@@ -101,7 +101,7 @@ import Modal from '@/components/Modal'
 import Pacman from '@/components/Pacman'
 import client from '@/utils/client'
 
-const agent = 'http://localhost:8010/proxy/swap-testnet-dev/agent/api/swap'
+const agent = `${process.env.NODE_ENV !== 'production' ? 'http://localhost:8010/proxy' : '/api'}/swap-testnet-dev/agent/api/swap`
 
 function newOrder (data) {
   return axios({
