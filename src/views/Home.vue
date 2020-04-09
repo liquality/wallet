@@ -6,7 +6,7 @@
       :balance="balance"
       @sell="sell"
       @close="selectedMarket = null" />
-    <div class="d-flex mb-4">
+    <div class="d-flex mb-4 balance-box">
       <div class="card card-up cursor-pointer" @click="updateBalance">
         <div class="card-body">
           <h1 class="h4 d-flex align-items-center justify-content-between"><span>BTC</span> <small class="ml-2 text-muted font-weight-light">testnet3</small></h1>
@@ -434,5 +434,19 @@ td > .btn {
 
 .nowrap {
   white-space: nowrap;
+}
+
+.balance-box.d-flex {
+  @media (max-width: 768px) {
+    flex-direction: column;
+
+    .card + .card {
+      margin-top: 1.5rem!important;
+    }
+
+    .card.ml-4 {
+      margin-left: 0!important;
+    }
+  }
 }
 </style>

@@ -19,6 +19,14 @@
   background: linear-gradient(180deg,hsl(232, 47%, 58%),hsl(232, 47%, 55%));
   min-height: 190px;
   margin-bottom: -90px;
+
+  @media (max-width: 768px) {
+    min-height: 210px;
+  }
+
+  @media (max-width: 375px) {
+    min-height: 220px;
+  }
 }
 
 .modal-content, .card, .table {
