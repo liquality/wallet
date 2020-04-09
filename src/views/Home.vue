@@ -1,5 +1,11 @@
 <template>
   <div>
+    <Modal
+      v-if="selectedMarket"
+      :market="selectedMarket"
+      :balance="balance"
+      @sell="sell"
+      @close="selectedMarket = null" />
     <div class="d-flex mb-4">
       <div class="card card-up cursor-pointer" @click="updateBalance">
         <div class="card-body">
@@ -16,77 +22,82 @@
         </div>
       </div>
     </div>
-    <table class="table bg-white border mb-4">
-      <thead>
-        <tr>
-          <td scope="col" class="text-muted">#</td>
-          <td scope="col" class="text-muted">Pair</td>
-          <td scope="col" class="text-muted">Rate</td>
-          <td scope="col" class="text-muted">Trade</td>
-        </tr>
-      </thead>
-      <tbody class="font-weight-normal">
-        <tr v-if="marketinfo.length === 0">
-          <td colspan="4" class="text-center font-weight-light text-muted">Fetching market data...</td>
-        </tr>
-        <tr v-for="(market, idx) in marketinfo" :key="market.to + '-' + market.from">
-          <td scope="row" class="text-muted font-weight-light">{{idx + 1}}</td>
-          <td>{{market.from}} <small class="text-muted">/ {{market.to}}</small></td>
-          <td><small class="text-muted">1 {{market.from}} =</small> {{market.rate}} <small class="text-muted">{{market.to}}</small></td>
-          <td><button class="btn btn-block btn-lg btn-primary" @click="buy(market.from, market.to)">Buy {{market.to}}</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <table class="table border bg-white">
-      <thead>
-        <tr>
-          <td scope="col" class="text-muted">#</td>
-          <td scope="col" class="text-muted">Description</td>
-          <td scope="col" class="text-muted">Rate</td>
-          <td scope="col" class="text-muted text-center">Trade duration</td>
-          <td scope="col" class="text-muted text-center">Progress</td>
-          <td scope="col" class="text-muted text-center">Status</td>
-        </tr>
-      </thead>
-      <tbody class="font-weight-normal">
-        <tr v-if="latestOrders.length === 0">
-          <td colspan="5" class="text-center font-weight-light text-muted">No previous orders found</td>
-        </tr>
-        <tr v-for="(order, idx) in latestOrders" :key="order.id">
-          <td scope="row" class="text-muted font-weight-light">{{orders.length - idx}}</td>
-          <td>+{{prettyAmount(order.to, order.toAmount)}} {{order.to}} <small class="text-muted">/ -{{prettyAmount(order.from, order.fromAmount)}} {{order.from}}</small></td>
-          <td><small class="text-muted">1 {{order.from}} =</small> {{order.rate}} <small class="text-muted">{{order.to}}</small></td>
-          <td class="text-muted text-center">
-            <span v-if="order.status.toLowerCase() !== 'success'">&mdash;</span>
-            <span v-else>{{getOrderDuration(order)}}</span>
-          </td>
-          <td class="text-center">
-            <button :class="{
-              'btn btn-block btn-link text-muted': true
-            }">
-              {{getOrderProgress(order)}}/5
-              <Pacman v-if="order.status.toLowerCase() !== 'success'" class="d-inline-block mr-3 ml-2" />
-            </button>
-          </td>
-          <td class="text-center"><button :class="{
-            'btn btn-block': true,
-            'btn-link text-primary': order.status.toLowerCase() !== 'success',
-            'btn-link text-success': order.status.toLowerCase() === 'success'
-          }">{{order.status}}</button></td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table bg-white border mb-4">
+        <thead>
+          <tr>
+            <td scope="col" class="text-muted">#</td>
+            <td scope="col" class="text-muted">Pair</td>
+            <td scope="col" class="text-muted">Rate</td>
+            <td scope="col" class="text-muted">Trade</td>
+          </tr>
+        </thead>
+        <tbody class="font-weight-normal">
+          <tr v-if="marketinfo.length === 0">
+            <td colspan="4" class="text-center font-weight-light text-muted">Fetching market data...</td>
+          </tr>
+          <tr v-for="(market, idx) in marketinfo" :key="market.to + '-' + market.from">
+            <td scope="row" class="text-muted font-weight-light">{{idx + 1}}</td>
+            <td>{{market.from}} <small class="text-muted">/ {{market.to}}</small></td>
+            <td><small class="text-muted">1 {{market.from}} =</small> {{market.rate}} <small class="text-muted">{{market.to}}</small></td>
+            <td><button class="btn btn-block btn-lg btn-primary" @click="selectedMarket = market">Sell {{market.from}}</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-responsive">
+      <table class="table border bg-white">
+        <thead>
+          <tr>
+            <td scope="col" class="text-muted">#</td>
+            <td scope="col" class="text-muted">Description</td>
+            <td scope="col" class="text-muted">Rate</td>
+            <td scope="col" class="text-muted text-center">Trade duration</td>
+            <td scope="col" class="text-muted text-center">Progress</td>
+            <td scope="col" class="text-muted text-center">Status</td>
+          </tr>
+        </thead>
+        <tbody class="font-weight-normal">
+          <tr v-if="latestOrders.length === 0">
+            <td colspan="6" class="text-center font-weight-light text-muted">No previous orders found</td>
+          </tr>
+          <tr v-for="(order, idx) in latestOrders" :key="order.id">
+            <td scope="row" class="text-muted font-weight-light">{{orders.length - idx}}</td>
+            <td>+{{prettyAmount(order.to, order.toAmount)}} <small class="text-muted">{{order.to}} / -{{prettyAmount(order.from, order.fromAmount)}} {{order.from}}</small></td>
+            <td><small class="text-muted">1 {{order.from}} =</small> {{order.rate}} <small class="text-muted">{{order.to}}</small></td>
+            <td class="text-center">
+              <button class="btn btn-block btn-link text-muted">
+                <span v-if="order.status.toLowerCase() !== 'success'">&mdash;</span>
+                <span v-else>{{getOrderDuration(order)}}</span>
+              </button>
+            </td>
+            <td class="text-center">
+              <button class="btn btn-block btn-link text-muted">
+                {{getOrderProgress(order)}}/5
+                <Pacman v-if="order.status.toLowerCase() !== 'success'" class="d-inline-block mr-3 ml-2" />
+              </button>
+            </td>
+            <td class="text-center"><button :class="{
+              'btn btn-block': true,
+              'btn-link text-primary': order.status.toLowerCase() !== 'success',
+              'btn-link text-success': order.status.toLowerCase() === 'success'
+            }">{{order.status}}</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import { differenceInMinutes } from 'date-fns'
+import { differenceInMinutes, differenceInSeconds } from 'date-fns'
 import { random } from 'lodash-es'
 import { mapState } from 'vuex'
 import { sha256 } from '@liquality/crypto'
 import cryptoassets from '@liquality/cryptoassets'
 
+import Modal from '@/components/Modal'
 import Pacman from '@/components/Pacman'
 import client from '@/utils/client'
 
@@ -124,7 +135,8 @@ const ORDER_STATUS_MAP = {
 
 export default {
   components: {
-    Pacman
+    Pacman,
+    Modal
   },
   data () {
     return {
@@ -136,7 +148,8 @@ export default {
         btc: '...',
         eth: '...'
       },
-      marketinfo: []
+      marketinfo: [],
+      selectedMarket: null
     }
   },
   computed: {
@@ -147,7 +160,13 @@ export default {
   },
   methods: {
     getOrderDuration (order) {
-      return `~${differenceInMinutes(order.endTime, order.startTime)} min`
+      const diff = Math.floor((order.endTime - order.startTime) / 1000)
+
+      if (diff < 60) {
+        return `${differenceInSeconds(order.endTime, order.startTime)} sec`
+      }
+
+      return `${differenceInMinutes(order.endTime, order.startTime)} min`
     },
     getOrderProgress (order) {
       return ORDER_STATUS_MAP[order.status.toLowerCase()]
@@ -178,8 +197,10 @@ export default {
     prettyAmount (chain, amount) {
       return cryptoassets[chain.toLowerCase()].unitToCurrency(amount)
     },
-    buy (from, to) {
-      this.swap(from, to)
+    sell ({ from, to, amount }) {
+      this.selectedMarket = null
+      const fromAmount = cryptoassets[from.toLowerCase()].currencyToUnit(amount)
+      this.swap(from, to, fromAmount)
     },
     async getUnusedAddresses (order) {
       const [fromAddress, toAddress] = await Promise.all([
@@ -208,7 +229,7 @@ export default {
       if (order.status.toLowerCase() === 'quote') {
         const [fromAddress, toAddress] = await this.getUnusedAddresses(order)
 
-        const secret = await client(order.from)('swap.generateSecret')('ccp')
+        const secret = await client(order.from)('swap.generateSecret')('test')
         const secretHash = sha256(secret)
 
         order = {
@@ -290,11 +311,11 @@ export default {
         this.updateBalance()
       }
     },
-    async swap (from, to) {
+    async swap (from, to, fromAmount) {
       const order = await newOrder({
         from,
         to,
-        fromAmount: 80000
+        fromAmount
       })
 
       order.startTime = Date.now()

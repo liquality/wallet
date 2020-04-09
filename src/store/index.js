@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import VuexPersist from 'vuex-persist'
 
 const vuexPersist = new VuexPersist({
-  key: 'trade-with-me',
+  key: 'p2p',
   storage: window.localStorage
 })
 

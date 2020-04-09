@@ -23,6 +23,7 @@
     "@liquality/ethereum-scraper-swap-find-provider": "^0.4.25",
     "@liquality/ethereum-swap-provider": "^0.4.25",
     "axios": "^0.19.2",
+    "bignumber.js": "^9.0.0",
     "bootstrap": "^4.4.1",
     "core-js": "^3.6.4",
     "date-fns": "^2.11.1",
