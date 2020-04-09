@@ -1,0 +1,43 @@
+@import "overrides";
+@import "bootstrap";
+@import "animation/pacman";
+
+html {
+  font-size: 16px;
+}
+
+%label {
+  @extend .text-muted;
+  padding-bottom: 0.25rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.nav-link.small, small.label, .small.label {
+  @extend %label;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.btn-code {
+  background: transparent;
+  border: 0;
+  outline: none;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: left;
+}
+
+.grayout {
+  opacity: 0.5;
+}
+
+.code-font {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.no-events {
+  pointer-events: none;
+}

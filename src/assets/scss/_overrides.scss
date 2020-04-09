@@ -1,0 +1,84 @@
+// $navbar-light-color: #fff;
+
+$blue-dark-1: #102A43;
+$blue-dark-2: #243B53;
+$blue-dark-3: #334E68;
+$blue-dark-4: #486581;
+$blue-dark-5: #627D98;
+$blue-light-1: #829AB1;
+$blue-light-2: #9FB3C8;
+$blue-light-3: #BCCCDC;
+$blue-light-4: #D9E2EC;
+$blue-light-5: #F0F4F8;
+
+$cyan-dark-1: #044E54;
+$cyan-dark-2: #0A6C74;
+$cyan-dark-3: #0E7C86;
+$cyan-dark-4: #14919B;
+$cyan-dark-5: #2CB1BC;
+$cyan-light-1: #38BEC9;
+$cyan-light-2: #54D1DB;
+$cyan-light-3: #87EAF2;
+$cyan-light-4: #BEF8FD;
+$cyan-light-5: #E0FCFF;
+
+$red-dark-1: #610404;
+$red-dark-2: #780A0A;
+$red-dark-3: #911111;
+$red-dark-4: #A61B1B;
+$red-dark-5: #BA2525;
+$red-light-1: #D64545;
+$red-light-2: #E66A6A;
+$red-light-3: #F29B9B;
+$red-light-4: #FACDCD;
+$red-light-5: #FFEEEE;
+
+$body-bg: $blue-light-5;
+$font-size-base:              0.875rem; // Assumes the browse, typically `16px`
+$font-size-lg:                1rem;
+$font-size-sm:                0.75rem;
+$lead-font-size:              1rem;
+$small-font-size:             75%;
+$text-muted: $blue-light-1;
+
+$headings-font-weight: 500;
+$font-weight-base: 300;
+$btn-font-weight: 500;
+$headings-color: $blue-dark-1;
+$body-color: $blue-dark-2;
+$lead-font-weight: 400;
+
+$hr-border-color: $blue-light-4;
+
+$sorange: #ed8f03;
+$badge-font-size: 85%;
+
+$dark: $blue-dark-3;
+$light: $blue-light-3;
+
+// linear-gradient(180deg,hsl(232, 47%, 58%),hsl(232, 47%, 55%))
+$primary: hsl(232, 47%, 55%);
+$secondary: $blue-dark-4;
+$info: $cyan-dark-4;
+
+$link-color: $dark;
+
+$enable-gradients: true;
+
+$input-btn-padding-y:         .415rem;
+$input-btn-padding-y-sm:      .275rem;
+$input-btn-padding-y-lg:      .6rem;
+
+// $success:       $cyan-dark-4;
+// $info:          $cyan !default;
+// $warning:       $yellow !default;
+// $danger:        $red !default;
+// $light:         $gray-100 !default;
+// $dark:          $gray-800 !default;
+
+$container-max-widths: (
+  // sm: 540px,
+  // md: 720px,
+  // lg: 900px,
+  xl: 980px
+);

@@ -1,0 +1,150 @@
+// https://github.com/ConnorAtherton/loaders.css
+
+$a-primary-color: $primary;
+$a-ball-size: 100px;
+$a-margin: 2px;
+$a-line-height: 0px;
+$a-line-width: 2px;
+$a-size: 6px;
+
+@mixin global-bg() {
+  background-color: $a-primary-color;
+}
+
+@mixin global-animation() {
+  animation-fill-mode: both;
+}
+
+@mixin balls() {
+  @include global-bg();
+
+  width: $a-ball-size;
+  height: $a-ball-size;
+  border-radius: 100%;
+  margin: $a-margin;
+}
+
+@mixin lines() {
+  @include global-bg();
+
+  width: $a-line-width;
+  height: $a-line-height;
+  border-radius: 2px;
+  margin: $a-margin;
+}
+
+@function delay($interval, $count, $index) {
+  @return ($index * $interval) - ($interval * $count);
+}
+
+@keyframes rotate_pacman_half_up  {
+    0% {
+         transform:rotate(270deg);
+    }
+    50% {
+         transform:rotate(360deg);
+    }
+    100% {
+         transform:rotate(270deg);
+    }
+}
+
+@keyframes rotate_pacman_half_down  {
+    0% {
+         transform:rotate(90deg);
+    }
+    50% {
+         transform:rotate(0deg);
+    }
+    100% {
+         transform:rotate(90deg);
+    }
+}
+
+@mixin pacman_design(){
+    width: 0px;
+    height: 0px;
+    border-right: $a-size solid transparent;
+    border-top: $a-size solid $a-primary-color;
+    border-left: $a-size solid $a-primary-color;
+    border-bottom: $a-size solid $a-primary-color;
+    border-radius: $a-size;
+}
+
+@keyframes pacman-balls {
+  75% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(-4 * $a-size, -$a-size / 4);
+  }
+}
+
+@mixin ball-placement($n:3, $start:0) {
+  @for $i from $start through $n {
+    > div:nth-child(#{$i + 2}) {
+      animation: pacman-balls 1s delay(.33s, $n, $i) infinite linear;
+    }
+  }
+}
+
+.loader {
+  display: inline-block;
+}
+
+.pacman {
+  @include ball-placement();
+
+  position: relative;
+
+  > div:first-of-type {
+    @include pacman_design();
+    animation: rotate_pacman_half_up 0.5s 0s infinite;
+    position: relative;
+  }
+
+  > div:nth-child(2) {
+    @include pacman_design();
+    animation: rotate_pacman_half_down 0.5s 0s infinite;
+    margin-top: -2 * $a-size;
+    position: relative;
+  }
+
+  > div:nth-child(3),
+  > div:nth-child(4),
+  > div:nth-child(5),
+  > div:nth-child(6) {
+    @include balls();
+
+    width: 5px;
+    height: 5px;
+
+    position: absolute;
+    transform: translate(0, -$a-size / 4);
+    top: 3px;
+    left: 28px;
+  }
+}
+
+.loader-white {
+  .pacman {
+    > div:first-of-type {
+      border-top: $a-size solid #fff;
+      border-left: $a-size solid #fff;
+      border-bottom: $a-size solid #fff;
+    }
+
+    > div:nth-child(2) {
+      border-top: $a-size solid #fff;
+      border-left: $a-size solid #fff;
+      border-bottom: $a-size solid #fff;
+    }
+
+    > div:nth-child(3),
+    > div:nth-child(4),
+    > div:nth-child(5),
+    > div:nth-child(6) {
+      background-color: #fff;
+    }
+  }
+}

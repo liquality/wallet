@@ -8,10 +8,30 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@liquality/bitcoin-esplora-api-provider": "^0.4.25",
+    "@liquality/bitcoin-esplora-swap-find-provider": "^0.4.25",
+    "@liquality/bitcoin-js-wallet-provider": "^0.4.25",
+    "@liquality/bitcoin-networks": "^0.4.25",
+    "@liquality/bitcoin-rpc-provider": "^0.4.25",
+    "@liquality/bitcoin-swap-provider": "^0.4.25",
+    "@liquality/client": "^0.4.25",
+    "@liquality/crypto": "^0.4.25",
+    "@liquality/cryptoassets": "0.0.10",
+    "@liquality/ethereum-js-wallet-provider": "^0.4.25",
+    "@liquality/ethereum-networks": "^0.4.25",
+    "@liquality/ethereum-rpc-provider": "^0.4.25",
+    "@liquality/ethereum-scraper-swap-find-provider": "^0.4.25",
+    "@liquality/ethereum-swap-provider": "^0.4.25",
+    "axios": "^0.19.2",
+    "bootstrap": "^4.4.1",
     "core-js": "^3.6.4",
+    "date-fns": "^2.11.1",
+    "lodash-es": "^4.17.15",
+    "uuid": "^7.0.3",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
-    "vuex": "^3.1.3"
+    "vuex": "^3.1.3",
+    "vuex-persist": "^2.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",
@@ -29,6 +49,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.26.3",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "worker-plugin": "^4.0.2"
   }
 }
