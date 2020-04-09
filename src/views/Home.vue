@@ -178,11 +178,13 @@ export default {
         this.updateMarket()
       }, random(15000, 30000))
     },
-    updateBalance () {
+    updateBalance (hideDots) {
       Object
         .keys(this.balance)
         .map(asset => {
-          this.balance[asset] = '...'
+          if (!hideDots) {
+            this.balance[asset] = '...'
+          }
 
           return asset
         })
