@@ -38,7 +38,7 @@
           </tr>
           <tr v-for="(market, idx) in marketinfo" :key="market.to + '-' + market.from">
             <td scope="row" class="text-muted font-weight-light">{{idx + 1}}</td>
-            <td>{{market.from}} <small class="text-muted">/ {{market.to}}</small></td>
+            <td class="nowrap">{{market.from}} <small class="text-muted">/ {{market.to}}</small></td>
             <td><small class="text-muted">1 {{market.from}} =</small> {{market.rate}} <small class="text-muted">{{market.to}}</small></td>
             <td><button class="btn btn-block btn-lg btn-primary" @click="selectedMarket = market">Sell {{market.from}}</button></td>
           </tr>
@@ -63,7 +63,7 @@
           </tr>
           <tr v-for="(order, idx) in latestOrders" :key="order.id">
             <td scope="row" class="text-muted font-weight-light">{{orders.length - idx}}</td>
-            <td>+{{prettyAmount(order.to, order.toAmount)}} <small class="text-muted">{{order.to}} / -{{prettyAmount(order.from, order.fromAmount)}} {{order.from}}</small></td>
+            <td class="nowrap">+{{prettyAmount(order.to, order.toAmount)}} <small class="text-muted">{{order.to}} / -{{prettyAmount(order.from, order.fromAmount)}} {{order.from}}</small></td>
             <td><small class="text-muted">1 {{order.from}} =</small> {{order.rate}} <small class="text-muted">{{order.to}}</small></td>
             <td class="text-center">
               <button class="btn btn-block btn-link text-muted">
@@ -430,5 +430,9 @@ td > .btn {
   &:hover, &:focus, &:active {
     text-decoration: none!important;
   }
+}
+
+.nowrap {
+  white-space: nowrap;
 }
 </style>
