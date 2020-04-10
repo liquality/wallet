@@ -27,7 +27,7 @@
             'btn-primary': !loading
           }"
           :disabled="!canSend || loading" @click="sendTransaction">
-          <span v-if="!loading">Send</span>
+          <span v-if="!loading">Withdraw</span>
           <Pacman v-else class="d-inline-block mr-3" />
         </button>
       </li>
