@@ -5,43 +5,47 @@
         <tbody class="font-weight-normal">
           <tr>
             <td class="text-muted text-right small-12">Order ID</td>
-            <td class="col-sm-8">{{order.id}}</td>
+            <td>{{order.id}}</td>
           </tr>
           <tr v-if="order.minConf">
             <td class="text-muted text-right small-12">Minimum<br>confirmations</td>
-            <td class="col-sm-8">{{order.minConf}}</td>
+            <td>{{order.minConf}}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Your {{order.from}}<br>address</td>
-            <td class="col-sm-8">{{order.fromAddress}}</td>
+            <td>{{order.fromAddress}}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Your {{order.to}}<br>address</td>
-            <td class="col-sm-8">{{order.toAddress}}</td>
+            <td>{{order.toAddress}}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">From</td>
-            <td class="col-sm-8">{{prettyBalance(order.from, order.fromAmount)}} {{order.from}}</td>
+            <td>{{prettyBalance(order.from, order.fromAmount)}} {{order.from}}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">To</td>
-            <td class="col-sm-8">{{prettyBalance(order.to, order.toAmount)}} {{order.to}}</td>
+            <td>{{prettyBalance(order.to, order.toAmount)}} {{order.to}}</td>
+          </tr>
+          <tr v-if="order.secret">
+            <td class="text-muted text-right small-12">Secret</td>
+            <td><span class="cursor-pointer text-muted font-weight-light" v-if="hidden" @click="hidden = false">Click to reveal the secret</span><span v-else>{{order.secret}}</span></td>
           </tr>
           <tr v-if="order.secretHash">
             <td class="text-muted text-right small-12">Secret Hash</td>
-            <td class="col-sm-8">{{order.secretHash}}</td>
+            <td>{{order.secretHash}}</td>
           </tr>
           <tr v-if="order.fromFundHash">
             <td class="text-muted text-right small-12">Your {{order.from}} funding<br>transaction</td>
-            <td class="col-sm-8">{{order.fromFundHash}}</td>
+            <td>{{order.fromFundHash}}</td>
           </tr>
           <tr v-if="order.toFundHash">
             <td class="text-muted text-right small-12">Counter-party's {{order.to}}<br>funding transaction</td>
-            <td class="col-sm-8">{{order.toFundHash}}</td>
+            <td>{{order.toFundHash}}</td>
           </tr>
           <tr v-if="order.toClaimHash">
             <td class="text-muted text-right small-12">Your {{order.to}} claim<br>transaction</td>
-            <td class="col-sm-8">{{order.toClaimHash}}</td>
+            <td>{{order.toClaimHash}}</td>
           </tr>
         </tbody>
       </table>
@@ -60,7 +64,7 @@ export default {
   },
   data () {
     return {
-      amount: 0
+      hidden: true
     }
   },
   props: {
