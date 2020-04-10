@@ -42,9 +42,6 @@ export default {
       name: 'Bitcoin',
       createdBy: 'Satoshi',
       announceList: [
-        'wss://tracker.btorrent.xyz',
-        'wss://tracker.openwebtorrent.com',
-        'wss://tracker.fastcast.nz',
         'wss://tracker.openwebtorrent.com'
       ]
     }, (err, file) => {
@@ -53,7 +50,9 @@ export default {
         return
       }
 
-      client.seed(file, function (torrent) {
+      client.seed(file, {
+        announce: ['wss://tracker.openwebtorrent.com']
+      }, function (torrent) {
         torrent.on('wire', function (wire, addr) {
           console.log('connected to a peer', wire)
           ref.count++
@@ -66,7 +65,9 @@ export default {
         })
       })
 
-      client.add(file, function (torrent) {
+      client.add(file, {
+        announce: ['wss://tracker.openwebtorrent.com']
+      }, function (torrent) {
         torrent.on('wire', function (wire, addr) {
           console.log('connected to a peer', wire)
           ref.count++
