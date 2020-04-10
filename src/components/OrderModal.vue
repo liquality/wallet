@@ -7,6 +7,10 @@
             <td class="text-muted text-right small-12">Order ID</td>
             <td>{{order.id}}</td>
           </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Status</td>
+            <td>{{order.status}}</td>
+          </tr>
           <tr v-if="order.minConf">
             <td class="text-muted text-right small-12">Minimum<br>confirmations</td>
             <td>{{order.minConf}}</td>
