@@ -31,7 +31,7 @@
         <thead>
           <tr>
             <td scope="col" class="text-muted">#</td>
-            <td scope="col" class="text-muted">Pair</td>
+            <td scope="col" class="text-muted">Asset</td>
             <td scope="col" class="text-muted">Rate</td>
             <td scope="col" class="text-muted">Trade</td>
           </tr>
