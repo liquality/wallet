@@ -73,10 +73,15 @@ export default {
   },
   props: {
     market: Object,
-    balance: Object
+    balance: Object,
+    prefill: Object
   },
   created () {
-    this.amount = this.reverseMin
+    if (this.prefill.amount) {
+      this.amount = this.prefill.amount
+    } else {
+      this.amount = this.reverseMin
+    }
   },
   computed: {
     fromBalance () {

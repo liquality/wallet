@@ -4,6 +4,7 @@
       v-if="selectedMarket"
       :market="selectedMarket"
       :balance="balance"
+      :prefill="prefill"
       @buy="buy"
       @close="selectedMarket = null" />
     <OrderModal
@@ -138,9 +139,10 @@ function updateOrder (id, data) {
   }).then(res => res.data)
 }
 
-function getMarketInfo (id, data) {
+function getMarketInfo (data = {}) {
   return axios({
-    url: agent + '/marketinfo'
+    url: agent + '/marketinfo',
+    params: data
   }).then(res => res.data)
 }
 
@@ -172,7 +174,8 @@ export default {
       marketinfo: [],
       selectedMarket: null,
       selectedOrder: null,
-      selectedWallet: null
+      selectedWallet: null,
+      prefill: {}
     }
   },
   computed: {
@@ -198,7 +201,7 @@ export default {
       return ORDER_STATUS_MAP[order.status.toLowerCase()]
     },
     async updateMarket () {
-      this.marketinfo = (await getMarketInfo()).filter(market => ['ETH', 'BTC'].includes(market.to) && ['ETH', 'BTC'].includes(market.from))
+      this.marketinfo = (await getMarketInfo(this.prefill.pair)).filter(market => ['ETH', 'BTC'].includes(market.to) && ['ETH', 'BTC'].includes(market.from))
 
       setTimeout(() => {
         this.updateMarket()
@@ -357,6 +360,23 @@ export default {
     }
   },
   async created () {
+    const { hash } = window.location
+
+    this.prefill = hash.replace('#', '').split('&').reduce((acc, query) => {
+      const parts = query.split('=')
+
+      if (parts[0] === 'pair') {
+        parts[1] = parts[1].split('_')
+        parts[1] = {
+          from: parts[1][0],
+          to: parts[1][1]
+        }
+      }
+
+      acc[parts[0]] = parts[1]
+      return acc
+    }, {})
+
     this.updateMarket()
     this.updateBalance(true)
     this.getUnusedAddresses({ to: 'BTC', from: 'ETH' })
