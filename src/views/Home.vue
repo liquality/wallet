@@ -4,7 +4,7 @@
       v-if="selectedMarket"
       :market="selectedMarket"
       :balance="balance"
-      @sell="sell"
+      @buy="buy"
       @close="selectedMarket = null" />
     <OrderModal
       v-if="selectedOrder"
@@ -43,11 +43,11 @@
           <tr v-for="(market, idx) in marketinfo" :key="market.to + '-' + market.from">
             <td scope="row" class="text-muted font-weight-light">{{idx + 1}}</td>
             <td class="nowrap">
-              <span class="asset-icon" :style="'background-image: url(/img/' + market.from.toLowerCase() + '.png)'"> </span>
-              <span>{{market.from}} <small class="text-muted">/ {{market.to}}</small></span>
+              <span class="asset-icon" :style="'background-image: url(/img/' + market.to.toLowerCase() + '.png)'"> </span>
+              <span>{{market.to}}</span>
             </td>
-            <td><small class="text-muted">1 {{market.from}} =</small> {{market.rate}} <small class="text-muted">{{market.to}}</small></td>
-            <td><button class="btn btn-block btn-lg btn-primary" @click="selectedMarket = market">Sell {{market.from}}</button></td>
+            <td>{{reverseRate(market)}} <small class="text-muted">{{market.from}}</small></td>
+            <td><button class="btn btn-block btn-lg btn-primary" @click="selectedMarket = market" :disabled="balance[market.to.toLowerCase()] === '...' || balance[market.from.toLowerCase()] === '...'">Buy</button></td>
           </tr>
         </tbody>
       </table>
@@ -94,6 +94,7 @@
 
 <script>
 import axios from 'axios'
+import BN from 'bignumber.js'
 import { differenceInMinutes, differenceInSeconds } from 'date-fns'
 import { random } from 'lodash-es'
 import { mapState } from 'vuex'
@@ -165,6 +166,9 @@ export default {
     }
   },
   methods: {
+    reverseRate (market) {
+      return BN(1).div(market.rate).dp(8)
+    },
     getOrderDuration (order) {
       const diff = Math.floor((order.endTime - order.startTime) / 1000)
 
@@ -204,7 +208,7 @@ export default {
     prettyAmount (chain, amount) {
       return cryptoassets[chain.toLowerCase()].unitToCurrency(amount)
     },
-    async sell ({ from, to, amount }) {
+    async buy ({ from, to, amount }) {
       const fromAmount = cryptoassets[from.toLowerCase()].currencyToUnit(amount)
 
       await this.swap(from, to, fromAmount)
@@ -465,7 +469,7 @@ td > .btn {
   vertical-align: middle;
   height: 30px;
   width: 30px;
-  margin-right: 8px;
+  margin-right: 10px;
   background-position: center center;
   background-repeat: no-repeat;
   background-size: contain;
