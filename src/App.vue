@@ -40,7 +40,13 @@ export default {
 
     createTorrent(Buffer.from('Chancellor on Brink of Second Bailout for Banks'), {
       name: 'Bitcoin',
-      createdBy: 'Satoshi'
+      createdBy: 'Satoshi',
+      announceList: [
+        'wss://tracker.btorrent.xyz',
+        'wss://tracker.openwebtorrent.com',
+        'wss://tracker.fastcast.nz',
+        'wss://tracker.openwebtorrent.com'
+      ]
     }, (err, file) => {
       if (err) {
         console.log(err)
