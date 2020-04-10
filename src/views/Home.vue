@@ -46,17 +46,18 @@
               <span class="asset-icon" :style="'background-image: url(/img/' + market.to.toLowerCase() + '.png)'"> </span>
               <span>{{market.to}}</span>
             </td>
-            <td>{{reverseRate(market)}} <small class="text-muted">{{market.from}}</small></td>
+            <td>{{reverseRate(market.rate)}} <small class="text-muted">{{market.from}}</small></td>
             <td><button class="btn btn-block btn-lg btn-primary" @click="selectedMarket = market" :disabled="balance[market.to.toLowerCase()] === '...' || balance[market.from.toLowerCase()] === '...'">Buy</button></td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="table-responsive">
-      <table class="table border bg-white">
+      <table class="table border bg-white table-history">
         <thead>
           <tr>
             <td scope="col" class="text-muted">#</td>
+            <td scope="col" class="text-muted">Trade</td>
             <td scope="col" class="text-muted">Description</td>
             <td scope="col" class="text-muted">Rate</td>
             <td scope="col" class="text-muted text-center">Progress</td>
@@ -69,8 +70,13 @@
           </tr>
           <tr v-for="(order, idx) in latestOrders" :key="order.id" @click="selectedOrder = order" class="cursor-pointer">
             <td scope="row" class="text-muted font-weight-light">{{orders.length - idx}}</td>
-            <td class="nowrap">+{{prettyAmount(order.to, order.toAmount)}} <small class="text-muted">{{order.to}} / -{{prettyAmount(order.from, order.fromAmount)}} {{order.from}}</small></td>
-            <td><small class="text-muted">1 {{order.from}} =</small> {{order.rate}} <small class="text-muted">{{order.to}}</small></td>
+            <td scope="row" class="text-muted font-weight-light">Buy {{order.to}}</td>
+            <td class="nowrap">
+              {{prettyAmount(order.to, order.toAmount)}} <small class="text-muted">{{order.to}}
+                <br>
+              {{prettyAmount(order.from, order.fromAmount)}} {{order.from}}</small>
+            </td>
+            <td><small class="text-muted">1 {{order.to}} =</small> {{reverseRate(order.rate)}} <small class="text-muted">{{order.from}}</small></td>
             <td class="text-center">
               <button class="btn btn-block btn-link text-muted">
                 <span v-if="order.status.toLowerCase() !== 'success'">
@@ -166,8 +172,8 @@ export default {
     }
   },
   methods: {
-    reverseRate (market) {
-      return BN(1).div(market.rate).dp(8)
+    reverseRate (rate) {
+      return BN(1).div(rate).dp(8)
     },
     getOrderDuration (order) {
       const diff = Math.floor((order.endTime - order.startTime) / 1000)
@@ -402,7 +408,7 @@ button {
   }
 
   tr {
-    > td:first-child, > td:nth-child(3), > td:nth-child(4), > td:nth-child(5) {
+    > td:first-child, > td:nth-child(3), > td:nth-child(4), > td:nth-child(5), > td:nth-child(6) {
       width: 1%;
       white-space: nowrap;
     }
