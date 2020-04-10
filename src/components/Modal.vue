@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="modal-backdrop"></div>
-    <div class="modal d-block" tabindex="-1" role="dialog" @click="close">
+    <div class="modal d-block" tabindex="-1" role="dialog" v-on:click.passive="close">
       <div :class="{
         'modal-dialog modal-dialog-centered': true,
         [type]: true
