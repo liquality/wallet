@@ -129,26 +129,6 @@ export default {
 </script>
 
 <style lang="scss">
-.list-group-flush {
-  a {
-    margin: 0;
-  }
-
-  > a:first-child {
-    border-top-left-radius: $border-radius;
-    border-top-right-radius: $border-radius;
-  }
-
-  > a:last-child {
-    border-bottom-left-radius: $border-radius;
-    border-bottom-right-radius: $border-radius;
-  }
-}
-
-.small-12 {
-  font-size: 12px;
-}
-
 input.simple {
   // border-radius: 0!important;
   // border-top: 0;

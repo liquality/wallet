@@ -10,15 +10,22 @@
       v-if="selectedOrder"
       :order="selectedOrder"
       @close="selectedOrder = null" />
+    <WalletModal
+      v-if="selectedWallet"
+      :wallet="selectedWallet"
+      :address="address[selectedWallet]"
+      :balance="balance[selectedWallet]"
+      @close="selectedWallet = null"
+      @refresh="selectedWallet = null; updateBalance()" />
     <div class="d-flex mb-4 balance-box">
-      <div class="card card-up cursor-pointer" @click="updateBalance">
+      <div class="card card-up cursor-pointer" @click="selectedWallet = 'btc'">
         <div class="card-body">
           <h1 class="h4 d-flex align-items-center justify-content-between"><span>BTC</span> <small class="ml-2 text-muted font-weight-light">testnet3</small></h1>
           <h2 class="h2 font-weight-light mt-3 mb-3">{{ balance.btc }}</h2>
           <h3 class="h6 mb-0 font-weight-light text-muted">{{ address.btc }}</h3>
         </div>
       </div>
-      <div class="card card-up cursor-pointer ml-4" @click="updateBalance">
+      <div class="card card-up cursor-pointer ml-4" @click="selectedWallet = 'eth'">
         <div class="card-body">
           <h1 class="h4 d-flex align-items-center justify-content-between"><span>ETH</span> <small class="ml-2 text-muted font-weight-light">rinkeby</small></h1>
           <h2 class="h2 font-weight-light mt-3 mb-3">{{ balance.eth }}</h2>
@@ -107,6 +114,7 @@ import { mapState } from 'vuex'
 import { sha256 } from '@liquality/crypto'
 import cryptoassets from '@liquality/cryptoassets'
 
+import WalletModal from '@/components/WalletModal'
 import TradeModal from '@/components/TradeModal'
 import OrderModal from '@/components/OrderModal'
 import Pacman from '@/components/Pacman'
@@ -148,7 +156,8 @@ export default {
   components: {
     Pacman,
     TradeModal,
-    OrderModal
+    OrderModal,
+    WalletModal
   },
   data () {
     return {
@@ -162,7 +171,8 @@ export default {
       },
       marketinfo: [],
       selectedMarket: null,
-      selectedOrder: null
+      selectedOrder: null,
+      selectedWallet: null
     }
   },
   computed: {
