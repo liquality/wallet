@@ -3,6 +3,10 @@
     <div class="table-responsive">
       <table class="table bg-white border-0 mb-1 mt-1">
         <tbody class="font-weight-normal">
+          <tr v-if="orderAgent">
+            <td class="text-muted text-right small-12">Agent</td>
+            <td>{{orderAgent}}</td>
+          </tr>
           <tr>
             <td class="text-muted text-right small-12">Order ID</td>
             <td>{{order.id}}</td>
@@ -27,11 +31,11 @@
             <td class="text-muted text-right small-12">Minimum<br>confirmations</td>
             <td>{{order.minConf}}</td>
           </tr>
-          <tr>
+          <tr v-if="order.fromAddress">
             <td class="text-muted text-right small-12">Your {{order.from}}<br>address</td>
             <td>{{order.fromAddress}}</td>
           </tr>
-          <tr>
+          <tr v-if="order.toAddress">
             <td class="text-muted text-right small-12">Your {{order.to}}<br>address</td>
             <td>{{order.toAddress}}</td>
           </tr>
@@ -77,7 +81,8 @@ export default {
     }
   },
   props: {
-    order: Object
+    order: Object,
+    orderAgent: String
   },
   computed: {
     reverseRate () {

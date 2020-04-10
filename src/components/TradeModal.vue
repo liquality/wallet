@@ -119,6 +119,7 @@ export default {
       this.loading = true
 
       this.$emit('buy', {
+        agentIndex: this.market.agentIndex,
         from: this.market.from,
         to: this.market.to,
         amount: this.youPay

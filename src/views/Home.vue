@@ -10,6 +10,7 @@
     <OrderModal
       v-if="selectedOrder"
       :order="selectedOrder"
+      :orderAgent="selectedOrderAgent"
       @close="selectedOrder = null" />
     <WalletModal
       v-if="selectedWallet"
@@ -121,27 +122,30 @@ import OrderModal from '@/components/OrderModal'
 import Pacman from '@/components/Pacman'
 import client from '@/utils/client'
 
-const agent = `${process.env.NODE_ENV !== 'production' ? 'http://localhost:8010/proxy' : '/api'}/swap-testnet-dev/agent/api/swap`
+const agents = [
+  `${process.env.NODE_ENV !== 'production' ? 'http://localhost:8010/proxy' : '/api'}/swap-testnet-dev/agent/api/swap`,
+  `${process.env.NODE_ENV !== 'production' ? 'http://localhost:8010/proxy' : '/api'}/swap-testnet/agent/api/swap`
+]
 
-function newOrder (data) {
+function newOrder (agentIndex, data) {
   return axios({
-    url: agent + '/order',
+    url: agents[agentIndex] + '/order',
     method: 'post',
     data
   }).then(res => res.data)
 }
 
-function updateOrder (id, data) {
+function updateOrder (agentIndex, id, data) {
   return axios({
-    url: agent + '/order/' + id,
+    url: agents[agentIndex] + '/order/' + id,
     method: 'post',
     data
   }).then(res => res.data)
 }
 
-function getMarketInfo (data = {}) {
+function getMarketInfo (agentIndex, data = {}) {
   return axios({
-    url: agent + '/marketinfo',
+    url: agents[agentIndex] + '/marketinfo',
     params: data
   }).then(res => res.data)
 }
@@ -182,6 +186,9 @@ export default {
     ...mapState(['orders']),
     latestOrders () {
       return this.orders.slice().reverse()
+    },
+    selectedOrderAgent () {
+      return agents[this.selectedOrder.agentIndex]
     }
   },
   methods: {
@@ -201,7 +208,30 @@ export default {
       return ORDER_STATUS_MAP[order.status.toLowerCase()]
     },
     async updateMarket () {
-      this.marketinfo = (await getMarketInfo(this.prefill.pair)).filter(market => ['ETH', 'BTC'].includes(market.to) && ['ETH', 'BTC'].includes(market.from))
+      const otherMarketInfo = (await getMarketInfo(1, this.prefill.pair))
+        .filter(market => ['ETH', 'BTC'].includes(market.to) && ['ETH', 'BTC'].includes(market.from))
+        .map(market => {
+          market.agentIndex = 1
+
+          return market
+        })
+
+      this.marketinfo = (await getMarketInfo(0, this.prefill.pair))
+        .filter(market => ['ETH', 'BTC'].includes(market.to) && ['ETH', 'BTC'].includes(market.from))
+        .map((refMarket, index) => {
+          refMarket.agentIndex = 0
+
+          const otherMarket = otherMarketInfo.find(m => m.to === refMarket.to && m.from === refMarket.from)
+
+          if (refMarket.rate > otherMarket.rate) {
+            console.log('Found best rate with agent 1', otherMarket.from, otherMarket.to)
+            return otherMarket
+          } else {
+            console.log('found best rate with agent 0', refMarket.from, refMarket.to)
+          }
+
+          return refMarket
+        })
 
       setTimeout(() => {
         this.updateMarket()
@@ -227,10 +257,10 @@ export default {
     prettyAmount (chain, amount) {
       return cryptoassets[chain.toLowerCase()].unitToCurrency(amount)
     },
-    async buy ({ from, to, amount }) {
+    async buy ({ agentIndex, from, to, amount }) {
       const fromAmount = cryptoassets[from.toLowerCase()].currencyToUnit(amount)
 
-      await this.swap(from, to, fromAmount)
+      await this.swap(agentIndex, from, to, fromAmount)
 
       this.selectedMarket = null
     },
@@ -291,7 +321,7 @@ export default {
           status: 'Initiated'
         }
 
-        await updateOrder(order.id, {
+        await updateOrder(order.agentIndex, order.id, {
           fromAddress: order.fromAddress,
           toAddress: order.toAddress,
           fromFundHash: order.fromFundHash,
@@ -344,13 +374,14 @@ export default {
         this.updateBalance()
       }
     },
-    async swap (from, to, fromAmount) {
-      const order = await newOrder({
+    async swap (agentIndex, from, to, fromAmount) {
+      const order = await newOrder(agentIndex, {
         from,
         to,
         fromAmount
       })
 
+      order.agentIndex = agentIndex
       order.startTime = Date.now()
       order.status = 'Quote'
 
