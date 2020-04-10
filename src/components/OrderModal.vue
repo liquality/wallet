@@ -4,7 +4,7 @@
       <table class="table bg-white border-0 mb-1 mt-1">
         <tbody class="font-weight-normal">
           <tr v-if="orderAgent">
-            <td class="text-muted text-right small-12">Agent</td>
+            <td class="text-muted text-right small-12">Counter-party</td>
             <td>{{orderAgent}}</td>
           </tr>
           <tr>
