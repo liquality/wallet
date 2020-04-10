@@ -1,11 +1,15 @@
 <template>
   <div>
-    <Modal
+    <TradeModal
       v-if="selectedMarket"
       :market="selectedMarket"
       :balance="balance"
       @sell="sell"
       @close="selectedMarket = null" />
+    <OrderModal
+      v-if="selectedOrder"
+      :order="selectedOrder"
+      @close="selectedOrder = null" />
     <div class="d-flex mb-4 balance-box">
       <div class="card card-up cursor-pointer" @click="updateBalance">
         <div class="card-body">
@@ -52,7 +56,6 @@
             <td scope="col" class="text-muted">#</td>
             <td scope="col" class="text-muted">Description</td>
             <td scope="col" class="text-muted">Rate</td>
-            <td scope="col" class="text-muted text-center">Trade duration</td>
             <td scope="col" class="text-muted text-center">Progress</td>
             <td scope="col" class="text-muted text-center">Status</td>
           </tr>
@@ -61,20 +64,17 @@
           <tr v-if="latestOrders.length === 0">
             <td colspan="6" class="text-center font-weight-light text-muted">No previous orders found</td>
           </tr>
-          <tr v-for="(order, idx) in latestOrders" :key="order.id">
+          <tr v-for="(order, idx) in latestOrders" :key="order.id" @click="selectedOrder = order" class="cursor-pointer">
             <td scope="row" class="text-muted font-weight-light">{{orders.length - idx}}</td>
             <td class="nowrap">+{{prettyAmount(order.to, order.toAmount)}} <small class="text-muted">{{order.to}} / -{{prettyAmount(order.from, order.fromAmount)}} {{order.from}}</small></td>
             <td><small class="text-muted">1 {{order.from}} =</small> {{order.rate}} <small class="text-muted">{{order.to}}</small></td>
             <td class="text-center">
               <button class="btn btn-block btn-link text-muted">
-                <span v-if="order.status.toLowerCase() !== 'success'">&mdash;</span>
-                <span v-else>{{getOrderDuration(order)}}</span>
-              </button>
-            </td>
-            <td class="text-center">
-              <button class="btn btn-block btn-link text-muted">
-                {{getOrderProgress(order)}}/5
-                <Pacman v-if="order.status.toLowerCase() !== 'success'" class="d-inline-block mr-3 ml-2" />
+                <span v-if="order.status.toLowerCase() !== 'success'">
+                  {{getOrderProgress(order)}}/5
+                  <Pacman class="d-inline-block mr-3 ml-2" />
+                </span>
+                <span v-else>Finished in {{getOrderDuration(order)}}</span>
               </button>
             </td>
             <td class="text-center"><button :class="{
@@ -97,7 +97,8 @@ import { mapState } from 'vuex'
 import { sha256 } from '@liquality/crypto'
 import cryptoassets from '@liquality/cryptoassets'
 
-import Modal from '@/components/Modal'
+import TradeModal from '@/components/TradeModal'
+import OrderModal from '@/components/OrderModal'
 import Pacman from '@/components/Pacman'
 import client from '@/utils/client'
 
@@ -136,7 +137,8 @@ const ORDER_STATUS_MAP = {
 export default {
   components: {
     Pacman,
-    Modal
+    TradeModal,
+    OrderModal
   },
   data () {
     return {
@@ -149,7 +151,8 @@ export default {
         eth: '...'
       },
       marketinfo: [],
-      selectedMarket: null
+      selectedMarket: null,
+      selectedOrder: null
     }
   },
   computed: {
@@ -163,10 +166,10 @@ export default {
       const diff = Math.floor((order.endTime - order.startTime) / 1000)
 
       if (diff < 60) {
-        return `${differenceInSeconds(order.endTime, order.startTime)} sec`
+        return `${differenceInSeconds(order.endTime, order.startTime)}s`
       }
 
-      return `${differenceInMinutes(order.endTime, order.startTime)} min`
+      return `${differenceInMinutes(order.endTime, order.startTime)}m`
     },
     getOrderProgress (order) {
       return ORDER_STATUS_MAP[order.status.toLowerCase()]
@@ -292,7 +295,7 @@ export default {
           }
         }, random(15000, 30000))
       } else if (order.status.toLowerCase() === 'exchanging') {
-        await client(order.to)('swap.claimSwap')(
+        const toClaimHash = await client(order.to)('swap.claimSwap')(
           order.toFundHash,
           order.toAddress,
           order.toCounterPartyAddress,
@@ -303,7 +306,8 @@ export default {
         order = {
           ...order,
           status: 'Success',
-          endTime: Date.now()
+          endTime: Date.now(),
+          toClaimHash
         }
 
         this.$store.commit('UPDATE_ORDER', order)

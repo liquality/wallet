@@ -29,6 +29,11 @@
   }
 }
 
+.modal {
+  overflow-x: hidden!important;
+  overflow-y: auto!important;
+}
+
 .modal-content, .card, .table {
   box-shadow: 0 1px 0 0 rgba(22,29,37,.05), 0 0 0 0 transparent!important;
 }
