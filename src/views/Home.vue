@@ -42,7 +42,10 @@
           </tr>
           <tr v-for="(market, idx) in marketinfo" :key="market.to + '-' + market.from">
             <td scope="row" class="text-muted font-weight-light">{{idx + 1}}</td>
-            <td class="nowrap">{{market.from}} <small class="text-muted">/ {{market.to}}</small></td>
+            <td class="nowrap">
+              <span class="asset-icon" :style="'background-image: url(/img/' + market.from.toLowerCase() + '.png)'"> </span>
+              <span>{{market.from}} <small class="text-muted">/ {{market.to}}</small></span>
+            </td>
             <td><small class="text-muted">1 {{market.from}} =</small> {{market.rate}} <small class="text-muted">{{market.to}}</small></td>
             <td><button class="btn btn-block btn-lg btn-primary" @click="selectedMarket = market">Sell {{market.from}}</button></td>
           </tr>
@@ -454,6 +457,23 @@ td > .btn {
     .card.ml-4 {
       margin-left: 0!important;
     }
+  }
+}
+
+.asset-icon {
+  display: inline-block;
+  vertical-align: middle;
+  height: 30px;
+  width: 30px;
+  margin-right: 8px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform-origin: center;
+  transition: all 0.2s ease-out;
+
+  & + span {
+    vertical-align: middle;
   }
 }
 </style>
