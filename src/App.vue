@@ -7,7 +7,7 @@
         </div>
       </nav>
       <div class="container">
-        <p class="mb-0 font-weight-light text-white">Welcome to 2020 &mdash; Your keys, your coins &mdash; Trade securely without middleman, thanks to Atomic Swaps!</p>
+        <p class="mb-0 font-weight-light text-white">Welcome to 2020 &mdash; Your keys, your coins &mdash; Trade securely without middlemen, thanks to Atomic Swaps!</p>
       </div>
     </div>
     <router-view class="container mt-4 mb-5" />
