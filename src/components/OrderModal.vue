@@ -11,10 +11,6 @@
             <td class="text-muted text-right small-12">Status</td>
             <td>{{order.status}}</td>
           </tr>
-          <tr v-if="order.minConf">
-            <td class="text-muted text-right small-12">Minimum<br>confirmations</td>
-            <td>{{order.minConf}}</td>
-          </tr>
           <tr>
             <td class="text-muted text-right small-12">From</td>
             <td>{{prettyBalance(order.from, order.fromAmount)}} {{order.from}}</td>
@@ -22,6 +18,10 @@
           <tr>
             <td class="text-muted text-right small-12">To</td>
             <td>{{prettyBalance(order.to, order.toAmount)}} {{order.to}}</td>
+          </tr>
+          <tr v-if="order.minConf">
+            <td class="text-muted text-right small-12">Minimum<br>confirmations</td>
+            <td>{{order.minConf}}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Your {{order.from}}<br>address</td>
