@@ -16,20 +16,20 @@
             <td>{{order.minConf}}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">Your {{order.from}}<br>address</td>
-            <td>{{order.fromAddress}}</td>
-          </tr>
-          <tr>
-            <td class="text-muted text-right small-12">Your {{order.to}}<br>address</td>
-            <td>{{order.toAddress}}</td>
-          </tr>
-          <tr>
             <td class="text-muted text-right small-12">From</td>
             <td>{{prettyBalance(order.from, order.fromAmount)}} {{order.from}}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">To</td>
             <td>{{prettyBalance(order.to, order.toAmount)}} {{order.to}}</td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Your {{order.from}}<br>address</td>
+            <td>{{order.fromAddress}}</td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Your {{order.to}}<br>address</td>
+            <td>{{order.toAddress}}</td>
           </tr>
           <tr v-if="order.secret">
             <td class="text-muted text-right small-12">Secret</td>
