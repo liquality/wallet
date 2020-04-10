@@ -201,10 +201,12 @@ export default {
     prettyAmount (chain, amount) {
       return cryptoassets[chain.toLowerCase()].unitToCurrency(amount)
     },
-    sell ({ from, to, amount }) {
-      this.selectedMarket = null
+    async sell ({ from, to, amount }) {
       const fromAmount = cryptoassets[from.toLowerCase()].currencyToUnit(amount)
-      this.swap(from, to, fromAmount)
+
+      await this.swap(from, to, fromAmount)
+
+      this.selectedMarket = null
     },
     async getUnusedAddresses (order) {
       const [fromAddress, toAddress] = await Promise.all([

@@ -5,15 +5,15 @@
         Sell {{market.from}}
       </h2>
 
-      <input type="number" class="form-control form-control-lg simple mb-3" v-model="amount" step="0.0001">
+      <input type="number" class="form-control form-control-lg simple mb-3" v-model="amount" step="0.0001" :readonly="loading">
 
-      <p class="mb-2 cursor-pointer" @click="amount = marketMin">
+      <p class="mb-2 cursor-pointer" @click="setAmount(marketMin)">
         <span class="badge text-muted">Min</span>
         <span class="font-weight-normal">{{marketMin}} </span>
         <small class="text-muted">{{market.from}}</small>
       </p>
 
-      <p class="mb-2 cursor-pointer" @click="amount = marketMax">
+      <p class="mb-2 cursor-pointer" @click="setAmount(marketMax)">
         <span class="badge text-muted">Max</span>
         <span class="font-weight-normal">{{marketMax}} </span>
         <small class="text-muted">{{market.from}}</small>
@@ -39,9 +39,16 @@
       </p>
 
       <button
-        class="text-center btn btn-lg btn-primary btn-block"
-        :disabled="!canSell"
-        @click="sell">Sell</button>
+        :class="{
+          'text-center btn btn-lg btn-block': true,
+          'btn-light': loading,
+          'btn-primary': !loading
+        }"
+        :disabled="!canSell || loading"
+        @click="sell">
+        <span v-if="!loading">Sell</span>
+        <Pacman v-else class="d-inline-block mr-3" />
+      </button>
     </div>
   </Modal>
 </template>
@@ -50,15 +57,18 @@
 import cryptoassets from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
 
+import Pacman from '@/components/Pacman'
 import Modal from '@/components/Modal'
 
 export default {
   components: {
-    Modal
+    Modal,
+    Pacman
   },
   data () {
     return {
-      amount: 0
+      amount: 0,
+      loading: false
     }
   },
   props: {
@@ -91,11 +101,18 @@ export default {
   },
   methods: {
     sell () {
+      this.loading = true
+
       this.$emit('sell', {
         from: this.market.from,
         to: this.market.to,
         amount: this.amount
       })
+    },
+    setAmount (amount) {
+      if (this.loading) return
+
+      this.amount = amount
     }
   }
 }
