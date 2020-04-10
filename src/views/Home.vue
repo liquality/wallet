@@ -19,7 +19,7 @@
       :balance="balance[selectedWallet]"
       @close="selectedWallet = null"
       @refresh="selectedWallet = null; updateBalance()" />
-    <div class="d-flex mb-4 balance-box">
+    <div class="d-flex justify-content-center mb-4 balance-box">
       <div class="card card-up cursor-pointer" @click="selectedWallet = 'btc'">
         <div class="card-body">
           <h1 class="h4 d-flex align-items-center justify-content-between"><span>BTC</span> <small class="ml-2 text-muted font-weight-light">testnet3</small></h1>
@@ -517,7 +517,7 @@ td > .btn {
   white-space: nowrap;
 }
 
-.balance-box.d-flex {
+.balance-box {
   @media (max-width: 768px) {
     flex-direction: column;
 
