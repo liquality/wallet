@@ -152,14 +152,27 @@ export default {
 input.simple {
   // border-radius: 0!important;
   // border-top: 0;
+  font-size: 1.4rem!important;
   // border-left: 0;
+  // padding-left: 8px!important;
   // border-right: 0;
+  font-weight: 400;
   outline: none;
-  // box-shadow: none;
+  box-shadow: none;
 
   &:hover, &:focus, &:active {
     outline: none;
-    // box-shadow: none;
+    box-shadow: none;
+  }
+
+  &[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  &[type="number"]::-webkit-inner-spin-button,
+  &[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 }
 </style>
