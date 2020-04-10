@@ -21,6 +21,10 @@
   min-height: 490px;
   margin-bottom: -290px;
 
+  .display-4 {
+    font-size: 3rem;
+  }
+
   @media (max-width: 768px) {
     min-height: 610px;
     margin-bottom: -460px;
