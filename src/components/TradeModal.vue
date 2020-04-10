@@ -116,7 +116,7 @@ export default {
       this.$emit('buy', {
         from: this.market.from,
         to: this.market.to,
-        amount: this.amount
+        amount: this.youPay
       })
     },
     setAmount (amount) {
