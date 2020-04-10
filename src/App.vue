@@ -12,8 +12,70 @@
       </div>
     </div>
     <router-view class="container mt-4 mb-5" />
+    <p class="text-center text-muted" v-if="footer">connected to {{count}} peers ~ last message {{message || 'null'}}</p>
   </div>
 </template>
+
+<script>
+import createTorrent from 'create-torrent'
+// import parseTorrent from 'parse-torrent'
+import WebTorrent from 'webtorrent'
+
+export default {
+  data () {
+    return {
+      count: 0,
+      message: null,
+      footer: false
+    }
+  },
+  created () {
+    const { query } = this.$route
+    const { handshake } = query
+    if (!handshake) return
+
+    this.footer = true
+    const ref = this
+    const client = new WebTorrent()
+
+    createTorrent(Buffer.from('Chancellor on Brink of Second Bailout for Banks'), {
+      name: 'Bitcoin',
+      createdBy: 'Satoshi'
+    }, (err, file) => {
+      if (err) {
+        console.log(err)
+        return
+      }
+
+      client.seed(file, function (torrent) {
+        torrent.on('wire', function (wire, addr) {
+          console.log('connected to a peer', wire)
+          ref.count++
+
+          wire.on('unknownmessage', buffer => {
+            ref.message = buffer.toString().trim()
+          })
+
+          wire._message(21, [], handshake)
+        })
+      })
+
+      client.add(file, function (torrent) {
+        torrent.on('wire', function (wire, addr) {
+          console.log('connected to a peer', wire)
+          ref.count++
+
+          wire.on('unknownmessage', buffer => {
+            ref.message = buffer.toString().trim()
+          })
+
+          wire._message(21, [], handshake)
+        })
+      })
+    })
+  }
+}
+</script>
 
 <style lang="scss">
 .cover {
