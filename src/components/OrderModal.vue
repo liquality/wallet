@@ -8,16 +8,20 @@
             <td>{{order.id}}</td>
           </tr>
           <tr>
+            <td class="text-muted text-right small-12">Rate</td>
+            <td>1 {{order.to}} = {{reverseRate}} {{order.from}}</td>
+          </tr>
+          <tr>
             <td class="text-muted text-right small-12">Status</td>
             <td>{{order.status}}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">From</td>
-            <td>{{prettyBalance(order.from, order.fromAmount)}} {{order.from}}</td>
+            <td class="text-muted text-right small-12">Buy</td>
+            <td>{{prettyBalance(order.to, order.toAmount)}} {{order.to}}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">To</td>
-            <td>{{prettyBalance(order.to, order.toAmount)}} {{order.to}}</td>
+            <td class="text-muted text-right small-12">Sell</td>
+            <td>{{prettyBalance(order.from, order.fromAmount)}} {{order.from}}</td>
           </tr>
           <tr v-if="order.minConf">
             <td class="text-muted text-right small-12">Minimum<br>confirmations</td>
@@ -58,6 +62,7 @@
 </template>
 
 <script>
+import BN from 'bignumber.js'
 import cryptoassets from '@liquality/cryptoassets'
 
 import Modal from '@/components/Modal'
@@ -73,6 +78,11 @@ export default {
   },
   props: {
     order: Object
+  },
+  computed: {
+    reverseRate () {
+      return BN(1).div(this.order.rate).dp(8)
+    }
   },
   methods: {
     prettyBalance (asset, value) {
