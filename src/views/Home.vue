@@ -181,9 +181,10 @@ export default {
         this.updateMarket()
       }, random(15000, 30000))
     },
-    updateBalance () {
+    updateBalance (firstTime) {
       Object
         .keys(this.balance)
+        .filter(asset => firstTime === true || this.balance[asset] !== '...')
         .map(asset => {
           this.balance[asset] = '...'
 
@@ -332,7 +333,7 @@ export default {
   },
   async created () {
     this.updateMarket()
-    this.updateBalance()
+    this.updateBalance(true)
     this.getUnusedAddresses({ to: 'BTC', from: 'ETH' })
     this.checkOrderHistory()
   }
