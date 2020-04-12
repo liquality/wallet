@@ -49,6 +49,8 @@ const AdditionalSwapArgs = {
 }
 
 export const getClient = (chain, mnemonic) => {
+  chain = chain.toLowerCase()
+
   const client = new Client()
 
   client.addProvider(new RpcProviders[chain](

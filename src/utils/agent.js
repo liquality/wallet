@@ -2,23 +2,21 @@ import Emitter from 'events'
 import { v4 as uuidv4 } from 'uuid'
 
 const emitter = new Emitter()
-const clientWorker = new Worker('./client-worker', { type: 'module' })
+const agentWorker = new Worker('./agent-worker', { type: 'module' })
 
-clientWorker.onmessage = event => {
+agentWorker.onmessage = event => {
   const { data } = event
 
   emitter.emit(data.id, data)
 }
 
-export default chain => (method, returnType) => (...args) => {
+export default method => (...args) => {
   const id = uuidv4()
 
-  clientWorker.postMessage({
+  agentWorker.postMessage({
     id,
-    chain,
     method,
-    args,
-    returnType
+    args
   })
 
   return new Promise((resolve, reject) => {

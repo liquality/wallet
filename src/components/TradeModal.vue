@@ -1,41 +1,45 @@
 <template>
   <Modal @close="$emit('close')">
-    <div class="modal-body">
-      <h2 class="h4 mb-3 font-weight-light">
-        Buy {{market.to}}
-      </h2>
+    <div class="modal-body modal-body-trade">
+      <div class="modal-cover">
+        <h2 class="h4 mb-0 bold-label text-white d-flex justify-content-between align-items-center">
+          <span>Buy</span>
+          <small>
+            <span class="cursor-pointer" @click="setAmount(buyMin)">Min</span> &mdash; <span class="cursor-pointer" @click="setAmount(buyMax)">Max</span>
+          </small>
+        </h2>
 
-      <input type="number" class="form-control form-control-lg simple mb-3" v-model="amount" step="0.0001" :readonly="loading">
+        <div class="input-group input-group-lg mt-1 mb-0">
+          <input type="number" class="form-control simple" v-model="amount" step="0.0001" :readonly="loading">
+          <div class="input-group-append">
+            <span class="input-group-text">{{coin}}</span>
+          </div>
+        </div>
+      </div>
 
-      <p class="mb-2 cursor-pointer" @click="setAmount(reverseMin)">
-        <span class="badge text-muted">Min</span>
-        <span class="font-weight-normal">{{reverseMin}} </span>
-        <small class="text-muted">{{market.to}}</small>
+      <label class="bold-label text-primary">Pay using</label>
+      <select class="form-control form-control-lg mb-3" v-model="payCoin">
+        <option
+          v-for="(data, payUsing) in marketData[coin]"
+          :key="payUsing"
+          :value="payUsing">{{dpUI(balance[payUsing], payUsing)}} {{payUsing}}</option>
+      </select>
+
+      <p class="mb-2 d-flex justify-content-between align-items-center">
+        <span class="bold-label text-primary">Rate</span>
+        <span>
+          <small class="text-muted">1 BTC = </small>
+          <span class="font-weight-normal">{{dpUI(bestBuyRateBasedOnAmount, payCoin)}} </span>
+          <small class="text-muted">{{payCoin}}</small>
+        </span>
       </p>
 
-      <p class="mb-2 cursor-pointer" @click="setAmount(reverseMax)">
-        <span class="badge text-muted">Max</span>
-        <span class="font-weight-normal">{{reverseMax}} </span>
-        <small class="text-muted">{{market.to}}</small>
-      </p>
-
-      <p class="mb-2">
-        <span class="badge text-muted">Rate</span>
-        <small class="text-muted">1 {{market.to}} = </small>
-        <span class="font-weight-normal">{{reverseRate}} </span>
-        <small class="text-muted">{{market.from}}</small>
-      </p>
-
-      <p class="mb-2">
-        <span class="badge text-muted">You have</span>
-        <span class="font-weight-normal">{{fromBalance}} </span>
-        <small class="text-muted">{{market.from}}</small>
-      </p>
-
-      <p>
-        <span class="badge text-muted">You pay</span>
-        <span class="font-weight-normal">{{youPay}} </span>
-        <small class="text-muted">{{market.from}}</small>
+      <p class="mb-3 d-flex justify-content-between align-items-center">
+        <span class="bold-label text-primary">You pay</span>
+        <span>
+          <span class="font-weight-normal">{{youPay}} </span>
+          <small class="text-muted">{{payCoin}}</small>
+        </span>
       </p>
 
       <button
@@ -54,8 +58,9 @@
 </template>
 
 <script>
-import cryptoassets from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
+
+import { dpUI } from '@/utils/coinFormatter'
 
 import Pacman from '@/components/Pacman'
 import Modal from '@/components/Modal'
@@ -68,60 +73,82 @@ export default {
   data () {
     return {
       amount: 0,
-      loading: false
+      loading: false,
+      payCoin: null
     }
   },
   props: {
+    coin: String,
     market: Object,
+    marketData: Object,
     balance: Object,
     prefill: Object
   },
   created () {
+    this.payCoin = Object.keys(this.selectedMarket)[0]
+
     if (this.prefill.amount) {
       this.amount = this.prefill.amount
     } else {
-      this.amount = this.reverseMin
+      this.amount = this.buyMin
     }
   },
   computed: {
-    fromBalance () {
-      return this.balance[this.market.from.toLowerCase()]
+    bestAgentIndex () {
+      return this.bestMarketBasedOnAmount.agentIndex
+    },
+    bestBuyRateBasedOnAmount () {
+      return this.bestMarketBasedOnAmount.buyRate
+    },
+    bestSellRateBasedOnAmount () {
+      return this.bestMarketBasedOnAmount.sellRate
+    },
+    bestMarketBasedOnAmount () {
+      return this.payMarket.markets.find(market => {
+        const sellAmount = BN(this.amount).div(market.sellRate)
+
+        return BN(market.sellMin).lte(sellAmount) && BN(market.sellMax).gte(sellAmount)
+      })
+    },
+    buyMin () {
+      return dpUI(BN(this.payMarket.sellMin).times(this.payMarket.sellRate), this.coin)
+    },
+    buyMax () {
+      return dpUI(BN(this.payMarket.sellMax).times(this.payMarket.sellRate), this.coin, true)
+    },
+    safeAmount () {
+      return this.amount || 0
+    },
+    payMarket () {
+      return this.selectedMarket[this.payCoin]
+    },
+    payBalance () {
+      return this.balance[this.payCoin]
+    },
+    selectedMarket () {
+      return this.marketData[this.coin]
     },
     canBuy () {
-      const amount = BN(this.amount)
+      const amount = BN(this.safeAmount)
       const youPay = BN(this.youPay)
 
-      if (amount.gt(this.reverseMax) || amount.lt(this.reverseMin) || youPay.gt(this.fromBalance)) return false
+      if (amount.gt(this.buyMax) || amount.lt(this.buyMin) || youPay.gt(this.payBalance)) return false
 
       return true
     },
-    marketMin () {
-      return cryptoassets[this.market.from.toLowerCase()].unitToCurrency(this.market.min)
-    },
-    marketMax () {
-      return cryptoassets[this.market.from.toLowerCase()].unitToCurrency(this.market.max)
-    },
     youPay () {
-      return BN(this.amount).div(this.market.rate).dp(8)
-    },
-    reverseRate () {
-      return BN(1).div(this.market.rate).dp(8)
-    },
-    reverseMin () {
-      return BN(this.marketMin).times(this.market.rate).dp(8)
-    },
-    reverseMax () {
-      return BN(this.marketMax).times(this.market.rate).dp(8)
+      return dpUI(BN(this.safeAmount).div(this.bestSellRateBasedOnAmount), this.payCoin)
     }
   },
   methods: {
+    dpUI,
     buy () {
       this.loading = true
 
       this.$emit('buy', {
-        agentIndex: this.market.agentIndex,
-        from: this.market.from,
-        to: this.market.to,
+        agentIndex: this.bestAgentIndex,
+        from: this.payCoin,
+        to: this.coin,
         amount: this.youPay
       })
     },
@@ -135,16 +162,22 @@ export default {
 </script>
 
 <style lang="scss">
+.modal-body-trade {
+  select {
+    border: 2px solid hsl(212, 33%, 89%)!important;
+    font-weight: 400;
+  }
+}
+
 input.simple {
-  // border-radius: 0!important;
-  // border-top: 0;
   font-size: 1.4rem!important;
-  // border-left: 0;
-  // padding-left: 8px!important;
-  // border-right: 0;
   font-weight: 400;
   outline: none;
   box-shadow: none;
+
+  &[readonly] {
+    background: transparent;
+  }
 
   &:hover, &:focus, &:active {
     outline: none;
@@ -159,6 +192,16 @@ input.simple {
   &[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
+  }
+}
+
+.bold-label {
+  font-size: 0.9rem!important;
+  font-weight: 700!important;
+  opacity: 0.7!important;
+
+  &.text-primary {
+    opacity: 0.9!important;
   }
 }
 </style>

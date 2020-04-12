@@ -41,3 +41,155 @@ html {
 .no-events {
   pointer-events: none;
 }
+
+button {
+  code, pre {
+    color: inherit;
+  }
+}
+
+.text-muted, .text-white {
+  code, pre {
+    color: inherit;
+  }
+}
+
+.form-control {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  border-bottom-width: 2px;
+  outline: 0;
+  box-shadow: none;
+  padding: 0;
+
+  &[readonly] {
+    background: white;
+  }
+
+  &:hover, &:focus, &:active {
+    outline: 0;
+    box-shadow: none;
+  }
+}
+
+.table {
+  font-size: 1rem;
+
+  th, td {
+    vertical-align: middle!important;
+  }
+
+  thead > tr {
+    td {
+      border: 0;
+    }
+  }
+
+  tr {
+    > td:first-child, > td:nth-child(3), > td:nth-child(4), > td:nth-child(5), > td:nth-child(6) {
+      width: 1%;
+      white-space: nowrap;
+    }
+  }
+}
+
+td > .badge {
+  text-align: center;
+  font-weight: 400;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+td > .btn {
+  text-align: center!important;
+}
+
+// .btn {
+//   // font-weight: 400!important;
+// }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.btn-link {
+  padding-left: 0!important;
+  padding-right: 0!important;
+
+  &:hover, &:focus, &:active {
+    text-decoration: none!important;
+  }
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.card-up {
+  will-change: transform;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translate(0, -5px);
+  }
+}
+
+.modal-cover {
+  margin: -1rem -1rem 1rem -1rem;
+  padding: 1.5rem 1rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  background: linear-gradient(180deg,hsl(232, 47%, 58%),hsl(232, 47%, 55%));
+  color: #fff;
+
+  input {
+    padding-left: 0!important;
+    padding-right: 0.4rem!important;
+    border-bottom-width: 2px;
+    border-color: hsla(0, 0%, 100%, 0.6)!important;
+
+    &:hover, &:active, &:focus {
+      background: transparent;
+      color: #fff;
+    }
+  }
+
+  .input-group-text, input {
+    background: transparent;
+    color: #fff;
+    border-radius: 0!important;
+    font-size: 1.6rem!important;
+    height: auto!important;
+
+    padding-top: 0.2rem!important;
+    padding-bottom: 0.2rem!important;
+  }
+
+  .input-group-text {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom-width: 2px;
+    border-bottom-color: transparent;
+
+    padding-right: 0!important;
+    padding-left: 1.5rem!important;
+  }
+}
+
+.list-group-item {
+  .modal-cover {
+    background: $primary;
+    margin: -0.75rem -1.25rem;
+  }
+}
+
+.word-break-all {
+  word-break: break-all
+}
+
+.opacity-8 {
+  opacity: 0.8;
+}
