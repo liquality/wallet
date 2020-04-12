@@ -17,8 +17,8 @@
       :balance="balance[selectedWallet]"
       @close="selectedWallet = null"
       @refresh="updateBalance([selectedWallet]); selectedWallet = null" />
-    <div class="table-responsive">
-      <table class="table bg-white border mb-4">
+    <div class="table-responsive mb-4">
+      <table class="table bg-white border mb-0">
         <thead>
           <tr>
             <td scope="col" class="text-muted">#</td>

@@ -5,8 +5,8 @@
       :order="selectedOrder"
       :orderAgent="selectedOrderAgent"
       @close="selectedOrder = null" />
-    <div class="table-responsive">
-      <table class="table border bg-white table-history">
+    <div class="table-responsive mb-4">
+      <table class="table border bg-white table-history mb-0">
         <thead>
           <tr>
             <td scope="col" class="text-muted">#</td>

@@ -1,10 +1,12 @@
 [[redirects]]
   from = "http://p2p-exchange.harshjv.com/*"
   to = "https://atomicwallet.harshjv.com/:splat"
+  status = 301
 
 [[redirects]]
   from = "https://p2p-exchange.harshjv.com/*"
   to = "https://atomicwallet.harshjv.com/:splat"
+  status = 301
 
 [[redirects]]
   from = "/api/*"
