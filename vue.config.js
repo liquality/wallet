@@ -2,6 +2,7 @@ const WorkerPlugin = require('worker-plugin')
 
 module.exports = {
   lintOnSave: false,
+  productionSourceMap: false,
   css: {
     loaderOptions: {
       sass: {
@@ -11,7 +12,9 @@ module.exports = {
   },
   configureWebpack: {
     plugins: [
-      new WorkerPlugin()
+      new WorkerPlugin({
+        globalObject: 'self'
+      })
     ]
   }
 }
