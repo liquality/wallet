@@ -28,7 +28,7 @@
       <p class="mb-2 d-flex justify-content-between align-items-center">
         <span class="bold-label text-primary">Rate</span>
         <span>
-          <small class="text-muted">1 BTC = </small>
+          <small class="text-muted">1 {{coin}} = </small>
           <span class="font-weight-normal">{{dpUI(bestBuyRateBasedOnAmount, payCoin)}} </span>
           <small class="text-muted">{{payCoin}}</small>
         </span>
