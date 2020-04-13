@@ -81,17 +81,19 @@ export default {
     coin: String,
     market: Object,
     marketData: Object,
-    balance: Object,
-    prefill: Object
+    balance: Object
+    // prefill: Object
   },
   created () {
     this.payCoin = Object.keys(this.selectedMarket)[0]
 
-    if (this.prefill.amount) {
-      this.amount = this.prefill.amount
-    } else {
-      this.amount = this.buyMin
-    }
+    this.amount = this.buyMin
+
+    // if (this.prefill.amount) {
+    //   this.amount = this.prefill.amount
+    // } else {
+    //   this.amount = this.buyMin
+    // }
   },
   computed: {
     bestAgentIndex () {

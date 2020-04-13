@@ -5,7 +5,6 @@
       :key="'trade:' + buyCoin"
       :coin="buyCoin"
       :balance="balance"
-      :prefill="prefill"
       :marketData="marketData"
       @buy="buy"
       @close="buyCoin = null" />
@@ -89,7 +88,7 @@ export default {
       address: {},
       selectedWallet: null,
       buyCoin: false,
-      prefill: {},
+      // prefill: {},
       supportedCoins: [
         'BTC',
         'ETH'
@@ -258,31 +257,37 @@ export default {
       this.performNextAction(order)
     }
   },
-  async created () {
-    const { hash } = window.location
-
-    this.prefill = hash.replace('#', '').split('&').reduce((acc, query) => {
-      const parts = query.split('=')
-
-      if (parts[0] === 'pair') {
-        parts[1] = parts[1].split('_')
-        parts[1] = {
-          from: parts[1][0],
-          to: parts[1][1]
-        }
-      }
-
-      acc[parts[0]] = parts[1]
-      return acc
-    }, {})
-
+  async updateMarketData () {
     this.marketData = await agent('market')(this.supportedCoins)
+
+    setTimeout(() => {
+      this.updateMarketData()
+    }, random(15000, 30000))
+  },
+  async created () {
+    // const { hash } = window.location
+
+    // this.prefill = hash.replace('#', '').split('&').reduce((acc, query) => {
+    //   const parts = query.split('=')
+    //
+    //   if (parts[0] === 'pair') {
+    //     parts[1] = parts[1].split('_')
+    //     parts[1] = {
+    //       from: parts[1][0],
+    //       to: parts[1][1]
+    //     }
+    //   }
+    //
+    //   acc[parts[0]] = parts[1]
+    //   return acc
+    // }, {})
 
     this.supportedCoins.map(coin => {
       this.$set(this.balance, coin, null)
       this.$set(this.address, coin, null)
     })
 
+    this.updateMarketData()
     this.updateBalance(this.supportedCoins)
     this.getUnusedAddresses(this.supportedCoins)
     this.checkOrderHistory()
