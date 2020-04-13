@@ -10,6 +10,7 @@ import EthereumJsWalletProvider from '@liquality/ethereum-js-wallet-provider'
 import EthereumSwapProvider from '@liquality/ethereum-swap-provider'
 import EthereumScraperSwapFindProvider from '@liquality/ethereum-scraper-swap-find-provider'
 
+import { isTestnet } from '@/utils/network'
 import { networks } from '@/utils/networks'
 import { rpc } from '@/utils/rpc'
 
@@ -29,8 +30,8 @@ const SwapProviders = {
 }
 
 const NetworkArgs = {
-  btc: 'bitcoin_testnet',
-  eth: 'rinkeby'
+  btc: isTestnet ? 'bitcoin_testnet' : 'bitcoin',
+  eth: isTestnet ? 'rinkeby' : 'mainnet'
 }
 
 const SwapArgs = {
@@ -45,7 +46,7 @@ const AdditionalSwapProviders = {
 
 const AdditionalSwapArgs = {
   btc: rpc.btc[NetworkArgs.btc],
-  eth: ['https://liquality.io/eth-rinkeby-api']
+  eth: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api']
 }
 
 export const getClient = (chain, mnemonic) => {

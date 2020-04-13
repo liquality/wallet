@@ -3,7 +3,7 @@
     <div class="cover">
       <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-          <router-link class="navbar-brand" to="/">Atomic Wallet <sup>testnet</sup></router-link>
+          <router-link class="navbar-brand" to="/">Liquality Wallet <sup>{{network}}</sup></router-link>
         </div>
       </nav>
       <div class="container text-center">
@@ -14,6 +14,18 @@
     <router-view class="container mt-4 mb-5" />
   </div>
 </template>
+
+<script>
+import { network } from '@/utils/network'
+
+export default {
+  computed: {
+    network () {
+      return network
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 .navbar {

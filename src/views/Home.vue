@@ -19,7 +19,7 @@
               <Pacman class="d-inline-block mr-3" />
             </div>
           </div>
-          <p class="text-center font-weight-normal mt-3 cursor-pointer" @click="demo">Experiment with a demo wallet &rsaquo;</p>
+          <p v-if="isTestnet" class="text-center font-weight-normal mt-3 cursor-pointer" @click="demo">Experiment with a demo wallet &rsaquo;</p>
         </div>
       </div>
     </div>
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { isTestnet } from '@/utils/network'
+
 import Pacman from '@/components/Pacman'
 import Wallet from '@/components/Wallet'
 import client from '@/utils/client'
@@ -44,6 +46,9 @@ export default {
     }
   },
   computed: {
+    isTestnet () {
+      return isTestnet
+    },
     title () {
       if (this.walletState === 'NOWALLET') {
         return 'Create a wallet'
