@@ -255,14 +255,14 @@ export default {
       this.$store.commit('NEW_ORDER', order)
 
       this.performNextAction(order)
-    }
-  },
-  async updateMarketData () {
-    this.marketData = await agent('market')(this.supportedCoins)
+    },
+    async updateMarketData () {
+      this.marketData = await agent('market')(this.supportedCoins)
 
-    setTimeout(() => {
-      this.updateMarketData()
-    }, random(15000, 30000))
+      setTimeout(() => {
+        this.updateMarketData()
+      }, random(15000, 30000))
+    }
   },
   async created () {
     // const { hash } = window.location
