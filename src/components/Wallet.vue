@@ -73,7 +73,7 @@ import client from '@/utils/client'
 import agent from '@/utils/agent'
 // import market from '@/utils/market'
 import { dpUI } from '@/utils/coinFormatter'
-// import agents from '@/utils/agents'
+import { isTestnet } from '@/utils/network'
 
 export default {
   components: {
@@ -89,10 +89,6 @@ export default {
       selectedWallet: null,
       buyCoin: false,
       // prefill: {},
-      supportedCoins: [
-        'BTC',
-        'ETH'
-      ],
       marketData: {},
       base: 'BTC'
     }
@@ -101,6 +97,10 @@ export default {
     ...mapState(['orders']),
     latestOrders () {
       return this.orders.slice().reverse()
+    },
+    supportedCoins () {
+      const coins = ['BTC', 'ETH']
+      return isTestnet ? coins : coins.concat(['DAI', 'USDC'])
     }
   },
   methods: {

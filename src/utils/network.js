@@ -8,6 +8,6 @@ function getHostname () {
 
 const hostname = getHostname()
 
-export const isTestnet = hostname.includes('testnet') || hostname === 'localhost'
+export const isTestnet = false // hostname.includes('testnet') || hostname === 'localhost'
 
 export const network = isTestnet ? 'testnet' : 'mainnet'

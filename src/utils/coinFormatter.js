@@ -2,12 +2,16 @@ import BN from 'bignumber.js'
 
 const DP_MAP = {
   BTC: 8,
-  ETH: 18
+  ETH: 18,
+  DAI: 18,
+  USDC: 6
 }
 
 const DP_UI_MAP = {
   BTC: 6,
-  ETH: 6
+  ETH: 6,
+  DAI: 6,
+  USDC: 6
 }
 
 export const dp = (amount, coin) => {

@@ -3,5 +3,7 @@ import EthereumNetworks from '@liquality/ethereum-networks'
 
 export const networks = {
   btc: BitcoinNetworks,
-  eth: EthereumNetworks
+  eth: EthereumNetworks,
+  dai: EthereumNetworks,
+  usdc: EthereumNetworks
 }
