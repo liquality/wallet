@@ -1,6 +1,6 @@
 {
   "name": "wallet",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -80,9 +80,6 @@
     "mac": {
       "category": "public.app-category.finance",
       "target": "zip"
-    },
-    "win": {
-      "target": "nsis"
     },
     "files": [
       "dist/**/*",
