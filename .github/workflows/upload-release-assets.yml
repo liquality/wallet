@@ -23,22 +23,22 @@ jobs:
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}-${{ hashFiles('**/package-lock.json') }}
-      - run: |
-          npm install
-          npm run build
-          npm run build:assets
       - name: Create Release
-        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          draft: false
+          draft: true
           prerelease: true
+      - env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - run: |
+          npm install
+          npm run build
+          npm run build:assets
       - name: Upload Chrome extension
-        id: upload_chrome_extension
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -46,14 +46,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./chrome-extension.zip
           asset_name: chrome-extension.zip
-          asset_content_type: application/zip
-      - name: Upload Mac app
-        id: upload_mac_app
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/wallet-0.0.1-mac.zip
-          asset_name: wallet-mac.zip
           asset_content_type: application/zip
