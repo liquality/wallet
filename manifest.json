@@ -1,0 +1,22 @@
+{
+  "name": "Liquality Wallet",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Multi-currency wallet",
+  "homepage_url": "https://wallet.liquality.io",
+  "icons": {
+    "16": "ext-icons/icon16.png",
+    "48": "ext-icons/icon48.png",
+    "128": "ext-icons/icon128.png"
+  },
+  "background": {
+    "page": "dist/index.html",
+    "persistent": true
+  },
+  "browser_action": {
+    "default_icon": "ext-icons/icon19.png",
+    "default_title": "Liquality Wallet",
+    "default_popup": "dist/index.html"
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}

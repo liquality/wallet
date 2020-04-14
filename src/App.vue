@@ -11,14 +11,18 @@
         <h2 class="mb-0 h5 font-weight-light text-white">Secure in-browser multi-crypto wallet with Atomic Swaps built-in!</h2>
       </div>
     </div>
-    <router-view class="container mt-4 mb-5" />
+    <Home class="container mt-4 mb-5" />
   </div>
 </template>
 
 <script>
+import Home from '@/views/Home'
 import { network } from '@/utils/network'
 
 export default {
+  components: {
+    Home
+  },
   computed: {
     network () {
       return network

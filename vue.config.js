@@ -1,6 +1,7 @@
 const WorkerPlugin = require('worker-plugin')
 
 module.exports = {
+  publicPath: './',
   lintOnSave: false,
   productionSourceMap: false,
   css: {

@@ -31,7 +31,7 @@
           <tr v-for="(coin, idx) in supportedCoins" :key="coin">
             <td scope="row" class="text-muted font-weight-light">{{idx + 1}}</td>
             <td class="cursor-pointer nowrap" @click="openWallet(coin)">
-              <span class="asset-icon" :style="'background-image: url(/img/' + coin.toLowerCase() + '.png)'"> </span>
+              <span class="asset-icon" :style="'background-image: url(./img/' + coin.toLowerCase() + '.png)'"> </span>
               <span>{{coin}}</span>
             </td>
             <td class="text-right cursor-pointer" @click="openWallet(coin)">
@@ -59,7 +59,6 @@
 </template>
 
 <script>
-// import axios from 'axios'
 import { random } from 'lodash-es'
 import { mapState } from 'vuex'
 import { sha256 } from '@liquality/crypto'

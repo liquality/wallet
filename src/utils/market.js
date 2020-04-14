@@ -6,7 +6,12 @@ import agents from './agents'
 import { dp } from './coinFormatter'
 
 export default async supportedCoins => {
-  const allMarketData = await Promise.all(agents.map(agent => axios(`${agent}/marketinfo`).then(res => res.data)))
+  const allMarketData = await Promise.all(agents.map(agent => axios({
+    url: `${agent}/marketinfo`,
+    headers: {
+      'x-requested-with': 'https://liquality.io'
+    }
+  }).then(res => res.data)))
 
   const pairMarkets = allMarketData[0]
     .filter(({ to, from }) => supportedCoins.includes(to) && supportedCoins.includes(from))

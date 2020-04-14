@@ -6,8 +6,18 @@ function getHostname () {
   }
 }
 
+function getProtocol () {
+  try {
+    return window.location.protocol
+  } catch (e) {
+    return self.location.protocol
+  }
+}
+
 const hostname = getHostname()
 
-export const isTestnet = hostname.includes('testnet') || hostname === 'localhost'
+export const isAppOrExtension = getProtocol().includes('chrome') || getProtocol().includes('file')
+
+export const isTestnet = isAppOrExtension || hostname.includes('testnet') || hostname === 'localhost'
 
 export const network = isTestnet ? 'testnet' : 'mainnet'

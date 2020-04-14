@@ -1,11 +1,15 @@
 {
-  "name": "trade-with-me",
-  "version": "0.1.0",
+  "name": "wallet",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start": "electron electron.js",
+    "build:assets": "run-s build:chrome-extension build:electron",
+    "build:chrome-extension": "bestzip chrome-extension.zip manifest.json dist/* ext-icons/*",
+    "build:electron": "electron-builder"
   },
   "dependencies": {
     "@liquality/bitcoin-esplora-api-provider": "^0.4.25",
@@ -35,6 +39,7 @@
     "date-fns": "^2.11.1",
     "localforage": "^1.7.3",
     "lodash-es": "^4.17.15",
+    "npm-run-all": "^4.1.5",
     "parse-torrent": "^7.1.2",
     "qrcode": "^1.4.4",
     "uuid": "^7.0.3",
@@ -52,6 +57,9 @@
     "@vue/cli-service": "~4.3.0",
     "@vue/eslint-config-standard": "^5.1.2",
     "babel-eslint": "^10.1.0",
+    "bestzip": "^2.1.5",
+    "electron": "^8.2.1",
+    "electron-builder": "^22.4.1",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
@@ -62,5 +70,25 @@
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11",
     "worker-plugin": "^4.0.2"
+  },
+  "main": "electron.js",
+  "build": {
+    "appId": "io.liquality.wallet",
+    "directories": {
+      "output": "build"
+    },
+    "mac": {
+      "category": "public.app-category.finance",
+      "target": "zip"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "files": [
+      "dist/**/*",
+      "electron.js",
+      "package.json",
+      "package-lock.json"
+    ]
   }
 }
