@@ -28,7 +28,7 @@ jobs:
           draft: false
           prerelease: true
       - name: Upload Chrome extension
-        id: upload-release-asset
+        id: upload_chrome_extension
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -38,7 +38,7 @@ jobs:
           asset_name: chrome-extension.zip
           asset_content_type: application/zip
       - name: Upload Mac app
-        id: upload-release-asset
+        id: upload_mac_app
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
