@@ -1,8 +1,7 @@
 on:
   push:
-    # Sequence of patterns matched against refs/tags
     tags:
-    - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    - 'v*'
 
 name: Upload Release Assets
 
@@ -17,6 +16,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 8
+      - uses: actions/cache@v1
+        env:
+          node-version: 8
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}-${{ hashFiles('**/package-lock.json') }}
       - run: |
           npm install
           npm run build
