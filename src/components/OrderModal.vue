@@ -12,6 +12,14 @@
             <td>{{order.id}}</td>
           </tr>
           <tr>
+            <td class="text-muted text-right small-12">Started At</td>
+            <td>{{new Date(order.startTime)}}</td>
+          </tr>
+          <tr v-if="order.endTime">
+            <td class="text-muted text-right small-12">Ended At</td>
+            <td>{{new Date(order.endTime)}}</td>
+          </tr>
+          <tr>
             <td class="text-muted text-right small-12">Rate</td>
             <td>1 {{order.to}} = {{reverseRate}} {{order.from}}</td>
           </tr>

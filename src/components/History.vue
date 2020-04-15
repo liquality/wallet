@@ -25,12 +25,12 @@
             v-for="(order, idx) in latestOrders"
             :key="order.id"
             @click="selectedOrder = order"
-            :class="{
-              'cursor-pointer': true,
-              'grayout': waiting[order.id]
-            }">
+            class="cursor-pointer">
             <td scope="row" class="text-muted font-weight-light">{{orders.length - idx}}</td>
-            <td scope="row" class="text-muted font-weight-light">Buy {{order.to}}</td>
+            <td scope="row" class="text-muted font-weight-light">
+              <span>Buy {{order.to}}</span>
+              <span class="badge badge-secondary ml-2" v-if="waiting[order.id]">Queued</span>
+            </td>
             <td class="nowrap">
               {{dpUI(prettyAmount(order.to, order.toAmount), order.to)}} <small class="text-muted">{{order.to}}
                 <br>
