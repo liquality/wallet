@@ -29,7 +29,7 @@
             <td scope="row" class="text-muted font-weight-light">{{orders.length - idx}}</td>
             <td scope="row" class="text-muted font-weight-light">
               <span>Buy {{order.to}}</span>
-              <span class="badge badge-secondary ml-2" v-if="waiting[order.id]">Queued</span>
+              <span class="badge badge-secondary ml-2 d-inline" v-if="waiting[order.id]">Queued</span>
             </td>
             <td class="nowrap">
               {{dpUI(prettyAmount(order.to, order.toAmount), order.to)}} <small class="text-muted">{{order.to}}
