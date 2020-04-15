@@ -9,7 +9,8 @@ export default async supportedCoins => {
   const allMarketData = await Promise.all(agents.map(agent => axios({
     url: `${agent}/marketinfo`,
     headers: {
-      'x-requested-with': 'https://liquality.io'
+      'x-requested-with': 'https://liquality.io',
+      'x-liquality-user-agent': 'wallet'
     }
   }).then(res => res.data)))
 
