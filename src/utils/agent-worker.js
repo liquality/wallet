@@ -9,7 +9,7 @@ function newOrder (agentIndex, data) {
     method: 'post',
     data,
     headers: {
-      'x-requested-with': 'https://liquality.io'
+      'x-liquality-user-agent': 'wallet'
     }
   }).then(res => res.data)
 }
@@ -18,10 +18,7 @@ function updateOrder (agentIndex, id, data) {
   return axios({
     url: agents[agentIndex] + '/order/' + id,
     method: 'post',
-    data,
-    headers: {
-      'x-requested-with': 'https://liquality.io'
-    }
+    data
   }).then(res => res.data)
 }
 

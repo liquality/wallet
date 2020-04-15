@@ -79,7 +79,7 @@
     },
     "mac": {
       "category": "public.app-category.finance",
-      "target": "zip"
+      "target": "dmg"
     },
     "files": [
       "dist/**/*",
