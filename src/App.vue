@@ -3,7 +3,7 @@
     <div class="cover">
       <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-          <router-link class="navbar-brand" to="/">Liquality Wallet <sup>{{network}}</sup></router-link>
+          <a class="navbar-brand">Liquality Wallet <sup>{{network}}</sup></a>
         </div>
       </nav>
       <div class="container text-center">

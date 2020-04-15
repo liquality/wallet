@@ -70,9 +70,9 @@ import WalletModal from '@/components/WalletModal'
 import TradeModal from '@/components/TradeModal'
 import client from '@/utils/client'
 import agent from '@/utils/agent'
-// import market from '@/utils/market'
 import { dpUI } from '@/utils/coinFormatter'
 import { isTestnet } from '@/utils/network'
+import { EventBus } from '@/utils/event-bus'
 
 export default {
   components: {
@@ -151,6 +151,25 @@ export default {
         this.performNextAction(order)
       })
     },
+    async getLockForChain (chain) {
+      if (this.chainLock[chain]) {
+        console.log(`waiting for ${chain} to get unlocked`)
+
+        await new Promise((resolve, reject) => {
+          EventBus.$once(`unlock:${chain}`, () => resolve())
+        })
+
+        await this.getLockForChain(chain)
+      } else {
+        this.chainLock[chain] = true
+        console.log(`got lock for ${chain}`)
+      }
+    },
+    async unlockChain (chain) {
+      this.chainLock[chain] = false
+      console.log(`unlocking ${chain}`)
+      EventBus.$emit(`unlock:${chain}`)
+    },
     async performNextAction (order) {
       if (!order.status) return
 
@@ -173,6 +192,7 @@ export default {
 
         this.performNextAction(order)
       } else if (order.status.toLowerCase() === 'secured') {
+        await this.getLockForChain(order.from)
         const fromFundHash = await client(order.from)('swap.initiateSwap')(
           order.fromAmount,
           order.fromCounterPartyAddress,
@@ -180,6 +200,7 @@ export default {
           order.secretHash,
           order.swapExpiration
         )
+        await this.unlockChain(order.from)
 
         order = {
           ...order,
@@ -220,6 +241,7 @@ export default {
           }
         }, random(15000, 30000))
       } else if (order.status.toLowerCase() === 'exchanging') {
+        await this.getLockForChain(order.to)
         const toClaimHash = await client(order.to)('swap.claimSwap')(
           order.toFundHash,
           order.toAddress,
@@ -227,6 +249,7 @@ export default {
           order.secret,
           order.nodeSwapExpiration
         )
+        await this.unlockChain(order.to)
 
         order = {
           ...order,
@@ -264,6 +287,7 @@ export default {
     }
   },
   async created () {
+    this.chainLock = {}
     // const { hash } = window.location
 
     // this.prefill = hash.replace('#', '').split('&').reduce((acc, query) => {
