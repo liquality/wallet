@@ -160,23 +160,23 @@ export default {
       })
     },
     async getLockForChain (order, chain) {
-      if (this.chainLock[chain]) {
-        this.waiting[order.id] = true
-
-        console.log(`waiting for ${chain} to get unlocked`, order.id)
-
-        await new Promise((resolve, reject) => {
-          EventBus.$once(`unlock:${chain}`, () => resolve())
-        })
-
-        await this.getLockForChain(order, chain)
-      } else {
-        await this.waitFor(5000, 8500)
-
-        this.waiting[order.id] = false
+      if (!this.chainLock[chain]) {
         this.chainLock[chain] = true
         console.log(`got lock for ${chain}`, order.id)
+
+        await this.waitFor(5000, 8500)
+        this.waiting[order.id] = false
+        return
       }
+
+      this.waiting[order.id] = true
+      console.log(`waiting for ${chain} to get unlocked`, order.id)
+
+      await new Promise((resolve, reject) => {
+        EventBus.$once(`unlock:${chain}`, () => resolve())
+      })
+
+      await this.getLockForChain(order, chain)
     },
     async unlockChain (chain) {
       this.chainLock[chain] = false
