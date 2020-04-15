@@ -54,7 +54,7 @@
         </tbody>
       </table>
     </div>
-    <History />
+    <History :waiting="waiting" />
   </div>
 </template>
 
@@ -89,7 +89,8 @@ export default {
       buyCoin: false,
       // prefill: {},
       marketData: {},
-      base: 'BTC'
+      base: 'BTC',
+      waiting: {}
     }
   },
   computed: {
@@ -151,18 +152,30 @@ export default {
         this.performNextAction(order)
       })
     },
-    async getLockForChain (chain) {
+    async waitFor (min, max) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve()
+        }, random(min, max))
+      })
+    },
+    async getLockForChain (order, chain) {
       if (this.chainLock[chain]) {
-        console.log(`waiting for ${chain} to get unlocked`)
+        this.waiting[order.id] = true
+
+        console.log(`waiting for ${chain} to get unlocked`, order.id)
 
         await new Promise((resolve, reject) => {
           EventBus.$once(`unlock:${chain}`, () => resolve())
         })
 
-        await this.getLockForChain(chain)
+        await this.getLockForChain(order, chain)
       } else {
+        await this.waitFor(5000, 8500)
+
+        this.waiting[order.id] = false
         this.chainLock[chain] = true
-        console.log(`got lock for ${chain}`)
+        console.log(`got lock for ${chain}`, order.id)
       }
     },
     async unlockChain (chain) {
@@ -192,7 +205,7 @@ export default {
 
         this.performNextAction(order)
       } else if (order.status.toLowerCase() === 'secured') {
-        await this.getLockForChain(order.from)
+        await this.getLockForChain(order, order.from)
         const fromFundHash = await client(order.from)('swap.initiateSwap')(
           order.fromAmount,
           order.fromCounterPartyAddress,
@@ -241,7 +254,7 @@ export default {
           }
         }, random(15000, 30000))
       } else if (order.status.toLowerCase() === 'exchanging') {
-        await this.getLockForChain(order.to)
+        await this.getLockForChain(order, order.to)
         const toClaimHash = await client(order.to)('swap.claimSwap')(
           order.toFundHash,
           order.toAddress,

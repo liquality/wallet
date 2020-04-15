@@ -21,7 +21,14 @@
           <tr v-if="latestOrders.length === 0">
             <td colspan="6" class="text-center font-weight-light text-muted">No previous orders found</td>
           </tr>
-          <tr v-for="(order, idx) in latestOrders" :key="order.id" @click="selectedOrder = order" class="cursor-pointer">
+          <tr
+            v-for="(order, idx) in latestOrders"
+            :key="order.id"
+            @click="selectedOrder = order"
+            :class="{
+              'cursor-pointer': true,
+              'grayout': waiting[order.id]
+            }">
             <td scope="row" class="text-muted font-weight-light">{{orders.length - idx}}</td>
             <td scope="row" class="text-muted font-weight-light">Buy {{order.to}}</td>
             <td class="nowrap">
@@ -73,6 +80,9 @@ const ORDER_STATUS_MAP = {
 }
 
 export default {
+  props: {
+    waiting: Object
+  },
   components: {
     Pacman,
     OrderModal
