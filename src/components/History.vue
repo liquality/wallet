@@ -30,6 +30,7 @@
             <td scope="row" class="text-muted font-weight-light">
               <span>Buy {{order.to}}</span>
               <span class="badge badge-secondary ml-2 d-inline" v-if="waiting[order.id]">Queued</span>
+              <p v-if="order.sendTo" class="mb-0 small">Send to {{order.sendTo}}</p>
             </td>
             <td class="nowrap">
               {{dpUI(prettyAmount(order.to, order.toAmount), order.to)}} <small class="text-muted">{{order.to}}
@@ -48,7 +49,7 @@
                   Finished in {{getOrderDuration(order)}}
                 </span>
                 <span v-else>
-                  {{getOrderProgress(order)}}/6
+                  {{getOrderProgress(order)}}/<span v-if="order.sendTo">7</span><span v-else>6</span>
                   <Pacman v-if="!waiting[order.id]" class="d-inline-block mr-3 ml-2" />
                 </span>
               </button>
@@ -83,7 +84,8 @@ const ORDER_STATUS_MAP = {
   'waiting for confirmations': 4,
   exchanging: 5,
   'ready to exchange': 5,
-  'getting refund': 5
+  'getting refund': 5,
+  'ready to send': 6
 }
 
 export default {

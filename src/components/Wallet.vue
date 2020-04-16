@@ -128,10 +128,10 @@ export default {
           })
         })
     },
-    async buy ({ agentIndex, from, to, amount }) {
+    async buy ({ agentIndex, from, to, amount, sendTo }) {
       const fromAmount = cryptoassets[from.toLowerCase()].currencyToUnit(amount)
 
-      await this.swap(agentIndex, from, to, fromAmount)
+      await this.swap(agentIndex, from, to, fromAmount, sendTo)
 
       this.buyCoin = null
     },
@@ -319,16 +319,28 @@ export default {
         )
         await this.unlockChain(order.to)
 
-        order = {
-          ...order,
-          status: 'Success',
-          endTime: Date.now(),
-          toClaimHash
+        if (order.sendTo) {
+          order = {
+            ...order,
+            status: 'Ready to Send',
+            toClaimHash
+          }
+
+          this.$store.commit('UPDATE_ORDER', order)
+
+          this.performNextAction(order)
+        } else {
+          order = {
+            ...order,
+            status: 'Success',
+            endTime: Date.now(),
+            toClaimHash
+          }
+
+          this.$store.commit('UPDATE_ORDER', order)
+
+          this.updateBalance([order.to, order.from])
         }
-
-        this.$store.commit('UPDATE_ORDER', order)
-
-        this.updateBalance([order.to, order.from])
       } else if (order.status.toLowerCase() === 'getting refund') {
         const diff = (order.swapExpiration - this.timestamp()) + random(5000, 10000)
         const refund = async () => {
@@ -358,9 +370,22 @@ export default {
         } else {
           await refund()
         }
+      } else if (order.status.toLowerCase() === 'ready to send') {
+        const sendTx = await client(order.to)('chain.sendTransaction')(order.sendTo, order.toAmount)
+
+        order = {
+          ...order,
+          status: 'Success',
+          endTime: Date.now(),
+          sendTx: sendTx
+        }
+
+        this.$store.commit('UPDATE_ORDER', order)
+
+        this.updateBalance([order.to, order.from])
       }
     },
-    async swap (agentIndex, from, to, fromAmount) {
+    async swap (agentIndex, from, to, fromAmount, sendTo) {
       const order = await agent('newOrder')(agentIndex, {
         from,
         to,
@@ -370,6 +395,7 @@ export default {
       order.agentIndex = agentIndex
       order.startTime = Date.now()
       order.status = 'Quote'
+      order.sendTo = sendTo
 
       this.$store.commit('NEW_ORDER', order)
 

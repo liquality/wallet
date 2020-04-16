@@ -18,6 +18,16 @@
       </div>
 
       <div v-if="bestMarketBasedOnAmount">
+        <p class="mb-1 d-flex justify-content-between align-items-center cursor-pointer" @click="sendTo = null; enterToAddress = !enterToAddress">
+          <span class="bold-label text-primary">Send to</span>
+          <span v-if="!enterToAddress">
+            <span class="text-muted">self</span>
+          </span>
+        </p>
+        <div class="mb-3" v-if="enterToAddress">
+          <input type="text" class="form-control simple mb-0" v-model="sendTo">
+        </div>
+
         <label class="bold-label text-primary">Pay using</label>
         <select class="form-control form-control-lg mb-3" v-model="payCoin">
           <option
@@ -92,7 +102,9 @@ export default {
     return {
       amount: 0,
       loading: false,
-      payCoin: null
+      payCoin: null,
+      enterToAddress: false,
+      sendTo: null
     }
   },
   props: {
@@ -168,7 +180,8 @@ export default {
         agentIndex: this.bestAgentIndex,
         from: this.payCoin,
         to: this.coin,
-        amount: this.youPay
+        amount: this.youPay,
+        sendTo: this.sendTo
       })
     },
     setAmount (amount) {

@@ -9,7 +9,7 @@
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Order ID</td>
-            <td>{{order.id}}</td>
+            <td><a :href="orderLink" rel="noopener" target="_blank">{{order.id}}</a></td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Started At</td>
@@ -67,6 +67,14 @@
             <td class="text-muted text-right small-12">Your {{order.to}} claim<br>transaction</td>
             <td>{{order.toClaimHash}}</td>
           </tr>
+          <tr v-if="order.sendTo">
+            <td class="text-muted text-right small-12">Your {{order.to}} send to<br>address</td>
+            <td>{{order.sendTo}}</td>
+          </tr>
+          <tr v-if="order.sendTx">
+            <td class="text-muted text-right small-12">Your {{order.to}} send<br>transaction</td>
+            <td>{{order.sendTx}}</td>
+          </tr>
           <tr>
             <td class="text-muted text-right small-12">Actions</td>
             <td class="cursor-pointer text-danger" @click="remove">Remove this order</td>
@@ -99,6 +107,9 @@ export default {
   computed: {
     reverseRate () {
       return BN(1).div(this.order.rate).dp(8)
+    },
+    orderLink () {
+      return this.orderAgent + '/order/' + this.order.id + '?verbose=true'
     }
   },
   methods: {
