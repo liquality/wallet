@@ -43,7 +43,7 @@
               <button class="btn btn-block btn-link text-muted">
                 <span v-if="order.status.toLowerCase() !== 'success'">
                   {{getOrderProgress(order)}}/5
-                  <Pacman class="d-inline-block mr-3 ml-2" />
+                  <Pacman v-if="!waiting[order.id]" class="d-inline-block mr-3 ml-2" />
                 </span>
                 <span v-else>Finished in {{getOrderDuration(order)}}</span>
               </button>
