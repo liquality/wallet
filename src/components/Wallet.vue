@@ -313,11 +313,11 @@ export default {
         const refund = async () => {
           await this.getLockForChain(order, order.from)
           await client(order.from)('swap.refundSwap')(
-            order.toFundHash,
-            order.toAddress,
-            order.toCounterPartyAddress,
+            order.fromFundHash,
+            order.fromCounterPartyAddress,
+            order.fromAddress,
             order.secretHash,
-            order.nodeSwapExpiration
+            order.swapExpiration
           )
           await this.unlockChain(order.from)
 
