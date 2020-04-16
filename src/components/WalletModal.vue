@@ -102,7 +102,7 @@ export default {
     async sendTransaction () {
       this.loading = true
 
-      const amount = cryptoassets[this.wallet].currencyToUnit(this.sendAmount)
+      const amount = cryptoassets[this.wallet.toLowerCase()].currencyToUnit(this.sendAmount)
 
       console.log(await client(this.wallet)('chain.sendTransaction')(this.sendAddress, amount, null, this.address))
 
