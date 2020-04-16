@@ -48,7 +48,7 @@
                   Finished in {{getOrderDuration(order)}}
                 </span>
                 <span v-else>
-                  {{getOrderProgress(order)}}/5
+                  {{getOrderProgress(order)}}/6
                   <Pacman v-if="!waiting[order.id]" class="d-inline-block mr-3 ml-2" />
                 </span>
               </button>
@@ -80,8 +80,10 @@ const ORDER_STATUS_MAP = {
   quote: 1,
   secured: 2,
   initiated: 3,
-  exchanging: 4,
-  'getting refund': 4
+  'waiting for confirmations': 4,
+  exchanging: 5,
+  'ready to exchange': 5,
+  'getting refund': 5
 }
 
 export default {

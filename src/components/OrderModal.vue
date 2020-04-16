@@ -67,6 +67,10 @@
             <td class="text-muted text-right small-12">Your {{order.to}} claim<br>transaction</td>
             <td>{{order.toClaimHash}}</td>
           </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Actions</td>
+            <td class="cursor-pointer text-danger" @click="remove">Remove this order</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -100,6 +104,10 @@ export default {
   methods: {
     prettyBalance (asset, value) {
       return cryptoassets[asset.toLowerCase()].unitToCurrency(value)
+    },
+    remove () {
+      this.$store.commit('REMOVE_ORDER', this.order)
+      this.$emit('close')
     }
   }
 }

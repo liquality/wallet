@@ -183,8 +183,11 @@ export default {
       console.log(`unlocking ${chain}`)
       EventBus.$emit(`unlock:${chain}`)
     },
+    timestamp () {
+      return Math.ceil(Date.now() / 1000)
+    },
     checkIfQuoteExpired (order) {
-      if (Date.now() >= order.expiresAt) {
+      if (this.timestamp() >= order.expiresAt) {
         order = {
           ...order,
           status: 'Quote Expired'
@@ -195,8 +198,8 @@ export default {
         return true
       }
     },
-    async checkIfSwapHasExpired (order) {
-      if (Date.now() >= order.nodeSwapExpiration) {
+    checkIfSwapHasExpired (order) {
+      if (this.timestamp() >= order.nodeSwapExpiration) {
         order = {
           ...order,
           status: 'Getting Refund'
@@ -268,7 +271,7 @@ export default {
         this.$store.commit('UPDATE_ORDER', order)
 
         this.performNextAction(order)
-      } else if (order.status.toLowerCase() === 'initiated') {
+      } else if (['waiting for confirmations', 'initiated'].includes(order.status.toLowerCase())) {
         const interval = setInterval(async () => {
           if (this.checkIfSwapHasExpired(order)) {
             clearInterval(interval)
@@ -283,19 +286,28 @@ export default {
           )
 
           if (tx) {
-            clearInterval(interval)
+            if (tx.confirmations >= order.minConf) {
+              clearInterval(interval)
 
-            const toFundHash = tx.hash
+              const toFundHash = tx.hash
 
-            order = {
-              ...order,
-              toFundHash,
-              status: 'Ready to Exchange'
+              order = {
+                ...order,
+                toFundHash,
+                status: 'Ready to Exchange'
+              }
+
+              this.$store.commit('UPDATE_ORDER', order)
+
+              this.performNextAction(order)
+            } else if (order.status.toLowerCase() === 'initiated') {
+              order = {
+                ...order,
+                status: 'Waiting for Confirmations'
+              }
+
+              this.$store.commit('UPDATE_ORDER', order)
             }
-
-            this.$store.commit('UPDATE_ORDER', order)
-
-            this.performNextAction(order)
           }
         }, random(15000, 30000))
       } else if (['exchanging', 'ready to exchange'].includes(order.status.toLowerCase())) {
@@ -320,7 +332,7 @@ export default {
 
         this.updateBalance([order.to, order.from])
       } else if (order.status.toLowerCase() === 'getting refund') {
-        const diff = (order.swapExpiration - Date.now) + random(5000, 10000)
+        const diff = (order.swapExpiration - this.timestamp()) + random(5000, 10000)
         const refund = async () => {
           await this.getLockForChain(order, order.from)
           await client(order.from)('swap.refundSwap')(
