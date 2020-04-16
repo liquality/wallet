@@ -213,7 +213,18 @@ export default {
       if (order.status.toLowerCase() === 'quote') {
         const [fromAddress, toAddress] = await this.getUnusedAddresses([order.from, order.to])
 
-        const secret = await client(order.from)('swap.generateSecret')('test')
+        const message = [
+          'Creating a swap with following terms:',
+          `Send: ${order.fromAmount} (lowest denomination) ${order.from}`,
+          `Receive: ${order.toAmount} (lowest denomination) ${order.to}`,
+          `My ${order.from} Address: ${fromAddress}`,
+          `My ${order.to} Address: ${toAddress}`,
+          `Counterparty ${order.from} Address: ${order.fromCounterPartyAddress}`,
+          `Counterparty ${order.to} Address: ${order.toCounterPartyAddress}`,
+          `Timestamp: ${Date.now()}`
+        ].join('\n')
+
+        const secret = await client(order.from)('swap.generateSecret')(message)
         const secretHash = sha256(secret)
 
         order = {
