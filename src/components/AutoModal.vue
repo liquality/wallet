@@ -199,12 +199,13 @@ export default {
       })
 
       const balance = await client(this.payCoin)('chain.getBalance', 'BigNumber')([this.address[this.payCoin]])
-      this.checkForBalance(balance, amount)
+      const minBalance = BN(balance).plus(amount)
+      this.checkForBalance(minBalance)
     },
-    async checkForBalance (ref, bump) {
+    async checkForBalance (minBalance) {
       const balance = await client(this.payCoin)('chain.getBalance', 'BigNumber')([this.address[this.payCoin]])
 
-      if (BN(ref).plus(bump).eq(balance)) {
+      if (BN(balance).gte(minBalance)) {
         this.$emit('buy', {
           agentIndex: this.bestAgentIndex,
           from: this.payCoin,
@@ -213,7 +214,7 @@ export default {
           sendTo: this.sendTo
         })
       } else {
-        setTimeout(this.checkForBalance, random(15000, 30000), ref, bump)
+        setTimeout(this.checkForBalance, random(15000, 30000), minBalance)
       }
     },
     dpUI,
