@@ -286,10 +286,10 @@ export default {
           )
 
           if (tx) {
+            const toFundHash = tx.hash
+
             if (tx.confirmations >= order.minConf) {
               clearInterval(interval)
-
-              const toFundHash = tx.hash
 
               order = {
                 ...order,
@@ -303,6 +303,7 @@ export default {
             } else if (order.status.toLowerCase() === 'initiated') {
               order = {
                 ...order,
+                toFundHash,
                 status: 'Waiting for Confirmations'
               }
 
