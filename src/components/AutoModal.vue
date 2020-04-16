@@ -1,57 +1,62 @@
 <template>
   <Modal @close="$emit('close')">
     <div class="modal-body modal-body-trade">
-      <div class="modal-cover">
-        <h2 class="h4 mb-0 bold-label text-white d-flex justify-content-between align-items-center">
-          <span>You deposit</span>
-          <small v-if="bestMarketBasedOnAmount">
-            <span class="cursor-pointer" @click="setAmount(sellMin)">Min</span> &mdash; <span class="cursor-pointer" @click="setAmount(sellMax)">Max</span>
-          </small>
-        </h2>
+      <div :class="{
+        'modal-cover': true,
+        'modal-cover-flat': qrcode
+      }">
+        <div v-if="qrcode">
+          <p class="text-center mb-0"><span class="bold-label text-white word-break-all">Waiting for {{amount}} {{payCoin}}</span></p>
+          <div v-html="qrcode" class="mb-2" />
 
-        <div class="input-group input-group-lg mt-1 mb-0">
-          <input type="number" class="form-control simple" v-model="amount" step="0.0001" :readonly="loading">
-          <div class="input-group-append">
-            <span class="input-group-text">{{payCoin}}</span>
+          <p class="font-weight-light mb-0 text-center word-break-all">0x{{address[payCoin]}}</p>
+        </div>
+        <div v-else>
+          <h2 class="h4 mb-0 bold-label text-white d-flex justify-content-between align-items-center">
+            <span>You deposit</span>
+            <small v-if="bestMarketBasedOnAmount">
+              <span class="cursor-pointer" @click="setAmount(sellMin)">Min</span> &mdash; <span class="cursor-pointer" @click="setAmount(sellMax)">Max</span>
+            </small>
+          </h2>
+
+          <div class="input-group input-group-lg mt-1 mb-0">
+            <input type="number" class="form-control simple" v-model="amount" step="0.0001" :readonly="loading">
+            <div class="input-group-append">
+              <span class="input-group-text">{{payCoin}}</span>
+            </div>
           </div>
         </div>
       </div>
 
       <div v-if="bestMarketBasedOnAmount">
-        <p class="mb-1 d-flex justify-content-between align-items-center cursor-pointer" @click="sendTo = null; enterToAddress = !enterToAddress">
-          <span class="bold-label text-primary">Send to</span>
-          <span v-if="!enterToAddress">
-            <span class="text-muted">self</span>
-          </span>
-        </p>
-        <div class="mb-3" v-if="enterToAddress">
-          <input type="text" class="form-control simple mb-0" v-model="sendTo">
-        </div>
-
-        <label class="bold-label text-primary">Pay using</label>
-        <select class="form-control form-control-lg mb-3" v-model="payCoin">
-          <option
-            v-for="(data, payUsing) in marketData[coin]"
-            :key="payUsing"
-            :value="payUsing">{{dpUI(balance[payUsing], payUsing)}} {{payUsing}}</option>
-        </select>
-
         <p class="mb-2 d-flex justify-content-between align-items-center">
           <span class="bold-label text-primary">Rate</span>
           <span>
-            <small class="text-muted">1 {{coin}} = </small>
-            <span class="font-weight-normal">{{dpUI(bestBuyRateBasedOnAmount, payCoin)}} </span>
-            <small class="text-muted">{{payCoin}}</small>
+            <small class="text-muted">1 {{payCoin}} = </small>
+            <span class="font-weight-normal">{{dpUI(bestSellRateBasedOnAmount, coin)}} </span>
+            <small class="text-muted">{{coin}}</small>
           </span>
         </p>
 
-        <p class="mb-3 d-flex justify-content-between align-items-center">
-          <span class="bold-label text-primary">You pay</span>
+        <p class="mb-2 d-flex justify-content-between align-items-center">
+          <span class="bold-label text-primary">You get</span>
           <span>
-            <span class="font-weight-normal">{{youPay}} </span>
-            <small class="text-muted">{{payCoin}}</small>
+            <span class="font-weight-normal">{{youGet}} </span>
+            <small class="text-muted">{{coin}}</small>
           </span>
         </p>
+
+        <div>
+          <p class="mb-0 d-flex justify-content-between align-items-center cursor-pointer" @click="sendToToggle">
+            <span class="bold-label text-primary">Send {{coin}} to</span>
+            <span v-if="!enterToAddress">
+              <span class="text-muted">self</span>
+            </span>
+          </p>
+          <div v-if="enterToAddress">
+            <input type="text" class="form-control simple mb-0" v-model="sendTo">
+          </div>
+        </div>
       </div>
       <div v-else>
         <p class="mb-2 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(sellMin)">
@@ -61,7 +66,7 @@
             <small class="text-muted">{{payCoin}}</small>
           </span>
         </p>
-        <p class="mb-3 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(sellMax)">
+        <p class="mb-0 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(sellMax)">
           <span class="bold-label text-primary">Max</span>
           <span>
             <span class="font-weight-normal">{{sellMax}} </span>
@@ -71,14 +76,15 @@
       </div>
 
       <button
+        v-if="!qrcode"
         :class="{
-          'text-center btn btn-lg btn-block': true,
+          'text-center btn btn-lg btn-block mt-3': true,
           'btn-light': loading,
           'btn-primary': !loading
         }"
         :disabled="!bestMarketBasedOnAmount || !canBuy || loading"
-        @click="buy">
-        <span v-if="!loading">Buy</span>
+        @click="next">
+        <span v-if="!loading">Continue</span>
         <Pacman v-else class="d-inline-block mr-3" />
       </button>
     </div>
@@ -86,9 +92,13 @@
 </template>
 
 <script>
+import { random } from 'lodash-es'
 import BN from 'bignumber.js'
+import QRCode from 'qrcode'
+import cryptoassets from '@liquality/cryptoassets'
 
 import { dpUI } from '@/utils/coinFormatter'
+import client from '@/utils/client'
 
 import Pacman from '@/components/Pacman'
 import Modal from '@/components/Modal'
@@ -105,14 +115,15 @@ export default {
       payCoin: null,
       enterToAddress: false,
       sendTo: null,
-      quick: false
+      qrcode: null
     }
   },
   props: {
     coin: String,
     market: Object,
     marketData: Object,
-    balance: Object
+    balance: Object,
+    address: Object
     // prefill: Object
   },
   created () {
@@ -122,9 +133,6 @@ export default {
   computed: {
     bestAgentIndex () {
       return this.bestMarketBasedOnAmount.agentIndex
-    },
-    bestBuyRateBasedOnAmount () {
-      return this.bestMarketBasedOnAmount.buyRate
     },
     bestSellRateBasedOnAmount () {
       return this.bestMarketBasedOnAmount.sellRate
@@ -143,7 +151,7 @@ export default {
       return dpUI(BN(this.payMarket.sellMax).times(this.payMarket.sellRate), this.coin, true)
     },
     sellMin () {
-      return dpUI(this.payMarket.sellMin, this.coin)
+      return dpUI(BN(this.payMarket.sellMin).plus(0.001), this.coin)
     },
     sellMax () {
       return dpUI(this.payMarket.sellMax, this.coin, true)
@@ -154,37 +162,61 @@ export default {
     payMarket () {
       return this.selectedMarket[this.payCoin]
     },
-    payBalance () {
-      return this.balance[this.payCoin]
-    },
     selectedMarket () {
       return this.marketData[this.coin]
     },
     canBuy () {
       const amount = BN(this.safeAmount)
-      const youPay = BN(this.youPay)
 
-      if (amount.gt(this.buyMax) || amount.lt(this.buyMin) || youPay.gt(this.payBalance)) return false
+      if (amount.gt(this.sellMax) || amount.lt(this.sellMin)) return false
 
       return true
     },
-    youPay () {
-      return dpUI(BN(this.safeAmount).div(this.bestSellRateBasedOnAmount), this.payCoin)
+    youGet () {
+      return dpUI(BN(this.safeAmount).times(this.bestSellRateBasedOnAmount), this.coin)
     }
   },
   methods: {
-    dpUI,
-    buy () {
-      this.loading = true
+    sendToToggle () {
+      if (this.qrcode) return
 
-      this.$emit('buy', {
-        agentIndex: this.bestAgentIndex,
-        from: this.payCoin,
-        to: this.coin,
-        amount: this.youPay,
-        sendTo: this.sendTo
-      })
+      this.sendTo = null
+      this.enterToAddress = !this.enterToAddress
     },
+    async next () {
+      const amount = cryptoassets[this.payCoin.toLowerCase()].currencyToUnit(this.amount)
+
+      QRCode.toString(`ethereum:0x${this.address[this.payCoin]}?value=${amount}`, {
+        type: 'svg',
+        color: {
+          dark: '#fff',
+          light: '#5665c2'
+        }
+      }, (err, svg) => {
+        if (err) throw err
+
+        this.qrcode = svg
+      })
+
+      const balance = await client(this.payCoin)('chain.getBalance', 'BigNumber')([this.address[this.payCoin]])
+      this.checkForBalance(balance, amount)
+    },
+    async checkForBalance (ref, bump) {
+      const balance = await client(this.payCoin)('chain.getBalance', 'BigNumber')([this.address[this.payCoin]])
+
+      if (BN(ref).plus(bump).eq(balance)) {
+        this.$emit('buy', {
+          agentIndex: this.bestAgentIndex,
+          from: this.payCoin,
+          to: this.coin,
+          amount: BN(this.amount).minus(0.001),
+          sendTo: this.sendTo
+        })
+      } else {
+        setTimeout(this.checkForBalance, random(15000, 30000), ref, bump)
+      }
+    },
+    dpUI,
     setAmount (amount) {
       if (this.loading) return
 

@@ -5,10 +5,10 @@
       :key="'quick:' + autoCoin"
       :coin="autoCoin"
       :balance="balance"
+      :address="address"
       :marketData="marketData"
       @buy="buy"
-      @close="autoCoin = null"
-      @autoBuy="autoBuy" />
+      @close="autoCoin = null" />
     <TradeModal
       v-if="buyCoin"
       :key="'trade:' + buyCoin"
@@ -151,6 +151,7 @@ export default {
 
       await this.swap(agentIndex, from, to, fromAmount, sendTo)
 
+      this.autoCoin = null
       this.buyCoin = null
     },
     async getUnusedAddresses (coins) {

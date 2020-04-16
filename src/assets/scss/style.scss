@@ -146,6 +146,10 @@ td > .btn {
   background: linear-gradient(180deg,hsl(232, 47%, 58%),hsl(232, 47%, 55%));
   color: #fff;
 
+  &.modal-cover-flat {
+    background: $primary;
+  }
+
   input {
     padding-left: 0!important;
     padding-right: 0.4rem!important;

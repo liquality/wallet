@@ -18,14 +18,16 @@
       </div>
 
       <div v-if="bestMarketBasedOnAmount">
-        <p class="mb-1 d-flex justify-content-between align-items-center cursor-pointer" @click="sendTo = null; enterToAddress = !enterToAddress">
-          <span class="bold-label text-primary">Send to</span>
-          <span v-if="!enterToAddress">
-            <span class="text-muted">self</span>
-          </span>
-        </p>
-        <div class="mb-3" v-if="enterToAddress">
-          <input type="text" class="form-control simple mb-0" v-model="sendTo">
+        <div class="mb-2">
+          <p class="mb-0 d-flex justify-content-between align-items-center cursor-pointer" @click="sendTo = null; enterToAddress = !enterToAddress">
+            <span class="bold-label text-primary">Send {{coin}} to</span>
+            <span v-if="!enterToAddress">
+              <span class="text-muted">self</span>
+            </span>
+          </p>
+          <div v-if="enterToAddress">
+            <input type="text" class="form-control simple mb-0" v-model="sendTo">
+          </div>
         </div>
 
         <label class="bold-label text-primary">Pay using</label>
@@ -82,13 +84,14 @@
         <Pacman v-else class="d-inline-block mr-3" />
       </button>
 
-      <p class="text-center small text-primary mb-0 mt-3 cursor-pointer" v-if="coin === 'BTC' && false" @click="$emit('autoBuy')">Or try quick buy &rsaquo;</p>
+      <p class="text-center small text-primary mb-0 mt-3 cursor-pointer" v-if="isTestnet && coin === 'BTC'" @click="$emit('autoBuy')">Or try quick buy &rsaquo;</p>
     </div>
   </Modal>
 </template>
 
 <script>
 import BN from 'bignumber.js'
+import { isTestnet } from '@/utils/network'
 
 import { dpUI } from '@/utils/coinFormatter'
 
@@ -127,6 +130,9 @@ export default {
     // }
   },
   computed: {
+    isTestnet () {
+      return isTestnet
+    },
     bestAgentIndex () {
       return this.bestMarketBasedOnAmount.agentIndex
     },
