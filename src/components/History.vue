@@ -75,7 +75,8 @@ const ORDER_STATUS_MAP = {
   quote: 1,
   secured: 2,
   initiated: 3,
-  exchanging: 4
+  exchanging: 4,
+  'getting refund': 4
 }
 
 export default {
