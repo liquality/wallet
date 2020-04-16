@@ -8,7 +8,7 @@
       </nav>
       <div class="container text-center">
         <h1 class="display-4 text-white">Your keys, your coins</h1>
-        <h2 class="mb-0 h5 font-weight-light text-white">Secure in-browser multi-crypto wallet with Atomic Swaps built-in!</h2>
+        <h2 class="mb-0 h5 font-weight-light text-white">Secure in-browser multi-crypto wallet with built-in Atomic Swaps!</h2>
       </div>
     </div>
     <Home class="container mt-4 mb-5" />
