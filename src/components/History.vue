@@ -41,7 +41,7 @@
             </td>
             <td class="text-center">
               <button class="btn btn-block btn-link text-muted">
-                <span v-if="order.status.toLowerCase() !== 'success'">
+                <span v-if="!['success', 'refunded', 'quote expired'].includes(order.status.toLowerCase())">
                   {{getOrderProgress(order)}}/5
                   <Pacman v-if="!waiting[order.id]" class="d-inline-block mr-3 ml-2" />
                 </span>
@@ -75,8 +75,7 @@ const ORDER_STATUS_MAP = {
   quote: 1,
   secured: 2,
   initiated: 3,
-  exchanging: 4,
-  success: 5
+  exchanging: 4
 }
 
 export default {
