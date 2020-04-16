@@ -4,7 +4,7 @@
       <div class="row balance-box">
         <div class="col-md-4 col-sm-6 mx-auto">
           <div class="card card-up cursor-pointer">
-            <div class="card-body" v-if="['LOCKED', 'NOWALLET'].includes(walletState)">
+            <div class="card-body" v-if="lockedOrNoWallet">
               <form autocomplete="off" v-on:submit.prevent="go">
                 <h1 class="h4 text-center mb-1 text-primary">{{title}}</h1>
                 <h2 class="h6 text-center font-weight-normal text-muted mb-4">{{subtitle}}</h2>
@@ -19,7 +19,7 @@
               <Pacman class="d-inline-block mr-3" />
             </div>
           </div>
-          <p v-if="isTestnet" class="text-center font-weight-normal mt-3 cursor-pointer" @click="demo">Experiment with a demo wallet &rsaquo;</p>
+          <p v-if="isTestnet && lockedOrNoWallet" class="text-center font-weight-normal mt-3 cursor-pointer" @click="demo">Experiment with a demo wallet &rsaquo;</p>
         </div>
       </div>
     </div>
@@ -46,6 +46,9 @@ export default {
     }
   },
   computed: {
+    lockedOrNoWallet () {
+      return ['LOCKED', 'NOWALLET'].includes(this.walletState)
+    },
     isTestnet () {
       return isTestnet
     },
