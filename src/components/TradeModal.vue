@@ -4,7 +4,7 @@
       <div class="modal-cover">
         <h2 class="h4 mb-0 bold-label text-white d-flex justify-content-between align-items-center">
           <span>Buy</span>
-          <small>
+          <small v-if="bestMarketBasedOnAmount">
             <span class="cursor-pointer" @click="setAmount(buyMin)">Min</span> &mdash; <span class="cursor-pointer" @click="setAmount(buyMax)">Max</span>
           </small>
         </h2>
@@ -17,30 +17,48 @@
         </div>
       </div>
 
-      <label class="bold-label text-primary">Pay using</label>
-      <select class="form-control form-control-lg mb-3" v-model="payCoin">
-        <option
-          v-for="(data, payUsing) in marketData[coin]"
-          :key="payUsing"
-          :value="payUsing">{{dpUI(balance[payUsing], payUsing)}} {{payUsing}}</option>
-      </select>
+      <div v-if="bestMarketBasedOnAmount">
+        <label class="bold-label text-primary">Pay using</label>
+        <select class="form-control form-control-lg mb-3" v-model="payCoin">
+          <option
+            v-for="(data, payUsing) in marketData[coin]"
+            :key="payUsing"
+            :value="payUsing">{{dpUI(balance[payUsing], payUsing)}} {{payUsing}}</option>
+        </select>
 
-      <p class="mb-2 d-flex justify-content-between align-items-center">
-        <span class="bold-label text-primary">Rate</span>
-        <span>
-          <small class="text-muted">1 {{coin}} = </small>
-          <span class="font-weight-normal">{{dpUI(bestBuyRateBasedOnAmount, payCoin)}} </span>
-          <small class="text-muted">{{payCoin}}</small>
-        </span>
-      </p>
+        <p class="mb-2 d-flex justify-content-between align-items-center">
+          <span class="bold-label text-primary">Rate</span>
+          <span>
+            <small class="text-muted">1 {{coin}} = </small>
+            <span class="font-weight-normal">{{dpUI(bestBuyRateBasedOnAmount, payCoin)}} </span>
+            <small class="text-muted">{{payCoin}}</small>
+          </span>
+        </p>
 
-      <p class="mb-3 d-flex justify-content-between align-items-center">
-        <span class="bold-label text-primary">You pay</span>
-        <span>
-          <span class="font-weight-normal">{{youPay}} </span>
-          <small class="text-muted">{{payCoin}}</small>
-        </span>
-      </p>
+        <p class="mb-3 d-flex justify-content-between align-items-center">
+          <span class="bold-label text-primary">You pay</span>
+          <span>
+            <span class="font-weight-normal">{{youPay}} </span>
+            <small class="text-muted">{{payCoin}}</small>
+          </span>
+        </p>
+      </div>
+      <div v-else>
+        <p class="mb-2 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(buyMin)">
+          <span class="bold-label text-primary">Min</span>
+          <span>
+            <span class="font-weight-normal">{{buyMin}} </span>
+            <small class="text-muted">{{coin}}</small>
+          </span>
+        </p>
+        <p class="mb-3 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(buyMax)">
+          <span class="bold-label text-primary">Max</span>
+          <span>
+            <span class="font-weight-normal">{{buyMax}} </span>
+            <small class="text-muted">{{coin}}</small>
+          </span>
+        </p>
+      </div>
 
       <button
         :class="{
@@ -48,7 +66,7 @@
           'btn-light': loading,
           'btn-primary': !loading
         }"
-        :disabled="!canBuy || loading"
+        :disabled="!bestMarketBasedOnAmount || !canBuy || loading"
         @click="buy">
         <span v-if="!loading">Buy</span>
         <Pacman v-else class="d-inline-block mr-3" />
@@ -86,7 +104,6 @@ export default {
   },
   created () {
     this.payCoin = Object.keys(this.selectedMarket)[0]
-
     this.amount = this.buyMin
 
     // if (this.prefill.amount) {
