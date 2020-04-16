@@ -262,6 +262,8 @@ export default {
           if (this.checkIfSwapHasExpired(order)) {
             clearInterval(interval)
 
+            this.performNextAction(order)
+
             return
           }
 
