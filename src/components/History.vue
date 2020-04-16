@@ -41,11 +41,16 @@
             </td>
             <td class="text-center">
               <button class="btn btn-block btn-link text-muted">
-                <span v-if="!['success', 'refunded', 'quote expired'].includes(order.status.toLowerCase())">
+                <span v-if="['quote expired'].includes(order.status.toLowerCase())">
+                  &mdash;
+                </span>
+                <span v-else-if="['success', 'refunded'].includes(order.status.toLowerCase())">
+                  Finished in {{getOrderDuration(order)}}
+                </span>
+                <span v-else>
                   {{getOrderProgress(order)}}/5
                   <Pacman v-if="!waiting[order.id]" class="d-inline-block mr-3 ml-2" />
                 </span>
-                <span v-else>Finished in {{getOrderDuration(order)}}</span>
               </button>
             </td>
             <td class="text-center"><button :class="{
