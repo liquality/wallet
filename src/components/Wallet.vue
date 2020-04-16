@@ -1,5 +1,14 @@
 <template>
   <div>
+    <AutoModal
+      v-if="autoCoin"
+      :key="'quick:' + autoCoin"
+      :coin="autoCoin"
+      :balance="balance"
+      :marketData="marketData"
+      @buy="buy"
+      @close="autoCoin = null"
+      @autoBuy="autoBuy" />
     <TradeModal
       v-if="buyCoin"
       :key="'trade:' + buyCoin"
@@ -7,7 +16,8 @@
       :balance="balance"
       :marketData="marketData"
       @buy="buy"
-      @close="buyCoin = null" />
+      @close="buyCoin = null"
+      @autoBuy="autoBuy" />
     <WalletModal
       v-if="selectedWallet"
       :key="'wallet:' + selectedWallet"
@@ -68,6 +78,7 @@ import Pacman from '@/components/Pacman'
 import History from '@/components/History'
 import WalletModal from '@/components/WalletModal'
 import TradeModal from '@/components/TradeModal'
+import AutoModal from '@/components/AutoModal'
 import client from '@/utils/client'
 import agent from '@/utils/agent'
 import { dpUI } from '@/utils/coinFormatter'
@@ -79,7 +90,8 @@ export default {
     TradeModal,
     WalletModal,
     History,
-    Pacman
+    Pacman,
+    AutoModal
   },
   data () {
     return {
@@ -87,6 +99,7 @@ export default {
       address: {},
       selectedWallet: null,
       buyCoin: false,
+      autoCoin: false,
       // prefill: {},
       marketData: {},
       base: 'BTC',
@@ -104,6 +117,11 @@ export default {
     }
   },
   methods: {
+    async autoBuy () {
+      const temp = this.buyCoin
+      this.buyCoin = false
+      this.autoCoin = temp
+    },
     toggleBase () {
       this.base = this.supportedCoins.find(coin => coin !== this.base)
     },
@@ -342,7 +360,8 @@ export default {
           this.updateBalance([order.to, order.from])
         }
       } else if (order.status.toLowerCase() === 'getting refund') {
-        const diff = (order.swapExpiration - this.timestamp()) + random(5000, 10000)
+        const diff = ((order.swapExpiration - this.timestamp()) + random(5, 10)) * 1000
+
         const refund = async () => {
           await this.getLockForChain(order, order.from)
           await client(order.from)('swap.refundSwap')(

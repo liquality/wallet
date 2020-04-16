@@ -3,16 +3,16 @@
     <div class="modal-body modal-body-trade">
       <div class="modal-cover">
         <h2 class="h4 mb-0 bold-label text-white d-flex justify-content-between align-items-center">
-          <span>Buy</span>
+          <span>You deposit</span>
           <small v-if="bestMarketBasedOnAmount">
-            <span class="cursor-pointer" @click="setAmount(buyMin)">Min</span> &mdash; <span class="cursor-pointer" @click="setAmount(buyMax)">Max</span>
+            <span class="cursor-pointer" @click="setAmount(sellMin)">Min</span> &mdash; <span class="cursor-pointer" @click="setAmount(sellMax)">Max</span>
           </small>
         </h2>
 
         <div class="input-group input-group-lg mt-1 mb-0">
           <input type="number" class="form-control simple" v-model="amount" step="0.0001" :readonly="loading">
           <div class="input-group-append">
-            <span class="input-group-text">{{coin}}</span>
+            <span class="input-group-text">{{payCoin}}</span>
           </div>
         </div>
       </div>
@@ -54,18 +54,18 @@
         </p>
       </div>
       <div v-else>
-        <p class="mb-2 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(buyMin)">
+        <p class="mb-2 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(sellMin)">
           <span class="bold-label text-primary">Min</span>
           <span>
-            <span class="font-weight-normal">{{buyMin}} </span>
-            <small class="text-muted">{{coin}}</small>
+            <span class="font-weight-normal">{{sellMin}} </span>
+            <small class="text-muted">{{payCoin}}</small>
           </span>
         </p>
-        <p class="mb-3 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(buyMax)">
+        <p class="mb-3 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(sellMax)">
           <span class="bold-label text-primary">Max</span>
           <span>
-            <span class="font-weight-normal">{{buyMax}} </span>
-            <small class="text-muted">{{coin}}</small>
+            <span class="font-weight-normal">{{sellMax}} </span>
+            <small class="text-muted">{{payCoin}}</small>
           </span>
         </p>
       </div>
@@ -81,8 +81,6 @@
         <span v-if="!loading">Buy</span>
         <Pacman v-else class="d-inline-block mr-3" />
       </button>
-
-      <p class="text-center small text-primary mb-0 mt-3 cursor-pointer" v-if="coin === 'BTC' && false" @click="$emit('autoBuy')">Or try quick buy &rsaquo;</p>
     </div>
   </Modal>
 </template>
@@ -106,7 +104,8 @@ export default {
       loading: false,
       payCoin: null,
       enterToAddress: false,
-      sendTo: null
+      sendTo: null,
+      quick: false
     }
   },
   props: {
@@ -118,13 +117,7 @@ export default {
   },
   created () {
     this.payCoin = Object.keys(this.selectedMarket)[0]
-    this.amount = this.buyMin
-
-    // if (this.prefill.amount) {
-    //   this.amount = this.prefill.amount
-    // } else {
-    //   this.amount = this.buyMin
-    // }
+    this.amount = this.sellMin
   },
   computed: {
     bestAgentIndex () {
@@ -138,7 +131,7 @@ export default {
     },
     bestMarketBasedOnAmount () {
       return this.payMarket.markets.find(market => {
-        const sellAmount = BN(this.amount).div(market.sellRate)
+        const sellAmount = BN(this.amount)
 
         return BN(market.sellMin).lte(sellAmount) && BN(market.sellMax).gte(sellAmount)
       })
@@ -148,6 +141,12 @@ export default {
     },
     buyMax () {
       return dpUI(BN(this.payMarket.sellMax).times(this.payMarket.sellRate), this.coin, true)
+    },
+    sellMin () {
+      return dpUI(this.payMarket.sellMin, this.coin)
+    },
+    sellMax () {
+      return dpUI(this.payMarket.sellMax, this.coin, true)
     },
     safeAmount () {
       return this.amount || 0

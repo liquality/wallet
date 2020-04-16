@@ -28,6 +28,7 @@ export default {
       if (!e.target) return
       const { className } = e.target
       if (!className) return
+      if (typeof className !== 'string') return
 
       if (className.split(' ').includes('modal')) {
         this.$emit('close')
