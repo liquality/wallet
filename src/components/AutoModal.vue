@@ -57,6 +57,10 @@
             <input type="text" class="form-control simple mb-0" v-model="sendTo">
           </div>
         </div>
+
+        <div class="text-center mt-3" v-if="qrcode">
+          <Pacman class="d-inline-block mr-3" />
+        </div>
       </div>
       <div v-else>
         <p class="mb-2 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(sellMin)">
