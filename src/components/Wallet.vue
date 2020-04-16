@@ -224,7 +224,7 @@ export default {
           `Timestamp: ${Date.now()}`
         ].join('\n')
 
-        const secret = await client(order.from)('swap.generateSecret')(message)
+        const secret = await client(order.from)('swap.generateSecret')(Buffer.from(message, 'utf8').toString('hex'))
         const secretHash = sha256(secret)
 
         order = {
