@@ -183,7 +183,7 @@ export default {
       console.log(`unlocking ${chain}`)
       EventBus.$emit(`unlock:${chain}`)
     },
-    async checkIfQuoteExpired (order) {
+    checkIfQuoteExpired (order) {
       if (Date.now() >= order.expiresAt) {
         order = {
           ...order,
