@@ -5,7 +5,6 @@ on:
 
 name: Upload Release Assets
 
-
 jobs:
   release:
     runs-on: ${{ matrix.os }}
@@ -29,6 +28,7 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}-${{ hashFiles('**/package-lock.json') }}
       - name: Create Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -46,6 +46,7 @@ jobs:
           cd electron
           npm ci
           npm run build
+          cd ..
       - name: Upload Chrome extension
         uses: actions/upload-release-asset@v1
         env:
