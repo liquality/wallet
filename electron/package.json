@@ -1,0 +1,32 @@
+{
+  "name": "liquality-wallet",
+  "version": "0.0.8",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "build": "electron-builder",
+    "start": "electron"
+  },
+  "devDependencies": {
+    "electron": "^8.2.1",
+    "electron-builder": "^22.4.1"
+  },
+  "build": {
+    "appId": "io.liquality.wallet",
+    "productName": "Liquality Wallet",
+    "directories": {
+      "output": "build"
+    },
+    "mac": {
+      "category": "public.app-category.finance"
+    },
+    "linux": {
+      "category": "Utility"
+    },
+    "files": [
+      "index.js",
+      "dist/**/*",
+      "package.json"
+    ]
+  }
+}

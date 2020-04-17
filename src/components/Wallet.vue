@@ -146,10 +146,10 @@ export default {
           })
         })
     },
-    async buy ({ agentIndex, from, to, amount, sendTo }) {
+    async buy ({ agentIndex, from, to, amount, sendTo, auto }) {
       const fromAmount = cryptoassets[from.toLowerCase()].currencyToUnit(amount)
 
-      await this.swap(agentIndex, from, to, fromAmount, sendTo)
+      await this.swap(agentIndex, from, to, fromAmount, sendTo, auto)
 
       this.autoCoin = null
       this.buyCoin = null
@@ -405,7 +405,7 @@ export default {
         this.updateBalance([order.to, order.from])
       }
     },
-    async swap (agentIndex, from, to, fromAmount, sendTo) {
+    async swap (agentIndex, from, to, fromAmount, sendTo, auto) {
       const order = await agent('newOrder')(agentIndex, {
         from,
         to,
@@ -416,6 +416,7 @@ export default {
       order.startTime = Date.now()
       order.status = 'Quote'
       order.sendTo = sendTo
+      order.auto = auto
 
       this.$store.commit('NEW_ORDER', order)
 

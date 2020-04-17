@@ -1,7 +1,10 @@
 <template>
   <div id="app">
-    <div class="cover">
-      <nav class="navbar navbar-expand-lg navbar-dark">
+    <div :class="{
+      cover: true,
+      'cover-app': isApp
+    }">
+      <nav class="navbar navbar-expand-lg navbar-dark" v-if="!isApp">
         <div class="container">
           <a class="navbar-brand">Liquality Wallet <sup>{{network}}</sup></a>
         </div>
@@ -17,7 +20,7 @@
 
 <script>
 import Home from '@/views/Home'
-import { network } from '@/utils/network'
+import { isApp, network } from '@/utils/network'
 
 export default {
   components: {
@@ -26,6 +29,9 @@ export default {
   computed: {
     network () {
       return network
+    },
+    isApp () {
+      return isApp
     }
   }
 }
@@ -46,10 +52,16 @@ export default {
 
 .cover {
   background: linear-gradient(180deg,hsl(232, 47%, 58%),hsl(232, 47%, 55%));
-  // min-height: 490px;
-  // margin-bottom: -290px;
   min-height: 340px;
   margin-bottom: -140px;
+
+  &.cover-app {
+    min-height: 280px;
+
+    .container {
+      padding-top: 40px;
+    }
+  }
 
   .display-4 {
     font-size: 2.6rem;
@@ -61,7 +73,14 @@ export default {
 
   @media (max-width: 768px) {
     min-height: 300px;
-    margin-bottom: -140px;
+
+    &.cover-app {
+      min-height: 240px;
+
+      .container {
+        padding-top: 30px;
+      }
+    }
 
     .display-4 {
       font-size: 2rem;

@@ -1,15 +1,17 @@
 {
   "name": "wallet",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "electron electron.js",
-    "build:assets": "run-s build:chrome-extension build:electron",
-    "build:chrome-extension": "bestzip chrome-extension.zip manifest.json dist/* ext-icons/*",
-    "build:electron": "electron-builder"
+    "copy": "run-p copy:extension copy:electron",
+    "build:extension": "run-s mkdirs build:_extension",
+    "build:_extension": "bestzip extension/build/chrome-extension.zip extension/*",
+    "copy:extension": "cpx \"dist/**/*\" extension/dist",
+    "copy:electron": "cpx \"dist/**/*\" electron/dist",
+    "mkdirs": "mkdirp extension/build"
   },
   "dependencies": {
     "@liquality/bitcoin-esplora-api-provider": "^0.4.25",
@@ -34,11 +36,13 @@
     "bip39": "^3.0.2",
     "bootstrap": "^4.4.1",
     "core-js": "^3.6.4",
+    "cpx": "^1.5.0",
     "create-torrent": "^4.4.1",
     "crypto-js": "^4.0.0",
     "date-fns": "^2.11.1",
     "localforage": "^1.7.3",
     "lodash-es": "^4.17.15",
+    "mkdirp": "^1.0.4",
     "npm-run-all": "^4.1.5",
     "parse-torrent": "^7.1.2",
     "qrcode": "^1.4.4",
@@ -58,8 +62,6 @@
     "@vue/eslint-config-standard": "^5.1.2",
     "babel-eslint": "^10.1.0",
     "bestzip": "^2.1.5",
-    "electron": "^8.2.1",
-    "electron-builder": "^22.4.1",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
@@ -70,22 +72,5 @@
     "sass-loader": "^8.0.2",
     "vue-template-compiler": "^2.6.11",
     "worker-plugin": "^4.0.2"
-  },
-  "main": "electron.js",
-  "build": {
-    "appId": "io.liquality.wallet",
-    "directories": {
-      "output": "build"
-    },
-    "mac": {
-      "category": "public.app-category.finance",
-      "target": "dmg"
-    },
-    "files": [
-      "dist/**/*",
-      "electron.js",
-      "package.json",
-      "package-lock.json"
-    ]
   }
 }

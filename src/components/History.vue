@@ -28,7 +28,8 @@
             class="cursor-pointer">
             <td scope="row" class="text-muted font-weight-light">{{orders.length - idx}}</td>
             <td scope="row" class="text-muted font-weight-light">
-              <span>Buy {{order.to}}</span>
+              <span v-if="order.auto">Auto buy {{order.to}}</span>
+              <span v-else>Buy {{order.to}}</span>
               <span class="badge badge-secondary ml-2 d-inline" v-if="waiting[order.id]">Queued</span>
               <p v-if="order.sendTo" class="mb-0 small">Send to {{order.sendTo}}</p>
             </td>

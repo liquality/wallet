@@ -1,5 +1,5 @@
 <template>
-  <Modal @close="$emit('close')">
+  <Modal @close="close">
     <div class="modal-body modal-body-trade">
       <div :class="{
         'modal-cover': true,
@@ -181,6 +181,10 @@ export default {
     }
   },
   methods: {
+    close () {
+      if (this.qrcode) return
+      this.$emit('close')
+    },
     sendToToggle () {
       if (this.qrcode) return
 
@@ -215,7 +219,8 @@ export default {
           from: this.payCoin,
           to: this.coin,
           amount: BN(this.amount).minus(0.001),
-          sendTo: this.sendTo
+          sendTo: this.sendTo,
+          auto: true
         })
       } else {
         setTimeout(this.checkForBalance, random(15000, 30000), minBalance)
