@@ -44,7 +44,7 @@ export default {
 
 <style lang="scss">
 .app-extension {
-  min-width: 860px;
+  min-width: 768px;
 }
 
 .navbar {
