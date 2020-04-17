@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.0.10",
+  "version": "0.0.1",
   "private": true,
   "main": "index.js",
   "repository": {

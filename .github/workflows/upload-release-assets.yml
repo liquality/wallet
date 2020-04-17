@@ -69,7 +69,7 @@ jobs:
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}-${{ hashFiles('**/package-lock.json') }}
-      - name: configure aws cli
+      - name: Build & push electron apps
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
