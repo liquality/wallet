@@ -1,5 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{
+    'app-extension': isExtension
+  }">
     <div :class="{
       cover: true,
       'cover-app': isApp
@@ -20,7 +22,7 @@
 
 <script>
 import Home from '@/views/Home'
-import { isApp, network } from '@/utils/network'
+import { isApp, network, isExtension } from '@/utils/network'
 
 export default {
   components: {
@@ -32,12 +34,19 @@ export default {
     },
     isApp () {
       return isApp
+    },
+    isExtension () {
+      return isExtension
     }
   }
 }
 </script>
 
 <style lang="scss">
+.app-extension {
+  min-width: 860px;
+}
+
 .navbar {
   margin-bottom: 2rem;
 

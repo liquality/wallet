@@ -18,7 +18,9 @@ const hostname = getHostname()
 
 export const isApp = getProtocol().includes('file')
 
-export const isAppOrExtension = getProtocol().includes('chrome') || isApp
+export const isExtension = getProtocol().includes('chrome')
+
+export const isAppOrExtension = isExtension || isApp
 
 export const isTestnet = isAppOrExtension || hostname.includes('testnet') || hostname === 'localhost'
 
