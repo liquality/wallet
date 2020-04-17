@@ -1,8 +1,12 @@
 {
   "name": "liquality-wallet",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "private": true,
   "main": "index.js",
+  "repository": {
+    "type" : "git",
+    "url" : "git@github.com:harshjv/wallet.git"
+  },
   "scripts": {
     "build": "electron-builder",
     "start": "electron"
