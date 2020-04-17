@@ -1,14 +1,18 @@
 {
   "name": "wallet",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "private": true,
+  "repository": {
+    "type" : "git",
+    "url" : "git@github.com:harshjv/wallet.git"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "copy": "run-p copy:extension copy:electron",
     "build:extension": "run-s mkdirs build:_extension",
-    "build:_extension": "bestzip extension/build/chrome-extension.zip extension/*",
+    "build:_extension": "bestzip extension/build/chrome-extension.zip extension/dist/* extension/icons/* extension/manifest.json",
     "copy:extension": "cpx \"dist/**/*\" extension/dist",
     "copy:electron": "cpx \"dist/**/*\" electron/dist",
     "mkdirs": "mkdirp extension/build"

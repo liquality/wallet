@@ -6,13 +6,8 @@ on:
 name: Upload Release Assets
 
 jobs:
-  release:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [macos-10.14, windows-2019, ubuntu-18.04]
-
+  build:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -32,7 +27,6 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
@@ -43,10 +37,6 @@ jobs:
           npm run build
           npm run copy
           npm run build:extension
-          cd electron
-          npm ci
-          npm run build
-          cd ..
       - name: Upload Chrome extension
         uses: actions/upload-release-asset@v1
         env:
@@ -56,3 +46,36 @@ jobs:
           asset_path: ./extension/build/chrome-extension.zip
           asset_name: chrome-extension.zip
           asset_content_type: application/zip
+
+  release:
+    needs: build
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build project
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - uses: actions/cache@v1
+        env:
+          node-version: 12
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}-${{ hashFiles('**/package-lock.json') }}
+      - name: configure aws cli
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          npm ci
+          npm run build
+          npm run copy
+          cd electron
+          npm ci
+          npm run build
