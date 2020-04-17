@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "main": "index.js",
   "repository": {
@@ -25,7 +25,8 @@
       "category": "public.app-category.finance"
     },
     "linux": {
-      "category": "Utility"
+      "category": "Utility",
+      "target": "deb, rpm, freebsd, AppImage, tar.gz"
     },
     "files": [
       "index.js",

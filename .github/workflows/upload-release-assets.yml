@@ -69,13 +69,15 @@ jobs:
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}-${{ hashFiles('**/package-lock.json') }}
-      - name: Build & push electron apps
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
+      - run: |
           npm ci
           npm run build
           npm run copy
           cd electron
           npm ci
+      - name: Build & push electron apps
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          cd electron
           npm run build
