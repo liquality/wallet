@@ -25,8 +25,7 @@
       "category": "public.app-category.finance"
     },
     "linux": {
-      "category": "Utility",
-      "target": "deb, rpm, freebsd, AppImage, tar.gz"
+      "category": "Utility"
     },
     "files": [
       "index.js",
