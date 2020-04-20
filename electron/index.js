@@ -9,7 +9,13 @@ function createWindow () {
     width: 860,
     height: 760,
     backgroundColor: '#F0F4F8',
-    title: 'Liquality Wallet'
+    title: 'Liquality Wallet',
+    webPreferences: {
+      nodeIntegration: false,
+      nodeIntegrationInWorker: false,
+      nodeIntegrationInSubFrames: false,
+      sandbox: true
+    }
   })
 
   win.loadFile(path.join('dist', 'index.html'))

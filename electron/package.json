@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "electron-builder",
-    "start": "electron"
+    "start": "electron index.js"
   },
   "devDependencies": {
     "electron": "^8.2.1",
