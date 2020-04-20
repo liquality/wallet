@@ -14,7 +14,7 @@ function getProtocol () {
   }
 }
 
-const hostname = getHostname()
+export const hostname = getHostname()
 
 export const isApp = getProtocol().includes('file')
 

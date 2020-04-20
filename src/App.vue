@@ -22,7 +22,7 @@
 
 <script>
 import Home from '@/views/Home'
-import { isApp, network, isExtension } from '@/utils/network'
+import { isApp, hostname, network, isExtension } from '@/utils/network'
 
 export default {
   components: {
@@ -37,6 +37,13 @@ export default {
     },
     isExtension () {
       return isExtension
+    },
+    appName () {
+      if (hostname && hostname.includes('liquality')) {
+        return 'Liquality Wallet'
+      }
+
+      return 'My Crypto Wallet'
     }
   }
 }
