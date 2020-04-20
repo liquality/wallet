@@ -84,7 +84,7 @@
         <Pacman v-else class="d-inline-block mr-3" />
       </button>
 
-      <p class="text-center small text-primary mb-0 mt-3 cursor-pointer" v-if="isTestnet && coin === 'BTC'" @click="$emit('autoBuy')">Or try quick buy &rsaquo;</p>
+      <p class="text-center small text-primary mb-0 mt-3 cursor-pointer" v-if="isTestnet && coin === 'BTC'" @click="$emit('autoBuy')">Auto buy &rsaquo;</p>
     </div>
   </Modal>
 </template>
