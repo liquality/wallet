@@ -1,9 +1,4 @@
 [[redirects]]
-  from = "http://p2p-exchange.harshjv.com/*"
-  to = "http://atomicwallet.harshjv.com/:splat"
-  status = 301
-
-[[redirects]]
   from = "/api/*"
   to = "https://liquality.io/:splat"
   status = 200
