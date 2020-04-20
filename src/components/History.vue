@@ -62,7 +62,7 @@
                 'btn-link text-success': order.status.toLowerCase() === 'success'
               }">
                 {{order.status}}
-                <div class="text-12 text-muted" v-if="order.status === 'Getting Refund'">in {{getRefundIn(order)}}</div>
+                <div class="text-12 text-muted" v-if="order.status === 'Getting Refund'">in {{getRefundIn(order, dateNow)}}</div>
               </button>
             </td>
           </tr>
@@ -121,7 +121,8 @@ export default {
   data () {
     return {
       selectedOrder: null,
-      selectedWallet: null
+      selectedWallet: null,
+      dateNow: null
     }
   },
   computed: {
@@ -141,8 +142,8 @@ export default {
     getOrderDuration (order) {
       return getDuration(order.startTime, order.endTime)
     },
-    getRefundIn (order) {
-      return getDuration(Date.now(), order.swapExpiration * 1000, true)
+    getRefundIn (order, dateNow) {
+      return getDuration(dateNow, order.swapExpiration * 1000, true)
     },
     getOrderProgress (order) {
       return ORDER_STATUS_MAP[order.status.toLowerCase()]
@@ -150,6 +151,16 @@ export default {
     prettyAmount (chain, amount) {
       return cryptoassets[chain.toLowerCase()].unitToCurrency(amount)
     }
+  },
+  created () {
+    this.dateNow = Date.now()
+
+    this.dateNowInterval = setInterval(() => {
+      this.dateNow = Date.now()
+    }, 1000)
+  },
+  beforeDestroy () {
+    clearInterval(this.dateNowInterval)
   }
 }
 </script>
