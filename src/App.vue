@@ -143,5 +143,12 @@ export default {
 
 .navbar-brand {
   margin: 0 auto!important;
+  position: relative;
+
+  sup {
+    position: absolute;
+    top: 10px;
+    margin-left: 4px;
+  }
 }
 </style>
