@@ -55,11 +55,16 @@
                 </span>
               </button>
             </td>
-            <td class="text-center"><button :class="{
-              'btn btn-block': true,
-              'btn-link text-primary': order.status.toLowerCase() !== 'success',
-              'btn-link text-success': order.status.toLowerCase() === 'success'
-            }">{{order.status}}</button></td>
+            <td class="text-center">
+              <button :class="{
+                'btn btn-block': true,
+                'btn-link text-primary': order.status.toLowerCase() !== 'success',
+                'btn-link text-success': order.status.toLowerCase() === 'success'
+              }">
+                {{order.status}}
+                <div class="text-12 text-muted" v-if="order.status === 'Getting Refund'">in {{getRefundIn(order)}}</div>
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -69,7 +74,7 @@
 
 <script>
 import BN from 'bignumber.js'
-import { differenceInMinutes, differenceInSeconds } from 'date-fns'
+import { differenceInHours, differenceInMinutes, differenceInSeconds } from 'date-fns'
 import { mapState } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 
@@ -87,6 +92,22 @@ const ORDER_STATUS_MAP = {
   'ready to exchange': 5,
   'getting refund': 5,
   'ready to send': 6
+}
+
+function getDuration (min, max, approx) {
+  const diff = Math.floor((max - min) / 1000)
+
+  if (diff >= 3600) {
+    return `${differenceInHours(max, min)}h`
+  }
+
+  if (diff >= 60) {
+    return `${differenceInMinutes(max, min)}m`
+  }
+
+  if (approx) return 'less than a min'
+
+  return `${differenceInSeconds(max, min)}s`
 }
 
 export default {
@@ -118,13 +139,10 @@ export default {
       return BN(1).div(rate).dp(8)
     },
     getOrderDuration (order) {
-      const diff = Math.floor((order.endTime - order.startTime) / 1000)
-
-      if (diff < 60) {
-        return `${differenceInSeconds(order.endTime, order.startTime)}s`
-      }
-
-      return `${differenceInMinutes(order.endTime, order.startTime)}m`
+      return getDuration(order.startTime, order.endTime)
+    },
+    getRefundIn (order) {
+      return getDuration(Date.now(), order.swapExpiration * 1000, true)
     },
     getOrderProgress (order) {
       return ORDER_STATUS_MAP[order.status.toLowerCase()]
@@ -135,3 +153,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.text-12 {
+  font-size: 12px;
+}
+</style>
