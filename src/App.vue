@@ -8,7 +8,7 @@
     }">
       <nav class="navbar navbar-expand-lg navbar-dark" v-if="!isApp">
         <div class="container">
-          <a class="navbar-brand">My Crypto Wallet <sup>{{network}}</sup></a>
+          <a class="navbar-brand">{{appName}} <sup>{{network}}</sup></a>
         </div>
       </nav>
       <div class="container text-center">
