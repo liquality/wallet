@@ -2,7 +2,7 @@
   <div class="cover">
     <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container">
-        <router-link to="/" class="navbar-brand">{{appName}} <sup>{{network}}</sup></router-link>
+        <router-link to="/" class="navbar-brand">Liquality Wallet <sup>{{network}}</sup></router-link>
       </div>
     </nav>
     <div class="container text-center">
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { isAppOrExtension, hostname, network } from '@/utils/network'
+import { network } from '@/utils/network'
 
 export default {
   props: {
@@ -24,13 +24,6 @@ export default {
   computed: {
     network () {
       return network
-    },
-    appName () {
-      if ((hostname && hostname.includes('liquality')) || isAppOrExtension) {
-        return 'Liquality Wallet'
-      }
-
-      return 'My Crypto Wallet'
     }
   }
 }

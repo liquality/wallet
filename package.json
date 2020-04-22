@@ -4,7 +4,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git@github.com:harshjv/wallet.git"
+    "url": "git@github.com:liquality/wallet.git"
   },
   "scripts": {
     "serve": "vue-cli-service serve",

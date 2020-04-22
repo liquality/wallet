@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type" : "git",
-    "url" : "git@github.com:harshjv/wallet.git"
+    "url" : "git@github.com:liquality/wallet.git"
   },
   "scripts": {
     "build": "electron-builder",

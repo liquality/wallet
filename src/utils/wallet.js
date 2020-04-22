@@ -7,7 +7,7 @@ import { getClient as createClient } from './clients'
 
 localforage.config({
   driver: localforage.INDEXEDDB,
-  name: 'mycryptowallet-1',
+  name: 'wallet',
   storeName: 'securewallets'
 })
 

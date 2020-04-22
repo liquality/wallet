@@ -9,8 +9,8 @@ function newOrder (agentIndex, data) {
     method: 'post',
     data,
     headers: {
-      'x-requested-with': 'mycryptowallet',
-      'x-liquality-user-agent': 'mycryptowallet'
+      'x-requested-with': 'wallet',
+      'x-liquality-user-agent': 'wallet'
     }
   }).then(res => res.data)
 }
@@ -21,8 +21,8 @@ function updateOrder (agentIndex, id, data) {
     method: 'post',
     data,
     headers: {
-      'x-requested-with': 'mycryptowallet',
-      'x-liquality-user-agent': 'mycryptowallet'
+      'x-requested-with': 'wallet',
+      'x-liquality-user-agent': 'wallet'
     }
   }).then(res => res.data)
 }
