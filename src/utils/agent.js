@@ -2,7 +2,7 @@ import Emitter from 'events'
 import { v4 as uuidv4 } from 'uuid'
 
 const emitter = new Emitter()
-const agentWorker = new Worker('./agent-worker', { type: 'module' })
+const agentWorker = new Worker('../background/agent', { type: 'module' })
 
 agentWorker.onmessage = event => {
   const { data } = event

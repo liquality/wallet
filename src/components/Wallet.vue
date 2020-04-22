@@ -108,8 +108,11 @@ export default {
   },
   computed: {
     ...mapState(['orders']),
-    latestOrders () {
-      return this.orders.slice().reverse()
+    walletId () {
+      return this.$route.params.walletId
+    },
+    walletOrders () {
+      return this.orders.filter(order => order.walletId === this.walletId)
     },
     supportedCoins () {
       const coins = ['BTC', 'ETH']
@@ -164,7 +167,7 @@ export default {
       }))
     },
     checkOrderHistory () {
-      this.orders.forEach(order => {
+      this.walletOrders.forEach(order => {
         if (!order.status) return
         if (['quote', 'success', 'refunded', 'quote expired'].includes(order.status.toLowerCase())) return
 
@@ -327,6 +330,8 @@ export default {
             }
           }
         }, random(15000, 30000))
+
+        this.intervals.push(interval)
       } else if (['exchanging', 'ready to exchange'].includes(order.status.toLowerCase())) {
         await this.getLockForChain(order, order.to)
         const toClaimHash = await client(order.to)('swap.claimSwap')(
@@ -386,7 +391,7 @@ export default {
         }
 
         if (diff > 0) {
-          setTimeout(refund, diff)
+          this.timeouts.push(setTimeout(refund, diff))
         } else {
           await refund()
         }
@@ -417,6 +422,7 @@ export default {
       order.status = 'Quote'
       order.sendTo = sendTo
       order.auto = auto
+      order.walletId = this.walletId
 
       this.$store.commit('NEW_ORDER', order)
 
@@ -425,12 +431,15 @@ export default {
     async updateMarketData () {
       this.marketData = await agent('market')(this.supportedCoins)
 
-      setTimeout(() => {
+      this.timeouts.push(setTimeout(() => {
         this.updateMarketData()
-      }, random(15000, 30000))
+      }, random(15000, 30000)))
     }
   },
   async created () {
+    this.intervals = []
+    this.timeouts = []
+
     this.chainLock = {}
     // const { hash } = window.location
 
@@ -458,6 +467,10 @@ export default {
     this.updateBalance(this.supportedCoins)
     this.getUnusedAddresses(this.supportedCoins)
     this.checkOrderHistory()
+  },
+  beforeDestroy () {
+    this.intervals.map(interval => clearInterval(interval))
+    this.timeouts.map(timeout => clearTimeout(timeout))
   }
 }
 </script>

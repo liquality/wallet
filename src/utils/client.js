@@ -2,7 +2,7 @@ import Emitter from 'events'
 import { v4 as uuidv4 } from 'uuid'
 
 const emitter = new Emitter()
-const clientWorker = new Worker('./client-worker', { type: 'module' })
+const clientWorker = new Worker('../background/client', { type: 'module' })
 
 clientWorker.onmessage = event => {
   const { data } = event

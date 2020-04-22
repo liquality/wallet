@@ -1,49 +1,19 @@
 <template>
   <div id="app" :class="{
-    'app-extension': isExtension
+    'app-extension': isExtension,
+    'mb-5': true
   }">
-    <div :class="{
-      cover: true,
-      'cover-app': isApp
-    }">
-      <nav class="navbar navbar-expand-lg navbar-dark" v-if="!isApp">
-        <div class="container">
-          <a class="navbar-brand">{{appName}} <sup>{{network}}</sup></a>
-        </div>
-      </nav>
-      <div class="container text-center">
-        <h1 class="display-4 text-white">Your keys, your coins</h1>
-        <h2 class="mb-0 h5 font-weight-light text-white">Secure in-browser multi-crypto wallet with built-in Atomic Swaps!</h2>
-      </div>
-    </div>
-    <Home class="container mt-4 mb-5" />
+    <router-view />
   </div>
 </template>
 
 <script>
-import Home from '@/views/Home'
-import { isApp, hostname, network, isExtension } from '@/utils/network'
+import { isExtension } from '@/utils/network'
 
 export default {
-  components: {
-    Home
-  },
   computed: {
-    network () {
-      return network
-    },
-    isApp () {
-      return isApp
-    },
     isExtension () {
       return isExtension
-    },
-    appName () {
-      if (hostname && hostname.includes('liquality')) {
-        return 'Liquality Wallet'
-      }
-
-      return 'My Crypto Wallet'
     }
   }
 }
@@ -67,13 +37,14 @@ export default {
 }
 
 .cover {
-  background: linear-gradient(180deg,hsl(232, 47%, 58%),hsl(232, 47%, 55%));
-  min-height: 340px;
-  margin-bottom: -140px;
+  background: linear-gradient(180deg, hsl(232, 47%, 58%), hsl(232, 47%, 55%));
+  margin-bottom: -90px;
+
+  .cover-element:last-child {
+    padding-bottom: 150px;
+  }
 
   &.cover-app {
-    min-height: 280px;
-
     .container {
       padding-top: 40px;
     }

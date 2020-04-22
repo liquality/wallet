@@ -269,14 +269,4 @@ input.simple {
     margin: 0;
   }
 }
-
-.bold-label {
-  font-size: 0.9rem!important;
-  font-weight: 700!important;
-  opacity: 0.7!important;
-
-  &.text-primary {
-    opacity: 0.9!important;
-  }
-}
 </style>

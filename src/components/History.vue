@@ -18,7 +18,7 @@
           </tr>
         </thead>
         <tbody class="font-weight-normal">
-          <tr v-if="latestOrders.length === 0">
+          <tr v-if="walletOrders.length === 0">
             <td colspan="6" class="text-center font-weight-light text-muted">No previous orders found</td>
           </tr>
           <tr
@@ -26,7 +26,7 @@
             :key="order.id"
             @click="selectedOrder = order"
             class="cursor-pointer">
-            <td scope="row" class="text-muted font-weight-light">{{orders.length - idx}}</td>
+            <td scope="row" class="text-muted font-weight-light">{{walletOrders.length - idx}}</td>
             <td scope="row" class="text-muted font-weight-light">
               <span v-if="order.auto">Auto buy {{order.to}}</span>
               <span v-else>Buy {{order.to}}</span>
@@ -127,8 +127,14 @@ export default {
   },
   computed: {
     ...mapState(['orders']),
+    walletId () {
+      return this.$route.params.walletId
+    },
+    walletOrders () {
+      return this.orders.filter(order => order.walletId === this.walletId)
+    },
     latestOrders () {
-      return this.orders.slice().reverse()
+      return this.walletOrders.slice().reverse()
     },
     selectedOrderAgent () {
       return agents[this.selectedOrder.agentIndex]

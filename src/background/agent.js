@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-import agents from './agents'
-import market from './market'
+import agents from '../utils/agents'
+import market from '../utils/market'
 
 function newOrder (agentIndex, data) {
   return axios({
