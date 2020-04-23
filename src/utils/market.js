@@ -20,6 +20,7 @@ export default isTestnet => async supportedCoins => {
       return allMarketData.reduce((acc, marketData, index) => {
         const convert = cryptoassets[from.toLowerCase()]
         const market = marketData.find(market => market.to === to && market.from === from)
+        if (!market) return acc
 
         market.agentIndex = index
 
