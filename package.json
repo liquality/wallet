@@ -12,7 +12,7 @@
     "lint": "vue-cli-service lint",
     "copy": "run-p copy:extension copy:electron",
     "build:extension": "run-s mkdirs build:_extension",
-    "build:_extension": "bestzip extension/build/chrome-extension.zip extension/dist/* extension/icons/* extension/manifest.json",
+    "build:_extension": "bestzip extension/build/chrome-extension.zip extension/dist/* extension/icons/* extension/background.js extension/manifest.json",
     "copy:extension": "cpx \"dist/**/*\" extension/dist",
     "copy:electron": "cpx \"dist/**/*\" electron/dist",
     "mkdirs": "mkdirp extension/build",
