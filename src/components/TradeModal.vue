@@ -84,13 +84,12 @@
         <Pacman v-else class="d-inline-block mr-3" />
       </button>
 
-      <p class="text-center small text-primary mb-0 mt-3 cursor-pointer" v-if="isTestnet && coin === 'BTC'" @click="$emit('autoBuy')">Auto buy &rsaquo;</p>
+      <p class="text-center small text-primary mb-0 mt-3 cursor-pointer" v-if="coin === 'BTC'" @click="$emit('autoBuy')">Auto buy &rsaquo;</p>
     </div>
   </Modal>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import BN from 'bignumber.js'
 
 import { dpUI } from '@/utils/coinFormatter'
@@ -130,7 +129,6 @@ export default {
     // }
   },
   computed: {
-    ...mapState(['isTestnet']),
     bestAgentIndex () {
       return this.bestMarketBasedOnAmount.agentIndex
     },
