@@ -4,6 +4,7 @@ import VuexPersist from 'vuex-persist'
 
 import client from '@/utils/client'
 import agent from '@/utils/agent'
+import agents from '@/utils/agents'
 
 const vuexPersist = new VuexPersist({
   key: 'wallet-history',
@@ -39,6 +40,9 @@ export default new Vuex.Store({
     },
     agent (state) {
       return agent(state.isTestnet)
+    },
+    agentUrls (state) {
+      return agents(state.isTestnet)
     }
   },
   plugins: [vuexPersist.plugin]

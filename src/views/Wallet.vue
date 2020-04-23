@@ -102,6 +102,9 @@ export default {
       const { name } = await this.client('wallet')('getWallet')(this.walletId)
       this.name = name
     }
+  },
+  beforeDestroy () {
+    this.lock()
   }
 }
 </script>

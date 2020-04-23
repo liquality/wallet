@@ -4,14 +4,20 @@
     'mb-5': true
   }">
     <router-view />
+
+    <div class="agent-status text-center mt-5 mb-5">
+      <p class="mb-0 text-muted">Connected to {{agentUrls.length}} liquidity providers</p>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { isExtension } from '@/utils/network'
 
 export default {
   computed: {
+    ...mapGetters(['agentUrls']),
     isExtension () {
       return isExtension
     }
@@ -127,6 +133,14 @@ export default {
     position: absolute;
     top: 10px;
     margin-left: 4px;
+  }
+}
+
+.agent-status {
+  p {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 500;
   }
 }
 </style>

@@ -1,10 +1,31 @@
 import { isAppOrExtension } from './network'
 
-const isProd = process.env.NODE_ENV !== 'production'
+const isLocal = process.env.NODE_ENV !== 'production'
 
-const cors = 'https://cors-anywhere.herokuapp.com/https://liquality.io'
+const corsPrefix = 'https://cors-anywhere.herokuapp.com'
 
-export default isTestnet => [
-  `${isProd ? 'http://localhost:8010/proxy' : (isAppOrExtension ? cors : '/api')}/swap${isTestnet ? '-testnet' : ''}-dev/agent/api/swap`,
-  `${isProd ? 'http://localhost:8010/proxy' : (isAppOrExtension ? cors : '/api')}/swap${isTestnet ? '-testnet' : ''}/agent/api/swap`
+const getCommonAgents = isTestnet => [
+  `/swap${isTestnet ? '-testnet' : ''}-dev/agent/api/swap`,
+  `/swap${isTestnet ? '-testnet' : ''}/agent/api/swap`
 ]
+
+const getOtherAgents = isTestnet => isTestnet
+  ? []
+  : [
+    '/swap/btc/api/swap',
+    '/swap/eth/api/swap'
+  ]
+
+export default isTestnet => {
+  const agents = getCommonAgents(isTestnet).concat(getOtherAgents(isTestnet))
+
+  if (isLocal) {
+    return agents.map(agent => `http://localhost:8010/proxy${agent}`)
+  }
+
+  if (isAppOrExtension) {
+    return agents.map(agent => `${corsPrefix}${agent}`)
+  }
+
+  return agents.map(agent => `/api${agent}`)
+}
