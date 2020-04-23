@@ -24,7 +24,7 @@ export default isTestnet => {
   }
 
   if (isAppOrExtension) {
-    return agents.map(agent => `${corsPrefix}${agent}`)
+    return agents.map(agent => `${corsPrefix}/https://liquality.io${agent}`)
   }
 
   return agents.map(agent => `/api${agent}`)
