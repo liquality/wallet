@@ -1,8 +1,5 @@
 <template>
-  <div id="app" :class="{
-    'app-extension': isExtension,
-    'mb-5': true
-  }">
+  <div id="app" class="mb-5">
     <router-view />
 
     <div class="agent-status text-center mt-5 mb-5">
@@ -13,23 +10,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { isExtension } from '@/utils/network'
 
 export default {
   computed: {
-    ...mapGetters(['agentUrls']),
-    isExtension () {
-      return isExtension
-    }
+    ...mapGetters(['agentUrls'])
   }
 }
 </script>
 
 <style lang="scss">
-.app-extension {
-  min-width: 768px;
-}
-
 .navbar {
   margin-bottom: 2rem;
 

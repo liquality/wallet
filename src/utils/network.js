@@ -21,3 +21,5 @@ export const isApp = getProtocol().includes('file')
 export const isExtension = getProtocol().includes('chrome')
 
 export const isAppOrExtension = isExtension || isApp
+
+export const isPublicWeb = getProtocol().includes('http')
