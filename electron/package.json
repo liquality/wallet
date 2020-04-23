@@ -1,6 +1,7 @@
 {
   "name": "liquality-wallet",
   "version": "0.3.0",
+  "description": "Secure multi-crypto wallet with built-in Atomic Swaps!",
   "private": true,
   "main": "index.js",
   "repository": {
