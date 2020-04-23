@@ -5,8 +5,8 @@ import cryptoassets from '@liquality/cryptoassets'
 import agents from './agents'
 import { dp } from './coinFormatter'
 
-export default async supportedCoins => {
-  const allMarketData = await Promise.all(agents.map(agent => axios({
+export default isTestnet => async supportedCoins => {
+  const allMarketData = await Promise.all(agents(isTestnet).map(agent => axios({
     url: `${agent}/marketinfo`,
     headers: {
       'x-requested-with': 'wallet',

@@ -1,6 +1,6 @@
 {
-  "name": "wallet",
-  "version": "0.1.0",
+  "name": "liquality-wallet",
+  "version": "0.2.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -15,7 +15,8 @@
     "build:_extension": "bestzip extension/build/chrome-extension.zip extension/dist/* extension/icons/* extension/manifest.json",
     "copy:extension": "cpx \"dist/**/*\" extension/dist",
     "copy:electron": "cpx \"dist/**/*\" electron/dist",
-    "mkdirs": "mkdirp extension/build"
+    "mkdirs": "mkdirp extension/build",
+    "sync": "node script/sync-version.js"
   },
   "dependencies": {
     "@liquality/bitcoin-esplora-api-provider": "^0.4.28",

@@ -2,7 +2,7 @@
   <div>
     <Cover :title="titleName" :subtitle="unlockedWalletId ? null : 'Unlock your wallet'">
       <div v-if="unlockedWalletId" class="cover-element">
-        <button class="btn btn-link text-white" @click="lock">Lock your wallet &rsaquo;</button>
+        <button class="btn btn-link text-white" @click="lock">Lock your wallet</button>
       </div>
     </Cover>
     <div class="container" v-if="name">
@@ -44,10 +44,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import Cover from '@/components/Cover.vue'
-import Pacman from '@/components/Pacman'
-import Wallet from '@/components/Wallet'
-import client from '@/utils/client'
+import Pacman from '@/components/Pacman.vue'
+import Wallet from '@/components/Wallet.vue'
 
 export default {
   components: {
@@ -63,6 +64,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['client']),
     titleName () {
       return this.name || '...'
     },
@@ -72,7 +74,7 @@ export default {
   },
   methods: {
     async demo () {
-      const { id, name } = await client('wallet')('demo')()
+      const { id, name } = await this.client('wallet')('demo')()
       this.password = null
       this.name = name
       this.unlockedWalletId = id
@@ -81,7 +83,7 @@ export default {
       if (this.walletId === 'demo') {
         this.demo()
       } else {
-        const { id, name } = await client('wallet')('unlock')(this.walletId, this.password)
+        const { id, name } = await this.client('wallet')('unlock')(this.walletId, this.password)
         this.password = null
         this.name = name
         this.unlockedWalletId = id
@@ -90,14 +92,14 @@ export default {
     async lock () {
       this.unlockedWalletId = null
 
-      await client('wallet')('lock')()
+      await this.client('wallet')('lock')()
     }
   },
   async created () {
     if (this.walletId === 'demo') {
       this.demo()
     } else {
-      const { name } = await client('wallet')('getWallet')(this.walletId)
+      const { name } = await this.client('wallet')('getWallet')(this.walletId)
       this.name = name
     }
   }

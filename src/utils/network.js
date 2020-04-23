@@ -21,7 +21,3 @@ export const isApp = getProtocol().includes('file')
 export const isExtension = getProtocol().includes('chrome')
 
 export const isAppOrExtension = isExtension || isApp
-
-export const isTestnet = isAppOrExtension || hostname.includes('testnet') || hostname === 'localhost'
-
-export const network = isTestnet ? 'testnet' : 'mainnet'

@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { network } from '@/utils/network'
+import { mapState } from 'vuex'
 
 export default {
   props: {
@@ -22,8 +22,9 @@ export default {
     subtitle: String
   },
   computed: {
+    ...mapState(['isTestnet']),
     network () {
-      return network
+      return this.isTestnet ? 'testnet' : 'mainnet'
     }
   }
 }

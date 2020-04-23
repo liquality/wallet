@@ -1,11 +1,11 @@
 {
   "name": "liquality-wallet",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "main": "index.js",
   "repository": {
-    "type" : "git",
-    "url" : "git@github.com:liquality/wallet.git"
+    "type": "git",
+    "url": "git@github.com:liquality/wallet.git"
   },
   "scripts": {
     "build": "electron-builder",
@@ -22,7 +22,12 @@
       "output": "build"
     },
     "mac": {
-      "category": "public.app-category.finance"
+      "category": "public.app-category.finance",
+      "target": [
+        {
+          "target": "dmg"
+        }
+      ]
     },
     "linux": {
       "category": "Utility"

@@ -96,13 +96,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { random } from 'lodash-es'
 import BN from 'bignumber.js'
 import QRCode from 'qrcode'
 import cryptoassets from '@liquality/cryptoassets'
 
 import { dpUI } from '@/utils/coinFormatter'
-import client from '@/utils/client'
 
 import Pacman from '@/components/Pacman'
 import Modal from '@/components/Modal'
@@ -135,6 +135,7 @@ export default {
     this.amount = this.sellMin
   },
   computed: {
+    ...mapGetters(['client']),
     bestAgentIndex () {
       return this.bestMarketBasedOnAmount.agentIndex
     },
@@ -206,12 +207,12 @@ export default {
         this.qrcode = svg
       })
 
-      const balance = await client(this.payCoin)('chain.getBalance', 'BigNumber')([this.address[this.payCoin]])
+      const balance = await this.client(this.payCoin)('chain.getBalance', 'BigNumber')([this.address[this.payCoin]])
       const minBalance = BN(balance).plus(amount)
       this.checkForBalance(minBalance)
     },
     async checkForBalance (minBalance) {
-      const balance = await client(this.payCoin)('chain.getBalance', 'BigNumber')([this.address[this.payCoin]])
+      const balance = await this.client(this.payCoin)('chain.getBalance', 'BigNumber')([this.address[this.payCoin]])
 
       if (BN(balance).gte(minBalance)) {
         this.$emit('buy', {

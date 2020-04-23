@@ -24,9 +24,6 @@
           &bull;
           <router-link to="/import" class="ml-1">Import an existing wallet</router-link>
         </div>
-        <div class="mt-2 text-center font-weight-normal" v-if="isTestnet">
-          <router-link to="/wallet/demo">Use demo wallet</router-link>
-        </div>
       </div>
       <div class="row justify-content-center" v-else>
         <div class="col-md-4 col-sm-6 mb-4">
@@ -39,6 +36,11 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="mt-2 text-center font-weight-normal">
+        <router-link v-if="isTestnet" to="/wallet/demo" class="mr-1">Use demo wallet</router-link>
+        <span v-if="isTestnet">&bull;</span>
+        <a href="#" class="ml-1 cursor-pointer" @click="toggleNetwork">Toggle network</a>
       </div>
     </div>
     <div class="container" v-else>
@@ -56,12 +58,11 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import { formatDistance } from 'date-fns'
-import { isTestnet } from '@/utils/network'
 
 import Cover from '@/components/Cover.vue'
-import Pacman from '@/components/Pacman'
-import client from '@/utils/client'
+import Pacman from '@/components/Pacman.vue'
 
 export default {
   components: {
@@ -76,53 +77,19 @@ export default {
     }
   },
   computed: {
-    isTestnet () {
-      return isTestnet
-    },
-    title () {
-      if (this.unlockedWalletId === 'NOWALLET') {
-        return 'Create a wallet'
-      }
-
-      return 'Unlock your wallet'
-    },
-    subtitle () {
-      if (this.unlockedWalletId === 'NOWALLET') {
-        return 'Encrypted in-browser with AES-256'
-      }
-
-      return 'Decrypted in-browser with AES-256'
-    },
-    action () {
-      if (this.unlockedWalletId === 'NOWALLET') {
-        return 'Create'
-      }
-
-      return 'Unlock'
-    },
-    warning () {
-      if (this.unlockedWalletId === 'NOWALLET') {
-        return 'This password encrypts your private key. This does not act as a seed to generate your keys. You will need this password to unlock your wallet.'
-      }
-
-      return 'This password decrypts your private key.'
-    }
+    ...mapState(['isTestnet']),
+    ...mapGetters(['client'])
   },
   methods: {
     distance (ref) {
       return formatDistance(Date.now(), ref)
     },
-    async demo () {
-      this.unlockedWalletId = await client('wallet')('demo')()
-    },
-    async go () {
+    toggleNetwork () {
+      this.$store.commit('TOGGLE_NETWORK')
     }
   },
   async created () {
-    this.wallets = await client('wallet')('getListOfWallets')()
+    this.wallets = await this.client('wallet')('getListOfWallets')()
   }
 }
 </script>
-
-<style lang="scss">
-</style>

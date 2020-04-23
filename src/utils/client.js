@@ -10,7 +10,7 @@ clientWorker.onmessage = event => {
   emitter.emit(data.id, data)
 }
 
-export default chain => (method, returnType) => (...args) => {
+export default isTestnet => chain => (method, returnType) => (...args) => {
   const id = uuidv4()
 
   clientWorker.postMessage({
@@ -18,7 +18,8 @@ export default chain => (method, returnType) => (...args) => {
     chain,
     method,
     args,
-    returnType
+    returnType,
+    isTestnet
   })
 
   return new Promise((resolve, reject) => {

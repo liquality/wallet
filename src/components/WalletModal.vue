@@ -43,11 +43,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
 import QRCode from 'qrcode'
 
-import client from '@/utils/client'
 import Modal from '@/components/Modal'
 import Pacman from '@/components/Pacman'
 
@@ -71,6 +71,7 @@ export default {
     balance: [String, Number]
   },
   computed: {
+    ...mapGetters(['client']),
     canSend () {
       if (!this.sendAddress) return false
 
@@ -104,7 +105,7 @@ export default {
 
       const amount = cryptoassets[this.wallet.toLowerCase()].currencyToUnit(this.sendAmount)
 
-      console.log(await client(this.wallet)('chain.sendTransaction')(this.sendAddress, amount, null, this.address))
+      console.log(await this.client(this.wallet)('chain.sendTransaction')(this.sendAddress, amount, null, this.address))
 
       this.sendAddress = null
       this.sendAmount = null

@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-import agents from '../utils/agents'
-import market from '../utils/market'
+import agents from '@/utils/agents'
+import market from '@/utils/market'
 
-function newOrder (agentIndex, data) {
+const newOrder = isTestnet => (agentIndex, data) => {
   return axios({
-    url: agents[agentIndex] + '/order',
+    url: agents(isTestnet)[agentIndex] + '/order',
     method: 'post',
     data,
     headers: {
@@ -15,9 +15,9 @@ function newOrder (agentIndex, data) {
   }).then(res => res.data)
 }
 
-function updateOrder (agentIndex, id, data) {
+const updateOrder = isTestnet => (agentIndex, id, data) => {
   return axios({
-    url: agents[agentIndex] + '/order/' + id,
+    url: agents(isTestnet)[agentIndex] + '/order/' + id,
     method: 'post',
     data,
     headers: {
@@ -34,10 +34,10 @@ const methods = {
 }
 
 addEventListener('message', async event => {
-  const { id, method, args } = event.data
+  const { id, method, args, isTestnet } = event.data
 
   try {
-    const result = await methods[method](...args)
+    const result = await methods[method](isTestnet)(...args)
 
     postMessage({
       id,

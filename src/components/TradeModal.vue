@@ -90,8 +90,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import BN from 'bignumber.js'
-import { isTestnet } from '@/utils/network'
 
 import { dpUI } from '@/utils/coinFormatter'
 
@@ -130,9 +130,7 @@ export default {
     // }
   },
   computed: {
-    isTestnet () {
-      return isTestnet
-    },
+    ...mapState(['isTestnet']),
     bestAgentIndex () {
       return this.bestMarketBasedOnAmount.agentIndex
     },

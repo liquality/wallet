@@ -10,13 +10,14 @@ agentWorker.onmessage = event => {
   emitter.emit(data.id, data)
 }
 
-export default method => (...args) => {
+export default isTestnet => method => (...args) => {
   const id = uuidv4()
 
   agentWorker.postMessage({
     id,
     method,
-    args
+    args,
+    isTestnet
   })
 
   return new Promise((resolve, reject) => {

@@ -69,8 +69,8 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import { random } from 'lodash-es'
-import { mapState } from 'vuex'
 import { sha256 } from '@liquality/crypto'
 import cryptoassets from '@liquality/cryptoassets'
 
@@ -79,10 +79,7 @@ import History from '@/components/History'
 import WalletModal from '@/components/WalletModal'
 import TradeModal from '@/components/TradeModal'
 import AutoModal from '@/components/AutoModal'
-import client from '@/utils/client'
-import agent from '@/utils/agent'
 import { dpUI } from '@/utils/coinFormatter'
-import { isTestnet } from '@/utils/network'
 import { EventBus } from '@/utils/event-bus'
 
 export default {
@@ -107,7 +104,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['orders']),
+    ...mapState(['orders', 'isTestnet']),
+    ...mapGetters(['client', 'agent']),
     walletId () {
       return this.$route.params.walletId
     },
@@ -116,7 +114,7 @@ export default {
     },
     supportedCoins () {
       const coins = ['BTC', 'ETH']
-      return isTestnet ? coins : coins.concat(['DAI', 'USDC'])
+      return this.isTestnet ? coins : coins.concat(['DAI', 'USDC'])
     }
   },
   methods: {
@@ -141,12 +139,11 @@ export default {
 
           return asset
         })
-        .map(asset => {
-          client(asset)('wallet.getUsedAddresses', 'Addresses')().then(addresses => {
-            client(asset)('chain.getBalance', 'BigNumber')(addresses).then(balance => {
-              this.balance[asset] = cryptoassets[asset.toLowerCase()].unitToCurrency(balance)
-            })
-          })
+        .map(async asset => {
+          const addresses = await this.client(asset)('wallet.getUsedAddresses', 'Addresses')()
+          const balance = await this.client(asset)('chain.getBalance', 'BigNumber')(addresses)
+
+          this.balance[asset] = cryptoassets[asset.toLowerCase()].unitToCurrency(balance)
         })
     },
     async buy ({ agentIndex, from, to, amount, sendTo, auto }) {
@@ -159,7 +156,7 @@ export default {
     },
     async getUnusedAddresses (coins) {
       return Promise.all(coins.map(coin => {
-        return client(coin)('wallet.getUnusedAddress', 'Address')().then(address => {
+        return this.client(coin)('wallet.getUnusedAddress', 'Address')().then(address => {
           this.address[coin] = address
 
           return address
@@ -246,7 +243,7 @@ export default {
           `Timestamp: ${Date.now()}`
         ].join('\n')
 
-        const secret = await client(order.from)('swap.generateSecret')(Buffer.from(message, 'utf8').toString('hex'))
+        const secret = await this.client(order.from)('swap.generateSecret')(Buffer.from(message, 'utf8').toString('hex'))
         const secretHash = sha256(secret)
 
         order = {
@@ -265,7 +262,7 @@ export default {
         if (this.checkIfQuoteExpired(order)) return
 
         await this.getLockForChain(order, order.from)
-        const fromFundHash = await client(order.from)('swap.initiateSwap')(
+        const fromFundHash = await this.client(order.from)('swap.initiateSwap')(
           order.fromAmount,
           order.fromCounterPartyAddress,
           order.fromAddress,
@@ -280,7 +277,7 @@ export default {
           status: 'Initiated'
         }
 
-        await agent('updateOrder')(order.agentIndex, order.id, {
+        await this.agent('updateOrder')(order.agentIndex, order.id, {
           fromAddress: order.fromAddress,
           toAddress: order.toAddress,
           fromFundHash: order.fromFundHash,
@@ -300,7 +297,7 @@ export default {
             return
           }
 
-          const tx = await client(order.to)('swap.findInitiateSwapTransaction')(
+          const tx = await this.client(order.to)('swap.findInitiateSwapTransaction')(
             order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
           )
 
@@ -334,7 +331,7 @@ export default {
         this.intervals.push(interval)
       } else if (['exchanging', 'ready to exchange'].includes(order.status.toLowerCase())) {
         await this.getLockForChain(order, order.to)
-        const toClaimHash = await client(order.to)('swap.claimSwap')(
+        const toClaimHash = await this.client(order.to)('swap.claimSwap')(
           order.toFundHash,
           order.toAddress,
           order.toCounterPartyAddress,
@@ -370,7 +367,7 @@ export default {
 
         const refund = async () => {
           await this.getLockForChain(order, order.from)
-          await client(order.from)('swap.refundSwap')(
+          await this.client(order.from)('swap.refundSwap')(
             order.fromFundHash,
             order.fromCounterPartyAddress,
             order.fromAddress,
@@ -396,7 +393,7 @@ export default {
           await refund()
         }
       } else if (order.status.toLowerCase() === 'ready to send') {
-        const sendTx = await client(order.to)('chain.sendTransaction')(order.sendTo, order.toAmount)
+        const sendTx = await this.client(order.to)('chain.sendTransaction')(order.sendTo, order.toAmount)
 
         order = {
           ...order,
@@ -411,7 +408,7 @@ export default {
       }
     },
     async swap (agentIndex, from, to, fromAmount, sendTo, auto) {
-      const order = await agent('newOrder')(agentIndex, {
+      const order = await this.agent('newOrder')(agentIndex, {
         from,
         to,
         fromAmount
@@ -429,7 +426,7 @@ export default {
       this.performNextAction(order)
     },
     async updateMarketData () {
-      this.marketData = await agent('market')(this.supportedCoins)
+      this.marketData = await this.agent('market')(this.supportedCoins)
 
       this.timeouts.push(setTimeout(() => {
         this.updateMarketData()

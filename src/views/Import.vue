@@ -45,9 +45,10 @@
 </template>
 
 <script>
-import Cover from '@/components/Cover'
-import Pacman from '@/components/Pacman'
-import client from '@/utils/client'
+import { mapGetters } from 'vuex'
+
+import Cover from '@/components/Cover.vue'
+import Pacman from '@/components/Pacman.vue'
 
 export default {
   components: {
@@ -62,9 +63,12 @@ export default {
       password: null
     }
   },
+  computed: {
+    ...mapGetters(['client'])
+  },
   methods: {
     async go () {
-      const { id, name } = await client('wallet')('import')(this.name, this.wallet, this.password)
+      const { id, name } = await this.client('wallet')('import')(this.name, this.wallet, this.password)
 
       this.wallet = null
       this.id = id

@@ -44,9 +44,10 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import Cover from '@/components/Cover'
 import Pacman from '@/components/Pacman'
-import client from '@/utils/client'
 
 export default {
   components: {
@@ -61,9 +62,12 @@ export default {
       password: null
     }
   },
+  computed: {
+    ...mapGetters(['client'])
+  },
   methods: {
     async go () {
-      const { id, name, wallet } = await client('wallet')('generate')(this.name, this.password)
+      const { id, name, wallet } = await this.client('wallet')('generate')(this.name, this.password)
 
       this.password = null
       this.id = id
@@ -72,7 +76,7 @@ export default {
     }
   },
   async created () {
-    this.unlockedWalletId = await client('wallet')('getUnlockedWalletId')()
+    this.unlockedWalletId = await this.client('wallet')('getUnlockedWalletId')()
   }
 }
 </script>

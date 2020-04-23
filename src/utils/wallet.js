@@ -3,7 +3,7 @@ import { generateMnemonic } from 'bip39'
 import localforage from 'localforage'
 
 import { encrypt, decrypt } from './crypto'
-import { getClient as createClient } from './clients'
+import { createClient } from './clients'
 
 localforage.config({
   driver: localforage.INDEXEDDB,
@@ -107,12 +107,14 @@ const WALLET = {
   }
 }
 
-const getClient = chain => {
-  if (!unlockedClients[chain]) {
-    unlockedClients[chain] = createClient(chain, unlockedWallet)
+const getClient = (chain, isTestnet) => {
+  const key = `${chain}:${isTestnet ? 'testnet' : 'mainnet'}`
+
+  if (!unlockedClients[key]) {
+    unlockedClients[key] = createClient(chain, unlockedWallet, isTestnet)
   }
 
-  return unlockedClients[chain]
+  return unlockedClients[key]
 }
 
 export {
