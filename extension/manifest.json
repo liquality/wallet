@@ -1,6 +1,6 @@
 {
   "name": "Liquality Wallet",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "manifest_version": 2,
   "description": "Secure multi-crypto wallet with built-in Atomic Swaps!",
   "homepage_url": "https://wallet.liquality.io",
