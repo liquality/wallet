@@ -75,13 +75,12 @@
 <script>
 import BN from 'bignumber.js'
 import { differenceInHours, differenceInMinutes, differenceInSeconds } from 'date-fns'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 
 import { dpUI } from '@/utils/coinFormatter'
 import OrderModal from '@/components/OrderModal'
 import Pacman from '@/components/Pacman'
-import agents from '@/utils/agents'
 
 const ORDER_STATUS_MAP = {
   quote: 1,
@@ -126,7 +125,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['orders']),
+    ...mapState(['orders', 'isTestnet']),
+    ...mapGetters(['agentUrls']),
     walletId () {
       return this.$route.params.walletId
     },
@@ -137,7 +137,7 @@ export default {
       return this.walletOrders.slice().reverse()
     },
     selectedOrderAgent () {
-      return agents[this.selectedOrder.agentIndex]
+      return this.agentUrls[this.selectedOrder.agentIndex]
     }
   },
   methods: {
