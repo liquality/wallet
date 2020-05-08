@@ -6,7 +6,7 @@
       <div v-if="wallets.length > 0">
         <div class="row balance-box justify-content-center">
           <div class="col-md-4 col-sm-6 mb-4" v-for="wallet in wallets" :key="wallet.id">
-            <div class="card card-up cursor-pointer">
+            <div class="card card-up">
               <div class="card-body">
                 <h1 class="h4 text-center text-primary">{{wallet.name}}</h1>
                 <h2 class="h6 text-center font-weight-normal text-muted mb-4" v-if="wallet.at" :title="new Date(wallet.at)">
@@ -27,7 +27,7 @@
       </div>
       <div class="row justify-content-center" v-else>
         <div class="col-md-4 col-sm-6 mb-4">
-          <div class="card card-up cursor-pointer">
+          <div class="card card-up">
             <div class="card-body">
               <h1 class="h4 text-center text-primary">Welcome!</h1>
 

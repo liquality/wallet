@@ -6,13 +6,15 @@ import agents from './agents'
 import { dp } from './coinFormatter'
 
 export default isTestnet => async supportedCoins => {
-  const allMarketData = await Promise.all(agents(isTestnet).map(agent => axios({
+  const _allMarketData = await Promise.all(agents(isTestnet).map(agent => axios({
     url: `${agent}/marketinfo`,
     headers: {
       'x-requested-with': 'wallet',
       'x-liquality-user-agent': 'wallet'
     }
-  }).then(res => res.data)))
+  }).then(res => res.data).catch(e => false)))
+
+  const allMarketData = _allMarketData.filter(r => r !== false)
 
   const pairMarkets = allMarketData[0]
     .filter(({ to, from }) => supportedCoins.includes(to) && supportedCoins.includes(from))

@@ -12,7 +12,6 @@ const getCommonAgents = isTestnet => [
 const getOtherAgents = isTestnet => isTestnet
   ? []
   : [
-    '/swap/btc/api/swap',
     '/swap/eth/api/swap'
   ]
 

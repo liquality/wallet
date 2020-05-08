@@ -9,7 +9,7 @@
       <div v-if="!unlockedWalletId">
         <div class="row balance-box">
           <div class="col-md-4 col-sm-6 mx-auto">
-            <div class="card card-up cursor-pointer">
+            <div class="card card-up">
               <div class="card-body" v-if="true">
                 <form autocomplete="off" v-on:submit.prevent="unlock">
                   <label class="bold-label text-primary mb-0">Password</label>
@@ -83,10 +83,14 @@ export default {
       if (this.walletId === 'demo') {
         this.demo()
       } else {
-        const { id, name } = await this.client('wallet')('unlock')(this.walletId, this.password)
-        this.password = null
-        this.name = name
-        this.unlockedWalletId = id
+        try {
+          const { id, name } = await this.client('wallet')('unlock')(this.walletId, this.password)
+          this.password = null
+          this.name = name
+          this.unlockedWalletId = id
+        } catch (e) {
+          this.password = null
+        }
       }
     },
     async lock () {

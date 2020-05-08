@@ -41,10 +41,14 @@ const encrypt = (value, key) => {
 }
 
 const decrypt = (value, key) => {
-  const encryptedValue = JsonFormatter.parse(value)
-  const decryptedValue = AES.decrypt(encryptedValue, key)
+  try {
+    const encryptedValue = JsonFormatter.parse(value)
+    const decryptedValue = AES.decrypt(encryptedValue, key)
 
-  return decryptedValue.toString(Enc.Utf8)
+    return decryptedValue.toString(Enc.Utf8)
+  } catch (e) {
+    return false
+  }
 }
 
 export {
