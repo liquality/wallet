@@ -33,22 +33,31 @@ $red-light-3: #F29B9B;
 $red-light-4: #FACDCD;
 $red-light-5: #FFEEEE;
 
+$brand-gradient: linear-gradient(to right, #8f60ee 0%,#719cd8 51%,#6fdec6 100%);
+
+$color-primary: #9D4DFA;
+
+$color-text-primary: #1D1E21;
+$color-text-secondary: #FFFFFF;
+$color-text-muted: #747E8D;
+
 $body-bg: $blue-light-5;
 $font-size-base:              0.875rem; // Assumes the browse, typically `16px`
 $font-size-lg:                1rem;
 $font-size-sm:                0.75rem;
 $lead-font-size:              1rem;
 $small-font-size:             75%;
-$text-muted: $blue-light-1;
+$text-muted: $color-text-muted;
 
-$headings-font-weight: 500;
+$font-family-base: 'Montserrat', sans-serif;
+$headings-font-weight: 600;
 $font-weight-base: 300;
-$btn-font-weight: 500;
-$headings-color: $blue-dark-1;
-$body-color: $blue-dark-2;
+$btn-font-weight: 600;
+$headings-color: $color-text-primary;
+$body-color: $color-text-primary;
 $lead-font-weight: 400;
 
-$hr-border-color: $blue-light-4;
+$hr-border-color: #D9DFE5;
 
 $sorange: #ed8f03;
 $badge-font-size: 85%;
@@ -57,7 +66,7 @@ $dark: $blue-dark-3;
 $light: $blue-light-3;
 
 // linear-gradient(180deg,hsl(232, 47%, 58%),hsl(232, 47%, 55%))
-$primary: hsl(232, 47%, 55%);
+$primary: $color-primary;
 $secondary: $blue-dark-4;
 $info: $cyan-dark-4;
 
