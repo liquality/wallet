@@ -38,6 +38,11 @@ export default {
   height: 60px;
   padding: 16px 30px;
 
+  &:hover {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
   &_icon {
     width: 28px;
     height: 28px;
