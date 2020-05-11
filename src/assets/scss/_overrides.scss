@@ -33,7 +33,7 @@ $red-light-3: #F29B9B;
 $red-light-4: #FACDCD;
 $red-light-5: #FFEEEE;
 
-$brand-gradient: linear-gradient(to right, #8f60ee 0%,#719cd8 51%,#6fdec6 100%);
+$brand-gradient-primary: linear-gradient(180deg, #26316D -5.61%, #3193AC 100%);
 
 $color-primary: #9D4DFA;
 
@@ -45,6 +45,7 @@ $body-bg: $blue-light-5;
 $font-size-base:              0.875rem; // Assumes the browse, typically `16px`
 $font-size-lg:                1rem;
 $font-size-sm:                0.75rem;
+$font-size-tiny:              0.6875rem;
 $lead-font-size:              1rem;
 $small-font-size:             75%;
 $text-muted: $color-text-muted;
@@ -57,7 +58,7 @@ $headings-color: $color-text-primary;
 $body-color: $color-text-primary;
 $lead-font-weight: 400;
 
-$hr-border-color: #D9DFE5;
+$hr-border-color: #d9dfe5;
 
 $sorange: #ed8f03;
 $badge-font-size: 85%;

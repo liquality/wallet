@@ -28,7 +28,7 @@ export default {
     height: 200px;
     justify-content: center;
     align-items: center;
-    background: $brand-gradient;
+    background: $brand-gradient-primary;
     color: $color-text-secondary;
     font-size: $font-size-lg;
   }

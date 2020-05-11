@@ -1,9 +1,14 @@
 <template>
   <div class="transaction">
-    <div class="transaction_icon"></div>
+    <div class="transaction_icon">
+      <SendIcon v-if="type ==='send'" class="transaction_icon_send" />
+      <ReceiveIcon v-if="type ==='receive'" class="transaction_icon_receive" />
+      <SwapIcon v-if="type ==='swap'" class="transaction_icon_swap"/>
+    </div>
     <div class="transaction_action">{{title}}</div>
     <div class="transaction_time">{{time}}</div>
     <div class="transaction_amount">{{amount}} {{code}}</div>
+    <div class="transaction_detail"></div>
     <div class="transaction_status">
       <ConfirmedIcon v-if="confirmed" />
       <div class="transaction_status_confirming" v-if="!confirmed">
@@ -18,11 +23,17 @@
 import moment from 'moment'
 import cryptoassets from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
+import SendIcon from '@/assets/icons/arrow_send.svg'
+import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
+import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import ConfirmedIcon from '@/assets/icons/confirmed.svg'
 import ConfirmingIcon from '@/assets/icons/confirming.svg'
 
 export default {
   components: {
+    SendIcon,
+    ReceiveIcon,
+    SwapIcon,
     ConfirmedIcon,
     ConfirmingIcon
   },
@@ -53,16 +64,44 @@ export default {
 <style lang="scss">
 .transaction {
   height: 60px;
-  border-top: 1px solid $hr-border-color;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(217, 223, 229, .2);
   display: grid;
-  grid-template-columns: 44px 1fr 1fr 44px;
+  grid-template-columns: 44px 1fr 1fr 60px;
   grid-template-rows: 1fr 1fr;
   grid-template-areas: 
   "icon action amount status"
   "icon time detail status";
+  align-items: center;
+  font-size: $font-size-sm;
 
   &_icon {
     grid-area: icon;
+    justify-self: center;
+
+    &_send, &_receive {
+      width: 18px;
+      height: 18px;
+    }
+
+    &_send {
+      path {
+        stroke: #FF287D;
+      }
+    }
+    &_receive {
+      path {
+        stroke: #2CD2CF;
+      }
+    }
+
+    &_swap {
+      width: 20px;
+      height: 24px;
+      path {
+        stroke: #D8D8D8;
+      }
+    }
   }
 
   &_action {
@@ -71,6 +110,8 @@ export default {
 
   &_time {
     grid-area: time;
+    font-size: $font-size-tiny;
+    color: #d8d8d8;
   }
 
   &_amount {
@@ -78,13 +119,20 @@ export default {
     text-align: right;
   }
 
+  &_detail {
+    grid-area: detail;
+    color: #d8d8d8;
+    text-align: right;
+  }
+
   &_status {
     grid-area: status;
+    justify-self: center;
+
     &_confirming {
       position: relative;
 
       svg {
-        stroke: red;
         width: 30px;
         height: 30px;
       }
@@ -97,7 +145,8 @@ export default {
       width: 30px;
       height: 30px;
       top: 0;
-      font-size: 10px;
+      font-size: $font-size-tiny;
+      letter-spacing: -1px;
     }
   }
 }

@@ -24,8 +24,11 @@ export default {
 #app {
   width: 375px;
   height: 694px;
+  display: flex;
+  flex-direction: column;
   background: #ffffff;
   border-radius: 20px;
   margin: 20px auto;
+  overflow: hidden;
 }
 </style>

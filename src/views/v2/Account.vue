@@ -9,16 +9,22 @@
         <span class="account_balance_code">BTC</span>
       </div>
       <div class="account_actions">
-        <button class="account_action_button"><SendIcon /></button>
-        <button class="account_action_button"><ReceiveIcon /></button>
-        <button class="account_action_button"><SwapIcon /></button>
+        <button class="account_actions_button"><SendIcon class="account_actions_button_icon" /></button>
+        <button class="account_actions_button"><ReceiveIcon class="account_actions_button_icon" /></button>
+        <button class="account_actions_button"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></button>
       </div>
       <div class="account_transactions">
-        <h3 class="account_transactions_title">Transactions</h3>
+        <div class="account_transactions_title">Transactions</div>
         <div class="account_transactions_list">
           <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
           <Transaction asset="BTC" v-bind:amount="0.04522" type="receive" title="Receive BTC" v-bind:timestamp="1589147004" v-bind:confirmed="false" />
           <Transaction asset="BTC" v-bind:amount="0.01092" type="swap" title="Swap BTC to ETH" v-bind:timestamp="1589123946" v-bind:confirmed="false" v-bind:step="1" v-bind:numSteps="3" />
+          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
+          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
+          <Transaction asset="BTC" v-bind:amount="0.04522" type="receive" title="Receive BTC" v-bind:timestamp="1589147004" v-bind:confirmed="true" />
+          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
+          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
+          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
         </div>
       </div>
     </div>
@@ -43,11 +49,102 @@ export default {
 
 <style lang="scss">
 .account {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 
-  &_main {
-    background: $brand-gradient;
-    color: $color-text-secondary;
+  &_header {
+    display: flex;
+    height: 56px;
+    align-items: center;
+    justify-content: center;
+    font-size: $h2-font-size;
+    border-bottom: 1px solid $hr-border-color;
+
+    img {
+      width: 24px;
+      margin-right: 4px;
+    }
   }
 
+  &_main {
+    display: flex;
+    flex-direction: column;
+    background: $brand-gradient-primary;
+    color: $color-text-secondary;
+    flex: 1;
+  }
+
+  &_balance {
+    display: flex;
+    height: 75px;
+    align-items: flex-end;
+    justify-content: center;
+
+    &_value {
+      line-height: 36px;
+      font-size: 50px;
+      margin-right: 8px;
+    }
+
+    &_code {
+      font-size: $h3-font-size;
+      line-height: 22px;
+    }
+  }
+
+  &_actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 170px;
+    margin: 0 auto;
+    padding: 34px 0;
+
+    &_button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 44px;
+      height: 44px;
+      background: #ffffff;
+      border: 0;
+      cursor: pointer;
+      border-radius: 50%;
+
+      &_icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      &_swap {
+        height: 30px;
+      }
+    }
+  }
+
+  &_transactions {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    &_title {
+      text-align: center;
+      font-size: $h5-font-size;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(107, 157, 176, .2);
+    }
+
+    &_list {
+      flex: 1;
+      flex-basis: 0;
+      overflow-y: scroll;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
 }
 </style>
