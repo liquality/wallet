@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,600&display=swap');
 @import "overrides";
 @import "bootstrap";
 
@@ -8,4 +8,34 @@ body {
 
 svg {
   vertical-align: top;
+}
+
+.wrapper {
+  display: flex;
+  flex: 1;
+  padding: 30px;
+  flex-direction: column;
+
+  &_top {
+    flex: 1;
+  }
+}
+
+.form {
+  label {
+    font-size: $font-size-sm;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  input {
+    color: $color-text-primary;
+    border-width: 0 0 1px 0;
+  }
+  .input-group-text {
+    background: none;
+    width: 70px;
+  }
+  .custom-select {
+    width: 70px;
+  }
 }

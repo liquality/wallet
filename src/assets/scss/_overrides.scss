@@ -36,6 +36,7 @@ $red-light-5: #FFEEEE;
 $brand-gradient-primary: linear-gradient(180deg, #26316D -5.61%, #3193AC 100%);
 
 $color-primary: #9D4DFA;
+$color-secondary: #2CD2CF;
 
 $color-text-primary: #1D1E21;
 $color-text-secondary: #FFFFFF;
@@ -68,7 +69,7 @@ $light: $blue-light-3;
 
 // linear-gradient(180deg,hsl(232, 47%, 58%),hsl(232, 47%, 55%))
 $primary: $color-primary;
-$secondary: $blue-dark-4;
+$secondary: $color-secondary;
 $info: $cyan-dark-4;
 
 $link-color: $dark;
@@ -78,6 +79,20 @@ $enable-gradients: true;
 $input-btn-padding-y:         .415rem;
 $input-btn-padding-y-sm:      .275rem;
 $input-btn-padding-y-lg:      .6rem;
+$btn-border-radius-lg: 22px;
+$btn-border-radius-sm: 11px;
+
+$input-padding-y: 0.1rem;
+$input-padding-x: 0;
+$input-border-radius: 0;
+$input-border-width: 0;
+$input-border-color: $color-secondary;
+$input-line-height: 1.1;
+$input-font-size: 28px;
+$input-color: $color-text-primary;
+
+$custom-select-border-width: 0;
+$form-group-margin-bottom: 60px;
 
 // $success:       $cyan-dark-4;
 // $info:          $cyan !default;

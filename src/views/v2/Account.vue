@@ -9,9 +9,9 @@
         <span class="account_balance_code">BTC</span>
       </div>
       <div class="account_actions">
-        <button class="account_actions_button"><SendIcon class="account_actions_button_icon" /></button>
+        <router-link to="/account/btc/send"><button class="account_actions_button"><SendIcon class="account_actions_button_icon" /></button></router-link>
         <button class="account_actions_button"><ReceiveIcon class="account_actions_button_icon" /></button>
-        <button class="account_actions_button"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></button>
+        <router-link to="/account/btc/swap"><button class="account_actions_button"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></button></router-link>
       </div>
       <div class="account_transactions">
         <div class="account_transactions_title">Transactions</div>
