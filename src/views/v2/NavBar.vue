@@ -32,6 +32,7 @@ export default {
   &_lock, &_prev {
     color: $color-text-muted;
     font-size: $font-size-sm;
+    cursor: pointer;
   }
 
   &_lock {

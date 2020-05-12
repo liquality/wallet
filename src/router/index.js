@@ -3,8 +3,11 @@ import VueRouter from 'vue-router'
 
 import Wallet from '@/views/v2/Wallet.vue'
 import Account from '@/views/v2/Account.vue'
-import Swap from '@/views/v2/Swap.vue'
 import Send from '@/views/v2/Send.vue'
+import SendConfirm from '@/views/v2/SendConfirm.vue'
+import Receive from '@/views/v2/Receive.vue'
+import Swap from '@/views/v2/Swap.vue'
+import SwapConfirm from '@/views/v2/SwapConfirm.vue'
 
 Vue.use(VueRouter)
 
@@ -18,12 +21,24 @@ const routes = [
     component: Account
   },
   {
+    path: '/account/:asset/send',
+    component: Send
+  },
+  {
+    path: '/account/:asset/send/confirm',
+    component: SendConfirm
+  },
+  {
+    path: '/account/:asset/receive',
+    component: Receive
+  },
+  {
     path: '/account/:asset/swap',
     component: Swap
   },
   {
-    path: '/account/:asset/send',
-    component: Send
+    path: '/account/:asset/swap/confirm',
+    component: SwapConfirm
   }
 ]
 

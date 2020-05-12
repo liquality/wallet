@@ -2,9 +2,9 @@
   <div class="swap wrapper">
     <div class="wrapper_top form">
       <div class="form-group">
-        <label for="amount">Send
-          <span class="swap_available">Available</span>
-          <span class="swap_balance">3.123456 BTC</span>
+        <label for="amount" class="balance-label">Send
+          <span class="balance-label_balance">3.123456 BTC</span>
+          <span class="balance-label_available">Available&nbsp;</span>
         </label>
         <div class="input-group">
           <input type="number" class="form-control" id="amount" placeholder="0.00">
@@ -28,17 +28,13 @@
           </div>
         </div>
       </div>
-      <div class="swap_rate form-group">
-        <label for="amount">Rate</label>
-        <div class="input-group">
-          <span class="swap_rate_base">1 BTC =</span>
-          <span class="swap_rate_value">43.856283</span>
-          <span class="swap_rate_term">ETH</span>
-        </div>
+      <div class="swap-rate form-group">
+        <label>Rate</label>
+        <p><span class="swap-rate_base">1 BTC =</span><span class="swap-rate_value">&nbsp;43.856283</span><span class="swap-rate_term">&nbsp;ETH</span></p>
       </div>
     </div>
     <div class="wrapper_bottom">
-      <button class='btn btn-primary btn-lg btn-block'>Continue</button>
+      <router-link to="/account/btc/swap/confirm"><button class="btn btn-primary btn-lg btn-block">Continue</button></router-link>
     </div>
   </div>
 </template>

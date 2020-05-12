@@ -1,10 +1,6 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:300,600&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap');
 @import "overrides";
 @import "bootstrap";
-
-body {
-
-}
 
 svg {
   vertical-align: top;
@@ -37,5 +33,51 @@ svg {
   }
   .custom-select {
     width: 70px;
+  }
+  .balance-label {
+    display: block;
+    
+    &_available {
+      float: right;
+      color: $color-text-muted;
+      text-transform: none;
+      font-weight: $font-weight-base;
+      padding-right: 6px;
+    }
+    &_balance {
+      float: right;
+      font-weight: $font-weight-base;
+    }
+  }
+  .confirm-value {
+    font-size: $input-font-size;
+  }
+  .swap-rate {
+    &_base, &_term {
+      color: $color-text-muted;
+    }
+  }
+}
+
+.btn-outline-primary {
+  border-width: 1px;
+}
+
+.btn-sm {
+  font-weight: $font-weight-base;
+}
+
+.btn.btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    display: inline-block;
+    height: 20px;
+    margin-right: 6px;
+    margin-top: -2px;
+    path {
+      stroke: $color-text-secondary;
+    }
   }
 }

@@ -53,11 +53,11 @@ $text-muted: $color-text-muted;
 
 $font-family-base: 'Montserrat', sans-serif;
 $headings-font-weight: 600;
-$font-weight-base: 300;
+$font-weight-base: 400;
 $btn-font-weight: 600;
 $headings-color: $color-text-primary;
 $body-color: $color-text-primary;
-$lead-font-weight: 400;
+$lead-font-weight: 600;
 
 $hr-border-color: #d9dfe5;
 
@@ -73,12 +73,15 @@ $secondary: $color-secondary;
 $info: $cyan-dark-4;
 
 $link-color: $dark;
-
-$enable-gradients: true;
+$link-hover-decoration: none;
 
 $input-btn-padding-y:         .415rem;
 $input-btn-padding-y-sm:      .275rem;
 $input-btn-padding-y-lg:      .6rem;
+$btn-padding-y-sm: 0.15rem;
+
+$btn-border-width: 0;
+$btn-box-shadow: none;
 $btn-border-radius-lg: 22px;
 $btn-border-radius-sm: 11px;
 
@@ -92,7 +95,7 @@ $input-font-size: 28px;
 $input-color: $color-text-primary;
 
 $custom-select-border-width: 0;
-$form-group-margin-bottom: 60px;
+$form-group-margin-bottom: 50px;
 
 // $success:       $cyan-dark-4;
 // $info:          $cyan !default;

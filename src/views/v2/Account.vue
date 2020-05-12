@@ -10,7 +10,7 @@
       </div>
       <div class="account_actions">
         <router-link to="/account/btc/send"><button class="account_actions_button"><SendIcon class="account_actions_button_icon" /></button></router-link>
-        <button class="account_actions_button"><ReceiveIcon class="account_actions_button_icon" /></button>
+        <router-link to="/account/btc/receive"><button class="account_actions_button"><ReceiveIcon class="account_actions_button_icon" /></button></router-link>
         <router-link to="/account/btc/swap"><button class="account_actions_button"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></button></router-link>
       </div>
       <div class="account_transactions">
