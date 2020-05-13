@@ -99,7 +99,7 @@ export default {
       width: 20px;
       height: 24px;
       path {
-        stroke: #D8D8D8;
+        stroke: #A8AEB7;
       }
     }
   }
@@ -111,7 +111,7 @@ export default {
   &_time {
     grid-area: time;
     font-size: $font-size-tiny;
-    color: #d8d8d8;
+    color: #646F85;;
   }
 
   &_amount {
@@ -121,7 +121,7 @@ export default {
 
   &_detail {
     grid-area: detail;
-    color: #d8d8d8;
+    color: #646F85;;
     text-align: right;
   }
 

@@ -4,28 +4,28 @@
       <img :src="'./img/btc.png'" />BTC
     </div>
     <div class="account_main">
-      <div class="account_balance">
-        <span class="account_balance_value">6.156523</span>
-        <span class="account_balance_code">BTC</span>
-      </div>
-      <div class="account_actions">
-        <router-link to="/account/btc/send"><button class="account_actions_button"><SendIcon class="account_actions_button_icon" /></button></router-link>
-        <router-link to="/account/btc/receive"><button class="account_actions_button"><ReceiveIcon class="account_actions_button_icon" /></button></router-link>
-        <router-link to="/account/btc/swap"><button class="account_actions_button"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></button></router-link>
+      <div class="account_top">
+        <div class="account_balance">
+          <span class="account_balance_value">6.156523</span>
+          <span class="account_balance_code">BTC</span>
+        </div>
+        <div class="account_actions">
+          <router-link to="/account/btc/send"><button class="account_actions_button"><SendIcon class="account_actions_button_icon" /></button></router-link>
+          <router-link to="/account/btc/receive"><button class="account_actions_button"><ReceiveIcon class="account_actions_button_icon" /></button></router-link>
+          <router-link to="/account/btc/swap"><button class="account_actions_button"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></button></router-link>
+        </div>
+        <div class="account_title">Transactions</div>
       </div>
       <div class="account_transactions">
-        <div class="account_transactions_title">Transactions</div>
-        <div class="account_transactions_list">
-          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
-          <Transaction asset="BTC" v-bind:amount="0.04522" type="receive" title="Receive BTC" v-bind:timestamp="1589147004" v-bind:confirmed="false" />
-          <Transaction asset="BTC" v-bind:amount="0.01092" type="swap" title="Swap BTC to ETH" v-bind:timestamp="1589123946" v-bind:confirmed="false" v-bind:step="1" v-bind:numSteps="3" />
-          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
-          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
-          <Transaction asset="BTC" v-bind:amount="0.04522" type="receive" title="Receive BTC" v-bind:timestamp="1589147004" v-bind:confirmed="true" />
-          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
-          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
-          <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
-        </div>
+        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
+        <Transaction asset="BTC" v-bind:amount="0.04522" type="receive" title="Receive BTC" v-bind:timestamp="1589147004" v-bind:confirmed="false" />
+        <Transaction asset="BTC" v-bind:amount="0.01092" type="swap" title="Swap BTC to ETH" v-bind:timestamp="1589123946" v-bind:confirmed="false" v-bind:step="1" v-bind:numSteps="3" />
+        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
+        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
+        <Transaction asset="BTC" v-bind:amount="0.04522" type="receive" title="Receive BTC" v-bind:timestamp="1589147004" v-bind:confirmed="true" />
+        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
+        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
+        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
       </div>
     </div>
   </div>
@@ -70,10 +70,14 @@ export default {
   &_main {
     display: flex;
     flex-direction: column;
-    background: $brand-gradient-primary;
-    color: $color-text-secondary;
     flex: 1;
   }
+
+  &_top {
+    background: $brand-gradient-primary;
+    color: $color-text-secondary;
+  }
+
 
   &_balance {
     display: flex;
@@ -100,6 +104,7 @@ export default {
     width: 170px;
     margin: 0 auto;
     padding: 34px 0;
+    
 
     &_button {
       display: flex;
@@ -123,27 +128,21 @@ export default {
     }
   }
 
+  &_title {
+    text-align: center;
+    font-size: $h5-font-size;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(107, 157, 176, .2);
+  }
+
   &_transactions {
-    display: flex;
-    flex-direction: column;
     flex: 1;
+    flex-basis: 0;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
 
-    &_title {
-      text-align: center;
-      font-size: $h5-font-size;
-      padding-bottom: 18px;
-      border-bottom: 1px solid rgba(107, 157, 176, .2);
-    }
-
-    &_list {
-      flex: 1;
-      flex-basis: 0;
-      overflow-y: scroll;
-      -ms-overflow-style: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 }

@@ -9,7 +9,7 @@ svg {
 .wrapper {
   display: flex;
   flex: 1;
-  padding: 30px;
+  padding: 16px;
   flex-direction: column;
 
   &_top {
@@ -29,33 +29,23 @@ svg {
   }
   .input-group-text {
     background: none;
-    width: 70px;
-  }
-  .custom-select {
-    width: 70px;
-  }
-  .balance-label {
-    display: block;
-    
-    &_available {
-      float: right;
-      color: $color-text-muted;
-      text-transform: none;
-      font-weight: $font-weight-base;
-      padding-right: 6px;
-    }
-    &_balance {
-      float: right;
-      font-weight: $font-weight-base;
-    }
   }
   .confirm-value {
     font-size: $input-font-size;
+  }
+  .form-control-address {
+    font-size: $font-size-lg;
   }
   .swap-rate {
     &_base, &_term {
       color: $color-text-muted;
     }
+
+    &_value {
+      font-size: 18px;
+    }
+    
+    margin-bottom: 0;
   }
 }
 
@@ -79,5 +69,11 @@ svg {
     path {
       stroke: $color-text-secondary;
     }
+  }
+}
+
+.icon-fill-primary {
+  path {
+    fill: $color-primary;
   }
 }

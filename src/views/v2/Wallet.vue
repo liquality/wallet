@@ -34,6 +34,9 @@ export default {
   }
 
   &_accounts {
+    a {
+      color: $color-text-primary;
+    }
     a:hover {
       text-decoration: none;
     }

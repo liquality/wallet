@@ -4,23 +4,23 @@
       <div class="form-group">
         <label for="address">Send to</label>
         <div class="input-group">
-          <input type="text" class="form-control" id="address" placeholder="Address">
-          <div class="input-group-append">
-            <span class="input-group-text"><button class="btn btn-outline-primary btn-sm btn-block">Paste</button></span>
-          </div>
+          <input type="text" class="form-control form-control-sm" id="address" placeholder="Address">
         </div>
       </div>
       <div class="form-group">
-        <label for="amount" class="balance-label">Amount
-          <span class="balance-label_balance">3.123456 BTC</span>
-          <span class="balance-label_available">Available&nbsp;</span>
-        </label>
+        <label for="amount">Amount</label>
         <div class="input-group">
           <input type="number" class="form-control" id="amount" placeholder="0.00">
           <div class="input-group-append">
             <span class="input-group-text">BTC</span>
           </div>
         </div>
+        <small class="form-text d-flex">
+          <div class="text-right w-100">
+            <span class="text-muted">Balance&nbsp;</span>
+            <span>3.123456 BTC</span>
+          </div>
+        </small>
       </div>
     </div>
     
@@ -40,8 +40,6 @@ export default {
 
 <style lang="scss">
 .send {
-  .form .input-group-text {
-    width: 60px;
-  }
+
 }
 </style>

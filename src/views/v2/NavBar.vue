@@ -38,6 +38,8 @@ export default {
   &_lock {
     &_icon {
       margin-left: 7px;
+      width: 12px;
+
     }
   }
 

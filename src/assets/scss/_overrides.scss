@@ -48,7 +48,7 @@ $font-size-lg:                1rem;
 $font-size-sm:                0.75rem;
 $font-size-tiny:              0.6875rem;
 $lead-font-size:              1rem;
-$small-font-size:             75%;
+$small-font-size:             $font-size-sm;
 $text-muted: $color-text-muted;
 
 $font-family-base: 'Montserrat', sans-serif;
@@ -72,7 +72,7 @@ $primary: $color-primary;
 $secondary: $color-secondary;
 $info: $cyan-dark-4;
 
-$link-color: $dark;
+$link-color: $color-primary;
 $link-hover-decoration: none;
 
 $input-btn-padding-y:         .415rem;
@@ -94,13 +94,17 @@ $input-line-height: 1.1;
 $input-font-size: 28px;
 $input-color: $color-text-primary;
 
+$input-border-radius-sm: 0;
+$input-padding-x-sm: 0;
+$input-font-size-sm: $font-size-base;
+
 $custom-select-border-width: 0;
-$form-group-margin-bottom: 50px;
+$form-group-margin-bottom: 46px;
 
 // $success:       $cyan-dark-4;
 // $info:          $cyan !default;
 // $warning:       $yellow !default;
-// $danger:        $red !default;
+$danger:        #F12274 !default;
 // $light:         $gray-100 !default;
 // $dark:          $gray-800 !default;
 
