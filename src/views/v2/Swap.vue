@@ -38,11 +38,17 @@
             <a href="#">+ Receive at external address</a>
           </div>
         </small>
-        <a href="#" class="text-muted float-right">X</a>
+
+      </div>
+      <div class="form-group">
+        <label class="w-100" for="amount">Receive at <a href="#" class="text-muted float-right">X</a></label>
         <div class="input-group">
-          <input type="text" class="form-control form-control-sm" id="to" placeholder="External Receiving Address">
+          <div class="input-group">
+            <input type="text" class="form-control form-control-sm" id="to" placeholder="External Receiving Address">
+          </div>
         </div>
       </div>
+
       <div class="swap_rate form-group">
         <label>Rate</label>
         <p><span class="swap-rate_base">1 BTC =</span><span class="swap-rate_value">&nbsp;43.856283</span><span class="swap-rate_term">&nbsp;ETH</span></p>

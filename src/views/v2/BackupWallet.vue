@@ -16,7 +16,7 @@
         <span>custom</span><span>afraid</span><span>zoom</span>
         <span>pudding</span><span>enrich</span><span>cage</span>
       </div>
-      <router-link to="/locked"><button class="btn btn-primary btn-lg btn-block btn-icon">Done</button></router-link>
+      <router-link to="/wallet"><button class="btn btn-primary btn-lg btn-block btn-icon">Done</button></router-link>
     </div>
   </div>
 </template>

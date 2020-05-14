@@ -16,7 +16,7 @@
         </div>
       </div>
       <p><router-link to="/wallet"><button class="btn btn-light btn-lg btn-block btn-icon">Unlock</button></router-link></p>
-      <p><router-link to="/locked"><button class="btn btn-primary btn-lg btn-block btn-icon">Cancel</button></router-link></p>
+      <p><router-link to="/"><button class="btn btn-primary btn-lg btn-block btn-icon">Cancel</button></router-link></p>
       <p>Forgot password? Import with seed phrase</p>
     </div>
   </div>
