@@ -33,7 +33,7 @@ $red-light-3: #F29B9B;
 $red-light-4: #FACDCD;
 $red-light-5: #FFEEEE;
 
-$brand-gradient-primary: linear-gradient(180deg, #26316D -5.61%, #3193AC 100%);
+$brand-gradient-primary: linear-gradient(180deg, #302E78 0%, #4866D3 52.08%, #1CE4C3 100%);
 
 $color-primary: #9D4DFA;
 $color-secondary: #2CD2CF;
@@ -80,6 +80,8 @@ $input-btn-padding-y-sm:      .275rem;
 $input-btn-padding-y-lg:      .6rem;
 $btn-padding-y-sm: 0.15rem;
 
+$input-focus-box-shadow: 0;
+$input-bg: transparent;
 $btn-border-width: 0;
 $btn-box-shadow: none;
 $btn-border-radius-lg: 22px;
@@ -101,12 +103,11 @@ $input-font-size-sm: $font-size-base;
 $custom-select-border-width: 0;
 $form-group-margin-bottom: 46px;
 
-// $success:       $cyan-dark-4;
-// $info:          $cyan !default;
-// $warning:       $yellow !default;
-$danger:        #F12274 !default;
-// $light:         $gray-100 !default;
-// $dark:          $gray-800 !default;
+$wrapper-padding: 20px;
+
+$danger:        #F12274;
+$light:         #FFFFFF;
+$dark:          $primary;
 
 $container-max-widths: (
   // sm: 540px,

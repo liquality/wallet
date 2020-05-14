@@ -6,10 +6,37 @@ svg {
   vertical-align: top;
 }
 
+.login-wrapper {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+  text-align: center;
+  padding: 70px $wrapper-padding 70px $wrapper-padding;
+  flex-direction: column;
+  background: $brand-gradient-primary;
+  color: $color-text-secondary;
+
+  .form input {
+    color: $color-text-secondary;
+  }
+
+  .form .form-group {
+    text-align: left;
+  }
+
+  h2 {
+    color: $color-text-secondary;
+  }
+}
+
+.login-header {
+  padding-bottom: 40px;
+}
+
 .wrapper {
   display: flex;
   flex: 1;
-  padding: 16px;
+  padding: $wrapper-padding;
   flex-direction: column;
 
   &_top {
@@ -55,6 +82,10 @@ svg {
 
 .btn-sm {
   font-weight: $font-weight-base;
+}
+
+.btn-light {
+  color: $primary;
 }
 
 .btn.btn-icon {

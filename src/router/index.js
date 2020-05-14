@@ -1,6 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import Splash from '@/views/v2/Splash.vue'
+import UnlockWallet from '@/views/v2/UnlockWallet.vue'
+import CreateWallet from '@/views/v2/CreateWallet.vue'
+import BackupWallet from '@/views/v2/BackupWallet.vue'
+import WalletLocked from '@/views/v2/WalletLocked.vue'
+
 import Wallet from '@/views/v2/Wallet.vue'
 import Account from '@/views/v2/Account.vue'
 import Send from '@/views/v2/Send.vue'
@@ -14,6 +20,26 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    component: Splash
+  },
+  {
+    path: '/open',
+    component: UnlockWallet
+  },
+  {
+    path: '/create',
+    component: CreateWallet
+  },
+  {
+    path: '/backup',
+    component: BackupWallet
+  },
+  {
+    path: '/locked',
+    component: WalletLocked
+  },
+  {
+    path: '/wallet',
     component: Wallet
   },
   {

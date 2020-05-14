@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="mb-5">
-    <NavBar />
+    <NavBar v-if="!['/', '/open', '/create', '/backup', '/locked'].includes($route.path)" />
     <router-view />
   </div>
 </template>

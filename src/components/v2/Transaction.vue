@@ -10,9 +10,9 @@
     <div class="transaction_amount">{{amount}} {{code}}</div>
     <div class="transaction_detail"></div>
     <div class="transaction_status">
-      <ConfirmedIcon v-if="confirmed" />
+      <CompletedIcon v-if="confirmed" />
       <div class="transaction_status_confirming" v-if="!confirmed">
-        <ConfirmingIcon />
+        <SpinnerIcon />
         <span class="transaction_status_steps" v-if="step">{{step}} / {{numSteps}}</span>
       </div>
     </div>
@@ -26,16 +26,16 @@ import BN from 'bignumber.js'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
-import ConfirmedIcon from '@/assets/icons/confirmed.svg'
-import ConfirmingIcon from '@/assets/icons/confirming.svg'
+import CompletedIcon from '@/assets/icons/completed.svg'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   components: {
     SendIcon,
     ReceiveIcon,
     SwapIcon,
-    ConfirmedIcon,
-    ConfirmingIcon
+    CompletedIcon,
+    SpinnerIcon
   },
   props: {
     asset: String,
@@ -129,13 +129,13 @@ export default {
     grid-area: status;
     justify-self: center;
 
+    svg {
+      width: 30px;
+      height: 30px;
+    }
+
     &_confirming {
       position: relative;
-
-      svg {
-        width: 30px;
-        height: 30px;
-      }
     }
     &_steps {
       position: absolute;
