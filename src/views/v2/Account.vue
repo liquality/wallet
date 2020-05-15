@@ -76,8 +76,8 @@ export default {
   &_top {
     background: $brand-gradient-primary;
     color: $color-text-secondary;
+    border-bottom: 1px solid #41DCCB;
   }
-
 
   &_balance {
     display: flex;
@@ -132,7 +132,6 @@ export default {
     text-align: center;
     font-size: $h5-font-size;
     padding-bottom: 18px;
-    border-bottom: 1px solid rgba(107, 157, 176, .2);
   }
 
   &_transactions {

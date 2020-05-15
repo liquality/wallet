@@ -8,12 +8,12 @@ svg {
 
 .login-wrapper {
   display: flex;
-  justify-content: space-between;
+
   flex: 1;
   text-align: center;
   padding: 70px $wrapper-padding 70px $wrapper-padding;
   flex-direction: column;
-  background: $brand-gradient-primary;
+  background: $brand-gradient-secondary;
   color: $color-text-secondary;
 
   .form input {
@@ -26,6 +26,7 @@ svg {
 
   h2 {
     color: $color-text-secondary;
+    margin-bottom: 26px;
   }
 }
 

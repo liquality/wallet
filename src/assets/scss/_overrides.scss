@@ -33,7 +33,8 @@ $red-light-3: #F29B9B;
 $red-light-4: #FACDCD;
 $red-light-5: #FFEEEE;
 
-$brand-gradient-primary: linear-gradient(180deg, #302E78 0%, #4866D3 52.08%, #1CE4C3 100%);
+$brand-gradient-primary: linear-gradient(180deg, #302E78 0%, #4866D3 52.08%, #2FAFCA 100%);
+$brand-gradient-secondary: linear-gradient(180deg, #302E78 0%, #4866D3 52.08%, #1CE4C3 100%);
 
 $color-primary: #9D4DFA;
 $color-secondary: #2CD2CF;
@@ -45,8 +46,8 @@ $color-text-muted: #747E8D;
 $body-bg: $blue-light-5;
 $font-size-base:              0.875rem; // Assumes the browse, typically `16px`
 $font-size-lg:                1rem;
-$font-size-sm:                0.75rem;
-$font-size-tiny:              0.6875rem;
+$font-size-sm:                0.8125rem;
+$font-size-tiny:              0.75rem;
 $lead-font-size:              1rem;
 $small-font-size:             $font-size-sm;
 $text-muted: $color-text-muted;
@@ -101,7 +102,7 @@ $input-padding-x-sm: 0;
 $input-font-size-sm: $font-size-base;
 
 $custom-select-border-width: 0;
-$form-group-margin-bottom: 36px;
+$form-group-margin-bottom: 30px;
 
 $wrapper-padding: 20px;
 

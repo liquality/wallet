@@ -18,7 +18,7 @@
         <div class="input-group">
           <input type="password" class="form-control" id="password" placeholder="">
         </div>
-        <small class="form-text">In the future you will need this password to unlock your wallet.</small>
+        <small class="form-text">You need this password to unlock your wallet.</small>
       </div>
     </div>
     <div>

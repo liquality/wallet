@@ -65,7 +65,7 @@ export default {
 .transaction {
   height: 60px;
   padding: 12px 0;
-  border-bottom: 1px solid rgba(217, 223, 229, .2);
+  border-bottom: 1px solid #D9DFE5;
   display: grid;
   grid-template-columns: 44px 1fr 1fr 60px;
   grid-template-rows: 1fr 1fr;

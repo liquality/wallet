@@ -11,7 +11,7 @@
         </div>
         <small class="form-text d-flex justify-content-between">
           <div class="swap_limits">
-            <a href="#">Min</a> 0.00002 <a class="ml-2" href="#">Max</a> 0.598382
+            <a href="#">Min</a> 0.00002 <a class="ml-1" href="#">Max</a> 0.598382
           </div>
           <div class="text-right">
             <span class="text-muted">Balance&nbsp;</span>

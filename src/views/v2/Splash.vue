@@ -30,12 +30,12 @@ export default {
 
 <style lang="scss">
 .splash {
-  justify-content: space-between;
   &_logo {
     padding: 40px 0;
   }
 
   &_tagline {
+    margin-bottom: 20px;
     &_wallet {
       margin-bottom: 10px;
     }
