@@ -30,8 +30,10 @@ const routes = [
     component: CreateWallet
   },
   {
+    name: 'Backup',
     path: '/backup',
-    component: BackupWallet
+    component: BackupWallet,
+    props: true
   },
   {
     path: '/wallet',

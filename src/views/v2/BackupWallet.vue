@@ -5,18 +5,15 @@
     </div>
     <div>
       <CompletedIcon class="backup-wallet_icon" />
-      <h5>My wallet</h5>
+      <h5>{{ name }}</h5>
       <h2>Backup your wallet</h2>
       <p>Back up your seed phrase in a secure location. It will not be displayed again.</p>
     </div>
     <div class="backup-wallet_bottom">
       <div class="backup-wallet_seed">
-        <span>logic</span><span>resist</span><span>dash</span>
-        <span>trigger</span><span>seminar</span><span>monkey</span>
-        <span>custom</span><span>afraid</span><span>zoom</span>
-        <span>pudding</span><span>enrich</span><span>cage</span>
+        <span v-for="word in seedList" :key="word">{{ word }}</span>
       </div>
-      <router-link to="/wallet"><button class="btn btn-primary btn-lg btn-block btn-icon">Done</button></router-link>
+      <router-link to="/open"><button class="btn btn-primary btn-lg btn-block btn-icon">Done</button></router-link>
     </div>
   </div>
 </template>
@@ -29,6 +26,12 @@ export default {
   components: {
     LogoWallet,
     CompletedIcon
+  },
+  props: ['name', 'seed'],
+  computed: {
+    seedList: function () {
+      return this.seed.split(' ')
+    }
   }
 }
 </script>
