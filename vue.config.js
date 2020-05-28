@@ -1,9 +1,6 @@
-const WorkerPlugin = require('worker-plugin')
-
 module.exports = {
-  publicPath: './',
   lintOnSave: false,
-  productionSourceMap: false,
+
   css: {
     loaderOptions: {
       sass: {
@@ -11,11 +8,35 @@ module.exports = {
       }
     }
   },
-  configureWebpack: {
-    plugins: [
-      new WorkerPlugin({
-        globalObject: 'self'
-      })
-    ]
+
+  pluginOptions: {
+    browserExtension: {
+      componentOptions: {
+        background: {
+          entry: 'src/background.js'
+        },
+        contentScripts: {
+          entries: {
+            'content-script': [
+              'src/contentScript.js'
+            ]
+          }
+        }
+      }
+    }
+  },
+
+  pages: {
+    popup: {
+      template: 'public/index.html',
+      entry: './src/main.js',
+      title: 'Liquality Wallet'
+    },
+    standalone: {
+      template: 'public/index.html',
+      entry: './src/main.js',
+      title: 'Liquality Wallet',
+      filename: 'index.html'
+    }
   }
 }

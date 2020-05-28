@@ -1,10 +1,10 @@
 <template>
   <div>
-    <OrderModal
+    <!-- <OrderModal
       v-if="selectedOrder"
       :order="selectedOrder"
       :orderAgent="selectedOrderAgent"
-      @close="selectedOrder = null" />
+      @close="selectedOrder = null" /> -->
     <div class="table-responsive mb-4">
       <table class="table border bg-white table-history mb-0">
         <thead>
@@ -18,42 +18,50 @@
           </tr>
         </thead>
         <tbody class="font-weight-normal">
-          <tr v-if="walletOrders.length === 0">
-            <td colspan="6" class="text-center font-weight-light text-muted">No previous orders found</td>
+          <tr v-if="networkWalletHistory.length === 0">
+            <td colspan="6" class="text-center font-weight-light text-muted">Empty</td>
           </tr>
           <tr
-            v-for="(order, idx) in latestOrders"
+            v-for="(order, idx) in networkWalletHistory"
             :key="order.id"
             @click="selectedOrder = order"
             class="cursor-pointer">
-            <td scope="row" class="text-muted font-weight-light">{{walletOrders.length - idx}}</td>
-            <td scope="row" class="text-muted font-weight-light">
-              <span v-if="order.auto">Auto buy {{order.to}}</span>
+            <td scope="row" class="text-muted font-weight-light">{{networkWalletHistory.length - idx}}</td>
+            <td scope="row">
+              <span v-if="order.type === 'send'">Sent {{prettyBalance(order.amount, order.from)}} {{order.from}}</span>
+              <span v-else-if="order.auto">Auto buy {{order.to}}</span>
               <span v-else>Buy {{order.to}}</span>
-              <span class="badge badge-secondary ml-2 d-inline" v-if="waiting[order.id]">Queued</span>
-              <p v-if="order.sendTo" class="mb-0 small">Send to {{order.sendTo}}</p>
+              <span class="badge badge-secondary ml-2 d-inline" v-if="order.waitingForLock">Queued</span>
+              <p v-if="order.sendTo" class="mb-0 small text-muted font-weight-light">Send to {{order.sendTo}}</p>
+              <p v-else-if="order.type === 'send'" class="mb-0 small text-muted font-weight-light">To {{order.toAddress}}</p>
             </td>
             <td class="nowrap">
-              {{dpUI(prettyAmount(order.to, order.toAmount), order.to)}} <small class="text-muted">{{order.to}}
-                <br>
-              {{dpUI(prettyAmount(order.from, order.fromAmount), order.from)}} {{order.from}}</small>
+              <span v-if="order.type === 'swap'">
+                {{dpUI(prettyAmount(order.to, order.toAmount), order.to)}} <small class="text-muted">{{order.to}}
+                  <br>
+                {{dpUI(prettyAmount(order.from, order.fromAmount), order.from)}} {{order.from}}</small>
+              </span>
             </td>
             <td class="text-right">
-              <small class="text-muted">1 {{order.to}} =</small> {{dpUI(reverseRate(order.rate), order.from)}} <small class="text-muted">{{order.from}}</small>
+              <span v-if="order.type === 'swap'">
+                <small class="text-muted">1 {{order.to}} =</small> {{dpUI(reverseRate(order.rate), order.from)}} <small class="text-muted">{{order.from}}</small>
+              </span>
             </td>
             <td class="text-center">
-              <button class="btn btn-block btn-link text-muted">
-                <span v-if="['quote expired'].includes(order.status.toLowerCase())">
-                  &mdash;
-                </span>
-                <span v-else-if="['success', 'refunded'].includes(order.status.toLowerCase())">
-                  Finished in {{getOrderDuration(order)}}
-                </span>
-                <span v-else>
-                  {{getOrderProgress(order)}}/<span v-if="order.sendTo">7</span><span v-else>6</span>
-                  <Pacman v-if="!waiting[order.id]" class="d-inline-block mr-3 ml-2" />
-                </span>
-              </button>
+              <span v-if="order.type === 'swap'">
+                <button class="btn btn-block btn-link text-muted">
+                  <span v-if="['quote expired'].includes(order.status.toLowerCase())">
+                    &mdash;
+                  </span>
+                  <span v-else-if="['success', 'refunded'].includes(order.status.toLowerCase())">
+                    Finished in {{getOrderDuration(order)}}
+                  </span>
+                  <span v-else>
+                    {{getOrderProgress(order)}}/<span v-if="order.sendTo">7</span><span v-else>6</span>
+                    <Pacman v-if="!order.waitingForLock" class="d-inline-block mr-3 ml-2" />
+                  </span>
+                </button>
+              </span>
             </td>
             <td class="text-center">
               <button :class="{
@@ -78,7 +86,7 @@ import { differenceInHours, differenceInMinutes, differenceInSeconds } from 'dat
 import { mapState, mapGetters } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 
-import { dpUI } from '@/utils/coinFormatter'
+import { dpUI, prettyBalance } from '@/utils/coinFormatter'
 import OrderModal from '@/components/OrderModal'
 import Pacman from '@/components/Pacman'
 
@@ -110,9 +118,6 @@ function getDuration (min, max, approx) {
 }
 
 export default {
-  props: {
-    waiting: Object
-  },
   components: {
     Pacman,
     OrderModal
@@ -125,16 +130,16 @@ export default {
     }
   },
   computed: {
-    ...mapState(['orders', 'isTestnet']),
+    ...mapState(['activeNetwork', 'history']),
     ...mapGetters(['agentUrls']),
+    networkWalletHistory () {
+      if (!this.history[this.activeNetwork]) return []
+      if (!this.history[this.activeNetwork][this.walletId]) return []
+
+      return this.history[this.activeNetwork][this.walletId].slice().reverse()
+    },
     walletId () {
       return this.$route.params.walletId
-    },
-    walletOrders () {
-      return this.orders.filter(order => order.walletId === this.walletId)
-    },
-    latestOrders () {
-      return this.walletOrders.slice().reverse()
     },
     selectedOrderAgent () {
       return this.agentUrls[this.selectedOrder.agentIndex]
@@ -156,7 +161,8 @@ export default {
     },
     prettyAmount (chain, amount) {
       return cryptoassets[chain.toLowerCase()].unitToCurrency(amount)
-    }
+    },
+    prettyBalance
   },
   created () {
     this.dateNow = Date.now()

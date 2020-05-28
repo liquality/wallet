@@ -14,7 +14,7 @@
                   <span v-else>Generated</span> {{distance(wallet.at)}} ago
                 </h2>
 
-                <router-link class="btn btn-primary btn-lg btn-block mt-4" :to="'/wallet/' + wallet.id">Unlock &rsaquo;</router-link>
+                <router-link class="btn btn-primary btn-lg btn-block mt-4" :to="'/wallet/' + wallet.id">Open &rsaquo;</router-link>
               </div>
             </div>
           </div>
@@ -38,8 +38,8 @@
         </div>
       </div>
       <div class="mt-2 text-center font-weight-normal">
-        <router-link v-if="isTestnet" to="/wallet/demo" class="mr-1">Use demo wallet</router-link>
-        <span v-if="isTestnet">&bull;</span>
+        <router-link v-if="false" to="/wallet/demo" class="mr-1">Use demo wallet</router-link>
+        <span v-if="false">&bull;</span>
         <a href="#" class="ml-1 cursor-pointer" @click="toggleNetwork">Toggle network</a>
       </div>
     </div>
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import { formatDistance } from 'date-fns'
 
 import Cover from '@/components/Cover.vue'
@@ -69,17 +69,7 @@ export default {
     Pacman,
     Cover
   },
-  data () {
-    return {
-      unlockedWalletId: null,
-      password: null,
-      wallets: null
-    }
-  },
-  computed: {
-    ...mapState(['isTestnet']),
-    ...mapGetters(['client'])
-  },
+  computed: mapState(['wallets']),
   methods: {
     distance (ref) {
       return formatDistance(Date.now(), ref)
@@ -87,9 +77,6 @@ export default {
     toggleNetwork () {
       this.$store.commit('TOGGLE_NETWORK')
     }
-  },
-  async created () {
-    this.wallets = await this.client('wallet')('getListOfWallets')()
   }
 }
 </script>

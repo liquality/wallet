@@ -12,38 +12,38 @@
         <div class="input-group input-group-lg mt-1 mb-0">
           <input type="number" class="form-control simple" v-model="amount" step="0.0001" :readonly="loading">
           <div class="input-group-append">
-            <span class="input-group-text">{{coin}}</span>
+            <span class="input-group-text">{{asset}}</span>
           </div>
         </div>
       </div>
 
       <div v-if="bestMarketBasedOnAmount">
         <div class="mb-2">
-          <p class="mb-0 d-flex justify-content-between align-items-center cursor-pointer" @click="sendTo = null; enterToAddress = !enterToAddress">
-            <span class="bold-label text-primary">Send {{coin}} to</span>
-            <span v-if="!enterToAddress">
+          <p class="mb-0 d-flex justify-content-between align-items-center cursor-pointer" @click="sendTo = null; enterSendToAddress = !enterSendToAddress">
+            <span class="bold-label text-primary">Send {{asset}} to</span>
+            <span v-if="!enterSendToAddress">
               <span class="text-muted">self</span>
             </span>
           </p>
-          <div v-if="enterToAddress">
+          <div v-if="enterSendToAddress">
             <input type="text" class="form-control simple mb-0" v-model="sendTo">
           </div>
         </div>
 
         <label class="bold-label text-primary">Pay using</label>
-        <select class="form-control form-control-lg mb-3" v-model="payCoin">
+        <select class="form-control form-control-lg mb-3" v-model="payAsset">
           <option
-            v-for="(data, payUsing) in marketData[coin]"
+            v-for="(data, payUsing) in networkMarketData[asset]"
             :key="payUsing"
-            :value="payUsing">{{dpUI(balance[payUsing], payUsing)}} {{payUsing}}</option>
+            :value="payUsing">{{prettyBalance(networkWalletBalances[payUsing], payUsing)}} {{payUsing}}</option>
         </select>
 
         <p class="mb-2 d-flex justify-content-between align-items-center">
           <span class="bold-label text-primary">Rate</span>
           <span>
-            <small class="text-muted">1 {{coin}} = </small>
-            <span class="font-weight-normal">{{dpUI(bestBuyRateBasedOnAmount, payCoin)}} </span>
-            <small class="text-muted">{{payCoin}}</small>
+            <small class="text-muted">1 {{asset}} = </small>
+            <span class="font-weight-normal">{{dpUI(bestBuyRateBasedOnAmount, payAsset)}} </span>
+            <small class="text-muted">{{payAsset}}</small>
           </span>
         </p>
 
@@ -51,7 +51,7 @@
           <span class="bold-label text-primary">You pay</span>
           <span>
             <span class="font-weight-normal">{{youPay}} </span>
-            <small class="text-muted">{{payCoin}}</small>
+            <small class="text-muted">{{payAsset}}</small>
           </span>
         </p>
       </div>
@@ -60,14 +60,14 @@
           <span class="bold-label text-primary">Min</span>
           <span>
             <span class="font-weight-normal">{{buyMin}} </span>
-            <small class="text-muted">{{coin}}</small>
+            <small class="text-muted">{{asset}}</small>
           </span>
         </p>
         <p class="mb-3 d-flex justify-content-between align-items-center cursor-pointer" @click="setAmount(buyMax)">
           <span class="bold-label text-primary">Max</span>
           <span>
             <span class="font-weight-normal">{{buyMax}} </span>
-            <small class="text-muted">{{coin}}</small>
+            <small class="text-muted">{{asset}}</small>
           </span>
         </p>
       </div>
@@ -83,16 +83,15 @@
         <span v-if="!loading">Buy</span>
         <Pacman v-else class="d-inline-block mr-3" />
       </button>
-
-      <p class="text-center small text-primary mb-0 mt-3 cursor-pointer" v-if="coin === 'BTC'" @click="$emit('autoBuy')">Auto buy &rsaquo;</p>
     </div>
   </Modal>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import BN from 'bignumber.js'
 
-import { dpUI } from '@/utils/coinFormatter'
+import { dpUI, prettyBalance } from '@/utils/coinFormatter'
 
 import Pacman from '@/components/Pacman'
 import Modal from '@/components/Modal'
@@ -106,31 +105,35 @@ export default {
     return {
       amount: 0,
       loading: false,
-      payCoin: null,
-      enterToAddress: false,
+      payAsset: null,
+      enterSendToAddress: false,
       sendTo: null
     }
   },
   props: {
-    coin: String,
-    market: Object,
-    marketData: Object,
-    balance: Object
-    // prefill: Object
+    asset: String
   },
   created () {
-    this.payCoin = Object.keys(this.selectedMarket)[0]
+    this.payAsset = Object.keys(this.selectedMarket)[0]
     this.amount = this.buyMin
-
-    // if (this.prefill.amount) {
-    //   this.amount = this.prefill.amount
-    // } else {
-    //   this.amount = this.buyMin
-    // }
   },
   computed: {
-    bestAgentIndex () {
-      return this.bestMarketBasedOnAmount.agentIndex
+    ...mapState(['activeNetwork', 'marketData', 'balances']),
+    walletId () {
+      return this.$route.params.walletId
+    },
+    walletOrders () {
+      return this.orders.filter(order => order.walletId === this.walletId)
+    },
+    networkMarketData () {
+      return this.marketData[this.activeNetwork]
+    },
+    networkWalletBalances () {
+      return this.balances[this.activeNetwork][this.walletId]
+    },
+
+    bestAgent () {
+      return this.bestMarketBasedOnAmount.agent
     },
     bestBuyRateBasedOnAmount () {
       return this.bestMarketBasedOnAmount.buyRate
@@ -146,22 +149,22 @@ export default {
       })
     },
     buyMin () {
-      return dpUI(BN(this.payMarket.sellMin).times(this.payMarket.sellRate), this.coin)
+      return dpUI(BN(this.payMarket.sellMin).times(this.payMarket.sellRate), this.asset)
     },
     buyMax () {
-      return dpUI(BN(this.payMarket.sellMax).times(this.payMarket.sellRate), this.coin, true)
+      return dpUI(BN(this.payMarket.sellMax).times(this.payMarket.sellRate), this.asset, true)
     },
     safeAmount () {
       return this.amount || 0
     },
     payMarket () {
-      return this.selectedMarket[this.payCoin]
+      return this.selectedMarket[this.payAsset]
     },
     payBalance () {
-      return this.balance[this.payCoin]
+      return this.networkWalletBalances[this.payAsset]
     },
     selectedMarket () {
-      return this.marketData[this.coin]
+      return this.networkMarketData[this.asset]
     },
     canBuy () {
       const amount = BN(this.safeAmount)
@@ -172,18 +175,19 @@ export default {
       return true
     },
     youPay () {
-      return dpUI(BN(this.safeAmount).div(this.bestSellRateBasedOnAmount), this.payCoin)
+      return dpUI(BN(this.safeAmount).div(this.bestSellRateBasedOnAmount), this.payAsset)
     }
   },
   methods: {
     dpUI,
+    prettyBalance,
     buy () {
       this.loading = true
 
       this.$emit('buy', {
-        agentIndex: this.bestAgentIndex,
-        from: this.payCoin,
-        to: this.coin,
+        agent: this.bestAgent,
+        from: this.payAsset,
+        to: this.asset,
         amount: this.youPay,
         sendTo: this.sendTo
       })

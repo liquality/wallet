@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+  "version": "0.4.0",
+  "name": "Liquality Wallet",
+  "description": "Secure multi-crypto wallet with built-in Atomic Swaps!",
+  "homepage_url": "https://liquality.io",
+  "permissions": [
+    "notifications",
+    "<all_urls>",
+    "*://*/*"
+  ],
+  "icons": {
+    "16": "icons/16x16.png",
+    "48": "icons/48x48.png",
+    "128": "icons/128x128.png",
+    "256": "icons/256x256.png",
+    "512": "icons/512x512.png",
+    "1024": "icons/1024x1024.png"
+  },
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16x16.png",
+      "48": "icons/48x48.png",
+      "128": "icons/128x128.png",
+      "256": "icons/256x256.png",
+      "512": "icons/512x512.png",
+      "1024": "icons/1024x1024.png"
+    }
+  }
+}
