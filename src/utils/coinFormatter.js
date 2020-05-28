@@ -1,4 +1,5 @@
 import BN from 'bignumber.js'
+import cryptoassets from '@liquality/cryptoassets'
 
 const DP_MAP = {
   BTC: 8,
@@ -16,12 +17,20 @@ const DP_UI_MAP = {
 
 export const dp = (amount, coin) => {
   if (!amount) return amount
-  coin = coin.toUpperCase()
+
   return BN(amount).dp(DP_MAP[coin])
 }
 
 export const dpUI = (amount, coin, floor = false) => {
   if (!amount) return amount
-  coin = coin.toUpperCase()
+
   return BN(amount).dp(DP_UI_MAP[coin], floor ? BN.ROUND_FLOOR : BN.ROUND_CEIL)
+}
+
+export const prettyBalance = (amount, coin, floor = false) => {
+  if (!amount) return amount
+
+  amount = cryptoassets[coin.toLowerCase()].unitToCurrency(amount)
+
+  return dpUI(amount, coin, floor)
 }

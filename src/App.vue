@@ -1,19 +1,66 @@
 <template>
   <div id="app" class="mb-5">
-    <router-view />
+    <Cover title="Unlock your wallet" subtitle="Your keys, your coins" v-if="!unlockedAt" />
 
-    <div class="agent-status text-center mt-5 mb-5">
-      <p class="mb-0 text-muted">Connected to {{agentUrls.length}} liquidity providers</p>
+    <div v-if="brokerReady">
+      <router-view v-if="unlockedAt" />
+      <div v-else>
+        <div class="container">
+          <div class="row balance-box">
+            <div class="col-md-4 col-sm-6 mx-auto">
+              <div class="card card-up">
+                <div class="card-body">
+                  <form autocomplete="off" v-on:submit.prevent="unlock">
+                    <label class="bold-label text-primary mb-0">Password</label>
+                    <input type="password" class="form-control form-control-lg" v-model="password" autocomplete="off" required>
+
+                    <p class="small mt-4">This password decrypts your mnemonic.</p>
+
+                    <button class="btn btn-primary btn-lg btn-block mt-4" type="submit">Unlock</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container" v-else>
+      <div class="row justify-content-center">
+        <div class="col-md-4 col-sm-6">
+          <div class="card card-up">
+            <div class="card-body d-flex justify-content-center align-items-center" style="min-height: 240px">
+              <Pacman class="d-inline-block mr-3" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+
+import Cover from '@/components/Cover.vue'
+import Pacman from '@/components/Pacman.vue'
 
 export default {
-  computed: {
-    ...mapGetters(['agentUrls'])
+  computed: mapState(['brokerReady', 'unlockedAt']),
+  components: {
+    Pacman,
+    Cover
+  },
+  data () {
+    return {
+      password: null
+    }
+  },
+  methods: {
+    ...mapActions(['unlockWallet']),
+    async unlock () {
+      await this.unlockWallet({ key: this.password })
+    }
   }
 }
 </script>
