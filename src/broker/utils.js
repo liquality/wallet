@@ -23,3 +23,11 @@ export const newConnectId = () => `##${Math.random().toString(36).substring(2)}#
 export const checkConnectId = id => /^##[0-9a-zA-Z]+##/.test(id)
 
 export const removeConnectId = id => id.replace(/^##[0-9a-zA-Z]+##/, '')
+
+export const inject = content => {
+  const container = document.head || document.documentElement
+  const scriptTag = document.createElement('script')
+  scriptTag.setAttribute('async', 'false')
+  scriptTag.textContent = `${content}`
+  container.insertBefore(scriptTag, container.children[0])
+}

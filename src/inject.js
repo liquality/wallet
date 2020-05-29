@@ -1,27 +1,3 @@
-import { inject } from './broker/utils'
-import Script from './broker/Script'
-
-const script = new Script()
-
-window.addEventListener('message', event => {
-  if (event.source !== window) return
-
-  if (event.data.type && (event.data.type === 'CAL_REQUEST')) {
-    const { id, asset, method, args } = event.data.payload
-
-    script.proxy(asset)(method)(...args)
-      .then(result => ({ result }))
-      .catch(error => {
-        console.error(error) /* eslint-disable-line */
-        return { error: error.toString() }
-      })
-      .then(response => {
-        window.dispatchEvent(new CustomEvent(id, { detail: response }))
-      })
-  }
-}, false)
-
-inject(`
 class InjectedProvider {
   constructor (asset) {
     this.asset = asset
@@ -69,4 +45,3 @@ class ProviderManager {
 }
 
 window.providerManager = new ProviderManager()
-`)

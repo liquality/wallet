@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import Cover from '@/components/Cover.vue'
 import Wallet from '@/components/Wallet.vue'
@@ -30,6 +30,10 @@ export default {
     walletId () {
       return this.$route.params.walletId
     }
+  },
+  methods: mapActions(['changeActiveWalletId']),
+  created () {
+    this.changeActiveWalletId({ walletId: this.walletId })
   }
 }
 </script>

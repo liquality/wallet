@@ -59,6 +59,7 @@ class Foreground {
       case 'ACTION_RESPONSE':
         this.emitter.emit(id, data)
         break
+
       case 'REHYDRATE_STATE':
         if (this.initialized) throw new Error('State has already been synchronised with Background')
 
@@ -68,12 +69,14 @@ class Foreground {
 
         this.processPendingMutations()
         break
+
       case 'MUTATION':
         // Don't commit any mutation from other contexts before REHYDRATE_STATE
         if (!this.initialized) return
 
         this.store.commit(data.type, data.payload)
         break
+
       default:
         throw new Error(`Received an invalid message type: ${type}`)
     }

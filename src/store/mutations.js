@@ -6,6 +6,9 @@ const ensureNetworkWalletTree = (ref, network, walletId, initialValue) => {
 }
 
 export default {
+  CHANGE_ACTIVE_WALLETID (state, { walletId }) {
+    state.activeWalletId = walletId
+  },
   CHANGE_PASSWORD (state, { key, encryptedWallets }) {
     state.key = key
     state.encryptedWallets = encryptedWallets

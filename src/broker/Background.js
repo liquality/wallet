@@ -88,9 +88,27 @@ class Background {
             })
           })
         break
+
+      case 'CAL_REQUEST':
+        this.store.dispatch('injectedProvider', data.payload)
+          .then(result => ({ result }))
+          .catch(error => {
+            console.error(error) /* eslint-disable-line */
+            return { error: error.toString() }
+          })
+          .then(response => {
+            connection.postMessage({
+              id,
+              type: 'CAL_RESPONSE',
+              data: response
+            })
+          })
+        break
+
       case 'MUTATION':
         this.store.commit(data.type, data.payload)
         break
+
       default:
         throw new Error(`Received an invalid message type: ${type}`)
     }
