@@ -1,4 +1,3 @@
-// wallets [{ id, name, mnemonic, createdAt, imported }]
 // addresses.network.walletId.asset
 // balances.network.walletId.asset
 // history.network.walletId[]

@@ -36,28 +36,28 @@
               <p v-else-if="order.type === 'send'" class="mb-0 small text-muted font-weight-light">To {{order.toAddress}}</p>
             </td>
             <td class="nowrap">
-              <span v-if="order.type === 'swap'">
+              <span v-if="order.type === 'SWAP'">
                 {{dpUI(prettyAmount(order.to, order.toAmount), order.to)}} <small class="text-muted">{{order.to}}
                   <br>
                 {{dpUI(prettyAmount(order.from, order.fromAmount), order.from)}} {{order.from}}</small>
               </span>
             </td>
             <td class="text-right">
-              <span v-if="order.type === 'swap'">
+              <span v-if="order.type === 'SWAP'">
                 <small class="text-muted">1 {{order.to}} =</small> {{dpUI(reverseRate(order.rate), order.from)}} <small class="text-muted">{{order.from}}</small>
               </span>
             </td>
             <td class="text-center">
-              <span v-if="order.type === 'swap'">
+              <span v-if="order.type === 'SWAP'">
                 <button class="btn btn-block btn-link text-muted">
-                  <span v-if="['quote expired'].includes(order.status.toLowerCase())">
+                  <span v-if="['QUOTE_EXPIRED'].includes(order.status)">
                     &mdash;
                   </span>
-                  <span v-else-if="['success', 'refunded'].includes(order.status.toLowerCase())">
+                  <span v-else-if="['SUCCESS', 'REFUNDED'].includes(order.status)">
                     Finished in {{getOrderDuration(order)}}
                   </span>
                   <span v-else>
-                    {{getOrderProgress(order)}}/<span v-if="order.sendTo">7</span><span v-else>6</span>
+                    {{getOrderProgress(order)}}/<span v-if="order.sendTo">8</span><span v-else>7</span>
                     <Pacman v-if="!order.waitingForLock" class="d-inline-block mr-3 ml-2" />
                   </span>
                 </button>
@@ -66,8 +66,8 @@
             <td class="text-center">
               <button :class="{
                 'btn btn-block': true,
-                'btn-link text-primary': order.status.toLowerCase() !== 'success',
-                'btn-link text-success': order.status.toLowerCase() === 'success'
+                'btn-link text-primary': order.status !== 'SUCCESS',
+                'btn-link text-success': order.status === 'SUCCESS'
               }">
                 {{order.status}}
                 <div class="text-12 text-muted" v-if="order.status === 'Getting Refund'">in {{getRefundIn(order, dateNow)}}</div>
@@ -87,18 +87,17 @@ import { mapState, mapGetters } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 
 import { dpUI, prettyBalance } from '@/utils/coinFormatter'
-import OrderModal from '@/components/OrderModal'
 import Pacman from '@/components/Pacman'
 
 const ORDER_STATUS_MAP = {
-  quote: 1,
-  secured: 2,
-  initiated: 3,
-  'waiting for confirmations': 4,
-  exchanging: 5,
-  'ready to exchange': 5,
-  'getting refund': 5,
-  'ready to send': 6
+  QUOTE: 1,
+  SECRET_READY: 2,
+  INITIATED: 3,
+  WAITING_FOR_CONFIRMATIONS: 4,
+  INITIATION_REPORTED: 5,
+  READY_TO_EXCHANGE: 6,
+  GET_REFUND: 6,
+  READY_TO_SEND: 7
 }
 
 function getDuration (min, max, approx) {
@@ -119,8 +118,7 @@ function getDuration (min, max, approx) {
 
 export default {
   components: {
-    Pacman,
-    OrderModal
+    Pacman
   },
   data () {
     return {
@@ -157,7 +155,7 @@ export default {
       return getDuration(dateNow, order.swapExpiration * 1000, true)
     },
     getOrderProgress (order) {
-      return ORDER_STATUS_MAP[order.status.toLowerCase()]
+      return ORDER_STATUS_MAP[order.status]
     },
     prettyAmount (chain, amount) {
       return cryptoassets[chain.toLowerCase()].unitToCurrency(amount)

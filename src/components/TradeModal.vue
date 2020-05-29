@@ -88,8 +88,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
+import cryptoassets from '@liquality/cryptoassets'
 
 import { dpUI, prettyBalance } from '@/utils/coinFormatter'
 
@@ -179,23 +180,34 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['newSwap']),
     dpUI,
     prettyBalance,
-    buy () {
-      this.loading = true
-
-      this.$emit('buy', {
-        agent: this.bestAgent,
-        from: this.payAsset,
-        to: this.asset,
-        amount: this.youPay,
-        sendTo: this.sendTo
-      })
-    },
     setAmount (amount) {
       if (this.loading) return
 
       this.amount = amount
+    },
+    async buy () {
+      this.loading = true
+
+      const fromAmount = cryptoassets[this.payAsset.toLowerCase()].currencyToUnit(this.youPay)
+
+      await this.newSwap({
+        network: this.activeNetwork,
+        walletId: this.walletId,
+        agent: this.bestAgent,
+        from: this.payAsset,
+        to: this.asset,
+        fromAmount,
+        sendTo: this.sendTo,
+        auto: false
+      })
+
+      this.autoAsset = null
+      this.buyAsset = null
+
+      this.$emit('close')
     }
   }
 }

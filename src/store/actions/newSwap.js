@@ -7,7 +7,7 @@ export const newSwap = async ({ dispatch, commit }, { network, walletId, agent, 
     fromAmount
   })
 
-  order.type = 'swap'
+  order.type = 'SWAP'
   order.network = network
   order.agent = agent
   order.startTime = Date.now()

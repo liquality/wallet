@@ -1,11 +1,15 @@
 import Vue from 'vue'
 
 const ensureNetworkWalletTree = (ref, network, walletId, initialValue) => {
-  if (!ref[network]) ref[network] = {}
-  if (!ref[network][walletId]) ref[network][walletId] = initialValue
+  if (!ref[network]) Vue.set(ref, network, {})
+  if (!ref[network][walletId]) Vue.set(ref[network], walletId, initialValue)
 }
 
 export default {
+  CHANGE_PASSWORD (state, { key, encryptedWallets }) {
+    state.key = key
+    state.encryptedWallets = encryptedWallets
+  },
   LOCK_WALLET (state) {
     state.key = null
     state.unlockedAt = null

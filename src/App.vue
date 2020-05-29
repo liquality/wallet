@@ -6,7 +6,7 @@
       <router-view v-if="unlockedAt" />
       <div v-else>
         <div class="container">
-          <div class="row balance-box">
+          <div class="row">
             <div class="col-md-4 col-sm-6 mx-auto">
               <div class="card card-up">
                 <div class="card-body">

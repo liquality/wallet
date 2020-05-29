@@ -1,18 +1,14 @@
 <template>
   <div>
-    <Cover v-if="id" title="Backup your wallet" />
-    <Cover v-else title="Generate your wallet" subtitle="Encrypted using AES-256" />
+    <Cover v-if="id" title="Your wallet was imported successfully" />
+    <Cover v-else title="Import your wallet" subtitle="Encrypted using AES-256" />
 
     <div class="container">
       <div class="row">
         <div class="col-md-4 col-sm-6 mx-auto">
           <div class="card card-up">
             <div class="card-body text-center" v-if="id">
-              <h1 class="h4 text-primary mb-4">{{name}}</h1>
-
-              <p>{{mnemonic}}</p>
-
-              <p class="small mt-4">Back it up at a secure location.</p>
+              <h1 class="h4">{{name}}</h1>
 
               <router-link class="btn btn-primary btn-lg btn-block mt-4" to="/">Continue &rsaquo;</router-link>
             </div>
@@ -23,11 +19,15 @@
                   <input type="text" class="form-control form-control-lg" v-model="name" autocomplete="off" required>
                 </div>
 
-                <button class="btn btn-primary btn-lg btn-block mt-4" type="submit">Generate &rsaquo;</button>
+                <div class="mt-4">
+                  <label class="bold-label text-primary mb-0">Mnemonic</label>
+                  <textarea class="form-control form-control-lg" rows="3" v-model="mnemonic" autocomplete="off" required />
+                </div>
+
+                <p class="small mt-4">This password encrypts your mnemonic. You will need this password to unlock your wallet.</p>
+
+                <button class="btn btn-primary btn-lg btn-block mt-4" type="submit">Import &rsaquo;</button>
               </form>
-            </div>
-            <div class="card-body d-flex justify-content-center align-items-center" style="min-height: 240px" v-if="false">
-              <Pacman class="d-inline-block mr-3" />
             </div>
           </div>
         </div>
@@ -40,12 +40,10 @@
 import { mapActions } from 'vuex'
 
 import Cover from '@/components/Cover.vue'
-import Pacman from '@/components/Pacman.vue'
 
 export default {
   components: {
-    Cover,
-    Pacman
+    Cover
   },
   data () {
     return {
@@ -55,17 +53,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['generateWallet']),
+    ...mapActions(['importWallet']),
     async go () {
-      const { id, name, mnemonic } = await this.generateWallet({ name: this.name })
+      const { id, name } = await this.importWallet({ name: this.name, mnemonic: this.mnemonic })
 
+      this.mnemonic = null
       this.id = id
       this.name = name
-      this.mnemonic = mnemonic
     }
   }
 }
 </script>
-
-<style lang="scss">
-</style>
