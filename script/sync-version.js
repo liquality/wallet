@@ -6,9 +6,7 @@ console.log(`Syncing version to ${version}`)
 
 ;[
   path.join(__dirname, '..', 'package-lock.json'),
-  path.join(__dirname, '..', 'electron', 'package.json'),
-  path.join(__dirname, '..', 'electron', 'package-lock.json'),
-  path.join(__dirname, '..', 'extension', 'manifest.json')
+  path.join(__dirname, '..', 'src', 'manifest.json')
 ].map(filePath => {
   const json = require(filePath)
 
