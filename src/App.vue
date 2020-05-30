@@ -1,21 +1,21 @@
 <template>
-  <div id="app" class="mb-5">
+  <div id="app">
     <NavBar v-if="!['/', '/open', '/create', '/backup'].includes($route.path)" />
     <router-view />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+
+import Cover from '@/components/Cover.vue'
+import Pacman from '@/components/Pacman.vue'
 
 import NavBar from '@/views/v2/NavBar.vue'
 
 export default {
   components: {
     NavBar
-  },
-  computed: {
-    ...mapGetters(['agentUrls'])
   }
 }
 </script>
@@ -27,8 +27,6 @@ export default {
   display: flex;
   flex-direction: column;
   background: #ffffff;
-  border-radius: 20px;
-  margin: 20px auto;
   overflow: hidden;
 }
 </style>

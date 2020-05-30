@@ -7,8 +7,10 @@ npm install
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+npm run dev
 ```
+
+and load `/dist` directory as unpacked extension on Google Chrome.
 
 ### Compiles and minifies for production
 ```

@@ -4,15 +4,15 @@
     <Cover v-else title="Generate your wallet" subtitle="Encrypted using AES-256" />
 
     <div class="container">
-      <div class="row balance-box">
+      <div class="row">
         <div class="col-md-4 col-sm-6 mx-auto">
           <div class="card card-up">
             <div class="card-body text-center" v-if="id">
               <h1 class="h4 text-primary mb-4">{{name}}</h1>
 
-              <p>{{wallet}}</p>
+              <p>{{mnemonic}}</p>
 
-              <p class="small mt-4">This seed phrase will not be displayed again. Back it up at a secure location.</p>
+              <p class="small mt-4">Back it up at a secure location.</p>
 
               <router-link class="btn btn-primary btn-lg btn-block mt-4" to="/">Continue &rsaquo;</router-link>
             </div>
@@ -22,13 +22,6 @@
                   <label class="bold-label text-primary mb-0">Name</label>
                   <input type="text" class="form-control form-control-lg" v-model="name" autocomplete="off" required>
                 </div>
-
-                <div class="mt-4">
-                  <label class="bold-label text-primary mb-0">Password</label>
-                  <input type="password" class="form-control form-control-lg" v-model="password" autocomplete="off" required>
-                </div>
-
-                <p class="small mt-4">This password encrypts your mnemonic. This does not act as a seed to generate your keys. You will need this password to unlock your wallet.</p>
 
                 <button class="btn btn-primary btn-lg btn-block mt-4" type="submit">Generate &rsaquo;</button>
               </form>
@@ -44,10 +37,10 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 
-import Cover from '@/components/Cover'
-import Pacman from '@/components/Pacman'
+import Cover from '@/components/Cover.vue'
+import Pacman from '@/components/Pacman.vue'
 
 export default {
   components: {
@@ -57,26 +50,19 @@ export default {
   data () {
     return {
       id: null,
-      wallet: null,
-      name: null,
-      password: null
+      mnemonic: null,
+      name: null
     }
-  },
-  computed: {
-    ...mapGetters(['client'])
   },
   methods: {
+    ...mapActions(['generateWallet']),
     async go () {
-      const { id, name, wallet } = await this.client('wallet')('generate')(this.name, this.password)
+      const { id, name, mnemonic } = await this.generateWallet({ name: this.name })
 
-      this.password = null
       this.id = id
       this.name = name
-      this.wallet = wallet
+      this.mnemonic = mnemonic
     }
-  },
-  async created () {
-    this.unlockedWalletId = await this.client('wallet')('getUnlockedWalletId')()
   }
 }
 </script>
