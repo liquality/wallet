@@ -41,7 +41,8 @@ const routes = [
   },
   {
     path: '/account/:asset',
-    component: Account
+    component: Account,
+    props: true
   },
   {
     path: '/account/:asset/send',

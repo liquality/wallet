@@ -1,21 +1,41 @@
 <template>
   <div class="wallet">
     <div class="wallet_stats">4 Assets</div>
-    <div class="wallet_accounts">
-      <router-link to="/account/btc"><AccountItem asset="BTC" v-bind:balance="5.5123123" /></router-link>
-      <router-link to="/account/btc"><AccountItem asset="ETH" v-bind:balance="12.51423" /></router-link>
-      <router-link to="/account/btc"><AccountItem asset="DAI" v-bind:balance="8212" /></router-link>
-      <router-link to="/account/btc"><AccountItem asset="USDC" v-bind:balance="9333" /></router-link>
+    <div class="wallet_accounts" v-if="networkWalletBalances">
+      <router-link v-for="(balance, asset, idx) in networkWalletBalances" :key="asset" v-bind:to="'/account/' + asset" >
+        <AccountItem v-bind:asset="asset" v-bind:balance="balance" />
+      </router-link>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+import { NetworkAssets } from '@/store/factory/client'
 import AccountItem from '@/components/v2/AccountItem'
 
 export default {
   components: {
     AccountItem
+  },
+  computed: {
+    ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'wallets']),
+    networkAssets () {
+      return NetworkAssets[this.activeNetwork]
+    },
+    networkWalletBalances () {
+      if (!this.balances[this.activeNetwork]) return false
+      if (!this.balances[this.activeNetwork][this.activeWalletId]) return false
+
+      return this.balances[this.activeNetwork][this.activeWalletId]
+    }
+  },
+  methods: {
+    ...mapActions(['changeActiveWalletId', 'updateBalances'])
+  },
+  async created () {
+    await this.changeActiveWalletId({ walletId: this.wallets[0].id })
+    this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
   }
 }
 </script>

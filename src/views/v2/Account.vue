@@ -1,13 +1,13 @@
 <template>
   <div class="account">
     <div class="account_header">
-      <img :src="'./img/btc.png'" />BTC
+      <img :src="'./img/' + asset.toLowerCase() +'.png'" />{{asset}}
     </div>
     <div class="account_main">
       <div class="account_top">
         <div class="account_balance">
-          <span class="account_balance_value">6.156523</span>
-          <span class="account_balance_code">BTC</span>
+          <span class="account_balance_value">{{balance}}</span>
+          <span class="account_balance_code">{{asset}}</span>
         </div>
         <div class="account_actions">
           <router-link to="/account/btc/send"><button class="account_actions_button"><SendIcon class="account_actions_button_icon" /></button></router-link>
@@ -32,10 +32,12 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import Transaction from '@/components/v2/Transaction'
+import { prettyBalance } from '@/utils/coinFormatter'
 
 export default {
   components: {
@@ -43,6 +45,24 @@ export default {
     ReceiveIcon,
     SwapIcon,
     Transaction
+  },
+  props: ['asset'],
+  computed: {
+    ...mapState(['activeNetwork', 'balances', 'activeWalletId']),
+    balance () {
+      console.log('asset', this.asset)
+      if (!this.balances[this.activeNetwork]) return false
+      if (!this.balances[this.activeNetwork][this.activeWalletId]) return false
+      if (!this.balances[this.activeNetwork][this.activeWalletId][this.asset]) return false
+
+      return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
+    }
+  },
+  methods: {
+    ...mapActions(['updateBalances'])
+  },
+  async created () {
+    console.log(this.balances)
   }
 }
 </script>

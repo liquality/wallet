@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 import LogoWallet from '@/assets/icons/logo_wallet.svg'
 
 export default {
@@ -32,35 +32,15 @@ export default {
   },
   data () {
     return {
-      password: null,
-      name: null
+      password: null
     }
-  },
-  computed: {
-    ...mapGetters(['client'])
   },
   methods: {
+    ...mapActions(['unlockWallet']),
     async unlock () {
-      try {
-        const { id, name } = await this.client('wallet')('unlock')(this.walletId, this.password)
-        this.$router.replace('/wallet')
-      } catch (e) {
-        this.password = null
-      }
-    },
-    async lock () {
-      await this.client('wallet')('lock')()
+      await this.unlockWallet({ key: this.password })
+      this.$router.replace('/wallet')
     }
-  },
-  async created () {
-    const wallets = await this.client('wallet')('getListOfWallets')()
-    const id = wallets[0].id
-    const { name } = await this.client('wallet')('getWallet')(id)
-    this.walletId = id
-    this.name = name
-  },
-  beforeDestroy () {
-    this.lock()
   }
 }
 </script>
