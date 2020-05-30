@@ -46,12 +46,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'marketData', 'balances']),
-    walletId () {
-      return this.$route.params.walletId
-    },
+    ...mapState(['activeNetwork', 'marketData', 'balances', 'activeWalletId']),
     walletOrders () {
-      return this.orders.filter(order => order.walletId === this.walletId)
+      return this.orders.filter(order => order.walletId === this.activeWalletId)
     },
     networkAssets () {
       return NetworkAssets[this.activeNetwork]
@@ -61,9 +58,9 @@ export default {
     },
     networkWalletBalances () {
       if (!this.balances[this.activeNetwork]) return false
-      if (!this.balances[this.activeNetwork][this.walletId]) return false
+      if (!this.balances[this.activeNetwork][this.activeWalletId]) return false
 
-      return this.balances[this.activeNetwork][this.walletId]
+      return this.balances[this.activeNetwork][this.activeWalletId]
     }
   },
   methods: {
@@ -75,8 +72,8 @@ export default {
     }
   },
   created () {
-    this.updateBalances({ network: this.activeNetwork, walletId: this.walletId })
-    this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.walletId, assets: this.networkAssets })
+    this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
+    this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: this.networkAssets })
   }
 }
 </script>

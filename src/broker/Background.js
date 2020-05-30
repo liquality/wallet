@@ -1,4 +1,4 @@
-import { BG_PREFIX, handleConnection, removeConnectId } from './utils'
+import { BG_PREFIX, handleConnection, removeConnectId, getAppId } from './utils'
 
 class Background {
   constructor (store) {
@@ -21,16 +21,17 @@ class Background {
   }
 
   onConnection (connection) {
-    this.bindMutation(connection)
+    connection.onMessage.addListener(message => this.onMessage(connection, message))
 
-    connection.onDisconnect.addListener((conn) => {
-      this.onDisconnect(conn)
+    const isExtension = connection.sender.url.startsWith(`chrome-extension://${getAppId()}/`)
+    if (!isExtension) return
+
+    connection.onDisconnect.addListener(() => {
+      this.onDisconnect(connection)
       this.unbindMutation(connection)
     })
 
-    connection.onMessage.addListener((message) => {
-      this.onMessage(connection, message)
-    })
+    this.bindMutation(connection)
 
     this.connections.push(connection)
 
@@ -54,11 +55,11 @@ class Background {
   }
 
   unbindMutation (connection) {
-    const connectName = connection.name
+    const { name } = connection
     const { _mutations: mutations } = this.store
 
     Object.entries(mutations).forEach(([type, funcList]) => {
-      if (type.startsWith(connectName)) {
+      if (type.startsWith(name)) {
         delete mutations[type]
       }
     })
@@ -66,7 +67,7 @@ class Background {
 
   onDisconnect (connection) {
     const index = this.connections.findIndex(conn => conn.name === connection.name)
-    this.connections.splice(index, 1)
+    if (index !== -1) this.connections.splice(index, 1)
   }
 
   onMessage (connection, { id, type, data }) {

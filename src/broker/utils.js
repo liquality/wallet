@@ -14,6 +14,8 @@ export const isBackgroundScript = context => {
   return isBgScr
 }
 
+export const getAppId = () => browser.runtime.id
+
 export const connectToBackground = name => browser.runtime.connect({ name })
 
 export const handleConnection = callback => browser.runtime.onConnect.addListener(callback)

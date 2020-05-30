@@ -1,10 +1,9 @@
 <template>
   <div>
-    <!-- <OrderModal
-      v-if="selectedOrder"
-      :order="selectedOrder"
-      :orderAgent="selectedOrderAgent"
-      @close="selectedOrder = null" /> -->
+    <HistoryModal
+      v-if="selectedItem"
+      :item="selectedItem"
+      @close="selectedItem = null" />
     <div class="table-responsive mb-4">
       <table class="table border bg-white table-history mb-0">
         <thead>
@@ -22,43 +21,43 @@
             <td colspan="6" class="text-center font-weight-light text-muted">Empty</td>
           </tr>
           <tr
-            v-for="(order, idx) in networkWalletHistory"
-            :key="order.id"
-            @click="selectedOrder = order"
+            v-for="(item, idx) in networkWalletHistory"
+            :key="item.id"
+            @click="selectedItem = item"
             class="cursor-pointer">
             <td scope="row" class="text-muted font-weight-light">{{networkWalletHistory.length - idx}}</td>
             <td scope="row">
-              <span v-if="order.type === 'send'">Sent {{prettyBalance(order.amount, order.from)}} {{order.from}}</span>
-              <span v-else-if="order.auto">Auto buy {{order.to}}</span>
-              <span v-else>Buy {{order.to}}</span>
-              <span class="badge badge-secondary ml-2 d-inline" v-if="order.waitingForLock">Queued</span>
-              <p v-if="order.sendTo" class="mb-0 small text-muted font-weight-light">Send to {{order.sendTo}}</p>
-              <p v-else-if="order.type === 'send'" class="mb-0 small text-muted font-weight-light">To {{order.toAddress}}</p>
+              <span v-if="item.type === 'SEND'">Sent {{prettyBalance(item.amount, item.from)}} {{item.from}}</span>
+              <span v-else-if="item.auto">Auto buy {{item.to}}</span>
+              <span v-else>Buy {{item.to}}</span>
+              <span class="badge badge-secondary ml-2 d-inline" v-if="item.waitingForLock">Queued</span>
+              <p v-if="item.sendTo" class="mb-0 small text-muted font-weight-light">Send to {{item.sendTo}}</p>
+              <p v-else-if="item.type === 'SEND'" class="mb-0 small text-muted font-weight-light">To {{item.toAddress}}</p>
             </td>
             <td class="nowrap">
-              <span v-if="order.type === 'SWAP'">
-                {{dpUI(prettyAmount(order.to, order.toAmount), order.to)}} <small class="text-muted">{{order.to}}
+              <span v-if="item.type === 'SWAP'">
+                {{dpUI(prettyAmount(item.to, item.toAmount), item.to)}} <small class="text-muted">{{item.to}}
                   <br>
-                {{dpUI(prettyAmount(order.from, order.fromAmount), order.from)}} {{order.from}}</small>
+                {{dpUI(prettyAmount(item.from, item.fromAmount), item.from)}} {{item.from}}</small>
               </span>
             </td>
             <td class="text-right">
-              <span v-if="order.type === 'SWAP'">
-                <small class="text-muted">1 {{order.to}} =</small> {{dpUI(reverseRate(order.rate), order.from)}} <small class="text-muted">{{order.from}}</small>
+              <span v-if="item.type === 'SWAP'">
+                <small class="text-muted">1 {{item.to}} =</small> {{dpUI(reverseRate(item.rate), item.from)}} <small class="text-muted">{{item.from}}</small>
               </span>
             </td>
             <td class="text-center">
-              <span v-if="order.type === 'SWAP'">
+              <span v-if="item.type === 'SWAP'">
                 <button class="btn btn-block btn-link text-muted">
-                  <span v-if="['QUOTE_EXPIRED'].includes(order.status)">
+                  <span v-if="['QUOTE_EXPIRED'].includes(item.status)">
                     &mdash;
                   </span>
-                  <span v-else-if="['SUCCESS', 'REFUNDED'].includes(order.status)">
-                    Finished in {{getOrderDuration(order)}}
+                  <span v-else-if="['SUCCESS', 'REFUNDED'].includes(item.status)">
+                    Finished in {{getOrderDuration(item)}}
                   </span>
                   <span v-else>
-                    {{getOrderProgress(order)}}/<span v-if="order.sendTo">8</span><span v-else>7</span>
-                    <Pacman v-if="!order.waitingForLock" class="d-inline-block mr-3 ml-2" />
+                    {{getOrderProgress(item)}}/<span v-if="item.sendTo">8</span><span v-else>7</span>
+                    <Pacman v-if="!item.waitingForLock" class="d-inline-block mr-3 ml-2" />
                   </span>
                 </button>
               </span>
@@ -66,11 +65,11 @@
             <td class="text-center">
               <button :class="{
                 'btn btn-block': true,
-                'btn-link text-primary': order.status !== 'SUCCESS',
-                'btn-link text-success': order.status === 'SUCCESS'
+                'btn-link text-primary': item.status !== 'SUCCESS',
+                'btn-link text-success': item.status === 'SUCCESS'
               }">
-                {{order.status}}
-                <div class="text-12 text-muted" v-if="order.status === 'Getting Refund'">in {{getRefundIn(order, dateNow)}}</div>
+                {{item.status}}
+                <div class="text-12 text-muted" v-if="item.status === 'Getting Refund'">in {{getRefundIn(item, dateNow)}}</div>
               </button>
             </td>
           </tr>
@@ -83,11 +82,12 @@
 <script>
 import BN from 'bignumber.js'
 import { differenceInHours, differenceInMinutes, differenceInSeconds } from 'date-fns'
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 
 import { dpUI, prettyBalance } from '@/utils/coinFormatter'
 import Pacman from '@/components/Pacman'
+import HistoryModal from '@/components/HistoryModal'
 
 const ORDER_STATUS_MAP = {
   QUOTE: 1,
@@ -118,29 +118,22 @@ function getDuration (min, max, approx) {
 
 export default {
   components: {
-    Pacman
+    Pacman,
+    HistoryModal
   },
   data () {
     return {
-      selectedOrder: null,
-      selectedWallet: null,
+      selectedItem: null,
       dateNow: null
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'history']),
-    ...mapGetters(['agentUrls']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'history']),
     networkWalletHistory () {
       if (!this.history[this.activeNetwork]) return []
-      if (!this.history[this.activeNetwork][this.walletId]) return []
+      if (!this.history[this.activeNetwork][this.activeWalletId]) return []
 
-      return this.history[this.activeNetwork][this.walletId].slice().reverse()
-    },
-    walletId () {
-      return this.$route.params.walletId
-    },
-    selectedOrderAgent () {
-      return this.agentUrls[this.selectedOrder.agentIndex]
+      return this.history[this.activeNetwork][this.activeWalletId].slice().reverse()
     }
   },
   methods: {
@@ -148,14 +141,14 @@ export default {
     reverseRate (rate) {
       return BN(1).div(rate).dp(8)
     },
-    getOrderDuration (order) {
-      return getDuration(order.startTime, order.endTime)
+    getOrderDuration (item) {
+      return getDuration(item.startTime, item.endTime)
     },
-    getRefundIn (order, dateNow) {
-      return getDuration(dateNow, order.swapExpiration * 1000, true)
+    getRefundIn (item, dateNow) {
+      return getDuration(dateNow, item.swapExpiration * 1000, true)
     },
-    getOrderProgress (order) {
-      return ORDER_STATUS_MAP[order.status]
+    getOrderProgress (item) {
+      return ORDER_STATUS_MAP[item.status]
     },
     prettyAmount (chain, amount) {
       return cryptoassets[chain.toLowerCase()].unitToCurrency(amount)

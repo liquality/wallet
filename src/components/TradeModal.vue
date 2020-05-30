@@ -119,18 +119,15 @@ export default {
     this.amount = this.buyMin
   },
   computed: {
-    ...mapState(['activeNetwork', 'marketData', 'balances']),
-    walletId () {
-      return this.$route.params.walletId
-    },
+    ...mapState(['activeNetwork', 'marketData', 'balances', 'activeWalletId']),
     walletOrders () {
-      return this.orders.filter(order => order.walletId === this.walletId)
+      return this.orders.filter(order => order.walletId === this.activeWalletId)
     },
     networkMarketData () {
       return this.marketData[this.activeNetwork]
     },
     networkWalletBalances () {
-      return this.balances[this.activeNetwork][this.walletId]
+      return this.balances[this.activeNetwork][this.activeWalletId]
     },
 
     bestAgent () {
@@ -195,7 +192,7 @@ export default {
 
       await this.newSwap({
         network: this.activeNetwork,
-        walletId: this.walletId,
+        walletId: this.activeWalletId,
         agent: this.bestAgent,
         from: this.payAsset,
         to: this.asset,

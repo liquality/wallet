@@ -4,7 +4,7 @@ export const sendTransaction = async ({ commit, getters }, { network, walletId, 
   const txHash = await client.chain.sendTransaction(to, amount, null, from)
 
   const transaction = {
-    type: 'send',
+    type: 'SEND',
     network,
     walletId,
 

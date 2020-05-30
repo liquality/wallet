@@ -71,7 +71,7 @@ export default {
     asset: String
   },
   computed: {
-    ...mapState(['addresses', 'activeNetwork', 'balances']),
+    ...mapState(['addresses', 'activeNetwork', 'activeWalletId', 'balances']),
     canSend () {
       if (!this.sendAddress) return false
 
@@ -81,14 +81,11 @@ export default {
 
       return true
     },
-    walletId () {
-      return this.$route.params.walletId
-    },
     address () {
-      return this.addresses[this.activeNetwork][this.walletId][this.asset]._address
+      return this.addresses[this.activeNetwork][this.activeWalletId][this.asset]._address
     },
     balance () {
-      return this.balances[this.activeNetwork][this.walletId][this.asset]
+      return this.balances[this.activeNetwork][this.activeWalletId][this.asset]
     }
   },
   created () {
@@ -113,7 +110,7 @@ export default {
     prettyBalance,
     ...mapActions(['updateBalances', 'sendTransaction']),
     refresh () {
-      this.updateBalances({ network: this.activeNetwork, walletId: this.walletId })
+      this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
       this.$emit('close')
     },
     async send () {
@@ -123,7 +120,7 @@ export default {
 
       await this.sendTransaction({
         network: this.activeNetwork,
-        walletId: this.walletId,
+        walletId: this.activeWalletId,
         asset: this.asset,
         amount,
         to: this.sendAddress,
