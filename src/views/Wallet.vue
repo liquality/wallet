@@ -5,7 +5,7 @@
         <button class="btn btn-link text-white">Some action</button>
       </div>
     </Cover>
-    <div class="container">
+    <div class="container" v-if="activeWalletId === walletId">
       <Wallet />
     </div>
   </div>
@@ -23,7 +23,7 @@ export default {
     Wallet
   },
   computed: {
-    ...mapState(['wallets']),
+    ...mapState(['wallets', 'activeWalletId']),
     wallet () {
       return this.wallets.find(w => w.id === this.walletId)
     },
