@@ -2,7 +2,7 @@
   <div class="wallet">
     <div class="wallet_stats">4 Assets</div>
     <div class="wallet_accounts" v-if="networkWalletBalances">
-      <router-link v-for="(balance, asset, idx) in networkWalletBalances" :key="asset" v-bind:to="'/account/' + asset" >
+      <router-link v-for="(balance, asset) in networkWalletBalances" :key="asset" v-bind:to="'/account/' + asset" >
         <AccountItem v-bind:asset="asset" v-bind:balance="balance" />
       </router-link>
     </div>

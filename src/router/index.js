@@ -46,7 +46,8 @@ const routes = [
   },
   {
     path: '/account/:asset/send',
-    component: Send
+    component: Send,
+    props: true
   },
   {
     path: '/account/:asset/send/confirm',

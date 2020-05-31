@@ -23,7 +23,7 @@ export default {
 <style lang="scss">
 #app {
   width: 375px;
-  height: 694px;
+  height: 600px;
   display: flex;
   flex-direction: column;
   background: #ffffff;

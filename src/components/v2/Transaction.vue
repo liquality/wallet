@@ -1,9 +1,9 @@
 <template>
   <div class="transaction">
     <div class="transaction_icon">
-      <SendIcon v-if="type ==='send'" class="transaction_icon_send" />
-      <ReceiveIcon v-if="type ==='receive'" class="transaction_icon_receive" />
-      <SwapIcon v-if="type ==='swap'" class="transaction_icon_swap"/>
+      <SendIcon v-if="type ==='SEND'" class="transaction_icon_send" />
+      <ReceiveIcon v-if="type ==='RECEIVE'" class="transaction_icon_receive" />
+      <SwapIcon v-if="type ==='SWAP'" class="transaction_icon_swap"/>
     </div>
     <div class="transaction_action">{{title}}</div>
     <div class="transaction_time">{{time}}</div>
@@ -42,7 +42,7 @@ export default {
     amount: Number,
     type: {
       type: String,
-      validator: (val) => ['send', 'receive', 'swap']
+      validator: (val) => ['SEND', 'RECEIVE', 'SWAP']
     },
     title: String,
     timestamp: Number,
