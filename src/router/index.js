@@ -55,11 +55,13 @@ const routes = [
   },
   {
     path: '/account/:asset/receive',
-    component: Receive
+    component: Receive,
+    props: true
   },
   {
     path: '/account/:asset/swap',
-    component: Swap
+    component: Swap,
+    props: true
   },
   {
     path: '/account/:asset/swap/confirm',

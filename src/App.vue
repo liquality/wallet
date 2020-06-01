@@ -14,8 +14,14 @@ import Pacman from '@/components/Pacman.vue'
 import NavBar from '@/views/v2/NavBar.vue'
 
 export default {
+  computed: mapState(['unlockedAt']),
   components: {
     NavBar
+  },
+  watch: {
+    unlockedAt: function (unlocked) {
+      if (unlocked) this.$router.replace('/wallet')
+    }
   }
 }
 </script>
@@ -23,7 +29,7 @@ export default {
 <style lang="scss">
 #app {
   width: 375px;
-  height: 600px;
+  height: 694px;
   display: flex;
   flex-direction: column;
   background: #ffffff;
