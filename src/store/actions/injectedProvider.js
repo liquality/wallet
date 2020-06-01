@@ -15,6 +15,8 @@ const RESTRICTED = [
 ]
 
 export const injectedProvider = async ({ state, getters }, { asset, method, args }) => {
+  if (!state.activeWalletId) throw new Error('No active wallet found. Select a wallet first.')
+
   const client = getters.client(state.activeNetwork, state.activeWalletId, asset)
 
   if (RESTRICTED.some(re => re.test(method))) {
