@@ -1,5 +1,8 @@
 <template>
-  <div id="app" class="mb-5">
+  <div id="app" :class="{
+    'mb-5': true,
+    'popup': $route.path.startsWith('/enable') || $route.path.startsWith('/permission')
+  }">
     <Cover title="Unlock your wallet" subtitle="Your keys, your coins" v-if="!unlockedAt" />
 
     <div v-if="brokerReady">

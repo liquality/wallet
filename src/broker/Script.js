@@ -1,48 +1,35 @@
 import EventEmitter from 'events'
-import { newConnectId, connectToBackground } from './utils'
+import { connectToBackground } from './utils'
 
 class Script {
   constructor () {
-    this.name = newConnectId()
-    this.connection = null
-
     this.emitter = new EventEmitter()
-
-    this.connection = connectToBackground(this.name)
-    this.connection.onMessage.addListener(message => this.onMessage(message))
+    this.background = connectToBackground()
+    this.background.onMessage.addListener(message => this.onMessage(message))
   }
 
-  onMessage ({ id, type, data }) {
-    console.log('onMessage', { id, type, data })
+  start () {
+    window.addEventListener('message', event => {
+      if (event.source !== window) return
+      if (!event.data) return
 
-    switch (type) {
-      case 'CAL_RESPONSE':
-        this.emitter.emit(id, data)
-        break
+      const { id, type, data } = event.data
+      if (!id || !type) return
 
-      default:
-        console.error(`Received an invalid message type: ${type}`)
-    }
-  }
+      this.emitter.once(id, result => window.dispatchEvent(new CustomEvent(id, { detail: result })))
 
-  proxy (asset) {
-    return method => (...args) => new Promise((resolve, reject) => {
-      const id = Date.now() + '.' + Math.random()
-
-      // wait for the result
-      this.emitter.once(id, result => {
-        if (result.error) reject(new Error(result.error))
-        else resolve(result.result)
-      })
-
-      this.connection.postMessage({
+      this.background.postMessage({
         id,
-        type: 'CAL_REQUEST',
-        data: {
-          payload: { asset, method, args }
-        }
+        type,
+        data
       })
-    })
+    }, false)
+  }
+
+  onMessage ({ id, data }) {
+    console.log('onMessage', { id, data })
+
+    this.emitter.emit(id, data)
   }
 }
 

@@ -11,6 +11,9 @@ import { importWallet } from './importWallet'
 import { injectedProvider } from './injectedProvider'
 import { newSwap } from './newSwap'
 import { performNextAction } from './performNextAction'
+import { replyOriginAccess } from './replyOriginAccess'
+import { replyPremission } from './replyPremission'
+import { requestOriginAccess } from './requestOriginAccess'
 import { sendTransaction } from './sendTransaction'
 import { unlockWallet } from './unlockWallet'
 import { updateBalances } from './updateBalances'
@@ -30,6 +33,9 @@ export {
   injectedProvider,
   newSwap,
   performNextAction,
+  replyOriginAccess,
+  replyPremission,
+  requestOriginAccess,
   sendTransaction,
   unlockWallet,
   updateBalances,
