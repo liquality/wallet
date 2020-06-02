@@ -1,3 +1,23 @@
+function proxy (type, data) {
+  return new Promise((resolve, reject) => {
+    const id = Date.now() + '.' + Math.random()
+
+    window.addEventListener(id, ({ detail }) => {
+      if (detail.error) reject(new Error(detail.error))
+      else resolve(detail.result)
+    }, {
+      once: true,
+      passive: true
+    })
+
+    window.postMessage({
+      id,
+      type,
+      data
+    }, '*')
+  })
+}
+
 class InjectedProvider {
   constructor (asset) {
     this.asset = asset
@@ -6,26 +26,10 @@ class InjectedProvider {
   setClient () {}
 
   getMethod (method) {
-    return (...args) => new Promise((resolve, reject) => {
-      const id = Date.now() + '.' + Math.random()
-
-      window.addEventListener(id, ({ detail }) => {
-        if (detail.error) reject(new Error(detail.error))
-        else resolve(detail.result)
-      }, {
-        once: true,
-        passive: true
-      })
-
-      window.postMessage({
-        type: 'CAL_REQUEST',
-        payload: {
-          id,
-          asset: this.asset,
-          method,
-          args
-        }
-      }, '*')
+    return (...args) => proxy('CAL_REQUEST', {
+      asset: this.asset,
+      method,
+      args
     })
   }
 }
@@ -41,6 +45,10 @@ class ProviderManager {
     this.cache[asset] = new InjectedProvider(asset)
 
     return this.cache[asset]
+  }
+
+  enable () {
+    return proxy('ENABLE_REQUEST')
   }
 }
 

@@ -6,6 +6,20 @@ svg {
   vertical-align: top;
 }
 
+html, body {
+  font-size: 16px;
+}
+
+#app {
+  min-width: 660px;
+  max-width: 100%;
+
+  &.popup {
+    min-width: auto;
+    max-width: 100%;
+  }
+}
+
 .login-wrapper {
   display: flex;
 

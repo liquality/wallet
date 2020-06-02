@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.1.1",
+  "version": "0.1.4",
   "private": true,
   "repository": {
     "type": "git",
@@ -39,6 +39,7 @@
     "lodash-es": "^4.17.15",
     "moment": "^2.25.3",
     "qrcode": "^1.4.4",
+    "qs": "^6.9.4",
     "uuid": "^8.1.0",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
