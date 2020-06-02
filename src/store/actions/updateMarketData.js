@@ -58,14 +58,18 @@ export const updateMarketData = async ({ commit, getters }, { network }) => {
 
   const marketData = networkAssets.reduce((acc, asset) => {
     acc[asset] = pairMarkets
-      .filter(market => market.to === asset)
+      .filter(market => { 
+        return market.from === asset
+      })
       .reduce((acc, market) => {
         market.markets.sort((a, b) => BN(a).minus(b).toNumber())
 
-        acc[market.from] = market
+        
+        acc[market.to] = market
 
-        delete acc[market.from].to
-        delete acc[market.from].from
+        const to = market.to
+        delete acc[to].to
+        delete acc[to].from
 
         return acc
       }, {})

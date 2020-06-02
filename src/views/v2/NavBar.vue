@@ -1,6 +1,6 @@
 <template>
   <div class="navbar d-flex justify-content-between">
-    <div class="navbar_prev"><ChevronLeftIcon class="navbar_prev_icon" />Back</div>
+    <div class="navbar_prev" @click="$router.go(-1)"><ChevronLeftIcon class="navbar_prev_icon" />Back</div>
     <div class="navbar_title">MY WALLET</div>
     <div class="navbar_lock">Lock<LockIcon class="navbar_lock_icon" /></div>
   </div>

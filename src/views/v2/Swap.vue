@@ -25,36 +25,36 @@
           <input type="number" class="form-control" id="amount" readonly v-model="toAmount" placeholder="0.00">
           <div class="input-group-append">
             <span class="input-group-text">
-              <select class="custom-select">
-                <option>BTC</option>
+              <select class="custom-select" @change="setToAsset($event.target.value)" v-model="toAsset">
+                <option v-for="to in toAssets" :key="to">{{to}}</option>
               </select>
             </span>
           </div>
         </div>
         <small class="form-text d-flex justify-content-between">
           <div class="swap_limits">
-            <a href="#">+ Receive at external address</a>
+            <a href="#" @click="enterSendToAddress = true">+ Receive at external address</a>
           </div>
         </small>
 
       </div>
-      <div class="form-group">
-        <label class="w-100" for="amount">Receive at <a href="#" class="text-muted float-right">X</a></label>
+      <div class="form-group" v-if="enterSendToAddress">
+        <label class="w-100" for="amount">Receive at <a href="#" class="text-muted float-right" @click="enterSendToAddress = false; sendTo = null">X</a></label>
         <div class="input-group">
           <div class="input-group">
-            <input type="text" class="form-control form-control-sm" id="to" placeholder="External Receiving Address">
+            <input type="text" v-model="sendTo" class="form-control form-control-sm" id="to" placeholder="External Receiving Address">
           </div>
         </div>
       </div>
 
       <div class="swap_rate form-group">
         <label>Rate</label>
-        <p><span class="swap-rate_base">1 {{toAsset}} =</span><span class="swap-rate_value">&nbsp;{{bestRateBasedOnAmount}}</span><span class="swap-rate_term">&nbsp;{{asset}}</span></p>
+        <p><span class="swap-rate_base">1 {{asset}} =</span><span class="swap-rate_value">&nbsp;{{bestRateBasedOnAmount}}</span><span class="swap-rate_term">&nbsp;{{toAsset}}</span></p>
       </div>
     </div>
     <div class="wrapper_bottom">
       <SwapInfo />
-      <router-link to="/account/btc/swap/confirm"><button class="btn btn-primary btn-lg btn-block">Review Terms</button></router-link>
+      <button class="btn btn-primary btn-lg btn-block" @click="buy" :disabled="!bestMarketBasedOnAmount || !canBuy">Review Terms</button>
     </div>
   </div>
 </template>
@@ -86,6 +86,7 @@ export default {
   created () {
     this.toAsset = Object.keys(this.selectedMarket)[0]
     this.amount = this.min
+    this.updateMarketData({network: this.activeNetwork})
   },
   computed: {
     ...mapState(['activeNetwork', 'marketData', 'balances', 'activeWalletId']),
@@ -95,7 +96,9 @@ export default {
     networkWalletBalances () {
       return this.balances[this.activeNetwork][this.activeWalletId]
     },
-
+    toAssets () {
+      return Object.keys(this.selectedMarket)
+    },
     bestAgent () {
       return this.bestMarketBasedOnAmount.agent
     },
@@ -138,7 +141,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['newSwap']),
+    ...mapActions(['newSwap', 'updateMarketData']),
     dpUI,
     prettyBalance,
     setAmount (amount) {
@@ -146,26 +149,24 @@ export default {
 
       this.amount = amount
     },
+    setToAsset (val) {
+      this.toAsset = val
+    },
     async buy () {
-      this.loading = true
-
-      const fromAmount = cryptoassets[this.payAsset.toLowerCase()].currencyToUnit(this.youPay)
+      const fromAmount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.amount)
 
       await this.newSwap({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
         agent: this.bestAgent,
-        from: this.payAsset,
-        to: this.asset,
+        from: this.asset,
+        to: this.toAsset,
         fromAmount,
         sendTo: this.sendTo,
         auto: false
       })
 
-      this.autoAsset = null
-      this.buyAsset = null
-
-      this.$emit('close')
+      this.$router.replace(`/account/${this.asset}`)
     }
   }
 }

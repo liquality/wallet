@@ -17,7 +17,7 @@
         <div class="account_title">Transactions</div>
       </div>
       <div class="account_transactions">
-        <Transaction v-for="(item) in assetHistory" :key="item.id" v-bind:asset="item.from" v-bind:amount="getTransactionAmount(item)" v-bind:type="item.type" v-bind:title="getTransactionTitle(item)" v-bind:timestamp="item.startTime" v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)" v-bind:step="getTransactionStep(item)" />
+        <Transaction v-for="(item) in assetHistory" :key="item.id" v-bind:asset="item.from" v-bind:amount="getTransactionAmount(item)" v-bind:type="item.type" v-bind:title="getTransactionTitle(item)" v-bind:timestamp="item.startTime" v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)" v-bind:step="getTransactionStep(item)" v-bind:numSteps="getTransactionNumSteps(item)" />
         <!-- <Transaction asset="BTC" v-bind:amount="0.04522" type="receive" title="Receive BTC" v-bind:timestamp="1589147004" v-bind:confirmed="false" />
         <Transaction asset="BTC" v-bind:amount="0.01092" type="swap" title="Swap BTC to ETH" v-bind:timestamp="1589123946" v-bind:confirmed="false" v-bind:step="1" v-bind:numSteps="3" />
         <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
@@ -84,7 +84,7 @@ export default {
       return item.type === 'SWAP' ? ORDER_STATUS_MAP[item.status] : undefined
     },
     getTransactionNumSteps (item) {
-      if (item.type !== 'SAWP') {
+      if (item.type !== 'SWAP') {
         return undefined
       }
 
@@ -104,9 +104,6 @@ export default {
     getTransactionAmount (item) {
       return prettyBalance(item.type === 'SWAP' ? item.fromAmount : item.amount, item.from)
     }
-  },
-  async created () {
-    console.log(this.balances)
   }
 }
 </script>
