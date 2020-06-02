@@ -153,20 +153,9 @@ export default {
       this.toAsset = val
     },
     async buy () {
-      const fromAmount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.amount)
-
-      await this.newSwap({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        agent: this.bestAgent,
-        from: this.asset,
-        to: this.toAsset,
-        fromAmount,
-        sendTo: this.sendTo,
-        auto: false
-      })
-
-      this.$router.replace(`/account/${this.asset}`)
+      this.$router.push({ name: 'SwapConfirm', params: { 
+        agent: this.bestAgent, asset: this.asset, toAsset: this.toAsset, amount: this.amount, toAmount: this.toAmount, rate: this.bestRateBasedOnAmount, sendTo: this.sendTo
+      } })
     }
   }
 }

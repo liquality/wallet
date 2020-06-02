@@ -16,6 +16,7 @@ export const sendTransaction = async ({ commit, getters }, { network, walletId, 
     amount,
     txHash,
 
+    startTime: Date.now(),
     status: 'SUCCESS'
   }
 

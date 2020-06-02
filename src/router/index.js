@@ -50,8 +50,10 @@ const routes = [
     props: true
   },
   {
+    name: 'SendConfirm',
     path: '/account/:asset/send/confirm',
-    component: SendConfirm
+    component: SendConfirm,
+    props: true
   },
   {
     path: '/account/:asset/receive',
@@ -64,8 +66,10 @@ const routes = [
     props: true
   },
   {
+    name: 'SwapConfirm',
     path: '/account/:asset/swap/confirm',
-    component: SwapConfirm
+    component: SwapConfirm,
+    props: true
   }
 ]
 

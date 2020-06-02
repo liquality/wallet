@@ -71,23 +71,9 @@ export default {
       this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
     },
     async send () {
-      this.loading = true
-
-      const amount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.sendAmount).toNumber()
-
-      await this.sendTransaction({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        asset: this.asset,
-        amount,
-        to: this.sendAddress,
-        from: this.address
-      })
-
-      this.sendAddress = null
-      this.sendAmount = null
-      
-      this.$router.replace(`/account/${this.asset}`)
+      this.$router.push({ name: 'SendConfirm', params: {
+        asset: this.asset, sendAddress: this.sendAddress, sendAmount: this.sendAmount
+      } })
     }
   }
 
