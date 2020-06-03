@@ -9,7 +9,8 @@ class Background {
     this.subscribeToMutations()
 
     handleConnection(connection => {
-      const isInternal = connection.sender.origin === `chrome-extension://${getAppId()}`
+      const { origin } = connection.sender
+      const isInternal = origin === `chrome-extension://${getAppId()}` || origin === `moz-extension://${getAppId()}`
 
       if (isInternal) {
         this.onInternalConnection(connection)

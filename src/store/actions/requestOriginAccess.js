@@ -7,7 +7,7 @@ export const requestOriginAccess = async ({ commit }, { origin }) => {
       else reject(new Error('User denied'))
     })
 
-    chrome.windows.create({
+    browser.windows.create({
       url: `./index.html#/enable/${origin}`,
       focused: true,
       type: 'popup',
