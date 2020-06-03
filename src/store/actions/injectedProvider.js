@@ -35,7 +35,7 @@ export const injectedProvider = async ({ state, getters }, { asset, method, args
         args: JSON.stringify(args)
       })
 
-      chrome.windows.create({
+      browser.windows.create({
         url: `./index.html#/permission?${query}`,
         focused: true,
         type: 'popup',
