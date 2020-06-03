@@ -1,38 +1,24 @@
 <template>
-  <div id="app">
-    <NavBar v-if="!['/', '/open', '/create', '/backup'].includes($route.path)" />
-    <router-view />
+  <div id="app" v-if="brokerReady">
+    <div v-if="!termsAcceptedAt || !keyUpdatedAt">
+      <OnboardingHome v-if="!termsAcceptedAt" />
+      <OnboardingPassword v-else-if="termsAcceptedAt && !keyUpdatedAt" />
+    </div>
+    <router-view v-else />
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
-import Cover from '@/components/Cover.vue'
-import Pacman from '@/components/Pacman.vue'
-
-import NavBar from '@/views/v2/NavBar.vue'
+import OnboardingHome from './views/Onboarding/OnboardingHome.vue'
+import OnboardingPassword from './views/Onboarding/OnboardingPassword.vue'
 
 export default {
-  computed: mapState(['unlockedAt']),
   components: {
-    NavBar
+    OnboardingHome,
+    OnboardingPassword
   },
-  watch: {
-    unlockedAt: function (unlocked) {
-      if (unlocked) this.$router.replace('/wallet')
-    }
-  }
+  computed: mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt'])
 }
 </script>
-
-<style lang="scss">
-#app {
-  width: 375px;
-  height: 694px;
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  overflow: hidden;
-}
-</style>

@@ -8,9 +8,9 @@ import { isBackgroundScript } from './utils'
 const Broker = state => {
   if (isBackgroundScript(window)) {
     const vuexPersist = new VuexPersist({
-      key: 'liquality-wallet-dev-10',
+      key: 'liquality-wallet-dev-14',
       storage: window.localStorage,
-      reducer: s => omit(s, ['unlockedAt', 'wallets'])
+      reducer: s => omit(s, ['key', 'wallets', 'unlockedAt']) // do not persist these states
     })
 
     return {

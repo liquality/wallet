@@ -1,9 +1,14 @@
 <template>
   <div class="wallet">
-    <div class="wallet_stats">4 Assets</div>
+    <div v-if="networkWalletBalances" class="wallet_stats">{{Object.keys(networkWalletBalances).length}} Assets</div>
     <div class="wallet_accounts" v-if="networkWalletBalances">
       <router-link v-for="(balance, asset) in networkWalletBalances" :key="asset" v-bind:to="'/account/' + asset" >
-        <AccountItem v-bind:asset="asset" v-bind:balance="balance" />
+        <div class="account-item d-flex align-items-center">
+          <img :src="'./img/' + asset.toLowerCase() + '.png'" class="account-item_icon" />
+          <div class="account-item_name flex-fill">{{asset}}</div>
+          <div class="account-item_balance">{{prettyBalance(balance, asset)}} {{asset}}</div>
+          <ChevronRightIcon class="account-item_chevron" />
+        </div>
       </router-link>
     </div>
   </div>
@@ -12,14 +17,15 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { NetworkAssets } from '@/store/factory/client'
-import AccountItem from '@/components/v2/AccountItem'
+import { prettyBalance } from '@/utils/coinFormatter'
+import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 
 export default {
   components: {
-    AccountItem
+    ChevronRightIcon
   },
   computed: {
-    ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'wallets']),
+    ...mapState(['activeNetwork', 'balances', 'activeWalletId']),
     networkAssets () {
       return NetworkAssets[this.activeNetwork]
     },
@@ -31,11 +37,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['changeActiveWalletId', 'updateBalances'])
+    ...mapActions(['changeActiveWalletId', 'updateBalances']),
+    prettyBalance
   },
   async created () {
-    await this.changeActiveWalletId({ walletId: this.wallets[0].id })
-    this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
+    // await this.changeActiveWalletId({ walletId: activeWalletId })
+    // this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
   }
 }
 </script>
@@ -60,6 +67,34 @@ export default {
     a:hover {
       text-decoration: none;
     }
+  }
+}
+
+.account-item {
+  width: 100%;
+  border-bottom: 1px solid $hr-border-color;
+  height: 60px;
+  padding: 16px 30px;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  &_icon {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+  }
+
+  &_balance {
+    width: 120px;
+    text-align: right;
+    margin-right: 20px;
+  }
+
+  &_chevron {
+    margin-bottom: 2px;
   }
 }
 </style>

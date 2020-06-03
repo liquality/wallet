@@ -11,10 +11,12 @@ import { importWallet } from './importWallet'
 import { injectedProvider } from './injectedProvider'
 import { newSwap } from './newSwap'
 import { performNextAction } from './performNextAction'
+import { proxyMutation } from './proxyMutation'
 import { replyOriginAccess } from './replyOriginAccess'
 import { replyPremission } from './replyPremission'
 import { requestOriginAccess } from './requestOriginAccess'
 import { sendTransaction } from './sendTransaction'
+import { setupWallet } from './setupWallet'
 import { unlockWallet } from './unlockWallet'
 import { updateBalances } from './updateBalances'
 import { updateMarketData } from './updateMarketData'
@@ -33,10 +35,12 @@ export {
   injectedProvider,
   newSwap,
   performNextAction,
+  proxyMutation,
   replyOriginAccess,
   replyPremission,
   requestOriginAccess,
   sendTransaction,
+  setupWallet,
   unlockWallet,
   updateBalances,
   updateMarketData

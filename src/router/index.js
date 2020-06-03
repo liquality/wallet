@@ -19,7 +19,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: Splash
+    component: Wallet
   },
   {
     path: '/open',

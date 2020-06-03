@@ -4,19 +4,25 @@
 // marketData.network
 
 export default {
+  // <do not keep these in localStorage>
+  key: null,
+  wallets: [],
+  unlockedAt: null,
+  // </do not keep these in localStorage>
+
   brokerReady: true,
 
-  key: null,
-  unlockedAt: null,
-  wallets: null,
-
-  encryptedWallets: '{"ct":"9Rp1KZNtO13B62AWlFRIYVDbTAiT/kwuxqUrHoC6gxIb9KG1jjaoeS22fRzBQAUg2VKSAo+JN15hNxyJXSunqDqFpIJQrhfZj8q7VOmV79mS+Xnl9bvFMDlO2q7prehiGR1cHDJQA6xl9QRvIh4aX72khWq3MwAE17jEBinN4onA+MnJJ9LGmgw/VcQ9voigOXPSNRlYGwipfTIo+86aXh7H7O3xpBn9klPrbJdpivQ=","iv":"758ab3ce68c61609eb05497500097661","s":"f17044ed4ca86860"}', // 123
-
+  encryptedWallets: null,
   addresses: {},
   balances: {},
   history: {},
   marketData: {},
 
   activeNetwork: 'testnet',
-  activeWalletId: null
+  activeWalletId: null,
+  activeAsset: null,
+
+  keyUpdatedAt: null,
+  termsAcceptedAt: null,
+  setupAt: null
 }

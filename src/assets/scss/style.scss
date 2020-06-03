@@ -10,14 +10,31 @@ html, body {
   font-size: 16px;
 }
 
+.max-width-250 {
+  max-width: 250px;
+}
+
 #app {
-  min-width: 660px;
-  max-width: 100%;
+  width: 375px;
+  height: 690px;
+
+  // #app {
+  //   width: 375px;
+  //   height: 694px;
+  //   display: flex;
+  //   flex-direction: column;
+  //   background: #ffffff;
+  //   overflow: hidden;
+  // }
 
   &.popup {
     min-width: auto;
     max-width: 100%;
   }
+}
+
+.brand-gradient {
+  background: $brand-gradient-secondary;
 }
 
 .login-wrapper {
@@ -86,7 +103,7 @@ html, body {
     &_value {
       font-size: 18px;
     }
-    
+
     margin-bottom: 0;
   }
 }
@@ -116,6 +133,10 @@ html, body {
       stroke: $color-text-secondary;
     }
   }
+}
+
+.btn-border {
+  border: 1px solid #9D4DFA;
 }
 
 .icon-fill-primary {
