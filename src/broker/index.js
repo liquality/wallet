@@ -10,7 +10,7 @@ const Broker = state => {
     const vuexPersist = new VuexPersist({
       key: 'liquality-wallet-dev-10',
       storage: window.localStorage,
-      reducer: s => omit(s, ['unlockedAt', 'wallets'])
+      reducer: s => omit(s, ['key', 'unlockedAt', 'wallets'])
     })
 
     return {

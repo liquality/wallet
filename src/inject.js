@@ -3,8 +3,9 @@ function proxy (type, data) {
     const id = Date.now() + '.' + Math.random()
 
     window.addEventListener(id, ({ detail }) => {
-      if (detail.error) reject(new Error(detail.error))
-      else resolve(detail.result)
+      const response = JSON.parse(detail)
+      if (response.error) reject(new Error(response.error))
+      else resolve(response.result)
     }, {
       once: true,
       passive: true

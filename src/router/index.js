@@ -33,7 +33,7 @@ const routes = [
     component: Wallet
   },
   {
-    path: '/enable/*',
+    path: '/enable',
     component: Enable
   },
   {

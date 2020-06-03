@@ -1,4 +1,7 @@
+import { stringify } from 'qs'
+
 import { emitter } from '../utils'
+import { createPopup } from '../../broker/utils'
 
 export const requestOriginAccess = async ({ commit }, { origin }) => {
   return new Promise((resolve, reject) => {
@@ -7,12 +10,8 @@ export const requestOriginAccess = async ({ commit }, { origin }) => {
       else reject(new Error('User denied'))
     })
 
-    browser.windows.create({
-      url: `./index.html#/enable/${origin}`,
-      focused: true,
-      type: 'popup',
-      height: 600,
-      width: 360
-    })
+    const query = stringify({ origin })
+
+    createPopup(`/enable?${query}`)
   })
 }

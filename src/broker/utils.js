@@ -16,6 +16,23 @@ export const isBackgroundScript = context => {
 
 export const getAppId = () => browser.runtime.id
 
+export const getRootURL = () => browser.runtime.getURL('/')
+
+export const createPopup = url => {
+  const options = {
+    url: `./index.html#${url}`,
+    type: 'popup',
+    height: 600,
+    width: 360
+  }
+
+  if (!getRootURL().startsWith('moz-')) {
+    options.focused = true
+  }
+
+  browser.windows.create(options)
+}
+
 export const connectToBackground = name => browser.runtime.connect({ name })
 
 export const handleConnection = callback => browser.runtime.onConnect.addListener(callback)

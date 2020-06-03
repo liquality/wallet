@@ -1,4 +1,4 @@
-import { BG_PREFIX, handleConnection, removeConnectId, getAppId } from './utils'
+import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 
 class Background {
   constructor (store) {
@@ -9,8 +9,8 @@ class Background {
     this.subscribeToMutations()
 
     handleConnection(connection => {
-      const { origin } = connection.sender
-      const isInternal = origin === `chrome-extension://${getAppId()}` || origin === `moz-extension://${getAppId()}`
+      const { url } = connection.sender
+      const isInternal = url.startsWith(getRootURL())
 
       if (isInternal) {
         this.onInternalConnection(connection)
@@ -117,7 +117,9 @@ class Background {
   onExternalMessage (connection, { id, type, data }) {
     console.log('onExternalMessage', { id, type, data })
 
-    const { origin } = connection.sender
+    const { url } = connection.sender
+    const { origin } = new URL(url)
+
     const entry = this.externalConnectionApprovalMap[origin]
 
     switch (type) {
