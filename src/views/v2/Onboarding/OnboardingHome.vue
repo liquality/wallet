@@ -1,5 +1,5 @@
 <template>
-  <div class="onboading-home">
+  <div class="onboading-home login-wrapper">
     <div class="onboading-home_header">
       <LogoWallet />
     </div>
@@ -9,8 +9,8 @@
         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
       </div>
       <div class="onboading-home_tnc__actions">
-        <button class="btn btn-primary btn-lg btn-block mb-2" @click="acceptTnC">I accept</button>
-        <button class="btn btn-light btn-border btn-lg btn-block" @click="cancel">Cancel</button>
+        <button class="btn btn-primary btn-lg btn-block mb-2" @click="acceptTnC">I Accept</button>
+        <button class="btn btn-light btn-outline-primary btn-lg btn-block btn-icon" @click="$router.go(-1)">Cancel</button>
       </div>
     </div>
   </div>
@@ -31,9 +31,7 @@ export default {
       this.proxyMutation({
         type: 'ACCEPT_TNC'
       })
-    },
-    cancel () {
-      window.close()
+      this.$router.push('/onboarding/password')
     }
   }
 }
@@ -41,36 +39,24 @@ export default {
 
 <style lang="scss">
 .onboading-home {
-  padding: 20px;
-  background: $brand-gradient-secondary;
-
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+  padding: 70px 0 0 0 !important;
 
   &_header {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
     flex-grow: 1;
   }
 
   &_tnc {
+    background: #FFFFFF;
+    color: $color-text-primary;
+    padding: $wrapper-padding;
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
     text-align: center;
 
-    margin: -20px;
-    padding: 20px;
-    background: #fff;
-
     &__text {
-      max-height: 300px;
+      max-height: 200px;
       overflow-y: auto;
       text-align: left;
     }

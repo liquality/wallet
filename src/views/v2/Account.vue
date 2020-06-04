@@ -5,6 +5,7 @@
     </div>
     <div class="account_main">
       <div class="account_top">
+        <RefreshIcon @click="refresh" class="account_refresh-icon" />
         <div class="account_balance">
           <span class="account_balance_value">{{balance}}</span>
           <span class="account_balance_code">{{asset}}</span>
@@ -18,14 +19,6 @@
       </div>
       <div class="account_transactions">
         <Transaction v-for="(item) in assetHistory" :key="item.id" v-bind:asset="item.from" v-bind:amount="getTransactionAmount(item)" v-bind:type="item.type" v-bind:title="getTransactionTitle(item)" v-bind:timestamp="item.startTime" v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)" v-bind:step="getTransactionStep(item)" v-bind:numSteps="getTransactionNumSteps(item)" />
-        <!-- <Transaction asset="BTC" v-bind:amount="0.04522" type="receive" title="Receive BTC" v-bind:timestamp="1589147004" v-bind:confirmed="false" />
-        <Transaction asset="BTC" v-bind:amount="0.01092" type="swap" title="Swap BTC to ETH" v-bind:timestamp="1589123946" v-bind:confirmed="false" v-bind:step="1" v-bind:numSteps="3" />
-        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
-        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
-        <Transaction asset="BTC" v-bind:amount="0.04522" type="receive" title="Receive BTC" v-bind:timestamp="1589147004" v-bind:confirmed="true" />
-        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
-        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" />
-        <Transaction asset="BTC" v-bind:amount="0.252932" type="send" title="Send BTC" v-bind:timestamp="1589147122" v-bind:confirmed="true" /> -->
       </div>
     </div>
   </div>
@@ -33,13 +26,12 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import Transaction from '@/components/v2/Transaction'
-import { dpUI, prettyBalance } from '@/utils/coinFormatter'
-import cryptoassets from '@liquality/cryptoassets'
-
+import { prettyBalance } from '@/utils/coinFormatter'
 
 const ORDER_STATUS_MAP = {
   QUOTE: 1,
@@ -54,6 +46,7 @@ const ORDER_STATUS_MAP = {
 
 export default {
   components: {
+    RefreshIcon,
     SendIcon,
     ReceiveIcon,
     SwapIcon,
@@ -61,7 +54,7 @@ export default {
   },
   props: ['asset'],
   computed: {
-    ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'history']),
+    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history']),
     balance () {
       if (!this.balances[this.activeNetwork]) return false
       if (!this.balances[this.activeNetwork][this.activeWalletId]) return false
@@ -80,6 +73,9 @@ export default {
   },
   methods: {
     ...mapActions(['updateBalances']),
+    refresh () {
+      this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
+    },
     getTransactionStep (item) {
       return item.type === 'SWAP' ? ORDER_STATUS_MAP[item.status] : undefined
     },
@@ -138,6 +134,7 @@ export default {
     background: $brand-gradient-primary;
     color: $color-text-secondary;
     border-bottom: 1px solid #41DCCB;
+    position: relative;
   }
 
   &_balance {
@@ -158,6 +155,18 @@ export default {
     }
   }
 
+  &_refresh-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    path {
+      fill: $color-text-secondary;
+    }
+  }
+
   &_actions {
     display: flex;
     justify-content: space-between;
@@ -165,7 +174,6 @@ export default {
     width: 170px;
     margin: 0 auto;
     padding: 34px 0;
-    
 
     &_button {
       display: flex;

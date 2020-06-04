@@ -10,9 +10,12 @@
         <p class="confirm-value">{{shortenAddress(this.sendAddress)}}</p>
       </div>
     </div>
-    
+
     <div class="wrapper_bottom">
-      <button class="btn btn-primary btn-lg btn-block btn-icon" @click="send"><SendIcon /> Send</button>
+      <div class="button-group">
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+        <button class="btn btn-primary btn-lg btn-icon" @click="send"><SendIcon /> Send</button>
+      </div>
     </div>
   </div>
 </template>
@@ -24,7 +27,7 @@ import { shortenAddress } from '../../utils/address'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 
 export default {
-  
+
   components: {
     SendIcon
   },
@@ -49,7 +52,7 @@ export default {
         to: this.sendAddress,
         from: this.address
       })
-      
+
       this.$router.replace(`/account/${this.asset}`)
     }
   }

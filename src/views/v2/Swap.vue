@@ -42,7 +42,7 @@
         <label class="w-100" for="amount">Receive at <a href="#" class="text-muted float-right" @click="enterSendToAddress = false; sendTo = null">X</a></label>
         <div class="input-group">
           <div class="input-group">
-            <input type="text" v-model="sendTo" class="form-control form-control-sm" id="to" placeholder="External Receiving Address">
+            <input type="text" v-model="sendTo" class="form-control form-control-sm" id="to" placeholder="External Receiving Address" autocomplete="off">
           </div>
         </div>
       </div>
@@ -53,24 +53,21 @@
       </div>
     </div>
     <div class="wrapper_bottom">
-      <SwapInfo />
-      <button class="btn btn-primary btn-lg btn-block" @click="buy" :disabled="!bestMarketBasedOnAmount || !canBuy">Review Terms</button>
+      <div class="button-group">
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+        <button class="btn btn-primary btn-lg" @click="swap" :disabled="!bestMarketBasedOnAmount || !canSwap">Review Terms</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import SwapInfo from '@/components/v2/SwapInfo'
 import BN from 'bignumber.js'
-import cryptoassets from '@liquality/cryptoassets'
 
 import { dpUI, prettyBalance } from '@/utils/coinFormatter'
 
 export default {
-  components: {
-    SwapInfo
-  },
   data () {
     return {
       amount: 0,
@@ -86,7 +83,7 @@ export default {
   created () {
     this.toAsset = Object.keys(this.selectedMarket)[0]
     this.amount = this.min
-    this.updateMarketData({network: this.activeNetwork})
+    this.updateMarketData({ network: this.activeNetwork })
   },
   computed: {
     ...mapState(['activeNetwork', 'marketData', 'balances', 'activeWalletId']),
@@ -129,7 +126,7 @@ export default {
     selectedMarket () {
       return this.networkMarketData[this.asset]
     },
-    canBuy () {
+    canSwap () {
       const amount = BN(this.safeAmount)
 
       if (amount.gt(this.max) || amount.lt(this.min) || amount.gt(this.balance)) return false
@@ -152,10 +149,13 @@ export default {
     setToAsset (val) {
       this.toAsset = val
     },
-    async buy () {
-      this.$router.push({ name: 'SwapConfirm', params: { 
-        agent: this.bestAgent, asset: this.asset, toAsset: this.toAsset, amount: this.amount, toAmount: this.toAmount, rate: this.bestRateBasedOnAmount, sendTo: this.sendTo
-      } })
+    async swap () {
+      this.$router.push({
+        name: 'SwapConfirm',
+        params: {
+          agent: this.bestAgent, asset: this.asset, toAsset: this.toAsset, amount: this.amount, toAmount: this.toAmount, rate: this.bestRateBasedOnAmount, sendTo: this.sendTo
+        }
+      })
     }
   }
 }
@@ -163,6 +163,6 @@ export default {
 
 <style lang="scss">
 .swap {
-  
+
 }
 </style>

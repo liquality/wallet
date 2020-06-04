@@ -1,13 +1,12 @@
 import { changeActiveWalletId } from './changeActiveWalletId'
+import { changeActiveNetwork } from './changeActiveNetwork'
 import { changePassword } from './changePassword'
 import { checkIfQuoteExpired } from './checkIfQuoteExpired'
 import { checkIfSwapHasExpired } from './checkIfSwapHasExpired'
 import { checkPendingSwaps } from './checkPendingSwaps'
 import { clientExec } from './clientExec'
-import { generateWallet } from './generateWallet'
 import { getLockForAsset } from './getLockForAsset'
 import { getUnusedAddresses } from './getUnusedAddresses'
-import { importWallet } from './importWallet'
 import { injectedProvider } from './injectedProvider'
 import { newSwap } from './newSwap'
 import { performNextAction } from './performNextAction'
@@ -17,21 +16,22 @@ import { replyPremission } from './replyPremission'
 import { requestOriginAccess } from './requestOriginAccess'
 import { sendTransaction } from './sendTransaction'
 import { setupWallet } from './setupWallet'
+import { createWallet } from './createWallet'
 import { unlockWallet } from './unlockWallet'
+import { lockWallet } from './lockWallet'
 import { updateBalances } from './updateBalances'
 import { updateMarketData } from './updateMarketData'
 
 export {
   changeActiveWalletId,
+  changeActiveNetwork,
   changePassword,
   checkIfQuoteExpired,
   checkIfSwapHasExpired,
   checkPendingSwaps,
   clientExec,
-  generateWallet,
   getLockForAsset,
   getUnusedAddresses,
-  importWallet,
   injectedProvider,
   newSwap,
   performNextAction,
@@ -41,7 +41,9 @@ export {
   requestOriginAccess,
   sendTransaction,
   setupWallet,
+  createWallet,
   unlockWallet,
+  lockWallet,
   updateBalances,
   updateMarketData
 }

@@ -1,24 +1,35 @@
 <template>
   <div id="app" v-if="brokerReady">
-    <div v-if="!termsAcceptedAt || !keyUpdatedAt">
-      <OnboardingHome v-if="!termsAcceptedAt" />
-      <OnboardingPassword v-else-if="termsAcceptedAt && !keyUpdatedAt" />
-    </div>
-    <router-view v-else />
+    <NavBar v-if="unlockedAt" />
+    <router-view />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 
-import OnboardingHome from './views/Onboarding/OnboardingHome.vue'
-import OnboardingPassword from './views/Onboarding/OnboardingPassword.vue'
+import NavBar from '@/views/v2/NavBar.vue'
 
 export default {
   components: {
-    OnboardingHome,
-    OnboardingPassword
+    NavBar
   },
-  computed: mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt'])
+  computed: mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
+  watch: {
+    unlockedAt: function (unlocked) {
+      if (unlocked) this.$router.replace('/wallet')
+    }
+  }
 }
 </script>
+
+<style lang="scss">
+#app {
+  width: 375px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  overflow: hidden;
+}
+</style>

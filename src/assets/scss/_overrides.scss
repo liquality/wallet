@@ -34,7 +34,7 @@ $red-light-4: #FACDCD;
 $red-light-5: #FFEEEE;
 
 $brand-gradient-primary: linear-gradient(180deg, #302E78 0%, #4866D3 52.08%, #2FAFCA 100%);
-$brand-gradient-secondary: linear-gradient(180deg, #302E78 0%, #4866D3 52.08%, #1CE4C3 100%);
+$brand-gradient-secondary: linear-gradient(360deg, #1CE4C3 -10.66%, #4866D3 31.99%, #302E78 81.56%);
 
 $color-primary: #9D4DFA;
 $color-secondary: #2CD2CF;
@@ -76,13 +76,15 @@ $info: $cyan-dark-4;
 $link-color: $color-primary;
 $link-hover-decoration: none;
 
-$input-btn-padding-y:         .415rem;
-$input-btn-padding-y-sm:      .275rem;
-$input-btn-padding-y-lg:      .6rem;
-$btn-padding-y-sm: 0.15rem;
+$input-btn-padding-y:    .415rem;
+$input-btn-padding-y-sm: .275rem;
+$input-btn-padding-y-lg: .6rem;
+$btn-padding-x-lg:       .6rem;
+$btn-padding-y-sm:       0.15rem;
 
 $input-focus-box-shadow: 0;
 $input-bg: transparent;
+$input-disabled-bg: transparent;
 $btn-border-width: 0;
 $btn-box-shadow: none;
 $btn-border-radius-lg: 22px;

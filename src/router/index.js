@@ -2,8 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Splash from '@/views/v2/Splash.vue'
+import OnboardingHome from '@/views/v2/Onboarding/OnboardingHome.vue'
+import OnboardingPassword from '@/views/v2/Onboarding/OnboardingPassword.vue'
+import ImportWallet from '@/views/v2/ImportWallet.vue'
 import UnlockWallet from '@/views/v2/UnlockWallet.vue'
-import CreateWallet from '@/views/v2/CreateWallet.vue'
 import BackupWallet from '@/views/v2/BackupWallet.vue'
 
 import Wallet from '@/views/v2/Wallet.vue'
@@ -19,21 +21,29 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    component: Wallet
+    component: Splash
+  },
+  {
+    path: '/onboarding',
+    component: OnboardingHome
+  },
+  {
+    name: 'OnboardingPassword',
+    path: '/onboarding/password',
+    component: OnboardingPassword,
+    props: true
+  },
+  {
+    path: '/onboarding/import',
+    component: ImportWallet
   },
   {
     path: '/open',
     component: UnlockWallet
   },
   {
-    path: '/create',
-    component: CreateWallet
-  },
-  {
-    name: 'Backup',
     path: '/backup',
-    component: BackupWallet,
-    props: true
+    component: BackupWallet
   },
   {
     path: '/wallet',

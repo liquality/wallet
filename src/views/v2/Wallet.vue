@@ -25,7 +25,7 @@ export default {
     ChevronRightIcon
   },
   computed: {
-    ...mapState(['activeNetwork', 'balances', 'activeWalletId']),
+    ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'wallets']),
     networkAssets () {
       return NetworkAssets[this.activeNetwork]
     },
@@ -37,12 +37,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['changeActiveWalletId', 'updateBalances']),
+    ...mapActions(['changeActiveWalletId']),
     prettyBalance
-  },
-  async created () {
-    // await this.changeActiveWalletId({ walletId: activeWalletId })
-    // this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
   }
 }
 </script>

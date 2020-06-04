@@ -1,11 +1,8 @@
 <template>
   <div class="backup-wallet login-wrapper no-outer-pad">
-    <div class="login-header">
-      <LogoWallet />
-    </div>
-    <div>
+    <div class="backup-wallet_top">
       <CompletedIcon class="backup-wallet_icon" />
-      <h5>{{ name }}</h5>
+      <h5>{{ wallet.name }}</h5>
       <h2>Backup your wallet</h2>
       <p>Back up your seed phrase in a secure location. It will not be displayed again.</p>
     </div>
@@ -13,24 +10,26 @@
       <div class="backup-wallet_seed">
         <span v-for="word in seedList" :key="word">{{ word }}</span>
       </div>
-      <router-link to="/open"><button class="btn btn-primary btn-lg btn-block btn-icon">Done</button></router-link>
+      <router-link to="/wallet"><button class="btn btn-primary btn-lg btn-block btn-icon">Done</button></router-link>
     </div>
   </div>
 </template>
 
 <script>
-import LogoWallet from '@/assets/icons/logo_wallet.svg'
+import { mapState } from 'vuex'
 import CompletedIcon from '@/assets/icons/completed.svg'
 
 export default {
   components: {
-    LogoWallet,
     CompletedIcon
   },
-  props: ['name', 'seed'],
   computed: {
+    ...mapState(['wallets', 'activeWalletId']),
+    wallet: function () {
+      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+    },
     seedList: function () {
-      return this.seed.split(' ')
+      return this.wallet.mnemonic.split(' ')
     }
   }
 }
@@ -38,7 +37,11 @@ export default {
 
 <style lang="scss">
 .backup-wallet {
-  padding: 70px 0 0 0 !important;
+  padding: 0 !important;
+
+  &_top {
+    flex-grow: 1;
+  }
 
   .backup-wallet_bottom {
     flex: 1;

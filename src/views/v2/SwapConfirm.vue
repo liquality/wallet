@@ -18,10 +18,14 @@
         <p><span class="swap-rate_base">1 {{asset}} =</span><span class="swap-rate_value">&nbsp;{{rate}}</span><span class="swap-rate_term">&nbsp;{{toAsset}}</span></p>
       </div>
     </div>
-    
+
     <div class="wrapper_bottom">
       <SwapInfo />
-      <button class="btn btn-primary btn-lg btn-block btn-icon" @click="send"><SwapIcon /> Initiate Swap</button>
+      <div class="button-group">
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+        <button class="btn btn-primary btn-lg btn-block btn-icon" @click="send"><SwapIcon /> Initiate Swap</button>
+      </div>
+
     </div>
   </div>
 </template>
@@ -60,7 +64,7 @@ export default {
         sendTo: this.sendTo,
         auto: false
       })
-      
+
       this.$router.replace(`/account/${this.asset}`)
     }
   }

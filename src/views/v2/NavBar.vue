@@ -1,26 +1,65 @@
 <template>
   <div class="navbar d-flex justify-content-between">
     <div class="navbar_prev" @click="$router.go(-1)"><ChevronLeftIcon class="navbar_prev_icon" />Back</div>
-    <div class="navbar_title">MY WALLET</div>
-    <div class="navbar_lock">Lock<LockIcon class="navbar_lock_icon" /></div>
+    <div class="navbar_title">{{wallet.name}}</div>
+    <div class="navbar_menu" @click="showMenu = !showMenu"><HamburgerIcon class="navbar_menu_icon" /></div>
+    <ul class="navbar_menu_list" v-if="showMenu">
+      <li @click="switchNetwork">Switch to {{inactiveNetwork}}</li>
+      <li @click="backup"><PaperIcon /> Backup</li>
+      <li @click="lock"><LockIcon class="lock_icon"/> Lock</li>
+    </ul>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
 
-import LockIcon from '@/assets/icons/lock.svg'
+import HamburgerIcon from '@/assets/icons/hamburger.svg'
 import ChevronLeftIcon from '@/assets/icons/chevron_left.svg'
+import LockIcon from '@/assets/icons/lock.svg'
+import PaperIcon from '@/assets/icons/paper.svg'
 
 export default {
   components: {
+    HamburgerIcon,
+    ChevronLeftIcon,
     LockIcon,
-    ChevronLeftIcon
+    PaperIcon
+  },
+  data () {
+    return { showMenu: false }
+  },
+  computed: {
+    ...mapState(['wallets', 'activeWalletId', 'activeNetwork']),
+    wallet: function () {
+      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+    },
+    inactiveNetwork: function () {
+      return this.activeNetwork === 'mainnet' ? 'testnet' : 'mainnet'
+    }
+  },
+  methods: {
+    ...mapActions(['lockWallet', 'changeActiveNetwork']),
+    async switchNetwork () {
+      this.showMenu = false
+      await this.changeActiveNetwork({ network: this.inactiveNetwork })
+    },
+    async lock () {
+      this.showMenu = false
+      await this.lockWallet()
+      this.$router.replace('/open')
+    },
+    backup () {
+      this.showMenu = false
+      this.$router.replace('/backup')
+    }
   }
 }
 </script>
 
 <style lang="scss">
 .navbar {
+  position: relative;
   height: 52px;
   padding: 17px;
   border-bottom: 1px solid $hr-border-color;
@@ -29,17 +68,52 @@ export default {
     font-weight: $headings-font-weight;
   }
 
-  &_lock, &_prev {
+  &_menu, &_prev {
     color: $color-text-muted;
     font-size: $font-size-sm;
     cursor: pointer;
   }
 
-  &_lock {
+  &_menu {
     &_icon {
-      margin-left: 7px;
-      width: 12px;
+      margin-left: 22px;
+      margin-top: 4px;
+      width: 18px;
+    }
+  }
 
+  &_menu_list {
+    position: absolute;
+    z-index: 3;
+    top: 51px;
+    right: 0;
+    list-style-type: none;
+    background: #ffffff;
+    border: 1px solid $hr-border-color;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      padding: 7px 20px;
+      border-bottom: 1px solid $hr-border-color;
+      cursor: pointer;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    svg {
+      height: 18px;
+      width: 20px;
+      object-fit: cover;
+      margin-right: 6px;
+    }
+
+    .lock_icon {
+      path {
+        fill: $color-text-primary;
+      }
     }
   }
 

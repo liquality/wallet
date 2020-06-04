@@ -8,9 +8,12 @@
         <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
       </div>
     </div>
-    
+
     <div class="wrapper_bottom">
-      <button class="btn btn-primary btn-lg btn-block btn-icon" @click="copy"><CopyIcon /> Copy Address</button>
+      <div class="button-group">
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+        <button class="btn btn-primary btn-lg btn-icon" @click="copy"><CopyIcon /> Copy Address</button>
+      </div>
     </div>
   </div>
 </template>
@@ -40,7 +43,7 @@ export default {
       if (!this.addresses[this.activeNetwork][this.activeWalletId][this.asset]) return false
 
       return this.addresses[this.activeNetwork][this.activeWalletId][this.asset]._address
-    },
+    }
   },
   async created () {
     const unusedAddress = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
@@ -61,13 +64,13 @@ export default {
   methods: {
     ...mapActions(['getUnusedAddresses']),
     copy () {
-      const copyText = document.querySelector(".receive_address");
-      const tempInput = document.createElement("input");
-      tempInput.value = copyText.innerHTML;
-      document.body.appendChild(tempInput);
-      tempInput.select();
-      document.execCommand("copy");
-      document.body.removeChild(tempInput);
+      const copyText = document.querySelector('.receive_address')
+      const tempInput = document.createElement('input')
+      tempInput.value = copyText.innerHTML
+      document.body.appendChild(tempInput)
+      tempInput.select()
+      document.execCommand('copy')
+      document.body.removeChild(tempInput)
     }
   }
 }
@@ -76,7 +79,8 @@ export default {
 <style lang="scss">
 .receive {
   &_qr {
-    margin-top: 30px;
+    margin: 30px auto 0 auto;
+    width: 300px;
   }
 }
 </style>

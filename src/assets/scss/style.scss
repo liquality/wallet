@@ -6,43 +6,20 @@ svg {
   vertical-align: top;
 }
 
-html, body {
-  font-size: 16px;
-}
-
-.max-width-250 {
-  max-width: 250px;
-}
-
 #app {
-  width: 375px;
-  height: 690px;
-
-  // #app {
-  //   width: 375px;
-  //   height: 694px;
-  //   display: flex;
-  //   flex-direction: column;
-  //   background: #ffffff;
-  //   overflow: hidden;
-  // }
-
   &.popup {
     min-width: auto;
     max-width: 100%;
   }
 }
 
-.brand-gradient {
-  background: $brand-gradient-secondary;
-}
-
 .login-wrapper {
   display: flex;
 
   flex: 1;
+  justify-content: space-between;
   text-align: center;
-  padding: 70px $wrapper-padding 70px $wrapper-padding;
+  padding: 70px $wrapper-padding 0 $wrapper-padding;
   flex-direction: column;
   background: $brand-gradient-secondary;
   color: $color-text-secondary;
@@ -59,6 +36,10 @@ html, body {
     color: $color-text-secondary;
     margin-bottom: 26px;
   }
+
+  a {
+    color: $color-text-secondary;
+  }
 }
 
 .login-header {
@@ -73,6 +54,15 @@ html, body {
 
   &_top {
     flex: 1;
+  }
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+
+  .btn {
+    width: 160px;
   }
 }
 
@@ -133,10 +123,6 @@ html, body {
       stroke: $color-text-secondary;
     }
   }
-}
-
-.btn-border {
-  border: 1px solid #9D4DFA;
 }
 
 .icon-fill-primary {

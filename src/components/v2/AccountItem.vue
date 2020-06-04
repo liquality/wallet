@@ -9,7 +9,6 @@
 
 <script>
 import cryptoassets from '@liquality/cryptoassets'
-import BN from 'bignumber.js'
 import { prettyBalance } from '@/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 
@@ -27,10 +26,36 @@ export default {
     },
     name: function () {
       return cryptoassets[this.asset.toLowerCase()].name
-    },
+    }
   },
   methods: {
     prettyBalance
   }
 }
 </script>
+
+<style lang="scss">
+.account-item {
+  width: 100%;
+  border-bottom: 1px solid $hr-border-color;
+  height: 60px;
+  padding: 16px 30px;
+  &:hover {
+    cursor: pointer;
+    text-decoration: none;
+  }
+  &_icon {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+  }
+  &_balance {
+    width: 120px;
+    text-align: right;
+    margin-right: 20px;
+  }
+  &_chevron {
+    margin-bottom: 2px;
+  }
+}
+</style>

@@ -17,7 +17,7 @@ export default {
     ClockIcon
   },
   computed: {
-    expiration: function() {
+    expiration: function () {
       return format(add(new Date(), { hours: 12 }), 'h:mm a')
     }
   }

@@ -6,19 +6,23 @@ const ensureNetworkWalletTree = (ref, network, walletId, initialValue) => {
 }
 
 export default {
-  SETUP_WALLET (state, { key, encryptedWallets, wallet }) {
+  SETUP_WALLET (state, { key }) {
     state.key = key
-    state.encryptedWallets = encryptedWallets
-    state.wallets.push(wallet)
-
-    state.setupAt = Date.now()
     state.keyUpdatedAt = Date.now()
+    state.setupAt = Date.now()
+  },
+  CREATE_WALLET (state, { encryptedWallets, wallet }) {
+    state.encryptedWallets = encryptedWallets
+    state.wallets = [wallet]
   },
   ACCEPT_TNC (state) {
     state.termsAcceptedAt = Date.now()
   },
   CHANGE_ACTIVE_WALLETID (state, { walletId }) {
     state.activeWalletId = walletId
+  },
+  CHANGE_ACTIVE_NETWORK (state, { network }) {
+    state.activeNetwork = network
   },
   CHANGE_PASSWORD (state, { key, encryptedWallets }) {
     state.key = key
@@ -34,10 +38,6 @@ export default {
     state.key = key
     state.wallets = wallets
     state.unlockedAt = unlockedAt
-  },
-  NEW_WALLET (state, { newWallet, encryptedWallets }) {
-    state.encryptedWallets = encryptedWallets
-    state.wallets.push(newWallet)
   },
   NEW_ORDER (state, { network, walletId, order }) {
     ensureNetworkWalletTree(state.history, network, walletId, [])

@@ -22,7 +22,6 @@
 <script>
 import moment from 'moment'
 import cryptoassets from '@liquality/cryptoassets'
-import BN from 'bignumber.js'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
@@ -65,11 +64,11 @@ export default {
 .transaction {
   height: 60px;
   padding: 12px 0;
-  border-bottom: 1px solid #D9DFE5;
+  border-bottom: 1px solid $hr-border-color;
   display: grid;
   grid-template-columns: 44px 1fr 1fr 60px;
   grid-template-rows: 1fr 1fr;
-  grid-template-areas: 
+  grid-template-areas:
   "icon action amount status"
   "icon time detail status";
   align-items: center;

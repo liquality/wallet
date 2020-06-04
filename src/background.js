@@ -15,7 +15,13 @@ store.subscribe(({ type, payload }, state) => {
 
       break
 
+    case 'CHANGE_ACTIVE_NETWORK':
+      store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
+
+      break
+
     case 'UNLOCK_WALLET':
+      store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateMarketData', { network: state.activeNetwork })
       store.dispatch('checkPendingSwaps')
 
