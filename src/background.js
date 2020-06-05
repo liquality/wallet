@@ -6,18 +6,6 @@ const BALANCE_UPDATE_INTERVAL = 30000
 
 store.subscribe(({ type, payload }, state) => {
   switch (type) {
-    case 'UPDATE_HISTORY':
-      if (payload.id) {
-        browser.notifications.create({
-          type: 'basic',
-          title: payload.updates.status,
-          message: payload.id,
-          iconUrl: './icons/512x512.png'
-        })
-      }
-
-      break
-
     case 'CHANGE_ACTIVE_NETWORK':
       store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateMarketData', { network: state.activeNetwork })
