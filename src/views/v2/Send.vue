@@ -42,7 +42,6 @@ import { prettyBalance } from '@/utils/coinFormatter'
 export default {
   data () {
     return {
-      loading: false,
       sendAmount: 0,
       sendAddress: null
     }

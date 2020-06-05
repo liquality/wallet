@@ -14,7 +14,7 @@
     <div class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-icon" @click="send"><SendIcon /> Send</button>
+        <button class="btn btn-primary btn-lg btn-icon" @click="send" :disabled="loading"><SendIcon /> Send</button>
       </div>
     </div>
   </div>
@@ -27,21 +27,23 @@ import { shortenAddress } from '../../utils/address'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 
 export default {
-
   components: {
     SendIcon
   },
-
   props: ['asset', 'sendAddress', 'sendAmount'],
-
+  data () {
+    return {
+      loading: false
+    }
+  },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId'])
   },
-
   methods: {
     ...mapActions(['sendTransaction']),
     shortenAddress,
     async send () {
+      this.loading = true
       const amount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.sendAmount).toNumber()
 
       await this.sendTransaction({

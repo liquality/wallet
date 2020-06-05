@@ -23,7 +23,7 @@
       <SwapInfo />
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-block btn-icon" @click="send"><SwapIcon /> Initiate Swap</button>
+        <button class="btn btn-primary btn-lg btn-block btn-icon" @click="send" :disabled="loading"><SwapIcon /> Initiate Swap</button>
       </div>
 
     </div>
@@ -43,17 +43,21 @@ export default {
     SwapInfo
   },
   props: ['agent', 'asset', 'toAsset', 'amount', 'toAmount', 'rate', 'sendTo'],
-
+  data () {
+    return {
+      loading: false
+    }
+  },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId'])
   },
-
   methods: {
     ...mapActions(['newSwap']),
     shortenAddress,
     async send () {
+      this.loading = true
       const fromAmount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.amount)
-
+      
       await this.newSwap({
         network: this.activeNetwork,
         walletId: this.activeWalletId,

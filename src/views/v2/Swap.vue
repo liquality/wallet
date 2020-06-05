@@ -71,7 +71,6 @@ export default {
   data () {
     return {
       amount: 0,
-      loading: false,
       toAsset: null,
       enterSendToAddress: false,
       sendTo: null
@@ -142,8 +141,6 @@ export default {
     dpUI,
     prettyBalance,
     setAmount (amount) {
-      if (this.loading) return
-
       this.amount = amount
     },
     setToAsset (val) {
