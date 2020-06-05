@@ -6,7 +6,7 @@ import OnboardingPassword from '@/views/v2/Onboarding/OnboardingPassword.vue'
 import ImportWallet from '@/views/v2/ImportWallet.vue'
 import UnlockWallet from '@/views/v2/UnlockWallet.vue'
 import BackupWallet from '@/views/v2/BackupWallet.vue'
-
+import MainnetWarning from '@/views/v2/MainnetWarning.vue'
 import Wallet from '@/views/v2/Wallet.vue'
 import Account from '@/views/v2/Account.vue'
 import Send from '@/views/v2/Send.vue'
@@ -43,6 +43,10 @@ const routes = [
   {
     path: '/wallet',
     component: Wallet
+  },
+  {
+    path: '/wallet/warning',
+    component: MainnetWarning
   },
   {
     path: '/account/:asset',
