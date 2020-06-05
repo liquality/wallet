@@ -1,7 +1,9 @@
 <template>
   <div id="app" v-if="brokerReady">
     <NavBar v-if="unlockedAt" />
-    <router-view />
+
+    <router-view v-if="termsAcceptedAt" />
+    <OnboardingHome v-else />
   </div>
 </template>
 
@@ -9,10 +11,12 @@
 import { mapState } from 'vuex'
 
 import NavBar from '@/views/v2/NavBar.vue'
+import OnboardingHome from '@/views/v2/Onboarding/OnboardingHome.vue'
 
 export default {
   components: {
-    NavBar
+    NavBar,
+    OnboardingHome
   },
   computed: mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
   watch: {

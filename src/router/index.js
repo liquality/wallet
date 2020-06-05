@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Splash from '@/views/v2/Splash.vue'
-import OnboardingHome from '@/views/v2/Onboarding/OnboardingHome.vue'
 import OnboardingPassword from '@/views/v2/Onboarding/OnboardingPassword.vue'
 import ImportWallet from '@/views/v2/ImportWallet.vue'
 import UnlockWallet from '@/views/v2/UnlockWallet.vue'
@@ -22,10 +21,6 @@ const routes = [
   {
     path: '/',
     component: Splash
-  },
-  {
-    path: '/onboarding',
-    component: OnboardingHome
   },
   {
     name: 'OnboardingPassword',

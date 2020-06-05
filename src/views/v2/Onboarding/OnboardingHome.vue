@@ -10,7 +10,6 @@
       </div>
       <div class="onboading-home_tnc__actions">
         <button class="btn btn-primary btn-lg btn-block mb-2" @click="acceptTnC">I Accept</button>
-        <button class="btn btn-light btn-outline-primary btn-lg btn-block btn-icon" @click="$router.go(-1)">Cancel</button>
       </div>
     </div>
   </div>
@@ -31,7 +30,6 @@ export default {
       this.proxyMutation({
         type: 'ACCEPT_TNC'
       })
-      this.$router.push('/onboarding/password')
     }
   }
 }
