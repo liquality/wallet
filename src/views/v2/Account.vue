@@ -1,5 +1,9 @@
 <template>
   <div class="account">
+    <HistoryModal
+      v-if="selectedItem"
+      :item="selectedItem"
+      @close="selectedItem = null" />
     <div class="account_header">
       <img :src="'./img/' + asset.toLowerCase() +'.png'" />{{asset}}
     </div>
@@ -18,7 +22,18 @@
         <div class="account_title">Transactions</div>
       </div>
       <div class="account_transactions">
-        <Transaction v-for="(item) in assetHistory" :key="item.id" v-bind:asset="item.from" v-bind:amount="getTransactionAmount(item)" v-bind:type="item.type" v-bind:title="getTransactionTitle(item)" v-bind:timestamp="item.startTime" v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)" v-bind:step="getTransactionStep(item)" v-bind:numSteps="getTransactionNumSteps(item)" />
+        <Transaction
+          v-for="(item) in assetHistory"
+          :key="item.id"
+          v-bind:asset="item.from"
+          v-bind:amount="getTransactionAmount(item)"
+          v-bind:type="item.type"
+          v-bind:title="getTransactionTitle(item)"
+          v-bind:timestamp="item.startTime"
+          v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)"
+          v-bind:step="getTransactionStep(item)"
+          v-bind:numSteps="getTransactionNumSteps(item)"
+          @click="selectedItem = item" />
       </div>
     </div>
   </div>
@@ -31,6 +46,7 @@ import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import Transaction from '@/components/v2/Transaction'
+import HistoryModal from '@/components/HistoryModal.vue'
 import { prettyBalance } from '@/utils/coinFormatter'
 
 const ORDER_STATUS_MAP = {
@@ -45,12 +61,18 @@ const ORDER_STATUS_MAP = {
 }
 
 export default {
+  data () {
+    return {
+      selectedItem: null
+    }
+  },
   components: {
     RefreshIcon,
     SendIcon,
     ReceiveIcon,
     SwapIcon,
-    Transaction
+    Transaction,
+    HistoryModal
   },
   props: ['asset'],
   computed: {

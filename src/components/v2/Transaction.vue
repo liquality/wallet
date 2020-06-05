@@ -1,5 +1,5 @@
 <template>
-  <div class="transaction">
+  <div class="transaction" @click="$emit('click')">
     <div class="transaction_icon">
       <SendIcon v-if="type ==='SEND'" class="transaction_icon_send" />
       <ReceiveIcon v-if="type ==='RECEIVE'" class="transaction_icon_receive" />

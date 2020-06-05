@@ -7,7 +7,7 @@
             <td class="text-muted text-right small-12">Amount</td>
             <td>{{prettyBalance(item.amount, item.from)}} {{item.from}}</td>
           </tr>
-          <tr>
+          <tr v-if="item.fromAddress">
             <td class="text-muted text-right small-12">Your {{item.from}}<br>from address</td>
             <td>{{item.fromAddress}}</td>
           </tr>
@@ -107,6 +107,10 @@
           <tr v-if="false">
             <td class="text-muted text-right small-12">Actions</td>
             <td class="cursor-pointer text-danger" @click="remove">Remove this item</td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Actions</td>
+            <td class="cursor-pointer text-danger" @click="$emit('close')">Close</td>
           </tr>
         </tbody>
       </table>
