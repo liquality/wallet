@@ -1,6 +1,9 @@
 import store from './store'
 import { prettyBalance } from './utils/coinFormatter'
 
+let balanceInterval
+const BALANCE_UPDATE_INTERVAL = 30000
+
 store.subscribe(({ type, payload }, state) => {
   switch (type) {
     case 'UPDATE_HISTORY':
@@ -25,6 +28,12 @@ store.subscribe(({ type, payload }, state) => {
       store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateMarketData', { network: state.activeNetwork })
       store.dispatch('checkPendingSwaps')
+
+      if (!balanceInterval) {
+        balanceInterval = setInterval(() => {
+          store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
+        }, BALANCE_UPDATE_INTERVAL)
+      }
 
       break
 
