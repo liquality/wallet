@@ -17,6 +17,7 @@ store.subscribe(({ type, payload }, state) => {
 
     case 'CHANGE_ACTIVE_NETWORK':
       store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
+      store.dispatch('updateMarketData', { network: state.activeNetwork })
 
       break
 
