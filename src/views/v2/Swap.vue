@@ -15,7 +15,7 @@
           </div>
           <div class="text-right">
             <span class="text-muted">Balance&nbsp;</span>
-            <span>{{prettyBalance(balance, asset)}} {{asset}}</span>
+            <span>{{balance}} {{asset}}</span>
           </div>
         </small>
       </div>
@@ -120,7 +120,7 @@ export default {
       return this.selectedMarket[this.toAsset]
     },
     balance () {
-      return this.networkWalletBalances[this.asset]
+      return prettyBalance(this.networkWalletBalances[this.asset], this.asset)
     },
     selectedMarket () {
       return this.networkMarketData[this.asset]
@@ -138,8 +138,6 @@ export default {
   },
   methods: {
     ...mapActions(['newSwap', 'updateMarketData']),
-    dpUI,
-    prettyBalance,
     setAmount (amount) {
       this.amount = amount
     },
