@@ -1,7 +1,9 @@
 <template>
   <div class="navbar d-flex justify-content-between">
     <div class="navbar_prev" @click="$router.go(-1)"><ChevronLeftIcon class="navbar_prev_icon" />Back</div>
-    <div class="navbar_title">{{wallet.name}}</div>
+    <div class="navbar_title">
+      <span class="navbar_title_name">{{wallet.name}}</span>&nbsp;<span class="navbar_title_network text-muted">({{activeNetwork}})</span>
+    </div>
     <div class="navbar_menu" @click="showMenu = !showMenu"><HamburgerIcon class="navbar_menu_icon" /></div>
     <ul class="navbar_menu_list" v-if="showMenu">
       <li @click="switchNetwork">Switch to {{inactiveNetwork}}</li>
@@ -65,9 +67,10 @@ export default {
   border-bottom: 1px solid $hr-border-color;
 
   &_title {
-    font-weight: $headings-font-weight;
+    &_name {
+      font-weight: $headings-font-weight;
+    }
   }
-
   &_menu, &_prev {
     color: $color-text-muted;
     font-size: $font-size-sm;
