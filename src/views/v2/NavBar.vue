@@ -42,9 +42,11 @@ export default {
   },
   methods: {
     ...mapActions(['lockWallet', 'changeActiveNetwork']),
-    async switchNetwork () {
+    switchNetwork () {
       this.showMenu = false
-      await this.changeActiveNetwork({ network: this.inactiveNetwork })
+      if (this.inactiveNetwork === 'mainnet') {
+        this.$router.push('/wallet/warning')
+      } else this.changeActiveNetwork({ network: 'testnet' })
     },
     async lock () {
       this.showMenu = false
