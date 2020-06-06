@@ -25,8 +25,8 @@ import CopyIcon from '@/assets/icons/copy.svg'
 import cryptoassets from '@liquality/cryptoassets'
 
 function getChainName (ticker) {
-	var map = {eth:"ethereum",btc:"bitcoin",usdc:"ethereum",dai:"ethereum"}
-	return map[ticker]
+  var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', dai: 'ethereum' }
+  return map[ticker]
 }
 
 export default {
@@ -50,17 +50,17 @@ export default {
 
       return this.addresses[this.activeNetwork][this.activeWalletId][this.asset]._address
     },
-		chainName () {
-			return getChainName(this.asset.toLowerCase())
-		}
-		
+    chainName () {
+      return getChainName(this.asset.toLowerCase())
+    }
+
   },
   async created () {
     const unusedAddress = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
     const uri = [
-      //map[this.asset.toLowerCase()],
-			getChainName(this.asset.toLowerCase()),
-			cryptoassets[this.asset.toLowerCase()].formatAddress(unusedAddress[0]._address)
+      // map[this.asset.toLowerCase()],
+      getChainName(this.asset.toLowerCase()),
+      cryptoassets[this.asset.toLowerCase()].formatAddress(unusedAddress[0]._address)
     ].join(':')
 
     QRCode.toString(uri, {
@@ -83,10 +83,10 @@ export default {
       document.execCommand('copy')
       document.body.removeChild(tempInput)
     },
-		getChainType (ticker) {
-			var map = {eth:"ethereum",btc:"bitcoin",usdc:"ethereum",dai:"ethereum"}
-			return map[ticker]
-		}
+    getChainType (ticker) {
+      var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', dai: 'ethereum' }
+      return map[ticker]
+    }
   }
 }
 </script>

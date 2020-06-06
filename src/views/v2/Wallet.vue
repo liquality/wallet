@@ -1,6 +1,9 @@
 <template>
   <div class="wallet">
-    <div v-if="networkWalletBalances" class="wallet_stats">{{Object.keys(networkWalletBalances).length}} Assets</div>
+    <div class="wallet_stats">
+      <span v-if="networkAssetsLoaded">{{Object.keys(networkWalletBalances).length}} Assets</span>
+      <span v-else>Loading ...</span>
+    </div>
     <div class="wallet_accounts" v-if="networkWalletBalances">
       <router-link v-for="(balance, asset) in networkWalletBalances" :key="asset" v-bind:to="'/account/' + asset" >
         <div class="account-item d-flex align-items-center">
@@ -26,14 +29,17 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'wallets']),
-    networkAssets () {
-      return NetworkAssets[this.activeNetwork]
-    },
     networkWalletBalances () {
       if (!this.balances[this.activeNetwork]) return false
       if (!this.balances[this.activeNetwork][this.activeWalletId]) return false
 
       return this.balances[this.activeNetwork][this.activeWalletId]
+    },
+    networkAssets () {
+      return NetworkAssets[this.activeNetwork]
+    },
+    networkAssetsLoaded () {
+      return this.networkWalletBalances && this.networkAssets.length === Object.keys(this.networkWalletBalances).length
     }
   },
   methods: {

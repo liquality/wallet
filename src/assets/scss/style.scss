@@ -127,6 +127,13 @@ svg {
       stroke: $color-text-secondary;
     }
   }
+
+  svg.btn-loading {
+    height: 24px;
+    circle {
+      stroke: #dedede;
+    }
+  }
 }
 
 .icon-fill-primary {

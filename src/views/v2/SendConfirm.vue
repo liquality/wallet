@@ -14,7 +14,10 @@
     <div class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-icon" @click="send" :disabled="loading"><SendIcon /> Send</button>
+        <button class="btn btn-primary btn-lg btn-icon" @click="send" :disabled="loading">
+          <SpinnerIcon class="btn-loading" v-if="loading" />
+          <template v-else><SendIcon /> Send</template>
+        </button>
       </div>
     </div>
   </div>
@@ -25,10 +28,12 @@ import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 import { shortenAddress } from '../../utils/address'
 import SendIcon from '@/assets/icons/arrow_send.svg'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   components: {
-    SendIcon
+    SendIcon,
+    SpinnerIcon
   },
   props: ['asset', 'sendAddress', 'sendAmount'],
   data () {

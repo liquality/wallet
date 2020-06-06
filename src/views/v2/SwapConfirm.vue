@@ -23,7 +23,10 @@
       <SwapInfo />
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-block btn-icon" @click="send" :disabled="loading"><SwapIcon /> Initiate Swap</button>
+        <button class="btn btn-primary btn-lg btn-block btn-icon" @click="send" :disabled="loading">
+          <SpinnerIcon class="btn-loading" v-if="loading" />
+          <template v-else><SwapIcon /> Initiate Swap</template>
+        </button>
       </div>
 
     </div>
@@ -35,11 +38,13 @@ import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 import { shortenAddress } from '../../utils/address'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 import SwapInfo from '@/components/v2/SwapInfo'
 
 export default {
   components: {
     SwapIcon,
+    SpinnerIcon,
     SwapInfo
   },
   props: ['agent', 'asset', 'toAsset', 'amount', 'toAmount', 'rate', 'sendTo'],
@@ -57,7 +62,7 @@ export default {
     async send () {
       this.loading = true
       const fromAmount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.amount)
-      
+
       await this.newSwap({
         network: this.activeNetwork,
         walletId: this.activeWalletId,

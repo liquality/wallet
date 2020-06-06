@@ -37,7 +37,7 @@ export default {
 <style lang="scss">
 .mainnet-warning {
   text-align: center;
-  
+
   h2, h3 {
     color: $danger;
   }

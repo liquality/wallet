@@ -29,20 +29,19 @@ export default {
   data: function () {
     return {
       wordList: Array(12).fill(''),
-      numWords : 12
+      numWords: 12
     }
   },
-  updated: function() {
+  updated: function () {
   },
   watch: {
     wordList: function (newList, oldList) {
-      var words = newList[0].split(" ")
-      if (words.length == this.numWords) {
-        for ( var  m = 0; m < words.length; m++) {
+      var words = newList[0].split(' ')
+      if (words.length === this.numWords) {
+        for (var m = 0; m < words.length; m++) {
           this.wordList[m] = words[m]
         }
       }
-      
     }
   },
   computed: {
@@ -60,7 +59,7 @@ export default {
       this.$router.push({ name: 'OnboardingPassword', params: { mnemonic } })
     },
     toggleMnemonicLength () {
-      this.numWords = (this.numWords == 12)? 24: 12
+      this.numWords = (this.numWords === 12) ? 24 : 12
       this.wordList = Array(this.numWords).fill('')
     }
   }
@@ -89,7 +88,7 @@ export default {
     background: #FFFFFF;
     color: $color-text-primary;
     padding: $wrapper-padding;
-    
+
   }
 
   > div {
