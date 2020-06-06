@@ -12,6 +12,12 @@
         <div class="input-group">
           <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required>
         </div>
+        <p v-if="errors.length">
+          <b>Please correct the following error(s):</b>
+          <ul>
+            <li v-for="error in errors">{{ error }}</li>
+          </ul>
+        </p>
       </div>
       <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
       <p><button class="btn btn-light btn-lg btn-block btn-icon" type="submit">Unlock</button></p>
@@ -29,14 +35,21 @@ export default {
   },
   data () {
     return {
+      errors: [],
       password: null
     }
   },
   methods: {
     ...mapActions(['unlockWallet']),
     async unlock () {
-      await this.unlockWallet({ key: this.password })
-      this.$router.replace('/wallet')
+      this.errors = []
+      try {
+        await this.unlockWallet({ key: this.password })
+        this.$router.replace('/wallet')
+      } catch (e) {
+        console.log(e)
+        this.errors.push(e.message)
+      }
     }
   }
 }
