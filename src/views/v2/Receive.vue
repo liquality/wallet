@@ -2,7 +2,7 @@
   <div class="receive wrapper form text-center">
     <div class="wrapper_top form">
       <div class="form-group">
-        <label>Your Current Bitcoin Address</label>
+        <label>Your Current {{chainName}} Address</label>
         <p class="receive_address">{{address}}</p>
         <p>Scan this QR code with a mobile wallet to send funds to this address.</p>
         <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
@@ -22,6 +22,12 @@
 import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
 import CopyIcon from '@/assets/icons/copy.svg'
+import cryptoassets from '@liquality/cryptoassets'
+
+function getChainName (ticker) {
+	var map = {eth:"ethereum",btc:"bitcoin",usdc:"ethereum",dai:"ethereum"}
+	return map[ticker]
+}
 
 export default {
   components: {
@@ -43,13 +49,18 @@ export default {
       if (!this.addresses[this.activeNetwork][this.activeWalletId][this.asset]) return false
 
       return this.addresses[this.activeNetwork][this.activeWalletId][this.asset]._address
-    }
+    },
+		chainName () {
+			return getChainName(this.asset.toLowerCase())
+		}
+		
   },
   async created () {
     const unusedAddress = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
     const uri = [
-      this.asset.toLowerCase(),
-      unusedAddress._address
+      //map[this.asset.toLowerCase()],
+			getChainName(this.asset.toLowerCase()),
+			cryptoassets[this.asset.toLowerCase()].formatAddress(unusedAddress[0]._address)
     ].join(':')
 
     QRCode.toString(uri, {
@@ -71,7 +82,11 @@ export default {
       tempInput.select()
       document.execCommand('copy')
       document.body.removeChild(tempInput)
-    }
+    },
+		getChainType (ticker) {
+			var map = {eth:"ethereum",btc:"bitcoin",usdc:"ethereum",dai:"ethereum"}
+			return map[ticker]
+		}
   }
 }
 </script>
