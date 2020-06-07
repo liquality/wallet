@@ -125,8 +125,10 @@ export const performNextAction = async ({ commit, getters, dispatch }, { network
 
       if (tx) {
         const toFundHash = tx.hash
-
-        if (tx.confirmations >= order.minConf) {
+        const isVerified = await toClient.swap.verifyInitiateSwapTransaction(
+          toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
+        )
+        if (isVerified && tx.confirmations >= order.minConf) {
           clearInterval(interval)
 
           const updates = {
