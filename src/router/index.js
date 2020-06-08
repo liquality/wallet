@@ -4,7 +4,6 @@ import VueRouter from 'vue-router'
 import Splash from '@/views/v2/Splash.vue'
 import OnboardingPassword from '@/views/v2/Onboarding/OnboardingPassword.vue'
 import ImportWallet from '@/views/v2/ImportWallet.vue'
-import UnlockWallet from '@/views/v2/UnlockWallet.vue'
 import BackupWallet from '@/views/v2/BackupWallet.vue'
 import MainnetWarning from '@/views/v2/MainnetWarning.vue'
 import Wallet from '@/views/v2/Wallet.vue'
@@ -31,10 +30,6 @@ const routes = [
   {
     path: '/onboarding/import',
     component: ImportWallet
-  },
-  {
-    path: '/open',
-    component: UnlockWallet
   },
   {
     path: '/backup',

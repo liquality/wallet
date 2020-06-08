@@ -51,7 +51,6 @@ export default {
     async lock () {
       this.showMenu = false
       await this.lockWallet()
-      this.$router.replace('/open')
     },
     backup () {
       this.showMenu = false
