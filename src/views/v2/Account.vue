@@ -51,13 +51,13 @@ import { prettyBalance } from '@/utils/coinFormatter'
 
 const ORDER_STATUS_MAP = {
   QUOTE: 1,
-  SECRET_READY: 2,
-  INITIATED: 3,
-  INITIATION_REPORTED: 4,
-  WAITING_FOR_CONFIRMATIONS: 5,
-  READY_TO_EXCHANGE: 6,
-  GET_REFUND: 6,
-  READY_TO_SEND: 7
+  SECRET_READY: 1,
+  INITIATED: 1,
+  INITIATION_REPORTED: 2,
+  WAITING_FOR_CONFIRMATIONS: 3,
+  READY_TO_EXCHANGE: 3,
+  GET_REFUND: 3,
+  READY_TO_SEND: 4
 }
 
 export default {
@@ -106,7 +106,7 @@ export default {
         return undefined
       }
 
-      return item.sendTo ? 8 : 7
+      return item.sendTo ? 5 : 4
     },
     getTransactionTitle (item) {
       if (item.type === 'SWAP') {

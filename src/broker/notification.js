@@ -1,7 +1,7 @@
 import { prettyBalance } from '../utils/coinFormatter'
 
 const SWAP_STATUS_MAP = {
-  INITIATED () {
+  INITIATION_REPORTED () {
     return 'Swap initiated'
   },
   WAITING_FOR_CONFIRMATIONS (item) {
