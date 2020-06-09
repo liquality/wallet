@@ -108,9 +108,18 @@
             <td class="text-muted text-right small-12">Actions</td>
             <td class="cursor-pointer text-danger" @click="remove">Remove this item</td>
           </tr>
+          <tr v-if="item.error">
+            <td class="text-danger text-right small-12">Error</td>
+            <td class="text-danger">
+              <pre>{{item.error}}</pre>
+            </td>
+          </tr>
           <tr>
             <td class="text-muted text-right small-12">Actions</td>
-            <td class="cursor-pointer text-danger" @click="$emit('close')">Close</td>
+            <td class="text-danger">
+              <span class="cursor-pointer mr-3" v-if="item.error" @click="retry">Retry</span>
+              <span class="cursor-pointer" @click="$emit('close')">Close</span>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -119,6 +128,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import BN from 'bignumber.js'
 
 import { prettyBalance } from '@/utils/coinFormatter'
@@ -145,7 +155,12 @@ export default {
     }
   },
   methods: {
-    prettyBalance
+    ...mapActions(['retrySwap']),
+    prettyBalance,
+    retry () {
+      this.retrySwap({ order: this.item })
+      this.$emit('close')
+    }
   }
 }
 </script>

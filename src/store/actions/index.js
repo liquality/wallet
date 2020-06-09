@@ -14,6 +14,7 @@ import { proxyMutation } from './proxyMutation'
 import { replyOriginAccess } from './replyOriginAccess'
 import { replyPremission } from './replyPremission'
 import { requestOriginAccess } from './requestOriginAccess'
+import { retrySwap } from './retrySwap'
 import { sendTransaction } from './sendTransaction'
 import { setupWallet } from './setupWallet'
 import { createWallet } from './createWallet'
@@ -39,6 +40,7 @@ export {
   replyOriginAccess,
   replyPremission,
   requestOriginAccess,
+  retrySwap,
   sendTransaction,
   setupWallet,
   createWallet,

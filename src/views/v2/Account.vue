@@ -33,6 +33,7 @@
           v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)"
           v-bind:step="getTransactionStep(item)"
           v-bind:numSteps="getTransactionNumSteps(item)"
+          v-bind:error="item.error"
           @click="selectedItem = item" />
       </div>
     </div>

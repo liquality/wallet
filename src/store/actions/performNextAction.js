@@ -56,17 +56,31 @@ export const performNextAction = async ({ commit, getters, dispatch }, { network
   } else if (order.status === 'SECRET_READY') {
     if (await dispatch('checkIfQuoteExpired', { network, walletId, order })) return
 
-    await dispatch('getLockForAsset', { network, walletId, asset: order.from, order })
+    const lock = await dispatch('getLockForAsset', { network, walletId, asset: order.from, order })
 
-    const fromFundHash = await fromClient.swap.initiateSwap(
-      order.fromAmount,
-      order.fromCounterPartyAddress,
-      order.fromAddress,
-      order.secretHash,
-      order.swapExpiration
-    )
+    let fromFundHash
 
-    unlockAsset(network, walletId, order.from)
+    try {
+      fromFundHash = await fromClient.swap.initiateSwap(
+        order.fromAmount,
+        order.fromCounterPartyAddress,
+        order.fromAddress,
+        order.secretHash,
+        order.swapExpiration
+      )
+    } catch (e) {
+      commit('UPDATE_HISTORY', {
+        network,
+        walletId,
+        id,
+        updates: {
+          error: e.toString()
+        }
+      })
+      return
+    } finally {
+      unlockAsset(lock)
+    }
 
     const updates = {
       fromFundHash,
@@ -172,17 +186,31 @@ export const performNextAction = async ({ commit, getters, dispatch }, { network
 
     INTERVALS.push(interval)
   } else if (['READY_TO_EXCHANGE'].includes(order.status)) {
-    await dispatch('getLockForAsset', { network, walletId, asset: order.to, order })
+    const lock = await dispatch('getLockForAsset', { network, walletId, asset: order.to, order })
 
-    const toClaimHash = await toClient.swap.claimSwap(
-      order.toFundHash,
-      order.toAddress,
-      order.toCounterPartyAddress,
-      order.secret,
-      order.nodeSwapExpiration
-    )
+    let toClaimHash
 
-    unlockAsset(network, walletId, order.to)
+    try {
+      toClaimHash = await toClient.swap.claimSwap(
+        order.toFundHash,
+        order.toAddress,
+        order.toCounterPartyAddress,
+        order.secret,
+        order.nodeSwapExpiration
+      )
+    } catch (e) {
+      commit('UPDATE_HISTORY', {
+        network,
+        walletId,
+        id,
+        updates: {
+          error: e.toString()
+        }
+      })
+      return
+    } finally {
+      unlockAsset(lock)
+    }
 
     if (order.sendTo) {
       const updates = {
@@ -228,17 +256,31 @@ export const performNextAction = async ({ commit, getters, dispatch }, { network
     const diff = ((order.swapExpiration - timestamp()) + random(5, 10)) * 1000
 
     const refund = async () => {
-      await dispatch('getLockForAsset', { network, walletId, asset: order.from, order })
+      const lock = await dispatch('getLockForAsset', { network, walletId, asset: order.from, order })
 
-      const refundHash = await fromClient.swap.refundSwap(
-        order.fromFundHash,
-        order.fromCounterPartyAddress,
-        order.fromAddress,
-        order.secretHash,
-        order.swapExpiration
-      )
+      let refundHash
 
-      unlockAsset(network, walletId, order.from)
+      try {
+        refundHash = await fromClient.swap.refundSwap(
+          order.fromFundHash,
+          order.fromCounterPartyAddress,
+          order.fromAddress,
+          order.secretHash,
+          order.swapExpiration
+        )
+      } catch (e) {
+        commit('UPDATE_HISTORY', {
+          network,
+          walletId,
+          id,
+          updates: {
+            error: e.toString()
+          }
+        })
+        return
+      } finally {
+        unlockAsset(lock)
+      }
 
       const updates = {
         refundHash,
@@ -267,7 +309,26 @@ export const performNextAction = async ({ commit, getters, dispatch }, { network
       await refund()
     }
   } else if (order.status === 'READY_TO_SEND') {
-    const sendToHash = await toClient.chain.sendTransaction(order.sendTo, order.toAmount)
+    const lock = await dispatch('getLockForAsset', { network, walletId, asset: order.to, order })
+
+    let sendToHash
+
+    try {
+      sendToHash = await toClient.chain.sendTransaction(order.sendTo, order.toAmount)
+    } catch (e) {
+      commit('UPDATE_HISTORY', {
+        network,
+        walletId,
+        id,
+        updates: {
+          error: e.toString()
+        }
+      })
+      return
+    } finally {
+      unlockAsset(lock)
+    }
+
     const updates = {
       sendToHash,
       endTime: Date.now(),

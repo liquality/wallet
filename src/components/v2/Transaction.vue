@@ -1,5 +1,8 @@
 <template>
-  <div class="transaction" @click="$emit('click')">
+  <div :class="{
+    transaction: true,
+    'text-danger': !!error
+  }" @click="$emit('click')">
     <div class="transaction_icon">
       <SendIcon v-if="type ==='SEND'" class="transaction_icon_send" />
       <ReceiveIcon v-if="type ==='RECEIVE'" class="transaction_icon_receive" />
@@ -9,7 +12,7 @@
     <div class="transaction_time">{{time}}</div>
     <div class="transaction_amount">{{amount}} {{code}}</div>
     <div class="transaction_detail"></div>
-    <div class="transaction_status">
+    <div class="transaction_status" v-if="!error">
       <CompletedIcon v-if="confirmed" />
       <div class="transaction_status_confirming" v-if="!confirmed">
         <SpinnerIcon />
@@ -47,7 +50,8 @@ export default {
     timestamp: Number,
     confirmed: Boolean,
     step: Number,
-    numSteps: Number
+    numSteps: Number,
+    error: String
   },
   computed: {
     code: function () {
