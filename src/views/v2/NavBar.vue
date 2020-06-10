@@ -17,14 +17,12 @@
 import { mapActions, mapState } from 'vuex'
 
 import HamburgerIcon from '@/assets/icons/hamburger.svg'
-import ChevronLeftIcon from '@/assets/icons/chevron_left.svg'
 import LockIcon from '@/assets/icons/lock.svg'
 import PaperIcon from '@/assets/icons/paper.svg'
 
 export default {
   components: {
     HamburgerIcon,
-    ChevronLeftIcon,
     LockIcon,
     PaperIcon
   },

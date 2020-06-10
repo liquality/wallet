@@ -15,9 +15,15 @@
           <span class="account_balance_code">{{asset}}</span>
         </div>
         <div class="account_actions">
-          <router-link v-bind:to="'/account/' + asset + '/send'"><button class="account_actions_button"><SendIcon class="account_actions_button_icon" /></button></router-link>
-          <router-link v-bind:to="'/account/' + asset + '/receive'"><button class="account_actions_button"><ReceiveIcon class="account_actions_button_icon" /></button></router-link>
-          <router-link v-bind:to="'/account/' + asset + '/swap'"><button class="account_actions_button"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></button></router-link>
+          <router-link v-bind:to="'/account/' + asset + '/send'"><button class="account_actions_button">
+            <div class="account_actions_button_wrapper"><SendIcon class="account_actions_button_icon" /></div>Send
+          </button></router-link>
+          <router-link v-bind:to="'/account/' + asset + '/receive'"><button class="account_actions_button">
+            <div class="account_actions_button_wrapper"><ReceiveIcon class="account_actions_button_icon" /></div>Receive
+          </button></router-link>
+          <router-link v-bind:to="'/account/' + asset + '/swap'"><button class="account_actions_button">
+            <div class="account_actions_button_wrapper"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></div>Swap
+          </button></router-link>
         </div>
         <div class="account_title">Transactions</div>
       </div>
@@ -192,22 +198,32 @@ export default {
 
   &_actions {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    width: 170px;
     margin: 0 auto;
-    padding: 34px 0;
+    padding: 24px 0;
 
     &_button {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 44px;
-      height: 44px;
-      background: #ffffff;
+      flex-direction: column;
+      width: 70px;
       border: 0;
       cursor: pointer;
-      border-radius: 50%;
+      color: $color-text-secondary;
+      background: none;
+
+      &_wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 44px;
+        height: 44px;
+        background: #ffffff;
+        border-radius: 50%;
+        margin-bottom: 4px;
+      }
 
       &_icon {
         width: 16px;

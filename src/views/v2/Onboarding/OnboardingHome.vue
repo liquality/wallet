@@ -549,23 +549,23 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions } from 'vuex'
 
-import LogoWallet from "@/assets/icons/logo_wallet.svg";
+import LogoWallet from '@/assets/icons/logo_wallet.svg'
 
 export default {
   components: {
     LogoWallet
   },
   methods: {
-    ...mapActions(["proxyMutation"]),
-    acceptTnC() {
+    ...mapActions(['proxyMutation']),
+    acceptTnC () {
       this.proxyMutation({
-        type: "ACCEPT_TNC"
-      });
+        type: 'ACCEPT_TNC'
+      })
     }
   }
-};
+}
 </script>
 
 <style lang="scss">
