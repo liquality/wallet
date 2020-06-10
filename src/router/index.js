@@ -49,6 +49,7 @@ const routes = [
     component: MainnetWarning
   },
   {
+    name: 'Account',
     path: '/account/:asset',
     component: Account,
     props: true

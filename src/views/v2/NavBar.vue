@@ -1,6 +1,8 @@
 <template>
   <div class="navbar d-flex justify-content-between">
-    <div class="navbar_prev" @click="$router.go(-1)"><ChevronLeftIcon class="navbar_prev_icon" />Back</div>
+    <router-link to='/wallet' :style="{visibility: $route.name === 'Account' ? 'visible' : 'hidden'}">
+      <div class="navbar_prev"><ChevronLeftIcon class="navbar_prev_icon" />Assets</div>
+    </router-link>
     <div class="navbar_title">
       <span class="navbar_title_name">{{wallet.name}}</span>&nbsp;<span class="navbar_title_network text-muted">({{activeNetwork}})</span>
     </div>
@@ -19,9 +21,11 @@ import { mapActions, mapState } from 'vuex'
 import HamburgerIcon from '@/assets/icons/hamburger.svg'
 import LockIcon from '@/assets/icons/lock.svg'
 import PaperIcon from '@/assets/icons/paper.svg'
+import ChevronLeftIcon from '@/assets/icons/chevron_left.svg'
 
 export default {
   components: {
+    ChevronLeftIcon,
     HamburgerIcon,
     LockIcon,
     PaperIcon
