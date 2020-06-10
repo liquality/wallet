@@ -1,11 +1,11 @@
 <template>
-  <div class="navbar d-flex justify-content-between">
-    <div class="navbar_prev" @click="$router.go(-1)"><ChevronLeftIcon class="navbar_prev_icon" />Back</div>
-    <div class="navbar_title">
-      <span class="navbar_title_name">{{wallet.name}}</span>&nbsp;<span class="navbar_title_network text-muted">({{activeNetwork}})</span>
+  <div class="navb">
+
+    <div class="navb_title">
+      <span class="navb_title_name">{{wallet.name}}</span>&nbsp;<span class="navb_title_network text-muted">({{activeNetwork}})</span>
     </div>
-    <div class="navbar_menu" @click="showMenu = !showMenu"><HamburgerIcon class="navbar_menu_icon" /></div>
-    <ul class="navbar_menu_list" v-if="showMenu">
+    <div class="navb_menu" @click="showMenu = !showMenu"><HamburgerIcon class="navb_menu_icon" /></div>
+    <ul class="navb_menu_list" v-if="showMenu">
       <li @click="switchNetwork">Switch to {{inactiveNetwork}}</li>
       <li @click="backup"><PaperIcon /> Backup</li>
       <li @click="lock"><LockIcon class="lock_icon"/> Lock</li>
@@ -62,13 +62,15 @@ export default {
 </script>
 
 <style lang="scss">
-.navbar {
+.navb {
   position: relative;
   height: 52px;
   padding: 17px;
   border-bottom: 1px solid $hr-border-color;
+  text-align: center;
 
   &_title {
+    display: inline;
     &_name {
       font-weight: $headings-font-weight;
     }
@@ -80,6 +82,9 @@ export default {
   }
 
   &_menu {
+    position: absolute;
+    top: 15px;
+    right: 17px;
     &_icon {
       margin-left: 22px;
       margin-top: 4px;
