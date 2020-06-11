@@ -38,16 +38,18 @@ export default {
 <style lang="scss">
 .backup-wallet {
   padding: 0 !important;
+  overflow: scroll;
 
   &_top {
-    flex-grow: 1;
   }
 
   .backup-wallet_bottom {
+    overfloat:scroll;
     flex: 1;
     background: #FFFFFF;
     color: $color-text-primary;
     padding: $wrapper-padding;
+    overflow: scroll;
   }
 
   > div {
