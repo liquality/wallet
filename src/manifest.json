@@ -24,8 +24,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://*.liquality.io/*",
-        "http://localhost:5000/*"
+        "https://*.liquality.io/*"
       ],
       "js": [
         "js/content-script.js"
