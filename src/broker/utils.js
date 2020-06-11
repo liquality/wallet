@@ -23,7 +23,7 @@ export const createPopup = url => {
     url: `./index.html#${url}`,
     type: 'popup',
     height: 600,
-    width: 360
+    width: 375
   }
 
   if (!getRootURL().startsWith('moz-')) {

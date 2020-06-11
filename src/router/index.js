@@ -15,6 +15,9 @@ import Receive from '@/views/v2/Receive.vue'
 import Swap from '@/views/v2/Swap.vue'
 import SwapConfirm from '@/views/v2/SwapConfirm.vue'
 
+import Enable from '@/views/Enable.vue'
+import Permission from '@/views/Permission.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -80,6 +83,14 @@ const routes = [
     path: '/account/:asset/swap/confirm',
     component: SwapConfirm,
     props: true
+  },
+  {
+    path: '/enable',
+    component: Enable
+  },
+  {
+    path: '/permission',
+    component: Permission
   }
 ]
 
