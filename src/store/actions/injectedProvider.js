@@ -1,6 +1,7 @@
 import { stringify } from 'qs'
 
 import { emitter } from '../utils'
+import { createPopup } from '../../broker/utils'
 
 const RESTRICTED = [
   /^chain.buildTransaction$/,
@@ -35,13 +36,7 @@ export const injectedProvider = async ({ state, getters }, { asset, method, args
         args: JSON.stringify(args)
       })
 
-      browser.windows.create({
-        url: `./index.html#/permission?${query}`,
-        focused: true,
-        type: 'popup',
-        height: 600,
-        width: 360
-      })
+      createPopup(`/permission?${query}`)
     })
   }
 

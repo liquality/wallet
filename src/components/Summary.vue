@@ -21,11 +21,15 @@
             <span>{{prettyBalance(balance, asset)}} <small class="text-muted">{{asset}}</small></span>
           </td>
           <td class="text-right">
-            <span v-if="base === asset">1 <small class="text-muted">{{asset}}</small></span>
-            <span v-else>{{dpUI(networkMarketData[asset][base].buyRate, asset)}} <small class="text-muted">{{base}}</small></span>
+            <span v-if="networkMarketData">
+              <span v-if="base === asset">1 <small class="text-muted">{{asset}}</small></span>
+              <span v-else>{{dpUI(networkMarketData[asset][base].buyRate, asset)}} <small class="text-muted">{{base}}</small></span>
+            </span>
           </td>
           <td class="nowrap">
-            <button class="btn btn-lg btn-primary" @click="$emit('buy', asset)" :disabled="!networkMarketData[asset]">Buy</button>
+            <span v-if="networkMarketData">
+              <button class="btn btn-lg btn-primary" @click="$emit('buy', asset)" :disabled="!networkMarketData[asset]">Buy</button>
+            </span>
           </td>
         </tr>
       </tbody>

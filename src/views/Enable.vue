@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     origin () {
-      return this.$route.params.pathMatch
+      return this.$route.query.origin
     }
   },
   methods: {

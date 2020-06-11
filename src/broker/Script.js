@@ -16,7 +16,7 @@ class Script {
       const { id, type, data } = event.data
       if (!id || !type) return
 
-      this.emitter.once(id, result => window.dispatchEvent(new CustomEvent(id, { detail: result })))
+      this.emitter.once(id, result => window.dispatchEvent(new CustomEvent(id, { detail: JSON.stringify(result) })))
 
       this.background.postMessage({
         id,
