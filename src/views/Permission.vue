@@ -1,20 +1,19 @@
 <template>
   <div>
-    <Cover title="Permission" />
+    <div class="popup-logo">
+      <LogoWallet />
+    </div>
+    <div class="permission-screen">
+      <h1 class="h5 text-center mb-4">Request</h1>
 
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-4 col-sm-6 mb-4">
-          <div class="card card-up">
-            <div class="card-body">
-              <h1 class="h4 text-center text-primary">{{$route.query.method}} <small><em>for</em></small> {{$route.query.asset}}</h1>
+      <h1 class="h4 text-center text-primary mb-4">{{$route.query.origin}}</h1>
 
-              <pre v-if="args"><code>{{args}}</code></pre>
+      <pre class="text-center"><code>{{funcCall}}</code></pre>
 
-              <a class="btn btn-primary btn-lg btn-block mt-4" href="#" @click="reply(true)">Allow &rsaquo;</a>
-              <a class="btn btn-link btn-block mt-2" href="#" @click="reply(false)">Deny &rsaquo;</a>
-            </div>
-          </div>
+      <div class="wrapper_bottom">
+        <div class="button-group">
+          <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Deny</button>
+          <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)">Allow</button>
         </div>
       </div>
     </div>
@@ -24,16 +23,16 @@
 <script>
 import { mapActions } from 'vuex'
 
-import Cover from '@/components/Cover.vue'
+import LogoWallet from '@/assets/icons/logo_wallet.svg'
 
 export default {
+  components: {
+    LogoWallet
+  },
   data () {
     return {
       replied: false
     }
-  },
-  components: {
-    Cover
   },
   methods: {
     ...mapActions(['replyPremission']),
@@ -51,10 +50,26 @@ export default {
   computed: {
     args () {
       try {
-        return JSON.parse(this.$route.query.args)
+        let args = JSON.parse(this.$route.query.args)
+
+        args = args.map(a => JSON.stringify(a))
+
+        return args.join(', ')
       } catch (e) {
         return ''
       }
+    },
+    funcCall () {
+      const arr = []
+
+      arr.push(this.$route.query.asset)
+      arr.push('.')
+      arr.push(this.$route.query.method)
+      arr.push('(')
+      arr.push(this.args)
+      arr.push(')')
+
+      return arr.join('')
     }
   },
   beforeDestroy () {
@@ -64,3 +79,23 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.popup-logo {
+  padding: 40px 20px;
+  background: #302E78;
+  text-align: center;
+}
+
+.permission-screen {
+  padding: 20px;
+}
+
+.wrapper_bottom {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 20px;
+}
+</style>

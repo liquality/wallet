@@ -2,11 +2,9 @@ import { createClient } from './factory/client'
 
 const agentEndpoints = {
   testnet: [
-    'https://liquality.io/swap-testnet-dev/agent',
     'https://liquality.io/swap-testnet/agent'
   ],
   mainnet: [
-    'https://liquality.io/swap-dev/agent',
     'https://liquality.io/swap/agent'
   ]
 }

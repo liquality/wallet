@@ -8,17 +8,30 @@ const RESTRICTED = [
   /^chain.buildBatchTransaction$/,
   /^chain.sendTransaction$/,
   /^chain.sendBatchTransaction$/,
-  /^wallet..*$/,
+  /^wallet.signMessage*$/,
   /^swap.generateSecret$/,
   /^swap.initiateSwap$/,
   /^swap.claimSwap$/,
   /^swap.refundSwap$/
 ]
 
-export const injectedProvider = async ({ state, getters }, { asset, method, args }) => {
+export const injectedProvider = async ({ state, getters }, { origin, data }) => {
+  if (!state.unlockedAt) throw new Error('Wallet is locked. Unlock the wallet first.')
   if (!state.activeWalletId) throw new Error('No active wallet found. Select a wallet first.')
 
+  let { asset, method, args } = data
   const client = getters.client(state.activeNetwork, state.activeWalletId, asset)
+
+  args = args.map(a => {
+    if (a === null) return undefined
+    return a
+  })
+
+  let printArgs = args
+
+  if (printArgs.every(a => a === undefined)) {
+    printArgs = []
+  }
 
   if (RESTRICTED.some(re => re.test(method))) {
     const id = Date.now() + '.' + Math.random()
@@ -31,9 +44,10 @@ export const injectedProvider = async ({ state, getters }, { asset, method, args
 
       const query = stringify({
         id,
+        origin,
         asset,
         method,
-        args: JSON.stringify(args)
+        args: JSON.stringify(printArgs)
       })
 
       createPopup(`/permission?${query}`)

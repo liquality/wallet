@@ -33,22 +33,34 @@ $red-light-3: #F29B9B;
 $red-light-4: #FACDCD;
 $red-light-5: #FFEEEE;
 
+$brand-gradient-primary: linear-gradient(180deg, #302E78 0%, #4866D3 52.08%, #2FAFCA 100%);
+$brand-gradient-secondary: linear-gradient(360deg, #1CE4C3 -10.66%, #4866D3 31.99%, #302E78 81.56%);
+
+$color-primary: #9D4DFA;
+$color-secondary: #2CD2CF;
+
+$color-text-primary: #1D1E21;
+$color-text-secondary: #FFFFFF;
+$color-text-muted: #747E8D;
+
 $body-bg: $blue-light-5;
 $font-size-base:              0.875rem; // Assumes the browse, typically `16px`
 $font-size-lg:                1rem;
-$font-size-sm:                0.75rem;
+$font-size-sm:                0.8125rem;
+$font-size-tiny:              0.75rem;
 $lead-font-size:              1rem;
-$small-font-size:             75%;
-$text-muted: $blue-light-1;
+$small-font-size:             $font-size-sm;
+$text-muted: $color-text-muted;
 
-$headings-font-weight: 500;
-$font-weight-base: 300;
-$btn-font-weight: 500;
-$headings-color: $blue-dark-1;
-$body-color: $blue-dark-2;
-$lead-font-weight: 400;
+$font-family-base: 'Montserrat', sans-serif;
+$headings-font-weight: 600;
+$font-weight-base: 400;
+$btn-font-weight: 600;
+$headings-color: $color-text-primary;
+$body-color: $color-text-primary;
+$lead-font-weight: 600;
 
-$hr-border-color: $blue-light-4;
+$hr-border-color: #d9dfe5;
 
 $sorange: #ed8f03;
 $badge-font-size: 85%;
@@ -57,24 +69,48 @@ $dark: $blue-dark-3;
 $light: $blue-light-3;
 
 // linear-gradient(180deg,hsl(232, 47%, 58%),hsl(232, 47%, 55%))
-$primary: hsl(232, 47%, 55%);
-$secondary: $blue-dark-4;
+$primary: $color-primary;
+$secondary: $color-secondary;
 $info: $cyan-dark-4;
 
-$link-color: $dark;
+$link-color: $color-primary;
+$link-hover-decoration: none;
 
-$enable-gradients: true;
+$input-btn-padding-y:    .415rem;
+$input-btn-padding-y-sm: .275rem;
+$input-btn-padding-y-lg: .6rem;
+$btn-padding-x-lg:       .6rem;
+$btn-padding-y-sm:       0.15rem;
 
-$input-btn-padding-y:         .415rem;
-$input-btn-padding-y-sm:      .275rem;
-$input-btn-padding-y-lg:      .6rem;
+$input-focus-box-shadow: 0;
+$input-bg: transparent;
+$input-disabled-bg: transparent;
+$btn-border-width: 0;
+$btn-box-shadow: none;
+$btn-border-radius-lg: 22px;
+$btn-border-radius-sm: 11px;
 
-// $success:       $cyan-dark-4;
-// $info:          $cyan !default;
-// $warning:       $yellow !default;
-// $danger:        $red !default;
-// $light:         $gray-100 !default;
-// $dark:          $gray-800 !default;
+$input-padding-y: 0.1rem;
+$input-padding-x: 0;
+$input-border-radius: 0;
+$input-border-width: 0;
+$input-border-color: $color-secondary;
+$input-line-height: 1.1;
+$input-font-size: 28px;
+$input-color: $color-text-primary;
+
+$input-border-radius-sm: 0;
+$input-padding-x-sm: 0;
+$input-font-size-sm: $font-size-base;
+
+$custom-select-border-width: 0;
+$form-group-margin-bottom: 30px;
+
+$wrapper-padding: 20px;
+
+$danger:        #F12274;
+$light:         #FFFFFF;
+$dark:          $primary;
 
 $container-max-widths: (
   // sm: 540px,

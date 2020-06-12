@@ -1,9 +1,9 @@
 import { attemptToLockAsset, waitForRandom, emitter } from '../utils'
 
 export const getLockForAsset = async ({ dispatch, commit }, { network, walletId, asset, order }) => {
-  const result = attemptToLockAsset(network, walletId, asset)
+  const { key, success } = attemptToLockAsset(network, walletId, asset)
 
-  if (result !== true) {
+  if (!success) {
     commit('UPDATE_HISTORY', {
       network,
       walletId,
@@ -13,21 +13,21 @@ export const getLockForAsset = async ({ dispatch, commit }, { network, walletId,
       }
     })
 
-    await new Promise(resolve => emitter.$once(`unlock:${result}`, () => resolve()))
+    await new Promise(resolve => emitter.$once(`unlock:${key}`, () => resolve()))
 
-    await dispatch('getLockForAsset', { network, walletId, asset, order })
-  } else {
-    if (order.waitingForLock) {
-      commit('UPDATE_HISTORY', {
-        network,
-        walletId,
-        id: order.id,
-        updates: {
-          waitingForLock: false
-        }
-      })
-    }
-
-    await waitForRandom(3000, 5000)
+    return dispatch('getLockForAsset', { network, walletId, asset, order })
   }
+
+  commit('UPDATE_HISTORY', {
+    network,
+    walletId,
+    id: order.id,
+    updates: {
+      waitingForLock: false
+    }
+  })
+
+  await waitForRandom(3000, 5000)
+
+  return key
 }

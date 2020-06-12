@@ -1,18 +1,20 @@
 <template>
   <div>
-    <Cover title="Enable" />
+    <div class="popup-logo">
+      <LogoWallet />
+    </div>
+    <div class="enable-screen">
+      <h1 class="h5 text-center mb-4">Request</h1>
 
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-4 col-sm-6 mb-4">
-          <div class="card card-up">
-            <div class="card-body">
-              <h1 class="h4 text-center text-primary">{{origin}}</h1>
+      <h1 class="h5 text-center text-primary">{{origin}}</h1>
+      <h2 class="h5 text-center mb-4">would like to connect to your wallet</h2>
 
-              <a class="btn btn-primary btn-lg btn-block mt-4" href="#" @click="reply(true)">Allow &rsaquo;</a>
-              <a class="btn btn-link btn-block mt-2" href="#" @click="reply(false)">Deny &rsaquo;</a>
-            </div>
-          </div>
+      <p class="text-primary text-center">Make sure you trust this site</p>
+
+      <div class="wrapper_bottom">
+        <div class="button-group">
+          <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Deny</button>
+          <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)">Allow</button>
         </div>
       </div>
     </div>
@@ -22,7 +24,7 @@
 <script>
 import { mapActions } from 'vuex'
 
-import Cover from '@/components/Cover.vue'
+import LogoWallet from '@/assets/icons/logo_wallet.svg'
 
 export default {
   data () {
@@ -31,7 +33,7 @@ export default {
     }
   },
   components: {
-    Cover
+    LogoWallet
   },
   computed: {
     origin () {
@@ -58,3 +60,23 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.popup-logo {
+  padding: 40px 20px;
+  background: #302E78;
+  text-align: center;
+}
+
+.enable-screen {
+  padding: 20px;
+}
+
+.wrapper_bottom {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 20px;
+}
+</style>

@@ -27,7 +27,8 @@ const rpc = {
     rinkeby: ['https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
   },
   DAI: {
-    mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
+    mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'],
+    rinkeby: ['https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
   },
   USDC: {
     mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
@@ -70,13 +71,18 @@ const AdditionalSwapProviders = {
 }
 
 const ERC20 = {
-  DAI: '0x6b175474e89094c44da98b954eedeac495271d0f',
-  USDC: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+  DAI: {
+    mainnet: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    rinkeby: '0xcE2748BE67fB4346654B4500c4BB0642536365FC'
+  },
+  USDC: {
+    mainnet: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+  }
 }
 
 export const NetworkAssets = {
   mainnet: ['BTC', 'ETH', 'DAI', 'USDC'],
-  testnet: ['BTC', 'ETH']
+  testnet: ['BTC', 'ETH', 'DAI']
 }
 
 export const createClient = (network, mnemonic) => {
@@ -115,8 +121,8 @@ export const createClient = (network, mnemonic) => {
       mnemonic
     ))
 
-    if (ERC20[asset]) {
-      client.addProvider(new EthereumErc20Provider(ERC20[asset]))
+    if (ERC20[asset] && ERC20[asset][NetworkArgs[asset]]) {
+      client.addProvider(new EthereumErc20Provider(ERC20[asset][NetworkArgs[asset]]))
     }
 
     client.addProvider(new SwapProviders[asset](

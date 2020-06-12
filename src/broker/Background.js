@@ -120,19 +120,11 @@ class Background {
     const { url } = connection.sender
     const { origin } = new URL(url)
 
-    const entry = this.externalConnectionApprovalMap[origin]
+    const allowed = this.externalConnectionApprovalMap[origin]
 
     switch (type) {
       case 'ENABLE_REQUEST':
-        if (entry === false) {
-          connection.postMessage({
-            id,
-            data: {
-              error: 'User denied'
-            }
-          })
-          return
-        } else if (entry === true) {
+        if (allowed) {
           connection.postMessage({
             id,
             data: {
@@ -146,7 +138,7 @@ class Background {
         break
 
       case 'CAL_REQUEST':
-        if (entry !== true) {
+        if (!allowed) {
           connection.postMessage({
             id,
             data: {
@@ -156,7 +148,7 @@ class Background {
           return
         }
 
-        this.storeProxy(id, connection, 'injectedProvider', data)
+        this.storeProxy(id, connection, 'injectedProvider', { origin, data })
         break
     }
   }
@@ -169,8 +161,8 @@ class Background {
         return { error: error.toString() }
       })
       .then(response => {
-        if (action === 'requestOriginAccess') {
-          this.externalConnectionApprovalMap[data.origin] = response.result === true
+        if (action === 'requestOriginAccess' && response.result) {
+          this.externalConnectionApprovalMap[data.origin] = true
         }
 
         connection.postMessage({

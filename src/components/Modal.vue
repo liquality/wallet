@@ -43,4 +43,8 @@ export default {
 .modal-backdrop {
   background-color: hsla(0, 0%, 0%, 0.5)!important;
 }
+
+.modal {
+  overflow: auto!important;
+}
 </style>

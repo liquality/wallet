@@ -15,7 +15,7 @@ export const waitForRandom = (min, max) => new Promise(resolve => setTimeout(() 
 export const timestamp = () => Math.ceil(Date.now() / 1000)
 
 export const getChainFromAsset = asset => {
-  if (['dai', 'usdc'].includes(asset)) return 'eth'
+  if (['DAI', 'USDC'].includes(asset)) return 'ETH'
 
   return asset
 }
@@ -24,17 +24,22 @@ export const attemptToLockAsset = (network, walletId, asset) => {
   const chain = getChainFromAsset(asset)
   const key = [network, walletId, chain].join('-')
 
-  if (CHAIN_LOCK[key]) return key
+  if (CHAIN_LOCK[key]) {
+    return {
+      key,
+      success: false
+    }
+  }
 
   CHAIN_LOCK[key] = true
 
-  return true
+  return {
+    key,
+    success: true
+  }
 }
 
-export const unlockAsset = (network, walletId, asset) => {
-  const chain = getChainFromAsset(asset)
-  const key = [network, walletId, chain].join('-')
-
+export const unlockAsset = key => {
   CHAIN_LOCK[key] = false
 
   emitter.$emit(`unlock:${key}`)
