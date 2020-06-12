@@ -26,7 +26,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
-import { shortenAddress } from '../../utils/address'
+import { shortenAddress } from '@/utils/address'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 

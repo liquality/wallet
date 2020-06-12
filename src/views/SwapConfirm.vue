@@ -36,10 +36,10 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
-import { shortenAddress } from '../../utils/address'
+import { shortenAddress } from '@/utils/address'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import SwapInfo from '@/components/v2/SwapInfo'
+import SwapInfo from '@/components/SwapInfo'
 
 export default {
   components: {

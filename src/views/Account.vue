@@ -52,7 +52,7 @@ import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
-import Transaction from '@/components/v2/Transaction'
+import Transaction from '@/components/Transaction'
 import HistoryModal from '@/components/HistoryModal.vue'
 import { prettyBalance } from '@/utils/coinFormatter'
 
@@ -85,10 +85,6 @@ export default {
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history']),
     balance () {
-      if (!this.balances[this.activeNetwork]) return false
-      if (!this.balances[this.activeNetwork][this.activeWalletId]) return false
-      if (!this.balances[this.activeNetwork][this.activeWalletId][this.asset]) return false
-
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
     },
     assetHistory () {

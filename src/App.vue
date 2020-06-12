@@ -10,8 +10,8 @@
 <script>
 import { mapState } from 'vuex'
 
-import NavBar from '@/views/v2/NavBar.vue'
-import OnboardingHome from '@/views/v2/Onboarding/OnboardingHome.vue'
+import NavBar from '@/views/NavBar.vue'
+import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 
 export default {
   components: {
