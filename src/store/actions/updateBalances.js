@@ -6,7 +6,7 @@ export const updateBalances = async ({ commit, getters }, { network, walletId })
   return Promise.all(assets
     .map(async asset => {
       const addresses = await getters.client(network, walletId, asset).wallet.getUsedAddresses()
-      const balance = await getters.client(network, walletId, asset).chain.getBalance(addresses)
+      const balance = (await getters.client(network, walletId, asset).chain.getBalance(addresses)).toNumber()
 
       commit('UPDATE_BALANCE', { network, walletId, asset, balance })
     }))
