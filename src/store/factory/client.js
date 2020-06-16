@@ -96,7 +96,7 @@ export const createClient = (network, mnemonic) => {
   }
 
   const SwapArgs = {
-    BTC: [{ network: networks.BTC[NetworkArgs.BTC] }, 'p2wsh'],
+    BTC: [networks.BTC[NetworkArgs.BTC], 'p2wsh'],
     ETH: [],
     DAI: [],
     USDC: []
