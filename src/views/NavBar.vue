@@ -6,8 +6,8 @@
     <div class="navbar_title">
       <span class="navbar_title_name">{{wallet.name}}</span>&nbsp;<span class="navbar_title_network text-muted">({{activeNetwork}})</span>
     </div>
-    <div class="navbar_menu" @click="showMenu = !showMenu"><HamburgerIcon class="navbar_menu_icon" /></div>
-    <ul class="navbar_menu_list" v-if="showMenu">
+    <div class="navbar_menu" @click.stop="showMenu = !showMenu"><HamburgerIcon class="navbar_menu_icon" /></div>
+    <ul class="navbar_menu_list" v-if="showMenu" v-click-away="hideMenu">
       <li @click="switchNetwork">Switch to {{inactiveNetwork}}</li>
       <li @click="backup"><PaperIcon /> Backup</li>
       <li @click="lock"><LockIcon class="lock_icon"/> Lock</li>
@@ -18,12 +18,16 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 
+import clickAway from '@/directives/clickAway'
 import HamburgerIcon from '@/assets/icons/hamburger.svg'
 import LockIcon from '@/assets/icons/lock.svg'
 import PaperIcon from '@/assets/icons/paper.svg'
 import ChevronLeftIcon from '@/assets/icons/chevron_left.svg'
 
 export default {
+  directives: {
+    clickAway
+  },
   components: {
     ChevronLeftIcon,
     HamburgerIcon,
@@ -58,6 +62,9 @@ export default {
     backup () {
       this.showMenu = false
       this.$router.replace('/backup')
+    },
+    hideMenu () {
+      this.showMenu = false
     }
   }
 }
