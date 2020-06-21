@@ -30,7 +30,7 @@ export default {
 
 <style lang="scss">
 #app {
-  width: 375px;
+  width: 360px;
   height: 600px;
   display: flex;
   flex-direction: column;

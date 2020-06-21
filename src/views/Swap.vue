@@ -53,6 +53,7 @@
       </div>
     </div>
     <div class="wrapper_bottom">
+      <SwapInfo />
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
         <button class="btn btn-primary btn-lg" @click="swap" :disabled="!bestMarketBasedOnAmount || !canSwap">Review Terms</button>
@@ -64,10 +65,13 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
-
 import { dpUI, prettyBalance } from '@/utils/coinFormatter'
+import SwapInfo from '@/components/SwapInfo'
 
 export default {
+  components: {
+    SwapInfo
+  },
   data () {
     return {
       amount: 0,

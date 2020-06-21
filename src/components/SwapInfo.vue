@@ -2,7 +2,7 @@
   <div class="swap-info">
     <h5 class="swap-info_title">What happens when you swap?</h5>
     <div class="media"><LockIcon class="icon-fill-primary" /><p class="text-muted media-body">When initiating the swap your funds will be securely locked into escrow</p></div>
-    <div class="media"><ClockIcon /><p class="text-muted media-body">If the swap doesn’t complete within 6 hours, your funds will be released in 12 hours at {{expiration}}</p></div>
+    <div class="media"><ClockIcon /><p class="text-muted media-body">If the swap doesn’t complete in 6 hours, your funds will be released in 12 hours at {{expiration}}</p></div>
   </div>
 </template>
 

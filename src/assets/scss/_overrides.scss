@@ -76,10 +76,11 @@ $info: $cyan-dark-4;
 $link-color: $color-primary;
 $link-hover-decoration: none;
 
+$input-btn-font-size-lg: $font-size-base;
 $input-btn-padding-y:    .415rem;
 $input-btn-padding-y-sm: .275rem;
-$input-btn-padding-y-lg: .6rem;
-$btn-padding-x-lg:       .6rem;
+$input-btn-padding-y-lg: .5rem;
+$btn-padding-x-lg:       .5rem;
 $btn-padding-y-sm:       0.15rem;
 
 $input-focus-box-shadow: 0;
@@ -104,7 +105,7 @@ $input-padding-x-sm: 0;
 $input-font-size-sm: $font-size-base;
 
 $custom-select-border-width: 0;
-$form-group-margin-bottom: 30px;
+$form-group-margin-bottom: 10px;
 
 $wrapper-padding: 20px;
 
