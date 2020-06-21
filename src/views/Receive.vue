@@ -12,7 +12,10 @@
     <div class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-icon" @click="copy"><CopyIcon /> Copy Address</button>
+        <button class="btn btn-primary btn-lg btn-icon" @click="copy">
+          <template v-if="copied"><TickIcon /> Copied!</template>
+          <template v-else><CopyIcon /> Copy Address</template>
+        </button>
       </div>
     </div>
   </div>
@@ -22,6 +25,7 @@
 import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
 import CopyIcon from '@/assets/icons/copy.svg'
+import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@liquality/cryptoassets'
 
 function getChainName (ticker) {
@@ -31,11 +35,13 @@ function getChainName (ticker) {
 
 export default {
   components: {
-    CopyIcon
+    CopyIcon,
+    TickIcon
   },
   data () {
     return {
-      qrcode: null
+      qrcode: null,
+      copied: false
     }
   },
   props: {
@@ -77,11 +83,14 @@ export default {
     copy () {
       const copyText = document.querySelector('.receive_address')
       const tempInput = document.createElement('input')
+      tempInput.style = "display: none;"
       tempInput.value = copyText.innerHTML
       document.body.appendChild(tempInput)
       tempInput.select()
       document.execCommand('copy')
       document.body.removeChild(tempInput)
+      this.copied = true
+      setTimeout(() => this.copied = false, 3000)
     },
     getChainType (ticker) {
       var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', dai: 'ethereum' }
