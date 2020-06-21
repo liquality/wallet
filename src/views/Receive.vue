@@ -83,14 +83,14 @@ export default {
     copy () {
       const copyText = document.querySelector('.receive_address')
       const tempInput = document.createElement('input')
-      tempInput.style = "display: none;"
+      tempInput.style = 'display: none;'
       tempInput.value = copyText.innerHTML
       document.body.appendChild(tempInput)
       tempInput.select()
       document.execCommand('copy')
       document.body.removeChild(tempInput)
       this.copied = true
-      setTimeout(() => this.copied = false, 3000)
+      setTimeout(() => { this.copied = false }, 3000)
     },
     getChainType (ticker) {
       var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', dai: 'ethereum' }
