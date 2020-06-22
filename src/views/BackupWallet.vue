@@ -38,18 +38,17 @@ export default {
 <style lang="scss">
 .backup-wallet {
   padding: 0 !important;
-  overflow: scroll;
+  overflow: hidden;
 
   &_top {
   }
 
   .backup-wallet_bottom {
-    overfloat:scroll;
     flex: 1;
     background: #FFFFFF;
     color: $color-text-primary;
     padding: $wrapper-padding;
-    overflow: scroll;
+    overflow-y: auto;
   }
 
   > div {
@@ -58,8 +57,7 @@ export default {
 
   &_icon {
     width: 40px;
-    margin-top: 30px;
-    margin-bottom: 10px;
+    margin: 10px 0;
   }
 
   h2 {
