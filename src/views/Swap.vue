@@ -31,12 +31,11 @@
             </span>
           </div>
         </div>
-        <small class="form-text d-flex justify-content-between">
+        <small class="form-text d-flex justify-content-between" v-if="!enterSendToAddress">
           <div class="swap_limits">
             <a href="javascript:void(0)" @click="enterSendToAddress = true">+ Receive at external address</a>
           </div>
         </small>
-
       </div>
       <div class="form-group" v-if="enterSendToAddress">
         <label class="w-100" for="amount">Receive at <a href="javascript:void(0)" class="text-muted float-right" @click="enterSendToAddress = false; sendTo = null">X</a></label>
