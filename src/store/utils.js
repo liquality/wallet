@@ -15,7 +15,7 @@ export const waitForRandom = (min, max) => new Promise(resolve => setTimeout(() 
 export const timestamp = () => Math.ceil(Date.now() / 1000)
 
 export const getChainFromAsset = asset => {
-  if (['DAI', 'USDC'].includes(asset)) return 'ETH'
+  if (['DAI', 'USDC', 'USDT'].includes(asset)) return 'ETH'
 
   return asset
 }

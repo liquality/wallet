@@ -1,24 +1,18 @@
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/cryptoassets'
 
-const DP_MAP = {
-  BTC: 8,
-  ETH: 18,
-  DAI: 18,
-  USDC: 6
-}
-
 const DP_UI_MAP = {
   BTC: 6,
   ETH: 6,
   DAI: 6,
-  USDC: 6
+  USDC: 6,
+  USDT: 6
 }
 
 export const dp = (amount, coin) => {
   if (!amount) return amount
 
-  return BN(amount).dp(DP_MAP[coin])
+  return BN(amount).dp(cryptoassets[coin.toLowerCase()].decimals)
 }
 
 export const dpUI = (amount, coin, floor = false) => {

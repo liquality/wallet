@@ -29,7 +29,7 @@ import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@liquality/cryptoassets'
 
 function getChainName (ticker) {
-  var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', dai: 'ethereum' }
+  var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', usdt: 'ethereum', dai: 'ethereum' }
   return map[ticker]
 }
 
@@ -93,7 +93,7 @@ export default {
       setTimeout(() => { this.copied = false }, 3000)
     },
     getChainType (ticker) {
-      var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', dai: 'ethereum' }
+      var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', usdt: 'ethereum', dai: 'ethereum' }
       return map[ticker]
     }
   }

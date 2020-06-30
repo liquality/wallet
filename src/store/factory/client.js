@@ -32,6 +32,9 @@ const rpc = {
   },
   USDC: {
     mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
+  },
+  USDT: {
+    mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
   }
 }
 
@@ -39,35 +42,40 @@ const networks = {
   BTC: BitcoinNetworks,
   ETH: EthereumNetworks,
   DAI: EthereumNetworks,
-  USDC: EthereumNetworks
+  USDC: EthereumNetworks,
+  USDT: EthereumNetworks
 }
 
 const RpcProviders = {
   BTC: BitcoinEsploraApiProvider,
   ETH: EthereumRpcProvider,
   DAI: EthereumRpcProvider,
-  USDC: EthereumRpcProvider
+  USDC: EthereumRpcProvider,
+  USDT: EthereumRpcProvider
 }
 
 const JsWalletProviders = {
   BTC: BitcoinJsWalletProvider,
   ETH: EthereumJsWalletProvider,
   DAI: EthereumJsWalletProvider,
-  USDC: EthereumJsWalletProvider
+  USDC: EthereumJsWalletProvider,
+  USDT: EthereumJsWalletProvider
 }
 
 const SwapProviders = {
   BTC: BitcoinSwapProvider,
   ETH: EthereumSwapProvider,
   DAI: EthereumErc20SwapProvider,
-  USDC: EthereumErc20SwapProvider
+  USDC: EthereumErc20SwapProvider,
+  USDT: EthereumErc20SwapProvider
 }
 
 const AdditionalSwapProviders = {
   BTC: BitcoinEsploraSwapFindProvider,
   ETH: EthereumScraperSwapFindProvider,
   DAI: EthereumErc20ScraperSwapFindProvider,
-  USDC: EthereumErc20ScraperSwapFindProvider
+  USDC: EthereumErc20ScraperSwapFindProvider,
+  USDT: EthereumErc20ScraperSwapFindProvider
 }
 
 const ERC20 = {
@@ -77,11 +85,14 @@ const ERC20 = {
   },
   USDC: {
     mainnet: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+  },
+  USDT: {
+    mainnet: '0xdac17f958d2ee523a2206206994597c13d831ec7'
   }
 }
 
 export const NetworkAssets = {
-  mainnet: ['BTC', 'ETH', 'DAI', 'USDC'],
+  mainnet: ['BTC', 'ETH', 'DAI', 'USDC', 'USDT'],
   testnet: ['BTC', 'ETH', 'DAI']
 }
 
@@ -92,21 +103,24 @@ export const createClient = (network, mnemonic) => {
     BTC: isTestnet ? 'bitcoin_testnet' : 'bitcoin',
     ETH: isTestnet ? 'rinkeby' : 'mainnet',
     DAI: isTestnet ? 'rinkeby' : 'mainnet',
-    USDC: isTestnet ? 'rinkeby' : 'mainnet'
+    USDC: isTestnet ? 'rinkeby' : 'mainnet',
+    USDT: isTestnet ? 'rinkeby' : 'mainnet'
   }
 
   const SwapArgs = {
     BTC: [networks.BTC[NetworkArgs.BTC], 'p2wsh'],
     ETH: [],
     DAI: [],
-    USDC: []
+    USDC: [],
+    USDT: []
   }
 
   const AdditionalSwapArgs = {
     BTC: rpc.BTC[NetworkArgs.BTC],
     ETH: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
     DAI: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
-    USDC: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api']
+    USDC: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
+    USDT: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api']
   }
 
   return NetworkAssets[network].map(asset => {
