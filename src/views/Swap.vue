@@ -1,6 +1,7 @@
 <template>
   <div class="swap wrapper">
     <div class="wrapper_top form">
+      <div class="text-center"><small class="text-danger" v-if="ethRequired">An ETH balance is required to swap.</small></div>
       <div class="form-group">
         <label for="amount">Send</label>
         <div class="input-group">
@@ -128,10 +129,13 @@ export default {
     selectedMarket () {
       return this.networkMarketData[this.asset]
     },
+    ethRequired () {
+      return this.networkWalletBalances['ETH'] === 0
+    },
     canSwap () {
       const amount = BN(this.safeAmount)
 
-      if (amount.gt(this.max) || amount.lt(this.min) || amount.gt(this.balance)) return false
+      if (this.ethRequired || amount.gt(this.max) || amount.lt(this.min) || amount.gt(this.balance)) return false
 
       return true
     },
