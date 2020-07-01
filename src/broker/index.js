@@ -4,12 +4,14 @@ import { omit } from 'lodash-es'
 import Background from './Background'
 import Foreground from './Foreground'
 import { isBackgroundScript } from './utils'
+import Storage from './Storage'
 
 const Broker = state => {
   if (isBackgroundScript(window)) {
     const vuexPersist = new VuexPersist({
       key: 'liquality-wallet-dev-14',
-      storage: window.localStorage,
+      storage: Storage,
+      asyncStorage: true,
       reducer: s => omit(s, ['key', 'wallets', 'unlockedAt']) // do not persist these states
     })
 
