@@ -46,10 +46,10 @@ class Background {
 
     this.bindMutation(connection)
 
-    connection.postMessage({
+    this.store.restored.then(() => connection.postMessage({
       type: 'REHYDRATE_STATE',
       data: this.store.state
-    })
+    }))
   }
 
   onExternalConnection (connection) {
