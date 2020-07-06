@@ -10,7 +10,7 @@ export default {
   },
   async setItem (key, data) {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.set({[key]: data}, () => {
+      chrome.storage.local.set({ [key]: data }, () => {
         if (chrome.runtime.lastError) reject(chrome.runtime.lastError.message)
         resolve()
       })
