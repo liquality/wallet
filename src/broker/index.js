@@ -23,9 +23,10 @@ const Broker = state => {
     if (prevStorage) {
       const restoreState = vuexPersist.restoreState
       vuexPersist.restoreState = async (key, storage) => {
-        await Storage.setItem('liquality-wallet', prevStorage)
-        await restoreState(key, storage)
+        await Storage.setItem('liquality-wallet', JSON.parse(prevStorage))
+        const state = await restoreState(key, storage)
         window.localStorage.removeItem('liquality-wallet-dev-14')
+        return state
       }
     }
 
