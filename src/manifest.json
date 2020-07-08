@@ -5,7 +5,9 @@
   "description": "Secure multi-crypto wallet with built-in Atomic Swaps!",
   "homepage_url": "https://liquality.io",
   "permissions": [
-    "notifications"
+    "notifications",
+    "storage",
+    "unlimitedStorage"
   ],
   "icons": {
     "16": "icons/16x16.png",
