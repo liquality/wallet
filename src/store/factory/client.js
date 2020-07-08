@@ -19,7 +19,7 @@ import EthereumNetworks from '@liquality/ethereum-networks'
 
 const rpc = {
   BTC: {
-    bitcoin: ['https://blockstream.info/api', 2],
+    bitcoin: ['https://liquality.io/electrs', 2],
     bitcoin_testnet: ['https://blockstream.info/testnet/api', 2]
   },
   ETH: {
