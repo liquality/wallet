@@ -26,7 +26,7 @@ const Broker = state => {
         await Storage.setItem('liquality-wallet', JSON.parse(prevStorage))
         const state = await restoreState(key, storage)
         window.localStorage.removeItem('liquality-wallet-dev-14')
-        vuexPersist.restoreState = restoreState; // Remove hook
+        vuexPersist.restoreState = restoreState // Remove hook
         return state
       }
     }

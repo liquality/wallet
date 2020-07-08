@@ -130,7 +130,7 @@ export default {
       return this.networkMarketData[this.asset]
     },
     ethRequired () {
-      return this.networkWalletBalances['ETH'] === 0
+      return this.networkWalletBalances.ETH === 0
     },
     canSwap () {
       const amount = BN(this.safeAmount)
