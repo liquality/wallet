@@ -51,9 +51,24 @@
         <label>Rate</label>
         <p><span class="swap-rate_base">1 {{asset}} =</span><span class="swap-rate_value">&nbsp;{{bestRateBasedOnAmount}}</span><span class="swap-rate_term">&nbsp;{{toAsset}}</span></p>
       </div>
+
+      <div class="form-group swap_fees">
+        <label>Network Speed/Fee</label>
+        <div class="swap_fees_asset" v-for="asset in new Set([getChainFromAsset(asset), getChainFromAsset(toAsset)]) " :key="asset">
+          {{ asset }}
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-light btn-outline-primary btn-sm"
+              :class="name == fees[asset].selected ? 'active' : ''"
+              v-for="(fee, name) in fees[asset].values" :key="name"
+              v-tooltip="{content: `${fee.fee} ${getFeeLabelFromAsset(asset)}<br />${fee.wait}s`}"
+              v-on:click="fees[asset].selected = name">
+              <input type="radio" name="fee" autocomplete="off" :checked="name == fees[asset].selected "> {{name}}
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="wrapper_bottom">
-      <SwapInfo />
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
         <button class="btn btn-primary btn-lg" @click="swap" :disabled="!bestMarketBasedOnAmount || !canSwap">Review Terms</button>
@@ -63,21 +78,19 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import { dpUI, prettyBalance } from '@/utils/coinFormatter'
-import SwapInfo from '@/components/SwapInfo'
+import { getChainFromAsset, getFeeLabelFromAsset } from '@/utils/asset'
 
 export default {
-  components: {
-    SwapInfo
-  },
   data () {
     return {
       amount: 0,
       toAsset: null,
       enterSendToAddress: false,
-      sendTo: null
+      sendTo: null,
+      fees: {}
     }
   },
   props: {
@@ -87,6 +100,8 @@ export default {
     this.toAsset = Object.keys(this.selectedMarket)[0]
     this.amount = this.min
     this.updateMarketData({ network: this.activeNetwork })
+    this.updateFees(this.asset)
+    this.updateFees(this.toAsset)
   },
   computed: {
     ...mapState(['activeNetwork', 'marketData', 'balances', 'activeWalletId']),
@@ -144,18 +159,37 @@ export default {
     }
   },
   methods: {
+    getFeeLabelFromAsset,
+    getChainFromAsset,
+    ...mapGetters(['client']),
     ...mapActions(['newSwap', 'updateMarketData']),
+    async updateFees (asset) {
+      const chainAsset = getChainFromAsset(asset)
+      const client = this.client()(this.activeNetwork, this.activeWalletId, chainAsset)
+      const fees = await client.chain.getFees()
+      this.fees = Object.assign({}, this.fees, {
+        [chainAsset]: {
+          values: fees,
+          selected: 'average'
+        }
+      })
+    },
     setAmount (amount) {
       this.amount = amount
     },
     setToAsset (val) {
       this.toAsset = val
+      this.updateFees(this.toAsset)
     },
     async swap () {
+      const fromFees = this.fees[getChainFromAsset(this.asset)]
+      const fromFee = fromFees.values[fromFees.selected].fee
+      const toFees = this.fees[getChainFromAsset(this.toAsset)]
+      const toFee = toFees.values[toFees.selected].fee
       this.$router.push({
         name: 'SwapConfirm',
         params: {
-          agent: this.bestAgent, asset: this.asset, toAsset: this.toAsset, amount: this.amount, toAmount: this.toAmount, rate: this.bestRateBasedOnAmount, sendTo: this.sendTo
+          agent: this.bestAgent, asset: this.asset, toAsset: this.toAsset, amount: this.amount, toAmount: this.toAmount, rate: this.bestRateBasedOnAmount, sendTo: this.sendTo, fee, toFee
         }
       })
     }
@@ -165,6 +199,15 @@ export default {
 
 <style lang="scss">
 .swap {
+  &_fees {
+    .btn-group label.btn {
+      text-transform: capitalize;
+    }
 
+    &_asset {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+  }
 }
 </style>

@@ -47,7 +47,7 @@ export default {
     SpinnerIcon,
     SwapInfo
   },
-  props: ['agent', 'asset', 'toAsset', 'amount', 'toAmount', 'rate', 'sendTo'],
+  props: ['agent', 'asset', 'toAsset', 'amount', 'toAmount', 'rate', 'sendTo', 'fee', 'toFee'],
   data () {
     return {
       loading: false
@@ -71,7 +71,9 @@ export default {
         to: this.toAsset,
         fromAmount,
         sendTo: this.sendTo,
-        auto: false
+        auto: false,
+        fee: this.fee,
+        claimFee: this.toFee
       })
 
       this.$router.replace(`/account/${this.asset}`)

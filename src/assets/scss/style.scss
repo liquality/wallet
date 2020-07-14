@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap');
 @import "overrides";
 @import "bootstrap";
+@import "tooltip";
 
 svg {
   vertical-align: top;
@@ -75,6 +76,9 @@ svg {
     font-size: $font-size-sm;
     font-weight: bold;
     text-transform: uppercase;
+  }
+  label.btn {
+    text-transform: none;
   }
   input {
     color: $color-text-primary;

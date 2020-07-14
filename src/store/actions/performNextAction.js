@@ -66,7 +66,8 @@ export const performNextAction = async ({ commit, getters, dispatch }, { network
         order.fromCounterPartyAddress,
         order.fromAddress,
         order.secretHash,
-        order.swapExpiration
+        order.swapExpiration,
+        order.fee
       )
     } catch (e) {
       commit('UPDATE_HISTORY', {
@@ -196,7 +197,8 @@ export const performNextAction = async ({ commit, getters, dispatch }, { network
         order.toAddress,
         order.toCounterPartyAddress,
         order.secret,
-        order.nodeSwapExpiration
+        order.nodeSwapExpiration,
+        order.claimFee
       )
     } catch (e) {
       commit('UPDATE_HISTORY', {
@@ -266,7 +268,8 @@ export const performNextAction = async ({ commit, getters, dispatch }, { network
           order.fromCounterPartyAddress,
           order.fromAddress,
           order.secretHash,
-          order.swapExpiration
+          order.swapExpiration,
+          order.fee
         )
       } catch (e) {
         commit('UPDATE_HISTORY', {

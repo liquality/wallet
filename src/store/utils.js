@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { random } from 'lodash-es'
 import axios from 'axios'
+import { getChainFromAsset } from '../utils/asset'
 
 export const TIMEOUTS = []
 
@@ -13,12 +14,6 @@ export const emitter = new Vue()
 export const waitForRandom = (min, max) => new Promise(resolve => setTimeout(() => resolve(), random(min, max)))
 
 export const timestamp = () => Math.ceil(Date.now() / 1000)
-
-export const getChainFromAsset = asset => {
-  if (['DAI', 'USDC', 'USDT'].includes(asset)) return 'ETH'
-
-  return asset
-}
 
 export const attemptToLockAsset = (network, walletId, asset) => {
   const chain = getChainFromAsset(asset)

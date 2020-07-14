@@ -4,11 +4,13 @@ import BitcoinSwapProvider from '@liquality/bitcoin-swap-provider'
 import BitcoinJsWalletProvider from '@liquality/bitcoin-js-wallet-provider'
 import BitcoinEsploraApiProvider from '@liquality/bitcoin-esplora-api-provider'
 import BitcoinEsploraSwapFindProvider from '@liquality/bitcoin-esplora-swap-find-provider'
+import BitcoinEarnFeeProvider from '@liquality/bitcoin-earn-fee-provider'
 
 import EthereumRpcProvider from '@liquality/ethereum-rpc-provider'
 import EthereumJsWalletProvider from '@liquality/ethereum-js-wallet-provider'
 import EthereumSwapProvider from '@liquality/ethereum-swap-provider'
 import EthereumScraperSwapFindProvider from '@liquality/ethereum-scraper-swap-find-provider'
+import EthereumGasStationFeeProvider from '@liquality/ethereum-gas-station-fee-provider'
 
 import EthereumErc20Provider from '@liquality/ethereum-erc20-provider'
 import EthereumErc20SwapProvider from '@liquality/ethereum-erc20-swap-provider'
@@ -76,6 +78,14 @@ const AdditionalSwapProviders = {
   DAI: EthereumErc20ScraperSwapFindProvider,
   USDC: EthereumErc20ScraperSwapFindProvider,
   USDT: EthereumErc20ScraperSwapFindProvider
+}
+
+const FeeProviders = {
+  BTC: BitcoinEarnFeeProvider,
+  ETH: EthereumGasStationFeeProvider,
+  DAI: EthereumGasStationFeeProvider,
+  USDC: EthereumGasStationFeeProvider,
+  USDT: EthereumGasStationFeeProvider
 }
 
 const ERC20 = {
@@ -146,6 +156,8 @@ export const createClient = (network, mnemonic) => {
     client.addProvider(new AdditionalSwapProviders[asset](
       ...AdditionalSwapArgs[asset]
     ))
+
+    client.addProvider(new FeeProviders[asset]())
 
     return {
       asset,
