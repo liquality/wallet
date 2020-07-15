@@ -3,5 +3,3 @@ export const getChainFromAsset = asset => {
 
   return asset
 }
-
-export const getFeeLabelFromAsset = asset => getChainFromAsset(asset) === 'ETH' ? 'gwei' : 'sat/b'

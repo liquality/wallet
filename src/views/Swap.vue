@@ -82,6 +82,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import { dpUI, prettyBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getFeeLabelFromAsset } from '@/utils/asset'
+import cryptoassets from '@liquality/cryptoassets'
 
 export default {
   data () {
@@ -159,8 +160,10 @@ export default {
     }
   },
   methods: {
-    getFeeLabelFromAsset,
     getChainFromAsset,
+    getFeeLabelFromAsset (asset) {
+      return cryptoassets[asset.toLowerCase()].fees.unit
+    },
     ...mapGetters(['client']),
     ...mapActions(['newSwap', 'updateMarketData']),
     async updateFees (asset) {
