@@ -192,7 +192,7 @@ export default {
     },
     async swap () {
       const fromFees = this.fees[getChainFromAsset(this.asset)]
-      const fromFee = fromFees.values[fromFees.selected].fee
+      const fee = fromFees.values[fromFees.selected].fee
       const toFees = this.fees[getChainFromAsset(this.toAsset)]
       const toFee = toFees.values[toFees.selected].fee
       this.$router.push({
