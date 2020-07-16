@@ -51,6 +51,10 @@ export default {
 
 <style lang="scss">
 .wallet {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
   &_stats {
     display: flex;
     width: 100%;
@@ -63,6 +67,7 @@ export default {
   }
 
   &_accounts {
+    overflow-y: auto;
     a {
       color: $color-text-primary;
     }

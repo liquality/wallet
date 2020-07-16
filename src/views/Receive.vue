@@ -24,14 +24,10 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
+import { getChainFromAsset } from '@/utils/asset'
 import CopyIcon from '@/assets/icons/copy.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@liquality/cryptoassets'
-
-function getChainName (ticker) {
-  var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', usdt: 'ethereum', dai: 'ethereum' }
-  return map[ticker]
-}
 
 export default {
   components: {
@@ -57,15 +53,18 @@ export default {
       return this.addresses[this.activeNetwork][this.activeWalletId][this.asset]._address
     },
     chainName () {
-      return getChainName(this.asset.toLowerCase())
+      const chain = getChainFromAsset(this.asset)
+      return ({
+        BTC: 'bitcoin',
+        ETH: 'ethereum'
+      })[chain]
     }
 
   },
   async created () {
     const unusedAddress = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
     const uri = [
-      // map[this.asset.toLowerCase()],
-      getChainName(this.asset.toLowerCase()),
+      this.chainName,
       cryptoassets[this.asset.toLowerCase()].formatAddress(unusedAddress[0]._address)
     ].join(':')
 
@@ -91,10 +90,6 @@ export default {
       document.body.removeChild(tempInput)
       this.copied = true
       setTimeout(() => { this.copied = false }, 3000)
-    },
-    getChainType (ticker) {
-      var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', usdt: 'ethereum', dai: 'ethereum' }
-      return map[ticker]
     }
   }
 }
