@@ -4,11 +4,12 @@
       <div class="text-center"><small class="text-danger" v-if="ethRequired">An ETH balance is required to swap.</small></div>
       <div class="form-group">
         <label for="amount">Send</label>
-        <div class="input-group">
-          <input type="number" class="form-control" id="amount" v-model="amount" placeholder="0.00">
+        <div class="input-group swap_asset">
+          <img :src="'./img/' + asset.toLowerCase() +'.png'" class="swap_asset_icon" />
           <div class="input-group-append">
             <span class="input-group-text">{{asset}}</span>
           </div>
+          <input type="number" class="form-control" id="amount" v-model="amount" placeholder="0.00" :style="getAssetColor(asset)">
         </div>
         <small class="form-text d-flex justify-content-between">
           <div class="swap_limits">
@@ -22,8 +23,8 @@
       </div>
       <div class="form-group">
         <label for="amount">Receive</label>
-        <div class="input-group">
-          <input type="number" class="form-control" id="amount" readonly v-model="toAmount" placeholder="0.00">
+        <div class="input-group swap_asset">
+          <img :src="'./img/' + toAsset.toLowerCase() +'.png'" class="swap_asset_icon" />
           <div class="input-group-append">
             <span class="input-group-text">
               <select class="custom-select" @change="setToAsset($event.target.value)" v-model="toAsset">
@@ -31,6 +32,7 @@
               </select>
             </span>
           </div>
+          <input type="number" class="form-control" id="amount" readonly v-model="toAmount" placeholder="0.00" :style="getAssetColor(toAsset)">
         </div>
         <small class="form-text d-flex justify-content-between" v-if="!enterSendToAddress">
           <div class="swap_limits">
@@ -81,7 +83,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import { dpUI, prettyBalance } from '@/utils/coinFormatter'
-import { getChainFromAsset, getFeeLabelFromAsset } from '@/utils/asset'
+import { getChainFromAsset } from '@/utils/asset'
 import cryptoassets from '@liquality/cryptoassets'
 
 export default {
@@ -161,6 +163,10 @@ export default {
   },
   methods: {
     getChainFromAsset,
+    getAssetColor (asset) {
+      const assetData = cryptoassets[asset.toLowerCase()]
+      if (assetData.color) return { color: assetData.color }
+    },
     getFeeLabelFromAsset (asset) {
       return cryptoassets[asset.toLowerCase()].fees.unit
     },
@@ -202,6 +208,23 @@ export default {
 
 <style lang="scss">
 .swap {
+  &_asset {
+    &.input-group {
+      align-items: center;
+    }
+
+    &_icon {
+      width: 28px;
+      height: 28px;
+      margin-right: 4px;
+    }
+
+    input {
+      text-align: right;
+      margin-left: 12px;
+    }
+  }
+
   &_fees {
     .btn-group label.btn {
       text-transform: capitalize;
