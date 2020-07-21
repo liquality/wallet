@@ -23,13 +23,16 @@
 </template>
 
 <script>
-import moment from 'moment'
+import moment from 'moment/min/moment-with-locales'
 import cryptoassets from '@liquality/cryptoassets'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+
+const locale = window.navigator.userLanguage || window.navigator.language
+moment.locale(locale)
 
 export default {
   components: {
