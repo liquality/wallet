@@ -35,7 +35,7 @@ export default {
     SendIcon,
     SpinnerIcon
   },
-  props: ['asset', 'sendAddress', 'sendAmount'],
+  props: ['asset', 'sendAddress', 'sendAmount', 'fee'],
   data () {
     return {
       loading: false
@@ -57,7 +57,7 @@ export default {
         asset: this.asset,
         amount,
         to: this.sendAddress,
-        from: this.address
+        fee: this.fee
       })
 
       this.$router.replace(`/account/${this.asset}`)

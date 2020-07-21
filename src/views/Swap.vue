@@ -186,7 +186,7 @@ export default {
     setToAsset (val) {
       this.toAsset = val
 
-      this.updateFees({ asset: chainAsset })
+      this.updateFees(this.toAssetChain)
       this.selectedFee = Object.assign({}, this.selectedFee, {
         [this.toChainAsset]: 'average'
       })
@@ -226,10 +226,6 @@ export default {
   }
 
   &_fees {
-    .btn-group label.btn {
-      text-transform: capitalize;
-    }
-
     &_asset {
       font-weight: bold;
       margin-bottom: 6px;

@@ -114,7 +114,7 @@ const FeeProviders = {
   WBTC: {
     mainnet: EthereumGasStationFeeProvider,
     rinkeby: EthereumRpcFeeProvider
-  },
+  }
 }
 
 const ERC20 = {

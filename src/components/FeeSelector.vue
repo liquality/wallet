@@ -1,5 +1,5 @@
 <template>
-  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  <div class="fee-selector btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-light btn-outline-primary btn-sm"
         v-for="name in ['slow', 'average', 'fast']" :key="name"
         :class="name == value ? 'active' : ''"
@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 
 export default {
@@ -31,5 +31,8 @@ export default {
 </script>
 
 <style lang="scss">
-
+.fee-selector.btn-group label.btn {
+  text-transform: capitalize;
+  font-weight: normal;
+}
 </style>

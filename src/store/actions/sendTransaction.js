@@ -1,10 +1,10 @@
 import { createNotification } from '../../broker/notification'
 import { prettyBalance } from '../../utils/coinFormatter'
 
-export const sendTransaction = async ({ commit, getters }, { network, walletId, asset, amount, to, from }) => {
+export const sendTransaction = async ({ commit, getters }, { network, walletId, asset, amount, to, fee }) => {
   const client = getters.client(network, walletId, asset)
 
-  const txHash = await client.chain.sendTransaction(to, amount, null, from)
+  const txHash = await client.chain.sendTransaction(to, amount, undefined, fee)
 
   const transaction = {
     type: 'SEND',
@@ -14,9 +14,9 @@ export const sendTransaction = async ({ commit, getters }, { network, walletId, 
     to: asset,
     from: asset,
     toAddress: to,
-    fromAddress: from,
 
     amount,
+    fee,
     txHash,
 
     startTime: Date.now(),

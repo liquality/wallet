@@ -22,6 +22,12 @@
           </div>
         </small>
       </div>
+      <div class="form-group">
+        <label>Network Speed/Fee</label>
+        <div>
+          <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
+        </div>
+      </div>
     </div>
 
     <div class="wrapper_bottom">
@@ -36,21 +42,32 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
-
+import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance } from '@/utils/coinFormatter'
+import { getChainFromAsset } from '@/utils/asset'
 
 export default {
+  components: {
+    FeeSelector
+  },
   data () {
     return {
       sendAmount: 0,
-      sendAddress: null
+      sendAddress: null,
+      selectedFee: 'average'
     }
   },
   props: {
     asset: String
   },
   computed: {
-    ...mapState(['addresses', 'activeNetwork', 'activeWalletId', 'balances']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'balances', 'fees']),
+    assetChain () {
+      return getChainFromAsset(this.asset)
+    },
+    assetFees () {
+      return this.fees[this.activeNetwork][this.activeWalletId][this.assetChain]
+    },
     canSend () {
       if (!this.sendAddress) return false
 
@@ -67,17 +84,20 @@ export default {
   },
   methods: {
     prettyBalance,
-    ...mapActions(['sendTransaction']),
+    ...mapActions(['updateFees']),
     async send () {
+      const fee = this.assetFees[this.selectedFee].fee
       this.$router.push({
         name: 'SendConfirm',
         params: {
-          asset: this.asset, sendAddress: this.sendAddress, sendAmount: this.sendAmount
+          asset: this.asset, sendAddress: this.sendAddress, sendAmount: this.sendAmount, fee
         }
       })
     }
+  },
+  created () {
+    this.updateFees()
   }
-
 }
 </script>
 
