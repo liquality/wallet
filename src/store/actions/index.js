@@ -21,6 +21,7 @@ import { createWallet } from './createWallet'
 import { unlockWallet } from './unlockWallet'
 import { lockWallet } from './lockWallet'
 import { updateBalances } from './updateBalances'
+import { updateFees } from './updateFees'
 import { updateMarketData } from './updateMarketData'
 
 export {
@@ -47,5 +48,6 @@ export {
   unlockWallet,
   lockWallet,
   updateBalances,
+  updateFees,
   updateMarketData
 }

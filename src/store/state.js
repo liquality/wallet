@@ -15,6 +15,7 @@ export default {
   encryptedWallets: null,
   addresses: {},
   balances: {},
+  fees: {},
   history: {},
   marketData: {},
 

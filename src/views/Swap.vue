@@ -56,17 +56,9 @@
 
       <div class="form-group swap_fees">
         <label>Network Speed/Fee</label>
-        <div class="swap_fees_asset" v-for="asset in new Set([getChainFromAsset(asset), getChainFromAsset(toAsset)]) " :key="asset">
+        <div class="swap_fees_asset" v-for="asset in new Set([assetChain, toAssetChain]) " :key="asset">
           {{ asset }}
-          <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-light btn-outline-primary btn-sm"
-              :class="name == fees[asset].selected ? 'active' : ''"
-              v-for="(fee, name) in fees[asset].values" :key="name"
-              v-tooltip="{content: `${fee.fee} ${getFeeLabelFromAsset(asset)}<br />${fee.wait}s`}"
-              v-on:click="fees[asset].selected = name">
-              <input type="radio" name="fee" autocomplete="off" :checked="name == fees[asset].selected "> {{name}}
-            </label>
-          </div>
+          <FeeSelector :asset="asset" v-model="selectedFee[asset]" v-bind:fees="getAssetFees(asset)" />
         </div>
       </div>
     </div>
@@ -82,18 +74,22 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
+import FeeSelector from '@/components/FeeSelector'
 import { dpUI, prettyBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset } from '@/utils/asset'
 import cryptoassets from '@liquality/cryptoassets'
 
 export default {
+  components: {
+    FeeSelector
+  },
   data () {
     return {
       amount: 0,
       toAsset: null,
       enterSendToAddress: false,
       sendTo: null,
-      fees: {}
+      selectedFee: {}
     }
   },
   props: {
@@ -103,11 +99,15 @@ export default {
     this.toAsset = Object.keys(this.selectedMarket)[0]
     this.amount = this.min
     this.updateMarketData({ network: this.activeNetwork })
-    this.updateFees(this.asset)
-    this.updateFees(this.toAsset)
+    this.updateFees({ asset: this.assetChain })
+    this.updateFees({ asset: this.toAssetChain })
+    this.selectedFee = {
+      [this.assetChain]: 'average',
+      [this.toAssetChain]: 'average'
+    }
   },
   computed: {
-    ...mapState(['activeNetwork', 'marketData', 'balances', 'activeWalletId']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'marketData', 'balances', 'fees']),
     networkMarketData () {
       return this.marketData[this.activeNetwork]
     },
@@ -159,10 +159,18 @@ export default {
     },
     toAmount () {
       return dpUI(BN(this.safeAmount).times(this.bestRateBasedOnAmount), this.toAsset)
+    },
+    assetChain () {
+      return getChainFromAsset(this.asset)
+    },
+    toAssetChain () {
+      return getChainFromAsset(this.toAsset)
     }
   },
   methods: {
-    getChainFromAsset,
+    getAssetFees (asset) {
+      return this.fees[this.activeNetwork][this.activeWalletId][asset]
+    },
     getAssetColor (asset) {
       const assetData = cryptoassets[asset.toLowerCase()]
       if (assetData.color) return { color: assetData.color }
@@ -171,30 +179,22 @@ export default {
       return cryptoassets[asset.toLowerCase()].fees.unit
     },
     ...mapGetters(['client']),
-    ...mapActions(['newSwap', 'updateMarketData']),
-    async updateFees (asset) {
-      const chainAsset = getChainFromAsset(asset)
-      const client = this.client()(this.activeNetwork, this.activeWalletId, chainAsset)
-      const fees = await client.chain.getFees()
-      this.fees = Object.assign({}, this.fees, {
-        [chainAsset]: {
-          values: fees,
-          selected: 'average'
-        }
-      })
-    },
+    ...mapActions(['newSwap', 'updateMarketData', 'updateFees']),
     setAmount (amount) {
       this.amount = amount
     },
     setToAsset (val) {
       this.toAsset = val
-      this.updateFees(this.toAsset)
+
+      this.updateFees({ asset: chainAsset })
+      this.selectedFee = Object.assign({}, this.selectedFee, {
+        [this.toChainAsset]: 'average'
+      })
     },
     async swap () {
-      const fromFees = this.fees[getChainFromAsset(this.asset)]
-      const fee = fromFees.values[fromFees.selected].fee
-      const toFees = this.fees[getChainFromAsset(this.toAsset)]
-      const toFee = toFees.values[toFees.selected].fee
+      const fee = this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]].fee
+      const toFee = this.getAssetFees(this.toAssetChain)[this.selectedFee[this.toAssetChain]].fee
+
       this.$router.push({
         name: 'SwapConfirm',
         params: {

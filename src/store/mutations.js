@@ -66,6 +66,11 @@ export default {
 
     Vue.set(state.balances[network][walletId], asset, balance)
   },
+  UPDATE_FEES (state, { network, walletId, asset, fees }) {
+    ensureNetworkWalletTree(state.fees, network, walletId, {})
+
+    Vue.set(state.fees[network][walletId], asset, fees)
+  },
   UPDATE_MARKET_DATA (state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
   }
