@@ -25,7 +25,7 @@
       <div class="form-group">
         <label>Network Speed/Fee</label>
         <div>
-          <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
+          <FeeSelector :asset="asset" v-model="selectedFee" v-if="assetFees" v-bind:fees="assetFees" />
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@ export default {
       return getChainFromAsset(this.asset)
     },
     assetFees () {
-      return this.fees[this.activeNetwork][this.activeWalletId][this.assetChain]
+      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
     },
     canSend () {
       if (!this.sendAddress) return false

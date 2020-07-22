@@ -56,7 +56,7 @@
 
       <div class="form-group swap_fees">
         <label>Network Speed/Fee</label>
-        <div class="swap_fees_asset" v-for="asset in new Set([assetChain, toAssetChain]) " :key="asset">
+        <div class="swap_fees_asset" v-for="asset in availableFees" :key="asset">
           {{ asset }}
           <FeeSelector :asset="asset" v-model="selectedFee[asset]" v-bind:fees="getAssetFees(asset)" />
         </div>
@@ -165,11 +165,17 @@ export default {
     },
     toAssetChain () {
       return getChainFromAsset(this.toAsset)
+    },
+    availableFees () {
+      const availableFees = new Set([])
+      if (this.getAssetFees(this.assetChain)) availableFees.add(this.assetChain)
+      if (this.getAssetFees(this.toAssetChain)) availableFees.add(this.toAssetChain)
+      return availableFees
     }
   },
   methods: {
     getAssetFees (asset) {
-      return this.fees[this.activeNetwork][this.activeWalletId][asset]
+      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
     },
     getAssetColor (asset) {
       const assetData = cryptoassets[asset.toLowerCase()]
