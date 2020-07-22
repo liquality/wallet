@@ -56,9 +56,13 @@ export default {
     ...mapActions(['setupWallet', 'createWallet', 'unlockWallet']),
     async next () {
       this.loading = true
+      const newWallet = !this.mnemonic
       await this.setupWallet({ key: this.password })
       await this.createWallet({ key: this.password, mnemonic: this.mnemonic }) // mnemonic prop can be null to generate new seed
       await this.unlockWallet({ key: this.password })
+      if (newWallet) {
+        this.$router.replace('/backup')
+      }
     }
   }
 }
