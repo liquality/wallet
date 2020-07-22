@@ -20,7 +20,10 @@
     </div>
 
     <div class="wrapper_bottom">
-      <SwapInfo />
+      <div class="swap-info">
+        <Warning />
+        <div class="media"><ClockIcon class="swap-info_clock" /><p class="text-muted media-body">If the swap doesn’t complete in 3 hours, your funds will be released in 6 hours at {{expiration}}</p></div>
+      </div>
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
         <button class="btn btn-primary btn-lg btn-block btn-icon" @click="send" :disabled="loading">
@@ -37,15 +40,18 @@
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 import { shortenAddress } from '@/utils/address'
+import Warning from '@/components/Warning'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import SwapInfo from '@/components/SwapInfo'
+import ClockIcon from '@/assets/icons/clock.svg'
+import { add, format } from 'date-fns'
 
 export default {
   components: {
+    Warning,
+    ClockIcon,
     SwapIcon,
-    SpinnerIcon,
-    SwapInfo
+    SpinnerIcon
   },
   props: ['agent', 'asset', 'toAsset', 'amount', 'toAmount', 'rate', 'sendTo', 'fee', 'toFee'],
   data () {
@@ -54,7 +60,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId'])
+    ...mapState(['activeNetwork', 'activeWalletId']),
+    expiration: function () {
+      return format(add(new Date(), { hours: 6 }), 'h:mm a')
+    }
   },
   methods: {
     ...mapActions(['newSwap']),
@@ -84,6 +93,19 @@ export default {
 
 <style lang="scss">
 .swap-confirm {
+  .swap-info {
+    text-align: left;
 
+    &_clock {
+      margin-top: 6px;
+      margin-right: 8px;
+      height: 20px;
+      width: 20px;
+      object-fit: contain;
+    }
+    p {
+      font-size: $font-size-sm;
+    }
+  }
 }
 </style>

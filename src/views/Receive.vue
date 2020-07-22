@@ -10,6 +10,7 @@
     </div>
 
     <div class="wrapper_bottom">
+      <Warning />
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
         <button class="btn btn-primary btn-lg btn-icon" @click="copy">
@@ -25,12 +26,14 @@
 import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
 import { getChainFromAsset } from '@/utils/asset'
+import Warning from '@/components/Warning'
 import CopyIcon from '@/assets/icons/copy.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@liquality/cryptoassets'
 
 export default {
   components: {
+    Warning,
     CopyIcon,
     TickIcon
   },
@@ -99,7 +102,7 @@ export default {
 .receive {
   &_qr {
     margin: 30px auto 0 auto;
-    width: 300px;
+    width: 250px;
   }
 }
 </style>

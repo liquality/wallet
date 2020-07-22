@@ -12,6 +12,7 @@
     </div>
 
     <div class="wrapper_bottom">
+      <Warning />
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
         <button class="btn btn-primary btn-lg btn-icon" @click="send" :disabled="loading">
@@ -27,11 +28,13 @@
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 import { shortenAddress } from '@/utils/address'
+import Warning from '@/components/Warning'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   components: {
+    Warning,
     SendIcon,
     SpinnerIcon
   },
