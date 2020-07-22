@@ -19,7 +19,7 @@ export default {
   history: {},
   marketData: {},
 
-  activeNetwork: 'testnet',
+  activeNetwork: 'mainnet',
   activeWalletId: null,
   activeAsset: null,
 
