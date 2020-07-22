@@ -84,9 +84,7 @@ export default {
     },
     switchNetwork (network) {
       this.showNetworks = false
-      if (network === 'mainnet') {
-        this.$router.push('/wallet/warning')
-      } else if (this.activeNetwork !== network) this.changeActiveNetwork({ network })
+      this.changeActiveNetwork({ network })
     }
   }
 }
