@@ -46,10 +46,10 @@ export default {
   computed: {
     disableNext () {
       if (!this.password || !this.confirmPassword) return true
+      if (this.password !== this.confirmPassword) return true
+      if (this.password.length < 8) return true
 
-      if (this.password === this.confirmPassword) return false
-
-      return true
+      return false
     }
   },
   methods: {
