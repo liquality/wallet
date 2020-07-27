@@ -82,15 +82,8 @@ export default {
   },
   methods: {
     ...mapActions(['getUnusedAddresses']),
-    copy () {
-      const copyText = document.querySelector('.receive_address')
-      const tempInput = document.createElement('input')
-      tempInput.style = 'display: none;'
-      tempInput.value = copyText.innerHTML
-      document.body.appendChild(tempInput)
-      tempInput.select()
-      document.execCommand('copy')
-      document.body.removeChild(tempInput)
+    async copy () {
+      await navigator.clipboard.writeText(this.address)
       this.copied = true
       setTimeout(() => { this.copied = false }, 3000)
     }
