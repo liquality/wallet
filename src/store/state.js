@@ -24,6 +24,7 @@ export default {
   activeAsset: null,
 
   keyUpdatedAt: null,
+  keySalt: null,
   termsAcceptedAt: null,
   setupAt: null
 }

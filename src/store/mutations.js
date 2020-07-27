@@ -11,8 +11,9 @@ export default {
     state.keyUpdatedAt = Date.now()
     state.setupAt = Date.now()
   },
-  CREATE_WALLET (state, { encryptedWallets, wallet }) {
+  CREATE_WALLET (state, { keySalt, encryptedWallets, wallet }) {
     state.encryptedWallets = encryptedWallets
+    state.keySalt = keySalt
     state.wallets = [wallet]
   },
   ACCEPT_TNC (state) {
@@ -24,8 +25,9 @@ export default {
   CHANGE_ACTIVE_NETWORK (state, { network }) {
     state.activeNetwork = network
   },
-  CHANGE_PASSWORD (state, { key, encryptedWallets }) {
+  CHANGE_PASSWORD (state, { key, keySalt, encryptedWallets }) {
     state.key = key
+    state.keySalt = keySalt
     state.encryptedWallets = encryptedWallets
     state.keyUpdatedAt = Date.now()
   },
