@@ -1,4 +1,4 @@
-import { decrypt, decryptLegacy } from '../../utils/crypto'
+import { encrypt, decrypt, decryptLegacy } from '../../utils/crypto'
 
 export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
   let wallets = await decrypt(state.encryptedWallets, key, state.keySalt)
@@ -7,7 +7,10 @@ export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
   // TODO: to be removed
   if (!wallets) {
     wallets = await decryptLegacy(state.encryptedWallets, key)
-    if (wallets) await dispatch('changePassword', { key })
+    if (wallets) {
+      const { encrypted: encryptedWallets, keySalt } = await encrypt(wallets, key)
+      commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet: JSON.parse(wallets)[0] })
+    }
   }
   // Migration to new encryption method
 
