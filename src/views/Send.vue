@@ -96,7 +96,7 @@ export default {
     }
   },
   created () {
-    this.updateFees()
+    this.updateFees({ asset: this.asset })
   }
 }
 </script>
