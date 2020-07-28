@@ -21,3 +21,7 @@ npm run build
 ```
 npm run lint
 ```
+
+## License
+
+[MIT](./LICENSE.md)

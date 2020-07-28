@@ -2,6 +2,8 @@
   "name": "liquality-wallet",
   "version": "0.1.16",
   "private": true,
+  "license": "MIT",
+  "author": "Liquality <info@liquality.io>",
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
