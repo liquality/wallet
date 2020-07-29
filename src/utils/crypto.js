@@ -11,7 +11,7 @@ async function pbkdf2 (password, salt) {
       if (err) reject(err)
       else resolve(Buffer.from(derivedKey).toString('hex'))
     })
-  });
+  })
 }
 
 const JsonFormatter = {
@@ -55,12 +55,12 @@ async function encrypt (value, key) {
   const rawEncryptedValue = AES.encrypt(value, derivedKey)
   return {
     encrypted: JsonFormatter.stringify(rawEncryptedValue),
-    keySalt,
+    keySalt
   }
 }
 
 async function decrypt (encrypted, key, keySalt) {
-  if(!keySalt) return false
+  if (!keySalt) return false
 
   const encryptedValue = JsonFormatter.parse(encrypted)
   try {

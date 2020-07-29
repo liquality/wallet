@@ -199,13 +199,13 @@ export default {
       })
     },
     async swap () {
-      const fee = this.availableFees.has(this.assetChain) ?
-        this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]].fee :
-        undefined
+      const fee = this.availableFees.has(this.assetChain)
+        ? this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]].fee
+        : undefined
 
-      const toFee = this.availableFees.has(this.toAssetChain) ?
-        this.getAssetFees(this.toAssetChain)[this.selectedFee[this.toAssetChain]].fee :
-        undefined
+      const toFee = this.availableFees.has(this.toAssetChain)
+        ? this.getAssetFees(this.toAssetChain)[this.selectedFee[this.toAssetChain]].fee
+        : undefined
 
       this.$router.push({
         name: 'SwapConfirm',
