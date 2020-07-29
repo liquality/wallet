@@ -20,7 +20,12 @@
         </div>
         <small class="form-text">Password must be at least 8 characters.</small>
       </div>
-      <p><button class="btn btn-primary btn-lg btn-block" :disabled="loading || disableNext" @click="next">Continue</button></p>
+      <p>
+        <button class="btn btn-primary btn-lg btn-block btn-icon" :disabled="loading || disableNext" @click="next">
+          <SpinnerIcon class="btn-loading" v-if="loading" />
+          <template v-else>Continue</template>
+        </button>
+      </p>
       <p><button class="btn btn-light btn-lg btn-block btn-icon" @click="$router.go(-1)">Cancel</button></p>
     </form>
   </div>
@@ -30,6 +35,7 @@
 import { mapActions } from 'vuex'
 
 import LogoWallet from '@/assets/icons/logo_wallet.svg'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   data () {
@@ -41,7 +47,8 @@ export default {
   },
   props: ['mnemonic'],
   components: {
-    LogoWallet
+    LogoWallet,
+    SpinnerIcon
   },
   computed: {
     disableNext () {
