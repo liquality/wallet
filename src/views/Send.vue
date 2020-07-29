@@ -22,10 +22,10 @@
           </div>
         </small>
       </div>
-      <div class="form-group">
+      <div class="form-group" v-if="feesAvailable">
         <label>Network Speed/Fee</label>
         <div>
-          <FeeSelector :asset="asset" v-model="selectedFee" v-if="assetFees" v-bind:fees="assetFees" />
+          <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
         </div>
       </div>
     </div>
@@ -68,6 +68,9 @@ export default {
     assetFees () {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
     },
+    feesAvailable () {
+      return this.assetFees && Object.keys(this.assetFees).length
+    },
     canSend () {
       if (!this.sendAddress) return false
 
@@ -86,7 +89,7 @@ export default {
     prettyBalance,
     ...mapActions(['updateFees']),
     async send () {
-      const fee = this.assetFees[this.selectedFee].fee
+      const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
       this.$router.push({
         name: 'SendConfirm',
         params: {

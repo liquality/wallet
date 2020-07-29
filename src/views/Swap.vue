@@ -54,7 +54,7 @@
         <p><span class="swap-rate_base">1 {{asset}} =</span><span class="swap-rate_value">&nbsp;{{bestRateBasedOnAmount}}</span><span class="swap-rate_term">&nbsp;{{toAsset}}</span></p>
       </div>
 
-      <div class="form-group swap_fees">
+      <div class="form-group swap_fees" v-if="availableFees.size">
         <label>Network Speed/Fee</label>
         <div class="swap_fees_asset" v-for="asset in availableFees" :key="asset">
           {{ asset }}
@@ -168,8 +168,10 @@ export default {
     },
     availableFees () {
       const availableFees = new Set([])
-      if (this.getAssetFees(this.assetChain)) availableFees.add(this.assetChain)
-      if (this.getAssetFees(this.toAssetChain)) availableFees.add(this.toAssetChain)
+      const fees = this.getAssetFees(this.assetChain)
+      const toFees = this.getAssetFees(this.toAssetChain)
+      if (fees && Object.keys(fees).length) availableFees.add(this.assetChain)
+      if (toFees && Object.keys(toFees).length) availableFees.add(this.toAssetChain)
       return availableFees
     }
   },
@@ -191,15 +193,19 @@ export default {
     },
     setToAsset (val) {
       this.toAsset = val
-
-      this.updateFees(this.toAssetChain)
+      this.updateFees({ asset: this.toAssetChain })
       this.selectedFee = Object.assign({}, this.selectedFee, {
-        [this.toChainAsset]: 'average'
+        [this.toAssetChain]: 'average'
       })
     },
     async swap () {
-      const fee = this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]].fee
-      const toFee = this.getAssetFees(this.toAssetChain)[this.selectedFee[this.toAssetChain]].fee
+      const fee = this.availableFees.has(this.assetChain) ?
+        this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]].fee :
+        undefined
+
+      const toFee = this.availableFees.has(this.toAssetChain) ?
+        this.getAssetFees(this.toAssetChain)[this.selectedFee[this.toAssetChain]].fee :
+        undefined
 
       this.$router.push({
         name: 'SwapConfirm',
