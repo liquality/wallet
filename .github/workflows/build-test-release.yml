@@ -22,6 +22,10 @@ jobs:
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
+      - run: |
+          npm ci
+          npm run lint
+          npm run build
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -30,17 +34,15 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          body: 
-      - run: |
-          npm ci
-          npm run lint
-          npm run build
+      - name: Get Tag Name
+        id: get_tag_name
+        run: echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}
       - name: Upload release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/liquality-wallet-${{ github.event.release.tag_name }}-production.zip
-          asset_name: liquality-wallet-${{ github.event.release.tag_name }}.zip
+          asset_path: ./artifacts/liquality-wallet-${{ steps.get_tag_name.outputs.TAG_NAME }}-production.zip
+          asset_name: liquality-wallet-${{ steps.get_tag_name.outputs.TAG_NAME }}.zip
           asset_content_type: application/zip
