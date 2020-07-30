@@ -1,0 +1,46 @@
+on:
+  push:
+    tags:
+    - 'v*'
+
+name: Build Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build project
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - uses: actions/cache@v1
+        env:
+          node-version: 12
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: 
+      - run: |
+          npm ci
+          npm run lint
+          npm run build
+      - name: Upload release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/build/liquality-wallet-${{ github.ref }}-production.zip
+          asset_name: extension.zip
+          asset_content_type: application/zip
