@@ -3,11 +3,11 @@
     <div class="wrapper_top form">
       <div class="form-group">
         <label>Pay</label>
-        <p class="confirm-value">{{amount}} {{asset}}</p>
+        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asset}}</p>
       </div>
       <div class="form-group">
         <label>Receive</label>
-        <p class="confirm-value">{{toAmount}} {{toAsset}}</p>
+        <p class="confirm-value" :style="getAssetColorStyle(toAsset)">{{toAmount}} {{toAsset}}</p>
       </div>
       <div class="form-group" v-if="sendTo">
         <label>At</label>
@@ -40,6 +40,7 @@
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 import { shortenAddress } from '@/utils/address'
+import { getAssetColorStyle } from '@/utils/asset'
 import Warning from '@/components/Warning'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -68,6 +69,7 @@ export default {
   methods: {
     ...mapActions(['newSwap']),
     shortenAddress,
+    getAssetColorStyle,
     async send () {
       this.loading = true
       const fromAmount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.amount)

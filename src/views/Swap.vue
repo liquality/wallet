@@ -9,7 +9,7 @@
           <div class="input-group-append">
             <span class="input-group-text">{{asset}}</span>
           </div>
-          <input type="number" class="form-control" id="amount" v-model="amount" placeholder="0.00" :style="getAssetColor(asset)">
+          <input type="number" class="form-control" id="amount" v-model="amount" placeholder="0.00" :style="getAssetColorStyle(asset)">
         </div>
         <small class="form-text d-flex justify-content-between">
           <div class="swap_limits">
@@ -32,7 +32,7 @@
               </select>
             </span>
           </div>
-          <input type="number" class="form-control" id="amount" readonly v-model="toAmount" placeholder="0.00" :style="getAssetColor(toAsset)">
+          <input type="number" class="form-control" id="amount" readonly v-model="toAmount" placeholder="0.00" :style="getAssetColorStyle(toAsset)">
         </div>
         <small class="form-text d-flex justify-content-between" v-if="!enterSendToAddress">
           <div class="swap_limits">
@@ -72,12 +72,11 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
 import FeeSelector from '@/components/FeeSelector'
 import { dpUI, prettyBalance } from '@/utils/coinFormatter'
-import { getChainFromAsset } from '@/utils/asset'
-import cryptoassets from '@liquality/cryptoassets'
+import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
 
 export default {
   components: {
@@ -176,18 +175,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['updateMarketData', 'updateFees']),
+    getAssetColorStyle,
     getAssetFees (asset) {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
     },
-    getAssetColor (asset) {
-      const assetData = cryptoassets[asset.toLowerCase()]
-      if (assetData.color) return { color: assetData.color }
-    },
-    getFeeLabelFromAsset (asset) {
-      return cryptoassets[asset.toLowerCase()].fees.unit
-    },
-    ...mapGetters(['client']),
-    ...mapActions(['newSwap', 'updateMarketData', 'updateFees']),
     setAmount (amount) {
       this.amount = amount
     },

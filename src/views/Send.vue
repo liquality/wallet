@@ -10,7 +10,7 @@
       <div class="form-group">
         <label for="amount">Amount</label>
         <div class="input-group">
-          <input type="number" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" required>
+          <input type="number" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" required>
           <div class="input-group-append">
             <span class="input-group-text">{{asset}}</span>
           </div>
@@ -44,7 +44,7 @@ import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance } from '@/utils/coinFormatter'
-import { getChainFromAsset } from '@/utils/asset'
+import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
 
 export default {
   components: {
@@ -87,6 +87,7 @@ export default {
   },
   methods: {
     prettyBalance,
+    getAssetColorStyle,
     ...mapActions(['updateFees']),
     async send () {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
