@@ -46,3 +46,12 @@ jobs:
           asset_path: ./artifacts/liquality-wallet-${{ steps.get_tag_name.outputs.TAG_NAME }}-production.zip
           asset_name: liquality-wallet-${{ steps.get_tag_name.outputs.TAG_NAME }}.zip
           asset_content_type: application/zip
+      - name: Chrome Extension upload & publish
+        uses: Passiverecords/chrome-extension-upload-action@1.4.1
+        if: contains(steps.get_tag_name.outputs.TAG_NAME, 'beta')
+        refresh-token: ${{ secrets.WEB_STORE_REFRESH_TOKEN }}
+        client-id: ${{ secrets.WEB_STORE_CLIENT_ID }}
+        client-secret: ${{ secrets.WEB_STORE_CLIENT_SECRET }}
+        file-name: ./artifacts/liquality-wallet-${{ steps.get_tag_name.outputs.TAG_NAME }}-production.zip
+        app-id: 'bkhfdnhibdhkbfihmljakbgnldoikgbm'
+        publish: true
