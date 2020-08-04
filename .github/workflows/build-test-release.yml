@@ -9,6 +9,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Get Current Tag
+        id: get_current_tag
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+      - name: Get Previous tag
+        id: previous_tag
+        uses: "WyriHaximus/github-action-get-previous-tag@0.2.0"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Get next minor version
+        id: semvers
+        uses: WyriHaximus/github-action-next-semvers@v1.0
+        with:
+          version: ${{ steps.previous_tag.outputs.tag }}
+      - name: Set development icon
+        if: steps.semvers.outputs.v_patch === steps.get_current_tag.outputs.tag
+        run: |
+            jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons' manifest.json > manifest.tmp
+            mv manifest.tmp manifest.json
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build project
@@ -34,28 +52,22 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-      - name: Get Tag Name
-        id: get_tag_name
-        run: echo ::set-output name=TAG_NAME::${GITHUB_REF#refs/tags/}
       - name: Upload release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/liquality-wallet-${{ steps.get_tag_name.outputs.TAG_NAME }}-production.zip
-          asset_name: liquality-wallet-${{ steps.get_tag_name.outputs.TAG_NAME }}.zip
+          asset_path: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
+          asset_name: liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           asset_content_type: application/zip
-      - name: Get Version Delims
-        id: get_version_delims
-        run: echo ::set-output name=DELIMS::$(echo "${{ steps.get_tag_name.outputs.TAG_NAME }}" | tr -d -c '.' | awk '{ print length; }')
       - name: Chrome Extension Publish
         uses: SebastienGllmt/chrome-addon@v3
-        if: steps.get_version_delims.outputs.DELIMS == 3
+        if: steps.semvers.outputs.v_patch === steps.get_current_tag.outputs.tag
         with:
           client-id: ${{ secrets.WEB_STORE_CLIENT_ID }}
           client-secret: ${{ secrets.WEB_STORE_CLIENT_SECRET }}
           refresh-token: ${{ secrets.WEB_STORE_REFRESH_TOKEN }}
-          zip: ./artifacts/liquality-wallet-${{ steps.get_tag_name.outputs.TAG_NAME }}-production.zip
+          zip: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
           extension: bkhfdnhibdhkbfihmljakbgnldoikgbm
           publishTarget: trustedTesters
