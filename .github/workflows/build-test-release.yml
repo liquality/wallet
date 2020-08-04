@@ -27,9 +27,7 @@ jobs:
         run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
       - name: Get Previous tag
         id: previous_tag
-        uses: WyriHaximus/github-action-get-previous-tag@0.2.0
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: echo ::set-output name=tag::$(git tag | tail -n 2 | head -n 1)
       - name: Get next minor version
         id: semvers
         uses: WyriHaximus/github-action-next-semvers@v1.0
