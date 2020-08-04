@@ -46,9 +46,12 @@ jobs:
           asset_path: ./artifacts/liquality-wallet-${{ steps.get_tag_name.outputs.TAG_NAME }}-production.zip
           asset_name: liquality-wallet-${{ steps.get_tag_name.outputs.TAG_NAME }}.zip
           asset_content_type: application/zip
+      - name: Get Version Delims
+        id: get_version_delims
+        run: echo ::set-output name=DELIMS::$(echo "${{ steps.get_tag_name.outputs.TAG_NAME }}" | tr -d -c '.' | awk '{ print length; }')
       - name: Chrome Extension Publish
         uses: SebastienGllmt/chrome-addon@v3
-        if: contains(steps.get_tag_name.outputs.TAG_NAME, 'beta')
+        if: steps.get_version_delims.outputs.DELIMS == 3
         with:
           client-id: ${{ secrets.WEB_STORE_CLIENT_ID }}
           client-secret: ${{ secrets.WEB_STORE_CLIENT_SECRET }}
