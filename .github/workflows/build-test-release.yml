@@ -63,7 +63,7 @@ jobs:
           asset_content_type: application/zip
       - name: Chrome Extension Publish
         uses: SebastienGllmt/chrome-addon@v3
-        if: steps.semvers.outputs.v_patch === steps.get_current_tag.outputs.tag
+        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         with:
           client-id: ${{ secrets.WEB_STORE_CLIENT_ID }}
           client-secret: ${{ secrets.WEB_STORE_CLIENT_SECRET }}
