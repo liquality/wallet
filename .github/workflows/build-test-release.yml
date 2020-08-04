@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Build project
         uses: actions/setup-node@v2-beta
         with:
@@ -25,10 +27,6 @@ jobs:
       - name: Get Current Tag
         id: get_current_tag
         run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
-      - run: |
-          git tag
-      - run: |
-          echo $(git tag | tail -n 2 | head -n 1)
       - name: Get Previous tag
         id: previous_tag
         run: echo ::set-output name=tag::$(git tag | tail -n 2 | head -n 1)
