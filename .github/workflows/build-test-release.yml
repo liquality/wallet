@@ -9,24 +9,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Get Current Tag
-        id: get_current_tag
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
-      - name: Get Previous tag
-        id: previous_tag
-        uses: "WyriHaximus/github-action-get-previous-tag@0.2.0"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-      - name: Get next minor version
-        id: semvers
-        uses: WyriHaximus/github-action-next-semvers@v1.0
-        with:
-          version: ${{ steps.previous_tag.outputs.tag }}
-      - name: Set development icon
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        run: |
-            jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons' manifest.json > manifest.tmp
-            mv manifest.tmp manifest.json
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build project
@@ -40,6 +22,24 @@ jobs:
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
+      - name: Get Current Tag
+        id: get_current_tag
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+      - name: Get Previous tag
+        id: previous_tag
+        uses: WyriHaximus/github-action-get-previous-tag@0.2.0
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Get next minor version
+        id: semvers
+        uses: WyriHaximus/github-action-next-semvers@v1.0
+        with:
+          version: ${{ steps.previous_tag.outputs.tag }}
+      - name: Set development icon
+        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+        run: |
+            jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons' manifest.json > manifest.tmp
+            mv manifest.tmp manifest.json
       - run: |
           npm ci
           npm run lint
