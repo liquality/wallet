@@ -25,10 +25,14 @@ jobs:
       - name: Get Current Tag
         id: get_current_tag
         run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
+      - run: |
+          git tag
+      - run: |
+          echo $(git tag | tail -n 2 | head -n 1)
       - name: Get Previous tag
         id: previous_tag
         run: echo ::set-output name=tag::$(git tag | tail -n 2 | head -n 1)
-      - name: Get next minor version
+      - name: Get next version
         id: semvers
         uses: WyriHaximus/github-action-next-semvers@v1.0
         with:
