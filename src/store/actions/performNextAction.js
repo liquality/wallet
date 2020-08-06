@@ -25,7 +25,7 @@ export const performNextAction = async ({ commit, getters, dispatch }, { network
       `My ${order.to} Address: ${toAddress}`,
       `Counterparty ${order.from} Address: ${order.fromCounterPartyAddress}`,
       `Counterparty ${order.to} Address: ${order.toCounterPartyAddress}`,
-      `Timestamp: ${Date.now()}`
+      `Timestamp: ${order.swapExpiration}`
     ].join('\n')
 
     const messageHex = Buffer.from(message, 'utf8').toString('hex')
