@@ -7,11 +7,14 @@ const SWAP_STATUS_MAP = {
   WAITING_FOR_CONFIRMATIONS (item) {
     return `Counterparty sent ${prettyBalance(item.toAmount, item.to)} ${item.to} to escrow`
   },
-  READY_TO_EXCHANGE () {
+  READY_TO_CLAIM () {
     return 'Claiming funds'
   },
   SUCCESS (item) {
     return `Swap completed, ${prettyBalance(item.toAmount, item.to)} ${item.to} ready to use`
+  },
+  REFUNDED (item) {
+    return `Swap refunded, ${prettyBalance(item.fromAmount, item.from)} ${item.from} returned`
   }
 }
 
