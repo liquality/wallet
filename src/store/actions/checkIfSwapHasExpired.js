@@ -1,7 +1,7 @@
-import { timestamp } from '../utils'
-
-export const checkIfSwapHasExpired = async ({ commit }, { network, walletId, order }) => {
-  if (timestamp() >= order.nodeSwapExpiration) {
+export const checkIfSwapHasExpired = async ({ commit, getters }, { network, walletId, order }) => {
+  const client = getters.client(network, walletId, order.from)
+  const latestBlock = await client.chain.getBlockByNumber(await client.chain.getBlockHeight())
+  if (latestBlock.timestamp > order.swapExpiration) {
     commit('UPDATE_HISTORY', {
       network,
       walletId,
