@@ -83,7 +83,7 @@ async function initiateSwap ({ getters, dispatch }, { order, network, walletId }
   }
 }
 
-async function reportInitiation ({}, { order }) {
+async function reportInitiation (store, { order }) {
   await updateOrder(order.agent, order.id, {
     fromAddress: order.fromAddress,
     toAddress: order.toAddress,
@@ -145,14 +145,14 @@ async function claimSwap ({ getters }, { order, network, walletId }) {
   const toClient = getters.client(network, walletId, order.to)
 
   const toClaimHash = await toClient.swap.claimSwap(
-      order.toFundHash,
-      order.toAddress,
-      order.toCounterPartyAddress,
-      order.secret,
-      order.nodeSwapExpiration,
-      order.claimFee
-    )
-  
+    order.toFundHash,
+    order.toAddress,
+    order.toCounterPartyAddress,
+    order.secret,
+    order.nodeSwapExpiration,
+    order.claimFee
+  )
+
   return {
     toClaimHash,
     status: 'WAITING_FOR_CLAIM_CONFIRMATIONS'
@@ -213,7 +213,7 @@ async function refundSwap ({ getters }, { order, network, walletId }) {
   }
 }
 
-async function sendTo ({ getters }, { order, network, walletId }) {
+async function sendTo ({ getters, dispatch }, { order, network, walletId }) {
   const toClient = getters.client(network, walletId, order.to)
   const sendToHash = await toClient.chain.sendTransaction(order.sendTo, order.toAmount)
 
