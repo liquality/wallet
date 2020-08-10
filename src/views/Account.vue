@@ -36,6 +36,7 @@
           v-bind:type="item.type"
           v-bind:title="getTransactionTitle(item)"
           v-bind:timestamp="item.startTime"
+          v-bind:detail="getTransactionStatus(item)"
           v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)"
           v-bind:step="getTransactionStep(item)"
           v-bind:numSteps="getTransactionNumSteps(item)"
@@ -67,6 +68,21 @@ const ORDER_STATUS_MAP = {
   GET_REFUND: 3,
   WAITING_FOR_REFUND_CONFIRMATIONS: 3,
   READY_TO_SEND: 4
+}
+
+const ORDER_STATUS_DETAIL_MAP = {
+  QUOTE: 'Initiating',
+  SECRET_READY: 'Initiating',
+  INITIATED: 'Pending Agent',
+  INITIATION_REPORTED: 'Pending Agent',
+  WAITING_FOR_CONFIRMATIONS: 'Pending Agent',
+  READY_TO_CLAIM: 'Claming',
+  WAITING_FOR_CLAIM_CONFIRMATIONS: 'Claiming',
+  GET_REFUND: 'Refunding',
+  WAITING_FOR_REFUND_CONFIRMATIONS: 'Refunding',
+  REFUNDED: 'Refunded',
+  SUCCESS: 'Completed',
+  READY_TO_SEND: 'Sending'
 }
 
 export default {
@@ -103,6 +119,9 @@ export default {
     refresh () {
       this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
     },
+    getTransactionStatus (item) {
+      return item.type === 'SWAP' ? ORDER_STATUS_DETAIL_MAP[item.status] : undefined
+    },
     getTransactionStep (item) {
       return item.type === 'SWAP' ? ORDER_STATUS_MAP[item.status] : undefined
     },
@@ -115,7 +134,7 @@ export default {
     },
     getTransactionTitle (item) {
       if (item.type === 'SWAP') {
-        return `Swap ${item.from} to ${item.to}`
+        return `${item.from} to ${item.to}`
       }
       if (item.type === 'SEND') {
         return `Send ${item.from}`
@@ -160,7 +179,6 @@ export default {
   &_top {
     background: $brand-gradient-primary;
     color: $color-text-secondary;
-    border-bottom: 1px solid #41DCCB;
     position: relative;
   }
 

@@ -11,7 +11,7 @@
     <div class="transaction_action">{{title}}</div>
     <div class="transaction_time">{{time}}</div>
     <div class="transaction_amount">{{amount}} {{code}}</div>
-    <div class="transaction_detail"></div>
+    <div class="transaction_detail">{{detail}}</div>
     <div class="transaction_status" v-if="!error">
       <CompletedIcon v-if="confirmed" />
       <div class="transaction_status_confirming" v-if="!confirmed">
@@ -51,6 +51,7 @@ export default {
     },
     title: String,
     timestamp: Number,
+    detail: String,
     confirmed: Boolean,
     step: Number,
     numSteps: Number,
@@ -73,7 +74,7 @@ export default {
   padding: 12px 0;
   border-bottom: 1px solid $hr-border-color;
   display: grid;
-  grid-template-columns: 44px 1fr 1fr 60px;
+  grid-template-columns: 44px 110px 1fr 60px;
   grid-template-rows: 1fr 1fr;
   grid-template-areas:
   "icon action amount status"
