@@ -24,7 +24,7 @@ import EthereumNetworks from '@liquality/ethereum-networks'
 const rpc = {
   BTC: {
     bitcoin: ['https://liquality.io/electrs', 2],
-    bitcoin_testnet: ['https://blockstream.info/testnet/api', 2]
+    bitcoin_testnet: ['https://liquality.io/testnet/electrs', 2]
   },
   ETH: {
     mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'],
