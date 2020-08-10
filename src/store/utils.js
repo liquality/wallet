@@ -3,10 +3,6 @@ import { random } from 'lodash-es'
 import axios from 'axios'
 import { getChainFromAsset } from '../utils/asset'
 
-export const TIMEOUTS = []
-
-export const INTERVALS = []
-
 export const CHAIN_LOCK = {}
 
 export const emitter = new Vue()
