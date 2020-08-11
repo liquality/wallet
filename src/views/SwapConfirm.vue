@@ -22,7 +22,7 @@
     <div class="wrapper_bottom">
       <div class="swap-info">
         <Warning />
-        <div class="media"><ClockIcon class="swap-info_clock" /><p class="text-muted media-body">If the swap doesn’t complete in 3 hours, your funds will be released in 6 hours at {{expiration}}</p></div>
+        <div class="media"><ClockIcon class="swap-info_clock" /><p class="text-muted media-body">If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at {{expiration}}</p></div>
       </div>
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>

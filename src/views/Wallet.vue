@@ -1,5 +1,8 @@
 <template>
   <div class="wallet">
+    <NavBar showMenu="true">
+      <strong>{{wallet.name}}</strong> <span class="text-muted">({{activeNetwork}})</span>
+    </NavBar>
     <div class="wallet_stats">
       <span v-if="networkAssetsLoaded">{{Object.keys(networkWalletBalances).length}} Assets</span>
       <span v-else>Loading ...</span>
@@ -21,14 +24,19 @@
 import { mapState, mapActions } from 'vuex'
 import { NetworkAssets } from '@/store/factory/client'
 import { prettyBalance } from '@/utils/coinFormatter'
+import NavBar from '@/components/NavBar.vue'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 
 export default {
   components: {
+    NavBar,
     ChevronRightIcon
   },
   computed: {
     ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'wallets']),
+    wallet: function () {
+      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+    },
     networkWalletBalances () {
       if (!this.balances[this.activeNetwork]) return false
       if (!this.balances[this.activeNetwork][this.activeWalletId]) return false

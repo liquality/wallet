@@ -1,6 +1,6 @@
 <template>
   <div id="app" v-if="brokerReady">
-    <NavBar v-if="unlockedAt" />
+    <Head v-if="unlockedAt" />
 
     <router-view v-if="termsAcceptedAt" />
     <OnboardingHome v-else />
@@ -10,12 +10,12 @@
 <script>
 import { mapState } from 'vuex'
 
-import NavBar from '@/views/NavBar.vue'
+import Head from '@/views/Head.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 
 export default {
   components: {
-    NavBar,
+    Head,
     OnboardingHome
   },
   computed: mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),

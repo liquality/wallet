@@ -49,10 +49,12 @@ export default {
     color: $color-text-primary;
     padding: $wrapper-padding;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
 
   > div {
-    padding: 0 $wrapper-padding;
+    padding: $wrapper-padding;
   }
 
   &_icon {
@@ -77,6 +79,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    flex: 1;
 
     span {
       display: block;

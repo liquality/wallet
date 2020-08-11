@@ -1,12 +1,12 @@
 <template>
   <div class="account">
+    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Assets">
+      <span class="account_header"><img :src="'./img/' + asset.toLowerCase() +'.png'" /> {{asset}}</span>
+    </NavBar>
     <HistoryModal
       v-if="selectedItem"
       :item="selectedItem"
       @close="selectedItem = null" />
-    <div class="account_header">
-      <img :src="'./img/' + asset.toLowerCase() +'.png'" />{{asset}}
-    </div>
     <div class="account_main">
       <div class="account_top">
         <RefreshIcon @click="refresh" class="account_refresh-icon" />
@@ -49,6 +49,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
@@ -92,6 +93,7 @@ export default {
     }
   },
   components: {
+    NavBar,
     RefreshIcon,
     SendIcon,
     ReceiveIcon,
@@ -158,14 +160,12 @@ export default {
 
   &_header {
     display: flex;
-    height: 56px;
     align-items: center;
     justify-content: center;
-    font-size: $h2-font-size;
-    border-bottom: 1px solid $hr-border-color;
+    font-size: $h3-font-size;
 
     img {
-      width: 24px;
+      width: 28px;
       margin-right: 4px;
     }
   }
