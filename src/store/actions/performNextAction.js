@@ -234,30 +234,50 @@ export const performNextAction = async (store, { network, walletId, id }) => {
 
   let updates
 
-  if (order.status === 'QUOTE') {
-    updates = await createSecret(store, { order, network, walletId })
-  } else if (order.status === 'SECRET_READY') {
-    updates = await withLock(store, { asset: order.from, order, network, walletId },
-      async () => initiateSwap(store, { order, network, walletId }))
-  } else if (order.status === 'INITIATED') {
-    updates = await reportInitiation(store, { order, network, walletId })
-  } else if (order.status === 'INITIATION_REPORTED') {
-    updates = await withInterval(async () => findInitiation(store, { order, network, walletId }))
-  } else if (order.status === 'WAITING_FOR_CONFIRMATIONS') {
-    updates = await withInterval(async () => waitForConfirmations(store, { order, network, walletId }))
-  } else if (order.status === 'READY_TO_CLAIM') {
-    updates = await withLock(store, { asset: order.to, order, network, walletId },
-      async () => claimSwap(store, { order, network, walletId }))
-  } else if (order.status === 'WAITING_FOR_CLAIM_CONFIRMATIONS') {
-    updates = await withInterval(async () => waitForClaimConfirmations(store, { order, network, walletId }))
-  } else if (order.status === 'GET_REFUND') {
-    updates = await withLock(store, { asset: order.from, order, network, walletId },
-      async () => refundSwap(store, { order, network, walletId }))
-  } else if (order.status === 'WAITING_FOR_REFUND_CONFIRMATIONS') {
-    updates = await withInterval(async () => waitForRefundConfirmations(store, { order, network, walletId }))
-  } else if (order.status === 'READY_TO_SEND') {
-    updates = await withLock(store, { asset: order.to, order, network, walletId },
-      async () => sendTo(store, { order, network, walletId }))
+  switch (order.status) {
+    case 'QUOTE':
+      updates = await createSecret(store, { order, network, walletId })
+      break
+
+    case 'SECRET_READY':
+      updates = await withLock(store, { asset: order.from, order, network, walletId },
+        async () => initiateSwap(store, { order, network, walletId }))
+      break
+
+    case 'INITIATED':
+      updates = await reportInitiation(store, { order, network, walletId })
+      break
+
+    case 'INITIATION_REPORTED':
+      updates = await withInterval(async () => findInitiation(store, { order, network, walletId }))
+      break
+
+    case 'WAITING_FOR_CONFIRMATIONS':
+      updates = await withInterval(async () => waitForConfirmations(store, { order, network, walletId }))
+      break
+
+    case 'READY_TO_CLAIM':
+      updates = await withLock(store, { asset: order.to, order, network, walletId },
+        async () => claimSwap(store, { order, network, walletId }))
+      break
+
+    case 'WAITING_FOR_CLAIM_CONFIRMATIONS':
+      updates = await withInterval(async () => waitForClaimConfirmations(store, { order, network, walletId }))
+      break
+
+    case 'GET_REFUND':
+      updates = await withLock(store, { asset: order.from, order, network, walletId },
+        async () => refundSwap(store, { order, network, walletId }))
+      break
+
+    case 'WAITING_FOR_REFUND_CONFIRMATIONS':
+      updates = await withInterval(async () => waitForRefundConfirmations(store, { order, network, walletId }))
+      break
+
+    case 'READY_TO_SEND':
+      updates = await withLock(store, { asset: order.to, order, network, walletId },
+        async () => sendTo(store, { order, network, walletId }))
+      break
   }
 
   if (updates) {
