@@ -237,18 +237,6 @@ export default {
     orderedTransactions () {
       return this.transactions.slice().sort((a, b) => a.step - b.step)
     },
-    fromFundHash () {
-      return this.item.fromFundHash
-    },
-    toFundHash () {
-      return this.item.toFundHash
-    },
-    toClaimHash () {
-      return this.item.toClaimHash
-    },
-    toRefundHash () {
-      return this.item.fromRefundHash
-    },
     fees () {
       const fees = []
       const fromChain = getChainFromAsset(this.item.from)
