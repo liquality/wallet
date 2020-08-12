@@ -123,10 +123,12 @@ export default {
       return this.bestMarketBasedOnAmount.sellRate
     },
     bestMarketBasedOnAmount () {
-      return this.market.markets.find(market => {
-        const amount = BN(this.amount)
-        return BN(market.sellMin).lte(amount) && BN(market.sellMax).gte(amount)
-      })
+      const amount = BN(this.amount)
+      return this.market.markets.slice().sort((a, b) => {
+        if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax))) return -1
+        else if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax))) return 1
+        else return 0
+      })[0]
     },
     min () {
       return dpUI(BN(this.market.sellMin), this.asset)
