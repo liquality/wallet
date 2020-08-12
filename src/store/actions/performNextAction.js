@@ -15,6 +15,8 @@ async function withLock ({ dispatch }, { asset, order, network, walletId }, func
 }
 
 async function withInterval (func) {
+  const updates = await func()
+  if (updates) { return updates }
   return new Promise((resolve, reject) => {
     const interval = setInterval(async () => {
       const updates = await func()

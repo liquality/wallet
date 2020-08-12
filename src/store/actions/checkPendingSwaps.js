@@ -3,7 +3,7 @@ import { NetworkAssets } from '../factory/client'
 const COMPLETED_STATES = [
   'SUCCESS',
   'REFUNDED'
-]
+] // TODO: Pull this out so it's being used everywhere else (Transaction icons etc.)
 
 export const checkPendingSwaps = async ({ state, dispatch }) => {
   Object.keys(NetworkAssets).forEach(network => {
