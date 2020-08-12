@@ -2,7 +2,7 @@
   <div :class="{
     transaction: true,
     'text-danger': !!error
-  }" @click="$emit('click')">
+  }">
     <div class="transaction_icon">
       <SendIcon v-if="type ==='SEND'" class="transaction_icon_send" />
       <ReceiveIcon v-if="type ==='RECEIVE'" class="transaction_icon_receive" />
@@ -23,16 +23,13 @@
 </template>
 
 <script>
-import moment from 'moment/min/moment-with-locales'
+import moment from '@/utils/moment'
 import cryptoassets from '@liquality/cryptoassets'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-
-const locale = window.navigator.userLanguage || window.navigator.language
-moment.locale(locale)
 
 export default {
   components: {
@@ -81,6 +78,7 @@ export default {
   "icon time detail status";
   align-items: center;
   font-size: $font-size-sm;
+  color: $color-text-primary;
 
   &_icon {
     grid-area: icon;
@@ -118,7 +116,7 @@ export default {
   &_time {
     grid-area: time;
     font-size: $font-size-tiny;
-    color: #646F85;;
+    color: $color-text-muted;
   }
 
   &_amount {
@@ -128,7 +126,7 @@ export default {
 
   &_detail {
     grid-area: detail;
-    color: #646F85;;
+    color: $color-text-muted;
     text-align: right;
   }
 

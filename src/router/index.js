@@ -8,6 +8,7 @@ import UnlockWallet from '@/views/UnlockWallet.vue'
 import BackupWallet from '@/views/BackupWallet.vue'
 import Wallet from '@/views/Wallet.vue'
 import Account from '@/views/Account.vue'
+import TransactionDetails from '@/views/TransactionDetails.vue'
 import Send from '@/views/Send.vue'
 import SendConfirm from '@/views/SendConfirm.vue'
 import Receive from '@/views/Receive.vue'
@@ -50,6 +51,12 @@ const routes = [
     name: 'Account',
     path: '/account/:asset',
     component: Account,
+    props: true
+  },
+  {
+    name: 'Transaction',
+    path: '/tx/:id',
+    component: TransactionDetails,
     props: true
   },
   {

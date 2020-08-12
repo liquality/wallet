@@ -3,10 +3,6 @@
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Assets">
       <span class="account_header"><img :src="'./img/' + asset.toLowerCase() +'.png'" /> {{asset}}</span>
     </NavBar>
-    <HistoryModal
-      v-if="selectedItem"
-      :item="selectedItem"
-      @close="selectedItem = null" />
     <div class="account_main">
       <div class="account_top">
         <RefreshIcon @click="refresh" class="account_refresh-icon" />
@@ -28,20 +24,19 @@
         <div class="account_title">Transactions</div>
       </div>
       <div class="account_transactions">
-        <Transaction
-          v-for="(item) in assetHistory"
-          :key="item.id"
-          v-bind:asset="item.from"
-          v-bind:amount="getTransactionAmount(item)"
-          v-bind:type="item.type"
-          v-bind:title="getTransactionTitle(item)"
-          v-bind:timestamp="item.startTime"
-          v-bind:detail="getTransactionStatus(item)"
-          v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)"
-          v-bind:step="getTransactionStep(item)"
-          v-bind:numSteps="getTransactionNumSteps(item)"
-          v-bind:error="item.error"
-          @click="selectedItem = item" />
+        <router-link :to="item.type === 'SWAP' ? `/tx/${item.id}` : ''" v-for="(item) in assetHistory" :key="item.id">
+          <Transaction
+            v-bind:asset="item.from"
+            v-bind:amount="getTransactionAmount(item)"
+            v-bind:type="item.type"
+            v-bind:title="getTransactionTitle(item)"
+            v-bind:timestamp="item.startTime"
+            v-bind:detail="getTransactionStatus(item)"
+            v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)"
+            v-bind:step="getTransactionStep(item)"
+            v-bind:numSteps="getTransactionNumSteps(item)"
+            v-bind:error="item.error" />
+        </router-link>
       </div>
     </div>
   </div>
@@ -55,51 +50,17 @@ import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import Transaction from '@/components/Transaction'
-import HistoryModal from '@/components/HistoryModal.vue'
 import { prettyBalance } from '@/utils/coinFormatter'
-
-const ORDER_STATUS_MAP = {
-  QUOTE: 1,
-  SECRET_READY: 1,
-  INITIATED: 1,
-  INITIATION_REPORTED: 2,
-  WAITING_FOR_CONFIRMATIONS: 3,
-  READY_TO_CLAIM: 3,
-  WAITING_FOR_CLAIM_CONFIRMATIONS: 3,
-  GET_REFUND: 3,
-  WAITING_FOR_REFUND_CONFIRMATIONS: 3,
-  READY_TO_SEND: 4
-}
-
-const ORDER_STATUS_DETAIL_MAP = {
-  QUOTE: 'Initiating',
-  SECRET_READY: 'Initiating',
-  INITIATED: 'Pending Agent',
-  INITIATION_REPORTED: 'Pending Agent',
-  WAITING_FOR_CONFIRMATIONS: 'Pending Agent',
-  READY_TO_CLAIM: 'Claming',
-  WAITING_FOR_CLAIM_CONFIRMATIONS: 'Claiming',
-  GET_REFUND: 'Refunding',
-  WAITING_FOR_REFUND_CONFIRMATIONS: 'Refunding',
-  REFUNDED: 'Refunded',
-  SUCCESS: 'Completed',
-  READY_TO_SEND: 'Sending'
-}
+import { ORDER_STATUS_STEP_MAP, ORDER_STATUS_LABEL_MAP } from '@/utils/order'
 
 export default {
-  data () {
-    return {
-      selectedItem: null
-    }
-  },
   components: {
     NavBar,
     RefreshIcon,
     SendIcon,
     ReceiveIcon,
     SwapIcon,
-    Transaction,
-    HistoryModal
+    Transaction
   },
   props: ['asset'],
   computed: {
@@ -122,10 +83,10 @@ export default {
       this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
     },
     getTransactionStatus (item) {
-      return item.type === 'SWAP' ? ORDER_STATUS_DETAIL_MAP[item.status] : undefined
+      return item.type === 'SWAP' ? ORDER_STATUS_LABEL_MAP[item.status] : undefined
     },
     getTransactionStep (item) {
-      return item.type === 'SWAP' ? ORDER_STATUS_MAP[item.status] : undefined
+      return item.type === 'SWAP' ? ORDER_STATUS_STEP_MAP[item.status] : undefined
     },
     getTransactionNumSteps (item) {
       if (item.type !== 'SWAP') {

@@ -79,7 +79,7 @@ export default {
   }
 
   &_menu {
-    right: 14px;
+    right: $wrapper-padding;
     &_icon {
       float: right;
       width: 18px;
@@ -93,12 +93,12 @@ export default {
 
     li {
       justify-content: start;
-      padding: 7px 20px;
+      padding: 7px $wrapper-padding;
     }
 
     svg {
       height: 18px;
-      width: 20px;
+      width: $wrapper-padding;
       object-fit: cover;
       margin-right: 6px;
     }
@@ -111,7 +111,7 @@ export default {
   }
 
   &_prev {
-    left: 14px;
+    left: $wrapper-padding;
     &_icon {
       margin-right: 7px;
       margin-top: 3px;

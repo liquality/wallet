@@ -11,13 +11,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 
 export default {
   props: ['asset', 'value', 'fees'],
   methods: {
-    ...mapGetters(['client']),
     getTooltip (name) {
       const unit = cryptoassets[this.asset.toLowerCase()].fees.unit
       let content = `${this.fees[name].fee} ${unit}`
