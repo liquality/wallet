@@ -107,7 +107,7 @@ export default {
       }
     },
     getTransactionAmount (item) {
-      return prettyBalance(item.type === 'SWAP' ? item.fromAmount : item.amount, item.from)
+      return item.type === 'SWAP' ? item.fromAmount : item.amount
     }
   }
 }

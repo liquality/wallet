@@ -14,7 +14,7 @@ export const ORDER_STATUS_STEP_MAP = {
 export const ORDER_STATUS_LABEL_MAP = {
   QUOTE: 'Initiating',
   SECRET_READY: 'Initiating',
-  INITIATED: 'Pending Agent',
+  INITIATED: 'Initiating',
   INITIATION_REPORTED: 'Pending Agent',
   WAITING_FOR_CONFIRMATIONS: 'Pending Agent',
   READY_TO_CLAIM: 'Claiming',

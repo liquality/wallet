@@ -10,13 +10,13 @@
     </div>
     <div class="transaction_action">{{title}}</div>
     <div class="transaction_time">{{time}}</div>
-    <div class="transaction_amount">{{amount}} {{code}}</div>
+    <div class="transaction_amount">{{prettyBalance(amount, asset)}} {{code}}</div>
     <div class="transaction_detail">{{detail}}</div>
     <div class="transaction_status" v-if="!error">
       <CompletedIcon v-if="confirmed" />
       <div class="transaction_status_confirming" v-if="!confirmed">
         <SpinnerIcon />
-        <span class="transaction_status_steps" v-if="step">{{step}} / {{numSteps}}</span>
+        <span class="transaction_status_steps" v-if="numSteps">{{step}} / {{numSteps}}</span>
       </div>
     </div>
   </div>
@@ -24,6 +24,7 @@
 
 <script>
 import moment from '@/utils/moment'
+import { prettyBalance } from '@/utils/coinFormatter'
 import cryptoassets from '@liquality/cryptoassets'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
@@ -61,6 +62,9 @@ export default {
     time: function () {
       return moment(this.timestamp).format('L, LT')
     }
+  },
+  methods: {
+    prettyBalance
   }
 }
 </script>

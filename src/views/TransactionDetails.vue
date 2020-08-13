@@ -8,7 +8,7 @@
         <div class="row">
           <div class="col">
             <h2>Status</h2>
-            <p>{{ status }}</p>
+            <p>{{ status }} <br /> <small class="text-muted">{{ item.status }}</small></p>
           </div>
           <div class="col">
             <CompletedIcon v-if="['SUCCESS', 'REFUNDED'].includes(item.status)" class="tx-details_status-icon" />
@@ -43,20 +43,32 @@
         </div>
       </div>
       <div class="tx-details_timeline">
-        <div class="tx-details_timeline_container"
-          v-for="(tx, i) in orderedTransactions" :key="tx.hash"
-          :class="{ left: i % 2 === 0, right: i % 2 === 1 }">
-          <div class="content">
-            <p v-if="tx.step === 1"><strong>Swap Initiated</strong></p>
-            <p v-if="tx.step === 3"><strong>Swap Complete</strong></p>
-            <h3>
-              <a :href="tx.explorerLink" target="_blank">{{ tx.asset }} {{ tx.action }}</a>
-              <CopyIcon @click="copy(tx.hash)"/>
-            </h3>
-            <p class="text-muted">Fee: {{prettyBalance(tx.totalFee, tx.asset)}} {{ getChainFromAsset(tx.asset) }}</p>
-            <p class="text-muted">{{ tx.confirmations || 0 }} Confirmations</p>
+        <small>{{ prettyTime(item.startTime) }}</small>
+        <h3>Start</h3>
+        <div class="tx-details_timeline_inner">
+          <div class="tx-details_timeline_container left completed"><div class="content"></div></div>
+          <div class="tx-details_timeline_container"
+            v-for="(step, id) in timeline" :key="id"
+            :class="{ [step.side]: true, completed: step.completed }">
+            <div class="content">
+              <template v-if="step.tx">
+                <h3>
+                  <a :href="step.tx.explorerLink" target="_blank">{{ step.title }}</a>
+                  <CopyIcon @click="copy(step.tx.hash)"/>
+                </h3>
+                <p class="text-muted" v-if="step.tx.totalFee">Fee: {{prettyBalance(step.tx.totalFee, step.tx.asset)}} {{ getChainFromAsset(step.tx.asset) }}</p>
+                <p class="text-muted">Confirmations: {{ step.tx.confirmations || 0 }}</p>
+              </template>
+              <h3 v-else>
+                <span :class="{'text-muted': !step.completed}">{{ step.title }}</span>
+              </h3>
+            </div>
           </div>
         </div>
+        <template v-if="timeline.length === 4 && timeline[3].completed">
+          <h3>Done</h3>
+          <small>{{ prettyTime(item.endTime) }}</small>
+        </template>
       </div>
       <div class="text-center">
         <button class="btn btn-sm btn-outline-primary" @click="advanced = !advanced">Advanced</button>
@@ -203,6 +215,21 @@ import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 
+const STEPS = {
+  QUOTE: 0,
+  SECRET_READY: 0,
+  INITIATED: 1,
+  INITIATION_REPORTED: 1,
+  WAITING_FOR_CONFIRMATIONS: 2,
+  READY_TO_CLAIM: 3,
+  WAITING_FOR_CLAIM_CONFIRMATIONS: 3,
+  GET_REFUND: 3,
+  WAITING_FOR_REFUND_CONFIRMATIONS: 3,
+  REFUNDED: 4,
+  SUCCESS: 4,
+  READY_TO_SEND: 4
+}
+
 export default {
   components: {
     NavBar,
@@ -214,7 +241,7 @@ export default {
     return {
       advanced: false,
       secretHidden: true,
-      transactions: []
+      timeline: []
     }
   },
   props: ['id'],
@@ -233,9 +260,6 @@ export default {
     },
     orderLink () {
       return this.item.agent + '/api/swap/order/' + this.item.id + '?verbose=true'
-    },
-    orderedTransactions () {
-      return this.transactions.slice().sort((a, b) => a.step - b.step)
     },
     fees () {
       const fees = []
@@ -269,35 +293,97 @@ export default {
     async copy (text) {
       await navigator.clipboard.writeText(text)
     },
-    async updateTransaction (hash, asset, step, action) {
+    async getTransaction (hash, asset) {
       const client = this.client(this.activeNetwork, this.activeWalletId, asset)
       const transaction = await client.chain.getTransactionByHash(hash)
       transaction.explorerLink = getExplorerLink(hash, asset, this.activeNetwork)
       transaction.asset = asset
-      transaction.step = step
-      transaction.action = action
-      const existingIndex = this.transactions.findIndex(tx => tx.hash === hash)
-      if (existingIndex > -1) this.$set(this.transactions, existingIndex, transaction)
-      else this.transactions.push(transaction)
+      return transaction
+    },
+    async getInitiationStep (completed) {
+      const step = {
+        side: 'left',
+        completed: completed,
+        title: completed ? `Locked ${this.item.from}` : `Locking ${this.item.from}`
+      }
+      if (completed) {
+        const tx = await this.getTransaction(this.item.fromFundHash, this.item.from)
+        step.tx = tx || { hash: this.item.fromFundHash }
+      }
+      return step
+    },
+    async getAgentInitiationStep (completed) {
+      const step = {
+        side: 'right',
+        completed: completed,
+        title: completed ? `Locked ${this.item.to}` : `Awaiting ${this.item.to}`
+      }
+      if (completed) {
+        if (this.item.toFundHash) {
+          const tx = await this.getTransaction(this.item.toFundHash, this.item.to)
+          step.tx = tx || { hash: this.item.toFundHash }
+        } else {
+          step.title = `No ${this.item.to} Locked`
+          step.completed = false
+        }
+      }
+      return step
+    },
+    async getClaimRefundStep (completed) {
+      const step = {
+        side: 'left',
+        completed: completed,
+        title: `Confirming ${this.item.to}`
+      }
+      if (completed) {
+        const isRefund = this.item.refundHash
+        if (isRefund) {
+          const tx = await this.getTransaction(this.item.refundHash, this.item.from)
+          step.title = `Refunded ${this.item.from}`
+          step.tx = tx || { hash: this.item.refundHash }
+        } else if (this.item.toClaimHash) {
+          const tx = await this.getTransaction(this.item.toClaimHash, this.item.to)
+          step.title = `Claimed ${this.item.to}`
+          step.tx = tx || { hash: this.item.toClaimHash }
+        }
+      }
+      return step
+    },
+    async getClaimRefundConfirmationStep (completed) {
+      const step = {
+        side: 'right',
+        completed: completed,
+        title: ''
+      }
+      if (!completed) {
+        const isRefund = this.item.refundHash
+        step.title = isRefund ? 'Confirming Refund' : 'Confirming Claim'
+      }
+      return step
     },
     async updateTransactions () {
-      if (this.item.fromFundHash) {
-        await this.updateTransaction(this.item.fromFundHash, this.item.from, 1, 'Locked')
+      const timeline = []
+
+      const steps = [
+        this.getInitiationStep,
+        this.getAgentInitiationStep,
+        this.getClaimRefundStep,
+        this.getClaimRefundConfirmationStep
+      ]
+
+      for (let i = 0; i < steps.length; i++) {
+        const completed = STEPS[this.item.status] > i
+        if (STEPS[this.item.status] >= i) {
+          timeline.push(await steps[i](completed))
+        }
       }
-      if (this.item.toFundHash) {
-        await this.updateTransaction(this.item.toFundHash, this.item.to, 2, 'Locked')
-      }
-      if (this.item.toClaimHash) {
-        await this.updateTransaction(this.item.toClaimHash, this.item.to, 3, 'Claimed')
-      }
-      if (this.item.fromRefundHash) {
-        await this.updateTransaction(this.item.fromRefundHash, this.item.from, 3, 'Refunded')
-      }
+
+      this.timeline = timeline
     }
   },
   created () {
     this.updateTransactions()
-    setInterval(() => this.updateTransactions(), 10000)
+    setInterval(() => this.updateTransactions(), 5000)
   }
 }
 </script>
@@ -337,28 +423,39 @@ export default {
     float: right;
   }
 
-  &_info, &_fee {
+  &_info, &_fee, &_timeline {
     border-bottom: 1px solid $hr-border-color;
     margin-bottom: $wrapper-padding;
   }
 
   &_timeline {
-    position: relative;
-    width: 100%;
+    padding-bottom: 20px;
+    text-align: center;
 
-    &::after {
-      content: '';
-      position: absolute;
-      width: 0px;
-      border-right: 1px dashed $color-secondary;
-      top: 0;
-      bottom: 0;
-      left: 50%;
+    &_inner {
+      position: relative;
+      width: 100%;
+      margin: 8px 0;
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: 0px;
+        border-right: 1px dashed $color-secondary;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+      }
+    }
+
+    h3 {
+      margin: 2px 0;
+      font-size: $font-size-base;
     }
 
     /* Container around content */
     &_container {
-      min-height: 1px;
+      min-height: 50px;
       position: relative;
       width: 50%;
 
@@ -367,35 +464,38 @@ export default {
         position: absolute;
         width: 11px;
         height: 11px;
-        background-color: $color-secondary;
-        border: 1px solid $hr-border-color;
+        border: 1px solid $color-secondary;
+        background: white;
         top: 0;
         border-radius: 50%;
         z-index: 1;
       }
 
-      &:first-child::after, &:last-child::after {
+      &.completed::after {
+        background-color: $color-secondary;
+        border: 1px solid $hr-border-color;
+      }
+
+      &.completed:first-child::after, &.completed:last-child::after {
+        background-color: $color-secondary;
         border: 0;
       }
 
       &:last-child {
         height: 0;
-        margin-bottom: 90px;
+        min-height: 10px;
       }
 
       .content {
         position: relative;
         top: -3px;
 
-        h3 {
-          margin: 2px 0;
-          font-size: $font-size-base;
-          svg {
-            cursor: pointer;
-            width: 14px;
-            margin-left: 6px;
-          }
+        h3 svg {
+          cursor: pointer;
+          width: 14px;
+          margin-left: 6px;
         }
+
         p {
           font-size: $font-size-sm;
           margin: 0;
