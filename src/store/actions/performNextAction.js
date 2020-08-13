@@ -30,8 +30,12 @@ async function withInterval (func) {
 
 async function hasSwapExpired ({ getters }, { network, walletId, order }) {
   const fromClient = getters.client(network, walletId, order.from)
-  const latestBlock = await fromClient.chain.getBlockByNumber(await fromClient.chain.getBlockHeight())
-  return latestBlock.timestamp > order.swapExpiration
+  try {
+    const latestBlock = await fromClient.chain.getBlockByNumber(await fromClient.chain.getBlockHeight())
+    return latestBlock.timestamp > order.swapExpiration
+  } catch (e) {
+    console.warn(e)
+  }
 }
 
 async function createSecret ({ getters, dispatch }, { order, network, walletId }) {
