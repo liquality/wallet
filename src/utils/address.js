@@ -1,5 +1,6 @@
 function shortenAddress (address) {
-  return `${address.substring(0, 6)}...${address.substring(address.length - 6)}`
+  const prefix = address.includes('0x') ? '0x' : ''
+  return `${prefix}${address.replace('0x', '').substring(0, 4)}...${address.substring(address.length - 4)}`
 }
 
 export { shortenAddress }
