@@ -86,7 +86,7 @@ export default {
       return item.type === 'SWAP' ? ORDER_STATUS_LABEL_MAP[item.status] : undefined
     },
     getTransactionStep (item) {
-      return item.type === 'SWAP' ? ORDER_STATUS_STEP_MAP[item.status] : undefined
+      return item.type === 'SWAP' ? ORDER_STATUS_STEP_MAP[item.status] + 1 : undefined
     },
     getTransactionNumSteps (item) {
       if (item.type !== 'SWAP') {

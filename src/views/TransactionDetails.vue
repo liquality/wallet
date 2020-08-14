@@ -49,7 +49,7 @@
           <div class="tx-details_timeline_container left completed"><div class="content"></div></div>
           <div class="tx-details_timeline_container"
             v-for="(step, id) in timeline" :key="id"
-            :class="{ [step.side]: true, completed: step.completed }">
+            :class="{ [step.side]: true, completed: step.completed, pending: step.pending }">
             <div class="content">
               <template v-if="step.tx">
                 <h3>
@@ -64,10 +64,13 @@
               </h3>
             </div>
           </div>
+          <div class="tx-details_timeline_container right" v-if="timeline.length == 3" :class="{ completed: timeline[2].completed }">
+            <div class="content"></div>
+          </div>
         </div>
-        <template v-if="timeline.length === 4 && timeline[3].completed">
-          <h3>Done</h3>
-          <small>{{ prettyTime(item.endTime) }}</small>
+        <template v-if="timeline.length == 3">
+          <h3 :class="{ 'text-muted': !timeline[2].completed }">Done</h3>
+          <small v-if="timeline[2].completed">{{ prettyTime(item.endTime) }}</small>
         </template>
       </div>
       <div class="text-center">
@@ -207,7 +210,7 @@ import moment from '@/utils/moment'
 import cryptoassets from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
-import { ORDER_STATUS_LABEL_MAP } from '@/utils/order'
+import { ORDER_STATUS_STEP_MAP, ORDER_STATUS_LABEL_MAP } from '@/utils/order'
 import { getChainFromAsset, getExplorerLink } from '@/utils/asset'
 
 import NavBar from '@/components/NavBar.vue'
@@ -215,19 +218,22 @@ import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 
-const STEPS = {
-  QUOTE: 0,
-  SECRET_READY: 0,
-  INITIATED: 1,
-  INITIATION_REPORTED: 1,
-  WAITING_FOR_CONFIRMATIONS: 2,
-  READY_TO_CLAIM: 3,
-  WAITING_FOR_CLAIM_CONFIRMATIONS: 3,
-  GET_REFUND: 3,
-  WAITING_FOR_REFUND_CONFIRMATIONS: 3,
-  REFUNDED: 4,
-  SUCCESS: 4,
-  READY_TO_SEND: 4
+const ACTIONS_TERMS = {
+  lock: {
+    default: 'Lock',
+    pending: 'Locking',
+    completed: 'Locked'
+  },
+  claim: {
+    default: 'Claim',
+    pending: 'Claiming',
+    completed: 'Claimed'
+  },
+  refund: {
+    default: 'Refund',
+    pending: 'Claiming',
+    completed: 'Claimed'
+  }
 }
 
 export default {
@@ -300,66 +306,31 @@ export default {
       transaction.asset = asset
       return transaction
     },
-    async getInitiationStep (completed) {
+    async getTransactionStep (completed, pending, side, hash, asset, action) {
       const step = {
-        side: 'left',
-        completed: completed,
-        title: completed ? `Locked ${this.item.from}` : `Locking ${this.item.from}`
+        side,
+        pending,
+        completed,
+        title: pending ? `${ACTIONS_TERMS[action].pending} ${asset}` : `${ACTIONS_TERMS[action].default} ${asset}`
       }
-      if (completed) {
-        const tx = await this.getTransaction(this.item.fromFundHash, this.item.from)
-        step.tx = tx || { hash: this.item.fromFundHash }
+      if (hash) {
+        const tx = await this.getTransaction(hash, asset)
+        if (tx && tx.confirmations > 0) step.title = `${ACTIONS_TERMS[action].completed} ${asset}`
+        else step.title = `${ACTIONS_TERMS[action].pending} ${asset}`
+        step.tx = tx || { hash: hash }
       }
       return step
     },
-    async getAgentInitiationStep (completed) {
-      const step = {
-        side: 'right',
-        completed: completed,
-        title: completed ? `Locked ${this.item.to}` : `Awaiting ${this.item.to}`
-      }
-      if (completed) {
-        if (this.item.toFundHash) {
-          const tx = await this.getTransaction(this.item.toFundHash, this.item.to)
-          step.tx = tx || { hash: this.item.toFundHash }
-        } else {
-          step.title = `No ${this.item.to} Locked`
-          step.completed = false
-        }
-      }
-      return step
+    async getInitiationStep (completed, pending) {
+      return this.getTransactionStep(completed, pending, 'left', this.item.fromFundHash, this.item.from, 'lock')
     },
-    async getClaimRefundStep (completed) {
-      const step = {
-        side: 'left',
-        completed: completed,
-        title: `Confirming ${this.item.to}`
-      }
-      if (completed) {
-        const isRefund = this.item.refundHash
-        if (isRefund) {
-          const tx = await this.getTransaction(this.item.refundHash, this.item.from)
-          step.title = `Refunded ${this.item.from}`
-          step.tx = tx || { hash: this.item.refundHash }
-        } else if (this.item.toClaimHash) {
-          const tx = await this.getTransaction(this.item.toClaimHash, this.item.to)
-          step.title = `Claimed ${this.item.to}`
-          step.tx = tx || { hash: this.item.toClaimHash }
-        }
-      }
-      return step
+    async getAgentInitiationStep (completed, pending) {
+      return this.getTransactionStep(completed, pending, 'right', this.item.toFundHash, this.item.to, 'lock')
     },
-    async getClaimRefundConfirmationStep (completed) {
-      const step = {
-        side: 'right',
-        completed: completed,
-        title: ''
-      }
-      if (!completed) {
-        const isRefund = this.item.refundHash
-        step.title = isRefund ? 'Confirming Refund' : 'Confirming Claim'
-      }
-      return step
+    async getClaimRefundStep (completed, pending) {
+      return this.item.refundHash
+        ? this.getTransactionStep(completed, pending, 'left', this.item.refundHash, this.item.from, 'refund')
+        : this.getTransactionStep(completed, pending, 'left', this.item.toClaimHash, this.item.to, 'claim')
     },
     async updateTransactions () {
       const timeline = []
@@ -367,15 +338,14 @@ export default {
       const steps = [
         this.getInitiationStep,
         this.getAgentInitiationStep,
-        this.getClaimRefundStep,
-        this.getClaimRefundConfirmationStep
+        this.getClaimRefundStep
       ]
 
       for (let i = 0; i < steps.length; i++) {
-        const completed = STEPS[this.item.status] > i
-        if (STEPS[this.item.status] >= i) {
-          timeline.push(await steps[i](completed))
-        }
+        const completed = ORDER_STATUS_STEP_MAP[this.item.status] > i
+        const pending = ORDER_STATUS_STEP_MAP[this.item.status] === i
+        const step = await steps[i](completed, pending)
+        timeline.push(step)
       }
 
       this.timeline = timeline
@@ -471,7 +441,7 @@ export default {
         z-index: 1;
       }
 
-      &.completed::after {
+      &.completed::after, &.pending::after {
         background-color: $color-secondary;
         border: 1px solid $hr-border-color;
       }
