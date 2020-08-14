@@ -6,6 +6,7 @@
         <div class="input-group">
           <input type="text" v-model="sendAddress" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
         </div>
+        <small v-if="sendAddress && !isValidAddress" class="text-danger">Invalid address</small>
       </div>
       <div class="form-group">
         <label for="amount">Amount</label>
@@ -42,6 +43,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
+import cryptoassets from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
@@ -71,12 +73,17 @@ export default {
     feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
     },
+    isValidAddress () {
+      return cryptoassets[this.asset.toLowerCase()].isValidAddress(this.sendAddress)
+    },
     canSend () {
       if (!this.sendAddress) return false
 
       const sendAmount = BN(this.sendAmount)
 
       if (sendAmount.gt(this.balance) || sendAmount.lte(0)) return false
+
+      if (!this.isValidAddress) return false
 
       return true
     },
