@@ -49,11 +49,8 @@ export default {
   computed: {
     ...mapState(['addresses', 'activeNetwork', 'activeWalletId']),
     address () {
-      if (!this.addresses[this.activeNetwork]) return false
-      if (!this.addresses[this.activeNetwork][this.activeWalletId]) return false
-      if (!this.addresses[this.activeNetwork][this.activeWalletId][this.asset]) return false
-
-      return this.addresses[this.activeNetwork][this.activeWalletId][this.asset]._address
+      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]?._address
+      return cryptoassets[this.asset.toLowerCase()].formatAddress(address)
     },
     chainName () {
       const chain = getChainFromAsset(this.asset)
@@ -65,10 +62,10 @@ export default {
 
   },
   async created () {
-    const unusedAddress = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
+    await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
     const uri = [
       this.chainName,
-      cryptoassets[this.asset.toLowerCase()].formatAddress(unusedAddress[0]._address)
+      this.address
     ].join(':')
 
     QRCode.toString(uri, {
@@ -95,7 +92,11 @@ export default {
 .receive {
   &_qr {
     margin: 30px auto 0 auto;
-    width: 250px;
+    width: 300px;
+  }
+  &_address {
+    font-size: $font-size-sm;
+    color: $color-primary;
   }
 }
 </style>
