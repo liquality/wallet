@@ -10,7 +10,7 @@
           <span class="account_balance_value">{{balance}}</span>
           <span class="account_balance_code">{{asset}}</span>
         </div>
-        <div class="account_address">
+        <div v-if="address" class="account_address">
           <button class="btn btn-outline-light"
             @click="copyAddress()"
             v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
@@ -83,7 +83,7 @@ export default {
     },
     address () {
       const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]?._address
-      return cryptoassets[this.asset.toLowerCase()].formatAddress(address)
+      return address ? cryptoassets[this.asset.toLowerCase()].formatAddress(address) : null
     },
     assetHistory () {
       if (!this.history[this.activeNetwork]) return []
@@ -95,7 +95,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateBalances']),
+    ...mapActions(['updateBalances', 'getUnusedAddresses']),
     shortenAddress,
     async copyAddress () {
       await navigator.clipboard.writeText(this.address)
@@ -131,6 +131,11 @@ export default {
     },
     getTransactionAmount (item) {
       return item.type === 'SWAP' ? item.fromAmount : item.amount
+    }
+  },
+  async created () {
+    if (!this.address) {
+      await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
     }
   }
 }
