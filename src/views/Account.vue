@@ -10,6 +10,13 @@
           <span class="account_balance_value">{{balance}}</span>
           <span class="account_balance_code">{{asset}}</span>
         </div>
+        <div class="account_address">
+          <button class="btn btn-outline-light"
+            @click="copyAddress()"
+            v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
+            {{ shortenAddress(this.address) }}
+          </button>
+        </div>
         <div class="account_actions">
           <router-link v-bind:to="'/account/' + asset + '/send'"><button class="account_actions_button">
             <div class="account_actions_button_wrapper"><SendIcon class="account_actions_button_icon" /></div>Send
@@ -21,7 +28,6 @@
             <div class="account_actions_button_wrapper"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></div>Swap
           </button></router-link>
         </div>
-        <div class="account_title">Transactions</div>
       </div>
       <div class="account_transactions">
         <router-link :to="item.type === 'SWAP' ? `/tx/${item.id}` : ''" v-for="(item) in assetHistory" :key="item.id">
@@ -44,6 +50,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import cryptoassets from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
@@ -51,6 +58,7 @@ import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import Transaction from '@/components/Transaction'
 import { prettyBalance } from '@/utils/coinFormatter'
+import { shortenAddress } from '@/utils/address'
 import { ORDER_STATUS_STEP_MAP, ORDER_STATUS_LABEL_MAP } from '@/utils/order'
 
 export default {
@@ -62,11 +70,20 @@ export default {
     SwapIcon,
     Transaction
   },
+  data () {
+    return {
+      addressCopied: false
+    }
+  },
   props: ['asset'],
   computed: {
-    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history']),
+    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'addresses', 'history']),
     balance () {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
+    },
+    address () {
+      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]?._address
+      return cryptoassets[this.asset.toLowerCase()].formatAddress(address)
     },
     assetHistory () {
       if (!this.history[this.activeNetwork]) return []
@@ -79,6 +96,12 @@ export default {
   },
   methods: {
     ...mapActions(['updateBalances']),
+    shortenAddress,
+    async copyAddress () {
+      await navigator.clipboard.writeText(this.address)
+      this.addressCopied = true
+      setTimeout(() => { this.addressCopied = false }, 2000)
+    },
     refresh () {
       this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
     },
@@ -178,7 +201,7 @@ export default {
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    padding: 24px 0;
+    padding: 10px 0;
 
     &_button {
       display: flex;
@@ -213,10 +236,18 @@ export default {
     }
   }
 
-  &_title {
+  &_address {
+    padding-top: 10px;
     text-align: center;
-    font-size: $h5-font-size;
-    padding-bottom: 18px;
+
+    button {
+      font-size: $h4-font-size;
+      font-weight: normal;
+      color: $color-text-secondary;
+      border: 0;
+      background: none;
+      outline: none;
+    }
   }
 
   &_transactions {
