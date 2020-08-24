@@ -48,11 +48,16 @@ export const newOrder = (agent, data) => {
   }).then(res => res.data)
 }
 
-export const updateOrder = (agent, id, data) => {
+export const updateOrder = (order) => {
   return axios({
-    url: agent + '/api/swap/order/' + id,
+    url: order.agent + '/api/swap/order/' + order.id,
     method: 'post',
-    data,
+    data: {
+      fromAddress: order.fromAddress,
+      toAddress: order.toAddress,
+      fromFundHash: order.fromFundHash,
+      secretHash: order.secretHash
+    },
     headers: {
       'x-requested-with': 'wallet',
       'x-liquality-user-agent': 'wallet'

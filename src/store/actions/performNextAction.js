@@ -1,10 +1,10 @@
 import { random } from 'lodash-es'
 import { sha256 } from '@liquality/crypto'
-import { unlockAsset, updateOrder } from '../utils'
+import { updateOrder, unlockAsset } from '../utils'
 import { createSwapNotification } from '../../broker/notification'
 
-async function withLock ({ dispatch }, { asset, order, network, walletId }, func) {
-  const lock = await dispatch('getLockForAsset', { network, walletId, asset, order })
+async function withLock ({ dispatch }, { order, network, walletId, asset }, func) {
+  const lock = await dispatch('getLockForAsset', { order, network, walletId, asset })
   try {
     return await func()
   } catch (e) {
@@ -74,7 +74,7 @@ async function initiateSwap ({ getters, dispatch }, { order, network, walletId }
 
   const fromClient = getters.client(network, walletId, order.from)
 
-  const fromFundHash = await fromClient.swap.initiateSwap(
+  const fromFundTx = await fromClient.swap.initiateSwap(
     order.fromAmount,
     order.fromCounterPartyAddress,
     order.fromAddress,
@@ -84,18 +84,14 @@ async function initiateSwap ({ getters, dispatch }, { order, network, walletId }
   )
 
   return {
-    fromFundHash,
+    fromFundHash: fromFundTx.hash,
+    fromFundTx,
     status: 'INITIATED'
   }
 }
 
 async function reportInitiation (store, { order }) {
-  await updateOrder(order.agent, order.id, {
-    fromAddress: order.fromAddress,
-    toAddress: order.toAddress,
-    fromFundHash: order.fromFundHash,
-    secretHash: order.secretHash
-  })
+  await updateOrder(order)
 
   return {
     status: 'INITIATION_REPORTED'
@@ -150,7 +146,7 @@ async function claimSwap ({ getters }, { order, network, walletId }) {
 
   const toClient = getters.client(network, walletId, order.to)
 
-  const toClaimHash = await toClient.swap.claimSwap(
+  const toClaimTx = await toClient.swap.claimSwap(
     order.toFundHash,
     order.toAddress,
     order.toCounterPartyAddress,
@@ -160,7 +156,8 @@ async function claimSwap ({ getters }, { order, network, walletId }) {
   )
 
   return {
-    toClaimHash,
+    toClaimHash: toClaimTx.hash,
+    toClaimTx,
     status: 'WAITING_FOR_CLAIM_CONFIRMATIONS'
   }
 }
@@ -204,7 +201,7 @@ async function waitForRefundConfirmations ({ getters }, { order, network, wallet
 
 async function refundSwap ({ getters }, { order, network, walletId }) {
   const fromClient = getters.client(network, walletId, order.from)
-  const refundHash = await fromClient.swap.refundSwap(
+  const refundTx = await fromClient.swap.refundSwap(
     order.fromFundHash,
     order.fromCounterPartyAddress,
     order.fromAddress,
@@ -214,7 +211,8 @@ async function refundSwap ({ getters }, { order, network, walletId }) {
   )
 
   return {
-    refundHash,
+    refundHash: refundTx.hash,
+    refundTx,
     status: 'WAITING_FOR_REFUND_CONFIRMATIONS'
   }
 }
@@ -246,7 +244,7 @@ export const performNextAction = async (store, { network, walletId, id }) => {
       break
 
     case 'SECRET_READY':
-      updates = await withLock(store, { asset: order.from, order, network, walletId },
+      updates = await withLock(store, { order, network, walletId, asset: order.from },
         async () => initiateSwap(store, { order, network, walletId }))
       break
 
@@ -263,7 +261,7 @@ export const performNextAction = async (store, { network, walletId, id }) => {
       break
 
     case 'READY_TO_CLAIM':
-      updates = await withLock(store, { asset: order.to, order, network, walletId },
+      updates = await withLock(store, { order, network, walletId, asset: order.to },
         async () => claimSwap(store, { order, network, walletId }))
       break
 
@@ -272,7 +270,7 @@ export const performNextAction = async (store, { network, walletId, id }) => {
       break
 
     case 'GET_REFUND':
-      updates = await withLock(store, { asset: order.from, order, network, walletId },
+      updates = await withLock(store, { order, network, walletId, asset: order.from },
         async () => refundSwap(store, { order, network, walletId }))
       break
 
@@ -281,7 +279,7 @@ export const performNextAction = async (store, { network, walletId, id }) => {
       break
 
     case 'READY_TO_SEND':
-      updates = await withLock(store, { asset: order.to, order, network, walletId },
+      updates = await withLock(store, { order, network, walletId, asset: order.to },
         async () => sendTo(store, { order, network, walletId }))
       break
   }

@@ -15,6 +15,7 @@ import { replyPremission } from './replyPremission'
 import { requestOriginAccess } from './requestOriginAccess'
 import { retrySwap } from './retrySwap'
 import { sendTransaction } from './sendTransaction'
+import { updateTransactionFee } from './updateTransactionFee'
 import { setupWallet } from './setupWallet'
 import { createWallet } from './createWallet'
 import { unlockWallet } from './unlockWallet'
@@ -41,6 +42,7 @@ export {
   requestOriginAccess,
   retrySwap,
   sendTransaction,
+  updateTransactionFee,
   setupWallet,
   createWallet,
   unlockWallet,

@@ -36,7 +36,7 @@
         <div class="row">
           <div class="col">
             <h2>Network Speed/Fee</h2>
-            <p v-for="fee in fees" :key="fee.chain">
+            <p v-for="fee in txFees" :key="fee.chain">
               {{ fee.chain }} Fee: {{ fee.fee }} {{ fee.unit }}
             </p>
           </div>
@@ -56,8 +56,25 @@
                   <a :href="step.tx.explorerLink" target="_blank">{{ step.title }}</a>
                   <CopyIcon @click="copy(step.tx.hash)"/>
                 </h3>
-                <p class="text-muted" v-if="step.tx.totalFee">Fee: {{prettyBalance(step.tx.totalFee, step.tx.asset)}} {{ getChainFromAsset(step.tx.asset) }}</p>
-                <p class="text-muted">Confirmations: {{ step.tx.confirmations || 0 }}</p>
+                <p class="text-muted" v-if="step.tx.fee && !feeSelectorEnabled(step)">Fee: {{prettyBalance(step.tx.fee, step.tx.asset)}} {{ getChainFromAsset(step.tx.asset) }}</p>
+                <p class="text-muted" v-if="!feeSelectorEnabled(step)">Confirmations: {{ step.tx.confirmations || 0 }}</p>
+                <template v-if="canUpdateFee(step)">
+                  <div v-if="feeSelectorEnabled(step)" class="form fee-update">
+                      <div class="input-group">
+                        <input type="number" v-model="newFeePrice" class="form-control form-control-sm" />
+                        <div class="input-group-append">
+                          <span class="input-group-text"><small>{{ feeSelectorUnit }}</small></span>
+                        </div>
+                      </div>
+                      <div class="fee-update_fees d-flex justify-content-between" v-if="feeSelectorFees">
+                        <a href="javascript:void(0)" @click="newFeePrice = feeSelectorFees.average.fee">Average: {{ feeSelectorFees.average.fee }}</a>
+                        <a href="javascript:void(0)" @click="newFeePrice = feeSelectorFees.fast.fee">Fast: {{ feeSelectorFees.fast.fee }}</a>
+                      </div>
+                    <button class="btn btn-sm btn-outline-primary" @click="closeFeeSelector()">Cancel</button>
+                    <button class="btn btn-sm btn-primary" @click="updateFee(step.tx.asset, step.tx.hash)">Update</button>
+                  </div>
+                  <a v-else href="javascript:void(0)" @click="openFeeSelector(step)">Speed up</a>
+                </template>
               </template>
               <h3 v-else>
                 <span :class="{'text-muted': !step.completed}">{{ step.title }}</span>
@@ -231,8 +248,8 @@ const ACTIONS_TERMS = {
   },
   refund: {
     default: 'Refund',
-    pending: 'Claiming',
-    completed: 'Claimed'
+    pending: 'Refunding',
+    completed: 'Refunded'
   }
 }
 
@@ -247,13 +264,16 @@ export default {
     return {
       advanced: false,
       secretHidden: true,
-      timeline: []
+      timeline: [],
+      showFeeSelector: false,
+      feeSelectorAsset: null,
+      newFeePrice: null
     }
   },
   props: ['id'],
   computed: {
     ...mapGetters(['client']),
-    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history']),
+    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
     item () {
       return this.history[this.activeNetwork][this.activeWalletId]
         .find((item) => item.id === this.id)
@@ -267,7 +287,7 @@ export default {
     orderLink () {
       return this.item.agent + '/api/swap/order/' + this.item.id + '?verbose=true'
     },
-    fees () {
+    txFees () {
       const fees = []
       const fromChain = getChainFromAsset(this.item.from)
       const toChain = getChainFromAsset(this.item.to)
@@ -284,10 +304,16 @@ export default {
         })
       }
       return fees
+    },
+    feeSelectorFees () {
+      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[getChainFromAsset(this.feeSelectorAsset)]
+    },
+    feeSelectorUnit () {
+      return cryptoassets[getChainFromAsset(this.feeSelectorAsset).toLowerCase()].fees.unit
     }
   },
   methods: {
-    ...mapActions(['retrySwap']),
+    ...mapActions(['retrySwap', 'updateTransactionFee', 'updateFees']),
     getChainFromAsset,
     prettyBalance,
     prettyTime (timestamp) {
@@ -299,14 +325,30 @@ export default {
     async copy (text) {
       await navigator.clipboard.writeText(text)
     },
-    async getTransaction (hash, asset) {
+    canUpdateFee (step) {
+      return step.side === 'left' && (!step.tx.confirmations || step.tx.confirmations === 0)
+    },
+    feeSelectorEnabled (step) {
+      return this.feeSelectorAsset === step.tx.asset && this.showFeeSelector
+    },
+    openFeeSelector (step) {
+      this.showFeeSelector = true
+      this.newFeePrice = step.tx.feePrice
+      this.feeSelectorAsset = step.tx.asset
+      this.updateFees({ asset: getChainFromAsset(step.tx.asset) })
+    },
+    closeFeeSelector () {
+      this.showFeeSelector = false
+      this.newFeePrice = null
+    },
+    async getTransaction (hash, asset, defaultTx) {
       const client = this.client(this.activeNetwork, this.activeWalletId, asset)
-      const transaction = await client.chain.getTransactionByHash(hash)
+      const transaction = await client.chain.getTransactionByHash(hash) || defaultTx
       transaction.explorerLink = getExplorerLink(hash, asset, this.activeNetwork)
       transaction.asset = asset
       return transaction
     },
-    async getTransactionStep (completed, pending, side, hash, asset, action) {
+    async getTransactionStep (completed, pending, side, hash, defaultTx, asset, action) {
       const step = {
         side,
         pending,
@@ -314,7 +356,7 @@ export default {
         title: pending ? `${ACTIONS_TERMS[action].pending} ${asset}` : `${ACTIONS_TERMS[action].default} ${asset}`
       }
       if (hash) {
-        const tx = await this.getTransaction(hash, asset)
+        const tx = await this.getTransaction(hash, asset, defaultTx)
         if (tx && tx.confirmations > 0) step.title = `${ACTIONS_TERMS[action].completed} ${asset}`
         else step.title = `${ACTIONS_TERMS[action].pending} ${asset}`
         step.tx = tx || { hash: hash }
@@ -322,15 +364,15 @@ export default {
       return step
     },
     async getInitiationStep (completed, pending) {
-      return this.getTransactionStep(completed, pending, 'left', this.item.fromFundHash, this.item.from, 'lock')
+      return this.getTransactionStep(completed, pending, 'left', this.item.fromFundHash, this.item.fromFundTx, this.item.from, 'lock')
     },
     async getAgentInitiationStep (completed, pending) {
-      return this.getTransactionStep(completed, pending, 'right', this.item.toFundHash, this.item.to, 'lock')
+      return this.getTransactionStep(completed, pending, 'right', this.item.toFundHash, null, this.item.to, 'lock')
     },
     async getClaimRefundStep (completed, pending) {
       return this.item.refundHash
-        ? this.getTransactionStep(completed, pending, 'left', this.item.refundHash, this.item.from, 'refund')
-        : this.getTransactionStep(completed, pending, 'left', this.item.toClaimHash, this.item.to, 'claim')
+        ? this.getTransactionStep(completed, pending, 'left', this.item.refundHash, this.item.refundTx, this.item.from, 'refund')
+        : this.getTransactionStep(completed, pending, 'left', this.item.toClaimHash, this.item.toClaimTx, this.item.to, 'claim')
     },
     async updateTransactions () {
       const timeline = []
@@ -349,6 +391,17 @@ export default {
       }
 
       this.timeline = timeline
+    },
+    async updateFee (asset, hash) {
+      await this.updateTransactionFee({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        asset,
+        id: this.item.id,
+        hash,
+        newFee: this.newFeePrice
+      })
+      this.showFeeSelector = false
     }
   },
   created () {
@@ -516,6 +569,19 @@ export default {
     td {
       border-bottom: 0;
     }
+  }
+}
+
+.fee-update {
+  padding-left: 10px;
+
+  .btn-primary {
+    margin-left: 10px;
+  }
+
+  &_fees {
+    font-size: $font-size-tiny;
+    margin: 6px 0;
   }
 }
 </style>
