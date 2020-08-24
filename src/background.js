@@ -14,7 +14,7 @@ store.subscribe(({ type, payload }, state) => {
     case 'UNLOCK_WALLET':
       store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateMarketData', { network: state.activeNetwork })
-      store.dispatch('checkPendingSwaps')
+      store.dispatch('checkPendingSwaps', { walletId: state.activeWalletId })
 
       if (!balanceInterval) {
         balanceInterval = setInterval(() => {

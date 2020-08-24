@@ -5,18 +5,17 @@ const COMPLETED_STATES = [
   'REFUNDED'
 ] // TODO: Pull this out so it's being used everywhere else (Transaction icons etc.)
 
-export const checkPendingSwaps = async ({ state, dispatch }) => {
+export const checkPendingSwaps = async ({ state, dispatch }, { walletId }) => {
   Object.keys(NetworkAssets).forEach(network => {
-    if (!state.history[network]) return
+    const history = state.history[network]?.[walletId]
+    if (!history) return
+    history.forEach(order => {
+      if (order.type !== 'SWAP') return
+      if (order.error) return
 
-    Object.keys(state.history[network]).forEach(walletId => {
-      state.history[network][walletId].forEach(order => {
-        if (order.type !== 'SWAP') return
-
-        if (!COMPLETED_STATES.includes(order.status)) {
-          dispatch('performNextAction', { network, walletId, id: order.id })
-        }
-      })
+      if (!COMPLETED_STATES.includes(order.status)) {
+        dispatch('performNextAction', { network, walletId, id: order.id })
+      }
     })
   })
 }
