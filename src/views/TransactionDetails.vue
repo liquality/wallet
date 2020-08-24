@@ -70,8 +70,13 @@
                         <a href="javascript:void(0)" @click="newFeePrice = feeSelectorFees.average.fee">Average: {{ feeSelectorFees.average.fee }}</a>
                         <a href="javascript:void(0)" @click="newFeePrice = feeSelectorFees.fast.fee">Fast: {{ feeSelectorFees.fast.fee }}</a>
                       </div>
-                    <button class="btn btn-sm btn-outline-primary" @click="closeFeeSelector()">Cancel</button>
-                    <button class="btn btn-sm btn-primary" @click="updateFee(step.tx.asset, step.tx.hash)">Update</button>
+                    <div>
+                      <button class="btn btn-sm btn-outline-primary" @click="closeFeeSelector()">Cancel</button>
+                      <button class="btn btn-sm btn-primary btn-icon" :disabled="feeSelectorLoading" @click="updateFee(step.tx.asset, step.tx.hash)">
+                        <SpinnerIcon class="btn-loading" v-if="feeSelectorLoading" />
+                        <template v-else>Update</template>
+                      </button>
+                    </div>
                   </div>
                   <a v-else href="javascript:void(0)" @click="openFeeSelector(step)">Speed up</a>
                 </template>
@@ -266,6 +271,7 @@ export default {
       secretHidden: true,
       timeline: [],
       showFeeSelector: false,
+      feeSelectorLoading: false,
       feeSelectorAsset: null,
       newFeePrice: null
     }
@@ -329,7 +335,7 @@ export default {
       return step.side === 'left' && (!step.tx.confirmations || step.tx.confirmations === 0)
     },
     feeSelectorEnabled (step) {
-      return this.feeSelectorAsset === step.tx.asset && this.showFeeSelector
+      return this.canUpdateFee(step) && this.feeSelectorAsset === step.tx.asset && this.showFeeSelector
     },
     openFeeSelector (step) {
       this.showFeeSelector = true
@@ -393,15 +399,20 @@ export default {
       this.timeline = timeline
     },
     async updateFee (asset, hash) {
-      await this.updateTransactionFee({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        asset,
-        id: this.item.id,
-        hash,
-        newFee: this.newFeePrice
-      })
-      this.showFeeSelector = false
+      this.feeSelectorLoading = true
+      try {
+        await this.updateTransactionFee({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          asset,
+          id: this.item.id,
+          hash,
+          newFee: this.newFeePrice
+        })
+      } finally {
+        this.feeSelectorLoading = false
+        this.showFeeSelector = false
+      }
     }
   },
   created () {
@@ -577,6 +588,7 @@ export default {
 
   .btn-primary {
     margin-left: 10px;
+    min-width: 60px;
   }
 
   &_fees {

@@ -15,6 +15,9 @@ export const updateTransactionFee = async ({ dispatch, commit, getters }, { netw
   const lock = await dispatch('getLockForAsset', { order, network, walletId, asset })
   try {
     newTx = await client.chain.updateTransactionFee(oldTx, newFee)
+  } catch (e) {
+    console.warn(e)
+    throw e
   } finally {
     unlockAsset(lock)
   }

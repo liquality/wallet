@@ -136,6 +136,19 @@ svg {
   }
 }
 
+.btn.btn-icon.btn-sm {
+  display: inline;
+
+  svg {
+    height: 16px;
+    margin: 2px 0 0 0;
+  }
+
+  svg.btn-loading {
+    height: 16px;
+  }
+}
+
 .icon-fill-primary {
   path {
     fill: $color-primary;
