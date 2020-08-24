@@ -75,7 +75,7 @@ export default {
   padding: 12px 0;
   border-bottom: 1px solid $hr-border-color;
   display: grid;
-  grid-template-columns: 44px 120px 1fr 60px;
+  grid-template-columns: 44px auto auto 60px;
   grid-template-rows: 1fr 1fr;
   grid-template-areas:
   "icon action amount status"
