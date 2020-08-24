@@ -82,8 +82,8 @@ export default {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
     },
     address () {
-      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]?._address
-      return address ? cryptoassets[this.asset.toLowerCase()].formatAddress(address) : null
+      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
+      return address && cryptoassets[this.asset.toLowerCase()].formatAddress(address)
     },
     assetHistory () {
       if (!this.history[this.activeNetwork]) return []

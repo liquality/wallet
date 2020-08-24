@@ -49,7 +49,7 @@ export default {
   computed: {
     ...mapState(['addresses', 'activeNetwork', 'activeWalletId']),
     address () {
-      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]?._address
+      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
       return cryptoassets[this.asset.toLowerCase()].formatAddress(address)
     },
     chainName () {
