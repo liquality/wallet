@@ -8,7 +8,7 @@
         <div class="row">
           <div class="col">
             <h2>Status</h2>
-            <p>{{ status }} <br /> <small class="text-muted">{{ item.status }}</small></p>
+            <p>{{ status }}</p>
           </div>
           <div class="col">
             <CompletedIcon v-if="['SUCCESS', 'REFUNDED'].includes(item.status)" class="tx-details_status-icon" />
