@@ -28,11 +28,11 @@
           <div class="input-group-append">
             <span class="input-group-text">
               <select class="custom-select" @change="setToAsset($event.target.value)" v-model="toAsset">
-                <option v-for="to in toAssets" :key="to">{{to}}</option>
+                <option v-for="to in toAssets" :key="to" :value="to">{{to}}</option>
               </select>
             </span>
           </div>
-          <input type="number" class="form-control" id="amount" readonly v-model="toAmount" placeholder="0.00" :style="getAssetColorStyle(toAsset)">
+          <input type="number" class="form-control" readonly v-model="toAmount" placeholder="0.00" :style="getAssetColorStyle(toAsset)">
         </div>
         <small class="form-text d-flex justify-content-between" v-if="!enterSendToAddress">
           <div class="swap_limits">
