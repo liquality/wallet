@@ -75,3 +75,29 @@ export const getMarketData = agent => {
     }
   }).then(res => res.data)
 }
+
+const COIN_GECKO_CACHE = {}
+const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
+
+async function getCoins () {
+  if ('coins' in COIN_GECKO_CACHE) {
+    return COIN_GECKO_CACHE.coins
+  }
+
+  const response = await axios.get(`${COIN_GECKO_API}/coins/list`)
+  const coins = response.data
+  COIN_GECKO_CACHE.coins = coins
+  return coins
+}
+
+export async function getPrices (baseCurrencies, toCurrency) {
+  const coins = await getCoins()
+  const coindIds = baseCurrencies.map(currency => coins.find(coin => coin.symbol === currency.toLowerCase()).id)
+  const response = await axios.get(`${COIN_GECKO_API}/simple/price?ids=${coindIds.join(',')}&vs_currencies=${toCurrency}`)
+  const prices = response.data
+  const symbolPrices = Object.entries(prices).reduce((curr, [id, toPrices]) => {
+    const currencySymbol = coins.find(coin => coin.id === id).symbol
+    return Object.assign(curr, { [currencySymbol.toUpperCase()]: toPrices[toCurrency] })
+  }, {})
+  return symbolPrices
+}

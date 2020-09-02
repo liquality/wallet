@@ -437,6 +437,14 @@ export default {
   overflow-x: hidden;
   flex: 1;
 
+  .row {
+    margin-bottom: 16px;
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+
   h2 {
     font-size: $font-size-sm;
     font-weight: bold;

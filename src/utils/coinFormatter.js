@@ -29,3 +29,11 @@ export const prettyBalance = (amount, coin, floor = false) => {
 
   return dpUI(amount, coin, floor)
 }
+
+export const prettyFiatBalance = (amount, rate) => {
+  if (!amount) return amount
+
+  const fiatAmount = BN(amount).times(rate)
+
+  return fiatAmount.toFormat(2)
+}

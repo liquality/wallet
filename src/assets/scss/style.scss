@@ -76,6 +76,13 @@ svg {
     font-size: $font-size-sm;
     font-weight: bold;
     text-transform: uppercase;
+    width: 100%;
+
+    .label-append {
+      float: right;
+      color: $text-muted;
+      font-weight: normal;
+    }
   }
   label.btn {
     text-transform: none;
@@ -89,6 +96,8 @@ svg {
   }
   .confirm-value {
     font-size: $input-font-size;
+    line-height: $input-font-size + 4px;
+    margin-bottom: 0;
   }
   .form-control-address {
     font-size: $font-size-lg;

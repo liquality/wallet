@@ -8,13 +8,16 @@
         </div>
         <small v-if="sendAddress && !isValidAddress" class="text-danger">Invalid address</small>
       </div>
-      <div class="form-group">
-        <label for="amount">Amount</label>
+      <div class="form-group send_asset">
+        <label for="amount">
+          Amount
+          <span class="label-append">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</span>
+        </label>
         <div class="input-group">
-          <input type="number" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" required>
           <div class="input-group-append">
             <span class="input-group-text">{{asset}}</span>
           </div>
+          <input type="text" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" required>
         </div>
         <small class="form-text d-flex">
           <div class="text-right w-100">
@@ -45,7 +48,7 @@ import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
-import { prettyBalance } from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
 
 export default {
@@ -63,7 +66,7 @@ export default {
     asset: String
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'balances', 'fees']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'balances', 'fees', 'fiatRates']),
     assetChain () {
       return getChainFromAsset(this.asset)
     },
@@ -94,6 +97,7 @@ export default {
   },
   methods: {
     prettyBalance,
+    prettyFiatBalance,
     getAssetColorStyle,
     ...mapActions(['updateFees']),
     async send () {
@@ -114,6 +118,11 @@ export default {
 
 <style lang="scss">
 .send {
-
+  &_asset {
+    input {
+      text-align: right;
+      margin-left: 12px;
+    }
+  }
 }
 </style>

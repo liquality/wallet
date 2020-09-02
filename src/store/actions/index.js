@@ -22,6 +22,7 @@ import { unlockWallet } from './unlockWallet'
 import { lockWallet } from './lockWallet'
 import { updateBalances } from './updateBalances'
 import { updateFees } from './updateFees'
+import { updateFiatRates } from './updateFiatRates'
 import { updateMarketData } from './updateMarketData'
 
 export {
@@ -49,5 +50,6 @@ export {
   lockWallet,
   updateBalances,
   updateFees,
+  updateFiatRates,
   updateMarketData
 }

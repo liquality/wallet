@@ -4,7 +4,10 @@
       <strong>{{wallet.name}}</strong> <span class="text-muted">({{activeNetwork}})</span>
     </NavBar>
     <div class="wallet_stats">
-      <span v-if="networkAssetsLoaded">{{Object.keys(networkWalletBalances).length}} Assets</span>
+      <div v-if="networkAssetsLoaded">
+        <div><span class="wallet_stats_total">{{totalFiatBalance}}</span><span>USD</span></div>
+        <span>{{Object.keys(networkWalletBalances).length}} Assets</span>
+      </div>
       <span v-else>Loading ...</span>
     </div>
     <div class="wallet_accounts" v-if="networkWalletBalances">
@@ -12,7 +15,10 @@
         <div class="account-item d-flex align-items-center">
           <img :src="'./img/' + asset.toLowerCase() + '.png'" class="account-item_icon" />
           <div class="account-item_name flex-fill">{{asset}}</div>
-          <div class="account-item_balance">{{prettyBalance(balance, asset)}} {{asset}}</div>
+          <div class="account-item_balance">
+            {{prettyBalance(balance, asset)}} {{asset}}
+            <span class="account-item_balance_fiat">${{prettyFiat(balance, asset)}}</span>
+          </div>
           <ChevronRightIcon class="account-item_chevron" />
         </div>
       </router-link>
@@ -21,9 +27,11 @@
 </template>
 
 <script>
+import BN from 'bignumber.js'
 import { mapState, mapActions } from 'vuex'
 import { NetworkAssets } from '@/store/factory/client'
-import { prettyBalance } from '@/utils/coinFormatter'
+import cryptoassets from '@liquality/cryptoassets'
+import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import NavBar from '@/components/NavBar.vue'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 
@@ -33,7 +41,7 @@ export default {
     ChevronRightIcon
   },
   computed: {
-    ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'wallets']),
+    ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'wallets', 'fiatRates']),
     wallet: function () {
       return this.wallets.find(wallet => wallet.id === this.activeWalletId)
     },
@@ -48,11 +56,22 @@ export default {
     },
     networkAssetsLoaded () {
       return this.networkWalletBalances && this.networkAssets.length === Object.keys(this.networkWalletBalances).length
+    },
+    totalFiatBalance () {
+      const total = Object.entries(this.networkWalletBalances).reduce((acum, [asset, balance]) => {
+        balance = cryptoassets[asset.toLowerCase()].unitToCurrency(balance)
+        return acum.plus(BN(balance).times(this.fiatRates[asset]))
+      }, BN(0))
+      return total.toFormat(2)
     }
   },
   methods: {
     ...mapActions(['changeActiveWalletId']),
-    prettyBalance
+    prettyBalance,
+    prettyFiat (amount, asset) {
+      amount = cryptoassets[asset.toLowerCase()].unitToCurrency(amount)
+      return prettyFiatBalance(amount, this.fiatRates[asset])
+    }
   }
 }
 </script>
@@ -64,14 +83,21 @@ export default {
   min-height: 0;
 
   &_stats {
+    text-align: center;
     display: flex;
     width: 100%;
     height: 200px;
     justify-content: center;
     align-items: center;
-    background: $brand-gradient-primary;
+    background: url('../assets/bg/asset_list.svg?inline');
     color: $color-text-secondary;
     font-size: $font-size-lg;
+
+    &_total {
+      font-size: $h1-font-size;
+      line-height: $h1-font-size;
+      margin-right: 10px;
+    }
   }
 
   &_accounts {
@@ -103,9 +129,19 @@ export default {
   }
 
   &_balance {
+    position: relative;
     width: 120px;
     text-align: right;
     margin-right: 20px;
+
+    &_fiat {
+      display: block;
+      position: absolute;
+      right: 0;
+      top: 18px;
+      font-size: $font-size-tiny;
+      color: $text-muted;
+    }
   }
 
   &_chevron {

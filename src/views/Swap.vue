@@ -3,13 +3,15 @@
     <div class="wrapper_top form">
       <div class="text-center"><small class="text-danger" v-if="ethRequired">An ETH balance is required to swap.</small></div>
       <div class="form-group">
-        <label for="amount">Send</label>
+        <label for="amount">Send
+          <span class="label-append">${{prettyFiatBalance(amount, fiatRates[asset])}}</span>
+        </label>
         <div class="input-group swap_asset">
           <img :src="'./img/' + asset.toLowerCase() +'.png'" class="swap_asset_icon" />
           <div class="input-group-append">
             <span class="input-group-text">{{asset}}</span>
           </div>
-          <input type="number" class="form-control" id="amount" v-model="amount" placeholder="0.00" :style="getAssetColorStyle(asset)">
+          <input type="text" class="form-control" id="amount" v-model="amount" placeholder="0.00" :style="getAssetColorStyle(asset)">
         </div>
         <small class="form-text d-flex justify-content-between">
           <div class="swap_limits">
@@ -32,7 +34,7 @@
               </select>
             </span>
           </div>
-          <input type="number" class="form-control" readonly v-model="toAmount" placeholder="0.00" :style="getAssetColorStyle(toAsset)">
+          <input type="text" class="form-control" readonly v-model="toAmount" placeholder="0.00" :style="getAssetColorStyle(toAsset)">
         </div>
         <small class="form-text d-flex justify-content-between" v-if="!enterSendToAddress">
           <div class="swap_limits">
@@ -75,7 +77,7 @@
 import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
 import FeeSelector from '@/components/FeeSelector'
-import { dpUI, prettyBalance } from '@/utils/coinFormatter'
+import { dpUI, prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
 
 export default {
@@ -106,7 +108,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'marketData', 'balances', 'fees']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'marketData', 'balances', 'fees', 'fiatRates']),
     networkMarketData () {
       return this.marketData[this.activeNetwork]
     },
@@ -178,6 +180,7 @@ export default {
   },
   methods: {
     ...mapActions(['updateMarketData', 'updateFees']),
+    prettyFiatBalance,
     getAssetColorStyle,
     getAssetFees (asset) {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]

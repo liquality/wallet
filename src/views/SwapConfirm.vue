@@ -4,6 +4,7 @@
       <div class="form-group">
         <label>Pay</label>
         <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asset}}</p>
+        <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
       </div>
       <div class="form-group">
         <label>Receive</label>
@@ -41,6 +42,7 @@ import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 import { shortenAddress } from '@/utils/address'
 import { getAssetColorStyle } from '@/utils/asset'
+import { prettyFiatBalance } from '@/utils/coinFormatter'
 import Warning from '@/components/Warning'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -61,7 +63,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'fiatRates']),
     expiration: function () {
       return format(add(new Date(), { hours: 6 }), 'h:mm a')
     }
@@ -70,6 +72,7 @@ export default {
     ...mapActions(['newSwap']),
     shortenAddress,
     getAssetColorStyle,
+    prettyFiatBalance,
     async send () {
       this.loading = true
       const fromAmount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.amount)
