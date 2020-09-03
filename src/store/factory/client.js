@@ -160,7 +160,7 @@ export const createClient = (network, mnemonic) => {
   }
 
   const AdditionalSwapArgs = {
-    BTC: rpc.BTC[NetworkArgs.BTC],
+    BTC: [isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'],
     ETH: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
     DAI: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
     USDC: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
