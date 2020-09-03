@@ -2,7 +2,7 @@ import Client from '@liquality/client'
 
 import BitcoinSwapProvider from '@liquality/bitcoin-swap-provider'
 import BitcoinJsWalletProvider from '@liquality/bitcoin-js-wallet-provider'
-import BitcoinEsploraApiProvider from '@liquality/bitcoin-esplora-api-provider'
+import BitcoinEsploraBatchApiProvider from '@liquality/bitcoin-esplora-batch-api-provider'
 import BitcoinEsploraSwapFindProvider from '@liquality/bitcoin-esplora-swap-find-provider'
 import BitcoinEarnFeeProvider from '@liquality/bitcoin-earn-fee-provider'
 import BitcoinRpcFeeProvider from '@liquality/bitcoin-rpc-fee-provider'
@@ -23,8 +23,8 @@ import EthereumNetworks from '@liquality/ethereum-networks'
 
 const rpc = {
   BTC: {
-    bitcoin: ['https://liquality.io/electrs', BitcoinNetworks.bitcoin, 2],
-    bitcoin_testnet: ['https://liquality.io/testnet/electrs', BitcoinNetworks.bitcoin_testnet, 2]
+    bitcoin: ['https://liquality.io/electrs-batch', 'https://liquality.io/electrs', BitcoinNetworks.bitcoin, 2],
+    bitcoin_testnet: ['https://liquality.io/electrs-testnet-batch', 'https://liquality.io/testnet/electrs', BitcoinNetworks.bitcoin_testnet, 2]
   },
   ETH: {
     mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'],
@@ -55,7 +55,7 @@ const networks = {
 }
 
 const RpcProviders = {
-  BTC: BitcoinEsploraApiProvider,
+  BTC: BitcoinEsploraBatchApiProvider,
   ETH: EthereumRpcProvider,
   DAI: EthereumRpcProvider,
   USDC: EthereumRpcProvider,
