@@ -58,9 +58,10 @@ export default {
       return this.networkWalletBalances && this.networkAssets.length === Object.keys(this.networkWalletBalances).length
     },
     totalFiatBalance () {
-      const total = Object.entries(this.networkWalletBalances).reduce((acum, [asset, balance]) => {
+      const total = Object.entries(this.networkWalletBalances).reduce((accum, [asset, balance]) => {
         balance = cryptoassets[asset.toLowerCase()].unitToCurrency(balance)
-        return acum.plus(BN(balance).times(this.fiatRates[asset]))
+        const balanceFiat = this.fiatRates[asset] ? BN(balance).times(this.fiatRates[asset]) : 0
+        return accum.plus(balanceFiat)
       }, BN(0))
       return total.toFormat(2)
     }
@@ -89,7 +90,7 @@ export default {
     height: 200px;
     justify-content: center;
     align-items: center;
-    background: url('../assets/bg/asset_list.svg?inline');
+    background: url('../assets/bg/asset_list.svg?inline'), $brand-gradient-primary;
     color: $color-text-secondary;
     font-size: $font-size-lg;
 
