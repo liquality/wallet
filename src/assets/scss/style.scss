@@ -68,6 +68,10 @@ svg {
 
   .btn {
     width: 152px;
+
+    &.btn-primary {
+      margin-left: auto;
+    }
   }
 }
 

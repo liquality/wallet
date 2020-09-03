@@ -15,7 +15,7 @@
     <div class="wrapper_bottom">
       <Warning />
       <div class="button-group">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+        <button class="btn btn-light btn-outline-primary btn-lg" v-if="!loading" @click="$router.go(-1)">Cancel</button>
         <button class="btn btn-primary btn-lg btn-icon" @click="send" :disabled="loading">
           <SpinnerIcon class="btn-loading" v-if="loading" />
           <template v-else><SendIcon /> Send</template>

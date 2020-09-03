@@ -26,7 +26,7 @@
         <div class="media"><ClockIcon class="swap-info_clock" /><p class="text-muted media-body">If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at {{expiration}}</p></div>
       </div>
       <div class="button-group">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+        <button class="btn btn-light btn-outline-primary btn-lg" v-if="!loading" @click="$router.go(-1)">Cancel</button>
         <button class="btn btn-primary btn-lg btn-block btn-icon" @click="send" :disabled="loading">
           <SpinnerIcon class="btn-loading" v-if="loading" />
           <template v-else><SwapIcon /> Initiate Swap</template>
