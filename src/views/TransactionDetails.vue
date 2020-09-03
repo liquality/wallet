@@ -71,7 +71,7 @@
                         <a href="javascript:void(0)" @click="newFeePrice = feeSelectorFees.fast.fee">Fast: {{ feeSelectorFees.fast.fee }}</a>
                       </div>
                     <div>
-                      <button class="btn btn-sm btn-outline-primary" @click="closeFeeSelector()">Cancel</button>
+                      <button class="btn btn-sm btn-outline-primary" v-if="!feeSelectorLoading" @click="closeFeeSelector()">Cancel</button>
                       <button class="btn btn-sm btn-primary btn-icon" :disabled="feeSelectorLoading" @click="updateFee(step.tx.asset, step.tx.hash)">
                         <SpinnerIcon class="btn-loading" v-if="feeSelectorLoading" />
                         <template v-else>Update</template>
