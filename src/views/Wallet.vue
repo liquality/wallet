@@ -6,7 +6,7 @@
     <div class="wallet_stats">
       <div v-if="networkAssetsLoaded">
         <div><span class="wallet_stats_total">{{totalFiatBalance}}</span><span>USD</span></div>
-        <span>{{Object.keys(networkWalletBalances).length}} Assets</span>
+        <span>{{assetsWithBalance.length}} Asset{{ assetsWithBalance.length > 1 ? 's' : '' }}</span>
       </div>
       <span v-else>Loading ...</span>
     </div>
@@ -57,11 +57,14 @@ export default {
         return assets.indexOf(a[0]) - assets.indexOf(b[0])
       })
     },
+    assetsWithBalance () {
+      return this.orderedBalances.filter(([asset, balance]) => balance > 0)
+    },
     networkAssetsLoaded () {
       return this.networkWalletBalances && NetworkAssets[this.activeNetwork].length === Object.keys(this.networkWalletBalances).length
     },
     totalFiatBalance () {
-      const total = Object.entries(this.networkWalletBalances).reduce((accum, [asset, balance]) => {
+      const total = this.assetsWithBalance.reduce((accum, [asset, balance]) => {
         balance = cryptoassets[asset.toLowerCase()].unitToCurrency(balance)
         const balanceFiat = this.fiatRates[asset] ? BN(balance).times(this.fiatRates[asset]) : 0
         return accum.plus(balanceFiat)
