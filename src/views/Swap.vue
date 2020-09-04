@@ -12,8 +12,9 @@
           <div class="input-group-append">
             <span class="input-group-text">{{asset}}</span>
           </div>
-          <input type="text" class="form-control" id="amount" v-model="amount" placeholder="0.00" :style="getAssetColorStyle(asset)">
+          <input type="text" class="form-control" :class="{ 'is-invalid': amountError }" id="amount" v-model="amount" placeholder="0.00" :style="getAssetColorStyle(asset)">
         </div>
+        <small v-if="amountError" class="text-danger form-text text-right">{{ amountError }}</small>
         <small class="form-text d-flex justify-content-between">
           <div class="swap_limits">
             <a href="javascript:void(0)" @click="setAmount(min)">Min</a> {{min}} <a href="javascript:void(0)" class="ml-1" @click="setAmount(max)">Max</a> {{max}}
@@ -150,10 +151,17 @@ export default {
     ethRequired () {
       return this.networkWalletBalances.ETH === 0
     },
-    canSwap () {
+    amountError () {
       const amount = BN(this.safeAmount)
 
-      if (this.ethRequired || amount.gt(this.max) || amount.lt(this.min) || amount.gt(this.balance)) return false
+      if (amount.gt(this.balance)) return 'Amount exceeds available balance.'
+      if (amount.gt(this.max)) return 'Please reduce amount. It exceeds maximum.'
+      if (amount.lt(this.min)) return 'Please increase amount. It is below minimum.'
+
+      return null
+    },
+    canSwap () {
+      if (this.ethRequired || this.amountError) return false
 
       return true
     },

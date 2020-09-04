@@ -11,15 +11,16 @@
           <div class="input-group-append">
             <span class="input-group-text">{{asset}}</span>
           </div>
-          <input type="text" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" required>
+          <input type="text" :class="{ 'is-invalid': sendAmount && amountError }" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" required>
         </div>
+        <small v-if="sendAmount && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
       </div>
       <div class="form-group">
         <label for="address">Send to</label>
         <div class="input-group">
-          <input type="text" v-model="sendAddress" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
+          <input type="text" :class="{ 'is-invalid': sendAddress && addressError }" v-model="sendAddress" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
         </div>
-        <small v-if="sendAddress && !isValidAddress" class="text-danger">Invalid address</small>
+        <small v-if="sendAddress && addressError" class="text-danger form-text text-right">{{ addressError }}</small>
       </div>
       <div class="form-group" v-if="feesAvailable">
         <label>Network Speed/Fee</label>
@@ -74,14 +75,20 @@ export default {
     isValidAddress () {
       return cryptoassets[this.asset.toLowerCase()].isValidAddress(this.sendAddress)
     },
+    addressError () {
+      if (!this.isValidAddress) return 'Address invalid.'
+      return null
+    },
+    amountError () {
+      const sendAmount = BN(this.sendAmount)
+      if (sendAmount.gt(this.balance)) return 'Amount exceeds available balance.'
+      return null
+    },
     canSend () {
-      if (!this.sendAddress) return false
-
       const sendAmount = BN(this.sendAmount)
 
-      if (sendAmount.gt(this.balance) || sendAmount.lte(0)) return false
-
-      if (!this.isValidAddress) return false
+      if (!this.sendAddress || this.addressError) return false
+      if (sendAmount.lte(0) || this.amountError) return false
 
       return true
     },
