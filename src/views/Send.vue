@@ -11,7 +11,7 @@
           <div class="input-group-append">
             <span class="input-group-text">{{asset}}</span>
           </div>
-          <input type="text" :class="{ 'is-invalid': sendAmount && amountError }" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" required>
+          <input type="text" :class="{ 'is-invalid': sendAmount && amountError }" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" autocomplete="off" required>
         </div>
         <small v-if="sendAmount && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
       </div>

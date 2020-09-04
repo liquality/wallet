@@ -61,7 +61,7 @@
                 <template v-if="canUpdateFee(step)">
                   <div v-if="feeSelectorEnabled(step)" class="form fee-update">
                       <div class="input-group">
-                        <input type="number" v-model="newFeePrice" class="form-control form-control-sm" />
+                        <input type="number" v-model="newFeePrice" class="form-control form-control-sm" autocomplete="off"/>
                         <div class="input-group-append">
                           <span class="input-group-text"><small>{{ feeSelectorUnit }}</small></span>
                         </div>

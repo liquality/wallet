@@ -9,7 +9,7 @@
     </div>
     <div class="import-wallet_bottom">
       <toggle-button @change="toggleMnemonicLength" color="#9d4dfa"/> {{numWords}} words
-      <form class="form import-wallet_seed">
+      <form class="form import-wallet_seed" autocomplete="off">
         <div v-for="(e, n) in numWords" :key="n"><input type="text" class="form-control form-control-sm" v-model="wordList[n]" autocomplete="off" required /></div>
       </form>
       <p><button class="btn btn-primary btn-lg btn-block" :disabled="disableNext" @click="next">Continue</button></p>
