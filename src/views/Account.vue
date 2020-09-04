@@ -7,8 +7,11 @@
       <div class="account_top">
         <RefreshIcon @click="refresh" class="account_refresh-icon" />
         <div class="account_balance">
-          <span class="account_balance_value">{{balance}}</span>
-          <span class="account_balance_code">{{asset}}</span>
+          <div class="account_balance_fiat">${{prettyFiatBalance(balance, fiatRates[asset])}}</div>
+          <div>
+            <span class="account_balance_value">{{balance}}</span>
+            <span class="account_balance_code">{{asset}}</span>
+          </div>
         </div>
         <div v-if="address" class="account_address">
           <button class="btn btn-outline-light"
@@ -57,7 +60,7 @@ import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import Transaction from '@/components/Transaction'
-import { prettyBalance } from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
 import { ORDER_STATUS_STEP_MAP, ORDER_STATUS_LABEL_MAP } from '@/utils/order'
 
@@ -77,7 +80,7 @@ export default {
   },
   props: ['asset'],
   computed: {
-    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'addresses', 'history']),
+    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'addresses', 'history', 'fiatRates']),
     balance () {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
     },
@@ -97,6 +100,7 @@ export default {
   methods: {
     ...mapActions(['updateBalances', 'getUnusedAddresses']),
     shortenAddress,
+    prettyFiatBalance,
     async copyAddress () {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true
@@ -166,16 +170,21 @@ export default {
   }
 
   &_top {
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 0;
     background: $brand-gradient-primary;
     color: $color-text-secondary;
+    text-align: center;
     position: relative;
   }
 
   &_balance {
-    display: flex;
-    height: 75px;
-    align-items: flex-end;
-    justify-content: center;
+    &_fiat {
+      margin-bottom: 6px;
+    }
 
     &_value {
       line-height: 36px;
@@ -206,7 +215,6 @@ export default {
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    padding: 10px 0;
 
     &_button {
       display: flex;
@@ -242,7 +250,6 @@ export default {
   }
 
   &_address {
-    padding-top: 10px;
     text-align: center;
 
     button {
