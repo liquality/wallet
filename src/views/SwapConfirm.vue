@@ -10,9 +10,9 @@
         <label>Receive</label>
         <p class="confirm-value" :style="getAssetColorStyle(toAsset)">{{toAmount}} {{toAsset}}</p>
       </div>
-      <div class="form-group" v-if="sendTo">
+      <div class="form-group">
         <label>At</label>
-        <p class="confirm-value">{{shortenAddress(sendTo)}}</p>
+        <p class="confirm-value">{{ sendTo ? shortenAddress(sendTo) : 'Wallet'}}</p>
       </div>
       <div class="swap-rate form-group">
         <label>Rate</label>
