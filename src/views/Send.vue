@@ -1,16 +1,10 @@
 <template>
   <div class="send wrapper form">
     <div class="wrapper_top form">
-      <div class="form-group">
-        <label for="address">Send to</label>
-        <div class="input-group">
-          <input type="text" v-model="sendAddress" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
-        </div>
-        <small v-if="sendAddress && !isValidAddress" class="text-danger">Invalid address</small>
-      </div>
       <div class="form-group send_asset">
         <label for="amount">
           Amount
+          <span class="label-sub"><span class="text-muted">Available</span> {{balance}} {{asset}}</span>
           <span class="label-append">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</span>
         </label>
         <div class="input-group">
@@ -19,12 +13,13 @@
           </div>
           <input type="text" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" required>
         </div>
-        <small class="form-text d-flex">
-          <div class="text-right w-100">
-            <span class="text-muted">Balance&nbsp;</span>
-            <span>{{balance}} {{asset}}</span>
-          </div>
-        </small>
+      </div>
+      <div class="form-group">
+        <label for="address">Send to</label>
+        <div class="input-group">
+          <input type="text" v-model="sendAddress" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
+        </div>
+        <small v-if="sendAddress && !isValidAddress" class="text-danger">Invalid address</small>
       </div>
       <div class="form-group" v-if="feesAvailable">
         <label>Network Speed/Fee</label>

@@ -4,6 +4,7 @@
       <div class="text-center"><small class="text-danger" v-if="ethRequired">An ETH balance is required to swap.</small></div>
       <div class="form-group">
         <label for="amount">Send
+          <span class="label-sub"><span class="text-muted">Available</span> {{balance}} {{asset}}</span>
           <span class="label-append">${{prettyFiatBalance(amount, fiatRates[asset])}}</span>
         </label>
         <div class="input-group swap_asset">
@@ -16,10 +17,6 @@
         <small class="form-text d-flex justify-content-between">
           <div class="swap_limits">
             <a href="javascript:void(0)" @click="setAmount(min)">Min</a> {{min}} <a href="javascript:void(0)" class="ml-1" @click="setAmount(max)">Max</a> {{max}}
-          </div>
-          <div class="text-right">
-            <span class="text-muted">Balance&nbsp;</span>
-            <span>{{balance}} {{asset}}</span>
           </div>
         </small>
       </div>
