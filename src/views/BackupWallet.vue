@@ -4,7 +4,7 @@
       <CompletedIcon class="backup-wallet_icon" />
       <h5>{{ wallet.name }}</h5>
       <h2>Backup your wallet</h2>
-      <p>Back up your seed phrase in a secure location. It will not be displayed again.</p>
+      <p>The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.</p>
     </div>
     <div class="backup-wallet_bottom">
       <div class="backup-wallet_seed">
@@ -41,6 +41,9 @@ export default {
   overflow: hidden;
 
   &_top {
+    p {
+      margin: 0;
+    }
   }
 
   .backup-wallet_bottom {
