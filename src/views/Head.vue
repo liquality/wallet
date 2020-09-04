@@ -1,6 +1,6 @@
 <template>
   <div class="head">
-    <LogoIcon class="head_logo" />
+    <router-link to="/wallet"><LogoIcon class="head_logo" /></router-link>
     <div class="head_network" @click.stop="showNetworks = !showNetworks">
       {{activeNetwork}}
       <ChevronUpIcon v-if="showNetworks" />
