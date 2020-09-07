@@ -96,7 +96,6 @@ export default {
   }
   &_address {
     font-size: $font-size-sm;
-    color: $color-primary;
   }
 }
 </style>

@@ -21,7 +21,7 @@
           </button>
         </div>
         <div class="account_actions">
-          <router-link v-bind:to="'/account/' + asset + '/send'"><button class="account_actions_button">
+          <router-link :to="sendDisabled ? '' : '/account/' + asset + '/send'"><button class="account_actions_button" :class="{ disabled: sendDisabled }">
             <div class="account_actions_button_wrapper"><SendIcon class="account_actions_button_icon" /></div>Send
           </button></router-link>
           <router-link v-bind:to="'/account/' + asset + '/receive'"><button class="account_actions_button">
@@ -83,6 +83,9 @@ export default {
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'addresses', 'history', 'fiatRates']),
     balance () {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
+    },
+    sendDisabled () {
+      return !this.balances[this.activeNetwork][this.activeWalletId][this.asset]
     },
     address () {
       const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
@@ -226,6 +229,11 @@ export default {
       cursor: pointer;
       color: $color-text-secondary;
       background: none;
+
+      &.disabled {
+        opacity: 0.5;
+        cursor: auto;
+      }
 
       &_wrapper {
         display: flex;
