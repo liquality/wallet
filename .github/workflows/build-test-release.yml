@@ -29,7 +29,7 @@ jobs:
         run: echo ::set-output name=tag::${GITHUB_REF#refs/tags/}
       - name: Get Previous tag
         id: previous_tag
-        run: echo ::set-output name=tag::$(git tag | tail -n 2 | head -n 1)
+        run: echo ::set-output name=tag::$(git tag --sort v:refname | tail -n 2 | head -n 1)
       - name: Get next version
         id: semvers
         uses: WyriHaximus/github-action-next-semvers@v1.0
