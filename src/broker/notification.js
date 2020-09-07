@@ -4,7 +4,7 @@ const SWAP_STATUS_MAP = {
   INITIATION_REPORTED () {
     return 'Swap initiated'
   },
-  WAITING_FOR_CONFIRMATIONS (item) {
+  CONFIRM_COUNTER_PARTY_INITIATION (item) {
     return `Counterparty sent ${prettyBalance(item.toAmount, item.to)} ${item.to} to escrow`
   },
   READY_TO_CLAIM () {

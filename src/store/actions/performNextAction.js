@@ -99,7 +99,23 @@ async function reportInitiation (store, { order }) {
   }
 }
 
-async function findInitiation ({ getters }, { order, network, walletId }) {
+async function confirmInitiation ({ getters }, { order, network, walletId }) {
+  // Jump the step if counter party has already accepted the initiation
+  const counterPartyInitiation = await findCounterPartyInitiation({ getters }, { order, network, walletId })
+  if (counterPartyInitiation) return counterPartyInitiation
+
+  const fromClient = getters.client(network, walletId, order.from)
+
+  const tx = await fromClient.chain.getTransactionByHash(order.fromFundHash)
+
+  if (tx && tx.confirmations >= order.minConf) {
+    return {
+      status: 'INITIATION_CONFIRMED'
+    }
+  }
+}
+
+async function findCounterPartyInitiation ({ getters }, { order, network, walletId }) {
   if (await hasSwapExpired({ getters }, { order, network, walletId })) {
     return { status: 'GET_REFUND' }
   }
@@ -118,13 +134,13 @@ async function findInitiation ({ getters }, { order, network, walletId }) {
     if (isVerified) {
       return {
         toFundHash,
-        status: 'WAITING_FOR_CONFIRMATIONS'
+        status: 'CONFIRM_COUNTER_PARTY_INITIATION'
       }
     }
   }
 }
 
-async function waitForConfirmations ({ getters }, { order, network, walletId }) {
+async function confirmCounterPartyInitiation ({ getters }, { order, network, walletId }) {
   if (await hasSwapExpired({ getters }, { order, network, walletId })) {
     return { status: 'GET_REFUND' }
   }
@@ -254,11 +270,15 @@ export const performNextAction = async (store, { network, walletId, id }) => {
       break
 
     case 'INITIATION_REPORTED':
-      updates = await withInterval(async () => findInitiation(store, { order, network, walletId }))
+      updates = await withInterval(async () => confirmInitiation(store, { order, network, walletId }))
       break
 
-    case 'WAITING_FOR_CONFIRMATIONS':
-      updates = await withInterval(async () => waitForConfirmations(store, { order, network, walletId }))
+    case 'INITIATION_CONFIRMED':
+      updates = await withInterval(async () => findCounterPartyInitiation(store, { order, network, walletId }))
+      break
+
+    case 'CONFIRM_COUNTER_PARTY_INITIATION':
+      updates = await withInterval(async () => confirmCounterPartyInitiation(store, { order, network, walletId }))
       break
 
     case 'READY_TO_CLAIM':
