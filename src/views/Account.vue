@@ -62,7 +62,7 @@ import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import Transaction from '@/components/Transaction'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
-import { ORDER_STATUS_STEP_MAP, ORDER_STATUS_LABEL_MAP } from '@/utils/order'
+import { ORDER_STATUS_STEP_MAP, getOrderStatusLabel } from '@/utils/order'
 
 export default {
   components: {
@@ -110,7 +110,7 @@ export default {
       this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
     },
     getTransactionStatus (item) {
-      return item.type === 'SWAP' ? ORDER_STATUS_LABEL_MAP[item.status] : undefined
+      return item.type === 'SWAP' ? getOrderStatusLabel(item) : undefined
     },
     getTransactionStep (item) {
       return item.type === 'SWAP' ? ORDER_STATUS_STEP_MAP[item.status] + 1 : undefined

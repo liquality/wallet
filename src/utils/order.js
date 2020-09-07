@@ -15,17 +15,21 @@ export const ORDER_STATUS_STEP_MAP = {
 }
 
 export const ORDER_STATUS_LABEL_MAP = {
-  QUOTE: 'Initiating',
-  SECRET_READY: 'Initiating',
-  INITIATED: 'Initiating',
-  INITIATION_REPORTED: 'Initiating',
-  INITIATION_CONFIRMED: 'Pending Agent',
-  CONFIRM_COUNTER_PARTY_INITIATION: 'Pending Agent',
-  READY_TO_CLAIM: 'Claiming',
-  WAITING_FOR_CLAIM_CONFIRMATIONS: 'Claiming',
-  GET_REFUND: 'Refunding',
-  WAITING_FOR_REFUND_CONFIRMATIONS: 'Refunding',
+  QUOTE: 'Locking {from}',
+  SECRET_READY: 'Locking {from}',
+  INITIATED: 'Locking {from}',
+  INITIATION_REPORTED: 'Locking {from}',
+  INITIATION_CONFIRMED: 'Locking {to}',
+  CONFIRM_COUNTER_PARTY_INITIATION: 'Locking {to}',
+  READY_TO_CLAIM: 'Claiming {to}',
+  WAITING_FOR_CLAIM_CONFIRMATIONS: 'Claiming {to}',
+  GET_REFUND: 'Refunding {from}',
+  WAITING_FOR_REFUND_CONFIRMATIONS: 'Refunding {from}',
   REFUNDED: 'Refunded',
   SUCCESS: 'Completed',
   READY_TO_SEND: 'Sending'
+}
+
+export function getOrderStatusLabel (item) {
+  return ORDER_STATUS_LABEL_MAP[item.status].replace('{from}', item.from).replace('{to}', item.to)
 }

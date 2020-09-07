@@ -232,7 +232,7 @@ import moment from '@/utils/moment'
 import cryptoassets from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
-import { ORDER_STATUS_STEP_MAP, ORDER_STATUS_LABEL_MAP } from '@/utils/order'
+import { ORDER_STATUS_STEP_MAP, getOrderStatusLabel } from '@/utils/order'
 import { getChainFromAsset, getExplorerLink } from '@/utils/asset'
 
 import NavBar from '@/components/NavBar.vue'
@@ -285,7 +285,7 @@ export default {
         .find((item) => item.id === this.id)
     },
     status () {
-      return ORDER_STATUS_LABEL_MAP[this.item.status]
+      return getOrderStatusLabel(this.item)
     },
     reverseRate () {
       return BN(1).div(this.item.rate).dp(8)
