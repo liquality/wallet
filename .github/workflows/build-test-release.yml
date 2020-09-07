@@ -43,7 +43,7 @@ jobs:
       - name: Set development agents
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         run: |
-            sed -i "" "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/store/getters.js
+            sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/store/getters.js
       - run: |
           npm ci
           npm run lint
