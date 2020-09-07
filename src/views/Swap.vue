@@ -1,6 +1,6 @@
 <template>
-  <div class="swap wrapper">
-    <div class="wrapper_top form">
+  <div class="swap wrapper form">
+    <div class="wrapper_top">
       <div class="text-center"><small class="text-danger" v-if="ethRequired">An ETH balance is required to swap.</small></div>
       <div class="form-group">
         <label for="amount">Send
@@ -48,7 +48,8 @@
           </div>
         </div>
       </div>
-
+    </div>
+    <div class="wrapper_bottom">
       <div class="swap_rate form-group">
         <label>Rate</label>
         <p><span class="swap-rate_base">1 {{asset}} =</span><span class="swap-rate_value">&nbsp;{{bestRateBasedOnAmount}}</span><span class="swap-rate_term">&nbsp;{{toAsset}}</span></p>
@@ -61,8 +62,6 @@
           <FeeSelector :asset="asset" v-model="selectedFee[asset]" v-bind:fees="getAssetFees(asset)" />
         </div>
       </div>
-    </div>
-    <div class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
         <button class="btn btn-primary btn-lg" @click="swap" :disabled="!bestMarketBasedOnAmount || !canSwap">Review Terms</button>
@@ -242,8 +241,14 @@ export default {
 
   &_fees {
     &_asset {
+      display: flex;
+      align-items: center;
       font-weight: bold;
-      margin-bottom: 6px;
+      margin: 6px 0;
+
+      .fee-selector {
+        margin-left: 6px;
+      }
     }
   }
 }

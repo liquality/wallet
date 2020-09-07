@@ -75,6 +75,13 @@ svg {
   }
 }
 
+.btn-group {
+  .btn-outline-dark.btn-light {
+    border-color: #d6d6d6 !important;
+    color: $color-text-primary;
+  }
+}
+
 .form {
   label {
     font-size: $font-size-sm;

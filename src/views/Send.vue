@@ -1,6 +1,6 @@
 <template>
   <div class="send wrapper form">
-    <div class="wrapper_top form">
+    <div class="wrapper_top">
       <div class="form-group send_asset">
         <label for="amount">
           Amount
@@ -22,15 +22,16 @@
         </div>
         <small v-if="sendAddress && addressError" class="text-danger form-text text-right">{{ addressError }}</small>
       </div>
-      <div class="form-group" v-if="feesAvailable">
-        <label>Network Speed/Fee</label>
-        <div>
-          <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
-        </div>
-      </div>
     </div>
 
     <div class="wrapper_bottom">
+      <div class="form-group" v-if="feesAvailable">
+        <label>Network Speed/Fee</label>
+        <div class="send_fees">
+          {{ assetChain }}
+          <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
+        </div>
+      </div>
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
         <button class="btn btn-primary btn-lg" @click="send" :disabled="!canSend">Continue</button>
@@ -125,6 +126,15 @@ export default {
     input {
       text-align: right;
       margin-left: 12px;
+    }
+  }
+  &_fees {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    margin: 6px 0;
+    .fee-selector {
+      margin-left: 6px;
     }
   }
 }

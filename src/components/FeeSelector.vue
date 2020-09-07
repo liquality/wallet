@@ -1,6 +1,6 @@
 <template>
   <div class="fee-selector btn-group btn-group-toggle" data-toggle="buttons">
-    <label class="btn btn-light btn-outline-primary btn-sm"
+    <label class="btn btn-light btn-outline-dark btn-sm"
         v-for="name in ['slow', 'average', 'fast']" :key="name"
         :class="name == value ? 'active' : ''"
         v-tooltip="{content: getTooltip(name)}"
