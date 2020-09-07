@@ -31,6 +31,5 @@ export default {
 <style lang="scss">
 .fee-selector.btn-group label.btn {
   text-transform: capitalize;
-  font-weight: normal;
 }
 </style>
