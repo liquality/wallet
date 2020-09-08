@@ -1,40 +1,46 @@
 <template>
-  <div class="send wrapper form">
-    <div class="wrapper_top">
-      <div class="form-group send_asset">
-        <label for="amount">
-          Amount
-          <span class="label-sub"><span class="text-muted">Available</span> {{balance}} {{asset}}</span>
-          <span class="label-append">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</span>
-        </label>
-        <div class="input-group">
-          <div class="input-group-append">
-            <span class="input-group-text">{{asset}}</span>
+  <div class="send">
+    <NavBar showBack="true" :backPath="`/account/${asset}`" :backLabel="asset">
+      Send
+    </NavBar>
+    <div class="wrapper form">
+      <div class="wrapper_top">
+        <div class="form-group">
+          <label for="amount">
+            Send
+            <span class="label-sub"><span class="text-muted">Available</span> {{balance}} {{asset}}</span>
+            <span class="label-append">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</span>
+          </label>
+          <div class="input-group send_asset">
+            <img :src="'./img/' + asset.toLowerCase() +'.png'" class="send_asset_icon" />
+            <div class="input-group-append">
+              <span class="input-group-text">{{asset}}</span>
+            </div>
+            <input type="text" :class="{ 'is-invalid': sendAmount && amountError }" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" autocomplete="off" required>
           </div>
-          <input type="text" :class="{ 'is-invalid': sendAmount && amountError }" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" autocomplete="off" required>
+          <small v-if="sendAmount && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
         </div>
-        <small v-if="sendAmount && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
-      </div>
-      <div class="form-group">
-        <label for="address">Send to</label>
-        <div class="input-group">
-          <input type="text" :class="{ 'is-invalid': sendAddress && addressError }" v-model="sendAddress" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
+        <div class="form-group">
+          <label for="address">Send to</label>
+          <div class="input-group">
+            <input type="text" :class="{ 'is-invalid': sendAddress && addressError }" v-model="sendAddress" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
+          </div>
+          <small v-if="sendAddress && addressError" class="text-danger form-text text-right">{{ addressError }}</small>
         </div>
-        <small v-if="sendAddress && addressError" class="text-danger form-text text-right">{{ addressError }}</small>
       </div>
-    </div>
 
-    <div class="wrapper_bottom">
-      <div class="form-group" v-if="feesAvailable">
-        <label>Network Speed/Fee</label>
-        <div class="send_fees">
-          {{ assetChain }}
-          <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
+      <div class="wrapper_bottom">
+        <div class="form-group" v-if="feesAvailable">
+          <label>Network Speed/Fee</label>
+          <div class="send_fees">
+            {{ assetChain }}
+            <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
+          </div>
         </div>
-      </div>
-      <div class="button-group">
-        <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
-        <button class="btn btn-primary btn-lg" @click="send" :disabled="!canSend">Review Terms</button>
+        <div class="button-group">
+          <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
+          <button class="btn btn-primary btn-lg" @click="send" :disabled="!canSend">Review Terms</button>
+        </div>
       </div>
     </div>
   </div>
@@ -44,12 +50,14 @@
 import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/cryptoassets'
+import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
 
 export default {
   components: {
+    NavBar,
     FeeSelector
   },
   data () {
@@ -123,6 +131,16 @@ export default {
 <style lang="scss">
 .send {
   &_asset {
+    &.input-group {
+      align-items: center;
+    }
+
+    &_icon {
+      width: 28px;
+      height: 28px;
+      margin-right: 4px;
+    }
+
     input {
       text-align: right;
       margin-left: 12px;

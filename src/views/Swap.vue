@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="swap">
     <NavBar showBack="true" :backPath="`/account/${asset}`" :backLabel="asset">
       Swap
     </NavBar>
     <InfoNotification v-if="ethRequired">
       <EthRequiredMessage />
     </InfoNotification>
-    <div class="swap wrapper form">
+    <div class="wrapper form">
       <div class="wrapper_top">
         <div class="form-group">
           <label for="amount">Send
