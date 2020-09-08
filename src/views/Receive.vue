@@ -12,7 +12,7 @@
     <div class="wrapper_bottom">
       <Warning />
       <div class="button-group">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Done</button>
+        <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Done</button></router-link>
         <button class="btn btn-primary btn-lg btn-icon" @click="copy">
           <template v-if="copied"><TickIcon /> Copied!</template>
           <template v-else><CopyIcon /> Copy Address</template>

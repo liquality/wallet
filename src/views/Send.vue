@@ -33,7 +33,7 @@
         </div>
       </div>
       <div class="button-group">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+        <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
         <button class="btn btn-primary btn-lg" @click="send" :disabled="!canSend">Review Terms</button>
       </div>
     </div>
