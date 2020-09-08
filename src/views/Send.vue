@@ -91,7 +91,7 @@ export default {
     amountError () {
       const sendAmount = BN(this.sendAmount)
       if (sendAmount.gt(this.balance)) return 'Amount exceeds available balance.'
-      if (this.asset === 'ETH' && sendAmount.eq(this.balance)) return 'To account for the fee, lower this amount.'
+      if ((this.asset === 'ETH' || this.asset === 'BTC') && sendAmount.eq(this.balance)) return 'To account for the fee, lower this amount.'
       return null
     },
     canSend () {
