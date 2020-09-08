@@ -3,6 +3,9 @@
     <NavBar showMenu="true">
       <strong>{{wallet.name}}</strong> <span class="text-muted">({{activeNetwork}})</span>
     </NavBar>
+    <InfoNotification v-if="ethRequired">
+      <EthRequiredMessage />
+    </InfoNotification>
     <div class="wallet_stats">
       <div v-if="networkAssetsLoaded">
         <div><span class="wallet_stats_total">{{totalFiatBalance}}</span><span>USD</span></div>
@@ -33,11 +36,15 @@ import { NetworkAssets } from '@/store/factory/client'
 import cryptoassets from '@liquality/cryptoassets'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import NavBar from '@/components/NavBar.vue'
+import InfoNotification from '@/components/InfoNotification'
+import EthRequiredMessage from '@/components/EthRequiredMessage'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 
 export default {
   components: {
     NavBar,
+    InfoNotification,
+    EthRequiredMessage,
     ChevronRightIcon
   },
   computed: {
@@ -50,6 +57,9 @@ export default {
       if (!this.balances[this.activeNetwork][this.activeWalletId]) return false
 
       return this.balances[this.activeNetwork][this.activeWalletId]
+    },
+    ethRequired () {
+      return this.networkWalletBalances.ETH === 0
     },
     orderedBalances () {
       const assets = NetworkAssets[this.activeNetwork]

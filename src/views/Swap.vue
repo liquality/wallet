@@ -1,70 +1,74 @@
 <template>
-  <div class="swap wrapper form">
-    <div class="wrapper_top">
-      <div class="text-center"><small class="text-danger" v-if="ethRequired">An ETH balance is required to swap.</small></div>
-      <div class="form-group">
-        <label for="amount">Send
-          <span class="label-sub"><span class="text-muted">Available</span> {{balance}} {{asset}}</span>
-          <span class="label-append">${{prettyFiatBalance(amount, fiatRates[asset])}}</span>
-        </label>
-        <div class="input-group swap_asset">
-          <img :src="'./img/' + asset.toLowerCase() +'.png'" class="swap_asset_icon" />
-          <div class="input-group-append">
-            <span class="input-group-text">{{asset}}</span>
+  <div>
+    <InfoNotification v-if="ethRequired">
+      <EthRequiredMessage />
+    </InfoNotification>
+    <div class="swap wrapper form">
+      <div class="wrapper_top">
+        <div class="form-group">
+          <label for="amount">Send
+            <span class="label-sub"><span class="text-muted">Available</span> {{balance}} {{asset}}</span>
+            <span class="label-append">${{prettyFiatBalance(amount, fiatRates[asset])}}</span>
+          </label>
+          <div class="input-group swap_asset">
+            <img :src="'./img/' + asset.toLowerCase() +'.png'" class="swap_asset_icon" />
+            <div class="input-group-append">
+              <span class="input-group-text">{{asset}}</span>
+            </div>
+            <input type="text" class="form-control" :class="{ 'is-invalid': showErrors && amountError }" id="amount" v-model="amount" placeholder="0.00" :style="getAssetColorStyle(asset)" autocomplete="off">
           </div>
-          <input type="text" class="form-control" :class="{ 'is-invalid': amountError }" id="amount" v-model="amount" placeholder="0.00" :style="getAssetColorStyle(asset)" autocomplete="off">
+          <small v-if="showErrors && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
+          <small class="form-text d-flex justify-content-between">
+            <div class="swap_limits">
+              <a href="javascript:void(0)" @click="setAmount(min)">Min</a> {{min}} <a href="javascript:void(0)" class="ml-1" @click="setAmount(max)">Max</a> {{max}}
+            </div>
+          </small>
         </div>
-        <small v-if="amountError" class="text-danger form-text text-right">{{ amountError }}</small>
-        <small class="form-text d-flex justify-content-between">
-          <div class="swap_limits">
-            <a href="javascript:void(0)" @click="setAmount(min)">Min</a> {{min}} <a href="javascript:void(0)" class="ml-1" @click="setAmount(max)">Max</a> {{max}}
+        <div class="form-group">
+          <label for="amount">Receive</label>
+          <div class="input-group swap_asset">
+            <img :src="'./img/' + toAsset.toLowerCase() +'.png'" class="swap_asset_icon" />
+            <div class="input-group-append">
+              <span class="input-group-text">
+                <select class="custom-select" @change="setToAsset($event.target.value)" v-model="toAsset">
+                  <option v-for="to in toAssets" :key="to" :value="to">{{to}}</option>
+                </select>
+              </span>
+            </div>
+            <input type="text" class="form-control" readonly v-model="toAmount" placeholder="0.00" :style="getAssetColorStyle(toAsset)" autocomplete="off">
           </div>
-        </small>
-      </div>
-      <div class="form-group">
-        <label for="amount">Receive</label>
-        <div class="input-group swap_asset">
-          <img :src="'./img/' + toAsset.toLowerCase() +'.png'" class="swap_asset_icon" />
-          <div class="input-group-append">
-            <span class="input-group-text">
-              <select class="custom-select" @change="setToAsset($event.target.value)" v-model="toAsset">
-                <option v-for="to in toAssets" :key="to" :value="to">{{to}}</option>
-              </select>
-            </span>
-          </div>
-          <input type="text" class="form-control" readonly v-model="toAmount" placeholder="0.00" :style="getAssetColorStyle(toAsset)" autocomplete="off">
+          <small class="form-text d-flex justify-content-between" v-if="!enterSendToAddress">
+            <div class="swap_limits">
+              <a href="javascript:void(0)" @click="enterSendToAddress = true">+ Receive at external address</a>
+            </div>
+          </small>
         </div>
-        <small class="form-text d-flex justify-content-between" v-if="!enterSendToAddress">
-          <div class="swap_limits">
-            <a href="javascript:void(0)" @click="enterSendToAddress = true">+ Receive at external address</a>
-          </div>
-        </small>
-      </div>
-      <div class="form-group" v-if="enterSendToAddress">
-        <label class="w-100" for="amount">Receive at <a href="javascript:void(0)" class="text-muted float-right" @click="enterSendToAddress = false; sendTo = null">X</a></label>
-        <div class="input-group">
+        <div class="form-group" v-if="enterSendToAddress">
+          <label class="w-100" for="amount">Receive at <a href="javascript:void(0)" class="text-muted float-right" @click="enterSendToAddress = false; sendTo = null">X</a></label>
           <div class="input-group">
-            <input type="text" v-model="sendTo" class="form-control form-control-sm" id="to" placeholder="External Receiving Address" autocomplete="off">
+            <div class="input-group">
+              <input type="text" v-model="sendTo" class="form-control form-control-sm" id="to" placeholder="External Receiving Address" autocomplete="off">
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="wrapper_bottom">
-      <div class="swap_rate form-group">
-        <label>Rate</label>
-        <p><span class="swap-rate_base">1 {{asset}} =</span><span class="swap-rate_value">&nbsp;{{bestRateBasedOnAmount}}</span><span class="swap-rate_term">&nbsp;{{toAsset}}</span></p>
-      </div>
-
-      <div class="form-group swap_fees" v-if="availableFees.size">
-        <label>Network Speed/Fee</label>
-        <div class="swap_fees_asset" v-for="asset in availableFees" :key="asset">
-          {{ asset }}
-          <FeeSelector :asset="asset" v-model="selectedFee[asset]" v-bind:fees="getAssetFees(asset)" />
+      <div class="wrapper_bottom">
+        <div class="swap_rate form-group">
+          <label>Rate</label>
+          <p><span class="swap-rate_base">1 {{asset}} =</span><span class="swap-rate_value">&nbsp;{{bestRateBasedOnAmount}}</span><span class="swap-rate_term">&nbsp;{{toAsset}}</span></p>
         </div>
-      </div>
-      <div class="button-group">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
-        <button class="btn btn-primary btn-lg" @click="swap" :disabled="!bestMarketBasedOnAmount || !canSwap">Review Terms</button>
+
+        <div class="form-group swap_fees" v-if="availableFees.size">
+          <label>Network Speed/Fee</label>
+          <div class="swap_fees_asset" v-for="asset in availableFees" :key="asset">
+            {{ asset }}
+            <FeeSelector :asset="asset" v-model="selectedFee[asset]" v-bind:fees="getAssetFees(asset)" />
+          </div>
+        </div>
+        <div class="button-group">
+          <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+          <button class="btn btn-primary btn-lg" @click="swap" :disabled="!bestMarketBasedOnAmount || !canSwap">Review Terms</button>
+        </div>
       </div>
     </div>
   </div>
@@ -74,11 +78,15 @@
 import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
 import FeeSelector from '@/components/FeeSelector'
+import InfoNotification from '@/components/InfoNotification'
+import EthRequiredMessage from '@/components/EthRequiredMessage'
 import { dpUI, prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
 
 export default {
   components: {
+    InfoNotification,
+    EthRequiredMessage,
     FeeSelector
   },
   data () {
@@ -149,6 +157,9 @@ export default {
     },
     ethRequired () {
       return this.networkWalletBalances.ETH === 0
+    },
+    showErrors () {
+      return !this.ethRequired
     },
     amountError () {
       const amount = BN(this.safeAmount)
