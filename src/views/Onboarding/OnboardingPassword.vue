@@ -52,9 +52,9 @@ export default {
     SpinnerIcon
   },
   computed: {
-    passwordMatch()  {
-      if (!this.password || !this.confirmPassword) return false;
-      if ((this.password.length == this.confirmPassword.length) && (this.password != this.confirmPassword)) return true;
+    passwordMatch () {
+      if (!this.password || !this.confirmPassword) return false
+      if ((this.password.length === this.confirmPassword.length) && (this.password !== this.confirmPassword)) return true
       return false
     },
     disableNext () {
