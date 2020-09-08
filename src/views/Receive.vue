@@ -1,22 +1,28 @@
 <template>
-  <div class="receive wrapper form text-center">
-    <div class="wrapper_top form">
-      <div class="form-group">
-        <label>Your Current {{chainName}} Address</label>
-        <p class="receive_address">{{address}}</p>
-        <p>Scan this QR code with a mobile wallet to send funds to this address.</p>
-        <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
+  <div class="receive">
+    <NavBar showBack="true" :backPath="`/account/${asset}`" :backLabel="asset">
+      Receive {{asset}}
+    </NavBar>
+    <div class="wrapper form text-center">
+      <div class="wrapper_top form">
+        <div class="form-group">
+          <div class="receive_asset"><img :src="'./img/' + asset.toLowerCase() +'.png'" /></div>
+          <label>Your Current {{chainName}} Address</label>
+          <p class="receive_address">{{address}}</p>
+          <p>Scan this QR code with a mobile wallet to send funds to this address.</p>
+          <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
+        </div>
       </div>
-    </div>
 
-    <div class="wrapper_bottom">
-      <Warning />
-      <div class="button-group">
-        <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Done</button></router-link>
-        <button class="btn btn-primary btn-lg btn-icon" @click="copy">
-          <template v-if="copied"><TickIcon /> Copied!</template>
-          <template v-else><CopyIcon /> Copy Address</template>
-        </button>
+      <div class="wrapper_bottom">
+        <Warning />
+        <div class="button-group">
+          <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Done</button></router-link>
+          <button class="btn btn-primary btn-lg btn-icon" @click="copy">
+            <template v-if="copied"><TickIcon /> Copied!</template>
+            <template v-else><CopyIcon /> Copy Address</template>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -26,6 +32,7 @@
 import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
 import { getChainFromAsset } from '@/utils/asset'
+import NavBar from '@/components/NavBar'
 import Warning from '@/components/Warning'
 import CopyIcon from '@/assets/icons/copy.svg'
 import TickIcon from '@/assets/icons/tick.svg'
@@ -33,6 +40,7 @@ import cryptoassets from '@liquality/cryptoassets'
 
 export default {
   components: {
+    NavBar,
     Warning,
     CopyIcon,
     TickIcon
@@ -90,9 +98,15 @@ export default {
 
 <style lang="scss">
 .receive {
+  &_asset {
+    padding-bottom: 6px;
+    img {
+      width: 28px;
+    }
+  }
   &_qr {
-    margin: 30px auto 0 auto;
-    width: 300px;
+    margin: 16px auto 0 auto;
+    width: 240px;
   }
   &_address {
     font-size: $font-size-sm;

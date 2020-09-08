@@ -69,6 +69,8 @@ export default {
   &_title {
     width: 100%;
     text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 
   &_menu, &_prev {

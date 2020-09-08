@@ -1,7 +1,7 @@
 <template>
   <div class="wallet">
     <NavBar showMenu="true">
-      <strong>{{wallet.name}}</strong> <span class="text-muted">({{activeNetwork}})</span>
+      <span class="wallet_header"><strong>{{wallet.name}}</strong> <span class="text-muted">({{activeNetwork}})</span></span>
     </NavBar>
     <InfoNotification v-if="ethRequired">
       <EthRequiredMessage />
@@ -98,6 +98,11 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 0;
+
+  &_header {
+    font-weight: normal;
+    text-transform: none;
+  }
 
   &_stats {
     text-align: center;

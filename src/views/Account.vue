@@ -169,6 +169,8 @@ export default {
     align-items: center;
     justify-content: center;
     font-size: $h3-font-size;
+    text-transform: none;
+    font-weight: normal;
 
     img {
       width: 28px;
