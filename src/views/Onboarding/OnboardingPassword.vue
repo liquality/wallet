@@ -18,6 +18,7 @@
         <div class="input-group">
           <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" autocomplete="off" required :readonly="loading">
         </div>
+        <small v-show="passwordMatch" class="form-text hidden" >Passwords don't match.</small>
         <small class="form-text">Password must be at least 8 characters.</small>
       </div>
       <p>
@@ -51,6 +52,11 @@ export default {
     SpinnerIcon
   },
   computed: {
+    passwordMatch()  {
+      if (!this.password || !this.confirmPassword) return false;
+      if ((this.password.length == this.confirmPassword.length) && (this.password != this.confirmPassword)) return true;
+      return false
+    },
     disableNext () {
       if (!this.password || !this.confirmPassword) return true
       if (this.password !== this.confirmPassword) return true
@@ -76,6 +82,11 @@ export default {
 </script>
 
 <style lang="scss">
+
+.hidden {
+  display:none;
+}
+
 .onboading-password {
   padding: 20px;
 
