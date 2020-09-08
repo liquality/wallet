@@ -32,7 +32,5 @@ test('Swap', async () => {
 
   const status = await page.$eval('.transaction_detail', el => el.textContent)
 
-  expect(status).toEqual('Initiating')
-
-  await page.waitFor(() => document.querySelector('.transaction_detail').textContent === 'Pending Agent')
+  expect(status).toEqual('Locking ETH')
 })
