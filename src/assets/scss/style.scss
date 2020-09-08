@@ -3,6 +3,18 @@
 @import "bootstrap";
 @import "tooltip";
 
+a {
+  cursor: pointer;
+}
+
+a:not([href]) {
+  color: $link-color;
+
+  &:hover {
+    color: $link-hover-color;
+  }
+}
+
 svg {
   vertical-align: top;
 }

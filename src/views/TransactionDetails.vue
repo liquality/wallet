@@ -67,8 +67,8 @@
                         </div>
                       </div>
                       <div class="fee-update_fees d-flex justify-content-between" v-if="feeSelectorFees">
-                        <a href="javascript:void(0)" @click="newFeePrice = feeSelectorFees.average.fee">Average: {{ feeSelectorFees.average.fee }}</a>
-                        <a href="javascript:void(0)" @click="newFeePrice = feeSelectorFees.fast.fee">Fast: {{ feeSelectorFees.fast.fee }}</a>
+                        <a @click="newFeePrice = feeSelectorFees.average.fee">Average: {{ feeSelectorFees.average.fee }}</a>
+                        <a @click="newFeePrice = feeSelectorFees.fast.fee">Fast: {{ feeSelectorFees.fast.fee }}</a>
                       </div>
                     <div>
                       <button class="btn btn-sm btn-outline-primary" v-if="!feeSelectorLoading" @click="closeFeeSelector()">Cancel</button>
@@ -78,7 +78,7 @@
                       </button>
                     </div>
                   </div>
-                  <a v-else href="javascript:void(0)" @click="openFeeSelector(step)">Speed up</a>
+                  <a v-else @click="openFeeSelector(step)">Speed up</a>
                 </template>
               </template>
               <h3 v-else>
