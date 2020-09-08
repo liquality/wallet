@@ -1,5 +1,8 @@
 <template>
   <div>
+    <NavBar showBack="true" :backPath="`/account/${asset}`" :backLabel="asset">
+      Swap
+    </NavBar>
     <InfoNotification v-if="ethRequired">
       <EthRequiredMessage />
     </InfoNotification>
@@ -78,6 +81,7 @@
 import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
 import FeeSelector from '@/components/FeeSelector'
+import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
 import { dpUI, prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
@@ -85,6 +89,7 @@ import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
 
 export default {
   components: {
+    NavBar,
     InfoNotification,
     EthRequiredMessage,
     FeeSelector
