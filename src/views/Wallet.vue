@@ -1,7 +1,7 @@
 <template>
   <div class="wallet">
     <NavBar showMenu="true">
-      <span class="wallet_header"><strong>{{wallet.name}}</strong> <span class="text-muted">({{activeNetwork}})</span></span>
+      <span class="wallet_header"><strong>Overview</strong> <span class="text-muted">({{activeNetwork}})</span></span>
     </NavBar>
     <InfoNotification v-if="ethRequired">
       <EthRequiredMessage />
@@ -48,10 +48,7 @@ export default {
     ChevronRightIcon
   },
   computed: {
-    ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'wallets', 'fiatRates']),
-    wallet: function () {
-      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
-    },
+    ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'fiatRates']),
     networkWalletBalances () {
       if (!this.balances[this.activeNetwork]) return false
       if (!this.balances[this.activeNetwork][this.activeWalletId]) return false

@@ -1,6 +1,6 @@
 <template>
   <div class="account">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Assets">
+    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
       <span class="account_header"><img :src="'./img/' + asset.toLowerCase() +'.png'" /> {{asset}}</span>
     </NavBar>
     <InfoNotification v-if="ethRequired">
