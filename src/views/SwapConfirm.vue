@@ -2,7 +2,7 @@
   <div class="swap-confirm wrapper form text-center">
     <div class="wrapper_top form">
       <div class="form-group">
-        <label>Pay</label>
+        <label>Send</label>
         <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asset}}</p>
         <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
       </div>
@@ -17,6 +17,12 @@
       <div class="swap-rate form-group">
         <label>Rate</label>
         <p><span class="swap-rate_base">1 {{asset}} =</span><span class="swap-rate_value">&nbsp;{{rate}}</span><span class="swap-rate_term">&nbsp;{{toAsset}}</span></p>
+      </div>
+      <div class="form-group">
+        <label>Network Fees</label>
+        <div v-for="(fee, asset) in totalFees" :key="asset">
+          <strong>~ {{ fee }}</strong>&nbsp;<span class="text-muted">{{ asset }}</span>&nbsp;<span>(${{prettyFiatBalance(fee, fiatRates[asset])}})</span>
+        </div>
       </div>
     </div>
 
@@ -41,7 +47,8 @@
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 import { shortenAddress } from '@/utils/address'
-import { getAssetColorStyle } from '@/utils/asset'
+import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
+import { TX_TYPES, getTxFee } from '@/utils/fees'
 import { prettyFiatBalance } from '@/utils/coinFormatter'
 import Warning from '@/components/Warning'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
@@ -66,6 +73,24 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId', 'fiatRates']),
     expiration: function () {
       return format(add(new Date(), { hours: 6 }), 'h:mm a')
+    },
+    totalFees () {
+      const fees = {}
+
+      const assetChain = getChainFromAsset(this.asset)
+      const initiationFee = getTxFee(this.asset, TX_TYPES.SWAP_INITIATION, this.fee)
+      fees[assetChain] = initiationFee
+
+      const toAssetChain = getChainFromAsset(this.toAsset)
+      const claimFee = getTxFee(this.toAsset, TX_TYPES.SWAP_CLAIM, this.toFee)
+      fees[toAssetChain] = toAssetChain in fees ? fees[toAssetChain].plus(claimFee) : claimFee
+
+      if (this.sendTo) {
+        const sendFee = getTxFee(this.toAsset, TX_TYPES.SEND, this.toFee)
+        fees[toAssetChain] = toAssetChain in fees ? fees[toAssetChain].plus(sendFee) : sendFee
+      }
+
+      return fees
     }
   },
   methods: {

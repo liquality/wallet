@@ -68,6 +68,7 @@
             <FeeSelector :asset="asset" v-model="selectedFee[asset]" v-bind:fees="getAssetFees(asset)" />
           </div>
         </div>
+
         <div class="button-group">
           <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
           <button class="btn btn-primary btn-lg" @click="swap" :disabled="!bestMarketBasedOnAmount || !canSwap">Review Terms</button>
