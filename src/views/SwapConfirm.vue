@@ -10,9 +10,9 @@
         <label>Receive</label>
         <p class="confirm-value" :style="getAssetColorStyle(toAsset)">{{toAmount}} {{toAsset}}</p>
       </div>
-      <div class="form-group">
+      <div v-if="sendTo" class="form-group">
         <label>At</label>
-        <p class="confirm-value">{{ sendTo ? shortenAddress(sendTo) : 'Wallet'}}</p>
+        <p class="confirm-value">{{ shortenAddress(sendTo) }}</p>
       </div>
       <div class="swap-rate form-group">
         <label>Rate</label>
@@ -21,10 +21,8 @@
       <div class="form-group">
         <label>Network Fees</label>
         <div v-for="(fee, asset) in totalFees" :key="asset">
-          <strong>
-            <template v-if="fee">~ {{ fee }}</template>
-            <template v-else>Unknown</template>
-          </strong>&nbsp;
+          <template v-if="fee">~ {{ fee }}</template>
+          <template v-else>Unknown</template>&nbsp;
           <span class="text-muted">{{ asset }}</span>&nbsp;
           <span v-if="fee">(${{prettyFiatBalance(fee, fiatRates[asset])}})</span>
         </div>
@@ -95,11 +93,11 @@ export default {
 
       if (this.toFee) {
         const claimFee = getTxFee(this.toAsset, TX_TYPES.SWAP_CLAIM, this.toFee)
-        fees[toAssetChain] = toAssetChain in fees ? fees[toAssetChain].plus(claimFee) : claimFee
+        fees[toAssetChain] = fees[toAssetChain] ? fees[toAssetChain].plus(claimFee) : claimFee
 
         if (this.sendTo) {
           const sendFee = getTxFee(this.toAsset, TX_TYPES.SEND, this.toFee)
-          fees[toAssetChain] = toAssetChain in fees ? fees[toAssetChain].plus(sendFee) : sendFee
+          fees[toAssetChain] = fees[toAssetChain] ? fees[toAssetChain].plus(sendFee) : sendFee
         }
       }
 
