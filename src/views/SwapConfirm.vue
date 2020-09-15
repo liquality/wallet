@@ -21,7 +21,12 @@
       <div class="form-group">
         <label>Network Fees</label>
         <div v-for="(fee, asset) in totalFees" :key="asset">
-          <strong>~ {{ fee }}</strong>&nbsp;<span class="text-muted">{{ asset }}</span>&nbsp;<span>(${{prettyFiatBalance(fee, fiatRates[asset])}})</span>
+          <strong>
+            <template v-if="fee">~ {{ fee }}</template>
+            <template v-else>Unknown</template>
+          </strong>&nbsp;
+          <span class="text-muted">{{ asset }}</span>&nbsp;
+          <span v-if="fee">(${{prettyFiatBalance(fee, fiatRates[asset])}})</span>
         </div>
       </div>
     </div>
@@ -75,19 +80,27 @@ export default {
       return format(add(new Date(), { hours: 6 }), 'h:mm a')
     },
     totalFees () {
-      const fees = {}
-
       const assetChain = getChainFromAsset(this.asset)
-      const initiationFee = getTxFee(this.asset, TX_TYPES.SWAP_INITIATION, this.fee)
-      fees[assetChain] = initiationFee
-
       const toAssetChain = getChainFromAsset(this.toAsset)
-      const claimFee = getTxFee(this.toAsset, TX_TYPES.SWAP_CLAIM, this.toFee)
-      fees[toAssetChain] = toAssetChain in fees ? fees[toAssetChain].plus(claimFee) : claimFee
 
-      if (this.sendTo) {
-        const sendFee = getTxFee(this.toAsset, TX_TYPES.SEND, this.toFee)
-        fees[toAssetChain] = toAssetChain in fees ? fees[toAssetChain].plus(sendFee) : sendFee
+      const fees = {
+        [assetChain]: null,
+        [toAssetChain]: null
+      }
+
+      if (this.fee) {
+        const initiationFee = getTxFee(this.asset, TX_TYPES.SWAP_INITIATION, this.fee)
+        fees[assetChain] = initiationFee
+      }
+
+      if (this.toFee) {
+        const claimFee = getTxFee(this.toAsset, TX_TYPES.SWAP_CLAIM, this.toFee)
+        fees[toAssetChain] = toAssetChain in fees ? fees[toAssetChain].plus(claimFee) : claimFee
+
+        if (this.sendTo) {
+          const sendFee = getTxFee(this.toAsset, TX_TYPES.SEND, this.toFee)
+          fees[toAssetChain] = toAssetChain in fees ? fees[toAssetChain].plus(sendFee) : sendFee
+        }
       }
 
       return fees
