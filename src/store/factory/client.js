@@ -42,6 +42,9 @@ const rpc = {
   },
   WBTC: {
     mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
+  },
+  UNI: {
+    mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
   }
 }
 
@@ -51,7 +54,8 @@ const networks = {
   DAI: EthereumNetworks,
   USDC: EthereumNetworks,
   USDT: EthereumNetworks,
-  WBTC: EthereumNetworks
+  WBTC: EthereumNetworks,
+  UNI: EthereumNetworks
 }
 
 const RpcProviders = {
@@ -60,7 +64,8 @@ const RpcProviders = {
   DAI: EthereumRpcProvider,
   USDC: EthereumRpcProvider,
   USDT: EthereumRpcProvider,
-  WBTC: EthereumRpcProvider
+  WBTC: EthereumRpcProvider,
+  UNI: EthereumRpcProvider
 }
 
 const JsWalletProviders = {
@@ -69,7 +74,8 @@ const JsWalletProviders = {
   DAI: EthereumJsWalletProvider,
   USDC: EthereumJsWalletProvider,
   USDT: EthereumJsWalletProvider,
-  WBTC: EthereumJsWalletProvider
+  WBTC: EthereumJsWalletProvider,
+  UNI: EthereumJsWalletProvider
 }
 
 const SwapProviders = {
@@ -78,7 +84,8 @@ const SwapProviders = {
   DAI: EthereumErc20SwapProvider,
   USDC: EthereumErc20SwapProvider,
   USDT: EthereumErc20SwapProvider,
-  WBTC: EthereumErc20SwapProvider
+  WBTC: EthereumErc20SwapProvider,
+  UNI: EthereumErc20SwapProvider
 }
 
 const AdditionalSwapProviders = {
@@ -87,7 +94,8 @@ const AdditionalSwapProviders = {
   DAI: EthereumErc20ScraperSwapFindProvider,
   USDC: EthereumErc20ScraperSwapFindProvider,
   USDT: EthereumErc20ScraperSwapFindProvider,
-  WBTC: EthereumErc20ScraperSwapFindProvider
+  WBTC: EthereumErc20ScraperSwapFindProvider,
+  UNI: EthereumErc20ScraperSwapFindProvider
 }
 
 const FeeProviders = {
@@ -114,6 +122,10 @@ const FeeProviders = {
   WBTC: {
     mainnet: EthereumGasStationFeeProvider,
     rinkeby: EthereumRpcFeeProvider
+  },
+  UNI: {
+    mainnet: EthereumGasStationFeeProvider,
+    rinkeby: EthereumRpcFeeProvider
   }
 }
 
@@ -130,11 +142,14 @@ const ERC20 = {
   },
   WBTC: {
     mainnet: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
+  },
+  UNI: {
+    mainnet: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984'
   }
 }
 
 export const NetworkAssets = {
-  mainnet: ['BTC', 'ETH', 'DAI', 'USDC', 'USDT', 'WBTC'],
+  mainnet: ['BTC', 'ETH', 'DAI', 'USDC', 'USDT', 'WBTC', 'UNI'],
   testnet: ['BTC', 'ETH', 'DAI']
 }
 
@@ -147,7 +162,8 @@ export const createClient = (network, mnemonic) => {
     DAI: isTestnet ? 'rinkeby' : 'mainnet',
     USDC: isTestnet ? 'rinkeby' : 'mainnet',
     USDT: isTestnet ? 'rinkeby' : 'mainnet',
-    WBTC: isTestnet ? 'rinkeby' : 'mainnet'
+    WBTC: isTestnet ? 'rinkeby' : 'mainnet',
+    UNI: isTestnet ? 'rinkeby' : 'mainnet'
   }
 
   const SwapArgs = {
@@ -156,7 +172,8 @@ export const createClient = (network, mnemonic) => {
     DAI: [],
     USDC: [],
     USDT: [],
-    WBTC: []
+    WBTC: [],
+    UNI: []
   }
 
   const AdditionalSwapArgs = {
@@ -165,7 +182,8 @@ export const createClient = (network, mnemonic) => {
     DAI: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
     USDC: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
     USDT: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
-    WBTC: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api']
+    WBTC: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
+    UNI: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api']
   }
 
   return NetworkAssets[network].map(asset => {

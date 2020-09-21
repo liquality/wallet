@@ -7,7 +7,8 @@ const DP_UI_MAP = {
   DAI: 6,
   USDC: 6,
   USDT: 6,
-  WBTC: 6
+  WBTC: 6,
+  UNI: 6
 }
 
 export const dp = (amount, coin) => {

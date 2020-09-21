@@ -12,7 +12,7 @@ const EXPLORERS = {
 }
 
 export const isERC20 = asset => {
-  return ['DAI', 'USDC', 'USDT', 'WBTC'].includes(asset)
+  return ['DAI', 'USDC', 'USDT', 'WBTC', 'UNI'].includes(asset)
 }
 
 export const getChainFromAsset = asset => {
