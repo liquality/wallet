@@ -149,7 +149,6 @@ export default {
 
   &_balance {
     position: relative;
-    width: 120px;
     text-align: right;
     margin-right: 20px;
 
