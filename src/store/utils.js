@@ -84,7 +84,7 @@ async function getCoins () {
     return COIN_GECKO_CACHE.coins
   }
 
-  const response = await axios.get(`${COIN_GECKO_API}/coins/list`)
+  const response = await axios.get(`${COIN_GECKO_API}/coins/markets?vs_currency=usd&order=market_cap_desc`)
   const coins = response.data
   COIN_GECKO_CACHE.coins = coins
   return coins
