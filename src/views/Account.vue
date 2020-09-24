@@ -30,7 +30,7 @@
           <router-link v-bind:to="'/account/' + asset + '/receive'"><button class="account_actions_button">
             <div class="account_actions_button_wrapper"><ReceiveIcon class="account_actions_button_icon" /></div>Receive
           </button></router-link>
-          <router-link v-bind:to="'/account/' + asset + '/swap'"><button class="account_actions_button">
+          <router-link :to="swapDisabled ? '' : '/account/' + asset + '/swap'"><button class="account_actions_button" :class="{ disabled: swapDisabled }">
             <div class="account_actions_button_wrapper"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></div>Swap
           </button></router-link>
         </div>
@@ -87,7 +87,7 @@ export default {
   },
   props: ['asset'],
   computed: {
-    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'addresses', 'history', 'fiatRates']),
+    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'addresses', 'history', 'fiatRates', 'marketData']),
     balance () {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
     },
@@ -96,6 +96,9 @@ export default {
     },
     sendDisabled () {
       return !this.balances[this.activeNetwork][this.activeWalletId][this.asset]
+    },
+    swapDisabled () {
+      return Object.keys(this.marketData[this.activeNetwork][this.asset]).length === 0
     },
     address () {
       const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
