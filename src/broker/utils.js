@@ -47,6 +47,6 @@ export const inject = content => {
   const container = document.head || document.documentElement
   const scriptTag = document.createElement('script')
   scriptTag.setAttribute('async', 'false')
-  scriptTag.textContent = `${content}`
+  scriptTag.textContent = `(() => {${content}})()`
   container.insertBefore(scriptTag, container.children[0])
 }

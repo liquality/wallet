@@ -27,5 +27,7 @@ export default {
   keyUpdatedAt: null,
   keySalt: null,
   termsAcceptedAt: null,
-  setupAt: null
+  setupAt: null,
+
+  injectEthereum: false
 }

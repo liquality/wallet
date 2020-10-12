@@ -78,5 +78,8 @@ export default {
   },
   UPDATE_MARKET_DATA (state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
+  },
+  ENABLE_ETHEREUM_INJECTION (state, { enable }) {
+    state.injectEthereum = enable
   }
 }

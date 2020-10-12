@@ -25,9 +25,7 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://*.liquality.io/*"
-      ],
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
         "js/content-script.js"
       ],

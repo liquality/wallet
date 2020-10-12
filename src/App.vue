@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-if="brokerReady">
+  <div id="app" v-if="brokerReady" :class="{ satmode }">
     <Head v-if="unlockedAt" />
 
     <router-view v-if="termsAcceptedAt" />
@@ -9,6 +9,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import SatMode from '@/mixins/SatMode'
 
 import Head from '@/views/Head.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
@@ -18,6 +19,7 @@ export default {
     Head,
     OnboardingHome
   },
+  mixins: [SatMode],
   computed: mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
   watch: {
     unlockedAt: function (unlocked) {

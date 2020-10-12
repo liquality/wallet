@@ -24,6 +24,7 @@ import { updateBalances } from './updateBalances'
 import { updateFees } from './updateFees'
 import { updateFiatRates } from './updateFiatRates'
 import { updateMarketData } from './updateMarketData'
+import { enableEthereumInjection } from './enableEthereumInjection'
 
 export {
   changeActiveWalletId,
@@ -51,5 +52,6 @@ export {
   updateBalances,
   updateFees,
   updateFiatRates,
-  updateMarketData
+  updateMarketData,
+  enableEthereumInjection
 }

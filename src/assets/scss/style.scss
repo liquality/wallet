@@ -26,6 +26,10 @@ svg {
   }
 }
 
+.satmode {
+  filter: sepia(1) contrast(149%) hue-rotate(248deg) invert(100%);
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
