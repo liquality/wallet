@@ -13,11 +13,15 @@ const CONFIRM_REQUIRED = [
   /^swap.generateSecret$/,
   /^swap.initiateSwap$/,
   /^swap.claimSwap$/,
-  /^swap.refundSwap$/
+  /^swap.refundSwap$/,
+
+  // Bitcoin
+  /^signP2SHTransaction$/
 ]
 
 const ALLOWED = [
   ...CONFIRM_REQUIRED,
+  /^chain.getConnectedNetwork$/,
   /^wallet.getAddresses*$/,
   /^jsonrpc$/
 ]

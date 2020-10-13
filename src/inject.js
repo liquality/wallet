@@ -133,4 +133,35 @@ if (!window.ethereum) {
 }
 `
 
-export { providerManager, ethereumProvider }
+const bitcoinProvider = `
+const REQUEST_MAP = {
+  wallet_getConnectedNetwork: 'chain.getConnectedNetwork',
+  wallet_getAddresses: 'wallet.getAddresses',
+  wallet_signMessage: 'wallet.signMessage',
+  wallet_sendTransaction: 'chain.sendTransaction',
+  wallet_signP2SHTransaction: 'signP2SHTransaction',
+}
+
+async function handleRequest (req) {
+  const btc = window.providerManager.getProviderFor('BTC')
+  const method = REQUEST_MAP[req.method] || req.method
+  return btc.getMethod(method)(...req.params)
+}
+
+window.bitcoin = {
+  enable: async () => {
+    const accepted = await window.providerManager.enable()
+    if (!accepted) throw new Error('User rejected')
+    const btc = window.providerManager.getProviderFor('BTC')
+    return btc.getMethod('wallet.getAddresses')()
+  },
+  request: async (req) => {
+    const params = req.params || []
+    return handleRequest({
+      method: req.method, params
+    })
+  }
+};
+`
+
+export { providerManager, ethereumProvider, bitcoinProvider }
