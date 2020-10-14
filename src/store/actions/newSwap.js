@@ -1,6 +1,6 @@
 import { newOrder } from '../utils'
 
-export const newSwap = async ({ dispatch, commit }, { network, walletId, agent, from, to, fromAmount, sendTo, auto, fee, claimFee }) => {
+export const newSwap = async ({ dispatch, commit }, { network, walletId, agent, from, to, fromAmount, sendTo, fee, claimFee }) => {
   const order = await newOrder(agent, {
     from,
     to,
@@ -13,7 +13,6 @@ export const newSwap = async ({ dispatch, commit }, { network, walletId, agent, 
   order.startTime = Date.now()
   order.status = 'QUOTE'
   order.sendTo = sendTo
-  order.auto = auto
   order.walletId = walletId
   order.fee = fee
   order.claimFee = claimFee

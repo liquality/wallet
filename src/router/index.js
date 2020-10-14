@@ -10,10 +10,8 @@ import Wallet from '@/views/Wallet.vue'
 import Account from '@/views/Account.vue'
 import TransactionDetails from '@/views/TransactionDetails.vue'
 import Send from '@/views/Send.vue'
-import SendConfirm from '@/views/SendConfirm.vue'
 import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap.vue'
-import SwapConfirm from '@/views/SwapConfirm.vue'
 
 import Enable from '@/views/Enable.vue'
 import Permission from '@/views/Permission.vue'
@@ -65,12 +63,6 @@ const routes = [
     props: true
   },
   {
-    name: 'SendConfirm',
-    path: '/account/:asset/send/confirm',
-    component: SendConfirm,
-    props: true
-  },
-  {
     path: '/account/:asset/receive',
     component: Receive,
     props: true
@@ -78,12 +70,6 @@ const routes = [
   {
     path: '/account/:asset/swap',
     component: Swap,
-    props: true
-  },
-  {
-    name: 'SwapConfirm',
-    path: '/account/:asset/swap/confirm',
-    component: SwapConfirm,
     props: true
   },
   {

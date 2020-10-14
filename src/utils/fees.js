@@ -8,6 +8,10 @@ const TX_TYPES = {
   SWAP_CLAIM: 'SWAP_CLAIM'
 }
 
+/**
+ * TODO: Move to Chain Abstraction Layer in the form
+ * client.chain.getFeeUnits('swap.initiationSwap')
+ * */
 const FEE_UNITS = {
   BTC: {
     [TX_TYPES.SEND]: 178, // Assume 2 inputs

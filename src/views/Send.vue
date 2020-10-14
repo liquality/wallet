@@ -1,45 +1,71 @@
 <template>
-  <div class="send">
-    <NavBar showBack="true" :backPath="`/account/${asset}`" :backLabel="asset">
-      Send
-    </NavBar>
-    <div class="wrapper form">
-      <div class="wrapper_top">
-        <div class="form-group">
-          <label for="amount">
-            Send
-            <span class="label-sub"><span class="text-muted">Available</span> {{balance}} {{asset}}</span>
-            <span class="label-append">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</span>
-          </label>
-          <div class="input-group send_asset">
-            <img :src="'./img/' + asset.toLowerCase() +'.png'" class="send_asset_icon" />
-            <div class="input-group-append">
-              <span class="input-group-text">{{asset}}</span>
+  <div>
+    <div class="send" v-if="!showConfirm">
+      <NavBar showBack="true" :backPath="`/account/${asset}`" :backLabel="asset">
+        Send
+      </NavBar>
+      <div class="wrapper form">
+        <div class="wrapper_top">
+          <div class="form-group">
+            <label for="amount">
+              Send
+              <span class="label-sub"><span class="text-muted">Available</span> {{balance}} {{asset}}</span>
+              <span class="label-append">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</span>
+            </label>
+            <div class="input-group send_asset">
+              <img :src="'./img/' + asset.toLowerCase() +'.png'" class="send_asset_icon" />
+              <div class="input-group-append">
+                <span class="input-group-text">{{asset}}</span>
+              </div>
+              <input type="text" :class="{ 'is-invalid': sendAmount && amountError }" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" autocomplete="off" required>
             </div>
-            <input type="text" :class="{ 'is-invalid': sendAmount && amountError }" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" autocomplete="off" required>
+            <small v-if="sendAmount && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
           </div>
-          <small v-if="sendAmount && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
+          <div class="form-group">
+            <label for="address">Send to</label>
+            <div class="input-group">
+              <input type="text" :class="{ 'is-invalid': sendAddress && addressError }" v-model="sendAddress" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
+            </div>
+            <small v-if="sendAddress && addressError" class="text-danger form-text text-right">{{ addressError }}</small>
+          </div>
+        </div>
+
+        <div class="wrapper_bottom">
+          <div class="form-group" v-if="feesAvailable">
+            <label>Network Speed/Fee</label>
+            <div class="send_fees">
+              {{ assetChain }}
+              <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
+            </div>
+          </div>
+          <div class="button-group">
+            <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
+            <button class="btn btn-primary btn-lg" @click="showConfirm = true" :disabled="!canSend">Review Terms</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="send-confirm wrapper form text-center" v-if="showConfirm">
+      <div class="wrapper_top form">
+        <div class="form-group">
+          <label>Send</label>
+          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{sendAmount}} {{asset}}</p>
+          <p class="text-muted">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</p>
         </div>
         <div class="form-group">
-          <label for="address">Send to</label>
-          <div class="input-group">
-            <input type="text" :class="{ 'is-invalid': sendAddress && addressError }" v-model="sendAddress" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
-          </div>
-          <small v-if="sendAddress && addressError" class="text-danger form-text text-right">{{ addressError }}</small>
+          <label>To</label>
+          <p class="confirm-value">{{shortenAddress(this.sendAddress)}}</p>
         </div>
       </div>
 
       <div class="wrapper_bottom">
-        <div class="form-group" v-if="feesAvailable">
-          <label>Network Speed/Fee</label>
-          <div class="send_fees">
-            {{ assetChain }}
-            <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
-          </div>
-        </div>
+        <Warning />
         <div class="button-group">
-          <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
-          <button class="btn btn-primary btn-lg" @click="send" :disabled="!canSend">Review Terms</button>
+          <button class="btn btn-light btn-outline-primary btn-lg" v-if="!loading" @click="showConfirm = false">Cancel</button>
+          <button class="btn btn-primary btn-lg btn-icon" @click="send" :disabled="loading">
+            <SpinnerIcon class="btn-loading" v-if="loading" />
+            <template v-else><SendIcon /> Send</template>
+          </button>
         </div>
       </div>
     </div>
@@ -54,17 +80,26 @@ import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
+import { shortenAddress } from '@/utils/address'
+import Warning from '@/components/Warning'
+import SendIcon from '@/assets/icons/arrow_send.svg'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   components: {
     NavBar,
-    FeeSelector
+    FeeSelector,
+    Warning,
+    SendIcon,
+    SpinnerIcon
   },
   data () {
     return {
       sendAmount: 0,
       sendAddress: null,
-      selectedFee: 'average'
+      selectedFee: 'average',
+      showConfirm: false,
+      loading: false
     }
   },
   props: {
@@ -108,18 +143,26 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['updateFees', 'sendTransaction']),
     prettyBalance,
     prettyFiatBalance,
     getAssetColorStyle,
-    ...mapActions(['updateFees']),
+    shortenAddress,
     async send () {
+      const amount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.sendAmount).toNumber()
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
-      this.$router.push({
-        name: 'SendConfirm',
-        params: {
-          asset: this.asset, sendAddress: this.sendAddress, sendAmount: this.sendAmount, fee
-        }
+
+      this.loading = true
+      await this.sendTransaction({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        asset: this.asset,
+        to: this.sendAddress,
+        amount,
+        fee
       })
+
+      this.$router.replace(`/account/${this.asset}`)
     }
   },
   created () {
