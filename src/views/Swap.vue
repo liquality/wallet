@@ -269,7 +269,6 @@ export default {
       return format(add(new Date(), { hours: 6 }), 'h:mm a')
     },
     totalFees () {
-
       const fees = {
         [this.assetChain]: null,
         [this.toAssetChain]: null
