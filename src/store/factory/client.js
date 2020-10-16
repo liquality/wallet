@@ -21,115 +21,9 @@ import EthereumErc20ScraperSwapFindProvider from '@liquality/ethereum-erc20-scra
 import BitcoinNetworks from '@liquality/bitcoin-networks'
 import EthereumNetworks from '@liquality/ethereum-networks'
 
-const rpc = {
-  BTC: {
-    bitcoin: ['https://liquality.io/electrs-batch', 'https://liquality.io/electrs', BitcoinNetworks.bitcoin, 2],
-    bitcoin_testnet: ['https://liquality.io/electrs-testnet-batch', 'https://liquality.io/testnet/electrs', BitcoinNetworks.bitcoin_testnet, 2]
-  },
-  ETH: {
-    mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'],
-    rinkeby: ['https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
-  },
-  DAI: {
-    mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'],
-    rinkeby: ['https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
-  },
-  USDC: {
-    mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
-  },
-  USDT: {
-    mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
-  },
-  WBTC: {
-    mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
-  },
-  UNI: {
-    mainnet: ['https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f']
-  }
-}
+import { isERC20 } from '../../utils/asset'
 
-const networks = {
-  BTC: BitcoinNetworks,
-  ETH: EthereumNetworks,
-  DAI: EthereumNetworks,
-  USDC: EthereumNetworks,
-  USDT: EthereumNetworks,
-  WBTC: EthereumNetworks,
-  UNI: EthereumNetworks
-}
-
-const RpcProviders = {
-  BTC: BitcoinEsploraBatchApiProvider,
-  ETH: EthereumRpcProvider,
-  DAI: EthereumRpcProvider,
-  USDC: EthereumRpcProvider,
-  USDT: EthereumRpcProvider,
-  WBTC: EthereumRpcProvider,
-  UNI: EthereumRpcProvider
-}
-
-const JsWalletProviders = {
-  BTC: BitcoinJsWalletProvider,
-  ETH: EthereumJsWalletProvider,
-  DAI: EthereumJsWalletProvider,
-  USDC: EthereumJsWalletProvider,
-  USDT: EthereumJsWalletProvider,
-  WBTC: EthereumJsWalletProvider,
-  UNI: EthereumJsWalletProvider
-}
-
-const SwapProviders = {
-  BTC: BitcoinSwapProvider,
-  ETH: EthereumSwapProvider,
-  DAI: EthereumErc20SwapProvider,
-  USDC: EthereumErc20SwapProvider,
-  USDT: EthereumErc20SwapProvider,
-  WBTC: EthereumErc20SwapProvider,
-  UNI: EthereumErc20SwapProvider
-}
-
-const AdditionalSwapProviders = {
-  BTC: BitcoinEsploraSwapFindProvider,
-  ETH: EthereumScraperSwapFindProvider,
-  DAI: EthereumErc20ScraperSwapFindProvider,
-  USDC: EthereumErc20ScraperSwapFindProvider,
-  USDT: EthereumErc20ScraperSwapFindProvider,
-  WBTC: EthereumErc20ScraperSwapFindProvider,
-  UNI: EthereumErc20ScraperSwapFindProvider
-}
-
-const FeeProviders = {
-  BTC: {
-    bitcoin: BitcoinEarnFeeProvider,
-    bitcoin_testnet: BitcoinRpcFeeProvider
-  },
-  ETH: {
-    mainnet: EthereumGasStationFeeProvider,
-    rinkeby: EthereumRpcFeeProvider
-  },
-  DAI: {
-    mainnet: EthereumGasStationFeeProvider,
-    rinkeby: EthereumRpcFeeProvider
-  },
-  USDC: {
-    mainnet: EthereumGasStationFeeProvider,
-    rinkeby: EthereumRpcFeeProvider
-  },
-  USDT: {
-    mainnet: EthereumGasStationFeeProvider,
-    rinkeby: EthereumRpcFeeProvider
-  },
-  WBTC: {
-    mainnet: EthereumGasStationFeeProvider,
-    rinkeby: EthereumRpcFeeProvider
-  },
-  UNI: {
-    mainnet: EthereumGasStationFeeProvider,
-    rinkeby: EthereumRpcFeeProvider
-  }
-}
-
-const ERC20 = {
+const ERC20_CONTRACT_ADDRESSES = {
   DAI: {
     mainnet: '0x6b175474e89094c44da98b954eedeac495271d0f',
     rinkeby: '0xcE2748BE67fB4346654B4500c4BB0642536365FC'
@@ -153,72 +47,49 @@ export const NetworkAssets = {
   testnet: ['BTC', 'ETH', 'DAI']
 }
 
-export const createClient = (network, mnemonic) => {
+function createBtcClient (network, mnemonic) {
   const isTestnet = network === 'testnet'
+  const bitcoinNetwork = isTestnet ? BitcoinNetworks.bitcoin_testnet : BitcoinNetworks.bitcoin
+  const esploraApi = isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'
+  const batchEsploraApi = isTestnet ? 'https://liquality.io/electrs-testnet-batch' : 'https://liquality.io/electrs-batch'
 
-  const NetworkArgs = {
-    BTC: isTestnet ? 'bitcoin_testnet' : 'bitcoin',
-    ETH: isTestnet ? 'rinkeby' : 'mainnet',
-    DAI: isTestnet ? 'rinkeby' : 'mainnet',
-    USDC: isTestnet ? 'rinkeby' : 'mainnet',
-    USDT: isTestnet ? 'rinkeby' : 'mainnet',
-    WBTC: isTestnet ? 'rinkeby' : 'mainnet',
-    UNI: isTestnet ? 'rinkeby' : 'mainnet'
+  const btcClient = new Client()
+  btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, network, 2))
+  btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic))
+  btcClient.addProvider(new BitcoinSwapProvider(bitcoinNetwork))
+  btcClient.addProvider(new BitcoinEsploraSwapFindProvider(esploraApi))
+  if (isTestnet) btcClient.addProvider(new BitcoinRpcFeeProvider())
+  else btcClient.addProvider(new BitcoinEarnFeeProvider())
+
+  return btcClient
+}
+
+function createEthClient (asset, network, mnemonic) {
+  const isTestnet = network === 'testnet'
+  const ethereumNetwork = isTestnet ? EthereumNetworks.rinkeby : EthereumNetworks.mainnet
+  const infuraApi = isTestnet ? 'https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f' : 'https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'
+  const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
+
+  const ethClient = new Client()
+  ethClient.addProvider(new EthereumRpcProvider(infuraApi))
+  ethClient.addProvider(new EthereumJsWalletProvider(ethereumNetwork, mnemonic))
+  if (isERC20(asset)) {
+    const contractAddress = ERC20_CONTRACT_ADDRESSES[asset][ethereumNetwork.name]
+    ethClient.addProvider(new EthereumErc20Provider(contractAddress))
+    ethClient.addProvider(new EthereumErc20SwapProvider())
+    ethClient.addProvider(new EthereumErc20ScraperSwapFindProvider(scraperApi))
+  } else {
+    ethClient.addProvider(new EthereumSwapProvider())
+    ethClient.addProvider(new EthereumScraperSwapFindProvider(scraperApi))
   }
+  if (isTestnet) ethClient.addProvider(new EthereumRpcFeeProvider())
+  else ethClient.addProvider(new EthereumGasStationFeeProvider())
 
-  const SwapArgs = {
-    BTC: [networks.BTC[NetworkArgs.BTC], 'p2wsh'],
-    ETH: [],
-    DAI: [],
-    USDC: [],
-    USDT: [],
-    WBTC: [],
-    UNI: []
-  }
+  return ethClient
+}
 
-  const AdditionalSwapArgs = {
-    BTC: [isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'],
-    ETH: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
-    DAI: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
-    USDC: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
-    USDT: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
-    WBTC: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'],
-    UNI: [isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api']
-  }
+export const createClient = (asset, network, mnemonic) => {
+  if (asset === 'BTC') return createBtcClient(network, mnemonic)
 
-  return NetworkAssets[network].map(asset => {
-    const client = new Client()
-
-    client.addProvider(new RpcProviders[asset](
-      ...rpc[asset][NetworkArgs[asset]]
-    ))
-
-    client.addProvider(new JsWalletProviders[asset](
-      networks[asset][NetworkArgs[asset]],
-      mnemonic
-    ))
-
-    if (ERC20[asset] && ERC20[asset][NetworkArgs[asset]]) {
-      client.addProvider(new EthereumErc20Provider(ERC20[asset][NetworkArgs[asset]]))
-    }
-
-    client.addProvider(new SwapProviders[asset](
-      ...SwapArgs[asset]
-    ))
-
-    client.addProvider(new AdditionalSwapProviders[asset](
-      ...AdditionalSwapArgs[asset]
-    ))
-
-    client.addProvider(new FeeProviders[asset][NetworkArgs[asset]]())
-
-    return {
-      asset,
-      client
-    }
-  }).reduce((acc, { asset, client }) => {
-    acc[asset] = client
-
-    return acc
-  }, {})
+  return createEthClient(asset, network, mnemonic)
 }

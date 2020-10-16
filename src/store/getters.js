@@ -17,16 +17,16 @@ export default {
   },
   client (state) {
     return (network, walletId, asset) => {
-      const cacheKey = [network, walletId].join('-')
+      const cacheKey = [asset, network, walletId].join('-')
 
       const cachedClient = clientCache[cacheKey]
-      if (cachedClient) return cachedClient[asset]
+      if (cachedClient) return cachedClient
 
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
-      const client = createClient(network, mnemonic)
+      const client = createClient(asset, network, mnemonic)
       clientCache[cacheKey] = client
 
-      return client[asset]
+      return client
     }
   },
   historyItemById (state) {
