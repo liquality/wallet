@@ -9,7 +9,7 @@
           <div class="form-group">
             <label for="amount">
               Send
-              <span class="label-sub"><span class="text-muted">Available</span> {{balance}} {{asset}}</span>
+              <span class="label-sub"><span class="text-muted">Available</span> {{available}} {{asset}}</span>
               <span class="label-append">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</span>
             </label>
             <div class="input-group send_asset">
@@ -35,7 +35,7 @@
             <label>Network Speed/Fee</label>
             <div class="send_fees">
               {{ assetChain }}
-              <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
+              <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" v-bind:txTypes="[txType]" />
             </div>
           </div>
           <div class="button-group">
@@ -55,6 +55,13 @@
         <div class="form-group">
           <label>To</label>
           <p class="confirm-value">{{shortenAddress(this.sendAddress)}}</p>
+        </div>
+        <div class="form-group">
+          <label>Network Fees</label>
+          <template v-if="totalFee">~ {{ totalFee }}</template>
+          <template v-else>Unknown</template>&nbsp;
+          <span class="text-muted">{{ asset }}</span>&nbsp;
+          <span v-if="fee">(${{prettyFiatBalance(totalFee, fiatRates[asset])}})</span>
         </div>
       </div>
 
@@ -81,6 +88,7 @@ import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
+import { TX_TYPES, getTxFee } from '@/utils/fees'
 import Warning from '@/components/Warning'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -125,8 +133,7 @@ export default {
     },
     amountError () {
       const sendAmount = BN(this.sendAmount)
-      if (sendAmount.gt(this.balance)) return 'Amount exceeds available balance.'
-      if ((this.asset === 'ETH' || this.asset === 'BTC') && sendAmount.eq(this.balance)) return 'To account for the fee, lower this amount.'
+      if (sendAmount.gt(this.available)) return 'Amount exceeds available balance.'
       return null
     },
     canSend () {
@@ -137,9 +144,21 @@ export default {
 
       return true
     },
-    balance () {
-      const rawBalance = this.balances[this.activeNetwork][this.activeWalletId][this.asset]
-      return prettyBalance(rawBalance, this.asset)
+    txType () {
+      return TX_TYPES.SEND
+    },
+    totalFee () {
+      const feePrice = this.assetFees[this.selectedFee].fee
+      const sendFee = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
+      return sendFee
+    },
+    available () {
+      const balance = this.balances[this.activeNetwork][this.activeWalletId][this.asset]
+      const fee = cryptoassets[this.assetChain.toLowerCase()].currencyToUnit(this.totalFee)
+      const available = this.assetChain !== this.asset
+        ? BN(balance)
+        : BN.max(BN(balance).minus(fee), 0)
+      return prettyBalance(available, this.asset)
     }
   },
   methods: {

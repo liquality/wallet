@@ -11,7 +11,7 @@
         <div class="wrapper_top">
           <div class="form-group">
             <label for="amount">Send
-              <span class="label-sub"><span class="text-muted">Available</span> {{balance}} {{asset}}</span>
+              <span class="label-sub"><span class="text-muted">Available</span> {{available}} {{asset}}</span>
               <span class="label-append">${{prettyFiatBalance(amount, fiatRates[asset])}}</span>
             </label>
             <div class="input-group swap_asset">
@@ -66,7 +66,7 @@
             <label>Network Speed/Fee</label>
             <div class="swap_fees_asset" v-for="asset in availableFees" :key="asset">
               {{ asset }}
-              <FeeSelector :asset="asset" v-model="selectedFee[asset]" v-bind:fees="getAssetFees(asset)" />
+              <FeeSelector :asset="asset" v-model="selectedFee[asset]" v-bind:fees="getAssetFees(asset)" v-bind:txTypes="getFeeTxTypes(asset)" />
             </div>
           </div>
 
@@ -208,7 +208,8 @@ export default {
       return dpUI(BN(this.market.sellMin), this.asset)
     },
     max () {
-      return dpUI(BN(this.market.sellMax), this.asset, true)
+      const max = BN.min(BN(this.available), dpUI(this.market.sellMax, this.asset))
+      return max
     },
     safeAmount () {
       return this.amount || 0
@@ -216,8 +217,13 @@ export default {
     market () {
       return this.selectedMarket[this.toAsset]
     },
-    balance () {
-      return prettyBalance(this.networkWalletBalances[this.asset], this.asset)
+    available () {
+      const balance = this.networkWalletBalances[this.asset]
+      const fee = cryptoassets[this.assetChain.toLowerCase()].currencyToUnit(this.totalFees[this.assetChain])
+      const available = this.assetChain !== this.asset
+        ? BN(balance)
+        : BN.max(BN(balance).minus(fee), 0)
+      return prettyBalance(available, this.asset)
     },
     selectedMarket () {
       return this.networkMarketData[this.asset]
@@ -231,8 +237,7 @@ export default {
     amountError () {
       const amount = BN(this.safeAmount)
 
-      if (amount.gt(this.balance)) return 'Amount exceeds available balance.'
-      if ((this.asset === 'ETH' || this.asset === 'BTC') && amount.eq(this.balance)) return 'To account for the fee, lower this amount.'
+      if (amount.gt(this.available)) return 'Amount exceeds available balance.'
       if (amount.gt(this.max)) return 'Please reduce amount. It exceeds maximum.'
       if (amount.lt(this.min)) return 'Please increase amount. It is below minimum.'
 
@@ -264,28 +269,26 @@ export default {
       return format(add(new Date(), { hours: 6 }), 'h:mm a')
     },
     totalFees () {
-      const assetChain = getChainFromAsset(this.asset)
-      const toAssetChain = getChainFromAsset(this.toAsset)
 
       const fees = {
-        [assetChain]: null,
-        [toAssetChain]: null
+        [this.assetChain]: null,
+        [this.toAssetChain]: null
       }
 
       if (this.availableFees.has(this.assetChain)) {
         const feePrice = this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]].fee
         const initiationFee = getTxFee(this.asset, TX_TYPES.SWAP_INITIATION, feePrice)
-        fees[assetChain] = initiationFee
+        fees[this.assetChain] = initiationFee
       }
 
       if (this.availableFees.has(this.toAssetChain)) {
         const feePrice = this.getAssetFees(this.toAssetChain)[this.selectedFee[this.toAssetChain]].fee
         const claimFee = getTxFee(this.toAsset, TX_TYPES.SWAP_CLAIM, feePrice)
-        fees[toAssetChain] = fees[toAssetChain] ? fees[toAssetChain].plus(claimFee) : claimFee
+        fees[this.toAssetChain] = fees[this.toAssetChain] ? fees[this.toAssetChain].plus(claimFee) : claimFee
 
         if (this.sendTo) {
           const sendFee = getTxFee(this.toAsset, TX_TYPES.SEND, feePrice)
-          fees[toAssetChain] = fees[toAssetChain] ? fees[toAssetChain].plus(sendFee) : sendFee
+          fees[this.toAssetChain] = fees[this.toAssetChain] ? fees[this.toAssetChain].plus(sendFee) : sendFee
         }
       }
 
@@ -295,10 +298,19 @@ export default {
   methods: {
     ...mapActions(['updateMarketData', 'updateFees', 'newSwap']),
     shortenAddress,
+    prettyBalance,
     prettyFiatBalance,
     getAssetColorStyle,
     getAssetFees (asset) {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
+    },
+    getFeeTxTypes (asset) {
+      if (asset === this.assetChain) {
+        return [TX_TYPES.SWAP_INITIATION]
+      }
+      if (asset === this.toAssetChain) {
+        return this.sendTo ? [TX_TYPES.SWAP_INITIATION, TX_TYPES.SEND] : [TX_TYPES.SWAP_INITIATION]
+      }
     },
     setAmount (amount) {
       this.amount = amount

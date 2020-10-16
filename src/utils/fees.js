@@ -14,19 +14,19 @@ const TX_TYPES = {
  * */
 const FEE_UNITS = {
   BTC: {
-    [TX_TYPES.SEND]: 178, // Assume 2 inputs
-    [TX_TYPES.SWAP_INITIATION]: 192, // Assume 2 inputs
+    [TX_TYPES.SEND]: 209, // Assume 2 inputs
+    [TX_TYPES.SWAP_INITIATION]: 300, // Assume 2 inputs
     [TX_TYPES.SWAP_CLAIM]: 143
   },
   ETH: {
     [TX_TYPES.SEND]: 21000,
-    [TX_TYPES.SWAP_INITIATION]: 78226,
-    [TX_TYPES.SWAP_CLAIM]: 13681
+    [TX_TYPES.SWAP_INITIATION]: 80000,
+    [TX_TYPES.SWAP_CLAIM]: 14000
   },
   ERC20: {
-    [TX_TYPES.SEND]: 38027,
-    [TX_TYPES.SWAP_INITIATION]: 373868 + 57227, // Contract creation + erc20 transfer
-    [TX_TYPES.SWAP_CLAIM]: 28630
+    [TX_TYPES.SEND]: 60000,
+    [TX_TYPES.SWAP_INITIATION]: 374000 + 63000, // Contract creation + erc20 transfer
+    [TX_TYPES.SWAP_CLAIM]: 60000
   }
 }
 

@@ -12,13 +12,21 @@
 
 <script>
 import cryptoassets from '@liquality/cryptoassets'
+import { getTxFee } from '@/utils/fees'
+import BN from 'bignumber.js'
 
 export default {
-  props: ['asset', 'value', 'fees'],
+  props: ['asset', 'value', 'fees', 'txTypes'],
   methods: {
     getTooltip (name) {
       const unit = cryptoassets[this.asset.toLowerCase()].fees.unit
       let content = `${this.fees[name].fee} ${unit}`
+      if (this.txTypes) {
+        const total = this.txTypes.reduce((accum, tx) => {
+          return accum.plus(getTxFee(this.asset, tx, this.fees[name].fee))
+        }, BN(0))
+        content += `<br />${total} ${this.asset}`
+      }
       if (this.fees[name].wait) {
         content += `<br />${this.fees[name].wait}s`
       }
