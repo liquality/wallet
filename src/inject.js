@@ -72,11 +72,12 @@ async function handleRequest (req) {
     return await window.ethereum.enable();
   }
   if(req.method === 'personal_sign') { 
-    return eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
+    const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
+    return '0x' + sig
   }
   if(req.method === 'eth_sendTransaction') {
     const result = await eth.getMethod('chain.sendTransaction')(req.params[0].to, parseInt(req.params[0].value, 16), req.params[0].data)
-    return result.hash
+    return '0x' + result.hash
   }
   if(req.method === 'eth_accounts') {
     return getAddresses()
@@ -119,7 +120,7 @@ function override() {
 if (!window.ethereum) {
   override()
   const retryLimit = 5
-  const retries = 0
+  let retries = 0
   const interval = setInterval(() => {
     retries++
     if (window.ethereum && !window.ethereum.isLiquality) {

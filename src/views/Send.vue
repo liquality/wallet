@@ -148,7 +148,7 @@ export default {
       return TX_TYPES.SEND
     },
     totalFee () {
-      const feePrice = this.assetFees[this.selectedFee].fee
+      const feePrice = this.feesAvailable ? this.assetFees[this.selectedFee].fee : 0
       const sendFee = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
       return sendFee
     },
