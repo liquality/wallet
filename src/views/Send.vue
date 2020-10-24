@@ -125,7 +125,7 @@ export default {
       return this.assetFees && Object.keys(this.assetFees).length
     },
     isValidAddress () {
-      return cryptoassets[this.asset.toLowerCase()].isValidAddress(this.sendAddress)
+      return cryptoassets[this.asset].isValidAddress(this.sendAddress)
     },
     addressError () {
       if (!this.isValidAddress) return 'Wrong format. Please check the address.'
@@ -154,7 +154,7 @@ export default {
     },
     available () {
       const balance = this.balances[this.activeNetwork][this.activeWalletId][this.asset]
-      const fee = cryptoassets[this.assetChain.toLowerCase()].currencyToUnit(this.totalFee)
+      const fee = cryptoassets[this.assetChain].currencyToUnit(this.totalFee)
       const available = this.assetChain !== this.asset
         ? BN(balance)
         : BN.max(BN(balance).minus(fee), 0)
@@ -168,7 +168,7 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async send () {
-      const amount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.sendAmount).toNumber()
+      const amount = cryptoassets[this.asset].currencyToUnit(this.sendAmount).toNumber()
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
 
       this.loading = true

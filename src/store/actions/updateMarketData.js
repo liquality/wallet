@@ -25,7 +25,7 @@ export const updateMarketData = async ({ commit, getters }, { network }) => {
     .filter(({ to, from }) => networkAssets.includes(to) && networkAssets.includes(from))
     .map(({ to, from }) => {
       return allMarketData.reduce((acc, marketData) => {
-        const convert = cryptoassets[from.toLowerCase()]
+        const convert = cryptoassets[from]
         const market = marketData.find(market => market.to === to && market.from === from)
         if (!market) return acc
 

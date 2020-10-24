@@ -57,7 +57,7 @@ export default {
     getAssetColorStyle,
     async send () {
       this.loading = true
-      const amount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.sendAmount).toNumber()
+      const amount = cryptoassets[this.asset].currencyToUnit(this.sendAmount).toNumber()
 
       await this.sendTransaction({
         network: this.activeNetwork,

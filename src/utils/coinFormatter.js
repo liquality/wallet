@@ -14,7 +14,7 @@ const DP_UI_MAP = {
 export const dp = (amount, coin) => {
   if (!amount) return amount
 
-  return BN(amount).dp(cryptoassets[coin.toLowerCase()].decimals)
+  return BN(amount).dp(cryptoassets[coin].decimals)
 }
 
 export const dpUI = (amount, coin) => {
@@ -26,7 +26,7 @@ export const dpUI = (amount, coin) => {
 export const prettyBalance = (amount, coin) => {
   if (!amount) return amount
 
-  amount = cryptoassets[coin.toLowerCase()].unitToCurrency(amount)
+  amount = cryptoassets[coin].unitToCurrency(amount)
 
   return dpUI(amount, coin)
 }

@@ -22,7 +22,7 @@ export const getChainFromAsset = asset => {
 }
 
 export const getAssetColorStyle = asset => {
-  const assetData = cryptoassets[asset.toLowerCase()]
+  const assetData = cryptoassets[asset]
   if (assetData.color) return { color: assetData.color }
 }
 

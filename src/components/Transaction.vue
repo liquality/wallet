@@ -57,7 +57,7 @@ export default {
   },
   computed: {
     code: function () {
-      return cryptoassets[this.asset.toLowerCase()].code
+      return cryptoassets[this.asset].code
     },
     time: function () {
       return moment(this.timestamp).format('L, LT')

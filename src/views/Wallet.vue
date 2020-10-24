@@ -72,7 +72,7 @@ export default {
     },
     totalFiatBalance () {
       const total = this.assetsWithBalance.reduce((accum, [asset, balance]) => {
-        balance = cryptoassets[asset.toLowerCase()].unitToCurrency(balance)
+        balance = cryptoassets[asset].unitToCurrency(balance)
         const balanceFiat = this.fiatRates[asset] ? BN(balance).times(this.fiatRates[asset]) : 0
         return accum.plus(balanceFiat)
       }, BN(0))
@@ -83,7 +83,7 @@ export default {
     ...mapActions(['changeActiveWalletId']),
     prettyBalance,
     prettyFiat (amount, asset) {
-      amount = cryptoassets[asset.toLowerCase()].unitToCurrency(amount)
+      amount = cryptoassets[asset].unitToCurrency(amount)
       return prettyFiatBalance(amount, this.fiatRates[asset])
     }
   }

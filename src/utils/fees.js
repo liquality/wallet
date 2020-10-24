@@ -36,7 +36,7 @@ function getTxFee (_asset, type, _feePrice) {
   const asset = isERC20(_asset) ? 'ERC20' : _asset
   const feeUnits = FEE_UNITS[asset][type]
   const fee = BN(feeUnits).times(feePrice)
-  return cryptoassets[chainAsset.toLowerCase()].unitToCurrency(fee)
+  return cryptoassets[chainAsset].unitToCurrency(fee)
 }
 
 export { TX_TYPES, getTxFee }

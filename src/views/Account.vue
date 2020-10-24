@@ -102,7 +102,7 @@ export default {
     },
     address () {
       const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
-      return address && cryptoassets[this.asset.toLowerCase()].formatAddress(address)
+      return address && cryptoassets[this.asset].formatAddress(address)
     },
     assetHistory () {
       if (!this.history[this.activeNetwork]) return []

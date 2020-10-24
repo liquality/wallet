@@ -300,13 +300,13 @@ export default {
       fees.push({
         chain: fromChain,
         fee: this.item.fee,
-        unit: cryptoassets[fromChain.toLowerCase()].fees.unit
+        unit: cryptoassets[fromChain].fees.unit
       })
       if (toChain !== fromChain) {
         fees.push({
           chain: toChain,
           fee: this.item.claimFee,
-          unit: cryptoassets[toChain.toLowerCase()].fees.unit
+          unit: cryptoassets[toChain].fees.unit
         })
       }
       return fees
@@ -315,7 +315,7 @@ export default {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[getChainFromAsset(this.feeSelectorAsset)]
     },
     feeSelectorUnit () {
-      return cryptoassets[getChainFromAsset(this.feeSelectorAsset).toLowerCase()].fees.unit
+      return cryptoassets[getChainFromAsset(this.feeSelectorAsset)].fees.unit
     }
   },
   methods: {

@@ -219,7 +219,7 @@ export default {
     },
     available () {
       const balance = this.networkWalletBalances[this.asset]
-      const fee = cryptoassets[this.assetChain.toLowerCase()].currencyToUnit(this.totalFees[this.assetChain])
+      const fee = cryptoassets[this.assetChain].currencyToUnit(this.totalFees[this.assetChain])
       const available = this.assetChain !== this.asset
         ? BN(balance)
         : BN.max(BN(balance).minus(fee), 0)
@@ -322,7 +322,7 @@ export default {
       })
     },
     async swap () {
-      const fromAmount = cryptoassets[this.asset.toLowerCase()].currencyToUnit(this.amount)
+      const fromAmount = cryptoassets[this.asset].currencyToUnit(this.amount)
 
       const fee = this.availableFees.has(this.assetChain)
         ? this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]].fee

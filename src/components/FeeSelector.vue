@@ -19,7 +19,7 @@ export default {
   props: ['asset', 'value', 'fees', 'txTypes'],
   methods: {
     getTooltip (name) {
-      const unit = cryptoassets[this.asset.toLowerCase()].fees.unit
+      const unit = cryptoassets[this.asset].fees.unit
       let content = `${this.fees[name].fee} ${unit}`
       if (this.txTypes) {
         const total = this.txTypes.reduce((accum, tx) => {
