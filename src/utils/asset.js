@@ -30,3 +30,11 @@ export const getExplorerLink = (hash, asset, network) => {
   const chain = getChainFromAsset(asset)
   return `${EXPLORERS[chain][network]}${hash}`
 }
+
+export const getAssetIcon = (asset) => {
+  try {
+    return require(`../../node_modules/cryptocurrency-icons/svg/color/${asset.toLowerCase()}.svg?inline`)
+  } catch (e) {
+    return require('../assets/icons/blank_asset.svg?inline')
+  }
+}

@@ -13,7 +13,7 @@
               <span class="label-append">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</span>
             </label>
             <div class="input-group send_asset">
-              <img :src="'./img/' + asset.toLowerCase() +'.png'" class="send_asset_icon" />
+              <img :src="getAssetIcon(asset)" class="asset-icon send_asset_icon" />
               <div class="input-group-append">
                 <span class="input-group-text">{{asset}}</span>
               </div>
@@ -86,7 +86,7 @@ import cryptoassets from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
-import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
+import { getChainFromAsset, getAssetColorStyle, getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import { TX_TYPES, getTxFee } from '@/utils/fees'
 import Warning from '@/components/Warning'
@@ -165,6 +165,7 @@ export default {
     ...mapActions(['updateFees', 'sendTransaction']),
     prettyBalance,
     prettyFiatBalance,
+    getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
     async send () {
@@ -198,8 +199,6 @@ export default {
     }
 
     &_icon {
-      width: 28px;
-      height: 28px;
       margin-right: 4px;
     }
 

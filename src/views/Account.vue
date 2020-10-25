@@ -1,7 +1,7 @@
 <template>
   <div class="account">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account_header"><img :src="'./img/' + asset.toLowerCase() +'.png'" /> {{asset}}</span>
+      <span class="account_header"><img :src="getAssetIcon(asset)" class="asset-icon" /> {{asset}}</span>
     </NavBar>
     <InfoNotification v-if="ethRequired">
       <EthRequiredMessage />
@@ -67,6 +67,7 @@ import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import Transaction from '@/components/Transaction'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
+import { getAssetIcon } from '@/utils/asset'
 import { ORDER_STATUS_STEP_MAP, getOrderStatusLabel } from '@/utils/order'
 
 export default {
@@ -115,6 +116,7 @@ export default {
   },
   methods: {
     ...mapActions(['updateBalances', 'getUnusedAddresses']),
+    getAssetIcon,
     shortenAddress,
     prettyFiatBalance,
     async copyAddress () {
@@ -176,7 +178,6 @@ export default {
     font-weight: normal;
 
     img {
-      width: 28px;
       margin-right: 4px;
     }
   }

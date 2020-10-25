@@ -6,7 +6,7 @@
     <div class="wrapper form text-center">
       <div class="wrapper_top form">
         <div class="form-group">
-          <div class="receive_asset"><img :src="'./img/' + asset.toLowerCase() +'.png'" /></div>
+          <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
           <label>Your Current {{chainName}} Address</label>
           <p class="receive_address">{{address}}</p>
           <p>Scan this QR code with a mobile wallet to send funds to this address.</p>
@@ -31,7 +31,7 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
-import { getChainFromAsset } from '@/utils/asset'
+import { getChainFromAsset, getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import Warning from '@/components/Warning'
 import CopyIcon from '@/assets/icons/copy.svg'
@@ -87,6 +87,7 @@ export default {
   },
   methods: {
     ...mapActions(['getUnusedAddresses']),
+    getAssetIcon,
     async copy () {
       await navigator.clipboard.writeText(this.address)
       this.copied = true
@@ -100,9 +101,6 @@ export default {
 .receive {
   &_asset {
     padding-bottom: 6px;
-    img {
-      width: 28px;
-    }
   }
   &_qr {
     margin: 16px auto 0 auto;

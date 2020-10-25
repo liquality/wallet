@@ -85,6 +85,10 @@ export default {
   padding: 40px 20px;
   background: #302E78;
   text-align: center;
+
+  svg {
+    height: 75px;
+  }
 }
 
 .permission-screen {

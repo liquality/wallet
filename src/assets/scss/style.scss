@@ -65,6 +65,10 @@ svg {
 
 .login-header {
   padding-bottom: 40px;
+
+  svg {
+    height: 75px;
+  }
 }
 
 .wrapper {
@@ -205,6 +209,10 @@ svg {
   }
 }
 
+.asset-icon {
+  width: 28px;
+  height: 28px;
+}
 
 .menu_list {
   position: absolute;

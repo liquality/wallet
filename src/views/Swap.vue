@@ -15,7 +15,7 @@
               <span class="label-append">${{prettyFiatBalance(amount, fiatRates[asset])}}</span>
             </label>
             <div class="input-group swap_asset">
-              <img :src="'./img/' + asset.toLowerCase() +'.png'" class="swap_asset_icon" />
+              <img :src="getAssetIcon(asset)" class="asset-icon swap_asset_icon" />
               <div class="input-group-append">
                 <span class="input-group-text">{{asset}}</span>
               </div>
@@ -31,7 +31,7 @@
           <div class="form-group">
             <label for="amount">Receive</label>
             <div class="input-group swap_asset">
-              <img :src="'./img/' + toAsset.toLowerCase() +'.png'" class="swap_asset_icon" />
+              <img :src="getAssetIcon(toAsset)" class="asset-icon swap_asset_icon" />
               <div class="input-group-append">
                 <span class="input-group-text">
                   <select class="custom-select" @change="setToAsset($event.target.value)" v-model="toAsset">
@@ -135,7 +135,7 @@ import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
 import { dpUI, prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
-import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
+import { getChainFromAsset, getAssetColorStyle, getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import { TX_TYPES, getTxFee } from '@/utils/fees'
 import Warning from '@/components/Warning'
@@ -299,6 +299,7 @@ export default {
     shortenAddress,
     prettyBalance,
     prettyFiatBalance,
+    getAssetIcon,
     getAssetColorStyle,
     getAssetFees (asset) {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
@@ -359,8 +360,6 @@ export default {
     }
 
     &_icon {
-      width: 28px;
-      height: 28px;
       margin-right: 4px;
     }
 

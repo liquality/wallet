@@ -43,6 +43,7 @@
     "bootstrap": "^4.5.0",
     "core-js": "^3.6.4",
     "crypto-js": "^4.0.0",
+    "cryptocurrency-icons": "^0.16.1",
     "date-fns": "^2.14.0",
     "lodash-es": "^4.17.15",
     "moment": "^2.25.3",

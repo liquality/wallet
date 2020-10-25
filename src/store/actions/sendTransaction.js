@@ -1,5 +1,6 @@
 import { createNotification } from '../../broker/notification'
 import { prettyBalance } from '../../utils/coinFormatter'
+import { getAssetIcon } from '../../utils/asset'
 
 export const sendTransaction = async ({ commit, getters }, { network, walletId, asset, amount, to, fee }) => {
   const client = getters.client(network, walletId, asset)
@@ -32,7 +33,7 @@ export const sendTransaction = async ({ commit, getters }, { network, walletId, 
   createNotification({
     title: `New ${asset} Transaction`,
     message: `Sent ${prettyBalance(amount, asset)} ${asset} to ${to}`,
-    iconUrl: `./img/${asset.toLowerCase()}.png`
+    iconUrl: getAssetIcon(asset)
   })
 
   return txHash

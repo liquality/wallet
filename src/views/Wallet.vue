@@ -16,7 +16,7 @@
     <div class="wallet_accounts" v-if="networkWalletBalances">
       <router-link v-for="([asset, balance]) in orderedBalances" :key="asset" v-bind:to="'/account/' + asset" >
         <div class="account-item d-flex align-items-center">
-          <img :src="'./img/' + asset.toLowerCase() + '.png'" class="account-item_icon" />
+          <img :src="getAssetIcon(asset)" class="asset-icon account-item_icon" />
           <div class="account-item_name flex-fill">{{asset}}</div>
           <div class="account-item_balance">
             {{prettyBalance(balance, asset)}} {{asset}}
@@ -35,6 +35,7 @@ import { mapState, mapActions } from 'vuex'
 import { NetworkAssets } from '@/store/factory/client'
 import cryptoassets from '@liquality/cryptoassets'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
@@ -81,6 +82,7 @@ export default {
   },
   methods: {
     ...mapActions(['changeActiveWalletId']),
+    getAssetIcon,
     prettyBalance,
     prettyFiat (amount, asset) {
       amount = cryptoassets[asset].unitToCurrency(amount)
@@ -142,8 +144,6 @@ export default {
   }
 
   &_icon {
-    width: 28px;
-    height: 28px;
     margin-right: 8px;
   }
 

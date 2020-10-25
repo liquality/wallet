@@ -115,6 +115,7 @@ export default {
   &_prev {
     left: $wrapper-padding;
     &_icon {
+      width: 6px;
       margin-right: 7px;
       margin-top: 3px;
     }
