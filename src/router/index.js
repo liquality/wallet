@@ -13,12 +13,15 @@ import Send from '@/views/Send.vue'
 import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap.vue'
 
+import ManageAssets from '@/views/ManageAssets'
+
 import Enable from '@/views/Enable.vue'
 import Permission from '@/views/Permission.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
+  // Onboarding
   {
     path: '/',
     component: Splash
@@ -41,6 +44,16 @@ const routes = [
     path: '/backup',
     component: BackupWallet
   },
+  // Onboarding
+
+  // Settings
+  {
+    path: '/settings/manage-assets',
+    component: ManageAssets
+  },
+  // Settings
+
+  // Wallet
   {
     path: '/wallet',
     component: Wallet
@@ -72,6 +85,9 @@ const routes = [
     component: Swap,
     props: true
   },
+  // Wallet
+
+  // Injection
   {
     path: '/enable',
     component: Enable
@@ -80,6 +96,7 @@ const routes = [
     path: '/permission',
     component: Permission
   }
+  // Injection
 ]
 
 const router = new VueRouter({

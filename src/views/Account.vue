@@ -10,7 +10,7 @@
       <div class="account_top">
         <RefreshIcon @click="refresh" class="account_refresh-icon" />
         <div class="account_balance">
-          <div class="account_balance_fiat">${{prettyFiatBalance(balance, fiatRates[asset])}}</div>
+          <div v-if="fiatRates[asset]" class="account_balance_fiat">${{prettyFiatBalance(balance, fiatRates[asset])}}</div>
           <div>
             <span class="account_balance_value">{{balance}}</span>
             <span class="account_balance_code">{{asset}}</span>
@@ -99,11 +99,14 @@ export default {
       return !this.balances[this.activeNetwork][this.activeWalletId][this.asset]
     },
     swapDisabled () {
-      return Object.keys(this.marketData[this.activeNetwork][this.asset]).length === 0
+      return !this.markets || Object.keys(this.markets).length === 0
     },
     address () {
       const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
       return address && cryptoassets[this.asset].formatAddress(address)
+    },
+    markets () {
+      return this.marketData[this.activeNetwork][this.asset]
     },
     assetHistory () {
       if (!this.history[this.activeNetwork]) return []

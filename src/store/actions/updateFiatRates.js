@@ -1,8 +1,11 @@
 import { getPrices } from '../utils'
-import { NetworkAssets } from '../factory/client'
+import { Networks } from '../factory/client'
+import { uniq } from 'lodash-es'
 
-export const updateFiatRates = async ({ commit }) => {
-  const assets = NetworkAssets.mainnet.concat(NetworkAssets.testnet)
+export const updateFiatRates = async ({ state, commit }) => {
+  const assets = Networks.reduce((result, network) => {
+    return uniq(result.concat(state.enabledAssets[network][state.activeWalletId]))
+  }, [])
   const fiatRates = await getPrices(assets, 'usd')
 
   commit('UPDATE_FIAT_RATES', { fiatRates })

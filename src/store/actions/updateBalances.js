@@ -1,8 +1,7 @@
 import Bluebird from 'bluebird'
-import { NetworkAssets } from '../factory/client'
 
-export const updateBalances = async ({ commit, getters }, { network, walletId }) => {
-  const assets = NetworkAssets[network]
+export const updateBalances = async ({ state, commit, getters }, { network, walletId }) => {
+  const assets = state.enabledAssets[network][walletId]
 
   return Bluebird.map(assets, async asset => {
     const addresses = await getters.client(network, walletId, asset).wallet.getUsedAddresses()

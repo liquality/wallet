@@ -20,7 +20,7 @@
           <div class="account-item_name flex-fill">{{asset}}</div>
           <div class="account-item_balance">
             {{prettyBalance(balance, asset)}} {{asset}}
-            <span class="account-item_balance_fiat">${{prettyFiat(balance, asset)}}</span>
+            <span v-if="fiatRates[asset]" class="account-item_balance_fiat">${{prettyFiat(balance, asset)}}</span>
           </div>
           <ChevronRightIcon class="account-item_chevron" />
         </div>
@@ -32,7 +32,6 @@
 <script>
 import BN from 'bignumber.js'
 import { mapState, mapActions } from 'vuex'
-import { NetworkAssets } from '@/store/factory/client'
 import cryptoassets from '@liquality/cryptoassets'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
@@ -49,7 +48,7 @@ export default {
     ChevronRightIcon
   },
   computed: {
-    ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'fiatRates']),
+    ...mapState(['activeNetwork', 'balances', 'activeWalletId', 'enabledAssets', 'fiatRates']),
     networkWalletBalances () {
       if (!this.balances[this.activeNetwork]) return false
       if (!this.balances[this.activeNetwork][this.activeWalletId]) return false
@@ -59,17 +58,20 @@ export default {
     ethRequired () {
       return this.networkWalletBalances.ETH === 0
     },
+    networkAssets () {
+      return this.enabledAssets[this.activeNetwork][this.activeWalletId]
+    },
     orderedBalances () {
-      const assets = NetworkAssets[this.activeNetwork]
-      return Object.entries(this.networkWalletBalances).sort((a, b) => {
-        return assets.indexOf(a[0]) - assets.indexOf(b[0])
+      const assets = this.networkAssets
+      return Object.entries(this.networkWalletBalances).filter(([asset]) => assets.includes(asset)).sort(([assetA], [assetB]) => {
+        return assets.indexOf(assetA) - assets.indexOf(assetB)
       })
     },
     assetsWithBalance () {
       return this.orderedBalances.filter(([asset, balance]) => balance > 0)
     },
     networkAssetsLoaded () {
-      return this.networkWalletBalances && NetworkAssets[this.activeNetwork].length === Object.keys(this.networkWalletBalances).length
+      return this.networkWalletBalances && Object.keys(this.networkWalletBalances).length >= this.networkAssets.length
     },
     totalFiatBalance () {
       const total = this.assetsWithBalance.reduce((accum, [asset, balance]) => {
@@ -106,6 +108,7 @@ export default {
   &_stats {
     text-align: center;
     display: flex;
+    flex: 0 0 auto;
     width: 100%;
     height: 200px;
     justify-content: center;
@@ -163,6 +166,7 @@ export default {
   }
 
   &_chevron {
+    width: 6px;
     margin-bottom: 2px;
   }
 }

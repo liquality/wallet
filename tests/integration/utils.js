@@ -1,7 +1,7 @@
 /* eslint-env jest */
 const puppeteer = require('puppeteer')
 const crypto = require('crypto')
-const { NetworkAssets } = require('../../src/store/factory/client')
+const buildConfig = require('../../src/build.config.js')
 
 jest.setTimeout(20000)
 
@@ -47,7 +47,7 @@ async function expectWalletOpen (page, network = 'mainnet') {
   expect(navbarTitle).toContain('Account 1')
   expect(navbarTitle).toContain(network)
 
-  await page.waitFor((NetworkAssets, network) => document.querySelectorAll('.account-item').length === NetworkAssets[network].length, undefined, NetworkAssets, network)
+  await page.waitFor((buildConfig, network) => document.querySelectorAll('.account-item').length === buildConfig[network].length, undefined, buildConfig, network)
 }
 
 async function importWallet (page) {

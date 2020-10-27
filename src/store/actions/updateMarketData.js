@@ -4,9 +4,7 @@ import cryptoassets from '@liquality/cryptoassets'
 import { getMarketData } from '../utils'
 import { dp } from '../../utils/coinFormatter'
 
-import { NetworkAssets } from '../factory/client'
-
-export const updateMarketData = async ({ commit, getters }, { network }) => {
+export const updateMarketData = async ({ state, commit, getters }, { network }) => {
   const endpoints = getters.agentEndpoints(network)
 
   const _allMarketData = await Promise.all(
@@ -18,7 +16,7 @@ export const updateMarketData = async ({ commit, getters }, { network }) => {
     )
   )
 
-  const networkAssets = NetworkAssets[network]
+  const networkAssets = state.enabledAssets[network][state.activeWalletId]
   const allMarketData = _allMarketData.filter(r => r !== false)
 
   const pairMarkets = allMarketData[0]

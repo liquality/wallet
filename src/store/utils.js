@@ -84,7 +84,7 @@ async function getCoins () {
     return COIN_GECKO_CACHE.coins
   }
 
-  const response = await axios.get(`${COIN_GECKO_API}/coins/markets?vs_currency=usd&order=market_cap_desc`)
+  const response = await axios.get(`${COIN_GECKO_API}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250`)
   const coins = response.data
   COIN_GECKO_CACHE.coins = coins
   return coins
@@ -92,7 +92,10 @@ async function getCoins () {
 
 export async function getPrices (baseCurrencies, toCurrency) {
   const coins = await getCoins()
-  const coindIds = baseCurrencies.map(currency => coins.find(coin => coin.symbol === currency.toLowerCase()).id)
+  const coindIds = baseCurrencies.reduce((list, currency) => {
+    const coin = coins.find(coin => coin.symbol === currency.toLowerCase())
+    return coin ? [...list, coin.id] : list
+  }, [])
   const response = await axios.get(`${COIN_GECKO_API}/simple/price?ids=${coindIds.join(',')}&vs_currencies=${toCurrency}`)
   const prices = response.data
   const symbolPrices = Object.entries(prices).reduce((curr, [id, toPrices]) => {

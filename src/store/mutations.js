@@ -81,5 +81,13 @@ export default {
   },
   ENABLE_ETHEREUM_INJECTION (state, { enable }) {
     state.injectEthereum = enable
+  },
+  ENABLE_ASSETS (state, { network, walletId, assets }) {
+    ensureNetworkWalletTree(state.enabledAssets, network, walletId, [])
+    state.enabledAssets[network][walletId].push(...assets)
+  },
+  DISABLE_ASSETS (state, { network, walletId, assets }) {
+    ensureNetworkWalletTree(state.enabledAssets, network, walletId, [])
+    Vue.set(state.enabledAssets[network], walletId, state.enabledAssets[network][walletId].filter(asset => !assets.includes(asset)))
   }
 }

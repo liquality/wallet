@@ -21,31 +21,9 @@ import EthereumErc20ScraperSwapFindProvider from '@liquality/ethereum-erc20-scra
 import BitcoinNetworks from '@liquality/bitcoin-networks'
 import EthereumNetworks from '@liquality/ethereum-networks'
 
-import { isERC20 } from '../../utils/asset'
+import { isERC20, getErc20ContractAddress } from '../../utils/asset'
 
-const ERC20_CONTRACT_ADDRESSES = {
-  DAI: {
-    mainnet: '0x6b175474e89094c44da98b954eedeac495271d0f',
-    rinkeby: '0xcE2748BE67fB4346654B4500c4BB0642536365FC'
-  },
-  USDC: {
-    mainnet: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-  },
-  USDT: {
-    mainnet: '0xdac17f958d2ee523a2206206994597c13d831ec7'
-  },
-  WBTC: {
-    mainnet: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
-  },
-  UNI: {
-    mainnet: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984'
-  }
-}
-
-export const NetworkAssets = {
-  mainnet: ['BTC', 'ETH', 'DAI', 'USDC', 'USDT', 'WBTC', 'UNI'],
-  testnet: ['BTC', 'ETH', 'DAI']
-}
+export const Networks = ['mainnet', 'testnet']
 
 function createBtcClient (network, mnemonic) {
   const isTestnet = network === 'testnet'
@@ -74,7 +52,7 @@ function createEthClient (asset, network, mnemonic) {
   ethClient.addProvider(new EthereumRpcProvider(infuraApi))
   ethClient.addProvider(new EthereumJsWalletProvider(ethereumNetwork, mnemonic))
   if (isERC20(asset)) {
-    const contractAddress = ERC20_CONTRACT_ADDRESSES[asset][ethereumNetwork.name]
+    const contractAddress = getErc20ContractAddress(asset, network)
     ethClient.addProvider(new EthereumErc20Provider(contractAddress))
     ethClient.addProvider(new EthereumErc20SwapProvider())
     ethClient.addProvider(new EthereumErc20ScraperSwapFindProvider(scraperApi))

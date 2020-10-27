@@ -5,6 +5,7 @@ import Background from './Background'
 import Foreground from './Foreground'
 import { isBackgroundScript } from './utils'
 import Storage from './Storage'
+import { isMigrationNeeded, processMigrations } from '../store/migrations'
 
 const Broker = state => {
   if (isBackgroundScript(window)) {
@@ -16,19 +17,19 @@ const Broker = state => {
     })
 
     /**
-     * Hook into vuex-persist `restoreState` such that a migration of the old localstorage state
-     * happens before the plugin starts restoring the state from chrome storage.
+     * Hook into vuex-persist `restoreState` to run migrations on state
+     * This happens before the plugin restores the state from chrome storage.
      */
-    const prevStorage = window.localStorage.getItem('liquality-wallet-dev-14')
-    if (prevStorage) {
-      const restoreState = vuexPersist.restoreState
-      vuexPersist.restoreState = async (key, storage) => {
-        await Storage.setItem('liquality-wallet', JSON.parse(prevStorage))
-        const state = await restoreState(key, storage)
-        window.localStorage.removeItem('liquality-wallet-dev-14')
-        vuexPersist.restoreState = restoreState // Remove hook
-        return state
+    const restoreState = vuexPersist.restoreState
+    vuexPersist.restoreState = async (key, storage) => {
+      const currentState = await Storage.getItem('liquality-wallet')
+      if (isMigrationNeeded(currentState)) {
+        const newState = await processMigrations(currentState)
+        await Storage.setItem('liquality-wallet', newState)
       }
+      const state = await restoreState(key, storage)
+      vuexPersist.restoreState = restoreState // Remove hook
+      return state
     }
 
     return {

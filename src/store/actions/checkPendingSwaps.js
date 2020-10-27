@@ -1,4 +1,4 @@
-import { NetworkAssets } from '../factory/client'
+import { Networks } from '../factory/client'
 
 const COMPLETED_STATES = [
   'SUCCESS',
@@ -6,7 +6,7 @@ const COMPLETED_STATES = [
 ] // TODO: Pull this out so it's being used everywhere else (Transaction icons etc.)
 
 export const checkPendingSwaps = async ({ state, dispatch }, { walletId }) => {
-  Object.keys(NetworkAssets).forEach(network => {
+  Object.keys(Networks).forEach(network => {
     const history = state.history[network]?.[walletId]
     if (!history) return
     history.forEach(order => {

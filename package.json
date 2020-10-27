@@ -13,7 +13,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "sync-versions": "node script/sync-versions.js",
-    "test": "jest --runInBand"
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration --runInBand"
   },
   "dependencies": {
     "@liquality/bitcoin-earn-fee-provider": "^0.7.3",
@@ -26,7 +27,7 @@
     "@liquality/bitcoin-swap-provider": "^0.7.3",
     "@liquality/client": "^0.7.3",
     "@liquality/crypto": "^0.7.3",
-    "@liquality/cryptoassets": "^0.2.1",
+    "@liquality/cryptoassets": "^0.2.2",
     "@liquality/ethereum-erc20-provider": "^0.7.3",
     "@liquality/ethereum-erc20-scraper-swap-find-provider": "^0.7.3",
     "@liquality/ethereum-erc20-swap-provider": "^0.7.3",
@@ -64,9 +65,11 @@
     "@vue/cli-plugin-babel": "~4.3.0",
     "@vue/cli-plugin-eslint": "~4.3.0",
     "@vue/cli-plugin-router": "~4.3.0",
+    "@vue/cli-plugin-unit-jest": "^4.5.8",
     "@vue/cli-plugin-vuex": "~4.3.0",
     "@vue/cli-service": "~4.3.0",
     "@vue/eslint-config-standard": "^5.1.2",
+    "@vue/test-utils": "^1.1.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",

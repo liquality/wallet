@@ -25,6 +25,8 @@ import { updateFees } from './updateFees'
 import { updateFiatRates } from './updateFiatRates'
 import { updateMarketData } from './updateMarketData'
 import { enableEthereumInjection } from './enableEthereumInjection'
+import { enableAssets } from './enableAssets'
+import { disableAssets } from './disableAssets'
 
 export {
   changeActiveWalletId,
@@ -53,5 +55,7 @@ export {
   updateFees,
   updateFiatRates,
   updateMarketData,
-  enableEthereumInjection
+  enableEthereumInjection,
+  enableAssets,
+  disableAssets
 }

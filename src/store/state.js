@@ -2,8 +2,11 @@
 // balances.network.walletId.asset
 // history.network.walletId[]
 // marketData.network
+import { LATEST_VERSION } from './migrations'
 
 export default {
+  version: LATEST_VERSION,
+
   // <do not keep these in localStorage>
   key: null,
   wallets: [],
@@ -13,6 +16,9 @@ export default {
   brokerReady: true,
 
   encryptedWallets: null,
+
+  enabledAssets: {},
+
   addresses: {},
   balances: {},
   fiatRates: {},
