@@ -574,6 +574,10 @@ export default {
 
   &_header {
     flex-grow: 1;
+
+    svg {
+      width: 100px;
+    }
   }
 
   &_tnc {

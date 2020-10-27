@@ -23,7 +23,7 @@ const Broker = state => {
     const restoreState = vuexPersist.restoreState
     vuexPersist.restoreState = async (key, storage) => {
       const currentState = await Storage.getItem('liquality-wallet')
-      if (isMigrationNeeded(currentState)) {
+      if (currentState && isMigrationNeeded(currentState)) {
         const newState = await processMigrations(currentState)
         await Storage.setItem('liquality-wallet', newState)
       }

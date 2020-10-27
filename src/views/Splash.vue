@@ -39,11 +39,16 @@ export default {
 .splash {
   &_logo {
     padding: 40px 0;
+
+    svg {
+      width: 100px;
+    }
   }
 
   &_tagline {
     margin-bottom: 20px;
     &_wallet {
+      width: 170px;
       margin-bottom: 10px;
     }
 
