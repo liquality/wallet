@@ -1,15 +1,7 @@
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/cryptoassets'
 
-const DP_UI_MAP = {
-  BTC: 6,
-  ETH: 6,
-  DAI: 6,
-  USDC: 6,
-  USDT: 6,
-  WBTC: 6,
-  UNI: 6
-}
+const VALUE_DECIMALS = 6
 
 export const dp = (amount, coin) => {
   if (!amount) return amount
@@ -20,7 +12,7 @@ export const dp = (amount, coin) => {
 export const dpUI = (amount, coin) => {
   if (!amount) return amount
 
-  return BN(amount).dp(DP_UI_MAP[coin], BN.ROUND_FLOOR)
+  return BN(amount).dp(VALUE_DECIMALS, BN.ROUND_FLOOR)
 }
 
 export const prettyBalance = (amount, coin) => {
