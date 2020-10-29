@@ -51,7 +51,7 @@ function createBtcClient (network, mnemonic) {
   btcClient.addProvider(new BitcoinSwapProvider(bitcoinNetwork))
   btcClient.addProvider(new BitcoinEsploraSwapFindProvider(esploraApi))
   if (isTestnet) btcClient.addProvider(new BitcoinRpcFeeProvider())
-  else btcClient.addProvider(new BitcoinEarnFeeProvider())
+  else btcClient.addProvider(new BitcoinEarnFeeProvider('https://liquality.io/swap/mempool/v1/fees/recommended'))
 
   return btcClient
 }
