@@ -1,19 +1,11 @@
 import { createClient } from './factory/client'
-
-const agentEndpoints = {
-  testnet: [
-    'https://liquality.io/swap-testnet/agent'
-  ],
-  mainnet: [
-    'https://liquality.io/swap/agent'
-  ]
-}
+import buildConfig from '../build.config'
 
 const clientCache = {}
 
 export default {
   agentEndpoints (state) {
-    return network => agentEndpoints[network]
+    return network => buildConfig.agentEndpoints[network]
   },
   client (state) {
     return (network, walletId, asset) => {

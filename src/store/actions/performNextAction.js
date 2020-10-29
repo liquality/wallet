@@ -1,6 +1,6 @@
 import { random } from 'lodash-es'
 import { sha256 } from '@liquality/crypto'
-import { updateOrder, unlockAsset } from '../utils'
+import { updateOrder, unlockAsset, wait } from '../utils'
 import { createSwapNotification } from '../../broker/notification'
 
 async function withLock ({ dispatch }, { order, network, walletId, asset }, func) {
@@ -28,14 +28,40 @@ async function withInterval (func) {
   })
 }
 
+async function hasChainTimePassed ({ getters }, { network, walletId, asset, timestamp }) {
+  const client = getters.client(network, walletId, asset)
+  const maxTries = 3
+  let tries = 0
+  while (tries < maxTries) {
+    try {
+      const blockNumber = await client.chain.getBlockHeight()
+      const latestBlock = await client.chain.getBlockByNumber(blockNumber)
+      return latestBlock.timestamp > timestamp
+    } catch (e) {
+      tries++
+      if (tries >= maxTries) throw e
+      else {
+        console.warn(e)
+        await wait(2000)
+      }
+    }
+  }
+}
+
+async function canRefund ({ getters }, { network, walletId, order }) {
+  return hasChainTimePassed({ getters }, { network, walletId, asset: order.from, timestamp: order.swapExpiration })
+}
+
 async function hasSwapExpired ({ getters }, { network, walletId, order }) {
-  const fromClient = getters.client(network, walletId, order.from)
-  try {
-    const blockNumber = await fromClient.chain.getBlockHeight()
-    const latestBlock = await fromClient.chain.getBlockByNumber(blockNumber)
-    return latestBlock.timestamp > order.swapExpiration
-  } catch (e) {
-    console.warn(e)
+  return hasChainTimePassed({ getters }, { network, walletId, asset: order.to, timestamp: order.nodeSwapExpiration })
+}
+
+async function handleExpirations ({ getters }, { network, walletId, order }) {
+  if (await canRefund({ getters }, { order, network, walletId })) {
+    return { status: 'GET_REFUND' }
+  }
+  if (await hasSwapExpired({ getters }, { order, network, walletId })) {
+    return { status: 'WAITING_FOR_REFUND' }
   }
 }
 
@@ -116,9 +142,8 @@ async function confirmInitiation ({ getters }, { order, network, walletId }) {
 }
 
 async function findCounterPartyInitiation ({ getters }, { order, network, walletId }) {
-  if (await hasSwapExpired({ getters }, { order, network, walletId })) {
-    return { status: 'GET_REFUND' }
-  }
+  const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
+  if (expirationUpdates) { return expirationUpdates }
 
   const toClient = getters.client(network, walletId, order.to)
 
@@ -141,9 +166,8 @@ async function findCounterPartyInitiation ({ getters }, { order, network, wallet
 }
 
 async function confirmCounterPartyInitiation ({ getters }, { order, network, walletId }) {
-  if (await hasSwapExpired({ getters }, { order, network, walletId })) {
-    return { status: 'GET_REFUND' }
-  }
+  const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
+  if (expirationUpdates) { return expirationUpdates }
 
   const toClient = getters.client(network, walletId, order.to)
 
@@ -157,9 +181,8 @@ async function confirmCounterPartyInitiation ({ getters }, { order, network, wal
 }
 
 async function claimSwap ({ getters }, { order, network, walletId }) {
-  if (await hasSwapExpired({ getters }, { order, network, walletId })) {
-    return { status: 'GET_REFUND' }
-  }
+  const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
+  if (expirationUpdates) { return expirationUpdates }
 
   const toClient = getters.client(network, walletId, order.to)
 
@@ -180,9 +203,8 @@ async function claimSwap ({ getters }, { order, network, walletId }) {
 }
 
 async function waitForClaimConfirmations ({ getters, dispatch }, { order, network, walletId }) {
-  if (await hasSwapExpired({ getters }, { order, network, walletId })) {
-    return { status: 'GET_REFUND' }
-  }
+  const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
+  if (expirationUpdates) { return expirationUpdates }
 
   const toClient = getters.client(network, walletId, order.to)
 
@@ -201,6 +223,12 @@ async function waitForClaimConfirmations ({ getters, dispatch }, { order, networ
         status: 'SUCCESS'
       }
     }
+  }
+}
+
+async function waitForRefund ({ getters }, { order, network, walletId }) {
+  if (await canRefund({ getters }, { order, network, walletId })) {
+    return { status: 'GET_REFUND' }
   }
 }
 
@@ -288,6 +316,10 @@ export const performNextAction = async (store, { network, walletId, id }) => {
 
     case 'WAITING_FOR_CLAIM_CONFIRMATIONS':
       updates = await withInterval(async () => waitForClaimConfirmations(store, { order, network, walletId }))
+      break
+
+    case 'WAITING_FOR_REFUND':
+      updates = await withInterval(async () => waitForRefund(store, { order, network, walletId }))
       break
 
     case 'GET_REFUND':

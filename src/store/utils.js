@@ -7,7 +7,11 @@ export const CHAIN_LOCK = {}
 
 export const emitter = new Vue()
 
-export const waitForRandom = (min, max) => new Promise(resolve => setTimeout(() => resolve(), random(min, max)))
+const wait = (millis) => new Promise(resolve => setTimeout(() => resolve(), millis))
+
+export { wait }
+
+export const waitForRandom = (min, max) => wait(random(min, max))
 
 export const timestamp = () => Math.ceil(Date.now() / 1000)
 

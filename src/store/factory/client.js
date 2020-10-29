@@ -2,6 +2,7 @@ import Client from '@liquality/client'
 
 import BitcoinSwapProvider from '@liquality/bitcoin-swap-provider'
 import BitcoinJsWalletProvider from '@liquality/bitcoin-js-wallet-provider'
+import BitcoinRpcProvider from '@liquality/bitcoin-rpc-provider'
 import BitcoinEsploraBatchApiProvider from '@liquality/bitcoin-esplora-batch-api-provider'
 import BitcoinEsploraSwapFindProvider from '@liquality/bitcoin-esplora-swap-find-provider'
 import BitcoinEarnFeeProvider from '@liquality/bitcoin-earn-fee-provider'
@@ -30,9 +31,22 @@ function createBtcClient (network, mnemonic) {
   const bitcoinNetwork = isTestnet ? BitcoinNetworks.bitcoin_testnet : BitcoinNetworks.bitcoin
   const esploraApi = isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'
   const batchEsploraApi = isTestnet ? 'https://liquality.io/electrs-testnet-batch' : 'https://liquality.io/electrs-batch'
+  const rpcUrl = isTestnet ? 'https://liquality.io/bitcointestnetrpc/' : 'https://liquality.io/bitcoinrpc/'
+  const rpcUser = isTestnet ? 'bitcoin' : 'liquality'
+  const rpcPassword = isTestnet ? 'local321' : 'liquality123'
+
+  /**
+   * Temporary provision to ensure `mediantime` is used for block.timestamp
+   * Esplora API does not provide the `mediantime` and `timestamp` is not suitable for timelocked applications
+   * https://github.com/Blockstream/esplora/issues/269
+   * OP_CLTV checks against `mediantime`
+   */
+  const bitcoinRpcProvider = new BitcoinRpcProvider(rpcUrl, rpcUser, rpcPassword)
+  const bitcoinEsploraProvider = new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, network, 2)
+  bitcoinEsploraProvider.getBlockByHash = (blockHash) => bitcoinRpcProvider.getBlockByHash(blockHash)
 
   const btcClient = new Client()
-  btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, network, 2))
+  btcClient.addProvider(bitcoinEsploraProvider)
   btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic))
   btcClient.addProvider(new BitcoinSwapProvider(bitcoinNetwork))
   btcClient.addProvider(new BitcoinEsploraSwapFindProvider(esploraApi))
