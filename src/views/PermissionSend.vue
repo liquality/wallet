@@ -58,7 +58,6 @@ export default {
   data () {
     return {
       showSendData: false,
-      asset: 'ETH',
       selectedFee: 'average',
       loading: false,
       replied: false
@@ -105,6 +104,9 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'balances', 'fees', 'fiatRates']),
+    asset () {
+      return this.request.asset
+    },
     assetChain () {
       return getChainFromAsset(this.asset)
     },
