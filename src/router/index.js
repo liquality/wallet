@@ -16,6 +16,7 @@ import Swap from '@/views/Swap.vue'
 import ManageAssets from '@/views/ManageAssets'
 
 import Enable from '@/views/Enable.vue'
+import PermissionSend from '@/views/PermissionSend.vue'
 import Permission from '@/views/Permission.vue'
 
 Vue.use(VueRouter)
@@ -93,7 +94,11 @@ const routes = [
     component: Enable
   },
   {
-    path: '/permission',
+    path: '/permission/send',
+    component: PermissionSend
+  },
+  {
+    path: '/permission/default',
     component: Permission
   }
   // Injection

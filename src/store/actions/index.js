@@ -6,13 +6,14 @@ import { checkPendingSwaps } from './checkPendingSwaps'
 import { clientExec } from './clientExec'
 import { getLockForAsset } from './getLockForAsset'
 import { getUnusedAddresses } from './getUnusedAddresses'
-import { injectedProvider } from './injectedProvider'
 import { newSwap } from './newSwap'
 import { performNextAction } from './performNextAction'
 import { proxyMutation } from './proxyMutation'
-import { replyOriginAccess } from './replyOriginAccess'
-import { replyPremission } from './replyPremission'
 import { requestOriginAccess } from './requestOriginAccess'
+import { requestPermission } from './requestPermission'
+import { replyOriginAccess } from './replyOriginAccess'
+import { replyPermission } from './replyPermission'
+import { executeRequest } from './executeRequest'
 import { retrySwap } from './retrySwap'
 import { sendTransaction } from './sendTransaction'
 import { updateTransactionFee } from './updateTransactionFee'
@@ -37,13 +38,14 @@ export {
   clientExec,
   getLockForAsset,
   getUnusedAddresses,
-  injectedProvider,
   newSwap,
   performNextAction,
   proxyMutation,
-  replyOriginAccess,
-  replyPremission,
   requestOriginAccess,
+  requestPermission,
+  replyOriginAccess,
+  replyPermission,
+  executeRequest,
   retrySwap,
   sendTransaction,
   updateTransactionFee,

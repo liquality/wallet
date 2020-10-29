@@ -35,9 +35,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyPremission']),
+    ...mapActions(['replyPermission']),
     reply (allowed) {
-      this.replyPremission({
+      this.replyPermission({
         id: this.$route.query.id,
         allowed
       })

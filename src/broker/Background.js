@@ -148,7 +148,7 @@ class Background {
           return
         }
 
-        this.storeProxy(id, connection, 'injectedProvider', { origin, data })
+        this.storeProxy(id, connection, 'requestPermission', { origin, data })
         break
     }
   }
