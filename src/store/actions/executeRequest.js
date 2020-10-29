@@ -2,7 +2,7 @@ export const executeRequest = async ({ getters, dispatch }, { request }) => {
   // Send transactions through wallet managed action
   if (request.method === 'chain.sendTransaction') {
     return dispatch('sendTransaction', {
-      network: request.netwrok,
+      network: request.network,
       walletId: request.walletId,
       asset: request.asset,
       to: request.args[0],
