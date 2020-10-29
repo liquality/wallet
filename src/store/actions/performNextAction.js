@@ -142,9 +142,6 @@ async function confirmInitiation ({ getters }, { order, network, walletId }) {
 }
 
 async function findCounterPartyInitiation ({ getters }, { order, network, walletId }) {
-  const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
-  if (expirationUpdates) { return expirationUpdates }
-
   const toClient = getters.client(network, walletId, order.to)
 
   const tx = await toClient.swap.findInitiateSwapTransaction(
@@ -163,12 +160,13 @@ async function findCounterPartyInitiation ({ getters }, { order, network, wallet
       }
     }
   }
+
+  // Expiration check should only happen if tx not found
+  const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
+  if (expirationUpdates) { return expirationUpdates }
 }
 
 async function confirmCounterPartyInitiation ({ getters }, { order, network, walletId }) {
-  const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
-  if (expirationUpdates) { return expirationUpdates }
-
   const toClient = getters.client(network, walletId, order.to)
 
   const tx = await toClient.chain.getTransactionByHash(order.toFundHash)
@@ -178,6 +176,10 @@ async function confirmCounterPartyInitiation ({ getters }, { order, network, wal
       status: 'READY_TO_CLAIM'
     }
   }
+
+  // Expiration check should only happen if tx not found
+  const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
+  if (expirationUpdates) { return expirationUpdates }
 }
 
 async function claimSwap ({ getters }, { order, network, walletId }) {
@@ -203,9 +205,6 @@ async function claimSwap ({ getters }, { order, network, walletId }) {
 }
 
 async function waitForClaimConfirmations ({ getters, dispatch }, { order, network, walletId }) {
-  const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
-  if (expirationUpdates) { return expirationUpdates }
-
   const toClient = getters.client(network, walletId, order.to)
 
   const tx = await toClient.chain.getTransactionByHash(order.toClaimHash)
@@ -224,6 +223,10 @@ async function waitForClaimConfirmations ({ getters, dispatch }, { order, networ
       }
     }
   }
+
+  // Expiration check should only happen if tx not found
+  const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
+  if (expirationUpdates) { return expirationUpdates }
 }
 
 async function waitForRefund ({ getters }, { order, network, walletId }) {
