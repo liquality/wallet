@@ -14,6 +14,7 @@ import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap.vue'
 
 import ManageAssets from '@/views/ManageAssets'
+import CustomToken from '@/views/CustomToken'
 
 import Enable from '@/views/Enable.vue'
 import PermissionSend from '@/views/PermissionSend.vue'
@@ -51,6 +52,10 @@ const routes = [
   {
     path: '/settings/manage-assets',
     component: ManageAssets
+  },
+  {
+    path: '/settings/manage-assets/custom-token',
+    component: CustomToken
   },
   // Settings
 

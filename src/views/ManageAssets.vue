@@ -6,6 +6,7 @@
     <div class="manage-assets_search form wrapper">
       <div class="input-group">
         <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" placeholder="Search for an Asset" />
+        <router-link to="/settings/manage-assets/custom-token">Custom Token</router-link>
       </div>
     </div>
     <div class="manage-assets_list">
@@ -100,6 +101,9 @@ export default {
 
   &_search {
     border-bottom: 1px solid $hr-border-color;
+    input {
+      margin-right: 8px;
+    }
 
     .input-group {
       align-items: center;
