@@ -2,10 +2,10 @@ import { createNotification } from '../../broker/notification'
 import { prettyBalance } from '../../utils/coinFormatter'
 import { getAssetIcon } from '../../utils/asset'
 
-export const sendTransaction = async ({ commit, getters }, { network, walletId, asset, amount, to, fee }) => {
+export const sendTransaction = async ({ commit, getters }, { network, walletId, asset, to, amount, data, fee }) => {
   const client = getters.client(network, walletId, asset)
 
-  const txHash = await client.chain.sendTransaction(to, amount, undefined, fee)
+  const tx = await client.chain.sendTransaction(to, amount, data, fee)
 
   const transaction = {
     type: 'SEND',
@@ -18,7 +18,8 @@ export const sendTransaction = async ({ commit, getters }, { network, walletId, 
 
     amount,
     fee,
-    txHash,
+    tx,
+    txHash: tx.hash,
 
     startTime: Date.now(),
     status: 'SUCCESS'
@@ -36,5 +37,5 @@ export const sendTransaction = async ({ commit, getters }, { network, walletId, 
     iconUrl: getAssetIcon(asset)
   })
 
-  return txHash
+  return tx
 }

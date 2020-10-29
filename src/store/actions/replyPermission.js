@@ -1,6 +1,6 @@
 import { emitter } from '../utils'
 
-export const replyPermission = async ({ getters, dispatch }, { request, allowed }) => {
+export const replyPermission = async ({ dispatch }, { request, allowed }) => {
   const response = { allowed }
   if (allowed) {
     try {

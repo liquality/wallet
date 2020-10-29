@@ -3,6 +3,12 @@
 @import "bootstrap";
 @import "tooltip";
 
+body {
+  height: 600px;
+  width: 360px;
+  overflow: hidden;
+}
+
 a {
   cursor: pointer;
 }

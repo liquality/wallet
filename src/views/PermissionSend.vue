@@ -1,5 +1,5 @@
 <template>
-  <div class="permission-eth-send wrapper form text-center">
+  <div class="permission-send wrapper form text-center">
     <div class="wrapper_top form">
       <div class="form-group">
         <label>Send</label>
@@ -12,11 +12,14 @@
       </div>
       <div class="form-group">
         <label>Network Speed / Fee</label>
-        <div class="permission-eth-send_fees">
+        <div class="permission-send_fees">
           <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
         </div>
       </div>
-      {{ sendData }}
+      <div v-if="sendData" class="permission-send_data">
+        <label @click="toggleShowSendData"><ChevronDown v-if="showSendData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
+        <div class="permission-send_data_code" v-if="showSendData">{{sendData}}</div>
+      </div>
     </div>
 
     <div class="wrapper_bottom">
@@ -39,15 +42,22 @@ import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getAssetColorStyle, getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
+import Warning from '@/components/Warning'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import ChevronDown from '@/assets/icons/chevron_down.svg'
+import ChevronRight from '@/assets/icons/chevron_right.svg'
 
 export default {
   components: {
+    Warning,
     SpinnerIcon,
+    ChevronDown,
+    ChevronRight,
     FeeSelector
   },
   data () {
     return {
+      showSendData: false,
       asset: 'ETH',
       selectedFee: 'average',
       loading: false,
@@ -61,15 +71,36 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
-    reply (allowed) {
-      this.replyPermission({
-        request: this.request,
-        allowed
-      })
+    toggleShowSendData () {
+      this.showSendData = !this.showSendData
+    },
+    async reply (allowed) {
+      const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
 
-      this.replied = true
+      // TODO: does not account for request having fee parameter. Make fee static in that case?
+      if (![2, 3].includes(this.request.args.length)) throw new Error('Send request must contain 2 or 3 arguments.')
 
-      window.close()
+      const requestWithFee = {
+        ...this.request,
+        args: [
+          ...this.request.args,
+          ...(this.request.args.length === 2 ? [undefined, fee] : [fee])
+        ]
+      }
+
+      this.loading = true
+
+      try {
+        await this.replyPermission({
+          request: requestWithFee,
+          allowed,
+          fee
+        })
+        this.replied = true
+        window.close()
+      } finally {
+        this.loading = false
+      }
     }
   },
   computed: {
@@ -103,6 +134,7 @@ export default {
     this.updateFees({ asset: this.asset })
   },
   beforeDestroy () {
+    // TODO: need to reply correctly when window is closed
     if (this.replied) return
 
     this.reply(false)
@@ -111,10 +143,41 @@ export default {
 </script>
 
 <style lang="scss">
-.permission-eth-send {
+.permission-send {
   &_fees {
     text-align: center;
     margin: 6px 0;
+  }
+
+  &_data {
+    border-top: 1px solid $hr-border-color;
+    border-bottom: 1px solid $hr-border-color;
+    padding: 10px 0;
+
+    &_icon-right {
+      width: 6px;
+      margin-right: 12px;
+    }
+
+    &_icon-down {
+      width: 12px;
+      margin-right: 6px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      text-align: left;
+    }
+
+    &_code {
+      margin-left: 18px;
+      max-height: 120px;
+      text-align: left;
+      overflow-y: auto;
+      word-wrap: break-word;
+      font-size: $font-size-sm;
+    }
   }
 }
 </style>

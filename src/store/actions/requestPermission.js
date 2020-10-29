@@ -74,10 +74,7 @@ export const requestPermission = async ({ state, dispatch }, { origin, data }) =
       })
 
       let permissionRoute = '/permission/default'
-      if (asset === 'ETH') {
-        if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
-        if (method === 'wallet.signMessage') permissionRoute = '/permission/eth/sign'
-      }
+      if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
 
       createPopup(`${permissionRoute}?${query}`)
     })
