@@ -4,7 +4,7 @@ export default {
     testnet: ['BTC', 'ETH', 'DAI']
   },
   agentEndpoints: {
-    testnet: ['http://localhost:3030'],
+    testnet: ['https://liquality.io/swap-testnet/agent'],
     mainnet: ['https://liquality.io/swap/agent']
   }
 }
