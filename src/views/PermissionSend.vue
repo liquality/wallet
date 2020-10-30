@@ -8,7 +8,7 @@
       </div>
       <div class="form-group">
         <label>To</label>
-        <p class="confirm-value">{{shortenAddress(this.address)}}</p>
+        <p class="confirm-value">{{shortAddress}}</p>
       </div>
       <div class="form-group">
         <label>Network Speed / Fee</label>
@@ -68,7 +68,6 @@ export default {
     prettyBalance,
     prettyFiatBalance,
     getAssetColorStyle,
-    shortenAddress,
     toggleshowData () {
       this.showData = !this.showData
     },
@@ -91,8 +90,7 @@ export default {
       try {
         await this.replyPermission({
           request: requestWithFee,
-          allowed,
-          fee
+          allowed
         })
         this.replied = true
         window.close()
@@ -111,6 +109,9 @@ export default {
     },
     address () {
       return this.request.args[0]
+    },
+    shortAddress () {
+      return this.address ? shortenAddress(this.address) : 'New Contract'
     },
     amount () {
       return cryptoassets[this.asset].unitToCurrency(this.request.args[1]).toNumber()

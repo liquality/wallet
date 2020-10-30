@@ -18,6 +18,7 @@ import CustomToken from '@/views/CustomToken'
 
 import Enable from '@/views/Enable.vue'
 import PermissionSend from '@/views/PermissionSend.vue'
+import PermissionSign from '@/views/PermissionSign.vue'
 import Permission from '@/views/Permission.vue'
 
 Vue.use(VueRouter)
@@ -101,6 +102,10 @@ const routes = [
   {
     path: '/permission/send',
     component: PermissionSend
+  },
+  {
+    path: '/permission/sign',
+    component: PermissionSign
   },
   {
     path: '/permission/default',

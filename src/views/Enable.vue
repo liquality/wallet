@@ -1,20 +1,26 @@
 <template>
   <div>
     <div class="popup-logo">
-      <LogoWallet />
+      <img :src="logo"/>
     </div>
-    <div class="enable-screen">
-      <h1 class="h5 text-center mb-4">Request</h1>
+    <div class="enable-screen wrapper text-center">
+      <h2>Connect Request</h2>
 
-      <h1 class="h5 text-center text-primary">{{origin}}</h1>
-      <h2 class="h5 text-center mb-4">would like to connect to your wallet</h2>
+      <div class="enable-screen_icon mt-4">{{originShort}}</div>
+      <p class="mt-1 mb-4">{{originDomain}}</p>
+
+      <p class="mb-4">By granting permission to <strong>{{origin}}</strong>, they can read your public account addresses.</p>
 
       <p class="text-primary text-center">Make sure you trust this site</p>
 
       <div class="wrapper_bottom">
+        <Warning />
         <div class="button-group">
           <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Deny</button>
-          <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)">Allow</button>
+          <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)" :disabled="loading">
+            <SpinnerIcon class="btn-loading" v-if="loading" />
+            <template v-else>Connect</template>
+          </button>
         </div>
       </div>
     </div>
@@ -24,7 +30,7 @@
 <script>
 import { mapActions } from 'vuex'
 
-import LogoWallet from '@/assets/icons/logo_wallet.svg'
+import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 
 export default {
   data () {
@@ -32,12 +38,21 @@ export default {
       replied: false
     }
   },
-  components: {
-    LogoWallet
-  },
   computed: {
+    logo () {
+      return LogoWallet
+    },
     origin () {
       return this.$route.query.origin
+    },
+    originShort () {
+      return this.originDomain[0].toUpperCase()
+    },
+    originDomain () {
+      return (new URL(this.origin)).hostname
+    },
+    originIcon () {
+      return `https://s2.googleusercontent.com/s2/favicons?domain_url=${this.origin}`
     }
   },
   methods: {
@@ -62,25 +77,16 @@ export default {
 </script>
 
 <style lang="scss">
-.popup-logo {
-  padding: 40px 20px;
-  background: #302E78;
-  text-align: center;
-
-  svg {
-    height: 75px;
-  }
-}
-
 .enable-screen {
-  padding: 20px;
-}
-
-.wrapper_bottom {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  padding: 20px;
+  &_icon {
+    font-size: 40px;
+    line-height: 74px;
+    margin: 0 auto;
+    color: white;
+    width: 74px;
+    height: 74px;
+    background: #b6b6b6;
+    border-radius: 50%;
+  }
 }
 </style>

@@ -75,6 +75,7 @@ export const requestPermission = async ({ state, dispatch }, { origin, data }) =
 
       let permissionRoute = '/permission/default'
       if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
+      if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
 
       createPopup(`${permissionRoute}?${query}`)
     })
