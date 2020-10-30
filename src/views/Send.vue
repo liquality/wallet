@@ -10,23 +10,23 @@
             <label for="amount">
               Send
               <span class="label-sub"><span class="text-muted">Available</span> {{available}} {{asset}}</span>
-              <span class="label-append">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</span>
+              <span class="label-append">${{prettyFiatBalance(amount, fiatRates[asset])}}</span>
             </label>
             <div class="input-group send_asset">
               <img :src="getAssetIcon(asset)" class="asset-icon send_asset_icon" />
               <div class="input-group-append">
                 <span class="input-group-text">{{asset}}</span>
               </div>
-              <input type="text" :class="{ 'is-invalid': sendAmount && amountError }" :style="getAssetColorStyle(asset)" v-model="sendAmount" class="form-control" id="amount" placeholder="0.00" autocomplete="off" required>
+              <input type="text" :class="{ 'is-invalid': amount && amountError }" :style="getAssetColorStyle(asset)" v-model="amount" class="form-control" id="amount" placeholder="0.00" autocomplete="off" required>
             </div>
-            <small v-if="sendAmount && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
+            <small v-if="amount && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
           </div>
           <div class="form-group">
             <label for="address">Send to</label>
             <div class="input-group">
-              <input type="text" :class="{ 'is-invalid': sendAddress && addressError }" v-model="sendAddress" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
+              <input type="text" :class="{ 'is-invalid': address && addressError }" v-model="address" class="form-control form-control-sm" id="address" placeholder="Address" autocomplete="off" required>
             </div>
-            <small v-if="sendAddress && addressError" class="text-danger form-text text-right">{{ addressError }}</small>
+            <small v-if="address && addressError" class="text-danger form-text text-right">{{ addressError }}</small>
           </div>
         </div>
 
@@ -49,12 +49,12 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <label>Send</label>
-          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{sendAmount}} {{asset}}</p>
-          <p class="text-muted">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</p>
+          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asset}}</p>
+          <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
         </div>
         <div class="form-group">
           <label>To</label>
-          <p class="confirm-value">{{shortenAddress(this.sendAddress)}}</p>
+          <p class="confirm-value">{{shortenAddress(this.address)}}</p>
         </div>
         <div class="form-group">
           <label>Network Fees</label>
@@ -103,8 +103,8 @@ export default {
   },
   data () {
     return {
-      sendAmount: 0,
-      sendAddress: null,
+      amount: 0,
+      address: null,
       selectedFee: 'average',
       showConfirm: false,
       loading: false
@@ -125,22 +125,22 @@ export default {
       return this.assetFees && Object.keys(this.assetFees).length
     },
     isValidAddress () {
-      return cryptoassets[this.asset].isValidAddress(this.sendAddress)
+      return cryptoassets[this.asset].isValidAddress(this.address)
     },
     addressError () {
       if (!this.isValidAddress) return 'Wrong format. Please check the address.'
       return null
     },
     amountError () {
-      const sendAmount = BN(this.sendAmount)
-      if (sendAmount.gt(this.available)) return 'Amount exceeds available balance.'
+      const amount = BN(this.amount)
+      if (amount.gt(this.available)) return 'Amount exceeds available balance.'
       return null
     },
     canSend () {
-      const sendAmount = BN(this.sendAmount)
+      const amount = BN(this.amount)
 
-      if (!this.sendAddress || this.addressError) return false
-      if (sendAmount.lte(0) || this.amountError) return false
+      if (!this.address || this.addressError) return false
+      if (amount.lte(0) || this.amountError) return false
 
       return true
     },
@@ -169,7 +169,7 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async send () {
-      const amount = cryptoassets[this.asset].currencyToUnit(this.sendAmount).toNumber()
+      const amount = cryptoassets[this.asset].currencyToUnit(this.amount).toNumber()
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
 
       this.loading = true
@@ -177,7 +177,7 @@ export default {
         network: this.activeNetwork,
         walletId: this.activeWalletId,
         asset: this.asset,
-        to: this.sendAddress,
+        to: this.address,
         amount,
         fee
       })

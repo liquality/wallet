@@ -3,12 +3,12 @@
     <div class="wrapper_top form">
       <div class="form-group">
         <label>Send</label>
-        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{sendAmount}} {{asset}}</p>
-        <p class="text-muted">${{prettyFiatBalance(sendAmount, fiatRates[asset])}}</p>
+        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asset}}</p>
+        <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
       </div>
       <div class="form-group">
         <label>To</label>
-        <p class="confirm-value">{{shortenAddress(this.sendAddress)}}</p>
+        <p class="confirm-value">{{shortenAddress(this.address)}}</p>
       </div>
       <div class="form-group">
         <label>Network Speed / Fee</label>
@@ -16,9 +16,9 @@
           <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" />
         </div>
       </div>
-      <div v-if="sendData" class="permission-send_data">
-        <label @click="toggleShowSendData"><ChevronDown v-if="showSendData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
-        <div class="permission-send_data_code" v-if="showSendData">{{sendData}}</div>
+      <div v-if="data" class="permission-send_data">
+        <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
+        <div class="permission-send_data_code" v-if="showData">{{data}}</div>
       </div>
     </div>
 
@@ -40,7 +40,7 @@ import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
-import { getChainFromAsset, getAssetColorStyle, getAssetIcon } from '@/utils/asset'
+import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import Warning from '@/components/Warning'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -57,21 +57,20 @@ export default {
   },
   data () {
     return {
-      showSendData: false,
+      showData: false,
       selectedFee: 'average',
       loading: false,
       replied: false
     }
   },
   methods: {
-    ...mapActions(['replyPermission', 'updateFees', 'sendTransaction']),
+    ...mapActions(['replyPermission', 'updateFees']),
     prettyBalance,
     prettyFiatBalance,
-    getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
-    toggleShowSendData () {
-      this.showSendData = !this.showSendData
+    toggleshowData () {
+      this.showData = !this.showData
     },
     async reply (allowed) {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
@@ -103,20 +102,20 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'balances', 'fees', 'fiatRates']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
     asset () {
       return this.request.asset
     },
     assetChain () {
       return getChainFromAsset(this.asset)
     },
-    sendAddress () {
+    address () {
       return this.request.args[0]
     },
-    sendAmount () {
+    amount () {
       return cryptoassets[this.asset].unitToCurrency(this.request.args[1]).toNumber()
     },
-    sendData () {
+    data () {
       return this.request.args[2]
     },
     assetFees () {
