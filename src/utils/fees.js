@@ -20,13 +20,13 @@ const FEE_UNITS = {
   },
   ETH: {
     [TX_TYPES.SEND]: 21000,
-    [TX_TYPES.SWAP_INITIATION]: 80000,
-    [TX_TYPES.SWAP_CLAIM]: 14000
+    [TX_TYPES.SWAP_INITIATION]: 120000,
+    [TX_TYPES.SWAP_CLAIM]: 21000
   },
   ERC20: {
-    [TX_TYPES.SEND]: 60000,
-    [TX_TYPES.SWAP_INITIATION]: 374000 + 63000, // Contract creation + erc20 transfer
-    [TX_TYPES.SWAP_CLAIM]: 60000
+    [TX_TYPES.SEND]: 90000,
+    [TX_TYPES.SWAP_INITIATION]: 561000 + 94500, // Contract creation + erc20 transfer
+    [TX_TYPES.SWAP_CLAIM]: 90000
   }
 }
 
