@@ -114,6 +114,7 @@ export default {
       return this.address ? shortenAddress(this.address) : 'New Contract'
     },
     amount () {
+      if (!this.request.args[1]) return 0
       return cryptoassets[this.asset].unitToCurrency(this.request.args[1]).toNumber()
     },
     data () {
