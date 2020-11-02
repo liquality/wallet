@@ -13,6 +13,7 @@ import Send from '@/views/Send.vue'
 import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap.vue'
 
+import Settings from '@/views/Settings'
 import ManageAssets from '@/views/ManageAssets'
 import CustomToken from '@/views/CustomToken'
 
@@ -50,6 +51,10 @@ const routes = [
   // Onboarding
 
   // Settings
+  {
+    path: '/settings',
+    component: Settings
+  },
   {
     path: '/settings/manage-assets',
     component: ManageAssets

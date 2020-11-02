@@ -26,6 +26,7 @@ import { updateFees } from './updateFees'
 import { updateFiatRates } from './updateFiatRates'
 import { updateMarketData } from './updateMarketData'
 import { enableEthereumInjection } from './enableEthereumInjection'
+import { disableEthereumInjection } from './disableEthereumInjection'
 import { enableAssets } from './enableAssets'
 import { disableAssets } from './disableAssets'
 
@@ -58,6 +59,7 @@ export {
   updateFiatRates,
   updateMarketData,
   enableEthereumInjection,
+  disableEthereumInjection,
   enableAssets,
   disableAssets
 }

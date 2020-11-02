@@ -79,8 +79,11 @@ export default {
   UPDATE_MARKET_DATA (state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
   },
-  ENABLE_ETHEREUM_INJECTION (state, { enable }) {
-    state.injectEthereum = enable
+  ENABLE_ETHEREUM_INJECTION (state) {
+    state.injectEthereum = true
+  },
+  DISABLE_ETHEREUM_INJECTION (state) {
+    state.injectEthereum = false
   },
   ENABLE_ASSETS (state, { network, walletId, assets }) {
     ensureNetworkWalletTree(state.enabledAssets, network, walletId, [])

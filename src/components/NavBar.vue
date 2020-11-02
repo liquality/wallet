@@ -10,6 +10,7 @@
       <div class="navbar_menu" v-if="showMenu" @click.stop="showMenuList = !showMenuList"><HamburgerIcon class="navbar_menu_icon" /></div>
       <ul class="menu_list navbar_menu_list" v-if="showMenuList" v-click-away="hideMenu">
         <li @click="assets"><AssetsIcon />Manage Assets</li>
+        <li @click="settings"><SettingsIcon />Settings</li>
         <li @click="backup"><PaperIcon /> Backup Seed</li>
         <li @click="lock"><LockIcon class="lock_icon"/> Lock</li>
       </ul>
@@ -25,6 +26,7 @@ import HamburgerIcon from '@/assets/icons/hamburger.svg'
 import LockIcon from '@/assets/icons/lock.svg'
 import PaperIcon from '@/assets/icons/paper.svg'
 import ChevronLeftIcon from '@/assets/icons/chevron_left.svg'
+import SettingsIcon from '@/assets/icons/settings.svg'
 import AssetsIcon from '@/assets/icons/assets.svg'
 
 export default {
@@ -36,7 +38,8 @@ export default {
     HamburgerIcon,
     LockIcon,
     PaperIcon,
-    AssetsIcon
+    AssetsIcon,
+    SettingsIcon
   },
   props: ['showMenu', 'showBack', 'backPath', 'backLabel'],
   data () {
@@ -58,6 +61,10 @@ export default {
     assets () {
       this.showMenuList = false
       this.$router.replace('/settings/manage-assets')
+    },
+    settings () {
+      this.showMenuList = false
+      this.$router.replace('/settings')
     },
     hideMenu () {
       this.showMenuList = false
