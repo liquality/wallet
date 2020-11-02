@@ -36,7 +36,13 @@ import Warning from '@/components/Warning'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 
+function isHex (str) {
+  return Boolean(str.match(/^[0-9a-f]+$/i))
+}
+
 function hexToAscii (hex) {
+  if (!isHex(hex)) return hex
+
   let str = ''
   for (let i = 0; i < hex.length; i += 2) {
     var code = parseInt(hex.substr(i, 2), 16)
