@@ -16,7 +16,7 @@ const CONFIRM_REQUIRED = [
   /^swap.refundSwap$/,
 
   // Bitcoin
-  /^signP2SHTransaction$/
+  /^signPSBT$/
 ]
 
 const ALLOWED = [
