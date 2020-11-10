@@ -232,7 +232,7 @@ import moment from '@/utils/moment'
 import cryptoassets from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
-import { ORDER_STATUS_STEP_MAP, getOrderStatusLabel } from '@/utils/order'
+import { getStep, getStatusLabel } from '@/utils/history'
 import { getChainFromAsset, getExplorerLink } from '@/utils/asset'
 
 import NavBar from '@/components/NavBar.vue'
@@ -285,7 +285,7 @@ export default {
         .find((item) => item.id === this.id)
     },
     status () {
-      return getOrderStatusLabel(this.item)
+      return getStatusLabel(this.item)
     },
     reverseRate () {
       return BN(1).div(this.item.rate).dp(8)
@@ -390,8 +390,8 @@ export default {
       ]
 
       for (let i = 0; i < steps.length; i++) {
-        const completed = ORDER_STATUS_STEP_MAP[this.item.status] > i
-        const pending = ORDER_STATUS_STEP_MAP[this.item.status] === i
+        const completed = getStep(this.item) > i
+        const pending = getStep(this.item) === i
         const step = await steps[i](completed, pending)
         timeline.push(step)
       }

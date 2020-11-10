@@ -2,7 +2,7 @@ import { changeActiveWalletId } from './changeActiveWalletId'
 import { changeActiveNetwork } from './changeActiveNetwork'
 import { changePassword } from './changePassword'
 import { checkIfQuoteExpired } from './checkIfQuoteExpired'
-import { checkPendingSwaps } from './checkPendingSwaps'
+import { checkPendingActions } from './checkPendingActions'
 import { clientExec } from './clientExec'
 import { getLockForAsset } from './getLockForAsset'
 import { getUnusedAddresses } from './getUnusedAddresses'
@@ -35,7 +35,7 @@ export {
   changeActiveNetwork,
   changePassword,
   checkIfQuoteExpired,
-  checkPendingSwaps,
+  checkPendingActions,
   clientExec,
   getLockForAsset,
   getUnusedAddresses,

@@ -20,4 +20,6 @@ export const newSwap = async ({ dispatch, commit }, { network, walletId, agent, 
   commit('NEW_ORDER', { network, walletId, order })
 
   dispatch('performNextAction', { network, walletId, id: order.id })
+
+  return order
 }

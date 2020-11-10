@@ -1,4 +1,4 @@
-export const ORDER_STATUS_STEP_MAP = {
+export const SWAP_STATUS_STEP_MAP = {
   QUOTE: 0,
   SECRET_READY: 0,
   INITIATED: 0,
@@ -15,7 +15,7 @@ export const ORDER_STATUS_STEP_MAP = {
   READY_TO_SEND: 3
 }
 
-export const ORDER_STATUS_LABEL_MAP = {
+export const SWAP_STATUS_LABEL_MAP = {
   QUOTE: 'Locking {from}',
   SECRET_READY: 'Locking {from}',
   INITIATED: 'Locking {from}',
@@ -32,6 +32,30 @@ export const ORDER_STATUS_LABEL_MAP = {
   READY_TO_SEND: 'Sending'
 }
 
-export function getOrderStatusLabel (item) {
-  return ORDER_STATUS_LABEL_MAP[item.status].replace('{from}', item.from).replace('{to}', item.to)
+export const SEND_STATUS_STEP_MAP = {
+  WAITING_FOR_CONFIRMATIONS: 0,
+  SUCCESS: 1
+}
+
+export const SEND_STATUS_LABEL_MAP = {
+  WAITING_FOR_CONFIRMATIONS: 'Pending',
+  SUCCESS: 'Completed'
+}
+
+export function getStatusLabel (item) {
+  if (item.type === 'SEND') {
+    return SEND_STATUS_LABEL_MAP[item.status]
+  }
+  if (item.type === 'SWAP') {
+    return SWAP_STATUS_LABEL_MAP[item.status].replace('{from}', item.from).replace('{to}', item.to)
+  }
+}
+
+export function getStep (item) {
+  if (item.type === 'SEND') {
+    return SEND_STATUS_STEP_MAP[item.status]
+  }
+  if (item.type === 'SWAP') {
+    return SWAP_STATUS_STEP_MAP[item.status]
+  }
 }

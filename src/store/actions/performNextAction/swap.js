@@ -1,52 +1,6 @@
-import { random } from 'lodash-es'
 import { sha256 } from '@liquality/crypto'
-import { updateOrder, unlockAsset, wait } from '../utils'
-import { createSwapNotification } from '../../broker/notification'
-
-async function withLock ({ dispatch }, { order, network, walletId, asset }, func) {
-  const lock = await dispatch('getLockForAsset', { order, network, walletId, asset })
-  try {
-    return await func()
-  } catch (e) {
-    return { error: e.toString() }
-  } finally {
-    unlockAsset(lock)
-  }
-}
-
-async function withInterval (func) {
-  const updates = await func()
-  if (updates) { return updates }
-  return new Promise((resolve, reject) => {
-    const interval = setInterval(async () => {
-      const updates = await func()
-      if (updates) {
-        clearInterval(interval)
-        resolve(updates)
-      }
-    }, random(15000, 30000))
-  })
-}
-
-async function hasChainTimePassed ({ getters }, { network, walletId, asset, timestamp }) {
-  const client = getters.client(network, walletId, asset)
-  const maxTries = 3
-  let tries = 0
-  while (tries < maxTries) {
-    try {
-      const blockNumber = await client.chain.getBlockHeight()
-      const latestBlock = await client.chain.getBlockByNumber(blockNumber)
-      return latestBlock.timestamp > timestamp
-    } catch (e) {
-      tries++
-      if (tries >= maxTries) throw e
-      else {
-        console.warn(e)
-        await wait(2000)
-      }
-    }
-  }
-}
+import { withLock, withInterval, hasChainTimePassed } from './utils'
+import { updateOrder } from '../../utils'
 
 async function canRefund ({ getters }, { network, walletId, order }) {
   return hasChainTimePassed({ getters }, { network, walletId, asset: order.from, timestamp: order.swapExpiration })
@@ -278,12 +232,7 @@ async function sendTo ({ getters, dispatch }, { order, network, walletId }) {
   }
 }
 
-export const performNextAction = async (store, { network, walletId, id }) => {
-  const { dispatch, commit, getters } = store
-  const order = getters.historyItemById(network, walletId, id)
-  if (!order) return
-  if (!order.status) return
-
+export const performNextSwapAction = async (store, { network, walletId, order }) => {
   let updates
 
   switch (order.status) {
@@ -340,21 +289,5 @@ export const performNextAction = async (store, { network, walletId, id }) => {
       break
   }
 
-  if (updates) {
-    commit('UPDATE_HISTORY', {
-      network,
-      walletId,
-      id,
-      updates
-    })
-
-    createSwapNotification({
-      ...order,
-      ...updates
-    })
-
-    if (!updates.error) {
-      dispatch('performNextAction', { network, walletId, id })
-    }
-  }
+  return updates
 }

@@ -16,7 +16,7 @@ store.subscribe(({ type, payload }, state) => {
       store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateFiatRates')
       store.dispatch('updateMarketData', { network: state.activeNetwork })
-      store.dispatch('checkPendingSwaps', { walletId: state.activeWalletId })
+      store.dispatch('checkPendingActions', { walletId: state.activeWalletId })
 
       if (!balanceInterval) {
         balanceInterval = setInterval(() => {

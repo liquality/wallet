@@ -5,16 +5,15 @@ const COMPLETED_STATES = [
   'REFUNDED'
 ] // TODO: Pull this out so it's being used everywhere else (Transaction icons etc.)
 
-export const checkPendingSwaps = async ({ state, dispatch }, { walletId }) => {
+export const checkPendingActions = async ({ state, dispatch }, { walletId }) => {
   Networks.forEach(network => {
     const history = state.history[network]?.[walletId]
     if (!history) return
-    history.forEach(order => {
-      if (order.type !== 'SWAP') return
-      if (order.error) return
+    history.forEach(item => {
+      if (item.error) return
 
-      if (!COMPLETED_STATES.includes(order.status)) {
-        dispatch('performNextAction', { network, walletId, id: order.id })
+      if (!COMPLETED_STATES.includes(item.status)) {
+        dispatch('performNextAction', { network, walletId, id: item.id })
       }
     })
   })
