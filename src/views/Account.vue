@@ -36,7 +36,7 @@
         </div>
       </div>
       <div class="account_transactions">
-        <router-link :to="item.type === 'SWAP' ? `/tx/${item.id}` : ''" v-for="(item) in assetHistory" :key="item.id">
+        <router-link :to="getDetailsLink(item)" v-for="(item) in assetHistory" :key="item.id">
           <Transaction
             v-bind:asset="item.from"
             v-bind:amount="getTransactionAmount(item)"
@@ -155,6 +155,12 @@ export default {
     },
     getTransactionAmount (item) {
       return item.type === 'SWAP' ? item.fromAmount : item.amount
+    },
+    getDetailsLink (item) {
+      return {
+        SEND: `/transaction/${item.id}`,
+        SWAP: `/swap/${item.id}`
+      }[item.type]
     }
   },
   async created () {

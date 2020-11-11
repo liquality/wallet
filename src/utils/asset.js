@@ -2,12 +2,24 @@ import cryptoassets from '@liquality/cryptoassets'
 
 const EXPLORERS = {
   ETH: {
-    testnet: 'https://rinkeby.etherscan.io/tx/0x',
-    mainnet: 'https://etherscan.io/tx/0x'
+    testnet: {
+      tx: 'https://rinkeby.etherscan.io/tx/0x',
+      address: 'https://rinkeby.etherscan.io/address/'
+    },
+    mainnet: {
+      tx: 'https://etherscan.io/tx/0x',
+      address: 'https://etherscan.io/address/'
+    }
   },
   BTC: {
-    testnet: 'https://blockstream.info/testnet/tx/',
-    mainnet: 'https://blockstream.info/tx/'
+    testnet: {
+      tx: 'https://blockstream.info/testnet/tx/',
+      address: 'https://blockstream.info/testnet/address/'
+    },
+    mainnet: {
+      tx: 'https://blockstream.info/tx/',
+      address: 'https://blockstream.info/address/'
+    }
   }
 }
 
@@ -30,9 +42,14 @@ export const getAssetColorStyle = asset => {
   if (assetData.color) return { color: assetData.color }
 }
 
-export const getExplorerLink = (hash, asset, network) => {
+export const getTransactionExplorerLink = (hash, asset, network) => {
   const chain = getChainFromAsset(asset)
-  return `${EXPLORERS[chain][network]}${hash}`
+  return `${EXPLORERS[chain][network].tx}${hash}`
+}
+
+export const getAddressExplorerLink = (address, asset, network) => {
+  const chain = getChainFromAsset(asset)
+  return `${EXPLORERS[chain][network].address}${address}`
 }
 
 export const getAssetIcon = (asset) => {
