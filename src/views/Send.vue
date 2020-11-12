@@ -35,7 +35,7 @@
             <label>Network Speed/Fee</label>
             <div class="send_fees">
               {{ assetChain }}
-              <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" v-bind:txTypes="[txType]" />
+              <FeeSelector :asset="assetChain" v-model="selectedFee" v-bind:fees="assetFees" v-bind:txTypes="[txType]" />
             </div>
           </div>
           <div class="button-group">
@@ -60,8 +60,8 @@
           <label>Network Fees</label>
           <template v-if="totalFee">~ {{ totalFee }}</template>
           <template v-else>Unknown</template>&nbsp;
-          <span class="text-muted">{{ asset }}</span>&nbsp;
-          <span v-if="fee">(${{prettyFiatBalance(totalFee, fiatRates[asset])}})</span>
+          <span class="text-muted">{{ assetChain }}</span>&nbsp;
+          <span v-if="fee">(${{prettyFiatBalance(totalFee, fiatRates[assetChain])}})</span>
         </div>
       </div>
 

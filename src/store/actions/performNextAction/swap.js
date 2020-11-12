@@ -241,7 +241,7 @@ export const performNextSwapAction = async (store, { network, walletId, order })
       break
 
     case 'SECRET_READY':
-      updates = await withLock(store, { order, network, walletId, asset: order.from },
+      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
         async () => initiateSwap(store, { order, network, walletId }))
       break
 
@@ -262,7 +262,7 @@ export const performNextSwapAction = async (store, { network, walletId, order })
       break
 
     case 'READY_TO_CLAIM':
-      updates = await withLock(store, { order, network, walletId, asset: order.to },
+      updates = await withLock(store, { item: order, network, walletId, asset: order.to },
         async () => claimSwap(store, { order, network, walletId }))
       break
 
@@ -275,7 +275,7 @@ export const performNextSwapAction = async (store, { network, walletId, order })
       break
 
     case 'GET_REFUND':
-      updates = await withLock(store, { order, network, walletId, asset: order.from },
+      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
         async () => refundSwap(store, { order, network, walletId }))
       break
 
@@ -284,7 +284,7 @@ export const performNextSwapAction = async (store, { network, walletId, order })
       break
 
     case 'READY_TO_SEND':
-      updates = await withLock(store, { order, network, walletId, asset: order.to },
+      updates = await withLock(store, { item: order, network, walletId, asset: order.to },
         async () => sendTo(store, { order, network, walletId }))
       break
   }

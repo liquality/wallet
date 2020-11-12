@@ -19,9 +19,16 @@
         </div>
         <div class="row">
           <div class="col">
-            <h2>Network Speed/Fee <a v-if="feesAvailable" class="btn btn-link" @click="showFeeSelecter()">Speed up</a></h2>
-            <p>{{ assetChain }} Fee: {{prettyBalance(tx.fee, item.from)}} | GasPrice: {{ item.fee }} {{ feeUnit }}</p>
-            <div v-if="feeSelectorVisible"><FeeSelector :asset="item.from" v-model="selectedFee" v-bind:fees="assetFees" v-bind:txTypes="[txType]" /></div>
+            <h2>Network Speed/Fee</h2>
+            <p>{{prettyBalance(tx ? tx.fee : item.tx.fee, item.from)}} {{ assetChain }} | {{ item.fee }} {{ feeUnit }} <a v-if="canUpdateFee && !showFeeSelector" @click="openFeeSelector()">Speed up</a></p>
+            <div v-if="showFeeSelector" class="mt-2">
+              <FeeSelector :asset="item.from" v-model="selectedFee" v-bind:fees="assetFees" v-bind:txTypes="[txType]" />
+              <button class="btn btn-sm btn-primary btn-icon ml-2" :disabled="feeSelectorLoading" @click="updateFee()">
+                <SpinnerIcon class="btn-loading" v-if="feeSelectorLoading" />
+                <template v-else>Update</template>
+              </button>
+              <button class="btn btn-sm btn-outline-primary ml-2" v-if="!feeSelectorLoading" @click="closeFeeSelector()">Cancel</button>
+            </div>
           </div>
         </div>
         <div class="row">
@@ -33,10 +40,10 @@
         <div class="row">
           <div class="col-10">
             <h2>Status</h2>
-            <p>{{ status }} <span v-if="tx.confirmations > 0"> / {{ tx.confirmations }} Confirmations</span></p>
+            <p>{{ status }} <span v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"> / {{ tx.confirmations }} Confirmations</span></p>
           </div>
           <div class="col">
-            <CompletedIcon v-if="['SUCCESS', 'REFUNDED'].includes(item.status)" class="tx-details_status-icon" />
+            <CompletedIcon v-if="item.status === 'SUCCESS'" class="tx-details_status-icon" />
             <SpinnerIcon v-else class="tx-details_status-icon" />
           </div>
         </div>
@@ -53,7 +60,6 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import BN from 'bignumber.js'
 import moment from '@/utils/moment'
 import cryptoassets from '@liquality/cryptoassets'
 
@@ -63,6 +69,7 @@ import { TX_TYPES } from '@/utils/fees'
 import { getChainFromAsset, getTransactionExplorerLink, getAddressExplorerLink } from '@/utils/asset'
 
 import NavBar from '@/components/NavBar.vue'
+import FeeSelector from '@/components/FeeSelector'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
@@ -70,6 +77,7 @@ import CopyIcon from '@/assets/icons/copy.svg'
 export default {
   components: {
     NavBar,
+    FeeSelector,
     CompletedIcon,
     SpinnerIcon,
     CopyIcon
@@ -77,7 +85,7 @@ export default {
   data () {
     return {
       tx: null,
-      feeSelectorVisible: false,
+      showFeeSelector: false,
       feeSelectorLoading: false,
       selectedFee: 'average'
     }
@@ -85,7 +93,7 @@ export default {
   props: ['id'],
   computed: {
     ...mapGetters(['client']),
-    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
+    ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees']),
     assetChain () {
       return getChainFromAsset(this.item.from)
     },
@@ -104,6 +112,9 @@ export default {
     },
     transactionLink () {
       return getTransactionExplorerLink(this.item.txHash, this.item.from, this.activeNetwork)
+    },
+    canUpdateFee () {
+      return this.feesAvailable && this.tx && (!this.tx.confirmations || this.tx.confirmations === 0)
     },
     assetFees () {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
@@ -125,23 +136,29 @@ export default {
     async copy (text) {
       await navigator.clipboard.writeText(text)
     },
-    canUpdateFee (step) {
-      return !this.tx.confirmations || this.tx.confirmations === 0
+    openFeeSelector () {
+      this.showFeeSelector = true
+      this.updateFees({ asset: this.assetChain })
+    },
+    closeFeeSelector () {
+      this.showFeeSelector = false
+      this.selectedFee = 'average'
     },
     async updateFee () {
       this.feeSelectorLoading = true
+      const newFee = this.assetFees[this.selectedFee].fee
       try {
         await this.updateTransactionFee({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
-          asset: this.from,
+          asset: this.item.from,
           id: this.item.id,
           hash: this.item.txHash,
-          newFee: this.newFeePrice
+          newFee
         })
       } finally {
         this.feeSelectorLoading = false
-        this.feeSelectorVisible = false
+        this.closeFeeSelector()
       }
     },
     async updateTransaction () {
@@ -152,7 +169,7 @@ export default {
   },
   created () {
     this.updateTransaction()
-    this.interval = setInterval(() => this.updateTransaction(), 5000)
+    this.interval = setInterval(() => this.updateTransaction(), 10000)
   },
   beforeDestroy () {
     clearInterval(this.interval)
@@ -210,148 +227,9 @@ export default {
     padding: 0 $wrapper-padding;
   }
 
-  &_rate {
-    font-weight: bold;
-    margin: 0 4px;
-  }
-
   &_status-icon {
     width: 28px;
     float: right;
-  }
-
-  &_timeline {
-    padding-bottom: 20px;
-    text-align: center;
-
-    &_inner {
-      position: relative;
-      width: 100%;
-      margin: 8px 0;
-
-      &::after {
-        content: '';
-        position: absolute;
-        width: 0px;
-        border-right: 1px dashed $color-secondary;
-        top: 0;
-        bottom: 0;
-        left: 50%;
-      }
-    }
-
-    h3 {
-      margin: 2px 0;
-      font-size: $font-size-base;
-    }
-
-    /* Container around content */
-    &_container {
-      min-height: 50px;
-      position: relative;
-      width: 50%;
-
-      &::after {
-        content: '';
-        position: absolute;
-        width: 11px;
-        height: 11px;
-        border: 1px solid $color-secondary;
-        background: white;
-        top: 0;
-        border-radius: 50%;
-        z-index: 1;
-      }
-
-      &.completed::after, &.pending::after {
-        background-color: $color-secondary;
-        border: 1px solid $hr-border-color;
-      }
-
-      &.completed:first-child::after, &.completed:last-child::after {
-        background-color: $color-secondary;
-        border: 0;
-      }
-
-      &:last-child {
-        height: 0;
-        min-height: 10px;
-      }
-
-      .content {
-        position: relative;
-        top: -3px;
-
-        h3 svg {
-          cursor: pointer;
-          width: 14px;
-          margin-left: 6px;
-        }
-
-        p {
-          font-size: $font-size-sm;
-          margin: 0;
-        }
-      }
-    }
-
-    /* Place the container to the left */
-    .left {
-      left: 0;
-      padding-right: 14px;
-      .content {
-        text-align: right;
-      }
-    }
-
-    /* Place the container to the right */
-    .right {
-      left: 50%;
-      padding-left: 14px;
-      .content {
-        text-align: left;
-      }
-    }
-
-    /* Fix the circle for containers on the right side */
-    .right::after {
-      left: -5px;
-    }
-
-    .left::after {
-      right: -6px;
-    }
-
-  }
-
-}
-.border-0 {
-  box-shadow: none!important;
-
-  tr:first-child {
-    td {
-      border-top: 0;
-    }
-  }
-
-  tr:last-child {
-    td {
-      border-bottom: 0;
-    }
-  }
-}
-
-.fee-update {
-  padding-left: 10px;
-
-  .btn-primary {
-    margin-left: 10px;
-    min-width: 60px;
-  }
-
-  &_fees {
-    font-size: $font-size-tiny;
-    margin: 6px 0;
   }
 }
 </style>

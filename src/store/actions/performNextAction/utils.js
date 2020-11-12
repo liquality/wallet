@@ -2,8 +2,8 @@
 import { random } from 'lodash-es'
 import { unlockAsset, wait } from '../../utils'
 
-export async function withLock ({ dispatch }, { order, network, walletId, asset }, func) {
-  const lock = await dispatch('getLockForAsset', { order, network, walletId, asset })
+export async function withLock ({ dispatch }, { item, network, walletId, asset }, func) {
+  const lock = await dispatch('getLockForAsset', { item, network, walletId, asset })
   try {
     return await func()
   } catch (e) {
