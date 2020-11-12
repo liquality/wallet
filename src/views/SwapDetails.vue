@@ -410,6 +410,7 @@ export default {
           newFee: this.newFeePrice
         })
       } finally {
+        this.updateTransactions()
         this.feeSelectorLoading = false
         this.showFeeSelector = false
       }

@@ -148,7 +148,7 @@ export default {
       this.feeSelectorLoading = true
       const newFee = this.assetFees[this.selectedFee].fee
       try {
-        await this.updateTransactionFee({
+        this.tx = await this.updateTransactionFee({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset: this.item.from,
