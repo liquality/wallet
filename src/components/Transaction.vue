@@ -16,7 +16,7 @@
       <CompletedIcon v-if="confirmed" />
       <div class="transaction_status_confirming" v-if="!confirmed">
         <SpinnerIcon />
-        <span class="transaction_status_steps" v-if="numSteps">{{step}} / {{numSteps}}</span>
+        <span class="transaction_status_steps" v-if="numSteps && numSteps > 2">{{step}} / {{numSteps}}</span>
       </div>
     </div>
   </div>
