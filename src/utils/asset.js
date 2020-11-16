@@ -1,4 +1,4 @@
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from '../utils/cryptoassets'
 
 const EXPLORERS = {
   ETH: {
@@ -21,10 +21,6 @@ const EXPLORERS = {
       address: 'https://blockstream.info/address/'
     }
   }
-}
-
-const TESTNET_CONTRACT_ADDRESSES = {
-  DAI: '0xcE2748BE67fB4346654B4500c4BB0642536365FC'
 }
 
 export const isERC20 = asset => {
@@ -62,15 +58,4 @@ export const getAssetIcon = (asset) => {
       return require('../assets/icons/blank_asset.svg?inline')
     }
   }
-}
-
-export const getAllAssets = (network) => {
-  if (network === 'testnet') return ['BTC', 'ETH', 'DAI'] // TODO: where is this duplicated?
-
-  return Object.keys(cryptoassets)
-}
-
-export const getErc20ContractAddress = (asset, network) => {
-  if (network === 'testnet') { return TESTNET_CONTRACT_ADDRESSES[asset] }
-  return cryptoassets[asset].contractAddress
 }

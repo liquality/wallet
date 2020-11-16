@@ -1,5 +1,5 @@
 import BN from 'bignumber.js'
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from '../../utils/cryptoassets'
 
 import { getMarketData } from '../utils'
 import { dp } from '../../utils/coinFormatter'

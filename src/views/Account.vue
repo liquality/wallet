@@ -56,7 +56,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'

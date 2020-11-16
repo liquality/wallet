@@ -1,5 +1,5 @@
 import BN from 'bignumber.js'
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from './cryptoassets'
 import { isERC20, getChainFromAsset } from './asset'
 
 const TX_TYPES = {

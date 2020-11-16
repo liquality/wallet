@@ -36,7 +36,7 @@ import NavBar from '@/components/NavBar'
 import Warning from '@/components/Warning'
 import CopyIcon from '@/assets/icons/copy.svg'
 import TickIcon from '@/assets/icons/tick.svg'
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 
 export default {
   components: {

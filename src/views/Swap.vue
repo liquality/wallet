@@ -129,7 +129,7 @@
 import { mapState, mapActions } from 'vuex'
 import BN from 'bignumber.js'
 import { add, format } from 'date-fns'
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'

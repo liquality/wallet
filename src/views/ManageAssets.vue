@@ -29,9 +29,9 @@
 <script>
 import { isEmpty } from 'lodash-es'
 import { mapState, mapActions } from 'vuex'
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 import { prettyBalance } from '@/utils/coinFormatter'
-import { getAllAssets, getAssetIcon } from '@/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import SearchIcon from '@/assets/icons/search.svg'
 
@@ -79,7 +79,7 @@ export default {
       newValue ? this.enableAssets(params) : this.disableAssets(params)
     },
     sortAssets () {
-      const allAssets = getAllAssets(this.activeNetwork)
+      const allAssets = Object.keys(cryptoassets)
       this.assets = allAssets.sort((a, b) => this.isAssetEnabled(b) - this.isAssetEnabled(a))
     },
     clearSearch () {

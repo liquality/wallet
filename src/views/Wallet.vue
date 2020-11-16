@@ -32,7 +32,7 @@
 <script>
 import BN from 'bignumber.js'
 import { mapState, mapActions } from 'vuex'
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'

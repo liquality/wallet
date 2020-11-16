@@ -229,7 +229,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import moment from '@/utils/moment'
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStep, getStatusLabel } from '@/utils/history'

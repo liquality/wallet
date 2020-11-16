@@ -1,5 +1,5 @@
 import BN from 'bignumber.js'
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from './cryptoassets'
 
 const VALUE_DECIMALS = 6
 

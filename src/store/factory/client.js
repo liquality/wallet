@@ -22,7 +22,8 @@ import EthereumErc20ScraperSwapFindProvider from '@liquality/ethereum-erc20-scra
 import BitcoinNetworks from '@liquality/bitcoin-networks'
 import EthereumNetworks from '@liquality/ethereum-networks'
 
-import { isERC20, getErc20ContractAddress } from '../../utils/asset'
+import { isERC20 } from '../../utils/asset'
+import cryptoassets from '../../utils/cryptoassets'
 
 export const Networks = ['mainnet', 'testnet']
 
@@ -66,7 +67,7 @@ function createEthClient (asset, network, mnemonic) {
   ethClient.addProvider(new EthereumRpcProvider(infuraApi))
   ethClient.addProvider(new EthereumJsWalletProvider(ethereumNetwork, mnemonic))
   if (isERC20(asset)) {
-    const contractAddress = getErc20ContractAddress(asset, network)
+    const contractAddress = cryptoassets[asset].contractAddress
     ethClient.addProvider(new EthereumErc20Provider(contractAddress))
     ethClient.addProvider(new EthereumErc20SwapProvider())
     ethClient.addProvider(new EthereumErc20ScraperSwapFindProvider(scraperApi))

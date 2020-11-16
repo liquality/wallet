@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 import { getTxFee } from '@/utils/fees'
 import BN from 'bignumber.js'
 
