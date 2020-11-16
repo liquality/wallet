@@ -41,6 +41,7 @@ function isHex (str) {
 }
 
 function hexToAscii (hex) {
+  hex = hex.replace('0x', '')
   if (!isHex(hex)) return hex
 
   let str = ''
