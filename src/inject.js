@@ -106,7 +106,11 @@ window.liqualityEthereum = {
   },
   sendAsync: (req, callback) => {
     handleRequest(req)
-      .then((result) => callback(null, {result}))
+      .then((result) => callback(null, {
+        id: req.id,
+        jsonrpc: '2.0',
+        result
+      }))
       .catch((err) => callback(err))
   },
   on: (method, callback) => {}, // TODO
