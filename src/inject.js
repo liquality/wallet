@@ -1,4 +1,4 @@
-const providerManager = `
+const providerManager = () => `
 function proxy (type, data) {
   return new Promise((resolve, reject) => {
     const id = Date.now() + '.' + Math.random()
@@ -57,7 +57,7 @@ class ProviderManager {
 window.providerManager = new ProviderManager()
 `
 
-const ethereumProvider = `
+const ethereumProvider = ({ networkVersion, chainId }) => `
 async function getAddresses () {
   const eth = window.providerManager.getProviderFor('ETH')
   let addresses = await eth.getMethod('wallet.getAddresses')()
@@ -88,6 +88,8 @@ async function handleRequest (req) {
 window.liqualityEthereum = {
   isLiquality: true,
   isEIP1193: true,
+  networkVersion: '${networkVersion}',
+  chainId: '${chainId}',
   enable: async () => {
     const accepted = await window.providerManager.enable()
     if (!accepted) throw new Error('User rejected')
@@ -138,7 +140,7 @@ if (!window.ethereum) {
 }
 `
 
-const bitcoinProvider = `
+const bitcoinProvider = () => `
 const REQUEST_MAP = {
   wallet_getConnectedNetwork: 'chain.getConnectedNetwork',
   wallet_getAddresses: 'wallet.getAddresses',
