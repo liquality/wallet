@@ -92,5 +92,9 @@ export default {
   DISABLE_ASSETS (state, { network, walletId, assets }) {
     ensureNetworkWalletTree(state.enabledAssets, network, walletId, [])
     Vue.set(state.enabledAssets[network], walletId, state.enabledAssets[network][walletId].filter(asset => !assets.includes(asset)))
+  },
+  ADD_CUSTOM_TOKEN (state, { network, walletId, customToken }) {
+    ensureNetworkWalletTree(state.customTokens, network, walletId, [])
+    state.customTokens[network][walletId].push(customToken)
   }
 }

@@ -4,10 +4,17 @@ import buildConfig from '../build.config'
 
 const clientCache = {}
 
-const TESTNET_ASSETS = ['BTC', 'ETH', 'DAI']
 const TESTNET_CONTRACT_ADDRESSES = {
   DAI: '0xcE2748BE67fB4346654B4500c4BB0642536365FC'
 }
+const TESTNET_ASSETS = ['BTC', 'ETH', 'DAI'].reduce((assets, asset) => {
+  return Object.assign(assets, {
+    [asset]: {
+      ...cryptoassets[asset],
+      contractAddress: TESTNET_CONTRACT_ADDRESSES[asset]
+    }
+  })
+}, {})
 
 export default {
   agentEndpoints (state) {
@@ -31,22 +38,20 @@ export default {
     return (network, walletId, id) => state.history[network][walletId].find(i => i.id === id)
   },
   cryptoassets (state) {
-    let assets
+    const { activeNetwork, activeWalletId } = state
 
-    // Setup base assets straight from `cryptoassets` lib
-    if (state.activeNetwork === 'testnet') {
-      assets = TESTNET_ASSETS.reduce((assets, asset) => {
-        return Object.assign(assets, {
-          [asset]: {
-            ...cryptoassets[asset],
-            contractAddress: TESTNET_CONTRACT_ADDRESSES[asset]
-          }
-        })
-      }, {})
-    } else {
-      assets = cryptoassets
-    }
+    const baseAssets = state.activeNetwork === 'testnet' ? TESTNET_ASSETS : cryptoassets
 
-    return assets
+    const customAssets = state.customTokens[activeNetwork]?.[activeWalletId]?.reduce((assets, token) => {
+      return Object.assign(assets, {
+        [token.symbol]: {
+          ...baseAssets.DAI, // Use DAI as template for custom tokens
+          ...token,
+          code: token.symbol
+        }
+      })
+    }, {})
+
+    return Object.assign({}, baseAssets, customAssets)
   }
 }

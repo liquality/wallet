@@ -10,7 +10,7 @@
     </div>
     <div class="transaction_action">{{title}}</div>
     <div class="transaction_time">{{time}}</div>
-    <div class="transaction_amount">{{prettyBalance(amount, asset)}} {{code}}</div>
+    <div class="transaction_amount">{{prettyBalance(amount, asset)}} {{asset}}</div>
     <div class="transaction_detail">{{detail}}</div>
     <div class="transaction_status" v-if="!error">
       <CompletedIcon v-if="confirmed" />
@@ -56,9 +56,6 @@ export default {
     error: String
   },
   computed: {
-    code: function () {
-      return cryptoassets[this.asset].code
-    },
     time: function () {
       return moment(this.timestamp).format('L, LT')
     }

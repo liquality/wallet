@@ -29,6 +29,7 @@ import { enableEthereumInjection } from './enableEthereumInjection'
 import { disableEthereumInjection } from './disableEthereumInjection'
 import { enableAssets } from './enableAssets'
 import { disableAssets } from './disableAssets'
+import { addCustomToken } from './addCustomToken'
 
 export {
   changeActiveWalletId,
@@ -61,5 +62,6 @@ export {
   enableEthereumInjection,
   disableEthereumInjection,
   enableAssets,
-  disableAssets
+  disableAssets,
+  addCustomToken
 }
