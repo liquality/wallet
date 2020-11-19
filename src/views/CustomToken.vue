@@ -6,7 +6,7 @@
     <div class="wrapper form">
       <div class="wrapper_top">
         <div class="form-group">
-          <label for="contractAddress">Contract Address</label>
+          <label for="contractAddress">Token Contract Address</label>
           <input type="text" v-model="contractAddress" @change="contractAddressChange" class="form-control form-control-sm" id="contractAddress" placeholder="Address" autocomplete="off" required>
         </div>
         <div class="form-group">
@@ -14,7 +14,7 @@
           <input type="text" v-model="name" class="form-control form-control-sm" id="name" placeholder="Name" autocomplete="off" required :disabled="autofilled">
         </div>
         <div class="form-group">
-          <label for="tokenSymbol">Symbol</label>
+          <label for="tokenSymbol">Token Symbol</label>
           <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled">
           <small v-if="symbol && symbolError" class="text-danger form-text text-right">{{ symbolError }}</small>
         </div>
