@@ -25,7 +25,6 @@
 <script>
 import moment from '@/utils/moment'
 import { prettyBalance } from '@/utils/coinFormatter'
-import cryptoassets from '@/utils/cryptoassets'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
