@@ -186,7 +186,7 @@ export default {
     }
   },
   created () {
-    this.updateFees({ asset: this.asset })
+    this.updateFees({ asset: this.assetChain })
   }
 }
 </script>
