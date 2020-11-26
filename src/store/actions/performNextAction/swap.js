@@ -86,33 +86,43 @@ async function confirmInitiation ({ getters }, { order, network, walletId }) {
 
   const fromClient = getters.client(network, walletId, order.from)
 
-  const tx = await fromClient.chain.getTransactionByHash(order.fromFundHash)
+  try {
+    const tx = await fromClient.chain.getTransactionByHash(order.fromFundHash)
 
-  if (tx && tx.confirmations >= order.minConf) {
-    return {
-      status: 'INITIATION_CONFIRMED'
+    if (tx && tx.confirmations >= order.minConf) {
+      return {
+        status: 'INITIATION_CONFIRMED'
+      }
     }
+  } catch (e) {
+    if (e.name === 'TxNotFoundError') console.warn(e)
+    else throw e
   }
 }
 
 async function findCounterPartyInitiation ({ getters }, { order, network, walletId }) {
   const toClient = getters.client(network, walletId, order.to)
 
-  const tx = await toClient.swap.findInitiateSwapTransaction(
-    order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
-  )
-
-  if (tx) {
-    const toFundHash = tx.hash
-    const isVerified = await toClient.swap.verifyInitiateSwapTransaction(
-      toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
+  try {
+    const tx = await toClient.swap.findInitiateSwapTransaction(
+      order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
     )
-    if (isVerified) {
-      return {
-        toFundHash,
-        status: 'CONFIRM_COUNTER_PARTY_INITIATION'
+
+    if (tx) {
+      const toFundHash = tx.hash
+      const isVerified = await toClient.swap.verifyInitiateSwapTransaction(
+        toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
+      )
+      if (isVerified) {
+        return {
+          toFundHash,
+          status: 'CONFIRM_COUNTER_PARTY_INITIATION'
+        }
       }
     }
+  } catch (e) {
+    if (['BlockNotFoundError', 'PendingTxError', 'TxNotFoundError'].includes(e.name)) console.warn(e)
+    else throw e
   }
 
   // Expiration check should only happen if tx not found
@@ -161,21 +171,26 @@ async function claimSwap ({ getters }, { order, network, walletId }) {
 async function waitForClaimConfirmations ({ getters, dispatch }, { order, network, walletId }) {
   const toClient = getters.client(network, walletId, order.to)
 
-  const tx = await toClient.chain.getTransactionByHash(order.toClaimHash)
+  try {
+    const tx = await toClient.chain.getTransactionByHash(order.toClaimHash)
 
-  if (tx && tx.confirmations > 0) {
-    if (order.sendTo) {
-      return {
-        status: 'READY_TO_SEND'
-      }
-    } else {
-      dispatch('updateBalances', { network, walletId, assets: [order.to, order.from] })
+    if (tx && tx.confirmations > 0) {
+      if (order.sendTo) {
+        return {
+          status: 'READY_TO_SEND'
+        }
+      } else {
+        dispatch('updateBalances', { network, walletId, assets: [order.to, order.from] })
 
-      return {
-        endTime: Date.now(),
-        status: 'SUCCESS'
+        return {
+          endTime: Date.now(),
+          status: 'SUCCESS'
+        }
       }
     }
+  } catch (e) {
+    if (e.name === 'TxNotFoundError') console.warn(e)
+    else throw e
   }
 
   // Expiration check should only happen if tx not found
@@ -191,13 +206,18 @@ async function waitForRefund ({ getters }, { order, network, walletId }) {
 
 async function waitForRefundConfirmations ({ getters }, { order, network, walletId }) {
   const fromClient = getters.client(network, walletId, order.from)
-  const tx = await fromClient.chain.getTransactionByHash(order.refundHash)
+  try {
+    const tx = await fromClient.chain.getTransactionByHash(order.refundHash)
 
-  if (tx && tx.confirmations > 0) {
-    return {
-      endTime: Date.now(),
-      status: 'REFUNDED'
+    if (tx && tx.confirmations > 0) {
+      return {
+        endTime: Date.now(),
+        status: 'REFUNDED'
+      }
     }
+  } catch (e) {
+    if (e.name === 'TxNotFoundError') console.warn(e)
+    else throw e
   }
 }
 
