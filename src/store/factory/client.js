@@ -89,9 +89,9 @@ function createRskClient (asset, network, mnemonic) {
   const isTestnet = network === 'testnet'
   const rskNetwork = isTestnet ? EthereumNetworks.rsk_testnet : EthereumNetworks.rsk_mainnet
   const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
+  const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rskl-mainnet-api'
 
-  // TODO: Setup scraper if performance is issue
-  return createEthereumClient(asset, rskNetwork, rpcApi, undefined, EthereumRpcFeeProvider, mnemonic)
+  return createEthereumClient(asset, rskNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
 }
 
 export const createClient = (asset, network, mnemonic) => {
