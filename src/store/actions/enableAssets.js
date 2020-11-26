@@ -2,4 +2,5 @@ export const enableAssets = async ({ commit, dispatch }, { network, walletId, as
   commit('ENABLE_ASSETS', { network, walletId, assets })
   dispatch('updateBalances', { network, walletId })
   dispatch('updateFiatRates')
+  dispatch('updateMarketData', { network })
 }

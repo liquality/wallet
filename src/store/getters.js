@@ -7,7 +7,7 @@ const clientCache = {}
 const TESTNET_CONTRACT_ADDRESSES = {
   DAI: '0xcE2748BE67fB4346654B4500c4BB0642536365FC'
 }
-const TESTNET_ASSETS = ['BTC', 'ETH', 'DAI'].reduce((assets, asset) => {
+const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI'].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
       ...cryptoassets[asset],

@@ -4,6 +4,7 @@ import store from './store'
 
 let balanceInterval
 let fiatRatesInterval
+let marketDataInterval
 
 store.subscribe(({ type, payload }, state) => {
   switch (type) {
@@ -28,6 +29,12 @@ store.subscribe(({ type, payload }, state) => {
         fiatRatesInterval = setInterval(() => {
           store.dispatch('updateFiatRates')
         }, random(20000, 30000))
+      }
+
+      if (!marketDataInterval) {
+        marketDataInterval = setInterval(() => {
+          store.dispatch('updateMarketData', { network: state.activeNetwork })
+        }, random(50000, 60000))
       }
 
       break

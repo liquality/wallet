@@ -20,6 +20,16 @@ const EXPLORERS = {
       tx: 'https://blockstream.info/tx/',
       address: 'https://blockstream.info/address/'
     }
+  },
+  RBTC: {
+    testnet: {
+      tx: 'https://explorer.testnet.rsk.co/tx/0x',
+      address: 'https://explorer.testnet.rsk.co/address/'
+    },
+    mainnet: {
+      tx: 'https://explorer.rsk.co/tx/0x',
+      address: 'https://explorer.rsk.co/address/'
+    }
   }
 }
 

@@ -23,6 +23,11 @@ const FEE_UNITS = {
     [TX_TYPES.SWAP_INITIATION]: 120000,
     [TX_TYPES.SWAP_CLAIM]: 21000
   },
+  RBTC: {
+    [TX_TYPES.SEND]: 21000,
+    [TX_TYPES.SWAP_INITIATION]: 120000,
+    [TX_TYPES.SWAP_CLAIM]: 21000
+  },
   ERC20: {
     [TX_TYPES.SEND]: 90000,
     [TX_TYPES.SWAP_INITIATION]: 561000 + 94500, // Contract creation + erc20 transfer
@@ -32,7 +37,7 @@ const FEE_UNITS = {
 
 function getTxFee (_asset, type, _feePrice) {
   const chainAsset = getChainFromAsset(_asset)
-  const feePrice = getChainFromAsset(_asset) === 'ETH' ? BN(_feePrice).times(1e9) : _feePrice // ETH fee price is in gwei
+  const feePrice = ['ETH', 'RBTC'].includes(getChainFromAsset(_asset)) ? BN(_feePrice).times(1e9) : _feePrice // ETH fee price is in gwei
   const asset = isERC20(_asset) ? 'ERC20' : _asset
   const feeUnits = FEE_UNITS[asset][type]
   const fee = BN(feeUnits).times(feePrice)

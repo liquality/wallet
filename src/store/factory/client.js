@@ -57,32 +57,46 @@ function createBtcClient (network, mnemonic) {
   return btcClient
 }
 
+function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, mnemonic) {
+  const ethClient = new Client()
+  ethClient.addProvider(new EthereumRpcProvider(rpcApi))
+  ethClient.addProvider(new EthereumJsWalletProvider(network, mnemonic))
+  if (isERC20(asset)) {
+    const contractAddress = cryptoassets[asset].contractAddress
+    ethClient.addProvider(new EthereumErc20Provider(contractAddress))
+    ethClient.addProvider(new EthereumErc20SwapProvider())
+    if (scraperApi) ethClient.addProvider(new EthereumErc20ScraperSwapFindProvider(scraperApi))
+  } else {
+    ethClient.addProvider(new EthereumSwapProvider())
+    if (scraperApi) ethClient.addProvider(new EthereumScraperSwapFindProvider(scraperApi))
+  }
+  ethClient.addProvider(new FeeProvider())
+
+  return ethClient
+}
+
 function createEthClient (asset, network, mnemonic) {
   const isTestnet = network === 'testnet'
   const ethereumNetwork = isTestnet ? EthereumNetworks.rinkeby : EthereumNetworks.mainnet
   const infuraApi = isTestnet ? 'https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f' : 'https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'
   const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
+  const FeeProvider = isTestnet ? EthereumRpcFeeProvider : EthereumGasStationFeeProvider
 
-  const ethClient = new Client()
-  ethClient.addProvider(new EthereumRpcProvider(infuraApi))
-  ethClient.addProvider(new EthereumJsWalletProvider(ethereumNetwork, mnemonic))
-  if (isERC20(asset)) {
-    const contractAddress = cryptoassets[asset].contractAddress
-    ethClient.addProvider(new EthereumErc20Provider(contractAddress))
-    ethClient.addProvider(new EthereumErc20SwapProvider())
-    ethClient.addProvider(new EthereumErc20ScraperSwapFindProvider(scraperApi))
-  } else {
-    ethClient.addProvider(new EthereumSwapProvider())
-    ethClient.addProvider(new EthereumScraperSwapFindProvider(scraperApi))
-  }
-  if (isTestnet) ethClient.addProvider(new EthereumRpcFeeProvider())
-  else ethClient.addProvider(new EthereumGasStationFeeProvider())
+  return createEthereumClient(asset, ethereumNetwork, infuraApi, scraperApi, FeeProvider, mnemonic)
+}
 
-  return ethClient
+function createRskClient (asset, network, mnemonic) {
+  const isTestnet = network === 'testnet'
+  const rskNetwork = isTestnet ? EthereumNetworks.rsk_testnet : EthereumNetworks.rsk_mainnet
+  const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
+
+  // TODO: Setup scraper if performance is issue
+  return createEthereumClient(asset, rskNetwork, rpcApi, undefined, EthereumRpcFeeProvider, mnemonic)
 }
 
 export const createClient = (asset, network, mnemonic) => {
   if (asset === 'BTC') return createBtcClient(network, mnemonic)
+  if (asset === 'RBTC') return createRskClient(asset, network, mnemonic)
 
   return createEthClient(asset, network, mnemonic)
 }

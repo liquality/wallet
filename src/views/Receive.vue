@@ -64,7 +64,8 @@ export default {
       const chain = getChainFromAsset(this.asset)
       return ({
         BTC: 'bitcoin',
-        ETH: 'ethereum'
+        ETH: 'ethereum',
+        RBTC: 'ethereum'
       })[chain]
     }
 
