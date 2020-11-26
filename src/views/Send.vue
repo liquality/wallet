@@ -242,7 +242,7 @@ export default {
     },
     amountError () {
       const amount = BN(this.amount)
-      if (amount.gt(this.available)) return 'Lower amount. This exceeds your available balance.'
+      if (amount.gt(this.available)) return 'Lower amount. This exceeds available balance.'
       return null
     },
     canSend () {
