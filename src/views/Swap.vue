@@ -235,7 +235,7 @@ export default {
     amountError () {
       const amount = BN(this.safeAmount)
 
-      if (amount.gt(this.available)) return 'Amount exceeds available balance.'
+      if (amount.gt(this.available)) return 'Lower amount. This exceeds your available balance.'
       if (amount.gt(this.max)) return 'Please reduce amount. It exceeds maximum.'
       if (amount.lt(this.min)) return 'Please increase amount. It is below minimum.'
 
