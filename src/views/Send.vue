@@ -7,19 +7,31 @@
       <div class="wrapper form">
         <div class="wrapper_top">
           <div class="form-group">
-            <label for="amount">
-              Send
-              <span class="label-sub"><span class="text-muted">Available</span> {{available}} {{asset}}</span>
-              <span class="label-append">${{prettyFiatBalance(amount, fiatRates[asset])}}</span>
-            </label>
+            <span class="float-left">
+              <label for="amount">
+                Send
+              </label>
+            </span>
+            <span class="float-right label-append">
+              ${{prettyFiatBalance(amount, fiatRates[asset])}}
+            </span>
             <div class="input-group send_asset">
               <img :src="getAssetIcon(asset)" class="asset-icon send_asset_icon" />
               <div class="input-group-append">
                 <span class="input-group-text">{{asset}}</span>
               </div>
-              <input type="text" :class="{ 'is-invalid': amount && amountError }" :style="getAssetColorStyle(asset)" v-model="amount" class="form-control" id="amount" placeholder="0.00" autocomplete="off" required>
+              <input type="number" max="available" min="0" :class="{ 'is-invalid': amount && amountError }" :style="getAssetColorStyle(asset)" v-model="amount" class="form-control" id="amount" placeholder="0.00" autocomplete="off" required>
             </div>
             <small v-if="amount && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
+          </div>
+          <div class="form-group">
+             <span class="label-sub float-left"><span class="text-muted">Available</span> {{available}} {{asset}}</span>
+              <div class="float-right btn-group btn-group-toggle" data-toggle="buttons">
+                 <label class="btn btn-light btn-outline-dark btn-sm"
+                  @click="didClickOnMaxAmount">
+                <input type="radio" name="maxAmount" autocomplete="off"> Max
+            </label>
+              </div>
           </div>
           <div class="form-group">
             <label for="address">Send to</label>
@@ -48,30 +60,34 @@
     <div class="send-confirm wrapper form text-center" v-if="showConfirm">
       <div class="wrapper_top form">
         <div class="form-group">
-          <label>Send</label>
-          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asset}}</p>
-          <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
+          <label>
+            Send <span class="text-muted">(INCL FEES)</span>
+          </label>
+          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amountToSend}} {{asset}}</p>
+          <p class="text-muted">${{amountToSendInFiat}}</p>
         </div>
         <div class="form-group">
           <label>To</label>
           <p class="confirm-value">{{shortenAddress(this.address)}}</p>
         </div>
-        <div class="form-group">
-          <label>Network Fees</label>
-          <template v-if="totalFee">~ {{ totalFee }}</template>
+      </div>
+      <div class="wrapper_bottom">
+        <div class="flot-left form-group">
+          <button class="btn" type="button" data-toggle="collapse" data-target="#sendDetails" aria-expanded="false" aria-controls="collapseExample">
+          DETAILS
+        </button>
+          <div id="sendDetails">
+            <template v-if="totalFee">~ {{ totalFee }}</template>
           <template v-else>Unknown</template>&nbsp;
           <span class="text-muted">{{ assetChain }}</span>&nbsp;
           <span v-if="fee">(${{prettyFiatBalance(totalFee, fiatRates[assetChain])}})</span>
+          </div>
         </div>
-      </div>
-
-      <div class="wrapper_bottom">
-        <Warning />
         <div class="button-group">
-          <button class="btn btn-light btn-outline-primary btn-lg" v-if="!loading" @click="showConfirm = false">Cancel</button>
+          <button class="btn btn-light btn-outline-primary btn-lg" v-if="!loading" @click="showConfirm = false">Edit</button>
           <button class="btn btn-primary btn-lg btn-icon" @click="send" :disabled="loading">
             <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else><SendIcon /> Send</template>
+            <template v-else>Send {{asset}}</template>
           </button>
         </div>
       </div>
@@ -159,6 +175,12 @@ export default {
         ? BN(balance)
         : BN.max(BN(balance).minus(fee), 0)
       return prettyBalance(available, this.asset)
+    },
+    amountToSend () {
+      return BN(this.amount).plus(BN(this.totalFee))
+    },
+    amountToSendInFiat () {
+      return prettyFiatBalance(this.amountToSend, this.fiatRates[this.asset])
     }
   },
   methods: {
@@ -183,6 +205,9 @@ export default {
       })
 
       this.$router.replace(`/account/${this.asset}`)
+    },
+    didClickOnMaxAmount () {
+      this.amount = this.available
     }
   },
   created () {
@@ -216,5 +241,17 @@ export default {
       margin-left: 6px;
     }
   }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>
