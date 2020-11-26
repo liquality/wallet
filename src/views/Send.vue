@@ -128,7 +128,7 @@
           <p class="confirm-value">{{ shortenAddress(this.address) }}</p>
         </div>
       </div>
-    
+
       <div class="wrapper_bottom">
         <div class="details-container">
           <div class="details-header" @click.stop="showDetails = !showDetails">
@@ -242,7 +242,7 @@ export default {
     },
     amountError () {
       const amount = BN(this.amount)
-      if (amount.gt(this.available)) return 'Lower amount. This exceeds your available balance.'
+      if (amount.gt(this.available)) return 'Amount exceeds available balance.'
       return null
     },
     canSend () {
