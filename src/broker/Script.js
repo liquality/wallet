@@ -27,8 +27,6 @@ class Script {
   }
 
   onMessage ({ id, data }) {
-    console.log('onMessage', { id, data })
-
     this.emitter.emit(id, data)
   }
 }

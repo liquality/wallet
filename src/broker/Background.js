@@ -86,8 +86,6 @@ class Background {
   }
 
   onInternalMessage (connection, { id, type, data }) {
-    console.log('onInternalMessage', { id, type, data })
-
     switch (type) {
       case 'ACTION_REQUEST':
         this.store.dispatch(data.type, data.payload)
@@ -115,8 +113,6 @@ class Background {
   }
 
   onExternalMessage (connection, { id, type, data }) {
-    console.log('onExternalMessage', { id, type, data })
-
     const { url } = connection.sender
     const { origin } = new URL(url)
 
