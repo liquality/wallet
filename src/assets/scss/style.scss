@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,600&display=swap');
-@import "overrides";
-@import "bootstrap";
-@import "tooltip";
+@import 'overrides';
+@import 'bootstrap';
+@import 'tooltip';
 
 body {
   height: 600px;
@@ -167,7 +167,8 @@ textarea {
     font-size: $font-size-lg;
   }
   .swap-rate {
-    &_base, &_term {
+    &_base,
+    &_term {
       color: $color-text-muted;
     }
 
@@ -261,17 +262,58 @@ textarea {
     }
 
     &:hover {
-      background: #F0F7F9;
+      background: #f0f7f9;
     }
   }
 }
 
 .popup-logo {
   padding: 20px 20px;
-  background: #302E78;
+  background: #302e78;
   text-align: center;
 
   svg {
     height: 75px;
+  }
+}
+
+.details-container {
+  text-align: left;
+  margin-bottom: 1rem;
+
+  .details-header {
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: $font-size-sm;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: left;
+
+  }
+  .details-list {
+    list-style-type: none;
+    background: #ffffff;
+    border: none;
+    padding: 0;
+    width: 100%;
+    li {
+      display: flex;
+      align-items: start;
+      justify-content: start;
+      padding: 5px 20px;
+      border: none;
+      font-size: $font-size-tiny;
+      label {
+        font-weight: bold;
+        float: left;
+      }
+    }
+  }
+  svg {
+    height: 6px;
+    margin-right: 4px;
   }
 }
