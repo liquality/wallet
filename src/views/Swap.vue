@@ -110,7 +110,6 @@
       <div class="wrapper_bottom">
         <div class="swap-info">
           <div class="media"><ClockIcon class="swap-info_clock" /><p class="text-muted media-body">If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at {{expiration}}</p></div>
-          <Warning />
         </div>
         <div class="button-group">
           <button class="btn btn-light btn-outline-primary btn-lg" v-if="!loading" @click="showConfirm = false">Cancel</button>
@@ -138,7 +137,6 @@ import { dpUI, prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getAssetColorStyle, getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import { TX_TYPES, getTxFee } from '@/utils/fees'
-import Warning from '@/components/Warning'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
@@ -149,7 +147,6 @@ export default {
     InfoNotification,
     EthRequiredMessage,
     FeeSelector,
-    Warning,
     ClockIcon,
     SwapIcon,
     SpinnerIcon
@@ -237,7 +234,7 @@ export default {
     amountError () {
       const amount = BN(this.safeAmount)
 
-      if (amount.gt(this.available)) return 'Amount exceeds available balance.'
+      if (amount.gt(this.available)) return 'Lower amount. This exceeds available balance.'
       if (amount.gt(this.max)) return 'Please reduce amount. It exceeds maximum.'
       if (amount.lt(this.min)) return 'Please increase amount. It is below minimum.'
 
