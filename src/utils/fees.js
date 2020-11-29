@@ -35,6 +35,17 @@ const FEE_UNITS = {
   }
 }
 
+const FEE_TYPES = {
+  GWEI: 'GWEI',
+  SAT : 'SAT'
+}
+
+const FEE_TYPE_CONFIG = {
+  ETH: 'GWEI',
+  RBTC: 'GWEI',
+  BTC : 'SAT'
+}
+
 function getTxFee (_asset, type, _feePrice) {
   const chainAsset = getChainFromAsset(_asset)
   const feePrice = ['ETH', 'RBTC'].includes(getChainFromAsset(_asset)) ? BN(_feePrice).times(1e9) : _feePrice // ETH fee price is in gwei
@@ -44,4 +55,9 @@ function getTxFee (_asset, type, _feePrice) {
   return cryptoassets[chainAsset].unitToCurrency(fee)
 }
 
-export { TX_TYPES, getTxFee }
+
+function getFeeType(asset) {
+  return FEE_TYPE_CONFIG[asset];
+}
+
+export { TX_TYPES, FEE_TYPES, FEE_TYPE_CONFIG, getTxFee, getFeeType }
