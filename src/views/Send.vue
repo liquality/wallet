@@ -87,9 +87,9 @@
         <div class="wrapper_bottom">
           <DetailsContainer v-if="feesAvailable">
            <template v-slot:header>
-            <span class="font-weight-bold text-uppercase">Network Speed/Fee</span> 
+            <span class="details-title">Network Speed/Fee</span> 
             <span class="text-muted">
-              &nbsp;({{ selectedFee }} / {{ totalFee }} {{ feeType }})
+              ({{ selectedFee.slice(0, 4) }} / {{ totalFee }} {{ feeType }})
             </span>
           </template>
           <template v-slot:content>
@@ -144,7 +144,7 @@
       <div class="wrapper_bottom">
         <DetailsContainer>
            <template v-slot:header>
-            <span class="font-weight-bold text-uppercase">Details</span>
+            <span class="details-title">Details</span>
           </template>
           <template v-slot:content>
              <li><label>Send</label></li>

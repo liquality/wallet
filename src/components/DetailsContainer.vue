@@ -1,8 +1,7 @@
 <template>
  <div class="details-container">
           <div class="details-header" @click.stop="showDetails = !showDetails">
-            <ChevronDownIcon v-if="showDetails"/>
-            <ChevronUpIcon v-else/>
+            <ChevronDownIcon :class="showDetails ? '' : 'right'"/>
             &nbsp;  <slot name="header"></slot>
           </div>
           <ul class="details-list" v-if="showDetails">
@@ -12,12 +11,10 @@
 </template>
 
 <script>
-import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
-import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 
 export default {
    components: {
-    ChevronUpIcon,
     ChevronDownIcon
   },
   props: ['open'],
@@ -43,18 +40,35 @@ export default {
     cursor: pointer;
     display: flex;
     align-items: center;
-    justify-content: left;
+    flex-wrap: wrap;
+    align-content: space-between;
     font-size: $font-size-tiny;
+
+    svg {
+      height: 5px;
+      margin-right: 10px;
+    }
+    svg.right {
+      transform: rotate(-90deg);
+    }
+
+    .details-title {
+      font-weight: bold;
+      text-transform: uppercase;
+      padding-right: 0.5em;
+    }
   }
+
   .details-list {
     list-style-type: none;
     background: #ffffff;
     border: none;
     padding: 0;
+
     li {
       display: flex;
       align-items: flex-start;
-      justify-content: flex-start;
+      justify-content: left;
       padding: 5px 20px;
       border: none;
       font-size: $font-size-tiny;
@@ -63,10 +77,6 @@ export default {
         float: left;
       }
     }
-  }
-  svg {
-    height: 6px;
-    margin-right: 4px;
   }
 }
 </style>
