@@ -93,7 +93,7 @@
               </span>
             </template>
             <template v-slot:content>
-              <li>
+              <li class="mb-2">
                 <div class="send_fees">
                   {{ assetChain }}
                   <FeeSelector

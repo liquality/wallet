@@ -133,8 +133,8 @@
               <a
                 class="text-muted float-right"
                 @click="
-                  enterSendToAddress = false
-                  sendTo = null
+                  enterSendToAddress = false;
+                  sendTo = null;
                 "
               >
                 X
@@ -162,7 +162,9 @@
               <span class="swap-rate_value">
                 &nbsp;{{ bestRateBasedOnAmount }}
               </span>
-              <span class="swap-rate_term label-bordered">&nbsp;{{ toAsset }}</span>
+              <span class="swap-rate_term label-bordered"
+                >&nbsp;{{ toAsset }}</span
+              >
             </p>
           </div>
 
@@ -211,50 +213,79 @@
     <div class="swap-confirm wrapper form text-center" v-if="showConfirm">
       <div class="wrapper_top form">
         <div class="form-group">
-          <label>Send</label>
+          <label>
+            Send <span v-if="includeFees" class="text-muted">(INCL FEES)</span>
+          </label>
           <p class="confirm-value" :style="getAssetColorStyle(asset)">
-            {{ amount }} {{ asset }}
+            {{ amountToSend }} {{ asset }}
           </p>
-          <p class="text-muted">
-            ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
-          </p>
+          <p v-if="!includeFees">~{{ totalFee }} ETH FEES</p>
+          <p class="text-muted">${{ amountToSendInFiat }}</p>
         </div>
         <div class="form-group">
-          <label>Receive</label>
+          <label>Receive <span class="text-muted">(EXCL FEES)</span></label>
           <p class="confirm-value" :style="getAssetColorStyle(toAsset)">
             {{ toAmount }} {{ toAsset }}
           </p>
+          <p class="text-muted">${{ amountToReveiveInFiat }}</p>
         </div>
         <div v-if="sendTo" class="form-group">
           <label>At</label>
           <p class="confirm-value">{{ shortenAddress(sendTo) }}</p>
         </div>
-        <div class="swap-rate form-group">
-          <label>Rate</label>
-          <p>
-            <span class="swap-rate_base">1 {{ asset }} =</span>
-            <span class="swap-rate_value">
-              &nbsp;{{ bestRateBasedOnAmount }}
-            </span>
-            <span class="swap-rate_term label-bordered">&nbsp;{{ toAsset }}</span>
-          </p>
-        </div>
-        <div class="form-group">
-          <label>Network Fees</label>
-          <div v-for="(fee, asset) in totalFees" :key="asset">
-            <template v-if="fee">~ {{ fee }}</template>
-            <template v-else>Unknown</template>
-            &nbsp;
-            <span class="text-muted">{{ asset }}</span>
-            &nbsp;
-            <span v-if="fee">
-              (${{ prettyFiatBalance(fee, fiatRates[asset]) }})
-            </span>
-          </div>
-        </div>
       </div>
 
       <div class="wrapper_bottom">
+        <DetailsContainer>
+          <template v-slot:header>
+            <span class="details-title">Details</span>
+          </template>
+          <template v-slot:content>
+            <li><label>Send</label></li>
+            <li>
+              <span class="text-muted">
+                AMOUNT:&nbsp;{{ amountToSend }} {{ assetChain }} / ${{
+                  amountToSendInFiat
+                }}</span
+              >
+            </li>
+            <li>
+              <span class="text-muted"
+                >NETWORK FEES:&nbsp; {{ totalFees[assetChain] }}
+                {{ sendFeeType }} / (${{
+                  prettyFiatBalance(totalFees[assetChain], fiatRates[asset])
+                }})
+              </span>
+            </li>
+            <li class="mt-2"><label>Receive</label></li>
+            <li>
+              <span class="text-muted">
+                AMOUNT:&nbsp;{{ toAmount }} {{ toAssetChain }} / ${{
+                  amountToReveiveInFiat
+                }}</span
+              >
+            </li>
+            <li>
+              <span class="text-muted"
+                >NETWORK FEES:&nbsp; {{ totalFees[toAssetChain] }}
+                {{ receiveFeeType }} / (${{
+                  prettyFiatBalance(
+                    totalFees[toAssetChain],
+                    fiatRates[toAsset]
+                  )
+                }})
+              </span>
+            </li>
+            <li>
+              <span class="text-muted"
+                >Rate: 1 {{ asset }}&nbsp;=&nbsp;{{
+                  bestRateBasedOnAmount
+                }}
+                &nbsp;{{ toAsset }}</span
+              >
+            </li>
+          </template>
+        </DetailsContainer>
         <div class="swap-info">
           <div class="media">
             <ClockIcon class="swap-info_clock" />
@@ -270,7 +301,7 @@
             v-if="!loading"
             @click="showConfirm = false"
           >
-            Cancel
+            Edit
           </button>
           <button
             class="btn btn-primary btn-lg btn-block btn-icon"
@@ -290,27 +321,33 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-import BN from 'bignumber.js'
-import { add, format } from 'date-fns'
-import cryptoassets from '@/utils/cryptoassets'
-import FeeSelector from '@/components/FeeSelector'
-import NavBar from '@/components/NavBar'
-import InfoNotification from '@/components/InfoNotification'
-import EthRequiredMessage from '@/components/EthRequiredMessage'
-import { dpUI, prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { mapState, mapActions } from "vuex";
+import BN from "bignumber.js";
+import { add, format } from "date-fns";
+import cryptoassets from "@/utils/cryptoassets";
+import FeeSelector from "@/components/FeeSelector";
+import NavBar from "@/components/NavBar";
+import InfoNotification from "@/components/InfoNotification";
+import EthRequiredMessage from "@/components/EthRequiredMessage";
+import { dpUI, prettyBalance, prettyFiatBalance } from "@/utils/coinFormatter";
 import {
   getChainFromAsset,
   getAssetColorStyle,
-  getAssetIcon,
-} from '@/utils/asset'
-import { shortenAddress } from '@/utils/address'
-import { TX_TYPES, getTxFee, getFeeLabel } from '@/utils/fees'
-import SwapIcon from '@/assets/icons/arrow_swap.svg'
-import SpinnerIcon from '@/assets/icons/spinner.svg'
-import ClockIcon from '@/assets/icons/clock.svg'
-import ArrowDownIcon from '@/assets/icons/arrow_down.svg'
-import DetailsContainer from '@/components/DetailsContainer'
+  getAssetIcon
+} from "@/utils/asset";
+import { shortenAddress } from "@/utils/address";
+import {
+  TX_TYPES,
+  FEE_TYPES,
+  getTxFee,
+  getFeeType,
+  getFeeLabel
+} from "@/utils/fees";
+import SwapIcon from "@/assets/icons/arrow_swap.svg";
+import SpinnerIcon from "@/assets/icons/spinner.svg";
+import ClockIcon from "@/assets/icons/clock.svg";
+import ArrowDownIcon from "@/assets/icons/arrow_down.svg";
+import DetailsContainer from "@/components/DetailsContainer";
 
 export default {
   components: {
@@ -322,7 +359,7 @@ export default {
     SwapIcon,
     SpinnerIcon,
     DetailsContainer,
-    ArrowDownIcon,
+    ArrowDownIcon
   },
   data() {
     return {
@@ -332,216 +369,237 @@ export default {
       sendTo: null,
       selectedFee: {},
       showConfirm: false,
-      loading: false,
-    }
+      loading: false
+    };
   },
   props: {
-    asset: String,
+    asset: String
   },
   created() {
-    this.toAsset = Object.keys(this.selectedMarket)[0]
-    this.amount = this.min
-    this.updateMarketData({ network: this.activeNetwork })
-    this.updateFees({ asset: this.assetChain })
-    this.updateFees({ asset: this.toAssetChain })
+    this.toAsset = Object.keys(this.selectedMarket)[0];
+    this.amount = this.min;
+    this.updateMarketData({ network: this.activeNetwork });
+    this.updateFees({ asset: this.assetChain });
+    this.updateFees({ asset: this.toAssetChain });
     this.selectedFee = {
-      [this.assetChain]: 'average',
-      [this.toAssetChain]: 'average',
-    }
+      [this.assetChain]: "average",
+      [this.toAssetChain]: "average"
+    };
   },
   computed: {
     ...mapState([
-      'activeNetwork',
-      'activeWalletId',
-      'marketData',
-      'balances',
-      'fees',
-      'fiatRates',
+      "activeNetwork",
+      "activeWalletId",
+      "marketData",
+      "balances",
+      "fees",
+      "fiatRates"
     ]),
     networkMarketData() {
-      return this.marketData[this.activeNetwork]
+      return this.marketData[this.activeNetwork];
     },
     networkWalletBalances() {
-      return this.balances[this.activeNetwork][this.activeWalletId]
+      return this.balances[this.activeNetwork][this.activeWalletId];
     },
     toAssets() {
-      return Object.keys(this.selectedMarket)
+      return Object.keys(this.selectedMarket);
     },
     bestAgent() {
-      return this.bestMarketBasedOnAmount.agent
+      return this.bestMarketBasedOnAmount.agent;
     },
     bestRateBasedOnAmount() {
-      return this.bestMarketBasedOnAmount.sellRate
+      return this.bestMarketBasedOnAmount.sellRate;
     },
     bestMarketBasedOnAmount() {
-      const amount = BN(this.amount)
+      const amount = BN(this.amount);
       return this.market.markets.slice().sort((a, b) => {
-        if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax))) return -1
+        if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax))) return -1;
         else if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax)))
-          return 1
-        else return 0
-      })[0]
+          return 1;
+        else return 0;
+      })[0];
     },
     min() {
-      return dpUI(BN(this.market.sellMin), this.asset)
+      return dpUI(BN(this.market.sellMin), this.asset);
     },
     max() {
       const max = BN.min(
         BN(this.available),
-        dpUI(this.market.sellMax, this.asset),
-      )
-      return max
+        dpUI(this.market.sellMax, this.asset)
+      );
+      return max;
     },
     safeAmount() {
-      return this.amount || 0
+      return this.amount || 0;
     },
     market() {
-      return this.selectedMarket[this.toAsset]
+      return this.selectedMarket[this.toAsset];
     },
     available() {
-      const balance = this.networkWalletBalances[this.asset]
+      const balance = this.networkWalletBalances[this.asset];
       const fee = cryptoassets[this.assetChain].currencyToUnit(
-        this.totalFees[this.assetChain],
-      )
+        this.totalFees[this.assetChain]
+      );
       const available =
         this.assetChain !== this.asset
           ? BN(balance)
-          : BN.max(BN(balance).minus(fee), 0)
-      return prettyBalance(available, this.asset)
+          : BN.max(BN(balance).minus(fee), 0);
+      return prettyBalance(available, this.asset);
     },
     selectedMarket() {
-      return this.networkMarketData[this.asset]
+      return this.networkMarketData[this.asset];
     },
     ethRequired() {
-      return this.networkWalletBalances.ETH === 0
+      return this.networkWalletBalances.ETH === 0;
     },
     showErrors() {
-      return !this.ethRequired
+      return !this.ethRequired;
     },
     amountError() {
-      const amount = BN(this.safeAmount)
+      const amount = BN(this.safeAmount);
 
       if (amount.gt(this.available))
-        return 'Lower amount. This exceeds available balance.'
+        return "Lower amount. This exceeds available balance.";
       if (amount.gt(this.max))
-        return 'Please reduce amount. It exceeds maximum.'
+        return "Please reduce amount. It exceeds maximum.";
       if (amount.lt(this.min))
-        return 'Please increase amount. It is below minimum.'
+        return "Please increase amount. It is below minimum.";
 
-      return null
+      return null;
     },
     canSwap() {
-      if (this.ethRequired || this.amountError) return false
+      if (this.ethRequired || this.amountError) return false;
 
-      return true
+      return true;
     },
     toAmount() {
       return dpUI(
         BN(this.safeAmount).times(this.bestRateBasedOnAmount),
-        this.toAsset,
-      )
+        this.toAsset
+      );
     },
     assetChain() {
-      return getChainFromAsset(this.asset)
+      return getChainFromAsset(this.asset);
     },
     toAssetChain() {
-      return getChainFromAsset(this.toAsset)
+      return getChainFromAsset(this.toAsset);
     },
     availableFees() {
-      const availableFees = new Set([])
-      const fees = this.getAssetFees(this.assetChain)
-      const toFees = this.getAssetFees(this.toAssetChain)
-      if (fees && Object.keys(fees).length) availableFees.add(this.assetChain)
+      const availableFees = new Set([]);
+      const fees = this.getAssetFees(this.assetChain);
+      const toFees = this.getAssetFees(this.toAssetChain);
+      if (fees && Object.keys(fees).length) availableFees.add(this.assetChain);
       if (toFees && Object.keys(toFees).length)
-        availableFees.add(this.toAssetChain)
-      return availableFees
+        availableFees.add(this.toAssetChain);
+      return availableFees;
     },
-    expiration: function () {
-      return format(add(new Date(), { hours: 6 }), 'h:mm a')
+    expiration: function() {
+      return format(add(new Date(), { hours: 6 }), "h:mm a");
     },
     totalFees() {
       const fees = {
         [this.assetChain]: null,
-        [this.toAssetChain]: null,
-      }
+        [this.toAssetChain]: null
+      };
 
       if (this.availableFees.has(this.assetChain)) {
         const feePrice = this.getAssetFees(this.assetChain)[
           this.selectedFee[this.assetChain]
-        ].fee
+        ].fee;
         const initiationFee = getTxFee(
           this.asset,
           TX_TYPES.SWAP_INITIATION,
-          feePrice,
-        )
-        fees[this.assetChain] = initiationFee
+          feePrice
+        );
+        fees[this.assetChain] = initiationFee;
       }
 
       if (this.availableFees.has(this.toAssetChain)) {
         const feePrice = this.getAssetFees(this.toAssetChain)[
           this.selectedFee[this.toAssetChain]
-        ].fee
-        const claimFee = getTxFee(this.toAsset, TX_TYPES.SWAP_CLAIM, feePrice)
+        ].fee;
+        const claimFee = getTxFee(this.toAsset, TX_TYPES.SWAP_CLAIM, feePrice);
         fees[this.toAssetChain] = fees[this.toAssetChain]
           ? fees[this.toAssetChain].plus(claimFee)
-          : claimFee
+          : claimFee;
 
         if (this.sendTo) {
-          const sendFee = getTxFee(this.toAsset, TX_TYPES.SEND, feePrice)
+          const sendFee = getTxFee(this.toAsset, TX_TYPES.SEND, feePrice);
           fees[this.toAssetChain] = fees[this.toAssetChain]
             ? fees[this.toAssetChain].plus(sendFee)
-            : sendFee
+            : sendFee;
         }
       }
 
-      return fees
+      return fees;
     },
+    sendFeeType() {
+      return getFeeType(this.assetChain);
+    },
+    receiveFeeType() {
+      return getFeeType(this.toAssetChain);
+    },
+    includeFees() {
+      return this.sendFeeType === FEE_TYPES.BTC;
+    },
+    amountToSend() {
+      if (this.feeType === FEE_TYPES.BTC) {
+        return BN(this.amount).plus(BN(this.totalFees[this.assetChain]));
+      }
+      return this.amount;
+    },
+    amountToSendInFiat() {
+      return prettyFiatBalance(this.amountToSend, this.fiatRates[this.asset]);
+    },
+    amountToReveiveInFiat() {
+      return prettyFiatBalance(this.toAmount, this.fiatRates[this.toAsset]);
+    }
   },
   methods: {
-    ...mapActions(['updateMarketData', 'updateFees', 'newSwap']),
+    ...mapActions(["updateMarketData", "updateFees", "newSwap"]),
     shortenAddress,
     prettyBalance,
     prettyFiatBalance,
     getAssetIcon,
     getAssetColorStyle,
     getAssetFees(asset) {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
+      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset];
     },
     getFeeTxTypes(asset) {
       if (asset === this.assetChain) {
-        return [TX_TYPES.SWAP_INITIATION]
+        return [TX_TYPES.SWAP_INITIATION];
       }
       if (asset === this.toAssetChain) {
         return this.sendTo
           ? [TX_TYPES.SWAP_INITIATION, TX_TYPES.SEND]
-          : [TX_TYPES.SWAP_INITIATION]
+          : [TX_TYPES.SWAP_INITIATION];
       }
     },
     setAmount(amount) {
-      this.amount = amount
+      this.amount = amount;
     },
     setToAsset(val) {
-      this.toAsset = val
-      this.updateFees({ asset: this.toAssetChain })
+      this.toAsset = val;
+      this.updateFees({ asset: this.toAssetChain });
       this.selectedFee = Object.assign({}, this.selectedFee, {
-        [this.toAssetChain]: 'average',
-      })
+        [this.toAssetChain]: "average"
+      });
     },
     async swap() {
-      const fromAmount = cryptoassets[this.asset].currencyToUnit(this.amount)
+      const fromAmount = cryptoassets[this.asset].currencyToUnit(this.amount);
 
       const fee = this.availableFees.has(this.assetChain)
         ? this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]]
             .fee
-        : undefined
+        : undefined;
 
       const toFee = this.availableFees.has(this.toAssetChain)
         ? this.getAssetFees(this.toAssetChain)[
             this.selectedFee[this.toAssetChain]
           ].fee
-        : undefined
+        : undefined;
 
-      this.loading = true
+      this.loading = true;
       await this.newSwap({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
@@ -551,16 +609,16 @@ export default {
         fromAmount,
         sendTo: this.sendTo,
         fee,
-        claimFee: toFee,
-      })
+        claimFee: toFee
+      });
 
-      this.$router.replace(`/account/${this.asset}`)
+      this.$router.replace(`/account/${this.asset}`);
     },
     getSelectedFeeLabel(fee) {
-      return getFeeLabel(fee)
-    },
-  },
-}
+      return getFeeLabel(fee);
+    }
+  }
+};
 </script>
 
 <style lang="scss">

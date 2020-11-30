@@ -70,9 +70,9 @@ export default {
       display: flex;
       align-items: center;
       justify-content: left;
-      padding: 5px 10px;
       border: none;
       font-size: $font-size-tiny;
+      padding: 5px 0px 0px 20px;
       label {
         float: left;
       }
