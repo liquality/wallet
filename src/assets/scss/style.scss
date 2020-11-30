@@ -146,6 +146,7 @@ textarea {
     & > .label-sub {
       text-transform: none;
       font-weight: normal;
+      font-size: $font-size-tiny;
     }
   }
   label.btn {
@@ -275,5 +276,11 @@ textarea {
   svg {
     height: 75px;
   }
+}
+
+.label-bordered {
+  border: 1px solid #d6d6d6;
+  padding: 0.05rem 0.5rem;
+  border-radius: 26px;
 }
 

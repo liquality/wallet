@@ -56,6 +56,7 @@ export default {
       font-weight: bold;
       text-transform: uppercase;
       padding-right: 0.5em;
+      font-size: $font-size-tiny;
     }
   }
 
@@ -67,13 +68,12 @@ export default {
 
     li {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: left;
-      padding: 5px 20px;
+      padding: 5px 10px;
       border: none;
       font-size: $font-size-tiny;
       label {
-        font-weight: bold;
         float: left;
       }
     }

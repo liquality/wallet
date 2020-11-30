@@ -14,7 +14,7 @@
             <span class="float-left">
               <label for="amount"> Send </label>
             </span>
-            <span class="float-right label-append">
+            <span class="float-right label-append label-bordered">
               ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
             </span>
             <div class="input-group send_asset">
@@ -86,26 +86,26 @@
 
         <div class="wrapper_bottom">
           <DetailsContainer v-if="feesAvailable">
-           <template v-slot:header>
-            <span class="details-title">Network Speed/Fee</span> 
-            <span class="text-muted">
-              ({{ selectedFee.slice(0, 4) }} / {{ totalFee }} {{ feeType }})
-            </span>
-          </template>
-          <template v-slot:content>
-             <li>
-               <div class="send_fees">
-              {{ assetChain }}
-              <FeeSelector
-                :asset="assetChain"
-                v-model="selectedFee"
-                v-bind:fees="assetFees"
-                v-bind:txTypes="[txType]"
-              />
-            </div>
-             </li>
-          </template>
-        </DetailsContainer>
+            <template v-slot:header>
+              <span class="details-title">Network Speed/Fee</span>
+              <span class="text-muted">
+                ({{ selectedFeeLabel }} / {{ totalFee }} {{ feeType }})
+              </span>
+            </template>
+            <template v-slot:content>
+              <li>
+                <div class="send_fees">
+                  {{ assetChain }}
+                  <FeeSelector
+                    :asset="assetChain"
+                    v-model="selectedFee"
+                    v-bind:fees="assetFees"
+                    v-bind:txTypes="[txType]"
+                  />
+                </div>
+              </li>
+            </template>
+          </DetailsContainer>
           <div class="button-group">
             <router-link :to="`/account/${asset}`"
               ><button class="btn btn-light btn-outline-primary btn-lg">
@@ -126,13 +126,13 @@
     <div class="send-confirm wrapper form text-center" v-if="showConfirm">
       <div class="wrapper_top form">
         <div class="form-group">
-          <label> Send <span v-if="includeFees" class="text-muted">(INCL FEES)</span> </label>
+          <label>
+            Send <span v-if="includeFees" class="text-muted">(INCL FEES)</span>
+          </label>
           <p class="confirm-value" :style="getAssetColorStyle(asset)">
             {{ amountToSend }} {{ asset }}
           </p>
-          <p v-if="!includeFees">
-            ~{{ totalFee }} ETH FEES
-          </p>
+          <p v-if="!includeFees">~{{ totalFee }} ETH FEES</p>
           <p class="text-muted">${{ amountToSendInFiat }}</p>
         </div>
         <div class="form-group">
@@ -140,18 +140,20 @@
           <p class="confirm-value">{{ shortenAddress(this.address) }}</p>
         </div>
       </div>
-    
+
       <div class="wrapper_bottom">
         <DetailsContainer>
-           <template v-slot:header>
+          <template v-slot:header>
             <span class="details-title">Details</span>
           </template>
           <template v-slot:content>
-             <li><label>Send</label></li>
+            <li><label>Send</label></li>
             <li>
               <span class="text-muted">
-                AMOUNT:&nbsp;{{ amountToSend }} {{ assetChain }} /
-                ${{ amountToSendInFiat }}</span>
+                AMOUNT:&nbsp;{{ amountToSend }} {{ assetChain }} / ${{
+                  amountToSendInFiat
+                }}</span
+              >
             </li>
             <li>
               <span class="text-muted"
@@ -185,21 +187,27 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-import BN from 'bignumber.js'
-import cryptoassets from '@/utils/cryptoassets'
-import NavBar from '@/components/NavBar'
-import FeeSelector from '@/components/FeeSelector'
-import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { mapState, mapActions } from "vuex";
+import BN from "bignumber.js";
+import cryptoassets from "@/utils/cryptoassets";
+import NavBar from "@/components/NavBar";
+import FeeSelector from "@/components/FeeSelector";
+import { prettyBalance, prettyFiatBalance } from "@/utils/coinFormatter";
 import {
   getChainFromAsset,
   getAssetColorStyle,
   getAssetIcon
-} from '@/utils/asset'
-import { shortenAddress } from '@/utils/address'
-import { TX_TYPES, FEE_TYPES, getTxFee, getFeeType } from '@/utils/fees'
-import SpinnerIcon from '@/assets/icons/spinner.svg'
-import DetailsContainer from '@/components/DetailsContainer'
+} from "@/utils/asset";
+import { shortenAddress } from "@/utils/address";
+import {
+  TX_TYPES,
+  FEE_TYPES,
+  getTxFee,
+  getFeeType,
+  getFeeLabel
+} from "@/utils/fees";
+import SpinnerIcon from "@/assets/icons/spinner.svg";
+import DetailsContainer from "@/components/DetailsContainer";
 
 export default {
   components: {
@@ -208,111 +216,117 @@ export default {
     SpinnerIcon,
     DetailsContainer
   },
-  data () {
+  data() {
     return {
       amount: 0,
       address: null,
-      selectedFee: 'average',
+      selectedFee: "average",
       showConfirm: false,
       loading: false
-    }
+    };
   },
   props: {
     asset: String
   },
   computed: {
     ...mapState([
-      'activeNetwork',
-      'activeWalletId',
-      'balances',
-      'fees',
-      'fiatRates'
+      "activeNetwork",
+      "activeWalletId",
+      "balances",
+      "fees",
+      "fiatRates"
     ]),
-    assetChain () {
-      return getChainFromAsset(this.asset)
+    assetChain() {
+      return getChainFromAsset(this.asset);
     },
-    assetFees () {
+    assetFees() {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         this.assetChain
-      ]
+      ];
     },
-    feesAvailable () {
-      return this.assetFees && Object.keys(this.assetFees).length
+    feesAvailable() {
+      return this.assetFees && Object.keys(this.assetFees).length;
     },
-    isValidAddress () {
-      return cryptoassets[this.asset].isValidAddress(this.address)
+    isValidAddress() {
+      return cryptoassets[this.asset].isValidAddress(this.address);
     },
-    addressError () {
-      if (!this.isValidAddress) { return 'Wrong format. Please check the address.' }
-      return null
+    addressError() {
+      if (!this.isValidAddress) {
+        return "Wrong format. Please check the address.";
+      }
+      return null;
     },
-    amountError () {
-      const amount = BN(this.amount)
-      if (amount.gt(this.available)) return 'Lower amount. This exceeds available balance.'
-      return null
+    amountError() {
+      const amount = BN(this.amount);
+      if (amount.gt(this.available))
+        return "Lower amount. This exceeds available balance.";
+      return null;
     },
-    canSend () {
-      if (!this.address || this.addressError) return false
-      if (BN(this.amount).lte(0) || this.amountError) return false
+    canSend() {
+      if (!this.address || this.addressError) return false;
+      if (BN(this.amount).lte(0) || this.amountError) return false;
 
-      return true
+      return true;
     },
-    txType () {
-      return TX_TYPES.SEND
+    txType() {
+      return TX_TYPES.SEND;
     },
-    totalFee () {
+    totalFee() {
       const feePrice = this.feesAvailable
         ? this.assetFees[this.selectedFee].fee
-        : 0
-      const sendFee = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
-      return sendFee
+        : 0;
+      const sendFee = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice);
+      return sendFee;
     },
-    available () {
+    available() {
       const balance = this.balances[this.activeNetwork][this.activeWalletId][
         this.asset
-      ]
-      const fee = cryptoassets[this.assetChain].currencyToUnit(this.totalFee)
+      ];
+      const fee = cryptoassets[this.assetChain].currencyToUnit(this.totalFee);
       const available =
         this.assetChain !== this.asset
           ? BN(balance)
-          : BN.max(BN(balance).minus(fee), 0)
-      return prettyBalance(available, this.asset)
+          : BN.max(BN(balance).minus(fee), 0);
+      return prettyBalance(available, this.asset);
     },
-    amountToSend () {
-      if(this.feeType === FEE_TYPES.SAT) {
-        return BN(this.amount).plus(BN(this.totalFee))
+    amountToSend() {
+      if (this.feeType === FEE_TYPES.BTC) {
+        return BN(this.amount).plus(BN(this.totalFee));
       }
-      return this.amount
+      return this.amount;
     },
-    amountToSendInFiat () {
-      return prettyFiatBalance(this.amountToSend, this.fiatRates[this.asset])
+    amountToSendInFiat() {
+      return prettyFiatBalance(this.amountToSend, this.fiatRates[this.asset]);
     },
-    totalFeeInFiat () {
-      return prettyFiatBalance(this.totalFee, this.fiatRates[this.assetChain])
+    totalFeeInFiat() {
+      return prettyFiatBalance(this.totalFee, this.fiatRates[this.assetChain]);
     },
-    feeType () {
-      return getFeeType(this.assetChain)
+    feeType() {
+      return getFeeType(this.assetChain);
     },
-    includeFees () {
-      return this.feeType === FEE_TYPES.SAT
+    includeFees() {
+      return this.feeType === FEE_TYPES.BTC;
     },
+    selectedFeeLabel() {
+      return getFeeLabel(this.selectedFee);
+    }
   },
   methods: {
-    ...mapActions(['updateFees', 'sendTransaction']),
+    ...mapActions(["updateFees", "sendTransaction"]),
     prettyBalance,
     prettyFiatBalance,
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
-    async send () {
+    async send() {
       const amount = cryptoassets[this.asset]
         .currencyToUnit(this.amount)
-        .toNumber()
+        .toNumber();
       const fee = this.feesAvailable
         ? this.assetFees[this.selectedFee].fee
-        : undefined
+        : undefined;
 
-      this.loading = true
+      this.loading = true;
       await this.sendTransaction({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
@@ -320,18 +334,18 @@ export default {
         to: this.address,
         amount,
         fee
-      })
+      });
 
-      this.$router.replace(`/account/${this.asset}`)
+      this.$router.replace(`/account/${this.asset}`);
     },
-    setMaxAmount () {
-      this.amount = this.available
+    setMaxAmount() {
+      this.amount = this.available;
     }
   },
-  created () {
-    this.updateFees({ asset: this.assetChain })
+  created() {
+    this.updateFees({ asset: this.assetChain });
   }
-}
+};
 </script>
 
 <style lang="scss">

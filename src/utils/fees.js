@@ -36,14 +36,20 @@ const FEE_UNITS = {
 }
 
 const FEE_TYPES = {
-  GWEI: 'GWEI',
-  SAT : 'SAT'
+  BTC: 'BTC',
+  ETH : 'ETH'
 }
 
 const FEE_TYPE_CONFIG = {
-  ETH: 'GWEI',
-  RBTC: 'GWEI',
-  BTC : 'SAT'
+  ETH: 'ETH',
+  RBTC: 'ETH',
+  BTC : 'BTC'
+}
+
+const FEE_OPTIONS = {
+  SLOW: { name: 'Slow', label: 'Slow'},
+  AVERAGE: { name: 'Average', label: 'Avg'},
+  FAST : { name: 'Fast', label: 'Fast'},
 }
 
 function getTxFee (_asset, type, _feePrice) {
@@ -60,4 +66,9 @@ function getFeeType(asset) {
   return FEE_TYPE_CONFIG[asset];
 }
 
-export { TX_TYPES, FEE_TYPES, FEE_TYPE_CONFIG, getTxFee, getFeeType }
+function getFeeLabel(fee) {
+  const name = fee.toUpperCase()
+  return FEE_OPTIONS[name].label
+}
+
+export { TX_TYPES, FEE_TYPES, FEE_TYPE_CONFIG, FEE_OPTIONS, getTxFee, getFeeType, getFeeLabel }
