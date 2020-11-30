@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
+import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 
 export default {
    components: {

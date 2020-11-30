@@ -22,11 +22,30 @@
               <input type="text" class="form-control" :class="{ 'is-invalid': showErrors && amountError }" id="amount" v-model="amount" placeholder="0.00" :style="getAssetColorStyle(asset)" autocomplete="off">
             </div>
             <small v-if="showErrors && amountError" class="text-danger form-text text-right">{{ amountError }}</small>
-            <small class="form-text d-flex justify-content-between">
-              <div class="swap_limits">
-                <a @click="setAmount(min)">Min</a> {{min}} <a class="ml-1" @click="setAmount(max)">Max</a> {{max}}
-              </div>
-            </small>
+          </div>
+          <div class="form-group">
+            <span class="label-sub float-left"
+              ><span class="text-muted">Available</span> {{ available }}
+              {{ asset }}</span
+            >
+            <div
+              class="float-right btn-group btn-group-toggle"
+            >
+              <label
+                :class="{ active: (amount === min)}"
+                class="btn btn-light btn-outline-dark btn-sm"
+                @click="setAmount(min)"
+              >
+                <input type="radio" name="amountSelector" autocomplete="off"/> Min
+              </label>
+              <label
+                :class="{ active: (amount === max)}"
+                class="btn btn-light btn-outline-dark btn-sm"
+                @click="setAmount(max)"
+              >
+                <input type="radio" name="amountSelector" autocomplete="off"/> Max
+              </label>
+            </div>
           </div>
           <div class="form-group">
             <label for="amount">Receive</label>

@@ -56,7 +56,7 @@
             >
               <label
                 class="btn btn-light btn-outline-dark btn-sm"
-                @click="clickMaxAmount"
+                @click="setMaxAmount"
               >
                 <input type="radio" name="maxAmount" autocomplete="off" /> Max
               </label>
@@ -324,7 +324,7 @@ export default {
 
       this.$router.replace(`/account/${this.asset}`)
     },
-    clickMaxAmount () {
+    setMaxAmount () {
       this.amount = this.available
     }
   },
