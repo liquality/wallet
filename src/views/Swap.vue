@@ -229,10 +229,6 @@
           </p>
           <p class="text-muted">${{ amountToReveiveInFiat }}</p>
         </div>
-        <div v-if="sendTo" class="form-group">
-          <label>At</label>
-          <p class="confirm-value">{{ shortenAddress(sendTo) }}</p>
-        </div>
       </div>
 
       <div class="wrapper_bottom">
@@ -274,6 +270,16 @@
                     fiatRates[toAsset]
                   )
                 }})
+              </span>
+            </li>
+            <li v-if="sendTo">
+              <span class="text-muted">
+                At External Wallet - {{ shortenAddress(sendTo) }}
+              </span>
+            </li>
+            <li v-else>
+              <span class="text-muted">
+                At This Wallet - {{ shortenAddress(currentWalletAddress) }}
               </span>
             </li>
             <li>
@@ -392,7 +398,10 @@ export default {
       'marketData',
       'balances',
       'fees',
-      'fiatRates'
+      'fiatRates',
+      'addresses',
+      'activeWalletId',
+      'activeNetwork'
     ]),
     networkMarketData () {
       return this.marketData[this.activeNetwork]
@@ -546,6 +555,10 @@ export default {
     },
     amountToReveiveInFiat () {
       return prettyFiatBalance(this.toAmount, this.fiatRates[this.toAsset])
+    },
+    currentWalletAddress () {
+      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
+      return address && cryptoassets[this.asset].formatAddress(address)
     }
   },
   methods: {

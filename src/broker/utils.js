@@ -1,3 +1,4 @@
+/* global browser */
 let isBgScr
 
 export const BG_PREFIX = '##BACKGROUND##'

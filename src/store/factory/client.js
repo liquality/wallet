@@ -2,7 +2,6 @@ import Client from '@liquality/client'
 
 import BitcoinSwapProvider from '@liquality/bitcoin-swap-provider'
 import BitcoinJsWalletProvider from '@liquality/bitcoin-js-wallet-provider'
-import BitcoinRpcProvider from '@liquality/bitcoin-rpc-provider'
 import BitcoinEsploraBatchApiProvider from '@liquality/bitcoin-esplora-batch-api-provider'
 import BitcoinEsploraSwapFindProvider from '@liquality/bitcoin-esplora-swap-find-provider'
 import BitcoinEarnFeeProvider from '@liquality/bitcoin-earn-fee-provider'
@@ -27,27 +26,29 @@ import cryptoassets from '../../utils/cryptoassets'
 
 export const Networks = ['mainnet', 'testnet']
 
+export const AssetNetworks = {
+  BTC: {
+    testnet: BitcoinNetworks.bitcoin_testnet,
+    mainnet: BitcoinNetworks.bitcoin
+  },
+  ETH: {
+    testnet: EthereumNetworks.rinkeby,
+    mainnet: EthereumNetworks.mainnet
+  },
+  RBTC: {
+    testnet: EthereumNetworks.rsk_testnet,
+    mainnet: EthereumNetworks.rsk_mainnet
+  }
+}
+
 function createBtcClient (network, mnemonic) {
   const isTestnet = network === 'testnet'
-  const bitcoinNetwork = isTestnet ? BitcoinNetworks.bitcoin_testnet : BitcoinNetworks.bitcoin
+  const bitcoinNetwork = AssetNetworks.BTC[network]
   const esploraApi = isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'
   const batchEsploraApi = isTestnet ? 'https://liquality.io/electrs-testnet-batch' : 'https://liquality.io/electrs-batch'
-  const rpcUrl = isTestnet ? 'https://liquality.io/bitcointestnetrpc/' : 'https://liquality.io/bitcoinrpc/'
-  const rpcUser = isTestnet ? 'bitcoin' : 'liquality'
-  const rpcPassword = isTestnet ? 'local321' : 'liquality123'
-
-  /**
-   * Temporary provision to ensure `mediantime` is used for block.timestamp
-   * Esplora API does not provide the `mediantime` and `timestamp` is not suitable for timelocked applications
-   * https://github.com/Blockstream/esplora/issues/269
-   * OP_CLTV checks against `mediantime`
-   */
-  const bitcoinRpcProvider = new BitcoinRpcProvider(rpcUrl, rpcUser, rpcPassword)
-  const bitcoinEsploraProvider = new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2)
-  bitcoinEsploraProvider.getBlockByHash = (blockHash) => bitcoinRpcProvider.getBlockByHash(blockHash)
 
   const btcClient = new Client()
-  btcClient.addProvider(bitcoinEsploraProvider)
+  btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2))
   btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic))
   btcClient.addProvider(new BitcoinSwapProvider(bitcoinNetwork))
   btcClient.addProvider(new BitcoinEsploraSwapFindProvider(esploraApi))
@@ -77,7 +78,7 @@ function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, 
 
 function createEthClient (asset, network, mnemonic) {
   const isTestnet = network === 'testnet'
-  const ethereumNetwork = isTestnet ? EthereumNetworks.rinkeby : EthereumNetworks.mainnet
+  const ethereumNetwork = AssetNetworks.ETH[network]
   const infuraApi = isTestnet ? 'https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f' : 'https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'
   const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
   const FeeProvider = isTestnet ? EthereumRpcFeeProvider : EthereumGasStationFeeProvider
@@ -87,9 +88,9 @@ function createEthClient (asset, network, mnemonic) {
 
 function createRskClient (asset, network, mnemonic) {
   const isTestnet = network === 'testnet'
-  const rskNetwork = isTestnet ? EthereumNetworks.rsk_testnet : EthereumNetworks.rsk_mainnet
+  const rskNetwork = AssetNetworks.RBTC[network]
   const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
-  const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rskl-mainnet-api'
+  const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
 
   return createEthereumClient(asset, rskNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
 }

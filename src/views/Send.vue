@@ -140,7 +140,6 @@
           <p class="confirm-value">{{ shortenAddress(this.address) }}</p>
         </div>
       </div>
-
       <div class="wrapper_bottom">
         <DetailsContainer>
           <template v-slot:header>

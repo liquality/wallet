@@ -36,5 +36,6 @@ export default {
   termsAcceptedAt: null,
   setupAt: null,
 
-  injectEthereum: false
+  injectEthereum: false,
+  injectEthereumAsset: 'ETH'
 }
