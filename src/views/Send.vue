@@ -150,7 +150,7 @@
             <li><label>Send</label></li>
             <li>
               <span class="text-muted">
-                AMOUNT:&nbsp;{{ amountToSend }} {{ assetChain }} / ${{
+                AMOUNT:&nbsp;{{ amountToSend }} {{ asset }} / ${{
                   amountToSendInFiat
                 }}</span
               >
