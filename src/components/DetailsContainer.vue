@@ -14,7 +14,7 @@
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 
 export default {
-   components: {
+  components: {
     ChevronDownIcon
   },
   props: ['open'],
@@ -27,7 +27,7 @@ export default {
     return {
       showDetails: false
     }
-  },
+  }
 }
 </script>
 

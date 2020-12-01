@@ -187,27 +187,26 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-import BN from "bignumber.js";
-import cryptoassets from "@/utils/cryptoassets";
-import NavBar from "@/components/NavBar";
-import FeeSelector from "@/components/FeeSelector";
-import { prettyBalance, prettyFiatBalance } from "@/utils/coinFormatter";
+import { mapState, mapActions } from 'vuex'
+import BN from 'bignumber.js'
+import cryptoassets from '@/utils/cryptoassets'
+import NavBar from '@/components/NavBar'
+import FeeSelector from '@/components/FeeSelector'
+import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import {
   getChainFromAsset,
   getAssetColorStyle,
   getAssetIcon
-} from "@/utils/asset";
-import { shortenAddress } from "@/utils/address";
+} from '@/utils/asset'
+import { shortenAddress } from '@/utils/address'
 import {
   TX_TYPES,
   FEE_TYPES,
   getTxFee,
-  getFeeType,
   getFeeLabel
-} from "@/utils/fees";
-import SpinnerIcon from "@/assets/icons/spinner.svg";
-import DetailsContainer from "@/components/DetailsContainer";
+} from '@/utils/fees'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
+import DetailsContainer from '@/components/DetailsContainer'
 
 export default {
   components: {
@@ -216,117 +215,116 @@ export default {
     SpinnerIcon,
     DetailsContainer
   },
-  data() {
+  data () {
     return {
       amount: 0,
       address: null,
-      selectedFee: "average",
+      selectedFee: 'average',
       showConfirm: false,
       loading: false
-    };
+    }
   },
   props: {
     asset: String
   },
   computed: {
     ...mapState([
-      "activeNetwork",
-      "activeWalletId",
-      "balances",
-      "fees",
-      "fiatRates"
+      'activeNetwork',
+      'activeWalletId',
+      'balances',
+      'fees',
+      'fiatRates'
     ]),
-    assetChain() {
-      return getChainFromAsset(this.asset);
+    assetChain () {
+      return getChainFromAsset(this.asset)
     },
-    assetFees() {
+    assetFees () {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         this.assetChain
-      ];
+      ]
     },
-    feesAvailable() {
-      return this.assetFees && Object.keys(this.assetFees).length;
+    feesAvailable () {
+      return this.assetFees && Object.keys(this.assetFees).length
     },
-    isValidAddress() {
-      return cryptoassets[this.asset].isValidAddress(this.address);
+    isValidAddress () {
+      return cryptoassets[this.asset].isValidAddress(this.address)
     },
-    addressError() {
+    addressError () {
       if (!this.isValidAddress) {
-        return "Wrong format. Please check the address.";
+        return 'Wrong format. Please check the address.'
       }
-      return null;
+      return null
     },
-    amountError() {
-      const amount = BN(this.amount);
-      if (amount.gt(this.available))
-        return "Lower amount. This exceeds available balance.";
-      return null;
+    amountError () {
+      const amount = BN(this.amount)
+      if (amount.gt(this.available)) { return 'Lower amount. This exceeds available balance.' }
+      return null
     },
-    canSend() {
-      if (!this.address || this.addressError) return false;
-      if (BN(this.amount).lte(0) || this.amountError) return false;
+    canSend () {
+      if (!this.address || this.addressError) return false
+      if (BN(this.amount).lte(0) || this.amountError) return false
 
-      return true;
+      return true
     },
-    txType() {
-      return TX_TYPES.SEND;
+    txType () {
+      return TX_TYPES.SEND
     },
-    totalFee() {
+    totalFee () {
       const feePrice = this.feesAvailable
         ? this.assetFees[this.selectedFee].fee
-        : 0;
-      const sendFee = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice);
-      return sendFee;
+        : 0
+      const sendFee = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
+      return sendFee
     },
-    available() {
+    available () {
       const balance = this.balances[this.activeNetwork][this.activeWalletId][
         this.asset
-      ];
-      const fee = cryptoassets[this.assetChain].currencyToUnit(this.totalFee);
+      ]
+      const fee = cryptoassets[this.assetChain].currencyToUnit(this.totalFee)
       const available =
         this.assetChain !== this.asset
           ? BN(balance)
-          : BN.max(BN(balance).minus(fee), 0);
-      return prettyBalance(available, this.asset);
+          : BN.max(BN(balance).minus(fee), 0)
+      return prettyBalance(available, this.asset)
     },
-    amountToSend() {
+    amountToSend () {
       if (this.feeType === FEE_TYPES.BTC) {
-        return BN(this.amount).plus(BN(this.totalFee));
+        return BN(this.amount).plus(BN(this.totalFee))
       }
-      return this.amount;
+      return this.amount
     },
-    amountToSendInFiat() {
-      return prettyFiatBalance(this.amountToSend, this.fiatRates[this.asset]);
+    amountToSendInFiat () {
+      return prettyFiatBalance(this.amountToSend, this.fiatRates[this.asset])
     },
-    totalFeeInFiat() {
-      return prettyFiatBalance(this.totalFee, this.fiatRates[this.assetChain]);
+    totalFeeInFiat () {
+      return prettyFiatBalance(this.totalFee, this.fiatRates[this.assetChain])
     },
-    feeType() {
-      return getFeeType(this.assetChain);
+    feeType () {
+      return FEE_TYPES[this.assetChain]
     },
-    includeFees() {
-      return this.feeType === FEE_TYPES.BTC;
+    includeFees () {
+      return this.feeType === FEE_TYPES.BTC
     },
-    selectedFeeLabel() {
-      return getFeeLabel(this.selectedFee);
+    selectedFeeLabel () {
+      return getFeeLabel(this.selectedFee)
     }
   },
   methods: {
-    ...mapActions(["updateFees", "sendTransaction"]),
+    ...mapActions(['updateFees', 'sendTransaction']),
     prettyBalance,
     prettyFiatBalance,
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
-    async send() {
+    async send () {
       const amount = cryptoassets[this.asset]
         .currencyToUnit(this.amount)
-        .toNumber();
+        .toNumber()
       const fee = this.feesAvailable
         ? this.assetFees[this.selectedFee].fee
-        : undefined;
+        : undefined
 
-      this.loading = true;
+      this.loading = true
       await this.sendTransaction({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
@@ -334,18 +332,18 @@ export default {
         to: this.address,
         amount,
         fee
-      });
+      })
 
-      this.$router.replace(`/account/${this.asset}`);
+      this.$router.replace(`/account/${this.asset}`)
     },
-    setMaxAmount() {
-      this.amount = this.available;
+    setMaxAmount () {
+      this.amount = this.available
     }
   },
-  created() {
-    this.updateFees({ asset: this.assetChain });
+  created () {
+    this.updateFees({ asset: this.assetChain })
   }
-};
+}
 </script>
 
 <style lang="scss">

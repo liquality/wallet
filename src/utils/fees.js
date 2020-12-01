@@ -36,20 +36,15 @@ const FEE_UNITS = {
 }
 
 const FEE_TYPES = {
-  BTC: 'BTC',
-  ETH : 'ETH'
-}
-
-const FEE_TYPE_CONFIG = {
   ETH: 'ETH',
-  RBTC: 'ETH',
-  BTC : 'BTC'
+  BTC: 'BTC',
+  RBTC: 'RBTC'
 }
 
 const FEE_OPTIONS = {
-  SLOW: { name: 'Slow', label: 'Slow'},
-  AVERAGE: { name: 'Average', label: 'Avg'},
-  FAST : { name: 'Fast', label: 'Fast'},
+  SLOW: { name: 'Slow', label: 'Slow' },
+  AVERAGE: { name: 'Average', label: 'Avg' },
+  FAST: { name: 'Fast', label: 'Fast' }
 }
 
 function getTxFee (_asset, type, _feePrice) {
@@ -61,14 +56,9 @@ function getTxFee (_asset, type, _feePrice) {
   return cryptoassets[chainAsset].unitToCurrency(fee)
 }
 
-
-function getFeeType(asset) {
-  return FEE_TYPE_CONFIG[asset];
-}
-
-function getFeeLabel(fee) {
+function getFeeLabel (fee) {
   const name = fee.toUpperCase()
   return FEE_OPTIONS[name].label
 }
 
-export { TX_TYPES, FEE_TYPES, FEE_TYPE_CONFIG, FEE_OPTIONS, getTxFee, getFeeType, getFeeLabel }
+export { TX_TYPES, FEE_TYPES, FEE_OPTIONS, getTxFee, getFeeLabel }
