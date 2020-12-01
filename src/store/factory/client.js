@@ -32,22 +32,9 @@ function createBtcClient (network, mnemonic) {
   const bitcoinNetwork = isTestnet ? BitcoinNetworks.bitcoin_testnet : BitcoinNetworks.bitcoin
   const esploraApi = isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'
   const batchEsploraApi = isTestnet ? 'https://liquality.io/electrs-testnet-batch' : 'https://liquality.io/electrs-batch'
-  const rpcUrl = isTestnet ? 'https://liquality.io/bitcointestnetrpc/' : 'https://liquality.io/bitcoinrpc/'
-  const rpcUser = isTestnet ? 'bitcoin' : 'liquality'
-  const rpcPassword = isTestnet ? 'local321' : 'liquality123'
-
-  /**
-   * Temporary provision to ensure `mediantime` is used for block.timestamp
-   * Esplora API does not provide the `mediantime` and `timestamp` is not suitable for timelocked applications
-   * https://github.com/Blockstream/esplora/issues/269
-   * OP_CLTV checks against `mediantime`
-   */
-  const bitcoinRpcProvider = new BitcoinRpcProvider(rpcUrl, rpcUser, rpcPassword)
-  const bitcoinEsploraProvider = new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2)
-  bitcoinEsploraProvider.getBlockByHash = (blockHash) => bitcoinRpcProvider.getBlockByHash(blockHash)
 
   const btcClient = new Client()
-  btcClient.addProvider(bitcoinEsploraProvider)
+  btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2))
   btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic))
   btcClient.addProvider(new BitcoinSwapProvider(bitcoinNetwork))
   btcClient.addProvider(new BitcoinEsploraSwapFindProvider(esploraApi))
@@ -89,7 +76,7 @@ function createRskClient (asset, network, mnemonic) {
   const isTestnet = network === 'testnet'
   const rskNetwork = isTestnet ? EthereumNetworks.rsk_testnet : EthereumNetworks.rsk_mainnet
   const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
-  const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rskl-mainnet-api'
+  const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
 
   return createEthereumClient(asset, rskNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
 }
