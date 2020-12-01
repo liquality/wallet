@@ -1,6 +1,7 @@
 import { inject } from './broker/utils'
 import Script from './broker/Script'
 import { providerManager, ethereumProvider, bitcoinProvider } from './inject'
+import { AssetNetworks } from './store/factory/client'
 
 ;(new Script()).start()
 
@@ -10,9 +11,12 @@ inject(bitcoinProvider())
 chrome.storage.local.get(['liquality-wallet'], (storage) => {
   const state = storage['liquality-wallet']
   if (state.injectEthereum) {
+    const asset = state.injectEthereumAsset
+    const network = AssetNetworks[asset][state.activeNetwork]
     inject(ethereumProvider({
-      networkVersion: state.activeNetwork === 'mainnet' ? '1' : '4', // TODO: pull from network object + consider asset (i.e. other eth based chains)
-      chainId: state.activeNetwork === 'mainnet' ? '0x1' : '0x4'
+      asset: state.injectEthereumAsset,
+      networkVersion: network.networkId,
+      chainId: `0x${network.chainId.toString(16)}`
     }))
   }
 })

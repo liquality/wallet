@@ -27,9 +27,24 @@ import cryptoassets from '../../utils/cryptoassets'
 
 export const Networks = ['mainnet', 'testnet']
 
+export const AssetNetworks = {
+  BTC: {
+    testnet: BitcoinNetworks.bitcoin_testnet,
+    mainnet: BitcoinNetworks.bitcoin
+  },
+  ETH: {
+    testnet: EthereumNetworks.rinkeby,
+    mainnet: EthereumNetworks.mainnet
+  },
+  RBTC: {
+    testnet: EthereumNetworks.rsk_testnet,
+    mainnet: EthereumNetworks.rsk_mainnet
+  }
+}
+
 function createBtcClient (network, mnemonic) {
   const isTestnet = network === 'testnet'
-  const bitcoinNetwork = isTestnet ? BitcoinNetworks.bitcoin_testnet : BitcoinNetworks.bitcoin
+  const bitcoinNetwork = AssetNetworks.BTC[network]
   const esploraApi = isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'
   const batchEsploraApi = isTestnet ? 'https://liquality.io/electrs-testnet-batch' : 'https://liquality.io/electrs-batch'
 
@@ -64,7 +79,7 @@ function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, 
 
 function createEthClient (asset, network, mnemonic) {
   const isTestnet = network === 'testnet'
-  const ethereumNetwork = isTestnet ? EthereumNetworks.rinkeby : EthereumNetworks.mainnet
+  const ethereumNetwork = AssetNetworks.ETH[network]
   const infuraApi = isTestnet ? 'https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f' : 'https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'
   const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
   const FeeProvider = isTestnet ? EthereumRpcFeeProvider : EthereumGasStationFeeProvider
@@ -74,7 +89,7 @@ function createEthClient (asset, network, mnemonic) {
 
 function createRskClient (asset, network, mnemonic) {
   const isTestnet = network === 'testnet'
-  const rskNetwork = isTestnet ? EthereumNetworks.rsk_testnet : EthereumNetworks.rsk_mainnet
+  const rskNetwork = AssetNetworks.RBTC[network]
   const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
   const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
 

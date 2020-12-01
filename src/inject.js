@@ -57,16 +57,16 @@ class ProviderManager {
 window.providerManager = new ProviderManager()
 `
 
-const ethereumProvider = ({ networkVersion, chainId }) => `
+const ethereumProvider = ({ asset, networkVersion, chainId }) => `
 async function getAddresses () {
-  const eth = window.providerManager.getProviderFor('ETH')
+  const eth = window.providerManager.getProviderFor('${asset}')
   let addresses = await eth.getMethod('wallet.getAddresses')()
   addresses = addresses.map(a => '0x' + a.address)
   return addresses
 }
 
 async function handleRequest (req) {
-  const eth = window.providerManager.getProviderFor('ETH')
+  const eth = window.providerManager.getProviderFor('${asset}')
   if(req.method.startsWith('metamask_')) return null;
   if(req.method === 'eth_requestAccounts') {
     return await window.ethereum.enable();

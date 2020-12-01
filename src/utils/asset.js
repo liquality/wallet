@@ -37,6 +37,10 @@ export const isERC20 = asset => {
   return cryptoassets[asset].type === 'erc20'
 }
 
+export const isEthereumChain = asset => {
+  return ['ETH', 'RBTC'].includes(asset)
+}
+
 export const getChainFromAsset = asset => {
   if (isERC20(asset)) return 'ETH'
 

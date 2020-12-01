@@ -8,8 +8,18 @@
         <div class="setting-item_title flex-fill">Default Web3 Wallet
           <span class="setting-item_sub">Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.</span>
         </div>
-        <div class="setting-item_toggle">
+        <div class="setting-item_control">
           <toggle-button color="#9d4dfa" :value="injectEthereum" @change="e => toggleInjectEthereum(e.value)" />
+        </div>
+      </div>
+      <div class="setting-item">
+        <div class="setting-item_title flex-fill">Web3 Asset
+          <span class="setting-item_sub">Select which ethereum based asset should be used for dapps.</span>
+        </div>
+        <div class="setting-item_control">
+          <select class="custom-select" @change="e => updateInjectEthereumAsset(e.target.value)">
+            <option v-for="asset in ethereumAssets" :key="asset" :selected="injectEthereumAsset === asset">{{ asset }}</option>
+          </select>
         </div>
       </div>
     </div>
@@ -19,19 +29,29 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
+import { isEthereumChain } from '@/utils/asset'
 
 export default {
   components: {
     NavBar
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'injectEthereum'])
+    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets', 'injectEthereum', 'injectEthereumAsset']),
+    networkAssets () {
+      return this.enabledAssets[this.activeNetwork][this.activeWalletId]
+    },
+    ethereumAssets () {
+      return this.networkAssets.filter(isEthereumChain)
+    }
   },
   methods: {
-    ...mapActions(['enableEthereumInjection', 'disableEthereumInjection']),
+    ...mapActions(['enableEthereumInjection', 'disableEthereumInjection', 'setEthereumInjectionAsset']),
     toggleInjectEthereum (enable) {
       if (enable) this.enableEthereumInjection()
       else this.disableEthereumInjection()
+    },
+    updateInjectEthereumAsset (asset) {
+      this.setEthereumInjectionAsset({ asset })
     }
   }
 }
@@ -46,8 +66,13 @@ export default {
     border-bottom: 1px solid $hr-border-color;
     padding: 16px 30px;
 
-    &_toggle {
+    &_control {
       text-align: right;
+
+      .custom-select {
+        width: auto;
+        border-bottom: 1px solid $primary;
+      }
     }
 
     &_sub {
