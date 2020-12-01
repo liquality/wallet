@@ -2,7 +2,6 @@ import Client from '@liquality/client'
 
 import BitcoinSwapProvider from '@liquality/bitcoin-swap-provider'
 import BitcoinJsWalletProvider from '@liquality/bitcoin-js-wallet-provider'
-import BitcoinRpcProvider from '@liquality/bitcoin-rpc-provider'
 import BitcoinEsploraBatchApiProvider from '@liquality/bitcoin-esplora-batch-api-provider'
 import BitcoinEsploraSwapFindProvider from '@liquality/bitcoin-esplora-swap-find-provider'
 import BitcoinEarnFeeProvider from '@liquality/bitcoin-earn-fee-provider'

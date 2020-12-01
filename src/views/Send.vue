@@ -128,7 +128,6 @@
           <p class="confirm-value">{{ shortenAddress(this.address) }}</p>
         </div>
       </div>
-    
       <div class="wrapper_bottom">
         <div class="details-container">
           <div class="details-header" @click.stop="showDetails = !showDetails">
