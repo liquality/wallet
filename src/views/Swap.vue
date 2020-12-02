@@ -50,36 +50,43 @@
               {{ available }} {{ asset }}
             </span>
             <div class="float-right btn-group btn-group-toggle">
-              <label
-                :class="{ active: amount === min }"
-                class="btn btn-light btn-outline-dark btn-sm amount-option mr-2"
-                @click="setAmount(min)"
-              >
-                <input
-                  type="radio"
-                  name="amountSelector"
-                  autocomplete="off"
-                  :checked="amount === min"
-                />
-                Min
-              </label>
-              <label
-                :class="{ active: amount === max }"
-                class="btn btn-light btn-outline-dark btn-sm amount-option"
-                @click="setAmount(max)"
-              >
-                <input
-                  type="radio"
-                  name="amountSelector"
-                  autocomplete="off"
-                  :checked="amount === max"
-                />
-                Max
-              </label>
+              <v-popover offset="1" trigger="hover focus" class="mr-2">
+                <label
+                  :class="{ active: amount === min }"
+                  class="btn btn-light btn-outline-dark btn-sm amount-option"
+                  @click="setAmount(min)"
+                >
+                  Min
+                </label>
+                <template slot="popover">
+                  <p class="my-0 text-right">
+                    {{ min }} {{ asset }}
+                  </p>
+                  <p class="text-muted my-0 text-right">
+                    {{ prettyFiatBalance(min, fiatRates[asset]) }} USD
+                  </p>
+                </template>
+              </v-popover>
+              <v-popover offset="1" trigger="hover focus">
+                <label
+                  :class="{ active: amount === max }"
+                  class="btn btn-light btn-outline-dark btn-sm amount-option tooltip-target"
+                  @click="setAmount(max)"
+                >
+                  Max
+                </label>
+                <template slot="popover">
+                  <p class="my-0 text-right">
+                    {{ max }} {{ asset }}
+                  </p>
+                  <p class="text-muted my-0 text-right">
+                    {{ prettyFiatBalance(max, fiatRates[asset]) }} USD
+                  </p>
+                </template>
+              </v-popover>
             </div>
           </div>
           <div class="swap-separator">
-            <ArrowDownIcon />
           </div>
           <div class="form-group">
             <span class="float-left">
@@ -275,14 +282,19 @@
                 }})
               </span>
             </li>
-            <li v-if="sendTo">
-              <span class="text-muted">
+            <li>
+              <span class="text-muted" v-if="sendTo">
                 AT: External Wallet - {{ shortenAddress(sendTo) }}
+                <CopyIcon class="copy-icon"
+                          @click="copy(sendTo)"
+                          v-tooltip.bottom="{
+                              content: sendToCopied ? 'Copied!' : 'Copy',
+                              hideOnTargetClick: false
+                          }"
+                />
               </span>
-            </li>
-            <li v-else>
-              <span class="text-muted">
-                AT: This Wallet - {{ shortenAddress(currentWalletAddress) }}
+              <span v-else class="text-muted">
+                AT: This Wallet
               </span>
             </li>
             <li>
@@ -356,6 +368,7 @@ import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
 import ArrowDownIcon from '@/assets/icons/arrow_down.svg'
+import CopyIcon from '@/assets/icons/copy.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 
 export default {
@@ -368,7 +381,8 @@ export default {
     SwapIcon,
     SpinnerIcon,
     DetailsContainer,
-    ArrowDownIcon
+    ArrowDownIcon,
+    CopyIcon
   },
   data () {
     return {
@@ -378,7 +392,8 @@ export default {
       sendTo: null,
       selectedFee: {},
       showConfirm: false,
-      loading: false
+      loading: false,
+      sendToCopied: false
     }
   },
   props: {
@@ -626,6 +641,13 @@ export default {
     },
     getSelectedFeeLabel (fee) {
       return getFeeLabel(fee)
+    },
+    async copy (text) {
+      await navigator.clipboard.writeText(text)
+      this.sendToCopied = true
+      setTimeout(() => {
+        this.sendToCopied = false
+      }, 3000)
     }
   }
 }
@@ -694,5 +716,11 @@ export default {
   svg {
     height: 18px;
   }
+}
+
+svg.copy-icon {
+          cursor: pointer;
+          width: 14px;
+          margin-left: 6px;
 }
 </style>
