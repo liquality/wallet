@@ -14,7 +14,7 @@
             <span class="float-left">
               <label for="amount"> Send </label>
             </span>
-            <span class="float-right label-append label-bordered">
+            <span class="float-right label-append text-muted">
               ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
             </span>
             <div class="input-group send_asset">
@@ -93,17 +93,19 @@
               </span>
             </template>
             <template v-slot:content>
-              <li class="mb-2">
-                <div class="send_fees">
-                  {{ assetChain }}
-                  <FeeSelector
-                    :asset="assetChain"
-                    v-model="selectedFee"
-                    v-bind:fees="assetFees"
-                    v-bind:txTypes="[txType]"
-                  />
-                </div>
-              </li>
+              <ul class="selectors">
+                <li>
+                  <div class="send_fees">
+                    {{ assetChain }}
+                    <FeeSelector
+                      :asset="assetChain"
+                      v-model="selectedFee"
+                      v-bind:fees="assetFees"
+                      v-bind:txTypes="[txType]"
+                    />
+                  </div>
+                </li>
+              </ul>
             </template>
           </DetailsContainer>
           <div class="button-group">
@@ -146,21 +148,25 @@
             <span class="details-title">Details</span>
           </template>
           <template v-slot:content>
-            <li><label>Send</label></li>
-            <li>
-              <span class="text-muted">
-                AMOUNT:&nbsp;{{ amountToSend }} {{ asset }} / ${{
-                  amountToSendInFiat
-                }}</span
-              >
-            </li>
-            <li>
-              <span class="text-muted"
-                >NETWORK FEES:&nbsp; {{ totalFee }} {{ feeType }} / ${{
-                  totalFeeInFiat
-                }}
-              </span>
-            </li>
+            <ul class="items">
+               <li>
+                 <label>Send</label>
+              </li>
+              <li>
+                <span class="text-muted">
+                  AMOUNT:&nbsp;{{ amountToSend }} {{ asset }} / ${{
+                    amountToSendInFiat
+                  }}</span
+                >
+              </li>
+              <li>
+                <span class="text-muted"
+                  >NETWORK FEES:&nbsp; {{ totalFee }} {{ feeType }} / ${{
+                    totalFeeInFiat
+                  }}
+                </span>
+              </li>
+            </ul>
           </template>
         </DetailsContainer>
         <div class="button-group">

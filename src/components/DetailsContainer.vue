@@ -4,9 +4,9 @@
             <ChevronDownIcon :class="showDetails ? '' : 'right'"/>
             &nbsp;  <slot name="header"></slot>
           </div>
-          <ul class="details-list" v-if="showDetails">
-             <slot name="content"></slot>
-          </ul>
+          <div class="details-content" v-if="showDetails">
+            <slot name="content"></slot>
+          </div>
         </div>
 </template>
 
@@ -34,7 +34,7 @@ export default {
 <style lang="scss">
 .details-container {
   text-align: left;
-  margin-bottom: 1rem;
+  margin-bottom: 25px;
 
   .details-header {
     cursor: pointer;
@@ -60,21 +60,37 @@ export default {
     }
   }
 
-  .details-list {
+  .details-content {
+
+    ul {
     list-style-type: none;
     background: #ffffff;
     border: none;
     padding: 0;
 
-    li {
-      display: flex;
-      align-items: center;
-      justify-content: left;
-      border: none;
-      font-size: $font-size-tiny;
-      padding: 5px 0px 0px 20px;
-      label {
-        float: left;
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        border: none;
+        font-size: $font-size-tiny;
+        padding-left: 20px;
+
+        label {
+          float: left;
+        }
+      }
+    }
+
+    ul.selectors {
+      li {
+        padding-top: 10px;
+      }
+    }
+
+    ul.items {
+      li {
+        padding-top: 5px;
       }
     }
   }

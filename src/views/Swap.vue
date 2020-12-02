@@ -15,7 +15,7 @@
         <div class="wrapper_top">
           <div class="form-group">
             <span class="float-left"><label for="amount">Send</label></span>
-            <div class="float-right label-append label-bordered">
+            <div class="float-right label-append text-muted">
               ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
             </div>
             <div class="input-group swap_asset">
@@ -162,7 +162,7 @@
               <span class="swap-rate_value">
                 &nbsp;{{ bestRateBasedOnAmount }}
               </span>
-              <span class="swap-rate_term label-bordered"
+              <span class="swap-rate_term text-muted"
                 >&nbsp;{{ toAsset }}</span
               >
             </p>
@@ -180,7 +180,8 @@
                 </span>
               </template>
               <template v-slot:content>
-                <li v-for="asset in availableFees" :key="asset">
+                <ul class="selectors">
+                  <li v-for="asset in availableFees" :key="asset">
                   <span class="mr-2 font-weight-bold">{{ asset }}</span>
                   <FeeSelector
                     :asset="asset"
@@ -189,6 +190,7 @@
                     v-bind:txTypes="getFeeTxTypes(asset)"
                   />
                 </li>
+                </ul>
               </template>
             </DetailsContainer>
           </div>
@@ -237,7 +239,8 @@
             <span class="details-title">Details</span>
           </template>
           <template v-slot:content>
-            <li><label>Send</label></li>
+            <ul class="items">
+              <li><label>Send</label></li>
             <li>
               <span class="text-muted">
                 AMOUNT:&nbsp;{{ amountToSend }} {{ asset }} / ${{
@@ -274,12 +277,12 @@
             </li>
             <li v-if="sendTo">
               <span class="text-muted">
-                At External Wallet - {{ shortenAddress(sendTo) }}
+                AT: External Wallet - {{ shortenAddress(sendTo) }}
               </span>
             </li>
             <li v-else>
               <span class="text-muted">
-                At This Wallet - {{ shortenAddress(currentWalletAddress) }}
+                AT: This Wallet - {{ shortenAddress(currentWalletAddress) }}
               </span>
             </li>
             <li>
@@ -290,6 +293,7 @@
                 &nbsp;{{ toAsset }}</span
               >
             </li>
+            </ul>
           </template>
         </DetailsContainer>
         <div class="swap-info">
