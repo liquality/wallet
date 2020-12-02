@@ -367,7 +367,6 @@ import {
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
-import ArrowDownIcon from '@/assets/icons/arrow_down.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 
@@ -381,7 +380,6 @@ export default {
     SwapIcon,
     SpinnerIcon,
     DetailsContainer,
-    ArrowDownIcon,
     CopyIcon
   },
   data () {
