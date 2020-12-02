@@ -2,7 +2,7 @@
   <div class="head">
     <router-link to="/wallet"><LogoIcon class="head_logo" /></router-link>
     <div class="head_network" @click.stop="showNetworks = !showNetworks">
-      {{activeNetwork}}
+      {{activeNetworkLabel}}
       <ChevronUpIcon v-if="showNetworks" />
       <ChevronDownIcon v-else />
     </div>
@@ -39,6 +39,12 @@ export default {
     ...mapState(['wallets', 'activeWalletId', 'activeNetwork']),
     wallet: function () {
       return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+    },
+    activeNetworkLabel () {
+      if (this.activeNetwork === 'testnet') {
+        return 'Rinkeby Testnet'
+      }
+      return this.activeNetwork
     }
   },
   methods: {

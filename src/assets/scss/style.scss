@@ -179,7 +179,7 @@ textarea {
     }
 
     &_value {
-      font-size: 18px;
+      font-size: $font-size-tiny;
     }
 
     margin-bottom: 0;
@@ -292,7 +292,7 @@ textarea {
 .btn-option {
   height: 20px;
   font-weight: 300 !important;
-  font-size: $font-size-tiny;
+  font-size: $font-size-tiny !important;
   border: 1px solid #D9DFE5;
   padding: 0.05rem 0.5rem;
   border-radius: 26px;
@@ -318,6 +318,10 @@ textarea {
 
 .mt-40 {
   margin-top: 40px;
+}
+
+.mt-80 {
+  margin-top: 80px;
 }
 
 .sub-form-group {

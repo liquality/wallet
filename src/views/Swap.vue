@@ -43,9 +43,8 @@
             >
               {{ amountError }}
             </small>
-          </div>
-          <div class="form-group">
-            <span class="label-sub">
+            <div class="form-text d-flex justify-content-between">
+                      <span class="label-sub">
               <span class="text-muted">Available</span>
               {{ available }} {{ asset }}
             </span>
@@ -53,7 +52,7 @@
               <v-popover offset="1" trigger="hover focus" class="mr-2">
                 <label
                   :class="{ active: amount === min }"
-                  class="btn btn-light btn-outline-dark btn-sm amount-option"
+                  class="btn btn-option"
                   @click="setAmount(min)"
                 >
                   Min
@@ -70,7 +69,7 @@
               <v-popover offset="1" trigger="hover focus">
                 <label
                   :class="{ active: amount === max }"
-                  class="btn btn-light btn-outline-dark btn-sm amount-option tooltip-target"
+                  class="btn btn-option tooltip-target"
                   @click="setAmount(max)"
                 >
                   Max
@@ -85,10 +84,9 @@
                 </template>
               </v-popover>
             </div>
+            </div>
           </div>
-          <div class="swap-separator">
-          </div>
-          <div class="form-group">
+          <div class="form-group mt-80">
             <span class="float-left">
               <label for="amount">Receive</label>
             </span>
@@ -223,7 +221,7 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <label>
-            Send <span v-if="includeFees" class="text-muted">(INCL FEES)</span>
+            Send <span v-if="includeFees" class="text-muted font-weight-lighter">(INCL FEES)</span>
           </label>
           <p class="confirm-value" :style="getAssetColorStyle(asset)">
             {{ amountToSend }} {{ asset }}
@@ -231,8 +229,8 @@
           <div v-if="!includeFees">~{{ totalFees[assetChain] }} ETH FEES</div>
           <div class="text-muted">${{ amountToSendInFiat }}</div>
         </div>
-        <div class="form-group">
-          <label>Receive <span class="text-muted">(EXCL FEES)</span></label>
+        <div class="form-group mt-30">
+          <label>Receive <span class="text-muted font-weight-lighter">(EXCL FEES)</span></label>
           <p class="confirm-value" :style="getAssetColorStyle(toAsset)">
             {{ toAmount }} {{ toAsset }}
           </p>
@@ -299,7 +297,7 @@
             </li>
             <li>
               <span class="text-muted"
-                >Rate: 1 {{ asset }}&nbsp;=&nbsp;{{
+                >RATE: 1 {{ asset }}&nbsp;=&nbsp;{{
                   bestRateBasedOnAmount
                 }}
                 &nbsp;{{ toAsset }}</span
@@ -689,30 +687,13 @@ export default {
     &_clock {
       margin-top: 6px;
       margin-right: 8px;
-      height: 20px;
-      width: 20px;
+      height: 10px;
+      width: 10px;
       object-fit: contain;
     }
     p {
       font-size: $font-size-sm;
     }
-  }
-}
-
-.amount-option {
-  border-radius: 26px !important;
-  font-size: $font-size-tiny;
-}
-
-.swap-separator {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-
-  svg {
-    height: 18px;
   }
 }
 

@@ -129,7 +129,7 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <label>
-            Send <span v-if="includeFees" class="text-muted">(INCL FEES)</span>
+            Send <span v-if="includeFees" class="text-muted font-weight-lighter">(INCL FEES)</span>
           </label>
           <p class="confirm-value" :style="getAssetColorStyle(asset)">
             {{ amountToSend }} {{ asset }}
