@@ -15,8 +15,7 @@
     "sync-versions": "node script/sync-versions.js",
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration --runInBand",
-    "postinstall": "husky install",
-    "standard": "standard"
+    "postinstall": "husky install"
   },
   "dependencies": {
     "@liquality/bitcoin-earn-fee-provider": "^0.8.1",
@@ -84,7 +83,6 @@
     "puppeteer": "^5.2.1",
     "sass": "^1.26.3",
     "sass-loader": "^8.0.2",
-    "standard": "^16.0.3",
     "vue-cli-plugin-browser-extension": "~0.24.0",
     "vue-svg-loader": "^0.16.0",
     "vue-template-compiler": "^2.6.11"
