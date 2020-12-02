@@ -176,6 +176,7 @@ textarea {
     &_base,
     &_term {
       color: $color-text-muted;
+      font-size: $font-size-tiny;
     }
 
     &_value {
@@ -312,16 +313,17 @@ textarea {
   height: 26px;
 }
 
-.mt-30 {
-  margin-top: 30px;
+.mt-20 {
+  margin-top: 20px;
 }
 
 .mt-40 {
   margin-top: 40px;
 }
 
-.mt-80 {
-  margin-top: 80px;
+.details-text {
+  color: $color-text-muted;
+  font-size: $font-size-tiny;
 }
 
 .sub-form-group {

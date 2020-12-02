@@ -129,46 +129,24 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <label>
-            Send <span v-if="includeFees" class="text-muted font-weight-lighter">(INCL FEES)</span>
+            Send
           </label>
           <p class="confirm-value" :style="getAssetColorStyle(asset)">
             {{ amountToSend }} {{ asset }}
           </p>
-          <p class="mb-0" v-if="!includeFees">~{{ totalFee }} ETH FEES</p>
-          <p class="text-muted mt-1">${{ amountToSendInFiat }}</p>
+          <p class="mb-0 details-text">
+            FEES:&nbsp; {{ totalFee }} {{ feeType }} / ${{
+                    totalFeeInFiat
+                  }}
+          </p>
+          <p class="details-text">TOTAL: ${{ amountToSendInFiat }}</p>
         </div>
-        <div class="form-group mt-30">
+        <div class="form-group mt-20">
           <label>Send To</label>
           <p class="confirm-address">{{ shortenAddress(this.address) }}</p>
         </div>
       </div>
       <div class="wrapper_bottom">
-        <DetailsContainer>
-          <template v-slot:header>
-            <span class="details-title">Details</span>
-          </template>
-          <template v-slot:content>
-            <ul class="items">
-               <li>
-                 <label>Send</label>
-              </li>
-              <li>
-                <span class="text-muted">
-                  AMOUNT:&nbsp;{{ amountToSend }} {{ asset }} / ${{
-                    amountToSendInFiat
-                  }}</span
-                >
-              </li>
-              <li>
-                <span class="text-muted"
-                  >NETWORK FEES:&nbsp; {{ totalFee }} {{ feeType }} / ${{
-                    totalFeeInFiat
-                  }}
-                </span>
-              </li>
-            </ul>
-          </template>
-        </DetailsContainer>
         <div class="button-group">
           <button
             class="btn btn-light btn-outline-primary btn-lg"
