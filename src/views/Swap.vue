@@ -307,7 +307,7 @@ import { dpUI, prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import {
   getChainFromAsset,
   getAssetColorStyle,
-  getAssetIcon,
+  getAssetIcon
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import { TX_TYPES, FEE_TYPES, getTxFee, getFeeLabel } from '@/utils/fees'
@@ -327,9 +327,9 @@ export default {
     SwapIcon,
     SpinnerIcon,
     DetailsContainer,
-    CopyIcon,
+    CopyIcon
   },
-  data() {
+  data () {
     return {
       amount: 0,
       toAsset: null,
@@ -338,13 +338,13 @@ export default {
       selectedFee: {},
       showConfirm: false,
       loading: false,
-      sendToCopied: false,
+      sendToCopied: false
     }
   },
   props: {
-    asset: String,
+    asset: String
   },
-  created() {
+  created () {
     this.toAsset = Object.keys(this.selectedMarket)[0]
     this.amount = this.min
     this.updateMarketData({ network: this.activeNetwork })
@@ -352,7 +352,7 @@ export default {
     this.updateFees({ asset: this.toAssetChain })
     this.selectedFee = {
       [this.assetChain]: 'average',
-      [this.toAssetChain]: 'average',
+      [this.toAssetChain]: 'average'
     }
   },
   computed: {
@@ -365,24 +365,24 @@ export default {
       'fiatRates',
       'addresses',
       'activeWalletId',
-      'activeNetwork',
+      'activeNetwork'
     ]),
-    networkMarketData() {
+    networkMarketData () {
       return this.marketData[this.activeNetwork]
     },
-    networkWalletBalances() {
+    networkWalletBalances () {
       return this.balances[this.activeNetwork][this.activeWalletId]
     },
-    toAssets() {
+    toAssets () {
       return Object.keys(this.selectedMarket)
     },
-    bestAgent() {
+    bestAgent () {
       return this.bestMarketBasedOnAmount.agent
     },
-    bestRateBasedOnAmount() {
+    bestRateBasedOnAmount () {
       return this.bestMarketBasedOnAmount.sellRate
     },
-    bestMarketBasedOnAmount() {
+    bestMarketBasedOnAmount () {
       const amount = BN(this.amount)
       return this.market.markets.slice().sort((a, b) => {
         if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax))) return -1
@@ -391,26 +391,26 @@ export default {
         } else return 0
       })[0]
     },
-    min() {
+    min () {
       return dpUI(BN(this.market.sellMin), this.asset)
     },
-    max() {
+    max () {
       const max = BN.min(
         BN(this.available),
-        dpUI(this.market.sellMax, this.asset),
+        dpUI(this.market.sellMax, this.asset)
       )
       return max
     },
-    safeAmount() {
+    safeAmount () {
       return this.amount || 0
     },
-    market() {
+    market () {
       return this.selectedMarket[this.toAsset]
     },
-    available() {
+    available () {
       const balance = this.networkWalletBalances[this.asset]
       const fee = cryptoassets[this.assetChain].currencyToUnit(
-        this.totalFees[this.assetChain],
+        this.totalFees[this.assetChain]
       )
       const available =
         this.assetChain !== this.asset
@@ -418,16 +418,16 @@ export default {
           : BN.max(BN(balance).minus(fee), 0)
       return prettyBalance(available, this.asset)
     },
-    selectedMarket() {
+    selectedMarket () {
       return this.networkMarketData[this.asset]
     },
-    ethRequired() {
+    ethRequired () {
       return this.networkWalletBalances.ETH === 0
     },
-    showErrors() {
+    showErrors () {
       return !this.ethRequired
     },
-    amountError() {
+    amountError () {
       const amount = BN(this.safeAmount)
 
       if (amount.gt(this.available)) {
@@ -442,24 +442,24 @@ export default {
 
       return null
     },
-    canSwap() {
+    canSwap () {
       if (this.ethRequired || this.amountError) return false
 
       return true
     },
-    toAmount() {
+    toAmount () {
       return dpUI(
         BN(this.safeAmount).times(this.bestRateBasedOnAmount),
-        this.toAsset,
+        this.toAsset
       )
     },
-    assetChain() {
+    assetChain () {
       return getChainFromAsset(this.asset)
     },
-    toAssetChain() {
+    toAssetChain () {
       return getChainFromAsset(this.toAsset)
     },
-    availableFees() {
+    availableFees () {
       const availableFees = new Set([])
       const fees = this.getAssetFees(this.assetChain)
       const toFees = this.getAssetFees(this.toAssetChain)
@@ -472,10 +472,10 @@ export default {
     expiration: function () {
       return format(add(new Date(), { hours: 6 }), 'h:mm a')
     },
-    totalFees() {
+    totalFees () {
       const fees = {
         [this.assetChain]: null,
-        [this.toAssetChain]: null,
+        [this.toAssetChain]: null
       }
 
       if (this.availableFees.has(this.assetChain)) {
@@ -485,7 +485,7 @@ export default {
         const initiationFee = getTxFee(
           this.asset,
           TX_TYPES.SWAP_INITIATION,
-          feePrice,
+          feePrice
         )
         fees[this.assetChain] = initiationFee
       }
@@ -509,33 +509,33 @@ export default {
 
       return fees
     },
-    sendFeeType() {
+    sendFeeType () {
       return FEE_TYPES[this.assetChain]
     },
-    receiveFeeType() {
+    receiveFeeType () {
       return FEE_TYPES[this.toAssetChain]
     },
-    includeFees() {
+    includeFees () {
       return this.sendFeeType === FEE_TYPES.BTC
     },
-    amountToSend() {
+    amountToSend () {
       if (this.feeType === FEE_TYPES.BTC) {
         return BN(this.amount).plus(BN(this.totalFees[this.assetChain]))
       }
       return this.amount
     },
-    amountToSendInFiat() {
+    amountToSendInFiat () {
       return prettyFiatBalance(this.amountToSend, this.fiatRates[this.asset])
     },
-    amountToReveiveInFiat() {
+    amountToReveiveInFiat () {
       return prettyFiatBalance(this.toAmount, this.fiatRates[this.toAsset])
     },
-    currentWalletAddress() {
+    currentWalletAddress () {
       const address = this.addresses[this.activeNetwork]?.[
         this.activeWalletId
       ]?.[this.asset]
       return address && cryptoassets[this.asset].formatAddress(address)
-    },
+    }
   },
   methods: {
     ...mapActions(['updateMarketData', 'updateFees', 'newSwap']),
@@ -544,10 +544,10 @@ export default {
     prettyFiatBalance,
     getAssetIcon,
     getAssetColorStyle,
-    getAssetFees(asset) {
+    getAssetFees (asset) {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
     },
-    getFeeTxTypes(asset) {
+    getFeeTxTypes (asset) {
       if (asset === this.assetChain) {
         return [TX_TYPES.SWAP_INITIATION]
       }
@@ -557,28 +557,28 @@ export default {
           : [TX_TYPES.SWAP_INITIATION]
       }
     },
-    setAmount(amount) {
+    setAmount (amount) {
       this.amount = amount
     },
-    setToAsset(val) {
+    setToAsset (val) {
       this.toAsset = val
       this.updateFees({ asset: this.toAssetChain })
       this.selectedFee = Object.assign({}, this.selectedFee, {
-        [this.toAssetChain]: 'average',
+        [this.toAssetChain]: 'average'
       })
     },
-    async swap() {
+    async swap () {
       const fromAmount = cryptoassets[this.asset].currencyToUnit(this.amount)
 
       const fee = this.availableFees.has(this.assetChain)
         ? this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]]
-            .fee
+          .fee
         : undefined
 
       const toFee = this.availableFees.has(this.toAssetChain)
         ? this.getAssetFees(this.toAssetChain)[
-            this.selectedFee[this.toAssetChain]
-          ].fee
+          this.selectedFee[this.toAssetChain]
+        ].fee
         : undefined
 
       this.loading = true
@@ -591,22 +591,22 @@ export default {
         fromAmount,
         sendTo: this.sendTo,
         fee,
-        claimFee: toFee,
+        claimFee: toFee
       })
 
       this.$router.replace(`/account/${this.asset}`)
     },
-    getSelectedFeeLabel(fee) {
+    getSelectedFeeLabel (fee) {
       return getFeeLabel(fee)
     },
-    async copy(text) {
+    async copy (text) {
       await navigator.clipboard.writeText(text)
       this.sendToCopied = true
       setTimeout(() => {
         this.sendToCopied = false
       }, 3000)
-    },
-  },
+    }
+  }
 }
 </script>
 
