@@ -1,3 +1,4 @@
+/* global chrome */
 export default {
   async getItem (key) {
     return new Promise((resolve, reject) => {

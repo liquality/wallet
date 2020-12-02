@@ -1,3 +1,5 @@
+/* global CustomEvent */
+
 import EventEmitter from 'events'
 import { connectToBackground } from './utils'
 

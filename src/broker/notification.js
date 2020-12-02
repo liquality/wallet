@@ -1,3 +1,5 @@
+/* global browser */
+
 import { prettyBalance } from '../utils/coinFormatter'
 import { getAssetIcon } from '../utils/asset'
 

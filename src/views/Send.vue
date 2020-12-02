@@ -14,7 +14,7 @@
             <span class="float-left">
               <label for="amount"> Send </label>
             </span>
-            <span class="float-right label-append">
+            <span class="float-right label-append text-muted">
               ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
             </span>
             <div class="input-group send_asset">
@@ -56,7 +56,7 @@
             >
               <label
                 class="btn btn-light btn-outline-dark btn-sm"
-                @click="clickMaxAmount"
+                @click="setMaxAmount"
               >
                 <input type="radio" name="maxAmount" autocomplete="off" /> Max
               </label>
@@ -85,18 +85,29 @@
         </div>
 
         <div class="wrapper_bottom">
-          <div class="form-group" v-if="feesAvailable">
-            <label>Network Speed/Fee</label>
-            <div class="send_fees">
-              {{ assetChain }}
-              <FeeSelector
-                :asset="assetChain"
-                v-model="selectedFee"
-                v-bind:fees="assetFees"
-                v-bind:txTypes="[txType]"
-              />
-            </div>
-          </div>
+          <DetailsContainer v-if="feesAvailable">
+            <template v-slot:header>
+              <span class="details-title">Network Speed/Fee</span>
+              <span class="text-muted">
+                ({{ selectedFeeLabel }} / {{ totalFee }} {{ feeType }})
+              </span>
+            </template>
+            <template v-slot:content>
+              <ul class="selectors">
+                <li>
+                  <div class="send_fees">
+                    {{ assetChain }}
+                    <FeeSelector
+                      :asset="assetChain"
+                      v-model="selectedFee"
+                      v-bind:fees="assetFees"
+                      v-bind:txTypes="[txType]"
+                    />
+                  </div>
+                </li>
+              </ul>
+            </template>
+          </DetailsContainer>
           <div class="button-group">
             <router-link :to="`/account/${asset}`"
               ><button class="btn btn-light btn-outline-primary btn-lg">
@@ -108,7 +119,7 @@
               @click="showConfirm = true"
               :disabled="!canSend"
             >
-              Review Terms
+              Review
             </button>
           </div>
         </div>
@@ -117,10 +128,13 @@
     <div class="send-confirm wrapper form text-center" v-if="showConfirm">
       <div class="wrapper_top form">
         <div class="form-group">
-          <label> Send <span class="text-muted">(INCL FEES)</span> </label>
+          <label>
+            Send <span v-if="includeFees" class="text-muted">(INCL FEES)</span>
+          </label>
           <p class="confirm-value" :style="getAssetColorStyle(asset)">
             {{ amountToSend }} {{ asset }}
           </p>
+          <p v-if="!includeFees">~{{ totalFee }} ETH FEES</p>
           <p class="text-muted">${{ amountToSendInFiat }}</p>
         </div>
         <div class="form-group">
@@ -128,31 +142,33 @@
           <p class="confirm-value">{{ shortenAddress(this.address) }}</p>
         </div>
       </div>
-    
       <div class="wrapper_bottom">
-        <div class="details-container">
-          <div class="details-header" @click.stop="showDetails = !showDetails">
-            <ChevronDownIcon v-if="showDetails"/>
-            <ChevronUpIcon v-else/>
-            &nbsp; DETAILS
-          </div>
-          <ul class="details-list" v-if="showDetails">
-            <li><label>Send</label></li>
-            <li>
-              <span class="text-muted">
-                AMOUNT:&nbsp;{{ amountToSend }} {{ assetChain }} /
-                {{ amountToSendInFiat }}</span
-              >
-            </li>
-            <li>
-              <span class="text-muted"
-                >NETWORK FEES:&nbsp; {{ totalFee }} / (${{
-                  prettyFiatBalance(totalFee, fiatRates[assetChain])
-                }})
-              </span>
-            </li>
-          </ul>
-        </div>
+        <DetailsContainer>
+          <template v-slot:header>
+            <span class="details-title">Details</span>
+          </template>
+          <template v-slot:content>
+            <ul class="items">
+               <li>
+                 <label>Send</label>
+              </li>
+              <li>
+                <span class="text-muted">
+                  AMOUNT:&nbsp;{{ amountToSend }} {{ asset }} / ${{
+                    amountToSendInFiat
+                  }}</span
+                >
+              </li>
+              <li>
+                <span class="text-muted"
+                  >NETWORK FEES:&nbsp; {{ totalFee }} {{ feeType }} / ${{
+                    totalFeeInFiat
+                  }}
+                </span>
+              </li>
+            </ul>
+          </template>
+        </DetailsContainer>
         <div class="button-group">
           <button
             class="btn btn-light btn-outline-primary btn-lg"
@@ -188,18 +204,21 @@ import {
   getAssetIcon
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
-import { TX_TYPES, getTxFee } from '@/utils/fees'
+import {
+  TX_TYPES,
+  FEE_TYPES,
+  getTxFee,
+  getFeeLabel
+} from '@/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
-import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import DetailsContainer from '@/components/DetailsContainer'
 
 export default {
   components: {
     NavBar,
     FeeSelector,
     SpinnerIcon,
-    ChevronUpIcon,
-    ChevronDownIcon
+    DetailsContainer
   },
   data () {
     return {
@@ -207,8 +226,7 @@ export default {
       address: null,
       selectedFee: 'average',
       showConfirm: false,
-      loading: false,
-      showDetails: true
+      loading: false
     }
   },
   props: {
@@ -237,19 +255,19 @@ export default {
       return cryptoassets[this.asset].isValidAddress(this.address)
     },
     addressError () {
-      if (!this.isValidAddress) { return 'Wrong format. Please check the address.' }
+      if (!this.isValidAddress) {
+        return 'Wrong format. Please check the address.'
+      }
       return null
     },
     amountError () {
       const amount = BN(this.amount)
-      if (amount.gt(this.available)) return 'Lower amount. This exceeds available balance.'
+      if (amount.gt(this.available)) { return 'Lower amount. This exceeds available balance.' }
       return null
     },
     canSend () {
-      const amount = BN(this.amount)
-
       if (!this.address || this.addressError) return false
-      if (amount.lte(0) || this.amountError) return false
+      if (BN(this.amount).lte(0) || this.amountError) return false
 
       return true
     },
@@ -275,10 +293,25 @@ export default {
       return prettyBalance(available, this.asset)
     },
     amountToSend () {
-      return BN(this.amount).plus(BN(this.totalFee))
+      if (this.feeType === FEE_TYPES.BTC) {
+        return BN(this.amount).plus(BN(this.totalFee))
+      }
+      return this.amount
     },
     amountToSendInFiat () {
       return prettyFiatBalance(this.amountToSend, this.fiatRates[this.asset])
+    },
+    totalFeeInFiat () {
+      return prettyFiatBalance(this.totalFee, this.fiatRates[this.assetChain])
+    },
+    feeType () {
+      return FEE_TYPES[this.assetChain]
+    },
+    includeFees () {
+      return this.feeType === FEE_TYPES.BTC
+    },
+    selectedFeeLabel () {
+      return getFeeLabel(this.selectedFee)
     }
   },
   methods: {
@@ -308,7 +341,7 @@ export default {
 
       this.$router.replace(`/account/${this.asset}`)
     },
-    clickMaxAmount () {
+    setMaxAmount () {
       this.amount = this.available
     }
   },

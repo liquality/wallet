@@ -2,7 +2,7 @@
   <div class="fee-selector btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-light btn-outline-dark btn-sm"
         v-for="name in ['slow', 'average', 'fast']" :key="name"
-        :class="name == value ? 'active' : ''"
+        :class="{ active: (name === value)}"
         v-tooltip="{content: getTooltip(name)}"
         v-on:click="$emit('input', name)">
         <input type="radio" name="fee" autocomplete="off" :checked="name === value"> {{name}}

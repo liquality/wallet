@@ -146,6 +146,7 @@ textarea {
     & > .label-sub {
       text-transform: none;
       font-weight: normal;
+      font-size: $font-size-tiny;
     }
   }
   label.btn {
@@ -277,36 +278,9 @@ textarea {
   }
 }
 
-.details-container {
-  text-align: left;
-  margin-bottom: 1rem;
-
-  .details-header {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    font-size: $font-size-sm;
-  }
-  .details-list {
-    list-style-type: none;
-    background: #ffffff;
-    border: none;
-    padding: 0;
-    li {
-      display: flex;
-      align-items: start;
-      justify-content: start;
-      padding: 5px 20px;
-      border: none;
-      font-size: $font-size-tiny;
-      label {
-        font-weight: bold;
-        float: left;
-      }
-    }
-  }
-  svg {
-    height: 6px;
-    margin-right: 4px;
-  }
+.label-bordered {
+  border: 1px solid #d6d6d6;
+  padding: 0.05rem 0.5rem;
+  border-radius: 26px;
 }
+

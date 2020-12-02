@@ -1,3 +1,4 @@
+/* global chrome */
 import { inject } from './broker/utils'
 import Script from './broker/Script'
 import { providerManager, ethereumProvider, bitcoinProvider } from './inject'

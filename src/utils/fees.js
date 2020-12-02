@@ -35,6 +35,18 @@ const FEE_UNITS = {
   }
 }
 
+const FEE_TYPES = {
+  ETH: 'ETH',
+  BTC: 'BTC',
+  RBTC: 'RBTC'
+}
+
+const FEE_OPTIONS = {
+  SLOW: { name: 'Slow', label: 'Slow' },
+  AVERAGE: { name: 'Average', label: 'Avg' },
+  FAST: { name: 'Fast', label: 'Fast' }
+}
+
 function getTxFee (_asset, type, _feePrice) {
   const chainAsset = getChainFromAsset(_asset)
   const feePrice = isEthereumChain(getChainFromAsset(_asset)) ? BN(_feePrice).times(1e9) : _feePrice // ETH fee price is in gwei
@@ -44,4 +56,9 @@ function getTxFee (_asset, type, _feePrice) {
   return cryptoassets[chainAsset].unitToCurrency(fee)
 }
 
-export { TX_TYPES, getTxFee }
+function getFeeLabel (fee) {
+  const name = fee.toUpperCase()
+  return FEE_OPTIONS[name].label
+}
+
+export { TX_TYPES, FEE_TYPES, FEE_OPTIONS, getTxFee, getFeeLabel }
