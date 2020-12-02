@@ -92,7 +92,7 @@
             <span class="float-left">
               <label for="amount">Receive</label>
             </span>
-            <div class="float-right label-append label-bordered">
+            <div class="float-right label-append text-muted">
               ${{ prettyFiatBalance(toAmount, fiatRates[toAsset]) }}
             </div>
             <div class="input-group swap_asset">

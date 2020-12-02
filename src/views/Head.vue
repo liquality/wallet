@@ -8,7 +8,7 @@
     </div>
     <ul class="menu_list" v-if="showNetworks" v-click-away="hideNetworks">
       <li @click="switchNetwork('mainnet')">Mainnet</li>
-      <li @click="switchNetwork('testnet')">Testnet</li>
+      <li @click="switchNetwork('testnet')">Rinkeby Testnet</li>
     </ul>
   </div>
 </template>

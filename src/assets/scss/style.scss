@@ -164,6 +164,11 @@ textarea {
     line-height: $input-font-size + 4px;
     margin-bottom: 0;
   }
+  .confirm-address {
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 0;
+  }
   .form-control-address {
     font-size: $font-size-lg;
   }
@@ -282,5 +287,42 @@ textarea {
   border: 1px solid #d6d6d6;
   padding: 0.05rem 0.5rem;
   border-radius: 26px;
+}
+
+.btn-option {
+  height: 20px;
+  font-weight: 300 !important;
+  font-size: $font-size-tiny;
+  border: 1px solid #D9DFE5;
+  padding: 0.05rem 0.5rem;
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: $color-text-primary;
+
+  &.active {
+      font-weight: $font-weight-base !important;
+      background-color: $dark;
+      color: #1D1E21;
+  }
+}
+
+.btn-option-lg {
+  height: 26px;
+}
+
+.mt-30 {
+  margin-top: 30px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.sub-form-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 

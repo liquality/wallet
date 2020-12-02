@@ -45,24 +45,24 @@
               >{{ amountError }}</small
             >
           </div>
-          <div class="form-group">
-            <span class="label-sub float-left"
+          <div class="sub-form-group">
+            <div class="label-sub"
               ><span class="text-muted">Available</span> {{ available }}
-              {{ asset }}</span
+              {{ asset }}</div
             >
             <div
-              class="float-right btn-group btn-group-toggle"
+              class="btn-group btn-group-toggle"
               data-toggle="buttons"
             >
-              <label
-                class="btn btn-light btn-outline-dark btn-sm"
+              <button
+                class="btn btn-option"
                 @click="setMaxAmount"
               >
-                <input type="radio" name="maxAmount" autocomplete="off" /> Max
-              </label>
+                Max
+              </button>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group mt-40">
             <label for="address">Send to</label>
             <div class="input-group">
               <input
@@ -134,12 +134,12 @@
           <p class="confirm-value" :style="getAssetColorStyle(asset)">
             {{ amountToSend }} {{ asset }}
           </p>
-          <p v-if="!includeFees">~{{ totalFee }} ETH FEES</p>
-          <p class="text-muted">${{ amountToSendInFiat }}</p>
+          <p class="mb-0" v-if="!includeFees">~{{ totalFee }} ETH FEES</p>
+          <p class="text-muted mt-1">${{ amountToSendInFiat }}</p>
         </div>
-        <div class="form-group">
+        <div class="form-group mt-30">
           <label>Send To</label>
-          <p class="confirm-value">{{ shortenAddress(this.address) }}</p>
+          <p class="confirm-address">{{ shortenAddress(this.address) }}</p>
         </div>
       </div>
       <div class="wrapper_bottom">
