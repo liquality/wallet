@@ -14,7 +14,6 @@
       <p class="text-primary text-center">Make sure you trust this site</p>
 
       <div class="wrapper_bottom">
-        <Warning />
         <div class="button-group">
           <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Deny</button>
           <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)" :disabled="loading">

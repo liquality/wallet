@@ -15,7 +15,6 @@
       </div>
 
       <div class="wrapper_bottom">
-        <Warning />
         <div class="button-group">
           <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Done</button></router-link>
           <button class="btn btn-primary btn-lg btn-icon" @click="copy">
@@ -33,7 +32,6 @@ import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
 import { getChainFromAsset, getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
-import Warning from '@/components/Warning'
 import CopyIcon from '@/assets/icons/copy.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@/utils/cryptoassets'
@@ -41,7 +39,6 @@ import cryptoassets from '@/utils/cryptoassets'
 export default {
   components: {
     NavBar,
-    Warning,
     CopyIcon,
     TickIcon
   },

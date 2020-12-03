@@ -15,7 +15,6 @@
       </div>
 
       <div class="wrapper_bottom">
-        <Warning />
         <div class="button-group">
           <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Cancel</button>
           <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)" :disabled="loading">
@@ -31,13 +30,11 @@
 <script>
 import { mapActions } from 'vuex'
 import { getAssetIcon } from '@/utils/asset'
-import Warning from '@/components/Warning'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   components: {
-    Warning,
     SpinnerIcon
   },
   data () {

@@ -23,7 +23,6 @@
     </div>
 
     <div class="wrapper_bottom">
-      <Warning />
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Cancel</button>
         <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)" :disabled="loading">
@@ -42,14 +41,12 @@ import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
-import Warning from '@/components/Warning'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
 
 export default {
   components: {
-    Warning,
     SpinnerIcon,
     ChevronDown,
     ChevronRight,
