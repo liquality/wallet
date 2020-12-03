@@ -56,7 +56,7 @@ export default {
       font-weight: bold;
       text-transform: uppercase;
       padding-right: 0.5em;
-      font-size: $font-size-xs;
+      font-size: $font-size-sm;
     }
   }
 

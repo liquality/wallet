@@ -2,13 +2,13 @@
   <div class="head">
     <router-link to="/wallet"><LogoIcon class="head_logo" /></router-link>
     <div class="head_network" @click.stop="showNetworks = !showNetworks">
-      {{activeNetworkLabel}}
+      {{ activeNetwork }}
       <ChevronUpIcon v-if="showNetworks" />
       <ChevronDownIcon v-else />
     </div>
     <ul class="menu_list" v-if="showNetworks" v-click-away="hideNetworks">
       <li @click="switchNetwork('mainnet')">Mainnet</li>
-      <li @click="switchNetwork('testnet')">Rinkeby Testnet</li>
+      <li @click="switchNetwork('testnet')">Testnet</li>
     </ul>
   </div>
 </template>
@@ -39,12 +39,6 @@ export default {
     ...mapState(['wallets', 'activeWalletId', 'activeNetwork']),
     wallet: function () {
       return this.wallets.find(wallet => wallet.id === this.activeWalletId)
-    },
-    activeNetworkLabel () {
-      if (this.activeNetwork === 'testnet') {
-        return 'Rinkeby Testnet'
-      }
-      return this.activeNetwork
     }
   },
   methods: {
