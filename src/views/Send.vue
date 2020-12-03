@@ -45,24 +45,24 @@
               >{{ amountError }}</small
             >
           </div>
-          <div class="form-group">
-            <span class="label-sub float-left"
+          <div class="sub-form-group">
+            <div class="label-sub"
               ><span class="text-muted">Available</span> {{ available }}
-              {{ asset }}</span
+              {{ asset }}</div
             >
             <div
-              class="float-right btn-group btn-group-toggle"
+              class="btn-group btn-group-toggle"
               data-toggle="buttons"
             >
-              <label
-                class="btn btn-light btn-outline-dark btn-sm"
+              <button
+                class="btn btn-option"
                 @click="setMaxAmount"
               >
-                <input type="radio" name="maxAmount" autocomplete="off" /> Max
-              </label>
+                Max
+              </button>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group mt-40">
             <label for="address">Send to</label>
             <div class="input-group">
               <input
@@ -129,46 +129,24 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <label>
-            Send <span v-if="includeFees" class="text-muted">(INCL FEES)</span>
+            Send
           </label>
           <p class="confirm-value" :style="getAssetColorStyle(asset)">
             {{ amountToSend }} {{ asset }}
           </p>
-          <p v-if="!includeFees">~{{ totalFee }} ETH FEES</p>
-          <p class="text-muted">${{ amountToSendInFiat }}</p>
+          <p class="mb-0 details-text">
+            FEES:&nbsp; {{ totalFee }} {{ feeType }} / ${{
+                    totalFeeInFiat
+                  }}
+          </p>
+          <p class="details-text">TOTAL: ${{ amountToSendInFiat }}</p>
         </div>
-        <div class="form-group">
+        <div class="form-group mt-20">
           <label>Send To</label>
-          <p class="confirm-value">{{ shortenAddress(this.address) }}</p>
+          <p class="confirm-address">{{ shortenAddress(this.address) }}</p>
         </div>
       </div>
       <div class="wrapper_bottom">
-        <DetailsContainer>
-          <template v-slot:header>
-            <span class="details-title">Details</span>
-          </template>
-          <template v-slot:content>
-            <ul class="items">
-               <li>
-                 <label>Send</label>
-              </li>
-              <li>
-                <span class="text-muted">
-                  AMOUNT:&nbsp;{{ amountToSend }} {{ asset }} / ${{
-                    amountToSendInFiat
-                  }}</span
-                >
-              </li>
-              <li>
-                <span class="text-muted"
-                  >NETWORK FEES:&nbsp; {{ totalFee }} {{ feeType }} / ${{
-                    totalFeeInFiat
-                  }}
-                </span>
-              </li>
-            </ul>
-          </template>
-        </DetailsContainer>
         <div class="button-group">
           <button
             class="btn btn-light btn-outline-primary btn-lg"

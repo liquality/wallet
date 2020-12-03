@@ -42,7 +42,7 @@ export default {
     align-items: center;
     flex-wrap: wrap;
     align-content: space-between;
-    font-size: $font-size-tiny;
+    font-size: $font-size-xs;
 
     svg {
       height: 5px;
@@ -56,7 +56,7 @@ export default {
       font-weight: bold;
       text-transform: uppercase;
       padding-right: 0.5em;
-      font-size: $font-size-tiny;
+      font-size: $font-size-sm;
     }
   }
 
@@ -73,11 +73,12 @@ export default {
         align-items: center;
         justify-content: left;
         border: none;
-        font-size: $font-size-tiny;
+        font-size: $font-size-xs;
         padding-left: 20px;
 
         label {
           float: left;
+          font-size: $font-size-xs !important;
         }
       }
     }

@@ -2,7 +2,7 @@
   <div class="head">
     <router-link to="/wallet"><LogoIcon class="head_logo" /></router-link>
     <div class="head_network" @click.stop="showNetworks = !showNetworks">
-      {{activeNetwork}}
+      {{ activeNetwork }}
       <ChevronUpIcon v-if="showNetworks" />
       <ChevronDownIcon v-else />
     </div>

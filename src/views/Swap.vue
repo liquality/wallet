@@ -43,56 +43,50 @@
             >
               {{ amountError }}
             </small>
-          </div>
-          <div class="form-group">
-            <span class="label-sub">
-              <span class="text-muted">Available</span>
-              {{ available }} {{ asset }}
-            </span>
-            <div class="float-right btn-group btn-group-toggle">
-              <v-popover offset="1" trigger="hover focus" class="mr-2">
-                <label
-                  :class="{ active: amount === min }"
-                  class="btn btn-light btn-outline-dark btn-sm amount-option"
-                  @click="setAmount(min)"
-                >
-                  Min
-                </label>
-                <template slot="popover">
-                  <p class="my-0 text-right">
-                    {{ min }} {{ asset }}
-                  </p>
-                  <p class="text-muted my-0 text-right">
-                    {{ prettyFiatBalance(min, fiatRates[asset]) }} USD
-                  </p>
-                </template>
-              </v-popover>
-              <v-popover offset="1" trigger="hover focus">
-                <label
-                  :class="{ active: amount === max }"
-                  class="btn btn-light btn-outline-dark btn-sm amount-option tooltip-target"
-                  @click="setAmount(max)"
-                >
-                  Max
-                </label>
-                <template slot="popover">
-                  <p class="my-0 text-right">
-                    {{ max }} {{ asset }}
-                  </p>
-                  <p class="text-muted my-0 text-right">
-                    {{ prettyFiatBalance(max, fiatRates[asset]) }} USD
-                  </p>
-                </template>
-              </v-popover>
+            <div class="form-text d-flex justify-content-between">
+              <span class="label-sub">
+                <span class="text-muted">Available</span>
+                {{ available }} {{ asset }}
+              </span>
+              <div class="float-right btn-group btn-group-toggle">
+                <v-popover offset="1" trigger="hover focus" class="mr-2">
+                  <label
+                    :class="{ active: amount === min }"
+                    class="btn btn-option"
+                    @click="setAmount(min)"
+                  >
+                    Min
+                  </label>
+                  <template slot="popover">
+                    <p class="my-0 text-right">{{ min }} {{ asset }}</p>
+                    <p class="text-muted my-0 text-right">
+                      {{ prettyFiatBalance(min, fiatRates[asset]) }} USD
+                    </p>
+                  </template>
+                </v-popover>
+                <v-popover offset="1" trigger="hover focus">
+                  <label
+                    :class="{ active: amount === max }"
+                    class="btn btn-option tooltip-target"
+                    @click="setAmount(max)"
+                  >
+                    Max
+                  </label>
+                  <template slot="popover">
+                    <p class="my-0 text-right">{{ max }} {{ asset }}</p>
+                    <p class="text-muted my-0 text-right">
+                      {{ prettyFiatBalance(max, fiatRates[asset]) }} USD
+                    </p>
+                  </template>
+                </v-popover>
+              </div>
             </div>
           </div>
-          <div class="swap-separator">
-          </div>
-          <div class="form-group">
+          <div class="form-group mt-40">
             <span class="float-left">
               <label for="amount">Receive</label>
             </span>
-            <div class="float-right label-append label-bordered">
+            <div class="float-right label-append text-muted">
               ${{ prettyFiatBalance(toAmount, fiatRates[toAsset]) }}
             </div>
             <div class="input-group swap_asset">
@@ -140,55 +134,50 @@
               <a
                 class="text-muted float-right"
                 @click="
-                  enterSendToAddress = false;
-                  sendTo = null;
+                  enterSendToAddress = false
+                  sendTo = null
                 "
               >
                 X
               </a>
             </label>
             <div class="input-group">
-              <div class="input-group">
-                <input
-                  type="text"
-                  v-model="sendTo"
-                  class="form-control form-control-sm"
-                  id="to"
-                  placeholder="External Receiving Address"
-                  autocomplete="off"
-                />
-              </div>
+              <input
+                type="text"
+                v-model="sendTo"
+                class="form-control form-control-sm"
+                id="to"
+                placeholder="External Receiving Address"
+                autocomplete="off"
+              />
             </div>
           </div>
         </div>
-        <div class="wrapper_bottom">
-          <div class="swap_rate form-group">
-            <label>Rate</label>
-            <p>
-              <span class="swap-rate_base">1 {{ asset }} =</span>
-              <span class="swap-rate_value">
-                &nbsp;{{ bestRateBasedOnAmount }}
-              </span>
-              <span class="swap-rate_term text-muted"
-                >&nbsp;{{ toAsset }}</span
-              >
-            </p>
-          </div>
+        <div class="mt-3 form-group">
+          <label>Rate</label>
+          <p>
+            <span class="swap-rate_base">1 {{ asset }} =</span>
+            <span class="swap-rate_value">
+              &nbsp;{{ bestRateBasedOnAmount }}
+            </span>
+            <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
+          </p>
+        </div>
 
-          <div class="form-group swap_fees" v-if="availableFees.size">
-            <DetailsContainer>
-              <template v-slot:header>
-                <span class="details-title">Network Speed/Fee</span>
-                <span class="text-muted">
-                  {{ assetChain }}
-                  {{ getSelectedFeeLabel(selectedFee[assetChain]) }} /
-                  {{ toAssetChain }}
-                  {{ getSelectedFeeLabel(selectedFee[toAssetChain]) }}
-                </span>
-              </template>
-              <template v-slot:content>
-                <ul class="selectors">
-                  <li v-for="asset in availableFees" :key="asset">
+        <div class="form-group swap_fees" v-if="availableFees.size">
+          <DetailsContainer>
+            <template v-slot:header>
+              <span class="details-title">Network Speed/Fee</span>
+              <span class="text-muted">
+                {{ assetChain }}
+                {{ getSelectedFeeLabel(selectedFee[assetChain]) }} /
+                {{ toAssetChain }}
+                {{ getSelectedFeeLabel(selectedFee[toAssetChain]) }}
+              </span>
+            </template>
+            <template v-slot:content>
+              <ul class="selectors">
+                <li v-for="asset in availableFees" :key="asset">
                   <span class="mr-2 font-weight-bold">{{ asset }}</span>
                   <FeeSelector
                     :asset="asset"
@@ -197,11 +186,11 @@
                     v-bind:txTypes="getFeeTxTypes(asset)"
                   />
                 </li>
-                </ul>
-              </template>
-            </DetailsContainer>
-          </div>
-
+              </ul>
+            </template>
+          </DetailsContainer>
+        </div>
+        <div class="wrapper_bottom">
           <div class="button-group">
             <router-link :to="`/account/${asset}`">
               <button class="btn btn-light btn-outline-primary btn-lg">
@@ -223,91 +212,54 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <label>
-            Send <span v-if="includeFees" class="text-muted">(INCL FEES)</span>
+            Send
           </label>
           <p class="confirm-value" :style="getAssetColorStyle(asset)">
             {{ amountToSend }} {{ asset }}
           </p>
-          <div v-if="!includeFees">~{{ totalFees[assetChain] }} ETH FEES</div>
-          <div class="text-muted">${{ amountToSendInFiat }}</div>
+          <p class="mb-0 details-text">
+            FEES:&nbsp; {{ totalFees[assetChain] }} {{ sendFeeType }} / (${{
+              prettyFiatBalance(totalFees[assetChain], fiatRates[asset])
+            }})
+          </p>
+          <p class="details-text">TOTAL: ${{ amountToSendInFiat }}</p>
         </div>
-        <div class="form-group">
-          <label>Receive <span class="text-muted">(EXCL FEES)</span></label>
+        <div class="form-group mt-20">
+          <label>Receive</label>
           <p class="confirm-value" :style="getAssetColorStyle(toAsset)">
             {{ toAmount }} {{ toAsset }}
           </p>
-          <p class="text-muted">${{ amountToReveiveInFiat }}</p>
+          <p class="details-text mb-0">
+            FEES:&nbsp; {{ totalFees[toAssetChain] }} {{ receiveFeeType }} /
+            (${{
+              prettyFiatBalance(totalFees[toAssetChain], fiatRates[toAsset])
+            }})
+          </p>
+
+          <p class="details-text mb-0" v-if="sendTo">
+            RECEIVE AT: External Wallet - {{ shortenAddress(sendTo) }}
+            <CopyIcon
+              class="copy-icon"
+              @click="copy(sendTo)"
+              v-tooltip.bottom="{
+                content: sendToCopied ? 'Copied!' : 'Copy',
+                hideOnTargetClick: false,
+              }"
+            />
+          </p>
+          <p class="details-text mb-0" v-else>
+            RECEIVE AT: This Wallet
+          </p>
+          <p class="details-text mb-0">
+            RATE: 1 {{ asset }}&nbsp;=&nbsp;{{
+                  bestRateBasedOnAmount
+                }}
+                &nbsp;{{ toAsset }}
+          </p>
         </div>
       </div>
 
       <div class="wrapper_bottom">
-        <DetailsContainer>
-          <template v-slot:header>
-            <span class="details-title">Details</span>
-          </template>
-          <template v-slot:content>
-            <ul class="items">
-              <li><label>Send</label></li>
-            <li>
-              <span class="text-muted">
-                AMOUNT:&nbsp;{{ amountToSend }} {{ asset }} / ${{
-                  amountToSendInFiat
-                }}</span
-              >
-            </li>
-            <li>
-              <span class="text-muted"
-                >NETWORK FEES:&nbsp; {{ totalFees[assetChain] }}
-                {{ sendFeeType }} / (${{
-                  prettyFiatBalance(totalFees[assetChain], fiatRates[asset])
-                }})
-              </span>
-            </li>
-            <li class="mt-2"><label>Receive</label></li>
-            <li>
-              <span class="text-muted">
-                AMOUNT:&nbsp;{{ toAmount }} {{ toAsset }} / ${{
-                  amountToReveiveInFiat
-                }}</span
-              >
-            </li>
-            <li>
-              <span class="text-muted"
-                >NETWORK FEES:&nbsp; {{ totalFees[toAssetChain] }}
-                {{ receiveFeeType }} / (${{
-                  prettyFiatBalance(
-                    totalFees[toAssetChain],
-                    fiatRates[toAsset]
-                  )
-                }})
-              </span>
-            </li>
-            <li>
-              <span class="text-muted" v-if="sendTo">
-                AT: External Wallet - {{ shortenAddress(sendTo) }}
-                <CopyIcon class="copy-icon"
-                          @click="copy(sendTo)"
-                          v-tooltip.bottom="{
-                              content: sendToCopied ? 'Copied!' : 'Copy',
-                              hideOnTargetClick: false
-                          }"
-                />
-              </span>
-              <span v-else class="text-muted">
-                AT: This Wallet
-              </span>
-            </li>
-            <li>
-              <span class="text-muted"
-                >Rate: 1 {{ asset }}&nbsp;=&nbsp;{{
-                  bestRateBasedOnAmount
-                }}
-                &nbsp;{{ toAsset }}</span
-              >
-            </li>
-            </ul>
-          </template>
-        </DetailsContainer>
         <div class="swap-info">
           <div class="media">
             <ClockIcon class="swap-info_clock" />
@@ -358,12 +310,7 @@ import {
   getAssetIcon
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
-import {
-  TX_TYPES,
-  FEE_TYPES,
-  getTxFee,
-  getFeeLabel
-} from '@/utils/fees'
+import { TX_TYPES, FEE_TYPES, getTxFee, getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
@@ -439,7 +386,9 @@ export default {
       const amount = BN(this.amount)
       return this.market.markets.slice().sort((a, b) => {
         if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax))) return -1
-        else if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax))) { return 1 } else return 0
+        else if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax))) {
+          return 1
+        } else return 0
       })[0]
     },
     min () {
@@ -481,9 +430,15 @@ export default {
     amountError () {
       const amount = BN(this.safeAmount)
 
-      if (amount.gt(this.available)) { return 'Lower amount. This exceeds available balance.' }
-      if (amount.gt(this.max)) { return 'Please reduce amount. It exceeds maximum.' }
-      if (amount.lt(this.min)) { return 'Please increase amount. It is below minimum.' }
+      if (amount.gt(this.available)) {
+        return 'Lower amount. This exceeds available balance.'
+      }
+      if (amount.gt(this.max)) {
+        return 'Please reduce amount. It exceeds maximum.'
+      }
+      if (amount.lt(this.min)) {
+        return 'Please increase amount. It is below minimum.'
+      }
 
       return null
     },
@@ -509,7 +464,9 @@ export default {
       const fees = this.getAssetFees(this.assetChain)
       const toFees = this.getAssetFees(this.toAssetChain)
       if (fees && Object.keys(fees).length) availableFees.add(this.assetChain)
-      if (toFees && Object.keys(toFees).length) { availableFees.add(this.toAssetChain) }
+      if (toFees && Object.keys(toFees).length) {
+        availableFees.add(this.toAssetChain)
+      }
       return availableFees
     },
     expiration: function () {
@@ -574,7 +531,9 @@ export default {
       return prettyFiatBalance(this.toAmount, this.fiatRates[this.toAsset])
     },
     currentWalletAddress () {
-      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
+      const address = this.addresses[this.activeNetwork]?.[
+        this.activeWalletId
+      ]?.[this.asset]
       return address && cryptoassets[this.asset].formatAddress(address)
     }
   },
@@ -689,8 +648,8 @@ export default {
     &_clock {
       margin-top: 6px;
       margin-right: 8px;
-      height: 20px;
-      width: 20px;
+      height: 10px;
+      width: 10px;
       object-fit: contain;
     }
     p {
@@ -699,26 +658,14 @@ export default {
   }
 }
 
-.amount-option {
-  border-radius: 26px !important;
-  font-size: $font-size-tiny;
-}
-
-.swap-separator {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-
-  svg {
-    height: 18px;
-  }
-}
-
 svg.copy-icon {
-          cursor: pointer;
-          width: 14px;
-          margin-left: 6px;
+  cursor: pointer;
+  width: 14px;
+  margin-left: 6px;
+}
+
+svg.qr-icon {
+  cursor: pointer;
+  width: 21px;
 }
 </style>
