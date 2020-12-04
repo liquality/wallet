@@ -79,7 +79,7 @@ export default {
 <style lang="scss">
 .navbar {
   position: relative;
-  height: 48px;
+  height: 44px;
   padding: 0 !important;
   border-bottom: 1px solid $hr-border-color;
 
