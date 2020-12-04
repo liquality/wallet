@@ -82,9 +82,7 @@
               >{{ addressError }}</small
             >
           </div>
-        </div>
-
-        <div class="wrapper_bottom">
+          <div class="form-group mt-150">
           <DetailsContainer v-if="feesAvailable">
             <template v-slot:header>
               <span class="details-title">Network Speed/Fee</span>
@@ -108,6 +106,9 @@
               </ul>
             </template>
           </DetailsContainer>
+        </div>
+        </div>
+        <div class="wrapper_bottom">
           <div class="button-group">
             <router-link :to="`/account/${asset}`"
               ><button class="btn btn-light btn-outline-primary btn-lg">
@@ -125,7 +126,15 @@
         </div>
       </div>
     </div>
-    <div class="send-confirm wrapper form text-center" v-if="showConfirm">
+    <div v-else>
+      <NavBar
+        :showBackButton="true"
+        :backClick="back"
+        backLabel="BACK"
+      >
+        Send
+      </NavBar>
+      <div class="send-confirm wrapper form text-center">
       <div class="wrapper_top form">
         <div class="form-group">
           <label>
@@ -165,6 +174,7 @@
           </button>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -257,7 +267,7 @@ export default {
         ? this.assetFees[this.selectedFee].fee
         : 0
       const sendFee = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
-      return sendFee
+      return sendFee.toString().substring(0, 8)
     },
     available () {
       const balance = this.balances[this.activeNetwork][this.activeWalletId][
@@ -321,6 +331,9 @@ export default {
     },
     setMaxAmount () {
       this.amount = this.available
+    },
+    back () {
+      this.showConfirm = false
     }
   },
   created () {

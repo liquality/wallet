@@ -48,15 +48,15 @@
                 <span class="text-muted">Available</span>
                 {{ available }} {{ asset }}
               </span>
-              <div class="float-right btn-group btn-group-toggle">
+              <div class="float-right btn-group">
                 <v-popover offset="1" trigger="hover focus" class="mr-2">
-                  <label
-                    :class="{ active: amount === min }"
+                  <button
+                    :class="{ active: amountOption === 'min' }"
                     class="btn btn-option"
                     @click="setAmount(min)"
                   >
                     Min
-                  </label>
+                  </button>
                   <template slot="popover">
                     <p class="my-0 text-right">{{ min }} {{ asset }}</p>
                     <p class="text-muted my-0 text-right">
@@ -65,13 +65,13 @@
                   </template>
                 </v-popover>
                 <v-popover offset="1" trigger="hover focus">
-                  <label
-                    :class="{ active: amount === max }"
+                  <button
+                    :class="{ active: amountOption === 'max' }"
                     class="btn btn-option tooltip-target"
                     @click="setAmount(max)"
                   >
-                    Max
-                  </label>
+                  Max
+                  </button>
                   <template slot="popover">
                     <p class="my-0 text-right">{{ max }} {{ asset }}</p>
                     <p class="text-muted my-0 text-right">
@@ -131,15 +131,11 @@
           <div class="form-group" v-if="enterSendToAddress">
             <label class="w-100" for="amount">
               Receive at
-              <a
-                class="text-muted float-right"
+                <CloseIcon class="float-right icon-sm icon-btn"
                 @click="
                   enterSendToAddress = false
                   sendTo = null
-                "
-              >
-                X
-              </a>
+                "/>
             </label>
             <div class="input-group">
               <input
@@ -208,7 +204,15 @@
         </div>
       </div>
     </div>
-    <div class="swap-confirm wrapper form text-center" v-if="showConfirm">
+    <div v-else>
+      <NavBar
+        :showBackButton="true"
+        :backClick="back"
+        backLabel="BACK"
+      >
+        Review
+      </NavBar>
+      <div class="swap-confirm wrapper form text-center">
       <div class="wrapper_top form">
         <div class="form-group">
           <label>
@@ -291,6 +295,7 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
 </template>
 
@@ -315,6 +320,7 @@ import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
+import CloseIcon from '@/assets/icons/close.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 
 export default {
@@ -327,11 +333,13 @@ export default {
     SwapIcon,
     SpinnerIcon,
     DetailsContainer,
-    CopyIcon
+    CopyIcon,
+    CloseIcon
   },
   data () {
     return {
       amount: 0,
+      amountOption: 'min',
       toAsset: null,
       enterSendToAddress: false,
       sendTo: null,
@@ -559,6 +567,11 @@ export default {
     },
     setAmount (amount) {
       this.amount = amount
+      if (this.amount === this.max) {
+        this.amountOption = 'max'
+      } else {
+        this.amountOption = 'min'
+      }
     },
     setToAsset (val) {
       this.toAsset = val
@@ -605,6 +618,9 @@ export default {
       setTimeout(() => {
         this.sendToCopied = false
       }, 3000)
+    },
+    back () {
+      this.showConfirm = false
     }
   }
 }
