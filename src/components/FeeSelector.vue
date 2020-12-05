@@ -3,7 +3,7 @@
     <label class="btn btn-option btn-option-lg"
         v-for="name in ['slow', 'average', 'fast']" :key="name"
         :class="{ active: (name === value)}"
-        v-tooltip="{content: getTooltip(name)}"
+        v-tooltip="{ content: getTooltip(name)} "
         v-on:click="$emit('input', name)">
         <input type="radio" name="fee" autocomplete="off" :checked="name === value"> {{name}}
     </label>
@@ -11,26 +11,29 @@
 </template>
 
 <script>
-import cryptoassets from '@/utils/cryptoassets'
 import { getTxFee } from '@/utils/fees'
 import BN from 'bignumber.js'
+import { prettyFiatBalance } from '@/utils/coinFormatter'
 
 export default {
-  props: ['asset', 'value', 'fees', 'txTypes'],
+  props: ['asset', 'value', 'fees', 'txTypes', 'fiatRates'],
   methods: {
     getTooltip (name) {
-      const unit = cryptoassets[this.asset].fees.unit
-      let content = `${this.fees[name].fee} ${unit}`
+      let content = '<div class="text-right">'
+      if (this.fees[name].wait) {
+        content += `${this.fees[name].wait} sec`
+      }
+
       if (this.txTypes) {
         const total = this.txTypes.reduce((accum, tx) => {
           return accum.plus(getTxFee(this.asset, tx, this.fees[name].fee))
         }, BN(0))
+        const totalFiat = prettyFiatBalance(total, this.fiatRates[this.asset])
         content += `<br />${total} ${this.asset}`
+        content += `<br />${totalFiat} USD`
       }
-      if (this.fees[name].wait) {
-        content += `<br />${this.fees[name].wait}s`
-      }
-      return content
+
+      return `${content}</div>`
     }
   }
 }

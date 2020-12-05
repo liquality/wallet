@@ -132,7 +132,7 @@ textarea {
 
 .form {
   label {
-    font-size: $font-size-sm;
+    font-size: $font-size-tiny;
     font-weight: bold;
     text-transform: uppercase;
     width: 100%;
@@ -303,9 +303,20 @@ textarea {
   color: $color-text-primary;
 
   &.active {
-      font-weight: $font-weight-base !important;
+      font-weight: $btn-font-weight !important;
       background-color: $dark;
       color: #1D1E21;
+  }
+  
+  &:focus {
+      box-shadow: none;
+  }
+
+  input[type=checkbox], 
+  input[type=radio] {
+    position: absolute;
+    clip: rect(0,0,0,0);
+    pointer-events: none;
   }
 }
 
@@ -314,11 +325,19 @@ textarea {
 }
 
 .mt-20 {
-  margin-top: 20px;
+  margin-top: 1.25rem;
+}
+
+.mt-30 {
+  margin-top: 1.875rem;
 }
 
 .mt-40 {
-  margin-top: 40px;
+  margin-top: 2.5rem;
+}
+
+.mt-150 {
+  margin-top: 9.375rem;
 }
 
 .details-text {
@@ -330,5 +349,25 @@ textarea {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+
 }
 
+.detail-group {
+    margin-top: 0.225rem;
+    margin-bottom: 0;
+}
+
+// remove error icon for all inputs
+.was-validated .form-control:invalid, .form-control.is-invalid {
+    padding-right: 1rem !important;
+    background-image: none !important;
+}
+
+.icon-sm {
+  width: 10px;
+  height: 10px;
+}
+
+.icon-btn {
+  cursor: pointer;
+}

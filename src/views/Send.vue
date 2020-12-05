@@ -56,6 +56,7 @@
             >
               <button
                 class="btn btn-option"
+                :class="{ active: (available == amount) }"
                 @click="setMaxAmount"
               >
                 Max
@@ -82,9 +83,7 @@
               >{{ addressError }}</small
             >
           </div>
-        </div>
-
-        <div class="wrapper_bottom">
+          <div class="form-group mt-150">
           <DetailsContainer v-if="feesAvailable">
             <template v-slot:header>
               <span class="details-title">Network Speed/Fee</span>
@@ -102,12 +101,16 @@
                       v-model="selectedFee"
                       v-bind:fees="assetFees"
                       v-bind:txTypes="[txType]"
+                      v-bind:fiatRates="fiatRates"
                     />
                   </div>
                 </li>
               </ul>
             </template>
           </DetailsContainer>
+        </div>
+        </div>
+        <div class="wrapper_bottom">
           <div class="button-group">
             <router-link :to="`/account/${asset}`"
               ><button class="btn btn-light btn-outline-primary btn-lg">
@@ -125,23 +128,50 @@
         </div>
       </div>
     </div>
-    <div class="send-confirm wrapper form text-center" v-if="showConfirm">
+    <div v-else>
+      <NavBar
+        :showBackButton="true"
+        :backClick="back"
+        backLabel="Back"
+      >
+        Send
+      </NavBar>
+      <div class="send-confirm wrapper form">
       <div class="wrapper_top form">
-        <div class="form-group">
+        <div>
           <label>
             Send
           </label>
-          <p class="confirm-value" :style="getAssetColorStyle(asset)">
-            {{ amountToSend }} {{ asset }}
-          </p>
-          <p class="mb-0 details-text">
-            FEES:&nbsp; {{ totalFee }} {{ feeType }} / ${{
-                    totalFeeInFiat
-                  }}
-          </p>
-          <p class="details-text">TOTAL: ${{ amountToSendInFiat }}</p>
+          <div class="d-flex align-items-center justify-content-between mt-0">
+            <div class="confirm-value" :style="getAssetColorStyle(asset)">
+            {{ amount }} {{ asset }}
+          </div>
+          <div class="details-text">${{ amountInFiat }}</div>
+          </div>
         </div>
-        <div class="form-group mt-20">
+        <div class="detail-group">
+          <label class="text-muted">
+            Network Fee
+          </label>
+          <div class="d-flex align-items-center justify-content-between mt-0">
+            <div>
+            {{ totalFee }} {{ feeType }}
+          </div>
+          <div class="details-text">${{ totalFeeInFiat }}</div>
+          </div>
+        </div>
+        <div class="detail-group">
+          <label class="text-muted">
+            Amount + Fees
+          </label>
+          <div class="d-flex align-items-center justify-content-between mt-0">
+            <div class="font-weight-bold">
+            {{ amount }} {{ asset }} + {{ totalFee }} {{ feeType }}
+          </div>
+          <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
+          </div>
+        </div>
+        <div class="mt-40">
           <label>Send To</label>
           <p class="confirm-address">{{ shortenAddress(this.address) }}</p>
         </div>
@@ -165,6 +195,7 @@
           </button>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -257,7 +288,7 @@ export default {
         ? this.assetFees[this.selectedFee].fee
         : 0
       const sendFee = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
-      return sendFee
+      return sendFee.toString().substring(0, 8)
     },
     available () {
       const balance = this.balances[this.activeNetwork][this.activeWalletId][
@@ -270,14 +301,8 @@ export default {
           : BN.max(BN(balance).minus(fee), 0)
       return prettyBalance(available, this.asset)
     },
-    amountToSend () {
-      if (this.feeType === FEE_TYPES.BTC) {
-        return BN(this.amount).plus(BN(this.totalFee))
-      }
-      return this.amount
-    },
-    amountToSendInFiat () {
-      return prettyFiatBalance(this.amountToSend, this.fiatRates[this.asset])
+    amountInFiat () {
+      return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
       return prettyFiatBalance(this.totalFee, this.fiatRates[this.assetChain])
@@ -290,6 +315,10 @@ export default {
     },
     selectedFeeLabel () {
       return getFeeLabel(this.selectedFee)
+    },
+    totalToSendInFiat () {
+      const total = BN(this.amount).plus(BN(this.totalFee))
+      return prettyFiatBalance(total, this.fiatRates[this.asset])
     }
   },
   methods: {
@@ -321,6 +350,9 @@ export default {
     },
     setMaxAmount () {
       this.amount = this.available
+    },
+    back () {
+      this.showConfirm = false
     }
   },
   created () {

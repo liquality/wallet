@@ -48,15 +48,15 @@
                 <span class="text-muted">Available</span>
                 {{ available }} {{ asset }}
               </span>
-              <div class="float-right btn-group btn-group-toggle">
+              <div class="float-right btn-group">
                 <v-popover offset="1" trigger="hover focus" class="mr-2">
-                  <label
-                    :class="{ active: amount === min }"
+                  <button
+                    :class="{ active: amountOption === 'min' }"
                     class="btn btn-option"
                     @click="setAmount(min)"
                   >
                     Min
-                  </label>
+                  </button>
                   <template slot="popover">
                     <p class="my-0 text-right">{{ min }} {{ asset }}</p>
                     <p class="text-muted my-0 text-right">
@@ -65,13 +65,13 @@
                   </template>
                 </v-popover>
                 <v-popover offset="1" trigger="hover focus">
-                  <label
-                    :class="{ active: amount === max }"
+                  <button
+                    :class="{ active: amountOption === 'max' }"
                     class="btn btn-option tooltip-target"
                     @click="setAmount(max)"
                   >
                     Max
-                  </label>
+                  </button>
                   <template slot="popover">
                     <p class="my-0 text-right">{{ max }} {{ asset }}</p>
                     <p class="text-muted my-0 text-right">
@@ -82,13 +82,10 @@
               </div>
             </div>
           </div>
-          <div class="form-group mt-40">
+          <div class="form-group mt-30">
             <span class="float-left">
               <label for="amount">Receive</label>
             </span>
-            <div class="float-right label-append text-muted">
-              ${{ prettyFiatBalance(toAmount, fiatRates[toAsset]) }}
-            </div>
             <div class="input-group swap_asset">
               <img
                 :src="getAssetIcon(toAsset)"
@@ -129,17 +126,17 @@
             </small>
           </div>
           <div class="form-group" v-if="enterSendToAddress">
-            <label class="w-100" for="amount">
-              Receive at
-              <a
-                class="text-muted float-right"
+            <label class="w-100 d-flex align-items-center justify-content-between" for="amount">
+              <div>Receive at</div>
+              <div>
+                <CloseIcon
+                class="float-right icon-sm icon-btn"
                 @click="
-                  enterSendToAddress = false
-                  sendTo = null
+                  enterSendToAddress = false;
+                  sendTo = null;
                 "
-              >
-                X
-              </a>
+              />
+              </div>
             </label>
             <div class="input-group">
               <input
@@ -184,6 +181,7 @@
                     v-model="selectedFee[asset]"
                     v-bind:fees="getAssetFees(asset)"
                     v-bind:txTypes="getFeeTxTypes(asset)"
+                    v-bind:fiatRates="fiatRates"
                   />
                 </li>
               </ul>
@@ -208,86 +206,121 @@
         </div>
       </div>
     </div>
-    <div class="swap-confirm wrapper form text-center" v-if="showConfirm">
-      <div class="wrapper_top form">
-        <div class="form-group">
-          <label>
-            Send
-          </label>
-          <p class="confirm-value" :style="getAssetColorStyle(asset)">
-            {{ amountToSend }} {{ asset }}
-          </p>
-          <p class="mb-0 details-text">
-            FEES:&nbsp; {{ totalFees[assetChain] }} {{ sendFeeType }} / (${{
-              prettyFiatBalance(totalFees[assetChain], fiatRates[asset])
-            }})
-          </p>
-          <p class="details-text">TOTAL: ${{ amountToSendInFiat }}</p>
-        </div>
-        <div class="form-group mt-20">
-          <label>Receive</label>
-          <p class="confirm-value" :style="getAssetColorStyle(toAsset)">
-            {{ toAmount }} {{ toAsset }}
-          </p>
-          <p class="details-text mb-0">
-            FEES:&nbsp; {{ totalFees[toAssetChain] }} {{ receiveFeeType }} /
-            (${{
-              prettyFiatBalance(totalFees[toAssetChain], fiatRates[toAsset])
-            }})
-          </p>
-
-          <p class="details-text mb-0" v-if="sendTo">
-            RECEIVE AT: External Wallet - {{ shortenAddress(sendTo) }}
-            <CopyIcon
-              class="copy-icon"
-              @click="copy(sendTo)"
-              v-tooltip.bottom="{
-                content: sendToCopied ? 'Copied!' : 'Copy',
-                hideOnTargetClick: false,
-              }"
-            />
-          </p>
-          <p class="details-text mb-0" v-else>
-            RECEIVE AT: This Wallet
-          </p>
-          <p class="details-text mb-0">
-            RATE: 1 {{ asset }}&nbsp;=&nbsp;{{
-                  bestRateBasedOnAmount
+    <div v-else>
+      <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
+        Swap
+      </NavBar>
+      <div class="swap-confirm wrapper form">
+        <div class="wrapper_top form">
+          <div>
+            <label> Send </label>
+            <div class="d-flex align-items-center justify-content-between mt-0">
+              <div class="confirm-value" :style="getAssetColorStyle(asset)">
+                {{ amount }} {{ asset }}
+              </div>
+              <div class="details-text">${{ amountToSendInFiat }}</div>
+            </div>
+          </div>
+          <div class="detail-group">
+            <label class="text-muted"> Network Fee </label>
+            <div class="d-flex align-items-center justify-content-between mt-0">
+              <div>{{ totalFees[assetChain] }} {{ sendFeeType }}</div>
+              <div class="details-text">
+                ${{
+                  prettyFiatBalance(totalFees[assetChain], fiatRates[asset])
                 }}
-                &nbsp;{{ toAsset }}
-          </p>
-        </div>
-      </div>
+              </div>
+            </div>
+          </div>
+          <div class="detail-group">
+            <label class="text-muted"> Amount + Fees </label>
+            <div class="d-flex align-items-center justify-content-between mt-0">
+              <div class="font-weight-bold">
+                {{ amount }} {{ asset }} + {{ totalFees[assetChain] }}
+                {{ sendFeeType }}
+              </div>
+              <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
+            </div>
+          </div>
 
-      <div class="wrapper_bottom">
-        <div class="swap-info">
-          <div class="media">
-            <ClockIcon class="swap-info_clock" />
-            <p class="text-muted media-body">
-              If the swap doesn’t complete in 3 hours, you will be refunded in 6
-              hours at {{ expiration }}
-            </p>
+          <div class="mt-20">
+            <label> Receive </label>
+            <div class="d-flex align-items-center justify-content-between my-0 py-0">
+              <div class="confirm-value" :style="getAssetColorStyle(toAsset)">
+                {{ toAmount }} {{ toAsset }}
+              </div>
+              <div class="details-text">${{ amountToReveiveInFiat }}</div>
+            </div>
+          </div>
+          <div class="detail-group">
+            <label class="text-muted"> Network Fee </label>
+            <div class="d-flex align-items-center justify-content-between my-0 py-0">
+              <div>{{ totalFees[toAssetChain] }} {{ receiveFeeType }}</div>
+              <div class="details-text">
+                ${{
+                  prettyFiatBalance(totalFees[toAssetChain], fiatRates[toAsset])
+                }}
+              </div>
+            </div>
+          </div>
+          <div class="detail-group">
+            <label class="text-muted"> Receive At </label>
+              <span v-if="sendTo">
+                {{ shortenAddress(sendTo) }}
+                <CopyIcon
+                  class="copy-icon"
+                  @click="copy(sendTo)"
+                  v-tooltip.bottom="{
+                    content: sendToCopied ? 'Copied!' : 'Copy',
+                    hideOnTargetClick: false,
+                  }"
+                />
+              </span>
+              <span v-else>
+                This Wallet
+              </span>
+          </div>
+          <div class="mt-20">
+            <label> Rate </label>
+            <div class="d-flex align-items-center justify-content-between my-0 py-0">
+              <div>
+                1 {{ asset }}&nbsp;=&nbsp;{{ bestRateBasedOnAmount }} &nbsp;{{
+                  toAsset
+                }}
+              </div>
+            </div>
           </div>
         </div>
-        <div class="button-group">
-          <button
-            class="btn btn-light btn-outline-primary btn-lg"
-            v-if="!loading"
-            @click="showConfirm = false"
-          >
-            Edit
-          </button>
-          <button
-            class="btn btn-primary btn-lg btn-block btn-icon"
-            @click="swap"
-            :disabled="loading"
-          >
-            <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>
-              <SwapIcon />
-              Initiate Swap
-            </template>
-          </button>
+        <div class="wrapper_bottom">
+          <div class="swap-info">
+            <div class="media">
+              <ClockIcon class="swap-info_clock" />
+              <p class="text-muted media-body">
+                If the swap doesn’t complete in 3 hours, you will be refunded in
+                6 hours at {{ expiration }}
+              </p>
+            </div>
+          </div>
+          <div class="button-group">
+            <button
+              class="btn btn-light btn-outline-primary btn-lg"
+              v-if="!loading"
+              @click="showConfirm = false"
+            >
+              Edit
+            </button>
+            <button
+              class="btn btn-primary btn-lg btn-block btn-icon"
+              @click="swap"
+              :disabled="loading"
+            >
+              <SpinnerIcon class="btn-loading" v-if="loading" />
+              <template v-else>
+                <SwapIcon />
+                Initiate Swap
+              </template>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -315,6 +348,7 @@ import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
+import CloseIcon from '@/assets/icons/close.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 
 export default {
@@ -327,11 +361,13 @@ export default {
     SwapIcon,
     SpinnerIcon,
     DetailsContainer,
-    CopyIcon
+    CopyIcon,
+    CloseIcon
   },
   data () {
     return {
       amount: 0,
+      amountOption: 'min',
       toAsset: null,
       enterSendToAddress: false,
       sendTo: null,
@@ -518,14 +554,8 @@ export default {
     includeFees () {
       return this.sendFeeType === FEE_TYPES.BTC
     },
-    amountToSend () {
-      if (this.feeType === FEE_TYPES.BTC) {
-        return BN(this.amount).plus(BN(this.totalFees[this.assetChain]))
-      }
-      return this.amount
-    },
     amountToSendInFiat () {
-      return prettyFiatBalance(this.amountToSend, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     amountToReveiveInFiat () {
       return prettyFiatBalance(this.toAmount, this.fiatRates[this.toAsset])
@@ -535,6 +565,10 @@ export default {
         this.activeWalletId
       ]?.[this.asset]
       return address && cryptoassets[this.asset].formatAddress(address)
+    },
+    totalToSendInFiat () {
+      const total = BN(this.amount).plus(BN(this.totalFees[this.assetChain]))
+      return prettyFiatBalance(total, this.fiatRates[this.asset])
     }
   },
   methods: {
@@ -559,6 +593,11 @@ export default {
     },
     setAmount (amount) {
       this.amount = amount
+      if (this.amount === this.max) {
+        this.amountOption = 'max'
+      } else {
+        this.amountOption = 'min'
+      }
     },
     setToAsset (val) {
       this.toAsset = val
@@ -605,6 +644,9 @@ export default {
       setTimeout(() => {
         this.sendToCopied = false
       }, 3000)
+    },
+    back () {
+      this.showConfirm = false
     }
   }
 }

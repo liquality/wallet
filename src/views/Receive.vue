@@ -9,13 +9,12 @@
           <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
           <label>Your Current {{chainName}} Address</label>
           <p class="receive_address">{{address}}</p>
-          <p>Scan this QR code with a mobile wallet to send funds to this address.</p>
+          <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
         </div>
       </div>
 
       <div class="wrapper_bottom">
-        <Warning />
         <div class="button-group">
           <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Done</button></router-link>
           <button class="btn btn-primary btn-lg btn-icon" @click="copy">
@@ -33,7 +32,6 @@ import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
 import { getChainFromAsset, getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
-import Warning from '@/components/Warning'
 import CopyIcon from '@/assets/icons/copy.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@/utils/cryptoassets'
@@ -41,7 +39,6 @@ import cryptoassets from '@/utils/cryptoassets'
 export default {
   components: {
     NavBar,
-    Warning,
     CopyIcon,
     TickIcon
   },
@@ -103,9 +100,13 @@ export default {
   &_asset {
     padding-bottom: 6px;
   }
+  &_message {
+    font-weight: bold;
+    margin-top: 40px;
+  }
   &_qr {
-    margin: 16px auto 0 auto;
-    width: 240px;
+    margin: 30px auto 0 auto;
+    width: 196px;
   }
   &_address {
     font-size: $font-size-sm;

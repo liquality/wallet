@@ -4,6 +4,9 @@
       <router-link v-if="showBack" class="navbar_prev" v-bind:to="backPath">
         <div><ChevronLeftIcon class="navbar_prev_icon" />{{ backLabel }}</div>
       </router-link>
+      <a v-if="showBackButton" class="navbar_prev" href="" @click="backClick">
+        <div><ChevronLeftIcon class="navbar_prev_icon" />{{ backLabel }}</div>
+      </a>
       <div class="navbar_title">
         <slot></slot>
       </div>
@@ -41,7 +44,7 @@ export default {
     AssetsIcon,
     SettingsIcon
   },
-  props: ['showMenu', 'showBack', 'backPath', 'backLabel'],
+  props: ['showMenu', 'showBack', 'backPath', 'backLabel', 'showBackButton', 'backClick'],
   data () {
     return {
       showMenuList: false
@@ -76,7 +79,7 @@ export default {
 <style lang="scss">
 .navbar {
   position: relative;
-  height: 48px;
+  height: 44px;
   padding: 0 !important;
   border-bottom: 1px solid $hr-border-color;
 
@@ -103,7 +106,7 @@ export default {
   }
 
   &_menu_list.menu_list {
-    top: 47px;
+    top: 44px;
     right: 0;
     left: auto;
 

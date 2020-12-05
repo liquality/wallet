@@ -1,13 +1,21 @@
 
 .tooltip {
+    $borderColor: rgba(0, 0, 0, 0.15);
+    $bgColor: #ffffff;
+    $textColor: black;
+    
     display: block !important;
     z-index: 10000;
-  
+    .wrapper {
+        padding: 0;
+      }
+
     .tooltip-inner {
-      background: black;
-      color: white;
-      border-radius: 16px;
-      padding: 5px 10px 4px;
+      background: $bgColor;
+      color: $textColor;
+      padding: 10px;
+      border: 1px solid $borderColor;
+      border-radius: 5px;
     }
   
     .tooltip-arrow {
@@ -16,7 +24,7 @@
       border-style: solid;
       position: absolute;
       margin: 5px;
-      border-color: black;
+      border-color: $borderColor;
       z-index: 1;
     }
   
@@ -81,20 +89,19 @@
     }
   
     &.popover {
-      $color: #ffffff;
       .wrapper {
         padding: 0;
       }
   
       .popover-inner {
-        background: $color;
-        color: black;
+        background: $bgColor;
+        color: $textColor;
         padding: 10px;
         border-radius: 5px;
       }
   
       .popover-arrow {
-        border-color:rgba(0, 0, 0, 0.15);
+        border-color: $borderColor;
       }
     }
   
