@@ -101,6 +101,7 @@
                       v-model="selectedFee"
                       v-bind:fees="assetFees"
                       v-bind:txTypes="[txType]"
+                      v-bind:fiatRates="fiatRates"
                     />
                   </div>
                 </li>

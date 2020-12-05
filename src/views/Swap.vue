@@ -86,9 +86,6 @@
             <span class="float-left">
               <label for="amount">Receive</label>
             </span>
-            <div class="float-right label-append text-muted">
-              ${{ prettyFiatBalance(toAmount, fiatRates[toAsset]) }}
-            </div>
             <div class="input-group swap_asset">
               <img
                 :src="getAssetIcon(toAsset)"
@@ -184,6 +181,7 @@
                     v-model="selectedFee[asset]"
                     v-bind:fees="getAssetFees(asset)"
                     v-bind:txTypes="getFeeTxTypes(asset)"
+                    v-bind:fiatRates="fiatRates"
                   />
                 </li>
               </ul>

@@ -9,7 +9,7 @@
           <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
           <label>Your Current {{chainName}} Address</label>
           <p class="receive_address">{{address}}</p>
-          <p>Scan this QR code with a mobile wallet to send funds to this address.</p>
+          <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
         </div>
       </div>
@@ -100,9 +100,13 @@ export default {
   &_asset {
     padding-bottom: 6px;
   }
+  &_message {
+    font-weight: bold;
+    margin-top: 40px;
+  }
   &_qr {
-    margin: 16px auto 0 auto;
-    width: 240px;
+    margin: 30px auto 0 auto;
+    width: 196px;
   }
   &_address {
     font-size: $font-size-sm;

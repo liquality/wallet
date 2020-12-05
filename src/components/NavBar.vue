@@ -106,7 +106,7 @@ export default {
   }
 
   &_menu_list.menu_list {
-    top: 47px;
+    top: 44px;
     right: 0;
     left: auto;
 

@@ -11,28 +11,29 @@
 </template>
 
 <script>
-import cryptoassets from '@/utils/cryptoassets'
 import { getTxFee } from '@/utils/fees'
 import BN from 'bignumber.js'
+import { prettyFiatBalance } from '@/utils/coinFormatter'
 
 export default {
-  props: ['asset', 'value', 'fees', 'txTypes'],
+  props: ['asset', 'value', 'fees', 'txTypes', 'fiatRates'],
   methods: {
     getTooltip (name) {
-      const unit = cryptoassets[this.asset].fees.unit
       let content = '<div class="text-right">'
       if (this.fees[name].wait) {
-        content += `${this.fees[name].wait}s<br />`
+        content += `${this.fees[name].wait} sec`
       }
-      content += `${this.fees[name].fee} ${unit}`
+
       if (this.txTypes) {
         const total = this.txTypes.reduce((accum, tx) => {
           return accum.plus(getTxFee(this.asset, tx, this.fees[name].fee))
         }, BN(0))
+        const totalFiat = prettyFiatBalance(total, this.fiatRates[this.asset])
         content += `<br />${total} ${this.asset}`
+        content += `<br />${totalFiat} USD`
       }
 
-      return `${content} <div class="text-right">`
+      return `${content}</div>`
     }
   }
 }
