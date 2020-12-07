@@ -21,7 +21,8 @@
             <p>{{prettyBalance(item.fromAmount, item.from)}} {{item.from}}</p>
           </div>
           <div class="col">
-            <h2>Received</h2>
+            <h2 v-if="['SUCCESS', 'REFUNDED'].includes(item.status)">Received</h2>
+            <h2 v-else>Pending Receipt</h2>
             <p>{{prettyBalance(item.toAmount, item.to)}} {{item.to}}</p>
           </div>
         </div>
