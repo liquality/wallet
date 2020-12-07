@@ -22,7 +22,7 @@
             <h2>Network Speed/Fee</h2>
             <p>{{prettyBalance(tx ? tx.fee : item.tx.fee, item.from)}} {{ assetChain }} | {{ item.fee }} {{ feeUnit }} <a v-if="canUpdateFee && !showFeeSelector" @click="openFeeSelector()">Speed up</a></p>
             <div v-if="showFeeSelector" class="mt-2">
-              <FeeSelector :asset="item.from" v-model="selectedFee" v-bind:fees="assetFees" v-bind:txTypes="[txType]" />
+              <FeeSelector :asset="item.from" v-model="selectedFee" v-bind:fees="assetFees" v-bind:txTypes="[txType]" v-bind:fiatRates="fiatRates"/>
               <button class="btn btn-sm btn-primary btn-icon ml-2" :disabled="feeSelectorLoading" @click="updateFee()">
                 <SpinnerIcon class="btn-loading" v-if="feeSelectorLoading" />
                 <template v-else>Update</template>
@@ -93,7 +93,7 @@ export default {
   props: ['id'],
   computed: {
     ...mapGetters(['client']),
-    ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees']),
+    ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     assetChain () {
       return getChainFromAsset(this.item.from)
     },
