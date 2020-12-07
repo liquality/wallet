@@ -265,9 +265,8 @@
               </div>
             </div>
           </div>
-          <div class="detail-group">
+          <div class="detail-group" v-if="sendTo">
             <label class="text-muted"> Receive At </label>
-              <span v-if="sendTo">
                 {{ shortenAddress(sendTo) }}
                 <CopyIcon
                   class="copy-icon"
@@ -277,10 +276,6 @@
                     hideOnTargetClick: false,
                   }"
                 />
-              </span>
-              <span v-else>
-                This Wallet
-              </span>
           </div>
           <div class="mt-20">
             <label> Rate </label>

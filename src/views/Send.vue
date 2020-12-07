@@ -165,9 +165,12 @@
             Amount + Fees
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
-            <div class="font-weight-bold">
-            {{ amount }} {{ asset }} + {{ totalFee }} {{ feeType }}
-          </div>
+            <div class="font-weight-bold" v-if="asset === feeType">
+              {{ amountWithFee }} {{ asset }}
+            </div>
+             <div class="font-weight-bold" v-else>
+              {{ amount }} {{ asset }} + {{ totalFee }} {{ feeType }}
+            </div>
           <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
           </div>
         </div>
@@ -317,8 +320,10 @@ export default {
       return getFeeLabel(this.selectedFee)
     },
     totalToSendInFiat () {
-      const total = BN(this.amount).plus(BN(this.totalFee))
-      return prettyFiatBalance(total, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.amountWithFee, this.fiatRates[this.asset])
+    },
+    amountWithFee () {
+      return BN(this.amount).plus(BN(this.totalFee))
     }
   },
   methods: {
