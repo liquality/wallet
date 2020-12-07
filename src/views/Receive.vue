@@ -70,9 +70,7 @@ export default {
       return ({
         BTC: 'bitcoin',
         ETH: 'ethereum',
-        RBTC: 'rbtc/rsk',
-        DAI: 'dai/ethereum',
-        UNI: 'uni/ethereum'
+        RBTC: 'ethereum'
       })[this.asset]
     }
 
