@@ -23,7 +23,7 @@
      <div class="login-footer">
         <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
         <div class="footer-content">
-          <button class="btn btn-light btn-lg btn-block btn-icon" 
+          <button class="btn btn-light btn-lg btn-block btn-icon"
                   :disabled="loading"
                   @click="unlock">
             <SpinnerIcon v-if="loading" />
@@ -71,7 +71,5 @@ export default {
 </script>
 
 <style lang="scss">
-.unlock-wallet {
 
-}
 </style>
