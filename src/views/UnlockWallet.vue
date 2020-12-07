@@ -6,7 +6,7 @@
     <div>
       <h2>Open your wallet</h2>
     </div>
-    <form class="form" autocomplete="off">
+    <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
       <div class="form-group">
         <label for="password">Password</label>
         <div class="input-group">
@@ -19,18 +19,17 @@
           </ul>
         </p>
       </div>
-    </form>
-     <div class="login-footer">
+      <div class="login-footer">
         <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
         <div class="footer-content">
           <button class="btn btn-light btn-lg btn-block btn-icon"
-                  :disabled="loading"
-                  @click="unlock">
+                  :disabled="loading">
             <SpinnerIcon v-if="loading" />
             <template v-else>Unlock</template>
           </button>
         </div>
       </div>
+    </form>
   </div>
 </template>
 
