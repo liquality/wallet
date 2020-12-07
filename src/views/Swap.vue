@@ -167,8 +167,10 @@
               <span class="details-title">Network Speed/Fee</span>
               <span class="text-muted">
                 {{ assetChain }}
-                {{ getSelectedFeeLabel(selectedFee[assetChain]) }} /
-                {{ toAssetChain }}
+                {{ getSelectedFeeLabel(selectedFee[assetChain]) }}
+              </span>
+              <span class="text-muted" v-if="assetChain != toAssetChain">
+                /{{ toAssetChain }}
                 {{ getSelectedFeeLabel(selectedFee[toAssetChain]) }}
               </span>
             </template>
@@ -224,7 +226,7 @@
           <div class="detail-group">
             <label class="text-muted"> Network Fee </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
-              <div>{{ totalFees[assetChain] }} {{ sendFeeType }}</div>
+              <div>~{{ totalFees[assetChain] }} {{ sendFeeType }}</div>
               <div class="details-text">
                 ${{
                   prettyFiatBalance(totalFees[assetChain], fiatRates[asset])
@@ -698,16 +700,5 @@ export default {
       font-size: $font-size-sm;
     }
   }
-}
-
-svg.copy-icon {
-  cursor: pointer;
-  width: 14px;
-  margin-left: 6px;
-}
-
-svg.qr-icon {
-  cursor: pointer;
-  width: 21px;
 }
 </style>

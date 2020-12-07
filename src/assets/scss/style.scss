@@ -47,14 +47,25 @@ textarea {
 
 .login-wrapper {
   display: flex;
-
   flex: 1;
-  justify-content: space-between;
   text-align: center;
   padding: 70px $wrapper-padding 0 $wrapper-padding;
   flex-direction: column;
   background: $brand-gradient-secondary;
   color: $color-text-secondary;
+  height: 600px;
+
+  .login-footer {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column; 
+    flex: 1;
+    padding-bottom: 1.25rem;
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
 
   .form input {
     color: $color-text-secondary;
@@ -75,7 +86,7 @@ textarea {
 }
 
 .login-header {
-  padding-bottom: 40px;
+  padding-bottom: 50px;
 
   svg {
     height: 75px;
@@ -370,4 +381,19 @@ textarea {
 
 .icon-btn {
   cursor: pointer;
+}
+
+svg.copy-icon {
+  cursor: pointer;
+  width: 12px;
+  margin-left: 4px;
+}
+
+svg.qr-icon {
+  cursor: pointer;
+  width: 21px;
+}
+
+.btn-footer {
+ width: 9.5rem;
 }
