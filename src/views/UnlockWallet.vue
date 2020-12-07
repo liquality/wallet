@@ -6,7 +6,7 @@
     <div>
       <h2>Open your wallet</h2>
     </div>
-    <form class="form" autocomplete="off" v-on:submit.prevent="unlock">
+    <form class="form" autocomplete="off">
       <div class="form-group">
         <label for="password">Password</label>
         <div class="input-group">
@@ -19,14 +19,18 @@
           </ul>
         </p>
       </div>
-      <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
-      <p>
-        <button class="btn btn-light btn-lg btn-block btn-icon" type="submit" :disabled="loading">
-          <SpinnerIcon v-if="loading" />
-          <template v-else>Unlock</template>
-        </button>
-      </p>
     </form>
+     <div class="login-footer">
+        <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
+        <div class="footer-content">
+          <button class="btn btn-light btn-lg btn-block btn-icon" 
+                  :disabled="loading"
+                  @click="unlock">
+            <SpinnerIcon v-if="loading" />
+            <template v-else>Unlock</template>
+          </button>
+        </div>
+      </div>
   </div>
 </template>
 

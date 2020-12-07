@@ -21,14 +21,16 @@
         <small v-show="passwordMatch" class="form-text hidden" >Passwords don't match.</small>
         <small class="form-text">Password must be at least 8 characters.</small>
       </div>
-      <p>
-        <button class="btn btn-primary btn-lg btn-block btn-icon" :disabled="loading || disableNext" @click="next">
+    </form>
+    <div class="login-footer">
+      <div class="footer-content">
+        <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
+        <button class="btn btn-primary btn-lg btn-footer btn-icon" :disabled="loading || disableNext" @click="next">
           <SpinnerIcon class="btn-loading" v-if="loading" />
           <template v-else>Continue</template>
         </button>
-      </p>
-      <p><button class="btn btn-light btn-lg btn-block btn-icon" @click="$router.go(-1)">Cancel</button></p>
-    </form>
+      </div>
+    </div>
   </div>
 </template>
 

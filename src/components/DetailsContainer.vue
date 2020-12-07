@@ -42,8 +42,8 @@ export default {
     align-items: center;
     flex-wrap: wrap;
     align-content: space-between;
-    font-size: $font-size-sm;
-    line-height: $font-size-sm;
+    font-size: $font-size-tiny;
+    line-height: $font-size-tiny;
 
     svg {
       height: 5px;
@@ -63,6 +63,7 @@ export default {
 
   .details-content {
     padding: 0;
+    font-size: $font-size-tiny;
     ul {
     list-style-type: none;
     background: #ffffff;

@@ -12,8 +12,12 @@
       <form class="form import-wallet_seed" autocomplete="off">
         <div v-for="(e, n) in numWords" :key="n"><input type="text" class="form-control form-control-sm" v-model="wordList[n]" autocomplete="off" required /></div>
       </form>
-      <p><button class="btn btn-primary btn-lg btn-block" :disabled="disableNext" @click="next">Continue</button></p>
-      <p><button class="btn btn-light btn-outline-primary btn-lg btn-block btn-icon" @click="$router.go(-1)">Cancel</button></p>
+    </div>
+    <div class="login-footer bg-white">
+        <div class="footer-content">
+          <button class="btn btn-light btn-outline-primary btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
+          <button class="btn btn-primary btn-lg btn-footer" :disabled="disableNext" @click="next">Continue</button>
+        </div>
     </div>
   </div>
 </template>

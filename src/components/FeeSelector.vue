@@ -21,7 +21,7 @@ export default {
     getTooltip (name) {
       let content = '<div class="text-right">'
       if (this.fees[name].wait) {
-        content += `${this.fees[name].wait} sec`
+        content += `${this.fees[name].wait} sec<br />`
       }
 
       if (this.txTypes) {
@@ -29,7 +29,7 @@ export default {
           return accum.plus(getTxFee(this.asset, tx, this.fees[name].fee))
         }, BN(0))
         const totalFiat = prettyFiatBalance(total, this.fiatRates[this.asset])
-        content += `<br />${total} ${this.asset}`
+        content += `${total} ${this.asset}`
         content += `<br />${totalFiat} USD`
       }
 

@@ -155,7 +155,7 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div>
-            {{ totalFee }} {{ feeType }}
+            ~{{ totalFee }} {{ feeType }}
           </div>
           <div class="details-text">${{ totalFeeInFiat }}</div>
           </div>

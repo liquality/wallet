@@ -8,7 +8,16 @@
         <div class="form-group">
           <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
           <label>Your Current {{chainName}} Address</label>
-          <p class="receive_address">{{address}}</p>
+          <p class="receive_address">{{address}}
+            <CopyIcon
+                  class="copy-icon"
+                  @click="copy"
+                  v-tooltip.bottom="{
+                    content: copied ? 'Copied!' : 'Copy',
+                    hideOnTargetClick: false,
+                  }"
+                />
+          </p>
           <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
         </div>
@@ -30,7 +39,7 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
-import { getChainFromAsset, getAssetIcon } from '@/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
 import TickIcon from '@/assets/icons/tick.svg'
@@ -58,12 +67,13 @@ export default {
       return address && cryptoassets[this.asset].formatAddress(address)
     },
     chainName () {
-      const chain = getChainFromAsset(this.asset)
       return ({
         BTC: 'bitcoin',
         ETH: 'ethereum',
-        RBTC: 'ethereum'
-      })[chain]
+        RBTC: 'rbtc/rsk',
+        DAI: 'dai/ethereum',
+        UNI: 'uni/ethereum'
+      })[this.asset]
     }
 
   },
@@ -109,7 +119,8 @@ export default {
     width: 196px;
   }
   &_address {
-    font-size: $font-size-sm;
+    font-size: $font-size-tiny;
+    font-weight: lighter;
   }
 }
 </style>
