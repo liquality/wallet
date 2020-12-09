@@ -28,6 +28,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import { isEthereumChain } from '@/utils/asset'
 
@@ -36,12 +37,9 @@ export default {
     NavBar
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets', 'injectEthereum', 'injectEthereumAsset']),
-    networkAssets () {
-      return this.enabledAssets[this.activeNetwork][this.activeWalletId]
-    },
+    ...mapState(['activeNetwork', 'activeWalletId', 'injectEthereum', 'injectEthereumAsset']),
     ethereumAssets () {
-      return this.networkAssets.filter(isEthereumChain)
+      return Object.keys(cryptoassets).filter(isEthereumChain)
     }
   },
   methods: {
