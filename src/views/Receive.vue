@@ -7,7 +7,7 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
-          <label>Your Current {{chainName}} Address</label>
+          <label>Your Current {{addressType}} Address</label>
           <p class="receive_address">{{address}}
             <CopyIcon
                   class="copy-icon"
@@ -71,6 +71,13 @@ export default {
         BTC: 'bitcoin',
         ETH: 'ethereum',
         RBTC: 'ethereum'
+      })[this.asset]
+    },
+    addressType () {
+      return ({
+        BTC: 'bitcoin',
+        ETH: 'ethereum',
+        RBTC: 'RSK'
       })[this.asset]
     }
 

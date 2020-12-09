@@ -5,10 +5,25 @@
     </div>
     <div class="import-wallet_top">
       <h2>Import wallet</h2>
-      <p>Enter the {{numWords}} word seed phrase saved when creating your wallet in the same order.</p>
+      <p>Enter the seed phrase, in the same order saved when creating your wallet.</p>
     </div>
     <div class="import-wallet_bottom">
-      <toggle-button @change="toggleMnemonicLength" color="#9d4dfa"/> {{numWords}} words
+      <div class="btn-group">
+         <button
+                    :class="{ active: numWords === 12 }"
+                    class="btn btn-option"
+                    @click="setMnemonicLength(12)"
+                  >
+                    12 words
+                  </button>
+          <button
+                    :class="{ active: numWords === 24 }"
+                    class="btn btn-option"
+                    @click="setMnemonicLength(24)"
+                  >
+                    24 words
+                  </button>
+      </div>
       <form class="form import-wallet_seed" autocomplete="off">
         <div v-for="(e, n) in numWords" :key="n"><input type="text" class="form-control form-control-sm" v-model="wordList[n]" autocomplete="off" required /></div>
       </form>
@@ -62,8 +77,8 @@ export default {
       const mnemonic = this.wordList.join(' ')
       this.$router.push({ name: 'OnboardingPassword', params: { mnemonic } })
     },
-    toggleMnemonicLength () {
-      this.numWords = (this.numWords === 12) ? 24 : 12
+    setMnemonicLength (words) {
+      this.numWords = words
       this.wordList = Array(this.numWords).fill('')
     }
   }
@@ -81,11 +96,22 @@ export default {
   padding: 50px 0 0 0 !important;
   overflow-y: scroll;
 
+  > div {
+    padding: 0 $wrapper-padding;
+  }
+
   .import-wallet_top {
     h2 {
-      padding-top: 10px;
       margin-bottom: 10px;
     }
+
+    p {
+      margin-bottom: 0 !important;
+      font-size: $font-size-sm;
+    }
+
+    padding-top: 25px;
+    padding-bottom: 20px;
   }
 
   .import-wallet_bottom {
@@ -93,10 +119,10 @@ export default {
     color: $color-text-primary;
     padding: $wrapper-padding;
 
-  }
+    .btn-group {
+      margin-bottom: 20px;
+    }
 
-  > div {
-    padding: 0 $wrapper-padding;
   }
 
   &_icon {
