@@ -124,7 +124,7 @@ export default {
   width: 100%;
   border-bottom: 1px solid $hr-border-color;
   height: 60px;
-  padding: 16px 30px;
+  padding: 16px 20px;
 
   &_icon {
     margin-right: 8px;

@@ -34,7 +34,7 @@
           <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Done</button></router-link>
           <button class="btn btn-primary btn-lg btn-icon" @click="copy">
             <template v-if="copied"><TickIcon /> Copied!</template>
-            <template v-else><CopyWhiteIcon /> Copy Address</template>
+            <template v-else><CopyWhiteIcon class="no-stroke"/> Copy Address</template>
           </button>
         </div>
       </div>

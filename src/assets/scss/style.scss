@@ -46,6 +46,19 @@ textarea {
   cursor: pointer;
 }
 
+.footer-container {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column; 
+    flex: 1;
+    padding-bottom: 1.25rem;
+    
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+    }
+}
+
 .login-wrapper {
   display: flex;
   flex: 1;
@@ -55,18 +68,6 @@ textarea {
   background: $brand-gradient-secondary;
   color: $color-text-secondary;
   height: 600px;
-
-  .login-footer {
-    display: flex;
-    justify-content: flex-end;
-    flex-direction: column; 
-    flex: 1;
-    padding-bottom: 1.25rem;
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
 
   .form input {
     color: $color-text-secondary;
@@ -309,8 +310,11 @@ textarea {
     height: 15px;
     margin-right: 6px;
     margin-top: -2px;
-    path {
-      stroke: $color-text-secondary;
+
+    &:not(.no-stroke) {
+      path {
+        stroke: $color-text-secondary;
+      }
     }
   }
 
@@ -479,8 +483,8 @@ textarea {
 
 svg.copy-icon {
   cursor: pointer;
-  width: 15px;
-  height: 15px;
+  width: 10px;
+  height: 10px;
   margin-left: 2px;
 }
 
