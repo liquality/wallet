@@ -7,7 +7,7 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
-          <label>Your Current {{chainName}} Address</label>
+          <label>Your Current {{addressType}} Address</label>
           <p class="receive_address">{{address}}
             <CopyIcon
                   class="copy-icon"
@@ -20,6 +20,12 @@
           </p>
           <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
+          <div v-if="activeNetwork === 'testnet'" class="testnet_message">
+            <div>Ether testnet faucet</div>
+            <div>
+              <a href="https://faucet.rinkeby.io/" target="_blank">https://faucet.rinkeby.io/</a>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -28,7 +34,7 @@
           <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Done</button></router-link>
           <button class="btn btn-primary btn-lg btn-icon" @click="copy">
             <template v-if="copied"><TickIcon /> Copied!</template>
-            <template v-else><CopyIcon /> Copy Address</template>
+            <template v-else><CopyWhiteIcon class="no-stroke"/> Copy Address</template>
           </button>
         </div>
       </div>
@@ -42,6 +48,7 @@ import QRCode from 'qrcode'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
+import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@/utils/cryptoassets'
 
@@ -49,6 +56,7 @@ export default {
   components: {
     NavBar,
     CopyIcon,
+    CopyWhiteIcon,
     TickIcon
   },
   data () {
@@ -71,6 +79,13 @@ export default {
         BTC: 'bitcoin',
         ETH: 'ethereum',
         RBTC: 'ethereum'
+      })[this.asset]
+    },
+    addressType () {
+      return ({
+        BTC: 'bitcoin',
+        ETH: 'ethereum',
+        RBTC: 'RSK'
       })[this.asset]
     }
 
@@ -117,8 +132,18 @@ export default {
     width: 196px;
   }
   &_address {
+    font-size: $font-size-xs;
+    font-weight: lighter;
+  }
+
+  .testnet_message {
+    margin-top: 24px;
     font-size: $font-size-tiny;
     font-weight: lighter;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 }
 </style>

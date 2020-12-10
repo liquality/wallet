@@ -182,7 +182,7 @@ export default {
     align-items: center;
     justify-content: center;
     font-size: $h3-font-size;
-    text-transform: none;
+    text-transform: uppercase;
     font-weight: normal;
 
     img {

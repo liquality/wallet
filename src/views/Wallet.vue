@@ -102,7 +102,7 @@ export default {
 
   &_header {
     font-weight: normal;
-    text-transform: none;
+    text-transform: uppercase;
   }
 
   &_stats {
