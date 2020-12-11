@@ -1,12 +1,12 @@
 <template>
   <div class="manage-assets">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="wallet_header"><strong>Manage Assets</strong></span>
+      <span class="wallet_header"><strong>Asset View</strong></span>
     </NavBar>
     <div class="manage-assets_search form wrapper">
       <div class="input-group">
         <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" placeholder="Search for an Asset" />
-        <router-link to="/settings/manage-assets/custom-token">Custom Token</router-link>
+        <router-link to="/settings/manage-assets/custom-token">Add Token</router-link>
       </div>
     </div>
     <div class="manage-assets_list">
@@ -16,7 +16,7 @@
           <span v-if="asset in networkWalletBalances" class="asset-item_balance">{{getAssetBalance(asset)}} {{asset}}</span>
         </div>
         <div class="asset-item_toggle">
-          <toggle-button color="#9d4dfa" :value="isAssetEnabled(asset)" @change="e => toggleAsset(asset, e.value)" />
+          <toggle-button :css-colors="true" :value="isAssetEnabled(asset)" @change="e => toggleAsset(asset, e.value)" />
         </div>
       </div>
     </div>
@@ -124,7 +124,7 @@ export default {
   width: 100%;
   border-bottom: 1px solid $hr-border-color;
   height: 60px;
-  padding: 16px 30px;
+  padding: 16px 20px;
 
   &_icon {
     margin-right: 8px;

@@ -19,7 +19,7 @@
           </ul>
         </p>
       </div>
-      <div class="login-footer">
+      <div class="footer-container">
         <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
         <div class="footer-content">
           <button class="btn btn-light btn-lg btn-block btn-icon"

@@ -2,6 +2,7 @@
 @import 'overrides';
 @import 'bootstrap';
 @import 'tooltip';
+@import 'vue-js-switch';
 
 body {
   height: 600px;
@@ -45,6 +46,19 @@ textarea {
   cursor: pointer;
 }
 
+.footer-container {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column; 
+    flex: 1;
+    padding-bottom: 1.25rem !important;
+    
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+    }
+}
+
 .login-wrapper {
   display: flex;
   flex: 1;
@@ -54,18 +68,6 @@ textarea {
   background: $brand-gradient-secondary;
   color: $color-text-secondary;
   height: 600px;
-
-  .login-footer {
-    display: flex;
-    justify-content: flex-end;
-    flex-direction: column; 
-    flex: 1;
-    padding-bottom: 1.25rem;
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
 
   .form input {
     color: $color-text-secondary;
@@ -202,8 +204,100 @@ textarea {
   font-weight: $font-weight-base;
 }
 
+// overrided btn-outline and primary as design spect for secondary buttons
+.btn-primary {
+  color: #ffffff;
+  border-color: $primary;
+  background-color: $primary;
+
+  @include hover() {
+    color: #ffffff;
+    border-color: #BA62FE;
+    background-color: #BA62FE;
+  }
+
+  &:focus,
+  &.focus {
+    color: #ffffff;
+    border-color: #BA62FE;
+    background-color: #BA62FE;
+  }
+
+  &.disabled,
+  &:disabled {
+    color: color-yiq($primary);
+    background-color: $primary;
+    border-color: $primary;
+  }
+
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active,
+  .show > &.dropdown-toggle {
+    color: #ffffff;
+    border-color: #8835E7;
+    background-color: #8835E7;
+  }
+}
+
+
 .btn-light {
   color: $primary;
+  border-color: $primary;
+  background-color: #F8FAFF;
+  border: none;
+
+  @include hover() {
+    color: #BA62FE;
+    background-color: #FFFFFF;
+  }
+
+  &:focus,
+  &.focus {
+    box-shadow: 0 0 0 $btn-focus-width rgba($primary, .5);
+  }
+
+  &.disabled,
+  &:disabled {
+    color: $primary;
+    background-color: #F8FAFF;
+  }
+
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    color: #8835E7;
+    background-color: #EAF0FE;
+  }
+}
+
+.btn-outline-primary {
+  color: $primary;
+  border-color: $primary;
+  background-color: #F8FAFF;
+  border: 1px solid $primary;
+
+  @include hover() {
+    color: #BA62FE;
+    background-color: #FFFFFF;
+    border-color: #BA62FE;
+  }
+
+  &:focus,
+  &.focus {
+    box-shadow: 0 0 0 $btn-focus-width rgba($primary, .5);
+  }
+
+  &.disabled,
+  &:disabled {
+    color: $primary;
+    background-color: #F8FAFF;
+  }
+
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    color: #8835E7;
+    background-color: #EAF0FE;
+    border-color: #8835E7;
+  }
 }
 
 .btn.btn-icon {
@@ -212,11 +306,15 @@ textarea {
   justify-content: center;
   svg {
     display: inline-block;
-    height: 18px;
+    width: 15px;
+    height: 15px;
     margin-right: 6px;
     margin-top: -2px;
-    path {
-      stroke: $color-text-secondary;
+
+    &:not(.no-stroke) {
+      path {
+        stroke: $color-text-secondary;
+      }
     }
   }
 
@@ -385,8 +483,9 @@ textarea {
 
 svg.copy-icon {
   cursor: pointer;
-  width: 12px;
-  margin-left: 4px;
+  width: 10px;
+  height: 10px;
+  margin-left: 2px;
 }
 
 svg.qr-icon {

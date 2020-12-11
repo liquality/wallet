@@ -22,7 +22,7 @@
         <small class="form-text">Password must be at least 8 characters.</small>
       </div>
     </form>
-    <div class="login-footer">
+    <div class="footer-container">
       <div class="footer-content">
         <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
         <button class="btn btn-primary btn-lg btn-footer btn-icon" :disabled="loading || disableNext" @click="next">
