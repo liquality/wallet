@@ -53,5 +53,20 @@ export default {
     }, {})
 
     return Object.assign({}, baseAssets, customAssets)
+  },
+  networkAssets (state) {
+    const { enabledAssets, activeNetwork, activeWalletId } = state
+    return enabledAssets[activeNetwork][activeWalletId]
+  },
+  orderedBalances (state) {
+    const { enabledAssets, balances, activeNetwork, activeWalletId } = state
+    if (!balances[activeNetwork]) return false
+    if (!balances[activeNetwork][activeWalletId]) return false
+
+    const networkWalletBalances = balances[activeNetwork][activeWalletId]
+    const assets = enabledAssets[activeNetwork][activeWalletId]
+    return Object.entries(networkWalletBalances).filter(([asset]) => assets.includes(asset)).sort(([assetA], [assetB]) => {
+      return assets.indexOf(assetA) - assets.indexOf(assetB)
+    })
   }
 }

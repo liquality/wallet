@@ -6,7 +6,7 @@ import OnboardingPassword from '@/views/Onboarding/OnboardingPassword.vue'
 import ImportWallet from '@/views/ImportWallet.vue'
 import UnlockWallet from '@/views/UnlockWallet.vue'
 import BackupWallet from '@/views/BackupWallet.vue'
-import Wallet from '@/views/Wallet.vue'
+import Wallet from '@/views/Wallet/Wallet.vue'
 import Account from '@/views/Account.vue'
 import SwapDetails from '@/views/SwapDetails.vue'
 import TransactionDetails from '@/views/TransactionDetails.vue'
@@ -22,6 +22,8 @@ import Enable from '@/views/Enable.vue'
 import PermissionSend from '@/views/PermissionSend.vue'
 import PermissionSign from '@/views/PermissionSign.vue'
 import Permission from '@/views/Permission.vue'
+import WalletAssets from '@/views/Wallet/WalletAssets.vue'
+import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 
 Vue.use(VueRouter)
 
@@ -69,7 +71,23 @@ const routes = [
   // Wallet
   {
     path: '/wallet',
-    component: Wallet
+    component: Wallet,
+    children: [
+      {
+        path: 'assets',
+        component: WalletAssets,
+        name: 'WalletAssets'
+      },
+      {
+        path: 'activity',
+        component: WalletActivity,
+        name: 'WalletActivity'
+      },
+      {
+        path: '',
+        redirect: 'assets'
+      }
+    ]
   },
   {
     name: 'Account',
