@@ -134,17 +134,16 @@ class Background {
         break
 
       case 'CAL_REQUEST':
-        if (!allowed) {
+        if (allowed || data.method === 'jsonrpc') {
+          this.storeProxy(id, connection, 'requestPermission', { origin, data })
+        } else {
           connection.postMessage({
             id,
             data: {
               error: 'Use enable() method first'
             }
           })
-          return
         }
-
-        this.storeProxy(id, connection, 'requestPermission', { origin, data })
         break
     }
   }
