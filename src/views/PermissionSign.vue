@@ -70,7 +70,10 @@ export default {
 
       try {
         await this.replyPermission({
-          request: this.request,
+          request: {
+            ...this.request,
+            args: [this.message, this.request.args[1]]
+          },
           allowed
         })
         this.replied = true
