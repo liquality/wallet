@@ -68,6 +68,7 @@ async function getAddresses () {
 async function handleRequest (req) {
   const eth = window.providerManager.getProviderFor('${asset}')
   if(req.method.startsWith('metamask_')) return null;
+
   if(req.method === 'eth_requestAccounts') {
     return await window.ethereum.enable();
   }
@@ -80,7 +81,7 @@ async function handleRequest (req) {
     return '0x' + result.hash
   }
   if(req.method === 'eth_accounts') {
-    return getAddresses()
+    return await window.ethereum.enable();
   }
   return eth.getMethod('jsonrpc')(req.method, ...req.params)
 }
@@ -101,9 +102,13 @@ window.liqualityEthereum = {
       method: req.method, params
     })
   },
-  send: async (req, _params) => {
+  send: async (req, _paramsOrCallback) => {
+    if (typeof _paramsOrCallback === "function") {
+      window.ethereum.sendAsync(req, _paramsOrCallback)
+      return
+    }
     const method = typeof req === 'string' ? req : req.method
-    const params = req.params || _params || []
+    const params = req.params || _paramsOrCallback || []
     return handleRequest({ method, params })
   },
   sendAsync: (req, callback) => {
