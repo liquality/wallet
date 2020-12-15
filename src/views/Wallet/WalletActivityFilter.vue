@@ -29,7 +29,8 @@
         </div>
         <ListItem v-for="(filter, key) in typeFilters"
                   :key="key"
-                  @item-selected="toogleTypeFilter(key)">
+                  @item-selected="toogleTypeFilter(key)"
+                  :item-class="filter.selected ? 'selected-item' : ''">
             <template #icon>
               <img :src="getItemIcon(filter.icon)"/>
             </template>
@@ -45,7 +46,8 @@
         </div>
         <ListItem v-for="(filter, key) in statusFilters"
                   :key="key"
-                  @item-selected="toogleStatusFilter(key)">
+                  @item-selected="toogleStatusFilter(key)"
+                  :item-class="filter.selected ? 'selected-item' : ''">
             <template #icon>
               <img :src="getItemIcon(filter.icon)"/>
             </template>
@@ -195,6 +197,8 @@ export default {
     }
 
     .activity-filter-section-title {
+      display: flex;
+      align-items: center;
       text-transform: uppercase;
       font-style: normal;
       font-weight: bold;
@@ -212,6 +216,10 @@ export default {
       display: flex;
       flex: 1;
       flex-direction: column;
+
+      .selected-item {
+        background-color: #F0F7F9;
+      }
     }
   }
 }
