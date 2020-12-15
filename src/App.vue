@@ -11,7 +11,7 @@
 import { mapState } from 'vuex'
 import SatMode from '@/mixins/SatMode'
 
-import Head from '@/views/Head.vue'
+import Head from '@/components/Head.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 
 export default {

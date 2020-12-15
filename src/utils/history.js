@@ -59,3 +59,49 @@ export function getStep (item) {
     return SWAP_STATUS_STEP_MAP[item.status]
   }
 }
+
+export const ACTIVITY_FILTER_TYPES = {
+  SWAP: {
+    label: 'Swap',
+    icon: 'swap_icon'
+  },
+  SEND: {
+    label: 'Send',
+    icon: 'send_icon'
+  },
+  RECEIVE: {
+    label: 'Receive',
+    icon: 'receive_icon'
+  }
+}
+
+export const ACTIVITY_FILTER_STATUSES = {
+  PENDING: {
+    label: 'Pending',
+    icon: 'pending_icon'
+  },
+  COMPLETED: {
+    label: 'Completed',
+    icon: 'completed_icon'
+  },
+  RECLAIMED: {
+    label: 'Reclaimend',
+    icon: 'reclaimed_icon'
+  },
+  REFUNDED: {
+    label: 'Refunded',
+    icon: 'refunded_icon'
+  },
+  NEEDS_ATTENTION: {
+    label: 'Needs Attention',
+    icon: 'needs_attention_icon'
+  }
+}
+
+export const getItemIcon = (name) => {
+  try {
+    return require(`../assets/icons/${name.toLowerCase()}.svg?inline`)
+  } catch (e) {
+    return require('../assets/icons/blank_asset.svg?inline')
+  }
+}

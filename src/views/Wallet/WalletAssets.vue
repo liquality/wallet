@@ -1,33 +1,36 @@
 <template>
-   <div>
-       <router-link v-for="([asset, balance]) in orderedBalances" :key="asset" v-bind:to="'/account/' + asset" >
-        <div class="account-item d-flex align-items-center">
-          <img :src="getAssetIcon(asset)" class="asset-icon account-item_icon" />
-          <div class="account-item_name flex-fill">{{asset}}</div>
-          <div class="account-item_balance">
-            {{prettyBalance(balance, asset)}} {{asset}}
-            <span v-if="fiatRates[asset]" class="account-item_balance_fiat">${{prettyFiat(balance, asset)}}</span>
-          </div>
-          <ChevronRightIcon class="account-item_chevron" />
-        </div>
-      </router-link>
+   <div v-if="networkWalletBalances">
+       <ListItem v-for="([asset, balance]) in orderedBalances"
+                 :key="asset"
+                 :to="'/account/' + asset">
+          <template #icon>
+            <img :src="getAssetIcon(asset)" class="asset-icon" />
+          </template>
+          {{ getAssetName(asset) }}
+          <template #detail>
+            {{ prettyBalance(balance, asset) }} {{asset}}
+          </template>
+          <template #detail-sub v-if="fiatRates[asset]">
+            ${{prettyFiat(balance, asset)}}
+          </template>
+      </ListItem>
    </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
+import ListItem from '@/components/ListItem'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 
 export default {
   components: {
-    ChevronRightIcon
+    ListItem
   },
   computed: {
     ...mapState(['fiatRates']),
-    ...mapGetters(['orderedBalances'])
+    ...mapGetters(['orderedBalances', 'networkWalletBalances'])
   },
   methods: {
     getAssetIcon,
@@ -35,6 +38,9 @@ export default {
     prettyFiat (amount, asset) {
       amount = cryptoassets[asset].unitToCurrency(amount)
       return prettyFiatBalance(amount, this.fiatRates[asset])
+    },
+    getAssetName (asset) {
+      return cryptoassets[asset] ? cryptoassets[asset].name : asset
     }
   }
 }

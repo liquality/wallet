@@ -46,6 +46,11 @@ textarea {
   cursor: pointer;
 }
 
+.h-padding {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 .footer-container {
     display: flex;
     justify-content: flex-end;
@@ -403,7 +408,7 @@ textarea {
   height: 20px;
   font-weight: 300 !important;
   font-size: $font-size-tiny !important;
-  border: 1px solid #D9DFE5;
+  border: 1px solid $hr-border-color;
   padding: 0.05rem 0.5rem;
   border-radius: 26px;
   display: flex;

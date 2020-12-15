@@ -4,13 +4,13 @@
         height: 20px !important; 
         border-radius: 26px;
         background-color: #ffffff; 
-        border: solid 1px #D9DFE5; 
+        border: solid 1px $hr-border-color; 
 
         .v-switch-button {
             width: 18px !important; 
             height: 18px !important;  
             transform: translate3d(0px, 0px, 0px) !important;
-            background-color: #D9DFE5 !important; 
+            background-color: $hr-border-color !important; 
         }
     }
 }

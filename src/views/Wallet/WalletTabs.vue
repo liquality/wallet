@@ -1,5 +1,6 @@
 <template>
-  <ul class="nav nav-tabs">
+  <div class="wallet-tabs">
+    <ul class="nav nav-tabs">
     <li class="nav-item">
       <router-link
         class="nav-link"
@@ -17,14 +18,28 @@
       </router-link>
     </li>
   </ul>
+   <div class="wallet-tab-content">
+      <router-view v-if="networkWalletBalances"></router-view>
+      <span v-else>Loading ...</span>
+    </div>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
+  computed: {
+    ...mapGetters(['networkWalletBalances'])
+  }
 }
 </script>
 
 <style lang="scss">
+.wallet-tabs {
+  margin: 0;
+  padding: 0;
+}
 .nav-tabs {
   height: 48px;
   border-bottom: none !important;
@@ -43,7 +58,7 @@ export default {
       align-items: center;
       justify-content: center;
       border: none !important;
-      border-bottom: 1px solid #d9dfe5 !important;
+      border-bottom: 1px solid $hr-border-color !important;
       padding: 0 !important;
     }
 
@@ -55,4 +70,13 @@ export default {
     }
   }
 }
+
+.wallet-tab-content {
+    a {
+      color: $color-text-primary;
+    }
+    a:hover {
+      text-decoration: none;
+    }
+  }
 </style>

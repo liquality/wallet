@@ -1,14 +1,14 @@
 <template>
    <div class="wallet-stats">
-      <div v-if="loaded">
+      <div v-if="networkAssetsLoaded">
         <div>
             <span class="wallet-stats_total">
-                {{totalFiatBalance}}
+                {{ totalFiatBalance }}
             </span>
             <span>USD</span>
         </div>
         <span>
-            {{assets.length}} Asset{{ assets.length === 1 ? '' : 's' }}
+            {{assetsWithBalance.length}} Asset{{ assetsWithBalance.length === 1 ? '' : 's' }}
         </span>
       </div>
       <span v-else>Loading ...</span>
@@ -16,18 +16,16 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
 
 export default {
-  props: [
-    'loaded',
-    'assets',
-    'fiatRates'
-  ],
   computed: {
+    ...mapState(['fiatRates']),
+    ...mapGetters(['networkAssetsLoaded', 'assetsWithBalance']),
     totalFiatBalance () {
-      const total = this.assets.reduce((accum, [asset, balance]) => {
+      const total = this.assetsWithBalance.reduce((accum, [asset, balance]) => {
         balance = cryptoassets[asset].unitToCurrency(balance)
         const balanceFiat = this.fiatRates[asset] ? BN(balance).times(this.fiatRates[asset]) : 0
         return accum.plus(balanceFiat)
@@ -40,13 +38,11 @@ export default {
 
 <style lang="scss">
 .wallet-stats {
-    text-align: center;
     display: flex;
-    flex: 0 0 auto;
-    width: 100%;
     height: 225px;
     justify-content: center;
     align-items: center;
+    text-align: center;
     background: $brand-gradient-primary;
     color: $color-text-secondary;
     font-size: $font-size-lg;
