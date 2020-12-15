@@ -82,5 +82,11 @@ export default {
   networkAssetsLoaded (_state, getters) {
     const { networkAssets, networkWalletBalances } = getters
     return networkWalletBalances && Object.keys(networkWalletBalances).length >= networkAssets.length
+  },
+  activity (state) {
+    const { history, activeNetwork, activeWalletId } = state
+    if (!history[activeNetwork]) return []
+    if (!history[activeNetwork][activeWalletId]) return []
+    return history[activeNetwork][activeWalletId].slice().reverse()
   }
 }

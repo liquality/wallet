@@ -1,9 +1,5 @@
 <template>
-  <div class="tx-details-wrapper">
-    <NavBar showBack="true" :backPath="`/account/${item.from}`" :backLabel="item.from">
-      Transaction Detail
-    </NavBar>
-    <div class="tx-details">
+  <div class="tx-details">
       <div class="tx-details_info">
         <div class="row">
           <div class="col">
@@ -55,7 +51,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -68,7 +63,6 @@ import { getStatusLabel } from '@/utils/history'
 import { TX_TYPES } from '@/utils/fees'
 import { getChainFromAsset, getTransactionExplorerLink, getAddressExplorerLink } from '@/utils/asset'
 
-import NavBar from '@/components/NavBar.vue'
 import FeeSelector from '@/components/FeeSelector'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -76,7 +70,6 @@ import CopyIcon from '@/assets/icons/copy.svg'
 
 export default {
   components: {
-    NavBar,
     FeeSelector,
     CompletedIcon,
     SpinnerIcon,
@@ -178,14 +171,6 @@ export default {
 </script>
 
 <style lang="scss">
-.tx-details-wrapper {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 .tx-details {
   padding: $wrapper-padding 0;
   overflow-y: auto;

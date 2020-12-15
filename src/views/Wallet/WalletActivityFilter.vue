@@ -1,30 +1,47 @@
 <template>
   <div class="activity-filter">
     <div class="activity-filter-header h-padding">
-      <div @click.stop="open = !open" class="filter-action">
+      <div class="activity-filter-header-actions">
+        <div @click.stop="open = !open" class="filter-action">
         <ChevronDownIcon :class="open ? '' : 'right'" />
         Filters ({{ filterCount }})
       </div>
-      <div class="filter-export">
-        <ExportIcon />
-        <span class="text-muted">Export</span>
-      </div>
-    </div>
-    <div class="activity-filter-content" v-if="open">
-      <div class="activity-filter-content-header h-padding">
-        <div @click.stop="reset" class="reset-action">
+      <div @click.stop="resetFilters"
+           class="reset-action"
+           v-if="filterCount > 0">
           <CloseIcon :class="open ? '' : 'right'" />
           <span class="text-muted">Reset</span>
         </div>
       </div>
+      <div class="filter-export" @click.stop="exportActivity">
+        <ExportIcon />
+        <span class="text-muted">Export</span>
+      </div>
+    </div>
+    <div class="activity-filter-content" v-show="open">
       <div class="activity-filter-type">
         <div class="activity-filter-section-title h-padding">Date Range</div>
-        <div class="date-filter-inputs">
-          inputs
+        <div class="date-filter-inputs h-padding">
+          <date-pick v-model="dateFilters.start">
+              <template v-slot:default="{toggle, inputValue}">
+                  <div class="input-group" @click="toggle">
+                    <input type="text" class="form-control form-control-sm" placeholder="Start" :value="inputValue">
+                    <CalendarIcon />
+                  </div>
+              </template>
+          </date-pick>
+          <date-pick v-model="dateFilters.end">
+              <template v-slot:default="{toggle, inputValue}">
+                  <div class="input-group" @click="toggle">
+                    <input type="text" class="form-control form-control-sm" placeholder="End" :value="inputValue">
+                    <CalendarIcon />
+                  </div>
+              </template>
+          </date-pick>
         </div>
       </div>
       <div class="activity-filter-type">
-        <div class="activity-filter-section-title filter-for-type h-padding">
+        <div class="activity-filter-section-title h-padding">
           Type
         </div>
         <ListItem v-for="(filter, key) in typeFilters"
@@ -41,7 +58,7 @@
         </ListItem>
       </div>
       <div class="activity-filter-type">
-        <div class="activity-filter-section-title filter-for-status h-padding">
+        <div class="activity-filter-section-title h-padding">
           Status
         </div>
         <ListItem v-for="(filter, key) in statusFilters"
@@ -62,18 +79,23 @@
 </template>
 
 <script>
+import CalendarIcon from '@/assets/icons/calendar_icon.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import CloseIcon from '@/assets/icons/close.svg'
 import ExportIcon from '@/assets/icons/export.svg'
 import ListItem from '@/components/ListItem'
 import { ACTIVITY_FILTER_TYPES, ACTIVITY_FILTER_STATUSES, getItemIcon } from '@/utils/history'
+import DatePick from 'vue-date-pick'
+import '@/assets/scss/vue-date-pick.scss'
 
 export default {
   components: {
+    CalendarIcon,
     ChevronDownIcon,
     CloseIcon,
     ExportIcon,
-    ListItem
+    ListItem,
+    DatePick
   },
   data () {
     return {
@@ -114,14 +136,41 @@ export default {
     toogleTypeFilter (key) {
       if (key in this.typeFilters) {
         this.typeFilters[key].selected = !this.typeFilters[key].selected
-        this.typeFilters = Object.assign({}, this.typeFilters)
+        this.typeFilters = { ...this.typeFilters }
+        this.applyFilters()
       }
     },
     toogleStatusFilter (key) {
       if (key in this.statusFilters) {
         this.statusFilters[key].selected = !this.statusFilters[key].selected
-        this.statusFilters = Object.assign({}, this.statusFilters)
+        this.statusFilters = { ...this.statusFilters }
+        this.applyFilters()
       }
+    },
+    exportActivity () {
+      this.$emit('expot-requested')
+    },
+    resetFilters () {
+      this.dateFilters = { start: null, end: null }
+      for (const key in this.typeFilters) {
+        this.typeFilters[key].selected = false
+      }
+
+      for (const key in this.statusFilters) {
+        this.statusFilters[key].selected = false
+      }
+      this.typeFilters = { ...this.typeFilters }
+      this.statusFilters = { ...this.statusFilters }
+      this.applyFilters()
+    },
+    applyFilters () {
+      const types = Object.entries(this.typeFilters).filter(f => f.selected === true)
+      const statuses = Object.entries(this.statusFilters).filter(f => f.selected === true)
+      this.$emit('filtes-changed', {
+        types,
+        statuses,
+        dates: this.dateFilters
+      })
     }
   }
 }
@@ -140,12 +189,16 @@ export default {
     border-top: 1px solid $hr-border-color;
     border-bottom: 1px solid $hr-border-color;
 
+    .activity-filter-header-actions {
+      display: flex;
+    }
     .filter-action {
       font-size: $font-size-sm;
       font-weight: $headings-font-weight;
       display: flex;
       align-items: center;
       cursor: pointer;
+      margin-right: 10px;
 
       svg {
         width: 10px;
@@ -157,6 +210,16 @@ export default {
         transform: rotate(-90deg);
       }
     }
+
+    .reset-action {
+        display: flex;
+        cursor: pointer;
+        svg {
+          width: 10px;
+          margin-right: 5px;
+          vertical-align: middle;
+        }
+      }
 
     .filter-export {
       font-size: $font-size-tiny;
@@ -184,16 +247,6 @@ export default {
       align-items: center;
       justify-content: flex-end;
       padding-top: 13px;
-
-      .reset-action {
-        display: flex;
-        cursor: pointer;
-        svg {
-          width: 10px;
-          margin-right: 5px;
-          vertical-align: middle;
-        }
-      }
     }
 
     .activity-filter-section-title {
@@ -204,12 +257,21 @@ export default {
       font-weight: bold;
       font-size: $font-size-tiny;
       height: 30px;
+      border-bottom: 1px solid $hr-border-color;
     }
 
-    .filter-for-type,
-    .filter-for-status,
     .date-filter-inputs {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
       border-bottom: 1px solid $hr-border-color;
+
+      svg {
+        width: 14px;
+        vertical-align: middle;
+        cursor: pointer;
+      }
     }
 
     .activity-filter-type {

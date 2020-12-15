@@ -84,17 +84,17 @@ export const ACTIVITY_FILTER_STATUSES = {
     label: 'Completed',
     icon: 'completed_icon'
   },
-  RECLAIMED: {
-    label: 'Reclaimend',
-    icon: 'reclaimed_icon'
+  NEEDS_ATTENTION: {
+    label: 'Needs Attention',
+    icon: 'needs_attention_icon'
   },
   REFUNDED: {
     label: 'Refunded',
     icon: 'refunded_icon'
   },
-  NEEDS_ATTENTION: {
-    label: 'Needs Attention',
-    icon: 'needs_attention_icon'
+  CANCELED: {
+    label: 'Canceled',
+    icon: 'canceled_icon'
   }
 }
 

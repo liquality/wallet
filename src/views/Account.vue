@@ -158,8 +158,8 @@ export default {
     },
     getDetailsLink (item) {
       return {
-        SEND: `/transaction/${item.id}`,
-        SWAP: `/swap/${item.id}`
+        SEND: `/details/${item.id}/transaction/`,
+        SWAP: `/details/${item.id}/swap/`
       }[item.type]
     }
   },
