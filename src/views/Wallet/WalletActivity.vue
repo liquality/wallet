@@ -31,6 +31,7 @@ import { mapGetters } from 'vuex'
 import { getItemIcon, getStatusLabel, ACTIVITY_FILTER_TYPES } from '@/utils/history'
 import { prettyBalance } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
+import { getCSVContent, exportToCSV } from '@/utils/export'
 
 export default {
   components: {
@@ -40,13 +41,12 @@ export default {
   computed: {
     ...mapGetters(['activity']),
     activityData () {
-      return this.activity.map(item => ({
-        ...item,
-        title: this.getTitle(item)
-      }))
+      return this.activity
     }
   },
   methods: {
+    getCSVContent,
+    exportToCSV,
     getStatusLabel,
     getItemIcon,
     prettyBalance,
@@ -54,7 +54,8 @@ export default {
       console.log('filters change', types, statuses, dates)
     },
     exportActivity () {
-
+      const content = this.getCSVContent(this.activityData)
+      this.exportToCSV({ filename: 'activity.csv', content })
     },
     getTitle (item) {
       switch (item.type) {
