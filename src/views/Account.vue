@@ -36,19 +36,7 @@
         </div>
       </div>
       <div class="account_transactions">
-        <router-link :to="getDetailsLink(item)" v-for="(item) in assetHistory" :key="item.id">
-          <Transaction
-            v-bind:asset="item.from"
-            v-bind:amount="getTransactionAmount(item)"
-            v-bind:type="item.type"
-            v-bind:title="getTransactionTitle(item)"
-            v-bind:timestamp="item.startTime"
-            v-bind:detail="getTransactionStatus(item)"
-            v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)"
-            v-bind:step="getTransactionStep(item)"
-            v-bind:numSteps="getTransactionNumSteps(item)"
-            v-bind:error="item.error" />
-        </router-link>
+        <TransactionList :transactions="assetHistory" />
       </div>
     </div>
   </div>
@@ -64,11 +52,10 @@ import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
-import Transaction from '@/components/Transaction'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
 import { getAssetIcon } from '@/utils/asset'
-import { getStep, getStatusLabel } from '@/utils/history'
+import TransactionList from '@/components/TransactionList'
 
 export default {
   components: {
@@ -79,7 +66,7 @@ export default {
     SendIcon,
     ReceiveIcon,
     SwapIcon,
-    Transaction
+    TransactionList
   },
   data () {
     return {
@@ -129,38 +116,6 @@ export default {
     },
     refresh () {
       this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
-    },
-    getTransactionStatus (item) {
-      return getStatusLabel(item)
-    },
-    getTransactionStep (item) {
-      return getStep(item) + 1
-    },
-    getTransactionNumSteps (item) {
-      return {
-        SEND: 2,
-        SWAP: item.sendTo ? 5 : 4
-      }[item.type]
-    },
-    getTransactionTitle (item) {
-      if (item.type === 'SWAP') {
-        return `${item.from} to ${item.to}`
-      }
-      if (item.type === 'SEND') {
-        return `Send ${item.from}`
-      }
-      if (item.type === 'RECEIVE') {
-        return `Receive ${item.from}`
-      }
-    },
-    getTransactionAmount (item) {
-      return item.type === 'SWAP' ? item.fromAmount : item.amount
-    },
-    getDetailsLink (item) {
-      return {
-        SEND: `/details/${item.id}/transaction/`,
-        SWAP: `/details/${item.id}/swap/`
-      }[item.type]
     }
   },
   async created () {

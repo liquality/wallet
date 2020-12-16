@@ -23,17 +23,17 @@
         <div class="activity-filter-section-title h-padding">Date Range</div>
         <div class="date-filter-inputs h-padding">
           <date-pick v-model="dateFilters.start">
-              <template v-slot:default="{toggle, inputValue}">
+              <template v-slot:default="{toggle, inputValue, inputEvents}">
                   <div class="input-group" @click="toggle">
-                    <input type="text" class="form-control form-control-sm" placeholder="Start" :value="inputValue">
+                    <input type="text" class="form-control form-control-sm" placeholder="Start" :value="inputValue" v-on="inputEvents">
                     <CalendarIcon />
                   </div>
               </template>
           </date-pick>
           <date-pick v-model="dateFilters.end">
-              <template v-slot:default="{toggle, inputValue}">
+              <template v-slot:default="{toggle, inputValue, inputEvents}">
                   <div class="input-group" @click="toggle">
-                    <input type="text" class="form-control form-control-sm" placeholder="End" :value="inputValue">
+                    <input type="text" class="form-control form-control-sm" placeholder="End" :value="inputValue" v-on="inputEvents">
                     <CalendarIcon />
                   </div>
               </template>
@@ -148,7 +148,7 @@ export default {
       }
     },
     exportActivity () {
-      this.$emit('expot-requested')
+      this.$emit('export-requested')
     },
     resetFilters () {
       this.dateFilters = { start: null, end: null }
@@ -164,9 +164,21 @@ export default {
       this.applyFilters()
     },
     applyFilters () {
-      const types = Object.entries(this.typeFilters).filter(f => f.selected === true)
-      const statuses = Object.entries(this.statusFilters).filter(f => f.selected === true)
-      this.$emit('filtes-changed', {
+      const types = []
+      const statuses = []
+      for (const key in this.typeFilters) {
+        if (this.typeFilters[key].selected === true) {
+          types.push(key)
+        }
+      }
+
+      for (const key in this.statusFilters) {
+        if (this.statusFilters[key].selected === true) {
+          statuses.push(key)
+        }
+      }
+
+      this.$emit('filters-changed', {
         types,
         statuses,
         dates: this.dateFilters
@@ -229,6 +241,7 @@ export default {
         width: 13px;
         margin-right: 5px;
         vertical-align: middle;
+        margin-bottom: 3px;
       }
     }
   }
