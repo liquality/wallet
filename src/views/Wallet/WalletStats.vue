@@ -48,9 +48,8 @@ export default {
     font-size: $font-size-lg;
 
     &_total {
-      font-size: $h1-font-size;
-      line-height: $h1-font-size;
-      margin-right: 10px;
+      font-size: 50px;
+      line-height: 61px;
     }
   }
 </style>

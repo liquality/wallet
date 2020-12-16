@@ -52,6 +52,7 @@ export default {
     .nav-link {
       height: 100%;
       font-size: $font-size-sm;
+      font-weight: $btn-font-weight;
       text-transform: uppercase;
       color: #646f85;
       display: flex;

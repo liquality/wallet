@@ -63,38 +63,38 @@ export function getStep (item) {
 export const ACTIVITY_FILTER_TYPES = {
   SWAP: {
     label: 'Swap',
-    icon: 'swap_icon'
+    icon: 'swap'
   },
   SEND: {
     label: 'Send',
-    icon: 'send_icon'
+    icon: 'send'
   },
   RECEIVE: {
     label: 'Receive',
-    icon: 'receive_icon'
+    icon: 'receive'
   }
 }
 
 export const ACTIVITY_FILTER_STATUSES = {
   PENDING: {
     label: 'Pending',
-    icon: 'pending_icon'
+    icon: 'pending'
   },
   COMPLETED: {
     label: 'Completed',
-    icon: 'completed_icon'
+    icon: 'completed'
   },
   NEEDS_ATTENTION: {
     label: 'Needs Attention',
-    icon: 'needs_attention_icon'
+    icon: 'needs_attention'
   },
   REFUNDED: {
     label: 'Refunded',
-    icon: 'refunded_icon'
+    icon: 'refunded'
   },
   CANCELED: {
     label: 'Canceled',
-    icon: 'canceled_icon'
+    icon: 'canceled'
   }
 }
 

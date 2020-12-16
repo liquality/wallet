@@ -1,9 +1,10 @@
 <template>
   <component :is="itemComponent"
+             class="list-item-container"
              :class="[itemClass]"
              v-bind:to="to"
              @click="$emit('item-selected')">
-        <div class="list-item d-flex align-items-center h-padding">
+        <div class="list-item d-flex align-items-center h-padding" :style="itemStyles">
           <div class="list-item-icon ml-0" v-if="hasSlot('icon')">
               <slot name="icon"></slot>
           </div>
@@ -40,7 +41,7 @@ export default {
   components: {
     ChevronRightIcon
   },
-  props: ['to', 'itemClass'],
+  props: ['to', 'itemClass', 'itemStyles'],
   methods: {
     hasSlot (name) {
       return this.$slots[name]
@@ -59,7 +60,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 .list-item {
   width: 100%;
   border-bottom: 1px solid $hr-border-color;

@@ -20,7 +20,7 @@
     </div>
     <div class="activity-filter-content" v-show="open">
       <div class="activity-filter-type">
-        <div class="activity-filter-section-title h-padding">Date Range</div>
+        <div class="activity-filter-section-title-dates h-padding">Date Range</div>
         <div class="date-filter-inputs h-padding">
           <date-pick v-model="dateFilters.start">
               <template v-slot:default="{toggle, inputValue, inputEvents}">
@@ -47,13 +47,14 @@
         <ListItem v-for="(filter, key) in typeFilters"
                   :key="key"
                   @item-selected="toogleTypeFilter(key)"
-                  :item-class="filter.selected ? 'selected-item' : ''">
+                  :item-class="filter.selected ? 'selected-item' : ''"
+                  :item-styles="{ height: '40px', paddingTop: '10px', paddingBottom: '10px'}">
             <template #icon>
               <img :src="getItemIcon(filter.icon)"/>
             </template>
             {{ filter.label }}
             <template #detail-icon>
-              <img :src="getItemIcon('selected_icon')" v-if="filter.selected"/>
+              <img :src="getItemIcon('selected')" v-if="filter.selected"/>
             </template>
         </ListItem>
       </div>
@@ -64,13 +65,14 @@
         <ListItem v-for="(filter, key) in statusFilters"
                   :key="key"
                   @item-selected="toogleStatusFilter(key)"
-                  :item-class="filter.selected ? 'selected-item' : ''">
+                  :item-class="filter.selected ? 'selected-item' : ''"
+                  :item-styles="{ height: '40px', paddingTop: '10px', paddingBottom: '10px'}">
             <template #icon>
               <img :src="getItemIcon(filter.icon)"/>
             </template>
             {{ filter.label }}
             <template #detail-icon>
-                <img :src="getItemIcon('selected_icon')" v-if="filter.selected"/>
+                <img :src="getItemIcon('selected')" v-if="filter.selected"/>
             </template>
         </ListItem>
       </div>
@@ -79,7 +81,7 @@
 </template>
 
 <script>
-import CalendarIcon from '@/assets/icons/calendar_icon.svg'
+import CalendarIcon from '@/assets/icons/calendar.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import CloseIcon from '@/assets/icons/close.svg'
 import ExportIcon from '@/assets/icons/export.svg'
@@ -198,7 +200,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-top: 1px solid $hr-border-color;
     border-bottom: 1px solid $hr-border-color;
 
     .activity-filter-header-actions {
@@ -267,17 +268,27 @@ export default {
       align-items: center;
       text-transform: uppercase;
       font-style: normal;
-      font-weight: bold;
+      font-weight: 700;
       font-size: $font-size-tiny;
       height: 30px;
       border-bottom: 1px solid $hr-border-color;
+    }
+
+    .activity-filter-section-title-dates {
+      display: flex;
+      align-items: center;
+      text-transform: uppercase;
+      font-style: normal;
+      font-weight: bold;
+      font-size: $font-size-tiny;
+      padding-top: 25px;
     }
 
     .date-filter-inputs {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 60px;
+      padding-bottom: 25px;
       border-bottom: 1px solid $hr-border-color;
 
       svg {

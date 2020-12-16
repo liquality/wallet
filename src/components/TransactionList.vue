@@ -16,18 +16,15 @@
         {{ getDetail(item) }}
       </template>
       <template #detail-sub>
-        {{ getDetailSub(item) }}
+       <span v-if="getUIStatus(item) === 'COMPLETED'"> ${{ item.fromUsdValue }} </span>
+       <span v-else> {{ getDetailSub(item) }} </span>
       </template>
       <template #detail-icon>
-        <div class="transaction-status" v-if="!item.error">
-          <CompletedIcon v-if="isConfirmed(item)" />
-          <div class="transaction-confirming" v-else>
-            <SpinnerIcon />
-            <span class="transaction-steps" v-if="getTotalSteps(item) > 2">
-              {{ getTransactionStep(item) }} / {{ getTotalSteps(item) }}
-            </span>
-          </div>
-        </div>
+        <TransactionStatus
+            :step="getTransactionStep(item)"
+            :total-steps="getTotalSteps(item)"
+            :status="getUIStatus(item)"
+            :error="item.error"/>
       </template>
     </ListItem>
   </div>
@@ -35,6 +32,7 @@
 
 <script>
 import ListItem from '@/components/ListItem'
+import TransactionStatus from '@/components/TransactionStatus'
 import {
   getItemIcon,
   getStep,
@@ -45,14 +43,11 @@ import {
 } from '@/utils/history'
 import { prettyBalance } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
-import CompletedIcon from '@/assets/icons/completed.svg'
-import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   components: {
     ListItem,
-    CompletedIcon,
-    SpinnerIcon
+    TransactionStatus
   },
   props: ['transactions'],
   methods: {
@@ -78,10 +73,8 @@ export default {
       return `${this.prettyBalance(amount, item.from)} ${item.from}`
     },
     getDetailSub (item) {
-      const status = {
-        SEND: SEND_STATUS_FILTER_MAP[item.status],
-        SWAP: SWAP_STATUS_FILTER_MAP[item.status]
-      }[item.type]
+      const status = this.getUIStatus(item)
+
       if (status) {
         const filterStatus = ACTIVITY_FILTER_STATUSES[status]
         if (filterStatus) {
@@ -90,6 +83,12 @@ export default {
       }
 
       return ''
+    },
+    getUIStatus (item) {
+      return {
+        SEND: SEND_STATUS_FILTER_MAP[item.status],
+        SWAP: SWAP_STATUS_FILTER_MAP[item.status]
+      }[item.type]
     },
     getDetailsUrl (item) {
       return {
@@ -100,10 +99,6 @@ export default {
     getTypeIcon (type) {
       const filter = ACTIVITY_FILTER_TYPES[type]
       return this.getItemIcon(filter.icon)
-    },
-    getDetailIcon (item) {},
-    isConfirmed (item) {
-      return ['SUCCESS', 'REFUNDED'].includes(item.status)
     },
     getTransactionStep (item) {
       return getStep(item) + 1
@@ -123,29 +118,4 @@ export default {
 </script>
 
 <style lang="scss">
-.transaction-status {
-  grid-area: status;
-  justify-self: center;
-
-  svg {
-    width: 30px;
-    height: 30px;
-  }
-
-  .transaction-confirming {
-    position: relative;
-  }
-
-  .transaction-steps {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 30px;
-    height: 30px;
-    top: 0;
-    font-size: $font-size-tiny;
-    letter-spacing: -1px;
-  }
-}
 </style>
