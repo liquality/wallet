@@ -21,7 +21,7 @@
     <div class="activity-filter-content" v-show="open">
       <div class="activity-filter-type">
         <div class="activity-filter-section-title-dates h-padding">Date Range</div>
-        <div class="date-filter-inputs h-padding">
+        <div class="date-filter-inputs h-padding form">
           <date-pick v-model="dateFilters.start">
               <template v-slot:default="{toggle, inputValue, inputEvents}">
                   <div class="input-group" @click="toggle">

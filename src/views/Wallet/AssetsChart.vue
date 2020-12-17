@@ -1,10 +1,49 @@
 <template>
-   <div class="wallet-divider"></div>
+   <div class="wallet-divider">
+     <div class="divider-color"
+          v-for="items in items"
+          :key="items.asset"
+          :style="{
+            width: `${items.percentage}%`,
+            backgroundColor: items.color
+          }"
+           v-tooltip="{ content: `${items.asset}: ${items.percentageRounded}%`} ">
+    </div>
+   </div>
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex'
+import BN from 'bignumber.js'
+import cryptoassets from '@/utils/cryptoassets'
 
 export default {
+  computed: {
+    ...mapState(['fiatRates']),
+    ...mapGetters(['assetsWithBalance']),
+    items () {
+      const top = [...this.assetsWithBalance].splice(0, 9)
+      const total = top.reduce((accum, [asset, balance]) => {
+        const value = cryptoassets[asset].unitToCurrency(balance)
+        const balanceFiat = this.fiatRates[asset] ? BN(value).times(this.fiatRates[asset]) : 0
+        return accum.plus(balanceFiat)
+      }, BN(0))
+
+      return top.map(([asset, balance]) => {
+        const cryptoasset = cryptoassets[asset]
+        const value = cryptoasset.unitToCurrency(balance)
+        const balanceFiat = this.fiatRates[asset] ? BN(value).times(this.fiatRates[asset]) : 0
+        const percentage = ((balanceFiat).times(100)).div(total).toNumber()
+        return {
+          asset,
+          percentage,
+          percentageRounded: Math.round(percentage),
+          balance: balanceFiat,
+          color: cryptoasset.color
+        }
+      })
+    }
+  }
 }
 </script>
 
@@ -13,20 +52,10 @@ export default {
     width: 100%;
     height: 9px;
     border-top: 1px solid $hr-border-color;
-    background:  linear-gradient( #EAB300, #EAB300),
-    linear-gradient( #627EEA, #627EEA),
-    linear-gradient( #F7CA4F, #F7CA4F),
-    linear-gradient( #53AE94, #53AE94),
-    linear-gradient( #3186E0, #3186E0),
-    linear-gradient( #E99F50, #E99F50);
+    display: flex;
 
-    background-size: 25% 100%,
-                     55% 100%,
-                     70% 100%,
-                     77% 100%,
-                     91% 100%,
-                     100% 100%;
-
-    background-repeat: no-repeat;
+    .divider-color {
+      height: 9px;
+    }
   }
 </style>
