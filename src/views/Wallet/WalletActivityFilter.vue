@@ -304,7 +304,7 @@ export default {
       flex-direction: column;
 
       .selected-item {
-        background-color: #F0F7F9;
+        background-color: #ffffff;
       }
     }
   }

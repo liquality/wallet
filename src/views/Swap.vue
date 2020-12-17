@@ -257,7 +257,7 @@
           <div class="detail-group">
             <label class="text-muted"> Network Fee </label>
             <div class="d-flex align-items-center justify-content-between my-0 py-0">
-              <div>{{ totalFees[toAssetChain] }} {{ receiveFeeType }}</div>
+              <div>~{{ totalFees[toAssetChain] }} {{ receiveFeeType }}</div>
               <div class="details-text">
                 ${{
                   prettyFiatBalance(totalFees[toAssetChain], fiatRates[toAsset])
