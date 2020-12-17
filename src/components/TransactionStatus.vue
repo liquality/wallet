@@ -1,6 +1,11 @@
 <template>
     <div class="transaction-status">
-        <NeedsAttentionIcon v-if="error || status === 'NEEDS_ATTENTION'" />
+        <div class="transaction-confirming" v-if="error || status === 'NEEDS_ATTENTION'">
+            <NeedsAttentionIcon />
+            <span class="transaction-steps" v-if="totalSteps > 2">
+                {{ step }} / {{ totalSteps }}
+            </span>
+        </div>
         <CompletedIcon v-else-if="status === 'COMPLETED'" />
         <RefundedIcon v-else-if="status === 'REFUNDED'" />
         <CanceledIcon v-else-if="status === 'CANCELED'" />
