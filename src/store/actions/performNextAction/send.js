@@ -4,15 +4,20 @@ import { withInterval } from './utils'
 async function waitForConfirmations ({ getters, dispatch }, { transaction, network, walletId }) {
   const client = getters.client(network, walletId, transaction.from)
 
-  const tx = await client.chain.getTransactionByHash(transaction.txHash)
+  try {
+    const tx = await client.chain.getTransactionByHash(transaction.txHash)
 
-  if (tx && tx.confirmations > 0) {
-    dispatch('updateBalances', { network, walletId, assets: [transaction.from] })
+    if (tx && tx.confirmations > 0) {
+      dispatch('updateBalances', { network, walletId, assets: [transaction.from] })
 
-    return {
-      endTime: Date.now(),
-      status: 'SUCCESS'
+      return {
+        endTime: Date.now(),
+        status: 'SUCCESS'
+      }
     }
+  } catch (e) {
+    if (e.name === 'TxNotFoundError') console.warn(e)
+    else throw e
   }
 }
 
