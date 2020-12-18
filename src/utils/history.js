@@ -91,10 +91,6 @@ export const ACTIVITY_FILTER_STATUSES = {
   REFUNDED: {
     label: 'Refunded',
     icon: 'refunded'
-  },
-  CANCELED: {
-    label: 'Canceled',
-    icon: 'canceled'
   }
 }
 
