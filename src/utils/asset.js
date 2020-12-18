@@ -42,7 +42,10 @@ export const isEthereumChain = asset => {
 }
 
 export const getChainFromAsset = asset => {
-  if (isERC20(asset)) return 'ETH'
+  if (isERC20(asset)) {
+    if (cryptoassets[asset].network === 'ethereum') return 'ETH'
+    if (cryptoassets[asset].network === 'rsk') return 'RBTC'
+  }
 
   return asset
 }

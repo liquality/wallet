@@ -96,8 +96,10 @@ function createRskClient (asset, network, mnemonic) {
 }
 
 export const createClient = (asset, network, mnemonic) => {
+  const assetData = cryptoassets[asset]
+
   if (asset === 'BTC') return createBtcClient(network, mnemonic)
-  if (asset === 'RBTC') return createRskClient(asset, network, mnemonic)
+  if (asset === 'RBTC' || assetData.network === 'rsk') return createRskClient(asset, network, mnemonic)
 
   return createEthClient(asset, network, mnemonic)
 }

@@ -28,7 +28,7 @@
     "@liquality/bitcoin-swap-provider": "^0.8.4",
     "@liquality/client": "^0.8.4",
     "@liquality/crypto": "^0.8.4",
-    "@liquality/cryptoassets": "^0.2.4",
+    "@liquality/cryptoassets": "^0.3.1",
     "@liquality/ethereum-erc20-provider": "^0.8.4",
     "@liquality/ethereum-erc20-scraper-swap-find-provider": "^0.8.4",
     "@liquality/ethereum-erc20-swap-provider": "^0.8.4",
