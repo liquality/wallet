@@ -53,5 +53,40 @@ export default {
     }, {})
 
     return Object.assign({}, baseAssets, customAssets)
+  },
+  networkAssets (state) {
+    const { enabledAssets, activeNetwork, activeWalletId } = state
+    return enabledAssets[activeNetwork][activeWalletId]
+  },
+  orderedBalances (state, getters) {
+    const { enabledAssets, activeNetwork, activeWalletId } = state
+    const { networkWalletBalances } = getters
+    const assets = enabledAssets[activeNetwork][activeWalletId]
+    return Object.entries(networkWalletBalances)
+      .filter(([asset]) => assets.includes(asset))
+      .sort(([assetA], [assetB]) => {
+        return assets.indexOf(assetA) - assets.indexOf(assetB)
+      })
+  },
+  networkWalletBalances (state) {
+    const { balances, activeNetwork, activeWalletId } = state
+    if (!balances[activeNetwork]) return false
+    if (!balances[activeNetwork][activeWalletId]) return false
+
+    return balances[activeNetwork][activeWalletId]
+  },
+  assetsWithBalance (_state, getters) {
+    const { orderedBalances } = getters
+    return orderedBalances.filter(([asset, balance]) => balance > 0)
+  },
+  networkAssetsLoaded (_state, getters) {
+    const { networkAssets, networkWalletBalances } = getters
+    return networkWalletBalances && Object.keys(networkWalletBalances).length >= networkAssets.length
+  },
+  activity (state) {
+    const { history, activeNetwork, activeWalletId } = state
+    if (!history[activeNetwork]) return []
+    if (!history[activeNetwork][activeWalletId]) return []
+    return history[activeNetwork][activeWalletId].slice().reverse()
   }
 }

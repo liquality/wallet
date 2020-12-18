@@ -59,3 +59,71 @@ export function getStep (item) {
     return SWAP_STATUS_STEP_MAP[item.status]
   }
 }
+
+export const ACTIVITY_FILTER_TYPES = {
+  SWAP: {
+    label: 'Swap',
+    icon: 'swap'
+  },
+  SEND: {
+    label: 'Send',
+    icon: 'send'
+  },
+  RECEIVE: {
+    label: 'Receive',
+    icon: 'receive'
+  }
+}
+
+export const ACTIVITY_FILTER_STATUSES = {
+  PENDING: {
+    label: 'Pending',
+    icon: 'pending'
+  },
+  COMPLETED: {
+    label: 'Completed',
+    icon: 'completed'
+  },
+  NEEDS_ATTENTION: {
+    label: 'Needs Attention',
+    icon: 'needs_attention'
+  },
+  REFUNDED: {
+    label: 'Refunded',
+    icon: 'refunded'
+  },
+  CANCELED: {
+    label: 'Canceled',
+    icon: 'canceled'
+  }
+}
+
+export const SEND_STATUS_FILTER_MAP = {
+  WAITING_FOR_CONFIRMATIONS: 'PENDING',
+  SUCCESS: 'COMPLETED'
+}
+
+export const SWAP_STATUS_FILTER_MAP = {
+  QUOTE: 'PENDING',
+  SECRET_READY: 'PENDING',
+  INITIATED: 'PENDING',
+  INITIATION_REPORTED: 'PENDING',
+  INITIATION_CONFIRMED: 'PENDING',
+  CONFIRM_COUNTER_PARTY_INITIATION: 'PENDING',
+  READY_TO_CLAIM: 'PENDING',
+  WAITING_FOR_CLAIM_CONFIRMATIONS: 'PENDING',
+  WAITING_FOR_REFUND: 'NEEDS_ATTENTION',
+  GET_REFUND: 'NEEDS_ATTENTION',
+  WAITING_FOR_REFUND_CONFIRMATIONS: 'NEEDS_ATTENTION',
+  REFUNDED: 'REFUNDED',
+  SUCCESS: 'COMPLETED',
+  READY_TO_SEND: 'PENDING'
+}
+
+export const getItemIcon = (name) => {
+  try {
+    return require(`../assets/icons/${name.toLowerCase()}.svg?inline`)
+  } catch (e) {
+    return require('../assets/icons/blank_asset.svg?inline')
+  }
+}

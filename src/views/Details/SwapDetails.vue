@@ -1,9 +1,5 @@
 <template>
-  <div class="swap-details-wrapper">
-    <NavBar showBack="true" :backPath="`/account/${item.from}`" :backLabel="item.from">
-      Swap {{item.from}} to {{item.to}}
-    </NavBar>
-    <div class="swap-details">
+   <div class="swap-details">
       <div class="swap-details_info">
         <div class="row">
           <div class="col">
@@ -223,7 +219,6 @@
         </table>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -236,7 +231,6 @@ import { prettyBalance } from '@/utils/coinFormatter'
 import { getStep, getStatusLabel } from '@/utils/history'
 import { getChainFromAsset, getTransactionExplorerLink } from '@/utils/asset'
 
-import NavBar from '@/components/NavBar.vue'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
@@ -261,7 +255,6 @@ const ACTIONS_TERMS = {
 
 export default {
   components: {
-    NavBar,
     CompletedIcon,
     SpinnerIcon,
     CopyIcon
@@ -428,14 +421,6 @@ export default {
 </script>
 
 <style lang="scss">
-.swap-details-wrapper {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
 .swap-details {
   padding: $wrapper-padding 0;
   overflow-y: auto;
