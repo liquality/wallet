@@ -97,13 +97,13 @@ const routes = [
     props: true,
     children: [
       {
-        path: ':id/swap',
+        path: 'swap/:id',
         component: SwapDetails,
         name: 'SwapDetails',
         props: true
       },
       {
-        path: ':id/transaction',
+        path: 'transaction/:id',
         component: TransactionDetails,
         name: 'TransactionDetails',
         props: true

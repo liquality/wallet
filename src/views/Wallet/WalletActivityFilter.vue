@@ -86,7 +86,7 @@ import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import CloseIcon from '@/assets/icons/close.svg'
 import ExportIcon from '@/assets/icons/export.svg'
 import ListItem from '@/components/ListItem'
-import { ACTIVITY_FILTER_TYPES, ACTIVITY_FILTER_STATUSES, getItemIcon } from '@/utils/history'
+import { ACTIVITY_FILTER_TYPES, ACTIVITY_STATUSES, getItemIcon } from '@/utils/history'
 import DatePick from 'vue-date-pick'
 import '@/assets/scss/vue-date-pick.scss'
 
@@ -107,7 +107,7 @@ export default {
         end: null
       },
       statusFilters: {
-        ...ACTIVITY_FILTER_STATUSES
+        ...ACTIVITY_STATUSES
       },
       typeFilters: {
         ...ACTIVITY_FILTER_TYPES

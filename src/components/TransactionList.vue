@@ -36,7 +36,7 @@ import TransactionStatus from '@/components/TransactionStatus'
 import {
   getItemIcon,
   getStep,
-  ACTIVITY_FILTER_STATUSES,
+  ACTIVITY_STATUSES,
   ACTIVITY_FILTER_TYPES,
   SEND_STATUS_FILTER_MAP,
   SWAP_STATUS_FILTER_MAP
@@ -76,7 +76,7 @@ export default {
       const status = this.getUIStatus(item)
 
       if (status) {
-        const filterStatus = ACTIVITY_FILTER_STATUSES[status]
+        const filterStatus = ACTIVITY_STATUSES[status]
         if (filterStatus) {
           return filterStatus.label
         }
@@ -92,8 +92,8 @@ export default {
     },
     getDetailsUrl (item) {
       return {
-        SEND: `/details/${item.id}/transaction`,
-        SWAP: `/details/${item.id}/swap`
+        SEND: `/details/transaction/${item.id}`,
+        SWAP: `/details/swap/${item.id}`
       }[item.type]
     },
     getTypeIcon (type) {

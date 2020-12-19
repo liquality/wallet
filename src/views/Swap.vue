@@ -28,7 +28,7 @@
               </div>
               <input
                 type="text"
-                class="form-control"
+                class="form-control input-amount"
                 :class="{ 'is-invalid': showErrors && amountError }"
                 id="amount"
                 v-model="amount"
@@ -87,13 +87,9 @@
               <label for="amount">Receive</label>
             </span>
             <div class="input-group swap_asset">
-              <img
-                :src="getAssetIcon(toAsset)"
-                class="asset-icon swap_asset_icon"
-              />
               <div class="input-group-append">
                 <span class="input-group-text">
-                  <select
+                  <!-- <select
                     class="custom-select"
                     @change="setToAsset($event.target.value)"
                     v-model="toAsset"
@@ -101,12 +97,15 @@
                     <option v-for="to in toAssets" :key="to" :value="to">
                       {{ to }}
                     </option>
-                  </select>
+                  </select> -->
+                  <AssetList :assets="toAssets"
+                             :initial-selected="toAsset"
+                             @asset-changed="setToAsset"/>
                 </span>
               </div>
               <input
                 type="text"
-                class="form-control"
+                class="form-control input-amount"
                 readonly
                 v-model="toAmount"
                 placeholder="0.00"
@@ -347,6 +346,7 @@ import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CloseIcon from '@/assets/icons/close.svg'
 import DetailsContainer from '@/components/DetailsContainer'
+import AssetList from '@/components/AssetList'
 
 export default {
   components: {
@@ -359,7 +359,8 @@ export default {
     SpinnerIcon,
     DetailsContainer,
     CopyIcon,
-    CloseIcon
+    CloseIcon,
+    AssetList
   },
   data () {
     return {
@@ -455,7 +456,7 @@ export default {
       return this.networkMarketData[this.asset]
     },
     ethRequired () {
-      return this.networkWalletBalances.ETH === 0
+      return this.assetChain === 'ETH' && this.networkWalletBalances.ETH === 0
     },
     showErrors () {
       return !this.ethRequired
@@ -660,7 +661,7 @@ export default {
       margin-right: 4px;
     }
 
-    input {
+    .input-amount {
       text-align: right;
       margin-left: 12px;
     }
