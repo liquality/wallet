@@ -20,7 +20,7 @@
         </div>
         <div class="form-group">
           <label for="decimals">Decimals</label>
-          <input type="text" v-model="decimals" class="form-control form-control-sm" id="decimals" placeholder="18" autocomplete="off" required :disabled="autofilled">
+          <input type="text" v-model="decimals" class="form-control form-control-sm" id="decimals" autocomplete="off" required :disabled="autofilled">
         </div>
         <div class="form-group">
           <label for="network">Network</label>
