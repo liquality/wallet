@@ -4,6 +4,7 @@
       v-for="item in transactions"
       :key="item.id"
       :to="getDetailsUrl(item)"
+      :itemClass="{ 'text-danger': true }"
     >
       <template #icon>
         <img :src="getTypeIcon(item.type)" />

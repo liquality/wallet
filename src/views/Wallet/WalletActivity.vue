@@ -11,6 +11,7 @@ import TransactionList from '@/components/TransactionList'
 import { mapGetters } from 'vuex'
 import { SWAP_STATUS_FILTER_MAP, SEND_STATUS_FILTER_MAP } from '@/utils/history'
 import moment from '@/utils/moment'
+import { getCSVContent, exportToCSV } from '@/utils/export'
 
 export default {
   components: {
@@ -26,6 +27,8 @@ export default {
     ...mapGetters(['activity'])
   },
   methods: {
+    getCSVContent,
+    exportToCSV,
     applyFilters ({ types, statuses, dates }) {
       let data = [...this.activity]
       if (types.length > 0) {

@@ -33,7 +33,7 @@
         </div>
       </div>
     </li>
-    <li v-for="asset in items" :key="asset">
+    <li v-for="asset in filteredItems" :key="asset">
       <a class="dropdown-item"
          href="#"
          @click="selectItem(asset)">
@@ -66,12 +66,24 @@ export default {
     return {
       selectedAsset: this.initialSelected,
       dropdownOpen: false,
-      search: ''
+      search: '',
+      filteredItems: []
     }
   },
   computed: {
     items () {
       return this.assets.filter(a => a !== this.selectedAsset)
+    }
+  },
+  watch: {
+    serach: function (newSearch, oldSearch) {
+      if (newSearch && newSearch !== oldSearch) {
+        this.filteredItems = this.items.filter(
+          a => a.toUpperCase().includes(newSearch.toUpperCase())
+        )
+      } else {
+        this.filteredItems = [...this.items]
+      }
     }
   },
   methods: {
@@ -86,6 +98,9 @@ export default {
       console.log('on toogle', this.items)
       this.dropdownOpen = !this.dropdownOpen
     }
+  },
+  created () {
+    this.filteredItems = [...this.items]
   }
 }
 </script>

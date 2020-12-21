@@ -13,7 +13,12 @@
       <div class="form-group">
         <label>Network Speed / Fee</label>
         <div class="permission-send_fees">
-          <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" v-bind:fiatRates="fiatRates"/>
+          <FeeSelector
+            :asset="asset"
+            v-model="selectedFee"
+            v-bind:fees="assetFees"
+            v-bind:txTypes="[txType]"
+            v-bind:fiatRates="fiatRates"/>
         </div>
       </div>
       <div v-if="data" class="permission-send_data">
@@ -44,6 +49,7 @@ import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
+import { TX_TYPES } from '@/utils/fees'
 
 export default {
   components: {
@@ -128,6 +134,9 @@ export default {
         ...this.$route.query,
         args: JSON.parse(this.$route.query.args)
       }
+    },
+    txType () {
+      return TX_TYPES.SEND
     }
   },
   created () {

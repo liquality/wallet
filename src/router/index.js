@@ -8,7 +8,6 @@ import UnlockWallet from '@/views/UnlockWallet.vue'
 import BackupWallet from '@/views/BackupWallet.vue'
 import Wallet from '@/views/Wallet/Wallet.vue'
 import Account from '@/views/Account.vue'
-import Details from '@/views/Details/Details.vue'
 import SwapDetails from '@/views/Details/SwapDetails.vue'
 import TransactionDetails from '@/views/Details/TransactionDetails.vue'
 import Send from '@/views/Send.vue'
@@ -92,23 +91,16 @@ const routes = [
   },
   // Details
   {
-    path: '/details',
-    component: Details,
-    props: true,
-    children: [
-      {
-        path: 'swap/:id',
-        component: SwapDetails,
-        name: 'SwapDetails',
-        props: true
-      },
-      {
-        path: 'transaction/:id',
-        component: TransactionDetails,
-        name: 'TransactionDetails',
-        props: true
-      }
-    ]
+    path: '/details/swap/:id',
+    component: SwapDetails,
+    name: 'SwapDetails',
+    props: true
+  },
+  {
+    path: '/details/transaction/:id',
+    component: TransactionDetails,
+    name: 'TransactionDetails',
+    props: true
   },
   {
     name: 'Account',
