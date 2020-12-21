@@ -72,7 +72,7 @@ async function handleRequest (req) {
   if(req.method === 'eth_requestAccounts') {
     return await window.ethereum.enable();
   }
-  if(req.method === 'personal_sign') { 
+  if(req.method === 'personal_sign') {
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
     return '0x' + sig
   }
