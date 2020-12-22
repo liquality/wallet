@@ -4,12 +4,10 @@
           @click="toogle">
      <div class="form">
         <div class="input-group">
-              <span class="input-group-text">
                 <img
                 :src="getAssetIcon(selectedAsset)"
                 class="asset-icon"
               />
-              </span>
               <span class="input-group-text">
                     {{ selectedAsset }}
               </span>
@@ -20,9 +18,7 @@
     <li>
       <div class="form dropdown-header">
         <div class="input-group">
-              <span class="input-group-text">
-                <SearchIcon/>
-              </span>
+              <SearchIcon/>
               <input
                 type="text"
                 class="form-control form-control-sm"
@@ -116,9 +112,16 @@ export default {
     .dropdown-header {
       padding-left: 15px;
       padding-right: 15px;
-      svg {
-        width: 16px;
-        margin-right: 8px;
+
+      .input-group {
+        align-items: center;
+        svg {
+          position: absolute;
+          left: 0;
+          top: 5px;
+          width: 16px;
+          margin-right: 8px;
+        }
       }
     }
 

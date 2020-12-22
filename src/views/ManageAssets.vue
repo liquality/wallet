@@ -103,10 +103,16 @@ export default {
     border-bottom: 1px solid $hr-border-color;
     input {
       margin-right: 8px;
+      padding-left: 20px;
     }
 
     .input-group {
       align-items: center;
+      svg {
+        position: absolute;
+        left: 0;
+        top: 5px;
+      }
     }
 
     svg {

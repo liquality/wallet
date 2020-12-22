@@ -204,6 +204,7 @@ export default {
 
     .activity-filter-header-actions {
       display: flex;
+      align-items: center;
     }
     .filter-action {
       font-size: $font-size-sm;
@@ -291,10 +292,17 @@ export default {
       padding-bottom: 25px;
       border-bottom: 1px solid $hr-border-color;
 
+      .input-group {
+        width: 150px;
+      }
+
       svg {
         width: 14px;
         vertical-align: middle;
         cursor: pointer;
+        position: absolute;
+        right: 0;
+        top: 5px;
       }
     }
 

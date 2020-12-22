@@ -92,11 +92,15 @@ export default {
     width: 28px;
     height: 28px;
     margin-right: 8px;
+    display: flex;
+    align-items: center;
   }
 
    .list-item-detail-icon {
     width: 28px;
     height: 28px;
+    display: flex;
+    align-items: center;
     margin-right: 12px;
     margin-left: 12px;
   }
