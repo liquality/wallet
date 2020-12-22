@@ -53,8 +53,6 @@ export default {
     align-items: center;
     justify-content: center;
     position: relative;
-    width: 35px;
-    height: 35px;
   }
 
   .error-indicator {

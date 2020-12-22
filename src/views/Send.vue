@@ -394,10 +394,6 @@ export default {
   }
 }
 
-.selectors-asset {
-  width: 40px;
-}
-
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

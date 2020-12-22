@@ -676,10 +676,6 @@ export default {
   }
 }
 
-.selectors-asset {
-  width: 40px;
-}
-
 .swap-confirm {
   .swap-info {
     text-align: left;
