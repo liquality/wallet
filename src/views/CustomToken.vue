@@ -20,7 +20,14 @@
         </div>
         <div class="form-group">
           <label for="decimals">Decimals</label>
-          <input type="text" v-model="decimals" class="form-control form-control-sm" id="decimals" placeholder="18" autocomplete="off" required :disabled="autofilled">
+          <input type="text" v-model="decimals" class="form-control form-control-sm" id="decimals" autocomplete="off" required :disabled="autofilled">
+        </div>
+        <div class="form-group">
+          <label for="network">Network</label>
+          <select v-model="network" class="form-control form-control-sm" id="network" autocomplete="off" required :disabled="autofilled">
+            <option value="ethereum">Ethereum</option>
+            <option value="rsk">RSK</option>
+          </select>
         </div>
       </div>
       <div class="wrapper_bottom">
@@ -49,6 +56,7 @@ export default {
       name: null,
       symbol: null,
       decimals: null,
+      network: 'ethereum',
       autofilled: false
     }
   },
@@ -61,7 +69,7 @@ export default {
       return null
     },
     canAdd () {
-      if (!this.symbol || !this.name || !this.contractAddress || !this.decimals) return false
+      if (!this.symbol || !this.name || !this.network || !this.contractAddress || !this.decimals) return false
       if (this.symbolError) return false
 
       return true
@@ -79,6 +87,7 @@ export default {
         await this.addCustomToken({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
+          erc20Network: this.network,
           contractAddress: this.contractAddress,
           name: this.name,
           symbol: this.symbol,
@@ -107,13 +116,14 @@ export default {
         try {
           const result = await axios.get(`https://api.ethplorer.io/getTokenInfo/${this.contractAddress}?apiKey=freekey`)
           const { symbol, name, decimals } = result.data
-          customToken = { symbol, name, decimals: parseInt(decimals) }
+          customToken = { symbol, name, decimals: parseInt(decimals), network: 'ethereum' }
         } catch (e) {}
       }
 
       if (customToken) {
         this.symbol = customToken.symbol
         this.name = customToken.name
+        this.network = customToken.network
         this.decimals = customToken.decimals
         this.autofilled = true
       }

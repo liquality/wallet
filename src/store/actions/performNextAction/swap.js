@@ -1,5 +1,6 @@
 import { sha256 } from '@liquality/crypto'
 import { withLock, withInterval, hasChainTimePassed } from './utils'
+import cryptoassets from '../../../utils/cryptoassets'
 import { updateOrder } from '../../utils'
 
 async function canRefund ({ getters }, { network, walletId, order }) {
@@ -89,7 +90,7 @@ async function confirmInitiation ({ getters }, { order, network, walletId }) {
   try {
     const tx = await fromClient.chain.getTransactionByHash(order.fromFundHash)
 
-    if (tx && tx.confirmations >= order.minConf) {
+    if (tx && tx.confirmations > 0) {
       return {
         status: 'INITIATION_CONFIRMED'
       }
@@ -135,7 +136,7 @@ async function confirmCounterPartyInitiation ({ getters }, { order, network, wal
 
   const tx = await toClient.chain.getTransactionByHash(order.toFundHash)
 
-  if (tx && tx.confirmations >= order.minConf) {
+  if (tx && tx.confirmations >= cryptoassets[order.to].safeConfirmations) {
     return {
       status: 'READY_TO_CLAIM'
     }
