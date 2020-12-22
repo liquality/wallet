@@ -6,8 +6,8 @@
     <div class="manage-assets_search form wrapper">
       <div class="input-group">
         <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" placeholder="Search for an Asset" />
-        <router-link to="/settings/manage-assets/custom-token">Add Token</router-link>
       </div>
+      <router-link to="/settings/manage-assets/custom-token">Add Custom Token</router-link>
     </div>
     <div class="manage-assets_list">
       <div v-for="asset in filteredAssets" :key="asset" class="asset-item d-flex align-items-center">
@@ -104,6 +104,10 @@ export default {
     input {
       margin-right: 8px;
       padding-left: 20px;
+    }
+
+    a {
+      padding-top: 20px;
     }
 
     .input-group {

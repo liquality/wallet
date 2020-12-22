@@ -17,7 +17,9 @@
         {{ getDetail(item) }}
       </template>
       <template #detail-sub>
-       <span v-if="getUIStatus(item) === 'COMPLETED'"> ${{ item.fromUsdValue }} </span>
+       <span v-if="getUIStatus(item) === 'COMPLETED'">
+         ${{ getCompletedAmount(item) }}
+       </span>
        <span v-else> {{ getDetailSub(item) }} </span>
       </template>
       <template #detail-icon>
@@ -42,8 +44,9 @@ import {
   SEND_STATUS_FILTER_MAP,
   SWAP_STATUS_FILTER_MAP
 } from '@/utils/history'
-import { prettyBalance } from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -51,9 +54,13 @@ export default {
     TransactionStatus
   },
   props: ['transactions'],
+  computed: {
+    ...mapState(['fiatRates'])
+  },
   methods: {
     getItemIcon,
     prettyBalance,
+    prettyFiatBalance,
     getTitle (item) {
       switch (item.type) {
         case 'SWAP':
@@ -113,6 +120,10 @@ export default {
         default:
           return 0
       }
+    },
+    getCompletedAmount (item) {
+      const amount = item.type === 'SWAP' ? item.fromAmount : item.amount
+      return prettyFiatBalance(amount, this.fiatRates[item.from])
     }
   }
 }

@@ -16,7 +16,7 @@
           <div class="form-group">
             <span class="float-left"><label for="amount">Send</label></span>
             <div class="float-right label-append text-muted">
-              ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
+              ${{ prettyFiatBalance(amount, fiatRates[assetChain]) }}
             </div>
             <div class="input-group swap_asset">
               <img
@@ -60,7 +60,7 @@
                   <template slot="popover">
                     <p class="my-0 text-right">{{ min }} {{ asset }}</p>
                     <p class="text-muted my-0 text-right">
-                      {{ prettyFiatBalance(min, fiatRates[asset]) }} USD
+                      {{ prettyFiatBalance(min, fiatRates[assetChain]) }} USD
                     </p>
                   </template>
                 </v-popover>
@@ -75,7 +75,7 @@
                   <template slot="popover">
                     <p class="my-0 text-right">{{ max }} {{ asset }}</p>
                     <p class="text-muted my-0 text-right">
-                      {{ prettyFiatBalance(max, fiatRates[asset]) }} USD
+                      {{ prettyFiatBalance(max, fiatRates[assetChain]) }} USD
                     </p>
                   </template>
                 </v-popover>
@@ -173,7 +173,7 @@
             <template v-slot:content>
               <ul class="selectors">
                 <li v-for="asset in availableFees" :key="asset">
-                  <span class="mr-2 font-weight-bold">{{ asset }}</span>
+                  <span class="selectors-asset">{{ asset }}</span>
                   <FeeSelector
                     :asset="asset"
                     v-model="selectedFee[asset]"
@@ -225,7 +225,7 @@
               <div>~{{ totalFees[assetChain] }} {{ sendFeeType }}</div>
               <div class="details-text">
                 ${{
-                  prettyFiatBalance(totalFees[assetChain], fiatRates[asset])
+                  prettyFiatBalance(totalFees[assetChain], fiatRates[assetChain])
                 }}
               </div>
             </div>
@@ -256,7 +256,7 @@
               <div>~{{ totalFees[toAssetChain] }} {{ receiveFeeType }}</div>
               <div class="details-text">
                 ${{
-                  prettyFiatBalance(totalFees[toAssetChain], fiatRates[toAsset])
+                  prettyFiatBalance(totalFees[toAssetChain], fiatRates[toAssetChain])
                 }}
               </div>
             </div>
@@ -548,10 +548,10 @@ export default {
       return this.sendFeeType === FEE_TYPES.BTC
     },
     amountToSendInFiat () {
-      return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.amount, this.fiatRates[this.assetChain])
     },
     amountToReveiveInFiat () {
-      return prettyFiatBalance(this.toAmount, this.fiatRates[this.toAsset])
+      return prettyFiatBalance(this.toAmount, this.fiatRates[this.toAssetChain])
     },
     currentWalletAddress () {
       const address = this.addresses[this.activeNetwork]?.[
@@ -561,7 +561,7 @@ export default {
     },
     totalToSendInFiat () {
       const total = BN(this.amount).plus(BN(this.totalFees[this.assetChain]))
-      return prettyFiatBalance(total, this.fiatRates[this.asset])
+      return prettyFiatBalance(total, this.fiatRates[this.assetChain])
     }
   },
   methods: {
@@ -674,6 +674,10 @@ export default {
       }
     }
   }
+}
+
+.selectors-asset {
+  width: 40px;
 }
 
 .swap-confirm {
