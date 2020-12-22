@@ -89,7 +89,7 @@
             <div class="input-group swap_asset">
               <div class="input-group-append">
                 <span class="input-group-text">
-                  <!-- <select
+                  <select
                     class="custom-select"
                     @change="setToAsset($event.target.value)"
                     v-model="toAsset"
@@ -97,10 +97,7 @@
                     <option v-for="to in toAssets" :key="to" :value="to">
                       {{ to }}
                     </option>
-                  </select> -->
-                  <AssetList :assets="toAssets"
-                             :initial-selected="toAsset"
-                             @asset-changed="setToAsset"/>
+                  </select>
                 </span>
               </div>
               <input
@@ -346,7 +343,6 @@ import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CloseIcon from '@/assets/icons/close.svg'
 import DetailsContainer from '@/components/DetailsContainer'
-import AssetList from '@/components/AssetList'
 
 export default {
   components: {
@@ -359,8 +355,7 @@ export default {
     SpinnerIcon,
     DetailsContainer,
     CopyIcon,
-    CloseIcon,
-    AssetList
+    CloseIcon
   },
   data () {
     return {

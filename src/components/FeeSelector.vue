@@ -3,7 +3,10 @@
     <label class="btn btn-option btn-option-lg"
         v-for="name in ['slow', 'average', 'fast']" :key="name"
         :class="{ active: (name === value)}"
-        v-tooltip="{ content: getTooltip(name)} "
+        v-tooltip="{
+          content: getTooltip(name),
+          trigger: txTypes ? 'hover' : 'manual'
+        }"
         v-on:click="$emit('input', name)">
         <input type="radio" name="fee" autocomplete="off" :checked="name === value"> {{name}}
     </label>
