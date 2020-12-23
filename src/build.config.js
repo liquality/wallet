@@ -1,7 +1,7 @@
 export default {
   defaultAssets: {
-    mainnet: ['BTC', 'ETH', 'DAI', 'USDC', 'USDT', 'WBTC', 'UNI'],
-    testnet: ['BTC', 'ETH', 'DAI']
+    mainnet: ['BTC', 'ETH', 'DAI', 'USDC', 'USDT', 'WBTC', 'UNI', 'RBTC'],
+    testnet: ['BTC', 'ETH', 'DAI', 'RBTC']
   },
   agentEndpoints: {
     testnet: ['https://liquality.io/swap-testnet-dev/agent'],

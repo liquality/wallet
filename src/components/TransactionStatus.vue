@@ -1,10 +1,11 @@
 <template>
     <div class="transaction-status">
         <div class="transaction-confirming" v-if="error || status === 'NEEDS_ATTENTION'">
-            <NeedsAttentionIcon />
+            <SpinnerIcon />
             <span class="transaction-steps" v-if="totalSteps > 2">
                 {{ step }} / {{ totalSteps }}
             </span>
+            <span class="error-indicator"></span>
         </div>
         <CompletedIcon v-else-if="status === 'COMPLETED'" />
         <RefundedIcon v-else-if="status === 'REFUNDED'" />
@@ -21,7 +22,6 @@
 
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import NeedsAttentionIcon from '@/assets/icons/needs_attention.svg'
 import RefundedIcon from '@/assets/icons/refunded.svg'
 import CanceledIcon from '@/assets/icons/canceled.svg'
 
@@ -29,7 +29,6 @@ export default {
   components: {
     CompletedIcon,
     SpinnerIcon,
-    NeedsAttentionIcon,
     RefundedIcon,
     CanceledIcon
   },
@@ -39,16 +38,29 @@ export default {
 
 <style lang="scss">
 .transaction-status {
-  grid-area: status;
-  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   svg {
     width: 30px;
     height: 30px;
+    vertical-align: middle;
   }
 
   .transaction-confirming {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
+  }
+
+  .error-indicator {
+    position: absolute;
+    top: 13px;
+    left: 27px;
+    border: solid 3px #F41973;
+    border-radius: 100%;
   }
 
   .transaction-steps {

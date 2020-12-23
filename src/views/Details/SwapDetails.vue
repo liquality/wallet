@@ -1,4 +1,8 @@
 <template>
+  <div class="details-wrapper">
+    <NavBar :showBackButton="true" :backClick="goBack" :backLabel="'Back'">
+      {{ `Swap ${item.from} to ${item.to}` }}
+    </NavBar>
    <div class="swap-details">
       <div class="swap-details_info">
         <div class="row">
@@ -219,6 +223,7 @@
         </table>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -234,6 +239,7 @@ import { getChainFromAsset, getTransactionExplorerLink } from '@/utils/asset'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
+import NavBar from '@/components/NavBar.vue'
 
 const ACTIONS_TERMS = {
   lock: {
@@ -257,7 +263,8 @@ export default {
   components: {
     CompletedIcon,
     SpinnerIcon,
-    CopyIcon
+    CopyIcon,
+    NavBar
   },
   data () {
     return {
@@ -408,6 +415,9 @@ export default {
         this.feeSelectorLoading = false
         this.showFeeSelector = false
       }
+    },
+    goBack () {
+      this.$router.go(-1)
     }
   },
   created () {
@@ -421,6 +431,13 @@ export default {
 </script>
 
 <style lang="scss">
+.details-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 .swap-details {
   padding: $wrapper-padding 0;
   overflow-y: auto;

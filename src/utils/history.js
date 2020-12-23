@@ -75,7 +75,7 @@ export const ACTIVITY_FILTER_TYPES = {
   }
 }
 
-export const ACTIVITY_FILTER_STATUSES = {
+export const ACTIVITY_STATUSES = {
   PENDING: {
     label: 'Pending',
     icon: 'pending'

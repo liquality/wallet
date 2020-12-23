@@ -28,7 +28,7 @@
               </div>
               <input
                 type="text"
-                class="form-control"
+                class="form-control input-amount"
                 :class="{ 'is-invalid': showErrors && amountError }"
                 id="amount"
                 v-model="amount"
@@ -87,10 +87,6 @@
               <label for="amount">Receive</label>
             </span>
             <div class="input-group swap_asset">
-              <img
-                :src="getAssetIcon(toAsset)"
-                class="asset-icon swap_asset_icon"
-              />
               <div class="input-group-append">
                 <span class="input-group-text">
                   <select
@@ -106,7 +102,7 @@
               </div>
               <input
                 type="text"
-                class="form-control"
+                class="form-control input-amount"
                 readonly
                 v-model="toAmount"
                 placeholder="0.00"
@@ -177,7 +173,7 @@
             <template v-slot:content>
               <ul class="selectors">
                 <li v-for="asset in availableFees" :key="asset">
-                  <span class="mr-2 font-weight-bold">{{ asset }}</span>
+                  <span class="selectors-asset">{{ asset }}</span>
                   <FeeSelector
                     :asset="asset"
                     v-model="selectedFee[asset]"
@@ -229,7 +225,7 @@
               <div>~{{ totalFees[assetChain] }} {{ sendFeeType }}</div>
               <div class="details-text">
                 ${{
-                  prettyFiatBalance(totalFees[assetChain], fiatRates[asset])
+                  prettyFiatBalance(totalFees[assetChain], fiatRates[assetChain])
                 }}
               </div>
             </div>
@@ -260,7 +256,7 @@
               <div>~{{ totalFees[toAssetChain] }} {{ receiveFeeType }}</div>
               <div class="details-text">
                 ${{
-                  prettyFiatBalance(totalFees[toAssetChain], fiatRates[toAsset])
+                  prettyFiatBalance(totalFees[toAssetChain], fiatRates[toAssetChain])
                 }}
               </div>
             </div>
@@ -455,7 +451,7 @@ export default {
       return this.networkMarketData[this.asset]
     },
     ethRequired () {
-      return this.networkWalletBalances.ETH === 0
+      return [this.assetChain, this.toAssetChain].includes('ETH') && this.networkWalletBalances.ETH === 0
     },
     showErrors () {
       return !this.ethRequired
@@ -660,7 +656,7 @@ export default {
       margin-right: 4px;
     }
 
-    input {
+    .input-amount {
       text-align: right;
       margin-left: 12px;
     }

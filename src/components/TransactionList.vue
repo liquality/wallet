@@ -4,6 +4,7 @@
       v-for="item in transactions"
       :key="item.id"
       :to="getDetailsUrl(item)"
+      :itemClass="{ 'text-danger': item.error }"
     >
       <template #icon>
         <img :src="getTypeIcon(item.type)" />
@@ -16,7 +17,9 @@
         {{ getDetail(item) }}
       </template>
       <template #detail-sub>
-       <span v-if="getUIStatus(item) === 'COMPLETED'"> ${{ item.fromUsdValue }} </span>
+       <span v-if="getUIStatus(item) === 'COMPLETED'">
+         ${{ getCompletedAmount(item) }}
+       </span>
        <span v-else> {{ getDetailSub(item) }} </span>
       </template>
       <template #detail-icon>
@@ -36,13 +39,15 @@ import TransactionStatus from '@/components/TransactionStatus'
 import {
   getItemIcon,
   getStep,
-  ACTIVITY_FILTER_STATUSES,
+  ACTIVITY_STATUSES,
   ACTIVITY_FILTER_TYPES,
   SEND_STATUS_FILTER_MAP,
   SWAP_STATUS_FILTER_MAP
 } from '@/utils/history'
-import { prettyBalance } from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
+import { mapState } from 'vuex'
+import { getChainFromAsset } from '@/utils/asset'
 
 export default {
   components: {
@@ -50,9 +55,13 @@ export default {
     TransactionStatus
   },
   props: ['transactions'],
+  computed: {
+    ...mapState(['fiatRates'])
+  },
   methods: {
     getItemIcon,
     prettyBalance,
+    prettyFiatBalance,
     getTitle (item) {
       switch (item.type) {
         case 'SWAP':
@@ -76,7 +85,7 @@ export default {
       const status = this.getUIStatus(item)
 
       if (status) {
-        const filterStatus = ACTIVITY_FILTER_STATUSES[status]
+        const filterStatus = ACTIVITY_STATUSES[status]
         if (filterStatus) {
           return filterStatus.label
         }
@@ -92,8 +101,8 @@ export default {
     },
     getDetailsUrl (item) {
       return {
-        SEND: `/details/${item.id}/transaction`,
-        SWAP: `/details/${item.id}/swap`
+        SEND: `/details/transaction/${item.id}`,
+        SWAP: `/details/swap/${item.id}`
       }[item.type]
     },
     getTypeIcon (type) {
@@ -112,6 +121,11 @@ export default {
         default:
           return 0
       }
+    },
+    getCompletedAmount (item) {
+      const amount = item.type === 'SWAP' ? item.fromAmount : item.amount
+      const assetChain = getChainFromAsset(item.from)
+      return prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[assetChain])
     }
   }
 }

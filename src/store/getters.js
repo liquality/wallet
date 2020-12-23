@@ -70,10 +70,7 @@ export default {
   },
   networkWalletBalances (state) {
     const { balances, activeNetwork, activeWalletId } = state
-    if (!balances[activeNetwork]) return false
-    if (!balances[activeNetwork][activeWalletId]) return false
-
-    return balances[activeNetwork][activeWalletId]
+    return balances[activeNetwork]?.[activeWalletId]
   },
   assetsWithBalance (_state, getters) {
     const { orderedBalances } = getters

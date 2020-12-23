@@ -3,9 +3,6 @@
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
       <span class="account_header"><img :src="getAssetIcon(asset)" class="asset-icon" /> {{asset}}</span>
     </NavBar>
-    <InfoNotification v-if="ethRequired">
-      <EthRequiredMessage />
-    </InfoNotification>
     <div class="account_main">
       <div class="account_top">
         <RefreshIcon @click="refresh" class="account_refresh-icon" />
@@ -46,8 +43,6 @@
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
-import InfoNotification from '@/components/InfoNotification'
-import EthRequiredMessage from '@/components/EthRequiredMessage'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
@@ -60,8 +55,6 @@ import TransactionList from '@/components/TransactionList'
 export default {
   components: {
     NavBar,
-    InfoNotification,
-    EthRequiredMessage,
     RefreshIcon,
     SendIcon,
     ReceiveIcon,
@@ -78,9 +71,6 @@ export default {
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'addresses', 'history', 'fiatRates', 'marketData']),
     balance () {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
-    },
-    ethRequired () {
-      return this.balances[this.activeNetwork][this.activeWalletId].ETH === 0
     },
     sendDisabled () {
       return !this.balances[this.activeNetwork][this.activeWalletId][this.asset]

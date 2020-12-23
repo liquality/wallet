@@ -13,7 +13,11 @@
       <div class="form-group">
         <label>Network Speed / Fee</label>
         <div class="permission-send_fees">
-          <FeeSelector :asset="asset" v-model="selectedFee" v-bind:fees="assetFees" v-bind:fiatRates="fiatRates"/>
+          <FeeSelector
+            :asset="asset"
+            v-model="selectedFee"
+            v-bind:fees="assetFees"
+            v-bind:fiatRates="fiatRates"/>
         </div>
       </div>
       <div v-if="data" class="permission-send_data">

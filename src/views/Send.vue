@@ -95,7 +95,7 @@
               <ul class="selectors">
                 <li>
                   <div class="send_fees">
-                    {{ assetChain }}
+                    <span class="selectors-asset">{{ assetChain }}</span>
                     <FeeSelector
                       :asset="assetChain"
                       v-model="selectedFee"
@@ -308,7 +308,7 @@ export default {
       return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
-      return prettyFiatBalance(this.totalFee, this.fiatRates[this.assetChain])
+      return prettyFiatBalance(this.totalFee, this.fiatRates[this.asset])
     },
     feeType () {
       return FEE_TYPES[this.assetChain]
@@ -320,7 +320,7 @@ export default {
       return getFeeLabel(this.selectedFee)
     },
     totalToSendInFiat () {
-      return prettyFiatBalance(this.amountWithFee, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.amountWithFee, this.fiatRates[this.assetChain])
     },
     amountWithFee () {
       return BN(this.amount).plus(BN(this.totalFee))
@@ -390,6 +390,7 @@ export default {
     .fee-selector {
       margin-left: 6px;
     }
+
   }
 }
 

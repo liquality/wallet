@@ -1,5 +1,9 @@
 <template>
-  <div class="tx-details">
+  <div class="details-wrapper">
+    <NavBar :showBackButton="true" :backClick="goBack" :backLabel="'Back'">
+      Transaction Detail
+    </NavBar>
+    <div class="tx-details">
       <div class="tx-details_info">
         <div class="row">
           <div class="col">
@@ -51,6 +55,7 @@
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -158,6 +163,9 @@ export default {
       const client = this.client(this.activeNetwork, this.activeWalletId, this.item.from)
       const transaction = await client.chain.getTransactionByHash(this.item.txHash) || this.item.tx
       this.tx = transaction
+    },
+    goBack () {
+      this.$router.go(-1)
     }
   },
   created () {
@@ -171,6 +179,13 @@ export default {
 </script>
 
 <style lang="scss">
+.details-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 .tx-details {
   padding: $wrapper-padding 0;
   overflow-y: auto;
