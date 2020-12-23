@@ -18,7 +18,9 @@
         </div>
         <div class="setting-item_control">
           <select class="custom-select" @change="e => updateInjectEthereumAsset(e.target.value)">
-            <option v-for="asset in ethereumAssets" :key="asset" :selected="injectEthereumAsset === asset">{{ asset }}</option>
+            <option v-for="asset in ethereumAssets" :key="asset" :selected="injectEthereumAsset === asset">
+              {{ getEthereumAssetName(asset) }}
+            </option>
           </select>
         </div>
       </div>
@@ -57,6 +59,12 @@ export default {
     },
     updateInjectEthereumAsset (asset) {
       this.setEthereumInjectionAsset({ asset })
+    },
+    getEthereumAssetName (code) {
+      if (code === 'RBTC') {
+        return 'RSK'
+      }
+      return code
     }
   }
 }
