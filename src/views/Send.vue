@@ -15,7 +15,7 @@
               <label for="amount"> Send </label>
             </span>
             <span class="float-right label-append text-muted">
-              ${{ prettyFiatBalance(amount, fiatRates[assetChain]) }}
+              ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
             </span>
             <div class="input-group send_asset">
               <img
@@ -305,10 +305,10 @@ export default {
       return prettyBalance(available, this.asset)
     },
     amountInFiat () {
-      return prettyFiatBalance(this.amount, this.fiatRates[this.assetChain])
+      return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
-      return prettyFiatBalance(this.totalFee, this.fiatRates[this.assetChain])
+      return prettyFiatBalance(this.totalFee, this.fiatRates[this.asset])
     },
     feeType () {
       return FEE_TYPES[this.assetChain]

@@ -16,7 +16,7 @@
           <div class="form-group">
             <span class="float-left"><label for="amount">Send</label></span>
             <div class="float-right label-append text-muted">
-              ${{ prettyFiatBalance(amount, fiatRates[assetChain]) }}
+              ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
             </div>
             <div class="input-group swap_asset">
               <img
@@ -60,7 +60,7 @@
                   <template slot="popover">
                     <p class="my-0 text-right">{{ min }} {{ asset }}</p>
                     <p class="text-muted my-0 text-right">
-                      {{ prettyFiatBalance(min, fiatRates[assetChain]) }} USD
+                      {{ prettyFiatBalance(min, fiatRates[asset]) }} USD
                     </p>
                   </template>
                 </v-popover>
@@ -75,7 +75,7 @@
                   <template slot="popover">
                     <p class="my-0 text-right">{{ max }} {{ asset }}</p>
                     <p class="text-muted my-0 text-right">
-                      {{ prettyFiatBalance(max, fiatRates[assetChain]) }} USD
+                      {{ prettyFiatBalance(max, fiatRates[asset]) }} USD
                     </p>
                   </template>
                 </v-popover>
@@ -548,10 +548,10 @@ export default {
       return this.sendFeeType === FEE_TYPES.BTC
     },
     amountToSendInFiat () {
-      return prettyFiatBalance(this.amount, this.fiatRates[this.assetChain])
+      return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     amountToReveiveInFiat () {
-      return prettyFiatBalance(this.toAmount, this.fiatRates[this.toAssetChain])
+      return prettyFiatBalance(this.toAmount, this.fiatRates[this.toAsset])
     },
     currentWalletAddress () {
       const address = this.addresses[this.activeNetwork]?.[
@@ -561,7 +561,7 @@ export default {
     },
     totalToSendInFiat () {
       const total = BN(this.amount).plus(BN(this.totalFees[this.assetChain]))
-      return prettyFiatBalance(total, this.fiatRates[this.assetChain])
+      return prettyFiatBalance(total, this.fiatRates[this.asset])
     }
   },
   methods: {
