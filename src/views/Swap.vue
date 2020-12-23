@@ -451,7 +451,7 @@ export default {
       return this.networkMarketData[this.asset]
     },
     ethRequired () {
-      return this.assetChain === 'ETH' && this.networkWalletBalances.ETH === 0
+      return [this.assetChain, this.toAssetChain].includes('ETH') && this.networkWalletBalances.ETH === 0
     },
     showErrors () {
       return !this.ethRequired

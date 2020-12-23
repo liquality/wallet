@@ -18,7 +18,10 @@
         </div>
         <div class="setting-item_control">
           <select class="custom-select" @change="e => updateInjectEthereumAsset(e.target.value)">
-            <option v-for="asset in ethereumAssets" :key="asset" :selected="injectEthereumAsset === asset">
+            <option v-for="asset in ethereumAssets"
+                    :key="asset"
+                    :selected="injectEthereumAsset === asset"
+                    :value="asset">
               {{ getEthereumAssetName(asset) }}
             </option>
           </select>

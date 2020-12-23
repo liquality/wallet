@@ -3,10 +3,7 @@
     <label class="btn btn-option btn-option-lg"
         v-for="name in ['slow', 'average', 'fast']" :key="name"
         :class="{ active: (name === value)}"
-        v-tooltip="{
-          content: getTooltip(name),
-          trigger: txTypes ? 'hover' : 'manual'
-        }"
+        v-tooltip="{ content: getTooltip(name) }"
         v-on:click="$emit('input', name)">
         <input type="radio" name="fee" autocomplete="off" :checked="name === value"> {{name}}
     </label>
@@ -34,6 +31,8 @@ export default {
         const totalFiat = prettyFiatBalance(total, this.fiatRates[this.asset])
         content += `${total} ${this.asset}`
         content += `<br />${totalFiat} USD`
+      } else {
+        content += `${this.fees[name].fee} gwei`
       }
 
       return `${content}</div>`
