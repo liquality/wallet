@@ -24,10 +24,17 @@
         </div>
         <div class="form-group">
           <label for="network">Network</label>
-          <select v-model="network" class="form-control form-control-sm" id="network" autocomplete="off" required :disabled="autofilled">
-            <option value="ethereum">Ethereum</option>
-            <option value="rsk">RSK</option>
-          </select>
+          <div class="dropdown">
+            <button class="btn btn-icon dropdown-toggle"
+                    type="button"
+                    @click="networkDropdownOpen = !networkDropdownOpen">
+              {{ network }}
+            </button>
+            <ul class="dropdown-menu" :class="{ show: networkDropdownOpen }">
+              <li><a class="dropdown-item" href="#" :class="{active: network === 'ethereum'}">Ethereum</a></li>
+              <li><a class="dropdown-item" href="#" :class="{active: network === 'rsk'}">RSK</a></li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="wrapper_bottom">
@@ -57,7 +64,8 @@ export default {
       symbol: null,
       decimals: null,
       network: 'ethereum',
-      autofilled: false
+      autofilled: false,
+      networkDropdownOpen: false
     }
   },
   computed: {
@@ -137,5 +145,9 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 0;
+
+  .form-group {
+    margin-bottom: 30px;
+  }
 }
 </style>
