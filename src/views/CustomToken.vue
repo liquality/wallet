@@ -25,14 +25,30 @@
         <div class="form-group">
           <label for="network">Network</label>
           <div class="dropdown">
-            <button class="btn btn-icon dropdown-toggle"
+            <button class="btn dropdown-toggle"
                     type="button"
-                    @click="networkDropdownOpen = !networkDropdownOpen">
+                    @click.stop="networkDropdownOpen = !networkDropdownOpen">
               {{ network }}
+              <ChevronUpIcon v-if="networkDropdownOpen" />
+              <ChevronDownIcon v-else />
             </button>
             <ul class="dropdown-menu" :class="{ show: networkDropdownOpen }">
-              <li><a class="dropdown-item" href="#" :class="{active: network === 'ethereum'}">Ethereum</a></li>
-              <li><a class="dropdown-item" href="#" :class="{active: network === 'rsk'}">RSK</a></li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   @click="setActiveNetwork('ethereum')"
+                   :class="{active: network === 'ethereum'}">
+                   Ethereum
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   @click="setActiveNetwork('rsk')"
+                   :class="{active: network === 'rsk'}">
+                   RSK
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -52,10 +68,14 @@ import axios from 'axios'
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
+import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 
 export default {
   components: {
-    NavBar
+    NavBar,
+    ChevronDownIcon,
+    ChevronUpIcon
   },
   data () {
     return {
@@ -135,6 +155,10 @@ export default {
         this.decimals = customToken.decimals
         this.autofilled = true
       }
+    },
+    setActiveNetwork (network) {
+      this.network = network
+      this.networkDropdownOpen = false
     }
   }
 }
@@ -149,5 +173,52 @@ export default {
   .form-group {
     margin-bottom: 30px;
   }
+
+  .dropdown {
+      .dropdown-menu {
+      min-width: 2rem;
+      border: 1px solid #D9DFE5;
+      border-radius: 0;
+      padding: 0;
+      margin: 0;
+    }
+    .dropdown-item {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      padding-right: 10px;
+      &:not(:last-child) {
+        border-bottom: 1px solid $hr-border-color;
+      }
+
+      &:hover, &.active {
+        background-color: #F0F7F9;
+        color: $color-text-primary;
+      }
+    }
+  }
+
+  .dropdown-toggle {
+    text-transform: capitalize;
+    padding-left: 0 !important;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+
+    &::after {
+      display: none;
+    }
+
+   svg {
+      width: 8px;
+    height: 4px;
+     margin-left: 2px;
+    }
+
+    svg.right {
+      transform: rotate(-90deg);
+    }
+}
 }
 </style>

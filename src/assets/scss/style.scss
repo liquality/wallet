@@ -404,6 +404,12 @@ textarea {
   border-radius: 26px;
 }
 
+.btn {
+  &:focus {
+      box-shadow: none;
+  }
+}
+
 .btn-option {
   height: 20px;
   font-weight: 300 !important;
