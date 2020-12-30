@@ -19,12 +19,11 @@
               ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
             </div>
             <div class="input-group swap_asset">
-              <img
-                :src="getAssetIcon(asset)"
-                class="asset-icon swap_asset_icon"
-              />
               <div class="input-group-append">
-                <span class="input-group-text">{{ asset }}</span>
+                <AssetList :assets="toAssets"
+                           :selected="asset"
+                           @asset-changed="setAsset"
+                />
               </div>
               <input
                 type="text"
@@ -88,17 +87,10 @@
             </span>
             <div class="input-group swap_asset">
               <div class="input-group-append">
-                <span class="input-group-text">
-                  <select
-                    class="custom-select"
-                    @change="setToAsset($event.target.value)"
-                    v-model="toAsset"
-                  >
-                    <option v-for="to in toAssets" :key="to" :value="to">
-                      {{ to }}
-                    </option>
-                  </select>
-                </span>
+                <AssetList :assets="toAssets"
+                          :selected="toAsset"
+                          @asset-changed="setToAsset"
+                />
               </div>
               <input
                 type="text"
@@ -343,6 +335,7 @@ import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CloseIcon from '@/assets/icons/close.svg'
 import DetailsContainer from '@/components/DetailsContainer'
+import AssetList from '@/components/AssetList'
 
 export default {
   components: {
@@ -355,7 +348,8 @@ export default {
     SpinnerIcon,
     DetailsContainer,
     CopyIcon,
-    CloseIcon
+    CloseIcon,
+    AssetList
   },
   data () {
     return {
@@ -599,6 +593,13 @@ export default {
         [this.toAssetChain]: 'average'
       })
     },
+    setAsset (val) {
+      // this.toAsset = val
+      // this.updateFees({ asset: this.toAssetChain })
+      // this.selectedFee = Object.assign({}, this.selectedFee, {
+      //   [this.toAssetChain]: 'average'
+      // })
+    },
     async swap () {
       const fromAmount = cryptoassets[this.asset].currencyToUnit(this.amount)
 
@@ -658,7 +659,7 @@ export default {
 
     .input-amount {
       text-align: right;
-      margin-left: 12px;
+      margin-left: 0px;
     }
   }
 

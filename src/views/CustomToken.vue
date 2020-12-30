@@ -212,12 +212,8 @@ export default {
 
    svg {
       width: 8px;
-    height: 4px;
-     margin-left: 2px;
-    }
-
-    svg.right {
-      transform: rotate(-90deg);
+      height: 4px;
+      margin-left: 2px;
     }
 }
 }
