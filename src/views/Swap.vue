@@ -81,7 +81,10 @@
               </div>
             </div>
           </div>
-          <div class="form-group mt-30">
+          <div class="form-group switch-icon">
+            <ArrowDownIcon/>
+          </div>
+          <div class="form-group">
             <span class="float-left">
               <label for="amount">Receive</label>
             </span>
@@ -95,7 +98,6 @@
               <input
                 type="text"
                 class="form-control input-amount"
-                readonly
                 v-model="toAmount"
                 placeholder="0.00"
                 :style="getAssetColorStyle(toAsset)"
@@ -330,6 +332,7 @@ import {
 import { shortenAddress } from '@/utils/address'
 import { TX_TYPES, FEE_TYPES, getTxFee, getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
+import ArrowDownIcon from '@/assets/icons/arrow_down.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
@@ -349,11 +352,13 @@ export default {
     DetailsContainer,
     CopyIcon,
     CloseIcon,
-    AssetList
+    AssetList,
+    ArrowDownIcon
   },
   data () {
     return {
       amount: 0,
+      toAmount: 0,
       amountOption: 'min',
       asset: null,
       toAsset: null,
@@ -372,6 +377,10 @@ export default {
     this.asset = this.routeAsset
     this.toAsset = Object.keys(this.selectedMarket)[0]
     this.amount = this.min
+    this.toAmount = dpUI(
+      BN(this.safeAmount).times(this.bestRateBasedOnAmount),
+      this.toAsset
+    )
     this.updateMarketData({ network: this.activeNetwork })
     this.updateFees({ asset: this.assetChain })
     this.updateFees({ asset: this.toAssetChain })
@@ -477,12 +486,6 @@ export default {
       if (this.ethRequired || this.amountError) return false
 
       return true
-    },
-    toAmount () {
-      return dpUI(
-        BN(this.safeAmount).times(this.bestRateBasedOnAmount),
-        this.toAsset
-      )
     },
     assetChain () {
       return getChainFromAsset(this.asset)
@@ -654,6 +657,16 @@ export default {
     back () {
       this.showConfirm = false
     }
+  },
+  watch: {
+    amount (newAmount, oldAmount) {
+      console.log('newAmount', newAmount)
+      this.toAmount = newAmount
+    },
+    toAmount (newToAmount, oldToAmount) {
+      console.log('newToAmount', newToAmount)
+      this.amount = newToAmount
+    }
   }
 }
 </script>
@@ -702,6 +715,23 @@ export default {
     }
     p {
       font-size: $font-size-sm;
+    }
+  }
+}
+
+.switch-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-bottom: 0px;
+
+  svg {
+    cursor: pointer;
+    height: 18px;
+    &.up {
+      transform: rotate(180deg);
     }
   }
 }

@@ -1,5 +1,6 @@
 <template>
- <div class="dropdown asset-list-search">
+ <div class="dropdown asset-list-search"
+      v-click-away="hide">
   <button class="btn dropdown-toggle"
           @click="toogle">
      <div class="form">
@@ -31,7 +32,7 @@
         </div>
       </div>
     </li>
-    <li v-for="asset in filteredItems" :key="asset">
+    <li v-for="(asset, key) in filteredItems" :key="key">
       <a class="dropdown-item"
          href="#"
          @click="selectItem(asset)">
@@ -64,8 +65,12 @@ import {
 import SearchIcon from '@/assets/icons/search.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
+import clickAway from '@/directives/clickAway'
 
 export default {
+  directives: {
+    clickAway
+  },
   components: {
     SearchIcon,
     ChevronDownIcon,
@@ -85,7 +90,7 @@ export default {
     }
   },
   watch: {
-    search: function (newSearch, oldSearch) {
+    search (newSearch, oldSearch) {
       if (newSearch && newSearch !== oldSearch) {
         this.filteredItems = this.items.filter(
           a => a.toUpperCase().includes(newSearch.toUpperCase())
@@ -94,7 +99,7 @@ export default {
         this.filteredItems = [...this.items]
       }
     },
-    assets: function (newAssets, oldAssets) {
+    assets (newAssets, oldAssets) {
       if (newAssets && newAssets !== oldAssets) {
         if (this.search) {
           this.filteredItems = this.items.filter(
@@ -116,6 +121,9 @@ export default {
     },
     toogle () {
       this.dropdownOpen = !this.dropdownOpen
+    },
+    hide () {
+      this.dropdownOpen = false
     }
   },
   created () {
@@ -149,6 +157,8 @@ export default {
 
   .dropdown-menu {
     width: 215px;
+    max-height: 185px;
+    overflow: auto;
     border-radius: 0;
     padding-top: 10px;
     padding-bottom: 0;
@@ -163,7 +173,6 @@ export default {
         align-items: center;
 
         input {
-          margin-right: 8px;
           padding-left: 20px;
         }
         svg {
@@ -178,6 +187,7 @@ export default {
 
     .dropdown-item {
       padding: 0.438rem 0;
+      height: 30px;
       border-bottom: 1px solid $hr-border-color;
 
       &:hover, &.active {
@@ -188,6 +198,8 @@ export default {
       .dropdown-item-asset-item {
         padding: 0 15px;
         img {
+          height: 16px;
+          width: 16px;
           margin-right: 5px;
         }
       }
