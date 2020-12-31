@@ -5,11 +5,11 @@
      <div class="form">
         <div class="input-group">
                 <img
-                :src="getAssetIcon(selectedAsset)"
+                :src="getAssetIcon(selected)"
                 class="asset-icon"
               />
               <span class="input-group-text">
-                    {{ selectedAsset }}
+                    {{ selected }}
               </span>
         </div>
       </div>
@@ -74,7 +74,6 @@ export default {
   props: ['assets', 'selected'],
   data () {
     return {
-      selectedAsset: this.selected,
       dropdownOpen: false,
       search: '',
       filteredItems: []
@@ -82,7 +81,7 @@ export default {
   },
   computed: {
     items () {
-      return this.assets.filter(a => a !== this.selectedAsset)
+      return this.assets.filter(a => a !== this.selected)
     }
   },
   watch: {
@@ -94,16 +93,26 @@ export default {
       } else {
         this.filteredItems = [...this.items]
       }
+    },
+    assets: function (newAssets, oldAssets) {
+      if (newAssets && newAssets !== oldAssets) {
+        if (this.search) {
+          this.filteredItems = this.items.filter(
+            a => a.toUpperCase().includes(this.search.toUpperCase())
+          )
+        } else {
+          this.filteredItems = [...this.items]
+        }
+      }
     }
   },
   methods: {
     getAssetColorStyle,
     getAssetIcon,
     selectItem (asset) {
-      this.selectedAsset = asset
       this.$emit('asset-changed', asset)
       this.dropdownOpen = false
-      this.filteredItems = [...this.items]
+      this.filteredItems = this.assets.filter(a => a !== asset)
     },
     toogle () {
       this.dropdownOpen = !this.dropdownOpen

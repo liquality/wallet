@@ -20,7 +20,7 @@
             </div>
             <div class="input-group swap_asset">
               <div class="input-group-append">
-                <AssetList :assets="toAssets"
+                <AssetList :assets="assets"
                            :selected="asset"
                            @asset-changed="setAsset"
                 />
@@ -313,7 +313,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import { add, format } from 'date-fns'
 import cryptoassets from '@/utils/cryptoassets'
@@ -355,6 +355,7 @@ export default {
     return {
       amount: 0,
       amountOption: 'min',
+      asset: null,
       toAsset: null,
       enterSendToAddress: false,
       sendTo: null,
@@ -365,9 +366,10 @@ export default {
     }
   },
   props: {
-    asset: String
+    routeAsset: String
   },
   created () {
+    this.asset = this.routeAsset
     this.toAsset = Object.keys(this.selectedMarket)[0]
     this.amount = this.min
     this.updateMarketData({ network: this.activeNetwork })
@@ -390,6 +392,12 @@ export default {
       'activeWalletId',
       'activeNetwork'
     ]),
+    ...mapGetters(['assetsWithBalance']),
+    assets () {
+      return this.assetsWithBalance.filter(
+        ([asset]) => asset !== this.asset
+      ).map(([asset]) => asset)
+    },
     networkMarketData () {
       return this.marketData[this.activeNetwork]
     },
@@ -594,11 +602,15 @@ export default {
       })
     },
     setAsset (val) {
-      // this.toAsset = val
-      // this.updateFees({ asset: this.toAssetChain })
-      // this.selectedFee = Object.assign({}, this.selectedFee, {
-      //   [this.toAssetChain]: 'average'
-      // })
+      this.asset = val
+      this.toAsset = Object.keys(this.selectedMarket)[0]
+      this.amount = this.min
+      this.updateFees({ asset: this.assetChain })
+      this.updateFees({ asset: this.toAssetChain })
+      this.selectedFee = {
+        [this.assetChain]: 'average',
+        [this.toAssetChain]: 'average'
+      }
     },
     async swap () {
       const fromAmount = cryptoassets[this.asset].currencyToUnit(this.amount)

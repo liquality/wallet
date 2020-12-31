@@ -119,7 +119,7 @@ const routes = [
     props: true
   },
   {
-    path: '/account/:asset/swap',
+    path: '/account/:routeAsset/swap',
     component: Swap,
     props: true
   },
