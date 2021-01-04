@@ -99,6 +99,7 @@
                 type="text"
                 class="form-control input-amount"
                 v-model="toAmount"
+                readonly
                 placeholder="0.00"
                 :style="getAssetColorStyle(toAsset)"
                 autocomplete="off"
@@ -599,15 +600,19 @@ export default {
     },
     setToAsset (val) {
       this.toAsset = val
-      this.updateFees({ asset: this.toAssetChain })
-      this.selectedFee = Object.assign({}, this.selectedFee, {
-        [this.toAssetChain]: 'average'
-      })
+      this.resetAmounts()
     },
     setAsset (val) {
+      this.amount = this.min
       this.asset = val
       this.toAsset = Object.keys(this.selectedMarket)[0]
-      this.amount = this.min
+      this.resetAmounts()
+    },
+    resetAmounts () {
+      this.toAmount = dpUI(
+        BN(this.safeAmount).times(this.bestRateBasedOnAmount),
+        this.toAsset
+      )
       this.updateFees({ asset: this.assetChain })
       this.updateFees({ asset: this.toAssetChain })
       this.selectedFee = {
@@ -656,16 +661,6 @@ export default {
     },
     back () {
       this.showConfirm = false
-    }
-  },
-  watch: {
-    amount (newAmount, oldAmount) {
-      console.log('newAmount', newAmount)
-      this.toAmount = newAmount
-    },
-    toAmount (newToAmount, oldToAmount) {
-      console.log('newToAmount', newToAmount)
-      this.amount = newToAmount
     }
   }
 }
