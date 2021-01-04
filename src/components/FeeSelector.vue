@@ -32,7 +32,7 @@ export default {
         content += `${total} ${this.asset}`
         content += `<br />${totalFiat} USD`
       } else {
-        content += `${this.fees[name].fee} gwei`
+        content += `${this.fees[name].fee} ETH`
       }
 
       return `${content}</div>`

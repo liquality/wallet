@@ -13,6 +13,68 @@ import { SWAP_STATUS_FILTER_MAP, SEND_STATUS_FILTER_MAP } from '@/utils/history'
 import moment from '@/utils/moment'
 import { getCSVContent, exportToCSV } from '@/utils/export'
 
+const CSV_HEADERS = [
+  {
+    label: 'ID',
+    key: 'id'
+  },
+  {
+    label: 'Order ID',
+    key: 'orderId'
+  },
+  {
+    label: 'Network',
+    key: 'network'
+  },
+  {
+    label: 'Created',
+    key: 'createdAt'
+  },
+  {
+    label: 'From Asset',
+    key: 'from'
+  },
+  {
+    label: 'To Asset',
+    key: 'to'
+  },
+  {
+    label: 'From',
+    key: 'fromAddress'
+  },
+  {
+    label: 'To',
+    key: 'toAddress'
+  },
+  {
+    label: 'Send To',
+    key: 'sendTo'
+  },
+  {
+    label: 'Send Amount',
+    key: 'fromAmount'
+  },
+  {
+    label: 'Receive Amount',
+    key: 'toAmount'
+  },
+  {
+    label: 'Send Amount USD',
+    key: 'fromAmountUsd'
+  },
+  {
+    label: 'Receive Amount USD',
+    key: 'toAmountUsd'
+  },
+  {
+    label: 'Status',
+    key: 'fromAmountUsd'
+  },
+  {
+    label: 'Wallet ID',
+    key: 'walletId'
+  }
+]
 export default {
   components: {
     WalletActivityFilter,
@@ -20,7 +82,8 @@ export default {
   },
   data () {
     return {
-      activityData: []
+      activityData: [],
+      headers: [...CSV_HEADERS]
     }
   },
   computed: {
@@ -68,7 +131,7 @@ export default {
       this.activityData = data
     },
     exportActivity () {
-      const content = this.getCSVContent(this.activityData)
+      const content = this.getCSVContent(this.activityData, this.headers)
       this.exportToCSV({ filename: 'activity.csv', content })
     }
   },

@@ -4,7 +4,7 @@
       <div class="activity-filter-header-actions">
         <div @click.stop="open = !open" class="filter-action">
         <ChevronDownIcon :class="open ? '' : 'right'" />
-        Filters ({{ filterCount }})
+        Filters {{ filterCount > 0 ? `(${filterCount})` : '' }}
       </div>
       <div @click.stop="resetFilters"
            class="reset-action"

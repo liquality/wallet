@@ -19,12 +19,11 @@
               ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
             </div>
             <div class="input-group swap_asset">
-              <img
-                :src="getAssetIcon(asset)"
-                class="asset-icon swap_asset_icon"
-              />
               <div class="input-group-append">
-                <span class="input-group-text">{{ asset }}</span>
+                <AssetList :assets="assets"
+                           :selected="asset"
+                           @asset-changed="setAsset"
+                />
               </div>
               <input
                 type="text"
@@ -82,29 +81,25 @@
               </div>
             </div>
           </div>
-          <div class="form-group mt-30">
+          <div class="form-group switch-icon">
+            <ArrowDownIcon/>
+          </div>
+          <div class="form-group">
             <span class="float-left">
               <label for="amount">Receive</label>
             </span>
             <div class="input-group swap_asset">
               <div class="input-group-append">
-                <span class="input-group-text">
-                  <select
-                    class="custom-select"
-                    @change="setToAsset($event.target.value)"
-                    v-model="toAsset"
-                  >
-                    <option v-for="to in toAssets" :key="to" :value="to">
-                      {{ to }}
-                    </option>
-                  </select>
-                </span>
+                <AssetList :assets="toAssets"
+                          :selected="toAsset"
+                          @asset-changed="setToAsset"
+                />
               </div>
               <input
                 type="text"
                 class="form-control input-amount"
-                readonly
                 v-model="toAmount"
+                readonly
                 placeholder="0.00"
                 :style="getAssetColorStyle(toAsset)"
                 autocomplete="off"
@@ -321,7 +316,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import { add, format } from 'date-fns'
 import cryptoassets from '@/utils/cryptoassets'
@@ -338,11 +333,13 @@ import {
 import { shortenAddress } from '@/utils/address'
 import { TX_TYPES, FEE_TYPES, getTxFee, getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
+import ArrowDownIcon from '@/assets/icons/arrow_down.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CloseIcon from '@/assets/icons/close.svg'
 import DetailsContainer from '@/components/DetailsContainer'
+import AssetList from '@/components/AssetList'
 
 export default {
   components: {
@@ -355,12 +352,16 @@ export default {
     SpinnerIcon,
     DetailsContainer,
     CopyIcon,
-    CloseIcon
+    CloseIcon,
+    AssetList,
+    ArrowDownIcon
   },
   data () {
     return {
       amount: 0,
+      toAmount: 0,
       amountOption: 'min',
+      asset: null,
       toAsset: null,
       enterSendToAddress: false,
       sendTo: null,
@@ -371,11 +372,16 @@ export default {
     }
   },
   props: {
-    asset: String
+    routeAsset: String
   },
   created () {
+    this.asset = this.routeAsset
     this.toAsset = Object.keys(this.selectedMarket)[0]
     this.amount = this.min
+    this.toAmount = dpUI(
+      BN(this.safeAmount).times(this.bestRateBasedOnAmount),
+      this.toAsset
+    )
     this.updateMarketData({ network: this.activeNetwork })
     this.updateFees({ asset: this.assetChain })
     this.updateFees({ asset: this.toAssetChain })
@@ -396,6 +402,12 @@ export default {
       'activeWalletId',
       'activeNetwork'
     ]),
+    ...mapGetters(['assetsWithBalance']),
+    assets () {
+      return this.assetsWithBalance.filter(
+        ([asset]) => asset !== this.asset
+      ).map(([asset]) => asset)
+    },
     networkMarketData () {
       return this.marketData[this.activeNetwork]
     },
@@ -475,12 +487,6 @@ export default {
       if (this.ethRequired || this.amountError) return false
 
       return true
-    },
-    toAmount () {
-      return dpUI(
-        BN(this.safeAmount).times(this.bestRateBasedOnAmount),
-        this.toAsset
-      )
     },
     assetChain () {
       return getChainFromAsset(this.asset)
@@ -594,10 +600,25 @@ export default {
     },
     setToAsset (val) {
       this.toAsset = val
+      this.resetAmounts()
+    },
+    setAsset (val) {
+      this.amount = this.min
+      this.asset = val
+      this.toAsset = Object.keys(this.selectedMarket)[0]
+      this.resetAmounts()
+    },
+    resetAmounts () {
+      this.toAmount = dpUI(
+        BN(this.safeAmount).times(this.bestRateBasedOnAmount),
+        this.toAsset
+      )
+      this.updateFees({ asset: this.assetChain })
       this.updateFees({ asset: this.toAssetChain })
-      this.selectedFee = Object.assign({}, this.selectedFee, {
+      this.selectedFee = {
+        [this.assetChain]: 'average',
         [this.toAssetChain]: 'average'
-      })
+      }
     },
     async swap () {
       const fromAmount = cryptoassets[this.asset].currencyToUnit(this.amount)
@@ -658,7 +679,7 @@ export default {
 
     .input-amount {
       text-align: right;
-      margin-left: 12px;
+      margin-left: 0px;
     }
   }
 
@@ -689,6 +710,23 @@ export default {
     }
     p {
       font-size: $font-size-sm;
+    }
+  }
+}
+
+.switch-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-bottom: 0px;
+
+  svg {
+    cursor: pointer;
+    height: 18px;
+    &.up {
+      transform: rotate(180deg);
     }
   }
 }

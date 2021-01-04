@@ -404,6 +404,12 @@ textarea {
   border-radius: 26px;
 }
 
+.btn {
+  &:focus {
+      box-shadow: none;
+  }
+}
+
 .btn-option {
   height: 20px;
   font-weight: 300 !important;
@@ -473,7 +479,7 @@ textarea {
 
 // remove error icon for all inputs
 .was-validated .form-control:invalid, .form-control.is-invalid {
-    padding-right: 1rem !important;
+    padding-right: 0rem !important;
     background-image: none !important;
 }
 
