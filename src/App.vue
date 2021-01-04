@@ -39,4 +39,16 @@ export default {
   background: #ffffff;
   overflow: hidden;
 }
+
+@keyframes redraw {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .99;
+  }
+}
+html {
+  animation: redraw 1s linear infinite;
+}
 </style>

@@ -8,7 +8,7 @@ export const exportToCSV = ({ filename, content }) => {
   link.remove()
 }
 
-export const getCSVContent = (data) => {
+export const getCSVContent = (data, headers) => {
   if (!data == null || !data.length) {
     return null
   }
@@ -16,16 +16,14 @@ export const getCSVContent = (data) => {
   const columnDelimiter = ','
   const lineDelimiter = '\n'
 
-  const keys = Object.keys(data[0])
-
-  let result = `${keys.join(columnDelimiter)}${lineDelimiter}`
+  let result = `${headers.map(h => (h.label)).join(columnDelimiter)}${lineDelimiter}`
 
   data.forEach((item) => {
     let ctr = 0
-    keys.forEach((key) => {
+    headers.forEach((header) => {
       if (ctr > 0) result += columnDelimiter
 
-      result += item[key]
+      result += item[header.key]
       ctr++
     })
     result += lineDelimiter
