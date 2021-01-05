@@ -72,6 +72,11 @@ export default {
     text-decoration: none;
   }
 
+  .list-item-title,
+  .list-item-detail {
+    color: $color-text-primary;
+    font-weight: 400;
+  }
   .list-item-detail,
   .list-item-detail-sub {
     text-align: right;
