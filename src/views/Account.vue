@@ -5,7 +5,10 @@
     </NavBar>
     <div class="account_main">
       <div class="account_top">
-        <RefreshIcon @click="refresh" class="account_refresh-icon" />
+        <RefreshIcon @click.stop="refresh"
+                     class="account_refresh-icon"
+                     :class="{ 'infinity-rotate': updateBalanceLoading }"
+        />
         <div class="account_balance">
           <div v-if="fiatRates[asset]" class="account_balance_fiat">${{prettyFiatBalance(balance, fiatRates[asset])}}</div>
           <div>
@@ -73,7 +76,16 @@ export default {
   },
   props: ['asset'],
   computed: {
-    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'addresses', 'history', 'fiatRates', 'marketData']),
+    ...mapState([
+      'activeWalletId',
+      'activeNetwork',
+      'balances',
+      'addresses',
+      'history',
+      'fiatRates',
+      'marketData',
+      'updateBalanceLoading'
+    ]),
     balance () {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
     },
