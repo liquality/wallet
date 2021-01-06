@@ -8,26 +8,54 @@
         <div class="row">
           <div class="col">
             <h2>Sent</h2>
-            <p>{{prettyBalance(item.amount, item.from)}} {{item.from}}</p>
+            <p>{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</p>
           </div>
         </div>
         <div class="row">
           <div class="col tx-details_link">
             <h2>Sent To</h2>
-            <p><a :href="addressLink" target="_blank">{{ item.toAddress }}</a><CopyIcon @click="copy(item.toAddress)" /></p>
+            <p>
+              <a :href="addressLink" target="_blank">{{ item.toAddress }}</a>
+              <CopyIcon @click="copy(item.toAddress)" />
+            </p>
           </div>
         </div>
         <div class="row">
           <div class="col">
             <h2>Network Speed/Fee</h2>
-            <p>{{prettyBalance(tx ? tx.fee : item.tx.fee, item.from)}} {{ assetChain }} | {{ item.fee }} {{ feeUnit }} <a v-if="canUpdateFee && !showFeeSelector" @click="openFeeSelector()">Speed up</a></p>
+            <p>
+              {{ prettyBalance(tx ? tx.fee : item.tx.fee, item.from) }}
+              {{ assetChain }} | {{ item.fee }} {{ feeUnit }}
+              <a
+                v-if="canUpdateFee && !showFeeSelector"
+                @click="openFeeSelector()"
+              >
+                Speed up
+              </a>
+            </p>
             <div v-if="showFeeSelector" class="mt-2">
-              <FeeSelector :asset="item.from" v-model="selectedFee" v-bind:fees="assetFees" v-bind:txTypes="[txType]" v-bind:fiatRates="fiatRates"/>
-              <button class="btn btn-sm btn-primary btn-icon ml-2" :disabled="feeSelectorLoading" @click="updateFee()">
+              <FeeSelector
+                :asset="item.from"
+                v-model="selectedFee"
+                v-bind:fees="assetFees"
+                v-bind:txTypes="[txType]"
+                v-bind:fiatRates="fiatRates"
+              />
+              <button
+                class="btn btn-sm btn-primary btn-icon ml-2"
+                :disabled="feeSelectorLoading"
+                @click="updateFee()"
+              >
                 <SpinnerIcon class="btn-loading" v-if="feeSelectorLoading" />
                 <template v-else>Update</template>
               </button>
-              <button class="btn btn-sm btn-outline-primary ml-2" v-if="!feeSelectorLoading" @click="closeFeeSelector()">Cancel</button>
+              <button
+                class="btn btn-sm btn-outline-primary ml-2"
+                v-if="!feeSelectorLoading"
+                @click="closeFeeSelector()"
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
@@ -40,17 +68,30 @@
         <div class="row">
           <div class="col-10">
             <h2>Status</h2>
-            <p>{{ status }} <span v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"> / {{ tx.confirmations }} Confirmations</span></p>
+            <p>
+              {{ status }}
+              <span
+                v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"
+              >
+                / {{ tx.confirmations }} Confirmations
+              </span>
+            </p>
           </div>
           <div class="col">
-            <CompletedIcon v-if="item.status === 'SUCCESS'" class="tx-details_status-icon" />
+            <CompletedIcon
+              v-if="item.status === 'SUCCESS'"
+              class="tx-details_status-icon"
+            />
             <SpinnerIcon v-else class="tx-details_status-icon" />
           </div>
         </div>
         <div class="row">
           <div class="col tx-details_link">
             <h2>Transaction ID</h2>
-            <p><a :href="transactionLink" target="_blank">{{ item.txHash }}</a><CopyIcon @click="copy(item.txHash)" /></p>
+            <p>
+              <a :href="transactionLink" target="_blank">{{ item.txHash }}</a>
+              <CopyIcon @click="copy(item.txHash)" />
+            </p>
           </div>
         </div>
       </div>
@@ -66,19 +107,25 @@ import cryptoassets from '@/utils/cryptoassets'
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStatusLabel } from '@/utils/history'
 import { TX_TYPES } from '@/utils/fees'
-import { getChainFromAsset, getTransactionExplorerLink, getAddressExplorerLink } from '@/utils/asset'
+import {
+  getChainFromAsset,
+  getTransactionExplorerLink,
+  getAddressExplorerLink
+} from '@/utils/asset'
 
 import FeeSelector from '@/components/FeeSelector'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
+import NavBar from '@/components/NavBar.vue'
 
 export default {
   components: {
     FeeSelector,
     CompletedIcon,
     SpinnerIcon,
-    CopyIcon
+    CopyIcon,
+    NavBar
   },
   data () {
     return {
@@ -91,13 +138,20 @@ export default {
   props: ['id'],
   computed: {
     ...mapGetters(['client']),
-    ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
+    ...mapState([
+      'activeWalletId',
+      'activeNetwork',
+      'history',
+      'fees',
+      'fiatRates'
+    ]),
     assetChain () {
       return getChainFromAsset(this.item.from)
     },
     item () {
-      return this.history[this.activeNetwork][this.activeWalletId]
-        .find((item) => item.id === this.id)
+      return this.history[this.activeNetwork][this.activeWalletId].find(
+        (item) => item.id === this.id
+      )
     },
     status () {
       return getStatusLabel(this.item)
@@ -106,16 +160,30 @@ export default {
       return cryptoassets[this.assetChain].fees.unit
     },
     addressLink () {
-      return getAddressExplorerLink(this.item.toAddress, this.item.from, this.activeNetwork)
+      return getAddressExplorerLink(
+        this.item.toAddress,
+        this.item.from,
+        this.activeNetwork
+      )
     },
     transactionLink () {
-      return getTransactionExplorerLink(this.item.txHash, this.item.from, this.activeNetwork)
+      return getTransactionExplorerLink(
+        this.item.txHash,
+        this.item.from,
+        this.activeNetwork
+      )
     },
     canUpdateFee () {
-      return this.feesAvailable && this.tx && (!this.tx.confirmations || this.tx.confirmations === 0)
+      return (
+        this.feesAvailable &&
+        this.tx &&
+        (!this.tx.confirmations || this.tx.confirmations === 0)
+      )
     },
     assetFees () {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
+        this.assetChain
+      ]
     },
     feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
@@ -160,8 +228,14 @@ export default {
       }
     },
     async updateTransaction () {
-      const client = this.client(this.activeNetwork, this.activeWalletId, this.item.from)
-      const transaction = await client.chain.getTransactionByHash(this.item.txHash) || this.item.tx
+      const client = this.client(
+        this.activeNetwork,
+        this.activeWalletId,
+        this.item.from
+      )
+      const transaction =
+        (await client.chain.getTransactionByHash(this.item.txHash)) ||
+        this.item.tx
       this.tx = transaction
     },
     goBack () {

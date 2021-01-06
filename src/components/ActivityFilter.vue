@@ -89,8 +89,73 @@ import ListItem from '@/components/ListItem'
 import { ACTIVITY_FILTER_TYPES, ACTIVITY_STATUSES, getItemIcon } from '@/utils/history'
 import DatePick from 'vue-date-pick'
 import '@/assets/scss/vue-date-pick.scss'
+import { getCSVContent, exportToCSV } from '@/utils/export'
+
+const CSV_HEADERS = [
+  {
+    label: 'ID',
+    key: 'id'
+  },
+  {
+    label: 'Order ID',
+    key: 'orderId'
+  },
+  {
+    label: 'Network',
+    key: 'network'
+  },
+  {
+    label: 'Created',
+    key: 'createdAt'
+  },
+  {
+    label: 'From Asset',
+    key: 'from'
+  },
+  {
+    label: 'To Asset',
+    key: 'to'
+  },
+  {
+    label: 'From',
+    key: 'fromAddress'
+  },
+  {
+    label: 'To',
+    key: 'toAddress'
+  },
+  {
+    label: 'Send To',
+    key: 'sendTo'
+  },
+  {
+    label: 'Send Amount',
+    key: 'fromAmount'
+  },
+  {
+    label: 'Receive Amount',
+    key: 'toAmount'
+  },
+  {
+    label: 'Send Amount USD',
+    key: 'fromAmountUsd'
+  },
+  {
+    label: 'Receive Amount USD',
+    key: 'toAmountUsd'
+  },
+  {
+    label: 'Status',
+    key: 'fromAmountUsd'
+  },
+  {
+    label: 'Wallet ID',
+    key: 'walletId'
+  }
+]
 
 export default {
+  props: ['activityData'],
   components: {
     CalendarIcon,
     ChevronDownIcon,
@@ -101,6 +166,7 @@ export default {
   },
   data () {
     return {
+      headers: [...CSV_HEADERS],
       open: false,
       dateFilters: {
         start: null,
@@ -134,6 +200,8 @@ export default {
     }
   },
   methods: {
+    getCSVContent,
+    exportToCSV,
     getItemIcon,
     toogleTypeFilter (key) {
       if (key in this.typeFilters) {
@@ -150,7 +218,8 @@ export default {
       }
     },
     exportActivity () {
-      this.$emit('export-requested')
+      const content = this.getCSVContent(this.activityData, this.headers)
+      this.exportToCSV({ filename: 'activity.csv', content })
     },
     resetFilters () {
       this.dateFilters = { start: null, end: null }

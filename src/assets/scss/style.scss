@@ -512,3 +512,14 @@ svg.qr-icon {
   width: 40px;
   font-weight: bold;
 }
+
+
+.infinity-rotate {
+  -webkit-animation:spin 1s ease infinite;
+  -moz-animation:spin 1s ease infinite;
+  animation:spin 1s ease infinite;
+  animation-fill-mode: forwards;
+}
+@-moz-keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { transform:rotate(360deg); } }

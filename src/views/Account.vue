@@ -5,7 +5,10 @@
     </NavBar>
     <div class="account_main">
       <div class="account_top">
-        <RefreshIcon @click="refresh" class="account_refresh-icon" />
+        <RefreshIcon @click.stop="refresh"
+                     class="account_refresh-icon"
+                     :class="{ 'infinity-rotate': updateBalanceLoading }"
+        />
         <div class="account_balance">
           <div v-if="fiatRates[asset]" class="account_balance_fiat">${{prettyFiatBalance(balance, fiatRates[asset])}}</div>
           <div>
@@ -33,7 +36,8 @@
         </div>
       </div>
       <div class="account_transactions">
-        <TransactionList :transactions="assetHistory" />
+        <ActivityFilter @filters-changed="applyFilters" :activity-data="activityData"/>
+        <TransactionList :transactions="activityData" />
       </div>
     </div>
   </div>
@@ -51,6 +55,8 @@ import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
 import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
+import ActivityFilter from '@/components/ActivityFilter'
+import { applyActivityFilters } from '@/utils/history'
 
 export default {
   components: {
@@ -59,16 +65,27 @@ export default {
     SendIcon,
     ReceiveIcon,
     SwapIcon,
+    ActivityFilter,
     TransactionList
   },
   data () {
     return {
-      addressCopied: false
+      addressCopied: false,
+      activityData: []
     }
   },
   props: ['asset'],
   computed: {
-    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'addresses', 'history', 'fiatRates', 'marketData']),
+    ...mapState([
+      'activeWalletId',
+      'activeNetwork',
+      'balances',
+      'addresses',
+      'history',
+      'fiatRates',
+      'marketData',
+      'updateBalanceLoading'
+    ]),
     balance () {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
     },
@@ -106,12 +123,16 @@ export default {
     },
     refresh () {
       this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
+    },
+    applyFilters (filters) {
+      this.activityData = applyActivityFilters([...this.assetHistory], filters)
     }
   },
   async created () {
     if (!this.address) {
       await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
     }
+    this.activityData = [...this.assetHistory]
   }
 }
 </script>

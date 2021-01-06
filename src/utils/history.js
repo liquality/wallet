@@ -1,3 +1,5 @@
+import moment from '@/utils/moment'
+
 export const SWAP_STATUS_STEP_MAP = {
   QUOTE: 0,
   SECRET_READY: 0,
@@ -122,4 +124,44 @@ export const getItemIcon = (name) => {
   } catch (e) {
     return require('../assets/icons/blank_asset.svg?inline')
   }
+}
+
+export const applyActivityFilters = (activity, filters) => {
+  const { types, statuses, dates } = filters
+  let data = [...activity]
+  if (types.length > 0) {
+    data = data.filter(i => types.includes(i.type))
+  }
+
+  if (statuses.length > 0) {
+    data = data.filter(i => {
+      if (i.type === 'SWAP') {
+        return statuses.includes(SWAP_STATUS_FILTER_MAP[i.status])
+      }
+
+      if (i.type === 'SEND') {
+        return statuses.includes(SEND_STATUS_FILTER_MAP[i.status])
+      }
+
+      return true
+    })
+  }
+
+  if (dates.start) {
+    const filter = moment(dates.start)
+    data = data.filter(i => {
+      const start = moment(i.startTime)
+      return filter >= start
+    })
+  }
+
+  if (dates.end) {
+    const filter = moment(dates.end)
+    data = data.filter(i => {
+      const end = moment(i.startTime)
+      return filter <= end
+    })
+  }
+
+  return data
 }
