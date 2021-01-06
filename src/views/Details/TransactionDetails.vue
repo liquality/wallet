@@ -110,7 +110,7 @@ import { TX_TYPES } from '@/utils/fees'
 import {
   getChainFromAsset,
   getTransactionExplorerLink,
-  getAddressExplorerLink,
+  getAddressExplorerLink
 } from '@/utils/asset'
 
 import FeeSelector from '@/components/FeeSelector'
@@ -125,14 +125,14 @@ export default {
     CompletedIcon,
     SpinnerIcon,
     CopyIcon,
-    NavBar,
+    NavBar
   },
-  data() {
+  data () {
     return {
       tx: null,
       showFeeSelector: false,
       feeSelectorLoading: false,
-      selectedFee: 'average',
+      selectedFee: 'average'
     }
   },
   props: ['id'],
@@ -143,74 +143,74 @@ export default {
       'activeNetwork',
       'history',
       'fees',
-      'fiatRates',
+      'fiatRates'
     ]),
-    assetChain() {
+    assetChain () {
       return getChainFromAsset(this.item.from)
     },
-    item() {
+    item () {
       return this.history[this.activeNetwork][this.activeWalletId].find(
-        (item) => item.id === this.id,
+        (item) => item.id === this.id
       )
     },
-    status() {
+    status () {
       return getStatusLabel(this.item)
     },
-    feeUnit() {
+    feeUnit () {
       return cryptoassets[this.assetChain].fees.unit
     },
-    addressLink() {
+    addressLink () {
       return getAddressExplorerLink(
         this.item.toAddress,
         this.item.from,
-        this.activeNetwork,
+        this.activeNetwork
       )
     },
-    transactionLink() {
+    transactionLink () {
       return getTransactionExplorerLink(
         this.item.txHash,
         this.item.from,
-        this.activeNetwork,
+        this.activeNetwork
       )
     },
-    canUpdateFee() {
+    canUpdateFee () {
       return (
         this.feesAvailable &&
         this.tx &&
         (!this.tx.confirmations || this.tx.confirmations === 0)
       )
     },
-    assetFees() {
+    assetFees () {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         this.assetChain
       ]
     },
-    feesAvailable() {
+    feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
     },
-    txType() {
+    txType () {
       return TX_TYPES.SEND
-    },
+    }
   },
   methods: {
     ...mapActions(['retrySwap', 'updateTransactionFee', 'updateFees']),
     getChainFromAsset,
     prettyBalance,
-    prettyTime(timestamp) {
+    prettyTime (timestamp) {
       return moment(timestamp).format('L, LT')
     },
-    async copy(text) {
+    async copy (text) {
       await navigator.clipboard.writeText(text)
     },
-    openFeeSelector() {
+    openFeeSelector () {
       this.showFeeSelector = true
       this.updateFees({ asset: this.assetChain })
     },
-    closeFeeSelector() {
+    closeFeeSelector () {
       this.showFeeSelector = false
       this.selectedFee = 'average'
     },
-    async updateFee() {
+    async updateFee () {
       this.feeSelectorLoading = true
       const newFee = this.assetFees[this.selectedFee].fee
       try {
@@ -220,35 +220,35 @@ export default {
           asset: this.item.from,
           id: this.item.id,
           hash: this.item.txHash,
-          newFee,
+          newFee
         })
       } finally {
         this.feeSelectorLoading = false
         this.closeFeeSelector()
       }
     },
-    async updateTransaction() {
+    async updateTransaction () {
       const client = this.client(
         this.activeNetwork,
         this.activeWalletId,
-        this.item.from,
+        this.item.from
       )
       const transaction =
         (await client.chain.getTransactionByHash(this.item.txHash)) ||
         this.item.tx
       this.tx = transaction
     },
-    goBack() {
+    goBack () {
       this.$router.go(-1)
-    },
+    }
   },
-  created() {
+  created () {
     this.updateTransaction()
     this.interval = setInterval(() => this.updateTransaction(), 10000)
   },
-  beforeDestroy() {
+  beforeDestroy () {
     clearInterval(this.interval)
-  },
+  }
 }
 </script>
 
