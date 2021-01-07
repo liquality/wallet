@@ -438,6 +438,8 @@ export default {
         this.stateSendAmount = dpUI(
           BN(newValue).dividedBy(this.bestRateBasedOnAmount),
           this.asset)
+        this.stateSendAmountFiat = cryptoToFiat(this.stateSendAmount, this.fiatRates[this.asset])
+        this.stateReceiveAmountFiat = cryptoToFiat(this.stateReceiveAmount, this.fiatRates[this.toAsset])
       }
     },
     sendAmountFiat: {
