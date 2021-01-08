@@ -240,7 +240,7 @@
               <div class="confirm-value" :style="getAssetColorStyle(asset)">
                 {{ sendAmount }} {{ asset }}
               </div>
-              <div class="details-text">${{ sendAmountFiat }}</div>
+              <div class="details-text">{{ sendAmountFiat }}</div>
             </div>
           </div>
           <div class="detail-group">
@@ -258,7 +258,7 @@
             <label class="text-muted"> Amount + Fees </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold">
-                {{ send }} {{ asset }} + {{ totalFees[assetChain] }}
+                {{ sendAmount }} {{ asset }} + {{ totalFees[assetChain] }}
                 {{ sendFeeType }}
               </div>
               <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
@@ -271,7 +271,7 @@
               <div class="confirm-value" :style="getAssetColorStyle(toAsset)">
                 {{ toAmount }} {{ toAsset }}
               </div>
-              <div class="details-text">${{ receiveAmountFiat }}</div>
+              <div class="details-text">{{ receiveAmountFiat }}</div>
             </div>
           </div>
           <div class="detail-group">
