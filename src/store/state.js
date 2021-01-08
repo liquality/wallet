@@ -22,7 +22,6 @@ export default {
 
   addresses: {},
   balances: {},
-  updateBalanceLoading: false,
   fiatRates: {},
   fees: {},
   history: {},

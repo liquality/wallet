@@ -35,13 +35,6 @@ const migrations = [
       }
       return { ...state, customTokens }
     }
-  },
-  { // Add updading balance flag
-    version: 4,
-    migrate: async (state) => {
-      state.updateBalanceLoading = false
-      return { ...state }
-    }
   }
 ]
 
