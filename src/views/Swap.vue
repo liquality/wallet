@@ -269,7 +269,7 @@
             <label> Receive </label>
             <div class="d-flex align-items-center justify-content-between my-0 py-0">
               <div class="confirm-value" :style="getAssetColorStyle(toAsset)">
-                {{ toAmount }} {{ toAsset }}
+                {{ receiveAmount }} {{ toAsset }}
               </div>
               <div class="details-text">{{ receiveAmountFiat }}</div>
             </div>
@@ -645,9 +645,11 @@ export default {
       ]?.[this.asset]
       return address && cryptoassets[this.asset].formatAddress(address)
     },
+    totalToSend () {
+      return BN(this.safeAmount).plus(BN(this.totalFees[this.assetChain]))
+    },
     totalToSendInFiat () {
-      const total = BN(this.safeAmount).plus(BN(this.totalFees[this.assetChain]))
-      return prettyFiatBalance(total, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.totalToSend, this.fiatRates[this.asset])
     }
   },
   methods: {
