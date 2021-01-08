@@ -16,8 +16,13 @@
           <div class="form-group">
             <span class="float-left"><label for="amount">Send</label></span>
             <div class="float-right btn btn-option label-append"
-                 @click="showSendInFiat = !showSendInFiat">
-              {{ showSendInFiat ? `${asset} ${sendAmount}` : `$${sendAmountFiat}` }}
+                 @click="toogleShowAmountsFiat">
+              <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
+                {{ `${asset} ${sendAmount}` }}
+              </span>
+              <span v-else>
+                {{ sendAmountFiat }}
+              </span>
             </div>
             <div class="input-group swap_asset">
               <div class="input-group-append">
@@ -27,13 +32,12 @@
                 />
               </div>
               <input
-                v-if="showSendInFiat"
+                v-if="showAmountsInFiat"
                 type="text"
                 class="form-control input-amount"
                 :class="{ 'is-invalid': showErrors && amountError }"
                 v-model="sendAmountFiat"
                 placeholder="0.00"
-                :style="getAssetColorStyle(asset)"
                 autocomplete="off"
               />
               <input
@@ -63,7 +67,7 @@
                   <button
                     :class="{ active: amountOption === 'min' }"
                     class="btn btn-option"
-                    @click="setAmount(min)"
+                    @click="setSendAmount(min)"
                   >
                     Min
                   </button>
@@ -78,7 +82,7 @@
                   <button
                     :class="{ active: amountOption === 'max' }"
                     class="btn btn-option tooltip-target"
-                    @click="setAmount(max)"
+                    @click="setSendAmount(max)"
                   >
                     Max
                   </button>
@@ -97,8 +101,13 @@
               <label for="amount">Receive</label>
             </span>
             <div class="float-right btn btn-option label-append"
-                 @click="showReceiveInFiat = !showReceiveInFiat">
-              {{ showReceiveInFiat ? `${toAsset} ${receiveAmount}` : `$${receiveAmountFiat}` }}
+                 @click="toogleShowAmountsFiat">
+              <span v-if="showAmountsInFiat" :style="getAssetColorStyle(toAsset)">
+                {{ `${toAsset} ${receiveAmount}` }}
+              </span>
+              <span v-else>
+                {{ receiveAmountFiat }}
+              </span>
             </div>
             <div class="input-group swap_asset">
               <div class="input-group-append">
@@ -108,12 +117,11 @@
                 />
               </div>
               <input
-                v-if="showReceiveInFiat"
+                v-if="showAmountsInFiat"
                 type="text"
                 class="form-control input-amount"
                 v-model="receiveAmountFiat"
                 placeholder="0.00"
-                :style="getAssetColorStyle(toAsset)"
                 autocomplete="off"
               />
               <input
@@ -383,8 +391,7 @@ export default {
   },
   data () {
     return {
-      showSendInFiat: false,
-      showReceiveInFiat: false,
+      showAmountsInFiat: false,
       stateSendAmount: 0,
       stateReceiveAmount: 0,
       stateSendAmountFiat: 0,
@@ -438,15 +445,18 @@ export default {
         this.stateSendAmount = dpUI(
           BN(newValue).dividedBy(this.bestRateBasedOnAmount),
           this.asset)
+        this.stateSendAmountFiat = cryptoToFiat(this.stateSendAmount, this.fiatRates[this.asset])
+        this.stateReceiveAmountFiat = cryptoToFiat(this.stateReceiveAmount, this.fiatRates[this.toAsset])
       }
     },
     sendAmountFiat: {
       get () {
-        return this.stateSendAmountFiat
+        return `$${this.stateSendAmountFiat}`
       },
       set (newValue) {
-        this.stateSendAmountFiat = newValue
-        this.stateSendAmount = fiatToCrypto(newValue, this.fiatRates[this.asset])
+        const value = newValue.replace('$', '')
+        this.stateSendAmountFiat = value
+        this.stateSendAmount = fiatToCrypto(value, this.fiatRates[this.asset])
         this.stateReceiveAmount = dpUI(
           BN(this.stateSendAmount).times(this.bestRateBasedOnAmount),
           this.toAsset)
@@ -455,11 +465,12 @@ export default {
     },
     receiveAmountFiat: {
       get () {
-        return this.stateReceiveAmountFiat
+        return `$${this.stateReceiveAmountFiat}`
       },
       set (newValue) {
-        this.stateReceiveAmountFiat = newValue
-        this.stateReceiveAmount = fiatToCrypto(newValue, this.fiatRates[this.toAsset])
+        const value = newValue.replace('$', '')
+        this.stateReceiveAmountFiat = value
+        this.stateReceiveAmount = fiatToCrypto(value, this.fiatRates[this.toAsset])
         this.stateSendAmount = dpUI(
           BN(this.stateReceiveAmount).dividedBy(this.bestRateBasedOnAmount),
           this.asset)
@@ -661,7 +672,7 @@ export default {
           : [TX_TYPES.SWAP_INITIATION]
       }
     },
-    setAmount (amount) {
+    setSendAmount (amount) {
       this.sendAmount = amount
       if (amount === this.max) {
         this.amountOption = 'max'
@@ -671,6 +682,9 @@ export default {
     },
     setToAsset (val) {
       this.toAsset = val
+      if (this.amountOption === 'max') {
+        this.sendAmount = this.max
+      }
       this.receiveAmount = dpUI(
         BN(this.sendAmount).times(this.bestRateBasedOnAmount),
         this.toAsset
@@ -732,6 +746,19 @@ export default {
     },
     back () {
       this.showConfirm = false
+    },
+    toogleShowAmountsFiat () {
+      this.showAmountsInFiat = !this.showAmountsInFiat
+    }
+  },
+  watch: {
+    selectedFee: {
+      handler (val) {
+        if (this.amountOption === 'max') {
+          this.sendAmount = this.max
+        }
+      },
+      deep: true
     }
   }
 }

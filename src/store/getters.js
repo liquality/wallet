@@ -61,6 +61,9 @@ export default {
   orderedBalances (state, getters) {
     const { enabledAssets, activeNetwork, activeWalletId } = state
     const { networkWalletBalances } = getters
+    if (!networkWalletBalances) {
+      return []
+    }
     const assets = enabledAssets[activeNetwork][activeWalletId]
     return Object.entries(networkWalletBalances)
       .filter(([asset]) => assets.includes(asset))

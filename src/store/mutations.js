@@ -68,9 +68,6 @@ export default {
 
     Vue.set(state.balances[network][walletId], asset, balance)
   },
-  UPDATE_BALANCE_LOADING (state, { loading }) {
-    state.updateBalanceLoading = loading
-  },
   UPDATE_FEES (state, { network, walletId, asset, fees }) {
     ensureNetworkWalletTree(state.fees, network, walletId, {})
 

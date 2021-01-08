@@ -2,7 +2,6 @@ import Bluebird from 'bluebird'
 
 export const updateBalances = async ({ state, commit, getters }, { network, walletId }) => {
   const assets = state.enabledAssets[network][walletId]
-  commit('UPDATE_BALANCE_LOADING', { loading: true })
   await Bluebird.map(assets, async asset => {
     const addresses = await getters.client(network, walletId, asset).wallet.getUsedAddresses()
     const balance = addresses.length === 0
@@ -11,6 +10,4 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
 
     commit('UPDATE_BALANCE', { network, walletId, asset, balance })
   }, { concurrency: 1 })
-
-  commit('UPDATE_BALANCE_LOADING', { loading: false })
 }

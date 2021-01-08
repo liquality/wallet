@@ -7,7 +7,7 @@
       <div class="account_top">
         <RefreshIcon @click.stop="refresh"
                      class="account_refresh-icon"
-                     :class="{ 'infinity-rotate': updateBalanceLoading }"
+                     :class="{ 'infinity-rotate': updatingBalances }"
         />
         <div class="account_balance">
           <div v-if="fiatRates[asset]" class="account_balance_fiat">${{prettyFiatBalance(balance, fiatRates[asset])}}</div>
@@ -71,7 +71,8 @@ export default {
   data () {
     return {
       addressCopied: false,
-      activityData: []
+      activityData: [],
+      updatingBalances: false
     }
   },
   props: ['asset'],
@@ -83,8 +84,7 @@ export default {
       'addresses',
       'history',
       'fiatRates',
-      'marketData',
-      'updateBalanceLoading'
+      'marketData'
     ]),
     balance () {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
@@ -121,8 +121,10 @@ export default {
       this.addressCopied = true
       setTimeout(() => { this.addressCopied = false }, 2000)
     },
-    refresh () {
-      this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
+    async refresh () {
+      this.updatingBalances = true
+      await this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
+      this.updatingBalances = false
     },
     applyFilters (filters) {
       this.activityData = applyActivityFilters([...this.assetHistory], filters)
