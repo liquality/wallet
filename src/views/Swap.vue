@@ -240,7 +240,7 @@
               <div class="confirm-value" :style="getAssetColorStyle(asset)">
                 {{ sendAmount }} {{ asset }}
               </div>
-              <div class="details-text">${{ sendAmountFiat }}</div>
+              <div class="details-text">{{ sendAmountFiat }}</div>
             </div>
           </div>
           <div class="detail-group">
@@ -258,7 +258,7 @@
             <label class="text-muted"> Amount + Fees </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold">
-                {{ send }} {{ asset }} + {{ totalFees[assetChain] }}
+                {{ sendAmount }} {{ asset }} + {{ totalFees[assetChain] }}
                 {{ sendFeeType }}
               </div>
               <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
@@ -269,9 +269,9 @@
             <label> Receive </label>
             <div class="d-flex align-items-center justify-content-between my-0 py-0">
               <div class="confirm-value" :style="getAssetColorStyle(toAsset)">
-                {{ toAmount }} {{ toAsset }}
+                {{ receiveAmount }} {{ toAsset }}
               </div>
-              <div class="details-text">${{ receiveAmountFiat }}</div>
+              <div class="details-text">{{ receiveAmountFiat }}</div>
             </div>
           </div>
           <div class="detail-group">
@@ -645,9 +645,11 @@ export default {
       ]?.[this.asset]
       return address && cryptoassets[this.asset].formatAddress(address)
     },
+    totalToSend () {
+      return BN(this.safeAmount).plus(BN(this.totalFees[this.assetChain]))
+    },
     totalToSendInFiat () {
-      const total = BN(this.safeAmount).plus(BN(this.totalFees[this.assetChain]))
-      return prettyFiatBalance(total, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.totalToSend, this.fiatRates[this.asset])
     }
   },
   methods: {
