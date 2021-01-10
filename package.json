@@ -41,6 +41,7 @@
     "@liquality/ethereum-swap-provider": "^0.8.4",
     "bignumber.js": "^9.0.0",
     "bip39": "^3.0.2",
+    "bitcoinjs-lib": "^5.2.0",
     "bluebird": "^3.7.2",
     "bootstrap": "^4.5.0",
     "core-js": "^3.6.4",
