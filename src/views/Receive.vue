@@ -33,7 +33,11 @@
 
       <div class="wrapper_bottom">
         <div class="button-group">
-          <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Done</button></router-link>
+          <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`">
+            <button class="btn btn-light btn-outline-primary btn-lg">
+              Done
+            </button>
+          </router-link>
           <button class="btn btn-primary btn-lg btn-icon" @click="copy">
             <template v-if="copied"><TickIcon /> Copied!</template>
             <template v-else><CopyWhiteIcon class="no-stroke"/> Copy Address</template>

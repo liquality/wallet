@@ -38,6 +38,9 @@
       <div class="account_transactions">
         <ActivityFilter @filters-changed="applyFilters" :activity-data="activityData"/>
         <TransactionList :transactions="activityData" />
+        <div class="activity-empty" v-if="activityData.length <= 0">
+         Once you start using your wallet you will see the activity here
+       </div>
       </div>
     </div>
   </div>
@@ -221,6 +224,8 @@ export default {
       cursor: pointer;
       color: $color-text-secondary;
       background: none;
+      font-weight: 600;
+      font-size: 13px;
 
       &.disabled {
         opacity: 0.5;
