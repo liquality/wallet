@@ -10,6 +10,23 @@
         <span>
             {{assetsWithBalance.length}} Asset{{ assetsWithBalance.length === 1 ? '' : 's' }}
         </span>
+         <div class="wallet-actions">
+          <router-link to="/assets/send"
+                       class="wallet-actions-item send">
+            <SendIcon/>
+            Send
+          </router-link>
+          <router-link to="/assets/receive"
+                       class="wallet-actions-item swap">
+            <SwapIcon/>
+            Swap
+          </router-link>
+          <router-link to="/assets/swap"
+                       class="wallet-actions-item receive">
+            <ReceiveIcon/>
+            Receive
+          </router-link>
+        </div>
       </div>
       <span v-else>Loading ...</span>
     </div>
@@ -19,10 +36,20 @@
 import { mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
+import SendIcon from '@/assets/icons/send_o.svg'
+import ReceiveIcon from '@/assets/icons/receive_o.svg'
+import SwapIcon from '@/assets/icons/swap_o.svg'
 
 export default {
+  components: {
+    SendIcon,
+    ReceiveIcon,
+    SwapIcon
+  },
   computed: {
-    ...mapState(['fiatRates']),
+    ...mapState([
+      'fiatRates'
+    ]),
     ...mapGetters(['networkAssetsLoaded', 'assetsWithBalance']),
     totalFiatBalance () {
       const total = this.assetsWithBalance.reduce((accum, [asset, balance]) => {
@@ -51,5 +78,51 @@ export default {
       font-size: 50px;
       line-height: 61px;
     }
+
+    .wallet-actions {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding-top: 10px;
+
+      .wallet-actions-item {
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 57px;
+
+        svg {
+          margin-bottom: 5px;
+        }
+
+        &.send {
+          svg {
+            width: 44px;
+            height: 44px;
+          }
+          margin-right: 14px;
+        }
+
+        &.swap {
+          svg {
+            width: 57px;
+            height: 57px;
+          }
+        }
+
+        &.receive {
+          margin-left: 14px;
+          svg {
+            width: 44px;
+            height: 44px;
+          }
+        }
+    }
   }
+}
 </style>
