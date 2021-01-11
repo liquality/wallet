@@ -1,6 +1,8 @@
 <template>
   <div class="receive">
-    <NavBar showBack="true" :backPath="`/account/${asset}`" :backLabel="asset">
+    <NavBar showBack="true"
+            :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
+            :backLabel="routeSource === 'assets' ? 'Overview' : asset">
       Receive {{asset}}
     </NavBar>
     <div class="wrapper form text-center">
@@ -70,6 +72,9 @@ export default {
   },
   computed: {
     ...mapState(['addresses', 'activeNetwork', 'activeWalletId']),
+    routeSource () {
+      return this.$route.query.source || null
+    },
     address () {
       const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
       return address && cryptoassets[this.asset].formatAddress(address)

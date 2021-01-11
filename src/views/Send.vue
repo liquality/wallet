@@ -3,8 +3,8 @@
     <div class="send" v-if="!showConfirm">
       <NavBar
         showBack="true"
-        :backPath="`/account/${asset}`"
-        :backLabel="asset"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
+        :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Send
       </NavBar>
@@ -252,6 +252,9 @@ export default {
       'fees',
       'fiatRates'
     ]),
+    routeSource () {
+      return this.$route.query.source || null
+    },
     assetChain () {
       return getChainFromAsset(this.asset)
     },

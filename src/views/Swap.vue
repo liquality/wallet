@@ -3,8 +3,8 @@
     <div class="swap" v-if="!showConfirm">
       <NavBar
         showBack="true"
-        :backPath="`/account/${asset}`"
-        :backLabel="asset"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
+        :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Swap
       </NavBar>
@@ -26,7 +26,7 @@
             </div>
             <div class="input-group swap_asset">
               <div class="input-group-append">
-                <AssetList :assets="assets"
+                <AssetDropdown :assets="assets"
                            :selected="asset"
                            @asset-changed="setAsset"
                 />
@@ -111,7 +111,7 @@
             </div>
             <div class="input-group swap_asset">
               <div class="input-group-append">
-                <AssetList :assets="toAssets"
+                <AssetDropdown :assets="toAssets"
                           :selected="toAsset"
                           @asset-changed="setToAsset"
                 />
@@ -392,7 +392,7 @@ import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CloseIcon from '@/assets/icons/close.svg'
 import DetailsContainer from '@/components/DetailsContainer'
-import AssetList from '@/components/AssetList'
+import AssetDropdown from '@/components/AssetDropdown'
 
 export default {
   components: {
@@ -406,7 +406,7 @@ export default {
     DetailsContainer,
     CopyIcon,
     CloseIcon,
-    AssetList
+    AssetDropdown
   },
   data () {
     return {
@@ -442,6 +442,9 @@ export default {
     }
   },
   computed: {
+    routeSource () {
+      return this.$route.query.source || null
+    },
     sendAmount: {
       get () {
         return this.stateSendAmount
