@@ -120,6 +120,7 @@ export default {
   .main-content {
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 
     .asset-list-header {
       display: flex;
