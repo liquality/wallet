@@ -111,6 +111,7 @@ export default {
   display: flex;
   flex-direction: column;
   flex: 1;
+  overflow: hidden;
 
   .asset-list-nav {
     font-weight: normal;
@@ -120,7 +121,7 @@ export default {
   .main-content {
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    overflow: hidden;
 
     .asset-list-header {
       display: flex;
@@ -145,6 +146,10 @@ export default {
           margin-right: 8px;
         }
       }
+    }
+
+    .list-items {
+      overflow-y: auto;
     }
 }
 }

@@ -15,7 +15,12 @@ export default {
       'RDOC',
       'RIFP'
     ],
-    testnet: ['BTC', 'ETH', 'DAI', 'RBTC']
+    testnet: [
+      'BTC',
+      'ETH',
+      'DAI',
+      'RBTC'
+    ]
   },
   agentEndpoints: {
     testnet: ['https://liquality.io/swap-testnet/agent'],
