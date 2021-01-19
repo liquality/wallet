@@ -230,7 +230,7 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div class="swap" v-else>
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
