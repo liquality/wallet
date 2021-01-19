@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="view-container">
     <div class="swap" v-if="!showConfirm">
       <NavBar
         showBack="true"
@@ -796,6 +796,10 @@ export default {
 
 <style lang="scss">
 .swap {
+  overflow-y: auto;
+  padding-bottom: 70px;
+  height: 100%;
+
   &_asset {
     &.input-group {
       align-items: center;

@@ -8,12 +8,7 @@ export default {
       'USDT',
       'WBTC',
       'UNI',
-      'RBTC',
-      'BPRO',
-      'DOC',
-      'RIF',
-      'RDOC',
-      'RIFP'
+      'RBTC'
     ],
     testnet: [
       'BTC',

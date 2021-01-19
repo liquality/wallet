@@ -104,6 +104,10 @@ textarea {
   }
 }
 
+.view-container {
+  overflow-y: hidden;
+}
+
 .wrapper {
   display: flex;
   flex: 1;
@@ -115,11 +119,15 @@ textarea {
   }
 
   &_bottom {
+    height: 70px;
+    margin-top: -70px;
+    padding: 20px;
     position: fixed;
     bottom: 0;
     right: 0;
     left: 0;
-    padding: 20px;
+    background-color: #FFFFFF;
+    z-index: 999;
   }
 }
 
