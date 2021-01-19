@@ -17,14 +17,9 @@
           <span class="setting-item_sub">Select which ethereum based asset should be used for dapps.</span>
         </div>
         <div class="setting-item_control">
-          <select class="custom-select" @change="e => updateInjectEthereumAsset(e.target.value)">
-            <option v-for="asset in ethereumAssets"
-                    :key="asset"
-                    :selected="injectEthereumAsset === asset"
-                    :value="asset">
-              {{ getEthereumAssetName(asset) }}
-            </option>
-          </select>
+          <AssetDropdown :assets="ethereumAssets"
+                         :selected="injectEthereumAsset"
+                         @asset-changed="updateInjectEthereumAsset" />
         </div>
       </div>
       <div class="settings-footer">
@@ -40,15 +35,23 @@ import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import { isEthereumChain } from '@/utils/asset'
 import { version } from '../../package.json'
+import AssetDropdown from '@/components/AssetDropdown'
 
 export default {
   components: {
-    NavBar
+    NavBar,
+    AssetDropdown
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'injectEthereum', 'injectEthereumAsset']),
     ethereumAssets () {
-      return Object.keys(cryptoassets).filter(isEthereumChain)
+      return Object.keys(cryptoassets)
+        .filter(isEthereumChain).map(a => {
+          if (a === 'RBTC') {
+            return 'RSK'
+          }
+          return a
+        })
     },
     appVersion () {
       return version
@@ -62,12 +65,6 @@ export default {
     },
     updateInjectEthereumAsset (asset) {
       this.setEthereumInjectionAsset({ asset })
-    },
-    getEthereumAssetName (code) {
-      if (code === 'RBTC') {
-        return 'RSK'
-      }
-      return code
     }
   }
 }
@@ -87,12 +84,9 @@ export default {
     padding: 16px 20px;
 
     &_control {
-      text-align: right;
-
-      .custom-select {
-        width: auto;
-        border-bottom: 1px solid $primary;
-      }
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
     }
 
     &_sub {

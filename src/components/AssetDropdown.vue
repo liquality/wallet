@@ -18,7 +18,7 @@
         <ChevronDownIcon v-else />
   </button>
   <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
-    <li>
+    <li v-if="showSearch">
       <div class="form dropdown-header">
         <div class="input-group">
               <SearchIcon/>
@@ -76,7 +76,7 @@ export default {
     ChevronDownIcon,
     ChevronUpIcon
   },
-  props: ['assets', 'selected'],
+  props: ['assets', 'selected', 'showSearch'],
   data () {
     return {
       dropdownOpen: false,
@@ -156,17 +156,19 @@ export default {
   }
 
   .dropdown-menu {
-    width: 215px;
+    max-width: 215px;
+    min-width: 8rem;
     max-height: 185px;
     overflow: auto;
     border-radius: 0;
-    padding-top: 10px;
     padding-bottom: 0;
+    padding-top: 0;
     margin: 0;
     border: 1px solid #D9DFE5;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     .dropdown-header {
+      margin-top: 10px;
       padding-left: 15px;
       padding-right: 15px;
 

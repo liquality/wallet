@@ -29,6 +29,7 @@
                 <AssetDropdown :assets="assets"
                            :selected="asset"
                            @asset-changed="setAsset"
+                           :show-search="true"
                 />
               </div>
               <input
@@ -114,6 +115,7 @@
                 <AssetDropdown :assets="toAssets"
                           :selected="toAsset"
                           @asset-changed="setToAsset"
+                          :show-search="true"
                 />
               </div>
               <input
