@@ -33,7 +33,7 @@ export default {
         const cryptoasset = cryptoassets[asset]
         const value = cryptoasset.unitToCurrency(balance)
         const balanceFiat = this.fiatRates[asset] ? BN(value).times(this.fiatRates[asset]) : 0
-        const percentage = ((balanceFiat).times(100)).div(total).toNumber()
+        const percentage = (BN(balanceFiat).times(100)).div(total).toNumber()
         return {
           asset,
           percentage,

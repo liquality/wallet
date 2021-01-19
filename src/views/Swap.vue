@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="view-container">
     <div class="swap" v-if="!showConfirm">
       <NavBar
         showBack="true"
@@ -29,6 +29,7 @@
                 <AssetDropdown :assets="assets"
                            :selected="asset"
                            @asset-changed="setAsset"
+                           :show-search="true"
                 />
               </div>
               <input
@@ -114,6 +115,7 @@
                 <AssetDropdown :assets="toAssets"
                           :selected="toAsset"
                           @asset-changed="setToAsset"
+                          :show-search="true"
                 />
               </div>
               <input
@@ -228,7 +230,7 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div class="swap" v-else>
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
@@ -794,6 +796,10 @@ export default {
 
 <style lang="scss">
 .swap {
+  overflow-y: auto;
+  padding-bottom: 70px;
+  height: 100%;
+
   &_asset {
     &.input-group {
       align-items: center;

@@ -12,17 +12,17 @@
         </span>
          <div class="wallet-actions">
           <router-link to="/assets/send"
-                       class="wallet-actions-item send">
+                       class="wallet-actions-item send-action">
             <SendIcon/>
             Send
           </router-link>
           <router-link to="/assets/swap"
-                       class="wallet-actions-item swap">
+                       class="wallet-actions-item swap-action">
             <SwapIcon/>
             Swap
           </router-link>
           <router-link to="/assets/receive"
-                       class="wallet-actions-item receive">
+                       class="wallet-actions-item receive-action">
             <ReceiveIcon/>
             Receive
           </router-link>
@@ -100,7 +100,7 @@ export default {
           margin-bottom: 5px;
         }
 
-        &.send {
+        &.send-action {
           svg {
             width: 44px;
             height: 44px;
@@ -108,14 +108,14 @@ export default {
           margin-right: 14px;
         }
 
-        &.swap {
+        &.swap-action {
           svg {
             width: 57px;
             height: 57px;
           }
         }
 
-        &.receive {
+        &.receive-action {
           margin-left: 14px;
           svg {
             width: 44px;

@@ -104,6 +104,10 @@ textarea {
   }
 }
 
+.view-container {
+  overflow-y: hidden;
+}
+
 .wrapper {
   display: flex;
   flex: 1;
@@ -115,11 +119,13 @@ textarea {
   }
 
   &_bottom {
+    padding: 20px;
     position: fixed;
     bottom: 0;
     right: 0;
     left: 0;
-    padding: 20px;
+    background-color: #FFFFFF;
+    z-index: 999;
   }
 }
 
@@ -536,4 +542,23 @@ svg.qr-icon {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.wallet-title-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wallet-title {
+  height: 57px;
+}
+
+.wallet-desc {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 400;
+  max-width: 290px;
+  line-height: 28px;
 }
