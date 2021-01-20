@@ -1,16 +1,19 @@
 <template>
   <div class="unlock-wallet login-wrapper">
     <div class="login-header">
-      <LogoWallet />
+      <LogoWalletMain />
     </div>
-    <div>
-      <h2>Open your wallet</h2>
+    <div class="wallet-title-container">
+      <WalletTitle class="wallet-title"/>
+      <p class="wallet-desc">
+        The atomic swap enabled multi-crypto wallet
+      </p>
     </div>
-    <form class="form" autocomplete="off" v-on:submit.prevent="unlock">
+    <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
       <div class="form-group">
         <label for="password">Password</label>
         <div class="input-group">
-          <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required>
+          <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required :readonly="loading">
         </div>
         <p v-if="errors.length">
           <b>Please correct the following error(s):</b>
@@ -19,22 +22,37 @@
           </ul>
         </p>
       </div>
-      <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
-      <p><button class="btn btn-light btn-lg btn-block btn-icon" type="submit">Unlock</button></p>
+      <div class="footer-container">
+        <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
+        <div class="footer-content">
+          <button class="btn btn-primary btn-lg btn-block btn-icon"
+                  :disabled="loading">
+            <span v-if="loading">
+              <SpinnerIcon /> &nbsp;
+            </span>
+            <template v-else>Unlock</template>
+          </button>
+        </div>
+      </div>
     </form>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
-import LogoWallet from '@/assets/icons/logo_wallet.svg'
+import LogoWalletMain from '@/assets/icons/logo_wallet_main.svg'
+import WalletTitle from '@/assets/icons/wallet_title.svg'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   components: {
-    LogoWallet
+    LogoWalletMain,
+    SpinnerIcon,
+    WalletTitle
   },
   data () {
     return {
+      loading: false,
       errors: [],
       password: null
     }
@@ -43,12 +61,15 @@ export default {
     ...mapActions(['unlockWallet']),
     async unlock () {
       this.errors = []
+      this.loading = true
       try {
         await this.unlockWallet({ key: this.password })
         this.$router.replace('/wallet')
       } catch (e) {
         console.log(e)
         this.errors.push(e.message)
+      } finally {
+        this.loading = false
       }
     }
   }
@@ -56,7 +77,5 @@ export default {
 </script>
 
 <style lang="scss">
-.unlock-wallet {
 
-}
 </style>

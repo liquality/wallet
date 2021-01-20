@@ -1,3 +1,4 @@
+/* global browser */
 let isBgScr
 
 export const BG_PREFIX = '##BACKGROUND##'
@@ -23,7 +24,7 @@ export const createPopup = url => {
     url: `./index.html#${url}`,
     type: 'popup',
     height: 600,
-    width: 375
+    width: 360
   }
 
   if (!getRootURL().startsWith('moz-')) {
@@ -47,6 +48,6 @@ export const inject = content => {
   const container = document.head || document.documentElement
   const scriptTag = document.createElement('script')
   scriptTag.setAttribute('async', 'false')
-  scriptTag.textContent = `${content}`
+  scriptTag.textContent = `(() => {${content}})()`
   container.insertBefore(scriptTag, container.children[0])
 }

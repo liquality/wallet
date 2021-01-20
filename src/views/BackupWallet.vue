@@ -4,7 +4,7 @@
       <CompletedIcon class="backup-wallet_icon" />
       <h5>{{ wallet.name }}</h5>
       <h2>Backup your wallet</h2>
-      <p>Back up your seed phrase in a secure location. It will not be displayed again.</p>
+      <p>The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.</p>
     </div>
     <div class="backup-wallet_bottom">
       <div class="backup-wallet_seed">
@@ -38,28 +38,31 @@ export default {
 <style lang="scss">
 .backup-wallet {
   padding: 0 !important;
-  overflow: scroll;
+  overflow: hidden;
 
   &_top {
+    p {
+      margin: 0;
+    }
   }
 
   .backup-wallet_bottom {
-    overfloat:scroll;
     flex: 1;
     background: #FFFFFF;
     color: $color-text-primary;
     padding: $wrapper-padding;
-    overflow: scroll;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
 
   > div {
-    padding: 0 $wrapper-padding;
+    padding: $wrapper-padding;
   }
 
   &_icon {
     width: 40px;
-    margin-top: 30px;
-    margin-bottom: 10px;
+    margin: 10px 0;
   }
 
   h2 {
@@ -79,6 +82,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    flex: 1;
 
     span {
       display: block;

@@ -1,12 +1,10 @@
 import BN from 'bignumber.js'
-import cryptoassets from '@liquality/cryptoassets'
+import cryptoassets from '../../utils/cryptoassets'
 
 import { getMarketData } from '../utils'
 import { dp } from '../../utils/coinFormatter'
 
-import { NetworkAssets } from '../factory/client'
-
-export const updateMarketData = async ({ commit, getters }, { network }) => {
+export const updateMarketData = async ({ state, commit, getters }, { network }) => {
   const endpoints = getters.agentEndpoints(network)
 
   const _allMarketData = await Promise.all(
@@ -18,14 +16,14 @@ export const updateMarketData = async ({ commit, getters }, { network }) => {
     )
   )
 
-  const networkAssets = NetworkAssets[network]
+  const networkAssets = state.enabledAssets[network][state.activeWalletId]
   const allMarketData = _allMarketData.filter(r => r !== false)
 
   const pairMarkets = allMarketData[0]
     .filter(({ to, from }) => networkAssets.includes(to) && networkAssets.includes(from))
     .map(({ to, from }) => {
       return allMarketData.reduce((acc, marketData) => {
-        const convert = cryptoassets[from.toLowerCase()]
+        const convert = cryptoassets[from]
         const market = marketData.find(market => market.to === to && market.from === from)
         if (!market) return acc
 

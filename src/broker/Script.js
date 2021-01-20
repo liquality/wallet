@@ -1,3 +1,5 @@
+/* global CustomEvent */
+
 import EventEmitter from 'events'
 import { connectToBackground } from './utils'
 
@@ -27,8 +29,6 @@ class Script {
   }
 
   onMessage ({ id, data }) {
-    console.log('onMessage', { id, data })
-
     this.emitter.emit(id, data)
   }
 }

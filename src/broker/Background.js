@@ -46,10 +46,10 @@ class Background {
 
     this.bindMutation(connection)
 
-    connection.postMessage({
+    this.store.restored.then(() => connection.postMessage({
       type: 'REHYDRATE_STATE',
       data: this.store.state
-    })
+    }))
   }
 
   onExternalConnection (connection) {
@@ -86,8 +86,6 @@ class Background {
   }
 
   onInternalMessage (connection, { id, type, data }) {
-    console.log('onInternalMessage', { id, type, data })
-
     switch (type) {
       case 'ACTION_REQUEST':
         this.store.dispatch(data.type, data.payload)
@@ -115,8 +113,6 @@ class Background {
   }
 
   onExternalMessage (connection, { id, type, data }) {
-    console.log('onExternalMessage', { id, type, data })
-
     const { url } = connection.sender
     const { origin } = new URL(url)
 
@@ -138,17 +134,16 @@ class Background {
         break
 
       case 'CAL_REQUEST':
-        if (!allowed) {
+        if (allowed || data.method === 'jsonrpc') {
+          this.storeProxy(id, connection, 'requestPermission', { origin, data })
+        } else {
           connection.postMessage({
             id,
             data: {
               error: 'Use enable() method first'
             }
           })
-          return
         }
-
-        this.storeProxy(id, connection, 'injectedProvider', { origin, data })
         break
     }
   }

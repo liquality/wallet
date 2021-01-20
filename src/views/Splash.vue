@@ -8,10 +8,10 @@
       <p>The atomic swap enabled <br/>
       multi-crypto wallet</p>
     </div>
-    <div>
+    <div class="footer-container">
       <router-link to="/onboarding/import"><p class="text-center">Import with seed phrase</p></router-link>
       <p v-if="keyUpdatedAt"><router-link to="/open"><button class="btn btn-light btn-lg btn-block btn-icon">Open wallet</button></router-link></p>
-      <p v-if="!keyUpdatedAt"><router-link to="/onboarding/password"><button class="btn btn-light btn-lg btn-block btn-icon">Create a new wallet</button></router-link></p>
+      <p v-if="!keyUpdatedAt"><router-link to="/onboarding/password"><button class="btn btn-primary btn-lg btn-block btn-icon">Create a new wallet</button></router-link></p>
     </div>
   </div>
 </template>
@@ -39,11 +39,16 @@ export default {
 .splash {
   &_logo {
     padding: 40px 0;
+
+    svg {
+      width: 100px;
+    }
   }
 
   &_tagline {
     margin-bottom: 20px;
     &_wallet {
+      width: 170px;
       margin-bottom: 10px;
     }
 

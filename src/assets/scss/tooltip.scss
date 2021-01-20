@@ -1,0 +1,167 @@
+
+.tooltip {
+    $borderColor: rgba(0, 0, 0, 0.15);
+    $bgColor: #ffffff;
+    $textColor: black;
+    
+    display: block !important;
+    z-index: 10000;
+    .wrapper {
+        padding: 0;
+      }
+
+    .tooltip-inner {
+      background: $bgColor;
+      color: $textColor;
+      padding: 10px;
+      border: 1px solid $borderColor;
+      border-radius: 5px;
+    }
+  
+    .tooltip-arrow {
+      width: 0;
+      height: 0;
+      border-style: solid;
+      position: absolute;
+      margin: 5px;
+      border-color: $bgColor;
+      z-index: 1;
+
+    }
+  
+    &[x-placement^="top"] {
+      margin-bottom: 5px;
+  
+      .tooltip-arrow {
+        border-width: 5px 5px 0 5px;
+        border-left-color: transparent !important;
+        border-right-color: transparent !important;
+        border-bottom-color: transparent !important;
+        bottom: -5px;
+        left: calc(50% - 5px);
+        margin-top: 0;
+        margin-bottom: 0;
+
+        &:before {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          top: -5px;
+          left: -5px;
+          border-style: solid;
+          border-width: 5px 5px 0 5px;
+          border-color: $borderColor transparent transparent transparent;
+        }
+
+         &:after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          top: -6.5px;
+          left: -5px;
+          border-style: solid;
+          border-width: 5px 5px 0 5px;
+          border-color: #ffffff transparent transparent transparent;
+        }
+      }
+    }
+  
+    &[x-placement^="bottom"] {
+      margin-top: 5px;
+  
+      .tooltip-arrow {
+        border-width: 0 5px 5px 5px;
+        border-left-color: transparent !important;
+        border-right-color: transparent !important;
+        border-top-color: transparent !important;
+        top: -5px;
+        left: calc(50% - 5px);
+        margin-top: 0;
+        margin-bottom: 0;
+
+        &:before {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          top: -1px;
+          left: -5px;
+          border-style: solid;
+          border-width: 0 5px 5px 5px;
+          border-color: transparent transparent $borderColor transparent;
+        }
+         &:after {
+          content: '';
+          position: absolute;
+          width: 0;
+          height: 0;
+          top: 1px;
+          left: -5px;
+          border-style: solid;
+          border-width: 0 5px 5px 5px;
+          border-color: transparent transparent #ffffff transparent;
+        }
+      }
+    }
+  
+    &[x-placement^="right"] {
+      margin-left: 5px;
+  
+      .tooltip-arrow {
+        border-width: 5px 5px 5px 0;
+        border-left-color: transparent !important;
+        border-top-color: transparent !important;
+        border-bottom-color: transparent !important;
+        left: -5px;
+        top: calc(50% - 5px);
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+  
+    &[x-placement^="left"] {
+      margin-right: 5px;
+  
+      .tooltip-arrow {
+        border-width: 5px 0 5px 5px;
+        border-top-color: transparent !important;
+        border-right-color: transparent !important;
+        border-bottom-color: transparent !important;
+        right: -5px;
+        top: calc(50% - 5px);
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+  
+    &.popover {
+      .wrapper {
+        padding: 0;
+      }
+  
+      .popover-inner {
+        background: $bgColor;
+        color: $textColor;
+        padding: 10px;
+        border: none;
+      }
+  
+      .popover-arrow {
+        border-color: $bgColor;
+      }
+    }
+  
+    &[aria-hidden='true'] {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity .15s, visibility .15s;
+    }
+  
+    &[aria-hidden='false'] {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity .15s;
+    }
+  }

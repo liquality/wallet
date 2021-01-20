@@ -53,8 +53,6 @@ class Foreground {
   }
 
   onMessage ({ id, type, data }) {
-    console.log('onMessage', { id, type, data })
-
     switch (type) {
       case 'ACTION_RESPONSE':
         this.emitter.emit(id, data)

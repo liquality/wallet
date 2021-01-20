@@ -1,0 +1,28 @@
+.vue-js-switch {
+    .v-switch-core {
+        width: 36px !important; 
+        height: 20px !important; 
+        border-radius: 26px;
+        background-color: #ffffff; 
+        border: solid 1px $hr-border-color; 
+
+        .v-switch-button {
+            width: 18px !important; 
+            height: 18px !important;  
+            transform: translate3d(0px, 0px, 0px) !important;
+            background-color: $hr-border-color !important; 
+        }
+    }
+}
+
+.vue-js-switch.toggled {
+    .v-switch-core {
+        background-color: #ffffff; 
+        border: solid 1px $primary; 
+
+        .v-switch-button {
+            transform: translate3d(16px, 0px, 0px) !important;
+            background-color: $primary !important; 
+        }
+    }
+}

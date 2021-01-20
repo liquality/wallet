@@ -1,91 +1,55 @@
-// $navbar-light-color: #fff;
-
-$blue-dark-1: #102A43;
-$blue-dark-2: #243B53;
-$blue-dark-3: #334E68;
-$blue-dark-4: #486581;
-$blue-dark-5: #627D98;
-$blue-light-1: #829AB1;
-$blue-light-2: #9FB3C8;
-$blue-light-3: #BCCCDC;
-$blue-light-4: #D9E2EC;
-$blue-light-5: #F0F4F8;
-
-$cyan-dark-1: #044E54;
-$cyan-dark-2: #0A6C74;
-$cyan-dark-3: #0E7C86;
-$cyan-dark-4: #14919B;
-$cyan-dark-5: #2CB1BC;
-$cyan-light-1: #38BEC9;
-$cyan-light-2: #54D1DB;
-$cyan-light-3: #87EAF2;
-$cyan-light-4: #BEF8FD;
-$cyan-light-5: #E0FCFF;
-
-$red-dark-1: #610404;
-$red-dark-2: #780A0A;
-$red-dark-3: #911111;
-$red-dark-4: #A61B1B;
-$red-dark-5: #BA2525;
-$red-light-1: #D64545;
-$red-light-2: #E66A6A;
-$red-light-3: #F29B9B;
-$red-light-4: #FACDCD;
-$red-light-5: #FFEEEE;
-
 $brand-gradient-primary: linear-gradient(180deg, #302E78 0%, #4866D3 52.08%, #2FAFCA 100%);
 $brand-gradient-secondary: linear-gradient(360deg, #1CE4C3 -10.66%, #4866D3 31.99%, #302E78 81.56%);
 
 $color-primary: #9D4DFA;
 $color-secondary: #2CD2CF;
 
+$danger:        #F12274;
+$light:         #F8FAFF;
+$dark:          #F0F7F9;
+
 $color-text-primary: #1D1E21;
 $color-text-secondary: #FFFFFF;
 $color-text-muted: #747E8D;
 
-$body-bg: $blue-light-5;
-$font-size-base:              0.875rem; // Assumes the browse, typically `16px`
+$font-size-base:              0.75rem; // Assumes the browse, typically `16px`
 $font-size-lg:                1rem;
 $font-size-sm:                0.8125rem;
 $font-size-tiny:              0.75rem;
 $lead-font-size:              1rem;
 $small-font-size:             $font-size-sm;
 $text-muted: $color-text-muted;
+$font-size-xs:                0.625rem;
 
 $font-family-base: 'Montserrat', sans-serif;
 $headings-font-weight: 600;
 $font-weight-base: 400;
+$font-weight-light: 300;
 $btn-font-weight: 600;
 $headings-color: $color-text-primary;
 $body-color: $color-text-primary;
 $lead-font-weight: 600;
 
-$hr-border-color: #d9dfe5;
+$hr-border-color: #D9DFE5;
 
-$sorange: #ed8f03;
 $badge-font-size: 85%;
 
-$dark: $blue-dark-3;
-$light: $blue-light-3;
-
-// linear-gradient(180deg,hsl(232, 47%, 58%),hsl(232, 47%, 55%))
 $primary: $color-primary;
 $secondary: $color-secondary;
-$info: $cyan-dark-4;
 
 $link-color: $color-primary;
 $link-hover-decoration: none;
 
+$input-btn-font-size-lg: $font-size-base;
 $input-btn-padding-y:    .415rem;
 $input-btn-padding-y-sm: .275rem;
-$input-btn-padding-y-lg: .6rem;
-$btn-padding-x-lg:       .6rem;
+$input-btn-padding-y-lg: .5rem;
+$btn-padding-x-lg:       .5rem;
 $btn-padding-y-sm:       0.15rem;
 
 $input-focus-box-shadow: 0;
 $input-bg: transparent;
 $input-disabled-bg: transparent;
-$btn-border-width: 0;
 $btn-box-shadow: none;
 $btn-border-radius-lg: 22px;
 $btn-border-radius-sm: 11px;
@@ -98,23 +62,18 @@ $input-border-color: $color-secondary;
 $input-line-height: 1.1;
 $input-font-size: 28px;
 $input-color: $color-text-primary;
+$input-focus-border-color: $color-primary;
 
 $input-border-radius-sm: 0;
 $input-padding-x-sm: 0;
 $input-font-size-sm: $font-size-base;
 
 $custom-select-border-width: 0;
-$form-group-margin-bottom: 30px;
+$form-group-margin-bottom: 5px;
+$label-margin-bottom: 0;
 
 $wrapper-padding: 20px;
 
-$danger:        #F12274;
-$light:         #FFFFFF;
-$dark:          $primary;
-
 $container-max-widths: (
-  // sm: 540px,
-  // md: 720px,
-  // lg: 900px,
   xl: 980px
 );

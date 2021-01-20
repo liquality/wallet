@@ -11,8 +11,9 @@ export default {
     state.keyUpdatedAt = Date.now()
     state.setupAt = Date.now()
   },
-  CREATE_WALLET (state, { encryptedWallets, wallet }) {
+  CREATE_WALLET (state, { keySalt, encryptedWallets, wallet }) {
     state.encryptedWallets = encryptedWallets
+    state.keySalt = keySalt
     state.wallets = [wallet]
   },
   ACCEPT_TNC (state) {
@@ -24,8 +25,9 @@ export default {
   CHANGE_ACTIVE_NETWORK (state, { network }) {
     state.activeNetwork = network
   },
-  CHANGE_PASSWORD (state, { key, encryptedWallets }) {
+  CHANGE_PASSWORD (state, { key, keySalt, encryptedWallets }) {
     state.key = key
+    state.keySalt = keySalt
     state.encryptedWallets = encryptedWallets
     state.keyUpdatedAt = Date.now()
   },
@@ -66,7 +68,36 @@ export default {
 
     Vue.set(state.balances[network][walletId], asset, balance)
   },
+  UPDATE_FEES (state, { network, walletId, asset, fees }) {
+    ensureNetworkWalletTree(state.fees, network, walletId, {})
+
+    Vue.set(state.fees[network][walletId], asset, fees)
+  },
+  UPDATE_FIAT_RATES (state, { fiatRates }) {
+    state.fiatRates = fiatRates
+  },
   UPDATE_MARKET_DATA (state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
+  },
+  SET_ETHEREUM_INJECTION_ASSET (state, { asset }) {
+    state.injectEthereumAsset = asset
+  },
+  ENABLE_ETHEREUM_INJECTION (state) {
+    state.injectEthereum = true
+  },
+  DISABLE_ETHEREUM_INJECTION (state) {
+    state.injectEthereum = false
+  },
+  ENABLE_ASSETS (state, { network, walletId, assets }) {
+    ensureNetworkWalletTree(state.enabledAssets, network, walletId, [])
+    state.enabledAssets[network][walletId].push(...assets)
+  },
+  DISABLE_ASSETS (state, { network, walletId, assets }) {
+    ensureNetworkWalletTree(state.enabledAssets, network, walletId, [])
+    Vue.set(state.enabledAssets[network], walletId, state.enabledAssets[network][walletId].filter(asset => !assets.includes(asset)))
+  },
+  ADD_CUSTOM_TOKEN (state, { network, walletId, customToken }) {
+    ensureNetworkWalletTree(state.customTokens, network, walletId, [])
+    state.customTokens[network][walletId].push(customToken)
   }
 }

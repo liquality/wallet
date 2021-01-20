@@ -1,18 +1,48 @@
 <template>
-  <div class="receive wrapper form text-center">
-    <div class="wrapper_top form">
-      <div class="form-group">
-        <label>Your Current {{chainName}} Address</label>
-        <p class="receive_address">{{address}}</p>
-        <p>Scan this QR code with a mobile wallet to send funds to this address.</p>
-        <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
+  <div class="receive">
+    <NavBar showBack="true"
+            :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
+            :backLabel="routeSource === 'assets' ? 'Overview' : asset">
+      Receive {{asset}}
+    </NavBar>
+    <div class="wrapper form text-center">
+      <div class="wrapper_top form">
+        <div class="form-group">
+          <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
+          <label>Your Current {{addressType}} Address</label>
+          <p class="receive_address">{{address}}
+            <CopyIcon
+                  class="copy-icon"
+                  @click="copy"
+                  v-tooltip.bottom="{
+                    content: copied ? 'Copied!' : 'Copy',
+                    hideOnTargetClick: false,
+                  }"
+                />
+          </p>
+          <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
+          <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
+          <div v-if="activeNetwork === 'testnet'" class="testnet_message">
+            <div>Ether testnet faucet</div>
+            <div>
+              <a href="https://faucet.rinkeby.io/" target="_blank">https://faucet.rinkeby.io/</a>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="wrapper_bottom">
-      <div class="button-group">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-icon" @click="copy"><CopyIcon /> Copy Address</button>
+      <div class="wrapper_bottom">
+        <div class="button-group">
+          <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`">
+            <button class="btn btn-light btn-outline-primary btn-lg">
+              Done
+            </button>
+          </router-link>
+          <button class="btn btn-primary btn-lg btn-icon" @click="copy">
+            <template v-if="copied"><TickIcon /> Copied!</template>
+            <template v-else><CopyWhiteIcon class="no-stroke"/> Copy Address</template>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -21,21 +51,24 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
+import { getAssetIcon } from '@/utils/asset'
+import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
-import cryptoassets from '@liquality/cryptoassets'
-
-function getChainName (ticker) {
-  var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', dai: 'ethereum' }
-  return map[ticker]
-}
+import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
+import TickIcon from '@/assets/icons/tick.svg'
+import cryptoassets from '@/utils/cryptoassets'
 
 export default {
   components: {
-    CopyIcon
+    NavBar,
+    CopyIcon,
+    CopyWhiteIcon,
+    TickIcon
   },
   data () {
     return {
-      qrcode: null
+      qrcode: null,
+      copied: false
     }
   },
   props: {
@@ -43,24 +76,34 @@ export default {
   },
   computed: {
     ...mapState(['addresses', 'activeNetwork', 'activeWalletId']),
+    routeSource () {
+      return this.$route.query.source || null
+    },
     address () {
-      if (!this.addresses[this.activeNetwork]) return false
-      if (!this.addresses[this.activeNetwork][this.activeWalletId]) return false
-      if (!this.addresses[this.activeNetwork][this.activeWalletId][this.asset]) return false
-
-      return this.addresses[this.activeNetwork][this.activeWalletId][this.asset]._address
+      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
+      return address && cryptoassets[this.asset].formatAddress(address)
     },
     chainName () {
-      return getChainName(this.asset.toLowerCase())
+      return ({
+        BTC: 'bitcoin',
+        ETH: 'ethereum',
+        RBTC: 'ethereum'
+      })[this.asset]
+    },
+    addressType () {
+      return ({
+        BTC: 'bitcoin',
+        ETH: 'ethereum',
+        RBTC: 'RSK'
+      })[this.asset]
     }
 
   },
   async created () {
-    const unusedAddress = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
+    await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
     const uri = [
-      // map[this.asset.toLowerCase()],
-      getChainName(this.asset.toLowerCase()),
-      cryptoassets[this.asset.toLowerCase()].formatAddress(unusedAddress[0]._address)
+      this.chainName,
+      this.address
     ].join(':')
 
     QRCode.toString(uri, {
@@ -74,18 +117,11 @@ export default {
   },
   methods: {
     ...mapActions(['getUnusedAddresses']),
-    copy () {
-      const copyText = document.querySelector('.receive_address')
-      const tempInput = document.createElement('input')
-      tempInput.value = copyText.innerHTML
-      document.body.appendChild(tempInput)
-      tempInput.select()
-      document.execCommand('copy')
-      document.body.removeChild(tempInput)
-    },
-    getChainType (ticker) {
-      var map = { eth: 'ethereum', btc: 'bitcoin', usdc: 'ethereum', dai: 'ethereum' }
-      return map[ticker]
+    getAssetIcon,
+    async copy () {
+      await navigator.clipboard.writeText(this.address)
+      this.copied = true
+      setTimeout(() => { this.copied = false }, 3000)
     }
   }
 }
@@ -93,9 +129,30 @@ export default {
 
 <style lang="scss">
 .receive {
+  &_asset {
+    padding-bottom: 6px;
+  }
+  &_message {
+    font-weight: bold;
+    margin-top: 40px;
+  }
   &_qr {
     margin: 30px auto 0 auto;
-    width: 300px;
+    width: 196px;
+  }
+  &_address {
+    font-size: $font-size-xs;
+    font-weight: lighter;
+  }
+
+  .testnet_message {
+    margin-top: 24px;
+    font-size: $font-size-tiny;
+    font-weight: lighter;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 }
 </style>

@@ -2,8 +2,11 @@
 // balances.network.walletId.asset
 // history.network.walletId[]
 // marketData.network
+import { LATEST_VERSION } from './migrations'
 
 export default {
+  version: LATEST_VERSION,
+
   // <do not keep these in localStorage>
   key: null,
   wallets: [],
@@ -13,16 +16,26 @@ export default {
   brokerReady: true,
 
   encryptedWallets: null,
+
+  enabledAssets: {},
+  customTokens: {},
+
   addresses: {},
   balances: {},
+  fiatRates: {},
+  fees: {},
   history: {},
   marketData: {},
 
-  activeNetwork: 'testnet',
+  activeNetwork: 'mainnet',
   activeWalletId: null,
   activeAsset: null,
 
   keyUpdatedAt: null,
+  keySalt: null,
   termsAcceptedAt: null,
-  setupAt: null
+  setupAt: null,
+
+  injectEthereum: false,
+  injectEthereumAsset: 'ETH'
 }

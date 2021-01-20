@@ -6,21 +6,30 @@ import OnboardingPassword from '@/views/Onboarding/OnboardingPassword.vue'
 import ImportWallet from '@/views/ImportWallet.vue'
 import UnlockWallet from '@/views/UnlockWallet.vue'
 import BackupWallet from '@/views/BackupWallet.vue'
-import MainnetWarning from '@/views/MainnetWarning.vue'
-import Wallet from '@/views/Wallet.vue'
+import Wallet from '@/views/Wallet/Wallet.vue'
 import Account from '@/views/Account.vue'
+import SwapDetails from '@/views/Details/SwapDetails.vue'
+import TransactionDetails from '@/views/Details/TransactionDetails.vue'
 import Send from '@/views/Send.vue'
-import SendConfirm from '@/views/SendConfirm.vue'
 import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap.vue'
-import SwapConfirm from '@/views/SwapConfirm.vue'
+
+import Settings from '@/views/Settings'
+import ManageAssets from '@/views/ManageAssets'
+import CustomToken from '@/views/CustomToken'
 
 import Enable from '@/views/Enable.vue'
+import PermissionSend from '@/views/PermissionSend.vue'
+import PermissionSign from '@/views/PermissionSign.vue'
 import Permission from '@/views/Permission.vue'
+import WalletAssets from '@/views/Wallet/WalletAssets.vue'
+import WalletActivity from '@/views/Wallet/WalletActivity.vue'
+import AssetList from '@/views/AssetList.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
+  // Onboarding
   {
     path: '/',
     component: Splash
@@ -43,13 +52,56 @@ const routes = [
     path: '/backup',
     component: BackupWallet
   },
+  // Onboarding
+
+  // Settings
   {
-    path: '/wallet',
-    component: Wallet
+    path: '/settings',
+    component: Settings
   },
   {
-    path: '/wallet/warning',
-    component: MainnetWarning
+    path: '/settings/manage-assets',
+    component: ManageAssets
+  },
+  {
+    path: '/settings/manage-assets/custom-token',
+    component: CustomToken
+  },
+  // Settings
+
+  // Wallet
+  {
+    path: '/wallet',
+    component: Wallet,
+    children: [
+      {
+        path: 'assets',
+        component: WalletAssets,
+        name: 'WalletAssets'
+      },
+      {
+        path: 'activity',
+        component: WalletActivity,
+        name: 'WalletActivity'
+      },
+      {
+        path: '',
+        redirect: 'assets'
+      }
+    ]
+  },
+  // Details
+  {
+    path: '/details/swap/:id',
+    component: SwapDetails,
+    name: 'SwapDetails',
+    props: true
+  },
+  {
+    path: '/details/transaction/:id',
+    component: TransactionDetails,
+    name: 'TransactionDetails',
+    props: true
   },
   {
     name: 'Account',
@@ -63,35 +115,42 @@ const routes = [
     props: true
   },
   {
-    name: 'SendConfirm',
-    path: '/account/:asset/send/confirm',
-    component: SendConfirm,
-    props: true
-  },
-  {
     path: '/account/:asset/receive',
     component: Receive,
     props: true
   },
   {
-    path: '/account/:asset/swap',
+    path: '/account/:routeAsset/swap',
     component: Swap,
     props: true
   },
+
+  // Assets list
   {
-    name: 'SwapConfirm',
-    path: '/account/:asset/swap/confirm',
-    component: SwapConfirm,
+    path: '/assets/:action',
+    component: AssetList,
     props: true
   },
+  // Wallet
+
+  // Injection
   {
     path: '/enable',
     component: Enable
   },
   {
-    path: '/permission',
+    path: '/permission/send',
+    component: PermissionSend
+  },
+  {
+    path: '/permission/sign',
+    component: PermissionSign
+  },
+  {
+    path: '/permission/default',
     component: Permission
   }
+  // Injection
 ]
 
 const router = new VueRouter({

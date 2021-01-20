@@ -18,11 +18,19 @@
         <div class="input-group">
           <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" autocomplete="off" required :readonly="loading">
         </div>
+        <small v-show="passwordMatch" class="form-text hidden" >Passwords don't match.</small>
         <small class="form-text">Password must be at least 8 characters.</small>
       </div>
-      <p><button class="btn btn-primary btn-lg btn-block" :disabled="loading || disableNext" @click="next">Continue</button></p>
-      <p><button class="btn btn-light btn-lg btn-block btn-icon" @click="$router.go(-1)">Cancel</button></p>
     </form>
+    <div class="footer-container">
+      <div class="footer-content">
+        <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
+        <button class="btn btn-primary btn-lg btn-footer btn-icon" :disabled="loading || disableNext" @click="next">
+          <SpinnerIcon class="btn-loading" v-if="loading" />
+          <template v-else>Continue</template>
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -30,6 +38,7 @@
 import { mapActions } from 'vuex'
 
 import LogoWallet from '@/assets/icons/logo_wallet.svg'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   data () {
@@ -41,30 +50,45 @@ export default {
   },
   props: ['mnemonic'],
   components: {
-    LogoWallet
+    LogoWallet,
+    SpinnerIcon
   },
   computed: {
+    passwordMatch () {
+      if (!this.password || !this.confirmPassword) return false
+      if ((this.password.length === this.confirmPassword.length) && (this.password !== this.confirmPassword)) return true
+      return false
+    },
     disableNext () {
       if (!this.password || !this.confirmPassword) return true
+      if (this.password !== this.confirmPassword) return true
+      if (this.password.length < 8) return true
 
-      if (this.password === this.confirmPassword) return false
-
-      return true
+      return false
     }
   },
   methods: {
     ...mapActions(['setupWallet', 'createWallet', 'unlockWallet']),
     async next () {
       this.loading = true
+      const newWallet = !this.mnemonic
       await this.setupWallet({ key: this.password })
       await this.createWallet({ key: this.password, mnemonic: this.mnemonic }) // mnemonic prop can be null to generate new seed
       await this.unlockWallet({ key: this.password })
+      if (newWallet) {
+        this.$router.replace('/backup')
+      }
     }
   }
 }
 </script>
 
 <style lang="scss">
+
+.hidden {
+  display:none;
+}
+
 .onboading-password {
   padding: 20px;
 

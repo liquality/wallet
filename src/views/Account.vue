@@ -1,129 +1,139 @@
 <template>
   <div class="account">
-    <HistoryModal
-      v-if="selectedItem"
-      :item="selectedItem"
-      @close="selectedItem = null" />
-    <div class="account_header">
-      <img :src="'./img/' + asset.toLowerCase() +'.png'" />{{asset}}
-    </div>
+    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
+      <span class="account_header"><img :src="getAssetIcon(asset)" class="asset-icon" /> {{asset}}</span>
+    </NavBar>
     <div class="account_main">
       <div class="account_top">
-        <RefreshIcon @click="refresh" class="account_refresh-icon" />
+        <RefreshIcon @click.stop="refresh"
+                     class="account_refresh-icon"
+                     :class="{ 'infinity-rotate': updatingBalances }"
+        />
         <div class="account_balance">
-          <span class="account_balance_value">{{balance}}</span>
-          <span class="account_balance_code">{{asset}}</span>
+          <div v-if="fiatRates[asset]" class="account_balance_fiat">${{prettyFiatBalance(balance, fiatRates[asset])}}</div>
+          <div>
+            <span class="account_balance_value">{{balance}}</span>
+            <span class="account_balance_code">{{asset}}</span>
+          </div>
+        </div>
+        <div v-if="address" class="account_address">
+          <button class="btn btn-outline-light"
+            @click="copyAddress()"
+            v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
+            {{ shortenAddress(this.address) }}
+          </button>
         </div>
         <div class="account_actions">
-          <router-link v-bind:to="'/account/' + asset + '/send'"><button class="account_actions_button">
+          <router-link :to="'/account/' + asset + '/send'"><button class="account_actions_button">
             <div class="account_actions_button_wrapper"><SendIcon class="account_actions_button_icon" /></div>Send
+          </button></router-link>
+          <router-link :to="'/account/' + asset + '/swap'"><button class="account_actions_button">
+            <div class="account_actions_button_wrapper"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></div>Swap
           </button></router-link>
           <router-link v-bind:to="'/account/' + asset + '/receive'"><button class="account_actions_button">
             <div class="account_actions_button_wrapper"><ReceiveIcon class="account_actions_button_icon" /></div>Receive
           </button></router-link>
-          <router-link v-bind:to="'/account/' + asset + '/swap'"><button class="account_actions_button">
-            <div class="account_actions_button_wrapper"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></div>Swap
-          </button></router-link>
         </div>
-        <div class="account_title">Transactions</div>
       </div>
       <div class="account_transactions">
-        <Transaction
-          v-for="(item) in assetHistory"
-          :key="item.id"
-          v-bind:asset="item.from"
-          v-bind:amount="getTransactionAmount(item)"
-          v-bind:type="item.type"
-          v-bind:title="getTransactionTitle(item)"
-          v-bind:timestamp="item.startTime"
-          v-bind:confirmed="['SUCCESS', 'REFUNDED'].includes(item.status)"
-          v-bind:step="getTransactionStep(item)"
-          v-bind:numSteps="getTransactionNumSteps(item)"
-          v-bind:error="item.error"
-          @click="selectedItem = item" />
+        <ActivityFilter @filters-changed="applyFilters"
+                        :activity-data="activityData"
+                        v-if="activityData.length > 0"/>
+        <TransactionList :transactions="activityData" />
+        <div class="activity-empty" v-if="activityData.length <= 0">
+         Once you start using your wallet you will see the activity here
+       </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
+import cryptoassets from '@/utils/cryptoassets'
+import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
-import Transaction from '@/components/Transaction'
-import HistoryModal from '@/components/HistoryModal.vue'
-import { prettyBalance } from '@/utils/coinFormatter'
-
-const ORDER_STATUS_MAP = {
-  QUOTE: 1,
-  SECRET_READY: 1,
-  INITIATED: 1,
-  INITIATION_REPORTED: 2,
-  WAITING_FOR_CONFIRMATIONS: 3,
-  READY_TO_EXCHANGE: 3,
-  GET_REFUND: 3,
-  READY_TO_SEND: 4
-}
+import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { shortenAddress } from '@/utils/address'
+import { getAssetIcon } from '@/utils/asset'
+import TransactionList from '@/components/TransactionList'
+import ActivityFilter from '@/components/ActivityFilter'
+import { applyActivityFilters } from '@/utils/history'
 
 export default {
-  data () {
-    return {
-      selectedItem: null
-    }
-  },
   components: {
+    NavBar,
     RefreshIcon,
     SendIcon,
     ReceiveIcon,
     SwapIcon,
-    Transaction,
-    HistoryModal
+    ActivityFilter,
+    TransactionList
+  },
+  data () {
+    return {
+      addressCopied: false,
+      activityData: [],
+      updatingBalances: false
+    }
   },
   props: ['asset'],
   computed: {
-    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history']),
+    ...mapGetters(['activity']),
+    ...mapState([
+      'activeWalletId',
+      'activeNetwork',
+      'balances',
+      'addresses',
+      'history',
+      'fiatRates',
+      'marketData'
+    ]),
     balance () {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
     },
+    address () {
+      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
+      return address && cryptoassets[this.asset].formatAddress(address)
+    },
+    markets () {
+      return this.marketData[this.activeNetwork][this.asset]
+    },
     assetHistory () {
-      if (!this.history[this.activeNetwork]) return []
-      if (!this.history[this.activeNetwork][this.activeWalletId]) return []
-      return this.history[this.activeNetwork][this.activeWalletId]
-        .slice()
-        .filter((item) => item.from === this.asset)
-        .reverse()
+      return this.activity.filter((item) => item.from === this.asset)
     }
   },
   methods: {
-    ...mapActions(['updateBalances']),
-    refresh () {
-      this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
+    ...mapActions(['updateBalances', 'getUnusedAddresses']),
+    getAssetIcon,
+    shortenAddress,
+    prettyFiatBalance,
+    async copyAddress () {
+      await navigator.clipboard.writeText(this.address)
+      this.addressCopied = true
+      setTimeout(() => { this.addressCopied = false }, 2000)
     },
-    getTransactionStep (item) {
-      return item.type === 'SWAP' ? ORDER_STATUS_MAP[item.status] : undefined
+    async refresh () {
+      this.updatingBalances = true
+      await this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
+      this.updatingBalances = false
     },
-    getTransactionNumSteps (item) {
-      if (item.type !== 'SWAP') {
-        return undefined
-      }
-
-      return item.sendTo ? 5 : 4
-    },
-    getTransactionTitle (item) {
-      if (item.type === 'SWAP') {
-        return `Swap ${item.from} to ${item.to}`
-      }
-      if (item.type === 'SEND') {
-        return `Send ${item.from}`
-      }
-      if (item.type === 'RECEIVE') {
-        return `Receive ${item.from}`
-      }
-    },
-    getTransactionAmount (item) {
-      return prettyBalance(item.type === 'SWAP' ? item.fromAmount : item.amount, item.from)
+    applyFilters (filters) {
+      this.activityData = applyActivityFilters([...this.assetHistory], filters)
+    }
+  },
+  async created () {
+    if (!this.address) {
+      await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
+    }
+    this.activityData = [...this.assetHistory]
+  },
+  watch: {
+    activeNetwork (newVal, oldVal) {
+      this.activityData = [...this.assetHistory]
     }
   }
 }
@@ -137,14 +147,13 @@ export default {
 
   &_header {
     display: flex;
-    height: 56px;
     align-items: center;
     justify-content: center;
-    font-size: $h2-font-size;
-    border-bottom: 1px solid $hr-border-color;
+    font-size: $h3-font-size;
+    text-transform: uppercase;
+    font-weight: normal;
 
     img {
-      width: 24px;
       margin-right: 4px;
     }
   }
@@ -156,17 +165,21 @@ export default {
   }
 
   &_top {
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 0;
     background: $brand-gradient-primary;
     color: $color-text-secondary;
-    border-bottom: 1px solid #41DCCB;
+    text-align: center;
     position: relative;
   }
 
   &_balance {
-    display: flex;
-    height: 75px;
-    align-items: flex-end;
-    justify-content: center;
+    &_fiat {
+      margin-bottom: 6px;
+    }
 
     &_value {
       line-height: 36px;
@@ -197,7 +210,6 @@ export default {
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-    padding: 24px 0;
 
     &_button {
       display: flex;
@@ -209,6 +221,13 @@ export default {
       cursor: pointer;
       color: $color-text-secondary;
       background: none;
+      font-weight: 600;
+      font-size: 13px;
+
+      &.disabled {
+        opacity: 0.5;
+        cursor: auto;
+      }
 
       &_wrapper {
         display: flex;
@@ -232,10 +251,17 @@ export default {
     }
   }
 
-  &_title {
+  &_address {
     text-align: center;
-    font-size: $h5-font-size;
-    padding-bottom: 18px;
+
+    button {
+      font-size: $h4-font-size;
+      font-weight: normal;
+      color: $color-text-secondary;
+      border: 0;
+      background: none;
+      outline: none;
+    }
   }
 
   &_transactions {

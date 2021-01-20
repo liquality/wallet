@@ -1,6 +1,6 @@
 <template>
-  <div id="app" v-if="brokerReady">
-    <NavBar v-if="unlockedAt" />
+  <div id="app" v-if="brokerReady" :class="{ satmode }">
+    <Head v-if="unlockedAt" />
 
     <router-view v-if="termsAcceptedAt" />
     <OnboardingHome v-else />
@@ -9,15 +9,17 @@
 
 <script>
 import { mapState } from 'vuex'
+import SatMode from '@/mixins/SatMode'
 
-import NavBar from '@/views/NavBar.vue'
+import Head from '@/components/Head.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 
 export default {
   components: {
-    NavBar,
+    Head,
     OnboardingHome
   },
+  mixins: [SatMode],
   computed: mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
   watch: {
     unlockedAt: function (unlocked) {
@@ -30,11 +32,23 @@ export default {
 
 <style lang="scss">
 #app {
-  width: 375px;
+  width: 360px;
   height: 600px;
   display: flex;
   flex-direction: column;
   background: #ffffff;
   overflow: hidden;
+}
+
+@keyframes redraw {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: .99;
+  }
+}
+html {
+  animation: redraw 1s linear infinite;
 }
 </style>
