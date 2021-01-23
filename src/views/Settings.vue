@@ -64,6 +64,10 @@ export default {
       else this.disableEthereumInjection()
     },
     updateInjectEthereumAsset (asset) {
+      // Update back to RBTC as asset
+      if (asset === 'RSK') {
+        asset = 'RBTC'
+      }
       this.setEthereumInjectionAsset({ asset })
     }
   }
