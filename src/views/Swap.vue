@@ -26,8 +26,8 @@
             </div>
             <div class="input-group swap_asset">
               <div class="input-group-append">
-                <AssetDropdown :assets="assets"
-                           :selected="asset"
+                <AssetDropdown :assets="assetList"
+                           :selected="{name: asset, label: asset}"
                            @asset-changed="setAsset"
                            :show-search="true"
                 />
@@ -112,8 +112,8 @@
             </div>
             <div class="input-group swap_asset">
               <div class="input-group-append">
-                <AssetDropdown :assets="toAssets"
-                          :selected="toAsset"
+                <AssetDropdown :assets="toAssetList"
+                          :selected="{name: toAsset, label: toAsset}"
                           @asset-changed="setToAsset"
                           :show-search="true"
                 />
@@ -678,6 +678,12 @@ export default {
         prettyFiatBalance(this.totalFees[this.toAssetChain], this.fiatRates[this.toAssetChain])
       )
       return amount.toFormat(2)
+    },
+    assetList () {
+      return this.assets.map(a => ({ name: a, label: a }))
+    },
+    toAssetList () {
+      return this.toAssets.map(a => ({ name: a, label: a }))
     }
   },
   methods: {
@@ -712,7 +718,7 @@ export default {
       }
     },
     setToAsset (val) {
-      this.toAsset = val
+      this.toAsset = val.name
       if (this.amountOption === 'max') {
         this.sendAmount = this.max
       } else {
@@ -722,7 +728,7 @@ export default {
       this.resetFees()
     },
     setAsset (val) {
-      this.asset = val
+      this.asset = val.name
       this.toAsset = Object.keys(this.selectedMarket)[0]
       this.sendAmount = this.min
       this.resetFees()

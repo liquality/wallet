@@ -18,7 +18,7 @@
         </div>
         <div class="setting-item_control">
           <AssetDropdown :assets="ethereumAssets"
-                         :selected="injectEthereumAsset"
+                         :selected="selectedAsset"
                          @asset-changed="updateInjectEthereumAsset" />
         </div>
       </div>
@@ -46,12 +46,16 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId', 'injectEthereum', 'injectEthereumAsset']),
     ethereumAssets () {
       return Object.keys(cryptoassets)
-        .filter(isEthereumChain).map(a => {
-          if (a === 'RBTC') {
-            return 'RSK'
-          }
-          return a
+        .filter(isEthereumChain)
+        .map(asset => {
+          const label = this.getLabel(asset)
+          return { name: asset, label }
         })
+    },
+    selectedAsset () {
+      const label = this.getLabel(this.injectEthereumAsset)
+      const name = this.injectEthereumAsset === 'RSK' ? 'RBTC' : this.injectEthereumAsset
+      return { name, label }
     },
     appVersion () {
       return version
@@ -64,7 +68,10 @@ export default {
       else this.disableEthereumInjection()
     },
     updateInjectEthereumAsset (asset) {
-      this.setEthereumInjectionAsset({ asset })
+      this.setEthereumInjectionAsset({ asset: asset.name })
+    },
+    getLabel (asset) {
+      return asset === 'RBTC' ? 'RSK' : asset
     }
   }
 }
