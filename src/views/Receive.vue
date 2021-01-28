@@ -22,7 +22,7 @@
           </p>
           <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
-          <div v-if="activeNetwork === 'testnet'" class="testnet_message">
+          <div v-if="showETHFaucet" class="testnet_message">
             <div>Ether testnet faucet</div>
             <div>
               <a href="https://faucet.rinkeby.io/" target="_blank">https://faucet.rinkeby.io/</a>
@@ -96,8 +96,13 @@ export default {
         ETH: 'ethereum',
         RBTC: 'RSK'
       })[this.asset]
+    },
+    showETHFaucet () {
+      if (this.activeNetwork === 'testnet' && this.asset === 'ETH') {
+        return true
+      }
+      return false
     }
-
   },
   async created () {
     await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
