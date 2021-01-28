@@ -2,7 +2,7 @@
 import {
   BRIDGE_IFRAME_ID,
   BRIDGE_REPLEY_PREFIX
-} from './utils/hw-bridge'
+} from '../../utils/hw-bridge'
 
 export class LedgerBridgeApp {
   _app
@@ -13,12 +13,18 @@ export class LedgerBridgeApp {
 
   sendMessageToHWBridge ({ app, method, payload }) {
     const iframe = document.getElementById(BRIDGE_IFRAME_ID)
-    iframe.contentWindow.postMessage({
-      app,
-      method,
-      payload
-    }, '*')
-    console.log('message send to the bridge: ', app, method, payload)
+    console.log('browser.runtime.id', browser.runtime.id)
+
+    if (iframe) {
+      iframe.contentWindow.postMessage({
+        app,
+        method,
+        payload
+      }, '*')
+      console.log('message send to the bridge: ', app, method, payload)
+    } else {
+      console.log('message not send: ', app, method, payload)
+    }
   }
 
   sendMessage ({ method, payload }) {
@@ -30,6 +36,9 @@ export class LedgerBridgeApp {
   }
 
   async callAppMethod (method, ...payload) {
+    console.log('callAppMethod', window.document.body)
+    const iframe = document.getElementById(BRIDGE_IFRAME_ID)
+    console.log('iframe', iframe, BRIDGE_IFRAME_ID)
     const replySignature = this.getReplySignature(method)
     return new Promise((resolve, reject) => {
       window.addEventListener('message', ({
@@ -49,7 +58,7 @@ export class LedgerBridgeApp {
         passive: true
       })
 
-      this.sendMessage(method, payload)
+      this.sendMessage({ method, payload })
       setTimeout(() => {
         reject(new Error(
           `Timeout calling the hw bridge: ${this._app}.${method}`
