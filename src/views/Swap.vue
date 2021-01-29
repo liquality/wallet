@@ -535,7 +535,7 @@ export default {
       })[0]
     },
     min () {
-      return dpUI(BN(this.market.sellMin), this.asset)
+      return dpUI(BN(this.market.sellMin))
     },
     max () {
       const max = BN.min(

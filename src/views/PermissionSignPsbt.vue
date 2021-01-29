@@ -1,20 +1,25 @@
 <template>
-  <div>
+  <div class="permission-screen">
     <div class="popup-logo">
       <img :src="logo" />
     </div>
-    <div class="permission-screen wrapper text-center">
+    <div class="wrapper text-center">
       <div class="wrapper_top">
         <h2>Sign Transaction</h2>
         <p class="text-muted">{{$route.query.origin}}</p>
         <img :src="getAssetIcon(asset)" class="permission-screen_icon mb-2" />
         <div class="permission-screen_tx">
-          <h5>Outputs</h5>
-          <div v-for="(output, i) in outputs" :key="i" class="permission-screen_tx_output bg-light p-2 mb-2 border rounded">
-            <div>{{ output.address }}</div>
-            <div class="text-primary">{{ prettyBalance(output.value, asset) }} {{ asset }}</div>
+          <h5>Outputs <SpinnerIcon v-if="!changeAddresses.length" class="ml-1" /></h5>
+          <div v-if="changeAddresses.length">
+            <div v-for="(output, i) in outputs" :key="i" class="permission-screen_tx_output bg-light p-2 mb-2 border rounded">
+              <div>{{ output.address }}</div>
+              <div class="row">
+                <div class="col text-primary align-text-bottom">{{ prettyBalance(output.value, asset, 8) }} {{ asset }}</div>
+                <div class="col text-right"><span class="badge badge-primary" v-if="externalAddresses.includes(output.address)">My Wallet</span></div>
+              </div>
+            </div>
+            <div class="text-muted">Fee: {{ prettyBalance(fee, asset, 8) }} {{ asset }}</div>
           </div>
-          <div class="text-muted">Fee: {{ prettyBalance(fee, asset) }} {{ asset }}</div>
         </div>
       </div>
 
@@ -32,8 +37,9 @@
 </template>
 
 <script>
+import 'setimmediate'
 import { mapActions, mapState, mapGetters } from 'vuex'
-import * as bitcoinjs from 'bitcoinjs-lib'
+import { Psbt } from 'bitcoinjs-lib'
 import { getAssetIcon } from '@/utils/asset'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -46,6 +52,7 @@ export default {
   },
   data () {
     return {
+      externalAddresses: [],
       changeAddresses: [],
       loading: false,
       replied: false
@@ -92,10 +99,9 @@ export default {
       return this.request.args[2]
     },
     psbt () {
-      return bitcoinjs.Psbt.fromBase64(this.psbtBase64, { network: AssetNetworks.BTC[this.activeNetwork] })
+      return Psbt.fromBase64(this.psbtBase64, { network: AssetNetworks.BTC[this.activeNetwork] })
     },
     outputs () {
-      console.log(this.changeAddresses)
       return this.psbt.txOutputs.filter(vout => !this.changeAddresses.includes(vout.address))
     },
     outputsValue () {
@@ -116,8 +122,8 @@ export default {
   },
   async created () {
     const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)
-    window.setImmediate = (callback) => { callback() } // setImmediate not availalbe here
-    this.changeAddresses = (await client.wallet.getAddresses(0, 100, true)).map(a => a.address)
+    this.changeAddresses = (await client.wallet.getAddresses(0, 300, true)).map(a => a.address)
+    this.externalAddresses = (await client.wallet.getAddresses(0, 300, false)).map(a => a.address)
   },
   beforeDestroy () {
     if (this.replied) return
@@ -129,6 +135,10 @@ export default {
 
 <style lang="scss">
 .permission-screen {
+  padding-bottom: 90px;
+  overflow-y: auto;
+  height: 100%;
+
   &_icon {
     width: 40px;
     height: 40px;
@@ -136,6 +146,13 @@ export default {
 
   &_tx {
     text-align: left;
+
+    svg {
+      height: 16px;
+      circle {
+        stroke: #dedede;
+      }
+    }
   }
 }
 </style>

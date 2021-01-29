@@ -9,18 +9,18 @@ export const dp = (amount, coin) => {
   return BN(amount).dp(cryptoassets[coin].decimals)
 }
 
-export const dpUI = (amount) => {
+export const dpUI = (amount, dp = VALUE_DECIMALS) => {
   if (!amount) return amount
 
-  return BN(amount).dp(VALUE_DECIMALS, BN.ROUND_FLOOR)
+  return BN(amount).dp(dp, BN.ROUND_FLOOR)
 }
 
-export const prettyBalance = (amount, coin) => {
+export const prettyBalance = (amount, coin, dp = VALUE_DECIMALS) => {
   if (!amount) return amount
 
   amount = cryptoassets[coin].unitToCurrency(amount)
 
-  return dpUI(amount)
+  return dpUI(amount, dp)
 }
 
 export const prettyFiatBalance = (amount, rate) => {
