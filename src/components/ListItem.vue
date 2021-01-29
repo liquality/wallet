@@ -67,7 +67,9 @@ export default {
   padding-top: 16px;
   padding-bottom: 16px;
 
-  &:hover {
+  &:hover, &.active {
+    background-color: #F0F7F9;
+    color: $color-text-primary;
     cursor: pointer;
     text-decoration: none;
   }

@@ -25,6 +25,7 @@ import PermissionSignPsbt from '@/views/PermissionSignPsbt.vue'
 import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
+import AssetList from '@/views/AssetList.vue'
 
 Vue.use(VueRouter)
 
@@ -122,6 +123,13 @@ const routes = [
   {
     path: '/account/:routeAsset/swap',
     component: Swap,
+    props: true
+  },
+
+  // Assets list
+  {
+    path: '/assets/:action',
+    component: AssetList,
     props: true
   },
   // Wallet

@@ -3,8 +3,8 @@
     <div class="send" v-if="!showConfirm">
       <NavBar
         showBack="true"
-        :backPath="`/account/${asset}`"
-        :backLabel="asset"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
+        :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Send
       </NavBar>
@@ -112,7 +112,7 @@
         </div>
         <div class="wrapper_bottom">
           <div class="button-group">
-            <router-link :to="`/account/${asset}`"
+            <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
               ><button class="btn btn-light btn-outline-primary btn-lg">
                 Cancel
               </button></router-link
@@ -252,6 +252,9 @@ export default {
       'fees',
       'fiatRates'
     ]),
+    routeSource () {
+      return this.$route.query.source || null
+    },
     assetChain () {
       return getChainFromAsset(this.asset)
     },

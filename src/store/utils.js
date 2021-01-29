@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
+import pkg from '../../package.json'
 import { getChainFromAsset } from '../utils/asset'
 import cryptoassets from '@liquality/cryptoassets'
 
@@ -41,14 +42,16 @@ export const unlockAsset = key => {
   emitter.$emit(`unlock:${key}`)
 }
 
+export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
+
 export const newOrder = (agent, data) => {
   return axios({
     url: agent + '/api/swap/order',
     method: 'post',
     data,
     headers: {
-      'x-requested-with': 'wallet',
-      'x-liquality-user-agent': 'wallet'
+      'x-requested-with': VERSION_STRING,
+      'x-liquality-user-agent': VERSION_STRING
     }
   }).then(res => res.data)
 }
@@ -64,8 +67,8 @@ export const updateOrder = (order) => {
       secretHash: order.secretHash
     },
     headers: {
-      'x-requested-with': 'wallet',
-      'x-liquality-user-agent': 'wallet'
+      'x-requested-with': VERSION_STRING,
+      'x-liquality-user-agent': VERSION_STRING
     }
   }).then(res => res.data)
 }
@@ -75,8 +78,8 @@ export const getMarketData = agent => {
     url: agent + '/api/swap/marketinfo',
     method: 'get',
     headers: {
-      'x-requested-with': 'wallet',
-      'x-liquality-user-agent': 'wallet'
+      'x-requested-with': VERSION_STRING,
+      'x-liquality-user-agent': VERSION_STRING
     }
   }).then(res => res.data)
 }

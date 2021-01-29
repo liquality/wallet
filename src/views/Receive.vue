@@ -1,6 +1,8 @@
 <template>
   <div class="receive">
-    <NavBar showBack="true" :backPath="`/account/${asset}`" :backLabel="asset">
+    <NavBar showBack="true"
+            :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
+            :backLabel="routeSource === 'assets' ? 'Overview' : asset">
       Receive {{asset}}
     </NavBar>
     <div class="wrapper form text-center">
@@ -31,7 +33,11 @@
 
       <div class="wrapper_bottom">
         <div class="button-group">
-          <router-link :to="`/account/${asset}`"><button class="btn btn-light btn-outline-primary btn-lg">Done</button></router-link>
+          <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`">
+            <button class="btn btn-light btn-outline-primary btn-lg">
+              Done
+            </button>
+          </router-link>
           <button class="btn btn-primary btn-lg btn-icon" @click="copy">
             <template v-if="copied"><TickIcon /> Copied!</template>
             <template v-else><CopyWhiteIcon class="no-stroke"/> Copy Address</template>
@@ -70,6 +76,9 @@ export default {
   },
   computed: {
     ...mapState(['addresses', 'activeNetwork', 'activeWalletId']),
+    routeSource () {
+      return this.$route.query.source || null
+    },
     address () {
       const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
       return address && cryptoassets[this.asset].formatAddress(address)

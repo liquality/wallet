@@ -24,27 +24,32 @@
           </button>
         </div>
         <div class="account_actions">
-          <router-link :to="sendDisabled ? '' : '/account/' + asset + '/send'"><button class="account_actions_button" :class="{ disabled: sendDisabled }">
+          <router-link :to="'/account/' + asset + '/send'"><button class="account_actions_button">
             <div class="account_actions_button_wrapper"><SendIcon class="account_actions_button_icon" /></div>Send
+          </button></router-link>
+          <router-link :to="'/account/' + asset + '/swap'"><button class="account_actions_button">
+            <div class="account_actions_button_wrapper"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></div>Swap
           </button></router-link>
           <router-link v-bind:to="'/account/' + asset + '/receive'"><button class="account_actions_button">
             <div class="account_actions_button_wrapper"><ReceiveIcon class="account_actions_button_icon" /></div>Receive
           </button></router-link>
-          <router-link :to="swapDisabled ? '' : '/account/' + asset + '/swap'"><button class="account_actions_button" :class="{ disabled: swapDisabled }">
-            <div class="account_actions_button_wrapper"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></div>Swap
-          </button></router-link>
         </div>
       </div>
       <div class="account_transactions">
-        <ActivityFilter @filters-changed="applyFilters" :activity-data="activityData"/>
+        <ActivityFilter @filters-changed="applyFilters"
+                        :activity-data="activityData"
+                        v-if="activityData.length > 0"/>
         <TransactionList :transactions="activityData" />
+        <div class="activity-empty" v-if="activityData.length <= 0">
+         Once you start using your wallet you will see the activity here
+       </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
@@ -77,6 +82,7 @@ export default {
   },
   props: ['asset'],
   computed: {
+    ...mapGetters(['activity']),
     ...mapState([
       'activeWalletId',
       'activeNetwork',
@@ -89,12 +95,6 @@ export default {
     balance () {
       return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
     },
-    sendDisabled () {
-      return !this.balances[this.activeNetwork][this.activeWalletId][this.asset]
-    },
-    swapDisabled () {
-      return !this.markets || Object.keys(this.markets).length === 0
-    },
     address () {
       const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
       return address && cryptoassets[this.asset].formatAddress(address)
@@ -103,12 +103,7 @@ export default {
       return this.marketData[this.activeNetwork][this.asset]
     },
     assetHistory () {
-      if (!this.history[this.activeNetwork]) return []
-      if (!this.history[this.activeNetwork][this.activeWalletId]) return []
-      return this.history[this.activeNetwork][this.activeWalletId]
-        .slice()
-        .filter((item) => item.from === this.asset)
-        .reverse()
+      return this.activity.filter((item) => item.from === this.asset)
     }
   },
   methods: {
@@ -135,6 +130,11 @@ export default {
       await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
     }
     this.activityData = [...this.assetHistory]
+  },
+  watch: {
+    activeNetwork (newVal, oldVal) {
+      this.activityData = [...this.assetHistory]
+    }
   }
 }
 </script>
@@ -221,6 +221,8 @@ export default {
       cursor: pointer;
       color: $color-text-secondary;
       background: none;
+      font-weight: 600;
+      font-size: 13px;
 
       &.disabled {
         opacity: 0.5;

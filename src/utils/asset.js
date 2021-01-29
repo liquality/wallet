@@ -34,7 +34,7 @@ const EXPLORERS = {
 }
 
 export const isERC20 = asset => {
-  return cryptoassets[asset].type === 'erc20'
+  return cryptoassets[asset]?.type === 'erc20'
 }
 
 export const isEthereumChain = asset => {
@@ -43,8 +43,8 @@ export const isEthereumChain = asset => {
 
 export const getChainFromAsset = asset => {
   if (isERC20(asset)) {
-    if (cryptoassets[asset].network === 'ethereum') return 'ETH'
-    if (cryptoassets[asset].network === 'rsk') return 'RBTC'
+    if (cryptoassets[asset]?.network === 'ethereum') return 'ETH'
+    if (cryptoassets[asset]?.network === 'rsk') return 'RBTC'
   }
 
   return asset

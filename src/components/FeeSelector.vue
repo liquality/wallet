@@ -14,6 +14,9 @@
 import { getTxFee } from '@/utils/fees'
 import BN from 'bignumber.js'
 import { prettyFiatBalance } from '@/utils/coinFormatter'
+import {
+  getChainFromAsset
+} from '@/utils/asset'
 
 export default {
   props: ['asset', 'value', 'fees', 'txTypes', 'fiatRates'],
@@ -32,7 +35,7 @@ export default {
         content += `${total} ${this.asset}`
         content += `<br />${totalFiat} USD`
       } else {
-        content += `${this.fees[name].fee} ETH`
+        content += `${this.fees[name].fee} ${getChainFromAsset(this.asset)}`
       }
 
       return `${content}</div>`

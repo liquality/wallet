@@ -6,11 +6,11 @@
      <div class="form">
         <div class="input-group">
                 <img
-                :src="getAssetIcon(selected)"
+                :src="getAssetIcon(selected.name)"
                 class="asset-icon"
               />
               <span class="input-group-text">
-                    {{ selected }}
+                    {{ selected.label }}
               </span>
         </div>
       </div>
@@ -18,7 +18,7 @@
         <ChevronDownIcon v-else />
   </button>
   <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
-    <li>
+    <li v-if="showSearch">
       <div class="form dropdown-header">
         <div class="input-group">
               <SearchIcon/>
@@ -32,16 +32,16 @@
         </div>
       </div>
     </li>
-    <li v-for="(asset, key) in filteredItems" :key="key">
+    <li v-for="asset in filteredItems" :key="asset.name">
       <a class="dropdown-item"
          href="#"
          @click="selectItem(asset)">
            <div class="dropdown-item-asset-item">
              <img
-                :src="getAssetIcon(asset)"
+                :src="getAssetIcon(asset.name)"
                 class="asset-icon"
               />
-              {{ asset }}
+              {{ asset.label }}
            </div>
       </a>
     </li>
@@ -76,7 +76,7 @@ export default {
     ChevronDownIcon,
     ChevronUpIcon
   },
-  props: ['assets', 'selected'],
+  props: ['assets', 'selected', 'showSearch'],
   data () {
     return {
       dropdownOpen: false,
@@ -86,14 +86,14 @@ export default {
   },
   computed: {
     items () {
-      return this.assets.filter(a => a !== this.selected)
+      return this.assets.filter(a => a.name !== this.selected.name)
     }
   },
   watch: {
     search (newSearch, oldSearch) {
       if (newSearch && newSearch !== oldSearch) {
         this.filteredItems = this.items.filter(
-          a => a.toUpperCase().includes(newSearch.toUpperCase())
+          a => a.name.toUpperCase().includes(newSearch.toUpperCase())
         )
       } else {
         this.filteredItems = [...this.items]
@@ -103,7 +103,7 @@ export default {
       if (newAssets && newAssets !== oldAssets) {
         if (this.search) {
           this.filteredItems = this.items.filter(
-            a => a.toUpperCase().includes(this.search.toUpperCase())
+            a => a.name.toUpperCase().includes(this.search.toUpperCase())
           )
         } else {
           this.filteredItems = [...this.items]
@@ -117,7 +117,7 @@ export default {
     selectItem (asset) {
       this.$emit('asset-changed', asset)
       this.dropdownOpen = false
-      this.filteredItems = this.assets.filter(a => a !== asset)
+      this.filteredItems = this.assets.filter(a => a.name !== asset.name)
     },
     toogle () {
       this.dropdownOpen = !this.dropdownOpen
@@ -156,17 +156,19 @@ export default {
   }
 
   .dropdown-menu {
-    width: 215px;
+    max-width: 215px;
+    min-width: 8rem;
     max-height: 185px;
     overflow: auto;
     border-radius: 0;
-    padding-top: 10px;
     padding-bottom: 0;
+    padding-top: 0;
     margin: 0;
     border: 1px solid #D9DFE5;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     .dropdown-header {
+      margin-top: 10px;
       padding-left: 15px;
       padding-right: 15px;
 
