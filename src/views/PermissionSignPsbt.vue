@@ -9,8 +9,8 @@
         <p class="text-muted">{{$route.query.origin}}</p>
         <img :src="getAssetIcon(asset)" class="permission-screen_icon mb-2" />
         <div class="permission-screen_tx">
-          <h5>Outputs <SpinnerIcon v-if="!changeAddresses.length" class="ml-1" /></h5>
-          <div v-if="changeAddresses.length">
+          <h5>Outputs <SpinnerIcon v-if="scanningChangeOutput" class="ml-1" /></h5>
+          <div v-if="!scanningChangeOutput">
             <div v-for="(output, i) in outputs" :key="i" class="permission-screen_tx_output bg-light p-2 mb-2 border rounded">
               <div>{{ output.address }}</div>
               <div class="row">
@@ -53,7 +53,8 @@ export default {
   data () {
     return {
       externalAddresses: [],
-      changeAddresses: [],
+      scanningChangeOutput: true,
+      changeOutputIndex: -1,
       loading: false,
       replied: false
     }
@@ -102,7 +103,7 @@ export default {
       return Psbt.fromBase64(this.psbtBase64, { network: AssetNetworks.BTC[this.activeNetwork] })
     },
     outputs () {
-      return this.psbt.txOutputs.filter(vout => !this.changeAddresses.includes(vout.address))
+      return this.psbt.txOutputs.filter((output, i) => i !== this.changeOutputIndex)
     },
     outputsValue () {
       return this.psbt.txOutputs.reduce((total, vout) => total + vout.value, 0)
@@ -122,8 +123,19 @@ export default {
   },
   async created () {
     const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)
-    this.changeAddresses = (await client.wallet.getAddresses(0, 300, true)).map(a => a.address)
-    this.externalAddresses = (await client.wallet.getAddresses(0, 300, false)).map(a => a.address)
+
+    const maxAddresses = 500
+    const addressesPerCall = 50
+    let i = 0
+    while (i < maxAddresses) {
+      const changeAddresses = (await client.wallet.getAddresses(i, addressesPerCall, true)).map(a => a.address)
+      this.changeOutputIndex = this.psbt.txOutputs.findIndex(vout => changeAddresses.includes(vout.address))
+      if (this.changeOutputIndex) break
+      i += addressesPerCall
+    }
+    this.scanningChangeOutput = false
+
+    this.externalAddresses = (await client.wallet.getAddresses(0, maxAddresses, false)).map(a => a.address)
   },
   beforeDestroy () {
     if (this.replied) return
