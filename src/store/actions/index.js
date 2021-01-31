@@ -9,8 +9,10 @@ import { getUnusedAddresses } from './getUnusedAddresses'
 import { newSwap } from './newSwap'
 import { performNextAction } from './performNextAction'
 import { proxyMutation } from './proxyMutation'
+import { requestUnlockWallet } from './requestUnlockWallet'
 import { requestOriginAccess } from './requestOriginAccess'
 import { requestPermission } from './requestPermission'
+import { replyUnlockWallet } from './replyUnlockWallet'
 import { replyOriginAccess } from './replyOriginAccess'
 import { replyPermission } from './replyPermission'
 import { executeRequest } from './executeRequest'
@@ -44,8 +46,10 @@ export {
   newSwap,
   performNextAction,
   proxyMutation,
+  requestUnlockWallet,
   requestOriginAccess,
   requestPermission,
+  replyUnlockWallet,
   replyOriginAccess,
   replyPermission,
   executeRequest,
