@@ -54,15 +54,15 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
-import { getAssetIcon } from '@/utils/asset'
+import {
+  getAssetIcon,
+  getChainFromAsset
+} from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@/utils/cryptoassets'
-import {
-  getChainFromAsset
-} from '@/utils/asset'
 
 export default {
   components: {

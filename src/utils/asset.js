@@ -52,7 +52,11 @@ export const getChainFromAsset = asset => {
 
 export const getAssetColorStyle = asset => {
   const assetData = cryptoassets[asset]
-  if (assetData.color) return { color: assetData.color }
+  if (assetData && assetData.color) {
+    return { color: assetData.color }
+  }
+  // return black as default
+  return { color: '#000000' }
 }
 
 export const getTransactionExplorerLink = (hash, asset, network) => {
