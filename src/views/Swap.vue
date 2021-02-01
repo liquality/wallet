@@ -572,7 +572,7 @@ export default {
       if (this.market && this.market.sellMin) {
         min = this.market.sellMin
       }
-      return dpUI(BN(min), this.asset)
+      return dpUI(BN(min))
     },
     max () {
       let max = 0
