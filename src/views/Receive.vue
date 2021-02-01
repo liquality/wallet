@@ -9,7 +9,7 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
-          <label>Your Current {{addressType}} Address</label>
+          <label>Your Current {{asset}} Address</label>
           <p class="receive_address">{{address}}
             <CopyIcon
                   class="copy-icon"
@@ -22,10 +22,13 @@
           </p>
           <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
-          <div v-if="activeNetwork === 'testnet'" class="testnet_message">
-            <div>Ether testnet faucet</div>
+          <div v-if="faucet" class="testnet_message">
+            <div>{{ faucet.name }} testnet faucet</div>
             <div>
-              <a href="https://faucet.rinkeby.io/" target="_blank">https://faucet.rinkeby.io/</a>
+              <a :href="faucet.url"
+                 target="_blank">
+                 {{ faucet.url }}
+              </a>
             </div>
           </div>
         </div>
@@ -51,7 +54,10 @@
 <script>
 import { mapActions, mapState } from 'vuex'
 import QRCode from 'qrcode'
-import { getAssetIcon } from '@/utils/asset'
+import {
+  getAssetIcon,
+  getChainFromAsset
+} from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
@@ -84,20 +90,23 @@ export default {
       return address && cryptoassets[this.asset].formatAddress(address)
     },
     chainName () {
+      const assetChain = getChainFromAsset(this.asset)
       return ({
         BTC: 'bitcoin',
         ETH: 'ethereum',
         RBTC: 'ethereum'
-      })[this.asset]
+      })[assetChain]
     },
-    addressType () {
-      return ({
-        BTC: 'bitcoin',
-        ETH: 'ethereum',
-        RBTC: 'RSK'
-      })[this.asset]
+    faucet () {
+      if (this.activeNetwork === 'testnet') {
+        return ({
+          BTC: { name: 'Bitcoin', url: 'https://testnet-faucet.mempool.co/' },
+          ETH: { name: 'Ether', url: 'https://faucet.rinkeby.io/' },
+          RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' }
+        })[this.asset]
+      }
+      return null
     }
-
   },
   async created () {
     await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
