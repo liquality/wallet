@@ -289,12 +289,14 @@ export default {
     txType () {
       return TX_TYPES.SEND
     },
-    totalFee () {
+    sendFee () {
       const feePrice = this.feesAvailable
         ? this.assetFees[this.selectedFee].fee
         : 0
-      const sendFee = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
-      return sendFee.toString().substring(0, 8)
+      return getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
+    },
+    totalFee () {
+      return this.sendFee.toString().substring(0, 8)
     },
     available () {
       const balance = this.balances[this.activeNetwork][this.activeWalletId][
@@ -323,7 +325,8 @@ export default {
       return getFeeLabel(this.selectedFee)
     },
     totalToSendInFiat () {
-      return prettyFiatBalance(this.amountWithFee, this.fiatRates[this.assetChain])
+      const total = BN(this.amount).plus(BN(this.sendFee))
+      return prettyFiatBalance(total, this.fiatRates[this.asset])
     },
     amountWithFee () {
       return BN(this.amount).plus(BN(this.totalFee))
