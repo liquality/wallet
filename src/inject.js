@@ -179,9 +179,9 @@ window.bitcoin = {
 const paymentUriHandler = () => `
 document.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", async (e) => {
-    const r = e.target;
-    if (!r || !r.closest) return;
-    const uri = r.closest('[href^="bitcoin:"]') || r.closest('[href^="ethereum:"]')
+    const element = e.target;
+    if (!element || !element.closest) return;
+    const uri = element.closest('[href^="bitcoin:"]') || element.closest('[href^="ethereum:"]')
     
     if (uri) {
       e.preventDefault()

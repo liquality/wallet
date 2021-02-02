@@ -11,6 +11,8 @@ export const handlePaymentUri = async ({ dispatch }, { data }) => {
     bitcoin: 'BTC'
   }[parsed.protocol.replace(':', '')]
 
+  if (!asset) throw new Error('Unsupported payment URI')
+
   const address = parsed.pathname
   const params = qs.parse(parsed.search.replace('?', ''))
   const value = parseFloat(params.amount || params.value)
