@@ -72,7 +72,10 @@
               <div class="float-right btn-group">
                 <v-popover offset="1" trigger="hover focus" class="mr-2">
                   <button
-                    :class="{ active: amountOption === 'min' }"
+                    :class="{
+                      active: amountOption === 'min' && market
+                     }"
+                    :disabled="!market"
                     class="btn btn-option"
                     @click="setSendAmount(min)"
                   >
@@ -87,7 +90,10 @@
                 </v-popover>
                 <v-popover offset="1" trigger="hover focus">
                   <button
-                    :class="{ active: amountOption === 'max' }"
+                     :class="{
+                      active: amountOption === 'max' && market
+                     }"
+                     :disabled="!market"
                     class="btn btn-option tooltip-target"
                     @click="setSendAmount(max)"
                   >
@@ -328,10 +334,13 @@
           <div class="mt-20">
             <label> Rate </label>
             <div class="d-flex align-items-center justify-content-between my-0 py-0">
-              <div>
+              <div v-if="market">
                 1 {{ asset }}&nbsp;=&nbsp;{{ bestRateBasedOnAmount }} &nbsp;{{
                   toAsset
                 }}
+              </div>
+              <div v-else>
+                1 {{ asset }}&nbsp;=&nbsp;N/A
               </div>
             </div>
           </div>
@@ -443,7 +452,7 @@ export default {
   },
   created () {
     this.asset = this.routeAsset
-    this.toAsset = Object.keys(this.selectedMarket)[0] || ''
+    this.toAsset = Object.keys(this.selectedMarket)[0] || 'N/A'
     this.sendAmount = this.min
     this.updateMarketData({ network: this.activeNetwork })
     this.updateFees({ asset: this.assetChain })
