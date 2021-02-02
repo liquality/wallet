@@ -11,6 +11,10 @@
       <InfoNotification v-if="ethRequired">
         <EthRequiredMessage />
       </InfoNotification>
+
+      <InfoNotification v-if="!market">
+        <NoLiquidityMessage />
+      </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
           <div class="form-group">
@@ -377,6 +381,7 @@ import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
+import NoLiquidityMessage from '@/components/NoLiquidityMessage'
 import {
   dpUI,
   prettyBalance,
@@ -405,6 +410,7 @@ export default {
     NavBar,
     InfoNotification,
     EthRequiredMessage,
+    NoLiquidityMessage,
     FeeSelector,
     ClockIcon,
     SwapIcon,
