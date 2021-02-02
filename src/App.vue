@@ -4,18 +4,12 @@
 
     <router-view v-if="termsAcceptedAt" />
     <OnboardingHome v-else />
-    <iframe src="https://localhost:9000"
-            frameborder="0"
-            :id="bridgeIframeId"
-            :name="bridgeIframeName">
-    </iframe>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import SatMode from '@/mixins/SatMode'
-import { BRIDGE_IFRAME_ID, BRIDGE_IFRAME_NAME } from './utils/hw-bridge'
 
 import Head from '@/components/Head.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
@@ -27,9 +21,7 @@ export default {
   },
   mixins: [SatMode],
   computed: {
-    ...mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
-    bridgeIframeId () { return BRIDGE_IFRAME_ID },
-    bridgeIframeName () { return BRIDGE_IFRAME_NAME }
+    ...mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt'])
   },
   watch: {
     unlockedAt: function (unlocked) {

@@ -47,5 +47,8 @@
       "512": "icons/512x512.png",
       "1024": "icons/1024x1024.png"
     }
+  },
+  "externally_connectable": {
+    "matches": ["https://localhost:9000/"]
   }
 }

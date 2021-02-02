@@ -1,4 +1,4 @@
-import EthereumLedgerProvider from '@liquality/ethereum-ledger-provider'
+import EthereumLedgerProvider from '@liquality/bitcoin-ledger-provider'
 import { EthereumLedgerBridgeApp } from './EthereumLedgerBridgeApp'
 import { version } from '../../../package.json'
 
