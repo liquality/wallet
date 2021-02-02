@@ -1,11 +1,12 @@
 <template>
   <div class="notification-content">
     <div class="notification-text">
-      A balance is required to swap and you need ETH to pay for gas.
+      No liquidity for this pair. Request it via
     </div>
-    <router-link to="/account/ETH/receive"
-                 class="btn btn-option get-eth-btn">
-      Get ETH
+    <router-link to="https://t.me/liquality"
+                 target="_blank"
+                 class="btn btn-option">
+      Telegram
     </router-link>
   </div>
 </template>
@@ -15,11 +16,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .get-eth-btn {
-    width: 68px;
-  }
+
   .notification-text {
-    width: 250px;
+    width: 245px;
   }
 }
 </style>
