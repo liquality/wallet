@@ -34,7 +34,7 @@ export default {
         content += `<br />${totalFiat} USD`
       } else {
         const { unit } = cryptoassets[this.asset].fees
-        content += `<br />${this.fees[name].fee} ${unit}`
+        content += `${this.fees[name].fee} ${unit}`
       }
 
       return `${content}</div>`
