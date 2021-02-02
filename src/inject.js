@@ -67,10 +67,10 @@ async function getAddresses () {
 
 async function handleRequest (req) {
   const eth = window.providerManager.getProviderFor('${asset}')
-  if(req.method.startsWith('metamask_')) return null;
+  if(req.method.startsWith('metamask_')) return null
 
   if(req.method === 'eth_requestAccounts') {
-    return await window.ethereum.enable();
+    return await window.ethereum.enable()
   }
   if(req.method === 'personal_sign') { 
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
@@ -81,7 +81,7 @@ async function handleRequest (req) {
     return '0x' + result.hash
   }
   if(req.method === 'eth_accounts') {
-    return await window.ethereum.enable();
+    return await window.ethereum.enable()
   }
   return eth.getMethod('jsonrpc')(req.method, ...req.params)
 }
@@ -103,7 +103,7 @@ window.liqualityEthereum = {
     })
   },
   send: async (req, _paramsOrCallback) => {
-    if (typeof _paramsOrCallback === "function") {
+    if (typeof _paramsOrCallback === 'function') {
       window.ethereum.sendAsync(req, _paramsOrCallback)
       return
     }
@@ -122,7 +122,7 @@ window.liqualityEthereum = {
   },
   on: (method, callback) => {}, // TODO
   autoRefreshOnNetworkChange: false
-};
+}
 
 function override() {
   window.ethereum = window.liqualityEthereum
@@ -135,13 +135,13 @@ if (!window.ethereum) {
   const interval = setInterval(() => {
     retries++
     if (window.ethereum && !window.ethereum.isLiquality) {
-      override();
+      override()
       clearInterval(interval)
     }
     if (retries >= retryLimit) clearInterval(interval)
   }, 1000)
 } else {
-  override();
+  override()
 }
 `
 
@@ -173,21 +173,23 @@ window.bitcoin = {
       method: req.method, params
     })
   }
-};
+}
 `
 
 const paymentUriHandler = () => `
-document.addEventListener("DOMContentLoaded", () => {
-  document.body.addEventListener("click", async (e) => {
-    const element = e.target;
-    if (!element || !element.closest) return;
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.addEventListener('click', async (e) => {
+    const element = e.target
+    if (!element || !element.closest) return
     const uri = element.closest('[href^="bitcoin:"]') || element.closest('[href^="ethereum:"]')
-    
     if (uri) {
-      e.preventDefault()
-      const href = uri.getAttribute("href")  
-      await window.providerManager.enable()
-      window.providerManager.proxy('HANDLE_PAYMENT_URI', { uri: href })
+      const href = uri.getAttribute('href')
+      const includesAmount = href.includes('value=') || href.includes('amount=')
+      if (includesAmount) {
+        e.preventDefault()
+        await window.providerManager.enable()
+        window.providerManager.proxy('HANDLE_PAYMENT_URI', { uri: href })
+      }
     }
   })
 })
