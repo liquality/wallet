@@ -1,8 +1,7 @@
 <template>
   <div class="notification-content">
-    <div>No liquidity for this pair.</div>
-    <div>Request it via
-      <button class="btn btn-option liq-telegram-btn"
+    <div>No liquidity.</div>
+    <div>Request liquidity for tokens via<button class="btn btn-option liq-telegram-btn"
               @click="openTelegramLink">
         Liquality Telegram
       </button>
