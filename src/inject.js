@@ -1,25 +1,4 @@
 const providerManager = () => `
-function proxy (type, data) {
-  return new Promise((resolve, reject) => {
-    const id = Date.now() + '.' + Math.random()
-
-    window.addEventListener(id, ({ detail }) => {
-      const response = JSON.parse(detail)
-      if (response.error) reject(new Error(response.error))
-      else resolve(response.result)
-    }, {
-      once: true,
-      passive: true
-    })
-
-    window.postMessage({
-      id,
-      type,
-      data
-    }, '*')
-  })
-}
-
 class InjectedProvider {
   constructor (asset) {
     this.asset = asset
@@ -28,7 +7,7 @@ class InjectedProvider {
   setClient () {}
 
   getMethod (method) {
-    return (...args) => proxy('CAL_REQUEST', {
+    return (...args) => window.providerManager.proxy('CAL_REQUEST', {
       asset: this.asset,
       method,
       args
@@ -41,6 +20,27 @@ class ProviderManager {
     this.cache = {}
   }
 
+  proxy (type, data) {
+    return new Promise((resolve, reject) => {
+      const id = Date.now() + '.' + Math.random()
+  
+      window.addEventListener(id, ({ detail }) => {
+        const response = JSON.parse(detail)
+        if (response.error) reject(new Error(response.error))
+        else resolve(response.result)
+      }, {
+        once: true,
+        passive: true
+      })
+  
+      window.postMessage({
+        id,
+        type,
+        data
+      }, '*')
+    })
+  }
+
   getProviderFor (asset) {
     if (this.cache[asset]) return this.cache[asset]
 
@@ -50,7 +50,7 @@ class ProviderManager {
   }
 
   enable () {
-    return proxy('ENABLE_REQUEST')
+    return this.proxy('ENABLE_REQUEST')
   }
 }
 
@@ -176,4 +176,21 @@ window.bitcoin = {
 };
 `
 
-export { providerManager, ethereumProvider, bitcoinProvider }
+const paymentUriHandler = () => `
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.addEventListener("click", async (e) => {
+    const element = e.target;
+    if (!element || !element.closest) return;
+    const uri = element.closest('[href^="bitcoin:"]') || element.closest('[href^="ethereum:"]')
+    
+    if (uri) {
+      e.preventDefault()
+      const href = uri.getAttribute("href")  
+      await window.providerManager.enable()
+      window.providerManager.proxy('HANDLE_PAYMENT_URI', { uri: href })
+    }
+  })
+})
+`
+
+export { providerManager, ethereumProvider, bitcoinProvider, paymentUriHandler }
