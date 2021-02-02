@@ -145,6 +145,19 @@ class Background {
           })
         }
         break
+
+      case 'HANDLE_PAYMENT_URI':
+        if (allowed) {
+          this.storeProxy(id, connection, 'handlePaymentUri', { data })
+        } else {
+          connection.postMessage({
+            id,
+            data: {
+              error: 'Use enable() method first'
+            }
+          })
+        }
+        break
     }
   }
 

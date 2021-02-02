@@ -23,7 +23,7 @@ export const createPopup = url => {
   const options = {
     url: `./index.html#${url}`,
     type: 'popup',
-    height: 600,
+    height: 620,
     width: 360
   }
 

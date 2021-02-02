@@ -15,6 +15,7 @@ import { requestPermission } from './requestPermission'
 import { replyUnlockWallet } from './replyUnlockWallet'
 import { replyOriginAccess } from './replyOriginAccess'
 import { replyPermission } from './replyPermission'
+import { handlePaymentUri } from './handlePaymentUri'
 import { executeRequest } from './executeRequest'
 import { retrySwap } from './retrySwap'
 import { sendTransaction } from './sendTransaction'
@@ -52,6 +53,7 @@ export {
   replyUnlockWallet,
   replyOriginAccess,
   replyPermission,
+  handlePaymentUri,
   executeRequest,
   retrySwap,
   sendTransaction,
