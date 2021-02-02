@@ -10,11 +10,12 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .notification-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   .get-eth-btn {
     width: 68px;
   }

@@ -20,5 +20,6 @@ export default {
   agentEndpoints: {
     testnet: ['https://liquality.io/swap-testnet/agent'],
     mainnet: ['https://liquality.io/swap/agent']
-  }
+  },
+  telegramUrl: 'https://t.me/liquality'
 }
