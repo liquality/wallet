@@ -27,8 +27,7 @@ const ALLOWED = [
 ]
 
 export const requestPermission = async ({ state, dispatch }, { origin, data }) => {
-  if (!state.unlockedAt) throw new Error('Wallet is locked. Unlock the wallet first.')
-  if (!state.activeWalletId) throw new Error('No active wallet found. Select a wallet first.')
+  await dispatch('requestUnlockWallet')
 
   let { asset, method, args } = data
 

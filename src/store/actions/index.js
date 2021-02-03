@@ -9,10 +9,13 @@ import { getUnusedAddresses } from './getUnusedAddresses'
 import { newSwap } from './newSwap'
 import { performNextAction } from './performNextAction'
 import { proxyMutation } from './proxyMutation'
+import { requestUnlockWallet } from './requestUnlockWallet'
 import { requestOriginAccess } from './requestOriginAccess'
 import { requestPermission } from './requestPermission'
+import { replyUnlockWallet } from './replyUnlockWallet'
 import { replyOriginAccess } from './replyOriginAccess'
 import { replyPermission } from './replyPermission'
+import { handlePaymentUri } from './handlePaymentUri'
 import { executeRequest } from './executeRequest'
 import { retrySwap } from './retrySwap'
 import { sendTransaction } from './sendTransaction'
@@ -44,10 +47,13 @@ export {
   newSwap,
   performNextAction,
   proxyMutation,
+  requestUnlockWallet,
   requestOriginAccess,
   requestPermission,
+  replyUnlockWallet,
   replyOriginAccess,
   replyPermission,
+  handlePaymentUri,
   executeRequest,
   retrySwap,
   sendTransaction,

@@ -11,6 +11,10 @@
       <InfoNotification v-if="ethRequired">
         <EthRequiredMessage />
       </InfoNotification>
+
+      <InfoNotification v-if="!market">
+        <NoLiquidityMessage />
+      </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
           <div class="form-group">
@@ -68,7 +72,10 @@
               <div class="float-right btn-group">
                 <v-popover offset="1" trigger="hover focus" class="mr-2">
                   <button
-                    :class="{ active: amountOption === 'min' }"
+                    :class="{
+                      active: amountOption === 'min' && market
+                     }"
+                    :disabled="!market"
                     class="btn btn-option"
                     @click="setSendAmount(min)"
                   >
@@ -83,7 +90,10 @@
                 </v-popover>
                 <v-popover offset="1" trigger="hover focus">
                   <button
-                    :class="{ active: amountOption === 'max' }"
+                     :class="{
+                      active: amountOption === 'max' && market
+                     }"
+                     :disabled="!market"
                     class="btn btn-option tooltip-target"
                     @click="setSendAmount(max)"
                   >
@@ -324,10 +334,13 @@
           <div class="mt-20">
             <label> Rate </label>
             <div class="d-flex align-items-center justify-content-between my-0 py-0">
-              <div>
+              <div v-if="market">
                 1 {{ asset }}&nbsp;=&nbsp;{{ bestRateBasedOnAmount }} &nbsp;{{
                   toAsset
                 }}
+              </div>
+              <div v-else>
+                1 {{ asset }}&nbsp;=&nbsp;N/A
               </div>
             </div>
           </div>
@@ -377,6 +390,7 @@ import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
+import NoLiquidityMessage from '@/components/NoLiquidityMessage'
 import {
   dpUI,
   prettyBalance,
@@ -405,6 +419,7 @@ export default {
     NavBar,
     InfoNotification,
     EthRequiredMessage,
+    NoLiquidityMessage,
     FeeSelector,
     ClockIcon,
     SwapIcon,
@@ -437,7 +452,7 @@ export default {
   },
   created () {
     this.asset = this.routeAsset
-    this.toAsset = Object.keys(this.selectedMarket)[0] || ''
+    this.toAsset = Object.keys(this.selectedMarket)[0] || 'N/A'
     this.sendAmount = this.min
     this.updateMarketData({ network: this.activeNetwork })
     this.updateFees({ asset: this.assetChain })

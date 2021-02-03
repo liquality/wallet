@@ -1,7 +1,7 @@
 /* global chrome */
 import { inject } from './broker/utils'
 import Script from './broker/Script'
-import { providerManager, ethereumProvider, bitcoinProvider } from './inject'
+import { providerManager, ethereumProvider, bitcoinProvider, paymentUriHandler } from './inject'
 import { AssetNetworks } from './store/factory/client'
 
 ;(new Script()).start()
@@ -21,3 +21,5 @@ chrome.storage.local.get(['liquality-wallet'], (storage) => {
     }))
   }
 })
+
+inject(paymentUriHandler())
