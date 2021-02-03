@@ -28,7 +28,7 @@ const ALLOWED = [
 
 export const requestPermission = async ({ state, dispatch }, { origin, data }) => {
   if (!state.unlockedAt) throw new Error('Wallet is locked. Unlock the wallet first.')
-  if (!state.activeWalletId) throw new Error('No active wallet found. Select a wallet first.')
+  if (!state.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
 
   let { asset, method, args } = data
 
@@ -76,6 +76,7 @@ export const requestPermission = async ({ state, dispatch }, { origin, data }) =
       let permissionRoute = '/permission/default'
       if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
       if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
+      if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'
 
       createPopup(`${permissionRoute}?${query}`)
     })

@@ -10,9 +10,17 @@
                      :class="{ 'infinity-rotate': updatingBalances }"
         />
         <div class="account_balance">
-          <div v-if="fiatRates[asset]" class="account_balance_fiat">${{prettyFiatBalance(balance, fiatRates[asset])}}</div>
+          <div class="account_balance_fiat">
+            <span v-if="fiatRates[asset]" >
+              ${{prettyFiatBalance(balance, fiatRates[asset])}}
+            </span>
+            <span v-else>&nbsp;</span>
+          </div>
           <div>
-            <span class="account_balance_value">{{balance}}</span>
+            <span class="account_balance_value"
+                  :style="{ fontSize: balanceFontSize }">
+              {{balance}}
+            </span>
             <span class="account_balance_code">{{asset}}</span>
           </div>
         </div>
@@ -104,6 +112,16 @@ export default {
     },
     assetHistory () {
       return this.activity.filter((item) => item.from === this.asset)
+    },
+    balanceFontSize () {
+      let fontSize = 50
+      if (this.balance.length > 6) {
+        fontSize = 30
+      } else if (this.balance.length > 13) {
+        fontSize = 15
+      }
+
+      return `${fontSize}px`
     }
   },
   methods: {
@@ -178,12 +196,12 @@ export default {
 
   &_balance {
     &_fiat {
+      min-height: 15px;
       margin-bottom: 6px;
     }
 
     &_value {
       line-height: 36px;
-      font-size: 50px;
       margin-right: 8px;
     }
 

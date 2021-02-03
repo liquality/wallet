@@ -18,9 +18,11 @@ import Settings from '@/views/Settings'
 import ManageAssets from '@/views/ManageAssets'
 import CustomToken from '@/views/CustomToken'
 
+import RequestUnlockWallet from '@/views/RequestUnlockWallet.vue'
 import Enable from '@/views/Enable.vue'
 import PermissionSend from '@/views/PermissionSend.vue'
 import PermissionSign from '@/views/PermissionSign.vue'
+import PermissionSignPsbt from '@/views/PermissionSignPsbt.vue'
 import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
@@ -135,6 +137,10 @@ const routes = [
 
   // Injection
   {
+    path: '/request-unlock',
+    component: RequestUnlockWallet
+  },
+  {
     path: '/enable',
     component: Enable
   },
@@ -145,6 +151,10 @@ const routes = [
   {
     path: '/permission/sign',
     component: PermissionSign
+  },
+  {
+    path: '/permission/signPsbt',
+    component: PermissionSignPsbt
   },
   {
     path: '/permission/default',
