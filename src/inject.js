@@ -81,7 +81,7 @@ async function handleRequest (req) {
     return '0x' + result.hash
   }
   if(req.method === 'eth_accounts') {
-    return await window.ethereum.enable()
+    return getAddresses()
   }
   return eth.getMethod('jsonrpc')(req.method, ...req.params)
 }
