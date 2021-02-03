@@ -6,7 +6,7 @@ export class EthereumLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async getAddress (path) {
-    return await super.callBridge({
+    return await super.callToBridge({
       method: 'getAddress',
       callType: 'ASYNC_METHOD',
       payload: [path]
@@ -14,7 +14,7 @@ export class EthereumLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async signPersonalMessage (path, message) {
-    return await super.callBridge({
+    return await super.callToBridge({
       method: 'signPersonalMessage',
       callType: 'ASYNC_METHOD',
       payload: [path, message]
@@ -22,7 +22,7 @@ export class EthereumLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async signTransaction (path, serializedTx) {
-    return await super.callBridge({
+    return await super.callToBridge({
       method: 'signTransaction',
       callType: 'ASYNC_METHOD',
       payload: [path, serializedTx]

@@ -1,6 +1,5 @@
 
 import {
-  BRIDGE_IFRAME_ID,
   BRIDGE_REPLEY_PREFIX,
   BRIDGE_IFRAME_NAME
 } from '../../utils/hw-bridge'
@@ -14,62 +13,48 @@ export class LedgerBridgeApp {
   }
 
   setupIframe () {
-    const iframe = document.createElement('iframe')
-    iframe.src = 'https://localhost:9000'
-
-    iframe.setAttribute('id', BRIDGE_IFRAME_ID)
-    iframe.setAttribute('name', BRIDGE_IFRAME_NAME)
-    iframe.setAttribute('style', 'height: 0%; width: 0%; border: 0; margin: 0;')
-    document.body.appendChild(iframe)
-  }
-
-  sendMessageToHWBridge ({ app, method, callType, payload }) {
-    const iframe = document.getElementById(BRIDGE_IFRAME_ID)
-
-    if (iframe) {
-      iframe.contentWindow.postMessage({
-        app,
-        method,
-        payload,
-        callType
-      }, '*')
-      console.log('message send to the bridge: ', app, method, payload, callType)
-    } else {
-      console.log('message not send: ', app, method, payload)
+    if (!document.getElementById(BRIDGE_IFRAME_NAME)) {
+      const frame = document.createElement('iframe')
+      frame.src = 'https://localhost:9000'
+      frame.setAttribute('name', BRIDGE_IFRAME_NAME)
+      frame.setAttribute('id', BRIDGE_IFRAME_NAME)
+      document.head.appendChild(frame)
     }
   }
 
   sendMessage ({ method, callType, payload }) {
-    this.sendMessageToHWBridge({ app: this._app, method, payload, callType })
+    const frame = document.getElementById(BRIDGE_IFRAME_NAME)
+    frame.contentWindow.postMessage({
+      app: this._app,
+      method,
+      payload,
+      callType
+    }, '*')
   }
 
   getReplySignature (method, callType) {
     return `${BRIDGE_REPLEY_PREFIX}::${this._app}::${method}::${callType}`
   }
 
-  async callBridge ({ method, callType, payload }) {
+  async callToBridge ({ method, callType, payload }) {
     const replySignature = this.getReplySignature(method, callType)
+    let responded = false
     return new Promise((resolve, reject) => {
-      chrome.runtime.onMessage.addListener(
-        (request, sender, sendResponse) => {
-          console.log('chrome.runtime.onMessage', request)
-          sendResponse({ message: 'hi to you' })
-        })
-
       chrome.runtime.onMessageExternal.addListener(
-        (request, sender, sendResponse) => {
-          console.log('chrome.runtime.onMessageExternal', request)
-          sendResponse({ message: 'hi to you' })
-        })
+        async (request, sender, sendResponse) => {
+          if (!request) {
+            return
+          }
 
-      chrome.runtime.onMessageExternal.addListener(
-        ({
-          action,
-          success,
-          payload
-        }, sender, sendResponse) => {
-          console.log('chrome.runtime.onMessage.addListener', payload)
+          const {
+            action,
+            success,
+            payload
+          } = request
           if (replySignature === action) {
+            console.log('[LEDGER-BRIDGE]: GOT MESAGE FROM IFRAME', request)
+            responded = true
+            sendResponse({ success })
             if (success) {
               resolve(payload)
             } else {
@@ -77,17 +62,17 @@ export class LedgerBridgeApp {
             }
           }
 
-          sendResponse(payload)
+          setTimeout(() => {
+            if (!responded) {
+              sendResponse({ success: false })
+              reject(new Error(
+            `Timeout calling the hw bridge: ${this._app}.${method}`
+              ))
+            }
+          }, 60000)
           return true
-        }
-      )
-
+        })
       this.sendMessage({ method, callType, payload })
-      setTimeout(() => {
-        reject(new Error(
-          `Timeout calling the hw bridge: ${this._app}.${method}`
-        ))
-      }, 300000)
     })
   }
 }
