@@ -8,7 +8,7 @@ import BitcoinEarnFeeProvider from '@liquality/bitcoin-earn-fee-provider'
 import BitcoinRpcFeeProvider from '@liquality/bitcoin-rpc-fee-provider'
 
 import EthereumRpcProvider from '@liquality/ethereum-rpc-provider'
-import EthereumJsWalletProvider from '@liquality/ethereum-js-wallet-provider'
+// import EthereumJsWalletProvider from '@liquality/ethereum-js-wallet-provider'
 import { EthereumLedgerBridgeProvider } from './EthereumLedgerBridgeProvider'
 import EthereumSwapProvider from '@liquality/ethereum-swap-provider'
 import EthereumScraperSwapFindProvider from '@liquality/ethereum-scraper-swap-find-provider'
@@ -62,7 +62,7 @@ function createBtcClient (network, mnemonic) {
 function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, mnemonic) {
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider(rpcApi))
-  ethClient.addProvider(new EthereumJsWalletProvider(network, mnemonic))
+  // ethClient.addProvider(new EthereumJsWalletProvider(network, mnemonic))
   ethClient.addProvider(new EthereumLedgerBridgeProvider())
   if (isERC20(asset)) {
     const contractAddress = cryptoassets[asset].contractAddress
