@@ -2,7 +2,7 @@
 import {
   BRIDGE_REPLEY_PREFIX,
   BRIDGE_IFRAME_NAME
-} from '../../utils/hw-bridge'
+} from '../../../utils/hw-bridge'
 
 export class LedgerBridgeApp {
   _app

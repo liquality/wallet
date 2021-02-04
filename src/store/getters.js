@@ -21,14 +21,14 @@ export default {
     return network => buildConfig.agentEndpoints[network]
   },
   client (state) {
-    return (network, walletId, asset) => {
-      const cacheKey = [asset, network, walletId].join('-')
+    return (network, walletId, asset, clientType) => {
+      const cacheKey = [asset, network, walletId, clientType].join('-')
 
       const cachedClient = clientCache[cacheKey]
       if (cachedClient) return cachedClient
 
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
-      const client = createClient(asset, network, mnemonic)
+      const client = createClient(asset, network, mnemonic, clientType)
       clientCache[cacheKey] = client
 
       return client
