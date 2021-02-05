@@ -79,7 +79,7 @@ function createBtcClient (network, mnemonic, walletType) {
 function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, mnemonic, walletType) {
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider(rpcApi))
-  if (walletType.contains('ledger')) {
+  if (walletType === 'ethereum_ledger') {
     ethClient.addProvider(new EthereumLedgerBridgeProvider(network))
   } else {
     ethClient.addProvider(new EthereumJsWalletProvider(network, mnemonic))

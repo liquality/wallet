@@ -20,6 +20,8 @@ export default {
   enabledAssets: {},
   customTokens: {},
 
+  accounts: {},
+
   addresses: {},
   balances: {},
   fiatRates: {},
