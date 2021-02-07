@@ -1,15 +1,16 @@
 <template>
   <div class="head">
-    <router-link to="/wallet"><LogoIcon class="head_logo" /></router-link>
+    <router-link to="/wallet" class="head_logo" ><LogoIcon /></router-link>
     <div class="head_network" @click.stop="showNetworks = !showNetworks">
       {{ activeNetwork }}
       <ChevronUpIcon v-if="showNetworks" />
       <ChevronDownIcon v-else />
+      <ul class="menu_list" v-if="showNetworks" v-click-away="hideNetworks">
+        <li @click="switchNetwork('mainnet')">Mainnet</li>
+        <li @click="switchNetwork('testnet')">Testnet</li>
+      </ul>
     </div>
-    <ul class="menu_list" v-if="showNetworks" v-click-away="hideNetworks">
-      <li @click="switchNetwork('mainnet')">Mainnet</li>
-      <li @click="switchNetwork('testnet')">Testnet</li>
-    </ul>
+    <HeadMenu />
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import clickAway from '@/directives/clickAway'
 import LogoIcon from '@/assets/icons/logo_icon.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import HeadMenu from '@/components/HeadMenu'
 
 export default {
   directives: {
@@ -28,7 +30,8 @@ export default {
   components: {
     ChevronUpIcon,
     ChevronDownIcon,
-    LogoIcon
+    LogoIcon,
+    HeadMenu
   },
   data () {
     return {
@@ -59,11 +62,11 @@ export default {
   position: relative;
   height: 36px;
   border-bottom: 1px solid $hr-border-color;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
 
-  &_logo {
-    position: absolute;
-    top: 10px;
-    left: 20px;
+  &_logo, &_logo svg {
     height: 12px;
   }
 

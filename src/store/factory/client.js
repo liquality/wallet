@@ -55,7 +55,7 @@ function createBtcClient (network, mnemonic, walletType) {
   const btcClient = new Client()
   btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2))
 
-  if (walletType.contains('ledger')) {
+  if (walletType.includes('ledger')) {
     let addressType
     if (walletType === 'bitcoin_ledger_legacy') {
       addressType = 'legacy'

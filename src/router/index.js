@@ -27,6 +27,7 @@ import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import AssetList from '@/views/AssetList.vue'
+import AddHardwareWallet from '@/views/AddHardwareWallet.vue'
 
 Vue.use(VueRouter)
 
@@ -159,6 +160,12 @@ const routes = [
   {
     path: '/permission/default',
     component: Permission
+  },
+
+  // hardware wallet
+  {
+    path: '/add-hardware-wallet',
+    component: AddHardwareWallet
   }
   // Injection
 ]
