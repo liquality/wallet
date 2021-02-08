@@ -1,9 +1,8 @@
 export const getLedgerAddresses = async (
-  { state, commit, getters },
-  { asset, walletType }
+  { commit, getters },
+  { network, walletId, asset, walletType }
 ) => {
-  const { activeNetwork, activeWalletId } = state
-  const client = getters.client(activeNetwork, activeWalletId, asset, walletType)
+  const client = getters.client(network, walletId, asset, walletType)
   const addresses = await client.wallet.getAddresses()
   return addresses
 }

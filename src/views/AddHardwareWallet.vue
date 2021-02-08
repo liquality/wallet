@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import NavBar from '@/components/NavBar'
 import AssetDropdown from '@/components/AssetDropdown'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -129,6 +129,8 @@ export default {
       try {
         if (this.selectedAsset) {
           const payload = {
+            network: this.activeNetwork,
+            walletId: this.activeWalletId,
             asset: this.selectedAsset.name,
             walletType: this.selectedAsset.type
           }
@@ -153,17 +155,20 @@ export default {
     async unlock () {
       // create the account
       if (this.selectedAccount) {
-        const { chain, type, address, path } = this.selectedAccount
+        const { chain, type, address } = this.selectedAccount
         const data = {
           name: `Ledger ${this.selectedAsset.name}`,
           chain,
           addresses: [address],
           assets: [this.selectedAsset.name],
-          type,
-          path
+          type
         }
 
-        const account = await this.createAccount(data)
+        const account = await this.createAccount({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          account: data
+        })
         console.log('ACCOUNT CREATED: ', account)
       }
     },
@@ -181,6 +186,10 @@ export default {
     }
   },
   computed: {
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId'
+    ]),
     ledgerOptions () {
       return LEDGER_OPTIONS
     },
