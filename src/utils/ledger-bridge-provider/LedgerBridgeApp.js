@@ -2,17 +2,17 @@
 import {
   BRIDGE_REPLEY_PREFIX,
   BRIDGE_IFRAME_NAME
-} from '../../../utils/hw-bridge'
+} from './config'
 
 export class LedgerBridgeApp {
   _app
 
   constructor (app) {
     this._app = app
-    this.setupIframe()
+    LedgerBridgeApp.setupIframe()
   }
 
-  setupIframe () {
+  static setupIframe () {
     if (!document.getElementById(BRIDGE_IFRAME_NAME)) {
       const frame = document.createElement('iframe')
       frame.src = 'https://localhost:9000'
@@ -37,6 +37,7 @@ export class LedgerBridgeApp {
   }
 
   async callToBridge ({ method, callType, payload }) {
+    console.log('[LEDGER-BRIDGE]:', { method, callType, payload })
     const replySignature = this.getReplySignature(method, callType)
     let responded = false
     return new Promise((resolve, reject) => {

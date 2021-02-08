@@ -3,7 +3,7 @@
       v-click-away="hide">
   <button class="btn dropdown-toggle"
           @click="toogle">
-     <div class="form">
+     <div class="form" v-if="selected">
         <div class="input-group">
                 <img
                 :src="getAssetIcon(selected.name)"
@@ -86,7 +86,7 @@ export default {
   },
   computed: {
     items () {
-      return this.assets.filter(a => a.name !== this.selected.name)
+      return this.assets.filter(a => a.name !== this.selected?.name)
     }
   },
   watch: {

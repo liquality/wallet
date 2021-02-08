@@ -20,14 +20,19 @@ import EthereumErc20ScraperSwapFindProvider from '@liquality/ethereum-erc20-scra
 
 import {
   BitcoinLedgerBridgeProvider,
-  EthereumLedgerBridgeProvider
-} from './ledger-bridge-provider'
+  EthereumLedgerBridgeProvider,
+  LEDGER_BITCOIN_OPTIONS,
+  LedgerBridgeApp
+} from '@/utils/ledger-bridge-provider'
 
 import BitcoinNetworks from '@liquality/bitcoin-networks'
 import EthereumNetworks from '@liquality/ethereum-networks'
 
 import { isERC20 } from '../../utils/asset'
 import cryptoassets from '../../utils/cryptoassets'
+
+// initialize eary the ledger bridge
+LedgerBridgeApp.setupIframe()
 
 export const Networks = ['mainnet', 'testnet']
 
@@ -56,12 +61,8 @@ function createBtcClient (network, mnemonic, walletType) {
   btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2))
 
   if (walletType.includes('ledger')) {
-    let addressType
-    if (walletType === 'bitcoin_ledger_legacy') {
-      addressType = 'legacy'
-    } else if (walletType === 'bitcoin_ledger_nagive_segwit') {
-      addressType = 'bech32'
-    }
+    const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
+    const { addressType } = option
     const ledger = new BitcoinLedgerBridgeProvider(bitcoinNetwork, addressType)
     btcClient.addProvider(ledger)
   } else {

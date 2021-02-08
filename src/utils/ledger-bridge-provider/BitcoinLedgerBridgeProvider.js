@@ -1,6 +1,6 @@
 import EthereumLedgerProvider from '@liquality/bitcoin-ledger-provider'
 import { BitcoinLedgerBridgeApp } from './BitcoinLedgerBridgeApp'
-import { version } from '../../../../package.json'
+import { version } from '../../../package.json'
 
 export class BitcoinLedgerBridgeProvider extends EthereumLedgerProvider {
   _ledgerApp = null

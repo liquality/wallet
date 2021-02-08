@@ -104,13 +104,15 @@ export default {
   // ACCOUNTS
   CREATE_ACCOUNT (state, account) {
     const { walletId } = account
+    if (!state.accounts[walletId]) {
+      state.accounts[walletId] = []
+    }
     state.accounts[walletId].push(account)
   },
   UPDATE_ACCOUNT (state,
     {
       id,
       walletId,
-      type,
       name,
       addresses,
       assets,
@@ -118,32 +120,35 @@ export default {
     }
   ) {
     const accounts = state.accounts[walletId]
-    const index = accounts.findIndex(
-      (account) => account.id === id
-    )
+    if (accounts) {
+      const index = accounts.findIndex(
+        (account) => account.id === id
+      )
 
-    if (index >= 0) {
-      const account = accounts[index]
-      const updatedAccount = {
-        ...account,
-        name,
-        addresses,
-        assets,
-        updatedAt
+      if (index >= 0) {
+        const account = accounts[index]
+        const updatedAccount = {
+          ...account,
+          name,
+          addresses,
+          assets,
+          updatedAt
+        }
+        const updatedAccounts = accounts.splice(index, 1, updatedAccount)
+        Vue.set(state.accounts, walletId, [...updatedAccounts])
       }
-      const updatedAccounts = accounts.splice(index, 1, updatedAccount)
-      Vue.set(state.accounts, walletId, [...updatedAccounts])
     }
   },
   REMOVE_ACCOUNT (state, { walletId, id }) {
     const accounts = state.accounts[walletId]
-    const index = accounts.findIndex(
-      (account) => account.id === id
-    )
-
-    if (index >= 0) {
-      const updatedAccounts = accounts.splice(index, 1)
-      Vue.set(state.accounts, walletId, [...updatedAccounts])
+    if (accounts) {
+      const index = accounts.findIndex(
+        (account) => account.id === id
+      )
+      if (index >= 0) {
+        const updatedAccounts = accounts.splice(index, 1)
+        Vue.set(state.accounts, walletId, [...updatedAccounts])
+      }
     }
   }
 }

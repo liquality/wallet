@@ -1,14 +1,23 @@
 import { v4 as uuidv4 } from 'uuid'
 
 export const createAccount = async (
-  { commit },
-  { walletId, name, chain, addresses, assets, type }) => {
+  { state, commit },
+  {
+    name,
+    chain,
+    addresses,
+    assets,
+    type,
+    path
+  }) => {
+  const { activeWalletId } = state
   const id = uuidv4()
   const createdAt = Date.now()
   const account = {
     id,
-    walletId,
+    walletId: activeWalletId,
     type,
+    path,
     name,
     chain,
     addresses,
