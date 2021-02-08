@@ -49,9 +49,9 @@ export default {
     hideNetworks () {
       this.showNetworks = false
     },
-    switchNetwork (network) {
+    async switchNetwork (network) {
+      await this.changeActiveNetwork({ network })
       this.showNetworks = false
-      this.changeActiveNetwork({ network })
     }
   }
 }

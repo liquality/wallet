@@ -102,52 +102,58 @@ export default {
   },
 
   // ACCOUNTS
-  CREATE_ACCOUNT (state, account) {
-    const { walletId } = account
+  CREATE_ACCOUNT (state, { network, walletId, account }) {
     if (!state.accounts[walletId]) {
-      state.accounts[walletId] = []
+      Vue.set(state.accounts, walletId, {
+        [network]: []
+      })
     }
-    state.accounts[walletId].push(account)
+    if (!state.accounts[walletId][network]) {
+      Vue.set(state.accounts[walletId], network, [])
+    }
+
+    state.accounts[walletId][network].push(account)
   },
-  UPDATE_ACCOUNT (state,
-    {
+  UPDATE_ACCOUNT (state, { network, walletId, account }) {
+    const {
       id,
-      walletId,
       name,
       addresses,
       assets,
+      balances,
       updatedAt
-    }
-  ) {
-    const accounts = state.accounts[walletId]
+    } = account
+    const accounts = state.accounts[walletId][network]
     if (accounts) {
       const index = accounts.findIndex(
-        (account) => account.id === id
+        (a) => a.id === id
       )
 
       if (index >= 0) {
-        const account = accounts[index]
+        const _account = accounts[index]
         const updatedAccount = {
-          ...account,
+          ..._account,
           name,
           addresses,
+          balances,
           assets,
           updatedAt
         }
         const updatedAccounts = accounts.splice(index, 1, updatedAccount)
-        Vue.set(state.accounts, walletId, [...updatedAccounts])
+        Vue.set(state.accounts[walletId], network, [...updatedAccounts])
       }
     }
   },
-  REMOVE_ACCOUNT (state, { walletId, id }) {
-    const accounts = state.accounts[walletId]
+  REMOVE_ACCOUNT (state, { walletId, id, network }) {
+    const accounts = state.accounts[walletId][network]
+
     if (accounts) {
       const index = accounts.findIndex(
         (account) => account.id === id
       )
       if (index >= 0) {
         const updatedAccounts = accounts.splice(index, 1)
-        Vue.set(state.accounts, walletId, [...updatedAccounts])
+        Vue.set(state.accounts[walletId], network, [...updatedAccounts])
       }
     }
   }

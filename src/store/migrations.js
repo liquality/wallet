@@ -1,5 +1,7 @@
 import { cloneDeep } from 'lodash-es'
 import buildConfig from '../build.config'
+import { accountCreator } from '@/utils/accounts'
+import { createClient } from '@/store/factory/client'
 
 const migrations = [
   { // Merely sets up the version
@@ -45,6 +47,57 @@ const migrations = [
       }
 
       return { ...state }
+    }
+  },
+  { // multiple account support
+    version: 5,
+    migrate: async (state) => {
+      const { enabledAssets } = state
+      const networks = ['mainnet', 'testnet']
+      const chains = ['BTC', 'ETH', 'RBTC']
+      const accounts = {}
+
+      state.wallets.forEach(wallet => {
+        const { id, mnemonic } = wallet
+        if (!accounts[id]) {
+          accounts[id] = {
+            mainnet: [],
+            testnet: []
+          }
+        }
+
+        networks.forEach(network => {
+          chains.forEach(chain => {
+            let assets = []
+            if (enabledAssets[network]?.[id]) {
+              assets = Object.keys(enabledAssets[network]?.[id])
+            }
+            const client = createClient(chain, network, mnemonic)
+            const addresses = client.wallet
+              .getUsedAddresses()
+              .map(a => a.address)
+
+            const _account = accountCreator(
+              {
+                walletId: id,
+                account: {
+                  name: `${chain} 1`,
+                  chain,
+                  addresses,
+                  assets,
+                  balances: {},
+                  type: 'default'
+                }
+              })
+
+            accounts[id][network].push(_account)
+          })
+        })
+      })
+
+      delete state.addresses
+      delete state.balances
+      return { ...state, accounts }
     }
   }
 ]

@@ -1,11 +1,12 @@
-export const getAccount = async ({ state }, { walletId, id }) => {
+export const getAccount = async ({ state }, { network, walletId, id }) => {
   const { accounts } = state
-  const index = accounts[walletId].findIndex(
-    (account) => account.id === id
-  )
-
-  if (index >= 0) {
-    return accounts[walletId][index]
+  if (accounts[walletId] && accounts[walletId][network]) {
+    const index = accounts[walletId][network].findIndex(
+      (account) => account.id === id
+    )
+    if (index >= 0) {
+      return accounts[walletId][network][index]
+    }
   }
 
   return null
