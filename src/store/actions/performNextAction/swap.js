@@ -114,7 +114,16 @@ async function findCounterPartyInitiation ({ getters }, { order, network, wallet
       const isVerified = await toClient.swap.verifyInitiateSwapTransaction(
         toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
       )
-      if (isVerified) {
+
+      // ERC20 swaps have separate funding tx. Ensures funding tx has enough confirmations
+      const fundingTransaction = await toClient.swap.findFundSwapTransaction(
+        toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
+      )
+      const fundingConfirmed = fundingTransaction
+        ? fundingTransaction.confirmations >= cryptoassets[order.to].safeConfirmations
+        : true
+
+      if (isVerified && fundingConfirmed) {
         return {
           toFundHash,
           status: 'CONFIRM_COUNTER_PARTY_INITIATION'
