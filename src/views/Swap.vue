@@ -724,18 +724,16 @@ export default {
       return BN(this.safeAmount).plus(this.totalFees[this.assetChain])
     },
     totalToSendInFiat () {
-      const amount = BN(this.stateSendAmountFiat).plus(
-        prettyFiatBalance(this.totalFees[this.assetChain], this.fiatRates[this.assetChain])
-      )
+      const fee = BN(prettyFiatBalance(this.totalFees[this.assetChain], this.fiatRates[this.assetChain]))
+      const amount = BN(this.stateSendAmountFiat).plus(fee)
       return amount.toFormat(2)
     },
     receiveAmountSameAsset () {
       return BN(this.receiveAmount).minus(BN(this.totalFees[this.toAssetChain]))
     },
     totalToReceiveInFiat () {
-      const amount = BN(this.stateReceiveAmountFiat).minus(
-        prettyFiatBalance(this.totalFees[this.toAssetChain], this.fiatRates[this.toAssetChain])
-      )
+      const fee = prettyFiatBalance(this.totalFees[this.toAssetChain], this.fiatRates[this.toAssetChain])
+      const amount = BN(this.stateReceiveAmountFiat).minus(fee)
       return amount.toFormat(2)
     },
     assetList () {
