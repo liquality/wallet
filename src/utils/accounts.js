@@ -21,7 +21,7 @@ export const accountCreator = (payload) => {
     chain,
     addresses,
     assets,
-    balances,
+    balances: balances || {},
     createdAt,
     updatedAt: null
   }

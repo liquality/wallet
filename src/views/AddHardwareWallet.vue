@@ -171,7 +171,7 @@ export default {
           account: data
         })
         console.log('ACCOUNT CREATED: ', account)
-        this.$router.replace('/wallet')
+        this.goToOverview()
       }
     },
     goToOverview () {

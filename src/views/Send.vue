@@ -3,7 +3,7 @@
     <div class="send" v-if="!showConfirm">
       <NavBar
         showBack="true"
-        :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/account/${this.account.id}/${this.asset}`"
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Send
@@ -204,7 +204,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar'
@@ -242,16 +242,25 @@ export default {
     }
   },
   props: {
-    asset: String
+    asset: String,
+    accountId: String
   },
   computed: {
     ...mapState([
       'activeNetwork',
       'activeWalletId',
-      'balances',
       'fees',
       'fiatRates'
     ]),
+    ...mapGetters([
+      'accountItem'
+    ]),
+    account () {
+      return this.accountItem(this.accountId)
+    },
+    balance () {
+      return this.account.balances[this.asset] || 0
+    },
     routeSource () {
       return this.$route.query.source || null
     },
@@ -299,15 +308,13 @@ export default {
       return this.sendFee.toString().substring(0, 8)
     },
     available () {
-      const balance = this.balances[this.activeNetwork][this.activeWalletId][
-        this.asset
-      ]
       const fee = cryptoassets[this.assetChain].currencyToUnit(this.totalFee)
-      const available =
-        this.assetChain !== this.asset
-          ? BN(balance)
-          : BN.max(BN(balance).minus(fee), 0)
-      return prettyBalance(available, this.asset)
+      if (this.assetChain !== this.asset) {
+        const available = BN.max(BN(this.balance).minus(fee), 0)
+        return prettyBalance(BN(available), this.asset)
+      } else {
+        return prettyBalance(BN(this.balance), this.asset)
+      }
     },
     amountInFiat () {
       return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
@@ -353,11 +360,12 @@ export default {
         walletId: this.activeWalletId,
         asset: this.asset,
         to: this.address,
+        accountId: this.account.id,
         amount,
         fee
       })
 
-      this.$router.replace(`/account/${this.asset}`)
+      this.$router.replace(`/account/${this.accountId}/${this.asset}`)
     },
     setMaxAmount () {
       this.amount = this.available

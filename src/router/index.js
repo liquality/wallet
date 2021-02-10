@@ -108,22 +108,22 @@ const routes = [
   },
   {
     name: 'Account',
-    path: '/account/:asset',
+    path: '/account/:accountId/:asset',
     component: Account,
     props: true
   },
   {
-    path: '/account/:asset/send',
+    path: '/account/:accountId/:asset/send',
     component: Send,
     props: true
   },
   {
-    path: '/account/:asset/receive',
+    path: '/account/:accountId/:asset/receive',
     component: Receive,
     props: true
   },
   {
-    path: '/account/:routeAsset/swap',
+    path: '/account/:accountId/:routeAsset/swap',
     component: Swap,
     props: true
   },

@@ -26,19 +26,19 @@
         </div>
         <div v-if="address" class="account_address">
           <button class="btn btn-outline-light"
-            @click="copyAddress()"
+            @click="copyAddress"
             v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
             {{ shortenAddress(this.address) }}
           </button>
         </div>
         <div class="account_actions">
-          <router-link :to="'/account/' + asset + '/send'"><button class="account_actions_button">
+          <router-link :to="`/account/${account.id}/${asset}/send`"><button class="account_actions_button">
             <div class="account_actions_button_wrapper"><SendIcon class="account_actions_button_icon" /></div>Send
           </button></router-link>
-          <router-link :to="'/account/' + asset + '/swap'"><button class="account_actions_button">
+          <router-link :to="`/account/${account.id}/${asset}/swap`"><button class="account_actions_button">
             <div class="account_actions_button_wrapper"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></div>Swap
           </button></router-link>
-          <router-link v-bind:to="'/account/' + asset + '/receive'"><button class="account_actions_button">
+          <router-link v-bind:to="`/account/${account.id}/${asset}/receive`"><button class="account_actions_button">
             <div class="account_actions_button_wrapper"><ReceiveIcon class="account_actions_button_icon" /></div>Receive
           </button></router-link>
         </div>
@@ -88,9 +88,9 @@ export default {
       updatingBalances: false
     }
   },
-  props: ['asset'],
+  props: ['accountId', 'asset'],
   computed: {
-    ...mapGetters(['activity']),
+    ...mapGetters(['activity', 'accountItem']),
     ...mapState([
       'activeWalletId',
       'activeNetwork',
@@ -100,15 +100,18 @@ export default {
       'fiatRates',
       'marketData'
     ]),
+    account () {
+      return this.accountItem(this.accountId)
+    },
     balance () {
-      return prettyBalance(this.balances[this.activeNetwork][this.activeWalletId][this.asset], this.asset)
+      return prettyBalance(this.account?.balances[this.asset] || 0, this.asset)
     },
     address () {
-      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
-      return address && cryptoassets[this.asset].formatAddress(address)
-    },
-    markets () {
-      return this.marketData[this.activeNetwork][this.asset]
+      const address = this.account?.addresses[0]
+      if (address) {
+        return cryptoassets[this.asset].formatAddress(address)
+      }
+      return ''
     },
     assetHistory () {
       return this.activity.filter((item) => item.from === this.asset)
@@ -144,13 +147,15 @@ export default {
     }
   },
   async created () {
+    console.log('accountId', this.accountId)
+    debugger
     if (!this.address) {
       await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
     }
     this.activityData = [...this.assetHistory]
   },
   watch: {
-    activeNetwork (newVal, oldVal) {
+    activeNetwork () {
       this.activityData = [...this.assetHistory]
     }
   }

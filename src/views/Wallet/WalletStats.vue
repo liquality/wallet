@@ -1,14 +1,15 @@
 <template>
    <div class="wallet-stats">
-      <div v-if="networkAssetsLoaded">
+     <span v-if="loading">Loading ...</span>
+      <div v-else>
         <div>
             <span class="wallet-stats_total">
-                {{ totalFiatBalance }}
+                {{ total }}
             </span>
             <span>USD</span>
         </div>
         <span>
-            {{assetsWithBalance.length}} Asset{{ assetsWithBalance.length === 1 ? '' : 's' }}
+            {{accountsData.length}} Asset{{ accountsData.length === 1 ? '' : 's' }}
         </span>
          <div class="wallet-actions">
           <router-link to="/assets/send"
@@ -28,17 +29,15 @@
           </router-link>
         </div>
       </div>
-      <span v-else>Loading ...</span>
     </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import BN from 'bignumber.js'
-import cryptoassets from '@/utils/cryptoassets'
+import { mapGetters } from 'vuex'
 import SendIcon from '@/assets/icons/send_o.svg'
 import ReceiveIcon from '@/assets/icons/receive_o.svg'
 import SwapIcon from '@/assets/icons/swap_o.svg'
+import { formatFiat } from '@/utils/coinFormatter'
 
 export default {
   components: {
@@ -46,18 +45,11 @@ export default {
     ReceiveIcon,
     SwapIcon
   },
+  props: ['loading'],
   computed: {
-    ...mapState([
-      'fiatRates'
-    ]),
-    ...mapGetters(['networkAssetsLoaded', 'assetsWithBalance']),
-    totalFiatBalance () {
-      const total = this.assetsWithBalance.reduce((accum, [asset, balance]) => {
-        balance = cryptoassets[asset].unitToCurrency(balance)
-        const balanceFiat = this.fiatRates[asset] ? BN(balance).times(this.fiatRates[asset]) : 0
-        return accum.plus(balanceFiat)
-      }, BN(0))
-      return total.toFormat(2)
+    ...mapGetters(['totalFiatBalance', 'accountsData']),
+    total () {
+      return formatFiat(this.totalFiatBalance)
     }
   }
 }

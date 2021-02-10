@@ -82,10 +82,6 @@ export default {
     const { orderedBalances } = getters
     return orderedBalances.filter(([asset, balance]) => balance > 0)
   },
-  networkAssetsLoaded (_state, getters) {
-    const { networkAssets, activeWalletFiatBalances } = getters
-    return activeWalletFiatBalances && Object.keys(activeWalletFiatBalances).length >= networkAssets.length
-  },
   activity (state) {
     const { history, activeNetwork, activeWalletId } = state
     if (!history[activeNetwork]) return []
@@ -93,16 +89,25 @@ export default {
     return history[activeNetwork][activeWalletId].slice().reverse()
   },
   totalFiatBalance (_state, getters) {
-    const { activeWalletFiatBalances } = getters
-    return activeWalletFiatBalances.reduce((accum, { balance }) => {
-      return BN(accum).plus(BN(balance || 0))
-    })
+    const { accountsData } = getters
+    return accountsData
+      .filter(a => a.type === 'default')
+      .map(a => a.totalFiatBalance)
+      .reduce((accum, balance) => {
+        return accum.plus(BN(balance || 0))
+      }, BN(0))
   },
-  accountsWithBalances (state, getters) {
+  accountItem (state, getters) {
+    const { accountsData } = getters
+    return (accountId) => {
+      const account = accountsData.find(a => a.id === accountId)
+      return account
+    }
+  },
+  accountsData (state, getters) {
     const { accounts, activeNetwork, activeWalletId } = state
     const { accountFiatBalance, assetFiatBalance } = getters
     return accounts[activeWalletId]?.[activeNetwork]
-            .filter(a => a.type === 'default')
             .map(account => {
               const totalFiatBalance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
               const fiatBalances = Object.entries(account.balances)
@@ -112,26 +117,13 @@ export default {
                     ...accum,
                     [asset]: fiat
                   }
-                })
+                }, {})
               return {
                 ...account,
                 fiatBalances,
                 totalFiatBalance
               }
             })
-  },
-  activeWalletFiatBalances (state, getters) {
-    const { accounts, activeNetwork, activeWalletId } = state
-    const { accountFiatBalance } = getters
-    return accounts[activeWalletId]?.[activeNetwork]
-            .filter(a => a.type === 'default')
-            .reduce((balances, account) => {
-              const balance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
-              return {
-                ...balances,
-                [account.id]: balance
-              }
-            }) || {}
   },
   accountFiatBalance (state, getters) {
     const { accounts } = state
@@ -143,7 +135,7 @@ export default {
           .reduce((accum, [asset, balance]) => {
             const fiat = assetFiatBalance(asset, balance)
             return accum.plus(fiat)
-          })
+          }, BN(0))
       }
       return BN(0)
     }

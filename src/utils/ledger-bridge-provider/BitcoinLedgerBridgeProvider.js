@@ -8,7 +8,7 @@ export class BitcoinLedgerBridgeProvider extends EthereumLedgerProvider {
   async getApp () {
     return new Promise((resolve) => {
       if (!this._ledgerApp) {
-        this._ledgerApp = new BitcoinLedgerBridgeApp()
+        this._ledgerApp = new Proxy(new BitcoinLedgerBridgeApp(), { get: this.errorProxy.bind(this) })
       }
       resolve(this._ledgerApp)
     })

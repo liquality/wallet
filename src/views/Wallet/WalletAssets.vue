@@ -1,20 +1,40 @@
 <template>
-   <div v-if="networkWalletBalances">
-       <ListItem v-for="([asset, balance]) in orderedBalances"
+  <div>
+    <div v-for="account in accountsData" :key="account.id">
+      <ListItem>
+          <template #icon>
+            <img :src="getAssetIcon(account.chain)"
+                 class="asset-icon" />
+          </template>
+          *** {{ account.name }}
+          <template #detail>
+            <span v-if="account.type && account.type.includes('ledger')">
+              Ledger
+            </span>
+            <span v-else>
+              Default
+            </span>
+          </template>
+          <template #detail-sub v-if="account.totalFiatBalance">
+            ${{ account.totalFiatBalance.toFormat(2) }}
+          </template>
+      </ListItem>
+      <ListItem v-for="asset in account.assets"
                  :key="asset"
-                 :to="'/account/' + asset">
+                 :to="`/account/${account.id}/${asset}`">
           <template #icon>
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </template>
           {{ getAssetName(asset) }}
-          <template #detail>
-            {{ prettyBalance(balance, asset) }} {{asset}}
+          <template #detail v-if="account.balances[asset]">
+            {{ prettyBalance(account.balances[asset], asset) }} {{asset}}
           </template>
-          <template #detail-sub v-if="fiatRates[asset]">
-            ${{prettyFiat(balance, asset)}}
+          <template #detail-sub v-if="account.fiatBalances[asset]">
+            ${{ account.fiatBalances[asset].toFormat(2) }}
           </template>
       </ListItem>
-   </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -29,8 +49,8 @@ export default {
     ListItem
   },
   computed: {
-    ...mapState(['fiatRates']),
-    ...mapGetters(['orderedBalances', 'networkWalletBalances'])
+    ...mapState(['fiatRates', 'activeWalletId']),
+    ...mapGetters(['accountsData'])
   },
   methods: {
     getAssetIcon,

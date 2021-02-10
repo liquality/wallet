@@ -3,7 +3,7 @@
     <div class="swap" v-if="!showConfirm">
       <NavBar
         showBack="true"
-        :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/account/${this.account.id}/${this.asset}`"
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Swap
@@ -448,7 +448,8 @@ export default {
     }
   },
   props: {
-    routeAsset: String
+    routeAsset: String,
+    accountId: String
   },
   created () {
     this.asset = this.routeAsset
@@ -463,8 +464,13 @@ export default {
       [this.assetChain]: 'average',
       [this.toAssetChain]: 'average'
     }
+    console.log('account id', this.accountId)
+    console.log('account', this.account)
   },
   computed: {
+    account () {
+      return this.accountItem(this.accountId)
+    },
     routeSource () {
       return this.$route.query.source || null
     },
@@ -536,14 +542,12 @@ export default {
       'activeNetwork',
       'activeWalletId',
       'marketData',
-      'balances',
       'fees',
       'fiatRates',
-      'addresses',
       'activeWalletId',
       'activeNetwork'
     ]),
-    ...mapGetters(['assetsWithBalance']),
+    ...mapGetters(['assetsWithBalance', 'accountItem']),
     assets () {
       return this.assetsWithBalance.filter(
         ([asset]) => asset !== this.asset
@@ -553,7 +557,7 @@ export default {
       return this.marketData[this.activeNetwork]
     },
     networkWalletBalances () {
-      return this.balances[this.activeNetwork][this.activeWalletId]
+      return this.account?.balances
     },
     toAssets () {
       return Object.keys(this.selectedMarket)
@@ -715,9 +719,7 @@ export default {
       return this.sendFeeType === FEE_TYPES.BTC
     },
     currentWalletAddress () {
-      const address = this.addresses[this.activeNetwork]?.[
-        this.activeWalletId
-      ]?.[this.asset]
+      const address = this.account?.addresses[0]
       return address && cryptoassets[this.asset].formatAddress(address)
     },
     sendAmountSameAsset () {
@@ -822,10 +824,11 @@ export default {
         fromAmount,
         sendTo: this.sendTo,
         fee,
-        claimFee: toFee
+        claimFee: toFee,
+        accountId: this.account?.id
       })
 
-      this.$router.replace(`/account/${this.asset}`)
+      this.$router.replace(`/account/${this.account?.id}/${this.asset}`)
     },
     getSelectedFeeLabel (fee) {
       return getFeeLabel(fee)
