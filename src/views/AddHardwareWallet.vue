@@ -154,8 +154,9 @@ export default {
     },
     async unlock () {
       // create the account
-      if (this.selectedAccount) {
-        const { chain, type, address } = this.selectedAccount
+      if (this.selectedAccount && this.selectedAsset) {
+        const { address } = this.selectedAccount
+        const { type, chain } = this.selectedAsset
         const data = {
           name: `Ledger ${this.selectedAsset.name}`,
           chain,
@@ -170,6 +171,7 @@ export default {
           account: data
         })
         console.log('ACCOUNT CREATED: ', account)
+        this.$router.replace('/wallet')
       }
     },
     goToOverview () {
