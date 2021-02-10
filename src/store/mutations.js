@@ -15,18 +15,18 @@ export default {
     state.encryptedWallets = encryptedWallets
     state.keySalt = keySalt
     state.wallets = [wallet]
+    if (!state.accounts[wallet.id]) {
+      Vue.set(state.accounts, wallet.id, {
+        mainnet: [],
+        testnet: []
+      })
+    }
   },
   ACCEPT_TNC (state) {
     state.termsAcceptedAt = Date.now()
   },
   CHANGE_ACTIVE_WALLETID (state, { walletId }) {
     state.activeWalletId = walletId
-    if (!state.accounts[walletId]) {
-      Vue.set(state.accounts, walletId, {
-        mainnet: [],
-        testnet: []
-      })
-    }
   },
   CHANGE_ACTIVE_NETWORK (state, { network }) {
     state.activeNetwork = network
