@@ -1,7 +1,7 @@
 import { cloneDeep } from 'lodash-es'
 import buildConfig from '../build.config'
 import { accountCreator } from '@/utils/accounts'
-import { createClient } from '@/store/factory/client'
+import { getChainFromAsset } from '@/utils/asset'
 
 const migrations = [
   { // Merely sets up the version
@@ -55,43 +55,45 @@ const migrations = [
       const { enabledAssets } = state
       const networks = ['mainnet', 'testnet']
       const chains = ['BTC', 'ETH', 'RBTC']
-      const accounts = {}
-
-      state.wallets.forEach(wallet => {
-        const { id, mnemonic } = wallet
-        if (!accounts[id]) {
-          accounts[id] = {
-            mainnet: [],
-            testnet: []
-          }
+      const walletId = state.activeWalletId
+      const accounts = {
+        [walletId]: {
+          mainnet: [],
+          testnet: []
         }
+      }
 
-        networks.forEach(network => {
-          chains.forEach(chain => {
-            let assets = []
-            if (enabledAssets[network]?.[id]) {
-              assets = Object.keys(enabledAssets[network]?.[id])
-            }
-            const client = createClient(chain, network, mnemonic)
-            const addresses = client.wallet
-              .getUsedAddresses()
-              .map(a => a.address)
+      networks.forEach(async network => {
+        const assetKeys = enabledAssets[network]?.[walletId] || []
 
-            const _account = accountCreator(
-              {
-                walletId: id,
-                account: {
-                  name: `${chain} 1`,
-                  chain,
-                  addresses,
-                  assets,
-                  balances: {},
-                  type: 'default'
-                }
-              })
-
-            accounts[id][network].push(_account)
+        chains.forEach(async chain => {
+          const assets = assetKeys.filter(asset => {
+            const assetChain = getChainFromAsset(asset)
+            return assetChain === chain
           })
+
+          const addresses = []
+
+          if (state.addresses?.[network] &&
+            state.addresses?.[network]?.[walletId] &&
+            state.addresses?.[network]?.[walletId]?.[chain]) {
+            addresses.push(state.addresses[network][walletId][chain])
+          }
+
+          const _account = accountCreator(
+            {
+              walletId,
+              account: {
+                name: `${chain} 1`,
+                chain,
+                addresses,
+                assets,
+                balances: {},
+                type: 'default'
+              }
+            })
+
+          accounts[walletId][network].push(_account)
         })
       })
 
@@ -119,7 +121,7 @@ async function processMigrations (state) {
         newState = await migration.migrate(cloneDeep(state))
         newState.version = migration.version
       } catch (e) {
-        console.error(`Failed to migrate to v${migration.version}`)
+        console.error(`Failed to migrate to v${migration.version}`, e)
         break
       }
     }

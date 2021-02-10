@@ -1,6 +1,9 @@
 import cryptoassets from '@liquality/cryptoassets'
 import { createClient } from './factory/client'
 import buildConfig from '../build.config'
+import { Object } from 'core-js'
+import BN from 'bignumber.js'
+import { cryptoToFiat } from '@/utils/coinFormatter'
 
 const clientCache = {}
 
@@ -80,13 +83,78 @@ export default {
     return orderedBalances.filter(([asset, balance]) => balance > 0)
   },
   networkAssetsLoaded (_state, getters) {
-    const { networkAssets, networkWalletBalances } = getters
-    return networkWalletBalances && Object.keys(networkWalletBalances).length >= networkAssets.length
+    const { networkAssets, activeWalletFiatBalances } = getters
+    return activeWalletFiatBalances && Object.keys(activeWalletFiatBalances).length >= networkAssets.length
   },
   activity (state) {
     const { history, activeNetwork, activeWalletId } = state
     if (!history[activeNetwork]) return []
     if (!history[activeNetwork][activeWalletId]) return []
     return history[activeNetwork][activeWalletId].slice().reverse()
+  },
+  totalFiatBalance (_state, getters) {
+    const { activeWalletFiatBalances } = getters
+    return activeWalletFiatBalances.reduce((accum, { balance }) => {
+      return BN(accum).plus(BN(balance || 0))
+    })
+  },
+  accountsWithBalances (state, getters) {
+    const { accounts, activeNetwork, activeWalletId } = state
+    const { accountFiatBalance, assetFiatBalance } = getters
+    return accounts[activeWalletId]?.[activeNetwork]
+            .filter(a => a.type === 'default')
+            .map(account => {
+              const totalFiatBalance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
+              const fiatBalances = Object.entries(account.balances)
+                .reduce((accum, [asset, balance]) => {
+                  const fiat = assetFiatBalance(asset, balance)
+                  return {
+                    ...accum,
+                    [asset]: fiat
+                  }
+                })
+              return {
+                ...account,
+                fiatBalances,
+                totalFiatBalance
+              }
+            })
+  },
+  activeWalletFiatBalances (state, getters) {
+    const { accounts, activeNetwork, activeWalletId } = state
+    const { accountFiatBalance } = getters
+    return accounts[activeWalletId]?.[activeNetwork]
+            .filter(a => a.type === 'default')
+            .reduce((balances, account) => {
+              const balance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
+              return {
+                ...balances,
+                [account.id]: balance
+              }
+            }) || {}
+  },
+  accountFiatBalance (state, getters) {
+    const { accounts } = state
+    const { assetFiatBalance } = getters
+    return (walletId, network, accountId) => {
+      const account = accounts[walletId]?.[network].find(a => a.id === accountId)
+      if (account) {
+        return Object.entries(account.balances)
+          .reduce((accum, [asset, balance]) => {
+            const fiat = assetFiatBalance(asset, balance)
+            return accum.plus(fiat)
+          })
+      }
+      return BN(0)
+    }
+  },
+  assetFiatBalance (state) {
+    const { fiatRates } = state
+    return (asset, balance) => {
+      if (fiatRates && fiatRates[asset]) {
+        return cryptoToFiat(balance || 0, fiatRates[asset])
+      }
+      return BN(0)
+    }
   }
 }

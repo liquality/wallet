@@ -63,10 +63,27 @@ export default {
 
     Vue.set(state.addresses[network][walletId], asset, address)
   },
-  UPDATE_BALANCE (state, { network, walletId, asset, balance }) {
-    ensureNetworkWalletTree(state.balances, network, walletId, {})
+  UPDATE_BALANCE (state, { network, accountId, walletId, asset, balance }) {
+    const accounts = state.accounts[walletId][network]
+    if (accounts) {
+      const index = accounts.findIndex(
+        (a) => a.id === accountId
+      )
 
-    Vue.set(state.balances[network][walletId], asset, balance)
+      if (index >= 0) {
+        const _account = accounts[index]
+        const balances = {
+          ...accounts[index].balances,
+          [asset]: balance
+        }
+        const updatedAccount = {
+          ..._account,
+          balances
+        }
+
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
+      }
+    }
   },
   UPDATE_FEES (state, { network, walletId, asset, fees }) {
     ensureNetworkWalletTree(state.fees, network, walletId, {})
@@ -139,8 +156,7 @@ export default {
           assets,
           updatedAt
         }
-        const updatedAccounts = accounts.splice(index, 1, updatedAccount)
-        Vue.set(state.accounts[walletId], network, [...updatedAccounts])
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
       }
     }
   },

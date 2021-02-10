@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 
-export const accountCreator = async (payload) => {
+export const accountCreator = (payload) => {
   const { walletId, account } = payload
   const {
     name,
