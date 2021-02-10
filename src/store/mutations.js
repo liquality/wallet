@@ -21,6 +21,12 @@ export default {
   },
   CHANGE_ACTIVE_WALLETID (state, { walletId }) {
     state.activeWalletId = walletId
+    if (!state.accounts[walletId]) {
+      Vue.set(state.accounts, walletId, {
+        mainnet: [],
+        testnet: []
+      })
+    }
   },
   CHANGE_ACTIVE_NETWORK (state, { network }) {
     state.activeNetwork = network
