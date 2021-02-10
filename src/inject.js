@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   })
-})
+}, { once: true })
 `
 
 export { providerManager, ethereumProvider, bitcoinProvider, paymentUriHandler }
