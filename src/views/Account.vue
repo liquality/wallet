@@ -148,7 +148,6 @@ export default {
   },
   async created () {
     console.log('accountId', this.accountId)
-    debugger
     if (!this.address) {
       await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
     }

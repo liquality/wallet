@@ -11,6 +11,12 @@ export const accountCreator = (payload) => {
     type
   } = account
 
+  const _addresses = addresses.map(a => {
+    if (a.startsWith('0x')) {
+      return a.substring(2, a.length)
+    }
+    return a
+  })
   const id = uuidv4()
   const createdAt = Date.now()
   return {
@@ -19,7 +25,7 @@ export const accountCreator = (payload) => {
     type,
     name,
     chain,
-    addresses,
+    addresses: _addresses,
     assets,
     balances: balances || {},
     createdAt,
