@@ -212,13 +212,13 @@
             </template>
             <template v-slot:content>
               <ul class="selectors">
-                <li v-for="asset in availableFees" :key="asset">
-                  <span class="selectors-asset">{{ asset }}</span>
+                <li v-for="assetFee in availableFees" :key="assetFee">
+                  <span class="selectors-asset">{{ assetFee }}</span>
                   <FeeSelector
-                    :asset="asset"
-                    v-model="selectedFee[asset]"
-                    v-bind:fees="getAssetFees(asset)"
-                    v-bind:txTypes="getFeeTxTypes(asset)"
+                    :asset="assetsFeeSelector[assetFee]"
+                    v-model="selectedFee[assetFee]"
+                    v-bind:fees="getAssetFees(assetFee)"
+                    v-bind:txTypes="getFeeTxTypes(assetFee)"
                     v-bind:fiatRates="fiatRates"
                   />
                 </li>
@@ -743,6 +743,12 @@ export default {
     },
     toAssetList () {
       return this.toAssets.map(a => ({ name: a, label: a }))
+    },
+    assetsFeeSelector () {
+      return {
+        [this.assetChain]: this.asset,
+        [this.toAssetChain]: this.toAsset
+      }
     }
   },
   methods: {

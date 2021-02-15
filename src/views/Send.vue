@@ -56,8 +56,8 @@
             >
               <button
                 class="btn btn-option"
-                :class="{ active: (available == amount) }"
-                @click="setMaxAmount"
+                :class="{ active: maxOptionActive }"
+                @click="toogleMaxAmount"
               >
                 Max
               </button>
@@ -97,7 +97,7 @@
                   <div class="send_fees">
                     <span class="selectors-asset">{{ assetChain }}</span>
                     <FeeSelector
-                      :asset="assetChain"
+                      :asset="asset"
                       v-model="selectedFee"
                       v-bind:fees="assetFees"
                       v-bind:txTypes="[txType]"
@@ -238,7 +238,8 @@ export default {
       address: null,
       selectedFee: 'average',
       showConfirm: false,
-      loading: false
+      loading: false,
+      maxOptionActive: false
     }
   },
   props: {
@@ -367,8 +368,11 @@ export default {
 
       this.$router.replace(`/account/${this.accountId}/${this.asset}`)
     },
-    setMaxAmount () {
-      this.amount = this.available
+    toogleMaxAmount () {
+      this.maxOptionActive = !this.maxOptionActive
+      if (this.maxOptionActive) {
+        this.amount = this.available
+      }
     },
     back () {
       this.showConfirm = false
@@ -376,6 +380,16 @@ export default {
   },
   created () {
     this.updateFees({ asset: this.assetChain })
+  },
+  watch: {
+    selectedFee: {
+      handler () {
+        if (this.maxOptionActive) {
+          this.amount = this.available
+        }
+      },
+      deep: true
+    }
   }
 }
 </script>
