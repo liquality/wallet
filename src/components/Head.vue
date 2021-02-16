@@ -65,6 +65,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 0 20px;
+  justify-content: space-between;
 
   &_logo, &_logo svg {
     height: 12px;

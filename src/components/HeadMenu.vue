@@ -1,41 +1,62 @@
 <template>
   <div class="dropdown head-menu"
       v-click-away="hide">
-  <button class="btn btn-icon dropdown-toggle"
-          @click="toogle">
-  </button>
-  <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
-    <li>
-      <div class="dropdown-header">
-          Accounts
-      </div>
-    </li>
-    <li>
-        <button class="dropdown-item"
-                @click="navigate('#')">
-            Create
-        </button>
-    </li>
-    <li>
-        <button class="dropdown-item"
-                @click="navigate('#')">
-            Import
-        </button>
-    </li>
-    <li>
-        <button class="dropdown-item"
-                @click="navigate('/add-hardware-wallet')">
-            Hardware
-        </button>
-    </li>
-  </ul>
+    <button class="btn btn-icon dropdown-toggle"
+            @click="toogle">
+          <AccountIcon class="account-icon"/>
+          <ChevronUpIcon class="chevron" v-if="dropdownOpen" />
+          <ChevronDownIcon class="chevron" v-else />
+    </button>
+    <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
+      <li>
+          <button class="dropdown-item"
+                  @click="navigate('#')">
+              <div class="head-option">
+                <CreateIcon class="create-icon" />
+              </div>
+              Create
+          </button>
+      </li>
+      <li>
+          <button class="dropdown-item"
+                  @click="navigate('#')">
+              <div class="head-option">
+                <ImportIcon class="import-icon" />
+              </div>
+              Import
+          </button>
+      </li>
+      <li>
+          <button class="dropdown-item"
+                  @click="navigate('/add-hardware-wallet')">
+              <div class="head-option">
+                <HardwareIcon class="hardware-icon" />
+              </div>
+              Hardware
+          </button>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
 import clickAway from '@/directives/clickAway'
+import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
+import AccountIcon from '@/assets/icons/account_icon.svg'
+import CreateIcon from '@/assets/icons/create_icon.svg'
+import ImportIcon from '@/assets/icons/import_icon.svg'
+import HardwareIcon from '@/assets/icons/hardware_icon.svg'
 
 export default {
+  components: {
+    ChevronDownIcon,
+    ChevronUpIcon,
+    AccountIcon,
+    CreateIcon,
+    ImportIcon,
+    HardwareIcon
+  },
   directives: {
     clickAway
   },
@@ -62,22 +83,32 @@ export default {
 <style lang="scss">
 .head-menu {
     .dropdown-toggle {
-    width: 20px !important;
-    height: 20px;
-    border-radius: 20px;
-    background-color: #A8AEB7;
-    border: 1px solid #1D1E21;
-    padding: 0;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      display: flex;
+      align-items: center;
 
-    &::after {
-      display: none;
-    }
+      &::after {
+        display: none;
+      }
+
+      .account-icon {
+        width: 14px !important;
+        height: 15px !important;
+        margin: 0 !important;
+      }
+      .chevron {
+          width: 16px;
+          margin: 0 0 0 8px !important;
+          padding: 0 !important;
+      }
   }
 
   .dropdown-menu {
     position: absolute;
-    left: -150px;
-    width: 180px;
+    left: -100px;
+    width: 116px;
+    top: 33px;
     height: auto;
     overflow: hidden;
     border-radius: 0;
@@ -96,10 +127,33 @@ export default {
       padding: 5px 15px;
       height: 30px;
       border-bottom: 1px solid $hr-border-color;
+      display: flex;
+      align-items: center;
 
       &:hover, &.active {
         background-color: #F0F7F9;
         color: $color-text-primary;
+      }
+
+      .head-option {
+        margin-right: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        width: 22px;
+        height: 15px;
+        .create-icon {
+          width: 15px;
+        }
+
+        .import-icon {
+          width: 15px;
+        }
+
+        .hardware-icon {
+          width: 20px;
+        }
       }
     }
   }
