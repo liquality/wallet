@@ -162,7 +162,9 @@ export default {
           assets,
           updatedAt
         }
+
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
+        console.log(updatedAccount)
       }
     }
   },
@@ -176,6 +178,24 @@ export default {
       if (index >= 0) {
         const updatedAccounts = accounts.splice(index, 1)
         Vue.set(state.accounts[walletId], network, [...updatedAccounts])
+      }
+    }
+  },
+  UPDATE_ACCOUNT_ADDRESSES (state, { network, accountId, walletId, asset, addresses }) {
+    const accounts = state.accounts[walletId][network]
+    if (accounts) {
+      const index = accounts.findIndex(
+        (a) => a.id === accountId
+      )
+
+      if (index >= 0) {
+        const _account = accounts[index]
+        const updatedAccount = {
+          ..._account,
+          addresses
+        }
+
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
       }
     }
   }

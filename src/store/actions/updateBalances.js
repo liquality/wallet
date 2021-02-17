@@ -6,17 +6,27 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
 
   if (accounts) {
     await Bluebird.map(accounts, async account => {
-      const { assets } = account
+      const { assets, type } = account
       assets.forEach(async asset => {
-        const addresses = account.addresses.map(address => {
-          return new Address({
-            address
+        let addresses
+        if (type.includes('ledger')) {
+          addresses = account.addresses.map(address => {
+            return new Address({
+              address
+            })
           })
-        })
+        } else {
+          addresses = await getters.client(network, walletId, asset, account.type).wallet.getUsedAddresses()
+        }
+
         const balance = addresses.length === 0
           ? 0
           : (await getters.client(network, walletId, asset, account.type).chain.getBalance(addresses)).toNumber()
+        const mergedAddresses = addresses.filter(a => {
+          return !account.addresses.includes(a.address)
+        }).map(a => a.address)
         commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance })
+        commit('UPDATE_ACCOUNT_ADDRESSES', { network, accountId: account.id, walletId, asset, addresses: mergedAddresses })
       })
     }, { concurrency: 1 })
   }

@@ -19,12 +19,12 @@ export const LEDGER_OPTIONS = [
     name: 'ETH',
     label: 'ETH',
     type: 'ethereum_ledger',
-    chain: 'ethereum'
+    chain: 'ETH'
   },
   {
     name: 'BTC',
     label: 'BTC',
     type: 'bitcoin_ledger_nagive_segwit',
-    chain: 'bitcoin'
+    chain: 'BTC'
   }
 ]

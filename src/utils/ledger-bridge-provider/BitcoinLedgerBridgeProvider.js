@@ -1,8 +1,8 @@
-import EthereumLedgerProvider from '@liquality/bitcoin-ledger-provider'
+import BitcoinLedgerProvider from '@liquality/bitcoin-ledger-provider'
 import { BitcoinLedgerBridgeApp } from './BitcoinLedgerBridgeApp'
 import { version } from '../../../package.json'
 
-export class BitcoinLedgerBridgeProvider extends EthereumLedgerProvider {
+export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
   _ledgerApp = null
 
   async getApp () {

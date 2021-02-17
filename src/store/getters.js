@@ -143,8 +143,9 @@ export default {
   assetFiatBalance (state) {
     const { fiatRates } = state
     return (asset, balance) => {
-      if (fiatRates && fiatRates[asset]) {
-        return cryptoToFiat(balance || 0, fiatRates[asset])
+      if (fiatRates && fiatRates[asset] && balance) {
+        const amount = cryptoassets[asset].unitToCurrency(balance)
+        return cryptoToFiat(amount, fiatRates[asset])
       }
       return BN(0)
     }

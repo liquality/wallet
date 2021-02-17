@@ -20,8 +20,8 @@ async function handleExpirations ({ getters }, { network, walletId, order }) {
   }
 }
 
-async function createSecret ({ getters, dispatch }, { order, network, walletId }) {
-  let [fromAddress, toAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [order.from, order.to] })
+async function createSecret ({ getters, dispatch }, { order, network, walletId, accountId }) {
+  let [fromAddress, toAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [order.from, order.to], accountId })
 
   fromAddress = fromAddress.toString()
   toAddress = toAddress.toString()
@@ -273,7 +273,7 @@ export const performNextSwapAction = async (store, { network, walletId, accountI
 
   switch (order.status) {
     case 'QUOTE':
-      updates = await createSecret(store, { order, network, walletId })
+      updates = await createSecret(store, { order, network, walletId, accountId })
       break
 
     case 'SECRET_READY':

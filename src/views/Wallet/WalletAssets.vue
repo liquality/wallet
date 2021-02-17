@@ -16,7 +16,7 @@
             </span>
           </template>
           <template #detail-sub v-if="account.totalFiatBalance">
-            ${{ account.totalFiatBalance.toFormat(2) }}
+            ${{ formatFiat(account.totalFiatBalance) }}
           </template>
       </ListItem>
       <ListItem v-for="asset in account.assets"
@@ -30,7 +30,7 @@
             {{ prettyBalance(account.balances[asset], asset) }} {{asset}}
           </template>
           <template #detail-sub v-if="account.fiatBalances[asset]">
-            ${{ account.fiatBalances[asset].toFormat(2) }}
+            ${{ formatFiat(account.fiatBalances[asset]) }}
           </template>
       </ListItem>
     </div>
@@ -40,7 +40,7 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import ListItem from '@/components/ListItem'
-import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 
@@ -55,10 +55,7 @@ export default {
   methods: {
     getAssetIcon,
     prettyBalance,
-    prettyFiat (amount, asset) {
-      amount = cryptoassets[asset].unitToCurrency(amount)
-      return prettyFiatBalance(amount, this.fiatRates[asset])
-    },
+    formatFiat,
     getAssetName (asset) {
       return cryptoassets[asset] ? cryptoassets[asset].name : asset
     }

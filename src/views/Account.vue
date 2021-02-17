@@ -128,7 +128,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateBalances', 'getUnusedAddresses']),
+    ...mapActions(['updateAccountBalance', 'updateAccountBalance', 'getUnusedAddresses']),
     getAssetIcon,
     shortenAddress,
     prettyFiatBalance,
@@ -139,7 +139,11 @@ export default {
     },
     async refresh () {
       this.updatingBalances = true
-      await this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
+      await this.updateAccountBalance({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        accountId: this.accountId
+      })
       this.updatingBalances = false
     },
     applyFilters (filters) {
@@ -147,9 +151,8 @@ export default {
     }
   },
   async created () {
-    console.log('accountId', this.accountId)
     if (!this.address) {
-      await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
+      await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
     }
     this.activityData = [...this.assetHistory]
   },
