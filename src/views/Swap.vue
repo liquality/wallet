@@ -547,11 +547,14 @@ export default {
       'activeWalletId',
       'activeNetwork'
     ]),
-    ...mapGetters(['assetsWithBalance', 'accountItem']),
+    ...mapGetters(['accountItem']),
     assets () {
-      return this.assetsWithBalance.filter(
-        ([asset]) => asset !== this.asset
-      ).map(([asset]) => asset)
+      return this.account?.balances
+                 .filter(
+                  ([asset]) => asset !== this.asset
+                ).map(
+                  ([asset]) => asset
+                ) || []
     },
     networkMarketData () {
       return this.marketData[this.activeNetwork]

@@ -64,11 +64,6 @@ export default {
   REMOVE_ORDER (state, { network, walletId, id }) {
     Vue.set(state.history[network], walletId, state.history[network][walletId].filter(i => i.id !== id))
   },
-  UPDATE_UNUSED_ADDRESS (state, { network, walletId, asset, address }) {
-    ensureNetworkWalletTree(state.addresses, network, walletId, {})
-
-    Vue.set(state.addresses[network][walletId], asset, address)
-  },
   UPDATE_BALANCE (state, { network, accountId, walletId, asset, balance }) {
     const accounts = state.accounts[walletId][network]
     if (accounts) {

@@ -62,25 +62,23 @@ export default {
     return enabledAssets[activeNetwork][activeWalletId]
   },
   orderedBalances (state, getters) {
-    const { enabledAssets, activeNetwork, activeWalletId } = state
-    const { networkWalletBalances } = getters
-    if (!networkWalletBalances) {
-      return []
-    }
-    const assets = enabledAssets[activeNetwork][activeWalletId]
-    return Object.entries(networkWalletBalances)
-      .filter(([asset]) => assets.includes(asset))
-      .sort(([assetA], [assetB]) => {
-        return assets.indexOf(assetA) - assets.indexOf(assetB)
-      })
-  },
-  networkWalletBalances (state) {
-    const { balances, activeNetwork, activeWalletId } = state
-    return balances[activeNetwork]?.[activeWalletId]
+    // const { enabledAssets, activeNetwork, activeWalletId } = state
+    // const { networkWalletBalances } = getters
+    // if (!networkWalletBalances) {
+    //   return []
+    // }
+    // const assets = enabledAssets[activeNetwork][activeWalletId]
+    // return Object.entries(networkWalletBalances)
+    //   .filter(([asset]) => assets.includes(asset))
+    //   .sort(([assetA], [assetB]) => {
+    //     return assets.indexOf(assetA) - assets.indexOf(assetB)
+    //   })
+    return []
   },
   assetsWithBalance (_state, getters) {
-    const { orderedBalances } = getters
-    return orderedBalances.filter(([asset, balance]) => balance > 0)
+    // const { orderedBalances } = getters
+    // return orderedBalances.filter(([asset, balance]) => balance > 0)
+    return []
   },
   activity (state) {
     const { history, activeNetwork, activeWalletId } = state

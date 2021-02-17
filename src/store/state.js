@@ -22,8 +22,6 @@ export default {
 
   accounts: {},
 
-  addresses: {},
-  balances: {},
   fiatRates: {},
   fees: {},
   history: {},

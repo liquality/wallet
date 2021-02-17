@@ -165,12 +165,11 @@ export default {
           type
         }
 
-        const account = await this.createAccount({
+        await this.createAccount({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           account: data
         })
-        console.log('ACCOUNT CREATED: ', account)
         this.goToOverview()
       }
     },
