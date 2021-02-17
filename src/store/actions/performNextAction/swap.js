@@ -72,11 +72,33 @@ async function initiateSwap ({ getters, dispatch }, { order, network, walletId }
   }
 }
 
+async function fundSwap ({ getters, dispatch }, { order, network, walletId }) {
+  if (await dispatch('checkIfQuoteExpired', { network, walletId, order })) return
+
+  const toClient = getters.client(network, walletId, order.to)
+
+  const fundTx = await toClient.swap.fundSwap(
+    order.fromFundHash,
+    order.fromAmount,
+    order.fromCounterPartyAddress,
+    order.fromAddress,
+    order.secretHash,
+    order.swapExpiration,
+    order.fee
+  )
+
+  console.log('ORDER FUNDED', fundTx)
+
+  return {
+    status: 'INITIATION_REPORTED'
+  }
+}
+
 async function reportInitiation (store, { order }) {
   await updateOrder(order)
 
   return {
-    status: 'INITIATION_REPORTED'
+    status: 'FUNDED'
   }
 }
 
@@ -277,6 +299,11 @@ export const performNextSwapAction = async (store, { network, walletId, order })
 
     case 'INITIATED':
       updates = await reportInitiation(store, { order, network, walletId })
+      break
+
+    case 'FUNDED':
+      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
+        async () => fundSwap(store, { order, network, walletId }))
       break
 
     case 'INITIATION_REPORTED':
