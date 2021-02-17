@@ -18,7 +18,7 @@
               Ledger
             </div>
             <div>
-              ${{ formatFiat(account.fiatBalances[account.assets[0]]) }}
+              {{ prettyBalance(account.balances[account.assets[0]], account.assets[0]) }} {{account.assets[0]}}
             </div>
             </div>
           </template>
@@ -126,6 +126,7 @@ export default {
 .detail-content {
   display: flex;
   align-items: center;
+  flex-direction: column;
 }
 
 .account-assets {

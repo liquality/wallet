@@ -102,6 +102,7 @@ import NavBar from '@/components/NavBar'
 import AssetDropdown from '@/components/AssetDropdown'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@/utils/ledger-bridge-provider'
+import { getChainFromAsset } from '@/utils/asset'
 
 export default {
   components: {
@@ -157,11 +158,16 @@ export default {
       if (this.selectedAccount && this.selectedAsset) {
         const { address } = this.selectedAccount
         const { type, chain } = this.selectedAsset
+        const assetKeys = this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
+        const assets = assetKeys.filter(asset => {
+          const assetChain = getChainFromAsset(asset)
+          return assetChain === this.selectedAsset.chain
+        })
         const data = {
           name: `Ledger ${this.selectedAsset.name}`,
           chain,
           addresses: [address],
-          assets: [this.selectedAsset.name],
+          assets,
           type
         }
 
@@ -189,7 +195,8 @@ export default {
   computed: {
     ...mapState([
       'activeNetwork',
-      'activeWalletId'
+      'activeWalletId',
+      'enabledAssets'
     ]),
     ledgerOptions () {
       return LEDGER_OPTIONS
