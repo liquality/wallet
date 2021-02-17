@@ -87,9 +87,8 @@ async function fundSwap ({ getters, dispatch }, { order, network, walletId }) {
     order.fee
   )
 
-  console.log('ORDER FUNDED', fundTx)
-
   return {
+    fundTxHash: fundTx?.hash,
     status: 'INITIATION_REPORTED'
   }
 }
