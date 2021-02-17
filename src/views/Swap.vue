@@ -698,16 +698,7 @@ export default {
         }, BN(0))
 
         fees[this.toAssetChain] = toFee
-
-        if (this.sendTo) {
-          const sendFee = getTxFee(this.toAsset, TX_TYPES.SEND, toAssetFee)
-          fees[this.toAssetChain] = fees[this.toAssetChain]
-            ? fees[this.toAssetChain].plus(sendFee)
-            : sendFee
-        }
       }
-      console.log('fees', this.toAssetChain, fees[this.toAssetChain]?.toNumber())
-      console.log('fees', this.assetChain, fees[this.assetChain]?.toNumber())
 
       return fees
     },
