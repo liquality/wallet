@@ -41,7 +41,7 @@ export const AssetNetworks = {
   }
 }
 
-function createBtcClient (network, mnemonic) {
+function createBtcClient (network, mnemonic, wType) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = AssetNetworks.BTC[network]
   const esploraApi = isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'
@@ -49,7 +49,7 @@ function createBtcClient (network, mnemonic) {
 
   const btcClient = new Client()
   btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2))
-  btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic))
+  btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic, wType))
   btcClient.addProvider(new BitcoinSwapProvider(bitcoinNetwork))
   btcClient.addProvider(new BitcoinEsploraSwapFindProvider(esploraApi))
   if (isTestnet) btcClient.addProvider(new BitcoinRpcFeeProvider())
@@ -98,7 +98,8 @@ function createRskClient (asset, network, mnemonic) {
 export const createClient = (asset, network, mnemonic) => {
   const assetData = cryptoassets[asset]
 
-  if (asset === 'BTC') return createBtcClient(network, mnemonic)
+  if (asset === 'BTC') return createBtcClient(network, mnemonic, 'bech32')
+  if (asset === 'BTC2') return createBtcClient(network, mnemonic, 'legacy')
   if (asset === 'RBTC' || assetData.network === 'rsk') return createRskClient(asset, network, mnemonic)
 
   return createEthClient(asset, network, mnemonic)

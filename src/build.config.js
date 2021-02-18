@@ -2,6 +2,7 @@ export default {
   defaultAssets: {
     mainnet: [
       'BTC',
+      'BTC2',
       'ETH',
       'DAI',
       'USDC',
