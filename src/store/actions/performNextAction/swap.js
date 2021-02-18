@@ -66,7 +66,7 @@ async function initiateSwap ({ getters, dispatch }, { order, network, walletId }
   )
 
   return {
-    fromFundHash: fromFundTx.hash,
+    fromSecondaryFundTx: fromFundTx,
     fromFundTx,
     status: 'INITIATED'
   }
