@@ -14,8 +14,8 @@ const TX_TYPES = {
  * */
 const FEE_UNITS = {
   BTC: {
-    [TX_TYPES.SEND]: 209, // Assume 2 inputs
-    [TX_TYPES.SWAP_INITIATION]: 300, // Assume 2 inputs
+    [TX_TYPES.SEND]: 290, // Assume 2 inputs
+    [TX_TYPES.SWAP_INITIATION]: 370, // Assume 2 inputs
     [TX_TYPES.SWAP_CLAIM]: 143
   },
   ETH: {
