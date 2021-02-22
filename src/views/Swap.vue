@@ -549,12 +549,10 @@ export default {
     ]),
     ...mapGetters(['accountItem']),
     assets () {
-      return this.account?.balances
+      return this.account?.assets
                  .filter(
-                  ([asset]) => asset !== this.asset
-                ).map(
-                  ([asset]) => asset
-                ) || []
+                  (asset) => asset !== this.asset
+                 ) || []
     },
     networkMarketData () {
       return this.marketData[this.activeNetwork]
@@ -682,32 +680,29 @@ export default {
       }
 
       if (this.availableFees.has(this.assetChain)) {
-        const feePrice = this.getAssetFees(this.assetChain)[
+        const fromTxTypes = this.getFeeTxTypes(this.assetChain)
+        const fromAssetFee = this.getAssetFees(this.assetChain)[
           this.selectedFee[this.assetChain]
         ].fee
-        const initiationFee = getTxFee(
-          this.asset,
-          TX_TYPES.SWAP_INITIATION,
-          feePrice
-        )
-        fees[this.assetChain] = initiationFee
+
+        const fromFee = fromTxTypes.reduce((accum, tx) => {
+          return accum.plus(getTxFee(this.asset, tx, fromAssetFee))
+        }, BN(0))
+
+        fees[this.assetChain] = fromFee
       }
 
       if (this.availableFees.has(this.toAssetChain)) {
-        const feePrice = this.getAssetFees(this.toAssetChain)[
+        const toTxTypes = this.getFeeTxTypes(this.toAssetChain)
+        const toAssetFee = this.getAssetFees(this.toAssetChain)[
           this.selectedFee[this.toAssetChain]
         ].fee
-        const claimFee = getTxFee(this.toAsset, TX_TYPES.SWAP_CLAIM, feePrice)
-        fees[this.toAssetChain] = fees[this.toAssetChain]
-          ? fees[this.toAssetChain].plus(claimFee)
-          : claimFee
 
-        if (this.sendTo) {
-          const sendFee = getTxFee(this.toAsset, TX_TYPES.SEND, feePrice)
-          fees[this.toAssetChain] = fees[this.toAssetChain]
-            ? fees[this.toAssetChain].plus(sendFee)
-            : sendFee
-        }
+        const toFee = toTxTypes.reduce((accum, tx) => {
+          return accum.plus(getTxFee(this.toAsset, tx, toAssetFee))
+        }, BN(0))
+
+        fees[this.toAssetChain] = toFee
       }
 
       return fees
@@ -773,8 +768,8 @@ export default {
       }
       if (asset === this.toAssetChain) {
         return this.sendTo
-          ? [TX_TYPES.SWAP_INITIATION, TX_TYPES.SEND]
-          : [TX_TYPES.SWAP_INITIATION]
+          ? [TX_TYPES.SWAP_CLAIM, TX_TYPES.SEND]
+          : [TX_TYPES.SWAP_CLAIM]
       }
     },
     setSendAmount (amount) {

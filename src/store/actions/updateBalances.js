@@ -24,17 +24,29 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
         const balance = addresses.length === 0
           ? 0
           : (await getters.client(network, walletId, asset, account.type).chain.getBalance(addresses)).toNumber()
-        const filtered = addresses.filter(a => {
-          return !account.addresses.includes(a.address)
-        }).map(a => a.address)
-        console.log(filtered)
-        const mergedAddresses = [
-          ...account.addresses,
-          ...addresses.filter(a => {
-            return !account.addresses.includes(a.address)
-          }).map(a => a.address)]
+
         commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance })
-        commit('UPDATE_ACCOUNT_ADDRESSES', { network, accountId: account.id, walletId, asset, addresses: mergedAddresses })
+        // we need to add the new accounts to keep track of them
+        if (type.includes('ledger')) {
+          const filtered = addresses.filter(a => {
+            return !account.addresses.includes(a.address)
+          }).map(a => a.address)
+
+          if (filtered.length > 0) {
+            commit('UPDATE_ACCOUNT_ADDRESSES',
+              {
+                network,
+                accountId: account.id,
+                walletId,
+                asset,
+                addresses:
+            [
+              ...account.addresses,
+              ...filtered
+            ]
+              })
+          }
+        }
       })
     }, { concurrency: 1 })
   }

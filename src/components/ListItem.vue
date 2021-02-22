@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
+import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 
 export default {
   components: {

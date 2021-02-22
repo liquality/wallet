@@ -2,6 +2,7 @@ import { sha256 } from '@liquality/crypto'
 import { withLock, withInterval, hasChainTimePassed } from './utils'
 import cryptoassets from '../../../utils/cryptoassets'
 import { updateOrder } from '../../utils'
+import { createNotification } from '../../../broker/notification'
 
 async function canRefund ({ getters }, { network, walletId, order }) {
   return hasChainTimePassed({ getters }, { network, walletId, asset: order.from, timestamp: order.swapExpiration })
@@ -68,7 +69,7 @@ async function initiateSwap ({ state, getters, dispatch }, { order, network, wal
   )
 
   return {
-    fromFundHash: fromFundTx.hash,
+    fromSecondaryFundTx: fromFundTx,
     fromFundTx,
     status: 'INITIATED'
   }

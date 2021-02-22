@@ -4,8 +4,9 @@
     <button class="btn btn-icon dropdown-toggle"
             @click="toogle">
           <AccountIcon class="account-icon"/>
-          <ChevronUpIcon class="chevron" v-if="dropdownOpen" />
-          <ChevronDownIcon class="chevron" v-else />
+          <DropdownIcon class="chevron"
+                        :class="{ open: dropdownOpen }"
+          />
     </button>
     <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
       <li>
@@ -41,8 +42,7 @@
 
 <script>
 import clickAway from '@/directives/clickAway'
-import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
-import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
+import DropdownIcon from '@/assets/icons/dropdown_arrow.svg'
 import AccountIcon from '@/assets/icons/account_icon.svg'
 import CreateIcon from '@/assets/icons/create_icon.svg'
 import ImportIcon from '@/assets/icons/import_icon.svg'
@@ -50,8 +50,7 @@ import HardwareIcon from '@/assets/icons/hardware_icon.svg'
 
 export default {
   components: {
-    ChevronDownIcon,
-    ChevronUpIcon,
+    DropdownIcon,
     AccountIcon,
     CreateIcon,
     ImportIcon,
@@ -97,10 +96,15 @@ export default {
         height: 15px !important;
         margin: 0 !important;
       }
+
       .chevron {
-          width: 16px;
+          width: 12px;
           margin: 0 0 0 8px !important;
           padding: 0 !important;
+
+          &.open {
+            transform: rotate(-180deg);
+          }
       }
   }
 

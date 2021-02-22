@@ -7,19 +7,24 @@
     </NavBar>
     <div class="wrapper" v-if="currentStep === 'connect'">
       <div class="wrapper_top">
-        <div class="step-name">1. Connect Ledger</div>
-        <p class="mt-1">
-          <ul class="list-group">
-            <li class="list-group-item">- Plug the Ledger into the computer</li>
-            <li class="list-group-item">- Enter pin to unlock it</li>
-            <li class="list-group-item">
-              - On the device, navigate to the asset that you want to access
+        <div class="step-detail">
+          <div class="step-number">1</div>
+          <div class="step-name">Connect Ledger</div>
+          <div class="step-icon">
+            <LedgerIcon />
+          </div>
+        </div>
+        <ul class="step-instructions">
+            <li>Plug the Ledger into the computer</li>
+            <li>Enter pin to unlock it</li>
+            <li>
+              On the device, navigate to the asset that you want to access
             </li>
-          </ul>
-        </p>
-        <p class="mt-1">
-          Select the corresponding asset here
-        </p>
+        </ul>
+        <div class="step-separator"></div>
+        <div class="indications">
+          Select the corresponding asset
+        </div>
         <p>
           <AssetDropdown :assets="ledgerOptions"
                          :selected="selectedAsset"
@@ -48,17 +53,19 @@
     </div>
     <div class="wrapper" v-else>
       <div class="wrapper_top">
-      <div class="step-name">2. Unlock Account</div>
-        <p>
-          If you don’t see your existing Ledger aacounts below,
-          switch path to Legacy vs Segwit, Native Segwit or Costum
-        </p>
-        <p>
-
-        </p>
-        <p>
+        <div class="step-detail">
+          <div class="step-number">2</div>
+          <div class="step-name">Unlock Account</div>
+        </div>
+        <div class="step-text" v-if="selectedAsset && selectedAsset.chain === 'BTC'">
+              If you don’t see your existing Ledger aacounts below,
+switch path to Legacy vs Segwit, Native Segwit or Costum
+          </div>
+        <div class="step-path" v-if="selectedAsset && selectedAsset.chain === 'BTC'">
+        </div>
+        <div class="indications">
           Select Account
-        </p>
+        </div>
         <p>
           <ul class="list-group list-group-flush">
             <a href="#"
@@ -101,6 +108,7 @@ import { mapActions, mapState } from 'vuex'
 import NavBar from '@/components/NavBar'
 import AssetDropdown from '@/components/AssetDropdown'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import LedgerIcon from '@/assets/icons/ledger_icon.svg'
 import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@/utils/ledger-bridge-provider'
 import { getChainFromAsset } from '@/utils/asset'
 
@@ -108,7 +116,8 @@ export default {
   components: {
     NavBar,
     AssetDropdown,
-    SpinnerIcon
+    SpinnerIcon,
+    LedgerIcon
   },
   data () {
     return {
@@ -219,13 +228,76 @@ export default {
         text-transform: uppercase;
     }
 
-    .step-name {
-      font-weight: normal;
-      font-size: 18px;
-      line-height: 36px;
-      text-align: center;
-      letter-spacing: -0.08px;
+    .step-detail {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      .step-number {
+        font-style: normal;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 28px;
+        border: solid 1px #000D35;
+      }
+
+      .step-name {
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 24px;
+        text-align: center;
+        text-transform: uppercase;
+        margin-top: 10px;
+      }
+
+      .step-icon {
+        margin-top: 15px;
+        svg {
+          width: 179px
+        }
+      }
+
+      .step-text {
+        margin-top: 15px;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 12px;
+        line-height: 18px;
+      }
     }
 
+    .step-instructions {
+      margin-top: 15px;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 16px;
+      padding-left: 20px;
+    }
+
+    .step-separator {
+      margin-top: 30px;
+      margin-bottom: 30px;
+      width: 320px;
+      mix-blend-mode: normal;
+      border: 1px solid #D9DFE5;
+    }
+
+    .indications {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 12px;
+      line-height: 24px;
+      display: flex;
+      align-items: center;
+      text-transform: uppercase;
+      color: #3D4767;
+    }
 }
 </style>
