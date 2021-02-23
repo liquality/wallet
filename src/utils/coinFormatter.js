@@ -5,7 +5,6 @@ const VALUE_DECIMALS = 6
 
 export const dp = (amount, coin) => {
   if (!amount) return amount
-
   return BN(amount).dp(cryptoassets[coin].decimals)
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.17.3",
+  "version": "0.17.4",
   "private": true,
   "license": "MIT",
   "author": "Liquality <info@liquality.io>",
@@ -28,7 +28,7 @@
     "@liquality/bitcoin-swap-provider": "^0.9.0",
     "@liquality/client": "^0.9.0",
     "@liquality/crypto": "^0.9.0",
-    "@liquality/cryptoassets": "^0.3.4",
+    "@liquality/cryptoassets": "^0.3.7",
     "@liquality/ethereum-erc20-provider": "^0.9.0",
     "@liquality/ethereum-erc20-scraper-swap-find-provider": "^0.9.0",
     "@liquality/ethereum-erc20-swap-provider": "^0.9.0",
@@ -85,7 +85,7 @@
     "puppeteer": "^5.2.1",
     "sass": "^1.26.3",
     "sass-loader": "^8.0.2",
-    "vue-cli-plugin-browser-extension": "~0.24.0",
+    "vue-cli-plugin-browser-extension": "^0.25.1",
     "vue-svg-loader": "^0.16.0",
     "vue-template-compiler": "^2.6.11"
   },

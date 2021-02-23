@@ -26,6 +26,22 @@ import cryptoassets from '../../utils/cryptoassets'
 
 export const Networks = ['mainnet', 'testnet']
 
+const bscNetworks = {
+  bsc_mainnet: {
+    name: 'bsc_mainnet',
+    coinType: '60',
+    networkId: 56,
+    chainId: 56
+  },
+  bsc_testnet: {
+    name: 'bsc_testnet',
+    coinType: '60',
+    networkId: 97,
+    chainId: 97,
+    isTestnet: true
+  }
+}
+
 export const AssetNetworks = {
   BTC: {
     testnet: BitcoinNetworks.bitcoin_testnet,
@@ -38,6 +54,10 @@ export const AssetNetworks = {
   RBTC: {
     testnet: EthereumNetworks.rsk_testnet,
     mainnet: EthereumNetworks.rsk_mainnet
+  },
+  BNB: {
+    testnet: bscNetworks.bsc_testnet,
+    mainnet: bscNetworks.bsc_mainnet
   }
 }
 
@@ -95,11 +115,21 @@ function createRskClient (asset, network, mnemonic) {
   return createEthereumClient(asset, rskNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
 }
 
+function createBSCClient (asset, network, mnemonic) {
+  const isTestnet = network === 'testnet'
+  const bnbNetwork = AssetNetworks.BNB[network]
+  const rpcApi = isTestnet ? 'https://data-seed-prebsc-1-s1.binance.org:8545' : 'https://bsc-dataseed.binance.org'
+  const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
+
+  return createEthereumClient(asset, bnbNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
+}
+
 export const createClient = (asset, network, mnemonic) => {
   const assetData = cryptoassets[asset]
 
   if (asset === 'BTC') return createBtcClient(network, mnemonic)
   if (asset === 'RBTC' || assetData.network === 'rsk') return createRskClient(asset, network, mnemonic)
+  if (asset === 'BNB' || assetData.network === 'bsc') return createBSCClient(asset, network, mnemonic)
 
   return createEthClient(asset, network, mnemonic)
 }
