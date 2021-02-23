@@ -692,7 +692,7 @@ export default {
         const toAssetFee = this.getAssetFees(this.toAssetChain)[
           this.selectedFee[this.toAssetChain]
         ].fee
-        console.log('toTxTypes', toTxTypes)
+
         const toFee = toTxTypes.reduce((accum, tx) => {
           return accum.plus(getTxFee(this.toAsset, tx, toAssetFee))
         }, BN(0))
