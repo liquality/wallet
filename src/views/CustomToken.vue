@@ -49,6 +49,14 @@
                    RSK
                 </a>
               </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   @click="setActiveNetwork('bsc')"
+                   :class="{active: network === 'bsc'}">
+                   BSC
+                </a>
+              </li>
             </ul>
           </div>
         </div>
