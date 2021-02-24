@@ -32,6 +32,11 @@ const FEE_UNITS = {
     [TX_TYPES.SEND]: 90000,
     [TX_TYPES.SWAP_INITIATION]: 561000 + 94500, // Contract creation + erc20 transfer
     [TX_TYPES.SWAP_CLAIM]: 90000
+  },
+  BNB: {
+    [TX_TYPES.SEND]: 21000,
+    [TX_TYPES.SWAP_INITIATION]: 120000,
+    [TX_TYPES.SWAP_CLAIM]: 21000
   }
 }
 

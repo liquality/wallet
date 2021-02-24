@@ -30,6 +30,16 @@ const EXPLORERS = {
       tx: 'https://explorer.rsk.co/tx/0x',
       address: 'https://explorer.rsk.co/address/'
     }
+  },
+  BNB: {
+    testnet: {
+      tx: 'https://testnet.bscscan.com/tx/',
+      address: 'https://testnet.bscscan.com/address/'
+    },
+    mainnet: {
+      tx: 'https://bscscan.com/tx/',
+      address: 'https://bscscan.com/address/'
+    }
   }
 }
 
@@ -38,7 +48,7 @@ export const isERC20 = asset => {
 }
 
 export const isEthereumChain = asset => {
-  return ['ETH', 'RBTC'].includes(asset)
+  return ['ETH', 'RBTC', 'BNB'].includes(asset)
 }
 
 export const getChainFromAsset = asset => {
