@@ -26,22 +26,6 @@ import cryptoassets from '../../utils/cryptoassets'
 
 export const Networks = ['mainnet', 'testnet']
 
-const bscNetworks = {
-  bsc_mainnet: {
-    name: 'bsc_mainnet',
-    coinType: '60',
-    networkId: 56,
-    chainId: 56
-  },
-  bsc_testnet: {
-    name: 'bsc_testnet',
-    coinType: '60',
-    networkId: 97,
-    chainId: 97,
-    isTestnet: true
-  }
-}
-
 export const AssetNetworks = {
   BTC: {
     testnet: BitcoinNetworks.bitcoin_testnet,
@@ -56,8 +40,8 @@ export const AssetNetworks = {
     mainnet: EthereumNetworks.rsk_mainnet
   },
   BNB: {
-    testnet: bscNetworks.bsc_testnet,
-    mainnet: bscNetworks.bsc_mainnet
+    testnet: EthereumNetworks.bsc_testnet,
+    mainnet: EthereumNetworks.bsc_mainnet
   }
 }
 
