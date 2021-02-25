@@ -31,7 +31,7 @@
                 min="0"
                 :class="{ 'is-invalid': amount && amountError }"
                 :style="getAssetColorStyle(asset)"
-                v-model="amount"
+                v-model="sendAmount"
                 class="form-control"
                 id="amount"
                 placeholder="0.00"
@@ -47,7 +47,7 @@
           </div>
           <div class="sub-form-group">
             <div class="label-sub"
-              ><span class="text-muted">Available</span> {{ available }}
+              ><span class="text-muted">Available</span> {{ dpUI(available) }}
               {{ asset }}</div
             >
             <div
@@ -112,11 +112,11 @@
         </div>
         <div class="wrapper_bottom">
           <div class="button-group">
-            <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
-              ><button class="btn btn-light btn-outline-primary btn-lg">
+            <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`">
+              <button class="btn btn-light btn-outline-primary btn-lg">
                 Cancel
-              </button></router-link
-            >
+              </button>
+            </router-link>
             <button
               class="btn btn-primary btn-lg"
               @click="showConfirm = true"
@@ -144,7 +144,7 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div class="confirm-value" :style="getAssetColorStyle(asset)">
-            {{ amount }} {{ asset }}
+            {{ prettyBalance(amount, asset) }} {{ asset }}
           </div>
           <div class="details-text">${{ amountInFiat }}</div>
           </div>
@@ -166,10 +166,10 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div class="font-weight-bold" v-if="asset === feeType">
-              {{ amountWithFee }} {{ asset }}
+              {{ prettyBalance(amountWithFee, asset) }} {{ asset }}
             </div>
              <div class="font-weight-bold" v-else>
-              {{ amount }} {{ asset }} + {{ prettyFee }} {{ feeType }}
+              {{ prettyBalance(amount, asset) }} {{ asset }} + {{ prettyFee }} {{ feeType }}
             </div>
           <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
           </div>
@@ -209,7 +209,7 @@ import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
-import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance, dpUI } from '@/utils/coinFormatter'
 import {
   getChainFromAsset,
   getAssetColorStyle,
@@ -246,6 +246,14 @@ export default {
     asset: String
   },
   computed: {
+    sendAmount: {
+      get () {
+        return dpUI(this.amount)
+      },
+      set (newValue) {
+        this.amount = BN(newValue)
+      }
+    },
     ...mapState([
       'activeNetwork',
       'activeWalletId',
@@ -336,6 +344,7 @@ export default {
   methods: {
     ...mapActions(['updateFees', 'sendTransaction']),
     prettyBalance,
+    dpUI,
     prettyFiatBalance,
     getAssetIcon,
     getAssetColorStyle,
