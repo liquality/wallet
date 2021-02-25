@@ -27,7 +27,7 @@
               </div>
               <input
                 type="number"
-                max="available"
+                :max="available"
                 min="0"
                 :class="{ 'is-invalid': amount && amountError }"
                 :style="getAssetColorStyle(asset)"
@@ -88,7 +88,7 @@
             <template v-slot:header>
               <span class="details-title">Network Speed/Fee</span>
               <span class="text-muted">
-                ({{ selectedFeeLabel }} / {{ totalFee }} {{ feeType }})
+                ({{ selectedFeeLabel }} / {{ prettyFee }} {{ feeType }})
               </span>
             </template>
             <template v-slot:content>
@@ -155,7 +155,7 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div>
-            ~{{ totalFee }} {{ feeType }}
+            ~{{ prettyFee }} {{ feeType }}
           </div>
           <div class="details-text">${{ totalFeeInFiat }}</div>
           </div>
@@ -169,7 +169,7 @@
               {{ amountWithFee }} {{ asset }}
             </div>
              <div class="font-weight-bold" v-else>
-              {{ amount }} {{ asset }} + {{ totalFee }} {{ feeType }}
+              {{ amount }} {{ asset }} + {{ prettyFee }} {{ feeType }}
             </div>
           <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
           </div>
@@ -296,25 +296,25 @@ export default {
         : 0
       return getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
     },
-    totalFee () {
-      return this.sendFee.toString().substring(0, 8)
+    prettyFee () {
+      return this.sendFee.dp(6)
     },
     available () {
       const balance = this.balances[this.activeNetwork][this.activeWalletId][
         this.asset
       ]
-      const fee = cryptoassets[this.assetChain].currencyToUnit(this.totalFee)
+      const fee = cryptoassets[this.assetChain].currencyToUnit(this.sendFee)
       const available =
         this.assetChain !== this.asset
           ? BN(balance)
           : BN.max(BN(balance).minus(fee), 0)
-      return prettyBalance(available, this.asset)
+      return cryptoassets[this.asset].unitToCurrency(available)
     },
     amountInFiat () {
       return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
-      return prettyFiatBalance(this.totalFee, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.sendFee, this.fiatRates[this.asset])
     },
     feeType () {
       return FEE_TYPES[this.assetChain]
@@ -330,7 +330,7 @@ export default {
       return prettyFiatBalance(total, this.fiatRates[this.asset])
     },
     amountWithFee () {
-      return BN(this.amount).plus(BN(this.totalFee))
+      return BN(this.amount).plus(BN(this.sendFee))
     }
   },
   methods: {
