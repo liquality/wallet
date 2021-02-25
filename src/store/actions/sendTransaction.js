@@ -3,6 +3,13 @@ import { createHistoryNotification } from '../../broker/notification'
 
 export const sendTransaction = async ({ dispatch, commit, getters }, { network, walletId, asset, to, amount, data, fee }) => {
   const client = getters.client(network, walletId, asset)
+  let displayTo = to
+
+  if (to && to.type === 'Buffer') {
+    to = Buffer.from(to.data)
+    displayTo = to.toString('hex')
+  }
+
   const tx = await client.chain.sendTransaction(to, amount, data, fee)
 
   const transaction = {
@@ -12,7 +19,7 @@ export const sendTransaction = async ({ dispatch, commit, getters }, { network, 
     walletId,
     to: asset,
     from: asset,
-    toAddress: to,
+    toAddress: displayTo,
     amount,
     fee,
     tx,

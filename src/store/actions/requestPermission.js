@@ -60,7 +60,7 @@ export const requestPermission = async ({ state, dispatch }, { origin, data }) =
     const id = Date.now() + '.' + Math.random()
 
     return new Promise((resolve, reject) => {
-      emitter.$once(`permission:${id}`, (response) => {
+      emitter.$once(`permission:${id}`, response => {
         if (!response.allowed) reject(new Error('User denied'))
         if (response.error) reject(new Error(response.error))
 
