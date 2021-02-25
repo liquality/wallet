@@ -66,10 +66,11 @@ import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
-import { getAssetIcon } from '@/utils/asset'
+import { getAssetIcon, getChainFromAsset } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
+import { AssetNetworks } from '@/store/factory/client'
 
 export default {
   components: {
@@ -105,7 +106,8 @@ export default {
     },
     address () {
       const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
-      return address && cryptoassets[this.asset].formatAddress(address)
+      const assetChain = getChainFromAsset(this.asset)
+      return address && cryptoassets[this.asset].formatAddress(address, AssetNetworks[assetChain][this.activeNetwork].chainId)
     },
     markets () {
       return this.marketData[this.activeNetwork][this.asset]
