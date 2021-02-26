@@ -12,14 +12,14 @@
         <div class="account_balance">
           <div class="account_balance_fiat">
             <span v-if="fiatRates[asset]" >
-              ${{prettyFiatBalance(balance, fiatRates[asset])}}
+              ${{ prettyFiatBalance(balance, fiatRates[asset]) }}
             </span>
             <span v-else>&nbsp;</span>
           </div>
           <div>
             <span class="account_balance_value"
                   :style="{ fontSize: balanceFontSize }">
-              {{balance}}
+              {{ balance }}
             </span>
             <span class="account_balance_code">{{asset}}</span>
           </div>

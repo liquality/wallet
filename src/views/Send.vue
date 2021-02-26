@@ -26,12 +26,12 @@
                 <span class="input-group-text">{{ asset }}</span>
               </div>
               <input
-                type="number"
-                :max="available"
-                min="0"
+                type="text"
+                maxlength="8"
+                pattern="\d*"
                 :class="{ 'is-invalid': amount && amountError }"
                 :style="getAssetColorStyle(asset)"
-                v-model="sendAmount"
+                v-model="amount"
                 class="form-control"
                 id="amount"
                 placeholder="0.00"
@@ -144,7 +144,7 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div class="confirm-value" :style="getAssetColorStyle(asset)">
-            {{ prettyBalance(amount, asset) }} {{ asset }}
+            {{ dpUI(amount) }} {{ asset }}
           </div>
           <div class="details-text">${{ amountInFiat }}</div>
           </div>
@@ -166,7 +166,7 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div class="font-weight-bold" v-if="asset === feeType">
-              {{ prettyBalance(amountWithFee, asset) }} {{ asset }}
+              {{ dpUI(amountWithFee) }} {{ asset }}
             </div>
              <div class="font-weight-bold" v-else>
               {{ prettyBalance(amount, asset) }} {{ asset }} + {{ prettyFee }} {{ feeType }}
@@ -234,7 +234,7 @@ export default {
   },
   data () {
     return {
-      amount: 0,
+      stateAmount: 0,
       address: null,
       selectedFee: 'average',
       showConfirm: false,
@@ -246,12 +246,20 @@ export default {
     asset: String
   },
   computed: {
-    sendAmount: {
+    amount: {
       get () {
-        return dpUI(this.amount)
+        return this.stateAmount
       },
       set (newValue) {
-        this.amount = BN(newValue)
+        if (newValue && !isNaN(newValue)) {
+          if (BN(newValue).gt(0)) {
+            this.stateAmount = dpUI(newValue).toNumber()
+          } else {
+            this.stateAmount = newValue
+          }
+        } else {
+          this.stateAmount = 0
+        }
       }
     },
     ...mapState([
@@ -372,7 +380,7 @@ export default {
     toogleMaxAmount () {
       this.maxOptionActive = !this.maxOptionActive
       if (this.maxOptionActive) {
-        this.amount = this.available
+        this.amount = dpUI(this.available)
       }
     },
     back () {
