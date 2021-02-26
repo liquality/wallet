@@ -366,22 +366,21 @@ export default {
       const amount = cryptoassets[this.asset]
         .currencyToUnit(this.stateAmount)
         .toNumber()
-      console.log('amount', amount)
-      // const fee = this.feesAvailable
-      //   ? this.assetFees[this.selectedFee].fee
-      //   : undefined
+      const fee = this.feesAvailable
+        ? this.assetFees[this.selectedFee].fee
+        : undefined
 
-      // this.loading = true
-      // await this.sendTransaction({
-      //   network: this.activeNetwork,
-      //   walletId: this.activeWalletId,
-      //   asset: this.asset,
-      //   to: this.address,
-      //   amount,
-      //   fee
-      // })
+      this.loading = true
+      await this.sendTransaction({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        asset: this.asset,
+        to: this.address,
+        amount,
+        fee
+      })
 
-      // this.$router.replace(`/account/${this.asset}`)
+      this.$router.replace(`/account/${this.asset}`)
     },
     toogleMaxAmount () {
       this.maxOptionActive = !this.maxOptionActive
