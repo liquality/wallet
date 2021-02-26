@@ -234,7 +234,7 @@ export default {
   },
   data () {
     return {
-      stateAmount: 0,
+      stateAmount: BN(0),
       address: null,
       selectedFee: 'average',
       showConfirm: false,
@@ -249,17 +249,22 @@ export default {
   computed: {
     amount: {
       get () {
-        return this.stateAmount
+        const uiAmount = dpUI(this.stateAmount)
+        if (uiAmount.gt(0)) {
+          return uiAmount
+        } else {
+          return this.stateAmount
+        }
       },
       set (newValue) {
         if (newValue && !isNaN(newValue)) {
-          if (BN(newValue).gt(0)) {
-            this.stateAmount = dpUI(newValue).toNumber()
-          } else {
-            this.stateAmount = newValue
+          this.stateAmount = newValue
+          if (!BN(newValue).eq(this.available)) {
+            this.maxOptionActive = false
           }
         } else {
           this.stateAmount = 0
+          this.maxOptionActive = false
         }
       }
     },
@@ -334,7 +339,7 @@ export default {
       }
     },
     amountInFiat () {
-      return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
       return prettyFiatBalance(this.sendFee, this.fiatRates[this.asset])
@@ -349,11 +354,11 @@ export default {
       return getFeeLabel(this.selectedFee)
     },
     totalToSendInFiat () {
-      const total = BN(this.amount).plus(BN(this.sendFee))
+      const total = BN(this.stateAmount).plus(BN(this.sendFee))
       return prettyFiatBalance(total, this.fiatRates[this.asset])
     },
     amountWithFee () {
-      return BN(this.amount).plus(BN(this.sendFee))
+      return BN(this.stateAmount).plus(BN(this.sendFee))
     }
   },
   methods: {
@@ -366,7 +371,7 @@ export default {
     shortenAddress,
     async send () {
       const amount = cryptoassets[this.asset]
-        .currencyToUnit(this.amount)
+        .currencyToUnit(this.stateAmount)
         .toNumber()
       const fee = this.feesAvailable
         ? this.assetFees[this.selectedFee].fee
@@ -388,7 +393,7 @@ export default {
     toogleMaxAmount () {
       this.maxOptionActive = !this.maxOptionActive
       if (this.maxOptionActive) {
-        this.amount = dpUI(this.available)
+        this.amount = this.available
       }
     },
     back () {
