@@ -12,14 +12,14 @@
         <div class="account_balance">
           <div class="account_balance_fiat">
             <span v-if="fiatRates[asset]" >
-              ${{prettyFiatBalance(balance, fiatRates[asset])}}
+              ${{ prettyFiatBalance(balance, fiatRates[asset]) }}
             </span>
             <span v-else>&nbsp;</span>
           </div>
           <div>
             <span class="account_balance_value"
                   :style="{ fontSize: balanceFontSize }">
-              {{balance}}
+              {{ balance }}
             </span>
             <span class="account_balance_code">{{asset}}</span>
           </div>
@@ -66,10 +66,11 @@ import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
-import { getAssetIcon } from '@/utils/asset'
+import { getAssetIcon, getChainFromAsset } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
+import { AssetNetworks } from '@/store/factory/client'
 
 export default {
   components: {
@@ -107,11 +108,12 @@ export default {
       return prettyBalance(this.account?.balances[this.asset] || 0, this.asset)
     },
     address () {
-      const address = this.account?.addresses[0]
-      if (address) {
-        return cryptoassets[this.asset].formatAddress(address)
-      }
-      return ''
+      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
+      const assetChain = getChainFromAsset(this.asset)
+      return address && cryptoassets[this.asset].formatAddress(address, AssetNetworks[assetChain][this.activeNetwork].chainId)
+    },
+    markets () {
+      return this.marketData[this.activeNetwork][this.asset]
     },
     assetHistory () {
       return this.activity.filter((item) => item.from === this.asset)

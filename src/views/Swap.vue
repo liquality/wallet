@@ -413,6 +413,7 @@ import CopyIcon from '@/assets/icons/copy.svg'
 import CloseIcon from '@/assets/icons/close.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import AssetDropdown from '@/components/AssetDropdown'
+import { AssetNetworks } from '@/store/factory/client'
 
 export default {
   components: {
@@ -717,8 +718,10 @@ export default {
       return this.sendFeeType === FEE_TYPES.BTC
     },
     currentWalletAddress () {
-      const address = this.account?.addresses[0]
-      return address && cryptoassets[this.asset].formatAddress(address)
+      const address = this.addresses[this.activeNetwork]?.[
+        this.activeWalletId
+      ]?.[this.asset]
+      return address && cryptoassets[this.asset].formatAddress(address, AssetNetworks[this.assetChain][this.activeNetwork].chainId)
     },
     sendAmountSameAsset () {
       return BN(this.safeAmount).plus(this.totalFees[this.assetChain])
