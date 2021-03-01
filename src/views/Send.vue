@@ -26,9 +26,9 @@
                 <span class="input-group-text">{{ asset }}</span>
               </div>
               <input
-                type="text"
-                maxlength="8"
-                pattern="\d*"
+                type="number"
+                :min="0"
+                :max="dpUI(available)"
                 :class="{ 'is-invalid': amount && amountError }"
                 :style="getAssetColorStyle(asset)"
                 v-model="amount"
@@ -248,21 +248,18 @@ export default {
   computed: {
     amount: {
       get () {
-        const uiAmount = dpUI(this.stateAmount)
-        if (uiAmount.gt(0)) {
-          return uiAmount
-        } else {
-          return this.stateAmount
-        }
+        return this.stateAmount
       },
       set (newValue) {
         if (newValue && !isNaN(newValue)) {
           this.stateAmount = newValue
-          if (!BN(newValue).eq(this.available)) {
+          const amount = BN(newValue)
+          const available = dpUI(this.available)
+          if (!amount.eq(available)) {
             this.maxOptionActive = false
           }
         } else {
-          this.stateAmount = 0
+          this.stateAmount = BN(0)
           this.maxOptionActive = false
         }
       }
@@ -363,29 +360,43 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async send () {
-      const amount = cryptoassets[this.asset]
-        .currencyToUnit(this.stateAmount)
-        .toNumber()
-      const fee = this.feesAvailable
-        ? this.assetFees[this.selectedFee].fee
-        : undefined
+      console.log('this.stateAmount', this.stateAmount)
+      console.log('this.available', this.available)
+      console.log('maxOptionActive', this.maxOptionActive)
+      let amountToSend = this.stateAmount
+      const available = dpUI(this.available)
+      if (this.maxOptionActive && available.eq(BN(this.stateAmount))) {
+        amountToSend = this.available
+      }
 
-      this.loading = true
-      await this.sendTransaction({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        asset: this.asset,
-        to: this.address,
-        amount,
-        fee
-      })
+      console.log('amontToSend', amountToSend)
 
-      this.$router.replace(`/account/${this.asset}`)
+      // const amount = cryptoassets[this.asset]
+      //   .currencyToUnit(this.stateAmount)
+      //   .toNumber()
+      // const fee = this.feesAvailable
+      //   ? this.assetFees[this.selectedFee].fee
+      //   : undefined
+
+      // this.loading = true
+      // await this.sendTransaction({
+      //   network: this.activeNetwork,
+      //   walletId: this.activeWalletId,
+      //   asset: this.asset,
+      //   to: this.address,
+      //   amount,
+      //   fee
+      // })
+
+      // this.$router.replace(`/account/${this.asset}`)
     },
     toogleMaxAmount () {
       this.maxOptionActive = !this.maxOptionActive
       if (this.maxOptionActive) {
-        this.amount = this.available
+        this.amount = BN.min(
+          BN(this.available),
+          dpUI(this.available)
+        )
       }
     },
     back () {
@@ -399,7 +410,10 @@ export default {
     selectedFee: {
       handler () {
         if (this.maxOptionActive) {
-          this.amount = this.available
+          this.amount = BN.min(
+            BN(this.available),
+            dpUI(this.available)
+          )
         }
       },
       deep: true
