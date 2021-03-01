@@ -234,7 +234,7 @@ export default {
   },
   data () {
     return {
-      stateAmount: BN(0),
+      amount: 0,
       address: null,
       selectedFee: 'average',
       showConfirm: false,
@@ -246,24 +246,6 @@ export default {
     asset: String
   },
   computed: {
-    amount: {
-      get () {
-        return this.stateAmount
-      },
-      set (newValue) {
-        if (newValue && !isNaN(newValue)) {
-          this.stateAmount = newValue
-          const amount = BN(newValue)
-          const available = dpUI(this.available)
-          if (!amount.eq(available)) {
-            this.maxOptionActive = false
-          }
-        } else {
-          this.stateAmount = BN(0)
-          this.maxOptionActive = false
-        }
-      }
-    },
     ...mapState([
       'activeNetwork',
       'activeWalletId',
@@ -329,7 +311,7 @@ export default {
       return cryptoassets[this.asset].unitToCurrency(available)
     },
     amountInFiat () {
-      return prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
       return prettyFiatBalance(this.sendFee, this.fiatRates[this.asset])
@@ -344,11 +326,11 @@ export default {
       return getFeeLabel(this.selectedFee)
     },
     totalToSendInFiat () {
-      const total = BN(this.stateAmount).plus(BN(this.sendFee))
+      const total = BN(this.amount).plus(BN(this.sendFee))
       return prettyFiatBalance(total, this.fiatRates[this.asset])
     },
     amountWithFee () {
-      return BN(this.stateAmount).plus(BN(this.sendFee))
+      return BN(this.amount).plus(BN(this.sendFee))
     }
   },
   methods: {
@@ -360,35 +342,26 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async send () {
-      console.log('this.stateAmount', this.stateAmount)
-      console.log('this.available', this.available)
-      console.log('maxOptionActive', this.maxOptionActive)
-      let amountToSend = this.stateAmount
-      const available = dpUI(this.available)
-      if (this.maxOptionActive && available.eq(BN(this.stateAmount))) {
-        amountToSend = this.available
-      }
+      const amountToSend = this.maxOptionActive ? this.available : this.amount
 
-      console.log('amontToSend', amountToSend)
+      const amount = cryptoassets[this.asset]
+        .currencyToUnit(amountToSend)
+        .toNumber()
+      const fee = this.feesAvailable
+        ? this.assetFees[this.selectedFee].fee
+        : undefined
 
-      // const amount = cryptoassets[this.asset]
-      //   .currencyToUnit(this.stateAmount)
-      //   .toNumber()
-      // const fee = this.feesAvailable
-      //   ? this.assetFees[this.selectedFee].fee
-      //   : undefined
+      this.loading = true
+      await this.sendTransaction({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        asset: this.asset,
+        to: this.address,
+        amount,
+        fee
+      })
 
-      // this.loading = true
-      // await this.sendTransaction({
-      //   network: this.activeNetwork,
-      //   walletId: this.activeWalletId,
-      //   asset: this.asset,
-      //   to: this.address,
-      //   amount,
-      //   fee
-      // })
-
-      // this.$router.replace(`/account/${this.asset}`)
+      this.$router.replace(`/account/${this.asset}`)
     },
     toogleMaxAmount () {
       this.maxOptionActive = !this.maxOptionActive
@@ -417,6 +390,13 @@ export default {
         }
       },
       deep: true
+    },
+    amount: function (val) {
+      const amount = BN(val)
+      const available = dpUI(this.available)
+      if (!amount.eq(available)) {
+        this.maxOptionActive = false
+      }
     }
   }
 }
