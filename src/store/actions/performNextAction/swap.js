@@ -1,7 +1,11 @@
 import { sha256 } from '@liquality/crypto'
 import { withLock, withInterval, hasChainTimePassed } from './utils'
 import cryptoassets from '../../../utils/cryptoassets'
-import { updateOrder } from '../../utils'
+import { updateOrder, timestamp } from '../../utils'
+
+async function hasQuoteExpired (store, { order }) {
+  return timestamp() >= order.expiresAt
+}
 
 async function canRefund ({ getters }, { network, walletId, order }) {
   return hasChainTimePassed({ getters }, { network, walletId, asset: order.from, timestamp: order.swapExpiration })
@@ -52,7 +56,9 @@ async function createSecret ({ getters, dispatch }, { order, network, walletId }
 }
 
 async function initiateSwap ({ getters, dispatch }, { order, network, walletId }) {
-  if (await dispatch('checkIfQuoteExpired', { network, walletId, order })) return
+  if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
+    return { status: 'QUOTE_EXPIRED' }
+  }
 
   const fromClient = getters.client(network, walletId, order.from)
 
@@ -73,31 +79,44 @@ async function initiateSwap ({ getters, dispatch }, { order, network, walletId }
 }
 
 async function fundSwap ({ getters, dispatch }, { order, network, walletId }) {
-  if (await dispatch('checkIfQuoteExpired', { network, walletId, order })) return
+  if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
+    return { status: 'QUOTE_EXPIRED' }
+  }
 
-  const toClient = getters.client(network, walletId, order.to)
+  const fromClient = getters.client(network, walletId, order.from)
 
-  const fundTx = await toClient.swap.fundSwap(
-    order.fromFundHash,
-    order.fromAmount,
-    order.fromCounterPartyAddress,
-    order.fromAddress,
-    order.secretHash,
-    order.swapExpiration,
-    order.fee
-  )
+  try {
+    console.log('funding')
+    const fundTx = await fromClient.swap.fundSwap(
+      order.fromFundHash,
+      order.fromAmount,
+      order.fromCounterPartyAddress,
+      order.fromAddress,
+      order.secretHash,
+      order.swapExpiration,
+      order.fee
+    )
 
-  return {
-    fundTxHash: fundTx?.hash,
-    status: 'INITIATION_REPORTED'
+    return {
+      fundTxHash: fundTx?.hash,
+      status: 'FUNDED'
+    }
+  } catch (e) { // Handle ERC20 contract initiation still to be mined
+    if (e.name === 'PendingTxError') console.warn(e)
+    else throw e
   }
 }
 
-async function reportInitiation (store, { order }) {
+async function reportInitiation ({ getters }, { order, network, walletId }) {
+  if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
+    console.log('WAITING FOR REFUND')
+    return { status: 'WAITING_FOR_REFUND' }
+  }
+
   await updateOrder(order)
 
   return {
-    status: 'FUNDED'
+    status: 'INITIATION_REPORTED'
   }
 }
 
@@ -297,12 +316,15 @@ export const performNextSwapAction = async (store, { network, walletId, order })
       break
 
     case 'INITIATED':
-      updates = await reportInitiation(store, { order, network, walletId })
+      updates = await withInterval(
+        async () => await withLock(store, { item: order, network, walletId, asset: order.from },
+          async () => fundSwap(store, { order, network, walletId })
+        )
+      )
       break
 
     case 'FUNDED':
-      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
-        async () => fundSwap(store, { order, network, walletId }))
+      updates = await reportInitiation(store, { order, network, walletId })
       break
 
     case 'INITIATION_REPORTED':

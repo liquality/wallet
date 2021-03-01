@@ -15,7 +15,7 @@ export { wait }
 
 export const waitForRandom = (min, max) => wait(random(min, max))
 
-export const timestamp = () => Math.ceil(Date.now() / 1000)
+export const timestamp = () => Date.now()
 
 export const attemptToLockAsset = (network, walletId, asset) => {
   const chain = getChainFromAsset(asset)
