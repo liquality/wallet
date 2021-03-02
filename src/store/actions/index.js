@@ -1,7 +1,6 @@
 export * from './changeActiveWalletId'
 export * from './changeActiveNetwork'
 export * from './changePassword'
-export * from './checkIfQuoteExpired'
 export * from './checkPendingActions'
 export * from './clientExec'
 export * from './getLockForAsset'

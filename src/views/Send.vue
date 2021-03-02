@@ -26,9 +26,9 @@
                 <span class="input-group-text">{{ asset }}</span>
               </div>
               <input
-                type="text"
-                maxlength="8"
-                pattern="\d*"
+                type="number"
+                :min="0"
+                :max="dpUI(available)"
                 :class="{ 'is-invalid': amount && amountError }"
                 :style="getAssetColorStyle(asset)"
                 v-model="amount"
@@ -234,7 +234,7 @@ export default {
   },
   data () {
     return {
-      stateAmount: BN(0),
+      amount: 0,
       address: null,
       selectedFee: 'average',
       showConfirm: false,
@@ -247,27 +247,6 @@ export default {
     accountId: String
   },
   computed: {
-    amount: {
-      get () {
-        const uiAmount = dpUI(this.stateAmount)
-        if (uiAmount.gt(0)) {
-          return uiAmount
-        } else {
-          return this.stateAmount
-        }
-      },
-      set (newValue) {
-        if (newValue && !isNaN(newValue)) {
-          this.stateAmount = newValue
-          if (!BN(newValue).eq(this.available)) {
-            this.maxOptionActive = false
-          }
-        } else {
-          this.stateAmount = 0
-          this.maxOptionActive = false
-        }
-      }
-    },
     ...mapState([
       'activeNetwork',
       'activeWalletId',
@@ -339,7 +318,7 @@ export default {
       }
     },
     amountInFiat () {
-      return prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
       return prettyFiatBalance(this.sendFee, this.fiatRates[this.asset])
@@ -354,11 +333,11 @@ export default {
       return getFeeLabel(this.selectedFee)
     },
     totalToSendInFiat () {
-      const total = BN(this.stateAmount).plus(BN(this.sendFee))
+      const total = BN(this.amount).plus(BN(this.sendFee))
       return prettyFiatBalance(total, this.fiatRates[this.asset])
     },
     amountWithFee () {
-      return BN(this.stateAmount).plus(BN(this.sendFee))
+      return BN(this.amount).plus(BN(this.sendFee))
     }
   },
   methods: {
@@ -370,8 +349,10 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async send () {
+      const amountToSend = this.maxOptionActive ? this.available : this.amount
+
       const amount = cryptoassets[this.asset]
-        .currencyToUnit(this.stateAmount)
+        .currencyToUnit(amountToSend)
         .toNumber()
       const fee = this.feesAvailable
         ? this.assetFees[this.selectedFee].fee
@@ -393,7 +374,10 @@ export default {
     toogleMaxAmount () {
       this.maxOptionActive = !this.maxOptionActive
       if (this.maxOptionActive) {
-        this.amount = this.available
+        this.amount = BN.min(
+          BN(this.available),
+          dpUI(this.available)
+        )
       }
     },
     back () {
@@ -407,10 +391,20 @@ export default {
     selectedFee: {
       handler () {
         if (this.maxOptionActive) {
-          this.amount = this.available
+          this.amount = BN.min(
+            BN(this.available),
+            dpUI(this.available)
+          )
         }
       },
       deep: true
+    },
+    amount: function (val) {
+      const amount = BN(val)
+      const available = dpUI(this.available)
+      if (!amount.eq(available)) {
+        this.maxOptionActive = false
+      }
     }
   }
 }
