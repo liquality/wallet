@@ -563,3 +563,28 @@ svg.qr-icon {
   max-width: 290px;
   line-height: 28px;
 }
+
+// common for accounts screens
+.account-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .account-title {
+    font-size: $font-size-head-title;
+    font-style: normal;
+    line-height: 26px;
+    text-transform: uppercase;
+    font-weight: $headings-font-weight;
+
+    img {
+      margin-right: 4px;
+    }
+  }
+
+  .account-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+}

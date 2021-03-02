@@ -1,49 +1,49 @@
 <template>
-  <div class="account">
+  <div class="account-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account_header"><img :src="getAssetIcon(asset)" class="asset-icon" /> {{asset}}</span>
+      <span class="account-title"><img :src="getAssetIcon(asset)" class="asset-icon" /> {{asset}}</span>
     </NavBar>
-    <div class="account_main">
-      <div class="account_top">
+    <div class="account-content">
+      <div class="account-content-top">
         <RefreshIcon @click.stop="refresh"
-                     class="account_refresh-icon"
+                     class="account-container_refresh-icon"
                      :class="{ 'infinity-rotate': updatingBalances }"
         />
-        <div class="account_balance">
-          <div class="account_balance_fiat">
+        <div class="account-container_balance">
+          <div class="account-container_balance_fiat">
             <span v-if="fiatRates[asset]" >
               ${{ prettyFiatBalance(balance, fiatRates[asset]) }}
             </span>
             <span v-else>&nbsp;</span>
           </div>
           <div>
-            <span class="account_balance_value"
+            <span class="account-container_balance_value"
                   :style="{ fontSize: balanceFontSize }">
               {{ balance }}
             </span>
-            <span class="account_balance_code">{{asset}}</span>
+            <span class="account-container_balance_code">{{asset}}</span>
           </div>
         </div>
-        <div v-if="address" class="account_address">
+        <div v-if="address" class="account-container_address">
           <button class="btn btn-outline-light"
             @click="copyAddress"
             v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
             {{ shortenAddress(this.address) }}
           </button>
         </div>
-        <div class="account_actions">
-          <router-link :to="`/account/${account.id}/${asset}/send`"><button class="account_actions_button">
-            <div class="account_actions_button_wrapper"><SendIcon class="account_actions_button_icon" /></div>Send
+        <div class="account-container_actions">
+          <router-link :to="`/account/${account.id}/${asset}/send`"><button class="account-container_actions_button">
+            <div class="account-container_actions_button_wrapper"><SendIcon class="account-container_actions_button_icon" /></div>Send
           </button></router-link>
-          <router-link :to="`/account/${account.id}/${asset}/swap`"><button class="account_actions_button">
-            <div class="account_actions_button_wrapper"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></div>Swap
+          <router-link :to="`/account/${account.id}/${asset}/swap`"><button class="account-container_actions_button">
+            <div class="account-container_actions_button_wrapper"><SwapIcon class="account-container_actions_button_icon account-container_actions_button_swap" /></div>Swap
           </button></router-link>
-          <router-link v-bind:to="`/account/${account.id}/${asset}/receive`"><button class="account_actions_button">
-            <div class="account_actions_button_wrapper"><ReceiveIcon class="account_actions_button_icon" /></div>Receive
+          <router-link v-bind:to="`/account/${account.id}/${asset}/receive`"><button class="account-container_actions_button">
+            <div class="account-container_actions_button_wrapper"><ReceiveIcon class="account-container_actions_button_icon" /></div>Receive
           </button></router-link>
         </div>
       </div>
-      <div class="account_transactions">
+      <div class="account-container_transactions">
         <ActivityFilter @filters-changed="applyFilters"
                         :activity-data="activityData"
                         v-if="activityData.length > 0"/>
@@ -167,31 +167,9 @@ export default {
 </script>
 
 <style lang="scss">
-.account {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
+.account-container {
 
-  &_header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: $h3-font-size;
-    text-transform: uppercase;
-    font-weight: normal;
-
-    img {
-      margin-right: 4px;
-    }
-  }
-
-  &_main {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-
-  &_top {
+  .account-content-top {
     height: 220px;
     display: flex;
     flex-direction: column;

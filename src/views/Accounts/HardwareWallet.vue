@@ -1,8 +1,8 @@
 <template>
   <div class="add-hardware-wallet">
     <NavBar :showMenu="false">
-      <span class="header">
-        <strong>Add Hardware Wallet</strong>
+      <span class="add-hardware-wallet-header">
+        Add Hardware Wallet
       </span>
     </NavBar>
     <div class="wrapper" v-if="currentStep === 'connect'">
@@ -223,9 +223,12 @@ export default {
   display: flex;
   flex-direction: column;
 
-    .header {
-        font-weight: normal;
-        text-transform: uppercase;
+    .add-hardware-wallet-header {
+      font-size: $font-size-head-title;
+      font-style: normal;
+      line-height: 26px;
+      text-transform: uppercase;
+      font-weight: $headings-font-weight;
     }
 
     .step-detail {

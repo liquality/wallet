@@ -11,7 +11,7 @@
     <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
       <li>
           <button class="dropdown-item"
-                  @click="navigate('#')">
+                  @click="navigate('/accounts/create')">
               <div class="head-option">
                 <CreateIcon class="create-icon" />
               </div>
@@ -20,7 +20,7 @@
       </li>
       <li>
           <button class="dropdown-item"
-                  @click="navigate('#')">
+                  @click="navigate('/accounts/import')">
               <div class="head-option">
                 <ImportIcon class="import-icon" />
               </div>
@@ -29,7 +29,7 @@
       </li>
       <li>
           <button class="dropdown-item"
-                  @click="navigate('/add-hardware-wallet')">
+                  @click="navigate('/accounts/hardware-wallet')">
               <div class="head-option">
                 <HardwareIcon class="hardware-icon" />
               </div>
