@@ -5,9 +5,6 @@ import buildConfig from '../../build.config'
 import { accountCreator } from '@/utils/accounts'
 import { getChainFromAsset } from '@/utils/asset'
 
-const networks = ['mainnet', 'testnet']
-const chains = ['BTC', 'ETH', 'RBTC']
-
 export const createWallet = async ({ state, getters, commit }, { key, mnemonic }) => {
   const { enabledAssets } = state
   const id = uuidv4()
@@ -26,10 +23,10 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
   commit('ENABLE_ASSETS', { network: 'mainnet', walletId: id, assets: buildConfig.defaultAssets.mainnet })
   commit('ENABLE_ASSETS', { network: 'testnet', walletId: id, assets: buildConfig.defaultAssets.testnet })
 
-  networks.forEach(async network => {
+  buildConfig.networks.forEach(async network => {
     const assetKeys = enabledAssets[network]?.[id] || []
 
-    chains.forEach(async chain => {
+    buildConfig.chains.forEach(async chain => {
       const assets = assetKeys.filter(asset => {
         const assetChain = getChainFromAsset(asset)
         return assetChain === chain

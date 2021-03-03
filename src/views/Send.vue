@@ -3,7 +3,7 @@
     <div class="send" v-if="!showConfirm">
       <NavBar
         showBack="true"
-        :backPath="routeSource === 'assets' ? '/wallet' : `/account/${this.account.id}/${this.asset}`"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${this.asset}`"
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Send
@@ -112,7 +112,7 @@
         </div>
         <div class="wrapper_bottom">
           <div class="button-group">
-            <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`">
+            <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${asset}`">
               <button class="btn btn-light btn-outline-primary btn-lg">
                 Cancel
               </button>
@@ -369,7 +369,7 @@ export default {
         fee
       })
 
-      this.$router.replace(`/account/${this.accountId}/${this.asset}`)
+      this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
     },
     toogleMaxAmount () {
       this.maxOptionActive = !this.maxOptionActive

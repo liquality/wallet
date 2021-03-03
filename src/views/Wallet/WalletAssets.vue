@@ -2,7 +2,7 @@
   <div>
     <div v-for="account in accountsData" :key="account.id">
       <ListItem v-if="account.chain === 'BTC'"
-                :to="`/account/${account.id}/${account.assets[0]}`">
+                :to="`/accounts/${account.id}/${account.assets[0]}`">
           <template #prefix>
             <div>&nbsp;</div>
           </template>
@@ -54,7 +54,7 @@
            :class="{ active: showAccountAssets[account.id] === true}">
         <ListItem v-for="asset in account.assets"
                  :key="asset"
-                 :to="`/account/${account.id}/${asset}`">
+                 :to="`/accounts/${account.id}/${asset}`">
           <template #icon>
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </template>

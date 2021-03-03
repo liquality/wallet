@@ -21,7 +21,7 @@
       <div class="list-items">
         <ListItem v-for="asset in filteredItems"
                  :key="asset"
-                 :to="`/account/${asset}/${action}?source=assets`">
+                 :to="`/accounts/${asset}/${action}?source=assets`">
           <template #icon>
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </template>

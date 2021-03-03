@@ -53,8 +53,6 @@ const migrations = [
     version: 5,
     migrate: async (state) => {
       const { enabledAssets } = state
-      const networks = ['mainnet', 'testnet']
-      const chains = ['BTC', 'ETH', 'RBTC']
       const walletId = state.activeWalletId
       const accounts = {
         [walletId]: {
@@ -63,10 +61,10 @@ const migrations = [
         }
       }
 
-      networks.forEach(async network => {
+      buildConfig.networks.forEach(async network => {
         const assetKeys = enabledAssets[network]?.[walletId] || []
 
-        chains.forEach(async chain => {
+        buildConfig.chains.forEach(async chain => {
           const assets = assetKeys.filter(asset => {
             const assetChain = getChainFromAsset(asset)
             return assetChain === chain

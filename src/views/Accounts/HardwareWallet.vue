@@ -1,7 +1,7 @@
 <template>
-  <div class="add-hardware-wallet">
+  <div class="account-container">
     <NavBar :showMenu="false">
-      <span class="add-hardware-wallet-header">
+      <span class="account-title">
         Add Hardware Wallet
       </span>
     </NavBar>
@@ -219,18 +219,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.add-hardware-wallet {
-  display: flex;
-  flex-direction: column;
-
-    .add-hardware-wallet-header {
-      font-size: $font-size-head-title;
-      font-style: normal;
-      line-height: 26px;
-      text-transform: uppercase;
-      font-weight: $headings-font-weight;
-    }
-
+.account-container {
     .step-detail {
       display: flex;
       flex-direction: column;
