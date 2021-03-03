@@ -66,11 +66,10 @@ import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
-import { getAssetIcon, getChainFromAsset } from '@/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
-import { AssetNetworks } from '@/store/factory/client'
 
 export default {
   components: {
@@ -148,9 +147,8 @@ export default {
     }
   },
   async created () {
-    const assetChain = getChainFromAsset(this.asset)
     const address = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
-    this.address = cryptoassets[this.asset].formatAddress(address[0], AssetNetworks[assetChain][this.activeNetwork].chainId)
+    this.address = cryptoassets[this.asset].formatAddress(address[0])
     this.activityData = [...this.assetHistory]
   },
   watch: {
