@@ -86,7 +86,8 @@ export default {
     return {
       addressCopied: false,
       activityData: [],
-      updatingBalances: false
+      updatingBalances: false,
+      address: null
     }
   },
   props: ['accountId', 'asset'],
@@ -95,7 +96,6 @@ export default {
     ...mapState([
       'activeWalletId',
       'activeNetwork',
-      'balances',
       'addresses',
       'history',
       'fiatRates',
@@ -106,11 +106,6 @@ export default {
     },
     balance () {
       return prettyBalance(this.account?.balances[this.asset] || 0, this.asset)
-    },
-    address () {
-      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
-      const assetChain = getChainFromAsset(this.asset)
-      return address && cryptoassets[this.asset].formatAddress(address, AssetNetworks[assetChain][this.activeNetwork].chainId)
     },
     markets () {
       return this.marketData[this.activeNetwork][this.asset]
@@ -130,7 +125,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateAccountBalance', 'updateAccountBalance', 'getUnusedAddresses']),
+    ...mapActions(['updateAccountBalance', 'getUnusedAddresses']),
     getAssetIcon,
     shortenAddress,
     prettyFiatBalance,
@@ -153,9 +148,9 @@ export default {
     }
   },
   async created () {
-    if (!this.address) {
-      await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
-    }
+    const assetChain = getChainFromAsset(this.asset)
+    const address = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
+    this.address = cryptoassets[this.asset].formatAddress(address[0], AssetNetworks[assetChain][this.activeNetwork].chainId)
     this.activityData = [...this.assetHistory]
   },
   watch: {
