@@ -82,7 +82,7 @@
             Select Account
           </span>
           <p v-if="selectedAsset">
-            <img :src="getAssetIcon(selectedAsset.chain)" 
+            <img :src="getAssetIcon(selectedAsset.chain)"
                   class="asset-icon" />
              {{ accountsLabel }} Accounts
           </p>
