@@ -19,19 +19,15 @@
     </li>
   </ul>
    <div class="wallet-tab-content">
-      <router-view v-if="networkWalletBalances"></router-view>
-      <span v-else>Loading ...</span>
+     <span v-if="loading">Loading ...</span>
+      <router-view v-else></router-view>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-
 export default {
-  computed: {
-    ...mapGetters(['networkWalletBalances'])
-  }
+  props: ['loading']
 }
 </script>
 

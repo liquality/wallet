@@ -1,7 +1,7 @@
 <template>
   <div class="receive">
     <NavBar showBack="true"
-            :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
+            :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${asset}`"
             :backLabel="routeSource === 'assets' ? 'Overview' : asset">
       Receive {{asset}}
     </NavBar>
@@ -36,7 +36,7 @@
 
       <div class="wrapper_bottom">
         <div class="button-group">
-          <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`">
+          <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${asset}`">
             <button class="btn btn-light btn-outline-primary btn-lg">
               Done
             </button>

@@ -2,7 +2,7 @@ import { performNextSwapAction } from './swap'
 import { performNextTransactionAction } from './send'
 import { createHistoryNotification } from '../../../broker/notification'
 
-export const performNextAction = async (store, { network, walletId, id }) => {
+export const performNextAction = async (store, { network, walletId, accountId, id }) => {
   const { dispatch, commit, getters } = store
   const item = getters.historyItemById(network, walletId, id)
   if (!item) return
@@ -10,16 +10,17 @@ export const performNextAction = async (store, { network, walletId, id }) => {
 
   let updates
   if (item.type === 'SWAP') {
-    updates = await performNextSwapAction(store, { network, walletId, order: item })
+    updates = await performNextSwapAction(store, { network, walletId, accountId, order: item })
   }
   if (item.type === 'SEND') {
-    updates = await performNextTransactionAction(store, { network, walletId, transaction: item })
+    updates = await performNextTransactionAction(store, { network, walletId, accountId, transaction: item })
   }
 
   if (updates) {
     commit('UPDATE_HISTORY', {
       network,
       walletId,
+      accountId,
       id,
       updates
     })
@@ -30,7 +31,7 @@ export const performNextAction = async (store, { network, walletId, id }) => {
     })
 
     if (!updates.error) {
-      dispatch('performNextAction', { network, walletId, id })
+      dispatch('performNextAction', { network, walletId, accountId, id })
     }
   }
 }

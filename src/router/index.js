@@ -27,6 +27,9 @@ import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import AssetList from '@/views/AssetList.vue'
+import HardwareWallet from '@/views/Accounts/HardwareWallet.vue'
+import CreateAccount from '@/views/Accounts/Create.vue'
+import ImportAccount from '@/views/Accounts/Import.vue'
 
 Vue.use(VueRouter)
 
@@ -105,24 +108,41 @@ const routes = [
     name: 'TransactionDetails',
     props: true
   },
+
+  // Accounts
+  {
+    path: '/accounts/create',
+    component: CreateAccount,
+    props: true
+  },
+  {
+    path: '/accounts/import',
+    component: ImportAccount,
+    props: true
+  },
+  {
+    path: '/accounts/hardware-wallet',
+    component: HardwareWallet,
+    props: true
+  },
   {
     name: 'Account',
-    path: '/account/:asset',
+    path: '/accounts/:accountId/:asset',
     component: Account,
     props: true
   },
   {
-    path: '/account/:asset/send',
+    path: '/accounts/:accountId/:asset/send',
     component: Send,
     props: true
   },
   {
-    path: '/account/:asset/receive',
+    path: '/accounts/:accountId/:asset/receive',
     component: Receive,
     props: true
   },
   {
-    path: '/account/:routeAsset/swap',
+    path: '/accounts/:accountId/:routeAsset/swap',
     component: Swap,
     props: true
   },
