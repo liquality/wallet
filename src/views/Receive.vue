@@ -63,7 +63,6 @@ import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@/utils/cryptoassets'
-import { AssetNetworks } from '@/store/factory/client'
 
 export default {
   components: {
@@ -88,17 +87,15 @@ export default {
     },
     address () {
       const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
-      return address && cryptoassets[this.asset].formatAddress(address, AssetNetworks[this.assetChain][this.activeNetwork].chainId)
-    },
-    assetChain () {
-      return getChainFromAsset(this.asset)
+      return address && cryptoassets[this.asset].formatAddress(address)
     },
     chainName () {
+      const assetChain = getChainFromAsset(this.asset)
       return ({
         BTC: 'bitcoin',
         ETH: 'ethereum',
         RBTC: 'ethereum'
-      })[this.assetChain]
+      })[assetChain]
     },
     faucet () {
       if (this.activeNetwork === 'testnet') {
