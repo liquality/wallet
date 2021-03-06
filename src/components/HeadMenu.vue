@@ -1,9 +1,9 @@
 <template>
   <div class="dropdown head-menu"
       v-click-away="hide">
-    <button class="btn btn-icon dropdown-toggle"
+    <button class="btn dropdown-toggle"
             @click="toogle">
-          <AccountIcon class="account-icon"/>
+          <div class="label-menu">Accounts</div>
           <DropdownIcon class="chevron"
                         :class="{ open: dropdownOpen }"
           />
@@ -43,7 +43,6 @@
 <script>
 import clickAway from '@/directives/clickAway'
 import DropdownIcon from '@/assets/icons/dropdown_arrow.svg'
-import AccountIcon from '@/assets/icons/account_icon.svg'
 import CreateIcon from '@/assets/icons/create_icon.svg'
 import ImportIcon from '@/assets/icons/import_icon.svg'
 import HardwareIcon from '@/assets/icons/hardware_icon.svg'
@@ -51,7 +50,6 @@ import HardwareIcon from '@/assets/icons/hardware_icon.svg'
 export default {
   components: {
     DropdownIcon,
-    AccountIcon,
     CreateIcon,
     ImportIcon,
     HardwareIcon
@@ -91,16 +89,21 @@ export default {
         display: none;
       }
 
-      .account-icon {
-        width: 14px !important;
-        height: 15px !important;
-        margin: 0 !important;
+      .label-menu {
+        font-weight: 300;
+        font-size: 12px;
+        line-height: 14px;
+        display: flex;
+        align-items: center;
+        text-align: right;
+        color: #646F85;
       }
 
       .chevron {
           width: 12px;
-          margin: 0 0 0 8px !important;
+          margin: 0 0 0 4px !important;
           padding: 0 !important;
+          vertical-align: middle;
 
           &.open {
             transform: rotate(-180deg);
@@ -110,7 +113,7 @@ export default {
 
   .dropdown-menu {
     position: absolute;
-    left: -100px;
+    left: -61px;
     width: 116px;
     top: 33px;
     height: auto;
@@ -118,7 +121,6 @@ export default {
     border-radius: 0;
     padding: 0;
     margin: 0;
-    border: 1px solid #D9DFE5;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     .dropdown-header {
@@ -126,10 +128,13 @@ export default {
       text-transform: uppercase;
       padding: 5px 15px;
     }
+
     .dropdown-item {
       text-transform: uppercase;
       padding: 5px 15px;
       height: 30px;
+      border-left: 1px solid $hr-border-color;;
+      border-right: 1px solid $hr-border-color;
       border-bottom: 1px solid $hr-border-color;
       display: flex;
       align-items: center;

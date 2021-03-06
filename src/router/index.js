@@ -27,7 +27,7 @@ import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import AssetList from '@/views/AssetList.vue'
-import HardwareWallet from '@/views/Accounts/HardwareWallet.vue'
+import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
 import ImportAccount from '@/views/Accounts/Import.vue'
 
