@@ -3,7 +3,7 @@
     <div class="swap" v-if="!showConfirm">
       <NavBar
         showBack="true"
-        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${this.asset}`"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Swap
@@ -228,7 +228,7 @@
         </div>
         <div class="wrapper_bottom">
           <div class="button-group">
-            <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${asset}`">
+            <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`">
               <button class="btn btn-light btn-outline-primary btn-lg">
                 Cancel
               </button>
@@ -448,8 +448,7 @@ export default {
     }
   },
   props: {
-    routeAsset: String,
-    accountId: String
+    routeAsset: String
   },
   created () {
     this.asset = this.routeAsset
@@ -464,13 +463,8 @@ export default {
       [this.assetChain]: 'average',
       [this.toAssetChain]: 'average'
     }
-    console.log('account id', this.accountId)
-    console.log('account', this.account)
   },
   computed: {
-    account () {
-      return this.accountItem(this.accountId)
-    },
     routeSource () {
       return this.$route.query.source || null
     },
@@ -542,23 +536,24 @@ export default {
       'activeNetwork',
       'activeWalletId',
       'marketData',
+      'balances',
       'fees',
       'fiatRates',
+      'addresses',
       'activeWalletId',
       'activeNetwork'
     ]),
-    ...mapGetters(['accountItem']),
+    ...mapGetters(['assetsWithBalance']),
     assets () {
-      return this.account?.assets
-                 .filter(
-                  (asset) => asset !== this.asset
-                 ) || []
+      return this.assetsWithBalance.filter(
+        ([asset]) => asset !== this.asset
+      ).map(([asset]) => asset)
     },
     networkMarketData () {
       return this.marketData[this.activeNetwork]
     },
     networkWalletBalances () {
-      return this.account?.balances
+      return this.balances[this.activeNetwork][this.activeWalletId]
     },
     toAssets () {
       return Object.keys(this.selectedMarket)
@@ -726,16 +721,18 @@ export default {
       return BN(this.safeAmount).plus(this.totalFees[this.assetChain])
     },
     totalToSendInFiat () {
-      const fee = BN(prettyFiatBalance(this.totalFees[this.assetChain], this.fiatRates[this.assetChain]))
-      const amount = BN(this.stateSendAmountFiat).plus(fee)
+      const amount = BN(this.stateSendAmountFiat).plus(
+        prettyFiatBalance(this.totalFees[this.assetChain], this.fiatRates[this.assetChain])
+      )
       return amount.toFormat(2)
     },
     receiveAmountSameAsset () {
       return BN(this.receiveAmount).minus(BN(this.totalFees[this.toAssetChain]))
     },
     totalToReceiveInFiat () {
-      const fee = prettyFiatBalance(this.totalFees[this.toAssetChain], this.fiatRates[this.toAssetChain])
-      const amount = BN(this.stateReceiveAmountFiat).minus(fee)
+      const amount = BN(this.stateReceiveAmountFiat).minus(
+        prettyFiatBalance(this.totalFees[this.toAssetChain], this.fiatRates[this.toAssetChain])
+      )
       return amount.toFormat(2)
     },
     assetList () {
@@ -830,11 +827,10 @@ export default {
         fromAmount,
         sendTo: this.sendTo,
         fee,
-        claimFee: toFee,
-        accountId: this.account?.id
+        claimFee: toFee
       })
 
-      this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
+      this.$router.replace(`/account/${this.asset}`)
     },
     getSelectedFeeLabel (fee) {
       return getFeeLabel(fee)

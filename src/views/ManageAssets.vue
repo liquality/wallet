@@ -13,7 +13,7 @@
       <div v-for="asset in filteredAssets" :key="asset" class="asset-item d-flex align-items-center">
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
         <div class="asset-item_name flex-fill">{{getAssetName(asset)}} ({{asset}})
-          <!-- <span v-if="asset in networkWalletBalances" class="asset-item_balance">{{getAssetBalance(asset)}} {{asset}}</span> -->
+          <span v-if="asset in networkWalletBalances" class="asset-item_balance">{{getAssetBalance(asset)}} {{asset}}</span>
         </div>
         <div class="asset-item_toggle">
           <toggle-button :css-colors="true" :value="isAssetEnabled(asset)" @change="e => toggleAsset(asset, e.value)" />
@@ -30,7 +30,7 @@
 import { isEmpty } from 'lodash-es'
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-// import { prettyBalance } from '@/utils/coinFormatter'
+import { prettyBalance } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import SearchIcon from '@/assets/icons/search.svg'
@@ -54,6 +54,12 @@ export default {
     },
     networkAssets () {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
+    },
+    networkWalletBalances () {
+      if (!this.balances[this.activeNetwork]) return false
+      if (!this.balances[this.activeNetwork][this.activeWalletId]) return false
+
+      return this.balances[this.activeNetwork][this.activeWalletId]
     }
   },
   methods: {
@@ -62,9 +68,9 @@ export default {
     getAssetName (asset) {
       return cryptoassets[asset].name
     },
-    // getAssetBalance (asset) {
-    //   return prettyBalance(this.networkWalletBalances[asset], asset)
-    // },
+    getAssetBalance (asset) {
+      return prettyBalance(this.networkWalletBalances[asset], asset)
+    },
     isAssetEnabled (asset) {
       return this.networkAssets.includes(asset)
     },

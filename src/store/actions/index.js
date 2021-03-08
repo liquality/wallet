@@ -1,38 +1,73 @@
-export * from './changeActiveWalletId'
-export * from './changeActiveNetwork'
-export * from './changePassword'
-export * from './checkPendingActions'
-export * from './clientExec'
-export * from './getLockForAsset'
-export * from './getUnusedAddresses'
-export * from './newSwap'
-export * from './performNextAction'
-export * from './proxyMutation'
-export * from './requestUnlockWallet'
-export * from './requestOriginAccess'
-export * from './requestPermission'
-export * from './replyUnlockWallet'
-export * from './replyOriginAccess'
-export * from './replyPermission'
-export * from './handlePaymentUri'
-export * from './executeRequest'
-export * from './retrySwap'
-export * from './sendTransaction'
-export * from './updateTransactionFee'
-export * from './setupWallet'
-export * from './createWallet'
-export * from './unlockWallet'
-export * from './lockWallet'
-export * from './updateBalances'
-export * from './updateFees'
-export * from './updateFiatRates'
-export * from './updateMarketData'
-export * from './setEthereumInjectionAsset'
-export * from './enableEthereumInjection'
-export * from './disableEthereumInjection'
-export * from './enableAssets'
-export * from './disableAssets'
-export * from './addCustomToken'
-export * from './accounts'
-export * from './hardware-wallet'
-export * from './updateAccountBalance'
+import { changeActiveWalletId } from './changeActiveWalletId'
+import { changeActiveNetwork } from './changeActiveNetwork'
+import { changePassword } from './changePassword'
+import { checkPendingActions } from './checkPendingActions'
+import { clientExec } from './clientExec'
+import { getLockForAsset } from './getLockForAsset'
+import { getUnusedAddresses } from './getUnusedAddresses'
+import { newSwap } from './newSwap'
+import { performNextAction } from './performNextAction'
+import { proxyMutation } from './proxyMutation'
+import { requestUnlockWallet } from './requestUnlockWallet'
+import { requestOriginAccess } from './requestOriginAccess'
+import { requestPermission } from './requestPermission'
+import { replyUnlockWallet } from './replyUnlockWallet'
+import { replyOriginAccess } from './replyOriginAccess'
+import { replyPermission } from './replyPermission'
+import { handlePaymentUri } from './handlePaymentUri'
+import { executeRequest } from './executeRequest'
+import { retrySwap } from './retrySwap'
+import { sendTransaction } from './sendTransaction'
+import { updateTransactionFee } from './updateTransactionFee'
+import { setupWallet } from './setupWallet'
+import { createWallet } from './createWallet'
+import { unlockWallet } from './unlockWallet'
+import { lockWallet } from './lockWallet'
+import { updateBalances } from './updateBalances'
+import { updateFees } from './updateFees'
+import { updateFiatRates } from './updateFiatRates'
+import { updateMarketData } from './updateMarketData'
+import { setEthereumInjectionAsset } from './setEthereumInjectionAsset'
+import { enableEthereumInjection } from './enableEthereumInjection'
+import { disableEthereumInjection } from './disableEthereumInjection'
+import { enableAssets } from './enableAssets'
+import { disableAssets } from './disableAssets'
+import { addCustomToken } from './addCustomToken'
+
+export {
+  changeActiveWalletId,
+  changeActiveNetwork,
+  changePassword,
+  checkPendingActions,
+  clientExec,
+  getLockForAsset,
+  getUnusedAddresses,
+  newSwap,
+  performNextAction,
+  proxyMutation,
+  requestUnlockWallet,
+  requestOriginAccess,
+  requestPermission,
+  replyUnlockWallet,
+  replyOriginAccess,
+  replyPermission,
+  handlePaymentUri,
+  executeRequest,
+  retrySwap,
+  sendTransaction,
+  updateTransactionFee,
+  setupWallet,
+  createWallet,
+  unlockWallet,
+  lockWallet,
+  updateBalances,
+  updateFees,
+  updateFiatRates,
+  updateMarketData,
+  setEthereumInjectionAsset,
+  enableEthereumInjection,
+  disableEthereumInjection,
+  enableAssets,
+  disableAssets,
+  addCustomToken
+}

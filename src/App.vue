@@ -20,9 +20,7 @@ export default {
     OnboardingHome
   },
   mixins: [SatMode],
-  computed: {
-    ...mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt'])
-  },
+  computed: mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
   watch: {
     unlockedAt: function (unlocked) {
       if (this.$route.path.startsWith('/permission') || this.$route.path.startsWith('/enable') || this.$route.path.startsWith('/request-unlock')) return

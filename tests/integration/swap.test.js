@@ -16,9 +16,9 @@ test('Swap', async () => {
   await switchToTestnet(page)
   await expectWalletOpen(page, 'testnet')
 
-  const ethLink = await page.$('a[href="#/accounts/ETH"]')
+  const ethLink = await page.$('a[href="#/account/ETH"]')
   await ethLink.click()
-  const swapLink = await page.waitFor('a[href="#/accounts/ETH/swap"]')
+  const swapLink = await page.waitFor('a[href="#/account/ETH/swap"]')
   await swapLink.click()
 
   const minLink = await page.waitForXPath('//a[contains(text(),"Min")]')

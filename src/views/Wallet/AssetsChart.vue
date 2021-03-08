@@ -14,36 +14,34 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-// import BN from 'bignumber.js'
-// import cryptoassets from '@/utils/cryptoassets'
+import BN from 'bignumber.js'
+import cryptoassets from '@/utils/cryptoassets'
 
 export default {
   computed: {
     ...mapState(['fiatRates']),
-    ...mapGetters([]),
+    ...mapGetters(['assetsWithBalance']),
     items () {
-      // const top = [...this.assetsWithBalance].splice(0, 9)
-      // const total = top.reduce((accum, [asset, balance]) => {
-      //   const value = cryptoassets[asset].unitToCurrency(balance)
-      //   const balanceFiat = this.fiatRates[asset] ? BN(value).times(this.fiatRates[asset]) : 0
-      //   return accum.plus(balanceFiat)
-      // }, BN(0))
+      const top = [...this.assetsWithBalance].splice(0, 9)
+      const total = top.reduce((accum, [asset, balance]) => {
+        const value = cryptoassets[asset].unitToCurrency(balance)
+        const balanceFiat = this.fiatRates[asset] ? BN(value).times(this.fiatRates[asset]) : 0
+        return accum.plus(balanceFiat)
+      }, BN(0))
 
-      // return top.map(([asset, balance]) => {
-      //   const cryptoasset = cryptoassets[asset]
-      //   const value = cryptoasset.unitToCurrency(balance)
-      //   const balanceFiat = this.fiatRates[asset] ? BN(value).times(this.fiatRates[asset]) : 0
-      //   const percentage = (BN(balanceFiat).times(100)).div(total).toNumber()
-      //   return {
-      //     asset,
-      //     percentage,
-      //     percentageRounded: Math.round(percentage),
-      //     balance: balanceFiat,
-      //     color: cryptoasset.color
-      //   }
-      // })
-
-      return []
+      return top.map(([asset, balance]) => {
+        const cryptoasset = cryptoassets[asset]
+        const value = cryptoasset.unitToCurrency(balance)
+        const balanceFiat = this.fiatRates[asset] ? BN(value).times(this.fiatRates[asset]) : 0
+        const percentage = (BN(balanceFiat).times(100)).div(total).toNumber()
+        return {
+          asset,
+          percentage,
+          percentageRounded: Math.round(percentage),
+          balance: balanceFiat,
+          color: cryptoasset.color
+        }
+      })
     }
   }
 }

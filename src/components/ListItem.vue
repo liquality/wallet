@@ -5,9 +5,6 @@
              v-bind:to="to"
              @click="$emit('item-selected')">
         <div class="list-item d-flex align-items-center h-padding" :style="itemStyles">
-          <div class="list-item-prefix ml-0" v-if="hasSlot('prefix')">
-              <slot name="prefix"></slot>
-          </div>
           <div class="list-item-icon ml-0" v-if="hasSlot('icon')">
               <slot name="icon"></slot>
           </div>
@@ -38,7 +35,7 @@
 </template>
 
 <script>
-import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
+import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 
 export default {
   components: {
@@ -96,15 +93,6 @@ export default {
   .list-item-detail-sub {
       font-size: $font-size-tiny;
       color: $text-muted;
-  }
-
-  .list-item-prefix {
-    width: 15px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 8px;
   }
 
   .list-item-icon {

@@ -9,15 +9,15 @@
       </span>
     </NavBar>
     <div class="wallet-content">
-      <WalletStats :loading="loadingBalances"/>
+      <WalletStats />
       <AssetsChart />
-      <WalletTabs :loading="loadingBalances"/>
+      <WalletTabs />
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import AssetsChart from './AssetsChart.vue'
 import NavBar from '@/components/NavBar.vue'
 import WalletStats from './WalletStats.vue'
@@ -30,33 +30,8 @@ export default {
     WalletStats,
     WalletTabs
   },
-  data () {
-    return {
-      loadingBalances: false
-    }
-  },
-  async created () {
-    this.loadingBalances = true
-    try {
-      await this.updateBalances(
-        {
-          network: this.activeNetwork,
-          walletId: this.activeWalletId
-        }
-      )
-    } catch (error) {
-      // TODO: manage error
-      console.error(error)
-    } finally {
-      this.loadingBalances = false
-    }
-  },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId']),
-    ...mapGetters(['accountsData'])
-  },
-  methods: {
-    ...mapActions(['updateBalances'])
+    ...mapState(['activeNetwork'])
   }
 }
 </script>

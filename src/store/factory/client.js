@@ -18,21 +18,11 @@ import EthereumErc20Provider from '@liquality/ethereum-erc20-provider'
 import EthereumErc20SwapProvider from '@liquality/ethereum-erc20-swap-provider'
 import EthereumErc20ScraperSwapFindProvider from '@liquality/ethereum-erc20-scraper-swap-find-provider'
 
-import {
-  BitcoinLedgerBridgeProvider,
-  EthereumLedgerBridgeProvider,
-  LEDGER_BITCOIN_OPTIONS,
-  LedgerBridgeApp
-} from '@/utils/ledger-bridge-provider'
-
 import BitcoinNetworks from '@liquality/bitcoin-networks'
 import EthereumNetworks from '@liquality/ethereum-networks'
 
 import { isERC20 } from '../../utils/asset'
 import cryptoassets from '../../utils/cryptoassets'
-
-// initialize eary the ledger bridge
-LedgerBridgeApp.setupIframe()
 
 export const Networks = ['mainnet', 'testnet']
 
@@ -55,7 +45,7 @@ export const AssetNetworks = {
   }
 }
 
-function createBtcClient (network, mnemonic, walletType) {
+function createBtcClient (network, mnemonic) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = AssetNetworks.BTC[network]
   const esploraApi = isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'
@@ -63,16 +53,7 @@ function createBtcClient (network, mnemonic, walletType) {
 
   const btcClient = new Client()
   btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2))
-
-  if (walletType.includes('ledger')) {
-    const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
-    const { addressType } = option
-    const ledger = new BitcoinLedgerBridgeProvider(bitcoinNetwork, addressType)
-    btcClient.addProvider(ledger)
-  } else {
-    btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic))
-  }
-
+  btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic))
   btcClient.addProvider(new BitcoinSwapProvider(bitcoinNetwork))
   btcClient.addProvider(new BitcoinEsploraSwapFindProvider(esploraApi))
   if (isTestnet) btcClient.addProvider(new BitcoinRpcFeeProvider())
@@ -81,15 +62,10 @@ function createBtcClient (network, mnemonic, walletType) {
   return btcClient
 }
 
-function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, mnemonic, walletType) {
+function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, mnemonic) {
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider(rpcApi))
-  if (walletType === 'ethereum_ledger') {
-    ethClient.addProvider(new EthereumLedgerBridgeProvider(network))
-  } else {
-    ethClient.addProvider(new EthereumJsWalletProvider(network, mnemonic))
-  }
-
+  ethClient.addProvider(new EthereumJsWalletProvider(network, mnemonic))
   if (isERC20(asset)) {
     const contractAddress = cryptoassets[asset].contractAddress
     ethClient.addProvider(new EthereumErc20Provider(contractAddress))
@@ -104,14 +80,14 @@ function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, 
   return ethClient
 }
 
-function createEthClient (asset, network, mnemonic, walletType) {
+function createEthClient (asset, network, mnemonic) {
   const isTestnet = network === 'testnet'
   const ethereumNetwork = AssetNetworks.ETH[network]
   const infuraApi = isTestnet ? 'https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f' : 'https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'
   const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
   const FeeProvider = isTestnet ? EthereumRpcFeeProvider : EthereumGasStationFeeProvider
 
-  return createEthereumClient(asset, ethereumNetwork, infuraApi, scraperApi, FeeProvider, mnemonic, walletType)
+  return createEthereumClient(asset, ethereumNetwork, infuraApi, scraperApi, FeeProvider, mnemonic)
 }
 
 function createRskClient (asset, network, mnemonic) {
@@ -132,12 +108,12 @@ function createBSCClient (asset, network, mnemonic) {
   return createEthereumClient(asset, bnbNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
 }
 
-export const createClient = (asset, network, mnemonic, walletType) => {
+export const createClient = (asset, network, mnemonic) => {
   const assetData = cryptoassets[asset]
 
-  if (asset === 'BTC') return createBtcClient(network, mnemonic, walletType)
+  if (asset === 'BTC') return createBtcClient(network, mnemonic)
   if (asset === 'RBTC' || assetData.network === 'rsk') return createRskClient(asset, network, mnemonic)
   if (asset === 'BNB' || assetData.network === 'bsc') return createBSCClient(asset, network, mnemonic)
 
-  return createEthClient(asset, network, mnemonic, walletType)
+  return createEthClient(asset, network, mnemonic)
 }

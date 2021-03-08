@@ -29,15 +29,15 @@ export const prettyFiatBalance = (amount, rate) => {
 }
 
 export const cryptoToFiat = (amount, rate) => {
-  if (!rate) return BN(amount)
+  if (!amount || !rate) return amount
   return BN(amount).times(rate)
 }
 
 export const fiatToCrypto = (amount, rate) => {
-  if (!rate) return amount
+  if (!amount || !rate) return amount
   return BN(amount).dividedBy(rate).dp(VALUE_DECIMALS, BN.ROUND_FLOOR)
 }
 
 export const formatFiat = (amount) => {
-  return amount.toFormat(2, BN.ROUND_CEIL)
+  return BN(amount).toFormat(2, BN.ROUND_CEIL)
 }

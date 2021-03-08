@@ -16,9 +16,9 @@ test('Import wallet', async () => {
 
   await expectWalletOpen(page)
 
-  const ethLink = await page.$('a[href="#/accounts/ETH"]')
+  const ethLink = await page.$('a[href="#/account/ETH"]')
   await ethLink.click()
-  const receiveLink = await page.waitFor('a[href="#/accounts/ETH/receive"]')
+  const receiveLink = await page.waitFor('a[href="#/account/ETH/receive"]')
   await receiveLink.click()
 
   // Validate using address

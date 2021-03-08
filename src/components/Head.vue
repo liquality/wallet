@@ -1,16 +1,15 @@
 <template>
   <div class="head">
-    <router-link to="/wallet" class="head_logo" ><LogoIcon /></router-link>
+    <router-link to="/wallet"><LogoIcon class="head_logo" /></router-link>
     <div class="head_network" @click.stop="showNetworks = !showNetworks">
       {{ activeNetwork }}
       <ChevronUpIcon v-if="showNetworks" />
       <ChevronDownIcon v-else />
-      <ul class="menu_list" v-if="showNetworks" v-click-away="hideNetworks">
-        <li @click="switchNetwork('mainnet')">Mainnet</li>
-        <li @click="switchNetwork('testnet')">Testnet</li>
-      </ul>
     </div>
-    <HeadMenu />
+    <ul class="menu_list" v-if="showNetworks" v-click-away="hideNetworks">
+      <li @click="switchNetwork('mainnet')">Mainnet</li>
+      <li @click="switchNetwork('testnet')">Testnet</li>
+    </ul>
   </div>
 </template>
 
@@ -21,7 +20,6 @@ import clickAway from '@/directives/clickAway'
 import LogoIcon from '@/assets/icons/logo_icon.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
-import HeadMenu from '@/components/HeadMenu'
 
 export default {
   directives: {
@@ -30,8 +28,7 @@ export default {
   components: {
     ChevronUpIcon,
     ChevronDownIcon,
-    LogoIcon,
-    HeadMenu
+    LogoIcon
   },
   data () {
     return {
@@ -49,9 +46,9 @@ export default {
     hideNetworks () {
       this.showNetworks = false
     },
-    async switchNetwork (network) {
-      await this.changeActiveNetwork({ network })
+    switchNetwork (network) {
       this.showNetworks = false
+      this.changeActiveNetwork({ network })
     }
   }
 }
@@ -62,12 +59,11 @@ export default {
   position: relative;
   height: 36px;
   border-bottom: 1px solid $hr-border-color;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  justify-content: space-between;
 
-  &_logo, &_logo svg {
+  &_logo {
+    position: absolute;
+    top: 10px;
+    left: 20px;
     height: 12px;
   }
 

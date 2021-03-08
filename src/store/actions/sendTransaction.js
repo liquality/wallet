@@ -1,10 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
 import { createHistoryNotification } from '../../broker/notification'
 
-export const sendTransaction = async ({ dispatch, commit, getters }, { network, walletId, accountId, asset, to, amount, data, fee }) => {
-  const account = getters.accountItem(accountId)
-  const client = getters.client(network, walletId, asset, account?.type)
-  console.log('send: ', to, amount, data, fee)
+export const sendTransaction = async ({ dispatch, commit, getters }, { network, walletId, asset, to, amount, data, fee }) => {
+  const client = getters.client(network, walletId, asset)
   const tx = await client.chain.sendTransaction(to, amount, data, fee)
 
   const transaction = {
@@ -23,9 +21,9 @@ export const sendTransaction = async ({ dispatch, commit, getters }, { network, 
     status: 'WAITING_FOR_CONFIRMATIONS'
   }
 
-  commit('NEW_TRASACTION', { network, walletId, accountId, transaction })
+  commit('NEW_TRASACTION', { network, walletId, transaction })
 
-  dispatch('performNextAction', { network, walletId, id: transaction.id, accountId })
+  dispatch('performNextAction', { network, walletId, id: transaction.id })
 
   createHistoryNotification(transaction)
 

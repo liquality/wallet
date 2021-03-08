@@ -1,6 +1,6 @@
 import { newOrder } from '../utils'
 
-export const newSwap = async ({ dispatch, commit }, { network, walletId, agent, from, to, fromAmount, sendTo, fee, claimFee, accountId }) => {
+export const newSwap = async ({ dispatch, commit }, { network, walletId, agent, from, to, fromAmount, sendTo, fee, claimFee }) => {
   const order = await newOrder(agent, {
     from,
     to,
@@ -17,9 +17,9 @@ export const newSwap = async ({ dispatch, commit }, { network, walletId, agent, 
   order.fee = fee
   order.claimFee = claimFee
 
-  commit('NEW_ORDER', { network, walletId, accountId, order })
+  commit('NEW_ORDER', { network, walletId, order })
 
-  dispatch('performNextAction', { network, walletId, accountId, id: order.id })
+  dispatch('performNextAction', { network, walletId, id: order.id })
 
   return order
 }
