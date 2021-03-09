@@ -223,7 +223,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .account-container {
   .progress-container {
     margin-top: 10px;
