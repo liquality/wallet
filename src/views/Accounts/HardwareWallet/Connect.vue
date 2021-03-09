@@ -1,5 +1,5 @@
 <template>
-<div class="wrapper" v-if="currentStep === 'connect'">
+<div class="wrapper">
       <div class="wrapper_top">
         <div class="step-detail">
           <div class="step-number">1</div>
@@ -38,7 +38,7 @@
                   <ChevronDownIcon v-else />
             </button>
             <ul class="dropdown-menu" :class="{ show: assetsDropdownOpen }">
-              <li v-for="asset in assetList" :key="asset">
+              <li v-for="asset in assetList" :key="asset.name">
                 <a class="dropdown-item"
                   href="#"
                   @click="selectAsset(asset)">
@@ -77,6 +77,8 @@
 </template>
 <script>
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import LedgerIcon from '@/assets/icons/ledger_icon.svg'
 import { LEDGER_OPTIONS } from '@/utils/ledger-bridge-provider'
 import clickAway from '@/directives/clickAway'
@@ -88,7 +90,9 @@ export default {
   },
   components: {
     SpinnerIcon,
-    LedgerIcon
+    LedgerIcon,
+    ChevronDownIcon,
+    ChevronUpIcon
   },
   props: ['selectedAsset', 'loading'],
   data () {
@@ -124,5 +128,28 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+
+.account-container {
+  .dropdown-toggle {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+
+    &::after {
+      display: none;
+    }
+
+    .input-group-text {
+      margin-left: 5px;
+    }
+
+    svg {
+        width: 16px;
+        margin-left: 4px;
+    }
+  }
+  }
 </style>
