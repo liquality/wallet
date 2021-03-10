@@ -8,92 +8,18 @@
     <Connect v-if="currentStep === 'connect'"
            :loading="loading"
            :selected-asset="selectedAsset"
-           :on-connect="onConnect"
+           @on-connect="connect"
+           @on-select-asset="setLedgerAsset"
     />
-    <div class="wrapper" v-else>
-      <div class="wrapper_top">
-        <div class="step-detail">
-          <div class="step-number">2</div>
-          <div class="step-name">Unlock Account</div>
-        </div>
-        <div
-          class="step-text"
-          v-if="selectedAsset && selectedAsset.chain === 'BTC'"
-        >
-          If you don’t see your existing Ledger accounts below, switch path to
-          Legacy vs Segwit, Native Segwit or Costum
-        </div>
-        <div
-          class="step-path"
-          v-if="selectedAsset && selectedAsset.chain === 'BTC'"
-        ></div>
-        <div v-if="loading" class="progress-container">
-          <CircleProgressBar class="circle-progress infinity-rotate" />
-          <div class="loading-message">
-            <h3>Loading</h3>
-            <span>Finding Accounts</span>
-          </div>
-        </div>
-        <div v-else>
-          <span class="indications">
-            Select Account
-          </span>
-          <p v-if="selectedAsset">
-            <img :src="getAssetIcon(selectedAsset.chain)"
-                  class="asset-icon" />
-             {{ accountsLabel }} Accounts
-          </p>
-          <table class="table"
-                 v-if="addresses && addresses.length > 0">
-            <tbody>
-              <tr
-                @click="selectAccount(item)"
-                v-for="(item, i) in addresses"
-                :key="item.address"
-                :class="{
-                  active:
-                    selectedAccount && item.address === selectedAccount.address,
-                }"
-              >
-                <td>{{ (i + 1)}}</td>
-                <td>{{ item.address }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div v-else class="no-accounts">
-              No Accounts here
-          </div>
-        </div>
-      </div>
-      <div class="wrapper_bottom">
-        <div class="button-group">
-          <button
-            class="btn btn-light btn-outline-primary btn-lg"
-            @click="goToStep('connect')"
-          >
-            Cancel
-          </button>
-          <button
-            v-if="ledgerError"
-            class="btn btn-primary btn-lg btn-icon"
-            @click="connect"
-            :disabled="loading || !selectedAsset"
-          >
-            <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>Try Again</template>
-          </button>
-          <button
-            v-else
-            class="btn btn-primary btn-lg btn-icon"
-            @click="unlock"
-            :disabled="loading || !selectedAccount"
-          >
-            <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>Unlock</template>
-          </button>
-        </div>
-      </div>
-    </div>
+    <Unlock v-else
+           :loading="loading"
+           :selected-asset="selectedAsset"
+           :selected-account="selectedAccount"
+           :ledger-error="ledgerError"
+           @on-connect="connect"
+           @on-unlock="unlock"
+           @on-select-account="selectAccount"
+    />
   </div>
 </template>
 
@@ -101,8 +27,7 @@
 import { mapActions, mapState } from 'vuex'
 import NavBar from '@/components/NavBar'
 import Connect from './Connect'
-import SpinnerIcon from '@/assets/icons/spinner.svg'
-import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
+import Unlock from './Unlock'
 import {
   LEDGER_BITCOIN_OPTIONS,
   LEDGER_OPTIONS
@@ -113,8 +38,7 @@ export default {
   components: {
     NavBar,
     Connect,
-    SpinnerIcon,
-    CircleProgressBar
+    Unlock
   },
   data () {
     return {
@@ -129,7 +53,7 @@ export default {
   methods: {
     getAssetIcon,
     ...mapActions(['createAccount', 'getLedgerAddresses']),
-    async onConnect (asset) {
+    async connect (asset) {
       this.selectedAsset = asset
       this.loading = true
       this.ledgerError = null
