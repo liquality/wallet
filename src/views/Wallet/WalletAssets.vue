@@ -1,5 +1,5 @@
 <template>
-  <WalletAccounts @item-selected="onAccountSelected" />
+  <WalletAccounts @item-selected="onAccountSelected"/>
 </template>
 
 <script>
