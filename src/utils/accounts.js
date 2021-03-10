@@ -32,3 +32,28 @@ export const accountCreator = (payload) => {
     updatedAt: null
   }
 }
+
+export const accountColors = [
+  '#1CE5C3',
+  '#007AFF',
+  '#4F67E4',
+  '#9D4DFA',
+  '#D421EB',
+  '#FF287D',
+  '#FE7F6B',
+  '#EAB300',
+  '#F7CA4F',
+  '#A1E44A',
+  '#48D870'
+]
+
+export const chainDefaultColors = {
+  BTC: '#EAB300',
+  ETH: '#4F67E4',
+  RBTC: '#3AB34D',
+  BNB: '#F7CA4F'
+}
+
+export const getNextAccountColor = (chain, count) => {
+
+}

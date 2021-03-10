@@ -50,7 +50,7 @@ export default {
   methods: {
     onAccountSelected ({ account, asset }) {
       const _asset = asset || account.assets[0]
-      this.$router.push(`/accounts/${_asset}/${this.action}?source=assets`)
+      this.$router.push(`/accounts/${account.id}/${_asset}/${this.action}?source=assets`)
     }
   }
 }
