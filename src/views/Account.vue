@@ -31,15 +31,15 @@
             {{ shortenAddress(this.address) }}
           </button>
         </div>
-        <div class="account_actions">
-          <router-link :to="'/account/' + asset + '/send'"><button class="account_actions_button">
-            <div class="account_actions_button_wrapper"><SendIcon class="account_actions_button_icon" /></div>Send
+        <div class="account-container_actions">
+          <router-link :to="`/accounts/${account?.id}/${asset}/send`"><button class="account-container_actions_button">
+            <div class="account-container_actions_button_wrapper"><SendIcon class="account-container_actions_button_icon" /></div>Send
           </button></router-link>
-          <router-link :to="'/account/' + asset + '/swap'"><button class="account_actions_button">
-            <div class="account_actions_button_wrapper"><SwapIcon class="account_actions_button_icon account_actions_button_swap" /></div>Swap
+          <router-link :to="`/accounts/${account?.id}/${asset}/swap`"><button class="account-container_actions_button">
+            <div class="account-container_actions_button_wrapper"><SwapIcon class="account-container_actions_button_icon account-container_actions_button_swap" /></div>Swap
           </button></router-link>
-          <router-link v-bind:to="'/account/' + asset + '/receive'"><button class="account_actions_button">
-            <div class="account_actions_button_wrapper"><ReceiveIcon class="account_actions_button_icon" /></div>Receive
+          <router-link v-bind:to="`/accounts/${account?.id}/${asset}/receive`"><button class="account-container_actions_button">
+            <div class="account-container_actions_button_wrapper"><ReceiveIcon class="account-container_actions_button_icon" /></div>Receive
           </button></router-link>
         </div>
       </div>
@@ -144,9 +144,8 @@ export default {
     }
   },
   async created () {
-    if (!this.address) {
-      await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
-    }
+    const address = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
+    this.address = cryptoassets[this.asset]?.formatAddress(address[0])
     this.activityData = [...this.assetHistory]
   },
   watch: {
