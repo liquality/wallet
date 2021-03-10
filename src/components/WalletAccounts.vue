@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="account in accountsData" :key="account.id">
+    <div v-for="account in filteredItems" :key="account.id">
       <ListItem v-if="account.chain === 'BTC'"
                 @item-selected="selectItem(account)">
           <template #prefix>
@@ -87,9 +87,11 @@ export default {
     PlusIcon,
     MinusIcon
   },
+  props: ['search'],
   data () {
     return {
-      showAccountAssets: {}
+      showAccountAssets: {},
+      filteredItems: []
     }
   },
   computed: {
@@ -108,6 +110,17 @@ export default {
     },
     selectItem (account, asset) {
       this.$emit('item-selected', { account, asset })
+    },
+    makeSearch (newSearch, oldSearch) {
+      if (newSearch && newSearch !== oldSearch) {
+        this.filteredItems = this.accountsData.filter(
+          account =>
+            account.chain.toUpperCase().includes(newSearch.toUpperCase()) ||
+            account.assets.includes(newSearch.toUpperCase())
+        )
+      } else {
+        this.filteredItems = [...this.accountsData]
+      }
     }
   },
   created () {
@@ -118,6 +131,13 @@ export default {
           [id]: false
         }
       }, {})
+
+    this.makeSearch(this.search)
+  },
+  watch: {
+    search (newSearch, oldSearch) {
+      this.makeSearch(newSearch, oldSearch)
+    }
   }
 }
 </script>
