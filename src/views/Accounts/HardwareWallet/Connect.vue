@@ -17,7 +17,7 @@
       </ul>
       <div class="options">
         <div class="options-text">
-          Select the same asset here
+          <span>Select the same asset here</span>
         </div>
         <div class="dropdown" v-click-away="hideAssetList">
           <button class="btn dropdown-toggle" @click="toogleAssetList">
@@ -142,6 +142,8 @@ export default {
 
       .input-group-text {
         margin-left: 5px;
+        flex-direction: column;
+        justify-content: center;
       }
 
       svg {

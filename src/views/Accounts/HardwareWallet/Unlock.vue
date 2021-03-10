@@ -19,8 +19,10 @@
         <div v-if="loading" class="progress-container">
           <CircleProgressBar class="circle-progress infinity-rotate" />
           <div class="loading-message">
-            <h3>Loading</h3>
-            <span>Finding Accounts</span>
+            <div>
+              <span class="loading-message-title">Loading</span>
+              <span class="loading-message-text">Finding Accounts</span>
+            </div>
           </div>
         </div>
         <div v-else>
@@ -33,11 +35,11 @@
              {{ accountsLabel }} Accounts
           </p>
           <table class="table"
-                 v-if="addresses && addresses.length > 0">
+                 v-if="accounts && accounts.length > 0">
             <tbody>
               <tr
                 @click="selectAccount(item)"
-                v-for="(item, i) in addresses"
+                v-for="(item, i) in accounts"
                 :key="item.address"
                 :class="{
                   active:
@@ -50,7 +52,7 @@
             </tbody>
           </table>
           <div v-else class="no-accounts">
-              No Accounts here
+              No Accounts Found
           </div>
         </div>
       </div>
@@ -99,7 +101,7 @@ export default {
     SpinnerIcon,
     CircleProgressBar
   },
-  props: ['selectedAsset', 'loading', 'selectedAccount', 'ledgerError'],
+  props: ['selectedAsset', 'loading', 'selectedAccount', 'ledgerError', 'accounts'],
   methods: {
     getAssetIcon,
     unlock () {
@@ -109,7 +111,7 @@ export default {
       this.$emit('on-select-account', account)
     },
     connect () {
-      this.$emit('on-connect')
+      this.$emit('on-connect', this.selectedAsset)
     },
     cancel () {
       this.$emit('on-cancel')
@@ -118,6 +120,12 @@ export default {
   computed: {
     assetList () {
       return LEDGER_OPTIONS
+    },
+    accountsLabel () {
+      return {
+        BTC: 'Bitcoin',
+        ETH: 'Ethereum'
+      }[this.selectedAsset?.chain]
     }
   }
 }

@@ -3,8 +3,8 @@
       v-click-away="hide">
     <button class="btn dropdown-toggle"
             @click="toogle">
-          <div class="label-menu">Accounts</div>
-          <DropdownIcon class="chevron"
+          <div class="label-menu">Account</div>
+          <ChevronRightIcon class="chevron"
                         :class="{ open: dropdownOpen }"
           />
     </button>
@@ -42,14 +42,14 @@
 
 <script>
 import clickAway from '@/directives/clickAway'
-import DropdownIcon from '@/assets/icons/dropdown_arrow.svg'
+import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import CreateIcon from '@/assets/icons/create_icon.svg'
 import ImportIcon from '@/assets/icons/import_icon.svg'
 import HardwareIcon from '@/assets/icons/hardware_icon.svg'
 
 export default {
   components: {
-    DropdownIcon,
+    ChevronRightIcon,
     CreateIcon,
     ImportIcon,
     HardwareIcon
@@ -100,13 +100,14 @@ export default {
       }
 
       .chevron {
-          width: 12px;
-          margin: 0 0 0 4px !important;
+          width: 5px;
+          margin: 0 0 0 8px !important;
           padding: 0 !important;
           vertical-align: middle;
+          transform: rotate(90deg);
 
           &.open {
-            transform: rotate(-180deg);
+            transform: rotate(-90deg);
           }
       }
   }

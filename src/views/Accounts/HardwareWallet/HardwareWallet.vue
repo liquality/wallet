@@ -13,6 +13,7 @@
     />
     <Unlock v-else
            :loading="loading"
+           :accounts="accounts"
            :selected-asset="selectedAsset"
            :selected-account="selectedAccount"
            :ledger-error="ledgerError"
@@ -45,7 +46,7 @@ export default {
       currentStep: 'connect',
       loading: false,
       selectedAsset: null,
-      addresses: [],
+      accounts: [],
       selectedAccount: null,
       ledgerError: null
     }
@@ -69,13 +70,13 @@ export default {
             walletType: this.selectedAsset.type
           }
 
-          const addresses = await this.getLedgerAddresses(payload)
+          const accounts = await this.getLedgerAddresses(payload)
 
-          if (addresses && addresses.length > 0) {
-            this.addresses = [...addresses]
+          if (accounts && accounts.length > 0) {
+            this.accounts = [...accounts]
           } else {
             // TODO: manage errors
-            this.ledgerError = { message: 'no addresses found' }
+            this.ledgerError = { message: 'no accounts found' }
           }
         }
       } catch (error) {
@@ -136,12 +137,6 @@ export default {
     },
     bitcoinOptions () {
       return LEDGER_BITCOIN_OPTIONS
-    },
-    accountsLabel () {
-      return {
-        BTC: 'Bitcoin',
-        ETH: 'Ethereum'
-      }[this.selectedAsset?.chain]
     }
   }
 }
@@ -153,7 +148,7 @@ export default {
     margin-top: 10px;
     display: flex;
     justify-content: center;
-    padding: 10px;
+    align-items: center;
 
     .circle-progress {
       width: 175px;
@@ -161,12 +156,26 @@ export default {
 
     .loading-message {
       z-index: 999;
-      display: flex;
+      text-align: center;
       position: absolute;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      padding-top: 55px;
+
+      .loading-message-title {
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 18px;
+        text-align: center;
+        color: #000D35;
+      }
+
+      .loading-message-text {
+        font-weight: 500;
+        font-size: 11px;
+        line-height: 16px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: #646F85;
+      }
     }
   }
 
@@ -175,6 +184,10 @@ export default {
     justify-content: center;
     align-items: center;
     height: 200px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
   }
 
   .step-detail {
@@ -218,7 +231,7 @@ export default {
       font-style: normal;
       font-weight: 300;
       font-size: 12px;
-      line-height: 18px;
+      line-height: 27px;
     }
   }
 
@@ -233,14 +246,19 @@ export default {
 
   .options {
     margin-top: 30px;
-    padding-top: 26px;
-    padding-bottom: 26px;
-    border-bottom: 1px solid $hr-border-color;
+    position: absolute;
+    padding: 26px 20px;
+    left: 0;
+    border-top: 1px solid $hr-border-color;
     border-bottom: 1px solid $hr-border-color;
     display: flex;
     align-items: center;
+    width: 100%;
+    height: 80px;
+    justify-content: space-between;
 
     .options-text {
+      max-width: 210px;
       font-style: normal;
       font-weight: bold;
       font-size: 12px;
@@ -249,6 +267,10 @@ export default {
       align-items: center;
       text-transform: uppercase;
       color: #3D4767;
+
+      span {
+        width: 120px;
+      }
     }
   }
 

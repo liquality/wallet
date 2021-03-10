@@ -2,7 +2,7 @@
   <component :is="itemComponent"
              class="list-item-container"
              :class="[itemClass]"
-             v-bind:to="to"
+             v-bind:to="to || '#'"
              @click="$emit('item-selected')">
         <div class="list-item d-flex align-items-center h-padding" :style="itemStyles">
           <div class="list-item-icon ml-0" v-if="hasSlot('icon')">
