@@ -207,10 +207,12 @@ async function claimSwap ({ getters }, { order, network, walletId }) {
 
   const toClaimTx = await toClient.swap.claimSwap(
     order.toFundHash,
+    order.toAmount,
     order.toAddress,
     order.toCounterPartyAddress,
-    order.secret,
+    order.secretHash,
     order.nodeSwapExpiration,
+    order.secret,
     order.claimFee
   )
 
@@ -278,6 +280,7 @@ async function refundSwap ({ getters }, { order, network, walletId }) {
   const fromClient = getters.client(network, walletId, order.from)
   const refundTx = await fromClient.swap.refundSwap(
     order.fromFundHash,
+    order.fromAmount,
     order.fromCounterPartyAddress,
     order.fromAddress,
     order.secretHash,
