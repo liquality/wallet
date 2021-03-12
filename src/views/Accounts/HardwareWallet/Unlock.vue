@@ -132,27 +132,4 @@ export default {
 </script>
 
 <style lang="scss">
-
-.account-container {
-  .dropdown-toggle {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    font-weight: 300;
-    display: flex;
-    align-items: center;
-
-    &::after {
-      display: none;
-    }
-
-    .input-group-text {
-      margin-left: 5px;
-    }
-
-    svg {
-        width: 16px;
-        margin-left: 4px;
-    }
-  }
-  }
 </style>
