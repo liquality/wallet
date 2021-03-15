@@ -17,7 +17,7 @@
             </h5>
         </div>
         <div class="bottom-buttons">
-            <button class="btn btn-primary btn-lg cancel-button">Cancel</button>
+            <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg cancel-button">Cancel</button></router-link>
             <router-link to="/seedLogin"><button class="btn btn-primary btn-lg privacy-button">I have privacy</button></router-link>
         </div>
     </div>
