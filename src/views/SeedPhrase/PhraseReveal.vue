@@ -5,7 +5,7 @@
         </div>
         <div class="middle-text-reveal">
             <h2>Your Seed Phrase</h2>
-            <h4>The seed phrase is the only way to restore your wallet.  Verify it and ensure it's stored securely'</h4>
+            <h4>The seed phrase is the only way to restore your wallet.  Verify it and ensure it's stored securely</h4>
         </div>
         <div class="bottom-box-reveal">
             <h5>Hidden for security.  MouseOver to reveal seed phrase</h5>
