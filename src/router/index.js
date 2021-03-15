@@ -33,6 +33,7 @@ import ImportAccount from '@/views/Accounts/Import.vue'
 
 import Warning from '@/views/SeedPhrase/Warning.vue'
 import LoginPhrase from '@/views/SeedPhrase/LoginPhrase.vue'
+import PhraseReveal from '@/views/SeedPhrase/PhraseReveal'
 
 Vue.use(VueRouter)
 
@@ -194,6 +195,10 @@ const routes = [
   {
     path: '/seedlogin',
     component: LoginPhrase
+  },
+  {
+    path: '/seedreveal',
+    component: PhraseReveal
   }
 
 ]

@@ -1,7 +1,7 @@
 <template>
-    <div class="login-wrapper">
+    <div class="login-wrapper no-outer-pad">
         <div class="logo-wrap">
-            <Logo2 />
+            <Logo />
 
         </div>
         <div class="middle-text">
@@ -29,22 +29,18 @@
         </div>
         <div class="bottom-buttons">
             <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg cancel-button">Cancel</button></router-link>
-            <router-link to="/backup"><button class="btn btn-primary btn-lg continue-button">Continue</button></router-link>
+            <router-link to="/seedreveal"><button class="btn btn-primary btn-lg continue-button">Continue</button></router-link>
         </div>
     </div>
 </template>
 
 <script>
 
-import Logo from '../../assets/icons/logo_icon.svg'
-import Logo2 from "../../assets/icons/logo_wallet.svg"
-import Logo3 from "../../assets/icons/wallet_text.svg"
+import Logo from '../../assets/icons/logo_wallet.svg'
 
 export default {
   components: {
-    Logo,
-    Logo2,
-    Logo3
+    Logo
   },
   data () {
     return {
@@ -142,6 +138,5 @@ export default {
     box-sizing: border-box;
     border-radius: 22px;
 }
-
 
 </style>
