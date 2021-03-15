@@ -32,6 +32,7 @@ import CreateAccount from '@/views/Accounts/Create.vue'
 import ImportAccount from '@/views/Accounts/Import.vue'
 
 import Warning from '@/views/SeedPhrase/Warning.vue'
+import LoginPhrase from '@/views/SeedPhrase/LoginPhrase.vue'
 
 Vue.use(VueRouter)
 
@@ -184,12 +185,17 @@ const routes = [
   },
   // Injection
 
-  //SeedPhrase
+  // SeedPhrase
 
   {
     path: '/privacywarning',
     component: Warning
+  },
+  {
+    path: '/seedlogin',
+    component: LoginPhrase
   }
+
 ]
 
 const router = new VueRouter({
