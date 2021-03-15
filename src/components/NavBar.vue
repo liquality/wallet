@@ -59,7 +59,7 @@ export default {
     },
     backup () {
       this.showMenuList = false
-      this.$router.replace('/backup')
+      this.$router.replace('/privacywarning')
     },
     assets () {
       this.showMenuList = false

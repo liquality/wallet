@@ -31,6 +31,8 @@ import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
 import ImportAccount from '@/views/Accounts/Import.vue'
 
+import Warning from '@/views/SeedPhrase/Warning.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -179,8 +181,15 @@ const routes = [
   {
     path: '/permission/default',
     component: Permission
-  }
+  },
   // Injection
+
+  //SeedPhrase
+
+  {
+    path: '/privacywarning',
+    component: Warning
+  }
 ]
 
 const router = new VueRouter({
