@@ -12,7 +12,7 @@
         </div>
         <div class="phrase-wrap">
             <div class="reveal-seed">
-                <span class="word-wrap" v-for="word in seedList" :key="word">{{ word }}</span>
+                <span v-for="word in seedList" :key="word">{{ word }}</span>
             </div>
         </div>
         <div class="bottom-buttons">
@@ -25,13 +25,13 @@
 <script>
 
 import { mapState } from 'vuex'
-import Eye from "../../assets/icons/eye.svg"
+import Eye from '../../assets/icons/eye.svg'
 
 export default {
-    components: {
-        Eye
-    },
-      computed: {
+  components: {
+    Eye
+  },
+  computed: {
     ...mapState(['wallets', 'activeWalletId']),
     wallet: function () {
       return this.wallets.find(wallet => wallet.id === this.activeWalletId)
@@ -134,17 +134,24 @@ export default {
     flex: 1;
 
     span {
-      display: block;
-      flex: 0 0 94px;
-      padding-bottom: 6px;
-      text-align: left;
+        display: block;
+        color: white;
+        flex: 0 0 94px;
+        padding-bottom: 6px;
+        text-align: left;
 
       &::before {
         display: block;
+        color: black;
         font-size: $font-size-tiny;
         counter-increment: wordIndex;
         content: counter(wordIndex);
       }
+    }
+    span:hover {
+        cursor: pointer;
+        color: black;
+        transition: ease-in 1s;
     }
 }
 
