@@ -56,12 +56,12 @@ export default {
       this.errors = []
       this.loading = true
       try {
-        if(this.checkbox === true) {
-        await this.unlockWallet({ key: this.password })
-        this.$router.push('/seedreveal')
-      } else {
-        this.errors.push('Please Accept Terms')
-      }
+        if (this.checkbox === true) {
+          await this.unlockWallet({ key: this.password })
+          this.$router.push('/seedreveal')
+        } else {
+          this.errors.push('Please Accept Terms')
+        }
       } catch (e) {
         console.log(e)
         this.errors.push(e.message)

@@ -120,6 +120,8 @@ export default {
 .phrase-wrap {
     position: absolute;
     bottom: 8.75%;
+    display: flex;
+    flex-flow: row wrap;
 }
 .reveal-seed {
     font-size: 18px;
@@ -151,7 +153,7 @@ export default {
     span:hover {
         cursor: pointer;
         color: black;
-        transition: ease-in 1s;
+        transition: ease-in .8s;
     }
 }
 
