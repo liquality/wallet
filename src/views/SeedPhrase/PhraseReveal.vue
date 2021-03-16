@@ -9,12 +9,15 @@
         </div>
         <div class="bottom-box-reveal">
             <h5>Hidden for security.  MouseOver to reveal seed phrase</h5>
-        </div>
-        <div class="phrase-wrap">
-            <div class="reveal-seed">
+                        <div class="reveal-seed">
                 <span v-for="word in seedList" :key="word">{{ word }}</span>
             </div>
         </div>
+        <!-- <div class="phrase-wrap">
+            <div class="reveal-seed">
+                <span v-for="word in seedList" :key="word">{{ word }}</span>
+            </div>
+        </div> -->
         <div class="bottom-buttons">
             <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg cancel-button">Cancel</button></router-link>
             <router-link to="/wallet"><button class="btn btn-primary btn-lg continue-button">I saved the seed</button></router-link>
@@ -118,8 +121,6 @@ export default {
     }
 }
 .phrase-wrap {
-    position: absolute;
-    bottom: 8.75%;
     display: flex;
     flex-flow: row wrap;
 }

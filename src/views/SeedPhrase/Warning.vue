@@ -16,9 +16,9 @@
                 View it in private without cameras around
             </h5>
         </div>
-        <div class="bottom-buttons">
-            <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg cancel-button">Cancel</button></router-link>
-            <router-link to="/seedLogin"><button class="btn btn-primary btn-lg privacy-button">I have privacy</button></router-link>
+        <div class="bottom-buttons-warning">
+            <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg width-button">Cancel</button></router-link>
+            <router-link to="/seedLogin"><button class="btn btn-primary btn-lg width-button">I have privacy</button></router-link>
         </div>
     </div>
 </template>
@@ -62,82 +62,55 @@ export default {
 <style lang="scss">
 
 .warning-line {
-    position: absolute;
-    left: -4.17%;
-    right: 0%;
-    top: 12.67%;
-    bottom: 87.33%;
-
+    display: flex;
     border: 3px solid #F12274;
 }
 
 .top-text {
-    position: absolute;
-    width: 335px;
-    height: 81px;
-    left: 16px;
-    top: 96px;
-
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 3%;
     font-family: Montserrat;
     font-style: normal;
     font-weight: 600;
     font-size: 30px;
     line-height: 32px;
-    /* or 107% */
-
     text-align: center;
     letter-spacing: -0.08px;
-
     color: #000D35;
 }
 .eye-svg {
     height: 150px;
     width: 150px;
     margin: 0 auto;
-    position: absolute;
-    top: 45%;
-    left: 30%;
+    margin-top: 20%;
 }
 .bottom-text {
+  width: 65%;
+  margin: 0 auto;
     h5 {
-        position: absolute;
-        left: 20px;
-        right: 20px;
-        top: 449px;
-        bottom: 81px;
-
+        display: flex;
+        text-align: center;
+        margin: 0 auto;
         font-family: Montserrat;
         font-style: normal;
         font-weight: 600;
         font-size: 16px;
         line-height: 22px;
-        /* or 137% */
-
         text-align: center;
         letter-spacing: -0.08px;
-
         color: #000D35;
     }
 }
-.privacy-button {
-    position: absolute;
-    width: 150px;
-    left: 52.22%;
-    right: 5.56%;
-    top: 90.67%;
-    bottom: 3.33%;
+.bottom-buttons-warning {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20%;
 }
-.cancel-button {
-    position: absolute;
+.width-button {
     width: 150px;
-    left: 5.56%;
-    right: 52.22%;
-    top: 90.67%;
-    bottom: 3.33%;
-    background: #F8FAFF;
-    border: 1px solid #9D4DFA;
-    box-sizing: border-box;
-    border-radius: 22px;
 }
 
 </style>
