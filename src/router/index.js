@@ -187,7 +187,6 @@ const routes = [
   // Injection
 
   // SeedPhrase
-
   {
     path: '/privacywarning',
     component: Warning

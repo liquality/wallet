@@ -23,12 +23,12 @@
             </form>
         </div>
         <div class="privacy-check">
-            <input type="checkbox" class="form-control" autocomplete="off" required>
+            <input type="checkbox" class="form-control" v-model="checkbox" autocomplete="off" required>
             <h4>I have privacy and understand the risk</h4>
         </div>
         <div class="bottom-buttons">
             <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg cancel-button">Cancel</button></router-link>
-            <router-link to="/seedreveal"><button class="btn btn-primary btn-lg continue-button">Continue</button></router-link>
+            <button class="btn btn-primary btn-lg continue-button" @click="unlock">Continue</button>
         </div>
     </div>
 </template>
@@ -46,17 +46,22 @@ export default {
     return {
       loading: false,
       errors: [],
-      password: null
+      password: null,
+      checkbox: false
     }
   },
-   methods: {
+  methods: {
     ...mapActions(['unlockWallet']),
     async unlock () {
       this.errors = []
       this.loading = true
       try {
+        if(this.checkbox === true) {
         await this.unlockWallet({ key: this.password })
-        this.$emit('unlocked')
+        this.$router.push('/seedreveal')
+      } else {
+        this.errors.push('Please Accept Terms')
+      }
       } catch (e) {
         console.log(e)
         this.errors.push(e.message)
