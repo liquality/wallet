@@ -107,7 +107,7 @@ export default {
 .bottom-buttons-warning {
   display: flex;
   justify-content: space-evenly;
-  margin-top: 20%;
+  margin-top: 25%;
 }
 .width-button {
     width: 150px;
