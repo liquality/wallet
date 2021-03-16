@@ -2,7 +2,6 @@
     <div class="login-wrapper no-outer-pad">
         <div class="logo-wrap">
             <Logo />
-
         </div>
         <div class="middle-text">
             <h2>Sign in to See Seed Phrase</h2>
@@ -36,6 +35,7 @@
 
 <script>
 
+import { mapActions } from 'vuex'
 import Logo from '../../assets/icons/logo_wallet.svg'
 
 export default {
@@ -48,6 +48,22 @@ export default {
       errors: [],
       password: null
     }
+  },
+   methods: {
+    ...mapActions(['unlockWallet']),
+    async unlock () {
+      this.errors = []
+      this.loading = true
+      try {
+        await this.unlockWallet({ key: this.password })
+        this.$emit('unlocked')
+      } catch (e) {
+        console.log(e)
+        this.errors.push(e.message)
+      } finally {
+        this.loading = false
+      }
+    }
   }
 }
 
@@ -59,16 +75,18 @@ export default {
     height: 100px;
     width: 100px;
     margin: 0 auto;
+    position: absolute;
+    top: 12%;
+    left: 37.5%;
 }
 
 .middle-text {
     h2 {
         position: absolute;
-        width: 50%;
-        width: 360px;
+        width: 60%;
         height: 64px;
-        left: 0px;
-        top: 235px;
+        left: 20%;
+        top: 35%;
 
         font-family: Montserrat;
         font-style: normal;
@@ -89,7 +107,7 @@ export default {
     width: 90%;
     margin: 0 auto;
     position: absolute;
-    top: 58%;
+    top: 50%;
     left: 5%;
 }
 .privacy-check {
@@ -98,10 +116,11 @@ export default {
     width: 13px;
     height: 13px;
     bottom: 13%;
+    left: 9%;
     }
     h4 {
         position: absolute;
-        left: 11.94%;
+        left: 15%;
         right: 5.56%;
         bottom: 10.80%;
 
