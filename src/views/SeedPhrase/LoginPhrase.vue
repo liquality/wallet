@@ -26,7 +26,7 @@
             <input type="checkbox" class="form-control" v-model="checkbox" autocomplete="off" required>
             <h4>I have privacy and understand the risk</h4>
         </div>
-        <div class="bottom-buttons">
+        <div class="bottom-buttons-phrase-confirm">
             <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg cancel-button">Cancel</button></router-link>
             <button class="btn btn-primary btn-lg continue-button" @click="unlock">Continue</button>
         </div>
@@ -80,40 +80,31 @@ export default {
     height: 100px;
     width: 100px;
     margin: 0 auto;
-    position: absolute;
-    top: 12%;
-    left: 37.5%;
+    margin-top: 1%;
 }
 
 .middle-text {
+  width: 75%;
+  margin: 0 auto;
     h2 {
-        position: absolute;
-        width: 60%;
-        height: 64px;
-        left: 20%;
-        top: 35%;
-
+        display: flex;
+        margin-top: 10%;
         font-family: Montserrat;
         font-style: normal;
         font-weight: normal;
         font-size: 28px;
         line-height: 32px;
-        /* or 114% */
-
         display: flex;
         align-items: center;
         text-align: center;
         letter-spacing: -0.16px;
-
         color: #FFFFFF;
     }
 }
 .sign-in {
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
-    position: absolute;
-    top: 50%;
-    left: 5%;
+    margin-top: 5%;
 }
 .privacy-check {
     input {
@@ -143,24 +134,20 @@ export default {
     }
 }
 .continue-button {
-    position: absolute;
     width: 150px;
+    position: absolute;
     left: 52.22%;
     right: 5.56%;
     top: 90.67%;
     bottom: 3.33%;
 }
 .cancel-button {
-    position: absolute;
     width: 150px;
+    position: absolute;
     left: 5.56%;
-    right: 52.22%;
+    right: 0%;
     top: 90.67%;
     bottom: 3.33%;
-    background: #F8FAFF;
-    border: 1px solid #9D4DFA;
-    box-sizing: border-box;
-    border-radius: 22px;
 }
 
 </style>
