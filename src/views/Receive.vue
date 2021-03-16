@@ -94,7 +94,8 @@ export default {
       return ({
         BTC: 'bitcoin',
         ETH: 'ethereum',
-        RBTC: 'ethereum'
+        RBTC: 'ethereum',
+        NEAR: 'near'
       })[assetChain]
     },
     faucet () {
@@ -102,7 +103,8 @@ export default {
         return ({
           BTC: { name: 'Bitcoin', url: 'https://testnet-faucet.mempool.co/' },
           ETH: { name: 'Ether', url: 'https://faucet.rinkeby.io/' },
-          RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' }
+          RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' },
+          NEAR: { name: 'NEAR', url: '' }
         })[this.asset]
       }
       return null

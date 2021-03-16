@@ -8,14 +8,16 @@ export default {
       'USDT',
       'WBTC',
       'UNI',
-      'RBTC'
+      'RBTC',
+      'NEAR'
     ],
     testnet: [
       'BTC',
       'ETH',
       'DAI',
       'RBTC',
-      'BNB'
+      'BNB',
+      'NEAR'
     ]
   },
   agentEndpoints: {

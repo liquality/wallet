@@ -37,13 +37,19 @@ const FEE_UNITS = {
     [TX_TYPES.SEND]: 21000,
     [TX_TYPES.SWAP_INITIATION]: 150000,
     [TX_TYPES.SWAP_CLAIM]: 45000
+  },
+  NEAR: {
+    [TX_TYPES.SEND]: 0, // Assume 2 inputs
+    [TX_TYPES.SWAP_INITIATION]: 0, // Assume 2 inputs
+    [TX_TYPES.SWAP_CLAIM]: 0
   }
 }
 
 const FEE_TYPES = {
   ETH: 'ETH',
   BTC: 'BTC',
-  RBTC: 'RBTC'
+  RBTC: 'RBTC',
+  NEAR: 'NEAR'
 }
 
 const FEE_OPTIONS = {

@@ -14,12 +14,18 @@ import EthereumScraperSwapFindProvider from '@liquality/ethereum-scraper-swap-fi
 import EthereumGasStationFeeProvider from '@liquality/ethereum-gas-station-fee-provider'
 import EthereumRpcFeeProvider from '@liquality/ethereum-rpc-fee-provider'
 
+import NearSwapProvider from '@liquality/near-swap-provider'
+import NearJsWalletProvider from '@liquality/near-js-wallet-provider'
+import NearRpcProvider from '@liquality/near-rpc-provider'
+import NearSwapFindProvider from '@liquality/near-swap-find-provider'
+
 import EthereumErc20Provider from '@liquality/ethereum-erc20-provider'
 import EthereumErc20SwapProvider from '@liquality/ethereum-erc20-swap-provider'
 import EthereumErc20ScraperSwapFindProvider from '@liquality/ethereum-erc20-scraper-swap-find-provider'
 
 import BitcoinNetworks from '@liquality/bitcoin-networks'
 import EthereumNetworks from '@liquality/ethereum-networks'
+import NearNetworks from '@liquality/near-networks'
 
 import { isERC20 } from '../../utils/asset'
 import cryptoassets from '../../utils/cryptoassets'
@@ -42,6 +48,10 @@ export const AssetNetworks = {
   BNB: {
     testnet: EthereumNetworks.bsc_testnet,
     mainnet: EthereumNetworks.bsc_mainnet
+  },
+  NEAR: {
+    testnet: NearNetworks.testnet,
+    mainnet: NearNetworks.mainnet
   }
 }
 
@@ -108,12 +118,25 @@ function createBSCClient (asset, network, mnemonic) {
   return createEthereumClient(asset, bnbNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
 }
 
+function createNearClient (network, mnemonic) {
+  const nearNetwork = AssetNetworks.NEAR[network]
+
+  const nearClient = new Client()
+  nearClient.addProvider(new NearRpcProvider(nearNetwork))
+  nearClient.addProvider(new NearJsWalletProvider(nearNetwork, mnemonic))
+  nearClient.addProvider(new NearSwapProvider())
+  nearClient.addProvider(new NearSwapFindProvider(nearNetwork?.helperUrl))
+
+  return nearClient
+}
+
 export const createClient = (asset, network, mnemonic) => {
   const assetData = cryptoassets[asset]
 
   if (asset === 'BTC') return createBtcClient(network, mnemonic)
   if (asset === 'RBTC' || assetData.network === 'rsk') return createRskClient(asset, network, mnemonic)
   if (asset === 'BNB' || assetData.network === 'bsc') return createBSCClient(asset, network, mnemonic)
+  if (asset === 'NEAR' || assetData.network === 'near') return createNearClient(network, mnemonic)
 
   return createEthClient(asset, network, mnemonic)
 }
