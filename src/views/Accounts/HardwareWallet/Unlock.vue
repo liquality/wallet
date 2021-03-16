@@ -9,13 +9,32 @@
           class="step-text"
           v-if="selectedAsset && selectedAsset.chain === 'BTC'"
         >
-          If you don’t see your existing Ledger accounts below, switch path to
-          Legacy vs Segwit, Native Segwit or Costum
-        </div>
-        <div
+          <div>
+            If you don’t see your existing Ledger accounts below, switch path to
+            Legacy vs Native Segwit
+          </div>
+          <div
           class="step-path"
           v-if="selectedAsset && selectedAsset.chain === 'BTC'"
-        ></div>
+        >
+        <div class="btn-group" v-click-away="hideLedgerBitcoinOptions">
+          <button class="btn dropdown-toggle custom-dropdown-toggle"
+                  :disabled="loading"
+                  @click="toogleLedgerBitcoinOptions">
+            BTC Version (HD Path): {{ ledgerBitcoinOption.label }}
+            <ChevronUpIcon v-if="ledgerBitcoinOptionsOpen" />
+            <ChevronDownIcon v-else />
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu" :class="{ show: ledgerBitcoinOptionsOpen }">
+            <li v-for="option in ledgerBitcoinOptions" :key="option.addressType">
+              <a class="dropdown-item custom-dropdown-item" href="#" @click="selectLedgerBitcoinOption(option)">
+                 {{ option.label }}
+              </a>
+            </li>
+          </ul>
+        </div>
+        </div>
+        </div>
         <div v-if="loading" class="progress-container">
           <CircleProgressBar class="circle-progress infinity-rotate" />
           <div class="loading-message">
@@ -88,10 +107,12 @@
 </template>
 <script>
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { LEDGER_OPTIONS } from '@/utils/ledger-bridge-provider'
+import { LEDGER_BITCOIN_OPTIONS } from '@/utils/ledger-bridge-provider'
 import clickAway from '@/directives/clickAway'
 import { getAssetIcon } from '@/utils/asset'
 import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
+import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 
 export default {
   directives: {
@@ -99,9 +120,27 @@ export default {
   },
   components: {
     SpinnerIcon,
-    CircleProgressBar
+    CircleProgressBar,
+    ChevronDownIcon,
+    ChevronUpIcon
   },
-  props: ['selectedAsset', 'loading', 'selectedAccount', 'ledgerError', 'accounts'],
+  props: [
+    'selectedAsset',
+    'loading',
+    'selectedAccount',
+    'ledgerError',
+    'accounts',
+    'currentPage'
+  ],
+  data () {
+    return {
+      ledgerBitcoinOption: null,
+      ledgerBitcoinOptionsOpen: false
+    }
+  },
+  created () {
+    this.ledgerBitcoinOption = this.ledgerBitcoinOptions[0]
+  },
   methods: {
     getAssetIcon,
     unlock () {
@@ -111,15 +150,31 @@ export default {
       this.$emit('on-select-account', account)
     },
     connect () {
-      this.$emit('on-connect', this.selectedAsset)
+      this.$emit('on-connect',
+        {
+          asset: this.selectedAsset,
+          walletType: this.ledgerBitcoinOption.name
+        })
     },
     cancel () {
       this.$emit('on-cancel')
+    },
+    selectLedgerBitcoinOption (option) {
+      this.ledgerBitcoinOption = option
+      this.hideLedgerBitcoinOptions()
+    },
+    toogleLedgerBitcoinOptions () {
+      this.ledgerBitcoinOptionsOpen = !this.ledgerBitcoinOptionsOpen
+    },
+    hideLedgerBitcoinOptions () {
+      this.ledgerBitcoinOptionsOpen = false
     }
   },
   computed: {
-    assetList () {
-      return LEDGER_OPTIONS
+    ledgerBitcoinOptions () {
+      return LEDGER_BITCOIN_OPTIONS.filter(
+        o => o.name !== this.ledgerBitcoinOption?.name
+      )
     },
     accountsLabel () {
       return {

@@ -17,8 +17,10 @@
            :selected-asset="selectedAsset"
            :selected-account="selectedAccount"
            :ledger-error="ledgerError"
+           :currentPage="ledgerPage"
            @on-connect="connect"
            @on-unlock="unlock"
+           @on-cancel="cancel"
            @on-select-account="selectAccount"
     />
   </div>
@@ -35,6 +37,8 @@ import {
 } from '@/utils/ledger-bridge-provider'
 import { getAssetIcon, getChainFromAsset } from '@/utils/asset'
 
+const LEDGER_PER_PAGE = 5
+
 export default {
   components: {
     NavBar,
@@ -48,29 +52,39 @@ export default {
       selectedAsset: null,
       accounts: [],
       selectedAccount: null,
-      ledgerError: null
+      ledgerError: null,
+      ledgerPage: 0
     }
   },
   methods: {
     getAssetIcon,
-    ...mapActions(['createAccount', 'getLedgerAddresses']),
-    async connect (asset) {
+    ...mapActions(['createAccount', 'getLedgerAccounts']),
+    async connect ({ asset, walletType, page }) {
+      this.ledgerPage += page || 0
+
+      if (this.ledgerPage <= 0) {
+        this.ledgerPage = 1
+      }
+      const from = (this.ledgerPage - 1) * LEDGER_PER_PAGE
+      const to = from + LEDGER_PER_PAGE
       this.selectedAsset = asset
       this.loading = true
       this.ledgerError = null
+      this.accounts = []
 
       try {
-        if (this.selectedAsset) {
+        if (asset) {
           this.currentStep = 'unlock'
-
           const payload = {
             network: this.activeNetwork,
             walletId: this.activeWalletId,
-            asset: this.selectedAsset.name,
-            walletType: this.selectedAsset.type
+            asset: asset.name,
+            walletType: walletType || asset.types[0],
+            from,
+            to
           }
 
-          const accounts = await this.getLedgerAddresses(payload)
+          const accounts = await this.getLedgerAccounts(payload)
 
           if (accounts && accounts.length > 0) {
             this.accounts = [...accounts]
@@ -78,12 +92,12 @@ export default {
             // TODO: manage errors
             this.ledgerError = { message: 'no accounts found' }
           }
+          this.loading = false
         }
       } catch (error) {
         // TODO: manage errors
         this.ledgerError = error
-        console.log('error getting addresses', error)
-      } finally {
+        console.log('error getting accounts', error)
         this.loading = false
       }
     },
@@ -98,7 +112,7 @@ export default {
           const assetChain = getChainFromAsset(asset)
           return assetChain === this.selectedAsset.chain
         })
-        const data = {
+        const account = {
           name: `Ledger ${this.selectedAsset.name}`,
           chain,
           addresses: [address],
@@ -109,7 +123,7 @@ export default {
         await this.createAccount({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
-          account: data
+          account
         })
         this.goToOverview()
       }
@@ -117,8 +131,12 @@ export default {
     goToOverview () {
       this.$router.replace('/wallet')
     },
-    goToStep (step) {
-      this.currentStep = step
+    cancel () {
+      this.loading = false
+      this.ledgerError = null
+      this.accounts = []
+      this.selectedAccount = null
+      this.currentStep = 'connect'
     },
     setLedgerAsset (asset) {
       this.selectedAsset = asset

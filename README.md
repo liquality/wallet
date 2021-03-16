@@ -1,5 +1,9 @@
 # Liquality Wallet <img align="right" src="https://raw.githubusercontent.com/liquality/chainabstractionlayer/master/liquality-logo.png" height="80px" />
 
+## Getting started
+- Install NVM [https://github.com/nvm-sh/nvm#installing-and-updating]()
+- Go to this folder repo and run `nvm use` to takes the right version for node (install if you need it)
+
 ## Project setup
 ```
 npm install

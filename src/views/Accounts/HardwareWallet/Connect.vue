@@ -20,7 +20,7 @@
           <span>Select the same asset here</span>
         </div>
         <div class="dropdown" v-click-away="hideAssetList">
-          <button class="btn dropdown-toggle" @click="toogleAssetList">
+          <button class="btn dropdown-toggle lg" @click="toogleAssetList">
             <div class="form" v-if="selectedAsset">
               <div class="input-group">
                 <img
@@ -34,7 +34,7 @@
             </div>
             <ChevronRightIcon :class="{ open: assetsDropdownOpen }" />
           </button>
-          <ul class="dropdown-menu" :class="{ show: assetsDropdownOpen }">
+          <ul class="dropdown-menu lg" :class="{ show: assetsDropdownOpen }">
             <li v-for="asset in assetList" :key="asset.name">
               <a class="dropdown-item" href="#" @click="selectAsset(asset)">
                  <div class="form">
@@ -101,7 +101,7 @@ export default {
     getAssetIcon,
     connect () {
       if (this.selectedAsset) {
-        this.$emit('on-connect', this.selectedAsset)
+        this.$emit('on-connect', { asset: this.selectedAsset })
       }
     },
     goToOverview () {
