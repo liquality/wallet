@@ -3,15 +3,16 @@
     <div class="phrase-reveal_top">
       <Eye class="phrase-reveal_icon mt-4" />
       <h2 class="mt-4">Seed Phrase</h2>
-      <p class="pb-2">The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.</p>
+      <p class="pb-2 m-0">The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.</p>
     </div>
     <div class="phrase-reveal_bottom">
-      <div class="phrase-reveal_seed">
+      <p>Hidden for security.  MouseOver to reveal phrase.</p>
+      <div class="phrase-reveal_seed pl-0 mb-1">
         <span v-for="word in seedList" :key="word">{{ word }}</span>
       </div>
-    <div class="bottom-buttons-reveal">
-        <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg btn-block button-width">Cancel</button></router-link>
-        <router-link to="/wallet"><button class="btn btn-primary btn-lg btn-block button-width">I saved the seed</button></router-link>
+    <div class="button-group">
+          <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg btn-block">Cancel</button></router-link>
+          <router-link to="/wallet"><button class="btn btn-primary btn-lg btn-block">I saved the seed</button></router-link>
     </div>
   </div>
   </div>
@@ -46,7 +47,6 @@ export default {
   overflow: hidden;
   &_top {
     p {
-      margin: 0;
       font-size: 14px;
     }
   }
@@ -64,8 +64,6 @@ export default {
   }
   &_seed {
     font-size: 18px;
-    padding-left: 0;
-    margin-bottom: 10px;
     text-align: left;
     counter-reset: wordIndex;
     display: flex;
@@ -92,15 +90,6 @@ export default {
         cursor: pointer;
     }
   }
-}
-
-.bottom-buttons-reveal {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    .button-width {
-        width: 150px;
-    }
 }
 
 </style>
