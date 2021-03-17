@@ -3,7 +3,7 @@
     <div class="phrase-reveal_top">
       <Eye class="phrase-reveal_icon mt-4" />
       <h2 class="mt-4">Seed Phrase</h2>
-      <p class="pb-2 m-0">The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.</p>
+      <h5 class="pb-2 m-0">The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.</h5>
     </div>
     <div class="phrase-reveal_bottom">
       <p>Hidden for security.  MouseOver to reveal phrase.</p>
@@ -46,13 +46,13 @@ export default {
   padding: 0 !important;
   overflow: hidden;
   &_top {
-    p {
-      font-size: 14px;
+    h5 {
+    color: $color-text-secondary;
     }
   }
   &_bottom {
     flex: 1;
-    background: #FFFFFF;
+    background: $color-text-secondary;
     color: $color-text-primary;
     padding: $wrapper-padding;
     overflow-y: auto;
@@ -75,17 +75,17 @@ export default {
       flex: 0 0 94px;
       padding-bottom: 6px;
       text-align: left;
-        color: white;
+        color: $color-text-secondary;
         &::before {
             display: block;
-            color: black;
+            color: $color-text-primary;
             font-size: $font-size-tiny;
             counter-increment: wordIndex;
             content: counter(wordIndex);
         }
     }
     span:hover {
-        color: black;
+        color: $color-text-primary;
         transition: ease-in .7s;
         cursor: pointer;
     }

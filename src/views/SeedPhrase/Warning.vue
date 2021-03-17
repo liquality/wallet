@@ -51,24 +51,14 @@ export default {
     line-height: 32px;
     text-align: center;
     letter-spacing: -0.08px;
-    color: #000D35;
+    color: $color-text-primary;
   }
   &_eye-svg {
     height: 150px;
     width: 150px;
   }
   &_bottom-text {
-    h5 {
-        text-align: center;
-        font-family: Montserrat;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 16px;
-        line-height: 22px;
-        text-align: center;
-        letter-spacing: -0.08px;
-        color: #000D35;
-    }
+    text-align: center;
   }
 }
 

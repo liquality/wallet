@@ -4,11 +4,11 @@
             <Logo />
         </div>
         <div class="login-phrase_middle-text mx-auto mt-2">
-            <h2 class="mt-4 px-8">Sign in to See Seed Phrase</h2>
+            <h2 class="mt-4 px-5">Sign in to See Seed Phrase</h2>
         <div class="login-phrase_sign-in mx-auto">
         </div>
             <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
-                <div class="form-group mb-8">
+                <div class="form-group mb-5">
                     <label for="password">Password</label>
                     <div class="input-group">
                     <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required :readonly="loading">
@@ -20,17 +20,17 @@
                     </ul>
                     </p>
                 </div>
+                <div class="form-group mt-5">
+                  <div class="form-check phrase-check my-auto mt-5">
+                    <input class="form-check-input" type="checkbox" value="" v-model="checkbox" id="checkbox">
+                    <label class="form-check-label mt-1" for="checkbox">
+                      I understand the risk and have privacy
+                    </label>
+                  </div>
+                </div>
             </form>
         </div>
-        <div class="form-group">
-        <div class="form-check phrase-check my-auto mt-5">
-          <input class="form-check-input" type="checkbox" value="" v-model="checkbox" id="checkbox">
-          <label class="form-check-label" for="checkbox">
-            I understand the risk and have privacy
-          </label>
-        </div>
-        </div>
-          <div class="button-group">
+          <div class="button-group mt-5">
                 <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg">Cancel</button></router-link>
                 <button class="btn btn-primary btn-lg" @click="unlock">Continue</button>
           </div>
@@ -85,17 +85,7 @@ export default {
     width: 100px;
   }
   &_middle-text {
-      h2 {
-          font-family: Montserrat;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 28px;
-          line-height: 32px;
-          align-items: center;
-          text-align: center;
-          letter-spacing: -0.16px;
-          color: #FFFFFF;
-    }
+    
   }
 }
 
