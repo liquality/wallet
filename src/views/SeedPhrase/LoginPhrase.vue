@@ -20,7 +20,7 @@
                     </ul>
                     </p>
                 </div>
-                <div class="form-group">
+                <div class="form-group mt-5">
                   <div class="form-check phrase-check my-auto">
                     <input class="form-check-input" type="checkbox" value="" v-model="checkbox" id="checkbox">
                     <label class="form-check-label mt-1" for="checkbox">
