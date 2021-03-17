@@ -20,17 +20,17 @@
                     </ul>
                     </p>
                 </div>
-                <div class="form-group mt-5 ml-1">
-                  <div class="form-check phrase-check my-auto">
-                    <input class="form-check-input" type="checkbox" value="" v-model="checkbox" id="checkbox">
-                    <label class="form-check-label mt-1" for="checkbox">
-                      I understand the risk and have privacy
-                    </label>
-                  </div>
-                </div>
             </form>
         </div>
         <div class="footer-container">
+            <div class="form-group mt-5 ml-1">
+              <div class="form-check phrase-check my-auto">
+                <input class="form-check-input" type="checkbox" value="" v-model="checkbox" id="checkbox">
+                <label class="form-check-label mt-1" for="checkbox">
+                  I understand the risk and have privacy
+                </label>
+              </div>
+            </div>
           <div class="button-group">
                 <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg">Cancel</button></router-link>
                 <button class="btn btn-primary btn-lg" @click="unlock">Continue</button>
