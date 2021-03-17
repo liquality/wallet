@@ -47,7 +47,7 @@ export default {
   overflow: hidden;
   &_top {
     h5 {
-    color: $color-text-secondary;
+      color: $color-text-secondary;
     }
   }
   &_bottom {

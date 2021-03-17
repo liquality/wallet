@@ -1,16 +1,16 @@
 <template>
-    <div class="login-wrapper no-outer-pad login-phrase">
-        <div class="login-phrase_logo-wrap mt-1 mx-auto">
+    <div class="login-wrapper login-phrase h-100">
+        <div class="login-phrase_logo-wrap mx-auto">
             <Logo />
         </div>
-        <div class="login-phrase_middle-text mx-auto mt-2">
+        <div class="login-phrase_middle-text mx-auto mt-1">
             <h2 class="mt-4 px-5">Sign in to See Seed Phrase</h2>
         <div class="login-phrase_sign-in mx-auto">
         </div>
             <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
-                <div class="form-group mb-5">
+                <div class="form-group">
                     <label for="password">Password</label>
-                    <div class="input-group">
+                    <div class="input-group mb-5">
                     <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required :readonly="loading">
                     </div>
                     <p v-if="errors.length">
@@ -20,8 +20,8 @@
                     </ul>
                     </p>
                 </div>
-                <div class="form-group mt-5">
-                  <div class="form-check phrase-check my-auto mt-5">
+                <div class="form-group">
+                  <div class="form-check phrase-check my-auto">
                     <input class="form-check-input" type="checkbox" value="" v-model="checkbox" id="checkbox">
                     <label class="form-check-label mt-1" for="checkbox">
                       I understand the risk and have privacy
@@ -30,10 +30,12 @@
                 </div>
             </form>
         </div>
-          <div class="button-group mt-5">
+        <div class="footer-container">
+          <div class="button-group">
                 <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg">Cancel</button></router-link>
                 <button class="btn btn-primary btn-lg" @click="unlock">Continue</button>
           </div>
+        </div>
     </div>
 </template>
 
@@ -84,9 +86,5 @@ export default {
     height: 100px;
     width: 100px;
   }
-  &_middle-text {
-    
-  }
 }
-
 </style>
