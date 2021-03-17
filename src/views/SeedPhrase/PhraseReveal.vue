@@ -1,12 +1,12 @@
 <template>
-  <div class="backup-wallet login-wrapper no-outer-pad">
-    <div class="backup-wallet_top">
-      <Eye class="backup-wallet_icon" />
-      <h2>Seed Phrase</h2>
-      <p>The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.</p>
+  <div class="phrase-reveal login-wrapper no-outer-pad">
+    <div class="phrase-reveal_top">
+      <Eye class="phrase-reveal_icon mt-4" />
+      <h2 class="mt-4">Seed Phrase</h2>
+      <p class="pb-2">The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.</p>
     </div>
-    <div class="backup-wallet_bottom">
-      <div class="backup-wallet_seed">
+    <div class="phrase-reveal_bottom">
+      <div class="phrase-reveal_seed">
         <span v-for="word in seedList" :key="word">{{ word }}</span>
       </div>
     <div class="bottom-buttons-reveal">
@@ -41,27 +41,65 @@ export default {
 
 <style lang="scss">
 
-.bottom-buttons-reveal {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    .button-width {
-        width: 150px;
+.phrase-reveal {
+  padding: 0 !important;
+  overflow: hidden;
+  &_top {
+    p {
+      margin: 0;
+      font-size: 14px;
     }
-}
-.backup-wallet_seed {
+  }
+  &_bottom {
+    flex: 1;
+    background: #FFFFFF;
+    color: $color-text-primary;
+    padding: $wrapper-padding;
+    overflow-y: auto;
     display: flex;
-    margin: 0 auto;
+    flex-direction: column;
+  }
+  &_icon {
+    width: 115px;
+  }
+  &_seed {
+    font-size: 18px;
+    padding-left: 0;
+    margin-bottom: 10px;
+    text-align: left;
+    counter-reset: wordIndex;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex: 1;
     span {
+      display: block;
+      flex: 0 0 94px;
+      padding-bottom: 6px;
+      text-align: left;
         color: white;
         &::before {
+            display: block;
             color: black;
+            font-size: $font-size-tiny;
+            counter-increment: wordIndex;
+            content: counter(wordIndex);
         }
     }
     span:hover {
         color: black;
         transition: ease-in .7s;
         cursor: pointer;
+    }
+  }
+}
+
+.bottom-buttons-reveal {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    .button-width {
+        width: 150px;
     }
 }
 

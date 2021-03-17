@@ -1,12 +1,12 @@
 <template>
-    <div class="login-wrapper no-outer-pad">
-        <div class="logo-wrap">
+    <div class="login-wrapper no-outer-pad login-phrase">
+        <div class="login-phrase_logo-wrap">
             <Logo />
         </div>
-        <div class="middle-text">
+        <div class="login-phrase_middle-text">
             <h2>Sign in to See Seed Phrase</h2>
+        <div class="login-phrase_sign-in">
         </div>
-        <div class="sign-in">
             <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -22,11 +22,11 @@
                 </div>
             </form>
         </div>
-        <div class="privacy-check">
+        <div class="login-phrase_privacy-check">
             <input type="checkbox" class="form-control" v-model="checkbox" autocomplete="off" required>
             <h4>I have privacy and understand the risk</h4>
         </div>
-        <div class="bottom-buttons-phrase-confirm">
+        <div class="login-phrase_bottom-buttons">
             <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg cancel-button">Cancel</button></router-link>
             <button class="btn btn-primary btn-lg continue-button" @click="unlock">Continue</button>
         </div>
@@ -75,38 +75,36 @@ export default {
 </script>
 
 <style lang="scss">
-
-.logo-wrap {
+.login-phrase {
+  &_logo-wrap {
     height: 100px;
     width: 100px;
     margin: 0 auto;
     margin-top: 1%;
-}
-
-.middle-text {
-  width: 75%;
-  margin: 0 auto;
-    h2 {
-        display: flex;
-        margin-top: 10%;
-        font-family: Montserrat;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 28px;
-        line-height: 32px;
-        display: flex;
-        align-items: center;
-        text-align: center;
-        letter-spacing: -0.16px;
-        color: #FFFFFF;
+  }
+  &_sign-in {
+      margin: 0 auto;
+      margin-top: 5%;
+  }
+  &_middle-text {
+    width: 75%;
+    margin: 0 auto;
+      h2 {
+          display: flex;
+          margin-top: 10%;
+          font-family: Montserrat;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 28px;
+          line-height: 32px;
+          display: flex;
+          align-items: center;
+          text-align: center;
+          letter-spacing: -0.16px;
+          color: #FFFFFF;
     }
 }
-.sign-in {
-    width: 95%;
-    margin: 0 auto;
-    margin-top: 5%;
-}
-.privacy-check {
+  &_privacy-check {
     input {
     position: absolute;
     width: 13px;
@@ -119,19 +117,16 @@ export default {
         left: 15%;
         right: 5.56%;
         bottom: 10.80%;
-
         font-family: Montserrat;
         font-style: normal;
         font-weight: 600;
         font-size: 14px;
         line-height: 24px;
-        /* or 171% */
-
         display: flex;
         align-items: center;
-
         color: #FFFFFF;
     }
+}
 }
 .continue-button {
     width: 150px;

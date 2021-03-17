@@ -1,17 +1,17 @@
 <template>
-    <div class="wallet">
+    <div class="wallet warning-phrase">
         <NavBar showMenu="true">
             <strong>Warning</strong>
         </NavBar>
-        <div class="warning-line"></div>
-        <div class="top-text">
+        <div class="warning-phrase_warning-line"></div>
+        <div class="warning-phrase_top-text">
             <h1>Show Seed Phrase?</h1>
             <h4>Anyone who has this seed phrase can steal your funds!</h4>
         </div>
-        <div class="eye-svg">
+        <div class="warning-phrase_eye-svg">
             <Eye />
         </div>
-        <div class="bottom-text">
+        <div class="warning-phrase_bottom-text">
             <h5>
                 View it in private without cameras around
             </h5>
@@ -61,12 +61,12 @@ export default {
 
 <style lang="scss">
 
-.warning-line {
+.warning-phrase {
+  &_warning-line {
     display: flex;
     border: 3px solid #F12274;
-}
-
-.top-text {
+  }
+  &_top-text {
     display: flex;
     flex-direction: column;
     width: 90%;
@@ -80,14 +80,14 @@ export default {
     text-align: center;
     letter-spacing: -0.08px;
     color: #000D35;
-}
-.eye-svg {
+  }
+  &_eye-svg {
     height: 150px;
     width: 150px;
     margin: 0 auto;
     margin-top: 20%;
-}
-.bottom-text {
+  }
+  &_bottom-text {
   width: 65%;
   margin: 0 auto;
     h5 {
@@ -103,6 +103,7 @@ export default {
         letter-spacing: -0.08px;
         color: #000D35;
     }
+  }
 }
 .bottom-buttons-warning {
   display: flex;
