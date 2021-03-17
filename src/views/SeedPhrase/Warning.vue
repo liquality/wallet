@@ -44,13 +44,8 @@ export default {
     border: 3px solid $danger;
   }
   &_top-text {
-    font-style: normal;
-    font-weight: 600;
-    font-size: 30px;
-    line-height: 32px;
-    text-align: center;
-    letter-spacing: -0.08px;
     color: $color-text-primary;
+    text-align: center;
   }
   &_eye-svg {
     height: 150px;
