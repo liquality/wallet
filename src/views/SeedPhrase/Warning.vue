@@ -44,7 +44,6 @@ export default {
     border: 3px solid $danger;
   }
   &_top-text {
-    font-family: Montserrat;
     font-style: normal;
     font-weight: 600;
     font-size: 30px;
