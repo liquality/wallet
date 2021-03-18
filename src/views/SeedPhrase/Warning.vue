@@ -4,14 +4,14 @@
             <strong>Warning</strong>
         </NavBar>
         <div class="warning-phrase_warning-line"></div>
-        <div class="warning-phrase_top-text mx-auto mt-2 px-2 mb-5">
+        <div class="mx-auto mt-2 px-2 mb-5 text-center">
             <h1>Show Seed Phrase?</h1>
             <h4>Anyone who has this seed phrase can steal your funds!</h4>
         </div>
         <div class="warning-phrase_eye-svg mx-auto mt-4">
             <Eye />
         </div>
-        <div class="warning-phrase_bottom-text mx-auto">
+        <div class="mx-auto text-center">
             <h5 class="mx-auto px-5">
                 View it in private without cameras around
             </h5>
@@ -43,16 +43,9 @@ export default {
   &_warning-line {
     border: 3px solid $danger;
   }
-  &_top-text {
-    color: $color-text-primary;
-    text-align: center;
-  }
   &_eye-svg {
     height: 150px;
     width: 150px;
-  }
-  &_bottom-text {
-    text-align: center;
   }
 }
 
