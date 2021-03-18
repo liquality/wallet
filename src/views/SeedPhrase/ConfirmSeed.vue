@@ -38,7 +38,7 @@
         <div class="footer-container bg-white px-2">
             <div class="button-group">
                 <router-link to="/backup"><button class="btn btn-outline-primary btn-lg btn-block">Back</button></router-link>
-                <button class="btn btn-primary btn-lg btn-block">Continue</button>
+                <router-link to="/congratulations"><button class="btn btn-primary btn-lg btn-block">Continue</button></router-link>
             </div>
     </div>
     </div>
@@ -71,7 +71,7 @@ export default {
   methods: {
     onSelect (word) {
       this.phraseSnip.push(word)
-      word.disabled = true;
+      word.disabled = true
     }
   }
 }
