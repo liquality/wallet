@@ -29,12 +29,18 @@
                 </form>
                 </div>
                 <div class="confirm-seed_selections mt-4 px-1 mx-auto">
-                    <div class="d-flex flex-row flex-wrap">
-                        <button class="btn btn-outline-primary w-25 btn-sm btn-block" v-for="word in seedList" :key="word" @click="() => onSelect(word)">{{ word }}</button>
+                    <div class="d-flex flex-row flex-wrap justify-content-between px-1">
+                        <button class="btn btn-outline-primary w-25 mx-1 bg-white btn-sm btn-block" v-for="word in seedList" :key="word" @click="() => onSelect(word)">{{ word }}</button>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="footer-container bg-white px-2">
+            <div class="button-group">
+                <router-link to="/backup"><button class="btn btn-outline-primary btn-lg btn-block">Back</button></router-link>
+                <button class="btn btn-primary btn-lg btn-block">Continue</button>
+            </div>
+    </div>
     </div>
 
 </template>
@@ -45,28 +51,29 @@ import { mapState } from 'vuex'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 
 export default {
-    data () {
-        return {
-            phraseSnip: []
-        }
-    },
-    computed: {
-        logo () {
-        return LogoWallet
-        },
-        ...mapState(['wallets', 'activeWalletId']),
-        wallet: function () {
-        return this.wallets.find(wallet => wallet.id === this.activeWalletId)
-        },
-        seedList: function () {
-        return this.wallet.mnemonic.split(' ')
-        }
-    },
-        methods: {
-        onSelect(word) {
-        this.phraseSnip.push(word)
-        }
+  data () {
+    return {
+      phraseSnip: []
     }
+  },
+  computed: {
+    logo () {
+      return LogoWallet
+    },
+    ...mapState(['wallets', 'activeWalletId']),
+    wallet: function () {
+      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+    },
+    seedList: function () {
+      return this.wallet.mnemonic.split(' ')
+    }
+  },
+  methods: {
+    onSelect (word) {
+      this.phraseSnip.push(word)
+      word.disabled = true;
+    }
+  }
 }
 
 </script>
