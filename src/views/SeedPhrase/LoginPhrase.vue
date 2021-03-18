@@ -1,7 +1,7 @@
 <template>
     <div class="login-wrapper login-phrase h-100">
         <div class="login-phrase_logo-wrap mx-auto">
-            <Logo />
+            <img :src="logo"/>
         </div>
         <div class="login-phrase_middle-text mx-auto mt-1">
             <h2 class="mt-4 px-5">Sign in to See Seed Phrase</h2>
@@ -42,18 +42,20 @@
 <script>
 
 import { mapActions } from 'vuex'
-import Logo from '../../assets/icons/logo_wallet.svg'
+import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 
 export default {
-  components: {
-    Logo
-  },
   data () {
     return {
       loading: false,
       errors: [],
       password: null,
       checkbox: false
+    }
+  },
+  computed: {
+    logo () {
+      return LogoWallet
     }
   },
   methods: {
