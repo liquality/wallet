@@ -10,7 +10,7 @@
       <div class="backup-wallet_seed">
         <span v-for="word in seedList" :key="word">{{ word }}</span>
       </div>
-      <router-link to="/wallet"><button class="btn btn-primary btn-lg btn-block btn-icon">Done</button></router-link>
+      <router-link to="/confirmseed"><button class="btn btn-primary btn-lg btn-block btn-icon">Next</button></router-link>
     </div>
   </div>
 </template>

@@ -34,6 +34,7 @@ import ImportAccount from '@/views/Accounts/Import.vue'
 import Warning from '@/views/SeedPhrase/Warning.vue'
 import LoginPhrase from '@/views/SeedPhrase/LoginPhrase.vue'
 import PhraseReveal from '@/views/SeedPhrase/PhraseReveal'
+import ConfirmSeed from '@/views/SeedPhrase/ConfirmSeed'
 
 Vue.use(VueRouter)
 
@@ -198,6 +199,10 @@ const routes = [
   {
     path: '/seedreveal',
     component: PhraseReveal
+  },
+  {
+    path: '/confirmseed',
+    component: ConfirmSeed
   }
 
 ]
