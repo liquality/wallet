@@ -26,6 +26,7 @@ export default {
   client (state) {
     return (network, walletId, asset, walletType = 'default') => {
       const cacheKey = [asset, network, walletId, walletType].join('-')
+      console.log('client', walletType, asset, cacheKey)
 
       const cachedClient = clientCache[cacheKey]
       if (cachedClient) return cachedClient

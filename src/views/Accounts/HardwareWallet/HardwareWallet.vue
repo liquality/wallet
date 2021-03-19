@@ -60,13 +60,6 @@ export default {
     getAssetIcon,
     ...mapActions(['createAccount', 'getLedgerAccounts']),
     async connect ({ asset, walletType, page }) {
-      this.ledgerPage += page || 0
-
-      if (this.ledgerPage <= 0) {
-        this.ledgerPage = 1
-      }
-      const from = (this.ledgerPage - 1) * LEDGER_PER_PAGE
-      const to = from + LEDGER_PER_PAGE
       this.selectedAsset = asset
       this.loading = true
       this.ledgerError = null
@@ -74,38 +67,45 @@ export default {
 
       try {
         if (asset) {
+          let currentPage = this.ledgerPage + (page || 0)
+
+          if (currentPage <= 0) {
+            currentPage = 1
+          }
+          const startingIndex = (currentPage - 1) * LEDGER_PER_PAGE
           this.currentStep = 'unlock'
           const payload = {
             network: this.activeNetwork,
             walletId: this.activeWalletId,
             asset: asset.name,
             walletType: walletType || asset.types[0],
-            from,
-            to
+            startingIndex,
+            numAddresses: LEDGER_PER_PAGE
           }
 
           const accounts = await this.getLedgerAccounts(payload)
 
           if (accounts && accounts.length > 0) {
             this.accounts = [...accounts]
+            this.ledgerPage = currentPage
           } else {
             // TODO: manage errors
-            this.ledgerError = { message: 'no accounts found' }
+            this.ledgerError = { message: 'No accounts found' }
           }
-          this.loading = false
         }
+        this.loading = false
       } catch (error) {
         // TODO: manage errors
-        this.ledgerError = error
+        this.ledgerError = { message: 'Error getting accounts' }
         console.log('error getting accounts', error)
         this.loading = false
       }
     },
-    async unlock () {
+    async unlock ({ walletType }) {
       // create the account
       if (this.selectedAccount && this.selectedAsset) {
         const { address } = this.selectedAccount
-        const { type, chain } = this.selectedAsset
+        const { chain } = this.selectedAsset
         const assetKeys =
           this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
         const assets = assetKeys.filter((asset) => {
@@ -117,7 +117,7 @@ export default {
           chain,
           addresses: [address],
           assets,
-          type
+          type: walletType || this.selectedAsset.types[0]
         }
 
         await this.createAccount({

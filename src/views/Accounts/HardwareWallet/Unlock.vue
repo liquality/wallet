@@ -53,8 +53,9 @@
                   class="asset-icon" />
              {{ accountsLabel }} Accounts
           </p>
-          <table class="table"
-                 v-if="accounts && accounts.length > 0">
+          <div class="table-responsive"
+               v-if="accounts && accounts.length > 0" clas>
+            <table class="table">
             <tbody>
               <tr
                 @click="selectAccount(item)"
@@ -70,8 +71,18 @@
               </tr>
             </tbody>
           </table>
+          <div class="account-nav">
+            <button class="btn btn-icon">
+              Previous
+            </button>
+
+            <button class="btn btn-icon">
+              Next
+            </button>
+          </div>
+          </div>
           <div v-else class="no-accounts">
-              No Accounts Found
+            {{ ledgerError && ledgerError.message ? ledgerError.message : 'No Accounts Found' }}
           </div>
         </div>
       </div>
@@ -144,16 +155,19 @@ export default {
   methods: {
     getAssetIcon,
     unlock () {
-      this.$emit('on-unlock')
+      const walletType = this.getWalletType()
+      this.$emit('on-unlock', { walletType })
     },
     selectAccount (account) {
       this.$emit('on-select-account', account)
     },
     connect () {
+      const walletType = this.getWalletType()
       this.$emit('on-connect',
         {
           asset: this.selectedAsset,
-          walletType: this.ledgerBitcoinOption.name
+          walletType,
+          page: this.currentPage
         })
     },
     cancel () {
@@ -168,6 +182,12 @@ export default {
     },
     hideLedgerBitcoinOptions () {
       this.ledgerBitcoinOptionsOpen = false
+    },
+    getWalletType () {
+      return {
+        BTC: this.ledgerBitcoinOption?.name,
+        ETH: null
+      }[this.selectedAsset?.chain]
     }
   },
   computed: {
@@ -187,4 +207,8 @@ export default {
 </script>
 
 <style lang="scss">
+.account-nav {
+  display: flex;
+  justify-content: space-between;
+}
 </style>

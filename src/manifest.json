@@ -49,6 +49,6 @@
     }
   },
   "externally_connectable": {
-    "matches": ["https://liquality-ledger-web-bridge.web.app/"]
+    "matches": ["https://localhost:9000/"]
   }
 }
