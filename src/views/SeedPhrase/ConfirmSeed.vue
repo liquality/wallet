@@ -14,15 +14,15 @@
                 <form class="form">
                     <div class="confirm-seed_inputs d-flex flex-row justify-content-around">
                         <div>
-                            <label>1<sub>st</sub> Word</label>
+                            <label>1<sup>st</sup> Word</label>
                             <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseSnip[0]" autocomplete="off" required />
                         </div>
                         <div>
-                            <label>5<sub>th</sub> Word</label>
+                            <label>5<sup>th</sup> Word</label>
                             <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseSnip[1]" autocomplete="off" required />
                         </div>
                         <div>
-                            <label>12<sub>th</sub> Word</label>
+                            <label>12<sup>th</sup> Word</label>
                             <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseSnip[2]" autocomplete="off" required />
                         </div>
                     </div>
