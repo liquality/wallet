@@ -95,9 +95,8 @@ export default {
         }
         this.loading = false
       } catch (error) {
-        // TODO: manage errors
-        this.ledgerError = { message: 'Error getting accounts' }
-        console.log('error getting accounts', error)
+        this.ledgerError = { message: error.message || 'Error getting accounts' }
+        console.error('error getting accounts', error)
         this.loading = false
       }
     },
