@@ -30,7 +30,7 @@
                 </div>
                 <div class="confirm-seed_selections mt-3 px-1 mx-auto">
                     <div class="confirm-seed_options flex-container d-flex flex-wrap justify-content-around px-1">
-                        <button class="btn button-confirm px-1 mx-1 my-2" v-for="(word, i) in seedList" :disabled="phraseIndex[i]" :key="word" @click="onSelect(word, i)">{{ word }}</button>
+                        <button class="btn button-confirm px-1 py-0 mx-1 my-3" v-for="(word, i) in seedList" :disabled="phraseIndex[i]" :key="word" @click="onSelect(word, i)">{{ word }}</button>
                     </div>
                 </div>
             </div>
@@ -74,10 +74,10 @@ export default {
   },
   methods: {
     onSelect (word, i) {
-        this.phraseSnip.push(word)
-        this.phraseIndex[i] = word
-      }
+      this.phraseSnip.push(word)
+      this.phraseIndex[i] = word
     }
+  }
 }
 
 </script>
