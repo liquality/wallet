@@ -28,9 +28,9 @@
                     </div>
                 </form>
                 </div>
-                <div class="confirm-seed_selections mt-2 px-1 mx-auto">
+                <div class="confirm-seed_selections mt-3 px-1 mx-auto">
                     <div class="confirm-seed_options flex-container d-flex flex-wrap justify-content-around px-1">
-                        <span class="button-confirm px-2 mx-1 my-3" v-for="word in seedList" :key="word" @click="() => onSelect(word)">{{ word }}</span>
+                        <button class="btn button-confirm px-1 mx-1 my-2" v-for="(word, i) in seedList" :disabled="phraseIndex[i]" :key="word" @click="onSelect(word, i)">{{ word }}</button>
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
         <div class="footer-container bg-white px-2">
             <div class="button-group">
                 <router-link to="/backup"><button class="btn btn-outline-primary btn-lg btn-block">Back</button></router-link>
-                <router-link to="/congratulations"><button class="btn btn-primary btn-lg btn-block">Continue</button></router-link>
+                <router-link to="/congratulations"><button class="btn btn-primary btn-lg btn-block" :disabled="!isConfirmedMatch">Continue</button></router-link>
             </div>
     </div>
     </div>
@@ -53,7 +53,8 @@ import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 export default {
   data () {
     return {
-      phraseSnip: []
+      phraseSnip: [],
+      phraseIndex: {}
     }
   },
   computed: {
@@ -66,14 +67,17 @@ export default {
     },
     seedList: function () {
       return this.wallet.mnemonic.split(' ')
+    },
+    isConfirmedMatch () {
+      return this.seedList[0] === this.phraseSnip[0] && this.seedList[4] === this.phraseSnip[1] && this.seedList[11] === this.phraseSnip[2]
     }
   },
   methods: {
-    onSelect (word) {
-      this.phraseSnip.push(word)
-      word.disabled = true
+    onSelect (word, i) {
+        this.phraseSnip.push(word)
+        this.phraseIndex[i] = word
+      }
     }
-  }
 }
 
 </script>
@@ -104,14 +108,19 @@ export default {
       }
   }
   &_selections {
-    color: $color-primary;
     font-size: 12px;
-    span {
-      width: 70px;
+    button {
+      color: $color-primary;
+      width: 75px;
       background: $color-text-secondary;
       border: 1px solid $hr-border-color;
-      box-sizing: border-box;
       border-radius: 26px;
+      &:disabled {
+        color: $hr-border-color;
+      }
+      &:focus {
+        box-shadow: none;
+    }
     }
   }
 }
