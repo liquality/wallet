@@ -28,9 +28,9 @@
                     </div>
                 </form>
                 </div>
-                <div class="confirm-seed_selections mt-4 px-1 mx-auto">
-                    <div class="d-flex flex-row flex-wrap justify-content-between px-1">
-                        <button class="btn btn-outline-primary w-25 mx-1 bg-white btn-sm btn-block" v-for="word in seedList" :key="word" @click="() => onSelect(word)">{{ word }}</button>
+                <div class="confirm-seed_selections mt-2 px-1 mx-auto">
+                    <div class="confirm-seed_options flex-container d-flex flex-wrap justify-content-around px-1">
+                        <span class="button-confirm px-2 mx-1 my-3" v-for="word in seedList" :key="word" @click="() => onSelect(word)">{{ word }}</span>
                     </div>
                 </div>
             </div>
@@ -102,6 +102,17 @@ export default {
               color: $color-text-primary !important;
           }
       }
+  }
+  &_selections {
+    color: $color-primary;
+    font-size: 12px;
+    span {
+      width: 70px;
+      background: $color-text-secondary;
+      border: 1px solid $hr-border-color;
+      box-sizing: border-box;
+      border-radius: 26px;
+    }
   }
 }
 </style>

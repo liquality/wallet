@@ -12,9 +12,9 @@
 import CompletedIcon from '@/assets/icons/completed.svg'
 
 export default {
-    components: {
-        CompletedIcon
-    }
+  components: {
+    CompletedIcon
+  }
 }
 
 </script>
