@@ -14,10 +14,11 @@
     <Unlock v-else
            :loading="loading"
            :accounts="accounts"
+           :selected-accounts="selectedAccounts"
            :selected-asset="selectedAsset"
-           :selected-account="selectedAccount"
+           :selected-wallet-type="selectedWalletType"
            :ledger-error="ledgerError"
-           :currentPage="ledgerPage"
+           :current-page="ledgerPage"
            @on-connect="connect"
            @on-unlock="unlock"
            @on-cancel="cancel"
@@ -50,8 +51,9 @@ export default {
       currentStep: 'connect',
       loading: false,
       selectedAsset: null,
+      selectedWalletType: null,
       accounts: [],
-      selectedAccount: null,
+      selectedAccounts: {},
       ledgerError: null,
       ledgerPage: 0
     }
@@ -67,7 +69,7 @@ export default {
 
       try {
         if (asset) {
-          let currentPage = this.ledgerPage + (page || 0)
+          let currentPage = (page || 0)
 
           if (currentPage <= 0) {
             currentPage = 1
@@ -86,10 +88,14 @@ export default {
           const accounts = await this.getLedgerAccounts(payload)
 
           if (accounts && accounts.length > 0) {
-            this.accounts = [...accounts]
+            this.accounts = accounts.map((account, index) => {
+              return {
+                account,
+                index: (index + 1) + startingIndex
+              }
+            })
             this.ledgerPage = currentPage
           } else {
-            // TODO: manage errors
             this.ledgerError = { message: 'No accounts found' }
           }
         }
@@ -101,29 +107,35 @@ export default {
       }
     },
     async unlock ({ walletType }) {
-      // create the account
-      if (this.selectedAccount && this.selectedAsset) {
-        const { address } = this.selectedAccount
+      const selectedAccountsKeys = Object.keys(this.selectedAccounts)
+
+      if (this.selectedAsset && selectedAccountsKeys.length > 0) {
         const { chain } = this.selectedAsset
         const assetKeys =
           this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
+
         const assets = assetKeys.filter((asset) => {
           const assetChain = getChainFromAsset(asset)
           return assetChain === this.selectedAsset.chain
         })
-        const account = {
-          name: `Ledger ${this.selectedAsset.name}`,
-          chain,
-          addresses: [address],
-          assets,
-          type: walletType || this.selectedAsset.types[0]
-        }
 
-        await this.createAccount({
-          network: this.activeNetwork,
-          walletId: this.activeWalletId,
-          account
+        Object.keys(selectedAccountsKeys).forEach(async index => {
+          const item = this.selectedAccounts[index]
+
+          const account = {
+            name: `Ledger ${this.selectedAsset.name} ${item.index}`,
+            chain,
+            addresses: [item.account.address],
+            assets,
+            type: walletType || this.selectedAsset.types[0]
+          }
+          await this.createAccount({
+            network: this.activeNetwork,
+            walletId: this.activeWalletId,
+            account
+          })
         })
+
         this.goToOverview()
       }
     },
@@ -134,14 +146,17 @@ export default {
       this.loading = false
       this.ledgerError = null
       this.accounts = []
-      this.selectedAccount = null
+      this.selectedAccount = {}
       this.currentStep = 'connect'
     },
     setLedgerAsset (asset) {
       this.selectedAsset = asset
     },
-    selectAccount (account) {
-      this.selectedAccount = account
+    selectAccount (item) {
+      this.selectedAccounts = {
+        ...this.selectedAccounts,
+        [item.account.address]: item
+      }
     }
   },
   created () {
@@ -154,6 +169,12 @@ export default {
     },
     bitcoinOptions () {
       return LEDGER_BITCOIN_OPTIONS
+    }
+  },
+  watch: {
+    selectedWalletType: function (_option) {
+      this.accounts = []
+      this.selectedAccounts = {}
     }
   }
 }

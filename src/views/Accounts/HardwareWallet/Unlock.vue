@@ -59,24 +59,23 @@
             <tbody>
               <tr
                 @click="selectAccount(item)"
-                v-for="(item, i) in accounts"
-                :key="item.address"
+                v-for="item in accounts"
+                :key="item.account.address"
                 :class="{
-                  active:
-                    selectedAccount && item.address === selectedAccount.address,
+                  active: selectedAccounts[item.account.address]
                 }"
               >
-                <td>{{ (i + 1)}}</td>
-                <td>{{ item.address }}</td>
+                <td>{{ item.index }}</td>
+                <td>{{ item.account.address }}</td>
               </tr>
             </tbody>
           </table>
           <div class="account-nav">
-            <button class="btn btn-icon">
+            <button class="btn btn-icon" @click="prev">
               Previous
             </button>
 
-            <button class="btn btn-icon">
+            <button class="btn btn-icon"  @click="next">
               Next
             </button>
           </div>
@@ -107,7 +106,7 @@
             v-else
             class="btn btn-primary btn-lg btn-icon"
             @click="unlock"
-            :disabled="loading || !selectedAccount"
+            :disabled="loading || Object.keys(selectedAccounts).length <= 0"
           >
             <SpinnerIcon class="btn-loading" v-if="loading" />
             <template v-else>Unlock</template>
@@ -136,11 +135,12 @@ export default {
     ChevronUpIcon
   },
   props: [
-    'selectedAsset',
     'loading',
-    'selectedAccount',
-    'ledgerError',
     'accounts',
+    'selectedAccounts',
+    'selectedAsset',
+    'selectedWalletType',
+    'ledgerError',
     'currentPage'
   ],
   data () {
@@ -158,17 +158,23 @@ export default {
       const walletType = this.getWalletType()
       this.$emit('on-unlock', { walletType })
     },
-    selectAccount (account) {
-      this.$emit('on-select-account', account)
+    selectAccount (item) {
+      this.$emit('on-select-account', item)
     },
-    connect () {
+    connect (nextPage) {
       const walletType = this.getWalletType()
       this.$emit('on-connect',
         {
           asset: this.selectedAsset,
           walletType,
-          page: this.currentPage
+          page: nextPage || this.currentPage
         })
+    },
+    prev () {
+      this.connect(this.currentPage - 1)
+    },
+    next () {
+      this.connect(this.currentPage + 1)
     },
     cancel () {
       this.$emit('on-cancel')
