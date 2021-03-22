@@ -6,7 +6,7 @@ export const getUnusedAddresses = async ({ state, commit, getters }, { network, 
     const index = accounts.findIndex(a => a.id === accountId)
     if (index >= 0) {
       const account = accounts[index]
-      const result = await getters.client(network, walletId, asset).wallet.getUnusedAddress()
+      const result = await getters.client(network, walletId, asset, account.type).wallet.getUnusedAddress()
       const address = result.address
       if (!account.addresses.includes(address)) {
         const addresses = [
