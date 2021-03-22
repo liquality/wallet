@@ -91,7 +91,7 @@ export default {
             this.accounts = accounts.map((account, index) => {
               return {
                 account,
-                index: (index + 1) + startingIndex
+                index: index + startingIndex
               }
             })
             this.ledgerPage = currentPage
@@ -107,36 +107,42 @@ export default {
       }
     },
     async unlock ({ walletType }) {
-      const selectedAccountsKeys = Object.keys(this.selectedAccounts)
+      if (this.selectedAsset && Object.keys(this.selectedAccounts).length > 0) {
+        try {
+          this.loading = true
+          const { chain } = this.selectedAsset
+          const assetKeys =
+            this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
 
-      if (this.selectedAsset && selectedAccountsKeys.length > 0) {
-        const { chain } = this.selectedAsset
-        const assetKeys =
-          this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
-
-        const assets = assetKeys.filter((asset) => {
-          const assetChain = getChainFromAsset(asset)
-          return assetChain === this.selectedAsset.chain
-        })
-
-        Object.keys(selectedAccountsKeys).forEach(async index => {
-          const item = this.selectedAccounts[index]
-
-          const account = {
-            name: `Ledger ${this.selectedAsset.name} ${item.index}`,
-            chain,
-            addresses: [item.account.address],
-            assets,
-            type: walletType || this.selectedAsset.types[0]
-          }
-          await this.createAccount({
-            network: this.activeNetwork,
-            walletId: this.activeWalletId,
-            account
+          const assets = assetKeys.filter((asset) => {
+            const assetChain = getChainFromAsset(asset)
+            return assetChain === this.selectedAsset.chain
           })
-        })
 
-        this.goToOverview()
+          for (const key in this.selectedAccounts) {
+            const item = this.selectedAccounts[key]
+
+            const account = {
+              name: `Ledger ${this.selectedAsset.name} ${item.index}`,
+              chain,
+              addresses: [item.account.address],
+              assets,
+              type: walletType || this.selectedAsset.types[0]
+            }
+            await this.createAccount({
+              network: this.activeNetwork,
+              walletId: this.activeWalletId,
+              account
+            })
+          }
+
+          this.loading = false
+          this.goToOverview()
+        } catch (error) {
+          this.ledgerError = { message: 'Error creating accounts' }
+          console.error('error creating accounts', error)
+          this.loading = false
+        }
       }
     },
     goToOverview () {
@@ -153,9 +159,16 @@ export default {
       this.selectedAsset = asset
     },
     selectAccount (item) {
-      this.selectedAccounts = {
-        ...this.selectedAccounts,
-        [item.account.address]: item
+      if (this.selectedAccounts[[item.account.address]]) {
+        delete this.selectedAccounts[item.account.address]
+        this.selectedAccounts = {
+          ...this.selectedAccounts
+        }
+      } else {
+        this.selectedAccounts = {
+          ...this.selectedAccounts,
+          [item.account.address]: item
+        }
       }
     }
   },
