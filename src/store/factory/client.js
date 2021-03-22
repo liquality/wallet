@@ -64,7 +64,7 @@ function createBtcClient (network, mnemonic, walletType) {
   const btcClient = new Client()
   btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2))
 
-  if (walletType.includes('ledger')) {
+  if (walletType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
     const { addressType } = option
     const ledger = new BitcoinLedgerBridgeProvider(bitcoinNetwork, addressType)

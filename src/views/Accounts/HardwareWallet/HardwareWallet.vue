@@ -14,11 +14,14 @@
     <Unlock v-else
            :loading="loading"
            :accounts="accounts"
+           :selected-accounts="selectedAccounts"
            :selected-asset="selectedAsset"
-           :selected-account="selectedAccount"
+           :selected-wallet-type="selectedWalletType"
            :ledger-error="ledgerError"
+           :current-page="ledgerPage"
            @on-connect="connect"
            @on-unlock="unlock"
+           @on-cancel="cancel"
            @on-select-account="selectAccount"
     />
   </div>
@@ -35,6 +38,8 @@ import {
 } from '@/utils/ledger-bridge-provider'
 import { getAssetIcon, getChainFromAsset } from '@/utils/asset'
 
+const LEDGER_PER_PAGE = 5
+
 export default {
   components: {
     NavBar,
@@ -46,85 +51,125 @@ export default {
       currentStep: 'connect',
       loading: false,
       selectedAsset: null,
+      selectedWalletType: null,
       accounts: [],
-      selectedAccount: null,
-      ledgerError: null
+      selectedAccounts: {},
+      ledgerError: null,
+      ledgerPage: 0
     }
   },
   methods: {
     getAssetIcon,
-    ...mapActions(['createAccount', 'getLedgerAddresses']),
-    async connect (asset) {
+    ...mapActions(['createAccount', 'getLedgerAccounts']),
+    async connect ({ asset, walletType, page }) {
       this.selectedAsset = asset
       this.loading = true
       this.ledgerError = null
+      this.accounts = []
 
       try {
-        if (this.selectedAsset) {
-          this.currentStep = 'unlock'
+        if (asset) {
+          let currentPage = (page || 0)
 
+          if (currentPage <= 0) {
+            currentPage = 1
+          }
+          const startingIndex = (currentPage - 1) * LEDGER_PER_PAGE
+          this.currentStep = 'unlock'
           const payload = {
             network: this.activeNetwork,
             walletId: this.activeWalletId,
-            asset: this.selectedAsset.name,
-            walletType: this.selectedAsset.type
+            asset: asset.name,
+            walletType: walletType || asset.types[0],
+            startingIndex,
+            numAddresses: LEDGER_PER_PAGE
           }
 
-          const accounts = await this.getLedgerAddresses(payload)
+          const accounts = await this.getLedgerAccounts(payload)
 
           if (accounts && accounts.length > 0) {
-            this.accounts = [...accounts]
+            this.accounts = accounts.map((account, index) => {
+              return {
+                account,
+                index: index + startingIndex
+              }
+            })
+            this.ledgerPage = currentPage
           } else {
-            // TODO: manage errors
-            this.ledgerError = { message: 'no accounts found' }
+            this.ledgerError = { message: 'No accounts found' }
           }
         }
+        this.loading = false
       } catch (error) {
-        // TODO: manage errors
-        this.ledgerError = error
-        console.log('error getting addresses', error)
-      } finally {
+        this.ledgerError = { message: error.message || 'Error getting accounts' }
+        console.error('error getting accounts', error)
         this.loading = false
       }
     },
-    async unlock () {
-      // create the account
-      if (this.selectedAccount && this.selectedAsset) {
-        const { address } = this.selectedAccount
-        const { type, chain } = this.selectedAsset
-        const assetKeys =
-          this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
-        const assets = assetKeys.filter((asset) => {
-          const assetChain = getChainFromAsset(asset)
-          return assetChain === this.selectedAsset.chain
-        })
-        const data = {
-          name: `Ledger ${this.selectedAsset.name}`,
-          chain,
-          addresses: [address],
-          assets,
-          type
-        }
+    async unlock ({ walletType }) {
+      if (this.selectedAsset && Object.keys(this.selectedAccounts).length > 0) {
+        try {
+          this.loading = true
+          const { chain } = this.selectedAsset
+          const assetKeys =
+            this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
 
-        await this.createAccount({
-          network: this.activeNetwork,
-          walletId: this.activeWalletId,
-          account: data
-        })
-        this.goToOverview()
+          const assets = assetKeys.filter((asset) => {
+            const assetChain = getChainFromAsset(asset)
+            return assetChain === this.selectedAsset.chain
+          })
+
+          for (const key in this.selectedAccounts) {
+            const item = this.selectedAccounts[key]
+
+            const account = {
+              name: `Ledger ${this.selectedAsset.name} ${item.index}`,
+              chain,
+              addresses: [item.account.address],
+              assets,
+              type: walletType || this.selectedAsset.types[0]
+            }
+            await this.createAccount({
+              network: this.activeNetwork,
+              walletId: this.activeWalletId,
+              account
+            })
+          }
+
+          this.loading = false
+          this.goToOverview()
+        } catch (error) {
+          this.ledgerError = { message: 'Error creating accounts' }
+          console.error('error creating accounts', error)
+          this.loading = false
+        }
       }
     },
     goToOverview () {
       this.$router.replace('/wallet')
     },
-    goToStep (step) {
-      this.currentStep = step
+    cancel () {
+      this.loading = false
+      this.ledgerError = null
+      this.accounts = []
+      this.selectedAccount = {}
+      this.currentStep = 'connect'
     },
     setLedgerAsset (asset) {
       this.selectedAsset = asset
     },
-    selectAccount (account) {
-      this.selectedAccount = account
+    selectAccount (item) {
+      if (this.selectedAccounts[[item.account.address]]) {
+        delete this.selectedAccounts[item.account.address]
+        this.selectedAccounts = {
+          ...this.selectedAccounts
+        }
+      } else {
+        this.selectedAccounts = {
+          ...this.selectedAccounts,
+          [item.account.address]: item
+        }
+      }
     }
   },
   created () {
@@ -138,151 +183,15 @@ export default {
     bitcoinOptions () {
       return LEDGER_BITCOIN_OPTIONS
     }
+  },
+  watch: {
+    selectedWalletType: function (_option) {
+      this.accounts = []
+      this.selectedAccounts = {}
+    }
   }
 }
 </script>
 
 <style lang="scss">
-.account-container {
-  .progress-container {
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    .circle-progress {
-      width: 175px;
-    }
-
-    .loading-message {
-      z-index: 999;
-      text-align: center;
-      position: absolute;
-
-      .loading-message-title {
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 18px;
-        text-align: center;
-        color: #000D35;
-      }
-
-      .loading-message-text {
-        font-weight: 500;
-        font-size: 11px;
-        line-height: 16px;
-        display: flex;
-        align-items: center;
-        text-align: center;
-        color: #646F85;
-      }
-    }
-  }
-
-  .no-accounts {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200px;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 18px;
-    text-align: center;
-  }
-
-  .step-detail {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    .step-number {
-      font-style: normal;
-      font-weight: 500;
-      font-size: 13px;
-      line-height: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 28px;
-      border: solid 1px #000d35;
-    }
-
-    .step-name {
-      font-weight: bold;
-      font-size: 12px;
-      line-height: 24px;
-      text-align: center;
-      text-transform: uppercase;
-      margin-top: 10px;
-    }
-
-    .step-icon {
-      margin-top: 15px;
-      svg {
-        width: 179px;
-      }
-    }
-
-    .step-text {
-      margin-top: 15px;
-      font-style: normal;
-      font-weight: 300;
-      font-size: 12px;
-      line-height: 27px;
-    }
-  }
-
-  .step-instructions {
-    margin-top: 15px;
-    font-style: normal;
-    font-weight: 300;
-    font-size: 16px;
-    padding-left: 20px;
-    line-height: 18px;
-  }
-
-  .options {
-    margin-top: 30px;
-    position: absolute;
-    padding: 26px 20px;
-    left: 0;
-    border-top: 1px solid $hr-border-color;
-    border-bottom: 1px solid $hr-border-color;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 80px;
-    justify-content: space-between;
-
-    .options-text {
-      max-width: 210px;
-      font-style: normal;
-      font-weight: bold;
-      font-size: 12px;
-      line-height: 16px;
-      display: flex;
-      align-items: center;
-      text-transform: uppercase;
-      color: #3D4767;
-
-      span {
-        width: 120px;
-      }
-    }
-  }
-
-  .indications {
-    font-style: normal;
-    font-weight: bold;
-    font-size: 12px;
-    line-height: 24px;
-    display: flex;
-    align-items: center;
-    text-transform: uppercase;
-    color: #3d4767;
-  }
-}
 </style>

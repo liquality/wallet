@@ -22,7 +22,6 @@ export class EthereumLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async signTransaction (path, serializedTx) {
-    debugger
     return await super.callToBridge({
       method: 'signTransaction',
       callType: 'ASYNC_METHOD',
