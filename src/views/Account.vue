@@ -147,8 +147,12 @@ export default {
     }
   },
   async created () {
-    const address = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
-    this.address = cryptoassets[this.asset]?.formatAddress(address[0])
+    if (this.account && this.account.type.includes('ledger')) {
+      this.address = cryptoassets[this.asset]?.formatAddress(this.account.addresses[0])
+    } else {
+      const addresses = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
+      this.address = cryptoassets[this.asset]?.formatAddress(addresses[0])
+    }
     this.activityData = [...this.assetHistory]
   },
   watch: {
