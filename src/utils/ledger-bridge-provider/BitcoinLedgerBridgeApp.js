@@ -1,8 +1,8 @@
 import { LedgerBridgeApp } from './LedgerBridgeApp'
 
 export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
-  constructor () {
-    super('BTC')
+  constructor (bridgeUrl) {
+    super('BTC', bridgeUrl)
   }
 
   async signMessageNew (path, hex) {

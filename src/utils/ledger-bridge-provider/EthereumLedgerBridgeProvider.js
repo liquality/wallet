@@ -6,9 +6,11 @@ import networks from '@liquality/ethereum-networks'
 
 export class EthereumLedgerBridgeProvider extends EthereumLedgerProvider {
   _ledgerApp = null
+  _bridgeUrl
 
-  constructor (network = networks.mainnet) {
+  constructor (network = networks.mainnet, bridgeUrl) {
     super(network)
+    this._bridgeUrl = bridgeUrl
     this._baseDerivationPath = `44'/${network.coinType}'`
   }
 

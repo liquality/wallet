@@ -1,8 +1,8 @@
 import { LedgerBridgeApp } from './LedgerBridgeApp'
 
 export class EthereumLedgerBridgeApp extends LedgerBridgeApp {
-  constructor () {
-    super('ETH')
+  constructor (bridgeUrl) {
+    super('ETH', bridgeUrl)
   }
 
   async getAddress (path) {

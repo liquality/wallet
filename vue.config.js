@@ -51,7 +51,9 @@ module.exports = {
       },
       manifestTransformer: manifest => {
         manifest.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self';"
-
+        manifest.externally_connectable = {
+          matches: [`${process.env.VUE_APP_LEDGER_BRIDGE_URL}/`]
+        }
         return manifest
       }
     }

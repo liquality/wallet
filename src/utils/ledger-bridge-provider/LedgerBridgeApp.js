@@ -6,16 +6,18 @@ import {
 
 export class LedgerBridgeApp {
   _app
+  _bridgeUrl
 
-  constructor (app) {
+  constructor (app, bridgeUrl) {
     this._app = app
-    LedgerBridgeApp.setupIframe()
+    this._bridgeUrl = bridgeUrl
+    LedgerBridgeApp.setupIframe(this._bridgeUrl)
   }
 
-  static setupIframe () {
+  static setupIframe (bridgeUrl) {
     if (!document.getElementById(BRIDGE_IFRAME_NAME)) {
       const frame = document.createElement('iframe')
-      frame.src = 'https://liquality-ledger-web-bridge.web.app'
+      frame.src = bridgeUrl
       frame.setAttribute('name', BRIDGE_IFRAME_NAME)
       frame.setAttribute('id', BRIDGE_IFRAME_NAME)
       const head = document.head || document.getElementsByTagName('head')[0]

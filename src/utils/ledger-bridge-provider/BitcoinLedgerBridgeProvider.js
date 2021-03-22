@@ -6,9 +6,16 @@ import { addressToString } from '@liquality/utils'
 import {
   decodeRawTransaction
 } from '@liquality/bitcoin-utils'
+import networks from '@liquality/ethereum-networks'
 
 export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
   _ledgerApp = null
+  _bridgeUrl
+
+  constructor (network = networks.bitcoin, addressType = 'bech32', bridgeUrl) {
+    super(network, addressType)
+    this._bridgeUrl = bridgeUrl
+  }
 
   async getApp () {
     return new Promise((resolve) => {
