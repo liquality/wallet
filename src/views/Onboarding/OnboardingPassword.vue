@@ -48,7 +48,6 @@ export default {
       loading: false
     }
   },
-  props: ['mnemonic'],
   components: {
     LogoWallet,
     SpinnerIcon
@@ -68,16 +67,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setupWallet', 'createWallet', 'unlockWallet']),
+    ...mapActions(['saveTempPassword']),
     async next () {
       this.loading = true
-      const newWallet = !this.mnemonic
-      await this.setupWallet({ key: this.password })
-      await this.createWallet({ key: this.password, mnemonic: this.mnemonic }) // mnemonic prop can be null to generate new seed
-      await this.unlockWallet({ key: this.password })
-      if (newWallet) {
-        this.$router.replace('/backup')
-      }
+      await this.saveTempPassword({ password: this.password })
+      this.$router.replace('/onboarding/setup')
     }
   }
 }

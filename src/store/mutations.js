@@ -10,6 +10,7 @@ export default {
     state.key = key
     state.keyUpdatedAt = Date.now()
     state.setupAt = Date.now()
+    state.tempPassword = null
   },
   CREATE_WALLET (state, { keySalt, encryptedWallets, wallet }) {
     state.encryptedWallets = encryptedWallets
@@ -193,5 +194,8 @@ export default {
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
       }
     }
+  },
+  SAVE_PASSWORD (state, { password }) {
+    state.tempPassword = password
   }
 }

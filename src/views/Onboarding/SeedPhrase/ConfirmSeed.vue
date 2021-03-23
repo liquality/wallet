@@ -10,7 +10,7 @@
         </div>
         <div class="confirm-seed_bottom">
             <div class="confirm-seed_bottom-top">
-                <div class="mx-auto mt-2">
+                <div class="mx-auto mt-3">
                 <form class="form">
                     <div class="confirm-seed_inputs d-flex flex-row justify-content-around">
                         <div>
@@ -28,45 +28,45 @@
                     </div>
                 </form>
                 </div>
-                <div class="confirm-seed_selections mt-3 px-1 mx-auto">
+                <div class="confirm-seed_selections mt-4 mb-3 px-1 mx-auto">
                     <div class="confirm-seed_options flex-container d-flex flex-wrap justify-content-around px-1">
-                        <button class="btn button-confirm px-1 py-0 mx-1 my-3" v-for="(word, i) in seedList" :disabled="phraseIndex[i]" :key="word" @click="onSelect(word, i)">{{ word }}</button>
+                        <button class="btn button-confirm px-1 py-0 mx-1 my-3" v-for="(word, i) in seedListShuffle" :disabled="phraseIndex[i]" :key="word" @click="onSelect(word, i)">{{ word }}</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="footer-container bg-white px-2">
+        <div class="footer-container bg-white px-2 pt-2">
             <div class="button-group">
-                <router-link to="/backup"><button class="btn btn-outline-primary btn-lg btn-block">Back</button></router-link>
-                <router-link to="/congratulations"><button class="btn btn-primary btn-lg btn-block" :disabled="!isConfirmedMatch">Continue</button></router-link>
+                <button class="btn btn-outline-primary btn-lg" @click="cancel">Back</button>
+                <button class="btn btn-primary btn-lg" :disabled="!isConfirmedMatch" @click="onConfirm">Continue</button>
             </div>
     </div>
     </div>
-
 </template>
 
 <script>
 
-import { mapState } from 'vuex'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 
 export default {
   data () {
     return {
       phraseSnip: [],
-      phraseIndex: {}
+      phraseIndex: {},
+      seedListShuffle: [],
+      showCongrats: false
     }
   },
+  created () {
+    this.seedListShuffle = [...this.seedList].sort(() => Math.random() - 0.5)
+  },
+  props: ['confirm', 'mnemonic'],
   computed: {
     logo () {
       return LogoWallet
     },
-    ...mapState(['wallets', 'activeWalletId']),
-    wallet: function () {
-      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
-    },
     seedList: function () {
-      return this.wallet.mnemonic.split(' ')
+      return this.mnemonic.split(' ')
     },
     isConfirmedMatch () {
       return this.seedList[0] === this.phraseSnip[0] && this.seedList[4] === this.phraseSnip[1] && this.seedList[11] === this.phraseSnip[2]
@@ -76,6 +76,12 @@ export default {
     onSelect (word, i) {
       this.phraseSnip.push(word)
       this.phraseIndex[i] = word
+    },
+    onConfirm () {
+      this.$emit('on-confirm')
+    },
+    cancel () {
+      this.$emit('on-cancel')
     }
   }
 }

@@ -21,7 +21,7 @@
 <script>
 
 import { mapState } from 'vuex'
-import Eye from '../../assets/icons/eye.svg'
+import Eye from '../../../assets/icons/eye.svg'
 
 export default {
   components: {

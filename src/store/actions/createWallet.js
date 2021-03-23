@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid'
-import { generateMnemonic } from 'bip39'
 import { encrypt } from '../../utils/crypto'
 import buildConfig from '../../build.config'
 import { accountCreator } from '@/utils/accounts'
@@ -8,10 +7,9 @@ import { getChainFromAsset } from '@/utils/asset'
 export const createWallet = async ({ state, getters, commit }, { key, mnemonic }) => {
   const { enabledAssets } = state
   const id = uuidv4()
-  const walletMnemonic = mnemonic || generateMnemonic()
   const at = Date.now()
   const name = 'Account 1'
-  const wallet = { id, name, mnemonic: walletMnemonic, at, imported: false }
+  const wallet = { id, name, mnemonic, at, imported: false }
 
   const { encrypted: encryptedWallets, keySalt } = await encrypt(
     JSON.stringify([wallet]),

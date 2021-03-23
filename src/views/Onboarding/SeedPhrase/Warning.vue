@@ -27,7 +27,7 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
-import Eye from '../../assets/icons/eye.svg'
+import Eye from '../../../assets/icons/eye.svg'
 
 export default {
   components: {
