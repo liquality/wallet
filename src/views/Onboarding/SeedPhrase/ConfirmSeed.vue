@@ -15,22 +15,22 @@
                     <div class="confirm-seed_inputs d-flex flex-row justify-content-around">
                         <div>
                             <label>1<sup>st</sup> Word</label>
-                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseSnip[0]" autocomplete="off" required />
+                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseIndex[0]" readonly @click="remove(0)" autocomplete="off" required />
                         </div>
                         <div>
                             <label>5<sup>th</sup> Word</label>
-                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseSnip[1]" autocomplete="off" required />
+                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseIndex[1]" readonly @click="remove(1)" autocomplete="off" required />
                         </div>
                         <div>
                             <label>12<sup>th</sup> Word</label>
-                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseSnip[2]" autocomplete="off" required />
+                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseIndex[2]" readonly @click="remove(2)" autocomplete="off" required />
                         </div>
                     </div>
                 </form>
                 </div>
                 <div class="confirm-seed_selections mt-4 mb-3 px-1 mx-auto">
                     <div class="confirm-seed_options flex-container d-flex flex-wrap justify-content-around px-1">
-                        <button class="btn button-confirm px-1 py-0 mx-1 my-3" v-for="(word, i) in seedListShuffle" :disabled="phraseIndex[i]" :key="word" @click="onSelect(word, i)">{{ word }}</button>
+                        <button class="btn button-confirm px-1 py-0 mx-1 my-3" v-for="(word, i) in seedListShuffle" :disabled="indexDisabled(i)" :key="word" @click="onSelect(word)">{{ word }}</button>
                     </div>
                 </div>
             </div>
@@ -51,8 +51,7 @@ import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 export default {
   data () {
     return {
-      phraseSnip: [],
-      phraseIndex: {},
+      phraseIndex: [],
       seedListShuffle: [],
       showCongrats: false
     }
@@ -69,19 +68,26 @@ export default {
       return this.mnemonic.split(' ')
     },
     isConfirmedMatch () {
-      return this.seedList[0] === this.phraseSnip[0] && this.seedList[4] === this.phraseSnip[1] && this.seedList[11] === this.phraseSnip[2]
+      return this.seedList[0] === this.phraseIndex[0] && this.seedList[4] === this.phraseIndex[1] && this.seedList[11] === this.phraseIndex[2]
     }
   },
   methods: {
-    onSelect (word, i) {
-      this.phraseSnip.push(word)
-      this.phraseIndex[i] = word
+    onSelect (word) {
+      this.phraseIndex.push(word)
+      console.log('select', this.phraseIndex)
     },
     onConfirm () {
       this.$emit('on-confirm')
     },
     cancel () {
       this.$emit('on-cancel')
+    },
+    indexDisabled (i) {
+      return this.seedListShuffle[i] === this.phraseIndex[0] || this.seedListShuffle[i] === this.phraseIndex[1] || this.seedListShuffle[i] === this.phraseIndex[2]
+    },
+    remove: function (i) {
+      this.phraseIndex.splice(i, 1)
+      console.log('remove', this.phraseIndex)
     }
   }
 }
