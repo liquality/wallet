@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     getAssetIcon,
-    ...mapActions(['createAccount', 'getLedgerAccounts']),
+    ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance']),
     async connect ({ asset, walletType, page }) {
       this.selectedAsset = asset
       this.loading = true
@@ -129,10 +129,16 @@ export default {
               assets,
               type: walletType || this.selectedAsset.types[0]
             }
-            await this.createAccount({
+            const createdAccount = await this.createAccount({
               network: this.activeNetwork,
               walletId: this.activeWalletId,
               account
+            })
+            console.log('createdAccount', createdAccount.id)
+            await this.updateAccountBalance({
+              network: this.activeNetwork,
+              walletId: this.activeWalletId,
+              accountId: createdAccount.id
             })
           }
 

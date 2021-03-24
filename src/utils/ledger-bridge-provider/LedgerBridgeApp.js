@@ -11,13 +11,13 @@ export class LedgerBridgeApp {
   constructor (app, bridgeUrl) {
     this._app = app
     this._bridgeUrl = bridgeUrl
-    LedgerBridgeApp.setupIframe(this._bridgeUrl)
+    LedgerBridgeApp.setupIframe()
   }
 
-  static setupIframe (bridgeUrl) {
+  static setupIframe () {
     if (!document.getElementById(BRIDGE_IFRAME_NAME)) {
       const frame = document.createElement('iframe')
-      frame.src = bridgeUrl
+      frame.src = 'https://localhost:9000'
       frame.setAttribute('name', BRIDGE_IFRAME_NAME)
       frame.setAttribute('id', BRIDGE_IFRAME_NAME)
       const head = document.head || document.getElementsByTagName('head')[0]
@@ -40,7 +40,7 @@ export class LedgerBridgeApp {
   }
 
   async callToBridge ({ method, callType, payload }) {
-    console.log('[LEDGER-BRIDGE]:', { method, callType, payload })
+    console.log('[EXTENSION-LEDGER-BRIDGE]:', { method, callType, payload })
     const replySignature = this.getReplySignature(method, callType)
     let responded = false
     return new Promise((resolve, reject) => {
@@ -56,7 +56,7 @@ export class LedgerBridgeApp {
             payload
           } = request
           if (replySignature === action) {
-            console.log('[LEDGER-BRIDGE]: GOT MESAGE FROM IFRAME', request)
+            console.log('[EXTENSION-LEDGER-BRIDGE]: GOT MESAGE FROM IFRAME', request)
             responded = true
             sendResponse({ success })
             if (success) {

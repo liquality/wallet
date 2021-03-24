@@ -72,12 +72,6 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
       payload: [transaction]
     })
 
-    return {
-      toString: function () {
-        return [...new Uint8Array(result.data)]
-          .map(b => b.toString(16).padStart(2, '0'))
-          .join('')
-      }
-    }
+    return Buffer.from(result)
   }
 }
