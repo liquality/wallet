@@ -27,10 +27,11 @@ export class LedgerBridgeApp {
 
   sendMessage ({ method, callType, payload }) {
     const frame = document.getElementById(BRIDGE_IFRAME_NAME)
+    const parsedPayload = this.parseRequestPayload(payload)
     frame.contentWindow.postMessage({
       app: this._app,
       method,
-      payload,
+      payload: parsedPayload,
       callType
     }, '*')
   }
@@ -60,7 +61,8 @@ export class LedgerBridgeApp {
             responded = true
             sendResponse({ success })
             if (success) {
-              resolve(payload)
+              const parsedPayload = this.parseResponsePayload(payload)
+              resolve(parsedPayload)
             } else {
               const error = new Error(
                 payload.message
@@ -83,5 +85,49 @@ export class LedgerBridgeApp {
         })
       this.sendMessage({ method, callType, payload })
     })
+  }
+
+  parseResponsePayload (payload) {
+    if (payload) {
+      if (payload.data && payload.type && payload.type === 'Hex') {
+        return Buffer.from(payload.data, 'hex')
+      }
+
+      if (payload instanceof Array) {
+        return payload.map(i => this.parseResponsePayload(i))
+      }
+
+      if (typeof payload === 'object' && Object.keys(payload).length > 0) {
+        const output = {}
+        for (const key in payload) {
+          output[key] = this.parseResponsePayload(payload[key])
+        }
+        return output
+      }
+    }
+
+    return payload
+  }
+
+  parseRequestPayload (payload) {
+    if (payload instanceof Uint8Array) {
+      return { type: 'Hex', data: payload.toString('hex') }
+    }
+
+    if (payload instanceof Array) {
+      return payload.map(i => this.parseRequestPayload(i))
+    }
+
+    if (payload && typeof input === 'object') {
+      if (Object.keys(payload).length > 0) {
+        const output = {}
+        for (const key in payload) {
+          output[key] = this.parseRequestPayload(payload[key])
+        }
+        return output
+      }
+    }
+
+    return payload
   }
 }
