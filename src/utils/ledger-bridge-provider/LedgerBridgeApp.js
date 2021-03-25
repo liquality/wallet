@@ -27,11 +27,10 @@ export class LedgerBridgeApp {
 
   sendMessage ({ method, callType, payload }) {
     const frame = document.getElementById(BRIDGE_IFRAME_NAME)
-    const parsedPayload = this.parseRequestPayload(payload)
     frame.contentWindow.postMessage({
       app: this._app,
       method,
-      payload: parsedPayload,
+      payload,
       callType
     }, '*')
   }
@@ -61,8 +60,9 @@ export class LedgerBridgeApp {
             responded = true
             sendResponse({ success })
             if (success) {
-              const parsedPayload = this.parseResponsePayload(payload)
-              resolve(parsedPayload)
+              resolve(
+                this.parseResponsePayload(payload)
+              )
             } else {
               const error = new Error(
                 payload.message
@@ -83,14 +83,16 @@ export class LedgerBridgeApp {
           }, 60000)
           return true
         })
-      this.sendMessage({ method, callType, payload })
+
+      const parsedPayload = this.parseRequestPayload(payload)
+      this.sendMessage({ method, callType, payload: parsedPayload })
     })
   }
 
   parseResponsePayload (payload) {
     if (payload) {
-      if (payload.data && payload.type && payload.type === 'Hex') {
-        return Buffer.from(payload.data, 'hex')
+      if (payload.type && payload.type === 'Hex') {
+        return Buffer.from(payload.data || '', 'hex')
       }
 
       if (payload instanceof Array) {
@@ -110,7 +112,7 @@ export class LedgerBridgeApp {
   }
 
   parseRequestPayload (payload) {
-    if (payload instanceof Uint8Array) {
+    if (payload instanceof Uint8Array || payload instanceof Buffer) {
       return { type: 'Hex', data: payload.toString('hex') }
     }
 
@@ -118,7 +120,7 @@ export class LedgerBridgeApp {
       return payload.map(i => this.parseRequestPayload(i))
     }
 
-    if (payload && typeof input === 'object') {
+    if (payload && typeof payload === 'object') {
       if (Object.keys(payload).length > 0) {
         const output = {}
         for (const key in payload) {
