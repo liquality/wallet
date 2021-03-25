@@ -10,13 +10,13 @@
       <div class="form-group">
         <label for="password">Choose Password</label>
         <div class="input-group">
-          <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required :readonly="loading">
+          <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required>
         </div>
       </div>
       <div class="form-group">
         <label for="confirmPassword">Confirm Password</label>
         <div class="input-group">
-          <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" autocomplete="off" required :readonly="loading">
+          <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" autocomplete="off" required>
         </div>
         <small v-show="passwordMatch" class="form-text hidden" >Passwords don't match.</small>
         <small class="form-text">Password must be at least 8 characters.</small>
@@ -25,9 +25,8 @@
     <div class="footer-container">
       <div class="footer-content">
         <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-footer btn-icon" :disabled="loading || disableNext" @click="next">
-          <SpinnerIcon class="btn-loading" v-if="loading" />
-          <template v-else>Continue</template>
+        <button class="btn btn-primary btn-lg btn-footer btn-icon" :disabled="disableNext" @click="next">
+          Continue
         </button>
       </div>
     </div>
@@ -35,22 +34,18 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 
 import LogoWallet from '@/assets/icons/logo_wallet.svg'
-import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   data () {
     return {
       password: null,
-      confirmPassword: null,
-      loading: false
+      confirmPassword: null
     }
   },
   components: {
     LogoWallet,
-    SpinnerIcon
   },
   computed: {
     passwordMatch () {
@@ -67,11 +62,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['saveTempPassword']),
-    async next () {
-      this.loading = true
-      await this.saveTempPassword({ password: this.password })
-      this.$router.replace('/onboarding/setup')
+    next () {
+      this.$emit('on-unlock', this.password)
     }
   }
 }

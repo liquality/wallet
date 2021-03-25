@@ -15,15 +15,15 @@
                     <div class="confirm-seed_inputs d-flex flex-row justify-content-around">
                         <div>
                             <label>1<sup>st</sup> Word</label>
-                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseIndex[0]" readonly @click="remove(0)" autocomplete="off" required />
+                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseIndex[0]" @click="remove(0)" autocomplete="off" required />
                         </div>
                         <div>
                             <label>5<sup>th</sup> Word</label>
-                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseIndex[1]" readonly @click="remove(1)" autocomplete="off" required />
+                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseIndex[1]" @click="remove(1)" autocomplete="off" required />
                         </div>
                         <div>
                             <label>12<sup>th</sup> Word</label>
-                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseIndex[2]" readonly @click="remove(2)" autocomplete="off" required />
+                            <input type="text" class="form-control text-center w-75 mx-auto form-control-sm" v-model="phraseIndex[2]" @click="remove(2)" autocomplete="off" required />
                         </div>
                     </div>
                 </form>
@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="footer-container bg-white px-2 pt-2">
-            <div class="button-group">
+            <div class="button-group px-2">
                 <button class="btn btn-outline-primary btn-lg" @click="cancel">Back</button>
                 <button class="btn btn-primary btn-lg" :disabled="!isConfirmedMatch" @click="onConfirm">Continue</button>
             </div>
@@ -87,7 +87,6 @@ export default {
     },
     remove: function (i) {
       this.phraseIndex.splice(i, 1)
-      console.log('remove', this.phraseIndex)
     }
   }
 }

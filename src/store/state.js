@@ -37,7 +37,5 @@ export default {
   setupAt: null,
 
   injectEthereum: false,
-  injectEthereumAsset: 'ETH',
-
-  tempPassword: null
+  injectEthereumAsset: 'ETH'
 }

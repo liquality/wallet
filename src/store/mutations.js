@@ -10,7 +10,6 @@ export default {
     state.key = key
     state.keyUpdatedAt = Date.now()
     state.setupAt = Date.now()
-    state.tempPassword = null
   },
   CREATE_WALLET (state, { keySalt, encryptedWallets, wallet }) {
     state.encryptedWallets = encryptedWallets

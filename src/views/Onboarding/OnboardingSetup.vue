@@ -1,5 +1,6 @@
 <template>
 <div>
+  <OnboardingPassword v-if="currentStep === 'beginning'" @on-unlock="currentStep = 'backup'"/>
   <div class="backup-wallet login-wrapper no-outer-pad" v-if="currentStep === 'backup'">
     <div class="backup-wallet_top">
       <CompletedIcon class="backup-wallet_icon" />
@@ -19,29 +20,31 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import { generateMnemonic } from 'bip39'
 import ConfirmSeed from './SeedPhrase/ConfirmSeed'
 import Congratulations from './SeedPhrase/Congratulations.vue'
+import OnboardingPassword from './OnboardingPassword'
 
 export default {
   data () {
     return {
       mnemonic: null,
-      currentStep: 'backup'
+      currentStep: 'beginning',
+      password: null
     }
   },
   components: {
     CompletedIcon,
     ConfirmSeed,
-    Congratulations
+    Congratulations,
+    OnboardingPassword
   },
   created () {
     this.mnemonic = generateMnemonic()
   },
   computed: {
-    ...mapState(['tempPassword']),
     seedList: function () {
       return this.mnemonic.split(' ')
     }
@@ -50,7 +53,7 @@ export default {
     ...mapActions(['setupWallet', 'createWallet', 'unlockWallet']),
     async confirmMnemonic () {
       this.currentStep = 'congrats'
-      const password = this.tempPassword
+      const password = this.password
       await this.setupWallet({ key: password })
       await this.createWallet({ key: password, mnemonic: this.mnemonic }) // mnemonic prop can be null to generate new seed
       setTimeout(() => {
@@ -59,6 +62,10 @@ export default {
     },
     pushToConfirm () {
       this.currentStep = 'confirm'
+    },
+    onUnlock (password) {
+      this.password = password
+      console.log('onUnlock', this.password, this.currentStep)
     }
   }
 }
