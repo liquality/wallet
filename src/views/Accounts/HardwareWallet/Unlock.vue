@@ -232,7 +232,6 @@ export default {
   p {
     font-weight: normal;
     font-size: 13px;
-    line-height: 59px;
     display: flex;
     align-items: center;
     color: #000D35;
@@ -257,7 +256,7 @@ export default {
     }
 
     .account-index {
-      padding: 0.75rem 0 0.75rem 0;
+      padding: 0.55rem 0 0.55rem 0;
     }
 
     .account-index,
@@ -267,7 +266,7 @@ export default {
     }
 
     .account-address {
-      padding: 0.75rem 34px 0.75rem 0.45rem;
+      padding: 0.55rem 34px 0.55rem 0.45rem;
       text-align: left;
     }
 

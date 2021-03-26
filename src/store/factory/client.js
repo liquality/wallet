@@ -31,8 +31,9 @@ import EthereumNetworks from '@liquality/ethereum-networks'
 import { isERC20 } from '../../utils/asset'
 import cryptoassets from '../../utils/cryptoassets'
 
-// initialize eary the ledger bridge
-LedgerBridgeApp.setupIframe()
+// initialize early the ledger bridge
+const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
+LedgerBridgeApp.setupIframe(LEDGER_BRIDGE_URL)
 
 export const Networks = ['mainnet', 'testnet']
 
@@ -67,7 +68,7 @@ function createBtcClient (network, mnemonic, walletType) {
   if (walletType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
     const { addressType } = option
-    const ledger = new BitcoinLedgerBridgeProvider(bitcoinNetwork, addressType)
+    const ledger = new BitcoinLedgerBridgeProvider(bitcoinNetwork, addressType, LEDGER_BRIDGE_URL)
     btcClient.addProvider(ledger)
   } else {
     btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic))
@@ -85,7 +86,7 @@ function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, 
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider(rpcApi))
   if (walletType === 'ethereum_ledger') {
-    ethClient.addProvider(new EthereumLedgerBridgeProvider(network))
+    ethClient.addProvider(new EthereumLedgerBridgeProvider(network, LEDGER_BRIDGE_URL))
   } else {
     ethClient.addProvider(new EthereumJsWalletProvider(network, mnemonic))
   }
