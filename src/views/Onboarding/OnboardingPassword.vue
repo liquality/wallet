@@ -45,7 +45,7 @@ export default {
     }
   },
   components: {
-    LogoWallet,
+    LogoWallet
   },
   computed: {
     passwordMatch () {

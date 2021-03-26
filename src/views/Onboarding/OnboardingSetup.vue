@@ -1,6 +1,6 @@
 <template>
 <div>
-  <OnboardingPassword v-if="currentStep === 'beginning'" @on-unlock="currentStep = 'backup'"/>
+  <OnboardingPassword v-if="currentStep === 'beginning'" @on-unlock="onUnlock"/>
   <div class="backup-wallet login-wrapper no-outer-pad" v-if="currentStep === 'backup'">
     <div class="backup-wallet_top">
       <CompletedIcon class="backup-wallet_icon" />
@@ -35,6 +35,7 @@ export default {
       password: null
     }
   },
+  props: ['passphrase'],
   components: {
     CompletedIcon,
     ConfirmSeed,
@@ -42,7 +43,11 @@ export default {
     OnboardingPassword
   },
   created () {
-    this.mnemonic = generateMnemonic()
+    if (this.passphrase) {
+      this.mnemonic = this.passphrase
+    } else {
+      this.mnemonic = generateMnemonic()
+    }
   },
   computed: {
     seedList: function () {
@@ -53,19 +58,22 @@ export default {
     ...mapActions(['setupWallet', 'createWallet', 'unlockWallet']),
     async confirmMnemonic () {
       this.currentStep = 'congrats'
-      const password = this.password
-      await this.setupWallet({ key: password })
-      await this.createWallet({ key: password, mnemonic: this.mnemonic }) // mnemonic prop can be null to generate new seed
+      await this.setupWallet({ key: this.password })
+      await this.createWallet({ key: this.password, mnemonic: this.mnemonic }) // mnemonic prop can be null to generate new seed
       setTimeout(() => {
-        this.unlockWallet({ key: password })
+        this.unlockWallet({ key: this.password })
       }, 3500)
     },
     pushToConfirm () {
       this.currentStep = 'confirm'
     },
-    onUnlock (password) {
+    async onUnlock (password) {
       this.password = password
-      console.log('onUnlock', this.password, this.currentStep)
+      if (this.passphrase) {
+        await this.confirmMnemonic()
+      } else {
+        this.currentStep = 'backup'
+      }
     }
   }
 }

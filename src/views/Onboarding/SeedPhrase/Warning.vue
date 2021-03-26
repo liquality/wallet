@@ -3,7 +3,7 @@
         <NavBar showMenu="true">
             <strong>Warning</strong>
         </NavBar>
-        <div class="warning-phrase_warning-line"></div>
+        <div class="warning-phrase_warning-line w-100"></div>
         <div class="mx-auto mt-2 px-2 mb-5 text-center">
             <h1 class="my-2">Show Seed Phrase?</h1>
             <h4>Anyone who has this seed phrase can steal your funds!</h4>
@@ -41,7 +41,8 @@ export default {
 
 .warning-phrase {
   &_warning-line {
-    border: 3px solid $danger;
+    height: 3px;
+    background-color: $danger;
   }
   &_eye-svg {
     height: 150px;

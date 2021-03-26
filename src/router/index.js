@@ -51,8 +51,10 @@ const routes = [
     component: UnlockWallet
   },
   {
-    path: '/onboarding/setup',
-    component: OnboardingSetup
+    path: '/onboarding/setup/:passphrase?',
+    component: OnboardingSetup,
+    name: 'OnboardingSetup',
+    props: true
   },
   // Onboarding
 
@@ -74,6 +76,7 @@ const routes = [
   // Wallet
   {
     path: '/wallet',
+    name: 'Wallet',
     component: Wallet,
     children: [
       {
