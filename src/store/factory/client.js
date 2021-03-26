@@ -31,7 +31,7 @@ import EthereumNetworks from '@liquality/ethereum-networks'
 import { isERC20 } from '../../utils/asset'
 import cryptoassets from '../../utils/cryptoassets'
 
-// initialize eary the ledger bridge
+// initialize early the ledger bridge
 const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
 LedgerBridgeApp.setupIframe(LEDGER_BRIDGE_URL)
 

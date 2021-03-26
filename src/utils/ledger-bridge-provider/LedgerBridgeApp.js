@@ -11,13 +11,13 @@ export class LedgerBridgeApp {
   constructor (app, bridgeUrl) {
     this._app = app
     this._bridgeUrl = bridgeUrl
-    LedgerBridgeApp.setupIframe()
+    LedgerBridgeApp.setupIframe(this._bridgeUrl)
   }
 
-  static setupIframe () {
+  static setupIframe (bridgeUrl) {
     if (!document.getElementById(BRIDGE_IFRAME_NAME)) {
       const frame = document.createElement('iframe')
-      frame.src = 'https://localhost:9000'
+      frame.src = bridgeUrl
       frame.setAttribute('name', BRIDGE_IFRAME_NAME)
       frame.setAttribute('id', BRIDGE_IFRAME_NAME)
       const head = document.head || document.getElementsByTagName('head')[0]
