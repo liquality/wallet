@@ -1,8 +1,9 @@
 <template>
   <div class="receive">
-    <NavBar showBack="true"
-            :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${asset}`"
-            :backLabel="routeSource === 'assets' ? 'Overview' : asset">
+     <NavBar
+        showBack="true"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
+        :backLabel="routeSource === 'assets' ? 'Overview' : asset">
       Receive {{asset}}
     </NavBar>
     <div class="wrapper form text-center">
@@ -36,7 +37,7 @@
 
       <div class="wrapper_bottom">
         <div class="button-group">
-          <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${asset}`">
+          <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`">
             <button class="btn btn-light btn-outline-primary btn-lg">
               Done
             </button>
@@ -52,7 +53,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import QRCode from 'qrcode'
 import {
   getAssetIcon,
@@ -73,21 +74,25 @@ export default {
   },
   data () {
     return {
+      address: null,
       qrcode: null,
       copied: false
     }
   },
   props: {
-    asset: String
+    asset: String,
+    accountId: String
   },
   computed: {
-    ...mapState(['addresses', 'activeNetwork', 'activeWalletId']),
+    ...mapState(['activeNetwork', 'activeWalletId']),
+    ...mapGetters([
+      'accountItem'
+    ]),
+    account () {
+      return this.accountItem(this.accountId)
+    },
     routeSource () {
       return this.$route.query.source || null
-    },
-    address () {
-      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
-      return address && cryptoassets[this.asset].formatAddress(address)
     },
     chainName () {
       const assetChain = getChainFromAsset(this.asset)
@@ -109,7 +114,13 @@ export default {
     }
   },
   async created () {
-    await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
+    if (this.account && this.account.type.includes('ledger')) {
+      this.address = cryptoassets[this.asset]?.formatAddress(this.account.addresses[0])
+    } else {
+      const addresses = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
+      this.address = cryptoassets[this.asset]?.formatAddress(addresses[0])
+    }
+
     const uri = [
       this.chainName,
       this.address

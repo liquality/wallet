@@ -1,83 +1,47 @@
 import { LedgerBridgeApp } from './LedgerBridgeApp'
 
 export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
-  constructor () {
-    super('BTC')
+  constructor (bridgeUrl) {
+    super('BTC', bridgeUrl)
   }
 
-  async signMessageNew (path, hex) {
+  async signMessageNew (...payload) {
     return await super.callToBridge({
       method: 'signMessageNew',
       callType: 'ASYNC_METHOD',
-      payload: [path, hex]
+      payload
     })
   }
 
-  async getWalletPublicKey (path) {
+  async getWalletPublicKey (...payload) {
     return await super.callToBridge({
       method: 'getWalletPublicKey',
       callType: 'ASYNC_METHOD',
-      payload: [path]
+      payload
     })
   }
 
-  async splitTransaction (
-    transactionHex,
-    hasTimestamp = false,
-    hasExtraData = false,
-    additionals = []
-  ) {
+  async splitTransaction (...payload) {
     return await super.callToBridge({
       method: 'splitTransaction',
       callType: 'METHOD',
-      payload: [
-        transactionHex,
-        hasTimestamp,
-        hasExtraData,
-        additionals
-      ]
+      payload
     })
   }
 
-  async createPaymentTransactionNew ({
-    inputs,
-    associatedKeysets,
-    changePath,
-    outputScriptHex,
-    segwit,
-    useTrustedInputForSegwit,
-    additionals
-  }) {
+  async createPaymentTransactionNew (...payload) {
     return await super.callToBridge({
       method: 'createPaymentTransactionNew',
       callType: 'ASYNC_METHOD',
-      payload: [
-        {
-          inputs,
-          associatedKeysets,
-          changePath,
-          outputScriptHex,
-          segwit,
-          useTrustedInputForSegwit,
-          additionals
-        }
-      ]
+      payload
     })
   }
 
-  async serializeTransactionOutputs (transaction) {
-    const result = await super.callToBridge({
+  async serializeTransactionOutputs (...payload) {
+    return await super.callToBridge({
       method: 'serializeTransactionOutputs',
       callType: 'METHOD',
-      payload: [transaction]
+      payload
     })
-
-    return {
-      toString: function () {
-        return [...new Uint8Array(result.data)]
-          .map(b => b.toString(16).padStart(2, '0'))
-          .join('')
-      }
-    }
   }
 }

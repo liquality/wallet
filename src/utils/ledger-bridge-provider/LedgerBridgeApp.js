@@ -6,19 +6,22 @@ import {
 
 export class LedgerBridgeApp {
   _app
+  _bridgeUrl
 
-  constructor (app) {
+  constructor (app, bridgeUrl) {
     this._app = app
-    LedgerBridgeApp.setupIframe()
+    this._bridgeUrl = bridgeUrl
+    LedgerBridgeApp.setupIframe(this._bridgeUrl)
   }
 
-  static setupIframe () {
+  static setupIframe (bridgeUrl) {
     if (!document.getElementById(BRIDGE_IFRAME_NAME)) {
       const frame = document.createElement('iframe')
-      frame.src = 'https://liquality-ledger-web-bridge.web.app'
+      frame.src = bridgeUrl
       frame.setAttribute('name', BRIDGE_IFRAME_NAME)
       frame.setAttribute('id', BRIDGE_IFRAME_NAME)
-      document.head.appendChild(frame)
+      const head = document.head || document.getElementsByTagName('head')[0]
+      head.appendChild(frame)
     }
   }
 
@@ -37,7 +40,7 @@ export class LedgerBridgeApp {
   }
 
   async callToBridge ({ method, callType, payload }) {
-    console.log('[LEDGER-BRIDGE]:', { method, callType, payload })
+    console.log('[EXTENSION-LEDGER-BRIDGE]:', { method, callType, payload })
     const replySignature = this.getReplySignature(method, callType)
     let responded = false
     return new Promise((resolve, reject) => {
@@ -53,13 +56,20 @@ export class LedgerBridgeApp {
             payload
           } = request
           if (replySignature === action) {
-            console.log('[LEDGER-BRIDGE]: GOT MESAGE FROM IFRAME', request)
+            console.log('[EXTENSION-LEDGER-BRIDGE]: GOT MESAGE FROM IFRAME', request)
             responded = true
             sendResponse({ success })
             if (success) {
-              resolve(payload)
+              resolve(
+                this.parseResponsePayload(payload)
+              )
             } else {
-              reject(payload)
+              const error = new Error(
+                payload.message
+              )
+              error.stack = payload.stask
+              error.name = payload.name
+              reject(error)
             }
           }
 
@@ -73,7 +83,53 @@ export class LedgerBridgeApp {
           }, 60000)
           return true
         })
-      this.sendMessage({ method, callType, payload })
+
+      const parsedPayload = this.parseRequestPayload(payload)
+      this.sendMessage({ method, callType, payload: parsedPayload })
     })
+  }
+
+  parseResponsePayload (payload) {
+    if (payload) {
+      if (payload.type && payload.type === 'Hex') {
+        return Buffer.from(payload.data || '', 'hex')
+      }
+
+      if (payload instanceof Array) {
+        return payload.map(i => this.parseResponsePayload(i))
+      }
+
+      if (typeof payload === 'object' && Object.keys(payload).length > 0) {
+        const output = {}
+        for (const key in payload) {
+          output[key] = this.parseResponsePayload(payload[key])
+        }
+        return output
+      }
+    }
+
+    return payload
+  }
+
+  parseRequestPayload (payload) {
+    if (payload instanceof Uint8Array || payload instanceof Buffer) {
+      return { type: 'Hex', data: payload.toString('hex') }
+    }
+
+    if (payload instanceof Array) {
+      return payload.map(i => this.parseRequestPayload(i))
+    }
+
+    if (payload && typeof payload === 'object') {
+      if (Object.keys(payload).length > 0) {
+        const output = {}
+        for (const key in payload) {
+          output[key] = this.parseRequestPayload(payload[key])
+        }
+        return output
+      }
+    }
+
+    return payload
   }
 }

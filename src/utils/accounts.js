@@ -57,3 +57,20 @@ export const chainDefaultColors = {
 export const getNextAccountColor = (chain, count) => {
 
 }
+
+export const ACCOUNT_TYPE_OPTIONS = [
+  {
+    name: 'ETH',
+    label: 'ETH',
+    type: 'ethereum_imported',
+    chain: 'ETH',
+    blockchain: 'Ethereum Blockchain'
+  },
+  {
+    name: 'BTC',
+    label: 'BTC',
+    type: 'bitcoin_imported',
+    chain: 'BTC',
+    blockchain: 'Bitcoin Blockchain'
+  }
+]
