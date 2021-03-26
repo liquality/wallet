@@ -5,8 +5,6 @@
         </div>
         <div class="login-phrase_middle-text mx-auto mt-1">
             <h2 class="mt-4 px-5">Sign in to See Seed Phrase</h2>
-        <div class="login-phrase_sign-in mx-auto">
-        </div>
             <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
                 <div class="form-group">
                     <label for="password">Password</label>

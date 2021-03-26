@@ -2,10 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Splash from '@/views/Splash.vue'
-import OnboardingPassword from '@/views/Onboarding/OnboardingPassword.vue'
+import OnboardingSetup from '@/views/Onboarding/OnboardingSetup.vue'
 import ImportWallet from '@/views/ImportWallet.vue'
 import UnlockWallet from '@/views/UnlockWallet.vue'
-import BackupWallet from '@/views/BackupWallet.vue'
 import Wallet from '@/views/Wallet/Wallet.vue'
 import Account from '@/views/Account.vue'
 import SwapDetails from '@/views/Details/SwapDetails.vue'
@@ -31,9 +30,9 @@ import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
 import ImportAccount from '@/views/Accounts/Import.vue'
 
-import Warning from '@/views/SeedPhrase/Warning.vue'
-import LoginPhrase from '@/views/SeedPhrase/LoginPhrase.vue'
-import PhraseReveal from '@/views/SeedPhrase/PhraseReveal'
+import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
+import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
+import PhraseReveal from '@/views/Onboarding/SeedPhrase/PhraseReveal'
 
 Vue.use(VueRouter)
 
@@ -44,12 +43,6 @@ const routes = [
     component: Splash
   },
   {
-    name: 'OnboardingPassword',
-    path: '/onboarding/password',
-    component: OnboardingPassword,
-    props: true
-  },
-  {
     path: '/onboarding/import',
     component: ImportWallet
   },
@@ -58,8 +51,10 @@ const routes = [
     component: UnlockWallet
   },
   {
-    path: '/backup',
-    component: BackupWallet
+    path: '/onboarding/setup/:passphrase?',
+    component: OnboardingSetup,
+    name: 'OnboardingSetup',
+    props: true
   },
   // Onboarding
 
@@ -81,6 +76,7 @@ const routes = [
   // Wallet
   {
     path: '/wallet',
+    name: 'Wallet',
     component: Wallet,
     children: [
       {

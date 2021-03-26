@@ -193,5 +193,8 @@ export default {
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
       }
     }
+  },
+  SAVE_PASSWORD (state, { password }) {
+    state.tempPassword = password
   }
 }

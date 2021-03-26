@@ -14,7 +14,7 @@ export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
   }
   // Migration to new encryption method
 
-  if (!wallets) throw new Error('Invalid key')
+  if (!wallets) throw new Error('Invalid Password')
 
   commit('UNLOCK_WALLET', {
     key,

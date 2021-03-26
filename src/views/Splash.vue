@@ -11,7 +11,7 @@
     <div class="footer-container">
       <router-link to="/onboarding/import"><p class="text-center">Import with seed phrase</p></router-link>
       <p v-if="keyUpdatedAt"><router-link to="/open"><button class="btn btn-light btn-lg btn-block btn-icon">Open wallet</button></router-link></p>
-      <p v-if="!keyUpdatedAt"><router-link to="/onboarding/password"><button class="btn btn-primary btn-lg btn-block btn-icon">Create a new wallet</button></router-link></p>
+      <p v-if="!keyUpdatedAt"><router-link to="/onboarding/setup"><button class="btn btn-primary btn-lg btn-block btn-icon">Create a new wallet</button></router-link></p>
     </div>
   </div>
 </template>
