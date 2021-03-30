@@ -64,7 +64,7 @@ export default {
       this.loading = true
       try {
         await this.unlockWallet({ key: this.password })
-        this.$router.replace('/wallet')
+        this.$emit('unlocked')
       } catch (e) {
         console.log(e)
         this.errors.push(e.message)

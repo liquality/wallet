@@ -1,14 +1,15 @@
 import { v4 as uuidv4 } from 'uuid'
-import { generateMnemonic } from 'bip39'
 import { encrypt } from '../../utils/crypto'
 import buildConfig from '../../build.config'
+import { accountCreator } from '@/utils/accounts'
+import { getChainFromAsset } from '@/utils/asset'
 
-export const createWallet = async ({ commit }, { key, mnemonic }) => {
+export const createWallet = async ({ state, getters, commit }, { key, mnemonic }) => {
+  const { enabledAssets } = state
   const id = uuidv4()
-  const walletMnemonic = mnemonic || generateMnemonic()
   const at = Date.now()
   const name = 'Account 1'
-  const wallet = { id, name, mnemonic: walletMnemonic, at, imported: false }
+  const wallet = { id, name, mnemonic, at, imported: false }
 
   const { encrypted: encryptedWallets, keySalt } = await encrypt(
     JSON.stringify([wallet]),
@@ -20,5 +21,38 @@ export const createWallet = async ({ commit }, { key, mnemonic }) => {
   commit('ENABLE_ASSETS', { network: 'mainnet', walletId: id, assets: buildConfig.defaultAssets.mainnet })
   commit('ENABLE_ASSETS', { network: 'testnet', walletId: id, assets: buildConfig.defaultAssets.testnet })
 
+  buildConfig.networks.forEach(async network => {
+    const assetKeys = enabledAssets[network]?.[id] || []
+
+    buildConfig.chains.forEach(async chain => {
+      const assets = assetKeys.filter(asset => {
+        const assetChain = getChainFromAsset(asset)
+        return assetChain === chain
+      })
+
+      const addresses = []
+      assets.forEach(async asset => {
+        const _address = await getters.client(network, id, asset).wallet.getUnusedAddress()
+        if (!addresses.includes(_address.address)) {
+          addresses.push(_address.address)
+        }
+      })
+
+      const _account = accountCreator(
+        {
+          walletId: id,
+          account: {
+            name: `${chain} 1`,
+            chain,
+            addresses,
+            assets,
+            balances: {},
+            type: 'default'
+          }
+        })
+
+      commit('CREATE_ACCOUNT', { network, walletId: id, account: _account })
+    })
+  })
   return wallet
 }

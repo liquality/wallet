@@ -1,15 +1,16 @@
 <template>
   <div class="receive">
-    <NavBar showBack="true"
-            :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
-            :backLabel="routeSource === 'assets' ? 'Overview' : asset">
+     <NavBar
+        showBack="true"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
+        :backLabel="routeSource === 'assets' ? 'Overview' : asset">
       Receive {{asset}}
     </NavBar>
     <div class="wrapper form text-center">
       <div class="wrapper_top form">
         <div class="form-group">
           <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
-          <label>Your Current {{addressType}} Address</label>
+          <label>Your Current {{asset}} Address</label>
           <p class="receive_address">{{address}}
             <CopyIcon
                   class="copy-icon"
@@ -22,10 +23,13 @@
           </p>
           <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
-          <div v-if="activeNetwork === 'testnet'" class="testnet_message">
-            <div>Ether testnet faucet</div>
+          <div v-if="faucet" class="testnet_message">
+            <div>{{ faucet.name }} testnet faucet</div>
             <div>
-              <a href="https://faucet.rinkeby.io/" target="_blank">https://faucet.rinkeby.io/</a>
+              <a :href="faucet.url"
+                 target="_blank">
+                 {{ faucet.url }}
+              </a>
             </div>
           </div>
         </div>
@@ -33,7 +37,7 @@
 
       <div class="wrapper_bottom">
         <div class="button-group">
-          <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`">
+          <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`">
             <button class="btn btn-light btn-outline-primary btn-lg">
               Done
             </button>
@@ -49,9 +53,12 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import QRCode from 'qrcode'
-import { getAssetIcon } from '@/utils/asset'
+import {
+  getAssetIcon,
+  getChainFromAsset
+} from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
@@ -67,40 +74,53 @@ export default {
   },
   data () {
     return {
+      address: null,
       qrcode: null,
       copied: false
     }
   },
   props: {
-    asset: String
+    asset: String,
+    accountId: String
   },
   computed: {
-    ...mapState(['addresses', 'activeNetwork', 'activeWalletId']),
+    ...mapState(['activeNetwork', 'activeWalletId']),
+    ...mapGetters([
+      'accountItem'
+    ]),
+    account () {
+      return this.accountItem(this.accountId)
+    },
     routeSource () {
       return this.$route.query.source || null
     },
-    address () {
-      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
-      return address && cryptoassets[this.asset].formatAddress(address)
-    },
     chainName () {
+      const assetChain = getChainFromAsset(this.asset)
       return ({
         BTC: 'bitcoin',
         ETH: 'ethereum',
         RBTC: 'ethereum'
-      })[this.asset]
+      })[assetChain]
     },
-    addressType () {
-      return ({
-        BTC: 'bitcoin',
-        ETH: 'ethereum',
-        RBTC: 'RSK'
-      })[this.asset]
+    faucet () {
+      if (this.activeNetwork === 'testnet') {
+        return ({
+          BTC: { name: 'Bitcoin', url: 'https://testnet-faucet.mempool.co/' },
+          ETH: { name: 'Ether', url: 'https://faucet.rinkeby.io/' },
+          RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' }
+        })[this.asset]
+      }
+      return null
     }
-
   },
   async created () {
-    await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
+    if (this.account && this.account.type.includes('ledger')) {
+      this.address = cryptoassets[this.asset]?.formatAddress(this.account.addresses[0])
+    } else {
+      const addresses = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
+      this.address = cryptoassets[this.asset]?.formatAddress(addresses[0])
+    }
+
     const uri = [
       this.chainName,
       this.address

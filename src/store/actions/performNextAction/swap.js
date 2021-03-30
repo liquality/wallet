@@ -1,7 +1,11 @@
 import { sha256 } from '@liquality/crypto'
 import { withLock, withInterval, hasChainTimePassed } from './utils'
 import cryptoassets from '../../../utils/cryptoassets'
-import { updateOrder } from '../../utils'
+import { updateOrder, timestamp } from '../../utils'
+
+async function hasQuoteExpired (store, { order }) {
+  return timestamp() >= order.expiresAt
+}
 
 async function canRefund ({ getters }, { network, walletId, order }) {
   return hasChainTimePassed({ getters }, { network, walletId, asset: order.from, timestamp: order.swapExpiration })
@@ -20,8 +24,8 @@ async function handleExpirations ({ getters }, { network, walletId, order }) {
   }
 }
 
-async function createSecret ({ getters, dispatch }, { order, network, walletId }) {
-  let [fromAddress, toAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [order.from, order.to] })
+async function createSecret ({ getters, dispatch }, { order, network, walletId, accountId }) {
+  let [fromAddress, toAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [order.from, order.to], accountId })
 
   fromAddress = fromAddress.toString()
   toAddress = toAddress.toString()
@@ -51,10 +55,13 @@ async function createSecret ({ getters, dispatch }, { order, network, walletId }
   }
 }
 
-async function initiateSwap ({ getters, dispatch }, { order, network, walletId }) {
-  if (await dispatch('checkIfQuoteExpired', { network, walletId, order })) return
-
-  const fromClient = getters.client(network, walletId, order.from)
+async function initiateSwap ({ state, getters, dispatch }, { order, network, walletId, accountId }) {
+  if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
+    return { status: 'QUOTE_EXPIRED' }
+  }
+  const { accounts } = state
+  const account = accounts[walletId][network].find(a => a.id === accountId)
+  const fromClient = getters.client(network, walletId, order.from, account?.type)
 
   const fromFundTx = await fromClient.swap.initiateSwap(
     order.fromAmount,
@@ -72,7 +79,41 @@ async function initiateSwap ({ getters, dispatch }, { order, network, walletId }
   }
 }
 
-async function reportInitiation (store, { order }) {
+async function fundSwap ({ getters, dispatch }, { order, network, walletId }) {
+  if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
+    return { status: 'QUOTE_EXPIRED' }
+  }
+
+  const fromClient = getters.client(network, walletId, order.from)
+
+  try {
+    console.log('funding')
+    const fundTx = await fromClient.swap.fundSwap(
+      order.fromFundHash,
+      order.fromAmount,
+      order.fromCounterPartyAddress,
+      order.fromAddress,
+      order.secretHash,
+      order.swapExpiration,
+      order.fee
+    )
+
+    return {
+      fundTxHash: fundTx?.hash,
+      status: 'FUNDED'
+    }
+  } catch (e) { // Handle ERC20 contract initiation still to be mined
+    if (e.name === 'PendingTxError') console.warn(e)
+    else throw e
+  }
+}
+
+async function reportInitiation ({ getters }, { order, network, walletId }) {
+  if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
+    console.log('WAITING FOR REFUND')
+    return { status: 'WAITING_FOR_REFUND' }
+  }
+
   await updateOrder(order)
 
   return {
@@ -80,12 +121,14 @@ async function reportInitiation (store, { order }) {
   }
 }
 
-async function confirmInitiation ({ getters }, { order, network, walletId }) {
+async function confirmInitiation ({ state, getters }, { order, network, walletId, accountId }) {
   // Jump the step if counter party has already accepted the initiation
   const counterPartyInitiation = await findCounterPartyInitiation({ getters }, { order, network, walletId })
   if (counterPartyInitiation) return counterPartyInitiation
+  const { accounts } = state
+  const account = accounts[walletId][network].find(a => a.id === accountId)
 
-  const fromClient = getters.client(network, walletId, order.from)
+  const fromClient = getters.client(network, walletId, order.from, account?.type)
 
   try {
     const tx = await fromClient.chain.getTransactionByHash(order.fromFundHash)
@@ -114,7 +157,16 @@ async function findCounterPartyInitiation ({ getters }, { order, network, wallet
       const isVerified = await toClient.swap.verifyInitiateSwapTransaction(
         toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
       )
-      if (isVerified) {
+
+      // ERC20 swaps have separate funding tx. Ensures funding tx has enough confirmations
+      const fundingTransaction = await toClient.swap.findFundSwapTransaction(
+        toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
+      )
+      const fundingConfirmed = fundingTransaction
+        ? fundingTransaction.confirmations >= cryptoassets[order.to].safeConfirmations
+        : true
+
+      if (isVerified && fundingConfirmed) {
         return {
           toFundHash,
           status: 'CONFIRM_COUNTER_PARTY_INITIATION'
@@ -155,10 +207,12 @@ async function claimSwap ({ getters }, { order, network, walletId }) {
 
   const toClaimTx = await toClient.swap.claimSwap(
     order.toFundHash,
+    order.toAmount,
     order.toAddress,
     order.toCounterPartyAddress,
-    order.secret,
+    order.secretHash,
     order.nodeSwapExpiration,
+    order.secret,
     order.claimFee
   )
 
@@ -226,6 +280,7 @@ async function refundSwap ({ getters }, { order, network, walletId }) {
   const fromClient = getters.client(network, walletId, order.from)
   const refundTx = await fromClient.swap.refundSwap(
     order.fromFundHash,
+    order.fromAmount,
     order.fromCounterPartyAddress,
     order.fromAddress,
     order.secretHash,
@@ -240,8 +295,10 @@ async function refundSwap ({ getters }, { order, network, walletId }) {
   }
 }
 
-async function sendTo ({ getters, dispatch }, { order, network, walletId }) {
-  const toClient = getters.client(network, walletId, order.to)
+async function sendTo ({ state, getters, dispatch }, { order, network, walletId, accountId }) {
+  const { accounts } = state
+  const account = accounts[walletId][network].find(a => a.id === accountId)
+  const toClient = getters.client(network, walletId, order.to, account?.type)
   const sendToHash = await toClient.chain.sendTransaction(order.sendTo, order.toAmount)
 
   dispatch('updateBalances', { network, walletId, assets: [order.to, order.from] })
@@ -253,60 +310,68 @@ async function sendTo ({ getters, dispatch }, { order, network, walletId }) {
   }
 }
 
-export const performNextSwapAction = async (store, { network, walletId, order }) => {
+export const performNextSwapAction = async (store, { network, walletId, accountId, order }) => {
   let updates
 
   switch (order.status) {
     case 'QUOTE':
-      updates = await createSecret(store, { order, network, walletId })
+      updates = await createSecret(store, { order, network, walletId, accountId })
       break
 
     case 'SECRET_READY':
       updates = await withLock(store, { item: order, network, walletId, asset: order.from },
-        async () => initiateSwap(store, { order, network, walletId }))
+        async () => initiateSwap(store, { order, network, walletId, accountId }))
       break
 
     case 'INITIATED':
+      updates = await withInterval(
+        async () => await withLock(store, { item: order, network, walletId, asset: order.from, accountId },
+          async () => fundSwap(store, { order, network, walletId, accountId })
+        )
+      )
+      break
+
+    case 'FUNDED':
       updates = await reportInitiation(store, { order, network, walletId })
       break
 
     case 'INITIATION_REPORTED':
-      updates = await withInterval(async () => confirmInitiation(store, { order, network, walletId }))
+      updates = await withInterval(async () => confirmInitiation(store, { order, network, walletId, accountId }))
       break
 
     case 'INITIATION_CONFIRMED':
-      updates = await withInterval(async () => findCounterPartyInitiation(store, { order, network, walletId }))
+      updates = await withInterval(async () => findCounterPartyInitiation(store, { order, network, walletId, accountId }))
       break
 
     case 'CONFIRM_COUNTER_PARTY_INITIATION':
-      updates = await withInterval(async () => confirmCounterPartyInitiation(store, { order, network, walletId }))
+      updates = await withInterval(async () => confirmCounterPartyInitiation(store, { order, network, walletId, accountId }))
       break
 
     case 'READY_TO_CLAIM':
-      updates = await withLock(store, { item: order, network, walletId, asset: order.to },
-        async () => claimSwap(store, { order, network, walletId }))
+      updates = await withLock(store, { item: order, network, walletId, asset: order.to, accountId },
+        async () => claimSwap(store, { order, network, walletId, accountId }))
       break
 
     case 'WAITING_FOR_CLAIM_CONFIRMATIONS':
-      updates = await withInterval(async () => waitForClaimConfirmations(store, { order, network, walletId }))
+      updates = await withInterval(async () => waitForClaimConfirmations(store, { order, network, walletId, accountId }))
       break
 
     case 'WAITING_FOR_REFUND':
-      updates = await withInterval(async () => waitForRefund(store, { order, network, walletId }))
+      updates = await withInterval(async () => waitForRefund(store, { order, network, walletId, accountId }))
       break
 
     case 'GET_REFUND':
-      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
+      updates = await withLock(store, { item: order, network, walletId, asset: order.from, accountId },
         async () => refundSwap(store, { order, network, walletId }))
       break
 
     case 'WAITING_FOR_REFUND_CONFIRMATIONS':
-      updates = await withInterval(async () => waitForRefundConfirmations(store, { order, network, walletId }))
+      updates = await withInterval(async () => waitForRefundConfirmations(store, { order, network, walletId, accountId }))
       break
 
     case 'READY_TO_SEND':
-      updates = await withLock(store, { item: order, network, walletId, asset: order.to },
-        async () => sendTo(store, { order, network, walletId }))
+      updates = await withLock(store, { item: order, network, walletId, asset: order.to, accountId },
+        async () => sendTo(store, { order, network, walletId, accountId }))
       break
   }
 

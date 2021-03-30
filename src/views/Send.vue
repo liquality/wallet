@@ -3,7 +3,7 @@
     <div class="send" v-if="!showConfirm">
       <NavBar
         showBack="true"
-        :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Send
@@ -27,8 +27,8 @@
               </div>
               <input
                 type="number"
-                max="available"
-                min="0"
+                :min="0"
+                :max="dpUI(available)"
                 :class="{ 'is-invalid': amount && amountError }"
                 :style="getAssetColorStyle(asset)"
                 v-model="amount"
@@ -47,7 +47,7 @@
           </div>
           <div class="sub-form-group">
             <div class="label-sub"
-              ><span class="text-muted">Available</span> {{ available }}
+              ><span class="text-muted">Available</span> {{ dpUI(available) }}
               {{ asset }}</div
             >
             <div
@@ -56,8 +56,8 @@
             >
               <button
                 class="btn btn-option"
-                :class="{ active: (available == amount) }"
-                @click="setMaxAmount"
+                :class="{ active: maxOptionActive }"
+                @click="toogleMaxAmount"
               >
                 Max
               </button>
@@ -88,7 +88,7 @@
             <template v-slot:header>
               <span class="details-title">Network Speed/Fee</span>
               <span class="text-muted">
-                ({{ selectedFeeLabel }} / {{ totalFee }} {{ feeType }})
+                ({{ selectedFeeLabel }} / {{ prettyFee }} {{ feeType }})
               </span>
             </template>
             <template v-slot:content>
@@ -97,7 +97,7 @@
                   <div class="send_fees">
                     <span class="selectors-asset">{{ assetChain }}</span>
                     <FeeSelector
-                      :asset="assetChain"
+                      :asset="asset"
                       v-model="selectedFee"
                       v-bind:fees="assetFees"
                       v-bind:txTypes="[txType]"
@@ -112,11 +112,11 @@
         </div>
         <div class="wrapper_bottom">
           <div class="button-group">
-            <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
-              ><button class="btn btn-light btn-outline-primary btn-lg">
+            <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${asset}`">
+              <button class="btn btn-light btn-outline-primary btn-lg">
                 Cancel
-              </button></router-link
-            >
+              </button>
+            </router-link>
             <button
               class="btn btn-primary btn-lg"
               @click="showConfirm = true"
@@ -144,7 +144,7 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div class="confirm-value" :style="getAssetColorStyle(asset)">
-            {{ amount }} {{ asset }}
+            {{ dpUI(amount) }} {{ asset }}
           </div>
           <div class="details-text">${{ amountInFiat }}</div>
           </div>
@@ -155,7 +155,7 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div>
-            ~{{ totalFee }} {{ feeType }}
+            ~{{ prettyFee }} {{ feeType }}
           </div>
           <div class="details-text">${{ totalFeeInFiat }}</div>
           </div>
@@ -166,10 +166,10 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div class="font-weight-bold" v-if="asset === feeType">
-              {{ amountWithFee }} {{ asset }}
+              {{ dpUI(amountWithFee) }} {{ asset }}
             </div>
              <div class="font-weight-bold" v-else>
-              {{ amount }} {{ asset }} + {{ totalFee }} {{ feeType }}
+              {{ prettyBalance(amount, asset) }} {{ asset }} + {{ prettyFee }} {{ feeType }}
             </div>
           <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
           </div>
@@ -204,12 +204,12 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
-import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance, dpUI } from '@/utils/coinFormatter'
 import {
   getChainFromAsset,
   getAssetColorStyle,
@@ -238,20 +238,30 @@ export default {
       address: null,
       selectedFee: 'average',
       showConfirm: false,
-      loading: false
+      loading: false,
+      maxOptionActive: false
     }
   },
   props: {
-    asset: String
+    asset: String,
+    accountId: String
   },
   computed: {
     ...mapState([
       'activeNetwork',
       'activeWalletId',
-      'balances',
       'fees',
       'fiatRates'
     ]),
+    ...mapGetters([
+      'accountItem'
+    ]),
+    account () {
+      return this.accountItem(this.accountId)
+    },
+    balance () {
+      return this.account.balances[this.asset] || 0
+    },
     routeSource () {
       return this.$route.query.source || null
     },
@@ -289,29 +299,29 @@ export default {
     txType () {
       return TX_TYPES.SEND
     },
-    totalFee () {
+    sendFee () {
       const feePrice = this.feesAvailable
         ? this.assetFees[this.selectedFee].fee
         : 0
-      const sendFee = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
-      return sendFee.toString().substring(0, 8)
+      return getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
+    },
+    prettyFee () {
+      return this.sendFee.dp(6)
     },
     available () {
-      const balance = this.balances[this.activeNetwork][this.activeWalletId][
-        this.asset
-      ]
       const fee = cryptoassets[this.assetChain].currencyToUnit(this.totalFee)
-      const available =
-        this.assetChain !== this.asset
-          ? BN(balance)
-          : BN.max(BN(balance).minus(fee), 0)
-      return prettyBalance(available, this.asset)
+      if (this.assetChain !== this.asset) {
+        const available = BN.max(BN(this.balance).minus(fee), 0)
+        return cryptoassets[this.asset].unitToCurrency(available)
+      } else {
+        return cryptoassets[this.asset].unitToCurrency(this.balance)
+      }
     },
     amountInFiat () {
       return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
-      return prettyFiatBalance(this.totalFee, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.sendFee, this.fiatRates[this.asset])
     },
     feeType () {
       return FEE_TYPES[this.assetChain]
@@ -323,22 +333,26 @@ export default {
       return getFeeLabel(this.selectedFee)
     },
     totalToSendInFiat () {
-      return prettyFiatBalance(this.amountWithFee, this.fiatRates[this.assetChain])
+      const total = BN(this.amount).plus(BN(this.sendFee))
+      return prettyFiatBalance(total, this.fiatRates[this.asset])
     },
     amountWithFee () {
-      return BN(this.amount).plus(BN(this.totalFee))
+      return BN(this.amount).plus(BN(this.sendFee))
     }
   },
   methods: {
     ...mapActions(['updateFees', 'sendTransaction']),
     prettyBalance,
+    dpUI,
     prettyFiatBalance,
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
     async send () {
+      const amountToSend = this.maxOptionActive ? this.available : this.amount
+
       const amount = cryptoassets[this.asset]
-        .currencyToUnit(this.amount)
+        .currencyToUnit(amountToSend)
         .toNumber()
       const fee = this.feesAvailable
         ? this.assetFees[this.selectedFee].fee
@@ -350,14 +364,21 @@ export default {
         walletId: this.activeWalletId,
         asset: this.asset,
         to: this.address,
+        accountId: this.account.id,
         amount,
         fee
       })
 
-      this.$router.replace(`/account/${this.asset}`)
+      this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
     },
-    setMaxAmount () {
-      this.amount = this.available
+    toogleMaxAmount () {
+      this.maxOptionActive = !this.maxOptionActive
+      if (this.maxOptionActive) {
+        this.amount = BN.min(
+          BN(this.available),
+          dpUI(this.available)
+        )
+      }
     },
     back () {
       this.showConfirm = false
@@ -365,6 +386,26 @@ export default {
   },
   created () {
     this.updateFees({ asset: this.assetChain })
+  },
+  watch: {
+    selectedFee: {
+      handler () {
+        if (this.maxOptionActive) {
+          this.amount = BN.min(
+            BN(this.available),
+            dpUI(this.available)
+          )
+        }
+      },
+      deep: true
+    },
+    amount: function (val) {
+      const amount = BN(val)
+      const available = dpUI(this.available)
+      if (!amount.eq(available)) {
+        this.maxOptionActive = false
+      }
+    }
   }
 }
 </script>

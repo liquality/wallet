@@ -1,5 +1,7 @@
 import { cloneDeep } from 'lodash-es'
 import buildConfig from '../build.config'
+import { accountCreator } from '@/utils/accounts'
+import { getChainFromAsset } from '@/utils/asset'
 
 const migrations = [
   { // Merely sets up the version
@@ -46,6 +48,57 @@ const migrations = [
 
       return { ...state }
     }
+  },
+  { // multiple account support
+    version: 5,
+    migrate: async (state) => {
+      const { enabledAssets } = state
+      const walletId = state.activeWalletId
+      const accounts = {
+        [walletId]: {
+          mainnet: [],
+          testnet: []
+        }
+      }
+
+      buildConfig.networks.forEach(async network => {
+        const assetKeys = enabledAssets[network]?.[walletId] || []
+
+        buildConfig.chains.forEach(async chain => {
+          const assets = assetKeys.filter(asset => {
+            const assetChain = getChainFromAsset(asset)
+            return assetChain === chain
+          })
+
+          const addresses = []
+
+          if (state.addresses?.[network] &&
+            state.addresses?.[network]?.[walletId] &&
+            state.addresses?.[network]?.[walletId]?.[chain]) {
+            addresses.push(state.addresses[network][walletId][chain])
+          }
+
+          const _account = accountCreator(
+            {
+              walletId,
+              account: {
+                name: `${chain} 1`,
+                chain,
+                addresses,
+                assets,
+                balances: {},
+                type: 'default'
+              }
+            })
+
+          accounts[walletId][network].push(_account)
+        })
+      })
+
+      delete state.addresses
+      delete state.balances
+      return { ...state, accounts }
+    }
   }
 ]
 
@@ -66,7 +119,7 @@ async function processMigrations (state) {
         newState = await migration.migrate(cloneDeep(state))
         newState.version = migration.version
       } catch (e) {
-        console.error(`Failed to migrate to v${migration.version}`)
+        console.error(`Failed to migrate to v${migration.version}`, e)
         break
       }
     }

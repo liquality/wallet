@@ -15,7 +15,7 @@ export { wait }
 
 export const waitForRandom = (min, max) => wait(random(min, max))
 
-export const timestamp = () => Math.ceil(Date.now() / 1000)
+export const timestamp = () => Date.now()
 
 export const attemptToLockAsset = (network, walletId, asset) => {
   const chain = getChainFromAsset(asset)
@@ -87,7 +87,8 @@ export const getMarketData = agent => {
 const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
 
 export async function getPrices (baseCurrencies, toCurrency) {
-  const coindIds = baseCurrencies.map(currency => cryptoassets[currency].coinGeckoId)
+  const coindIds = baseCurrencies.filter(currency => cryptoassets[currency]?.coinGeckoId)
+    .map(currency => cryptoassets[currency].coinGeckoId)
   const { data } = await axios.get(`${COIN_GECKO_API}/simple/price?ids=${coindIds.join(',')}&vs_currencies=${toCurrency}`)
   let prices = mapKeys(data, (v, coinGeckoId) => findKey(cryptoassets, asset => asset.coinGeckoId === coinGeckoId))
   prices = mapValues(prices, rates => mapKeys(rates, (v, k) => k.toUpperCase()))

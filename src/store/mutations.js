@@ -15,6 +15,12 @@ export default {
     state.encryptedWallets = encryptedWallets
     state.keySalt = keySalt
     state.wallets = [wallet]
+    if (!state.accounts[wallet.id]) {
+      Vue.set(state.accounts, wallet.id, {
+        mainnet: [],
+        testnet: []
+      })
+    }
   },
   ACCEPT_TNC (state) {
     state.termsAcceptedAt = Date.now()
@@ -58,15 +64,27 @@ export default {
   REMOVE_ORDER (state, { network, walletId, id }) {
     Vue.set(state.history[network], walletId, state.history[network][walletId].filter(i => i.id !== id))
   },
-  UPDATE_UNUSED_ADDRESS (state, { network, walletId, asset, address }) {
-    ensureNetworkWalletTree(state.addresses, network, walletId, {})
+  UPDATE_BALANCE (state, { network, accountId, walletId, asset, balance }) {
+    const accounts = state.accounts[walletId][network]
+    if (accounts) {
+      const index = accounts.findIndex(
+        (a) => a.id === accountId
+      )
 
-    Vue.set(state.addresses[network][walletId], asset, address)
-  },
-  UPDATE_BALANCE (state, { network, walletId, asset, balance }) {
-    ensureNetworkWalletTree(state.balances, network, walletId, {})
+      if (index >= 0) {
+        const _account = accounts[index]
+        const balances = {
+          ...accounts[index].balances,
+          [asset]: balance
+        }
+        const updatedAccount = {
+          ..._account,
+          balances
+        }
 
-    Vue.set(state.balances[network][walletId], asset, balance)
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
+      }
+    }
   },
   UPDATE_FEES (state, { network, walletId, asset, fees }) {
     ensureNetworkWalletTree(state.fees, network, walletId, {})
@@ -99,5 +117,84 @@ export default {
   ADD_CUSTOM_TOKEN (state, { network, walletId, customToken }) {
     ensureNetworkWalletTree(state.customTokens, network, walletId, [])
     state.customTokens[network][walletId].push(customToken)
+  },
+
+  // ACCOUNTS
+  CREATE_ACCOUNT (state, { network, walletId, account }) {
+    if (!state.accounts[walletId]) {
+      Vue.set(state.accounts, walletId, {
+        [network]: []
+      })
+    }
+    if (!state.accounts[walletId][network]) {
+      Vue.set(state.accounts[walletId], network, [])
+    }
+
+    state.accounts[walletId][network].push(account)
+  },
+  UPDATE_ACCOUNT (state, { network, walletId, account }) {
+    const {
+      id,
+      name,
+      addresses,
+      assets,
+      balances,
+      updatedAt
+    } = account
+    const accounts = state.accounts[walletId][network]
+    if (accounts) {
+      const index = accounts.findIndex(
+        (a) => a.id === id
+      )
+
+      if (index >= 0) {
+        const _account = accounts[index]
+        const updatedAccount = {
+          ..._account,
+          name,
+          addresses,
+          balances,
+          assets,
+          updatedAt
+        }
+
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
+        console.log(updatedAccount)
+      }
+    }
+  },
+  REMOVE_ACCOUNT (state, { walletId, id, network }) {
+    const accounts = state.accounts[walletId][network]
+
+    if (accounts) {
+      const index = accounts.findIndex(
+        (account) => account.id === id
+      )
+      if (index >= 0) {
+        const updatedAccounts = accounts.splice(index, 1)
+        Vue.set(state.accounts[walletId], network, [...updatedAccounts])
+      }
+    }
+  },
+  UPDATE_ACCOUNT_ADDRESSES (state, { network, accountId, walletId, asset, addresses }) {
+    const accounts = state.accounts[walletId][network]
+    if (accounts) {
+      const index = accounts.findIndex(
+        (a) => a.id === accountId
+      )
+
+      if (index >= 0) {
+        const _account = accounts[index]
+        const updatedAccount = {
+          ..._account,
+          addresses
+        }
+
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
+      }
+    }
+  },
+  SAVE_PASSWORD (state, { password }) {
+    state.tempPassword = password
   }
 }

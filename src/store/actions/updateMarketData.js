@@ -20,8 +20,8 @@ export const updateMarketData = async ({ state, commit, getters }, { network }) 
   const allMarketData = _allMarketData.filter(r => r !== false)
 
   const pairMarkets = allMarketData[0]
-    .filter(({ to, from }) => networkAssets.includes(to) && networkAssets.includes(from))
-    .map(({ to, from }) => {
+    ?.filter(({ to, from }) => networkAssets.includes(to) && networkAssets.includes(from))
+    ?.map(({ to, from }) => {
       return allMarketData.reduce((acc, marketData) => {
         const convert = cryptoassets[from]
         const market = marketData.find(market => market.to === to && market.from === from)
@@ -52,7 +52,7 @@ export const updateMarketData = async ({ state, commit, getters }, { network }) 
 
         markets: []
       })
-    })
+    }) || []
 
   const marketData = networkAssets.reduce((acc, asset) => {
     acc[asset] = pairMarkets

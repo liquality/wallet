@@ -24,6 +24,7 @@
         <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
         <div class="permission-send_data_code" v-if="showData">{{data}}</div>
       </div>
+      <div v-if="error" class="mt-4 text-danger"><strong>Error:</strong> {{ error }}</div>
     </div>
 
     <div class="wrapper_bottom">
@@ -60,6 +61,7 @@ export default {
     return {
       showData: false,
       selectedFee: 'average',
+      error: null,
       loading: false,
       replied: false
     }
@@ -87,14 +89,19 @@ export default {
       }
 
       this.loading = true
+      this.error = null
 
       try {
-        await this.replyPermission({
+        const response = await this.replyPermission({
           request: requestWithFee,
           allowed
         })
         this.replied = true
-        window.close()
+        if (response.error) {
+          this.error = response.error
+        } else {
+          window.close()
+        }
       } finally {
         this.loading = false
       }
