@@ -55,7 +55,8 @@ export const AssetNetworks = {
     mainnet: EthereumNetworks.bsc_mainnet
   }
 }
-
+   rsk_wallet_mod
+function createBtcClient (network, mnemonic, wType) {
 function createBtcClient (network, mnemonic, walletType) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = AssetNetworks.BTC[network]
@@ -64,6 +65,8 @@ function createBtcClient (network, mnemonic, walletType) {
 
   const btcClient = new Client()
   btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2))
+      rsk_wallet_mod
+  btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic, wType))
 
   if (walletType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
@@ -135,7 +138,9 @@ function createBSCClient (asset, network, mnemonic) {
 
 export const createClient = (asset, network, mnemonic, walletType) => {
   const assetData = cryptoassets[asset]
-
+  rsk_wallet_mod
+  if (asset === 'BTC') return createBtcClient(network, mnemonic, 'bech32')
+  if (asset === 'BTC2') return createBtcClient(network, mnemonic, 'legacy')
   if (asset === 'BTC') return createBtcClient(network, mnemonic, walletType)
   if (asset === 'RBTC' || assetData.network === 'rsk') return createRskClient(asset, network, mnemonic)
   if (asset === 'BNB' || assetData.network === 'bsc') return createBSCClient(asset, network, mnemonic)

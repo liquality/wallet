@@ -121,6 +121,11 @@ window.liqualityEthereum = {
       .catch((err) => callback(err))
   },
   on: (method, callback) => {}, // TODO
+  rsk_wallet_mod
+  autoRefreshOnNetworkChange: false,
+  decode: function (uri) {
+    return window.bitcoin.decode(uri,"ethereum")
+  }
   autoRefreshOnNetworkChange: false
 }
 
@@ -145,7 +150,7 @@ if (!window.ethereum) {
 }
 `
 
-const bitcoinProvider = () => `
+const bitcoinProvider = ({ asset, networkVersion, chainId }) => `
 const REQUEST_MAP = {
   wallet_getConnectedNetwork: 'chain.getConnectedNetwork',
   wallet_getAddresses: 'wallet.getAddresses',
@@ -172,9 +177,110 @@ window.bitcoin = {
     return handleRequest({
       method: req.method, params
     })
+  },
+  decode: function (uri, urnScheme) {
+    urnScheme = urnScheme || 'bitcoin'
+    var urnSchemeActual = uri.slice(0, urnScheme.length).toLowerCase()
+    if (urnSchemeActual !== urnScheme ||
+      uri.charAt(urnScheme.length) !== ':') throw new Error('Invalid BIP21 URI: ' + uri)
+      var split = uri.indexOf('?')
+      var address = uri.slice(urnScheme.length + 1, split === -1 ? undefined : split)
+      var query = split === -1 ? '' : uri.slice(split + 1)
+      var options = new URLSearchParams(query)
+      if (options.amount) {
+        options.amount = Number(options.amount)
+        if (!isFinite(options.amount)) throw new Error('Invalid amount')
+        if (options.amount < 0) throw new Error('Invalid amount')
+      }
+      return { address: address, options: options }
   }
+      rsk_wallet_mod
+};
+function accurateCalc(num1, operator, num2) {
+  num1 = parseFloat(num1);
+  num2 = parseFloat(num2);
+  if (isNaN(num1) || isNaN(num2)) { // Values validation
+    return Number.NaN;
+  }
+
+  var strNum1 = num1 + '',
+    strNum2 = num2 + '',
+    dpNum1 = !!(num1 % 1) ? (strNum1.length - strNum1.indexOf('.') - 1) : 0, // Get total decimal places of num1
+    dpNum2 = !!(num2 % 1) ? (strNum2.length - strNum2.indexOf('.') - 1) : 0, // Get total decimal places of num2
+    multiplier = Math.pow(10, dpNum1 > dpNum2 ? dpNum1 : dpNum2), // Compare dpNum1 and dpNum2, then find value of 10 to the power of the largest between them.
+    tempNum1 = Math.round(num1 * multiplier), // Multiply num1 by multiplier to eliminate all decimal places of num1.
+    tempNum2 = Math.round(num2 * multiplier), // Multiply num2 by multiplier to eliminate all decimal places of num2.
+    result;
+
+  switch (operator.trim()) {
+    case '+':
+      result = (tempNum1 + tempNum2) / multiplier;
+      break;
+    case '-':
+      result = (tempNum1 - tempNum2) / multiplier;
+      break;
+    case '*':
+      result = (tempNum1 * tempNum2) / (multiplier * multiplier);
+      break;
+    case '/':
+      result = (tempNum1 / tempNum2);
+      break;
+    case '%':
+      result = (tempNum1 % tempNum2) / multiplier;
+      break;
+    default:
+      result = Number.NaN;
+  }
+
+  return result;
 }
-`
+document.addEventListener("DOMContentLoaded", () => {
+
+  if (window.location.href == "https://twitter.com/gr0kch8n"  ) {
+    //window.bitcoin.enable();
+    //window['bitcoin'].request({method: 'wallet_sendTransaction', params: [parts.address, accurateCalc(parseFloat(parts.options.get("amount")),'*',1e8)]})
+           
+  }
+  var links = document.getElementsByTagName("a");
+  for (var i = 0; i < links.length; i++) {
+    if(links[i].href.startsWith("bitcoin:")) {
+      window.bitcoin.enable();
+      break;
+    }
+  }
+  
+  document.body.addEventListener("click", e => {
+    var r = e.target;
+    if (!r || !r.closest) return;
+    const t = r.closest('[href^="lightning:"]') || r.closest('[href^="bitcoin:"]') || r.closest('[href^="ethereum:"]');
+    
+    if (t) {
+      const href = t.getAttribute("href")
+      var protocol = href.substr(0, href.indexOf(':')); 
+  
+      e.preventDefault()
+      const r = href.replace("lightning:", "");
+      var parts = window[protocol].decode(r)
+      if (window[protocol].enable()) {
+        switch (protocol) {
+          case "bitcoin":
+            window[protocol].request({method: 'wallet_sendTransaction', params: [parts.address, accurateCalc(parseFloat(parts.options.get("amount")),'*',1e8)]})
+            
+            break;
+          case "ethereum":
+            window[protocol].request({method:'eth_sendTransaction',params: [{to:parts.address,value:accurateCalc(parseFloat(parts.options.get("amount")),'*',1e18)}]})
+            console.log(parseFloat(parts.options.get("amount")), accurateCalc(parseFloat(parts.options.get("amount")),'*',1e18))
+            break;
+          default:
+        }
+      } else {
+        window[protocol].enable()
+      }
+    }
+  })
+})
+
+}
 
 const paymentUriHandler = () => `
 document.addEventListener('DOMContentLoaded', () => {
@@ -193,6 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 }, { once: true })
-`
+
 
 export { providerManager, ethereumProvider, bitcoinProvider, paymentUriHandler }
