@@ -2,7 +2,7 @@
   <div class="account-container">
     <NavBar :showMenu="false">
       <span class="account-title">
-        Add Hardware Wallet
+        Add Ledger Accounts
       </span>
     </NavBar>
     <Connect v-if="currentStep === 'connect'"
@@ -38,7 +38,7 @@ import {
 } from '@/utils/ledger-bridge-provider'
 import { getAssetIcon, getChainFromAsset } from '@/utils/asset'
 
-const LEDGER_PER_PAGE = 5
+const LEDGER_PER_PAGE = 1
 
 export default {
   components: {
@@ -134,7 +134,6 @@ export default {
               walletId: this.activeWalletId,
               account
             })
-            console.log('createdAccount', createdAccount.id)
             await this.updateAccountBalance({
               network: this.activeNetwork,
               walletId: this.activeWalletId,
@@ -171,9 +170,17 @@ export default {
           ...this.selectedAccounts
         }
       } else {
-        this.selectedAccounts = {
-          ...this.selectedAccounts,
-          [item.account.address]: item
+        // with BTC we can select more than one account
+        // with ETH we can select only one account
+        if (this.selectedAsset?.name === 'ETH') {
+          this.selectedAccounts = {
+            [item.account.address]: item
+          }
+        } else {
+          this.selectedAccounts = {
+            ...this.selectedAccounts,
+            [item.account.address]: item
+          }
         }
       }
     }

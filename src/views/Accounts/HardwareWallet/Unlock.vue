@@ -69,6 +69,7 @@
                 </td>
                 <td class="account-selected-mark">
                   <CheckRightIcon v-if="selectedAccounts[item.account.address]"/>
+                  <span v-else>&nbsp;</span>
                 </td>
               </tr>
             </tbody>
@@ -243,6 +244,7 @@ export default {
   .accounts-table {
     tr {
       cursor: pointer;
+      height: 35px;
     }
 
     .account-index,
@@ -255,10 +257,6 @@ export default {
       color: #000D35;
     }
 
-    .account-index {
-      padding: 0.55rem 0 0.55rem 0;
-    }
-
     .account-index,
     .account-selected-mark,
     .account-address {
@@ -266,13 +264,14 @@ export default {
     }
 
     .account-address {
-      padding: 0.55rem 34px 0.55rem 0.45rem;
       text-align: left;
     }
-
-    .account-selected-mark {
-      padding: 0.75rem 0 0.75rem 0;
+    .account-selected-mark  {
+      width: 37px;
+    }
+    .account-selected-mark svg {
       width: 13px;
+      height: 9px;
     }
   }
 }
