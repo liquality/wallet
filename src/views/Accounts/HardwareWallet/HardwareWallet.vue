@@ -196,12 +196,6 @@ export default {
     bitcoinOptions () {
       return LEDGER_BITCOIN_OPTIONS
     }
-  },
-  watch: {
-    selectedWalletType: function (_option) {
-      this.accounts = []
-      this.selectedAccounts = {}
-    }
   }
 }
 </script>

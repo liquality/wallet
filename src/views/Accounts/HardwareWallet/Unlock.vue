@@ -74,7 +74,7 @@
               </tr>
             </tbody>
           </table>
-          <div class="account-nav">
+          <div class="account-nav" v-if="accounts && accounts.length > 5">
             <button class="btn btn-link" @click="prev" :disabled="currentPage <=0">
               Previous
             </button>
@@ -218,6 +218,11 @@ export default {
         BTC: 'Bitcoin',
         ETH: 'Ethereum'
       }[this.selectedAsset?.chain]
+    }
+  },
+  watch: {
+    ledgerBitcoinOption: async function (val) {
+      await this.connect(1)
     }
   }
 }
