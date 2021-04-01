@@ -47,7 +47,8 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
             addresses,
             assets,
             balances: {},
-            type: 'default'
+            type: 'default',
+            index: 0
           }
         })
 

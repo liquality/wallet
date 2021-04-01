@@ -38,7 +38,7 @@ import {
 } from '@/utils/ledger-bridge-provider'
 import { getAssetIcon, getChainFromAsset } from '@/utils/asset'
 
-const LEDGER_PER_PAGE = 1
+const LEDGER_PER_PAGE = 5
 
 export default {
   components: {
@@ -127,6 +127,7 @@ export default {
               chain,
               addresses: [item.account.address],
               assets,
+              index: item.index,
               type: walletType || this.selectedAsset.types[0]
             }
             const createdAccount = await this.createAccount({

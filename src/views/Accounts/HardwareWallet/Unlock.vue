@@ -53,27 +53,27 @@
                   class="asset-icon" />
              {{ accountsLabel }} Accounts
           </p>
-          <div class="table-responsive"
-               v-if="accounts && accounts.length > 0">
+          <div v-if="accounts && accounts.length > 0">
             <table class="table accounts-table">
-            <tbody>
-              <tr
-                @click="selectAccount(item)"
-                v-for="item in accounts"
-                :key="item.account.address"
-              >
-                <td class="account-index">{{ (item.index + 1) }}</td>
-                <td class="account-address"
-                    v-tooltip.top="{ content: item.account.address }">
-                  {{ shortenAddress(item.account.address) }}
-                </td>
-                <td class="account-selected-mark">
-                  <CheckRightIcon v-if="selectedAccounts[item.account.address]"/>
-                  <span v-else>&nbsp;</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+              <tbody>
+                <tr
+                  @click="selectAccount(item)"
+                  v-for="item in accounts"
+                  :key="item.account.address"
+                >
+                  <td class="account-index">{{ (item.index + 1) }}</td>
+                  <td class="account-address">
+                    <div v-tooltip.top="{ content: item.account.address }">
+                      {{ shortenAddress(item.account.address) }}
+                    </div>
+                  </td>
+                  <td class="account-selected-mark">
+                    <CheckRightIcon v-if="selectedAccounts[item.account.address]"/>
+                    <span v-else>&nbsp;</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           <div class="account-nav" v-if="accounts && accounts.length > 5">
             <button class="btn btn-link" @click="prev" :disabled="currentPage <=0">
               Previous
@@ -247,9 +247,11 @@ export default {
   }
 
   .accounts-table {
+    position: absolute;
+    left: 0;
     tr {
-      cursor: pointer;
       height: 35px;
+      cursor: pointer;
     }
 
     .account-index,
@@ -260,6 +262,11 @@ export default {
       line-height: 18px;
       align-items: center;
       color: #000D35;
+      div {
+        display: flex;
+        width: 100%;
+        height: 100%;
+      }
     }
 
     .account-index,
