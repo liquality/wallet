@@ -464,8 +464,6 @@ export default {
       [this.assetChain]: 'average',
       [this.toAssetChain]: 'average'
     }
-    console.log('account id', this.accountId)
-    console.log('account', this.account)
   },
   computed: {
     account () {
@@ -752,7 +750,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateMarketData', 'updateFees', 'newSwap']),
+    ...mapActions(['updateMarketData', 'updateFees', 'newSwap', 'showNotification']),
     shortenAddress,
     prettyBalance,
     prettyFiatBalance,
@@ -807,48 +805,68 @@ export default {
       }
     },
     async swap () {
-      const fromAmount = cryptoassets[this.asset].currencyToUnit(this.safeAmount)
+      try {
+        const fromAmount = cryptoassets[this.asset].currencyToUnit(this.safeAmount)
 
-      const fee = this.availableFees.has(this.assetChain)
-        ? this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]]
-          .fee
-        : undefined
+        const fee = this.availableFees.has(this.assetChain)
+          ? this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]]
+            .fee
+          : undefined
 
-      const toFee = this.availableFees.has(this.toAssetChain)
-        ? this.getAssetFees(this.toAssetChain)[
-          this.selectedFee[this.toAssetChain]
-        ].fee
-        : undefined
+        const toFee = this.availableFees.has(this.toAssetChain)
+          ? this.getAssetFees(this.toAssetChain)[
+            this.selectedFee[this.toAssetChain]
+          ].fee
+          : undefined
 
-      this.loading = true
-      await this.newSwap({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        agent: this.bestAgent,
-        from: this.asset,
-        to: this.toAsset,
-        fromAmount,
-        sendTo: this.sendTo,
-        fee,
-        claimFee: toFee,
-        fromAccountId: this.accountId,
-        toAccountId: this.accountId
-      })
-      console.log('this.account?.type', this.account)
-      if (this.account?.type.includes('ledger')) {
-        const unsubscribe = this.$store.subscribeAction((action, state) => {
-          console.log('subscription', action.type)
-          const { type, payload } = action
-          if (type === 'performNextAction') {
-            const { order } = payload
-            console.log('on performNextSwapAction', order?.status)
-            if (order && order?.status === 'INITIATED') {
-              unsubscribe()
-            }
-          }
+        this.loading = true
+        const order = await this.newSwap({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          agent: this.bestAgent,
+          from: this.asset,
+          to: this.toAsset,
+          fromAmount,
+          sendTo: this.sendTo,
+          fee,
+          claimFee: toFee,
+          fromAccountId: this.accountId,
+          toAccountId: this.accountId
         })
-      } else {
-        this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
+        if (this.account?.type.includes('ledger')) {
+          const unsubscribe = this.$store.subscribe(async mutation => {
+            const { type, payload } = mutation
+            if (type === '##BACKGROUND##UPDATE_HISTORY') {
+              const { id, updates } = payload
+              if (id && id === order.id && updates) {
+                const { status, error } = updates
+                if (error) {
+                  console.error(error)
+                  unsubscribe()
+                  this.loading = false
+                  const { message } = error
+                  await this.showNotification({
+                    title: 'Error',
+                    message: message || error
+                  })
+                }
+
+                if (status === 'INITIATED') {
+                  unsubscribe()
+                  this.loading = false
+                  this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
+                }
+              }
+            }
+          })
+        } else {
+          this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
+        }
+      } catch (error) {
+        console.error(error)
+        const { message } = error
+        this.loading = false
+        await this.showNotification({ title: 'Error', message: message || error })
       }
     },
     getSelectedFeeLabel (fee) {

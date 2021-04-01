@@ -2,6 +2,7 @@ import { sha256 } from '@liquality/crypto'
 import { withLock, withInterval, hasChainTimePassed } from './utils'
 import cryptoassets from '../../../utils/cryptoassets'
 import { updateOrder, timestamp } from '../../utils'
+import { createNotification } from '../../../broker/notification'
 
 async function hasQuoteExpired (store, { order }) {
   return timestamp() >= order.expiresAt
@@ -200,13 +201,28 @@ async function confirmCounterPartyInitiation ({ getters }, { order, network, wal
   if (expirationUpdates) { return expirationUpdates }
 }
 
-async function claimSwap ({ getters }, { order, network, walletId }) {
+async function claimSwap ({ store, getters }, { order, network, walletId }) {
   const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
   if (expirationUpdates) { return expirationUpdates }
 
   const account = getters.accountItem(order.toAccountId)
   const toClient = getters.client(network, walletId, order.to, account?.type)
 
+  if (account?.type.includes('ledger')) {
+    const notificationId = await createNotification({
+      title: 'Sign with Ledger',
+      message: 'You have a pending transaction to sign for claim your fund.'
+    })
+
+    const listener = (_id) => {
+      if (_id === notificationId) {
+        console.log('notification with order id', _id)
+        browser.notifications.clear(_id)
+        browser.notifications.onClicked.removeListener(listener)
+      }
+    }
+    browser.notifications.onClicked.addListener(listener)
+  }
   const toClaimTx = await toClient.swap.claimSwap(
     order.toFundHash,
     order.toAmount,
