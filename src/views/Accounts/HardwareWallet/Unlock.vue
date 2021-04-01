@@ -73,8 +73,8 @@
                   </td>
                 </tr>
               </tbody>
-            <!-- </table>
-          <div class="account-nav" v-if="accounts && accounts.length > 5">
+            </table>
+          <!-- <div class="account-nav" v-if="accounts && accounts.length > 5">
             <button class="btn btn-link" @click="prev" :disabled="currentPage <=0">
               Previous
             </button>
