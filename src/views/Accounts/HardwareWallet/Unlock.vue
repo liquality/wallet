@@ -73,7 +73,7 @@
                   </td>
                 </tr>
               </tbody>
-            </table>
+            <!-- </table>
           <div class="account-nav" v-if="accounts && accounts.length > 5">
             <button class="btn btn-link" @click="prev" :disabled="currentPage <=0">
               Previous
@@ -82,7 +82,7 @@
             <button class="btn btn-link"  @click="next">
               Next
             </button>
-          </div>
+          </div> -->
           </div>
           <div v-else class="no-accounts">
             {{ ledgerError && ledgerError.message ? ledgerError.message : 'No Accounts Found' }}

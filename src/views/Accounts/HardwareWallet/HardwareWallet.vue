@@ -11,7 +11,7 @@
            @on-connect="connect"
            @on-select-asset="setLedgerAsset"
     />
-    <Unlock v-if="currentStep === 'unlock'"
+    <Unlock v-else
            :loading="loading"
            :accounts="accounts"
            :selected-accounts="selectedAccounts"
@@ -23,12 +23,6 @@
            @on-cancel="cancel"
            @on-select-account="selectAccount"
     />
-
-    <Connect v-else
-           :loading="loading"
-           :selected-asset="selectedAsset"
-           @on-connect="connect"
-           @on-select-asset="setLedgerAsset"
     />
   </div>
 </template>
@@ -114,11 +108,7 @@ export default {
     },
     async unlock ({ walletType }) {
       if (this.selectedAsset) {
-        if (this.selectedAsset?.name === 'BTC') {
-          await this.addAccount({ walletType })
-        } else {
-          this.showTokenManagement({ walletType })
-        }
+        await this.addAccount({ walletType })
       }
     },
     showTokenManagement ({ walletType }) {
