@@ -146,7 +146,6 @@ export default {
     'accounts',
     'selectedAccounts',
     'selectedAsset',
-    'selectedWalletType',
     'ledgerError',
     'currentPage'
   ],

@@ -59,6 +59,16 @@ export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
 
     return { hex: txHex, fee }
   }
+
+  async getLedgerInputs (unspentOutputs) {
+    const app = await this.getApp()
+
+    return Promise.all(unspentOutputs.map(async utxo => {
+      const hex = await this.getMethod('getTransactionHex')(utxo.txid)
+      const tx = await app.splitTransaction(hex, true)
+      return [tx, utxo.vout, undefined, 0]
+    }))
+  }
 }
 
 BitcoinLedgerBridgeProvider.version = version

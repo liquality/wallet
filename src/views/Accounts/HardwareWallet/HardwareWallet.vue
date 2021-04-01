@@ -11,18 +11,24 @@
            @on-connect="connect"
            @on-select-asset="setLedgerAsset"
     />
-    <Unlock v-else
+    <Unlock v-if="currentStep === 'unlock'"
            :loading="loading"
            :accounts="accounts"
            :selected-accounts="selectedAccounts"
            :selected-asset="selectedAsset"
-           :selected-wallet-type="selectedWalletType"
            :ledger-error="ledgerError"
            :current-page="ledgerPage"
            @on-connect="connect"
            @on-unlock="unlock"
            @on-cancel="cancel"
            @on-select-account="selectAccount"
+    />
+
+    <Connect v-else
+           :loading="loading"
+           :selected-asset="selectedAsset"
+           @on-connect="connect"
+           @on-select-asset="setLedgerAsset"
     />
   </div>
 </template>
@@ -51,11 +57,11 @@ export default {
       currentStep: 'connect',
       loading: false,
       selectedAsset: null,
-      selectedWalletType: null,
       accounts: [],
       selectedAccounts: {},
       ledgerError: null,
-      ledgerPage: 0
+      ledgerPage: 0,
+      selectedWalletType: null
     }
   },
   methods: {
@@ -107,7 +113,21 @@ export default {
       }
     },
     async unlock ({ walletType }) {
-      if (this.selectedAsset && Object.keys(this.selectedAccounts).length > 0) {
+      if (this.selectedAsset) {
+        if (this.selectedAsset?.name === 'BTC') {
+          await this.addAccount({ walletType })
+        } else {
+          this.showTokenManagement({ walletType })
+        }
+      }
+    },
+    showTokenManagement ({ walletType }) {
+      this.loading = false
+      this.currentStep = 'token-management'
+      this.selectedWalletType = walletType
+    },
+    async addAccount ({ walletType }) {
+      if (Object.keys(this.selectedAccounts).length > 0) {
         try {
           this.loading = true
           const { chain } = this.selectedAsset

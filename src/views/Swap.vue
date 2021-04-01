@@ -831,10 +831,25 @@ export default {
         sendTo: this.sendTo,
         fee,
         claimFee: toFee,
-        accountId: this.account?.id
+        fromAccountId: this.accountId,
+        toAccountId: this.accountId
       })
-
-      this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
+      console.log('this.account?.type', this.account)
+      if (this.account?.type.includes('ledger')) {
+        const unsubscribe = this.$store.subscribeAction((action, state) => {
+          console.log('subscription', action.type)
+          const { type, payload } = action
+          if (type === 'performNextAction') {
+            const { order } = payload
+            console.log('on performNextSwapAction', order?.status)
+            if (order && order?.status === 'INITIATED') {
+              unsubscribe()
+            }
+          }
+        })
+      } else {
+        this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
+      }
     },
     getSelectedFeeLabel (fee) {
       return getFeeLabel(fee)
