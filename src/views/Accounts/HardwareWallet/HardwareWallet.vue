@@ -2,7 +2,7 @@
   <div class="account-container">
     <NavBar :showMenu="false">
       <span class="account-title">
-        Add Hardware Wallet
+        Add Ledger Accounts
       </span>
     </NavBar>
     <Connect v-if="currentStep === 'connect'"
@@ -11,18 +11,24 @@
            @on-connect="connect"
            @on-select-asset="setLedgerAsset"
     />
-    <Unlock v-else
+    <Unlock v-if="currentStep === 'unlock'"
            :loading="loading"
            :accounts="accounts"
            :selected-accounts="selectedAccounts"
            :selected-asset="selectedAsset"
-           :selected-wallet-type="selectedWalletType"
            :ledger-error="ledgerError"
            :current-page="ledgerPage"
            @on-connect="connect"
            @on-unlock="unlock"
            @on-cancel="cancel"
            @on-select-account="selectAccount"
+    />
+
+    <Connect v-else
+           :loading="loading"
+           :selected-asset="selectedAsset"
+           @on-connect="connect"
+           @on-select-asset="setLedgerAsset"
     />
   </div>
 </template>
@@ -51,11 +57,11 @@ export default {
       currentStep: 'connect',
       loading: false,
       selectedAsset: null,
-      selectedWalletType: null,
       accounts: [],
       selectedAccounts: {},
       ledgerError: null,
-      ledgerPage: 0
+      ledgerPage: 0,
+      selectedWalletType: null
     }
   },
   methods: {
@@ -107,7 +113,21 @@ export default {
       }
     },
     async unlock ({ walletType }) {
-      if (this.selectedAsset && Object.keys(this.selectedAccounts).length > 0) {
+      if (this.selectedAsset) {
+        if (this.selectedAsset?.name === 'BTC') {
+          await this.addAccount({ walletType })
+        } else {
+          this.showTokenManagement({ walletType })
+        }
+      }
+    },
+    showTokenManagement ({ walletType }) {
+      this.loading = false
+      this.currentStep = 'token-management'
+      this.selectedWalletType = walletType
+    },
+    async addAccount ({ walletType }) {
+      if (Object.keys(this.selectedAccounts).length > 0) {
         try {
           this.loading = true
           const { chain } = this.selectedAsset
@@ -127,6 +147,7 @@ export default {
               chain,
               addresses: [item.account.address],
               assets,
+              index: item.index,
               type: walletType || this.selectedAsset.types[0]
             }
             const createdAccount = await this.createAccount({
@@ -134,7 +155,6 @@ export default {
               walletId: this.activeWalletId,
               account
             })
-            console.log('createdAccount', createdAccount.id)
             await this.updateAccountBalance({
               network: this.activeNetwork,
               walletId: this.activeWalletId,
@@ -171,9 +191,17 @@ export default {
           ...this.selectedAccounts
         }
       } else {
-        this.selectedAccounts = {
-          ...this.selectedAccounts,
-          [item.account.address]: item
+        // with BTC we can select more than one account
+        // with ETH we can select only one account
+        if (this.selectedAsset?.name === 'ETH') {
+          this.selectedAccounts = {
+            [item.account.address]: item
+          }
+        } else {
+          this.selectedAccounts = {
+            ...this.selectedAccounts,
+            [item.account.address]: item
+          }
         }
       }
     }
@@ -188,12 +216,6 @@ export default {
     },
     bitcoinOptions () {
       return LEDGER_BITCOIN_OPTIONS
-    }
-  },
-  watch: {
-    selectedWalletType: function (_option) {
-      this.accounts = []
-      this.selectedAccounts = {}
     }
   }
 }

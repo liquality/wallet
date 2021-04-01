@@ -5,6 +5,7 @@ export const accountCreator = (payload) => {
   const {
     name,
     chain,
+    index,
     addresses,
     assets,
     balances,
@@ -25,6 +26,7 @@ export const accountCreator = (payload) => {
     type,
     name,
     chain,
+    index,
     addresses: _addresses,
     assets,
     balances: balances || {},

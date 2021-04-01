@@ -87,7 +87,8 @@ const migrations = [
                 addresses,
                 assets,
                 balances: {},
-                type: 'default'
+                type: 'default',
+                index: 0
               }
             })
 

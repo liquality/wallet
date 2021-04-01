@@ -53,27 +53,28 @@
                   class="asset-icon" />
              {{ accountsLabel }} Accounts
           </p>
-          <div class="table-responsive"
-               v-if="accounts && accounts.length > 0">
+          <div v-if="accounts && accounts.length > 0">
             <table class="table accounts-table">
-            <tbody>
-              <tr
-                @click="selectAccount(item)"
-                v-for="item in accounts"
-                :key="item.account.address"
-              >
-                <td class="account-index">{{ (item.index + 1) }}</td>
-                <td class="account-address"
-                    v-tooltip.top="{ content: item.account.address }">
-                  {{ shortenAddress(item.account.address) }}
-                </td>
-                <td class="account-selected-mark">
-                  <CheckRightIcon v-if="selectedAccounts[item.account.address]"/>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="account-nav">
+              <tbody>
+                <tr
+                  @click="selectAccount(item)"
+                  v-for="item in accounts"
+                  :key="item.account.address"
+                >
+                  <td class="account-index">{{ (item.index + 1) }}</td>
+                  <td class="account-address">
+                    <div v-tooltip.top="{ content: item.account.address }">
+                      {{ shortenAddress(item.account.address) }}
+                    </div>
+                  </td>
+                  <td class="account-selected-mark">
+                    <CheckRightIcon v-if="selectedAccounts[item.account.address]"/>
+                    <span v-else>&nbsp;</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          <div class="account-nav" v-if="accounts && accounts.length > 5">
             <button class="btn btn-link" @click="prev" :disabled="currentPage <=0">
               Previous
             </button>
@@ -145,7 +146,6 @@ export default {
     'accounts',
     'selectedAccounts',
     'selectedAsset',
-    'selectedWalletType',
     'ledgerError',
     'currentPage'
   ],
@@ -218,6 +218,11 @@ export default {
         ETH: 'Ethereum'
       }[this.selectedAsset?.chain]
     }
+  },
+  watch: {
+    ledgerBitcoinOption: async function (val) {
+      await this.connect(1)
+    }
   }
 }
 </script>
@@ -241,7 +246,10 @@ export default {
   }
 
   .accounts-table {
+    position: absolute;
+    left: 0;
     tr {
+      height: 35px;
       cursor: pointer;
     }
 
@@ -253,10 +261,11 @@ export default {
       line-height: 18px;
       align-items: center;
       color: #000D35;
-    }
-
-    .account-index {
-      padding: 0.55rem 0 0.55rem 0;
+      div {
+        display: flex;
+        width: 100%;
+        height: 100%;
+      }
     }
 
     .account-index,
@@ -266,13 +275,14 @@ export default {
     }
 
     .account-address {
-      padding: 0.55rem 34px 0.55rem 0.45rem;
       text-align: left;
     }
-
-    .account-selected-mark {
-      padding: 0.75rem 0 0.75rem 0;
+    .account-selected-mark  {
+      width: 37px;
+    }
+    .account-selected-mark svg {
       width: 13px;
+      height: 9px;
     }
   }
 }
