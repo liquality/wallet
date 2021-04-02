@@ -80,7 +80,7 @@ export const getAssetColorStyle = asset => {
 }
 
 export const getTransactionExplorerLink = (hash, asset, network) => {
-  const transactionHash = getExplorerTransactionHash(asset,hash)
+  const transactionHash = getExplorerTransactionHash(asset, hash)
   const chain = getChainFromAsset(asset)
   return `${EXPLORERS[chain][network].tx}${transactionHash}`
 }
@@ -102,10 +102,10 @@ export const getAssetIcon = (asset) => {
   }
 }
 
-export const getExplorerTransactionHash =(asset,hash) => {
+export const getExplorerTransactionHash = (asset, hash) => {
   switch (asset) {
-    case "NEAR":
-      return hash.split("_")[0];
-    default:  return hash
+    case 'NEAR':
+      return hash.split('_')[0]
+    default: return hash
   }
 }
