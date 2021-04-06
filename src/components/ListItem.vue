@@ -1,10 +1,12 @@
 <template>
   <component :is="itemComponent"
              class="list-item-container"
-             :class="[itemClass]"
+             :class="[containerClass]"
              v-bind:to="to || '#'"
              @click="$emit('item-selected')">
-        <div class="list-item d-flex align-items-center h-padding" :style="itemStyles">
+        <div class="list-item d-flex align-items-center"
+             :style="itemStyles"
+             :class="[itemClass]">
           <div class="list-item-prefix ml-0" v-if="hasSlot('prefix')">
               <slot name="prefix"></slot>
           </div>
@@ -44,7 +46,7 @@ export default {
   components: {
     ChevronRightIcon
   },
-  props: ['to', 'itemClass', 'itemStyles'],
+  props: ['to', 'itemClass', 'itemStyles', 'containerClass'],
   methods: {
     hasSlot (name) {
       return this.$slots[name]

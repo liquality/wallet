@@ -4,7 +4,8 @@
       v-for="item in transactions"
       :key="item.id"
       :to="getDetailsUrl(item)"
-      :itemClass="{ 'text-danger': item.error }"
+      :container-class="{ 'text-danger': item.error }"
+      :item-class="'h-padding'"
     >
       <template #icon>
         <img :src="getTypeIcon(item.type)" />
