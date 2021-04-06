@@ -18,7 +18,6 @@ import NearSwapProvider from '@liquality/near-swap-provider'
 import NearJsWalletProvider from '@liquality/near-js-wallet-provider'
 import NearRpcProvider from '@liquality/near-rpc-provider'
 import NearSwapFindProvider from '@liquality/near-swap-find-provider'
-import NearRpcFeeProvider from '@liquality/near-rpc-fee-provider'
 
 import EthereumErc20Provider from '@liquality/ethereum-erc20-provider'
 import EthereumErc20SwapProvider from '@liquality/ethereum-erc20-swap-provider'
@@ -127,7 +126,6 @@ function createNearClient (network, mnemonic) {
   nearClient.addProvider(new NearJsWalletProvider(nearNetwork, mnemonic))
   nearClient.addProvider(new NearSwapProvider())
   nearClient.addProvider(new NearSwapFindProvider(nearNetwork?.helperUrl))
-  nearClient.addProvider(new NearRpcFeeProvider())
   nearClient.assertValidTransaction = function (transaction) {}
   nearClient.chain.getTransactionByHash = async (txHash) => {
     const transaction = await nearClient.getMethod('getTransactionByHash')(txHash)

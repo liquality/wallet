@@ -80,8 +80,9 @@ export const getAssetColorStyle = asset => {
 }
 
 export const getTransactionExplorerLink = (hash, asset, network) => {
+  const transactionHash = getExplorerTransactionHash(asset, hash)
   const chain = getChainFromAsset(asset)
-  return `${EXPLORERS[chain][network].tx}${hash}`
+  return `${EXPLORERS[chain][network].tx}${transactionHash}`
 }
 
 export const getAddressExplorerLink = (address, asset, network) => {
@@ -98,5 +99,13 @@ export const getAssetIcon = (asset) => {
     } catch (e) {
       return require('../assets/icons/blank_asset.svg?inline')
     }
+  }
+}
+
+export const getExplorerTransactionHash = (asset, hash) => {
+  switch (asset) {
+    case 'NEAR':
+      return hash.split('_')[0]
+    default: return hash
   }
 }
