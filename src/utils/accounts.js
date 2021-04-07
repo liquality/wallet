@@ -48,13 +48,13 @@ export const accountColors = [
   '#EAB300',
   '#F7CA4F',
   '#A1E44A',
-  '#48D870'
+  '#3AB24D'
 ]
 
 export const chainDefaultColors = {
   BTC: '#EAB300',
   ETH: '#4F67E4',
-  RBTC: '#FE7F6B',
+  RBTC: '#3AB24D',
   BNB: '#F7CA4F'
 }
 
