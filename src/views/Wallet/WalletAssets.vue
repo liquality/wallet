@@ -1,11 +1,16 @@
 <template>
-  <WalletAccounts @item-selected="onAccountSelected"/>
+  <WalletAccounts @item-selected="onAccountSelected"
+    :accounts="accountsData"/>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import WalletAccounts from '@/components/WalletAccounts'
 
 export default {
+  computed: {
+    ...mapGetters(['accountsData'])
+  },
   components: {
     WalletAccounts
   },

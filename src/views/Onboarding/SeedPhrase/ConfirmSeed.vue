@@ -74,7 +74,6 @@ export default {
   methods: {
     onSelect (word) {
       this.phraseIndex.push(word)
-      console.log('select', this.phraseIndex)
     },
     onConfirm () {
       this.$emit('on-confirm')

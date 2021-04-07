@@ -54,16 +54,18 @@ export const accountColors = [
 export const chainDefaultColors = {
   BTC: '#EAB300',
   ETH: '#4F67E4',
-  RBTC: '#3AB34D',
+  RBTC: '#FE7F6B',
   BNB: '#F7CA4F'
 }
 
 export const getNextAccountColor = (chain, index) => {
   const defaultColor = chainDefaultColors[chain]
   const defaultIndex = accountColors.findIndex(c => c === defaultColor)
-  const nextIndex = index + 1
-  const _accountIndex = nextIndex >= accountColors.length ? defaultIndex : nextIndex
-  return accountColors[_accountIndex]
+  const finalIndex = index + defaultIndex
+  if (finalIndex >= accountColors.length) {
+    return accountColors[defaultIndex]
+  }
+  return accountColors[finalIndex]
 }
 
 export const ACCOUNT_TYPE_OPTIONS = [

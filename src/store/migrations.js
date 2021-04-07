@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash-es'
 import buildConfig from '../build.config'
-import { accountCreator } from '@/utils/accounts'
+import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { getChainFromAsset } from '@/utils/asset'
 
 const migrations = [
@@ -88,7 +88,8 @@ const migrations = [
                 assets,
                 balances: {},
                 type: 'default',
-                index: 0
+                index: 0,
+                color: getNextAccountColor(chain, 0)
               }
             })
 

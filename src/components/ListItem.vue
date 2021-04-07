@@ -71,6 +71,7 @@ export default {
   height: 60px;
   padding-top: 16px;
   padding-bottom: 16px;
+  position: relative;
 
   &:hover, &.active {
     background-color: #F0F7F9;

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { encrypt } from '../../utils/crypto'
 import buildConfig from '../../build.config'
-import { accountCreator } from '@/utils/accounts'
+import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { getChainFromAsset } from '@/utils/asset'
 
 export const createWallet = async ({ state, getters, commit }, { key, mnemonic }) => {
@@ -48,7 +48,8 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
             assets,
             balances: {},
             type: 'default',
-            index: 0
+            index: 0,
+            color: getNextAccountColor(chain, 0)
           }
         })
 
