@@ -13,6 +13,9 @@
                  class="asset-icon" />
           </template>
           {{ account.name }}
+          <template #sub-title>
+            {{ account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : '' }}
+          </template>
           <template #detail>
             <div class="detail-content">
               <div class="ledger-tag"
@@ -47,6 +50,9 @@
                  class="asset-icon" />
           </template>
           {{ account.name }}
+          <template #sub-title>
+            {{ account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : '' }}
+          </template>
           <template #detail>
             <div class="ledger-tag"
                    v-if="account.type && account.type.includes('ledger')">
@@ -91,6 +97,7 @@ import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
+import { shortenAddress } from '@/utils/address'
 
 export default {
   components: {
@@ -109,6 +116,7 @@ export default {
     getAssetIcon,
     prettyBalance,
     formatFiat,
+    shortenAddress,
     getAccountIcon (assetChain) {
       if (['ETH', 'RBTC'].includes(assetChain)) {
         return {
