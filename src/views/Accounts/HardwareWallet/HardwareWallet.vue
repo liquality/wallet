@@ -37,6 +37,7 @@ import {
   LEDGER_OPTIONS
 } from '@/utils/ledger-bridge-provider'
 import { getAssetIcon, getChainFromAsset } from '@/utils/asset'
+import { getNextAccountColor } from '@/utils/accounts'
 
 const LEDGER_PER_PAGE = 5
 
@@ -138,7 +139,8 @@ export default {
               addresses: [item.account.address],
               assets,
               index: item.index,
-              type: walletType || this.selectedAsset.types[0]
+              type: walletType || this.selectedAsset.types[0],
+              color: getNextAccountColor(chain, item.index)
             }
             const createdAccount = await this.createAccount({
               network: this.activeNetwork,

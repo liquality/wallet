@@ -9,7 +9,8 @@ export const accountCreator = (payload) => {
     addresses,
     assets,
     balances,
-    type
+    type,
+    color
   } = account
 
   const _addresses = addresses.map(a => {
@@ -31,7 +32,8 @@ export const accountCreator = (payload) => {
     assets,
     balances: balances || {},
     createdAt,
-    updatedAt: null
+    updatedAt: null,
+    color
   }
 }
 
@@ -46,18 +48,24 @@ export const accountColors = [
   '#EAB300',
   '#F7CA4F',
   '#A1E44A',
-  '#48D870'
+  '#3AB24D'
 ]
 
 export const chainDefaultColors = {
   BTC: '#EAB300',
   ETH: '#4F67E4',
-  RBTC: '#3AB34D',
+  RBTC: '#3AB24D',
   BNB: '#F7CA4F'
 }
 
-export const getNextAccountColor = (chain, count) => {
-
+export const getNextAccountColor = (chain, index) => {
+  const defaultColor = chainDefaultColors[chain]
+  const defaultIndex = accountColors.findIndex(c => c === defaultColor)
+  const finalIndex = index + defaultIndex
+  if (finalIndex >= accountColors.length) {
+    return accountColors[defaultIndex]
+  }
+  return accountColors[finalIndex]
 }
 
 export const ACCOUNT_TYPE_OPTIONS = [

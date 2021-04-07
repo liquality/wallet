@@ -32,13 +32,13 @@
           </button>
         </div>
         <div class="account-container_actions">
-          <router-link :to="`/accounts/${account.id}/${asset}/send`"><button class="account-container_actions_button">
+          <router-link :to="`/accounts/${accountId}/${asset}/send`"><button class="account-container_actions_button">
             <div class="account-container_actions_button_wrapper"><SendIcon class="account-container_actions_button_icon" /></div>Send
           </button></router-link>
-          <router-link :to="`/accounts/${account.id}/${asset}/swap`"><button class="account-container_actions_button">
+          <router-link :to="`/accounts/${accountId}/${asset}/swap`"><button class="account-container_actions_button">
             <div class="account-container_actions_button_wrapper"><SwapIcon class="account-container_actions_button_icon account-container_actions_button_swap" /></div>Swap
           </button></router-link>
-          <router-link v-bind:to="`/accounts/${account.id}/${asset}/receive`"><button class="account-container_actions_button">
+          <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`"><button class="account-container_actions_button">
             <div class="account-container_actions_button_wrapper"><ReceiveIcon class="account-container_actions_button_icon" /></div>Receive
           </button></router-link>
         </div>
@@ -153,6 +153,7 @@ export default {
       const addresses = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
       this.address = cryptoassets[this.asset]?.formatAddress(addresses[0])
     }
+    await this.refresh()
     this.activityData = [...this.assetHistory]
   },
   watch: {

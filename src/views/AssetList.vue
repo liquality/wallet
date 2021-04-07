@@ -23,7 +23,8 @@
       </div>
       <div class="list-items">
         <WalletAccounts @item-selected="onAccountSelected"
-                        :search="search"/>
+                        :search="search"
+                        :accounts="accountsData"/>
       </div>
     </div>
   </div>
@@ -33,8 +34,12 @@
 import SearchIcon from '@/assets/icons/search.svg'
 import WalletAccounts from '@/components/WalletAccounts'
 import NavBar from '@/components/NavBar'
+import { mapGetters } from 'vuex'
 
 export default {
+  computed: {
+    ...mapGetters(['accountsData'])
+  },
   components: {
     NavBar,
     WalletAccounts,

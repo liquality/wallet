@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { encrypt } from '../../utils/crypto'
 import buildConfig from '../../build.config'
-import { accountCreator } from '@/utils/accounts'
+import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { getChainFromAsset } from '@/utils/asset'
 
 export const createWallet = async ({ state, getters, commit }, { key, mnemonic }) => {
@@ -21,7 +21,7 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
   commit('ENABLE_ASSETS', { network: 'mainnet', walletId: id, assets: buildConfig.defaultAssets.mainnet })
   commit('ENABLE_ASSETS', { network: 'testnet', walletId: id, assets: buildConfig.defaultAssets.testnet })
 
-  buildConfig.networks.forEach(async network => {
+  for (const network of buildConfig.networks) {
     const assetKeys = enabledAssets[network]?.[id] || []
 
     buildConfig.chains.forEach(async chain => {
@@ -31,12 +31,12 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
       })
 
       const addresses = []
-      assets.forEach(async asset => {
+      for (const asset of assets) {
         const _address = await getters.client(network, id, asset).wallet.getUnusedAddress()
         if (!addresses.includes(_address.address)) {
           addresses.push(_address.address)
         }
-      })
+      }
 
       const _account = accountCreator(
         {
@@ -48,12 +48,13 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
             assets,
             balances: {},
             type: 'default',
-            index: 0
+            index: 0,
+            color: getNextAccountColor(chain, 0)
           }
         })
 
       commit('CREATE_ACCOUNT', { network, walletId: id, account: _account })
     })
-  })
+  }
   return wallet
 }

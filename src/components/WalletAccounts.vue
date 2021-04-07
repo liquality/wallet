@@ -4,13 +4,18 @@
       <ListItem v-if="account.chain === 'BTC'"
                 @item-selected="selectItem(account)">
           <template #prefix>
-            <div>&nbsp;</div>
+            <div class="account-color"
+                 :style="{'background-color': account.color}">
+            </div>
           </template>
           <template #icon>
             <img :src="getAssetIcon(account.chain)"
                  class="asset-icon" />
           </template>
           {{ account.name }}
+          <template #sub-title>
+            {{ account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : '' }}
+          </template>
           <template #detail>
             <div class="detail-content">
               <div class="ledger-tag"
@@ -31,15 +36,23 @@
           @item-selected="toogleShowAccountAssets(account.id)"
         >
           <template #prefix>
-            <MinusIcon v-if="showAccountAssets[account.id] === true"
+             <div class="account-color"
+                 :style="{'background-color': account.color}">
+            </div>
+            <div class="prefix-icon-container">
+              <MinusIcon v-if="showAccountAssets[account.id] === true"
               class="prefix-icon"/>
-            <PlusIcon v-else class="prefix-icon"/>
+              <PlusIcon v-else class="prefix-icon"/>
+            </div>
           </template>
           <template #icon>
-            <img :src="getAssetIcon(account.chain)"
+            <img :src="getAccountIcon(account.chain)"
                  class="asset-icon" />
           </template>
           {{ account.name }}
+          <template #sub-title>
+            {{ account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : '' }}
+          </template>
           <template #detail>
             <div class="ledger-tag"
                    v-if="account.type && account.type.includes('ledger')">
@@ -55,7 +68,12 @@
         <ListItem v-for="asset in account.assets"
                  :key="asset"
                  @item-selected="selectItem(account, asset)">
-          <template #icon>
+          <template #prefix>
+             <div class="account-color"
+                 :style="{'background-color': account.color}">
+            </div>
+          </template>
+          <template #icon class="account-asset-item">
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </template>
           {{ getAssetName(asset) }}
@@ -73,13 +91,13 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
 import ListItem from '@/components/ListItem'
 import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
+import { shortenAddress } from '@/utils/address'
 
 export default {
   components: {
@@ -87,21 +105,27 @@ export default {
     PlusIcon,
     MinusIcon
   },
-  props: ['search'],
+  props: ['search', 'accounts'],
   data () {
     return {
       showAccountAssets: {},
       filteredItems: []
     }
   },
-  computed: {
-    ...mapState(['fiatRates', 'activeWalletId']),
-    ...mapGetters(['accountsData'])
-  },
   methods: {
     getAssetIcon,
     prettyBalance,
     formatFiat,
+    shortenAddress,
+    getAccountIcon (assetChain) {
+      if (['ETH', 'RBTC'].includes(assetChain)) {
+        return {
+          ETH: getAssetIcon('eth_account'),
+          RBTC: getAssetIcon('rsk_account')
+        }[assetChain]
+      }
+      return getAssetIcon(assetChain)
+    },
     getAssetName (asset) {
       return cryptoassets[asset] ? cryptoassets[asset].name : asset
     },
@@ -113,18 +137,18 @@ export default {
     },
     makeSearch (newSearch, oldSearch) {
       if (newSearch && newSearch !== oldSearch) {
-        this.filteredItems = this.accountsData.filter(
+        this.filteredItems = this.accounts.filter(
           account =>
             account.chain.toUpperCase().includes(newSearch.toUpperCase()) ||
             account.assets.includes(newSearch.toUpperCase())
         )
       } else {
-        this.filteredItems = [...this.accountsData]
+        this.filteredItems = [...this.accounts]
       }
     }
   },
   created () {
-    this.showAccountAssets = this.accountsData.map(a => a.id).reduce(
+    this.showAccountAssets = this.accounts.map(a => a.id).reduce(
       (accum, id) => {
         return {
           ...accum,
@@ -153,7 +177,6 @@ export default {
 
 .account-assets {
   margin: 0;
-  padding-left: 30px;
   height: auto;
   width: 100%;
   display: none;
@@ -161,9 +184,30 @@ export default {
   &.active {
     display: block;
   }
+
+  .account-asset-item {
+    padding-left: 30px;
+  }
+
+  .list-item-icon {
+    margin-left: 33px !important;
+  }
 }
 
-.prefix-icon {
-  width: 12px;
+.prefix-icon-container {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+  .prefix-icon {
+    width: 12px;
+  }
+}
+
+.account-color {
+  width: 5px;
+  height: 60px;
+  position: absolute;
+  left: 0;
+  margin-right: 5px;
 }
 </style>
