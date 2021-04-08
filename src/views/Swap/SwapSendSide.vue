@@ -16,11 +16,11 @@
       </div>
     </div>
     <div class="swap-send-main">
-      <div class="swap-send-main-input">
+      <div class="swap-send-main-input-container">
         <input
           v-if="showAmountsInFiat"
           type="text"
-          class="form-control input-amount"
+          class="form-control swap-send-main-input"
           :class="{ 'is-invalid': showErrors && amountError }"
           :value="sendAmountFiat"
           @input="$emit('update:sendAmountFiat', $event.target.value)"
@@ -31,7 +31,7 @@
         <input
           v-else
           type="text"
-          class="form-control input-amount"
+          class="form-control swap-send-main-input"
           :class="{ 'is-invalid': showErrors && amountError }"
           :value="sendAmount"
           @input="$emit('update:sendAmount', $event.target.value)"
@@ -40,6 +40,16 @@
           autocomplete="off"
           :disabled="!hasMarket"
         />
+        <div class="swap-send-main-icon">
+          <img
+                :src="getAssetIcon(asset)"
+                class="asset-icon"
+              />
+          <span class="asset-name">
+            {{ asset }}
+          </span>
+          <ChevronRightIcon />
+        </div>
       </div>
       <div class="swap-send-main-errors" v-if="showErrors && amountError">
         <small class="text-danger form-text text-right">
@@ -95,9 +105,12 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
+import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 
 export default {
-  components: {},
+  components: {
+    ChevronRightIcon
+  },
   data () {
     return {
       showAmountsInFiat: false
@@ -126,6 +139,9 @@ export default {
     },
     setSendAmount (amount) {
       this.$emit('send-amount-change', amount)
+    },
+    assetIconClick () {
+      this.$emit('from-asset-icon-click')
     }
   }
 }
@@ -151,8 +167,28 @@ export default {
   .swap-send-main {
     display: flex;
     flex-direction: column;
-    .swap-send-main-input {
+    .swap-send-main-input-container {
       display: flex;
+    }
+
+    .swap-send-main-icon {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+
+      .asset-name {
+        margin-left: 5px;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 24px;
+        line-height: 29px;
+      }
+
+      svg {
+        width: 8px;
+        margin-left: 10px;
+      }
     }
 
     .swap-send-main-errors {

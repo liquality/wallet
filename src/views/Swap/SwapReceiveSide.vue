@@ -16,11 +16,11 @@
       </div>
     </div>
     <div class="swap-receive-main">
-      <div class="swap-receive-main-input">
+      <div class="swap-receive-main-input-container">
         <input
                 v-if="showAmountsInFiat"
                 type="text"
-                class="form-control input-amount"
+                class="form-control swap-receive-main-input"
                 :value="receiveAmountFiat"
                 @input="$emit('update:receiveAmountFiat', $event.target.value)"
                 placeholder="0.00"
@@ -109,6 +109,9 @@ export default {
     closeReceiveAt () {
       this.enterSendToAddress = false
       this.$emit('update:sendTo', null)
+    },
+    assetIconClick () {
+      this.$emit('to-asset-icon-click')
     }
   }
 }
