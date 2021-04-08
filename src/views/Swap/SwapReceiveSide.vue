@@ -6,43 +6,40 @@
       </div>
       <div class="swap-receive-top-amount">
         <div class="btn btn-option label-append" @click="toogleShowAmountsFiat">
-           <span v-if="showAmountsInFiat" :style="getAssetColorStyle(toAsset)">
-                {{ `${toAsset} ${receiveAmount}` }}
-              </span>
-              <span v-else>
-                {{ receiveAmountFiat }}
-              </span>
+          <span v-if="showAmountsInFiat" :style="getAssetColorStyle(toAsset)">
+            {{ `${toAsset} ${receiveAmount}` }}
+          </span>
+          <span v-else>
+            {{ receiveAmountFiat }}
+          </span>
         </div>
       </div>
     </div>
     <div class="swap-receive-main">
       <div class="swap-receive-main-input-container">
         <input
-                v-if="showAmountsInFiat"
-                type="text"
-                class="form-control swap-receive-main-input"
-                :value="receiveAmountFiat"
-                @input="$emit('update:receiveAmountFiat', $event.target.value)"
-                placeholder="0.00"
-                autocomplete="off"
-                :disabled="!hasMarket"
-              />
-              <input
-                v-else
-                type="text"
-                class="form-control swap-receive-main-input"
-                :value="receiveAmount"
-                @input="$emit('update:receiveAmount', $event.target.value)"
-                placeholder="0.00"
-                :style="getAssetColorStyle(toAsset)"
-                autocomplete="off"
-                :disabled="!hasMarket"
-              />
-               <div class="swap-receive-main-icon">
-          <img
-                :src="getAssetIcon(toAsset)"
-                class="asset-icon"
-              />
+          v-if="showAmountsInFiat"
+          type="text"
+          class="form-control swap-receive-main-input"
+          :value="receiveAmountFiat"
+          @input="$emit('update:receiveAmountFiat', $event.target.value)"
+          placeholder="0.00"
+          autocomplete="off"
+          :disabled="!hasMarket"
+        />
+        <input
+          v-else
+          type="text"
+          class="form-control swap-receive-main-input"
+          :value="receiveAmount"
+          @input="$emit('update:receiveAmount', $event.target.value)"
+          placeholder="0.00"
+          :style="getAssetColorStyle(toAsset)"
+          autocomplete="off"
+          :disabled="!hasMarket"
+        />
+        <div class="swap-receive-main-icon">
+          <img :src="getAssetIcon(toAsset)" class="asset-icon" />
           <span class="asset-name">
             {{ toAsset }}
           </span>
@@ -50,40 +47,43 @@
         </div>
       </div>
       <div class="swap-receive-main-sub">
-                   <small
-              class="form-text d-flex justify-content-between"
-              v-if="!enterSendToAddress"
-            >
-              <div class="swap_limits">
-                <a @click="enterSendToAddress = true">
-                  + Receive at external address
-                </a>
-              </div>
-            </small>
+        <small
+          class="form-text d-flex justify-content-between"
+          v-if="!enterSendToAddress"
+        >
+          <div class="swap_limits">
+            <a @click="enterSendToAddress = true">
+              + Receive at external address
+            </a>
+          </div>
+        </small>
       </div>
       <div class="swap-receive-main-asset"></div>
     </div>
     <div class="swap-receive-bottom" v-if="enterSendToAddress">
-            <label class="w-100 d-flex align-items-center justify-content-between" for="sendTo">
-              <div>Receive at</div>
-              <div>
-                <CloseIcon
-                class="float-right icon-sm icon-btn"
-                @click="closeReceiveAt"
-              />
-              </div>
-            </label>
-            <div class="input-group">
-              <input
-                type="text"
-                :value="sendTo"
-                @input="$emit('update:sendTo', $event.target.value)"
-                class="form-control form-control-sm"
-                id="to"
-                placeholder="External Receiving Address"
-                autocomplete="off"
-              />
-            </div>
+      <label
+        class="w-100 d-flex align-items-center justify-content-between"
+        for="sendTo"
+      >
+        <div>Receive at</div>
+        <div>
+          <CloseIcon
+            class="float-right icon-sm icon-btn"
+            @click="closeReceiveAt"
+          />
+        </div>
+      </label>
+      <div class="input-group">
+        <input
+          type="text"
+          :value="sendTo"
+          @input="$emit('update:sendTo', $event.target.value)"
+          class="form-control form-control-sm"
+          id="to"
+          placeholder="External Receiving Address"
+          autocomplete="off"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -149,7 +149,7 @@ export default {
   .swap-receive-main {
     display: flex;
     flex-direction: column;
-       .swap-receive-main-input-container {
+    .swap-receive-main-input-container {
       display: flex;
     }
 
@@ -177,7 +177,6 @@ export default {
       display: flex;
       width: 100%;
     }
-
   }
 
   .swap-receive-bottom {
@@ -191,7 +190,6 @@ export default {
       font-weight: normal;
       font-size: $font-size-tiny;
     }
-
   }
 }
 </style>
