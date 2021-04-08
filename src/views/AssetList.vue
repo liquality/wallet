@@ -38,14 +38,31 @@ import { mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters(['accountsData'])
+    ...mapGetters(['accountsData']),
+    accounts () {
+      if (this.excludeAsset) {
+        return this.accountsData.filter(a => {
+          const assets = a.assets.filter(
+            asset => asset !== this.excludeAsset
+          )
+          return {
+            ...a,
+            assets
+          }
+        })
+      }
+      return this.accountsData
+    }
   },
   components: {
     NavBar,
     WalletAccounts,
     SearchIcon
   },
-  props: ['action'],
+  props: [
+    'action',
+    'excludeAsset'
+  ],
   data () {
     return {
       search: '',

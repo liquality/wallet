@@ -17,174 +17,31 @@
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
-          <div class="form-group">
-            <span class="float-left"><label for="amount">Send</label></span>
-            <div class="float-right btn btn-option label-append"
-                 @click="toogleShowAmountsFiat">
-              <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
-                {{ `${asset} ${sendAmount}` }}
-              </span>
-              <span v-else>
-                {{ sendAmountFiat }}
-              </span>
-            </div>
-            <div class="input-group swap_asset">
-              <div class="input-group-append">
-                <AssetDropdown :assets="assetList"
-                           :selected="{name: asset, label: asset}"
-                           @asset-changed="setAsset"
-                           :show-search="true"
-                />
-              </div>
-              <input
-                v-if="showAmountsInFiat"
-                type="text"
-                class="form-control input-amount"
-                :class="{ 'is-invalid': showErrors && amountError }"
-                v-model="sendAmountFiat"
-                placeholder="0.00"
-                autocomplete="off"
-                :disabled="!market"
-              />
-              <input
-                v-else
-                type="text"
-                class="form-control input-amount"
-                :class="{ 'is-invalid': showErrors && amountError }"
-                v-model="sendAmount"
-                placeholder="0.00"
-                :style="getAssetColorStyle(asset)"
-                autocomplete="off"
-                :disabled="!market"
-              />
-            </div>
-            <small
-              v-if="showErrors && amountError"
-              class="text-danger form-text text-right"
-            >
-              {{ amountError }}
-            </small>
-            <div class="form-text d-flex justify-content-between">
-              <span class="label-sub">
-                <span class="text-muted">Available</span>
-                {{ available }} {{ asset }}
-              </span>
-              <div class="float-right btn-group">
-                <v-popover offset="1" trigger="hover focus" class="mr-2">
-                  <button
-                    :class="{
-                      active: amountOption === 'min' && market
-                     }"
-                    :disabled="!market"
-                    class="btn btn-option"
-                    @click="setSendAmount(min)"
-                  >
-                    Min
-                  </button>
-                  <template slot="popover">
-                    <p class="my-0 text-right">{{ min }} {{ asset }}</p>
-                    <p class="text-muted my-0 text-right">
-                      {{ prettyFiatBalance(min, fiatRates[asset]) }} USD
-                    </p>
-                  </template>
-                </v-popover>
-                <v-popover offset="1" trigger="hover focus">
-                  <button
-                     :class="{
-                      active: amountOption === 'max' && market
-                     }"
-                     :disabled="!market"
-                    class="btn btn-option tooltip-target"
-                    @click="setSendAmount(max)"
-                  >
-                    Max
-                  </button>
-                  <template slot="popover">
-                    <p class="my-0 text-right">{{ max }} {{ asset }}</p>
-                    <p class="text-muted my-0 text-right">
-                      {{ prettyFiatBalance(max, fiatRates[asset]) }} USD
-                    </p>
-                  </template>
-                </v-popover>
-              </div>
-            </div>
-          </div>
-          <div class="form-group mt-30">
-            <span class="float-left">
-              <label for="amount">Receive</label>
-            </span>
-            <div class="float-right btn btn-option label-append"
-                 @click="toogleShowAmountsFiat">
-              <span v-if="showAmountsInFiat" :style="getAssetColorStyle(toAsset)">
-                {{ `${toAsset} ${receiveAmount}` }}
-              </span>
-              <span v-else>
-                {{ receiveAmountFiat }}
-              </span>
-            </div>
-            <div class="input-group swap_asset">
-              <div class="input-group-append">
-                <AssetDropdown :assets="toAssetList"
-                          :selected="{name: toAsset, label: toAsset}"
-                          @asset-changed="setToAsset"
-                          :show-search="true"
-                />
-              </div>
-              <input
-                v-if="showAmountsInFiat"
-                type="text"
-                class="form-control input-amount"
-                v-model="receiveAmountFiat"
-                placeholder="0.00"
-                autocomplete="off"
-                :disabled="!market"
-              />
-              <input
-                v-else
-                type="text"
-                class="form-control input-amount"
-                v-model="receiveAmount"
-                placeholder="0.00"
-                :style="getAssetColorStyle(toAsset)"
-                autocomplete="off"
-                :disabled="!market"
-              />
-            </div>
-            <small
-              class="form-text d-flex justify-content-between"
-              v-if="!enterSendToAddress"
-            >
-              <div class="swap_limits">
-                <a @click="enterSendToAddress = true">
-                  + Receive at external address
-                </a>
-              </div>
-            </small>
-          </div>
-          <div class="form-group" v-if="enterSendToAddress">
-            <label class="w-100 d-flex align-items-center justify-content-between" for="amount">
-              <div>Receive at</div>
-              <div>
-                <CloseIcon
-                class="float-right icon-sm icon-btn"
-                @click="
-                  enterSendToAddress = false;
-                  sendTo = null;
-                "
-              />
-              </div>
-            </label>
-            <div class="input-group">
-              <input
-                type="text"
-                v-model="sendTo"
-                class="form-control form-control-sm"
-                id="to"
-                placeholder="External Receiving Address"
-                autocomplete="off"
-              />
-            </div>
-          </div>
+          <SwapSendSide :asset="asset"
+                        :send-amount="sendAmount"
+                        :send-amount-fiat="sendAmountFiat"
+                        @update:sendAmount="(amount) => sendAmount = amount"
+                        @update:sendAmountFiat="(amount) => sendAmountFiat = amount"
+                        :max="max"
+                        :min="min"
+                        :available="available"
+                        :max-fiat="prettyFiatBalance(max, fiatRates[asset])"
+                        :min-fiat="prettyFiatBalance(min, fiatRates[asset])"
+                        :show-errors="showErrors"
+                        :amount-error="amountError"
+                        :has-market="!!market"
+                        :amount-option="amountOption"
+                        @send-amount-change="setSendAmount"/>
+
+          <SwapReceiveSide class="mt-30"
+                           :to-asset="toAsset"
+                           :receive-amount="receiveAmount"
+                           :receive-amount-fiat="receiveAmountFiat"
+                           :send-to="sendTo"
+                           @update:receiveAmount="(amount) => receiveAmount = amount"
+                           @update:receiveAmountFiat="(amount) => receiveAmountFiat = amount"
+                           @update:sendTo="(to) => sendTo = to"
+                           :has-market="!!market"/>
         </div>
         <div class="mt-3 form-group">
           <label>Rate</label>
@@ -410,9 +267,9 @@ import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
-import CloseIcon from '@/assets/icons/close.svg'
 import DetailsContainer from '@/components/DetailsContainer'
-import AssetDropdown from '@/components/AssetDropdown'
+import SwapSendSide from './SwapSendSide'
+import SwapReceiveSide from './SwapReceiveSide'
 
 export default {
   components: {
@@ -426,8 +283,8 @@ export default {
     SpinnerIcon,
     DetailsContainer,
     CopyIcon,
-    CloseIcon,
-    AssetDropdown
+    SwapSendSide,
+    SwapReceiveSide
   },
   data () {
     return {
