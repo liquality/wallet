@@ -30,7 +30,7 @@
               <input
                 v-else
                 type="text"
-                class="form-control input-amount"
+                class="form-control swap-receive-main-input"
                 :value="receiveAmount"
                 @input="$emit('update:receiveAmount', $event.target.value)"
                 placeholder="0.00"
@@ -38,6 +38,16 @@
                 autocomplete="off"
                 :disabled="!hasMarket"
               />
+               <div class="swap-receive-main-icon">
+          <img
+                :src="getAssetIcon(toAsset)"
+                class="asset-icon"
+              />
+          <span class="asset-name">
+            {{ toAsset }}
+          </span>
+          <ChevronRightIcon />
+        </div>
       </div>
       <div class="swap-receive-main-sub">
                    <small
@@ -81,10 +91,12 @@
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
 import CloseIcon from '@/assets/icons/close.svg'
+import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 
 export default {
   components: {
-    CloseIcon
+    CloseIcon,
+    ChevronRightIcon
   },
   data () {
     return {
@@ -137,8 +149,28 @@ export default {
   .swap-receive-main {
     display: flex;
     flex-direction: column;
-    .swap-receive-main-input {
+       .swap-receive-main-input-container {
       display: flex;
+    }
+
+    .swap-receive-main-icon {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+
+      .asset-name {
+        margin-left: 5px;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 24px;
+        line-height: 29px;
+      }
+
+      svg {
+        width: 8px;
+        margin-left: 10px;
+      }
     }
 
     .swap-receive-main-errors {
