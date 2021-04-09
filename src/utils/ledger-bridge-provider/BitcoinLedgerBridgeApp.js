@@ -6,7 +6,7 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async signMessageNew (...payload) {
-    return await super.callToBridge({
+    return await this.callToBridge({
       method: 'signMessageNew',
       callType: 'ASYNC_METHOD',
       payload
@@ -14,7 +14,7 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async getWalletPublicKey (...payload) {
-    return await super.callToBridge({
+    return await this.callToBridge({
       method: 'getWalletPublicKey',
       callType: 'ASYNC_METHOD',
       payload
@@ -22,7 +22,7 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async splitTransaction (...payload) {
-    return await super.callToBridge({
+    return await this.callToBridge({
       method: 'splitTransaction',
       callType: 'METHOD',
       payload
@@ -30,7 +30,7 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async createPaymentTransactionNew (...payload) {
-    return await super.callToBridge({
+    return await this.callToBridge({
       method: 'createPaymentTransactionNew',
       callType: 'ASYNC_METHOD',
       payload
@@ -38,7 +38,7 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async serializeTransactionOutputs (...payload) {
-    return await super.callToBridge({
+    return await this.callToBridge({
       method: 'serializeTransactionOutputs',
       callType: 'METHOD',
       payload

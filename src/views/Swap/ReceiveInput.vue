@@ -19,7 +19,7 @@
       <div class="swap-receive-main-input-container">
         <input
           v-if="showAmountsInFiat"
-          type="text"
+          type="number"
           class="form-control swap-receive-main-input"
           :value="receiveAmountFiat"
           @input="$emit('update:receiveAmountFiat', $event.target.value)"
@@ -29,7 +29,7 @@
         />
         <input
           v-else
-          type="text"
+          type="number"
           class="form-control swap-receive-main-input"
           :value="receiveAmount"
           @input="$emit('update:receiveAmount', $event.target.value)"
@@ -38,7 +38,7 @@
           autocomplete="off"
           :disabled="!hasMarket"
         />
-        <div class="swap-receive-main-icon">
+        <div class="swap-receive-main-icon" @click="assetIconClick">
           <img :src="getAssetIcon(toAsset)" class="asset-icon" />
           <span class="asset-name">
             {{ toAsset }}
@@ -46,19 +46,15 @@
           <ChevronRightIcon />
         </div>
       </div>
-      <div class="swap-receive-main-sub">
-        <small
-          class="form-text d-flex justify-content-between"
-          v-if="!enterSendToAddress"
+    </div>
+    <div class="swap-receive-bottom" v-if="!enterSendToAddress">
+      <small
+          class="form-text d-flex align-items-center justify-content-between"
         >
-          <div class="swap_limits">
-            <a @click="enterSendToAddress = true">
-              + Receive at external address
+          <a @click="enterSendToAddress = true">
+              + Receive at external wallet
             </a>
-          </div>
         </small>
-      </div>
-      <div class="swap-receive-main-asset"></div>
     </div>
     <div class="swap-receive-bottom" v-if="enterSendToAddress">
       <label
@@ -123,7 +119,7 @@ export default {
       this.$emit('update:sendTo', null)
     },
     assetIconClick () {
-      this.$emit('to-asset-icon-click')
+      this.$emit('to-asset-click')
     }
   }
 }
@@ -172,24 +168,12 @@ export default {
         margin-left: 10px;
       }
     }
-
-    .swap-receive-main-errors {
-      display: flex;
-      width: 100%;
-    }
   }
 
   .swap-receive-bottom {
     display: flex;
-    align-items: center;
     flex-direction: column;
-
-    .swap-receive-bottom-available {
-      line-height: 15px;
-      text-transform: none;
-      font-weight: normal;
-      font-size: $font-size-tiny;
-    }
+    margin-top: 10px;
   }
 }
 </style>

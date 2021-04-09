@@ -101,6 +101,7 @@ export default {
     getAssetIcon,
     connect () {
       if (this.selectedAsset) {
+        console.log('connect on Connect')
         this.$emit('on-connect', { asset: this.selectedAsset })
       }
     },

@@ -12,15 +12,11 @@ export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
   constructor (network = networks.bitcoin, addressType = 'bech32', bridgeUrl) {
     super(network, addressType)
     this._bridgeUrl = bridgeUrl
+    this._ledgerApp = new Proxy(new BitcoinLedgerBridgeApp(this._bridgeUrl), { get: this.errorProxy.bind(this) })
   }
 
   async getApp () {
-    return new Promise((resolve) => {
-      if (!this._ledgerApp) {
-        this._ledgerApp = new Proxy(new BitcoinLedgerBridgeApp(), { get: this.errorProxy.bind(this) })
-      }
-      resolve(this._ledgerApp)
-    })
+    return Promise.resolve(this._ledgerApp)
   }
 
   async _buildTransaction (_outputs, feePerByte, fixedInputs) {

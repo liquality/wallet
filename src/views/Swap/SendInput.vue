@@ -19,7 +19,7 @@
       <div class="swap-send-main-input-container">
         <input
           v-if="showAmountsInFiat"
-          type="text"
+          type="number"
           class="form-control swap-send-main-input"
           :class="{ 'is-invalid': showErrors && amountError }"
           :value="sendAmountFiat"
@@ -30,7 +30,7 @@
         />
         <input
           v-else
-          type="text"
+          type="number"
           class="form-control swap-send-main-input"
           :class="{ 'is-invalid': showErrors && amountError }"
           :value="sendAmount"
@@ -40,7 +40,7 @@
           autocomplete="off"
           :disabled="!hasMarket"
         />
-        <div class="swap-send-main-icon">
+        <div class="swap-send-main-icon" @click="assetIconClick">
           <img
                 :src="getAssetIcon(asset)"
                 class="asset-icon"
@@ -56,7 +56,6 @@
           {{ amountError }}
         </small>
       </div>
-      <div class="swap-send-main-asset"></div>
     </div>
     <div class="swap-send-bottom">
       <div class="swap-send-bottom-options">
@@ -97,7 +96,7 @@
       </div>
       <div class="swap-send-bottom-available">
         <span class="text-muted">Available</span>
-        {{ available }} {{ asset }}
+        {{ isNaN(available) ? '0' : available || '0' }} {{ asset }}
       </div>
     </div>
   </div>
@@ -141,7 +140,7 @@ export default {
       this.$emit('send-amount-change', amount)
     },
     assetIconClick () {
-      this.$emit('from-asset-icon-click')
+      this.$emit('from-asset-click')
     }
   }
 }

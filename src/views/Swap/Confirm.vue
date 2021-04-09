@@ -1,13 +1,9 @@
 <template>
   <div class="view-container">
-    <div class="swap" v-if="currentStep === 'inputs'">
+    <div class="swap" v-if="!showConfirm">
       <NavBar
         showBack="true"
-        :backPath="
-          routeSource === 'assets'
-            ? '/wallet'
-            : `/accounts/${this.account.id}/${this.asset}`
-        "
+        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${this.asset}`"
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Swap
@@ -21,37 +17,31 @@
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
-          <SendInput
-            :asset="asset"
-            :send-amount="sendAmount"
-            :send-amount-fiat="sendAmountFiat"
-            @update:sendAmount="(amount) => (sendAmount = amount)"
-            @update:sendAmountFiat="(amount) => (sendAmountFiat = amount)"
-            :max="max"
-            :min="min"
-            :available="available"
-            :max-fiat="prettyFiatBalance(max, fiatRates[asset])"
-            :min-fiat="prettyFiatBalance(min, fiatRates[asset])"
-            :show-errors="showErrors"
-            :amount-error="amountError"
-            :has-market="!!market"
-            @from-asset-click="fromAssetClick"
-            :amount-option="amountOption"
-            @send-amount-change="setSendAmount"
-          />
+          <SwapSendSide :asset="asset"
+                        :send-amount="sendAmount"
+                        :send-amount-fiat="sendAmountFiat"
+                        @update:sendAmount="(amount) => sendAmount = amount"
+                        @update:sendAmountFiat="(amount) => sendAmountFiat = amount"
+                        :max="max"
+                        :min="min"
+                        :available="available"
+                        :max-fiat="prettyFiatBalance(max, fiatRates[asset])"
+                        :min-fiat="prettyFiatBalance(min, fiatRates[asset])"
+                        :show-errors="showErrors"
+                        :amount-error="amountError"
+                        :has-market="!!market"
+                        :amount-option="amountOption"
+                        @send-amount-change="setSendAmount"/>
 
-          <ReceiveInput
-            class="mt-30"
-            :to-asset="toAsset"
-            :receive-amount="receiveAmount"
-            :receive-amount-fiat="receiveAmountFiat"
-            :send-to="sendTo"
-            @update:receiveAmount="(amount) => (receiveAmount = amount)"
-            @update:receiveAmountFiat="(amount) => (receiveAmountFiat = amount)"
-            @update:sendTo="(to) => (sendTo = to)"
-            :has-market="!!market"
-            @to-asset-click="toAssetClick"
-          />
+          <SwapReceiveSide class="mt-30"
+                           :to-asset="toAsset"
+                           :receive-amount="receiveAmount"
+                           :receive-amount-fiat="receiveAmountFiat"
+                           :send-to="sendTo"
+                           @update:receiveAmount="(amount) => receiveAmount = amount"
+                           @update:receiveAmountFiat="(amount) => receiveAmountFiat = amount"
+                           @update:sendTo="(to) => sendTo = to"
+                           :has-market="!!market"/>
         </div>
         <div class="mt-3 form-group">
           <label>Rate</label>
@@ -95,16 +85,14 @@
         </div>
         <div class="wrapper_bottom">
           <div class="button-group">
-            <router-link
-              :to="routeSource === 'assets' ? '/wallet' : `/accounts/${asset}`"
-            >
+            <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${asset}`">
               <button class="btn btn-light btn-outline-primary btn-lg">
                 Cancel
               </button>
             </router-link>
             <button
               class="btn btn-primary btn-lg"
-              @click="currentStep = 'confirm'"
+              @click="showConfirm = true"
               :disabled="!canSwap"
             >
               Review
@@ -113,14 +101,14 @@
         </div>
       </div>
     </div>
-    <div class="swap" v-if="currentStep === 'confirm'">
+    <div class="swap" v-else>
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
       <div class="swap-confirm wrapper form">
         <div class="wrapper_top form">
           <div>
-            <label>Send</label>
+            <label> Send </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="confirm-value" :style="getAssetColorStyle(asset)">
                 {{ sendAmount }} {{ asset }}
@@ -129,29 +117,25 @@
             </div>
           </div>
           <div class="detail-group">
-            <label class="text-muted">Network Fee</label>
+            <label class="text-muted"> Network Fee </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div>~{{ totalFees[assetChain] }} {{ sendFeeType }}</div>
               <div class="details-text">
                 ${{
-                  prettyFiatBalance(
-                    totalFees[assetChain],
-                    fiatRates[assetChain],
-                  )
+                  prettyFiatBalance(totalFees[assetChain], fiatRates[assetChain])
                 }}
               </div>
             </div>
           </div>
           <div class="detail-group">
-            <label class="text-muted">Amount + Fees</label>
+            <label class="text-muted"> Amount + Fees </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold">
                 <span v-if="asset === assetChain">
                   {{ sendAmountSameAsset }} {{ sendFeeType }}
                 </span>
                 <span v-else>
-                  {{ sendAmount }} {{ asset }} + {{ totalFees[assetChain] }}
-                  {{ sendFeeType }}
+                  {{ sendAmount }} {{ asset }} + {{ totalFees[assetChain] }} {{ sendFeeType }}
                 </span>
               </div>
               <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
@@ -159,10 +143,8 @@
           </div>
 
           <div class="mt-20">
-            <label>Receive</label>
-            <div
-              class="d-flex align-items-center justify-content-between my-0 py-0"
-            >
+            <label> Receive </label>
+            <div class="d-flex align-items-center justify-content-between my-0 py-0">
               <div class="confirm-value" :style="getAssetColorStyle(toAsset)">
                 {{ receiveAmount }} {{ toAsset }}
               </div>
@@ -170,59 +152,53 @@
             </div>
           </div>
           <div class="detail-group">
-            <label class="text-muted">Network Fee</label>
-            <div
-              class="d-flex align-items-center justify-content-between my-0 py-0"
-            >
+            <label class="text-muted"> Network Fee </label>
+            <div class="d-flex align-items-center justify-content-between my-0 py-0">
               <div>~{{ totalFees[toAssetChain] }} {{ receiveFeeType }}</div>
               <div class="details-text">
                 ${{
-                  prettyFiatBalance(
-                    totalFees[toAssetChain],
-                    fiatRates[toAssetChain],
-                  )
+                  prettyFiatBalance(totalFees[toAssetChain], fiatRates[toAssetChain])
                 }}
               </div>
             </div>
           </div>
           <div class="detail-group">
-            <label class="text-muted">Amount - Fees</label>
+            <label class="text-muted"> Amount - Fees </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold">
                 <span v-if="toAsset === toAssetChain">
                   {{ receiveAmountSameAsset }} {{ receiveFeeType }}
                 </span>
                 <span v-else>
-                  {{ receiveAmount }} {{ toAsset }} -
-                  {{ totalFees[toAssetChain] }} {{ receiveFeeType }}
+                  {{ receiveAmount }} {{ toAsset }} - {{ totalFees[toAssetChain] }} {{ receiveFeeType }}
                 </span>
               </div>
               <div class="font-weight-bold">${{ totalToReceiveInFiat }}</div>
             </div>
           </div>
           <div class="detail-group" v-if="sendTo">
-            <label class="text-muted">Receive At</label>
-            {{ shortenAddress(sendTo) }}
-            <CopyIcon
-              class="copy-icon"
-              @click="copy(sendTo)"
-              v-tooltip.bottom="{
-                content: sendToCopied ? 'Copied!' : 'Copy',
-                hideOnTargetClick: false,
-              }"
-            />
+            <label class="text-muted"> Receive At </label>
+                {{ shortenAddress(sendTo) }}
+                <CopyIcon
+                  class="copy-icon"
+                  @click="copy(sendTo)"
+                  v-tooltip.bottom="{
+                    content: sendToCopied ? 'Copied!' : 'Copy',
+                    hideOnTargetClick: false,
+                  }"
+                />
           </div>
           <div class="mt-20">
-            <label>Rate</label>
-            <div
-              class="d-flex align-items-center justify-content-between my-0 py-0"
-            >
+            <label> Rate </label>
+            <div class="d-flex align-items-center justify-content-between my-0 py-0">
               <div v-if="market">
                 1 {{ asset }}&nbsp;=&nbsp;{{ bestRateBasedOnAmount }} &nbsp;{{
                   toAsset
                 }}
               </div>
-              <div v-else>1 {{ asset }}&nbsp;=&nbsp;N/A</div>
+              <div v-else>
+                1 {{ asset }}&nbsp;=&nbsp;N/A
+              </div>
             </div>
           </div>
         </div>
@@ -240,7 +216,7 @@
             <button
               class="btn btn-light btn-outline-primary btn-lg"
               v-if="!loading"
-              @click="currentStep = 'inputs'"
+              @click="showConfirm = false"
             >
               Edit
             </button>
@@ -258,15 +234,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="swap" v-else>
-      <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
-        Select Asset
-      </NavBar>
-      <Accounts :exclude-asset="assetSelection === 'to' ? asset : toAsset"
-                :selected-market="selectedMarket"
-                :asset-selection="assetSelection"
-                @asset-selected="assetChanged"/>
     </div>
   </div>
 </template>
@@ -301,9 +268,8 @@ import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import DetailsContainer from '@/components/DetailsContainer'
-import SendInput from './SendInput'
-import ReceiveInput from './ReceiveInput'
-import Accounts from './Accounts'
+import SwapSendSide from './SwapSendSide'
+import SwapReceiveSide from './SwapReceiveSide'
 
 export default {
   components: {
@@ -317,9 +283,8 @@ export default {
     SpinnerIcon,
     DetailsContainer,
     CopyIcon,
-    SendInput,
-    ReceiveInput,
-    Accounts
+    SwapSendSide,
+    SwapReceiveSide
   },
   data () {
     return {
@@ -334,8 +299,7 @@ export default {
       enterSendToAddress: false,
       sendTo: null,
       selectedFee: {},
-      currentStep: 'inputs',
-      assetSelection: 'from',
+      showConfirm: false,
       loading: false,
       sendToCopied: false
     }
@@ -346,12 +310,16 @@ export default {
   },
   created () {
     this.asset = this.routeAsset
-    this.toAsset = ''
+    this.toAsset = Object.keys(this.selectedMarket)[0] || 'N/A'
     this.sendAmount = this.min
     this.updateMarketData({ network: this.activeNetwork })
     this.updateFees({ asset: this.assetChain })
+    if (this.toAssetChain) {
+      this.updateFees({ asset: this.toAssetChain })
+    }
     this.selectedFee = {
-      [this.assetChain]: 'average'
+      [this.assetChain]: 'average',
+      [this.toAssetChain]: 'average'
     }
   },
   computed: {
@@ -369,24 +337,16 @@ export default {
         if (newValue && !isNaN(newValue)) {
           this.stateSendAmount = newValue
         } else {
-          this.stateSendAmount = 0.0
+          this.stateSendAmount = 0.00
         }
 
         if (this.bestRateBasedOnAmount) {
-          this.stateReceiveAmount = dpUI(
-            BN(this.stateSendAmount).times(this.bestRateBasedOnAmount)
-          )
+          this.stateReceiveAmount = dpUI(BN(this.stateSendAmount).times(this.bestRateBasedOnAmount))
         } else {
-          this.stateReceiveAmount = 0.0
+          this.stateReceiveAmount = 0.00
         }
-        this.stateSendAmountFiat = prettyFiatBalance(
-          this.stateSendAmount,
-          this.fiatRates[this.asset]
-        )
-        this.stateReceiveAmountFiat = prettyFiatBalance(
-          this.stateReceiveAmount,
-          this.fiatRates[this.toAsset]
-        )
+        this.stateSendAmountFiat = prettyFiatBalance(this.stateSendAmount, this.fiatRates[this.asset])
+        this.stateReceiveAmountFiat = prettyFiatBalance(this.stateReceiveAmount, this.fiatRates[this.toAsset])
       }
     },
     receiveAmount: {
@@ -397,23 +357,15 @@ export default {
         if (newValue && !isNaN(newValue)) {
           this.stateReceiveAmount = newValue
         } else {
-          this.stateReceiveAmount = 0.0
+          this.stateReceiveAmount = 0.00
         }
         if (this.bestRateBasedOnAmount) {
-          this.stateSendAmount = dpUI(
-            BN(this.stateReceiveAmount).dividedBy(this.bestRateBasedOnAmount)
-          )
+          this.stateSendAmount = dpUI(BN(this.stateReceiveAmount).dividedBy(this.bestRateBasedOnAmount))
         } else {
-          this.stateSendAmount = 0.0
+          this.stateSendAmount = 0.00
         }
-        this.stateSendAmountFiat = prettyFiatBalance(
-          this.stateSendAmount,
-          this.fiatRates[this.asset]
-        )
-        this.stateReceiveAmountFiat = prettyFiatBalance(
-          this.stateReceiveAmount,
-          this.fiatRates[this.toAsset]
-        )
+        this.stateSendAmountFiat = prettyFiatBalance(this.stateSendAmount, this.fiatRates[this.asset])
+        this.stateReceiveAmountFiat = prettyFiatBalance(this.stateReceiveAmount, this.fiatRates[this.toAsset])
       }
     },
     sendAmountFiat: {
@@ -425,16 +377,11 @@ export default {
         this.stateSendAmountFiat = value
         this.stateSendAmount = fiatToCrypto(value, this.fiatRates[this.asset])
         if (this.bestRateBasedOnAmount) {
-          this.stateReceiveAmount = dpUI(
-            BN(this.stateSendAmount).times(this.bestRateBasedOnAmount)
-          )
+          this.stateReceiveAmount = dpUI(BN(this.stateSendAmount).times(this.bestRateBasedOnAmount))
         } else {
           this.stateReceiveAmount = 0
         }
-        this.stateReceiveAmountFiat = prettyFiatBalance(
-          this.stateReceiveAmount,
-          this.fiatRates[this.toAsset]
-        )
+        this.stateReceiveAmountFiat = prettyFiatBalance(this.stateReceiveAmount, this.fiatRates[this.toAsset])
       }
     },
     receiveAmountFiat: {
@@ -444,21 +391,15 @@ export default {
       set (newValue) {
         const value = (newValue || '0').replace('$', '')
         this.stateReceiveAmountFiat = value
-        this.stateReceiveAmount = fiatToCrypto(
-          value,
-          this.fiatRates[this.toAsset]
-        )
+        this.stateReceiveAmount = fiatToCrypto(value, this.fiatRates[this.toAsset])
         if (this.bestRateBasedOnAmount) {
-          this.stateSendAmount = dpUI(
-            BN(this.stateReceiveAmount).dividedBy(this.bestRateBasedOnAmount)
+          this.stateSendAmount = dpUI(BN(this.stateReceiveAmount)
+            .dividedBy(this.bestRateBasedOnAmount)
           )
         } else {
           this.stateSendAmount = 0
         }
-        this.stateSendAmountFiat = prettyFiatBalance(
-          this.stateSendAmount,
-          this.fiatRates[this.asset]
-        )
+        this.stateSendAmountFiat = prettyFiatBalance(this.stateSendAmount, this.fiatRates[this.asset])
       }
     },
     ...mapState([
@@ -472,7 +413,10 @@ export default {
     ]),
     ...mapGetters(['accountItem']),
     assets () {
-      return this.account?.assets.filter((asset) => asset !== this.asset) || []
+      return this.account?.assets
+                 .filter(
+                  (asset) => asset !== this.asset
+                 ) || []
     },
     networkMarketData () {
       return this.marketData[this.activeNetwork]
@@ -493,9 +437,13 @@ export default {
       const amount = BN(this.safeAmount)
       return this.market?.markets.slice().sort((a, b) => {
         if (a && a.sellMin && a.sellMax) {
-          if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax))) {
+          if (amount.gte(BN(a.sellMin)) &&
+            amount.lte(BN(a.sellMax))
+          ) {
             return -1
-          } else if (amount.gte(BN(a.sellMin)) && amount.lte(BN(a.sellMax))) {
+          } else if (amount.gte(BN(a.sellMin)) &&
+                    amount.lte(BN(a.sellMax))
+          ) {
             return 1
           }
         } else {
@@ -515,7 +463,10 @@ export default {
       if (this.market && this.market.sellMax) {
         max = this.market.sellMax
       }
-      return BN.min(BN(this.available), dpUI(max))
+      return BN.min(
+        BN(this.available),
+        dpUI(max)
+      )
     },
     safeAmount () {
       return this.sendAmount || 0
@@ -538,10 +489,7 @@ export default {
       return this.networkMarketData[this.asset]
     },
     ethRequired () {
-      return (
-        [this.assetChain, this.toAssetChain].includes('ETH') &&
-        this.networkWalletBalances.ETH === 0
-      )
+      return [this.assetChain, this.toAssetChain].includes('ETH') && this.networkWalletBalances.ETH === 0
     },
     showErrors () {
       return !this.ethRequired
@@ -562,7 +510,9 @@ export default {
       return null
     },
     canSwap () {
-      if (!this.market || this.ethRequired || this.amountError) {
+      if (!this.market ||
+          this.ethRequired ||
+          this.amountError) {
         return false
       }
 
@@ -640,12 +590,7 @@ export default {
       return BN(this.safeAmount).plus(this.totalFees[this.assetChain])
     },
     totalToSendInFiat () {
-      const fee = BN(
-        prettyFiatBalance(
-          this.totalFees[this.assetChain],
-          this.fiatRates[this.assetChain]
-        )
-      )
+      const fee = BN(prettyFiatBalance(this.totalFees[this.assetChain], this.fiatRates[this.assetChain]))
       const amount = BN(this.stateSendAmountFiat).plus(fee)
       return amount.toFormat(2)
     },
@@ -653,18 +598,15 @@ export default {
       return BN(this.receiveAmount).minus(BN(this.totalFees[this.toAssetChain]))
     },
     totalToReceiveInFiat () {
-      const fee = prettyFiatBalance(
-        this.totalFees[this.toAssetChain],
-        this.fiatRates[this.toAssetChain]
-      )
+      const fee = prettyFiatBalance(this.totalFees[this.toAssetChain], this.fiatRates[this.toAssetChain])
       const amount = BN(this.stateReceiveAmountFiat).minus(fee)
       return amount.toFormat(2)
     },
     assetList () {
-      return this.assets.map((a) => ({ name: a, label: a }))
+      return this.assets.map(a => ({ name: a, label: a }))
     },
     toAssetList () {
-      return this.toAssets.map((a) => ({ name: a, label: a }))
+      return this.toAssets.map(a => ({ name: a, label: a }))
     },
     assetsFeeSelector () {
       return {
@@ -674,12 +616,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'updateMarketData',
-      'updateFees',
-      'newSwap',
-      'showNotification'
-    ]),
+    ...mapActions(['updateMarketData', 'updateFees', 'newSwap', 'showNotification']),
     shortenAddress,
     prettyBalance,
     prettyFiatBalance,
@@ -709,8 +646,8 @@ export default {
         this.amountOption = 'min'
       }
     },
-    setToAsset (toAsset) {
-      this.toAsset = toAsset
+    setToAsset (val) {
+      this.toAsset = val.name
       if (this.amountOption === 'max') {
         this.sendAmount = this.max
       } else {
@@ -719,33 +656,27 @@ export default {
 
       this.resetFees()
     },
-    setFromAsset (asset) {
-      this.asset = asset
+    setAsset (val) {
+      this.asset = val.name
+      this.toAsset = Object.keys(this.selectedMarket)[0]
       this.sendAmount = this.min
       this.resetFees()
     },
     resetFees () {
-      const selectedFee = {}
-      if (this.assetChain) {
-        this.updateFees({ asset: this.assetChain })
-        selectedFee[this.assetChain] = 'average'
+      this.updateFees({ asset: this.assetChain })
+      this.updateFees({ asset: this.toAssetChain })
+      this.selectedFee = {
+        [this.assetChain]: 'average',
+        [this.toAssetChain]: 'average'
       }
-      if (this.toAssetChain) {
-        this.updateFees({ asset: this.toAssetChain })
-        selectedFee[this.toAssetChain] = 'average'
-      }
-      this.selectedFee = { ...selectedFee }
     },
     async swap () {
       try {
-        const fromAmount = cryptoassets[this.asset].currencyToUnit(
-          this.safeAmount
-        )
+        const fromAmount = cryptoassets[this.asset].currencyToUnit(this.safeAmount)
 
         const fee = this.availableFees.has(this.assetChain)
-          ? this.getAssetFees(this.assetChain)[
-            this.selectedFee[this.assetChain]
-          ].fee
+          ? this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]]
+            .fee
           : undefined
 
         const toFee = this.availableFees.has(this.toAssetChain)
@@ -769,7 +700,7 @@ export default {
           toAccountId: this.accountId
         })
         if (this.account?.type.includes('ledger')) {
-          const unsubscribe = this.$store.subscribe(async (mutation) => {
+          const unsubscribe = this.$store.subscribe(async mutation => {
             const { type, payload } = mutation
             if (type === '##BACKGROUND##UPDATE_HISTORY') {
               const { id, updates } = payload
@@ -789,9 +720,7 @@ export default {
                 if (status === 'INITIATED') {
                   unsubscribe()
                   this.loading = false
-                  this.$router.replace(
-                    `/accounts/${this.account?.id}/${this.asset}`
-                  )
+                  this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
                 }
               }
             }
@@ -803,10 +732,7 @@ export default {
         console.error(error)
         const { message } = error
         this.loading = false
-        await this.showNotification({
-          title: 'Error',
-          message: message || error
-        })
+        await this.showNotification({ title: 'Error', message: message || error })
       }
     },
     getSelectedFeeLabel (fee) {
@@ -820,34 +746,10 @@ export default {
       }, 3000)
     },
     back () {
-      this.currentStep = 'inputs'
+      this.showConfirm = false
     },
     toogleShowAmountsFiat () {
       this.showAmountsInFiat = !this.showAmountsInFiat
-    },
-    toAssetClick () {
-      this.assetSelection = 'to'
-      this.currentStep = 'accounts'
-    },
-    fromAssetClick () {
-      this.assetSelection = 'from'
-      this.currentStep = 'accounts'
-    },
-    fromAssetChanged (accountId, fromAsset) {
-      this.fromAccountId = accountId
-      this.setFromAsset(fromAsset)
-    },
-    toAssetChanged (accountId, toAsset) {
-      this.toAccountId = accountId
-      this.setToAsset(toAsset)
-    },
-    assetChanged ({ accountId, asset }) {
-      if (this.assetSelection === 'to') {
-        this.toAssetChanged(accountId, asset)
-      } else {
-        this.fromAssetChanged(accountId, asset)
-      }
-      this.currentStep = 'inputs'
     }
   },
   watch: {
