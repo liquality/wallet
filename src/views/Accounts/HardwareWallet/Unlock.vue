@@ -170,6 +170,7 @@ export default {
     },
     connect (nextPage) {
       const walletType = this.getWalletType()
+      console.log('connect on Unlock')
       this.$emit('on-connect',
         {
           asset: this.selectedAsset,
@@ -221,7 +222,9 @@ export default {
   },
   watch: {
     ledgerBitcoinOption: async function (val) {
-      await this.connect(1)
+      if (!this.loading) {
+        await this.connect(1)
+      }
     }
   }
 }

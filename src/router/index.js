@@ -11,7 +11,7 @@ import SwapDetails from '@/views/Details/SwapDetails.vue'
 import TransactionDetails from '@/views/Details/TransactionDetails.vue'
 import Send from '@/views/Send.vue'
 import Receive from '@/views/Receive.vue'
-import Swap from '@/views/Swap.vue'
+import Swap from '@/views/Swap/Swap.vue'
 
 import Settings from '@/views/Settings'
 import ManageAssets from '@/views/ManageAssets'

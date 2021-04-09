@@ -145,22 +145,30 @@ export default {
       } else {
         this.filteredItems = [...this.accounts]
       }
+    },
+    onUpdateAccounts () {
+      this.showAccountAssets = this.accounts.map(a => a.id).reduce(
+        (accum, id) => {
+          return {
+            ...accum,
+            [id]: false
+          }
+        }, {})
+
+      this.makeSearch(this.search)
     }
   },
   created () {
-    this.showAccountAssets = this.accounts.map(a => a.id).reduce(
-      (accum, id) => {
-        return {
-          ...accum,
-          [id]: false
-        }
-      }, {})
-
-    this.makeSearch(this.search)
+    this.onUpdateAccounts()
   },
   watch: {
     search (newSearch, oldSearch) {
-      this.makeSearch(newSearch, oldSearch)
+      if (newSearch && newSearch !== oldSearch) {
+        this.makeSearch(newSearch, oldSearch)
+      }
+    },
+    accounts () {
+      this.onUpdateAccounts()
     }
   }
 }

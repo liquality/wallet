@@ -1,13 +1,5 @@
 <template>
   <div class="asset-list">
-    <NavBar showMenu="true"
-            showBack="true"
-            backPath="/wallet"
-            backLabel="Overview">
-      <span class="asset-list-nav">
-        <strong>Select Asset</strong>
-      </span>
-    </NavBar>
     <div class="main-content">
       <div class="form asset-list-header">
         <div class="input-group">
@@ -33,26 +25,47 @@
 <script>
 import SearchIcon from '@/assets/icons/search.svg'
 import WalletAccounts from '@/components/WalletAccounts'
-import NavBar from '@/components/NavBar'
 import { mapGetters } from 'vuex'
 
 export default {
   computed: {
     ...mapGetters(['accountsData', 'accountsWithBalance']),
     accounts () {
-      if (this.action === 'swap') {
-        return this.accountsWithBalance
+      let _accounts = []
+      if (this.assetSelection === 'from') {
+        _accounts = this.accountsWithBalance.map(account => {
+          const assets = account.assets.filter(
+            asset => asset !== this.excludeAsset
+          )
+          return {
+            ...account,
+            assets
+          }
+        })
+      } else {
+        _accounts = this.accountsData.map(account => {
+          const assets = account.assets.filter(
+            asset => this.selectedMarket[asset] &&
+                    asset !== this.excludeAsset
+          )
+          return {
+            ...account,
+            assets
+          }
+        })
       }
-      return this.accountsData
+
+      return _accounts.filter(account => account.assets.length > 0)
     }
   },
   components: {
-    NavBar,
     WalletAccounts,
     SearchIcon
   },
   props: [
-    'action'
+    'excludeAsset',
+    'selectedMarket',
+    'assetSelection'
   ],
   data () {
     return {
@@ -62,7 +75,10 @@ export default {
   methods: {
     onAccountSelected ({ account, asset }) {
       const _asset = asset || account.assets[0]
-      this.$router.push(`/accounts/${account.id}/${_asset}/${this.action}?source=assets`)
+      this.$emit('asset-selected', {
+        accountId: account.id,
+        asset: _asset
+      })
     }
   }
 }

@@ -102,6 +102,23 @@ export default {
       return account
     }
   },
+  accountsWithBalance (state, getters) {
+    const { accountsData } = getters
+    return accountsData.map(account => {
+      const balances = Object.entries(account.balances)
+        .filter(([_, balance]) => BN(balance).gt(0))
+        .reduce((accum, [asset, balance]) => {
+          return {
+            ...accum,
+            [asset]: balance
+          }
+        }, {})
+      return {
+        ...account,
+        balances
+      }
+    }).filter(account => account.balances && Object.keys(account.balances).length > 0)
+  },
   accountsData (state, getters) {
     const { accounts, activeNetwork, activeWalletId } = state
     const { accountFiatBalance, assetFiatBalance } = getters

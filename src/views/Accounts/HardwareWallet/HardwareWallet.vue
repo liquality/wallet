@@ -76,7 +76,6 @@ export default {
             currentPage = 1
           }
           const startingIndex = (currentPage - 1) * LEDGER_PER_PAGE
-          this.currentStep = 'unlock'
           const payload = {
             network: this.activeNetwork,
             walletId: this.activeWalletId,
@@ -85,6 +84,7 @@ export default {
             startingIndex,
             numAddresses: LEDGER_PER_PAGE
           }
+          this.currentStep = 'unlock'
 
           const accounts = await this.getLedgerAccounts(payload)
 
