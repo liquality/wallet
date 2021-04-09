@@ -200,6 +200,7 @@ export default {
   .swap-send-bottom {
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
 
     .swap-send-bottom-available {
       line-height: 15px;

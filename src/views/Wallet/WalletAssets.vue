@@ -19,9 +19,6 @@ export default {
       const _asset = asset || account.assets[0]
       this.$router.push(`/accounts/${account.id}/${_asset}`)
     }
-  },
-  async created () {
-
   }
 }
 </script>

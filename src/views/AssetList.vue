@@ -24,7 +24,7 @@
       <div class="list-items">
         <WalletAccounts @item-selected="onAccountSelected"
                         :search="search"
-                        :accounts="accountsData"/>
+                        :accounts="accounts"/>
       </div>
     </div>
   </div>
@@ -38,18 +38,10 @@ import { mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters(['accountsData']),
+    ...mapGetters(['accountsData', 'accountsWithBalance']),
     accounts () {
-      if (this.excludeAsset) {
-        return this.accountsData.filter(a => {
-          const assets = a.assets.filter(
-            asset => asset !== this.excludeAsset
-          )
-          return {
-            ...a,
-            assets
-          }
-        })
+      if (this.action === 'swap') {
+        return this.accountsWithBalance
       }
       return this.accountsData
     }
@@ -60,13 +52,11 @@ export default {
     SearchIcon
   },
   props: [
-    'action',
-    'excludeAsset'
+    'action'
   ],
   data () {
     return {
-      search: '',
-      filteredItems: []
+      search: ''
     }
   },
   methods: {

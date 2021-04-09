@@ -70,11 +70,11 @@
               <span class="details-title">Network Speed/Fee</span>
               <span class="text-muted">
                 {{ assetChain }}
-                {{ getSelectedFeeLabel(selectedFee[assetChain]) }}
+                {{ assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : '' }}
               </span>
               <span class="text-muted" v-if="assetChain != toAssetChain">
                 /{{ toAssetChain }}
-                {{ getSelectedFeeLabel(selectedFee[toAssetChain]) }}
+                {{ toAssetChain ? getSelectedFeeLabel(selectedFee[toAssetChain]) : '' }}
               </span>
             </template>
             <template v-slot:content>
@@ -337,7 +337,8 @@ export default {
       currentStep: 'inputs',
       assetSelection: 'from',
       loading: false,
-      sendToCopied: false
+      sendToCopied: false,
+      toAccountId: null
     }
   },
   props: {
@@ -471,17 +472,11 @@ export default {
       'activeNetwork'
     ]),
     ...mapGetters(['accountItem']),
-    assets () {
-      return this.account?.assets.filter((asset) => asset !== this.asset) || []
-    },
     networkMarketData () {
       return this.marketData[this.activeNetwork]
     },
     networkWalletBalances () {
       return this.account?.balances
-    },
-    toAssets () {
-      return Object.keys(this.selectedMarket)
     },
     bestAgent () {
       return this.bestMarketBasedOnAmount?.agent
@@ -515,7 +510,7 @@ export default {
       if (this.market && this.market.sellMax) {
         max = this.market.sellMax
       }
-      return BN.min(BN(this.available), dpUI(max))
+      return this.available && !isNaN(this.available) ? BN.min(BN(this.available), dpUI(max)) : BN(0)
     },
     safeAmount () {
       return this.sendAmount || 0
@@ -630,12 +625,6 @@ export default {
     includeFees () {
       return this.sendFeeType === FEE_TYPES.BTC
     },
-    currentWalletAddress () {
-      const address = this.addresses[this.activeNetwork]?.[
-        this.activeWalletId
-      ]?.[this.asset]
-      return address && cryptoassets[this.asset].formatAddress(address)
-    },
     sendAmountSameAsset () {
       return BN(this.safeAmount).plus(this.totalFees[this.assetChain])
     },
@@ -659,12 +648,6 @@ export default {
       )
       const amount = BN(this.stateReceiveAmountFiat).minus(fee)
       return amount.toFormat(2)
-    },
-    assetList () {
-      return this.assets.map((a) => ({ name: a, label: a }))
-    },
-    toAssetList () {
-      return this.toAssets.map((a) => ({ name: a, label: a }))
     },
     assetsFeeSelector () {
       return {
@@ -714,7 +697,7 @@ export default {
       if (this.amountOption === 'max') {
         this.sendAmount = this.max
       } else {
-        this.sendAmount = this.stateSendAmount
+        this.sendAmount = this.min
       }
 
       this.resetFees()
@@ -766,7 +749,7 @@ export default {
           fee,
           claimFee: toFee,
           fromAccountId: this.accountId,
-          toAccountId: this.accountId
+          toAccountId: this.toAccountId
         })
         if (this.account?.type.includes('ledger')) {
           const unsubscribe = this.$store.subscribe(async (mutation) => {
@@ -834,7 +817,7 @@ export default {
       this.currentStep = 'accounts'
     },
     fromAssetChanged (accountId, fromAsset) {
-      this.fromAccountId = accountId
+      this.accountId = accountId
       this.setFromAsset(fromAsset)
     },
     toAssetChanged (accountId, toAsset) {

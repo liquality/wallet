@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import AssetsChart from './AssetsChart.vue'
 import NavBar from '@/components/NavBar.vue'
 import WalletStats from './WalletStats.vue'
@@ -52,8 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId']),
-    ...mapGetters(['accountsData'])
+    ...mapState(['activeNetwork', 'activeWalletId'])
   },
   methods: {
     ...mapActions(['updateBalances'])
