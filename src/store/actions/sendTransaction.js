@@ -5,6 +5,13 @@ export const sendTransaction = async ({ dispatch, commit, getters }, { network, 
   const client = getters.client(network, walletId, asset)
   const tx = await client.chain.sendTransaction(to, amount, data, fee)
 
+  // TODO: RSK GAS LIMIT PATCH - PROVIDER SHOULD BE ABLE TO SET CUSTOM LIMIT FROM DAPP - FIX IN NEXT RELEASE
+  if (asset === 'RBTC') {
+    client._providers[0].estimateGas = async () => {
+      return 2000000
+    }
+  }
+
   const transaction = {
     id: uuidv4(),
     type: 'SEND',
