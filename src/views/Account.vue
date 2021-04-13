@@ -135,6 +135,8 @@ export default {
       setTimeout(() => { this.addressCopied = false }, 2000)
     },
     async refresh () {
+      if (this.updatingBalances) return
+
       this.updatingBalances = true
       await this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
       this.updatingBalances = false
