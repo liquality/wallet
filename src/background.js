@@ -24,17 +24,17 @@ store.subscribe(async ({ type, payload }, state) => {
 
       asyncLoop(
         () => store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId }),
-        () => random(50000, 60000)
+        () => random(400000, 600000)
       )
 
       asyncLoop(
         () => store.dispatch('updateFiatRates'),
-        () => random(50000, 60000)
+        () => random(400000, 600000)
       )
 
       asyncLoop(
         () => store.dispatch('updateMarketData', { network: state.activeNetwork }),
-        () => random(50000, 60000)
+        () => random(400000, 600000)
       )
 
       break
