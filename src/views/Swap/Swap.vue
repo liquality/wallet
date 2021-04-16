@@ -347,12 +347,22 @@ export default {
   },
   created () {
     this.asset = this.routeAsset
-    this.toAsset = ''
     this.sendAmount = this.min
     this.updateMarketData({ network: this.activeNetwork })
     this.updateFees({ asset: this.assetChain })
-    this.selectedFee = {
-      [this.assetChain]: 'average'
+    if (this.selectedMarket && Object.keys(this.selectedMarket).length > 0) {
+      const toAsset = Object.keys(this.selectedMarket)[0]
+      this.toAssetChanged(this.accountId, toAsset)
+      this.toAsset = toAsset
+      this.updateFees({ asset: toAsset })
+      this.selectedFee = {
+        [this.assetChain]: 'average',
+        [this.toAssetChain]: 'average'
+      }
+    } else {
+      this.selectedFee = {
+        [this.assetChain]: 'average'
+      }
     }
   },
   computed: {
