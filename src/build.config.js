@@ -8,7 +8,8 @@ export default {
       'USDT',
       'WBTC',
       'UNI',
-      'RBTC'
+      'RBTC',
+      'SOV'
     ],
     testnet: [
       'BTC',
