@@ -10,59 +10,19 @@
       </NavBar>
       <div class="wrapper form">
         <div class="wrapper_top">
-          <div class="form-group">
-            <span class="float-left">
-              <label for="amount"> Send </label>
-            </span>
-            <span class="float-right label-append text-muted">
-              ${{ prettyFiatBalance(amount, fiatRates[asset]) }}
-            </span>
-            <div class="input-group send_asset">
-              <img
-                :src="getAssetIcon(asset)"
-                class="asset-icon send_asset_icon"
-              />
-              <div class="input-group-append">
-                <span class="input-group-text">{{ asset }}</span>
-              </div>
-              <input
-                type="number"
-                :min="0"
-                :max="dpUI(available)"
-                :class="{ 'is-invalid': amount && amountError }"
-                :style="getAssetColorStyle(asset)"
-                v-model="amount"
-                class="form-control"
-                id="amount"
-                placeholder="0.00"
-                autocomplete="off"
-                required
-              />
-            </div>
-            <small
-              v-if="amount && amountError"
-              class="text-danger form-text text-right"
-              >{{ amountError }}</small
-            >
-          </div>
-          <div class="sub-form-group">
-            <div class="label-sub"
-              ><span class="text-muted">Available</span> {{ dpUI(available) }}
-              {{ asset }}</div
-            >
-            <div
-              class="btn-group btn-group-toggle"
-              data-toggle="buttons"
-            >
-              <button
-                class="btn btn-option"
-                :class="{ active: maxOptionActive }"
-                @click="toogleMaxAmount"
-              >
-                Max
-              </button>
-            </div>
-          </div>
+           <SendInput
+            :asset="asset"
+            :amount="amount"
+            :amount-fiat="amountFiat"
+            @update:amount="(newAmount) => (amount = newAmount)"
+            @toogle-max="toogleMaxAmount"
+            @update:amountFiat="(amount) => (amountFiat = amount)"
+            :max="available"
+            :available="available"
+            :max-fiat="prettyFiatBalance(available, fiatRates[asset])"
+            :amount-error="amountError"
+            :max-active="maxOptionActive"
+          />
           <div class="form-group mt-40">
             <label for="address">Send to</label>
             <div class="input-group">
@@ -209,7 +169,7 @@ import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
-import { prettyBalance, prettyFiatBalance, dpUI } from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance, dpUI, fiatToCrypto } from '@/utils/coinFormatter'
 import {
   getChainFromAsset,
   getAssetColorStyle,
@@ -224,17 +184,20 @@ import {
 } from '@/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
+import SendInput from './SendInput'
 
 export default {
   components: {
     NavBar,
     FeeSelector,
     SpinnerIcon,
-    DetailsContainer
+    DetailsContainer,
+    SendInput
   },
   data () {
     return {
-      amount: 0,
+      stateAmount: 0,
+      stateAmountFiat: 0,
       address: null,
       selectedFee: 'average',
       showConfirm: false,
@@ -258,6 +221,32 @@ export default {
     ]),
     account () {
       return this.accountItem(this.accountId)
+    },
+    amount: {
+      get () {
+        return this.stateAmount
+      },
+      set (newValue) {
+        if (newValue && !isNaN(newValue)) {
+          this.stateAmount = newValue
+        } else {
+          this.stateAmount = 0.0
+        }
+        this.stateAmountFiat = prettyFiatBalance(
+          this.stateAmount,
+          this.fiatRates[this.asset]
+        )
+      }
+    },
+    amountFiat: {
+      get () {
+        return `$${this.stateAmountFiat}`
+      },
+      set (newValue) {
+        const value = (newValue || '0').replace('$', '')
+        this.stateAmountFiat = value
+        this.stateAmount = fiatToCrypto(value, this.fiatRates[this.asset])
+      }
     },
     balance () {
       return this.account.balances[this.asset] || 0

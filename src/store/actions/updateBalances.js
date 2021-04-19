@@ -7,7 +7,7 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
   if (accounts) {
     await Bluebird.map(accounts, async account => {
       const { assets, type } = account
-      for (const asset of assets) {
+      assets.forEach(async asset => {
         let addresses = []
         if (type.includes('ledger')) {
           addresses = account.addresses
@@ -47,7 +47,7 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
               })
           }
         }
-      }
+      })
     }, { concurrency: 1 })
   }
 }

@@ -323,7 +323,6 @@ export default {
   },
   data () {
     return {
-      showAmountsInFiat: false,
       stateSendAmount: 0,
       stateReceiveAmount: 0,
       stateSendAmountFiat: 0,
@@ -814,9 +813,6 @@ export default {
     },
     back () {
       this.currentStep = 'inputs'
-    },
-    toogleShowAmountsFiat () {
-      this.showAmountsInFiat = !this.showAmountsInFiat
     },
     toAssetClick () {
       this.assetSelection = 'to'
