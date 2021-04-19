@@ -118,9 +118,10 @@ export default {
     formatFiat,
     shortenAddress,
     getAccountIcon (assetChain) {
-      if (['ETH', 'RBTC'].includes(assetChain)) {
+      if (['ETH', 'RBTC', 'BNB'].includes(assetChain)) {
         return {
           ETH: getAssetIcon('eth_account'),
+          BNB: getAssetIcon('bnb_account', 'png'),
           RBTC: getAssetIcon('rsk_account')
         }[assetChain]
       }
