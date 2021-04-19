@@ -3,6 +3,7 @@ import { withLock, withInterval, hasChainTimePassed } from './utils'
 import cryptoassets from '../../../utils/cryptoassets'
 import { updateOrder, timestamp } from '../../utils'
 import { createNotification } from '../../../broker/notification'
+import BN from 'bignumber.js'
 
 async function hasQuoteExpired (store, { order }) {
   return timestamp() >= order.expiresAt
@@ -65,11 +66,13 @@ async function initiateSwap ({ state, getters, dispatch }, { order, network, wal
   const fromClient = getters.client(network, walletId, order.from, account?.type)
 
   const fromFundTx = await fromClient.swap.initiateSwap(
-    order.fromAmount,
-    order.fromCounterPartyAddress,
-    order.fromAddress,
-    order.secretHash,
-    order.swapExpiration,
+    {
+      value: BN(order.fromAmount),
+      recipientAddress: order.fromCounterPartyAddress,
+      refundAddress: order.fromAddress,
+      secretHash: order.secretHash,
+      expiration: order.swapExpiration
+    },
     order.fee
   )
 
@@ -90,12 +93,14 @@ async function fundSwap ({ getters, dispatch }, { order, network, walletId }) {
   try {
     console.log('funding')
     const fundTx = await fromClient.swap.fundSwap(
+      {
+        value: BN(order.fromAmount),
+        recipientAddress: order.fromCounterPartyAddress,
+        refundAddress: order.fromAddress,
+        secretHash: order.secretHash,
+        expiration: order.swapExpiration
+      },
       order.fromFundHash,
-      order.fromAmount,
-      order.fromCounterPartyAddress,
-      order.fromAddress,
-      order.secretHash,
-      order.swapExpiration,
       order.fee
     )
 
@@ -150,18 +155,38 @@ async function findCounterPartyInitiation ({ getters }, { order, network, wallet
 
   try {
     const tx = await toClient.swap.findInitiateSwapTransaction(
-      order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
+      {
+        value: BN(order.toAmount),
+        recipientAddress: order.toAddress,
+        refundAddress: order.toCounterPartyAddress,
+        secretHash: order.secretHash,
+        expiration: order.nodeSwapExpiration
+      }
     )
 
     if (tx) {
       const toFundHash = tx.hash
       const isVerified = await toClient.swap.verifyInitiateSwapTransaction(
-        toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
+        {
+          value: BN(order.toAmount),
+          recipientAddress: order.toAddress,
+          refundAddress: order.toCounterPartyAddress,
+          secretHash: order.secretHash,
+          expiration: order.nodeSwapExpiration
+        },
+        toFundHash
       )
 
       // ERC20 swaps have separate funding tx. Ensures funding tx has enough confirmations
       const fundingTransaction = await toClient.swap.findFundSwapTransaction(
-        toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
+        {
+          value: BN(order.toAmount),
+          recipientAddress: order.toAddress,
+          refundAddress: order.toCounterPartyAddress,
+          secretHash: order.secretHash,
+          expiration: order.nodeSwapExpiration
+        },
+        toFundHash
       )
       const fundingConfirmed = fundingTransaction
         ? fundingTransaction.confirmations >= cryptoassets[order.to].safeConfirmations
@@ -224,12 +249,14 @@ async function claimSwap ({ store, getters }, { order, network, walletId }) {
     browser.notifications.onClicked.addListener(listener)
   }
   const toClaimTx = await toClient.swap.claimSwap(
+    {
+      value: BN(order.toAmount),
+      recipientAddress: order.toAddress,
+      refundAddress: order.toCounterPartyAddress,
+      secretHash: order.secretHash,
+      expiration: order.nodeSwapExpiration
+    },
     order.toFundHash,
-    order.toAmount,
-    order.toAddress,
-    order.toCounterPartyAddress,
-    order.secretHash,
-    order.nodeSwapExpiration,
     order.secret,
     order.claimFee
   )
@@ -300,12 +327,14 @@ async function refundSwap ({ getters }, { order, network, walletId }) {
   const account = getters.accountItem(order.fromAccountId)
   const fromClient = getters.client(network, walletId, order.from, account?.type)
   const refundTx = await fromClient.swap.refundSwap(
+    {
+      value: BN(order.fromAmount),
+      recipientAddress: order.fromCounterPartyAddress,
+      refundAddress: order.fromAddress,
+      secretHash: order.secretHash,
+      expiration: order.swapExpiration
+    },
     order.fromFundHash,
-    order.fromAmount,
-    order.fromCounterPartyAddress,
-    order.fromAddress,
-    order.secretHash,
-    order.swapExpiration,
     order.fee
   )
 
@@ -319,7 +348,7 @@ async function refundSwap ({ getters }, { order, network, walletId }) {
 async function sendTo ({ state, getters, dispatch }, { order, network, walletId }) {
   const account = getters.accountItem(order.toAccountId)
   const toClient = getters.client(network, walletId, order.to, account?.type)
-  const sendToHash = await toClient.chain.sendTransaction(order.sendTo, order.toAmount)
+  const sendToHash = await toClient.chain.sendTransaction({ to: order.sendTo, value: BN(order.toAmount) })
 
   dispatch('updateBalances', { network, walletId, assets: [order.to, order.from] })
 

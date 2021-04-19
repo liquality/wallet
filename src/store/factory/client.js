@@ -18,6 +18,11 @@ import EthereumErc20Provider from '@liquality/ethereum-erc20-provider'
 import EthereumErc20SwapProvider from '@liquality/ethereum-erc20-swap-provider'
 import EthereumErc20ScraperSwapFindProvider from '@liquality/ethereum-erc20-scraper-swap-find-provider'
 
+import NearSwapProvider from '@liquality/near-swap-provider'
+import NearJsWalletProvider from '@liquality/near-js-wallet-provider'
+import NearRpcProvider from '@liquality/near-rpc-provider'
+import NearSwapFindProvider from '@liquality/near-swap-find-provider'
+
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
@@ -26,6 +31,7 @@ import {
 
 import BitcoinNetworks from '@liquality/bitcoin-networks'
 import EthereumNetworks from '@liquality/ethereum-networks'
+import NearNetworks from '@liquality/near-networks'
 
 import { isERC20 } from '../../utils/asset'
 import cryptoassets from '../../utils/cryptoassets'
@@ -42,7 +48,7 @@ export const AssetNetworks = {
   },
   ETH: {
     testnet: EthereumNetworks.rinkeby,
-    mainnet: EthereumNetworks.mainnet
+    mainnet: EthereumNetworks.ethereum_mainnet
   },
   RBTC: {
     testnet: EthereumNetworks.rsk_testnet,
@@ -51,6 +57,10 @@ export const AssetNetworks = {
   BNB: {
     testnet: EthereumNetworks.bsc_testnet,
     mainnet: EthereumNetworks.bsc_mainnet
+  },
+  NEAR: {
+    testnet: NearNetworks.near_testnet,
+    mainnet: NearNetworks.near_mainnet
   }
 }
 
@@ -61,7 +71,9 @@ function createBtcClient (network, mnemonic, walletType) {
   const batchEsploraApi = isTestnet ? 'https://liquality.io/electrs-testnet-batch' : 'https://liquality.io/electrs-batch'
 
   const btcClient = new Client()
-  btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2))
+  btcClient.addProvider(new BitcoinEsploraBatchApiProvider(
+    { batchUrl: batchEsploraApi, url: esploraApi, network: bitcoinNetwork, numberOfBlockConfirmation: 2 }
+  ))
 
   if (walletType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
@@ -69,10 +81,10 @@ function createBtcClient (network, mnemonic, walletType) {
     const ledger = new BitcoinLedgerBridgeProvider(bitcoinNetwork, addressType, LEDGER_BRIDGE_URL)
     btcClient.addProvider(ledger)
   } else {
-    btcClient.addProvider(new BitcoinJsWalletProvider(bitcoinNetwork, mnemonic))
+    btcClient.addProvider(new BitcoinJsWalletProvider({ network: bitcoinNetwork, mnemonic }))
   }
 
-  btcClient.addProvider(new BitcoinSwapProvider(bitcoinNetwork))
+  btcClient.addProvider(new BitcoinSwapProvider({ network: bitcoinNetwork }))
   btcClient.addProvider(new BitcoinEsploraSwapFindProvider(esploraApi))
   if (isTestnet) btcClient.addProvider(new BitcoinRpcFeeProvider())
   else btcClient.addProvider(new BitcoinEarnFeeProvider('https://liquality.io/swap/mempool/v1/fees/recommended'))
@@ -82,7 +94,7 @@ function createBtcClient (network, mnemonic, walletType) {
 
 function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, mnemonic, walletType) {
   const ethClient = new Client()
-  ethClient.addProvider(new EthereumRpcProvider(rpcApi))
+  ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
   if (walletType === 'ethereum_ledger') {
     ethClient.addProvider(new EthereumLedgerBridgeProvider(network, LEDGER_BRIDGE_URL))
   } else {
@@ -113,6 +125,22 @@ function createEthClient (asset, network, mnemonic, walletType) {
   return createEthereumClient(asset, ethereumNetwork, infuraApi, scraperApi, FeeProvider, mnemonic, walletType)
 }
 
+function createNearClient (network, mnemonic) {
+  const nearNetwork = AssetNetworks.NEAR[network]
+  const nearClient = new Client()
+  nearClient.addProvider(new NearRpcProvider(nearNetwork))
+  nearClient.addProvider(new NearJsWalletProvider(nearNetwork, mnemonic))
+  nearClient.addProvider(new NearSwapProvider())
+  nearClient.addProvider(new NearSwapFindProvider(nearNetwork?.helperUrl))
+  nearClient.assertValidTransaction = function (transaction) { }
+  nearClient.chain.getTransactionByHash = async (txHash) => {
+    const transaction = await nearClient.getMethod('getTransactionByHash')(txHash)
+    return transaction
+  }
+
+  return nearClient
+}
+
 function createRskClient (asset, network, mnemonic) {
   const isTestnet = network === 'testnet'
   const rskNetwork = AssetNetworks.RBTC[network]
@@ -137,6 +165,7 @@ export const createClient = (asset, network, mnemonic, walletType) => {
   if (asset === 'BTC') return createBtcClient(network, mnemonic, walletType)
   if (asset === 'RBTC' || assetData.network === 'rsk') return createRskClient(asset, network, mnemonic)
   if (asset === 'BNB' || assetData.network === 'bsc') return createBSCClient(asset, network, mnemonic)
+  if (asset === 'NEAR' || assetData.network === 'near') return createNearClient(network, mnemonic)
 
   return createEthClient(asset, network, mnemonic, walletType)
 }

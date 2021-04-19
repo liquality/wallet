@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid'
 import { createHistoryNotification } from '../../broker/notification'
+import BN from 'bignumber.js'
 
 export const sendTransaction = async ({ dispatch, commit, getters }, { network, walletId, accountId, asset, to, amount, data, fee }) => {
   const account = getters.accountItem(accountId)
   const client = getters.client(network, walletId, asset, account?.type)
-  console.log('send: ', to, amount, data, fee)
-  const tx = await client.chain.sendTransaction(to, amount, data, fee)
+  const tx = await client.chain.sendTransaction({ to, value: BN(amount), data, fee })
 
   const transaction = {
     id: uuidv4(),

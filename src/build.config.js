@@ -8,14 +8,16 @@ export default {
       'USDT',
       'WBTC',
       'UNI',
-      'RBTC'
+      'RBTC',
+      'NEAR'
     ],
     testnet: [
       'BTC',
       'ETH',
       'DAI',
       'RBTC',
-      'BNB'
+      'BNB',
+      'NEAR'
     ]
   },
   agentEndpoints: {
@@ -24,5 +26,5 @@ export default {
   },
   telegramUrl: 'https://t.me/liquality',
   networks: ['mainnet', 'testnet'],
-  chains: ['BTC', 'ETH', 'RBTC', 'BNB']
+  chains: ['BTC', 'ETH', 'RBTC', 'BNB', 'NEAR']
 }
