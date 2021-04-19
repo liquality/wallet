@@ -79,9 +79,9 @@ export const getAddressExplorerLink = (address, asset, network) => {
   return `${EXPLORERS[chain][network].address}${address}`
 }
 
-export const getAssetIcon = (asset) => {
+export const getAssetIcon = (asset, extension = 'svg') => {
   try {
-    return require(`../assets/icons/assets/${asset.toLowerCase()}.svg?inline`)
+    return require(`../assets/icons/assets/${asset.toLowerCase()}.${extension}?inline`)
   } catch (e) {
     try {
       return require(`../../node_modules/cryptocurrency-icons/svg/color/${asset.toLowerCase()}.svg?inline`)
