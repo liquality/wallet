@@ -1,23 +1,24 @@
 <template>
   <div class="swap-send-container">
-    <div class="swap-send-top">
-      <div class="swap-send-top-label">
-        Send
-      </div>
-      <div class="swap-send-top-amount">
-        <div class="btn btn-option label-append" @click="toogleShowAmountsFiat">
-          <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
-            {{ `${asset} ${sendAmount}` }}
-          </span>
-          <span v-else>
-            {{ sendAmountFiat }}
-          </span>
-        </div>
-      </div>
-    </div>
     <div class="swap-send-main">
       <div class="swap-send-main-input-container">
-        <input
+        <div style="display: flex">
+          <div class="swap-send-top">
+          <div class="swap-send-top-label">
+            Send
+          </div>
+          <div class="swap-send-top-amount">
+            <div class="btn btn-option label-append" @click="toogleShowAmountsFiat">
+              <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
+                {{ `${asset} ${sendAmount}` }}
+              </span>
+              <span v-else>
+                {{ sendAmountFiat }}
+              </span>
+            </div>
+          </div>
+      </div>
+          <input
           v-if="showAmountsInFiat"
           type="number"
           class="form-control swap-send-main-input"
@@ -40,6 +41,7 @@
           autocomplete="off"
           :disabled="!hasMarket"
         />
+        </div>
         <div class="swap-send-main-icon" @click="assetIconClick">
           <img
                 :src="getAssetIcon(asset)"

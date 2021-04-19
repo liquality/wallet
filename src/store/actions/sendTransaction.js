@@ -2,8 +2,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { createHistoryNotification } from '../../broker/notification'
 
 export const sendTransaction = async ({ dispatch, commit, getters }, { network, walletId, accountId, asset, to, amount, data, fee }) => {
-   const account = getters.accountItem(accountId)
-   const client = getters.client(network, walletId, asset, account?.type)
+  const account = getters.accountItem(accountId)
+  const client = getters.client(network, walletId, asset, account?.type)
 
   // TODO: RSK GAS LIMIT PATCH - PROVIDER SHOULD BE ABLE TO SET CUSTOM LIMIT FROM DAPP - FIX IN NEXT RELEASE
   const originalEstimateGas = client._providers[0].estimateGas

@@ -137,7 +137,11 @@ export default {
       if (this.updatingBalances) return
 
       this.updatingBalances = true
-      await this.updateBalances({ network: this.activeNetwork, walletId: this.activeWalletId })
+      await this.updateAccountBalance({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        accountId: this.accountId
+      })
       this.updatingBalances = false
     },
     applyFilters (filters) {
