@@ -72,7 +72,7 @@ export default {
   }
 
   &_network {
-    height: 100%;
+    height: 36px;
     display: flex;
     font-size: $font-size-tiny;
     justify-content: center;

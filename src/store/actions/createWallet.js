@@ -23,8 +23,7 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
 
   for (const network of buildConfig.networks) {
     const assetKeys = enabledAssets[network]?.[id] || []
-
-    buildConfig.chains.forEach(async chain => {
+    for (const chain of buildConfig.chains) {
       const assets = assetKeys.filter(asset => {
         const assetChain = getChainFromAsset(asset)
         return assetChain === chain
@@ -54,7 +53,7 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
         })
 
       commit('CREATE_ACCOUNT', { network, walletId: id, account: _account })
-    })
+    }
   }
   return wallet
 }

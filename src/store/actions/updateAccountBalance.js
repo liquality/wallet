@@ -6,8 +6,7 @@ export const updateAccountBalance = async ({ state, commit, getters }, { network
   if (index >= 0) {
     const account = accounts[index]
     const { assets, type } = account
-
-    assets.forEach(async asset => {
+    for (const asset of assets) {
       let addresses = []
       if (type.includes('ledger')) {
         addresses = account.addresses.map(a => new Address({
@@ -23,6 +22,6 @@ export const updateAccountBalance = async ({ state, commit, getters }, { network
         )).toNumber()
 
       commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance })
-    })
+    }
   }
 }

@@ -1,19 +1,19 @@
 <template>
-  <div class="swap-send-container">
-    <div class="swap-send-main">
-      <div class="swap-send-main-input-container">
-        <div class="swap-send-main-input">
-          <div class="swap-send-top">
-          <div class="swap-send-top-label">
+  <div class="send-container">
+    <div class="send-main">
+      <div class="send-main-input-container">
+        <div class="send-main-input">
+          <div class="send-top">
+          <div class="send-top-label">
             Send
           </div>
-          <div class="swap-send-top-amount">
+          <div class="send-top-amount">
             <div class="btn btn-option label-append" @click="toogleShowAmountsFiat">
               <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
-                {{ `${asset} ${sendAmount}` }}
+                {{ `${asset} ${amount}` }}
               </span>
               <span v-else>
-                {{ sendAmountFiat }}
+                {{ amountFiat }}
               </span>
             </div>
           </div>
@@ -22,27 +22,25 @@
           v-if="showAmountsInFiat"
           type="text"
           class="form-control"
-          :class="{ 'is-invalid': showErrors && amountError }"
-          :value="sendAmountFiat"
-          @input="$emit('update:sendAmountFiat', $event.target.value)"
+          :class="{ 'is-invalid': amountError }"
+          :value="amountFiat"
+          @input="$emit('update:amountFiat', $event.target.value)"
           placeholder="0.00"
           autocomplete="off"
-          :disabled="!hasMarket"
         />
         <input
           v-else
           type="number"
           class="form-control"
-          :class="{ 'is-invalid': showErrors && amountError }"
-          :value="sendAmount"
-          @input="$emit('update:sendAmount', $event.target.value)"
+          :class="{ 'is-invalid': amountError }"
+          :value="amount"
+          @input="$emit('update:amount', $event.target.value)"
           placeholder="0.00"
           :style="getAssetColorStyle(asset)"
           autocomplete="off"
-          :disabled="!hasMarket"
         />
         </div>
-        <div class="swap-send-main-icon" @click="assetIconClick">
+        <div class="send-main-icon">
           <img
                 :src="getAssetIcon(asset)"
                 class="asset-icon"
@@ -50,44 +48,24 @@
           <span class="asset-name">
             {{ asset }}
           </span>
-          <div>
-            <ChevronRightIcon />
-          </div>
         </div>
       </div>
-      <div class="swap-send-main-errors" v-if="showErrors && amountError">
+      <div class="send-main-errors" v-if="amountError">
         <small class="text-danger form-text text-right">
           {{ amountError }}
         </small>
       </div>
     </div>
-    <div class="swap-send-bottom">
-      <div class="swap-send-bottom-options">
+    <div class="send-bottom">
+      <div class="send-bottom-options">
         <div class="btn-group">
-          <v-popover offset="1" trigger="hover focus" class="mr-2">
-            <button
-              :class="{
-                active: amountOption === 'min' && hasMarket,
-              }"
-              :disabled="!hasMarket"
-              class="btn btn-option"
-              @click="setSendAmount(min)"
-            >
-              Min
-            </button>
-            <template slot="popover">
-              <p class="my-0 text-right">{{ min }} {{ asset }}</p>
-              <p class="text-muted my-0 text-right">{{ minFiat }} USD</p>
-            </template>
-          </v-popover>
           <v-popover offset="1" trigger="hover focus">
             <button
               :class="{
-                active: amountOption === 'max' && hasMarket,
+                active: maxActive
               }"
-              :disabled="!hasMarket"
               class="btn btn-option tooltip-target"
-              @click="setSendAmount(max)"
+              @click="$emit('toogle-max')"
             >
               Max
             </button>
@@ -98,7 +76,7 @@
           </v-popover>
         </div>
       </div>
-      <div class="swap-send-bottom-available">
+      <div class="send-bottom-available">
         <span class="text-muted">Available</span>
         {{ isNaN(available) ? '0' : available || '0' }} {{ asset }}
       </div>
@@ -108,12 +86,8 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 
 export default {
-  components: {
-    ChevronRightIcon
-  },
   data () {
     return {
       showAmountsInFiat: false
@@ -121,17 +95,12 @@ export default {
   },
   props: [
     'asset',
-    'available',
-    'sendAmount',
-    'sendAmountFiat',
-    'min',
+    'amount',
+    'amountFiat',
     'max',
-    'minFiat',
+    'available',
     'maxFiat',
-    'showErrors',
-    'amountError',
-    'hasMarket',
-    'amountOption'
+    'amountError'
   ],
   created () {},
   methods: {
@@ -139,50 +108,43 @@ export default {
     getAssetIcon,
     toogleShowAmountsFiat () {
       this.showAmountsInFiat = !this.showAmountsInFiat
-    },
-    setSendAmount (amount) {
-      this.$emit('send-amount-change', amount)
-    },
-    assetIconClick () {
-      this.$emit('from-asset-click')
     }
   }
 }
 </script>
 
 <style lang="scss">
-.swap-send-container {
+.send-container {
   display: flex;
   flex-direction: column;
   width: 100%;
 
-  .swap-send-top {
+  .send-top {
     display: flex;
     justify-content: space-between;
 
-    .swap-send-top-label {
+    .send-top-label {
       font-size: 0.75rem;
       font-weight: bold;
       text-transform: uppercase;
     }
   }
 
-  .swap-send-main {
+  .send-main {
     display: flex;
     flex-direction: column;
-    .swap-send-main-input-container {
+    .send-main-input-container {
       display: flex;
       justify-content: space-between;
 
-      .swap-send-main-input {
+      .send-main-input {
         display: flex;
         flex-direction: column;
         max-width: 190px;
       }
     }
 
-    .swap-send-main-icon {
-      cursor: pointer;
+    .send-main-icon {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
@@ -209,19 +171,19 @@ export default {
       }
     }
 
-    .swap-send-main-errors {
+    .send-main-errors {
       display: flex;
       width: 100%;
     }
 
   }
 
-  .swap-send-bottom {
+  .send-bottom {
     display: flex;
     justify-content: space-between;
     margin-top: 10px;
 
-    .swap-send-bottom-available {
+    .send-bottom-available {
       line-height: 15px;
       text-transform: none;
       font-weight: normal;
