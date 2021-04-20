@@ -123,6 +123,7 @@ export default {
     const { accounts, activeNetwork, activeWalletId } = state
     const { accountFiatBalance, assetFiatBalance } = getters
     return accounts[activeWalletId]?.[activeNetwork]
+            .filter(account => account.assets && account.assets.length > 0)
             .map(account => {
               const totalFiatBalance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
               const fiatBalances = Object.entries(account.balances)

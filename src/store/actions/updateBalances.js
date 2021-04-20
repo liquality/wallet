@@ -3,6 +3,7 @@ import { Address } from '@liquality/utils'
 
 export const updateBalances = async ({ state, commit, getters }, { network, walletId }) => {
   const accounts = state.accounts[walletId]?.[network]
+                   .filter(a => a.assets && a.assets.length > 0) || []
 
   if (accounts) {
     await Bluebird.map(accounts, async account => {

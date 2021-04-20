@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="account in filteredItems" :key="account.id">
-      <ListItem v-if="account.chain === 'BTC'"
+      <ListItem v-if="account.chain === 'bitcoin'"
                 @item-selected="selectItem(account)">
           <template #prefix>
             <div class="account-color"
@@ -9,7 +9,7 @@
             </div>
           </template>
           <template #icon>
-            <img :src="getAssetIcon(account.chain)"
+            <img :src="getAccountIcon(account.chain)"
                  class="asset-icon" />
           </template>
           {{ account.name }}
@@ -77,7 +77,7 @@
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </template>
           {{ getAssetName(asset) }}
-          <template #detail v-if="account.balances[asset]">
+          <template #detail>
             {{ prettyBalance(account.balances[asset], asset) }} {{asset}}
           </template>
           <template #detail-sub v-if="account.fiatBalances[asset]">

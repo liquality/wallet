@@ -144,7 +144,7 @@ export default {
         const _account = accounts[index]
         const updatedAccount = {
           ..._account,
-          assets: [...new Set(_account.assets.push(assets))]
+          assets: [..._account.assets.filter(asset => !assets.includes(asset)), ...assets]
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
