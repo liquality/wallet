@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
+import { getAssetIcon } from '@/utils/asset'
 
 export const accountCreator = (payload) => {
   const { walletId, account } = payload
@@ -58,6 +59,15 @@ export const chainDefaultColors = {
   bsc: '#F7CA4F'
 }
 
+export const getAccountIcon = (chain) => {
+  return {
+    bitcoin: getAssetIcon('BTC'),
+    ethereum: getAssetIcon('eth_account'),
+    bsc: getAssetIcon('bnb_account', 'png'),
+    rsk: getAssetIcon('rsk_account')
+  }[chain]
+}
+
 export const getNextAccountColor = (chain, index) => {
   const defaultColor = chainDefaultColors[chain]
   const defaultIndex = accountColors.findIndex(c => c === defaultColor)
@@ -73,14 +83,14 @@ export const ACCOUNT_TYPE_OPTIONS = [
     name: 'ETH',
     label: 'ETH',
     type: 'ethereum_imported',
-    chain: 'ETH',
+    chain: 'ethereum',
     blockchain: 'Ethereum Blockchain'
   },
   {
     name: 'BTC',
     label: 'BTC',
     type: 'bitcoin_imported',
-    chain: 'BTC',
+    chain: 'bitcoin',
     blockchain: 'Bitcoin Blockchain'
   }
 ]

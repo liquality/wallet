@@ -94,6 +94,7 @@
 import ListItem from '@/components/ListItem'
 import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
+import { getAccountIcon } from '@/utils/accounts'
 import cryptoassets from '@/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
@@ -113,18 +114,11 @@ export default {
     }
   },
   methods: {
+    getAccountIcon,
     getAssetIcon,
     prettyBalance,
     formatFiat,
     shortenAddress,
-    getAccountIcon (chain) {
-      return {
-        bitcoin: getAssetIcon('BTC'),
-        ethereum: getAssetIcon('eth_account'),
-        bsc: getAssetIcon('bnb_account', 'png'),
-        rsk: getAssetIcon('rsk_account')
-      }[chain]
-    },
     getAssetName (asset) {
       return cryptoassets[asset] ? cryptoassets[asset].name : asset
     },
