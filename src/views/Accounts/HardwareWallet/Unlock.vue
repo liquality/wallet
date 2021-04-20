@@ -49,7 +49,7 @@
             Select Account
           </span>
           <p v-if="selectedAsset">
-            <img :src="getAssetIcon(selectedAsset.chain)"
+            <img :src="getAccountIcon(selectedAsset.chain)"
                   class="asset-icon" />
              {{ accountsLabel }} Accounts
           </p>
@@ -123,7 +123,7 @@
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { LEDGER_BITCOIN_OPTIONS } from '@/utils/ledger-bridge-provider'
 import clickAway from '@/directives/clickAway'
-import { getAssetIcon } from '@/utils/asset'
+import { getAccountIcon } from '@/utils/accounts'
 import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
@@ -159,7 +159,7 @@ export default {
     this.ledgerBitcoinOption = this.ledgerBitcoinOptions[0]
   },
   methods: {
-    getAssetIcon,
+    getAccountIcon,
     shortenAddress,
     unlock () {
       const walletType = this.getWalletType()
