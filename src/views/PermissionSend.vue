@@ -42,9 +42,10 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
+import { unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
-import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
+import { getNativeAsset, getAssetColorStyle } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
@@ -113,7 +114,7 @@ export default {
       return this.request.asset
     },
     assetChain () {
-      return getChainFromAsset(this.asset)
+      return getNativeAsset(this.asset)
     },
     address () {
       return this.request.args[0]
@@ -123,7 +124,7 @@ export default {
     },
     amount () {
       if (!this.request.args[1]) return 0
-      return cryptoassets[this.asset].unitToCurrency(this.request.args[1]).toNumber()
+      return unitToCurrency(cryptoassets[this.asset], this.request.args[1]).toNumber()
     },
     data () {
       return this.request.args[2]

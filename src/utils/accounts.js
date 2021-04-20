@@ -52,10 +52,10 @@ export const accountColors = [
 ]
 
 export const chainDefaultColors = {
-  BTC: '#EAB300',
-  ETH: '#4F67E4',
-  RBTC: '#3AB24D',
-  BNB: '#F7CA4F'
+  bitcoin: '#EAB300',
+  ethereum: '#4F67E4',
+  rsk: '#3AB24D',
+  bsc: '#F7CA4F'
 }
 
 export const getNextAccountColor = (chain, index) => {

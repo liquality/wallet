@@ -14,8 +14,9 @@
 import { getTxFee } from '@/utils/fees'
 import BN from 'bignumber.js'
 import { prettyFiatBalance } from '@/utils/coinFormatter'
-import { getChainFromAsset } from '@/utils/asset'
+import { getNativeAsset } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
 export default {
   props: [
@@ -32,16 +33,17 @@ export default {
         content += `${this.fees[name].wait} sec<br />`
       }
 
-      const assetChain = getChainFromAsset(this.asset)
+      const nativeAsset = getNativeAsset(this.asset)
       if (this.txTypes) {
         const total = this.txTypes.reduce((accum, tx) => {
           return accum.plus(getTxFee(this.asset, tx, this.fees[name].fee))
         }, BN(0))
-        const totalFiat = prettyFiatBalance(total, this.fiatRates[assetChain])
-        content += `${total} ${assetChain}`
+        const totalFiat = prettyFiatBalance(total, this.fiatRates[nativeAsset])
+        content += `${total} ${nativeAsset}`
         content += `<br />${totalFiat} USD`
       } else {
-        const { unit } = cryptoassets[assetChain].fees
+        const chainId = cryptoassets[this.asset].chain
+        const { unit } = chains[chainId].fees
         content += `${this.fees[name].fee} ${unit}`
       }
 

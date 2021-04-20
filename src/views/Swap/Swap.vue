@@ -276,6 +276,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import { add, format } from 'date-fns'
 import cryptoassets from '@/utils/cryptoassets'
+import { currencyToUnit } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
@@ -290,7 +291,7 @@ import {
   formatFiat
 } from '@/utils/coinFormatter'
 import {
-  getChainFromAsset,
+  getNativeAsset,
   getAssetColorStyle,
   getAssetIcon
 } from '@/utils/asset'
@@ -529,9 +530,7 @@ export default {
     },
     available () {
       const balance = this.networkWalletBalances[this.asset]
-      const fee = cryptoassets[this.assetChain].currencyToUnit(
-        this.totalFees[this.assetChain]
-      )
+      const fee = currencyToUnit(cryptoassets[this.assetChain], this.totalFees[this.assetChain])
       const available =
         this.assetChain !== this.asset
           ? BN(balance)
@@ -573,10 +572,10 @@ export default {
       return true
     },
     assetChain () {
-      return getChainFromAsset(this.asset)
+      return getNativeAsset(this.asset)
     },
     toAssetChain () {
-      return getChainFromAsset(this.toAsset)
+      return getNativeAsset(this.toAsset)
     },
     availableFees () {
       const availableFees = new Set([])
@@ -730,9 +729,7 @@ export default {
     },
     async swap () {
       try {
-        const fromAmount = cryptoassets[this.asset].currencyToUnit(
-          this.safeAmount
-        )
+        const fromAmount = currencyToUnit(cryptoassets[this.asset], this.safeAmount)
 
         const fee = this.availableFees.has(this.assetChain)
           ? this.getAssetFees(this.assetChain)[

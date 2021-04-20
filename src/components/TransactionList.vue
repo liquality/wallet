@@ -48,7 +48,7 @@ import {
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
 import { mapState } from 'vuex'
-import { getChainFromAsset } from '@/utils/asset'
+import { getNativeAsset } from '@/utils/asset'
 
 export default {
   components: {
@@ -125,8 +125,8 @@ export default {
     },
     getCompletedAmount (item) {
       const amount = item.type === 'SWAP' ? item.fromAmount : item.amount
-      const assetChain = getChainFromAsset(item.from)
-      return prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[assetChain])
+      const nativeAsset = getNativeAsset(item.from)
+      return prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[nativeAsset])
     }
   }
 }

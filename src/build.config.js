@@ -9,7 +9,8 @@ export default {
       'WBTC',
       'UNI',
       'RBTC',
-      'SOV'
+      'SOV',
+      'BNB'
     ],
     testnet: [
       'BTC',
@@ -25,5 +26,5 @@ export default {
   },
   telegramUrl: 'https://t.me/liquality',
   networks: ['mainnet', 'testnet'],
-  chains: ['BTC', 'ETH', 'RBTC', 'BNB']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc']
 }

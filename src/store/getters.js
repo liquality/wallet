@@ -1,4 +1,4 @@
-import cryptoassets from '@liquality/cryptoassets'
+import { assets as cryptoassets, unitToCurrency } from '@liquality/cryptoassets'
 import { createClient } from './factory/client'
 import buildConfig from '../build.config'
 import { Object } from 'core-js'
@@ -159,7 +159,7 @@ export default {
     const { fiatRates } = state
     return (asset, balance) => {
       if (fiatRates && fiatRates[asset] && balance) {
-        const amount = cryptoassets[asset].unitToCurrency(balance)
+        const amount = unitToCurrency(cryptoassets[asset], balance)
         return cryptoToFiat(amount, fiatRates[asset])
       }
       return BN(0)
