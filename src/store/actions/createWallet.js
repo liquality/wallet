@@ -21,23 +21,21 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
   commit('ENABLE_ASSETS', { network: 'mainnet', walletId: id, assets: buildConfig.defaultAssets.mainnet })
   commit('ENABLE_ASSETS', { network: 'testnet', walletId: id, assets: buildConfig.defaultAssets.testnet })
 
-  for (const network of buildConfig.networks) {
+  buildConfig.networks.forEach(network => {
     const assetKeys = state.enabledAssets[network]?.[id] || []
-    for (const chainId of buildConfig.chains) {
+    buildConfig.chains.forEach(async chainId => {
       const assets = assetKeys.filter(asset => {
         return cryptoassets[asset].chain === chainId
       })
 
-      const addresses = []
-      for (const asset of assets) {
-        const _address = await getters.client(network, id, asset).wallet.getUnusedAddress()
-        if (!addresses.includes(_address.address)) {
-          addresses.push(_address.address)
-        }
-      }
+      const addresses = [
+        ...new Set(
+          (await getAssetsAddresses(getters, network, id, assets))
+            .map(a => a.address)
+        )
+      ]
 
       const chain = chains[chainId]
-
       const _account = accountCreator(
         {
           walletId: id,
@@ -54,7 +52,17 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
         })
 
       commit('CREATE_ACCOUNT', { network, walletId: id, account: _account })
-    }
-  }
+    })
+  })
   return wallet
 }
+
+const getAssetsAddresses = (getters, network, id, assets) => (
+  Promise.all(
+    assets.map(
+      asset => (
+        getters.client(network, id, asset).wallet.getUnusedAddress()
+      )
+    )
+  )
+)

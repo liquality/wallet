@@ -114,6 +114,44 @@ export default {
     ensureNetworkWalletTree(state.enabledAssets, network, walletId, [])
     Vue.set(state.enabledAssets[network], walletId, state.enabledAssets[network][walletId].filter(asset => !assets.includes(asset)))
   },
+  DISABLE_ACCOUNT_ASSETS (state, { network, walletId, accountId, assets }) {
+    const accounts = state.accounts[walletId][network]
+    if (accounts) {
+      const index = accounts.findIndex(
+        (a) => a.id === accountId
+      )
+
+      if (index >= 0) {
+        const _account = accounts[index]
+        const updatedAccount = {
+          ..._account,
+          assets: _account.assets.filter(asset => !assets.includes(asset))
+        }
+
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
+      }
+    }
+    Vue.set(state.enabledAssets[network], walletId, state.enabledAssets[network][walletId].filter(asset => !assets.includes(asset)))
+  },
+  ENABLE_ACCOUNT_ASSETS (state, { network, walletId, accountId, assets }) {
+    const accounts = state.accounts[walletId][network]
+    if (accounts) {
+      const index = accounts.findIndex(
+        (a) => a.id === accountId
+      )
+
+      if (index >= 0) {
+        const _account = accounts[index]
+        const updatedAccount = {
+          ..._account,
+          assets: [...new Set(_account.assets.push(assets))]
+        }
+
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
+      }
+    }
+    Vue.set(state.enabledAssets[network], walletId, state.enabledAssets[network][walletId].filter(asset => !assets.includes(asset)))
+  },
   ADD_CUSTOM_TOKEN (state, { network, walletId, customToken }) {
     ensureNetworkWalletTree(state.customTokens, network, walletId, [])
     state.customTokens[network][walletId].push(customToken)
