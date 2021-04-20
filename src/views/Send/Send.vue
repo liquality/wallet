@@ -72,7 +72,7 @@
         </div>
         <div class="wrapper_bottom">
           <div class="button-group">
-            <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${asset}`">
+            <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${asset}`">
               <button class="btn btn-light btn-outline-primary btn-lg">
                 Cancel
               </button>
