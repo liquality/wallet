@@ -6,7 +6,6 @@ import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
 export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic }) => {
-  const { enabledAssets } = state
   const id = uuidv4()
   const at = Date.now()
   const name = 'Account 1'
@@ -22,15 +21,14 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic 
   commit('ENABLE_ASSETS', { network: 'mainnet', walletId: id, assets: buildConfig.defaultAssets.mainnet })
   commit('ENABLE_ASSETS', { network: 'testnet', walletId: id, assets: buildConfig.defaultAssets.testnet })
 
-  for (const network of buildConfig.networks) {
-    const assetKeys = enabledAssets[network]?.[id] || []
-    for (const chainId of buildConfig.chains) {
+  buildConfig.networks.forEach(network => {
+    const assetKeys = state.enabledAssets[network]?.[id] || []
+    buildConfig.chains.forEach(async chainId => {
       const assets = assetKeys.filter(asset => {
         return cryptoassets[asset].chain === chainId
       })
 
       const chain = chains[chainId]
-
       const _account = accountCreator(
         {
           walletId: id,
@@ -47,8 +45,8 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic 
         })
 
       commit('CREATE_ACCOUNT', { network, walletId: id, account: _account })
-    }
-  }
+    })
+  })
 
   return wallet
 }

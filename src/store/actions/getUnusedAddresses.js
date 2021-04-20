@@ -4,7 +4,7 @@ export const getUnusedAddresses = async ({ state, commit, getters }, { network, 
   return Bluebird.map(assets, async asset => {
     const accounts = state.accounts[walletId]?.[network]
     const index = accounts.findIndex(a => a.id === accountId)
-    if (index >= 0) {
+    if (index >= 0 && asset) {
       const account = accounts[index]
       const result = await getters.client(network, walletId, asset, account.type).wallet.getUnusedAddress()
       const address = result.address

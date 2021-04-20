@@ -50,7 +50,7 @@ export default {
   position: absolute;
 }
 
-$colors: (#d13447, #ffbf00, #263672);
+$colors: (#9D4DFA, #1CE5C3, #F12274);
 
 @for $i from 0 through 150 {
   $w: random(8);

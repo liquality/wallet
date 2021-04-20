@@ -3,6 +3,7 @@ import {
   BRIDGE_REPLEY_PREFIX,
   BRIDGE_IFRAME_NAME
 } from './config'
+import { setupBridgeIframe } from './utils'
 
 export class LedgerBridgeApp {
   _app
@@ -15,14 +16,7 @@ export class LedgerBridgeApp {
   }
 
   setupIframe () {
-    if (!document.getElementById(BRIDGE_IFRAME_NAME)) {
-      const frame = document.createElement('iframe')
-      frame.src = this._bridgeUrl
-      frame.setAttribute('name', BRIDGE_IFRAME_NAME)
-      frame.setAttribute('id', BRIDGE_IFRAME_NAME)
-      const head = document.head || document.getElementsByTagName('head')[0]
-      head.appendChild(frame)
-    }
+    setupBridgeIframe(this._bridgeUrl)
   }
 
   sendMessage ({ method, callType, payload }) {
