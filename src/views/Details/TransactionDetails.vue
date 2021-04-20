@@ -158,7 +158,7 @@ export default {
       return getStatusLabel(this.item)
     },
     feeUnit () {
-      return chains[cryptoassets[this.asset].chain].fees.unit
+      return chains[cryptoassets[this.item.from].chain].fees.unit
     },
     addressLink () {
       return getAddressExplorerLink(

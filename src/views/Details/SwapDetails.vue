@@ -37,8 +37,8 @@
         <div class="row">
           <div class="col">
             <h2>Network Speed/Fee</h2>
-            <p v-for="fee in txFees" :key="fee.chain">
-              {{ fee.chain }} Fee: {{ fee.fee }} {{ fee.unit }}
+            <p v-for="fee in txFees" :key="fee.asset">
+              {{ fee.asset }} Fee: {{ fee.fee }} {{ fee.unit }}
             </p>
           </div>
         </div>
@@ -300,13 +300,13 @@ export default {
       const fromChain = cryptoassets[this.item.from].chain
       const toChain = cryptoassets[this.item.to].chain
       fees.push({
-        chain: fromChain,
+        asset: getNativeAsset(this.item.from),
         fee: this.item.fee,
         unit: chains[fromChain].fees.unit
       })
       if (toChain !== fromChain) {
         fees.push({
-          chain: toChain,
+          asset: getNativeAsset(this.item.to),
           fee: this.item.claimFee,
           unit: chains[toChain].fees.unit
         })
