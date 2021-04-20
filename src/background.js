@@ -12,15 +12,17 @@ function asyncLoop (fn, delay) {
 store.subscribe(async ({ type, payload }, state) => {
   switch (type) {
     case 'CHANGE_ACTIVE_NETWORK':
+      store.dispatch('initializeAddresses', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateMarketData', { network: state.activeNetwork })
       break
 
     case 'UNLOCK_WALLET':
-      await store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
-      await store.dispatch('updateFiatRates')
-      await store.dispatch('updateMarketData', { network: state.activeNetwork })
-      await store.dispatch('checkPendingActions', { walletId: state.activeWalletId })
+      store.dispatch('initializeAddresses', { network: state.activeNetwork, walletId: state.activeWalletId })
+      store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
+      store.dispatch('updateFiatRates')
+      store.dispatch('updateMarketData', { network: state.activeNetwork })
+      store.dispatch('checkPendingActions', { walletId: state.activeWalletId })
 
       asyncLoop(
         () => store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId }),
