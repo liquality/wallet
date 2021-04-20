@@ -133,8 +133,9 @@ export default {
           for (const key in this.selectedAccounts) {
             const item = this.selectedAccounts[key]
 
+            const index = item.index + 1
             const account = {
-              name: `Ledger ${this.selectedAsset.name} ${item.index}`,
+              name: `Ledger ${this.selectedAsset.name} ${index}`,
               chain,
               addresses: [item.account.address],
               assets,

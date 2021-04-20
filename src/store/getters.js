@@ -139,6 +139,12 @@ export default {
                 fiatBalances,
                 totalFiatBalance
               }
+            }).sort((a, b) => {
+              if (a.type.includes('ledger')) {
+                return -1
+              }
+
+              return 0
             })
   },
   accountFiatBalance (state, getters) {

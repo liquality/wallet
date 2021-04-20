@@ -21,7 +21,8 @@ import EthereumErc20ScraperSwapFindProvider from '@liquality/ethereum-erc20-scra
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
-  LEDGER_BITCOIN_OPTIONS
+  LEDGER_BITCOIN_OPTIONS,
+  setupBridgeIframe
 } from '@/utils/ledger-bridge-provider'
 
 import BitcoinNetworks from '@liquality/bitcoin-networks'
@@ -30,8 +31,9 @@ import EthereumNetworks from '@liquality/ethereum-networks'
 import { isERC20 } from '../../utils/asset'
 import cryptoassets from '../../utils/cryptoassets'
 
-// initialize early the ledger bridge
+// initialize the ledger bridge early to be ready
 const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
+setupBridgeIframe(LEDGER_BRIDGE_URL)
 
 export const Networks = ['mainnet', 'testnet']
 
