@@ -5,7 +5,7 @@ import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
-export const createWallet = async ({ state, getters, commit }, { key, mnemonic }) => {
+export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic }) => {
   const { enabledAssets } = state
   const id = uuidv4()
   const at = Date.now()
@@ -29,14 +29,6 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
         return cryptoassets[asset].chain === chainId
       })
 
-      const addresses = []
-      for (const asset of assets) {
-        const _address = await getters.client(network, id, asset).wallet.getUnusedAddress()
-        if (!addresses.includes(_address.address)) {
-          addresses.push(_address.address)
-        }
-      }
-
       const chain = chains[chainId]
 
       const _account = accountCreator(
@@ -45,7 +37,7 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
           account: {
             name: `${chain.name} 1`,
             chain: chainId,
-            addresses,
+            addresses: [],
             assets,
             balances: {},
             type: 'default',
@@ -57,5 +49,6 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
       commit('CREATE_ACCOUNT', { network, walletId: id, account: _account })
     }
   }
+
   return wallet
 }
