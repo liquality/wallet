@@ -117,15 +117,13 @@ export default {
     prettyBalance,
     formatFiat,
     shortenAddress,
-    getAccountIcon (assetChain) {
-      if (['ETH', 'RBTC', 'BNB'].includes(assetChain)) {
-        return {
-          ETH: getAssetIcon('eth_account'),
-          BNB: getAssetIcon('bnb_account', 'png'),
-          RBTC: getAssetIcon('rsk_account')
-        }[assetChain]
-      }
-      return getAssetIcon(assetChain)
+    getAccountIcon (chain) {
+      return {
+        bitcoin: getAssetIcon('BTC'),
+        ethereum: getAssetIcon('eth_account'),
+        bsc: getAssetIcon('bnb_account', 'png'),
+        rsk: getAssetIcon('rsk_account')
+      }[chain]
     },
     getAssetName (asset) {
       return cryptoassets[asset] ? cryptoassets[asset].name : asset

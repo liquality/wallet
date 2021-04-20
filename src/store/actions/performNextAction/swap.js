@@ -1,6 +1,7 @@
 import { sha256 } from '@liquality/crypto'
 import { withLock, withInterval, hasChainTimePassed } from './utils'
 import cryptoassets from '../../../utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 import { updateOrder, timestamp } from '../../utils'
 import { createNotification } from '../../../broker/notification'
 
@@ -164,7 +165,7 @@ async function findCounterPartyInitiation ({ getters }, { order, network, wallet
         toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
       )
       const fundingConfirmed = fundingTransaction
-        ? fundingTransaction.confirmations >= cryptoassets[order.to].safeConfirmations
+        ? fundingTransaction.confirmations >= chains[cryptoassets[order.to].chain].safeConfirmations
         : true
 
       if (isVerified && fundingConfirmed) {
@@ -190,7 +191,7 @@ async function confirmCounterPartyInitiation ({ getters }, { order, network, wal
 
   const tx = await toClient.chain.getTransactionByHash(order.toFundHash)
 
-  if (tx && tx.confirmations >= cryptoassets[order.to].safeConfirmations) {
+  if (tx && tx.confirmations >= chains[cryptoassets[order.to].chain].safeConfirmations) {
     return {
       status: 'READY_TO_CLAIM'
     }

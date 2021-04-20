@@ -167,11 +167,12 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
+import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance, dpUI, fiatToCrypto } from '@/utils/coinFormatter'
 import {
-  getChainFromAsset,
+  getNativeAsset,
   getAssetColorStyle,
   getAssetIcon
 } from '@/utils/asset'
@@ -255,7 +256,7 @@ export default {
       return this.$route.query.source || null
     },
     assetChain () {
-      return getChainFromAsset(this.asset)
+      return getNativeAsset(this.asset)
     },
     assetFees () {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
@@ -266,7 +267,7 @@ export default {
       return this.assetFees && Object.keys(this.assetFees).length
     },
     isValidAddress () {
-      return cryptoassets[this.asset].isValidAddress(this.address)
+      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address)
     },
     addressError () {
       if (!this.isValidAddress) {
@@ -298,12 +299,12 @@ export default {
       return this.sendFee.dp(6)
     },
     available () {
-      const fee = cryptoassets[this.assetChain].currencyToUnit(this.totalFee)
+      const fee = currencyToUnit(cryptoassets[this.assetChain], this.totalFee)
       if (this.assetChain !== this.asset) {
         const available = BN.max(BN(this.balance).minus(fee), 0)
-        return cryptoassets[this.asset].unitToCurrency(available)
+        return unitToCurrency(cryptoassets[this.asset], available)
       } else {
-        return cryptoassets[this.asset].unitToCurrency(this.balance)
+        return unitToCurrency(cryptoassets[this.asset], this.balance)
       }
     },
     amountInFiat () {
@@ -340,9 +341,7 @@ export default {
     async send () {
       const amountToSend = this.maxOptionActive ? this.available : this.amount
 
-      const amount = cryptoassets[this.asset]
-        .currencyToUnit(amountToSend)
-        .toNumber()
+      const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toNumber()
       const fee = this.feesAvailable
         ? this.assetFees[this.selectedFee].fee
         : undefined

@@ -1,7 +1,8 @@
+import { chains } from '@liquality/cryptoassets'
 import cryptoassets from '../utils/cryptoassets'
 
 const EXPLORERS = {
-  ETH: {
+  ethereum: {
     testnet: {
       tx: 'https://rinkeby.etherscan.io/tx/0x',
       address: 'https://rinkeby.etherscan.io/address/'
@@ -11,7 +12,7 @@ const EXPLORERS = {
       address: 'https://etherscan.io/address/'
     }
   },
-  BTC: {
+  bitcoin: {
     testnet: {
       tx: 'https://blockstream.info/testnet/tx/',
       address: 'https://blockstream.info/testnet/address/'
@@ -21,7 +22,7 @@ const EXPLORERS = {
       address: 'https://blockstream.info/address/'
     }
   },
-  RBTC: {
+  rsk: {
     testnet: {
       tx: 'https://explorer.testnet.rsk.co/tx/0x',
       address: 'https://explorer.testnet.rsk.co/address/'
@@ -31,7 +32,7 @@ const EXPLORERS = {
       address: 'https://explorer.rsk.co/address/'
     }
   },
-  BNB: {
+  bsc: {
     testnet: {
       tx: 'https://testnet.bscscan.com/tx/',
       address: 'https://testnet.bscscan.com/address/'
@@ -47,17 +48,15 @@ export const isERC20 = asset => {
   return cryptoassets[asset]?.type === 'erc20'
 }
 
+// TODO: move to cryptoassets?
 export const isEthereumChain = asset => {
-  return ['ETH', 'RBTC', 'BNB'].includes(asset)
+  const chain = cryptoassets[asset].chain
+  return ['ethereum', 'rsk', 'bsc'].includes(chain)
 }
 
-export const getChainFromAsset = asset => {
-  if (isERC20(asset)) {
-    if (cryptoassets[asset]?.network === 'ethereum') return 'ETH'
-    if (cryptoassets[asset]?.network === 'rsk') return 'RBTC'
-  }
-
-  return asset
+export const getNativeAsset = asset => {
+  const chainId = cryptoassets[asset]?.chain
+  return chains[chainId].nativeAsset
 }
 
 export const getAssetColorStyle = asset => {
@@ -70,12 +69,12 @@ export const getAssetColorStyle = asset => {
 }
 
 export const getTransactionExplorerLink = (hash, asset, network) => {
-  const chain = getChainFromAsset(asset)
+  const chain = cryptoassets[asset].chain
   return `${EXPLORERS[chain][network].tx}${hash}`
 }
 
 export const getAddressExplorerLink = (address, asset, network) => {
-  const chain = getChainFromAsset(asset)
+  const chain = cryptoassets[asset].chain
   return `${EXPLORERS[chain][network].address}${address}`
 }
 

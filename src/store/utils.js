@@ -2,8 +2,7 @@ import Vue from 'vue'
 import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
 import pkg from '../../package.json'
-import { getChainFromAsset } from '../utils/asset'
-import cryptoassets from '@liquality/cryptoassets'
+import { assets as cryptoassets } from '@liquality/cryptoassets'
 
 export const CHAIN_LOCK = {}
 
@@ -18,7 +17,7 @@ export const waitForRandom = (min, max) => wait(random(min, max))
 export const timestamp = () => Date.now()
 
 export const attemptToLockAsset = (network, walletId, asset) => {
-  const chain = getChainFromAsset(asset)
+  const chain = cryptoassets(asset).chain
   const key = [network, walletId, chain].join('-')
 
   if (CHAIN_LOCK[key]) {

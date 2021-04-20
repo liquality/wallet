@@ -134,9 +134,9 @@ function createBSCClient (asset, network, mnemonic) {
 export const createClient = (asset, network, mnemonic, walletType) => {
   const assetData = cryptoassets[asset]
 
-  if (asset === 'BTC') return createBtcClient(network, mnemonic, walletType)
-  if (asset === 'RBTC' || assetData.network === 'rsk') return createRskClient(asset, network, mnemonic)
-  if (asset === 'BNB' || assetData.network === 'bsc') return createBSCClient(asset, network, mnemonic)
+  if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType)
+  if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic)
+  if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic)
 
   return createEthClient(asset, network, mnemonic, walletType)
 }

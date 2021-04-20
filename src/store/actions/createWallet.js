@@ -2,7 +2,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { encrypt } from '../../utils/crypto'
 import buildConfig from '../../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
-import { getChainFromAsset } from '@/utils/asset'
+import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
 export const createWallet = async ({ state, getters, commit }, { key, mnemonic }) => {
   const { enabledAssets } = state
@@ -23,10 +24,9 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
 
   for (const network of buildConfig.networks) {
     const assetKeys = enabledAssets[network]?.[id] || []
-    for (const chain of buildConfig.chains) {
+    for (const chainId of buildConfig.chains) {
       const assets = assetKeys.filter(asset => {
-        const assetChain = getChainFromAsset(asset)
-        return assetChain === chain
+        return cryptoassets[asset].chain === chainId
       })
 
       const addresses = []
@@ -37,18 +37,20 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
         }
       }
 
+      const chain = chains[chainId]
+
       const _account = accountCreator(
         {
           walletId: id,
           account: {
-            name: `${chain} 1`,
-            chain,
+            name: `${chain.name} 1`,
+            chain: chainId,
             addresses,
             assets,
             balances: {},
             type: 'default',
             index: 0,
-            color: getNextAccountColor(chain, 0)
+            color: getNextAccountColor(chainId, 0)
           }
         })
 
