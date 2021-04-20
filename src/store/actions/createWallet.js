@@ -5,7 +5,6 @@ import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { getChainFromAsset } from '@/utils/asset'
 
 export const createWallet = async ({ state, getters, commit }, { key, mnemonic }) => {
-  const { enabledAssets } = state
   const id = uuidv4()
   const at = Date.now()
   const name = 'Account 1'
@@ -22,7 +21,7 @@ export const createWallet = async ({ state, getters, commit }, { key, mnemonic }
   commit('ENABLE_ASSETS', { network: 'testnet', walletId: id, assets: buildConfig.defaultAssets.testnet })
 
   for (const network of buildConfig.networks) {
-    const assetKeys = enabledAssets[network]?.[id] || []
+    const assetKeys = buildConfig.defaultAssets[network] || []
     for (const chain of buildConfig.chains) {
       const assets = assetKeys.filter(asset => {
         const assetChain = getChainFromAsset(asset)
