@@ -74,7 +74,8 @@ const migrations = [
 
           const addresses = []
 
-          if (state.addresses?.[network] &&
+          if (state.addresses &&
+            state.addresses?.[network] &&
             state.addresses?.[network]?.[walletId] &&
             state.addresses?.[network]?.[walletId]?.[chain.nativeAsset]) {
             addresses.push(state.addresses[network][walletId][chain.nativeAsset])
@@ -105,15 +106,17 @@ const migrations = [
       // Move .network property to .chain
       const customTokens = {
         mainnet: {
-          [walletId]: state.customTokens.mainnet[walletId].map(token => {
+          [walletId]: state.customTokens.mainnet?.[walletId]?.map(token => {
             const newCustomToken = { ...token, chain: token.network }
             delete newCustomToken.network
+            return newCustomToken
           })
         },
         testnet: {
-          [walletId]: state.customTokens.testnet[walletId].map(token => {
+          [walletId]: state.customTokens.testnet?.[walletId]?.map(token => {
             const newCustomToken = { ...token, chain: token.network }
             delete newCustomToken.network
+            return newCustomToken
           })
         }
       }
