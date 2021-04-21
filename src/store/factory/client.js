@@ -33,7 +33,6 @@ import cryptoassets from '../../utils/cryptoassets'
 
 // initialize the ledger bridge early to be ready
 const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
-setupBridgeIframe(LEDGER_BRIDGE_URL)
 
 export const Networks = ['mainnet', 'testnet']
 
@@ -135,6 +134,7 @@ function createBSCClient (asset, network, mnemonic) {
 
 export const createClient = (asset, network, mnemonic, walletType) => {
   const assetData = cryptoassets[asset]
+  setupBridgeIframe(LEDGER_BRIDGE_URL)
 
   if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType)
   if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic)
