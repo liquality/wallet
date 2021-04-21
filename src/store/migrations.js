@@ -101,7 +101,24 @@ const migrations = [
 
       delete state.addresses
       delete state.balances
-      return { ...state, accounts }
+
+      // Move .network property to .chain
+      const customTokens = {
+        mainnet: {
+          [walletId]: state.customTokens.mainnet[walletId].map(token => {
+            const newCustomToken = { ...token, chain: token.network }
+            delete newCustomToken.network
+          })
+        },
+        testnet: {
+          [walletId]: state.customTokens.testnet[walletId].map(token => {
+            const newCustomToken = { ...token, chain: token.network }
+            delete newCustomToken.network
+          })
+        }
+      }
+
+      return { ...state, accounts, customTokens }
     }
   }
 ]
