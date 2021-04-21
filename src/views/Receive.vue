@@ -55,15 +55,13 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import QRCode from 'qrcode'
-import {
-  getAssetIcon,
-  getChainFromAsset
-} from '@/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -95,12 +93,12 @@ export default {
       return this.$route.query.source || null
     },
     chainName () {
-      const assetChain = getChainFromAsset(this.asset)
       return ({
-        BTC: 'bitcoin',
-        ETH: 'ethereum',
-        RBTC: 'ethereum'
-      })[assetChain]
+        bitcoin: 'bitcoin',
+        ethereum: 'ethereum',
+        rsk: 'ethereum',
+        bsc: 'ethereum'
+      })[cryptoassets[this.asset].chain]
     },
     faucet () {
       if (this.activeNetwork === 'testnet') {
@@ -116,10 +114,10 @@ export default {
   },
   async created () {
     if (this.account && this.account.type.includes('ledger')) {
-      this.address = cryptoassets[this.asset]?.formatAddress(this.account.addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0])
     } else {
       const addresses = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
-      this.address = cryptoassets[this.asset]?.formatAddress(addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(addresses[0])
     }
 
     const uri = [

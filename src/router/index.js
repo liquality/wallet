@@ -9,7 +9,7 @@ import Wallet from '@/views/Wallet/Wallet.vue'
 import Account from '@/views/Account.vue'
 import SwapDetails from '@/views/Details/SwapDetails.vue'
 import TransactionDetails from '@/views/Details/TransactionDetails.vue'
-import Send from '@/views/Send.vue'
+import Send from '@/views/Send/Send.vue'
 import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap/Swap.vue'
 

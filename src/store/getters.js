@@ -1,4 +1,4 @@
-import cryptoassets from '@liquality/cryptoassets'
+import { assets as cryptoassets, unitToCurrency } from '@liquality/cryptoassets'
 import { createClient } from './factory/client'
 import buildConfig from '../build.config'
 import { Object } from 'core-js'
@@ -123,6 +123,7 @@ export default {
     const { accounts, activeNetwork, activeWalletId } = state
     const { accountFiatBalance, assetFiatBalance } = getters
     return accounts[activeWalletId]?.[activeNetwork]
+            .filter(account => account.assets && account.assets.length > 0)
             .map(account => {
               const totalFiatBalance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
               const fiatBalances = Object.entries(account.balances)
@@ -138,6 +139,12 @@ export default {
                 fiatBalances,
                 totalFiatBalance
               }
+            }).sort((a, b) => {
+              if (a.type.includes('ledger')) {
+                return -1
+              }
+
+              return 0
             })
   },
   accountFiatBalance (state, getters) {
@@ -159,7 +166,7 @@ export default {
     const { fiatRates } = state
     return (asset, balance) => {
       if (fiatRates && fiatRates[asset] && balance) {
-        const amount = cryptoassets[asset].unitToCurrency(balance)
+        const amount = unitToCurrency(cryptoassets[asset], balance)
         return cryptoToFiat(amount, fiatRates[asset])
       }
       return BN(0)

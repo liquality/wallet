@@ -103,12 +103,13 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import moment from '@/utils/moment'
 import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStatusLabel } from '@/utils/history'
 import { TX_TYPES } from '@/utils/fees'
 import {
-  getChainFromAsset,
+  getNativeAsset,
   getTransactionExplorerLink,
   getAddressExplorerLink
 } from '@/utils/asset'
@@ -146,7 +147,7 @@ export default {
       'fiatRates'
     ]),
     assetChain () {
-      return getChainFromAsset(this.item.from)
+      return getNativeAsset(this.item.from)
     },
     item () {
       return this.history[this.activeNetwork][this.activeWalletId].find(
@@ -157,7 +158,7 @@ export default {
       return getStatusLabel(this.item)
     },
     feeUnit () {
-      return cryptoassets[this.assetChain].fees.unit
+      return chains[cryptoassets[this.item.from].chain].fees.unit
     },
     addressLink () {
       return getAddressExplorerLink(
@@ -194,7 +195,7 @@ export default {
   },
   methods: {
     ...mapActions(['retrySwap', 'updateTransactionFee', 'updateFees']),
-    getChainFromAsset,
+    getNativeAsset,
     prettyBalance,
     prettyTime (timestamp) {
       return moment(timestamp).format('L, LT')

@@ -9,7 +9,7 @@
           />
     </button>
     <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
-      <li>
+      <!-- <li>
           <button class="dropdown-item"
                   @click="navigate('/accounts/create')">
               <div class="head-option">
@@ -17,16 +17,7 @@
               </div>
               Create
           </button>
-      </li>
-      <li>
-          <button class="dropdown-item"
-                  @click="navigate('/accounts/import')">
-              <div class="head-option">
-                <ImportIcon class="import-icon" />
-              </div>
-              Import
-          </button>
-      </li>
+      </li> -->
       <li>
           <button class="dropdown-item"
                   @click="navigate('/accounts/hardware-wallet')">
@@ -43,15 +34,11 @@
 <script>
 import clickAway from '@/directives/clickAway'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
-import CreateIcon from '@/assets/icons/create_icon.svg'
-import ImportIcon from '@/assets/icons/import_icon.svg'
 import HardwareIcon from '@/assets/icons/hardware_icon.svg'
 
 export default {
   components: {
     ChevronRightIcon,
-    CreateIcon,
-    ImportIcon,
     HardwareIcon
   },
   directives: {

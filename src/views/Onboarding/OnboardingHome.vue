@@ -524,17 +524,12 @@
         <p class="c0" id="h.3j2qqm3">
           <span class="c3">13.7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contact.</span>
           <span>We welcome your comments or questions about these Terms. Please contact us at:</span>
-          <span class="c15">
-            <a
-              class="c16"
-              href="/cdn-cgi/l/email-protection#5e32372f2b3f32372a271e3d31302d3b302d272d70303b2a"
+          <a
+              class=""
+              href="mailto:liquality@consensys.net"
             >
-              <span
-                class="__cf_email__"
-                data-cfemail="80ece9f1f5e1ece9f4f9c0e3efeef3e5eef3f9f3aeeee5f4"
-              >[email&#160;protected]</span>
+              liquality@consensys.net
             </a>
-          </span>
           <span class="c2">.</span>
         </p>
         <p class="c4 c10">
@@ -572,6 +567,9 @@ export default {
 .onboading-home {
   padding: 70px 0 0 0 !important;
 
+  a {
+    color: $color-primary !important;
+  }
   &_header {
     flex-grow: 1;
 

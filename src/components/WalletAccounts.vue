@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="account in filteredItems" :key="account.id">
-      <ListItem v-if="account.chain === 'BTC'"
+      <ListItem v-if="account.chain === 'bitcoin'"
                 @item-selected="selectItem(account)">
           <template #prefix>
             <div class="account-color"
@@ -9,7 +9,7 @@
             </div>
           </template>
           <template #icon>
-            <img :src="getAssetIcon(account.chain)"
+            <img :src="getAccountIcon(account.chain)"
                  class="asset-icon" />
           </template>
           {{ account.name }}
@@ -77,7 +77,7 @@
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </template>
           {{ getAssetName(asset) }}
-          <template #detail v-if="account.balances[asset]">
+          <template #detail>
             {{ prettyBalance(account.balances[asset], asset) }} {{asset}}
           </template>
           <template #detail-sub v-if="account.fiatBalances[asset]">
@@ -94,6 +94,7 @@
 import ListItem from '@/components/ListItem'
 import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
+import { getAccountIcon } from '@/utils/accounts'
 import cryptoassets from '@/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
@@ -113,19 +114,11 @@ export default {
     }
   },
   methods: {
+    getAccountIcon,
     getAssetIcon,
     prettyBalance,
     formatFiat,
     shortenAddress,
-    getAccountIcon (assetChain) {
-      if (['ETH', 'RBTC'].includes(assetChain)) {
-        return {
-          ETH: getAssetIcon('eth_account'),
-          RBTC: getAssetIcon('rsk_account')
-        }[assetChain]
-      }
-      return getAssetIcon(assetChain)
-    },
     getAssetName (asset) {
       return cryptoassets[asset] ? cryptoassets[asset].name : asset
     },

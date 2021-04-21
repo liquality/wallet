@@ -5,7 +5,7 @@
     </NavBar>
     <div class="settings">
       <div class="setting-item">
-        <div class="setting-item_title flex-fill">Default Web3 Wallet
+        <div class="setting-item_title flex-fill mb-2">Default Web3 Wallet
           <span class="setting-item_sub">Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.</span>
         </div>
         <div class="setting-item_control">
@@ -22,6 +22,14 @@
                          @asset-changed="updateInjectEthereumAsset" />
         </div>
       </div>
+      <div class="setting-item">
+        <div class="setting-item_title flex-fill mb-2">Wallet Logs
+          <span class="setting-item_sub">The wallet logs contain your public information such as addresses and transactions.</span>
+        </div>
+        <div class="setting-item_control">
+          <button class="btn btn-outline-primary" @click="downloadLogs">Download Logs</button>
+        </div>
+      </div>
       <div class="settings-footer">
          <div class="text-muted">Version {{ appVersion }}</div>
         </div>
@@ -31,10 +39,11 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import cryptoassets from '@/utils/cryptoassets'
-import NavBar from '@/components/NavBar.vue'
-import { isEthereumChain } from '@/utils/asset'
 import { version } from '../../package.json'
+import cryptoassets from '@/utils/cryptoassets'
+import { isEthereumChain } from '@/utils/asset'
+import { downloadFile, getWalletStateLogs } from '@/utils/export'
+import NavBar from '@/components/NavBar.vue'
 import AssetDropdown from '@/components/AssetDropdown'
 
 export default {
@@ -72,6 +81,10 @@ export default {
     },
     getLabel (asset) {
       return asset === 'RBTC' ? 'RSK' : asset
+    },
+    async downloadLogs () {
+      const logs = await getWalletStateLogs()
+      downloadFile({ filename: 'Liquality Walelt Logs.json', type: 'application/javascript;charset=utf-8;', content: logs })
     }
   }
 }

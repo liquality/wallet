@@ -1,6 +1,7 @@
 import BN from 'bignumber.js'
 import cryptoassets from './cryptoassets'
-import { isERC20, isEthereumChain, getChainFromAsset } from './asset'
+import { chains, unitToCurrency } from '@liquality/cryptoassets'
+import { isERC20, isEthereumChain } from './asset'
 
 const TX_TYPES = {
   SEND: 'SEND',
@@ -59,12 +60,13 @@ const FEE_OPTIONS = {
 }
 
 function getTxFee (_asset, type, _feePrice) {
-  const chainAsset = getChainFromAsset(_asset)
-  const feePrice = isEthereumChain(getChainFromAsset(_asset)) ? BN(_feePrice).times(1e9) : _feePrice // ETH fee price is in gwei
+  const chainId = cryptoassets[_asset].chain
+  const nativeAsset = chains[chainId].nativeAsset
+  const feePrice = isEthereumChain(_asset) ? BN(_feePrice).times(1e9) : _feePrice // ETH fee price is in gwei
   const asset = isERC20(_asset) ? 'ERC20' : _asset
   const feeUnits = FEE_UNITS[asset][type]
   const fee = BN(feeUnits).times(feePrice)
-  return cryptoassets[chainAsset].unitToCurrency(fee)
+  return unitToCurrency(cryptoassets[nativeAsset], fee)
 }
 
 function getFeeLabel (fee) {

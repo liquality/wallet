@@ -59,6 +59,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
@@ -134,6 +135,8 @@ export default {
       setTimeout(() => { this.addressCopied = false }, 2000)
     },
     async refresh () {
+      if (this.updatingBalances) return
+
       this.updatingBalances = true
       await this.updateAccountBalance({
         network: this.activeNetwork,
@@ -148,10 +151,10 @@ export default {
   },
   async created () {
     if (this.account && this.account.type.includes('ledger')) {
-      this.address = cryptoassets[this.asset]?.formatAddress(this.account.addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0])
     } else {
       const addresses = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
-      this.address = cryptoassets[this.asset]?.formatAddress(addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(addresses[0])
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]

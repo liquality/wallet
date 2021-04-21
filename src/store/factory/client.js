@@ -26,7 +26,8 @@ import NearSwapFindProvider from '@liquality/near-swap-find-provider'
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
-  LEDGER_BITCOIN_OPTIONS
+  LEDGER_BITCOIN_OPTIONS,
+  setupBridgeIframe
 } from '@/utils/ledger-bridge-provider'
 
 import BitcoinNetworks from '@liquality/bitcoin-networks'
@@ -36,7 +37,7 @@ import NearNetworks from '@liquality/near-networks'
 import { isERC20 } from '../../utils/asset'
 import cryptoassets from '../../utils/cryptoassets'
 
-// initialize early the ledger bridge
+// initialize the ledger bridge early to be ready
 const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
 
 export const Networks = ['mainnet', 'testnet']
@@ -161,11 +162,12 @@ function createBSCClient (asset, network, mnemonic) {
 
 export const createClient = (asset, network, mnemonic, walletType) => {
   const assetData = cryptoassets[asset]
+  setupBridgeIframe(LEDGER_BRIDGE_URL)
 
-  if (asset === 'BTC') return createBtcClient(network, mnemonic, walletType)
-  if (asset === 'RBTC' || assetData.network === 'rsk') return createRskClient(asset, network, mnemonic)
-  if (asset === 'BNB' || assetData.network === 'bsc') return createBSCClient(asset, network, mnemonic)
-  if (asset === 'NEAR' || assetData.network === 'near') return createNearClient(network, mnemonic)
+  if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType)
+  if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic)
+  if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic)
+  if (assetData.chain === 'near') return createNearClient(network, mnemonic)
 
   return createEthClient(asset, network, mnemonic, walletType)
 }

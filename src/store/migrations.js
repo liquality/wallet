@@ -1,7 +1,8 @@
 import { cloneDeep } from 'lodash-es'
 import buildConfig from '../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
-import { getChainFromAsset } from '@/utils/asset'
+import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
 const migrations = [
   { // Merely sets up the version
@@ -64,32 +65,34 @@ const migrations = [
       buildConfig.networks.forEach(async network => {
         const assetKeys = enabledAssets[network]?.[walletId] || []
 
-        buildConfig.chains.forEach(async chain => {
+        buildConfig.chains.forEach(async chainId => {
           const assets = assetKeys.filter(asset => {
-            const assetChain = getChainFromAsset(asset)
-            return assetChain === chain
+            return cryptoassets[asset].chain === chainId
           })
+
+          const chain = chains[chainId]
 
           const addresses = []
 
-          if (state.addresses?.[network] &&
+          if (state.addresses &&
+            state.addresses?.[network] &&
             state.addresses?.[network]?.[walletId] &&
-            state.addresses?.[network]?.[walletId]?.[chain]) {
-            addresses.push(state.addresses[network][walletId][chain])
+            state.addresses?.[network]?.[walletId]?.[chain.nativeAsset]) {
+            addresses.push(state.addresses[network][walletId][chain.nativeAsset])
           }
 
           const _account = accountCreator(
             {
               walletId,
               account: {
-                name: `${chain} 1`,
-                chain,
+                name: `${chain.name} 1`,
+                chain: chainId,
                 addresses,
                 assets,
                 balances: {},
                 type: 'default',
                 index: 0,
-                color: getNextAccountColor(chain, 0)
+                color: getNextAccountColor(chainId, 0)
               }
             })
 
@@ -99,7 +102,26 @@ const migrations = [
 
       delete state.addresses
       delete state.balances
-      return { ...state, accounts }
+
+      // Move .network property to .chain
+      const customTokens = {
+        mainnet: {
+          [walletId]: state.customTokens.mainnet?.[walletId]?.map(token => {
+            const newCustomToken = { ...token, chain: token.network }
+            delete newCustomToken.network
+            return newCustomToken
+          })
+        },
+        testnet: {
+          [walletId]: state.customTokens.testnet?.[walletId]?.map(token => {
+            const newCustomToken = { ...token, chain: token.network }
+            delete newCustomToken.network
+            return newCustomToken
+          })
+        }
+      }
+
+      return { ...state, accounts, customTokens }
     }
   }
 ]

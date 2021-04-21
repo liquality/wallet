@@ -10,17 +10,20 @@ inject(providerManager())
 inject(bitcoinProvider())
 inject(nearProvider())
 
+function injectEthereum (state, asset, name) {
+  const network = AssetNetworks[asset][state.activeNetwork]
+  inject(ethereumProvider({
+    name,
+    asset,
+    network,
+    overrideEthereum: state.injectEthereum && asset === state.injectEthereumAsset
+  }))
+}
+
 chrome.storage.local.get(['liquality-wallet'], (storage) => {
   const state = storage['liquality-wallet']
-  if (state.injectEthereum) {
-    const asset = state.injectEthereumAsset
-    const network = AssetNetworks[asset][state.activeNetwork]
-    inject(ethereumProvider({
-      asset: state.injectEthereumAsset,
-      networkVersion: network.networkId,
-      chainId: `0x${network.chainId.toString(16)}`
-    }))
-  }
+  injectEthereum(state, 'ETH', 'eth')
+  injectEthereum(state, 'RBTC', 'rsk')
 })
 
 inject(paymentUriHandler())

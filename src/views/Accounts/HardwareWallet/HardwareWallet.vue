@@ -36,7 +36,8 @@ import {
   LEDGER_BITCOIN_OPTIONS,
   LEDGER_OPTIONS
 } from '@/utils/ledger-bridge-provider'
-import { getAssetIcon, getChainFromAsset } from '@/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import cryptoassets from '@/utils/cryptoassets'
 import { getNextAccountColor } from '@/utils/accounts'
 
 const LEDGER_PER_PAGE = 5
@@ -126,15 +127,15 @@ export default {
             this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
 
           const assets = assetKeys.filter((asset) => {
-            const assetChain = getChainFromAsset(asset)
-            return assetChain === this.selectedAsset.chain
+            return cryptoassets[asset].chain === this.selectedAsset.chain
           })
 
           for (const key in this.selectedAccounts) {
             const item = this.selectedAccounts[key]
 
+            const index = item.index + 1
             const account = {
-              name: `Ledger ${this.selectedAsset.name} ${item.index}`,
+              name: `Ledger ${this.selectedAsset.name} ${index}`,
               chain,
               addresses: [item.account.address],
               assets,
