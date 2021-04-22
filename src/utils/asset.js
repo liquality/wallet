@@ -56,7 +56,7 @@ export const isEthereumChain = asset => {
 
 export const getNativeAsset = asset => {
   const chainId = cryptoassets[asset]?.chain
-  return chains[chainId].nativeAsset
+  return chainId ? chains[chainId].nativeAsset : asset
 }
 
 export const getAssetColorStyle = asset => {
