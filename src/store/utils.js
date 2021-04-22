@@ -17,7 +17,7 @@ export const waitForRandom = (min, max) => wait(random(min, max))
 export const timestamp = () => Date.now()
 
 export const attemptToLockAsset = (network, walletId, asset) => {
-  const chain = cryptoassets(asset).chain
+  const chain = cryptoassets[asset].chain
   const key = [network, walletId, chain].join('-')
 
   if (CHAIN_LOCK[key]) {

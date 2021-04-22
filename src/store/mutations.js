@@ -150,7 +150,6 @@ export default {
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
       }
     }
-    Vue.set(state.enabledAssets[network], walletId, state.enabledAssets[network][walletId].filter(asset => !assets.includes(asset)))
   },
   ADD_CUSTOM_TOKEN (state, { network, walletId, customToken }) {
     ensureNetworkWalletTree(state.customTokens, network, walletId, [])
