@@ -8,9 +8,10 @@ import { cryptoToFiat } from '@/utils/coinFormatter'
 const clientCache = {}
 
 const TESTNET_CONTRACT_ADDRESSES = {
-  DAI: '0xcE2748BE67fB4346654B4500c4BB0642536365FC'
+  DAI: '0xcE2748BE67fB4346654B4500c4BB0642536365FC',
+  SOV: '0x6a9A07972D07E58f0daF5122D11e069288A375fB'
 }
-const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB'].reduce((assets, asset) => {
+const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV'].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
       ...cryptoassets[asset],
