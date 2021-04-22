@@ -526,7 +526,7 @@ export default {
       return this.sendAmount || 0
     },
     market () {
-      return this.selectedMarket[this.toAsset]
+      return this.selectedMarket?.[this.toAsset]
     },
     available () {
       const balance = this.networkWalletBalances[this.asset]
