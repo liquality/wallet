@@ -39,7 +39,7 @@ export default {
           return accum.plus(getTxFee(this.asset, tx, this.fees[name].fee))
         }, BN(0))
         const totalFiat = prettyFiatBalance(total, this.fiatRates[nativeAsset])
-        content += `${total} ${nativeAsset}`
+        content += `${BN(total).dp(6)} ${nativeAsset}`
         content += `<br />${totalFiat} USD`
       } else {
         const chainId = cryptoassets[this.asset].chain

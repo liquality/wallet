@@ -21,12 +21,23 @@ export default {
   },
   mixins: [SatMode],
   computed: {
-    ...mapState(['brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt'])
+    ...mapState([
+      'activeNetwork',
+      'brokerReady',
+      'keyUpdatedAt',
+      'termsAcceptedAt',
+      'unlockedAt'
+    ])
   },
   watch: {
     unlockedAt: function (unlocked) {
       if (this.$route.path.startsWith('/permission') || this.$route.path.startsWith('/enable') || this.$route.path.startsWith('/request-unlock')) return
       if (unlocked) this.$router.replace('/wallet')
+    },
+    activeNetwork: function (_network) {
+      if (['Send', 'Receive', 'Swap'].includes(this.$route.name)) {
+        this.$router.replace('/wallet')
+      }
     }
   }
 }
