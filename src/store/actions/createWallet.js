@@ -2,15 +2,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { encrypt } from '../../utils/crypto'
 import buildConfig from '../../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
-import cryptoassets from '@/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 
 export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic }) => {
   const id = uuidv4()
   const at = Date.now()
   const name = 'Account 1'
   const wallet = { id, name, mnemonic, at, imported: false }
-
+  const { networks, defaultAssets } = buildConfig
   const { encrypted: encryptedWallets, keySalt } = await encrypt(
     JSON.stringify([wallet]),
     key
@@ -18,14 +17,14 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic 
 
   commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet })
   commit('CHANGE_ACTIVE_WALLETID', { walletId: id })
-  commit('ENABLE_ASSETS', { network: 'mainnet', walletId: id, assets: buildConfig.defaultAssets.mainnet })
-  commit('ENABLE_ASSETS', { network: 'testnet', walletId: id, assets: buildConfig.defaultAssets.testnet })
+  commit('ENABLE_ASSETS', { network: 'mainnet', walletId: id, assets: defaultAssets.mainnet })
+  commit('ENABLE_ASSETS', { network: 'testnet', walletId: id, assets: defaultAssets.testnet })
 
-  buildConfig.networks.forEach(network => {
-    const assetKeys = state.enabledAssets[network]?.[id] || []
+  networks.forEach(network => {
+    const assetKeys = defaultAssets[network]
     buildConfig.chains.forEach(async chainId => {
       const assets = assetKeys.filter(asset => {
-        return cryptoassets[asset].chain === chainId
+        return cryptoassets[asset]?.chain === chainId
       })
 
       const chain = chains[chainId]

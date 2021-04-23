@@ -27,8 +27,9 @@ import {
 import BitcoinNetworks from '@liquality/bitcoin-networks'
 import EthereumNetworks from '@liquality/ethereum-networks'
 
-import { isERC20 } from '../../utils/asset'
-import cryptoassets from '../../utils/cryptoassets'
+import { isERC20 } from '@/utils/asset'
+import cryptoassets from '@/utils/cryptoassets'
+import buildConfig from '../../build.config'
 
 const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
 
@@ -56,8 +57,8 @@ export const AssetNetworks = {
 function createBtcClient (network, mnemonic, walletType) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = AssetNetworks.BTC[network]
-  const esploraApi = isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'
-  const batchEsploraApi = isTestnet ? 'https://liquality.io/electrs-testnet-batch' : 'https://liquality.io/electrs-batch'
+  const esploraApi = buildConfig.exploraApis[network]
+  const batchEsploraApi = buildConfig.batchEsploraApis[network]
 
   const btcClient = new Client()
   btcClient.addProvider(new BitcoinEsploraBatchApiProvider(batchEsploraApi, esploraApi, bitcoinNetwork, 2))
