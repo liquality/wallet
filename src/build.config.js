@@ -17,7 +17,8 @@ export default {
       'ETH',
       'DAI',
       'RBTC',
-      'BNB'
+      'BNB',
+      'SOV'
     ]
   },
   agentEndpoints: {
