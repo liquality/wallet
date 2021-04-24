@@ -11,7 +11,7 @@ import EthereumRpcProvider from '@liquality/ethereum-rpc-provider'
 import EthereumJsWalletProvider from '@liquality/ethereum-js-wallet-provider'
 import EthereumSwapProvider from '@liquality/ethereum-swap-provider'
 import EthereumScraperSwapFindProvider from '@liquality/ethereum-scraper-swap-find-provider'
-import EthereumGasStationFeeProvider from '@liquality/ethereum-gas-station-fee-provider'
+import EthereumGasNowFeeProvider from '@liquality/ethereum-gas-now-fee-provider'
 import EthereumRpcFeeProvider from '@liquality/ethereum-rpc-fee-provider'
 
 import EthereumErc20Provider from '@liquality/ethereum-erc20-provider'
@@ -108,7 +108,7 @@ function createEthClient (asset, network, mnemonic, walletType) {
   const ethereumNetwork = AssetNetworks.ETH[network]
   const infuraApi = isTestnet ? 'https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f' : 'https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'
   const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
-  const FeeProvider = isTestnet ? EthereumRpcFeeProvider : EthereumGasStationFeeProvider
+  const FeeProvider = isTestnet ? EthereumRpcFeeProvider : EthereumGasNowFeeProvider
 
   return createEthereumClient(asset, ethereumNetwork, infuraApi, scraperApi, FeeProvider, mnemonic, walletType)
 }
