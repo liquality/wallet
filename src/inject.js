@@ -70,7 +70,7 @@ async function handleRequest (req) {
   if(req.method.startsWith('metamask_')) return null
 
   if(req.method === 'eth_requestAccounts') {
-    return await window.ethereum.enable()
+    return await window.${name}.enable()
   }
   if(req.method === 'personal_sign') { 
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
@@ -104,7 +104,7 @@ window.${name} = {
   },
   send: async (req, _paramsOrCallback) => {
     if (typeof _paramsOrCallback === 'function') {
-      window.ethereum.sendAsync(req, _paramsOrCallback)
+      window.${name}.sendAsync(req, _paramsOrCallback)
       return
     }
     const method = typeof req === 'string' ? req : req.method
