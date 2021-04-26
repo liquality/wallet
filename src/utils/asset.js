@@ -1,5 +1,5 @@
 import { chains } from '@liquality/cryptoassets'
-import cryptoassets from '../utils/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 
 const EXPLORERS = {
   ethereum: {
@@ -64,9 +64,20 @@ export const isEthereumChain = asset => {
   return ['ethereum', 'rsk', 'bsc'].includes(chain)
 }
 
+export const isEthereumNativeAsset = asset => {
+  const chainId = cryptoassets[asset]?.chain
+  if (chainId &&
+      ['ethereum', 'rsk', 'bsc'].includes(chainId) &&
+      chains[chainId].nativeAsset === asset) {
+    return true
+  }
+
+  return false
+}
+
 export const getNativeAsset = asset => {
   const chainId = cryptoassets[asset]?.chain
-  return chains[chainId].nativeAsset
+  return chainId ? chains[chainId].nativeAsset : asset
 }
 
 export const getAssetColorStyle = asset => {

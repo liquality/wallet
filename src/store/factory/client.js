@@ -11,7 +11,7 @@ import EthereumRpcProvider from '@liquality/ethereum-rpc-provider'
 import EthereumJsWalletProvider from '@liquality/ethereum-js-wallet-provider'
 import EthereumSwapProvider from '@liquality/ethereum-swap-provider'
 import EthereumScraperSwapFindProvider from '@liquality/ethereum-scraper-swap-find-provider'
-import EthereumGasStationFeeProvider from '@liquality/ethereum-gas-station-fee-provider'
+import EthereumGasNowFeeProvider from '@liquality/ethereum-gas-now-fee-provider'
 import EthereumRpcFeeProvider from '@liquality/ethereum-rpc-fee-provider'
 
 import EthereumErc20Provider from '@liquality/ethereum-erc20-provider'
@@ -26,18 +26,17 @@ import NearSwapFindProvider from '@liquality/near-swap-find-provider'
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
-  LEDGER_BITCOIN_OPTIONS,
-  setupBridgeIframe
+  LEDGER_BITCOIN_OPTIONS
 } from '@/utils/ledger-bridge-provider'
 
 import BitcoinNetworks from '@liquality/bitcoin-networks'
 import EthereumNetworks from '@liquality/ethereum-networks'
 import NearNetworks from '@liquality/near-networks'
 
-import { isERC20 } from '../../utils/asset'
-import cryptoassets from '../../utils/cryptoassets'
+import { isERC20 } from '@/utils/asset'
+import cryptoassets from '@/utils/cryptoassets'
+import buildConfig from '../../build.config'
 
-// initialize the ledger bridge early to be ready
 const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
 
 export const Networks = ['mainnet', 'testnet']
@@ -68,8 +67,8 @@ export const AssetNetworks = {
 function createBtcClient (network, mnemonic, walletType) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = AssetNetworks.BTC[network]
-  const esploraApi = isTestnet ? 'https://liquality.io/testnet/electrs' : 'https://liquality.io/electrs'
-  const batchEsploraApi = isTestnet ? 'https://liquality.io/electrs-testnet-batch' : 'https://liquality.io/electrs-batch'
+  const esploraApi = buildConfig.exploraApis[network]
+  const batchEsploraApi = buildConfig.batchEsploraApis[network]
 
   const btcClient = new Client()
   btcClient.addProvider(new BitcoinEsploraBatchApiProvider(
@@ -121,7 +120,7 @@ function createEthClient (asset, network, mnemonic, walletType) {
   const ethereumNetwork = AssetNetworks.ETH[network]
   const infuraApi = isTestnet ? 'https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f' : 'https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'
   const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
-  const FeeProvider = isTestnet ? EthereumRpcFeeProvider : EthereumGasStationFeeProvider
+  const FeeProvider = isTestnet ? EthereumRpcFeeProvider : EthereumGasNowFeeProvider
 
   return createEthereumClient(asset, ethereumNetwork, infuraApi, scraperApi, FeeProvider, mnemonic, walletType)
 }
@@ -162,7 +161,6 @@ function createBSCClient (asset, network, mnemonic) {
 
 export const createClient = (asset, network, mnemonic, walletType) => {
   const assetData = cryptoassets[asset]
-  setupBridgeIframe(LEDGER_BRIDGE_URL)
 
   if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType)
   if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic)

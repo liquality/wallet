@@ -41,7 +41,7 @@
 import { mapState, mapActions } from 'vuex'
 import { version } from '../../package.json'
 import cryptoassets from '@/utils/cryptoassets'
-import { isEthereumChain } from '@/utils/asset'
+import { isEthereumNativeAsset } from '@/utils/asset'
 import { downloadFile, getWalletStateLogs } from '@/utils/export'
 import NavBar from '@/components/NavBar.vue'
 import AssetDropdown from '@/components/AssetDropdown'
@@ -55,7 +55,7 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId', 'injectEthereum', 'injectEthereumAsset']),
     ethereumAssets () {
       return Object.keys(cryptoassets)
-        .filter(isEthereumChain)
+        .filter(isEthereumNativeAsset)
         .map(asset => {
           const label = this.getLabel(asset)
           return { name: asset, label }

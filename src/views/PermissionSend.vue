@@ -30,7 +30,7 @@
     <div class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)" :disabled="loading">
+        <button class="btn btn-primary btn-lg btn-icon" @click.stop="reply(true)" :disabled="loading">
           <SpinnerIcon class="btn-loading" v-if="loading" />
           <template v-else>Confirm</template>
         </button>

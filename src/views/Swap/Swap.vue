@@ -6,7 +6,7 @@
         :backPath="
           routeSource === 'assets'
             ? '/wallet'
-            : `/accounts/${this.account.id}/${this.asset}`
+            : `/accounts/${account.id}/${asset}`
         "
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
@@ -526,7 +526,7 @@ export default {
       return this.sendAmount || 0
     },
     market () {
-      return this.selectedMarket[this.toAsset]
+      return this.selectedMarket?.[this.toAsset]
     },
     available () {
       const balance = this.networkWalletBalances[this.asset]
@@ -637,11 +637,9 @@ export default {
       return BN(this.safeAmount).plus(this.totalFees[this.assetChain])
     },
     totalToSendInFiat () {
-      const fee = BN(
-        prettyFiatBalance(
-          this.totalFees[this.assetChain],
-          this.fiatRates[this.assetChain]
-        )
+      const fee = cryptoToFiat(
+        this.totalFees[this.assetChain],
+        this.fiatRates[this.assetChain]
       )
       const amount = BN(this.stateSendAmountFiat).plus(fee)
       return amount.toFormat(2)
@@ -650,7 +648,7 @@ export default {
       return BN(this.receiveAmount).minus(BN(this.totalFees[this.toAssetChain]))
     },
     totalToReceiveInFiat () {
-      const fee = prettyFiatBalance(
+      const fee = cryptoToFiat(
         this.totalFees[this.toAssetChain],
         this.fiatRates[this.toAssetChain]
       )

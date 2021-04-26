@@ -132,16 +132,19 @@ const routes = [
     props: true
   },
   {
+    name: 'Send',
     path: '/accounts/:accountId/:asset/send',
     component: Send,
     props: true
   },
   {
+    name: 'Receive',
     path: '/accounts/:accountId/:asset/receive',
     component: Receive,
     props: true
   },
   {
+    name: 'Swap',
     path: '/accounts/:accountId/:routeAsset/swap',
     component: Swap,
     props: true
