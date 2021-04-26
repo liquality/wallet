@@ -27,11 +27,11 @@ export default {
   },
   exploraApis: {
     testnet: 'https://liquality.io/testnet/electrs',
-    mainnet: 'https://liquality.io/electrs'
+    mainnet: 'https://api-mainnet-bitcoin-electrs.liquality.io'
   },
   batchEsploraApis: {
     testnet: 'https://liquality.io/electrs-testnet-batch',
-    mainnet: 'https://liquality.io/electrs-batch'
+    mainnet: 'https://api-mainnet-bitcoin-electrs-batch.liquality.io'
   },
   telegramUrl: 'https://t.me/liquality',
   networks: ['mainnet', 'testnet'],
