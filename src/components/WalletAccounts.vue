@@ -140,13 +140,16 @@ export default {
       }
     },
     onUpdateAccounts () {
-      this.showAccountAssets = this.accounts.map(a => a.id).reduce(
-        (accum, id) => {
-          return {
-            ...accum,
-            [id]: false
-          }
-        }, {})
+      this.showAccountAssets = {
+        ...this.accounts.map(a => a.id).reduce(
+          (accum, id) => {
+            return {
+              ...accum,
+              [id]: false
+            }
+          }, {}),
+        ...this.showAccountAssets
+      }
 
       this.makeSearch(this.search)
     }
