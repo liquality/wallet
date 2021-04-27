@@ -108,7 +108,8 @@ export default {
     },
     getTypeIcon (type) {
       const filter = ACTIVITY_FILTER_TYPES[type]
-      return this.getItemIcon(filter.icon)
+      console.log('filter', type)
+      return this.getItemIcon(filter?.icon)
     },
     getTransactionStep (item) {
       return getStep(item) + 1

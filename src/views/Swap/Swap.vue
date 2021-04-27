@@ -246,7 +246,7 @@
             </button>
             <button
               class="btn btn-primary btn-lg btn-block btn-icon"
-              @click="swap"
+              @click.stop="swap"
               :disabled="loading"
             >
               <SpinnerIcon class="btn-loading" v-if="loading" />
@@ -742,7 +742,7 @@ export default {
           : undefined
 
         this.loading = true
-        const order = await this.newSwap({
+        await this.newSwap({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           agent: this.bestAgent,
@@ -755,37 +755,8 @@ export default {
           fromAccountId: this.accountId,
           toAccountId: this.toAccountId
         })
-        if (this.account?.type.includes('ledger')) {
-          const unsubscribe = this.$store.subscribe(async (mutation) => {
-            const { type, payload } = mutation
-            if (type === '##BACKGROUND##UPDATE_HISTORY') {
-              const { id, updates } = payload
-              if (id && id === order.id && updates) {
-                const { status, error } = updates
-                if (error) {
-                  console.error(error)
-                  unsubscribe()
-                  this.loading = false
-                  const { message } = error
-                  await this.showNotification({
-                    title: 'Error',
-                    message: message || error
-                  })
-                }
 
-                if (status === 'INITIATED') {
-                  unsubscribe()
-                  this.loading = false
-                  this.$router.replace(
-                    `/accounts/${this.account?.id}/${this.asset}`
-                  )
-                }
-              }
-            }
-          })
-        } else {
-          this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
-        }
+        this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {
         console.error(error)
         const { message } = error

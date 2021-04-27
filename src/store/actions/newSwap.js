@@ -1,7 +1,8 @@
 import { newOrder } from '../utils'
+import { createSecret, initiateSwap } from './performNextAction/swap'
 
 export const newSwap = async (
-  { dispatch, commit },
+  { state, dispatch, commit, getters },
   {
     network,
     walletId,
@@ -33,7 +34,22 @@ export const newSwap = async (
   order.fromAccountId = fromAccountId
   order.toAccountId = toAccountId
 
-  commit('NEW_ORDER', { network, walletId, order })
+  const secreatedCreated = await createSecret({ dispatch, getters }, { order, network, walletId })
+  const swapInitiated = await initiateSwap({ state, dispatch, getters },
+    {
+      order: {
+        ...order,
+        ...secreatedCreated
+      },
+      network,
+      walletId
+    })
+  const createdOrder = {
+    ...order,
+    ...secreatedCreated,
+    swapInitiated
+  }
+  commit('NEW_ORDER', { network, walletId, order: createdOrder })
 
   dispatch('performNextAction', { network, walletId, fromAccountId, toAccountId, id: order.id })
 

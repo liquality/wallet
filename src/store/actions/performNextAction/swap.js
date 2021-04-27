@@ -4,8 +4,9 @@ import cryptoassets from '../../../utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import { updateOrder, timestamp } from '../../utils'
 import { createNotification } from '../../../broker/notification'
+import { isERC20 } from '../../../utils/asset'
 
-async function hasQuoteExpired (store, { order }) {
+export async function hasQuoteExpired (store, { order }) {
   return timestamp() >= order.expiresAt
 }
 
@@ -13,7 +14,7 @@ async function canRefund ({ getters }, { network, walletId, order }) {
   return hasChainTimePassed({ getters }, { network, walletId, asset: order.from, timestamp: order.swapExpiration, fromAccountId: order.fromAccountId })
 }
 
-async function hasSwapExpired ({ getters }, { network, walletId, order }) {
+export async function hasSwapExpired ({ getters }, { network, walletId, order }) {
   return hasChainTimePassed({ getters }, { network, walletId, asset: order.to, timestamp: order.nodeSwapExpiration, fromAccountId: order.fromAccountId })
 }
 
@@ -26,7 +27,7 @@ async function handleExpirations ({ getters }, { network, walletId, order }) {
   }
 }
 
-async function createSecret ({ getters, dispatch }, { order, network, walletId }) {
+export async function createSecret ({ getters, dispatch }, { order, network, walletId }) {
   let [fromAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [order.from], accountId: order.fromAccountId })
   let [toAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [order.to], accountId: order.toAccountId })
 
@@ -58,9 +59,9 @@ async function createSecret ({ getters, dispatch }, { order, network, walletId }
   }
 }
 
-async function initiateSwap ({ state, getters, dispatch }, { order, network, walletId }) {
+export async function initiateSwap ({ state, getters, dispatch }, { order, network, walletId }) {
   if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
-    return { status: 'QUOTE_EXPIRED' }
+    throw new Error('The quote is expired')
   }
   const account = getters.accountItem(order.fromAccountId)
   const fromClient = getters.client(network, walletId, order.from, account?.type)
@@ -90,6 +91,21 @@ async function fundSwap ({ getters, dispatch }, { order, network, walletId }) {
 
   try {
     console.log('funding')
+    console.log('account', account)
+    if (account?.type.includes('ledger') && isERC20(order.from)) {
+      const notificationId = await createNotification({
+        title: 'Sign with Ledger',
+        message: 'You have sign to fund the swap transaction.'
+      })
+      const listener = (_id) => {
+        if (_id === notificationId) {
+          console.log('notification with order id', _id)
+          browser.notifications.clear(_id)
+          browser.notifications.onClicked.removeListener(listener)
+        }
+      }
+      browser.notifications.onClicked.addListener(listener)
+    }
     const fundTx = await fromClient.swap.fundSwap(
       order.fromFundHash,
       order.fromAmount,
@@ -335,15 +351,6 @@ export const performNextSwapAction = async (store, { network, walletId, order })
   let updates
 
   switch (order.status) {
-    case 'QUOTE':
-      updates = await createSecret(store, { order, network, walletId })
-      break
-
-    case 'SECRET_READY':
-      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
-        async () => initiateSwap(store, { order, network, walletId }))
-      break
-
     case 'INITIATED':
       updates = await withInterval(
         async () => await withLock(store, { item: order, network, walletId, asset: order.from },
