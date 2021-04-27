@@ -132,11 +132,6 @@ function createNearClient (network, mnemonic) {
   nearClient.addProvider(new NearJsWalletProvider(nearNetwork, mnemonic))
   nearClient.addProvider(new NearSwapProvider())
   nearClient.addProvider(new NearSwapFindProvider(nearNetwork?.helperUrl))
-  // nearClient.assertValidTransaction = function (transaction) { }
-  // nearClient.chain.getTransactionByHash = async (txHash) => {
-  //   const transaction = await nearClient.getMethod('getTransactionByHash')(txHash)
-  //   return transaction
-  // }
 
   return nearClient
 }
