@@ -47,8 +47,9 @@ export const newSwap = async (
   const createdOrder = {
     ...order,
     ...secreatedCreated,
-    swapInitiated
+    ...swapInitiated
   }
+  console.log('createdOrder', createdOrder)
   commit('NEW_ORDER', { network, walletId, order: createdOrder })
 
   dispatch('performNextAction', { network, walletId, fromAccountId, toAccountId, id: order.id })

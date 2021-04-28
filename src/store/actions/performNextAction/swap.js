@@ -91,7 +91,6 @@ async function fundSwap ({ getters, dispatch }, { order, network, walletId }) {
 
   try {
     console.log('funding')
-    console.log('account', account)
     if (account?.type.includes('ledger') && isERC20(order.from)) {
       const notificationId = await createNotification({
         title: 'Sign with Ledger',
@@ -349,7 +348,7 @@ async function sendTo ({ state, getters, dispatch }, { order, network, walletId 
 
 export const performNextSwapAction = async (store, { network, walletId, order }) => {
   let updates
-
+  console.log('performNextSwapAction started :::', order.status)
   switch (order.status) {
     case 'INITIATED':
       updates = await withInterval(
@@ -402,6 +401,8 @@ export const performNextSwapAction = async (store, { network, walletId, order })
         async () => sendTo(store, { order, network, walletId }))
       break
   }
+
+  console.log('performNextSwapAction ended :::', updates.status)
 
   return updates
 }
