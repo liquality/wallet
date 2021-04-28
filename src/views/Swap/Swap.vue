@@ -761,6 +761,7 @@ export default {
         console.error(error)
         const { message } = error
         this.loading = false
+        console.error(error)
         await this.showNotification({
           title: 'Error',
           message: message || error
