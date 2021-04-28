@@ -34,7 +34,6 @@ async function sendLedgerNotification (account, message) {
     })
     const listener = (_id) => {
       if (_id === notificationId) {
-        console.log('notification with order id', _id)
         browser.notifications.clear(_id)
         browser.notifications.onClicked.removeListener(listener)
       }

@@ -1,5 +1,4 @@
 import { newOrder } from '../utils'
-import { withLock } from './performNextAction/utils'
 import { hasQuoteExpired } from './performNextAction/swap'
 import { sha256 } from '@liquality/crypto'
 
@@ -64,19 +63,10 @@ export const newSwap = async (
     fromAmount
   })
 
-  let [fromAddress] = await store.dispatch('getUnusedAddresses', { network, walletId, assets: [order.from], accountId: order.fromAccountId })
-  let [toAddress] = await store.dispatch('getUnusedAddresses', { network, walletId, assets: [order.to], accountId: order.toAccountId })
-
-  fromAddress = fromAddress.toString()
-  toAddress = toAddress.toString()
-  order.fromAddress = fromAddress
-  order.toAddress = toAddress
-
   order.type = 'SWAP'
   order.network = network
   order.agent = agent
   order.startTime = Date.now()
-  order.status = 'QUOTE'
   order.sendTo = sendTo
   order.walletId = walletId
   order.fee = fee
@@ -84,16 +74,20 @@ export const newSwap = async (
   order.fromAccountId = fromAccountId
   order.toAccountId = toAccountId
 
-  const initiatedOrder = await withLock(store, { item: order, network, walletId, asset: order.from },
-    async () => initiateSwap(store, { order, network, walletId }))
+  const [fromAddress] = await store.dispatch('getUnusedAddresses', { network, walletId, assets: [order.from], accountId: order.fromAccountId })
+  const [toAddress] = await store.dispatch('getUnusedAddresses', { network, walletId, assets: [order.to], accountId: order.toAccountId })
+  order.fromAddress = fromAddress.toString()
+  order.toAddress = toAddress.toString()
 
-  const createdOrder = {
+  const initiationParams = await initiateSwap(store, { order, network, walletId })
+
+  const initiatedOrder = {
     ...order,
-    ...initiatedOrder
+    ...initiationParams,
+    status: 'INITIATED'
   }
 
-  console.log('createdOrder', createdOrder)
-  store.commit('NEW_ORDER', { network, walletId, order: createdOrder })
+  store.commit('NEW_ORDER', { network, walletId, order: initiatedOrder })
 
   store.dispatch('performNextAction', { network, walletId, fromAccountId, toAccountId, id: order.id })
 
