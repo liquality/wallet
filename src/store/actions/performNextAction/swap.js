@@ -348,7 +348,7 @@ async function sendTo ({ state, getters, dispatch }, { order, network, walletId 
 
 export const performNextSwapAction = async (store, { network, walletId, order }) => {
   let updates
-  console.log('performNextSwapAction started :::', order.status)
+  console.log('performNextSwapAction started :::', order?.status)
   switch (order.status) {
     case 'INITIATED':
       updates = await withInterval(
@@ -402,7 +402,7 @@ export const performNextSwapAction = async (store, { network, walletId, order })
       break
   }
 
-  console.log('performNextSwapAction ended :::', updates.status)
+  console.log('performNextSwapAction ended :::', updates?.status)
 
   return updates
 }
