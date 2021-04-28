@@ -72,7 +72,6 @@ async function fundSwap ({ getters }, { order, network, walletId }) {
 
 async function reportInitiation ({ getters }, { order, network, walletId }) {
   if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
-    console.log('WAITING FOR REFUND')
     return { status: 'WAITING_FOR_REFUND' }
   }
 
@@ -280,7 +279,6 @@ async function sendTo ({ state, getters, dispatch }, { order, network, walletId 
 
 export const performNextSwapAction = async (store, { network, walletId, order }) => {
   let updates
-  console.log('performNextSwapAction started :::', order?.status)
   switch (order.status) {
     case 'INITIATED':
       updates = await reportInitiation(store, { order, network, walletId })
@@ -330,8 +328,6 @@ export const performNextSwapAction = async (store, { network, walletId, order })
         async () => sendTo(store, { order, network, walletId }))
       break
   }
-
-  console.log('performNextSwapAction ended :::', updates?.status)
 
   return updates
 }

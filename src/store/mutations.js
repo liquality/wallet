@@ -196,7 +196,6 @@ export default {
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
-        console.log(updatedAccount)
       }
     }
   },
