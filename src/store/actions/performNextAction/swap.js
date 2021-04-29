@@ -168,7 +168,7 @@ async function claimSwap ({ store, getters }, { order, network, walletId }) {
   const account = getters.accountItem(order.toAccountId)
   const toClient = getters.client(network, walletId, order.to, account?.type)
 
-  await sendLedgerNotification(order, account, 'You have a pending transaction to sign for claim your fund.')
+  await sendLedgerNotification(order, account, 'You have a pending transaction to sign for claim your funds.')
 
   const toClaimTx = await toClient.swap.claimSwap(
     order.toFundHash,
@@ -246,6 +246,7 @@ async function waitForRefundConfirmations ({ getters }, { order, network, wallet
 async function refundSwap ({ getters }, { order, network, walletId }) {
   const account = getters.accountItem(order.fromAccountId)
   const fromClient = getters.client(network, walletId, order.from, account?.type)
+  await sendLedgerNotification(order, account, 'You have a pending transaction to sign for refund your funds.')
   const refundTx = await fromClient.swap.refundSwap(
     order.fromFundHash,
     order.fromAmount,
