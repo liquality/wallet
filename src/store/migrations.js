@@ -123,7 +123,7 @@ const migrations = [
       const migrateHistory = (state, network, walletId) => {
         return state.history[network]?.[walletId]
           // Remove defunct order statuses
-          ?.filer(item => !(['QUOTE', 'SECRET_READY'].includes(item.status)))
+          ?.filter(item => !(['QUOTE', 'SECRET_READY'].includes(item.status)))
           // INITIATION statuses should be moved to FUNDED to prevent double funding
           .map(item => ['INITIATION_REPORTED', 'INITIATION_CONFIRMED'].includes(item.status) ? ({ ...item, status: 'FUNDED' }) : item)
           // Account ids should be assigned to orders
@@ -132,8 +132,8 @@ const migrations = [
 
             const fromChain = cryptoassets[item.from].chain
             const toChain = cryptoassets[item.to].chain
-            const fromAccountId = accounts[network][walletId].find(account => account.chain === fromChain).id
-            const toAccountId = accounts[network][walletId].find(account => account.chain === toChain).id
+            const fromAccountId = accounts[walletId][network].find(account => account.chain === fromChain).id
+            const toAccountId = accounts[walletId][network].find(account => account.chain === toChain).id
 
             return { ...item, fromAccountId, toAccountId }
           })
