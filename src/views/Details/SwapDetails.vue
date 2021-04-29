@@ -244,7 +244,8 @@
        </template>
        <template #footer>
           <button class="btn btn-outline-clear"
-                  @click="retry">
+                  @click="retry"
+                  :disabled="retryingSwap">
             <template v-if="retryingSwap">...</template>
             <template v-else>Sign</template>
        </button>
@@ -358,6 +359,8 @@ export default {
         return 'Fund'
       } else if (this.item.status === 'READY_TO_CLAIM') {
         return 'Claim'
+      } else if (this.item.status === 'GET_REFUND') {
+        return 'Refund'
       }
 
       return null
@@ -378,6 +381,11 @@ export default {
         } else if (this.item.status === 'READY_TO_CLAIM') {
           const toAccount = this.accountItem(this.item.toAccountId)
           if (toAccount?.type.includes('ledger')) {
+            return true
+          }
+        } else if (this.item.status === 'GET_REFUND') {
+          const fromAccount = this.accountItem(this.item.fromAccountId)
+          if (fromAccount?.type.includes('ledger')) {
             return true
           }
         }
