@@ -121,7 +121,21 @@ const migrations = [
         }
       }
 
-      return { ...state, accounts, customTokens }
+      // Remove defunct order statuses
+      const history = {
+        mainnet: {
+          [walletId]: state.history.mainnet?.[walletId]
+            ?.filer(item => !(['QUOTE', 'SECRET_READY'].includes(item.status)))
+            .map(item => ['INITIATION_REPORTED', 'INITIATION_CONFIRMED'].includes(item.status) ? ({ ...item, status: 'FUNDED' }) : item)
+        },
+        testnet: {
+          [walletId]: state.history.testnet?.[walletId]
+            ?.filer(item => !(['QUOTE', 'SECRET_READY'].includes(item.status)))
+            .map(item => ['INITIATION_REPORTED', 'INITIATION_CONFIRMED'].includes(item.status) ? ({ ...item, status: 'FUNDED' }) : item)
+        }
+      }
+
+      return { ...state, accounts, customTokens, history }
     }
   }
 ]
