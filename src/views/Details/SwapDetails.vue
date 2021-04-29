@@ -244,7 +244,8 @@
        </template>
        <template #footer>
           <button class="btn btn-outline-clear"
-                  @click="retry">
+                  @click="retry"
+                  :disabled="retryingSwap">
             <template v-if="retryingSwap">...</template>
             <template v-else>Sign</template>
        </button>
@@ -383,8 +384,8 @@ export default {
             return true
           }
         } else if (this.item.status === 'GET_REFUND') {
-          const toAccount = this.accountItem(this.item.fromAccountId)
-          if (toAccount?.type.includes('ledger')) {
+          const fromAccount = this.accountItem(this.item.fromAccountId)
+          if (fromAccount?.type.includes('ledger')) {
             return true
           }
         }
