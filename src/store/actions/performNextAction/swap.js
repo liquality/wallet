@@ -1,11 +1,11 @@
-import { sha256 } from '@liquality/crypto'
 import { withLock, withInterval, hasChainTimePassed } from './utils'
-import cryptoassets from '../../../utils/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import { updateOrder, timestamp } from '../../utils'
 import { createNotification } from '../../../broker/notification'
+import { isERC20 } from '@/utils/asset'
 
-async function hasQuoteExpired (store, { order }) {
+export async function hasQuoteExpired (store, { order }) {
   return timestamp() >= order.expiresAt
 }
 
@@ -13,7 +13,7 @@ async function canRefund ({ getters }, { network, walletId, order }) {
   return hasChainTimePassed({ getters }, { network, walletId, asset: order.from, timestamp: order.swapExpiration, fromAccountId: order.fromAccountId })
 }
 
-async function hasSwapExpired ({ getters }, { network, walletId, order }) {
+export async function hasSwapExpired ({ getters }, { network, walletId, order }) {
   return hasChainTimePassed({ getters }, { network, walletId, asset: order.to, timestamp: order.nodeSwapExpiration, fromAccountId: order.fromAccountId })
 }
 
@@ -26,46 +26,36 @@ async function handleExpirations ({ getters }, { network, walletId, order }) {
   }
 }
 
-async function createSecret ({ getters, dispatch }, { order, network, walletId }) {
-  let [fromAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [order.from], accountId: order.fromAccountId })
-  let [toAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [order.to], accountId: order.toAccountId })
-
-  fromAddress = fromAddress.toString()
-  toAddress = toAddress.toString()
-
-  const message = [
-    'Creating a swap with following terms:',
-    `Send: ${order.fromAmount} (lowest denomination) ${order.from}`,
-    `Receive: ${order.toAmount} (lowest denomination) ${order.to}`,
-    `My ${order.from} Address: ${fromAddress}`,
-    `My ${order.to} Address: ${toAddress}`,
-    `Counterparty ${order.from} Address: ${order.fromCounterPartyAddress}`,
-    `Counterparty ${order.to} Address: ${order.toCounterPartyAddress}`,
-    `Timestamp: ${order.swapExpiration}`
-  ].join('\n')
-
-  const messageHex = Buffer.from(message, 'utf8').toString('hex')
-  const fromClient = getters.client(network, walletId, order.from)
-  const secret = await fromClient.swap.generateSecret(messageHex)
-  const secretHash = sha256(secret)
-
-  return {
-    secret,
-    fromAddress,
-    toAddress,
-    secretHash,
-    status: 'SECRET_READY'
+async function sendLedgerNotification (account, message) {
+  if (account?.type.includes('ledger')) {
+    const notificationId = await createNotification({
+      title: 'Sign with Ledger',
+      message
+    })
+    const listener = (_id) => {
+      if (_id === notificationId) {
+        browser.notifications.clear(_id)
+        browser.notifications.onClicked.removeListener(listener)
+      }
+    }
+    browser.notifications.onClicked.addListener(listener)
   }
 }
 
-async function initiateSwap ({ state, getters, dispatch }, { order, network, walletId }) {
+async function fundSwap ({ getters }, { order, network, walletId }) {
   if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
     return { status: 'QUOTE_EXPIRED' }
   }
+
+  if (!isERC20(order.from)) return { status: 'FUNDED' } // Skip. Only ERC20 swaps need funding
+
   const account = getters.accountItem(order.fromAccountId)
   const fromClient = getters.client(network, walletId, order.from, account?.type)
 
-  const fromFundTx = await fromClient.swap.initiateSwap(
+  await sendLedgerNotification(account, 'You have sign to fund the swap transaction.')
+
+  const fundTx = await fromClient.swap.fundSwap(
+    order.fromFundHash,
     order.fromAmount,
     order.fromCounterPartyAddress,
     order.fromAddress,
@@ -75,44 +65,13 @@ async function initiateSwap ({ state, getters, dispatch }, { order, network, wal
   )
 
   return {
-    fromFundHash: fromFundTx.hash,
-    fromFundTx,
-    status: 'INITIATED'
-  }
-}
-
-async function fundSwap ({ getters, dispatch }, { order, network, walletId }) {
-  if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
-    return { status: 'QUOTE_EXPIRED' }
-  }
-  const account = getters.accountItem(order.fromAccountId)
-  const fromClient = getters.client(network, walletId, order.from, account?.type)
-
-  try {
-    console.log('funding')
-    const fundTx = await fromClient.swap.fundSwap(
-      order.fromFundHash,
-      order.fromAmount,
-      order.fromCounterPartyAddress,
-      order.fromAddress,
-      order.secretHash,
-      order.swapExpiration,
-      order.fee
-    )
-
-    return {
-      fundTxHash: fundTx?.hash,
-      status: 'FUNDED'
-    }
-  } catch (e) { // Handle ERC20 contract initiation still to be mined
-    if (e.name === 'PendingTxError') console.warn(e)
-    else throw e
+    fundTxHash: fundTx.hash,
+    status: 'FUNDED'
   }
 }
 
 async function reportInitiation ({ getters }, { order, network, walletId }) {
   if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
-    console.log('WAITING FOR REFUND')
     return { status: 'WAITING_FOR_REFUND' }
   }
 
@@ -209,21 +168,8 @@ async function claimSwap ({ store, getters }, { order, network, walletId }) {
   const account = getters.accountItem(order.toAccountId)
   const toClient = getters.client(network, walletId, order.to, account?.type)
 
-  if (account?.type.includes('ledger')) {
-    const notificationId = await createNotification({
-      title: 'Sign with Ledger',
-      message: 'You have a pending transaction to sign for claim your fund.'
-    })
+  await sendLedgerNotification(order, account, 'You have a pending transaction to sign for claim your fund.')
 
-    const listener = (_id) => {
-      if (_id === notificationId) {
-        console.log('notification with order id', _id)
-        browser.notifications.clear(_id)
-        browser.notifications.onClicked.removeListener(listener)
-      }
-    }
-    browser.notifications.onClicked.addListener(listener)
-  }
   const toClaimTx = await toClient.swap.claimSwap(
     order.toFundHash,
     order.toAmount,
@@ -333,26 +279,8 @@ async function sendTo ({ state, getters, dispatch }, { order, network, walletId 
 
 export const performNextSwapAction = async (store, { network, walletId, order }) => {
   let updates
-
   switch (order.status) {
-    case 'QUOTE':
-      updates = await createSecret(store, { order, network, walletId })
-      break
-
-    case 'SECRET_READY':
-      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
-        async () => initiateSwap(store, { order, network, walletId }))
-      break
-
     case 'INITIATED':
-      updates = await withInterval(
-        async () => await withLock(store, { item: order, network, walletId, asset: order.from },
-          async () => fundSwap(store, { order, network, walletId })
-        )
-      )
-      break
-
-    case 'FUNDED':
       updates = await reportInitiation(store, { order, network, walletId })
       break
 
@@ -361,6 +289,11 @@ export const performNextSwapAction = async (store, { network, walletId, order })
       break
 
     case 'INITIATION_CONFIRMED':
+      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
+        async () => fundSwap(store, { order, network, walletId }))
+      break
+
+    case 'FUNDED':
       updates = await withInterval(async () => findCounterPartyInitiation(store, { order, network, walletId }))
       break
 

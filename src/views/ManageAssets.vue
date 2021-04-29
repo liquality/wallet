@@ -93,7 +93,6 @@ export default {
   },
   watch: {
     activeNetwork () {
-      console.log('cryptoassets', Object.keys(cryptoassets))
       this.clearSearch()
     }
   }
