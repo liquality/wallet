@@ -463,7 +463,7 @@ export default {
     setLedgerInstructions () {
       // :::::: Show the modal for ledger if we need it ::::::
     // Apply only for ledger accounts but the order should have an account id:
-      if (this.item && this.item.fromAccountId && this.item.toAccountId) {
+      if (this.item && this.item.error && this.item.fromAccountId && this.item.toAccountId) {
       // Check the status and get the account related
         if (this.item.status === 'INITIATION_CONFIRMED') {
         // fund transaction only apply for erc20
