@@ -249,10 +249,6 @@
             <template v-if="retryingSwap">...</template>
             <template v-else>Done</template>
        </button>
-        <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)" :disabled="loading">
-            <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>Connect</template>
-          </button>
       </template>
     </Modal>
   </div>
