@@ -268,6 +268,68 @@
                 :asset-selection="assetSelection"
                 @asset-selected="assetChanged"/>
     </div>
+    <!-- Modals for ledger prompts -->
+    <Modal v-if="swapErrorModalOpen" @close="swapErrorModalOpen = false">
+      <template #header>
+        <div class="text-center text-danger">
+          Oooops...
+        </div>
+      </template>
+       <div class="justify-content-center"
+            v-if="account && account.type.includes('ledger')">
+         <div class="modal-title d-flex justify-content-center">
+          Can’t find the ledger Account
+        </div>
+         <div class="step-icon d-flex justify-content-center">
+          <LedgerIcon />
+        </div>
+         <ul class="step-instructions align-self-start">
+          <li>Plug the Ledger into the computer</li>
+          <li>Enter pin to unlock it</li>
+          <li>
+           On the Ledger, navigate to the asset you want to access
+          </li>
+          <li>
+           Once connected follow the prompts on the Ledger
+          </li>
+        </ul>
+        <p class="text-center">
+            {{ swapErrorMessage }}
+          </p>
+      </div>
+      <div v-else class="justify-content-center">
+        <p class="text-center">
+            {{ swapErrorMessage }}
+          </p>
+      </div>
+       <template #footer>
+       <button class="btn btn-outline-clear" @click="swapErrorModalOpen = false">
+         Ok
+       </button>
+      </template>
+    </Modal>
+    <Modal v-if="modalSettingsOpen" @close="modalSettingsOpen = false">
+      <template #header>
+         <h5>
+           Initiate
+         </h5>
+      </template>
+       <template>
+         <div class="modal-title">
+           On Your Ledger
+         </div>
+         <div class="ledger-options-container">
+         <div class="ledger-options-instructions">
+          Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag.
+        </div>
+        <p>
+          <LedgerSignRquest class="ledger-sign-request"/>
+        </p>
+      </div>
+       </template>
+       <template #footer>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -301,10 +363,13 @@ import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
+import LedgerIcon from '@/assets/icons/ledger_icon.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import ReceiveInput from './ReceiveInput'
 import Accounts from './Accounts'
+import Modal from '@/components/Modal'
+import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
 export default {
   components: {
@@ -318,9 +383,12 @@ export default {
     SpinnerIcon,
     DetailsContainer,
     CopyIcon,
+    LedgerIcon,
     SendInput,
     ReceiveInput,
-    Accounts
+    Accounts,
+    Modal,
+    LedgerSignRquest
   },
   data () {
     return {
@@ -338,7 +406,10 @@ export default {
       assetSelection: 'from',
       loading: false,
       sendToCopied: false,
-      toAccountId: null
+      toAccountId: null,
+      swapErrorModalOpen: false,
+      modalSettingsOpen: false,
+      swapErrorMessage: ''
     }
   },
   props: {
@@ -666,8 +737,7 @@ export default {
     ...mapActions([
       'updateMarketData',
       'updateFees',
-      'newSwap',
-      'showNotification'
+      'newSwap'
     ]),
     shortenAddress,
     prettyBalance,
@@ -726,6 +796,12 @@ export default {
       this.selectedFee = { ...selectedFee }
     },
     async swap () {
+      this.swapErrorMessage = ''
+      this.swapErrorModalOpen = false
+      this.loading = true
+      if (this.account?.type.includes('ledger')) {
+        this.modalSettingsOpen = true
+      }
       try {
         const fromAmount = currencyToUnit(cryptoassets[this.asset], this.safeAmount)
 
@@ -740,8 +816,6 @@ export default {
             this.selectedFee[this.toAssetChain]
           ].fee
           : undefined
-
-        this.loading = true
         await this.newSwap({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
@@ -756,15 +830,16 @@ export default {
           toAccountId: this.toAccountId
         })
 
+        this.modalSettingsOpen = false
+
         this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {
         console.error(error)
         const { message } = error
         this.loading = false
-        await this.showNotification({
-          title: 'Error',
-          message: message || error
-        })
+        this.modalSettingsOpen = false
+        this.swapErrorMessage = message || error
+        this.swapErrorModalOpen = true
       }
     },
     getSelectedFeeLabel (fee) {
@@ -885,5 +960,18 @@ export default {
       transform: rotate(180deg);
     }
   }
+}
+svg.ledger-sign-request {
+  margin-top: 5px;
+  width: 320px;
+}
+
+.ledger-options-instructions {
+  margin-top: 10px;
+  align-self: start;
+  padding-left: 0px !important;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 20px;
 }
 </style>

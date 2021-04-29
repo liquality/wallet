@@ -755,13 +755,6 @@ svg.qr-icon {
       margin-top: 10px;
     }
 
-    .step-icon {
-      margin-top: 15px;
-      svg {
-        width: 179px;
-      }
-    }
-
     .step-text {
       margin-top: 10px;
       font-style: normal;
@@ -769,16 +762,6 @@ svg.qr-icon {
       font-size: 12px;
       line-height: 27px;
     }
-  }
-
-  .step-instructions {
-    margin-top: 10px;
-    font-style: normal;
-    font-weight: 300;
-    font-size: 16px;
-    padding-left: 20px;
-    line-height: 25px;
-    margin-bottom: 30px;
   }
 
   .options {
@@ -823,6 +806,36 @@ svg.qr-icon {
   }
 }
 
+
+.step-icon {
+  margin-top: 15px;
+  svg {
+    width: 179px;
+  }
+}
+
+.step-instructions {
+  margin-top: 10px;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 16px;
+  padding-left: 20px;
+  line-height: 25px;
+  margin-bottom: 30px;
+}
+
+.modal-title {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.ledger-options-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .custom-dropdown-toggle {
   padding-left: 0 !important;

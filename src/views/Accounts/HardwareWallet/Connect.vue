@@ -166,22 +166,18 @@ export default {
 </script>
 
 <style lang="scss">
-.ledger-options-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.ledger-options {
-  width: 227px;
-}
 
 .ledger-options-instructions {
   list-style-type: none;
   align-self: start;
-  padding-left: 20px !important;
+  padding-left: 0px !important;
   font-weight: 300;
   font-size: 14px;
   line-height: 20px;
 }
+
+svg.ledger-options {
+  width: 227px;
+}
+
 </style>

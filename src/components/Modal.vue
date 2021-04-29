@@ -11,7 +11,10 @@
       }" role="document">
         <div class="modal-content">
           <div class="modal-header">
-             <h5 class="modal-title" v-if="hasSlot('title')">
+            <div class="modal-header-container" v-if="hasSlot('header')">
+               <slot name="header"></slot>
+             </div>
+             <h5 class="modal-title" v-else-if="hasSlot('title')">
                <slot name="title"></slot>
              </h5>
               <a href="#" @click="close" >
@@ -65,27 +68,34 @@ export default {
 .modal {
   overflow: auto!important;
 }
+
+.modal-body {
+  padding: 20px;
+}
+
 .modal-content {
   border-radius: 0 !important;
   border: 1px solid #D9DFE5;
   box-sizing: border-box;
   box-shadow: 2px 4px 4px rgba(46, 44, 44, 0.25);
 }
+
+.modal-header-container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
 .modal-header {
   border-bottom: 0 !important;
   padding: 20px 20px 0 20px !important;
-
-  .modal-title {
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 20px;
-  }
   svg.modal-close {
     height: 20px;
     cursor: pointer;
   }
 }
+
 .modal-footer {
   border-top: 0 !important;
   padding: 0 20px 18px 20px !important;
