@@ -1,6 +1,9 @@
 <template>
   <div class="asset-list">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
+    <NavBar showMenu="true"
+            showBack="true"
+            backPath="/wallet"
+            backLabel="Overview">
       <span class="asset-list-nav">
         <strong>Select Asset</strong>
       </span>
@@ -19,89 +22,48 @@
         </div>
       </div>
       <div class="list-items">
-        <ListItem v-for="asset in filteredItems"
-                 :key="asset"
-                 :to="`/account/${asset}/${action}?source=assets`">
-          <template #icon>
-            <img :src="getAssetIcon(asset)" class="asset-icon" />
-          </template>
-          {{ getAssetName(asset) }}
-          <template #sub-title>
-            {{asset}}
-      </template>
-      </ListItem>
-        <span class="dropdown-item"
-              v-if="filteredItems.length <= 0">
-              <div class="dropdown-item-asset-item">
-                No items
-              </div>
-          </span>
+        <WalletAccounts @item-selected="onAccountSelected"
+                        :search="search"
+                        :accounts="accounts"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import {
-  getAssetColorStyle,
-  getAssetIcon
-} from '@/utils/asset'
 import SearchIcon from '@/assets/icons/search.svg'
-import { mapGetters } from 'vuex'
-import ListItem from '@/components/ListItem'
+import WalletAccounts from '@/components/WalletAccounts'
 import NavBar from '@/components/NavBar'
-import cryptoassets from '@/utils/cryptoassets'
+import { mapGetters } from 'vuex'
 
 export default {
+  computed: {
+    ...mapGetters(['accountsData', 'accountsWithBalance']),
+    accounts () {
+      if (this.action === 'swap') {
+        return this.accountsWithBalance
+      }
+      return this.accountsData
+    }
+  },
   components: {
     NavBar,
-    ListItem,
+    WalletAccounts,
     SearchIcon
   },
-  props: ['action'],
+  props: [
+    'action'
+  ],
   data () {
     return {
-      search: '',
-      filteredItems: []
-    }
-  },
-  computed: {
-    ...mapGetters(['orderedBalances', 'networkWalletBalances']),
-    items () {
-      return this.orderedBalances.map(([asset]) => asset)
-    }
-  },
-  watch: {
-    search (newSearch, oldSearch) {
-      if (newSearch && newSearch !== oldSearch) {
-        this.filteredItems = this.items.filter(
-          a => a.toUpperCase().includes(newSearch.toUpperCase())
-        )
-      } else {
-        this.filteredItems = [...this.items]
-      }
-    },
-    assets (newAssets, oldAssets) {
-      if (newAssets && newAssets !== oldAssets) {
-        if (this.search) {
-          this.filteredItems = this.items.filter(
-            a => a.toUpperCase().includes(this.search.toUpperCase())
-          )
-        } else {
-          this.filteredItems = [...this.items]
-        }
-      }
+      search: ''
     }
   },
   methods: {
-    getAssetColorStyle,
-    getAssetIcon,
-    getAssetName (asset) {
-      return cryptoassets[asset] ? cryptoassets[asset].name : asset
+    onAccountSelected ({ account, asset }) {
+      const _asset = asset || account.assets[0]
+      this.$router.push(`/accounts/${account.id}/${_asset}/${this.action}?source=assets`)
     }
-  },
-  created () {
-    this.filteredItems = [...this.items]
   }
 }
 </script>

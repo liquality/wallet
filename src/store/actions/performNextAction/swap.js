@@ -1,14 +1,20 @@
-import { sha256 } from '@liquality/crypto'
 import { withLock, withInterval, hasChainTimePassed } from './utils'
-import cryptoassets from '../../../utils/cryptoassets'
-import { updateOrder } from '../../utils'
+import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
+import { updateOrder, timestamp } from '../../utils'
+import { createNotification } from '../../../broker/notification'
+import { isERC20 } from '@/utils/asset'
 
-async function canRefund ({ getters }, { network, walletId, order }) {
-  return hasChainTimePassed({ getters }, { network, walletId, asset: order.from, timestamp: order.swapExpiration })
+export async function hasQuoteExpired (store, { order }) {
+  return timestamp() >= order.expiresAt
 }
 
-async function hasSwapExpired ({ getters }, { network, walletId, order }) {
-  return hasChainTimePassed({ getters }, { network, walletId, asset: order.to, timestamp: order.nodeSwapExpiration })
+async function canRefund ({ getters }, { network, walletId, order }) {
+  return hasChainTimePassed({ getters }, { network, walletId, asset: order.from, timestamp: order.swapExpiration, fromAccountId: order.fromAccountId })
+}
+
+export async function hasSwapExpired ({ getters }, { network, walletId, order }) {
+  return hasChainTimePassed({ getters }, { network, walletId, asset: order.to, timestamp: order.nodeSwapExpiration, fromAccountId: order.fromAccountId })
 }
 
 async function handleExpirations ({ getters }, { network, walletId, order }) {
@@ -20,43 +26,36 @@ async function handleExpirations ({ getters }, { network, walletId, order }) {
   }
 }
 
-async function createSecret ({ getters, dispatch }, { order, network, walletId }) {
-  let [fromAddress, toAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [order.from, order.to] })
-
-  fromAddress = fromAddress.toString()
-  toAddress = toAddress.toString()
-
-  const message = [
-    'Creating a swap with following terms:',
-    `Send: ${order.fromAmount} (lowest denomination) ${order.from}`,
-    `Receive: ${order.toAmount} (lowest denomination) ${order.to}`,
-    `My ${order.from} Address: ${fromAddress}`,
-    `My ${order.to} Address: ${toAddress}`,
-    `Counterparty ${order.from} Address: ${order.fromCounterPartyAddress}`,
-    `Counterparty ${order.to} Address: ${order.toCounterPartyAddress}`,
-    `Timestamp: ${order.swapExpiration}`
-  ].join('\n')
-
-  const messageHex = Buffer.from(message, 'utf8').toString('hex')
-  const fromClient = getters.client(network, walletId, order.from)
-  const secret = await fromClient.swap.generateSecret(messageHex)
-  const secretHash = sha256(secret)
-
-  return {
-    secret,
-    fromAddress,
-    toAddress,
-    secretHash,
-    status: 'SECRET_READY'
+async function sendLedgerNotification (account, message) {
+  if (account?.type.includes('ledger')) {
+    const notificationId = await createNotification({
+      title: 'Sign with Ledger',
+      message
+    })
+    const listener = (_id) => {
+      if (_id === notificationId) {
+        browser.notifications.clear(_id)
+        browser.notifications.onClicked.removeListener(listener)
+      }
+    }
+    browser.notifications.onClicked.addListener(listener)
   }
 }
 
-async function initiateSwap ({ getters, dispatch }, { order, network, walletId }) {
-  if (await dispatch('checkIfQuoteExpired', { network, walletId, order })) return
+async function fundSwap ({ getters }, { order, network, walletId }) {
+  if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
+    return { status: 'QUOTE_EXPIRED' }
+  }
 
-  const fromClient = getters.client(network, walletId, order.from)
+  if (!isERC20(order.from)) return { status: 'FUNDED' } // Skip. Only ERC20 swaps need funding
 
-  const fromFundTx = await fromClient.swap.initiateSwap(
+  const account = getters.accountItem(order.fromAccountId)
+  const fromClient = getters.client(network, walletId, order.from, account?.type)
+
+  await sendLedgerNotification(account, 'Signing required to fund the swap.')
+
+  const fundTx = await fromClient.swap.fundSwap(
+    order.fromFundHash,
     order.fromAmount,
     order.fromCounterPartyAddress,
     order.fromAddress,
@@ -66,13 +65,16 @@ async function initiateSwap ({ getters, dispatch }, { order, network, walletId }
   )
 
   return {
-    fromFundHash: fromFundTx.hash,
-    fromFundTx,
-    status: 'INITIATED'
+    fundTxHash: fundTx.hash,
+    status: 'FUNDED'
   }
 }
 
-async function reportInitiation (store, { order }) {
+async function reportInitiation ({ getters }, { order, network, walletId }) {
+  if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
+    return { status: 'WAITING_FOR_REFUND' }
+  }
+
   await updateOrder(order)
 
   return {
@@ -80,12 +82,13 @@ async function reportInitiation (store, { order }) {
   }
 }
 
-async function confirmInitiation ({ getters }, { order, network, walletId }) {
+async function confirmInitiation ({ state, getters }, { order, network, walletId }) {
   // Jump the step if counter party has already accepted the initiation
   const counterPartyInitiation = await findCounterPartyInitiation({ getters }, { order, network, walletId })
   if (counterPartyInitiation) return counterPartyInitiation
+  const account = getters.accountItem(order.fromAccountId)
 
-  const fromClient = getters.client(network, walletId, order.from)
+  const fromClient = getters.client(network, walletId, order.from, account?.type)
 
   try {
     const tx = await fromClient.chain.getTransactionByHash(order.fromFundHash)
@@ -102,7 +105,8 @@ async function confirmInitiation ({ getters }, { order, network, walletId }) {
 }
 
 async function findCounterPartyInitiation ({ getters }, { order, network, walletId }) {
-  const toClient = getters.client(network, walletId, order.to)
+  const account = getters.accountItem(order.toAccountId)
+  const toClient = getters.client(network, walletId, order.to, account?.type)
 
   try {
     const tx = await toClient.swap.findInitiateSwapTransaction(
@@ -114,7 +118,16 @@ async function findCounterPartyInitiation ({ getters }, { order, network, wallet
       const isVerified = await toClient.swap.verifyInitiateSwapTransaction(
         toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
       )
-      if (isVerified) {
+
+      // ERC20 swaps have separate funding tx. Ensures funding tx has enough confirmations
+      const fundingTransaction = await toClient.swap.findFundSwapTransaction(
+        toFundHash, order.toAmount, order.toAddress, order.toCounterPartyAddress, order.secretHash, order.nodeSwapExpiration
+      )
+      const fundingConfirmed = fundingTransaction
+        ? fundingTransaction.confirmations >= chains[cryptoassets[order.to].chain].safeConfirmations
+        : true
+
+      if (isVerified && fundingConfirmed) {
         return {
           toFundHash,
           status: 'CONFIRM_COUNTER_PARTY_INITIATION'
@@ -132,11 +145,12 @@ async function findCounterPartyInitiation ({ getters }, { order, network, wallet
 }
 
 async function confirmCounterPartyInitiation ({ getters }, { order, network, walletId }) {
-  const toClient = getters.client(network, walletId, order.to)
+  const account = getters.accountItem(order.toAccountId)
+  const toClient = getters.client(network, walletId, order.to, account?.type)
 
   const tx = await toClient.chain.getTransactionByHash(order.toFundHash)
 
-  if (tx && tx.confirmations >= cryptoassets[order.to].safeConfirmations) {
+  if (tx && tx.confirmations >= chains[cryptoassets[order.to].chain].safeConfirmations) {
     return {
       status: 'READY_TO_CLAIM'
     }
@@ -147,18 +161,23 @@ async function confirmCounterPartyInitiation ({ getters }, { order, network, wal
   if (expirationUpdates) { return expirationUpdates }
 }
 
-async function claimSwap ({ getters }, { order, network, walletId }) {
+async function claimSwap ({ store, getters }, { order, network, walletId }) {
   const expirationUpdates = await handleExpirations({ getters }, { order, network, walletId })
   if (expirationUpdates) { return expirationUpdates }
 
-  const toClient = getters.client(network, walletId, order.to)
+  const account = getters.accountItem(order.toAccountId)
+  const toClient = getters.client(network, walletId, order.to, account?.type)
+
+  await sendLedgerNotification(order, account, 'Signing required to claim the swap.')
 
   const toClaimTx = await toClient.swap.claimSwap(
     order.toFundHash,
+    order.toAmount,
     order.toAddress,
     order.toCounterPartyAddress,
-    order.secret,
+    order.secretHash,
     order.nodeSwapExpiration,
+    order.secret,
     order.claimFee
   )
 
@@ -170,7 +189,8 @@ async function claimSwap ({ getters }, { order, network, walletId }) {
 }
 
 async function waitForClaimConfirmations ({ getters, dispatch }, { order, network, walletId }) {
-  const toClient = getters.client(network, walletId, order.to)
+  const account = getters.accountItem(order.toAccountId)
+  const toClient = getters.client(network, walletId, order.to, account?.type)
 
   try {
     const tx = await toClient.chain.getTransactionByHash(order.toClaimHash)
@@ -206,7 +226,8 @@ async function waitForRefund ({ getters }, { order, network, walletId }) {
 }
 
 async function waitForRefundConfirmations ({ getters }, { order, network, walletId }) {
-  const fromClient = getters.client(network, walletId, order.from)
+  const account = getters.accountItem(order.fromAccountId)
+  const fromClient = getters.client(network, walletId, order.from, account?.type)
   try {
     const tx = await fromClient.chain.getTransactionByHash(order.refundHash)
 
@@ -223,9 +244,12 @@ async function waitForRefundConfirmations ({ getters }, { order, network, wallet
 }
 
 async function refundSwap ({ getters }, { order, network, walletId }) {
-  const fromClient = getters.client(network, walletId, order.from)
+  const account = getters.accountItem(order.fromAccountId)
+  const fromClient = getters.client(network, walletId, order.from, account?.type)
+  await sendLedgerNotification(order, account, 'Signing required to refund the swap.')
   const refundTx = await fromClient.swap.refundSwap(
     order.fromFundHash,
+    order.fromAmount,
     order.fromCounterPartyAddress,
     order.fromAddress,
     order.secretHash,
@@ -240,8 +264,9 @@ async function refundSwap ({ getters }, { order, network, walletId }) {
   }
 }
 
-async function sendTo ({ getters, dispatch }, { order, network, walletId }) {
-  const toClient = getters.client(network, walletId, order.to)
+async function sendTo ({ state, getters, dispatch }, { order, network, walletId }) {
+  const account = getters.accountItem(order.toAccountId)
+  const toClient = getters.client(network, walletId, order.to, account?.type)
   const sendToHash = await toClient.chain.sendTransaction(order.sendTo, order.toAmount)
 
   dispatch('updateBalances', { network, walletId, assets: [order.to, order.from] })
@@ -255,17 +280,7 @@ async function sendTo ({ getters, dispatch }, { order, network, walletId }) {
 
 export const performNextSwapAction = async (store, { network, walletId, order }) => {
   let updates
-
   switch (order.status) {
-    case 'QUOTE':
-      updates = await createSecret(store, { order, network, walletId })
-      break
-
-    case 'SECRET_READY':
-      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
-        async () => initiateSwap(store, { order, network, walletId }))
-      break
-
     case 'INITIATED':
       updates = await reportInitiation(store, { order, network, walletId })
       break
@@ -275,6 +290,11 @@ export const performNextSwapAction = async (store, { network, walletId, order })
       break
 
     case 'INITIATION_CONFIRMED':
+      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
+        async () => fundSwap(store, { order, network, walletId }))
+      break
+
+    case 'FUNDED':
       updates = await withInterval(async () => findCounterPartyInitiation(store, { order, network, walletId }))
       break
 

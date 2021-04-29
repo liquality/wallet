@@ -10,10 +10,10 @@
       <router-link to="/settings/manage-assets/custom-token">Add Custom Token</router-link>
     </div>
     <div class="manage-assets_list">
-      <div v-for="asset in filteredAssets" :key="asset" class="asset-item d-flex align-items-center">
+      <div v-for="asset in assets" :key="asset" class="asset-item d-flex align-items-center">
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
         <div class="asset-item_name flex-fill">{{getAssetName(asset)}} ({{asset}})
-          <span v-if="asset in networkWalletBalances" class="asset-item_balance">{{getAssetBalance(asset)}} {{asset}}</span>
+          <!-- <span v-if="asset in networkWalletBalances" class="asset-item_balance">{{getAssetBalance(asset)}} {{asset}}</span> -->
         </div>
         <div class="asset-item_toggle">
           <toggle-button :css-colors="true" :value="isAssetEnabled(asset)" @change="e => toggleAsset(asset, e.value)" />
@@ -30,7 +30,7 @@
 import { isEmpty } from 'lodash-es'
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-import { prettyBalance } from '@/utils/coinFormatter'
+// import { prettyBalance } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import SearchIcon from '@/assets/icons/search.svg'
@@ -42,35 +42,25 @@ export default {
   },
   data () {
     return {
-      search: ''
+      search: '',
+      assets: []
     }
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets', 'balances']),
-    filteredAssets () {
-      if (isEmpty(this.search)) return this.assets
-
-      return this.assets.filter(asset => asset.toLowerCase().includes(this.search.toLowerCase()) || cryptoassets[asset].name.toLowerCase().includes(this.search.toLowerCase()))
-    },
     networkAssets () {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
-    },
-    networkWalletBalances () {
-      if (!this.balances[this.activeNetwork]) return false
-      if (!this.balances[this.activeNetwork][this.activeWalletId]) return false
-
-      return this.balances[this.activeNetwork][this.activeWalletId]
     }
   },
   methods: {
     ...mapActions(['enableAssets', 'disableAssets']),
     getAssetIcon,
     getAssetName (asset) {
-      return cryptoassets[asset].name
+      return cryptoassets[asset]?.name || asset
     },
-    getAssetBalance (asset) {
-      return prettyBalance(this.networkWalletBalances[asset], asset)
-    },
+    // getAssetBalance (asset) {
+    //   return prettyBalance(this.networkWalletBalances[asset], asset)
+    // },
     isAssetEnabled (asset) {
       return this.networkAssets.includes(asset)
     },
@@ -80,15 +70,31 @@ export default {
     },
     sortAssets () {
       const allAssets = Object.keys(cryptoassets)
-      this.assets = allAssets.sort((a, b) => this.isAssetEnabled(b) - this.isAssetEnabled(a))
+      const assets = allAssets.sort((a, b) => this.isAssetEnabled(b) - this.isAssetEnabled(a))
+      if (isEmpty(this.search)) {
+        this.assets = assets
+      } else {
+        this.assets = assets.filter(
+          asset => asset.toLowerCase().includes(
+            this.search.toLowerCase()
+          ) ||
+        cryptoassets[asset]?.name.toLowerCase()
+        .includes(this.search.toLowerCase())
+        )
+      }
     },
     clearSearch () {
-      this.sortAssets()
       this.search = ''
+      this.sortAssets()
     }
   },
   created () {
     this.sortAssets()
+  },
+  watch: {
+    activeNetwork () {
+      this.clearSearch()
+    }
   }
 }
 </script>

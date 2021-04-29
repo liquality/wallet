@@ -2,17 +2,16 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Splash from '@/views/Splash.vue'
-import OnboardingPassword from '@/views/Onboarding/OnboardingPassword.vue'
+import OnboardingSetup from '@/views/Onboarding/OnboardingSetup.vue'
 import ImportWallet from '@/views/ImportWallet.vue'
 import UnlockWallet from '@/views/UnlockWallet.vue'
-import BackupWallet from '@/views/BackupWallet.vue'
 import Wallet from '@/views/Wallet/Wallet.vue'
 import Account from '@/views/Account.vue'
 import SwapDetails from '@/views/Details/SwapDetails.vue'
 import TransactionDetails from '@/views/Details/TransactionDetails.vue'
-import Send from '@/views/Send.vue'
+import Send from '@/views/Send/Send.vue'
 import Receive from '@/views/Receive.vue'
-import Swap from '@/views/Swap.vue'
+import Swap from '@/views/Swap/Swap.vue'
 
 import Settings from '@/views/Settings'
 import ManageAssets from '@/views/ManageAssets'
@@ -27,6 +26,13 @@ import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import AssetList from '@/views/AssetList.vue'
+import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
+import CreateAccount from '@/views/Accounts/Create.vue'
+import ImportAccount from '@/views/Accounts/Import.vue'
+
+import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
+import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
+import PhraseReveal from '@/views/Onboarding/SeedPhrase/PhraseReveal'
 
 Vue.use(VueRouter)
 
@@ -37,12 +43,6 @@ const routes = [
     component: Splash
   },
   {
-    name: 'OnboardingPassword',
-    path: '/onboarding/password',
-    component: OnboardingPassword,
-    props: true
-  },
-  {
     path: '/onboarding/import',
     component: ImportWallet
   },
@@ -51,8 +51,10 @@ const routes = [
     component: UnlockWallet
   },
   {
-    path: '/backup',
-    component: BackupWallet
+    path: '/onboarding/setup/:passphrase?',
+    component: OnboardingSetup,
+    name: 'OnboardingSetup',
+    props: true
   },
   // Onboarding
 
@@ -74,6 +76,7 @@ const routes = [
   // Wallet
   {
     path: '/wallet',
+    name: 'Wallet',
     component: Wallet,
     children: [
       {
@@ -105,24 +108,44 @@ const routes = [
     name: 'TransactionDetails',
     props: true
   },
+
+  // Accounts
+  {
+    path: '/accounts/create',
+    component: CreateAccount,
+    props: true
+  },
+  {
+    path: '/accounts/import',
+    component: ImportAccount,
+    props: true
+  },
+  {
+    path: '/accounts/hardware-wallet',
+    component: HardwareWallet,
+    props: true
+  },
   {
     name: 'Account',
-    path: '/account/:asset',
+    path: '/accounts/:accountId/:asset',
     component: Account,
     props: true
   },
   {
-    path: '/account/:asset/send',
+    name: 'Send',
+    path: '/accounts/:accountId/:asset/send',
     component: Send,
     props: true
   },
   {
-    path: '/account/:asset/receive',
+    name: 'Receive',
+    path: '/accounts/:accountId/:asset/receive',
     component: Receive,
     props: true
   },
   {
-    path: '/account/:routeAsset/swap',
+    name: 'Swap',
+    path: '/accounts/:accountId/:routeAsset/swap',
     component: Swap,
     props: true
   },
@@ -159,8 +182,23 @@ const routes = [
   {
     path: '/permission/default',
     component: Permission
-  }
+  },
   // Injection
+
+  // SeedPhrase
+  {
+    path: '/privacywarning',
+    component: Warning
+  },
+  {
+    path: '/seedlogin',
+    component: LoginPhrase
+  },
+  {
+    path: '/seedreveal',
+    component: PhraseReveal
+  }
+
 ]
 
 const router = new VueRouter({

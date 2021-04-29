@@ -16,9 +16,9 @@ test('Send transaction', async () => {
   await switchToTestnet(page)
   await expectWalletOpen(page, 'testnet')
 
-  const ethLink = await page.$('a[href="#/account/ETH"]')
+  const ethLink = await page.$('a[href="#/accounts/ETH"]')
   await ethLink.click()
-  const sendLink = await page.waitFor('a[href="#/account/ETH/send"]')
+  const sendLink = await page.waitFor('a[href="#/accounts/ETH/send"]')
   await sendLink.click()
 
   await page.type('#address', CONSTANTS.ETH_ADDRESS)

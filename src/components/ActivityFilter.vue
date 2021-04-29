@@ -47,7 +47,9 @@
         <ListItem v-for="(filter, key) in typeFilters"
                   :key="key"
                   @item-selected="toogleTypeFilter(key)"
-                  :item-class="filter.selected ? 'selected-item' : ''"
+                  :container-class="filter.selected ? 'selected-item' : ''"
+                  :item-class="'h-padding'"
+                  h-padding
                   :item-styles="{ height: '40px', paddingTop: '10px', paddingBottom: '10px'}">
             <template #icon>
               <img :src="getItemIcon(filter.icon)"/>
@@ -89,7 +91,7 @@ import ListItem from '@/components/ListItem'
 import { ACTIVITY_FILTER_TYPES, ACTIVITY_STATUSES, getItemIcon } from '@/utils/history'
 import DatePick from 'vue-date-pick'
 import '@/assets/scss/vue-date-pick.scss'
-import { getCSVContent, exportToCSV } from '@/utils/export'
+import { getCSVContent, downloadFile } from '@/utils/export'
 
 const CSV_HEADERS = [
   {
@@ -201,7 +203,6 @@ export default {
   },
   methods: {
     getCSVContent,
-    exportToCSV,
     getItemIcon,
     toogleTypeFilter (key) {
       if (key in this.typeFilters) {
@@ -219,7 +220,7 @@ export default {
     },
     exportActivity () {
       const content = this.getCSVContent(this.activityData, this.headers)
-      this.exportToCSV({ filename: 'activity.csv', content })
+      downloadFile({ filename: 'activity.csv', type: 'text/csv;charset=utf-8;', content })
     },
     resetFilters () {
       this.dateFilters = { start: null, end: null }

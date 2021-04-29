@@ -1,5 +1,6 @@
 import qs from 'qs'
 import cryptoassets from '../../utils/cryptoassets'
+import { currencyToUnit } from '@liquality/cryptoassets'
 
 export const handlePaymentUri = async ({ dispatch }, { data }) => {
   const { uri } = data
@@ -16,7 +17,7 @@ export const handlePaymentUri = async ({ dispatch }, { data }) => {
   const address = parsed.pathname
   const params = qs.parse(parsed.search.replace('?', ''))
   const value = parseFloat(params.amount || params.value)
-  const unitValue = cryptoassets[asset].currencyToUnit(value)
+  const unitValue = currencyToUnit(cryptoassets[asset], value).toNumber()
 
   return dispatch('requestPermission', {
     data: {

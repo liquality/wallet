@@ -8,18 +8,32 @@ export default {
       'USDT',
       'WBTC',
       'UNI',
-      'RBTC'
+      'RBTC',
+      'SOV',
+      'BNB'
     ],
     testnet: [
       'BTC',
       'ETH',
       'DAI',
-      'RBTC'
+      'RBTC',
+      'BNB',
+      'SOV'
     ]
   },
   agentEndpoints: {
     testnet: ['https://liquality.io/swap-testnet/agent'],
     mainnet: ['https://liquality.io/swap/agent']
   },
-  telegramUrl: 'https://t.me/liquality'
+  exploraApis: {
+    testnet: 'https://liquality.io/testnet/electrs',
+    mainnet: 'https://api-mainnet-bitcoin-electrs.liquality.io'
+  },
+  batchEsploraApis: {
+    testnet: 'https://liquality.io/electrs-testnet-batch',
+    mainnet: 'https://api-mainnet-bitcoin-electrs-batch.liquality.io'
+  },
+  telegramUrl: 'https://t.me/liquality',
+  networks: ['mainnet', 'testnet'],
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc']
 }

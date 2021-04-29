@@ -1,8 +1,9 @@
 <template>
   <div class="receive">
-    <NavBar showBack="true"
-            :backPath="routeSource === 'assets' ? '/wallet' : `/account/${asset}`"
-            :backLabel="routeSource === 'assets' ? 'Overview' : asset">
+     <NavBar
+        showBack="true"
+        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
+        :backLabel="routeSource === 'assets' ? 'Overview' : asset">
       Receive {{asset}}
     </NavBar>
     <div class="wrapper form text-center">
@@ -36,7 +37,7 @@
 
       <div class="wrapper_bottom">
         <div class="button-group">
-          <router-link :to="routeSource === 'assets' ? '/wallet' : `/account/${asset}`">
+          <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`">
             <button class="btn btn-light btn-outline-primary btn-lg">
               Done
             </button>
@@ -52,17 +53,15 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import QRCode from 'qrcode'
-import {
-  getAssetIcon,
-  getChainFromAsset
-} from '@/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -73,29 +72,33 @@ export default {
   },
   data () {
     return {
+      address: null,
       qrcode: null,
       copied: false
     }
   },
   props: {
-    asset: String
+    asset: String,
+    accountId: String
   },
   computed: {
-    ...mapState(['addresses', 'activeNetwork', 'activeWalletId']),
+    ...mapState(['activeNetwork', 'activeWalletId']),
+    ...mapGetters([
+      'accountItem'
+    ]),
+    account () {
+      return this.accountItem(this.accountId)
+    },
     routeSource () {
       return this.$route.query.source || null
     },
-    address () {
-      const address = this.addresses[this.activeNetwork]?.[this.activeWalletId]?.[this.asset]
-      return address && cryptoassets[this.asset].formatAddress(address)
-    },
     chainName () {
-      const assetChain = getChainFromAsset(this.asset)
       return ({
-        BTC: 'bitcoin',
-        ETH: 'ethereum',
-        RBTC: 'ethereum'
-      })[assetChain]
+        bitcoin: 'bitcoin',
+        ethereum: 'ethereum',
+        rsk: 'ethereum',
+        bsc: 'ethereum'
+      })[cryptoassets[this.asset].chain]
     },
     faucet () {
       if (this.activeNetwork === 'testnet') {
@@ -109,7 +112,13 @@ export default {
     }
   },
   async created () {
-    await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset] })
+    if (this.account && this.account.type.includes('ledger')) {
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0])
+    } else {
+      const addresses = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(addresses[0])
+    }
+
     const uri = [
       this.chainName,
       this.address

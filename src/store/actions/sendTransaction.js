@@ -1,9 +1,24 @@
 import { v4 as uuidv4 } from 'uuid'
 import { createHistoryNotification } from '../../broker/notification'
 
-export const sendTransaction = async ({ dispatch, commit, getters }, { network, walletId, asset, to, amount, data, fee }) => {
-  const client = getters.client(network, walletId, asset)
-  const tx = await client.chain.sendTransaction(to, amount, data, fee)
+export const sendTransaction = async ({ dispatch, commit, getters }, { network, walletId, accountId, asset, to, amount, data, fee }) => {
+  const account = getters.accountItem(accountId)
+  const client = getters.client(network, walletId, asset, account?.type)
+
+  // TODO: RSK GAS LIMIT PATCH - PROVIDER SHOULD BE ABLE TO SET CUSTOM LIMIT FROM DAPP - FIX IN NEXT RELEASE
+  const originalEstimateGas = client._providers[0].estimateGas
+  if (asset === 'RBTC' && data) {
+    client._providers[0].estimateGas = async () => {
+      return 2000000
+    }
+  }
+
+  let tx
+  try {
+    tx = await client.chain.sendTransaction(to, amount, data, fee)
+  } finally {
+    client._providers[0].estimateGas = originalEstimateGas
+  }
 
   const transaction = {
     id: uuidv4(),
@@ -21,9 +36,9 @@ export const sendTransaction = async ({ dispatch, commit, getters }, { network, 
     status: 'WAITING_FOR_CONFIRMATIONS'
   }
 
-  commit('NEW_TRASACTION', { network, walletId, transaction })
+  commit('NEW_TRASACTION', { network, walletId, accountId, transaction })
 
-  dispatch('performNextAction', { network, walletId, id: transaction.id })
+  dispatch('performNextAction', { network, walletId, id: transaction.id, accountId })
 
   createHistoryNotification(transaction)
 

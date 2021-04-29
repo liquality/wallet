@@ -1,11 +1,11 @@
 import BN from 'bignumber.js'
 import cryptoassets from './cryptoassets'
+import { unitToCurrency } from '@liquality/cryptoassets'
 
 const VALUE_DECIMALS = 6
 
 export const dp = (amount, coin) => {
   if (!amount) return amount
-
   return BN(amount).dp(cryptoassets[coin].decimals)
 }
 
@@ -18,7 +18,7 @@ export const dpUI = (amount, dp = VALUE_DECIMALS) => {
 export const prettyBalance = (amount, coin, dp = VALUE_DECIMALS) => {
   if (!amount || !coin) return amount
 
-  amount = cryptoassets[coin].unitToCurrency(amount)
+  amount = unitToCurrency(cryptoassets[coin], amount)
 
   return dpUI(amount, dp)
 }
@@ -30,15 +30,15 @@ export const prettyFiatBalance = (amount, rate) => {
 }
 
 export const cryptoToFiat = (amount, rate) => {
-  if (!amount || !rate) return amount
+  if (!rate) return BN(amount)
   return BN(amount).times(rate)
 }
 
 export const fiatToCrypto = (amount, rate) => {
-  if (!amount || !rate) return amount
+  if (!rate) return amount
   return BN(amount).dividedBy(rate).dp(VALUE_DECIMALS, BN.ROUND_FLOOR)
 }
 
 export const formatFiat = (amount) => {
-  return BN(amount).toFormat(2, BN.ROUND_CEIL)
+  return amount.toFormat(2, BN.ROUND_CEIL)
 }

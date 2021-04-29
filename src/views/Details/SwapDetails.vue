@@ -37,8 +37,8 @@
         <div class="row">
           <div class="col">
             <h2>Network Speed/Fee</h2>
-            <p v-for="fee in txFees" :key="fee.chain">
-              {{ fee.chain }} Fee: {{ fee.fee }} {{ fee.unit }}
+            <p v-for="fee in txFees" :key="fee.asset">
+              {{ fee.asset }} Fee: {{ fee.fee }} {{ fee.unit }}
             </p>
           </div>
         </div>
@@ -57,7 +57,7 @@
                   <a :href="step.tx.explorerLink" target="_blank">{{ step.title }}</a>
                   <CopyIcon @click="copy(step.tx.hash)"/>
                 </h3>
-                <p class="text-muted" v-if="step.tx.fee && !feeSelectorEnabled(step)">Fee: {{prettyBalance(step.tx.fee, step.tx.asset)}} {{ getChainFromAsset(step.tx.asset) }}</p>
+                <p class="text-muted" v-if="step.tx.fee && !feeSelectorEnabled(step)">Fee: {{prettyBalance(step.tx.fee, step.tx.asset)}} {{ getNativeAsset(step.tx.asset) }}</p>
                 <p class="text-muted" v-if="!feeSelectorEnabled(step)">Confirmations: {{ step.tx.confirmations || 0 }}</p>
                 <template v-if="canUpdateFee(step)">
                   <div v-if="feeSelectorEnabled(step)" class="form fee-update">
@@ -223,6 +223,34 @@
         </table>
       </div>
     </div>
+    <Modal v-if="ledgerSignRequired && showLedgerModal" @close="showLedgerModal = false">
+      <template #header>
+        <h5>
+          Sign to {{ ledgerModalTitle }}
+        </h5>
+      </template>
+       <template>
+         <div class="modal-title">
+           On Your Ledger
+         </div>
+         <div class="ledger-options-container">
+         <div class="ledger-options-instructions">
+          Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag.
+        </div>
+        <p>
+          <LedgerSignRquest class="ledger-sign-request"/>
+        </p>
+      </div>
+       </template>
+       <template #footer>
+          <button class="btn btn-outline-clear"
+                  @click="retry"
+                  :disabled="retryingSwap">
+            <template v-if="retryingSwap">...</template>
+            <template v-else>Sign</template>
+       </button>
+      </template>
+    </Modal>
   </div>
 </template>
 
@@ -231,15 +259,18 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import moment from '@/utils/moment'
 import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStep, getStatusLabel } from '@/utils/history'
-import { getChainFromAsset, getTransactionExplorerLink } from '@/utils/asset'
+import { isERC20, getNativeAsset, getTransactionExplorerLink } from '@/utils/asset'
 
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import NavBar from '@/components/NavBar.vue'
+import Modal from '@/components/Modal'
+import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
 const ACTIONS_TERMS = {
   lock: {
@@ -264,7 +295,9 @@ export default {
     CompletedIcon,
     SpinnerIcon,
     CopyIcon,
-    NavBar
+    NavBar,
+    Modal,
+    LedgerSignRquest
   },
   data () {
     return {
@@ -274,12 +307,14 @@ export default {
       showFeeSelector: false,
       feeSelectorLoading: false,
       feeSelectorAsset: null,
-      newFeePrice: null
+      newFeePrice: null,
+      showLedgerModal: false,
+      retryingSwap: false
     }
   },
   props: ['id'],
   computed: {
-    ...mapGetters(['client']),
+    ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
     item () {
       return this.history[this.activeNetwork][this.activeWalletId]
@@ -296,38 +331,87 @@ export default {
     },
     txFees () {
       const fees = []
-      const fromChain = getChainFromAsset(this.item.from)
-      const toChain = getChainFromAsset(this.item.to)
+      const fromChain = cryptoassets[this.item.from].chain
+      const toChain = cryptoassets[this.item.to].chain
       fees.push({
-        chain: fromChain,
+        asset: getNativeAsset(this.item.from),
         fee: this.item.fee,
-        unit: cryptoassets[fromChain].fees.unit
+        unit: chains[fromChain].fees.unit
       })
       if (toChain !== fromChain) {
         fees.push({
-          chain: toChain,
+          asset: getNativeAsset(this.item.to),
           fee: this.item.claimFee,
-          unit: cryptoassets[toChain].fees.unit
+          unit: chains[toChain].fees.unit
         })
       }
       return fees
     },
     feeSelectorFees () {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[getChainFromAsset(this.feeSelectorAsset)]
+      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[getNativeAsset(this.feeSelectorAsset)]
     },
     feeSelectorUnit () {
-      return cryptoassets[getChainFromAsset(this.feeSelectorAsset)].fees.unit
+      const chain = cryptoassets[this.feeSelectorAsset].chain
+      return chains[chain].fees.unit
+    },
+    ledgerModalTitle () {
+      if (this.item.status === 'INITIATION_CONFIRMED') {
+        return 'Fund'
+      } else if (this.item.status === 'READY_TO_CLAIM') {
+        return 'Claim'
+      } else if (this.item.status === 'GET_REFUND') {
+        return 'Refund'
+      }
+
+      return null
+    },
+    ledgerSignRequired () {
+      // :::::: Show the modal for ledger if we need it ::::::
+      // Apply only for ledger accounts but the order should have an account id:
+      if (this.item && (this.item.error || this.retryingSwap) && this.item.fromAccountId && this.item.toAccountId) {
+      // Check the status and get the account related
+        if (this.item.status === 'INITIATION_CONFIRMED') {
+        // fund transaction only apply for erc20
+          if (isERC20(this.item.from)) {
+            const fromAccount = this.accountItem(this.item.fromAccountId)
+            if (fromAccount?.type.includes('ledger')) {
+              return true
+            }
+          }
+        } else if (this.item.status === 'READY_TO_CLAIM') {
+          const toAccount = this.accountItem(this.item.toAccountId)
+          if (toAccount?.type.includes('ledger')) {
+            return true
+          }
+        } else if (this.item.status === 'GET_REFUND') {
+          const fromAccount = this.accountItem(this.item.fromAccountId)
+          if (fromAccount?.type.includes('ledger')) {
+            return true
+          }
+        }
+      }
+
+      return false
     }
   },
   methods: {
     ...mapActions(['retrySwap', 'updateTransactionFee', 'updateFees']),
-    getChainFromAsset,
+    getNativeAsset,
     prettyBalance,
     prettyTime (timestamp) {
       return moment(timestamp).format('L, LT')
     },
-    retry () {
-      this.retrySwap({ order: this.item })
+    async retry () {
+      if (this.retryingSwap) return
+      this.retryingSwap = true
+      try {
+        await this.retrySwap({ order: this.item })
+        if (!this.item.error) {
+          this.showLedgerModal = false
+        }
+      } finally {
+        this.retryingSwap = false
+      }
     },
     async copy (text) {
       await navigator.clipboard.writeText(text)
@@ -342,7 +426,7 @@ export default {
       this.showFeeSelector = true
       this.newFeePrice = step.tx.feePrice
       this.feeSelectorAsset = step.tx.asset
-      this.updateFees({ asset: getChainFromAsset(step.tx.asset) })
+      this.updateFees({ asset: getNativeAsset(step.tx.asset) })
     },
     closeFeeSelector () {
       this.showFeeSelector = false
@@ -422,7 +506,12 @@ export default {
   },
   created () {
     this.updateTransactions()
-    this.interval = setInterval(() => this.updateTransactions(), 5000)
+    if (this.ledgerSignRequired) {
+      this.showLedgerModal = true
+    }
+    this.interval = setInterval(() => {
+      this.updateTransactions()
+    }, 5000)
   },
   beforeDestroy () {
     clearInterval(this.interval)

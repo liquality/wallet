@@ -1,5 +1,6 @@
 import BN from 'bignumber.js'
 import cryptoassets from '../../utils/cryptoassets'
+import { unitToCurrency } from '@liquality/cryptoassets'
 
 import { getMarketData } from '../utils'
 import { dp } from '../../utils/coinFormatter'
@@ -20,18 +21,17 @@ export const updateMarketData = async ({ state, commit, getters }, { network }) 
   const allMarketData = _allMarketData.filter(r => r !== false)
 
   const pairMarkets = allMarketData[0]
-    .filter(({ to, from }) => networkAssets.includes(to) && networkAssets.includes(from))
-    .map(({ to, from }) => {
+    ?.filter(({ to, from }) => networkAssets.includes(to) && networkAssets.includes(from))
+    ?.map(({ to, from }) => {
       return allMarketData.reduce((acc, marketData) => {
-        const convert = cryptoassets[from]
         const market = marketData.find(market => market.to === to && market.from === from)
         if (!market) return acc
 
         market.sellRate = BN(market.rate).toString()
         market.buyRate = dp(BN(1).div(market.sellRate), from).toString()
 
-        market.sellMin = BN(convert.unitToCurrency(market.min)).toString()
-        market.sellMax = BN(convert.unitToCurrency(market.max)).toString()
+        market.sellMin = BN(unitToCurrency(cryptoassets[from], market.min)).toString()
+        market.sellMax = BN(unitToCurrency(cryptoassets[from], market.max)).toString()
 
         acc.buyRate = dp(BN.min(acc.buyRate, market.buyRate), from).toString()
         acc.sellRate = dp(BN.min(acc.sellRate, market.sellRate), to).toString()
@@ -52,7 +52,7 @@ export const updateMarketData = async ({ state, commit, getters }, { network }) 
 
         markets: []
       })
-    })
+    }) || []
 
   const marketData = networkAssets.reduce((acc, asset) => {
     acc[asset] = pairMarkets

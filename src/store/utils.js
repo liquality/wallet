@@ -2,8 +2,7 @@ import Vue from 'vue'
 import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
 import pkg from '../../package.json'
-import { getChainFromAsset } from '../utils/asset'
-import cryptoassets from '@liquality/cryptoassets'
+import { assets as cryptoassets } from '@liquality/cryptoassets'
 
 export const CHAIN_LOCK = {}
 
@@ -15,10 +14,10 @@ export { wait }
 
 export const waitForRandom = (min, max) => wait(random(min, max))
 
-export const timestamp = () => Math.ceil(Date.now() / 1000)
+export const timestamp = () => Date.now()
 
 export const attemptToLockAsset = (network, walletId, asset) => {
-  const chain = getChainFromAsset(asset)
+  const chain = cryptoassets[asset].chain
   const key = [network, walletId, chain].join('-')
 
   if (CHAIN_LOCK[key]) {
@@ -87,7 +86,8 @@ export const getMarketData = agent => {
 const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
 
 export async function getPrices (baseCurrencies, toCurrency) {
-  const coindIds = baseCurrencies.map(currency => cryptoassets[currency].coinGeckoId)
+  const coindIds = baseCurrencies.filter(currency => cryptoassets[currency]?.coinGeckoId)
+    .map(currency => cryptoassets[currency].coinGeckoId)
   const { data } = await axios.get(`${COIN_GECKO_API}/simple/price?ids=${coindIds.join(',')}&vs_currencies=${toCurrency}`)
   let prices = mapKeys(data, (v, coinGeckoId) => findKey(cryptoassets, asset => asset.coinGeckoId === coinGeckoId))
   prices = mapValues(prices, rates => mapKeys(rates, (v, k) => k.toUpperCase()))

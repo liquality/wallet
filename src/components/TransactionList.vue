@@ -4,7 +4,8 @@
       v-for="item in transactions"
       :key="item.id"
       :to="getDetailsUrl(item)"
-      :itemClass="{ 'text-danger': item.error }"
+      :container-class="{ 'text-danger': item.error }"
+      :item-class="'h-padding'"
     >
       <template #icon>
         <img :src="getTypeIcon(item.type)" />
@@ -47,7 +48,7 @@ import {
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
 import { mapState } from 'vuex'
-import { getChainFromAsset } from '@/utils/asset'
+import { getNativeAsset } from '@/utils/asset'
 
 export default {
   components: {
@@ -107,7 +108,7 @@ export default {
     },
     getTypeIcon (type) {
       const filter = ACTIVITY_FILTER_TYPES[type]
-      return this.getItemIcon(filter.icon)
+      return this.getItemIcon(filter?.icon)
     },
     getTransactionStep (item) {
       return getStep(item) + 1
@@ -124,8 +125,8 @@ export default {
     },
     getCompletedAmount (item) {
       const amount = item.type === 'SWAP' ? item.fromAmount : item.amount
-      const assetChain = getChainFromAsset(item.from)
-      return prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[assetChain])
+      const nativeAsset = getNativeAsset(item.from)
+      return prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[nativeAsset])
     }
   }
 }

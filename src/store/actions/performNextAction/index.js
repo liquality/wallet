@@ -33,4 +33,6 @@ export const performNextAction = async (store, { network, walletId, id }) => {
       dispatch('performNextAction', { network, walletId, id })
     }
   }
+
+  return updates
 }

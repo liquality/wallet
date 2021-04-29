@@ -57,7 +57,7 @@ class ProviderManager {
 window.providerManager = new ProviderManager()
 `
 
-const ethereumProvider = ({ asset, networkVersion, chainId }) => `
+const ethereumProvider = ({ name, asset, network, overrideEthereum = false }) => `
 async function getAddresses () {
   const eth = window.providerManager.getProviderFor('${asset}')
   let addresses = await eth.getMethod('wallet.getAddresses')()
@@ -70,7 +70,7 @@ async function handleRequest (req) {
   if(req.method.startsWith('metamask_')) return null
 
   if(req.method === 'eth_requestAccounts') {
-    return await window.ethereum.enable()
+    return await window.${name}.enable()
   }
   if(req.method === 'personal_sign') { 
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
@@ -86,11 +86,11 @@ async function handleRequest (req) {
   return eth.getMethod('jsonrpc')(req.method, ...req.params)
 }
 
-window.liqualityEthereum = {
+window.${name} = {
   isLiquality: true,
   isEIP1193: true,
-  networkVersion: '${networkVersion}',
-  chainId: '${chainId}',
+  networkVersion: '${network.networkId}',
+  chainId: '${network.chainId.toString(16)}',
   enable: async () => {
     const accepted = await window.providerManager.enable()
     if (!accepted) throw new Error('User rejected')
@@ -104,7 +104,7 @@ window.liqualityEthereum = {
   },
   send: async (req, _paramsOrCallback) => {
     if (typeof _paramsOrCallback === 'function') {
-      window.ethereum.sendAsync(req, _paramsOrCallback)
+      window.${name}.sendAsync(req, _paramsOrCallback)
       return
     }
     const method = typeof req === 'string' ? req : req.method
@@ -124,24 +124,27 @@ window.liqualityEthereum = {
   autoRefreshOnNetworkChange: false
 }
 
-function override() {
-  window.ethereum = window.liqualityEthereum
-}
+${overrideEthereum
+  ? `function override() {
+    window.ethereum = window.${name}
+  }
 
-if (!window.ethereum) {
-  override()
-  const retryLimit = 5
-  let retries = 0
-  const interval = setInterval(() => {
-    retries++
-    if (window.ethereum && !window.ethereum.isLiquality) {
-      override()
-      clearInterval(interval)
-    }
-    if (retries >= retryLimit) clearInterval(interval)
-  }, 1000)
-} else {
-  override()
+  if (!window.ethereum) {
+    override()
+    const retryLimit = 5
+    let retries = 0
+    const interval = setInterval(() => {
+      retries++
+      if (window.ethereum && !window.ethereum.isLiquality) {
+        override()
+        clearInterval(interval)
+      }
+      if (retries >= retryLimit) clearInterval(interval)
+    }, 1000)
+  } else {
+    override()
+  }`
+  : ''
 }
 `
 
@@ -192,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   })
-})
+}, { once: true })
 `
 
 export { providerManager, ethereumProvider, bitcoinProvider, paymentUriHandler }
