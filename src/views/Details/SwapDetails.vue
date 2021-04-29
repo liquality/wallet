@@ -487,7 +487,12 @@ export default {
   created () {
     this.updateTransactions()
     this.setLedgerInstructions()
-    this.interval = setInterval(() => this.updateTransactions(), 5000)
+    this.interval = setInterval(() => {
+      this.updateTransactions()
+      if (!['INITIATION_CONFIRMED', 'READY_TO_CLAIM'].includes(this.item?.status)) {
+        this.ledgerModalOpen = false
+      }
+    }, 5000)
   },
   beforeDestroy () {
     clearInterval(this.interval)
