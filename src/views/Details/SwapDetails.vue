@@ -244,8 +244,7 @@
        </template>
        <template #footer>
           <button class="btn btn-outline-clear"
-                  @click="retry"
-                  :disabled="retryingSwap">
+                  @click="retry">
             <template v-if="retryingSwap">...</template>
             <template v-else>Done</template>
        </button>
@@ -364,6 +363,7 @@ export default {
       return moment(timestamp).format('L, LT')
     },
     async retry () {
+      if (this.retryingSwap) return
       this.retryingSwap = true
       await this.retrySwap({ order: this.item })
       this.ledgerModalOpen = false
