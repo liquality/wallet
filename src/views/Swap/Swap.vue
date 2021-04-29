@@ -327,8 +327,6 @@
         </p>
       </div>
        </template>
-       <template #footer>
-      </template>
     </Modal>
   </div>
 </template>

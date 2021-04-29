@@ -17,9 +17,7 @@
              <h5 class="modal-title" v-else-if="hasSlot('title')">
                <slot name="title"></slot>
              </h5>
-              <a href="#" @click="close" >
-                        <ModalClose class="modal-close"/>
-          </a>
+              <ModalClose class="modal-close" @click="close"/>
           </div>
            <div class="modal-body">
              <slot></slot>

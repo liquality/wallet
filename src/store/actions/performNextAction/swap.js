@@ -1,9 +1,9 @@
 import { withLock, withInterval, hasChainTimePassed } from './utils'
-import cryptoassets from '../../../utils/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import { updateOrder, timestamp } from '../../utils'
 import { createNotification } from '../../../broker/notification'
-import { isERC20 } from '../../../utils/asset'
+import { isERC20 } from '@/utils/asset'
 
 export async function hasQuoteExpired (store, { order }) {
   return timestamp() >= order.expiresAt
