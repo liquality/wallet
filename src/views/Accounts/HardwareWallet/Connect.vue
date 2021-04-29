@@ -72,15 +72,37 @@
         </button>
       </div>
     </div>
+    <Modal v-if="modalSettingsOpen" @close="closeModalSettings">
+      <template #title>
+        To Swap
+      </template>
+       <div class="ledger-options-container">
+         <ul class="ledger-options-instructions">
+          <li>On your Ledger in the eth App</li>
+          <li>Go to Settings</li>
+          <li>
+           Select 'Allow Contract Data'
+          </li>
+        </ul>
+        <LedgerOptions class="ledger-options"/>
+      </div>
+       <template #footer>
+       <button class="btn btn-outline-clear" @click="connect">
+         Got it
+       </button>
+      </template>
+    </Modal>
   </div>
 </template>
 <script>
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import LedgerOptions from '@/assets/icons/ledger_options.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import LedgerIcon from '@/assets/icons/ledger_icon.svg'
 import { LEDGER_OPTIONS } from '@/utils/ledger-bridge-provider'
 import clickAway from '@/directives/clickAway'
 import { getAssetIcon } from '@/utils/asset'
+import Modal from '@/components/Modal'
 
 export default {
   directives: {
@@ -89,19 +111,36 @@ export default {
   components: {
     SpinnerIcon,
     LedgerIcon,
-    ChevronRightIcon
+    ChevronRightIcon,
+    Modal,
+    LedgerOptions
   },
   props: ['selectedAsset', 'loading'],
   data () {
     return {
-      assetsDropdownOpen: false
+      assetsDropdownOpen: false,
+      modalSettingsOpen: false
     }
   },
   methods: {
     getAssetIcon,
+    closeModalSettings () {
+      this.modalSettingsOpen = false
+    },
     connect () {
       if (this.selectedAsset) {
-        this.$emit('on-connect', { asset: this.selectedAsset })
+        // validation to show a modal for settings related to ethereum app
+        if (this.selectedAsset?.name === 'ETH') {
+          if (!this.modalSettingsOpen) {
+            this.modalSettingsOpen = true
+          } else {
+            this.modalSettingsOpen = false
+            this.$emit('on-connect', { asset: this.selectedAsset })
+          }
+        } else {
+          this.modalSettingsOpen = false
+          this.$emit('on-connect', { asset: this.selectedAsset })
+        }
       }
     },
     goToOverview () {
@@ -127,4 +166,22 @@ export default {
 </script>
 
 <style lang="scss">
+.ledger-options-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ledger-options {
+  width: 227px;
+}
+
+.ledger-options-instructions {
+  list-style-type: none;
+  align-self: start;
+  padding-left: 20px !important;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 20px;
+}
 </style>
