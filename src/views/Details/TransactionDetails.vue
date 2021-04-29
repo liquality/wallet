@@ -194,7 +194,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['retrySwap', 'updateTransactionFee', 'updateFees']),
+    ...mapActions(['updateTransactionFee', 'updateFees']),
     getNativeAsset,
     prettyBalance,
     prettyTime (timestamp) {

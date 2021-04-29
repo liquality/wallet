@@ -223,11 +223,11 @@
         </table>
       </div>
     </div>
-    <Modal v-if="ledgerModalOpen" @close="ledgerModalOpen = false">
+    <Modal v-if="ledgerSignRequired && showLedgerModal" @close="showLedgerModal = false">
       <template #header>
-         <h5>
-           {{ ledgerModalTitle }}
-         </h5>
+        <h5>
+          Sign to {{ ledgerModalTitle }}
+        </h5>
       </template>
        <template>
          <div class="modal-title">
@@ -246,7 +246,7 @@
           <button class="btn btn-outline-clear"
                   @click="retry">
             <template v-if="retryingSwap">...</template>
-            <template v-else>Done</template>
+            <template v-else>Sign</template>
        </button>
       </template>
     </Modal>
@@ -307,9 +307,8 @@ export default {
       feeSelectorLoading: false,
       feeSelectorAsset: null,
       newFeePrice: null,
-      ledgerModalOpen: false,
-      retryingSwap: false,
-      ledgerModalTitle: ''
+      showLedgerModal: false,
+      retryingSwap: false
     }
   },
   props: ['id'],
@@ -353,6 +352,38 @@ export default {
     feeSelectorUnit () {
       const chain = cryptoassets[this.feeSelectorAsset].chain
       return chains[chain].fees.unit
+    },
+    ledgerModalTitle () {
+      if (this.item.status === 'INITIATION_CONFIRMED') {
+        return 'Fund'
+      } else if (this.item.status === 'READY_TO_CLAIM') {
+        return 'Claim'
+      }
+
+      return null
+    },
+    ledgerSignRequired () {
+      // :::::: Show the modal for ledger if we need it ::::::
+      // Apply only for ledger accounts but the order should have an account id:
+      if (this.item && (this.item.error || this.retryingSwap) && this.item.fromAccountId && this.item.toAccountId) {
+      // Check the status and get the account related
+        if (this.item.status === 'INITIATION_CONFIRMED') {
+        // fund transaction only apply for erc20
+          if (isERC20(this.item.from)) {
+            const fromAccount = this.accountItem(this.item.fromAccountId)
+            if (fromAccount?.type.includes('ledger')) {
+              return true
+            }
+          }
+        } else if (this.item.status === 'READY_TO_CLAIM') {
+          const toAccount = this.accountItem(this.item.toAccountId)
+          if (toAccount?.type.includes('ledger')) {
+            return true
+          }
+        }
+      }
+
+      return false
     }
   },
   methods: {
@@ -365,10 +396,14 @@ export default {
     async retry () {
       if (this.retryingSwap) return
       this.retryingSwap = true
-      await this.retrySwap({ order: this.item })
-      this.ledgerModalOpen = false
-      this.retryingSwap = false
-      this.ledgerModalTitle = ''
+      try {
+        await this.retrySwap({ order: this.item })
+        if (!this.item.error) {
+          this.showLedgerModal = false
+        }
+      } finally {
+        this.retryingSwap = false
+      }
     },
     async copy (text) {
       await navigator.clipboard.writeText(text)
@@ -459,39 +494,15 @@ export default {
     },
     goBack () {
       this.$router.go(-1)
-    },
-    setLedgerInstructions () {
-      // :::::: Show the modal for ledger if we need it ::::::
-    // Apply only for ledger accounts but the order should have an account id:
-      if (this.item && this.item.error && this.item.fromAccountId && this.item.toAccountId) {
-      // Check the status and get the account related
-        if (this.item.status === 'INITIATION_CONFIRMED') {
-        // fund transaction only apply for erc20
-          if (isERC20(this.item.from)) {
-            const fromAccount = this.accountItem(this.item.fromAccountId)
-            if (fromAccount?.type.includes('ledger')) {
-              this.ledgerModalTitle = 'Fund'
-              this.ledgerModalOpen = true
-            }
-          }
-        } else if (this.item.status === 'READY_TO_CLAIM') {
-          const toAccount = this.accountItem(this.item.toAccountId)
-          if (toAccount?.type.includes('ledger')) {
-            this.ledgerModalTitle = 'Claim'
-            this.ledgerModalOpen = true
-          }
-        }
-      }
     }
   },
   created () {
     this.updateTransactions()
-    this.setLedgerInstructions()
+    if (this.ledgerSignRequired) {
+      this.showLedgerModal = true
+    }
     this.interval = setInterval(() => {
       this.updateTransactions()
-      if (!['INITIATION_CONFIRMED', 'READY_TO_CLAIM'].includes(this.item?.status)) {
-        this.ledgerModalOpen = false
-      }
     }, 5000)
   },
   beforeDestroy () {
