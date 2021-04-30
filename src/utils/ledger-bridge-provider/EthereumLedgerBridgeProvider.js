@@ -1,7 +1,7 @@
 import EthereumLedgerProvider from '@liquality/ethereum-ledger-provider'
 import { EthereumLedgerBridgeApp } from './EthereumLedgerBridgeApp'
 import { version } from '../../../package.json'
-import networks from '@liquality/ethereum-networks'
+import { EthereumNetworks } from '@liquality/ethereum-networks'
 import { Address } from '@liquality/utils'
 
 export class EthereumLedgerBridgeProvider extends EthereumLedgerProvider {
@@ -9,7 +9,7 @@ export class EthereumLedgerBridgeProvider extends EthereumLedgerProvider {
   _bridgeUrl
   _addressesCache = {}
 
-  constructor (network = networks.mainnet, bridgeUrl) {
+  constructor (network = EthereumNetworks.ethereum_mainnet, bridgeUrl) {
     super(network)
     this._bridgeUrl = bridgeUrl
     this._ledgerApp = new Proxy(new EthereumLedgerBridgeApp(this._bridgeUrl), { get: this.errorProxy.bind(this) })

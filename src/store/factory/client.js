@@ -1,27 +1,27 @@
-import Client from '@liquality/client'
+import { Client } from '@liquality/client'
 
-import BitcoinSwapProvider from '@liquality/bitcoin-swap-provider'
-import BitcoinJsWalletProvider from '@liquality/bitcoin-js-wallet-provider'
-import BitcoinEsploraBatchApiProvider from '@liquality/bitcoin-esplora-batch-api-provider'
-import BitcoinEsploraSwapFindProvider from '@liquality/bitcoin-esplora-swap-find-provider'
-import BitcoinEarnFeeProvider from '@liquality/bitcoin-earn-fee-provider'
-import BitcoinRpcFeeProvider from '@liquality/bitcoin-rpc-fee-provider'
+import { BitcoinSwapProvider } from '@liquality/bitcoin-swap-provider'
+import { BitcoinJsWalletProvider } from '@liquality/bitcoin-js-wallet-provider'
+import { BitcoinEsploraBatchApiProvider } from '@liquality/bitcoin-esplora-batch-api-provider'
+import { BitcoinEsploraSwapFindProvider } from '@liquality/bitcoin-esplora-swap-find-provider'
+import { BitcoinFeeApiProvider } from '@liquality/bitcoin-fee-api-provider'
+import { BitcoinRpcFeeProvider } from '@liquality/bitcoin-rpc-fee-provider'
 
-import EthereumRpcProvider from '@liquality/ethereum-rpc-provider'
-import EthereumJsWalletProvider from '@liquality/ethereum-js-wallet-provider'
-import EthereumSwapProvider from '@liquality/ethereum-swap-provider'
-import EthereumScraperSwapFindProvider from '@liquality/ethereum-scraper-swap-find-provider'
-import EthereumGasNowFeeProvider from '@liquality/ethereum-gas-now-fee-provider'
-import EthereumRpcFeeProvider from '@liquality/ethereum-rpc-fee-provider'
+import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
+import { EthereumJsWalletProvider } from '@liquality/ethereum-js-wallet-provider'
+import { EthereumSwapProvider } from '@liquality/ethereum-swap-provider'
+import { EthereumScraperSwapFindProvider } from '@liquality/ethereum-scraper-swap-find-provider'
+import { EthereumGasNowFeeProvider } from '@liquality/ethereum-gas-now-fee-provider'
+import { EthereumRpcFeeProvider } from '@liquality/ethereum-rpc-fee-provider'
 
-import EthereumErc20Provider from '@liquality/ethereum-erc20-provider'
-import EthereumErc20SwapProvider from '@liquality/ethereum-erc20-swap-provider'
-import EthereumErc20ScraperSwapFindProvider from '@liquality/ethereum-erc20-scraper-swap-find-provider'
+import { EthereumErc20Provider } from '@liquality/ethereum-erc20-provider'
+import { EthereumErc20SwapProvider } from '@liquality/ethereum-erc20-swap-provider'
+import { EthereumErc20ScraperSwapFindProvider } from '@liquality/ethereum-erc20-scraper-swap-find-provider'
 
-import NearSwapProvider from '@liquality/near-swap-provider'
-import NearJsWalletProvider from '@liquality/near-js-wallet-provider'
-import NearRpcProvider from '@liquality/near-rpc-provider'
-import NearSwapFindProvider from '@liquality/near-swap-find-provider'
+import { NearSwapProvider } from '@liquality/near-swap-provider'
+import { NearJsWalletProvider } from '@liquality/near-js-wallet-provider'
+import { NearRpcProvider } from '@liquality/near-rpc-provider'
+import { NearSwapFindProvider } from '@liquality/near-swap-find-provider'
 
 import {
   BitcoinLedgerBridgeProvider,
@@ -29,9 +29,9 @@ import {
   LEDGER_BITCOIN_OPTIONS
 } from '@/utils/ledger-bridge-provider'
 
-import BitcoinNetworks from '@liquality/bitcoin-networks'
-import EthereumNetworks from '@liquality/ethereum-networks'
-import NearNetworks from '@liquality/near-networks'
+import { BitcoinNetworks } from '@liquality/bitcoin-networks'
+import { EthereumNetworks } from '@liquality/ethereum-networks'
+import { NearNetworks } from '@liquality/near-networks'
 
 import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
@@ -87,7 +87,7 @@ function createBtcClient (network, mnemonic, walletType) {
   btcClient.addProvider(new BitcoinSwapProvider({ network: bitcoinNetwork }))
   btcClient.addProvider(new BitcoinEsploraSwapFindProvider(esploraApi))
   if (isTestnet) btcClient.addProvider(new BitcoinRpcFeeProvider())
-  else btcClient.addProvider(new BitcoinEarnFeeProvider('https://liquality.io/swap/mempool/v1/fees/recommended'))
+  else btcClient.addProvider(new BitcoinFeeApiProvider('https://liquality.io/swap/mempool/v1/fees/recommended'))
 
   return btcClient
 }
