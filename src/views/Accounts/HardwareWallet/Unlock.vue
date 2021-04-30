@@ -170,7 +170,6 @@ export default {
     },
     connect (nextPage) {
       const walletType = this.getWalletType()
-      console.log('connect on Unlock')
       this.$emit('on-connect',
         {
           asset: this.selectedAsset,

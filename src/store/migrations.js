@@ -1,8 +1,7 @@
 import { cloneDeep } from 'lodash-es'
 import buildConfig from '../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
-import cryptoassets from '@/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 
 const migrations = [
   { // Merely sets up the version
@@ -67,7 +66,7 @@ const migrations = [
 
         buildConfig.chains.forEach(async chainId => {
           const assets = assetKeys.filter(asset => {
-            return cryptoassets[asset].chain === chainId
+            return cryptoassets[asset]?.chain === chainId
           })
 
           const chain = chains[chainId]
@@ -121,7 +120,35 @@ const migrations = [
         }
       }
 
-      return { ...state, accounts, customTokens }
+      const migrateHistory = (state, network, walletId) => {
+        return state.history[network]?.[walletId]
+          // Remove defunct order statuses
+          ?.filter(item => !(['QUOTE', 'SECRET_READY'].includes(item.status)))
+          // INITIATION statuses should be moved to FUNDED to prevent double funding
+          .map(item => ['INITIATION_REPORTED', 'INITIATION_CONFIRMED'].includes(item.status) ? ({ ...item, status: 'FUNDED' }) : item)
+          // Account ids should be assigned to orders
+          .map(item => {
+            if (item.type !== 'SWAP') return item
+
+            const fromChain = cryptoassets[item.from].chain
+            const toChain = cryptoassets[item.to].chain
+            const fromAccountId = accounts[walletId][network].find(account => account.chain === fromChain).id
+            const toAccountId = accounts[walletId][network].find(account => account.chain === toChain).id
+
+            return { ...item, fromAccountId, toAccountId }
+          })
+      }
+
+      const history = {
+        mainnet: {
+          [walletId]: migrateHistory(state, 'mainnet', walletId)
+        },
+        testnet: {
+          [walletId]: migrateHistory(state, 'testnet', walletId)
+        }
+      }
+
+      return { ...state, accounts, customTokens, history }
     }
   }
 ]

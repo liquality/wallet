@@ -196,7 +196,6 @@ export default {
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
-        console.log(updatedAccount)
       }
     }
   },
@@ -224,7 +223,7 @@ export default {
         const _account = accounts[index]
         const updatedAccount = {
           ..._account,
-          addresses
+          addresses: [...new Set(addresses)]
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
