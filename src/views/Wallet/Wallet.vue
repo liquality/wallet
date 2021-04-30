@@ -63,8 +63,7 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),
     ...mapGetters(['accountItem']),
     ledgerItem () {
-      return this.history[this.activeNetwork][this.activeWalletId]
-        .find((item) => this.ledgerSignRequired(item))
+      return this.history[this.activeNetwork]?.[this.activeWalletId]?.find((item) => this.ledgerSignRequired(item))
     },
     showLedgerRequest () {
       return this.ledgerItem
