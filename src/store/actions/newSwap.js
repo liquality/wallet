@@ -31,7 +31,7 @@ async function initiateSwap ({ getters }, { order, network, walletId }) {
       value: BN(order.fromAmount),
       recipientAddress: order.fromCounterPartyAddress,
       refundAddress: order.fromAddress,
-      secretHash: order.secretHash,
+      secretHash: secretHash,
       expiration: order.swapExpiration
     },
     order.fee
