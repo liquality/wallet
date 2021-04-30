@@ -6,7 +6,6 @@ async function waitForConfirmations ({ getters, dispatch }, { transaction, netwo
 
   try {
     const tx = await client.chain.getTransactionByHash(transaction.txHash)
-
     if (tx && tx.confirmations > 0) {
       dispatch('updateBalances', { network, walletId, assets: [transaction.from] })
 

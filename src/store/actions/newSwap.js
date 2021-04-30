@@ -1,6 +1,7 @@
 import { newOrder } from '../utils'
 import { hasQuoteExpired } from './performNextAction/swap'
 import { sha256 } from '@liquality/crypto'
+import BN from 'bignumber.js'
 
 async function initiateSwap ({ getters }, { order, network, walletId }) {
   if (await hasQuoteExpired({ getters }, { network, walletId, order })) {
@@ -26,11 +27,13 @@ async function initiateSwap ({ getters }, { order, network, walletId }) {
   const secretHash = sha256(secret)
 
   const fromFundTx = await fromClient.swap.initiateSwap(
-    order.fromAmount,
-    order.fromCounterPartyAddress,
-    order.fromAddress,
-    secretHash,
-    order.swapExpiration,
+    {
+      value: BN(order.fromAmount),
+      recipientAddress: order.fromCounterPartyAddress,
+      refundAddress: order.fromAddress,
+      secretHash: order.secretHash,
+      expiration: order.swapExpiration
+    },
     order.fee
   )
 

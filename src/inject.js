@@ -179,6 +179,34 @@ window.bitcoin = {
 }
 `
 
+const nearProvider = () => `
+const REQUEST_MAP = {
+  wallet_getConnectedNetwork: 'chain.getConnectedNetwork',
+  wallet_getAddresses: 'wallet.getAddresses',
+  wallet_signMessage: 'wallet.signMessage',
+  wallet_sendTransaction: 'chain.sendTransaction',
+}
+async function handleRequest (req) {
+  const near = window.providerManager.getProviderFor('NEAR')
+  const method = REQUEST_MAP[req.method] || req.method
+  return near.getMethod(method)(...req.params)
+}
+window.near = {
+  enable: async () => {
+    const accepted = await window.providerManager.enable()
+    if (!accepted) throw new Error('User rejected')
+    const near = window.providerManager.getProviderFor('NEAR')
+    return near.getMethod('wallet.getAddresses')()
+  },
+  request: async (req) => {
+    const params = req.params || []
+    return handleRequest({
+      method: req.method, params
+    })
+  }
+}
+`
+
 const paymentUriHandler = () => `
 document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('click', async (e) => {
@@ -198,4 +226,4 @@ document.addEventListener('DOMContentLoaded', () => {
 }, { once: true })
 `
 
-export { providerManager, ethereumProvider, bitcoinProvider, paymentUriHandler }
+export { providerManager, ethereumProvider, bitcoinProvider, nearProvider, paymentUriHandler }
