@@ -29,10 +29,10 @@ const migrations = [
     migrate: async (state) => {
       const customTokens = {
         mainnet: {
-          [state.activeWalletId]: state.customTokens.mainnet[state.activeWalletId].map(token => ({ ...token, network: 'ethereum' }))
+          [state.activeWalletId]: state.customTokens?.mainnet?.[state.activeWalletId].map(token => ({ ...token, network: 'ethereum' }))
         },
         testnet: {
-          [state.activeWalletId]: state.customTokens.testnet[state.activeWalletId].map(token => ({ ...token, network: 'ethereum' }))
+          [state.activeWalletId]: state.customTokens?.testnet?.[state.activeWalletId].map(token => ({ ...token, network: 'ethereum' }))
         }
       }
       return { ...state, customTokens }
@@ -61,10 +61,10 @@ const migrations = [
         }
       }
 
-      buildConfig.networks.forEach(async network => {
+      buildConfig.networks.forEach(network => {
         const assetKeys = enabledAssets[network]?.[walletId] || []
 
-        buildConfig.chains.forEach(async chainId => {
+        buildConfig.chains.forEach(chainId => {
           const assets = assetKeys.filter(asset => {
             return cryptoassets[asset]?.chain === chainId
           })
