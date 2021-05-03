@@ -100,7 +100,8 @@ export default {
     'max',
     'available',
     'maxFiat',
-    'amountError'
+    'amountError',
+    'maxActive'
   ],
   created () {},
   methods: {

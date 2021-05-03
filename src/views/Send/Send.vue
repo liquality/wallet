@@ -129,7 +129,7 @@
               {{ dpUI(amountWithFee) }} {{ asset }}
             </div>
              <div class="font-weight-bold" v-else>
-              {{ prettyBalance(amount, asset) }} {{ asset }} + {{ prettyFee }} {{ feeType }}
+              {{ dpUI(amount) }} {{ asset }} + {{ prettyFee }} {{ feeType }}
             </div>
           <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
           </div>
@@ -299,12 +299,12 @@ export default {
       return this.sendFee.dp(6)
     },
     available () {
-      const fee = currencyToUnit(cryptoassets[this.assetChain], this.totalFee)
-      if (this.assetChain !== this.asset) {
+      if (cryptoassets[this.asset].type === 'erc20') {
+        return unitToCurrency(cryptoassets[this.asset], this.balance)
+      } else {
+        const fee = currencyToUnit(cryptoassets[this.assetChain], this.sendFee)
         const available = BN.max(BN(this.balance).minus(fee), 0)
         return unitToCurrency(cryptoassets[this.asset], available)
-      } else {
-        return unitToCurrency(cryptoassets[this.asset], this.balance)
       }
     },
     amountInFiat () {
