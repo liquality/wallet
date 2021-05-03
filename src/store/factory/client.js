@@ -26,6 +26,8 @@ import { NearSwapFindProvider } from '@liquality/near-swap-find-provider'
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
+  BitcoinLedgerBridgeApp,
+  EthereumLedgerBridgeApp,
   LEDGER_BITCOIN_OPTIONS
 } from '@/utils/ledger-bridge-provider'
 
@@ -78,7 +80,8 @@ function createBtcClient (network, mnemonic, walletType) {
   if (walletType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
     const { addressType } = option
-    const ledger = new BitcoinLedgerBridgeProvider(bitcoinNetwork, addressType, LEDGER_BRIDGE_URL)
+    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(LEDGER_BRIDGE_URL)
+    const ledger = new BitcoinLedgerBridgeProvider(bitcoinNetwork, addressType, bitcoinLedgerApp)
     btcClient.addProvider(ledger)
   } else {
     btcClient.addProvider(new BitcoinJsWalletProvider({ network: bitcoinNetwork, mnemonic }))
@@ -95,8 +98,9 @@ function createBtcClient (network, mnemonic, walletType) {
 function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, mnemonic, walletType) {
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
-  if (walletType === 'ethereum_ledger') {
-    ethClient.addProvider(new EthereumLedgerBridgeProvider(network, LEDGER_BRIDGE_URL))
+  if (walletType === 'ethereum_ledger' || walletType === 'ethereum_rsk') {
+    const ethereumLedgerApp = EthereumLedgerBridgeApp('ETH', LEDGER_BRIDGE_URL)
+    ethClient.addProvider(new EthereumLedgerBridgeProvider(network, ethereumLedgerApp))
   } else {
     ethClient.addProvider(new EthereumJsWalletProvider(network, mnemonic))
   }

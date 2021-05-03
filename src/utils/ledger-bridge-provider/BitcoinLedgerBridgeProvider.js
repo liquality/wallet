@@ -1,18 +1,15 @@
 import BitcoinLedgerProvider from '@liquality/bitcoin-ledger-provider'
-import { BitcoinLedgerBridgeApp } from './BitcoinLedgerBridgeApp'
 import { version } from '../../../package.json'
 import * as bitcoin from 'bitcoinjs-lib'
 import { addressToString } from '@liquality/utils'
 import { BitcoinNetworks } from '@liquality/bitcoin-networks'
 
 export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
-  _ledgerApp = null
-  _bridgeUrl
+  _ledgerApp
 
-  constructor (network = BitcoinNetworks.bitcoin, addressType = 'bech32', bridgeUrl) {
+  constructor (network = BitcoinNetworks.bitcoin, addressType = 'bech32', ledgerApp) {
     super(network, addressType)
-    this._bridgeUrl = bridgeUrl
-    this._ledgerApp = new Proxy(new BitcoinLedgerBridgeApp(this._bridgeUrl), { get: this.errorProxy.bind(this) })
+    this._ledgerApp = new Proxy(ledgerApp, { get: this.errorProxy.bind(this) })
   }
 
   async getApp () {

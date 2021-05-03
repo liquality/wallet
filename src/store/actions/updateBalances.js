@@ -1,5 +1,5 @@
 import Bluebird from 'bluebird'
-import { Address } from '@liquality/utils'
+import { Address } from '@liquality/types'
 
 export const updateBalances = async ({ state, commit, getters }, { network, walletId }) => {
   const accounts = state.accounts[walletId]?.[network]
