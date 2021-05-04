@@ -98,8 +98,8 @@ function createBtcClient (network, mnemonic, walletType) {
 function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, mnemonic, walletType) {
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
-  if (walletType === 'ethereum_ledger' || walletType === 'ethereum_rsk') {
-    const ethereumLedgerApp = EthereumLedgerBridgeApp('ETH', LEDGER_BRIDGE_URL)
+  if (walletType === 'ethereum_ledger' || walletType === 'rsk_ledger') {
+    const ethereumLedgerApp = new EthereumLedgerBridgeApp('ETH', LEDGER_BRIDGE_URL)
     ethClient.addProvider(new EthereumLedgerBridgeProvider(network, ethereumLedgerApp))
   } else {
     ethClient.addProvider(new EthereumJsWalletProvider(network, mnemonic))
@@ -140,13 +140,13 @@ function createNearClient (network, mnemonic) {
   return nearClient
 }
 
-function createRskClient (asset, network, mnemonic) {
+function createRskClient (asset, network, mnemonic, walletType) {
   const isTestnet = network === 'testnet'
   const rskNetwork = AssetNetworks.RBTC[network]
   const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
   const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
 
-  return createEthereumClient(asset, rskNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
+  return createEthereumClient(asset, rskNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic, walletType)
 }
 
 function createBSCClient (asset, network, mnemonic) {
@@ -162,7 +162,7 @@ export const createClient = (asset, network, mnemonic, walletType) => {
   const assetData = cryptoassets[asset]
 
   if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType)
-  if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic)
+  if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic, walletType)
   if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic)
 
