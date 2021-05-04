@@ -18,9 +18,9 @@
     "postinstall": "husky install"
   },
   "dependencies": {
-    "@liquality/bitcoin-fee-api-provider": "^1.0.0-beta.5",
     "@liquality/bitcoin-esplora-batch-api-provider": "^1.0.0-beta.5",
     "@liquality/bitcoin-esplora-swap-find-provider": "^1.0.0-beta.5",
+    "@liquality/bitcoin-fee-api-provider": "^1.0.0-beta.5",
     "@liquality/bitcoin-js-wallet-provider": "^1.0.0-beta.5",
     "@liquality/bitcoin-ledger-provider": "^0.8.4",
     "@liquality/bitcoin-networks": "^1.0.0-beta.5",
