@@ -84,7 +84,7 @@ export default {
     },
     async downloadLogs () {
       const logs = await getWalletStateLogs()
-      downloadFile({ filename: 'Liquality Walelt Logs.json', type: 'application/javascript;charset=utf-8;', content: logs })
+      downloadFile({ filename: 'Liquality Wallet Logs.json', type: 'application/javascript;charset=utf-8;', content: logs })
     }
   }
 }
