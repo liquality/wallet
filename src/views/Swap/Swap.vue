@@ -16,7 +16,7 @@
         <EthRequiredMessage />
       </InfoNotification>
 
-      <InfoNotification v-if="!market">
+      <InfoNotification v-if="showNoLiquidityMessage">
         <NoLiquidityMessage />
       </InfoNotification>
       <div class="wrapper form">
@@ -440,6 +440,9 @@ export default {
     },
     routeSource () {
       return this.$route.query.source || null
+    },
+    showNoLiquidityMessage () {
+      return !this.market || BN(this.min).gt(this.max)
     },
     sendAmount: {
       get () {
