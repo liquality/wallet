@@ -2,7 +2,8 @@
 import { withInterval } from './utils'
 
 async function waitForConfirmations ({ getters, dispatch }, { transaction, network, walletId }) {
-  const client = getters.client(network, walletId, transaction.from)
+  const account = getters.accountItem(transaction.accountId)
+  const client = getters.client(network, walletId, transaction.from, account?.type)
 
   try {
     const tx = await client.chain.getTransactionByHash(transaction.txHash)

@@ -34,7 +34,8 @@ export const sendTransaction = async ({ dispatch, commit, getters }, { network, 
     tx,
     txHash: tx.hash,
     startTime: Date.now(),
-    status: 'WAITING_FOR_CONFIRMATIONS'
+    status: 'WAITING_FOR_CONFIRMATIONS',
+    accountId
   }
 
   commit('NEW_TRASACTION', { network, walletId, accountId, transaction })
