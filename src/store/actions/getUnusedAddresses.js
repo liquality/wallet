@@ -1,4 +1,5 @@
 import Bluebird from 'bluebird'
+import { isEthereumChain } from '@/utils/asset'
 
 export const getUnusedAddresses = async ({ state, commit, getters }, { network, walletId, assets, accountId }) => {
   return Bluebird.map(assets, async asset => {
@@ -7,7 +8,7 @@ export const getUnusedAddresses = async ({ state, commit, getters }, { network, 
     if (index >= 0 && asset) {
       const account = accounts[index]
       const result = await getters.client(network, walletId, asset, account?.type).wallet.getUnusedAddress()
-      const address = result.address.replace('0x', '')
+      const address = isEthereumChain(asset) ? result.address.replace('0x', '') : result.address // TODO: Should not require removing 0x
       if (!account.addresses.includes(address)) {
         const addresses = [
           ...account.addresses,
