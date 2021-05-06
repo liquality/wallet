@@ -2,15 +2,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { createHistoryNotification } from '../../broker/notification'
 import BN from 'bignumber.js'
 
-export const sendTransaction = async ({ dispatch, commit, getters }, { network, walletId, accountId, asset, to, amount, data, fee }) => {
+export const sendTransaction = async ({ dispatch, commit, getters }, { network, walletId, accountId, asset, to, amount, data, fee, gas }) => {
   const account = getters.accountItem(accountId)
   const client = getters.client(network, walletId, asset, account?.type)
 
-  // TODO: RSK GAS LIMIT PATCH - PROVIDER SHOULD BE ABLE TO SET CUSTOM LIMIT FROM DAPP - FIX IN NEXT RELEASE
   const originalEstimateGas = client._providers[0].estimateGas
-  if (asset === 'RBTC' && data) {
+  if (gas) {
     client._providers[0].estimateGas = async () => {
-      return 2000000
+      return gas
     }
   }
 
@@ -29,7 +28,7 @@ export const sendTransaction = async ({ dispatch, commit, getters }, { network, 
     to: asset,
     from: asset,
     toAddress: to,
-    amount,
+    amount: BN(amount).toNumber(),
     fee,
     tx,
     txHash: tx.hash,
