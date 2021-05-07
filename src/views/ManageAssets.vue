@@ -5,7 +5,7 @@
     </NavBar>
     <div class="manage-assets_search form wrapper">
       <div class="input-group">
-        <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" placeholder="Search for an Asset" />
+        <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" @change="() => sortAssets()" placeholder="Search for an Asset" />
       </div>
       <router-link to="/settings/manage-assets/custom-token">Add Custom Token</router-link>
     </div>
@@ -75,11 +75,9 @@ export default {
         this.assets = assets
       } else {
         this.assets = assets.filter(
-          asset => asset.toLowerCase().includes(
-            this.search.toLowerCase()
-          ) ||
-        cryptoassets[asset]?.name.toLowerCase()
-        .includes(this.search.toLowerCase())
+          asset => asset.toUpperCase().includes(
+            this.search.toUpperCase(),
+          )
         )
       }
     },
@@ -90,6 +88,7 @@ export default {
   },
   created () {
     this.sortAssets()
+    console.log(this.assets)
   },
   watch: {
     activeNetwork () {
