@@ -269,45 +269,10 @@
                 @asset-selected="assetChanged"/>
     </div>
     <!-- Modals for ledger prompts -->
-    <Modal v-if="swapErrorModalOpen" @close="swapErrorModalOpen = false">
-      <template #header>
-        <div class="text-center text-danger">
-          Oooops...
-        </div>
-      </template>
-       <div class="justify-content-center"
-            v-if="account && account.type.includes('ledger')">
-         <div class="modal-title d-flex justify-content-center">
-          Can’t find the ledger Account
-        </div>
-         <div class="step-icon d-flex justify-content-center">
-          <LedgerIcon />
-        </div>
-         <ul class="step-instructions align-self-start">
-          <li>Plug the Ledger into the computer</li>
-          <li>Enter pin to unlock it</li>
-          <li>
-           On the Ledger, navigate to the asset you want to access
-          </li>
-          <li>
-           Once connected follow the prompts on the Ledger
-          </li>
-        </ul>
-        <p class="text-center">
-            {{ swapErrorMessage }}
-          </p>
-      </div>
-      <div v-else class="justify-content-center">
-        <p class="text-center">
-            {{ swapErrorMessage }}
-          </p>
-      </div>
-       <template #footer>
-       <button class="btn btn-outline-clear" @click="swapErrorModalOpen = false">
-         Ok
-       </button>
-      </template>
-    </Modal>
+    <OperationErrorModal :open="swapErrorModalOpen"
+                         :account="account"
+                         @close="swapErrorModalOpen = false"
+                         :error="swapErrorMessage" />
     <Modal v-if="modalSettingsOpen" @close="modalSettingsOpen = false">
       <template #header>
          <h5>
@@ -361,12 +326,12 @@ import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
-import LedgerIcon from '@/assets/icons/ledger_icon.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import ReceiveInput from './ReceiveInput'
 import Accounts from './Accounts'
 import Modal from '@/components/Modal'
+import OperationErrorModal from '@/components/OperationErrorModal'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
 export default {
@@ -381,11 +346,11 @@ export default {
     SpinnerIcon,
     DetailsContainer,
     CopyIcon,
-    LedgerIcon,
     SendInput,
     ReceiveInput,
     Accounts,
     Modal,
+    OperationErrorModal,
     LedgerSignRquest
   },
   data () {
@@ -404,6 +369,7 @@ export default {
       assetSelection: 'from',
       loading: false,
       sendToCopied: false,
+      fromAccountId: null,
       toAccountId: null,
       swapErrorModalOpen: false,
       modalSettingsOpen: false,
@@ -417,6 +383,7 @@ export default {
   created () {
     this.asset = this.routeAsset
     this.sendAmount = this.min
+    this.fromAccountId = this.accountId
     this.updateMarketData({ network: this.activeNetwork })
     this.updateFees({ asset: this.assetChain })
     if (this.selectedMarket && Object.keys(this.selectedMarket).length > 0) {
@@ -436,7 +403,7 @@ export default {
   },
   computed: {
     account () {
-      return this.accountItem(this.accountId)
+      return this.accountItem(this.fromAccountId)
     },
     routeSource () {
       return this.$route.query.source || null
@@ -827,7 +794,7 @@ export default {
           sendTo: this.sendTo,
           fee,
           claimFee: toFee,
-          fromAccountId: this.accountId,
+          fromAccountId: this.fromAccountId,
           toAccountId: this.toAccountId
         })
 
@@ -865,7 +832,7 @@ export default {
       this.currentStep = 'accounts'
     },
     fromAssetChanged (accountId, fromAsset) {
-      this.accountId = accountId
+      this.fromAccountId = accountId
       this.setFromAsset(fromAsset)
     },
     toAssetChanged (accountId, toAsset) {
