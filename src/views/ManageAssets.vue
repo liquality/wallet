@@ -76,7 +76,7 @@ export default {
       } else {
         this.assets = assets.filter(
           asset => asset.toUpperCase().includes(
-            this.search.toUpperCase(),
+            this.search.toUpperCase()
           )
         )
       }
@@ -88,7 +88,6 @@ export default {
   },
   created () {
     this.sortAssets()
-    console.log(this.assets)
   },
   watch: {
     activeNetwork () {
