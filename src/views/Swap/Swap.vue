@@ -72,7 +72,7 @@
                 {{ assetChain }}
                 {{ assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : '' }}
               </span>
-              <span class="text-muted" v-if="assetChain != toAssetChain">
+              <span class="text-muted" v-if="toAssetChain && assetChain != toAssetChain">
                 /{{ toAssetChain }}
                 {{ toAssetChain ? getSelectedFeeLabel(selectedFee[toAssetChain]) : '' }}
               </span>
@@ -388,12 +388,32 @@ export default {
     this.updateFees({ asset: this.assetChain })
     if (this.selectedMarket && Object.keys(this.selectedMarket).length > 0) {
       const toAsset = Object.keys(this.selectedMarket)[0]
-      this.toAssetChanged(this.accountId, toAsset)
-      this.toAsset = toAsset
-      this.updateFees({ asset: toAsset })
-      this.selectedFee = {
-        [this.assetChain]: 'average',
-        [this.toAssetChain]: 'average'
+      let toAccountId
+
+      if (this.account &&
+          this.account.assets &&
+          this.account.assets.length > 0 &&
+          this.account.assets.includes(toAsset)) {
+        toAccountId = this.accountId
+      } else if (this.accounts.length > 0) {
+        const toAccount = this.accounts[this.activeWalletId]?.[this.activeNetwork]
+                      .find(account => account.assets &&
+                                         account.assets.length > 0 &&
+                                         account.assets.includes(toAsset) &&
+                                         account.id !== this.accountId)
+        if (toAccount) {
+          toAccountId = toAccount.id
+        }
+      }
+
+      if (toAccountId && toAsset) {
+        this.toAssetChanged(toAccountId, toAsset)
+        this.toAsset = toAsset
+        this.updateFees({ asset: toAsset })
+        this.selectedFee = {
+          [this.assetChain]: 'average',
+          [this.toAssetChain]: 'average'
+        }
       }
     } else {
       this.selectedFee = {
@@ -518,7 +538,8 @@ export default {
       'fees',
       'fiatRates',
       'activeWalletId',
-      'activeNetwork'
+      'activeNetwork',
+      'accounts'
     ]),
     ...mapGetters(['accountItem']),
     networkMarketData () {
@@ -594,9 +615,11 @@ export default {
       if (amount.gt(this.available)) {
         return 'Lower amount. This exceeds available balance.'
       }
+
       if (amount.gt(this.max)) {
         return 'Please reduce amount. It exceeds maximum.'
       }
+
       if (amount.lt(this.min)) {
         return 'Please increase amount. It is below minimum.'
       }
@@ -604,7 +627,10 @@ export default {
       return null
     },
     canSwap () {
-      if (!this.market || this.ethRequired || this.amountError) {
+      if (!this.market ||
+          this.ethRequired ||
+          this.amountError ||
+          BN(this.safeAmount).lte(0)) {
         return false
       }
 
@@ -639,7 +665,7 @@ export default {
         const fromTxTypes = this.getFeeTxTypes(this.assetChain)
         const fromAssetFee = this.getAssetFees(this.assetChain)[
           this.selectedFee[this.assetChain]
-        ].fee
+        ]?.fee
 
         const fromFee = fromTxTypes.reduce((accum, tx) => {
           return accum.plus(getTxFee(this.asset, tx, fromAssetFee))
@@ -652,7 +678,7 @@ export default {
         const toTxTypes = this.getFeeTxTypes(this.toAssetChain)
         const toAssetFee = this.getAssetFees(this.toAssetChain)[
           this.selectedFee[this.toAssetChain]
-        ].fee
+        ]?.fee
 
         const toFee = toTxTypes.reduce((accum, tx) => {
           return accum.plus(getTxFee(this.toAsset, tx, toAssetFee))
@@ -784,6 +810,9 @@ export default {
             this.selectedFee[this.toAssetChain]
           ].fee
           : undefined
+        console.log('this.fromAccountId', this.fromAccountId)
+        console.log('this.toAccountId', this.toAccountId)
+
         await this.newSwap({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
@@ -811,7 +840,7 @@ export default {
       }
     },
     getSelectedFeeLabel (fee) {
-      return getFeeLabel(fee)
+      return fee ? getFeeLabel(fee) : ''
     },
     async copy (text) {
       await navigator.clipboard.writeText(text)
