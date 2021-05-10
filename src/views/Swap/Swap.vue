@@ -810,8 +810,6 @@ export default {
             this.selectedFee[this.toAssetChain]
           ].fee
           : undefined
-        console.log('this.fromAccountId', this.fromAccountId)
-        console.log('this.toAccountId', this.toAccountId)
 
         await this.newSwap({
           network: this.activeNetwork,
