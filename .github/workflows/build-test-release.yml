@@ -40,13 +40,18 @@ jobs:
         run: |
             jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
             mv ./src/manifest.tmp ./src/manifest.json
-      - name: Set development agents
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        run: |
-            sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
       - run: |
           npm ci
           npm run lint
+      - name: Set build Mode
+        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+        run: | 
+          npm run build --mode staging
+        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
+        run: |
+          npm run build
+        if: steps.semvers.outputs.v_major == steps.get_current_tag.outputs.tag
+        run: |
           npm run build
       - name: Create Release
         id: create_release
