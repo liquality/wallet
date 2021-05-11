@@ -23,6 +23,10 @@ export default {
       'SOV'
     ]
   },
+  agentEndpoints: {
+    testnet: ['https://liquality.io/swap-testnet/agent'],
+    mainnet: ['https://liquality.io/swap/agent']
+  },
   exploraApis: {
     testnet: 'https://liquality.io/testnet/electrs',
     mainnet: 'https://api-mainnet-bitcoin-electrs.liquality.io'

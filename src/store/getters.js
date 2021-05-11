@@ -3,6 +3,7 @@ import { createClient } from './factory/client'
 import { Object } from 'core-js'
 import BN from 'bignumber.js'
 import { cryptoToFiat } from '@/utils/coinFormatter'
+import buildConfig from '../build.config'
 
 const clientCache = {}
 
@@ -21,11 +22,7 @@ const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR'].reduc
 
 export default {
   agentEndpoints (state) {
-    return network =>
-      ({
-        testnet: (process.env.VUE_APP_AGENT_TESTNET_URL || '').split(','),
-        mainnet: (process.env.VUE_APP_AGENT_MAINNET_URL || '').split(',')
-      }[network])
+    return network => buildConfig.agentEndpoints[network]
   },
   client (state) {
     return (network, walletId, asset, walletType = 'default') => {
