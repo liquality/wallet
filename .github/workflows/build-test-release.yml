@@ -42,8 +42,7 @@ jobs:
             mv ./src/manifest.tmp ./src/manifest.json
       - name: Set build mode sufix for dev-staging
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        run: |
-          echo "BUILD_MODE: ${BUILD_MODE}"
+        run: echo "BUILD_MODE: ${BUILD_MODE}"
         env:
           BUILD_MODE: ':staging'
       - run: |
