@@ -5,7 +5,7 @@
     </NavBar>
     <div class="manage-assets_search form wrapper">
       <div class="input-group">
-        <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" @change="() => sortAssets()" placeholder="Search for an Asset" />
+        <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" @keyup="(e) => sortAssets(e)" placeholder="Search for an Asset" />
       </div>
       <router-link to="/settings/manage-assets/custom-token">Add Custom Token</router-link>
     </div>
