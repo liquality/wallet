@@ -43,13 +43,15 @@ jobs:
       - run: |
           npm ci
           npm run lint
-      - name: Set build Mode
+      - name: Set build Mode Staging
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         run: | 
           npm run build --mode staging
+      - name: Set build Mode Prod for Minor
         if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         run: |
           npm run build
+      - name: Set build Mode Prod for Major
         if: steps.semvers.outputs.v_major == steps.get_current_tag.outputs.tag
         run: |
           npm run build
