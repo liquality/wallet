@@ -46,7 +46,7 @@ jobs:
       - name: Set build Mode Staging
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         run: | 
-          npm run build --mode staging
+          npm run build:staging
       - name: Set build Mode Prod for Minor
         if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         run: |
