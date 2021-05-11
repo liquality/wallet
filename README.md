@@ -10,6 +10,13 @@ npm ci
 ```
 
 ### Compiles and hot-reloads for development
+- Create a .env.local file with this content:
+```
+  VUE_APP_LEDGER_BRIDGE_URL=https://liquality.github.io/ledger-web-bridge/dist
+  VUE_APP_AGENT_TESTNET_URL=https://liquality.io/swap-testnet-dev/agent
+  VUE_APP_AGENT_MAINNET_URL=https://liquality.io/swap/agent
+```
+- Run the local build
 ```
 npm run dev
 ```
