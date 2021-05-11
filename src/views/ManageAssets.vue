@@ -5,11 +5,14 @@
     </NavBar>
     <div class="manage-assets_search form wrapper">
       <div class="input-group">
-        <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" @keyup="(e) => sortAssets(e)" placeholder="Search for an Asset" />
+        <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" @keyup="sortAssets" placeholder="Search for an Asset" />
       </div>
       <router-link to="/settings/manage-assets/custom-token">Add Custom Token</router-link>
     </div>
     <div class="manage-assets_list">
+      <div v-if="assets.length === 0" class="mt-3 px-1 d-flex justify-content-center text-center">
+        <h4>No Assets Found! <br /> Refine Your Search!</h4>
+      </div>
       <div v-for="asset in assets" :key="asset" class="asset-item d-flex align-items-center">
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
         <div class="asset-item_name flex-fill">{{getAssetName(asset)}} ({{asset}})
@@ -102,6 +105,11 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 0;
+
+  &_none {
+    padding-top: 5px;
+    font-size: 16px;
+  }
 
   &_search {
     border-bottom: 1px solid $hr-border-color;
