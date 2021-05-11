@@ -69,7 +69,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
+          asset_path: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           asset_name: liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           asset_content_type: application/zip
       - name: Chrome Extension Publish
@@ -79,6 +79,6 @@ jobs:
           client-id: ${{ secrets.WEB_STORE_CLIENT_ID }}
           client-secret: ${{ secrets.WEB_STORE_CLIENT_SECRET }}
           refresh-token: ${{ secrets.WEB_STORE_REFRESH_TOKEN }}
-          zip: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
+          zip: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           extension: bkhfdnhibdhkbfihmljakbgnldoikgbm
           publishTarget: trustedTesters
