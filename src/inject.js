@@ -77,7 +77,11 @@ async function handleRequest (req) {
     return '0x' + sig
   }
   if(req.method === 'eth_sendTransaction') {
-    const result = await eth.getMethod('chain.sendTransaction')(req.params[0].to, parseInt(req.params[0].value, 16), req.params[0].data)
+    const to = req.params[0].to
+    const value = req.params[0].value
+    const data = req.params[0].data
+    const gas = req.params[0].gas
+    const result = await eth.getMethod('chain.sendTransaction')({ to, value, data, gas })
     return '0x' + result.hash
   }
   if(req.method === 'eth_accounts') {
@@ -150,7 +154,7 @@ ${overrideEthereum
 
 const bitcoinProvider = () => `
 const REQUEST_MAP = {
-  wallet_getConnectedNetwork: 'chain.getConnectedNetwork',
+  wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
   wallet_sendTransaction: 'chain.sendTransaction',
@@ -159,6 +163,11 @@ const REQUEST_MAP = {
 
 async function handleRequest (req) {
   const btc = window.providerManager.getProviderFor('BTC')
+  if (req.method === 'wallet_sendTransaction') {
+    const to = req.params[0].to
+    const value = req.params[0].value.toString(16)
+    return btc.getMethod('chain.sendTransaction')({ to, value })
+  }
   const method = REQUEST_MAP[req.method] || req.method
   return btc.getMethod(method)(...req.params)
 }
@@ -181,7 +190,7 @@ window.bitcoin = {
 
 const nearProvider = () => `
 const REQUEST_MAP = {
-  wallet_getConnectedNetwork: 'chain.getConnectedNetwork',
+  wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
   wallet_sendTransaction: 'chain.sendTransaction',

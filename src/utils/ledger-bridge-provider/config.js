@@ -32,7 +32,7 @@ export const LEDGER_OPTIONS = [
   },
   {
     name: 'RBTC',
-    label: 'RSk',
+    label: 'RSK',
     types: ['rsk_ledger'],
     chain: 'rsk'
   }

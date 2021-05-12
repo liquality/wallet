@@ -5,10 +5,11 @@ export const executeRequest = async ({ getters, dispatch }, { request }) => {
       network: request.network,
       walletId: request.walletId,
       asset: request.asset,
-      to: request.args[0],
-      amount: request.args[1],
-      data: request.args[2],
-      fee: request.args[3]
+      to: request.args[0].to,
+      amount: request.args[0].value,
+      data: request.args[0].data,
+      fee: request.args[0].fee,
+      gas: request.args[0].gas
     })
   }
 
