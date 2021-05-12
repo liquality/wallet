@@ -24,7 +24,7 @@ export default {
     ]
   },
   agentEndpoints: {
-    testnet: ['https://liquality.io/swap-testnet-dev/agent'],
+    testnet: ['https://liquality.io/swap-testnet/agent'],
     mainnet: ['https://liquality.io/swap/agent']
   },
   exploraApis: {
