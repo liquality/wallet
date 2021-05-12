@@ -8,10 +8,21 @@
         <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" @keyup="sortAssets" placeholder="Search for an Asset" />
       </div>
       <router-link to="/settings/manage-assets/custom-token">Add Custom Token</router-link>
-    </div>
+      <div v-if="assets.length === 0" class="mt-3 d-flex">
+        <div class="manage-assets_noneTop">
+          <h4 class="manage-assets_noneText">Can't find this token</h4>
+          <h4 class="manage-assets_customText">Add Custom ERC20 tokens.</h4>
+          <h5>Learn how</h5>
+        </div>
+      </div>
     <div class="manage-assets_list">
-      <div v-if="assets.length === 0" class="mt-3 px-1 d-flex justify-content-center text-center">
-        <h4>No Assets Found! <br /> Refine Your Search!</h4>
+       <div v-if="assets.length === 0" class="mt-5 d-flex">
+        <div class="manage-assets_noneBottom">
+          <h5 class="manage-assets_noneBottomText">INQUIRE</h5>
+          <h4 class="manage-assets_bottomEnable">Enable other tokens</h4>
+          <h4 class="manage-assets_bottomLiquidity">Offer liquidity</h4>
+        </div>
+      </div>
       </div>
       <div v-for="asset in assets" :key="asset" class="asset-item d-flex align-items-center">
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
@@ -106,9 +117,27 @@ export default {
   flex-direction: column;
   min-height: 0;
 
-  &_none {
-    padding-top: 5px;
-    font-size: 16px;
+  &_noneTop {
+    h5 {
+      color: $color-primary;
+    }
+  }
+
+  &_noneText {
+    font-weight: bold;
+  }
+
+  &_customText {
+    font-weight: 100;
+  }
+
+  &_noneBottom {
+    height: 190px;
+  }
+
+  &_bottomEnable, &_bottomLiquidity {
+    font-size: 13px;
+    color: $color-primary;
   }
 
   &_search {
