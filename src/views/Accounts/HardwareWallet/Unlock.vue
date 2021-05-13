@@ -73,11 +73,6 @@
                     <span v-else>&nbsp;</span>
                   </td>
                 </tr>
-                <tr>
-                  <td class="text-center" colspan="3">
-                    In this release you can add your 1st account
-                  </td>
-                </tr>
               </tbody>
             </table>
           <!-- <div class="account-nav" v-if="accounts && accounts.length > 5">
@@ -89,8 +84,12 @@
               Next
             </button>
           </div> -->
+          <div class="account-message">
+            No worries. We are only showing the first account.<br>
+            Stay tuned for the update that shows all your accounts.
           </div>
-          <div v-else class="no-accounts">
+          </div>
+          <div v-else class="account-message">
             {{ ledgerError && ledgerError.message ? ledgerError.message : 'No Accounts Found' }}
           </div>
         </div>
@@ -253,6 +252,25 @@ export default {
     img {
       margin-right: 11px;
     }
+  }
+
+  .account-message {
+    position: absolute;
+    left: 0;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    color: #1D1E21;
+    height: 55px;
+    background-color: rgba($color: #FFF3BC, $alpha: 0.5);
+    padding: 5px 20px 5px 20px;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 16px;
   }
 
   .accounts-table {

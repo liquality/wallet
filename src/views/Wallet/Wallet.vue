@@ -14,7 +14,7 @@
     <div class="wallet-content">
       <WalletStats :loading="loadingBalances"/>
       <AssetsChart />
-      <WalletTabs :loading="loadingBalances"/>
+      <WalletTabs />
     </div>
   </div>
 </template>
