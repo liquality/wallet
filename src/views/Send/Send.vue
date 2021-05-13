@@ -159,6 +159,13 @@
         </div>
       </div>
     </div>
+    <!-- Modals for ledger prompts -->
+    <OperationErrorModal :open="sendErrorModalOpen"
+                         :account="account"
+                         @close="closeSendErrorModal"
+                         :error="sendErrorMessage" />
+    <LedgerSignRequestModal :open="signRequestModalOpen"
+                            @close="closeSignRequestModal" />
     </div>
   </div>
 </template>
@@ -186,6 +193,8 @@ import {
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
+import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
+import OperationErrorModal from '@/components/OperationErrorModal'
 
 export default {
   components: {
@@ -193,7 +202,9 @@ export default {
     FeeSelector,
     SpinnerIcon,
     DetailsContainer,
-    SendInput
+    SendInput,
+    OperationErrorModal,
+    LedgerSignRequestModal
   },
   data () {
     return {
@@ -203,7 +214,10 @@ export default {
       selectedFee: 'average',
       showConfirm: false,
       loading: false,
-      maxOptionActive: false
+      maxOptionActive: false,
+      sendErrorModalOpen: false,
+      signRequestModalOpen: false,
+      sendErrorMessage: ''
     }
   },
   props: {
@@ -339,25 +353,39 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async send () {
-      const amountToSend = this.maxOptionActive ? this.available : this.amount
-
-      const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toNumber()
-      const fee = this.feesAvailable
-        ? this.assetFees[this.selectedFee].fee
-        : undefined
-
+      this.sendErrorMessage = ''
       this.loading = true
-      await this.sendTransaction({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        asset: this.asset,
-        to: this.address,
-        accountId: this.account.id,
-        amount,
-        fee
-      })
+      if (this.account?.type.includes('ledger')) {
+        this.signRequestModalOpen = true
+      }
 
-      this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
+      try {
+        const amountToSend = this.maxOptionActive ? this.available : this.amount
+
+        const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toNumber()
+        const fee = this.feesAvailable
+          ? this.assetFees[this.selectedFee].fee
+          : undefined
+
+        await this.sendTransaction({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          asset: this.asset,
+          to: this.address,
+          accountId: this.account.id,
+          amount,
+          fee
+        })
+
+        this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
+      } catch (error) {
+        console.error(error)
+        const { message } = error
+        this.loading = false
+        this.signRequestModalOpen = false
+        this.sendErrorMessage = message || error
+        this.sendErrorModalOpen = true
+      }
     },
     toogleMaxAmount () {
       this.maxOptionActive = !this.maxOptionActive
@@ -370,6 +398,14 @@ export default {
     },
     back () {
       this.showConfirm = false
+    },
+    closeSendErrorModal () {
+      this.sendErrorModalOpen = false
+      this.loading = false
+    },
+    closeSignRequestModal () {
+      this.signRequestModalOpen = false
+      this.loading = false
     }
   },
   created () {
