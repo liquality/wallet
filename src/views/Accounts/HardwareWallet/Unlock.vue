@@ -73,6 +73,11 @@
                     <span v-else>&nbsp;</span>
                   </td>
                 </tr>
+                <tr>
+                  <td class="text-center" colspan="3">
+                    In this release you can add your 1st account
+                  </td>
+                </tr>
               </tbody>
             </table>
           <!-- <div class="account-nav" v-if="accounts && accounts.length > 5">
