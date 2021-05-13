@@ -880,6 +880,8 @@ export default {
       handler (val) {
         if (this.amountOption === 'max') {
           this.sendAmount = this.max
+        } else if (this.amountOption === 'min') {
+          this.sendAmount = this.min
         }
       },
       deep: true
