@@ -58,6 +58,7 @@
               <tbody>
                 <tr
                   @click="selectAccount(item)"
+                  :class="{disabled: item.exists}"
                   v-for="item in accounts"
                   :key="item.account.address"
                 >
@@ -70,6 +71,11 @@
                   <td class="account-selected-mark">
                     <CheckRightIcon v-if="selectedAccounts[item.account.address]"/>
                     <span v-else>&nbsp;</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-center" colspan="3">
+                    In this release you can add your 1st account
                   </td>
                 </tr>
               </tbody>
@@ -166,7 +172,9 @@ export default {
       this.$emit('on-unlock', { walletType })
     },
     selectAccount (item) {
-      this.$emit('on-select-account', item)
+      if (!item.exists) {
+        this.$emit('on-select-account', item)
+      }
     },
     connect (nextPage) {
       const walletType = this.getWalletType()
@@ -267,6 +275,14 @@ export default {
         display: flex;
         width: 100%;
         height: 100%;
+      }
+    }
+
+    tr.disabled {
+      cursor: default;
+      .account-index,
+      .account-address {
+        color: $color-text-muted;
       }
     }
 

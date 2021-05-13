@@ -386,23 +386,22 @@ export default {
     this.fromAccountId = this.accountId
     this.updateMarketData({ network: this.activeNetwork })
     this.updateFees({ asset: this.assetChain })
+
     if (this.selectedMarket && Object.keys(this.selectedMarket).length > 0) {
       const toAsset = Object.keys(this.selectedMarket)[0]
       let toAccountId
-
       if (this.account &&
           this.account.assets &&
-          this.account.assets.length > 0 &&
           this.account.assets.includes(toAsset)) {
         toAccountId = this.accountId
-      } else if (this.accounts.length > 0) {
-        const toAccount = this.accounts[this.activeWalletId]?.[this.activeNetwork]
-                      .find(account => account.assets &&
-                                         account.assets.length > 0 &&
-                                         account.assets.includes(toAsset) &&
-                                         account.id !== this.accountId)
-        if (toAccount) {
-          toAccountId = toAccount.id
+      } else {
+        if (this.networkAccounts.length > 0) {
+          const toAccount = this.networkAccounts.find(account => account.assets &&
+                                       account.assets.includes(toAsset) &&
+                                       account.id !== this.accountId)
+          if (toAccount) {
+            toAccountId = toAccount.id
+          }
         }
       }
 
@@ -538,10 +537,9 @@ export default {
       'fees',
       'fiatRates',
       'activeWalletId',
-      'activeNetwork',
-      'accounts'
+      'activeNetwork'
     ]),
-    ...mapGetters(['accountItem']),
+    ...mapGetters(['accountItem', 'networkAccounts']),
     networkMarketData () {
       return this.marketData[this.activeNetwork]
     },

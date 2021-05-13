@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar'
 import Connect from './Connect'
 import Unlock from './Unlock'
@@ -62,7 +62,11 @@ export default {
   },
   methods: {
     getAssetIcon,
-    ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance']),
+    ...mapActions([
+      'createAccount',
+      'getLedgerAccounts',
+      'updateAccountBalance'
+    ]),
     async connect ({ asset, walletType, page }) {
       this.selectedAsset = asset
       this.loading = true
@@ -71,6 +75,7 @@ export default {
 
       try {
         if (asset) {
+          const _walletType = walletType || asset.types[0]
           let currentPage = (page || 0)
 
           if (currentPage <= 0) {
@@ -81,7 +86,7 @@ export default {
             network: this.activeNetwork,
             walletId: this.activeWalletId,
             asset: asset.name,
-            walletType: walletType || asset.types[0],
+            walletType: _walletType,
             startingIndex,
             numAddresses: LEDGER_PER_PAGE
           }
@@ -91,9 +96,16 @@ export default {
 
           if (accounts && accounts.length > 0) {
             this.accounts = accounts.map((account, index) => {
+              const { address } = account
+              const exists = this.networkAccounts.find(a => {
+                const _address = address.startsWith('0x') ? address.substr(2) : address
+                return a.addresses.includes(_address)
+              }
+              )
               return {
                 account,
-                index: index + startingIndex
+                index: index + startingIndex,
+                exists: !!exists
               }
             })
             this.ledgerPage = currentPage
@@ -203,7 +215,12 @@ export default {
     this.selectedAsset = this.ledgerOptions[0]
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets']),
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId',
+      'enabledAssets'
+    ]),
+    ...mapGetters(['networkAccounts']),
     ledgerOptions () {
       return LEDGER_OPTIONS
     },
