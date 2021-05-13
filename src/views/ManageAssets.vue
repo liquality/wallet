@@ -9,18 +9,18 @@
       </div>
       <router-link to="/settings/manage-assets/custom-token">Add Custom Token</router-link>
       <div v-if="assets.length === 0" class="mt-3 d-flex">
-        <div class="manage-assets_noneTop">
+        <div>
           <h4 class="manage-assets_noneText">Can't find this token</h4>
           <h4 class="manage-assets_customText">Add Custom ERC20 tokens.</h4>
-          <h5>Learn how</h5>
+          <a>Learn how</a>
         </div>
       </div>
     <div class="manage-assets_list">
        <div v-if="assets.length === 0" class="mt-5 d-flex">
         <div class="manage-assets_noneBottom">
           <h5 class="manage-assets_noneBottomText">INQUIRE</h5>
-          <h4 class="manage-assets_bottomEnable">Enable other tokens</h4>
-          <h4 class="manage-assets_bottomLiquidity">Offer liquidity</h4>
+          <a target="_blank" href="https://forms.gle/nsHeZFGgT3y7hwKp6">Enable other tokens</a><br />
+          <a href="mailto:info@liquality.io">Offer liquidity</a>
         </div>
       </div>
       </div>
@@ -91,7 +91,9 @@ export default {
         this.assets = assets.filter(
           asset => asset.toUpperCase().includes(
             this.search.toUpperCase()
-          )
+          ) ||
+        cryptoassets[asset]?.name.toLowerCase()
+        .includes(this.search.toLowerCase())
         )
       }
     },
@@ -117,33 +119,12 @@ export default {
   flex-direction: column;
   min-height: 0;
 
-  &_noneTop {
-    h5 {
-      color: $color-primary;
-      &:hover {
-        cursor: pointer;
-      }
-    }
-  }
-
   &_noneText {
     font-weight: bold;
   }
 
   &_customText {
     font-weight: 100;
-  }
-
-  &_noneBottom {
-    height: 190px;
-  }
-
-  &_bottomEnable, &_bottomLiquidity {
-    font-size: 13px;
-    color: $color-primary;
-    &:hover {
-      cursor: pointer;
-    }
   }
 
   &_search {
