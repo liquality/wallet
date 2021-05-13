@@ -58,6 +58,7 @@
               <tbody>
                 <tr
                   @click="selectAccount(item)"
+                  :class="{disabled: item.exists}"
                   v-for="item in accounts"
                   :key="item.account.address"
                 >
@@ -166,7 +167,9 @@ export default {
       this.$emit('on-unlock', { walletType })
     },
     selectAccount (item) {
-      this.$emit('on-select-account', item)
+      if (!item.exists) {
+        this.$emit('on-select-account', item)
+      }
     },
     connect (nextPage) {
       const walletType = this.getWalletType()
@@ -267,6 +270,14 @@ export default {
         display: flex;
         width: 100%;
         height: 100%;
+      }
+    }
+
+    tr.disabled {
+      cursor: default;
+      .account-index,
+      .account-address {
+        color: $color-text-muted;
       }
     }
 
