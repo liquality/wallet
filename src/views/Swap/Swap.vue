@@ -429,7 +429,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage () {
-      return !this.market || BN(this.min).gt(this.max)
+      return !this.market
     },
     sendAmount: {
       get () {
