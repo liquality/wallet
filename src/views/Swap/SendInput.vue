@@ -42,7 +42,8 @@
           :disabled="!hasMarket"
         />
         </div>
-        <div class="swap-send-main-icon" @click="assetIconClick">
+        <AccountTooltip :account="account" :asset="asset">
+          <div class="swap-send-main-icon" @click="assetIconClick">
           <img
                 :src="getAssetIcon(asset)"
                 class="asset-icon"
@@ -54,6 +55,7 @@
             <ChevronRightIcon />
           </div>
         </div>
+        </AccountTooltip>
       </div>
       <div class="swap-send-main-errors" v-if="showErrors && amountError">
         <small class="text-danger form-text text-right">
@@ -109,10 +111,12 @@
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
+import AccountTooltip from '@/components/AccountTooltip'
 
 export default {
   components: {
-    ChevronRightIcon
+    ChevronRightIcon,
+    AccountTooltip
   },
   data () {
     return {
@@ -120,6 +124,7 @@ export default {
     }
   },
   props: [
+    'account',
     'asset',
     'available',
     'sendAmount',

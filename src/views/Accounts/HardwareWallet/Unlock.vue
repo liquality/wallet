@@ -58,6 +58,7 @@
               <tbody>
                 <tr
                   @click="selectAccount(item)"
+                  :class="{disabled: item.exists}"
                   v-for="item in accounts"
                   :key="item.account.address"
                 >
@@ -83,8 +84,12 @@
               Next
             </button>
           </div> -->
+          <div class="account-message">
+            No worries. We are only showing the first account.<br>
+            Stay tuned for the update that shows all your accounts.
           </div>
-          <div v-else class="no-accounts">
+          </div>
+          <div v-else class="account-message">
             {{ ledgerError && ledgerError.message ? ledgerError.message : 'No Accounts Found' }}
           </div>
         </div>
@@ -166,7 +171,9 @@ export default {
       this.$emit('on-unlock', { walletType })
     },
     selectAccount (item) {
-      this.$emit('on-select-account', item)
+      if (!item.exists) {
+        this.$emit('on-select-account', item)
+      }
     },
     connect (nextPage) {
       const walletType = this.getWalletType()
@@ -247,6 +254,25 @@ export default {
     }
   }
 
+  .account-message {
+    position: absolute;
+    left: 0;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    color: #1D1E21;
+    height: 55px;
+    background-color: rgba($color: #FFF3BC, $alpha: 0.5);
+    padding: 5px 20px 5px 20px;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 16px;
+  }
+
   .accounts-table {
     position: absolute;
     left: 0;
@@ -267,6 +293,14 @@ export default {
         display: flex;
         width: 100%;
         height: 100%;
+      }
+    }
+
+    tr.disabled {
+      cursor: default;
+      .account-index,
+      .account-address {
+        color: $color-text-muted;
       }
     }
 
