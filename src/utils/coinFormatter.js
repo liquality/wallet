@@ -1,4 +1,4 @@
- import BN from 'bignumber.js'
+import BN from 'bignumber.js'
 import cryptoassets from './cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
 

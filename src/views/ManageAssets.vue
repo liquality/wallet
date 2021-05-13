@@ -120,6 +120,9 @@ export default {
   &_noneTop {
     h5 {
       color: $color-primary;
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 
@@ -138,6 +141,9 @@ export default {
   &_bottomEnable, &_bottomLiquidity {
     font-size: 13px;
     color: $color-primary;
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   &_search {
