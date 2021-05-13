@@ -13,6 +13,7 @@
            <SendInput
             :asset="asset"
             :amount="amount"
+            :account="account"
             :amount-fiat="amountFiat"
             @update:amount="(newAmount) => (amount = newAmount)"
             @toogle-max="toogleMaxAmount"

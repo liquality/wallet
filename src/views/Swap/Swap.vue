@@ -22,6 +22,7 @@
       <div class="wrapper form">
         <div class="wrapper_top">
           <SendInput
+            :account="account"
             :asset="asset"
             :send-amount="sendAmount"
             :send-amount-fiat="sendAmountFiat"
@@ -42,6 +43,7 @@
 
           <ReceiveInput
             class="mt-30"
+            :account="toAccount"
             :to-asset="toAsset"
             :receive-amount="receiveAmount"
             :receive-amount-fiat="receiveAmountFiat"
@@ -369,24 +371,23 @@ export default {
 
     if (this.selectedMarket && Object.keys(this.selectedMarket).length > 0) {
       const toAsset = Object.keys(this.selectedMarket)[0]
-      let toAccountId
       if (this.account &&
           this.account.assets &&
           this.account.assets.includes(toAsset)) {
-        toAccountId = this.accountId
+        this.toAccountId = this.accountId
       } else {
         if (this.networkAccounts.length > 0) {
           const toAccount = this.networkAccounts.find(account => account.assets &&
                                        account.assets.includes(toAsset) &&
                                        account.id !== this.accountId)
           if (toAccount) {
-            toAccountId = toAccount.id
+            this.toAccountId = toAccount.id
           }
         }
       }
 
-      if (toAccountId && toAsset) {
-        this.toAssetChanged(toAccountId, toAsset)
+      if (this.toAccountId && toAsset) {
+        this.toAssetChanged(this.toAccountId, toAsset)
         this.toAsset = toAsset
         this.updateFees({ asset: toAsset })
         this.selectedFee = {
@@ -403,6 +404,9 @@ export default {
   computed: {
     account () {
       return this.accountItem(this.fromAccountId)
+    },
+    toAccount () {
+      return this.toAccountId ? this.accountItem(this.toAccountId) : null
     },
     routeSource () {
       return this.$route.query.source || null
