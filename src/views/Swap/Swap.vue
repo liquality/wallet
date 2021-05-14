@@ -740,16 +740,12 @@ export default {
       this.sendAmount = amount
       if (amount === this.max) {
         this.amountOption = 'max'
-      } else {
-        this.amountOption = 'min'
       }
     },
     setToAsset (toAsset) {
       this.toAsset = toAsset
       if (this.amountOption === 'max') {
         this.sendAmount = this.max
-      } else {
-        this.sendAmount = this.min
       }
 
       this.resetFees()
@@ -870,8 +866,6 @@ export default {
       handler (val) {
         if (this.amountOption === 'max') {
           this.sendAmount = this.max
-        } else if (this.amountOption === 'min') {
-          this.sendAmount = this.min
         }
       },
       deep: true

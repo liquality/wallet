@@ -15,7 +15,6 @@
           <a>Learn how</a>
         </div>
       </div>
-    <div class="manage-assets_list">
        <div v-if="assets.length === 0" class="mt-5 d-flex">
         <div class="manage-assets_noneBottom">
           <h5 class="manage-assets_noneBottomText">INQUIRE</h5>
@@ -24,6 +23,7 @@
         </div>
       </div>
       </div>
+          <div class="manage-assets_list">
       <div v-for="asset in assets" :key="asset" class="asset-item d-flex align-items-center">
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
         <div class="asset-item_name flex-fill">{{getAssetName(asset)}} ({{asset}})
@@ -34,7 +34,7 @@
         </div>
       </div>
     </div>
-    <div v-if="search" class="wrapper">
+    <div v-if="search" class="wrapper manage-assets_bottomSection">
       <button class="btn btn-light btn-outline-primary btn-lg btn-block" @click="clearSearch">Done</button>
     </div>
   </div>
@@ -125,6 +125,12 @@ export default {
 
   &_customText {
     font-weight: 100;
+  }
+
+  &_bottomSection {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
   }
 
   &_search {
