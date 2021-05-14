@@ -12,7 +12,7 @@
         <div>
           <h4>Can't find this token</h4>
           <p class="manage-assets_customText">Add Custom ERC20 tokens.</p>
-          <a>Learn how</a>
+          <a target="_blank" href="https://liquality.io/blog/liquality-wallet-0-9-0-release-notes/#add-custom-tokens-to-your-liquality-wallet">Learn how</a>
         </div>
       </div>
        <div v-if="assets.length === 0" class="mt-5 d-flex">
