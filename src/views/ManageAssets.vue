@@ -10,8 +10,8 @@
       <router-link to="/settings/manage-assets/custom-token">Add Custom Token</router-link>
       <div v-if="assets.length === 0" class="mt-3 d-flex">
         <div>
-          <h4 class="manage-assets_noneText">Can't find this token</h4>
-          <h4 class="manage-assets_customText">Add Custom ERC20 tokens.</h4>
+          <h4>Can't find this token</h4>
+          <p class="manage-assets_customText">Add Custom ERC20 tokens.</p>
           <a>Learn how</a>
         </div>
       </div>
@@ -119,12 +119,8 @@ export default {
   flex-direction: column;
   min-height: 0;
 
-  &_noneText {
-    font-weight: bold;
-  }
-
   &_customText {
-    font-weight: 100;
+    font-size: $font-size-lg;
   }
 
   &_bottomSection {
