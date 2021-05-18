@@ -61,6 +61,10 @@ export const AssetNetworks = {
     testnet: EthereumNetworks.bsc_testnet,
     mainnet: EthereumNetworks.bsc_mainnet
   },
+  POLYGON: {
+    testnet: EthereumNetworks.polygon_testnet,
+    mainnet: EthereumNetworks.polygon_mainnet
+  },
   NEAR: {
     testnet: NearNetworks.near_testnet,
     mainnet: NearNetworks.near_mainnet
@@ -194,12 +198,22 @@ function createBSCClient (asset, network, mnemonic) {
   return createEthereumClient(asset, bnbNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
 }
 
+function createPolygonClient (asset, network, mnemonic) {
+  const isTestnet = network === 'testnet'
+  const polygonNetwork = AssetNetworks.POLYGON[network]
+  const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com/' : 'https://rpc-mainnet.maticvigil.com/'
+  const scraperApi = isTestnet ? 'https://liquality.io/polygon-testnet-api' : 'https://liquality.io/polygon-mainnet-api'
+
+  return createEthereumClient(asset, polygonNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
+}
+
 export const createClient = (asset, network, mnemonic, walletType) => {
   const assetData = cryptoassets[asset]
 
   if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType)
   if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic, walletType)
   if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic)
+  if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic)
 
   return createEthClient(asset, network, mnemonic, walletType)

@@ -96,8 +96,10 @@ export default {
       return ({
         bitcoin: 'bitcoin',
         ethereum: 'ethereum',
+        near: 'near',
         rsk: 'ethereum',
-        bsc: 'ethereum'
+        bsc: 'ethereum',
+        polyon: 'ethereum'
       })[cryptoassets[this.asset].chain]
     },
     faucet () {
@@ -106,7 +108,9 @@ export default {
           BTC: { name: 'Bitcoin', url: 'https://testnet-faucet.mempool.co/' },
           ETH: { name: 'Ether', url: 'https://faucet.rinkeby.io/' },
           RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' },
-          NEAR: { name: 'NEAR', url: '' }
+          BNB: { name: 'BNB', url: 'https://testnet.binance.org/faucet-smart/' },
+          NEAR: { name: 'NEAR', url: '' },
+          POLYGON: { name: 'POLYGON', url: 'https://faucet.matic.network/' }
         })[this.asset]
       }
       return null
