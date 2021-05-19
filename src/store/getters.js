@@ -1,9 +1,9 @@
 import { assets as cryptoassets, unitToCurrency } from '@liquality/cryptoassets'
 import { createClient } from './factory/client'
-import buildConfig from '../build.config'
 import { Object } from 'core-js'
 import BN from 'bignumber.js'
 import { cryptoToFiat } from '@/utils/coinFormatter'
+import buildConfig from '../build.config'
 
 const clientCache = {}
 
@@ -11,7 +11,7 @@ const TESTNET_CONTRACT_ADDRESSES = {
   DAI: '0xcE2748BE67fB4346654B4500c4BB0642536365FC',
   SOV: '0x6a9A07972D07E58f0daF5122D11e069288A375fB'
 }
-const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV'].reduce((assets, asset) => {
+const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR'].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
       ...cryptoassets[asset],
@@ -58,28 +58,13 @@ export default {
 
     return Object.assign({}, baseAssets, customAssets)
   },
+  networkAccounts (state) {
+    const { activeNetwork, activeWalletId, accounts } = state
+    return accounts[activeWalletId]?.[activeNetwork] || []
+  },
   networkAssets (state) {
     const { enabledAssets, activeNetwork, activeWalletId } = state
     return enabledAssets[activeNetwork][activeWalletId]
-  },
-  orderedBalances (state, getters) {
-    // const { enabledAssets, activeNetwork, activeWalletId } = state
-    // const { networkWalletBalances } = getters
-    // if (!networkWalletBalances) {
-    //   return []
-    // }
-    // const assets = enabledAssets[activeNetwork][activeWalletId]
-    // return Object.entries(networkWalletBalances)
-    //   .filter(([asset]) => assets.includes(asset))
-    //   .sort(([assetA], [assetB]) => {
-    //     return assets.indexOf(assetA) - assets.indexOf(assetB)
-    //   })
-    return []
-  },
-  assetsWithBalance (_state, getters) {
-    // const { orderedBalances } = getters
-    // return orderedBalances.filter(([asset, balance]) => balance > 0)
-    return []
   },
   activity (state) {
     const { history, activeNetwork, activeWalletId } = state

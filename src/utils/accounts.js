@@ -39,6 +39,7 @@ export const accountCreator = (payload) => {
 }
 
 export const accountColors = [
+  '#000000',
   '#1CE5C3',
   '#007AFF',
   '#4F67E4',
@@ -56,7 +57,8 @@ export const chainDefaultColors = {
   bitcoin: '#EAB300',
   ethereum: '#4F67E4',
   rsk: '#3AB24D',
-  bsc: '#F7CA4F'
+  bsc: '#F7CA4F',
+  near: '#000000'
 }
 
 export const getAccountIcon = (chain) => {
@@ -64,7 +66,8 @@ export const getAccountIcon = (chain) => {
     bitcoin: getAssetIcon('BTC'),
     ethereum: getAssetIcon('eth_account'),
     bsc: getAssetIcon('bnb_account', 'png'),
-    rsk: getAssetIcon('rsk_account')
+    rsk: getAssetIcon('rsk_account'),
+    near: getAssetIcon('NEAR')
   }[chain]
 }
 

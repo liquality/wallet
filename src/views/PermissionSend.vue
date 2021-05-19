@@ -10,7 +10,7 @@
         <label>To</label>
         <p class="confirm-value">{{shortAddress}}</p>
       </div>
-      <div class="form-group">
+      <div class="form-group mt-4">
         <label>Network Speed / Fee</label>
         <div class="permission-send_fees">
           <FeeSelector
@@ -50,6 +50,7 @@ import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
+import BigNumber from 'bignumber.js'
 
 export default {
   components: {
@@ -77,16 +78,11 @@ export default {
     },
     async reply (allowed) {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
-
-      // TODO: does not account for request having fee parameter. Make fee static in that case?
-      if (![2, 3].includes(this.request.args.length)) throw new Error('Send request must contain 2 or 3 arguments.')
+      const optionsWithFee = { ...this.request.args[0], value: this.value, fee }
 
       const requestWithFee = {
         ...this.request,
-        args: [
-          ...this.request.args,
-          ...(this.request.args.length === 2 ? [undefined, fee] : [fee])
-        ]
+        args: [optionsWithFee]
       }
 
       this.loading = true
@@ -117,17 +113,23 @@ export default {
       return getNativeAsset(this.asset)
     },
     address () {
-      return this.request.args[0]
+      console.log(this.request.args[0])
+      return this.request.args[0].to
     },
     shortAddress () {
       return this.address ? shortenAddress(this.address) : 'New Contract'
     },
+    value () {
+      // Parse SendOptions.value into BigNumber
+      const value = this.request.args[0].value
+      return BigNumber(value ? '0x' + value : 0)
+    },
     amount () {
-      if (!this.request.args[1]) return 0
-      return unitToCurrency(cryptoassets[this.asset], this.request.args[1]).toNumber()
+      if (!this.value) return 0
+      return unitToCurrency(cryptoassets[this.asset], this.value).toNumber()
     },
     data () {
-      return this.request.args[2]
+      return this.request.args[0].data
     },
     assetFees () {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]

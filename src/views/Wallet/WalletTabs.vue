@@ -19,15 +19,13 @@
     </li>
   </ul>
    <div class="wallet-tab-content">
-     <span v-if="loading">Loading ...</span>
-      <router-view v-else></router-view>
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['loading']
 }
 </script>
 

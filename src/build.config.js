@@ -10,7 +10,8 @@ export default {
       'UNI',
       'RBTC',
       'SOV',
-      'BNB'
+      'BNB',
+      'NEAR'
     ],
     testnet: [
       'BTC',
@@ -18,11 +19,12 @@ export default {
       'DAI',
       'RBTC',
       'BNB',
+      'NEAR',
       'SOV'
     ]
   },
   agentEndpoints: {
-    testnet: ['https://liquality.io/swap-testnet/agent'],
+    testnet: [process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet/agent'],
     mainnet: ['https://liquality.io/swap/agent']
   },
   exploraApis: {
@@ -35,5 +37,5 @@ export default {
   },
   telegramUrl: 'https://t.me/liquality',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near']
 }

@@ -41,6 +41,16 @@ const EXPLORERS = {
       tx: 'https://bscscan.com/tx/',
       address: 'https://bscscan.com/address/'
     }
+  },
+  near: {
+    testnet: {
+      tx: 'https://explorer.testnet.near.org/transactions/',
+      address: 'https://explorer.testnet.near.org/accounts/'
+    },
+    mainnet: {
+      tx: 'https://explorer.mainnet.near.org/transactions/',
+      address: 'https://explorer.mainnet.near.org/accounts/'
+    }
   }
 }
 
@@ -80,8 +90,9 @@ export const getAssetColorStyle = asset => {
 }
 
 export const getTransactionExplorerLink = (hash, asset, network) => {
+  const transactionHash = getExplorerTransactionHash(asset, hash)
   const chain = cryptoassets[asset].chain
-  return `${EXPLORERS[chain][network].tx}${hash}`
+  return `${EXPLORERS[chain][network].tx}${transactionHash}`
 }
 
 export const getAddressExplorerLink = (address, asset, network) => {
@@ -98,5 +109,13 @@ export const getAssetIcon = (asset, extension = 'svg') => {
     } catch (e) {
       return require('../assets/icons/blank_asset.svg?inline')
     }
+  }
+}
+
+export const getExplorerTransactionHash = (asset, hash) => {
+  switch (asset) {
+    case 'NEAR':
+      return hash.split('_')[0]
+    default: return hash
   }
 }

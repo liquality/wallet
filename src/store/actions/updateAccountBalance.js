@@ -1,4 +1,4 @@
-import { Address } from '@liquality/utils'
+import { Address } from '@liquality/types'
 
 export const updateAccountBalance = async ({ state, commit, getters }, { network, walletId, accountId }) => {
   const accounts = state.accounts[walletId]?.[network]

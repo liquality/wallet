@@ -1,13 +1,14 @@
 /* global chrome */
 import { inject } from './broker/utils'
 import Script from './broker/Script'
-import { providerManager, ethereumProvider, bitcoinProvider, paymentUriHandler } from './inject'
+import { providerManager, ethereumProvider, bitcoinProvider, nearProvider, paymentUriHandler } from './inject'
 import { AssetNetworks } from './store/factory/client'
 
 ;(new Script()).start()
 
 inject(providerManager())
 inject(bitcoinProvider())
+inject(nearProvider())
 
 function injectEthereum (state, asset, name) {
   const network = AssetNetworks[asset][state.activeNetwork]

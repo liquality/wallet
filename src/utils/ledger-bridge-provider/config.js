@@ -29,5 +29,11 @@ export const LEDGER_OPTIONS = [
       'bitcoin_ledger_legacy'
     ],
     chain: 'bitcoin'
+  },
+  {
+    name: 'RBTC',
+    label: 'RSK',
+    types: ['rsk_ledger'],
+    chain: 'rsk'
   }
 ]

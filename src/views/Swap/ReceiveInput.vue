@@ -46,15 +46,17 @@
             :disabled="!hasMarket"
           />
         </div>
-        <div class="swap-receive-main-icon" @click="assetIconClick">
-          <img :src="getAssetIcon(toAsset)" class="asset-icon" />
-          <span class="asset-name">
-            {{ toAsset }}
-          </span>
-          <div>
-            <ChevronRightIcon />
+        <AccountTooltip :account="account" :asset="toAsset">
+          <div class="swap-receive-main-icon" @click="assetIconClick">
+            <img :src="getAssetIcon(toAsset)" class="asset-icon" />
+            <span class="asset-name">
+              {{ toAsset }}
+            </span>
+            <div>
+              <ChevronRightIcon />
+            </div>
           </div>
-        </div>
+        </AccountTooltip>
       </div>
     </div>
     <div class="swap-receive-bottom" v-if="!enterSendToAddress">
@@ -98,11 +100,13 @@
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
 import CloseIcon from '@/assets/icons/close.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
+import AccountTooltip from '@/components/AccountTooltip'
 
 export default {
   components: {
     CloseIcon,
-    ChevronRightIcon
+    ChevronRightIcon,
+    AccountTooltip
   },
   data () {
     return {
@@ -111,6 +115,7 @@ export default {
     }
   },
   props: [
+    'account',
     'toAsset',
     'sendTo',
     'receiveAmount',
