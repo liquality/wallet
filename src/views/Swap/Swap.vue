@@ -22,6 +22,7 @@
       <div class="wrapper form">
         <div class="wrapper_top">
           <SendInput
+            :account="account"
             :asset="asset"
             :send-amount="sendAmount"
             :send-amount-fiat="sendAmountFiat"
@@ -42,6 +43,7 @@
 
           <ReceiveInput
             class="mt-30"
+            :account="toAccount"
             :to-asset="toAsset"
             :receive-amount="receiveAmount"
             :receive-amount-fiat="receiveAmountFiat"
@@ -271,28 +273,10 @@
     <!-- Modals for ledger prompts -->
     <OperationErrorModal :open="swapErrorModalOpen"
                          :account="account"
-                         @close="swapErrorModalOpen = false"
+                         @close="closeSwapErrorModal"
                          :error="swapErrorMessage" />
-    <Modal v-if="modalSettingsOpen" @close="modalSettingsOpen = false">
-      <template #header>
-         <h5>
-           Initiate
-         </h5>
-      </template>
-       <template>
-         <div class="modal-title">
-           On Your Ledger
-         </div>
-         <div class="ledger-options-container">
-         <div class="ledger-options-instructions">
-          Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag.
-        </div>
-        <p>
-          <LedgerSignRquest class="ledger-sign-request"/>
-        </p>
-      </div>
-       </template>
-    </Modal>
+    <LedgerSignRequestModal :open="signRequestModalOpen"
+                            @close="closeSignRequestModal" />
   </div>
 </template>
 
@@ -330,9 +314,8 @@ import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import ReceiveInput from './ReceiveInput'
 import Accounts from './Accounts'
-import Modal from '@/components/Modal'
+import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
-import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
 export default {
   components: {
@@ -349,9 +332,8 @@ export default {
     SendInput,
     ReceiveInput,
     Accounts,
-    Modal,
-    OperationErrorModal,
-    LedgerSignRquest
+    LedgerSignRequestModal,
+    OperationErrorModal
   },
   data () {
     return {
@@ -372,7 +354,7 @@ export default {
       fromAccountId: null,
       toAccountId: null,
       swapErrorModalOpen: false,
-      modalSettingsOpen: false,
+      signRequestModalOpen: false,
       swapErrorMessage: ''
     }
   },
@@ -386,28 +368,26 @@ export default {
     this.fromAccountId = this.accountId
     this.updateMarketData({ network: this.activeNetwork })
     this.updateFees({ asset: this.assetChain })
+
     if (this.selectedMarket && Object.keys(this.selectedMarket).length > 0) {
       const toAsset = Object.keys(this.selectedMarket)[0]
-      let toAccountId
-
       if (this.account &&
           this.account.assets &&
-          this.account.assets.length > 0 &&
           this.account.assets.includes(toAsset)) {
-        toAccountId = this.accountId
-      } else if (this.accounts.length > 0) {
-        const toAccount = this.accounts[this.activeWalletId]?.[this.activeNetwork]
-                      .find(account => account.assets &&
-                                         account.assets.length > 0 &&
-                                         account.assets.includes(toAsset) &&
-                                         account.id !== this.accountId)
-        if (toAccount) {
-          toAccountId = toAccount.id
+        this.toAccountId = this.accountId
+      } else {
+        if (this.networkAccounts.length > 0) {
+          const toAccount = this.networkAccounts.find(account => account.assets &&
+                                       account.assets.includes(toAsset) &&
+                                       account.id !== this.accountId)
+          if (toAccount) {
+            this.toAccountId = toAccount.id
+          }
         }
       }
 
-      if (toAccountId && toAsset) {
-        this.toAssetChanged(toAccountId, toAsset)
+      if (this.toAccountId && toAsset) {
+        this.toAssetChanged(this.toAccountId, toAsset)
         this.toAsset = toAsset
         this.updateFees({ asset: toAsset })
         this.selectedFee = {
@@ -424,6 +404,9 @@ export default {
   computed: {
     account () {
       return this.accountItem(this.fromAccountId)
+    },
+    toAccount () {
+      return this.toAccountId ? this.accountItem(this.toAccountId) : null
     },
     routeSource () {
       return this.$route.query.source || null
@@ -538,10 +521,9 @@ export default {
       'fees',
       'fiatRates',
       'activeWalletId',
-      'activeNetwork',
-      'accounts'
+      'activeNetwork'
     ]),
-    ...mapGetters(['accountItem']),
+    ...mapGetters(['accountItem', 'networkAccounts']),
     networkMarketData () {
       return this.marketData[this.activeNetwork]
     },
@@ -794,7 +776,7 @@ export default {
       this.swapErrorModalOpen = false
       this.loading = true
       if (this.account?.type.includes('ledger')) {
-        this.modalSettingsOpen = true
+        this.signRequestModalOpen = true
       }
       try {
         const fromAmount = currencyToUnit(cryptoassets[this.asset], this.safeAmount)
@@ -825,14 +807,14 @@ export default {
           toAccountId: this.toAccountId
         })
 
-        this.modalSettingsOpen = false
+        this.signRequestModalOpen = false
 
         this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {
         console.error(error)
         const { message } = error
         this.loading = false
-        this.modalSettingsOpen = false
+        this.signRequestModalOpen = false
         this.swapErrorMessage = message || error
         this.swapErrorModalOpen = true
       }
@@ -873,6 +855,14 @@ export default {
         this.fromAssetChanged(accountId, asset)
       }
       this.currentStep = 'inputs'
+    },
+    closeSwapErrorModal () {
+      this.swapErrorModalOpen = false
+      this.loading = false
+    },
+    closeSignRequestModal () {
+      this.signRequestModalOpen = false
+      this.loading = false
     }
   },
   watch: {
@@ -955,18 +945,5 @@ export default {
       transform: rotate(180deg);
     }
   }
-}
-svg.ledger-sign-request {
-  margin-top: 5px;
-  width: 320px;
-}
-
-.ledger-options-instructions {
-  margin-top: 10px;
-  align-self: start;
-  padding-left: 0px !important;
-  font-weight: 300;
-  font-size: 14px;
-  line-height: 20px;
 }
 </style>

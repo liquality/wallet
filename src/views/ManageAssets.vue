@@ -5,11 +5,25 @@
     </NavBar>
     <div class="manage-assets_search form wrapper">
       <div class="input-group">
-        <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" placeholder="Search for an Asset" />
+        <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" @keyup="sortAssets" placeholder="Search for an Asset" />
       </div>
       <router-link to="/settings/manage-assets/custom-token">Add Custom Token</router-link>
-    </div>
-    <div class="manage-assets_list">
+      <div v-if="assets.length === 0" class="mt-3 d-flex">
+        <div>
+          <h4>Can't find this token</h4>
+          <p class="manage-assets_customText">Add Custom ERC20 tokens.</p>
+          <a target="_blank" href="https://liquality.io/blog/liquality-wallet-0-9-0-release-notes/#add-custom-tokens-to-your-liquality-wallet">Learn how</a>
+        </div>
+      </div>
+       <div v-if="assets.length === 0" class="mt-5 d-flex">
+        <div class="manage-assets_noneBottom">
+          <h5 class="manage-assets_noneBottomText">INQUIRE</h5>
+          <a target="_blank" href="https://forms.gle/nsHeZFGgT3y7hwKp6">Enable other tokens</a><br />
+          <a href="mailto:info@liquality.io">Offer liquidity</a>
+        </div>
+      </div>
+      </div>
+          <div class="manage-assets_list">
       <div v-for="asset in assets" :key="asset" class="asset-item d-flex align-items-center">
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
         <div class="asset-item_name flex-fill">{{getAssetName(asset)}} ({{asset}})
@@ -20,7 +34,7 @@
         </div>
       </div>
     </div>
-    <div v-if="search" class="wrapper">
+    <div v-if="search" class="wrapper manage-assets_bottomSection">
       <button class="btn btn-light btn-outline-primary btn-lg btn-block" @click="clearSearch">Done</button>
     </div>
   </div>
@@ -75,8 +89,8 @@ export default {
         this.assets = assets
       } else {
         this.assets = assets.filter(
-          asset => asset.toLowerCase().includes(
-            this.search.toLowerCase()
+          asset => asset.toUpperCase().includes(
+            this.search.toUpperCase()
           ) ||
         cryptoassets[asset]?.name.toLowerCase()
         .includes(this.search.toLowerCase())
@@ -104,6 +118,16 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 0;
+
+  &_customText {
+    font-size: $font-size-lg;
+  }
+
+  &_bottomSection {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+  }
 
   &_search {
     border-bottom: 1px solid $hr-border-color;

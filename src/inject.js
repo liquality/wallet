@@ -154,7 +154,7 @@ ${overrideEthereum
 
 const bitcoinProvider = () => `
 const REQUEST_MAP = {
-  wallet_getConnectedNetwork: 'chain.getConnectedNetwork',
+  wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
   wallet_sendTransaction: 'chain.sendTransaction',
@@ -190,7 +190,7 @@ window.bitcoin = {
 
 const nearProvider = () => `
 const REQUEST_MAP = {
-  wallet_getConnectedNetwork: 'chain.getConnectedNetwork',
+  wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
   wallet_sendTransaction: 'chain.sendTransaction',

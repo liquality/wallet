@@ -118,7 +118,7 @@ function createBtcClient (network, mnemonic, walletType) {
   return btcClient
 }
 
-function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, mnemonic, walletType) {
+function createEthereumClient (asset, network, rpcApi, scraperApi, feeProvider, mnemonic, walletType) {
   const ethClient = new Client()
   const derivationPath = `m/44'/${network.coinType}'/0'/0/0`
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
@@ -147,7 +147,7 @@ function createEthereumClient (asset, network, rpcApi, scraperApi, FeeProvider, 
     ethClient.addProvider(new EthereumSwapProvider())
     if (scraperApi) ethClient.addProvider(new EthereumScraperSwapFindProvider(scraperApi))
   }
-  ethClient.addProvider(new FeeProvider())
+  ethClient.addProvider(feeProvider)
 
   return ethClient
 }
@@ -157,9 +157,9 @@ function createEthClient (asset, network, mnemonic, walletType) {
   const ethereumNetwork = AssetNetworks.ETH[network]
   const infuraApi = isTestnet ? 'https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f' : 'https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'
   const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
-  const FeeProvider = isTestnet ? EthereumRpcFeeProvider : EthereumGasNowFeeProvider
+  const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider()
 
-  return createEthereumClient(asset, ethereumNetwork, infuraApi, scraperApi, FeeProvider, mnemonic, walletType)
+  return createEthereumClient(asset, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, walletType)
 }
 
 function createNearClient (network, mnemonic) {
@@ -185,8 +185,9 @@ function createRskClient (asset, network, mnemonic, walletType) {
   const rskNetwork = AssetNetworks.RBTC[network]
   const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
   const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
-  return createEthereumClient(asset, rskNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic, walletType)
+  return createEthereumClient(asset, rskNetwork, rpcApi, scraperApi, feeProvider, mnemonic, walletType)
 }
 
 function createBSCClient (asset, network, mnemonic) {
@@ -194,8 +195,9 @@ function createBSCClient (asset, network, mnemonic) {
   const bnbNetwork = AssetNetworks.BNB[network]
   const rpcApi = isTestnet ? 'https://data-seed-prebsc-1-s1.binance.org:8545' : 'https://bsc-dataseed.binance.org'
   const scraperApi = isTestnet ? 'https://liquality.io/bsc-testnet-api' : 'https://liquality.io/bsc-mainnet-api'
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
-  return createEthereumClient(asset, bnbNetwork, rpcApi, scraperApi, EthereumRpcFeeProvider, mnemonic)
+  return createEthereumClient(asset, bnbNetwork, rpcApi, scraperApi, feeProvider, mnemonic)
 }
 
 function createPolygonClient (asset, network, mnemonic) {
