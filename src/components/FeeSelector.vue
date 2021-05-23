@@ -1,13 +1,18 @@
 <template>
-  <div class="fee-selector btn-group btn-group-toggle" data-toggle="buttons">
+<div class="fee-selector">
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-option btn-option-lg"
         v-for="name in ['slow', 'average', 'fast']" :key="name"
         :class="{ active: (name === value)}"
         v-tooltip="{ content: getTooltip(name) }"
-        v-on:click="$emit('input', name)">
+        @click="$emit('input', name)">
         <input type="radio" name="fee" autocomplete="off" :checked="name === value"> {{name}}
     </label>
   </div>
+  <button class="btn btn-link" @click="$emit('custom-selected', asset)">
+    Custom
+  </button>
+</div>
 </template>
 
 <script>

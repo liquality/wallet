@@ -83,12 +83,20 @@
               <ul class="selectors">
                 <li v-for="assetFee in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
+                  <div v-if="selectedFee[assetFee] === 'custom'">
+                    Custom Fee
+                    <button class="btn btn-link" @click="resetFee(assetFee)">
+                      Reset
+                    </button>
+                  </div>
                   <FeeSelector
+                    v-else
                     :asset="assetsFeeSelector[assetFee]"
                     v-model="selectedFee[assetFee]"
-                    v-bind:fees="getAssetFees(assetFee)"
-                    v-bind:txTypes="getFeeTxTypes(assetFee)"
-                    v-bind:fiatRates="fiatRates"
+                    :fees="getAssetFees(assetFee)"
+                    :txTypes="getFeeTxTypes(assetFee)"
+                    :fiatRates="fiatRates"
+                    @custom-selected="onCustomFeeSelected"
                   />
                 </li>
               </ul>
@@ -114,6 +122,17 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="swap" v-if="currentStep === 'custom-fees'">
+      <CustomFees
+        @apply="applyCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="customFeeAsset"
+        :selected-fee="selectedFee"
+        :fees="getAssetFees(customFeeAsset)"
+        :txTypes="getFeeTxTypes(customFeeAsset)"
+        :fiatRates="fiatRates"
+      />
     </div>
     <div class="swap" v-if="currentStep === 'confirm'">
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
@@ -316,6 +335,7 @@ import ReceiveInput from './ReceiveInput'
 import Accounts from './Accounts'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
+import CustomFees from '@/components/CustomFees'
 
 export default {
   components: {
@@ -333,7 +353,8 @@ export default {
     ReceiveInput,
     Accounts,
     LedgerSignRequestModal,
-    OperationErrorModal
+    OperationErrorModal,
+    CustomFees
   },
   data () {
     return {
@@ -355,7 +376,8 @@ export default {
       toAccountId: null,
       swapErrorModalOpen: false,
       signRequestModalOpen: false,
-      swapErrorMessage: ''
+      swapErrorMessage: '',
+      customFeeAsset: null
     }
   },
   props: {
@@ -771,6 +793,10 @@ export default {
       }
       this.selectedFee = { ...selectedFee }
     },
+    resetFee (asset) {
+      this.selectedFee = { ...this.selectedFee, [asset]: 'average' }
+      this.updateFees({ asset })
+    },
     async swap () {
       this.swapErrorMessage = ''
       this.swapErrorModalOpen = false
@@ -863,11 +889,22 @@ export default {
     closeSignRequestModal () {
       this.signRequestModalOpen = false
       this.loading = false
+    },
+    cancelCustomFee () {
+      this.currentStep = 'inputs'
+      this.customFeeAsset = null
+    },
+    applyCustomFee (fee) {
+
+    },
+    onCustomFeeSelected (customFeeAsset) {
+      this.customFeeAsset = customFeeAsset
+      this.currentStep = 'custom-fees'
     }
   },
   watch: {
     selectedFee: {
-      handler (val) {
+      handler () {
         if (this.amountOption === 'max') {
           this.sendAmount = this.max
         }
