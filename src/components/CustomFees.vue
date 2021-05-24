@@ -28,7 +28,7 @@
               </span>
             </div>
             <div class="custom-fee-amount">
-              {{  getCustomFeeAmount(name) }}
+              {{ getCustomFeeAmount(name) }}
             </div>
             <div class="custom-fee-fiat">
               {{ getCustomFiatAmount(name) }}
@@ -36,8 +36,39 @@
           </div>
         </div>
         <!-- Customized -->
+        <div class="custom-fee-title">Customized Setting</div>
+        <div class="custom-fee-customized">
+          <div class="custom-fee-details">
+            <div class="custom-fee-details-item">
+              <div>Gas Price</div>
+              <div>$ {{ '0.02' }}</div>
+            </div>
+            <div class="custom-fee-details-item">
+              <div>{{ gasUnit }}</div>
+              <input type="number" class="form-control" min="1" step="1" />
+            </div>
+          </div>
+          <div class="custom-fee-details">
+            <div class="custom-fee-details-item">
+              <div>Gas Limit</div>
+              <div>$ {{ '0.02' }}</div>
+            </div>
+            <div class="custom-fee-details-item">
+              <div>{{ gasUnit }}</div>
+              <input type="number" class="form-control" min="1" step="1" />
+            </div>
+          </div>
+        </div>
 
-        <!-- Presets -->
+        <!-- Result -->
+        <div class="custom-fee-result">
+          <div class="custom-fee-result-title">
+            New Speed/Fee
+          </div>
+          <div class="custom-fee-result-time">~ {{ '1800' }} sec</div>
+          <div class="custom-fee-result-amount">{{ '0.0000' }} {{ asset }}</div>
+          <div class="custom-fee-result-fiat">{{ '0.01' }} USD</div>
+        </div>
       </div>
       <div class="wrapper_bottom">
         <div class="button-group">
@@ -76,16 +107,25 @@ export default {
   data () {
     return {
       fee: null,
-      preset: 'average'
+      preset: null
     }
   },
   props: ['asset', 'selectedFee', 'fees', 'txTypes', 'fiatRates'],
   created () {
+    console.log('fees', this.fees)
     this.preset = this.selectedFee?.[this.asset] || 'average'
   },
   computed: {
     nativeAsset () {
       return getNativeAsset(this.asset)
+    },
+    gasUnit () {
+      const chainId = cryptoassets[this.asset]?.chain
+      if (chainId) {
+        const { unit } = chains[chainId]?.fees || ''
+        return unit
+      }
+      return ''
     }
   },
   methods: {
@@ -108,7 +148,10 @@ export default {
     getCustomFiatAmount (name) {
       if (this.txTypes) {
         const total = this.getTotalAmount(name)
-        const totalFiat = prettyFiatBalance(total, this.fiatRates[this.nativeAsset])
+        const totalFiat = prettyFiatBalance(
+          total,
+          this.fiatRates[this.nativeAsset]
+        )
         return `${totalFiat} USD`
       }
       return ''
@@ -186,8 +229,9 @@ export default {
     &:not(:last-child) {
       border-right: 1px solid $hr-border-color;
     }
-    &.active, &:hover {
-      background-color: #F0F7F9;
+    &.active,
+    &:hover {
+      background-color: #f0f7f9;
     }
     .custom-fee-name {
       font-style: normal;
@@ -210,6 +254,73 @@ export default {
       line-height: 16px;
       color: #646f85;
     }
+  }
+}
+
+.custom-fee-customized {
+  display: flex;
+  & div:first-child {
+    margin-right: 15px;
+  }
+}
+
+.custom-fee-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  .custom-fee-details-item {
+    flex: 1;
+    display: flex;
+
+    & input {
+      height: 25px !important;
+      align-items: flex-end;
+    }
+
+    & div {
+      flex: 1;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    & div:first-child {
+      justify-content: flex-start;
+    }
+
+    & div:last-child {
+      justify-content: flex-end;
+    }
+
+  }
+}
+
+.custom-fee-result {
+  background: #F0F7F9;
+  border: 1px solid #D9DFE5;
+  display: flex;
+  margin-top: 30px;
+  padding: 10px;
+  flex-direction: column;
+
+  .custom-fee-result-title {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 26px;
+  }
+
+  .custom-fee-result-time,
+  .custom-fee-result-amount,
+  .custom-fee-result-fiat {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: 16px;
+
+  }
+
+  .custom-fee-result-fiat {
+    color: #646F85;
   }
 }
 </style>
