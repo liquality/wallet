@@ -1,5 +1,5 @@
 <template>
-  <div class="onboading-home login-wrapper">
+  <div class="onboading-home login-wrapper no-outer-pad">
     <div class="onboading-home_header">
       <LogoWallet />
     </div>
@@ -537,8 +537,8 @@
         </p>
       </div>
       <div class="button-group">
-          <router-link :to="`/`"><button class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
-          <button class="btn btn-primary btn-lg px-2" @click="acceptTnC">I Accept</button>
+          <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+          <button class="btn btn-primary btn-lg ml-2" @click="acceptTnC">I Accept</button>
       </div>
     </div>
   </div>
@@ -567,6 +567,13 @@ export default {
 <style lang="scss">
 .onboading-home {
   padding: 70px 0 0 0 !important;
+
+  &_buttonGroup {
+    display: flex;
+    background: red;
+    width: 100%;
+    justify-content: space-evenly;
+  }
 
   a {
     color: $color-primary !important;
