@@ -83,9 +83,9 @@
               <ul class="selectors">
                 <li v-for="assetFee in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
-                  <div v-if="selectedFee[assetFee] === 'custom'">
-                    Custom Fee
-                    <button class="btn btn-link" @click="resetFee(assetFee)">
+                  <div v-if="customFees[assetFee]">
+                    {{ customFees[assetFee].amount }} / {{ customFees[assetFee].fiat }}
+                    <button class="btn btn-link" @click="resetCustomFee(assetFee)">
                       Reset
                     </button>
                   </div>
@@ -123,18 +123,18 @@
         </div>
       </div>
     </div>
-    <div class="swap" v-if="currentStep === 'custom-fees'">
+    <div class="swap" v-else-if="currentStep === 'custom-fees'">
       <CustomFees
         @apply="applyCustomFee"
         @cancel="cancelCustomFee"
-        :asset="customFeeAsset"
+        :asset="customFeeAssetSelected"
         :selected-fee="selectedFee"
-        :fees="getAssetFees(customFeeAsset)"
-        :txTypes="getFeeTxTypes(customFeeAsset)"
+        :fees="getAssetFees(customFeeAssetSelected)"
+        :txTypes="getFeeTxTypes(customFeeAssetSelected)"
         :fiatRates="fiatRates"
       />
     </div>
-    <div class="swap" v-if="currentStep === 'confirm'">
+    <div class="swap" v-else-if="currentStep === 'confirm'">
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
@@ -377,7 +377,8 @@ export default {
       swapErrorModalOpen: false,
       signRequestModalOpen: false,
       swapErrorMessage: '',
-      customFeeAsset: null
+      customFeeAssetSelected: null,
+      customFees: {}
     }
   },
   props: {
@@ -793,9 +794,9 @@ export default {
       }
       this.selectedFee = { ...selectedFee }
     },
-    resetFee (asset) {
-      this.selectedFee = { ...this.selectedFee, [asset]: 'average' }
-      this.updateFees({ asset })
+    resetCustomFee (asset) {
+      delete this.customFees[asset]
+      this.resetFees()
     },
     async swap () {
       this.swapErrorMessage = ''
@@ -806,18 +807,28 @@ export default {
       }
       try {
         const fromAmount = currencyToUnit(cryptoassets[this.asset], this.safeAmount)
+        // validate if we use custom fees
+        let fee
+        if (this.customFees[this.assetChain]) {
+          fee = this.customFees[this.assetChain].fee
+        } else {
+          fee = this.availableFees.has(this.assetChain)
+            ? this.getAssetFees(this.assetChain)[
+              this.selectedFee[this.assetChain]
+            ].fee
+            : undefined
+        }
 
-        const fee = this.availableFees.has(this.assetChain)
-          ? this.getAssetFees(this.assetChain)[
-            this.selectedFee[this.assetChain]
-          ].fee
-          : undefined
-
-        const toFee = this.availableFees.has(this.toAssetChain)
-          ? this.getAssetFees(this.toAssetChain)[
-            this.selectedFee[this.toAssetChain]
-          ].fee
-          : undefined
+        let toFee
+        if (this.customFees[this.toAssetChain]) {
+          toFee = this.customFees[this.toAssetChain].fee
+        } else {
+          toFee = this.availableFees.has(this.toAssetChain)
+            ? this.getAssetFees(this.toAssetChain)[
+              this.selectedFee[this.toAssetChain]
+            ].fee
+            : undefined
+        }
 
         await this.newSwap({
           network: this.activeNetwork,
@@ -892,13 +903,14 @@ export default {
     },
     cancelCustomFee () {
       this.currentStep = 'inputs'
-      this.customFeeAsset = null
+      this.customFeeAssetSelected = null
     },
-    applyCustomFee (fee) {
-
+    applyCustomFee ({ asset, fee, amount, fiat }) {
+      this.customFees[asset] = { fee, amount, fiat }
+      this.currentStep = 'inputs'
     },
-    onCustomFeeSelected (customFeeAsset) {
-      this.customFeeAsset = customFeeAsset
+    onCustomFeeSelected (asset) {
+      this.customFeeAssetSelected = asset
       this.currentStep = 'custom-fees'
     }
   },
