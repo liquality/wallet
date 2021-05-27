@@ -88,7 +88,7 @@ export default {
             asset: asset.name,
             walletType: _walletType,
             startingIndex,
-            numAddresses: LEDGER_PER_PAGE
+            numAccounts: LEDGER_PER_PAGE
           }
           this.currentStep = 'unlock'
 
@@ -97,9 +97,12 @@ export default {
           if (accounts && accounts.length > 0) {
             this.accounts = accounts.map((account, index) => {
               const { address } = account
-              const exists = this.networkAccounts.find(a => {
+              const exists = this.networkAccounts.filter(a => {
+                const { chain } = this.selectedAsset
+                return a.chain === chain
+              }).find(a => {
                 const _address = address.startsWith('0x') ? address.substr(2) : address
-                return a.addresses.includes(_address)
+                return a.addresses.includes(_address.toLowerCase())
               }
               )
               return {

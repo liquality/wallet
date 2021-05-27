@@ -1,5 +1,4 @@
-import { getPrices } from '../utils'
-import { Networks } from '../factory/client'
+import { Networks, getPrices } from '../utils'
 import { uniq } from 'lodash-es'
 
 export const updateFiatRates = async ({ state, commit }) => {
