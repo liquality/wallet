@@ -13,7 +13,7 @@
         </div>
         <div class="mx-auto text-center">
             <h5 class="mx-auto px-5">
-                View it in private without cameras around
+                View it in private without cameras around.
             </h5>
         </div>
         <div class="wrapper_bottom">

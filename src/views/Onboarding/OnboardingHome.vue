@@ -536,8 +536,9 @@
           <span class="c20"></span>
         </p>
       </div>
-      <div class="onboading-home_tnc__actions">
-        <button class="btn btn-primary btn-lg btn-block mb-2" @click="acceptTnC">I Accept</button>
+      <div class="button-group">
+          <router-link :to="`/`"><button class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
+          <button class="btn btn-primary btn-lg px-2" @click="acceptTnC">I Accept</button>
       </div>
     </div>
   </div>

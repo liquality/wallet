@@ -125,6 +125,7 @@ export default {
       background: $color-text-secondary;
       border: 1px solid $hr-border-color;
       border-radius: 26px;
+      font-weight: 600;
       &:disabled {
         color: $hr-border-color;
       }
