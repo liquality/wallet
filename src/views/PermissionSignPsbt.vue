@@ -43,7 +43,7 @@ import { Psbt } from 'bitcoinjs-lib'
 import { getAssetIcon } from '@/utils/asset'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { AssetNetworks } from '@/store/factory/client'
+import { AssetNetworks } from '@/store/utils'
 import { prettyBalance } from '@/utils/coinFormatter'
 
 export default {

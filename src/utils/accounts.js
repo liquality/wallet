@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { getAssetIcon } from '@/utils/asset'
+import { chains } from '@liquality/cryptoassets'
 
 export const accountCreator = (payload) => {
   const { walletId, account } = payload
@@ -14,11 +15,10 @@ export const accountCreator = (payload) => {
     color
   } = account
 
+  const { formatAddress } = chains[chain]
   const _addresses = addresses.map(a => {
-    if (a.startsWith('0x')) {
-      return a.substring(2, a.length)
-    }
-    return a
+    const address = formatAddress(a)
+    return address.startsWith('0x') ? address.substring(2, address.length) : address
   })
   const id = uuidv4()
   const createdAt = Date.now()
