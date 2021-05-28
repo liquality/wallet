@@ -93,24 +93,8 @@ export default {
           this.currentStep = 'unlock'
 
           const accounts = await this.getLedgerAccounts(payload)
-
           if (accounts && accounts.length > 0) {
-            this.accounts = accounts.map((account, index) => {
-              const { address } = account
-              const exists = this.networkAccounts.filter(a => {
-                const { chain } = this.selectedAsset
-                return a.chain === chain
-              }).find(a => {
-                const _address = address.startsWith('0x') ? address.substr(2) : address
-                return a.addresses.includes(_address.toLowerCase())
-              }
-              )
-              return {
-                account,
-                index: index + startingIndex,
-                exists: !!exists
-              }
-            })
+            this.accounts = accounts
             this.ledgerPage = currentPage
           } else {
             this.ledgerError = { message: 'No accounts found' }
