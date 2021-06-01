@@ -16,7 +16,7 @@
         <EthRequiredMessage />
       </InfoNotification>
 
-      <InfoNotification v-if="showNoLiquidityMessage">
+      <InfoNotification v-else-if="showNoLiquidityMessage">
         <NoLiquidityMessage />
       </InfoNotification>
       <div class="wrapper form">
@@ -583,10 +583,15 @@ export default {
       return this.networkMarketData[this.asset]
     },
     ethRequired () {
-      return (
-        [this.assetChain, this.toAssetChain].includes('ETH') &&
-        this.networkWalletBalances.ETH === 0
-      )
+      if (this.assetChain === 'ETH') {
+        return !this.account?.balances?.ETH || this.account?.balances?.ETH === 0
+      }
+
+      if (this.toAssetChain === 'ETH') {
+        return !this.toAccount?.balances?.ETH || this.toAccount?.balances?.ETH === 0
+      }
+
+      return false
     },
     showErrors () {
       return !this.ethRequired
