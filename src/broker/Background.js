@@ -92,7 +92,7 @@ class Background {
           .then(result => ({ result }))
           .catch(error => {
             console.error(error) /* eslint-disable-line */
-            return { error: error.toString() }
+            return { error: error.message }
           })
           .then(response => {
             connection.postMessage({

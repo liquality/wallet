@@ -88,7 +88,6 @@ export default {
   .list-item-detail,
   .list-item-detail-sub {
     text-align: right;
-
   }
 
   .list-item-detail-mr {

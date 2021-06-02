@@ -15,11 +15,8 @@
         <div class="input-group">
           <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required :readonly="loading">
         </div>
-        <p v-if="errors.length">
-          <b>Please correct the following error(s):</b>
-          <ul>
-            <li v-for="error in errors" :key="error">{{ error }}</li>
-          </ul>
+        <p v-if="error" class="mt-3">
+          {{ error }}
         </p>
       </div>
       <div class="footer-container">
@@ -53,21 +50,22 @@ export default {
   data () {
     return {
       loading: false,
-      errors: [],
+      error: null,
       password: null
     }
   },
   methods: {
     ...mapActions(['unlockWallet']),
     async unlock () {
-      this.errors = []
+      this.error = null
       this.loading = true
       try {
         await this.unlockWallet({ key: this.password })
         this.$emit('unlocked')
       } catch (e) {
+        debugger
         console.log(e)
-        this.errors.push(e.message)
+        this.error = e.message
       } finally {
         this.loading = false
       }
