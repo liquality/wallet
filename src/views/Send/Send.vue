@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="send" v-if="!showConfirm">
+  <div class="view-container">
+    <div class="send" v-if="currentStep === 'inputs'">
       <NavBar
         showBack="true"
         :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
@@ -57,12 +57,20 @@
                 <li>
                   <div class="send_fees">
                     <span class="selectors-asset">{{ assetChain }}</span>
+                    <div class="custom-fees" v-if="customFees[assetChain]">
+                    {{ customFees[assetChain].amount }} / {{ customFees[assetChain].fiat }}
+                    <button class="btn btn-link" @click="resetCustomFee">
+                      Reset
+                    </button>
+                  </div>
                     <FeeSelector
+                      v-else
                       :asset="asset"
                       v-model="selectedFee"
                       v-bind:fees="assetFees"
                       v-bind:txTypes="[txType]"
                       v-bind:fiatRates="fiatRates"
+                      @custom-selected="onCustomFeeSelected"
                     />
                   </div>
                 </li>
@@ -80,7 +88,7 @@
             </router-link>
             <button
               class="btn btn-primary btn-lg"
-              @click="showConfirm = true"
+              @click="currentStep = null"
               :disabled="!canSend"
             >
               Review
@@ -89,7 +97,18 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div class="send" v-else-if="currentStep === 'custom-fees'">
+      <CustomFees
+        @apply="applyCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="assetChain"
+        :selected-fee="{[assetChain]: selectedFee}"
+        :fees="assetFees"
+        :txTypes="[txType]"
+        :fiatRates="fiatRates"
+      />
+    </div>
+    <div class="send" v-else>
       <NavBar
         :showBackButton="true"
         :backClick="back"
@@ -137,7 +156,7 @@
         </div>
         <div class="mt-40">
           <label>Send To</label>
-          <p class="confirm-address">{{ shortenAddress(this.address) }}</p>
+          <p class="confirm-address">{{ this.address ? shortenAddress(this.address) : '' }}</p>
         </div>
       </div>
       <div class="wrapper_bottom">
@@ -145,7 +164,7 @@
           <button
             class="btn btn-light btn-outline-primary btn-lg"
             v-if="!loading"
-            @click="showConfirm = false"
+            @click="currentStep = 'inputs'"
           >
             Edit
           </button>
@@ -160,14 +179,14 @@
         </div>
       </div>
     </div>
-    <!-- Modals for ledger prompts -->
+    </div>
+     <!-- Modals for ledger prompts -->
     <OperationErrorModal :open="sendErrorModalOpen"
                          :account="account"
                          @close="closeSendErrorModal"
                          :error="sendErrorMessage" />
     <LedgerSignRequestModal :open="signRequestModalOpen"
                             @close="closeSignRequestModal" />
-    </div>
   </div>
 </template>
 
@@ -196,6 +215,7 @@ import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
+import CustomFees from '@/components/CustomFees'
 
 export default {
   components: {
@@ -205,7 +225,8 @@ export default {
     DetailsContainer,
     SendInput,
     OperationErrorModal,
-    LedgerSignRequestModal
+    LedgerSignRequestModal,
+    CustomFees
   },
   data () {
     return {
@@ -213,12 +234,14 @@ export default {
       stateAmountFiat: 0,
       address: null,
       selectedFee: 'average',
-      showConfirm: false,
+      currentStep: 'inputs',
       loading: false,
       maxOptionActive: false,
       sendErrorModalOpen: false,
       signRequestModalOpen: false,
-      sendErrorMessage: ''
+      sendErrorMessage: '',
+      customFeeAssetSelected: null,
+      customFees: {}
     }
   },
   props: {
@@ -305,9 +328,14 @@ export default {
       return TX_TYPES.SEND
     },
     sendFee () {
-      const feePrice = this.feesAvailable
-        ? this.assetFees[this.selectedFee].fee
-        : 0
+      let feePrice
+      if (this.customFees[this.assetChain]) {
+        feePrice = this.customFees[this.assetChain].fee
+      } else {
+        feePrice = this.feesAvailable
+          ? this.assetFees[this.selectedFee].fee
+          : 0
+      }
       return getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
     },
     prettyFee () {
@@ -364,9 +392,15 @@ export default {
         const amountToSend = this.maxOptionActive ? this.available : this.amount
 
         const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toNumber()
-        const fee = this.feesAvailable
-          ? this.assetFees[this.selectedFee].fee
-          : undefined
+        // validate for custom fees
+        let fee
+        if (this.customFees[this.assetChain]) {
+          fee = this.customFees[this.assetChain].fee
+        } else {
+          fee = this.feesAvailable
+            ? this.assetFees[this.selectedFee].fee
+            : undefined
+        }
 
         await this.sendTransaction({
           network: this.activeNetwork,
@@ -398,7 +432,7 @@ export default {
       }
     },
     back () {
-      this.showConfirm = false
+      this.currentStep = 'inputs'
     },
     closeSendErrorModal () {
       this.sendErrorModalOpen = false
@@ -407,6 +441,21 @@ export default {
     closeSignRequestModal () {
       this.signRequestModalOpen = false
       this.loading = false
+    },
+    cancelCustomFee () {
+      this.currentStep = 'inputs'
+    },
+    applyCustomFee ({ fee, amount, fiat }) {
+      this.customFees[this.assetChain] = { fee, amount, fiat }
+      this.currentStep = 'inputs'
+    },
+    onCustomFeeSelected () {
+      this.currentStep = 'custom-fees'
+    },
+    resetCustomFee () {
+      delete this.customFees[this.assetChain]
+      this.selectedFee = 'average'
+      this.updateFees({ asset: this.assetChain })
     }
   },
   created () {
@@ -458,6 +507,9 @@ export default {
     margin: 6px 0;
     .fee-selector {
       margin-left: 6px;
+    }
+    .custom-fees {
+      font-weight: normal;
     }
 
   }

@@ -3,6 +3,9 @@ import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
 import pkg from '../../package.json'
 import { assets as cryptoassets } from '@liquality/cryptoassets'
+import { BitcoinNetworks } from '@liquality/bitcoin-networks'
+import { EthereumNetworks } from '@liquality/ethereum-networks'
+import { NearNetworks } from '@liquality/near-networks'
 
 export const CHAIN_LOCK = {}
 
@@ -93,4 +96,33 @@ export async function getPrices (baseCurrencies, toCurrency) {
   prices = mapValues(prices, rates => mapKeys(rates, (v, k) => k.toUpperCase()))
   const symbolPrices = mapValues(prices, rates => rates[toCurrency.toUpperCase()])
   return symbolPrices
+}
+
+export const Networks = ['mainnet', 'testnet']
+
+export const AssetNetworks = {
+  BTC: {
+    testnet: BitcoinNetworks.bitcoin_testnet,
+    mainnet: BitcoinNetworks.bitcoin
+  },
+  ETH: {
+    testnet: EthereumNetworks.rinkeby,
+    mainnet: EthereumNetworks.ethereum_mainnet
+  },
+  RBTC: {
+    testnet: EthereumNetworks.rsk_testnet,
+    mainnet: EthereumNetworks.rsk_mainnet
+  },
+  BNB: {
+    testnet: EthereumNetworks.bsc_testnet,
+    mainnet: EthereumNetworks.bsc_mainnet
+  },
+  POLYGON: {
+    testnet: EthereumNetworks.polygon_testnet,
+    mainnet: EthereumNetworks.polygon_mainnet
+  },
+  NEAR: {
+    testnet: NearNetworks.near_testnet,
+    mainnet: NearNetworks.near_mainnet
+  }
 }

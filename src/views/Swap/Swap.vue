@@ -16,7 +16,7 @@
         <EthRequiredMessage />
       </InfoNotification>
 
-      <InfoNotification v-if="showNoLiquidityMessage">
+      <InfoNotification v-else-if="showNoLiquidityMessage">
         <NoLiquidityMessage />
       </InfoNotification>
       <div class="wrapper form">
@@ -83,12 +83,20 @@
               <ul class="selectors">
                 <li v-for="assetFee in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
+                  <div v-if="customFees[assetFee]">
+                    {{ customFees[assetFee].amount }} / {{ customFees[assetFee].fiat }}
+                    <button class="btn btn-link" @click="resetCustomFee(assetFee)">
+                      Reset
+                    </button>
+                  </div>
                   <FeeSelector
+                    v-else
                     :asset="assetsFeeSelector[assetFee]"
                     v-model="selectedFee[assetFee]"
-                    v-bind:fees="getAssetFees(assetFee)"
-                    v-bind:txTypes="getFeeTxTypes(assetFee)"
-                    v-bind:fiatRates="fiatRates"
+                    :fees="getAssetFees(assetFee)"
+                    :txTypes="getFeeTxTypes(assetFee)"
+                    :fiatRates="fiatRates"
+                    @custom-selected="onCustomFeeSelected"
                   />
                 </li>
               </ul>
@@ -115,7 +123,18 @@
         </div>
       </div>
     </div>
-    <div class="swap" v-if="currentStep === 'confirm'">
+    <div class="swap" v-else-if="currentStep === 'custom-fees'">
+      <CustomFees
+        @apply="applyCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="customFeeAssetSelected"
+        :selected-fee="selectedFee"
+        :fees="getAssetFees(customFeeAssetSelected)"
+        :txTypes="getFeeTxTypes(customFeeAssetSelected)"
+        :fiatRates="fiatRates"
+      />
+    </div>
+    <div class="swap" v-else-if="currentStep === 'confirm'">
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
@@ -316,6 +335,7 @@ import ReceiveInput from './ReceiveInput'
 import Accounts from './Accounts'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
+import CustomFees from '@/components/CustomFees'
 
 export default {
   components: {
@@ -333,7 +353,8 @@ export default {
     ReceiveInput,
     Accounts,
     LedgerSignRequestModal,
-    OperationErrorModal
+    OperationErrorModal,
+    CustomFees
   },
   data () {
     return {
@@ -355,7 +376,9 @@ export default {
       toAccountId: null,
       swapErrorModalOpen: false,
       signRequestModalOpen: false,
-      swapErrorMessage: ''
+      swapErrorMessage: '',
+      customFeeAssetSelected: null,
+      customFees: {}
     }
   },
   props: {
@@ -583,10 +606,15 @@ export default {
       return this.networkMarketData[this.asset]
     },
     ethRequired () {
-      return (
-        [this.assetChain, this.toAssetChain].includes('ETH') &&
-        this.networkWalletBalances.ETH === 0
-      )
+      if (this.assetChain === 'ETH') {
+        return !this.account?.balances?.ETH || this.account?.balances?.ETH === 0
+      }
+
+      if (this.toAssetChain === 'ETH') {
+        return !this.toAccount?.balances?.ETH || this.toAccount?.balances?.ETH === 0
+      }
+
+      return false
     },
     showErrors () {
       return !this.ethRequired
@@ -771,6 +799,10 @@ export default {
       }
       this.selectedFee = { ...selectedFee }
     },
+    resetCustomFee (asset) {
+      delete this.customFees[asset]
+      this.resetFees()
+    },
     async swap () {
       this.swapErrorMessage = ''
       this.swapErrorModalOpen = false
@@ -780,18 +812,28 @@ export default {
       }
       try {
         const fromAmount = currencyToUnit(cryptoassets[this.asset], this.safeAmount)
+        // validate if we use custom fees
+        let fee
+        if (this.customFees[this.assetChain]) {
+          fee = this.customFees[this.assetChain].fee
+        } else {
+          fee = this.availableFees.has(this.assetChain)
+            ? this.getAssetFees(this.assetChain)[
+              this.selectedFee[this.assetChain]
+            ].fee
+            : undefined
+        }
 
-        const fee = this.availableFees.has(this.assetChain)
-          ? this.getAssetFees(this.assetChain)[
-            this.selectedFee[this.assetChain]
-          ].fee
-          : undefined
-
-        const toFee = this.availableFees.has(this.toAssetChain)
-          ? this.getAssetFees(this.toAssetChain)[
-            this.selectedFee[this.toAssetChain]
-          ].fee
-          : undefined
+        let toFee
+        if (this.customFees[this.toAssetChain]) {
+          toFee = this.customFees[this.toAssetChain].fee
+        } else {
+          toFee = this.availableFees.has(this.toAssetChain)
+            ? this.getAssetFees(this.toAssetChain)[
+              this.selectedFee[this.toAssetChain]
+            ].fee
+            : undefined
+        }
 
         await this.newSwap({
           network: this.activeNetwork,
@@ -863,11 +905,23 @@ export default {
     closeSignRequestModal () {
       this.signRequestModalOpen = false
       this.loading = false
+    },
+    cancelCustomFee () {
+      this.currentStep = 'inputs'
+      this.customFeeAssetSelected = null
+    },
+    applyCustomFee ({ asset, fee, amount, fiat }) {
+      this.customFees[asset] = { fee, amount, fiat }
+      this.currentStep = 'inputs'
+    },
+    onCustomFeeSelected (asset) {
+      this.customFeeAssetSelected = asset
+      this.currentStep = 'custom-fees'
     }
   },
   watch: {
     selectedFee: {
-      handler (val) {
+      handler () {
         if (this.amountOption === 'max') {
           this.sendAmount = this.max
         }

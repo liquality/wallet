@@ -62,7 +62,8 @@ const FEE_TYPES = {
 const FEE_OPTIONS = {
   SLOW: { name: 'Slow', label: 'Slow' },
   AVERAGE: { name: 'Average', label: 'Avg' },
-  FAST: { name: 'Fast', label: 'Fast' }
+  FAST: { name: 'Fast', label: 'Fast' },
+  CUSTOM: { name: 'Custom', label: 'Custom' }
 }
 
 function getTxFee (_asset, type, _feePrice) {
@@ -76,8 +77,8 @@ function getTxFee (_asset, type, _feePrice) {
 }
 
 function getFeeLabel (fee) {
-  const name = fee.toUpperCase()
-  return FEE_OPTIONS[name].label
+  const name = fee?.toUpperCase() || ''
+  return FEE_OPTIONS?.[name]?.label || ''
 }
 
 export { TX_TYPES, FEE_TYPES, FEE_OPTIONS, getTxFee, getFeeLabel }

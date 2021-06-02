@@ -75,19 +75,15 @@
                 </tr>
               </tbody>
             </table>
-          <!-- <div class="account-nav" v-if="accounts && accounts.length > 5">
-            <button class="btn btn-link" @click="prev" :disabled="currentPage <=0">
-              Previous
-            </button>
+            <div class="account-nav">
+              <button class="btn btn-link" @click="prev" :disabled="currentPage <= 0">
+                Previous
+              </button>
 
-            <button class="btn btn-link"  @click="next">
-              Next
-            </button>
-          </div> -->
-          <div class="account-message">
-            No worries. We are only showing the first account.<br>
-            Stay tuned for the update that shows all your accounts.
-          </div>
+              <button class="btn btn-link"  @click="next">
+                Next
+              </button>
+            </div>
           </div>
           <div v-else class="account-message">
             {{ ledgerError && ledgerError.message ? ledgerError.message : 'No Accounts Found' }}
@@ -274,8 +270,6 @@ export default {
   }
 
   .accounts-table {
-    position: absolute;
-    left: 0;
     tr {
       height: 35px;
       cursor: pointer;
