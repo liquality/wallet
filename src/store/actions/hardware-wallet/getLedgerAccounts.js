@@ -1,5 +1,5 @@
 
-import { assets } from '@liquality/cryptoassets'
+import { assets, chains as chainList } from '@liquality/cryptoassets'
 
 export const getLedgerAccounts = async (
   { commit, getters },
@@ -7,6 +7,7 @@ export const getLedgerAccounts = async (
 ) => {
   const { client, networkAccounts } = getters
   const { chain } = assets[asset]
+  const { formatAddress } = chainList[chain]
   const results = []
   const usedAddresses = []
 
@@ -17,11 +18,11 @@ export const getLedgerAccounts = async (
   // get all the used addresses in the same chain
   for (const account of existingAccounts) {
     if (account.type.includes('ledger')) {
-      usedAddresses.push(...account.addresses)
+      usedAddresses.push(...account.addresses.map(address => formatAddress(address)))
     } else {
       const _client = client(network, walletId, asset, account.type, account.index)
       const addresses = await _client.wallet.getUsedAddresses()
-      usedAddresses.push(...addresses.map(a => a.address))
+      usedAddresses.push(...addresses.map(a => formatAddress(a.address)))
     }
   }
 
@@ -30,12 +31,15 @@ export const getLedgerAccounts = async (
     const _client = client(network, walletId, asset, walletType, index)
     const addresses = await _client.wallet.getAddresses()
     if (addresses && addresses.length > 0) {
+      const formatedAddress = formatAddress(addresses[0].address)
+      debugger
       results.push({
         account: addresses[0],
         index: index + startingIndex,
-        exists: usedAddresses.includes(addresses[0].address)
+        exists: usedAddresses.includes(formatedAddress)
       })
     }
   }
+  debugger
   return results
 }

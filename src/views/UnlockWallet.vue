@@ -63,6 +63,7 @@ export default {
         await this.unlockWallet({ key: this.password })
         this.$emit('unlocked')
       } catch (e) {
+        debugger
         console.log(e)
         this.error = e.message
       } finally {
