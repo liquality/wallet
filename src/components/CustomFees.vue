@@ -51,10 +51,11 @@
                 <input type="number"
                      class="form-control"
                      :step="stepSize"
-                     v-model="fee" />
+                     :value="fee"
+                     @input="setCustomFee(parseFloat($event.target.value))" />
                 <div class="input-group-text fee-input-controls">
                   <ChevronUpIcon @click="incrementFee"/>
-                  <ChevronDownIcon  @click="reduceFee"/>
+                  <ChevronDownIcon  @click="decrementFee"/>
                 </div>
               </div>
             </div>
@@ -96,7 +97,7 @@
 <script>
 import { getAssetIcon, getNativeAsset } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
-import { getTxFee, getFeeLabel } from '@/utils/fees'
+import { getFeeLabel } from '@/utils/fees'
 import BN from 'bignumber.js'
 import { prettyFiatBalance } from '@/utils/coinFormatter'
 import cryptoassets from '@/utils/cryptoassets'
@@ -116,9 +117,9 @@ export default {
       preset: null
     }
   },
-  props: ['asset', 'selectedFee', 'fees', 'txTypes', 'fiatRates'],
+  props: ['asset', 'selectedFee', 'fees', 'totalFees', 'fiatRates'],
   created () {
-    this.preset = this.selectedFee?.[this.asset] || 'average'
+    this.preset = this.selectedFee || 'average'
     this.fee = this.fees[this.preset]?.fee
   },
   computed: {
@@ -132,9 +133,6 @@ export default {
         return unit
       }
       return ''
-    },
-    totalAmount () {
-      return this.getTotalAmount()
     },
     customFiatAmount () {
       return this.getFiatAmount()
@@ -162,9 +160,14 @@ export default {
     apply () {
       this.$emit('apply', {
         asset: this.asset,
-        fee: this.fee,
-        amount: this.customFeeAmount,
-        fiat: this.customFiatAmount
+        fee: this.fee
+      })
+    },
+    setCustomFee (fee) {
+      this.fee = fee
+      this.$emit('update', {
+        asset: this.asset,
+        fee: this.fee
       })
     },
     setPreset (name) {
@@ -172,23 +175,18 @@ export default {
       this.fee = this.fees[name]?.fee
     },
     incrementFee () {
-      this.fee = this.fee + this.stepSize
+      this.setCustomFee(this.fee + this.stepSize)
     },
-    reduceFee () {
+    decrementFee () {
       if (this.fee && this.fee > 0) {
-        this.fee = this.fee - this.stepSize
+        this.setCustomFee(this.fee - this.stepSize)
       }
     },
-    getTotalAmount (name) {
-      const _fee = this.fees?.[name]?.fee || this.fee
-      return this.txTypes?.reduce((accum, tx) => {
-        return accum.plus(getTxFee(this.asset, tx, _fee))
-      }, BN(0)) || BN(0)
-    },
     getFeeAmount (name) {
-      if (this.txTypes) {
-        const total = this.getTotalAmount(name)
-        return `${BN(total).dp(6)} ${this.nativeAsset}`
+      if (!name) name = this.preset || 'custom'
+      if (this.totalFees && this.totalFees[name]) {
+        const totalFee = this.totalFees[name]
+        return `${BN(totalFee).dp(6)} ${this.nativeAsset}`
       } else {
         const chainId = cryptoassets[this.asset].chain
         const { unit } = chains[chainId].fees
@@ -196,10 +194,10 @@ export default {
       }
     },
     getFiatAmount (name) {
-      if (this.txTypes) {
-        const total = this.getTotalAmount(name)
+      if (!name) name = this.preset || 'custom'
+      if (this.totalFees && this.totalFees[name]) {
         const totalFiat = prettyFiatBalance(
-          total,
+          this.totalFees[name],
           this.fiatRates[this.nativeAsset]
         )
         return `${totalFiat} USD`

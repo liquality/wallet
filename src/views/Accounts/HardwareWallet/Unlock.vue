@@ -20,7 +20,7 @@
         <div class="btn-group" v-click-away="hideLedgerBitcoinOptions">
           <button class="btn dropdown-toggle custom-dropdown-toggle"
                   :disabled="loading"
-                  @click="toogleLedgerBitcoinOptions">
+                  @click="toggleLedgerBitcoinOptions">
             BTC Version (HD Path): {{ ledgerBitcoinOption.label }}
             <ChevronUpIcon v-if="ledgerBitcoinOptionsOpen" />
             <ChevronDownIcon v-else />
@@ -198,7 +198,7 @@ export default {
       this.ledgerBitcoinOption = option
       this.hideLedgerBitcoinOptions()
     },
-    toogleLedgerBitcoinOptions () {
+    toggleLedgerBitcoinOptions () {
       this.ledgerBitcoinOptionsOpen = !this.ledgerBitcoinOptionsOpen
     },
     hideLedgerBitcoinOptions () {

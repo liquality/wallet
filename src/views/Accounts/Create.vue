@@ -12,7 +12,7 @@
           <span>Select Asset <br/> to Create</span>
         </div>
         <div class="dropdown" v-click-away="hideAssetList">
-          <button class="btn custom-dropdown-toggle" @click="toogleAssetList">
+          <button class="btn custom-dropdown-toggle" @click="toggleAssetList">
             <div class="form" v-if="selectedAsset">
               <div class="input-group">
                 <img
@@ -109,7 +109,7 @@ export default {
     selectAsset (asset) {
       this.selectedAsset = asset
     },
-    toogleAssetList () {
+    toggleAssetList () {
       this.assetsDropdownOpen = !this.assetsDropdownOpen
     },
     hideAssetList () {

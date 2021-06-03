@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import { getTxFee } from '@/utils/fees'
 import BN from 'bignumber.js'
 import { prettyFiatBalance } from '@/utils/coinFormatter'
 import { getNativeAsset } from '@/utils/asset'
@@ -28,7 +27,7 @@ export default {
     'asset',
     'value',
     'fees',
-    'txTypes',
+    'totalFees',
     'fiatRates'
   ],
   methods: {
@@ -39,10 +38,8 @@ export default {
       }
 
       const nativeAsset = getNativeAsset(this.asset)
-      if (this.txTypes) {
-        const total = this.txTypes.reduce((accum, tx) => {
-          return accum.plus(getTxFee(this.asset, tx, this.fees[name].fee))
-        }, BN(0))
+      if (this.totalFees && name in this.totalFees) {
+        const total = this.totalFees[name]
         const totalFiat = prettyFiatBalance(total, this.fiatRates[nativeAsset])
         content += `${BN(total).dp(6)} ${nativeAsset}`
         content += `<br />${totalFiat} USD`
