@@ -143,7 +143,7 @@ export default {
         return Object.entries(account.balances)
           .reduce((accum, [asset, balance]) => {
             const fiat = assetFiatBalance(asset, balance)
-            return accum.plus(fiat)
+            return accum.plus(fiat || 0)
           }, BN(0))
       }
       return BN(0)
@@ -156,7 +156,7 @@ export default {
         const amount = unitToCurrency(cryptoassets[asset], balance)
         return cryptoToFiat(amount, fiatRates[asset])
       }
-      return BN(0)
+      return null
     }
   }
 }

@@ -40,8 +40,6 @@ import { AssetNetworks } from '@/store/utils'
 
 const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
 
-export const Networks = ['mainnet', 'testnet']
-
 function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = AssetNetworks.BTC[network]

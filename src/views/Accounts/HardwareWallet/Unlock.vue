@@ -64,7 +64,9 @@
                 >
                   <td class="account-index">{{ (item.index + 1) }}</td>
                   <td class="account-address">
-                    <div v-tooltip.top="{ content: item.account.address }">
+                    <div v-tooltip.top="{
+                      content: item.exists ? `This account is already connected: ${item.account.address}` : item.account.address
+                    }">
                       {{ shortenAddress(item.account.address) }}
                     </div>
                   </td>
