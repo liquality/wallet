@@ -35,7 +35,7 @@ export default {
     testnet: 'https://liquality.io/electrs-testnet-batch',
     mainnet: 'https://api-mainnet-bitcoin-electrs-batch.liquality.io'
   },
-  telegramUrl: 'https://t.me/liquality',
+  discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
   chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near']
 }

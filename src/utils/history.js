@@ -13,6 +13,7 @@ export const SWAP_STATUS_STEP_MAP = {
   WAITING_FOR_REFUND_CONFIRMATIONS: 2,
   REFUNDED: 3,
   SUCCESS: 3,
+  QUOTE_EXPIRED: 3,
   READY_TO_SEND: 3
 }
 
@@ -29,7 +30,8 @@ export const SWAP_STATUS_LABEL_MAP = {
   WAITING_FOR_REFUND_CONFIRMATIONS: 'Refunding {from}',
   REFUNDED: 'Refunded',
   SUCCESS: 'Completed',
-  READY_TO_SEND: 'Sending'
+  READY_TO_SEND: 'Sending',
+  QUOTE_EXPIRED: 'Quote Expired {from}'
 }
 
 export const SEND_STATUS_STEP_MAP = {
