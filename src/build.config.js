@@ -12,7 +12,8 @@ export default {
       'SOV',
       'BNB',
       'NEAR',
-      'POLYGON'
+      'POLYGON',
+      'PWETH'
     ],
     testnet: [
       'BTC',
@@ -22,7 +23,8 @@ export default {
       'BNB',
       'NEAR',
       'SOV',
-      'POLYGON'
+      'POLYGON',
+      'PWETH'
     ]
   },
   agentEndpoints: {

@@ -173,14 +173,14 @@ function createBSCClient (asset, network, mnemonic, indexPath = 0) {
   return createEthereumClient(asset, bnbNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
 }
 
-function createPolygonClient (asset, network, mnemonic) {
+function createPolygonClient (asset, network, mnemonic, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const polygonNetwork = AssetNetworks.POLYGON[network]
   const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com/' : 'https://rpc-mainnet.maticvigil.com/'
   const scraperApi = isTestnet ? 'https://liquality.io/polygon-testnet-api' : 'https://liquality.io/polygon-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
-  return createEthereumClient(asset, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic)
+  return createEthereumClient(asset, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
 }
 
 export const createClient = (asset, network, mnemonic, walletType, indexPath = 0) => {
