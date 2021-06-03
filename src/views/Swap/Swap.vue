@@ -999,7 +999,7 @@ export default {
       this.currentStep = 'inputs'
     },
     onCustomFeeSelected (asset) {
-      this.customFeeAssetSelected = asset
+      this.customFeeAssetSelected = getNativeAsset(asset)
       this.currentStep = 'custom-fees'
     }
   },
