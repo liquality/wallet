@@ -38,7 +38,6 @@
                 :asset="item.from"
                 v-model="selectedFee"
                 v-bind:fees="assetFees"
-                v-bind:txTypes="[txType]"
                 v-bind:fiatRates="fiatRates"
               />
               <button
@@ -107,7 +106,6 @@ import { chains } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStatusLabel } from '@/utils/history'
-import { TX_TYPES } from '@/utils/fees'
 import {
   getNativeAsset,
   getTransactionExplorerLink,
@@ -188,9 +186,6 @@ export default {
     },
     feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
-    },
-    txType () {
-      return TX_TYPES.SEND
     }
   },
   methods: {
