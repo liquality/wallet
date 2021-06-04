@@ -33,7 +33,7 @@
       </ListItem>
       <div v-else>
         <ListItem
-          @item-selected="toogleShowAccountAssets(account.id)"
+          @item-selected="toggleShowAccountAssets(account.id)"
         >
           <template #prefix>
              <div class="account-color"
@@ -122,7 +122,7 @@ export default {
     getAssetName (asset) {
       return cryptoassets[asset] ? cryptoassets[asset].name : asset
     },
-    toogleShowAccountAssets (id) {
+    toggleShowAccountAssets (id) {
       this.showAccountAssets[id] = !this.showAccountAssets[id]
     },
     selectItem (account, asset) {

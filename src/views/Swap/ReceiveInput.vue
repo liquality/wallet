@@ -10,7 +10,7 @@
             <div class="swap-receive-top-amount">
               <div
                 class="btn btn-option label-append"
-                @click="toogleShowAmountsFiat"
+                @click="toggleShowAmountsFiat"
               >
                 <span
                   v-if="showAmountsInFiat"
@@ -126,7 +126,7 @@ export default {
   methods: {
     getAssetColorStyle,
     getAssetIcon,
-    toogleShowAmountsFiat () {
+    toggleShowAmountsFiat () {
       this.showAmountsInFiat = !this.showAmountsInFiat
     },
     closeReceiveAt () {

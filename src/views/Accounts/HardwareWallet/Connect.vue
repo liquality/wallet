@@ -20,7 +20,7 @@
           <span>Select the same asset here</span>
         </div>
         <div class="dropdown" v-click-away="hideAssetList">
-          <button class="btn dropdown-toggle lg" @click="toogleAssetList">
+          <button class="btn dropdown-toggle lg" @click="toggleAssetList">
             <div class="form" v-if="selectedAsset">
               <div class="input-group">
                 <img
@@ -150,7 +150,7 @@ export default {
       this.$emit('on-select-asset', asset)
       this.hideAssetList()
     },
-    toogleAssetList () {
+    toggleAssetList () {
       this.assetsDropdownOpen = !this.assetsDropdownOpen
     },
     hideAssetList () {

@@ -16,7 +16,7 @@
             :account="account"
             :amount-fiat="amountFiat"
             @update:amount="(newAmount) => (amount = newAmount)"
-            @toogle-max="toogleMaxAmount"
+            @toggle-max="toggleMaxAmount"
             @update:amountFiat="(amount) => (amountFiat = amount)"
             :max="available"
             :available="available"
@@ -57,8 +57,8 @@
                 <li>
                   <div class="send_fees">
                     <span class="selectors-asset">{{ assetChain }}</span>
-                    <div class="custom-fees" v-if="customFees[assetChain]">
-                    {{ customFees[assetChain].amount }} / {{ customFees[assetChain].fiat }}
+                    <div class="custom-fees" v-if="customFee">
+                    {{ currentFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
                     <button class="btn btn-link" @click="resetCustomFee">
                       Reset
                     </button>
@@ -67,9 +67,9 @@
                       v-else
                       :asset="asset"
                       v-model="selectedFee"
-                      v-bind:fees="assetFees"
-                      v-bind:txTypes="[txType]"
-                      v-bind:fiatRates="fiatRates"
+                      :fees="assetFees"
+                      :totalFees="maxOptionActive ? maxSendFees : sendFees"
+                      :fiatRates="fiatRates"
                       @custom-selected="onCustomFeeSelected"
                     />
                   </div>
@@ -100,11 +100,12 @@
     <div class="send" v-else-if="currentStep === 'custom-fees'">
       <CustomFees
         @apply="applyCustomFee"
+        @update="setCustomFee"
         @cancel="cancelCustomFee"
         :asset="assetChain"
-        :selected-fee="{[assetChain]: selectedFee}"
+        :selected-fee="selectedFee"
         :fees="assetFees"
-        :txTypes="[txType]"
+        :totalFees="maxOptionActive ? maxSendFees : sendFees"
         :fiatRates="fiatRates"
       />
     </div>
@@ -192,6 +193,7 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
+import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
@@ -230,6 +232,8 @@ export default {
   },
   data () {
     return {
+      sendFees: {},
+      maxSendFees: {},
       stateAmount: 0,
       stateAmountFiat: 0,
       address: null,
@@ -241,7 +245,7 @@ export default {
       signRequestModalOpen: false,
       sendErrorMessage: '',
       customFeeAssetSelected: null,
-      customFees: {}
+      customFee: null
     }
   },
   props: {
@@ -256,7 +260,8 @@ export default {
       'fiatRates'
     ]),
     ...mapGetters([
-      'accountItem'
+      'accountItem',
+      'client'
     ]),
     account () {
       return this.accountItem(this.accountId)
@@ -297,12 +302,26 @@ export default {
       return getNativeAsset(this.asset)
     },
     assetFees () {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
+      const assetFees = {}
+      if (this.customFee) {
+        assetFees.custom = { fee: this.customFee }
+      }
+
+      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         this.assetChain
       ]
+      if (fees) {
+        Object.assign(assetFees, fees)
+      }
+
+      return assetFees
     },
     feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
+    },
+    currentFee () {
+      const fees = this.maxOptionActive ? this.maxSendFees : this.sendFees
+      return (this.selectedFee in fees) ? fees[this.selectedFee] : BN(0)
     },
     isValidAddress () {
       return chains[cryptoassets[this.asset].chain].isValidAddress(this.address)
@@ -324,28 +343,15 @@ export default {
 
       return true
     },
-    txType () {
-      return TX_TYPES.SEND
-    },
-    sendFee () {
-      let feePrice
-      if (this.customFees[this.assetChain]) {
-        feePrice = this.customFees[this.assetChain].fee
-      } else {
-        feePrice = this.feesAvailable
-          ? this.assetFees[this.selectedFee].fee
-          : 0
-      }
-      return getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
-    },
     prettyFee () {
-      return this.sendFee.dp(6)
+      return this.currentFee.dp(6)
     },
     available () {
       if (cryptoassets[this.asset].type === 'erc20') {
         return unitToCurrency(cryptoassets[this.asset], this.balance)
       } else {
-        const fee = currencyToUnit(cryptoassets[this.assetChain], this.sendFee)
+        const maxSendFee = (this.selectedFee in this.maxSendFees) ? this.maxSendFees[this.selectedFee] : BN(0)
+        const fee = currencyToUnit(cryptoassets[this.assetChain], maxSendFee)
         const available = BN.max(BN(this.balance).minus(fee), 0)
         return unitToCurrency(cryptoassets[this.asset], available)
       }
@@ -354,7 +360,7 @@ export default {
       return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
-      return prettyFiatBalance(this.sendFee, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.currentFee, this.fiatRates[this.asset])
     },
     feeType () {
       return FEE_TYPES[this.assetChain]
@@ -366,11 +372,11 @@ export default {
       return getFeeLabel(this.selectedFee)
     },
     totalToSendInFiat () {
-      const total = BN(this.amount).plus(BN(this.sendFee))
+      const total = BN(this.amount).plus(BN(this.currentFee))
       return prettyFiatBalance(total, this.fiatRates[this.asset])
     },
     amountWithFee () {
-      return BN(this.amount).plus(BN(this.sendFee))
+      return BN(this.amount).plus(BN(this.currentFee))
     }
   },
   methods: {
@@ -381,6 +387,42 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
+    async _updateSendFees (amount) {
+      const getMax = amount === undefined
+      if (this.feesAvailable) {
+        const sendFees = {}
+        for (const [speed, fee] of Object.entries(this.assetFees)) {
+          const feePrice = fee.fee
+          sendFees[speed] = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
+        }
+        if (this.asset === 'BTC') {
+          const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)
+          const feePerBytes = Object.values(this.assetFees).map(fee => fee.fee)
+          const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
+          try {
+            const totalFees = await client.getMethod('getTotalFees')({ value, feePerBytes, max: getMax })
+            for (const [speed, fee] of Object.entries(this.assetFees)) {
+              const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
+              sendFees[speed] = totalFee
+            }
+          } catch (e) {
+            console.error(e)
+          }
+        }
+
+        if (getMax) {
+          this.maxSendFees = sendFees
+        } else {
+          this.sendFees = sendFees
+        }
+      }
+    },
+    updateSendFees: _.debounce(async function (amount) {
+      await this._updateSendFees(amount)
+    }, 800),
+    async updateMaxSendFees () {
+      await this._updateSendFees()
+    },
     async send () {
       this.sendErrorMessage = ''
       this.loading = true
@@ -392,15 +434,11 @@ export default {
         const amountToSend = this.maxOptionActive ? this.available : this.amount
 
         const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toNumber()
+
         // validate for custom fees
-        let fee
-        if (this.customFees[this.assetChain]) {
-          fee = this.customFees[this.assetChain].fee
-        } else {
-          fee = this.feesAvailable
-            ? this.assetFees[this.selectedFee].fee
-            : undefined
-        }
+        const fee = this.feesAvailable
+          ? this.assetFees[this.selectedFee].fee
+          : undefined
 
         await this.sendTransaction({
           network: this.activeNetwork,
@@ -422,7 +460,7 @@ export default {
         this.sendErrorModalOpen = true
       }
     },
-    toogleMaxAmount () {
+    toggleMaxAmount () {
       this.maxOptionActive = !this.maxOptionActive
       if (this.maxOptionActive) {
         this.amount = BN.min(
@@ -444,22 +482,42 @@ export default {
     },
     cancelCustomFee () {
       this.currentStep = 'inputs'
+      this.selectedFee = 'average'
     },
-    applyCustomFee ({ fee, amount, fiat }) {
-      this.customFees[this.assetChain] = { fee, amount, fiat }
+    setCustomFee: _.debounce(async function ({ fee }) {
+      this.customFee = fee
+      if (this.maxOptionActive) {
+        this.updateMaxSendFees()
+      } else {
+        this.updateSendFees(this.amount)
+      }
+    }, 800),
+    applyCustomFee ({ fee }) {
+      const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee)
+      if (presetFee) {
+        const [speed] = presetFee
+        this.selectedFee = speed
+        this.customFee = null
+      } else {
+        this.updateMaxSendFees()
+        this.updateSendFees(this.amount)
+        this.customFee = fee
+        this.selectedFee = 'custom'
+      }
       this.currentStep = 'inputs'
     },
     onCustomFeeSelected () {
       this.currentStep = 'custom-fees'
     },
     resetCustomFee () {
-      delete this.customFees[this.assetChain]
+      this.customFee = null
       this.selectedFee = 'average'
-      this.updateFees({ asset: this.assetChain })
     }
   },
-  created () {
-    this.updateFees({ asset: this.assetChain })
+  async created () {
+    await this.updateFees({ asset: this.assetChain })
+    await this.updateSendFees(0)
+    await this.updateMaxSendFees()
   },
   watch: {
     selectedFee: {
@@ -478,6 +536,12 @@ export default {
       const available = dpUI(this.available)
       if (!amount.eq(available)) {
         this.maxOptionActive = false
+        this.updateSendFees(this.amount)
+      }
+    },
+    available: function () {
+      if (this.maxOptionActive) {
+        this.amount = dpUI(this.available)
       }
     }
   }

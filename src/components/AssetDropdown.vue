@@ -2,7 +2,7 @@
  <div class="dropdown asset-list-search"
       v-click-away="hide">
   <button class="btn dropdown-toggle"
-          @click="toogle">
+          @click="toggle">
      <div class="form" v-if="selected">
         <div class="input-group">
                 <img
@@ -119,7 +119,7 @@ export default {
       this.dropdownOpen = false
       this.filteredItems = this.assets.filter(a => a.name !== asset.name)
     },
-    toogle () {
+    toggle () {
       this.dropdownOpen = !this.dropdownOpen
     },
     hide () {
