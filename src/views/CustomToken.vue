@@ -57,6 +57,14 @@
                    BSC
                 </a>
               </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   @click="selectChain('polygon')"
+                   :class="{active: chain === 'polygon'}">
+                   POLYGON
+                </a>
+              </li>
             </ul>
           </div>
         </div>

@@ -42,6 +42,16 @@ const EXPLORERS = {
       address: 'https://bscscan.com/address/'
     }
   },
+  polygon: {
+    testnet: {
+      tx: 'https://explorer-mumbai.maticvigil.com/tx/0x',
+      address: 'https://explorer-mumbai.maticvigil.com/address/0x'
+    },
+    mainnet: {
+      tx: 'https://explorer-mainnet.maticvigil.com/tx/0x',
+      address: 'https://explorer-mainnet.maticvigil.com/address/0x'
+    }
+  },
   near: {
     testnet: {
       tx: 'https://explorer.testnet.near.org/transactions/',
@@ -61,13 +71,13 @@ export const isERC20 = asset => {
 // TODO: move to cryptoassets?
 export const isEthereumChain = asset => {
   const chain = cryptoassets[asset].chain
-  return ['ethereum', 'rsk', 'bsc'].includes(chain)
+  return ['ethereum', 'rsk', 'bsc', 'polygon'].includes(chain)
 }
 
 export const isEthereumNativeAsset = asset => {
   const chainId = cryptoassets[asset]?.chain
   if (chainId &&
-      ['ethereum', 'rsk', 'bsc'].includes(chainId) &&
+    ['ethereum', 'rsk', 'bsc', 'polygon'].includes(chainId) &&
       chains[chainId].nativeAsset === asset) {
     return true
   }

@@ -32,7 +32,6 @@ export const getLedgerAccounts = async (
     const addresses = await _client.wallet.getAddresses()
     if (addresses && addresses.length > 0) {
       const formatedAddress = formatAddress(addresses[0].address)
-      debugger
       results.push({
         account: addresses[0],
         index: index + startingIndex,
@@ -40,6 +39,5 @@ export const getLedgerAccounts = async (
       })
     }
   }
-  debugger
   return results
 }
