@@ -2,7 +2,7 @@
 import { inject } from './broker/utils'
 import Script from './broker/Script'
 import { providerManager, ethereumProvider, bitcoinProvider, nearProvider, paymentUriHandler } from './inject'
-import { AssetNetworks } from './store/factory/client'
+import { AssetNetworks } from './store/utils'
 
 ;(new Script()).start()
 
