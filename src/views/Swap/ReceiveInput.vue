@@ -32,7 +32,7 @@
             @input="$emit('update:receiveAmountFiat', $event.target.value)"
             placeholder="0.00"
             autocomplete="off"
-            :disabled="!hasMarket"
+            :disabled="disabled"
           />
           <input
             v-else
@@ -43,7 +43,7 @@
             placeholder="0.00"
             :style="getAssetColorStyle(toAsset)"
             autocomplete="off"
-            :disabled="!hasMarket"
+            :disabled="disabled"
           />
         </div>
         <AccountTooltip :account="account" :asset="toAsset">
@@ -120,7 +120,7 @@ export default {
     'sendTo',
     'receiveAmount',
     'receiveAmountFiat',
-    'hasMarket'
+    'disabled'
   ],
   created () {},
   methods: {

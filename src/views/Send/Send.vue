@@ -207,9 +207,8 @@ import {
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import {
-  TX_TYPES,
   FEE_TYPES,
-  getTxFee,
+  getSendFee,
   getFeeLabel
 } from '@/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -393,7 +392,7 @@ export default {
         const sendFees = {}
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const feePrice = fee.fee
-          sendFees[speed] = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
+          sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
         if (this.asset === 'BTC') {
           const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)

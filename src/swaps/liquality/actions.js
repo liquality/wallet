@@ -1,10 +1,128 @@
-import { withLock, withInterval, hasChainTimePassed } from './utils'
-import cryptoassets from '@/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
-import { updateOrder, timestamp } from '../../utils'
-import { createNotification } from '../../../broker/notification'
+import axios from 'axios'
+import { chains, unitToCurrency, currencyToUnit } from '@liquality/cryptoassets'
+import { sha256 } from '@liquality/crypto'
+import pkg from '../../../package.json'
+import { withLock, withInterval } from '../../store/actions/performNextAction/utils'
+import { hasChainTimePassed } from './utils'
+import { timestamp } from '../../store/utils'
+import { createNotification } from '../../broker/notification'
 import BN from 'bignumber.js'
 import { isERC20 } from '@/utils/asset'
+import cryptoassets from '@/utils/cryptoassets'
+
+export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
+
+export async function getSupportedPairs ({ commit, getters, state }, { network }) {
+  const endpoints = getters.agentEndpoints(network)
+  const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
+  const markets = (await axios({
+    url: agent + '/api/swap/marketinfo',
+    method: 'get',
+    headers: {
+      'x-requested-with': VERSION_STRING,
+      'x-liquality-user-agent': VERSION_STRING
+    }
+  })).data
+
+  const pairs = markets
+    .filter(market => cryptoassets[market.from] && cryptoassets[market.to])
+    .map(market => ({
+      from: market.from,
+      to: market.to,
+      min: BN(unitToCurrency(cryptoassets[market.from], market.min)).toString(),
+      max: BN(unitToCurrency(cryptoassets[market.from], market.max)).toString()
+    }))
+
+  return pairs
+}
+
+export async function getQuote ({ commit, getters, state }, { network, from, to, amount }) {
+  // TODO: If amount exceeds max, throw error type `AmountOverMax` that can be handled in swap app
+  // Also throw `AmountUnderMin`
+  // Can query get supported pairs (market data) for this
+  const endpoints = getters.agentEndpoints(network)
+  const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
+  const quote = (await axios({
+    url: agent + '/api/swap/order',
+    method: 'post',
+    data: { from, to, fromAmount: currencyToUnit(cryptoassets[from], amount).toNumber() },
+    headers: {
+      'x-requested-with': VERSION_STRING,
+      'x-liquality-user-agent': VERSION_STRING
+    }
+  })).data
+  // Should have from, to, fromamount, toamount
+  // TODO: slippage %
+  // Perhaps include fees here?
+  return {
+    ...quote,
+    protocol: 'liquality'
+  }
+}
+
+export async function newSwap ({ commit, getters, dispatch }, { network, walletId, quote }) {
+  if (await hasQuoteExpired({ getters }, { network, walletId, order: quote })) {
+    throw new Error('The quote is expired')
+  }
+
+  const [fromAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [quote.from], accountId: quote.fromAccountId })
+  const [toAddress] = await dispatch('getUnusedAddresses', { network, walletId, assets: [quote.to], accountId: quote.toAccountId })
+  quote.fromAddress = fromAddress.toString()
+  quote.toAddress = toAddress.toString()
+
+  const account = getters.accountItem(quote.fromAccountId)
+  const fromClient = getters.client(network, walletId, quote.from, account?.type)
+
+  const message = [
+    'Creating a swap with following terms:',
+    `Send: ${quote.fromAmount} (lowest denomination) ${quote.from}`,
+    `Receive: ${quote.toAmount} (lowest denomination) ${quote.to}`,
+    `My ${quote.from} Address: ${quote.fromAddress}`,
+    `My ${quote.to} Address: ${quote.toAddress}`,
+    `Counterparty ${quote.from} Address: ${quote.fromCounterPartyAddress}`,
+    `Counterparty ${quote.to} Address: ${quote.toCounterPartyAddress}`,
+    `Timestamp: ${quote.swapExpiration}`
+  ].join('\n')
+
+  const messageHex = Buffer.from(message, 'utf8').toString('hex')
+  const secret = await fromClient.swap.generateSecret(messageHex)
+  const secretHash = sha256(secret)
+
+  const fromFundTx = await fromClient.swap.initiateSwap(
+    {
+      value: BN(quote.fromAmount),
+      recipientAddress: quote.fromCounterPartyAddress,
+      refundAddress: quote.fromAddress,
+      secretHash: secretHash,
+      expiration: quote.swapExpiration
+    },
+    quote.fee
+  )
+
+  return {
+    secret,
+    secretHash,
+    fromFundHash: fromFundTx.hash,
+    fromFundTx
+  }
+}
+
+async function updateOrder (agent, order) {
+  return axios({
+    url: agent + '/api/swap/order/' + order.id,
+    method: 'post',
+    data: {
+      fromAddress: order.fromAddress,
+      toAddress: order.toAddress,
+      fromFundHash: order.fromFundHash,
+      secretHash: order.secretHash
+    },
+    headers: {
+      'x-requested-with': VERSION_STRING,
+      'x-liquality-user-agent': VERSION_STRING
+    }
+  }).then(res => res.data)
+}
 
 export async function hasQuoteExpired (store, { order }) {
   return timestamp() >= order.expiresAt
@@ -78,7 +196,9 @@ async function reportInitiation ({ getters }, { order, network, walletId }) {
     return { status: 'WAITING_FOR_REFUND' }
   }
 
-  await updateOrder(order)
+  const endpoints = getters.agentEndpoints(network)
+  const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
+  await updateOrder(agent, order)
 
   return {
     status: 'INITIATION_REPORTED'
@@ -305,7 +425,7 @@ async function sendTo ({ state, getters, dispatch }, { order, network, walletId 
   }
 }
 
-export const performNextSwapAction = async (store, { network, walletId, order }) => {
+export async function performNextSwapAction (store, { network, walletId, order }) {
   let updates
   switch (order.status) {
     case 'INITIATED':

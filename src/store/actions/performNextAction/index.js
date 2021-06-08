@@ -1,6 +1,6 @@
-import { performNextSwapAction } from './swap'
 import { performNextTransactionAction } from './send'
 import { createHistoryNotification } from '../../../broker/notification'
+import { protocols } from '../../../swaps'
 
 export const performNextAction = async (store, { network, walletId, id }) => {
   const { dispatch, commit, getters } = store
@@ -10,7 +10,7 @@ export const performNextAction = async (store, { network, walletId, id }) => {
 
   let updates
   if (item.type === 'SWAP') {
-    updates = await performNextSwapAction(store, { network, walletId, order: item })
+    updates = await protocols[item.protocol].performNextSwapAction(store, { network, walletId, order: item })
   }
   if (item.type === 'SEND') {
     updates = await performNextTransactionAction(store, { network, walletId, transaction: item })
