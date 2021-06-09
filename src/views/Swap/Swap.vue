@@ -763,7 +763,10 @@ export default {
       this.selectedFee[asset] = 'average'
     },
     async updateQuotes () {
-      this.quotes = await this.getQuotes({ network: this.activeNetwork, from: this.asset, to: this.toAsset, amount: BN(this.sendAmount) })
+      const quotes = await this.getQuotes({ network: this.activeNetwork, from: this.asset, to: this.toAsset, amount: BN(this.sendAmount) })
+      if (quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)) {
+        this.quotes = quotes
+      }
     },
     async swap () {
       this.swapErrorMessage = ''

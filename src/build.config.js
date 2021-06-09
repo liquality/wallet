@@ -27,6 +27,7 @@ export default {
       'PWETH'
     ]
   },
+  infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
   agentEndpoints: {
     testnet: [process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet/agent'],
     mainnet: ['https://liquality.io/swap/agent']

@@ -36,8 +36,12 @@ function getSendFee (asset, feePrice) {
 }
 
 function getSwapFee (protocol, type, asset, feePrice) {
-  const units = protocols[protocol].feeUnits[type]
-  return getTxFee(units, asset, feePrice)
+  const feeUnits = protocols[protocol].feeUnits
+  if (feeUnits && type in feeUnits) {
+    return getTxFee(feeUnits[type], asset, feePrice)
+  } else {
+    return BN(0) // There is no fee for this part of the swap
+  }
 }
 
 function getTxFee (units, _asset, _feePrice) {

@@ -54,6 +54,8 @@ export async function getQuote ({ commit, getters, state }, { network, from, to,
   // Should have from, to, fromamount, toamount
   // TODO: slippage %
   // Perhaps include fees here?
+
+  // TODO: hnumbers should come out in bignumber
   return {
     ...quote,
     protocol: 'liquality'

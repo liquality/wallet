@@ -1,7 +1,7 @@
 import liquality from './liquality'
-import oneinch from './1inch'
+import uniswap from './uniswap'
 
 export const protocols = {
   liquality,
-  oneinch
+  uniswap
 }
