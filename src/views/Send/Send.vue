@@ -49,7 +49,7 @@
             <template v-slot:header>
               <span class="details-title">Network Speed/Fee</span>
               <span class="text-muted">
-                ({{ selectedFeeLabel }} / {{ prettyFee }} {{ feeType }})
+                ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
               </span>
             </template>
             <template v-slot:content>
@@ -136,7 +136,7 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div>
-            ~{{ prettyFee }} {{ feeType }}
+            ~{{ prettyFee }} {{ assetChain }}
           </div>
           <div class="details-text">${{ totalFeeInFiat }}</div>
           </div>
@@ -146,11 +146,11 @@
             Amount + Fees
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
-            <div class="font-weight-bold" v-if="asset === feeType">
+            <div class="font-weight-bold" v-if="asset === assetChain">
               {{ dpUI(amountWithFee) }} {{ asset }}
             </div>
              <div class="font-weight-bold" v-else>
-              {{ dpUI(amount) }} {{ asset }} + {{ prettyFee }} {{ feeType }}
+              {{ dpUI(amount) }} {{ asset }} + {{ prettyFee }} {{ assetChain }}
             </div>
           <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
           </div>
@@ -207,7 +207,6 @@ import {
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import {
-  FEE_TYPES,
   getSendFee,
   getFeeLabel
 } from '@/utils/fees'
@@ -360,12 +359,6 @@ export default {
     },
     totalFeeInFiat () {
       return prettyFiatBalance(this.currentFee, this.fiatRates[this.asset])
-    },
-    feeType () {
-      return FEE_TYPES[this.assetChain]
-    },
-    includeFees () {
-      return this.feeType === FEE_TYPES.BTC
     },
     selectedFeeLabel () {
       return getFeeLabel(this.selectedFee)

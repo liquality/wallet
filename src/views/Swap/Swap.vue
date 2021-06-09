@@ -150,7 +150,7 @@
           <div class="detail-group">
             <label class="text-muted">Network Fee</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
-              <div>~{{ fromSwapFee }} {{ sendFeeType }}</div>
+              <div>~{{ fromSwapFee }} {{ assetChain }}</div>
               <div class="details-text">
                 ${{
                   prettyFiatBalance(
@@ -166,11 +166,11 @@
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold">
                 <span v-if="asset === assetChain">
-                  {{ sendAmountSameAsset }} {{ sendFeeType }}
+                  {{ sendAmountSameAsset }} {{ assetChain }}
                 </span>
                 <span v-else>
                   {{ sendAmount }} {{ asset }} + {{ fromSwapFee }}
-                  {{ sendFeeType }}
+                  {{ assetChain }}
                 </span>
               </div>
               <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
@@ -193,7 +193,7 @@
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
             >
-              <div>~{{ toSwapFee }} {{ receiveFeeType }}</div>
+              <div>~{{ toSwapFee }} {{ toAssetChain }}</div>
               <div class="details-text">
                 ${{
                   prettyFiatBalance(
@@ -209,11 +209,11 @@
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold">
                 <span v-if="toAsset === toAssetChain">
-                  {{ receiveAmountSameAsset }} {{ receiveFeeType }}
+                  {{ receiveAmountSameAsset }} {{ toAssetChain }}
                 </span>
                 <span v-else>
                   {{ receiveAmount }} {{ toAsset }} -
-                  {{ toSwapFee }} {{ receiveFeeType }}
+                  {{ toSwapFee }} {{ toAssetChain }}
                 </span>
               </div>
               <div class="font-weight-bold">${{ totalToReceiveInFiat }}</div>
@@ -323,7 +323,7 @@ import {
   getAssetIcon
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
-import { FEE_TYPES, getSwapFee, getSwapTxTypes, getFeeLabel } from '@/utils/fees'
+import { getSwapFee, getSwapTxTypes, getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
@@ -598,15 +598,6 @@ export default {
     },
     expiration: function () {
       return format(add(new Date(), { hours: 6 }), 'h:mm a')
-    },
-    sendFeeType () {
-      return FEE_TYPES[this.assetChain]
-    },
-    receiveFeeType () {
-      return FEE_TYPES[this.toAssetChain]
-    },
-    includeFees () {
-      return this.sendFeeType === FEE_TYPES.BTC
     },
     sendAmountSameAsset () {
       return BN(this.safeAmount).plus(this.fromSwapFee)

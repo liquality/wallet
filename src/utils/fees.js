@@ -19,14 +19,6 @@ const SEND_FEE_UNITS = {
   ERC20: 90000
 }
 
-const FEE_TYPES = {
-  ETH: 'ETH',
-  BTC: 'BTC',
-  RBTC: 'RBTC',
-  NEAR: 'NEAR',
-  POLYGON: 'POLYGON'
-}
-
 const FEE_OPTIONS = {
   SLOW: { name: 'Slow', label: 'Slow' },
   AVERAGE: { name: 'Average', label: 'Avg' },
@@ -63,4 +55,4 @@ function getFeeLabel (fee) {
   return FEE_OPTIONS?.[name]?.label || ''
 }
 
-export { FEE_TYPES, FEE_OPTIONS, getSwapTxTypes, getSendFee, getSwapFee, getFeeLabel }
+export { FEE_OPTIONS, getSwapTxTypes, getSendFee, getSwapFee, getFeeLabel }
