@@ -50,7 +50,7 @@
             @to-asset-click="toAssetClick"
           />
         </div>
-        <div class="mt-3 form-group">
+        <div class="mt-30 form-group swap-rate">
           <label>Rate</label>
           <p>
             <span class="swap-rate_base">1 {{ asset }} =</span>
@@ -58,10 +58,12 @@
               &nbsp;{{ bestRate }}
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
+            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuote.protocol }}</span>
+            <span class="swap-rate_loading ml-1" v-else-if="updatingQuotes"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
           </p>
         </div>
 
-        <div class="form-group swap_fees" v-if="availableFees.size">
+        <div class="form-group swap_fees mt-30" v-if="availableFees.size">
           <DetailsContainer>
             <template v-slot:header>
               <span class="details-title">Network Speed/Fee</span>
@@ -226,6 +228,7 @@
                 1 {{ asset }}&nbsp;=&nbsp;{{ bestRate }} &nbsp;{{
                   toAsset
                 }}
+                <span class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuote.protocol }}</span>
               </div>
               <div v-else>1 {{ asset }}&nbsp;=&nbsp;N/A</div>
             </div>
@@ -745,10 +748,12 @@ export default {
       this.selectedFee[asset] = 'average'
     },
     async updateQuotes () {
+      this.updatingQuotes = true
       const quotes = await this.getQuotes({ network: this.activeNetwork, from: this.asset, to: this.toAsset, amount: BN(this.sendAmount) })
       if (quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)) {
         this.quotes = quotes
       }
+      this.updatingQuotes = false
     },
     async swap () {
       this.swapErrorMessage = ''
@@ -935,6 +940,18 @@ export default {
       .fee-selector {
         margin-left: 6px;
       }
+    }
+  }
+}
+
+.swap-rate {
+  p {
+    margin-bottom: 0;
+  }
+
+  &_loading {
+    svg {
+      height: 16px
     }
   }
 }
