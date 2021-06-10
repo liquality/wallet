@@ -195,10 +195,6 @@
               <td class="text-muted text-right small-12">Your {{item.to}} claim<br>transaction</td>
               <td>{{item.toClaimHash}}</td>
             </tr>
-            <tr v-if="item.sendTo">
-              <td class="text-muted text-right small-12">Your {{item.to}} send to<br>address</td>
-              <td>{{item.sendTo}}</td>
-            </tr>
             <tr v-if="item.sendTx">
               <td class="text-muted text-right small-12">Your {{item.to}} send<br>transaction</td>
               <td>{{item.sendTx}}</td>

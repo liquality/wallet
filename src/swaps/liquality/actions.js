@@ -343,17 +343,11 @@ async function waitForClaimConfirmations ({ getters, dispatch }, { order, networ
     const tx = await toClient.chain.getTransactionByHash(order.toClaimHash)
 
     if (tx && tx.confirmations > 0) {
-      if (order.sendTo) {
-        return {
-          status: 'READY_TO_SEND'
-        }
-      } else {
-        dispatch('updateBalances', { network, walletId, assets: [order.to, order.from] })
+      dispatch('updateBalances', { network, walletId, assets: [order.to, order.from] })
 
-        return {
-          endTime: Date.now(),
-          status: 'SUCCESS'
-        }
+      return {
+        endTime: Date.now(),
+        status: 'SUCCESS'
       }
     }
   } catch (e) {
@@ -413,20 +407,6 @@ async function refundSwap ({ getters }, { order, network, walletId }) {
   }
 }
 
-async function sendTo ({ state, getters, dispatch }, { order, network, walletId }) {
-  const account = getters.accountItem(order.toAccountId)
-  const toClient = getters.client(network, walletId, order.to, account?.type)
-  const sendToHash = await toClient.chain.sendTransaction({ to: order.sendTo, value: BN(order.toAmount) })
-
-  dispatch('updateBalances', { network, walletId, assets: [order.to, order.from] })
-
-  return {
-    sendToHash,
-    endTime: Date.now(),
-    status: 'SUCCESS'
-  }
-}
-
 export async function performNextSwapAction (store, { network, walletId, order }) {
   let updates
   switch (order.status) {
@@ -471,11 +451,6 @@ export async function performNextSwapAction (store, { network, walletId, order }
 
     case 'WAITING_FOR_REFUND_CONFIRMATIONS':
       updates = await withInterval(async () => waitForRefundConfirmations(store, { order, network, walletId }))
-      break
-
-    case 'READY_TO_SEND':
-      updates = await withLock(store, { item: order, network, walletId, asset: order.to },
-        async () => sendTo(store, { order, network, walletId }))
       break
   }
 

@@ -118,7 +118,7 @@ export default {
         case 'SEND':
           return 2
         case 'SWAP':
-          return item.sendTo ? 5 : 4
+          return 4
         default:
           return 0
       }

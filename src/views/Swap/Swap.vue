@@ -46,9 +46,7 @@
             :to-asset="toAsset"
             :receive-amount="dpUI(receiveAmount)"
             :receive-amount-fiat="receiveAmountFiat"
-            :send-to="sendTo"
             disabled
-            @update:sendTo="(to) => (sendTo = to)"
             @to-asset-click="toAssetClick"
           />
         </div>
@@ -219,18 +217,6 @@
               <div class="font-weight-bold">${{ totalToReceiveInFiat }}</div>
             </div>
           </div>
-          <div class="detail-group" v-if="sendTo">
-            <label class="text-muted">Receive At</label>
-            {{ shortenAddress(sendTo) }}
-            <CopyIcon
-              class="copy-icon"
-              @click="copy(sendTo)"
-              v-tooltip.bottom="{
-                content: sendToCopied ? 'Copied!' : 'Copy',
-                hideOnTargetClick: false,
-              }"
-            />
-          </div>
           <div class="mt-20">
             <label>Rate</label>
             <div
@@ -327,7 +313,6 @@ import { getSwapFee, getSwapTxTypes, getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
-import CopyIcon from '@/assets/icons/copy.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import ReceiveInput from './ReceiveInput'
@@ -347,7 +332,6 @@ export default {
     SwapIcon,
     SpinnerIcon,
     DetailsContainer,
-    CopyIcon,
     SendInput,
     ReceiveInput,
     Accounts,
@@ -363,15 +347,13 @@ export default {
       asset: null,
       toAsset: null,
       quotes: [],
-      enterSendToAddress: false,
-      sendTo: null,
+      updatingQuotes: false,
       swapFees: {},
       maxSwapFees: {},
       selectedFee: {},
       currentStep: 'inputs',
       assetSelection: 'from',
       loading: false,
-      sendToCopied: false,
       fromAccountId: null,
       toAccountId: null,
       swapErrorModalOpen: false,
@@ -812,13 +794,6 @@ export default {
     },
     getSelectedFeeLabel (fee) {
       return fee ? getFeeLabel(fee) : ''
-    },
-    async copy (text) {
-      await navigator.clipboard.writeText(text)
-      this.sendToCopied = true
-      setTimeout(() => {
-        this.sendToCopied = false
-      }, 3000)
     },
     back () {
       this.currentStep = 'inputs'
