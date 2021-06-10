@@ -1,35 +1,8 @@
 /* global browser */
 
-import { prettyBalance } from '../utils/coinFormatter'
-import { getAssetIcon } from '../utils/asset'
-
-const SWAP_STATUS_MAP = {
-  INITIATION_REPORTED () {
-    return {
-      message: 'Swap initiated'
-    }
-  },
-  CONFIRM_COUNTER_PARTY_INITIATION (item) {
-    return {
-      message: `Counterparty sent ${prettyBalance(item.toAmount, item.to)} ${item.to} to escrow`
-    }
-  },
-  READY_TO_CLAIM () {
-    return {
-      message: 'Claiming funds'
-    }
-  },
-  SUCCESS (item) {
-    return {
-      message: `Swap completed, ${prettyBalance(item.toAmount, item.to)} ${item.to} ready to use`
-    }
-  },
-  REFUNDED (item) {
-    return {
-      message: `Swap refunded, ${prettyBalance(item.fromAmount, item.from)} ${item.from} returned`
-    }
-  }
-}
+import { prettyBalance } from '@/utils/coinFormatter'
+import { getAssetIcon } from '@/utils/asset'
+import { protocols } from '@/swaps'
 
 const SEND_STATUS_MAP = {
   WAITING_FOR_CONFIRMATIONS (item) {
@@ -53,8 +26,9 @@ export const createNotification = config => browser.notifications.create({
 })
 
 const createSwapNotification = item => {
-  if (!(item.status in SWAP_STATUS_MAP)) return
-  const notification = SWAP_STATUS_MAP[item.status](item)
+  const notificationFunction = protocols[item.protocol].statuses[item.status].notification
+  if (!notificationFunction) return
+  const notification = notificationFunction(item)
 
   return createNotification({
     title: `${item.from} -> ${item.to}`,

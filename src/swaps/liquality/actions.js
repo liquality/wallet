@@ -12,6 +12,18 @@ import cryptoassets from '@/utils/cryptoassets'
 
 export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
 
+async function _getQuote ({ agent, from, to, amount }) {
+  return (await axios({
+    url: agent + '/api/swap/order',
+    method: 'post',
+    data: { from, to, fromAmount: amount },
+    headers: {
+      'x-requested-with': VERSION_STRING,
+      'x-liquality-user-agent': VERSION_STRING
+    }
+  })).data
+}
+
 export async function getSupportedPairs ({ commit, getters, state }, { network }) {
   const endpoints = getters.agentEndpoints(network)
   const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
@@ -29,8 +41,9 @@ export async function getSupportedPairs ({ commit, getters, state }, { network }
     .map(market => ({
       from: market.from,
       to: market.to,
-      min: BN(unitToCurrency(cryptoassets[market.from], market.min)).toString(),
-      max: BN(unitToCurrency(cryptoassets[market.from], market.max)).toString()
+      min: BN(unitToCurrency(cryptoassets[market.from], market.min)).toFixed(),
+      max: BN(unitToCurrency(cryptoassets[market.from], market.max)).toFixed(),
+      rate: BN(market.rate).toFixed()
     }))
 
   return pairs
@@ -43,29 +56,38 @@ export async function getQuote ({ commit, getters, state }, { network, from, to,
 
   // Consider only returning a quote based on the marketData.rate. Does retrieving quotes from agent create too much overhead for it and is slow for the user?
 
-  const endpoints = getters.agentEndpoints(network)
-  const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
-  const quote = (await axios({
-    url: agent + '/api/swap/order',
-    method: 'post',
-    data: { from, to, fromAmount: currencyToUnit(cryptoassets[from], amount).toNumber() },
-    headers: {
-      'x-requested-with': VERSION_STRING,
-      'x-liquality-user-agent': VERSION_STRING
-    }
-  })).data
+  const market = state.marketData[network].find(market => market.to === to && market.from === from)
+
+  if (!market) return null
+
+  const fromAmount = currencyToUnit(cryptoassets[from], amount)
+  const toAmount = currencyToUnit(cryptoassets[to], BN(amount).times(BN(market.rate)))
+
+  // Retrieving quote involving btc adds too much overhead
+  // const quote = await _getQuote({ agent, from, to, amount: currencyToUnit(cryptoassets[from], amount).toNumber() })
+
   // Should have from, to, fromamount, toamount
   // TODO: slippage %
   // Perhaps include fees here?
 
-  // TODO: hnumbers should come out in bignumber
+  // TODO: numbers should come out in bignumber
   return {
-    ...quote,
-    protocol: 'liquality'
+    from, to, fromAmount: fromAmount.toNumber(), toAmount: toAmount.toNumber()
   }
 }
 
-export async function newSwap ({ commit, getters, dispatch }, { network, walletId, quote }) {
+export async function newSwap ({ commit, getters, dispatch }, { network, walletId, quote: _quote }) {
+  const endpoints = getters.agentEndpoints(network)
+  const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
+
+  // TODO: Check for a slippage between this rate and calculated quote?
+  const lockedQuote = await _getQuote({ agent, from: _quote.from, to: _quote.to, amount: _quote.fromAmount })
+
+  const quote = {
+    ..._quote,
+    ...lockedQuote
+  }
+
   if (await hasQuoteExpired({ getters }, { network, walletId, order: quote })) {
     throw new Error('The quote is expired')
   }
@@ -105,6 +127,8 @@ export async function newSwap ({ commit, getters, dispatch }, { network, walletI
   )
 
   return {
+    ...quote,
+    status: 'INITIATED',
     secret,
     secretHash,
     fromFundHash: fromFundTx.hash,

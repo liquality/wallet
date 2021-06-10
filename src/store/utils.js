@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
-import pkg from '../../package.json'
 import { assets as cryptoassets } from '@liquality/cryptoassets'
 import { BitcoinNetworks } from '@liquality/bitcoin-networks'
 import { EthereumNetworks } from '@liquality/ethereum-networks'
@@ -42,19 +41,6 @@ export const unlockAsset = key => {
   CHAIN_LOCK[key] = false
 
   emitter.$emit(`unlock:${key}`)
-}
-
-export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
-
-export const getMarketData = agent => {
-  return axios({
-    url: agent + '/api/swap/marketinfo',
-    method: 'get',
-    headers: {
-      'x-requested-with': VERSION_STRING,
-      'x-liquality-user-agent': VERSION_STRING
-    }
-  }).then(res => res.data)
 }
 
 const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
