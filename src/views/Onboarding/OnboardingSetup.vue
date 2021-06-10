@@ -66,7 +66,7 @@ export default {
       await this.createWallet({ key: this.password, mnemonic: this.mnemonic }) // mnemonic prop can be null to generate new seed
       setTimeout(() => {
         this.unlockWallet({ key: this.password })
-      }, 3500)
+      }, 1650)
     },
     pushToConfirm () {
       this.currentStep = 'confirm'
