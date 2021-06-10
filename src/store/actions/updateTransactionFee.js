@@ -1,5 +1,6 @@
 import { isObject } from 'lodash-es'
-import { updateOrder, unlockAsset } from '../utils'
+import { unlockAsset } from '../utils'
+import { updateOrder } from '../../swaps/liquality'
 
 export const updateTransactionFee = async ({ dispatch, commit, getters }, { network, walletId, asset, id, hash, newFee }) => {
   const item = getters.historyItemById(network, walletId, id)
@@ -43,7 +44,10 @@ export const updateTransactionFee = async ({ dispatch, commit, getters }, { netw
 
   const isFundingUpdate = hashKey === 'fromFundHash'
   if (isFundingUpdate) {
-    await updateOrder(item)
+    const endpoints = getters.agentEndpoints(network)
+    const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
+    // TODO: this should be the function of any swap? Should be able to bump any tx
+    await updateOrder(agent, item)
   }
 
   return newTx

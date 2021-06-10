@@ -40,6 +40,9 @@ export async function getQuote ({ commit, getters, state }, { network, from, to,
   // TODO: If amount exceeds max, throw error type `AmountOverMax` that can be handled in swap app
   // Also throw `AmountUnderMin`
   // Can query get supported pairs (market data) for this
+
+  // Consider only returning a quote based on the marketData.rate. Does retrieving quotes from agent create too much overhead for it and is slow for the user?
+
   const endpoints = getters.agentEndpoints(network)
   const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
   const quote = (await axios({
@@ -109,7 +112,7 @@ export async function newSwap ({ commit, getters, dispatch }, { network, walletI
   }
 }
 
-async function updateOrder (agent, order) {
+export async function updateOrder (agent, order) {
   return axios({
     url: agent + '/api/swap/order/' + order.id,
     method: 'post',

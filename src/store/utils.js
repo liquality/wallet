@@ -46,35 +46,6 @@ export const unlockAsset = key => {
 
 export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
 
-export const newOrder = (agent, data) => {
-  return axios({
-    url: agent + '/api/swap/order',
-    method: 'post',
-    data,
-    headers: {
-      'x-requested-with': VERSION_STRING,
-      'x-liquality-user-agent': VERSION_STRING
-    }
-  }).then(res => res.data)
-}
-
-export const updateOrder = (order) => {
-  return axios({
-    url: order.agent + '/api/swap/order/' + order.id,
-    method: 'post',
-    data: {
-      fromAddress: order.fromAddress,
-      toAddress: order.toAddress,
-      fromFundHash: order.fromFundHash,
-      secretHash: order.secretHash
-    },
-    headers: {
-      'x-requested-with': VERSION_STRING,
-      'x-liquality-user-agent': VERSION_STRING
-    }
-  }).then(res => res.data)
-}
-
 export const getMarketData = agent => {
   return axios({
     url: agent + '/api/swap/marketinfo',
