@@ -8,7 +8,7 @@ const TX_TYPES = {
 
 const feeUnits = {
   SWAP: {
-    ETH: 100000 + 400000, // (potential)Approval(erc20) + Swap
+    ETH: 100000 + 400000, // (potential)ERC20 Approval + Swap
     BNB: 100000 + 400000,
     POLYGON: 100000 + 400000,
     ERC20: 100000 + 400000
@@ -16,7 +16,6 @@ const feeUnits = {
 }
 
 // TOOD: constants for status
-
 const statuses = {
   WAITING_FOR_APPROVE_CONFIRMATIONS: {
     step: 0,
