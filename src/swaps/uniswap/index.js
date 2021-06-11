@@ -8,28 +8,43 @@ const TX_TYPES = {
 
 const feeUnits = {
   SWAP: {
-    ETH: 400000,
-    BNB: 400000,
-    POLYGON: 400000,
-    ERC20: 400000
+    ETH: 100000 + 400000, // (potential)Approval(erc20) + Swap
+    BNB: 100000 + 400000,
+    POLYGON: 100000 + 400000,
+    ERC20: 100000 + 400000
   }
 }
 
 // TOOD: constants for status
 
 const statuses = {
-  WAITING_FOR_CONFIRMATIONS: {
+  WAITING_FOR_APPROVE_CONFIRMATIONS: {
     step: 0,
-    label: 'Pending',
+    label: 'Approving {from}',
+    filterStatus: 'PENDING',
+    notification (swap) {
+      return {
+        message: `Approving ${swap.from}`
+      }
+    }
+  },
+  APPROVE_CONFIRMED: {
+    step: 1,
+    label: 'Swapping {from}',
+    filterStatus: 'PENDING'
+  },
+  WAITING_FOR_SWAP_CONFIRMATIONS: {
+    step: 1,
+    label: 'Swapping {from}',
     filterStatus: 'PENDING',
     notification () {
       return {
-        message: 'Swap transaction sent'
+        message: 'Engaging the unicorn'
       }
     }
   },
   SUCCESS: {
-    step: 1,
+    step: 2,
     label: 'Completed',
     filterStatus: 'COMPLETED',
     notification (swap) {
@@ -39,7 +54,7 @@ const statuses = {
     }
   },
   FAILED: {
-    step: 1,
+    step: 2,
     label: 'Swap Failed',
     filterStatus: 'REFUNDED',
     notification () {
@@ -57,5 +72,5 @@ export default {
   toTxType: null,
   SwapDetails,
   statuses,
-  totalSteps: 2
+  totalSteps: 3
 }

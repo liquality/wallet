@@ -57,6 +57,7 @@ export async function getPrices (baseCurrencies, toCurrency) {
 
 export const Networks = ['mainnet', 'testnet']
 
+// TODO: This should be per chain, not per native asset
 export const AssetNetworks = {
   BTC: {
     testnet: BitcoinNetworks.bitcoin_testnet,

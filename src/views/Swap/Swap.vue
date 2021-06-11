@@ -59,7 +59,7 @@
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
             <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuote.protocol }}</span>
-            <span class="swap-rate_loading ml-1" v-else-if="updatingQuotes"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
+            <span v-if="updatingQuotes" class="swap-rate_loading ml-1"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
           </p>
         </div>
 
@@ -747,14 +747,14 @@ export default {
       this.currentStep = 'inputs'
       this.selectedFee[asset] = 'average'
     },
-    async updateQuotes () {
+    updateQuotes: _.debounce(async function () {
       this.updatingQuotes = true
       const quotes = await this.getQuotes({ network: this.activeNetwork, from: this.asset, to: this.toAsset, amount: BN(this.sendAmount) })
       if (quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)) {
         this.quotes = quotes
       }
       this.updatingQuotes = false
-    },
+    }, 1000),
     async swap () {
       this.swapErrorMessage = ''
       this.swapErrorModalOpen = false
