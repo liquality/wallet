@@ -122,11 +122,11 @@ const migrations = [
 
       const migrateHistory = (state, network, walletId) => {
         return state.history[network]?.[walletId]
-          // Remove defunct order statuses
+          // Remove defunct swap statuses
           ?.filter(item => !(['QUOTE', 'SECRET_READY'].includes(item.status)))
           // INITIATION statuses should be moved to FUNDED to prevent double funding
           .map(item => ['INITIATION_REPORTED', 'INITIATION_CONFIRMED'].includes(item.status) ? ({ ...item, status: 'FUNDED' }) : item)
-          // Account ids should be assigned to orders
+          // Account ids should be assigned to swaps
           .map(item => {
             if (item.type !== 'SWAP') return item
 

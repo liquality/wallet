@@ -4,11 +4,6 @@ import { chains, unitToCurrency } from '@liquality/cryptoassets'
 import { isERC20, isEthereumChain } from './asset'
 import { getSwapProtocolByType } from '../utils/swaps'
 
-/**
- * TODO: Move to Chain Abstraction Layer in the form
- * client.chain.getFeeUnits('swap.initiationSwap')
- * */
-
 const SEND_FEE_UNITS = {
   BTC: 290,
   ETH: 21000,

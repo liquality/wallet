@@ -175,12 +175,12 @@ export async function newSwap ({ commit, getters, dispatch }, { network, walletI
   }
 }
 
-async function waitForApproveConfirmations ({ getters, dispatch }, { order, network, walletId }) {
-  const account = getters.accountItem(order.accountId)
-  const client = getters.client(network, walletId, order.from, account?.type)
+async function waitForApproveConfirmations ({ getters, dispatch }, { swap, network, walletId }) {
+  const account = getters.accountItem(swap.accountId)
+  const client = getters.client(network, walletId, swap.from, account?.type)
 
   try {
-    const tx = await client.chain.getTransactionByHash(order.approveTxHash)
+    const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
     if (tx && tx.confirmations > 0) {
       return {
         endTime: Date.now(),
@@ -193,14 +193,14 @@ async function waitForApproveConfirmations ({ getters, dispatch }, { order, netw
   }
 }
 
-async function waitForSwapConfirmations ({ getters, dispatch }, { order, network, walletId }) {
-  const account = getters.accountItem(order.accountId)
-  const client = getters.client(network, walletId, order.from, account?.type)
+async function waitForSwapConfirmations ({ getters, dispatch }, { swap, network, walletId }) {
+  const account = getters.accountItem(swap.accountId)
+  const client = getters.client(network, walletId, swap.from, account?.type)
 
   try {
-    const tx = await client.chain.getTransactionByHash(order.swapTxHash)
+    const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
     if (tx && tx.confirmations > 0) {
-      dispatch('updateBalances', { network, walletId, assets: [order.from] })
+      dispatch('updateBalances', { network, walletId, assets: [swap.from] })
       return {
         endTime: Date.now(),
         status: 'SUCCESS'
@@ -212,19 +212,19 @@ async function waitForSwapConfirmations ({ getters, dispatch }, { order, network
   }
 }
 
-export async function performNextSwapAction (store, { network, walletId, order }) {
+export async function performNextSwapAction (store, { network, walletId, swap }) {
   let updates
 
-  switch (order.status) {
+  switch (swap.status) {
     case 'WAITING_FOR_APPROVE_CONFIRMATIONS':
-      updates = await withInterval(async () => waitForApproveConfirmations(store, { order, network, walletId }))
+      updates = await withInterval(async () => waitForApproveConfirmations(store, { swap, network, walletId }))
       break
     case 'APPROVE_CONFIRMED':
-      updates = await withLock(store, { item: order, network, walletId, asset: order.from },
-        async () => sendSwap(store, { quote: order, network, walletId }))
+      updates = await withLock(store, { item: swap, network, walletId, asset: swap.from },
+        async () => sendSwap(store, { quote: swap, network, walletId }))
       break
     case 'WAITING_FOR_SWAP_CONFIRMATIONS':
-      updates = await withInterval(async () => waitForSwapConfirmations(store, { order, network, walletId }))
+      updates = await withInterval(async () => waitForSwapConfirmations(store, { swap, network, walletId }))
       break
   }
 

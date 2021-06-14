@@ -10,7 +10,7 @@ export const performNextAction = async (store, { network, walletId, id }) => {
 
   let updates
   if (item.type === 'SWAP') {
-    updates = await getSwapProtocol(network, item.protocol).performNextSwapAction(store, { network, walletId, order: item })
+    updates = await getSwapProtocol(network, item.protocol).performNextSwapAction(store, { network, walletId, swap: item })
   }
   if (item.type === 'SEND') {
     updates = await performNextTransactionAction(store, { network, walletId, transaction: item })

@@ -260,7 +260,7 @@ export default {
       if (this.retryingSwap) return
       this.retryingSwap = true
       try {
-        await this.retrySwap({ order: this.item })
+        await this.retrySwap({ swap: this.item })
         if (!this.item.error) {
           this.showLedgerModal = false
         }

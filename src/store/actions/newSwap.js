@@ -11,29 +11,27 @@ export const newSwap = async (
     fromAccountId,
     toAccountId
   }) => {
-  const order = { ...quote }
+  const swap = { ...quote }
 
-  // TODO: rename order to swap
-  order.type = 'SWAP'
-  order.network = network
-  order.startTime = Date.now()
-  order.walletId = walletId
-  order.fee = fee
-  order.claimFee = claimFee
-  order.fromAccountId = fromAccountId
-  order.toAccountId = toAccountId
+  swap.type = 'SWAP'
+  swap.network = network
+  swap.startTime = Date.now()
+  swap.walletId = walletId
+  swap.fee = fee
+  swap.claimFee = claimFee
+  swap.fromAccountId = fromAccountId
+  swap.toAccountId = toAccountId
 
-  const initiationParams = await getSwapProtocol(network, order.protocol).newSwap(store, { network, walletId, quote: order })
+  const initiationParams = await getSwapProtocol(network, swap.protocol).newSwap(store, { network, walletId, quote: swap })
 
-  const initiatedOrder = {
-    ...order,
+  const createdSwap = {
+    ...swap,
     ...initiationParams // TODO: Maybe move protocol specific params to an inner property?
   }
 
-  // TODO: rename "ORDER" to "SWAP"
-  store.commit('NEW_ORDER', { network, walletId, order: initiatedOrder })
+  store.commit('NEW_SWAP', { network, walletId, swap: createdSwap })
 
-  store.dispatch('performNextAction', { network, walletId, fromAccountId, toAccountId, id: initiatedOrder.id })
+  store.dispatch('performNextAction', { network, walletId, fromAccountId, toAccountId, id: createdSwap.id })
 
-  return order
+  return createdSwap
 }
