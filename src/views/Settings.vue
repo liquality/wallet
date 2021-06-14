@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="view-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
       <span class="wallet_header"><strong>Settings</strong></span>
     </NavBar>
@@ -96,7 +96,6 @@ export default {
       else this.disableEthereumInjection()
     },
     async toogleUseLedgerLive (use) {
-      console.log('this.useLedgerLive', this.useLedgerLive, use)
       await this.setUseLedgerLive({ use })
     },
     updateInjectEthereumAsset (asset) {
@@ -119,7 +118,8 @@ export default {
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 600px;
+  height: 100%;
+  padding-bottom: 40px;
 
   .setting-item {
     width: 100%;
@@ -141,8 +141,8 @@ export default {
 
   .settings-footer {
     width: 100%;
-    position: fixed;
     bottom: 0;
+    margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
   }
