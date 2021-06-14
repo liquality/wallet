@@ -64,10 +64,6 @@ export async function getQuote ({ commit, getters, state }, { network, protocol,
   const fromAmount = currencyToUnit(cryptoassets[from], amount)
   const toAmount = currencyToUnit(cryptoassets[to], BN(amount).times(BN(market.rate)))
 
-  // Should have from, to, fromamount, toamount
-  // TODO: slippage %
-  // Perhaps include fees here?
-
   // TODO: numbers should come out in bignumber
   return {
     from, to, fromAmount: fromAmount.toNumber(), toAmount: toAmount.toNumber()

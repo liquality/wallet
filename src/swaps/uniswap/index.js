@@ -15,7 +15,6 @@ const feeUnits = {
   }
 }
 
-// TOOD: constants for status
 const statuses = {
   WAITING_FOR_APPROVE_CONFIRMATIONS: {
     step: 0,

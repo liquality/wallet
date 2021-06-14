@@ -2,7 +2,6 @@ import _ from 'lodash'
 import { getSwapProtocol } from '../../utils/swaps'
 import buildConfig from '../../build.config'
 
-// TODO: better name?
 export const updateMarketData = async ({ state, commit, getters }, { network }) => {
   const supportedPairResponses = await Promise.all(Object.keys(buildConfig.swapProtocols[network]).map(protocol => {
     return getSwapProtocol(network, protocol)
