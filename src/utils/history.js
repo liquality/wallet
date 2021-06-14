@@ -31,7 +31,8 @@ export const SWAP_STATUS_LABEL_MAP = {
   REFUNDED: 'Refunded',
   SUCCESS: 'Completed',
   READY_TO_SEND: 'Sending',
-  QUOTE_EXPIRED: 'Quote Expired {from}'
+  QUOTE_EXPIRED: 'Quote Expired {from}',
+  USER_FUNDED: 'User Funded'
 }
 
 export const SEND_STATUS_STEP_MAP = {
@@ -46,10 +47,10 @@ export const SEND_STATUS_LABEL_MAP = {
 
 export function getStatusLabel (item) {
   if (item.type === 'SEND') {
-    return SEND_STATUS_LABEL_MAP[item.status]
+    return SEND_STATUS_LABEL_MAP[item.status] || ''
   }
   if (item.type === 'SWAP') {
-    return SWAP_STATUS_LABEL_MAP[item.status].replace('{from}', item.from).replace('{to}', item.to)
+    return SWAP_STATUS_LABEL_MAP[item.status]?.replace('{from}', item.from)?.replace('{to}', item.to) || ''
   }
 }
 
