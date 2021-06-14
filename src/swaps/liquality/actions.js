@@ -9,6 +9,7 @@ import { createNotification } from '../../broker/notification'
 import BN from 'bignumber.js'
 import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
+import { getSwapProtocolConfig } from '../../utils/swaps'
 
 export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
 
@@ -24,9 +25,8 @@ async function _getQuote ({ agent, from, to, amount }) {
   })).data
 }
 
-export async function getSupportedPairs ({ commit, getters, state }, { network }) {
-  const endpoints = getters.agentEndpoints(network)
-  const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
+export async function getSupportedPairs ({ commit, getters, state }, { network, protocol }) {
+  const agent = getSwapProtocolConfig(network, protocol).agent
   const markets = (await axios({
     url: agent + '/api/swap/marketinfo',
     method: 'get',
@@ -43,20 +43,25 @@ export async function getSupportedPairs ({ commit, getters, state }, { network }
       to: market.to,
       min: BN(unitToCurrency(cryptoassets[market.from], market.min)).toFixed(),
       max: BN(unitToCurrency(cryptoassets[market.from], market.max)).toFixed(),
-      rate: BN(market.rate).toFixed()
+      rate: BN(market.rate).toFixed(),
+      protocol
     }))
 
   return pairs
 }
 
-export async function getQuote ({ commit, getters, state }, { network, from, to, amount }) {
+export async function getQuote ({ commit, getters, state }, { network, protocol, from, to, amount }) {
   // TODO: If amount exceeds max, throw error type `AmountOverMax` that can be handled in swap app
   // Also throw `AmountUnderMin`
   // Can query get supported pairs (market data) for this
 
   // Consider only returning a quote based on the marketData.rate. Does retrieving quotes from agent create too much overhead for it and is slow for the user?
 
-  const market = state.marketData[network].find(market => market.to === to && market.from === from)
+  // TODO: should be restricted to liquality protocol
+  const market = state.marketData[network].find(market =>
+    market.to === to &&
+    market.from === from &&
+    market.protocol === protocol)
 
   if (!market) return null
 
@@ -77,8 +82,7 @@ export async function getQuote ({ commit, getters, state }, { network, from, to,
 }
 
 export async function newSwap ({ commit, getters, dispatch }, { network, walletId, quote: _quote }) {
-  const endpoints = getters.agentEndpoints(network)
-  const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
+  const agent = getSwapProtocolConfig(network, _quote.protocol).agent
 
   // TODO: Check for a slippage between this rate and calculated quote?
   const lockedQuote = await _getQuote({ agent, from: _quote.from, to: _quote.to, amount: _quote.fromAmount })
@@ -225,8 +229,7 @@ async function reportInitiation ({ getters }, { order, network, walletId }) {
     return { status: 'WAITING_FOR_REFUND' }
   }
 
-  const endpoints = getters.agentEndpoints(network)
-  const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
+  const agent = getSwapProtocolConfig(network, order.protocol).agent
   await updateOrder(agent, order)
 
   return {

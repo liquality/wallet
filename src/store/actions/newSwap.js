@@ -1,4 +1,4 @@
-import { protocols } from '../../swaps'
+import { getSwapProtocol } from '../../utils/swaps'
 
 export const newSwap = async (
   store,
@@ -23,7 +23,7 @@ export const newSwap = async (
   order.fromAccountId = fromAccountId
   order.toAccountId = toAccountId
 
-  const initiationParams = await protocols[order.protocol].newSwap(store, { network, walletId, quote: order })
+  const initiationParams = await getSwapProtocol(network, order.protocol).newSwap(store, { network, walletId, quote: order })
 
   const initiatedOrder = {
     ...order,

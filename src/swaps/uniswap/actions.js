@@ -15,8 +15,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import { isEthereumChain, isERC20 } from '../../utils/asset'
 import { AssetNetworks } from '../../store/utils'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
-
-const UNISWAP_ROUTER_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
+import { getSwapProtocolConfig } from '../../utils/swaps'
 
 export async function getSupportedPairs () {
   return []
@@ -88,10 +87,11 @@ export async function approveTokens ({ commit, getters, dispatch }, { network, w
 
   const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
   const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
+  const uniswapRouterAddress = getSwapProtocolConfig(network, quote.protocol).routerAddress
 
   const [fromAddressRaw] = await dispatch('getUnusedAddresses', { network, walletId, assets: [quote.from], accountId: quote.toAccountId })
   const fromAddress = fromChain.formatAddress(fromAddressRaw)
-  const allowance = await erc20.allowance(fromAddress, UNISWAP_ROUTER_ADDRESS)
+  const allowance = await erc20.allowance(fromAddress, uniswapRouterAddress)
   const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
   if (allowance.gte(inputAmount)) {
     return {
@@ -100,7 +100,7 @@ export async function approveTokens ({ commit, getters, dispatch }, { network, w
   }
 
   const inputAmountHex = inputAmount.toHexString()
-  const encodedData = erc20.interface.encodeFunctionData('approve', [UNISWAP_ROUTER_ADDRESS, inputAmountHex])
+  const encodedData = erc20.interface.encodeFunctionData('approve', [uniswapRouterAddress, inputAmountHex])
 
   const account = getters.accountItem(quote.fromAccountId)
   const client = getters.client(network, walletId, quote.from, account?.type)
@@ -133,8 +133,9 @@ export async function sendSwap ({ commit, getters, dispatch }, { network, wallet
   const [toAddressRaw] = await dispatch('getUnusedAddresses', { network, walletId, assets: [quote.to], accountId: quote.toAccountId })
   const toAddress = toChain.formatAddress(toAddressRaw)
 
+  const uniswapRouterAddress = getSwapProtocolConfig(network, quote.protocol).routerAddress
   const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
-  const uniswap = new ethers.Contract(UNISWAP_ROUTER_ADDRESS, UniswapV2Router.abi, api)
+  const uniswap = new ethers.Contract(uniswapRouterAddress, UniswapV2Router.abi, api)
 
   let encodedData
   if (isERC20(quote.from)) {
@@ -151,7 +152,7 @@ export async function sendSwap ({ commit, getters, dispatch }, { network, wallet
   const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
   const account = getters.accountItem(quote.fromAccountId)
   const client = getters.client(network, walletId, quote.from, account?.type)
-  const swapTx = await client.chain.sendTransaction({ to: UNISWAP_ROUTER_ADDRESS, value, data: encodedData, fee: quote.fee })
+  const swapTx = await client.chain.sendTransaction({ to: uniswapRouterAddress, value, data: encodedData, fee: quote.fee })
 
   return {
     status: 'WAITING_FOR_SWAP_CONFIRMATIONS',
@@ -162,13 +163,9 @@ export async function sendSwap ({ commit, getters, dispatch }, { network, wallet
 
 export async function newSwap ({ commit, getters, dispatch }, { network, walletId, quote }) {
   const approvalRequired = isERC20(quote.from)
-  const updates = await withLock({ commit, getters, dispatch }, { item: quote, network, walletId, asset: quote.from },
-    async () => {
-      return approvalRequired
-        ? await approveTokens({ commit, getters, dispatch }, { network, walletId, quote })
-        : await sendSwap({ commit, getters, dispatch }, { network, walletId, quote })
-    }
-  )
+  const updates = approvalRequired
+    ? await approveTokens({ commit, getters, dispatch }, { network, walletId, quote })
+    : await sendSwap({ commit, getters, dispatch }, { network, walletId, quote })
 
   return {
     id: uuidv4(),

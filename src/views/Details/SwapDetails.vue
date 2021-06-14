@@ -91,7 +91,7 @@ import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
 import Modal from '@/components/Modal'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
-import { protocols } from '@/swaps'
+import { getSwapProtocol } from '../../utils/swaps'
 
 export default {
   components: {
@@ -115,7 +115,7 @@ export default {
         .find((item) => item.id === this.id)
     },
     swapDetailsComponent () {
-      return protocols[this.item.protocol].SwapDetails
+      return getSwapProtocol(this.item.network, this.item.protocol).SwapDetails
     },
     status () {
       return getStatusLabel(this.item)

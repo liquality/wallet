@@ -1,5 +1,6 @@
 import { isObject } from 'lodash-es'
 import { unlockAsset } from '../utils'
+import { getSwapProtocolConfig } from '../../utils/swaps'
 import { updateOrder } from '../../swaps/liquality'
 
 export const updateTransactionFee = async ({ dispatch, commit, getters }, { network, walletId, asset, id, hash, newFee }) => {
@@ -44,9 +45,8 @@ export const updateTransactionFee = async ({ dispatch, commit, getters }, { netw
 
   const isFundingUpdate = hashKey === 'fromFundHash'
   if (isFundingUpdate) {
-    const endpoints = getters.agentEndpoints(network)
-    const agent = endpoints[0] // TODO: Figure out a way to consider multiple agents if needed
     // TODO: this should be the function of any swap? Should be able to bump any tx
+    const agent = getSwapProtocolConfig(network, item.protocol).agent
     await updateOrder(agent, item)
   }
 

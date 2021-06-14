@@ -2,7 +2,7 @@ import BN from 'bignumber.js'
 import cryptoassets from './cryptoassets'
 import { chains, unitToCurrency } from '@liquality/cryptoassets'
 import { isERC20, isEthereumChain } from './asset'
-import { protocols } from '../swaps'
+import { getSwapProtocolByType } from '../utils/swaps'
 
 /**
  * TODO: Move to Chain Abstraction Layer in the form
@@ -26,8 +26,8 @@ const FEE_OPTIONS = {
   CUSTOM: { name: 'Custom', label: 'Custom' }
 }
 
-function getSwapTxTypes (protocol) {
-  const { fromTxType, toTxType } = protocols[protocol]
+function getSwapTxTypes (swapProtocol) {
+  const { fromTxType, toTxType } = getSwapProtocolByType(swapProtocol)
   return { fromTxType, toTxType }
 }
 
@@ -35,8 +35,8 @@ function getSendFee (asset, feePrice) {
   return getTxFee(SEND_FEE_UNITS, asset, feePrice)
 }
 
-function getSwapFee (protocol, type, asset, feePrice) {
-  const feeUnits = protocols[protocol].feeUnits
+function getSwapFee (swapProtocol, type, asset, feePrice) {
+  const feeUnits = getSwapProtocolByType(swapProtocol).feeUnits
   if (feeUnits && type in feeUnits) {
     return getTxFee(feeUnits[type], asset, feePrice)
   } else {

@@ -1,10 +1,13 @@
 import _ from 'lodash'
-import { protocols } from '../../swaps'
+import { getSwapProtocol } from '../../utils/swaps'
+import buildConfig from '../../build.config'
 
 // TODO: better name?
 export const updateMarketData = async ({ state, commit, getters }, { network }) => {
-  const supportedPairResponses = await Promise.all(Object.entries(protocols).map(([protocolId, protocol]) => {
-    return protocol.getSupportedPairs({ state, commit, getters }, { network }).then(pairs => pairs.map(pair => ({ ...pair, protocol: protocolId })))
+  const supportedPairResponses = await Promise.all(Object.keys(buildConfig.swapProtocols[network]).map(protocol => {
+    return getSwapProtocol(network, protocol)
+      .getSupportedPairs({ state, commit, getters }, { network, protocol })
+      .then(pairs => pairs.map(pair => ({ ...pair, protocol })))
   }))
   const supportedPairs = _.flatten(supportedPairResponses)
 

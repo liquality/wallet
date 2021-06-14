@@ -1,5 +1,5 @@
 import moment from '@/utils/moment'
-import { protocols } from '@/swaps'
+import { getSwapProtocol } from './swaps'
 
 export const SEND_STATUS_STEP_MAP = {
   WAITING_FOR_CONFIRMATIONS: 0,
@@ -16,7 +16,7 @@ export function getStatusLabel (item) {
     return SEND_STATUS_LABEL_MAP[item.status]
   }
   if (item.type === 'SWAP') {
-    return protocols[item.protocol].statuses[item.status].label.replace('{from}', item.from).replace('{to}', item.to)
+    return getSwapProtocol(item.network, item.protocol).statuses[item.status].label.replace('{from}', item.from).replace('{to}', item.to)
   }
 }
 
@@ -25,7 +25,7 @@ export function getStep (item) {
     return SEND_STATUS_STEP_MAP[item.status]
   }
   if (item.type === 'SWAP') {
-    return protocols[item.protocol].statuses[item.status].step
+    return getSwapProtocol(item.network, item.protocol).statuses[item.status].step
   }
 }
 
@@ -86,7 +86,7 @@ export const applyActivityFilters = (activity, filters) => {
   if (statuses.length > 0) {
     data = data.filter(i => {
       if (i.type === 'SWAP') {
-        return statuses.includes(protocols[i.protocol].statuses[i.status].filterStatus)
+        return statuses.includes(getSwapProtocol(i.network, i.protocol).statuses[i.status].filterStatus)
       }
 
       if (i.type === 'SEND') {

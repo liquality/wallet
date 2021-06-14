@@ -323,6 +323,7 @@ import Accounts from './Accounts'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
+import { SwapProtocol, getSwapProtocolConfig } from '@/utils/swaps'
 
 export default {
   components: {
@@ -488,7 +489,10 @@ export default {
     },
     min () {
       const min = 0
-      const liqualityMarket = this.networkMarketData.find(pair => pair.from === this.asset && pair.to === this.toAsset && pair.protocol === 'liquality')
+      const liqualityMarket = this.networkMarketData.find(pair =>
+        pair.from === this.asset &&
+        pair.to === this.toAsset &&
+        getSwapProtocolConfig(this.activeNetwork, pair.protocol).type === SwapProtocol.LIQUALITY)
       if (liqualityMarket) {
         return dpUI(BN(liqualityMarket.min))
       }
@@ -679,7 +683,7 @@ export default {
         }
       }
 
-      const txTypes = getSwapTxTypes(this.bestQuote.protocol)
+      const txTypes = getSwapTxTypes(getSwapProtocolConfig(this.activeNetwork, this.bestQuote.protocol).type)
 
       if (this.availableFees.has(this.assetChain)) {
         const getMax = amount === undefined
@@ -697,7 +701,7 @@ export default {
           }
         } else {
           for (const [speed, fee] of Object.entries(assetFees)) {
-            const staticFee = getSwapFee(this.bestQuote.protocol, txTypes.fromTxType, this.asset, fee.fee)
+            const staticFee = getSwapFee(getSwapProtocolConfig(this.activeNetwork, this.bestQuote.protocol).type, txTypes.fromTxType, this.asset, fee.fee)
             fees[this.assetChain][speed] = fees[this.assetChain][speed].plus(staticFee)
           }
         }
@@ -706,7 +710,7 @@ export default {
       if (this.availableFees.has(this.toAssetChain)) {
         const assetFees = this.getAssetFees(this.toAssetChain)
         for (const [speed, fee] of Object.entries(assetFees)) {
-          const staticFee = getSwapFee(this.bestQuote.protocol, txTypes.toTxType, this.toAsset, fee.fee)
+          const staticFee = getSwapFee(getSwapProtocolConfig(this.activeNetwork, this.bestQuote.protocol).type, txTypes.toTxType, this.toAsset, fee.fee)
           fees[this.toAssetChain][speed] = fees[this.toAssetChain][speed].plus(staticFee)
         }
       }
