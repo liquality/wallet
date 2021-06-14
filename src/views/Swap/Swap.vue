@@ -413,6 +413,12 @@ export default {
         [this.assetChain]: 'average'
       }
     }
+    this.interval = setInterval(() => {
+      this.updateQuotes()
+    }, 30000)
+  },
+  beforeDestroy () {
+    clearInterval(this.interval)
   },
   computed: {
     account () {
