@@ -40,25 +40,25 @@ export default {
   },
   swapProtocols: {
     testnet: {
-      liquality1: {
+      liquality: {
+        name: 'Liquality',
         type: SwapProtocol.LIQUALITY,
         agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet/agent'
       },
-      // liquality2: {
-      //   type: SwapProtocol.LIQUALITY,
-      //   agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
-      // },
       uniswapV2: {
+        name: 'Uniswap V2',
         type: SwapProtocol.UNISWAPV2,
         routerAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
       }
     },
     mainnet: {
-      liquality1: {
+      liquality: {
+        name: 'Liquality',
         type: SwapProtocol.LIQUALITY,
         agent: 'https://liquality.io/swap/agent'
       },
       uniswapV2: {
+        name: 'Uniswap V2',
         type: SwapProtocol.UNISWAPV2,
         routerAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
       }

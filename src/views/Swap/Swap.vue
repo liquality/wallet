@@ -58,7 +58,7 @@
               &nbsp;{{ bestRate }}
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
-            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuote.protocol }}</span>
+            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProtocol }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
           </p>
         </div>
@@ -228,7 +228,7 @@
                 1 {{ asset }}&nbsp;=&nbsp;{{ bestRate }} &nbsp;{{
                   toAsset
                 }}
-                <span class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuote.protocol }}</span>
+                <span class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProtocol }}</span>
               </div>
               <div v-else>1 {{ asset }}&nbsp;=&nbsp;N/A</div>
             </div>
@@ -492,6 +492,9 @@ export default {
     bestQuote () {
       const sortedQuotes = this.quotes.slice(0).sort((a, b) => BN(b.toAmount).minus(a.toAmount).toNumber())
       return sortedQuotes[0]
+    },
+    bestQuoteProtocol () {
+      return getSwapProtocolConfig(this.activeNetwork, this.bestQuote.protocol).name
     },
     min () {
       const min = 0
