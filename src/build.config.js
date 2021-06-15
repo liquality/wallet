@@ -12,7 +12,7 @@ export default {
       'SOV',
       'BNB',
       'NEAR',
-      'POLYGON',
+      'MATIC',
       'PWETH'
     ],
     testnet: [
@@ -23,7 +23,7 @@ export default {
       'BNB',
       'NEAR',
       'SOV',
-      'POLYGON',
+      'MATIC',
       'PWETH'
     ]
   },
