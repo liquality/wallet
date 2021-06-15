@@ -14,13 +14,14 @@ export const setupBridgeIframe = (bridgeUrl) => {
   }
 }
 
-export function getReplySignature (app, method, callType) {
-  return `${BRIDGE_REPLEY_PREFIX}::${app}::${method}::${callType}`
+export function getReplySignature (network, app, method, callType) {
+  return `${BRIDGE_REPLEY_PREFIX}::${network}::${app}::${method}::${callType}`
 }
 
-export const sendMessageToBridge = ({ method, callType, payload, app }) => {
+export const sendMessageToBridge = ({ network, app, method, callType, payload }) => {
   const frame = document.getElementById(BRIDGE_IFRAME_NAME)
   frame.contentWindow.postMessage({
+    network,
     app,
     method,
     payload,
@@ -28,9 +29,9 @@ export const sendMessageToBridge = ({ method, callType, payload, app }) => {
   }, '*')
 }
 
-export async function callToBridge ({ app, method, callType, payload }) {
-  console.log('[EXTENSION-LEDGER-BRIDGE]:', { method, callType, payload })
-  const replySignature = getReplySignature(app, method, callType)
+export async function callToBridge ({ network, app, method, callType, payload }) {
+  console.log('[EXTENSION-LEDGER-BRIDGE]:', { network, method, callType, payload })
+  const replySignature = getReplySignature(network, app, method, callType)
   let responded = false
   return new Promise((resolve, reject) => {
     chrome.runtime.onMessageExternal.addListener(
@@ -74,7 +75,7 @@ export async function callToBridge ({ app, method, callType, payload }) {
       })
 
     const parsedPayload = parseRequestPayload(payload)
-    sendMessageToBridge({ app, method, callType, payload: parsedPayload })
+    sendMessageToBridge({ network, app, method, callType, payload: parsedPayload })
   })
 }
 

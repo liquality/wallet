@@ -31,6 +31,7 @@ import {
   LEDGER_BITCOIN_OPTIONS
 } from '@/utils/ledger-bridge-provider'
 import { bitcoin } from '@liquality/types'
+import { chains } from '@liquality/cryptoassets'
 
 import { isERC20 } from '@/utils/asset'
 import { BTC_ADDRESS_TYPE_TO_PREFIX } from '@/utils/address'
@@ -55,7 +56,7 @@ function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
     const { addressType } = option
     const baseDerivationPath = `${BTC_ADDRESS_TYPE_TO_PREFIX[addressType]}'/${bitcoinNetwork.coinType}'/${indexPath}'`
-    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(LEDGER_BRIDGE_URL)
+    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(network, LEDGER_BRIDGE_URL)
     const ledger = new BitcoinLedgerBridgeProvider(
       {
         network: bitcoinNetwork,
@@ -83,6 +84,7 @@ function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
 function createEthereumClient (
   asset,
   network,
+  ethereumNetwork,
   rpcApi,
   scraperApi,
   feeProvider,
@@ -91,13 +93,15 @@ function createEthereumClient (
   indexPath = 0
 ) {
   const ethClient = new Client()
-  const derivationPath = `m/44'/${network.coinType}'/${indexPath}'/0/0`
+  const derivationPath = `m/44'/${ethereumNetwork.coinType}'/${indexPath}'/0/0`
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
   if (walletType === 'ethereum_ledger' || walletType === 'rsk_ledger') {
-    const ethereumLedgerApp = new EthereumLedgerBridgeApp('ETH', LEDGER_BRIDGE_URL)
+    const assetData = cryptoassets[asset]
+    const { nativeAsset } = chains?.[assetData.chain]
+    const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, nativeAsset || 'ETH', LEDGER_BRIDGE_URL)
     const ledger = new EthereumLedgerBridgeProvider(
       {
-        network,
+        network: ethereumNetwork,
         derivationPath
       },
       ethereumLedgerApp
@@ -105,7 +109,7 @@ function createEthereumClient (
     ethClient.addProvider(ledger)
   } else {
     ethClient.addProvider(new EthereumJsWalletProvider(
-      { network, mnemonic, derivationPath }
+      { network: ethereumNetwork, mnemonic, derivationPath }
     ))
   }
 
@@ -130,7 +134,7 @@ function createEthClient (asset, network, mnemonic, walletType, indexPath = 0) {
   const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
   const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider()
 
-  return createEthereumClient(asset, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, walletType, indexPath)
+  return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, walletType, indexPath)
 }
 
 function createNearClient (network, mnemonic, indexPath = 0) {
@@ -158,7 +162,7 @@ function createRskClient (asset, network, mnemonic, walletType, indexPath = 0) {
   const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
-  return createEthereumClient(asset, rskNetwork, rpcApi, scraperApi, feeProvider, mnemonic, walletType, indexPath)
+  return createEthereumClient(asset, network, rskNetwork, rpcApi, scraperApi, feeProvider, mnemonic, walletType, indexPath)
 }
 
 function createBSCClient (asset, network, mnemonic, indexPath = 0) {
@@ -168,7 +172,7 @@ function createBSCClient (asset, network, mnemonic, indexPath = 0) {
   const scraperApi = isTestnet ? 'https://liquality.io/bsc-testnet-api' : 'https://liquality.io/bsc-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
-  return createEthereumClient(asset, bnbNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
+  return createEthereumClient(asset, network, bnbNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
 }
 
 function createPolygonClient (asset, network, mnemonic, indexPath = 0) {
@@ -178,7 +182,7 @@ function createPolygonClient (asset, network, mnemonic, indexPath = 0) {
   const scraperApi = isTestnet ? 'https://liquality.io/polygon-testnet-api' : 'https://liquality.io/polygon-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
-  return createEthereumClient(asset, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
+  return createEthereumClient(asset, network, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
 }
 
 export const createClient = (asset, network, mnemonic, walletType, indexPath = 0) => {
