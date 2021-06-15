@@ -89,21 +89,18 @@ export default {
   overflow: hidden;
 
   &_description {
-    font-weight: 500;
+    font-weight: 100;
     font-size: 14px;
   }
 
   &_logo-wrap {
-    height: 100px;
-    width: 100px;
-    position: relative;
-    right: 15px;
-    top: 10px;
+    margin: 0 auto;
+    margin-top: 20px;
   }
 
   .backup-wallet_bottom {
     flex: 1;
-    background: #FFFFFF;
+    background: $color-text-secondary;
     color: $color-text-primary;
     padding: $wrapper-padding;
     overflow-y: auto;
@@ -127,7 +124,6 @@ export default {
   &_seed {
     font-size: 18px;
     padding-left: 0;
-    margin-bottom: 10px;
     text-align: left;
     counter-reset: wordIndex;
     display: flex;

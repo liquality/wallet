@@ -568,13 +568,6 @@ export default {
 .onboading-home {
   padding: 70px 0 0 0 !important;
 
-  &_buttonGroup {
-    display: flex;
-    background: red;
-    width: 100%;
-    justify-content: space-evenly;
-  }
-
   a {
     color: $color-primary !important;
   }
@@ -587,7 +580,7 @@ export default {
   }
 
   &_tnc {
-    background: #ffffff;
+    background: $color-text-secondary;
     color: $color-text-primary;
     padding: $wrapper-padding;
     display: flex;

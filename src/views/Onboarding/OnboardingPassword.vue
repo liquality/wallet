@@ -94,9 +94,9 @@ export default {
   }
 
   &_errorLength {
-    background: #fff;
-    border-top: 1.75px solid #F12274;
-    color: #F12274;
+    background: $color-text-secondary;
+    border-top: 2px solid $danger;
+    color: $danger;
     padding: 4px;
   }
 
