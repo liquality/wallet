@@ -110,7 +110,7 @@ export default {
           RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' },
           BNB: { name: 'BNB', url: 'https://testnet.binance.org/faucet-smart/' },
           NEAR: { name: 'NEAR', url: '' },
-          POLYGON: { name: 'POLYGON', url: 'https://faucet.matic.network/' }
+          MATIC: { name: 'MATIC', url: 'https://faucet.matic.network/' }
         })[this.asset]
       }
       return null
