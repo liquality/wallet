@@ -26,6 +26,7 @@ chrome.storage.local.get(['liquality-wallet'], (storage) => {
   injectEthereum(state, 'RBTC', 'rsk')
   injectEthereum(state, 'BNB', 'bsc')
   injectEthereum(state, 'POLYGON', 'polygon')
+  injectEthereum(state, 'ARBITRUM', 'arbitrum')
 })
 
 inject(paymentUriHandler())

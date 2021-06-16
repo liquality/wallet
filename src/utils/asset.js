@@ -61,6 +61,16 @@ const EXPLORERS = {
       tx: 'https://explorer.mainnet.near.org/transactions/',
       address: 'https://explorer.mainnet.near.org/accounts/'
     }
+  },
+  arbitrum: {
+    testnet: {
+      tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x',
+      address: 'https://rinkeby-explorer.arbitrum.io/address/0x'
+    },
+    mainnet: {
+      tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x',
+      address: 'https://rinkeby-explorer.arbitrum.io/address/0x'
+    }
   }
 }
 
@@ -71,13 +81,13 @@ export const isERC20 = asset => {
 // TODO: move to cryptoassets?
 export const isEthereumChain = asset => {
   const chain = cryptoassets[asset].chain
-  return ['ethereum', 'rsk', 'bsc', 'polygon'].includes(chain)
+  return ['ethereum', 'rsk', 'bsc', 'polygon', 'arbitrum'].includes(chain)
 }
 
 export const isEthereumNativeAsset = asset => {
   const chainId = cryptoassets[asset]?.chain
   if (chainId &&
-    ['ethereum', 'rsk', 'bsc', 'polygon'].includes(chainId) &&
+    ['ethereum', 'rsk', 'bsc', 'polygon', 'arbitrum'].includes(chainId) &&
       chains[chainId].nativeAsset === asset) {
     return true
   }

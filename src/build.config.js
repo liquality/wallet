@@ -12,8 +12,9 @@ export default {
       'SOV',
       'BNB',
       'NEAR',
-      'POLYGON',
-      'PWETH'
+      'MATIC',
+      'PWETH',
+      'ARBETH'
     ],
     testnet: [
       'BTC',
@@ -23,8 +24,9 @@ export default {
       'BNB',
       'NEAR',
       'SOV',
-      'POLYGON',
-      'PWETH'
+      'MATIC',
+      'PWETH',
+      'ARBETH'
     ]
   },
   agentEndpoints: {
@@ -41,5 +43,5 @@ export default {
   },
   telegramUrl: 'https://t.me/liquality',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum']
 }

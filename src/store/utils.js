@@ -117,9 +117,13 @@ export const AssetNetworks = {
     testnet: EthereumNetworks.bsc_testnet,
     mainnet: EthereumNetworks.bsc_mainnet
   },
-  POLYGON: {
+  MATIC: {
     testnet: EthereumNetworks.polygon_testnet,
     mainnet: EthereumNetworks.polygon_mainnet
+  },
+  ARBITRUM: {
+    testnet: EthereumNetworks.arbitrum_testnet,
+    mainnet: EthereumNetworks.arbitrum_mainnet
   },
   NEAR: {
     testnet: NearNetworks.near_testnet,
