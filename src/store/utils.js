@@ -118,8 +118,14 @@ export const AssetNetworks = {
     mainnet: EthereumNetworks.bsc_mainnet
   },
   MATIC: {
-    testnet: EthereumNetworks.polygon_testnet,
-    mainnet: EthereumNetworks.polygon_mainnet
+    testnet: {
+      ...EthereumNetworks.polygon_testnet,
+      coinType: '60' // Remove when CAL >= 1.3.0
+    },
+    mainnet: {
+      ...EthereumNetworks.polygon_mainnet,
+      coinType: '60' // Remove when CAL >= 1.3.0
+    }
   },
   NEAR: {
     testnet: NearNetworks.near_testnet,
