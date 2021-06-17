@@ -6,7 +6,7 @@
   "author": "Liquality <info@liquality.io>",
   "repository": {
     "type": "git",
-    "url": "git@github.com:liquality/wallet.git"
+    "url": "git@github.com:liquality/wallet.git"                          
   },
   "scripts": {
     "dev": "vue-cli-service build --mode development --watch",
