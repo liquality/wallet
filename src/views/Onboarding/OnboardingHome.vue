@@ -1,5 +1,5 @@
 <template>
-  <div class="onboading-home login-wrapper">
+  <div class="onboading-home login-wrapper no-outer-pad">
     <div class="onboading-home_header">
       <LogoWallet />
     </div>
@@ -536,8 +536,9 @@
           <span class="c20"></span>
         </p>
       </div>
-      <div class="onboading-home_tnc__actions">
-        <button id="terms_privacy_accept_button" class="btn btn-primary btn-lg btn-block mb-2" @click="acceptTnC">I Accept</button>
+      <div class="button-group">
+          <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+          <button class="btn btn-primary btn-lg ml-2" @click="acceptTnC">I Accept</button>
       </div>
     </div>
   </div>
@@ -579,7 +580,7 @@ export default {
   }
 
   &_tnc {
-    background: #ffffff;
+    background: $color-text-secondary;
     color: $color-text-primary;
     padding: $wrapper-padding;
     display: flex;

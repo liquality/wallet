@@ -63,7 +63,7 @@ $colors: (#9D4DFA, #1CE5C3, #F12274);
     left: unquote($l+"%");
     opacity: random() + 0.5;
     transform: rotate(#{random()*360}deg);
-    animation: drop-#{$i} unquote(4+random()+"s") unquote(random()+"s") infinite;
+    animation: drop-#{$i} unquote(2+random()+"s") unquote(random()+"s") infinite;
   }
 
   @keyframes drop-#{$i} {

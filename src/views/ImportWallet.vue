@@ -1,5 +1,5 @@
 <template>
-  <div class="import-wallet login-wrapper">
+  <div class="import-wallet login-wrapper no-outer-pad">
     <div class="login-header">
       <LogoWallet />
     </div>
@@ -33,7 +33,7 @@
     <div class="footer-container bg-white">
         <div class="footer-content">
           <button class="btn btn-light btn-outline-primary btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
-          <button class="btn btn-primary btn-lg btn-footer" id="import_wallet_continue_button" :disabled="disableNext" @click="next">Continue</button>
+          <button class="btn btn-primary btn-lg btn-footer ml-2" :disabled="disableNext" @click="next">Continue</button>
         </div>
     </div>
   </div>
@@ -139,6 +139,7 @@ export default {
 
   &_seed.form {
     font-size: 18px;
+    font-weight: 700;
     padding-left: 0;
     margin-bottom: 10px;
     text-align: left;
@@ -158,10 +159,12 @@ export default {
         font-size: $font-size-tiny;
         counter-increment: wordIndex;
         content: counter(wordIndex);
+        font-weight: 700;
       }
 
       input {
         color: $color-text-primary;
+        font-weight: 700;
       }
     }
   }

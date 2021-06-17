@@ -12,7 +12,7 @@ const TESTNET_CONTRACT_ADDRESSES = {
   SOV: '0x6a9A07972D07E58f0daF5122D11e069288A375fB',
   PWETH: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa'
 }
-const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'POLYGON', 'PWETH'].reduce((assets, asset) => {
+const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'MATIC', 'PWETH'].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
       ...cryptoassets[asset],
@@ -26,11 +26,13 @@ export default {
     return network => buildConfig.agentEndpoints[network]
   },
   client (state) {
-    return (network, walletId, asset, walletType = 'default', indexPath = 0) => {
+    return (network, walletId, asset, walletType = 'default', indexPath = 0, useCache = true) => {
       const cacheKey = [asset, network, walletId, walletType, indexPath].join('-')
 
-      const cachedClient = clientCache[cacheKey]
-      if (cachedClient) return cachedClient
+      if (useCache) {
+        const cachedClient = clientCache[cacheKey]
+        if (cachedClient) return cachedClient
+      }
 
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
       const client = createClient(asset, network, mnemonic, walletType, indexPath)

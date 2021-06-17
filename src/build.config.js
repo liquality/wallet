@@ -12,7 +12,7 @@ export default {
       'SOV',
       'BNB',
       'NEAR',
-      'POLYGON',
+      'MATIC',
       'PWETH'
     ],
     testnet: [
@@ -23,7 +23,7 @@ export default {
       'BNB',
       'NEAR',
       'SOV',
-      'POLYGON',
+      'MATIC',
       'PWETH'
     ]
   },
@@ -39,7 +39,7 @@ export default {
     testnet: 'https://liquality.io/electrs-testnet-batch',
     mainnet: 'https://api-mainnet-bitcoin-electrs-batch.liquality.io'
   },
-  telegramUrl: 'https://t.me/liquality',
+  discordUrl: 'https://discord.gg/ngvuxPWVkB',
   networks: ['mainnet', 'testnet'],
   chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon']
 }
