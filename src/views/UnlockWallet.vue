@@ -20,9 +20,10 @@
         </p>
       </div>
       <div class="footer-container">
-        <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
+        <p><router-link to="/onboarding/import" id="forgot_password_import_seed">Forgot password? Import with seed phrase</router-link></p>
         <div class="footer-content">
           <button class="btn btn-primary btn-lg btn-block btn-icon"
+                  id="unlock_button"
                   :disabled="loading">
             <span v-if="loading">
               <SpinnerIcon /> &nbsp;

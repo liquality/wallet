@@ -8,10 +8,10 @@
       <p class="m-0">The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.</p>
     </div>
     <div class="backup-wallet_bottom">
-      <div class="backup-wallet_seed pt-1">
-        <span v-for="word in seedList" :key="word">{{ word }}</span>
+      <div class="backup-wallet_seed pt-1" id="backup-wallet_seed_wordlist">
+        <span v-for="word in seedList" :key="word" id="backup_seed_word">{{ word }}</span>
       </div>
-      <button class="btn btn-primary btn-lg btn-block btn-icon" @click="pushToConfirm">Next</button>
+      <button class="btn btn-primary btn-lg btn-block btn-icon" id="backup_your_wallet_next_button" @click="pushToConfirm">Next</button>
     </div>
   </div>
   <ConfirmSeed v-if="currentStep === 'confirm'" @on-confirm="confirmMnemonic" @on-cancel="currentStep = 'backup'" :mnemonic="mnemonic" />

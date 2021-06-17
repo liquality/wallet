@@ -3,7 +3,7 @@ import { Address } from '@liquality/types'
 
 export const updateBalances = async ({ state, commit, getters }, { network, walletId, assets }) => {
   let accounts = state.accounts[walletId]?.[network]
-                   .filter(a => a.assets && a.assets.length > 0)
+    .filter(a => a.assets && a.assets.length > 0)
   if (assets && assets.length > 0) {
     accounts = accounts.filter(a => a.assets.some(s => assets.includes(s)))
   }

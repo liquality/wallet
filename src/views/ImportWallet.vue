@@ -3,7 +3,7 @@
     <div class="login-header">
       <LogoWallet />
     </div>
-    <div class="import-wallet_top">
+    <div class="import-wallet_top" id="import-wallet_top">
       <h2>Import wallet</h2>
       <p>Enter the seed phrase, in the same order saved when creating your wallet.</p>
     </div>
@@ -12,6 +12,7 @@
          <button
                     :class="{ active: numWords === 12 }"
                     class="btn btn-option"
+                    id="12_words_option"
                     @click="setMnemonicLength(12)"
                   >
                     12 words
@@ -19,19 +20,20 @@
           <button
                     :class="{ active: numWords === 24 }"
                     class="btn btn-option"
+                    id="24_words_option"
                     @click="setMnemonicLength(24)"
                   >
                     24 words
                   </button>
       </div>
       <form class="form import-wallet_seed" autocomplete="off">
-        <div v-for="(e, n) in numWords" :key="n"><input type="text" class="form-control form-control-sm" v-model="wordList[n]" autocomplete="off" required /></div>
+        <div v-for="(e, n) in numWords" :key="n"><input type="text" class="form-control form-control-sm" id="import_wallet_word" v-model="wordList[n]" autocomplete="off" required /></div>
       </form>
     </div>
     <div class="footer-container bg-white">
         <div class="footer-content">
           <button class="btn btn-light btn-outline-primary btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
-          <button class="btn btn-primary btn-lg btn-footer" :disabled="disableNext" @click="next">Continue</button>
+          <button class="btn btn-primary btn-lg btn-footer" id="import_wallet_continue_button" :disabled="disableNext" @click="next">Continue</button>
         </div>
     </div>
   </div>

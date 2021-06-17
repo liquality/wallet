@@ -55,7 +55,7 @@
             @to-asset-click="toAssetClick"
           />
         </div>
-        <div class="mt-3 form-group">
+        <div class="mt-3 form-group" id="rate_block">
           <label>Rate</label>
           <p>
             <span class="swap-rate_base">1 {{ asset }} =</span>
@@ -69,7 +69,7 @@
         <div class="form-group swap_fees" v-if="availableFees.size">
           <DetailsContainer>
             <template v-slot:header>
-              <span class="details-title">Network Speed/Fee</span>
+              <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
               <span class="text-muted">
                 {{ assetChain }}
                 {{ assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : '' }}
@@ -114,6 +114,7 @@
             </router-link>
             <button
               class="btn btn-primary btn-lg"
+              id="swap_review_button"
               @click="currentStep = 'confirm'"
               :disabled="!canSwap"
             >
@@ -261,6 +262,7 @@
           <div class="button-group">
             <button
               class="btn btn-light btn-outline-primary btn-lg"
+              id="edit_swap_button"
               v-if="!loading"
               @click="currentStep = 'inputs'"
             >
@@ -268,6 +270,7 @@
             </button>
             <button
               class="btn btn-primary btn-lg btn-block btn-icon"
+              id="initiate_swap_button"
               @click.stop="swap"
               :disabled="loading"
             >

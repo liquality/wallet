@@ -537,7 +537,7 @@
         </p>
       </div>
       <div class="onboading-home_tnc__actions">
-        <button class="btn btn-primary btn-lg btn-block mb-2" @click="acceptTnC">I Accept</button>
+        <button id="terms_privacy_accept_button" class="btn btn-primary btn-lg btn-block mb-2" @click="acceptTnC">I Accept</button>
       </div>
     </div>
   </div>
