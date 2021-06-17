@@ -702,7 +702,7 @@ export default {
       return BN(this.safeAmount).plus(this.fromSwapFee)
     },
     totalToSendInFiat () {
-      const amount = this.stateSendAmount.plus(this.fromSwapFee)
+      const amount = BN(this.stateSendAmount).plus(this.fromSwapFee)
       return cryptoToFiat(amount, this.fiatRates[this.assetChain]).toFormat(2)
     },
     receiveAmountSameAsset () {
