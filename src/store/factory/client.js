@@ -98,8 +98,9 @@ function createEthereumClient (
   const derivationPath = `m/44'/${ethereumNetwork.coinType}'/${indexPath}'/0/0`
   if (walletType === 'ethereum_ledger' || walletType === 'rsk_ledger') {
     const assetData = cryptoassets[asset]
-    const { nativeAsset } = chains?.[assetData.chain]
-    const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, nativeAsset || 'ETH', LEDGER_BRIDGE_URL)
+    const chainData = chains?.[assetData.chain]
+    const { nativeAsset } = chainData || 'ETH'
+    const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, nativeAsset, LEDGER_BRIDGE_URL)
     const ledger = new EthereumLedgerBridgeProvider(
       {
         network: ethereumNetwork,
@@ -189,11 +190,11 @@ function createPolygonClient (asset, network, mnemonic, indexPath = 0) {
 export const createClient = (asset, network, mnemonic, walletType, indexPath = 0) => {
   const assetData = cryptoassets[asset]
 
-  if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType, indexPath)
-  if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic, walletType, indexPath)
-  if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic, indexPath)
-  if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
-  if (assetData.chain === 'near') return createNearClient(network, mnemonic, indexPath)
+  if (assetData?.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType, indexPath)
+  if (assetData?.chain === 'rsk') return createRskClient(asset, network, mnemonic, walletType, indexPath)
+  if (assetData?.chain === 'bsc') return createBSCClient(asset, network, mnemonic, indexPath)
+  if (assetData?.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
+  if (assetData?.chain === 'near') return createNearClient(network, mnemonic, indexPath)
 
   return createEthClient(asset, network, mnemonic, walletType, indexPath)
 }
