@@ -93,8 +93,9 @@ function createEthereumClient (
   indexPath = 0
 ) {
   const ethClient = new Client()
-  const derivationPath = `m/44'/${ethereumNetwork.coinType}'/${indexPath}'/0/0`
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
+
+  const derivationPath = `m/44'/${ethereumNetwork.coinType}'/${indexPath}'/0/0`
   if (walletType === 'ethereum_ledger' || walletType === 'rsk_ledger') {
     const assetData = cryptoassets[asset]
     const { nativeAsset } = chains?.[assetData.chain]
@@ -178,7 +179,7 @@ function createBSCClient (asset, network, mnemonic, indexPath = 0) {
 function createPolygonClient (asset, network, mnemonic, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const polygonNetwork = AssetNetworks.MATIC[network]
-  const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com/' : 'https://rpc-mainnet.maticvigil.com/'
+  const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com/' : 'https://rpc-mainnet.matic.network/'
   const scraperApi = isTestnet ? 'https://liquality.io/polygon-testnet-api' : 'https://liquality.io/polygon-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
