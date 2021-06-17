@@ -13,7 +13,7 @@
         Swap
       </NavBar>
       <InfoNotification v-if="ethRequired">
-        <EthRequiredMessage />
+        <EthRequiredMessage :account-id="account.id"/>
       </InfoNotification>
 
       <InfoNotification v-else-if="showNoLiquidityMessage">
