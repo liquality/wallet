@@ -1,4 +1,4 @@
-const TestUtil = require('../utils/TestUtils')
+const TestUtil = require('../../utils/TestUtils')
 const puppeteer = require('puppeteer')
 const log = console.log
 const expect = require('chai').expect
@@ -18,6 +18,7 @@ describe('Liquality wallet', async () => {
     slowMo: 20,
     headless: false,
     ignoreHTTPSErrors: true,
+    executablePath: process.env.PUPPETEER_EXEC_PATH, // set by docker container
     args: [
       '--no-sandbox',
       '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
@@ -45,7 +46,7 @@ describe('Liquality wallet', async () => {
     await browser.close()
   })
 
-  it.only('Create a new wallet with 12 words', async () => {
+  it('Create a new wallet with 12 words', async () => {
     // Accept terms
     await page.waitForSelector('#terms_privacy_accept_button',{
       visible: true
