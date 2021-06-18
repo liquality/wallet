@@ -2,7 +2,7 @@ import { Address } from '@liquality/types'
 
 export const updateAccountBalance = async ({ state, commit, getters }, { network, walletId, accountId }) => {
   const accounts = state.accounts[walletId]?.[network]
-                        .filter(a => a.assets && a.assets.length > 0) || []
+    .filter(a => a.assets && a.assets.length > 0) || []
   const index = accounts?.findIndex(a => a.id === accountId)
   if (index >= 0) {
     const account = accounts[index]

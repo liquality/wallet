@@ -25,7 +25,7 @@
     <div class="footer-container">
       <div class="footer-content">
         <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-footer btn-icon" :disabled="disableNext" @click="next">
+        <button class="btn btn-primary btn-lg btn-footer btn-icon" id="next_button" :disabled="disableNext" @click="next">
           Continue
         </button>
       </div>

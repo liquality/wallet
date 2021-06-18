@@ -6,7 +6,7 @@
   "author": "Liquality <info@liquality.io>",
   "repository": {
     "type": "git",
-    "url": "git@github.com:liquality/wallet.git"                          
+    "url": "git@github.com:liquality/wallet.git"
   },
   "scripts": {
     "dev": "vue-cli-service build --mode development --watch",
@@ -16,12 +16,13 @@
     "sync-versions": "node script/sync-versions.js",
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration --runInBand",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "test:wip": "./node_modules/mocha/bin/mocha --async-only --colors --no-timeouts --reporter nyan ./tests/integration/*.spec.js"
   },
   "dependencies": {
-    "@liquality/bitcoin-fee-api-provider": "^1.1.9",
     "@liquality/bitcoin-esplora-batch-api-provider": "^1.1.9",
     "@liquality/bitcoin-esplora-swap-find-provider": "^1.1.9",
+    "@liquality/bitcoin-fee-api-provider": "^1.1.9",
     "@liquality/bitcoin-js-wallet-provider": "^1.1.9",
     "@liquality/bitcoin-ledger-provider": "^1.1.9",
     "@liquality/bitcoin-networks": "^1.1.9",
@@ -52,14 +53,19 @@
     "bitcoinjs-lib": "^5.2.0",
     "bluebird": "^3.7.2",
     "bootstrap": "^4.5.0",
+    "chai": "^4.3.4",
+    "chalk": "^2.4.2",
     "core-js": "^3.6.4",
     "crypto-js": "^4.0.0",
     "cryptocurrency-icons": "^0.16.1",
     "date-fns": "^2.14.0",
     "lodash-es": "^4.17.15",
+    "log": "^6.0.0",
     "memoizee": "^0.4.15",
+    "mocha": "^9.0.0",
     "moment": "^2.25.3",
     "pbkdf2": "^3.1.1",
+    "puppeteer-core": "^10.0.0",
     "qrcode": "^1.4.4",
     "qs": "^6.9.4",
     "setimmediate": "^1.0.5",

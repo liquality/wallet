@@ -4,6 +4,7 @@
     <li class="nav-item">
       <router-link
         class="nav-link"
+        id="asserts_tab"
         :to="{ name: 'WalletAssets' }"
       >
         Assets
@@ -12,6 +13,7 @@
     <li class="nav-item">
       <router-link
         class="nav-link"
+        id="activity_tab"
         :to="{ name: 'WalletActivity' }"
       >
         Activity

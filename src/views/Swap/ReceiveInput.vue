@@ -62,6 +62,7 @@
     <div class="swap-receive-bottom" v-if="!enterSendToAddress">
       <small
         class="form-text d-flex align-items-center justify-content-between"
+        id="receive_at_external_wallet"
       >
         <a @click="enterSendToAddress = true">
           + Receive at external wallet

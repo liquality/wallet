@@ -3,6 +3,7 @@
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-option btn-option-lg"
         v-for="name in ['slow', 'average', 'fast']" :key="name"
+           :id="name"
         :class="{ active: (name === value)}"
         v-tooltip="{ content: getTooltip(name) }"
         @click="$emit('input', name)">

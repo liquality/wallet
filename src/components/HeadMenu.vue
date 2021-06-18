@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown head-menu"
+  <div id="account" class="dropdown head-menu"
       v-click-away="hide">
     <button class="btn dropdown-toggle"
             @click="toggle">
