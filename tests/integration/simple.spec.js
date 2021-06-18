@@ -13,21 +13,13 @@ const password = '123123123'
 const enterWords = ['blouse', 'sort', 'ice', 'forward', 'ivory', 'enrich', 'connect', 'mimic', 'apple', 'setup', 'level', 'palm']
 
 describe('Liquality wallet', async () => {
-  // Extension & chrome window size
-  const extension = {
-    width: 250,
-    height: 900
-  }
-
   // Chrome options
   const options = {
     slowMo: 20,
     headless: false,
     ignoreHTTPSErrors: true,
-    // devtools: true,
     args: [
       '--no-sandbox',
-      `--window-size=${extension.width},${extension.height}`,
       '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
       '--load-extension=' + testUtil.extensionPathBuildPath
     ]
@@ -37,20 +29,6 @@ describe('Liquality wallet', async () => {
     browser = await puppeteer.launch(options)
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
-
-    // Request interception
-    await page.setRequestInterception(true)
-
-    // // Print XHR requests on console
-    // page.on('request', (request) => {
-    //   console.log('>>', request.method(), request.url())
-    //   request.continue()
-    // });
-    //
-    // // Print XHR responses on console
-    // page.on('response', (response) => {
-    //   console.log('<<', response.status(), response.url())
-    // });
   })
 
   // after each hook
@@ -64,11 +42,14 @@ describe('Liquality wallet', async () => {
         console.error(new Error(errorMessage))
       }
     })
-    // await browser.close()
+    await browser.close()
   })
 
   it.only('Create a new wallet with 12 words', async () => {
     // Accept terms
+    await page.waitForSelector('#terms_privacy_accept_button',{
+      visible: true
+    })
     await page.click('#terms_privacy_accept_button')
     log(chalk.greenBright('User click on Terms & Privacy accept option'))
 
@@ -197,7 +178,7 @@ describe('Liquality wallet', async () => {
     console.log('User successfully loggedIn after unlock')
   })
 
-  it('import wallet use seed phrase 12 word', async () => {
+  it('import wallet use seed phrase 12 word with 0 coins', async () => {
     await page.click('#terms_privacy_accept_button') // Accept terms
     const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
       visible: true
@@ -234,6 +215,21 @@ describe('Liquality wallet', async () => {
       visible: true
     })
     console.log('user successfully logged in after import wallet')
+
+    await page.click('#testnet_network')
+    const overviewText = await page.$eval('.text-muted', el => el.innerText)
+    expect(overviewText, 'Testnet overview header').contain('TESTNET')
+    console.log(chalk.green('user successfully changed to TESTNET'))
+    // check Send & Swap & Receive options have been displayed
+    await page.waitForSelector('#send_action', {
+      visible: true
+    })
+    await page.waitForSelector('#swap_action', {
+      visible: true
+    })
+    await page.waitForSelector('#receive_action', {
+      visible: true
+    })
   })
   it('import wallet and see balance', async () => {
     await page.click('#terms_privacy_accept_button') // Accept terms
@@ -304,8 +300,10 @@ describe('Liquality wallet', async () => {
     const walletStatText = await page.$eval('.wallet-stats', el => el.innerText)
     expect(walletStatText, 'Wallet stats has currency should be USD').contain('USD')
     // Check the Total amount
-    const totalAmount = await page.$eval('.wallet-stats_total', el => el.innerText)
+    await page.waitForTimeout(10000)
+    const totalAmount = await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g,''))
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
+    console.log(chalk.green('After Import wallet, the funds total greater than 2000 USD'))
   })
   it('SWAP BTC to RBTC', async () => {
     await page.click('#terms_privacy_accept_button') // Accept terms
@@ -417,9 +415,14 @@ describe('Liquality wallet', async () => {
 
     // Review
     await page.click('#swap_review_button')
+    console.log(chalk.green('User clicked on Swap review button'))
 
-    await page.waitForSelector('#swap_review_button', {
+
+    await page.waitForSelector('#initiate_swap_button', {
       visible: true
     })
+    console.log(chalk.green('Initiate swap button has been enabled, almost there...'))
+    //TODO: Click on swap confirm step
+
   })
 })

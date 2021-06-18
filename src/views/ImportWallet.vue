@@ -32,8 +32,8 @@
     </div>
     <div class="footer-container bg-white">
         <div class="footer-content">
-          <button class="btn btn-light btn-outline-primary btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
-          <button class="btn btn-primary btn-lg btn-footer ml-2" :disabled="disableNext" @click="next">Continue</button>
+          <button id="import_wallet_cancel_button" class="btn btn-light btn-outline-primary btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
+          <button id="import_wallet_continue_button" class="btn btn-primary btn-lg btn-footer ml-2" :disabled="disableNext" @click="next">Continue</button>
         </div>
     </div>
   </div>
