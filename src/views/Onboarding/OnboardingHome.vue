@@ -537,8 +537,8 @@
         </p>
       </div>
       <div class="button-group">
-          <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
-          <button class="btn btn-primary btn-lg ml-2" @click="acceptTnC">I Accept</button>
+          <button id="terms_privacy_cancel_button" class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
+          <button id="terms_privacy_accept_button" class="btn btn-primary btn-lg ml-2" @click="acceptTnC">I Accept</button>
       </div>
     </div>
   </div>
