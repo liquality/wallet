@@ -10,7 +10,6 @@ const testUtil = new TestUtil()
 let browser
 let page
 const password = '123123123'
-const enterWords = ['blouse', 'sort', 'ice', 'forward', 'ivory', 'enrich', 'connect', 'mimic', 'apple', 'setup', 'level', 'palm']
 
 describe('Liquality wallet', async () => {
   // Chrome options
@@ -191,10 +190,12 @@ describe('Liquality wallet', async () => {
     })
     console.log('Import wallet page hase been loaded')
     // check continue button has been disabled
+    let enterWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level palm';
+    let enterWord = enterWords.split(' ');
     const seedsWordsCount = await page.$$('#import_wallet_word')
     for (let i = 0; i < seedsWordsCount.length; i++) {
       const wordInput = seedsWordsCount[i]
-      await wordInput.type(enterWords[i])
+      await wordInput.type(enterWord[i])
     }
 
     // Click on continue button
@@ -249,7 +250,7 @@ describe('Liquality wallet', async () => {
     if (!SEED_WORDS) {
       throw new Error('Please provide SEED_WORDS as environment variables')
     } else {
-      words = SEED_WORDS.split(',')
+      words = SEED_WORDS.split(' ')
     }
 
     const seedsWordsCount = await page.$$('#import_wallet_word')
@@ -306,7 +307,7 @@ describe('Liquality wallet', async () => {
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
     console.log(chalk.green('After Import wallet, the funds total greater than 2000 USD'))
   })
-  it('SWAP BTC to RBTC', async () => {
+  it.only('SWAP BTC to RBTC', async () => {
     await page.click('#terms_privacy_accept_button') // Accept terms
     const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
       visible: true
@@ -323,7 +324,7 @@ describe('Liquality wallet', async () => {
     if (!SEED_WORDS) {
       throw new Error('Please provide SEED_WORDS as environment variables')
     } else {
-      words = SEED_WORDS.split(',')
+      words = SEED_WORDS.split(' ')
     }
 
     const seedsWordsCount = await page.$$('#import_wallet_word')
