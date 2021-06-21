@@ -1,3 +1,4 @@
+/* eslint-env mocha */
 const TestUtil = require('../../utils/TestUtils')
 const puppeteer = require('puppeteer')
 const log = console.log
