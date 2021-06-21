@@ -11,7 +11,7 @@ let browser
 let page
 const password = '123123123'
 
-describe('Liquality wallet', async () => {
+describe('Liquality wallet...', async () => {
   // Chrome options
   const options = {
     slowMo: 20,
@@ -301,8 +301,8 @@ describe('Liquality wallet', async () => {
     // Check the currency
     const walletStatText = await page.$eval('.wallet-stats', el => el.innerText)
     expect(walletStatText, 'Wallet stats has currency should be USD').contain('USD')
-    // Check the Total amount
-    await page.waitForTimeout(10000)
+    // Check the Total amount - 10s wait to load amount
+    await page.waitForTimeout(10000);
     const totalAmount = await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g, ''))
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
     console.log(chalk.green('After Import wallet, the funds total greater than 2000 USD'))

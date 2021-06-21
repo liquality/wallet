@@ -19,7 +19,7 @@
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration --runInBand",
     "postinstall": "husky install",
-    "test:testNetNetwork": "./node_modules/mocha/bin/mocha --async-only --colors --no-timeouts --reporter nyan ./tests/integration/testnet/*.spec.js"
+    "test:testNetNetwork": "./node_modules/mocha/bin/mocha --async-only --colors --no-timeouts --reporter spec --ui bdd ./tests/integration/testnet/*.spec.js"
   },
   "dependencies": {
     "@liquality/bitcoin-esplora-batch-api-provider": "^1.1.9",
@@ -99,7 +99,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "husky": "^5.0.4",
     "jest": "^26.4.2",
-    "puppeteer": "^5.2.1",
+    "puppeteer": "^5.5.0",
     "sass": "^1.26.3",
     "sass-loader": "^8.0.2",
     "vue-cli-plugin-browser-extension": "^0.25.1",
