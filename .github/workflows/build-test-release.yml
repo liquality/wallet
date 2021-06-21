@@ -15,8 +15,11 @@ jobs:
           fetch-depth: 0
       - name: Build project
         uses: actions/setup-node@v2-beta
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           node-version: 12
+          args: install
       - uses: actions/cache@v1
         env:
           node-version: 12
@@ -48,6 +51,13 @@ jobs:
           npm ci
           npm run lint
           npm run build
+      - name: TestNet integration tests
+        uses: mujo-code/puppeteer-headful@master
+        env:
+          CI: 'true'
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+        with:
+          args: npm run test:testNetNetwork
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

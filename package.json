@@ -9,6 +9,8 @@
     "url": "git@github.com:liquality/wallet.git"
   },
   "scripts": {
+    "clean": "rm -rf node_modules",
+    "reinstall": "npm run clean && npm install",
     "dev": "vue-cli-service build --mode development --watch",
     "build:staging": "vue-cli-service build --mode staging",
     "build": "vue-cli-service build",
@@ -17,7 +19,7 @@
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration --runInBand",
     "postinstall": "husky install",
-    "test:wip": "./node_modules/mocha/bin/mocha --async-only --colors --no-timeouts --reporter nyan ./tests/integration/*.spec.js"
+    "test:testNetNetwork": "./node_modules/mocha/bin/mocha --async-only --colors --no-timeouts --reporter nyan ./tests/integration/testnet/*.spec.js"
   },
   "dependencies": {
     "@liquality/bitcoin-esplora-batch-api-provider": "^1.1.9",
