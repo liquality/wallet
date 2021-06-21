@@ -137,7 +137,7 @@ describe('Liquality wallet...', async () => {
       visible: true
     })
 
-    await page.waitFor('.receive_address:not(:empty)')
+    await page.waitForSelector('.receive_address:not(:empty)')
 
     // QR code has been loaded
     await page.waitForSelector('.receive_qr', {
@@ -307,6 +307,7 @@ describe('Liquality wallet...', async () => {
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
     console.log(chalk.green('After Import wallet, the funds total greater than 2000 USD'))
   })
+
   it('SWAP BTC to RBTC', async () => {
     await page.click('#terms_privacy_accept_button') // Accept terms
     const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
@@ -376,7 +377,7 @@ describe('Liquality wallet...', async () => {
     const walletStatText = await page.$eval('.wallet-stats', el => el.innerText)
     expect(walletStatText, 'Wallet stats has currency should be USD').contain('USD')
     // Check the Total amount
-    await page.waitFor(5000)
+    await page.waitForTimeout(5000)
     // const totalAmount = await page.$eval('.wallet-stats_total', el => el.innerText)
     // expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
 
@@ -387,7 +388,7 @@ describe('Liquality wallet...', async () => {
     })
     // SEND from assert (BTC)
     await page.type('#search_for_a_currency_search', 'BTC')
-    await page.waitFor(2000)
+    await page.waitForTimeout(2000)
     const assertListItems = await page.$$('#assert_list_item')
     await assertListItems[0].click()
     // select min
