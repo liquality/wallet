@@ -1,3 +1,4 @@
+/* eslint-disable */
 <template>
   <div class="swap">
     <NavBar :showBackButton="false" :showBack="false" :showMenuList="false">
