@@ -712,7 +712,7 @@ export default {
       return BN(this.receiveAmount).minus(this.toSwapFee)
     },
     totalToReceiveInFiat () {
-      const amount = this.stateReceiveAmount.plus(this.toSwapFee)
+      const amount = this.stateReceiveAmount.minus(this.toSwapFee)
       return cryptoToFiat(amount, this.fiatRates[this.toAssetChain]).toFormat(2)
     },
     assetsFeeSelector () {
