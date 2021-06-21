@@ -9,7 +9,6 @@ const testUtil = new TestUtil()
 
 let browser
 let page
-let navigationPromise
 const password = '123123123'
 
 describe('Liquality wallet...', async () => {
@@ -30,7 +29,6 @@ describe('Liquality wallet...', async () => {
     browser = await puppeteer.launch(options)
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
-    navigationPromise = page.waitForNavigation()
   })
 
   // after each hook
