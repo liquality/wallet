@@ -619,7 +619,7 @@ describe('Liquality wallet...', async () => {
     await assertListItems[0].click()
     expect(await page.$eval('#overview', el => el.innerText), 'SEND page not loaded correctly')
       .equals('SEND')
-    //Enter send amount (or) coins
+    // Enter send amount (or) coins
     await page.type('#send_amount_input_field', '0.000001')
     // Send address
     await page.type('#address', '0x172E90C757c66f0d93E96165FDb7B3c03337Be6A')
