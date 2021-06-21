@@ -307,7 +307,7 @@ describe('Liquality wallet', async () => {
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
     console.log(chalk.green('After Import wallet, the funds total greater than 2000 USD'))
   })
-  it.only('SWAP BTC to RBTC', async () => {
+  it('SWAP BTC to RBTC', async () => {
     await page.click('#terms_privacy_accept_button') // Accept terms
     const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
       visible: true
