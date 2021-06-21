@@ -1,4 +1,3 @@
-/* eslint-env mocha */
 const TestUtil = require('../../utils/TestUtils')
 const puppeteer = require('puppeteer')
 const log = console.log
@@ -53,7 +52,7 @@ describe('Liquality wallet...', async () => {
   })
 
   it('Create a wallet with less that 8 or more characters password', async () => {
-    let password = '1234567'
+    const password = '1234567'
     // Create new wallet
     await page.click('#create_new_wallet_option')
     log(chalk.greenBright('User click on create new wallet option'))
@@ -62,9 +61,10 @@ describe('Liquality wallet...', async () => {
     await page.type('#confirmPassword', password)
     log(chalk.greenBright('User set the password & confirmed'))
     // confirm button has been disabled
-    expect(await page.$('#next_button[disabled]'), 'Next Button should be disabled if password length ' +
+    const isNextButtonDisabled = await page.$('#next_button[disabled]')
+    expect(isNextButtonDisabled, 'Next Button should be disabled if password length ' +
       'is less that 8 characters')
-      .to.not.null
+      .not.to.equal(null)
     log(chalk.green.underline.bold('Continue button has been disabled if the password if password length ' +
       'is less that 8 characters'))
   })
@@ -77,9 +77,9 @@ describe('Liquality wallet...', async () => {
     await page.type('#confirmPassword', '121212121212')
     log(chalk.greenBright('User set the password & confirmed'))
     // confirm button has been disabled
-
-    expect(await page.$('#next_button[disabled]'), 'Next Button should be disabled if password mismatch')
-      .to.not.null
+    const isNextButtonDisabled = await page.$('#next_button[disabled]')
+    expect(isNextButtonDisabled, 'Next Button should be disabled if password mismatch')
+      .not.to.equal(null)
     log(chalk.green.underline.bold('Continue button has been disabled if the password & confirmPassword are wrong'))
   })
   it('Import wallet, lock and try to unlock with invalid password', async () => {
@@ -156,13 +156,12 @@ describe('Liquality wallet...', async () => {
     // Try to unlock with invalid password now
     await page.type('#password', '1212323233232')
     await page.click('#unlock_button')
-    await page.waitForSelector('#password_error',{
+    await page.waitForSelector('#password_error', {
       visible: true,
       timeout: 5000
     })
     expect(await page.$eval('#password_error', el => el.innerText))
       .contain('Try Again. Enter the right password (it has 8 or more characters).')
-
   })
   it('Create a new wallet with 12 words', async () => {
     // Create new wallet
@@ -300,8 +299,8 @@ describe('Liquality wallet...', async () => {
     })
     console.log('Import wallet page hase been loaded')
     // check continue button has been disabled
-    let enterWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level palm'
-    let enterWord = enterWords.split(' ')
+    const enterWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level palm'
+    const enterWord = enterWords.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')
     for (let i = 0; i < seedsWordsCount.length; i++) {
       const wordInput = seedsWordsCount[i]
