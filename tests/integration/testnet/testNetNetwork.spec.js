@@ -47,7 +47,7 @@ describe('Liquality wallet', async () => {
 
   it('Create a new wallet with 12 words', async () => {
     // Accept terms
-    await page.waitForSelector('#terms_privacy_accept_button',{
+    await page.waitForSelector('#terms_privacy_accept_button', {
       visible: true
     })
     await page.click('#terms_privacy_accept_button')
@@ -303,7 +303,7 @@ describe('Liquality wallet', async () => {
     expect(walletStatText, 'Wallet stats has currency should be USD').contain('USD')
     // Check the Total amount
     await page.waitForTimeout(10000)
-    const totalAmount = await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g,''))
+    const totalAmount = await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g, ''))
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
     console.log(chalk.green('After Import wallet, the funds total greater than 2000 USD'))
   })
@@ -419,12 +419,10 @@ describe('Liquality wallet', async () => {
     await page.click('#swap_review_button')
     console.log(chalk.green('User clicked on Swap review button'))
 
-
     await page.waitForSelector('#initiate_swap_button', {
       visible: true
     })
     console.log(chalk.green('Initiate swap button has been enabled, almost there...'))
-    //TODO: Click on swap confirm step
-
+    // TODO: Click on swap confirm step
   })
 })

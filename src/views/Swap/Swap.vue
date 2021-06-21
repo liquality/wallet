@@ -705,15 +705,17 @@ export default {
       return BN(this.safeAmount).plus(this.fromSwapFee)
     },
     totalToSendInFiat () {
-      const amount = BN(this.stateSendAmount).plus(this.fromSwapFee)
-      return cryptoToFiat(amount, this.fiatRates[this.assetChain]).toFormat(2)
+      const send = cryptoToFiat(BN(this.stateSendAmount), this.fiatRates[this.asset])
+      const fee = cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain])
+      return send.plus(fee).toFormat(2)
     },
     receiveAmountSameAsset () {
       return BN(this.receiveAmount).minus(this.toSwapFee)
     },
     totalToReceiveInFiat () {
-      const amount = this.stateReceiveAmount.plus(this.toSwapFee)
-      return cryptoToFiat(amount, this.fiatRates[this.toAssetChain]).toFormat(2)
+      const receive = cryptoToFiat(this.stateReceiveAmount, this.fiatRates[this.toAsset])
+      const fee = cryptoToFiat(this.toSwapFee, this.fiatRates[this.toAssetChain])
+      return receive.minus(fee).toFormat(2)
     },
     assetsFeeSelector () {
       return {
