@@ -29,6 +29,12 @@ describe('Liquality wallet...', async () => {
     browser = await puppeteer.launch(options)
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
+    // Accept terms
+    await page.waitForSelector('#terms_privacy_accept_button', {
+      visible: true
+    })
+    await page.click('#terms_privacy_accept_button')
+    log(chalk.greenBright('User click on Terms & Privacy accept option'))
   })
 
   // after each hook
@@ -45,14 +51,119 @@ describe('Liquality wallet...', async () => {
     await browser.close()
   })
 
-  it('Create a new wallet with 12 words', async () => {
-    // Accept terms
-    await page.waitForSelector('#terms_privacy_accept_button', {
+  it('Create a wallet with less that 8 or more characters password', async () => {
+    let password = '1234567'
+    // Create new wallet
+    await page.click('#create_new_wallet_option')
+    log(chalk.greenBright('User click on create new wallet option'))
+    // Set password
+    await page.type('#password', password)
+    await page.type('#confirmPassword', password)
+    log(chalk.greenBright('User set the password & confirmed'))
+    // confirm button has been disabled
+    expect(await page.$('#next_button[disabled]'), 'Next Button should be disabled if password length ' +
+      'is less that 8 characters')
+      .to.not.null
+    log(chalk.green.underline.bold('Continue button has been disabled if the password if password length ' +
+      'is less that 8 characters'))
+  })
+  it('Try to create a wallet with mismatch password', async () => {
+    // Create new wallet
+    await page.click('#create_new_wallet_option')
+    log(chalk.greenBright('User click on create new wallet option'))
+    // Set password
+    await page.type('#password', password)
+    await page.type('#confirmPassword', '121212121212')
+    log(chalk.greenBright('User set the password & confirmed'))
+    // confirm button has been disabled
+
+    expect(await page.$('#next_button[disabled]'), 'Next Button should be disabled if password mismatch')
+      .to.not.null
+    log(chalk.green.underline.bold('Continue button has been disabled if the password & confirmPassword are wrong'))
+  })
+  it('Import wallet, lock and try to unlock with invalid password', async () => {
+    const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
       visible: true
     })
-    await page.click('#terms_privacy_accept_button')
-    log(chalk.greenBright('User click on Terms & Privacy accept option'))
+    await importWithSeedOptionElement.click()
+    console.log('Import with seed phrase option has been displayed')
+    await page.waitForSelector('#import-wallet_top', {
+      visible: true
+    })
+    console.log('Import wallet page hase been loaded')
+    // Get the existing SEED words as environment variables
+    let words
+    const SEED_WORDS = process.env.SEED_WORDS
+    if (!SEED_WORDS) {
+      throw new Error('Please provide SEED_WORDS as environment variables')
+    } else {
+      words = SEED_WORDS.split(' ')
+    }
 
+    const seedsWordsCount = await page.$$('#import_wallet_word')
+    for (let i = 0; i < seedsWordsCount.length; i++) {
+      const wordInput = seedsWordsCount[i]
+      await wordInput.type(words[i])
+    }
+
+    // Click on continue button
+    await page.click('#import_wallet_continue_button')
+    console.log('Import wallet continue button has been clicked')
+
+    // Create a password
+    await page.type('#password', password)
+    await page.type('#confirmPassword', password)
+    await page.click('#next_button') // click on continue
+
+    // overview page
+    await page.waitForSelector('#overview', {
+      visible: true
+    })
+
+    await page.click('#head_network')
+    await page.waitForSelector('#testnet_network', {
+      visible: true
+    })
+    console.log('user successfully logged in after import wallet')
+
+    await page.click('#testnet_network')
+    const overviewText = await page.$eval('.text-muted', el => el.innerText)
+    expect(overviewText, 'Testnet overview header').contain('TESTNET')
+    console.log('user successfully changed to TESTNET')
+    // check Send & Swap & Receive options have been displayed
+    await page.waitForSelector('#send_action', {
+      visible: true
+    })
+    await page.waitForSelector('#swap_action', {
+      visible: true
+    })
+    await page.waitForSelector('#receive_action', {
+      visible: true
+    })
+
+    // Lock
+    await page.click('#burger_icon_menu')
+    await page.waitForSelector('#lock', {
+      visible: true
+    })
+
+    await page.click('#lock')
+    await page.waitForSelector('#password', {
+      visible: true
+    })
+
+    // Try to unlock with invalid password now
+    await page.type('#password', '1212323233232')
+    await page.click('#unlock_button')
+    await page.waitForSelector('#password_error',{
+      visible: true,
+      timeout: 5000
+    })
+    expect(await page.$eval('#password_error', el => el.innerText))
+      .contain('Try Again. Enter the right password (it has 8 or more characters).')
+
+  })
+  it('Create a new wallet with 12 words', async () => {
     // Create new wallet
     await page.click('#create_new_wallet_option')
     log(chalk.greenBright('User click on create new wallet option'))
@@ -177,9 +288,7 @@ describe('Liquality wallet...', async () => {
     })
     console.log('User successfully loggedIn after unlock')
   })
-
-  it('import wallet use seed phrase 12 word with 0 coins', async () => {
-    await page.click('#terms_privacy_accept_button') // Accept terms
+  it('Import wallet use seed phrase 12 word with 0 coins', async () => {
     const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
       visible: true
     })
@@ -190,8 +299,8 @@ describe('Liquality wallet...', async () => {
     })
     console.log('Import wallet page hase been loaded')
     // check continue button has been disabled
-    let enterWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level palm';
-    let enterWord = enterWords.split(' ');
+    let enterWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level palm'
+    let enterWord = enterWords.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')
     for (let i = 0; i < seedsWordsCount.length; i++) {
       const wordInput = seedsWordsCount[i]
@@ -233,8 +342,7 @@ describe('Liquality wallet...', async () => {
       visible: true
     })
   })
-  it('import wallet and see balance', async () => {
-    await page.click('#terms_privacy_accept_button') // Accept terms
+  it('Import wallet and see balance', async () => {
     const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
       visible: true
     })
@@ -302,14 +410,12 @@ describe('Liquality wallet...', async () => {
     const walletStatText = await page.$eval('.wallet-stats', el => el.innerText)
     expect(walletStatText, 'Wallet stats has currency should be USD').contain('USD')
     // Check the Total amount - 10s wait to load amount
-    await page.waitForTimeout(10000);
+    await page.waitForTimeout(10000)
     const totalAmount = await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g, ''))
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
     console.log(chalk.green('After Import wallet, the funds total greater than 2000 USD'))
   })
-
   it('SWAP BTC to RBTC', async () => {
-    await page.click('#terms_privacy_accept_button') // Accept terms
     const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
       visible: true
     })
