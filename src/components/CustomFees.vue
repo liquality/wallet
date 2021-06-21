@@ -210,9 +210,11 @@ export default {
     fee: function (val) {
       if (this.fees) {
         this.preset = ({
+          /* eslint-disable */
           [this.fees?.['slow']?.fee]: 'slow',
           [this.fees?.['average']?.fee]: 'average',
           [this.fees?.['fast']?.fee]: 'fast'
+          /* eslint-enable */
         })[val || 0]
       }
     }
