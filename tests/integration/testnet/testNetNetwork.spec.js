@@ -47,7 +47,7 @@ describe('Liquality wallet...', async () => {
         console.error(new Error(errorMessage))
       }
     })
-    // await browser.close()
+    await browser.close()
   })
 
   it('Create a wallet with less that 8 or more characters password', async () => {
