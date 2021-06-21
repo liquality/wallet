@@ -8,7 +8,7 @@
             Send
           </div>
           <div class="swap-send-top-amount">
-            <div class="btn btn-option label-append" @click="toogleShowAmountsFiat">
+            <div class="btn btn-option label-append" @click="toggleShowAmountsFiat">
               <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
                 {{ `${asset} ${sendAmount}` }}
               </span>
@@ -73,6 +73,7 @@
               }"
               :disabled="!hasMarket"
               class="btn btn-option"
+              id="min_amount_send_button"
               @click="setSendAmount(min)"
             >
               Min
@@ -89,6 +90,7 @@
               }"
               :disabled="!hasMarket"
               class="btn btn-option tooltip-target"
+              id="max_amount_send_button"
               @click="setSendAmount(max)"
             >
               Max
@@ -102,7 +104,7 @@
       </div>
       <div class="swap-send-bottom-available">
         <span class="text-muted">Available</span>
-        {{ isNaN(available) ? '0' : available || '0' }} {{ asset }}
+        {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
       </div>
     </div>
   </div>
@@ -110,6 +112,7 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
+import { dpUI } from '@/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import AccountTooltip from '@/components/AccountTooltip'
 
@@ -140,9 +143,10 @@ export default {
   ],
   created () {},
   methods: {
+    dpUI,
     getAssetColorStyle,
     getAssetIcon,
-    toogleShowAmountsFiat () {
+    toggleShowAmountsFiat () {
       this.showAmountsInFiat = !this.showAmountsInFiat
     },
     setSendAmount (amount) {

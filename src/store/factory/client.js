@@ -30,51 +30,18 @@ import {
   EthereumLedgerBridgeApp,
   LEDGER_BITCOIN_OPTIONS
 } from '@/utils/ledger-bridge-provider'
-
-import { BitcoinNetworks } from '@liquality/bitcoin-networks'
-import { EthereumNetworks } from '@liquality/ethereum-networks'
-import { NearNetworks } from '@liquality/near-networks'
 import { bitcoin } from '@liquality/types'
+import { chains } from '@liquality/cryptoassets'
 
 import { isERC20 } from '@/utils/asset'
+import { BTC_ADDRESS_TYPE_TO_PREFIX } from '@/utils/address'
 import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
+import { AssetNetworks } from '@/store/utils'
 
 const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
 
-export const Networks = ['mainnet', 'testnet']
-
-export const AssetNetworks = {
-  BTC: {
-    testnet: BitcoinNetworks.bitcoin_testnet,
-    mainnet: BitcoinNetworks.bitcoin
-  },
-  ETH: {
-    testnet: EthereumNetworks.rinkeby,
-    mainnet: EthereumNetworks.ethereum_mainnet
-  },
-  RBTC: {
-    testnet: EthereumNetworks.rsk_testnet,
-    mainnet: EthereumNetworks.rsk_mainnet
-  },
-  BNB: {
-    testnet: EthereumNetworks.bsc_testnet,
-    mainnet: EthereumNetworks.bsc_mainnet
-  },
-  NEAR: {
-    testnet: NearNetworks.near_testnet,
-    mainnet: NearNetworks.near_mainnet
-  }
-}
-
-// default Derivation paths
-const BTC_ADDRESS_TYPE_TO_PREFIX = {
-  legacy: 44,
-  'p2sh-segwit': 49,
-  bech32: 84
-}
-
-function createBtcClient (network, mnemonic, walletType) {
+function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = AssetNetworks.BTC[network]
   const esploraApi = buildConfig.exploraApis[network]
@@ -88,8 +55,8 @@ function createBtcClient (network, mnemonic, walletType) {
   if (walletType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
     const { addressType } = option
-    const baseDerivationPath = `${BTC_ADDRESS_TYPE_TO_PREFIX[addressType]}'/${bitcoinNetwork.coinType}'/0'`
-    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(LEDGER_BRIDGE_URL)
+    const baseDerivationPath = `${BTC_ADDRESS_TYPE_TO_PREFIX[addressType]}'/${bitcoinNetwork.coinType}'/${indexPath}'`
+    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(network, LEDGER_BRIDGE_URL)
     const ledger = new BitcoinLedgerBridgeProvider(
       {
         network: bitcoinNetwork,
@@ -100,7 +67,7 @@ function createBtcClient (network, mnemonic, walletType) {
     )
     btcClient.addProvider(ledger)
   } else {
-    const baseDerivationPath = `${BTC_ADDRESS_TYPE_TO_PREFIX[bitcoin.AddressType.BECH32]}'/${bitcoinNetwork.coinType}'/0'`
+    const baseDerivationPath = `${BTC_ADDRESS_TYPE_TO_PREFIX[bitcoin.AddressType.BECH32]}'/${bitcoinNetwork.coinType}'/${indexPath}'`
     btcClient.addProvider(new BitcoinJsWalletProvider(
       { network: bitcoinNetwork, mnemonic, baseDerivationPath }
     ))
@@ -114,15 +81,29 @@ function createBtcClient (network, mnemonic, walletType) {
   return btcClient
 }
 
-function createEthereumClient (asset, network, rpcApi, scraperApi, feeProvider, mnemonic, walletType) {
+function createEthereumClient (
+  asset,
+  network,
+  ethereumNetwork,
+  rpcApi,
+  scraperApi,
+  feeProvider,
+  mnemonic,
+  walletType,
+  indexPath = 0
+) {
   const ethClient = new Client()
-  const derivationPath = `m/44'/${network.coinType}'/0'/0/0`
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
+
+  const derivationPath = `m/44'/${ethereumNetwork.coinType}'/${indexPath}'/0/0`
   if (walletType === 'ethereum_ledger' || walletType === 'rsk_ledger') {
-    const ethereumLedgerApp = new EthereumLedgerBridgeApp('ETH', LEDGER_BRIDGE_URL)
+    const assetData = cryptoassets[asset]
+    const chainData = chains?.[assetData.chain]
+    const { nativeAsset } = chainData || 'ETH'
+    const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, nativeAsset, LEDGER_BRIDGE_URL)
     const ledger = new EthereumLedgerBridgeProvider(
       {
-        network,
+        network: ethereumNetwork,
         derivationPath
       },
       ethereumLedgerApp
@@ -130,7 +111,7 @@ function createEthereumClient (asset, network, rpcApi, scraperApi, feeProvider, 
     ethClient.addProvider(ledger)
   } else {
     ethClient.addProvider(new EthereumJsWalletProvider(
-      { network, mnemonic, derivationPath }
+      { network: ethereumNetwork, mnemonic, derivationPath }
     ))
   }
 
@@ -148,20 +129,20 @@ function createEthereumClient (asset, network, rpcApi, scraperApi, feeProvider, 
   return ethClient
 }
 
-function createEthClient (asset, network, mnemonic, walletType) {
+function createEthClient (asset, network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const ethereumNetwork = AssetNetworks.ETH[network]
   const infuraApi = isTestnet ? 'https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f' : 'https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'
   const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
   const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider()
 
-  return createEthereumClient(asset, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, walletType)
+  return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, walletType, indexPath)
 }
 
-function createNearClient (network, mnemonic) {
+function createNearClient (network, mnemonic, indexPath = 0) {
   const nearNetwork = AssetNetworks.NEAR[network]
   const nearClient = new Client()
-  const derivationPath = `m/44'/${nearNetwork.coinType}'/0'`
+  const derivationPath = `m/44'/${nearNetwork.coinType}'/${indexPath}'`
   nearClient.addProvider(new NearRpcProvider(nearNetwork))
   nearClient.addProvider(new NearJsWalletProvider(
     {
@@ -176,33 +157,44 @@ function createNearClient (network, mnemonic) {
   return nearClient
 }
 
-function createRskClient (asset, network, mnemonic, walletType) {
+function createRskClient (asset, network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const rskNetwork = AssetNetworks.RBTC[network]
   const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
   const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
-  return createEthereumClient(asset, rskNetwork, rpcApi, scraperApi, feeProvider, mnemonic, walletType)
+  return createEthereumClient(asset, network, rskNetwork, rpcApi, scraperApi, feeProvider, mnemonic, walletType, indexPath)
 }
 
-function createBSCClient (asset, network, mnemonic) {
+function createBSCClient (asset, network, mnemonic, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const bnbNetwork = AssetNetworks.BNB[network]
   const rpcApi = isTestnet ? 'https://data-seed-prebsc-1-s1.binance.org:8545' : 'https://bsc-dataseed.binance.org'
   const scraperApi = isTestnet ? 'https://liquality.io/bsc-testnet-api' : 'https://liquality.io/bsc-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
-  return createEthereumClient(asset, bnbNetwork, rpcApi, scraperApi, feeProvider, mnemonic)
+  return createEthereumClient(asset, network, bnbNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
 }
 
-export const createClient = (asset, network, mnemonic, walletType) => {
+function createPolygonClient (asset, network, mnemonic, indexPath = 0) {
+  const isTestnet = network === 'testnet'
+  const polygonNetwork = AssetNetworks.MATIC[network]
+  const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com/' : 'https://rpc-mainnet.matic.network/'
+  const scraperApi = isTestnet ? 'https://liquality.io/polygon-testnet-api' : 'https://liquality.io/polygon-mainnet-api'
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
+
+  return createEthereumClient(asset, network, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
+}
+
+export const createClient = (asset, network, mnemonic, walletType, indexPath = 0) => {
   const assetData = cryptoassets[asset]
 
-  if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType)
-  if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic, walletType)
-  if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic)
-  if (assetData.chain === 'near') return createNearClient(network, mnemonic)
+  if (assetData?.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType, indexPath)
+  if (assetData?.chain === 'rsk') return createRskClient(asset, network, mnemonic, walletType, indexPath)
+  if (assetData?.chain === 'bsc') return createBSCClient(asset, network, mnemonic, indexPath)
+  if (assetData?.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
+  if (assetData?.chain === 'near') return createNearClient(network, mnemonic, indexPath)
 
-  return createEthClient(asset, network, mnemonic, walletType)
+  return createEthClient(asset, network, mnemonic, walletType, indexPath)
 }

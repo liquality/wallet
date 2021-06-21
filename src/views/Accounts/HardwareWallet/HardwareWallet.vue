@@ -88,26 +88,13 @@ export default {
             asset: asset.name,
             walletType: _walletType,
             startingIndex,
-            numAddresses: LEDGER_PER_PAGE
+            numAccounts: LEDGER_PER_PAGE
           }
           this.currentStep = 'unlock'
 
           const accounts = await this.getLedgerAccounts(payload)
-
           if (accounts && accounts.length > 0) {
-            this.accounts = accounts.map((account, index) => {
-              const { address } = account
-              const exists = this.networkAccounts.find(a => {
-                const _address = address.startsWith('0x') ? address.substr(2) : address
-                return a.addresses.includes(_address)
-              }
-              )
-              return {
-                account,
-                index: index + startingIndex,
-                exists: !!exists
-              }
-            })
+            this.accounts = accounts
             this.ledgerPage = currentPage
           } else {
             this.ledgerError = { message: 'No accounts found' }

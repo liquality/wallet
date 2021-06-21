@@ -8,22 +8,22 @@
             </span>
             <span>USD</span>
         </div>
-        <span>
+        <span id="total_assets">
             {{accountsData.length}} Asset{{ accountsData.length === 1 ? '' : 's' }}
         </span>
          <div class="wallet-actions">
           <router-link to="/assets/send"
-                       class="wallet-actions-item send-action">
+                       class="wallet-actions-item send-action" id="send_action">
             <SendIcon/>
             Send
           </router-link>
           <router-link to="/assets/swap"
-                       class="wallet-actions-item swap-action">
+                       class="wallet-actions-item swap-action" id="swap_action">
             <SwapIcon/>
             Swap
           </router-link>
           <router-link to="/assets/receive"
-                       class="wallet-actions-item receive-action">
+                       class="wallet-actions-item receive-action" id="receive_action">
             <ReceiveIcon/>
             Receive
           </router-link>

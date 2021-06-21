@@ -11,7 +11,9 @@ export default {
       'RBTC',
       'SOV',
       'BNB',
-      'NEAR'
+      'NEAR',
+      'MATIC',
+      'PWETH'
     ],
     testnet: [
       'BTC',
@@ -20,7 +22,9 @@ export default {
       'RBTC',
       'BNB',
       'NEAR',
-      'SOV'
+      'SOV',
+      'MATIC',
+      'PWETH'
     ]
   },
   agentEndpoints: {
@@ -37,5 +41,5 @@ export default {
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon']
 }

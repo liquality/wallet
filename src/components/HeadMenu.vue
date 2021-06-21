@@ -1,8 +1,8 @@
 <template>
-  <div class="dropdown head-menu"
+  <div id="account" class="dropdown head-menu"
       v-click-away="hide">
     <button class="btn dropdown-toggle"
-            @click="toogle">
+            @click="toggle">
           <div class="label-menu">Account</div>
           <ChevronRightIcon class="chevron"
                         :class="{ open: dropdownOpen }"
@@ -50,7 +50,7 @@ export default {
     }
   },
   methods: {
-    toogle () {
+    toggle () {
       this.dropdownOpen = !this.dropdownOpen
     },
     hide () {

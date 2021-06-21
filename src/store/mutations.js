@@ -123,8 +123,14 @@ export default {
 
       if (index >= 0) {
         const _account = accounts[index]
+        const { balances } = _account
+        const balanceAssets = Object.keys(balances).filter(asset => assets.includes(asset))
+        for (const asset of balanceAssets) {
+          delete balances[asset]
+        }
         const updatedAccount = {
           ..._account,
+          balances,
           assets: _account.assets.filter(asset => !assets.includes(asset))
         }
 
@@ -232,5 +238,8 @@ export default {
   },
   SAVE_PASSWORD (state, { password }) {
     state.tempPassword = password
+  },
+  SET_USE_LEDGER_LIVE (state, { use }) {
+    state.useLedgerLive = use
   }
 }

@@ -21,12 +21,12 @@ const FEE_UNITS = {
   },
   ETH: {
     [TX_TYPES.SEND]: 21000,
-    [TX_TYPES.SWAP_INITIATION]: 150000,
+    [TX_TYPES.SWAP_INITIATION]: 155000,
     [TX_TYPES.SWAP_CLAIM]: 45000
   },
   RBTC: {
     [TX_TYPES.SEND]: 21000,
-    [TX_TYPES.SWAP_INITIATION]: 160000,
+    [TX_TYPES.SWAP_INITIATION]: 165000,
     [TX_TYPES.SWAP_CLAIM]: 45000
   },
   ERC20: {
@@ -35,6 +35,11 @@ const FEE_UNITS = {
     [TX_TYPES.SWAP_CLAIM]: 100000
   },
   BNB: {
+    [TX_TYPES.SEND]: 21000,
+    [TX_TYPES.SWAP_INITIATION]: 150000,
+    [TX_TYPES.SWAP_CLAIM]: 45000
+  },
+  MATIC: {
     [TX_TYPES.SEND]: 21000,
     [TX_TYPES.SWAP_INITIATION]: 150000,
     [TX_TYPES.SWAP_CLAIM]: 45000
@@ -50,13 +55,15 @@ const FEE_TYPES = {
   ETH: 'ETH',
   BTC: 'BTC',
   RBTC: 'RBTC',
-  NEAR: 'NEAR'
+  NEAR: 'NEAR',
+  POLYGON: 'POLYGON'
 }
 
 const FEE_OPTIONS = {
   SLOW: { name: 'Slow', label: 'Slow' },
   AVERAGE: { name: 'Average', label: 'Avg' },
-  FAST: { name: 'Fast', label: 'Fast' }
+  FAST: { name: 'Fast', label: 'Fast' },
+  CUSTOM: { name: 'Custom', label: 'Custom' }
 }
 
 function getTxFee (_asset, type, _feePrice) {
@@ -70,8 +77,8 @@ function getTxFee (_asset, type, _feePrice) {
 }
 
 function getFeeLabel (fee) {
-  const name = fee.toUpperCase()
-  return FEE_OPTIONS[name].label
+  const name = fee?.toUpperCase() || ''
+  return FEE_OPTIONS?.[name]?.label || ''
 }
 
 export { TX_TYPES, FEE_TYPES, FEE_OPTIONS, getTxFee, getFeeLabel }

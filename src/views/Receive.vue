@@ -11,7 +11,7 @@
         <div class="form-group">
           <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
           <label>Your Current {{asset}} Address</label>
-          <p class="receive_address">{{address}}
+          <p class="receive_address" id="receive_address">{{address}}
             <CopyIcon
                   class="copy-icon"
                   @click="copy"
@@ -22,10 +22,10 @@
                 />
           </p>
           <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
-          <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
+          <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
           <div v-if="faucet" class="testnet_message">
             <div>{{ faucet.name }} testnet faucet</div>
-            <div>
+            <div id="receive_url">
               <a :href="faucet.url"
                  target="_blank">
                  {{ faucet.url }}
@@ -38,11 +38,11 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`">
-            <button class="btn btn-light btn-outline-primary btn-lg">
+            <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">
               Done
             </button>
           </router-link>
-          <button class="btn btn-primary btn-lg btn-icon" @click="copy">
+          <button class="btn btn-primary btn-lg btn-icon" id="copy_address_button" @click="copy">
             <template v-if="copied"><TickIcon /> Copied!</template>
             <template v-else><CopyWhiteIcon class="no-stroke"/> Copy Address</template>
           </button>
@@ -96,8 +96,10 @@ export default {
       return ({
         bitcoin: 'bitcoin',
         ethereum: 'ethereum',
+        near: 'near',
         rsk: 'ethereum',
-        bsc: 'ethereum'
+        bsc: 'ethereum',
+        polyon: 'ethereum'
       })[cryptoassets[this.asset].chain]
     },
     faucet () {
@@ -106,7 +108,9 @@ export default {
           BTC: { name: 'Bitcoin', url: 'https://testnet-faucet.mempool.co/' },
           ETH: { name: 'Ether', url: 'https://faucet.rinkeby.io/' },
           RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' },
-          NEAR: { name: 'NEAR', url: '' }
+          BNB: { name: 'BNB', url: 'https://testnet.binance.org/faucet-smart/' },
+          NEAR: { name: 'NEAR', url: '' },
+          MATIC: { name: 'MATIC', url: 'https://faucet.matic.network/' }
         })[this.asset]
       }
       return null

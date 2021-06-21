@@ -8,7 +8,7 @@
             Send
           </div>
           <div class="send-top-amount">
-            <div class="btn btn-option label-append" @click="toogleShowAmountsFiat">
+            <div class="btn btn-option label-append" @click="toggleShowAmountsFiat">
               <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
                 {{ `${asset} ${amount}` }}
               </span>
@@ -67,7 +67,7 @@
                 active: maxActive
               }"
               class="btn btn-option tooltip-target"
-              @click="$emit('toogle-max')"
+              @click="$emit('toggle-max')"
             >
               Max
             </button>
@@ -80,7 +80,7 @@
       </div>
       <div class="send-bottom-available">
         <span class="text-muted">Available</span>
-        {{ isNaN(available) ? '0' : available || '0' }} {{ asset }}
+        {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
       </div>
     </div>
   </div>
@@ -88,6 +88,7 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
+import { dpUI } from '@/utils/coinFormatter'
 import AccountTooltip from '@/components/AccountTooltip'
 
 export default {
@@ -111,9 +112,10 @@ export default {
     'maxActive'
   ],
   methods: {
+    dpUI,
     getAssetColorStyle,
     getAssetIcon,
-    toogleShowAmountsFiat () {
+    toggleShowAmountsFiat () {
       this.showAmountsInFiat = !this.showAmountsInFiat
     }
   }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="view-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
       <span class="wallet_header"><strong>Settings</strong></span>
     </NavBar>
@@ -30,6 +30,14 @@
           <button class="btn btn-outline-primary" @click="downloadLogs">Download Logs</button>
         </div>
       </div>
+      <div class="setting-item">
+        <div class="setting-item_title flex-fill mb-2">Use Ledger Live
+          <span class="setting-item_sub">The Ledger Live brige allows to use your Ledger easily.</span>
+        </div>
+        <div class="setting-item_control">
+          <toggle-button  :css-colors="true" :value="useLedgerLive" @change="e => toogleUseLedgerLive(e.value)" />
+        </div>
+      </div>
       <div class="settings-footer">
          <div class="text-muted">Version {{ appVersion }}</div>
         </div>
@@ -52,7 +60,13 @@ export default {
     AssetDropdown
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'injectEthereum', 'injectEthereumAsset']),
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId',
+      'injectEthereum',
+      'injectEthereumAsset',
+      'useLedgerLive'
+    ]),
     ethereumAssets () {
       return Object.keys(cryptoassets)
         .filter(isEthereumNativeAsset)
@@ -71,10 +85,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['enableEthereumInjection', 'disableEthereumInjection', 'setEthereumInjectionAsset']),
+    ...mapActions([
+      'enableEthereumInjection',
+      'disableEthereumInjection',
+      'setEthereumInjectionAsset',
+      'setUseLedgerLive'
+    ]),
     toggleInjectEthereum (enable) {
       if (enable) this.enableEthereumInjection()
       else this.disableEthereumInjection()
+    },
+    async toogleUseLedgerLive (use) {
+      await this.setUseLedgerLive({ use })
     },
     updateInjectEthereumAsset (asset) {
       this.setEthereumInjectionAsset({ asset: asset.name })
@@ -96,7 +118,8 @@ export default {
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 600px;
+  height: 100%;
+  padding-bottom: 40px;
 
   .setting-item {
     width: 100%;
@@ -118,8 +141,8 @@ export default {
 
   .settings-footer {
     width: 100%;
-    position: fixed;
     bottom: 0;
+    margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
   }

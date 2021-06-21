@@ -113,7 +113,6 @@ export default {
       return getNativeAsset(this.asset)
     },
     address () {
-      console.log(this.request.args[0])
       return this.request.args[0].to
     },
     shortAddress () {

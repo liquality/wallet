@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="send" v-if="!showConfirm">
+  <div class="view-container">
+    <div class="send" v-if="currentStep === 'inputs'">
       <NavBar
         showBack="true"
         :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
@@ -16,7 +16,7 @@
             :account="account"
             :amount-fiat="amountFiat"
             @update:amount="(newAmount) => (amount = newAmount)"
-            @toogle-max="toogleMaxAmount"
+            @toggle-max="toggleMaxAmount"
             @update:amountFiat="(amount) => (amountFiat = amount)"
             :max="available"
             :available="available"
@@ -57,12 +57,20 @@
                 <li>
                   <div class="send_fees">
                     <span class="selectors-asset">{{ assetChain }}</span>
+                    <div class="custom-fees" v-if="customFee">
+                    {{ currentFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
+                    <button class="btn btn-link" @click="resetCustomFee">
+                      Reset
+                    </button>
+                  </div>
                     <FeeSelector
+                      v-else
                       :asset="asset"
                       v-model="selectedFee"
-                      v-bind:fees="assetFees"
-                      v-bind:txTypes="[txType]"
-                      v-bind:fiatRates="fiatRates"
+                      :fees="assetFees"
+                      :totalFees="maxOptionActive ? maxSendFees : sendFees"
+                      :fiatRates="fiatRates"
+                      @custom-selected="onCustomFeeSelected"
                     />
                   </div>
                 </li>
@@ -80,7 +88,7 @@
             </router-link>
             <button
               class="btn btn-primary btn-lg"
-              @click="showConfirm = true"
+              @click="currentStep = null"
               :disabled="!canSend"
             >
               Review
@@ -89,7 +97,19 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div class="send" v-else-if="currentStep === 'custom-fees'">
+      <CustomFees
+        @apply="applyCustomFee"
+        @update="setCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="assetChain"
+        :selected-fee="selectedFee"
+        :fees="assetFees"
+        :totalFees="maxOptionActive ? maxSendFees : sendFees"
+        :fiatRates="fiatRates"
+      />
+    </div>
+    <div class="send" v-else>
       <NavBar
         :showBackButton="true"
         :backClick="back"
@@ -137,7 +157,7 @@
         </div>
         <div class="mt-40">
           <label>Send To</label>
-          <p class="confirm-address">{{ shortenAddress(this.address) }}</p>
+          <p class="confirm-address">{{ this.address ? shortenAddress(this.address) : '' }}</p>
         </div>
       </div>
       <div class="wrapper_bottom">
@@ -145,7 +165,7 @@
           <button
             class="btn btn-light btn-outline-primary btn-lg"
             v-if="!loading"
-            @click="showConfirm = false"
+            @click="currentStep = 'inputs'"
           >
             Edit
           </button>
@@ -160,19 +180,20 @@
         </div>
       </div>
     </div>
-    <!-- Modals for ledger prompts -->
+    </div>
+     <!-- Modals for ledger prompts -->
     <OperationErrorModal :open="sendErrorModalOpen"
                          :account="account"
                          @close="closeSendErrorModal"
                          :error="sendErrorMessage" />
     <LedgerSignRequestModal :open="signRequestModalOpen"
                             @close="closeSignRequestModal" />
-    </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
+import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
@@ -196,6 +217,7 @@ import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
+import CustomFees from '@/components/CustomFees'
 
 export default {
   components: {
@@ -205,20 +227,25 @@ export default {
     DetailsContainer,
     SendInput,
     OperationErrorModal,
-    LedgerSignRequestModal
+    LedgerSignRequestModal,
+    CustomFees
   },
   data () {
     return {
+      sendFees: {},
+      maxSendFees: {},
       stateAmount: 0,
       stateAmountFiat: 0,
       address: null,
       selectedFee: 'average',
-      showConfirm: false,
+      currentStep: 'inputs',
       loading: false,
       maxOptionActive: false,
       sendErrorModalOpen: false,
       signRequestModalOpen: false,
-      sendErrorMessage: ''
+      sendErrorMessage: '',
+      customFeeAssetSelected: null,
+      customFee: null
     }
   },
   props: {
@@ -233,7 +260,8 @@ export default {
       'fiatRates'
     ]),
     ...mapGetters([
-      'accountItem'
+      'accountItem',
+      'client'
     ]),
     account () {
       return this.accountItem(this.accountId)
@@ -274,12 +302,26 @@ export default {
       return getNativeAsset(this.asset)
     },
     assetFees () {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
+      const assetFees = {}
+      if (this.customFee) {
+        assetFees.custom = { fee: this.customFee }
+      }
+
+      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         this.assetChain
       ]
+      if (fees) {
+        Object.assign(assetFees, fees)
+      }
+
+      return assetFees
     },
     feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
+    },
+    currentFee () {
+      const fees = this.maxOptionActive ? this.maxSendFees : this.sendFees
+      return (this.selectedFee in fees) ? fees[this.selectedFee] : BN(0)
     },
     isValidAddress () {
       return chains[cryptoassets[this.asset].chain].isValidAddress(this.address)
@@ -301,23 +343,15 @@ export default {
 
       return true
     },
-    txType () {
-      return TX_TYPES.SEND
-    },
-    sendFee () {
-      const feePrice = this.feesAvailable
-        ? this.assetFees[this.selectedFee].fee
-        : 0
-      return getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
-    },
     prettyFee () {
-      return this.sendFee.dp(6)
+      return this.currentFee.dp(6)
     },
     available () {
       if (cryptoassets[this.asset].type === 'erc20') {
         return unitToCurrency(cryptoassets[this.asset], this.balance)
       } else {
-        const fee = currencyToUnit(cryptoassets[this.assetChain], this.sendFee)
+        const maxSendFee = (this.selectedFee in this.maxSendFees) ? this.maxSendFees[this.selectedFee] : BN(0)
+        const fee = currencyToUnit(cryptoassets[this.assetChain], maxSendFee)
         const available = BN.max(BN(this.balance).minus(fee), 0)
         return unitToCurrency(cryptoassets[this.asset], available)
       }
@@ -326,7 +360,7 @@ export default {
       return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
-      return prettyFiatBalance(this.sendFee, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.currentFee, this.fiatRates[this.asset])
     },
     feeType () {
       return FEE_TYPES[this.assetChain]
@@ -338,11 +372,11 @@ export default {
       return getFeeLabel(this.selectedFee)
     },
     totalToSendInFiat () {
-      const total = BN(this.amount).plus(BN(this.sendFee))
+      const total = BN(this.amount).plus(BN(this.currentFee))
       return prettyFiatBalance(total, this.fiatRates[this.asset])
     },
     amountWithFee () {
-      return BN(this.amount).plus(BN(this.sendFee))
+      return BN(this.amount).plus(BN(this.currentFee))
     }
   },
   methods: {
@@ -353,6 +387,42 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
+    async _updateSendFees (amount) {
+      const getMax = amount === undefined
+      if (this.feesAvailable) {
+        const sendFees = {}
+        for (const [speed, fee] of Object.entries(this.assetFees)) {
+          const feePrice = fee.fee
+          sendFees[speed] = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
+        }
+        if (this.asset === 'BTC') {
+          const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)
+          const feePerBytes = Object.values(this.assetFees).map(fee => fee.fee)
+          const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
+          try {
+            const totalFees = await client.getMethod('getTotalFees')({ value, feePerBytes, max: getMax })
+            for (const [speed, fee] of Object.entries(this.assetFees)) {
+              const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
+              sendFees[speed] = totalFee
+            }
+          } catch (e) {
+            console.error(e)
+          }
+        }
+
+        if (getMax) {
+          this.maxSendFees = sendFees
+        } else {
+          this.sendFees = sendFees
+        }
+      }
+    },
+    updateSendFees: _.debounce(async function (amount) {
+      await this._updateSendFees(amount)
+    }, 800),
+    async updateMaxSendFees () {
+      await this._updateSendFees()
+    },
     async send () {
       this.sendErrorMessage = ''
       this.loading = true
@@ -364,6 +434,8 @@ export default {
         const amountToSend = this.maxOptionActive ? this.available : this.amount
 
         const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toNumber()
+
+        // validate for custom fees
         const fee = this.feesAvailable
           ? this.assetFees[this.selectedFee].fee
           : undefined
@@ -388,7 +460,7 @@ export default {
         this.sendErrorModalOpen = true
       }
     },
-    toogleMaxAmount () {
+    toggleMaxAmount () {
       this.maxOptionActive = !this.maxOptionActive
       if (this.maxOptionActive) {
         this.amount = BN.min(
@@ -398,7 +470,7 @@ export default {
       }
     },
     back () {
-      this.showConfirm = false
+      this.currentStep = 'inputs'
     },
     closeSendErrorModal () {
       this.sendErrorModalOpen = false
@@ -407,10 +479,45 @@ export default {
     closeSignRequestModal () {
       this.signRequestModalOpen = false
       this.loading = false
+    },
+    cancelCustomFee () {
+      this.currentStep = 'inputs'
+      this.selectedFee = 'average'
+    },
+    setCustomFee: _.debounce(async function ({ fee }) {
+      this.customFee = fee
+      if (this.maxOptionActive) {
+        this.updateMaxSendFees()
+      } else {
+        this.updateSendFees(this.amount)
+      }
+    }, 800),
+    applyCustomFee ({ fee }) {
+      const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee)
+      if (presetFee) {
+        const [speed] = presetFee
+        this.selectedFee = speed
+        this.customFee = null
+      } else {
+        this.updateMaxSendFees()
+        this.updateSendFees(this.amount)
+        this.customFee = fee
+        this.selectedFee = 'custom'
+      }
+      this.currentStep = 'inputs'
+    },
+    onCustomFeeSelected () {
+      this.currentStep = 'custom-fees'
+    },
+    resetCustomFee () {
+      this.customFee = null
+      this.selectedFee = 'average'
     }
   },
-  created () {
-    this.updateFees({ asset: this.assetChain })
+  async created () {
+    await this.updateFees({ asset: this.assetChain })
+    await this.updateSendFees(0)
+    await this.updateMaxSendFees()
   },
   watch: {
     selectedFee: {
@@ -429,6 +536,12 @@ export default {
       const available = dpUI(this.available)
       if (!amount.eq(available)) {
         this.maxOptionActive = false
+        this.updateSendFees(this.amount)
+      }
+    },
+    available: function () {
+      if (this.maxOptionActive) {
+        this.amount = dpUI(this.available)
       }
     }
   }
@@ -458,6 +571,9 @@ export default {
     margin: 6px 0;
     .fee-selector {
       margin-left: 6px;
+    }
+    .custom-fees {
+      font-weight: normal;
     }
 
   }

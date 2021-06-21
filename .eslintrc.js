@@ -3,7 +3,8 @@ module.exports = {
 
   env: {
     node: true,
-    webextensions: true
+    webextensions: true,
+    mocha: true
   },
 
   extends: [

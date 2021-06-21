@@ -10,7 +10,7 @@
             <div class="swap-receive-top-amount">
               <div
                 class="btn btn-option label-append"
-                @click="toogleShowAmountsFiat"
+                @click="toggleShowAmountsFiat"
               >
                 <span
                   v-if="showAmountsInFiat"
@@ -62,6 +62,7 @@
     <div class="swap-receive-bottom" v-if="!enterSendToAddress">
       <small
         class="form-text d-flex align-items-center justify-content-between"
+        id="receive_at_external_wallet"
       >
         <a @click="enterSendToAddress = true">
           + Receive at external wallet
@@ -126,7 +127,7 @@ export default {
   methods: {
     getAssetColorStyle,
     getAssetIcon,
-    toogleShowAmountsFiat () {
+    toggleShowAmountsFiat () {
       this.showAmountsInFiat = !this.showAmountsInFiat
     },
     closeReceiveAt () {
