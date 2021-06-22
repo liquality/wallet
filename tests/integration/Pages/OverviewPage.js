@@ -1,7 +1,6 @@
 const chalk = require('chalk')
 
 class OverviewPage {
-
   /**
    * Overview page loaded after user loggedIn.
    * @param page
@@ -47,7 +46,6 @@ class OverviewPage {
   async GetCurrency (page) {
     return await page.$eval('.wallet-stats', el => el.innerText)
   }
-
 }
 
 module.exports = OverviewPage

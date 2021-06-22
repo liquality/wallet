@@ -2,7 +2,6 @@ const log = console.log
 const chalk = require('chalk')
 
 class HomePage {
-
   /**
    * Accept Terms & Privacy.
    * @param page

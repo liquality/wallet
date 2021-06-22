@@ -1,7 +1,6 @@
 const chalk = require('chalk')
 
 class PasswordPage {
-
   /**
    * Enter password and submit details.
    * @param page
