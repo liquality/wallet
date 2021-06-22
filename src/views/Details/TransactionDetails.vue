@@ -84,8 +84,8 @@
             <SpinnerIcon v-else class="tx-details_status-icon" />
           </div>
         </div>
-        <div class="row" id="transaction_details_transaction_id">
-          <div class="col tx-details_link">
+        <div class="row">
+          <div class="col tx-details_link" id="transaction_details_transaction_id">
             <h2>Transaction ID</h2>
             <p>
               <a :href="transactionLink" target="_blank" id="transactionLink">{{ item.txHash }}</a>
