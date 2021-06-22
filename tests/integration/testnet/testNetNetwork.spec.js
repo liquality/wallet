@@ -227,7 +227,7 @@ describe('Liquality wallet...', async () => {
     })
 
     // validate the testnet asserts count
-    let assetsCount =  await overviewPage.GetTotalAssets(page)
+    const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
 
     // Assets BTC receive
@@ -393,7 +393,7 @@ describe('Liquality wallet...', async () => {
     })
 
     // validate the testnet asserts count
-    let assetsCount =  await overviewPage.GetTotalAssets(page)
+    const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
 
     // Check the currency
