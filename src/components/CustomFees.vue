@@ -210,9 +210,9 @@ export default {
     fee: function (val) {
       if (this.fees) {
         this.preset = ({
-          [this.fees?.['slow']?.fee]: 'slow',
-          [this.fees?.['average']?.fee]: 'average',
-          [this.fees?.['fast']?.fee]: 'fast'
+          [this.fees?.slow?.fee]: 'slow',
+          [this.fees?.average?.fee]: 'average',
+          [this.fees?.fast?.fee]: 'fast'
         })[val || 0]
       }
     }

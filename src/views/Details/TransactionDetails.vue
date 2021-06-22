@@ -8,19 +8,19 @@
         <div class="row">
           <div class="col">
             <h2>Sent</h2>
-            <p>{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</p>
+            <p id="transaction_detail_sent_amount">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</p>
           </div>
         </div>
         <div class="row">
-          <div class="col tx-details_link">
+          <div class="col tx-details_link" id="send_to_tx_details_link">
             <h2>Sent To</h2>
             <p>
-              <a :href="addressLink" target="_blank">{{ item.toAddress }}</a>
+              <a :href="addressLink" target="_blank" id="transaction_details_send_to_link">{{ item.toAddress }}</a>
               <CopyIcon @click="copy(item.toAddress)" />
             </p>
           </div>
         </div>
-        <div class="row">
+        <div class="row" id="transaction_details_network_speed_fee">
           <div class="col">
             <h2>Network Speed/Fee</h2>
             <p>
@@ -58,13 +58,13 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row" id="transaction_details_date_time">
           <div class="col">
             <h2>Time</h2>
             <p>{{ prettyTime(item.endTime || item.startTime) }}</p>
           </div>
         </div>
-        <div class="row">
+        <div class="row" id="transaction_details_status">
           <div class="col-10">
             <h2>Status</h2>
             <p>
@@ -84,11 +84,11 @@
             <SpinnerIcon v-else class="tx-details_status-icon" />
           </div>
         </div>
-        <div class="row">
+        <div class="row" id="transaction_details_transaction_id">
           <div class="col tx-details_link">
             <h2>Transaction ID</h2>
             <p>
-              <a :href="transactionLink" target="_blank">{{ item.txHash }}</a>
+              <a :href="transactionLink" target="_blank" id="transactionLink">{{ item.txHash }}</a>
               <CopyIcon @click="copy(item.txHash)" />
             </p>
           </div>

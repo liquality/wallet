@@ -32,6 +32,7 @@
           v-else
           type="number"
           class="form-control"
+          id="send_amount_input_field"
           :class="{ 'is-invalid': amountError }"
           :value="amount"
           @input="$emit('update:amount', $event.target.value)"
@@ -78,7 +79,7 @@
           </v-popover>
         </div>
       </div>
-      <div class="send-bottom-available">
+      <div class="send-bottom-available" id="send_available_balance">
         <span class="text-muted">Available</span>
         {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
       </div>
