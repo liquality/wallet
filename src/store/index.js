@@ -6,6 +6,9 @@ import getters from './getters'
 import * as actions from './actions'
 import mutations from './mutations'
 import Broker from '../broker'
+import {
+  setLedgerBridgeListener
+} from '@/utils/ledger-bridge-provider'
 
 Vue.use(Vuex)
 
@@ -18,3 +21,5 @@ export default new Vuex.Store({
   mutations,
   plugins: [broker.plugin]
 })
+
+setLedgerBridgeListener()

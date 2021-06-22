@@ -1,32 +1,9 @@
 import {
-  BRIDGE_IFRAME_NAME,
   BRIDGE_REPLEY_PREFIX
 } from './config'
 
-export const setupBridgeIframe = (bridgeUrl) => {
-  if (!document.getElementById(BRIDGE_IFRAME_NAME)) {
-    const frame = document.createElement('iframe')
-    frame.src = bridgeUrl
-    frame.setAttribute('name', BRIDGE_IFRAME_NAME)
-    frame.setAttribute('id', BRIDGE_IFRAME_NAME)
-    const head = document.head || document.getElementsByTagName('head')[0]
-    head.appendChild(frame)
-  }
-}
-
 export function getReplySignature (network, app, method, callType) {
   return `${BRIDGE_REPLEY_PREFIX}::${network}::${app}::${method}::${callType}`
-}
-
-export const sendMessageToBridge = ({ network, app, method, callType, payload }) => {
-  const frame = document.getElementById(BRIDGE_IFRAME_NAME)
-  frame.contentWindow.postMessage({
-    network,
-    app,
-    method,
-    payload,
-    callType
-  }, '*')
 }
 
 export async function callToBridge ({ network, app, method, callType, payload }) {
@@ -34,8 +11,8 @@ export async function callToBridge ({ network, app, method, callType, payload })
   const replySignature = getReplySignature(network, app, method, callType)
   let responded = false
   return new Promise((resolve, reject) => {
-    chrome.runtime.onMessageExternal.addListener(
-      async (request, sender, sendResponse) => {
+    PORT.onMessage.addListener(
+      async (request) => {
         if (!request) {
           return
         }
@@ -48,7 +25,6 @@ export async function callToBridge ({ network, app, method, callType, payload })
         if (replySignature === action) {
           console.log('[EXTENSION-LEDGER-BRIDGE]: GOT MESAGE FROM IFRAME', request)
           responded = true
-          sendResponse({ success })
           if (success) {
             resolve(
               parseResponsePayload(payload)
@@ -65,7 +41,6 @@ export async function callToBridge ({ network, app, method, callType, payload })
 
         setTimeout(() => {
           if (!responded) {
-            sendResponse({ success: false })
             reject(new Error(
           `Timeout calling the hw bridge: ${app}.${method}`
             ))
@@ -121,4 +96,23 @@ export function parseRequestPayload (payload) {
   }
 
   return payload
+}
+
+let PORT = null
+export function setLedgerBridgeListener () {
+  chrome.runtime.onConnectExternal.addListener(port => {
+    PORT = port
+  })
+}
+
+export const sendMessageToBridge = ({ network, app, method, callType, payload }) => {
+  if (PORT) {
+    PORT.postMessage({
+      network,
+      app,
+      method,
+      payload,
+      callType
+    })
+  }
 }

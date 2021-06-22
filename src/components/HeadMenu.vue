@@ -27,6 +27,15 @@
               Hardware
           </button>
       </li>
+      <li>
+          <button class="dropdown-item"
+                  @click="openLedgerBridge">
+              <div class="head-option">
+                <HardwareIcon class="hardware-icon" />
+              </div>
+              Ledger Bridge
+          </button>
+      </li>
     </ul>
   </div>
 </template>
@@ -59,6 +68,19 @@ export default {
     navigate (path) {
       this.hide()
       this.$router.push(path)
+    },
+    openLedgerBridge () {
+      this.hide()
+      const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
+      const ledgerBridge = window.open(LEDGER_BRIDGE_URL, 'LEDGER_WEB_BRIDGE', `toolbar=no,
+                                                                            location=no,
+                                                                            status=no,
+                                                                            menubar=no,
+                                                                            scrollbars=yes,
+                                                                            resizable=yes,
+                                                                            width=300,
+                                                                            height=300`)
+      ledgerBridge.focus()
     }
   }
 }
