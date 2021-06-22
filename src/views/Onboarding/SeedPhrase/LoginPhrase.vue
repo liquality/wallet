@@ -11,7 +11,7 @@
                     <div class="input-group">
                     <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required :readonly="loading">
                     </div>
-                    <p v-if="error" class="mt-3">
+                    <p v-if="error" class="mt-3" id="password_error">
                       {{ error }}
                     </p>
                 </div>
@@ -29,6 +29,7 @@
           <div class="button-group">
                 <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg">Cancel</button></router-link>
                 <button class="btn btn-primary btn-lg"
+                        id="continue_button_to_see_seed_phrase"
                         @click="unlock"
                         :disabled="!checkbox || !password">
                   Continue

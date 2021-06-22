@@ -41,6 +41,7 @@
             <small
               v-if="address && addressError"
               class="text-danger form-text text-right"
+              id="address_format_error"
               >{{ addressError }}</small
             >
           </div>
@@ -82,12 +83,13 @@
         <div class="wrapper_bottom">
           <div class="button-group">
             <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${asset}`">
-              <button class="btn btn-light btn-outline-primary btn-lg">
+              <button class="btn btn-light btn-outline-primary btn-lg" id="send_cancel_button">
                 Cancel
               </button>
             </router-link>
             <button
               class="btn btn-primary btn-lg"
+              id="send_review_button"
               @click="currentStep = null"
               :disabled="!canSend"
             >
@@ -130,7 +132,7 @@
           <div class="details-text">${{ amountInFiat }}</div>
           </div>
         </div>
-        <div class="detail-group">
+        <div class="detail-group" id="detail_group_network_fee">
           <label class="text-muted">
             Network Fee
           </label>
@@ -141,7 +143,7 @@
           <div class="details-text">${{ totalFeeInFiat }}</div>
           </div>
         </div>
-        <div class="detail-group">
+        <div class="detail-group" id="detail_group_account_fee">
           <label class="text-muted">
             Amount + Fees
           </label>
@@ -164,6 +166,7 @@
         <div class="button-group">
           <button
             class="btn btn-light btn-outline-primary btn-lg"
+            id="edit_send_to_button"
             v-if="!loading"
             @click="currentStep = 'inputs'"
           >
@@ -171,6 +174,7 @@
           </button>
           <button
             class="btn btn-primary btn-lg btn-icon"
+            id="send_button_confirm"
             @click="send"
             :disabled="loading"
           >

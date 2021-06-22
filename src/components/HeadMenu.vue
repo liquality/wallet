@@ -20,6 +20,7 @@
       </li> -->
       <li>
           <button class="dropdown-item"
+                  id="hardware_option"
                   @click="navigate('/accounts/hardware-wallet')">
               <div class="head-option">
                 <HardwareIcon class="hardware-icon" />

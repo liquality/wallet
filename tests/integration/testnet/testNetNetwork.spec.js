@@ -1,4 +1,7 @@
 const TestUtil = require('../../utils/TestUtils')
+const OverviewPage = require('../Pages/OverviewPage')
+const HomePage = require('../Pages/HomePage')
+const PasswordPage = require('../Pages/PasswordPage')
 const puppeteer = require('puppeteer')
 const log = console.log
 const expect = require('chai').expect
@@ -6,6 +9,9 @@ const assert = require('chai').assert
 const chalk = require('chalk')
 
 const testUtil = new TestUtil()
+const overviewPage = new OverviewPage()
+const homePage = new HomePage()
+const passwordPage = new PasswordPage()
 
 let browser
 let page
@@ -29,15 +35,9 @@ describe('Liquality wallet...', async () => {
     browser = await puppeteer.launch(options)
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
-    // Accept terms
-    await page.waitForSelector('#terms_privacy_accept_button', {
-      visible: true
-    })
-    await page.click('#terms_privacy_accept_button')
-    log(chalk.greenBright('User click on Terms & Privacy accept option'))
+    await homePage.ClickOnAcceptPrivacy(page)
   })
 
-  // after each hook
   afterEach(async () => {
     page.on('pageerror', errors => {
       if (errors.length) {
@@ -173,6 +173,7 @@ describe('Liquality wallet...', async () => {
     log(chalk.greenBright('User set the password & confirmed'))
     await page.click('#next_button')
     log(chalk.green.underline.bold('User submit password details :)'))
+
     // Unlocking wallet...
     await page.waitForSelector('#backup-wallet_seed_wordlist')
     const allSeedPhases = await page.$$eval('#backup_seed_word', elements => elements.map(item => item.textContent))
@@ -202,9 +203,7 @@ describe('Liquality wallet...', async () => {
     await page.click('#seed_phrase_continue', { delay: 100 })
 
     // overview page
-    await page.waitForSelector('#overview', {
-      visible: true
-    })
+    await overviewPage.HasOverviewPageLoaded(page)
 
     await page.click('#head_network')
     await page.waitForSelector('#testnet_network', {
@@ -228,8 +227,7 @@ describe('Liquality wallet...', async () => {
     })
 
     // validate the testnet asserts count
-    const assetsElement = await page.$('#total_assets')
-    const assetsCount = await (await assetsElement.getProperty('innerText')).jsonValue()
+    const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
 
     // Assets BTC receive
@@ -311,15 +309,11 @@ describe('Liquality wallet...', async () => {
     await page.click('#import_wallet_continue_button')
     console.log('Import wallet continue button has been clicked')
 
-    // Create a password
-    await page.type('#password', password)
-    await page.type('#confirmPassword', password)
-    await page.click('#next_button') // click on continue
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
 
     // overview page
-    await page.waitForSelector('#overview', {
-      visible: true
-    })
+    await overviewPage.HasOverviewPageLoaded(page)
 
     await page.click('#head_network')
     await page.waitForSelector('#testnet_network', {
@@ -371,15 +365,11 @@ describe('Liquality wallet...', async () => {
     await page.click('#import_wallet_continue_button')
     console.log('Import wallet continue button has been clicked')
 
-    // Create a password
-    await page.type('#password', password)
-    await page.type('#confirmPassword', password)
-    await page.click('#next_button') // click on continue
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
 
     // overview page
-    await page.waitForSelector('#overview', {
-      visible: true
-    })
+    await overviewPage.HasOverviewPageLoaded(page)
 
     await page.click('#head_network')
     await page.waitForSelector('#testnet_network', {
@@ -403,17 +393,17 @@ describe('Liquality wallet...', async () => {
     })
 
     // validate the testnet asserts count
-    const assetsCount = await page.$eval('#total_assets', el => el.innerText)
+    const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
 
     // Check the currency
-    const walletStatText = await page.$eval('.wallet-stats', el => el.innerText)
-    expect(walletStatText, 'Wallet stats has currency should be USD').contain('USD')
+    expect(await overviewPage.GetCurrency(page),
+      'Wallet stats has currency should be USD').contain('USD')
+
     // Check the Total amount - 10s wait to load amount
-    await page.waitForTimeout(10000)
-    const totalAmount = await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g, ''))
+    const totalAmount = await overviewPage.GetTotalLiquidity(page)
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
-    console.log(chalk.green('After Import wallet, the funds total greater than 2000 USD'))
+    console.log(chalk.green('After Import wallet, the funds in the wallet:', totalAmount))
   })
   it('SWAP BTC to RBTC', async () => {
     const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
@@ -444,15 +434,11 @@ describe('Liquality wallet...', async () => {
     await page.click('#import_wallet_continue_button')
     console.log('Import wallet continue button has been clicked')
 
-    // Create a password
-    await page.type('#password', password)
-    await page.type('#confirmPassword', password)
-    await page.click('#next_button') // click on continue
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
 
     // overview page
-    await page.waitForSelector('#overview', {
-      visible: true
-    })
+    await overviewPage.HasOverviewPageLoaded(page)
 
     await page.click('#head_network')
     await page.waitForSelector('#testnet_network', {
@@ -474,18 +460,6 @@ describe('Liquality wallet...', async () => {
     await page.waitForSelector('#receive_action', {
       visible: true
     })
-
-    // validate the testnet asserts count
-    const assetsCount = await page.$eval('#total_assets', el => el.innerText)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
-
-    // Check the currency
-    const walletStatText = await page.$eval('.wallet-stats', el => el.innerText)
-    expect(walletStatText, 'Wallet stats has currency should be USD').contain('USD')
-    // Check the Total amount
-    await page.waitForTimeout(5000)
-    // const totalAmount = await page.$eval('.wallet-stats_total', el => el.innerText)
-    // expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
 
     // Click on SWAP
     await page.click('#swap_action')
@@ -531,5 +505,173 @@ describe('Liquality wallet...', async () => {
     })
     console.log(chalk.green('Initiate swap button has been enabled, almost there...'))
     // TODO: Click on swap confirm step
+  })
+  it('Send BTC to another Wrong address. check Review option has been disabled', async () => {
+    const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
+      visible: true
+    })
+    await importWithSeedOptionElement.click()
+    console.log('Import with seed phrase option has been displayed')
+    await page.waitForSelector('#import-wallet_top', {
+      visible: true
+    })
+    console.log('Import wallet page hase been loaded')
+    // Get the existing SEED words as environment variables
+    let words
+    const SEED_WORDS = process.env.SEED_WORDS
+    if (!SEED_WORDS) {
+      throw new Error('Please provide SEED_WORDS as environment variables')
+    } else {
+      words = SEED_WORDS.split(' ')
+    }
+
+    const seedsWordsCount = await page.$$('#import_wallet_word')
+    for (let i = 0; i < seedsWordsCount.length; i++) {
+      const wordInput = seedsWordsCount[i]
+      await wordInput.type(words[i])
+    }
+
+    // Click on continue button
+    await page.click('#import_wallet_continue_button')
+    console.log('Import wallet continue button has been clicked')
+
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+
+    await page.click('#head_network')
+    await page.waitForSelector('#testnet_network', {
+      visible: true
+    })
+    console.log('user successfully logged in after import wallet')
+
+    await page.click('#testnet_network')
+    const overviewText = await page.$eval('.text-muted', el => el.innerText)
+    expect(overviewText, 'Testnet overview header').contain('TESTNET')
+    console.log('user successfully changed to TESTNET')
+
+    // check Send & Swap & Receive options have been displayed
+    await page.waitForSelector('#send_action', {
+      visible: true
+    })
+    await page.waitForSelector('#swap_action', {
+      visible: true
+    })
+    await page.waitForSelector('#receive_action', {
+      visible: true
+    })
+
+    // Click on SEND Option
+    await page.click('#send_action')
+    await page.waitForSelector('#search_for_a_currency_search', {
+      visible: true
+    })
+
+    // SEND from assert (BTC)
+    await page.type('#search_for_a_currency_search', 'BTC')
+    await page.waitForTimeout(2000)
+    const assertListItems = await page.$$('#assert_list_item')
+    await assertListItems[0].click()
+    expect(await page.$eval('#overview', el => el.innerText), 'SEND page not loaded correctly')
+      .equals('SEND')
+    // Enter send amount (or) coins
+    await page.type('#send_amount_input_field', '0.000001')
+    // Send address
+    await page.type('#address', '0x172E90C757c66f0d93E96165FDb7B3c03337Be6A')
+    await page.waitForSelector('#address_format_error', { visible: true })
+    expect(await page.$eval('#address_format_error', el => el.innerText)).equals('Wrong format. Please check the address.')
+
+    // Check Send Review option has been disabled
+    expect(await page.$('#send_review_button[disabled]'), 'Send Review Button should be disabled if address wrong format')
+      .not.to.equal(null)
+    log(chalk.green.underline.bold('Send Review Button disabled if address wrong format'))
+  })
+  it('Send BTC to another address,Lower amount. This exceeds available balance.', async () => {
+    const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
+      visible: true
+    })
+    await importWithSeedOptionElement.click()
+    console.log('Import with seed phrase option has been displayed')
+    await page.waitForSelector('#import-wallet_top', {
+      visible: true
+    })
+    console.log('Import wallet page hase been loaded')
+    // Get the existing SEED words as environment variables
+    let words
+    const SEED_WORDS = process.env.SEED_WORDS
+    if (!SEED_WORDS) {
+      throw new Error('Please provide SEED_WORDS as environment variables')
+    } else {
+      words = SEED_WORDS.split(' ')
+    }
+
+    const seedsWordsCount = await page.$$('#import_wallet_word')
+    for (let i = 0; i < seedsWordsCount.length; i++) {
+      const wordInput = seedsWordsCount[i]
+      await wordInput.type(words[i])
+    }
+
+    // Click on continue button
+    await page.click('#import_wallet_continue_button')
+    console.log('Import wallet continue button has been clicked')
+
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+
+    await page.click('#head_network')
+    await page.waitForSelector('#testnet_network', {
+      visible: true
+    })
+    console.log('user successfully logged in after import wallet')
+
+    await page.click('#testnet_network')
+    const overviewText = await page.$eval('.text-muted', el => el.innerText)
+    expect(overviewText, 'Testnet overview header').contain('TESTNET')
+    console.log('user successfully changed to TESTNET')
+
+    // check Send & Swap & Receive options have been displayed
+    await page.waitForSelector('#send_action', {
+      visible: true
+    })
+    await page.waitForSelector('#swap_action', {
+      visible: true
+    })
+    await page.waitForSelector('#receive_action', {
+      visible: true
+    })
+
+    // Click on SEND Option
+    await page.click('#send_action')
+    await page.waitForSelector('#search_for_a_currency_search', {
+      visible: true
+    })
+
+    // SEND from assert (BTC)
+    await page.type('#search_for_a_currency_search', 'BTC')
+    await page.waitForTimeout(2000)
+    const assertListItems = await page.$$('#assert_list_item')
+    await assertListItems[0].click()
+    expect(await page.$eval('#overview', el => el.innerText), 'SEND page not loaded correctly')
+      .equals('SEND')
+
+    // Enter send amount (or) coins
+    await page.type('#send_amount_input_field', '10')
+    await page.waitForSelector('.send-main-errors', { visible: true })
+    expect(await page.$eval('.send-main-errors', el => el.innerText))
+      .equals('Lower amount. This exceeds available balance.')
+    console.log(chalk.greenBright('Lower amount. This exceeds available balance.'))
+
+    // Send address
+    await page.type('#address', '0x32Be343B94f860124dC4fEe278FDCBD38C102D88')
+
+    // Check Send Review option has been disabled
+    expect(await page.$('#send_review_button[disabled]'), 'Send Review Button should be disabled if address wrong format')
+      .not.to.equal(null)
+    log(chalk.green.underline.bold('Send Review Button disabled if amount is exceeds'))
   })
 })
