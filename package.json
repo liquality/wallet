@@ -89,6 +89,7 @@
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/test-utils": "^1.1.0",
     "babel-eslint": "^10.1.0",
+    "bitcoin-address-generator": "^1.0.2",
     "eslint": "^7.29.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
