@@ -66,6 +66,7 @@
       <div class="account-assets"
            :class="{ active: showAccountAssets[account.id] === true}">
         <ListItem v-for="asset in account.assets"
+                  :id="asset"
                  :key="asset"
                  @item-selected="selectItem(account, asset)">
           <template #prefix>
