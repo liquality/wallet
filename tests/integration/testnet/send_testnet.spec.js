@@ -27,6 +27,7 @@ const options = {
   executablePath: process.env.PUPPETEER_EXEC_PATH,
   args: [
     '--no-sandbox',
+    '--disabled-setupid-sandbox',
     '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
     '--load-extension=' + testUtil.extensionPathBuildPath
   ]
@@ -311,7 +312,7 @@ describe('Liquality wallet SEND feature', async () => {
     expect(sedToHrefLink).contain('https://explorer.testnet.rsk.co/address')
     await page.waitForSelector('#transaction_details_network_speed_fee', { visible: true })
     await page.waitForSelector('#transaction_details_date_time', { visible: true })
-    //TODO: add timer here to validate the status is Completed
+    // TODO: add timer here to validate the status is Completed
     await page.waitForSelector('#transaction_details_status', { visible: true })
     await page.waitForSelector('#transaction_details_transaction_id', { visible: true })
     const transactionIdHrefLink = await page.$eval('#transactionLink', el => el.href)
