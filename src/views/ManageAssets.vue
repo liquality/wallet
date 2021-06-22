@@ -7,7 +7,7 @@
       <div class="input-group">
         <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" @keyup="sortAssets" placeholder="Search for an Asset" />
       </div>
-      <router-link to="/settings/manage-assets/custom-token">Add Custom Token</router-link>
+      <router-link to="/settings/manage-assets/custom-token" id="add_custom_token">Add Custom Token</router-link>
       <div v-if="assets.length === 0" class="mt-3 d-flex">
         <div>
           <h4>Can't find this token</h4>
