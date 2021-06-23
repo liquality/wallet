@@ -1,5 +1,5 @@
 import moment from '@/utils/moment'
-import { getSwapProtocol } from './swaps'
+import store from '@/store'
 
 export const SEND_STATUS_STEP_MAP = {
   WAITING_FOR_CONFIRMATIONS: 0,
@@ -16,7 +16,8 @@ export function getStatusLabel (item) {
     return SEND_STATUS_LABEL_MAP[item.status]
   }
   if (item.type === 'SWAP') {
-    return getSwapProtocol(item.network, item.protocol).statuses[item.status].label.replace('{from}', item.from).replace('{to}', item.to)
+    const swapProvider = store.getters.swapProvider(item.network, item.provider)
+    return swapProvider.statuses[item.status].label.replace('{from}', item.from).replace('{to}', item.to)
   }
 }
 
@@ -25,7 +26,8 @@ export function getStep (item) {
     return SEND_STATUS_STEP_MAP[item.status]
   }
   if (item.type === 'SWAP') {
-    return getSwapProtocol(item.network, item.protocol).statuses[item.status].step
+    const swapProvider = store.getters.swapProvider(item.network, item.provider)
+    return swapProvider.statuses[item.status].step
   }
 }
 
@@ -86,7 +88,8 @@ export const applyActivityFilters = (activity, filters) => {
   if (statuses.length > 0) {
     data = data.filter(i => {
       if (i.type === 'SWAP') {
-        return statuses.includes(getSwapProtocol(i.network, i.protocol).statuses[i.status].filterStatus)
+        const swapProvider = store.getters.swapProvider(i.network, i.provider)
+        return statuses.includes(swapProvider.statuses[i.status].filterStatus)
       }
 
       if (i.type === 'SEND') {

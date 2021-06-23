@@ -2,7 +2,6 @@ import BN from 'bignumber.js'
 import cryptoassets from './cryptoassets'
 import { chains, unitToCurrency } from '@liquality/cryptoassets'
 import { isERC20, isEthereumChain } from './asset'
-import { getSwapProtocolByType } from '../utils/swaps'
 
 const SEND_FEE_UNITS = {
   BTC: 290,
@@ -21,17 +20,11 @@ const FEE_OPTIONS = {
   CUSTOM: { name: 'Custom', label: 'Custom' }
 }
 
-function getSwapTxTypes (swapProtocol) {
-  const { fromTxType, toTxType } = getSwapProtocolByType(swapProtocol)
-  return { fromTxType, toTxType }
-}
-
 function getSendFee (asset, feePrice) {
   return getTxFee(SEND_FEE_UNITS, asset, feePrice)
 }
 
-function getSwapFee (swapProtocol, type, asset, feePrice) {
-  const feeUnits = getSwapProtocolByType(swapProtocol).feeUnits
+function getSwapFee (feeUnits, type, asset, feePrice) {
   if (feeUnits && type in feeUnits) {
     return getTxFee(feeUnits[type], asset, feePrice)
   } else {
@@ -54,4 +47,4 @@ function getFeeLabel (fee) {
   return FEE_OPTIONS?.[name]?.label || ''
 }
 
-export { FEE_OPTIONS, getSwapTxTypes, getSendFee, getSwapFee, getFeeLabel }
+export { FEE_OPTIONS, getSendFee, getSwapFee, getFeeLabel }

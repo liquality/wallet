@@ -1,10 +1,12 @@
 import { assets as cryptoassets, unitToCurrency } from '@liquality/cryptoassets'
 import { createClient } from './factory/client'
+import { createSwapProvider } from './factory/swapProvider'
 import { Object } from 'core-js'
 import BN from 'bignumber.js'
 import { cryptoToFiat } from '@/utils/coinFormatter'
 
 const clientCache = {}
+const swapProviderCache = {}
 
 const TESTNET_CONTRACT_ADDRESSES = {
   DAI: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
@@ -33,6 +35,19 @@ export default {
       clientCache[cacheKey] = client
 
       return client
+    }
+  },
+  swapProvider (state) {
+    return (network, providerId) => {
+      const cacheKey = [network, providerId]
+
+      const cachedSwapProvider = swapProviderCache[cacheKey]
+      if (cachedSwapProvider) return cachedSwapProvider
+
+      const swapProvider = createSwapProvider(network, providerId)
+      swapProviderCache[cacheKey] = swapProvider
+
+      return swapProvider
     }
   },
   historyItemById (state) {

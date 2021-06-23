@@ -1,12 +1,12 @@
 import _ from 'lodash'
-import { getSwapProtocol } from '../../utils/swaps'
 import buildConfig from '../../build.config'
 
 export const updateMarketData = async ({ state, commit, getters }, { network }) => {
-  const supportedPairResponses = await Promise.all(Object.keys(buildConfig.swapProtocols[network]).map(protocol => {
-    return getSwapProtocol(network, protocol)
-      .getSupportedPairs({ state, commit, getters }, { network, protocol })
-      .then(pairs => pairs.map(pair => ({ ...pair, protocol })))
+  const supportedPairResponses = await Promise.all(Object.keys(buildConfig.swapProviders[network]).map(provider => {
+    const swapProvider = getters.swapProvider(network, provider)
+    return swapProvider
+      .getSupportedPairs({ state, commit, getters }, { network, provider })
+      .then(pairs => pairs.map(pair => ({ ...pair, provider })))
   }))
   const supportedPairs = _.flatten(supportedPairResponses)
 

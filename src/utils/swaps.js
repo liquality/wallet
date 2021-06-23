@@ -1,27 +1,22 @@
 import buildConfig from '../build.config'
-import * as swaps from '../swaps'
+import LiqualitySwapDetails from '../swaps/liquality/SwapDetails'
+import UniswapSwapDetails from '../swaps/uniswap/SwapDetails'
 
-export const SwapProtocol = {
+export const SwapProviderType = {
   LIQUALITY: 'LIQUALITY',
   UNISWAPV2: 'UNISWAPV2'
 }
 
-export const PROTOCOL_TYPE_MAP = {
-  [SwapProtocol.LIQUALITY]: swaps.liquality,
-  [SwapProtocol.UNISWAPV2]: swaps.uniswap
+const SwapDetailsComponents = {
+  [SwapProviderType.LIQUALITY]: LiqualitySwapDetails,
+  [SwapProviderType.UNISWAPV2]: UniswapSwapDetails
 }
 
-function getSwapProtocolByType (type) {
-  return PROTOCOL_TYPE_MAP[type]
+export function getSwapProviderConfig (network, providerId) {
+  return buildConfig.swapProviders[network][providerId]
 }
 
-function getSwapProtocolConfig (network, protocolId) {
-  return buildConfig.swapProtocols[network][protocolId]
+export function getSwapDetailsComponent (network, providerId) {
+  const config = getSwapProviderConfig(network, providerId)
+  return SwapDetailsComponents[config.type]
 }
-
-function getSwapProtocol (network, protocolId) {
-  const protocolType = getSwapProtocolConfig(network, protocolId).type
-  return getSwapProtocolByType(protocolType)
-}
-
-export { getSwapProtocolByType, getSwapProtocolConfig, getSwapProtocol }

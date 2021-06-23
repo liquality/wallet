@@ -2,7 +2,7 @@
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
-import { getSwapProtocol } from '../utils/swaps'
+import store from '@/store'
 
 const SEND_STATUS_MAP = {
   WAITING_FOR_CONFIRMATIONS (item) {
@@ -26,7 +26,8 @@ export const createNotification = config => browser.notifications.create({
 })
 
 const createSwapNotification = item => {
-  const notificationFunction = getSwapProtocol(item.network, item.protocol).statuses[item.status].notification
+  const swapProvider = store.getters.swapProvider(item.network, item.provider)
+  const notificationFunction = swapProvider.statuses[item.status].notification
   if (!notificationFunction) return
   const notification = notificationFunction(item)
 

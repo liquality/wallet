@@ -151,13 +151,13 @@ const migrations = [
       return { ...state, accounts, customTokens, history }
     }
   },
-  { // Multi protocol swaps
+  { // Multi provider swaps
     version: 6,
     migrate: async (state) => {
       const walletId = state.activeWalletId
 
       const migrateHistory = (state, network, walletId) => {
-        return state.history[network]?.[walletId].map(item => item.type === 'SWAP' ? { ...item, protocol: 'liquality' } : item)
+        return state.history[network]?.[walletId].map(item => item.type === 'SWAP' ? { ...item, provider: 'liquality' } : item)
       }
 
       const history = {

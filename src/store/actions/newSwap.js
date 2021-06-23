@@ -1,5 +1,3 @@
-import { getSwapProtocol } from '../../utils/swaps'
-
 export const newSwap = async (
   store,
   {
@@ -22,11 +20,12 @@ export const newSwap = async (
   swap.fromAccountId = fromAccountId
   swap.toAccountId = toAccountId
 
-  const initiationParams = await getSwapProtocol(network, swap.protocol).newSwap(store, { network, walletId, quote: swap })
+  const swapProvider = store.getters.swapProvider(network, swap.provider)
+  const initiationParams = await swapProvider.newSwap({ network, walletId, quote: swap })
 
   const createdSwap = {
     ...swap,
-    ...initiationParams // TODO: Maybe move protocol specific params to an inner property?
+    ...initiationParams // TODO: Maybe move provider specific params to an inner property?
   }
 
   store.commit('NEW_SWAP', { network, walletId, swap: createdSwap })

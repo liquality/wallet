@@ -58,7 +58,7 @@
               &nbsp;{{ bestRate }}
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
-            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProtocol }}</span>
+            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProviderLabel }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
           </p>
         </div>
@@ -228,7 +228,7 @@
                 1 {{ asset }}&nbsp;=&nbsp;{{ bestRate }} &nbsp;{{
                   toAsset
                 }}
-                <span class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProtocol }}</span>
+                <span class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProviderLabel }}</span>
               </div>
               <div v-else>1 {{ asset }}&nbsp;=&nbsp;N/A</div>
             </div>
@@ -312,7 +312,7 @@ import {
   getAssetIcon
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
-import { getSwapFee, getSwapTxTypes, getFeeLabel } from '@/utils/fees'
+import { getSwapFee, getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
@@ -323,7 +323,7 @@ import Accounts from './Accounts'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
-import { SwapProtocol, getSwapProtocolConfig } from '@/utils/swaps'
+import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 
 export default {
   components: {
@@ -475,7 +475,7 @@ export default {
       'activeWalletId',
       'activeNetwork'
     ]),
-    ...mapGetters(['client', 'accountItem', 'networkAccounts']),
+    ...mapGetters(['client', 'swapProvider', 'accountItem', 'networkAccounts']),
     networkMarketData () {
       return this.marketData[this.activeNetwork]
     },
@@ -493,15 +493,19 @@ export default {
       const sortedQuotes = this.quotes.slice(0).sort((a, b) => BN(b.toAmount).minus(a.toAmount).toNumber())
       return sortedQuotes[0]
     },
-    bestQuoteProtocol () {
-      return getSwapProtocolConfig(this.activeNetwork, this.bestQuote.protocol).name
+    bestQuoteProviderLabel () {
+      return getSwapProviderConfig(this.activeNetwork, this.bestQuote.provider).name
+    },
+    bestQuoteProvider () {
+      if (!this.bestQuote) return null
+      return this.swapProvider(this.activeNetwork, this.bestQuote.provider)
     },
     min () {
       const min = 0
       const liqualityMarket = this.networkMarketData.find(pair =>
         pair.from === this.asset &&
         pair.to === this.toAsset &&
-        getSwapProtocolConfig(this.activeNetwork, pair.protocol).type === SwapProtocol.LIQUALITY)
+        getSwapProviderConfig(this.activeNetwork, pair.provider).type === SwapProviderType.LIQUALITY)
       if (liqualityMarket) {
         return dpUI(BN(liqualityMarket.min))
       }
@@ -692,13 +696,13 @@ export default {
         }
       }
 
-      const txTypes = getSwapTxTypes(getSwapProtocolConfig(this.activeNetwork, this.bestQuote.protocol).type)
+      const { fromTxType, toTxType } = this.bestQuoteProvider
 
       if (this.availableFees.has(this.assetChain)) {
         const getMax = amount === undefined
         const assetFees = this.getAssetFees(this.assetChain)
 
-        if (txTypes.fromTxType === 'SWAP_INITIATION' && this.assetChain === 'BTC') {
+        if (fromTxType === 'SWAP_INITIATION' && this.assetChain === 'BTC') {
           const client = this.client(this.activeNetwork, this.activeWalletId, this.assetChain)
           const feePerBytes = Object.values(assetFees).map(fee => fee.fee)
           const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
@@ -710,7 +714,7 @@ export default {
           }
         } else {
           for (const [speed, fee] of Object.entries(assetFees)) {
-            const staticFee = getSwapFee(getSwapProtocolConfig(this.activeNetwork, this.bestQuote.protocol).type, txTypes.fromTxType, this.asset, fee.fee)
+            const staticFee = getSwapFee(this.bestQuoteProvider.feeUnits, fromTxType, this.asset, fee.fee)
             fees[this.assetChain][speed] = fees[this.assetChain][speed].plus(staticFee)
           }
         }
@@ -719,7 +723,7 @@ export default {
       if (this.availableFees.has(this.toAssetChain)) {
         const assetFees = this.getAssetFees(this.toAssetChain)
         for (const [speed, fee] of Object.entries(assetFees)) {
-          const staticFee = getSwapFee(getSwapProtocolConfig(this.activeNetwork, this.bestQuote.protocol).type, txTypes.toTxType, this.toAsset, fee.fee)
+          const staticFee = getSwapFee(this.bestQuoteProvider.feeUnits, toTxType, this.toAsset, fee.fee)
           fees[this.toAssetChain][speed] = fees[this.toAssetChain][speed].plus(staticFee)
         }
       }

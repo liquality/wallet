@@ -46,9 +46,8 @@ import {
 } from '@/utils/history'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { getNativeAsset } from '@/utils/asset'
-import { getSwapProtocol } from '../utils/swaps'
 
 export default {
   components: {
@@ -57,7 +56,8 @@ export default {
   },
   props: ['transactions'],
   computed: {
-    ...mapState(['fiatRates'])
+    ...mapState(['fiatRates']),
+    ...mapGetters(['swapProvider'])
   },
   methods: {
     getItemIcon,
@@ -98,7 +98,8 @@ export default {
       if (item.type === 'SEND') {
         return SEND_STATUS_FILTER_MAP[item.status]
       } else if (item.type === 'SWAP') {
-        return getSwapProtocol(item.network, item.protocol).statuses[item.status].filterStatus
+        const swapProvider = this.swapProvider(item.network, item.provider)
+        return swapProvider.statuses[item.status].filterStatus
       }
     },
     getDetailsUrl (item) {
@@ -118,8 +119,10 @@ export default {
       switch (item.type) {
         case 'SEND':
           return 2
-        case 'SWAP':
-          return getSwapProtocol(item.network, item.protocol).totalSteps
+        case 'SWAP': {
+          const swapProvider = this.swapProvider(item.network, item.provider)
+          return swapProvider.totalSteps
+        }
         default:
           return 0
       }
