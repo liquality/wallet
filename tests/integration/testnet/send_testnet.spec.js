@@ -125,7 +125,7 @@ describe('Liquality wallet SEND feature', async () => {
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
-    const sendToAddress = testDataUtils.getRandomAddress('ethereum')
+    const sendToAddress = testDataUtils.getRandomAddress('bitcoin')
     await sendPage.EnterSendToAddress(page, sendToAddress)
     // Click Review Button
     await sendPage.ClickSendReview(page)
@@ -170,6 +170,43 @@ describe('Liquality wallet SEND feature', async () => {
     // Transaction details page validations
     const domain = 'https://testnet.bscscan.com'
     await transactionDetailsPage.ValidateSentAmount(page, '0 BNB')
+    await transactionDetailsPage.ValidateSentToLink(page, `${domain}/address`)
+    await transactionDetailsPage.ValidateNetworkSpeedFee(page)
+    await transactionDetailsPage.ValidateTime(page)
+    await transactionDetailsPage.ValidateStatus(page)
+    await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
+  })
+  it.skip('Send BTC to another BTC wallet', async () => {
+    const bitCoinName = 'BTC'
+    const coinsToSend = '0.0000001'
+
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ClickSend(page)
+    // Search for coin & select coin
+    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
+
+    // Enter send amount (or) coins
+    await sendPage.EnterSendAmount(page, coinsToSend)
+    // Send address
+    const address = testDataUtils.getRandomAddress('bitcoin')
+    await sendPage.EnterSendToAddress(page, address)
+    // Click Review Button
+    await sendPage.ClickSendReview(page)
+    // Confirm SEND
+    await sendPage.SendConfirmButton(page)
+    // Transaction details page validations
+    const domain = 'https://testnet.bscscan.com'
+    await transactionDetailsPage.ValidateSentAmount(page, '0 BTC')
     await transactionDetailsPage.ValidateSentToLink(page, `${domain}/address`)
     await transactionDetailsPage.ValidateNetworkSpeedFee(page)
     await transactionDetailsPage.ValidateTime(page)

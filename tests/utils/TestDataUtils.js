@@ -1,5 +1,5 @@
 const Wallet = require('ethereumjs-wallet')
-const Bitcoin = require('bitcoin-address-generator')
+const bitcoin = require('bitcoinjs-lib')
 
 class TestDataUtils {
   /**
@@ -36,12 +36,9 @@ class TestDataUtils {
    * @returns {*}
    */
   getBitcoinAddress () {
-    let addressNew
-    Bitcoin.createWalletAddress(response => {
-      console.log(response)
-      addressNew = response.address
-    })
-    return addressNew
+    const keyPair = bitcoin.ECPair.makeRandom()
+    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
+    return address
   }
 }
 
