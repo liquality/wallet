@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="account in filteredItems" :key="account.id">
+    <div v-for="account in filteredItems" :key="account.id" :id="account.chain.toUpperCase()">
       <ListItem v-if="account.chain === 'bitcoin'"
                 @item-selected="selectItem(account)">
           <template #prefix>
