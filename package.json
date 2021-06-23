@@ -18,8 +18,8 @@
     "sync-versions": "node script/sync-versions.js",
     "test:unit": "jest tests/unit",
     "postinstall": "husky install",
-    "test:testNetNetwork": "./node_modules/mocha/bin/mocha --reporter mocha-allure-reporter ./tests/**/testnet/*.spec.js",
-    "allure:report": "./node_modules/mocha/bin/allure --verbose generate allure-results --clean -o allure-report",
+    "test:testNetNetwork": "node_modules/mocha/bin/mocha --reporter mocha-allure-reporter ./tests/**/testnet/*.spec.js",
+    "allure:report": "node_modules/allure-commandline/bin/allure --verbose generate allure-results --clean -o allure-report",
     "allure:clear": "rm -r allure-results/ allure-report cypress/screenshots || true",
     "allure:history": "mv -f allure-report/history allure-results/history && rm -r allure-report || true"
   },
