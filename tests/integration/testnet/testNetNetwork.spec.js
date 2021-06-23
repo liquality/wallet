@@ -27,7 +27,8 @@ describe('Liquality wallet...', async () => {
     args: [
       '--no-sandbox',
       '--disabled-setupid-sandbox',
-      `--disable-extensions`,
+      `--disable-gpu`,
+      '--disable-extensions',
       '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
       '--load-extension=' + testUtil.extensionPathBuildPath
     ]
