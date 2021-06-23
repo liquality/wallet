@@ -1,4 +1,5 @@
 const chalk = require('chalk')
+const expect = require('chai').expect
 
 class OverviewPage {
   /**
@@ -12,6 +13,42 @@ class OverviewPage {
       visible: true
     })
     console.log(chalk.green('User logged successfully, overview page loaded'))
+  }
+
+  /**
+   * Select Network from overview page
+   * @param page
+   * @param network - Network type
+   * @returns {Promise<void>}
+   * @constructor
+   * @example - SelectNetwork(page,'testnet')
+   */
+  async SelectNetwork (page, network) {
+    await page.click('#head_network')
+    switch (network) {
+      case 'testnet': {
+        await page.waitForSelector('#testnet_network', { visible: true })
+        console.log('user successfully logged in after import wallet')
+        await page.click('#testnet_network')
+        const overviewText = await page.$eval('.text-muted', el => el.innerText)
+        expect(overviewText, 'Testnet overview header').contain('TESTNET')
+        console.log('user successfully changed to TESTNET')
+        break
+      }
+
+      case 'mainnet': {
+        await page.waitForSelector('#mainnet_network', { visible: true })
+        console.log('user successfully logged in after import wallet')
+        await page.click('#mainnet_network')
+        const overviewText = await page.$eval('.text-muted', el => el.innerText)
+        expect(overviewText, 'Mainnet overview header').contain('MAINNET')
+        console.log('user successfully changed to MAINET')
+        break
+      }
+
+      default:
+        throw Error(`Unsupported Network: ${network}`)
+    }
   }
 
   /**
@@ -45,6 +82,17 @@ class OverviewPage {
    */
   async GetCurrency (page) {
     return await page.$eval('.wallet-stats', el => el.innerText)
+  }
+
+  /**
+   * Click SEND option from Overview page.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickSend (page) {
+    await page.waitForSelector('#send_action', { visible: true })
+    await page.click('#send_action')
   }
 }
 
