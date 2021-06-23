@@ -166,7 +166,6 @@ export default {
     const { fiatRates } = state
     return (asset, balance) => {
       if (fiatRates && fiatRates[asset] && balance) {
-        console.log(asset, cryptoassets[asset])
         const amount = unitToCurrency(cryptoassets[asset], balance)
         return cryptoToFiat(amount, fiatRates[asset])
       }

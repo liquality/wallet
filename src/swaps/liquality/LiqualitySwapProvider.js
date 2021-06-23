@@ -31,7 +31,7 @@ class LiqualitySwapProvider extends SwapProvider {
     })).data
   }
 
-  async getSupportedPairs ({ network }) {
+  async getSupportedPairs () {
     const markets = (await axios({
       url: this.agent + '/api/swap/marketinfo',
       method: 'get',
@@ -509,7 +509,6 @@ class LiqualitySwapProvider extends SwapProvider {
       ETH: 165000,
       RBTC: 165000,
       BNB: 165000,
-      POLYGON: 165000,
       NEAR: 10000000000000,
       MATIC: 165000,
       ERC20: 600000 + 94500 // Contract creation + erc20 transfer
@@ -519,7 +518,6 @@ class LiqualitySwapProvider extends SwapProvider {
       ETH: 45000,
       RBTC: 45000,
       BNB: 45000,
-      POLYGON: 45000,
       MATIC: 45000,
       NEAR: 8000000000000,
       ERC20: 100000

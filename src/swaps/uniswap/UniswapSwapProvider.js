@@ -244,7 +244,7 @@ class UniswapSwapProvider extends SwapProvider {
     SWAP: {
       ETH: 100000 + 400000, // (potential)ERC20 Approval + Swap
       BNB: 100000 + 400000,
-      POLYGON: 100000 + 400000,
+      MATIC: 100000 + 400000,
       ERC20: 100000 + 400000
     }
   }

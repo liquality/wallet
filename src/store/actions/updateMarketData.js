@@ -5,7 +5,7 @@ export const updateMarketData = async ({ state, commit, getters }, { network }) 
   const supportedPairResponses = await Promise.all(Object.keys(buildConfig.swapProviders[network]).map(provider => {
     const swapProvider = getters.swapProvider(network, provider)
     return swapProvider
-      .getSupportedPairs({ state, commit, getters }, { network, provider })
+      .getSupportedPairs({ network })
       .then(pairs => pairs.map(pair => ({ ...pair, provider })))
   }))
   const supportedPairs = _.flatten(supportedPairResponses)

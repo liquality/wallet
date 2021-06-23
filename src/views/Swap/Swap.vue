@@ -467,7 +467,7 @@ export default {
       return this.bestQuote ? unitToCurrency(cryptoassets[this.toAsset], this.bestQuote.toAmount) : BN(0)
     },
     receiveAmountFiat () {
-      return prettyFiatBalance(this.receiveAmount, this.fiatRates[this.toAsset])
+      return '$' + prettyFiatBalance(this.receiveAmount, this.fiatRates[this.toAsset])
     },
     ...mapState([
       'activeNetwork',
