@@ -49,3 +49,12 @@ jobs:
         with:
           args: npm run test:testNetNetwork
 
+      - name: Archive Mocha HTML report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: mocha-html-test-report
+          path: mochawesome-report
+
+
+

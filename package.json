@@ -18,7 +18,7 @@
     "sync-versions": "node script/sync-versions.js",
     "test:unit": "jest tests/unit",
     "postinstall": "husky install",
-    "test:testNetNetwork": "./node_modules/mocha/bin/mocha ./tests/**/testnet/*.spec.js"
+    "test:testNetNetwork": "node_modules/mocha/bin/mocha --parallel ./tests/**/testnet/*.spec.js"
   },
   "dependencies": {
     "@liquality/bitcoin-esplora-batch-api-provider": "^1.1.9",
@@ -93,6 +93,7 @@
     "@vue/cli-service": "~4.3.0",
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/test-utils": "^1.1.0",
+    "allure-commandline": "^2.13.8",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.29.0",
     "eslint-plugin-import": "^2.23.4",
@@ -103,6 +104,8 @@
     "ethereumjs-wallet": "^1.0.1",
     "husky": "^5.0.4",
     "jest": "^26.4.2",
+    "mocha-allure-reporter": "^1.4.0",
+    "mochawesome": "^6.2.2",
     "puppeteer": "^10.0.0",
     "puppeteer-core": "^10.0.0",
     "sass": "^1.26.3",
