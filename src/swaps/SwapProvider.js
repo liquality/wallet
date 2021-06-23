@@ -1,4 +1,5 @@
 import store from '../store'
+import { createNotification } from '../broker/notification'
 
 class SwapProvider {
   constructor (providerId) {
@@ -6,6 +7,22 @@ class SwapProvider {
       throw new TypeError('Abstract class "SwapProvider" cannot be instantiated directly.')
     }
     this.providerId = providerId
+  }
+
+  async sendLedgerNotification (account, message) {
+    if (account?.type.includes('ledger')) {
+      const notificationId = await createNotification({
+        title: 'Sign with Ledger',
+        message
+      })
+      const listener = (_id) => {
+        if (_id === notificationId) {
+          browser.notifications.clear(_id)
+          browser.notifications.onClicked.removeListener(listener)
+        }
+      }
+      browser.notifications.onClicked.addListener(listener)
+    }
   }
 
   /**

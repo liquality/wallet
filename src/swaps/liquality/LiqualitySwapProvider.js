@@ -6,7 +6,6 @@ import { sha256 } from '@liquality/crypto'
 import pkg from '../../../package.json'
 import { withLock, withInterval } from '../../store/actions/performNextAction/utils'
 import { timestamp, wait } from '../../store/utils'
-import { createNotification } from '../../broker/notification'
 import { prettyBalance } from '../../utils/coinFormatter'
 import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
@@ -70,15 +69,17 @@ class LiqualitySwapProvider extends SwapProvider {
     const fromAmount = currencyToUnit(cryptoassets[from], amount)
     const toAmount = currencyToUnit(cryptoassets[to], BN(amount).times(BN(market.rate)))
 
-    // TODO: numbers should come out in bignumber
     return {
       from, to, fromAmount: fromAmount.toNumber(), toAmount: toAmount.toNumber()
     }
   }
 
   async newSwap ({ network, walletId, quote: _quote }) {
-    // TODO: Check for a slippage between this rate and calculated quote?
     const lockedQuote = await this._getQuote({ from: _quote.from, to: _quote.to, amount: _quote.fromAmount })
+
+    if (BN(lockedQuote.toAmount).lt(BN(_quote.toAmount).times(0.995))) {
+      throw new Error('The quote slippage is too high (> 0.5%). Try again.')
+    }
 
     const quote = {
       ..._quote,
@@ -86,7 +87,7 @@ class LiqualitySwapProvider extends SwapProvider {
     }
 
     if (await this.hasQuoteExpired({ network, walletId, swap: quote })) {
-      throw new Error('The quote is expired')
+      throw new Error('The quote is expired.')
     }
 
     quote.fromAddress = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
@@ -186,23 +187,6 @@ class LiqualitySwapProvider extends SwapProvider {
     }
     if (await this.hasSwapExpired({ swap, network, walletId })) {
       return { status: 'WAITING_FOR_REFUND' }
-    }
-  }
-
-  // TODO: take to utils and need to call from uniswap provider if required
-  async sendLedgerNotification (account, message) {
-    if (account?.type.includes('ledger')) {
-      const notificationId = await createNotification({
-        title: 'Sign with Ledger',
-        message
-      })
-      const listener = (_id) => {
-        if (_id === notificationId) {
-          browser.notifications.clear(_id)
-          browser.notifications.onClicked.removeListener(listener)
-        }
-      }
-      browser.notifications.onClicked.addListener(listener)
     }
   }
 

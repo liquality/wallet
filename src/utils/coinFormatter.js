@@ -25,8 +25,8 @@ export const prettyBalance = (amount, coin, dp = VALUE_DECIMALS) => {
 
 export const prettyFiatBalance = (amount, rate) => {
   if (!amount || !rate) return amount
-  const fiatAmount = BN(amount).times(rate)
-  return fiatAmount.toFormat(2, BN.ROUND_CEIL)
+  const fiatAmount = cryptoToFiat(amount, rate)
+  return formatFiat(fiatAmount)
 }
 
 export const cryptoToFiat = (amount, rate) => {

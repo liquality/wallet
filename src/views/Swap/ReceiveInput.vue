@@ -19,7 +19,7 @@
                   {{ `${toAsset} ${receiveAmount}` }}
                 </span>
                 <span v-else>
-                  {{ receiveAmountFiat }}
+                  ${{ formatFiat(receiveAmountFiat) }}
                 </span>
               </div>
             </div>
@@ -28,7 +28,7 @@
             v-if="showAmountsInFiat"
             type="text"
             class="form-control swap-receive-main-input"
-            :value="receiveAmountFiat"
+            :value="receiveAmountFiatValue"
             @input="$emit('update:receiveAmountFiat', $event.target.value)"
             placeholder="0.00"
             autocomplete="off"
@@ -64,6 +64,7 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
+import { formatFiat, dpUI } from '@/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import AccountTooltip from '@/components/AccountTooltip'
 
@@ -85,7 +86,13 @@ export default {
     'disabled'
   ],
   created () {},
+  computed: {
+    receiveAmountFiatValue () {
+      return '$' + dpUI(this.receiveAmountFiat, 2)
+    }
+  },
   methods: {
+    formatFiat,
     getAssetColorStyle,
     getAssetIcon,
     toggleShowAmountsFiat () {

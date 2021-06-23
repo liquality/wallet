@@ -18,6 +18,8 @@ import { AssetNetworks } from '../../store/utils'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
 import { SwapProvider } from '../SwapProvider'
 
+const SWAP_DEADLINE = 30 * 60 // 30 minutes
+
 class UniswapSwapProvider extends SwapProvider {
   constructor ({ providerId, routerAddress }) {
     super(providerId)
@@ -78,10 +80,9 @@ class UniswapSwapProvider extends SwapProvider {
 
     const toAmountInUnit = currencyToUnit(cryptoassets[to], BN(trade.outputAmount.toExact()))
     return {
-    // TODO: numbers should come out in bignumber
       from,
       to,
-      // TODO: Amounts should not be in number, it will lose precision
+      // TODO: Amounts should be in BigNumber to prevent loss of precision
       fromAmount: fromAmountInUnit.toNumber(),
       toAmount: toAmountInUnit.toNumber()
     }
@@ -130,8 +131,13 @@ class UniswapSwapProvider extends SwapProvider {
     const outputAmount = CurrencyAmount.fromRawAmount(toToken, BN(quote.toAmount).toFixed())
     const minimumOutput = this.getMinimumOutput(outputAmount)
 
+    const account = this.getAccount(quote.fromAccountId)
+    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const blockHeight = await client.chain.getBlockHeight()
+    const currentBlock = await client.chain.getBlockByNumber(blockHeight)
+
     const path = [fromToken.address, toToken.address]
-    const deadline = Math.floor(Date.now() / 1000) + 60 * 20 // TODO: should this use chain time instead?
+    const deadline = currentBlock.timestamp + SWAP_DEADLINE
     const minimumOutputInUnit = currencyToUnit(cryptoassets[quote.to], BN(minimumOutput.toExact()))
     const inputAmountHex = ethers.BigNumber.from(BN(quote.fromAmount).toFixed()).toHexString()
     const outputAmountHex = ethers.BigNumber.from(minimumOutputInUnit.toFixed()).toHexString()
@@ -155,8 +161,8 @@ class UniswapSwapProvider extends SwapProvider {
     }
 
     const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
-    const account = this.getAccount(quote.fromAccountId)
-    const client = this.getClient(network, walletId, quote.from, account?.type)
+
+    await this.sendLedgerNotification(quote, account, 'Signing required to complete the swap.')
     const swapTx = await client.chain.sendTransaction({ to: this.routerAddress, value, data: encodedData, fee: quote.fee })
 
     return {

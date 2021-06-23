@@ -186,7 +186,7 @@
               <div class="confirm-value" :style="getAssetColorStyle(toAsset)">
                 {{ receiveAmount }} {{ toAsset }}
               </div>
-              <div class="details-text">{{ receiveAmountFiat }}</div>
+              <div class="details-text">{{ '$' + formatFiat(receiveAmountFiat) }}</div>
             </div>
           </div>
           <div class="detail-group">
@@ -467,7 +467,7 @@ export default {
       return this.bestQuote ? unitToCurrency(cryptoassets[this.toAsset], this.bestQuote.toAmount) : BN(0)
     },
     receiveAmountFiat () {
-      return '$' + prettyFiatBalance(this.receiveAmount, this.fiatRates[this.toAsset])
+      return cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
     },
     ...mapState([
       'activeNetwork',
@@ -616,7 +616,7 @@ export default {
       return BN(this.receiveAmount).minus(this.toSwapFee)
     },
     totalToReceiveInFiat () {
-      const receive = cryptoToFiat(this.stateReceiveAmount, this.fiatRates[this.toAsset])
+      const receive = cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
       const fee = cryptoToFiat(this.toSwapFee, this.fiatRates[this.toAssetChain])
       return receive.minus(fee).toFormat(2)
     },
