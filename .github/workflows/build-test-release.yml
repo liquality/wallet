@@ -51,13 +51,13 @@ jobs:
           npm ci
           npm run lint
           npm run build
-      - name: TestNet integration tests
-        uses: mujo-code/puppeteer-headful@master
-        env:
-          CI: 'true'
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-        with:
-          args: npm run test:testNetNetwork
+      # - name: TestNet integration tests
+      #   uses: mujo-code/puppeteer-headful@master
+      #   env:
+      #     CI: 'true'
+      #     SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+      #   with:
+      #     args: npm run test:testNetNetwork
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
