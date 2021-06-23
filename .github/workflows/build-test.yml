@@ -49,15 +49,11 @@ jobs:
         with:
           args: npm run test:testNetNetwork
 
-#      - name: ===>> Generate Allure HTML Report ==>>>
-#        if: always()
-#        run: |
-#          npm run allure:report
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: mocha-html-report
+          name: mocha-html-test-report
           path: mochawesome-report
 
 

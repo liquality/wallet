@@ -31,3 +31,4 @@ dist_electron
 artifacts
 /allure-results/
 /allure-report/
+/mochawesome-report/
