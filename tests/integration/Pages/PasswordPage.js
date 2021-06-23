@@ -9,6 +9,7 @@ class PasswordPage {
    * @constructor
    */
   async SubmitPasswordDetails (page, password) {
+    await page.waitForSelector('#password', { visible: true })
     await page.type('#password', password)
     await page.type('#confirmPassword', password)
     await page.click('#next_button')

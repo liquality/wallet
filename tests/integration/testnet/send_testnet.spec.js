@@ -2,18 +2,21 @@ const TestUtil = require('../../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
+const SearchAssetPage = require('../Pages/SearchAssetPage')
+const SendPage = require('../Pages/SendPage')
+const TransactionDetailsPage = require('../Pages/TransactionDetailsPage')
 const TestDataUtils = require('../../utils/TestDataUtils')
 
 const puppeteer = require('puppeteer')
-const log = console.log
-const expect = require('chai').expect
-const chalk = require('chalk')
 
 const testUtil = new TestUtil()
 const testDataUtils = new TestDataUtils()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
+const searchAssetPage = new SearchAssetPage()
+const sendPage = new SendPage()
+const transactionDetailsPage = new TransactionDetailsPage()
 
 let browser
 let page
@@ -27,7 +30,10 @@ const options = {
   executablePath: process.env.PUPPETEER_EXEC_PATH,
   args: [
     '--no-sandbox',
-    '--disabled-setupid-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-gpu',
+    '--disable-extensions',
     '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
     '--load-extension=' + testUtil.extensionPathBuildPath
   ]
@@ -45,281 +51,169 @@ describe('Liquality wallet SEND feature', async () => {
   })
 
   it('Send BTC to another Wrong address. check Review option has been disabled', async () => {
-    const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
-      visible: true
-    })
-    await importWithSeedOptionElement.click()
-    console.log('Import with seed phrase option has been displayed')
-    await page.waitForSelector('#import-wallet_top', {
-      visible: true
-    })
-    console.log('Import wallet page hase been loaded')
-    // Get the existing SEED words as environment variables
-    let words
-    const SEED_WORDS = process.env.SEED_WORDS
-    if (!SEED_WORDS) {
-      throw new Error('Please provide SEED_WORDS as environment variables')
-    } else {
-      words = SEED_WORDS.split(' ')
-    }
+    const bitCoinName = 'BTC'
+    const coinsToSend = '0.000001'
 
-    const seedsWordsCount = await page.$$('#import_wallet_word')
-    for (let i = 0; i < seedsWordsCount.length; i++) {
-      const wordInput = seedsWordsCount[i]
-      await wordInput.type(words[i])
-    }
-
-    // Click on continue button
-    await page.click('#import_wallet_continue_button')
-    console.log('Import wallet continue button has been clicked')
-
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
-
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-
-    await page.click('#head_network')
-    await page.waitForSelector('#testnet_network', {
-      visible: true
-    })
-    console.log('user successfully logged in after import wallet')
-
-    await page.click('#testnet_network')
-    const overviewText = await page.$eval('.text-muted', el => el.innerText)
-    expect(overviewText, 'Testnet overview header').contain('TESTNET')
-    console.log('user successfully changed to TESTNET')
-
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
     // check Send & Swap & Receive options have been displayed
-    await page.waitForSelector('#send_action', {
-      visible: true
-    })
-    await page.waitForSelector('#swap_action', {
-      visible: true
-    })
-    await page.waitForSelector('#receive_action', {
-      visible: true
-    })
+    await overviewPage.ClickSend(page)
+    // Search for coin & select coin
+    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
 
-    // Click on SEND Option
-    await page.click('#send_action')
-    await page.waitForSelector('#search_for_a_currency_search', {
-      visible: true
-    })
-
-    // SEND from assert (BTC)
-    await page.type('#search_for_a_currency_search', 'BTC')
-    await page.waitForTimeout(2000)
-    const assertListItems = await page.$$('#assert_list_item')
-    await assertListItems[0].click()
-    expect(await page.$eval('#overview', el => el.innerText), 'SEND page not loaded correctly')
-      .equals('SEND')
     // Enter send amount (or) coins
-    await page.type('#send_amount_input_field', '0.000001')
+    await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
-    await page.type('#address', '0x172E90C757c66f0d93E96165FDb7B3c03337Be6A')
-    await page.waitForSelector('#address_format_error', { visible: true })
-    expect(await page.$eval('#address_format_error', el => el.innerText)).equals('Wrong format. Please check the address.')
-
+    await sendPage.EnterSendToAddress(page, '0x172E90C757c66f0d93E96165FDb7B3c03337Be6A')
+    // Check Address format error
+    await sendPage.ValidateAddressFormatError(page, 'Wrong format. Please check the address.')
     // Check Send Review option has been disabled
-    expect(await page.$('#send_review_button[disabled]'), 'Send Review Button should be disabled if address wrong format')
-      .not.to.equal(null)
-    log(chalk.green.underline.bold('Send Review Button disabled if address wrong format'))
+    await sendPage.HasReviewButtonDisabled(page)
   })
   it('Send BTC to another address,Lower amount. This exceeds available balance.', async () => {
-    const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
-      visible: true
-    })
-    await importWithSeedOptionElement.click()
-    console.log('Import with seed phrase option has been displayed')
-    await page.waitForSelector('#import-wallet_top', {
-      visible: true
-    })
-    console.log('Import wallet page hase been loaded')
-    // Get the existing SEED words as environment variables
-    let words
-    const SEED_WORDS = process.env.SEED_WORDS
-    if (!SEED_WORDS) {
-      throw new Error('Please provide SEED_WORDS as environment variables')
-    } else {
-      words = SEED_WORDS.split(' ')
-    }
+    const bitCoinName = 'BTC'
+    const coinsToSend = '10'
 
-    const seedsWordsCount = await page.$$('#import_wallet_word')
-    for (let i = 0; i < seedsWordsCount.length; i++) {
-      const wordInput = seedsWordsCount[i]
-      await wordInput.type(words[i])
-    }
-
-    // Click on continue button
-    await page.click('#import_wallet_continue_button')
-    console.log('Import wallet continue button has been clicked')
-
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
-
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-
-    await page.click('#head_network')
-    await page.waitForSelector('#testnet_network', {
-      visible: true
-    })
-    console.log('user successfully logged in after import wallet')
-
-    await page.click('#testnet_network')
-    const overviewText = await page.$eval('.text-muted', el => el.innerText)
-    expect(overviewText, 'Testnet overview header').contain('TESTNET')
-    console.log('user successfully changed to TESTNET')
-
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
     // check Send & Swap & Receive options have been displayed
-    await page.waitForSelector('#send_action', {
-      visible: true
-    })
-    await page.waitForSelector('#swap_action', {
-      visible: true
-    })
-    await page.waitForSelector('#receive_action', {
-      visible: true
-    })
-
-    // Click on SEND Option
-    await page.click('#send_action')
-    await page.waitForSelector('#search_for_a_currency_search', {
-      visible: true
-    })
-
-    // SEND from assert (BTC)
-    await page.type('#search_for_a_currency_search', 'BTC')
-    await page.waitForTimeout(2000)
-    const assertListItems = await page.$$('#assert_list_item')
-    await assertListItems[0].click()
-    expect(await page.$eval('#overview', el => el.innerText), 'SEND page not loaded correctly')
-      .equals('SEND')
+    await overviewPage.ClickSend(page)
+    // Search for coin & select coin
+    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
 
     // Enter send amount (or) coins
-    await page.type('#send_amount_input_field', '10')
-    await page.waitForSelector('.send-main-errors', { visible: true })
-    expect(await page.$eval('.send-main-errors', el => el.innerText))
-      .equals('Lower amount. This exceeds available balance.')
-    console.log(chalk.greenBright('Lower amount. This exceeds available balance.'))
-
+    await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
-    await page.type('#address', '0x32Be343B94f860124dC4fEe278FDCBD38C102D88')
-
+    await sendPage.EnterSendToAddress(page, '0x32Be343B94f860124dC4fEe278FDCBD38C102D88')
+    // Check Send Limit format error
+    await sendPage.ValidateAmountLimitError(page, 'Lower amount. This exceeds available balance.')
     // Check Send Review option has been disabled
-    expect(await page.$('#send_review_button[disabled]'), 'Send Review Button should be disabled if address wrong format')
-      .not.to.equal(null)
-    log(chalk.green.underline.bold('Send Review Button disabled if amount is exceeds'))
+    await sendPage.HasReviewButtonDisabled(page)
   })
   it('Send SOV to random ETH address', async () => {
-    const sovryan = 'SOV'
+    const bitCoinName = 'SOV'
     const coinsToSend = '1'
 
-    const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', {
-      visible: true
-    })
-    await importWithSeedOptionElement.click()
-    console.log('Import with seed phrase option has been displayed')
-    await page.waitForSelector('#import-wallet_top', {
-      visible: true
-    })
-    console.log('Import wallet page hase been loaded')
-    // Get the existing SEED words as environment variables
-    let words
-    const SEED_WORDS = process.env.SEED_WORDS
-    if (!SEED_WORDS) {
-      throw new Error('Please provide SEED_WORDS as environment variables')
-    } else {
-      words = SEED_WORDS.split(' ')
-    }
-
-    const seedsWordsCount = await page.$$('#import_wallet_word')
-    for (let i = 0; i < seedsWordsCount.length; i++) {
-      const wordInput = seedsWordsCount[i]
-      await wordInput.type(words[i])
-    }
-
-    // Click on continue button
-    await page.click('#import_wallet_continue_button')
-    console.log('Import wallet continue button has been clicked')
-
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
-
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-
-    await page.click('#head_network')
-    await page.waitForSelector('#testnet_network', {
-      visible: true
-    })
-    console.log('user successfully logged in after import wallet')
-
-    await page.click('#testnet_network')
-    const overviewText = await page.$eval('.text-muted', el => el.innerText)
-    expect(overviewText, 'Testnet overview header').contain('TESTNET')
-    console.log('user successfully changed to TESTNET')
-
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
     // check Send & Swap & Receive options have been displayed
-    await page.waitForSelector('#send_action', {
-      visible: true
-    })
-    await page.waitForSelector('#swap_action', {
-      visible: true
-    })
-    await page.waitForSelector('#receive_action', {
-      visible: true
-    })
-
-    // Click on SEND Option
-    await page.click('#send_action')
-    await page.waitForSelector('#search_for_a_currency_search', {
-      visible: true
-    })
-
-    // SEND
-    await page.type('#search_for_a_currency_search', sovryan)
-    await page.waitForTimeout(2000)
-    const assertListItems = await page.$$('#assert_list_item')
-    await assertListItems[0].click()
-    await page.click('#' + sovryan)
-    expect(await page.$eval('#overview', el => el.innerText), 'SEND page not loaded correctly')
-      .equals('SEND')
+    await overviewPage.ClickSend(page)
+    // Search for coin & select coin
+    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
 
     // Enter send amount (or) coins
-    await page.type('#send_amount_input_field', coinsToSend)
-
+    await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
-    const ethAddress = testDataUtils.getRandomEthereumAddress()
-    await page.type('#address', ethAddress)
-
+    const sendToAddress = testDataUtils.getRandomAddress('ethereum')
+    await sendPage.EnterSendToAddress(page, sendToAddress)
     // Click Review Button
-    await page.click('#send_review_button')
+    await sendPage.ClickSendReview(page)
+    // Confirm SEND
+    await sendPage.SendConfirmButton(page)
+    // Transaction details page validations
+    const domain = 'https://explorer.testnet.rsk.co'
+    await transactionDetailsPage.ValidateSentAmount(page, '1 SOV')
+    await transactionDetailsPage.ValidateSentToLink(page, `${domain}/address`)
+    await transactionDetailsPage.ValidateNetworkSpeedFee(page)
+    await transactionDetailsPage.ValidateTime(page)
+    await transactionDetailsPage.ValidateStatus(page)
+    await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
+  })
+  it('Send BNB to another BNB wallet', async () => {
+    const bitCoinName = 'BNB'
+    const coinsToSend = '0.0000001'
 
-    await page.waitForSelector('#send_button_confirm', { visible: true })
-    await page.click('#send_button_confirm')
-    await page.waitForSelector('.transaction-list', { visible: true })
-    await page.waitForSelector('.list-item-detail-icon', { visible: true })
-    await page.click('.list-item-detail-icon')
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ClickSend(page)
+    // Search for coin & select coin
+    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
 
-    // Transaction details page
-    await page.waitForSelector('#transaction_detail_sent_amount', { visible: true })
-    const sentAmount = await page.$eval('#transaction_detail_sent_amount', el => el.innerText)
-    expect(sentAmount.toString().trim()).equals('1 SOV')
-    await page.waitForSelector('#transaction_details_send_to_link', { visible: true })
-    const sedToHrefLink = await page.$eval('#transaction_details_send_to_link', el => el.href)
-    console.log(chalk.blueBright(sedToHrefLink))
-    expect(sedToHrefLink).contain('https://explorer.testnet.rsk.co/address')
-    await page.waitForSelector('#transaction_details_network_speed_fee', { visible: true })
-    const sendNetworkSpeedFee = await page.$eval('#transaction_details_network_speed_fee', el => el.innerText)
-    console.log(chalk.blueBright(sendNetworkSpeedFee))
-    await page.waitForSelector('#transaction_details_date_time', { visible: true })
-    // TODO: add timer here to validate the status is Completed
-    await page.waitForSelector('#transaction_details_status', { visible: true })
-    await page.waitForSelector('#transaction_details_transaction_id', { visible: true })
-    const transactionIdHrefLink = await page.$eval('#transactionLink', el => el.href)
-    expect(transactionIdHrefLink).contain('https://explorer.testnet.rsk.co/tx')
-    console.log(chalk.blueBright(transactionIdHrefLink))
+    // Enter send amount (or) coins
+    await sendPage.EnterSendAmount(page, coinsToSend)
+    // Send address
+    await sendPage.EnterSendToAddress(page, '0x0c62B13f8116eBA444DeFdE842aBd7d1f68F964f')
+    // Click Review Button
+    await sendPage.ClickSendReview(page)
+    // Confirm SEND
+    await sendPage.SendConfirmButton(page)
+    // Transaction details page validations
+    const domain = 'https://testnet.bscscan.com'
+    await transactionDetailsPage.ValidateSentAmount(page, '0 BNB')
+    await transactionDetailsPage.ValidateSentToLink(page, `${domain}/address`)
+    await transactionDetailsPage.ValidateNetworkSpeedFee(page)
+    await transactionDetailsPage.ValidateTime(page)
+    await transactionDetailsPage.ValidateStatus(page)
+    await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
+  })
+  it.skip('Send BTC to another BTC wallet', async () => {
+    const bitCoinName = 'BTC'
+    const coinsToSend = '0.0000001'
+
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ClickSend(page)
+    // Search for coin & select coin
+    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
+
+    // Enter send amount (or) coins
+    await sendPage.EnterSendAmount(page, coinsToSend)
+    // Send address
+    const address = testDataUtils.getRandomAddress('bitcoin')
+    await sendPage.EnterSendToAddress(page, address)
+    // Click Review Button
+    await sendPage.ClickSendReview(page)
+    // Confirm SEND
+    await sendPage.SendConfirmButton(page)
+    // Transaction details page validations
+    const domain = 'https://testnet.bscscan.com'
+    await transactionDetailsPage.ValidateSentAmount(page, '0 BTC')
+    await transactionDetailsPage.ValidateSentToLink(page, `${domain}/address`)
+    await transactionDetailsPage.ValidateNetworkSpeedFee(page)
+    await transactionDetailsPage.ValidateTime(page)
+    await transactionDetailsPage.ValidateStatus(page)
+    await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
   })
 })
