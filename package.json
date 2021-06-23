@@ -18,7 +18,7 @@
     "sync-versions": "node script/sync-versions.js",
     "test:unit": "jest tests/unit",
     "postinstall": "husky install",
-    "test:testNetNetwork": "node_modules/mocha/bin/mocha --reporter mocha-allure-reporter ./tests/**/testnet/*.spec.js",
+    "test:testNetNetwork": "node_modules/mocha/bin/mocha --reporter mochawesome ./tests/**/testnet/*.spec.js",
     "allure:report": "node_modules/allure-commandline/bin/allure --verbose generate allure-results --clean -o allure-report",
     "allure:clear": "rm -r allure-results/ allure-report cypress/screenshots || true",
     "allure:history": "mv -f allure-report/history allure-results/history && rm -r allure-report || true"
@@ -108,6 +108,7 @@
     "husky": "^5.0.4",
     "jest": "^26.4.2",
     "mocha-allure-reporter": "^1.4.0",
+    "mochawesome": "^6.2.2",
     "puppeteer": "^10.0.0",
     "puppeteer-core": "^10.0.0",
     "sass": "^1.26.3",
