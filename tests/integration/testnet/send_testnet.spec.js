@@ -142,7 +142,7 @@ describe('Liquality wallet SEND feature', async () => {
     await transactionDetailsPage.ValidateStatus(page)
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
   })
-  it.only('Send BNB to another BNB wallet', async () => {
+  it('Send BNB to another BNB wallet', async () => {
     const bitCoinName = 'BNB'
     const coinsToSend = '0.0000001'
 
