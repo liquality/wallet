@@ -7,6 +7,7 @@
               <input
                 type="text"
                 class="form-control form-control-sm"
+                id="search_for_a_currency"
                 v-model="search"
                 placeholder="Search for a Currency"
                 autocomplete="off"

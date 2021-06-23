@@ -511,6 +511,7 @@ class LiqualitySwapProvider extends SwapProvider {
       BNB: 165000,
       POLYGON: 165000,
       NEAR: 10000000000000,
+      MATIC: 165000,
       ERC20: 600000 + 94500 // Contract creation + erc20 transfer
     },
     SWAP_CLAIM: {
@@ -519,6 +520,7 @@ class LiqualitySwapProvider extends SwapProvider {
       RBTC: 45000,
       BNB: 45000,
       POLYGON: 45000,
+      MATIC: 45000,
       NEAR: 8000000000000,
       ERC20: 100000
     }

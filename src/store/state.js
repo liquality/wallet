@@ -37,5 +37,6 @@ export default {
   setupAt: null,
 
   injectEthereum: false,
-  injectEthereumAsset: 'ETH'
+  injectEthereumAsset: 'ETH',
+  useLedgerLive: false
 }

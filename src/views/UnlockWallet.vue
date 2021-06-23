@@ -15,14 +15,15 @@
         <div class="input-group">
           <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required :readonly="loading">
         </div>
-        <p v-if="error" class="mt-3">
+        <p v-if="error" class="mt-3" id="password_error">
           {{ error }}
         </p>
       </div>
       <div class="footer-container">
-        <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
+        <p><router-link to="/onboarding/import" id="forgot_password_import_seed">Forgot password? Import with seed phrase</router-link></p>
         <div class="footer-content">
           <button class="btn btn-primary btn-lg btn-block btn-icon"
+                  id="unlock_button"
                   :disabled="loading">
             <span v-if="loading">
               <SpinnerIcon /> &nbsp;

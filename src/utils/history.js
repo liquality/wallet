@@ -13,11 +13,11 @@ export const SEND_STATUS_LABEL_MAP = {
 
 export function getStatusLabel (item) {
   if (item.type === 'SEND') {
-    return SEND_STATUS_LABEL_MAP[item.status]
+    return SEND_STATUS_LABEL_MAP[item.status] || ''
   }
   if (item.type === 'SWAP') {
     const swapProvider = store.getters.swapProvider(item.network, item.provider)
-    return swapProvider.statuses[item.status].label.replace('{from}', item.from).replace('{to}', item.to)
+    return swapProvider.statuses[item.status].label.replace('{from}', item.from).replace('{to}', item.to) || ''
   }
 }
 

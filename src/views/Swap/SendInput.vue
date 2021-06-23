@@ -73,6 +73,7 @@
               }"
               :disabled="disabled"
               class="btn btn-option"
+              id="min_amount_send_button"
               @click="setSendAmount(min)"
             >
               Min
@@ -89,6 +90,7 @@
               }"
               :disabled="disabled"
               class="btn btn-option tooltip-target"
+              id="max_amount_send_button"
               @click="setSendAmount(max)"
             >
               Max

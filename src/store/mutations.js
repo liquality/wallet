@@ -238,5 +238,8 @@ export default {
   },
   SAVE_PASSWORD (state, { password }) {
     state.tempPassword = password
+  },
+  SET_USE_LEDGER_LIVE (state, { use }) {
+    state.useLedgerLive = use
   }
 }

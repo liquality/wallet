@@ -151,8 +151,14 @@ const migrations = [
       return { ...state, accounts, customTokens, history }
     }
   },
-  { // Multi provider swaps
+  { // set useLedgerLive default to false
     version: 6,
+    migrate: async (state) => {
+      return { ...state, useLedgerLive: false }
+    }
+  },
+  { // Multi provider swaps
+    version: 7,
     migrate: async (state) => {
       const walletId = state.activeWalletId
 

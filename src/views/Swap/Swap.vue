@@ -13,7 +13,7 @@
         Swap
       </NavBar>
       <InfoNotification v-if="ethRequired">
-        <EthRequiredMessage />
+        <EthRequiredMessage :account-id="account.id"/>
       </InfoNotification>
 
       <InfoNotification v-else-if="showNoLiquidityMessage">
@@ -50,7 +50,7 @@
             @to-asset-click="toAssetClick"
           />
         </div>
-        <div class="mt-30 form-group swap-rate">
+        <div class="mt-30 form-group swap-rate" id="rate_block">
           <label>Rate</label>
           <p>
             <span class="swap-rate_base">1 {{ asset }} =</span>
@@ -66,7 +66,7 @@
         <div class="form-group swap_fees mt-30" v-if="availableFees.size">
           <DetailsContainer>
             <template v-slot:header>
-              <span class="details-title">Network Speed/Fee</span>
+              <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
               <span class="text-muted">
                 {{ assetChain }}
                 {{ assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : '' }}
@@ -111,6 +111,7 @@
             </router-link>
             <button
               class="btn btn-primary btn-lg"
+              id="swap_review_button"
               @click="currentStep = 'confirm'"
               :disabled="!canSwap"
             >
@@ -247,6 +248,7 @@
           <div class="button-group">
             <button
               class="btn btn-light btn-outline-primary btn-lg"
+              id="edit_swap_button"
               v-if="!loading"
               @click="currentStep = 'inputs'"
             >
@@ -254,6 +256,7 @@
             </button>
             <button
               class="btn btn-primary btn-lg btn-block btn-icon"
+              id="initiate_swap_button"
               @click.stop="swap"
               :disabled="loading"
             >
@@ -605,15 +608,17 @@ export default {
       return BN(this.safeAmount).plus(this.fromSwapFee)
     },
     totalToSendInFiat () {
-      const amount = BN(this.stateSendAmount).plus(this.fromSwapFee)
-      return cryptoToFiat(amount, this.fiatRates[this.assetChain]).toFormat(2)
+      const send = cryptoToFiat(BN(this.stateSendAmount), this.fiatRates[this.asset])
+      const fee = cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain])
+      return send.plus(fee).toFormat(2)
     },
     receiveAmountSameAsset () {
       return BN(this.receiveAmount).minus(this.toSwapFee)
     },
     totalToReceiveInFiat () {
-      const amount = this.receiveAmount.plus(this.toSwapFee)
-      return cryptoToFiat(amount, this.fiatRates[this.toAssetChain]).toFormat(2)
+      const receive = cryptoToFiat(this.stateReceiveAmount, this.fiatRates[this.toAsset])
+      const fee = cryptoToFiat(this.toSwapFee, this.fiatRates[this.toAssetChain])
+      return receive.minus(fee).toFormat(2)
     },
     assetsFeeSelector () {
       return {

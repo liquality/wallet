@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown head-menu"
+  <div id="account" class="dropdown head-menu"
       v-click-away="hide">
     <button class="btn dropdown-toggle"
             @click="toggle">
@@ -20,6 +20,7 @@
       </li> -->
       <li>
           <button class="dropdown-item"
+                  id="hardware_option"
                   @click="navigate('/accounts/hardware-wallet')">
               <div class="head-option">
                 <HardwareIcon class="hardware-icon" />

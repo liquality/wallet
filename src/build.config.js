@@ -14,7 +14,7 @@ export default {
       'SOV',
       'BNB',
       'NEAR',
-      'POLYGON',
+      'MATIC',
       'PWETH'
     ],
     testnet: [
@@ -25,7 +25,7 @@ export default {
       'BNB',
       'NEAR',
       'SOV',
-      'POLYGON',
+      'MATIC',
       'PWETH'
     ]
   },
@@ -64,7 +64,7 @@ export default {
       }
     }
   },
-  telegramUrl: 'https://t.me/liquality',
+  discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
   chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon']
 }

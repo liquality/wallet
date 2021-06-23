@@ -4,24 +4,21 @@
             <img :src="logo"/>
         </div>
         <div class="login-phrase_middle-text mx-auto mt-1">
-            <h2 class="mt-4 px-5">Sign in to See Seed Phrase</h2>
+            <h2 class="mt-4 px-4">Sign-in to See Seed Phrase</h2>
             <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
-                <div class="form-group">
+                <div class="form-group mt-2">
                     <label for="password">Password</label>
-                    <div class="input-group mb-5">
+                    <div class="input-group">
                     <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required :readonly="loading">
                     </div>
-                    <p v-if="errors.length">
-                    <b>Please correct the following error(s):</b>
-                    <ul>
-                        <li v-for="error in errors" :key="error">{{ error }}</li>
-                    </ul>
+                    <p v-if="error" class="mt-3" id="password_error">
+                      {{ error }}
                     </p>
                 </div>
             </form>
         </div>
         <div class="footer-container">
-            <div class="form-group mt-5 ml-1">
+            <div class="form-group d-flex mt-5 mb-3 ml-1">
               <div class="form-check phrase-check my-auto">
                 <input class="form-check-input" type="checkbox" value="" v-model="checkbox" id="checkbox">
                 <label class="form-check-label mt-1" for="checkbox">
@@ -31,7 +28,12 @@
             </div>
           <div class="button-group">
                 <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg">Cancel</button></router-link>
-                <button class="btn btn-primary btn-lg" @click="unlock">Continue</button>
+                <button class="btn btn-primary btn-lg"
+                        id="continue_button_to_see_seed_phrase"
+                        @click="unlock"
+                        :disabled="!checkbox || !password">
+                  Continue
+                </button>
           </div>
         </div>
     </div>
@@ -46,7 +48,7 @@ export default {
   data () {
     return {
       loading: false,
-      errors: [],
+      error: null,
       password: null,
       checkbox: false
     }
@@ -59,18 +61,18 @@ export default {
   methods: {
     ...mapActions(['unlockWallet']),
     async unlock () {
-      this.errors = []
+      this.error = null
       this.loading = true
       try {
         if (this.checkbox === true) {
           await this.unlockWallet({ key: this.password })
           this.$router.push('/seedreveal')
         } else {
-          this.errors.push('Please Accept Terms')
+          this.error = 'Please Accept Terms'
         }
       } catch (e) {
         console.log(e)
-        this.errors.push(e.message)
+        this.error = e.message
       } finally {
         this.loading = false
       }
