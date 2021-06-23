@@ -48,7 +48,6 @@ class SendPage {
   async SendConfirmButton (page) {
     await page.waitForSelector('#send_button_confirm', { visible: true })
     await page.click('#send_button_confirm')
-    await page.waitForSelector('.transaction-list', { visible: true })
     await page.waitForSelector('.list-item-detail-icon', { visible: true })
     await page.click('.list-item-detail-icon')
   }

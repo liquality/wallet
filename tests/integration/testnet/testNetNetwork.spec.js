@@ -13,8 +13,7 @@ const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
-let browser
-let page
+let browser, page
 const password = '123123123'
 
 describe('Liquality wallet...', async () => {

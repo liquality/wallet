@@ -18,8 +18,7 @@ const searchAssetPage = new SearchAssetPage()
 const sendPage = new SendPage()
 const transactionDetailsPage = new TransactionDetailsPage()
 
-let browser
-let page
+let browser, page
 const password = '123123123'
 
 // Chrome options
@@ -143,7 +142,7 @@ describe('Liquality wallet SEND feature', async () => {
     await transactionDetailsPage.ValidateStatus(page)
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
   })
-  it('Send BNB to another BNB wallet', async () => {
+  it.only('Send BNB to another BNB wallet', async () => {
     const bitCoinName = 'BNB'
     const coinsToSend = '0.0000001'
 
