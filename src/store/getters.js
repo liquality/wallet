@@ -1,14 +1,15 @@
 import { assets as cryptoassets, unitToCurrency } from '@liquality/cryptoassets'
 import { createClient } from './factory/client'
+import { createSwapProvider } from './factory/swapProvider'
 import { Object } from 'core-js'
 import BN from 'bignumber.js'
 import { cryptoToFiat } from '@/utils/coinFormatter'
-import buildConfig from '../build.config'
 
 const clientCache = {}
+const swapProviderCache = {}
 
 const TESTNET_CONTRACT_ADDRESSES = {
-  DAI: '0xcE2748BE67fB4346654B4500c4BB0642536365FC',
+  DAI: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
   SOV: '0x6a9A07972D07E58f0daF5122D11e069288A375fB',
   PWETH: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa'
 }
@@ -22,9 +23,6 @@ const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'MATI
 }, {})
 
 export default {
-  agentEndpoints (state) {
-    return network => buildConfig.agentEndpoints[network]
-  },
   client (state) {
     return (network, walletId, asset, walletType = 'default', indexPath = 0, useCache = true) => {
       const cacheKey = [asset, network, walletId, walletType, indexPath].join('-')
@@ -39,6 +37,19 @@ export default {
       clientCache[cacheKey] = client
 
       return client
+    }
+  },
+  swapProvider (state) {
+    return (network, providerId) => {
+      const cacheKey = [network, providerId]
+
+      const cachedSwapProvider = swapProviderCache[cacheKey]
+      if (cachedSwapProvider) return cachedSwapProvider
+
+      const swapProvider = createSwapProvider(network, providerId)
+      swapProviderCache[cacheKey] = swapProvider
+
+      return swapProvider
     }
   },
   historyItemById (state) {

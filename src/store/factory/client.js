@@ -132,7 +132,7 @@ function createEthereumClient (
 function createEthClient (asset, network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const ethereumNetwork = AssetNetworks.ETH[network]
-  const infuraApi = isTestnet ? 'https://rinkeby.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f' : 'https://mainnet.infura.io/v3/da99ebc8c0964bb8bb757b6f8cc40f1f'
+  const infuraApi = isTestnet ? `https://rinkeby.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
   const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
   const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider()
 

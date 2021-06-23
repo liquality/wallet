@@ -127,10 +127,6 @@ const CSV_HEADERS = [
     key: 'toAddress'
   },
   {
-    label: 'Send To',
-    key: 'sendTo'
-  },
-  {
     label: 'Send Amount',
     key: 'fromAmount'
   },
