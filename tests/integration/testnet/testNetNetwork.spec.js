@@ -437,7 +437,6 @@ describe('Liquality wallet...', async () => {
     // Click on continue button
     await page.click('#import_wallet_continue_button')
     console.log('Import wallet continue button has been clicked')
-
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
 
@@ -501,12 +500,10 @@ describe('Liquality wallet...', async () => {
     await page.click('#network_speed_fee')
 
     // Review
+    await page.waitForSelector('#swap_review_button:not([disabled]')
     await page.click('#swap_review_button')
     console.log(chalk.green('User clicked on Swap review button'))
-
-    await page.waitForSelector('#initiate_swap_button', {
-      visible: true
-    })
+    await page.waitForSelector('#initiate_swap_button', { visible: true })
     console.log(chalk.green('Initiate swap button has been enabled, almost there...'))
     // TODO: Click on swap confirm step
   })
