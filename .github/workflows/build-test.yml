@@ -58,7 +58,7 @@ jobs:
         if: always()
         with:
           name: allure-html-report
-          path: allure-report/index.html
+          path: allure-report
 
 
 
