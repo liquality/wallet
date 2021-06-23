@@ -30,7 +30,8 @@ const options = {
   executablePath: process.env.PUPPETEER_EXEC_PATH,
   args: [
     '--no-sandbox',
-    '--disabled-setupid-sandbox',
+    '--disable-setuid-sandbox',
+    `--disable-dev-shm-usage`,
     '--disable-gpu',
     '--disable-extensions',
     '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
