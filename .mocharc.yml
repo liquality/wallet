@@ -5,3 +5,6 @@ color: true
 inline-diffs: true
 allow-uncaught: true
 async-only: true
+reporter: mochawesome
+require:
+  - mochawesome/register

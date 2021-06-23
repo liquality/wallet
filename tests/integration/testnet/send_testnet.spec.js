@@ -49,7 +49,7 @@ describe('Liquality wallet SEND feature', async () => {
     await browser.close()
   })
 
-  it.only('Send BTC to another Wrong address. check Review option has been disabled', async () => {
+  it('Send BTC to another Wrong address. check Review option has been disabled', async () => {
     const bitCoinName = 'BTC'
     const coinsToSend = '0.000001'
 
