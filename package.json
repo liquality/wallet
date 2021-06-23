@@ -18,7 +18,7 @@
     "sync-versions": "node script/sync-versions.js",
     "test:unit": "jest tests/unit",
     "postinstall": "husky install",
-    "test:testNetNetwork": "./node_modules/mocha/bin/mocha --async-only --colors --no-timeouts --reporter spec --ui bdd ./tests/integration/testnet/*.spec.js"
+    "test:testNetNetwork": "./node_modules/mocha/bin/mocha ./tests/**/testnet/*.spec.js"
   },
   "dependencies": {
     "@liquality/bitcoin-esplora-batch-api-provider": "^1.1.9",

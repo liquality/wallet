@@ -32,13 +32,14 @@ class TestDataUtils {
   }
 
   /**
-   * Generate bitcoin address.
+   * Generate bitcoin address for testnet.
    * @returns {*}
    */
   getRandomBitcoinAddress () {
     const keyPair = bitcoin.ECPair.makeRandom()
     const { address } = bitcoin.payments.p2pkh({
-      pubkey: keyPair.publicKey
+      pubkey: keyPair.publicKey,
+      network: bitcoin.networks.testnet
     })
     return address
   }

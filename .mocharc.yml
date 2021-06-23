@@ -1,0 +1,9 @@
+ui: 'bdd'
+timeout: 0
+full-trace: true
+parallel: true
+reporter: spec
+color: true
+inline-diffs: true
+allow-uncaught: true
+async-only: true

@@ -18,8 +18,7 @@ const searchAssetPage = new SearchAssetPage()
 const sendPage = new SendPage()
 const transactionDetailsPage = new TransactionDetailsPage()
 
-let browser
-let page
+let browser, page
 const password = '123123123'
 
 // Chrome options
@@ -179,7 +178,7 @@ describe('Liquality wallet SEND feature', async () => {
     await transactionDetailsPage.ValidateStatus(page)
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
   })
-  it.skip('Send BTC to another BTC wallet', async () => {
+  it('Send BTC to another BTC wallet', async () => {
     const bitCoinName = 'BTC'
     const coinsToSend = '0.0000001'
 
@@ -208,7 +207,7 @@ describe('Liquality wallet SEND feature', async () => {
     // Confirm SEND
     await sendPage.SendConfirmButton(page)
     // Transaction details page validations
-    const domain = 'https://testnet.bscscan.com'
+    const domain = 'https://blockstream.info/testnet'
     await transactionDetailsPage.ValidateSentAmount(page, '0 BTC')
     await transactionDetailsPage.ValidateSentToLink(page, `${domain}/address`)
     await transactionDetailsPage.ValidateNetworkSpeedFee(page)
