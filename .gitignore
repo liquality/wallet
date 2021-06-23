@@ -29,3 +29,5 @@ dist_electron
 *.pem
 *.pub
 artifacts
+/allure-results/
+/allure-report/

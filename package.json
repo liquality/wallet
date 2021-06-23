@@ -18,7 +18,10 @@
     "sync-versions": "node script/sync-versions.js",
     "test:unit": "jest tests/unit",
     "postinstall": "husky install",
-    "test:testNetNetwork": "./node_modules/mocha/bin/mocha ./tests/**/testnet/*.spec.js"
+    "test:testNetNetwork": "./node_modules/mocha/bin/mocha --reporter mocha-allure-reporter ./tests/**/testnet/*.spec.js",
+    "allure:report": "./node_modules/mocha/bin/allure --verbose generate allure-results --clean -o allure-report",
+    "allure:clear": "rm -r allure-results/ allure-report cypress/screenshots || true",
+    "allure:history": "mv -f allure-report/history allure-results/history && rm -r allure-report || true"
   },
   "dependencies": {
     "@liquality/bitcoin-esplora-batch-api-provider": "^1.1.9",
@@ -93,6 +96,7 @@
     "@vue/cli-service": "~4.3.0",
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/test-utils": "^1.1.0",
+    "allure-commandline": "^2.13.8",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.29.0",
     "eslint-plugin-import": "^2.23.4",
@@ -103,6 +107,7 @@
     "ethereumjs-wallet": "^1.0.1",
     "husky": "^5.0.4",
     "jest": "^26.4.2",
+    "mocha-allure-reporter": "^1.4.0",
     "puppeteer": "^10.0.0",
     "puppeteer-core": "^10.0.0",
     "sass": "^1.26.3",

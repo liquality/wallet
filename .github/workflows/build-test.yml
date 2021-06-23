@@ -49,3 +49,16 @@ jobs:
         with:
           args: npm run test:testNetNetwork
 
+      - name: ===>> Generate Allure HTML Report ==>>>
+        if: always()
+        run: |
+          npm run allure:report
+      - name: Archive Allure HTML report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: allure-html-report
+          path: allure-report/index.html
+
+
+
