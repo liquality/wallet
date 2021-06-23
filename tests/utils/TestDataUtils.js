@@ -14,7 +14,7 @@ class TestDataUtils {
       }
 
       case 'bitcoin': {
-        return this.getBitcoinAddress()
+        return this.getRandomBitcoinAddress()
       }
 
       default:
@@ -35,9 +35,11 @@ class TestDataUtils {
    * Generate bitcoin address.
    * @returns {*}
    */
-  getBitcoinAddress () {
+  getRandomBitcoinAddress () {
     const keyPair = bitcoin.ECPair.makeRandom()
-    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey })
+    const { address } = bitcoin.payments.p2pkh({
+      pubkey: keyPair.publicKey
+    })
     return address
   }
 }
