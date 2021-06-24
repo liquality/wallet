@@ -121,6 +121,29 @@ class SendPage {
   async GetSendAvailableBalance (page) {
     return await page.$eval('#send_available_balance', el => el.innerText)
   }
+
+  /**
+   * Get Network Speed fee.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
+  async GetNetworkSpeedFee (page) {
+    await page.waitForSelector('#send_network_speed_avg_fee', { visible: true })
+    await page.waitForTimeout(5000)
+    return await page.$eval('#send_network_speed_avg_fee', el => el.innerText)
+  }
+
+  /**
+   * Click on Network Speed/FEE option
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickNetworkSpeedFee (page) {
+    await page.click('#send_network_speed')
+    await page.waitForSelector('#average', { visible: true })
+  }
 }
 
 module.exports = SendPage

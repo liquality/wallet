@@ -48,8 +48,8 @@
           <div class="form-group mt-150">
           <DetailsContainer v-if="feesAvailable">
             <template v-slot:header>
-              <span class="details-title">Network Speed/Fee</span>
-              <span class="text-muted">
+              <span class="details-title" id="send_network_speed">Network Speed/Fee</span>
+              <span class="text-muted" id="send_network_speed_avg_fee">
                 ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
               </span>
             </template>
