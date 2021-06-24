@@ -26,7 +26,7 @@ const options = {
   slowMo: 20,
   headless: false,
   executablePath: process.env.PUPPETEER_EXEC_PATH,
-  ignoreDefaultArgs: [
+  args: [
     '--no-sandbox',
     '--disable-setuid-sandbox',
     '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
