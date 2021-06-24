@@ -41,13 +41,18 @@ jobs:
           npm run lint
           npm run build
 
+      -name: screenshots directory
+       if: always()
+       run: |
+         mkdir screenshots
+
       - name: ===>> TestNet integration tests ==>>>
         uses: mujo-code/puppeteer-headful@master
         env:
           CI: 'true'
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
         with:
-          args: mkdir screenshots && npm run test:testNetNetwork
+          args: npm run test:testNetNetwork
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2
