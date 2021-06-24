@@ -17,18 +17,14 @@ let browser, page
 const password = '123123123'
 
 describe('Liquality wallet...', async () => {
-  // Chrome options
+// Chrome options
   const options = {
     slowMo: 20,
     headless: false,
-    ignoreHTTPSErrors: true,
-    executablePath: process.env.PUPPETEER_EXEC_PATH, // set by docker container
-    args: [
+    executablePath: process.env.PUPPETEER_EXEC_PATH,
+    ignoreDefaultArgs: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-      '--disable-extensions',
       '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
       '--load-extension=' + testUtil.extensionPathBuildPath
     ]
