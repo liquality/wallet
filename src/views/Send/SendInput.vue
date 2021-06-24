@@ -68,6 +68,7 @@
                 active: maxActive
               }"
               class="btn btn-option tooltip-target"
+              id="max_send_amount_button"
               @click="$emit('toggle-max')"
             >
               Max
