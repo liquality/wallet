@@ -50,6 +50,12 @@ jobs:
           npm ci
           npm run lint
           npm run build
+
+      - name: screenshots directory
+        if: always()
+        run: |
+          mkdir screenshots
+
       - name: ===>> TestNet integration tests ==>>>
         uses: mujo-code/puppeteer-headful@master
         env:
@@ -57,6 +63,21 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
         with:
           args: npm run test:testNetNetwork
+
+      - name: Archive Mocha HTML report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: mocha-html-test-report
+          path: mochawesome-report
+
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
