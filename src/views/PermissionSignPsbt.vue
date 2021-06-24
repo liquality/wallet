@@ -43,7 +43,7 @@ import { Psbt } from 'bitcoinjs-lib'
 import { getAssetIcon } from '@/utils/asset'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { AssetNetworks } from '@/store/utils'
+import { ChainNetworks } from '@/store/utils'
 import { prettyBalance } from '@/utils/coinFormatter'
 
 export default {
@@ -101,7 +101,7 @@ export default {
       return this.request.args[2]
     },
     psbt () {
-      return Psbt.fromBase64(this.psbtBase64, { network: AssetNetworks.BTC[this.activeNetwork] })
+      return Psbt.fromBase64(this.psbtBase64, { network: ChainNetworks.bitcoin[this.activeNetwork] })
     },
     outputs () {
       return this.psbt.txOutputs.filter((output, i) => i !== this.changeOutputIndex)
