@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
-import pkg from '../../package.json'
 import { assets as cryptoassets } from '@liquality/cryptoassets'
 import { BitcoinNetworks } from '@liquality/bitcoin-networks'
 import { EthereumNetworks } from '@liquality/ethereum-networks'
@@ -44,48 +43,6 @@ export const unlockAsset = key => {
   emitter.$emit(`unlock:${key}`)
 }
 
-export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
-
-export const newOrder = (agent, data) => {
-  return axios({
-    url: agent + '/api/swap/order',
-    method: 'post',
-    data,
-    headers: {
-      'x-requested-with': VERSION_STRING,
-      'x-liquality-user-agent': VERSION_STRING
-    }
-  }).then(res => res.data)
-}
-
-export const updateOrder = (order) => {
-  return axios({
-    url: order.agent + '/api/swap/order/' + order.id,
-    method: 'post',
-    data: {
-      fromAddress: order.fromAddress,
-      toAddress: order.toAddress,
-      fromFundHash: order.fromFundHash,
-      secretHash: order.secretHash
-    },
-    headers: {
-      'x-requested-with': VERSION_STRING,
-      'x-liquality-user-agent': VERSION_STRING
-    }
-  }).then(res => res.data)
-}
-
-export const getMarketData = agent => {
-  return axios({
-    url: agent + '/api/swap/marketinfo',
-    method: 'get',
-    headers: {
-      'x-requested-with': VERSION_STRING,
-      'x-liquality-user-agent': VERSION_STRING
-    }
-  }).then(res => res.data)
-}
-
 const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
 
 export async function getPrices (baseCurrencies, toCurrency) {
@@ -100,6 +57,7 @@ export async function getPrices (baseCurrencies, toCurrency) {
 
 export const Networks = ['mainnet', 'testnet']
 
+// TODO: This should be per chain, not per native asset
 export const AssetNetworks = {
   BTC: {
     testnet: BitcoinNetworks.bitcoin_testnet,

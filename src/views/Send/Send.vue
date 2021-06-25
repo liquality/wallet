@@ -48,9 +48,9 @@
           <div class="form-group mt-150">
           <DetailsContainer v-if="feesAvailable">
             <template v-slot:header>
-              <span class="details-title">Network Speed/Fee</span>
-              <span class="text-muted">
-                ({{ selectedFeeLabel }} / {{ prettyFee }} {{ feeType }})
+              <span class="details-title" id="send_network_speed">Network Speed/Fee</span>
+              <span class="text-muted" id="send_network_speed_avg_fee">
+                ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
               </span>
             </template>
             <template v-slot:content>
@@ -138,7 +138,7 @@
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div>
-            ~{{ prettyFee }} {{ feeType }}
+            ~{{ prettyFee }} {{ assetChain }}
           </div>
           <div class="details-text">${{ totalFeeInFiat }}</div>
           </div>
@@ -148,11 +148,11 @@
             Amount + Fees
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
-            <div class="font-weight-bold" v-if="asset === feeType">
+            <div class="font-weight-bold" v-if="asset === assetChain">
               {{ dpUI(amountWithFee) }} {{ asset }}
             </div>
              <div class="font-weight-bold" v-else>
-              {{ dpUI(amount) }} {{ asset }} + {{ prettyFee }} {{ feeType }}
+              {{ dpUI(amount) }} {{ asset }} + {{ prettyFee }} {{ assetChain }}
             </div>
           <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
           </div>
@@ -212,9 +212,7 @@ import {
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import {
-  TX_TYPES,
-  FEE_TYPES,
-  getTxFee,
+  getSendFee,
   getFeeLabel
 } from '@/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -374,12 +372,6 @@ export default {
     totalFeeInFiat () {
       return prettyFiatBalance(this.currentFee, this.fiatRates[this.asset])
     },
-    feeType () {
-      return FEE_TYPES[this.assetChain]
-    },
-    includeFees () {
-      return this.feeType === FEE_TYPES.BTC
-    },
     selectedFeeLabel () {
       return getFeeLabel(this.selectedFee)
     },
@@ -405,7 +397,7 @@ export default {
         const sendFees = {}
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const feePrice = fee.fee
-          sendFees[speed] = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
+          sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
         if (this.asset === 'BTC') {
           const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)

@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-if="brokerReady" :class="{ satmode }">
+  <div id="app" v-if="brokerReady">
     <Head v-if="unlockedAt" />
 
     <router-view v-if="termsAcceptedAt" />
@@ -9,7 +9,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import SatMode from '@/mixins/SatMode'
 
 import Head from '@/components/Head.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
@@ -19,7 +18,6 @@ export default {
     Head,
     OnboardingHome
   },
-  mixins: [SatMode],
   computed: {
     ...mapState([
       'activeNetwork',

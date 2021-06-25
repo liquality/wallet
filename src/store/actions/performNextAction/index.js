@@ -1,4 +1,3 @@
-import { performNextSwapAction } from './swap'
 import { performNextTransactionAction } from './send'
 import { createHistoryNotification } from '../../../broker/notification'
 
@@ -10,7 +9,8 @@ export const performNextAction = async (store, { network, walletId, id }) => {
 
   let updates
   if (item.type === 'SWAP') {
-    updates = await performNextSwapAction(store, { network, walletId, order: item })
+    const swapProvider = store.getters.swapProvider(network, item.provider)
+    updates = await swapProvider.performNextSwapAction(store, { network, walletId, swap: item })
   }
   if (item.type === 'SEND') {
     updates = await performNextTransactionAction(store, { network, walletId, transaction: item })

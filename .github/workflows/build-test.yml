@@ -30,16 +30,28 @@ jobs:
 
       - name: Set development manifest
         run: |
-            jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
-            mv ./src/manifest.tmp ./src/manifest.json
+          jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
+          mv ./src/manifest.tmp ./src/manifest.json
 
       - name: Set development agents
         run: |
-            sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
+          sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
       - run: |
           npm ci
           npm run lint
           npm run build
+
+      - name: screenshots directory
+        if: always()
+        run: |
+          mkdir screenshots
+
+      - name:  Install other dependencies for puppeteer __tests__
+        if: always()
+        run: |
+          sudo apt-get install gconf-service libasound2 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt-get install ./google-chrome-stable_current_amd64.deb
 
       - name: ===>> TestNet integration tests ==>>>
         uses: mujo-code/puppeteer-headful@master
@@ -48,4 +60,20 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
         with:
           args: npm run test:testNetNetwork
+
+      - name: Archive Mocha HTML report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: mocha-html-test-report
+          path: mochawesome-report
+
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots
+
+
 

@@ -47,10 +47,10 @@ export default {
     state.wallets = wallets
     state.unlockedAt = unlockedAt
   },
-  NEW_ORDER (state, { network, walletId, order }) {
+  NEW_SWAP (state, { network, walletId, swap }) {
     ensureNetworkWalletTree(state.history, network, walletId, [])
 
-    state.history[network][walletId].push(order)
+    state.history[network][walletId].push(swap)
   },
   NEW_TRASACTION (state, { network, walletId, transaction }) {
     ensureNetworkWalletTree(state.history, network, walletId, [])

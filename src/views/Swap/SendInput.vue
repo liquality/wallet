@@ -27,7 +27,7 @@
           @input="$emit('update:sendAmountFiat', $event.target.value)"
           placeholder="0.00"
           autocomplete="off"
-          :disabled="!hasMarket"
+          :disabled="disabled"
         />
         <input
           v-else
@@ -39,7 +39,7 @@
           placeholder="0.00"
           :style="getAssetColorStyle(asset)"
           autocomplete="off"
-          :disabled="!hasMarket"
+          :disabled="disabled"
         />
         </div>
         <AccountTooltip :account="account" :asset="asset">
@@ -69,9 +69,9 @@
           <v-popover offset="1" trigger="hover focus" class="mr-2">
             <button
               :class="{
-                active: amountOption === 'min' && hasMarket,
+                active: amountOption === 'min' && !disabled,
               }"
-              :disabled="!hasMarket"
+              :disabled="disabled"
               class="btn btn-option"
               id="min_amount_send_button"
               @click="setSendAmount(min)"
@@ -86,9 +86,9 @@
           <v-popover offset="1" trigger="hover focus">
             <button
               :class="{
-                active: amountOption === 'max' && hasMarket,
+                active: amountOption === 'max' && !disabled,
               }"
-              :disabled="!hasMarket"
+              :disabled="disabled"
               class="btn btn-option tooltip-target"
               id="max_amount_send_button"
               @click="setSendAmount(max)"
@@ -138,7 +138,7 @@ export default {
     'maxFiat',
     'showErrors',
     'amountError',
-    'hasMarket',
+    'disabled',
     'amountOption'
   ],
   created () {},

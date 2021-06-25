@@ -122,11 +122,11 @@ const migrations = [
 
       const migrateHistory = (state, network, walletId) => {
         return state.history[network]?.[walletId]
-          // Remove defunct order statuses
+          // Remove defunct swap statuses
           ?.filter(item => !(['QUOTE', 'SECRET_READY'].includes(item.status)))
           // INITIATION statuses should be moved to FUNDED to prevent double funding
           .map(item => ['INITIATION_REPORTED', 'INITIATION_CONFIRMED'].includes(item.status) ? ({ ...item, status: 'FUNDED' }) : item)
-          // Account ids should be assigned to orders
+          // Account ids should be assigned to swaps
           .map(item => {
             if (item.type !== 'SWAP') return item
 
@@ -157,8 +157,29 @@ const migrations = [
       return { ...state, useLedgerLive: false }
     }
   },
-  { // remove useLedgerLive
+  { // Multi provider swaps
     version: 7,
+    migrate: async (state) => {
+      const walletId = state.activeWalletId
+
+      const migrateHistory = (state, network, walletId) => {
+        return state.history[network]?.[walletId].map(item => item.type === 'SWAP' ? { ...item, provider: 'liquality' } : item)
+      }
+
+      const history = {
+        mainnet: {
+          [walletId]: migrateHistory(state, 'mainnet', walletId)
+        },
+        testnet: {
+          [walletId]: migrateHistory(state, 'testnet', walletId)
+        }
+      }
+
+      return { ...state, history }
+    }
+  },
+  { // remove useLedgerLive
+    version: 8,
     migrate: async (state) => {
       delete state.useLedgerLive
       return { ...state, usbBridgeWindowsId: 0 }
