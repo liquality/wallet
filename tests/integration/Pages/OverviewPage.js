@@ -94,6 +94,18 @@ class OverviewPage {
     await page.waitForSelector('#send_action', { visible: true })
     await page.click('#send_action')
   }
+
+  /**
+   * Click on SWIPE button from overview.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickSwipe (page) {
+    await page.waitForSelector('#swap_action', { visible: true })
+    await page.click('#swap_action')
+    await page.waitForSelector('#search_for_a_currency_search', { visible: true })
+  }
 }
 
 module.exports = OverviewPage

@@ -33,6 +33,7 @@
           v-else
           type="number"
           class="form-control"
+          id="swap_send_amount_input_field"
           :class="{ 'is-invalid': showErrors && amountError }"
           :value="sendAmount"
           @input="$emit('update:sendAmount', $event.target.value)"
