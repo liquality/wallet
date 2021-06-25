@@ -8,7 +8,7 @@
     <Connect v-if="currentStep === 'connect'"
            :loading="loading"
            :selected-asset="selectedAsset"
-           @on-connect="connect"
+           @on-connect="tryToConnect"
            @on-select-asset="setLedgerAsset"
     />
     <Unlock v-else
@@ -18,12 +18,12 @@
            :selected-asset="selectedAsset"
            :ledger-error="ledgerError"
            :current-page="ledgerPage"
-           @on-connect="connect"
+           @on-connect="tryToConnect"
            @on-unlock="unlock"
            @on-cancel="cancel"
            @on-select-account="selectAccount"
     />
-    />
+    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
@@ -39,6 +39,8 @@ import {
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import { getNextAccountColor } from '@/utils/accounts'
+import LedgerBridgeModal from '@/components/LedgerBridgeModal'
+import { BG_PREFIX } from '@/broker/utils'
 
 const LEDGER_PER_PAGE = 5
 
@@ -46,7 +48,8 @@ export default {
   components: {
     NavBar,
     Connect,
-    Unlock
+    Unlock,
+    LedgerBridgeModal
   },
   data () {
     return {
@@ -57,16 +60,53 @@ export default {
       selectedAccounts: {},
       ledgerError: null,
       ledgerPage: 0,
-      selectedWalletType: null
+      selectedWalletType: null,
+      bridgeModalOpen: false
+    }
+  },
+  computed: {
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId',
+      'enabledAssets'
+    ]),
+    ...mapState({
+      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
+    }),
+    ...mapGetters(['networkAccounts']),
+    ledgerOptions () {
+      return LEDGER_OPTIONS
+    },
+    bitcoinOptions () {
+      return LEDGER_BITCOIN_OPTIONS
     }
   },
   methods: {
     getAssetIcon,
+    closeBridgeModal () {
+      this.loading = false
+      this.bridgeModalOpen = false
+    },
     ...mapActions([
       'createAccount',
       'getLedgerAccounts',
       'updateAccountBalance'
     ]),
+    async tryToConnect ({ asset, walletType, page }) {
+      if (this.usbBridgeTransportCreated) {
+        await this.connect({ asset, walletType, page })
+      } else {
+        this.loading = true
+        this.bridgeModalOpen = true
+        this.$store.subscribe(async ({ type, payload }) => {
+          if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
+          payload.created === true) {
+            this.bridgeModalOpen = false
+            await this.connect({ asset, walletType, page })
+          }
+        })
+      }
+    },
     async connect ({ asset, walletType, page }) {
       this.selectedAsset = asset
       this.loading = true
@@ -200,20 +240,6 @@ export default {
   },
   created () {
     this.selectedAsset = this.ledgerOptions[0]
-  },
-  computed: {
-    ...mapState([
-      'activeNetwork',
-      'activeWalletId',
-      'enabledAssets'
-    ]),
-    ...mapGetters(['networkAccounts']),
-    ledgerOptions () {
-      return LEDGER_OPTIONS
-    },
-    bitcoinOptions () {
-      return LEDGER_BITCOIN_OPTIONS
-    }
   }
 }
 </script>

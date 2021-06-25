@@ -178,8 +178,14 @@ const migrations = [
       return { ...state, history }
     }
   },
-  { // Inject ethereum asset -> chain
+  { // remove useLedgerLive
     version: 8,
+    migrate: async (state) => {
+      delete state.useLedgerLive
+      return { ...state, usbBridgeWindowsId: 0 }
+  },
+  { // Inject ethereum asset -> chain
+    version: 9,
     migrate: async (state) => {
       const injectEthereumChain = cryptoassets[state.injectEthereumAsset].chain
       delete state.injectEthereumAsset
