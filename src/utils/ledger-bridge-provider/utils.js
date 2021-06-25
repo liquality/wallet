@@ -1,6 +1,45 @@
 import {
   BRIDGE_REPLEY_PREFIX
 } from './config'
+import EventEmitter from 'events'
+
+let CHROME_PORT = null
+const bridgeEmiter = new EventEmitter()
+
+export const setLedgerBridgeListener = () => {
+  if (!CHROME_PORT) {
+    chrome.runtime.onConnectExternal.addListener(port => {
+      port.onDisconnect.addListener(() => {
+        CHROME_PORT = null
+        return true
+      })
+      CHROME_PORT = port
+      port.onMessage.addListener(
+        async (request) => {
+          if (!request) {
+            return
+          }
+
+          const {
+            action
+          } = request
+          console.log('action', action)
+          bridgeEmiter.emit(action, request)
+        })
+    })
+  }
+  return bridgeEmiter
+}
+
+export const sendMessageToBridge = ({ network, app, method, callType, payload }) => {
+  CHROME_PORT.postMessage({
+    network,
+    app,
+    method,
+    payload,
+    callType
+  })
+}
 
 export function getReplySignature (network, app, method, callType) {
   return `${BRIDGE_REPLEY_PREFIX}::${network}::${app}::${method}::${callType}`
@@ -11,43 +50,41 @@ export async function callToBridge ({ network, app, method, callType, payload })
   const replySignature = getReplySignature(network, app, method, callType)
   let responded = false
   return new Promise((resolve, reject) => {
-    PORT.onMessage.addListener(
-      async (request) => {
-        if (!request) {
-          return
+    const listener = async (request) => {
+      const {
+        action,
+        success,
+        payload
+      } = request
+      if (replySignature === action) {
+        console.log('[EXTENSION-LEDGER-BRIDGE]: GOT MESAGE FROM IFRAME', request)
+        responded = true
+        if (success) {
+          bridgeEmiter.removeListener(replySignature, listener)
+          resolve(
+            parseResponsePayload(payload)
+          )
+        } else {
+          const error = new Error(
+            payload.message
+          )
+          error.stack = payload.stask
+          error.name = payload.name
+          bridgeEmiter.removeListener(replySignature, listener)
+          reject(error)
         }
+      }
+    }
 
-        const {
-          action,
-          success,
-          payload
-        } = request
-        if (replySignature === action) {
-          console.log('[EXTENSION-LEDGER-BRIDGE]: GOT MESAGE FROM IFRAME', request)
-          responded = true
-          if (success) {
-            resolve(
-              parseResponsePayload(payload)
-            )
-          } else {
-            const error = new Error(
-              payload.message
-            )
-            error.stack = payload.stask
-            error.name = payload.name
-            reject(error)
-          }
-        }
-
-        setTimeout(() => {
-          if (!responded) {
-            reject(new Error(
-          `Timeout calling the hw bridge: ${app}.${method}`
-            ))
-          }
-        }, 60000)
-        return true
-      })
+    bridgeEmiter.once(replySignature, listener)
+    setTimeout(() => {
+      if (!responded) {
+        bridgeEmiter.removeListener(replySignature, listener)
+        reject(new Error(
+      `Timeout calling the hw bridge: ${app}.${method}`
+        ))
+      }
+    }, 60000)
 
     const parsedPayload = parseRequestPayload(payload)
     sendMessageToBridge({ network, app, method, callType, payload: parsedPayload })
@@ -96,23 +133,4 @@ export function parseRequestPayload (payload) {
   }
 
   return payload
-}
-
-let PORT = null
-export function setLedgerBridgeListener () {
-  chrome.runtime.onConnectExternal.addListener(port => {
-    PORT = port
-  })
-}
-
-export const sendMessageToBridge = ({ network, app, method, callType, payload }) => {
-  if (PORT) {
-    PORT.postMessage({
-      network,
-      app,
-      method,
-      payload,
-      callType
-    })
-  }
 }

@@ -192,6 +192,7 @@
                          :error="sendErrorMessage" />
     <LedgerSignRequestModal :open="signRequestModalOpen"
                             @close="closeSignRequestModal" />
+    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
@@ -222,6 +223,8 @@ import SendInput from './SendInput'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
+import LedgerBridgeModal from '@/components/LedgerBridgeModal'
+import { BG_PREFIX } from '@/broker/utils'
 
 export default {
   components: {
@@ -232,7 +235,8 @@ export default {
     SendInput,
     OperationErrorModal,
     LedgerSignRequestModal,
-    CustomFees
+    CustomFees,
+    LedgerBridgeModal
   },
   data () {
     return {
@@ -249,7 +253,8 @@ export default {
       signRequestModalOpen: false,
       sendErrorMessage: '',
       customFeeAssetSelected: null,
-      customFee: null
+      customFee: null,
+      bridgeModalOpen: false
     }
   },
   props: {
@@ -263,6 +268,9 @@ export default {
       'fees',
       'fiatRates'
     ]),
+    ...mapState({
+      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
+    }),
     ...mapGetters([
       'accountItem',
       'client'
@@ -427,6 +435,21 @@ export default {
     async updateMaxSendFees () {
       await this._updateSendFees()
     },
+    async tryToSend () {
+      if (this.account?.type.includes('ledger') && !this.usbBridgeTransportCreated) {
+        this.loading = true
+        this.bridgeModalOpen = true
+        this.$store.subscribe(async ({ type, payload }) => {
+          if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
+          payload.created === true) {
+            this.bridgeModalOpen = false
+            await this.send()
+          }
+        })
+      } else {
+        await this.send()
+      }
+    },
     async send () {
       this.sendErrorMessage = ''
       this.loading = true
@@ -516,6 +539,10 @@ export default {
     resetCustomFee () {
       this.customFee = null
       this.selectedFee = 'average'
+    },
+    closeBridgeModal () {
+      this.loading = false
+      this.bridgeModalOpen = false
     }
   },
   async created () {

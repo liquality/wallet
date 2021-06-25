@@ -156,6 +156,13 @@ const migrations = [
     migrate: async (state) => {
       return { ...state, useLedgerLive: false }
     }
+  },
+  { // remove useLedgerLive
+    version: 7,
+    migrate: async (state) => {
+      delete state.useLedgerLive
+      return { ...state, usbBridgeWindowsId: 0 }
+    }
   }
 ]
 

@@ -300,6 +300,7 @@
                          :error="swapErrorMessage" />
     <LedgerSignRequestModal :open="signRequestModalOpen"
                             @close="closeSignRequestModal" />
+    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
@@ -342,6 +343,8 @@ import Accounts from './Accounts'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
+import LedgerBridgeModal from '@/components/LedgerBridgeModal'
+import { BG_PREFIX } from '@/broker/utils'
 
 export default {
   components: {
@@ -360,7 +363,8 @@ export default {
     Accounts,
     LedgerSignRequestModal,
     OperationErrorModal,
-    CustomFees
+    CustomFees,
+    LedgerBridgeModal
   },
   data () {
     return {
@@ -386,7 +390,8 @@ export default {
       signRequestModalOpen: false,
       swapErrorMessage: '',
       customFeeAssetSelected: null,
-      customFees: {}
+      customFees: {},
+      bridgeModalOpen: false
     }
   },
   props: {
@@ -558,6 +563,9 @@ export default {
       'activeWalletId',
       'activeNetwork'
     ]),
+    ...mapState({
+      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
+    }),
     ...mapGetters(['client', 'accountItem', 'networkAccounts']),
     networkMarketData () {
       return this.marketData[this.activeNetwork]
@@ -875,6 +883,21 @@ export default {
       this.currentStep = 'inputs'
       this.selectedFee[asset] = 'average'
     },
+    async tryToSwap () {
+      if (this.account?.type.includes('ledger') && !this.usbBridgeTransportCreated) {
+        this.loading = true
+        this.bridgeModalOpen = true
+        this.$store.subscribe(async ({ type, payload }) => {
+          if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
+          payload.created === true) {
+            this.bridgeModalOpen = false
+            await this.swap()
+          }
+        })
+      } else {
+        await this.swap()
+      }
+    },
     async swap () {
       this.swapErrorMessage = ''
       this.swapErrorModalOpen = false
@@ -1006,6 +1029,10 @@ export default {
     onCustomFeeSelected (asset) {
       this.customFeeAssetSelected = getNativeAsset(asset)
       this.currentStep = 'custom-fees'
+    },
+    closeBridgeModal () {
+      this.loading = false
+      this.bridgeModalOpen = false
     }
   },
   watch: {
