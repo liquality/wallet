@@ -6,6 +6,7 @@ const SearchAssetPage = require('../Pages/SearchAssetPage')
 const SendPage = require('../Pages/SendPage')
 const TransactionDetailsPage = require('../Pages/TransactionDetailsPage')
 const TestDataUtils = require('../../utils/TestDataUtils')
+const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
 
@@ -25,7 +26,6 @@ const password = '123123123'
 const options = {
   slowMo: 20,
   headless: false,
-  executablePath: process.env.PUPPETEER_EXEC_PATH,
   args: [
     '--no-sandbox',
     '--disable-setuid-sandbox',
@@ -210,5 +210,60 @@ describe('Liquality wallet SEND feature', async () => {
     await transactionDetailsPage.ValidateTime(page)
     await transactionDetailsPage.ValidateStatus(page)
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
+  })
+  it('ETH Send Max value check against Available Balance', async () => {
+    const bitCoinName = 'ETH'
+
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ClickSend(page)
+    // Search for coin & select coin
+    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
+
+    // Click on Max
+    await sendPage.SelectMaxSend(page)
+    // Validate Available amount vs send amount
+    const sendAmount = await sendPage.GetSendAmount(page)
+    const availableAmount = await sendPage.GetSendAvailableBalance(page)
+    expect(availableAmount,
+      'Available balance and Max send amount are equal for ethereum').contains(sendAmount)
+  })
+  it('ETH Send Check Network Fee', async () => {
+    const bitCoinName = 'ETH'
+
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ClickSend(page)
+    // Search for coin & select coin
+    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
+
+    // Check Network Speed/FEE
+    const ethereumNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
+    expect(ethereumNetworkSpeedFee, 'ETH Avg Network Speed validation')
+      .equals('(Avg / 0.000032 ETH)')
+    // Click on Network Speed/FEE
+    await sendPage.ClickNetworkSpeedFee(page)
+    await page.hover('#slow', { slow: true })
+    await page.screenshot({ path: './screenshots/send_network_speed_fee_slow.png' })
+    await page.hover('#fast', { slow: true })
+    await page.screenshot({ path: './screenshots/send_network_speed_fee_fast.png' })
   })
 })

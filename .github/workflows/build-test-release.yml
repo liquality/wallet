@@ -19,6 +19,7 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           args: install
+
       - uses: actions/cache@v1
         env:
           node-version: 12
@@ -50,6 +51,17 @@ jobs:
           npm ci
           npm run lint
           npm run build
+
+      - name: screenshots directory
+        if: always()
+        run: |
+          mkdir screenshots
+
+      - name: Install other dependencies for puppeteer __tests__
+        if: always()
+        run: |
+         sudo apt-get install gconf-service libasound2 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+
       - name: ===>> TestNet integration tests ==>>>
         uses: mujo-code/puppeteer-headful@master
         env:
@@ -57,6 +69,21 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
         with:
           args: npm run test:testNetNetwork
+
+      - name: Archive Mocha HTML report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: mocha-html-test-report
+          path: mochawesome-report
+
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

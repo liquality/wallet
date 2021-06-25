@@ -48,7 +48,10 @@ class SendPage {
   async SendConfirmButton (page) {
     await page.waitForSelector('#send_button_confirm', { visible: true })
     await page.click('#send_button_confirm')
-    await page.waitForSelector('.list-item-detail-icon', { visible: true, timeout: 120000 })
+    await page.waitForSelector('.list-item-detail-icon', {
+      visible: true,
+      timeout: 120000
+    })
     await page.click('.list-item-detail-icon')
   }
 
@@ -87,6 +90,59 @@ class SendPage {
   async ValidateAmountLimitError (page, message) {
     await page.waitForSelector('.send-main-errors', { visible: true })
     expect(await page.$eval('.send-main-errors', el => el.innerText)).equals(message)
+  }
+
+  /**
+   * Click Max Send amount
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async SelectMaxSend (page) {
+    await page.click('#max_send_amount_button')
+  }
+
+  /**
+   * Get SEND amount from input.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
+  async GetSendAmount (page) {
+    return await page.$eval('#send_amount_input_field', el => el.value)
+  }
+
+  /**
+   * Get Available Balance from send view.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
+  async GetSendAvailableBalance (page) {
+    return await page.$eval('#send_available_balance', el => el.innerText)
+  }
+
+  /**
+   * Get Network Speed fee.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
+  async GetNetworkSpeedFee (page) {
+    await page.waitForSelector('#send_network_speed_avg_fee', { visible: true })
+    await page.waitForTimeout(5000)
+    return await page.$eval('#send_network_speed_avg_fee', el => el.innerText)
+  }
+
+  /**
+   * Click on Network Speed/FEE option
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickNetworkSpeedFee (page) {
+    await page.click('#send_network_speed')
+    await page.waitForSelector('#average', { visible: true })
   }
 }
 
