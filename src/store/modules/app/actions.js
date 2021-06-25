@@ -20,7 +20,7 @@ export const actions = {
     const url = process.env.VUE_APP_LEDGER_BRIDGE_URL
     const win = await browser.windows.create(
       {
-        url,
+        url: `${url}#${browser.runtime.id}`,
         focused: true,
         type: 'popup',
         height: 600,
