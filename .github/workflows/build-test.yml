@@ -14,6 +14,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Build project
+        uses: actions/setup-node@v2-beta
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
+        with:
+          args: install
       - uses: actions/cache@v1
         env:
           node-version: 12
@@ -28,8 +34,6 @@ jobs:
           mv ./src/manifest.tmp ./src/manifest.json
 
       - name: Set development agents
-        env:
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         run: |
           sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
       - run: |
