@@ -85,13 +85,16 @@ import { chains } from '@liquality/cryptoassets'
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStatusLabel } from '@/utils/history'
 import { isERC20, getNativeAsset } from '@/utils/asset'
-import { getSwapDetailsComponent } from '@/utils/swaps'
+import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
 import Modal from '@/components/Modal'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
+
+import LiqualitySwapDetails from '@/swaps/liquality/SwapDetails'
+import UniswapSwapDetails from '@/swaps/uniswap/SwapDetails'
 
 export default {
   components: {
@@ -115,7 +118,11 @@ export default {
         .find((item) => item.id === this.id)
     },
     swapDetailsComponent () {
-      return getSwapDetailsComponent(this.item.network, this.item.provider)
+      const config = getSwapProviderConfig(this.item.network, this.item.providerId)
+      return ({
+        [SwapProviderType.LIQUALITY]: LiqualitySwapDetails,
+        [SwapProviderType.UNISWAPV2]: UniswapSwapDetails
+      })[config.type]
     },
     status () {
       return getStatusLabel(this.item)
