@@ -26,7 +26,7 @@ const password = '123123123'
 const options = {
   slowMo: 20,
   headless: false,
-  executablePath: process.env.PUPPETEER_EXEC_PATH,
+  // executablePath: process.env.PUPPETEER_EXEC_PATH,
   args: [
     '--no-sandbox',
     '--disable-setuid-sandbox',
