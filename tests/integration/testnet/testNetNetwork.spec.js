@@ -21,7 +21,6 @@ describe('Liquality wallet...', async () => {
   const options = {
     slowMo: 20,
     headless: false,
-    executablePath: process.env.PUPPETEER_EXEC_PATH,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
