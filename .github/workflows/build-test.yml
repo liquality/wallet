@@ -19,6 +19,7 @@ jobs:
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
+          node-version: 14.1.0
           args: install
 
       - uses: actions/cache@v1
@@ -50,6 +51,7 @@ jobs:
       - name: ===>> TestNet integration tests ==>>>
         uses: mujo-code/puppeteer-headful@master
         env:
+          node-version: 14.1.0
           CI: 'true'
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
         with:

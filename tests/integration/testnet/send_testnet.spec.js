@@ -26,10 +26,11 @@ const password = '123123123'
 const options = {
   slowMo: 20,
   headless: false,
-  executablePath: '/usr/bin/google-chrome',
+  executablePath: process.env.PUPPETEER_EXEC_PATH, // set by docker container
   args: [
     '--no-sandbox',
     '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
     '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
     '--load-extension=' + testUtil.extensionPathBuildPath
   ]
