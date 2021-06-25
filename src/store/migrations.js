@@ -177,6 +177,15 @@ const migrations = [
 
       return { ...state, history }
     }
+  },
+  { // Inject ethereum asset -> chain
+    version: 8,
+    migrate: async (state) => {
+      const injectEthereumChain = cryptoassets[state.injectEthereumAsset].chain
+      delete state.injectEthereumAsset
+
+      return { ...state, injectEthereumChain }
+    }
   }
 ]
 

@@ -10,11 +10,11 @@ import UniswapV2Router from '@uniswap/v2-periphery/build/IUniswapV2Router02.json
 import * as ethers from 'ethers'
 
 import buildConfig from '../../build.config'
-import { chains, currencyToUnit } from '@liquality/cryptoassets'
+import { currencyToUnit } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isEthereumChain, isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
-import { AssetNetworks } from '../../store/utils'
+import { ChainNetworks } from '../../store/utils'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
 import { SwapProvider } from '../SwapProvider'
 
@@ -52,8 +52,7 @@ class UniswapSwapProvider extends SwapProvider {
     // Only uniswap on ethereum is supported atm
     if (cryptoassets[from].chain !== 'ethereum' || cryptoassets[to].chain !== 'ethereum') return null
 
-    const nativeAsset = chains[cryptoassets[from].chain].nativeAsset
-    const chainId = AssetNetworks[nativeAsset][network].chainId
+    const chainId = ChainNetworks[cryptoassets[from].chain][network].chainId
 
     const tokenA = this.getUniswapToken(chainId, from)
     const tokenB = this.getUniswapToken(chainId, to)
@@ -89,9 +88,8 @@ class UniswapSwapProvider extends SwapProvider {
   }
 
   async approveTokens ({ network, walletId, quote }) {
-    const fromChain = chains[cryptoassets[quote.from].chain]
-    const nativeAsset = fromChain.nativeAsset
-    const chainId = AssetNetworks[nativeAsset][network].chainId
+    const fromChain = cryptoassets[quote.from].chain
+    const chainId = ChainNetworks[fromChain][network].chainId
 
     const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
     const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
@@ -121,9 +119,8 @@ class UniswapSwapProvider extends SwapProvider {
   }
 
   async sendSwap ({ network, walletId, quote }) {
-    const toChain = chains[cryptoassets[quote.to].chain]
-    const nativeAsset = toChain.nativeAsset
-    const chainId = AssetNetworks[nativeAsset][network].chainId
+    const toChain = cryptoassets[quote.to].chain
+    const chainId = ChainNetworks[toChain][network].chainId
 
     const fromToken = this.getUniswapToken(chainId, quote.from)
     const toToken = this.getUniswapToken(chainId, quote.to)
