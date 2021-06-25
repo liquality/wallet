@@ -183,6 +183,7 @@ const migrations = [
     migrate: async (state) => {
       delete state.useLedgerLive
       return { ...state, usbBridgeWindowsId: 0 }
+    }
   },
   { // Inject ethereum asset -> chain
     version: 9,
