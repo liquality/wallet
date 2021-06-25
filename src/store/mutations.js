@@ -241,5 +241,8 @@ export default {
   },
   SET_USE_LEDGER_LIVE (state, { use }) {
     state.useLedgerLive = use
+  },
+  SET_USB_BRIDGE_WINDOWS_ID (state, { id }) {
+    state.usbBridgeWindowsId = id
   }
 }

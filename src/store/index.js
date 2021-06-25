@@ -6,6 +6,7 @@ import getters from './getters'
 import * as actions from './actions'
 import mutations from './mutations'
 import Broker from '../broker'
+import { appModule } from './modules/app'
 
 Vue.use(Vuex)
 
@@ -16,5 +17,8 @@ export default new Vuex.Store({
   getters,
   actions,
   mutations,
-  plugins: [broker.plugin]
+  plugins: [broker.plugin],
+  modules: {
+    app: appModule
+  }
 })

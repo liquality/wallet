@@ -39,8 +39,6 @@ import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
 import { ChainNetworks } from '@/store/utils'
 
-const LEDGER_BRIDGE_URL = process.env.VUE_APP_LEDGER_BRIDGE_URL
-
 function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = ChainNetworks.bitcoin[network]
@@ -56,7 +54,7 @@ function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
     const { addressType } = option
     const baseDerivationPath = `${BTC_ADDRESS_TYPE_TO_PREFIX[addressType]}'/${bitcoinNetwork.coinType}'/${indexPath}'`
-    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(network, LEDGER_BRIDGE_URL)
+    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(network)
     const ledger = new BitcoinLedgerBridgeProvider(
       {
         network: bitcoinNetwork,
@@ -100,7 +98,7 @@ function createEthereumClient (
     const assetData = cryptoassets[asset]
     const chainData = chains?.[assetData.chain]
     const { nativeAsset } = chainData || 'ETH'
-    const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, nativeAsset, LEDGER_BRIDGE_URL)
+    const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, nativeAsset)
     const ledger = new EthereumLedgerBridgeProvider(
       {
         network: ethereumNetwork,

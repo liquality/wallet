@@ -38,5 +38,5 @@ export default {
 
   injectEthereum: false,
   injectEthereumChain: 'ethereum',
-  useLedgerLive: false
+  usbBridgeWindowsId: 0
 }
