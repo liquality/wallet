@@ -21,9 +21,11 @@ describe('Liquality wallet...', async () => {
   const options = {
     slowMo: 20,
     headless: false,
+    executablePath: process.env.PUPPETEER_EXEC_PATH, // set by docker container
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
       '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
       '--load-extension=' + testUtil.extensionPathBuildPath
     ]

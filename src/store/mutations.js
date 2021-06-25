@@ -97,8 +97,8 @@ export default {
   UPDATE_MARKET_DATA (state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
   },
-  SET_ETHEREUM_INJECTION_ASSET (state, { asset }) {
-    state.injectEthereumAsset = asset
+  SET_ETHEREUM_INJECTION_CHAIN (state, { chain }) {
+    state.injectEthereumChain = chain
   },
   ENABLE_ETHEREUM_INJECTION (state) {
     state.injectEthereum = true

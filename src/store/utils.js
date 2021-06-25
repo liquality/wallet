@@ -57,29 +57,28 @@ export async function getPrices (baseCurrencies, toCurrency) {
 
 export const Networks = ['mainnet', 'testnet']
 
-// TODO: This should be per chain, not per native asset
-export const AssetNetworks = {
-  BTC: {
+export const ChainNetworks = {
+  bitcoin: {
     testnet: BitcoinNetworks.bitcoin_testnet,
     mainnet: BitcoinNetworks.bitcoin
   },
-  ETH: {
+  ethereum: {
     testnet: EthereumNetworks.rinkeby,
     mainnet: EthereumNetworks.ethereum_mainnet
   },
-  RBTC: {
+  rsk: {
     testnet: EthereumNetworks.rsk_testnet,
     mainnet: EthereumNetworks.rsk_mainnet
   },
-  BNB: {
+  bsc: {
     testnet: EthereumNetworks.bsc_testnet,
     mainnet: EthereumNetworks.bsc_mainnet
   },
-  MATIC: {
+  polygon: {
     testnet: EthereumNetworks.polygon_testnet,
     mainnet: EthereumNetworks.polygon_mainnet
   },
-  NEAR: {
+  near: {
     testnet: NearNetworks.near_testnet,
     mainnet: NearNetworks.near_mainnet
   }

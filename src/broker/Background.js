@@ -1,12 +1,16 @@
+import { ChainNetworks } from '../store/utils'
+import buildConfig from '../build.config'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 
 class Background {
   constructor (store) {
     this.store = store
     this.internalConnections = []
+    this.externalConnections = []
     this.externalConnectionApprovalMap = {}
 
     this.subscribeToMutations()
+    this.subscribeToWalletChanges()
 
     handleConnection(connection => {
       const { url } = connection.sender
@@ -34,6 +38,33 @@ class Background {
     })
   }
 
+  getChainIds (network) {
+    return buildConfig.chains.reduce((chainIds, chain) => {
+      return Object.assign({}, chainIds, { [chain]: ChainNetworks[chain][network].chainId })
+    }, {})
+  }
+
+  subscribeToWalletChanges () {
+    this.store.subscribe((mutation, state) => {
+      if (mutation.type === 'CHANGE_ACTIVE_NETWORK') {
+        this.externalConnections.forEach(connection => {
+          connection.postMessage({
+            id: 'liqualityChainChanged',
+            data: { chainIds: this.getChainIds(state.activeNetwork) }
+          })
+        })
+      }
+      if (mutation.type === 'SET_ETHEREUM_INJECTION_CHAIN') {
+        this.externalConnections.forEach(connection => {
+          connection.postMessage({
+            id: 'liqualityEthereumOverrideChanged',
+            data: { chain: state.injectEthereumChain, chainIds: this.getChainIds(state.activeNetwork) }
+          })
+        })
+      }
+    })
+  }
+
   onInternalConnection (connection) {
     this.internalConnections.push(connection)
 
@@ -53,7 +84,13 @@ class Background {
   }
 
   onExternalConnection (connection) {
+    this.externalConnections.push(connection)
+
     connection.onMessage.addListener(message => this.onExternalMessage(connection, message))
+
+    connection.onDisconnect.addListener(() => {
+      this.onExternalDisconnect(connection)
+    })
   }
 
   bindMutation (connection) {
@@ -159,6 +196,11 @@ class Background {
         }
         break
     }
+  }
+
+  onExternalDisconnect (connection) {
+    const index = this.externalConnections.findIndex(conn => conn.name === connection.name)
+    if (index !== -1) this.externalConnections.splice(index, 1)
   }
 
   storeProxy (id, connection, action, data) {

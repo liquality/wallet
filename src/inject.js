@@ -49,6 +49,10 @@ class ProviderManager {
     return this.cache[asset]
   }
 
+  getInjectionName (chain) {
+    return chain === 'ethereum' ? 'eth' : chain
+  }
+
   enable () {
     return this.proxy('ENABLE_REQUEST')
   }
@@ -57,7 +61,9 @@ class ProviderManager {
 window.providerManager = new ProviderManager()
 `
 
-const ethereumProvider = ({ name, asset, network, overrideEthereum = false }) => `
+const ethereumProvider = ({ asset, chain, network }) => `
+const injectionName = window.providerManager.getInjectionName('${chain}')
+
 async function getAddresses () {
   const eth = window.providerManager.getProviderFor('${asset}')
   let addresses = await eth.getMethod('wallet.getAddresses')()
@@ -70,7 +76,7 @@ async function handleRequest (req) {
   if(req.method.startsWith('metamask_')) return null
 
   if(req.method === 'eth_requestAccounts') {
-    return await window.${name}.enable()
+    return await window[injectionName].enable()
   }
   if(req.method === 'personal_sign') { 
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
@@ -90,11 +96,11 @@ async function handleRequest (req) {
   return eth.getMethod('jsonrpc')(req.method, ...req.params)
 }
 
-window.${name} = {
+window[injectionName] = {
   isLiquality: true,
   isEIP1193: true,
   networkVersion: '${network.networkId}',
-  chainId: '${network.chainId.toString(16)}',
+  chainId: '0x${network.chainId.toString(16)}',
   enable: async () => {
     const accepted = await window.providerManager.enable()
     if (!accepted) throw new Error('User rejected')
@@ -108,7 +114,7 @@ window.${name} = {
   },
   send: async (req, _paramsOrCallback) => {
     if (typeof _paramsOrCallback === 'function') {
-      window.${name}.sendAsync(req, _paramsOrCallback)
+      window[injectionName].sendAsync(req, _paramsOrCallback)
       return
     }
     const method = typeof req === 'string' ? req : req.method
@@ -124,31 +130,64 @@ window.${name} = {
       }))
       .catch((err) => callback(err))
   },
-  on: (method, callback) => {}, // TODO
+  on: (method, callback) => {
+    if (method === 'chainChanged') {
+      window.addEventListener('liqualityChainChanged', ({ detail }) => {
+        const result = JSON.parse(detail)
+        callback('0x' + result.chainIds['${chain}'].toString(16))
+      })
+    }
+  },
   autoRefreshOnNetworkChange: false
 }
+`
 
-${overrideEthereum
-  ? `function override() {
-    window.ethereum = window.${name}
-  }
-
-  if (!window.ethereum) {
-    override()
-    const retryLimit = 5
-    let retries = 0
-    const interval = setInterval(() => {
-      retries++
-      if (window.ethereum && !window.ethereum.isLiquality) {
-        override()
-        clearInterval(interval)
+const overrideEthereum = (chain) => `
+function proxyEthereum(chain) {
+  window.ethereumProxyChain = chain
+  const overrideHandler = {
+    get: function (target, prop, receiver) {
+      if (prop === 'on') {
+        return (method, callback) => {
+          window.addEventListener('liqualityChainChanged', ({ detail }) => {
+            const result = JSON.parse(detail)
+            callback('0x' + result.chainIds[window.ethereumProxyChain].toString(16))
+          })
+          window.addEventListener('liqualityEthereumOverrideChanged', ({ detail }) => {
+            const result = JSON.parse(detail)
+            callback('0x' + result.chainIds[result.chain].toString(16))
+          })
+        }
       }
-      if (retries >= retryLimit) clearInterval(interval)
-    }, 1000)
-  } else {
-    override()
-  }`
-  : ''
+      return Reflect.get(...arguments)
+    }
+  }
+  const injectionName = window.providerManager.getInjectionName(chain)
+  window.ethereum = new Proxy(window[injectionName], overrideHandler)
+}
+
+function overrideEthereum(chain) {
+  window.addEventListener('liqualityEthereumOverrideChanged', ({ detail }) => {
+    const result = JSON.parse(detail)
+    proxyEthereum(result.chain)
+  })
+  proxyEthereum(chain)
+}
+
+if (!window.ethereum) {
+  overrideEthereum('${chain}')
+  const retryLimit = 5
+  let retries = 0
+  const interval = setInterval(() => {
+    retries++
+    if (window.ethereum && !window.ethereum.isLiquality) {
+      overrideEthereum('${chain}')
+      clearInterval(interval)
+    }
+    if (retries >= retryLimit) clearInterval(interval)
+  }, 1000)
+} else {
+  overrideEthereum('${chain}')
 }
 `
 
@@ -235,4 +274,4 @@ document.addEventListener('DOMContentLoaded', () => {
 }, { once: true })
 `
 
-export { providerManager, ethereumProvider, bitcoinProvider, nearProvider, paymentUriHandler }
+export { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, paymentUriHandler }
