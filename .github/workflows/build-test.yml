@@ -20,11 +20,10 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           node-version: 14.1.0
-          args: install
 
       - uses: actions/cache@v1
         env:
-          node-version: 12
+          node-version: 14.1.0
           cache-name: cache-node-modules
         with:
           path: ~/.npm
