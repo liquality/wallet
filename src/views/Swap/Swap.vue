@@ -142,17 +142,17 @@
           <div>
             <label>Send</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
-              <div class="confirm-value" :style="getAssetColorStyle(asset)">
+              <div class="confirm-value" id="send_swap_confirm_value" :style="getAssetColorStyle(asset)">
                 {{ sendAmount }} {{ asset }}
               </div>
-              <div class="details-text">{{ sendAmountFiat }}</div>
+              <div class="details-text" id="send_swap_amount_fiat">{{ sendAmountFiat }}</div>
             </div>
           </div>
           <div class="detail-group">
             <label class="text-muted">Network Fee</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
-              <div>~{{ fromSwapFee }} {{ assetChain }}</div>
-              <div class="details-text">
+              <div id="swap_send_network_fee_value">~{{ fromSwapFee }} {{ assetChain }}</div>
+              <div class="details-text" id="swap_send_network_fee_fiat_rate">
                 ${{
                   prettyFiatBalance(
                     fromSwapFee,
@@ -165,7 +165,7 @@
           <div class="detail-group">
             <label class="text-muted">Amount + Fees</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
-              <div class="font-weight-bold">
+              <div class="font-weight-bold" id="swap_send_amount_fees_value">
                 <span v-if="asset === assetChain">
                   {{ sendAmountSameAsset }} {{ assetChain }}
                 </span>
@@ -174,7 +174,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
             </div>
           </div>
 
@@ -183,19 +183,20 @@
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
             >
-              <div class="confirm-value" :style="getAssetColorStyle(toAsset)">
+              <div class="confirm-value" id="receive_swap_confirm_value" :style="getAssetColorStyle(toAsset)">
                 {{ receiveAmount }} {{ toAsset }}
               </div>
-              <div class="details-text">{{ '$' + formatFiat(receiveAmountFiat) }}</div>
+              <div class="details-text" id="receive_swap_amount_fiat">{{ '$' + formatFiat(receiveAmountFiat) }}</div>
             </div>
           </div>
           <div class="detail-group">
             <label class="text-muted">Network Fee</label>
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
+              id="swap_receive_network_fee_value"
             >
               <div>~{{ toSwapFee }} {{ toAssetChain }}</div>
-              <div class="details-text">
+              <div class="details-text" id="swap_receive_network_fee_fiat_rate">
                 ${{
                   prettyFiatBalance(
                     toSwapFee,
@@ -208,7 +209,7 @@
           <div class="detail-group">
             <label class="text-muted">Amount - Fees</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
-              <div class="font-weight-bold">
+              <div class="font-weight-bold" id="swap_receive_amount_fee_value">
                 <span v-if="toAsset === toAssetChain">
                   {{ receiveAmountSameAsset }} {{ toAssetChain }}
                 </span>
@@ -217,19 +218,20 @@
                   {{ toSwapFee }} {{ toAssetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold">${{ totalToReceiveInFiat }}</div>
+              <div class="font-weight-bold" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
             </div>
           </div>
           <div class="mt-20">
             <label>Rate</label>
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
+              id="swap_rate_value"
             >
               <div v-if="bestQuote">
                 1 {{ asset }}&nbsp;=&nbsp;{{ bestRate }} &nbsp;{{
                   toAsset
                 }}
-                <span class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProviderLabel }}</span>
+                <span class="badge badge-pill badge-primary text-uppercase ml-1" id="bestQuote_provider_label">{{ bestQuoteProviderLabel }}</span>
               </div>
               <div v-else>1 {{ asset }}&nbsp;=&nbsp;N/A</div>
             </div>
@@ -239,7 +241,7 @@
           <div class="swap-info">
             <div class="media">
               <ClockIcon class="swap-info_clock" />
-              <p class="text-muted media-body">
+              <p class="text-muted media-body" id="media-body-info">
                 If the swap doesn’t complete in 3 hours, you will be refunded in
                 6 hours at {{ expiration }}
               </p>

@@ -24,8 +24,8 @@ class SearchAssetPage {
         await page.click('#' + asset)
     }
     console.log(chalk.blue('User search: ' + asset))
-    expect(await page.$eval('#overview', el => el.innerText), 'SEND page not loaded correctly')
-      .equals('SEND')
+    expect(await page.$eval('#overview', el => el.innerText), 'SEND/SWAP page not loaded correctly')
+      .to.be.oneOf(['SEND', 'SWAP'])
   }
 }
 
