@@ -16,21 +16,8 @@ const seedWordsPage = new SeedWordsPage()
 let browser, page
 
 describe('Liquality wallet - Create wallet', async () => {
-  const options = {
-    slowMo: 20,
-    headless: false,
-    executablePath: process.env.PUPPETEER_EXEC_PATH, // set by docker container
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-extensions-except=' + testUtil.extensionPathBuildPath,
-      '--load-extension=' + testUtil.extensionPathBuildPath
-    ]
-  }
-
   beforeEach(async () => {
-    browser = await puppeteer.launch(options)
+    browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
     await homePage.ClickOnAcceptPrivacy(page)
