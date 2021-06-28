@@ -52,6 +52,73 @@ class OverviewPage {
   }
 
   /**
+   * Check Send,swipe and receive options have been displayed.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ValidateSendSwipeReceiveOptions (page) {
+    // check Send & Swap & Receive options have been displayed
+    await page.waitForSelector('#send_action', {
+      visible: true
+    })
+    await page.waitForSelector('#swap_action', {
+      visible: true
+    })
+    await page.waitForSelector('#receive_action', {
+      visible: true
+    })
+  }
+
+  /**
+   * Click on Chain
+   * @param page
+   * @param chain - chain name
+   * @returns {Promise<void>}
+   * @constructor
+   * @example SelectChain(page,'BITCOIN')
+   */
+  async SelectChain (page, chain) {
+    await page.waitForSelector('#assert_list_item', { visible: true })
+    await page.waitForSelector(`#${chain}`, { visible: true })
+    await page.click(`#${chain}`)
+    await page.waitForSelector('.account-container_balance_code', { visible: true })
+  }
+
+  /**
+   * Click Receive button.
+   * @param page
+   * @param chainCode - chainCode
+   * @returns {Promise<void>}
+   * @constructor
+   * @example SelectChain(page,'BTC')
+   */
+  async ClickChainReceive (page, chainCode) {
+    await page.waitForSelector('.account-container_balance_code', { visible: true })
+    const code = await page.$eval('.account-container_balance_code', el => el.textContent)
+    expect(code).equals(chainCode)
+    // Click Receive button
+    await page.click('#receive')
+    await page.waitForSelector('.receive_address', { visible: true })
+  }
+
+  /**
+   * Check asset account details overview
+   * @param page
+   * @param assertCode
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async CheckAssertOverviewDetails (page, assertCode) {
+    await page.waitForSelector('.account-container_balance_code', { visible: true })
+    const code = await page.$eval('.account-container_balance_code', el => el.textContent)
+    expect(code).equals(assertCode)
+    // Check assert account title
+    const title = await page.$eval('.account-title', el => el.textContent)
+    expect(title).contains(assertCode)
+  }
+
+  /**
    * Get Total assets from overview page.
    * @param page
    * @returns {Promise<*>}
@@ -105,6 +172,21 @@ class OverviewPage {
     await page.waitForSelector('#swap_action', { visible: true })
     await page.click('#swap_action')
     await page.waitForSelector('#search_for_a_currency_search', { visible: true })
+  }
+
+  /**
+   * Click on Lock option.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickLock (page) {
+    // Lock
+    await page.waitForSelector('#burger_icon_menu', { visible: true })
+    await page.click('#burger_icon_menu')
+    await page.waitForSelector('#lock', { visible: true })
+    await page.click('#lock')
+    await page.waitForSelector('#password', { visible: true })
   }
 }
 
