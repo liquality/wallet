@@ -18,6 +18,18 @@ class HomePage {
   }
 
   /**
+   * Click on Create New wallet option.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnCreateNewWallet (page) {
+    await page.waitForSelector('#create_new_wallet_option', { visible: true })
+    await page.click('#create_new_wallet_option')
+    log(chalk.greenBright('User click on create new wallet option'))
+  }
+
+  /**
    * Click on Import wallet Option from home screen.
    * @param page
    * @returns {Promise<void>}
@@ -27,6 +39,7 @@ class HomePage {
     const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', { visible: true })
     await importWithSeedOptionElement.click()
     console.log('Import with seed phrase option has been displayed')
+    await page.waitForSelector('#import-wallet_top', { visible: true })
   }
 
   /**
