@@ -9,9 +9,8 @@ class SeedWordsPage {
    */
   async GetBackupSeedWords (page) {
     await page.waitForSelector('#backup-wallet_seed_wordlist', { visible: true })
-    console.log(chalk.green('Bsckup seed words list has been displayed'))
+    console.log(chalk.green('Backup seed words list has been displayed'))
     const allSeedPhases = await page.$$eval('#backup_seed_word', elements => elements.map(item => item.textContent))
-    console.log(allSeedPhases)
 
     const seed1 = allSeedPhases[0]
     const seed5 = allSeedPhases[4]
