@@ -41,6 +41,7 @@ jobs:
           npm ci
           npm run lint
           npm run build
+          export $DISPLAY
 
       - name: screenshots directory
         if: always()
