@@ -27,7 +27,7 @@ describe('Liquality wallet - Create wallet', async () => {
     await browser.close()
   })
 
-  it('Create a wallet with less that 8 or more characters password,validate button has been disabled', async () => {
+  it('Create a wallet with less that 8 or more characters password,validate button has been disabled-["mainnet"]', async () => {
     const password = '1234567'
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
@@ -36,7 +36,7 @@ describe('Liquality wallet - Create wallet', async () => {
     // confirm button has been disabled
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
-  it('Create a wallet with mismatch password, validate button has been disabled', async () => {
+  it('Create a wallet with mismatch password, validate button has been disabled-["mainnet"]', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
     // Set password
@@ -44,7 +44,7 @@ describe('Liquality wallet - Create wallet', async () => {
     // confirm button has been disabled
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
-  it('Create a new wallet with 12 words, validate overviewPage', async () => {
+  it('Create a new wallet with 12 words, validate overviewPage-["mainnet"]', async () => {
     const password = '123123123'
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
@@ -63,7 +63,11 @@ describe('Liquality wallet - Create wallet', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.SelectNetwork(page, 'testnet')
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
 
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
