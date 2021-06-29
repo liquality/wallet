@@ -26,10 +26,10 @@
           <div class="manage-assets_list">
       <div v-for="asset in assets" :key="asset" class="asset-item d-flex align-items-center" id="asset_item">
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
-        <div class="asset-item_name flex-fill" id="asset_item_name">{{getAssetName(asset)}} ({{asset}})
+        <div class="asset-item_name flex-fill" :id="asset">{{getAssetName(asset)}} ({{asset}})
           <!-- <span v-if="asset in networkWalletBalances" class="asset-item_balance">{{getAssetBalance(asset)}} {{asset}}</span> -->
         </div>
-        <div class="asset-item_toggle" id="asset-item_toggle">
+        <div class="asset-item_toggle" :id="asset + '_toggle_button'">
           <toggle-button :css-colors="true" :value="isAssetEnabled(asset)" @change="e => toggleAsset(asset, e.value)" />
         </div>
       </div>
