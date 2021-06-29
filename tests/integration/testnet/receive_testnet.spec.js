@@ -66,4 +66,28 @@ describe('Liquality wallet- Receive', async () => {
     await receivePage.ClickDone(page)
     await overviewPage.CheckAssertOverviewDetails(page, 'BTC')
   })
+  it('Import wallet and check Receive for ETH', async () => {
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Select ETH
+    await overviewPage.SelectChain(page, 'ETHEREUM')
+    await overviewPage.ClickChainReceive(page, 'ETH')
+    // Receive validations
+    await receivePage.HasQRCodeDisplayed(page)
+    await receivePage.CheckReceiveAddresses(page)
+    await receivePage.ClickCopyAddress(page)
+    await receivePage.ClickDone(page)
+    await overviewPage.CheckAssertOverviewDetails(page, 'ETH')
+  })
 })
