@@ -4,11 +4,11 @@
       <LogoWallet />
     </div>
     <div>
-      <h2>Create Password</h2>
+      <h2>Create New Password</h2>
     </div>
     <form class="form" autocomplete="off" v-on:submit.prevent="generate">
       <div class="form-group">
-        <label for="password">Choose Password</label>
+        <label for="password">Choose Password ( At least 8 characters )</label>
         <div class="input-group">
           <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required>
         </div>
@@ -18,14 +18,14 @@
         <div class="input-group">
           <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" autocomplete="off" required>
         </div>
-        <small v-show="passwordMatch" class="form-text hidden" >Passwords don't match.</small>
+        <small v-show="passwordMatch" class="onboading-password_errorLength form-text hidden" >Passwords don't match.</small>
         <small class="form-text">Password must be at least 8 characters.</small>
       </div>
     </form>
     <div class="footer-container">
       <div class="footer-content">
         <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-footer btn-icon" :disabled="disableNext" @click="next">
+        <button class="btn btn-primary btn-lg btn-footer btn-icon" id="next_button" :disabled="disableNext" @click="next">
           Continue
         </button>
       </div>
@@ -91,6 +91,13 @@ export default {
     text-align: center;
 
     margin-top: 2rem;
+  }
+
+  &_errorLength {
+    background: $color-text-secondary;
+    border-top: 2px solid $danger;
+    color: $danger;
+    padding: 4px;
   }
 
   &_input {

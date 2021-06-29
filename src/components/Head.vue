@@ -1,13 +1,13 @@
 <template>
   <div class="head">
-    <router-link to="/wallet" class="head_logo" ><LogoIcon /></router-link>
-    <div class="head_network" @click.stop="showNetworks = !showNetworks">
+    <router-link to="/wallet" class="head_logo" id="wallet_header_logo"><LogoIcon /></router-link>
+    <div id="head_network" class="head_network" @click.stop="showNetworks = !showNetworks">
       {{ activeNetwork }}
       <ChevronUpIcon v-if="showNetworks" />
       <ChevronDownIcon v-else />
-      <ul class="menu_list" v-if="showNetworks" v-click-away="hideNetworks">
-        <li @click="switchNetwork('mainnet')">Mainnet</li>
-        <li @click="switchNetwork('testnet')">Testnet</li>
+      <ul class="menu_list" id="list_of_networks" v-if="showNetworks" v-click-away="hideNetworks">
+        <li id="mainnet_network" @click="switchNetwork('mainnet')">Mainnet</li>
+        <li id="testnet_network" @click="switchNetwork('testnet')">Testnet</li>
       </ul>
     </div>
     <HeadMenu />

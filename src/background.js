@@ -18,7 +18,6 @@ store.subscribe(async ({ type, payload }, state) => {
       break
 
     case 'UNLOCK_WALLET':
-      store.dispatch('setupLedgerBridge')
       store.dispatch('initializeAddresses', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateFiatRates')

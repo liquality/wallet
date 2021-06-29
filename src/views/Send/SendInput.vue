@@ -32,6 +32,7 @@
           v-else
           type="number"
           class="form-control"
+          id="send_amount_input_field"
           :class="{ 'is-invalid': amountError }"
           :value="amount"
           @input="$emit('update:amount', $event.target.value)"
@@ -67,6 +68,7 @@
                 active: maxActive
               }"
               class="btn btn-option tooltip-target"
+              id="max_send_amount_button"
               @click="$emit('toggle-max')"
             >
               Max
@@ -78,7 +80,7 @@
           </v-popover>
         </div>
       </div>
-      <div class="send-bottom-available">
+      <div class="send-bottom-available" id="send_available_balance">
         <span class="text-muted">Available</span>
         {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
       </div>

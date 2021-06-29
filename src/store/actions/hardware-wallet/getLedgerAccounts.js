@@ -1,11 +1,15 @@
 
 import { assets, chains as chainList } from '@liquality/cryptoassets'
-
 export const getLedgerAccounts = async (
-  { commit, getters },
+  { getters },
   { network, walletId, asset, walletType, startingIndex, numAccounts }
 ) => {
   const { client, networkAccounts } = getters
+  const _client = client(network, walletId, asset, walletType, 0, false)
+  const addresses = await _client.wallet.getAddresses()
+  if (!addresses || addresses.length <= 0) {
+    return []
+  }
   const { chain } = assets[asset]
   const { formatAddress } = chainList[chain]
   const results = []
@@ -28,7 +32,7 @@ export const getLedgerAccounts = async (
 
   const pageIndexes = [...Array(numAccounts || 5).keys()].map(i => i + startingIndex)
   for (const index of pageIndexes) {
-    const _client = client(network, walletId, asset, walletType, index)
+    const _client = client(network, walletId, asset, walletType, index, false)
     const addresses = await _client.wallet.getAddresses()
     if (addresses && addresses.length > 0) {
       const formatedAddress = formatAddress(addresses[0].address)

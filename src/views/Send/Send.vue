@@ -41,15 +41,16 @@
             <small
               v-if="address && addressError"
               class="text-danger form-text text-right"
+              id="address_format_error"
               >{{ addressError }}</small
             >
           </div>
           <div class="form-group mt-150">
           <DetailsContainer v-if="feesAvailable">
             <template v-slot:header>
-              <span class="details-title">Network Speed/Fee</span>
-              <span class="text-muted">
-                ({{ selectedFeeLabel }} / {{ prettyFee }} {{ feeType }})
+              <span class="details-title" id="send_network_speed">Network Speed/Fee</span>
+              <span class="text-muted" id="send_network_speed_avg_fee">
+                ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
               </span>
             </template>
             <template v-slot:content>
@@ -82,12 +83,13 @@
         <div class="wrapper_bottom">
           <div class="button-group">
             <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${asset}`">
-              <button class="btn btn-light btn-outline-primary btn-lg">
+              <button class="btn btn-light btn-outline-primary btn-lg" id="send_cancel_button">
                 Cancel
               </button>
             </router-link>
             <button
               class="btn btn-primary btn-lg"
+              id="send_review_button"
               @click="currentStep = null"
               :disabled="!canSend"
             >
@@ -130,27 +132,27 @@
           <div class="details-text">${{ amountInFiat }}</div>
           </div>
         </div>
-        <div class="detail-group">
+        <div class="detail-group" id="detail_group_network_fee">
           <label class="text-muted">
             Network Fee
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
             <div>
-            ~{{ prettyFee }} {{ feeType }}
+            ~{{ prettyFee }} {{ assetChain }}
           </div>
           <div class="details-text">${{ totalFeeInFiat }}</div>
           </div>
         </div>
-        <div class="detail-group">
+        <div class="detail-group" id="detail_group_account_fee">
           <label class="text-muted">
             Amount + Fees
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
-            <div class="font-weight-bold" v-if="asset === feeType">
+            <div class="font-weight-bold" v-if="asset === assetChain">
               {{ dpUI(amountWithFee) }} {{ asset }}
             </div>
              <div class="font-weight-bold" v-else>
-              {{ dpUI(amount) }} {{ asset }} + {{ prettyFee }} {{ feeType }}
+              {{ dpUI(amount) }} {{ asset }} + {{ prettyFee }} {{ assetChain }}
             </div>
           <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
           </div>
@@ -164,6 +166,7 @@
         <div class="button-group">
           <button
             class="btn btn-light btn-outline-primary btn-lg"
+            id="edit_send_to_button"
             v-if="!loading"
             @click="currentStep = 'inputs'"
           >
@@ -171,6 +174,7 @@
           </button>
           <button
             class="btn btn-primary btn-lg btn-icon"
+            id="send_button_confirm"
             @click="send"
             :disabled="loading"
           >
@@ -188,6 +192,7 @@
                          :error="sendErrorMessage" />
     <LedgerSignRequestModal :open="signRequestModalOpen"
                             @close="closeSignRequestModal" />
+    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
@@ -207,9 +212,7 @@ import {
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import {
-  TX_TYPES,
-  FEE_TYPES,
-  getTxFee,
+  getSendFee,
   getFeeLabel
 } from '@/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -218,6 +221,8 @@ import SendInput from './SendInput'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
+import LedgerBridgeModal from '@/components/LedgerBridgeModal'
+import { BG_PREFIX } from '@/broker/utils'
 
 export default {
   components: {
@@ -228,7 +233,8 @@ export default {
     SendInput,
     OperationErrorModal,
     LedgerSignRequestModal,
-    CustomFees
+    CustomFees,
+    LedgerBridgeModal
   },
   data () {
     return {
@@ -245,7 +251,8 @@ export default {
       signRequestModalOpen: false,
       sendErrorMessage: '',
       customFeeAssetSelected: null,
-      customFee: null
+      customFee: null,
+      bridgeModalOpen: false
     }
   },
   props: {
@@ -259,6 +266,9 @@ export default {
       'fees',
       'fiatRates'
     ]),
+    ...mapState({
+      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
+    }),
     ...mapGetters([
       'accountItem',
       'client'
@@ -362,12 +372,6 @@ export default {
     totalFeeInFiat () {
       return prettyFiatBalance(this.currentFee, this.fiatRates[this.asset])
     },
-    feeType () {
-      return FEE_TYPES[this.assetChain]
-    },
-    includeFees () {
-      return this.feeType === FEE_TYPES.BTC
-    },
     selectedFeeLabel () {
       return getFeeLabel(this.selectedFee)
     },
@@ -393,7 +397,7 @@ export default {
         const sendFees = {}
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const feePrice = fee.fee
-          sendFees[speed] = getTxFee(this.assetChain, TX_TYPES.SEND, feePrice)
+          sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
         if (this.asset === 'BTC') {
           const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)
@@ -422,6 +426,21 @@ export default {
     }, 800),
     async updateMaxSendFees () {
       await this._updateSendFees()
+    },
+    async tryToSend () {
+      if (this.account?.type.includes('ledger') && !this.usbBridgeTransportCreated) {
+        this.loading = true
+        this.bridgeModalOpen = true
+        this.$store.subscribe(async ({ type, payload }) => {
+          if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
+          payload.created === true) {
+            this.bridgeModalOpen = false
+            await this.send()
+          }
+        })
+      } else {
+        await this.send()
+      }
     },
     async send () {
       this.sendErrorMessage = ''
@@ -512,6 +531,10 @@ export default {
     resetCustomFee () {
       this.customFee = null
       this.selectedFee = 'average'
+    },
+    closeBridgeModal () {
+      this.loading = false
+      this.bridgeModalOpen = false
     }
   },
   async created () {

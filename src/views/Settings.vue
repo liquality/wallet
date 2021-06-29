@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="view-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
       <span class="wallet_header"><strong>Settings</strong></span>
     </NavBar>
@@ -13,13 +13,13 @@
         </div>
       </div>
       <div class="setting-item">
-        <div class="setting-item_title flex-fill">Web3 Asset
-          <span class="setting-item_sub">Select which ethereum based asset should be used for dapps.</span>
+        <div class="setting-item_title flex-fill">Web3 Network
+          <span class="setting-item_sub">Select which ethereum based network should be used for dapps.</span>
         </div>
         <div class="setting-item_control">
-          <AssetDropdown :assets="ethereumAssets"
-                         :selected="selectedAsset"
-                         @asset-changed="updateInjectEthereumAsset" />
+          <ChainDropdown :chains="ethereumChains"
+                         :selected="injectEthereumChain"
+                         @chain-changed="updateInjectEthereumChain" />
         </div>
       </div>
       <div class="setting-item">
@@ -28,6 +28,14 @@
         </div>
         <div class="setting-item_control">
           <button class="btn btn-outline-primary" @click="downloadLogs">Download Logs</button>
+        </div>
+      </div>
+      <div class="setting-item">
+        <div class="setting-item_title flex-fill mb-2">Use Ledger Live
+          <span class="setting-item_sub">The Ledger Live brige allows to use your Ledger easily.</span>
+        </div>
+        <div class="setting-item_control">
+          <toggle-button  :css-colors="true" :value="useLedgerLive" @change="e => toogleUseLedgerLive(e.value)" />
         </div>
       </div>
       <div class="settings-footer">
@@ -40,47 +48,48 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { version } from '../../package.json'
-import cryptoassets from '@/utils/cryptoassets'
-import { isEthereumNativeAsset } from '@/utils/asset'
+import { isEthereumChain } from '@liquality/cryptoassets'
+import buildConfig from '@/build.config'
 import { downloadFile, getWalletStateLogs } from '@/utils/export'
 import NavBar from '@/components/NavBar.vue'
-import AssetDropdown from '@/components/AssetDropdown'
+import ChainDropdown from '@/components/ChainDropdown'
 
 export default {
   components: {
     NavBar,
-    AssetDropdown
+    ChainDropdown
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'injectEthereum', 'injectEthereumAsset']),
-    ethereumAssets () {
-      return Object.keys(cryptoassets)
-        .filter(isEthereumNativeAsset)
-        .map(asset => {
-          const label = this.getLabel(asset)
-          return { name: asset, label }
-        })
-    },
-    selectedAsset () {
-      const label = this.getLabel(this.injectEthereumAsset)
-      const name = this.injectEthereumAsset === 'RSK' ? 'RBTC' : this.injectEthereumAsset
-      return { name, label }
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId',
+      'injectEthereum',
+      'injectEthereumChain',
+      'useLedgerLive'
+    ]),
+    ethereumChains () {
+      return buildConfig.chains.filter(isEthereumChain)
     },
     appVersion () {
       return version
     }
   },
   methods: {
-    ...mapActions(['enableEthereumInjection', 'disableEthereumInjection', 'setEthereumInjectionAsset']),
+    ...mapActions([
+      'enableEthereumInjection',
+      'disableEthereumInjection',
+      'setEthereumInjectionChain',
+      'setUseLedgerLive'
+    ]),
     toggleInjectEthereum (enable) {
       if (enable) this.enableEthereumInjection()
       else this.disableEthereumInjection()
     },
-    updateInjectEthereumAsset (asset) {
-      this.setEthereumInjectionAsset({ asset: asset.name })
+    async toogleUseLedgerLive (use) {
+      await this.setUseLedgerLive({ use })
     },
-    getLabel (asset) {
-      return asset === 'RBTC' ? 'RSK' : asset
+    updateInjectEthereumChain (chain) {
+      this.setEthereumInjectionChain({ chain })
     },
     async downloadLogs () {
       const logs = await getWalletStateLogs()
@@ -96,7 +105,8 @@ export default {
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 600px;
+  height: 100%;
+  padding-bottom: 40px;
 
   .setting-item {
     width: 100%;
@@ -118,8 +128,8 @@ export default {
 
   .settings-footer {
     width: 100%;
-    position: fixed;
     bottom: 0;
+    margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
   }

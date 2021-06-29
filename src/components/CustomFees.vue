@@ -147,6 +147,7 @@ export default {
         ethereum: 1,
         rsk: 1,
         bsc: 1,
+        polygon: 1,
         near: 0.00001
       })[chainId] || 1
     }
@@ -209,9 +210,9 @@ export default {
     fee: function (val) {
       if (this.fees) {
         this.preset = ({
-          [this.fees?.['slow']?.fee]: 'slow',
-          [this.fees?.['average']?.fee]: 'average',
-          [this.fees?.['fast']?.fee]: 'fast'
+          [this.fees?.slow?.fee]: 'slow',
+          [this.fees?.average?.fee]: 'average',
+          [this.fees?.fast?.fee]: 'fast'
         })[val || 0]
       }
     }

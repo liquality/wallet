@@ -1,8 +1,10 @@
 /* global chrome */
 import { inject } from './broker/utils'
 import Script from './broker/Script'
-import { providerManager, ethereumProvider, bitcoinProvider, nearProvider, paymentUriHandler } from './inject'
-import { AssetNetworks } from './store/utils'
+import { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, paymentUriHandler } from './inject'
+import buildConfig from './build.config'
+import { ChainNetworks } from './store/utils'
+import { chains, isEthereumChain } from '@liquality/cryptoassets'
 
 ;(new Script()).start()
 
@@ -10,23 +12,27 @@ inject(providerManager())
 inject(bitcoinProvider())
 inject(nearProvider())
 
-function injectEthereum (state, asset, name) {
-  const network = AssetNetworks[asset][state.activeNetwork]
+function injectEthereum (state, chain) {
+  const network = ChainNetworks[chain][state.activeNetwork]
   inject(ethereumProvider({
-    name,
-    asset,
-    network,
-    overrideEthereum: state.injectEthereum && asset === state.injectEthereumAsset
+    chain,
+    asset: chains[chain].nativeAsset,
+    network
   }))
 }
 
 chrome.storage.local.get(['liquality-wallet'], (storage) => {
   const state = storage['liquality-wallet']
-  injectEthereum(state, 'ETH', 'eth')
-  injectEthereum(state, 'RBTC', 'rsk')
-  injectEthereum(state, 'BNB', 'bsc')
-  injectEthereum(state, 'POLYGON', 'polygon')
-  injectEthereum(state, 'ARBETH', 'arbitrum')
+
+  buildConfig.chains
+    .filter(isEthereumChain)
+    .forEach(chain => {
+      injectEthereum(state, chain)
+    })
+
+  if (state.injectEthereum && state.injectEthereumChain) {
+    inject(overrideEthereum(state.injectEthereumChain))
+  }
 })
 
 inject(paymentUriHandler())

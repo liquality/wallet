@@ -3,10 +3,11 @@ import { Address } from '@liquality/types'
 
 export const updateBalances = async ({ state, commit, getters }, { network, walletId, assets }) => {
   let accounts = state.accounts[walletId]?.[network]
-                   .filter(a => a.assets && a.assets.length > 0)
+    .filter(a => a.assets && a.assets.length > 0)
   if (assets && assets.length > 0) {
     accounts = accounts.filter(a => a.assets.some(s => assets.includes(s)))
   }
+  const { client } = getters
 
   await Bluebird.map(accounts, async account => {
     const { assets, type } = account
@@ -21,12 +22,12 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
             })
           })
       } else {
-        addresses = await getters.client(network, walletId, asset, account.type).wallet.getUsedAddresses()
+        addresses = await client(network, walletId, asset, account.type).wallet.getUsedAddresses()
       }
 
       const balance = addresses.length === 0
         ? 0
-        : (await getters.client(network, walletId, asset, account.type).chain.getBalance(addresses)).toNumber()
+        : (await client(network, walletId, asset, account.type).chain.getBalance(addresses)).toNumber()
 
       commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance })
     }, { concurrency: 1 })
