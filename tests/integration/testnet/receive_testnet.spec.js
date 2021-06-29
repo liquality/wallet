@@ -18,7 +18,7 @@ const receivePage = new ReceivePage()
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet- Receive', async () => {
+describe('Liquality wallet- Receive-["mainnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -48,8 +48,12 @@ describe('Liquality wallet- Receive', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.SelectNetwork(page, 'testnet')
-
+    // Select network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
@@ -75,8 +79,12 @@ describe('Liquality wallet- Receive', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    // Select Network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
 
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)

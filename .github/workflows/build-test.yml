@@ -56,7 +56,7 @@ jobs:
           CI: 'true'
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
         with:
-          args: npm run test:testNetNetwork
+          args: npm run test:testnet
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2

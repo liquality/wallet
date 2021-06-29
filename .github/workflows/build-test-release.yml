@@ -60,14 +60,14 @@ jobs:
         run: |
           mkdir screenshots
 
-      - name: ===>> TestNet integration tests ==>>>
+      - name: ===>> MainNet integration tests ==>>>
         uses: mujo-code/puppeteer-headful@master
         env:
           node-version: 14.1.0
           CI: 'true'
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
         with:
-          args: npm run test:testNetNetwork
+          args: npm run test:mainnet
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2
