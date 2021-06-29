@@ -72,4 +72,46 @@ describe('Liquality wallet- Import wallet', async () => {
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
   })
+  it('Import wallet,lock wallet and unlock wallet', async () => {
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Clock on Lock
+    await overviewPage.ClickLock(page)
+    // Unlock
+    await passwordPage.ClickUnlock(page, password)
+  })
+  it('Import wallet,lock wallet and forgot password while unlock wallet', async () => {
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Clock on Lock
+    await overviewPage.ClickLock(page)
+    // Click on Forgot password? Import with seed phrase
+    await passwordPage.ClickOnForgotPassword(page)
+    // Enter the seed phrase & submit password details
+    await homePage.EnterSeedWords(page)
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // check user landed on overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+  })
 })

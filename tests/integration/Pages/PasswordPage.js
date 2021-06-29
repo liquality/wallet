@@ -50,15 +50,28 @@ class PasswordPage {
    * @param password
    * @returns {Promise<void>}
    */
-  async clickUnlock (page, password) {
+  async ClickUnlock (page, password) {
     // unlock
     await page.type('#password', password)
     await page.click('#unlock_button')
     // overview page after unlock
-    await page.waitForSelector('#overview', {
-      visible: true
-    })
+    await page.waitForSelector('#overview', { visible: true })
+    await page.waitForSelector('#send_action', { visible: true })
+    await page.waitForSelector('#swap_action', { visible: true })
+    await page.waitForSelector('#receive_action', { visible: true })
     console.log('User successfully loggedIn after unlock')
+  }
+
+  /**
+   * Click on Forgot password? Import with seed phrase.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnForgotPassword (page) {
+    const forgotPassword = await page.waitForSelector('#forgot_password_import_seed', { visible: true })
+    await forgotPassword.click()
+    await page.waitForSelector('.import-wallet_bottom', { visible: true })
   }
 }
 

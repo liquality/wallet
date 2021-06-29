@@ -204,6 +204,7 @@ class OverviewPage {
     await page.click('#burger_icon_menu')
     await page.waitForSelector('#lock', { visible: true })
     await page.click('#lock')
+    console.log(chalk.green('User clicked on lock option'))
     await page.waitForSelector('#password', { visible: true })
   }
 }
