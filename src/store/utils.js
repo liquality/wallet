@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
-import pkg from '../../package.json'
-import { nativeCodeSynonyms, assets as cryptoassets } from '@liquality/cryptoassets'
+import { assets as cryptoassets } from '@liquality/cryptoassets'
 import { BitcoinNetworks } from '@liquality/bitcoin-networks'
 import { EthereumNetworks } from '@liquality/ethereum-networks'
 import { NearNetworks } from '@liquality/near-networks'
@@ -52,8 +51,11 @@ export async function getPrices (baseCurrencies, toCurrency) {
   const { data } = await axios.get(`${COIN_GECKO_API}/simple/price?ids=${coindIds.join(',')}&vs_currencies=${toCurrency}`)
   let prices = mapKeys(data, (v, coinGeckoId) => findKey(cryptoassets, asset => asset.coinGeckoId === coinGeckoId))
   prices = mapValues(prices, rates => mapKeys(rates, (v, k) => k.toUpperCase()))
-  for (const code in nativeCodeSynonyms) {
-    prices[code] = prices[nativeCodeSynonyms[code]]
+
+  for (const baseCurrency of baseCurrencies) {
+    if (!prices[baseCurrency] && cryptoassets[baseCurrency].matchingAsset) {
+      prices[baseCurrency] = prices[cryptoassets[baseCurrency].matchingAsset]
+    }
   }
   const symbolPrices = mapValues(prices, rates => rates[toCurrency.toUpperCase()])
   return symbolPrices
