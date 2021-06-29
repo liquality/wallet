@@ -41,14 +41,14 @@ jobs:
           npm ci
           npm run lint
           npm run build
-          export $DISPLAY
-          sudo sysctl -w kernel.unprivileged_userns_clone=1
-          sudo apt-get install xvfb
 
       - name: screenshots directory
         if: always()
         run: |
           mkdir screenshots
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
 
       - name: ===>> TestNet integration tests ==>>>
         uses: mujo-code/puppeteer-headful@master
@@ -56,8 +56,9 @@ jobs:
           node-version: 14.1.0
           CI: 'true'
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          DISPLAY: :0
         with:
-          args: xvfb-run --auto-servernum npm run test:testnet
+          args: npm run test:testnet
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2
