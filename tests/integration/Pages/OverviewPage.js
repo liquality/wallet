@@ -80,8 +80,26 @@ class OverviewPage {
    */
   async SelectChain (page, chain) {
     await page.waitForSelector('#assert_list_item', { visible: true })
-    await page.waitForSelector(`#${chain}`, { visible: true })
-    await page.click(`#${chain}`)
+    const assertListItems = await page.$$('#assert_list_item')
+    switch (chain) {
+      case 'BITCOIN': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
+      case 'ETHEREUM': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const eth = await page.waitForSelector('#ETH', { visible: true })
+        await eth.click()
+        break
+      }
+
+      default:
+        await assertListItems[0].click()
+        await page.click('#' + chain)
+    }
     await page.waitForSelector('.account-container_balance_code', { visible: true })
   }
 
