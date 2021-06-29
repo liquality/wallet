@@ -259,7 +259,7 @@
             <button
               class="btn btn-primary btn-lg btn-block btn-icon"
               id="initiate_swap_button"
-              @click.stop="swap"
+              @click.stop="tryToSwap"
               :disabled="loading"
             >
               <SpinnerIcon class="btn-loading" v-if="loading" />
@@ -799,7 +799,7 @@ export default {
             this.loading = false
             unsubscribe()
           }
-        }, 15000)
+        }, 25000)
       } else {
         await this.swap()
       }

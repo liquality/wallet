@@ -118,7 +118,7 @@ export default {
         .find((item) => item.id === this.id)
     },
     swapDetailsComponent () {
-      const config = getSwapProviderConfig(this.item.network, this.item.providerId)
+      const config = getSwapProviderConfig(this.item.network, this.item.provider)
       return ({
         [SwapProviderType.LIQUALITY]: LiqualitySwapDetails,
         [SwapProviderType.UNISWAPV2]: UniswapSwapDetails

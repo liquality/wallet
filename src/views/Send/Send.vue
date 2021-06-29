@@ -175,7 +175,7 @@
           <button
             class="btn btn-primary btn-lg btn-icon"
             id="send_button_confirm"
-            @click="send"
+            @click="tryToSend"
             :disabled="loading"
           >
             <SpinnerIcon class="btn-loading" v-if="loading" />
@@ -448,7 +448,7 @@ export default {
             this.loading = false
             unsubscribe()
           }
-        }, 15000)
+        }, 25000)
       } else {
         await this.send()
       }

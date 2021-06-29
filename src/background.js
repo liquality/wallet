@@ -24,6 +24,9 @@ store.subscribe(async ({ type, payload }, state) => {
       store.dispatch('updateMarketData', { network: state.activeNetwork })
       store.dispatch('checkPendingActions', { walletId: state.activeWalletId })
 
+      store.commit('app/SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
+      store.commit('app/SET_USB_BRIDGE_CREATED', { created: false })
+
       asyncLoop(
         () => store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId }),
         () => random(400000, 600000)

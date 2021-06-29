@@ -10,7 +10,7 @@ import UniswapV2Router from '@uniswap/v2-periphery/build/IUniswapV2Router02.json
 import * as ethers from 'ethers'
 
 import buildConfig from '../../build.config'
-import { currencyToUnit } from '@liquality/cryptoassets'
+import { currencyToUnit, chains } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isEthereumChain, isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
@@ -140,7 +140,7 @@ class UniswapSwapProvider extends SwapProvider {
     const outputAmountHex = ethers.BigNumber.from(minimumOutputInUnit.toFixed()).toHexString()
 
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
-    const toAddress = toChain.formatAddress(toAddressRaw)
+    const toAddress = chains[toChain].formatAddress(toAddressRaw)
 
     const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
     const uniswap = new ethers.Contract(this.routerAddress, UniswapV2Router.abi, api)

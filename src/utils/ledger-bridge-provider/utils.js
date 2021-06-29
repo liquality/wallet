@@ -3,7 +3,7 @@ import {
 } from './config'
 import EventEmitter from 'events'
 
-let CHROME_PORT = null
+export let CHROME_PORT = null
 const bridgeEmiter = new EventEmitter()
 
 export const setLedgerBridgeListener = () => {
@@ -11,6 +11,7 @@ export const setLedgerBridgeListener = () => {
     chrome.runtime.onConnectExternal.addListener(port => {
       port.onDisconnect.addListener(() => {
         CHROME_PORT = null
+        bridgeEmiter.emit('DISCONNECTED_PORT')
         return true
       })
       CHROME_PORT = port
