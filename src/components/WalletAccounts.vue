@@ -22,7 +22,7 @@
                    v-if="account.type && account.type.includes('ledger')">
               Ledger
             </div>
-            <div>
+            <div :id="account.assets[0]">
               {{ prettyBalance(account.balances[account.assets[0]], account.assets[0]) }} {{account.assets[0]}}
             </div>
             </div>

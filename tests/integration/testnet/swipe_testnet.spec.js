@@ -99,4 +99,48 @@ describe('Liquality wallet SWIPE feature', async () => {
     // TODO: Click on swap confirm step
     await swapPage.ClickInitiateSwapButton(page)
   })
+  it('SWAP,Please increase amount. It is below minimum.', async () => {
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // Click on Swipe
+    await overviewPage.ClickSwipe(page)
+
+    // SEND from assert (BTC)
+    await searchAssetPage.SearchForAnAsset(page, 'BTC')
+    // Enter 0
+    await swapPage.EnterSendAmountOnSwap(page, '0')
+    expect(await swapPage.GetSwapSendErrors(page)).contains('Please increase amount. It is below minimum.')
+    // Check review button has been disabled
+    await swapPage.HasReviewButtonDisabled(page)
+  })
+  it('SWAP,Lower amount. This exceeds available balance.', async () => {
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // Click on Swipe
+    await overviewPage.ClickSwipe(page)
+
+    // SEND from assert (BTC)
+    await searchAssetPage.SearchForAnAsset(page, 'BTC')
+    // Enter 1000
+    await swapPage.EnterSendAmountOnSwap(page, '1000')
+    expect(await swapPage.GetSwapSendErrors(page)).contains('Lower amount. This exceeds available balance.')
+    // Check review button has been disabled
+    await swapPage.HasReviewButtonDisabled(page)
+  })
 })
