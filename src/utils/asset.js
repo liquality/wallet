@@ -68,8 +68,8 @@ const EXPLORERS = {
       address: 'https://rinkeby-explorer.arbitrum.io/address/0x'
     },
     mainnet: {
-      tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x',
-      address: 'https://rinkeby-explorer.arbitrum.io/address/0x'
+      tx: 'https://explorer.arbitrum.io/tx/0x',
+      address: 'https://explorer.arbitrum.io/address/0x'
     }
   }
 }

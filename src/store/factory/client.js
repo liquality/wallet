@@ -184,8 +184,8 @@ function createPolygonClient (asset, network, mnemonic, indexPath = 0) {
 function createArbitrumClient (asset, network, mnemonic, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const arbitrumNetwork = AssetNetworks.ARBETH[network]
-  const rpcApi = isTestnet ? 'https://rinkeby.arbitrum.io/rpc' : 'https://rinkeby.arbitrum.io/rpc'
-  const scraperApi = isTestnet ? 'http://localhost:8080' : 'https://liquality.io/arbitrum-mainnet-api'
+  const rpcApi = isTestnet ? 'https://rinkeby.arbitrum.io/rpc' : 'https://arb1.arbitrum.io/rpc'
+  const scraperApi = isTestnet ? 'https://liquality.io/arbitrum-testnet-api' : 'https://liquality.io/arbitrum-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
   return createEthereumClient(asset, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
