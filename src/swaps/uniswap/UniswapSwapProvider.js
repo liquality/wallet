@@ -10,7 +10,7 @@ import UniswapV2Router from '@uniswap/v2-periphery/build/IUniswapV2Router02.json
 import * as ethers from 'ethers'
 
 import buildConfig from '../../build.config'
-import { currencyToUnit } from '@liquality/cryptoassets'
+import { chains, currencyToUnit } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isEthereumChain, isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
@@ -47,7 +47,7 @@ class UniswapSwapProvider extends SwapProvider {
   }
 
   async getQuote ({ network, from, to, amount }) {
-  // Uniswap only provides liquidity for ethereum tokens
+    // Uniswap only provides liquidity for ethereum tokens
     if (!isEthereumChain(from) || !isEthereumChain(to)) return null
     // Only uniswap on ethereum is supported atm
     if (cryptoassets[from].chain !== 'ethereum' || cryptoassets[to].chain !== 'ethereum') return null
@@ -95,7 +95,7 @@ class UniswapSwapProvider extends SwapProvider {
     const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
 
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.toAccountId)
-    const fromAddress = fromChain.formatAddress(fromAddressRaw)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
     const allowance = await erc20.allowance(fromAddress, this.routerAddress)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     if (allowance.gte(inputAmount)) {
@@ -140,7 +140,7 @@ class UniswapSwapProvider extends SwapProvider {
     const outputAmountHex = ethers.BigNumber.from(minimumOutputInUnit.toFixed()).toHexString()
 
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
-    const toAddress = toChain.formatAddress(toAddressRaw)
+    const toAddress = chains[toChain].formatAddress(toAddressRaw)
 
     const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
     const uniswap = new ethers.Contract(this.routerAddress, UniswapV2Router.abi, api)
