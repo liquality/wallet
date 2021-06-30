@@ -43,7 +43,7 @@
           </div>
         </div>
       </div>
-      <component v-bind:is="swapDetailsComponent" :id="id"></component>
+      <component v-bind:is="swapDetailsComponent" :id="id" @retrySwap="retry()"></component>
     </div>
     <Modal v-if="ledgerSignRequired && showLedgerModal" @close="showLedgerModal = false">
       <template #header>
@@ -106,7 +106,8 @@ export default {
   },
   data () {
     return {
-      showLedgerModal: false
+      showLedgerModal: false,
+      retryingSwap: false
     }
   },
   props: ['id'],
@@ -198,6 +199,18 @@ export default {
     },
     goBack () {
       this.$router.go(-1)
+    },
+    async retry () {
+      if (this.retryingSwap) return
+      this.retryingSwap = true
+      try {
+        await this.retrySwap({ swap: this.item })
+        if (!this.item.error) {
+          this.showLedgerModal = false
+        }
+      } finally {
+        this.retryingSwap = false
+      }
     }
   },
   created () {
