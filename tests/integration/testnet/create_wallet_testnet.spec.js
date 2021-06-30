@@ -24,7 +24,9 @@ describe('Liquality wallet - Create wallet', async () => {
   })
 
   afterEach(async () => {
-    await browser.close()
+    if (browser !== undefined) {
+      await browser.close()
+    }
   })
 
   it('Create a wallet with less that 8 or more characters password,validate button has been disabled-["mainnet"]', async () => {

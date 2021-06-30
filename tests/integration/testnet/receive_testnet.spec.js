@@ -27,7 +27,9 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
   })
 
   afterEach(async () => {
-    await browser.close()
+    if (browser !== undefined) {
+      await browser.close()
+    }
   })
 
   it('Create a new wallet and check Receive for BTC', async () => {
