@@ -169,7 +169,7 @@
           <tr>
             <td class="text-muted text-right small-12">Actions</td>
             <td class="text-danger">
-              <span class="cursor-pointer mr-3" v-if="item.error" @click="retry">Retry</span>
+              <span class="cursor-pointer mr-3" v-if="item.error" @click="emit('retrySwap')">Retry</span>
             </td>
           </tr>
         </tbody>
@@ -223,8 +223,7 @@ export default {
       showFeeSelector: false,
       feeSelectorLoading: false,
       feeSelectorAsset: null,
-      newFeePrice: null,
-      retryingSwap: false
+      newFeePrice: null
     }
   },
   props: ['id'],
@@ -250,23 +249,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['retrySwap', 'updateTransactionFee', 'updateFees']),
+    ...mapActions(['updateTransactionFee', 'updateFees']),
     getNativeAsset,
     prettyBalance,
     prettyTime (timestamp) {
       return moment(timestamp).format('L, LT')
-    },
-    async retry () {
-      if (this.retryingSwap) return
-      this.retryingSwap = true
-      try {
-        await this.retrySwap({ swap: this.item })
-        if (!this.item.error) {
-          this.showLedgerModal = false
-        }
-      } finally {
-        this.retryingSwap = false
-      }
     },
     async copy (text) {
       await navigator.clipboard.writeText(text)

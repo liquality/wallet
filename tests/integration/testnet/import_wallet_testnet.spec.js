@@ -28,7 +28,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await browser.close()
   })
 
-  it('Import wallet with random seed phrase 12 word with 0 coins', async () => {
+  it('Import wallet with random seed phrase 12 word with 0 coins-["mainnet"]', async () => {
     await homePage.ClickOnImportWallet(page)
     console.log('Import wallet page hase been loaded')
 
@@ -39,14 +39,17 @@ describe('Liquality wallet- Import wallet', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.SelectNetwork(page, 'testnet')
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
   })
-
   it('Import wallet and see balance', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
@@ -72,7 +75,7 @@ describe('Liquality wallet- Import wallet', async () => {
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
   })
-  it('Import wallet,lock wallet and unlock wallet', async () => {
+  it('Import wallet,lock wallet and unlock wallet-["mainnet"]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -81,8 +84,12 @@ describe('Liquality wallet- Import wallet', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    // Select network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Clock on Lock
@@ -90,7 +97,7 @@ describe('Liquality wallet- Import wallet', async () => {
     // Unlock
     await passwordPage.ClickUnlock(page, password)
   })
-  it('Import wallet,lock wallet and forgot password while unlock wallet', async () => {
+  it('Import wallet,lock wallet and forgot password while unlock wallet-["mainnet"]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -99,8 +106,12 @@ describe('Liquality wallet- Import wallet', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    // Select network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Clock on Lock
