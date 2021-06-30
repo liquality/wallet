@@ -27,7 +27,9 @@ describe('Liquality wallet SWIPE feature', async () => {
   })
 
   afterEach(async () => {
-    await browser.close()
+    if (browser !== undefined) {
+      await browser.close()
+    }
   })
 
   it('SWAP BTC to ETH', async () => {

@@ -25,7 +25,9 @@ describe('Liquality wallet- Import wallet', async () => {
   })
 
   afterEach(async () => {
-    await browser.close()
+    if (browser !== undefined) {
+      await browser.close()
+    }
   })
 
   it('Import wallet with random seed phrase 12 word with 0 coins-["mainnet"]', async () => {
