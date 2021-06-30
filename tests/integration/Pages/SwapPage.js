@@ -105,19 +105,23 @@ class SwapPage {
   }
 
   async GetSwapSendNetworkFeeValue (page) {
-    await page.waitForTimeout(5000)
     await page.waitForSelector('#swap_send_network_fee_value', { visible: true })
     return await page.$eval('#swap_send_network_fee_value', el => el.textContent)
   }
 
+  /**
+   * Get Network fee from SEND section.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
   async GetSwapSendNetworkFeeInDollar (page) {
-    await page.waitForTimeout(5000)
     await page.waitForSelector('#swap_send_network_fee_fiat_rate', { visible: true })
+    await page.waitForTimeout(20000)
     return await page.$eval('#swap_send_network_fee_fiat_rate', el => el.textContent)
   }
 
   async GetSwapSendAccountFeesValue (page) {
-    await page.waitForTimeout(5000)
     await page.waitForSelector('#swap_send_amount_fees_value', { visible: true })
     return await page.$eval('#swap_send_amount_fees_value', el => el.textContent)
   }
@@ -138,31 +142,26 @@ class SwapPage {
   }
 
   async GetSwapReceiveNetworkValue (page) {
-    await page.waitForTimeout(5000)
     await page.waitForSelector('#swap_receive_network_fee_value', { visible: true })
     return await page.$eval('#swap_receive_network_fee_value', el => el.textContent)
   }
 
   async GetSwapReceiveNetworkInDollar (page) {
-    await page.waitForTimeout(5000)
     await page.waitForSelector('#swap_receive_network_fee_fiat_rate', { visible: true })
     return await page.$eval('#swap_receive_network_fee_fiat_rate', el => el.textContent)
   }
 
   async GetSwapReceiveAccountFeeValue (page) {
-    await page.waitForTimeout(5000)
     await page.waitForSelector('#swap_receive_amount_fee_value', { visible: true })
     return await page.$eval('#swap_receive_amount_fee_value', el => el.textContent)
   }
 
   async GetSwapReceiveAccountFeeInDollar (page) {
-    await page.waitForTimeout(5000)
     await page.waitForSelector('#swap_receive_total_amount_in_fiat', { visible: true })
     return await page.$eval('#swap_receive_total_amount_in_fiat', el => el.textContent)
   }
 
   async GetSwapRate (page) {
-    await page.waitForTimeout(5000)
     await page.waitForSelector('#swap_rate_value', { visible: true })
     return await page.$eval('#swap_rate_value', el => el.textContent)
   }
