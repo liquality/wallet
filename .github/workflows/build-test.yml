@@ -55,7 +55,7 @@ jobs:
         uses: mujo-code/puppeteer-headful@master
         env:
           node-version: 14.1.0
-          CI: 'true'Xvfb $DISPLAY -screen 0 1024x768x16 &
+          CI: 'true'
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
         with:
           args: npm run test:testnet
