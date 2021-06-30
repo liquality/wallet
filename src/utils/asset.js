@@ -69,7 +69,7 @@ export const isERC20 = asset => {
 }
 
 export const isEthereumChain = asset => {
-  const chain = cryptoassets[asset].chain
+  const chain = cryptoassets[asset]?.chain
   return _isEthereumChain(chain)
 }
 

@@ -175,7 +175,7 @@
           <button
             class="btn btn-primary btn-lg btn-icon"
             id="send_button_confirm"
-            @click="send"
+            @click="tryToSend"
             :disabled="loading"
           >
             <SpinnerIcon class="btn-loading" v-if="loading" />
@@ -431,13 +431,24 @@ export default {
       if (this.account?.type.includes('ledger') && !this.usbBridgeTransportCreated) {
         this.loading = true
         this.bridgeModalOpen = true
-        this.$store.subscribe(async ({ type, payload }) => {
+        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
           if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
           payload.created === true) {
             this.bridgeModalOpen = false
             await this.send()
+            if (unsubscribe) {
+              unsubscribe()
+            }
           }
         })
+
+        setTimeout(() => {
+          if (unsubscribe) {
+            this.bridgeModalOpen = false
+            this.loading = false
+            unsubscribe()
+          }
+        }, 25000)
       } else {
         await this.send()
       }

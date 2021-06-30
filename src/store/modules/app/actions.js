@@ -8,9 +8,8 @@ export const actions = {
       try {
         const existingWindow = await browser.windows.get(usbBridgeWindowsId)
         if (existingWindow) {
-          commit('SET_USB_BRIDGE_WINDOWS_ID', { id: usbBridgeWindowsId }, { root: true })
-          await browser.windows.update(usbBridgeWindowsId, { focused: true })
-          return existingWindow.id
+          commit('SET_USB_BRIDGE_WINDOWS_ID', { id: 0 }, { root: true })
+          await browser.windows.remove(usbBridgeWindowsId)
         }
       } catch (error) {
         console.log(error)
@@ -41,6 +40,12 @@ export const actions = {
     })
     bridgeEmiter.on('BRIDGE_CLOSED', () => {
       console.log('USB-BRIDGE::BRIDGE_CLOSED')
+      commit('SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
+      commit('SET_USB_BRIDGE_CREATED', { created: false })
+    })
+
+    bridgeEmiter.on('DISCONNECTED_PORT', () => {
+      console.log('USB-BRIDGE::DISCONNECTED_PORT')
       commit('SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
       commit('SET_USB_BRIDGE_CREATED', { created: false })
     })
