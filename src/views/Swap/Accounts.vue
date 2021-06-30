@@ -45,10 +45,7 @@ export default {
         })
       } else {
         _accounts = this.accountsData.map(account => {
-          const assets = account.assets.filter(
-            asset => this.selectedMarket[asset] &&
-                    asset !== this.excludeAsset
-          )
+          const assets = account.assets.filter(asset => asset !== this.excludeAsset)
           return {
             ...account,
             assets
@@ -65,7 +62,6 @@ export default {
   },
   props: [
     'excludeAsset',
-    'selectedMarket',
     'assetSelection'
   ],
   data () {

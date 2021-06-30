@@ -50,7 +50,8 @@ export const accountColors = [
   '#EAB300',
   '#F7CA4F',
   '#A1E44A',
-  '#3AB24D'
+  '#3AB24D',
+  '#8247E5'
 ]
 
 export const chainDefaultColors = {
@@ -69,13 +70,16 @@ export const getAccountIcon = (chain) => {
     bsc: getAssetIcon('bnb_account', 'png'),
     rsk: getAssetIcon('rsk_account'),
     near: getAssetIcon('NEAR'),
-    polygon: getAssetIcon('POLYGON')
+    polygon: getAssetIcon('polygon_account')
   }[chain]
 }
 
 export const getNextAccountColor = (chain, index) => {
   const defaultColor = chainDefaultColors[chain]
   const defaultIndex = accountColors.findIndex(c => c === defaultColor)
+  if (defaultIndex === -1) {
+    return defaultColor
+  }
   const finalIndex = index + defaultIndex
   if (finalIndex >= accountColors.length) {
     return accountColors[defaultIndex]

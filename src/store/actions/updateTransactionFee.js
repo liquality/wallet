@@ -1,5 +1,5 @@
 import { isObject } from 'lodash-es'
-import { updateOrder, unlockAsset } from '../utils'
+import { unlockAsset } from '../utils'
 
 export const updateTransactionFee = async ({ dispatch, commit, getters }, { network, walletId, asset, id, hash, newFee }) => {
   const item = getters.historyItemById(network, walletId, id)
@@ -43,7 +43,9 @@ export const updateTransactionFee = async ({ dispatch, commit, getters }, { netw
 
   const isFundingUpdate = hashKey === 'fromFundHash'
   if (isFundingUpdate) {
-    await updateOrder(item)
+    // TODO: this should be the function of any swap? Should be able to bump any tx
+    const swapProvider = getters.swapProvider(network, item.provider)
+    await swapProvider.updateOrder(item)
   }
 
   return newTx

@@ -47,10 +47,10 @@ export default {
     state.wallets = wallets
     state.unlockedAt = unlockedAt
   },
-  NEW_ORDER (state, { network, walletId, order }) {
+  NEW_SWAP (state, { network, walletId, swap }) {
     ensureNetworkWalletTree(state.history, network, walletId, [])
 
-    state.history[network][walletId].push(order)
+    state.history[network][walletId].push(swap)
   },
   NEW_TRASACTION (state, { network, walletId, transaction }) {
     ensureNetworkWalletTree(state.history, network, walletId, [])
@@ -97,8 +97,8 @@ export default {
   UPDATE_MARKET_DATA (state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
   },
-  SET_ETHEREUM_INJECTION_ASSET (state, { asset }) {
-    state.injectEthereumAsset = asset
+  SET_ETHEREUM_INJECTION_CHAIN (state, { chain }) {
+    state.injectEthereumChain = chain
   },
   ENABLE_ETHEREUM_INJECTION (state) {
     state.injectEthereum = true
@@ -241,5 +241,8 @@ export default {
   },
   SET_USE_LEDGER_LIVE (state, { use }) {
     state.useLedgerLive = use
+  },
+  SET_USB_BRIDGE_WINDOWS_ID (state, { id }) {
+    state.usbBridgeWindowsId = id
   }
 }

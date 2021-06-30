@@ -1,12 +1,12 @@
-export const retrySwap = async ({ dispatch, commit }, { order }) => {
+export const retrySwap = async ({ dispatch, commit }, { swap }) => {
   commit('UPDATE_HISTORY', {
-    network: order.network,
-    walletId: order.walletId,
-    id: order.id,
+    network: swap.network,
+    walletId: swap.walletId,
+    id: swap.id,
     updates: {
       error: false
     }
   })
 
-  return dispatch('performNextAction', { network: order.network, walletId: order.walletId, id: order.id })
+  return dispatch('performNextAction', { network: swap.network, walletId: swap.walletId, id: swap.id })
 }

@@ -1,4 +1,4 @@
-import { chains } from '@liquality/cryptoassets'
+import { chains, isEthereumChain as _isEthereumChain } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 
 const EXPLORERS = {
@@ -68,17 +68,16 @@ export const isERC20 = asset => {
   return cryptoassets[asset]?.type === 'erc20'
 }
 
-// TODO: move to cryptoassets?
 export const isEthereumChain = asset => {
-  const chain = cryptoassets[asset].chain
-  return ['ethereum', 'rsk', 'bsc', 'polygon'].includes(chain)
+  const chain = cryptoassets[asset]?.chain
+  return _isEthereumChain(chain)
 }
 
 export const isEthereumNativeAsset = asset => {
   const chainId = cryptoassets[asset]?.chain
   if (chainId &&
-    ['ethereum', 'rsk', 'bsc', 'polygon'].includes(chainId) &&
-      chains[chainId].nativeAsset === asset) {
+    _isEthereumChain(chainId) &&
+    chains[chainId].nativeAsset === asset) {
     return true
   }
 

@@ -13,13 +13,13 @@
         </div>
       </div>
       <div class="setting-item">
-        <div class="setting-item_title flex-fill">Web3 Asset
-          <span class="setting-item_sub">Select which ethereum based asset should be used for dapps.</span>
+        <div class="setting-item_title flex-fill">Web3 Network
+          <span class="setting-item_sub">Select which ethereum based network should be used for dapps.</span>
         </div>
         <div class="setting-item_control">
-          <AssetDropdown :assets="ethereumAssets"
-                         :selected="selectedAsset"
-                         @asset-changed="updateInjectEthereumAsset" />
+          <ChainDropdown :chains="ethereumChains"
+                         :selected="injectEthereumChain"
+                         @chain-changed="updateInjectEthereumChain" />
         </div>
       </div>
       <div class="setting-item">
@@ -28,14 +28,6 @@
         </div>
         <div class="setting-item_control">
           <button class="btn btn-outline-primary" @click="downloadLogs">Download Logs</button>
-        </div>
-      </div>
-      <div class="setting-item">
-        <div class="setting-item_title flex-fill mb-2">Use Ledger Live
-          <span class="setting-item_sub">The Ledger Live brige allows to use your Ledger easily.</span>
-        </div>
-        <div class="setting-item_control">
-          <toggle-button  :css-colors="true" :value="useLedgerLive" @change="e => toogleUseLedgerLive(e.value)" />
         </div>
       </div>
       <div class="settings-footer">
@@ -48,37 +40,26 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { version } from '../../package.json'
-import cryptoassets from '@/utils/cryptoassets'
-import { isEthereumNativeAsset } from '@/utils/asset'
+import { isEthereumChain } from '@liquality/cryptoassets'
+import buildConfig from '@/build.config'
 import { downloadFile, getWalletStateLogs } from '@/utils/export'
 import NavBar from '@/components/NavBar.vue'
-import AssetDropdown from '@/components/AssetDropdown'
+import ChainDropdown from '@/components/ChainDropdown'
 
 export default {
   components: {
     NavBar,
-    AssetDropdown
+    ChainDropdown
   },
   computed: {
     ...mapState([
       'activeNetwork',
       'activeWalletId',
       'injectEthereum',
-      'injectEthereumAsset',
-      'useLedgerLive'
+      'injectEthereumChain'
     ]),
-    ethereumAssets () {
-      return Object.keys(cryptoassets)
-        .filter(isEthereumNativeAsset)
-        .map(asset => {
-          const label = this.getLabel(asset)
-          return { name: asset, label }
-        })
-    },
-    selectedAsset () {
-      const label = this.getLabel(this.injectEthereumAsset)
-      const name = this.injectEthereumAsset === 'RSK' ? 'RBTC' : this.injectEthereumAsset
-      return { name, label }
+    ethereumChains () {
+      return buildConfig.chains.filter(isEthereumChain)
     },
     appVersion () {
       return version
@@ -88,21 +69,14 @@ export default {
     ...mapActions([
       'enableEthereumInjection',
       'disableEthereumInjection',
-      'setEthereumInjectionAsset',
-      'setUseLedgerLive'
+      'setEthereumInjectionChain'
     ]),
     toggleInjectEthereum (enable) {
       if (enable) this.enableEthereumInjection()
       else this.disableEthereumInjection()
     },
-    async toogleUseLedgerLive (use) {
-      await this.setUseLedgerLive({ use })
-    },
-    updateInjectEthereumAsset (asset) {
-      this.setEthereumInjectionAsset({ asset: asset.name })
-    },
-    getLabel (asset) {
-      return asset === 'RBTC' ? 'RSK' : asset
+    updateInjectEthereumChain (chain) {
+      this.setEthereumInjectionChain({ chain })
     },
     async downloadLogs () {
       const logs = await getWalletStateLogs()

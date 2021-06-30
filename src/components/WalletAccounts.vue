@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="account in filteredItems" :key="account.id">
+    <div v-for="account in filteredItems" :key="account.id" :id="account.chain.toUpperCase()">
       <ListItem v-if="account.chain === 'bitcoin'"
                 @item-selected="selectItem(account)">
           <template #prefix>
@@ -22,7 +22,7 @@
                    v-if="account.type && account.type.includes('ledger')">
               Ledger
             </div>
-            <div>
+            <div :id="account.assets[0]">
               {{ prettyBalance(account.balances[account.assets[0]], account.assets[0]) }} {{account.assets[0]}}
             </div>
             </div>
@@ -66,6 +66,7 @@
       <div class="account-assets"
            :class="{ active: showAccountAssets[account.id] === true}">
         <ListItem v-for="asset in account.assets"
+                  :id="asset"
                  :key="asset"
                  @item-selected="selectItem(account, asset)">
           <template #prefix>

@@ -2,6 +2,24 @@ const crypto = require('crypto')
 
 class TestUtils {
   /**
+   * Get Chrome options
+   * @returns {{slowMo: number, headless: boolean, args: string[], executablePath: string}}
+   */
+  getChromeOptions () {
+    return {
+      slowMo: 20,
+      headless: false,
+      executablePath: process.env.PUPPETEER_EXEC_PATH, // set by docker container
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-extensions-except=' + this.extensionPathBuildPath,
+        '--load-extension=' + this.extensionPathBuildPath
+      ]
+    }
+  }
+
+  /**
    * Generate external ID
    * @param absolutePath - extension dir path.
    * @returns {string}
