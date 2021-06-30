@@ -32,7 +32,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     }
   })
 
-  it.only('SWAP BTC to ETH', async () => {
+  it('SWAP BTC to ETH', async () => {
     const asset1 = 'BTC'
     const asset2 = 'ETH'
 
@@ -69,7 +69,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(swapSendNetworkFeeValue.trim()).contain(asset1)
 
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
-    expect(swapSendNetworkFeeInDollar.trim(),'Send network fee can not be $0.00').not.contain('$0.00')
+    expect(swapSendNetworkFeeInDollar.trim(), 'Send network fee can not be $0.00').not.contain('$0.00')
 
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
     expect(swapSendAccountFeesValue.trim()).contain(asset1)
