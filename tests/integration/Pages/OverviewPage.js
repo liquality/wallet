@@ -104,6 +104,14 @@ class OverviewPage {
         break
       }
 
+      case 'NEAR': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const eth = await page.waitForSelector('#NEAR', { visible: true })
+        await eth.click()
+        break
+      }
+
       default:
         await assertListItems[0].click()
         await page.click('#' + chain)
