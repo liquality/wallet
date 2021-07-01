@@ -258,7 +258,7 @@ describe('Liquality wallet SEND feature', async () => {
     await page.hover('#fast', { slow: true })
     await page.screenshot({ path: './screenshots/send_network_speed_fee_fast.png' })
   })
-  it.only('NEAR Send Check Network Fee', async () => {
+  it('NEAR Send Check Network Fee', async () => {
     const bitCoinName = 'NEAR'
 
     // Import wallet option
