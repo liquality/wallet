@@ -131,8 +131,7 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
     await overviewPage.CheckAssertOverviewDetails(page, 'BNB')
   })
   it('Import wallet and check Receive for NEAR', async () => {
-
-    let nearPlatform = 'NEAR'
+    const nearPlatform = 'NEAR'
 
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
@@ -155,7 +154,7 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
     await overviewPage.SelectChain(page, nearPlatform)
     await overviewPage.ClickChainReceive(page, nearPlatform)
     // Receive validations
-    let yourCurrentAddress = await page.$eval('#your_current_asset_address',(el) => el.textContent)
+    const yourCurrentAddress = await page.$eval('#your_current_asset_address', (el) => el.textContent)
     expect(yourCurrentAddress).contains(nearPlatform)
     await receivePage.HasQRCodeDisplayed(page)
     await receivePage.CheckReceiveURL(page)

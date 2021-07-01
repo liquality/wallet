@@ -6,7 +6,7 @@ class ReceivePage {
   async CheckReceiveAddresses (page) {
     await page.waitForSelector('.receive_address:not(:empty)')
     const addressText = await page.$eval('#receive_address', (el) => el.textContent.trim())
-    console.log(chalk.underline("Receive address: " + addressText))
+    console.log(chalk.underline('Receive address: ' + addressText))
     expect(addressText, 'Receive address must be string and not undefined')
       .to.be.a('string')
     assert.isNotNull(addressText, 'Receive address not null')
