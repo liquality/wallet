@@ -130,4 +130,39 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
     await receivePage.ClickDone(page)
     await overviewPage.CheckAssertOverviewDetails(page, 'BNB')
   })
+  it('Import wallet and check Receive for NEAR', async () => {
+
+    let nearPlatform = 'NEAR'
+
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select Network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
+
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Select NEAR
+    await overviewPage.SelectChain(page, nearPlatform)
+    await overviewPage.ClickChainReceive(page, nearPlatform)
+    // Receive validations
+    let yourCurrentAddress = await page.$eval('#your_current_asset_address',(el) => el.textContent)
+    expect(yourCurrentAddress).contains(nearPlatform)
+    await receivePage.HasQRCodeDisplayed(page)
+    await receivePage.CheckReceiveURL(page)
+    await receivePage.CheckReceiveAddresses(page)
+    await receivePage.ClickCopyAddress(page)
+    await receivePage.ClickDone(page)
+    // After done
+    await overviewPage.CheckAssertOverviewDetails(page, nearPlatform)
+  })
 })
