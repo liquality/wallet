@@ -93,11 +93,13 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendAmountValue (page) {
+    await page.waitForTimeout(5000)
     await page.waitForSelector('#send_swap_confirm_value', { visible: true })
     return await page.$eval('#send_swap_confirm_value', el => el.textContent)
   }
 
   async GetSwapSendAmountInDollar (page) {
+    await page.waitForTimeout(5000)
     await page.waitForSelector('#send_swap_amount_fiat', { visible: true })
     return await page.$eval('#send_swap_amount_fiat', el => el.textContent)
   }
@@ -107,8 +109,15 @@ class SwapPage {
     return await page.$eval('#swap_send_network_fee_value', el => el.textContent)
   }
 
+  /**
+   * Get Network fee from SEND section.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
   async GetSwapSendNetworkFeeInDollar (page) {
     await page.waitForSelector('#swap_send_network_fee_fiat_rate', { visible: true })
+    await page.waitForTimeout(20000)
     return await page.$eval('#swap_send_network_fee_fiat_rate', el => el.textContent)
   }
 
