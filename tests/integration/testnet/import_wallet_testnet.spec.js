@@ -1,4 +1,5 @@
 const TestUtil = require('../../utils/TestUtils')
+const TestDataUtils = require('../../utils/TestDataUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
@@ -8,6 +9,7 @@ const expect = require('chai').expect
 const puppeteer = require('puppeteer')
 
 const testUtil = new TestUtil()
+const testDataUtils = new TestDataUtils()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
@@ -35,7 +37,7 @@ describe('Liquality wallet- Import wallet', async () => {
     console.log('Import wallet page hase been loaded')
 
     // check continue button has been disabled
-    const enterWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level palm'
+    const enterWords = testDataUtils.getRandomSeedWords()
     await seedWordsPage.EnterImportSeedWords(page, enterWords)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
@@ -71,7 +73,7 @@ describe('Liquality wallet- Import wallet', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
+    await homePage.EnterSeedWords(page, null)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
