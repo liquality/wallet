@@ -164,7 +164,7 @@ export default {
     width: 196px;
   }
   &_address {
-    font-size: $font-size-xs;
+    font-size: 0.74rem;
     font-weight: lighter;
   }
 
