@@ -53,7 +53,6 @@ describe('Liquality wallet- Import wallet', async () => {
     expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
   })
   it('Import wallet with random seed (phrase 11 words) and check continue is disabled -["mainnet"]', async () => {
-
     await homePage.ClickOnImportWallet(page)
     console.log('Import wallet page hase been loaded')
     // check continue button has been disabled
