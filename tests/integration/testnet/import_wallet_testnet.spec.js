@@ -1,4 +1,5 @@
 const TestUtil = require('../../utils/TestUtils')
+const TestDataUtils = require('../../utils/TestDataUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
@@ -8,6 +9,7 @@ const expect = require('chai').expect
 const puppeteer = require('puppeteer')
 
 const testUtil = new TestUtil()
+const testDataUtils = new TestDataUtils()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
@@ -30,12 +32,12 @@ describe('Liquality wallet- Import wallet', async () => {
     }
   })
 
-  it('Import wallet with random seed phrase 12 word with 0 coins-["mainnet"]', async () => {
+  it('Import wallet with random seed (phrase 12 words) with 0 coins-["mainnet"]', async () => {
     await homePage.ClickOnImportWallet(page)
     console.log('Import wallet page hase been loaded')
 
     // check continue button has been disabled
-    const enterWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level palm'
+    const enterWords = testDataUtils.getRandomSeedWords()
     await seedWordsPage.EnterImportSeedWords(page, enterWords)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
@@ -52,11 +54,26 @@ describe('Liquality wallet- Import wallet', async () => {
     const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
   })
+  it('Import wallet with random seed (phrase 11 words) and check continue is disabled -["mainnet"]', async () => {
+    await homePage.ClickOnImportWallet(page)
+    console.log('Import wallet page hase been loaded')
+    // check continue button has been disabled
+    const seedWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level'
+    const enterWord = seedWords.split(' ')
+    const seedsWordsCount = await page.$$('#import_wallet_word')
+    for (let i = 0; i < enterWord.length; i++) {
+      const wordInput = seedsWordsCount[i]
+      await wordInput.type(enterWord[i])
+    }
+    // Continue button has been Disabled
+    await page.click('#import_wallet_continue_button:not([enabled])')
+    console.log('Import wallet continue button has been disabled')
+  })
   it('Import wallet with (12 seed words) and see balance', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
+    await homePage.EnterSeedWords(page, null)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
