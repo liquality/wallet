@@ -30,7 +30,7 @@ describe('Liquality wallet- Import wallet', async () => {
     }
   })
 
-  it('Import wallet with random seed phrase 12 word with 0 coins-["mainnet"]', async () => {
+  it('Import wallet with random seed (phrase 12 words) with 0 coins-["mainnet"]', async () => {
     await homePage.ClickOnImportWallet(page)
     console.log('Import wallet page hase been loaded')
 
@@ -51,6 +51,22 @@ describe('Liquality wallet- Import wallet', async () => {
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+  })
+  it('Import wallet with random seed (phrase 11 words) and check continue is disabled -["mainnet"]', async () => {
+
+    await homePage.ClickOnImportWallet(page)
+    console.log('Import wallet page hase been loaded')
+    // check continue button has been disabled
+    const seedWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level'
+    const enterWord = seedWords.split(' ')
+    const seedsWordsCount = await page.$$('#import_wallet_word')
+    for (let i = 0; i < enterWord.length; i++) {
+      const wordInput = seedsWordsCount[i]
+      await wordInput.type(enterWord[i])
+    }
+    // Continue button has been Disabled
+    await page.click('#import_wallet_continue_button:not([enabled])')
+    console.log('Import wallet continue button has been disabled')
   })
   it('Import wallet with (12 seed words) and see balance', async () => {
     // Import wallet option
