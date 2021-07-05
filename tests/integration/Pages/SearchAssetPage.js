@@ -12,10 +12,11 @@ class SearchAssetPage {
   async SearchForAnAsset (page, asset) {
     await page.waitForSelector('#search_for_a_currency_search', { visible: true })
     await page.type('#search_for_a_currency_search', asset)
-    await page.waitForTimeout(2000)
     const assertListItems = await page.$$('#assert_list_item')
+    await page.waitForTimeout(10000)
     switch (asset) {
       case 'BTC': {
+        await page.waitForSelector('#BITCOIN',{visible: true})
         await page.click('#BITCOIN')
         break
       }
