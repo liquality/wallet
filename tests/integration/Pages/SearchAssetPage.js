@@ -16,7 +16,7 @@ class SearchAssetPage {
     await page.waitForTimeout(10000)
     switch (asset) {
       case 'BTC': {
-        await page.waitForSelector('#BITCOIN',{visible: true})
+        await page.waitForSelector('#BITCOIN', { visible: true })
         await page.click('#BITCOIN')
         break
       }
