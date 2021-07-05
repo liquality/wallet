@@ -29,6 +29,37 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     }
   })
 
+  it('should be able to see Settings page', async () => {
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page, null)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+
+    // Click on Backup seed from Burger Icon menu
+    await page.waitForSelector('#burger_icon_menu', { visible: true })
+    await page.click('#burger_icon_menu')
+    // Click on Settings
+    const settings = await page.waitForSelector('#settings', { visible: true })
+    await settings.click()
+    await page.waitForSelector('#settings_item_default_wallet', { visible: true })
+    const settingDefaultWebWallet = await page.$eval('#settings_item_default_wallet', (el) => el.textContent)
+    expect(settingDefaultWebWallet).contains('Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.')
+
+    const settingsItemWebNetwork = await page.$eval('#settings_item_web_network', (el) => el.textContent)
+    expect(settingsItemWebNetwork).contains('Select which ethereum based network should be used for dapps.')
+
+    await page.waitForSelector('#download_logs_button', { visible: true })
+    const appVersion = await page.$eval('#settings_app_version', (el) => el.textContent)
+    expect(appVersion).contain('Version')
+  })
   it('should be use backup seed feature', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
@@ -80,6 +111,56 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
 
     await page.click('#i_saved_the_seed')
     await page.waitForTimeout(1000)
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+  })
+  it('Import wallet,lock wallet and unlock wallet-["mainnet"]', async () => {
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Clock on Lock
+    await overviewPage.ClickLock(page)
+    // Unlock
+    await passwordPage.ClickUnlock(page, password)
+  })
+  it('Import wallet,lock wallet and forgot password while unlock wallet-["mainnet"]', async () => {
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Clock on Lock
+    await overviewPage.ClickLock(page)
+    // Click on Forgot password? Import with seed phrase
+    await passwordPage.ClickOnForgotPassword(page)
+    // Enter the seed phrase & submit password details
+    await homePage.EnterSeedWords(page)
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // check user landed on overview page
+    await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
   })
 })
