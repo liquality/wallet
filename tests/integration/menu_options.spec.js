@@ -1,24 +1,21 @@
-const TestUtil = require('../../utils/TestUtils')
-const TestDataUtils = require('../../utils/TestDataUtils')
+const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
-const SeedWordsPage = require('../Pages/SeedWordsPage')
 const expect = require('chai').expect
+const chalk = require('chalk')
 
 const puppeteer = require('puppeteer')
 
 const testUtil = new TestUtil()
-const testDataUtils = new TestDataUtils()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
-const seedWordsPage = new SeedWordsPage()
 
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet- Import wallet', async () => {
+describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -32,44 +29,7 @@ describe('Liquality wallet- Import wallet', async () => {
     }
   })
 
-  it('Import wallet with random seed (phrase 12 words) with 0 coins-["mainnet"]', async () => {
-    await homePage.ClickOnImportWallet(page)
-    console.log('Import wallet page hase been loaded')
-
-    // check continue button has been disabled
-    const enterWords = testDataUtils.getRandomSeedWords()
-    await seedWordsPage.EnterImportSeedWords(page, enterWords)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV !== 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'testnet')
-    } else {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    }
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ValidateSendSwipeReceiveOptions(page)
-    // validate the testnet asserts count
-    const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
-  })
-  it('Import wallet with random seed (phrase 11 words) and check continue is disabled -["mainnet"]', async () => {
-    await homePage.ClickOnImportWallet(page)
-    console.log('Import wallet page hase been loaded')
-    // check continue button has been disabled
-    const seedWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level'
-    const enterWord = seedWords.split(' ')
-    const seedsWordsCount = await page.$$('#import_wallet_word')
-    for (let i = 0; i < enterWord.length; i++) {
-      const wordInput = seedsWordsCount[i]
-      await wordInput.type(enterWord[i])
-    }
-    // Continue button has been Disabled
-    await page.click('#import_wallet_continue_button:not([enabled])')
-    console.log('Import wallet continue button has been disabled')
-  })
-  it('Import wallet with (12 seed words) and see balance', async () => {
+  it('should be able to see Settings page', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -82,28 +42,29 @@ describe('Liquality wallet- Import wallet', async () => {
     await overviewPage.SelectNetwork(page, 'testnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
-    // validate the testnet asserts count
-    const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
-    // Check the currency
-    expect(await overviewPage.GetCurrency(page),
-      'Wallet stats has currency should be USD').contain('USD')
 
-    // Check the Total amount - 10s wait to load amount
-    const totalAmount = await overviewPage.GetTotalLiquidity(page)
-    expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
-    console.log('After Import wallet, the funds in the wallet:', totalAmount)
+    // Click on Backup seed from Burger Icon menu
+    await page.waitForSelector('#burger_icon_menu', { visible: true })
+    await page.click('#burger_icon_menu')
+    // Click on Settings
+    const settings = await page.waitForSelector('#settings', { visible: true })
+    await settings.click()
+    await page.waitForSelector('#settings_item_default_wallet', { visible: true })
+    const settingDefaultWebWallet = await page.$eval('#settings_item_default_wallet', (el) => el.textContent)
+    expect(settingDefaultWebWallet).contains('Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.')
+
+    const settingsItemWebNetwork = await page.$eval('#settings_item_web_network', (el) => el.textContent)
+    expect(settingsItemWebNetwork).contains('Select which ethereum based network should be used for dapps.')
+
+    await page.waitForSelector('#download_logs_button', { visible: true })
+    const appVersion = await page.$eval('#settings_app_version', (el) => el.textContent)
+    expect(appVersion).contain('Version')
   })
-  it('Import wallet with (24 seed words) and see balance', async () => {
+  it('should be use backup seed feature', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit, select 24 seed option
-    await page.waitForSelector('#word_button_group', { visible: true })
-    await page.click('#twenty_four_words_option')
-    const seedWords = await page.$$eval('#import_wallet_word', (el) => el.length)
-    expect(seedWords).equals(24)
-    // Enter 24 seed words
-    await homePage.EnterSeedWords(page, 24)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page, null)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
@@ -112,12 +73,45 @@ describe('Liquality wallet- Import wallet', async () => {
     await overviewPage.SelectNetwork(page, 'testnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
-    // validate the testnet asserts count
-    const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')
+
+    // Click on Backup seed from Burger Icon menu
+    await page.waitForSelector('#burger_icon_menu', { visible: true })
+    await page.click('#burger_icon_menu')
+    await page.waitForSelector('#backup_seed', { visible: true })
+    await page.click('#backup_seed')
+    console.log(chalk.green('User clicked on Backup Seed option'))
+    await page.waitForSelector('#i_have_privacy_button', { visible: true })
+    expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals('Show Seed Phrase?')
+    expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent))
+      .equals('Anyone who has this seed phrase can steal your funds!')
+    await page.click('#i_have_privacy_button')
+    await page.waitForSelector('#password', { visible: true })
+    await page.type('#password', password)
+    await page.click('#checkbox')
+    await page.waitForSelector('#continue_button_to_see_seed_phrase:not([disabled])')
+    await page.click('#continue_button_to_see_seed_phrase')
+    await page.waitForSelector('#i_saved_the_seed:not([disabled])', { visible: true })
+
+    const result = await page.evaluate(() => {
+      const elements = Array.from(document.querySelectorAll('#seed_word_mouse_hover'))
+      return elements.map(element => {
+        return element.innerText
+      })
+    })
+
+    expect(result.length).equals(12)
+    for (const word of result) {
+      expect(word).not.equals(undefined)
+      expect(word).not.equals(null)
+    }
+
+    await page.click('#i_saved_the_seed')
+    await page.waitForTimeout(1000)
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
   })
   it('Import wallet,lock wallet and unlock wallet-["mainnet"]', async () => {
     // Import wallet option
