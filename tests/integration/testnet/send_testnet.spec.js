@@ -7,6 +7,7 @@ const SendPage = require('../Pages/SendPage')
 const TransactionDetailsPage = require('../Pages/TransactionDetailsPage')
 const TestDataUtils = require('../../utils/TestDataUtils')
 const expect = require('chai').expect
+const chalk = require('chalk')
 
 const puppeteer = require('puppeteer')
 
@@ -31,7 +32,9 @@ describe('Liquality wallet SEND feature', async () => {
   })
 
   afterEach(async () => {
-    await browser.close()
+    if (browser !== undefined) {
+      await browser.close()
+    }
   })
 
   it('Send BTC to another Wrong address. check Review option has been disabled', async () => {
@@ -254,5 +257,50 @@ describe('Liquality wallet SEND feature', async () => {
     await page.screenshot({ path: './screenshots/send_network_speed_fee_slow.png' })
     await page.hover('#fast', { slow: true })
     await page.screenshot({ path: './screenshots/send_network_speed_fee_fast.png' })
+  })
+  it('NEAR Send Check Network Fee', async () => {
+    const bitCoinName = 'NEAR'
+
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // check NEAR
+    await overviewPage.SelectChain(page, 'NEAR')
+    await page.waitForSelector('#send', { visible: true })
+    await page.waitForSelector('#swap', { visible: true })
+    await page.waitForSelector('#receive', { visible: true })
+    const code = await page.$eval('.account-container_balance_code', (el) => el.textContent)
+    expect(code).equals(bitCoinName)
+    await page.waitForSelector('.account-container_address', { visible: true })
+    // Click on NEAR send
+    await page.click('#send')
+    await sendPage.EnterSendAmount(page, '1')
+    await sendPage.EnterSendToAddress(page, 'caf7949de4fa4a61fd5d4d71c171560e49ad64e35221b01050ddf81a452a61cb')
+
+    // Check Network Speed/FEE
+    const ethereumNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
+    expect(ethereumNetworkSpeedFee, 'NEAR Avg Network Speed validation')
+      .equals('(Avg / 0.001 NEAR)')
+    // Click on Network Speed/FEE
+    await sendPage.ClickNetworkSpeedFee(page)
+    await page.hover('#slow', { slow: true })
+    await page.screenshot({ path: './screenshots/send_network_speed_fee_near_slow.png' })
+    await page.hover('#fast', { slow: true })
+    await page.screenshot({ path: './screenshots/send_network_speed_fee__near_fast.png' })
+
+    // Click on SEND Review button
+    await sendPage.ClickSendReview(page)
+    const confirmSendValue = await page.$eval('#confirm_send_value', (el) => el.textContent)
+    expect(confirmSendValue.trim()).equals('1 NEAR')
+    await page.waitForSelector('#detail_group_network_fee', { visible: true })
+    await page.waitForSelector('#send_button_confirm:not([enabled]')
+    console.log(chalk.green('Send Near button has been enabled'))
   })
 })

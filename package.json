@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.34.6",
+  "version": "0.35.1",
   "private": true,
   "license": "MIT",
   "author": "Liquality <info@liquality.io>",
@@ -18,7 +18,8 @@
     "sync-versions": "node script/sync-versions.js",
     "test:unit": "jest tests/unit",
     "postinstall": "husky install",
-    "test:testNetNetwork": "node_modules/mocha/bin/mocha ./tests/**/testnet/*.spec.js"
+    "test:testnet": "node_modules/mocha/bin/mocha --colors 'tests/**/testnet/*.spec.js'",
+    "test:mainnet": "NODE_ENV=mainnet node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/**/testnet/*.spec.js'"
   },
   "dependencies": {
     "@liquality/bitcoin-esplora-batch-api-provider": "^1.1.9",

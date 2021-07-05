@@ -8,11 +8,11 @@
       <p>Enter the seed phrase, in the same order saved when creating your wallet.</p>
     </div>
     <div class="import-wallet_bottom">
-      <div class="btn-group">
+      <div class="btn-group" id="word_button_group">
          <button
                     :class="{ active: numWords === 12 }"
                     class="btn btn-option"
-                    id="12_words_option"
+                    id="twelve_words_option"
                     @click="setMnemonicLength(12)"
                   >
                     12 words
@@ -20,7 +20,7 @@
           <button
                     :class="{ active: numWords === 24 }"
                     class="btn btn-option"
-                    id="24_words_option"
+                    id="twenty_four_words_option"
                     @click="setMnemonicLength(24)"
                   >
                     24 words

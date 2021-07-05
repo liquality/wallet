@@ -30,14 +30,6 @@
           <button class="btn btn-outline-primary" @click="downloadLogs">Download Logs</button>
         </div>
       </div>
-      <div class="setting-item">
-        <div class="setting-item_title flex-fill mb-2">Use Ledger Live
-          <span class="setting-item_sub">The Ledger Live brige allows to use your Ledger easily.</span>
-        </div>
-        <div class="setting-item_control">
-          <toggle-button  :css-colors="true" :value="useLedgerLive" @change="e => toogleUseLedgerLive(e.value)" />
-        </div>
-      </div>
       <div class="settings-footer">
          <div class="text-muted">Version {{ appVersion }}</div>
         </div>
@@ -64,8 +56,7 @@ export default {
       'activeNetwork',
       'activeWalletId',
       'injectEthereum',
-      'injectEthereumChain',
-      'useLedgerLive'
+      'injectEthereumChain'
     ]),
     ethereumChains () {
       return buildConfig.chains.filter(isEthereumChain)
@@ -78,15 +69,11 @@ export default {
     ...mapActions([
       'enableEthereumInjection',
       'disableEthereumInjection',
-      'setEthereumInjectionChain',
-      'setUseLedgerLive'
+      'setEthereumInjectionChain'
     ]),
     toggleInjectEthereum (enable) {
       if (enable) this.enableEthereumInjection()
       else this.disableEthereumInjection()
-    },
-    async toogleUseLedgerLive (use) {
-      await this.setUseLedgerLive({ use })
     },
     updateInjectEthereumChain (chain) {
       this.setEthereumInjectionChain({ chain })

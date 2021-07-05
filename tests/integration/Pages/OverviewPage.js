@@ -80,8 +80,42 @@ class OverviewPage {
    */
   async SelectChain (page, chain) {
     await page.waitForSelector('#assert_list_item', { visible: true })
-    await page.waitForSelector(`#${chain}`, { visible: true })
-    await page.click(`#${chain}`)
+    const assertListItems = await page.$$('#assert_list_item')
+    switch (chain) {
+      case 'BITCOIN': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
+      case 'ETHEREUM': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const eth = await page.waitForSelector('#ETH', { visible: true })
+        await eth.click()
+        break
+      }
+
+      case 'BSC': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const eth = await page.waitForSelector('#BNB', { visible: true })
+        await eth.click()
+        break
+      }
+
+      case 'NEAR': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const eth = await page.waitForSelector('#NEAR', { visible: true })
+        await eth.click()
+        break
+      }
+
+      default:
+        await assertListItems[0].click()
+        await page.click('#' + chain)
+    }
     await page.waitForSelector('.account-container_balance_code', { visible: true })
   }
 
@@ -186,6 +220,7 @@ class OverviewPage {
     await page.click('#burger_icon_menu')
     await page.waitForSelector('#lock', { visible: true })
     await page.click('#lock')
+    console.log(chalk.green('User clicked on lock option'))
     await page.waitForSelector('#password', { visible: true })
   }
 }

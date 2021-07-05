@@ -2,8 +2,50 @@ const chalk = require('chalk')
 const expect = require('chai').expect
 
 class SwapPage {
+  /**
+   * Enter SEND amount in SWAP view.
+   * @param page
+   * @param amountToSend
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async EnterSendAmountOnSwap (page, amountToSend) {
+    // Enter send amount (or) coins
+    const addressInputField = await page.$('#swap_send_amount_input_field')
+    await addressInputField.click({ clickCount: 3 })
+    await addressInputField.type(amountToSend)
+  }
+
+  /**
+   * Click on Min
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
   async ClickOnMin (page) {
     await page.click('#min_amount_send_button')
+  }
+
+  /**
+   * Get SWAP send errors
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
+  async GetSwapSendErrors (page) {
+    await page.waitForSelector('.swap-send-main-errors', { visible: true })
+    return await page.$eval('.swap-send-main-errors', (el) => el.textContent)
+  }
+
+  /**
+   * Review button has been disabled.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async HasReviewButtonDisabled (page) {
+    await page.waitForSelector('#swap_review_button:not([enabled]')
+    console.log(chalk.green('SWAP review button has been disabled'))
   }
 
   async SelectSwapReceiveCoin (page) {
@@ -51,11 +93,13 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendAmountValue (page) {
+    await page.waitForTimeout(5000)
     await page.waitForSelector('#send_swap_confirm_value', { visible: true })
     return await page.$eval('#send_swap_confirm_value', el => el.textContent)
   }
 
   async GetSwapSendAmountInDollar (page) {
+    await page.waitForTimeout(5000)
     await page.waitForSelector('#send_swap_amount_fiat', { visible: true })
     return await page.$eval('#send_swap_amount_fiat', el => el.textContent)
   }
@@ -65,8 +109,15 @@ class SwapPage {
     return await page.$eval('#swap_send_network_fee_value', el => el.textContent)
   }
 
+  /**
+   * Get Network fee from SEND section.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
   async GetSwapSendNetworkFeeInDollar (page) {
     await page.waitForSelector('#swap_send_network_fee_fiat_rate', { visible: true })
+    await page.waitForTimeout(20000)
     return await page.$eval('#swap_send_network_fee_fiat_rate', el => el.textContent)
   }
 

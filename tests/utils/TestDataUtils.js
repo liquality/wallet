@@ -1,5 +1,7 @@
 const Wallet = require('ethereumjs-wallet')
 const bitcoin = require('bitcoinjs-lib')
+const bip39 = require('bip39')
+const crypto = require('crypto')
 
 class TestDataUtils {
   /**
@@ -42,6 +44,15 @@ class TestDataUtils {
       network: bitcoin.networks.testnet
     })
     return address
+  }
+
+  /**
+   * Generate Random seed 12 words.
+   * @returns {string}
+   */
+  getRandomSeedWords () {
+    const randomBytes = crypto.randomBytes(16)
+    return bip39.entropyToMnemonic(randomBytes.toString('hex'))
   }
 }
 

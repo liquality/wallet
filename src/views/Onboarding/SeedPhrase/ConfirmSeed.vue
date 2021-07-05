@@ -82,7 +82,7 @@ export default {
       this.$emit('on-cancel')
     },
     indexDisabled (i) {
-      return this.seedListShuffle[i] === this.phraseIndex[0] || this.seedListShuffle[i] === this.phraseIndex[1] || this.seedListShuffle[i] === this.phraseIndex[2]
+      return this.seedListShuffle[i] === this.phraseIndex[0] || this.seedListShuffle[i] === this.phraseIndex[1] || this.seedListShuffle[i] === this.phraseIndex[2] || this.phraseIndex.length === 3
     },
     remove: function (i) {
       this.phraseIndex.splice(i, 1)
