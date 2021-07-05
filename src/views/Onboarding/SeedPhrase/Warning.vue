@@ -5,8 +5,8 @@
         </NavBar>
         <div class="warning-phrase_warning-line w-100"></div>
         <div class="mx-auto mt-2 px-2 mb-5 text-center">
-            <h1 class="my-2">Show Seed Phrase?</h1>
-            <h4>Anyone who has this seed phrase can steal your funds!</h4>
+            <h1 class="my-2" id="show_seed_phrase">Show Seed Phrase?</h1>
+            <h4 id="show_seed_phrase_warning">Anyone who has this seed phrase can steal your funds!</h4>
         </div>
         <div class="warning-phrase_eye-svg mx-auto mt-4">
             <Eye />
