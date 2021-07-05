@@ -496,7 +496,7 @@ class LiqualitySwapProvider extends SwapProvider {
       NEAR: 10000000000000,
       MATIC: 165000,
       ERC20: 600000 + 94500, // Contract creation + erc20 transfer
-      ARBETH: 2000000
+      ARBETH: 2400000
     },
     SWAP_CLAIM: {
       BTC: 143,
@@ -506,7 +506,7 @@ class LiqualitySwapProvider extends SwapProvider {
       MATIC: 45000,
       NEAR: 8000000000000,
       ERC20: 100000,
-      ARBETH: 2000000
+      ARBETH: 680000
     }
   }
 
