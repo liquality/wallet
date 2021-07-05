@@ -49,7 +49,7 @@ class HomePage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async EnterSeedWords (page, numberOfWords) {
+  async EnterSeedWords (page, numberOfWords = 12) {
     await page.waitForSelector('#import-wallet_top', { visible: true })
     console.log('Import wallet page hase been loaded')
 
