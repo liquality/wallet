@@ -118,8 +118,10 @@ describe('Liquality wallet SWIPE feature', async () => {
     // SEND from assert (BTC)
     await searchAssetPage.SearchForAnAsset(page, 'BTC')
     // Enter 0
+    await page.waitForTimeout(20000)
     await swapPage.EnterSendAmountOnSwap(page, '0')
-    expect(await swapPage.GetSwapSendErrors(page)).contains('Please increase amount. It is below minimum.')
+    expect(await swapPage.GetSwapSendErrors(page))
+      .contains('Please increase amount. It is below minimum.')
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })

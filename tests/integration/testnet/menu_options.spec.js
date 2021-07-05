@@ -79,6 +79,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     }
 
     await page.click('#i_saved_the_seed')
+    await page.waitForTimeout(1000)
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
   })
 })
