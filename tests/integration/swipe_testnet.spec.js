@@ -1,4 +1,4 @@
-const TestUtil = require('../../utils/TestUtils')
+const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
@@ -63,7 +63,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(sendAmountValue.trim()).contain(asset1)
 
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
-    expect(swapSendAmountInDollar.trim()).not.contain('$00.00')
+    expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00').not.contain('$00.00')
 
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
     expect(swapSendNetworkFeeValue.trim()).contain(asset1)

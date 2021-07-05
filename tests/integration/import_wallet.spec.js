@@ -1,5 +1,5 @@
-const TestUtil = require('../../utils/TestUtils')
-const TestDataUtils = require('../../utils/TestDataUtils')
+const TestUtil = require('../utils/TestUtils')
+const TestDataUtils = require('../utils/TestDataUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
