@@ -28,7 +28,6 @@ import { SolanaWalletProvider } from '@liquality/solana-wallet-provider'
 import { SolanaRpcProvider } from '@liquality/solana-rpc-provider'
 import { SolanaSwapFindProvider } from '@liquality/solana-swap-find-provider'
 
-
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
