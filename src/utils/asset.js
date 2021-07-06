@@ -61,6 +61,17 @@ const EXPLORERS = {
       tx: 'https://explorer.mainnet.near.org/transactions/',
       address: 'https://explorer.mainnet.near.org/accounts/'
     }
+  },
+  solana: {
+    // TODO: Check address prop for solana
+    testnet: {
+      tx: 'https://explorer.solana.com/?cluster=devnet/',
+      address: 'https://explorer.testnet.near.org/accounts/'
+    },
+    mainnet: {
+      tx: 'https://explorer.solana.com/',
+      address: 'https://explorer.mainnet.near.org/accounts/'
+    }
   }
 }
 
