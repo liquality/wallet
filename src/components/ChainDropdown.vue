@@ -3,7 +3,7 @@
       v-click-away="hide">
   <button class="btn dropdown-toggle"
           @click="toggle">
-     <div class="form" v-if="selected">
+     <div class="form" id="dropdown-item" v-if="selected">
         <div class="input-group">
                 <img
                 :src="getChainIcon(selected)"

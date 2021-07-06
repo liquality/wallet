@@ -7,6 +7,7 @@
       <div class="account-content-top">
         <RefreshIcon @click.stop="refresh"
                      class="account-container_refresh-icon"
+                     id="refresh-icon"
                      :class="{ 'infinity-rotate': updatingBalances }"
         />
         <div class="account-container_balance">
