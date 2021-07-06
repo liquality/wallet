@@ -52,7 +52,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
   })
   it('Import wallet with random seed (phrase 11 words) and check continue is disabled -["mainnet"]', async () => {
     await homePage.ClickOnImportWallet(page)
@@ -84,7 +84,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')
@@ -114,7 +114,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')

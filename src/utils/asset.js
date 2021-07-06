@@ -61,6 +61,16 @@ const EXPLORERS = {
       tx: 'https://explorer.mainnet.near.org/transactions/',
       address: 'https://explorer.mainnet.near.org/accounts/'
     }
+  },
+  arbitrum: {
+    testnet: {
+      tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x',
+      address: 'https://rinkeby-explorer.arbitrum.io/address/0x'
+    },
+    mainnet: {
+      tx: 'https://explorer.arbitrum.io/tx/0x',
+      address: 'https://explorer.arbitrum.io/address/0x'
+    }
   }
 }
 
