@@ -13,6 +13,12 @@
 
       <p class="text-primary text-center">Make sure you trust this site</p>
 
+      <div class="list-items">
+        <WalletAccounts @item-selected="onAccountSelected"
+                        :search="search"
+                        :accounts="accounts"/>
+      </div>
+
       <div class="wrapper_bottom">
         <div class="button-group">
           <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Deny</button>
@@ -27,17 +33,26 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-
+import { mapActions, mapGetters } from 'vuex'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
+import WalletAccounts from '@/components/WalletAccounts'
 
 export default {
+  components: {
+    WalletAccounts
+  },
   data () {
     return {
-      replied: false
+      replied: false,
+      loading: false,
+      search: ''
     }
   },
   computed: {
+    ...mapGetters(['accountsData']),
+    accounts () {
+      return this.accountsData
+    },
     logo () {
       return LogoWallet
     },
@@ -56,6 +71,10 @@ export default {
   },
   methods: {
     ...mapActions(['replyOriginAccess']),
+    onAccountSelected ({ account, asset }) {
+      const _asset = asset || account.assets[0]
+      console.log('onAccountSelected', _asset)
+    },
     reply (allowed) {
       this.replyOriginAccess({
         origin: this.origin,
@@ -87,5 +106,9 @@ export default {
     background: #b6b6b6;
     border-radius: 50%;
   }
+}
+
+.list-items {
+      overflow-y: auto;
 }
 </style>

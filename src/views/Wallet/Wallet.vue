@@ -28,6 +28,7 @@ import InfoNotification from '@/components/InfoNotification.vue'
 import LedgerRequestMessage from '@/components/LedgerRequestMessage.vue'
 import WalletStats from './WalletStats.vue'
 import WalletTabs from './WalletTabs.vue'
+import { v4 as uuidv4 } from 'uuid'
 
 export default {
   components: {
@@ -43,7 +44,20 @@ export default {
       loadingBalances: false
     }
   },
+  beforeCreate () {
+    const id = uuidv4()
+    // eslint-disable-next-line no-undef
+    analytics.identify(id, {
+      name: 'Bradley Suira'
+    })
+  },
   async created () {
+    // eslint-disable-next-line no-undef
+    analytics.track('wallet_overview', {
+      component: 'Wallet'
+    }, () => {
+      console.log('analytics called')
+    })
     this.loadingBalances = true
     try {
       await this.updateBalances(
