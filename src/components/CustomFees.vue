@@ -148,7 +148,8 @@ export default {
         rsk: 1,
         bsc: 1,
         polygon: 1,
-        near: 0.00001
+        near: 0.00001,
+        sol: 0.00001,
       })[chainId] || 1
     }
   },
