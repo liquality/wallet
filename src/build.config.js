@@ -14,6 +14,7 @@ export default {
       'SOV',
       'BNB',
       'NEAR',
+      'SOL',
       'MATIC',
       'PWETH'
     ],
@@ -24,6 +25,7 @@ export default {
       'RBTC',
       'BNB',
       'NEAR',
+      'SOL',
       'SOV',
       'MATIC',
       'PWETH'
