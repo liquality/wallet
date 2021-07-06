@@ -255,6 +255,34 @@ window.near = {
 }
 `
 
+const solanaProvider = () => `
+const REQUEST_MAP = {
+  wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
+  wallet_getAddresses: 'wallet.getAddresses',
+  wallet_signMessage: 'wallet.signMessage',
+  wallet_sendTransaction: 'chain.sendTransaction',
+}
+async function handleRequest (req) {
+  const solana = window.providerManager.getProviderFor('SOLANA')
+  const method = REQUEST_MAP[req.method] || req.method
+  return solana.getMethod(method)(...req.params)
+}
+window.solana = {
+  enable: async () => {
+    const accepted = await window.providerManager.enable()
+    if (!accepted) throw new Error('User rejected')
+    const solana = window.providerManager.getProviderFor('SOLANA')
+    return solana.getMethod('wallet.getAddresses')()
+  },
+  request: async (req) => {
+    const params = req.params || []
+    return handleRequest({
+      method: req.method, params
+    })
+  }
+}
+`
+
 const paymentUriHandler = () => `
 document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('click', async (e) => {
@@ -274,4 +302,4 @@ document.addEventListener('DOMContentLoaded', () => {
 }, { once: true })
 `
 
-export { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, paymentUriHandler }
+export { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, solanaProvider, paymentUriHandler }
