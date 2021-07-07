@@ -42,7 +42,11 @@ describe('Liquality wallet - Create wallet', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
     // Set password
-    await passwordPage.EnterPasswordDetails(page, '12345678', '1234567')
+    await passwordPage.EnterPasswordDetails(page, 'testwallet1', 'testwallet2')
+    // check the password error message
+    await page.waitForSelector('#password_match_error', { visible: true })
+    expect(await page.$eval('#password_match_error', (el) => el.textContent))
+      .contains('Passwords don\'t match.')
     // confirm button has been disabled
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
