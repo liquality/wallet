@@ -71,7 +71,7 @@ export const getAccountIcon = (chain) => {
     bsc: getAssetIcon('bnb_account', 'png'),
     rsk: getAssetIcon('rsk_account'),
     near: getAssetIcon('NEAR'),
-    solana: getAssetIcon('SOLANA'),
+    solana: getAssetIcon('SOL'),
     polygon: getAssetIcon('polygon_account')
   }[chain]
 }
