@@ -29,6 +29,17 @@ import LedgerRequestMessage from '@/components/LedgerRequestMessage.vue'
 import WalletStats from './WalletStats.vue'
 import WalletTabs from './WalletTabs.vue'
 import { v4 as uuidv4 } from 'uuid'
+import Analytics from 'analytics'
+import segmentPlugin from '@analytics/segment'
+
+const analytics = Analytics({
+  app: 'liq-test',
+  plugins: [
+    segmentPlugin({
+      writeKey: '3jTItMqoo8OuN1gJ6MljKOIsrDjqIZo7'
+    })
+  ]
+})
 
 export default {
   components: {

@@ -22,6 +22,7 @@
     "test:mainnet": "NODE_ENV=mainnet node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/**/*.spec.js'"
   },
   "dependencies": {
+    "@analytics/segment": "^1.1.0",
     "@liquality/bitcoin-esplora-batch-api-provider": "^1.1.9",
     "@liquality/bitcoin-esplora-swap-find-provider": "^1.1.9",
     "@liquality/bitcoin-fee-api-provider": "^1.1.9",
@@ -54,6 +55,7 @@
     "@uniswap/v2-core": "^1.0.1",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@uniswap/v2-sdk": "^3.0.0",
+    "analytics": "^0.7.5",
     "bignumber.js": "^9.0.0",
     "bip39": "^3.0.2",
     "bitcoinjs-lib": "^5.2.0",
