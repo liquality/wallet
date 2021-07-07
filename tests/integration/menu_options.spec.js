@@ -135,6 +135,33 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // Unlock
     await passwordPage.ClickUnlock(page, password)
   })
+  it('Import wallet,lock wallet and while unlock wallet check password error-["mainnet"]', async () => {
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Clock on Lock
+    await overviewPage.ClickLock(page)
+    // While Unlock enter wrong password
+    await page.type('#password', 'wallettest01')
+    await page.click('#unlock_button')
+    // Check password error message
+    await page.waitForSelector('#password_error', { visible: true })
+    const error = await page.$eval('#password_error', (el) => el.textContent)
+    expect(error).contains('Try Again. Enter the right password (it has 8 or more characters).')
+  })
   it('Import wallet,lock wallet and forgot password while unlock wallet-["mainnet"]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
