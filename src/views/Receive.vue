@@ -111,7 +111,7 @@ export default {
           RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' },
           BNB: { name: 'BNB', url: 'https://testnet.binance.org/faucet-smart/' },
           NEAR: { name: 'NEAR', url: '' },
-          SOLANA: {name: 'SOLANA', url: 'https://solfaucet.com/'},
+          SOLANA: { name: 'SOLANA', url: 'https://solfaucet.com/' },
           MATIC: { name: 'MATIC', url: 'https://faucet.matic.network/' }
         })[this.asset]
       }
