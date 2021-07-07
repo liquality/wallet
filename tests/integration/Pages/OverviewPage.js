@@ -112,6 +112,14 @@ class OverviewPage {
         break
       }
 
+      case 'SOLANA': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const eth = await page.waitForSelector('#SOLANA', { visible: true })
+        await eth.click()
+        break
+      }
+
       default:
         await assertListItems[0].click()
         await page.click('#' + chain)
