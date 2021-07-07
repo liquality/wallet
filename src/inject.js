@@ -263,7 +263,7 @@ const REQUEST_MAP = {
   wallet_sendTransaction: 'chain.sendTransaction',
 }
 async function handleRequest (req) {
-  const solana = window.providerManager.getProviderFor('SOLANA')
+  const solana = window.providerManager.getProviderFor('SOL')
   const method = REQUEST_MAP[req.method] || req.method
   return solana.getMethod(method)(...req.params)
 }
@@ -271,7 +271,7 @@ window.solana = {
   enable: async () => {
     const accepted = await window.providerManager.enable()
     if (!accepted) throw new Error('User rejected')
-    const solana = window.providerManager.getProviderFor('SOLANA')
+    const solana = window.providerManager.getProviderFor('SOL')
     return solana.getMethod('wallet.getAddresses')()
   },
   request: async (req) => {
