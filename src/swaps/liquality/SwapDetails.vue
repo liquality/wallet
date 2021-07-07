@@ -191,6 +191,7 @@ import { getNativeAsset, getTransactionExplorerLink } from '@/utils/asset'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
+import { getSwapProviderConfig } from '../../utils/swaps'
 
 const ACTIONS_TERMS = {
   lock: {
@@ -238,7 +239,8 @@ export default {
       return BN(1).div(this.item.rate).dp(8)
     },
     orderLink () {
-      return this.item.agent + '/api/swap/order/' + this.item.id + '?verbose=true'
+      const agent = getSwapProviderConfig(this.item.network, this.item.provider).agent
+      return agent + '/api/swap/order/' + this.item.id + '?verbose=true'
     },
     feeSelectorFees () {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[getNativeAsset(this.feeSelectorAsset)]

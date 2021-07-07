@@ -65,6 +65,14 @@
                    POLYGON
                 </a>
               </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   @click="selectChain('arbitrum')"
+                   :class="{active: chain === 'arbitrum'}">
+                   ARBITRUM
+                </a>
+              </li>
             </ul>
           </div>
         </div>
