@@ -54,7 +54,7 @@ class SwapProvider {
    * @param {{ network, walletId, asset, accountId, txType, amount, feePrices[], max }} options
    * @return Object of key feePrice and value fee
    */
-  async estimateFee ({ network, walletId, asset, accountId, txType, amount, feePrices, max }) {
+  async estimateFees ({ network, walletId, asset, accountId, txType, amount, feePrices, max }) {
     throw new Error('`estimateFee` not implemented')
   }
 
