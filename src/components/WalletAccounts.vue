@@ -129,12 +129,15 @@ export default {
     selectItem (account, asset) {
       this.$emit('item-selected', { account, asset })
     },
-    makeSearch (newSearch, oldSearch) {
-      if (newSearch && newSearch !== oldSearch) {
+    makeSearch (newSearch) {
+      if (newSearch) {
         this.filteredItems = this.accounts.filter(
-          account =>
-            account.chain.toUpperCase().includes(newSearch.toUpperCase()) ||
-            account.assets.includes(newSearch.toUpperCase())
+          account => {
+            const search = newSearch.toUpperCase()
+            return account.chain?.toUpperCase().includes(search) ||
+                   account.assets.includes(search) ||
+                   account.name?.toUpperCase().includes(search)
+          }
         )
       } else {
         this.filteredItems = [...this.accounts]
@@ -160,8 +163,8 @@ export default {
   },
   watch: {
     search (newSearch, oldSearch) {
-      if (newSearch && newSearch !== oldSearch) {
-        this.makeSearch(newSearch, oldSearch)
+      if (newSearch !== oldSearch) {
+        this.makeSearch(newSearch)
       }
     },
     accounts () {
