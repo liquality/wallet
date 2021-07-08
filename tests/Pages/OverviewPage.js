@@ -97,11 +97,11 @@ class OverviewPage {
         break
       }
 
-      case 'BSC': {
+      case 'BNB': {
+        const eth = await page.waitForSelector('#BSC', { visible: true })
+        await eth.click()
         await page.waitForSelector(`#${chain}`, { visible: true })
         await page.click(`#${chain}`)
-        const eth = await page.waitForSelector('#BNB', { visible: true })
-        await eth.click()
         break
       }
 
