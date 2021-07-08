@@ -318,7 +318,7 @@ import {
   getAssetIcon
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
-import { getSwapFee, getFeeLabel } from '@/utils/fees'
+import { getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
@@ -392,6 +392,7 @@ export default {
       await this.updateMaxSwapFees()
     })()
 
+    // TODO: market data should not be used to set the to asset. If there are no markets from liquality source, there will be no to asset
     if (this.networkMarketData && Object.keys(this.networkMarketData).length > 0) {
       const toAsset = this.asset === 'BTC' ? 'ETH' : 'BTC'
       if (this.account &&
@@ -713,34 +714,32 @@ export default {
 
       const { fromTxType, toTxType } = this.bestQuoteProvider
 
-      if (this.availableFees.has(this.assetChain)) {
-        const getMax = amount === undefined
-        const assetFees = this.getAssetFees(this.assetChain)
+      const addFees = async (asset, chain, txType, max) => {
+        const assetFees = this.getAssetFees(chain)
+        const totalFees = await this.bestQuoteProvider.estimateFees({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          accountId: this.accountId,
+          asset,
+          txType,
+          amount,
+          feePrices: Object.values(assetFees).map(fee => fee.fee),
+          max
+        })
 
-        if (fromTxType === 'SWAP_INITIATION' && this.assetChain === 'BTC') {
-          const client = this.client(this.activeNetwork, this.activeWalletId, this.assetChain)
-          const feePerBytes = Object.values(assetFees).map(fee => fee.fee)
-          const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
-          const totalFees = await client.getMethod('getTotalFees')({ value, feePerBytes, max: getMax })
+        if (!totalFees) return
 
-          for (const [speed, fee] of Object.entries(assetFees)) {
-            const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
-            fees[this.assetChain][speed] = fees[this.assetChain][speed].plus(totalFee)
-          }
-        } else {
-          for (const [speed, fee] of Object.entries(assetFees)) {
-            const staticFee = getSwapFee(this.bestQuoteProvider.feeUnits, fromTxType, this.asset, fee.fee)
-            fees[this.assetChain][speed] = fees[this.assetChain][speed].plus(staticFee)
-          }
+        for (const [speed, fee] of Object.entries(assetFees)) {
+          fees[chain][speed] = fees[chain][speed].plus(totalFees[fee.fee])
         }
       }
 
+      if (this.availableFees.has(this.assetChain)) {
+        await addFees(this.asset, this.assetChain, fromTxType, getMax)
+      }
+
       if (this.availableFees.has(this.toAssetChain)) {
-        const assetFees = this.getAssetFees(this.toAssetChain)
-        for (const [speed, fee] of Object.entries(assetFees)) {
-          const staticFee = getSwapFee(this.bestQuoteProvider.feeUnits, toTxType, this.toAsset, fee.fee)
-          fees[this.toAssetChain][speed] = fees[this.toAssetChain][speed].plus(staticFee)
-        }
+        await addFees(this.toAsset, this.toAssetChain, toTxType, false)
       }
 
       if (getMax) {
