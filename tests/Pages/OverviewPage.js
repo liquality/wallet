@@ -88,19 +88,20 @@ class OverviewPage {
         break
       }
 
-      case 'ETHEREUM': {
+      case 'DAI':
+      case 'ETH': {
+        const eth = await page.waitForSelector('#ETHEREUM', { visible: true })
+        await eth.click()
         await page.waitForSelector(`#${chain}`, { visible: true })
         await page.click(`#${chain}`)
-        const eth = await page.waitForSelector('#ETH', { visible: true })
-        await eth.click()
         break
       }
 
-      case 'BSC': {
+      case 'BNB': {
+        const eth = await page.waitForSelector('#BSC', { visible: true })
+        await eth.click()
         await page.waitForSelector(`#${chain}`, { visible: true })
         await page.click(`#${chain}`)
-        const eth = await page.waitForSelector('#BNB', { visible: true })
-        await eth.click()
         break
       }
 
@@ -109,6 +110,23 @@ class OverviewPage {
         await page.click(`#${chain}`)
         const eth = await page.waitForSelector('#NEAR', { visible: true })
         await eth.click()
+        break
+      }
+
+      case 'ARBETH': {
+        const eth = await page.waitForSelector('#ARBITRUM', { visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
+      case 'SOV':
+      case 'RBTC': {
+        const eth = await page.waitForSelector('#RSK', { visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
         break
       }
 
@@ -133,6 +151,7 @@ class OverviewPage {
     expect(code).equals(chainCode)
     // Click Receive button
     await page.click('#receive')
+    console.log(chalk.green('User clicked on receive option for ' + chainCode))
     await page.waitForSelector('.receive_address', { visible: true })
   }
 
