@@ -24,14 +24,6 @@ function getSendFee (asset, feePrice) {
   return getTxFee(SEND_FEE_UNITS, asset, feePrice)
 }
 
-function getSwapFee (feeUnits, type, asset, feePrice) {
-  if (feeUnits && type in feeUnits) {
-    return getTxFee(feeUnits[type], asset, feePrice)
-  } else {
-    return BN(0) // There is no fee for this part of the swap
-  }
-}
-
 function getTxFee (units, _asset, _feePrice) {
   const chainId = cryptoassets[_asset].chain
   const nativeAsset = chains[chainId].nativeAsset
@@ -47,4 +39,4 @@ function getFeeLabel (fee) {
   return FEE_OPTIONS?.[name]?.label || ''
 }
 
-export { FEE_OPTIONS, getSendFee, getSwapFee, getFeeLabel }
+export { FEE_OPTIONS, getSendFee, getTxFee, getFeeLabel }

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import BN from 'bignumber.js'
+import _ from 'lodash'
 import { SwapProvider } from '../SwapProvider'
 import { chains, unitToCurrency, currencyToUnit } from '@liquality/cryptoassets'
 import { sha256 } from '@liquality/crypto'
@@ -9,6 +10,7 @@ import { timestamp, wait } from '../../store/utils'
 import { prettyBalance } from '../../utils/coinFormatter'
 import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
+import { getTxFee } from '../../utils/fees'
 
 export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
 
@@ -129,6 +131,24 @@ class LiqualitySwapProvider extends SwapProvider {
       secretHash,
       fromFundHash: fromFundTx.hash,
       fromFundTx
+    }
+  }
+
+  async estimateFees ({ network, walletId, asset, accountId, txType, amount, feePrices, max }) {
+    if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
+      const account = this.getAccount(accountId)
+      const client = this.getClient(network, walletId, asset, account.type)
+      const value = max ? undefined : currencyToUnit(cryptoassets[asset], BN(amount))
+      const totalFees = await client.getMethod('getTotalFees')({ value, feePerBytes: feePrices, max })
+      return _.mapValues(totalFees, f => unitToCurrency(cryptoassets[asset], f))
+    }
+
+    if (txType in LiqualitySwapProvider.feeUnits) {
+      const fees = {}
+      for (const feePrice of feePrices) {
+        fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice)
+      }
+      return fees
     }
   }
 
