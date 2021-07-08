@@ -4,7 +4,7 @@
       <span class="wallet_header"><strong>Settings</strong></span>
     </NavBar>
     <div class="settings">
-      <div class="setting-item">
+      <div class="setting-item" id="settings_item_default_wallet">
         <div class="setting-item_title flex-fill mb-2">Default Web3 Wallet
           <span class="setting-item_sub">Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.</span>
         </div>
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="setting-item">
-        <div class="setting-item_title flex-fill">Web3 Network
+        <div class="setting-item_title flex-fill" id="settings_item_web_network">Web3 Network
           <span class="setting-item_sub">Select which ethereum based network should be used for dapps.</span>
         </div>
         <div class="setting-item_control">
@@ -22,24 +22,16 @@
                          @chain-changed="updateInjectEthereumChain" />
         </div>
       </div>
-      <div class="setting-item">
+      <div class="setting-item" id="settings_item_wallet_logs">
         <div class="setting-item_title flex-fill mb-2">Wallet Logs
           <span class="setting-item_sub">The wallet logs contain your public information such as addresses and transactions.</span>
         </div>
         <div class="setting-item_control">
-          <button class="btn btn-outline-primary" @click="downloadLogs">Download Logs</button>
-        </div>
-      </div>
-      <div class="setting-item">
-        <div class="setting-item_title flex-fill mb-2">Use Ledger Live
-          <span class="setting-item_sub">The Ledger Live brige allows to use your Ledger easily.</span>
-        </div>
-        <div class="setting-item_control">
-          <toggle-button  :css-colors="true" :value="useLedgerLive" @change="e => toogleUseLedgerLive(e.value)" />
+          <button class="btn btn-outline-primary" id="download_logs_button" @click="downloadLogs">Download Logs</button>
         </div>
       </div>
       <div class="settings-footer">
-         <div class="text-muted">Version {{ appVersion }}</div>
+         <div class="text-muted" id="settings_app_version">Version {{ appVersion }}</div>
         </div>
     </div>
   </div>
@@ -64,8 +56,7 @@ export default {
       'activeNetwork',
       'activeWalletId',
       'injectEthereum',
-      'injectEthereumChain',
-      'useLedgerLive'
+      'injectEthereumChain'
     ]),
     ethereumChains () {
       return buildConfig.chains.filter(isEthereumChain)
@@ -78,15 +69,11 @@ export default {
     ...mapActions([
       'enableEthereumInjection',
       'disableEthereumInjection',
-      'setEthereumInjectionChain',
-      'setUseLedgerLive'
+      'setEthereumInjectionChain'
     ]),
     toggleInjectEthereum (enable) {
       if (enable) this.enableEthereumInjection()
       else this.disableEthereumInjection()
-    },
-    async toogleUseLedgerLive (use) {
-      await this.setUseLedgerLive({ use })
     },
     updateInjectEthereumChain (chain) {
       this.setEthereumInjectionChain({ chain })

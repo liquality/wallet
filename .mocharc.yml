@@ -6,6 +6,7 @@ inline-diffs: true
 allow-uncaught: true
 async-only: true
 parallel: true
+jobs: 10
 reporter: mochawesome
 reporter-option:
   - 'reportPageTitle=Liquality Wallet Test Report'

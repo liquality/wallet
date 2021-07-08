@@ -185,14 +185,25 @@ function createPolygonClient (asset, network, mnemonic, indexPath = 0) {
   return createEthereumClient(asset, network, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
 }
 
+function createArbitrumClient (asset, network, mnemonic, indexPath = 0) {
+  const isTestnet = network === 'testnet'
+  const arbitrumNetwork = ChainNetworks.arbitrum[network]
+  const rpcApi = isTestnet ? 'https://rinkeby.arbitrum.io/rpc' : 'https://arb1.arbitrum.io/rpc'
+  const scraperApi = isTestnet ? 'https://liquality.io/arbitrum-testnet-api' : 'https://liquality.io/arbitrum-mainnet-api'
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
+
+  return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
+}
+
 export const createClient = (asset, network, mnemonic, walletType, indexPath = 0) => {
   const assetData = cryptoassets[asset]
 
-  if (assetData?.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType, indexPath)
-  if (assetData?.chain === 'rsk') return createRskClient(asset, network, mnemonic, walletType, indexPath)
-  if (assetData?.chain === 'bsc') return createBSCClient(asset, network, mnemonic, indexPath)
-  if (assetData?.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
-  if (assetData?.chain === 'near') return createNearClient(network, mnemonic, indexPath)
+  if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType, indexPath)
+  if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic, walletType, indexPath)
+  if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic, indexPath)
+  if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
+  if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, indexPath)
+  if (assetData.chain === 'near') return createNearClient(network, mnemonic, indexPath)
 
   return createEthClient(asset, network, mnemonic, walletType, indexPath)
 }

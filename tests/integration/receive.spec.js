@@ -1,4 +1,4 @@
-const TestUtil = require('../../utils/TestUtils')
+const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
@@ -27,7 +27,9 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
   })
 
   afterEach(async () => {
-    await browser.close()
+    if (browser !== undefined) {
+      await browser.close()
+    }
   })
 
   it('Create a new wallet and check Receive for BTC', async () => {
@@ -58,7 +60,7 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
 
     // Select BTC
     await overviewPage.SelectChain(page, 'BITCOIN')
@@ -93,9 +95,73 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
     await overviewPage.ClickChainReceive(page, 'ETH')
     // Receive validations
     await receivePage.HasQRCodeDisplayed(page)
+    await receivePage.CheckReceiveURL(page)
     await receivePage.CheckReceiveAddresses(page)
     await receivePage.ClickCopyAddress(page)
     await receivePage.ClickDone(page)
     await overviewPage.CheckAssertOverviewDetails(page, 'ETH')
+  })
+  it('Import wallet and check Receive for BNB', async () => {
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select Network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
+
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Select BNB
+    await overviewPage.SelectChain(page, 'BSC')
+    await overviewPage.ClickChainReceive(page, 'BNB')
+    // Receive validations
+    await receivePage.HasQRCodeDisplayed(page)
+    await receivePage.CheckReceiveURL(page)
+    await receivePage.CheckReceiveAddresses(page)
+    await receivePage.ClickCopyAddress(page)
+    await receivePage.ClickDone(page)
+    await overviewPage.CheckAssertOverviewDetails(page, 'BNB')
+  })
+  it('Import wallet and check Receive for NEAR', async () => {
+    const nearPlatform = 'NEAR'
+
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select Network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
+
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Select NEAR
+    await overviewPage.SelectChain(page, nearPlatform)
+    await overviewPage.ClickChainReceive(page, nearPlatform)
+    // Receive validations
+    const yourCurrentAddress = await page.$eval('#your_current_asset_address', (el) => el.textContent)
+    expect(yourCurrentAddress).contains(nearPlatform)
+    await receivePage.HasQRCodeDisplayed(page)
+    await receivePage.CheckReceiveURL(page)
+    await receivePage.CheckReceiveAddresses(page)
+    await receivePage.ClickCopyAddress(page)
+    await receivePage.ClickDone(page)
+    // After done
+    await overviewPage.CheckAssertOverviewDetails(page, nearPlatform)
   })
 })

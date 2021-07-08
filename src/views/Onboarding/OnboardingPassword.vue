@@ -18,7 +18,7 @@
         <div class="input-group">
           <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" autocomplete="off" required>
         </div>
-        <small v-show="passwordMatch" class="onboading-password_errorLength form-text hidden" >Passwords don't match.</small>
+        <small v-show="passwordMatch" class="onboading-password_errorLength form-text hidden" id="password_match_error">Passwords don't match.</small>
         <small class="form-text">Password must be at least 8 characters.</small>
       </div>
     </form>
