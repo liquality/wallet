@@ -69,10 +69,12 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
     await receivePage.HasQRCodeDisplayed(page)
     await receivePage.CheckReceiveAddresses(page)
     await receivePage.ClickCopyAddress(page)
+    // Click on Done button, user takes back to main screen
     await receivePage.ClickDone(page)
     await overviewPage.CheckAssertOverviewDetails(page, 'BTC')
   })
-  it('Import wallet and check Receive for ETH', async () => {
+  it('Check Receive for ETH', async () => {
+    const code = 'ETH'
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -91,17 +93,46 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Select ETH
-    await overviewPage.SelectChain(page, 'ETHEREUM')
-    await overviewPage.ClickChainReceive(page, 'ETH')
+    await overviewPage.SelectChain(page, code)
+    await overviewPage.ClickChainReceive(page, code)
     // Receive validations
     await receivePage.HasQRCodeDisplayed(page)
     await receivePage.CheckReceiveURL(page)
     await receivePage.CheckReceiveAddresses(page)
     await receivePage.ClickCopyAddress(page)
     await receivePage.ClickDone(page)
-    await overviewPage.CheckAssertOverviewDetails(page, 'ETH')
+    await overviewPage.CheckAssertOverviewDetails(page, code)
   })
-  it('Import wallet and check Receive for BNB', async () => {
+  it('Check Receive for DAI', async () => {
+    const code = 'DAI'
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select Network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
+
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Select ETH
+    await overviewPage.SelectChain(page, code)
+    await overviewPage.ClickChainReceive(page, code)
+    // Receive validations
+    await receivePage.HasQRCodeDisplayed(page)
+    await receivePage.CheckReceiveAddresses(page)
+    await receivePage.ClickCopyAddress(page)
+    await receivePage.ClickDone(page)
+    await overviewPage.CheckAssertOverviewDetails(page, code)
+  })
+  it('Check Receive for BNB', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -130,7 +161,7 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
     await receivePage.ClickDone(page)
     await overviewPage.CheckAssertOverviewDetails(page, 'BNB')
   })
-  it('Import wallet and check Receive for NEAR', async () => {
+  it('Check Receive for NEAR', async () => {
     const nearPlatform = 'NEAR'
 
     // Import wallet option
@@ -163,5 +194,103 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
     await receivePage.ClickDone(page)
     // After done
     await overviewPage.CheckAssertOverviewDetails(page, nearPlatform)
+  })
+  it('Check Receive for ARBETH', async () => {
+    const code = 'ARBETH'
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select Network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
+
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Select code
+    await overviewPage.SelectChain(page, code)
+    await overviewPage.ClickChainReceive(page, code)
+    // Receive validations
+    const yourCurrentAddress = await page.$eval('#your_current_asset_address', (el) => el.textContent)
+    expect(yourCurrentAddress).contains(code)
+    await receivePage.HasQRCodeDisplayed(page)
+    await receivePage.CheckReceiveURL(page)
+    await receivePage.CheckReceiveAddresses(page)
+    await receivePage.ClickCopyAddress(page)
+    await receivePage.ClickDone(page)
+    // After done
+    await overviewPage.CheckAssertOverviewDetails(page, code)
+  })
+  it('Check Receive for RBTC', async () => {
+    const code = 'RBTC'
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select Network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
+
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Select code
+    await overviewPage.SelectChain(page, code)
+    await overviewPage.ClickChainReceive(page, code)
+    // Receive validations
+    const yourCurrentAddress = await page.$eval('#your_current_asset_address', (el) => el.textContent)
+    expect(yourCurrentAddress).contains(code)
+    await receivePage.HasQRCodeDisplayed(page)
+    await receivePage.CheckReceiveURL(page)
+    await receivePage.CheckReceiveAddresses(page)
+    await receivePage.ClickCopyAddress(page)
+    await receivePage.ClickDone(page)
+    // After done
+    await overviewPage.CheckAssertOverviewDetails(page, code)
+  })
+  it('Check Receive for SOV', async () => {
+    const code = 'SOV'
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select Network
+    if (process.env.NODE_ENV !== 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'testnet')
+    } else {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    }
+
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+    // Select code
+    await overviewPage.SelectChain(page, code)
+    await overviewPage.ClickChainReceive(page, code)
+    // Receive validations
+    const yourCurrentAddress = await page.$eval('#your_current_asset_address', (el) => el.textContent)
+    expect(yourCurrentAddress).contains(code)
+    await receivePage.HasQRCodeDisplayed(page)
+    await receivePage.CheckReceiveAddresses(page)
+    await receivePage.ClickCopyAddress(page)
+    await receivePage.ClickDone(page)
+    // After done
+    await overviewPage.CheckAssertOverviewDetails(page, code)
   })
 })
