@@ -17,7 +17,7 @@
             <SendIcon/>
             Send
           </router-link>
-          <router-link to="/assets/swap"
+          <router-link to="/assets/swap.send"
                        class="wallet-actions-item swap-action" id="swap_action">
             <SwapIcon/>
             Swap
