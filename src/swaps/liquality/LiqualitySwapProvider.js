@@ -510,7 +510,6 @@ class LiqualitySwapProvider extends SwapProvider {
 
   static feeUnits = {
     SWAP_INITIATION: {
-      BTC: 370, // Assume 2 inputs
       ETH: 165000,
       RBTC: 165000,
       BNB: 165000,

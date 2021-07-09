@@ -392,38 +392,32 @@ export default {
       await this.updateMaxSwapFees()
     })()
 
-    // TODO: market data should not be used to set the to asset. If there are no markets from liquality source, there will be no to asset
-    if (this.networkMarketData && Object.keys(this.networkMarketData).length > 0) {
-      const toAsset = this.asset === 'BTC' ? 'ETH' : 'BTC'
-      if (this.account &&
-          this.account.assets &&
-          this.account.assets.includes(toAsset)) {
-        this.toAccountId = this.accountId
-      } else {
-        if (this.networkAccounts.length > 0) {
-          const toAccount = this.networkAccounts.find(account => account.assets &&
-                                       account.assets.includes(toAsset) &&
-                                       account.id !== this.accountId)
-          if (toAccount) {
-            this.toAccountId = toAccount.id
-          }
-        }
-      }
-
-      if (this.toAccountId && toAsset) {
-        this.toAssetChanged(this.toAccountId, toAsset)
-        this.toAsset = toAsset
-        this.updateFees({ asset: toAsset })
-        this.selectedFee = {
-          [this.assetChain]: 'average',
-          [this.toAssetChain]: 'average'
-        }
-      }
+    const toAsset = this.asset === 'BTC' ? 'ETH' : 'BTC'
+    if (this.account &&
+        this.account.assets &&
+        this.account.assets.includes(toAsset)) {
+      this.toAccountId = this.accountId
     } else {
-      this.selectedFee = {
-        [this.assetChain]: 'average'
+      if (this.networkAccounts.length > 0) {
+        const toAccount = this.networkAccounts.find(account => account.assets &&
+                                      account.assets.includes(toAsset) &&
+                                      account.id !== this.accountId)
+        if (toAccount) {
+          this.toAccountId = toAccount.id
+        }
       }
     }
+
+    if (this.toAccountId && toAsset) {
+      this.toAssetChanged(this.toAccountId, toAsset)
+      this.toAsset = toAsset
+      this.updateFees({ asset: toAsset })
+      this.selectedFee = {
+        [this.assetChain]: 'average',
+        [this.toAssetChain]: 'average'
+      }
+    }
+
     this.interval = setInterval(() => {
       this.updateQuotes()
     }, 30000)
