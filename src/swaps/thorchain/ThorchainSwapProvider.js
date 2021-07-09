@@ -112,6 +112,8 @@ class ThorchainSwapProvider extends SwapProvider {
     const fromPoolData = pools.find((pool) => pool.asset === toThorchainAsset(from))
     const toPoolData = pools.find((pool) => pool.asset === toThorchainAsset(to))
 
+    if (!fromPoolData || !toPoolData) return // Pool doesn't exist
+
     const fromPool = {
       assetBalance: toPoolBalance(fromPoolData.balance_asset),
       runeBalance: toPoolBalance(fromPoolData.balance_rune)

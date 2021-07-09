@@ -82,7 +82,7 @@ class UniswapSwapProvider extends SwapProvider {
     return {
       from,
       to,
-      // TODO: Amounts should be in BigNumber to prevent loss of precision
+      // TODO: Amounts should be in BigNumber to prevent loss of precision - VERY IMPORTANT, ERC20s ARE BEING APPROVED FOR WRONG AMOUNTS THEN FAIULING
       fromAmount: fromAmountInUnit.toNumber(),
       toAmount: toAmountInUnit.toNumber()
     }

@@ -55,7 +55,7 @@
           <p>
             <span class="swap-rate_base">1 {{ asset }} =</span>
             <span class="swap-rate_value">
-              &nbsp;{{ bestRate }}
+              &nbsp;{{ bestRate || '?' }}
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
             <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProviderLabel }}</span>
@@ -63,7 +63,7 @@
           </p>
         </div>
 
-        <div class="form-group swap_fees mt-30" v-if="availableFees.size">
+        <div class="form-group swap_fees mt-30" v-if="bestQuote && availableFees.size">
           <DetailsContainer>
             <template v-slot:header>
               <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
@@ -436,7 +436,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage () {
-      return !this.bestQuote || BN(this.min).gt(this.max)
+      return BN(this.sendAmount).gt(0) && (!this.bestQuote || BN(this.min).gt(this.max))
     },
     sendAmount: {
       get () {
@@ -795,6 +795,8 @@ export default {
       }
     },
     updateQuotes: _.debounce(async function () {
+      if (BN(this.sendAmount).eq(0)) return
+
       this.updatingQuotes = true
       const quotes = await this.getQuotes({ network: this.activeNetwork, from: this.asset, to: this.toAsset, amount: BN(this.sendAmount) })
       if (quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)) {
@@ -936,6 +938,10 @@ export default {
     },
     stateSendAmount: function (val, oldVal) {
       if (BN(val).eq(oldVal)) return
+      if (BN(val).eq(0)) {
+        this.quotes = []
+        return
+      }
 
       const amount = BN(val)
       const max = dpUI(this.max)
