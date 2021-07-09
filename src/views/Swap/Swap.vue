@@ -692,11 +692,8 @@ export default {
       this.resetFees()
       this.updateQuotes()
     },
-    async _updateSwapFees (amount) {
+    async _updateSwapFees (max) {
       if (!this.bestQuote) return
-
-      const getMax = amount === undefined
-
       const fees = {
         [this.assetChain]: {
           slow: BN(0),
@@ -714,7 +711,7 @@ export default {
 
       const { fromTxType, toTxType } = this.bestQuoteProvider
 
-      const addFees = async (asset, chain, txType, max) => {
+      const addFees = async (asset, chain, txType) => {
         const assetFees = this.getAssetFees(chain)
         const totalFees = await this.bestQuoteProvider.estimateFees({
           network: this.activeNetwork,
@@ -722,7 +719,7 @@ export default {
           accountId: this.accountId,
           asset,
           txType,
-          amount,
+          quote: this.bestQuote,
           feePrices: Object.values(assetFees).map(fee => fee.fee),
           max
         })
@@ -735,24 +732,24 @@ export default {
       }
 
       if (this.availableFees.has(this.assetChain)) {
-        await addFees(this.asset, this.assetChain, fromTxType, getMax)
+        await addFees(this.asset, this.assetChain, fromTxType)
       }
 
       if (this.availableFees.has(this.toAssetChain)) {
         await addFees(this.toAsset, this.toAssetChain, toTxType, false)
       }
 
-      if (getMax) {
+      if (max) {
         this.maxSwapFees = fees
       } else {
         this.swapFees = fees
       }
     },
-    updateSwapFees: _.debounce(async function (amount) {
-      await this._updateSwapFees(amount)
+    updateSwapFees: _.debounce(async function () {
+      await this._updateSwapFees(false)
     }, 800),
     async updateMaxSwapFees () {
-      await this._updateSwapFees()
+      await this._updateSwapFees(true)
     },
     resetFees () {
       const selectedFee = {}
@@ -907,7 +904,7 @@ export default {
       if (this.amountOption === 'max') {
         this.updateMaxSwapFees()
       } else {
-        this.updateSwapFees(this.stateSendAmount)
+        this.updateSwapFees()
       }
     }, 800),
     applyCustomFee ({ asset, fee }) {
@@ -919,7 +916,7 @@ export default {
         this.customFees[asset] = null
       } else {
         this.updateMaxSwapFees()
-        this.updateSwapFees(this.stateSendAmount)
+        this.updateSwapFees()
         this.customFees[asset] = fee
         this.selectedFee[asset] = 'custom'
       }
@@ -943,7 +940,9 @@ export default {
       },
       deep: true
     },
-    stateSendAmount: function (val) {
+    stateSendAmount: function (val, oldVal) {
+      if (BN(val).eq(oldVal)) return
+
       const amount = BN(val)
       const max = dpUI(this.max)
       const min = dpUI(this.min)
@@ -952,17 +951,18 @@ export default {
       } else {
         if (amount.eq(min)) this.amountOption = 'min'
         else this.amountOption = null
-        this.updateSwapFees(amount)
       }
       this.updateQuotes()
     },
-    max: function () {
+    max: function (val, oldVal) {
+      if (BN(val).eq(oldVal)) return
+
       if (this.amountOption === 'max') {
         this.sendAmount = dpUI(this.max)
       }
     },
     bestQuote: function () {
-      this.updateSwapFees(this.stateSendAmount)
+      this._updateSwapFees() // Skip debounce
       this.updateMaxSwapFees()
     }
   }

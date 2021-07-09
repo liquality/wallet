@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
 import buildConfig from '../../build.config'
-import { chains, currencyToUnit } from '@liquality/cryptoassets'
+import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
@@ -15,6 +15,7 @@ import { getDoubleSwapOutput, getSwapMemo } from '@thorchain/asgardex-util'
 import { baseAmount, baseToAsset, assetFromString } from '@xchainjs/xchain-util'
 import { SwapProvider } from '../SwapProvider'
 import { getTxFee } from '../../utils/fees'
+import { mapValues } from 'lodash-es'
 
 // Pool balances are denominated with 8 decimals
 const THORCHAIN_DECIMAL = 8
@@ -213,16 +214,17 @@ class ThorchainSwapProvider extends SwapProvider {
     return swapTx
   }
 
-  async sendSwap ({ network, walletId, quote }) {
-    // TODO: erc20 is special function on router // deposit(address vault, address asset, uint256 amount, string memo)
-
+  async makeMemo ({ network, walletId, quote }) {
     const toChain = cryptoassets[quote.to].chain
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
     const toAddress = chains[toChain].formatAddress(toAddressRaw)
 
-    const thorchainAsset = assetFromString(toThorchainAsset(quote.to)) // TODO: ONLY GONNA WORK FOR NATIVE MAN
-    const memo = getSwapMemo({ asset: thorchainAsset, address: toAddress }) // TODO: need to add limit to avoid slippage
+    const thorchainAsset = assetFromString(toThorchainAsset(quote.to))
+    return getSwapMemo({ asset: thorchainAsset, address: toAddress }) // TODO: need to add limit to avoid slippage
+  }
 
+  async sendSwap ({ network, walletId, quote }) {
+    const memo = await this.makeMemo({ network, walletId, quote })
     let swapTx
     if (quote.from === 'BTC') { // TODO: This should be abstracted, such that each chain has it's own way of sending the moemo, it can be in CAL or can use xchainjs
       swapTx = await this.sendBitcoinSwap({ quote, network, walletId, memo })
@@ -253,7 +255,18 @@ class ThorchainSwapProvider extends SwapProvider {
     }
   }
 
-  async estimateFees ({ network, walletId, asset, accountId, txType, amount, feePrices, max }) {
+  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+    if (txType === ThorchainSwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
+      const account = this.getAccount(accountId)
+      const client = this.getClient(network, walletId, asset, account.type)
+      const value = max ? undefined : BN(quote.fromAmount)
+      const memo = await this.getSwapMemo({ network, walletId, quote })
+      const encodedMemo = Buffer.from(memo, 'utf-8').toString('hex')
+      const txs = feePrices.map(fee => ({ to: '', value, data: encodedMemo, fee }))
+      const totalFees = await client.getMethod('getTotalFees')(txs, max)
+      return mapValues(totalFees, f => unitToCurrency(cryptoassets[asset], f))
+    }
+
     if (txType in ThorchainSwapProvider.feeUnits) {
       const fees = {}
       for (const feePrice of feePrices) {

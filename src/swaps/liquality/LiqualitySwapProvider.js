@@ -1,6 +1,6 @@
 import axios from 'axios'
 import BN from 'bignumber.js'
-import _ from 'lodash'
+import { mapValues } from 'lodash-es'
 import { SwapProvider } from '../SwapProvider'
 import { chains, unitToCurrency, currencyToUnit } from '@liquality/cryptoassets'
 import { sha256 } from '@liquality/crypto'
@@ -134,13 +134,14 @@ class LiqualitySwapProvider extends SwapProvider {
     }
   }
 
-  async estimateFees ({ network, walletId, asset, accountId, txType, amount, feePrices, max }) {
+  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
     if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
       const account = this.getAccount(accountId)
       const client = this.getClient(network, walletId, asset, account.type)
-      const value = max ? undefined : currencyToUnit(cryptoassets[asset], BN(amount))
-      const totalFees = await client.getMethod('getTotalFees')({ value, feePerBytes: feePrices, max })
-      return _.mapValues(totalFees, f => unitToCurrency(cryptoassets[asset], f))
+      const value = max ? undefined : BN(quote.fromAmount)
+      const txs = feePrices.map(fee => ({ to: '', value, fee }))
+      const totalFees = await client.getMethod('getTotalFees')(txs, max)
+      return mapValues(totalFees, f => unitToCurrency(cryptoassets[asset], f))
     }
 
     if (txType in LiqualitySwapProvider.feeUnits) {

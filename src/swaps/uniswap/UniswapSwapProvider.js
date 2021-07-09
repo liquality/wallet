@@ -184,7 +184,7 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  async estimateFees ({ network, walletId, asset, accountId, txType, amount, feePrices, max }) {
+  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
     if (txType in UniswapSwapProvider.feeUnits) {
       const fees = {}
       for (const feePrice of feePrices) {
