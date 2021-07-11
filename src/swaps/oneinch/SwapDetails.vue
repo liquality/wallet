@@ -1,5 +1,5 @@
 <template>
-  <div class="uniswap-swap-details">
+  <div class="oneinch-swap-details uniswap-swap-details">
     <div class="row"><div class="col">Slippage: {{ slippagePercent }}% </div></div>
     <div class="row" v-if="item.approveTxHash"><div class="col">Approval Transaction: <a :href="getExplorerLink(item.approveTxHash)" target="_blank">{{ item.approveTxHash }}</a></div></div>
     <div class="row" v-if="item.swapTxHash"><div class="col">Swap Transaction: <a :href="getExplorerLink(item.swapTxHash)" target="_blank">{{ item.swapTxHash }}</a></div></div>

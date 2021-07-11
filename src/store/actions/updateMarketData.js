@@ -2,9 +2,7 @@ import _ from 'lodash'
 import buildConfig from '../../build.config'
 
 export const updateMarketData = async ({ state, commit, getters }, { network }) => {
-  console.log(network)
   const supportedPairResponses = await Promise.all(Object.keys(buildConfig.swapProviders[network]).map(provider => {
-    console.log(provider)
     const swapProvider = getters.swapProvider(network, provider)
     return swapProvider
       .getSupportedPairs({ network })

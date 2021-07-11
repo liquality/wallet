@@ -7,6 +7,5 @@ export const SwapProviderType = {
 }
 
 export function getSwapProviderConfig (network, providerId) {
-  console.log(providerId)
   return buildConfig.swapProviders[network][providerId]
 }

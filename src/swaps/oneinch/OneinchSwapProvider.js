@@ -1,57 +1,48 @@
 import axios from 'axios'
 import BN from 'bignumber.js'
 import { SwapProvider } from '../SwapProvider'
+import { v4 as uuidv4 } from 'uuid'
 import { chains, assets, currencyToUnit } from '@liquality/cryptoassets'
-import { sha256 } from '@liquality/crypto'
-import pkg from '../../../package.json'
+import { ChainNetworks } from '../../store/utils'
 import { withLock, withInterval } from '../../store/actions/performNextAction/utils'
-import { timestamp, wait } from '../../store/utils'
 import { prettyBalance } from '../../utils/coinFormatter'
 import { isEthereumChain, isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
+import * as ethers from 'ethers'
+import buildConfig from '../../build.config'
+import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
-export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
+const nativeAssetAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+const chainToRpcProviders = {
+  1: `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`,
+  56: 'https://bsc-dataseed.binance.org',
+  137: 'https://rpc-mainnet.matic.network'
+}
 
 class OneinchSwapProvider extends SwapProvider {
-  constructor ({ providerId, agent }) {
+  constructor ({ providerId, agent, routerAddress }) {
     super(providerId)
     this.agent = agent
+    this.routerAddress = routerAddress
   }
 
   async getSupportedPairs () {
     return []
   }
 
-  async getQuote ({ from, to, amount }) {
-    console.log('I am here')
-    console.log(from, to, amount)
-    // Uniswap only provides liquidity for ethereum tokens
-    if (!isEthereumChain(from) || !isEthereumChain(to)) return null
-    // Only uniswap on ethereum is supported atm
-    if (cryptoassets[from].chain !== 'ethereum' || cryptoassets[to].chain !== 'ethereum') return null
-    console.log('in 1inch after pass checks')
-    console.log('before quote data')
-    const ethAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+  async getQuote ({ network, from, to, amount }) {
+    if (!isEthereumChain(from) || !isEthereumChain(to) || amount <= 0) return null
     const fromAmountInUnit = BN(currencyToUnit(cryptoassets[from], BN(amount)))
+    const chainIdFrom = ChainNetworks[cryptoassets[from].chain][network].chainId
+    const chainIdTo = ChainNetworks[cryptoassets[to].chain][network].chainId
+    if (chainIdFrom !== chainIdTo || !chainToRpcProviders[chainIdFrom]) return null
+
     const trade = await axios({
-      url: this.agent + '/quote',
+      url: this.agent + `/${chainIdFrom}/quote`,
       method: 'get',
-      params: { fromTokenAddress: assets[from].contractAddress || ethAddress, toTokenAddress: assets[to].contractAddress || ethAddress, amount: fromAmountInUnit.toNumber() },
-      headers: {
-        'x-requested-with': VERSION_STRING,
-        'x-liquality-user-agent': VERSION_STRING
-      }
+      params: { fromTokenAddress: assets[from].contractAddress || nativeAssetAddress, toTokenAddress: assets[to].contractAddress || nativeAssetAddress, amount: fromAmountInUnit.toNumber() }
     })
-    console.log(trade.data)
-    const toAmountInUnit = BN(trade.data.toTokenAmount) // unitToCurrency(cryptoassets[to], BN(trade.data.toTokenAmount))
-    console.log('returned object')
-    console.log({
-      from,
-      to,
-      // TODO: Amounts should be in BigNumber to prevent loss of precision
-      fromAmount: fromAmountInUnit.toNumber(),
-      toAmount: toAmountInUnit.toNumber()
-    })
+    const toAmountInUnit = BN(trade.data.toTokenAmount)
     return {
       from,
       to,
@@ -61,178 +52,90 @@ class OneinchSwapProvider extends SwapProvider {
     }
   }
 
-  async newSwap ({ network, walletId, quote: _quote }) {
-    const lockedQuote = await this._getQuote({ from: _quote.from, to: _quote.to, amount: _quote.fromAmount })
+  async approveTokens ({ network, walletId, quote }) {
+    const fromChain = cryptoassets[quote.from].chain
+    const toChain = cryptoassets[quote.to].chain
+    const chainId = ChainNetworks[fromChain][network].chainId
+    if (fromChain !== toChain || !chainToRpcProviders[chainId]) return null
 
-    if (BN(lockedQuote.toAmount).lt(BN(_quote.toAmount).times(0.995))) {
-      throw new Error('The quote slippage is too high (> 0.5%). Try again.')
+    const api = new ethers.providers.StaticJsonRpcProvider(chainToRpcProviders[chainId])
+    const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
+    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.toAccountId)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
+    const allowance = await erc20.allowance(fromAddress, this.routerAddress)
+    const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
+    if (allowance.gte(inputAmount)) {
+      return {
+        status: 'APPROVE_CONFIRMED'
+      }
     }
 
-    const quote = {
-      ..._quote,
-      ...lockedQuote
-    }
-
-    if (await this.hasQuoteExpired({ network, walletId, swap: quote })) {
-      throw new Error('The quote is expired.')
-    }
-
-    quote.fromAddress = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
-    quote.toAddress = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
+    const callData = await axios({
+      url: this.agent + `/${chainId}/approve/calldata`,
+      method: 'get',
+      params: { tokenAddress: cryptoassets[quote.from].contractAddress }
+    })
 
     const account = this.getAccount(quote.fromAccountId)
-    const fromClient = this.getClient(network, walletId, quote.from, account?.type)
-
-    const message = [
-      'Creating a swap with following terms:',
-      `Send: ${quote.fromAmount} (lowest denomination) ${quote.from}`,
-      `Receive: ${quote.toAmount} (lowest denomination) ${quote.to}`,
-      `My ${quote.from} Address: ${quote.fromAddress}`,
-      `My ${quote.to} Address: ${quote.toAddress}`,
-      `Counterparty ${quote.from} Address: ${quote.fromCounterPartyAddress}`,
-      `Counterparty ${quote.to} Address: ${quote.toCounterPartyAddress}`,
-      `Timestamp: ${quote.swapExpiration}`
-    ].join('\n')
-
-    const messageHex = Buffer.from(message, 'utf8').toString('hex')
-    const secret = await fromClient.swap.generateSecret(messageHex)
-    const secretHash = sha256(secret)
-
-    const fromFundTx = await fromClient.swap.initiateSwap(
-      {
-        value: BN(quote.fromAmount),
-        recipientAddress: quote.fromCounterPartyAddress,
-        refundAddress: quote.fromAddress,
-        secretHash: secretHash,
-        expiration: quote.swapExpiration
-      },
-      quote.fee
-    )
+    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const approveTx = await client.chain.sendTransaction(callData.data)
 
     return {
-      ...quote,
-      status: 'INITIATED',
-      secret,
-      secretHash,
-      fromFundHash: fromFundTx.hash,
-      fromFundTx
+      status: 'WAITING_FOR_APPROVE_CONFIRMATIONS',
+      approveTx,
+      approveTxHash: approveTx.hash
     }
   }
 
-  updateOrder (order) {
-    return axios({
-      url: this.agent + '/api/swap/order/' + order.id,
-      method: 'post',
-      data: {
-        fromAddress: order.fromAddress,
-        toAddress: order.toAddress,
-        fromFundHash: order.fromFundHash,
-        secretHash: order.secretHash
-      },
-      headers: {
-        'x-requested-with': VERSION_STRING,
-        'x-liquality-user-agent': VERSION_STRING
-      }
-    }).then(res => res.data)
-  }
+  async sendSwap ({ network, walletId, quote }) {
+    const toChain = cryptoassets[quote.to].chain
+    const fromChain = cryptoassets[quote.to].chain
+    const chainId = ChainNetworks[toChain][network].chainId
+    if (toChain !== fromChain || !chainToRpcProviders[chainId]) return null
 
-  async hasQuoteExpired ({ swap }) {
-    return timestamp() >= swap.expiresAt
-  }
+    const account = this.getAccount(quote.fromAccountId)
+    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddress = chains[toChain].formatAddress(fromAddressRaw)
 
-  async hasChainTimePassed ({ network, walletId, asset, timestamp }) {
-    const client = this.getClient(network, walletId, asset)
-    const maxTries = 3
-    let tries = 0
-    while (tries < maxTries) {
-      try {
-        const blockNumber = await client.chain.getBlockHeight()
-        const latestBlock = await client.chain.getBlockByNumber(blockNumber)
-        return latestBlock.timestamp > timestamp
-      } catch (e) {
-        tries++
-        if (tries >= maxTries) throw e
-        else {
-          console.warn(e)
-          await wait(2000)
-        }
-      }
+    const trade = await axios({
+      url: this.agent + `/${chainId}/swap`,
+      method: 'get',
+      params: { fromTokenAddress: assets[quote.from].contractAddress || nativeAssetAddress, toTokenAddress: assets[quote.to].contractAddress || nativeAssetAddress, amount: quote.fromAmount, fromAddress: fromAddress, slippage: 0.5 }
+    })
+    await this.sendLedgerNotification(quote, account, 'Signing required to complete the swap.')
+    const swapTx = await client.chain.sendTransaction(trade.data.tx)
+    return {
+      status: 'WAITING_FOR_SWAP_CONFIRMATIONS',
+      swapTx,
+      swapTxHash: swapTx.hash
     }
   }
 
-  async canRefund ({ network, walletId, swap }) {
-    return this.hasChainTimePassed({ network, walletId, asset: swap.from, timestamp: swap.swapExpiration, fromAccountId: swap.fromAccountId })
-  }
-
-  async hasSwapExpired ({ network, walletId, swap }) {
-    return this.hasChainTimePassed({ network, walletId, asset: swap.to, timestamp: swap.nodeSwapExpiration, fromAccountId: swap.fromAccountId })
-  }
-
-  async handleExpirations ({ network, walletId, swap }) {
-    if (await this.canRefund({ swap, network, walletId })) {
-      return { status: 'GET_REFUND' }
-    }
-    if (await this.hasSwapExpired({ swap, network, walletId })) {
-      return { status: 'WAITING_FOR_REFUND' }
-    }
-  }
-
-  async fundSwap ({ swap, network, walletId }) {
-    if (await this.hasQuoteExpired({ network, walletId, swap })) {
-      return { status: 'QUOTE_EXPIRED' }
-    }
-
-    if (!isERC20(swap.from)) return { status: 'FUNDED' } // Skip. Only ERC20 swaps need funding
-
-    const account = this.getAccount(swap.fromAccountId)
-    const fromClient = this.getClient(network, walletId, swap.from, account?.type)
-
-    await this.sendLedgerNotification(account, 'Signing required to fund the swap.')
-
-    const fundTx = await fromClient.swap.fundSwap(
-      {
-        value: BN(swap.fromAmount),
-        recipientAddress: swap.fromCounterPartyAddress,
-        refundAddress: swap.fromAddress,
-        secretHash: swap.secretHash,
-        expiration: swap.swapExpiration
-      },
-      swap.fromFundHash,
-      swap.fee
-    )
+  async newSwap ({ network, walletId, quote }) {
+    const approvalRequired = isERC20(quote.from)
+    const updates = approvalRequired
+      ? await this.approveTokens({ network, walletId, quote })
+      : await this.sendSwap({ network, walletId, quote })
 
     return {
-      fundTxHash: fundTx.hash,
-      status: 'FUNDED'
+      id: uuidv4(),
+      fee: quote.fee,
+      slippage: 50,
+      ...updates
     }
   }
 
-  async reportInitiation ({ swap, network, walletId }) {
-    if (await this.hasQuoteExpired({ network, walletId, swap })) {
-      return { status: 'WAITING_FOR_REFUND' }
-    }
-
-    await this.updateOrder(swap)
-
-    return {
-      status: 'INITIATION_REPORTED'
-    }
-  }
-
-  async confirmInitiation ({ swap, network, walletId }) {
-    // Jump the step if counter party has already accepted the initiation
-    const counterPartyInitiation = await this.findCounterPartyInitiation({ swap, network, walletId })
-    if (counterPartyInitiation) return counterPartyInitiation
-    const account = this.getAccount(swap.fromAccountId)
-
-    const fromClient = this.getClient(network, walletId, swap.from, account?.type)
+  async waitForApproveConfirmations ({ swap, network, walletId }) {
+    const account = this.getAccount(swap.accountId)
+    const client = this.getClient(network, walletId, swap.from, account?.type)
 
     try {
-      const tx = await fromClient.chain.getTransactionByHash(swap.fromFundHash)
-
+      const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
       if (tx && tx.confirmations > 0) {
         return {
-          status: 'INITIATION_CONFIRMED'
+          endTime: Date.now(),
+          status: 'APPROVE_CONFIRMED'
         }
       }
     } catch (e) {
@@ -241,122 +144,14 @@ class OneinchSwapProvider extends SwapProvider {
     }
   }
 
-  async findCounterPartyInitiation ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.toAccountId)
-    const toClient = this.getClient(network, walletId, swap.to, account?.type)
+  async waitForSwapConfirmations ({ swap, network, walletId }) {
+    const account = this.getAccount(swap.accountId)
+    const client = this.getClient(network, walletId, swap.from, account?.type)
 
     try {
-      const tx = await toClient.swap.findInitiateSwapTransaction(
-        {
-          value: BN(swap.toAmount),
-          recipientAddress: swap.toAddress,
-          refundAddress: swap.toCounterPartyAddress,
-          secretHash: swap.secretHash,
-          expiration: swap.nodeSwapExpiration
-        }
-      )
-
-      if (tx) {
-        const toFundHash = tx.hash
-        const isVerified = await toClient.swap.verifyInitiateSwapTransaction(
-          {
-            value: BN(swap.toAmount),
-            recipientAddress: swap.toAddress,
-            refundAddress: swap.toCounterPartyAddress,
-            secretHash: swap.secretHash,
-            expiration: swap.nodeSwapExpiration
-          },
-          toFundHash
-        )
-
-        // ERC20 swaps have separate funding tx. Ensures funding tx has enough confirmations
-        const fundingTransaction = await toClient.swap.findFundSwapTransaction(
-          {
-            value: BN(swap.toAmount),
-            recipientAddress: swap.toAddress,
-            refundAddress: swap.toCounterPartyAddress,
-            secretHash: swap.secretHash,
-            expiration: swap.nodeSwapExpiration
-          },
-          toFundHash
-        )
-        const fundingConfirmed = fundingTransaction
-          ? fundingTransaction.confirmations >= chains[cryptoassets[swap.to].chain].safeConfirmations
-          : true
-
-        if (isVerified && fundingConfirmed) {
-          return {
-            toFundHash,
-            status: 'CONFIRM_COUNTER_PARTY_INITIATION'
-          }
-        }
-      }
-    } catch (e) {
-      if (['BlockNotFoundError', 'PendingTxError', 'TxNotFoundError'].includes(e.name)) console.warn(e)
-      else throw e
-    }
-
-    // Expiration check should only happen if tx not found
-    const expirationUpdates = await this.handleExpirations({ swap, network, walletId })
-    if (expirationUpdates) { return expirationUpdates }
-  }
-
-  async confirmCounterPartyInitiation ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.toAccountId)
-    const toClient = this.getClient(network, walletId, swap.to, account?.type)
-
-    const tx = await toClient.chain.getTransactionByHash(swap.toFundHash)
-
-    if (tx && tx.confirmations >= chains[cryptoassets[swap.to].chain].safeConfirmations) {
-      return {
-        status: 'READY_TO_CLAIM'
-      }
-    }
-
-    // Expiration check should only happen if tx not found
-    const expirationUpdates = await this.handleExpirations({ swap, network, walletId })
-    if (expirationUpdates) { return expirationUpdates }
-  }
-
-  async claimSwap ({ swap, network, walletId }) {
-    const expirationUpdates = await this.handleExpirations({ swap, network, walletId })
-    if (expirationUpdates) { return expirationUpdates }
-
-    const account = this.getAccount(swap.toAccountId)
-    const toClient = this.getClient(network, walletId, swap.to, account?.type)
-
-    await this.sendLedgerNotification(swap, account, 'Signing required to claim the swap.')
-
-    const toClaimTx = await toClient.swap.claimSwap(
-      {
-        value: BN(swap.toAmount),
-        recipientAddress: swap.toAddress,
-        refundAddress: swap.toCounterPartyAddress,
-        secretHash: swap.secretHash,
-        expiration: swap.nodeSwapExpiration
-      },
-      swap.toFundHash,
-      swap.secret,
-      swap.claimFee
-    )
-
-    return {
-      toClaimHash: toClaimTx.hash,
-      toClaimTx,
-      status: 'WAITING_FOR_CLAIM_CONFIRMATIONS'
-    }
-  }
-
-  async waitForClaimConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.toAccountId)
-    const toClient = this.getClient(network, walletId, swap.to, account?.type)
-
-    try {
-      const tx = await toClient.chain.getTransactionByHash(swap.toClaimHash)
-
+      const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
       if (tx && tx.confirmations > 0) {
-        this.updateBalances({ network, walletId, assets: [swap.to, swap.from] })
-
+        this.updateBalances({ network, walletId, assets: [swap.from] })
         return {
           endTime: Date.now(),
           status: 'SUCCESS'
@@ -366,103 +161,21 @@ class OneinchSwapProvider extends SwapProvider {
       if (e.name === 'TxNotFoundError') console.warn(e)
       else throw e
     }
-
-    // Expiration check should only happen if tx not found
-    const expirationUpdates = await this.handleExpirations({ swap, network, walletId })
-    if (expirationUpdates) { return expirationUpdates }
-  }
-
-  async waitForRefund ({ swap, network, walletId }) {
-    if (await this.canRefund({ swap, network, walletId })) {
-      return { status: 'GET_REFUND' }
-    }
-  }
-
-  async waitForRefundConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.fromAccountId)
-    const fromClient = this.getClient(network, walletId, swap.from, account?.type)
-    try {
-      const tx = await fromClient.chain.getTransactionByHash(swap.refundHash)
-
-      if (tx && tx.confirmations > 0) {
-        return {
-          endTime: Date.now(),
-          status: 'REFUNDED'
-        }
-      }
-    } catch (e) {
-      if (e.name === 'TxNotFoundError') console.warn(e)
-      else throw e
-    }
-  }
-
-  async refundSwap ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.fromAccountId)
-    const fromClient = this.getClient(network, walletId, swap.from, account?.type)
-    await this.sendLedgerNotification(swap, account, 'Signing required to refund the swap.')
-    const refundTx = await fromClient.swap.refundSwap(
-      {
-        value: BN(swap.fromAmount),
-        recipientAddress: swap.fromCounterPartyAddress,
-        refundAddress: swap.fromAddress,
-        secretHash: swap.secretHash,
-        expiration: swap.swapExpiration
-      },
-      swap.fromFundHash,
-      swap.fee
-    )
-
-    return {
-      refundHash: refundTx.hash,
-      refundTx,
-      status: 'WAITING_FOR_REFUND_CONFIRMATIONS'
-    }
   }
 
   async performNextSwapAction (store, { network, walletId, swap }) {
     let updates
+
     switch (swap.status) {
-      case 'INITIATED':
-        updates = await this.reportInitiation({ swap, network, walletId })
+      case 'WAITING_FOR_APPROVE_CONFIRMATIONS':
+        updates = await withInterval(async () => this.waitForApproveConfirmations({ swap, network, walletId }))
         break
-
-      case 'INITIATION_REPORTED':
-        updates = await withInterval(async () => this.confirmInitiation({ swap, network, walletId }))
-        break
-
-      case 'INITIATION_CONFIRMED':
+      case 'APPROVE_CONFIRMED':
         updates = await withLock(store, { item: swap, network, walletId, asset: swap.from },
-          async () => this.fundSwap({ swap, network, walletId }))
+          async () => this.sendSwap({ quote: swap, network, walletId }))
         break
-
-      case 'FUNDED':
-        updates = await withInterval(async () => this.findCounterPartyInitiation({ swap, network, walletId }))
-        break
-
-      case 'CONFIRM_COUNTER_PARTY_INITIATION':
-        updates = await withInterval(async () => this.confirmCounterPartyInitiation({ swap, network, walletId }))
-        break
-
-      case 'READY_TO_CLAIM':
-        updates = await withLock(store, { item: swap, network, walletId, asset: swap.to },
-          async () => this.claimSwap({ swap, network, walletId }))
-        break
-
-      case 'WAITING_FOR_CLAIM_CONFIRMATIONS':
-        updates = await withInterval(async () => this.waitForClaimConfirmations({ swap, network, walletId }))
-        break
-
-      case 'WAITING_FOR_REFUND':
-        updates = await withInterval(async () => this.waitForRefund({ swap, network, walletId }))
-        break
-
-      case 'GET_REFUND':
-        updates = await withLock(store, { item: swap, network, walletId, asset: swap.from },
-          async () => this.refundSwap({ swap, network, walletId }))
-        break
-
-      case 'WAITING_FOR_REFUND_CONFIRMATIONS':
-        updates = await withInterval(async () => this.waitForRefundConfirmations({ swap, network, walletId }))
+      case 'WAITING_FOR_SWAP_CONFIRMATIONS':
+        updates = await withInterval(async () => this.waitForSwapConfirmations({ swap, network, walletId }))
         break
     }
 
@@ -474,104 +187,42 @@ class OneinchSwapProvider extends SwapProvider {
   }
 
   static feeUnits = {
-    SWAP_INITIATION: {
-      BTC: 370, // Assume 2 inputs
-      ETH: 165000,
-      RBTC: 165000,
-      BNB: 165000,
-      NEAR: 10000000000000,
-      MATIC: 165000,
-      ERC20: 600000 + 94500 // Contract creation + erc20 transfer
-    },
-    SWAP_CLAIM: {
-      BTC: 143,
-      ETH: 45000,
-      RBTC: 45000,
-      BNB: 45000,
-      MATIC: 45000,
-      NEAR: 8000000000000,
-      ERC20: 100000
+    SWAP: {
+      ETH: 100000 + 400000, // (potential)ERC20 Approval + Swap
+      BNB: 100000 + 400000,
+      MATIC: 100000 + 400000,
+      ERC20: 100000 + 700000
     }
   }
 
   static statuses = {
-    INITIATED: {
+    WAITING_FOR_APPROVE_CONFIRMATIONS: {
       step: 0,
-      label: 'Locking {from}',
-      filterStatus: 'PENDING'
-    },
-    INITIATION_REPORTED: {
-      step: 0,
-      label: 'Locking {from}',
-      filterStatus: 'PENDING',
-      notification () {
-        return {
-          message: 'Swap initiated'
-        }
-      }
-    },
-    INITIATION_CONFIRMED: {
-      step: 0,
-      label: 'Locking {from}',
-      filterStatus: 'PENDING'
-    },
-    FUNDED: {
-      step: 1,
-      label: 'Locking {to}',
-      filterStatus: 'PENDING'
-    },
-    CONFIRM_COUNTER_PARTY_INITIATION: {
-      step: 1,
-      label: 'Locking {to}',
+      label: 'Approving {from}',
       filterStatus: 'PENDING',
       notification (swap) {
         return {
-          message: `Counterparty sent ${prettyBalance(swap.toAmount, swap.to)} ${swap.to} to escrow`
+          message: `Approving ${swap.from}`
         }
       }
     },
-    READY_TO_CLAIM: {
-      step: 2,
-      label: 'Claiming {to}',
+    APPROVE_CONFIRMED: {
+      step: 1,
+      label: 'Swapping {from}',
+      filterStatus: 'PENDING'
+    },
+    WAITING_FOR_SWAP_CONFIRMATIONS: {
+      step: 1,
+      label: 'Swapping {from}',
       filterStatus: 'PENDING',
       notification () {
         return {
-          message: 'Claiming funds'
-        }
-      }
-    },
-    WAITING_FOR_CLAIM_CONFIRMATIONS: {
-      step: 2,
-      label: 'Claiming {to}',
-      filterStatus: 'PENDING'
-    },
-    WAITING_FOR_REFUND: {
-      step: 2,
-      label: 'Pending Refund',
-      filterStatus: 'PENDING'
-    },
-    GET_REFUND: {
-      step: 2,
-      label: 'Refunding {from}',
-      filterStatus: 'PENDING'
-    },
-    WAITING_FOR_REFUND_CONFIRMATIONS: {
-      step: 2,
-      label: 'Refunding {from}',
-      filterStatus: 'PENDING'
-    },
-    REFUNDED: {
-      step: 3,
-      label: 'Refunded',
-      filterStatus: 'REFUNDED',
-      notification (swap) {
-        return {
-          message: `Swap refunded, ${prettyBalance(swap.fromAmount, swap.from)} ${swap.from} returned`
+          message: 'Engaging oneinch'
         }
       }
     },
     SUCCESS: {
-      step: 3,
+      step: 2,
       label: 'Completed',
       filterStatus: 'COMPLETED',
       notification (swap) {
@@ -580,17 +231,22 @@ class OneinchSwapProvider extends SwapProvider {
         }
       }
     },
-    QUOTE_EXPIRED: {
-      step: 3,
-      label: 'Quote Expired',
-      filterStatus: 'REFUNDED'
+    FAILED: {
+      step: 2,
+      label: 'Swap Failed',
+      filterStatus: 'REFUNDED',
+      notification () {
+        return {
+          message: 'Swap failed'
+        }
+      }
     }
   }
 
   static fromTxType = OneinchSwapProvider.txTypes.SWAP
   static toTxType = null
 
-  static totalSteps = 4
+  static totalSteps = 3
 }
 
 export { OneinchSwapProvider }

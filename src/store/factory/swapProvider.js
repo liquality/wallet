@@ -9,5 +9,5 @@ export const createSwapProvider = (network, providerId) => {
 
   if (swapProviderConfig.type === SwapProviderType.LIQUALITY) return new LiqualitySwapProvider({ providerId, agent: swapProviderConfig.agent })
   if (swapProviderConfig.type === SwapProviderType.UNISWAPV2) return new UniswapSwapProvider({ providerId, routerAddress: swapProviderConfig.routerAddress })
-  if (swapProviderConfig.type === SwapProviderType.ONEINCHV3) return new OneinchSwapProvider({ providerId, agent: swapProviderConfig.agent })
+  if (swapProviderConfig.type === SwapProviderType.ONEINCHV3) return new OneinchSwapProvider({ providerId, agent: swapProviderConfig.agent, routerAddress: swapProviderConfig.routerAddress })
 }

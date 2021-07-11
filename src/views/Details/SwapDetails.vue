@@ -95,6 +95,7 @@ import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
 import LiqualitySwapDetails from '@/swaps/liquality/SwapDetails'
 import UniswapSwapDetails from '@/swaps/uniswap/SwapDetails'
+import OneinchSwapDetails from '@/swaps/oneinch/SwapDetails'
 
 export default {
   components: {
@@ -122,7 +123,8 @@ export default {
       const config = getSwapProviderConfig(this.item.network, this.item.provider)
       return ({
         [SwapProviderType.LIQUALITY]: LiqualitySwapDetails,
-        [SwapProviderType.UNISWAPV2]: UniswapSwapDetails
+        [SwapProviderType.UNISWAPV2]: UniswapSwapDetails,
+        [SwapProviderType.ONEINCHV3]: OneinchSwapDetails
       })[config.type]
     },
     status () {
