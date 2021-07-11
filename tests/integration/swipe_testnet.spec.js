@@ -57,7 +57,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Review
     await swapPage.ClickSwapReviewButton(page)
 
-    // SWAP details validation
+    // SWAP SEND details validation
     await page.waitForTimeout(3000)
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(asset1)
@@ -101,7 +101,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // TODO: Click on swap confirm step
     await swapPage.ClickInitiateSwapButton(page)
   })
-  it('SWAP,Please increase amount. It is below minimum.', async () => {
+  it('SWAP (BTC),Please increase amount. It is below minimum.', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -125,7 +125,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
-  it('SWAP,Lower amount. This exceeds available balance.', async () => {
+  it('SWAP(BTC),Lower amount. This exceeds available balance.', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit

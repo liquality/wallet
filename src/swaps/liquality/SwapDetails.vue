@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="liquality-timeline">
-      <small>{{ prettyTime(item.startTime) }}</small>
+      <small id="start_time">{{ prettyTime(item.startTime) }}</small>
       <h3>Start</h3>
       <div class="liquality-timeline_inner">
-        <div class="liquality-timeline_container left completed"><div class="content"></div></div>
+        <div class="liquality-timeline_container left completed"><div class="content" id="swap_details_content"></div></div>
         <div class="liquality-timeline_container"
           v-for="(step, id) in timeline" :key="id"
           :class="{ [step.side]: true, completed: step.completed, pending: step.pending }">
@@ -54,7 +54,7 @@
       </template>
     </div>
     <div class="text-center">
-      <button class="btn btn-sm btn-outline-primary" @click="advanced = !advanced">Advanced</button>
+      <button class="btn btn-sm btn-outline-primary" id="advanced_button" @click="advanced = !advanced">Advanced</button>
     </div>
     <div class="table" v-if="advanced">
       <table class="table bg-white border-0 mb-1 mt-1">
@@ -87,47 +87,47 @@
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Order ID</td>
-            <td><a :href="orderLink" rel="noopener" target="_blank">{{item.id}}</a></td>
+            <td><a :href="orderLink" rel="noopener" id="swap_details_order_id" target="_blank">{{item.id}}</a></td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Started At</td>
-            <td>{{new Date(item.startTime)}}</td>
+            <td id="swap_details_started_at">{{new Date(item.startTime)}}</td>
           </tr>
           <tr v-if="item.endTime">
             <td class="text-muted text-right small-12">Finished At</td>
-            <td>{{new Date(item.endTime)}}</td>
+            <td id="swap_details_finished_at">{{new Date(item.endTime)}}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Rate</td>
-            <td>1 {{item.to}} = {{reverseRate}} {{item.from}}</td>
+            <td id="swap_details_rate">1 {{item.to}} = {{reverseRate}} {{item.from}}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Status</td>
-            <td>{{item.status}}</td>
+            <td id="swap_details_status">{{item.status}}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Buy</td>
-            <td>{{prettyBalance(item.toAmount, item.to)}} {{item.to}}</td>
+            <td id="swap_details_buy">{{prettyBalance(item.toAmount, item.to)}} {{item.to}}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Sell</td>
-            <td>{{prettyBalance(item.fromAmount, item.from)}} {{item.from}}</td>
+            <td id="swap_details_sell">{{prettyBalance(item.fromAmount, item.from)}} {{item.from}}</td>
           </tr>
           <tr v-if="item.minConf">
             <td class="text-muted text-right small-12">Minimum<br>confirmations</td>
-            <td>{{item.minConf}}</td>
+            <td id="confirmations">{{item.minConf}}</td>
           </tr>
           <tr v-if="item.fromAddress">
             <td class="text-muted text-right small-12">Your {{item.from}}<br>address</td>
-            <td>{{item.fromAddress}}</td>
+            <td id="from_address">{{item.fromAddress}}</td>
           </tr>
           <tr v-if="item.toAddress">
             <td class="text-muted text-right small-12">Your {{item.to}}<br>address</td>
-            <td>{{item.toAddress}}</td>
+            <td id="to_address">{{item.toAddress}}</td>
           </tr>
           <tr v-if="item.secret">
             <td class="text-muted text-right small-12">Secret</td>
-            <td>
+            <td id="secret_key">
               <span class="cursor-pointer text-muted font-weight-light" v-if="secretHidden" @click="secretHidden = false">
                 Click to reveal the secret
               </span>
@@ -138,31 +138,31 @@
           </tr>
           <tr v-if="item.secretHash">
             <td class="text-muted text-right small-12">Secret Hash</td>
-            <td>{{item.secretHash}}</td>
+            <td id="secretHash">{{item.secretHash}}</td>
           </tr>
           <tr v-if="item.fromFundHash">
             <td class="text-muted text-right small-12">Your {{item.from}} funding<br>transaction</td>
-            <td>{{item.fromFundHash}}</td>
+            <td id="from_funding_transaction">{{item.fromFundHash}}</td>
           </tr>
           <tr v-if="item.toFundHash">
             <td class="text-muted text-right small-12">Counter-party's {{item.to}}<br>funding transaction</td>
-            <td>{{item.toFundHash}}</td>
+            <td id="to_funding_transaction">{{item.toFundHash}}</td>
           </tr>
           <tr v-if="item.toClaimHash">
             <td class="text-muted text-right small-12">Your {{item.to}} claim<br>transaction</td>
-            <td>{{item.toClaimHash}}</td>
+            <td id="to_claim_hash">{{item.toClaimHash}}</td>
           </tr>
           <tr v-if="item.sendTx">
             <td class="text-muted text-right small-12">Your {{item.to}} send<br>transaction</td>
-            <td>{{item.sendTx}}</td>
+            <td id="send_transaction">{{item.sendTx}}</td>
           </tr>
           <tr v-if="false">
             <td class="text-muted text-right small-12">Actions</td>
-            <td class="cursor-pointer text-danger" @click="remove">Remove this item</td>
+            <td class="cursor-pointer text-danger" id="remove_this_item" @click="remove">Remove this item</td>
           </tr>
           <tr v-if="item.error">
             <td class="text-danger text-right small-12">Error</td>
-            <td class="text-danger">
+            <td class="text-danger" id="item_error">
               <pre>{{item.error}}</pre>
             </td>
           </tr>
