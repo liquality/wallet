@@ -23,7 +23,7 @@ class OverviewPage {
    * @constructor
    * @example - SelectNetwork(page,'testnet')
    */
-  async SelectNetwork (page, network="testnet") {
+  async SelectNetwork (page, network = 'testnet') {
     await page.click('#head_network')
     switch (network) {
       case 'testnet': {
