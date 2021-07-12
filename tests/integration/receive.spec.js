@@ -91,9 +91,7 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select network
-    if (process.env.NODE_ENV !== 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'testnet')
-    } else {
+    if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     }
     // check Send & Swap & Receive options have been displayed

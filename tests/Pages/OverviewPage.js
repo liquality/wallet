@@ -18,12 +18,12 @@ class OverviewPage {
   /**
    * Select Network from overview page
    * @param page
-   * @param network - Network type
+   * @param network - Network type default: testnet
    * @returns {Promise<void>}
    * @constructor
    * @example - SelectNetwork(page,'testnet')
    */
-  async SelectNetwork (page, network) {
+  async SelectNetwork (page, network = 'testnet') {
     await page.click('#head_network')
     switch (network) {
       case 'testnet': {
@@ -60,13 +60,16 @@ class OverviewPage {
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#send_action', {
-      visible: true
+      visible: true,
+      timeout: 60000
     })
     await page.waitForSelector('#swap_action', {
-      visible: true
+      visible: true,
+      timeout: 60000
     })
     await page.waitForSelector('#receive_action', {
-      visible: true
+      visible: true,
+      timeout: 60000
     })
   }
 
@@ -224,6 +227,7 @@ class OverviewPage {
   async ClickSwipe (page) {
     await page.waitForSelector('#swap_action', { visible: true })
     await page.click('#swap_action')
+    console.log('User clicked on SWAP button from overview page')
     await page.waitForSelector('#search_for_a_currency_search', { visible: true })
   }
 

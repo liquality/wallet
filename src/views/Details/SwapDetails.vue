@@ -6,7 +6,7 @@
    <div class="swap-details">
       <div class="swap-details_info">
         <div class="row">
-          <div class="col">
+          <div class="col" id="swap-details-status-section">
             <h2>Status</h2>
             <p>{{ status }}</p>
           </div>
@@ -20,7 +20,7 @@
             <h2>Sent</h2>
             <p>{{prettyBalance(item.fromAmount, item.from)}} {{item.from}}</p>
           </div>
-          <div class="col">
+          <div class="col" id="pending_receipt_section">
             <h2 v-if="['SUCCESS', 'REFUNDED'].includes(item.status)">Received</h2>
             <h2 v-else>Pending Receipt</h2>
             <p>{{prettyBalance(item.toAmount, item.to)}} {{item.to}}</p>
@@ -33,7 +33,7 @@
           </div>
         </div>
       </div>
-      <div class="swap-details_fee">
+      <div class="swap-details_fee" id="swap-details-network-fee-section">
         <div class="row">
           <div class="col">
             <h2>Network Speed/Fee</h2>

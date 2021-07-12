@@ -39,7 +39,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
@@ -60,7 +60,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     const appVersion = await page.$eval('#settings_app_version', (el) => el.textContent)
     expect(appVersion).contain('Version')
   })
-  it('should be use backup seed feature', async () => {
+  it('should be able to test backup seed feature', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -70,7 +70,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
@@ -123,7 +123,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
@@ -157,9 +157,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select network
-    if (process.env.NODE_ENV !== 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'testnet')
-    } else {
+    if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     }
     // check Send & Swap & Receive options have been displayed
@@ -179,9 +177,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select network
-    if (process.env.NODE_ENV !== 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'testnet')
-    } else {
+    if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     }
     // check Send & Swap & Receive options have been displayed
@@ -206,9 +202,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select network
-    if (process.env.NODE_ENV !== 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'testnet')
-    } else {
+    if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     }
     // check Send & Swap & Receive options have been displayed

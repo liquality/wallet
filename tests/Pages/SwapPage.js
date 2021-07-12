@@ -14,6 +14,7 @@ class SwapPage {
     const addressInputField = await page.$('#swap_send_amount_input_field')
     await addressInputField.click({ clickCount: 3 })
     await addressInputField.type(amountToSend)
+    console.log(chalk.green('User enters SWAP send amount as ' + amountToSend))
   }
 
   /**
@@ -54,15 +55,22 @@ class SwapPage {
   }
 
   async ClickSwapReviewButton (page) {
-    await page.waitForSelector('#swap_review_button:not([disabled]')
+    await page.waitForSelector('#swap_review_button:not([disabled])')
     await page.click('#swap_review_button')
-    console.log(chalk.green('User clicked on Swap review button'))
+    console.log(chalk.green('User clicked on SWAP review button'))
   }
 
+  /**
+   * Click on Initiate Swap button.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
   async ClickInitiateSwapButton (page) {
     await page.waitForSelector('#initiate_swap_button:not([disabled]', { visible: true })
     console.log(chalk.green('Initiate swap button has been enabled, almost there...'))
-    // await page.click('#initiate_swap_button')
+    await page.click('#initiate_swap_button')
+    console.log(chalk.green('User clicked on initiate_swap_button option'))
   }
 
   /**
@@ -74,6 +82,7 @@ class SwapPage {
   async ValidateNetworkFeeTab (page) {
     await page.waitForSelector('#network_speed_fee', { visible: true })
     await page.click('#network_speed_fee')
+    console.log(chalk.green('user clicked on on Network fee options'))
   }
 
   /**
@@ -117,7 +126,7 @@ class SwapPage {
    */
   async GetSwapSendNetworkFeeInDollar (page) {
     await page.waitForSelector('#swap_send_network_fee_fiat_rate', { visible: true })
-    await page.waitForTimeout(20000)
+    await page.waitForTimeout(10000)
     return await page.$eval('#swap_send_network_fee_fiat_rate', el => el.textContent)
   }
 
@@ -166,6 +175,12 @@ class SwapPage {
     return await page.$eval('#swap_rate_value', el => el.textContent)
   }
 
+  /**
+   * Check If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at 8:45 PM
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
   async ValidateMessage (page) {
     const message = await page.$eval('#media-body-info', el => el.textContent)
     expect(message).contain('If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at')
