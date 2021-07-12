@@ -55,7 +55,7 @@ class SwapPage {
   }
 
   async ClickSwapReviewButton (page) {
-    await page.waitForSelector('#swap_review_button:not([disabled]')
+    await page.waitForSelector('#swap_review_button:not([disabled])')
     await page.click('#swap_review_button')
     console.log(chalk.green('User clicked on SWAP review button'))
   }

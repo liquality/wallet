@@ -60,7 +60,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     const appVersion = await page.$eval('#settings_app_version', (el) => el.textContent)
     expect(appVersion).contain('Version')
   })
-  it('should be use backup seed feature', async () => {
+  it('should be able to test backup seed feature', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
