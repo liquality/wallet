@@ -5,6 +5,8 @@ const PasswordPage = require('../Pages/PasswordPage')
 const SearchAssetPage = require('../Pages/SearchAssetPage')
 const SwapPage = require('../Pages/SwapPage')
 const expect = require('chai').expect
+const chalk = require('chalk')
+const https = require('https')
 
 const puppeteer = require('puppeteer')
 
@@ -100,6 +102,112 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // TODO: Click on swap confirm step
     await swapPage.ClickInitiateSwapButton(page)
+  })
+  it('SWAP SOV to BTC', async () => {
+    const asset1 = 'SOV'
+    const asset2 = 'BTC'
+
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page, 'testnet')
+    // Click on Swipe
+    await overviewPage.ClickSwipe(page)
+
+    // SEND from assert (BTC)
+    await searchAssetPage.SearchForAnAsset(page, asset1)
+    await swapPage.EnterSendAmountOnSwap(page, '1')
+    // Click on Network speed + FEE
+    await swapPage.ValidateNetworkFeeTab(page)
+    // Click on SWAP Review button
+    await swapPage.ClickSwapReviewButton(page)
+
+    // SWAP SEND details validation
+    // Send confirm value
+    const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
+    expect(sendAmountValue.trim()).contain('1 SOV')
+    console.log(chalk.green('SEND Swap value: ' + sendAmountValue))
+    // Send confirm USD value
+    const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
+    expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00').equals('$1')
+    console.log(chalk.green('User SEND Swap value in USD: ' + swapSendAmountInDollar))
+    // Send Network Fee
+    const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
+    expect(swapSendNetworkFeeValue.trim()).contain('RBTC')
+    console.log(chalk.green('User SEND Swap Network Fee value: ' + swapSendNetworkFeeValue))
+    // Send Network Fee in USD
+    const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
+    expect(swapSendNetworkFeeInDollar.trim(), 'Send network fee can not be $0.00').not.contain('$0.00')
+    console.log(chalk.green('User SEND Swap Network Fee value in USD: ' + swapSendNetworkFeeInDollar))
+    // Send Account+FEES
+    const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
+    expect(swapSendAccountFeesValue.trim()).contain('RBTC')
+    console.log(chalk.green('User SEND Account+FEES value: ' + swapSendAccountFeesValue))
+    // Send Accounts+FEES in USD
+    const swapSendAccountFeesInDollar = await swapPage.GetSwapSendAccountFeesInDollar(page)
+    expect(swapSendAccountFeesInDollar.trim()).not.contain('$00.00')
+    console.log(chalk.green('User SEND Account+FEES value in USD: ' + swapSendAccountFeesInDollar))
+
+    // Receive details validation
+    const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
+    expect(receiveAmountValue.trim()).contain(asset2)
+
+    const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
+    expect(receiveAmountInDollar.trim()).not.contain('$00.00')
+
+    const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
+    expect(receiveNetworkFeeValue.trim()).contain(asset2)
+
+    const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
+    expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
+
+    const receiveAccountFeesValue = await swapPage.GetSwapReceiveNetworkValue(page)
+    expect(receiveAccountFeesValue.trim()).contain(asset2)
+
+    const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
+    expect(receiveAccountFeesInDollar.trim()).not.contain('$00.00')
+    // Validate message
+    await swapPage.ValidateMessage(page)
+    // Click on Initiate SWAP button
+    await swapPage.ClickInitiateSwapButton(page)
+    // Wait for Activity tab list of items
+    await page.waitForSelector('.transaction-list', { visible: true })
+    const transactions = await page.$$('.transaction-status')
+    await transactions[0].click()
+    await page.waitForSelector('.swap-details_info', { visible: true })
+
+    await page.waitForSelector('#swap-details-status-section', { visible: true })
+    await page.waitForSelector('#pending_receipt_section', { visible: true })
+    await page.waitForSelector('#swap-details-network-fee-section', { visible: true })
+
+    // Advanced option
+    const advancedButton = await page.waitForSelector('#advanced_button', { visible: true })
+    console.log(chalk.green('Swap details Advanced button has been displayed'))
+    await advancedButton.click()
+
+    const orderIdHref = await page.$eval('#order_id_href_link', (el) => el.href)
+    console.log(chalk.green('SWAP Order ID href:' + orderIdHref))
+    https.get(orderIdHref, (resp) => {
+      console.log('Status Code:', resp.statusCode)
+      expect(resp.statusCode).equals(200)
+      let data = ''
+
+      resp.on('data', (chunk) => {
+        data += chunk
+      })
+
+      resp.on('end', () => {
+        console.log(JSON.parse(data.toString()))
+      })
+    }).on('error', (err) => {
+      console.log('Error: ' + err.message)
+    })
   })
   it('SWAP (BTC),Please increase amount. It is below minimum.', async () => {
     // Import wallet option
