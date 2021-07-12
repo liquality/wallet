@@ -11,6 +11,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import * as ethers from 'ethers'
 import buildConfig from '../../build.config'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
+import { getTxFee } from '../../utils/fees'
 
 const nativeAssetAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const chainToRpcProviders = {
@@ -123,6 +124,16 @@ class OneinchSwapProvider extends SwapProvider {
       fee: quote.fee,
       slippage: 50,
       ...updates
+    }
+  }
+
+  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+    if (txType in OneinchSwapProvider.feeUnits) {
+      const fees = {}
+      for (const feePrice of feePrices) {
+        fees[feePrice] = getTxFee(OneinchSwapProvider.feeUnits[txType], asset, feePrice)
+      }
+      return fees
     }
   }
 
