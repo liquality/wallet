@@ -1,5 +1,6 @@
 import axios from 'axios'
 import BN from 'bignumber.js'
+import { mapValues } from 'lodash-es'
 import { SwapProvider } from '../SwapProvider'
 import { chains, unitToCurrency, currencyToUnit } from '@liquality/cryptoassets'
 import { sha256 } from '@liquality/crypto'
@@ -9,6 +10,7 @@ import { timestamp, wait } from '../../store/utils'
 import { prettyBalance } from '../../utils/coinFormatter'
 import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
+import { getTxFee } from '../../utils/fees'
 
 export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
 
@@ -129,6 +131,25 @@ class LiqualitySwapProvider extends SwapProvider {
       secretHash,
       fromFundHash: fromFundTx.hash,
       fromFundTx
+    }
+  }
+
+  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+    if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
+      const account = this.getAccount(accountId)
+      const client = this.getClient(network, walletId, asset, account.type)
+      const value = max ? undefined : BN(quote.fromAmount)
+      const txs = feePrices.map(fee => ({ to: '', value, fee }))
+      const totalFees = await client.getMethod('getTotalFees')(txs, max)
+      return mapValues(totalFees, f => unitToCurrency(cryptoassets[asset], f))
+    }
+
+    if (txType in LiqualitySwapProvider.feeUnits) {
+      const fees = {}
+      for (const feePrice of feePrices) {
+        fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice)
+      }
+      return fees
     }
   }
 
@@ -489,13 +510,13 @@ class LiqualitySwapProvider extends SwapProvider {
 
   static feeUnits = {
     SWAP_INITIATION: {
-      BTC: 370, // Assume 2 inputs
       ETH: 165000,
       RBTC: 165000,
       BNB: 165000,
       NEAR: 10000000000000,
       MATIC: 165000,
-      ERC20: 600000 + 94500 // Contract creation + erc20 transfer
+      ERC20: 600000 + 94500, // Contract creation + erc20 transfer
+      ARBETH: 2400000
     },
     SWAP_CLAIM: {
       BTC: 143,
@@ -504,7 +525,8 @@ class LiqualitySwapProvider extends SwapProvider {
       BNB: 45000,
       MATIC: 45000,
       NEAR: 8000000000000,
-      ERC20: 100000
+      ERC20: 100000,
+      ARBETH: 680000
     }
   }
 

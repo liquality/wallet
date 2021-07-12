@@ -1,4 +1,4 @@
-const TestUtil = require('../../utils/TestUtils')
+const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
@@ -27,7 +27,9 @@ describe('Liquality wallet SWIPE feature', async () => {
   })
 
   afterEach(async () => {
-    await browser.close()
+    if (browser !== undefined) {
+      await browser.close()
+    }
   })
 
   it('SWAP BTC to ETH', async () => {
@@ -55,19 +57,19 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Review
     await swapPage.ClickSwapReviewButton(page)
 
-    // SWAP details validation
+    // SWAP SEND details validation
     await page.waitForTimeout(3000)
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(asset1)
 
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
-    expect(swapSendAmountInDollar.trim()).not.contain('$00.00')
+    expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00').not.contain('$00.00')
 
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
     expect(swapSendNetworkFeeValue.trim()).contain(asset1)
 
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
-    expect(swapSendNetworkFeeInDollar.trim()).not.contain('$0.00')
+    expect(swapSendNetworkFeeInDollar.trim(), 'Send network fee can not be $0.00').not.contain('$0.00')
 
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
     expect(swapSendAccountFeesValue.trim()).contain(asset1)
@@ -99,7 +101,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // TODO: Click on swap confirm step
     await swapPage.ClickInitiateSwapButton(page)
   })
-  it('SWAP,Please increase amount. It is below minimum.', async () => {
+  it('SWAP (BTC),Please increase amount. It is below minimum.', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -116,12 +118,14 @@ describe('Liquality wallet SWIPE feature', async () => {
     // SEND from assert (BTC)
     await searchAssetPage.SearchForAnAsset(page, 'BTC')
     // Enter 0
+    await page.waitForTimeout(20000)
     await swapPage.EnterSendAmountOnSwap(page, '0')
-    expect(await swapPage.GetSwapSendErrors(page)).contains('Please increase amount. It is below minimum.')
+    expect(await swapPage.GetSwapSendErrors(page))
+      .contains('Please increase amount. It is below minimum.')
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
-  it('SWAP,Lower amount. This exceeds available balance.', async () => {
+  it('SWAP(BTC),Lower amount. This exceeds available balance.', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit

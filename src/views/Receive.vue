@@ -110,7 +110,8 @@ export default {
           RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' },
           BNB: { name: 'BNB', url: 'https://testnet.binance.org/faucet-smart/' },
           NEAR: { name: 'NEAR', url: '' },
-          MATIC: { name: 'MATIC', url: 'https://faucet.matic.network/' }
+          MATIC: { name: 'MATIC', url: 'https://faucet.matic.network/' },
+          ARBETH: { name: 'ARBETH', url: 'https://faucet.rinkeby.io/' }
         })[this.asset]
       }
       return null
@@ -164,7 +165,7 @@ export default {
     width: 196px;
   }
   &_address {
-    font-size: $font-size-xs;
+    font-size: 0.74rem;
     font-weight: lighter;
   }
 

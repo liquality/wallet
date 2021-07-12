@@ -1,4 +1,4 @@
-const TestUtil = require('../../utils/TestUtils')
+const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
@@ -24,7 +24,9 @@ describe('Liquality wallet - Create wallet', async () => {
   })
 
   afterEach(async () => {
-    await browser.close()
+    if (browser !== undefined) {
+      await browser.close()
+    }
   })
 
   it('Create a wallet with less that 8 or more characters password,validate button has been disabled-["mainnet"]', async () => {
@@ -40,7 +42,11 @@ describe('Liquality wallet - Create wallet', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
     // Set password
-    await passwordPage.EnterPasswordDetails(page, '12345678', '1234567')
+    await passwordPage.EnterPasswordDetails(page, 'testwallet1', 'testwallet2')
+    // check the password error message
+    await page.waitForSelector('#password_match_error', { visible: true })
+    expect(await page.$eval('#password_match_error', (el) => el.textContent))
+      .contains('Passwords don\'t match.')
     // confirm button has been disabled
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
@@ -73,6 +79,6 @@ describe('Liquality wallet - Create wallet', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
   })
 })

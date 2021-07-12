@@ -51,6 +51,12 @@ export async function getPrices (baseCurrencies, toCurrency) {
   const { data } = await axios.get(`${COIN_GECKO_API}/simple/price?ids=${coindIds.join(',')}&vs_currencies=${toCurrency}`)
   let prices = mapKeys(data, (v, coinGeckoId) => findKey(cryptoassets, asset => asset.coinGeckoId === coinGeckoId))
   prices = mapValues(prices, rates => mapKeys(rates, (v, k) => k.toUpperCase()))
+
+  for (const baseCurrency of baseCurrencies) {
+    if (!prices[baseCurrency] && cryptoassets[baseCurrency].matchingAsset) {
+      prices[baseCurrency] = prices[cryptoassets[baseCurrency].matchingAsset]
+    }
+  }
   const symbolPrices = mapValues(prices, rates => rates[toCurrency.toUpperCase()])
   return symbolPrices
 }
@@ -77,6 +83,10 @@ export const ChainNetworks = {
   polygon: {
     testnet: EthereumNetworks.polygon_testnet,
     mainnet: EthereumNetworks.polygon_mainnet
+  },
+  arbitrum: {
+    testnet: EthereumNetworks.arbitrum_testnet,
+    mainnet: EthereumNetworks.arbitrum_mainnet
   },
   near: {
     testnet: NearNetworks.near_testnet,

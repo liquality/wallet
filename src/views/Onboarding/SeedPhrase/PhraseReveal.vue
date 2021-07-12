@@ -8,11 +8,11 @@
     <div class="phrase-reveal_bottom">
       <p class="phrase-reveal_mouseText">Hidden for security.  Mouse-Over to reveal phrase.</p>
       <div class="phrase-reveal_seed pl-0 mb-1">
-        <span v-for="word in seedList" :key="word">{{ word }}</span>
+        <span v-for="word in seedList" id="seed_word_mouse_hover" :key="word">{{ word }}</span>
       </div>
     <div class="button-group">
-          <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg btn-block">Cancel</button></router-link>
-          <router-link to="/wallet"><button class="btn btn-primary btn-lg btn-block">I saved the seed</button></router-link>
+          <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg btn-block" id="cancel_button">Cancel</button></router-link>
+          <router-link to="/wallet"><button class="btn btn-primary btn-lg btn-block" id="i_saved_the_seed">I saved the seed</button></router-link>
     </div>
   </div>
   </div>
