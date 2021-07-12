@@ -74,7 +74,8 @@ export default {
     return {
       address: null,
       qrcode: null,
-      copied: false
+      copied: false,
+      isArb: false
     }
   },
   props: {
@@ -170,7 +171,7 @@ export default {
   }
 
   .testnet_message {
-    margin-top: 24px;
+    margin-top: 18px;
     font-size: $font-size-tiny;
     font-weight: lighter;
     display: flex;
