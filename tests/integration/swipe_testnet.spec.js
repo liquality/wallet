@@ -47,7 +47,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // Click on Swipe
     await overviewPage.ClickSwipe(page)
 
@@ -116,7 +116,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // Click on Swipe
     await overviewPage.ClickSwipe(page)
 
@@ -219,7 +219,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // Click on Swipe
     await overviewPage.ClickSwipe(page)
 
@@ -243,7 +243,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // Click on Swipe
     await overviewPage.ClickSwipe(page)
 

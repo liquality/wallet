@@ -18,12 +18,12 @@ class OverviewPage {
   /**
    * Select Network from overview page
    * @param page
-   * @param network - Network type
+   * @param network - Network type default: testnet
    * @returns {Promise<void>}
    * @constructor
    * @example - SelectNetwork(page,'testnet')
    */
-  async SelectNetwork (page, network) {
+  async SelectNetwork (page, network="testnet") {
     await page.click('#head_network')
     switch (network) {
       case 'testnet': {
