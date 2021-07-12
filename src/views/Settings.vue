@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="view-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
       <span class="wallet_header"><strong>Settings</strong></span>
     </NavBar>
     <div class="settings">
-      <div class="setting-item">
-        <div class="setting-item_title flex-fill">Default Web3 Wallet
+      <div class="setting-item" id="settings_item_default_wallet">
+        <div class="setting-item_title flex-fill mb-2">Default Web3 Wallet
           <span class="setting-item_sub">Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.</span>
         </div>
         <div class="setting-item_control">
@@ -13,17 +13,25 @@
         </div>
       </div>
       <div class="setting-item">
-        <div class="setting-item_title flex-fill">Web3 Asset
-          <span class="setting-item_sub">Select which ethereum based asset should be used for dapps.</span>
+        <div class="setting-item_title flex-fill" id="settings_item_web_network">Web3 Network
+          <span class="setting-item_sub">Select which ethereum based network should be used for dapps.</span>
         </div>
         <div class="setting-item_control">
-          <AssetDropdown :assets="ethereumAssets"
-                         :selected="selectedAsset"
-                         @asset-changed="updateInjectEthereumAsset" />
+          <ChainDropdown :chains="ethereumChains"
+                         :selected="injectEthereumChain"
+                         @chain-changed="updateInjectEthereumChain" />
+        </div>
+      </div>
+      <div class="setting-item" id="settings_item_wallet_logs">
+        <div class="setting-item_title flex-fill mb-2">Wallet Logs
+          <span class="setting-item_sub">The wallet logs contain your public information such as addresses and transactions.</span>
+        </div>
+        <div class="setting-item_control">
+          <button class="btn btn-outline-primary" id="download_logs_button" @click="downloadLogs">Download Logs</button>
         </div>
       </div>
       <div class="settings-footer">
-         <div class="text-muted">Version {{ appVersion }}</div>
+         <div class="text-muted" id="settings_app_version">Version {{ appVersion }}</div>
         </div>
     </div>
   </div>
@@ -31,47 +39,48 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import cryptoassets from '@/utils/cryptoassets'
-import NavBar from '@/components/NavBar.vue'
-import { isEthereumChain } from '@/utils/asset'
 import { version } from '../../package.json'
-import AssetDropdown from '@/components/AssetDropdown'
+import { isEthereumChain } from '@liquality/cryptoassets'
+import buildConfig from '@/build.config'
+import { downloadFile, getWalletStateLogs } from '@/utils/export'
+import NavBar from '@/components/NavBar.vue'
+import ChainDropdown from '@/components/ChainDropdown'
 
 export default {
   components: {
     NavBar,
-    AssetDropdown
+    ChainDropdown
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'injectEthereum', 'injectEthereumAsset']),
-    ethereumAssets () {
-      return Object.keys(cryptoassets)
-        .filter(isEthereumChain)
-        .map(asset => {
-          const label = this.getLabel(asset)
-          return { name: asset, label }
-        })
-    },
-    selectedAsset () {
-      const label = this.getLabel(this.injectEthereumAsset)
-      const name = this.injectEthereumAsset === 'RSK' ? 'RBTC' : this.injectEthereumAsset
-      return { name, label }
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId',
+      'injectEthereum',
+      'injectEthereumChain'
+    ]),
+    ethereumChains () {
+      return buildConfig.chains.filter(isEthereumChain)
     },
     appVersion () {
       return version
     }
   },
   methods: {
-    ...mapActions(['enableEthereumInjection', 'disableEthereumInjection', 'setEthereumInjectionAsset']),
+    ...mapActions([
+      'enableEthereumInjection',
+      'disableEthereumInjection',
+      'setEthereumInjectionChain'
+    ]),
     toggleInjectEthereum (enable) {
       if (enable) this.enableEthereumInjection()
       else this.disableEthereumInjection()
     },
-    updateInjectEthereumAsset (asset) {
-      this.setEthereumInjectionAsset({ asset: asset.name })
+    updateInjectEthereumChain (chain) {
+      this.setEthereumInjectionChain({ chain })
     },
-    getLabel (asset) {
-      return asset === 'RBTC' ? 'RSK' : asset
+    async downloadLogs () {
+      const logs = await getWalletStateLogs()
+      downloadFile({ filename: 'Liquality Wallet Logs.json', type: 'application/javascript;charset=utf-8;', content: logs })
     }
   }
 }
@@ -83,7 +92,8 @@ export default {
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 600px;
+  height: 100%;
+  padding-bottom: 40px;
 
   .setting-item {
     width: 100%;
@@ -105,8 +115,8 @@ export default {
 
   .settings-footer {
     width: 100%;
-    position: fixed;
     bottom: 0;
+    margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
   }

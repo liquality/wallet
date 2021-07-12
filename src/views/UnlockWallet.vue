@@ -15,17 +15,15 @@
         <div class="input-group">
           <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required :readonly="loading">
         </div>
-        <p v-if="errors.length">
-          <b>Please correct the following error(s):</b>
-          <ul>
-            <li v-for="error in errors" :key="error">{{ error }}</li>
-          </ul>
+        <p v-if="error" class="mt-3" id="password_error">
+          {{ error }}
         </p>
       </div>
       <div class="footer-container">
-        <p><router-link to="/onboarding/import">Forgot password? Import with seed phrase</router-link></p>
+        <p><router-link to="/onboarding/import" id="forgot_password_import_seed">Forgot password? Import with seed phrase</router-link></p>
         <div class="footer-content">
           <button class="btn btn-primary btn-lg btn-block btn-icon"
+                  id="unlock_button"
                   :disabled="loading">
             <span v-if="loading">
               <SpinnerIcon /> &nbsp;
@@ -53,21 +51,22 @@ export default {
   data () {
     return {
       loading: false,
-      errors: [],
+      error: null,
       password: null
     }
   },
   methods: {
     ...mapActions(['unlockWallet']),
     async unlock () {
-      this.errors = []
+      this.error = null
       this.loading = true
       try {
         await this.unlockWallet({ key: this.password })
         this.$emit('unlocked')
       } catch (e) {
+        debugger
         console.log(e)
-        this.errors.push(e.message)
+        this.error = e.message
       } finally {
         this.loading = false
       }

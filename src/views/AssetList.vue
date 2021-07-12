@@ -15,6 +15,7 @@
               <input
                 type="text"
                 class="form-control form-control-sm"
+                id="search_for_a_currency_search"
                 v-model="search"
                 placeholder="Search for a Currency"
                 autocomplete="off"
@@ -40,7 +41,7 @@ export default {
   computed: {
     ...mapGetters(['accountsData', 'accountsWithBalance']),
     accounts () {
-      if (this.action === 'swap') {
+      if (this.action === 'swap.send') {
         return this.accountsWithBalance
       }
       return this.accountsData
@@ -62,7 +63,8 @@ export default {
   methods: {
     onAccountSelected ({ account, asset }) {
       const _asset = asset || account.assets[0]
-      this.$router.push(`/accounts/${account.id}/${_asset}/${this.action}?source=assets`)
+      const _action = this.action === 'swap.send' ? 'swap' : this.action
+      this.$router.push(`/accounts/${account.id}/${_asset}/${_action}?source=assets`)
     }
   }
 }

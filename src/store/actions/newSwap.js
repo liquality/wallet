@@ -1,41 +1,36 @@
-import { newOrder } from '../utils'
-
 export const newSwap = async (
-  { dispatch, commit },
+  store,
   {
     network,
     walletId,
-    agent,
-    from,
-    to,
-    fromAmount,
-    sendTo,
+    quote,
     fee,
     claimFee,
     fromAccountId,
     toAccountId
   }) => {
-  const order = await newOrder(agent, {
-    from,
-    to,
-    fromAmount
-  })
+  const swap = { ...quote }
 
-  order.type = 'SWAP'
-  order.network = network
-  order.agent = agent
-  order.startTime = Date.now()
-  order.status = 'QUOTE'
-  order.sendTo = sendTo
-  order.walletId = walletId
-  order.fee = fee
-  order.claimFee = claimFee
-  order.fromAccountId = fromAccountId
-  order.toAccountId = toAccountId
+  swap.type = 'SWAP'
+  swap.network = network
+  swap.startTime = Date.now()
+  swap.walletId = walletId
+  swap.fee = fee
+  swap.claimFee = claimFee
+  swap.fromAccountId = fromAccountId
+  swap.toAccountId = toAccountId
 
-  commit('NEW_ORDER', { network, walletId, order })
+  const swapProvider = store.getters.swapProvider(network, swap.provider)
+  const initiationParams = await swapProvider.newSwap({ network, walletId, quote: swap })
 
-  dispatch('performNextAction', { network, walletId, fromAccountId, toAccountId, id: order.id })
+  const createdSwap = {
+    ...swap,
+    ...initiationParams // TODO: Maybe move provider specific params to an inner property?
+  }
 
-  return order
+  store.commit('NEW_SWAP', { network, walletId, swap: createdSwap })
+
+  store.dispatch('performNextAction', { network, walletId, fromAccountId, toAccountId, id: createdSwap.id })
+
+  return createdSwap
 }

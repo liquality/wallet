@@ -13,7 +13,7 @@ const Broker = state => {
       key: 'liquality-wallet',
       storage: Storage,
       asyncStorage: true,
-      reducer: s => omit(s, ['key', 'wallets', 'unlockedAt']) // do not persist these states
+      reducer: s => omit(s, ['key', 'wallets', 'unlockedAt', 'app']) // do not persist these states
     })
 
     /**

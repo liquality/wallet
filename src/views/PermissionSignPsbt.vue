@@ -26,7 +26,7 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Cancel</button>
-          <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)" :disabled="loading">
+          <button class="btn btn-primary btn-lg btn-icon" @click.stop="reply(true)" :disabled="loading">
             <SpinnerIcon class="btn-loading" v-if="loading" />
             <template v-else>Sign</template>
           </button>
@@ -43,7 +43,7 @@ import { Psbt } from 'bitcoinjs-lib'
 import { getAssetIcon } from '@/utils/asset'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { AssetNetworks } from '@/store/factory/client'
+import { ChainNetworks } from '@/store/utils'
 import { prettyBalance } from '@/utils/coinFormatter'
 
 export default {
@@ -64,6 +64,7 @@ export default {
     prettyBalance,
     getAssetIcon,
     reply (allowed) {
+      if (this.loading) return
       this.loading = true
 
       try {
@@ -100,7 +101,7 @@ export default {
       return this.request.args[2]
     },
     psbt () {
-      return Psbt.fromBase64(this.psbtBase64, { network: AssetNetworks.BTC[this.activeNetwork] })
+      return Psbt.fromBase64(this.psbtBase64, { network: ChainNetworks.bitcoin[this.activeNetwork] })
     },
     outputs () {
       return this.psbt.txOutputs.filter((output, i) => i !== this.changeOutputIndex)

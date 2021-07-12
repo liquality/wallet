@@ -10,7 +10,7 @@
         <label>To</label>
         <p class="confirm-value">{{shortAddress}}</p>
       </div>
-      <div class="form-group">
+      <div class="form-group mt-4">
         <label>Network Speed / Fee</label>
         <div class="permission-send_fees">
           <FeeSelector
@@ -30,7 +30,7 @@
     <div class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-icon" @click="reply(true)" :disabled="loading">
+        <button class="btn btn-primary btn-lg btn-icon" @click.stop="reply(true)" :disabled="loading">
           <SpinnerIcon class="btn-loading" v-if="loading" />
           <template v-else>Confirm</template>
         </button>
@@ -42,13 +42,15 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
+import { unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
-import { getChainFromAsset, getAssetColorStyle } from '@/utils/asset'
+import { getNativeAsset, getAssetColorStyle } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
+import BigNumber from 'bignumber.js'
 
 export default {
   components: {
@@ -76,16 +78,11 @@ export default {
     },
     async reply (allowed) {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
-
-      // TODO: does not account for request having fee parameter. Make fee static in that case?
-      if (![2, 3].includes(this.request.args.length)) throw new Error('Send request must contain 2 or 3 arguments.')
+      const optionsWithFee = { ...this.request.args[0], value: this.value, fee }
 
       const requestWithFee = {
         ...this.request,
-        args: [
-          ...this.request.args,
-          ...(this.request.args.length === 2 ? [undefined, fee] : [fee])
-        ]
+        args: [optionsWithFee]
       }
 
       this.loading = true
@@ -113,20 +110,25 @@ export default {
       return this.request.asset
     },
     assetChain () {
-      return getChainFromAsset(this.asset)
+      return getNativeAsset(this.asset)
     },
     address () {
-      return this.request.args[0]
+      return this.request.args[0].to
     },
     shortAddress () {
       return this.address ? shortenAddress(this.address) : 'New Contract'
     },
+    value () {
+      // Parse SendOptions.value into BigNumber
+      const value = this.request.args[0].value
+      return BigNumber(value ? '0x' + value : 0)
+    },
     amount () {
-      if (!this.request.args[1]) return 0
-      return cryptoassets[this.asset].unitToCurrency(this.request.args[1]).toNumber()
+      if (!this.value) return 0
+      return unitToCurrency(cryptoassets[this.asset], this.value).toNumber()
     },
     data () {
-      return this.request.args[2]
+      return this.request.args[0].data
     },
     assetFees () {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]

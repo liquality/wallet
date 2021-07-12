@@ -8,7 +8,7 @@
             Send
           </div>
           <div class="send-top-amount">
-            <div class="btn btn-option label-append" @click="toogleShowAmountsFiat">
+            <div class="btn btn-option label-append" @click="toggleShowAmountsFiat">
               <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
                 {{ `${asset} ${amount}` }}
               </span>
@@ -32,6 +32,7 @@
           v-else
           type="number"
           class="form-control"
+          id="send_amount_input_field"
           :class="{ 'is-invalid': amountError }"
           :value="amount"
           @input="$emit('update:amount', $event.target.value)"
@@ -40,15 +41,17 @@
           autocomplete="off"
         />
         </div>
-        <div class="send-main-icon">
-          <img
-                :src="getAssetIcon(asset)"
-                class="asset-icon"
-              />
-          <span class="asset-name">
-            {{ asset }}
-          </span>
-        </div>
+        <AccountTooltip :account="account" :asset="asset">
+          <div class="send-main-icon">
+            <img
+              :src="getAssetIcon(asset)"
+              class="asset-icon"
+            />
+            <span class="asset-name">
+              {{ asset }}
+            </span>
+          </div>
+        </AccountTooltip>
       </div>
       <div class="send-main-errors" v-if="amountError">
         <small class="text-danger form-text text-right">
@@ -65,7 +68,8 @@
                 active: maxActive
               }"
               class="btn btn-option tooltip-target"
-              @click="$emit('toogle-max')"
+              id="max_send_amount_button"
+              @click="$emit('toggle-max')"
             >
               Max
             </button>
@@ -76,9 +80,9 @@
           </v-popover>
         </div>
       </div>
-      <div class="send-bottom-available">
+      <div class="send-bottom-available" id="send_available_balance">
         <span class="text-muted">Available</span>
-        {{ isNaN(available) ? '0' : available || '0' }} {{ asset }}
+        {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
       </div>
     </div>
   </div>
@@ -86,8 +90,13 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
+import { dpUI } from '@/utils/coinFormatter'
+import AccountTooltip from '@/components/AccountTooltip'
 
 export default {
+  components: {
+    AccountTooltip
+  },
   data () {
     return {
       showAmountsInFiat: false
@@ -96,17 +105,19 @@ export default {
   props: [
     'asset',
     'amount',
+    'account',
     'amountFiat',
     'max',
     'available',
     'maxFiat',
-    'amountError'
+    'amountError',
+    'maxActive'
   ],
-  created () {},
   methods: {
+    dpUI,
     getAssetColorStyle,
     getAssetIcon,
-    toogleShowAmountsFiat () {
+    toggleShowAmountsFiat () {
       this.showAmountsInFiat = !this.showAmountsInFiat
     }
   }

@@ -14,7 +14,11 @@ export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
   }
   // Migration to new encryption method
 
-  if (!wallets) throw new Error('Invalid Password')
+  if (!wallets) {
+    throw new Error(
+      'Try Again. Enter the right password (it has 8 or more characters).'
+    )
+  }
 
   commit('UNLOCK_WALLET', {
     key,

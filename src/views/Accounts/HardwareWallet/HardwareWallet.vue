@@ -8,7 +8,7 @@
     <Connect v-if="currentStep === 'connect'"
            :loading="loading"
            :selected-asset="selectedAsset"
-           @on-connect="connect"
+           @on-connect="tryToConnect"
            @on-select-asset="setLedgerAsset"
     />
     <Unlock v-else
@@ -18,17 +18,17 @@
            :selected-asset="selectedAsset"
            :ledger-error="ledgerError"
            :current-page="ledgerPage"
-           @on-connect="connect"
+           @on-connect="tryToConnect"
            @on-unlock="unlock"
            @on-cancel="cancel"
            @on-select-account="selectAccount"
     />
-    />
+    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar'
 import Connect from './Connect'
 import Unlock from './Unlock'
@@ -36,8 +36,11 @@ import {
   LEDGER_BITCOIN_OPTIONS,
   LEDGER_OPTIONS
 } from '@/utils/ledger-bridge-provider'
-import { getAssetIcon, getChainFromAsset } from '@/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import cryptoassets from '@/utils/cryptoassets'
 import { getNextAccountColor } from '@/utils/accounts'
+import LedgerBridgeModal from '@/components/LedgerBridgeModal'
+import { BG_PREFIX } from '@/broker/utils'
 
 const LEDGER_PER_PAGE = 5
 
@@ -45,7 +48,8 @@ export default {
   components: {
     NavBar,
     Connect,
-    Unlock
+    Unlock,
+    LedgerBridgeModal
   },
   data () {
     return {
@@ -56,12 +60,53 @@ export default {
       selectedAccounts: {},
       ledgerError: null,
       ledgerPage: 0,
-      selectedWalletType: null
+      selectedWalletType: null,
+      bridgeModalOpen: false
+    }
+  },
+  computed: {
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId',
+      'enabledAssets'
+    ]),
+    ...mapState({
+      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
+    }),
+    ...mapGetters(['networkAccounts']),
+    ledgerOptions () {
+      return LEDGER_OPTIONS
+    },
+    bitcoinOptions () {
+      return LEDGER_BITCOIN_OPTIONS
     }
   },
   methods: {
     getAssetIcon,
-    ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance']),
+    closeBridgeModal () {
+      this.loading = false
+      this.bridgeModalOpen = false
+    },
+    ...mapActions([
+      'createAccount',
+      'getLedgerAccounts',
+      'updateAccountBalance'
+    ]),
+    async tryToConnect ({ asset, walletType, page }) {
+      if (this.usbBridgeTransportCreated) {
+        await this.connect({ asset, walletType, page })
+      } else {
+        this.loading = true
+        this.bridgeModalOpen = true
+        this.$store.subscribe(async ({ type, payload }) => {
+          if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
+          payload.created === true) {
+            this.bridgeModalOpen = false
+            await this.connect({ asset, walletType, page })
+          }
+        })
+      }
+    },
     async connect ({ asset, walletType, page }) {
       this.selectedAsset = asset
       this.loading = true
@@ -70,6 +115,7 @@ export default {
 
       try {
         if (asset) {
+          const _walletType = walletType || asset.types[0]
           let currentPage = (page || 0)
 
           if (currentPage <= 0) {
@@ -80,21 +126,15 @@ export default {
             network: this.activeNetwork,
             walletId: this.activeWalletId,
             asset: asset.name,
-            walletType: walletType || asset.types[0],
+            walletType: _walletType,
             startingIndex,
-            numAddresses: LEDGER_PER_PAGE
+            numAccounts: LEDGER_PER_PAGE
           }
           this.currentStep = 'unlock'
 
           const accounts = await this.getLedgerAccounts(payload)
-
           if (accounts && accounts.length > 0) {
-            this.accounts = accounts.map((account, index) => {
-              return {
-                account,
-                index: index + startingIndex
-              }
-            })
+            this.accounts = accounts
             this.ledgerPage = currentPage
           } else {
             this.ledgerError = { message: 'No accounts found' }
@@ -126,15 +166,15 @@ export default {
             this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
 
           const assets = assetKeys.filter((asset) => {
-            const assetChain = getChainFromAsset(asset)
-            return assetChain === this.selectedAsset.chain
+            return cryptoassets[asset].chain === this.selectedAsset.chain
           })
 
           for (const key in this.selectedAccounts) {
             const item = this.selectedAccounts[key]
 
+            const index = item.index + 1
             const account = {
-              name: `Ledger ${this.selectedAsset.name} ${item.index}`,
+              name: `Ledger ${this.selectedAsset.name} ${index}`,
               chain,
               addresses: [item.account.address],
               assets,
@@ -200,15 +240,6 @@ export default {
   },
   created () {
     this.selectedAsset = this.ledgerOptions[0]
-  },
-  computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets']),
-    ledgerOptions () {
-      return LEDGER_OPTIONS
-    },
-    bitcoinOptions () {
-      return LEDGER_BITCOIN_OPTIONS
-    }
   }
 }
 </script>

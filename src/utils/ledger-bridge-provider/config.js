@@ -19,7 +19,7 @@ export const LEDGER_OPTIONS = [
     name: 'ETH',
     label: 'ETH',
     types: ['ethereum_ledger'],
-    chain: 'ETH'
+    chain: 'ethereum'
   },
   {
     name: 'BTC',
@@ -28,6 +28,12 @@ export const LEDGER_OPTIONS = [
       'bitcoin_ledger_nagive_segwit',
       'bitcoin_ledger_legacy'
     ],
-    chain: 'BTC'
+    chain: 'bitcoin'
+  },
+  {
+    name: 'RBTC',
+    label: 'RSK',
+    types: ['rsk_ledger'],
+    chain: 'rsk'
   }
 ]

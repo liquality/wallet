@@ -10,8 +10,8 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon" /></div>
-          <label>Your Current {{asset}} Address</label>
-          <p class="receive_address">{{address}}
+          <label id="your_current_asset_address">Your Current {{asset}} Address</label>
+          <p class="receive_address" id="receive_address">{{address}}
             <CopyIcon
                   class="copy-icon"
                   @click="copy"
@@ -22,10 +22,10 @@
                 />
           </p>
           <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
-          <div v-if="qrcode" v-html="qrcode" class="receive_qr"></div>
+          <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
           <div v-if="faucet" class="testnet_message">
             <div>{{ faucet.name }} testnet faucet</div>
-            <div>
+            <div id="receive_url">
               <a :href="faucet.url"
                  target="_blank">
                  {{ faucet.url }}
@@ -38,11 +38,11 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`">
-            <button class="btn btn-light btn-outline-primary btn-lg">
+            <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">
               Done
             </button>
           </router-link>
-          <button class="btn btn-primary btn-lg btn-icon" @click="copy">
+          <button class="btn btn-primary btn-lg btn-icon" id="copy_address_button" @click="copy">
             <template v-if="copied"><TickIcon /> Copied!</template>
             <template v-else><CopyWhiteIcon class="no-stroke"/> Copy Address</template>
           </button>
@@ -55,15 +55,13 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import QRCode from 'qrcode'
-import {
-  getAssetIcon,
-  getChainFromAsset
-} from '@/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -95,19 +93,25 @@ export default {
       return this.$route.query.source || null
     },
     chainName () {
-      const assetChain = getChainFromAsset(this.asset)
       return ({
-        BTC: 'bitcoin',
-        ETH: 'ethereum',
-        RBTC: 'ethereum'
-      })[assetChain]
+        bitcoin: 'bitcoin',
+        ethereum: 'ethereum',
+        near: 'near',
+        rsk: 'ethereum',
+        bsc: 'ethereum',
+        polyon: 'ethereum'
+      })[cryptoassets[this.asset].chain]
     },
     faucet () {
       if (this.activeNetwork === 'testnet') {
         return ({
           BTC: { name: 'Bitcoin', url: 'https://testnet-faucet.mempool.co/' },
           ETH: { name: 'Ether', url: 'https://faucet.rinkeby.io/' },
-          RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' }
+          RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' },
+          BNB: { name: 'BNB', url: 'https://testnet.binance.org/faucet-smart/' },
+          NEAR: { name: 'NEAR', url: '' },
+          MATIC: { name: 'MATIC', url: 'https://faucet.matic.network/' },
+          ARBETH: { name: 'ARBETH', url: 'https://faucet.rinkeby.io/' }
         })[this.asset]
       }
       return null
@@ -115,10 +119,10 @@ export default {
   },
   async created () {
     if (this.account && this.account.type.includes('ledger')) {
-      this.address = cryptoassets[this.asset]?.formatAddress(this.account.addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0])
     } else {
       const addresses = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
-      this.address = cryptoassets[this.asset]?.formatAddress(addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(addresses[0])
     }
 
     const uri = [
@@ -161,7 +165,7 @@ export default {
     width: 196px;
   }
   &_address {
-    font-size: $font-size-xs;
+    font-size: 0.74rem;
     font-weight: lighter;
   }
 

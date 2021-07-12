@@ -1,0 +1,82 @@
+on:
+  pull_request:
+    branches:
+      - dev
+
+name: Build test
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Build project
+        uses: actions/setup-node@v2-beta
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
+        with:
+          node-version: 14.1.0
+
+      - name: Install puppeteer display dependencies
+        if: always()
+        run: |
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 xorg openbox xauth x11vnc fluxbox fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1
+          export DISPLAY=:0.0
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+
+      - uses: actions/cache@v1
+        env:
+          node-version: 14.1.0
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
+
+      - name: Set development manifest
+        run: |
+          jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
+          mv ./src/manifest.tmp ./src/manifest.json
+
+      - name: Set development agents
+        run: |
+          sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
+      - run: |
+          npm ci
+          npm run lint
+          npm run build
+
+      - name: screenshots directory
+        if: always()
+        run: |
+          mkdir screenshots
+
+      - name: ===>> TestNet integration tests ==>>>
+        uses: mujo-code/puppeteer-headful@master
+        env:
+          node-version: 14.1.0
+          CI: 'true'
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: npm run test:testnet
+
+      - name: Archive Mocha HTML report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: mocha-html-test-report
+          path: mochawesome-report
+
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots
+
+
+

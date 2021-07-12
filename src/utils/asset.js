@@ -1,7 +1,8 @@
-import cryptoassets from '../utils/cryptoassets'
+import { chains, isEthereumChain as _isEthereumChain } from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 
 const EXPLORERS = {
-  ETH: {
+  ethereum: {
     testnet: {
       tx: 'https://rinkeby.etherscan.io/tx/0x',
       address: 'https://rinkeby.etherscan.io/address/'
@@ -11,7 +12,7 @@ const EXPLORERS = {
       address: 'https://etherscan.io/address/'
     }
   },
-  BTC: {
+  bitcoin: {
     testnet: {
       tx: 'https://blockstream.info/testnet/tx/',
       address: 'https://blockstream.info/testnet/address/'
@@ -21,7 +22,7 @@ const EXPLORERS = {
       address: 'https://blockstream.info/address/'
     }
   },
-  RBTC: {
+  rsk: {
     testnet: {
       tx: 'https://explorer.testnet.rsk.co/tx/0x',
       address: 'https://explorer.testnet.rsk.co/address/'
@@ -31,7 +32,7 @@ const EXPLORERS = {
       address: 'https://explorer.rsk.co/address/'
     }
   },
-  BNB: {
+  bsc: {
     testnet: {
       tx: 'https://testnet.bscscan.com/tx/',
       address: 'https://testnet.bscscan.com/address/'
@@ -39,6 +40,36 @@ const EXPLORERS = {
     mainnet: {
       tx: 'https://bscscan.com/tx/',
       address: 'https://bscscan.com/address/'
+    }
+  },
+  polygon: {
+    testnet: {
+      tx: 'https://explorer-mumbai.maticvigil.com/tx/0x',
+      address: 'https://explorer-mumbai.maticvigil.com/address/0x'
+    },
+    mainnet: {
+      tx: 'https://explorer-mainnet.maticvigil.com/tx/0x',
+      address: 'https://explorer-mainnet.maticvigil.com/address/0x'
+    }
+  },
+  near: {
+    testnet: {
+      tx: 'https://explorer.testnet.near.org/transactions/',
+      address: 'https://explorer.testnet.near.org/accounts/'
+    },
+    mainnet: {
+      tx: 'https://explorer.mainnet.near.org/transactions/',
+      address: 'https://explorer.mainnet.near.org/accounts/'
+    }
+  },
+  arbitrum: {
+    testnet: {
+      tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x',
+      address: 'https://rinkeby-explorer.arbitrum.io/address/0x'
+    },
+    mainnet: {
+      tx: 'https://explorer.arbitrum.io/tx/0x',
+      address: 'https://explorer.arbitrum.io/address/0x'
     }
   }
 }
@@ -48,16 +79,24 @@ export const isERC20 = asset => {
 }
 
 export const isEthereumChain = asset => {
-  return ['ETH', 'RBTC', 'BNB'].includes(asset)
+  const chain = cryptoassets[asset]?.chain
+  return _isEthereumChain(chain)
 }
 
-export const getChainFromAsset = asset => {
-  if (isERC20(asset)) {
-    if (cryptoassets[asset]?.network === 'ethereum') return 'ETH'
-    if (cryptoassets[asset]?.network === 'rsk') return 'RBTC'
+export const isEthereumNativeAsset = asset => {
+  const chainId = cryptoassets[asset]?.chain
+  if (chainId &&
+    _isEthereumChain(chainId) &&
+    chains[chainId].nativeAsset === asset) {
+    return true
   }
 
-  return asset
+  return false
+}
+
+export const getNativeAsset = asset => {
+  const chainId = cryptoassets[asset]?.chain
+  return chainId ? chains[chainId].nativeAsset : asset
 }
 
 export const getAssetColorStyle = asset => {
@@ -70,23 +109,32 @@ export const getAssetColorStyle = asset => {
 }
 
 export const getTransactionExplorerLink = (hash, asset, network) => {
-  const chain = getChainFromAsset(asset)
-  return `${EXPLORERS[chain][network].tx}${hash}`
+  const transactionHash = getExplorerTransactionHash(asset, hash)
+  const chain = cryptoassets[asset].chain
+  return `${EXPLORERS[chain][network].tx}${transactionHash}`
 }
 
 export const getAddressExplorerLink = (address, asset, network) => {
-  const chain = getChainFromAsset(asset)
+  const chain = cryptoassets[asset].chain
   return `${EXPLORERS[chain][network].address}${address}`
 }
 
-export const getAssetIcon = (asset) => {
+export const getAssetIcon = (asset, extension = 'svg') => {
   try {
-    return require(`../assets/icons/assets/${asset.toLowerCase()}.svg?inline`)
+    return require(`../assets/icons/assets/${asset.toLowerCase()}.${extension}?inline`)
   } catch (e) {
     try {
       return require(`../../node_modules/cryptocurrency-icons/svg/color/${asset.toLowerCase()}.svg?inline`)
     } catch (e) {
       return require('../assets/icons/blank_asset.svg?inline')
     }
+  }
+}
+
+export const getExplorerTransactionHash = (asset, hash) => {
+  switch (asset) {
+    case 'NEAR':
+      return hash.split('_')[0]
+    default: return hash
   }
 }

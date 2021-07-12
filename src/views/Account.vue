@@ -7,6 +7,7 @@
       <div class="account-content-top">
         <RefreshIcon @click.stop="refresh"
                      class="account-container_refresh-icon"
+                     id="refresh-icon"
                      :class="{ 'infinity-rotate': updatingBalances }"
         />
         <div class="account-container_balance">
@@ -32,13 +33,13 @@
           </button>
         </div>
         <div class="account-container_actions">
-          <router-link :to="`/accounts/${accountId}/${asset}/send`"><button class="account-container_actions_button">
+          <router-link :to="`/accounts/${accountId}/${asset}/send`"><button class="account-container_actions_button" id="send">
             <div class="account-container_actions_button_wrapper"><SendIcon class="account-container_actions_button_icon" /></div>Send
           </button></router-link>
-          <router-link :to="`/accounts/${accountId}/${asset}/swap`"><button class="account-container_actions_button">
+          <router-link :to="`/accounts/${accountId}/${asset}/swap`"><button class="account-container_actions_button" id="swap">
             <div class="account-container_actions_button_wrapper"><SwapIcon class="account-container_actions_button_icon account-container_actions_button_swap" /></div>Swap
           </button></router-link>
-          <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`"><button class="account-container_actions_button">
+          <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`"><button class="account-container_actions_button" id="receive">
             <div class="account-container_actions_button_wrapper"><ReceiveIcon class="account-container_actions_button_icon" /></div>Receive
           </button></router-link>
         </div>
@@ -59,6 +60,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
@@ -150,10 +152,10 @@ export default {
   },
   async created () {
     if (this.account && this.account.type.includes('ledger')) {
-      this.address = cryptoassets[this.asset]?.formatAddress(this.account.addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0])
     } else {
       const addresses = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
-      this.address = cryptoassets[this.asset]?.formatAddress(addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(addresses[0])
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]

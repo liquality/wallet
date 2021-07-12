@@ -10,7 +10,7 @@
             <div class="swap-receive-top-amount">
               <div
                 class="btn btn-option label-append"
-                @click="toogleShowAmountsFiat"
+                @click="toggleShowAmountsFiat"
               >
                 <span
                   v-if="showAmountsInFiat"
@@ -19,7 +19,7 @@
                   {{ `${toAsset} ${receiveAmount}` }}
                 </span>
                 <span v-else>
-                  {{ receiveAmountFiat }}
+                  ${{ formatFiat(receiveAmountFiat) }}
                 </span>
               </div>
             </div>
@@ -28,67 +28,34 @@
             v-if="showAmountsInFiat"
             type="text"
             class="form-control swap-receive-main-input"
-            :value="receiveAmountFiat"
+            :value="receiveAmountFiatValue"
             @input="$emit('update:receiveAmountFiat', $event.target.value)"
             placeholder="0.00"
             autocomplete="off"
-            :disabled="!hasMarket"
+            :disabled="disabled"
           />
           <input
             v-else
             type="number"
             class="form-control swap-receive-main-input"
-            :value="receiveAmount"
-            @input="$emit('update:receiveAmount', $event.target.value)"
-            placeholder="0.00"
+            :value="receiveAmountValue"
+            placeholder=""
             :style="getAssetColorStyle(toAsset)"
             autocomplete="off"
-            :disabled="!hasMarket"
+            :disabled="disabled"
           />
         </div>
-        <div class="swap-receive-main-icon" @click="assetIconClick">
-          <img :src="getAssetIcon(toAsset)" class="asset-icon" />
-          <span class="asset-name">
-            {{ toAsset }}
-          </span>
-          <div>
-            <ChevronRightIcon />
+        <AccountTooltip :account="account" :asset="toAsset">
+          <div class="swap-receive-main-icon" @click="assetIconClick">
+            <img :src="getAssetIcon(toAsset)" class="asset-icon" />
+            <span class="asset-name">
+              {{ toAsset }}
+            </span>
+            <div>
+              <ChevronRightIcon />
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <div class="swap-receive-bottom" v-if="!enterSendToAddress">
-      <small
-        class="form-text d-flex align-items-center justify-content-between"
-      >
-        <a @click="enterSendToAddress = true">
-          + Receive at external wallet
-        </a>
-      </small>
-    </div>
-    <div class="swap-receive-bottom" v-if="enterSendToAddress">
-      <label
-        class="w-100 d-flex align-items-center justify-content-between"
-        for="sendTo"
-      >
-        <div>Receive at</div>
-        <div>
-          <CloseIcon
-            class="float-right icon-sm icon-btn"
-            @click="closeReceiveAt"
-          />
-        </div>
-      </label>
-      <div class="input-group">
-        <input
-          type="text"
-          :value="sendTo"
-          @input="$emit('update:sendTo', $event.target.value)"
-          class="form-control form-control-sm"
-          id="to"
-          placeholder="External Receiving Address"
-          autocomplete="off"
-        />
+        </AccountTooltip>
       </div>
     </div>
   </div>
@@ -96,37 +63,42 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import CloseIcon from '@/assets/icons/close.svg'
+import { formatFiat, dpUI } from '@/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
+import AccountTooltip from '@/components/AccountTooltip'
 
 export default {
   components: {
-    CloseIcon,
-    ChevronRightIcon
+    ChevronRightIcon,
+    AccountTooltip
   },
   data () {
     return {
-      enterSendToAddress: false,
       showAmountsInFiat: false
     }
   },
   props: [
+    'account',
     'toAsset',
-    'sendTo',
     'receiveAmount',
     'receiveAmountFiat',
-    'hasMarket'
+    'disabled'
   ],
   created () {},
+  computed: {
+    receiveAmountFiatValue () {
+      return '$' + dpUI(this.receiveAmountFiat, 2)
+    },
+    receiveAmountValue () {
+      return this.receiveAmount.gt(0) ? dpUI(this.receiveAmount) : ''
+    }
+  },
   methods: {
+    formatFiat,
     getAssetColorStyle,
     getAssetIcon,
-    toogleShowAmountsFiat () {
+    toggleShowAmountsFiat () {
       this.showAmountsInFiat = !this.showAmountsInFiat
-    },
-    closeReceiveAt () {
-      this.enterSendToAddress = false
-      this.$emit('update:sendTo', null)
     },
     assetIconClick () {
       this.$emit('to-asset-click')

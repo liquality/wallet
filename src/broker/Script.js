@@ -18,8 +18,6 @@ class Script {
       const { id, type, data } = event.data
       if (!id || !type) return
 
-      this.emitter.once(id, result => window.dispatchEvent(new CustomEvent(id, { detail: JSON.stringify(result) })))
-
       this.background.postMessage({
         id,
         type,
@@ -29,7 +27,7 @@ class Script {
   }
 
   onMessage ({ id, data }) {
-    this.emitter.emit(id, data)
+    window.dispatchEvent(new CustomEvent(id, { detail: JSON.stringify(data) }))
   }
 }
 

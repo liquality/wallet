@@ -46,7 +46,7 @@
         </div>
         <ListItem v-for="(filter, key) in typeFilters"
                   :key="key"
-                  @item-selected="toogleTypeFilter(key)"
+                  @item-selected="toggleTypeFilter(key)"
                   :container-class="filter.selected ? 'selected-item' : ''"
                   :item-class="'h-padding'"
                   h-padding
@@ -66,7 +66,7 @@
         </div>
         <ListItem v-for="(filter, key) in statusFilters"
                   :key="key"
-                  @item-selected="toogleStatusFilter(key)"
+                  @item-selected="toggleStatusFilter(key)"
                   :item-class="filter.selected ? 'selected-item' : ''"
                   :item-styles="{ height: '40px', paddingTop: '10px', paddingBottom: '10px'}">
             <template #icon>
@@ -91,7 +91,7 @@ import ListItem from '@/components/ListItem'
 import { ACTIVITY_FILTER_TYPES, ACTIVITY_STATUSES, getItemIcon } from '@/utils/history'
 import DatePick from 'vue-date-pick'
 import '@/assets/scss/vue-date-pick.scss'
-import { getCSVContent, exportToCSV } from '@/utils/export'
+import { getCSVContent, downloadFile } from '@/utils/export'
 
 const CSV_HEADERS = [
   {
@@ -125,10 +125,6 @@ const CSV_HEADERS = [
   {
     label: 'To',
     key: 'toAddress'
-  },
-  {
-    label: 'Send To',
-    key: 'sendTo'
   },
   {
     label: 'Send Amount',
@@ -203,16 +199,15 @@ export default {
   },
   methods: {
     getCSVContent,
-    exportToCSV,
     getItemIcon,
-    toogleTypeFilter (key) {
+    toggleTypeFilter (key) {
       if (key in this.typeFilters) {
         this.typeFilters[key].selected = !this.typeFilters[key].selected
         this.typeFilters = { ...this.typeFilters }
         this.applyFilters()
       }
     },
-    toogleStatusFilter (key) {
+    toggleStatusFilter (key) {
       if (key in this.statusFilters) {
         this.statusFilters[key].selected = !this.statusFilters[key].selected
         this.statusFilters = { ...this.statusFilters }
@@ -221,7 +216,7 @@ export default {
     },
     exportActivity () {
       const content = this.getCSVContent(this.activityData, this.headers)
-      this.exportToCSV({ filename: 'activity.csv', content })
+      downloadFile({ filename: 'activity.csv', type: 'text/csv;charset=utf-8;', content })
     },
     resetFilters () {
       this.dateFilters = { start: null, end: null }

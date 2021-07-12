@@ -8,19 +8,19 @@
         <div class="row">
           <div class="col">
             <h2>Sent</h2>
-            <p>{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</p>
+            <p id="transaction_detail_sent_amount">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</p>
           </div>
         </div>
         <div class="row">
-          <div class="col tx-details_link">
+          <div class="col tx-details_link" id="send_to_tx_details_link">
             <h2>Sent To</h2>
             <p>
-              <a :href="addressLink" target="_blank">{{ item.toAddress }}</a>
+              <a :href="addressLink" target="_blank" id="transaction_details_send_to_link">{{ item.toAddress }}</a>
               <CopyIcon @click="copy(item.toAddress)" />
             </p>
           </div>
         </div>
-        <div class="row">
+        <div class="row" id="transaction_details_network_speed_fee">
           <div class="col">
             <h2>Network Speed/Fee</h2>
             <p>
@@ -38,7 +38,6 @@
                 :asset="item.from"
                 v-model="selectedFee"
                 v-bind:fees="assetFees"
-                v-bind:txTypes="[txType]"
                 v-bind:fiatRates="fiatRates"
               />
               <button
@@ -59,13 +58,13 @@
             </div>
           </div>
         </div>
-        <div class="row">
+        <div class="row" id="transaction_details_date_time">
           <div class="col">
             <h2>Time</h2>
             <p>{{ prettyTime(item.endTime || item.startTime) }}</p>
           </div>
         </div>
-        <div class="row">
+        <div class="row" id="transaction_details_status">
           <div class="col-10">
             <h2>Status</h2>
             <p>
@@ -86,10 +85,10 @@
           </div>
         </div>
         <div class="row">
-          <div class="col tx-details_link">
+          <div class="col tx-details_link" id="transaction_details_transaction_id">
             <h2>Transaction ID</h2>
             <p>
-              <a :href="transactionLink" target="_blank">{{ item.txHash }}</a>
+              <a :href="transactionLink" target="_blank" id="transactionLink">{{ item.txHash }}</a>
               <CopyIcon @click="copy(item.txHash)" />
             </p>
           </div>
@@ -103,12 +102,12 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import moment from '@/utils/moment'
 import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStatusLabel } from '@/utils/history'
-import { TX_TYPES } from '@/utils/fees'
 import {
-  getChainFromAsset,
+  getNativeAsset,
   getTransactionExplorerLink,
   getAddressExplorerLink
 } from '@/utils/asset'
@@ -146,7 +145,7 @@ export default {
       'fiatRates'
     ]),
     assetChain () {
-      return getChainFromAsset(this.item.from)
+      return getNativeAsset(this.item.from)
     },
     item () {
       return this.history[this.activeNetwork][this.activeWalletId].find(
@@ -157,7 +156,7 @@ export default {
       return getStatusLabel(this.item)
     },
     feeUnit () {
-      return cryptoassets[this.assetChain].fees.unit
+      return chains[cryptoassets[this.item.from].chain].fees.unit
     },
     addressLink () {
       return getAddressExplorerLink(
@@ -187,14 +186,11 @@ export default {
     },
     feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
-    },
-    txType () {
-      return TX_TYPES.SEND
     }
   },
   methods: {
-    ...mapActions(['retrySwap', 'updateTransactionFee', 'updateFees']),
-    getChainFromAsset,
+    ...mapActions(['updateTransactionFee', 'updateFees']),
+    getNativeAsset,
     prettyBalance,
     prettyTime (timestamp) {
       return moment(timestamp).format('L, LT')

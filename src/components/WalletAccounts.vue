@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div v-for="account in filteredItems" :key="account.id">
-      <ListItem v-if="account.chain === 'BTC'"
+    <div v-for="account in filteredItems" :key="account.id" :id="account.chain.toUpperCase()">
+      <ListItem v-if="account.chain === 'bitcoin'"
                 @item-selected="selectItem(account)">
           <template #prefix>
             <div class="account-color"
@@ -9,7 +9,7 @@
             </div>
           </template>
           <template #icon>
-            <img :src="getAssetIcon(account.chain)"
+            <img :src="getAccountIcon(account.chain)"
                  class="asset-icon" />
           </template>
           {{ account.name }}
@@ -22,7 +22,7 @@
                    v-if="account.type && account.type.includes('ledger')">
               Ledger
             </div>
-            <div>
+            <div :id="account.assets[0]">
               {{ prettyBalance(account.balances[account.assets[0]], account.assets[0]) }} {{account.assets[0]}}
             </div>
             </div>
@@ -33,7 +33,7 @@
       </ListItem>
       <div v-else>
         <ListItem
-          @item-selected="toogleShowAccountAssets(account.id)"
+          @item-selected="toggleShowAccountAssets(account.id)"
         >
           <template #prefix>
              <div class="account-color"
@@ -66,6 +66,7 @@
       <div class="account-assets"
            :class="{ active: showAccountAssets[account.id] === true}">
         <ListItem v-for="asset in account.assets"
+                  :id="asset"
                  :key="asset"
                  @item-selected="selectItem(account, asset)">
           <template #prefix>
@@ -77,7 +78,7 @@
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </template>
           {{ getAssetName(asset) }}
-          <template #detail v-if="account.balances[asset]">
+          <template #detail>
             {{ prettyBalance(account.balances[asset], asset) }} {{asset}}
           </template>
           <template #detail-sub v-if="account.fiatBalances[asset]">
@@ -94,6 +95,7 @@
 import ListItem from '@/components/ListItem'
 import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
+import { getAccountIcon } from '@/utils/accounts'
 import cryptoassets from '@/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
@@ -113,47 +115,45 @@ export default {
     }
   },
   methods: {
+    getAccountIcon,
     getAssetIcon,
     prettyBalance,
     formatFiat,
     shortenAddress,
-    getAccountIcon (assetChain) {
-      if (['ETH', 'RBTC'].includes(assetChain)) {
-        return {
-          ETH: getAssetIcon('eth_account'),
-          RBTC: getAssetIcon('rsk_account')
-        }[assetChain]
-      }
-      return getAssetIcon(assetChain)
-    },
     getAssetName (asset) {
       return cryptoassets[asset] ? cryptoassets[asset].name : asset
     },
-    toogleShowAccountAssets (id) {
+    toggleShowAccountAssets (id) {
       this.showAccountAssets[id] = !this.showAccountAssets[id]
     },
     selectItem (account, asset) {
       this.$emit('item-selected', { account, asset })
     },
-    makeSearch (newSearch, oldSearch) {
-      if (newSearch && newSearch !== oldSearch) {
+    makeSearch (newSearch) {
+      if (newSearch) {
         this.filteredItems = this.accounts.filter(
-          account =>
-            account.chain.toUpperCase().includes(newSearch.toUpperCase()) ||
-            account.assets.includes(newSearch.toUpperCase())
+          account => {
+            const search = newSearch.toUpperCase()
+            return account.chain?.toUpperCase().includes(search) ||
+                   account.assets.includes(search) ||
+                   account.name?.toUpperCase().includes(search)
+          }
         )
       } else {
         this.filteredItems = [...this.accounts]
       }
     },
     onUpdateAccounts () {
-      this.showAccountAssets = this.accounts.map(a => a.id).reduce(
-        (accum, id) => {
-          return {
-            ...accum,
-            [id]: false
-          }
-        }, {})
+      this.showAccountAssets = {
+        ...this.accounts.map(a => a.id).reduce(
+          (accum, id) => {
+            return {
+              ...accum,
+              [id]: false
+            }
+          }, {}),
+        ...this.showAccountAssets
+      }
 
       this.makeSearch(this.search)
     }
@@ -163,8 +163,8 @@ export default {
   },
   watch: {
     search (newSearch, oldSearch) {
-      if (newSearch && newSearch !== oldSearch) {
-        this.makeSearch(newSearch, oldSearch)
+      if (newSearch !== oldSearch) {
+        this.makeSearch(newSearch)
       }
     },
     accounts () {

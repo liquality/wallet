@@ -1,6 +1,6 @@
 
 import { random } from 'lodash-es'
-import { unlockAsset, wait } from '../../utils'
+import { unlockAsset } from '../../utils'
 
 export async function withLock ({ dispatch }, { item, network, walletId, asset }, func) {
   const lock = await dispatch('getLockForAsset', { item, network, walletId, asset })
@@ -25,24 +25,4 @@ export async function withInterval (func) {
       }
     }, random(15000, 30000))
   })
-}
-
-export async function hasChainTimePassed ({ getters }, { network, walletId, asset, timestamp }) {
-  const client = getters.client(network, walletId, asset)
-  const maxTries = 3
-  let tries = 0
-  while (tries < maxTries) {
-    try {
-      const blockNumber = await client.chain.getBlockHeight()
-      const latestBlock = await client.chain.getBlockByNumber(blockNumber)
-      return latestBlock.timestamp > timestamp
-    } catch (e) {
-      tries++
-      if (tries >= maxTries) throw e
-      else {
-        console.warn(e)
-        await wait(2000)
-      }
-    }
-  }
 }

@@ -14,13 +14,16 @@
         <li>
           On the device, navigate to the asset that you want to access
         </li>
+        <li v-if="selectedAsset.name === 'ETH'">
+          To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Allow Contract Data'
+        </li>
       </ul>
       <div class="options">
         <div class="options-text">
           <span>Select the same asset here</span>
         </div>
         <div class="dropdown" v-click-away="hideAssetList">
-          <button class="btn dropdown-toggle lg" @click="toogleAssetList">
+          <button class="btn dropdown-toggle lg" @click="toggleAssetList">
             <div class="form" v-if="selectedAsset">
               <div class="input-group">
                 <img
@@ -101,7 +104,6 @@ export default {
     getAssetIcon,
     connect () {
       if (this.selectedAsset) {
-        console.log('connect on Connect')
         this.$emit('on-connect', { asset: this.selectedAsset })
       }
     },
@@ -112,7 +114,7 @@ export default {
       this.$emit('on-select-asset', asset)
       this.hideAssetList()
     },
-    toogleAssetList () {
+    toggleAssetList () {
       this.assetsDropdownOpen = !this.assetsDropdownOpen
     },
     hideAssetList () {
@@ -128,4 +130,5 @@ export default {
 </script>
 
 <style lang="scss">
+
 </style>

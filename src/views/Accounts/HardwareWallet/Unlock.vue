@@ -20,7 +20,7 @@
         <div class="btn-group" v-click-away="hideLedgerBitcoinOptions">
           <button class="btn dropdown-toggle custom-dropdown-toggle"
                   :disabled="loading"
-                  @click="toogleLedgerBitcoinOptions">
+                  @click="toggleLedgerBitcoinOptions">
             BTC Version (HD Path): {{ ledgerBitcoinOption.label }}
             <ChevronUpIcon v-if="ledgerBitcoinOptionsOpen" />
             <ChevronDownIcon v-else />
@@ -49,7 +49,7 @@
             Select Account
           </span>
           <p v-if="selectedAsset">
-            <img :src="getAssetIcon(selectedAsset.chain)"
+            <img :src="getAccountIcon(selectedAsset.chain)"
                   class="asset-icon" />
              {{ accountsLabel }} Accounts
           </p>
@@ -58,12 +58,15 @@
               <tbody>
                 <tr
                   @click="selectAccount(item)"
+                  :class="{disabled: item.exists}"
                   v-for="item in accounts"
                   :key="item.account.address"
                 >
                   <td class="account-index">{{ (item.index + 1) }}</td>
                   <td class="account-address">
-                    <div v-tooltip.top="{ content: item.account.address }">
+                    <div v-tooltip.top="{
+                      content: item.exists ? `This account is already connected: ${item.account.address}` : item.account.address
+                    }">
                       {{ shortenAddress(item.account.address) }}
                     </div>
                   </td>
@@ -74,17 +77,17 @@
                 </tr>
               </tbody>
             </table>
-          <!-- <div class="account-nav" v-if="accounts && accounts.length > 5">
-            <button class="btn btn-link" @click="prev" :disabled="currentPage <=0">
-              Previous
-            </button>
+            <div class="account-nav">
+              <button class="btn btn-link" @click="prev" :disabled="currentPage <= 0">
+                Previous
+              </button>
 
-            <button class="btn btn-link"  @click="next">
-              Next
-            </button>
-          </div> -->
+              <button class="btn btn-link"  @click="next">
+                Next
+              </button>
+            </div>
           </div>
-          <div v-else class="no-accounts">
+          <div v-else class="account-message">
             {{ ledgerError && ledgerError.message ? ledgerError.message : 'No Accounts Found' }}
           </div>
         </div>
@@ -123,7 +126,7 @@
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { LEDGER_BITCOIN_OPTIONS } from '@/utils/ledger-bridge-provider'
 import clickAway from '@/directives/clickAway'
-import { getAssetIcon } from '@/utils/asset'
+import { getAccountIcon } from '@/utils/accounts'
 import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
@@ -159,18 +162,19 @@ export default {
     this.ledgerBitcoinOption = this.ledgerBitcoinOptions[0]
   },
   methods: {
-    getAssetIcon,
+    getAccountIcon,
     shortenAddress,
     unlock () {
       const walletType = this.getWalletType()
       this.$emit('on-unlock', { walletType })
     },
     selectAccount (item) {
-      this.$emit('on-select-account', item)
+      if (!item.exists) {
+        this.$emit('on-select-account', item)
+      }
     },
     connect (nextPage) {
       const walletType = this.getWalletType()
-      console.log('connect on Unlock')
       this.$emit('on-connect',
         {
           asset: this.selectedAsset,
@@ -194,7 +198,7 @@ export default {
       this.ledgerBitcoinOption = option
       this.hideLedgerBitcoinOptions()
     },
-    toogleLedgerBitcoinOptions () {
+    toggleLedgerBitcoinOptions () {
       this.ledgerBitcoinOptionsOpen = !this.ledgerBitcoinOptionsOpen
     },
     hideLedgerBitcoinOptions () {
@@ -248,9 +252,26 @@ export default {
     }
   }
 
-  .accounts-table {
+  .account-message {
     position: absolute;
     left: 0;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    color: #1D1E21;
+    height: 55px;
+    background-color: rgba($color: #FFF3BC, $alpha: 0.5);
+    padding: 5px 20px 5px 20px;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 16px;
+  }
+
+  .accounts-table {
     tr {
       height: 35px;
       cursor: pointer;
@@ -268,6 +289,14 @@ export default {
         display: flex;
         width: 100%;
         height: 100%;
+      }
+    }
+
+    tr.disabled {
+      cursor: default;
+      .account-index,
+      .account-address {
+        color: $color-text-muted;
       }
     }
 

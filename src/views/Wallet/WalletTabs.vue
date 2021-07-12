@@ -4,6 +4,7 @@
     <li class="nav-item">
       <router-link
         class="nav-link"
+        id="asserts_tab"
         :to="{ name: 'WalletAssets' }"
       >
         Assets
@@ -12,6 +13,7 @@
     <li class="nav-item">
       <router-link
         class="nav-link"
+        id="activity_tab"
         :to="{ name: 'WalletActivity' }"
       >
         Activity
@@ -19,15 +21,13 @@
     </li>
   </ul>
    <div class="wallet-tab-content">
-     <span v-if="loading">Loading ...</span>
-      <router-view v-else></router-view>
+      <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['loading']
 }
 </script>
 

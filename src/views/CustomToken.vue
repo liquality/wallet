@@ -23,38 +23,54 @@
           <input type="text" v-model="decimals" class="form-control form-control-sm" id="decimals" autocomplete="off" required :disabled="autofilled">
         </div>
         <div class="form-group">
-          <label for="network">Network</label>
+          <label for="chain">Chain</label>
           <div class="dropdown">
             <button class="btn dropdown-toggle"
                     type="button"
-                    @click.stop="networkDropdownOpen = !networkDropdownOpen">
-              {{ network }}
-              <ChevronUpIcon v-if="networkDropdownOpen" />
+                    @click.stop="chainDropdownOpen = !chainDropdownOpen">
+              {{ chain }}
+              <ChevronUpIcon v-if="chainDropdownOpen" />
               <ChevronDownIcon v-else />
             </button>
-            <ul class="dropdown-menu" :class="{ show: networkDropdownOpen }">
+            <ul class="dropdown-menu" :class="{ show: chainDropdownOpen }">
               <li>
                 <a class="dropdown-item"
                    href="#"
-                   @click="setActiveNetwork('ethereum')"
-                   :class="{active: network === 'ethereum'}">
+                   @click="selectChain('ethereum')"
+                   :class="{active: chain === 'ethereum'}">
                    Ethereum
                 </a>
               </li>
               <li>
                 <a class="dropdown-item"
                    href="#"
-                   @click="setActiveNetwork('rsk')"
-                   :class="{active: network === 'rsk'}">
+                   @click="selectChain('rsk')"
+                   :class="{active: chain === 'rsk'}">
                    RSK
                 </a>
               </li>
               <li>
                 <a class="dropdown-item"
                    href="#"
-                   @click="setActiveNetwork('bsc')"
-                   :class="{active: network === 'bsc'}">
+                   @click="selectChain('bsc')"
+                   :class="{active: chain === 'bsc'}">
                    BSC
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   @click="selectChain('polygon')"
+                   :class="{active: chain === 'polygon'}">
+                   POLYGON
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item"
+                   href="#"
+                   @click="selectChain('arbitrum')"
+                   :class="{active: chain === 'arbitrum'}">
+                   ARBITRUM
                 </a>
               </li>
             </ul>
@@ -91,9 +107,9 @@ export default {
       name: null,
       symbol: null,
       decimals: null,
-      network: 'ethereum',
+      chain: 'ethereum',
       autofilled: false,
-      networkDropdownOpen: false
+      chainDropdownOpen: false
     }
   },
   computed: {
@@ -105,7 +121,7 @@ export default {
       return null
     },
     canAdd () {
-      if (!this.symbol || !this.name || !this.network || !this.contractAddress || !this.decimals) return false
+      if (!this.symbol || !this.name || !this.chain || !this.contractAddress || !this.decimals) return false
       if (this.symbolError) return false
 
       return true
@@ -123,7 +139,7 @@ export default {
         await this.addCustomToken({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
-          erc20Network: this.network,
+          chain: this.chain,
           contractAddress: this.contractAddress,
           name: this.name,
           symbol: this.symbol,
@@ -152,21 +168,21 @@ export default {
         try {
           const result = await axios.get(`https://api.ethplorer.io/getTokenInfo/${this.contractAddress}?apiKey=freekey`)
           const { symbol, name, decimals } = result.data
-          customToken = { symbol, name, decimals: parseInt(decimals), network: 'ethereum' }
+          customToken = { symbol, name, decimals: parseInt(decimals), chain: 'ethereum' }
         } catch (e) {}
       }
 
       if (customToken) {
         this.symbol = customToken.symbol
         this.name = customToken.name
-        this.network = customToken.network
+        this.chain = customToken.network
         this.decimals = customToken.decimals
         this.autofilled = true
       }
     },
-    setActiveNetwork (network) {
-      this.network = network
-      this.networkDropdownOpen = false
+    selectChain (chain) {
+      this.chain = chain
+      this.chainDropdownOpen = false
     }
   }
 }

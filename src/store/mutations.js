@@ -47,10 +47,10 @@ export default {
     state.wallets = wallets
     state.unlockedAt = unlockedAt
   },
-  NEW_ORDER (state, { network, walletId, order }) {
+  NEW_SWAP (state, { network, walletId, swap }) {
     ensureNetworkWalletTree(state.history, network, walletId, [])
 
-    state.history[network][walletId].push(order)
+    state.history[network][walletId].push(swap)
   },
   NEW_TRASACTION (state, { network, walletId, transaction }) {
     ensureNetworkWalletTree(state.history, network, walletId, [])
@@ -97,8 +97,8 @@ export default {
   UPDATE_MARKET_DATA (state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
   },
-  SET_ETHEREUM_INJECTION_ASSET (state, { asset }) {
-    state.injectEthereumAsset = asset
+  SET_ETHEREUM_INJECTION_CHAIN (state, { chain }) {
+    state.injectEthereumChain = chain
   },
   ENABLE_ETHEREUM_INJECTION (state) {
     state.injectEthereum = true
@@ -113,6 +113,49 @@ export default {
   DISABLE_ASSETS (state, { network, walletId, assets }) {
     ensureNetworkWalletTree(state.enabledAssets, network, walletId, [])
     Vue.set(state.enabledAssets[network], walletId, state.enabledAssets[network][walletId].filter(asset => !assets.includes(asset)))
+  },
+  DISABLE_ACCOUNT_ASSETS (state, { network, walletId, accountId, assets }) {
+    const accounts = state.accounts[walletId][network]
+    if (accounts) {
+      const index = accounts.findIndex(
+        (a) => a.id === accountId
+      )
+
+      if (index >= 0) {
+        const _account = accounts[index]
+        const { balances } = _account
+        const balanceAssets = Object.keys(balances).filter(asset => assets.includes(asset))
+        for (const asset of balanceAssets) {
+          delete balances[asset]
+        }
+        const updatedAccount = {
+          ..._account,
+          balances,
+          assets: _account.assets.filter(asset => !assets.includes(asset))
+        }
+
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
+      }
+    }
+    Vue.set(state.enabledAssets[network], walletId, state.enabledAssets[network][walletId].filter(asset => !assets.includes(asset)))
+  },
+  ENABLE_ACCOUNT_ASSETS (state, { network, walletId, accountId, assets }) {
+    const accounts = state.accounts[walletId][network]
+    if (accounts) {
+      const index = accounts.findIndex(
+        (a) => a.id === accountId
+      )
+
+      if (index >= 0) {
+        const _account = accounts[index]
+        const updatedAccount = {
+          ..._account,
+          assets: [..._account.assets.filter(asset => !assets.includes(asset)), ...assets]
+        }
+
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
+      }
+    }
   },
   ADD_CUSTOM_TOKEN (state, { network, walletId, customToken }) {
     ensureNetworkWalletTree(state.customTokens, network, walletId, [])
@@ -159,7 +202,6 @@ export default {
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
-        console.log(updatedAccount)
       }
     }
   },
@@ -187,7 +229,7 @@ export default {
         const _account = accounts[index]
         const updatedAccount = {
           ..._account,
-          addresses
+          addresses: [...new Set(addresses)]
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
@@ -196,5 +238,11 @@ export default {
   },
   SAVE_PASSWORD (state, { password }) {
     state.tempPassword = password
+  },
+  SET_USE_LEDGER_LIVE (state, { use }) {
+    state.useLedgerLive = use
+  },
+  SET_USB_BRIDGE_WINDOWS_ID (state, { id }) {
+    state.usbBridgeWindowsId = id
   }
 }

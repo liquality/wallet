@@ -1,16 +1,19 @@
-import cryptoassets from '@liquality/cryptoassets'
+import { assets as cryptoassets, unitToCurrency } from '@liquality/cryptoassets'
 import { createClient } from './factory/client'
-import buildConfig from '../build.config'
+import { createSwapProvider } from './factory/swapProvider'
 import { Object } from 'core-js'
 import BN from 'bignumber.js'
 import { cryptoToFiat } from '@/utils/coinFormatter'
 
 const clientCache = {}
+const swapProviderCache = {}
 
 const TESTNET_CONTRACT_ADDRESSES = {
-  DAI: '0xcE2748BE67fB4346654B4500c4BB0642536365FC'
+  DAI: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
+  SOV: '0x6a9A07972D07E58f0daF5122D11e069288A375fB',
+  PWETH: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa'
 }
-const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB'].reduce((assets, asset) => {
+const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'MATIC', 'PWETH', 'ARBETH'].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
       ...cryptoassets[asset],
@@ -20,21 +23,33 @@ const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB'].reduce((assets, asse
 }, {})
 
 export default {
-  agentEndpoints (state) {
-    return network => buildConfig.agentEndpoints[network]
-  },
   client (state) {
-    return (network, walletId, asset, walletType = 'default') => {
-      const cacheKey = [asset, network, walletId, walletType].join('-')
+    return (network, walletId, asset, walletType = 'default', indexPath = 0, useCache = true) => {
+      const cacheKey = [asset, network, walletId, walletType, indexPath].join('-')
 
-      const cachedClient = clientCache[cacheKey]
-      if (cachedClient) return cachedClient
+      if (useCache) {
+        const cachedClient = clientCache[cacheKey]
+        if (cachedClient) return cachedClient
+      }
 
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
-      const client = createClient(asset, network, mnemonic, walletType)
+      const client = createClient(asset, network, mnemonic, walletType, indexPath)
       clientCache[cacheKey] = client
 
       return client
+    }
+  },
+  swapProvider (state) {
+    return (network, providerId) => {
+      const cacheKey = [network, providerId]
+
+      const cachedSwapProvider = swapProviderCache[cacheKey]
+      if (cachedSwapProvider) return cachedSwapProvider
+
+      const swapProvider = createSwapProvider(network, providerId)
+      swapProviderCache[cacheKey] = swapProvider
+
+      return swapProvider
     }
   },
   historyItemById (state) {
@@ -57,28 +72,13 @@ export default {
 
     return Object.assign({}, baseAssets, customAssets)
   },
+  networkAccounts (state) {
+    const { activeNetwork, activeWalletId, accounts } = state
+    return accounts[activeWalletId]?.[activeNetwork] || []
+  },
   networkAssets (state) {
     const { enabledAssets, activeNetwork, activeWalletId } = state
     return enabledAssets[activeNetwork][activeWalletId]
-  },
-  orderedBalances (state, getters) {
-    // const { enabledAssets, activeNetwork, activeWalletId } = state
-    // const { networkWalletBalances } = getters
-    // if (!networkWalletBalances) {
-    //   return []
-    // }
-    // const assets = enabledAssets[activeNetwork][activeWalletId]
-    // return Object.entries(networkWalletBalances)
-    //   .filter(([asset]) => assets.includes(asset))
-    //   .sort(([assetA], [assetB]) => {
-    //     return assets.indexOf(assetA) - assets.indexOf(assetB)
-    //   })
-    return []
-  },
-  assetsWithBalance (_state, getters) {
-    // const { orderedBalances } = getters
-    // return orderedBalances.filter(([asset, balance]) => balance > 0)
-    return []
   },
   activity (state) {
     const { history, activeNetwork, activeWalletId } = state
@@ -123,22 +123,29 @@ export default {
     const { accounts, activeNetwork, activeWalletId } = state
     const { accountFiatBalance, assetFiatBalance } = getters
     return accounts[activeWalletId]?.[activeNetwork]
-            .map(account => {
-              const totalFiatBalance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
-              const fiatBalances = Object.entries(account.balances)
-                .reduce((accum, [asset, balance]) => {
-                  const fiat = assetFiatBalance(asset, balance)
-                  return {
-                    ...accum,
-                    [asset]: fiat
-                  }
-                }, {})
-              return {
-                ...account,
-                fiatBalances,
-                totalFiatBalance
-              }
-            })
+      .filter(account => account.assets && account.assets.length > 0)
+      .map(account => {
+        const totalFiatBalance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
+        const fiatBalances = Object.entries(account.balances)
+          .reduce((accum, [asset, balance]) => {
+            const fiat = assetFiatBalance(asset, balance)
+            return {
+              ...accum,
+              [asset]: fiat
+            }
+          }, {})
+        return {
+          ...account,
+          fiatBalances,
+          totalFiatBalance
+        }
+      }).sort((a, b) => {
+        if (a.type.includes('ledger')) {
+          return -1
+        }
+
+        return 0
+      })
   },
   accountFiatBalance (state, getters) {
     const { accounts } = state
@@ -149,7 +156,7 @@ export default {
         return Object.entries(account.balances)
           .reduce((accum, [asset, balance]) => {
             const fiat = assetFiatBalance(asset, balance)
-            return accum.plus(fiat)
+            return accum.plus(fiat || 0)
           }, BN(0))
       }
       return BN(0)
@@ -159,10 +166,10 @@ export default {
     const { fiatRates } = state
     return (asset, balance) => {
       if (fiatRates && fiatRates[asset] && balance) {
-        const amount = cryptoassets[asset].unitToCurrency(balance)
+        const amount = unitToCurrency(cryptoassets[asset], balance)
         return cryptoToFiat(amount, fiatRates[asset])
       }
-      return BN(0)
+      return null
     }
   }
 }
