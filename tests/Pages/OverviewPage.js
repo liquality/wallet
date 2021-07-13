@@ -12,7 +12,7 @@ class OverviewPage {
     await page.waitForSelector('#overview', {
       visible: true
     })
-    console.log(chalk.green('User logged successfully, overview page loaded'))
+    console.log(chalk.green('User logged successfully, overview page has been loaded'))
   }
 
   /**
@@ -42,7 +42,7 @@ class OverviewPage {
         await page.click('#mainnet_network')
         const overviewText = await page.$eval('.text-muted', el => el.innerText)
         expect(overviewText, 'Mainnet overview header').contain('MAINNET')
-        console.log('user successfully changed to MAINET')
+        console.log('user successfully changed to MAINNET')
         break
       }
 
@@ -63,14 +63,17 @@ class OverviewPage {
       visible: true,
       timeout: 60000
     })
+    console.log('SEND button has been displayed')
     await page.waitForSelector('#swap_action', {
       visible: true,
       timeout: 60000
     })
+    console.log('SWAP button has been displayed')
     await page.waitForSelector('#receive_action', {
       visible: true,
       timeout: 60000
     })
+    console.log('RECEIVE button has been displayed')
   }
 
   /**
