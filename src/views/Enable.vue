@@ -34,7 +34,8 @@ import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 export default {
   data () {
     return {
-      replied: false
+      replied: false,
+      loading: false
     }
   },
   computed: {
