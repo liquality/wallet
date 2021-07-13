@@ -174,7 +174,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" :class="{highFees: highFees}" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
             </div>
           </div>
 
@@ -374,7 +374,8 @@ export default {
       swapErrorMessage: '',
       customFeeAssetSelected: null,
       customFees: {},
-      bridgeModalOpen: false
+      bridgeModalOpen: false,
+      highFees: false
     }
   },
   props: {
@@ -769,6 +770,11 @@ export default {
       delete this.customFees[asset]
       this.resetFees()
     },
+    highFeesCheck (highFees, fromSwapFee, sendAmount) {
+      if (fromSwapFee >= sendAmount * 0.25) {
+        return highFees === true
+      }
+    },
     cancelCustomFee (asset) {
       this.currentStep = 'inputs'
       this.selectedFee[asset] = 'average'
@@ -978,6 +984,11 @@ export default {
   overflow-y: auto;
   padding-bottom: 70px;
   height: 100%;
+
+  &_highFees {
+    color: $danger;
+    font-weight: bold;
+  }
 
   &_asset {
     &.input-group {
