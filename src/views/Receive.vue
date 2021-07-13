@@ -75,7 +75,6 @@ export default {
       address: null,
       qrcode: null,
       copied: false,
-      isArb: false
     }
   },
   props: {
