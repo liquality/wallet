@@ -44,7 +44,6 @@ async function importWalletTestReceive (bitcoin) {
 }
 
 describe('Liquality wallet- Receive-["mainnet"]', async () => {
-
   describe('Create wallet and Check receive', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -132,7 +131,6 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
       it(`Check Receive for ${token}`, async () => {
         await importWalletTestReceive(`${token}`)
       })
-
     })
   })
 })
