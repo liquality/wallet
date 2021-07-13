@@ -21,14 +21,20 @@ let browser, page
 const password = '123123123'
 
 describe('Liquality wallet SWIPE feature', async () => {
-  beforeEach(async () => {
+  before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
     await homePage.ClickOnAcceptPrivacy(page)
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
   })
 
-  afterEach(async () => {
+  after(async () => {
     if (browser !== undefined) {
       await browser.close()
     }
@@ -38,12 +44,6 @@ describe('Liquality wallet SWIPE feature', async () => {
     const asset1 = 'BTC'
     const asset2 = 'ETH'
 
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
@@ -60,7 +60,6 @@ describe('Liquality wallet SWIPE feature', async () => {
     await swapPage.ClickSwapReviewButton(page)
 
     // SWAP SEND details validation
-    await page.waitForTimeout(3000)
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(asset1)
 
@@ -107,12 +106,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     const asset1 = 'SOV'
     const asset2 = 'BTC'
 
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await page.click("#wallet_header_logo")
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
@@ -210,12 +204,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     })
   })
   it('SWAP (BTC),Please increase amount. It is below minimum.', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await page.click("#wallet_header_logo")
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
@@ -234,12 +223,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     await swapPage.HasReviewButtonDisabled(page)
   })
   it('SWAP(BTC),Lower amount. This exceeds available balance.', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await page.click("#wallet_header_logo")
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
