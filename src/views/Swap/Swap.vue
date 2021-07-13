@@ -566,6 +566,10 @@ export default {
     amountError () {
       const amount = BN(this.safeAmount)
 
+      if (this.showNoLiquidityMessage === true) {
+        return null
+      }
+
       if (amount.gt(this.available)) {
         return 'Lower amount. This exceeds available balance.'
       }
