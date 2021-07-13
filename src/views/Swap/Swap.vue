@@ -174,7 +174,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" :class="{highFees: highFees}" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" :class="{isHighFee: highFees}" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
             </div>
           </div>
 
@@ -409,10 +409,6 @@ export default {
       }
     }
 
-    if (this.fromSwapFee) {
-      this.highFeesCheck()
-    }
-
     if (this.toAccountId && toAsset) {
       this.toAssetChanged(this.toAccountId, toAsset)
       this.toAsset = toAsset
@@ -433,6 +429,9 @@ export default {
   computed: {
     account () {
       return this.accountItem(this.fromAccountId)
+    },
+    isHighFee () {
+      return this.toSwapFee >= this.sendAmount * 0.25
     },
     toAccount () {
       return this.toAccountId ? this.accountItem(this.toAccountId) : null
@@ -772,11 +771,6 @@ export default {
     resetCustomFee (asset) {
       delete this.customFees[asset]
       this.resetFees()
-    },
-    highFeesCheck (highFees, fromSwapFee, sendAmount) {
-      if (fromSwapFee >= sendAmount) {
-        return highFees === true
-      }
     },
     cancelCustomFee (asset) {
       this.currentStep = 'inputs'
