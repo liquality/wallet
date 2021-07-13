@@ -174,7 +174,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" :class="{highFeesCheck: highFees}" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" :class="{highFees: highFees}" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
             </div>
           </div>
 
@@ -407,6 +407,10 @@ export default {
           this.toAccountId = toAccount.id
         }
       }
+    }
+
+    if (this.fromSwapFee) {
+      this.highFeesCheck()
     }
 
     if (this.toAccountId && toAsset) {
@@ -770,7 +774,7 @@ export default {
       this.resetFees()
     },
     highFeesCheck (highFees, fromSwapFee, sendAmount) {
-      if (fromSwapFee >= sendAmount * 0.25) {
+      if (fromSwapFee >= sendAmount) {
         return highFees === true
       }
     },
