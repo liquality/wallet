@@ -74,7 +74,7 @@ export default {
     return {
       address: null,
       qrcode: null,
-      copied: false,
+      copied: false
     }
   },
   props: {

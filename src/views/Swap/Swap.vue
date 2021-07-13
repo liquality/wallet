@@ -174,7 +174,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" :class="{highFees: highFees}" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" :class="{highFeesCheck: highFees}" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
             </div>
           </div>
 
@@ -565,11 +565,10 @@ export default {
       return !this.ethRequired
     },
     amountError () {
-      const amount = BN(this.safeAmount)
-
-      if (this.showNoLiquidityMessage === true) {
+      if (this.showNoLiquidityMessage) {
         return null
       }
+      const amount = BN(this.safeAmount)
 
       if (amount.gt(this.available)) {
         return 'Lower amount. This exceeds available balance.'
