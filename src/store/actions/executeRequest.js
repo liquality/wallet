@@ -1,7 +1,9 @@
-export const executeRequest = async ({ getters, dispatch }, { request }) => {
+export const executeRequest = async ({ getters, dispatch, state }, { request }) => {
   // Send transactions through wallet managed action
-  // TODO: get the default account for an origin
-  const { network, walletId, asset, accountId } = request
+  const { network, walletId, asset, origin } = request
+  const { externalConnections, activeWalletId } = state
+  const accounts = externalConnections[activeWalletId]?.[origin] || []
+  const [accountId] = accounts
   if (request.method === 'chain.sendTransaction') {
     return dispatch('sendTransaction', {
       network,

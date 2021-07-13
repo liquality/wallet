@@ -29,7 +29,7 @@ export default {
       walletId,
       asset,
       accountId,
-      useCache
+      useCache = true
     }) => {
       const account = getters.accountItem(accountId)
       const accountType = account?.type || 'default'

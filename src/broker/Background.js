@@ -7,7 +7,6 @@ class Background {
     this.store = store
     this.internalConnections = []
     this.externalConnections = []
-    this.externalConnectionApprovalMap = {}
 
     this.subscribeToMutations()
     this.subscribeToWalletChanges()
@@ -153,7 +152,8 @@ class Background {
     const { url } = connection.sender
     const { origin } = new URL(url)
 
-    const allowed = this.externalConnectionApprovalMap[origin]
+    const { externalConnections, activeWalletId } = this.store.state
+    const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin)
 
     switch (type) {
       case 'ENABLE_REQUEST':
@@ -211,10 +211,6 @@ class Background {
         return { error: error.toString() }
       })
       .then(response => {
-        if (action === 'requestOriginAccess' && response.result) {
-          this.externalConnectionApprovalMap[data.origin] = true
-        }
-
         connection.postMessage({
           id,
           data: response
