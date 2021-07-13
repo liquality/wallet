@@ -106,7 +106,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     const asset1 = 'SOV'
     const asset2 = 'BTC'
 
-    await page.click("#wallet_header_logo")
+    await page.click('#wallet_header_logo')
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
@@ -204,7 +204,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     })
   })
   it('SWAP (BTC),Please increase amount. It is below minimum.', async () => {
-    await page.click("#wallet_header_logo")
+    await page.click('#wallet_header_logo')
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
@@ -223,7 +223,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     await swapPage.HasReviewButtonDisabled(page)
   })
   it('SWAP(BTC),Lower amount. This exceeds available balance.', async () => {
-    await page.click("#wallet_header_logo")
+    await page.click('#wallet_header_logo')
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
