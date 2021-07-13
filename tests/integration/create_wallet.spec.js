@@ -15,7 +15,7 @@ const seedWordsPage = new SeedWordsPage()
 
 let browser, page
 
-describe('Liquality wallet - Create wallet', async () => {
+describe.skip('Liquality wallet - Create wallet', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -71,6 +71,8 @@ describe('Liquality wallet - Create wallet', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
     }
 
     // check Send & Swap & Receive options have been displayed

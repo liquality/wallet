@@ -15,7 +15,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
+describe.skip('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -159,6 +159,8 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
@@ -179,6 +181,8 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
@@ -204,6 +208,8 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)

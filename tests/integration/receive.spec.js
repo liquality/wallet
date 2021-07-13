@@ -43,7 +43,7 @@ async function importWalletTestReceive (bitcoin) {
   await page.click('#wallet_header_logo')
 }
 
-describe('Liquality wallet- Receive-["mainnet"]', async () => {
+describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
   describe('Create wallet and Check receive', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -116,6 +116,8 @@ describe('Liquality wallet- Receive-["mainnet"]', async () => {
       // Select Network
       if (process.env.NODE_ENV === 'mainnet') {
         await overviewPage.SelectNetwork(page, 'mainnet')
+      } else {
+        await overviewPage.SelectNetwork(page)
       }
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
