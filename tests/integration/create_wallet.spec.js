@@ -15,7 +15,7 @@ const seedWordsPage = new SeedWordsPage()
 
 let browser, page
 
-describe.skip('Liquality wallet - Create wallet', async () => {
+describe('Liquality wallet - Create wallet', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
