@@ -374,8 +374,7 @@ export default {
       swapErrorMessage: '',
       customFeeAssetSelected: null,
       customFees: {},
-      bridgeModalOpen: false,
-      highFees: false
+      bridgeModalOpen: false
     }
   },
   props: {
