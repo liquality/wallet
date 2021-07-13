@@ -108,8 +108,7 @@ class UniswapSwapProvider extends SwapProvider {
     const inputAmountHex = inputAmount.toHexString()
     const encodedData = erc20.interface.encodeFunctionData('approve', [this.routerAddress, inputAmountHex])
 
-    const account = this.getAccount(quote.fromAccountId)
-    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const approveTx = await client.chain.sendTransaction({ to: cryptoassets[quote.from].contractAddress, value: 0, data: encodedData, fee: quote.fee })
 
     return {
@@ -129,8 +128,7 @@ class UniswapSwapProvider extends SwapProvider {
     const outputAmount = CurrencyAmount.fromRawAmount(toToken, BN(quote.toAmount).toFixed())
     const minimumOutput = this.getMinimumOutput(outputAmount)
 
-    const account = this.getAccount(quote.fromAccountId)
-    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const blockHeight = await client.chain.getBlockHeight()
     const currentBlock = await client.chain.getBlockByNumber(blockHeight)
 
@@ -160,7 +158,7 @@ class UniswapSwapProvider extends SwapProvider {
 
     const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
 
-    await this.sendLedgerNotification(quote, account, 'Signing required to complete the swap.')
+    await this.sendLedgerNotification(quote.fromAccountId, 'Signing required to complete the swap.')
     const swapTx = await client.chain.sendTransaction({ to: this.routerAddress, value, data: encodedData, fee: quote.fee })
 
     return {
@@ -195,8 +193,7 @@ class UniswapSwapProvider extends SwapProvider {
   }
 
   async waitForApproveConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.fromAccountId)
-    const client = this.getClient(network, walletId, swap.from, account?.type)
+    const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
@@ -213,8 +210,7 @@ class UniswapSwapProvider extends SwapProvider {
   }
 
   async waitForSwapConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.accountId)
-    const client = this.getClient(network, walletId, swap.from, account?.type)
+    const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)

@@ -23,9 +23,24 @@ const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'MATI
 }, {})
 
 export default {
-  client (state) {
-    return (network, walletId, asset, walletType = 'default', indexPath = 0, useCache = true) => {
-      const cacheKey = [asset, network, walletId, walletType, indexPath].join('-')
+  client (state, getters) {
+    return ({
+      network,
+      walletId,
+      asset,
+      accountId,
+      useCache
+    }) => {
+      const account = getters.accountItem(accountId)
+      const accountType = account?.type || 'default'
+      const accountIndex = account?.index || 0
+      const cacheKey = [
+        asset,
+        network,
+        walletId,
+        accountType,
+        accountIndex
+      ].join('-')
 
       if (useCache) {
         const cachedClient = clientCache[cacheKey]
@@ -33,7 +48,7 @@ export default {
       }
 
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
-      const client = createClient(asset, network, mnemonic, walletType, indexPath)
+      const client = createClient(asset, network, mnemonic, accountType, accountIndex)
       clientCache[cacheKey] = client
 
       return client
