@@ -245,13 +245,15 @@ export default {
   SET_USB_BRIDGE_WINDOWS_ID (state, { id }) {
     state.usbBridgeWindowsId = id
   },
-  ADD_EXTERNAL_CONNECTION (state, { origin, activeWalletId, accountId }) {
+  ADD_EXTERNAL_CONNECTION (state, { origin, activeWalletId, accountId, chain }) {
     if (!state.externalConnections[activeWalletId]) {
       Vue.set(state.externalConnections, activeWalletId, {
-        [origin]: []
+        [origin]: {
+          [chain]: []
+        }
       })
     }
-    const accounts = state.externalConnections[activeWalletId]?.[origin] || []
-    Vue.set(state.externalConnections[activeWalletId], origin, [...accounts, accountId])
+    const accounts = state.externalConnections[activeWalletId]?.[origin]?.[chain] || []
+    Vue.set(state.externalConnections[activeWalletId][origin], chain, [...accounts, accountId])
   }
 }

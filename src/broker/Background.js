@@ -151,9 +151,10 @@ class Background {
   onExternalMessage (connection, { id, type, data }) {
     const { url } = connection.sender
     const { origin } = new URL(url)
-
+    const { chain } = data
     const { externalConnections, activeWalletId } = this.store.state
-    const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin)
+    const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
+                    Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
 
     switch (type) {
       case 'ENABLE_REQUEST':
@@ -167,7 +168,7 @@ class Background {
           return
         }
 
-        this.storeProxy(id, connection, 'requestOriginAccess', { origin })
+        this.storeProxy(id, connection, 'requestOriginAccess', { origin, chain })
         break
 
       case 'CAL_REQUEST':

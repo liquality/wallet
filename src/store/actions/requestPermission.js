@@ -63,7 +63,6 @@ export const requestPermission = async ({ state, dispatch }, { origin, data }) =
       emitter.$once(`permission:${id}`, (response) => {
         if (!response.allowed) reject(new Error('User denied'))
         if (response.error) reject(new Error(response.error))
-
         resolve(response.result)
       })
 
