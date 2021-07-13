@@ -1,5 +1,5 @@
-const TestUtil = require('../../utils/TestUtils')
-const TestDataUtils = require('../../utils/TestDataUtils')
+const TestUtil = require('../utils/TestUtils')
+const TestDataUtils = require('../utils/TestDataUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
@@ -43,16 +43,14 @@ describe('Liquality wallet- Import wallet', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV !== 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'testnet')
-    } else {
+    if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
   })
   it('Import wallet with random seed (phrase 11 words) and check continue is disabled -["mainnet"]', async () => {
     await homePage.ClickOnImportWallet(page)
@@ -79,12 +77,12 @@ describe('Liquality wallet- Import wallet', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')
@@ -109,64 +107,14 @@ describe('Liquality wallet- Import wallet', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')
-  })
-  it('Import wallet,lock wallet and unlock wallet-["mainnet"]', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    // Select network
-    if (process.env.NODE_ENV !== 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'testnet')
-    } else {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    }
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ValidateSendSwipeReceiveOptions(page)
-    // Clock on Lock
-    await overviewPage.ClickLock(page)
-    // Unlock
-    await passwordPage.ClickUnlock(page, password)
-  })
-  it('Import wallet,lock wallet and forgot password while unlock wallet-["mainnet"]', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    // Select network
-    if (process.env.NODE_ENV !== 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'testnet')
-    } else {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    }
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ValidateSendSwipeReceiveOptions(page)
-    // Clock on Lock
-    await overviewPage.ClickLock(page)
-    // Click on Forgot password? Import with seed phrase
-    await passwordPage.ClickOnForgotPassword(page)
-    // Enter the seed phrase & submit password details
-    await homePage.EnterSeedWords(page)
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // check user landed on overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.ValidateSendSwipeReceiveOptions(page)
   })
 })

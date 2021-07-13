@@ -1,4 +1,4 @@
-const TestUtil = require('../../utils/TestUtils')
+const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
@@ -42,7 +42,11 @@ describe('Liquality wallet - Create wallet', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
     // Set password
-    await passwordPage.EnterPasswordDetails(page, '12345678', '1234567')
+    await passwordPage.EnterPasswordDetails(page, 'testwallet1', 'testwallet2')
+    // check the password error message
+    await page.waitForSelector('#password_match_error', { visible: true })
+    expect(await page.$eval('#password_match_error', (el) => el.textContent))
+      .contains('Passwords don\'t match.')
     // confirm button has been disabled
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
@@ -65,9 +69,7 @@ describe('Liquality wallet - Create wallet', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV !== 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'testnet')
-    } else {
+    if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     }
 
@@ -75,6 +77,6 @@ describe('Liquality wallet - Create wallet', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 6').contain('6 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
   })
 })

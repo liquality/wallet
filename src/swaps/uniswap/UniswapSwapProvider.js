@@ -17,6 +17,7 @@ import { prettyBalance } from '../../utils/coinFormatter'
 import { ChainNetworks } from '../../store/utils'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
 import { SwapProvider } from '../SwapProvider'
+import { getTxFee } from '../../utils/fees'
 
 const SWAP_DEADLINE = 30 * 60 // 30 minutes
 
@@ -81,7 +82,7 @@ class UniswapSwapProvider extends SwapProvider {
     return {
       from,
       to,
-      // TODO: Amounts should be in BigNumber to prevent loss of precision
+      // TODO: Amounts should be in BigNumber to prevent loss of precision - VERY IMPORTANT, ERC20s ARE BEING APPROVED FOR WRONG AMOUNTS THEN FAIULING
       fromAmount: fromAmountInUnit.toNumber(),
       toAmount: toAmountInUnit.toNumber()
     }
@@ -183,8 +184,18 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
+  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+    if (txType in UniswapSwapProvider.feeUnits) {
+      const fees = {}
+      for (const feePrice of feePrices) {
+        fees[feePrice] = getTxFee(UniswapSwapProvider.feeUnits[txType], asset, feePrice)
+      }
+      return fees
+    }
+  }
+
   async waitForApproveConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.accountId)
+    const account = this.getAccount(swap.fromAccountId)
     const client = this.getClient(network, walletId, swap.from, account?.type)
 
     try {

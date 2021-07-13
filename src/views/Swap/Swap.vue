@@ -55,7 +55,7 @@
           <p>
             <span class="swap-rate_base">1 {{ asset }} =</span>
             <span class="swap-rate_value">
-              &nbsp;{{ bestRate }}
+              &nbsp;{{ bestRate || '?' }}
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
             <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProviderLabel }}</span>
@@ -63,7 +63,7 @@
           </p>
         </div>
 
-        <div class="form-group swap_fees mt-30" v-if="availableFees.size">
+        <div class="form-group swap_fees mt-30" v-if="bestQuote && availableFees.size">
           <DetailsContainer>
             <template v-slot:header>
               <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
@@ -318,7 +318,7 @@ import {
   getAssetIcon
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
-import { getSwapFee, getFeeLabel } from '@/utils/fees'
+import { getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ClockIcon from '@/assets/icons/clock.svg'
@@ -392,37 +392,32 @@ export default {
       await this.updateMaxSwapFees()
     })()
 
-    if (this.networkMarketData && Object.keys(this.networkMarketData).length > 0) {
-      const toAsset = this.asset === 'BTC' ? 'ETH' : 'BTC'
-      if (this.account &&
-          this.account.assets &&
-          this.account.assets.includes(toAsset)) {
-        this.toAccountId = this.accountId
-      } else {
-        if (this.networkAccounts.length > 0) {
-          const toAccount = this.networkAccounts.find(account => account.assets &&
-                                       account.assets.includes(toAsset) &&
-                                       account.id !== this.accountId)
-          if (toAccount) {
-            this.toAccountId = toAccount.id
-          }
-        }
-      }
-
-      if (this.toAccountId && toAsset) {
-        this.toAssetChanged(this.toAccountId, toAsset)
-        this.toAsset = toAsset
-        this.updateFees({ asset: toAsset })
-        this.selectedFee = {
-          [this.assetChain]: 'average',
-          [this.toAssetChain]: 'average'
-        }
-      }
+    const toAsset = this.asset === 'BTC' ? 'ETH' : 'BTC'
+    if (this.account &&
+        this.account.assets &&
+        this.account.assets.includes(toAsset)) {
+      this.toAccountId = this.accountId
     } else {
-      this.selectedFee = {
-        [this.assetChain]: 'average'
+      if (this.networkAccounts.length > 0) {
+        const toAccount = this.networkAccounts.find(account => account.assets &&
+                                      account.assets.includes(toAsset) &&
+                                      account.id !== this.accountId)
+        if (toAccount) {
+          this.toAccountId = toAccount.id
+        }
       }
     }
+
+    if (this.toAccountId && toAsset) {
+      this.toAssetChanged(this.toAccountId, toAsset)
+      this.toAsset = toAsset
+      this.updateFees({ asset: toAsset })
+      this.selectedFee = {
+        [this.assetChain]: 'average',
+        [this.toAssetChain]: 'average'
+      }
+    }
+
     this.interval = setInterval(() => {
       this.updateQuotes()
     }, 30000)
@@ -441,7 +436,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage () {
-      return !this.bestQuote || BN(this.min).gt(this.max)
+      return BN(this.sendAmount).gt(0) && (!this.bestQuote || BN(this.min).gt(this.max))
     },
     sendAmount: {
       get () {
@@ -691,11 +686,8 @@ export default {
       this.resetFees()
       this.updateQuotes()
     },
-    async _updateSwapFees (amount) {
+    async _updateSwapFees (max) {
       if (!this.bestQuote) return
-
-      const getMax = amount === undefined
-
       const fees = {
         [this.assetChain]: {
           slow: BN(0),
@@ -713,47 +705,45 @@ export default {
 
       const { fromTxType, toTxType } = this.bestQuoteProvider
 
-      if (this.availableFees.has(this.assetChain)) {
-        const getMax = amount === undefined
-        const assetFees = this.getAssetFees(this.assetChain)
+      const addFees = async (asset, chain, txType) => {
+        const assetFees = this.getAssetFees(chain)
+        const totalFees = await this.bestQuoteProvider.estimateFees({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          accountId: this.accountId,
+          asset,
+          txType,
+          quote: this.bestQuote,
+          feePrices: Object.values(assetFees).map(fee => fee.fee),
+          max
+        })
 
-        if (fromTxType === 'SWAP_INITIATION' && this.assetChain === 'BTC') {
-          const client = this.client(this.activeNetwork, this.activeWalletId, this.assetChain)
-          const feePerBytes = Object.values(assetFees).map(fee => fee.fee)
-          const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
-          const totalFees = await client.getMethod('getTotalFees')({ value, feePerBytes, max: getMax })
+        if (!totalFees) return
 
-          for (const [speed, fee] of Object.entries(assetFees)) {
-            const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
-            fees[this.assetChain][speed] = fees[this.assetChain][speed].plus(totalFee)
-          }
-        } else {
-          for (const [speed, fee] of Object.entries(assetFees)) {
-            const staticFee = getSwapFee(this.bestQuoteProvider.feeUnits, fromTxType, this.asset, fee.fee)
-            fees[this.assetChain][speed] = fees[this.assetChain][speed].plus(staticFee)
-          }
+        for (const [speed, fee] of Object.entries(assetFees)) {
+          fees[chain][speed] = fees[chain][speed].plus(totalFees[fee.fee])
         }
+      }
+
+      if (this.availableFees.has(this.assetChain)) {
+        await addFees(this.asset, this.assetChain, fromTxType)
       }
 
       if (this.availableFees.has(this.toAssetChain)) {
-        const assetFees = this.getAssetFees(this.toAssetChain)
-        for (const [speed, fee] of Object.entries(assetFees)) {
-          const staticFee = getSwapFee(this.bestQuoteProvider.feeUnits, toTxType, this.toAsset, fee.fee)
-          fees[this.toAssetChain][speed] = fees[this.toAssetChain][speed].plus(staticFee)
-        }
+        await addFees(this.toAsset, this.toAssetChain, toTxType, false)
       }
 
-      if (getMax) {
+      if (max) {
         this.maxSwapFees = fees
       } else {
         this.swapFees = fees
       }
     },
-    updateSwapFees: _.debounce(async function (amount) {
-      await this._updateSwapFees(amount)
+    updateSwapFees: _.debounce(async function () {
+      await this._updateSwapFees(false)
     }, 800),
     async updateMaxSwapFees () {
-      await this._updateSwapFees()
+      await this._updateSwapFees(true)
     },
     resetFees () {
       const selectedFee = {}
@@ -805,6 +795,8 @@ export default {
       }
     },
     updateQuotes: _.debounce(async function () {
+      if (BN(this.sendAmount).eq(0)) return
+
       this.updatingQuotes = true
       const quotes = await this.getQuotes({ network: this.activeNetwork, from: this.asset, to: this.toAsset, amount: BN(this.sendAmount) })
       if (quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)) {
@@ -908,7 +900,7 @@ export default {
       if (this.amountOption === 'max') {
         this.updateMaxSwapFees()
       } else {
-        this.updateSwapFees(this.stateSendAmount)
+        this.updateSwapFees()
       }
     }, 800),
     applyCustomFee ({ asset, fee }) {
@@ -920,7 +912,7 @@ export default {
         this.customFees[asset] = null
       } else {
         this.updateMaxSwapFees()
-        this.updateSwapFees(this.stateSendAmount)
+        this.updateSwapFees()
         this.customFees[asset] = fee
         this.selectedFee[asset] = 'custom'
       }
@@ -944,7 +936,13 @@ export default {
       },
       deep: true
     },
-    stateSendAmount: function (val) {
+    stateSendAmount: function (val, oldVal) {
+      if (BN(val).eq(oldVal)) return
+      if (BN(val).eq(0)) {
+        this.quotes = []
+        return
+      }
+
       const amount = BN(val)
       const max = dpUI(this.max)
       const min = dpUI(this.min)
@@ -953,17 +951,18 @@ export default {
       } else {
         if (amount.eq(min)) this.amountOption = 'min'
         else this.amountOption = null
-        this.updateSwapFees(amount)
       }
       this.updateQuotes()
     },
-    max: function () {
+    max: function (val, oldVal) {
+      if (BN(val).eq(oldVal)) return
+
       if (this.amountOption === 'max') {
         this.sendAmount = dpUI(this.max)
       }
     },
     bestQuote: function () {
-      this.updateSwapFees(this.stateSendAmount)
+      this._updateSwapFees() // Skip debounce
       this.updateMaxSwapFees()
     }
   }

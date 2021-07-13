@@ -38,9 +38,8 @@
             v-else
             type="number"
             class="form-control swap-receive-main-input"
-            :value="receiveAmount"
-            @input="$emit('update:receiveAmount', $event.target.value)"
-            placeholder="0.00"
+            :value="receiveAmountValue"
+            placeholder=""
             :style="getAssetColorStyle(toAsset)"
             autocomplete="off"
             :disabled="disabled"
@@ -89,6 +88,9 @@ export default {
   computed: {
     receiveAmountFiatValue () {
       return '$' + dpUI(this.receiveAmountFiat, 2)
+    },
+    receiveAmountValue () {
+      return this.receiveAmount.gt(0) ? dpUI(this.receiveAmount) : ''
     }
   },
   methods: {

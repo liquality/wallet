@@ -16,7 +16,8 @@ export default {
       'NEAR',
       'SOL',
       'MATIC',
-      'PWETH'
+      'PWETH',
+      'ARBETH'
     ],
     testnet: [
       'BTC',
@@ -28,7 +29,8 @@ export default {
       'SOL',
       'SOV',
       'MATIC',
-      'PWETH'
+      'PWETH',
+      'ARBETH'
     ]
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
@@ -68,5 +70,5 @@ export default {
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'solana', 'polygon']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'solana', 'polygon', 'arbitrum']
 }

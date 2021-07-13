@@ -1,11 +1,11 @@
-const TestUtil = require('../../utils/TestUtils')
+const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const SearchAssetPage = require('../Pages/SearchAssetPage')
 const SendPage = require('../Pages/SendPage')
 const TransactionDetailsPage = require('../Pages/TransactionDetailsPage')
-const TestDataUtils = require('../../utils/TestDataUtils')
+const TestDataUtils = require('../utils/TestDataUtils')
 const expect = require('chai').expect
 const chalk = require('chalk')
 
@@ -50,7 +50,7 @@ describe('Liquality wallet SEND feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
@@ -78,7 +78,7 @@ describe('Liquality wallet SEND feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
@@ -106,7 +106,7 @@ describe('Liquality wallet SEND feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
@@ -143,7 +143,7 @@ describe('Liquality wallet SEND feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
@@ -179,7 +179,7 @@ describe('Liquality wallet SEND feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
@@ -215,7 +215,7 @@ describe('Liquality wallet SEND feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
@@ -241,7 +241,7 @@ describe('Liquality wallet SEND feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
@@ -270,7 +270,7 @@ describe('Liquality wallet SEND feature', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check NEAR
     await overviewPage.SelectChain(page, 'NEAR')
     await page.waitForSelector('#send', { visible: true })

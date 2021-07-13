@@ -68,6 +68,7 @@ async function getAddresses () {
   const eth = window.providerManager.getProviderFor('${asset}')
   let addresses = await eth.getMethod('wallet.getAddresses')()
   addresses = addresses.map(a => '0x' + a.address)
+  window[injectionName].selectedAddress = addresses[0]
   return addresses
 }
 

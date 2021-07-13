@@ -50,6 +50,15 @@ class SwapProvider {
   }
 
   /**
+   * Estimate the fees for the given parameters
+   * @param {{ network, walletId, asset, accountId, txType, amount, feePrices[], max }} options
+   * @return Object of key feePrice and value fee
+   */
+  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+    throw new Error('`estimateFee` not implemented')
+  }
+
+  /**
    * This hook is called when state updates are required
    * @param {object} store
    * @param {{ network, walletId, swap }}
@@ -105,12 +114,6 @@ class SwapProvider {
   async getSwapAddress (network, walletId, asset, accountId) {
     const [address] = await store.dispatch('getUnusedAddresses', { network, walletId, assets: [asset], accountId })
     return address
-  }
-
-  get feeUnits () {
-    const feeUnits = this.constructor.feeUnits
-    if (typeof feeUnits === 'undefined') throw new Error('`feeUnits` is not defined. Shape: { TX_TYPE_1: number, TX_TYPE_2: number }')
-    return feeUnits
   }
 
   get statuses () {
