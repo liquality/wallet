@@ -430,7 +430,7 @@ export default {
       return this.accountItem(this.fromAccountId)
     },
     isHighFee () {
-      return this.totalToReceiveInFiat >= this.totalToSendInFiat * 0.25
+      return this.getTotalSwapFeeInFiat >= this.receiveAmountFiat * 0.25
     },
     toAccount () {
       return this.toAccountId ? this.accountItem(this.toAccountId) : null
