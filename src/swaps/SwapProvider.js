@@ -51,10 +51,10 @@ class SwapProvider {
 
   /**
    * Estimate the fees for the given parameters
-   * @param {{ network, walletId, asset, accountId, txType, amount, feePrices[], max }} options
+   * @param {{ network, walletId, asset, fromAccountId, toAccountId, txType, amount, feePrices[], max }} options
    * @return Object of key feePrice and value fee
    */
-  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+  async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
     throw new Error('`estimateFee` not implemented')
   }
 
@@ -69,8 +69,8 @@ class SwapProvider {
   }
 
   /**
-   * Get account by id
-   * @param {string} accountId
+   * Get market data
+   * @param {string} network
    * @return account
    */
   getMarketData (network) {
