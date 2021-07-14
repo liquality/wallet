@@ -174,7 +174,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" :class="{isHighFee: highFees}" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" :class="{higherThanNormal: highFees}" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
             </div>
           </div>
 
@@ -374,7 +374,8 @@ export default {
       swapErrorMessage: '',
       customFeeAssetSelected: null,
       customFees: {},
-      bridgeModalOpen: false
+      bridgeModalOpen: false,
+      higherThanNormal: false
     }
   },
   props: {
@@ -430,7 +431,7 @@ export default {
       return this.accountItem(this.fromAccountId)
     },
     isHighFee () {
-      return this.toSwapFee >= this.sendAmount * 0.25
+      return this.toSwapFee >= this.sendAmount * 0.25 ? this.higherThanNormal === true : this.higherThanNormal === false
     },
     toAccount () {
       return this.toAccountId ? this.accountItem(this.toAccountId) : null
