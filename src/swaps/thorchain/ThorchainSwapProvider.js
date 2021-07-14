@@ -257,9 +257,9 @@ class ThorchainSwapProvider extends SwapProvider {
     }
   }
 
-  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+  async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
     if (txType === ThorchainSwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
-      const account = this.getAccount(accountId)
+      const account = this.getAccount(quote.fromAccountId)
       const client = this.getClient(network, walletId, asset, account.type)
       const value = max ? undefined : BN(quote.fromAmount)
       const memo = await this.getSwapMemo({ network, walletId, quote })
@@ -388,11 +388,10 @@ class ThorchainSwapProvider extends SwapProvider {
 
   static feeUnits = {
     SWAP: {
-      BTC: 600, // TODO: Temporary number, should actually use getTotalFee() from CAL
-      ETH: 100000 + 400000, // (potential)ERC20 Approval + Swap
-      BNB: 100000 + 400000,
-      MATIC: 100000 + 400000,
-      ERC20: 100000 + 400000
+      ETH: 200000,
+      BNB: 200000,
+      MATIC: 200000,
+      ERC20: 100000 + 200000 // (potential)ERC20 Approval + Swap
     }
   }
 

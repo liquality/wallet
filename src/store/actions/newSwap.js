@@ -5,9 +5,7 @@ export const newSwap = async (
     walletId,
     quote,
     fee,
-    claimFee,
-    fromAccountId,
-    toAccountId
+    claimFee
   }) => {
   const swap = { ...quote }
 
@@ -17,8 +15,6 @@ export const newSwap = async (
   swap.walletId = walletId
   swap.fee = fee
   swap.claimFee = claimFee
-  swap.fromAccountId = fromAccountId
-  swap.toAccountId = toAccountId
 
   const swapProvider = store.getters.swapProvider(network, swap.provider)
   const initiationParams = await swapProvider.newSwap({ network, walletId, quote: swap })
@@ -30,7 +26,7 @@ export const newSwap = async (
 
   store.commit('NEW_SWAP', { network, walletId, swap: createdSwap })
 
-  store.dispatch('performNextAction', { network, walletId, fromAccountId, toAccountId, id: createdSwap.id })
+  store.dispatch('performNextAction', { network, walletId, id: createdSwap.id })
 
   return createdSwap
 }
