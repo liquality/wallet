@@ -94,9 +94,8 @@ class UniswapSwapProvider extends SwapProvider {
     return {
       from,
       to,
-      // TODO: Amounts should be in BigNumber to prevent loss of precision - VERY IMPORTANT, ERC20s ARE BEING APPROVED FOR WRONG AMOUNTS THEN FAIULING
-      fromAmount: fromAmountInUnit.toNumber(),
-      toAmount: toAmountInUnit.toNumber()
+      fromAmount: fromAmountInUnit,
+      toAmount: toAmountInUnit
     }
   }
 
@@ -249,8 +248,8 @@ class UniswapSwapProvider extends SwapProvider {
     const client = this.getClient(network, walletId, quote.from, account?.type)
 
     let gasLimit = 0
-    const approvalTx = await this.buildApprovalTx({ network, walletId, quote })
     if (await this.requiresApproval({ network, walletId, quote })) {
+      const approvalTx = await this.buildApprovalTx({ network, walletId, quote })
       const rawApprovalTx = {
         from: approvalTx.from,
         to: approvalTx.to,

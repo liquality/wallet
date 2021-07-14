@@ -72,7 +72,10 @@ class LiqualitySwapProvider extends SwapProvider {
     const toAmount = currencyToUnit(cryptoassets[to], BN(amount).times(BN(market.rate)))
 
     return {
-      from, to, fromAmount: fromAmount.toNumber(), toAmount: toAmount.toNumber()
+      from,
+      to,
+      fromAmount: fromAmount,
+      toAmount: toAmount
     }
   }
 

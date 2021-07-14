@@ -134,9 +134,8 @@ class ThorchainSwapProvider extends SwapProvider {
     return {
       from,
       to,
-      // TODO: Amounts should be in BigNumber to prevent loss of precision
-      fromAmount: fromAmountInUnit.toNumber(),
-      toAmount: toAmountInUnit.toNumber()
+      fromAmount: fromAmountInUnit,
+      toAmount: toAmountInUnit
     }
   }
 
@@ -258,11 +257,11 @@ class ThorchainSwapProvider extends SwapProvider {
   }
 
   async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
-    if (txType === ThorchainSwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
+    if (txType === ThorchainSwapProvider.txTypes.SWAP && asset === 'BTC') {
       const account = this.getAccount(quote.fromAccountId)
       const client = this.getClient(network, walletId, asset, account.type)
       const value = max ? undefined : BN(quote.fromAmount)
-      const memo = await this.getSwapMemo({ network, walletId, quote })
+      const memo = await this.makeMemo({ network, walletId, quote })
       const encodedMemo = Buffer.from(memo, 'utf-8').toString('hex')
       const txs = feePrices.map(fee => ({ to: '', value, data: encodedMemo, fee }))
       const totalFees = await client.getMethod('getTotalFees')(txs, max)
