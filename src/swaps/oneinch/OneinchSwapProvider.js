@@ -14,6 +14,7 @@ import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 import { getTxFee } from '../../utils/fees'
 
 const nativeAssetAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+const slippagePercentage = 0.5
 const chainToRpcProviders = {
   1: `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`,
   56: 'https://bsc-dataseed.binance.org',
@@ -31,6 +32,14 @@ class OneinchSwapProvider extends SwapProvider {
     return []
   }
 
+  async _getQuote (chainIdFrom, fromToken, toToken, amount) {
+    return (await axios({
+      url: this.agent + `/${chainIdFrom}/quote`,
+      method: 'get',
+      params: { fromTokenAddress: fromToken || nativeAssetAddress, toTokenAddress: toToken || nativeAssetAddress, amount }
+    }))
+  }
+
   async getQuote ({ network, from, to, amount }) {
     if (!isEthereumChain(from) || !isEthereumChain(to) || amount <= 0) return null
     const fromAmountInUnit = BN(currencyToUnit(cryptoassets[from], BN(amount)))
@@ -38,11 +47,7 @@ class OneinchSwapProvider extends SwapProvider {
     const chainIdTo = ChainNetworks[cryptoassets[to].chain][network].chainId
     if (chainIdFrom !== chainIdTo || !chainToRpcProviders[chainIdFrom]) return null
 
-    const trade = await axios({
-      url: this.agent + `/${chainIdFrom}/quote`,
-      method: 'get',
-      params: { fromTokenAddress: assets[from].contractAddress || nativeAssetAddress, toTokenAddress: assets[to].contractAddress || nativeAssetAddress, amount: fromAmountInUnit.toNumber() }
-    })
+    const trade = await this._getQuote(chainIdFrom, assets[from].contractAddress, assets[to].contractAddress, fromAmountInUnit.toNumber())
     const toAmountInUnit = BN(trade.data.toTokenAmount)
     return {
       from,
@@ -74,12 +79,12 @@ class OneinchSwapProvider extends SwapProvider {
     const callData = await axios({
       url: this.agent + `/${chainId}/approve/calldata`,
       method: 'get',
-      params: { tokenAddress: cryptoassets[quote.from].contractAddress }
+      params: { tokenAddress: cryptoassets[quote.from].contractAddress, amount: inputAmount }
     })
 
     const account = this.getAccount(quote.fromAccountId)
     const client = this.getClient(network, walletId, quote.from, account?.type)
-    const approveTx = await client.chain.sendTransaction(callData.data)
+    const approveTx = await client.chain.sendTransaction({ to: callData.data?.to, value: callData.data?.value, data: callData.data?.data, fee: quote.fee })
 
     return {
       status: 'WAITING_FOR_APPROVE_CONFIRMATIONS',
@@ -90,7 +95,7 @@ class OneinchSwapProvider extends SwapProvider {
 
   async sendSwap ({ network, walletId, quote }) {
     const toChain = cryptoassets[quote.to].chain
-    const fromChain = cryptoassets[quote.to].chain
+    const fromChain = cryptoassets[quote.from].chain
     const chainId = ChainNetworks[toChain][network].chainId
     if (toChain !== fromChain || !chainToRpcProviders[chainId]) return null
 
@@ -102,10 +107,15 @@ class OneinchSwapProvider extends SwapProvider {
     const trade = await axios({
       url: this.agent + `/${chainId}/swap`,
       method: 'get',
-      params: { fromTokenAddress: assets[quote.from].contractAddress || nativeAssetAddress, toTokenAddress: assets[quote.to].contractAddress || nativeAssetAddress, amount: quote.fromAmount, fromAddress: fromAddress, slippage: 0.5 }
+      params: { fromTokenAddress: assets[quote.from].contractAddress || nativeAssetAddress, toTokenAddress: assets[quote.to].contractAddress || nativeAssetAddress, amount: quote.fromAmount, fromAddress: fromAddress, slippage: slippagePercentage }
     })
+
+    if (BN(quote.toAmount).times(1 - slippagePercentage / 100).gt(trade.data.toTokenAmount)) {
+      throw new Error(`Slippage is too high. You expect ${quote.toAmount} but you are going to receive ${trade.data.toTokenAmount} ${quote.to}`)
+    }
+
     await this.sendLedgerNotification(quote, account, 'Signing required to complete the swap.')
-    const swapTx = await client.chain.sendTransaction(trade.data.tx)
+    const swapTx = await client.chain.sendTransaction({ to: trade.data.tx?.to, value: trade.data.tx?.value, data: trade.data.tx?.data, fee: quote.fee })
     return {
       status: 'WAITING_FOR_SWAP_CONFIRMATIONS',
       swapTx,
@@ -128,10 +138,16 @@ class OneinchSwapProvider extends SwapProvider {
   }
 
   async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
-    if (txType in OneinchSwapProvider.feeUnits) {
+    const toChain = cryptoassets[quote.to].chain
+    const chainId = ChainNetworks[toChain][network].chainId
+    if (txType in OneinchSwapProvider.txTypes) {
       const fees = {}
+      const tradeData = await this._getQuote(chainId, assets[quote.from].contractAddress, assets[quote.to].contractAddress, quote.fromAmount)
       for (const feePrice of feePrices) {
-        fees[feePrice] = getTxFee(OneinchSwapProvider.feeUnits[txType], asset, feePrice)
+        fees[feePrice] = getTxFee(
+          OneinchSwapProvider.supportedAssets.reduce((o, key) => Object.assign(o, { [key]: BN(tradeData.data?.estimatedGas).times(1.5) }), {}),
+          asset,
+          feePrice)
       }
       return fees
     }
@@ -197,14 +213,7 @@ class OneinchSwapProvider extends SwapProvider {
     SWAP: 'SWAP'
   }
 
-  static feeUnits = {
-    SWAP: {
-      ETH: 100000 + 400000, // (potential)ERC20 Approval + Swap
-      BNB: 100000 + 400000,
-      MATIC: 100000 + 400000,
-      ERC20: 100000 + 700000
-    }
-  }
+  static supportedAssets = ['ETH', 'BNB', 'MATIC', 'ERC20']
 
   static statuses = {
     WAITING_FOR_APPROVE_CONFIRMATIONS: {
