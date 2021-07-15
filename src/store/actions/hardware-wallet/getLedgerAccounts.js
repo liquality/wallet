@@ -5,20 +5,6 @@ export const getLedgerAccounts = async (
   { network, walletId, asset, walletType, startingIndex, numAccounts }
 ) => {
   const { client, networkAccounts } = getters
-  const _client = client(
-    {
-      network,
-      walletId,
-      asset,
-      walletType,
-      index: 0,
-      useCache: false
-    }
-  )
-  const addresses = await _client.wallet.getAddresses()
-  if (!addresses || addresses.length <= 0) {
-    return []
-  }
   const { chain } = assets[asset]
   const { formatAddress } = chainList[chain]
   const results = []
