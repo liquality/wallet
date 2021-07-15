@@ -2,7 +2,7 @@
   <div>
     <div v-for="account in filteredItems" :key="account.id" :id="account.chain.toUpperCase()">
       <ListItem @item-selected="selectItem(account)"
-                :container-class="account.id === accountId ? 'active' : ''">
+                :item-class="account.id === accountId ? 'active' : ''">
           <template #prefix>
             <div class="account-color"
                  :style="{'background-color': account.color}">
