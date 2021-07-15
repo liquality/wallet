@@ -254,6 +254,6 @@ export default {
       })
     }
     const accounts = state.externalConnections[activeWalletId]?.[origin]?.[chain] || []
-    Vue.set(state.externalConnections[activeWalletId][origin], chain, [...accounts, accountId])
+    Vue.set(state.externalConnections[activeWalletId][origin], chain, [...new Set([...accounts, accountId])])
   }
 }

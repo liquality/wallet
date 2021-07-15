@@ -1,6 +1,7 @@
 import { ChainNetworks } from '../store/utils'
 import buildConfig from '../build.config'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
+import { assets } from '@liquality/cryptoassets'
 
 class Background {
   constructor (store) {
@@ -151,7 +152,13 @@ class Background {
   onExternalMessage (connection, { id, type, data }) {
     const { url } = connection.sender
     const { origin } = new URL(url)
-    const { chain } = data
+    let chain
+    if (data.chain) {
+      chain = data.chain
+    } else {
+      const { asset } = data
+      chain = assets[asset].chain
+    }
     const { externalConnections, activeWalletId } = this.store.state
     const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
                     Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)

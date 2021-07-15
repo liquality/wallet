@@ -4,7 +4,7 @@
       <img :src="logo"/>
     </div>
     <div class="enable-screen wrapper">
-      <h2 class="text-center">Connect Request {{ chain }}</h2>
+      <h2 class="text-center">Connect Request</h2>
 
       <div class="enable-screen_icon mt-2 text-center">{{originShort}}</div>
       <p class="mt-1 mb-2 text-center">{{originDomain}}</p>
@@ -53,7 +53,7 @@ export default {
   computed: {
     ...mapGetters(['accountsData']),
     accounts () {
-      return this.accountsData // .filter(a => a.chain === this.chain)
+      return this.accountsData.filter(a => a.chain === this.chain)
     },
     logo () {
       return LogoWallet
@@ -153,7 +153,7 @@ export default {
 
     .list-items {
       overflow-y: auto;
-      max-height: 200px;
+      padding-bottom: 80px;
     }
   }
 }

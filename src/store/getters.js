@@ -29,11 +29,13 @@ export default {
       walletId,
       asset,
       accountId,
-      useCache = true
+      useCache = true,
+      walletType = 'default',
+      index = 0
     }) => {
-      const account = getters.accountItem(accountId)
-      const accountType = account?.type || 'default'
-      const accountIndex = account?.index || 0
+      const account = accountId ? getters.accountItem(accountId) : null
+      const accountType = account?.type || walletType
+      const accountIndex = account?.index || index
       const cacheKey = [
         asset,
         network,
