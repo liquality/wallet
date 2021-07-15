@@ -710,7 +710,6 @@ export default {
         const totalFees = await this.bestQuoteProvider.estimateFees({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
-          accountId: this.accountId,
           asset,
           txType,
           quote: this.bestQuote,
@@ -725,12 +724,12 @@ export default {
         }
       }
 
-      if (this.availableFees.has(this.assetChain)) {
+      if (fromTxType && this.availableFees.has(this.assetChain)) {
         await addFees(this.asset, this.assetChain, fromTxType)
       }
 
-      if (this.availableFees.has(this.toAssetChain)) {
-        await addFees(this.toAsset, this.toAssetChain, toTxType, false)
+      if (toTxType && this.availableFees.has(this.toAssetChain)) {
+        await addFees(this.toAsset, this.toAssetChain, toTxType)
       }
 
       if (max) {
@@ -798,7 +797,14 @@ export default {
       if (BN(this.sendAmount).eq(0)) return
 
       this.updatingQuotes = true
-      const quotes = await this.getQuotes({ network: this.activeNetwork, from: this.asset, to: this.toAsset, amount: BN(this.sendAmount) })
+      const quotes = await this.getQuotes({
+        network: this.activeNetwork,
+        from: this.asset,
+        to: this.toAsset,
+        fromAccountId: this.fromAccountId,
+        toAccountId: this.toAccountId,
+        amount: BN(this.sendAmount)
+      })
       if (quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)) {
         this.quotes = quotes
       }
@@ -829,9 +835,7 @@ export default {
           walletId: this.activeWalletId,
           quote: this.bestQuote,
           fee,
-          claimFee: toFee,
-          fromAccountId: this.fromAccountId,
-          toAccountId: this.toAccountId
+          claimFee: toFee
         })
 
         this.signRequestModalOpen = false

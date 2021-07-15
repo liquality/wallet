@@ -72,7 +72,10 @@ class LiqualitySwapProvider extends SwapProvider {
     const toAmount = currencyToUnit(cryptoassets[to], BN(amount).times(BN(market.rate)))
 
     return {
-      from, to, fromAmount: fromAmount.toNumber(), toAmount: toAmount.toNumber()
+      from,
+      to,
+      fromAmount: fromAmount,
+      toAmount: toAmount
     }
   }
 
@@ -133,9 +136,9 @@ class LiqualitySwapProvider extends SwapProvider {
     }
   }
 
-  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+  async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
     if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
-      const client = this.getClient(network, walletId, asset, accountId)
+      const client = this.getClient(network, walletId, asset, quote.fromAccountId)
       const value = max ? undefined : BN(quote.fromAmount)
       const txs = feePrices.map(fee => ({ to: '', value, fee }))
       const totalFees = await client.getMethod('getTotalFees')(txs, max)
