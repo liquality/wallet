@@ -36,7 +36,7 @@ const toPoolBalance = (baseAmountString) => baseAmount(baseAmountString, THORCHA
 // Probably cryptoassets should adopt that kind of naming for assets
 const toThorchainAsset = (asset) => {
   return isERC20(asset) ? `ETH.${asset}-${cryptoassets[asset].contractAddress.toUpperCase()}` : `${asset}.${asset}`
-} // TODO: ONLY WORKS FOR NATIVE TOKENS
+}
 
 /**
  * Helper to convert decimal of asset amounts
@@ -78,15 +78,6 @@ class ThorchainSwapProvider extends SwapProvider {
     return []
   }
 
-  // getMinimumOutput (outputAmount) { // TODO: configurable slippage?
-  //   const slippageTolerance = new Percent('50', '10000') // 0.5%
-  //   const slippageAdjustedAmountOut = new Fraction(JSBI.BigInt(1))
-  //     .add(slippageTolerance)
-  //     .invert()
-  //     .multiply(outputAmount.quotient).quotient
-  //   return CurrencyAmount.fromRawAmount(outputAmount.currency, slippageAdjustedAmountOut)
-  // }
-
   async _getPools () {
     return (await axios.get(`${this.thornode}/thorchain/pools`)).data
   }
@@ -125,7 +116,8 @@ class ThorchainSwapProvider extends SwapProvider {
     }
 
     const fromAmountInUnit = currencyToUnit(cryptoassets[from], BN(amount))
-    const inputAmount = convertBaseAmountDecimal(baseAmount(fromAmountInUnit, cryptoassets[from].decimals), 8)
+    const baseInputAmount = baseAmount(fromAmountInUnit, cryptoassets[from].decimals)
+    const inputAmount = convertBaseAmountDecimal(baseInputAmount, 8)
 
     // For RUNE it's `getSwapOutput`
     const swapOutput = getDoubleSwapOutput(inputAmount, fromPool, toPool)
@@ -219,15 +211,17 @@ class ThorchainSwapProvider extends SwapProvider {
     const toChain = cryptoassets[quote.to].chain
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
     const toAddress = chains[toChain].formatAddress(toAddressRaw)
-
+    const baseOutputAmount = baseAmount(quote.toAmount, cryptoassets[quote.to].decimals)
+    const minimumOutput = baseOutputAmount.amount().multipliedBy(0.995).dp(0) // 50 bips slippage
+    const limit = convertBaseAmountDecimal(baseAmount(minimumOutput, cryptoassets[quote.to].decimals), 8)
     const thorchainAsset = assetFromString(toThorchainAsset(quote.to))
-    return getSwapMemo({ asset: thorchainAsset, address: toAddress }) // TODO: need to add limit to avoid slippage
+    return getSwapMemo({ asset: thorchainAsset, address: toAddress, limit })
   }
 
   async sendSwap ({ network, walletId, quote }) {
     const memo = await this.makeMemo({ network, walletId, quote })
     let swapTx
-    if (quote.from === 'BTC') { // TODO: This should be abstracted, such that each chain has it's own way of sending the moemo, it can be in CAL or can use xchainjs
+    if (quote.from === 'BTC') {
       swapTx = await this.sendBitcoinSwap({ quote, network, walletId, memo })
     } else if (quote.from === 'ETH' || isERC20(quote.from)) {
       swapTx = await this.sendEthereumSwap({ quote, network, walletId, memo })
@@ -241,8 +235,6 @@ class ThorchainSwapProvider extends SwapProvider {
   }
 
   async newSwap ({ network, walletId, quote }) {
-    // TODO: check slippage
-
     const approvalRequired = isERC20(quote.from)
     const updates = approvalRequired
       ? await this.approveTokens({ network, walletId, quote })
