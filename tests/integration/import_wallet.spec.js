@@ -43,10 +43,10 @@ describe('Liquality wallet- Import wallet', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV !== 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'testnet')
-    } else {
+    if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
@@ -79,7 +79,7 @@ describe('Liquality wallet- Import wallet', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
@@ -109,7 +109,7 @@ describe('Liquality wallet- Import wallet', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page, 'testnet')
+    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count

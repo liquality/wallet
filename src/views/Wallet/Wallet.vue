@@ -64,7 +64,7 @@ export default {
   },
   async created () {
     // eslint-disable-next-line no-undef
-    analytics.track('wallet_overview', {
+    analytics.track('Wallet Unlock', {
       component: 'Wallet'
     }, () => {
       console.log('analytics called')

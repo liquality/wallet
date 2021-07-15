@@ -404,7 +404,8 @@ export default {
           const feePerBytes = Object.values(this.assetFees).map(fee => fee.fee)
           const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
           try {
-            const totalFees = await client.getMethod('getTotalFees')({ value, feePerBytes, max: getMax })
+            const txs = feePerBytes.map(fee => ({ value, fee }))
+            const totalFees = await client.getMethod('getTotalFees')(txs, getMax)
             for (const [speed, fee] of Object.entries(this.assetFees)) {
               const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
               sendFees[speed] = totalFee

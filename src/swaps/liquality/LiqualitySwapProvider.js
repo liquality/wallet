@@ -1,5 +1,6 @@
 import axios from 'axios'
 import BN from 'bignumber.js'
+import { mapValues } from 'lodash-es'
 import { SwapProvider } from '../SwapProvider'
 import { chains, unitToCurrency, currencyToUnit } from '@liquality/cryptoassets'
 import { sha256 } from '@liquality/crypto'
@@ -9,6 +10,7 @@ import { timestamp, wait } from '../../store/utils'
 import { prettyBalance } from '../../utils/coinFormatter'
 import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
+import { getTxFee } from '../../utils/fees'
 
 export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
 
@@ -70,7 +72,10 @@ class LiqualitySwapProvider extends SwapProvider {
     const toAmount = currencyToUnit(cryptoassets[to], BN(amount).times(BN(market.rate)))
 
     return {
-      from, to, fromAmount: fromAmount.toNumber(), toAmount: toAmount.toNumber()
+      from,
+      to,
+      fromAmount: fromAmount,
+      toAmount: toAmount
     }
   }
 
@@ -129,6 +134,25 @@ class LiqualitySwapProvider extends SwapProvider {
       secretHash,
       fromFundHash: fromFundTx.hash,
       fromFundTx
+    }
+  }
+
+  async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
+    if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
+      const account = this.getAccount(quote.fromAccountId)
+      const client = this.getClient(network, walletId, asset, account.type)
+      const value = max ? undefined : BN(quote.fromAmount)
+      const txs = feePrices.map(fee => ({ to: '', value, fee }))
+      const totalFees = await client.getMethod('getTotalFees')(txs, max)
+      return mapValues(totalFees, f => unitToCurrency(cryptoassets[asset], f))
+    }
+
+    if (txType in LiqualitySwapProvider.feeUnits) {
+      const fees = {}
+      for (const feePrice of feePrices) {
+        fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice)
+      }
+      return fees
     }
   }
 
@@ -489,7 +513,6 @@ class LiqualitySwapProvider extends SwapProvider {
 
   static feeUnits = {
     SWAP_INITIATION: {
-      BTC: 370, // Assume 2 inputs
       ETH: 165000,
       RBTC: 165000,
       BNB: 165000,

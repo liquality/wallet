@@ -38,7 +38,7 @@ export const getLedgerAccounts = async (
       const formatedAddress = formatAddress(addresses[0].address)
       results.push({
         account: addresses[0],
-        index: index + startingIndex,
+        index,
         exists: usedAddresses.includes(formatedAddress)
       })
     }
