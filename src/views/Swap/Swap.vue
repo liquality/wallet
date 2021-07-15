@@ -174,7 +174,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" :class="{isHighFee: highFees}" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" :class="isHighFee === true ? 'highFees' : ''" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
             </div>
           </div>
 
@@ -218,7 +218,7 @@
                   {{ toSwapFee }} {{ toAssetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" :class="{isHighFee: highFees}" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
+              <div class="font-weight-bold" :class="isHighFee === true ? 'highFees' : ''" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
             </div>
           </div>
           <div class="mt-20">
@@ -374,7 +374,8 @@ export default {
       swapErrorMessage: '',
       customFeeAssetSelected: null,
       customFees: {},
-      bridgeModalOpen: false
+      bridgeModalOpen: false,
+      isHighFee: false
     }
   },
   props: {
@@ -428,9 +429,6 @@ export default {
   computed: {
     account () {
       return this.accountItem(this.fromAccountId)
-    },
-    isHighFee () {
-      return this.getTotalSwapFeeInFiat >= this.receiveAmountFiat * 0.25
     },
     toAccount () {
       return this.toAccountId ? this.accountItem(this.toAccountId) : null
@@ -666,6 +664,15 @@ export default {
       }
 
       return assetFees
+    },
+    checkHighFee () {
+      const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
+      const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
+      if (feeTotal.gte(BN(receiveTotalPercentage))) {
+        this.isHighFee = true
+      } else {
+        this.isHighFee = false
+      }
     },
     setSendAmount (amount) {
       this.sendAmount = amount
@@ -970,6 +977,12 @@ export default {
     bestQuote: function () {
       this._updateSwapFees() // Skip debounce
       this.updateMaxSwapFees()
+    },
+    fromSwapFee: function () {
+      this.checkHighFee()
+    },
+    toSwapFee: function () {
+      this.checkHighFee()
     }
   }
 }
@@ -980,11 +993,6 @@ export default {
   overflow-y: auto;
   padding-bottom: 70px;
   height: 100%;
-
-  &_highFees {
-    color: $danger;
-    font-weight: bold;
-  }
 
   &_asset {
     &.input-group {
@@ -1014,6 +1022,11 @@ export default {
     }
   }
 }
+
+  .highFees {
+    color: $danger;
+    font-weight: bold;
+  }
 
 .swap-rate {
   p {
