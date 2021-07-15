@@ -333,6 +333,8 @@ import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
 
+const DEFAULT_SWAP_VALUE_USD = 100
+
 export default {
   components: {
     NavBar,
@@ -356,7 +358,7 @@ export default {
     return {
       stateSendAmount: 0,
       stateSendAmountFiat: 0,
-      amountOption: 'min',
+      amountOption: null,
       asset: null,
       toAsset: null,
       quotes: [],
@@ -383,7 +385,6 @@ export default {
   },
   created () {
     this.asset = this.routeAsset
-    this.sendAmount = this.min
     this.fromAccountId = this.accountId
     this.updateMarketData({ network: this.activeNetwork })
 
@@ -417,6 +418,8 @@ export default {
         [this.toAssetChain]: 'average'
       }
     }
+
+    this.sendAmount = dpUI(this.defaultAmount)
 
     this.interval = setInterval(() => {
       this.updateQuotes()
@@ -508,16 +511,23 @@ export default {
       if (!this.bestQuote) return null
       return this.swapProvider(this.activeNetwork, this.bestQuote.provider)
     },
+    defaultAmount () {
+      const min = BN(this.min)
+      if (!min.eq(0)) {
+        return BN(min)
+      } else if (this.fiatRates[this.asset]) {
+        return BN(fiatToCrypto(DEFAULT_SWAP_VALUE_USD, this.fiatRates[this.asset]))
+      } else {
+        return BN(0)
+      }
+    },
     min () {
-      const min = 0
       const liqualityMarket = this.networkMarketData.find(pair =>
         pair.from === this.asset &&
         pair.to === this.toAsset &&
         getSwapProviderConfig(this.activeNetwork, pair.provider).type === SwapProviderType.LIQUALITY)
-      if (liqualityMarket) {
-        return dpUI(BN(liqualityMarket.min))
-      }
-      return dpUI(BN(min))
+      const min = liqualityMarket ? BN(liqualityMarket.min) : BN(0)
+      return dpUI(min)
     },
     max () {
       return this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
@@ -645,8 +655,6 @@ export default {
     prettyFiatBalance,
     getAssetIcon,
     getAssetColorStyle,
-    cryptoToFiat,
-    fiatToCrypto,
     formatFiat,
     getAssetFees (asset) {
       const assetFees = {}
@@ -665,7 +673,7 @@ export default {
       this.sendAmount = amount
       if (amount === this.max) {
         this.amountOption = 'max'
-      } else {
+      } else if (amount === this.min) {
         this.amountOption = 'min'
       }
     },
@@ -673,7 +681,7 @@ export default {
       this.toAsset = toAsset
       if (this.amountOption === 'max') {
         this.sendAmount = this.max
-      } else {
+      } else if (this.amountOption === 'min') {
         this.sendAmount = this.min
       }
 
