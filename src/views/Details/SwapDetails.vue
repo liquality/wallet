@@ -95,6 +95,7 @@ import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
 import LiqualitySwapDetails from '@/swaps/liquality/SwapDetails'
 import UniswapSwapDetails from '@/swaps/uniswap/SwapDetails'
+import OneinchSwapDetails from '@/swaps/oneinch/SwapDetails'
 import ThorchainSwapDetails from '@/swaps/thorchain/SwapDetails'
 
 export default {
@@ -124,6 +125,7 @@ export default {
       return ({
         [SwapProviderType.LIQUALITY]: LiqualitySwapDetails,
         [SwapProviderType.UNISWAPV2]: UniswapSwapDetails,
+        [SwapProviderType.ONEINCHV3]: OneinchSwapDetails,
         [SwapProviderType.THORCHAIN]: ThorchainSwapDetails
       })[config.type]
     },

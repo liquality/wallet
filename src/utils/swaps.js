@@ -3,6 +3,7 @@ import buildConfig from '../build.config'
 export const SwapProviderType = {
   LIQUALITY: 'LIQUALITY',
   UNISWAPV2: 'UNISWAPV2',
+  ONEINCHV3: 'ONEINCHV3',
   THORCHAIN: 'THORCHAIN'
 }
 
