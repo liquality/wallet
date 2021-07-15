@@ -334,6 +334,7 @@ import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
 
 const DEFAULT_SWAP_VALUE_USD = 100
+const QUOTE_TIMER_MS = 30000
 
 export default {
   components: {
@@ -421,9 +422,7 @@ export default {
 
     this.sendAmount = dpUI(this.defaultAmount)
 
-    this.interval = setInterval(() => {
-      this.updateQuotes()
-    }, 30000)
+    this.resetQuoteTimer()
   },
   beforeDestroy () {
     clearInterval(this.interval)
@@ -439,7 +438,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage () {
-      return BN(this.sendAmount).gt(0) && (!this.bestQuote || BN(this.min).gt(this.max))
+      return BN(this.sendAmount).gt(0) && (!this.bestQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
     sendAmount: {
       get () {
@@ -592,6 +591,7 @@ export default {
     },
     canSwap () {
       if (!this.bestQuote ||
+          this.updatingQuotes ||
           this.ethRequired ||
           this.amountError ||
           BN(this.safeAmount).lte(0)) {
@@ -711,11 +711,12 @@ export default {
         }
       }
 
-      const { fromTxType, toTxType } = this.bestQuoteProvider
+      const bestQuoteProvider = this.bestQuoteProvider
+      const { fromTxType, toTxType } = bestQuoteProvider
 
       const addFees = async (asset, chain, txType) => {
         const assetFees = this.getAssetFees(chain)
-        const totalFees = await this.bestQuoteProvider.estimateFees({
+        const totalFees = await bestQuoteProvider.estimateFees({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset,
@@ -801,10 +802,13 @@ export default {
         await this.swap()
       }
     },
-    updateQuotes: _.debounce(async function () {
-      if (BN(this.sendAmount).eq(0)) return
-
-      this.updatingQuotes = true
+    resetQuoteTimer () {
+      clearTimeout(this.quoteTimer)
+      this.quoteTimer = setTimeout(() => {
+        this.updateQuotes()
+      }, QUOTE_TIMER_MS)
+    },
+    _updateQuotes: _.debounce(async function () {
       const quotes = await this.getQuotes({
         network: this.activeNetwork,
         from: this.asset,
@@ -817,7 +821,14 @@ export default {
         this.quotes = quotes
       }
       this.updatingQuotes = false
+      this.resetQuoteTimer()
     }, 1000),
+    updateQuotes () {
+      if (BN(this.sendAmount).eq(0)) return
+      this.quotes = []
+      this.updatingQuotes = true
+      this._updateQuotes()
+    },
     async swap () {
       this.swapErrorMessage = ''
       this.swapErrorModalOpen = false
