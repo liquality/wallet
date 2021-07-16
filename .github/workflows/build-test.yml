@@ -34,12 +34,6 @@ jobs:
           npm ci
           npm run lint
           npm run build
-
-      - name: screenshots directory
-        if: always()
-        run: |
-          mkdir screenshots
-
   test:
     needs: [build]
     runs-on: ubuntu-latest
@@ -75,6 +69,7 @@ jobs:
         if: always()
         run: |
           mkdir screenshots
+          npm ci
 
       - name: ===>> TestNet integration tests ==>>>
         uses: mujo-code/puppeteer-headful@master
