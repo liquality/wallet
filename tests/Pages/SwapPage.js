@@ -54,8 +54,17 @@ class SwapPage {
     await page.waitForSelector('#search_for_a_currency', { visible: true })
   }
 
+  /**
+   * Check SWAP Screen Review button has been Enabled.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
   async ClickSwapReviewButton (page) {
-    await page.waitForSelector('#swap_review_button:not([disabled])')
+    console.log('User checking for SWAP Review button is enabled or disabled')
+    await page.waitForSelector('#swap_review_button:not([disabled])', {
+      timeout: 5000
+    })
     await page.click('#swap_review_button')
     console.log(chalk.green('User clicked on SWAP review button'))
   }

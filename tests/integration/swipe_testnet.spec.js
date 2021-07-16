@@ -50,13 +50,19 @@ describe('Liquality wallet SWIPE feature', async () => {
     await overviewPage.SelectNetwork(page)
     // Click on Swipe
     await overviewPage.ClickSwipe(page)
+    // Check No errors first & No Liquidity message
+    if (await page.$('swap-send-main-errors') !== null) console.log('No Liquidity error message has been displayed')
+    else console.log('Enough Liquidity')
 
     // SEND from assert (BTC)
     await searchAssetPage.SearchForAnAsset(page, asset1)
+    // Validate min SEND amount from text field & check Min is Active
+    const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
+    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').equals('0.0008')
     await swapPage.ClickOnMin(page)
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
-    // Review
+    // Review Button
     await swapPage.ClickSwapReviewButton(page)
 
     // SWAP SEND details validation
@@ -77,6 +83,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     const swapSendAccountFeesInDollar = await swapPage.GetSwapSendAccountFeesInDollar(page)
     expect(swapSendAccountFeesInDollar.trim()).not.contain('$00.00')
+    expect(swapSendAccountFeesInDollar.trim()).not.contain('NaN')
 
     // Receive details validation
     const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
@@ -84,28 +91,34 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
     expect(receiveAmountInDollar.trim()).not.contain('$00.00')
+    expect(receiveAmountInDollar.trim()).not.contain('NaN')
 
     const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
     expect(receiveNetworkFeeValue.trim()).contain(asset2)
 
     const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
     expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
+    expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
 
     const receiveAccountFeesValue = await swapPage.GetSwapReceiveNetworkValue(page)
     expect(receiveAccountFeesValue.trim()).contain(asset2)
 
     const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
     expect(receiveAccountFeesInDollar.trim()).not.contain('$00.00')
+    expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
+    // RATE
+    await page.waitForSelector('#swap_rate_value')
+
     // Validate message
     await swapPage.ValidateMessage(page)
-
-    // TODO: Click on swap confirm step
-    await swapPage.ClickInitiateSwapButton(page)
+    // Check SWAP Initiate option has been enabled
+    await page.waitForSelector('#swap_review_button:not([disabled])', { timeout: 5000 })
   })
   it('SWAP SOV to BTC', async () => {
     const asset1 = 'SOV'
     const asset2 = 'BTC'
 
+    await page.waitForSelector('#wallet_header_logo')
     await page.click('#wallet_header_logo')
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
@@ -116,6 +129,10 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // SEND from assert (BTC)
     await searchAssetPage.SearchForAnAsset(page, asset1)
+    // Validate min SEND amount from text field & check Min is Active
+    const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
+    expect(swapSendAmountField, 'SOV to BTC SWAP min value not set in input').equals('0.05')
+    await page.$eval('#min_amount_send_button', (el) => el.textContent)
     await swapPage.EnterSendAmountOnSwap(page, '1')
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
@@ -152,24 +169,33 @@ describe('Liquality wallet SWIPE feature', async () => {
     const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
     expect(receiveAmountValue.trim()).contain(asset2)
 
+    // Receive fiat amount in $
     const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    expect(receiveAmountInDollar.trim()).not.contain('$00.00')
-
+    expect(receiveAmountInDollar.trim()).not.contain('$0.00')
+    expect(receiveAmountInDollar.trim()).not.contain('NaN')
+    // Receive Network Fee
     const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
     expect(receiveNetworkFeeValue.trim()).contain(asset2)
-
+    // Receive Network Fee fiat total
     const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
     expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
-
+    expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
+    // Receive Amount+Fees fee
     const receiveAccountFeesValue = await swapPage.GetSwapReceiveNetworkValue(page)
     expect(receiveAccountFeesValue.trim()).contain(asset2)
-
+    // Receive Amount+Fees fiat value
     const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
-    expect(receiveAccountFeesInDollar.trim()).not.contain('$00.00')
+    expect(receiveAccountFeesInDollar.trim()).not.contain('$0.00')
+    expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
+    // RATE
+    await page.waitForSelector('#swap_rate_value')
+
     // Validate message
     await swapPage.ValidateMessage(page)
+
     // Click on Initiate SWAP button
     await swapPage.ClickInitiateSwapButton(page)
+
     // Wait for Activity tab list of items
     await page.waitForSelector('.transaction-list', { visible: true })
     const transactions = await page.$$('.transaction-status')
@@ -178,6 +204,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     await page.waitForSelector('#swap-details-status-section', { visible: true })
     await page.waitForSelector('#pending_receipt_section', { visible: true })
+    // Validate Transaction SWAP Network SPEED and
     await page.waitForSelector('#swap-details-network-fee-section', { visible: true })
 
     // Advanced option
