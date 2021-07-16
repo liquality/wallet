@@ -188,5 +188,16 @@ export default {
       }
       return null
     }
+  },
+  chainAssets (state, getters) {
+    const { cryptoassets } = getters
+
+    const chainAssets = Object.entries(cryptoassets).reduce((chains, [asset, assetData]) => {
+      const assets = assetData.chain in chains ? chains[assetData.chain] : []
+      return Object.assign({}, chains, {
+        [assetData.chain]: [...assets, asset]
+      })
+    }, {})
+    return chainAssets
   }
 }
