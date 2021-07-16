@@ -46,6 +46,8 @@ jobs:
           mv ./src/manifest.tmp ./src/manifest.json
 
       - name: Set development agents
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         run: |
           sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
       - run: |
@@ -62,6 +64,7 @@ jobs:
         uses: mujo-code/puppeteer-headful@master
         env:
           node-version: 14.1.0
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
           CI: 'true'
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
