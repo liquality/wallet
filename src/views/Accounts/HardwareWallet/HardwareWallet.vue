@@ -98,11 +98,14 @@ export default {
       } else {
         this.loading = true
         this.bridgeModalOpen = true
-        this.$store.subscribe(async ({ type, payload }) => {
+        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
           if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
           payload.created === true) {
             this.bridgeModalOpen = false
             await this.connect({ asset, walletType, page })
+            if (unsubscribe) {
+              unsubscribe()
+            }
           }
         })
       }

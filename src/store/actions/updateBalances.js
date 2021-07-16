@@ -22,12 +22,26 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
             })
           })
       } else {
-        addresses = await client(network, walletId, asset, account.type).wallet.getUsedAddresses()
+        addresses = await client(
+          {
+            network,
+            walletId,
+            asset,
+            accountId: account.id
+          }
+        ).wallet.getUsedAddresses()
       }
 
       const balance = addresses.length === 0
         ? 0
-        : (await client(network, walletId, asset, account.type).chain.getBalance(addresses)).toNumber()
+        : (await client(
+          {
+            network,
+            walletId,
+            asset,
+            accountId: account.id
+          }
+        ).chain.getBalance(addresses)).toNumber()
 
       commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance })
     }, { concurrency: 1 })

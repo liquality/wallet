@@ -38,5 +38,7 @@ export default {
 
   injectEthereum: false,
   injectEthereumChain: 'ethereum',
-  usbBridgeWindowsId: 0
+  usbBridgeWindowsId: 0,
+
+  externalConnections: {}
 }

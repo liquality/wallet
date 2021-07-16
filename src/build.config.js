@@ -63,6 +63,12 @@ export default {
         name: 'Uniswap V2',
         type: SwapProviderType.UNISWAPV2,
         routerAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
+      },
+      oneinchV3: {
+        name: 'Oneinch V3',
+        type: SwapProviderType.ONEINCHV3,
+        agent: 'https://api.1inch.exchange/v3.0',
+        routerAddress: '0x11111112542d85b3ef69ae05771c2dccff4faa26'
       }
     }
   },
