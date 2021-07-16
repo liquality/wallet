@@ -12,18 +12,18 @@ class OverviewPage {
     await page.waitForSelector('#overview', {
       visible: true
     })
-    console.log(chalk.green('User logged successfully, overview page loaded'))
+    console.log(chalk.green('User logged successfully, overview page has been loaded'))
   }
 
   /**
    * Select Network from overview page
    * @param page
-   * @param network - Network type
+   * @param network - Network type default: testnet
    * @returns {Promise<void>}
    * @constructor
    * @example - SelectNetwork(page,'testnet')
    */
-  async SelectNetwork (page, network) {
+  async SelectNetwork (page, network = 'testnet') {
     await page.click('#head_network')
     switch (network) {
       case 'testnet': {
@@ -42,7 +42,7 @@ class OverviewPage {
         await page.click('#mainnet_network')
         const overviewText = await page.$eval('.text-muted', el => el.innerText)
         expect(overviewText, 'Mainnet overview header').contain('MAINNET')
-        console.log('user successfully changed to MAINET')
+        console.log('user successfully changed to MAINNET')
         break
       }
 
@@ -60,14 +60,20 @@ class OverviewPage {
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#send_action', {
-      visible: true
+      visible: true,
+      timeout: 60000
     })
+    console.log('SEND button has been displayed')
     await page.waitForSelector('#swap_action', {
-      visible: true
+      visible: true,
+      timeout: 60000
     })
+    console.log('SWAP button has been displayed')
     await page.waitForSelector('#receive_action', {
-      visible: true
+      visible: true,
+      timeout: 60000
     })
+    console.log('RECEIVE button has been displayed')
   }
 
   /**
@@ -224,6 +230,7 @@ class OverviewPage {
   async ClickSwipe (page) {
     await page.waitForSelector('#swap_action', { visible: true })
     await page.click('#swap_action')
+    console.log('User clicked on SWAP button from overview page')
     await page.waitForSelector('#search_for_a_currency_search', { visible: true })
   }
 

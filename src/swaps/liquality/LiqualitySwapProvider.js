@@ -72,7 +72,10 @@ class LiqualitySwapProvider extends SwapProvider {
     const toAmount = currencyToUnit(cryptoassets[to], BN(amount).times(BN(market.rate)))
 
     return {
-      from, to, fromAmount: fromAmount.toNumber(), toAmount: toAmount.toNumber()
+      from,
+      to,
+      fromAmount: fromAmount,
+      toAmount: toAmount
     }
   }
 
@@ -95,8 +98,7 @@ class LiqualitySwapProvider extends SwapProvider {
     quote.fromAddress = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
     quote.toAddress = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
 
-    const account = this.getAccount(quote.fromAccountId)
-    const fromClient = this.getClient(network, walletId, quote.from, account?.type)
+    const fromClient = this.getClient(network, walletId, quote.from, quote.fromAccountId)
 
     const message = [
       'Creating a swap with following terms:',
@@ -134,10 +136,9 @@ class LiqualitySwapProvider extends SwapProvider {
     }
   }
 
-  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+  async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
     if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
-      const account = this.getAccount(accountId)
-      const client = this.getClient(network, walletId, asset, account.type)
+      const client = this.getClient(network, walletId, asset, quote.fromAccountId)
       const value = max ? undefined : BN(quote.fromAmount)
       const txs = feePrices.map(fee => ({ to: '', value, fee }))
       const totalFees = await client.getMethod('getTotalFees')(txs, max)
@@ -174,8 +175,8 @@ class LiqualitySwapProvider extends SwapProvider {
     return timestamp() >= swap.expiresAt
   }
 
-  async hasChainTimePassed ({ network, walletId, asset, timestamp }) {
-    const client = this.getClient(network, walletId, asset)
+  async hasChainTimePassed ({ network, walletId, asset, timestamp, fromAccountId }) {
+    const client = this.getClient(network, walletId, asset, fromAccountId)
     const maxTries = 3
     let tries = 0
     while (tries < maxTries) {
@@ -218,10 +219,9 @@ class LiqualitySwapProvider extends SwapProvider {
 
     if (!isERC20(swap.from)) return { status: 'FUNDED' } // Skip. Only ERC20 swaps need funding
 
-    const account = this.getAccount(swap.fromAccountId)
-    const fromClient = this.getClient(network, walletId, swap.from, account?.type)
+    const fromClient = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
-    await this.sendLedgerNotification(account, 'Signing required to fund the swap.')
+    await this.sendLedgerNotification(swap.fromAccountId, 'Signing required to fund the swap.')
 
     const fundTx = await fromClient.swap.fundSwap(
       {
@@ -257,9 +257,8 @@ class LiqualitySwapProvider extends SwapProvider {
     // Jump the step if counter party has already accepted the initiation
     const counterPartyInitiation = await this.findCounterPartyInitiation({ swap, network, walletId })
     if (counterPartyInitiation) return counterPartyInitiation
-    const account = this.getAccount(swap.fromAccountId)
 
-    const fromClient = this.getClient(network, walletId, swap.from, account?.type)
+    const fromClient = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await fromClient.chain.getTransactionByHash(swap.fromFundHash)
@@ -276,8 +275,7 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async findCounterPartyInitiation ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.toAccountId)
-    const toClient = this.getClient(network, walletId, swap.to, account?.type)
+    const toClient = this.getClient(network, walletId, swap.to, swap.toAccountId)
 
     try {
       const tx = await toClient.swap.findInitiateSwapTransaction(
@@ -336,8 +334,7 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async confirmCounterPartyInitiation ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.toAccountId)
-    const toClient = this.getClient(network, walletId, swap.to, account?.type)
+    const toClient = this.getClient(network, walletId, swap.to, swap.toAccountId)
 
     const tx = await toClient.chain.getTransactionByHash(swap.toFundHash)
 
@@ -356,10 +353,9 @@ class LiqualitySwapProvider extends SwapProvider {
     const expirationUpdates = await this.handleExpirations({ swap, network, walletId })
     if (expirationUpdates) { return expirationUpdates }
 
-    const account = this.getAccount(swap.toAccountId)
-    const toClient = this.getClient(network, walletId, swap.to, account?.type)
+    const toClient = this.getClient(network, walletId, swap.to, swap.toAccountId)
 
-    await this.sendLedgerNotification(swap, account, 'Signing required to claim the swap.')
+    await this.sendLedgerNotification(swap.toAccountId, 'Signing required to claim the swap.')
 
     const toClaimTx = await toClient.swap.claimSwap(
       {
@@ -382,8 +378,7 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async waitForClaimConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.toAccountId)
-    const toClient = this.getClient(network, walletId, swap.to, account?.type)
+    const toClient = this.getClient(network, walletId, swap.to, swap.toAccountId)
 
     try {
       const tx = await toClient.chain.getTransactionByHash(swap.toClaimHash)
@@ -413,8 +408,7 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async waitForRefundConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.fromAccountId)
-    const fromClient = this.getClient(network, walletId, swap.from, account?.type)
+    const fromClient = this.getClient(network, walletId, swap.from, swap.fromAccountId)
     try {
       const tx = await fromClient.chain.getTransactionByHash(swap.refundHash)
 
@@ -431,9 +425,8 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async refundSwap ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.fromAccountId)
-    const fromClient = this.getClient(network, walletId, swap.from, account?.type)
-    await this.sendLedgerNotification(swap, account, 'Signing required to refund the swap.')
+    const fromClient = this.getClient(network, walletId, swap.from, swap.fromAccountId)
+    await this.sendLedgerNotification(swap.fromAccountId, 'Signing required to refund the swap.')
     const refundTx = await fromClient.swap.refundSwap(
       {
         value: BN(swap.fromAmount),

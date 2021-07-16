@@ -27,6 +27,7 @@ const ALLOWED = [
 ]
 
 export const requestPermission = async ({ state, dispatch }, { origin, data }) => {
+  await dispatch('requestUnlockWallet')
   if (!state.unlockedAt) throw new Error('Wallet is locked. Unlock the wallet first.')
   if (!state.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
 
@@ -63,7 +64,6 @@ export const requestPermission = async ({ state, dispatch }, { origin, data }) =
       emitter.$once(`permission:${id}`, (response) => {
         if (!response.allowed) reject(new Error('User denied'))
         if (response.error) reject(new Error(response.error))
-
         resolve(response.result)
       })
 
