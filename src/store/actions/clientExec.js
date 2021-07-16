@@ -1,5 +1,5 @@
-export const clientExec = async ({ getters }, { network, walletId, asset, method, args, returnType }) => {
-  const client = getters.client(network, walletId, asset)
+export const clientExec = async ({ getters }, { network, walletId, asset, method, args, returnType, accountId }) => {
+  const client = getters.client({ network, walletId, asset, accountId })
 
   const [namespace, fnName] = method.split('.')
 

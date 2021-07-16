@@ -1,13 +1,13 @@
 import { ChainNetworks } from '../store/utils'
 import buildConfig from '../build.config'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
+import { assets } from '@liquality/cryptoassets'
 
 class Background {
   constructor (store) {
     this.store = store
     this.internalConnections = []
     this.externalConnections = []
-    this.externalConnectionApprovalMap = {}
 
     this.subscribeToMutations()
     this.subscribeToWalletChanges()
@@ -152,8 +152,16 @@ class Background {
   onExternalMessage (connection, { id, type, data }) {
     const { url } = connection.sender
     const { origin } = new URL(url)
-
-    const allowed = this.externalConnectionApprovalMap[origin]
+    let chain
+    if (data.chain) {
+      chain = data.chain
+    } else {
+      const { asset } = data
+      chain = assets[asset].chain
+    }
+    const { externalConnections, activeWalletId } = this.store.state
+    const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
+                    Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
 
     switch (type) {
       case 'ENABLE_REQUEST':
@@ -167,7 +175,7 @@ class Background {
           return
         }
 
-        this.storeProxy(id, connection, 'requestOriginAccess', { origin })
+        this.storeProxy(id, connection, 'requestOriginAccess', { origin, chain })
         break
 
       case 'CAL_REQUEST':
@@ -211,10 +219,6 @@ class Background {
         return { error: error.toString() }
       })
       .then(response => {
-        if (action === 'requestOriginAccess' && response.result) {
-          this.externalConnectionApprovalMap[data.origin] = true
-        }
-
         connection.postMessage({
           id,
           data: response
