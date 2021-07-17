@@ -24,7 +24,8 @@ class OverviewPage {
    * @example - SelectNetwork(page,'testnet')
    */
   async SelectNetwork (page, network = 'testnet') {
-    await page.click('#head_network')
+    let headNetwork = await page.waitForSelector('#head_network')
+    await headNetwork.click({ slowMo: 10 })
     await page.waitForTimeout(1000)
     switch (network) {
       case 'testnet': {
