@@ -107,11 +107,10 @@ describe('Liquality wallet SEND feature', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ClickSend(page)
-    // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
-
+    // Click on bitcoin & Click on Send option
+    await overviewPage.SelectChain(page, bitCoinName)
+    await page.waitForSelector('#send', { visible: true })
+    await page.click('#send')
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
@@ -144,11 +143,9 @@ describe('Liquality wallet SEND feature', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ClickSend(page)
-    // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
-
+    await overviewPage.SelectChain(page, bitCoinName)
+    await page.waitForSelector('#send', { visible: true })
+    await page.click('#send')
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
