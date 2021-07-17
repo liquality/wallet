@@ -104,7 +104,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
 
   const tokens = ['ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV']
   describe('Import wallet, Receive tokens', async () => {
-    before(async () => {
+    beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl)
@@ -127,9 +127,13 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
     })
 
-    after(async () => {
-      if (browser !== undefined) {
+    afterEach(async () => {
+      try {
+        console.log('Cleaning up instances')
+        await page.close()
         await browser.close()
+      } catch (e) {
+        console.log('Cannot cleanup instances')
       }
     })
 

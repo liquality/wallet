@@ -21,7 +21,7 @@ let browser, page
 const password = '123123123'
 
 describe('Liquality wallet SWIPE feature', async () => {
-  before(async () => {
+  beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
@@ -34,7 +34,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
   })
 
-  after(async () => {
+  afterEach(async () => {
     try {
       console.log('Cleaning up instances')
       await page.close()
@@ -122,17 +122,15 @@ describe('Liquality wallet SWIPE feature', async () => {
     const asset1 = 'SOV'
     const asset2 = 'BTC'
 
-    await page.waitForSelector('#wallet_header_logo')
-    await page.click('#wallet_header_logo')
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // Click on Swipe
-    await overviewPage.ClickSwipe(page)
-
-    // SEND from assert (BTC)
-    await searchAssetPage.SearchForAnAsset(page, asset1)
+    // Click on SOV then click on SWAP button
+    await overviewPage.SelectChain(page, asset1)
+    await page.waitForSelector('#swap', { visible: true })
+    await page.click('#swap')
+    console.log(chalk.green('User clicked on SOV SWAP button'))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'SOV to BTC SWAP min value not set in input').equals('0.05')
@@ -235,7 +233,6 @@ describe('Liquality wallet SWIPE feature', async () => {
     })
   })
   it('SWAP (BTC),Please increase amount. It is below minimum.', async () => {
-    await page.click('#wallet_header_logo')
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
@@ -254,7 +251,6 @@ describe('Liquality wallet SWIPE feature', async () => {
     await swapPage.HasReviewButtonDisabled(page)
   })
   it('SWAP(BTC),Lower amount. This exceeds available balance.', async () => {
-    await page.click('#wallet_header_logo')
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet

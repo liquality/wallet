@@ -90,8 +90,7 @@ class OverviewPage {
    * @example SelectChain(page,'BITCOIN')
    */
   async SelectChain (page, chain) {
-    await page.waitForSelector('#assert_list_item', { visible: true })
-    const assertListItems = await page.$$('#assert_list_item')
+    await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
       case 'BITCOIN': {
         await page.waitForSelector(`#${chain}`, { visible: true })
@@ -142,10 +141,10 @@ class OverviewPage {
       }
 
       default:
-        await assertListItems[0].click()
-        await page.click('#' + chain)
+        throw Error(`Unsupported chain: ${chain}`)
     }
     await page.waitForSelector('.account-container_balance_code', { visible: true })
+    await page.waitForSelector('#refresh-icon', { visible: true })
   }
 
   /**

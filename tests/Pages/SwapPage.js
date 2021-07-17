@@ -101,6 +101,7 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendAmount (page) {
+    await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
     return await page.$eval('#swap_send_amount_input_field', el => el.value)
   }
 
