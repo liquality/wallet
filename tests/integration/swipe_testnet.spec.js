@@ -44,7 +44,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     }
   })
 
-  it('SWAP BTC to ETH', async () => {
+  it.only('SWAP BTC to ETH', async () => {
     const asset1 = 'BTC'
     const asset2 = 'ETH'
 

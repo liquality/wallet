@@ -63,7 +63,7 @@ class SwapPage {
   async ClickSwapReviewButton (page) {
     console.log('User checking for SWAP Review button is enabled or disabled')
     await page.waitForSelector('#swap_review_button:not([disabled])', {
-      timeout: 5000
+      timeout: 60000
     })
     await page.click('#swap_review_button')
     console.log(chalk.green('User clicked on SWAP review button'))

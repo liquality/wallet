@@ -31,7 +31,8 @@ class OverviewPage {
       case 'testnet': {
         await page.waitForSelector('#testnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
-        await page.click('#testnet_network')
+        await page.click('#testnet_network', { delay: 10 })
+        await page.waitForTimeout(2000)
         await page.waitForSelector('#active_network', { visible: true })
         const overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Testnet overview header').contain('TESTNET')
