@@ -13,7 +13,6 @@ class TestUtils {
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        '--disable-gpu',
         '--disable-extensions-except=' + this.extensionPathBuildPath,
         '--load-extension=' + this.extensionPathBuildPath
       ]

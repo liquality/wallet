@@ -24,8 +24,12 @@ describe('Liquality wallet - Create wallet', async () => {
   })
 
   after(async () => {
-    if (browser !== undefined) {
+    try {
+      console.log('Cleaning up instances')
+      await page.close()
       await browser.close()
+    } catch (e) {
+      console.log('Cannot cleanup istances')
     }
   })
 
