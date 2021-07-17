@@ -56,7 +56,6 @@ jobs:
         with:
           args: npm run test:testnet
 
-
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2
         if: always()

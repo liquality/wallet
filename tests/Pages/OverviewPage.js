@@ -25,12 +25,13 @@ class OverviewPage {
    */
   async SelectNetwork (page, network = 'testnet') {
     await page.click('#head_network')
+    await page.waitForTimeout(1000)
     switch (network) {
       case 'testnet': {
         await page.waitForSelector('#testnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
         await page.click('#testnet_network')
-        const overviewText = await page.$eval('.text-muted', el => el.innerText)
+        const overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Testnet overview header').contain('TESTNET')
         console.log('user successfully changed to TESTNET')
         break
@@ -40,7 +41,7 @@ class OverviewPage {
         await page.waitForSelector('#mainnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
         await page.click('#mainnet_network')
-        const overviewText = await page.$eval('.text-muted', el => el.innerText)
+        const overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Mainnet overview header').contain('MAINNET')
         console.log('user successfully changed to MAINNET')
         break

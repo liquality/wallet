@@ -112,7 +112,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Validate message
     await swapPage.ValidateMessage(page)
     // Check SWAP Initiate option has been enabled
-    await page.waitForSelector('#swap_review_button:not([disabled])', { timeout: 5000 })
+    await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
   it('SWAP SOV to BTC', async () => {
     const asset1 = 'SOV'
