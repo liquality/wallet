@@ -56,8 +56,7 @@ describe('Liquality wallet - Create wallet', async () => {
     // confirm button has been disabled
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
-
-  it('Create a new wallet with 12 words, validate overviewPage-["mainnet"]', async () => {
+  it('Create a new wallet with 12 words, validate overviewPage-["mainnet","smoke"]', async () => {
     const password = '123123123'
 
     const passwordInput = await page.$('#password')

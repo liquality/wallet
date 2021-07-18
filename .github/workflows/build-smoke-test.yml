@@ -2,13 +2,11 @@ on:
   pull_request:
     branches:
       - dev
-    types: [closed]
 
-
-name: Build & Regression testnet
+name: Build & Run smoke tests
 
 jobs:
-  regressiontest:
+  smoketest:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -49,14 +47,14 @@ jobs:
         run: |
           mkdir screenshots
 
-      - name: Run Regression tests
+      - name: Smoke tests
         uses: mujo-code/puppeteer-headful@master
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:testnet
+          args: test:testnet:smoke
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2
