@@ -33,7 +33,6 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
   })
-
   afterEach(async () => {
     try {
       console.log('Cleaning up instances')
@@ -55,8 +54,11 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Click on Swipe
     await overviewPage.ClickSwipe(page)
     // Check No errors first & No Liquidity message
-    if (await page.$('swap-send-main-errors') !== null) console.log('No Liquidity error message has been displayed')
-    else console.log('Enough Liquidity')
+    if (await page.$('swap-send-main-errors') !== null) {
+      console.log('No Liquidity error message has been displayed')
+    } else {
+      console.log('Enough Liquidity')
+    }
 
     // SEND from assert (BTC)
     await searchAssetPage.SearchForAnAsset(page, asset1)
@@ -66,6 +68,10 @@ describe('Liquality wallet SWIPE feature', async () => {
     await swapPage.ClickOnMin(page)
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
+    // Click on Network speed + FEE & Validate BTC Avg/ETH Avg
+    const networkSpeedFee = await page.$eval('#details_header_chevron_down_icon', el => el.textContent)
+    expect(networkSpeedFee).contain(asset1 + ' Avg')
+    expect(networkSpeedFee).contain(asset2 + ' Avg')
     // Review Button
     await swapPage.ClickSwapReviewButton(page)
 
