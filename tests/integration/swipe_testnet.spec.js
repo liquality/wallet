@@ -206,6 +206,10 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // Wait for Activity tab list of items
     await page.waitForSelector('.transaction-list', { visible: true })
+    await page.waitForSelector('.transaction-steps', { visible: true })
+    const transactionSteps = await page.$eval('.transaction-steps', el => el.textContent)
+    expect(transactionSteps).not.contains('NaN')
+
     const transactions = await page.$$('.transaction-status')
     await transactions[0].click()
     await page.waitForSelector('.swap-details_info', { visible: true })
