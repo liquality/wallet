@@ -15,7 +15,7 @@ const seedWordsPage = new SeedWordsPage()
 
 let browser, page
 
-describe('Liquality wallet - Create wallet', async () => {
+describe('Liquality wallet - Create wallet-["smoke"]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -56,7 +56,7 @@ describe('Liquality wallet - Create wallet', async () => {
     // confirm button has been disabled
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
-  it('Create a new wallet with 12 words, validate overviewPage-["mainnet","smoke"]', async () => {
+  it('Create a new wallet with 12 words, validate overviewPage-["mainnet"]', async () => {
     const password = '123123123'
 
     const passwordInput = await page.$('#password')
