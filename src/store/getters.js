@@ -23,9 +23,26 @@ const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'MATI
 }, {})
 
 export default {
-  client (state) {
-    return (network, walletId, asset, walletType = 'default', indexPath = 0, useCache = true) => {
-      const cacheKey = [asset, network, walletId, walletType, indexPath].join('-')
+  client (state, getters) {
+    return ({
+      network,
+      walletId,
+      asset,
+      accountId,
+      useCache = true,
+      walletType = 'default',
+      index = 0
+    }) => {
+      const account = accountId ? getters.accountItem(accountId) : null
+      const accountType = account?.type || walletType
+      const accountIndex = account?.index || index
+      const cacheKey = [
+        asset,
+        network,
+        walletId,
+        accountType,
+        accountIndex
+      ].join('-')
 
       if (useCache) {
         const cachedClient = clientCache[cacheKey]
@@ -33,7 +50,7 @@ export default {
       }
 
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
-      const client = createClient(asset, network, mnemonic, walletType, indexPath)
+      const client = createClient(asset, network, mnemonic, accountType, accountIndex)
       clientCache[cacheKey] = client
 
       return client
@@ -171,5 +188,16 @@ export default {
       }
       return null
     }
+  },
+  chainAssets (state, getters) {
+    const { cryptoassets } = getters
+
+    const chainAssets = Object.entries(cryptoassets).reduce((chains, [asset, assetData]) => {
+      const assets = assetData.chain in chains ? chains[assetData.chain] : []
+      return Object.assign({}, chains, {
+        [assetData.chain]: [...assets, asset]
+      })
+    }, {})
+    return chainAssets
   }
 }

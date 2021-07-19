@@ -1,6 +1,6 @@
 <template>
  <div class="details-container">
-          <div class="details-header" @click.stop="showDetails = !showDetails">
+          <div class="details-header" id="details_header_chevron_down_icon" @click.stop="showDetails = !showDetails">
             <ChevronDownIcon :class="showDetails ? '' : 'right'"/>
             &nbsp;  <slot name="header"></slot>
           </div>

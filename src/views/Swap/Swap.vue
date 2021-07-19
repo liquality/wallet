@@ -333,6 +333,9 @@ import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
 
+const DEFAULT_SWAP_VALUE_USD = 100
+const QUOTE_TIMER_MS = 30000
+
 export default {
   components: {
     NavBar,
@@ -356,7 +359,7 @@ export default {
     return {
       stateSendAmount: 0,
       stateSendAmountFiat: 0,
-      amountOption: 'min',
+      amountOption: null,
       asset: null,
       toAsset: null,
       quotes: [],
@@ -383,7 +386,6 @@ export default {
   },
   created () {
     this.asset = this.routeAsset
-    this.sendAmount = this.min
     this.fromAccountId = this.accountId
     this.updateMarketData({ network: this.activeNetwork })
 
@@ -418,9 +420,9 @@ export default {
       }
     }
 
-    this.interval = setInterval(() => {
-      this.updateQuotes()
-    }, 30000)
+    this.sendAmount = dpUI(this.defaultAmount)
+
+    this.resetQuoteTimer()
   },
   beforeDestroy () {
     clearInterval(this.interval)
@@ -436,7 +438,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage () {
-      return BN(this.sendAmount).gt(0) && (!this.bestQuote || BN(this.min).gt(this.max))
+      return BN(this.sendAmount).gt(0) && (!this.bestQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
     sendAmount: {
       get () {
@@ -508,16 +510,23 @@ export default {
       if (!this.bestQuote) return null
       return this.swapProvider(this.activeNetwork, this.bestQuote.provider)
     },
+    defaultAmount () {
+      const min = BN(this.min)
+      if (!min.eq(0)) {
+        return BN(min)
+      } else if (this.fiatRates[this.asset]) {
+        return BN.min(fiatToCrypto(DEFAULT_SWAP_VALUE_USD, this.fiatRates[this.asset]), this.available)
+      } else {
+        return BN(0)
+      }
+    },
     min () {
-      const min = 0
       const liqualityMarket = this.networkMarketData.find(pair =>
         pair.from === this.asset &&
         pair.to === this.toAsset &&
         getSwapProviderConfig(this.activeNetwork, pair.provider).type === SwapProviderType.LIQUALITY)
-      if (liqualityMarket) {
-        return dpUI(BN(liqualityMarket.min))
-      }
-      return dpUI(BN(min))
+      const min = liqualityMarket ? BN(liqualityMarket.min) : BN(0)
+      return dpUI(min)
     },
     max () {
       return this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
@@ -582,6 +591,7 @@ export default {
     },
     canSwap () {
       if (!this.bestQuote ||
+          this.updatingQuotes ||
           this.ethRequired ||
           this.amountError ||
           BN(this.safeAmount).lte(0)) {
@@ -645,8 +655,6 @@ export default {
     prettyFiatBalance,
     getAssetIcon,
     getAssetColorStyle,
-    cryptoToFiat,
-    fiatToCrypto,
     formatFiat,
     getAssetFees (asset) {
       const assetFees = {}
@@ -665,7 +673,7 @@ export default {
       this.sendAmount = amount
       if (amount === this.max) {
         this.amountOption = 'max'
-      } else {
+      } else if (amount === this.min) {
         this.amountOption = 'min'
       }
     },
@@ -673,8 +681,10 @@ export default {
       this.toAsset = toAsset
       if (this.amountOption === 'max') {
         this.sendAmount = this.max
-      } else {
+      } else if (this.amountOption === 'min') {
         this.sendAmount = this.min
+      } else {
+        this.sendAmount = dpUI(this.defaultAmount)
       }
 
       this.resetFees()
@@ -682,7 +692,7 @@ export default {
     },
     setFromAsset (asset) {
       this.asset = asset
-      this.sendAmount = this.min
+      this.sendAmount = dpUI(this.defaultAmount)
       this.resetFees()
       this.updateQuotes()
     },
@@ -703,11 +713,12 @@ export default {
         }
       }
 
-      const { fromTxType, toTxType } = this.bestQuoteProvider
+      const bestQuoteProvider = this.bestQuoteProvider
+      const { fromTxType, toTxType } = bestQuoteProvider
 
       const addFees = async (asset, chain, txType) => {
         const assetFees = this.getAssetFees(chain)
-        const totalFees = await this.bestQuoteProvider.estimateFees({
+        const totalFees = await bestQuoteProvider.estimateFees({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset,
@@ -793,10 +804,13 @@ export default {
         await this.swap()
       }
     },
-    updateQuotes: _.debounce(async function () {
-      if (BN(this.sendAmount).eq(0)) return
-
-      this.updatingQuotes = true
+    resetQuoteTimer () {
+      clearTimeout(this.quoteTimer)
+      this.quoteTimer = setTimeout(() => {
+        this.updateQuotes()
+      }, QUOTE_TIMER_MS)
+    },
+    _updateQuotes: _.debounce(async function () {
       const quotes = await this.getQuotes({
         network: this.activeNetwork,
         from: this.asset,
@@ -809,7 +823,14 @@ export default {
         this.quotes = quotes
       }
       this.updatingQuotes = false
+      this.resetQuoteTimer()
     }, 1000),
+    updateQuotes () {
+      if (BN(this.sendAmount).eq(0)) return
+      this.quotes = []
+      this.updatingQuotes = true
+      this._updateQuotes()
+    },
     async swap () {
       this.swapErrorMessage = ''
       this.swapErrorModalOpen = false

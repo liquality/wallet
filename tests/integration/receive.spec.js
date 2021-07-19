@@ -44,7 +44,7 @@ async function importWalletTestReceive (bitcoin) {
 }
 
 describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
-  describe('Create wallet and Check receive', async () => {
+  describe('Create wallet and Check receive-["smoke"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -53,8 +53,12 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
     })
 
     afterEach(async () => {
-      if (browser !== undefined) {
+      try {
+        console.log('Cleaning up instances')
+        await page.close()
         await browser.close()
+      } catch (e) {
+        console.log('Cannot cleanup istances')
       }
     })
     it('Create a new wallet and check Receive for BTC', async () => {
@@ -100,7 +104,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
 
   const tokens = ['ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV']
   describe('Import wallet, Receive tokens', async () => {
-    before(async () => {
+    beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl)
@@ -123,9 +127,13 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
     })
 
-    after(async () => {
-      if (browser !== undefined) {
+    afterEach(async () => {
+      try {
+        console.log('Cleaning up instances')
+        await page.close()
         await browser.close()
+      } catch (e) {
+        console.log('Cannot cleanup instances')
       }
     })
 

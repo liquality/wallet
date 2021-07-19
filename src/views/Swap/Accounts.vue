@@ -30,12 +30,12 @@ import { mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters(['accountsData', 'accountsWithBalance']),
+    ...mapGetters(['accountsData', 'accountsWithBalance', 'chainAssets']),
     accounts () {
       let _accounts = []
       if (this.assetSelection === 'from') {
         _accounts = this.accountsWithBalance.map(account => {
-          const assets = account.assets.filter(
+          const assets = this.chainAssets[account.chain].filter(
             asset => asset !== this.excludeAsset
           )
           return {
@@ -45,7 +45,7 @@ export default {
         })
       } else {
         _accounts = this.accountsData.map(account => {
-          const assets = account.assets.filter(asset => asset !== this.excludeAsset)
+          const assets = this.chainAssets[account.chain].filter(asset => asset !== this.excludeAsset)
           return {
             ...account,
             assets

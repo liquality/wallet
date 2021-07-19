@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.35.4",
+  "version": "0.35.5",
   "private": true,
   "license": "MIT",
   "author": "Liquality <info@liquality.io>",
@@ -19,6 +19,7 @@
     "test:unit": "jest tests/unit",
     "postinstall": "husky install",
     "test:testnet": "node_modules/mocha/bin/mocha --colors 'tests/**/*.spec.js'",
+    "test:testnet:smoke": "node_modules/mocha/bin/mocha --colors --grep 'smoke' 'tests/**/*.spec.js'",
     "test:mainnet": "NODE_ENV=mainnet node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/**/*.spec.js'"
   },
   "dependencies": {

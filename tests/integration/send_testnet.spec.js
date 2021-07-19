@@ -32,8 +32,12 @@ describe('Liquality wallet SEND feature', async () => {
   })
 
   afterEach(async () => {
-    if (browser !== undefined) {
+    try {
+      console.log('Cleaning up instances')
+      await page.close()
       await browser.close()
+    } catch (e) {
+      console.log('Cannot cleanup instances')
     }
   })
 
@@ -93,7 +97,7 @@ describe('Liquality wallet SEND feature', async () => {
     // Check Send Review option has been disabled
     await sendPage.HasReviewButtonDisabled(page)
   })
-  it('Send SOV to random ETH address', async () => {
+  it('Send SOV to random ETH address-["smoke"]', async () => {
     const bitCoinName = 'SOV'
     const coinsToSend = '1'
 
@@ -107,11 +111,10 @@ describe('Liquality wallet SEND feature', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ClickSend(page)
-    // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
-
+    // Click on bitcoin & Click on Send option
+    await overviewPage.SelectChain(page, bitCoinName)
+    await page.waitForSelector('#send', { visible: true })
+    await page.click('#send')
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
@@ -144,11 +147,9 @@ describe('Liquality wallet SEND feature', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ClickSend(page)
-    // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
-
+    await overviewPage.SelectChain(page, bitCoinName)
+    await page.waitForSelector('#send', { visible: true })
+    await page.click('#send')
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address

@@ -131,14 +131,27 @@ export default {
     },
     makeSearch (newSearch) {
       if (newSearch) {
+        let assetMatched = false
+        let accountMatched = false
+        const search = newSearch.toUpperCase()
         this.filteredItems = this.accounts.filter(
           account => {
-            const search = newSearch.toUpperCase()
-            return account.chain?.toUpperCase().includes(search) ||
-                   account.assets.includes(search) ||
-                   account.name?.toUpperCase().includes(search)
+            const accountMatch = account.chain?.toUpperCase().includes(search) ||
+              account.name?.toUpperCase().includes(search)
+            const assetMatch = account.assets.includes(search)
+            if (assetMatch) assetMatched = true
+            if (accountMatch) accountMatched = true
+            return accountMatch || assetMatch
           }
         )
+        // Show filtered assets only and expand matched accounts
+        if (!accountMatched && assetMatched) {
+          this.filteredItems = this.filteredItems.map(account => {
+            const filteredAssets = account.assets.filter(asset => asset.includes(search))
+            return { ...account, assets: filteredAssets }
+          })
+          this.filteredItems.forEach(account => this.toggleShowAccountAssets(account.id))
+        }
       } else {
         this.filteredItems = [...this.accounts]
       }

@@ -2,14 +2,15 @@ import store from '../store'
 import { createNotification } from '../broker/notification'
 
 class SwapProvider {
-  constructor (providerId) {
+  constructor (config) {
     if (this.constructor === SwapProvider) {
       throw new TypeError('Abstract class "SwapProvider" cannot be instantiated directly.')
     }
-    this.providerId = providerId
+    this.config = config
   }
 
-  async sendLedgerNotification (account, message) {
+  async sendLedgerNotification (accountId, message) {
+    const account = store.getters.accountItem(accountId)
     if (account?.type.includes('ledger')) {
       const notificationId = await createNotification({
         title: 'Sign with Ledger',
@@ -80,8 +81,15 @@ class SwapProvider {
   /**
    * Get blockchain client
    */
-  getClient (network, walletId, asset, walletType, indexPath) {
-    return store.getters.client(network, walletId, asset, walletType, indexPath)
+  getClient (network, walletId, asset, accountId) {
+    return store.getters.client(
+      {
+        network,
+        walletId,
+        asset,
+        accountId
+      }
+    )
   }
 
   /**
