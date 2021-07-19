@@ -860,6 +860,14 @@ export default {
         })
 
         this.signRequestModalOpen = false
+        this.trackAnalytics({
+          event: 'Swap',
+          properties: {
+            from: this.asset,
+            to: this.toAsset,
+            value: this.sendAmount
+          }
+        })
 
         this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {

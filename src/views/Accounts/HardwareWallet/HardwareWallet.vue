@@ -90,7 +90,8 @@ export default {
     ...mapActions([
       'createAccount',
       'getLedgerAccounts',
-      'updateAccountBalance'
+      'updateAccountBalance',
+      'trackAnalytics'
     ]),
     async tryToConnect ({ asset, walletType, page }) {
       if (this.usbBridgeTransportCreated) {
@@ -153,6 +154,7 @@ export default {
     async unlock ({ walletType }) {
       if (this.selectedAsset) {
         await this.addAccount({ walletType })
+        await this.trackAnalytics({ event: 'Ledger Connect' })
       }
     },
     showTokenManagement ({ walletType }) {

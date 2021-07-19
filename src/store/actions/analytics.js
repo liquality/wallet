@@ -32,6 +32,10 @@ export const setupAnalytics = ({ commit, state }) => {
   })
 }
 
-export const trackAnalytics = ({ commit }, { event, data = {} }) => {
-  return analytics.track(event, ...data)
+export const trackAnalytics = ({ commit }, { event, properties = {} }) => {
+// TODO: add verification for acepted analytics
+//  if (state.analytics && state.analytics.acceptedDate) {
+//     return analytics.track(event, ...properties)
+//  }
+  return analytics.track(event, ...properties)
 }
