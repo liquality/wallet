@@ -16,6 +16,8 @@ jobs:
 
       - name: Build project
         uses: actions/setup-node@v1
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           args: install
 
@@ -46,7 +48,7 @@ jobs:
           mkdir screenshots
 
       - name: Smoke tests
-        uses: docker build .
+        uses: beemi/puppeteer-headful@master
         env:
           DISPLAY: :99
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
