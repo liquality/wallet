@@ -174,7 +174,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" :class="checkHighFee ? 'highFees' : ''" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
             </div>
           </div>
 
@@ -218,7 +218,7 @@
                   {{ toSwapFee }} {{ toAssetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
+              <div class="font-weight-bold" :class="checkHighFee ? 'highFees' : ''" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
             </div>
           </div>
           <div class="mt-20">
@@ -573,6 +573,9 @@ export default {
       return !this.ethRequired
     },
     amountError () {
+      if (this.showNoLiquidityMessage) {
+        return null
+      }
       const amount = BN(this.safeAmount)
 
       if (amount.gt(this.available)) {
@@ -640,6 +643,11 @@ export default {
         [this.assetChain]: this.asset,
         [this.toAssetChain]: this.toAsset
       }
+    },
+    checkHighFee () {
+      const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
+      const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
+      return feeTotal.gte(BN(receiveTotalPercentage))
     }
   },
   methods: {
@@ -1028,6 +1036,11 @@ export default {
     }
   }
 }
+
+  .highFees {
+    color: $danger;
+    font-weight: bold;
+  }
 
 .swap-rate {
   p {

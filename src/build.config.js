@@ -45,7 +45,7 @@ export default {
       liquality: {
         name: 'Liquality',
         type: SwapProviderType.LIQUALITY,
-        agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet/agent'
+        agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
       },
       uniswapV2: {
         name: 'Uniswap V2',

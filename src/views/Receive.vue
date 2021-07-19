@@ -170,7 +170,7 @@ export default {
   }
 
   .testnet_message {
-    margin-top: 24px;
+    margin-top: 18px;
     font-size: $font-size-tiny;
     font-weight: lighter;
     display: flex;
