@@ -13,7 +13,7 @@ class TestUtils {
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        '--font-render-hinting=medium',
+        '--font-render-hinting=none',
         '--disable-extensions-except=' + this.extensionPathBuildPath,
         '--load-extension=' + this.extensionPathBuildPath
       ]
