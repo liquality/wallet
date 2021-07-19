@@ -377,7 +377,7 @@ export default {
       swapErrorMessage: '',
       customFeeAssetSelected: null,
       customFees: {},
-      bridgeModalOpen: false,
+      bridgeModalOpen: false
     }
   },
   props: {
@@ -677,15 +677,6 @@ export default {
 
       return assetFees
     },
-    // checkHighFee () {
-    //   const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
-    //   const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
-    //   if (feeTotal.gte(BN(receiveTotalPercentage))) {
-    //     this.isHighFee = true
-    //   } else {
-    //     this.isHighFee = false
-    //   }
-    // },
     setSendAmount (amount) {
       this.sendAmount = amount
       if (amount === this.max) {
