@@ -22,19 +22,13 @@ const chainToRpcProviders = {
 }
 
 class OneinchSwapProvider extends SwapProvider {
-  constructor ({ providerId, agent, routerAddress }) {
-    super(providerId)
-    this.agent = agent
-    this.routerAddress = routerAddress
-  }
-
   async getSupportedPairs () {
     return []
   }
 
   async _getQuote (chainIdFrom, fromToken, toToken, amount) {
     return (await axios({
-      url: this.agent + `/${chainIdFrom}/quote`,
+      url: this.config.agent + `/${chainIdFrom}/quote`,
       method: 'get',
       params: { fromTokenAddress: fromToken || nativeAssetAddress, toTokenAddress: toToken || nativeAssetAddress, amount }
     }))
@@ -68,7 +62,7 @@ class OneinchSwapProvider extends SwapProvider {
     const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.toAccountId)
     const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
-    const allowance = await erc20.allowance(fromAddress, this.routerAddress)
+    const allowance = await erc20.allowance(fromAddress, this.config.routerAddress)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     if (allowance.gte(inputAmount)) {
       return {
@@ -77,7 +71,7 @@ class OneinchSwapProvider extends SwapProvider {
     }
 
     const callData = await axios({
-      url: this.agent + `/${chainId}/approve/calldata`,
+      url: this.config.agent + `/${chainId}/approve/calldata`,
       method: 'get',
       params: { tokenAddress: cryptoassets[quote.from].contractAddress, amount: inputAmount }
     })
@@ -105,7 +99,7 @@ class OneinchSwapProvider extends SwapProvider {
     const fromAddress = chains[toChain].formatAddress(fromAddressRaw)
 
     const trade = await axios({
-      url: this.agent + `/${chainId}/swap`,
+      url: this.config.agent + `/${chainId}/swap`,
       method: 'get',
       params: { fromTokenAddress: assets[quote.from].contractAddress || nativeAssetAddress, toTokenAddress: assets[quote.to].contractAddress || nativeAssetAddress, amount: quote.fromAmount, fromAddress: fromAddress, slippage: slippagePercentage }
     })
