@@ -62,6 +62,17 @@ const EXPLORERS = {
       address: 'https://explorer.mainnet.near.org/accounts/'
     }
   },
+  solana: {
+    // TODO: Check address prop for solana
+    testnet: {
+      tx: 'https://explorer.solana.com/?cluster=devnet/',
+      address: 'https://explorer.testnet.near.org/accounts/'
+    },
+    mainnet: {
+      tx: 'https://explorer.solana.com/',
+      address: 'https://explorer.mainnet.near.org/accounts/'
+    }
+  },
   arbitrum: {
     testnet: {
       tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x',

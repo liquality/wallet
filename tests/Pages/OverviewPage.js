@@ -123,6 +123,14 @@ class OverviewPage {
         break
       }
 
+      case 'SOLANA': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const sol = await page.waitForSelector('#SOL', { visible: true })
+        await sol.click()
+        break;
+      }
+      
       case 'ARBETH': {
         const eth = await page.waitForSelector('#ARBITRUM', { visible: true })
         await eth.click()

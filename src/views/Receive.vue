@@ -97,6 +97,7 @@ export default {
         bitcoin: 'bitcoin',
         ethereum: 'ethereum',
         near: 'near',
+        solana: 'solana',
         rsk: 'ethereum',
         bsc: 'ethereum',
         polyon: 'ethereum'
@@ -110,6 +111,7 @@ export default {
           RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' },
           BNB: { name: 'BNB', url: 'https://testnet.binance.org/faucet-smart/' },
           NEAR: { name: 'NEAR', url: '' },
+          SOL: { name: 'SOLANA', url: 'https://solfaucet.com/' },
           MATIC: { name: 'MATIC', url: 'https://faucet.matic.network/' },
           ARBETH: { name: 'ARBETH', url: 'https://faucet.rinkeby.io/' }
         })[this.asset]
