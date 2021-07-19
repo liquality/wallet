@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import Head from '@/components/Head.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
@@ -27,6 +27,9 @@ export default {
       'unlockedAt'
     ])
   },
+  methods: {
+    ...mapActions('setupAnalytics')
+  },
   watch: {
     unlockedAt: function (unlocked) {
       if (this.$route.path.startsWith('/permission') || this.$route.path.startsWith('/enable') || this.$route.path.startsWith('/request-unlock')) return
@@ -37,6 +40,9 @@ export default {
         this.$router.replace('/wallet')
       }
     }
+  },
+  created () {
+    this.setupAnalytics()
   }
 }
 </script>

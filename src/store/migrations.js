@@ -2,6 +2,7 @@ import { cloneDeep } from 'lodash-es'
 import buildConfig from '../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
+import { v4 as uuidv4 } from 'uuid'
 
 const migrations = [
   { // Merely sets up the version
@@ -192,6 +193,21 @@ const migrations = [
       delete state.injectEthereumAsset
 
       return { ...state, injectEthereumChain }
+    }
+  },
+  { // Analytics
+    version: 10,
+    migrate: async (state) => {
+      const userId = uuidv4()
+      return {
+        ...state,
+        analytics: {
+          userId,
+          acceptedDate: null,
+          askedDate: null,
+          notAskAgain: false
+        }
+      }
     }
   }
 ]
