@@ -2,7 +2,7 @@ import axios from 'axios'
 import BN from 'bignumber.js'
 import { SwapProvider } from '../SwapProvider'
 import { v4 as uuidv4 } from 'uuid'
-import { chains, assets, currencyToUnit } from '@liquality/cryptoassets'
+import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import { ChainNetworks } from '../../store/utils'
 import { withLock, withInterval } from '../../store/actions/performNextAction/utils'
 import { prettyBalance } from '../../utils/coinFormatter'
@@ -11,7 +11,6 @@ import cryptoassets from '@/utils/cryptoassets'
 import * as ethers from 'ethers'
 import buildConfig from '../../build.config'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
-import { getTxFee } from '../../utils/fees'
 
 const nativeAssetAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const slippagePercentage = 0.5
@@ -26,11 +25,16 @@ class OneinchSwapProvider extends SwapProvider {
     return []
   }
 
-  async _getQuote (chainIdFrom, fromToken, toToken, amount) {
+  async _getQuote (chainIdFrom, from, to, amount) {
+    const fromToken = cryptoassets[from].contractAddress
+    const toToken = cryptoassets[to].contractAddress
+    const referrerAddress = this.config.referrerAddress?.[cryptoassets[from].chain]
+    const fee = referrerAddress && this.config.referrerFee
+
     return (await axios({
       url: this.config.agent + `/${chainIdFrom}/quote`,
       method: 'get',
-      params: { fromTokenAddress: fromToken || nativeAssetAddress, toTokenAddress: toToken || nativeAssetAddress, amount }
+      params: { fromTokenAddress: fromToken || nativeAssetAddress, toTokenAddress: toToken || nativeAssetAddress, amount, fee }
     }))
   }
 
@@ -41,7 +45,7 @@ class OneinchSwapProvider extends SwapProvider {
     const chainIdTo = ChainNetworks[cryptoassets[to].chain][network].chainId
     if (chainIdFrom !== chainIdTo || !chainToRpcProviders[chainIdFrom]) return null
 
-    const trade = await this._getQuote(chainIdFrom, assets[from].contractAddress, assets[to].contractAddress, fromAmountInUnit.toNumber())
+    const trade = await this._getQuote(chainIdFrom, from, to, fromAmountInUnit.toNumber())
     const toAmountInUnit = BN(trade.data.toTokenAmount)
     return {
       from,
@@ -98,10 +102,24 @@ class OneinchSwapProvider extends SwapProvider {
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
     const fromAddress = chains[toChain].formatAddress(fromAddressRaw)
 
+    const swapParams = {
+      fromTokenAddress: cryptoassets[quote.from].contractAddress || nativeAssetAddress,
+      toTokenAddress: cryptoassets[quote.to].contractAddress || nativeAssetAddress,
+      amount: quote.fromAmount,
+      fromAddress: fromAddress,
+      slippage: slippagePercentage
+    }
+
+    const referrerAddress = this.config.referrerAddress?.[cryptoassets[quote.from].chain]
+    if (referrerAddress) {
+      swapParams.referrerAddress = referrerAddress
+      swapParams.fee = this.config.referrerFee
+    }
+
     const trade = await axios({
       url: this.config.agent + `/${chainId}/swap`,
       method: 'get',
-      params: { fromTokenAddress: assets[quote.from].contractAddress || nativeAssetAddress, toTokenAddress: assets[quote.to].contractAddress || nativeAssetAddress, amount: quote.fromAmount, fromAddress: fromAddress, slippage: slippagePercentage }
+      params: swapParams
     })
 
     if (BN(quote.toAmount).times(1 - slippagePercentage / 100).gt(trade.data.toTokenAmount)) {
@@ -132,16 +150,17 @@ class OneinchSwapProvider extends SwapProvider {
   }
 
   async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
-    const toChain = cryptoassets[quote.to].chain
-    const chainId = ChainNetworks[toChain][network].chainId
+    const chain = cryptoassets[quote.from].chain
+    const chainId = ChainNetworks[chain][network].chainId
+    const nativeAsset = chains[chain].nativeAsset
+
     if (txType in OneinchSwapProvider.txTypes) {
       const fees = {}
-      const tradeData = await this._getQuote(chainId, assets[quote.from].contractAddress, assets[quote.to].contractAddress, quote.fromAmount)
+      const tradeData = await this._getQuote(chainId, quote.from, quote.to, quote.fromAmount)
       for (const feePrice of feePrices) {
-        fees[feePrice] = getTxFee(
-          OneinchSwapProvider.supportedAssets.reduce((o, key) => Object.assign(o, { [key]: BN(tradeData.data?.estimatedGas).times(1.5) }), {}),
-          asset,
-          feePrice)
+        const gasPrice = BN(feePrice).times(1e9) // ETH fee price is in gwei
+        const fee = BN(tradeData.data?.estimatedGas).times(1.5).times(gasPrice)
+        fees[feePrice] = unitToCurrency(cryptoassets[nativeAsset], fee)
       }
       return fees
     }
@@ -206,8 +225,6 @@ class OneinchSwapProvider extends SwapProvider {
   static txTypes = {
     SWAP: 'SWAP'
   }
-
-  static supportedAssets = ['ETH', 'BNB', 'MATIC', 'ERC20']
 
   static statuses = {
     WAITING_FOR_APPROVE_CONFIRMATIONS: {
