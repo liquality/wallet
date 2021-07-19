@@ -9,7 +9,8 @@ class TestUtils {
     return {
       slowMo: 20,
       headless: false,
-      executablePath: process.env.PUPPETEER_EXEC_PATH, // set by docker container
+      // executablePath: process.env.PUPPETEER_EXEC_PATH, // set by docker container
+      executablePath: 'google-chrome-stable', // set by docker container
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
