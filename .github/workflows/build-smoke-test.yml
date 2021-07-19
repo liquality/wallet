@@ -8,6 +8,8 @@ name: Build & Run smoke tests
 jobs:
   smoketest:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/beemi/puppeteer-headful:master
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -48,14 +50,13 @@ jobs:
           mkdir screenshots
 
       - name: Smoke tests
-        uses: docker pull ghcr.io/beemi/puppeteer-headful:master
         env:
           DISPLAY: :99
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        with:
-          args: npm run test:testnet
+        run: |
+          npm run test:testnet
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2
