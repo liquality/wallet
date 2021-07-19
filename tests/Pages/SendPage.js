@@ -11,6 +11,8 @@ class SendPage {
    */
   async EnterSendAmount (page, coinsToSend) {
     // Enter send amount (or) coins
+    await page.waitForSelector('#send_amount_input_field', { visible: true })
+    console.log('SEND page has been loaded')
     const addressInputField = await page.$('#send_amount_input_field')
     await addressInputField.click({ clickCount: 3 })
     await addressInputField.type(coinsToSend)

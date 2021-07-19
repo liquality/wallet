@@ -24,8 +24,12 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
   })
 
   afterEach(async () => {
-    if (browser !== undefined) {
+    try {
+      console.log('Cleaning up instances')
+      await page.close()
       await browser.close()
+    } catch (e) {
+      console.log('Cannot cleanup istances')
     }
   })
 
