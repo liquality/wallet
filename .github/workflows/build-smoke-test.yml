@@ -48,7 +48,7 @@ jobs:
           mkdir screenshots
 
       - name: Smoke tests
-        uses: beemi/puppeteer-headful:master
+        uses: docker pull ghcr.io/beemi/puppeteer-headful:master
         env:
           DISPLAY: :99
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
