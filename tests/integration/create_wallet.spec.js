@@ -29,7 +29,7 @@ describe('Liquality wallet - Create wallet-["smoke"]', async () => {
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup istances')
+      console.log('Cannot cleanup Distances')
     }
   })
 
