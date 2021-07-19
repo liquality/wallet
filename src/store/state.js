@@ -40,5 +40,11 @@ export default {
   injectEthereumChain: 'ethereum',
   usbBridgeWindowsId: 0,
 
-  externalConnections: {}
+  externalConnections: {},
+  analytics: {
+    userId: null,
+    acceptedDate: null,
+    askedDate: null,
+    notAskAgain: false
+  }
 }
