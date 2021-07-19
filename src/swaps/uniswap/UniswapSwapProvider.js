@@ -21,9 +21,8 @@ import { SwapProvider } from '../SwapProvider'
 const SWAP_DEADLINE = 30 * 60 // 30 minutes
 
 class UniswapSwapProvider extends SwapProvider {
-  constructor ({ providerId, routerAddress }) {
-    super(providerId)
-    this.routerAddress = routerAddress
+  constructor (config) {
+    super(config)
     this._apiCache = {}
   }
 
@@ -108,7 +107,7 @@ class UniswapSwapProvider extends SwapProvider {
 
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
     const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
-    const allowance = await erc20.allowance(fromAddress, this.routerAddress)
+    const allowance = await erc20.allowance(fromAddress, this.config.routerAddress)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     if (allowance.gte(inputAmount)) {
       return false
@@ -121,7 +120,7 @@ class UniswapSwapProvider extends SwapProvider {
 
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     const inputAmountHex = inputAmount.toHexString()
-    const encodedData = erc20.interface.encodeFunctionData('approve', [this.routerAddress, inputAmountHex])
+    const encodedData = erc20.interface.encodeFunctionData('approve', [this.config.routerAddress, inputAmountHex])
 
     const fromChain = cryptoassets[quote.from].chain
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
@@ -180,7 +179,7 @@ class UniswapSwapProvider extends SwapProvider {
     const toAddress = chains[toChain].formatAddress(toAddressRaw)
 
     const api = this.getApi(network, quote.to)
-    const uniswap = new ethers.Contract(this.routerAddress, UniswapV2Router.abi, api)
+    const uniswap = new ethers.Contract(this.config.routerAddress, UniswapV2Router.abi, api)
 
     let encodedData
     if (isERC20(quote.from)) {
@@ -202,7 +201,7 @@ class UniswapSwapProvider extends SwapProvider {
 
     return {
       from: fromAddress, // Required for estimation only (not used in chain client)
-      to: this.routerAddress,
+      to: this.config.routerAddress,
       value,
       data: encodedData,
       fee: quote.fee

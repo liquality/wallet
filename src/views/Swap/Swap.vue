@@ -515,7 +515,7 @@ export default {
       if (!min.eq(0)) {
         return BN(min)
       } else if (this.fiatRates[this.asset]) {
-        return BN(fiatToCrypto(DEFAULT_SWAP_VALUE_USD, this.fiatRates[this.asset]))
+        return BN.min(fiatToCrypto(DEFAULT_SWAP_VALUE_USD, this.fiatRates[this.asset]), this.available)
       } else {
         return BN(0)
       }
@@ -691,6 +691,8 @@ export default {
         this.sendAmount = this.max
       } else if (this.amountOption === 'min') {
         this.sendAmount = this.min
+      } else {
+        this.sendAmount = dpUI(this.defaultAmount)
       }
 
       this.resetFees()
@@ -698,7 +700,7 @@ export default {
     },
     setFromAsset (asset) {
       this.asset = asset
-      this.sendAmount = this.min
+      this.sendAmount = dpUI(this.defaultAmount)
       this.resetFees()
       this.updateQuotes()
     },

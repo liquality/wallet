@@ -10,7 +10,7 @@
         <input type="radio" name="fee" autocomplete="off" :checked="name === value"> {{name}}
     </label>
   </div>
-  <button class="btn btn-link" @click="$emit('custom-selected', asset)">
+  <button id="custom_network_speed_button" class="btn btn-link" @click="$emit('custom-selected', asset)">
     Custom
   </button>
 </div>

@@ -24,13 +24,17 @@ class OverviewPage {
    * @example - SelectNetwork(page,'testnet')
    */
   async SelectNetwork (page, network = 'testnet') {
-    await page.click('#head_network')
+    await page.waitForSelector('#head_network', { visible: true })
+    await page.click('#head_network', { delay: 5 })
+    await page.waitForTimeout(1000)
     switch (network) {
       case 'testnet': {
         await page.waitForSelector('#testnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
-        await page.click('#testnet_network')
-        const overviewText = await page.$eval('.text-muted', el => el.innerText)
+        await page.click('#testnet_network', { delay: 10 })
+        await page.waitForTimeout(2000)
+        await page.waitForSelector('#active_network', { visible: true })
+        const overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Testnet overview header').contain('TESTNET')
         console.log('user successfully changed to TESTNET')
         break
@@ -40,7 +44,8 @@ class OverviewPage {
         await page.waitForSelector('#mainnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
         await page.click('#mainnet_network')
-        const overviewText = await page.$eval('.text-muted', el => el.innerText)
+        await page.waitForSelector('#active_network', { visible: true })
+        const overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Mainnet overview header').contain('MAINNET')
         console.log('user successfully changed to MAINNET')
         break
@@ -85,8 +90,7 @@ class OverviewPage {
    * @example SelectChain(page,'BITCOIN')
    */
   async SelectChain (page, chain) {
-    await page.waitForSelector('#assert_list_item', { visible: true })
-    const assertListItems = await page.$$('#assert_list_item')
+    await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
       case 'BITCOIN': {
         await page.waitForSelector(`#${chain}`, { visible: true })
@@ -137,10 +141,10 @@ class OverviewPage {
       }
 
       default:
-        await assertListItems[0].click()
-        await page.click('#' + chain)
+        throw Error(`Unsupported chain: ${chain}`)
     }
     await page.waitForSelector('.account-container_balance_code', { visible: true })
+    await page.waitForSelector('#refresh-icon', { visible: true })
   }
 
   /**

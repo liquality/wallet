@@ -15,11 +15,6 @@ import { getTxFee } from '../../utils/fees'
 export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
 
 class LiqualitySwapProvider extends SwapProvider {
-  constructor ({ providerId, agent }) {
-    super(providerId)
-    this.agent = agent
-  }
-
   async _getQuote ({ from, to, amount }) {
     return (await axios({
       url: this.agent + '/api/swap/order',
@@ -50,7 +45,7 @@ class LiqualitySwapProvider extends SwapProvider {
         min: BN(unitToCurrency(cryptoassets[market.from], market.min)).toFixed(),
         max: BN(unitToCurrency(cryptoassets[market.from], market.max)).toFixed(),
         rate: BN(market.rate).toFixed(),
-        provider: this.providerId
+        provider: this.config.providerId
       }))
 
     return pairs
@@ -60,7 +55,7 @@ class LiqualitySwapProvider extends SwapProvider {
     const marketData = this.getMarketData(network)
     // Quotes are retrieved using market data because direct quotes take a long time for BTC swaps (agent takes long to generate new address)
     const market = marketData.find(market =>
-      market.provider === this.providerId &&
+      market.provider === this.config.providerId &&
       market.to === to &&
       market.from === from &&
       BN(amount).gte(BN(market.min)) &&

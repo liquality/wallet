@@ -2,11 +2,11 @@ import store from '../store'
 import { createNotification } from '../broker/notification'
 
 class SwapProvider {
-  constructor (providerId) {
+  constructor (config) {
     if (this.constructor === SwapProvider) {
       throw new TypeError('Abstract class "SwapProvider" cannot be instantiated directly.')
     }
-    this.providerId = providerId
+    this.config = config
   }
 
   async sendLedgerNotification (accountId, message) {
