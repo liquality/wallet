@@ -861,7 +861,7 @@ export default {
 
         this.signRequestModalOpen = false
         this.trackAnalytics({
-          event: 'Swap',
+          event: 'Swap Created',
           properties: {
             from: this.asset,
             to: this.toAsset,
