@@ -683,6 +683,8 @@ export default {
         this.sendAmount = this.max
       } else if (this.amountOption === 'min') {
         this.sendAmount = this.min
+      } else {
+        this.sendAmount = dpUI(this.defaultAmount)
       }
 
       this.resetFees()
@@ -690,7 +692,7 @@ export default {
     },
     setFromAsset (asset) {
       this.asset = asset
-      this.sendAmount = this.min
+      this.sendAmount = dpUI(this.defaultAmount)
       this.resetFees()
       this.updateQuotes()
     },
