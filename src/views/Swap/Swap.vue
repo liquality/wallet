@@ -515,7 +515,7 @@ export default {
       if (!min.eq(0)) {
         return BN(min)
       } else if (this.fiatRates[this.asset]) {
-        return BN(fiatToCrypto(DEFAULT_SWAP_VALUE_USD, this.fiatRates[this.asset]))
+        return BN.min(fiatToCrypto(DEFAULT_SWAP_VALUE_USD, this.fiatRates[this.asset]), this.available)
       } else {
         return BN(0)
       }
