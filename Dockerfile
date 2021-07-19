@@ -24,8 +24,6 @@ RUN  apt-get update \
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
-COPY README.md /
-
 COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

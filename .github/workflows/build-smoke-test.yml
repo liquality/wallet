@@ -15,8 +15,6 @@ jobs:
           fetch-depth: 0
 
       - name: Build project
-        env:
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         uses: actions/setup-node@v1
         with:
           args: install
@@ -50,7 +48,6 @@ jobs:
       - name: Smoke tests
         env:
           DISPLAY: :99
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         run: |
