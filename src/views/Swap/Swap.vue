@@ -174,7 +174,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" :class="isHighFee === true ? 'highFees' : ''" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" :class="checkHighFee ? 'highFees' : ''" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
             </div>
           </div>
 
@@ -218,7 +218,7 @@
                   {{ toSwapFee }} {{ toAssetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" :class="isHighFee === true ? 'highFees' : ''" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
+              <div class="font-weight-bold" :class="checkHighFee ? 'highFees' : ''" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
             </div>
           </div>
           <div class="mt-20">
@@ -378,7 +378,6 @@ export default {
       customFeeAssetSelected: null,
       customFees: {},
       bridgeModalOpen: false,
-      isHighFee: false
     }
   },
   props: {
@@ -644,6 +643,11 @@ export default {
         [this.assetChain]: this.asset,
         [this.toAssetChain]: this.toAsset
       }
+    },
+    checkHighFee () {
+      const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
+      const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
+      return feeTotal.gte(BN(receiveTotalPercentage))
     }
   },
   methods: {
@@ -673,15 +677,15 @@ export default {
 
       return assetFees
     },
-    checkHighFee () {
-      const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
-      const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
-      if (feeTotal.gte(BN(receiveTotalPercentage))) {
-        this.isHighFee = true
-      } else {
-        this.isHighFee = false
-      }
-    },
+    // checkHighFee () {
+    //   const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
+    //   const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
+    //   if (feeTotal.gte(BN(receiveTotalPercentage))) {
+    //     this.isHighFee = true
+    //   } else {
+    //     this.isHighFee = false
+    //   }
+    // },
     setSendAmount (amount) {
       this.sendAmount = amount
       if (amount === this.max) {
@@ -1000,12 +1004,6 @@ export default {
     bestQuote: function () {
       this._updateSwapFees() // Skip debounce
       this.updateMaxSwapFees()
-    },
-    fromSwapFee: function () {
-      this.checkHighFee()
-    },
-    toSwapFee: function () {
-      this.checkHighFee()
     }
   }
 }
