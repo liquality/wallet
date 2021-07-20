@@ -25,17 +25,14 @@ export const setupAnalytics = ({ commit, state }) => {
     userId = state.analytics.userId
   }
 
-  const { platform, userAgent } = navigator
-  return analytics.identify(userId, {
-    platform,
-    userAgent
-  })
+  return analytics.identify(userId)
 }
 
-export const trackAnalytics = ({ commit }, { event, properties = {} }) => {
+export const trackAnalytics = ({ state, commit }, { event, properties = {} }) => {
 // TODO: add verification for acepted analytics
 //  if (state.analytics && state.analytics.acceptedDate) {
 //     return analytics.track(event, ...properties)
 //  }
-  return analytics.track(event, ...properties)
+  const { activeNetwork } = state
+  return analytics.track(event, { ...properties, activeNetwork })
 }

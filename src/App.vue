@@ -28,7 +28,7 @@ export default {
     ])
   },
   methods: {
-    ...mapActions('setupAnalytics')
+    ...mapActions(['setupAnalytics'])
   },
   watch: {
     unlockedAt: function (unlocked) {
