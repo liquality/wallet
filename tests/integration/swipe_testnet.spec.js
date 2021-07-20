@@ -37,7 +37,7 @@ describe('Liquality wallet SWIPE feature', async () => {
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup Distances')
+      console.log('Cannot cleanup instances')
     }
   })
 
@@ -252,7 +252,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
-  it('SWAP(BTC),Lower amount. This exceeds available balance.', async () => {
+  it.only('SWAP(BTC),Lower amount. This exceeds available balance.', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
