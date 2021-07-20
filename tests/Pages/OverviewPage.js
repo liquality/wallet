@@ -92,7 +92,7 @@ class OverviewPage {
   async SelectChain (page, chain) {
     await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
-      case 'BITCOIN': {
+      case 'BTC': {
         await page.waitForSelector(`#${chain}`, { visible: true })
         await page.click(`#${chain}`)
         break
