@@ -90,7 +90,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
 
       // Select BTC
-      await overviewPage.SelectChain(page, 'BITCOIN')
+      await overviewPage.SelectChain(page, 'BTC')
       await overviewPage.ClickChainReceive(page, 'BTC')
       // Receive validations
       await receivePage.HasQRCodeDisplayed(page)
