@@ -69,26 +69,21 @@ const convertBaseAmountDecimal = (amount, decimal) => {
 }
 
 class ThorchainSwapProvider extends SwapProvider {
-  constructor ({ providerId, thornode }) {
-    super(providerId)
-    this.thornode = thornode
-  }
-
   async getSupportedPairs () {
     return []
   }
 
   async _getPools () {
-    return (await axios.get(`${this.thornode}/thorchain/pools`)).data
+    return (await axios.get(`${this.config.thornode}/thorchain/pools`)).data
   }
 
   async _getInboundAddresses () {
-    return (await axios.get(`${this.thornode}/thorchain/inbound_addresses`)).data
+    return (await axios.get(`${this.config.thornode}/thorchain/inbound_addresses`)).data
   }
 
   async _getTransaction (hash) {
     try {
-      return (await axios.get(`${this.thornode}/thorchain/tx/${hash}`)).data
+      return (await axios.get(`${this.config.thornode}/thorchain/tx/${hash}`)).data
     } catch (e) { // Error means tx not found
       return null
     }

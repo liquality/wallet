@@ -5,11 +5,15 @@ import { OneinchSwapProvider } from '@/swaps/oneinch/OneinchSwapProvider'
 import { ThorchainSwapProvider } from '@/swaps/thorchain/ThorchainSwapProvider'
 import buildConfig from '@/build.config'
 
+const providers = {
+  [SwapProviderType.LIQUALITY]: LiqualitySwapProvider,
+  [SwapProviderType.UNISWAPV2]: UniswapSwapProvider,
+  [SwapProviderType.ONEINCHV3]: OneinchSwapProvider,
+  [SwapProviderType.THORCHAIN]: ThorchainSwapProvider
+}
+
 export const createSwapProvider = (network, providerId) => {
   const swapProviderConfig = buildConfig.swapProviders[network][providerId]
-
-  if (swapProviderConfig.type === SwapProviderType.LIQUALITY) return new LiqualitySwapProvider({ providerId, agent: swapProviderConfig.agent })
-  if (swapProviderConfig.type === SwapProviderType.UNISWAPV2) return new UniswapSwapProvider({ providerId, routerAddress: swapProviderConfig.routerAddress })
-  if (swapProviderConfig.type === SwapProviderType.ONEINCHV3) return new OneinchSwapProvider({ providerId, agent: swapProviderConfig.agent, routerAddress: swapProviderConfig.routerAddress })
-  if (swapProviderConfig.type === SwapProviderType.THORCHAIN) return new ThorchainSwapProvider({ providerId, thornode: swapProviderConfig.thornode })
+  const SwapProvider = providers[swapProviderConfig.type]
+  return new SwapProvider({ ...swapProviderConfig, providerId })
 }
