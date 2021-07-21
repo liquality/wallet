@@ -44,7 +44,7 @@
           <span class="c3">Terms of Use</span>
           <span>” or the “</span>
           <span class="c3">Agreement</span>
-          <span>”) govern your use of the website located at</span>
+          <span>”) govern your use of the website located at </span>
           <span class="c15">
             <a class="c16" href="https://liquality.io/">https://liquality.io/</a>
           </span>
@@ -535,10 +535,33 @@
         <p class="c4 c10">
           <span class="c20"></span>
         </p>
+        <div class="analytics-optin">
+          <div class="analytics-optin-title">
+            Help us improve Liquality to better serve you
+          </div>
+          <div class="analytics-optin-message">
+            <p>Share where you click. There is no identifying data.</p>
+            <p>This permissions can be revoked any time.</p>
+          </div>
+          <div class="analytics-optin-options">
+            <ul>
+              <li>Sure, I will share my clicks</li>
+              <li>Not today. ask me again</li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="button-group">
-          <button id="terms_privacy_cancel_button" class="btn btn-light btn-outline-primary btn-lg" @click="$router.go(-1)">Cancel</button>
-          <button id="terms_privacy_accept_button" class="btn btn-primary btn-lg ml-2" @click="acceptTnC">I Accept</button>
+          <button id="terms_privacy_cancel_button"
+                  class="btn btn-light btn-outline-primary btn-lg"
+                  @click="$router.go(-1)">
+                  Cancel
+          </button>
+          <button id="terms_privacy_accept_button"
+                  class="btn btn-primary btn-lg ml-2"
+                  @click="acceptTnC">
+                  I Accept
+          </button>
       </div>
     </div>
   </div>
