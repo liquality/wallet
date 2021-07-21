@@ -1,3 +1,5 @@
+const bs58 = require("bs58");
+
 const providerManager = () => `
 class InjectedProvider {
   constructor (asset) {
@@ -59,7 +61,7 @@ class ProviderManager {
 }
 
 window.providerManager = new ProviderManager()
-`
+`;
 
 const ethereumProvider = ({ asset, chain, network }) => `
 const injectionName = window.providerManager.getInjectionName('${chain}')
@@ -141,9 +143,9 @@ window[injectionName] = {
   },
   autoRefreshOnNetworkChange: false
 }
-`
+`;
 
-const overrideEthereum = (chain) => `
+const overrideEthereum = chain => `
 function proxyEthereum(chain) {
   window.ethereumProxyChain = chain
   const overrideHandler = {
@@ -190,7 +192,7 @@ if (!window.ethereum) {
 } else {
   overrideEthereum('${chain}')
 }
-`
+`;
 
 const bitcoinProvider = () => `
 const REQUEST_MAP = {
@@ -226,7 +228,7 @@ window.bitcoin = {
     })
   }
 }
-`
+`;
 
 const nearProvider = () => `
 const REQUEST_MAP = {
@@ -254,7 +256,7 @@ window.near = {
     })
   }
 }
-`
+`;
 
 const solanaProvider = () => `
 const REQUEST_MAP = {
@@ -269,6 +271,7 @@ async function handleRequest (req) {
   return solana.getMethod(method)(...req.params)
 }
 window.solana = {
+  isPhantom: true,
   enable: async () => {
     const accepted = await window.providerManager.enable()
     if (!accepted) throw new Error('User rejected')
@@ -280,9 +283,73 @@ window.solana = {
     return handleRequest({
       method: req.method, params
     })
-  }
+  },
+  async listeners(data) {
+    console.log('listener data', data)
+    if(data === 'connect') {
+      await window.providerManager.enable()
+
+      
+    }
+  },
+ 
+  async connect(data) {
+    console.log('on connect args', data)
+    window.postMessage({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'connect',
+      params: {
+        publicKey: "4B9k2YntFxQC93MezXZB3AKLsLrEaqDdXEaPmgTTF5WX"
+      }
+    })
+  },
+
+  async on(data) {
+    console.log('on on args', data)
+    window.postMessage({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'connect',
+      params: {
+        publicKey: "4B9k2YntFxQC93MezXZB3AKLsLrEaqDdXEaPmgTTF5WX"
+      }
+    })
+  },
+
+  async disconnect() {
+    console.log('in the disconnect')
+  },
+
+  async postMessage() {
+    await window.providerManager.enable()
+
+    // window.postMessage({
+    //   jsonrpc: '2.0',
+    //   id: 1,
+    //   method: 'connect',
+    //   params: {
+    //     publicKey: "4B9k2YntFxQC93MezXZB3AKLsLrEaqDdXEaPmgTTF5WX"
+    //   }
+    // })
+ }
 }
-`
+`;
+
+// console.log('once', once)
+// if(data.method === 'connect') {
+//   console.log("asddsda", data)
+//   const accepted = await window.providerManager.enable()
+//   if (!accepted) throw new Error('User rejected')
+//   const solana = window.providerManager.getProviderFor('SOL')
+//   const addresses = await solana.getMethod('wallet.getAddresses')()
+//   console.log(addresses)
+//   const {publicKey, address} = addresses[0];
+//   console.log(addresses[0])
+//   console.log('address', address.length)
+//   console.log('public key', publicKey.length)
+
+// }
 
 const paymentUriHandler = () => `
 document.addEventListener('DOMContentLoaded', () => {
@@ -301,6 +368,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 }, { once: true })
-`
+`;
 
-export { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, solanaProvider, paymentUriHandler }
+export {
+  providerManager,
+  ethereumProvider,
+  overrideEthereum,
+  bitcoinProvider,
+  nearProvider,
+  solanaProvider,
+  paymentUriHandler
+};
