@@ -15,10 +15,12 @@ jobs:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
+          node-version: '14'
+          cache: 'npm'
           args: install
 
       - uses: actions/cache@v1

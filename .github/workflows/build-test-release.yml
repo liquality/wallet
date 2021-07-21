@@ -65,11 +65,11 @@ jobs:
         run: |
           mkdir screenshots
 
-      - name: ===>> MainNet integration tests ==>>>
-        uses: mujo-code/puppeteer-headful@master
+      - name: MainNet integration tests
+        uses: beemi/puppeteer-headful@master
         env:
-          node-version: 14.1.0
           CI: 'true'
+          DISPLAY: :99
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
