@@ -160,7 +160,7 @@ class OverviewPage {
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
     expect(code).equals(chainCode)
     // Click Receive button
-    await page.click('#receive')
+    await page.click(`#${chainCode}_receive_button`)
     console.log(chalk.green('User clicked on receive option for ' + chainCode))
     await page.waitForSelector('.receive_address', { visible: true })
   }
