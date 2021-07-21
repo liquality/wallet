@@ -262,7 +262,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     await page.click('#swap')
     console.log(chalk.green('User clicked on BTC SWAP button'))
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').equals('0.0008')
+    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').equals('0')
     // Enter 1000
     await swapPage.EnterSendAmountOnSwap(page, '1000')
     expect(await swapPage.GetSwapSendErrors(page)).contains('Lower amount. This exceeds available balance.')
