@@ -113,8 +113,8 @@ describe('Liquality wallet SEND feature', async () => {
     await overviewPage.SelectNetwork(page)
     // Click on bitcoin & Click on Send option
     await overviewPage.SelectChain(page, bitCoinName)
-    await page.waitForSelector('#send', { visible: true })
-    await page.click('#send')
+    await page.waitForSelector('#SOV_send_button', { visible: true })
+    await page.click('#SOV_send_button')
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
@@ -148,8 +148,8 @@ describe('Liquality wallet SEND feature', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     await overviewPage.SelectChain(page, bitCoinName)
-    await page.waitForSelector('#send', { visible: true })
-    await page.click('#send')
+    await page.waitForSelector('#BNB_send_button', { visible: true })
+    await page.click('#BNB_send_button')
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
@@ -274,9 +274,9 @@ describe('Liquality wallet SEND feature', async () => {
     await overviewPage.SelectNetwork(page)
     // check NEAR
     await overviewPage.SelectChain(page, 'NEAR')
-    await page.waitForSelector('#send', { visible: true })
-    await page.waitForSelector('#swap', { visible: true })
-    await page.waitForSelector('#receive', { visible: true })
+    await page.waitForSelector('#NEAR_send_button', { visible: true })
+    await page.waitForSelector('#NEAR_swap_button', { visible: true })
+    await page.waitForSelector('#NEAR_receive_button', { visible: true })
     const code = await page.$eval('.account-container_balance_code', (el) => el.textContent)
     expect(code).equals(bitCoinName)
     await page.waitForSelector('.account-container_address', { visible: true })
