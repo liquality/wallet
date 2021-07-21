@@ -252,7 +252,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
-  it.only('SWAP(BTC),Lower amount. This exceeds available balance.', async () => {
+  it('SWAP(BTC),Lower amount. This exceeds available balance.', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
