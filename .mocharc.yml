@@ -5,7 +5,6 @@ color: true
 inline-diffs: true
 allow-uncaught: true
 async-only: true
-retries: 1
 parallel: true
 jobs: 10
 reporter: mochawesome

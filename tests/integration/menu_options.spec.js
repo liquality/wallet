@@ -29,7 +29,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup istances')
+      console.log('Cannot cleanup instances')
     }
   })
 

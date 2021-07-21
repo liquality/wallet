@@ -2,7 +2,6 @@ const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
-const SearchAssetPage = require('../Pages/SearchAssetPage')
 const SwapPage = require('../Pages/SwapPage')
 const expect = require('chai').expect
 const chalk = require('chalk')
@@ -14,13 +13,12 @@ const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
-const searchAssetPage = new SearchAssetPage()
 const swapPage = new SwapPage()
 
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet SWIPE feature', async () => {
+describe.skip('Liquality wallet SWIPE feature', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -39,7 +37,7 @@ describe('Liquality wallet SWIPE feature', async () => {
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup istances')
+      console.log('Cannot cleanup instances')
     }
   })
 
@@ -51,17 +49,11 @@ describe('Liquality wallet SWIPE feature', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // Click on Swipe
-    await overviewPage.ClickSwipe(page)
-    // Check No errors first & No Liquidity message
-    if (await page.$('swap-send-main-errors') !== null) {
-      console.log('No Liquidity error message has been displayed')
-    } else {
-      console.log('Enough Liquidity')
-    }
-
-    // SEND from assert (BTC)
-    await searchAssetPage.SearchForAnAsset(page, asset1)
+    // Click on BTC then click on SWAP button
+    await overviewPage.SelectChain(page, asset1)
+    await page.waitForSelector('#swap', { visible: true })
+    await page.click('#swap')
+    console.log(chalk.green('User clicked on BTC SWAP button'))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').equals('0.0008')
@@ -247,13 +239,13 @@ describe('Liquality wallet SWIPE feature', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // Click on Swipe
-    await overviewPage.ClickSwipe(page)
-
-    // SEND from assert (BTC)
-    await searchAssetPage.SearchForAnAsset(page, 'BTC')
-    // Enter 0
-    await page.waitForTimeout(20000)
+    // Click on BTC then click on SWAP button
+    await overviewPage.SelectChain(page, 'BTC')
+    await page.waitForSelector('#swap', { visible: true })
+    await page.click('#swap')
+    console.log(chalk.green('User clicked on BTC SWAP button'))
+    const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
+    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').equals('0.0008')
     await swapPage.EnterSendAmountOnSwap(page, '0')
     expect(await swapPage.GetSwapSendErrors(page))
       .contains('Please increase amount. It is below minimum.')
@@ -265,11 +257,12 @@ describe('Liquality wallet SWIPE feature', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // Click on Swipe
-    await overviewPage.ClickSwipe(page)
-
-    // SEND from assert (BTC)
-    await searchAssetPage.SearchForAnAsset(page, 'BTC')
+    await overviewPage.SelectChain(page, 'BTC')
+    await page.waitForSelector('#swap', { visible: true })
+    await page.click('#swap')
+    console.log(chalk.green('User clicked on BTC SWAP button'))
+    const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
+    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').equals('0')
     // Enter 1000
     await swapPage.EnterSendAmountOnSwap(page, '1000')
     expect(await swapPage.GetSwapSendErrors(page)).contains('Lower amount. This exceeds available balance.')
