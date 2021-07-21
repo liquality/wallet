@@ -281,7 +281,7 @@ describe('Liquality wallet SEND feature', async () => {
     expect(code).equals(bitCoinName)
     await page.waitForSelector('.account-container_address', { visible: true })
     // Click on NEAR send
-    await page.click('#send')
+    await page.click('#NEAR_send_button')
     await sendPage.EnterSendAmount(page, '1')
     await sendPage.EnterSendToAddress(page, 'caf7949de4fa4a61fd5d4d71c171560e49ad64e35221b01050ddf81a452a61cb')
 
