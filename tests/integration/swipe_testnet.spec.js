@@ -18,7 +18,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet SWIPE feature', async () => {
+describe.skip('Liquality wallet SWIPE feature', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -116,7 +116,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check SWAP Initiate option has been enabled
     await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
-  it('SWAP SOV to BTC-["smoke"]', async () => {
+  it.only('SWAP SOV to BTC-["smoke"]', async () => {
     const asset1 = 'SOV'
     const asset2 = 'BTC'
 
