@@ -126,7 +126,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateAccountBalance', 'getUnusedAddresses']),
+    ...mapActions([
+      'updateAccountBalance',
+      'getUnusedAddresses',
+      'trackAnalytics'
+    ]),
     getAssetIcon,
     shortenAddress,
     prettyFiatBalance,
@@ -159,6 +163,14 @@ export default {
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
+    this.trackAnalytics({
+      event: 'Active Asset',
+      properties: {
+        category: 'Select Asset',
+        action: 'Account View',
+        label: `Select ${this.asset}`
+      }
+    })
   },
   watch: {
     activeNetwork () {

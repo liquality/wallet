@@ -321,11 +321,15 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 11px;
+  line-height: 18px;
 
   @include hover() {
     color: $color-text-primary;
-    background-color: #FFFFFF;
-    border-color: $color-text-primary;
+    background-color: #F0F7F9;
+    border-color: #D9DFE5;
   }
 
   &:focus,
@@ -907,4 +911,20 @@ svg.qr-icon {
 .dropdown-menu-end {
   right: 0;
   left: auto;
+}
+
+.custom-control-input~.custom-control-label::before {
+  border: solid 1px #D9DFE5;
+  background-color: #FFFFFF;
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+  border: solid 1px #D9DFE5;
+  background-color: $color-secondary;
+  background: radial-gradient(circle, $color-secondary 45%, #FFFFFF 100%);
+}
+
+.custom-control-input~.custom-control-label::after,
+.custom-control-input:checked~.custom-control-label::after {
+  background-image: none !important;
 }

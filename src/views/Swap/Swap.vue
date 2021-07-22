@@ -521,7 +521,7 @@ export default {
       }
     },
     min () {
-      const liqualityMarket = this.networkMarketData.find(pair =>
+      const liqualityMarket = this.networkMarketData?.find(pair =>
         pair.from === this.asset &&
         pair.to === this.toAsset &&
         getSwapProviderConfig(this.activeNetwork, pair.provider).type === SwapProviderType.LIQUALITY)
@@ -647,7 +647,8 @@ export default {
       'updateMarketData',
       'getQuotes',
       'updateFees',
-      'newSwap'
+      'newSwap',
+      'trackAnalytics'
     ]),
     shortenAddress,
     dpUI,
@@ -860,6 +861,14 @@ export default {
         })
 
         this.signRequestModalOpen = false
+        this.trackAnalytics({
+          event: 'Swap Created',
+          properties: {
+            category: 'Create Swap',
+            action: 'Swap View',
+            label: `Swap ${this.sendAmount} ${this.asset} to ${this.toAsset}`
+          }
+        })
 
         this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {
