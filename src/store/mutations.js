@@ -5,6 +5,11 @@ const ensureNetworkWalletTree = (ref, network, walletId, initialValue) => {
   if (!ref[network][walletId]) Vue.set(ref[network], walletId, initialValue)
 }
 
+const ensureOriginWalletTree = (ref, walletId, origin, initialValue) => {
+  if (!ref[walletId]) Vue.set(ref, walletId, {})
+  if (!ref[walletId][origin]) Vue.set(ref[walletId], origin, initialValue)
+}
+
 export default {
   SETUP_WALLET (state, { key }) {
     state.key = key
@@ -246,13 +251,8 @@ export default {
     state.usbBridgeWindowsId = id
   },
   ADD_EXTERNAL_CONNECTION (state, { origin, activeWalletId, accountId, chain }) {
-    if (!state.externalConnections[activeWalletId]) {
-      Vue.set(state.externalConnections, activeWalletId, {
-        [origin]: {
-          [chain]: []
-        }
-      })
-    }
+    ensureOriginWalletTree(state.externalConnections, activeWalletId, origin, {})
+
     const accounts = state.externalConnections[activeWalletId]?.[origin]?.[chain] || []
     Vue.set(state.externalConnections[activeWalletId][origin], chain, [...new Set([...accounts, accountId])])
   },
