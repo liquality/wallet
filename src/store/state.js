@@ -45,6 +45,7 @@ export default {
     userId: null,
     acceptedDate: null,
     askedDate: null,
+    askedTimes: 0,
     notAskAgain: false
   }
 }

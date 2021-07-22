@@ -4,6 +4,8 @@
 
     <router-view v-if="termsAcceptedAt" />
     <OnboardingHome v-else />
+
+    <AnalyticsOptInModal/>
   </div>
 </template>
 
@@ -12,11 +14,13 @@ import { mapState, mapActions } from 'vuex'
 
 import Head from '@/components/Head.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
+import AnalyticsOptInModal from '@/components/AnalyticsOptInModal.vue'
 
 export default {
   components: {
     Head,
-    OnboardingHome
+    OnboardingHome,
+    AnalyticsOptInModal
   },
   computed: {
     ...mapState([
@@ -28,7 +32,7 @@ export default {
     ])
   },
   methods: {
-    ...mapActions(['setupAnalytics'])
+    ...mapActions(['initializeAnalytics'])
   },
   watch: {
     unlockedAt: function (unlocked) {
@@ -42,7 +46,7 @@ export default {
     }
   },
   created () {
-    this.setupAnalytics()
+    this.initializeAnalytics()
   }
 }
 </script>

@@ -205,6 +205,7 @@ const migrations = [
           userId,
           acceptedDate: null,
           askedDate: null,
+          askedTimes: 0,
           notAskAgain: false
         }
       }

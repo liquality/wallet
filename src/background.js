@@ -19,6 +19,7 @@ store.subscribe(async ({ type, payload }, state) => {
 
     case 'UNLOCK_WALLET':
       store.dispatch('trackAnalytics', { event: 'Wallet Unlock' })
+      store.dispatch('checkAnalyticsOptIn')
       store.dispatch('initializeAddresses', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateFiatRates')

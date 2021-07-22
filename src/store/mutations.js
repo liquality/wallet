@@ -256,17 +256,10 @@ export default {
     const accounts = state.externalConnections[activeWalletId]?.[origin]?.[chain] || []
     Vue.set(state.externalConnections[activeWalletId][origin], chain, [...new Set([...accounts, accountId])])
   },
-  INITIALIZE_ANALYTICS (state, {
-    userId,
-    acceptedDate,
-    askedDate,
-    notAskAgain
-  }) {
+  SET_ANALYTICS_PREFERENCES (state, payload) {
     state.analytics = {
-      userId,
-      acceptedDate,
-      askedDate,
-      notAskAgain
+      ...state.analytics,
+      ...payload
     }
   }
 }

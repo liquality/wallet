@@ -11,28 +11,44 @@ const analytics = Analytics({
   ]
 })
 
-export const setupAnalytics = ({ commit, state }) => {
-  let userId
-  if (!state.analytics || !state.analytics.userId) {
-    userId = uuidv4()
-    commit('INITIALIZE_ANALYTICS', {
-      userId,
-      acceptedDate: null,
-      askedDate: null,
-      notAskAgain: false
-    })
-  } else {
-    userId = state.analytics.userId
-  }
+export const initializeAnalyticsPreferences = ({ commit }, { accepted }) => {
+  commit('SET_ANALYTICS_PREFERENCES', {
+    userId: uuidv4(),
+    acceptedDate: accepted ? Date.now() : null,
+    askedTimes: 0,
+    askedDate: null,
+    notAskAgain: false
+  })
+}
 
-  return analytics.identify(userId)
+export const updateAnalyticsPreferences = ({ commit, state }, payload) => {
+  commit('SET_ANALYTICS_PREFERENCES', { ...payload })
+}
+
+export const setAnalyticsResponse = async ({ commit, state }, { accepted }) => {
+  if (accepted) {
+    commit('SET_ANALYTICS_PREFERENCES', { acceptedDate: Date.now() })
+  } else {
+    commit('SET_ANALYTICS_PREFERENCES', { acceptedDate: null })
+  }
+}
+
+export const initializeAnalytics = async ({ commit, state }) => {
+  if (state.analytics && state.analytics.acceptedDate) {
+    await analytics.identify(state.analytics.userId)
+    commit('app/ANALITYCS_STARTED', null, { root: true })
+  }
 }
 
 export const trackAnalytics = ({ state, commit }, { event, properties = {} }) => {
-// TODO: add verification for acepted analytics
-//  if (state.analytics && state.analytics.acceptedDate) {
-//     return analytics.track(event, ...properties)
-//  }
-  const { activeNetwork } = state
-  return analytics.track(event, { ...properties, activeNetwork })
+  if (state.analytics && state.analytics.acceptedDate && state.analytics.userId) {
+    const { activeNetwork } = state
+    return analytics.track(event, { ...properties, activeNetwork })
+  }
+}
+
+export const checkAnalyticsOptIn = ({ state, commit, dispatch }) => {
+  if (!state.analytics?.acceptedDate) {
+    dispatch('setAnalyticsOptInModalOpen', { open: true }, { root: true })
+  }
 }
