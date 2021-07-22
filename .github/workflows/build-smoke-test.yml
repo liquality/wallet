@@ -15,10 +15,12 @@ jobs:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
+          node-version: '14'
+          cache: 'npm'
           args: install
 
       - uses: actions/cache@v1
@@ -48,13 +50,14 @@ jobs:
           mkdir screenshots
 
       - name: Smoke tests
-        uses: mujo-code/puppeteer-headful@master
+        uses: beemi/puppeteer-headful@master
         env:
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
+          CI: 'true'
+          DISPLAY: :99
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:testnet:smoke
+          args: npm run test:testnet
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2

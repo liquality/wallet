@@ -92,7 +92,7 @@ class OverviewPage {
   async SelectChain (page, chain) {
     await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
-      case 'BITCOIN': {
+      case 'BTC': {
         await page.waitForSelector(`#${chain}`, { visible: true })
         await page.click(`#${chain}`)
         break
@@ -160,7 +160,7 @@ class OverviewPage {
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
     expect(code).equals(chainCode)
     // Click Receive button
-    await page.click('#receive')
+    await page.click(`#${chainCode}_receive_button`)
     console.log(chalk.green('User clicked on receive option for ' + chainCode))
     await page.waitForSelector('.receive_address', { visible: true })
   }
@@ -200,6 +200,7 @@ class OverviewPage {
    */
   async GetTotalLiquidity (page) {
     // Check the Total amount - 10s wait to load amount
+    await page.waitForSelector('.wallet-stats_total', { timeout: 60000 })
     await page.waitForTimeout(10000)
     return await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g, ''))
   }

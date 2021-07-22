@@ -17,7 +17,7 @@ export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@l
 class LiqualitySwapProvider extends SwapProvider {
   async _getQuote ({ from, to, amount }) {
     return (await axios({
-      url: this.agent + '/api/swap/order',
+      url: this.config.agent + '/api/swap/order',
       method: 'post',
       data: { from, to, fromAmount: amount },
       headers: {
@@ -29,7 +29,7 @@ class LiqualitySwapProvider extends SwapProvider {
 
   async getSupportedPairs () {
     const markets = (await axios({
-      url: this.agent + '/api/swap/marketinfo',
+      url: this.config.agent + '/api/swap/marketinfo',
       method: 'get',
       headers: {
         'x-requested-with': VERSION_STRING,
@@ -151,7 +151,7 @@ class LiqualitySwapProvider extends SwapProvider {
 
   updateOrder (order) {
     return axios({
-      url: this.agent + '/api/swap/order/' + order.id,
+      url: this.config.agent + '/api/swap/order/' + order.id,
       method: 'post',
       data: {
         fromAddress: order.fromAddress,
