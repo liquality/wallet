@@ -199,5 +199,11 @@ export default {
       })
     }, {})
     return chainAssets
+  },
+  analyticsEnabled (state) {
+    if (state.analytics && state.analytics.acceptedDate != null) {
+      return true
+    }
+    return false
   }
 }

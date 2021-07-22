@@ -49,6 +49,8 @@ export const trackAnalytics = ({ state, commit }, { event, properties = {} }) =>
 
 export const checkAnalyticsOptIn = ({ state, commit, dispatch }) => {
   if (!state.analytics?.acceptedDate) {
-    dispatch('setAnalyticsOptInModalOpen', { open: true }, { root: true })
+    setTimeout(() => {
+      dispatch('app/setAnalyticsOptInModalOpen', { open: true }, { root: true })
+    }, 2000)
   }
 }

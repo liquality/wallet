@@ -22,6 +22,14 @@
                          @chain-changed="updateInjectEthereumChain" />
         </div>
       </div>
+      <div class="setting-item" id="settings_item_default_wallet">
+        <div class="setting-item_title flex-fill mb-2">Analytics
+          <span class="setting-item_sub">Share where you click. No identifying data is collected.</span>
+        </div>
+        <div class="setting-item_control">
+          <toggle-button  :css-colors="true" :value="analyticsEnabled" @change="e => setAnalyticsEnable(e.value)" />
+        </div>
+      </div>
       <div class="setting-item" id="settings_item_wallet_logs">
         <div class="setting-item_title flex-fill mb-2">Wallet Logs
           <span class="setting-item_sub">The wallet logs contain your public information such as addresses and transactions.</span>
@@ -38,7 +46,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import { version } from '../../package.json'
 import { isEthereumChain } from '@liquality/cryptoassets'
 import buildConfig from '@/build.config'
@@ -58,6 +66,9 @@ export default {
       'injectEthereum',
       'injectEthereumChain'
     ]),
+    ...mapGetters([
+      'analyticsEnabled'
+    ]),
     ethereumChains () {
       return buildConfig.chains.filter(isEthereumChain)
     },
@@ -69,7 +80,9 @@ export default {
     ...mapActions([
       'enableEthereumInjection',
       'disableEthereumInjection',
-      'setEthereumInjectionChain'
+      'setEthereumInjectionChain',
+      'setAnalyticsResponse',
+      'initializeAnalytics'
     ]),
     toggleInjectEthereum (enable) {
       if (enable) this.enableEthereumInjection()
@@ -77,6 +90,12 @@ export default {
     },
     updateInjectEthereumChain (chain) {
       this.setEthereumInjectionChain({ chain })
+    },
+    async setAnalyticsEnable (enable) {
+      await this.setAnalyticsResponse({ accepted: enable })
+      if (enable) {
+        await this.initializeAnalytics()
+      }
     },
     async downloadLogs () {
       const logs = await getWalletStateLogs()
