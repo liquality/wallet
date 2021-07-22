@@ -154,7 +154,14 @@ export default {
     async unlock ({ walletType }) {
       if (this.selectedAsset) {
         await this.addAccount({ walletType })
-        await this.trackAnalytics({ event: 'Ledger Connect' })
+        await this.trackAnalytics({
+          event: 'Ledger Connect',
+          properties: {
+            category: 'Hardware Wallet',
+            action: 'Add Ledger Account',
+            label: `Asset ${this.selectedAsset.name}`
+          }
+        })
       }
     },
     showTokenManagement ({ walletType }) {

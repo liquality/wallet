@@ -43,7 +43,12 @@ export const initializeAnalytics = async ({ commit, state }) => {
 export const trackAnalytics = ({ state, commit }, { event, properties = {} }) => {
   if (state.analytics && state.analytics.acceptedDate && state.analytics.userId) {
     const { activeNetwork } = state
-    return analytics.track(event, { ...properties, activeNetwork })
+    if (properties && properties.category) {
+      properties.category = `${properties.category} on ${activeNetwork}`
+    } else {
+      properties.category = `on ${activeNetwork}`
+    }
+    return analytics.track(event, { ...properties })
   }
 }
 

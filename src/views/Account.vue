@@ -166,7 +166,9 @@ export default {
     this.trackAnalytics({
       event: 'Active Asset',
       properties: {
-        label: this.asset
+        category: 'Select Asset',
+        action: 'Account View',
+        label: `Select ${this.asset}`
       }
     })
   },

@@ -864,9 +864,9 @@ export default {
         this.trackAnalytics({
           event: 'Swap Created',
           properties: {
-            from: this.asset,
-            to: this.toAsset,
-            value: this.sendAmount
+            category: 'Create Swap',
+            action: 'Swap View',
+            label: `Swap ${this.sendAmount} ${this.asset} to ${this.toAsset}`
           }
         })
 
