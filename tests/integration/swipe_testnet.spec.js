@@ -23,6 +23,7 @@ describe.skip('Liquality wallet SWIPE feature', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
+    await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
