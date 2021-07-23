@@ -251,8 +251,8 @@ describe('Liquality wallet SEND feature', async () => {
 
     // Check Network Speed/FEE
     const ethereumNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
-    expect(ethereumNetworkSpeedFee, 'ETH Avg Network Speed validation')
-      .equals('(Avg / 0.000032 ETH)')
+    expect(ethereumNetworkSpeedFee, 'ETH Avg Network Speed fee validation')
+      .not.equals('(Avg / 0.000000 ETH)')
     // Click on Network Speed/FEE
     await sendPage.ClickNetworkSpeedFee(page)
     await page.hover('#slow', { slow: true })
