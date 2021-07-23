@@ -26,7 +26,7 @@ class SendPage {
    * @constructor
    */
   async EnterSendToAddress (page, sendToAddress) {
-    await page.waitForSelector('##address')
+    await page.waitForSelector('#address')
     await page.type('#address', sendToAddress)
   }
 
