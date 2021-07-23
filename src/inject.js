@@ -1,5 +1,3 @@
-const bs58 = require("bs58");
-
 const providerManager = () => `
 class InjectedProvider {
   constructor (asset) {
@@ -9,11 +7,15 @@ class InjectedProvider {
   setClient () {}
 
   getMethod (method) {
-    return (...args) => window.providerManager.proxy('CAL_REQUEST', {
-      asset: this.asset,
-      method,
-      args
-    })
+    return (...args) => {
+      console.log('argsa', args, this.asset, method)
+      
+      return window.providerManager.proxy('CAL_REQUEST', {
+        asset: this.asset,
+        method,
+        args
+      })
+    }
   }
 }
 
@@ -264,6 +266,7 @@ const REQUEST_MAP = {
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
   wallet_sendTransaction: 'chain.sendTransaction',
+  wallet_parseWireTransaction: 'chain._parseWireTransaction'
 }
 async function handleRequest (req) {
   const solana = window.providerManager.getProviderFor('SOL')
@@ -271,85 +274,100 @@ async function handleRequest (req) {
   return solana.getMethod(method)(...req.params)
 }
 window.solana = {
-  isPhantom: true,
-  enable: async () => {
+  publicKey: '',
+  connected: false,
+  solana: window.providerManager.getProviderFor('SOL'),
+  async enable() {
     const accepted = await window.providerManager.enable()
     if (!accepted) throw new Error('User rejected')
-    const solana = window.providerManager.getProviderFor('SOL')
-    return solana.getMethod('wallet.getAddresses')()
+    return this.solana.getMethod('wallet.getAddresses')()
   },
-  request: async (req) => {
+  async request(req) {
     const params = req.params || []
     return handleRequest({
       method: req.method, params
     })
   },
-  async listeners(data) {
-    console.log('listener data', data)
-    if(data === 'connect') {
-      await window.providerManager.enable()
+  async postMessage(msg) {
+    const { method } = msg;
+    console.log('current method', method)
+    
+    switch(method) {
+      case 'connect': {
+        await window.providerManager.enable()
+        const solana = window.providerManager.getProviderFor('SOL')
+        const addr = await solana.getMethod('wallet.getAddresses')()
+        console.log(addr)
+        this.publicKey = addr[0].publicKey
+        window.postMessage({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'connected',
+          params: {
+            publicKey: this.publicKey
+          }
+        })
+        return solana.getMethod('wallet.getAddresses')()
+      }
+      case 'sign': {
+        const solana = window.providerManager.getProviderFor('SOL')
+        const message = msg.params.data.toString('hex');
+        
+        const signature = await this.request({
+            method: REQUEST_MAP.wallet_signMessage, 
+            params: [message, this.publicKey]
+        })
+       
+        console.log('signa', signature)
 
-      
+        // TODO: NEEd to find a way to encode signature variable
+        // const result = '{bs58.encode(Buffer.from("signature"))'
+
+        window.postMessage({
+              jsonrpc: '2.0',
+              id: 2,
+              result: { signature: result, publicKey: this.publicKey }
+        })
+        return;
+      }
+      case 'signTransaction': {
+        const data = msg.params.message
+
+        
+        const signedTx = await this.request({
+          method: REQUEST_MAP.wallet_sendTransaction, 
+          params: data
+        })
+
+
+        console.log('signed', signedTx)
+        
+
+        window.postMessage({
+          jsonrpc: '2.0',
+          id: 2,
+          result: { signature: result, publicKey: this.publicKey }
+        })
+      }
+      // case 'disconnect': {
+      //   window.postMessage({
+      //     jsonrpc: '2.0',
+      //     id: 1,
+      //     method: 'disconnected',
+      //     params: {
+      //       publicKey: this.publicKey
+      //     }
+      //   })
+      // }
+      default: {
+        return
+      }
     }
-  },
- 
-  async connect(data) {
-    console.log('on connect args', data)
-    window.postMessage({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'connect',
-      params: {
-        publicKey: "4B9k2YntFxQC93MezXZB3AKLsLrEaqDdXEaPmgTTF5WX"
-      }
-    })
-  },
 
-  async on(data) {
-    console.log('on on args', data)
-    window.postMessage({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'connect',
-      params: {
-        publicKey: "4B9k2YntFxQC93MezXZB3AKLsLrEaqDdXEaPmgTTF5WX"
-      }
-    })
-  },
-
-  async disconnect() {
-    console.log('in the disconnect')
-  },
-
-  async postMessage() {
-    await window.providerManager.enable()
-
-    // window.postMessage({
-    //   jsonrpc: '2.0',
-    //   id: 1,
-    //   method: 'connect',
-    //   params: {
-    //     publicKey: "4B9k2YntFxQC93MezXZB3AKLsLrEaqDdXEaPmgTTF5WX"
-    //   }
-    // })
- }
+  }
 }
 `;
 
-// console.log('once', once)
-// if(data.method === 'connect') {
-//   console.log("asddsda", data)
-//   const accepted = await window.providerManager.enable()
-//   if (!accepted) throw new Error('User rejected')
-//   const solana = window.providerManager.getProviderFor('SOL')
-//   const addresses = await solana.getMethod('wallet.getAddresses')()
-//   console.log(addresses)
-//   const {publicKey, address} = addresses[0];
-//   console.log(addresses[0])
-//   console.log('address', address.length)
-//   console.log('public key', publicKey.length)
-
-// }
 
 const paymentUriHandler = () => `
 document.addEventListener('DOMContentLoaded', () => {
