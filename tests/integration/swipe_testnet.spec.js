@@ -18,7 +18,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
-describe.skip('Liquality wallet SWIPE feature', async () => {
+describe('Liquality wallet SWIPE feature', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -52,12 +52,12 @@ describe.skip('Liquality wallet SWIPE feature', async () => {
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
     await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector('#swap', { visible: true })
-    await page.click('#swap')
+    await page.waitForSelector('#BTC_swap_button', { visible: true })
+    await page.click('#BTC_swap_button')
     console.log(chalk.green('User clicked on BTC SWAP button'))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').equals('0.0008')
+    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     await swapPage.ClickOnMin(page)
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
@@ -127,8 +127,8 @@ describe.skip('Liquality wallet SWIPE feature', async () => {
     await overviewPage.SelectNetwork(page)
     // Click on SOV then click on SWAP button
     await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector('#swap', { visible: true })
-    await page.click('#swap')
+    await page.waitForSelector('#SOV_swap_button', { visible: true })
+    await page.click('#SOV_swap_button')
     console.log(chalk.green('User clicked on SOV SWAP button'))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
@@ -242,8 +242,8 @@ describe.skip('Liquality wallet SWIPE feature', async () => {
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
     await overviewPage.SelectChain(page, 'BTC')
-    await page.waitForSelector('#swap', { visible: true })
-    await page.click('#swap')
+    await page.waitForSelector('#BTC_swap_button', { visible: true })
+    await page.click('#BTC_swap_button')
     console.log(chalk.green('User clicked on BTC SWAP button'))
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').equals('0.0008')
@@ -259,11 +259,11 @@ describe.skip('Liquality wallet SWIPE feature', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     await overviewPage.SelectChain(page, 'BTC')
-    await page.waitForSelector('#swap', { visible: true })
-    await page.click('#swap')
+    await page.waitForSelector('#BTC_swap_button', { visible: true })
+    await page.click('#BTC_swap_button')
     console.log(chalk.green('User clicked on BTC SWAP button'))
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').equals('0')
+    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     // Enter 1000
     await swapPage.EnterSendAmountOnSwap(page, '1000')
     expect(await swapPage.GetSwapSendErrors(page)).contains('Lower amount. This exceeds available balance.')
