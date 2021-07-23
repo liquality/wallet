@@ -500,7 +500,16 @@ export default {
       return dpUI(rate)
     },
     bestQuote () {
-      const sortedQuotes = this.quotes.slice(0).sort((a, b) => BN(b.toAmount).minus(a.toAmount).toNumber())
+      const sortedQuotes = this.quotes.slice(0)
+        .sort((a, b) => {
+          const isCrossChain = cryptoassets[this.asset].chain !== cryptoassets[this.toAsset].chain
+          if (isCrossChain) { // Prefer Liquality for crosschain swaps where liquidity is available
+            if (getSwapProviderConfig(this.activeNetwork, a.provider).type === SwapProviderType.LIQUALITY) return -1
+            else if (getSwapProviderConfig(this.activeNetwork, b.provider).type === SwapProviderType.LIQUALITY) return 1
+          }
+
+          return BN(b.toAmount).minus(a.toAmount).toNumber()
+        })
       return sortedQuotes[0]
     },
     bestQuoteProviderLabel () {
