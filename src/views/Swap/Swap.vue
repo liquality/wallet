@@ -58,7 +58,7 @@
               &nbsp;{{ bestRate || '?' }}
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
-            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProviderLabel }}</span>
+            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1" id="bestQuote_provider">{{ bestQuoteProviderLabel }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
           </p>
         </div>

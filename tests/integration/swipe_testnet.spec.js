@@ -42,7 +42,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     }
   })
 
-  it('SWAP BTC to ETH', async () => {
+  it('SWAP BTC to ETH (LIQUALITY)', async () => {
     const asset1 = 'BTC'
     const asset2 = 'ETH'
 
@@ -59,6 +59,10 @@ describe('Liquality wallet SWIPE feature', async () => {
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     await swapPage.ClickOnMin(page)
+    // Rate & source provider validation (BTC->ETH source chosen is LIQUALITY)
+    await page.waitForSelector('#bestQuote_provider', { visible: true })
+    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+      'BTC->ETH swap, LIQUALITY source should be chosen!').equals('Liquality')
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
     // Click on Network speed + FEE & Validate BTC Avg/ETH Avg
@@ -105,6 +109,93 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     const receiveAccountFeesValue = await swapPage.GetSwapReceiveNetworkValue(page)
     expect(receiveAccountFeesValue.trim()).contain(asset2)
+
+    const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
+    expect(receiveAccountFeesInDollar.trim()).not.contain('$00.00')
+    expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
+    // RATE
+    await page.waitForSelector('#swap_rate_value')
+
+    // Validate message
+    await swapPage.ValidateMessage(page)
+    // Check SWAP Initiate option has been enabled
+    await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
+  })
+  it('SWAP ETH to DAI (UNISWAP V2)', async () => {
+    const asset1 = 'ETH'
+    const asset2 = 'DAI'
+
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page)
+    // Click on ETH then click on SWAP button
+    await overviewPage.SelectChain(page, asset1)
+    await page.waitForSelector('#ETH_swap_button', { visible: true })
+    await page.click('#ETH_swap_button')
+    console.log(chalk.green('User clicked on ETH SWAP button'))
+    // Validate min SEND amount from text field & check Min is Active
+    const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
+    expect(swapSendAmountField, 'ETH to DAI SWAP min value not set in input').not.equals('0.0000')
+    await swapPage.ClickOnMin(page)
+    // Select 2nd Pair (DAI)
+    await page.click('.swap-receive-main-icon')
+    await page.waitForSelector('#search_for_a_currency')
+    await page.type('#search_for_a_currency', asset2)
+    await page.waitForSelector('#DAI')
+    await page.click('#DAI')
+    // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
+    await page.waitForSelector('#bestQuote_provider', { visible: true })
+    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+      'ETH->DAI, Uniswap V2 source should be chosen!').equals('Uniswap V2')
+
+    // Click on Network speed + FEE
+    await swapPage.ValidateNetworkFeeTab(page)
+    // Click on Network speed + FEE & Validate
+    const networkSpeedFee = await page.$eval('#details_header_chevron_down_icon', el => el.textContent)
+    expect(networkSpeedFee).contain(asset1 + ' Avg')
+    // expect(networkSpeedFee).contain(asset2 + ' Avg')
+
+    // Review Button
+    await swapPage.ClickSwapReviewButton(page)
+
+    // SWAP SEND details validation
+    const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
+    expect(sendAmountValue.trim()).contain(asset1)
+
+    const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
+    expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00').not.contain('$00.00')
+
+    const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
+    expect(swapSendNetworkFeeValue.trim()).contain(asset1)
+
+    const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
+    expect(swapSendNetworkFeeInDollar.trim(), 'Send network fee can not be $0.00').not.contain('$0.00')
+
+    const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
+    expect(swapSendAccountFeesValue.trim()).contain(asset1)
+
+    const swapSendAccountFeesInDollar = await swapPage.GetSwapSendAccountFeesInDollar(page)
+    expect(swapSendAccountFeesInDollar.trim()).not.contain('$00.00')
+    expect(swapSendAccountFeesInDollar.trim()).not.contain('NaN')
+
+    // Receive details validation
+    const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
+    expect(receiveAmountValue.trim()).contain(asset2)
+
+    const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
+    expect(receiveAmountInDollar.trim()).not.contain('$00.00')
+    expect(receiveAmountInDollar.trim()).not.contain('NaN')
+
+    const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
+    expect(receiveNetworkFeeValue.trim()).contain(asset1)
+
+    const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
+    expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
+    expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
+
+    const receiveAccountFeesValue = await swapPage.GetSwapReceiveNetworkValue(page)
+    expect(receiveAccountFeesValue.trim()).contain(asset1)
 
     const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
     expect(receiveAccountFeesInDollar.trim()).not.contain('$00.00')
@@ -266,6 +357,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     // Enter 1000
     await swapPage.EnterSendAmountOnSwap(page, '1000')
+    await page.waitForTimeout(5000)
     expect(await swapPage.GetSwapSendErrors(page)).contains('Lower amount. This exceeds available balance.')
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
