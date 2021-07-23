@@ -5,7 +5,7 @@ import { assets as cryptoassets } from '@liquality/cryptoassets'
 import { BitcoinNetworks } from '@liquality/bitcoin-networks'
 import { EthereumNetworks } from '@liquality/ethereum-networks'
 import { NearNetworks } from '@liquality/near-networks'
-import { SolanaNetworks } from '@liquality/solana-network'
+import { SolanaNetworks } from '@liquality/solana-networks'
 
 export const CHAIN_LOCK = {}
 
