@@ -121,7 +121,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check SWAP Initiate option has been enabled
     await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
-  it('SWAP ETH to DAI (UNISWAP V2)', async () => {
+  it('SWAP ETH to DAI - not cross chain (UNISWAP V2)', async () => {
     const asset1 = 'ETH'
     const asset2 = 'DAI'
 
