@@ -26,6 +26,7 @@ class SendPage {
    * @constructor
    */
   async EnterSendToAddress (page, sendToAddress) {
+    await page.waitForSelector('#address')
     await page.type('#address', sendToAddress)
   }
 
@@ -51,11 +52,11 @@ class SendPage {
   async SendConfirmButton (page) {
     await page.waitForSelector('#send_button_confirm', { visible: true })
     await page.click('#send_button_confirm')
-    await page.waitForSelector('.list-item-detail-icon', {
+    await page.waitForSelector('.transaction-status', {
       visible: true,
       timeout: 120000
     })
-    await page.click('.list-item-detail-icon')
+    await page.click('.transaction-status')
   }
 
   /**

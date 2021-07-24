@@ -101,6 +101,7 @@
     "@vue/test-utils": "^1.1.0",
     "allure-commandline": "^2.13.8",
     "babel-eslint": "^10.1.0",
+    "chai-match": "^1.1.1",
     "eslint": "^7.29.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
