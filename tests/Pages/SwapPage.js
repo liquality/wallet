@@ -34,7 +34,7 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendErrors (page) {
-    await page.waitForSelector('.swap-send-main-errors', { visible: true, timeout: 60000})
+    await page.waitForSelector('.swap-send-main-errors', { visible: true, timeout: 60000 })
     return await page.$eval('.swap-send-main-errors', (el) => el.textContent)
   }
 

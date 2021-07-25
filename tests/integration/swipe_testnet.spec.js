@@ -358,7 +358,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Enter 1000
     await swapPage.EnterSendAmountOnSwap(page, '2')
     expect(await swapPage.GetSwapSendErrors(page))
-      .to.be.oneOf(['Lower amount. This exceeds available balance.',' Please reduce amount. It exceeds maximum. '])
+      .to.be.oneOf(['Lower amount. This exceeds available balance.', ' Please reduce amount. It exceeds maximum. '])
     // Rate & source provider validation (BTC if its more than 1 or 2 source chosen is Thorchain)
     await page.waitForSelector('#bestQuote_provider', { visible: true })
     expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
