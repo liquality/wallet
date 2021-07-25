@@ -140,12 +140,12 @@ describe('Liquality wallet SWIPE feature', async () => {
     await swapPage.ClickOnMin(page)
     // Select 2nd Pair (DAI)
     await page.click('.swap-receive-main-icon')
-    await page.waitForSelector('#search_for_a_currency')
-    await page.type('#search_for_a_currency', asset2)
-    await page.waitForSelector('#DAI')
+    await page.waitForSelector('#ETHEREUM',{visible: true})
+    await page.click('#ETHEREUM')
+    await page.waitForSelector('#DAI',{visible: true})
     await page.click('#DAI')
     // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
-    await page.waitForSelector('#bestQuote_provider', { visible: true })
+    await page.waitForSelector('#bestQuote_provider', { visible: true, timeout: 60000})
     expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
       'ETH->DAI, Uniswap V2 source should be chosen!').equals('Uniswap V2')
 
