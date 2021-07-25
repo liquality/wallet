@@ -47,5 +47,8 @@ export const actions = {
     })
 
     return bridgeEmiter
+  },
+  setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
+    commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
   }
 }

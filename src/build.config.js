@@ -51,6 +51,11 @@ export default {
         name: 'Uniswap V2',
         type: SwapProviderType.UNISWAPV2,
         routerAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
+      },
+      thorchain: {
+        name: 'Thorchain',
+        type: SwapProviderType.THORCHAIN,
+        thornode: 'https://testnet.thornode.thorchain.info'
       }
     },
     mainnet: {

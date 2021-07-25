@@ -49,6 +49,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl)
+      await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
     })
 
@@ -58,7 +59,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
         await page.close()
         await browser.close()
       } catch (e) {
-        console.log('Cannot cleanup istances')
+        console.log('Cannot cleanup instances')
       }
     })
     it('Create a new wallet and check Receive for BTC', async () => {
@@ -90,7 +91,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
 
       // Select BTC
-      await overviewPage.SelectChain(page, 'BITCOIN')
+      await overviewPage.SelectChain(page, 'BTC')
       await overviewPage.ClickChainReceive(page, 'BTC')
       // Receive validations
       await receivePage.HasQRCodeDisplayed(page)
@@ -108,6 +109,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl)
+      await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
