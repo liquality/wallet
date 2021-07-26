@@ -5,6 +5,7 @@ import { assets as cryptoassets } from '@liquality/cryptoassets'
 import { BitcoinNetworks } from '@liquality/bitcoin-networks'
 import { EthereumNetworks } from '@liquality/ethereum-networks'
 import { NearNetworks } from '@liquality/near-networks'
+import { TerraNetworks } from '@liquality/terra-networks'
 
 export const CHAIN_LOCK = {}
 
@@ -91,5 +92,9 @@ export const ChainNetworks = {
   near: {
     testnet: NearNetworks.near_testnet,
     mainnet: NearNetworks.near_mainnet
+  },
+  terra: {
+    testnet: TerraNetworks.terra_testnet,
+    mainnet: TerraNetworks.terra_mainnet
   }
 }

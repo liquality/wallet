@@ -23,6 +23,11 @@ import { NearJsWalletProvider } from '@liquality/near-js-wallet-provider'
 import { NearRpcProvider } from '@liquality/near-rpc-provider'
 import { NearSwapFindProvider } from '@liquality/near-swap-find-provider'
 
+import { TerraSwapProvider } from '@liquality/terra-swap-provider'
+import { TerraWalletProvider } from '@liquality/terra-wallet-provider'
+import { TerraRpcProvider } from '@liquality/terra-rpc-provider'
+import { TerraSwapFindProvider } from '@liquality/terra-swap-find-provider'
+
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
@@ -155,6 +160,24 @@ function createNearClient (network, mnemonic, indexPath = 0) {
   return nearClient
 }
 
+function createTerraClient (network, mnemonic, indexPath = 0) {
+  const terraNetwork = ChainNetworks.terra[network]
+  const terraClient = new Client()
+  const derivationPath = `m/44'/${terraNetwork.coinType}'/${indexPath}'`
+  terraClient.addProvider(new TerraRpcProvider(terraNetwork))
+  terraClient.addProvider(new TerraJsWalletProvider(
+    {
+      network: terraNetwork,
+      mnemonic,
+      derivationPath
+    }
+  ))
+  terraClient.addProvider(new TerraSwapProvider())
+  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork?.helperUrl))
+
+  return terraClient
+}
+
 function createRskClient (asset, network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const rskNetwork = ChainNetworks.rsk[network]
@@ -204,6 +227,8 @@ export const createClient = (asset, network, mnemonic, walletType, indexPath = 0
   if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
   if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, indexPath)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, indexPath)
+  if (assetData.chain === 'terra') return createTerraClient(network, mnemonic, indexPath)
+
 
   return createEthClient(asset, network, mnemonic, walletType, indexPath)
 }

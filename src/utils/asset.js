@@ -62,6 +62,16 @@ const EXPLORERS = {
       address: 'https://explorer.mainnet.near.org/accounts/'
     }
   },
+  terra: {
+    testnet: { // TODO: REplace with links for terra
+      tx: 'https://explorer.testnet.near.org/transactions/',
+      address: 'https://explorer.testnet.near.org/accounts/'
+    },
+    mainnet: {
+      tx: 'https://explorer.mainnet.near.org/transactions/',
+      address: 'https://explorer.mainnet.near.org/accounts/'
+    }
+  },
   arbitrum: {
     testnet: {
       tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x',
