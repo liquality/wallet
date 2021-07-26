@@ -326,7 +326,7 @@ describe('Liquality wallet SWIPE feature', async () => {
       console.log('Error: ' + err.message)
     })
   })
-  it('SWAP (BTC),Please increase amount. It is below minimum.', async () => {
+  it.skip('SWAP (BTC),Please increase amount. It is below minimum.', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
@@ -338,13 +338,13 @@ describe('Liquality wallet SWIPE feature', async () => {
     console.log(chalk.green('User clicked on BTC SWAP button'))
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
-    await swapPage.EnterSendAmountOnSwap(page, '0')
+    await swapPage.EnterSendAmountOnSwap(page, '0.0001')
     expect(await swapPage.GetSwapSendErrors(page))
       .contains('Please increase amount. It is below minimum.')
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
-  it('SWAP(ETHEREUM),Lower amount. This exceeds available balance.(Thorchain)', async () => {
+  it.skip('SWAP(ETHEREUM),Lower amount. This exceeds available balance.(Thorchain)', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
