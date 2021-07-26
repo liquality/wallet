@@ -8,9 +8,7 @@ class InjectedProvider {
 
   getMethod (method) {
     return (...args) => {
-      console.log('argsa', args, this.asset, method)
-      
-      return window.providerManager.proxy('CAL_REQUEST', {
+     return window.providerManager.proxy('CAL_REQUEST', {
         asset: this.asset,
         method,
         args
@@ -273,7 +271,7 @@ async function handleRequest (req) {
   const method = REQUEST_MAP[req.method] || req.method
   return solana.getMethod(method)(...req.params)
 }
-window.solana = {
+window.sollet = {
   publicKey: '',
   connected: false,
   solana: window.providerManager.getProviderFor('SOL'),
@@ -298,7 +296,8 @@ window.solana = {
         const solana = window.providerManager.getProviderFor('SOL')
         const addr = await solana.getMethod('wallet.getAddresses')()
         console.log(addr)
-        this.publicKey = addr[0].publicKey
+        this.publicKey = addr[0].address
+        console.log('address', this.publicKey)
         window.postMessage({
           jsonrpc: '2.0',
           id: 1,
@@ -311,44 +310,39 @@ window.solana = {
       }
       case 'sign': {
         const solana = window.providerManager.getProviderFor('SOL')
-        const message = msg.params.data.toString('hex');
+        const message = msg.params.data.toString('hex')
         
         const signature = await this.request({
             method: REQUEST_MAP.wallet_signMessage, 
             params: [message, this.publicKey]
         })
        
-        console.log('signa', signature)
-
-        // TODO: NEEd to find a way to encode signature variable
-        // const result = '{bs58.encode(Buffer.from("signature"))'
-
         window.postMessage({
               jsonrpc: '2.0',
               id: 2,
-              result: { signature: result, publicKey: this.publicKey }
+              result: { signature, publicKey: this.publicKey }
         })
         return;
       }
-      case 'signTransaction': {
-        const data = msg.params.message
-
+      // case 'signTransaction': {
+      //   const data = msg.params.message
+      //   console.log('called')
         
-        const signedTx = await this.request({
-          method: REQUEST_MAP.wallet_sendTransaction, 
-          params: data
-        })
+      //   const result = await this.request({
+      //     method: REQUEST_MAP.wallet_sendTransaction, 
+      //     params: [data]
+      //   })
 
 
-        console.log('signed', signedTx)
+      //   console.log('signed', result)
         
 
-        window.postMessage({
-          jsonrpc: '2.0',
-          id: 2,
-          result: { signature: result, publicKey: this.publicKey }
-        })
-      }
+      //   window.postMessage({
+      //     jsonrpc: '2.0',
+      //     id: 2,
+      //     result: { signature: result, publicKey: this.publicKey }
+      //   })
+      // }
       // case 'disconnect': {
       //   window.postMessage({
       //     jsonrpc: '2.0',

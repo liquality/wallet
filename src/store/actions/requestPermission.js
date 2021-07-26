@@ -1,7 +1,10 @@
+import base58, { decode } from 'bs58';
+import { Message, Transaction } from '@solana/web3.js'
 import { stringify } from 'qs'
 
 import { emitter } from '../utils'
 import { createPopup } from '../../broker/utils'
+import { BigNumber } from '@liquality/types'
 
 const CONFIRM_REQUIRED = [
   /^chain.buildTransaction$/,
@@ -31,6 +34,8 @@ export const requestPermission = async ({ state, dispatch }, { origin, data }) =
   if (!state.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
 
   let { asset, method, args } = data
+  
+  
 
   if (!ALLOWED.some(re => re.test(method))) throw new Error('Method not allowed')
 
@@ -56,9 +61,9 @@ export const requestPermission = async ({ state, dispatch }, { origin, data }) =
     args: printArgs
   }
 
+  
   if (CONFIRM_REQUIRED.some(re => re.test(method))) {
     const id = Date.now() + '.' + Math.random()
-
     return new Promise((resolve, reject) => {
       emitter.$once(`permission:${id}`, (response) => {
         if (!response.allowed) reject(new Error('User denied'))
@@ -66,14 +71,15 @@ export const requestPermission = async ({ state, dispatch }, { origin, data }) =
 
         resolve(response.result)
       })
-
+      
+      
       const query = stringify({
         id,
         ...request,
         args: JSON.stringify(request.args)
       })
 
-      let permissionRoute = '/permission/default'
+     let permissionRoute = '/permission/default'
       if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
       if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
       if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'
