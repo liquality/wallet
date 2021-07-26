@@ -24,6 +24,7 @@ class SwapPage {
    * @constructor
    */
   async ClickOnMin (page) {
+    await page.waitForSelector('#min_amount_send_button', { visible: true })
     await page.click('#min_amount_send_button')
   }
 
@@ -34,7 +35,10 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendErrors (page) {
-    await page.waitForSelector('.swap-send-main-errors', { visible: true, timeout: 60000 })
+    await page.waitForSelector('.swap-send-main-errors', {
+      visible: true,
+      timeout: 60000
+    })
     return await page.$eval('.swap-send-main-errors', (el) => el.textContent)
   }
 
