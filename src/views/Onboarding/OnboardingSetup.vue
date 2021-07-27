@@ -34,7 +34,7 @@ export default {
     return {
       mnemonic: null,
       currentStep: 'beginning',
-      password: null
+      password: 'andon940410'
     }
   },
   props: ['passphrase'],

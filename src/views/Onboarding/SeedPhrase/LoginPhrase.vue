@@ -49,7 +49,7 @@ export default {
     return {
       loading: false,
       error: null,
-      password: null,
+      password: 'andon940410',
       checkbox: false
     }
   },

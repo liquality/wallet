@@ -72,7 +72,7 @@ export const getAccountIcon = (chain) => {
     bsc: getAssetIcon('bnb_account', 'png'),
     rsk: getAssetIcon('rsk_account'),
     near: getAssetIcon('NEAR'),
-    terra: getAssetIcon('TERRA'),
+    terra: getAssetIcon('ULUNA'),
     polygon: getAssetIcon('polygon_account'),
     arbitrum: getAssetIcon('ARBITRUM')
   }[chain]

@@ -329,10 +329,11 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async confirmCounterPartyInitiation ({ swap, network, walletId }) {
+    console.log('asddd')
     const toClient = this.getClient(network, walletId, swap.to, swap.toAccountId)
 
     const tx = await toClient.chain.getTransactionByHash(swap.toFundHash)
-
+    console.log('tx', tx)
     if (tx && tx.confirmations >= chains[cryptoassets[swap.to].chain].safeConfirmations) {
       return {
         status: 'READY_TO_CLAIM'
@@ -345,13 +346,14 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async claimSwap ({ swap, network, walletId }) {
+    console.log('called claim swap')
     const expirationUpdates = await this.handleExpirations({ swap, network, walletId })
     if (expirationUpdates) { return expirationUpdates }
 
     const toClient = this.getClient(network, walletId, swap.to, swap.toAccountId)
 
     await this.sendLedgerNotification(swap.toAccountId, 'Signing required to claim the swap.')
-
+    
     const toClaimTx = await toClient.swap.claimSwap(
       {
         value: BN(swap.toAmount),
@@ -377,7 +379,7 @@ class LiqualitySwapProvider extends SwapProvider {
 
     try {
       const tx = await toClient.chain.getTransactionByHash(swap.toClaimHash)
-
+      
       if (tx && tx.confirmations > 0) {
         this.updateBalances({ network, walletId, assets: [swap.to, swap.from] })
 
@@ -466,6 +468,7 @@ class LiqualitySwapProvider extends SwapProvider {
         break
 
       case 'READY_TO_CLAIM':
+        console.log('REAY TO CLAIM')
         updates = await withLock(store, { item: swap, network, walletId, asset: swap.to },
           async () => this.claimSwap({ swap, network, walletId }))
         break

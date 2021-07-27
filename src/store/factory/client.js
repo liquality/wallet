@@ -163,17 +163,17 @@ function createNearClient (network, mnemonic, indexPath = 0) {
 function createTerraClient (network, mnemonic, indexPath = 0) {
   const terraNetwork = ChainNetworks.terra[network]
   const terraClient = new Client()
-  const derivationPath = `m/44'/${terraNetwork.coinType}'/${indexPath}'`
+  const derivationPath = ''
   terraClient.addProvider(new TerraRpcProvider(terraNetwork))
-  terraClient.addProvider(new TerraJsWalletProvider(
+  terraClient.addProvider(new TerraWalletProvider(
     {
       network: terraNetwork,
       mnemonic,
       derivationPath
     }
   ))
-  terraClient.addProvider(new TerraSwapProvider())
-  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork?.helperUrl))
+  terraClient.addProvider(new TerraSwapProvider(terraNetwork))
+  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork))
 
   return terraClient
 }
