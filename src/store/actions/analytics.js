@@ -56,9 +56,6 @@ export const trackAnalytics = ({ state, commit }, { event, properties = {} }) =>
 
 export const checkAnalyticsOptIn = ({ state, commit, dispatch }) => {
   const { acceptedDate } = state.analytics
-  const openAnalyticsOptInModal = setTimeout(() => {
-    dispatch('app/setAnalyticsOptInModalOpen', { open: true }, { root: true })
-  }, 1500)
 
   if (!acceptedDate) {
     // not to exceed 2x a/week every 2 weeks
@@ -78,19 +75,19 @@ export const checkAnalyticsOptIn = ({ state, commit, dispatch }) => {
         commit('SET_ANALYTICS_PREFERENCES', {
           askedDate: Date.now()
         })
-        openAnalyticsOptInModal()
+        dispatch('app/setAnalyticsOptInModalOpen', { open: true }, { root: true })
       } else if (currentDay >= (pastDay + 2)) {
         // check for not to exceed 2x a/week
         commit('SET_ANALYTICS_PREFERENCES', {
           askedDate: Date.now()
         })
-        openAnalyticsOptInModal()
+        dispatch('app/setAnalyticsOptInModalOpen', { open: true }, { root: true })
       }
     } else if (currentMonth > pastMonth) {
       commit('SET_ANALYTICS_PREFERENCES', {
         askedDate: Date.now()
       })
-      openAnalyticsOptInModal()
+      dispatch('app/setAnalyticsOptInModalOpen', { open: true }, { root: true })
     }
   }
 }
