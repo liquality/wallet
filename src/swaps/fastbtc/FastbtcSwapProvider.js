@@ -28,19 +28,13 @@ class FastbtcSwapProvider extends SwapProvider {
   }
 
   async getSupportedPairs () {
-    const currentDate = (new Date()).toISOString()
     const validAmountRange = await this._getTxAmount()
     return [{
       from: 'BTC',
       to: 'RBTC',
       rate: 0.998,
-      orderExpiresIn: 7200000,
-      status: 'ACTIVE',
       max: (currencyToUnit(cryptoassets.BTC, BN(validAmountRange.max))),
-      min: (currencyToUnit(cryptoassets.BTC, BN(validAmountRange.min))),
-      createdAt: currentDate,
-      updatedAt: currentDate,
-      minConf: 1
+      min: (currencyToUnit(cryptoassets.BTC, BN(validAmountRange.min)))
     }]
   }
 
