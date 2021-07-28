@@ -7,7 +7,6 @@ import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import { withInterval } from '../../store/actions/performNextAction/utils'
 import { prettyBalance } from '../../utils/coinFormatter'
 import cryptoassets from '@/utils/cryptoassets'
-import { getTxFee } from '../../utils/fees'
 
 const fastBtcSatoshiFee = 5000
 const fastBtcPercentageFee = 0.2
@@ -15,7 +14,7 @@ const fastBtcPercentageFee = 0.2
 class FastbtcSwapProvider extends SwapProvider {
   constructor (config) {
     super(config)
-    this.socketConnection = io(this.config.agent, {
+    this.socketConnection = io(this.config.bridgeEndpoint, {
       reconnectionDelayMax: 10000
     })
 
@@ -29,7 +28,20 @@ class FastbtcSwapProvider extends SwapProvider {
   }
 
   async getSupportedPairs () {
-    return []
+    const currentDate = (new Date()).toISOString()
+    const validAmountRange = await this._getTxAmount()
+    return [{
+      from: 'BTC',
+      to: 'RBTC',
+      rate: 0.998,
+      orderExpiresIn: 7200000,
+      status: 'ACTIVE',
+      max: (currencyToUnit(cryptoassets.BTC, BN(validAmountRange.max))),
+      min: (currencyToUnit(cryptoassets.BTC, BN(validAmountRange.min))),
+      createdAt: currentDate,
+      updatedAt: currentDate,
+      minConf: 1
+    }]
   }
 
   async _getHistory (web3Addr) {
@@ -63,10 +75,11 @@ class FastbtcSwapProvider extends SwapProvider {
   }
 
   async getQuote ({ network, from, to, amount }) {
+    if (from !== 'BTC' || to !== 'RBTC') return null
     const fromAmountInUnit = BN(currencyToUnit(cryptoassets[from], BN(amount)))
     const validAmountRange = await this._getTxAmount()
     const isQuoteAmountInTheRange = amount <= validAmountRange.max && amount >= validAmountRange.min
-    if (from !== 'BTC' || to !== 'RBTC' || !isQuoteAmountInTheRange) return null
+    if (!isQuoteAmountInTheRange) return null
     const toAmountInUnit = BN(currencyToUnit(cryptoassets[to],
       BN(amount).minus(unitToCurrency(cryptoassets[from], fastBtcSatoshiFee))))
       .times(1 - fastBtcPercentageFee / 100)
@@ -83,7 +96,7 @@ class FastbtcSwapProvider extends SwapProvider {
     if (quote.from !== 'BTC' || quote.to !== 'RBTC') return null
     const toChain = cryptoassets[quote.to].chain
     const account = this.getAccount(quote.fromAccountId)
-    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
     const toAddress = chains[toChain].formatAddress(toAddressRaw)
     const relayAddress = await this._getAddress(toAddress)
@@ -109,21 +122,14 @@ class FastbtcSwapProvider extends SwapProvider {
   }
 
   async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
-    if (txType === FastbtcSwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
+    if (txType === FastbtcSwapProvider.txTypes.SWAP && asset === 'BTC') {
       const client = this.getClient(network, walletId, asset, quote.fromAccountId)
       const value = max ? undefined : BN(quote.fromAmount)
       const txs = feePrices.map(fee => ({ to: '', value, fee }))
       const totalFees = await client.getMethod('getTotalFees')(txs, max)
       return mapValues(totalFees, f => unitToCurrency(cryptoassets[asset], f))
     }
-
-    if (txType in FastbtcSwapProvider.feeUnits) {
-      const fees = {}
-      for (const feePrice of feePrices) {
-        fees[feePrice] = getTxFee(FastbtcSwapProvider.feeUnits[txType], asset, feePrice)
-      }
-      return fees
-    }
+    return null
   }
 
   async waitForSendConfirmations ({ swap, network, walletId }) {
@@ -191,20 +197,7 @@ class FastbtcSwapProvider extends SwapProvider {
   }
 
   static txTypes = {
-    SWAP_INITIATION: 'SWAP_INITIATION'
-  }
-
-  static feeUnits = {
-    SWAP_INITIATION: {
-      BTC: 290,
-      ETH: 21000,
-      RBTC: 21000,
-      BNB: 21000,
-      NEAR: 10000000000000,
-      MATIC: 21000,
-      ERC20: 90000,
-      ARBETH: 620000
-    }
+    SWAP: 'SWAP'
   }
 
   static statuses = {
@@ -245,7 +238,7 @@ class FastbtcSwapProvider extends SwapProvider {
     }
   }
 
-  static fromTxType = FastbtcSwapProvider.txTypes.SWAP_INITIATION
+  static fromTxType = FastbtcSwapProvider.txTypes.SWAP
   static toTxType = null
 
   static totalSteps = 3

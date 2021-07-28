@@ -84,7 +84,7 @@ export default {
       fastBTC: {
         name: 'FastBTC',
         type: SwapProviderType.FASTBTC,
-        agent: 'http://3.131.33.161:3000/'
+        bridgeEndpoint: 'http://3.131.33.161:3000/'
       }
     }
   },
