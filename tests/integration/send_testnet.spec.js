@@ -28,12 +28,17 @@ describe('Liquality wallet SEND feature', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
+    await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
 
   afterEach(async () => {
-    if (browser !== undefined) {
+    try {
+      console.log('Cleaning up instances')
+      await page.close()
       await browser.close()
+    } catch (e) {
+      console.log('Cannot cleanup instances')
     }
   })
 
@@ -93,7 +98,7 @@ describe('Liquality wallet SEND feature', async () => {
     // Check Send Review option has been disabled
     await sendPage.HasReviewButtonDisabled(page)
   })
-  it('Send SOV to random ETH address', async () => {
+  it('Send SOV to random ETH address-["smoke"]', async () => {
     const bitCoinName = 'SOV'
     const coinsToSend = '1'
 
@@ -107,11 +112,10 @@ describe('Liquality wallet SEND feature', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ClickSend(page)
-    // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
-
+    // Click on bitcoin & Click on Send option
+    await overviewPage.SelectChain(page, bitCoinName)
+    await page.waitForSelector('#SOV_send_button', { visible: true })
+    await page.click('#SOV_send_button')
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
@@ -144,11 +148,9 @@ describe('Liquality wallet SEND feature', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ClickSend(page)
-    // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
-
+    await overviewPage.SelectChain(page, bitCoinName)
+    await page.waitForSelector('#BNB_send_button', { visible: true })
+    await page.click('#BNB_send_button')
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
@@ -249,8 +251,8 @@ describe('Liquality wallet SEND feature', async () => {
 
     // Check Network Speed/FEE
     const ethereumNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
-    expect(ethereumNetworkSpeedFee, 'ETH Avg Network Speed validation')
-      .equals('(Avg / 0.000032 ETH)')
+    expect(ethereumNetworkSpeedFee, 'ETH Avg Network Speed fee validation')
+      .not.equals('(Avg / 0.000000 ETH)')
     // Click on Network Speed/FEE
     await sendPage.ClickNetworkSpeedFee(page)
     await page.hover('#slow', { slow: true })
@@ -273,14 +275,14 @@ describe('Liquality wallet SEND feature', async () => {
     await overviewPage.SelectNetwork(page)
     // check NEAR
     await overviewPage.SelectChain(page, 'NEAR')
-    await page.waitForSelector('#send', { visible: true })
-    await page.waitForSelector('#swap', { visible: true })
-    await page.waitForSelector('#receive', { visible: true })
+    await page.waitForSelector('#NEAR_send_button', { visible: true })
+    await page.waitForSelector('#NEAR_swap_button', { visible: true })
+    await page.waitForSelector('#NEAR_receive_button', { visible: true })
     const code = await page.$eval('.account-container_balance_code', (el) => el.textContent)
     expect(code).equals(bitCoinName)
     await page.waitForSelector('.account-container_address', { visible: true })
     // Click on NEAR send
-    await page.click('#send')
+    await page.click('#NEAR_send_button')
     await sendPage.EnterSendAmount(page, '1')
     await sendPage.EnterSendToAddress(page, 'caf7949de4fa4a61fd5d4d71c171560e49ad64e35221b01050ddf81a452a61cb')
 

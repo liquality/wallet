@@ -33,21 +33,22 @@ export const actions = {
     bridgeEmiter.on('LISTENER_STARTED', () => {
       console.log('USB-BRIDGE::LISTENER_STARTED')
       commit('SET_USB_BRIDGE_CREATED', { created: true })
-    })
-    bridgeEmiter.on('TRANSPORT_CREATED', () => {
+    }).on('TRANSPORT_CREATED', () => {
       console.log('USB-BRIDGE::TRANSPORT_CREATED')
       commit('SET_USB_BRIDGE_TRANSPORT_CREATED', { created: true })
-    })
-    bridgeEmiter.on('BRIDGE_CLOSED', () => {
+    }).on('BRIDGE_CLOSED', () => {
       console.log('USB-BRIDGE::BRIDGE_CLOSED')
       commit('SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
       commit('SET_USB_BRIDGE_CREATED', { created: false })
-    })
-
-    bridgeEmiter.on('DISCONNECTED_PORT', () => {
+    }).on('DISCONNECTED_PORT', () => {
       console.log('USB-BRIDGE::DISCONNECTED_PORT')
       commit('SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
       commit('SET_USB_BRIDGE_CREATED', { created: false })
     })
+
+    return bridgeEmiter
+  },
+  setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
+    commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
   }
 }

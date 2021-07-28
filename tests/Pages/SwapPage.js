@@ -24,6 +24,7 @@ class SwapPage {
    * @constructor
    */
   async ClickOnMin (page) {
+    await page.waitForSelector('#min_amount_send_button', { visible: true })
     await page.click('#min_amount_send_button')
   }
 
@@ -34,7 +35,10 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendErrors (page) {
-    await page.waitForSelector('.swap-send-main-errors', { visible: true })
+    await page.waitForSelector('.swap-send-main-errors', {
+      visible: true,
+      timeout: 60000
+    })
     return await page.$eval('.swap-send-main-errors', (el) => el.textContent)
   }
 
@@ -54,8 +58,17 @@ class SwapPage {
     await page.waitForSelector('#search_for_a_currency', { visible: true })
   }
 
+  /**
+   * Check SWAP Screen Review button has been Enabled.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
   async ClickSwapReviewButton (page) {
-    await page.waitForSelector('#swap_review_button:not([disabled])')
+    console.log('User checking for SWAP Review button is enabled or disabled')
+    await page.waitForSelector('#swap_review_button:not([disabled])', {
+      timeout: 60000
+    })
     await page.click('#swap_review_button')
     console.log(chalk.green('User clicked on SWAP review button'))
   }
@@ -92,6 +105,8 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendAmount (page) {
+    await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
+    console.log('SWAP screen has been displayed with send amount input field')
     return await page.$eval('#swap_send_amount_input_field', el => el.value)
   }
 

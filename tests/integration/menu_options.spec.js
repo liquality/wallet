@@ -20,12 +20,17 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
+    await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
 
   afterEach(async () => {
-    if (browser !== undefined) {
+    try {
+      console.log('Cleaning up instances')
+      await page.close()
       await browser.close()
+    } catch (e) {
+      console.log('Cannot cleanup instances')
     }
   })
 
@@ -159,6 +164,8 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
@@ -179,6 +186,8 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
@@ -204,6 +213,8 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)

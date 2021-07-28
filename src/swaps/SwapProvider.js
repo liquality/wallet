@@ -2,14 +2,15 @@ import store from '../store'
 import { createNotification } from '../broker/notification'
 
 class SwapProvider {
-  constructor (providerId) {
+  constructor (config) {
     if (this.constructor === SwapProvider) {
       throw new TypeError('Abstract class "SwapProvider" cannot be instantiated directly.')
     }
-    this.providerId = providerId
+    this.config = config
   }
 
-  async sendLedgerNotification (account, message) {
+  async sendLedgerNotification (accountId, message) {
+    const account = store.getters.accountItem(accountId)
     if (account?.type.includes('ledger')) {
       const notificationId = await createNotification({
         title: 'Sign with Ledger',
@@ -51,10 +52,10 @@ class SwapProvider {
 
   /**
    * Estimate the fees for the given parameters
-   * @param {{ network, walletId, asset, accountId, txType, amount, feePrices[], max }} options
+   * @param {{ network, walletId, asset, fromAccountId, toAccountId, txType, amount, feePrices[], max }} options
    * @return Object of key feePrice and value fee
    */
-  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+  async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
     throw new Error('`estimateFee` not implemented')
   }
 
@@ -69,8 +70,8 @@ class SwapProvider {
   }
 
   /**
-   * Get account by id
-   * @param {string} accountId
+   * Get market data
+   * @param {string} network
    * @return account
    */
   getMarketData (network) {
@@ -80,8 +81,15 @@ class SwapProvider {
   /**
    * Get blockchain client
    */
-  getClient (network, walletId, asset, walletType, indexPath) {
-    return store.getters.client(network, walletId, asset, walletType, indexPath)
+  getClient (network, walletId, asset, accountId) {
+    return store.getters.client(
+      {
+        network,
+        walletId,
+        asset,
+        accountId
+      }
+    )
   }
 
   /**

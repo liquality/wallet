@@ -107,7 +107,7 @@ export default {
       if (this.activeNetwork === 'testnet') {
         return ({
           BTC: { name: 'Bitcoin', url: 'https://testnet-faucet.mempool.co/' },
-          ETH: { name: 'Ether', url: 'https://faucet.rinkeby.io/' },
+          ETH: { name: 'Ether', url: 'https://faucet.dimensions.network/' },
           RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' },
           BNB: { name: 'BNB', url: 'https://testnet.binance.org/faucet-smart/' },
           NEAR: { name: 'NEAR', url: '' },

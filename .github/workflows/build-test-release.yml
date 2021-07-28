@@ -25,7 +25,7 @@ jobs:
         if: always()
         run: |
           sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0 xorg openbox xauth x11vnc fluxbox fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1
-          export DISPLAY=:0.0
+          export DISPLAY=:99
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
 
       - uses: actions/cache@v1
@@ -65,11 +65,11 @@ jobs:
         run: |
           mkdir screenshots
 
-      - name: ===>> MainNet integration tests ==>>>
-        uses: mujo-code/puppeteer-headful@master
+      - name: MainNet integration tests
+        uses: beemi/puppeteer-headful@master
         env:
-          node-version: 14.1.0
           CI: 'true'
+          DISPLAY: :99
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:

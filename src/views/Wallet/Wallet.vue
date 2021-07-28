@@ -3,7 +3,7 @@
     <NavBar showMenu="true">
       <span class="wallet-header">
         <strong>Overview</strong>
-          <span class="text-muted">
+          <span class="text-muted" id="active_network">
             ({{ activeNetwork }})
           </span>
       </span>

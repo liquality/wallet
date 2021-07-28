@@ -286,7 +286,7 @@ export default {
       this.newFeePrice = null
     },
     async getTransaction (hash, asset, defaultTx) {
-      const client = this.client(this.activeNetwork, this.activeWalletId, asset)
+      const client = this.client({ network: this.activeNetwork, walletId: this.activeWalletId, asset })
       const transaction = await client.chain.getTransactionByHash(hash) || defaultTx
       transaction.explorerLink = getTransactionExplorerLink(hash, asset, this.activeNetwork)
       transaction.asset = asset

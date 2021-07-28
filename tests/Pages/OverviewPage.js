@@ -12,7 +12,7 @@ class OverviewPage {
     await page.waitForSelector('#overview', {
       visible: true
     })
-    console.log(chalk.green('User logged successfully, overview page loaded'))
+    console.log(chalk.green('User logged successfully, overview page has been loaded'))
   }
 
   /**
@@ -24,13 +24,17 @@ class OverviewPage {
    * @example - SelectNetwork(page,'testnet')
    */
   async SelectNetwork (page, network = 'testnet') {
-    await page.click('#head_network')
+    await page.waitForSelector('#head_network', { visible: true })
+    await page.click('#head_network', { delay: 5 })
+    await page.waitForTimeout(1000)
     switch (network) {
       case 'testnet': {
         await page.waitForSelector('#testnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
-        await page.click('#testnet_network')
-        const overviewText = await page.$eval('.text-muted', el => el.innerText)
+        await page.click('#testnet_network', { delay: 10 })
+        await page.waitForTimeout(2000)
+        await page.waitForSelector('#active_network', { visible: true })
+        const overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Testnet overview header').contain('TESTNET')
         console.log('user successfully changed to TESTNET')
         break
@@ -40,9 +44,10 @@ class OverviewPage {
         await page.waitForSelector('#mainnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
         await page.click('#mainnet_network')
-        const overviewText = await page.$eval('.text-muted', el => el.innerText)
+        await page.waitForSelector('#active_network', { visible: true })
+        const overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Mainnet overview header').contain('MAINNET')
-        console.log('user successfully changed to MAINET')
+        console.log('user successfully changed to MAINNET')
         break
       }
 
@@ -63,14 +68,17 @@ class OverviewPage {
       visible: true,
       timeout: 60000
     })
+    console.log('SEND button has been displayed')
     await page.waitForSelector('#swap_action', {
       visible: true,
       timeout: 60000
     })
+    console.log('SWAP button has been displayed')
     await page.waitForSelector('#receive_action', {
       visible: true,
       timeout: 60000
     })
+    console.log('RECEIVE button has been displayed')
   }
 
   /**
@@ -82,10 +90,9 @@ class OverviewPage {
    * @example SelectChain(page,'BITCOIN')
    */
   async SelectChain (page, chain) {
-    await page.waitForSelector('#assert_list_item', { visible: true })
-    const assertListItems = await page.$$('#assert_list_item')
+    await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
-      case 'BITCOIN': {
+      case 'BTC': {
         await page.waitForSelector(`#${chain}`, { visible: true })
         await page.click(`#${chain}`)
         break
@@ -141,11 +148,20 @@ class OverviewPage {
         break
       }
 
+      case 'MATIC':
+      case 'PWETH': {
+        const eth = await page.waitForSelector('#POLYGON', { visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
       default:
-        await assertListItems[0].click()
-        await page.click('#' + chain)
+        throw Error(`Unsupported chain: ${chain}`)
     }
     await page.waitForSelector('.account-container_balance_code', { visible: true })
+    await page.waitForSelector('#refresh-icon', { visible: true })
   }
 
   /**
@@ -161,7 +177,7 @@ class OverviewPage {
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
     expect(code).equals(chainCode)
     // Click Receive button
-    await page.click('#receive')
+    await page.click(`#${chainCode}_receive_button`)
     console.log(chalk.green('User clicked on receive option for ' + chainCode))
     await page.waitForSelector('.receive_address', { visible: true })
   }
@@ -176,10 +192,16 @@ class OverviewPage {
   async CheckAssertOverviewDetails (page, assertCode) {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
-    expect(code).equals(assertCode)
+    expect(code, 'Assert Code wrong').equals(assertCode)
     // Check assert account title
     const title = await page.$eval('.account-title', el => el.textContent)
     expect(title).contains(assertCode)
+    // Check fiat balance not NaN
+    expect(await page.$eval('.account-container_balance_fiat', el => el.textContent), 'Balance $ not be NaN')
+      .not.equals('NaN')
+    // account balance is not NaN
+    expect(await page.$eval('.account-container_balance_value', el => el.textContent), 'Balance value not be NaN')
+      .not.equals('NaN')
   }
 
   /**
@@ -201,6 +223,7 @@ class OverviewPage {
    */
   async GetTotalLiquidity (page) {
     // Check the Total amount - 10s wait to load amount
+    await page.waitForSelector('.wallet-stats_total', { timeout: 60000 })
     await page.waitForTimeout(10000)
     return await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g, ''))
   }

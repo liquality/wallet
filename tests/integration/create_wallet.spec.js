@@ -15,17 +15,22 @@ const seedWordsPage = new SeedWordsPage()
 
 let browser, page
 
-describe('Liquality wallet - Create wallet', async () => {
-  beforeEach(async () => {
+describe('Liquality wallet - Create wallet-["smoke"]', async () => {
+  before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
+    await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
 
-  afterEach(async () => {
-    if (browser !== undefined) {
+  after(async () => {
+    try {
+      console.log('Cleaning up instances')
+      await page.close()
       await browser.close()
+    } catch (e) {
+      console.log('Cannot cleanup instances')
     }
   })
 
@@ -39,8 +44,10 @@ describe('Liquality wallet - Create wallet', async () => {
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
   it('Create a wallet with mismatch password, validate button has been disabled-["mainnet"]', async () => {
-    // Create new wallet
-    await homePage.ClickOnCreateNewWallet(page)
+    const passwordInput = await page.$('#password')
+    const confirmPasswordInput = await page.$('#confirmPassword')
+    await passwordInput.click({ clickCount: 3 })
+    await confirmPasswordInput.click({ clickCount: 3 })
     // Set password
     await passwordPage.EnterPasswordDetails(page, 'testwallet1', 'testwallet2')
     // check the password error message
@@ -52,8 +59,11 @@ describe('Liquality wallet - Create wallet', async () => {
   })
   it('Create a new wallet with 12 words, validate overviewPage-["mainnet"]', async () => {
     const password = '123123123'
-    // Create new wallet
-    await homePage.ClickOnCreateNewWallet(page)
+
+    const passwordInput = await page.$('#password')
+    const confirmPasswordInput = await page.$('#confirmPassword')
+    await passwordInput.click({ clickCount: 3 })
+    await confirmPasswordInput.click({ clickCount: 3 })
     // Set password
     await passwordPage.SubmitPasswordDetails(page, password)
     // Unlocking wallet...
@@ -71,6 +81,8 @@ describe('Liquality wallet - Create wallet', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
     }
 
     // check Send & Swap & Receive options have been displayed

@@ -23,12 +23,17 @@ describe('Liquality wallet- Import wallet', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
+    await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
 
   afterEach(async () => {
-    if (browser !== undefined) {
+    try {
+      console.log('Cleaning up instances')
+      await page.close()
       await browser.close()
+    } catch (e) {
+      console.log('Cannot cleanup instances')
     }
   })
 
@@ -45,6 +50,8 @@ describe('Liquality wallet- Import wallet', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
@@ -67,7 +74,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await page.click('#import_wallet_continue_button:not([enabled])')
     console.log('Import wallet continue button has been disabled')
   })
-  it('Import wallet with (12 seed words) and see balance', async () => {
+  it('Import wallet with (12 seed words) and see balance-["smoke"]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -92,7 +99,7 @@ describe('Liquality wallet- Import wallet', async () => {
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
   })
-  it('Import wallet with (24 seed words) and see balance', async () => {
+  it('Import wallet with (24 seed words) and see balance-["smoke"]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit, select 24 seed option
