@@ -16,7 +16,7 @@ export const initializeAnalyticsPreferences = ({ commit }, { accepted }) => {
     userId: uuidv4(),
     acceptedDate: accepted ? Date.now() : null,
     askedTimes: 0,
-    askedDate: null,
+    askedDate: Date.now(),
     notAskAgain: false
   })
 }
@@ -33,9 +33,11 @@ export const setAnalyticsResponse = async ({ commit, state }, { accepted }) => {
   }
 }
 
-export const initializeAnalytics = async ({ commit, state }) => {
-  if (state.analytics && state.analytics.acceptedDate) {
-    await analytics.identify(state.analytics.userId)
+export const initializeAnalytics = async ({ commit, dispatch, state }) => {
+  if (!state.analytics || !state.analytics.userId) {
+    await dispatch('initializeAnalyticsPreferences', { accepted: false })
+  } else if (state.analytics?.acceptedDate) {
+    await analytics.identify(state.analytics?.userId)
     commit('app/ANALITYCS_STARTED', null, { root: true })
   }
 }
@@ -53,9 +55,39 @@ export const trackAnalytics = ({ state, commit }, { event, properties = {} }) =>
 }
 
 export const checkAnalyticsOptIn = ({ state, commit, dispatch }) => {
-  if (!state.analytics?.acceptedDate) {
-    setTimeout(() => {
+  const { acceptedDate } = state.analytics
+
+  if (!acceptedDate) {
+    // not to exceed 2x a/week every 2 weeks
+    const askedDate = new Date(state.analytics?.askedDate)
+    const currentDate = new Date()
+
+    const pastMonth = askedDate.getMonth()
+    const pastDay = askedDate.getDay()
+    const pastDayOfMonth = askedDate.getDate()
+    const currentMonth = currentDate.getMonth()
+    const currentDay = currentDate.getDay()
+    const currentDayOfMonth = currentDate.getDate()
+
+    if (currentMonth === pastMonth) {
+      // check for every two weeks
+      if (currentDayOfMonth >= (pastDayOfMonth + 15)) {
+        commit('SET_ANALYTICS_PREFERENCES', {
+          askedDate: Date.now()
+        })
+        dispatch('app/setAnalyticsOptInModalOpen', { open: true }, { root: true })
+      } else if (currentDay >= (pastDay + 2)) {
+        // check for not to exceed 2x a/week
+        commit('SET_ANALYTICS_PREFERENCES', {
+          askedDate: Date.now()
+        })
+        dispatch('app/setAnalyticsOptInModalOpen', { open: true }, { root: true })
+      }
+    } else if (currentMonth > pastMonth) {
+      commit('SET_ANALYTICS_PREFERENCES', {
+        askedDate: Date.now()
+      })
       dispatch('app/setAnalyticsOptInModalOpen', { open: true }, { root: true })
-    }, 2000)
+    }
   }
 }
