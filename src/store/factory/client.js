@@ -172,8 +172,8 @@ function createSolanaClient (network, mnemonic, indexPath = 0) {
       derivationPath
     }
   ))
-  solanaClient.addProvider(new SolanaSwapProvider())
-  solanaClient.addProvider(new SolanaSwapFindProvider(solanaNetwork?.helperUrl))
+  solanaClient.addProvider(new SolanaSwapProvider(solanaNetwork))
+  solanaClient.addProvider(new SolanaSwapFindProvider(solanaNetwork))
 
   return solanaClient
 }
