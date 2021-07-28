@@ -405,4 +405,40 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
+  it('SWAP BTC to RBTC - fastBTC integration["mainnet"]', async () => {
+    const asset1 = 'BTC'
+
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select mainnet for fastBTC integration
+    await overviewPage.SelectNetwork(page, 'mainnet')
+    // Click asset 1
+    await overviewPage.SelectChain(page, asset1)
+    await page.waitForSelector('#' + asset1 + '_swap_button', { visible: true })
+    await page.click('#' + asset1 + '_swap_button')
+    console.log(chalk.green('User clicked on BTC SWAP button'))
+
+    await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
+    console.log('SWAP screen has been displayed with send amount input field')
+
+    // Select 2nd Pair (RBTC)
+    await page.click('.swap-receive-main-icon')
+    await page.waitForSelector('#RSK', { visible: true })
+    await page.click('#RSK')
+    await page.waitForSelector('#RBTC', { visible: true })
+    await page.click('#RBTC')
+
+    // (Liquality swap provider)
+    await page.waitForSelector('#bestQuote_provider', { visible: true, timeout: 60000 })
+    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+      'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
+
+    // Update the SWAP value to 1
+    await swapPage.EnterSendAmountOnSwap(page, 1)
+
+    // (fastBTC swap provider)
+    await page.waitForSelector('#bestQuote_provider', { visible: true, timeout: 60000 })
+    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+      'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').equals('fastBTC')
+  })
 })
