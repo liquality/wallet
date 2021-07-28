@@ -63,14 +63,13 @@ const EXPLORERS = {
     }
   },
   solana: {
-    // TODO: Check address prop for solana
     testnet: {
-      tx: 'https://explorer.solana.com/?cluster=devnet/',
-      address: 'https://explorer.testnet.near.org/accounts/'
+      tx: 'https://explorer.solana.com/tx/{hash}?cluster=devnet',
+      address: 'https://explorer.solana.com/address/{hash}?cluster=devnet'
     },
     mainnet: {
-      tx: 'https://explorer.solana.com/',
-      address: 'https://explorer.mainnet.near.org/accounts/'
+      tx: 'https://explorer.solana.com/tx/',
+      address: 'https://explorer.solana.com/address/'
     }
   },
   arbitrum: {
@@ -122,7 +121,9 @@ export const getAssetColorStyle = asset => {
 export const getTransactionExplorerLink = (hash, asset, network) => {
   const transactionHash = getExplorerTransactionHash(asset, hash)
   const chain = cryptoassets[asset].chain
-  return `${EXPLORERS[chain][network].tx}${transactionHash}`
+  const link = `${EXPLORERS[chain][network].tx}`;
+  
+  return link.includes('{hash}') ? link.replace('{hash}', transactionHash) : link + transactionHash
 }
 
 export const getAddressExplorerLink = (address, asset, network) => {
