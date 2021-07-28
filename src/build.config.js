@@ -80,6 +80,11 @@ export default {
           bsc: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5'
         },
         referrerFee: 0.3
+      },
+      fastBTC: {
+        name: 'FastBTC',
+        type: SwapProviderType.FASTBTC,
+        bridgeEndpoint: 'http://3.131.33.161:3000/'
       }
     }
   },
