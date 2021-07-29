@@ -5,7 +5,7 @@ class SwapPage {
   /**
    * Enter SEND amount in SWAP view.
    * @param page
-   * @param amountToSend
+   * @param {string} amountToSend - amount to enter in send input
    * @returns {Promise<void>}
    * @constructor
    */
