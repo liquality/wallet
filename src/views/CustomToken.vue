@@ -88,9 +88,9 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
+import { TOKEN_DETAILS } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
@@ -164,18 +164,17 @@ export default {
 
       if (this.existingAsset) {
         customToken = this.existingAsset
-      } else if (this.activeNetwork === 'mainnet') {
+      } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
         try {
-          const result = await axios.get(`https://api.ethplorer.io/getTokenInfo/${this.contractAddress}?apiKey=freekey`)
-          const { symbol, name, decimals } = result.data
-          customToken = { symbol, name, decimals: parseInt(decimals), chain: 'ethereum' }
+          const { symbol, name, decimals } = await TOKEN_DETAILS[this.chain].getDetails(this.contractAddress)
+          customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
         } catch (e) {}
       }
 
       if (customToken) {
         this.symbol = customToken.symbol
         this.name = customToken.name
-        this.chain = customToken.network
+        this.chain = customToken.chain
         this.decimals = customToken.decimals
         this.autofilled = true
       }
