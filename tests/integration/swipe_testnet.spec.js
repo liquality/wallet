@@ -439,6 +439,6 @@ describe('Liquality wallet SWIPE feature', async () => {
     // (fastBTC swap provider)
     await page.waitForSelector('#bestQuote_provider', { visible: true, timeout: 60000 })
     expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
-      'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['fastBTC', 'Liquality'])
+      'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
   })
 })
