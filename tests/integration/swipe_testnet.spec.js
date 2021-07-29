@@ -342,7 +342,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check source name
     await page.waitForSelector('#bestQuote_provider', { visible: true })
     expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
-      'BTC->ETH swap, Thorchain source should be chosen!').oneOf(['Thorchain','Liquality'])
+      'BTC->ETH swap, Thorchain source should be chosen!').oneOf(['Thorchain', 'Liquality'])
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
@@ -362,7 +362,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check source name
     await page.waitForSelector('#bestQuote_provider', { visible: true })
     expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
-      'ETH->BTC swap, Thorchain source should be chosen!').oneOf(['Thorchain','Liquality'])
+      'ETH->BTC swap, Thorchain source should be chosen!').oneOf(['Thorchain', 'Liquality'])
   })
   it('SWAP (ETHEREUM),Please increase amount. It is below minimum.', async () => {
     // overview page
@@ -439,6 +439,6 @@ describe('Liquality wallet SWIPE feature', async () => {
     // (fastBTC swap provider)
     await page.waitForSelector('#bestQuote_provider', { visible: true, timeout: 60000 })
     expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
-      'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['fastBTC','Liquality'])
+      'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['fastBTC', 'Liquality'])
   })
 })
