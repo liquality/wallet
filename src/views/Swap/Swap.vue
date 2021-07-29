@@ -648,6 +648,9 @@ export default {
       const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
       const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
       return feeTotal.gte(BN(receiveTotalPercentage))
+    },
+    checkSwapNegative () {
+      return cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset]) <= 0
     }
   },
   methods: {
