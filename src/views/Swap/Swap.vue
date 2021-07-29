@@ -174,7 +174,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" :class="checkHighFee ? 'highFees' : ''" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" id="swap_send_amount_fees_fiat_rate">${{ totalToSendInFiat }}</div>
             </div>
           </div>
 
@@ -218,7 +218,7 @@
                   {{ toSwapFee }} {{ toAssetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" :class="checkHighFee ? 'highFees' : ''" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
+              <div class="font-weight-bold" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
             </div>
           </div>
           <div class="mt-20">
@@ -236,6 +236,12 @@
               <div v-else>1 {{ asset }}&nbsp;=&nbsp;N/A</div>
             </div>
           </div>
+        </div>
+        <div class="fee_wrapper" v-if="checkHighFee">
+          Fees are high.  Review transaction carefully.
+        </div>
+        <div class="fee_wrapper" v-if="checkSwapNegative">
+          Fees are high.  Review transaction carefully.
         </div>
         <div class="wrapper_bottom">
           <div class="swap-info">
@@ -1039,11 +1045,6 @@ export default {
     }
   }
 }
-
-  .highFees {
-    color: $danger;
-    font-weight: bold;
-  }
 
 .swap-rate {
   p {
