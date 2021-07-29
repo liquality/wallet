@@ -295,6 +295,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 
     button {
       font-size: $h4-font-size;
@@ -306,14 +307,16 @@ export default {
     }
 
     .eye-btn {
-      margin-left: 16px;
+      position: absolute;
+      right: 70px;
       height: 40px;
+      width: 35px;
       background-color: transparent;
       display: flex;
       align-items: center;
-      justify-content: center;
+
       svg {
-        width: 16px;
+        width: 20px;
       }
 
       &:hover {
