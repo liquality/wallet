@@ -1,10 +1,10 @@
 import {
   chains,
   isEthereumChain as _isEthereumChain
-} from '@liquality/cryptoassets';
-import cryptoassets from '@/utils/cryptoassets';
-import axios from 'axios';
-import * as ethers from 'ethers';
+} from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
+import axios from 'axios'
+import * as ethers from 'ethers'
 
 const EXPLORERS = {
   ethereum: {
@@ -77,99 +77,99 @@ const EXPLORERS = {
       address: 'https://explorer.arbitrum.io/address/0x'
     }
   }
-};
+}
 
 export const isERC20 = asset => {
-  return cryptoassets[asset]?.type === 'erc20';
-};
+  return cryptoassets[asset]?.type === 'erc20'
+}
 
 export const isEthereumChain = asset => {
-  const chain = cryptoassets[asset]?.chain;
-  return _isEthereumChain(chain);
-};
+  const chain = cryptoassets[asset]?.chain
+  return _isEthereumChain(chain)
+}
 
 export const isEthereumNativeAsset = asset => {
-  const chainId = cryptoassets[asset]?.chain;
+  const chainId = cryptoassets[asset]?.chain
   if (
     chainId &&
     _isEthereumChain(chainId) &&
     chains[chainId].nativeAsset === asset
   ) {
-    return true;
+    return true
   }
 
-  return false;
-};
+  return false
+}
 
 export const getNativeAsset = asset => {
-  const chainId = cryptoassets[asset]?.chain;
-  return chainId ? chains[chainId].nativeAsset : asset;
-};
+  const chainId = cryptoassets[asset]?.chain
+  return chainId ? chains[chainId].nativeAsset : asset
+}
 
 export const getAssetColorStyle = asset => {
-  const assetData = cryptoassets[asset];
+  const assetData = cryptoassets[asset]
   if (assetData && assetData.color) {
-    return { color: assetData.color };
+    return { color: assetData.color }
   }
   // return black as default
-  return { color: '#000000' };
-};
+  return { color: '#000000' }
+}
 
 export const getTransactionExplorerLink = (hash, asset, network) => {
-  const transactionHash = getExplorerTransactionHash(asset, hash);
-  const chain = cryptoassets[asset].chain;
-  return `${EXPLORERS[chain][network].tx}${transactionHash}`;
-};
+  const transactionHash = getExplorerTransactionHash(asset, hash)
+  const chain = cryptoassets[asset].chain
+  return `${EXPLORERS[chain][network].tx}${transactionHash}`
+}
 
 export const getAddressExplorerLink = (address, asset, network) => {
-  const chain = cryptoassets[asset].chain;
-  return `${EXPLORERS[chain][network].address}${address}`;
-};
+  const chain = cryptoassets[asset].chain
+  return `${EXPLORERS[chain][network].address}${address}`
+}
 
 export const getAssetIcon = (asset, extension = 'svg') => {
   try {
-    return require(`../assets/icons/assets/${asset.toLowerCase()}.${extension}?inline`);
+    return require(`../assets/icons/assets/${asset.toLowerCase()}.${extension}?inline`)
   } catch (e) {
     try {
-      return require(`../../node_modules/cryptocurrency-icons/svg/color/${asset.toLowerCase()}.svg?inline`);
+      return require(`../../node_modules/cryptocurrency-icons/svg/color/${asset.toLowerCase()}.svg?inline`)
     } catch (e) {
-      return require('../assets/icons/blank_asset.svg?inline');
+      return require('../assets/icons/blank_asset.svg?inline')
     }
   }
-};
+}
 
 export const getExplorerTransactionHash = (asset, hash) => {
   switch (asset) {
     case 'NEAR':
-      return hash.split('_')[0];
+      return hash.split('_')[0]
     default:
-      return hash;
+      return hash
   }
-};
+}
 
 export const TOKEN_DETAILS = {
   ethereum: {
     sourceUrl(contractAddress) {
-      return `https://api.ethplorer.io/getTokenInfo/${contractAddress}?apiKey=freekey`;
+      return `https://api.ethplorer.io/getTokenInfo/${contractAddress}?apiKey=freekey`
     },
     async getDetails(contractAddress) {
-      const data = await fetchData(this.sourceUrl(contractAddress));
+      const data = await fetchData(this.sourceUrl(contractAddress))
 
-      const { symbol, name, decimals } = data;
+      const { symbol, name, decimals } = data
 
-      return { symbol, name, decimals };
+      return { symbol, name, decimals }
     }
   },
   bsc: {
     sourceUrl(contractAddress) {
-      return `https://wallet.binance.org/api/v1/bsc-mainnet/assets/${contractAddress}`;
+      return `https://wallet.binance.org/api/v1/bsc-mainnet/assets/${contractAddress}`
     },
     async getDetails(contractAddress) {
-      const data = await fetchData(this.sourceUrl(contractAddress));
+      const data = await fetchData(this.sourceUrl(contractAddress))
 
-      const { displaySymbol, name, decimals } = data;
+      const { displaySymbol, name, decimals } = data
 
-      return { symbol: displaySymbol, name, decimals };
+      return { symbol: displaySymbol, name, decimals }
     }
   },
   polygon: {
@@ -178,20 +178,20 @@ export const TOKEN_DETAILS = {
         symbol: `https://api.polygonscan.com/api?module=proxy&action=eth_call&to=${contractAddress}&data=0x06fdde03&tag=latest&apikey=8XR2CZ5HY3JRP6J4BGP1TBC3WJEU88NSVZ`,
         name: `https://api.polygonscan.com/api?module=proxy&action=eth_call&to=${contractAddress}&data=0x95d89b41&tag=latest&apikey=8XR2CZ5HY3JRP6J4BGP1TBC3WJEU88NSVZ`,
         decimals: `https://api.polygonscan.com/api?module=proxy&action=eth_call&to=${contractAddress}&data=0x313ce567&tag=latest&apikey=8XR2CZ5HY3JRP6J4BGP1TBC3WJEU88NSVZ`
-      };
+      }
     },
     async getDetails(contractAddress) {
       const [_symbol, _name, _decimals] = await Promise.all([
         fetchData(this.sourceUrl(contractAddress).symbol),
         fetchData(this.sourceUrl(contractAddress).name),
         fetchData(this.sourceUrl(contractAddress).decimals)
-      ]);
-      return parseAssetData(_symbol.result, _name.result, _decimals.result);
+      ])
+      return parseAssetData(_symbol.result, _name.result, _decimals.result)
     }
   },
   rsk: {
     sourceUrl() {
-      return 'https://public-node.rsk.co';
+      return 'https://public-node.rsk.co'
     },
     rpcBody(contractAddress) {
       return {
@@ -231,42 +231,42 @@ export const TOKEN_DETAILS = {
           ],
           id: 3
         }
-      };
+      }
     },
     async getDetails(contractAddress) {
       const [_symbol, _name, _decimals] = await Promise.all([
         postData(this.sourceUrl(), this.rpcBody(contractAddress).symbol),
         postData(this.sourceUrl(), this.rpcBody(contractAddress).name),
         postData(this.sourceUrl(), this.rpcBody(contractAddress).decimals)
-      ]);
+      ])
 
-      return parseAssetData(_symbol.result, _name.result, _decimals.result);
+      return parseAssetData(_symbol.result, _name.result, _decimals.result)
     }
   }
-};
+}
 
 const fetchData = async url => {
-  const { data } = await axios.get(url);
+  const { data } = await axios.get(url)
 
-  return data;
-};
+  return data
+}
 
 const postData = async (url, body) => {
-  const { data } = await axios.post(url, body);
+  const { data } = await axios.post(url, body)
 
-  return data;
-};
+  return data
+}
 
 const parseAssetData = (_symbol, _name, _decimals) => {
   const iFace = new ethers.utils.Interface([
     'function decimals() public view returns (uint8)',
     'function name() public view returns (string)',
     'function symbol() public view returns (string)'
-  ]);
+  ])
 
-  const symbol = iFace.decodeFunctionResult('symbol', _symbol);
-  const name = iFace.decodeFunctionResult('name', _name);
-  const decimals = iFace.decodeFunctionResult('decimals', _decimals);
+  const symbol = iFace.decodeFunctionResult('symbol', _symbol)
+  const name = iFace.decodeFunctionResult('name', _name)
+  const decimals = iFace.decodeFunctionResult('decimals', _decimals)
 
-  return { symbol, name, decimals };
-};
+  return { symbol, name, decimals }
+}
