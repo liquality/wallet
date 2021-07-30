@@ -51,17 +51,25 @@
           />
         </div>
         <div class="mt-30 form-group swap-rate" id="rate_block">
-          <label>Rate</label>
-          <p>
+          <label class="d-flex align-items-center">
+            Rate
+            <div v-if="selectedQuote" class="btn btn-option swap-rate_provider ml-2" @click="showQuotesModal = true">
+              <span id="selectedQuote_provider" class="d-flex align-items-center">
+                <img :src="selectedQuoteIcon" class="mr-1" />
+                {{ selectedQuoteProviderLabel }}
+              </span>
+            </div>
+          </label>
+          <p class="py-1">
             <span class="swap-rate_base">1 {{ asset }} =</span>
             <span class="swap-rate_value">
               &nbsp;{{ quoteRate || '?' }}
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
-            <span v-if="selectedQuote" class="badge badge-pill badge-primary text-uppercase ml-1" id="selectedQuote_provider">{{ selectedQuoteProviderLabel }}</span>
+            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1" id="bestQuote_provider">{{ bestQuoteProviderLabel }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
           </p>
-          <p>
+          <p v-if="quotes.length">
             <a href="#" @click="showQuotesModal = true">See all {{ quotes.length }} quotes</a>
           </p>
         </div>
@@ -225,7 +233,15 @@
             </div>
           </div>
           <div class="mt-20">
-            <label>Rate</label>
+            <label class="d-flex align-items-center">
+              Rate
+              <div v-if="selectedQuote" class="btn btn-option swap-rate_provider ml-2">
+                <span id="selectedQuote_provider" class="d-flex align-items-center">
+                  <img :src="selectedQuoteIcon" class="mr-1" />
+                  {{ selectedQuoteProviderLabel }}
+                </span>
+              </div>
+            </label>
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
               id="swap_rate_value"
@@ -340,7 +356,7 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import SwapQuotesModal from '@/components/SwapQuotesModal'
 import CustomFees from '@/components/CustomFees'
-import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
+import { SwapProviderType, getSwapProviderConfig, getSwapProviderIcon } from '@/utils/swaps'
 import { calculateQuoteRate } from '@/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
@@ -533,6 +549,10 @@ export default {
       if (!this.selectedQuote) return null
       return this.swapProvider(this.activeNetwork, this.selectedQuote.provider)
     },
+    selectedQuoteIcon () {
+      const icon = getSwapProviderIcon(this.activeNetwork, this.selectedQuote.provider)
+      return icon
+    },
     defaultAmount () {
       const min = BN(this.min)
       if (!min.eq(0)) {
@@ -570,11 +590,14 @@ export default {
     maxFee () {
       const selectedSpeed = this.selectedFee[this.assetChain]
       const fee = this.maxSwapFees[this.assetChain]?.[selectedSpeed]
+      console.log('fee', fee)
       return fee ? currencyToUnit(cryptoassets[this.assetChain], fee) : BN(0)
     },
     available () {
       if (!this.networkWalletBalances) return BN(0)
       const balance = this.networkWalletBalances[this.asset]
+      console.log(this.maxFee)
+      console.log(BN(balance).toString(), BN(this.maxFee).toString())
       const available =
         isERC20(this.asset)
           ? BN(balance)
@@ -1087,6 +1110,16 @@ export default {
   &_loading {
     svg {
       height: 16px
+    }
+  }
+
+  &_provider {
+    display: inline-block;
+    text-transform: none;
+    img {
+      height: 15px;
+      width: auto;
+      max-width: 14px;
     }
   }
 }
