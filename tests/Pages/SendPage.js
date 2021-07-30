@@ -26,6 +26,7 @@ class SendPage {
    * @constructor
    */
   async EnterSendToAddress (page, sendToAddress) {
+    await page.waitForSelector('#address')
     await page.type('#address', sendToAddress)
   }
 
@@ -40,6 +41,7 @@ class SendPage {
     await page.waitForSelector('#send_review_button:not([disabled])', { visible: true })
     await page.click('#send_review_button')
     await page.waitForSelector('.confirm-address', { visible: true })
+    console.log('User clicked on confirm SEND review button')
   }
 
   /**
@@ -51,11 +53,13 @@ class SendPage {
   async SendConfirmButton (page) {
     await page.waitForSelector('#send_button_confirm', { visible: true })
     await page.click('#send_button_confirm')
-    await page.waitForSelector('.list-item-detail-icon', {
+    console.log('User clicked on SEND button Confirm...waiting for Transaction Status')
+    await page.waitForSelector('.transaction-status', {
       visible: true,
-      timeout: 120000
+      timeout: 180000
     })
-    await page.click('.list-item-detail-icon')
+    await page.click('.transaction-status')
+    console.log('User clicked on transaction status icon from Transaction details')
   }
 
   /**

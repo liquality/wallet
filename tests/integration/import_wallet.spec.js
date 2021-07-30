@@ -23,6 +23,7 @@ describe('Liquality wallet- Import wallet', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl)
+    await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
 
@@ -32,7 +33,7 @@ describe('Liquality wallet- Import wallet', async () => {
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup istances')
+      console.log('Cannot cleanup instances')
     }
   })
 

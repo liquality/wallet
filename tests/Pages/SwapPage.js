@@ -5,7 +5,7 @@ class SwapPage {
   /**
    * Enter SEND amount in SWAP view.
    * @param page
-   * @param amountToSend
+   * @param {string} amountToSend - amount to enter in send input
    * @returns {Promise<void>}
    * @constructor
    */
@@ -24,6 +24,7 @@ class SwapPage {
    * @constructor
    */
   async ClickOnMin (page) {
+    await page.waitForSelector('#min_amount_send_button', { visible: true })
     await page.click('#min_amount_send_button')
   }
 
@@ -34,7 +35,10 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendErrors (page) {
-    await page.waitForSelector('.swap-send-main-errors', { visible: true })
+    await page.waitForSelector('.swap-send-main-errors', {
+      visible: true,
+      timeout: 60000
+    })
     return await page.$eval('.swap-send-main-errors', (el) => el.textContent)
   }
 
@@ -102,6 +106,7 @@ class SwapPage {
    */
   async GetSwapSendAmount (page) {
     await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
+    console.log('SWAP screen has been displayed with send amount input field')
     return await page.$eval('#swap_send_amount_input_field', el => el.value)
   }
 

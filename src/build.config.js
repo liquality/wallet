@@ -51,6 +51,11 @@ export default {
         name: 'Uniswap V2',
         type: SwapProviderType.UNISWAPV2,
         routerAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
+      },
+      thorchain: {
+        name: 'Thorchain',
+        type: SwapProviderType.THORCHAIN,
+        thornode: 'https://testnet.thornode.thorchain.info'
       }
     },
     mainnet: {
@@ -75,6 +80,11 @@ export default {
           bsc: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5'
         },
         referrerFee: 0.3
+      },
+      fastBTC: {
+        name: 'FastBTC',
+        type: SwapProviderType.FASTBTC,
+        bridgeEndpoint: 'http://3.131.33.161:3000/'
       }
     }
   },

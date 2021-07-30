@@ -58,7 +58,7 @@
               &nbsp;{{ bestRate || '?' }}
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
-            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1">{{ bestQuoteProviderLabel }}</span>
+            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1" id="bestQuote_provider">{{ bestQuoteProviderLabel }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
           </p>
         </div>
@@ -506,7 +506,16 @@ export default {
       return dpUI(rate)
     },
     bestQuote () {
-      const sortedQuotes = this.quotes.slice(0).sort((a, b) => BN(b.toAmount).minus(a.toAmount).toNumber())
+      const sortedQuotes = this.quotes.slice(0)
+        .sort((a, b) => {
+          const isCrossChain = cryptoassets[this.asset].chain !== cryptoassets[this.toAsset].chain
+          if (isCrossChain) { // Prefer Liquality for crosschain swaps where liquidity is available
+            if (getSwapProviderConfig(this.activeNetwork, a.provider).type === SwapProviderType.LIQUALITY) return -1
+            else if (getSwapProviderConfig(this.activeNetwork, b.provider).type === SwapProviderType.LIQUALITY) return 1
+          }
+
+          return BN(b.toAmount).minus(a.toAmount).toNumber()
+        })
       return sortedQuotes[0]
     },
     bestQuoteProviderLabel () {
@@ -527,7 +536,7 @@ export default {
       }
     },
     min () {
-      const liqualityMarket = this.networkMarketData.find(pair =>
+      const liqualityMarket = this.networkMarketData?.find(pair =>
         pair.from === this.asset &&
         pair.to === this.toAsset &&
         getSwapProviderConfig(this.activeNetwork, pair.provider).type === SwapProviderType.LIQUALITY)
@@ -664,7 +673,8 @@ export default {
       'updateMarketData',
       'getQuotes',
       'updateFees',
-      'newSwap'
+      'newSwap',
+      'trackAnalytics'
     ]),
     shortenAddress,
     dpUI,
@@ -877,6 +887,14 @@ export default {
         })
 
         this.signRequestModalOpen = false
+        this.trackAnalytics({
+          event: 'Swap Created',
+          properties: {
+            category: 'Create Swap',
+            action: 'Swap View',
+            label: `Swap ${this.sendAmount} ${this.asset} to ${this.toAsset}`
+          }
+        })
 
         this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {

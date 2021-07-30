@@ -92,7 +92,7 @@ class OverviewPage {
   async SelectChain (page, chain) {
     await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
-      case 'BITCOIN': {
+      case 'BTC': {
         await page.waitForSelector(`#${chain}`, { visible: true })
         await page.click(`#${chain}`)
         break
@@ -140,6 +140,15 @@ class OverviewPage {
         break
       }
 
+      case 'MATIC':
+      case 'PWETH': {
+        const eth = await page.waitForSelector('#POLYGON', { visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
       default:
         throw Error(`Unsupported chain: ${chain}`)
     }
@@ -160,7 +169,7 @@ class OverviewPage {
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
     expect(code).equals(chainCode)
     // Click Receive button
-    await page.click('#receive')
+    await page.click(`#${chainCode}_receive_button`)
     console.log(chalk.green('User clicked on receive option for ' + chainCode))
     await page.waitForSelector('.receive_address', { visible: true })
   }
@@ -175,10 +184,16 @@ class OverviewPage {
   async CheckAssertOverviewDetails (page, assertCode) {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
-    expect(code).equals(assertCode)
+    expect(code, 'Assert Code wrong').equals(assertCode)
     // Check assert account title
     const title = await page.$eval('.account-title', el => el.textContent)
     expect(title).contains(assertCode)
+    // Check fiat balance not NaN
+    expect(await page.$eval('.account-container_balance_fiat', el => el.textContent), 'Balance $ not be NaN')
+      .not.equals('NaN')
+    // account balance is not NaN
+    expect(await page.$eval('.account-container_balance_value', el => el.textContent), 'Balance value not be NaN')
+      .not.equals('NaN')
   }
 
   /**
@@ -200,6 +215,7 @@ class OverviewPage {
    */
   async GetTotalLiquidity (page) {
     // Check the Total amount - 10s wait to load amount
+    await page.waitForSelector('.wallet-stats_total', { timeout: 60000 })
     await page.waitForTimeout(10000)
     return await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g, ''))
   }

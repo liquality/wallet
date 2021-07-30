@@ -5,6 +5,7 @@
       </template>
       <p>
         This allows to connect to your Ledger device.
+        Please click on Enable USB button inside the bridge
       </p>
        <template v-slot:footer>
        <button class="btn btn-outline-clear" @click="openBridgeWindow">

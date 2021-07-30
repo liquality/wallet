@@ -3,6 +3,32 @@ const chalk = require('chalk')
 
 class HomePage {
   /**
+   * Scroll to the end of the terms
+   * @param  page
+   * @returns {Promise<void>}
+   */
+  async ScrollToEndOfTerms (page) {
+    const scrollSelector = '#onboarding_home_text_container'
+    await page.waitForSelector(scrollSelector, {
+      visible: true
+    })
+
+    const result = await page.evaluate(async (selector) => {
+      return new Promise((resolve, reject) => {
+        const scrollableSection = document.querySelector(selector)
+        if (scrollableSection) {
+          scrollableSection.scrollTop = scrollableSection.scrollHeight
+          resolve(`Scrolled to selector ${selector}`)
+        } else {
+          reject(new Error(`Cannot find selector ${selector}`))
+        }
+      })
+    }, scrollSelector)
+
+    log(chalk.green(`ScrollToEndOfTerms: ${result}`))
+  }
+
+  /**
    * Accept Terms & Privacy.
    * @param page
    * @returns {Promise<void>}

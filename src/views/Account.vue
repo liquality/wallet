@@ -33,14 +33,14 @@
           </button>
         </div>
         <div class="account-container_actions">
-          <router-link :to="`/accounts/${accountId}/${asset}/send`"><button class="account-container_actions_button" id="send">
-            <div class="account-container_actions_button_wrapper"><SendIcon class="account-container_actions_button_icon" /></div>Send
+          <router-link :to="`/accounts/${accountId}/${asset}/send`"><button class="account-container_actions_button">
+            <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`"><SendIcon class="account-container_actions_button_icon" /></div>Send
           </button></router-link>
-          <router-link :to="`/accounts/${accountId}/${asset}/swap`"><button class="account-container_actions_button" id="swap">
-            <div class="account-container_actions_button_wrapper"><SwapIcon class="account-container_actions_button_icon account-container_actions_button_swap" /></div>Swap
+          <router-link :to="`/accounts/${accountId}/${asset}/swap`"><button class="account-container_actions_button">
+            <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`"><SwapIcon class="account-container_actions_button_icon account-container_actions_button_swap" /></div>Swap
           </button></router-link>
-          <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`"><button class="account-container_actions_button" id="receive">
-            <div class="account-container_actions_button_wrapper"><ReceiveIcon class="account-container_actions_button_icon" /></div>Receive
+          <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`"><button class="account-container_actions_button">
+            <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`"><ReceiveIcon class="account-container_actions_button_icon" /></div>Receive
           </button></router-link>
         </div>
       </div>
@@ -126,7 +126,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateAccountBalance', 'getUnusedAddresses']),
+    ...mapActions([
+      'updateAccountBalance',
+      'getUnusedAddresses',
+      'trackAnalytics'
+    ]),
     getAssetIcon,
     shortenAddress,
     prettyFiatBalance,
@@ -159,6 +163,14 @@ export default {
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
+    this.trackAnalytics({
+      event: 'Active Asset',
+      properties: {
+        category: 'Select Asset',
+        action: 'Account View',
+        label: `Select ${this.asset}`
+      }
+    })
   },
   watch: {
     activeNetwork () {

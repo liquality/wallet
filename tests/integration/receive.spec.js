@@ -26,12 +26,16 @@ const password = '123123123'
 async function importWalletTestReceive (bitcoin) {
   // Select code
   await overviewPage.SelectChain(page, bitcoin)
+  // Validate details about assert on overview page
+  await overviewPage.CheckAssertOverviewDetails(page, bitcoin)
+  // Click on Receive
   await overviewPage.ClickChainReceive(page, bitcoin)
   // Receive validations
   const yourCurrentAddress = await page.$eval('#your_current_asset_address', (el) => el.textContent)
   expect(yourCurrentAddress).contains(bitcoin)
   await receivePage.HasQRCodeDisplayed(page)
-  if (bitcoin === 'ETH' || bitcoin === 'ARBETH' || bitcoin === 'RBTC' || bitcoin === 'BNB') {
+  if (bitcoin === 'ETH' || bitcoin === 'ARBETH' || bitcoin === 'RBTC' ||
+    bitcoin === 'BNB' || bitcoin === 'MATIC' || bitcoin === 'ARBETH') {
     await receivePage.CheckReceiveURL(page)
   }
   await receivePage.CheckReceiveAddresses(page)
@@ -49,16 +53,16 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl)
+      await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
     })
-
     afterEach(async () => {
       try {
         console.log('Cleaning up instances')
         await page.close()
         await browser.close()
       } catch (e) {
-        console.log('Cannot cleanup istances')
+        console.log('Cannot cleanup instances')
       }
     })
     it('Create a new wallet and check Receive for BTC', async () => {
@@ -90,7 +94,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
 
       // Select BTC
-      await overviewPage.SelectChain(page, 'BITCOIN')
+      await overviewPage.SelectChain(page, 'BTC')
       await overviewPage.ClickChainReceive(page, 'BTC')
       // Receive validations
       await receivePage.HasQRCodeDisplayed(page)
@@ -101,13 +105,13 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       await overviewPage.CheckAssertOverviewDetails(page, 'BTC')
     })
   })
-
-  const tokens = ['ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV']
+  const tokens = ['ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH']
   describe('Import wallet, Receive tokens', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl)
+      await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
       // Import wallet option
       await homePage.ClickOnImportWallet(page)

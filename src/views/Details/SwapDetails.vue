@@ -97,6 +97,7 @@ import LiqualitySwapDetails from '@/swaps/liquality/SwapDetails'
 import UniswapSwapDetails from '@/swaps/uniswap/SwapDetails'
 import OneinchSwapDetails from '@/swaps/oneinch/SwapDetails'
 import ThorchainSwapDetails from '@/swaps/thorchain/SwapDetails'
+import FastbtcSwapDetails from '@/swaps/fastbtc/SwapDetails'
 
 export default {
   components: {
@@ -126,7 +127,8 @@ export default {
         [SwapProviderType.LIQUALITY]: LiqualitySwapDetails,
         [SwapProviderType.UNISWAPV2]: UniswapSwapDetails,
         [SwapProviderType.ONEINCHV3]: OneinchSwapDetails,
-        [SwapProviderType.THORCHAIN]: ThorchainSwapDetails
+        [SwapProviderType.THORCHAIN]: ThorchainSwapDetails,
+        [SwapProviderType.FASTBTC]: FastbtcSwapDetails
       })[config.type]
     },
     status () {
