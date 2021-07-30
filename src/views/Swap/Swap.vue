@@ -55,15 +55,18 @@
           <p>
             <span class="swap-rate_base">1 {{ asset }} =</span>
             <span class="swap-rate_value">
-              &nbsp;{{ bestRate || '?' }}
+              &nbsp;{{ quoteRate || '?' }}
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
-            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1" id="bestQuote_provider">{{ bestQuoteProviderLabel }}</span>
+            <span v-if="selectedQuote" class="badge badge-pill badge-primary text-uppercase ml-1" id="selectedQuote_provider">{{ selectedQuoteProviderLabel }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
+          </p>
+          <p>
+            <a href="#" @click="showQuotesModal = true">See all {{ quotes.length }} quotes</a>
           </p>
         </div>
 
-        <div class="form-group swap_fees mt-30" v-if="bestQuote && availableFees.size">
+        <div class="form-group swap_fees mt-30" v-if="selectedQuote && availableFees.size">
           <DetailsContainer>
             <template v-slot:header>
               <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
@@ -227,11 +230,11 @@
               class="d-flex align-items-center justify-content-between my-0 py-0"
               id="swap_rate_value"
             >
-              <div v-if="bestQuote">
-                1 {{ asset }}&nbsp;=&nbsp;{{ bestRate }} &nbsp;{{
+              <div v-if="selectedQuote">
+                1 {{ asset }}&nbsp;=&nbsp;{{ quoteRate }} &nbsp;{{
                   toAsset
                 }}
-                <span class="badge badge-pill badge-primary text-uppercase ml-1" id="bestQuote_provider_label">{{ bestQuoteProviderLabel }}</span>
+                <span class="badge badge-pill badge-primary text-uppercase ml-1" id="selectedQuote_provider_label">{{ selectedQuoteProviderLabel }}</span>
               </div>
               <div v-else>1 {{ asset }}&nbsp;=&nbsp;N/A</div>
             </div>
@@ -280,6 +283,13 @@
                 :asset-selection="assetSelection"
                 @asset-selected="assetChanged"/>
     </div>
+    <!-- Modals for quotes -->
+    <SwapQuotesModal
+      v-if="showQuotesModal && selectedQuote"
+      :quotes="quotes"
+      :preset-provider="selectedQuote.provider"
+      @select-quote="selectQuote"
+      @close="showQuotesModal = false" />
     <!-- Modals for ledger prompts -->
     <OperationErrorModal :open="swapErrorModalOpen"
                          :account="account"
@@ -328,8 +338,10 @@ import ReceiveInput from './ReceiveInput'
 import Accounts from './Accounts'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
+import SwapQuotesModal from '@/components/SwapQuotesModal'
 import CustomFees from '@/components/CustomFees'
 import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
+import { calculateQuoteRate } from '@/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
 
@@ -353,7 +365,8 @@ export default {
     LedgerSignRequestModal,
     OperationErrorModal,
     CustomFees,
-    LedgerBridgeModal
+    LedgerBridgeModal,
+    SwapQuotesModal
   },
   data () {
     return {
@@ -362,8 +375,11 @@ export default {
       amountOption: null,
       asset: null,
       toAsset: null,
+      showQuotesModal: false,
       quotes: [],
       updatingQuotes: false,
+      selectedQuote: null,
+      userSelectedQuote: false,
       swapFees: {},
       maxSwapFees: {},
       selectedFee: {},
@@ -438,7 +454,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage () {
-      return BN(this.sendAmount).gt(0) && (!this.bestQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
+      return BN(this.sendAmount).gt(0) && (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
     sendAmount: {
       get () {
@@ -468,7 +484,7 @@ export default {
       }
     },
     receiveAmount () {
-      return this.bestQuote ? unitToCurrency(cryptoassets[this.toAsset], this.bestQuote.toAmount) : BN(0)
+      return this.selectedQuote ? unitToCurrency(cryptoassets[this.toAsset], this.selectedQuote.toAmount) : BN(0)
     },
     receiveAmountFiat () {
       return cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
@@ -492,11 +508,9 @@ export default {
     networkWalletBalances () {
       return this.account?.balances
     },
-    bestRate () {
-      if (!this.bestQuote) return null
-      const fromAmount = unitToCurrency(cryptoassets[this.asset], this.bestQuote.fromAmount)
-      const toAmount = unitToCurrency(cryptoassets[this.toAsset], this.bestQuote.toAmount)
-      const rate = toAmount.div(fromAmount)
+    quoteRate () {
+      if (!this.selectedQuote) return null
+      const rate = calculateQuoteRate(this.selectedQuote)
       return dpUI(rate)
     },
     bestQuote () {
@@ -512,12 +526,12 @@ export default {
         })
       return sortedQuotes[0]
     },
-    bestQuoteProviderLabel () {
-      return getSwapProviderConfig(this.activeNetwork, this.bestQuote.provider).name
+    selectedQuoteProviderLabel () {
+      return getSwapProviderConfig(this.activeNetwork, this.selectedQuote.provider).name
     },
-    bestQuoteProvider () {
-      if (!this.bestQuote) return null
-      return this.swapProvider(this.activeNetwork, this.bestQuote.provider)
+    selectedQuoteProvider () {
+      if (!this.selectedQuote) return null
+      return this.swapProvider(this.activeNetwork, this.selectedQuote.provider)
     },
     defaultAmount () {
       const min = BN(this.min)
@@ -599,7 +613,7 @@ export default {
       return null
     },
     canSwap () {
-      if (!this.bestQuote ||
+      if (!this.selectedQuote ||
           this.updatingQuotes ||
           this.ethRequired ||
           this.amountError ||
@@ -707,7 +721,7 @@ export default {
       this.updateQuotes()
     },
     async _updateSwapFees (max) {
-      if (!this.bestQuote) return
+      if (!this.selectedQuote) return
       const fees = {
         [this.assetChain]: {
           slow: BN(0),
@@ -723,17 +737,17 @@ export default {
         }
       }
 
-      const bestQuoteProvider = this.bestQuoteProvider
-      const { fromTxType, toTxType } = bestQuoteProvider
+      const selectedQuoteProvider = this.selectedQuoteProvider
+      const { fromTxType, toTxType } = selectedQuoteProvider
 
       const addFees = async (asset, chain, txType) => {
         const assetFees = this.getAssetFees(chain)
-        const totalFees = await bestQuoteProvider.estimateFees({
+        const totalFees = await selectedQuoteProvider.estimateFees({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset,
           txType,
-          quote: this.bestQuote,
+          quote: this.selectedQuote,
           feePrices: Object.values(assetFees).map(fee => fee.fee),
           max
         })
@@ -831,6 +845,18 @@ export default {
       })
       if (quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)) {
         this.quotes = quotes
+        if (this.selectedQuote) {
+          // Preserve selected provider
+          if (this.userSelectedQuote) {
+            const matchingQuote = this.quotes.find(q => q.provider === this.selectedQuote.provider)
+            this.selectedQuote = matchingQuote || this.bestQuote
+          } else {
+            this.userSelectedQuote = false
+            this.selectedQuote = this.bestQuote
+          }
+        } else {
+          this.selectedQuote = this.bestQuote
+        }
       }
       this.updatingQuotes = false
       this.resetQuoteTimer()
@@ -840,6 +866,12 @@ export default {
       this.quotes = []
       this.updatingQuotes = true
       this._updateQuotes()
+    },
+    selectQuote (provider) {
+      const matchingQuote = this.quotes.find(q => q.provider === provider)
+      this.selectedQuote = matchingQuote
+      this.userSelectedQuote = true
+      this.showQuotesModal = false
     },
     async swap () {
       this.swapErrorMessage = ''
@@ -864,7 +896,7 @@ export default {
         await this.newSwap({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
-          quote: this.bestQuote,
+          quote: this.selectedQuote,
           fee,
           claimFee: toFee
         })
@@ -1004,7 +1036,7 @@ export default {
         this.sendAmount = dpUI(this.max)
       }
     },
-    bestQuote: function () {
+    selectedQuote: function () {
       this._updateSwapFees() // Skip debounce
       this.updateMaxSwapFees()
     }

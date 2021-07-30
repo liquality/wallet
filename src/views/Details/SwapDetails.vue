@@ -85,7 +85,6 @@ import { chains } from '@liquality/cryptoassets'
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStatusLabel } from '@/utils/history'
 import { isERC20, getNativeAsset } from '@/utils/asset'
-import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -93,11 +92,7 @@ import NavBar from '@/components/NavBar.vue'
 import Modal from '@/components/Modal'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
-import LiqualitySwapDetails from '@/swaps/liquality/SwapDetails'
-import UniswapSwapDetails from '@/swaps/uniswap/SwapDetails'
-import OneinchSwapDetails from '@/swaps/oneinch/SwapDetails'
-import ThorchainSwapDetails from '@/swaps/thorchain/SwapDetails'
-import FastbtcSwapDetails from '@/swaps/fastbtc/SwapDetails'
+import { getSwapDetailsComponent } from '../../utils/swaps'
 
 export default {
   components: {
@@ -122,14 +117,7 @@ export default {
         .find((item) => item.id === this.id)
     },
     swapDetailsComponent () {
-      const config = getSwapProviderConfig(this.item.network, this.item.provider)
-      return ({
-        [SwapProviderType.LIQUALITY]: LiqualitySwapDetails,
-        [SwapProviderType.UNISWAPV2]: UniswapSwapDetails,
-        [SwapProviderType.ONEINCHV3]: OneinchSwapDetails,
-        [SwapProviderType.THORCHAIN]: ThorchainSwapDetails,
-        [SwapProviderType.FASTBTC]: FastbtcSwapDetails
-      })[config.type]
+      return getSwapDetailsComponent(this.item.network, this.item.provider)
     },
     status () {
       return getStatusLabel(this.item)

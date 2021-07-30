@@ -8,6 +8,25 @@ export const SwapProviderType = {
   FASTBTC: 'FASTBTC'
 }
 
+const swapProviderRoot = {
+  [SwapProviderType.LIQUALITY]: 'swaps/liquality',
+  [SwapProviderType.UNISWAPV2]: 'swaps/uniswap',
+  [SwapProviderType.ONEINCHV3]: 'swaps/oneinch',
+  [SwapProviderType.THORCHAIN]: 'swaps/thorchain',
+  [SwapProviderType.FASTBTC]: 'swaps/fastbtc'
+}
+
 export function getSwapProviderConfig (network, providerId) {
   return buildConfig.swapProviders[network][providerId]
+}
+
+export function getSwapDetailsComponent (network, providerId) {
+  const config = getSwapProviderConfig(network, providerId)
+  const root = swapProviderRoot[config.type]
+  return require(`../${root}/SwapDetails.vue`).default
+}
+
+export function getSwapProviderIcon (network, providerId) {
+  const config = getSwapProviderConfig(network, providerId)
+  return require(`../assets/icons/swapProviders/${config.icon}?inline`)
 }
