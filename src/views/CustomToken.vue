@@ -179,9 +179,10 @@ export default {
         this.autofilled = true
       }
     },
-    selectChain (chain) {
+    async selectChain (chain) {
       this.chain = chain
       this.chainDropdownOpen = false
+      await this.contractAddressChange()
     }
   }
 }
