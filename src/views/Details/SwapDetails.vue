@@ -18,7 +18,7 @@
         <div class="row">
           <div class="col">
             <h2>Sent</h2>
-            <p>{{prettyBalance(item.fromAmount, item.from)}} {{item.from}}</p>
+            <p :id="'sent-'+item.from">{{prettyBalance(item.fromAmount, item.from)}} {{item.from}}</p>
           </div>
           <div class="col" id="pending_receipt_section">
             <h2 v-if="['SUCCESS', 'REFUNDED'].includes(item.status)">Received</h2>
@@ -37,7 +37,7 @@
         <div class="row">
           <div class="col">
             <h2>Network Speed/Fee</h2>
-            <p v-for="fee in txFees" :key="fee.asset">
+            <p v-for="fee in txFees" :key="fee.asset" :id="'network_fee_'+fee.asset">
               {{ fee.asset }} Fee: {{ fee.fee }} {{ fee.unit }}
             </p>
           </div>

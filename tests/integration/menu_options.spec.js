@@ -23,7 +23,6 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
-
   afterEach(async () => {
     try {
       console.log('Cleaning up instances')
@@ -34,7 +33,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     }
   })
 
-  it('should be able to see Settings page', async () => {
+  it('should be able to see Settings page, validate options under settings screen', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -54,13 +53,20 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // Click on Settings
     const settings = await page.waitForSelector('#settings', { visible: true })
     await settings.click()
+
+    // Default Web3 Wallet
     await page.waitForSelector('#settings_item_default_wallet', { visible: true })
     const settingDefaultWebWallet = await page.$eval('#settings_item_default_wallet', (el) => el.textContent)
     expect(settingDefaultWebWallet).contains('Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.')
 
+    // Web3 Network dropdown
     const settingsItemWebNetwork = await page.$eval('#settings_item_web_network', (el) => el.textContent)
     expect(settingsItemWebNetwork).contains('Select which ethereum based network should be used for dapps.')
 
+    // Check the Analytics toggle option has been added
+    await page.waitForSelector('#analytics_toggle_button', { visible: true })
+
+    // Wallet logs
     await page.waitForSelector('#download_logs_button', { visible: true })
     const appVersion = await page.$eval('#settings_app_version', (el) => el.textContent)
     expect(appVersion).contain('Version')
