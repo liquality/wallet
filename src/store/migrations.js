@@ -210,17 +210,38 @@ const migrations = [
         }
       }
     }
+  },
+  { // rskLegacyDerivation
+    version: 11,
+    migrate: async (state) => {
+      const accKeys = Object.keys(state.accounts);
+
+      if (!accKeys.length) {
+        return {
+          ...state,
+        }
+      }
+
+      const accData = state.accounts[accKeys[0]].mainnet;
+      const rskBalances = accData.filter(e => e.chain === 'rsk')[0].balances
+      const hasBalance = Object.values(rskBalances).some(balance => balance > 0)
+
+      return {
+        ...state,
+        rskLegacyDerivation: !hasBalance
+      }
+    }
   }
 ]
 
 const LATEST_VERSION = migrations[migrations.length - 1].version
 
-function isMigrationNeeded (state) {
+function isMigrationNeeded(state) {
   const currentVersion = state.version || 0
   return currentVersion < LATEST_VERSION
 }
 
-async function processMigrations (state) {
+async function processMigrations(state) {
   const currentVersion = state.version || 0
 
   let newState = cloneDeep(state)

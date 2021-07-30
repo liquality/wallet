@@ -16,7 +16,7 @@ export default {
     state.keyUpdatedAt = Date.now()
     state.setupAt = Date.now()
   },
-  CREATE_WALLET (state, { keySalt, encryptedWallets, wallet }) {
+  CREATE_WALLET (state, { keySalt, encryptedWallets, wallet, rskLegacyDerivation }) {
     state.encryptedWallets = encryptedWallets
     state.keySalt = keySalt
     state.wallets = [wallet]
@@ -26,6 +26,7 @@ export default {
         testnet: []
       })
     }
+    state.rskLegacyDerivation = rskLegacyDerivation
   },
   ACCEPT_TNC (state) {
     state.termsAcceptedAt = Date.now()
@@ -47,10 +48,11 @@ export default {
     state.unlockedAt = null
     state.wallets = null
   },
-  UNLOCK_WALLET (state, { key, wallets, unlockedAt }) {
+  UNLOCK_WALLET (state, { key, wallets, unlockedAt, rskLegacyDerivation }) {
     state.key = key
     state.wallets = wallets
     state.unlockedAt = unlockedAt
+    state.rskLegacyDerivation = rskLegacyDerivation
   },
   NEW_SWAP (state, { network, walletId, swap }) {
     ensureNetworkWalletTree(state.history, network, walletId, [])
