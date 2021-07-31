@@ -1,6 +1,6 @@
 import {
   BRIDGE_REPLEY_PREFIX
-} from './config'
+} from '@/utils/ledger'
 import EventEmitter from 'events'
 
 export let CHROME_PORT = null

@@ -29,13 +29,11 @@ export default {
       walletId,
       asset,
       accountId,
-      useCache = true,
-      walletType = 'default',
-      index = 0
+      useCache = true
     }) => {
       const account = accountId ? getters.accountItem(accountId) : null
-      const accountType = account?.type || walletType
-      const accountIndex = account?.index || index
+      const accountType = account?.type || 'default'
+      const accountIndex = account?.index || 0
       const cacheKey = [
         asset,
         network,
@@ -50,7 +48,7 @@ export default {
       }
 
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
-      const client = createClient(asset, network, mnemonic, accountType, accountIndex)
+      const client = createClient(asset, network, mnemonic, accountType, account?.derivationPath)
       clientCache[cacheKey] = client
 
       return client

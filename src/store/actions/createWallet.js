@@ -3,8 +3,9 @@ import { encrypt } from '../../utils/crypto'
 import buildConfig from '../../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
+import { DEFAULT_DERIVATION_PATHS } from '@/utils/derivationPaths'
 
-export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic }) => {
+export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic, userDefaultPath = false }) => {
   const id = uuidv4()
   const at = Date.now()
   const name = 'Account 1'
@@ -28,6 +29,9 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic 
       })
 
       const chain = chains[chainId]
+      const derivationPathGetter = DEFAULT_DERIVATION_PATHS[chainId].default
+      const index = 0
+      const derivationPath = derivationPathGetter(index, network, userDefaultPath)
       const _account = accountCreator(
         {
           walletId: id,
@@ -38,7 +42,8 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic 
             assets,
             balances: {},
             type: 'default',
-            index: 0,
+            index,
+            derivationPath,
             color: getNextAccountColor(chainId, 0)
           }
         })
