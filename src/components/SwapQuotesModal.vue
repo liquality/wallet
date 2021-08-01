@@ -10,12 +10,12 @@
           <p>These quotes are from different swap providers.</p>
           <div class="quote-list">
             <div class="row quote-list_header pb-2">
-              <div class="col-6">Rate</div>
-              <div class="col-6">Provider</div>
+              <div class="col-5">Rate</div>
+              <div class="col-7">Provider</div>
             </div>
-            <div class="row quote-list_quote" v-for="quote in quotes" :key="quote.provider" :class="{ 'quote-list_quote_active': quote.provider === selectedProvider }" @click="setSelectedProvider(quote.provider)">
-              <div class="col-6 quote-list_quote_rate d-flex align-items-center">{{ getProviderRate(quote) }}</div>
-              <div class="col-4 quote-list_quote_provider d-flex align-items-center">
+            <div class="row quote-list_quote" v-for="quote in sortedQuotes" :key="quote.provider" :class="{ 'quote-list_quote_active': quote.provider === selectedProvider }" @click="setSelectedProvider(quote.provider)">
+              <div class="col-5 quote-list_quote_rate d-flex align-items-center">{{ getProviderRate(quote) }}</div>
+              <div class="col-5 quote-list_quote_provider d-flex align-items-center">
                 <img :src="getProviderIcon(quote)" class="mr-2" />
                 {{ getProviderName(quote) }}
               </div>
@@ -41,7 +41,7 @@ import { mapState } from 'vuex'
 import Modal from '@/components/Modal'
 import TickBlue from '@/assets/icons/tick_blue.svg'
 import { getSwapProviderConfig, getSwapProviderIcon } from '@/utils/swaps'
-import { calculateQuoteRate } from '@/utils/quotes'
+import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
 import { dpUI } from '@/utils/coinFormatter'
 
 export default {
@@ -56,7 +56,10 @@ export default {
   },
   props: ['quotes', 'presetProvider'],
   computed: {
-    ...mapState(['activeNetwork'])
+    ...mapState(['activeNetwork']),
+    sortedQuotes () {
+      return sortQuotes(this.quotes, this.activeNetwork)
+    }
   },
   methods: {
     getProviderName (quote) {
