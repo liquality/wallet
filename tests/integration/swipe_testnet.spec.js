@@ -147,7 +147,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
     await page.waitForSelector('#selectedQuote_provider', { visible: true, timeout: 60000 })
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'ETH->DAI, Uniswap V2 source should be chosen!').equals('Uniswap V2')
+      'ETH->DAI, Supporting source should be chosen!').oneOf(['Uniswap V2', 'Thorchain', 'Liquality'])
 
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
