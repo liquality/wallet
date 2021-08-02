@@ -186,8 +186,8 @@ class SwapPage {
   }
 
   async GetSwapRate (page) {
-    await page.waitForSelector('#swap_rate_value', { visible: true })
-    return await page.$eval('#swap_rate_value', el => el.textContent)
+    await page.waitForSelector('#swap-rate_value', { visible: true })
+    return await page.$eval('#swap-rate_value', el => el.textContent)
   }
 
   /**
