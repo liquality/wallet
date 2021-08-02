@@ -137,10 +137,16 @@
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
+      <div class="fee-wrapper" v-if="checkHighFee">
+        Fees are high.  Review transaction carefully.
+      </div>
+      <div class="fee-wrapper" v-if="checkSwapNegative">
+        Swap is negative.  Review transaction carefully.
+      </div>
       <div class="swap-confirm wrapper form">
         <div class="wrapper_top form">
           <div>
-            <label>Send</label>
+            <label class="mt-1">Send</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="confirm-value" id="send_swap_confirm_value" :style="getAssetColorStyle(asset)">
                 {{ sendAmount }} {{ asset }}
@@ -236,12 +242,6 @@
               <div v-else>1 {{ asset }}&nbsp;=&nbsp;N/A</div>
             </div>
           </div>
-        </div>
-        <div class="fee_wrapper" v-if="checkHighFee">
-          Fees are high.  Review transaction carefully.
-        </div>
-        <div class="fee_wrapper" v-if="checkSwapNegative">
-          Fees are high.  Review transaction carefully.
         </div>
         <div class="wrapper_bottom">
           <div class="swap-info">
@@ -665,7 +665,7 @@ export default {
       return feeTotal.gte(BN(receiveTotalPercentage))
     },
     checkSwapNegative () {
-      return cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset]) <= 0
+      return this.totalToReceiveInFiat <= 0
     }
   },
   methods: {
@@ -1063,6 +1063,16 @@ export default {
     }
   }
 }
+
+  .fee-wrapper {
+    background-color: #F0F7F9;
+    align-self: center;
+    padding-left: 20px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    position: absolute;
+    width: 100%;
+  }
 
 .swap-rate {
   p {
