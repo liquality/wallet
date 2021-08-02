@@ -32,6 +32,7 @@
             {{ shortenAddress(this.address) }}
           </button>
           <a class="eye-btn"
+             :id="`${asset}_view_in_explorer`"
             @click="copyAddress"
             :href="addressLink"
             target="_blank"
