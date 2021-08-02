@@ -96,7 +96,13 @@ function createEthereumClient (
 
   const legacyCoinType = 137;
   const { rskLegacyDerivation } = state;
-  const coinType = rskLegacyDerivation ? legacyCoinType : ethereumNetwork.coinType
+  let coinType;
+
+  if (walletType === 'rsk_ledger') {
+    coinType = legacyCoinType
+  } else {
+    coinType = rskLegacyDerivation ? legacyCoinType : ethereumNetwork.coinType
+  }
 
   const derivationPath = `m/44'/${coinType}'/${indexPath}'/0/0`
 

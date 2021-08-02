@@ -3,6 +3,8 @@ import buildConfig from '../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 import { v4 as uuidv4 } from 'uuid'
+import { Client } from '@liquality/client'
+import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
 
 const migrations = [
   { // Merely sets up the version
@@ -216,19 +218,34 @@ const migrations = [
     migrate: async (state) => {
       const accKeys = Object.keys(state.accounts);
 
-      if (!accKeys.length) {
+      if (!accKeys?.length) {
         return {
           ...state,
         }
       }
 
-      const accData = state.accounts[accKeys[0]].mainnet;
-      const rskBalances = accData.filter(e => e.chain === 'rsk')[0].balances
-      const hasBalance = Object.values(rskBalances).some(balance => balance > 0)
+      let addresses = [];
 
+      for(let i = 0; i < accKeys.length; i++) {
+        const currentAccs = currentState.accounts[accKeys[i]].mainnet;
+        
+        for(let k = 0; k < currentAccs.length; k++) {
+          if(currentAccs[k].chain === 'rsk') {
+            addresses.push(...currentAccs[k].addresses)
+          }
+        }
+      }
+
+      const client = new Client()
+        .addProvider(
+          new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' })
+        );
+      
+      const balance = await client._chain.getBalance(addresses)
+      
       return {
         ...state,
-        rskLegacyDerivation: !hasBalance
+        rskLegacyDerivation: !balance.toNumber()
       }
     }
   }
