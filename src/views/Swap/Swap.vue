@@ -54,7 +54,7 @@
           <label class="d-flex align-items-center">
             Rate
             <SwapProviderLabel v-if="selectedQuote" class="ml-2" :provider="selectedQuote.provider" :network="activeNetwork" />
-            <a href="#" @click="showSwapProvidersInfoModal = true" class="ml-auto">Swap Types</a>
+            <a href="#" @click="showSwapProvidersInfoModal = true" class="ml-auto" id="swap_types_option">Swap Types</a>
           </label>
           <p class="py-1">
             <span class="swap-rate_base">1 {{ asset }} =</span>
@@ -65,7 +65,7 @@
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
           </p>
           <p v-if="quotes.length">
-            <a href="#" @click="showQuotesModal = true">See all {{ quotes.length }} quotes</a>
+            <a id="see_all_quotes" href="#" @click="showQuotesModal = true">See all {{ quotes.length }} quotes</a>
           </p>
         </div>
 

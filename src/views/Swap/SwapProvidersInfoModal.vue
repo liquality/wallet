@@ -1,7 +1,7 @@
 <template>
   <Modal @close="$emit('close')">
     <template #header>
-      <h5>
+      <h5 id="learn_about_swaps_types_header">
         Learn about swap types
       </h5>
     </template>

@@ -1,7 +1,7 @@
 <template>
   <Modal @close="$emit('close')">
     <template #header>
-        <h5>
+        <h5 id="available_quotes_header">
           {{ quotes.length }} AVAILABLE QUOTES
         </h5>
     </template>
@@ -13,7 +13,7 @@
               <div class="col-5">Rate</div>
               <div class="col-7">Provider</div>
             </div>
-            <div class="row quote-list_quote" v-for="quote in sortedQuotes" :key="quote.provider" :class="{ 'quote-list_quote_active': quote.provider === selectedProvider }" @click="setSelectedProvider(quote.provider)">
+            <div class="row quote-list_quote" v-for="quote in sortedQuotes" :key="quote.provider" :id="`${quote.provider}_rate_provider`" :class="{ 'quote-list_quote_active': quote.provider === selectedProvider }" @click="setSelectedProvider(quote.provider)">
               <div class="col-5 quote-list_quote_rate d-flex align-items-center">{{ getProviderRate(quote) }}</div>
               <div class="col-5 quote-list_quote_provider d-flex align-items-center">
                 <img :src="getProviderIcon(quote)" class="mr-2" />
@@ -27,6 +27,7 @@
       <template #footer>
         <div>
           <button class="btn btn-primary btn-block btn-lg"
+                  id="select_quote_button"
                   @click="selectQuote">
               Select Quote
           </button>
