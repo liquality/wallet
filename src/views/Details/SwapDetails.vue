@@ -28,7 +28,7 @@
         </div>
         <div class="row">
           <div class="col">
-            <h2>Rate</h2>
+            <h2 class="d-flex align-items-center">Rate <SwapProviderLabel class="ml-2" :provider="item.provider" :network="activeNetwork" /></h2>
             <p>1 {{item.from}} = <span class="swap-details_rate">{{item.rate}}</span> {{item.to}}</p>
           </div>
         </div>
@@ -90,6 +90,7 @@ import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
 import Modal from '@/components/Modal'
+import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
 import { getSwapDetailsComponent } from '../../utils/swaps'
@@ -100,7 +101,8 @@ export default {
     SpinnerIcon,
     NavBar,
     Modal,
-    LedgerSignRquest
+    LedgerSignRquest,
+    SwapProviderLabel
   },
   data () {
     return {

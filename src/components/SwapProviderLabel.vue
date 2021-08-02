@@ -1,13 +1,13 @@
 <template>
-  <v-popover offset="1" trigger="hover focus">
-    <div class="btn btn-option swap-provider-label">
+  <v-popover offset="1" trigger="hover focus" placement="top">
+    <div class="btn btn-option swap-provider-label" @click="$emit('click')">
       <span class="d-flex align-items-center">
         <img :src="icon" class="mr-1" /><span id="selectedQuote_provider">{{ label }}</span>
       </span>
     </div>
     <template slot="popover">
-      <p class="mb-0"><strong>{{ info.title }}</strong></p>
-      <p class="mb-0">{{ info.description }}</p>
+      <p class="mb-0 text-left"><strong>{{ info.title }}</strong></p>
+      <p class="mb-0 text-left">{{ info.description }}</p>
     </template>
   </v-popover>
 </template>

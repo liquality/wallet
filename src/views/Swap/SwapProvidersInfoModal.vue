@@ -44,7 +44,7 @@
 <script>
 import { mapState } from 'vuex'
 import Modal from '@/components/Modal'
-import SwapProviderLabel from './SwapProviderLabel.vue'
+import SwapProviderLabel from '@/components/SwapProviderLabel.vue'
 import { getSwapProviderConfig, getSwapProviderIcon, getSwapProviderInfo } from '@/utils/swaps'
 import buildConfig from '@/build.config'
 

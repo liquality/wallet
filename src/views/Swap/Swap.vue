@@ -53,7 +53,7 @@
         <div class="mt-30 form-group swap-rate" id="rate_block">
           <label class="d-flex align-items-center">
             Rate
-            <SwapProviderLabel v-if="selectedQuote" class="ml-2" :provider="selectedQuote.provider" :network="activeNetwork" />
+            <SwapProviderLabel @click="showQuotesModal = true" v-if="selectedQuote" class="ml-2" :provider="selectedQuote.provider" :network="activeNetwork" />
             <a href="#" @click="showSwapProvidersInfoModal = true" class="ml-auto" id="swap_types_option">Swap Types</a>
           </label>
           <p class="py-1">
@@ -107,6 +107,7 @@
           </DetailsContainer>
         </div>
         <div class="wrapper_bottom">
+          <SwapInfo v-if="selectedQuote" :quote="selectedQuote" />
           <div class="button-group">
             <router-link
               :to="routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${this.asset}`"
@@ -227,10 +228,11 @@
               <div class="font-weight-bold" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
             </div>
           </div>
-          <div class="mt-20" id="swap_review_rate_block">
+          <div class="mt-20 swap-rate" id="swap_review_rate_block">
             <label class="d-flex align-items-center" id="selected_quote_provider_on_review">
               Rate
               <SwapProviderLabel v-if="selectedQuote" class="ml-2" :provider="selectedQuote.provider" :network="activeNetwork" />
+              <a href="#" @click="showSwapProvidersInfoModal = true" class="ml-auto">Swap Types</a>
             </label>
             <p class="py-1" id="swap_rates_from_to">
               <span class="swap-rate_base">1 {{ asset }} =</span>
@@ -242,15 +244,7 @@
           </div>
         </div>
         <div class="wrapper_bottom">
-          <div class="swap-info">
-            <div class="media">
-              <ClockIcon class="swap-info_clock" />
-              <p class="text-muted media-body" id="media-body-info">
-                If the swap doesn’t complete in 3 hours, you will be refunded in
-                6 hours at {{ expiration }}
-              </p>
-            </div>
-          </div>
+          <SwapInfo :quote="selectedQuote" />
           <div class="button-group">
             <button
               class="btn btn-light btn-outline-primary btn-lg"
@@ -310,7 +304,6 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
-import { add, format } from 'date-fns'
 import cryptoassets from '@/utils/cryptoassets'
 import { currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
@@ -336,14 +329,14 @@ import { shortenAddress } from '@/utils/address'
 import { getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import ClockIcon from '@/assets/icons/clock.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import ReceiveInput from './ReceiveInput'
 import Accounts from './Accounts'
 import QuotesModal from './QuotesModal'
 import SwapProvidersInfoModal from './SwapProvidersInfoModal'
-import SwapProviderLabel from './SwapProviderLabel'
+import SwapInfo from './SwapInfo'
+import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
@@ -362,7 +355,6 @@ export default {
     EthRequiredMessage,
     NoLiquidityMessage,
     FeeSelector,
-    ClockIcon,
     SwapIcon,
     SpinnerIcon,
     DetailsContainer,
@@ -375,7 +367,8 @@ export default {
     CustomFees,
     LedgerBridgeModal,
     QuotesModal,
-    SwapProvidersInfoModal
+    SwapProvidersInfoModal,
+    SwapInfo
   },
   data () {
     return {
@@ -636,9 +629,6 @@ export default {
         availableFees.add(this.toAssetChain)
       }
       return availableFees
-    },
-    expiration: function () {
-      return format(add(new Date(), { hours: 6 }), 'h:mm a')
     },
     sendAmountSameAsset () {
       return BN(this.safeAmount).plus(this.fromSwapFee)
@@ -1095,23 +1085,6 @@ export default {
   a {
     text-transform: none;
     font-weight: normal;
-  }
-}
-
-.swap-confirm {
-  .swap-info {
-    text-align: left;
-
-    &_clock {
-      margin-top: 6px;
-      margin-right: 8px;
-      height: 10px;
-      width: 10px;
-      object-fit: contain;
-    }
-    p {
-      font-size: $font-size-sm;
-    }
   }
 }
 
