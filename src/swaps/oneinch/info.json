@@ -1,0 +1,18 @@
+{
+  "title": "1inch DEX Aggregator Swaps",
+  "description": "Aggregate of popular Ethereum only DEXes.",
+  "pros": [
+    "Best exchange rates",
+    "High liquidity",
+    "Many pairs",
+    "Fast"
+  ],
+  "cons": [
+    "Slippage",
+    "Ethereum tokens only"
+  ],
+  "fees": [
+    "Additional aggregator fees",
+    "Slippage (up to 0.5% in Liquality)"
+  ]
+}

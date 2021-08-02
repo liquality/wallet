@@ -60,8 +60,8 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     await swapPage.ClickOnMin(page)
     // Rate & source provider validation (BTC->ETH source chosen is LIQUALITY)
-    await page.waitForSelector('#bestQuote_provider', { visible: true })
-    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+    await page.waitForSelector('#selectedQuote_provider', { visible: true })
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->ETH swap, LIQUALITY source should be chosen!').equals('Liquality')
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
@@ -114,7 +114,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(receiveAccountFeesInDollar.trim()).not.contain('$00.00')
     expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
     // RATE
-    await page.waitForSelector('#swap_rate_value')
+    await page.waitForSelector('#swap-rate_value')
 
     // Validate message
     await swapPage.ValidateMessage(page)
@@ -145,9 +145,9 @@ describe('Liquality wallet SWIPE feature', async () => {
     await page.waitForSelector('#DAI', { visible: true })
     await page.click('#DAI')
     // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
-    await page.waitForSelector('#bestQuote_provider', { visible: true, timeout: 60000 })
-    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
-      'ETH->DAI, Uniswap V2 source should be chosen!').equals('Uniswap V2')
+    await page.waitForSelector('#selectedQuote_provider', { visible: true, timeout: 60000 })
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+      'ETH->DAI, Supporting source should be chosen!').oneOf(['Uniswap V2', 'Thorchain', 'Liquality'])
 
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
@@ -201,7 +201,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(receiveAccountFeesInDollar.trim()).not.contain('$00.00')
     expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
     // RATE
-    await page.waitForSelector('#swap_rate_value')
+    await page.waitForSelector('#swap_review_rate_block')
 
     // Validate message
     await swapPage.ValidateMessage(page)
@@ -280,7 +280,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(receiveAccountFeesInDollar.trim()).not.contain('$0.00')
     expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
     // RATE
-    await page.waitForSelector('#swap_rate_value')
+    await page.waitForSelector('#swap_review_rate_block')
 
     // Validate message
     await swapPage.ValidateMessage(page)
@@ -340,8 +340,8 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     await swapPage.EnterSendAmountOnSwap(page, '1')
     // Check source name
-    await page.waitForSelector('#bestQuote_provider', { visible: true })
-    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+    await page.waitForSelector('#selectedQuote_provider', { visible: true })
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->ETH swap, Thorchain source should be chosen!').oneOf(['Thorchain', 'Liquality'])
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
@@ -360,8 +360,8 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     await swapPage.EnterSendAmountOnSwap(page, '1')
     // Check source name
-    await page.waitForSelector('#bestQuote_provider', { visible: true })
-    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+    await page.waitForSelector('#selectedQuote_provider', { visible: true })
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'ETH->BTC swap, Thorchain source should be chosen!').oneOf(['Thorchain', 'Liquality'])
   })
   it('SWAP (ETHEREUM),Please increase amount. It is below minimum.', async () => {
@@ -399,8 +399,8 @@ describe('Liquality wallet SWIPE feature', async () => {
       .to.be.oneOf([' Lower amount. This exceeds available balance. ',
         ' Please reduce amount. It exceeds maximum. '])
     // Rate & source provider validation (BTC if its more than 1 or 2 source chosen is Thorchain)
-    await page.waitForSelector('#bestQuote_provider', { visible: true })
-    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+    await page.waitForSelector('#selectedQuote_provider', { visible: true })
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'ETH swap, Thorchain source should be chosen!').oneOf(['Liquality', 'Thorchain'])
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
@@ -429,16 +429,16 @@ describe('Liquality wallet SWIPE feature', async () => {
     await page.click('#RBTC')
 
     // (Liquality swap provider)
-    await page.waitForSelector('#bestQuote_provider', { visible: true, timeout: 60000 })
-    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+    await page.waitForSelector('#selectedQuote_provider', { visible: true, timeout: 60000 })
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
 
     // Update the SWAP value to 1
     await swapPage.EnterSendAmountOnSwap(page, '1')
 
     // (fastBTC swap provider)
-    await page.waitForSelector('#bestQuote_provider', { visible: true, timeout: 60000 })
-    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+    await page.waitForSelector('#selectedQuote_provider', { visible: true, timeout: 60000 })
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
   })
 })

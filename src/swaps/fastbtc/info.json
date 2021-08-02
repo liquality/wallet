@@ -1,0 +1,16 @@
+{
+  "title": "Sovryn FastBTC Relay",
+  "description": "Custodial BTC to RBTC swaps up to 1 BTC.",
+  "pros": [
+    "Convenient for BTC --> RBTC"
+  ],
+  "cons": [
+    "Only BTC to RBTC, not vice versa",
+    "Custodial"
+  ],
+  "fees": [
+    "5000 sats + 0.2% per transaction",
+    "MIN Transaction: 0.0004 BTC",
+    "MAX Transaction: 1.00 BTC"
+  ]
+}
