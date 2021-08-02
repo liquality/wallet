@@ -1,20 +1,44 @@
 import { encrypt, decrypt, decryptLegacy } from '../../utils/crypto'
+import { Client } from '@liquality/client'
+import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
 
 export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
   let wallets = await decrypt(state.encryptedWallets, key, state.keySalt)
 
   const accKeys = Object.keys(state.accounts);
-  const accData = state.accounts[accKeys].mainnet;
-  const rskBalances = accData.filter(e => e.chain === 'rsk')[0].balances
-  const hasBalance = Object.values(rskBalances).some(balance => balance > 0)
 
+  if (!accKeys?.length) {
+    return {
+      ...state,
+    }
+  }
+
+  let addresses = [];
+
+  for(let i = 0; i < accKeys.length; i++) {
+    const currentAccs = currentState.accounts[accKeys[i]].mainnet;
+    
+    for(let k = 0; k < currentAccs.length; k++) {
+      if(currentAccs[k].chain === 'rsk') {
+        addresses.push(...currentAccs[k].addresses)
+      }
+    }
+  }
+
+  const client = new Client()
+    .addProvider(
+      new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' })
+    );
+  
+  const balance = await client._chain.getBalance(addresses)
+  
   // Migration to new encryption method
   // TODO: to be removed
   if (!wallets) {
     wallets = await decryptLegacy(state.encryptedWallets, key)
     if (wallets) {
       const { encrypted: encryptedWallets, keySalt } = await encrypt(wallets, key)
-      commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet: JSON.parse(wallets)[0], rskLegacyDerivation: !hasBalance })
+      commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet: JSON.parse(wallets)[0], rskLegacyDerivation: !balance.toNumber() })
     }
   }
   // Migration to new encryption method
@@ -29,6 +53,6 @@ export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
     key,
     wallets: JSON.parse(wallets),
     unlockedAt: Date.now(),
-    rskLegacyDerivation: !hasBalance
+    rskLegacyDerivation: !balance.toNumber()
   })
 }
