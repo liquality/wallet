@@ -191,14 +191,17 @@ class SwapPage {
   }
 
   /**
-   * Check If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at 8:45 PM
+   * Check If the swap contains the right message
    * @param page
    * @returns {Promise<void>}
    * @constructor
    */
   async ValidateMessage (page) {
     const message = await page.$eval('#media-body-info', el => el.textContent)
-    expect(message).contain('If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at')
+    expect(message).contain.oneOf([
+      'If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at',
+      'Max slippage is 0.5%.'
+    ])
   }
 }
 
