@@ -7,12 +7,6 @@ export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
 
   const accKeys = Object.keys(state.accounts);
 
-  if (!accKeys?.length) {
-    return {
-      ...state,
-    }
-  }
-
   let addresses = [];
 
   for(let i = 0; i < accKeys.length; i++) {
