@@ -429,16 +429,16 @@ describe('Liquality wallet SWIPE feature', async () => {
     await page.click('#RBTC')
 
     // (Liquality swap provider)
-    await page.waitForSelector('#bestQuote_provider', { visible: true, timeout: 60000 })
-    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+    await page.waitForSelector('#selectedQuote_provider', { visible: true, timeout: 60000 })
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
 
     // Update the SWAP value to 1
     await swapPage.EnterSendAmountOnSwap(page, '1')
 
     // (fastBTC swap provider)
-    await page.waitForSelector('#bestQuote_provider', { visible: true, timeout: 60000 })
-    expect(await page.$eval('#bestQuote_provider', (el) => el.textContent),
+    await page.waitForSelector('#selectedQuote_provider', { visible: true, timeout: 60000 })
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
   })
 })

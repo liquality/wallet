@@ -1,8 +1,8 @@
 <template>
   <v-popover offset="1" trigger="hover focus">
     <div class="btn btn-option swap-provider-label">
-      <span id="selectedQuote_provider" class="d-flex align-items-center">
-        <img :src="icon" class="mr-1" />{{ label }}
+      <span class="d-flex align-items-center">
+        <img :src="icon" class="mr-1" /><span id="selectedQuote_provider">{{ label }}</span>
       </span>
     </div>
     <template slot="popover">
