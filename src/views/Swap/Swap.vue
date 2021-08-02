@@ -53,12 +53,8 @@
         <div class="mt-30 form-group swap-rate" id="rate_block">
           <label class="d-flex align-items-center">
             Rate
-            <div v-if="selectedQuote" class="btn btn-option swap-rate_provider ml-2" @click="showQuotesModal = true">
-              <span id="selectedQuote_provider" class="d-flex align-items-center">
-                <img :src="selectedQuoteIcon" class="mr-1" />
-                {{ selectedQuoteProviderLabel }}
-              </span>
-            </div>
+            <SwapProviderLabel v-if="selectedQuote" class="ml-2" :provider="selectedQuote.provider" :network="activeNetwork" />
+            <a href="#" @click="showSwapProvidersInfoModal = true" class="ml-auto">Swap Types</a>
           </label>
           <p class="py-1">
             <span class="swap-rate_base">1 {{ asset }} =</span>
@@ -66,7 +62,6 @@
               &nbsp;{{ quoteRate || '?' }}
             </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
-            <span v-if="bestQuote" class="badge badge-pill badge-primary text-uppercase ml-1" id="bestQuote_provider">{{ bestQuoteProviderLabel }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
           </p>
           <p v-if="quotes.length">
@@ -235,25 +230,15 @@
           <div class="mt-20">
             <label class="d-flex align-items-center">
               Rate
-              <div v-if="selectedQuote" class="btn btn-option swap-rate_provider ml-2">
-                <span id="selectedQuote_provider" class="d-flex align-items-center">
-                  <img :src="selectedQuoteIcon" class="mr-1" />
-                  {{ selectedQuoteProviderLabel }}
-                </span>
-              </div>
+              <SwapProviderLabel v-if="selectedQuote" class="ml-2" :provider="selectedQuote.provider" :network="activeNetwork" />
             </label>
-            <div
-              class="d-flex align-items-center justify-content-between my-0 py-0"
-              id="swap_rate_value"
-            >
-              <div v-if="selectedQuote">
-                1 {{ asset }}&nbsp;=&nbsp;{{ quoteRate }} &nbsp;{{
-                  toAsset
-                }}
-                <span class="badge badge-pill badge-primary text-uppercase ml-1" id="selectedQuote_provider_label">{{ selectedQuoteProviderLabel }}</span>
-              </div>
-              <div v-else>1 {{ asset }}&nbsp;=&nbsp;N/A</div>
-            </div>
+            <p class="py-1">
+              <span class="swap-rate_base">1 {{ asset }} =</span>
+              <span class="swap-rate_value">
+                &nbsp;{{ quoteRate || '?' }}
+              </span>
+              <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
+            </p>
           </div>
         </div>
         <div class="wrapper_bottom">
@@ -299,8 +284,12 @@
                 :asset-selection="assetSelection"
                 @asset-selected="assetChanged"/>
     </div>
+    <!-- Swap types -->
+    <SwapProvidersInfoModal
+      v-if="showSwapProvidersInfoModal"
+      @close="showSwapProvidersInfoModal = false" />
     <!-- Modals for quotes -->
-    <SwapQuotesModal
+    <QuotesModal
       v-if="showQuotesModal && selectedQuote"
       :quotes="quotes"
       :preset-provider="selectedQuote.provider"
@@ -352,11 +341,13 @@ import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import ReceiveInput from './ReceiveInput'
 import Accounts from './Accounts'
+import QuotesModal from './QuotesModal'
+import SwapProvidersInfoModal from './SwapProvidersInfoModal'
+import SwapProviderLabel from './SwapProviderLabel'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
-import SwapQuotesModal from '@/components/SwapQuotesModal'
 import CustomFees from '@/components/CustomFees'
-import { SwapProviderType, getSwapProviderConfig, getSwapProviderIcon } from '@/utils/swaps'
+import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
@@ -378,11 +369,13 @@ export default {
     SendInput,
     ReceiveInput,
     Accounts,
+    SwapProviderLabel,
     LedgerSignRequestModal,
     OperationErrorModal,
     CustomFees,
     LedgerBridgeModal,
-    SwapQuotesModal
+    QuotesModal,
+    SwapProvidersInfoModal
   },
   data () {
     return {
@@ -392,6 +385,7 @@ export default {
       asset: null,
       toAsset: null,
       showQuotesModal: false,
+      showSwapProvidersInfoModal: false,
       quotes: [],
       updatingQuotes: false,
       selectedQuote: null,
@@ -533,16 +527,9 @@ export default {
       const sortedQuotes = sortQuotes(this.quotes, this.activeNetwork)
       return sortedQuotes[0]
     },
-    selectedQuoteProviderLabel () {
-      return getSwapProviderConfig(this.activeNetwork, this.selectedQuote.provider).name
-    },
     selectedQuoteProvider () {
       if (!this.selectedQuote) return null
       return this.swapProvider(this.activeNetwork, this.selectedQuote.provider)
-    },
-    selectedQuoteIcon () {
-      const icon = getSwapProviderIcon(this.activeNetwork, this.selectedQuote.provider)
-      return icon
     },
     defaultAmount () {
       const min = BN(this.min)
@@ -581,14 +568,11 @@ export default {
     maxFee () {
       const selectedSpeed = this.selectedFee[this.assetChain]
       const fee = this.maxSwapFees[this.assetChain]?.[selectedSpeed]
-      console.log('fee', fee)
       return fee ? currencyToUnit(cryptoassets[this.assetChain], fee) : BN(0)
     },
     available () {
       if (!this.networkWalletBalances) return BN(0)
       const balance = this.networkWalletBalances[this.asset]
-      console.log(this.maxFee)
-      console.log(BN(balance).toString(), BN(this.maxFee).toString())
       const available =
         isERC20(this.asset)
           ? BN(balance)
@@ -1104,14 +1088,13 @@ export default {
     }
   }
 
-  &_provider {
-    display: inline-block;
+  &_value {
+    font-weight: bold;
+  }
+
+  a {
     text-transform: none;
-    img {
-      height: 15px;
-      width: auto;
-      max-width: 14px;
-    }
+    font-weight: normal;
   }
 }
 

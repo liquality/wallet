@@ -1,0 +1,18 @@
+{
+  "title": "Liquality Atomic Swaps",
+  "description": "The most secure, non-custodial way to swap across blockchains.",
+  "pros": [
+    "Cross-chain",
+    "Secure",
+    "Native assets"
+  ],
+  "cons": [
+    "Low liquidity",
+    "Few pairs"
+  ],
+  "fees": [
+    "0.5 - 1.0%",
+    "0 slippage",
+    "$50 - $100 minimum trade size"
+  ]
+}

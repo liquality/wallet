@@ -67,8 +67,7 @@ export default {
       return config.name
     },
     getProviderIcon (quote) {
-      const icon = getSwapProviderIcon(this.activeNetwork, quote.provider)
-      return icon
+      return getSwapProviderIcon(this.activeNetwork, quote.provider)
     },
     getProviderRate (quote) {
       return dpUI(calculateQuoteRate(quote))
