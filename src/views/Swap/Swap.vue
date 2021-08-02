@@ -850,7 +850,8 @@ export default {
       this.resetQuoteTimer()
     }, 1000),
     updateQuotes () {
-      if (BN(this.sendAmount).eq(0)) return
+      if (BN(this.sendAmount).eq(0)) return // Don't update quote when amount 0
+      if (this.currentStep !== 'inputs') return // Don't update quote when in review
       this.quotes = []
       this.updatingQuotes = true
       this._updateQuotes()
@@ -1027,6 +1028,9 @@ export default {
     selectedQuote: function () {
       this._updateSwapFees() // Skip debounce
       this.updateMaxSwapFees()
+    },
+    currentStep: function (val) {
+      if (val === 'inputs') this.updateQuotes()
     }
   }
 }
