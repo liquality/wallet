@@ -227,12 +227,12 @@
               <div class="font-weight-bold" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
             </div>
           </div>
-          <div class="mt-20">
-            <label class="d-flex align-items-center">
+          <div class="mt-20" id="swap_review_rate_block">
+            <label class="d-flex align-items-center" id="selected_quote_provider_on_review">
               Rate
               <SwapProviderLabel v-if="selectedQuote" class="ml-2" :provider="selectedQuote.provider" :network="activeNetwork" />
             </label>
-            <p class="py-1">
+            <p class="py-1" id="swap_rates_from_to">
               <span class="swap-rate_base">1 {{ asset }} =</span>
               <span class="swap-rate_value">
                 &nbsp;{{ quoteRate || '?' }}

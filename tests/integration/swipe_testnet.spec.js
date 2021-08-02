@@ -201,7 +201,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(receiveAccountFeesInDollar.trim()).not.contain('$00.00')
     expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
     // RATE
-    await page.waitForSelector('#swap-rate_value')
+    await page.waitForSelector('#swap_review_rate_block')
 
     // Validate message
     await swapPage.ValidateMessage(page)
@@ -280,7 +280,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(receiveAccountFeesInDollar.trim()).not.contain('$0.00')
     expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
     // RATE
-    await page.waitForSelector('#swap-rate_value')
+    await page.waitForSelector('#swap_review_rate_block')
 
     // Validate message
     await swapPage.ValidateMessage(page)
