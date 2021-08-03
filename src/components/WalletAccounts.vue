@@ -92,6 +92,7 @@
 </template>
 
 <script>
+import { debounce } from 'lodash-es'
 import ListItem from '@/components/ListItem'
 import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
@@ -129,33 +130,34 @@ export default {
     selectItem (account, asset) {
       this.$emit('item-selected', { account, asset })
     },
-    makeSearch (newSearch) {
+    makeSearch: debounce(function (newSearch) {
       if (newSearch) {
-        let assetMatched = false
-        let accountMatched = false
         const search = newSearch.toUpperCase()
-        this.filteredItems = this.accounts.filter(
-          account => {
-            const accountMatch = account.chain?.toUpperCase().includes(search) ||
-              account.name?.toUpperCase().includes(search)
-            const assetMatch = account.assets.includes(search)
-            if (assetMatch) assetMatched = true
-            if (accountMatch) accountMatched = true
-            return accountMatch || assetMatch
-          }
-        )
-        // Show filtered assets only and expand matched accounts
-        if (!accountMatched && assetMatched) {
-          this.filteredItems = this.filteredItems.map(account => {
-            const filteredAssets = account.assets.filter(asset => asset.includes(search))
-            return { ...account, assets: filteredAssets }
-          })
-          this.filteredItems.forEach(account => this.toggleShowAccountAssets(account.id))
+        const assetComparator = asset => {
+          return asset.toUpperCase().includes(search) || cryptoassets[asset].name.toUpperCase().includes(search)
         }
+
+        this.filteredItems = this.accounts.filter(account => account.assets.find(assetComparator))
+
+        // Show filtered assets only
+        this.filteredItems = this.filteredItems.map(account => {
+          const filteredAssets = account.assets.filter(assetComparator)
+          return { ...account, assets: filteredAssets }
+        })
+
+        // Expand matched accounts
+        this.filteredItems.forEach(account => {
+          this.showAccountAssets[account.id] = true
+        })
       } else {
         this.filteredItems = [...this.accounts]
+
+        // Collapse accounts
+        this.filteredItems.forEach(account => {
+          this.showAccountAssets[account.id] = false
+        })
       }
-    },
+    }, 500),
     onUpdateAccounts () {
       this.showAccountAssets = {
         ...this.accounts.map(a => a.id).reduce(
@@ -167,12 +169,11 @@ export default {
           }, {}),
         ...this.showAccountAssets
       }
-
-      this.makeSearch(this.search)
     }
   },
   created () {
     this.onUpdateAccounts()
+    this.filteredItems = this.accounts
   },
   watch: {
     search (newSearch, oldSearch) {
@@ -182,6 +183,7 @@ export default {
     },
     accounts () {
       this.onUpdateAccounts()
+      this.makeSearch(this.search)
     }
   }
 }

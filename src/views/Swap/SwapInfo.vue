@@ -40,6 +40,8 @@ export default {
   text-align: left;
 
   &_clock {
+    width: 14px;
+    height: 14px;
     flex: 0 24px;
   }
 
