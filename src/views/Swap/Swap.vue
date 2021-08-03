@@ -64,7 +64,7 @@
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span>
           </p>
-          <p v-if="quotes.length">
+          <p v-if="quotes.length > 1">
             <a id="see_all_quotes" href="#" @click="showQuotesModal = true">See all {{ quotes.length }} quotes</a>
           </p>
         </div>
