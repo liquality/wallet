@@ -323,7 +323,9 @@ import {
   prettyFiatBalance,
   cryptoToFiat,
   fiatToCrypto,
-  formatFiat
+  formatFiat,
+  VALUE_DECIMALS,
+  SMALL_VALUE_DECIMALS
 } from '@/utils/coinFormatter'
 import {
   isERC20,
@@ -577,6 +579,12 @@ export default {
           ? BN(balance)
           : BN.max(BN(balance).minus(this.maxFee), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
+    },
+    availableAmount () {
+      if (this.fiatRates[this.asset] <= 3) {
+        return dpUI(this.available, SMALL_VALUE_DECIMALS)
+      }
+      return dpUI(this.available, VALUE_DECIMALS)
     },
     ethRequired () {
       if (this.assetChain === 'ETH') {
