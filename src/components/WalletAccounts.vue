@@ -149,15 +149,16 @@ export default {
         this.filteredItems.forEach(account => {
           this.showAccountAssets[account.id] = true
         })
-      } else {
-        this.filteredItems = [...this.accounts]
-
-        // Collapse accounts
-        this.filteredItems.forEach(account => {
-          this.showAccountAssets[account.id] = false
-        })
       }
     }, 500),
+    clearSearch () {
+      this.filteredItems = [...this.accounts]
+
+      // Collapse accounts
+      this.filteredItems.forEach(account => {
+        this.showAccountAssets[account.id] = false
+      })
+    },
     onUpdateAccounts () {
       this.showAccountAssets = {
         ...this.accounts.map(a => a.id).reduce(
@@ -178,7 +179,8 @@ export default {
   watch: {
     search (newSearch, oldSearch) {
       if (newSearch !== oldSearch) {
-        this.makeSearch(newSearch)
+        if (newSearch) this.makeSearch(newSearch)
+        else this.clearSearch()
       }
     },
     accounts () {
