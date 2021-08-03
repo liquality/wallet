@@ -52,12 +52,13 @@ export const getLegacyRskBalance = async(accounts) => {
   
   let addresses = [];
 
-  walletIds.forEach((wallet, idx) => {
-    const walletAccounts = accounts[wallet[idx]].mainnet;
+
+  walletIds.forEach((wallet) => {
+    const walletAccounts = accounts[wallet].mainnet;
 
     walletAccounts.forEach(account => {
       if(account.chain === 'rsk') {
-        addresses.push(...currentAccs[k].addresses)
+        addresses.push(...account.addresses)
       }
     })
   })
