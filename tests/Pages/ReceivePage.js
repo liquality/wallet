@@ -25,7 +25,7 @@ class ReceivePage {
    * @constructor
    */
   async HasQRCodeDisplayed (page) {
-    await page.waitForSelector('.receive_qr', { visible: true })
+    await page.waitForSelector('.receive_qr', { visible: true, timeout: 60000 })
   }
 
   /**
