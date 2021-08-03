@@ -288,7 +288,8 @@
       :quotes="quotes"
       :preset-provider="selectedQuote.provider"
       @select-quote="selectQuote"
-      @close="showQuotesModal = false" />
+      @close="showQuotesModal = false"
+      @click-learn-more="showQuotesModal = false; showSwapProvidersInfoModal = true" />
     <!-- Modals for ledger prompts -->
     <OperationErrorModal :open="swapErrorModalOpen"
                          :account="account"
