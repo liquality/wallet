@@ -157,6 +157,21 @@ class OverviewPage {
   }
 
   /**
+   * Validate view explorer href for each assert on overview page.
+   * @param page
+   * @param asset {string} - assert symbol.
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async HasViewExplorerDisplayed (page, asset) {
+    const id = `#${asset}_view_in_explorer`
+    await page.waitForSelector(id, { visible: true })
+    const explorerLink = await page.$eval(id, el => el.href)
+    expect(explorerLink).contains('https://')
+    console.log('View explorer link:' + explorerLink)
+  }
+
+  /**
    * Click Receive button.
    * @param page
    * @param chainCode - chainCode

@@ -3,6 +3,7 @@
     <ListItem
       v-for="item in transactions"
       :key="item.id"
+      :id="item.type+'_'+item.from+'_'+item.to"
       :to="getDetailsUrl(item)"
       :container-class="{ 'text-danger': item.error }"
       :item-class="'h-padding'"
