@@ -5,6 +5,8 @@ import {
 import cryptoassets from '@/utils/cryptoassets'
 import axios from 'axios'
 import * as ethers from 'ethers'
+import ABI from './abi.json'
+import buildConfig from '../build.config'
 
 const EXPLORERS = {
   ethereum: {
@@ -149,15 +151,18 @@ export const getExplorerTransactionHash = (asset, hash) => {
 
 export const TOKEN_DETAILS = {
   ethereum: {
-    sourceUrl(contractAddress) {
-      return `https://api.ethplorer.io/getTokenInfo/${contractAddress}?apiKey=freekey`
-    },
     async getDetails(contractAddress) {
-      const data = await fetchData(this.sourceUrl(contractAddress))
-
-      const { symbol, name, decimals } = data
-
-      return { symbol, name, decimals }
+      return await fetchTokenDetails(contractAddress, `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`)
+    }
+  },
+  polygon: {
+    async getDetails(contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://rpc-mainnet.matic.network/');
+    }
+  },
+  rsk: {
+    async getDetails(contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://public-node.rsk.co')
     }
   },
   bsc: {
@@ -168,79 +173,8 @@ export const TOKEN_DETAILS = {
       const data = await fetchData(this.sourceUrl(contractAddress))
 
       const { displaySymbol, name, decimals } = data
-
+      
       return { symbol: displaySymbol, name, decimals }
-    }
-  },
-  polygon: {
-    sourceUrl(contractAddress) {
-      return {
-        symbol: `https://api.polygonscan.com/api?module=proxy&action=eth_call&to=${contractAddress}&data=0x06fdde03&tag=latest&apikey=8XR2CZ5HY3JRP6J4BGP1TBC3WJEU88NSVZ`,
-        name: `https://api.polygonscan.com/api?module=proxy&action=eth_call&to=${contractAddress}&data=0x95d89b41&tag=latest&apikey=8XR2CZ5HY3JRP6J4BGP1TBC3WJEU88NSVZ`,
-        decimals: `https://api.polygonscan.com/api?module=proxy&action=eth_call&to=${contractAddress}&data=0x313ce567&tag=latest&apikey=8XR2CZ5HY3JRP6J4BGP1TBC3WJEU88NSVZ`
-      }
-    },
-    async getDetails(contractAddress) {
-      const [_symbol, _name, _decimals] = await Promise.all([
-        fetchData(this.sourceUrl(contractAddress).symbol),
-        fetchData(this.sourceUrl(contractAddress).name),
-        fetchData(this.sourceUrl(contractAddress).decimals)
-      ])
-      return parseAssetData(_symbol.result, _name.result, _decimals.result)
-    }
-  },
-  rsk: {
-    sourceUrl() {
-      return 'https://public-node.rsk.co'
-    },
-    rpcBody(contractAddress) {
-      return {
-        decimals: {
-          jsonrpc: '2.0',
-          method: 'eth_call',
-          params: [
-            {
-              to: contractAddress,
-              data: '0x313ce567'
-            },
-            '0x364428'
-          ],
-          id: 1
-        },
-        symbol: {
-          jsonrpc: '2.0',
-          method: 'eth_call',
-          params: [
-            {
-              to: contractAddress,
-              data: '0x06fdde03'
-            },
-            '0x364428'
-          ],
-          id: 2
-        },
-        name: {
-          jsonrpc: '2.0',
-          method: 'eth_call',
-          params: [
-            {
-              to: contractAddress,
-              data: '0x95d89b41'
-            },
-            '0x364428'
-          ],
-          id: 3
-        }
-      }
-    },
-    async getDetails(contractAddress) {
-      const [_symbol, _name, _decimals] = await Promise.all([
-        postData(this.sourceUrl(), this.rpcBody(contractAddress).symbol),
-        postData(this.sourceUrl(), this.rpcBody(contractAddress).name),
-        postData(this.sourceUrl(), this.rpcBody(contractAddress).decimals)
-      ])
-
-      return parseAssetData(_symbol.result, _name.result, _decimals.result)
     }
   }
 }
@@ -251,22 +185,15 @@ const fetchData = async url => {
   return data
 }
 
-const postData = async (url, body) => {
-  const { data } = await axios.post(url, body)
+const fetchTokenDetails = async (contractAddress, rpcUrl) => {
+  const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
+  const contract = new ethers.Contract(contractAddress.toLowerCase(), ABI, provider)
+      
+  const [decimals, name, symbol] = await Promise.all([
+    contract.decimals(),
+    contract.name(),
+    contract.symbol()
+  ]) 
 
-  return data
-}
-
-const parseAssetData = (_symbol, _name, _decimals) => {
-  const iFace = new ethers.utils.Interface([
-    'function decimals() public view returns (uint8)',
-    'function name() public view returns (string)',
-    'function symbol() public view returns (string)'
-  ])
-
-  const symbol = iFace.decodeFunctionResult('symbol', _symbol)
-  const name = iFace.decodeFunctionResult('name', _name)
-  const decimals = iFace.decodeFunctionResult('decimals', _decimals)
-
-  return { symbol, name, decimals }
+  return { decimals, name, symbol }
 }

@@ -90,7 +90,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-import { TOKEN_DETAILS } from '@/utils/asset'
+import { tokenDetailProviders } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
@@ -166,7 +166,7 @@ export default {
         customToken = this.existingAsset
       } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
         try {
-          const { symbol, name, decimals } = await TOKEN_DETAILS[this.chain].getDetails(this.contractAddress)
+          const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
           customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
         } catch (e) {}
       }
