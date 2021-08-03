@@ -33,14 +33,14 @@
       </ListItem>
       <div v-else>
         <ListItem
-          @item-selected="toggleShowAccountAssets(account.id)"
+          @item-selected="toggleExpandedAccounts(account.id)"
         >
           <template #prefix>
              <div class="account-color"
                  :style="{'background-color': account.color}">
             </div>
             <div class="prefix-icon-container">
-              <MinusIcon v-if="showAccountAssets[account.id] === true"
+              <MinusIcon v-if="shouldExpandAccount(account)"
               class="prefix-icon"/>
               <PlusIcon v-else class="prefix-icon"/>
             </div>
@@ -64,7 +64,7 @@
           </template>
       </ListItem>
       <div class="account-assets"
-           :class="{ active: showAccountAssets[account.id] === true}">
+           :class="{ active: shouldExpandAccount(account) }">
         <ListItem v-for="asset in account.assets"
                   :id="asset"
                  :key="asset"
@@ -92,7 +92,6 @@
 </template>
 
 <script>
-import { debounce } from 'lodash-es'
 import ListItem from '@/components/ListItem'
 import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
@@ -111,8 +110,21 @@ export default {
   props: ['search', 'accounts'],
   data () {
     return {
-      showAccountAssets: {},
-      filteredItems: []
+      expandedAccounts: []
+    }
+  },
+  computed: {
+    filteredItems () {
+      if (!this.search) return this.accounts
+
+      const search = this.search.toUpperCase()
+      const assetComparator = asset => {
+        return asset.toUpperCase().includes(search) || cryptoassets[asset].name.toUpperCase().includes(search)
+      }
+
+      return this.accounts
+        .filter(account => account.assets.find(assetComparator))
+        .map(account => ({ ...account, assets: account.assets.filter(assetComparator) }))
     }
   },
   methods: {
@@ -124,68 +136,18 @@ export default {
     getAssetName (asset) {
       return cryptoassets[asset] ? cryptoassets[asset].name : asset
     },
-    toggleShowAccountAssets (id) {
-      this.showAccountAssets[id] = !this.showAccountAssets[id]
+    toggleExpandedAccounts (id) {
+      if (this.expandedAccounts.includes(id)) {
+        this.expandedAccounts = this.expandedAccounts.filter(account => account.id === id)
+      } else {
+        this.expandedAccounts.push(id)
+      }
     },
     selectItem (account, asset) {
       this.$emit('item-selected', { account, asset })
     },
-    makeSearch: debounce(function (newSearch) {
-      if (newSearch) {
-        const search = newSearch.toUpperCase()
-        const assetComparator = asset => {
-          return asset.toUpperCase().includes(search) || cryptoassets[asset].name.toUpperCase().includes(search)
-        }
-
-        this.filteredItems = this.accounts.filter(account => account.assets.find(assetComparator))
-
-        // Show filtered assets only
-        this.filteredItems = this.filteredItems.map(account => {
-          const filteredAssets = account.assets.filter(assetComparator)
-          return { ...account, assets: filteredAssets }
-        })
-
-        // Expand matched accounts
-        this.filteredItems.forEach(account => {
-          this.showAccountAssets[account.id] = true
-        })
-      }
-    }, 500),
-    clearSearch () {
-      this.filteredItems = [...this.accounts]
-
-      // Collapse accounts
-      this.filteredItems.forEach(account => {
-        this.showAccountAssets[account.id] = false
-      })
-    },
-    onUpdateAccounts () {
-      this.showAccountAssets = {
-        ...this.accounts.map(a => a.id).reduce(
-          (accum, id) => {
-            return {
-              ...accum,
-              [id]: false
-            }
-          }, {}),
-        ...this.showAccountAssets
-      }
-    }
-  },
-  created () {
-    this.onUpdateAccounts()
-    this.filteredItems = this.accounts
-  },
-  watch: {
-    search (newSearch, oldSearch) {
-      if (newSearch !== oldSearch) {
-        if (newSearch) this.makeSearch(newSearch)
-        else this.clearSearch()
-      }
-    },
-    accounts () {
-      this.onUpdateAccounts()
-      this.makeSearch(this.search)
+    shouldExpandAccount (account) {
+      return this.expandedAccounts.includes(account.id) || this.search
     }
   }
 }
