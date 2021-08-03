@@ -14,7 +14,7 @@ export const dpUI = (amount, coin, dp = VALUE_DECIMALS, dpSmall = SMALL_VALUE_DE
   if (!amount) return amount
 
   if (fiatRates[coin] < 3) {
-    return BN(amount).dpSmall(dp, BN.ROUND_FLOOR)
+    return BN(amount).dp(dpSmall, BN.ROUND_FLOOR)
   } else {
     return BN(amount).dp(dp, BN.ROUND_FLOOR)
   }
