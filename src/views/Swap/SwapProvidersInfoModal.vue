@@ -2,12 +2,12 @@
   <Modal @close="$emit('close')">
     <template #header>
       <h5 id="learn_about_swaps_types_header">
-        Learn about swap types
+        Learn about swap providers
       </h5>
     </template>
     <template>
       <div class="swap-providers-info">
-        <p>When trading assets provider vary regards the way its done: assets, chain, fees, slippage etc. At a glance:</p>
+        <p>There are tradeoffs different swap providers make across factors like convenience, security, liquidity, and fees. At a glance:</p>
         <div class="swap-providers-info_links mb-4 border-bottom">
           <ul>
             <li v-for="provider in providers" :key="provider.id" class="py-1 px-2">
