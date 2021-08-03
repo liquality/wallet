@@ -14,6 +14,7 @@
               <SearchIcon/>
               <input
                 type="text"
+                ref="search"
                 class="form-control form-control-sm"
                 id="search_for_a_currency_search"
                 v-model="search"
@@ -66,6 +67,9 @@ export default {
       const _action = this.action === 'swap.send' ? 'swap' : this.action
       this.$router.push(`/accounts/${account.id}/${_asset}/${_action}?source=assets`)
     }
+  },
+  created () {
+    this.$nextTick(() => this.$refs.search.focus())
   }
 }
 </script>
