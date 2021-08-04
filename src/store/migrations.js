@@ -3,6 +3,7 @@ import buildConfig from '../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 import { v4 as uuidv4 } from 'uuid'
+import { getLegacyRskBalance } from './utils'
 
 const migrations = [
   { // Merely sets up the version
@@ -210,17 +211,34 @@ const migrations = [
         }
       }
     }
+  },
+  { // rskLegacyDerivation
+    version: 11,
+    migrate: async (state) => {
+      if (!Object.keys(state.accounts)?.length) {
+        return {
+          ...state,
+        }
+      }
+
+      const balance = await getLegacyRskBalance(state.accounts) 
+
+      return {
+        ...state,
+        rskLegacyDerivation: !balance.toNumber()
+      }
+    }
   }
 ]
 
 const LATEST_VERSION = migrations[migrations.length - 1].version
 
-function isMigrationNeeded (state) {
+function isMigrationNeeded(state) {
   const currentVersion = state.version || 0
   return currentVersion < LATEST_VERSION
 }
 
-async function processMigrations (state) {
+async function processMigrations(state) {
   const currentVersion = state.version || 0
 
   let newState = cloneDeep(state)
