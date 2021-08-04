@@ -23,6 +23,10 @@ import { NearJsWalletProvider } from '@liquality/near-js-wallet-provider'
 import { NearRpcProvider } from '@liquality/near-rpc-provider'
 import { NearSwapFindProvider } from '@liquality/near-swap-find-provider'
 
+
+import { CosmosRpcProvider } from '@liquality/cosmos-rpc-provider'
+import { CosmosWalletProvider } from '@liquality/cosmos-wallet-provider'
+
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
@@ -155,6 +159,20 @@ function createNearClient (network, mnemonic, indexPath = 0) {
   return nearClient
 }
 
+function createCosmosClient(network, mnemonic, indexPath = 0) {
+  const cosmosNetwork = ChainNetworks.cosmos[network]
+  const cosmosClient = new Client()
+
+  cosmosClient.addProvider(new CosmosRpcProvider(cosmosNetwork))
+  cosmosClient.addProvider(new CosmosWalletProvider({
+    network: cosmosNetwork,
+    mnemonic,
+    derivationPath: ''
+  }))
+
+  return cosmosClient;
+}
+
 function createRskClient (asset, network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const rskNetwork = ChainNetworks.rsk[network]
@@ -204,6 +222,7 @@ export const createClient = (asset, network, mnemonic, walletType, indexPath = 0
   if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
   if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, indexPath)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, indexPath)
+  if (assetData.chain === 'cosmos') return createCosmosClient(network, mnemonic, indexPath)
 
   return createEthClient(asset, network, mnemonic, walletType, indexPath)
 }

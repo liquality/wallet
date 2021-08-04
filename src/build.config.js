@@ -14,6 +14,7 @@ export default {
       'SOV',
       'BNB',
       'NEAR',
+      'PHOTON',
       'MATIC',
       'PWETH',
       'ARBETH'
@@ -25,6 +26,7 @@ export default {
       'RBTC',
       'BNB',
       'NEAR',
+      'PHOTON',
       'SOV',
       'MATIC',
       'PWETH',
@@ -97,5 +99,5 @@ export default {
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'cosmos', 'polygon', 'arbitrum']
 }

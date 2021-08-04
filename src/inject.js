@@ -256,6 +256,34 @@ window.near = {
 }
 `
 
+const cosmosProvider = () => `
+const REQUEST_MAP = {
+  wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
+  wallet_getAddresses: 'wallet.getAddresses',
+  wallet_signMessage: 'wallet.signMessage',
+  wallet_sendTransaction: 'chain.sendTransaction',
+}
+async function handleRequest (req) {
+  const cosmos = window.providerManager.getProviderFor('PHOTON')
+  const method = REQUEST_MAP[req.method] || req.method
+  return cosmos.getMethod(method)(...req.params)
+}
+window.keplr = {
+  enable: async () => {
+    const accepted = await window.providerManager.enable('cosmos')
+    if (!accepted) throw new Error('User rejected')
+    const cosmos = window.providerManager.getProviderFor('PHOTON')
+    return cosmos.getMethod('wallet.getAddresses')()
+  },
+  request: async (req) => {
+    const params = req.params || []
+    return handleRequest({
+      method: req.method, params
+    })
+  }
+}
+`
+
 const paymentUriHandler = () => `
 document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('click', async (e) => {
@@ -275,4 +303,4 @@ document.addEventListener('DOMContentLoaded', () => {
 }, { once: true })
 `
 
-export { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, paymentUriHandler }
+export { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, cosmosProvider ,paymentUriHandler }
