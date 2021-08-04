@@ -94,9 +94,9 @@ function createEthereumClient (
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
 
-  const legacyCoinType = 137;
-  const { rskLegacyDerivation } = state;
-  let coinType;
+  const legacyCoinType = 137
+  const { rskLegacyDerivation } = state
+  let coinType
 
   if (walletType === 'rsk_ledger') {
     coinType = legacyCoinType

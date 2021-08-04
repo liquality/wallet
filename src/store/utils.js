@@ -47,17 +47,16 @@ export const unlockAsset = key => {
 
 const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
 
-export const getLegacyRskBalance = async(accounts) => {
-  const walletIds = Object.keys(accounts);
-  
-  let addresses = [];
+export const getLegacyRskBalance = async (accounts) => {
+  const walletIds = Object.keys(accounts)
 
+  const addresses = []
 
   walletIds.forEach((wallet) => {
-    const walletAccounts = accounts[wallet].mainnet;
+    const walletAccounts = accounts[wallet].mainnet
 
     walletAccounts.forEach(account => {
-      if(account.chain === 'rsk') {
+      if (account.chain === 'rsk') {
         addresses.push(...account.addresses)
       }
     })
@@ -66,8 +65,8 @@ export const getLegacyRskBalance = async(accounts) => {
   const client = new Client()
     .addProvider(
       new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' })
-    );
-  
+    )
+
   return await client._chain.getBalance(addresses)
 }
 
