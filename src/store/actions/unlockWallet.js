@@ -26,6 +26,6 @@ export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
     key,
     wallets: JSON.parse(wallets),
     unlockedAt: Date.now(),
-    rskLegacyDerivation: !balance.isEqualTo(0)
+    rskLegacyDerivation: balance.isEqualTo(0)
   })
 }
