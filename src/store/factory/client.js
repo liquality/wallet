@@ -39,6 +39,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
 import { ChainNetworks } from '@/store/utils'
 import state from '../state'
+import store from '../../store'
 
 function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
@@ -93,15 +94,14 @@ function createEthereumClient (
 ) {
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
-
   const legacyCoinType = 137;
-  const { rskLegacyDerivation } = state;
+  const { rskLegacyDerivation } = store.state;
   let coinType;
-
+  
   if (walletType === 'rsk_ledger') {
     coinType = legacyCoinType
   } else {
-    coinType = rskLegacyDerivation ? legacyCoinType : ethereumNetwork.coinType
+    coinType = rskLegacyDerivation || state.rskLegacyDerivation ? legacyCoinType : ethereumNetwork.coinType
   }
 
   const derivationPath = `m/44'/${coinType}'/${indexPath}'/0/0`
