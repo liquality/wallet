@@ -31,7 +31,7 @@
                   @click="selectQuote">
               Select Quote
           </button>
-          <div class="mt-3"><a href="#" class="text-muted">Learn about swap types</a></div>
+          <div class="mt-3"><a href="#" @click="$emit('click-learn-more')" class="text-muted">Learn about swap types</a></div>
         </div>
     </template>
   </Modal>

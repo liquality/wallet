@@ -12,7 +12,6 @@ class SearchAssetPage {
   async SearchForAnAsset (page, asset) {
     await page.waitForSelector('#search_for_a_currency_search', { visible: true })
     await page.type('#search_for_a_currency_search', asset)
-    const assertListItems = await page.$$('#assert_list_item')
     await page.waitForTimeout(1000)
     switch (asset) {
       case 'BTC': {
@@ -31,7 +30,7 @@ class SearchAssetPage {
       }
 
       default:
-        await assertListItems[0].click()
+        await page.waitForSelector(`#${asset}`, { visible: true })
         await page.click('#' + asset)
     }
     console.log(chalk.blue('User search for assert: ' + asset))
