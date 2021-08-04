@@ -190,7 +190,7 @@ const migrations = [
   { // Inject ethereum asset -> chain
     version: 9,
     migrate: async (state) => {
-      const injectEthereumChain = cryptoassets[state.injectEthereumAsset].chain
+      const injectEthereumChain = cryptoassets[state.injectEthereumAsset]?.chain || 'ethereum'
       delete state.injectEthereumAsset
 
       return { ...state, injectEthereumChain }
@@ -217,11 +217,11 @@ const migrations = [
     migrate: async (state) => {
       if (!Object.keys(state.accounts)?.length) {
         return {
-          ...state,
+          ...state
         }
       }
 
-      const balance = await getLegacyRskBalance(state.accounts) 
+      const balance = await getLegacyRskBalance(state.accounts)
 
       return {
         ...state,
@@ -233,12 +233,12 @@ const migrations = [
 
 const LATEST_VERSION = migrations[migrations.length - 1].version
 
-function isMigrationNeeded(state) {
+function isMigrationNeeded (state) {
   const currentVersion = state.version || 0
   return currentVersion < LATEST_VERSION
 }
 
-async function processMigrations(state) {
+async function processMigrations (state) {
   const currentVersion = state.version || 0
 
   let newState = cloneDeep(state)

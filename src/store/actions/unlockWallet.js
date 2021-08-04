@@ -4,7 +4,7 @@ import { getLegacyRskBalance } from '../utils'
 export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
   let wallets = await decrypt(state.encryptedWallets, key, state.keySalt)
 
-  const balance = await getLegacyRskBalance(state.accounts)  
+  const balance = await getLegacyRskBalance(state.accounts)
   // Migration to new encryption method
   // TODO: to be removed
   if (!wallets) {
