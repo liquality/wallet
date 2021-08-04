@@ -11,7 +11,7 @@ export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
     wallets = await decryptLegacy(state.encryptedWallets, key)
     if (wallets) {
       const { encrypted: encryptedWallets, keySalt } = await encrypt(wallets, key)
-      commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet: JSON.parse(wallets)[0], rskLegacyDerivation: !balance.toNumber() })
+      commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet: JSON.parse(wallets)[0], rskLegacyDerivation: balance.isEqualTo(0) })
     }
   }
   // Migration to new encryption method
@@ -26,6 +26,6 @@ export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
     key,
     wallets: JSON.parse(wallets),
     unlockedAt: Date.now(),
-    rskLegacyDerivation: !balance.toNumber()
+    rskLegacyDerivation: !balance.isEqualTo(0)
   })
 }
