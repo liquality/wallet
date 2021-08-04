@@ -3,9 +3,8 @@ import {
   isEthereumChain as _isEthereumChain
 } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
-import axios from 'axios'
 import * as ethers from 'ethers'
-import ABI from './abi.json'
+import tokenABI from './tokenABI.json'
 import buildConfig from '../build.config'
 
 const EXPLORERS = {
@@ -149,7 +148,7 @@ export const getExplorerTransactionHash = (asset, hash) => {
   }
 }
 
-export const TOKEN_DETAILS = {
+export const tokenDetailProviders = {
   ethereum: {
     async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`)
@@ -166,28 +165,15 @@ export const TOKEN_DETAILS = {
     }
   },
   bsc: {
-    sourceUrl(contractAddress) {
-      return `https://wallet.binance.org/api/v1/bsc-mainnet/assets/${contractAddress}`
-    },
     async getDetails(contractAddress) {
-      const data = await fetchData(this.sourceUrl(contractAddress))
-
-      const { displaySymbol, name, decimals } = data
-      
-      return { symbol: displaySymbol, name, decimals }
+      return await fetchTokenDetails(contractAddress, 'https://bsc-dataseed.binance.org')
     }
   }
 }
 
-const fetchData = async url => {
-  const { data } = await axios.get(url)
-
-  return data
-}
-
 const fetchTokenDetails = async (contractAddress, rpcUrl) => {
   const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl);
-  const contract = new ethers.Contract(contractAddress.toLowerCase(), ABI, provider)
+  const contract = new ethers.Contract(contractAddress.toLowerCase(), tokenABI, provider)
       
   const [decimals, name, symbol] = await Promise.all([
     contract.decimals(),
