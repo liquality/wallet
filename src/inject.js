@@ -268,6 +268,7 @@ async function handleRequest (req) {
   const method = REQUEST_MAP[req.method] || req.method
   return terraProvider.getMethod(method)(...req.params)
 }
+window.isTerraExtensionAvailable = true
 window.terra = {
   enable: async () => {
     const accepted = await window.providerManager.enable('terra')
@@ -280,6 +281,9 @@ window.terra = {
     return handleRequest({
       method: req.method, params
     })
+  },
+  connect() {
+    
   }
 }
 `
