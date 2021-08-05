@@ -400,7 +400,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     await swapPage.EnterSendAmountOnSwap(page, '10')
     expect(await swapPage.GetSwapSendErrors(page))
       .to.be.oneOf([' Lower amount. This exceeds available balance. ',
-      ' Please reduce amount. It exceeds maximum. '])
+        ' Please reduce amount. It exceeds maximum. '])
     // Rate & source provider validation (BTC if its more than 1 or 2 source chosen is Thorchain)
     await page.waitForSelector('#selectedQuote_provider', { visible: true })
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
@@ -451,9 +451,8 @@ describe('Liquality wallet SWIPE feature', async () => {
       'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
   })
   it('SWAP (NEAR->BTC)', async () => {
-
-    let asset1 = 'NEAR'
-    let asset2 = 'BTC'
+    const asset1 = 'NEAR'
+    const asset2 = 'BTC'
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
@@ -481,11 +480,11 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Click on selected Quote service provider
     await page.click('#selectedQuote_provider')
     await page.waitForSelector('#liquality_rate_provider', { visible: true })
-    expect(await page.$eval('#available_quotes_header', (el)=>el.textContent)).contain('1 AVAILABLE QUOTES')
+    expect(await page.$eval('#available_quotes_header', (el) => el.textContent)).contain('1 AVAILABLE QUOTES')
     await page.click('#select_quote_button')
 
     // Get the quote value
-    let quoteValueOnSwapScreen = await page.$eval('.swap-rate_value', (el) => el.textContent)
+    const quoteValueOnSwapScreen = await page.$eval('.swap-rate_value', (el) => el.textContent)
 
     // Click on Swap Types
     await page.click('#swap_types_option')
@@ -543,7 +542,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // RATE
     await page.waitForSelector('#swap_review_rate_block')
     // Swap rate quote value on review screen, ensure quote shouldn't get refreshed from swap screen & review screen
-    let quoteValueOnSwapReviewScreenValue = await page.$eval('.swap-rate_value', (el) => el.textContent)
+    const quoteValueOnSwapReviewScreenValue = await page.$eval('.swap-rate_value', (el) => el.textContent)
     expect(quoteValueOnSwapScreen.trim(), 'Quote value should be same on SWAP screen & Review screen')
       .equals(quoteValueOnSwapReviewScreenValue.trim())
 
