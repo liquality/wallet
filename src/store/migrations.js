@@ -225,7 +225,7 @@ const migrations = [
 
       return {
         ...state,
-        rskLegacyDerivation: !balance.toNumber()
+        rskLegacyDerivation: balance.isGreaterThan(0)
       }
     }
   }

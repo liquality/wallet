@@ -3,15 +3,18 @@ import { getLegacyRskBalance } from '../utils'
 
 export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
   let wallets = await decrypt(state.encryptedWallets, key, state.keySalt)
-
-  const balance = await getLegacyRskBalance(state.accounts)
+  
   // Migration to new encryption method
   // TODO: to be removed
   if (!wallets) {
     wallets = await decryptLegacy(state.encryptedWallets, key)
     if (wallets) {
       const { encrypted: encryptedWallets, keySalt } = await encrypt(wallets, key)
+<<<<<<< Updated upstream
       commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet: JSON.parse(wallets)[0], rskLegacyDerivation: !balance.toNumber() })
+=======
+      commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet: JSON.parse(wallets)[0] })
+>>>>>>> Stashed changes
     }
   }
   // Migration to new encryption method
@@ -26,6 +29,5 @@ export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
     key,
     wallets: JSON.parse(wallets),
     unlockedAt: Date.now(),
-    rskLegacyDerivation: !balance.toNumber()
   })
 }

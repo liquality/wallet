@@ -7,6 +7,7 @@ import { EthereumNetworks } from '@liquality/ethereum-networks'
 import { NearNetworks } from '@liquality/near-networks'
 import { Client } from '@liquality/client'
 import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
+import { EthereumJsWalletProvider } from '@liquality/ethereum-js-wallet-provider'
 
 export const CHAIN_LOCK = {}
 
@@ -47,10 +48,10 @@ export const unlockAsset = key => {
 
 const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
 
-export const getLegacyRskBalance = async (accounts) => {
+export const getLegacyRskBalance = async (accounts, mnemonic, indexPath = 0) => {
   const walletIds = Object.keys(accounts)
 
-  const addresses = []
+  let addresses = []
 
   walletIds.forEach((wallet) => {
     const walletAccounts = accounts[wallet].mainnet
@@ -66,8 +67,21 @@ export const getLegacyRskBalance = async (accounts) => {
     .addProvider(
       new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' })
     )
+    
+  if(mnemonic) {
+    client.addProvider(
+      new EthereumJsWalletProvider({
+        network: ChainNetworks.ethereum.mainnet,
+        mnemonic,
+        derivationPath: `m/44'/137'/${indexPath}'/0/0`
+      }))
 
-  return await client._chain.getBalance(addresses)
+    const _addresses = await client._wallet.getAddresses();
+
+    addresses.push(..._addresses.map(e => e.address))
+  }
+
+  return await client._chain.getBalance(addresses);
 }
 
 export async function getPrices (baseCurrencies, toCurrency) {
