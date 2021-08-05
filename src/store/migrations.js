@@ -3,6 +3,7 @@ import buildConfig from '../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 import { v4 as uuidv4 } from 'uuid'
+import { getLegacyRskBalance } from './utils'
 
 const migrations = [
   { // Merely sets up the version
@@ -189,7 +190,7 @@ const migrations = [
   { // Inject ethereum asset -> chain
     version: 9,
     migrate: async (state) => {
-      const injectEthereumChain = cryptoassets[state.injectEthereumAsset].chain
+      const injectEthereumChain = cryptoassets[state.injectEthereumAsset]?.chain || 'ethereum'
       delete state.injectEthereumAsset
 
       return { ...state, injectEthereumChain }
@@ -208,6 +209,23 @@ const migrations = [
           askedTimes: 0,
           notAskAgain: false
         }
+      }
+    }
+  },
+  { // rskLegacyDerivation
+    version: 11,
+    migrate: async (state) => {
+      if (!Object.keys(state.accounts)?.length) {
+        return {
+          ...state
+        }
+      }
+
+      const balance = await getLegacyRskBalance(state.accounts)
+
+      return {
+        ...state,
+        rskLegacyDerivation: !balance.toNumber()
       }
     }
   }
