@@ -6,29 +6,12 @@
     <div class="wrapper form">
       <div class="wrapper_top">
         <div class="form-group">
-          <label for="contractAddress">Token Contract Address</label>
-          <input type="text" v-model="contractAddress" @change="contractAddressChange" class="form-control form-control-sm" id="contractAddress" placeholder="Address" autocomplete="off" required>
-        </div>
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" v-model="name" class="form-control form-control-sm" id="name" placeholder="Name" autocomplete="off" required :disabled="autofilled">
-        </div>
-        <div class="form-group">
-          <label for="tokenSymbol">Token Symbol</label>
-          <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled">
-          <small v-if="symbol && symbolError" class="text-danger form-text text-right">{{ symbolError }}</small>
-        </div>
-        <div class="form-group">
-          <label for="decimals">Decimals</label>
-          <input type="text" v-model="decimals" class="form-control form-control-sm" id="decimals" autocomplete="off" required :disabled="autofilled">
-        </div>
-        <div class="form-group">
           <label for="chain">Chain</label>
           <div class="dropdown">
             <button class="btn dropdown-toggle"
                     type="button"
                     @click.stop="chainDropdownOpen = !chainDropdownOpen">
-              {{ chain }}
+              {{ chain || 'Select chain...' }}
               <ChevronUpIcon v-if="chainDropdownOpen" />
               <ChevronDownIcon v-else />
             </button>
@@ -76,6 +59,25 @@
             </ul>
           </div>
         </div>
+        <fieldset :disabled="!chain">
+          <div class="form-group">
+            <label for="contractAddress">Token Contract Address</label>
+            <input type="text" v-model="contractAddress" @change="contractAddressChange" class="form-control form-control-sm" id="contractAddress" placeholder="Address" autocomplete="off" required>
+          </div>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" v-model="name" class="form-control form-control-sm" id="name" placeholder="Name" autocomplete="off" required :disabled="autofilled">
+          </div>
+          <div class="form-group">
+            <label for="tokenSymbol">Token Symbol</label>
+            <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled">
+            <small v-if="symbol && symbolError" class="text-danger form-text text-right">{{ symbolError }}</small>
+          </div>
+          <div class="form-group">
+            <label for="decimals">Decimals</label>
+            <input type="text" v-model="decimals" class="form-control form-control-sm" id="decimals" autocomplete="off" required :disabled="autofilled">
+          </div>
+        </fieldset>
       </div>
       <div class="wrapper_bottom">
         <div class="button-group">
@@ -107,7 +109,7 @@ export default {
       name: null,
       symbol: null,
       decimals: null,
-      chain: 'ethereum',
+      chain: null,
       autofilled: false,
       chainDropdownOpen: false
     }
