@@ -582,6 +582,9 @@ export default {
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     availableAmount () {
+      if (this.fiatRates[this.asset] <= 3) {
+        return dpUI(this.available, SMALL_VALUE_DECIMALS)
+      }
       return dpUI(this.available, VALUE_DECIMALS)
     },
     ethRequired () {
