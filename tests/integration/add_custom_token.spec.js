@@ -90,7 +90,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       expect(decimal).to.equals(tokenDetails.decimal)
     })
     it('BSC chain - PancakeSwap token', async () => {
-      let tokenDetails = {
+      const tokenDetails = {
         chain: 'bsc',
         address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
         name: 'PancakeSwap Token',
@@ -146,7 +146,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       expect(decimal).to.equals(tokenDetails.decimal)
     })
     it('Polygon chain - USD Coin (USDC)', async () => {
-      let tokenDetails = {
+      const tokenDetails = {
         chain: 'polygon',
         address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
         name: 'Polygon USD Coin',
