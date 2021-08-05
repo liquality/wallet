@@ -9,7 +9,7 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    const now = Date.now();
+    const now = Date.now()
     await page.screenshot({ path: `./screenshots/${now}_overviewPage.png` })
     await page.waitForSelector('#burger_icon_menu', {
       visible: true,
