@@ -231,7 +231,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'SOV to BTC SWAP min value not set in input').equals('0.05')
     await page.$eval('#min_amount_send_button', (el) => el.textContent)
-    await swapPage.EnterSendAmountOnSwap(page, '1')
+    await swapPage.EnterSendAmountOnSwap(page, '2')
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
     // Click on SWAP Review button
@@ -240,7 +240,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // SWAP SEND details validation
     // Send confirm value
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
-    expect(sendAmountValue.trim()).contain('1 SOV')
+    expect(sendAmountValue.trim()).contain('2 SOV')
     console.log(chalk.green('SEND Swap value: ' + sendAmountValue))
     // Send confirm USD value
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)

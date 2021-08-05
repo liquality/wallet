@@ -98,9 +98,9 @@ describe('Liquality wallet SEND feature', async () => {
     // Check Send Review option has been disabled
     await sendPage.HasReviewButtonDisabled(page)
   })
-  it('Send SOV to random ETH address-["smoke"]', async () => {
+  it('Send SOV to random ETH address', async () => {
     const bitCoinName = 'SOV'
-    const coinsToSend = '1'
+    const coinsToSend = '2'
 
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
@@ -129,7 +129,7 @@ describe('Liquality wallet SEND feature', async () => {
     await sendPage.SendConfirmButton(page)
     // Transaction details page validations
     const domain = 'https://explorer.testnet.rsk.co'
-    await transactionDetailsPage.ValidateSentAmount(page, '1 SOV')
+    await transactionDetailsPage.ValidateSentAmount(page, '2 SOV')
     await transactionDetailsPage.ValidateSentToLink(page, `${domain}/address`)
     await transactionDetailsPage.ValidateNetworkSpeedFee(page)
     await transactionDetailsPage.ValidateTime(page)
