@@ -137,7 +137,7 @@ export default {
     },
     existingAsset () {
       const existingAsset = Object.values(cryptoassets).find(asset =>
-        asset.type === 'erc20' && asset.contractAddress.toLowerCase() === this.contractAddress.toLowerCase())
+        asset.type === 'erc20' && asset.contractAddress.toLowerCase() === this.contractAddress.toLowerCase() && asset.chain === this.chain)
       return existingAsset ? { ...existingAsset, symbol: existingAsset.code } : null
     }
   },
@@ -171,12 +171,15 @@ export default {
       this.contractAddress = e.target.value
       this.fetchToken()
     },
-    fetchToken: debounce(async function () {
+    resetFields () {
       this.symbol = null
       this.name = null
       this.decimals = null
       this.assetExists = false
       this.autofilled = false
+    },
+    fetchToken: debounce(async function () {
+      this.resetFields()
 
       let customToken
 
@@ -190,7 +193,6 @@ export default {
       if (customToken) {
         this.symbol = customToken.symbol
         this.name = customToken.name
-        this.chain = customToken.chain
         this.decimals = customToken.decimals
         this.autofilled = true
       }
@@ -198,7 +200,8 @@ export default {
     async selectChain (chain) {
       this.chain = chain
       this.chainDropdownOpen = false
-      await this.fetchToken()
+      this.resetFields()
+      this.fetchToken()
     }
   }
 }
