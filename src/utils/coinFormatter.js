@@ -3,7 +3,6 @@ import cryptoassets from './cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
 
 export const VALUE_DECIMALS = 6
-export const SMALL_VALUE_DECIMALS = 2
 
 export const dp = (amount, coin) => {
   if (!amount) return amount

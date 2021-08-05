@@ -144,10 +144,10 @@
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
-      <div class="fee-wrapper" v-if="checkHighFee">
+      <div class="fee-wrapper" v-if="isHighFee">
         Fees are high.  Review transaction carefully.
       </div>
-      <div class="fee-wrapper" v-if="checkSwapNegative">
+      <div class="fee-wrapper" v-if="isSwapNegative">
         Swap is negative.  Review transaction carefully.
       </div>
       <div class="swap-confirm wrapper form">
@@ -582,9 +582,6 @@ export default {
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     availableAmount () {
-      if (this.fiatRates[this.asset] <= 3) {
-        return dpUI(this.available, SMALL_VALUE_DECIMALS)
-      }
       return dpUI(this.available, VALUE_DECIMALS)
     },
     ethRequired () {
@@ -670,12 +667,12 @@ export default {
         [this.toAssetChain]: this.toAsset
       }
     },
-    checkHighFee () {
+    isHighFee () {
       const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
       const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
       return feeTotal.gte(BN(receiveTotalPercentage))
     },
-    checkSwapNegative () {
+    isSwapNegative () {
       return this.totalToReceiveInFiat <= 0
     }
   },
