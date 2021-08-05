@@ -269,13 +269,43 @@ async function handleRequest (req) {
   return cosmos.getMethod(method)(...req.params)
 }
 window.keplr = {
-  enable: async () => {
+  address: null,
+  async enable(chainId) {
     const accepted = await window.providerManager.enable('cosmos')
     if (!accepted) throw new Error('User rejected')
     const cosmos = window.providerManager.getProviderFor('PHOTON')
-    return cosmos.getMethod('wallet.getAddresses')()
+    const addr = await cosmos.getMethod('wallet.getAddresses')()
+    if(addr) {
+      this.address = addr[0]
+
+      const {address, publicKey} = this.address;
+      console.log(address)
+      return {
+        algo: 'algo',
+        pubKey: new Uint8Array(publicKey.split(',')),
+        address: new Uint8Array(publicKey.split(',')),
+        isNanoLedger: false
+      }
+    }
+    return addr;
   },
-  request: async (req) => {
+  getKey() {
+    if(!this.address) {
+      return
+    }
+
+    const {address, publicKey} = this.address;
+    
+
+    return {
+      algo: 'algo',
+      pubKey: new Uint8Array(publicKey.split(',')),
+      address: new Uint8Array(publicKey.split(',')),
+      isNanoLedger: false
+    }
+  },
+  async request(req) {
+    console.log('called2')
     const params = req.params || []
     return handleRequest({
       method: req.method, params
