@@ -18,7 +18,7 @@
             <div class="list-item-title">
               <slot></slot>
             </div>
-            <div class="list-item-sub-title" v-if="hasSlot('sub-title')">
+            <div class="list-item-sub-title" id="assert_address" v-if="hasSlot('sub-title')">
               <slot name="sub-title"></slot>
             </div>
           </div>

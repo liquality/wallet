@@ -59,6 +59,17 @@ class SwapPage {
   }
 
   /**
+   * Get Selected service provider from SWAP screen.
+   * @param page
+   * @returns {Promise<*>} - Liquality, Thorchain....
+   * @constructor
+   */
+  async GetSelectedServiceProvider (page) {
+    await page.waitForSelector('#selectedQuote_provider', { visible: true })
+    return await page.$eval('#selectedQuote_provider', (el) => el.textContent)
+  }
+
+  /**
    * Check SWAP Screen Review button has been Enabled.
    * @param page
    * @returns {Promise<void>}

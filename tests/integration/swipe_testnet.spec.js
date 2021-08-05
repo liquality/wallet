@@ -145,7 +145,10 @@ describe('Liquality wallet SWIPE feature', async () => {
     await page.waitForSelector('#DAI', { visible: true })
     await page.click('#DAI')
     // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
-    await page.waitForSelector('#selectedQuote_provider', { visible: true, timeout: 60000 })
+    await page.waitForSelector('#selectedQuote_provider', {
+      visible: true,
+      timeout: 60000
+    })
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'ETH->DAI, Supporting source should be chosen!').oneOf(['Uniswap V2', 'Thorchain', 'Liquality'])
 
@@ -397,7 +400,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     await swapPage.EnterSendAmountOnSwap(page, '10')
     expect(await swapPage.GetSwapSendErrors(page))
       .to.be.oneOf([' Lower amount. This exceeds available balance. ',
-        ' Please reduce amount. It exceeds maximum. '])
+      ' Please reduce amount. It exceeds maximum. '])
     // Rate & source provider validation (BTC if its more than 1 or 2 source chosen is Thorchain)
     await page.waitForSelector('#selectedQuote_provider', { visible: true })
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
@@ -429,7 +432,10 @@ describe('Liquality wallet SWIPE feature', async () => {
     await page.click('#RBTC')
 
     // (Liquality swap provider)
-    await page.waitForSelector('#selectedQuote_provider', { visible: true, timeout: 60000 })
+    await page.waitForSelector('#selectedQuote_provider', {
+      visible: true,
+      timeout: 60000
+    })
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
 
@@ -437,8 +443,113 @@ describe('Liquality wallet SWIPE feature', async () => {
     await swapPage.EnterSendAmountOnSwap(page, '1')
 
     // (fastBTC swap provider)
-    await page.waitForSelector('#selectedQuote_provider', { visible: true, timeout: 60000 })
+    await page.waitForSelector('#selectedQuote_provider', {
+      visible: true,
+      timeout: 60000
+    })
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
+  })
+  it('SWAP (NEAR->BTC)', async () => {
+
+    let asset1 = 'NEAR'
+    let asset2 = 'BTC'
+
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+
+    // Select testnet
+    await overviewPage.SelectNetwork(page)
+
+    // Click first assert then click on SWAP button
+    await overviewPage.SelectChain(page, asset1)
+    await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
+    await page.click(`#${asset1}_swap_button`)
+    console.log(chalk.green(`User clicked on ${asset1} SWAP button`))
+
+    // Swap screen
+    const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
+    expect(swapSendAmountField, `${asset1} to ${asset2} SWAP min value not set in input`)
+      .not.equals('0.0000')
+    // Validate Min has been active
+    expect(await page.$eval('#min_amount_send_button', (el) => el.getAttribute('class'))).contain('active')
+
+    // Check source name
+    expect(await swapPage.GetSelectedServiceProvider(page),
+      `${asset1}->${asset2} swap, source should be chosen!`).oneOf(['Thorchain', 'Liquality'])
+
+    // Click on selected Quote service provider
+    await page.click('#selectedQuote_provider')
+    await page.waitForSelector('#liquality_rate_provider', { visible: true })
+    expect(await page.$eval('#available_quotes_header', (el)=>el.textContent)).contain('1 AVAILABLE QUOTES')
+    await page.click('#select_quote_button')
+
+    // Get the quote value
+    let quoteValueOnSwapScreen = await page.$eval('.swap-rate_value', (el) => el.textContent)
+
+    // Click on Swap Types
+    await page.click('#swap_types_option')
+    await page.waitForSelector('#learn_about_swaps_types_header', { visible: true })
+    console.log(chalk.green('Learn about Swaps Types model has been displayed'))
+    await page.click('.modal-close')
+
+    // Click SWAP review button
+    await swapPage.ClickSwapReviewButton(page)
+
+    // SWAP review screen validations
+    // SWAP SEND details validation
+    const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
+    expect(sendAmountValue.trim()).contain(asset1)
+
+    const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
+    expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00')
+      .not.contain('$0.00')
+
+    const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
+    expect(swapSendNetworkFeeValue.trim()).contain(asset1)
+
+    const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
+    expect(swapSendNetworkFeeInDollar.trim(), 'Send network fee can not be $0.00')
+      .not.contain('$0.00')
+
+    const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
+    expect(swapSendAccountFeesValue.trim()).contain(asset1)
+
+    const swapSendAccountFeesInDollar = await swapPage.GetSwapSendAccountFeesInDollar(page)
+    expect(swapSendAccountFeesInDollar.trim()).not.contain('$0.00')
+    expect(swapSendAccountFeesInDollar.trim()).not.contain('NaN')
+
+    // Receive details validation
+    const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
+    expect(receiveAmountValue.trim()).contain(asset2)
+
+    const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
+    expect(receiveAmountInDollar.trim()).not.contain('$0.00')
+    expect(receiveAmountInDollar.trim()).not.contain('NaN')
+
+    const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
+    expect(receiveNetworkFeeValue.trim()).contain(asset2)
+
+    const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
+    expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
+    expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
+
+    const receiveAccountFeesValue = await swapPage.GetSwapReceiveNetworkValue(page)
+    expect(receiveAccountFeesValue.trim()).contain(asset2)
+
+    const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
+    expect(receiveAccountFeesInDollar.trim()).not.contain('$0.00')
+    expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
+    // RATE
+    await page.waitForSelector('#swap_review_rate_block')
+    // Swap rate quote value on review screen, ensure quote shouldn't get refreshed from swap screen & review screen
+    let quoteValueOnSwapReviewScreenValue = await page.$eval('.swap-rate_value', (el) => el.textContent)
+    expect(quoteValueOnSwapScreen.trim(), 'Quote value should be same on SWAP screen & Review screen')
+      .equals(quoteValueOnSwapReviewScreenValue.trim())
+
+    // Validate message
+    await swapPage.ValidateMessage(page)
+    // Check SWAP Initiate option has been enabled
+    await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
 })
