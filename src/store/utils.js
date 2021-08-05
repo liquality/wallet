@@ -51,7 +51,7 @@ const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
 export const getLegacyRskBalance = async (accounts, mnemonic, indexPath = 0) => {
   const walletIds = Object.keys(accounts)
 
-  let addresses = []
+  const addresses = []
 
   walletIds.forEach((wallet) => {
     const walletAccounts = accounts[wallet].mainnet
@@ -67,8 +67,8 @@ export const getLegacyRskBalance = async (accounts, mnemonic, indexPath = 0) => 
     .addProvider(
       new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' })
     )
-    
-  if(mnemonic) {
+
+  if (mnemonic) {
     client.addProvider(
       new EthereumJsWalletProvider({
         network: ChainNetworks.rsk.mainnet,
@@ -76,12 +76,12 @@ export const getLegacyRskBalance = async (accounts, mnemonic, indexPath = 0) => 
         derivationPath: `m/44'/137'/${indexPath}'/0/0`
       }))
 
-    const _addresses = await client.wallet.getAddresses();
+    const _addresses = await client.wallet.getAddresses()
 
     addresses.push(..._addresses.map(e => e.address))
   }
 
-  return await client.chain.getBalance(addresses);
+  return await client.chain.getBalance(addresses)
 }
 
 export async function getPrices (baseCurrencies, toCurrency) {

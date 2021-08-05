@@ -15,8 +15,8 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic 
     JSON.stringify([wallet]),
     key
   )
-    
-  const balance = await getLegacyRskBalance(state.accounts, mnemonic)  
+
+  const balance = await getLegacyRskBalance(state.accounts, mnemonic)
 
   commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet, rskLegacyDerivation: balance.isGreaterThan(0) })
   commit('CHANGE_ACTIVE_WALLETID', { walletId: id })

@@ -98,7 +98,7 @@ function createEthereumClient (
   const ethereumNetworkCoinType = '60'
   const { rskLegacyDerivation } = store.state
   let coinType = ethereumNetwork.coinType
-  
+
   if (walletType === 'rsk_ledger') {
     coinType = legacyCoinType
   } else if (ethereumNetwork.name === 'rsk_mainnet') {
