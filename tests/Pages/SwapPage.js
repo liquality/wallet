@@ -18,7 +18,7 @@ class SwapPage {
   }
 
   /**
-   * Click on Min
+   * Click on Min.
    * @param page
    * @returns {Promise<void>}
    * @constructor
