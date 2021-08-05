@@ -38,7 +38,6 @@ import { BTC_ADDRESS_TYPE_TO_PREFIX } from '@/utils/address'
 import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
 import { ChainNetworks } from '@/store/utils'
-import state from '../state'
 import store from '../../store'
 
 function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
@@ -103,7 +102,7 @@ function createEthereumClient (
   if (walletType === 'rsk_ledger') {
     coinType = legacyCoinType
   } else if (ethereumNetwork.name === 'rsk_mainnet') {
-    coinType = rskLegacyDerivation || state.rskLegacyDerivation ? legacyCoinType : ethereumNetworkCoinType
+    coinType = rskLegacyDerivation ? legacyCoinType : ethereumNetworkCoinType
   }
 
   const derivationPath = `m/44'/${coinType}'/${indexPath}'/0/0`

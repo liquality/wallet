@@ -71,17 +71,17 @@ export const getLegacyRskBalance = async (accounts, mnemonic, indexPath = 0) => 
   if(mnemonic) {
     client.addProvider(
       new EthereumJsWalletProvider({
-        network: ChainNetworks.ethereum.mainnet,
+        network: ChainNetworks.rsk.mainnet,
         mnemonic,
         derivationPath: `m/44'/137'/${indexPath}'/0/0`
       }))
 
-    const _addresses = await client._wallet.getAddresses();
+    const _addresses = await client.wallet.getAddresses();
 
     addresses.push(..._addresses.map(e => e.address))
   }
 
-  return await client._chain.getBalance(addresses);
+  return await client.chain.getBalance(addresses);
 }
 
 export async function getPrices (baseCurrencies, toCurrency) {
