@@ -33,8 +33,9 @@ if (process.env.NODE_ENV === 'mainnet') {
         console.log('Cannot cleanup instances')
       }
     })
-    it('Should be able to add custom token & Check token fetch details', async () => {
+    it('Should be able to add custom token & Check token fetch details-[Tether USD]', async () => {
       const tokenDetails = {
+        chain: 'ethereum',
         address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
         name: 'Tether USD',
         symbol: 'USDT',
@@ -66,20 +67,26 @@ if (process.env.NODE_ENV === 'mainnet') {
       console.log(chalk.green('User clicked on Add Custom Token'))
       // Add Custom token screen
       await page.waitForSelector('#contractAddress', { visible: true })
+      // select chain
+      await page.waitForSelector('#select_chain_dropdown', { visible: true })
+      await page.click('#select_chain_dropdown')
+      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
+      await page.click(`#${tokenDetails.chain}_chain`)
+      // paste address
       await page.type('#contractAddress', tokenDetails.address)
       console.log(chalk.green('User enter token address as'), tokenDetails.address)
-      await page.waitForTimeout(2000)
       await page.click('#tokenSymbol')
+      await page.click('#name')
+      await page.waitForTimeout(10000)
+      // Check Token name
       const name = await page.$eval('#name', el => el.value)
       expect(name).to.equals(tokenDetails.name)
-
+      // Check Token Symbol
       const symbol = await page.$eval('#tokenSymbol', el => el.value)
       expect(symbol).to.equals(tokenDetails.symbol)
-
+      // Check Token Symbol
       const decimal = await page.$eval('#decimals', el => el.value)
       expect(decimal).to.equals(tokenDetails.decimal)
-
-      // TODO: validate Chain selection later
     })
   })
 }
