@@ -238,7 +238,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     console.log(chalk.green('SEND Swap value: ' + sendAmountValue))
     // Send confirm USD value
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
-    expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00').equals('$1')
+    expect(swapSendAmountInDollar.trim(), 'SWAP send amount in fiat not to be 0.00').not.equals('$0.00')
     console.log(chalk.green('User SEND Swap value in USD: ' + swapSendAmountInDollar))
     // Send Network Fee
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)

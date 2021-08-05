@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.35.15",
+  "version": "0.35.18",
   "private": true,
   "license": "MIT",
   "author": "Liquality <info@liquality.io>",
@@ -35,7 +35,7 @@
     "@liquality/bitcoin-swap-provider": "^1.4.4",
     "@liquality/client": "^1.4.4",
     "@liquality/crypto": "^1.4.4",
-    "@liquality/cryptoassets": "^1.2.3",
+    "@liquality/cryptoassets": "^1.2.10",
     "@liquality/ethereum-erc20-provider": "^1.4.4",
     "@liquality/ethereum-erc20-scraper-swap-find-provider": "^1.4.4",
     "@liquality/ethereum-erc20-swap-provider": "^1.4.4",
