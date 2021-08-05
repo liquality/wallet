@@ -97,7 +97,7 @@ describe('Liquality wallet SEND feature', async () => {
     // Check Send Review option has been disabled
     await sendPage.HasReviewButtonDisabled(page)
   })
-  it('Send SOV to random ETH address', async () => {
+  it.skip('Send SOV to random ETH address', async () => {
     const bitCoinName = 'SOV'
     const coinsToSend = '2'
 
