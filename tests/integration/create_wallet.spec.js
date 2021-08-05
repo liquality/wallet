@@ -66,6 +66,7 @@ describe('Liquality wallet - Create wallet-["smoke"]', async () => {
     await confirmPasswordInput.click({ clickCount: 3 })
     // Set password
     await passwordPage.SubmitPasswordDetails(page, password)
+
     // Unlocking wallet...
     const seed1 = (await seedWordsPage.GetBackupSeedWords(page)).seed1
     const seed5 = (await seedWordsPage.GetBackupSeedWords(page)).seed5
