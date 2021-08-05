@@ -42,7 +42,7 @@
     "@liquality/ethereum-gas-now-fee-provider": "^1.4.4",
     "@liquality/ethereum-js-wallet-provider": "^1.4.4",
     "@liquality/ethereum-ledger-provider": "^1.4.4",
-    "@liquality/ethereum-networks": "^1.4.4",
+    "@liquality/ethereum-networks": "^1.5.1",
     "@liquality/ethereum-rpc-fee-provider": "^1.4.4",
     "@liquality/ethereum-rpc-provider": "^1.4.4",
     "@liquality/ethereum-scraper-swap-find-provider": "^1.4.4",
