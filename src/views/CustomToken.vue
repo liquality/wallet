@@ -62,7 +62,7 @@
         <fieldset :disabled="!chain">
           <div class="form-group">
             <label for="contractAddress">Token Contract Address</label>
-            <input type="text" v-model="contractAddress" @change="contractAddressChange" class="form-control form-control-sm" id="contractAddress" placeholder="Address" autocomplete="off" required>
+            <input type="text" @change="contractAddressChange" @paste="contractAddressPaste" class="form-control form-control-sm" id="contractAddress" placeholder="Address" autocomplete="off" required>
           </div>
           <div class="form-group">
             <label for="name">Name</label>
@@ -91,6 +91,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { debounce } from 'lodash-es'
 import cryptoassets from '@/utils/cryptoassets'
 import { tokenDetailProviders } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
@@ -155,7 +156,16 @@ export default {
       })
       this.$router.replace('/settings/manage-assets')
     },
-    async contractAddressChange () {
+    contractAddressPaste (e) {
+      this.contractAddress = e.clipboardData.getData('text')
+      this.fetchToken()
+    },
+    contractAddressChange (e) {
+      if (this.contractAddress === e.target.value) return
+      this.contractAddress = e.target.value
+      this.fetchToken()
+    },
+    fetchToken: debounce(async function () {
       this.symbol = null
       this.name = null
       this.decimals = null
@@ -167,10 +177,8 @@ export default {
       if (this.existingAsset) {
         customToken = this.existingAsset
       } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
-        try {
-          const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
-          customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
-        } catch (e) {}
+        const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
+        customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
       }
 
       if (customToken) {
@@ -180,11 +188,11 @@ export default {
         this.decimals = customToken.decimals
         this.autofilled = true
       }
-    },
+    }, 500),
     async selectChain (chain) {
       this.chain = chain
       this.chainDropdownOpen = false
-      await this.contractAddressChange()
+      await this.fetchToken()
     }
   }
 }
