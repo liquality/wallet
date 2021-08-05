@@ -31,7 +31,6 @@ describe('Liquality wallet SEND feature', async () => {
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
-
   afterEach(async () => {
     try {
       console.log('Cleaning up instances')
