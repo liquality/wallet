@@ -94,7 +94,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         chain: 'bsc',
         address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
         name: 'PancakeSwap Token',
-        symbol: 'CAKE',
+        symbol: 'Cake',
         decimal: '18'
       }
       // Import wallet option
