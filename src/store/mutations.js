@@ -48,11 +48,10 @@ export default {
     state.unlockedAt = null
     state.wallets = null
   },
-  UNLOCK_WALLET (state, { key, wallets, unlockedAt, rskLegacyDerivation }) {
+  UNLOCK_WALLET (state, { key, wallets, unlockedAt }) {
     state.key = key
     state.wallets = wallets
     state.unlockedAt = unlockedAt
-    state.rskLegacyDerivation = rskLegacyDerivation
   },
   NEW_SWAP (state, { network, walletId, swap }) {
     ensureNetworkWalletTree(state.history, network, walletId, [])
