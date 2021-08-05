@@ -325,8 +325,7 @@ import {
   cryptoToFiat,
   fiatToCrypto,
   formatFiat,
-  VALUE_DECIMALS,
-  SMALL_VALUE_DECIMALS
+  VALUE_DECIMALS
 } from '@/utils/coinFormatter'
 import {
   isERC20,
