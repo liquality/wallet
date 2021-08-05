@@ -1,5 +1,4 @@
 import { encrypt, decrypt, decryptLegacy } from '../../utils/crypto'
-import { getLegacyRskBalance } from '../utils'
 
 export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
   let wallets = await decrypt(state.encryptedWallets, key, state.keySalt)

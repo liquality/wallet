@@ -39,6 +39,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
 import { ChainNetworks } from '@/store/utils'
 import state from '../state'
+import store from '../../store'
 
 function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'

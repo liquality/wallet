@@ -3,6 +3,7 @@ import { encrypt } from '../../utils/crypto'
 import buildConfig from '../../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
+import { getLegacyRskBalance } from '../utils'
 
 export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic }) => {
   const id = uuidv4()
