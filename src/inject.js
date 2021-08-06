@@ -271,37 +271,43 @@ async function handleRequest (req) {
 window.keplr = {
   address: null,
   async enable(chainId) {
+    console.log('0')
     const accepted = await window.providerManager.enable('cosmos')
     if (!accepted) throw new Error('User rejected')
     const cosmos = window.providerManager.getProviderFor('PHOTON')
     const addr = await cosmos.getMethod('wallet.getAddresses')()
+    console.log(chainId, addr)
     if(addr) {
+      
       this.address = addr[0]
 
       const {address, publicKey} = this.address;
       console.log(address)
       return {
-        algo: 'algo',
+        name: 'kolev',
+        algo: 'secp256k1',
         pubKey: new Uint8Array(publicKey.split(',')),
-        address: new Uint8Array(publicKey.split(',')),
-        isNanoLedger: false
+        address: new TextEncoder().encode(address),
+        bech32Address: address
       }
     }
-    return addr;
-  },
-  getKey() {
-    if(!this.address) {
-      return
-    }
-
-    const {address, publicKey} = this.address;
     
-
+  },
+  async getKey() {
+    const accepted = await window.providerManager.enable('cosmos')
+    if (!accepted) throw new Error('User rejected')
+    const cosmos = window.providerManager.getProviderFor('PHOTON')
+    const addr = await cosmos.getMethod('wallet.getAddresses')()
+    
+    const {address, publicKey} = addr[0];
+    
+    
     return {
-      algo: 'algo',
+      name: 'kolev',
+      algo: 'secp256k1',
       pubKey: new Uint8Array(publicKey.split(',')),
-      address: new Uint8Array(publicKey.split(',')),
-      isNanoLedger: false
+      address: new TextEncoder().encode(address),
+      bech32Address: address
     }
   },
   async request(req) {
@@ -310,6 +316,15 @@ window.keplr = {
     return handleRequest({
       method: req.method, params
     })
+  },
+  async signAmino(
+    chainId,
+    signer,
+    signDoc
+  ) {
+    console.log('chainId', chainId)
+    console.log('signer', signer)
+    console.log('signDoc', signDoc)
   }
 }
 `
