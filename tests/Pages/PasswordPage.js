@@ -56,9 +56,6 @@ class PasswordPage {
     await page.click('#unlock_button')
     // overview page after unlock
     await page.waitForSelector('#overview', { visible: true })
-    await page.waitForSelector('#send_action', { visible: true })
-    await page.waitForSelector('#swap_action', { visible: true })
-    await page.waitForSelector('#receive_action', { visible: true })
     console.log('User successfully loggedIn after unlock')
   }
 

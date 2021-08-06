@@ -38,6 +38,7 @@ import { BTC_ADDRESS_TYPE_TO_PREFIX } from '@/utils/address'
 import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
 import { ChainNetworks } from '@/store/utils'
+import store from '../../store'
 
 function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
@@ -93,7 +94,18 @@ function createEthereumClient (
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
 
-  const derivationPath = `m/44'/${ethereumNetwork.coinType}'/${indexPath}'/0/0`
+  const legacyCoinType = '137'
+  const { rskLegacyDerivation } = store.state
+  let coinType = ethereumNetwork.coinType
+
+  if (walletType === 'rsk_ledger') {
+    coinType = legacyCoinType
+  } else if (ethereumNetwork.name === 'rsk_mainnet') {
+    coinType = rskLegacyDerivation ? legacyCoinType : ethereumNetwork.coinType
+  }
+
+  const derivationPath = `m/44'/${coinType}'/${indexPath}'/0/0`
+
   if (walletType === 'ethereum_ledger' || walletType === 'rsk_ledger') {
     const assetData = cryptoassets[asset]
     const chainData = chains?.[assetData.chain]
@@ -130,8 +142,8 @@ function createEthereumClient (
 function createEthClient (asset, network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const ethereumNetwork = ChainNetworks.ethereum[network]
-  const infuraApi = isTestnet ? `https://rinkeby.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
-  const scraperApi = isTestnet ? 'https://liquality.io/eth-rinkeby-api' : 'https://liquality.io/eth-mainnet-api'
+  const infuraApi = isTestnet ? `https://ropsten.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
+  const scraperApi = isTestnet ? 'https://liquality.io/eth-ropsten-api' : 'https://liquality.io/eth-mainnet-api'
   const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider()
 
   return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, walletType, indexPath)
@@ -185,14 +197,25 @@ function createPolygonClient (asset, network, mnemonic, indexPath = 0) {
   return createEthereumClient(asset, network, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
 }
 
+function createArbitrumClient (asset, network, mnemonic, indexPath = 0) {
+  const isTestnet = network === 'testnet'
+  const arbitrumNetwork = ChainNetworks.arbitrum[network]
+  const rpcApi = isTestnet ? 'https://rinkeby.arbitrum.io/rpc' : 'https://arb1.arbitrum.io/rpc'
+  const scraperApi = isTestnet ? 'https://liquality.io/arbitrum-testnet-api' : 'https://liquality.io/arbitrum-mainnet-api'
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
+
+  return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
+}
+
 export const createClient = (asset, network, mnemonic, walletType, indexPath = 0) => {
   const assetData = cryptoassets[asset]
 
-  if (assetData?.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType, indexPath)
-  if (assetData?.chain === 'rsk') return createRskClient(asset, network, mnemonic, walletType, indexPath)
-  if (assetData?.chain === 'bsc') return createBSCClient(asset, network, mnemonic, indexPath)
-  if (assetData?.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
-  if (assetData?.chain === 'near') return createNearClient(network, mnemonic, indexPath)
+  if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, walletType, indexPath)
+  if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic, walletType, indexPath)
+  if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic, indexPath)
+  if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
+  if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, indexPath)
+  if (assetData.chain === 'near') return createNearClient(network, mnemonic, indexPath)
 
   return createEthClient(asset, network, mnemonic, walletType, indexPath)
 }

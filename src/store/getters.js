@@ -9,11 +9,11 @@ const clientCache = {}
 const swapProviderCache = {}
 
 const TESTNET_CONTRACT_ADDRESSES = {
-  DAI: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
+  DAI: '0xad6d458402f60fd3bd25163575031acdce07538d',
   SOV: '0x6a9A07972D07E58f0daF5122D11e069288A375fB',
   PWETH: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa'
 }
-const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'MATIC', 'PWETH'].reduce((assets, asset) => {
+const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'MATIC', 'PWETH', 'ARBETH'].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
       ...cryptoassets[asset],
@@ -23,9 +23,26 @@ const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'MATI
 }, {})
 
 export default {
-  client (state) {
-    return (network, walletId, asset, walletType = 'default', indexPath = 0, useCache = true) => {
-      const cacheKey = [asset, network, walletId, walletType, indexPath].join('-')
+  client (state, getters) {
+    return ({
+      network,
+      walletId,
+      asset,
+      accountId,
+      useCache = true,
+      walletType = 'default',
+      index = 0
+    }) => {
+      const account = accountId ? getters.accountItem(accountId) : null
+      const accountType = account?.type || walletType
+      const accountIndex = account?.index || index
+      const cacheKey = [
+        asset,
+        network,
+        walletId,
+        accountType,
+        accountIndex
+      ].join('-')
 
       if (useCache) {
         const cachedClient = clientCache[cacheKey]
@@ -33,7 +50,7 @@ export default {
       }
 
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
-      const client = createClient(asset, network, mnemonic, walletType, indexPath)
+      const client = createClient(asset, network, mnemonic, accountType, accountIndex)
       clientCache[cacheKey] = client
 
       return client
@@ -171,5 +188,22 @@ export default {
       }
       return null
     }
+  },
+  chainAssets (state, getters) {
+    const { cryptoassets } = getters
+
+    const chainAssets = Object.entries(cryptoassets).reduce((chains, [asset, assetData]) => {
+      const assets = assetData.chain in chains ? chains[assetData.chain] : []
+      return Object.assign({}, chains, {
+        [assetData.chain]: [...assets, asset]
+      })
+    }, {})
+    return chainAssets
+  },
+  analyticsEnabled (state) {
+    if (state.analytics && state.analytics.acceptedDate != null) {
+      return true
+    }
+    return false
   }
 }

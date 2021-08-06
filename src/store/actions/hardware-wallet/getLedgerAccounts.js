@@ -5,11 +5,6 @@ export const getLedgerAccounts = async (
   { network, walletId, asset, walletType, startingIndex, numAccounts }
 ) => {
   const { client, networkAccounts } = getters
-  const _client = client(network, walletId, asset, walletType, 0, false)
-  const addresses = await _client.wallet.getAddresses()
-  if (!addresses || addresses.length <= 0) {
-    return []
-  }
   const { chain } = assets[asset]
   const { formatAddress } = chainList[chain]
   const results = []
@@ -24,7 +19,15 @@ export const getLedgerAccounts = async (
     if (account.type.includes('ledger')) {
       usedAddresses.push(...account.addresses.map(address => formatAddress(address)))
     } else {
-      const _client = client(network, walletId, asset, account.type, account.index)
+      const _client = client(
+        {
+          network,
+          walletId,
+          asset,
+          accountId: account.id,
+          useCache: false
+        }
+      )
       const addresses = await _client.wallet.getUsedAddresses()
       usedAddresses.push(...addresses.map(a => formatAddress(a.address)))
     }
@@ -32,13 +35,22 @@ export const getLedgerAccounts = async (
 
   const pageIndexes = [...Array(numAccounts || 5).keys()].map(i => i + startingIndex)
   for (const index of pageIndexes) {
-    const _client = client(network, walletId, asset, walletType, index, false)
+    const _client = client(
+      {
+        network,
+        walletId,
+        asset,
+        walletType,
+        index,
+        useCache: false
+      }
+    )
     const addresses = await _client.wallet.getAddresses()
     if (addresses && addresses.length > 0) {
       const formatedAddress = formatAddress(addresses[0].address)
       results.push({
         account: addresses[0],
-        index: index + startingIndex,
+        index,
         exists: usedAddresses.includes(formatedAddress)
       })
     }

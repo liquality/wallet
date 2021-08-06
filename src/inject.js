@@ -53,8 +53,8 @@ class ProviderManager {
     return chain === 'ethereum' ? 'eth' : chain
   }
 
-  enable () {
-    return this.proxy('ENABLE_REQUEST')
+  enable (chain) {
+    return this.proxy('ENABLE_REQUEST', { chain })
   }
 }
 
@@ -68,6 +68,7 @@ async function getAddresses () {
   const eth = window.providerManager.getProviderFor('${asset}')
   let addresses = await eth.getMethod('wallet.getAddresses')()
   addresses = addresses.map(a => '0x' + a.address)
+  window[injectionName].selectedAddress = addresses[0]
   return addresses
 }
 
@@ -102,7 +103,7 @@ window[injectionName] = {
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
   enable: async () => {
-    const accepted = await window.providerManager.enable()
+    const accepted = await window.providerManager.enable('${chain}')
     if (!accepted) throw new Error('User rejected')
     return getAddresses()
   },
@@ -213,7 +214,7 @@ async function handleRequest (req) {
 
 window.bitcoin = {
   enable: async () => {
-    const accepted = await window.providerManager.enable()
+    const accepted = await window.providerManager.enable('bitcoin')
     if (!accepted) throw new Error('User rejected')
     const btc = window.providerManager.getProviderFor('BTC')
     return btc.getMethod('wallet.getAddresses')()
@@ -241,7 +242,7 @@ async function handleRequest (req) {
 }
 window.near = {
   enable: async () => {
-    const accepted = await window.providerManager.enable()
+    const accepted = await window.providerManager.enable('near')
     if (!accepted) throw new Error('User rejected')
     const near = window.providerManager.getProviderFor('NEAR')
     return near.getMethod('wallet.getAddresses')()
@@ -266,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const includesAmount = href.includes('value=') || href.includes('amount=')
       if (includesAmount) {
         e.preventDefault()
-        await window.providerManager.enable()
+        await window.providerManager.enable('near')
         window.providerManager.proxy('HANDLE_PAYMENT_URI', { uri: href })
       }
     }

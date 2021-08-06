@@ -126,7 +126,7 @@
             Send
           </label>
           <div class="d-flex align-items-center justify-content-between mt-0">
-            <div class="confirm-value" :style="getAssetColorStyle(asset)">
+            <div id="confirm_send_value" class="confirm-value" :style="getAssetColorStyle(asset)">
             {{ dpUI(amount) }} {{ asset }}
           </div>
           <div class="details-text">${{ amountInFiat }}</div>
@@ -159,7 +159,7 @@
         </div>
         <div class="mt-40">
           <label>Send To</label>
-          <p class="confirm-address">{{ this.address ? shortenAddress(this.address) : '' }}</p>
+          <p class="confirm-address" id="confirm-address">{{ this.address ? shortenAddress(this.address) : '' }}</p>
         </div>
       </div>
       <div class="wrapper_bottom">
@@ -404,7 +404,8 @@ export default {
           const feePerBytes = Object.values(this.assetFees).map(fee => fee.fee)
           const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
           try {
-            const totalFees = await client.getMethod('getTotalFees')({ value, feePerBytes, max: getMax })
+            const txs = feePerBytes.map(fee => ({ value, fee }))
+            const totalFees = await client.getMethod('getTotalFees')(txs, getMax)
             for (const [speed, fee] of Object.entries(this.assetFees)) {
               const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
               sendFees[speed] = totalFee

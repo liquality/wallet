@@ -5,7 +5,7 @@
     </NavBar>
     <div class="wrapper form">
       <div class="wrapper_top">
-        <div class="selected-asset">
+        <div class="selected-asset" id="custom_fee_selected_asset">
           <img :src="getAssetIcon(asset)" class="asset-icon" />
           <span class="asset-name">
             {{ asset }}
@@ -17,6 +17,7 @@
           <div
             class="custom-fee-presets-option"
             v-for="name in ['slow', 'average', 'fast']"
+            :id=name
             :key="name"
             :class="{ active: name === preset }"
             @click="setPreset(name)"
@@ -50,6 +51,7 @@
               <div class="input-group">
                 <input type="number"
                      class="form-control"
+                       id="custom_fee_input_field"
                      :step="stepSize"
                      :value="fee"
                      @input="setCustomFee(parseFloat($event.target.value))" />
@@ -63,7 +65,7 @@
         </div>
 
         <!-- Result -->
-        <div class="custom-fee-result">
+        <div class="custom-fee-result" id="custom_speed_fee_results">
           <div class="custom-fee-result-title">
             New Speed/Fee
           </div>
@@ -77,12 +79,14 @@
         <div class="button-group">
           <button
             class="btn btn-light btn-outline-primary btn-lg"
+            id="custom_fee_cancel_button"
             @click="cancel"
           >
             Cancel
           </button>
           <button
             class="btn btn-primary btn-lg btn-block"
+            id="custom_fee_apply_button"
             @click="apply"
             :disabled="!fee"
           >

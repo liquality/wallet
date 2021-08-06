@@ -5,7 +5,7 @@ class SwapPage {
   /**
    * Enter SEND amount in SWAP view.
    * @param page
-   * @param amountToSend
+   * @param {string} amountToSend - amount to enter in send input
    * @returns {Promise<void>}
    * @constructor
    */
@@ -14,15 +14,17 @@ class SwapPage {
     const addressInputField = await page.$('#swap_send_amount_input_field')
     await addressInputField.click({ clickCount: 3 })
     await addressInputField.type(amountToSend)
+    console.log(chalk.green('User enters SWAP send amount as ' + amountToSend))
   }
 
   /**
-   * Click on Min
+   * Click on Min.
    * @param page
    * @returns {Promise<void>}
    * @constructor
    */
   async ClickOnMin (page) {
+    await page.waitForSelector('#min_amount_send_button', { visible: true })
     await page.click('#min_amount_send_button')
   }
 
@@ -33,7 +35,10 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendErrors (page) {
-    await page.waitForSelector('.swap-send-main-errors', { visible: true })
+    await page.waitForSelector('.swap-send-main-errors', {
+      visible: true,
+      timeout: 60000
+    })
     return await page.$eval('.swap-send-main-errors', (el) => el.textContent)
   }
 
@@ -53,16 +58,43 @@ class SwapPage {
     await page.waitForSelector('#search_for_a_currency', { visible: true })
   }
 
-  async ClickSwapReviewButton (page) {
-    await page.waitForSelector('#swap_review_button:not([disabled]')
-    await page.click('#swap_review_button')
-    console.log(chalk.green('User clicked on Swap review button'))
+  /**
+   * Get Selected service provider from SWAP screen.
+   * @param page
+   * @returns {Promise<*>} - Liquality, Thorchain....
+   * @constructor
+   */
+  async GetSelectedServiceProvider (page) {
+    await page.waitForSelector('#selectedQuote_provider', { visible: true })
+    return await page.$eval('#selectedQuote_provider', (el) => el.textContent)
   }
 
+  /**
+   * Check SWAP Screen Review button has been Enabled.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickSwapReviewButton (page) {
+    console.log('User checking for SWAP Review button is enabled or disabled')
+    await page.waitForSelector('#swap_review_button:not([disabled])', {
+      timeout: 60000
+    })
+    await page.click('#swap_review_button')
+    console.log(chalk.green('User clicked on SWAP review button'))
+  }
+
+  /**
+   * Click on Initiate Swap button.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
   async ClickInitiateSwapButton (page) {
     await page.waitForSelector('#initiate_swap_button:not([disabled]', { visible: true })
     console.log(chalk.green('Initiate swap button has been enabled, almost there...'))
-    // await page.click('#initiate_swap_button')
+    await page.click('#initiate_swap_button')
+    console.log(chalk.green('User clicked on initiate_swap_button option'))
   }
 
   /**
@@ -74,6 +106,7 @@ class SwapPage {
   async ValidateNetworkFeeTab (page) {
     await page.waitForSelector('#network_speed_fee', { visible: true })
     await page.click('#network_speed_fee')
+    console.log(chalk.green('user clicked on on Network fee options'))
   }
 
   /**
@@ -83,6 +116,8 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendAmount (page) {
+    await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
+    console.log('SWAP screen has been displayed with send amount input field')
     return await page.$eval('#swap_send_amount_input_field', el => el.value)
   }
 
@@ -93,11 +128,13 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendAmountValue (page) {
+    await page.waitForTimeout(5000)
     await page.waitForSelector('#send_swap_confirm_value', { visible: true })
     return await page.$eval('#send_swap_confirm_value', el => el.textContent)
   }
 
   async GetSwapSendAmountInDollar (page) {
+    await page.waitForTimeout(5000)
     await page.waitForSelector('#send_swap_amount_fiat', { visible: true })
     return await page.$eval('#send_swap_amount_fiat', el => el.textContent)
   }
@@ -107,8 +144,15 @@ class SwapPage {
     return await page.$eval('#swap_send_network_fee_value', el => el.textContent)
   }
 
+  /**
+   * Get Network fee from SEND section.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
   async GetSwapSendNetworkFeeInDollar (page) {
     await page.waitForSelector('#swap_send_network_fee_fiat_rate', { visible: true })
+    await page.waitForTimeout(10000)
     return await page.$eval('#swap_send_network_fee_fiat_rate', el => el.textContent)
   }
 
@@ -153,13 +197,22 @@ class SwapPage {
   }
 
   async GetSwapRate (page) {
-    await page.waitForSelector('#swap_rate_value', { visible: true })
-    return await page.$eval('#swap_rate_value', el => el.textContent)
+    await page.waitForSelector('#swap-rate_value', { visible: true })
+    return await page.$eval('#swap-rate_value', el => el.textContent)
   }
 
+  /**
+   * Check If the swap contains the right message
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
   async ValidateMessage (page) {
     const message = await page.$eval('#media-body-info', el => el.textContent)
-    expect(message).contain('If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at')
+    expect(message).contain.oneOf([
+      'If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at',
+      'Max slippage is 0.5%.'
+    ])
   }
 }
 

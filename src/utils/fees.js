@@ -10,7 +10,8 @@ const SEND_FEE_UNITS = {
   BNB: 21000,
   NEAR: 10000000000000,
   MATIC: 21000,
-  ERC20: 90000
+  ERC20: 90000,
+  ARBETH: 620000
 }
 
 const FEE_OPTIONS = {
@@ -22,14 +23,6 @@ const FEE_OPTIONS = {
 
 function getSendFee (asset, feePrice) {
   return getTxFee(SEND_FEE_UNITS, asset, feePrice)
-}
-
-function getSwapFee (feeUnits, type, asset, feePrice) {
-  if (feeUnits && type in feeUnits) {
-    return getTxFee(feeUnits[type], asset, feePrice)
-  } else {
-    return BN(0) // There is no fee for this part of the swap
-  }
 }
 
 function getTxFee (units, _asset, _feePrice) {
@@ -47,4 +40,4 @@ function getFeeLabel (fee) {
   return FEE_OPTIONS?.[name]?.label || ''
 }
 
-export { FEE_OPTIONS, getSendFee, getSwapFee, getFeeLabel }
+export { FEE_OPTIONS, getSendFee, getTxFee, getFeeLabel }

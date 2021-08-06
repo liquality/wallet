@@ -6,7 +6,7 @@
    <div class="swap-details">
       <div class="swap-details_info">
         <div class="row">
-          <div class="col">
+          <div class="col" id="swap-details-status-section">
             <h2>Status</h2>
             <p>{{ status }}</p>
           </div>
@@ -18,9 +18,9 @@
         <div class="row">
           <div class="col">
             <h2>Sent</h2>
-            <p>{{prettyBalance(item.fromAmount, item.from)}} {{item.from}}</p>
+            <p :id="'sent-'+item.from">{{prettyBalance(item.fromAmount, item.from)}} {{item.from}}</p>
           </div>
-          <div class="col">
+          <div class="col" id="pending_receipt_section">
             <h2 v-if="['SUCCESS', 'REFUNDED'].includes(item.status)">Received</h2>
             <h2 v-else>Pending Receipt</h2>
             <p>{{prettyBalance(item.toAmount, item.to)}} {{item.to}}</p>
@@ -28,16 +28,16 @@
         </div>
         <div class="row">
           <div class="col">
-            <h2>Rate</h2>
+            <h2 class="d-flex align-items-center">Rate <SwapProviderLabel class="ml-2" :provider="item.provider" :network="activeNetwork" /></h2>
             <p>1 {{item.from}} = <span class="swap-details_rate">{{item.rate}}</span> {{item.to}}</p>
           </div>
         </div>
       </div>
-      <div class="swap-details_fee">
+      <div class="swap-details_fee" id="swap-details-network-fee-section">
         <div class="row">
           <div class="col">
             <h2>Network Speed/Fee</h2>
-            <p v-for="fee in txFees" :key="fee.asset">
+            <p v-for="fee in txFees" :key="fee.asset" :id="'network_fee_'+fee.asset">
               {{ fee.asset }} Fee: {{ fee.fee }} {{ fee.unit }}
             </p>
           </div>
@@ -85,16 +85,15 @@ import { chains } from '@liquality/cryptoassets'
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStatusLabel } from '@/utils/history'
 import { isERC20, getNativeAsset } from '@/utils/asset'
-import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 
 import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
 import Modal from '@/components/Modal'
+import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
-import LiqualitySwapDetails from '@/swaps/liquality/SwapDetails'
-import UniswapSwapDetails from '@/swaps/uniswap/SwapDetails'
+import { getSwapDetailsComponent } from '../../utils/swaps'
 
 export default {
   components: {
@@ -102,7 +101,8 @@ export default {
     SpinnerIcon,
     NavBar,
     Modal,
-    LedgerSignRquest
+    LedgerSignRquest,
+    SwapProviderLabel
   },
   data () {
     return {
@@ -119,11 +119,7 @@ export default {
         .find((item) => item.id === this.id)
     },
     swapDetailsComponent () {
-      const config = getSwapProviderConfig(this.item.network, this.item.provider)
-      return ({
-        [SwapProviderType.LIQUALITY]: LiqualitySwapDetails,
-        [SwapProviderType.UNISWAPV2]: UniswapSwapDetails
-      })[config.type]
+      return getSwapDetailsComponent(this.item.network, this.item.provider)
     },
     status () {
       return getStatusLabel(this.item)

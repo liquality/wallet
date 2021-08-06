@@ -10,7 +10,7 @@ import UniswapV2Router from '@uniswap/v2-periphery/build/IUniswapV2Router02.json
 import * as ethers from 'ethers'
 
 import buildConfig from '../../build.config'
-import { chains, currencyToUnit } from '@liquality/cryptoassets'
+import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isEthereumChain, isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
@@ -21,13 +21,25 @@ import { SwapProvider } from '../SwapProvider'
 const SWAP_DEADLINE = 30 * 60 // 30 minutes
 
 class UniswapSwapProvider extends SwapProvider {
-  constructor ({ providerId, routerAddress }) {
-    super(providerId)
-    this.routerAddress = routerAddress
+  constructor (config) {
+    super(config)
+    this._apiCache = {}
   }
 
   async getSupportedPairs () {
     return []
+  }
+
+  getApi (network, asset) {
+    const fromChain = cryptoassets[asset].chain
+    const chainId = ChainNetworks[fromChain][network].chainId
+    if (chainId in this._apiCache) {
+      return this._apiCache[chainId]
+    } else {
+      const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
+      this._apiCache[chainId] = api
+      return api
+    }
   }
 
   getUniswapToken (chainId, asset) {
@@ -59,7 +71,7 @@ class UniswapSwapProvider extends SwapProvider {
 
     const pairAddress = Pair.getAddress(tokenA, tokenB)
 
-    const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
+    const api = this.getApi(network, from)
     const contract = new ethers.Contract(pairAddress, UniswapV2Pair.abi, api)
     const reserves = await contract.getReserves()
     const token0Address = await contract.token0()
@@ -81,35 +93,60 @@ class UniswapSwapProvider extends SwapProvider {
     return {
       from,
       to,
-      // TODO: Amounts should be in BigNumber to prevent loss of precision
-      fromAmount: fromAmountInUnit.toNumber(),
-      toAmount: toAmountInUnit.toNumber()
+      fromAmount: fromAmountInUnit,
+      toAmount: toAmountInUnit
+    }
+  }
+
+  async requiresApproval ({ network, walletId, quote }) {
+    if (!isERC20(quote.from)) return false
+
+    const fromChain = cryptoassets[quote.from].chain
+    const api = this.getApi(network, quote.from)
+    const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
+
+    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
+    const allowance = await erc20.allowance(fromAddress, this.config.routerAddress)
+    const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
+    if (allowance.gte(inputAmount)) {
+      return false
+    }
+  }
+
+  async buildApprovalTx ({ network, walletId, quote }) {
+    const api = this.getApi(network, quote.from)
+    const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
+
+    const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
+    const inputAmountHex = inputAmount.toHexString()
+    const encodedData = erc20.interface.encodeFunctionData('approve', [this.config.routerAddress, inputAmountHex])
+
+    const fromChain = cryptoassets[quote.from].chain
+    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
+
+    return {
+      from: fromAddress, // Required for estimation only (not used in chain client)
+      to: cryptoassets[quote.from].contractAddress,
+      value: 0,
+      data: encodedData,
+      fee: quote.fee
     }
   }
 
   async approveTokens ({ network, walletId, quote }) {
-    const fromChain = cryptoassets[quote.from].chain
-    const chainId = ChainNetworks[fromChain][network].chainId
-
-    const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
-    const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
-
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.toAccountId)
-    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
-    const allowance = await erc20.allowance(fromAddress, this.routerAddress)
-    const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
-    if (allowance.gte(inputAmount)) {
+    const requiresApproval = await this.requiresApproval({ network, walletId, quote })
+    if (!requiresApproval) {
       return {
         status: 'APPROVE_CONFIRMED'
       }
     }
 
-    const inputAmountHex = inputAmount.toHexString()
-    const encodedData = erc20.interface.encodeFunctionData('approve', [this.routerAddress, inputAmountHex])
+    const txData = await this.buildApprovalTx({ network, walletId, quote })
 
-    const account = this.getAccount(quote.fromAccountId)
-    const client = this.getClient(network, walletId, quote.from, account?.type)
-    const approveTx = await client.chain.sendTransaction({ to: cryptoassets[quote.from].contractAddress, value: 0, data: encodedData, fee: quote.fee })
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
+    const approveTx = await client.chain.sendTransaction(txData)
 
     return {
       status: 'WAITING_FOR_APPROVE_CONFIRMATIONS',
@@ -118,7 +155,7 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  async sendSwap ({ network, walletId, quote }) {
+  async buildSwapTx ({ network, walletId, quote }) {
     const toChain = cryptoassets[quote.to].chain
     const chainId = ChainNetworks[toChain][network].chainId
 
@@ -128,8 +165,7 @@ class UniswapSwapProvider extends SwapProvider {
     const outputAmount = CurrencyAmount.fromRawAmount(toToken, BN(quote.toAmount).toFixed())
     const minimumOutput = this.getMinimumOutput(outputAmount)
 
-    const account = this.getAccount(quote.fromAccountId)
-    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const blockHeight = await client.chain.getBlockHeight()
     const currentBlock = await client.chain.getBlockByNumber(blockHeight)
 
@@ -142,8 +178,8 @@ class UniswapSwapProvider extends SwapProvider {
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
     const toAddress = chains[toChain].formatAddress(toAddressRaw)
 
-    const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
-    const uniswap = new ethers.Contract(this.routerAddress, UniswapV2Router.abi, api)
+    const api = this.getApi(network, quote.to)
+    const uniswap = new ethers.Contract(this.config.routerAddress, UniswapV2Router.abi, api)
 
     let encodedData
     if (isERC20(quote.from)) {
@@ -159,8 +195,25 @@ class UniswapSwapProvider extends SwapProvider {
 
     const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
 
-    await this.sendLedgerNotification(quote, account, 'Signing required to complete the swap.')
-    const swapTx = await client.chain.sendTransaction({ to: this.routerAddress, value, data: encodedData, fee: quote.fee })
+    const fromChain = cryptoassets[quote.from].chain
+    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
+
+    return {
+      from: fromAddress, // Required for estimation only (not used in chain client)
+      to: this.config.routerAddress,
+      value,
+      data: encodedData,
+      fee: quote.fee
+    }
+  }
+
+  async sendSwap ({ network, walletId, quote }) {
+    const txData = await this.buildSwapTx({ network, walletId, quote })
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
+
+    await this.sendLedgerNotification(quote.fromAccountId, 'Signing required to complete the swap.')
+    const swapTx = await client.chain.sendTransaction(txData)
 
     return {
       status: 'WAITING_FOR_SWAP_CONFIRMATIONS',
@@ -183,9 +236,46 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
+  async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
+    if (txType !== UniswapSwapProvider.fromTxType) throw new Error(`Invalid tx type ${txType}`)
+
+    const nativeAsset = chains[cryptoassets[asset].chain].nativeAsset
+    const account = this.getAccount(quote.fromAccountId)
+    const client = this.getClient(network, walletId, quote.from, account?.type)
+
+    let gasLimit = 0
+    if (await this.requiresApproval({ network, walletId, quote })) {
+      const approvalTx = await this.buildApprovalTx({ network, walletId, quote })
+      const rawApprovalTx = {
+        from: approvalTx.from,
+        to: approvalTx.to,
+        data: approvalTx.data,
+        value: '0x' + approvalTx.value.toString(16)
+      }
+
+      gasLimit += await client.getMethod('estimateGas')(rawApprovalTx)
+    }
+
+    const swapTx = await this.buildSwapTx({ network, walletId, quote })
+    const rawSwapTx = {
+      from: swapTx.from,
+      to: swapTx.to,
+      data: swapTx.data,
+      value: '0x' + swapTx.value.toString(16)
+    }
+    gasLimit += await client.getMethod('estimateGas')(rawSwapTx)
+
+    const fees = {}
+    for (const feePrice of feePrices) {
+      const gasPrice = BN(feePrice).times(1e9) // ETH fee price is in gwei
+      const fee = BN(gasLimit).times(1.1).times(gasPrice)
+      fees[feePrice] = unitToCurrency(cryptoassets[nativeAsset], fee)
+    }
+    return fees
+  }
+
   async waitForApproveConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.accountId)
-    const client = this.getClient(network, walletId, swap.from, account?.type)
+    const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
@@ -202,8 +292,7 @@ class UniswapSwapProvider extends SwapProvider {
   }
 
   async waitForSwapConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.accountId)
-    const client = this.getClient(network, walletId, swap.from, account?.type)
+    const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
@@ -241,15 +330,6 @@ class UniswapSwapProvider extends SwapProvider {
 
   static txTypes = {
     SWAP: 'SWAP'
-  }
-
-  static feeUnits = {
-    SWAP: {
-      ETH: 100000 + 400000, // (potential)ERC20 Approval + Swap
-      BNB: 100000 + 400000,
-      MATIC: 100000 + 400000,
-      ERC20: 100000 + 400000
-    }
   }
 
   static statuses = {

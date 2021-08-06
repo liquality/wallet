@@ -90,7 +90,8 @@ export default {
     ...mapActions([
       'createAccount',
       'getLedgerAccounts',
-      'updateAccountBalance'
+      'updateAccountBalance',
+      'trackAnalytics'
     ]),
     async tryToConnect ({ asset, walletType, page }) {
       if (this.usbBridgeTransportCreated) {
@@ -98,11 +99,14 @@ export default {
       } else {
         this.loading = true
         this.bridgeModalOpen = true
-        this.$store.subscribe(async ({ type, payload }) => {
+        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
           if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
           payload.created === true) {
             this.bridgeModalOpen = false
             await this.connect({ asset, walletType, page })
+            if (unsubscribe) {
+              unsubscribe()
+            }
           }
         })
       }
@@ -150,6 +154,14 @@ export default {
     async unlock ({ walletType }) {
       if (this.selectedAsset) {
         await this.addAccount({ walletType })
+        await this.trackAnalytics({
+          event: 'Ledger Connect',
+          properties: {
+            category: 'Hardware Wallet',
+            action: 'Add Ledger Account',
+            label: `Asset ${this.selectedAsset.name}`
+          }
+        })
       }
     },
     showTokenManagement ({ walletType }) {

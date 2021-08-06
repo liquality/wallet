@@ -1,0 +1,19 @@
+{
+  "title": "Thorchain AMM Swaps",
+  "description": "Swap tokens across blockchains through liquidity pools.",
+  "pros": [
+    "Cross-chain",
+    "High liquidity",
+    "Native assets",
+    "Fee on destination chain not required"
+  ],
+  "cons": [
+    "Beta software (chaosnet)",
+    "Swaps executed on intermediary blockchain",
+    "Few pairs"
+  ],
+  "fees": [
+    "Outbound Fee",
+    "Slippage"
+  ]
+}

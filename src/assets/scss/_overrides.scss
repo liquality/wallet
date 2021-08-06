@@ -74,6 +74,9 @@ $form-group-margin-bottom: 5px;
 $label-margin-bottom: 0;
 
 $wrapper-padding: 20px;
+$grid-gutter-width: 40px;
+$modal-inner-padding: $grid-gutter-width / 2;
+$modal-footer-margin-between: 4px;
 
 $container-max-widths: (
   xl: 980px

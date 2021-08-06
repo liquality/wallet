@@ -9,28 +9,35 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    await page.waitForSelector('#overview', {
-      visible: true
+    const now = Date.now()
+    await page.screenshot({ path: `./screenshots/${now}_overviewPage.png` })
+    await page.waitForSelector('#burger_icon_menu', {
+      visible: true,
+      timeout: 120000
     })
-    console.log(chalk.green('User logged successfully, overview page loaded'))
+    console.log(chalk.green('User logged successfully, overview page has been loaded'))
   }
 
   /**
    * Select Network from overview page
    * @param page
-   * @param network - Network type
+   * @param network - Network type default: testnet
    * @returns {Promise<void>}
    * @constructor
    * @example - SelectNetwork(page,'testnet')
    */
-  async SelectNetwork (page, network) {
-    await page.click('#head_network')
+  async SelectNetwork (page, network = 'testnet') {
+    await page.waitForSelector('#head_network', { visible: true })
+    await page.click('#head_network', { delay: 5 })
+    await page.waitForTimeout(1000)
     switch (network) {
       case 'testnet': {
         await page.waitForSelector('#testnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
-        await page.click('#testnet_network')
-        const overviewText = await page.$eval('.text-muted', el => el.innerText)
+        await page.click('#testnet_network', { delay: 10 })
+        await page.waitForTimeout(2000)
+        await page.waitForSelector('#active_network', { visible: true })
+        const overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Testnet overview header').contain('TESTNET')
         console.log('user successfully changed to TESTNET')
         break
@@ -40,9 +47,10 @@ class OverviewPage {
         await page.waitForSelector('#mainnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
         await page.click('#mainnet_network')
-        const overviewText = await page.$eval('.text-muted', el => el.innerText)
+        await page.waitForSelector('#active_network', { visible: true })
+        const overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Mainnet overview header').contain('MAINNET')
-        console.log('user successfully changed to MAINET')
+        console.log('user successfully changed to MAINNET')
         break
       }
 
@@ -60,14 +68,20 @@ class OverviewPage {
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#send_action', {
-      visible: true
+      visible: true,
+      timeout: 60000
     })
+    console.log('SEND button has been displayed')
     await page.waitForSelector('#swap_action', {
-      visible: true
+      visible: true,
+      timeout: 60000
     })
+    console.log('SWAP button has been displayed')
     await page.waitForSelector('#receive_action', {
-      visible: true
+      visible: true,
+      timeout: 60000
     })
+    console.log('RECEIVE button has been displayed')
   }
 
   /**
@@ -79,28 +93,85 @@ class OverviewPage {
    * @example SelectChain(page,'BITCOIN')
    */
   async SelectChain (page, chain) {
-    await page.waitForSelector('#assert_list_item', { visible: true })
-    const assertListItems = await page.$$('#assert_list_item')
+    await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
-      case 'BITCOIN': {
+      case 'BTC': {
         await page.waitForSelector(`#${chain}`, { visible: true })
         await page.click(`#${chain}`)
         break
       }
 
-      case 'ETHEREUM': {
+      case 'DAI':
+      case 'ETH': {
+        const eth = await page.waitForSelector('#ETHEREUM', { visible: true })
+        await eth.click()
         await page.waitForSelector(`#${chain}`, { visible: true })
         await page.click(`#${chain}`)
-        const eth = await page.waitForSelector('#ETH', { visible: true })
+        break
+      }
+
+      case 'BNB': {
+        const eth = await page.waitForSelector('#BSC', { visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
+      case 'NEAR': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const eth = await page.waitForSelector('#NEAR', { visible: true })
         await eth.click()
         break
       }
 
+      case 'ARBETH': {
+        const eth = await page.waitForSelector('#ARBITRUM', { visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
+      case 'SOV':
+      case 'RBTC': {
+        const eth = await page.waitForSelector('#RSK', { visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
+      case 'MATIC':
+      case 'PWETH': {
+        const eth = await page.waitForSelector('#POLYGON', { visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
       default:
-        await assertListItems[0].click()
-        await page.click('#' + chain)
+        throw Error(`Unsupported chain: ${chain}`)
     }
     await page.waitForSelector('.account-container_balance_code', { visible: true })
+    await page.waitForSelector('#refresh-icon', { visible: true })
+  }
+
+  /**
+   * Validate view explorer href for each assert on overview page.
+   * @param page
+   * @param asset {string} - assert symbol.
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async HasViewExplorerDisplayed (page, asset) {
+    const id = `#${asset}_view_in_explorer`
+    await page.waitForSelector(id, { visible: true })
+    const explorerLink = await page.$eval(id, el => el.href)
+    expect(explorerLink).contains('https://')
+    console.log('View explorer link:' + explorerLink)
   }
 
   /**
@@ -116,7 +187,8 @@ class OverviewPage {
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
     expect(code).equals(chainCode)
     // Click Receive button
-    await page.click('#receive')
+    await page.click(`#${chainCode}_receive_button`)
+    console.log(chalk.green('User clicked on receive option for ' + chainCode))
     await page.waitForSelector('.receive_address', { visible: true })
   }
 
@@ -130,10 +202,16 @@ class OverviewPage {
   async CheckAssertOverviewDetails (page, assertCode) {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
-    expect(code).equals(assertCode)
+    expect(code, 'Assert Code wrong').equals(assertCode)
     // Check assert account title
     const title = await page.$eval('.account-title', el => el.textContent)
     expect(title).contains(assertCode)
+    // Check fiat balance not NaN
+    expect(await page.$eval('.account-container_balance_fiat', el => el.textContent), 'Balance $ not be NaN')
+      .not.equals('NaN')
+    // account balance is not NaN
+    expect(await page.$eval('.account-container_balance_value', el => el.textContent), 'Balance value not be NaN')
+      .not.equals('NaN')
   }
 
   /**
@@ -155,6 +233,7 @@ class OverviewPage {
    */
   async GetTotalLiquidity (page) {
     // Check the Total amount - 10s wait to load amount
+    await page.waitForSelector('.wallet-stats_total', { timeout: 60000 })
     await page.waitForTimeout(10000)
     return await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g, ''))
   }
@@ -189,6 +268,7 @@ class OverviewPage {
   async ClickSwipe (page) {
     await page.waitForSelector('#swap_action', { visible: true })
     await page.click('#swap_action')
+    console.log('User clicked on SWAP button from overview page')
     await page.waitForSelector('#search_for_a_currency_search', { visible: true })
   }
 
