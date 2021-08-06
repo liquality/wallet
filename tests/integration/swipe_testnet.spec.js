@@ -411,7 +411,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
-  it('SWAP BTC to RBTC - fastBTC integration["mainnet"]', async () => {
+  it.skip('SWAP BTC to RBTC - fastBTC integration["mainnet"]', async () => {
     const asset1 = 'BTC'
 
     // overview page
