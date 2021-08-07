@@ -231,7 +231,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'SOV to BTC SWAP min value not set in input').equals('0.05')
     await page.$eval('#min_amount_send_button', (el) => el.textContent)
-    await swapPage.EnterSendAmountOnSwap(page, '1')
+    await swapPage.ClickOnMin(page)
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
     // Click on SWAP Review button
@@ -240,7 +240,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // SWAP SEND details validation
     // Send confirm value
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
-    expect(sendAmountValue.trim()).contain('1 SOV')
+    expect(sendAmountValue.trim()).contain(asset1)
     console.log(chalk.green('SEND Swap value: ' + sendAmountValue))
     // Send confirm USD value
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
@@ -400,7 +400,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'ETH SWAP min value not set in input').not.equals('0.0000')
     // Enter 1000
-    await swapPage.EnterSendAmountOnSwap(page, '10')
+    await swapPage.EnterSendAmountOnSwap(page, '1000')
     expect(await swapPage.GetSwapSendErrors(page))
       .to.be.oneOf([' Lower amount. This exceeds available balance. ',
         ' Please reduce amount. It exceeds maximum. '])
@@ -411,7 +411,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
-  it('SWAP BTC to RBTC - fastBTC integration["mainnet"]', async () => {
+  it('SWAP BTC to RBTC - fastBTC["mainnet"]', async () => {
     const asset1 = 'BTC'
 
     // overview page
@@ -453,6 +453,55 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
   })
+  it('SWAP BTC to RBTC - fastBTC quote select["mainnet"]', async () => {
+    const asset1 = 'BTC'
+
+    // overview page
+    await overviewPage.HasOverviewPageLoaded(page)
+    // Select MainBet for fastBTC integration
+    await overviewPage.SelectNetwork(page, 'mainnet')
+    // Click asset 1
+    await overviewPage.SelectChain(page, asset1)
+    await page.waitForSelector('#' + asset1 + '_swap_button', { visible: true })
+    await page.click('#' + asset1 + '_swap_button')
+    console.log(chalk.green('User clicked on BTC SWAP button'))
+
+    await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
+    console.log('SWAP screen has been displayed with send amount input field')
+
+    // Select 2nd Pair (RBTC)
+    await page.click('.swap-receive-main-icon')
+    await page.waitForSelector('#RSK', { visible: true })
+    await page.click('#RSK')
+    await page.waitForSelector('#RBTC', { visible: true })
+    await page.click('#RBTC')
+
+    // (Liquality swap provider)
+    await page.waitForSelector('#selectedQuote_provider', {
+      visible: true,
+      timeout: 60000
+    })
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+      'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
+
+    // Check see all quotes
+    await page.waitForSelector('#see_all_quotes', { visible: true })
+    await page.click('#see_all_quotes')
+    await page.waitForSelector('#available_quotes_header', { visible: true })
+    await page.click('#fastBTC_rate_provider')
+    await page.click('#select_quote_button')
+
+    // (fastBTC swap provider)
+    await page.waitForSelector('#selectedQuote_provider', {
+      visible: true,
+      timeout: 60000
+    })
+
+    // (FastBTC)
+    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+      'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC'])
+  })
+
   it('SWAP (NEAR->BTC)', async () => {
     const asset1 = 'NEAR'
     const asset2 = 'BTC'

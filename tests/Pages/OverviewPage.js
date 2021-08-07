@@ -9,8 +9,11 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    await page.waitForSelector('#overview', {
-      visible: true
+    const now = Date.now()
+    await page.screenshot({ path: `./screenshots/${now}_overviewPage.png` })
+    await page.waitForSelector('#burger_icon_menu', {
+      visible: true,
+      timeout: 120000
     })
     console.log(chalk.green('User logged successfully, overview page has been loaded'))
   }

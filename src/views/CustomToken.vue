@@ -9,6 +9,7 @@
           <label for="chain">Chain</label>
           <div class="dropdown">
             <button class="btn dropdown-toggle"
+                    id="select_chain_dropdown"
                     type="button"
                     @click.stop="chainDropdownOpen = !chainDropdownOpen">
               {{ chain || 'Select chain...' }}
@@ -18,6 +19,7 @@
             <ul class="dropdown-menu" :class="{ show: chainDropdownOpen }">
               <li>
                 <a class="dropdown-item"
+                   id="ethereum_chain"
                    href="#"
                    @click="selectChain('ethereum')"
                    :class="{active: chain === 'ethereum'}">
@@ -26,6 +28,7 @@
               </li>
               <li>
                 <a class="dropdown-item"
+                   id="rsk_chain"
                    href="#"
                    @click="selectChain('rsk')"
                    :class="{active: chain === 'rsk'}">
@@ -34,6 +37,7 @@
               </li>
               <li>
                 <a class="dropdown-item"
+                   id="bsc_chain"
                    href="#"
                    @click="selectChain('bsc')"
                    :class="{active: chain === 'bsc'}">
@@ -42,6 +46,7 @@
               </li>
               <li>
                 <a class="dropdown-item"
+                   id="polygon_chain"
                    href="#"
                    @click="selectChain('polygon')"
                    :class="{active: chain === 'polygon'}">
@@ -50,6 +55,7 @@
               </li>
               <li>
                 <a class="dropdown-item"
+                   id="arbitrum_chain"
                    href="#"
                    @click="selectChain('arbitrum')"
                    :class="{active: chain === 'arbitrum'}">
@@ -131,7 +137,7 @@ export default {
     },
     existingAsset () {
       const existingAsset = Object.values(cryptoassets).find(asset =>
-        asset.type === 'erc20' && asset.contractAddress.toLowerCase() === this.contractAddress.toLowerCase())
+        asset.type === 'erc20' && asset.contractAddress.toLowerCase() === this.contractAddress.toLowerCase() && asset.chain === this.chain)
       return existingAsset ? { ...existingAsset, symbol: existingAsset.code } : null
     }
   },
@@ -165,12 +171,15 @@ export default {
       this.contractAddress = e.target.value
       this.fetchToken()
     },
-    fetchToken: debounce(async function () {
+    resetFields () {
       this.symbol = null
       this.name = null
       this.decimals = null
       this.assetExists = false
       this.autofilled = false
+    },
+    fetchToken: debounce(async function () {
+      this.resetFields()
 
       let customToken
 
@@ -184,7 +193,6 @@ export default {
       if (customToken) {
         this.symbol = customToken.symbol
         this.name = customToken.name
-        this.chain = customToken.chain
         this.decimals = customToken.decimals
         this.autofilled = true
       }
@@ -192,7 +200,8 @@ export default {
     async selectChain (chain) {
       this.chain = chain
       this.chainDropdownOpen = false
-      await this.fetchToken()
+      this.resetFields()
+      this.fetchToken()
     }
   }
 }
