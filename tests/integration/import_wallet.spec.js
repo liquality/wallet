@@ -74,7 +74,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await page.click('#import_wallet_continue_button:not([enabled])')
     console.log('Import wallet continue button has been disabled')
   })
-  it('Import wallet with (12 seed words) and see balance-["smoke"]', async () => {
+  xit('Import wallet with (12 seed words) and see balance-["smoke"]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
