@@ -74,7 +74,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await page.click('#import_wallet_continue_button:not([enabled])')
     console.log('Import wallet continue button has been disabled')
   })
-  it('Import wallet with (12 seed words) and see balance-["smoke"]', async () => {
+  it('Import wallet with (12 seed words) and see balance-["mainnet"]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -83,8 +83,11 @@ describe('Liquality wallet- Import wallet', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
+    if (process.env.NODE_ENV === 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
+    }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
@@ -96,7 +99,7 @@ describe('Liquality wallet- Import wallet', async () => {
 
     // Check the Total amount - 10s wait to load amount
     const totalAmount = await overviewPage.GetTotalLiquidity(page)
-    expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
+    expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 0 USD').greaterThanOrEqual(0)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
   })
   it('Import wallet with (24 seed words) and see balance-["smoke"]', async () => {
