@@ -10,6 +10,8 @@ const CONFIRM_REQUIRED = [
   /^chain.sendBatchTransaction$/,
   /^chain.updateTransactionFee$/,
   /^wallet.signMessage*$/,
+  /^wallet.signAmino*$/,
+  /^wallet.sendInjectionTx*$/,
   /^swap.generateSecret$/,
   /^swap.initiateSwap$/,
   /^swap.claimSwap$/,
@@ -35,7 +37,6 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
     if (!state.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
 
     let { asset, method, args } = data
-
     if (!ALLOWED.some(re => re.test(method))) throw new Error('Method not allowed')
 
     const { activeNetwork: network, activeWalletId: walletId } = state

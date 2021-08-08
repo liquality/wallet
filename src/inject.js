@@ -262,6 +262,8 @@ const REQUEST_MAP = {
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
   wallet_sendTransaction: 'chain.sendTransaction',
+  wallet_signAmino: 'wallet.signAmino',
+  wallet_sendInjectionTx: 'wallet.sendInjectionTx'
 }
 async function handleRequest (req) {
   const cosmos = window.providerManager.getProviderFor('PHOTON')
@@ -322,9 +324,27 @@ window.keplr = {
     signer,
     signDoc
   ) {
-    console.log('chainId', chainId)
-    console.log('signer', signer)
-    console.log('signDoc', signDoc)
+    const response = await this.request({
+      method: REQUEST_MAP.wallet_signAmino,
+      params: [signer, signDoc]
+    })
+    
+    return response
+  },
+  async sendTx(
+    chainId,
+    stdTx,
+    mode
+  ) {
+    console.log(stdTx)
+    const response = await this.request({
+      method: REQUEST_MAP.wallet_sendInjectionTx,
+      params: [stdTx]
+    })
+
+    console.log('respa', response)
+    
+    return response
   }
 }
 `
