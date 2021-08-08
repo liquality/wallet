@@ -20,7 +20,7 @@
     "postinstall": "husky install",
     "test:testnet": "node_modules/mocha/bin/mocha --colors 'tests/**/*.spec.js'",
     "test:testnet:smoke": "node_modules/mocha/bin/mocha --colors --grep 'smoke' 'tests/**/*.spec.js'",
-    "test:mainnet": "NODE_ENV=mainnet node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/**/*.spec.js'"
+    "test:mainnet": "NODE_ENV=mainnet DEBUG=mochawesome* node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/**/*.spec.js'"
   },
   "dependencies": {
     "@analytics/segment": "^1.1.0",
@@ -110,10 +110,10 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
     "ethereumjs-wallet": "^1.0.1",
+    "filenamify": "^5.0.0",
     "husky": "^5.0.4",
     "jest": "^26.4.2",
-    "mocha-allure-reporter": "^1.4.0",
-    "mochawesome": "^6.2.2",
+    "mochawesome-screenshots": "^1.7.3",
     "puppeteer": "^10.0.0",
     "puppeteer-core": "^10.0.0",
     "sass": "^1.26.3",

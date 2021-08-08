@@ -42,7 +42,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     }
   })
 
-  it.skip('SWAP BTC to ETH (LIQUALITY)', async () => {
+  it.only('SWAP BTC to ETH (LIQUALITY)', async () => {
     const asset1 = 'BTC'
     const asset2 = 'ETH'
 
@@ -453,7 +453,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
   })
-  it('SWAP BTC to RBTC - fastBTC quote select["mainnet"]', async () => {
+  it.only('SWAP BTC to RBTC - fastBTC quote select["mainnet"]', async () => {
     const asset1 = 'BTC'
 
     // overview page
@@ -482,7 +482,7 @@ describe('Liquality wallet SWIPE feature', async () => {
       timeout: 60000
     })
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
+      'BTC->RBTC,Liquality swap source should be chosen!').equals('Liqualit')
 
     // Check see all quotes
     await page.waitForSelector('#see_all_quotes', { visible: true })
@@ -501,7 +501,6 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC'])
   })
-
   it('SWAP (NEAR->BTC)', async () => {
     const asset1 = 'NEAR'
     const asset2 = 'BTC'

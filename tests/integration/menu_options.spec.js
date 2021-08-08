@@ -23,7 +23,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
-  afterEach(async () => {
+  afterEach(async function () {
     try {
       console.log('Cleaning up instances')
       await page.close()
