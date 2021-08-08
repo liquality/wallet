@@ -1,5 +1,6 @@
 import { SwapProviderType } from '@/utils/swaps'
 import { LiqualitySwapProvider } from '@/swaps/liquality/LiqualitySwapProvider'
+import { LiqualityBoostSwapProvider } from '@/swaps/liqualityboost/LiqualityBoostSwapProvider'
 import { UniswapSwapProvider } from '@/swaps/uniswap/UniswapSwapProvider'
 import { OneinchSwapProvider } from '@/swaps/oneinch/OneinchSwapProvider'
 import { ThorchainSwapProvider } from '@/swaps/thorchain/ThorchainSwapProvider'
@@ -9,7 +10,8 @@ const providers = {
   [SwapProviderType.LIQUALITY]: LiqualitySwapProvider,
   [SwapProviderType.UNISWAPV2]: UniswapSwapProvider,
   [SwapProviderType.ONEINCHV3]: OneinchSwapProvider,
-  [SwapProviderType.THORCHAIN]: ThorchainSwapProvider
+  [SwapProviderType.THORCHAIN]: ThorchainSwapProvider,
+  [SwapProviderType.LIQUALITYBOOST]: LiqualityBoostSwapProvider
 }
 
 export const createSwapProvider = (network, providerId) => {

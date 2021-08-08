@@ -94,6 +94,7 @@ import Modal from '@/components/Modal'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
 import LiqualitySwapDetails from '@/swaps/liquality/SwapDetails'
+import LiqualityBoostSwapDetails from '@/swaps/liqualityboost/SwapDetails'
 import UniswapSwapDetails from '@/swaps/uniswap/SwapDetails'
 import OneinchSwapDetails from '@/swaps/oneinch/SwapDetails'
 import ThorchainSwapDetails from '@/swaps/thorchain/SwapDetails'
@@ -126,7 +127,8 @@ export default {
         [SwapProviderType.LIQUALITY]: LiqualitySwapDetails,
         [SwapProviderType.UNISWAPV2]: UniswapSwapDetails,
         [SwapProviderType.ONEINCHV3]: OneinchSwapDetails,
-        [SwapProviderType.THORCHAIN]: ThorchainSwapDetails
+        [SwapProviderType.THORCHAIN]: ThorchainSwapDetails,
+        [SwapProviderType.LIQUALITYBOOSTPROVIDER]: LiqualityBoostSwapDetails
       })[config.type]
     },
     status () {

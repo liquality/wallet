@@ -4,7 +4,8 @@ export const SwapProviderType = {
   LIQUALITY: 'LIQUALITY',
   UNISWAPV2: 'UNISWAPV2',
   ONEINCHV3: 'ONEINCHV3',
-  THORCHAIN: 'THORCHAIN'
+  THORCHAIN: 'THORCHAIN',
+  LIQUALITYBOOST: 'LIQUALITYBOOST'
 }
 
 export function getSwapProviderConfig (network, providerId) {
