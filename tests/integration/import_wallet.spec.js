@@ -18,7 +18,7 @@ const seedWordsPage = new SeedWordsPage()
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet- Import wallet', async () => {
+describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -37,7 +37,7 @@ describe('Liquality wallet- Import wallet', async () => {
     }
   })
 
-  it('Import wallet with random seed (phrase 12 words) with 0 coins-["mainnet"]', async () => {
+  it('Import wallet with random seed (phrase 12 words) with 0 coins', async () => {
     await homePage.ClickOnImportWallet(page)
     console.log('Import wallet page hase been loaded')
 
@@ -59,7 +59,7 @@ describe('Liquality wallet- Import wallet', async () => {
     const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
   })
-  it('Import wallet with random seed (phrase 11 words) and check continue is disabled -["mainnet"]', async () => {
+  it('Import wallet with random seed (phrase 11 words) and check continue is disabled', async () => {
     await homePage.ClickOnImportWallet(page)
     console.log('Import wallet page hase been loaded')
     // check continue button has been disabled
@@ -74,7 +74,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await page.click('#import_wallet_continue_button:not([enabled])')
     console.log('Import wallet continue button has been disabled')
   })
-  it('Import wallet with (12 seed words) and see balance-["mainnet"]', async () => {
+  it('Import wallet with (12 seed words) and see balance', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -102,7 +102,7 @@ describe('Liquality wallet- Import wallet', async () => {
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 0 USD').greaterThanOrEqual(0)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
   })
-  it('Import wallet with (24 seed words) and see balance-["smoke"]', async () => {
+  it('Import wallet with (24 seed words) and see balance', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit, select 24 seed option

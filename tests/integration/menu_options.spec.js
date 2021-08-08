@@ -158,7 +158,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     expect(await page.$eval('#password_error', (el) => el.textContent))
       .contains('Try Again. Enter the right password (it has 8 or more characters).')
   })
-  it('Import wallet,lock wallet and unlock wallet-["mainnet"]', async () => {
+  it('Import wallet,lock wallet and unlock wallet', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -180,7 +180,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     // Unlock
     await passwordPage.ClickUnlock(page, password)
   })
-  it('Import wallet,lock wallet and while unlock wallet check password error-["mainnet"]', async () => {
+  it('Import wallet,lock wallet and while unlock wallet check password error', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -207,7 +207,7 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     const error = await page.$eval('#password_error', (el) => el.textContent)
     expect(error).contains('Try Again. Enter the right password (it has 8 or more characters).')
   })
-  it('Import wallet,lock wallet and forgot password while unlock wallet-["mainnet"]', async () => {
+  it('Import wallet,lock wallet and forgot password while unlock wallet', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
