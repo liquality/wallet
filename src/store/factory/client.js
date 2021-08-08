@@ -100,7 +100,7 @@ function createEthereumClient (
 
   if (walletType === 'rsk_ledger') {
     coinType = legacyCoinType
-  } else if (ethereumNetwork.name === 'rsk_mainnet' || ethereumNetwork.name === 'rsk_testnet') {
+  } else if (ethereumNetwork.name === 'rsk_mainnet') {
     coinType = rskLegacyDerivation ? legacyCoinType : ethereumNetwork.coinType
   }
 
