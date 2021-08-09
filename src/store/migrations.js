@@ -3,7 +3,7 @@ import buildConfig from '../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 import { v4 as uuidv4 } from 'uuid'
-import { getLegacyRskBalance } from './utils'
+import { shouldApplyRskLegacyDerivation } from './utils'
 
 const migrations = [
   { // Merely sets up the version
@@ -221,11 +221,11 @@ const migrations = [
         }
       }
 
-      const balance = await getLegacyRskBalance(state.accounts)
+      const rskLegacyDerivation = await shouldApplyRskLegacyDerivation(state.accounts)
 
       return {
         ...state,
-        rskLegacyDerivation: balance.isGreaterThan(0)
+        rskLegacyDerivation
       }
     }
   }
