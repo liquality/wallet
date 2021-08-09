@@ -57,7 +57,7 @@ const getRskERC20Assets = () => {
 }
 
 export const shouldApplyRskLegacyDerivation = async (accounts, mnemonic, indexPath = 0) => {
-  const rskERC20Assets = getRskERC20Assets();
+  const rskERC20Assets = getRskERC20Assets()
   const walletIds = Object.keys(accounts)
 
   const addresses = []
@@ -92,18 +92,18 @@ export const shouldApplyRskLegacyDerivation = async (accounts, mnemonic, indexPa
 
   const erc20BalancesPromises = rskERC20Assets.map(asset => {
     const client = new Client()
-    .addProvider(new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' }))
-    .addProvider(new EthereumErc20Provider(asset.contractAddress))
-    
+      .addProvider(new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' }))
+      .addProvider(new EthereumErc20Provider(asset.contractAddress))
+
     return client.chain.getBalance(addresses)
   })
-  
+
   const balances = await Promise.all([
     client.chain.getBalance(addresses),
     ...erc20BalancesPromises
-  ]) 
+  ])
 
-  return balances.some(amount => amount.isGreaterThan(0));
+  return balances.some(amount => amount.isGreaterThan(0))
 }
 
 export async function getPrices (baseCurrencies, toCurrency) {

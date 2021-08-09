@@ -74,7 +74,7 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
     await page.click('#import_wallet_continue_button:not([enabled])')
     console.log('Import wallet continue button has been disabled')
   })
-  it('Import wallet with (12 seed words) and see balance', async () => {
+  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -101,6 +101,11 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
     const totalAmount = await overviewPage.GetTotalLiquidity(page)
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 0 USD').greaterThanOrEqual(0)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
+
+    // GET the ETHEREUM assert Address
+    const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
+    const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
+    expect(rskAddress, 'ETH & RSK Addresses should be different if balance >0').not.equals(ethAddress)
   })
   it('Import wallet with (24 seed words) and see balance', async () => {
     // Import wallet option

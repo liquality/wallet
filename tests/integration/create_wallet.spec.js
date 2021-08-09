@@ -57,7 +57,7 @@ describe('Liquality wallet - Create wallet-["mainnet"]', async () => {
     // confirm button has been disabled
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
-  it('Create a new wallet with 12 words, validate overviewPage', async () => {
+  it('Create a new wallet with 12 words, validate overviewPage address for ETH and RSK', async () => {
     const password = '123123123'
 
     const passwordInput = await page.$('#password')
@@ -91,5 +91,10 @@ describe('Liquality wallet - Create wallet-["mainnet"]', async () => {
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
+
+    // GET the ETHEREUM assert Address
+    const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
+    const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
+    expect(rskAddress, 'ETH & RSK Address are same if the wallet created with 0 balance').equals(ethAddress)
   })
 })

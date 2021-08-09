@@ -287,6 +287,20 @@ class OverviewPage {
     console.log(chalk.green('User clicked on lock option'))
     await page.waitForSelector('#password', { visible: true })
   }
+
+  /**
+   * Get Assert address from overview page
+   * @param page
+   * @param assertName - ETHEREUM, BITCOIN
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async GetAssertAddress (page, assertName) {
+    const $parent = await page.$(`#${assertName}`)
+    const assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
+    expect(assertAddress).not.equals(null)
+    return assertAddress
+  }
 }
 
 module.exports = OverviewPage
