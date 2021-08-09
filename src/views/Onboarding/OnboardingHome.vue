@@ -1127,8 +1127,7 @@
             Help us improve Liquality to better serve you
           </div>
           <div class="analytics-optin-message">
-            Share where you click. There is no identifying data, This
-            permissions can be revoked any time.
+            Share where you click. There is no identifying or personal data shared with us. You can change these permissions at any time in your settings.
           </div>
           <div class="analytics-optin-options">
             <div class="custom-control custom-radio">
@@ -1142,7 +1141,7 @@
                 @click="setAnalyticsOption(true)"
               />
               <label class="custom-control-label" for="optin_anaylitics_accept">
-                Sure, I will share my clicks
+                Sure, I'll help improve Liquality
               </label>
             </div>
             <div class="custom-control custom-radio">
@@ -1156,7 +1155,7 @@
                 @click="setAnalyticsOption(false)"
               />
               <label class="custom-control-label" for="optin_anaylitics_reject">
-                Not today. ask me again
+                Not today, ask me again
               </label>
             </div>
           </div>
