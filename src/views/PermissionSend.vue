@@ -2,8 +2,8 @@
   <div class="permission-send wrapper form text-center">
     <div class="wrapper_top form">
       <div class="form-group">
-        <label>Send</label>
-        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asset}}</p>
+        <label>{{label}}</label>
+        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asd}}</p>
         <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
       </div>
       <div class="form-group">
@@ -46,11 +46,18 @@ import { unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getNativeAsset, getAssetColorStyle } from '@/utils/asset'
+import { parseTransactionData } from '@/utils/txData'
+import { tokenDetailProviders } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
 import BigNumber from 'bignumber.js'
+
+const TRANSACTION_TYPES = {
+  approve: 'Approve',
+  send: 'Send'
+}
 
 export default {
   components: {
@@ -65,7 +72,8 @@ export default {
       selectedFee: 'average',
       error: null,
       loading: false,
-      replied: false
+      replied: false,
+      asd: ''
     }
   },
   methods: {
@@ -75,6 +83,10 @@ export default {
     getAssetColorStyle,
     toggleshowData () {
       this.showData = !this.showData
+    },
+    async getData() {
+      const data = await tokenDetailProviders.ethereum.getDetails(this.request.args[0].to)
+      this.asd = data.symbol
     },
     async reply (allowed) {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
@@ -115,6 +127,10 @@ export default {
     address () {
       return this.request.args[0].to
     },
+    label() {
+      const txType = parseTransactionData(this.request.args[0]?.data)?.name || 'send'
+      return TRANSACTION_TYPES[txType]
+    },
     shortAddress () {
       return this.address ? shortenAddress(this.address) : 'New Contract'
     },
@@ -131,6 +147,7 @@ export default {
       return this.request.args[0].data
     },
     assetFees () {
+      console.log(this.fees, this.request.args[0])
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
     },
     feesAvailable () {
