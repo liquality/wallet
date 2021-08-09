@@ -18,7 +18,7 @@ class SwapPage {
   }
 
   /**
-   * Click on Min
+   * Click on Min.
    * @param page
    * @returns {Promise<void>}
    * @constructor
@@ -56,6 +56,17 @@ class SwapPage {
   async SelectSwapReceiveCoin (page) {
     await page.click('.swap-receive-main-icon', { slowMo: 20 })
     await page.waitForSelector('#search_for_a_currency', { visible: true })
+  }
+
+  /**
+   * Get Selected service provider from SWAP screen.
+   * @param page
+   * @returns {Promise<*>} - Liquality, Thorchain....
+   * @constructor
+   */
+  async GetSelectedServiceProvider (page) {
+    await page.waitForSelector('#selectedQuote_provider', { visible: true })
+    return await page.$eval('#selectedQuote_provider', (el) => el.textContent)
   }
 
   /**

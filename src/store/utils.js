@@ -7,6 +7,8 @@ import { EthereumNetworks } from '@liquality/ethereum-networks'
 import { NearNetworks } from '@liquality/near-networks'
 import { Client } from '@liquality/client'
 import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
+import { EthereumJsWalletProvider } from '@liquality/ethereum-js-wallet-provider'
+import { EthereumErc20Provider } from '@liquality/ethereum-erc20-provider'
 
 export const CHAIN_LOCK = {}
 
@@ -47,7 +49,15 @@ export const unlockAsset = key => {
 
 const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
 
-export const getLegacyRskBalance = async (accounts) => {
+const getRskERC20Assets = () => {
+  const erc20 = Object.keys(cryptoassets)
+    .filter(asset => cryptoassets[asset].chain === 'rsk' && cryptoassets[asset].type === 'erc20')
+
+  return erc20.map(erc => cryptoassets[erc])
+}
+
+export const shouldApplyRskLegacyDerivation = async (accounts, mnemonic, indexPath = 0) => {
+  const rskERC20Assets = getRskERC20Assets()
   const walletIds = Object.keys(accounts)
 
   const addresses = []
@@ -67,7 +77,33 @@ export const getLegacyRskBalance = async (accounts) => {
       new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' })
     )
 
-  return await client._chain.getBalance(addresses)
+  if (mnemonic) {
+    client.addProvider(
+      new EthereumJsWalletProvider({
+        network: ChainNetworks.rsk.mainnet,
+        mnemonic,
+        derivationPath: `m/44'/137'/${indexPath}'/0/0`
+      }))
+
+    const _addresses = await client.wallet.getAddresses()
+
+    addresses.push(..._addresses.map(e => e.address))
+  }
+
+  const erc20BalancesPromises = rskERC20Assets.map(asset => {
+    const client = new Client()
+      .addProvider(new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' }))
+      .addProvider(new EthereumErc20Provider(asset.contractAddress))
+
+    return client.chain.getBalance(addresses)
+  })
+
+  const balances = await Promise.all([
+    client.chain.getBalance(addresses),
+    ...erc20BalancesPromises
+  ])
+
+  return balances.some(amount => amount.isGreaterThan(0))
 }
 
 export async function getPrices (baseCurrencies, toCurrency) {

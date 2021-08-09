@@ -9,8 +9,11 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    await page.waitForSelector('#overview', {
-      visible: true
+    const now = Date.now()
+    await page.screenshot({ path: `./screenshots/${now}_overviewPage.png` })
+    await page.waitForSelector('#burger_icon_menu', {
+      visible: true,
+      timeout: 120000
     })
     console.log(chalk.green('User logged successfully, overview page has been loaded'))
   }
@@ -283,6 +286,20 @@ class OverviewPage {
     await page.click('#lock')
     console.log(chalk.green('User clicked on lock option'))
     await page.waitForSelector('#password', { visible: true })
+  }
+
+  /**
+   * Get Assert address from overview page
+   * @param page
+   * @param assertName - ETHEREUM, BITCOIN
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async GetAssertAddress (page, assertName) {
+    const $parent = await page.$(`#${assertName}`)
+    const assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
+    expect(assertAddress).not.equals(null)
+    return assertAddress
   }
 }
 
