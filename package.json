@@ -71,6 +71,7 @@
     "cryptocurrency-icons": "^0.16.1",
     "date-fns": "^2.14.0",
     "ethers": "^5.3.0",
+    "human-standard-token-abi": "^2.0.0",
     "lodash-es": "^4.17.15",
     "log": "^6.0.0",
     "memoizee": "^0.4.15",
