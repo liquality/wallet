@@ -1122,9 +1122,6 @@
           </a>
           <span class="c2">.</span>
         </p>
-        <p class="c4 c10">
-          <span class="c20"></span>
-        </p>
         <div class="analytics-optin">
           <div class="analytics-optin-title">
             Help us improve Liquality to better serve you
@@ -1215,7 +1212,7 @@ export default {
       if (el.target) {
         const { offsetHeight, scrollTop, scrollHeight } = el?.target
         const scrolled = offsetHeight + scrollTop
-        if (scrolled >= scrollHeight) {
+        if (scrolled >= scrollHeight - 50) { // (50) is buffer
           this.scrolledToEnd = true
         } else {
           this.scrolledToEnd = false
