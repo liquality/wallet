@@ -660,7 +660,8 @@ export default {
       'getQuotes',
       'updateFees',
       'newSwap',
-      'trackAnalytics'
+      'trackAnalytics',
+      'updateFiatRates'
     ]),
     shortenAddress,
     dpUI,
@@ -702,12 +703,14 @@ export default {
 
       this.resetFees()
       this.updateQuotes()
+      this.updateFiatRates({ assets: [toAsset] })
     },
     setFromAsset (asset) {
       this.asset = asset
       this.sendAmount = dpUI(this.defaultAmount)
       this.resetFees()
       this.updateQuotes()
+      this.updateFiatRates({ assets: [asset] })
     },
     async _updateSwapFees (max) {
       if (!this.selectedQuote) return
