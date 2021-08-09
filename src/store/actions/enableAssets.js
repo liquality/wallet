@@ -2,7 +2,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { chains } from '@liquality/cryptoassets'
 
-export const enableAssets = async ({ state, commit, dispatch }, { network, walletId, assets }) => {
+export const enableAssets = async ({ state, commit, dispatch, getters }, { network, walletId, assets }) => {
   commit('ENABLE_ASSETS', { network, walletId, assets })
   const accounts = state.accounts[walletId]?.[network] || []
 
@@ -44,6 +44,6 @@ export const enableAssets = async ({ state, commit, dispatch }, { network, walle
       await dispatch('updateAccountBalance', { network, walletId, accountId })
     }
   })
-  dispatch('updateFiatRates')
+  dispatch('updateFiatRates', { assets: getters.allNetworkAssets })
   dispatch('updateMarketData', { network })
 }
