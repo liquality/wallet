@@ -174,12 +174,12 @@ function createNearClient (network, mnemonic, indexPath = 0) {
 function createCosmosClient(network, mnemonic, indexPath = 0) {
   const cosmosNetwork = ChainNetworks.cosmos[network]
   const cosmosClient = new Client()
-
+  
   cosmosClient.addProvider(new CosmosRpcProvider(cosmosNetwork))
   cosmosClient.addProvider(new CosmosWalletProvider({
     network: cosmosNetwork,
     mnemonic,
-    derivationPath: ''
+    derivationPath: `m/44'/${cosmosNetwork.coinType}'/0'/0/0`
   }))
 
   return cosmosClient;
