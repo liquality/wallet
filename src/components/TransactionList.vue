@@ -48,7 +48,6 @@ import {
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
 import { mapState, mapGetters } from 'vuex'
-import { getNativeAsset } from '@/utils/asset'
 
 export default {
   components: {
