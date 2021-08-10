@@ -1122,16 +1122,12 @@
           </a>
           <span class="c2">.</span>
         </p>
-        <p class="c4 c10">
-          <span class="c20"></span>
-        </p>
         <div class="analytics-optin">
           <div class="analytics-optin-title">
             Help us improve Liquality to better serve you
           </div>
           <div class="analytics-optin-message">
-            Share where you click. There is no identifying data, This
-            permissions can be revoked any time.
+            Share where you click. There is no identifying or personal data shared with us. You can change these permissions at any time in your settings.
           </div>
           <div class="analytics-optin-options">
             <div class="custom-control custom-radio">
@@ -1145,7 +1141,7 @@
                 @click="setAnalyticsOption(true)"
               />
               <label class="custom-control-label" for="optin_anaylitics_accept">
-                Sure, I will share my clicks
+                Sure, I'll help improve Liquality
               </label>
             </div>
             <div class="custom-control custom-radio">
@@ -1159,7 +1155,7 @@
                 @click="setAnalyticsOption(false)"
               />
               <label class="custom-control-label" for="optin_anaylitics_reject">
-                Not today. ask me again
+                Not today, ask me again
               </label>
             </div>
           </div>
@@ -1215,7 +1211,7 @@ export default {
       if (el.target) {
         const { offsetHeight, scrollTop, scrollHeight } = el?.target
         const scrolled = offsetHeight + scrollTop
-        if (scrolled >= scrollHeight) {
+        if (scrolled >= scrollHeight - 50) { // (50) is buffer
           this.scrolledToEnd = true
         } else {
           this.scrolledToEnd = false

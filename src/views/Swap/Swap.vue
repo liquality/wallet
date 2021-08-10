@@ -197,12 +197,12 @@
               class="d-flex align-items-center justify-content-between my-0 py-0"
             >
               <div class="confirm-value" id="receive_swap_confirm_value" :style="getAssetColorStyle(toAsset)">
-                {{ receiveAmount }} {{ toAsset }}
+                {{ dpUI(receiveAmount) }} {{ toAsset }}
               </div>
               <div class="details-text" id="receive_swap_amount_fiat">{{ '$' + formatFiat(receiveAmountFiat) }}</div>
             </div>
           </div>
-          <div class="detail-group">
+          <div class="detail-group" v-if="receiveFeeRequired">
             <label class="text-muted">Network Fee</label>
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
@@ -223,8 +223,8 @@
             <label class="text-muted">Amount - Fees</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold" id="swap_receive_amount_fee_value">
-                <span v-if="toAsset === toAssetChain">
-                  {{ receiveAmountSameAsset }} {{ toAssetChain }}
+                <span v-if="toAsset === toAssetChain || !receiveFeeRequired">
+                  {{ receiveAmountSameAsset }} {{ toAsset }}
                 </span>
                 <span v-else>
                   {{ receiveAmount }} {{ toAsset }} -
@@ -562,6 +562,7 @@ export default {
       return fee || BN(0)
     },
     toSwapFee () {
+      if (!this.receiveFeeRequired) return BN(0)
       const selectedSpeed = this.selectedFee[this.toAssetChain]
       const fee = this.amountOption === 'max' ? this.maxSwapFees[this.toAssetChain]?.[selectedSpeed] : this.swapFees[this.toAssetChain]?.[selectedSpeed]
       return fee || BN(0)
@@ -570,6 +571,9 @@ export default {
       const selectedSpeed = this.selectedFee[this.assetChain]
       const fee = this.maxSwapFees[this.assetChain]?.[selectedSpeed]
       return fee ? currencyToUnit(cryptoassets[this.assetChain], fee) : BN(0)
+    },
+    receiveFeeRequired () {
+      return this.selectedQuoteProvider.toTxType
     },
     available () {
       if (!this.networkWalletBalances) return BN(0)
@@ -681,7 +685,8 @@ export default {
       'getQuotes',
       'updateFees',
       'newSwap',
-      'trackAnalytics'
+      'trackAnalytics',
+      'updateFiatRates'
     ]),
     shortenAddress,
     dpUI,
@@ -723,12 +728,14 @@ export default {
 
       this.resetFees()
       this.updateQuotes()
+      this.updateFiatRates({ assets: [toAsset] })
     },
     setFromAsset (asset) {
       this.asset = asset
       this.sendAmount = dpUI(this.defaultAmount)
       this.resetFees()
       this.updateQuotes()
+      this.updateFiatRates({ assets: [asset] })
     },
     async _updateSwapFees (max) {
       if (!this.selectedQuote) return
@@ -898,7 +905,7 @@ export default {
           ].fee
           : undefined
 
-        const toFee = this.availableFees.has(this.toAssetChain)
+        const toFee = this.receiveFeeRequired && this.availableFees.has(this.toAssetChain)
           ? this.getAssetFees(this.toAssetChain)[
             this.selectedFee[this.toAssetChain]
           ].fee

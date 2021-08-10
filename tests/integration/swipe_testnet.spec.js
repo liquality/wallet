@@ -193,19 +193,13 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(receiveAmountInDollar.trim()).not.contain('$00.00')
     expect(receiveAmountInDollar.trim()).not.contain('NaN')
 
-    const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
-    expect(receiveNetworkFeeValue.trim()).contain(asset1)
-
     const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
     expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
     expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
 
-    const receiveAccountFeesValue = await swapPage.GetSwapReceiveNetworkValue(page)
-    expect(receiveAccountFeesValue.trim()).contain(asset1)
+    const receiveAccountFeesValue = await swapPage.GetSwapReceiveAccountFeeValue(page)
+    expect(receiveAccountFeesValue.trim()).contain(asset2)
 
-    const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
-    expect(receiveAccountFeesInDollar.trim()).not.contain('$00.00')
-    expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
     // RATE
     await page.waitForSelector('#swap_review_rate_block')
 
