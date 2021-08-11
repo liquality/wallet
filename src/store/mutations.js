@@ -262,5 +262,8 @@ export default {
       ...state.analytics,
       ...payload
     }
+  },
+  SET_WATS_NEW_MODAL_VERSION (state, { version }) {
+    state.watsNewModalVersion = version
   }
 }

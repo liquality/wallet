@@ -19,7 +19,7 @@
              </h5>
               <ModalClose class="modal-close" @click="close"/>
           </div>
-           <div class="modal-body">
+           <div :class="bodyClass">
              <slot></slot>
            </div>
            <div class="modal-footer"  v-if="hasSlot('footer')">
@@ -41,6 +41,10 @@ export default {
     type: {
       type: String,
       default: 'modal-sm'
+    },
+    bodyClass: {
+      type: String,
+      default: 'modal-body'
     },
     closeOutside: {
       type: Boolean,

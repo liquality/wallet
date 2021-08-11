@@ -48,5 +48,6 @@ export default {
     askedDate: null,
     askedTimes: 0,
     notAskAgain: false
-  }
+  },
+  watsNewModalVersion: null
 }
