@@ -1,9 +1,18 @@
 <template>
   <div class="permission-send wrapper form text-center">
     <div class="wrapper_top form">
+      <div v-if="error" class="mt-4 text-danger"><strong>Error:</strong> {{ error }}</div>
+      <div v-if="isApprove">
+        <div class="form-group">
+        <label>{{label}}</label>
+        <label>{{subLabel}}</label>
+        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{symbol}}</p>
+      </div>
+      </div>
+      <div v-else>
       <div class="form-group">
         <label>{{label}}</label>
-        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asd}}</p>
+        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{symbol}}</p>
         <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
       </div>
       <div class="form-group">
@@ -24,9 +33,22 @@
         <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
         <div class="permission-send_data_code" v-if="showData">{{data}}</div>
       </div>
-      <div v-if="error" class="mt-4 text-danger"><strong>Error:</strong> {{ error }}</div>
-    </div>
+   
+      </div>
 
+      <div class="form-group mt-4">
+        <label>Network Speed / Fee</label>
+        <div class="permission-send_fees">
+          <FeeSelector
+            :asset="asset"
+            v-model="selectedFee"
+            v-bind:fees="assetFees"
+            v-bind:fiatRates="fiatRates"/>
+        </div>
+      </div>
+    </div>
+    
+    
     <div class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Cancel</button>
@@ -55,7 +77,7 @@ import ChevronRight from '@/assets/icons/chevron_right.svg'
 import BigNumber from 'bignumber.js'
 
 const TRANSACTION_TYPES = {
-  approve: 'Approve',
+  approve: 'Allow',
   send: 'Send'
 }
 
@@ -73,7 +95,10 @@ export default {
       error: null,
       loading: false,
       replied: false,
-      asd: ''
+      symbol: '',
+      label: '',
+      subLabel: '',
+      isApprove: false
     }
   },
   methods: {
@@ -84,9 +109,27 @@ export default {
     toggleshowData () {
       this.showData = !this.showData
     },
-    async getData() {
+    async getSymbol() {
       const data = await tokenDetailProviders.ethereum.getDetails(this.request.args[0].to)
-      this.asd = data.symbol
+      this.symbol = data.symbol
+    },
+    async getLabel() {
+      const txType = parseTransactionData(this.request.args[0]?.data)?.name || 'send'
+      
+      if (txType === 'approve' && chrome.tabs?.query) {
+        this.isApprove = true;
+        
+        chrome.tabs.query({active: true, lastFocusedWindow: true}, async tabs => {
+          if(!tabs) return
+
+          const origin = tabs[0].url.split('&').find(e => e.includes('origin'))
+          const url = decodeURIComponent(origin.split('=')[1])
+          this.label = `${TRANSACTION_TYPES[txType]}`
+          this.subLabel = `${url} to spend your`
+        })
+      } else if (txType === 'send') {
+        this.label = TRANSACTION_TYPES[txType]
+      }
     },
     async reply (allowed) {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
@@ -127,10 +170,6 @@ export default {
     address () {
       return this.request.args[0].to
     },
-    label() {
-      const txType = parseTransactionData(this.request.args[0]?.data)?.name || 'send'
-      return TRANSACTION_TYPES[txType]
-    },
     shortAddress () {
       return this.address ? shortenAddress(this.address) : 'New Contract'
     },
@@ -147,7 +186,8 @@ export default {
       return this.request.args[0].data
     },
     assetFees () {
-      console.log(this.fees, this.request.args[0])
+      console.log(parseInt(this.request.args[0].gas) * 66)
+      console.log(this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain])
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
     },
     feesAvailable () {
@@ -161,6 +201,8 @@ export default {
     }
   },
   created () {
+    this.getSymbol()
+    this.getLabel()
     this.updateFees({ asset: this.asset })
   },
   beforeDestroy () {
