@@ -66,7 +66,6 @@ class OverviewPage {
    * @constructor
    */
   async CloseWatsNewModal (page) {
-    // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#wats_new_close_btn', {
       visible: true,
       timeout: 60000

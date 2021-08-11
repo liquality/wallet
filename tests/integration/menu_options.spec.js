@@ -239,7 +239,6 @@ describe('Hamburger menu options [Wallet] - ["mainnet"]', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // check user landed on overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
   })
 })
