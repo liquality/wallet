@@ -14,7 +14,7 @@
         <li>
           On the device, navigate to the asset that you want to access
         </li>
-        <li v-if="selectedAsset.name === 'ETH'">
+        <li v-if="isEthereumChain(selectedAsset.name)">
           To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Allow Contract Data'
         </li>
       </ul>
@@ -83,7 +83,7 @@ import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import LedgerIcon from '@/assets/icons/ledger_icon.svg'
 import { LEDGER_OPTIONS } from '@/utils/ledger-bridge-provider'
 import clickAway from '@/directives/clickAway'
-import { getAssetIcon } from '@/utils/asset'
+import { isEthereumChain, getAssetIcon } from '@/utils/asset'
 
 export default {
   directives: {
@@ -102,6 +102,7 @@ export default {
   },
   methods: {
     getAssetIcon,
+    isEthereumChain,
     connect () {
       if (this.selectedAsset) {
         this.$emit('on-connect', { asset: this.selectedAsset })
