@@ -98,7 +98,7 @@ export default {
     Vue.set(state.fees[network][walletId], asset, fees)
   },
   UPDATE_FIAT_RATES (state, { fiatRates }) {
-    state.fiatRates = fiatRates
+    state.fiatRates = Object.assign({}, state.fiatRates, fiatRates)
   },
   UPDATE_MARKET_DATA (state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
