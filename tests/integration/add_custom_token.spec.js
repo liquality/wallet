@@ -106,6 +106,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await passwordPage.SubmitPasswordDetails(page, password)
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
+      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
