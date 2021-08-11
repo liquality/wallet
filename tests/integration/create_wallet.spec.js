@@ -80,6 +80,7 @@ describe('Liquality wallet - Create wallet-["mainnet"]', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     } else {

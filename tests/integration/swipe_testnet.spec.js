@@ -48,6 +48,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -127,6 +128,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on ETH then click on SWAP button
@@ -215,6 +217,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on SOV then click on SWAP button
@@ -330,6 +333,7 @@ describe('Liquality wallet SWIPE feature', async () => {
   it('SWAP (BTC->ETH) - Thorchain', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -350,6 +354,7 @@ describe('Liquality wallet SWIPE feature', async () => {
   it('SWAP (ETH->BTC) - Thorchain', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -368,6 +373,7 @@ describe('Liquality wallet SWIPE feature', async () => {
   it('SWAP (ETHEREUM),Please increase amount. It is below minimum.', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on ETH then click on SWAP button
@@ -386,6 +392,7 @@ describe('Liquality wallet SWIPE feature', async () => {
   it('SWAP(ETHEREUM),Lower amount. This exceeds available balance.(Thorchain)', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     await overviewPage.SelectChain(page, 'ETH')
@@ -411,6 +418,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select mainnet for fastBTC integration
     await overviewPage.SelectNetwork(page, 'mainnet')
     // Click asset 1
@@ -453,6 +461,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select MainBet for fastBTC integration
     await overviewPage.SelectNetwork(page, 'mainnet')
     // Click asset 1
@@ -503,6 +512,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
 
     // Select testnet
     await overviewPage.SelectNetwork(page)

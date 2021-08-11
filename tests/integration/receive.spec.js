@@ -83,6 +83,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
 
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
+      await overviewPage.CloseWatsNewModal(page)
       // Select network
       if (process.env.NODE_ENV === 'mainnet') {
         await overviewPage.SelectNetwork(page, 'mainnet')
@@ -121,6 +122,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       await passwordPage.SubmitPasswordDetails(page, password)
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
+      await overviewPage.CloseWatsNewModal(page)
       // Select Network
       if (process.env.NODE_ENV === 'mainnet') {
         await overviewPage.SelectNetwork(page, 'mainnet')
