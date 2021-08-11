@@ -18,18 +18,18 @@
         <div class="row">
           <div class="col">
             <h2>Sent</h2>
-            <p :id="'sent-'+item.from">{{prettyBalance(item.fromAmount, item.from)}} {{item.from}}</p>
+            <p :id="'sent-'+item.from">{{prettyBalance(item.fromAmount, item.from)}} {{ item.from }}</p>
           </div>
           <div class="col" id="pending_receipt_section">
             <h2 v-if="['SUCCESS', 'REFUNDED'].includes(item.status)">Received</h2>
             <h2 v-else>Pending Receipt</h2>
-            <p>{{prettyBalance(item.toAmount, item.to)}} {{item.to}}</p>
+            <p>{{prettyBalance(item.toAmount, item.to)}} {{ item.to }}</p>
           </div>
         </div>
         <div class="row">
           <div class="col">
             <h2 class="d-flex align-items-center">Rate <SwapProviderLabel class="ml-2" :provider="item.provider" :network="activeNetwork" /></h2>
-            <p>1 {{item.from}} = <span class="swap-details_rate">{{item.rate}}</span> {{item.to}}</p>
+            <p>1 {{item.from}} = <span class="swap-details_rate">{{ rate }}</span> {{ item.to }}</p>
           </div>
         </div>
       </div>
@@ -82,7 +82,8 @@ import moment from '@/utils/moment'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
-import { prettyBalance } from '@/utils/coinFormatter'
+import { prettyBalance, dpUI } from '@/utils/coinFormatter'
+import { calculateQuoteRate } from '@/utils/quotes'
 import { getStatusLabel } from '@/utils/history'
 import { isERC20, getNativeAsset } from '@/utils/asset'
 
@@ -141,6 +142,10 @@ export default {
         })
       }
       return fees
+    },
+    rate () {
+      const rate = calculateQuoteRate(this.item)
+      return dpUI(rate)
     },
     ledgerModalTitle () {
       if (this.item.status === 'INITIATION_CONFIRMED') {

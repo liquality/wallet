@@ -94,14 +94,14 @@ function createEthereumClient (
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
 
-  const legacyCoinType = '137'
+  const rskLegacyCoinType = ethereumNetwork.name === 'rsk_mainnet' ? '137' : '37310'
   const { rskLegacyDerivation } = store.state
   let coinType = ethereumNetwork.coinType
 
   if (walletType === 'rsk_ledger') {
-    coinType = legacyCoinType
+    coinType = rskLegacyCoinType
   } else if (ethereumNetwork.name === 'rsk_mainnet' || ethereumNetwork.name === 'rsk_testnet') {
-    coinType = rskLegacyDerivation ? legacyCoinType : ethereumNetwork.coinType
+    coinType = rskLegacyDerivation ? rskLegacyCoinType : ethereumNetwork.coinType
   }
 
   const derivationPath = `m/44'/${coinType}'/${indexPath}'/0/0`

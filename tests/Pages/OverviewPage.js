@@ -65,6 +65,21 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
+  async CloseWatsNewModal (page) {
+    await page.waitForSelector('#wats_new_close_btn', {
+      visible: true,
+      timeout: 60000
+    })
+    await page.click('#wats_new_close_btn')
+    console.log('Wat\'s new Modal closed')
+  }
+
+  /**
+   * Check Send,swipe and receive options have been displayed.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#send_action', {
