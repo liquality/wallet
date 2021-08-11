@@ -41,12 +41,10 @@ export default {
   },
   computed: {
     ...mapState({
-      analyticsOptInModalOpen: state => state.app.analyticsOptInModalOpen,
-      termsAcceptedAt: state => state.termsAcceptedAt,
-      unlockedAt: state => state.unlockedAt
+      analyticsOptInModalOpen: state => state.app.analyticsOptInModalOpen
     }),
     open () {
-      return this.analyticsOptInModalOpen && this.unlockedAt && this.termsAcceptedAt
+      return this.analyticsOptInModalOpen
     }
   },
   methods: {

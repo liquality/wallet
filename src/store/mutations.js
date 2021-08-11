@@ -263,7 +263,7 @@ export default {
       ...payload
     }
   },
-  SET_WATS_NEW_MODAL_SHOWED (state, { showed }) {
-    state.watsNewModalShowed = showed
+  SET_WATS_NEW_MODAL_VERSION (state, { version }) {
+    state.watsNewModalVersion = version
   }
 }

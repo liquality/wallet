@@ -49,5 +49,5 @@ export default {
     askedTimes: 0,
     notAskAgain: false
   },
-  watsNewModalShowed: false
+  watsNewModalVersion: null
 }
