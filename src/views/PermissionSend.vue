@@ -22,16 +22,6 @@
         <label>To</label>
         <p class="confirm-value">{{shortAddress}}</p>
       </div>
-      <div class="form-group mt-4">
-        <label>Network Speed / Fee</label>
-        <div class="permission-send_fees">
-          <FeeSelector
-            :asset="asset"
-            v-model="selectedFee"
-            v-bind:fees="assetFees"
-            v-bind:fiatRates="fiatRates"/>
-        </div>
-      </div>
       <div v-if="data" class="permission-send_data">
         <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
         <div class="permission-send_data_code" v-if="showData">{{data}}</div>
@@ -180,9 +170,9 @@ export default {
       return this.address ? shortenAddress(this.address) : 'New Contract'
     },
     value () {
-      // Parse SendOptions.value into BigNumber
+      // Parse SendOptions.value into BN
       const value = this.request.args[0].value
-      return BigNumber(value ? '0x' + value : 0)
+      return BN(value ? '0x' + value : 0)
     },
     amount () {
       if (!this.value) return 0
