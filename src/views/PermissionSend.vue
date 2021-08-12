@@ -8,6 +8,9 @@
         <label>{{subLabel}}</label>
         <p class="confirm-value" :style="getAssetColorStyle(asset)">{{symbol}}</p>
       </div>
+      <div class="form-group">
+        <label>Transaction fee {{feeInUsdValue}} USD</label>
+      </div>
       </div>
       <div v-else>
       <div class="form-group">
@@ -74,7 +77,7 @@ import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
-import BigNumber from 'bignumber.js'
+import BN from 'bignumber.js'
 
 const TRANSACTION_TYPES = {
   approve: 'Allow',
@@ -110,8 +113,11 @@ export default {
       this.showData = !this.showData
     },
     async getSymbol() {
-      const data = await tokenDetailProviders.ethereum.getDetails(this.request.args[0].to)
-      this.symbol = data.symbol
+      if(this.assetChain === 'ETH') {
+          const data = await tokenDetailProviders.ethereum.getDetails(this.request.args[0].to)
+          this.symbol = data.symbol
+      }
+      return '';
     },
     async getLabel() {
       const txType = parseTransactionData(this.request.args[0]?.data)?.name || 'send'
@@ -186,9 +192,14 @@ export default {
       return this.request.args[0].data
     },
     assetFees () {
-      console.log(parseInt(this.request.args[0].gas) * 66)
-      console.log(this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain])
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+    },
+    feeInUsdValue() {
+      const gas = BN(this.request.args[0].gas, 16)
+      const feePerGas = BN(this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain][this.selectedFee].fee).div(1e9)
+      const txCost = gas.times(feePerGas)
+       
+      return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
     },
     feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
