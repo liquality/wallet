@@ -70,6 +70,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
           if (response.error) reject(new Error(response.error))
           resolve(response.result)
         })
+
         const query = stringify({
           id,
           ...request,
