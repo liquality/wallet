@@ -1,12 +1,8 @@
 import { stringify } from 'qs'
-import abi from 'human-standard-token-abi';
-import * as ethers from 'ethers'
 
 import { emitter } from '../utils'
 import { createPopup } from '../../broker/utils'
-console.log('ABI', abi)
-const hstInterface = new ethers.utils.Interface(abi);
-console.log(hstInterface)
+
 const CONFIRM_REQUIRED = [
   /^chain.buildTransaction$/,
   /^chain.buildBatchTransaction$/,
@@ -74,9 +70,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
           if (response.error) reject(new Error(response.error))
           resolve(response.result)
         })
-        const tokenData = hstInterface.parseTransaction({ data: request.args[0].data });
-        console.log(tokenData.value.toNumber())
-        console.log(tokenData)
+        
         const query = stringify({
           id,
           ...request,
