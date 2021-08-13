@@ -64,6 +64,12 @@ export default {
         type: SwapProviderType.LIQUALITY,
         agent: 'https://liquality.io/swap/agent'
       },
+      liqualityBoost: {
+        name: 'Liquality Boost',
+        type: SwapProviderType.LIQUALITYBOOST,
+        agent: 'https://liquality.io/swap/agent',
+        network: 'mainnet'
+      },
       uniswapV2: {
         name: 'Uniswap V2',
         type: SwapProviderType.UNISWAPV2,
