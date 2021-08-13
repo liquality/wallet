@@ -3,4 +3,4 @@ import * as ethers from 'ethers'
 
 const hstInterface = new ethers.utils.Interface(abi);
  
-export const parseTransactionData = (data) => hstInterface.parseTransaction({ data });
+export const parseTokenTx = (data) => hstInterface.parseTransaction({ data })

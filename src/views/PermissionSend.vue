@@ -61,7 +61,7 @@ import { unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getNativeAsset, getAssetColorStyle } from '@/utils/asset'
-import { parseTransactionData } from '@/utils/txData'
+import { parseTokenTx } from '@/utils/parseTokenTx'
 import { tokenDetailProviders } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -104,28 +104,31 @@ export default {
     },
     async getSymbol() {
       if(this.assetChain === 'ETH') {
+        try {
           const data = await tokenDetailProviders.ethereum.getDetails(this.request.args[0].to)
           this.symbol = data.symbol
+        } catch {
+          this.symbol = 'ETH'
+        }
       }
-      return '';
     },
     async getLabel() {
-      const txType = parseTransactionData(this.request.args[0]?.data)?.name || 'send'
-      
-      if (txType === 'approve' && chrome.tabs?.query) {
-        this.isApprove = true;
+      try {
+        const txType = parseTokenTx(this.request.args[0]?.data)?.name || 'send'
         
-        chrome.tabs.query({active: true, lastFocusedWindow: true}, async tabs => {
-          if(!tabs) return
-
-          const origin = tabs[0].url.split('&').find(e => e.includes('origin'))
-          const url = decodeURIComponent(origin.split('=')[1])
-          this.label = `${TRANSACTION_TYPES[txType]}`
-          this.subLabel = `${url} to spend your`
-        })
-      } else if (txType === 'send') {
-        this.label = TRANSACTION_TYPES[txType]
+        switch(txType) {
+          case 'approve': {
+            this.isApprove = true;
+            this.label = `${TRANSACTION_TYPES[txType]}`
+            this.subLabel = this.request.origin
+          } default: {
+            this.label = TRANSACTION_TYPES['send']
+          }
+        }
+      } catch {
+        this.label = TRANSACTION_TYPES['send']
       }
+     
     },
     async reply (allowed) {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
@@ -201,10 +204,10 @@ export default {
       }
     }
   },
-  created () {
-    this.getSymbol()
-    this.getLabel()
-    this.updateFees({ asset: this.asset })
+  async created () {
+    await this.getSymbol()
+    await this.getLabel()
+    await this.updateFees({ asset: this.asset })
   },
   beforeDestroy () {
     // TODO: need to reply correctly when window is closed
