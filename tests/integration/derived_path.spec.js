@@ -96,7 +96,7 @@ describe('Derived path address validation-["mainnet"]', async () => {
 
     expect(sovAddress, 'SOV & RBTC address are equal').eq(rbtcAddress)
   })
-  it.only('Balance > 0 wallet, validate ETH & RSK derived path not same', async () => {
+  it('Balance > 0 wallet, validate ETH & RSK derived path not same', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
