@@ -11,7 +11,7 @@
                      :class="{ 'infinity-rotate': updatingBalances }"
         />
         <div class="account-container_balance">
-          <div class="account-container_balance_fiat">
+          <div class="account-container_balance_fiat" :id="`${asset}_fiat_value`">
             <span v-if="fiatRates[asset]" >
               ${{ prettyFiatBalance(balance, fiatRates[asset]) }}
             </span>
@@ -19,6 +19,7 @@
           </div>
           <div>
             <span class="account-container_balance_value"
+                  :id="`${asset}_balance_value`"
                   :style="{ fontSize: balanceFontSize }">
               {{ balance }}
             </span>
@@ -26,7 +27,7 @@
           </div>
         </div>
         <div v-if="address" class="account-container_address">
-          <button class="btn btn-outline-light"
+          <button class="btn btn-outline-light" :id="`${asset}_address_container`"
             @click="copyAddress"
             v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
             {{ shortenAddress(this.address) }}
