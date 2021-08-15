@@ -22,6 +22,9 @@
         <label>To</label>
         <p class="confirm-value">{{shortAddress}}</p>
       </div>
+      <div class="form-group">
+        <label>Transaction fee {{feeInUsdValue}} USD</label>
+      </div>
       <div v-if="data" class="permission-send_data">
         <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
         <div class="permission-send_data_code" v-if="showData">{{data}}</div>
@@ -29,6 +32,7 @@
    
       </div>
 
+    
       <div class="form-group mt-4">
         <label>Network Speed / Fee</label>
         <div class="permission-send_fees">
@@ -121,8 +125,10 @@ export default {
             this.isApprove = true;
             this.label = `${TRANSACTION_TYPES[txType]}`
             this.subLabel = this.request.origin
+            return;
           } default: {
             this.label = TRANSACTION_TYPES['send']
+            return;
           }
         }
       } catch {
@@ -185,6 +191,7 @@ export default {
       return this.request.args[0].data
     },
     assetFees () {
+      console.log(this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain])
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
     },
     feeInUsdValue() {

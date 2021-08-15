@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="navbar">
-      <router-link v-if="showBack" class="navbar_prev" v-bind:to="backPath">
+      <router-link v-if="showBack" class="navbar_prev" id="previous_nav_bar" v-bind:to="backPath">
         <div><ChevronLeftIcon class="navbar_prev_icon" />{{ backLabel }}</div>
       </router-link>
       <a v-else-if="showBackButton" class="navbar_prev" href="#" @click="backClick">

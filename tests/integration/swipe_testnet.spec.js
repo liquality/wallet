@@ -48,6 +48,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -127,6 +128,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on ETH then click on SWAP button
@@ -193,19 +195,13 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(receiveAmountInDollar.trim()).not.contain('$00.00')
     expect(receiveAmountInDollar.trim()).not.contain('NaN')
 
-    const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
-    expect(receiveNetworkFeeValue.trim()).contain(asset1)
-
     const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
     expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
     expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
 
-    const receiveAccountFeesValue = await swapPage.GetSwapReceiveNetworkValue(page)
-    expect(receiveAccountFeesValue.trim()).contain(asset1)
+    const receiveAccountFeesValue = await swapPage.GetSwapReceiveAccountFeeValue(page)
+    expect(receiveAccountFeesValue.trim()).contain(asset2)
 
-    const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
-    expect(receiveAccountFeesInDollar.trim()).not.contain('$00.00')
-    expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
     // RATE
     await page.waitForSelector('#swap_review_rate_block')
 
@@ -221,6 +217,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on SOV then click on SWAP button
@@ -336,6 +333,7 @@ describe('Liquality wallet SWIPE feature', async () => {
   it('SWAP (BTC->ETH) - Thorchain', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -356,6 +354,7 @@ describe('Liquality wallet SWIPE feature', async () => {
   it('SWAP (ETH->BTC) - Thorchain', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -374,6 +373,7 @@ describe('Liquality wallet SWIPE feature', async () => {
   it('SWAP (ETHEREUM),Please increase amount. It is below minimum.', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on ETH then click on SWAP button
@@ -392,6 +392,7 @@ describe('Liquality wallet SWIPE feature', async () => {
   it('SWAP(ETHEREUM),Lower amount. This exceeds available balance.(Thorchain)', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     await overviewPage.SelectChain(page, 'ETH')
@@ -417,6 +418,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select mainnet for fastBTC integration
     await overviewPage.SelectNetwork(page, 'mainnet')
     // Click asset 1
@@ -459,6 +461,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select MainBet for fastBTC integration
     await overviewPage.SelectNetwork(page, 'mainnet')
     // Click asset 1
@@ -509,6 +512,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
 
     // Select testnet
     await overviewPage.SelectNetwork(page)

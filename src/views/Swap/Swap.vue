@@ -144,10 +144,16 @@
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
+      <div class="fee-wrapper" v-if="isHighFee">
+        Fees are high.  Review transaction carefully.
+      </div>
+      <div class="fee-wrapper" v-if="isSwapNegative">
+        Swap is negative.  Review transaction carefully.
+      </div>
       <div class="swap-confirm wrapper form">
         <div class="wrapper_top form">
           <div>
-            <label>Send</label>
+            <label class="mt-1">Send</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="confirm-value" id="send_swap_confirm_value" :style="getAssetColorStyle(asset)">
                 {{ sendAmount }} {{ asset }}
@@ -191,12 +197,12 @@
               class="d-flex align-items-center justify-content-between my-0 py-0"
             >
               <div class="confirm-value" id="receive_swap_confirm_value" :style="getAssetColorStyle(toAsset)">
-                {{ receiveAmount }} {{ toAsset }}
+                {{ dpUI(receiveAmount) }} {{ toAsset }}
               </div>
               <div class="details-text" id="receive_swap_amount_fiat">{{ '$' + formatFiat(receiveAmountFiat) }}</div>
             </div>
           </div>
-          <div class="detail-group">
+          <div class="detail-group" v-if="receiveFeeRequired">
             <label class="text-muted">Network Fee</label>
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
@@ -217,8 +223,8 @@
             <label class="text-muted">Amount - Fees</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold" id="swap_receive_amount_fee_value">
-                <span v-if="toAsset === toAssetChain">
-                  {{ receiveAmountSameAsset }} {{ toAssetChain }}
+                <span v-if="toAsset === toAssetChain || !receiveFeeRequired">
+                  {{ receiveAmountSameAsset }} {{ toAsset }}
                 </span>
                 <span v-else>
                   {{ receiveAmount }} {{ toAsset }} -
@@ -318,7 +324,8 @@ import {
   prettyFiatBalance,
   cryptoToFiat,
   fiatToCrypto,
-  formatFiat
+  formatFiat,
+  VALUE_DECIMALS
 } from '@/utils/coinFormatter'
 import {
   isERC20,
@@ -555,6 +562,7 @@ export default {
       return fee || BN(0)
     },
     toSwapFee () {
+      if (!this.receiveFeeRequired) return BN(0)
       const selectedSpeed = this.selectedFee[this.toAssetChain]
       const fee = this.amountOption === 'max' ? this.maxSwapFees[this.toAssetChain]?.[selectedSpeed] : this.swapFees[this.toAssetChain]?.[selectedSpeed]
       return fee || BN(0)
@@ -564,6 +572,9 @@ export default {
       const fee = this.maxSwapFees[this.assetChain]?.[selectedSpeed]
       return fee ? currencyToUnit(cryptoassets[this.assetChain], fee) : BN(0)
     },
+    receiveFeeRequired () {
+      return this.selectedQuoteProvider.toTxType
+    },
     available () {
       if (!this.networkWalletBalances) return BN(0)
       const balance = this.networkWalletBalances[this.asset]
@@ -572,6 +583,9 @@ export default {
           ? BN(balance)
           : BN.max(BN(balance).minus(this.maxFee), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
+    },
+    availableAmount () {
+      return dpUI(this.available, VALUE_DECIMALS)
     },
     ethRequired () {
       if (this.assetChain === 'ETH') {
@@ -588,6 +602,9 @@ export default {
       return !this.ethRequired
     },
     amountError () {
+      if (this.showNoLiquidityMessage) {
+        return null
+      }
       const amount = BN(this.safeAmount)
 
       if (amount.gt(this.available)) {
@@ -652,6 +669,14 @@ export default {
         [this.assetChain]: this.asset,
         [this.toAssetChain]: this.toAsset
       }
+    },
+    isHighFee () {
+      const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
+      const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
+      return feeTotal.gte(BN(receiveTotalPercentage))
+    },
+    isSwapNegative () {
+      return this.totalToReceiveInFiat <= 0
     }
   },
   methods: {
@@ -660,7 +685,8 @@ export default {
       'getQuotes',
       'updateFees',
       'newSwap',
-      'trackAnalytics'
+      'trackAnalytics',
+      'updateFiatRates'
     ]),
     shortenAddress,
     dpUI,
@@ -702,12 +728,14 @@ export default {
 
       this.resetFees()
       this.updateQuotes()
+      this.updateFiatRates({ assets: [toAsset] })
     },
     setFromAsset (asset) {
       this.asset = asset
       this.sendAmount = dpUI(this.defaultAmount)
       this.resetFees()
       this.updateQuotes()
+      this.updateFiatRates({ assets: [asset] })
     },
     async _updateSwapFees (max) {
       if (!this.selectedQuote) return
@@ -877,7 +905,7 @@ export default {
           ].fee
           : undefined
 
-        const toFee = this.availableFees.has(this.toAssetChain)
+        const toFee = this.receiveFeeRequired && this.availableFees.has(this.toAssetChain)
           ? this.getAssetFees(this.toAssetChain)[
             this.selectedFee[this.toAssetChain]
           ].fee
@@ -1071,6 +1099,16 @@ export default {
     }
   }
 }
+
+  .fee-wrapper {
+    background-color: #F0F7F9;
+    align-self: center;
+    padding-left: 20px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    position: absolute;
+    width: 100%;
+  }
 
 .swap-rate {
   p {
