@@ -5,6 +5,22 @@ import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 import { v4 as uuidv4 } from 'uuid'
 import { shouldApplyRskLegacyDerivation } from './utils'
 
+// add a migration to reuse
+const rskLegacyDerivationMigration = async (state) => {
+  if (!Object.keys(state.accounts)?.length) {
+    return {
+      ...state
+    }
+  }
+
+  const rskLegacyDerivation = await shouldApplyRskLegacyDerivation(state.accounts)
+
+  return {
+    ...state,
+    rskLegacyDerivation
+  }
+}
+
 const migrations = [
   { // Merely sets up the version
     version: 1,
@@ -214,20 +230,11 @@ const migrations = [
   },
   { // rskLegacyDerivation
     version: 11,
-    migrate: async (state) => {
-      if (!Object.keys(state.accounts)?.length) {
-        return {
-          ...state
-        }
-      }
-
-      const rskLegacyDerivation = await shouldApplyRskLegacyDerivation(state.accounts)
-
-      return {
-        ...state,
-        rskLegacyDerivation
-      }
-    }
+    migrate: rskLegacyDerivationMigration
+  },
+  { // rskLegacyDerivation for fix
+    version: 12,
+    migrate: rskLegacyDerivationMigration
   }
 ]
 
