@@ -7,7 +7,8 @@ import { shouldApplyRskLegacyDerivation } from './utils'
 
 // add a migration to reuse
 const rskLegacyDerivationMigration = async (state) => {
-  if (!Object.keys(state.accounts)?.length) {
+  const hasAccounts = Object.keys(state.accounts || {}).length > 0
+  if (!hasAccounts) {
     return {
       ...state
     }
