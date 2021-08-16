@@ -144,10 +144,16 @@
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
+      <div class="fee-wrapper" v-if="isHighFee">
+        Fees are high.  Review transaction carefully.
+      </div>
+      <div class="fee-wrapper" v-if="isSwapNegative">
+        Swap is negative.  Review transaction carefully.
+      </div>
       <div class="swap-confirm wrapper form">
         <div class="wrapper_top form">
           <div>
-            <label>Send</label>
+            <label class="mt-1">Send</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="confirm-value" id="send_swap_confirm_value" :style="getAssetColorStyle(asset)">
                 {{ sendAmount }} {{ asset }}
@@ -318,7 +324,8 @@ import {
   prettyFiatBalance,
   cryptoToFiat,
   fiatToCrypto,
-  formatFiat
+  formatFiat,
+  VALUE_DECIMALS
 } from '@/utils/coinFormatter'
 import {
   isERC20,
@@ -577,6 +584,9 @@ export default {
           : BN.max(BN(balance).minus(this.maxFee), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
     },
+    availableAmount () {
+      return dpUI(this.available, VALUE_DECIMALS)
+    },
     ethRequired () {
       if (this.assetChain === 'ETH') {
         return !this.account?.balances?.ETH || this.account?.balances?.ETH === 0
@@ -592,6 +602,9 @@ export default {
       return !this.ethRequired
     },
     amountError () {
+      if (this.showNoLiquidityMessage) {
+        return null
+      }
       const amount = BN(this.safeAmount)
 
       if (amount.gt(this.available)) {
@@ -656,6 +669,14 @@ export default {
         [this.assetChain]: this.asset,
         [this.toAssetChain]: this.toAsset
       }
+    },
+    isHighFee () {
+      const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
+      const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
+      return feeTotal.gte(BN(receiveTotalPercentage))
+    },
+    isSwapNegative () {
+      return this.totalToReceiveInFiat <= 0
     }
   },
   methods: {
@@ -1078,6 +1099,16 @@ export default {
     }
   }
 }
+
+  .fee-wrapper {
+    background-color: #F0F7F9;
+    align-self: center;
+    padding-left: 20px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    position: absolute;
+    width: 100%;
+  }
 
 .swap-rate {
   p {

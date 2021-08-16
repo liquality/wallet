@@ -165,12 +165,11 @@ export default {
     width: 196px;
   }
   &_address {
-    font-size: 0.74rem;
-    font-weight: lighter;
+    font-size: 0.7rem;
   }
 
   .testnet_message {
-    margin-top: 24px;
+    margin-top: 18px;
     font-size: $font-size-tiny;
     font-weight: lighter;
     display: flex;

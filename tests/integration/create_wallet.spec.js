@@ -15,7 +15,7 @@ const seedWordsPage = new SeedWordsPage()
 
 let browser, page
 
-describe('Liquality wallet - Create wallet-["mainnet"]', async () => {
+describe('Create wallet-["mainnet"]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -86,16 +86,10 @@ describe('Liquality wallet - Create wallet-["mainnet"]', async () => {
     } else {
       await overviewPage.SelectNetwork(page)
     }
-
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
-
-    // GET the ETHEREUM assert Address
-    const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
-    const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
-    expect(rskAddress, 'ETH & RSK Address are same if the wallet created with 0 balance').equals(ethAddress)
   })
 })
