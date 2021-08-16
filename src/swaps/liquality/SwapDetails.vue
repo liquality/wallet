@@ -233,9 +233,7 @@ export default {
       showFeeSelector: false,
       feeSelectorLoading: false,
       feeSelectorAsset: null,
-      newFeePrice: null,
-      retryingSwap: false,
-      showLedgerModal: false,
+      newFeePrice: null
     }
   },
   props: ['id', 'retrySwap'],
