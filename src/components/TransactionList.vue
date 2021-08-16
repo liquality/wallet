@@ -129,7 +129,7 @@ export default {
     },
     getCompletedAmount (item) {
       const amount = item.type === 'SWAP' ? item.fromAmount : item.amount
-      
+
       return prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[item.from])
     }
   }
