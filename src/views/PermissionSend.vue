@@ -1,15 +1,39 @@
 <template>
   <div class="permission-send wrapper form text-center">
-    <div v-if="currentStep === 'inputs'" class="wrapper_top form">
-      <div class="form-group">
-        <label>Send</label>
-        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asset}}</p>
-        <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
+    <div v-if="currentStep === 'inputs'"  class="wrapper_top form">
+      <div v-if="error" class="mt-4 text-danger"><strong>Error:</strong> {{ error }}</div>
+      <div v-if="isApprove">
+        <div class="form-group">
+        <label>{{label}}</label>
+        <label>{{subLabel}}</label>
+        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{symbol}}</p>
       </div>
       <div class="form-group">
-        <label>To</label>
-        <p class="confirm-value">{{shortAddress}}</p>
+        <label>Transaction fee {{feeInUsdValue}} USD</label>
       </div>
+      </div>
+      
+      <div v-else class="wrapper_top form">
+        <div class="form-group">
+          <label>{{label}}</label>
+          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{symbol}}</p>
+          <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
+        </div>
+        <div class="form-group">
+          <label>To</label>
+          <p class="confirm-value">{{shortAddress}}</p>
+        </div>
+        <div class="form-group">
+          <label>Transaction fee {{feeInUsdValue}} USD</label>
+        </div>
+        <div v-if="data" class="permission-send_data">
+          <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
+          <div class="permission-send_data_code" v-if="showData">{{data}}</div>
+        </div>
+   
+      </div>
+
+    
       <div class="form-group mt-4">
         <label>Network Speed / Fee</label>
         <div class="permission-send_fees">
@@ -22,14 +46,9 @@
             />
         </div>
       </div>
-      <div v-if="data" class="permission-send_data">
-        <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
-        <div class="permission-send_data_code" v-if="showData">{{data}}</div>
-      </div>
-      <div v-if="error" class="mt-4 text-danger"><strong>Error:</strong> {{ error }}</div>
     </div>
-
-
+    
+    
     <div class="send" v-else-if="currentStep === 'custom-fees'">
       <CustomFees
         @apply="applyCustomFee"
@@ -63,12 +82,19 @@ import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getNativeAsset, getAssetColorStyle } from '@/utils/asset'
+import { parseTokenTx } from '@/utils/parseTokenTx'
+import { tokenDetailProviders } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
 import BN from 'bignumber.js'
 import _ from 'lodash'
+
+const TRANSACTION_TYPES = {
+  approve: 'Allow',
+  send: 'Send'
+}
 
 export default {
   components: {
@@ -85,6 +111,10 @@ export default {
       error: null,
       loading: false,
       replied: false,
+      symbol: '',
+      label: '',
+      subLabel: '',
+      isApprove: false,
       currentStep: 'inputs',
       sendFees: {},
       maxSendFees: {},
@@ -106,6 +136,36 @@ export default {
     },
     toggleshowData () {
       this.showData = !this.showData
+    },
+    async getSymbol() {
+      if(this.assetChain === 'ETH') {
+        try {
+          const data = await tokenDetailProviders.ethereum.getDetails(this.request.args[0].to)
+          this.symbol = data.symbol
+        } catch {
+          this.symbol = 'ETH'
+        }
+      }
+    },
+    async getLabel() {
+      try {
+        const txType = parseTokenTx(this.request.args[0]?.data)?.name || 'send'
+        
+        switch(txType) {
+          case 'approve': {
+            this.isApprove = true;
+            this.label = `${TRANSACTION_TYPES[txType]}`
+            this.subLabel = this.request.origin
+            return;
+          } default: {
+            this.label = TRANSACTION_TYPES['send']
+            return;
+          }
+        }
+      } catch {
+        this.label = TRANSACTION_TYPES['send']
+      }
+     
     },
     async reply (allowed) {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
@@ -228,6 +288,13 @@ export default {
       
       return assetFees
     },
+    feeInUsdValue() {
+      const gas = BN(this.request.args[0].gas, 16)
+      const feePerGas = BN(this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain][this.selectedFee].fee).div(1e9)
+      const txCost = gas.times(feePerGas)
+       
+      return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
+    },
     feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
     },
@@ -239,6 +306,8 @@ export default {
     }
   },
   async created () {
+    await this.getSymbol()
+    await this.getLabel()
     await this.updateFees({ asset: this.asset })
     await this.updateSendFees(0)
     await this.updateMaxSendFees()
