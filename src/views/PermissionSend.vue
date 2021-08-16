@@ -1,6 +1,6 @@
 <template>
   <div class="permission-send wrapper form text-center">
-    <div class="wrapper_top form">
+    <div v-if="currentStep === 'inputs'"  class="wrapper_top form">
       <div v-if="error" class="mt-4 text-danger"><strong>Error:</strong> {{ error }}</div>
       <div v-if="isApprove">
         <div class="form-group">
@@ -12,23 +12,24 @@
         <label>Transaction fee {{feeInUsdValue}} USD</label>
       </div>
       </div>
-      <div v-else>
-      <div class="form-group">
-        <label>{{label}}</label>
-        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{symbol}}</p>
-        <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
-      </div>
-      <div class="form-group">
-        <label>To</label>
-        <p class="confirm-value">{{shortAddress}}</p>
-      </div>
-      <div class="form-group">
-        <label>Transaction fee {{feeInUsdValue}} USD</label>
-      </div>
-      <div v-if="data" class="permission-send_data">
-        <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
-        <div class="permission-send_data_code" v-if="showData">{{data}}</div>
-      </div>
+      
+      <div v-else class="wrapper_top form">
+        <div class="form-group">
+          <label>{{label}}</label>
+          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{symbol}}</p>
+          <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
+        </div>
+        <div class="form-group">
+          <label>To</label>
+          <p class="confirm-value">{{shortAddress}}</p>
+        </div>
+        <div class="form-group">
+          <label>Transaction fee {{feeInUsdValue}} USD</label>
+        </div>
+        <div v-if="data" class="permission-send_data">
+          <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
+          <div class="permission-send_data_code" v-if="showData">{{data}}</div>
+        </div>
    
       </div>
 
@@ -40,13 +41,28 @@
             :asset="asset"
             v-model="selectedFee"
             v-bind:fees="assetFees"
-            v-bind:fiatRates="fiatRates"/>
+            v-bind:fiatRates="fiatRates"
+            @custom-selected="onCustomFeeSelected(asset)"
+            />
         </div>
       </div>
     </div>
     
     
-    <div class="wrapper_bottom">
+    <div class="send" v-else-if="currentStep === 'custom-fees'">
+      <CustomFees
+        @apply="applyCustomFee"
+        @update="setCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="assetChain"
+        :selected-fee="selectedFee"
+        :fees="assetFees"
+        :totalFees="maxOptionActive ? maxSendFees : sendFees"
+        :fiatRates="fiatRates"
+      />
+    </div>
+
+    <div v-if="currentStep === 'inputs'" class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Cancel</button>
         <button class="btn btn-primary btn-lg btn-icon" @click.stop="reply(true)" :disabled="loading">
@@ -59,10 +75,11 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
+import CustomFees from '@/components/CustomFees'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getNativeAsset, getAssetColorStyle } from '@/utils/asset'
 import { parseTokenTx } from '@/utils/parseTokenTx'
@@ -72,6 +89,7 @@ import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
 import BN from 'bignumber.js'
+import _ from 'lodash'
 
 const TRANSACTION_TYPES = {
   approve: 'Allow',
@@ -83,7 +101,8 @@ export default {
     SpinnerIcon,
     ChevronDown,
     ChevronRight,
-    FeeSelector
+    FeeSelector,
+    CustomFees
   },
   data () {
     return {
@@ -95,7 +114,12 @@ export default {
       symbol: '',
       label: '',
       subLabel: '',
-      isApprove: false
+      isApprove: false,
+      currentStep: 'inputs',
+      sendFees: {},
+      maxSendFees: {},
+      maxOptionActive: false,
+      customFee: null
     }
   },
   methods: {
@@ -103,6 +127,13 @@ export default {
     prettyBalance,
     prettyFiatBalance,
     getAssetColorStyle,
+    onCustomFeeSelected () {
+      this.currentStep = 'custom-fees'
+    },
+    cancelCustomFee () {
+      this.currentStep = 'inputs'
+      this.selectedFee = 'average'
+    },
     toggleshowData () {
       this.showData = !this.showData
     },
@@ -162,10 +193,61 @@ export default {
       } finally {
         this.loading = false
       }
-    }
+    },
+    async _updateSendFees (amount) {
+      const getMax = amount === undefined
+      if (this.feesAvailable) {
+        const sendFees = {}
+        
+        for (const [speed, fee] of Object.entries(this.assetFees)) {
+          const gas = BN(this.request.args[0].gas, 16)
+          const feePerGas = BN(fee.fee).div(1e9)
+          const txCost = gas.times(feePerGas)
+          sendFees[speed] = txCost
+        }
+        
+        if (getMax) {
+          this.maxSendFees = sendFees
+        } else {
+          this.sendFees = sendFees
+        }
+      }
+      
+    },
+    applyCustomFee ({ fee }) {
+      const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee)
+      if (presetFee) {
+        const [speed] = presetFee
+        this.selectedFee = speed
+        this.customFee = null
+      } else {
+        this.updateMaxSendFees()
+        this.updateSendFees(this.amount)
+        this.customFee = fee
+        this.selectedFee = 'custom'
+      }
+      this.currentStep = 'inputs'
+    },
+    updateSendFees: _.debounce(async function (amount) {
+      await this._updateSendFees(amount)
+    }, 800),
+    async updateMaxSendFees () {
+      await this._updateSendFees()
+    },
+    setCustomFee: _.debounce(async function ({ fee }) {
+      this.customFee = fee
+      if (this.maxOptionActive) {
+        this.updateMaxSendFees()
+      } else {
+        this.updateSendFees(this.amount)
+      }
+    }, 800),
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
+     ...mapGetters([
+      'client'
+    ]),
     asset () {
       return this.request.asset
     },
@@ -191,8 +273,20 @@ export default {
       return this.request.args[0].data
     },
     assetFees () {
-      console.log(this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain])
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      const assetFees = {}
+      if (this.customFee) {
+        assetFees.custom = { fee: this.customFee }
+      }
+      
+      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
+        this.assetChain
+      ]
+      
+      if (fees) {
+        Object.assign(assetFees, fees)
+      }
+      
+      return assetFees
     },
     feeInUsdValue() {
       const gas = BN(this.request.args[0].gas, 16)
@@ -215,6 +309,8 @@ export default {
     await this.getSymbol()
     await this.getLabel()
     await this.updateFees({ asset: this.asset })
+    await this.updateSendFees(0)
+    await this.updateMaxSendFees()
   },
   beforeDestroy () {
     // TODO: need to reply correctly when window is closed
@@ -226,6 +322,32 @@ export default {
 </script>
 
 <style lang="scss">
+.send {
+  &_asset {
+    &.input-group {
+      align-items: center;
+    }
+    &_icon {
+      margin-right: 4px;
+    }
+    input {
+      text-align: right;
+      margin-left: 12px;
+    }
+  }
+  &_fees {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    margin: 6px 0;
+    .fee-selector {
+      margin-left: 6px;
+    }
+    .custom-fees {
+      font-weight: normal;
+    }
+  }
+}
 .permission-send {
   &_fees {
     text-align: center;
