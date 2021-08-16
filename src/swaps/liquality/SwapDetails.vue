@@ -178,7 +178,7 @@
         <tr>
           <td class="text-muted text-right small-12">Actions</td>
           <td class="text-danger">
-            <span class="cursor-pointer mr-3" v-if="item.error" @click="emit('retrySwap')">Retry</span>
+            <span class="cursor-pointer mr-3" v-if="item.error" @click="$emit('retrySwap')">Retry</span>
           </td>
         </tr>
         </tbody>
@@ -236,7 +236,7 @@ export default {
       newFeePrice: null
     }
   },
-  props: ['id'],
+  props: ['id', 'retrySwap'],
   computed: {
     ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
