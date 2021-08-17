@@ -505,7 +505,6 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC'])
   })
-
   it('SWAP (NEAR->BTC)', async () => {
     const asset1 = 'NEAR'
     const asset2 = 'BTC'
