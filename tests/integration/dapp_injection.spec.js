@@ -12,7 +12,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Dapp Injection-[mainnet]', async () => {
+describe.only('Dapp Injection-[mainnet]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -61,7 +61,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
     await connectRequestWindow.click('#ETHEREUM')
     // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button')
+    await connectRequestWindow.click('#connect_request_button').catch(e => e);
 
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
@@ -86,7 +86,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
     await connectRequestWindow.click('#ETHEREUM')
     // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button')
+    await connectRequestWindow.click('#connect_request_button').catch(e => e);
 
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
@@ -116,7 +116,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await connectRequestWindow.waitForSelector('#POLYGON', { visible: true })
     await connectRequestWindow.click('#POLYGON')
     // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button')
+    await connectRequestWindow.click('#connect_request_button').catch(e => e);
 
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
