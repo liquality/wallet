@@ -12,7 +12,7 @@
         <label>Transaction fee {{feeInUsdValue}} USD</label>
       </div>
       </div>
-      
+
       <div v-else class="wrapper_top form">
         <div class="form-group">
           <label>{{label}}</label>
@@ -30,10 +30,9 @@
           <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
           <div class="permission-send_data_code" v-if="showData">{{data}}</div>
         </div>
-   
+
       </div>
 
-    
       <div class="form-group mt-4">
         <label>Network Speed / Fee</label>
         <div class="permission-send_fees">
@@ -47,8 +46,7 @@
         </div>
       </div>
     </div>
-    
-    
+
     <div class="send" v-else-if="currentStep === 'custom-fees'">
       <CustomFees
         @apply="applyCustomFee"
@@ -81,9 +79,9 @@ import { unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
-import { getNativeAsset, getAssetColorStyle } from '@/utils/asset'
+import { getNativeAsset, getAssetColorStyle, tokenDetailProviders } from '@/utils/asset'
 import { parseTokenTx } from '@/utils/parseTokenTx'
-import { tokenDetailProviders } from '@/utils/asset'
+
 import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
@@ -137,8 +135,8 @@ export default {
     toggleshowData () {
       this.showData = !this.showData
     },
-    async getSymbol() {
-      if(this.assetChain === 'ETH') {
+    async getSymbol () {
+      if (this.assetChain === 'ETH') {
         try {
           const data = await tokenDetailProviders.ethereum.getDetails(this.request.args[0].to)
           this.symbol = data.symbol
@@ -147,25 +145,24 @@ export default {
         }
       }
     },
-    async getLabel() {
+    async getLabel () {
       try {
         const txType = parseTokenTx(this.request.args[0]?.data)?.name || 'send'
-        
-        switch(txType) {
+
+        switch (txType) {
           case 'approve': {
-            this.isApprove = true;
+            this.isApprove = true
             this.label = `${TRANSACTION_TYPES[txType]}`
             this.subLabel = this.request.origin
-            return;
+            return
           } default: {
-            this.label = TRANSACTION_TYPES['send']
-            return;
+            this.label = TRANSACTION_TYPES.send
+            return
           }
         }
       } catch {
-        this.label = TRANSACTION_TYPES['send']
+        this.label = TRANSACTION_TYPES.send
       }
-     
     },
     async reply (allowed) {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
@@ -198,21 +195,20 @@ export default {
       const getMax = amount === undefined
       if (this.feesAvailable) {
         const sendFees = {}
-        
+
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const gas = BN(this.request.args[0].gas, 16)
           const feePerGas = BN(fee.fee).div(1e9)
           const txCost = gas.times(feePerGas)
           sendFees[speed] = txCost
         }
-        
+
         if (getMax) {
           this.maxSendFees = sendFees
         } else {
           this.sendFees = sendFees
         }
       }
-      
     },
     applyCustomFee ({ fee }) {
       const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee)
@@ -241,11 +237,11 @@ export default {
       } else {
         this.updateSendFees(this.amount)
       }
-    }, 800),
+    }, 800)
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
-     ...mapGetters([
+    ...mapGetters([
       'client'
     ]),
     asset () {
@@ -277,22 +273,22 @@ export default {
       if (this.customFee) {
         assetFees.custom = { fee: this.customFee }
       }
-      
+
       const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         this.assetChain
       ]
-      
+
       if (fees) {
         Object.assign(assetFees, fees)
       }
-      
+
       return assetFees
     },
-    feeInUsdValue() {
+    feeInUsdValue () {
       const gas = BN(this.request.args[0].gas, 16)
       const feePerGas = BN(this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain][this.selectedFee].fee).div(1e9)
       const txCost = gas.times(feePerGas)
-       
+
       return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
     },
     feesAvailable () {
