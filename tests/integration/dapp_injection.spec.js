@@ -66,6 +66,61 @@ describe('Dapp Injection-[mainnet]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
+  it('Sushi injection ETH chain', async () => {
+    // Go to Sushi app
+    const dappPage = await browser.newPage()
+    await dappPage.setViewport({
+      width: 1366,
+      height: 768
+    })
+    await dappPage.goto('https://app.sushi.com/swap')
+    await dappPage.waitForSelector('#connect-wallet', { visible: true })
+    await dappPage.click('#connect-wallet')
+    // select a wallet type as Injected
+    await dappPage.waitForXPath('//div[contains(text(),\'Injected\')]', { visible: true })
+    const walletConnect = await dappPage.$x('//div[contains(text(),\'Injected\')]')
+    // Before click on injected wallet option.
+    const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
+    await walletConnect[0].click()
+    const connectRequestWindow = await newPagePromise
+    await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
+    await connectRequestWindow.click('#ETHEREUM')
+    // Check connect button is enabled
+    await connectRequestWindow.click('#connect_request_button')
+
+    // Check web3 status as connected
+    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
+  })
+  it('Sushi injection Polygon chain', async () => {
+    // Select polygon network
+    await page.click('#dropdown-item')
+    await page.waitForSelector('#polygon_web_network', { visible: true })
+    await page.click('#polygon_web_network')
+
+    // Go to Sushi app
+    const dappPage = await browser.newPage()
+    await dappPage.setViewport({
+      width: 1366,
+      height: 768
+    })
+    await dappPage.goto('https://app.sushi.com/swap')
+    await dappPage.waitForSelector('#connect-wallet', { visible: true })
+    await dappPage.click('#connect-wallet')
+    // select a wallet type as Injected
+    await dappPage.waitForXPath('//div[contains(text(),\'Injected\')]', { visible: true })
+    const walletConnect = await dappPage.$x('//div[contains(text(),\'Injected\')]')
+    // Before click on injected wallet option.
+    const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
+    await walletConnect[0].click()
+    const connectRequestWindow = await newPagePromise
+    await connectRequestWindow.waitForSelector('#POLYGON', { visible: true })
+    await connectRequestWindow.click('#POLYGON')
+    // Check connect button is enabled
+    await connectRequestWindow.click('#connect_request_button')
+
+    // Check web3 status as connected
+    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
+  })
 
   afterEach(async () => {
     try {
