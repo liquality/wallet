@@ -51,15 +51,6 @@ describe('Custom fee feature', async () => {
     // Send address to another SOV
     await sendPage.EnterSendToAddress(page, '0x9d0023Bd55ab3647f6C591DA6d46e5A6128d33d1')
   })
-  afterEach(async () => {
-    try {
-      console.log('Cleaning up instances')
-      await page.close()
-      await browser.close()
-    } catch (e) {
-      console.log('Cannot cleanup instances')
-    }
-  })
 
   it('Send SOV to another SOV with custom fee (Fast)', async () => {
     // Network speed
@@ -132,5 +123,15 @@ describe('Custom fee feature', async () => {
     await transactionDetailsPage.ValidateTime(page)
     await transactionDetailsPage.ValidateStatus(page)
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
+  })
+
+  afterEach(async () => {
+    try {
+      console.log('Cleaning up instances')
+      await page.close()
+      await browser.close()
+    } catch (e) {
+      console.log('Cannot cleanup instances')
+    }
   })
 })

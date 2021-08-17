@@ -316,6 +316,30 @@ class OverviewPage {
     expect(assertAddress).not.equals(null)
     return assertAddress
   }
+
+  /**
+   * Click on Hamburger icon.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnBurgerIcon (page) {
+    // Click on Backup seed from Burger Icon menu
+    await page.waitForSelector('#burger_icon_menu', { visible: true })
+    await page.click('#burger_icon_menu')
+  }
+
+  /**
+   * Click on Settings under menu items.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async SelectSettings (page) {
+    const settings = await page.waitForSelector('#settings', { visible: true })
+    await settings.click()
+    await page.waitForSelector('#settings_item_default_wallet', { visible: true })
+  }
 }
 
 module.exports = OverviewPage

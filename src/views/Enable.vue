@@ -22,6 +22,7 @@
         <div class="button-group">
           <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Deny</button>
           <button class="btn btn-primary btn-lg btn-icon"
+                  id="connect_request_button"
                   @click="reply(true)"
                   :disabled="loading || !accountId">
             <SpinnerIcon class="btn-loading" v-if="loading" />

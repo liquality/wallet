@@ -34,6 +34,7 @@
     </li>
     <li v-for="chain in filteredItems" :key="chain">
       <a class="dropdown-item"
+         :id="`${chain}_web_network`"
          href="#"
          @click="selectItem(chain)">
            <div class="dropdown-item-chain-item">
