@@ -15,7 +15,7 @@ const seedWordsPage = new SeedWordsPage()
 
 let browser, page
 
-describe('Liquality wallet - Create wallet-["smoke"]', async () => {
+describe('Create wallet-["mainnet"]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -34,7 +34,7 @@ describe('Liquality wallet - Create wallet-["smoke"]', async () => {
     }
   })
 
-  it('Create a wallet with less that 8 or more characters password,validate button has been disabled-["mainnet"]', async () => {
+  it('Create a wallet with less that 8 or more characters password,validate button has been disabled', async () => {
     const password = '1234567'
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
@@ -43,7 +43,7 @@ describe('Liquality wallet - Create wallet-["smoke"]', async () => {
     // confirm button has been disabled
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
-  it('Create a wallet with mismatch password, validate button has been disabled-["mainnet"]', async () => {
+  it('Create a wallet with mismatch password, validate button has been disabled', async () => {
     const passwordInput = await page.$('#password')
     const confirmPasswordInput = await page.$('#confirmPassword')
     await passwordInput.click({ clickCount: 3 })
@@ -57,7 +57,7 @@ describe('Liquality wallet - Create wallet-["smoke"]', async () => {
     // confirm button has been disabled
     await passwordPage.ValidateSubmitPasswordDisabled(page)
   })
-  it('Create a new wallet with 12 words, validate overviewPage-["mainnet"]', async () => {
+  it('Create a new wallet with 12 words, validate overviewPage address for ETH and RSK', async () => {
     const password = '123123123'
 
     const passwordInput = await page.$('#password')
@@ -66,6 +66,7 @@ describe('Liquality wallet - Create wallet-["smoke"]', async () => {
     await confirmPasswordInput.click({ clickCount: 3 })
     // Set password
     await passwordPage.SubmitPasswordDetails(page, password)
+
     // Unlocking wallet...
     const seed1 = (await seedWordsPage.GetBackupSeedWords(page)).seed1
     const seed5 = (await seedWordsPage.GetBackupSeedWords(page)).seed5
@@ -79,12 +80,12 @@ describe('Liquality wallet - Create wallet-["smoke"]', async () => {
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     } else {
       await overviewPage.SelectNetwork(page)
     }
-
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count

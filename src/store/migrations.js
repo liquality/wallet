@@ -3,6 +3,24 @@ import buildConfig from '../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 import { v4 as uuidv4 } from 'uuid'
+import { shouldApplyRskLegacyDerivation } from './utils'
+
+// add a migration to reuse
+const rskLegacyDerivationMigration = async (state) => {
+  const hasAccounts = Object.keys(state.accounts || {}).length > 0
+  if (!hasAccounts) {
+    return {
+      ...state
+    }
+  }
+
+  const rskLegacyDerivation = await shouldApplyRskLegacyDerivation(state.accounts)
+
+  return {
+    ...state,
+    rskLegacyDerivation
+  }
+}
 
 const migrations = [
   { // Merely sets up the version
@@ -189,7 +207,7 @@ const migrations = [
   { // Inject ethereum asset -> chain
     version: 9,
     migrate: async (state) => {
-      const injectEthereumChain = cryptoassets[state.injectEthereumAsset].chain
+      const injectEthereumChain = cryptoassets[state.injectEthereumAsset]?.chain || 'ethereum'
       delete state.injectEthereumAsset
 
       return { ...state, injectEthereumChain }
@@ -210,6 +228,14 @@ const migrations = [
         }
       }
     }
+  },
+  { // rskLegacyDerivation
+    version: 11,
+    migrate: rskLegacyDerivationMigration
+  },
+  { // rskLegacyDerivation for fix
+    version: 12,
+    migrate: rskLegacyDerivationMigration
   }
 ]
 

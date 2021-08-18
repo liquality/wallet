@@ -16,7 +16,7 @@ export default {
     state.keyUpdatedAt = Date.now()
     state.setupAt = Date.now()
   },
-  CREATE_WALLET (state, { keySalt, encryptedWallets, wallet }) {
+  CREATE_WALLET (state, { keySalt, encryptedWallets, wallet, rskLegacyDerivation }) {
     state.encryptedWallets = encryptedWallets
     state.keySalt = keySalt
     state.wallets = [wallet]
@@ -26,6 +26,7 @@ export default {
         testnet: []
       })
     }
+    state.rskLegacyDerivation = rskLegacyDerivation
   },
   ACCEPT_TNC (state) {
     state.termsAcceptedAt = Date.now()
@@ -97,7 +98,7 @@ export default {
     Vue.set(state.fees[network][walletId], asset, fees)
   },
   UPDATE_FIAT_RATES (state, { fiatRates }) {
-    state.fiatRates = fiatRates
+    state.fiatRates = Object.assign({}, state.fiatRates, fiatRates)
   },
   UPDATE_MARKET_DATA (state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
@@ -261,5 +262,8 @@ export default {
       ...state.analytics,
       ...payload
     }
+  },
+  SET_WATS_NEW_MODAL_VERSION (state, { version }) {
+    state.watsNewModalVersion = version
   }
 }

@@ -4,8 +4,10 @@
 
     <router-view v-if="termsAcceptedAt" />
     <OnboardingHome v-else />
-
-    <AnalyticsOptInModal/>
+    <template v-if="unlockedAt && termsAcceptedAt">
+      <AnalyticsOptInModal/>
+      <WatsNewModal/>
+    </template>
   </div>
 </template>
 
@@ -15,12 +17,14 @@ import { mapState, mapActions } from 'vuex'
 import Head from '@/components/Head.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 import AnalyticsOptInModal from '@/components/AnalyticsOptInModal.vue'
+import WatsNewModal from '@/components/WatsNewModal.vue'
 
 export default {
   components: {
     Head,
     OnboardingHome,
-    AnalyticsOptInModal
+    AnalyticsOptInModal,
+    WatsNewModal
   },
   computed: {
     ...mapState([

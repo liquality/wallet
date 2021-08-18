@@ -1,5 +1,11 @@
-import { chains, isEthereumChain as _isEthereumChain } from '@liquality/cryptoassets'
+import {
+  chains,
+  isEthereumChain as _isEthereumChain
+} from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
+import * as ethers from 'ethers'
+import tokenABI from './tokenABI.json'
+import buildConfig from '../build.config'
 
 const EXPLORERS = {
   ethereum: {
@@ -85,9 +91,11 @@ export const isEthereumChain = asset => {
 
 export const isEthereumNativeAsset = asset => {
   const chainId = cryptoassets[asset]?.chain
-  if (chainId &&
+  if (
+    chainId &&
     _isEthereumChain(chainId) &&
-    chains[chainId].nativeAsset === asset) {
+    chains[chainId].nativeAsset === asset
+  ) {
     return true
   }
 
@@ -135,6 +143,43 @@ export const getExplorerTransactionHash = (asset, hash) => {
   switch (asset) {
     case 'NEAR':
       return hash.split('_')[0]
-    default: return hash
+    default:
+      return hash
   }
+}
+
+export const tokenDetailProviders = {
+  ethereum: {
+    async getDetails (contractAddress) {
+      return await fetchTokenDetails(contractAddress, `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`)
+    }
+  },
+  polygon: {
+    async getDetails (contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://rpc-mainnet.matic.network/')
+    }
+  },
+  rsk: {
+    async getDetails (contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://public-node.rsk.co')
+    }
+  },
+  bsc: {
+    async getDetails (contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://bsc-dataseed.binance.org')
+    }
+  }
+}
+
+const fetchTokenDetails = async (contractAddress, rpcUrl) => {
+  const provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl)
+  const contract = new ethers.Contract(contractAddress.toLowerCase(), tokenABI, provider)
+
+  const [decimals, name, symbol] = await Promise.all([
+    contract.decimals(),
+    contract.name(),
+    contract.symbol()
+  ])
+
+  return { decimals, name, symbol }
 }

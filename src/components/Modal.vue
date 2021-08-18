@@ -19,7 +19,7 @@
              </h5>
               <ModalClose class="modal-close" @click="close"/>
           </div>
-           <div class="modal-body">
+           <div :class="bodyClass">
              <slot></slot>
            </div>
            <div class="modal-footer"  v-if="hasSlot('footer')">
@@ -42,6 +42,10 @@ export default {
       type: String,
       default: 'modal-sm'
     },
+    bodyClass: {
+      type: String,
+      default: 'modal-body'
+    },
     closeOutside: {
       type: Boolean,
       default: false
@@ -63,12 +67,16 @@ export default {
   background-color: rgba(0, 0, 0, 0.1)!important;
 }
 
-.modal {
-  overflow: auto!important;
+.modal-dialog {
+  margin: $wrapper-padding !important;
 }
 
-.modal-body {
-  padding: 20px;
+.modal-dialog-centered {
+  min-height: calc(100% - 40px) !important;
+}
+
+.modal {
+  overflow: auto!important;
 }
 
 .modal-content {
@@ -76,6 +84,10 @@ export default {
   border: 1px solid #D9DFE5;
   box-sizing: border-box;
   box-shadow: 2px 4px 4px rgba(46, 44, 44, 0.25);
+
+  .modal-body {
+    padding: 20px 20px 0 20px;
+  }
 }
 
 .modal-header-container {
@@ -95,7 +107,6 @@ export default {
 
 .modal-footer {
   border-top: 0 !important;
-  padding: 0 20px 18px 20px !important;
   justify-content: center !important;
 }
 </style>

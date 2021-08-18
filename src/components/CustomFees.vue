@@ -71,7 +71,7 @@
           </div>
           <div class="custom-fee-result-amount">{{ customFeeAmount }}</div>
           <div class="custom-fee-result-fiat" v-if="customFiatAmount">
-            {{ customFiatAmount }} USD
+            {{ customFiatAmount }}
           </div>
         </div>
       </div>

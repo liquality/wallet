@@ -106,7 +106,7 @@ export default {
       if (this.activeNetwork === 'testnet') {
         return ({
           BTC: { name: 'Bitcoin', url: 'https://testnet-faucet.mempool.co/' },
-          ETH: { name: 'Ether', url: 'https://faucet.dimensions.network/' },
+          ETH: { name: 'Ethererum Ropsten', url: 'https://faucet.dimensions.network/' },
           RBTC: { name: 'RBTC/RSK', url: 'https://faucet.rsk.co/' },
           BNB: { name: 'BNB', url: 'https://testnet.binance.org/faucet-smart/' },
           NEAR: { name: 'NEAR', url: '' },
@@ -161,16 +161,15 @@ export default {
     margin-top: 40px;
   }
   &_qr {
-    margin: 30px auto 0 auto;
+    margin: 25px auto 0 auto;
     width: 196px;
   }
   &_address {
-    font-size: 0.74rem;
-    font-weight: lighter;
+    font-size: 0.7rem;
   }
 
   .testnet_message {
-    margin-top: 24px;
+    margin-top: 18px;
     font-size: $font-size-tiny;
     font-weight: lighter;
     display: flex;

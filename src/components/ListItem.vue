@@ -5,7 +5,7 @@
              v-bind:to="to || '#'"
              @click="$emit('item-selected')">
         <div class="list-item d-flex align-items-center"
-             id="assert_list_item"
+             id="asset_list_item"
              :style="itemStyles"
              :class="[itemClass]">
           <div class="list-item-prefix ml-0" v-if="hasSlot('prefix')">
@@ -18,7 +18,7 @@
             <div class="list-item-title">
               <slot></slot>
             </div>
-            <div class="list-item-sub-title" v-if="hasSlot('sub-title')">
+            <div class="list-item-sub-title" id="assert_address" v-if="hasSlot('sub-title')">
               <slot name="sub-title"></slot>
             </div>
           </div>

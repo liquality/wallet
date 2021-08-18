@@ -12,13 +12,13 @@
              :class="{ [step.side]: true, completed: step.completed, pending: step.pending }">
           <div class="content">
             <template v-if="step.tx">
-              <h3>
-                <a :href="step.tx.explorerLink" target="_blank">{{ step.title }}</a>
+              <h3 :id="step.tx.asset">
+                <a :href="step.tx.explorerLink" target="_blank" :id="step.title">{{ step.title }}</a>
                 <CopyIcon @click="copy(step.tx.hash)"/>
               </h3>
               <p class="text-muted" v-if="step.tx.fee && !feeSelectorEnabled(step)">Fee:
                 {{ prettyBalance(step.tx.fee, step.tx.asset) }} {{ getNativeAsset(step.tx.asset) }}</p>
-              <p class="text-muted" v-if="!feeSelectorEnabled(step)">Confirmations: {{ step.tx.confirmations || 0 }}</p>
+              <p id="confirmations_asset_number" class="text-muted" v-if="!feeSelectorEnabled(step)">Confirmations: {{ step.tx.confirmations || 0 }}</p>
               <template v-if="canUpdateFee(step)">
                 <div v-if="feeSelectorEnabled(step)" class="form fee-update">
                   <div class="input-group">
@@ -178,7 +178,7 @@
         <tr>
           <td class="text-muted text-right small-12">Actions</td>
           <td class="text-danger">
-            <span class="cursor-pointer mr-3" v-if="item.error" @click="emit('retrySwap')">Retry</span>
+            <span class="cursor-pointer mr-3" v-if="item.error" @click="$emit('retrySwap')">Retry</span>
           </td>
         </tr>
         </tbody>
@@ -236,7 +236,7 @@ export default {
       newFeePrice: null
     }
   },
-  props: ['id'],
+  props: ['id', 'retrySwap'],
   computed: {
     ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
