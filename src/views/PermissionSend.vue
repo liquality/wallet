@@ -29,7 +29,6 @@
       <div v-if="error" class="mt-4 text-danger"><strong>Error:</strong> {{ error }}</div>
     </div>
 
-
     <div class="send" v-else-if="currentStep === 'custom-fees'">
       <CustomFees
         @apply="applyCustomFee"
@@ -138,21 +137,20 @@ export default {
       const getMax = amount === undefined
       if (this.feesAvailable) {
         const sendFees = {}
-        
+
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const gas = BN(this.request.args[0].gas, 16)
           const feePerGas = BN(fee.fee).div(1e9)
           const txCost = gas.times(feePerGas)
           sendFees[speed] = txCost
         }
-        
+
         if (getMax) {
           this.maxSendFees = sendFees
         } else {
           this.sendFees = sendFees
         }
       }
-      
     },
     applyCustomFee ({ fee }) {
       const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee)
@@ -181,11 +179,11 @@ export default {
       } else {
         this.updateSendFees(this.amount)
       }
-    }, 800),
+    }, 800)
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
-     ...mapGetters([
+    ...mapGetters([
       'client'
     ]),
     asset () {
@@ -217,15 +215,15 @@ export default {
       if (this.customFee) {
         assetFees.custom = { fee: this.customFee }
       }
-      
+
       const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         this.assetChain
       ]
-      
+
       if (fees) {
         Object.assign(assetFees, fees)
       }
-      
+
       return assetFees
     },
     feesAvailable () {
