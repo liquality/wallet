@@ -519,6 +519,9 @@ export default {
     networkWalletBalances () {
       return this.account?.balances
     },
+    userHasMin () {
+      return this.account.fromAsset.availableAmount >= this.asset
+    },
     quoteRate () {
       if (!this.selectedQuote) return null
       const rate = calculateQuoteRate(this.selectedQuote)
