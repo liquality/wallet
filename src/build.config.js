@@ -71,8 +71,8 @@ export default {
       liqualityBoost: {
         name: 'Liquality Boost',
         type: SwapProviderType.LIQUALITYBOOST,
-        agent: 'https://liquality.io/swap/agent',
-        network: 'mainnet'
+        network: 'mainnet',
+        icon: 'liqualityboost.svg'
       },
       uniswapV2: {
         name: 'Uniswap V2',

@@ -85,7 +85,8 @@ class LiqualityBoostSwapProvider extends SwapProvider {
       secret,
       secretHash,
       fromFundHash: fromFundTx.hash,
-      fromFundTx
+      fromFundTx,
+      slippage: slippagePercentage * 100
     }
   }
 
@@ -109,7 +110,7 @@ class LiqualityBoostSwapProvider extends SwapProvider {
 
   async performNextSwapAction (store, { network, walletId, swap }) {
     let updates
-    const swapLiqualityFormat = { ...swap, to: swap.toNativeAsset, toAmount: swap.toNativeAssetAmount }
+    const swapLiqualityFormat = { ...swap, to: swap.toNativeAsset, toAmount: swap.toNativeAssetAmount, slippagePercentage }
     const swapOneInchFormat = { ...swap, from: swap.toNativeAsset, fromAmount: swap.toNativeAssetAmount, fromAccountId: swap.toAccountId, slippagePercentage }
     switch (swap.status) {
       case 'INITIATED':
