@@ -153,7 +153,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  it('1Inch injection - ETH', async () => {
+  it.skip('1Inch injection - ETH', async () => {
     // Go to 1inch app
     const dappPage = await browser.newPage()
     await dappPage.goto('https://app.1inch.io/')
@@ -175,7 +175,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector("[class$='account-button ng-star-inserted']", { visible: true })
   })
-  it('1Inch injection - Polygon', async () => {
+  it.skip('1Inch injection - Polygon', async () => {
     // Select polygon network
     await page.click('#dropdown-item')
     await page.waitForSelector('#polygon_web_network', { visible: true })
@@ -207,7 +207,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector("[class$='account-button ng-star-inserted']", { visible: true })
   })
-  it('1Inch injection - BSC', async () => {
+  it.skip('1Inch injection - BSC', async () => {
     // Select polygon network
     await page.click('#dropdown-item')
     await page.waitForSelector('#bsc_web_network', { visible: true })
@@ -216,7 +216,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     // Go to 1inch app
     const dappPage = await browser.newPage()
     await dappPage.goto('https://app.1inch.io/')
-    // Change to polygon
+    // Change to BSC
     await dappPage.waitForSelector('[data-id*="connect-wallet-button"]', { visible: true })
     await dappPage.click("[data-id$='header.switch-network-button']")
     await dappPage.click("[data-id$='BSC Mainnet']")
@@ -225,7 +225,8 @@ describe('Dapp Injection-[mainnet]', async () => {
     await dappPage.click('[data-id*="connect-wallet-button"]')
     await dappPage.waitForSelector("[data-id$='Ethereum']")
     await dappPage.click('.mat-checkbox-inner-container')
-    await dappPage.click("[data-id$='BSC Mainnet']")
+    await dappPage.waitForSelector("[data-id*='BSC']", { visible: true })
+    await dappPage.click("[data-id*='BSC']")
 
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
@@ -241,12 +242,7 @@ describe('Dapp Injection-[mainnet]', async () => {
   })
 
   afterEach(async () => {
-    try {
-      console.log('Cleaning up instances')
-      await page.close()
-      await browser.close()
-    } catch (e) {
-      console.log('Cannot cleanup instances')
-    }
+    await page.close()
+    await browser.close()
   })
 })

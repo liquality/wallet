@@ -18,7 +18,7 @@ const seedWordsPage = new SeedWordsPage()
 let browser, page
 const password = '123123123'
 
-describe.skip('Liquality wallet- Import wallet-["mainnet"]', async () => {
+describe.skip('Liquality wallet- Import wallet-["mainnet"]-Browserstack test', async () => {
   beforeEach(async () => {
     const caps = {
       browser: 'chrome', // You can choose `chrome`, `edge` or `firefox` in this capability

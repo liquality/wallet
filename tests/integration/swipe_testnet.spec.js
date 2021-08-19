@@ -33,13 +33,8 @@ describe('Liquality wallet SWIPE feature', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
   })
   afterEach(async () => {
-    try {
-      console.log('Cleaning up instances')
-      await page.close()
-      await browser.close()
-    } catch (e) {
-      console.log('Cannot cleanup instances')
-    }
+    await page.close()
+    await browser.close()
   })
 
   it.skip('SWAP BTC to ETH (LIQUALITY)', async () => {
@@ -210,8 +205,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check SWAP Initiate option has been enabled
     await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
-  // In Testnet test are failed with Sender not found error, so skipping this for now
-  it.skip('SWAP SOV to BTC', async () => {
+  it('SWAP SOV to BTC', async () => {
     const asset1 = 'SOV'
     const asset2 = 'BTC'
 
@@ -456,7 +450,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
   })
-  it.skip('SWAP BTC to RBTC - fastBTC quote select["mainnet"]', async () => {
+  it('SWAP BTC to RBTC - fastBTC quote select["mainnet"]', async () => {
     const asset1 = 'BTC'
 
     // overview page
