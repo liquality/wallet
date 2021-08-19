@@ -17,10 +17,9 @@ export const getUnusedAddresses = async ({ state, commit, getters }, { network, 
       ).wallet.getUnusedAddress()
       const address = isEthereumChain(asset) ? result.address.replace('0x', '') : result.address // TODO: Should not require removing 0x
       if (!account.addresses.includes(address)) {
-        const addresses = [
-          ...account.addresses,
-          address
-        ]
+        // TODO: update cryptoassets to export ChainId.Bitcoin
+        const addresses = account.chain === 'bitcoin' ? [...account.addresses, address] : [address]
+        // for bitcoin we need to add new addresses to track the balance
         commit('UPDATE_ACCOUNT_ADDRESSES',
           {
             network,
