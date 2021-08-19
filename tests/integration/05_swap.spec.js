@@ -32,9 +32,13 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
   })
-  afterEach(async () => {
-    await page.close()
-    await browser.close()
+  after(async () => {
+    try {
+      await page.close()
+      await browser.close()
+    } catch (e) {
+      throw new Error(e)
+    }
   })
 
   it.skip('SWAP BTC to ETH (LIQUALITY)', async () => {
@@ -216,9 +220,9 @@ describe('Liquality wallet SWIPE feature', async () => {
     await overviewPage.SelectNetwork(page)
     // Click on SOV then click on SWAP button
     await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector('#SOV_swap_button', { visible: true })
-    await page.click('#SOV_swap_button')
-    console.log(chalk.green('User clicked on SOV SWAP button'))
+    await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
+    await page.click(`#${asset1}_swap_button`)
+    console.log(chalk.green(`User clicked on ${asset1} SWAP button`))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'SOV to BTC SWAP min value not set in input').equals('0.05')
@@ -234,6 +238,10 @@ describe('Liquality wallet SWIPE feature', async () => {
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(asset1)
     console.log(chalk.green('SEND Swap value: ' + sendAmountValue))
+
+    // Check Fees are high. Review transaction carefully.
+    await swapPage.CheckFeesAreHigh(page)
+
     // Send confirm USD value
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
     expect(swapSendAmountInDollar.trim(), 'SWAP send amount in fiat not to be 0.00').not.equals('$0.00')
@@ -244,7 +252,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     console.log(chalk.green('User SEND Swap Network Fee value: ' + swapSendNetworkFeeValue))
     // Send Network Fee in USD
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
-    expect(swapSendNetworkFeeInDollar.trim(), 'Send network fee can not be $0.00').not.contain('$0.00')
+    expect(swapSendNetworkFeeInDollar.trim(), `Send ${asset1} network fee can not be $0.00`).not.contain('$0.00')
     console.log(chalk.green('User SEND Swap Network Fee value in USD: ' + swapSendNetworkFeeInDollar))
     // Send Account+FEES
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
