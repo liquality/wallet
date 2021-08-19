@@ -144,10 +144,10 @@
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
-      <div class="fee-wrapper" v-if="isHighFee">
+      <div class="fee-wrapper" id="fees_are_high" v-if="isHighFee">
         Fees are high.  Review transaction carefully.
       </div>
-      <div class="fee-wrapper" v-if="isSwapNegative">
+      <div class="fee-wrapper" id="swap_is_negative" v-if="isSwapNegative">
         Swap is negative.  Review transaction carefully.
       </div>
       <div class="swap-confirm wrapper form">
