@@ -21,12 +21,12 @@ const password = '123123123'
 describe.skip('Liquality wallet- Import wallet-["mainnet"]', async () => {
   beforeEach(async () => {
     const caps = {
-      'browser': 'chrome',  // You can choose `chrome`, `edge` or `firefox` in this capability
-      'browser_version': 'latest',  // We support v83 and above. You can choose `latest`, `latest-beta`, `latest-1`, `latest-2` and so on, in this capability
-      'os': 'os x',
-      'os_version': 'big sur',
-      'build': 'puppeteer-build-1',
-      'name': 'Liquality wallet- Import wallet',  // The name of your test and build. See browserstack.com/docs/automate/puppeteer/organize tests for more details
+      browser: 'chrome', // You can choose `chrome`, `edge` or `firefox` in this capability
+      browser_version: 'latest', // We support v83 and above. You can choose `latest`, `latest-beta`, `latest-1`, `latest-2` and so on, in this capability
+      os: 'os x',
+      os_version: 'big sur',
+      build: 'puppeteer-build-1',
+      name: 'Liquality wallet- Import wallet', // The name of your test and build. See browserstack.com/docs/automate/puppeteer/organize tests for more details
       'browserstack.username': process.env.BROWSERSTACK_USERNAME || 'raj_T62SqR',
       'browserstack.accessKey': process.env.BROWSERSTACK_ACCESS_KEY || 'SYb3apzjYGJUpEAgVtyd',
       'browserstack.networkLogs': true,
@@ -37,7 +37,7 @@ describe.skip('Liquality wallet- Import wallet-["mainnet"]', async () => {
 
     browser = await puppeteer.connect({
       browserWSEndpoint:
-        `wss://cdp.browserstack.com?caps=${encodeURIComponent(JSON.stringify(caps))}`,
+        `wss://cdp.browserstack.com?caps=${encodeURIComponent(JSON.stringify(caps))}`
     })
 
     // browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -49,14 +49,16 @@ describe.skip('Liquality wallet- Import wallet-["mainnet"]', async () => {
 
   afterEach(async () => {
     try {
-      await page.evaluate(_ => {}, `browserstack_executor: ${JSON.stringify({ action: 'setSessionStatus',
+      await page.evaluate(_ => {}, `browserstack_executor: ${JSON.stringify({
+ action: 'setSessionStatus',
         arguments: {
           status: 'passed',
           reason: 'Title matched'
         }
       })}`)
     } catch (e) {
-      await page.evaluate(_ => {}, `browserstack_executor: ${JSON.stringify({ action: 'setSessionStatus',
+      await page.evaluate(_ => {}, `browserstack_executor: ${JSON.stringify({
+ action: 'setSessionStatus',
         arguments: {
           status: 'failed',
           reason: 'Title did not match'
@@ -66,7 +68,7 @@ describe.skip('Liquality wallet- Import wallet-["mainnet"]', async () => {
     await browser.close()
   })
 
-  it.only('Import wallet with random seed (phrase 12 words) with 0 coins', async () => {
+  it('Import wallet with random seed (phrase 12 words) with 0 coins', async () => {
     await homePage.ClickOnImportWallet(page)
     console.log('Import wallet page hase been loaded')
 
