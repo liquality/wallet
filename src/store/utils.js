@@ -152,5 +152,9 @@ export const ChainNetworks = {
   near: {
     testnet: NearNetworks.near_testnet,
     mainnet: NearNetworks.near_mainnet
+  },
+  fuse: {
+    testnet: NearNetworks.fuse_testnet,
+    mainnet: NearNetworks.fuse_mainnet
   }
 }

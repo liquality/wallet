@@ -17,7 +17,6 @@ import { EthereumRpcFeeProvider } from '@liquality/ethereum-rpc-fee-provider'
 import { EthereumErc20Provider } from '@liquality/ethereum-erc20-provider'
 import { EthereumErc20SwapProvider } from '@liquality/ethereum-erc20-swap-provider'
 import { EthereumErc20ScraperSwapFindProvider } from '@liquality/ethereum-erc20-scraper-swap-find-provider'
-
 import { NearSwapProvider } from '@liquality/near-swap-provider'
 import { NearJsWalletProvider } from '@liquality/near-js-wallet-provider'
 import { NearRpcProvider } from '@liquality/near-rpc-provider'
@@ -207,6 +206,16 @@ function createArbitrumClient (asset, network, mnemonic, indexPath = 0) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
 }
 
+function createFuuseClient (asset, network, mnemonic, indexPath = 0) {
+  const isTestnet = network === 'testnet'
+  const fuseNetwork = ChainNetworks.fuse[network]
+  const rpcApi = isTestnet ? 'https://rpc.fuse.io/' : ' https://fuse-mainnet.gateway.pokt.network/'
+  const scraperApi = isTestnet ? 'https://liquality.io/fuse-testnet-api' : 'https://liquality.io/fuse-mainnet-api'
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
+
+  return createEthereumClient(asset, network, fuseNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', indexPath)
+}
+
 export const createClient = (asset, network, mnemonic, walletType, indexPath = 0) => {
   const assetData = cryptoassets[asset]
 
@@ -215,6 +224,7 @@ export const createClient = (asset, network, mnemonic, walletType, indexPath = 0
   if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic, indexPath)
   if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
   if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, indexPath)
+  if (assetData.chain === 'fuse') return createFuuseClient(asset, network, mnemonic, indexPath)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, indexPath)
 
   return createEthClient(asset, network, mnemonic, walletType, indexPath)

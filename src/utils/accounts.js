@@ -61,7 +61,8 @@ export const chainDefaultColors = {
   bsc: '#F7CA4F',
   near: '#000000',
   polygon: '#8247E5',
-  arbitrum: '#28A0EF'
+  arbitrum: '#28A0EF',
+  fuse: '#46e8b6'
 }
 
 export const getAccountIcon = (chain) => {
@@ -72,7 +73,8 @@ export const getAccountIcon = (chain) => {
     rsk: getAssetIcon('rsk_account'),
     near: getAssetIcon('NEAR'),
     polygon: getAssetIcon('polygon_account'),
-    arbitrum: getAssetIcon('ARBITRUM')
+    arbitrum: getAssetIcon('ARBITRUM'),
+    fuse: getAssetIcon('FUSE')
   }[chain]
 }
 

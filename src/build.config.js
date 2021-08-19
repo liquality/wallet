@@ -16,7 +16,8 @@ export default {
       'NEAR',
       'MATIC',
       'PWETH',
-      'ARBETH'
+      'ARBETH',
+      'FUSE'
     ],
     testnet: [
       'BTC',
@@ -97,5 +98,5 @@ export default {
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'fuse']
 }

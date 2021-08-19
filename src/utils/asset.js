@@ -77,6 +77,16 @@ const EXPLORERS = {
       tx: 'https://explorer.arbitrum.io/tx/0x',
       address: 'https://explorer.arbitrum.io/address/0x'
     }
+  },
+  fuse: {
+    testnet: {
+      tx: 'https://explorer-node.fuse.io/tx/0x',
+      address: 'https://explorer-node.fuse.io/address/0x'
+    },
+    mainnet: {
+      tx: 'https://explorer-node.fuse.io/tx/0x',
+      address: 'https://explorer-node.fuse.io/address/0x'
+    }
   }
 }
 
@@ -167,6 +177,11 @@ export const tokenDetailProviders = {
   bsc: {
     async getDetails (contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://bsc-dataseed.binance.org')
+    }
+  },
+  fuse: {
+    async getDetails (contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://rpc.fuse.io/')
     }
   }
 }

@@ -99,7 +99,8 @@ export default {
         near: 'near',
         rsk: 'ethereum',
         bsc: 'ethereum',
-        polyon: 'ethereum'
+        polyon: 'ethereum',
+        fuse: 'ethereum'
       })[cryptoassets[this.asset].chain]
     },
     faucet () {
@@ -111,7 +112,8 @@ export default {
           BNB: { name: 'BNB', url: 'https://testnet.binance.org/faucet-smart/' },
           NEAR: { name: 'NEAR', url: '' },
           MATIC: { name: 'MATIC', url: 'https://faucet.matic.network/' },
-          ARBETH: { name: 'ARBETH', url: 'https://faucet.rinkeby.io/' }
+          ARBETH: { name: 'ARBETH', url: 'https://faucet.rinkeby.io/' },
+          FUSE: { name: 'FUSE', url: '' }
         })[this.asset]
       }
       return null
