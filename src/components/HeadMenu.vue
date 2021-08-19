@@ -40,7 +40,7 @@ import HardwareIcon from '@/assets/icons/hardware_icon.svg'
 export default {
   components: {
     ChevronRightIcon,
-    HardwareIcon,
+    HardwareIcon
     // CreateIcon
   },
   directives: {
