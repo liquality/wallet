@@ -12,7 +12,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe.only('Dapp Injection-[mainnet]', async () => {
+describe('Dapp Injection-[mainnet]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -160,7 +160,7 @@ describe.only('Dapp Injection-[mainnet]', async () => {
     await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true })
     await dappPage.click('[data-id$="header.connect-wallet-button"]')
     await dappPage.waitForSelector("[data-id$='Ethereum']")
-    await dappPage.click(".mat-checkbox-inner-container")
+    await dappPage.click('.mat-checkbox-inner-container')
     await dappPage.click("[data-id$='Ethereum']")
 
     // Before click on injected wallet option.
@@ -192,7 +192,7 @@ describe.only('Dapp Injection-[mainnet]', async () => {
 
     await dappPage.click('[data-id*="connect-wallet-button"]')
     await dappPage.waitForSelector("[data-id$='Ethereum']")
-    await dappPage.click(".mat-checkbox-inner-container")
+    await dappPage.click('.mat-checkbox-inner-container')
     await dappPage.click("[data-id$='Polygon Network']")
 
     // Before click on injected wallet option.
@@ -224,7 +224,7 @@ describe.only('Dapp Injection-[mainnet]', async () => {
 
     await dappPage.click('[data-id*="connect-wallet-button"]')
     await dappPage.waitForSelector("[data-id$='Ethereum']")
-    await dappPage.click(".mat-checkbox-inner-container")
+    await dappPage.click('.mat-checkbox-inner-container')
     await dappPage.click("[data-id$='BSC Mainnet']")
 
     // Before click on injected wallet option.
