@@ -159,8 +159,8 @@ describe('Dapp Injection-[mainnet]', async () => {
     await dappPage.goto('https://app.1inch.io/')
     await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true })
     await dappPage.click('[data-id$="header.connect-wallet-button"]')
-    await dappPage.waitForSelector("[data-id*='accept-checkbox']", { visible: true })
-    await dappPage.click("[data-id*='accept-checkbox']")
+    await dappPage.waitForSelector("[class$='mat-checkbox-inner-container']", { visible: true })
+    await dappPage.click("[class$='mat-checkbox-inner-container']")
     await dappPage.click("[data-id$='Ethereum']")
 
     // Before click on injected wallet option.
@@ -191,8 +191,8 @@ describe('Dapp Injection-[mainnet]', async () => {
     await dappPage.waitForTimeout(2000)
 
     await dappPage.click('[data-id*="connect-wallet-button"]')
-    await dappPage.waitForSelector("[data-id*='accept-checkbox']", { visible: true })
-    await dappPage.click("[data-id*='accept-checkbox']")
+    await dappPage.waitForSelector("[class$='mat-checkbox-inner-container']", { visible: true })
+    await dappPage.click("[class$='mat-checkbox-inner-container']")
     await dappPage.click("[data-id$='Polygon Network']")
 
     // Before click on injected wallet option.
@@ -223,8 +223,8 @@ describe('Dapp Injection-[mainnet]', async () => {
     await dappPage.waitForTimeout(2000)
 
     await dappPage.click('[data-id*="connect-wallet-button"]')
-    await dappPage.waitForSelector("[data-id*='accept-checkbox']", { visible: true })
-    await dappPage.click("[data-id*='accept-checkbox']")
+    await dappPage.waitForSelector("[class$='mat-checkbox-inner-container']", { visible: true })
+    await dappPage.click("[class$='mat-checkbox-inner-container']")
     await dappPage.click("[data-id$='BSC Mainnet']")
 
     // Before click on injected wallet option.
