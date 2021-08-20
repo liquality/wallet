@@ -196,8 +196,8 @@ describe('Liquality wallet SEND feature', async () => {
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
-    const address = testDataUtils.getRandomAddress('bitcoin')
-    await sendPage.EnterSendToAddress(page, address)
+    // const address = testDataUtils.getRandomAddress('bitcoin')
+    await sendPage.EnterSendToAddress(page, "tb1qhny9yxjwvv3n765csw5vkt5faclvek0yjta496")
     // Click Review Button
     await sendPage.ClickSendReview(page)
     // Confirm SEND
