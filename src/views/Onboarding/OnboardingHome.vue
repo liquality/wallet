@@ -1117,8 +1117,8 @@
             We welcome your comments or questions about these Terms. Please
             contact us at:
           </span>
-          <a class="" href="mailto:liquality@consensys.net">
-            liquality@consensys.net
+          <a class="" href="mailto:info@liquality.io">
+            info@liquality.io
           </a>
           <span class="c2">.</span>
         </p>
