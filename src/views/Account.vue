@@ -30,7 +30,7 @@
           <button class="btn btn-outline-light" :id="`${asset}_address_container`"
             @click="copyAddress"
             v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
-            {{ shortenAddress(this.address) }}
+            {{ shortenAddress(address) }}
           </button>
           <a class="eye-btn"
              :id="`${asset}_view_in_explorer`"
