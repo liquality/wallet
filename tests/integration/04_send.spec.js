@@ -173,7 +173,7 @@ describe('Liquality wallet SEND feature', async () => {
     await transactionDetailsPage.ValidateStatus(page)
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
   })
-  it('Send BTC to another BTC wallet', async () => {
+  it.skip('Send BTC to another BTC wallet', async () => {
     const bitCoinName = 'BTC'
     const coinsToSend = '0.0000001'
 
