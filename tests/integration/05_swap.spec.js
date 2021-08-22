@@ -18,7 +18,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet SWIPE feature', async () => {
+describe.only('Liquality wallet SWIPE feature', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -470,12 +470,15 @@ describe('Liquality wallet SWIPE feature', async () => {
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(asset1)
+    console.log(`${asset1} SEND value on SWAP review page`, sendAmountValue)
 
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
+    console.log(`${asset1} SEND value in USD on SWAP review page`, swapSendAmountInDollar)
     expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00')
       .not.contain('$0.00')
 
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
+    console.log(`${asset1} SEND Network Fee value on SWAP review page`, swapSendNetworkFeeValue)
     expect(swapSendNetworkFeeValue.trim()).contain(asset1)
 
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
