@@ -464,6 +464,7 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // Click SWAP review button
     await swapPage.ClickSwapReviewButton(page)
+    await page.waitForTimeout(2000)
 
     // SWAP review screen validations
     // SWAP SEND details validation
