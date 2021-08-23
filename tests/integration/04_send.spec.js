@@ -33,11 +33,10 @@ describe('Liquality wallet SEND feature', async () => {
   })
   afterEach(async () => {
     try {
-      console.log('Cleaning up instances')
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup instances')
+      throw new Error(e)
     }
   })
 
@@ -99,7 +98,7 @@ describe('Liquality wallet SEND feature', async () => {
     // Check Send Review option has been disabled
     await sendPage.HasReviewButtonDisabled(page)
   })
-  it('Send SOV to random ETH address', async () => {
+  it('Send SOV to random ETH address-[smoke]', async () => {
     const bitCoinName = 'SOV'
     const coinsToSend = '1'
 
@@ -268,7 +267,7 @@ describe('Liquality wallet SEND feature', async () => {
     await page.hover('#fast', { slow: true })
     await page.screenshot({ path: './screenshots/send_network_speed_fee_fast.png' })
   })
-  it('NEAR Send Check Network Fee', async () => {
+  it('NEAR Send Check Network Fee-[smoke]', async () => {
     const bitCoinName = 'NEAR'
 
     // Import wallet option

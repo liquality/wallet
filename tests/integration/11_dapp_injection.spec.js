@@ -42,7 +42,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await page.click('#default_web3_wallet_toggle_button > label > div')
   })
 
-  it('UNISWAP Injection - ETH', async () => {
+  it('UNISWAP Injection - ETH-[smoke]', async () => {
     // Go to uniSwap app
     const dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -122,7 +122,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
     debugger
   })
-  it('Sushi injection - Polygon', async () => {
+  it('Sushi injection - Polygon-[smoke]', async () => {
     // Select polygon network
     await page.click('#dropdown-item')
     await page.waitForSelector('#polygon_web_network', { visible: true })
