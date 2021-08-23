@@ -34,7 +34,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         throw new Error(e)
       }
     })
-    it('ETHEREUM - [Tether USD]', async () => {
+    it('ETHEREUM - [Tether USD]-["smoke"]', async () => {
       const tokenDetails = {
         chain: 'ethereum',
         address: '0xdac17f958d2ee523a2206206994597c13d831ec7',

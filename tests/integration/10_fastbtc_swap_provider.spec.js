@@ -18,7 +18,7 @@ let browser, page
 const password = '123123123'
 
 if (process.env.NODE_ENV === 'mainnet') {
-  describe('FastBTC swap provider-only on ["mainnet"]', async () => {
+  describe('FastBTC swap provider-only on ["mainnet","smoke"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()

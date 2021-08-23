@@ -29,11 +29,10 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
 
   afterEach(async () => {
     try {
-      console.log('Cleaning up instances')
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup instances')
+      throw new Error(e)
     }
   })
 
@@ -75,7 +74,7 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
     await page.click('#import_wallet_continue_button:not([enabled])')
     console.log('Import wallet continue button has been disabled')
   })
-  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path', async () => {
+  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path-[smoke]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
