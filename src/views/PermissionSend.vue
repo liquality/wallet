@@ -286,8 +286,15 @@ export default {
     },
     feeInUsdValue () {
       const gas = BN(this.request.args[0].gas, 16)
-      const feePerGas = BN(this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain][this.selectedFee].fee).div(1e9)
-      const txCost = gas.times(feePerGas)
+      let feePerGas;
+      
+      if (this.selectedFee === 'custom') {
+        feePerGas = this.customFee
+      } else {
+        feePerGas = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[this.selectedFee]?.fee
+      }
+      
+      const txCost = gas.times(BN(feePerGas).div(1e9))
 
       return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
     },
