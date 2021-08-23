@@ -9,7 +9,7 @@
         <p class="confirm-value" :style="getAssetColorStyle(asset)">{{symbol}}</p>
       </div>
       <div class="form-group">
-        <label>Transaction fee {{feeInUsdValue}} USD</label>
+        <label>Transaction fee {{usdValue}} USD</label>
       </div>
       </div>
 
@@ -24,7 +24,7 @@
           <p class="confirm-value">{{shortAddress}}</p>
         </div>
         <div class="form-group">
-          <label>Transaction fee {{feeInUsdValue}} USD</label>
+          <label>Transaction fee {{usdValue}} USD</label>
         </div>
         <div v-if="data" class="permission-send_data">
           <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
@@ -79,7 +79,7 @@ import { unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
-import { getNativeAsset, getAssetColorStyle, tokenDetailProviders } from '@/utils/asset'
+import { getNativeAsset, getAssetColorStyle, tokenDetailProviders, estimateGas } from '@/utils/asset'
 import { parseTokenTx } from '@/utils/parseTokenTx'
 
 import { shortenAddress } from '@/utils/address'
@@ -117,7 +117,8 @@ export default {
       sendFees: {},
       maxSendFees: {},
       maxOptionActive: false,
-      customFee: null
+      customFee: null,
+      usdValue: 0
     }
   },
   methods: {
@@ -196,8 +197,9 @@ export default {
       if (this.feesAvailable) {
         const sendFees = {}
 
+        const gas = await this.estimateGas();
+
         for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const gas = BN(this.request.args[0].gas, 16)
           const feePerGas = BN(fee.fee).div(1e9)
           const txCost = gas.times(feePerGas)
           sendFees[speed] = txCost
@@ -209,6 +211,21 @@ export default {
           this.sendFees = sendFees
         }
       }
+    },
+    async estimateGas() {
+      let gas = this.request.args[0].gas
+      
+      if(!gas) {
+        const { data, to, value } = this.request.args[0]
+
+        gas = await estimateGas({
+          data,
+          to,
+          value
+        })
+      }
+
+      return BN(gas, 16)
     },
     applyCustomFee ({ fee }) {
       const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee)
@@ -237,7 +254,22 @@ export default {
       } else {
         this.updateSendFees(this.amount)
       }
-    }, 800)
+    }, 800),
+    async feeInUsdValue () {
+      const gas = await this.estimateGas();
+
+      let feePerGas
+      
+      if (this.selectedFee === 'custom') {
+        feePerGas = this.customFee
+      } else {
+        feePerGas = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[this.selectedFee]?.fee
+      }
+      
+      const txCost = gas.times(BN(feePerGas).div(1e9))
+  
+      this.usdValue = prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
+    },
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
@@ -284,20 +316,6 @@ export default {
 
       return assetFees
     },
-    feeInUsdValue () {
-      const gas = BN(this.request.args[0].gas, 16)
-      let feePerGas
-      
-      if (this.selectedFee === 'custom') {
-        feePerGas = this.customFee
-      } else {
-        feePerGas = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[this.selectedFee]?.fee
-      }
-      
-      const txCost = gas.times(BN(feePerGas).div(1e9))
-
-      return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
-    },
     feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
     },
@@ -309,11 +327,14 @@ export default {
     }
   },
   async created () {
-    await this.getSymbol()
-    await this.getLabel()
-    await this.updateFees({ asset: this.asset })
-    await this.updateSendFees(0)
-    await this.updateMaxSendFees()
+    await Promise.all([
+      this.getSymbol(),
+      this.getLabel(),
+      this.updateFees({ asset: this.asset }),
+      this.updateSendFees(0),
+      this.updateMaxSendFees(),
+      this.feeInUsdValue(),
+    ])
   },
   beforeDestroy () {
     // TODO: need to reply correctly when window is closed
