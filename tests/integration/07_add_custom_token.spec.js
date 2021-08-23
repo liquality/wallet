@@ -249,7 +249,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       console.log(chalk.green('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
-      await page.waitForTimeout(10000)
+      await page.waitForTimeout(30000)
       // Check Token name
       const name = await page.$eval('#name', el => el.value)
       expect(name).to.equals(tokenDetails.name)
