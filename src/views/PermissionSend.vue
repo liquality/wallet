@@ -286,7 +286,7 @@ export default {
     },
     feeInUsdValue () {
       const gas = BN(this.request.args[0].gas, 16)
-      let feePerGas;
+      let feePerGas
       
       if (this.selectedFee === 'custom') {
         feePerGas = this.customFee
