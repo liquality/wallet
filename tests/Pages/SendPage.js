@@ -54,9 +54,10 @@ class SendPage {
     await page.waitForSelector('#send_button_confirm', { visible: true })
     await page.click('#send_button_confirm')
     console.log('User clicked on SEND button Confirm...waiting for Transaction Status')
-    await page.waitForSelector('.transaction-status', {
+    await page.waitForTimeout(10000)
+    await page.waitForSelector('.transaction-list', {
       visible: true,
-      timeout: 180000
+      timeout: 120000
     })
     await page.click('.transaction-status')
     console.log('User clicked on transaction status icon from Transaction details')

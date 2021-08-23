@@ -26,11 +26,10 @@ describe('Create wallet-["mainnet"]', async () => {
 
   after(async () => {
     try {
-      console.log('Cleaning up instances')
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup instances')
+      throw new Error(e)
     }
   })
 

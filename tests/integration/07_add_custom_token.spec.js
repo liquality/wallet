@@ -28,11 +28,10 @@ if (process.env.NODE_ENV === 'mainnet') {
     })
     afterEach(async () => {
       try {
-        console.log('Cleaning up instances')
         await page.close()
         await browser.close()
       } catch (e) {
-        console.log('Cannot cleanup instances')
+        throw new Error(e)
       }
     })
     it('ETHEREUM - [Tether USD]', async () => {

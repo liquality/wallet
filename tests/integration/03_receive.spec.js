@@ -134,13 +134,8 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
     })
 
     afterEach(async () => {
-      try {
-        console.log('Cleaning up instances')
-        await page.close()
-        await browser.close()
-      } catch (e) {
-        console.log('Cannot cleanup instances')
-      }
+      await page.close()
+      await browser.close()
     })
 
     tokens.forEach((token) => {
