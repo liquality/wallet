@@ -16,6 +16,17 @@
             swap more pairs in one convenient location.
           </div>
         </div>
+        <div class="item">
+          <div class="item-icon">
+            <CircleDotsIcon/>
+          </div>
+          <div class="item-content">
+            <a href="https://liquality.io/blog/liquality-raises-7-million-in-funding-round/"
+               target="_blank">
+              Learn more...
+            </a>
+          </div>
+        </div>
       </div>
     </template>
     <template #footer>
@@ -33,6 +44,7 @@
 
 <script>
 import Modal from '@/components/Modal'
+import CircleDotsIcon from '@/assets/icons/circle_dots_icon.svg'
 import ChartIcon from '@/assets/icons/chart_icon.svg'
 import { version } from '../../package.json'
 import { mapActions, mapState } from 'vuex'
@@ -40,6 +52,7 @@ import { mapActions, mapState } from 'vuex'
 export default {
   components: {
     Modal,
+    CircleDotsIcon,
     ChartIcon
   },
   data: function () {
