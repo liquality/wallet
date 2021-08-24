@@ -122,7 +122,6 @@ export default {
 
 <style lang="scss">
 .wrapper {
-  padding-top: 0 !important;
   .create-item-row-title {
     display: flex;
   }
