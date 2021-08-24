@@ -1,12 +1,12 @@
 on:
-  pull_request:
-    branches:
-      - dev
+  schedule:
+    - cron: '0 8 * * *' # everyday at 8am
+    - cron: '0 22 * * *' # everyday at 10pm
 
-name: PullRequest tests
+name: Testnet tests
 
 jobs:
-  pull_request_tests:
+  regressiontest:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -47,7 +47,7 @@ jobs:
         run: |
           mkdir screenshots
 
-      - name: Smoke tests
+      - name: Regression tests
         uses: beemi/puppeteer-headful@master
         env:
           CI: 'true'
@@ -55,7 +55,7 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:pullrequest:smoke
+          args: npm run test:testnet
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2
@@ -70,4 +70,6 @@ jobs:
         with:
           name: screenshots
           path: screenshots
+
+
 
