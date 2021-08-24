@@ -52,7 +52,7 @@ describe('Custom fee feature', async () => {
     await sendPage.EnterSendToAddress(page, '0x9d0023Bd55ab3647f6C591DA6d46e5A6128d33d1')
   })
 
-  it.only('Send SOV to another SOV with custom fee (Fast)-[smoke]', async () => {
+  it('Send SOV to another SOV with custom fee (Fast)-[smoke]', async () => {
     // Network speed
     await sendPage.ClickNetworkSpeedFee(page)
     expect(await page.$eval('#average', (el) => el.getAttribute('class')),
