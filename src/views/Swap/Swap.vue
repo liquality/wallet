@@ -625,7 +625,7 @@ export default {
       if (!this.selectedQuote ||
           this.updatingQuotes ||
           this.ethRequired ||
-          this.NoLiquidityMessage ||
+          this.noLiquidityMessage ||
           this.amountError ||
           BN(this.safeAmount).lte(0)) {
         return false
