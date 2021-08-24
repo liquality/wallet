@@ -3,7 +3,7 @@ on:
     branches:
       - dev
 
-name: Build & Smoke tests(PR)
+name: PullRequest tests
 
 jobs:
   pull_request_tests:
