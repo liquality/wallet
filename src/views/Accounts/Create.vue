@@ -120,7 +120,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .wrapper {
   padding-top: 0 !important;
   .create-item-row-title {
