@@ -133,6 +133,7 @@ export default {
   .send-top {
     display: flex;
     justify-content: space-between;
+    margin-top: 20px;
 
     .send-top-label {
       font-size: 0.75rem;
@@ -160,6 +161,7 @@ export default {
       align-items: flex-end;
       justify-content: space-between;
       margin-left: 10px;
+      margin-top: 20px;
 
       .asset-name {
         margin-left: 5px;
