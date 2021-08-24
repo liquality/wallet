@@ -21,9 +21,10 @@
             <CircleDotsIcon/>
           </div>
           <div class="item-content">
-            Liquality is introducing additional swap types for easy completion
-            of trades Liquality is introducing additional swap types for easy
-            completion of trades.
+            <a href="https://liquality.io/blog/liquality-raises-7-million-in-funding-round/"
+               target="_blank">
+              Learn more...
+            </a>
           </div>
         </div>
       </div>
