@@ -16,7 +16,8 @@ export default {
       'NEAR',
       'MATIC',
       'PWETH',
-      'ARBETH'
+      'ARBETH',
+      'FISH'
     ],
     testnet: [
       'BTC',

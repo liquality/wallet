@@ -16,6 +16,8 @@ import {
   rskLegacyDerivationPathFix
 } from './11_12_rsk_legacy_derivation_path'
 
+import { rskFishToken } from './13_rsk_fish_token'
+
 const migrations = [
   firstMigration, // v1
   setDefaultAssets, // v2
@@ -28,7 +30,8 @@ const migrations = [
   injectEthereumAssetChain, // v9
   analitycsSettings, // v10
   rskLegacyDerivationPath, // v11
-  rskLegacyDerivationPathFix // v12
+  rskLegacyDerivationPathFix, // v12
+  rskFishToken // 13
 ]
 
 const LATEST_VERSION = migrations[migrations.length - 1].version
