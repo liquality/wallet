@@ -204,12 +204,12 @@ if (process.env.NODE_ENV === 'mainnet') {
       const decimal = await page.$eval('#decimals', el => el.value)
       expect(decimal).to.equals(tokenDetails.decimal)
     })
-    it('Polygon - Dai Stablecoin (DAI)', async () => {
+    it('Polygon - (PoS) EthLend Token', async () => {
       const tokenDetails = {
         chain: 'polygon',
-        address: '0x84000b263080BC37D1DD73A29D92794A6CF1564e',
-        name: 'Dai Stablecoin',
-        symbol: 'DAI',
+        address: '0x313d009888329C9d1cf4f75CA3f32566335bd604',
+        name: '(PoS) EthLend Token',
+        symbol: 'LEND',
         decimal: '18'
       }
       // Import wallet option

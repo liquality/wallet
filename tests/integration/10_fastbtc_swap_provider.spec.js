@@ -110,8 +110,9 @@ if (process.env.NODE_ENV === 'mainnet') {
         timeout: 60000
       })
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
+        'BTC->RBTC, Liquality swap source should be chosen!').equals('Liquality')
 
+      await page.waitForTimeout(3000)
       // Check see all quotes
       await page.waitForSelector('#see_all_quotes', { visible: true })
       await page.click('#see_all_quotes')

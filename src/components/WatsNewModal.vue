@@ -2,7 +2,7 @@
   <Modal v-if="open" @close="close" body-class="">
     <template #header>
       <h6>
-        Wat's New
+        What's New
       </h6>
     </template>
     <template>
