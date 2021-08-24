@@ -18,6 +18,7 @@ store.subscribe(async ({ type, payload }, state) => {
       break
 
     case 'UNLOCK_WALLET':
+      store.dispatch('updateEnabledAssets')
       store.dispatch('trackAnalytics', {
         event: 'Wallet Unlock',
         properties: {

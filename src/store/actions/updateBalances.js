@@ -1,5 +1,6 @@
 import Bluebird from 'bluebird'
 import { Address } from '@liquality/types'
+import { ChainId } from '@liquality/cryptoassets'
 
 export const updateBalances = async ({ state, commit, getters }, { network, walletId, assets }) => {
   let accounts = state.accounts[walletId]?.[network]
@@ -47,7 +48,7 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
 
       // Commit to the state the addresses
       let updatedAddresses = []
-      if (account.chain === 'bitcoin') {
+      if (account.chain === ChainId.bitcoin) {
         const addressExists = addresses.some(a => account.addresses.includes(a.address))
         if (!addressExists) {
           updatedAddresses = [...account.addresses, ...addresses.map(a => a.address)]
