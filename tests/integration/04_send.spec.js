@@ -224,11 +224,9 @@ describe('SEND feature', async () => {
     await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ClickSend(page)
-    // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
-
+    await overviewPage.SelectChain(page, bitCoinName)
+    await page.waitForSelector(`#${bitCoinName}_send_button`, { visible: true })
+    await page.click(`#${bitCoinName}_send_button`)
     // Click on Max
     await sendPage.SelectMaxSend(page)
     // Validate Available amount vs send amount
@@ -252,9 +250,10 @@ describe('SEND feature', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
-    await overviewPage.ClickSend(page)
-    // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
+    await overviewPage.SelectNetwork(page)
+    await overviewPage.SelectChain(page, bitCoinName)
+    await page.waitForSelector(`#${bitCoinName}_send_button`, { visible: true })
+    await page.click(`#${bitCoinName}_send_button`)
 
     // Check Network Speed/FEE
     const ethereumNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
@@ -263,9 +262,9 @@ describe('SEND feature', async () => {
     // Click on Network Speed/FEE
     await sendPage.ClickNetworkSpeedFee(page)
     await page.hover('#slow', { slow: true })
-    await page.screenshot({ path: './screenshots/send_network_speed_fee_slow.png' })
+    // await page.screenshot({ path: './screenshots/send_network_speed_fee_slow.png' })
     await page.hover('#fast', { slow: true })
-    await page.screenshot({ path: './screenshots/send_network_speed_fee_fast.png' })
+    // await page.screenshot({ path: './screenshots/send_network_speed_fee_fast.png' })
   })
   it('NEAR Send Check Network Fee-[smoke]', async () => {
     const bitCoinName = 'NEAR'
@@ -295,7 +294,8 @@ describe('SEND feature', async () => {
     // Click on NEAR send
     await page.click('#NEAR_send_button')
     await sendPage.EnterSendAmount(page, '1')
-    await sendPage.EnterSendToAddress(page, 'caf7949de4fa4a61fd5d4d71c171560e49ad64e35221b01050ddf81a452a61cb')
+    await sendPage.EnterSendToAddress(page,
+      'caf7949de4fa4a61fd5d4d71c171560e49ad64e35221b01050ddf81a452a61cb')
 
     // Check Network Speed/FEE
     const ethereumNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
@@ -304,9 +304,9 @@ describe('SEND feature', async () => {
     // Click on Network Speed/FEE
     await sendPage.ClickNetworkSpeedFee(page)
     await page.hover('#slow', { slow: true })
-    await page.screenshot({ path: './screenshots/send_network_speed_fee_near_slow.png' })
+    // await page.screenshot({ path: './screenshots/send_network_speed_fee_near_slow.png' })
     await page.hover('#fast', { slow: true })
-    await page.screenshot({ path: './screenshots/send_network_speed_fee__near_fast.png' })
+    // await page.screenshot({ path: './screenshots/send_network_speed_fee__near_fast.png' })
 
     // Click on SEND Review button
     await sendPage.ClickSendReview(page)
