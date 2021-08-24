@@ -29,7 +29,6 @@ class FastbtcSwapProvider extends SwapProvider {
 
   async getSupportedPairs () {
     const validAmountRange = await this._getTxAmount()
-    console.log(validAmountRange)
     return [{
       from: 'BTC',
       to: 'RBTC',

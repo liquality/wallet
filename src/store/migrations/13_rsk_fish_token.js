@@ -17,12 +17,19 @@ export const rskFishToken = {
     return {
       ...state,
       accounts: {
+        ...state.accounts,
         [activeWalletId]: {
-          mainnet: mainnetAccounts,
-          testnet: state.accounts[activeWalletId].testnet
+          ...state.accounts[activeWalletId],
+          mainnet: mainnetAccounts
         }
       },
-      enabledAssets: [...enabledAssets.mainnet[activeWalletId], 'FISH']
+      enabledAssets: {
+        ...enabledAssets,
+        mainnet: {
+          ...enabledAssets.mainnet,
+          activeWalletId: [...enabledAssets.mainnet[activeWalletId], 'FISH']
+        }
+      }
     }
   }
 }
