@@ -16,16 +16,6 @@
             swap more pairs in one convenient location.
           </div>
         </div>
-        <div class="item">
-          <div class="item-icon">
-            <CircleDotsIcon/>
-          </div>
-          <div class="item-content">
-            Liquality is introducing additional swap types for easy completion
-            of trades Liquality is introducing additional swap types for easy
-            completion of trades.
-          </div>
-        </div>
       </div>
     </template>
     <template #footer>
@@ -43,7 +33,6 @@
 
 <script>
 import Modal from '@/components/Modal'
-import CircleDotsIcon from '@/assets/icons/circle_dots_icon.svg'
 import ChartIcon from '@/assets/icons/chart_icon.svg'
 import { version } from '../../package.json'
 import { mapActions, mapState } from 'vuex'
@@ -51,7 +40,6 @@ import { mapActions, mapState } from 'vuex'
 export default {
   components: {
     Modal,
-    CircleDotsIcon,
     ChartIcon
   },
   data: function () {
