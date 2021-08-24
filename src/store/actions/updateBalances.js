@@ -44,6 +44,28 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
         ).chain.getBalance(addresses)).toNumber()
 
       commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance })
+
+      // Commit to the state the addresses
+      let updatedAddresses = []
+      if (account.chain === 'bitcoin') {
+        const addressExists = addresses.some(a => account.addresses.includes(a.address))
+        if (!addressExists) {
+          updatedAddresses = [...account.addresses, ...addresses.map(a => a.address)]
+        } else {
+          updatedAddresses = [...account.addresses]
+        }
+      } else {
+        updatedAddresses = [...addresses.map(a => a.address)]
+      }
+
+      commit('UPDATE_ACCOUNT_ADDRESSES',
+        {
+          network,
+          accountId: account.id,
+          walletId,
+          asset,
+          addresses: updatedAddresses
+        })
     }, { concurrency: 1 })
   }, { concurrency: 1 })
 }

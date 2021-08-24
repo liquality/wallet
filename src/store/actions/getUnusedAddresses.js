@@ -15,21 +15,28 @@ export const getUnusedAddresses = async ({ state, commit, getters }, { network, 
           accountId: account.id
         }
       ).wallet.getUnusedAddress()
+
       const address = isEthereumChain(asset) ? result.address.replace('0x', '') : result.address // TODO: Should not require removing 0x
-      if (!account.addresses.includes(address)) {
-        const addresses = [
-          ...account.addresses,
-          address
-        ]
-        commit('UPDATE_ACCOUNT_ADDRESSES',
-          {
-            network,
-            accountId,
-            walletId,
-            asset,
-            addresses
-          })
+      let updatedAddresses = []
+      if (account.chain === 'bitcoin') {
+        if (!account.addresses.includes(address)) {
+          updatedAddresses = [...account.addresses, address]
+        } else {
+          updatedAddresses = [...account.addresses]
+        }
+      } else {
+        updatedAddresses = [address]
       }
+
+      commit('UPDATE_ACCOUNT_ADDRESSES',
+        {
+          network,
+          accountId: account.id,
+          walletId,
+          asset,
+          addresses: updatedAddresses
+        })
+
       return address
     }
     return ''

@@ -35,11 +35,13 @@
 import clickAway from '@/directives/clickAway'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import HardwareIcon from '@/assets/icons/hardware_icon.svg'
+// import CreateIcon from '@/assets/icons/create_icon.svg'
 
 export default {
   components: {
     ChevronRightIcon,
     HardwareIcon
+    // CreateIcon
   },
   directives: {
     clickAway

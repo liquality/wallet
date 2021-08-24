@@ -18,7 +18,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet SWIPE feature', async () => {
+describe('SWAP feature', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -32,13 +32,12 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
   })
-  afterEach(async () => {
+  after(async () => {
     try {
-      console.log('Cleaning up instances')
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup instances')
+      throw new Error(e)
     }
   })
 
@@ -122,7 +121,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check SWAP Initiate option has been enabled
     await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
-  it('SWAP ETH to DAI - not cross chain (UNISWAP V2)', async () => {
+  it('SWAP ETH to DAI - not cross chain (UNISWAP V2)-[smoke]', async () => {
     const asset1 = 'ETH'
     const asset2 = 'DAI'
 
@@ -210,8 +209,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check SWAP Initiate option has been enabled
     await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
-  // In Testnet test are failed with Sender not found error, so skipping this for now
-  it.skip('SWAP SOV to BTC', async () => {
+  it('SWAP SOV to BTC', async () => {
     const asset1 = 'SOV'
     const asset2 = 'BTC'
 
@@ -222,27 +220,34 @@ describe('Liquality wallet SWIPE feature', async () => {
     await overviewPage.SelectNetwork(page)
     // Click on SOV then click on SWAP button
     await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector('#SOV_swap_button', { visible: true })
-    await page.click('#SOV_swap_button')
-    console.log(chalk.green('User clicked on SOV SWAP button'))
+    await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
+    await page.click(`#${asset1}_swap_button`)
+    console.log(chalk.green(`User clicked on ${asset1} SWAP button`))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-    expect(swapSendAmountField, 'SOV to BTC SWAP min value not set in input').equals('0.05')
+    expect(swapSendAmountField, 'SOV to BTC SWAP min value not set in input')
+      .equals('0.05')
     await page.$eval('#min_amount_send_button', (el) => el.textContent)
     await swapPage.ClickOnMin(page)
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
     // Click on SWAP Review button
     await swapPage.ClickSwapReviewButton(page)
+    await page.waitForTimeout(1000)
 
     // SWAP SEND details validation
     // Send confirm value
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(asset1)
     console.log(chalk.green('SEND Swap value: ' + sendAmountValue))
+
+    // Check Fees are high. Review transaction carefully.
+    await swapPage.CheckFeesAreHigh(page)
+
     // Send confirm USD value
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
-    expect(swapSendAmountInDollar.trim(), 'SWAP send amount in fiat not to be 0.00').not.equals('$0.00')
+    expect(swapSendAmountInDollar.trim(), `Send Network fee should not be $0.00 for ${asset1}`)
+      .not.equals('$0.00')
     console.log(chalk.green('User SEND Swap value in USD: ' + swapSendAmountInDollar))
     // Send Network Fee
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
@@ -250,7 +255,7 @@ describe('Liquality wallet SWIPE feature', async () => {
     console.log(chalk.green('User SEND Swap Network Fee value: ' + swapSendNetworkFeeValue))
     // Send Network Fee in USD
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
-    expect(swapSendNetworkFeeInDollar.trim(), 'Send network fee can not be $0.00').not.contain('$0.00')
+    expect(swapSendNetworkFeeInDollar.trim(), `Send ${asset1} network fee can not be $0.00`).not.contain('$0.00')
     console.log(chalk.green('User SEND Swap Network Fee value in USD: ' + swapSendNetworkFeeInDollar))
     // Send Account+FEES
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
@@ -281,7 +286,8 @@ describe('Liquality wallet SWIPE feature', async () => {
     expect(receiveAccountFeesValue.trim()).contain(asset2)
     // Receive Amount+Fees fiat value
     const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
-    expect(receiveAccountFeesInDollar.trim()).not.contain('$0.00')
+    expect(receiveAccountFeesInDollar.trim(), `Receive Network fee should not be $0.00 for ${asset2}`)
+      .not.contain('$0.00')
     expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
     // RATE
     await page.waitForSelector('#swap_review_rate_block')
@@ -330,7 +336,7 @@ describe('Liquality wallet SWIPE feature', async () => {
       console.log('Error: ' + err.message)
     })
   })
-  it('SWAP (BTC->ETH) - Thorchain', async () => {
+  it('SWAP (BTC->ETH) - Thorchain-[smoke]', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
@@ -413,98 +419,6 @@ describe('Liquality wallet SWIPE feature', async () => {
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
-  it('SWAP BTC to RBTC - fastBTC["mainnet"]', async () => {
-    const asset1 = 'BTC'
-
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
-    // Select mainnet for fastBTC integration
-    await overviewPage.SelectNetwork(page, 'mainnet')
-    // Click asset 1
-    await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector('#' + asset1 + '_swap_button', { visible: true })
-    await page.click('#' + asset1 + '_swap_button')
-    console.log(chalk.green('User clicked on BTC SWAP button'))
-
-    await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
-    console.log('SWAP screen has been displayed with send amount input field')
-
-    // Select 2nd Pair (RBTC)
-    await page.click('.swap-receive-main-icon')
-    await page.waitForSelector('#RSK', { visible: true })
-    await page.click('#RSK')
-    await page.waitForSelector('#RBTC', { visible: true })
-    await page.click('#RBTC')
-
-    // (Liquality swap provider)
-    await page.waitForSelector('#selectedQuote_provider', {
-      visible: true,
-      timeout: 60000
-    })
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
-
-    // Update the SWAP value to 1
-    await swapPage.EnterSendAmountOnSwap(page, '1')
-
-    // (fastBTC swap provider)
-    await page.waitForSelector('#selectedQuote_provider', {
-      visible: true,
-      timeout: 60000
-    })
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
-  })
-  it.skip('SWAP BTC to RBTC - fastBTC quote select["mainnet"]', async () => {
-    const asset1 = 'BTC'
-
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
-    // Select MainBet for fastBTC integration
-    await overviewPage.SelectNetwork(page, 'mainnet')
-    // Click asset 1
-    await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector('#' + asset1 + '_swap_button', { visible: true })
-    await page.click('#' + asset1 + '_swap_button')
-    console.log(chalk.green('User clicked on BTC SWAP button'))
-
-    await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
-    console.log('SWAP screen has been displayed with send amount input field')
-
-    // Select 2nd Pair (RBTC)
-    await page.click('.swap-receive-main-icon')
-    await page.waitForSelector('#RSK', { visible: true })
-    await page.click('#RSK')
-    await page.waitForSelector('#RBTC', { visible: true })
-    await page.click('#RBTC')
-
-    // (Liquality swap provider)
-    await page.waitForSelector('#selectedQuote_provider', {
-      visible: true,
-      timeout: 60000
-    })
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
-
-    // Check see all quotes
-    await page.waitForSelector('#see_all_quotes', { visible: true })
-    await page.click('#see_all_quotes')
-    await page.waitForSelector('#available_quotes_header', { visible: true })
-    await page.click('#fastBTC_rate_provider')
-    await page.click('#select_quote_button')
-
-    // (fastBTC swap provider)
-    await page.waitForSelector('#selectedQuote_provider', {
-      visible: true,
-      timeout: 60000
-    })
-
-    // (FastBTC)
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC'])
-  })
   it('SWAP (NEAR->BTC)', async () => {
     const asset1 = 'NEAR'
     const asset2 = 'BTC'
@@ -550,21 +464,25 @@ describe('Liquality wallet SWIPE feature', async () => {
 
     // Click SWAP review button
     await swapPage.ClickSwapReviewButton(page)
+    await page.waitForTimeout(2000)
 
     // SWAP review screen validations
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(asset1)
+    console.log(`${asset1} SEND value on SWAP review page`, sendAmountValue)
 
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
+    console.log(`${asset1} SEND value in USD on SWAP review page`, swapSendAmountInDollar)
     expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00')
       .not.contain('$0.00')
 
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
+    console.log(`${asset1} SEND Network Fee value on SWAP review page`, swapSendNetworkFeeValue)
     expect(swapSendNetworkFeeValue.trim()).contain(asset1)
 
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
-    expect(swapSendNetworkFeeInDollar.trim(), 'Send network fee can not be $0.00')
+    expect(swapSendNetworkFeeInDollar.trim(), `Send Network fee should not be $0.00 for ${asset1}`)
       .not.contain('$0.00')
 
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)

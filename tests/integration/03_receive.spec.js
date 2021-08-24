@@ -47,7 +47,7 @@ async function importWalletTestReceive (bitcoin) {
   await page.click('#wallet_header_logo')
 }
 
-describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
+describe('Liquality wallet- Receive tokens ["mainnet","smoke"]', async () => {
   describe('Create wallet and Check receive', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -134,13 +134,8 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
     })
 
     afterEach(async () => {
-      try {
-        console.log('Cleaning up instances')
-        await page.close()
-        await browser.close()
-      } catch (e) {
-        console.log('Cannot cleanup instances')
-      }
+      await page.close()
+      await browser.close()
     })
 
     tokens.forEach((token) => {
