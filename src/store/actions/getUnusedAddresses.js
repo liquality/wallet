@@ -19,7 +19,7 @@ export const getUnusedAddresses = async ({ state, commit, getters }, { network, 
 
       const address = isEthereumChain(asset) ? result.address.replace('0x', '') : result.address // TODO: Should not require removing 0x
       let updatedAddresses = []
-      if (account.chain === ChainId.bitcoin) {
+      if (account.chain === ChainId.Bitcoin) {
         if (!account.addresses.includes(address)) {
           updatedAddresses = [...account.addresses, address]
         } else {

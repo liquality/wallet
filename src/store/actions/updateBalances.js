@@ -48,7 +48,7 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
 
       // Commit to the state the addresses
       let updatedAddresses = []
-      if (account.chain === ChainId.bitcoin) {
+      if (account.chain === ChainId.Bitcoin) {
         const addressExists = addresses.some(a => account.addresses.includes(a.address))
         if (!addressExists) {
           updatedAddresses = [...account.addresses, ...addresses.map(a => a.address)]
