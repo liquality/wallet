@@ -100,9 +100,6 @@ export default {
       this.search = ''
     }
   },
-  created () {
-    // this.sortAssets()
-  },
   watch: {
     activeNetwork () {
       this.clearSearch()
