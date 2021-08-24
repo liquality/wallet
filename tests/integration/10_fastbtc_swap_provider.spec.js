@@ -80,7 +80,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
     })
-    it('SWAP BTC to RBTC - fastBTC quote select', async () => {
+    it.skip('SWAP BTC to RBTC - fastBTC quote select', async () => {
       const asset1 = 'BTC'
 
       // overview page

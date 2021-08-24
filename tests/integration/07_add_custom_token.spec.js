@@ -204,7 +204,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       const decimal = await page.$eval('#decimals', el => el.value)
       expect(decimal).to.equals(tokenDetails.decimal)
     })
-    it('Polygon - (PoS) EthLend Token', async () => {
+    it.skip('Polygon - (PoS) EthLend Token', async () => {
       const tokenDetails = {
         chain: 'polygon',
         address: '0x313d009888329C9d1cf4f75CA3f32566335bd604',
