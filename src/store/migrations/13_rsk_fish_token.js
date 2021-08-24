@@ -22,7 +22,13 @@ export const rskFishToken = {
           testnet: state.accounts[activeWalletId].testnet
         }
       },
-      enabledAssets: [...enabledAssets.mainnet[activeWalletId], 'FISH']
+      enabledAssets: {
+        ...enabledAssets,
+        mainnet: {
+          ...enabledAssets.mainnet,
+          activeWalletId: [...enabledAssets.mainnet[activeWalletId], 'FISH']
+        }
+      }
     }
   }
 }
