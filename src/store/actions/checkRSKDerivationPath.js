@@ -6,5 +6,5 @@ export const checkRSKDerivationPath = async ({ commit, state }, { mnemonic }) =>
     mnemonic
   )
   console.log('RSK DERIVATION PATH => ', rskLegacyDerivation)
-  commit('SET_RSK_LEGACY_DERIVATION_PATH_FLAG', { rskLegacyDerivation: true })
+  commit('SET_RSK_LEGACY_DERIVATION_PATH_FLAG', { rskLegacyDerivation })
 }
