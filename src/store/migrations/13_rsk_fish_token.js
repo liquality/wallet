@@ -13,6 +13,7 @@ export const rskFishToken = {
       }
       return account
     })
+
     return {
       ...state,
       accounts: {

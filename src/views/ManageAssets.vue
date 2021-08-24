@@ -101,7 +101,7 @@ export default {
     }
   },
   created () {
-    this.sortAssets()
+    // this.sortAssets()
   },
   watch: {
     activeNetwork () {
