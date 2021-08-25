@@ -242,8 +242,8 @@ class OverviewPage {
    * @constructor
    */
   async ValidateTotalAssets (page) {
-    const assetsElement = await page.$('#total_assets')
-    const assetsCount = await assetsElement.getProperty('innerText').jsonValue()
+    await page.waitForSelector('#total_assets', { timeout: 60000 })
+    const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, 'Total assets should be 7 on overview page').contain('7 Assets')
   }
 

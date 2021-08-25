@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import { processMigrations } from '../../src/store/migrations'
+import { processMigrations } from '@/store/migrations'
 import buildConfig from '../../src/build.config'
 
 test('Migrates to v2', async () => {
