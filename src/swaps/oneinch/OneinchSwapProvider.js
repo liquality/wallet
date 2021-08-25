@@ -107,7 +107,7 @@ class OneinchSwapProvider extends SwapProvider {
       toTokenAddress: cryptoassets[quote.to].contractAddress || nativeAssetAddress,
       amount: quote.fromAmount,
       fromAddress: fromAddress,
-      slippage: slippagePercentage
+      slippage: quote.slippagePercentage ? quote.slippagePercentage : slippagePercentage
     }
 
     const referrerAddress = this.config.referrerAddress?.[cryptoassets[quote.from].chain]
@@ -122,7 +122,7 @@ class OneinchSwapProvider extends SwapProvider {
       params: swapParams
     })
 
-    if (BN(quote.toAmount).times(1 - slippagePercentage / 100).gt(trade.data.toTokenAmount)) {
+    if (BN(quote.toAmount).times(1 - swapParams.slippage / 100).gt(trade.data.toTokenAmount)) {
       throw new Error(`Slippage is too high. You expect ${quote.toAmount} but you are going to receive ${trade.data.toTokenAmount} ${quote.to}`)
     }
 

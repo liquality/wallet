@@ -23,7 +23,7 @@ const password = '123123123'
  * @param bitcoin
  * @returns {Promise<void>}
  */
-async function importWalletTestReceive (bitcoin) {
+async function importWalletTestReceive(bitcoin) {
   // Select code
   await overviewPage.SelectChain(page, bitcoin)
   // Validate details about assert on overview page
@@ -35,7 +35,7 @@ async function importWalletTestReceive (bitcoin) {
   expect(yourCurrentAddress).contains(bitcoin)
   await receivePage.HasQRCodeDisplayed(page)
   if (bitcoin === 'ETH' || bitcoin === 'ARBETH' || bitcoin === 'RBTC' ||
-    bitcoin === 'BNB' || bitcoin === 'MATIC' || bitcoin === 'ARBETH') {
+    bitcoin === 'BNB' || bitcoin === 'MATIC' || bitcoin === 'ARBETH' || bitcoin === 'SOL') {
     await receivePage.CheckReceiveURL(page)
   }
   await receivePage.CheckReceiveAddresses(page)
@@ -90,10 +90,6 @@ describe('Liquality wallet- Receive tokens ["mainnet","smoke"]', async () => {
       }
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
-      // validate the testnet asserts count
-      const assetsCount = await overviewPage.GetTotalAssets(page)
-      expect(assetsCount, 'Total assets in TESTNET should be 8').contain('8 Assets')
-
       // Select BTC
       await overviewPage.SelectChain(page, 'BTC')
       await overviewPage.ClickChainReceive(page, 'BTC')
@@ -106,7 +102,7 @@ describe('Liquality wallet- Receive tokens ["mainnet","smoke"]', async () => {
       await overviewPage.CheckAssertOverviewDetails(page, 'BTC')
     })
   })
-  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH']
+  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH', 'SOL']
   describe('Import wallet, Receive tokens', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())

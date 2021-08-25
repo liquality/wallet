@@ -87,8 +87,7 @@ describe('Create wallet-[mainnet, smoke]', async () => {
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
-    // validate the testnet asserts count
-    const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 8').contain('8 Assets')
+    // validate the total assets on overview screen.
+    await overviewPage.ValidateTotalAssets(page)
   })
 })

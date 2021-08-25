@@ -1,0 +1,18 @@
+{
+  "title": "LiqualityBoost Atomic Swaps",
+  "description": "The most secure, non-custodial way to swap across blockchains. Swap any native asset to hundreds of erc20 tokens ",
+  "pros": [
+    "Cross-chain",
+    "Secure",
+    "Native assets and erc20 tokens"
+  ],
+  "cons": [
+    "Low liquidity",
+    "Few pairs"
+  ],
+  "fees": [
+    "0.5 - 1.0%",
+    "up to 3% slippage",
+    "$50 - $100 minimum trade size"
+  ]
+}
