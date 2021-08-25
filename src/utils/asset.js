@@ -50,12 +50,12 @@ const EXPLORERS = {
   },
   polygon: {
     testnet: {
-      tx: 'https://explorer-mumbai.maticvigil.com/tx/0x',
-      address: 'https://explorer-mumbai.maticvigil.com/address/0x'
+      tx: 'https://polygonscan.com/tx/0x',
+      address: 'https://polygonscan.com/address/'
     },
     mainnet: {
-      tx: 'https://explorer-mainnet.maticvigil.com/tx/0x',
-      address: 'https://explorer-mainnet.maticvigil.com/address/0x'
+      tx: 'https://polygonscan.com/tx/0x',
+      address: 'https://polygonscan.com/address/'
     }
   },
   near: {

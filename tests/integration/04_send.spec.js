@@ -7,7 +7,6 @@ const SendPage = require('../Pages/SendPage')
 const TransactionDetailsPage = require('../Pages/TransactionDetailsPage')
 const TestDataUtils = require('../utils/TestDataUtils')
 const expect = require('chai').expect
-const chalk = require('chalk')
 
 const puppeteer = require('puppeteer')
 
@@ -23,7 +22,7 @@ const transactionDetailsPage = new TransactionDetailsPage()
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet SEND feature', async () => {
+describe('SEND feature', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -33,11 +32,10 @@ describe('Liquality wallet SEND feature', async () => {
   })
   afterEach(async () => {
     try {
-      console.log('Cleaning up instances')
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup instances')
+      throw new Error(e)
     }
   })
 
@@ -99,7 +97,7 @@ describe('Liquality wallet SEND feature', async () => {
     // Check Send Review option has been disabled
     await sendPage.HasReviewButtonDisabled(page)
   })
-  it('Send SOV to random ETH address', async () => {
+  it('Send SOV to random ETH address-[smoke]', async () => {
     const bitCoinName = 'SOV'
     const coinsToSend = '1'
 
@@ -225,11 +223,9 @@ describe('Liquality wallet SEND feature', async () => {
     await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ClickSend(page)
-    // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
-
+    await overviewPage.SelectChain(page, bitCoinName)
+    await page.waitForSelector(`#${bitCoinName}_send_button`, { visible: true })
+    await page.click(`#${bitCoinName}_send_button`)
     // Click on Max
     await sendPage.SelectMaxSend(page)
     // Validate Available amount vs send amount
@@ -237,84 +233,5 @@ describe('Liquality wallet SEND feature', async () => {
     const availableAmount = await sendPage.GetSendAvailableBalance(page)
     expect(availableAmount,
       'Available balance and Max send amount are equal for ethereum').contains(sendAmount)
-  })
-  it('ETH Send Check Network Fee', async () => {
-    const bitCoinName = 'ETH'
-
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ClickSend(page)
-    // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
-
-    // Check Network Speed/FEE
-    const ethereumNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
-    expect(ethereumNetworkSpeedFee, 'ETH Avg Network Speed fee validation')
-      .not.equals('(Avg / 0.000000 ETH)')
-    // Click on Network Speed/FEE
-    await sendPage.ClickNetworkSpeedFee(page)
-    await page.hover('#slow', { slow: true })
-    await page.screenshot({ path: './screenshots/send_network_speed_fee_slow.png' })
-    await page.hover('#fast', { slow: true })
-    await page.screenshot({ path: './screenshots/send_network_speed_fee_fast.png' })
-  })
-  it('NEAR Send Check Network Fee', async () => {
-    const bitCoinName = 'NEAR'
-
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
-    // check NEAR
-    await overviewPage.SelectChain(page, 'NEAR')
-    await page.waitForSelector('#NEAR_send_button', { visible: true })
-    await page.waitForSelector('#NEAR_swap_button', { visible: true })
-    await page.waitForSelector('#NEAR_receive_button', { visible: true })
-    // Check view explorer
-    await overviewPage.HasViewExplorerDisplayed(page, bitCoinName)
-
-    const code = await page.$eval('.account-container_balance_code', (el) => el.textContent)
-    expect(code).equals(bitCoinName)
-    await page.waitForSelector('.account-container_address', { visible: true })
-    // Click on NEAR send
-    await page.click('#NEAR_send_button')
-    await sendPage.EnterSendAmount(page, '1')
-    await sendPage.EnterSendToAddress(page, 'caf7949de4fa4a61fd5d4d71c171560e49ad64e35221b01050ddf81a452a61cb')
-
-    // Check Network Speed/FEE
-    const ethereumNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
-    expect(ethereumNetworkSpeedFee, 'NEAR Avg Network Speed validation')
-      .equals('(Avg / 0.001 NEAR)')
-    // Click on Network Speed/FEE
-    await sendPage.ClickNetworkSpeedFee(page)
-    await page.hover('#slow', { slow: true })
-    await page.screenshot({ path: './screenshots/send_network_speed_fee_near_slow.png' })
-    await page.hover('#fast', { slow: true })
-    await page.screenshot({ path: './screenshots/send_network_speed_fee__near_fast.png' })
-
-    // Click on SEND Review button
-    await sendPage.ClickSendReview(page)
-    const confirmSendValue = await page.$eval('#confirm_send_value', (el) => el.textContent)
-    expect(confirmSendValue.trim()).equals('1 NEAR')
-    await page.waitForSelector('#detail_group_network_fee', { visible: true })
-    await page.waitForSelector('#send_button_confirm:not([enabled]')
-    console.log(chalk.green('Send Near button has been enabled'))
   })
 })

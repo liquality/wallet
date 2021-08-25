@@ -18,7 +18,7 @@ let browser, page
 const password = '123123123'
 
 if (process.env.NODE_ENV === 'mainnet') {
-  describe('FastBTC swap provider-only on ["mainnet"]', async () => {
+  describe('FastBTC swap provider-only on ["mainnet","smoke"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -80,7 +80,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'BTC->RBTC,fastBTC swap source should be chosen if BTC=1').oneOf(['FastBTC', 'Liquality'])
     })
-    it('SWAP BTC to RBTC - fastBTC quote select', async () => {
+    it.skip('SWAP BTC to RBTC - fastBTC quote select', async () => {
       const asset1 = 'BTC'
 
       // overview page
@@ -110,8 +110,9 @@ if (process.env.NODE_ENV === 'mainnet') {
         timeout: 60000
       })
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
+        'BTC->RBTC, Liquality swap source should be chosen!').equals('Liquality')
 
+      await page.waitForTimeout(3000)
       // Check see all quotes
       await page.waitForSelector('#see_all_quotes', { visible: true })
       await page.click('#see_all_quotes')

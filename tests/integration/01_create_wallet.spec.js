@@ -15,7 +15,7 @@ const seedWordsPage = new SeedWordsPage()
 
 let browser, page
 
-describe('Create wallet-["mainnet"]', async () => {
+describe('Create wallet-[mainnet, smoke]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()

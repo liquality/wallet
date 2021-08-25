@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.39.0",
+  "version": "0.39.8",
   "private": true,
   "license": "MIT",
   "author": "Liquality <info@liquality.io>",
@@ -19,7 +19,7 @@
     "test:unit": "jest tests/unit",
     "postinstall": "husky install",
     "test:testnet": "node_modules/mocha/bin/mocha --colors 'tests/**/*.spec.js'",
-    "test:testnet:smoke": "node_modules/mocha/bin/mocha --colors --grep 'smoke' 'tests/**/*.spec.js'",
+    "test:pullrequest:smoke": "node_modules/mocha/bin/mocha --colors --grep 'smoke' 'tests/**/*.spec.js'",
     "test:mainnet": "NODE_ENV=mainnet node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/**/*.spec.js'"
   },
   "dependencies": {
@@ -35,7 +35,7 @@
     "@liquality/bitcoin-swap-provider": "^1.4.4",
     "@liquality/client": "^1.4.4",
     "@liquality/crypto": "^1.4.4",
-    "@liquality/cryptoassets": "^1.2.10",
+    "@liquality/cryptoassets": "^1.2.11",
     "@liquality/ethereum-erc20-provider": "^1.4.4",
     "@liquality/ethereum-erc20-scraper-swap-find-provider": "^1.4.4",
     "@liquality/ethereum-erc20-swap-provider": "^1.4.4",

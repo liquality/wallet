@@ -52,18 +52,29 @@ describe('Custom fee feature', async () => {
     await sendPage.EnterSendToAddress(page, '0x9d0023Bd55ab3647f6C591DA6d46e5A6128d33d1')
   })
 
-  it('Send SOV to another SOV with custom fee (Fast)', async () => {
+  it('Send SOV to another SOV with custom fee (Fast)-[smoke]', async () => {
     // Network speed
     await sendPage.ClickNetworkSpeedFee(page)
-    expect(await page.$eval('#average', (el) => el.getAttribute('class')), 'Avg network speed/fee by default selected')
+    expect(await page.$eval('#average', (el) => el.getAttribute('class')),
+      'Avg network speed/fee by default selected')
+    expect(await page.$eval('#average', (el) => el.getAttribute('class')), 'Avg network speed/fee has tooltip')
+      .contains('has-tooltip')
+    // Check Network Speed/FEE
+    const avgNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
+    expect(avgNetworkSpeedFee, 'SOV Avg Network Speed validation')
+      .equals('(Avg / 0.000001 RBTC)')
+
     // Select Custom network speed fee
     await page.click('#custom_network_speed_button')
-    // By default Average is active
+    // By default Average is active & has tool tip
     await page.waitForSelector('#average', { visible: true })
     expect(await page.$eval('#average', (el) => el.getAttribute('class')), 'Avg network speed/fee by default selected')
       .contains('active')
+
     // Choose Fast Network speed
     await page.click('#fast')
+    expect(await page.$eval('#fast', (el) => el.getAttribute('class')), 'Fast network speed/fee selected')
+      .contains('active')
     // #fast > div.custom-fee-amount
     const fastFeeAmount = await page.$eval('#fast > div.custom-fee-amount', el => el.textContent.trim())
     const fastFeeFiatAmount = await page.$eval('#fast > div.custom-fee-fiat', el => el.textContent.trim())

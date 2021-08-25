@@ -121,7 +121,7 @@ describe('SWAP feature', async () => {
     // Check SWAP Initiate option has been enabled
     await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
-  it('SWAP ETH to DAI - not cross chain (UNISWAP V2)', async () => {
+  it('SWAP ETH to DAI - not cross chain (UNISWAP V2)-[smoke]', async () => {
     const asset1 = 'ETH'
     const asset2 = 'DAI'
 
@@ -336,7 +336,7 @@ describe('SWAP feature', async () => {
       console.log('Error: ' + err.message)
     })
   })
-  it('SWAP (BTC->ETH) - Thorchain', async () => {
+  it('SWAP (BTC->ETH) - Thorchain-[smoke]', async () => {
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
