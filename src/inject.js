@@ -143,7 +143,7 @@ window[injectionName] = {
   },
   autoRefreshOnNetworkChange: false
 }
-`;
+`
 
 const overrideEthereum = chain => `
 function proxyEthereum(chain) {
@@ -192,7 +192,7 @@ if (!window.ethereum) {
 } else {
   overrideEthereum('${chain}')
 }
-`;
+`
 
 const bitcoinProvider = () => `
 const REQUEST_MAP = {
@@ -228,7 +228,7 @@ window.bitcoin = {
     })
   }
 }
-`;
+`
 
 const nearProvider = () => `
 const REQUEST_MAP = {
@@ -256,7 +256,7 @@ window.near = {
     })
   }
 }
-`;
+`
 
 const solanaProvider = () => `
 const REQUEST_MAP = {
@@ -305,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 }, { once: true })
-`;
+`
 
 export {
   providerManager,
@@ -315,4 +315,4 @@ export {
   nearProvider,
   solanaProvider,
   paymentUriHandler
-};
+}
