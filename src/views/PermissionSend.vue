@@ -9,7 +9,7 @@
         <p class="confirm-value" :style="getAssetColorStyle(asset)">{{symbol}}</p>
       </div>
       <div class="form-group">
-        <label>Transaction fee {{usdValue}} USD</label>
+        <label>Transaction fee {{feeInUsdValue}} USD</label>
       </div>
       </div>
 
@@ -24,7 +24,7 @@
           <p class="confirm-value">{{shortAddress}}</p>
         </div>
         <div class="form-group">
-          <label>Transaction fee {{usdValue}} USD</label>
+          <label>Transaction fee {{feeInUsdValue}} USD</label>
         </div>
         <div v-if="data" class="permission-send_data">
           <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
@@ -118,7 +118,7 @@ export default {
       maxSendFees: {},
       maxOptionActive: false,
       customFee: null,
-      usdValue: 0
+      gas: 0
     }
   },
   methods: {
@@ -197,11 +197,9 @@ export default {
       if (this.feesAvailable) {
         const sendFees = {}
 
-        const gas = await this.estimateGas();
-
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const feePerGas = BN(fee.fee).div(1e9)
-          const txCost = gas.times(feePerGas)
+          const txCost = this.gas.times(feePerGas)
           sendFees[speed] = txCost
         }
 
@@ -255,21 +253,9 @@ export default {
         this.updateSendFees(this.amount)
       }
     }, 800),
-    async feeInUsdValue () {
-      const gas = await this.estimateGas();
-
-      let feePerGas
-      
-      if (this.selectedFee === 'custom') {
-        feePerGas = this.customFee
-      } else {
-        feePerGas = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[this.selectedFee]?.fee
-      }
-      
-      const txCost = gas.times(BN(feePerGas).div(1e9))
-  
-      this.usdValue = prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
-    },
+    async calculateGas() {
+      this.gas = await this.estimateGas();
+    }
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
@@ -324,6 +310,19 @@ export default {
         ...this.$route.query,
         args: JSON.parse(this.$route.query.args)
       }
+    },
+    feeInUsdValue () {
+      let feePerGas
+      
+      if (this.selectedFee === 'custom') {
+        feePerGas = this.customFee
+      } else {
+        feePerGas = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[this.selectedFee]?.fee
+      }
+      
+      const txCost = this.gas.times(BN(feePerGas).div(1e9))
+  
+      return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
     }
   },
   async created () {
@@ -333,7 +332,7 @@ export default {
       this.updateFees({ asset: this.asset }),
       this.updateSendFees(0),
       this.updateMaxSendFees(),
-      this.feeInUsdValue(),
+      this.calculateGas(),
     ])
   },
   beforeDestroy () {
