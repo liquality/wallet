@@ -228,14 +228,15 @@ class OverviewPage {
   }
 
   /**
-   * Get Total assets from overview page.
+   * Validate total asserts from overview page.
    * @param page
    * @returns {Promise<*>}
    * @constructor
    */
-  async GetTotalAssets (page) {
+  async ValidateTotalAssets (page) {
     const assetsElement = await page.$('#total_assets')
-    return (await assetsElement.getProperty('innerText')).jsonValue()
+    const assetsCount = await assetsElement.getProperty('innerText').jsonValue()
+    expect(assetsCount, 'Total assets should be 7 on overview page').contain('7 Assets')
   }
 
   /**
