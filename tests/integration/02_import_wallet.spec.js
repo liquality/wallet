@@ -18,7 +18,7 @@ const seedWordsPage = new SeedWordsPage()
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
+describe('Import wallet-["mainnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -107,6 +107,16 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
     expect(rskAddress, 'ETH & RSK Addresses should be different if balance >0').not.equals(ethAddress)
+
+    // Check RSK & ERC20 tokens
+    const rskTokens = ['RBTC', 'SOV', 'FISH']
+    if (process.env.NODE_ENV === 'mainnet') {
+      await page.click('#RSK')
+      for (let i = 0; i < rskTokens.length; i++) {
+        const token = rskTokens[i]
+        await page.waitForSelector(`#${token}`, { visible: true })
+      }
+    }
   })
   it('Import wallet with (24 seed words) and see balance', async () => {
     // Import wallet option
