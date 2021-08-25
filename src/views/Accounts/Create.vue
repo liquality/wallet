@@ -7,11 +7,9 @@
     </NavBar>
     <div class="wrapper">
     <div class="wrapper_top">
-      <div class="options">
-        <div class="options-text">
-          <span>Select Asset <br/> to Create</span>
-        </div>
-        <div class="dropdown" v-click-away="hideAssetList">
+        <div class="create-item-row">
+          <div class="create-item-row-title">Select the corresponding Blockchain</div>
+          <div class="dropdown" v-click-away="hideAssetList">
           <button class="btn custom-dropdown-toggle" @click="toggleAssetList">
             <div class="form" v-if="selectedAsset">
               <div class="input-group">
@@ -21,15 +19,12 @@
                 />
                 <span class="input-group-text">
                   {{ selectedAsset.label }}
-                  <span class="text-description">
-                    {{ selectedAsset.blockchain }}
-                  </span>
                 </span>
               </div>
             </div>
             <ChevronRightIcon :class="{ open: assetsDropdownOpen }" />
           </button>
-          <ul class="dropdown-menu" :class="{ show: assetsDropdownOpen }">
+          <ul class="dropdown-menu custom-dropdown-menu" :class="{ show: assetsDropdownOpen }">
             <li v-for="asset in assetList" :key="asset.name">
               <a class="dropdown-item" href="#" @click="selectAsset(asset)">
                  <div class="form">
@@ -47,7 +42,7 @@
             </li>
           </ul>
         </div>
-      </div>
+        </div>
     </div>
     <div class="wrapper_bottom">
       <div class="button-group">
@@ -73,10 +68,10 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
-import { ACCOUNT_TYPE_OPTIONS } from '@/utils/accounts'
 import { getAssetIcon } from '@/utils/asset'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import clickAway from '@/directives/clickAway'
+import { mapState } from 'vuex'
 
 export default {
   directives: {
@@ -94,8 +89,11 @@ export default {
     }
   },
   computed: {
+    ...mapState(['networkAssets']),
     assetList () {
-      return ACCOUNT_TYPE_OPTIONS.filter(i => i.name !== this.selectedAsset?.name)
+      return this.networkAssets
+        .filter(a => a !== this.selectedAsset)
+        .map()
     }
   },
   created () {
@@ -125,9 +123,18 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   padding-top: 0 !important;
+  .create-item-row-title {
+    display: flex;
+  }
 
-  .options {
-    border-top: none;
+  .create-item-row {
+    padding: 26px 0px;
+    font-style: normal;
+      font-weight: bold;
+      font-size: 12px;
+      line-height: 16px;
+      text-transform: uppercase;
+      color: #3D4767;
   }
 }
 </style>

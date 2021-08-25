@@ -39,6 +39,22 @@ Ex: export SEED_WORDS=test1 test2 test3 test4 test5 test6 test7 test8 test9 test
 $ npm run test:testNetNetwork
 ```
 
+### Releases
+
+Release to Chrome Store dev*
+
+Update the tag in [manifest.json](src/manifest.json) & [package.json](package.json)
+
+```shell
+git tag <TAG NAME>
+```
+
+```shell
+git push origin <TAG NAME>
+```
+
+
+
 ## License
 
 [MIT](./LICENSE.md)

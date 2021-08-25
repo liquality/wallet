@@ -5,17 +5,17 @@
     </NavBar>
     <div class="manage-assets_search form wrapper">
       <div class="input-group">
-        <SearchIcon /><input type="text" autocomplete="off" class="form-control form-control-sm" v-model="search" @keyup="sortAssets" placeholder="Search for an Asset" />
+        <SearchIcon /><input type="text" id="search_for_an_assert_input" autocomplete="off" class="form-control form-control-sm" v-model="search" placeholder="Search for an Asset" />
       </div>
       <router-link to="/settings/manage-assets/custom-token" id="add_custom_token">Add Custom Token</router-link>
-      <div v-if="assets.length === 0" class="mt-3 d-flex">
+      <div v-if="sortedFilteredAssets.length === 0" class="mt-3 d-flex">
         <div>
           <h4>Can't find this token</h4>
           <p class="manage-assets_customText">Add Custom ERC20 tokens.</p>
-          <a target="_blank" href="https://liquality.io/blog/liquality-wallet-0-9-0-release-notes/#add-custom-tokens-to-your-liquality-wallet">Learn how</a>
+          <a target="_blank" href="https://liquality.io/blog/how-to-use-the-liquality-wallet-101/#q-how-can-i-add-custom-tokens-to-my-liquality-wallet">Learn how</a>
         </div>
       </div>
-       <div v-if="assets.length === 0" class="mt-5 d-flex">
+       <div v-if="sortedFilteredAssets.length === 0" class="mt-5 d-flex">
         <div class="manage-assets_noneBottom">
           <h5 class="manage-assets_noneBottomText">INQUIRE</h5>
           <a target="_blank" href="https://forms.gle/nsHeZFGgT3y7hwKp6">Enable other tokens</a><br />
@@ -24,7 +24,7 @@
       </div>
       </div>
           <div class="manage-assets_list">
-      <div v-for="asset in assets" :key="asset" class="asset-item d-flex align-items-center" id="asset_item">
+      <div v-for="asset in sortedFilteredAssets" :key="asset" class="asset-item d-flex align-items-center" id="asset_item">
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
         <div class="asset-item_name flex-fill" :id="asset">{{getAssetName(asset)}} ({{asset}})
           <!-- <span v-if="asset in networkWalletBalances" class="asset-item_balance">{{getAssetBalance(asset)}} {{asset}}</span> -->
@@ -48,6 +48,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import SearchIcon from '@/assets/icons/search.svg'
+import buildConfig from '@/build.config'
 
 export default {
   components: {
@@ -64,6 +65,22 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets', 'balances']),
     networkAssets () {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
+    },
+    sortedAssets () {
+      const allAssets = Object.keys(cryptoassets).filter(asset => buildConfig.chains.includes(cryptoassets[asset].chain))
+      const assets = allAssets.sort((a, b) => this.isAssetEnabled(b) - this.isAssetEnabled(a))
+      return assets
+    },
+    sortedFilteredAssets () {
+      if (isEmpty(this.search)) return this.sortedAssets
+
+      return this.sortedAssets.filter(
+        asset => asset.toUpperCase().includes(
+          this.search.toUpperCase()
+        ) ||
+      cryptoassets[asset]?.name.toLowerCase()
+        .includes(this.search.toLowerCase())
+      )
     }
   },
   methods: {
@@ -72,9 +89,6 @@ export default {
     getAssetName (asset) {
       return cryptoassets[asset]?.name || asset
     },
-    // getAssetBalance (asset) {
-    //   return prettyBalance(this.networkWalletBalances[asset], asset)
-    // },
     isAssetEnabled (asset) {
       return this.networkAssets.includes(asset)
     },
@@ -82,28 +96,9 @@ export default {
       const params = { network: this.activeNetwork, walletId: this.activeWalletId, assets: [asset] }
       newValue ? this.enableAssets(params) : this.disableAssets(params)
     },
-    sortAssets () {
-      const allAssets = Object.keys(cryptoassets)
-      const assets = allAssets.sort((a, b) => this.isAssetEnabled(b) - this.isAssetEnabled(a))
-      if (isEmpty(this.search)) {
-        this.assets = assets
-      } else {
-        this.assets = assets.filter(
-          asset => asset.toUpperCase().includes(
-            this.search.toUpperCase()
-          ) ||
-        cryptoassets[asset]?.name.toLowerCase()
-          .includes(this.search.toLowerCase())
-        )
-      }
-    },
     clearSearch () {
       this.search = ''
-      this.sortAssets()
     }
-  },
-  created () {
-    this.sortAssets()
   },
   watch: {
     activeNetwork () {

@@ -18,7 +18,7 @@ const seedWordsPage = new SeedWordsPage()
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet- Import wallet', async () => {
+describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -29,15 +29,14 @@ describe('Liquality wallet- Import wallet', async () => {
 
   afterEach(async () => {
     try {
-      console.log('Cleaning up instances')
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup instances')
+      throw new Error(e)
     }
   })
 
-  it('Import wallet with random seed (phrase 12 words) with 0 coins-["mainnet"]', async () => {
+  it('Import wallet with random seed (phrase 12 words) with 0 coins', async () => {
     await homePage.ClickOnImportWallet(page)
     console.log('Import wallet page hase been loaded')
 
@@ -48,6 +47,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     } else {
@@ -59,7 +59,7 @@ describe('Liquality wallet- Import wallet', async () => {
     const assetsCount = await overviewPage.GetTotalAssets(page)
     expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
   })
-  it('Import wallet with random seed (phrase 11 words) and check continue is disabled -["mainnet"]', async () => {
+  it('Import wallet with random seed (phrase 11 words) and check continue is disabled', async () => {
     await homePage.ClickOnImportWallet(page)
     console.log('Import wallet page hase been loaded')
     // check continue button has been disabled
@@ -74,7 +74,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await page.click('#import_wallet_continue_button:not([enabled])')
     console.log('Import wallet continue button has been disabled')
   })
-  it('Import wallet with (12 seed words) and see balance-["smoke"]', async () => {
+  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path-[smoke]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -83,8 +83,12 @@ describe('Liquality wallet- Import wallet', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
+    await overviewPage.CloseWatsNewModal(page)
+    if (process.env.NODE_ENV === 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
+    }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
@@ -96,10 +100,15 @@ describe('Liquality wallet- Import wallet', async () => {
 
     // Check the Total amount - 10s wait to load amount
     const totalAmount = await overviewPage.GetTotalLiquidity(page)
-    expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 2000 USD').greaterThanOrEqual(2000)
+    expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 0 USD').greaterThanOrEqual(0)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
+
+    // GET the ETHEREUM assert Address
+    const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
+    const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
+    expect(rskAddress, 'ETH & RSK Addresses should be different if balance >0').not.equals(ethAddress)
   })
-  it('Import wallet with (24 seed words) and see balance-["smoke"]', async () => {
+  it('Import wallet with (24 seed words) and see balance', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit, select 24 seed option
@@ -113,6 +122,7 @@ describe('Liquality wallet- Import wallet', async () => {
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed

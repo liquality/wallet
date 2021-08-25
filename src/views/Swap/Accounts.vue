@@ -6,6 +6,7 @@
               <SearchIcon/>
               <input
                 type="text"
+                ref="search"
                 class="form-control form-control-sm"
                 id="search_for_a_currency"
                 v-model="search"
@@ -77,6 +78,9 @@ export default {
         asset: _asset
       })
     }
+  },
+  created () {
+    this.$nextTick(() => this.$refs.search.focus())
   }
 }
 </script>

@@ -4,6 +4,8 @@ import { createSwapProvider } from './factory/swapProvider'
 import { Object } from 'core-js'
 import BN from 'bignumber.js'
 import { cryptoToFiat } from '@/utils/coinFormatter'
+import { Networks } from './utils'
+import { uniq } from 'lodash-es'
 
 const clientCache = {}
 const swapProviderCache = {}
@@ -96,6 +98,11 @@ export default {
   networkAssets (state) {
     const { enabledAssets, activeNetwork, activeWalletId } = state
     return enabledAssets[activeNetwork][activeWalletId]
+  },
+  allNetworkAssets (state) {
+    return Networks.reduce((result, network) => {
+      return uniq(result.concat(state.enabledAssets[network][state.activeWalletId]))
+    }, [])
   },
   activity (state) {
     const { history, activeNetwork, activeWalletId } = state

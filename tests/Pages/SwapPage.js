@@ -5,7 +5,7 @@ class SwapPage {
   /**
    * Enter SEND amount in SWAP view.
    * @param page
-   * @param amountToSend
+   * @param {string} amountToSend - amount to enter in send input
    * @returns {Promise<void>}
    * @constructor
    */
@@ -18,7 +18,7 @@ class SwapPage {
   }
 
   /**
-   * Click on Min
+   * Click on Min.
    * @param page
    * @returns {Promise<void>}
    * @constructor
@@ -59,6 +59,17 @@ class SwapPage {
   }
 
   /**
+   * Get Selected service provider from SWAP screen.
+   * @param page
+   * @returns {Promise<*>} - Liquality, Thorchain....
+   * @constructor
+   */
+  async GetSelectedServiceProvider (page) {
+    await page.waitForSelector('#selectedQuote_provider', { visible: true })
+    return await page.$eval('#selectedQuote_provider', (el) => el.textContent)
+  }
+
+  /**
    * Check SWAP Screen Review button has been Enabled.
    * @param page
    * @returns {Promise<void>}
@@ -96,6 +107,11 @@ class SwapPage {
     await page.waitForSelector('#network_speed_fee', { visible: true })
     await page.click('#network_speed_fee')
     console.log(chalk.green('user clicked on on Network fee options'))
+    const averageFee = await page.$eval('#average', (el) => el.getAttribute('class'))
+    expect(averageFee,
+      'Avg network speed/fee by default selected').contains('active')
+    expect(averageFee,
+      'Avg network speed/fee should have tooltip').contains('has-tooltip')
   }
 
   /**
@@ -186,19 +202,35 @@ class SwapPage {
   }
 
   async GetSwapRate (page) {
-    await page.waitForSelector('#swap_rate_value', { visible: true })
-    return await page.$eval('#swap_rate_value', el => el.textContent)
+    await page.waitForSelector('#swap-rate_value', { visible: true })
+    return await page.$eval('#swap-rate_value', el => el.textContent)
   }
 
   /**
-   * Check If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at 8:45 PM
+   *  Fees are high. Review transaction carefully.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async CheckFeesAreHigh (page) {
+    await page.waitForSelector('#fees_are_high', { visible: true })
+    const messages = await page.$eval('#fees_are_high', el => el.textContent)
+    expect(messages.trim()).equals('Fees are high. Review transaction carefully.')
+    console.log(chalk.redBright('Fees are high. Review transaction carefully.'))
+  }
+
+  /**
+   * Check If the swap contains the right message
    * @param page
    * @returns {Promise<void>}
    * @constructor
    */
   async ValidateMessage (page) {
     const message = await page.$eval('#media-body-info', el => el.textContent)
-    expect(message).contain('If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at')
+    expect(message).contain.oneOf([
+      'If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at',
+      'Max slippage is 0.5%.'
+    ])
   }
 }
 

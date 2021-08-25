@@ -6,35 +6,20 @@
     <div class="wrapper form">
       <div class="wrapper_top">
         <div class="form-group">
-          <label for="contractAddress">Token Contract Address</label>
-          <input type="text" v-model="contractAddress" @change="contractAddressChange" class="form-control form-control-sm" id="contractAddress" placeholder="Address" autocomplete="off" required>
-        </div>
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" v-model="name" class="form-control form-control-sm" id="name" placeholder="Name" autocomplete="off" required :disabled="autofilled">
-        </div>
-        <div class="form-group">
-          <label for="tokenSymbol">Token Symbol</label>
-          <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled">
-          <small v-if="symbol && symbolError" class="text-danger form-text text-right">{{ symbolError }}</small>
-        </div>
-        <div class="form-group">
-          <label for="decimals">Decimals</label>
-          <input type="text" v-model="decimals" class="form-control form-control-sm" id="decimals" autocomplete="off" required :disabled="autofilled">
-        </div>
-        <div class="form-group">
           <label for="chain">Chain</label>
           <div class="dropdown">
             <button class="btn dropdown-toggle"
+                    id="select_chain_dropdown"
                     type="button"
                     @click.stop="chainDropdownOpen = !chainDropdownOpen">
-              {{ chain }}
+              {{ chain || 'Select chain...' }}
               <ChevronUpIcon v-if="chainDropdownOpen" />
               <ChevronDownIcon v-else />
             </button>
             <ul class="dropdown-menu" :class="{ show: chainDropdownOpen }">
               <li>
                 <a class="dropdown-item"
+                   id="ethereum_chain"
                    href="#"
                    @click="selectChain('ethereum')"
                    :class="{active: chain === 'ethereum'}">
@@ -43,6 +28,7 @@
               </li>
               <li>
                 <a class="dropdown-item"
+                   id="rsk_chain"
                    href="#"
                    @click="selectChain('rsk')"
                    :class="{active: chain === 'rsk'}">
@@ -51,6 +37,7 @@
               </li>
               <li>
                 <a class="dropdown-item"
+                   id="bsc_chain"
                    href="#"
                    @click="selectChain('bsc')"
                    :class="{active: chain === 'bsc'}">
@@ -59,6 +46,7 @@
               </li>
               <li>
                 <a class="dropdown-item"
+                   id="polygon_chain"
                    href="#"
                    @click="selectChain('polygon')"
                    :class="{active: chain === 'polygon'}">
@@ -67,6 +55,7 @@
               </li>
               <li>
                 <a class="dropdown-item"
+                   id="arbitrum_chain"
                    href="#"
                    @click="selectChain('arbitrum')"
                    :class="{active: chain === 'arbitrum'}">
@@ -76,11 +65,30 @@
             </ul>
           </div>
         </div>
+        <fieldset :disabled="!chain">
+          <div class="form-group">
+            <label for="contractAddress">Token Contract Address</label>
+            <input type="text" @change="contractAddressChange" @paste="contractAddressPaste" class="form-control form-control-sm" id="contractAddress" placeholder="Address" autocomplete="off" required>
+          </div>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" v-model="name" class="form-control form-control-sm" id="name" placeholder="Name" autocomplete="off" required :disabled="autofilled">
+          </div>
+          <div class="form-group">
+            <label for="tokenSymbol">Token Symbol</label>
+            <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled">
+            <small v-if="symbol && symbolError" class="text-danger form-text text-right">{{ symbolError }}</small>
+          </div>
+          <div class="form-group">
+            <label for="decimals">Decimals</label>
+            <input type="text" v-model="decimals" class="form-control form-control-sm" id="decimals" autocomplete="off" required :disabled="autofilled">
+          </div>
+        </fieldset>
       </div>
       <div class="wrapper_bottom">
         <div class="button-group">
-          <router-link :to="`/settings/manage-assets`"><button class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
-          <button class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd">Add Token</button>
+          <router-link :to="`/settings/manage-assets`"><button id="cancel_add_token_button" class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
+          <button id="add_token_button" class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd">Add Token</button>
         </div>
       </div>
     </div>
@@ -88,9 +96,10 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { mapState, mapActions } from 'vuex'
+import { debounce } from 'lodash-es'
 import cryptoassets from '@/utils/cryptoassets'
+import { tokenDetailProviders } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
@@ -107,7 +116,7 @@ export default {
       name: null,
       symbol: null,
       decimals: null,
-      chain: 'ethereum',
+      chain: null,
       autofilled: false,
       chainDropdownOpen: false
     }
@@ -128,7 +137,7 @@ export default {
     },
     existingAsset () {
       const existingAsset = Object.values(cryptoassets).find(asset =>
-        asset.type === 'erc20' && asset.contractAddress.toLowerCase() === this.contractAddress.toLowerCase())
+        asset.type === 'erc20' && asset.contractAddress.toLowerCase() === this.contractAddress.toLowerCase() && asset.chain === this.chain)
       return existingAsset ? { ...existingAsset, symbol: existingAsset.code } : null
     }
   },
@@ -153,36 +162,46 @@ export default {
       })
       this.$router.replace('/settings/manage-assets')
     },
-    async contractAddressChange () {
+    contractAddressPaste (e) {
+      this.contractAddress = e.clipboardData.getData('text')
+      this.fetchToken()
+    },
+    contractAddressChange (e) {
+      if (this.contractAddress === e.target.value) return
+      this.contractAddress = e.target.value
+      this.fetchToken()
+    },
+    resetFields () {
       this.symbol = null
       this.name = null
       this.decimals = null
       this.assetExists = false
       this.autofilled = false
+    },
+    fetchToken: debounce(async function () {
+      this.resetFields()
 
       let customToken
 
       if (this.existingAsset) {
         customToken = this.existingAsset
-      } else if (this.activeNetwork === 'mainnet') {
-        try {
-          const result = await axios.get(`https://api.ethplorer.io/getTokenInfo/${this.contractAddress}?apiKey=freekey`)
-          const { symbol, name, decimals } = result.data
-          customToken = { symbol, name, decimals: parseInt(decimals), chain: 'ethereum' }
-        } catch (e) {}
+      } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
+        const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
+        customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
       }
 
       if (customToken) {
         this.symbol = customToken.symbol
         this.name = customToken.name
-        this.chain = customToken.network
         this.decimals = customToken.decimals
         this.autofilled = true
       }
-    },
-    selectChain (chain) {
+    }, 500),
+    async selectChain (chain) {
       this.chain = chain
       this.chainDropdownOpen = false
+      this.resetFields()
+      this.fetchToken()
     }
   }
 }

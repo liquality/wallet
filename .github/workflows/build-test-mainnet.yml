@@ -1,9 +1,9 @@
 on:
-  pull_request:
-    branches:
-      - dev
+  schedule:
+    - cron: '0 9 * * *' # everyday at 9am
+    - cron: '0 23 * * *' # everyday at 11pm
 
-name: Build & Regression testnet
+name: Mainnet tests
 
 jobs:
   regressiontest:
@@ -55,7 +55,7 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:testnet
+          args: npm run test:mainnet
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2

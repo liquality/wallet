@@ -241,7 +241,7 @@ class ThorchainSwapProvider extends SwapProvider {
   }
 
   async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
-    if (txType === ThorchainSwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
+    if (txType === ThorchainSwapProvider.txTypes.SWAP && asset === 'BTC') {
       const client = this.getClient(network, walletId, asset, quote.fromAccountId)
       const value = max ? undefined : BN(quote.fromAmount)
       const memo = await this.makeMemo({ network, walletId, quote })

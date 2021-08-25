@@ -9,8 +9,9 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    await page.waitForSelector('#overview', {
-      visible: true
+    await page.waitForSelector('#burger_icon_menu', {
+      visible: true,
+      timeout: 120000
     })
     console.log(chalk.green('User logged successfully, overview page has been loaded'))
   }
@@ -54,6 +55,21 @@ class OverviewPage {
       default:
         throw Error(`Unsupported Network: ${network}`)
     }
+  }
+
+  /**
+   * Check Send,swipe and receive options have been displayed.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async CloseWatsNewModal (page) {
+    await page.waitForSelector('#wats_new_close_btn', {
+      visible: true,
+      timeout: 60000
+    })
+    await page.click('#wats_new_close_btn')
+    console.log('Wat\'s new Modal closed')
   }
 
   /**
@@ -162,6 +178,21 @@ class OverviewPage {
     }
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     await page.waitForSelector('#refresh-icon', { visible: true })
+  }
+
+  /**
+   * Validate view explorer href for each assert on overview page.
+   * @param page
+   * @param asset {string} - assert symbol.
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async HasViewExplorerDisplayed (page, asset) {
+    const id = `#${asset}_view_in_explorer`
+    await page.waitForSelector(id, { visible: true })
+    const explorerLink = await page.$eval(id, el => el.href)
+    expect(explorerLink).contains('https://')
+    console.log('View explorer link:' + explorerLink)
   }
 
   /**
@@ -276,6 +307,44 @@ class OverviewPage {
     await page.click('#lock')
     console.log(chalk.green('User clicked on lock option'))
     await page.waitForSelector('#password', { visible: true })
+  }
+
+  /**
+   * Get Assert address from overview page
+   * @param page
+   * @param assertName - ETHEREUM, BITCOIN
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async GetAssertAddress (page, assertName) {
+    const $parent = await page.$(`#${assertName}`)
+    const assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
+    expect(assertAddress).not.equals(null)
+    return assertAddress
+  }
+
+  /**
+   * Click on Hamburger icon.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnBurgerIcon (page) {
+    // Click on Backup seed from Burger Icon menu
+    await page.waitForSelector('#burger_icon_menu', { visible: true })
+    await page.click('#burger_icon_menu')
+  }
+
+  /**
+   * Click on Settings under menu items.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async SelectSettings (page) {
+    const settings = await page.waitForSelector('#settings', { visible: true })
+    await settings.click()
+    await page.waitForSelector('#settings_item_default_wallet', { visible: true })
   }
 }
 

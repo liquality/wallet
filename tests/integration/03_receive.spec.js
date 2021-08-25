@@ -47,8 +47,8 @@ async function importWalletTestReceive (bitcoin) {
   await page.click('#wallet_header_logo')
 }
 
-describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
-  describe('Create wallet and Check receive-["smoke"]', async () => {
+describe('Liquality wallet- Receive tokens ["mainnet","smoke"]', async () => {
+  describe('Create wallet and Check receive', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -83,6 +83,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
 
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
+      await overviewPage.CloseWatsNewModal(page)
       // Select network
       if (process.env.NODE_ENV === 'mainnet') {
         await overviewPage.SelectNetwork(page, 'mainnet')
@@ -105,7 +106,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       await overviewPage.CheckAssertOverviewDetails(page, 'BTC')
     })
   })
-  const tokens = ['ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH']
+  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH']
   describe('Import wallet, Receive tokens', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -121,6 +122,7 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
       await passwordPage.SubmitPasswordDetails(page, password)
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
+      await overviewPage.CloseWatsNewModal(page)
       // Select Network
       if (process.env.NODE_ENV === 'mainnet') {
         await overviewPage.SelectNetwork(page, 'mainnet')
@@ -132,13 +134,8 @@ describe('Liquality wallet- Receive tokens ["mainnet"]', async () => {
     })
 
     afterEach(async () => {
-      try {
-        console.log('Cleaning up instances')
-        await page.close()
-        await browser.close()
-      } catch (e) {
-        console.log('Cannot cleanup instances')
-      }
+      await page.close()
+      await browser.close()
     })
 
     tokens.forEach((token) => {

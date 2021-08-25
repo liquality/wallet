@@ -20,9 +20,14 @@ export const unlockWallet = async ({ commit, state, dispatch }, { key }) => {
     )
   }
 
+  const parsedWallets = JSON.parse(wallets)
+  const { mnemonic } = parsedWallets[0]
+  // Added this check to fix the rsk derivation path
+  await dispatch('checkRSKDerivationPath', { mnemonic })
+
   commit('UNLOCK_WALLET', {
     key,
-    wallets: JSON.parse(wallets),
+    wallets: parsedWallets,
     unlockedAt: Date.now()
   })
 }

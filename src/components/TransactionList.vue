@@ -3,6 +3,7 @@
     <ListItem
       v-for="item in transactions"
       :key="item.id"
+      :id="item.type+'_'+item.from+'_'+item.to"
       :to="getDetailsUrl(item)"
       :container-class="{ 'text-danger': item.error }"
       :item-class="'h-padding'"
@@ -47,7 +48,6 @@ import {
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
 import { mapState, mapGetters } from 'vuex'
-import { getNativeAsset } from '@/utils/asset'
 
 export default {
   components: {
@@ -129,8 +129,8 @@ export default {
     },
     getCompletedAmount (item) {
       const amount = item.type === 'SWAP' ? item.fromAmount : item.amount
-      const nativeAsset = getNativeAsset(item.from)
-      return prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[nativeAsset])
+
+      return prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[item.from])
     }
   }
 }

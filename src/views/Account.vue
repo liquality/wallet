@@ -11,7 +11,7 @@
                      :class="{ 'infinity-rotate': updatingBalances }"
         />
         <div class="account-container_balance">
-          <div class="account-container_balance_fiat">
+          <div class="account-container_balance_fiat" :id="`${asset}_fiat_value`">
             <span v-if="fiatRates[asset]" >
               ${{ prettyFiatBalance(balance, fiatRates[asset]) }}
             </span>
@@ -19,6 +19,7 @@
           </div>
           <div>
             <span class="account-container_balance_value"
+                  :id="`${asset}_balance_value`"
                   :style="{ fontSize: balanceFontSize }">
               {{ balance }}
             </span>
@@ -26,11 +27,19 @@
           </div>
         </div>
         <div v-if="address" class="account-container_address">
-          <button class="btn btn-outline-light"
+          <button class="btn btn-outline-light" :id="`${asset}_address_container`"
             @click="copyAddress"
             v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
-            {{ shortenAddress(this.address) }}
+            {{ shortenAddress(address) }}
           </button>
+          <a class="eye-btn"
+             :id="`${asset}_view_in_explorer`"
+            @click="copyAddress"
+            :href="addressLink"
+            target="_blank"
+            v-tooltip.bottom="{ content: 'View in Explorer' }">
+            <EyeIcon />
+          </a>
         </div>
         <div class="account-container_actions">
           <router-link :to="`/accounts/${accountId}/${asset}/send`"><button class="account-container_actions_button">
@@ -68,10 +77,11 @@ import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
-import { getAssetIcon } from '@/utils/asset'
+import { getAssetIcon, getAddressExplorerLink } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
+import EyeIcon from '@/assets/icons/eye.svg'
 
 export default {
   components: {
@@ -81,7 +91,8 @@ export default {
     ReceiveIcon,
     SwapIcon,
     ActivityFilter,
-    TransactionList
+    TransactionList,
+    EyeIcon
   },
   data () {
     return {
@@ -123,6 +134,17 @@ export default {
       }
 
       return `${fontSize}px`
+    },
+    addressLink () {
+      if (this.account) {
+        return getAddressExplorerLink(
+          this.address,
+          this.asset,
+          this.activeNetwork
+        )
+      }
+
+      return '#'
     }
   },
   methods: {
@@ -272,6 +294,10 @@ export default {
 
   &_address {
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 
     button {
       font-size: $h4-font-size;
@@ -280,6 +306,24 @@ export default {
       border: 0;
       background: none;
       outline: none;
+    }
+
+    .eye-btn {
+      position: absolute;
+      right: 70px;
+      height: 40px;
+      width: 35px;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+
+      svg {
+        width: 20px;
+      }
+
+      &:hover {
+        opacity: 0.8;
+      }
     }
   }
 
@@ -294,4 +338,5 @@ export default {
     }
   }
 }
+
 </style>
