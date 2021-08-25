@@ -1,10 +1,7 @@
-import base58, { decode } from 'bs58';
-import { Message, Transaction } from '@solana/web3.js'
 import { stringify } from 'qs'
 
 import { emitter } from '../utils'
 import { createPopup } from '../../broker/utils'
-import { BigNumber } from '@liquality/types'
 
 const CONFIRM_REQUIRED = [
   /^chain.buildTransaction$/,

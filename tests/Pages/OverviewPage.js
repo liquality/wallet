@@ -144,9 +144,9 @@ class OverviewPage {
         await page.click(`#${chain}`)
         const sol = await page.waitForSelector('#SOL', { visible: true })
         await sol.click()
-        break;
+        break
       }
-      
+
       case 'ARBETH': {
         const eth = await page.waitForSelector('#ARBITRUM', { visible: true })
         await eth.click()

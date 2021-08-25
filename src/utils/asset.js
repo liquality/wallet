@@ -129,8 +129,8 @@ export const getAssetColorStyle = asset => {
 export const getTransactionExplorerLink = (hash, asset, network) => {
   const transactionHash = getExplorerTransactionHash(asset, hash)
   const chain = cryptoassets[asset].chain
-  const link = `${EXPLORERS[chain][network].tx}`;
-  
+  const link = `${EXPLORERS[chain][network].tx}`
+
   return link.includes('{hash}') ? link.replace('{hash}', transactionHash) : link + transactionHash
 }
 

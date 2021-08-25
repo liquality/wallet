@@ -286,8 +286,6 @@ window.sollet = {
 }
 `
 
-
-
 const paymentUriHandler = () => `
 document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('click', async (e) => {
