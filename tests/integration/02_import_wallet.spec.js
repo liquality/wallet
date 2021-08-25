@@ -57,7 +57,7 @@ describe('Import wallet-["mainnet"]', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 8').contain('8 Assets')
   })
   it('Import wallet with random seed (phrase 11 words) and check continue is disabled', async () => {
     await homePage.ClickOnImportWallet(page)
@@ -93,7 +93,7 @@ describe('Import wallet-["mainnet"]', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 8').contain('8 Assets')
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')
@@ -139,7 +139,7 @@ describe('Import wallet-["mainnet"]', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
+    expect(assetsCount, 'Total assets in TESTNET should be 8').contain('8 Assets')
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')

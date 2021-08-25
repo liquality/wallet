@@ -92,7 +92,7 @@ describe('Liquality wallet- Receive tokens ["mainnet","smoke"]', async () => {
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
       // validate the testnet asserts count
       const assetsCount = await overviewPage.GetTotalAssets(page)
-      expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
+      expect(assetsCount, 'Total assets in TESTNET should be 8').contain('8 Assets')
 
       // Select BTC
       await overviewPage.SelectChain(page, 'BTC')
