@@ -264,7 +264,6 @@ const REQUEST_MAP = {
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
   wallet_sendTransaction: 'chain.sendTransaction',
-  wallet_parseWireTransaction: 'chain._parseWireTransaction'
 }
 async function handleRequest (req) {
   const solana = window.providerManager.getProviderFor('SOL')
@@ -272,95 +271,21 @@ async function handleRequest (req) {
   return solana.getMethod(method)(...req.params)
 }
 window.sollet = {
-  publicKey: '',
-  connected: false,
-  solana: window.providerManager.getProviderFor('SOL'),
-  async enable() {
-    const accepted = await window.providerManager.enable()
+  enable: async () => {
+    const accepted = await window.providerManager.enable('solana')
     if (!accepted) throw new Error('User rejected')
-    return this.solana.getMethod('wallet.getAddresses')()
+    const solana = window.providerManager.getProviderFor('SOL')
+    return solana.getMethod('wallet.getAddresses')()
   },
-  async request(req) {
+  request: async (req) => {
     const params = req.params || []
     return handleRequest({
       method: req.method, params
     })
-  },
-  async postMessage(msg) {
-    const { method } = msg;
-    console.log('current method', method)
-    
-    switch(method) {
-      case 'connect': {
-        await window.providerManager.enable()
-        const solana = window.providerManager.getProviderFor('SOL')
-        const addr = await solana.getMethod('wallet.getAddresses')()
-        console.log(addr)
-        this.publicKey = addr[0].address
-        console.log('address', this.publicKey)
-        window.postMessage({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'connected',
-          params: {
-            publicKey: this.publicKey
-          }
-        })
-        return solana.getMethod('wallet.getAddresses')()
-      }
-      case 'sign': {
-        const solana = window.providerManager.getProviderFor('SOL')
-        const message = msg.params.data.toString('hex')
-        
-        const signature = await this.request({
-            method: REQUEST_MAP.wallet_signMessage, 
-            params: [message, this.publicKey]
-        })
-       
-        window.postMessage({
-              jsonrpc: '2.0',
-              id: 2,
-              result: { signature, publicKey: this.publicKey }
-        })
-        return;
-      }
-      // case 'signTransaction': {
-      //   const data = msg.params.message
-      //   console.log('called')
-        
-      //   const result = await this.request({
-      //     method: REQUEST_MAP.wallet_sendTransaction, 
-      //     params: [data]
-      //   })
-
-
-      //   console.log('signed', result)
-        
-
-      //   window.postMessage({
-      //     jsonrpc: '2.0',
-      //     id: 2,
-      //     result: { signature: result, publicKey: this.publicKey }
-      //   })
-      // }
-      // case 'disconnect': {
-      //   window.postMessage({
-      //     jsonrpc: '2.0',
-      //     id: 1,
-      //     method: 'disconnected',
-      //     params: {
-      //       publicKey: this.publicKey
-      //     }
-      //   })
-      // }
-      default: {
-        return
-      }
-    }
-
   }
 }
-`;
+`
+
 
 
 const paymentUriHandler = () => `
