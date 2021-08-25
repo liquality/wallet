@@ -17,7 +17,7 @@ export function getStatusLabel (item) {
   }
   if (item.type === 'SWAP') {
     const swapProvider = store.getters.swapProvider(item.network, item.provider)
-    return swapProvider.statuses[item.status].label.replace('{from}', item.from).replace('{to}', item.to) || ''
+    return swapProvider.statuses[item.status].label.replace('{from}', item.from).replace('{to}', item.to).replace('{bridgeAsset}', item.bridgeAsset || '') || ''
   }
 }
 
