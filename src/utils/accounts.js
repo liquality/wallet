@@ -60,7 +60,7 @@ export const chainDefaultColors = {
   rsk: '#3AB24D',
   bsc: '#F7CA4F',
   near: '#000000',
-  solana: '#ffffff',
+  solana: '#008080',
   polygon: '#8247E5',
   arbitrum: '#28A0EF'
 }
