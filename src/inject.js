@@ -61,7 +61,7 @@ class ProviderManager {
 }
 
 window.providerManager = new ProviderManager()
-`;
+`
 
 const ethereumProvider = ({ asset, chain, network }) => `
 const injectionName = window.providerManager.getInjectionName('${chain}')
