@@ -62,7 +62,7 @@ jobs:
         run: |
           mkdir screenshots
 
-      - name: MainNet integration tests
+      - name: MainNet e2e tests
         uses: beemi/puppeteer-headful@master
         env:
           CI: 'true'
