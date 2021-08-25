@@ -12,11 +12,13 @@
       >
         Swap
       </NavBar>
-      <InfoNotification v-if="ethRequired">
-        <EthRequiredMessage :account-id="account.id"/>
+      <InfoNotification v-if="noTokens && sameNetwork">
+        <OneTokenRequired :accountId="account.id" :asset="asset" />
       </InfoNotification>
-
-      <InfoNotification v-else-if="showNoLiquidityMessage">
+      <InfoNotification v-if="noTokens">
+        <TokenRequiredMessage :accountId="account.id" :asset="asset" :gas="toAsset" />
+      </InfoNotification>
+      <InfoNotification v-else-if="!noTokens && showNoLiquidityMessage">
         <NoLiquidityMessage />
       </InfoNotification>
       <div class="wrapper form">
@@ -144,10 +146,10 @@
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
-      <div class="fee-wrapper" id="fees_are_high" v-if="isHighFee">
+      <div class="fee-wrapper" v-if="isHighFee">
         Fees are high.  Review transaction carefully.
       </div>
-      <div class="fee-wrapper" id="swap_is_negative" v-if="isSwapNegative">
+      <div class="fee-wrapper" v-if="isSwapNegative">
         Swap is negative.  Review transaction carefully.
       </div>
       <div class="swap-confirm wrapper form">
@@ -316,8 +318,9 @@ import { currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
-import EthRequiredMessage from '@/components/EthRequiredMessage'
 import NoLiquidityMessage from '@/components/NoLiquidityMessage'
+import TokenRequiredMessage from '@/components/TokenRequiredMessage'
+import OneTokenRequired from '@/components/OneTokenRequired'
 import {
   dpUI,
   prettyBalance,
@@ -360,7 +363,8 @@ export default {
   components: {
     NavBar,
     InfoNotification,
-    EthRequiredMessage,
+    OneTokenRequired,
+    TokenRequiredMessage,
     NoLiquidityMessage,
     FeeSelector,
     SwapIcon,
@@ -437,6 +441,8 @@ export default {
       }
     }
 
+    console.log(this.hasMin)
+
     if (this.toAccountId && toAsset) {
       this.toAssetChanged(this.toAccountId, toAsset)
       this.toAsset = toAsset
@@ -447,7 +453,11 @@ export default {
       }
     }
 
-    this.sendAmount = dpUI(this.defaultAmount)
+    if (this.available >= this.min) {
+      this.sendAmount = dpUI(this.defaultAmount)
+    } else {
+      this.sendAmount = 0.0
+    }
 
     this.resetQuoteTimer()
   },
@@ -519,6 +529,13 @@ export default {
     networkWalletBalances () {
       return this.account?.balances
     },
+    sameNetwork () {
+      if (this.assetChain === this.toAssetChain) {
+        return true
+      }
+
+      return false
+    },
     quoteRate () {
       if (!this.selectedQuote) return null
       const rate = calculateQuoteRate(this.selectedQuote)
@@ -587,7 +604,7 @@ export default {
     availableAmount () {
       return dpUI(this.available, VALUE_DECIMALS)
     },
-    ethRequired () {
+    noTokens () {
       if (this.assetChain === 'ETH') {
         return !this.account?.balances?.ETH || this.account?.balances?.ETH === 0
       }
@@ -596,13 +613,64 @@ export default {
         return !this.toAccount?.balances?.ETH || this.toAccount?.balances?.ETH === 0
       }
 
+      if (this.assetChain === 'RBTC') {
+        return !this.account?.balances?.RBTC || this.account?.balances?.RBTC === 0
+      }
+
+      if (this.toAssetChain === 'RBTC') {
+        return !this.toAccount?.balances?.RBTC || this.toAccount?.balances?.RBTC === 0
+      }
+
+      if (this.assetChain === 'BTC') {
+        return !this.account?.balances?.BTC || this.account?.balances?.BTC === 0
+      }
+
+      if (this.toAssetChain === 'BTC') {
+        return !this.toAccount?.balances?.BTC || this.toAccount?.balances?.BTC === 0
+      }
+
+      if (this.assetChain === 'BNB') {
+        return !this.account?.balances?.BNB || this.account?.balances?.BNB === 0
+      }
+
+      if (this.toAssetChain === 'BNB') {
+        return !this.toAccount?.balances?.BNB || this.toAccount?.balances?.BNB === 0
+      }
+
+      if (this.assetChain === 'NEAR') {
+        return !this.account?.balances?.NEAR || this.account?.balances?.NEAR === 0
+      }
+
+      if (this.toAssetChain === 'NEAR') {
+        return !this.toAccount?.balances?.NEAR || this.toAccount?.balances?.NEAR === 0
+      }
+
+      if (this.assetChain === 'MATIC') {
+        return !this.account?.balances?.MATIC || this.account?.balances?.MATIC === 0
+      }
+
+      if (this.toAssetChain === 'MATIC') {
+        return !this.toAccount?.balances?.MATIC || this.toAccount?.balances?.MATIC === 0
+      }
+
+      if (this.assetChain === 'ARBETH') {
+        return !this.account?.balances?.ARBETH || this.account?.balances?.ARBETH === 0
+      }
+
+      if (this.toAssetChain === 'ARBETH') {
+        return !this.toAccount?.balances?.ARBETH || this.toAccount?.balances?.ARBETH === 0
+      }
+
       return false
     },
     showErrors () {
-      return !this.ethRequired
+      return !this.showNoLiquidityMessage || !this.noTokens
     },
     amountError () {
       if (this.showNoLiquidityMessage) {
+        return null
+      }
+      if (this.noTokens && this.stateSendAmount >= 0) {
         return null
       }
       const amount = BN(this.safeAmount)
@@ -624,8 +692,8 @@ export default {
     canSwap () {
       if (!this.selectedQuote ||
           this.updatingQuotes ||
-          this.ethRequired ||
           this.showNoLiquidityMessage ||
+          this.noTokens ||
           this.amountError ||
           BN(this.safeAmount).lte(0)) {
         return false
