@@ -24,6 +24,7 @@
 export default {
   props: {
     accountId: String,
+    toAccountId: String,
     asset: String,
     toAsset: String
   },
@@ -32,7 +33,7 @@ export default {
       return `/accounts/${this.accountId}/${this.asset}/receive`
     },
     buyGas () {
-      return `/accounts/${this.accountId}/${this.toAsset}/receive`
+      return `/accounts/${this.toAccountId}/${this.toAsset}/receive`
     }
   }
 }

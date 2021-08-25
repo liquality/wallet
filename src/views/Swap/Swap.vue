@@ -13,10 +13,10 @@
         Swap
       </NavBar>
       <InfoNotification v-if="noTokens && sameNetwork">
-        <OneTokenRequired :accountId="account.id" :asset="asset" />
+        <OneTokenRequired :accountId="accountId" :asset="asset" />
       </InfoNotification>
       <InfoNotification v-if="noTokens">
-        <TokenRequiredMessage :accountId="account.id" :asset="asset" :gas="toAsset" />
+        <TokenRequiredMessage :accountId="account.id" :toAccountId="toAccountId" :asset="asset" :gas="toAsset" />
       </InfoNotification>
       <InfoNotification v-else-if="!noTokens && showNoLiquidityMessage">
         <NoLiquidityMessage />
@@ -440,8 +440,6 @@ export default {
         }
       }
     }
-
-    console.log(this.hasMin)
 
     if (this.toAccountId && toAsset) {
       this.toAssetChanged(this.toAccountId, toAsset)
