@@ -136,8 +136,7 @@ describe('Import wallet-["mainnet"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
-    const assetsCount = await overviewPage.ValidateTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 8').contain('8 Assets')
+    await overviewPage.ValidateTotalAssets(page)
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')
