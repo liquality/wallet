@@ -3,7 +3,6 @@ const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const SeedWordsPage = require('../Pages/SeedWordsPage')
-const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
 
@@ -33,36 +32,11 @@ describe('Create wallet-[mainnet, smoke]', async () => {
     }
   })
 
-  it('Create a wallet with less that 8 or more characters password,validate button has been disabled', async () => {
-    const password = '1234567'
-    // Create new wallet
-    await homePage.ClickOnCreateNewWallet(page)
-    // Set password
-    await passwordPage.EnterPasswordDetails(page, password, password)
-    // confirm button has been disabled
-    await passwordPage.ValidateSubmitPasswordDisabled(page)
-  })
-  it('Create a wallet with mismatch password, validate button has been disabled', async () => {
-    const passwordInput = await page.$('#password')
-    const confirmPasswordInput = await page.$('#confirmPassword')
-    await passwordInput.click({ clickCount: 3 })
-    await confirmPasswordInput.click({ clickCount: 3 })
-    // Set password
-    await passwordPage.EnterPasswordDetails(page, 'testwallet1', 'testwallet2')
-    // check the password error message
-    await page.waitForSelector('#password_match_error', { visible: true })
-    expect(await page.$eval('#password_match_error', (el) => el.textContent))
-      .contains('Passwords don\'t match.')
-    // confirm button has been disabled
-    await passwordPage.ValidateSubmitPasswordDisabled(page)
-  })
   it('Create a new wallet with 12 words, validate overviewPage address for ETH and RSK', async () => {
     const password = '123123123'
 
-    const passwordInput = await page.$('#password')
-    const confirmPasswordInput = await page.$('#confirmPassword')
-    await passwordInput.click({ clickCount: 3 })
-    await confirmPasswordInput.click({ clickCount: 3 })
+    // Create new wallet
+    await homePage.ClickOnCreateNewWallet(page)
     // Set password
     await passwordPage.SubmitPasswordDetails(page, password)
 
