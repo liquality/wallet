@@ -10,8 +10,8 @@ import buildConfig from '../build.config'
 const EXPLORERS = {
   ethereum: {
     testnet: {
-      tx: 'https://ropsten.etherscan.io/tx/0x',
-      address: 'https://ropsten.etherscan.io/address/'
+      tx: 'https://rinkeby.etherscan.io/tx/0x',
+      address: 'https://rinkeby.etherscan.io/address/'
     },
     mainnet: {
       tx: 'https://etherscan.io/tx/0x',
@@ -68,6 +68,16 @@ const EXPLORERS = {
       address: 'https://explorer.mainnet.near.org/accounts/'
     }
   },
+  solana: {
+    testnet: {
+      tx: 'https://explorer.solana.com/tx/{hash}?cluster=devnet',
+      address: 'https://explorer.solana.com/address/{hash}?cluster=devnet'
+    },
+    mainnet: {
+      tx: 'https://explorer.solana.com/tx/',
+      address: 'https://explorer.solana.com/address/'
+    }
+  },
   arbitrum: {
     testnet: {
       tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x',
@@ -119,7 +129,9 @@ export const getAssetColorStyle = asset => {
 export const getTransactionExplorerLink = (hash, asset, network) => {
   const transactionHash = getExplorerTransactionHash(asset, hash)
   const chain = cryptoassets[asset].chain
-  return `${EXPLORERS[chain][network].tx}${transactionHash}`
+  const link = `${EXPLORERS[chain][network].tx}`
+
+  return link.includes('{hash}') ? link.replace('{hash}', transactionHash) : link + transactionHash
 }
 
 export const getAddressExplorerLink = (address, asset, network) => {
