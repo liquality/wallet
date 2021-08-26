@@ -6,7 +6,7 @@ const analytics = Analytics({
   app: process.env.VUE_APP_ANALYTICS_NAME,
   plugins: [
     segmentPlugin({
-      writeKey: 'process.env.VUE_APP_ANALYTICS_WRITE_KEY'
+      writeKey: process.env.VUE_APP_ANALYTICS_WRITE_KEY
     })
   ]
 })
