@@ -10,8 +10,8 @@ import buildConfig from '../build.config'
 const EXPLORERS = {
   ethereum: {
     testnet: {
-      tx: 'https://rinkeby.etherscan.io/tx/0x',
-      address: 'https://rinkeby.etherscan.io/address/'
+      tx: 'https://ropsten.etherscan.io/tx/0x',
+      address: 'https://ropsten.etherscan.io/address/'
     },
     mainnet: {
       tx: 'https://etherscan.io/tx/0x',
@@ -80,8 +80,8 @@ const EXPLORERS = {
   },
   arbitrum: {
     testnet: {
-      tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x',
-      address: 'https://rinkeby-explorer.arbitrum.io/address/0x'
+      tx: 'https://ropsten-explorer.arbitrum.io/tx/0x',
+      address: 'https://ropsten-explorer.arbitrum.io/address/0x'
     },
     mainnet: {
       tx: 'https://explorer.arbitrum.io/tx/0x',

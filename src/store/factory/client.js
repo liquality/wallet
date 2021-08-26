@@ -23,6 +23,11 @@ import { NearJsWalletProvider } from '@liquality/near-js-wallet-provider'
 import { NearRpcProvider } from '@liquality/near-rpc-provider'
 import { NearSwapFindProvider } from '@liquality/near-swap-find-provider'
 
+import { SolanaRpcProvider } from '@liquality/solana-rpc-provider'
+import { SolanaWalletProvider } from '@liquality/solana-wallet-provider'
+import { SolanaSwapProvider } from '@liquality/solana-swap-provider'
+import { SolanaSwapFindProvider } from '@liquality/solana-swap-find-provider'
+
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
@@ -143,7 +148,7 @@ function createEthClient (asset, network, mnemonic, walletType, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const ethereumNetwork = ChainNetworks.ethereum[network]
   const infuraApi = isTestnet ? `https://ropsten.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
-  const scraperApi = isTestnet ? 'https://liquality.io/eth-ropsten-api' : 'https://liquality.io/eth-mainnet-api'
+  const scraperApi = isTestnet ? 'https://liquality.io/eth-ropsten-api'  : 'https://liquality.io/eth-mainnet-api'
   const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider()
 
   return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, walletType, indexPath)
@@ -165,6 +170,24 @@ function createNearClient (network, mnemonic, indexPath = 0) {
   nearClient.addProvider(new NearSwapFindProvider(nearNetwork?.helperUrl))
 
   return nearClient
+}
+
+function createSolanaClient (network, mnemonic, indexPath = 0) {
+  const solanaNetwork = ChainNetworks.solana[network]
+  const solanaClient = new Client()
+  const derivationPath = `m/44'/501'/${solanaNetwork.walletIndex}'/${indexPath}'`
+  solanaClient.addProvider(new SolanaRpcProvider(solanaNetwork))
+  solanaClient.addProvider(new SolanaWalletProvider(
+    {
+      network: solanaNetwork,
+      mnemonic,
+      derivationPath
+    }
+  ))
+  solanaClient.addProvider(new SolanaSwapProvider(solanaNetwork))
+  solanaClient.addProvider(new SolanaSwapFindProvider(solanaNetwork))
+
+  return solanaClient
 }
 
 function createRskClient (asset, network, mnemonic, walletType, indexPath = 0) {
@@ -200,7 +223,7 @@ function createPolygonClient (asset, network, mnemonic, indexPath = 0) {
 function createArbitrumClient (asset, network, mnemonic, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const arbitrumNetwork = ChainNetworks.arbitrum[network]
-  const rpcApi = isTestnet ? 'https://rinkeby.arbitrum.io/rpc' : 'https://arb1.arbitrum.io/rpc'
+  const rpcApi = isTestnet ? 'https://ropsten.arbitrum.io/rpc' : 'https://arb1.arbitrum.io/rpc'
   const scraperApi = isTestnet ? 'https://liquality.io/arbitrum-testnet-api' : 'https://liquality.io/arbitrum-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
@@ -216,6 +239,7 @@ export const createClient = (asset, network, mnemonic, walletType, indexPath = 0
   if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, indexPath)
   if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, indexPath)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, indexPath)
+  if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, indexPath)
 
   return createEthClient(asset, network, mnemonic, walletType, indexPath)
 }

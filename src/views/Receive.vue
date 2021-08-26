@@ -113,7 +113,7 @@ export default {
           NEAR: { name: 'NEAR', url: '' },
           SOL: { name: 'SOLANA', url: 'https://solfaucet.com/' },
           MATIC: { name: 'MATIC', url: 'https://faucet.matic.network/' },
-          ARBETH: { name: 'ARBETH', url: 'https://faucet.rinkeby.io/' }
+          ARBETH: { name: 'ARBETH', url: 'https://faucet.ropsten.io/' }
         })[this.asset]
       }
       return null
