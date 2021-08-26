@@ -54,9 +54,7 @@ export default {
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
       const client = createClient(asset, network, mnemonic, accountType, accountIndex)
       clientCache[cacheKey] = client
-      if(asset === 'SOL') {
-        client.wallet.getUnusedAddress().then(console.log)
-      }
+
       return client
     }
   },
