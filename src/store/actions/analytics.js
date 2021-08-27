@@ -38,6 +38,7 @@ export const initializeAnalytics = async ({ commit, dispatch, state }) => {
     await dispatch('initializeAnalyticsPreferences', { accepted: false })
   } else if (state.analytics?.acceptedDate && ['production', 'mainnet'].includes(process.env.NODE_ENV)) {
     await analytics.identify(state.analytics?.userId)
+    console.log('Segment enabled')
     commit('app/ANALITYCS_STARTED', null, { root: true })
   }
 }
