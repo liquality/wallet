@@ -36,14 +36,15 @@ export const setAnalyticsResponse = async ({ commit, state }, { accepted }) => {
 export const initializeAnalytics = async ({ commit, dispatch, state }) => {
   if (!state.analytics || !state.analytics.userId) {
     await dispatch('initializeAnalyticsPreferences', { accepted: false })
-  } else if (state.analytics?.acceptedDate) {
+  } else if (state.analytics?.acceptedDate && ['production', 'mainnet'].includes(process.env.NODE_ENV)) {
     await analytics.identify(state.analytics?.userId)
     commit('app/ANALITYCS_STARTED', null, { root: true })
   }
 }
 
 export const trackAnalytics = ({ state, commit }, { event, properties = {} }) => {
-  if (state.analytics && state.analytics.acceptedDate && state.analytics.userId) {
+  const analitycsAccepted = state.analytics && state.analytics.acceptedDate && state.analytics.userId
+  if (analitycsAccepted && ['production', 'mainnet'].includes(process.env.NODE_ENV)) {
     const { activeNetwork } = state
     if (properties && properties.category) {
       properties.category = `${properties.category} on ${activeNetwork}`
