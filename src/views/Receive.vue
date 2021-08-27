@@ -160,7 +160,7 @@ export default {
   }
   &_message {
     font-weight: bold;
-    margin-top: 40px;
+    margin-top: 26px;
   }
   &_qr {
     margin: 25px auto 0 auto;
