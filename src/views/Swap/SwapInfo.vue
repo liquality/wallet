@@ -1,5 +1,5 @@
 <template>
-  <div class="swap-info mb-3">
+  <div v-if="showRefundMessage" class="swap-info mb-3">
     <div class="d-flex align-items-center">
       <ClockIcon class="swap-info_clock mr-2" />
       <p id="media-body-info" class="my-0">
@@ -30,6 +30,10 @@ export default {
     showSlippageMessage () {
       const providerType = getSwapProviderConfig(this.activeNetwork, this.quote.provider).type
       return (providerType !== SwapProviderType.LIQUALITY) && (providerType !== SwapProviderType.FASTBTC)
+    },
+    showRefundMessage () {
+      const providerType = getSwapProviderConfig(this.activeNetwork, this.quote.provider).type
+      return providerType !== SwapProviderType.FASTBTC
     }
   }
 }
