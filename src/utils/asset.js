@@ -71,7 +71,7 @@ const EXPLORERS = {
   solana: {
     testnet: {
       tx: 'https://explorer.solana.com/tx/{hash}?cluster=devnet',
-      address: 'https://explorer.solana.com/address/{hash}?cluster=devnet'
+      address: 'https://explorer.solana.com/address/{address}?cluster=devnet'
     },
     mainnet: {
       tx: 'https://explorer.solana.com/tx/',
@@ -136,7 +136,9 @@ export const getTransactionExplorerLink = (hash, asset, network) => {
 
 export const getAddressExplorerLink = (address, asset, network) => {
   const chain = cryptoassets[asset].chain
-  return `${EXPLORERS[chain][network].address}${address}`
+  const link = `${EXPLORERS[chain][network].address}`
+
+  return link.includes('{address}') ? link.replace('{address}', address) : link + address
 }
 
 export const getAssetIcon = (asset, extension = 'svg') => {
@@ -162,22 +164,22 @@ export const getExplorerTransactionHash = (asset, hash) => {
 
 export const tokenDetailProviders = {
   ethereum: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`)
     }
   },
   polygon: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://rpc-mainnet.matic.network/')
     }
   },
   rsk: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://public-node.rsk.co')
     }
   },
   bsc: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://bsc-dataseed.binance.org')
     }
   }
