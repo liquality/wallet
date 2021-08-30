@@ -7,7 +7,7 @@
     <div>
     <router-link :to="tokenAccountUrl"
                  class="btn btn-option get-eth-btn">
-      {{`Get ${this.asset}`}}
+    {{`Get ${this.asset}`}}
     </router-link>
     </div>
     <div>
@@ -33,7 +33,7 @@ export default {
       return `/accounts/${this.accountId}/${this.asset}/receive`
     },
     buyGas () {
-      return `/accounts/${this.toAccountId}/${this.toAsset}/receive`
+      return `/accounts/${this.accountId}/${this.toAsset}/receive`
     }
   }
 }
@@ -53,12 +53,14 @@ export default {
   }
 
   .get-eth-btn {
-    width: 75px;
+    display: flex;
+    justify-content: center;
+    width: 90px;
     text-align: center;
-    padding-left: 10px;
   }
   .notification-text {
     align-self: center;
   }
+
 }
 </style>

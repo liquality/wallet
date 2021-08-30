@@ -16,7 +16,7 @@
         <OneTokenRequired :accountId="accountId" :asset="asset" />
       </InfoNotification>
       <InfoNotification v-if="noTokens">
-        <TokenRequiredMessage :accountId="account.id" :toAccountId="toAccountId" :asset="asset" :gas="toAsset" />
+        <TokenRequiredMessage :accountId="account.id" :asset="asset" :toAsset="toAsset" />
       </InfoNotification>
       <InfoNotification v-else-if="!noTokens && showNoLiquidityMessage">
         <NoLiquidityMessage />
@@ -603,72 +603,22 @@ export default {
       return dpUI(this.available, VALUE_DECIMALS)
     },
     noTokens () {
-      if (this.assetChain === 'ETH') {
-        return !this.account?.balances?.ETH || this.account?.balances?.ETH === 0
+      if (this.networkWalletBalances[this.asset] < this.min) {
+        return true
       }
-
-      if (this.toAssetChain === 'ETH') {
-        return !this.toAccount?.balances?.ETH || this.toAccount?.balances?.ETH === 0
+      if (this.networkWalletBalances[this.toAsset] < this.min) {
+        return true
       }
-
-      if (this.assetChain === 'RBTC') {
-        return !this.account?.balances?.RBTC || this.account?.balances?.RBTC === 0
-      }
-
-      if (this.toAssetChain === 'RBTC') {
-        return !this.toAccount?.balances?.RBTC || this.toAccount?.balances?.RBTC === 0
-      }
-
-      if (this.assetChain === 'BTC') {
-        return !this.account?.balances?.BTC || this.account?.balances?.BTC === 0
-      }
-
-      if (this.toAssetChain === 'BTC') {
-        return !this.toAccount?.balances?.BTC || this.toAccount?.balances?.BTC === 0
-      }
-
-      if (this.assetChain === 'BNB') {
-        return !this.account?.balances?.BNB || this.account?.balances?.BNB === 0
-      }
-
-      if (this.toAssetChain === 'BNB') {
-        return !this.toAccount?.balances?.BNB || this.toAccount?.balances?.BNB === 0
-      }
-
-      if (this.assetChain === 'NEAR') {
-        return !this.account?.balances?.NEAR || this.account?.balances?.NEAR === 0
-      }
-
-      if (this.toAssetChain === 'NEAR') {
-        return !this.toAccount?.balances?.NEAR || this.toAccount?.balances?.NEAR === 0
-      }
-
-      if (this.assetChain === 'MATIC') {
-        return !this.account?.balances?.MATIC || this.account?.balances?.MATIC === 0
-      }
-
-      if (this.toAssetChain === 'MATIC') {
-        return !this.toAccount?.balances?.MATIC || this.toAccount?.balances?.MATIC === 0
-      }
-
-      if (this.assetChain === 'ARBETH') {
-        return !this.account?.balances?.ARBETH || this.account?.balances?.ARBETH === 0
-      }
-
-      if (this.toAssetChain === 'ARBETH') {
-        return !this.toAccount?.balances?.ARBETH || this.toAccount?.balances?.ARBETH === 0
-      }
-
       return false
     },
     showErrors () {
-      return !this.showNoLiquidityMessage || !this.noTokens
+      return this.stateSendAmount > 0
     },
     amountError () {
       if (this.showNoLiquidityMessage) {
         return null
       }
-      if (this.noTokens && this.stateSendAmount >= 0) {
+      if (this.noTokens) {
         return null
       }
       const amount = BN(this.safeAmount)

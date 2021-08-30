@@ -31,7 +31,10 @@ export default {
   align-items: center;
 
   .get-eth-btn {
-    width: 68px;
+    display: flex;
+    justify-content: center;
+    width: 90px;
+    text-align: center;
   }
   .notification-text {
     width: 250px;
