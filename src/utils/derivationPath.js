@@ -4,9 +4,9 @@ import { BTC_ADDRESS_TYPE_TO_PREFIX } from '@/utils/address'
 import { bitcoin } from '@liquality/types'
 import { LEDGER_BITCOIN_OPTIONS } from '@/utils/ledger-bridge-provider'
 
-const getBitcoinDerivationPath = (walletType, coinType, index) => {
-  if (walletType.includes('bitcoin_ledger')) {
-    const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === walletType)
+const getBitcoinDerivationPath = (accountType, coinType, index) => {
+  if (accountType.includes('bitcoin_ledger')) {
+    const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === accountType)
     const { addressType } = option
     return `${BTC_ADDRESS_TYPE_TO_PREFIX[addressType]}'/${coinType}'/${index}'`
   } else {
@@ -15,18 +15,19 @@ const getBitcoinDerivationPath = (walletType, coinType, index) => {
 }
 
 const getEthereumBasedDerivationPath = (coinType, index) => `m/44'/${coinType}'/${index}'/0/0`
+
 const derivationPaths = {
-  [ChainId.Bitcoin]: (network, index, walletType = 'default') => {
+  [ChainId.Bitcoin]: (network, index, accountType = 'default') => {
     const bitcoinNetwork = ChainNetworks[ChainId.Bitcoin][network]
-    return getBitcoinDerivationPath(walletType, bitcoinNetwork.coinType, index)
+    return getBitcoinDerivationPath(accountType, bitcoinNetwork.coinType, index)
   },
   [ChainId.Ethereum]: (network, index) => {
     const ethNetwork = ChainNetworks[ChainId.Ethereum][network]
     return getEthereumBasedDerivationPath(ethNetwork.coinType, index)
   },
-  [ChainId.Rootstock]: (network, index, walletType = 'default') => {
+  [ChainId.Rootstock]: (network, index, accountType = 'default') => {
     let coinType
-    if (walletType === 'rsk_ledger') {
+    if (accountType === 'rsk_ledger') {
       coinType = network === 'mainnet' ? '137' : '37310'
     } else {
       const ethNetwork = ChainNetworks[ChainId.Rootstock][network]
@@ -47,10 +48,6 @@ const derivationPaths = {
     const ethNetwork = ChainNetworks[ChainId.Polygon][network]
     return getEthereumBasedDerivationPath(ethNetwork.coinType, index)
   },
-  [ChainId.Rootstock]: (network, index) => {
-    const ethNetwork = ChainNetworks[ChainId.Rootstock][network]
-    return getEthereumBasedDerivationPath(ethNetwork.coinType, index)
-  },
   [ChainId.Arbitrum]: (network, index) => {
     const ethNetwork = ChainNetworks[ChainId.Arbitrum][network]
     return getEthereumBasedDerivationPath(ethNetwork.coinType, index)
@@ -61,6 +58,7 @@ const derivationPaths = {
   }
 }
 
-export const getDerivationPath = (chainId, network, index, walletType) => {
-  return derivationPaths[chainId](network, index, walletType)
+export const getDerivationPath = (chainId, network, index, accountType) => {
+  console.log('getDerivationPath', chainId, accountType)
+  return derivationPaths[chainId](network, index, accountType)
 }

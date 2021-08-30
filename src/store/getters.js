@@ -6,6 +6,7 @@ import BN from 'bignumber.js'
 import { cryptoToFiat } from '@/utils/coinFormatter'
 import { Networks } from '@/utils/networks'
 import { uniq } from 'lodash-es'
+import { getDerivationPath } from '@/utils/derivationPath'
 
 const clientCache = {}
 const swapProviderCache = {}
@@ -31,26 +32,35 @@ export default {
       walletId,
       asset,
       accountId,
-      useCache = true
+      useCache = true,
+      accountType = 'default',
+      accountIndex = 0
     }) => {
       const account = accountId ? getters.accountItem(accountId) : null
-      const accountType = account?.type || 'default'
+      const _accountType = account?.type || accountType
+      const { chain } = cryptoassets[asset]
+      let derivationPath
+      if (account && account.derivationPath) {
+        derivationPath = account.derivationPath
+      } else {
+        derivationPath = getDerivationPath(chain, network, accountIndex, _accountType)
+      }
       const cacheKey = [
         asset,
+        chain,
         network,
         walletId,
-        account.derivationPath,
-        accountType
+        derivationPath,
+        _accountType
       ].join('-')
 
       if (useCache) {
         const cachedClient = clientCache[cacheKey]
-        console.log('cacheKey', cacheKey)
         if (cachedClient) return cachedClient
       }
 
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
-      const client = createClient(asset, network, mnemonic, accountType, account.derivationPath)
+      const client = createClient(asset, network, mnemonic, _accountType, derivationPath)
       clientCache[cacheKey] = client
 
       return client

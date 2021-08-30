@@ -177,7 +177,7 @@ function createRskClient (asset, network, mnemonic, accountType, derivationPath)
   const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
   const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
-  console.log('createRskClient', asset, network, accountType, derivationPath)
+
   return createEthereumClient(asset, network, rskNetwork, rpcApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath)
 }
 

@@ -34,6 +34,7 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic 
           network,
           account: {
             name: `${chain.name} 1`,
+            alias: '',
             chain: chainId,
             addresses: [],
             assets,

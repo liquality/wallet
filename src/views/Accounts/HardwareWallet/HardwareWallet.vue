@@ -130,7 +130,7 @@ export default {
             network: this.activeNetwork,
             walletId: this.activeWalletId,
             asset: asset.name,
-            walletType: _walletType,
+            accountType: _walletType,
             startingIndex,
             numAccounts: LEDGER_PER_PAGE
           }
@@ -187,6 +187,7 @@ export default {
             const index = item.index + 1
             const account = {
               name: `Ledger ${this.selectedAsset.name} ${index}`,
+              alias: '',
               chain,
               addresses: [item.account.address],
               assets,
