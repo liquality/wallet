@@ -164,6 +164,13 @@ class OverviewPage {
         await page.click(`#${chain}`)
         break
       }
+      case 'SOLANA': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const sol = await page.waitForSelector('#SOL', { visible: true })
+        await sol.click()
+        break
+      }
 
       default:
         throw Error(`Unsupported chain: ${chain}`)
@@ -228,14 +235,15 @@ class OverviewPage {
   }
 
   /**
-   * Get Total assets from overview page.
+   * Validate total asserts from overview page.
    * @param page
    * @returns {Promise<*>}
    * @constructor
    */
-  async GetTotalAssets (page) {
-    const assetsElement = await page.$('#total_assets')
-    return (await assetsElement.getProperty('innerText')).jsonValue()
+  async ValidateTotalAssets (page) {
+    await page.waitForSelector('#total_assets', { timeout: 60000 })
+    const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
+    expect(assetsCount, 'Total assets should be 8 on overview page').contain('8 Assets')
   }
 
   /**

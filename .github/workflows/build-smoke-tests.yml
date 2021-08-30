@@ -42,6 +42,9 @@ jobs:
           npm run lint
           npm run build
 
+      - name: Run Integration Tests
+        run: npm run test:integration
+
       - name: screenshots directory
         if: always()
         run: |

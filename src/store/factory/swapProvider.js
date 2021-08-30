@@ -1,5 +1,6 @@
 import { SwapProviderType } from '@/utils/swaps'
 import { LiqualitySwapProvider } from '@/swaps/liquality/LiqualitySwapProvider'
+import { LiqualityBoostSwapProvider } from '@/swaps/liqualityboost/LiqualityBoostSwapProvider'
 import { UniswapSwapProvider } from '@/swaps/uniswap/UniswapSwapProvider'
 import { OneinchSwapProvider } from '@/swaps/oneinch/OneinchSwapProvider'
 import { ThorchainSwapProvider } from '@/swaps/thorchain/ThorchainSwapProvider'
@@ -11,6 +12,7 @@ const providers = {
   [SwapProviderType.UNISWAPV2]: UniswapSwapProvider,
   [SwapProviderType.ONEINCHV3]: OneinchSwapProvider,
   [SwapProviderType.THORCHAIN]: ThorchainSwapProvider,
+  [SwapProviderType.LIQUALITYBOOST]: LiqualityBoostSwapProvider,
   [SwapProviderType.FASTBTC]: FastbtcSwapProvider
 }
 
