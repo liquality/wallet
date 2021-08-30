@@ -32,12 +32,11 @@ export default {
       asset,
       accountId,
       useCache = true,
-      walletType = 'default',
-      index = 0
+      walletType = 'default'
     }) => {
       const account = accountId ? getters.accountItem(accountId) : null
       const accountType = account?.type || walletType
-      const accountIndex = account?.index || index
+      const accountIndex = account?.index || 0
       const cacheKey = [
         asset,
         network,

@@ -42,7 +42,7 @@ import { isERC20 } from '@/utils/asset'
 import { BTC_ADDRESS_TYPE_TO_PREFIX } from '@/utils/address'
 import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
-import { ChainNetworks } from '@/store/utils'
+import { ChainNetworks } from '@/utils/networks'
 import store from '../../store'
 
 function createBtcClient (network, mnemonic, walletType, indexPath = 0) {
