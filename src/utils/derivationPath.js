@@ -15,7 +15,6 @@ const getBitcoinDerivationPath = (walletType, coinType, index) => {
 }
 
 const getEthereumBasedDerivationPath = (coinType, index) => `m/44'/${coinType}'/${index}'/0/0`
-
 const derivationPaths = {
   [ChainId.Bitcoin]: (network, index, walletType = 'default') => {
     const bitcoinNetwork = ChainNetworks[ChainId.Bitcoin][network]
@@ -41,8 +40,8 @@ const derivationPaths = {
     return getEthereumBasedDerivationPath(ethNetwork.coinType, index)
   },
   [ChainId.Near]: (network, index) => {
-    const ethNetwork = ChainNetworks[ChainId.Near][network]
-    return getEthereumBasedDerivationPath(ethNetwork.coinType, index)
+    const nearNetwork = ChainNetworks[ChainId.Near][network]
+    return `m/44'/${nearNetwork.coinType}'/${index}'`
   },
   [ChainId.Polygon]: (network, index) => {
     const ethNetwork = ChainNetworks[ChainId.Polygon][network]
