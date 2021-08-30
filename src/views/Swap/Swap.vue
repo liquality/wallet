@@ -528,11 +528,7 @@ export default {
       return this.account?.balances
     },
     sameNetwork () {
-      if (this.assetChain === this.toAssetChain) {
-        return true
-      }
-
-      return false
+      return this.assetChain === this.toAssetChain
     },
     quoteRate () {
       if (!this.selectedQuote) return null
