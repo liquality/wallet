@@ -3,7 +3,6 @@ import { encrypt } from '../../utils/crypto'
 import buildConfig from '../../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
-import { shouldApplyRskLegacyDerivation } from '../utils'
 
 export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic }) => {
   const id = uuidv4()
@@ -16,9 +15,7 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic 
     key
   )
 
-  const rskLegacyDerivation = await shouldApplyRskLegacyDerivation(state.accounts, mnemonic)
-
-  commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet, rskLegacyDerivation })
+  commit('CREATE_WALLET', { keySalt, encryptedWallets, wallet })
   commit('CHANGE_ACTIVE_WALLETID', { walletId: id })
   commit('ENABLE_ASSETS', { network: 'mainnet', walletId: id, assets: defaultAssets.mainnet })
   commit('ENABLE_ASSETS', { network: 'testnet', walletId: id, assets: defaultAssets.testnet })
@@ -34,6 +31,7 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic 
       const _account = accountCreator(
         {
           walletId: id,
+          network,
           account: {
             name: `${chain.name} 1`,
             chain: chainId,

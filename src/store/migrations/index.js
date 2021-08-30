@@ -15,8 +15,8 @@ import {
   rskLegacyDerivationPath,
   rskLegacyDerivationPathFix
 } from './11_12_rsk_legacy_derivation_path'
-
 import { rskFishToken } from './13_rsk_fish_token'
+import { rskDerivationPath } from './14_rsk_derivation_path'
 
 const migrations = [
   firstMigration, // v1
@@ -31,7 +31,8 @@ const migrations = [
   analitycsSettings, // v10
   rskLegacyDerivationPath, // v11
   rskLegacyDerivationPathFix, // v12
-  rskFishToken // 13
+  rskFishToken, // v13
+  rskDerivationPath // v14
 ]
 
 const LATEST_VERSION = migrations[migrations.length - 1].version
