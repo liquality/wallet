@@ -602,9 +602,7 @@ export default {
       if (this.networkWalletBalances[this.asset] < this.min) {
         return true
       }
-      if (this.networkWalletBalances[this.toAsset] < this.min) {
-        return true
-      }
+      
       return false
     },
     showErrors () {
