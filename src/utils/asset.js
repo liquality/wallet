@@ -70,8 +70,8 @@ const EXPLORERS = {
   },
   solana: {
     testnet: {
-      tx: 'https://explorer.solana.com/tx/{template}?cluster=devnet',
-      address: 'https://explorer.solana.com/address/{template}?cluster=devnet'
+      tx: 'https://explorer.solana.com/tx/{hash}?cluster=devnet',
+      address: 'https://explorer.solana.com/address/{hash}?cluster=devnet'
     },
     mainnet: {
       tx: 'https://explorer.solana.com/tx/',
@@ -131,14 +131,14 @@ export const getTransactionExplorerLink = (hash, asset, network) => {
   const chain = cryptoassets[asset].chain
   const link = `${EXPLORERS[chain][network].tx}`
 
-  return link.includes('{template}') ? link.replace('{template}', transactionHash) : link + transactionHash
+  return link.includes('{hash}') ? link.replace('{hash}', transactionHash) : link + transactionHash
 }
 
 export const getAddressExplorerLink = (address, asset, network) => {
   const chain = cryptoassets[asset].chain
   const link = `${EXPLORERS[chain][network].address}`
 
-  return link.includes('{template}') ? link.replace('{template}', address) : link + address
+  return link.includes('{hash}') ? link.replace('{hash}', address) : link + address
 }
 
 export const getAssetIcon = (asset, extension = 'svg') => {
