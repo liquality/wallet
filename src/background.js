@@ -2,6 +2,9 @@ import 'setimmediate'
 import { random } from 'lodash-es'
 import store from './store'
 import { wait } from './store/utils'
+import amplitude from 'amplitude-js'
+
+amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
 function asyncLoop (fn, delay) {
   return wait(delay())
@@ -15,9 +18,16 @@ store.subscribe(async ({ type, payload }, state) => {
       store.dispatch('initializeAddresses', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateBalances', { network: state.activeNetwork, walletId: state.activeWalletId })
       store.dispatch('updateMarketData', { network: state.activeNetwork })
+
+      amplitude.getInstance().logEvent('Network Changed', {
+        network: state.activeNetwork,
+        walletId: state.activeWalletId
+      })
       break
 
     case 'UNLOCK_WALLET':
+      amplitude.getInstance().logEvent('Unlock Wallet')
+
       store.dispatch('trackAnalytics', {
         event: 'Wallet Unlock',
         properties: {

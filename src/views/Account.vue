@@ -1,7 +1,7 @@
 <template>
   <div class="account-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account-title"><img :src="getAssetIcon(asset)" class="asset-icon" /> {{asset}}</span>
+      <span class="account-title"><img :src="getAssetIcon(asset)" class="asset-icon"/> {{ asset }}</span>
     </NavBar>
     <div class="account-content">
       <div class="account-content-top">
@@ -12,7 +12,7 @@
         />
         <div class="account-container_balance">
           <div class="account-container_balance_fiat" :id="`${asset}_fiat_value`">
-            <span v-if="fiatRates[asset]" >
+            <span v-if="fiatRates[asset]">
               ${{ prettyFiatBalance(balance, fiatRates[asset]) }}
             </span>
             <span v-else>&nbsp;</span>
@@ -23,44 +23,59 @@
                   :style="{ fontSize: balanceFontSize }">
               {{ balance }}
             </span>
-            <span class="account-container_balance_code">{{asset}}</span>
+            <span class="account-container_balance_code">{{ asset }}</span>
           </div>
         </div>
         <div v-if="address" class="account-container_address">
           <button class="btn btn-outline-light" :id="`${asset}_address_container`"
-            @click="copyAddress"
-            v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
+                  @click="copyAddress"
+                  v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
             {{ shortenAddress(address) }}
           </button>
           <a class="eye-btn"
              :id="`${asset}_view_in_explorer`"
-            @click="copyAddress"
-            :href="addressLink"
-            target="_blank"
-            v-tooltip.bottom="{ content: 'View in Explorer' }">
-            <EyeIcon />
+             @click="copyAddress"
+             :href="addressLink"
+             target="_blank"
+             v-tooltip.bottom="{ content: 'View in Explorer' }">
+            <EyeIcon/>
           </a>
         </div>
         <div class="account-container_actions">
-          <router-link :to="`/accounts/${accountId}/${asset}/send`"><button class="account-container_actions_button">
-            <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`"><SendIcon class="account-container_actions_button_icon" /></div>Send
-          </button></router-link>
-          <router-link :to="`/accounts/${accountId}/${asset}/swap`"><button class="account-container_actions_button">
-            <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`"><SwapIcon class="account-container_actions_button_icon account-container_actions_button_swap" /></div>Swap
-          </button></router-link>
-          <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`"><button class="account-container_actions_button">
-            <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`"><ReceiveIcon class="account-container_actions_button_icon" /></div>Receive
-          </button></router-link>
+          <router-link :to="`/accounts/${accountId}/${asset}/send`">
+            <button class="account-container_actions_button">
+              <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`">
+                <SendIcon class="account-container_actions_button_icon"/>
+              </div>
+              Send
+            </button>
+          </router-link>
+          <router-link :to="`/accounts/${accountId}/${asset}/swap`">
+            <button class="account-container_actions_button">
+              <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
+                <SwapIcon class="account-container_actions_button_icon account-container_actions_button_swap"/>
+              </div>
+              Swap
+            </button>
+          </router-link>
+          <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`">
+            <button class="account-container_actions_button">
+              <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
+                <ReceiveIcon class="account-container_actions_button_icon"/>
+              </div>
+              Receive
+            </button>
+          </router-link>
         </div>
       </div>
       <div class="account-container_transactions">
         <ActivityFilter @filters-changed="applyFilters"
                         :activity-data="activityData"
                         v-if="activityData.length > 0"/>
-        <TransactionList :transactions="activityData" />
+        <TransactionList :transactions="activityData"/>
         <div class="activity-empty" v-if="activityData.length <= 0">
-         Once you start using your wallet you will see the activity here
-       </div>
+          Once you start using your wallet you will see the activity here
+        </div>
       </div>
     </div>
   </div>
@@ -82,6 +97,10 @@ import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
+
+import amplitude from 'amplitude-js'
+
+amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
 export default {
   components: {
@@ -180,7 +199,12 @@ export default {
     if (this.account && this.account.type.includes('ledger')) {
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0])
     } else {
-      const addresses = await this.getUnusedAddresses({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [this.asset], accountId: this.accountId })
+      const addresses = await this.getUnusedAddresses({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        assets: [this.asset],
+        accountId: this.accountId
+      })
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(addresses[0])
     }
     await this.refresh()
@@ -193,6 +217,13 @@ export default {
         label: `Select ${this.asset}`
       }
     })
+    const eventProperties = {
+      category: `Select Asset on ${this.activeNetwork}`,
+      action: `Active Asset on ${this.chain}`,
+      label: `Select ${this.asset} (${this.chain})`
+    }
+
+    amplitude.getInstance().logEvent('Active Asset', eventProperties)
   },
   watch: {
     activeNetwork () {
@@ -241,6 +272,7 @@ export default {
     width: 24px;
     height: 24px;
     cursor: pointer;
+
     path {
       fill: $color-text-secondary;
     }
