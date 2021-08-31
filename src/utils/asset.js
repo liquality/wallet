@@ -10,62 +10,62 @@ import buildConfig from '../build.config'
 const EXPLORERS = {
   ethereum: {
     testnet: {
-      tx: 'https://ropsten.etherscan.io/tx/0x',
-      address: 'https://ropsten.etherscan.io/address/'
+      tx: 'https://ropsten.etherscan.io/tx/0x{hash}',
+      address: 'https://ropsten.etherscan.io/address/{hash}'
     },
     mainnet: {
-      tx: 'https://etherscan.io/tx/0x',
-      address: 'https://etherscan.io/address/'
+      tx: 'https://etherscan.io/tx/0x{hash}',
+      address: 'https://etherscan.io/address/{hash}'
     }
   },
   bitcoin: {
     testnet: {
-      tx: 'https://blockstream.info/testnet/tx/',
-      address: 'https://blockstream.info/testnet/address/'
+      tx: 'https://blockstream.info/testnet/tx/{hash}',
+      address: 'https://blockstream.info/testnet/address/{hash}'
     },
     mainnet: {
-      tx: 'https://blockstream.info/tx/',
-      address: 'https://blockstream.info/address/'
+      tx: 'https://blockstream.info/tx/{hash}',
+      address: 'https://blockstream.info/address/{hash}'
     }
   },
   rsk: {
     testnet: {
-      tx: 'https://explorer.testnet.rsk.co/tx/0x',
-      address: 'https://explorer.testnet.rsk.co/address/'
+      tx: 'https://explorer.testnet.rsk.co/tx/0x{hash}',
+      address: 'https://explorer.testnet.rsk.co/address/{hash}'
     },
     mainnet: {
-      tx: 'https://explorer.rsk.co/tx/0x',
-      address: 'https://explorer.rsk.co/address/'
+      tx: 'https://explorer.rsk.co/tx/0x{hash}',
+      address: 'https://explorer.rsk.co/address/{hash}'
     }
   },
   bsc: {
     testnet: {
-      tx: 'https://testnet.bscscan.com/tx/',
-      address: 'https://testnet.bscscan.com/address/'
+      tx: 'https://testnet.bscscan.com/tx/{hash}',
+      address: 'https://testnet.bscscan.com/address/{hash}'
     },
     mainnet: {
-      tx: 'https://bscscan.com/tx/',
-      address: 'https://bscscan.com/address/'
+      tx: 'https://bscscan.com/tx/{hash}',
+      address: 'https://bscscan.com/address/{hash}'
     }
   },
   polygon: {
     testnet: {
-      tx: 'https://polygonscan.com/tx/0x',
-      address: 'https://polygonscan.com/address/'
+      tx: 'https://polygonscan.com/tx/0x{hash}',
+      address: 'https://polygonscan.com/address/{hash}'
     },
     mainnet: {
-      tx: 'https://polygonscan.com/tx/0x',
-      address: 'https://polygonscan.com/address/'
+      tx: 'https://polygonscan.com/tx/0x{hash}',
+      address: 'https://polygonscan.com/address/{hash}'
     }
   },
   near: {
     testnet: {
-      tx: 'https://explorer.testnet.near.org/transactions/',
-      address: 'https://explorer.testnet.near.org/accounts/'
+      tx: 'https://explorer.testnet.near.org/transactions/{hash}',
+      address: 'https://explorer.testnet.near.org/accounts/{hash}'
     },
     mainnet: {
-      tx: 'https://explorer.mainnet.near.org/transactions/',
-      address: 'https://explorer.mainnet.near.org/accounts/'
+      tx: 'https://explorer.mainnet.near.org/transactions/{hash}',
+      address: 'https://explorer.mainnet.near.org/accounts/{hash}'
     }
   },
   solana: {
@@ -74,14 +74,14 @@ const EXPLORERS = {
       address: 'https://explorer.solana.com/address/{hash}?cluster=devnet'
     },
     mainnet: {
-      tx: 'https://explorer.solana.com/tx/',
-      address: 'https://explorer.solana.com/address/'
+      tx: 'https://explorer.solana.com/tx/{hash}',
+      address: 'https://explorer.solana.com/address/{hash}'
     }
   },
   arbitrum: {
     testnet: {
-      tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x',
-      address: 'https://rinkeby-explorer.arbitrum.io/address/0x'
+      tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x{hash}',
+      address: 'https://rinkeby-explorer.arbitrum.io/address/0x{hash}'
     },
     mainnet: {
       tx: 'https://explorer.arbitrum.io/tx/0x',
@@ -131,12 +131,14 @@ export const getTransactionExplorerLink = (hash, asset, network) => {
   const chain = cryptoassets[asset].chain
   const link = `${EXPLORERS[chain][network].tx}`
 
-  return link.includes('{hash}') ? link.replace('{hash}', transactionHash) : link + transactionHash
+  return link.replace('{hash}', transactionHash)
 }
 
 export const getAddressExplorerLink = (address, asset, network) => {
   const chain = cryptoassets[asset].chain
-  return `${EXPLORERS[chain][network].address}${address}`
+  const link = `${EXPLORERS[chain][network].address}`
+
+  return link.replace('{hash}', address)
 }
 
 export const getAssetIcon = (asset, extension = 'svg') => {
@@ -162,23 +164,28 @@ export const getExplorerTransactionHash = (asset, hash) => {
 
 export const tokenDetailProviders = {
   ethereum: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`)
     }
   },
   polygon: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://rpc-mainnet.matic.network/')
     }
   },
   rsk: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://public-node.rsk.co')
     }
   },
   bsc: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://bsc-dataseed.binance.org')
+    }
+  },
+  arbitrum: {
+    async getDetails (contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://arb1.arbitrum.io/rpc')
     }
   }
 }
