@@ -38,7 +38,7 @@ export const rskDerivationPath = {
           }
           updatedAccounts.push(updatedAccount)
 
-          if (account.chain === ChainId.Rootstock) {
+          if (account.chain === ChainId.Rootstock && !account.type.includes('ledger')) {
             // get the legacy rsk derivation path
             const coinType = network === 'mainnet' ? '137' : '37310'
             const chain = chains[ChainId.Rootstock]
