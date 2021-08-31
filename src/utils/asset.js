@@ -180,6 +180,11 @@ export const tokenDetailProviders = {
     async getDetails (contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://bsc-dataseed.binance.org')
     }
+  },
+  arbitrum: {
+    async getDetails (contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://arb1.arbitrum.io/rpc')
+    }
   }
 }
 
