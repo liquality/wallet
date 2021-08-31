@@ -209,21 +209,17 @@ export default {
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
+
+    const { chain } = cryptoassets[this.asset]
+
     this.trackAnalytics({
       event: 'Active Asset',
       properties: {
-        category: 'Select Asset',
-        action: 'Account View',
-        label: `Select ${this.asset}`
+        category: `Select Asset on ${this.activeNetwork}`,
+        action: `Active Asset on ${chain}`,
+        label: `Select ${this.asset} (${chain})`
       }
     })
-    const eventProperties = {
-      category: `Select Asset on ${this.activeNetwork}`,
-      action: `Active Asset on ${this.chain}`,
-      label: `Select ${this.asset} (${this.chain})`
-    }
-
-    amplitude.getInstance().logEvent('Active Asset', eventProperties)
   },
   watch: {
     activeNetwork () {
