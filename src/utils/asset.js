@@ -202,3 +202,15 @@ const fetchTokenDetails = async (contractAddress, rpcUrl) => {
 
   return { decimals, name, symbol }
 }
+
+export const estimateGas = async ({ data, to, value }) => {
+  const paramsForGasEstimate = {
+    data,
+    to,
+    value
+  }
+
+  const provider = ethers.getDefaultProvider()
+
+  return await provider.estimateGas(paramsForGasEstimate)
+}
