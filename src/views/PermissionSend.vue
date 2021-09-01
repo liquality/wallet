@@ -193,7 +193,7 @@ export default {
       }
     },
     async _updateSendFees (amount) {
-      if(!this.gas) {
+      if (!this.gas) {
         return
       }
 
@@ -214,10 +214,10 @@ export default {
         }
       }
     },
-    async estimateGas() {
+    async estimateGas () {
       let gas = this.request.args[0].gas
-      
-      if(!gas) {
+
+      if (!gas) {
         const { data, to, value } = this.request.args[0]
 
         gas = await estimateGas({
@@ -257,8 +257,8 @@ export default {
         this.updateSendFees(this.amount)
       }
     }, 800),
-    async calculateGas() {
-      this.gas = await this.estimateGas();
+    async calculateGas () {
+      this.gas = await this.estimateGas()
     }
   },
   computed: {
@@ -316,22 +316,20 @@ export default {
       }
     },
     feeInUsdValue () {
-      if(!this.gas) {
+      if (!this.gas) {
         return
       }
 
       let feePerGas
-      
+
       if (this.selectedFee === 'custom') {
         feePerGas = this.customFee
       } else {
         feePerGas = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[this.selectedFee]?.fee
       }
-      
-      
 
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
-  
+
       return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
     }
   },
@@ -342,7 +340,7 @@ export default {
       this.updateFees({ asset: this.asset }),
       this.updateSendFees(0),
       this.updateMaxSendFees(),
-      this.calculateGas(),
+      this.calculateGas()
     ])
   },
   beforeDestroy () {
