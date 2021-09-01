@@ -9,7 +9,7 @@
         <p class="confirm-value" :style="getAssetColorStyle(asset)">{{symbol}}</p>
       </div>
       <div class="form-group">
-        <label>Transaction fee {{feeInUsdValue}} USD</label>
+        <label v-if="feeInUsdValue">Transaction fee {{feeInUsdValue}} USD</label>
       </div>
       </div>
 
@@ -24,7 +24,7 @@
           <p class="confirm-value">{{shortAddress}}</p>
         </div>
         <div class="form-group">
-          <label>Transaction fee {{feeInUsdValue}} USD</label>
+          <label v-if="feeInUsdValue">Transaction fee {{feeInUsdValue}} USD</label>
         </div>
         <div v-if="data" class="permission-send_data">
           <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
@@ -193,6 +193,10 @@ export default {
       }
     },
     async _updateSendFees (amount) {
+      if(!this.gas) {
+        return
+      }
+
       const getMax = amount === undefined
       if (this.feesAvailable) {
         const sendFees = {}
@@ -312,6 +316,10 @@ export default {
       }
     },
     feeInUsdValue () {
+      if(!this.gas) {
+        return
+      }
+
       let feePerGas
       
       if (this.selectedFee === 'custom') {
@@ -320,6 +328,8 @@ export default {
         feePerGas = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[this.selectedFee]?.fee
       }
       
+      
+
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
   
       return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
