@@ -63,7 +63,7 @@ jobs:
           mkdir screenshots
 
       - name: MainNet e2e tests
-        uses: beemi/puppeteer-headful@master
+        uses: beemi/puppeteer-headful@latest
         env:
           CI: 'true'
           DISPLAY: :99
