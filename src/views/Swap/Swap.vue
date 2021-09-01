@@ -686,7 +686,6 @@ export default {
       'getQuotes',
       'updateFees',
       'newSwap',
-      'trackAnalytics',
       'updateFiatRates'
     ]),
     shortenAddress,
@@ -921,15 +920,6 @@ export default {
         })
 
         this.signRequestModalOpen = false
-        this.trackAnalytics({
-          event: 'Swap Created',
-          properties: {
-            category: 'Create Swap',
-            action: 'Swap View',
-            label: `Swap ${this.sendAmount} ${this.asset} to ${this.toAsset}`
-          }
-        })
-
         this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {
         console.error(error)
