@@ -9,7 +9,7 @@
           <span class="setting-item_sub">Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.</span>
         </div>
         <div class="setting-item_control" id="default_web3_wallet_toggle_button">
-          <toggle-button  :css-colors="true" :value="injectEthereum" @change="e => toggleInjectEthereum(e.value)" />
+          <toggle-button :css-colors="true" :value="injectEthereum" @change="e => toggleInjectEthereum(e.value)"/>
         </div>
       </div>
       <div class="setting-item">
@@ -19,7 +19,7 @@
         <div class="setting-item_control">
           <ChainDropdown :chains="ethereumChains"
                          :selected="injectEthereumChain"
-                         @chain-changed="updateInjectEthereumChain" />
+                         @chain-changed="updateInjectEthereumChain"/>
         </div>
       </div>
       <div class="setting-item" id="settings_item_default_wallet_analytics">
@@ -27,7 +27,7 @@
           <span class="setting-item_sub">Share where you click. No identifying data is collected.</span>
         </div>
         <div class="setting-item_control" id="analytics_toggle_button">
-          <toggle-button  :css-colors="true" :value="analyticsEnabled" @change="e => setAnalyticsEnable(e.value)" />
+          <toggle-button :css-colors="true" :value="analyticsEnabled" @change="e => setAnalyticsEnable(e.value)"/>
         </div>
       </div>
       <div class="setting-item" id="settings_item_wallet_logs">
@@ -39,8 +39,8 @@
         </div>
       </div>
       <div class="settings-footer">
-         <div class="text-muted" id="settings_app_version">Version {{ appVersion }}</div>
-        </div>
+        <div class="text-muted" id="settings_app_version">Version {{ appVersion }}</div>
+      </div>
     </div>
   </div>
 </template>
@@ -82,14 +82,24 @@ export default {
       'disableEthereumInjection',
       'setEthereumInjectionChain',
       'setAnalyticsResponse',
-      'initializeAnalytics'
+      'initializeAnalytics',
+      'trackAnalytics'
     ]),
     toggleInjectEthereum (enable) {
-      if (enable) this.enableEthereumInjection()
-      else this.disableEthereumInjection()
+      if (enable) {
+        this.enableEthereumInjection()
+      } else {
+        this.disableEthereumInjection()
+      }
+      this.trackAnalytics({
+        event: `Default Web3 Wallet toggle (${enable})`
+      })
     },
     updateInjectEthereumChain (chain) {
       this.setEthereumInjectionChain({ chain })
+      this.trackAnalytics({
+        event: `Web3 Network Update (${chain})`
+      })
     },
     async setAnalyticsEnable (enable) {
       await this.setAnalyticsResponse({ accepted: enable })
@@ -99,7 +109,14 @@ export default {
     },
     async downloadLogs () {
       const logs = await getWalletStateLogs()
-      downloadFile({ filename: 'Liquality Wallet Logs.json', type: 'application/javascript;charset=utf-8;', content: logs })
+      downloadFile({
+        filename: 'Liquality Wallet Logs.json',
+        type: 'application/javascript;charset=utf-8;',
+        content: logs
+      })
+      this.trackAnalytics({
+        event: 'Download logs'
+      })
     }
   }
 }

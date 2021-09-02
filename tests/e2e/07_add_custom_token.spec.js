@@ -148,6 +148,54 @@ if (process.env.NODE_ENV === 'mainnet') {
       const decimal = await page.$eval('#decimals', el => el.value)
       expect(decimal).to.equals(tokenDetails.decimal)
     })
+    it('ARBITRUM - ShushiToken token', async () => {
+      const tokenDetails = {
+        chain: 'arbitrum',
+        address: '0xd4d42F0b6DEF4CE0383636770eF773390d85c61A',
+        name: 'SushiToken',
+        symbol: 'SUSHI',
+        decimal: '18'
+      }
+
+      // Import wallet option
+      await homePage.ClickOnImportWallet(page)
+      // Enter seed words and submit
+      await homePage.EnterSeedWords(page, null)
+      // Create a password & submit
+      await passwordPage.SubmitPasswordDetails(page, password)
+      // overview page
+      await overviewPage.HasOverviewPageLoaded(page)
+      await overviewPage.CloseWatsNewModal(page)
+      // Select network(Only works against Mainnet)
+      await overviewPage.SelectNetwork(page, 'mainnet')
+      // check Send & Swap & Receive options have been displayed
+      await overviewPage.ValidateSendSwipeReceiveOptions(page)
+
+      // Click on Backup seed from Burger Icon menu
+      await overviewPage.ClickAddCustomToken(page)
+
+      // select chain
+      // await page.evaluate( () => document.getElementById("contractAddress").value = "")
+      await page.waitForSelector('#select_chain_dropdown', { visible: true })
+      await page.click('#select_chain_dropdown')
+      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
+      await page.click(`#${tokenDetails.chain}_chain`)
+      // paste address
+      await page.type('#contractAddress', tokenDetails.address)
+      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      await page.click('#tokenSymbol')
+      await page.click('#name')
+      await page.waitForTimeout(10000)
+      // Check Token name
+      const name = await page.$eval('#name', el => el.value)
+      expect(name).to.equals(tokenDetails.name)
+      // Check Token Symbol
+      const symbol = await page.$eval('#tokenSymbol', el => el.value)
+      expect(symbol).to.equals(tokenDetails.symbol)
+      // Check Token Symbol
+      const decimal = await page.$eval('#decimals', el => el.value)
+      expect(decimal).to.equals(tokenDetails.decimal)
+    })
     it('Polygon - USD Coin (USDC)', async () => {
       const tokenDetails = {
         chain: 'polygon',
