@@ -28,14 +28,13 @@ if (process.env.NODE_ENV === 'mainnet') {
     })
     afterEach(async () => {
       try {
-        console.log('Cleaning up instances')
         await page.close()
         await browser.close()
       } catch (e) {
-        console.log('Cannot cleanup instances')
+        throw new Error(e)
       }
     })
-    it('ETHEREUM - [Tether USD]', async () => {
+    it('ETHEREUM - [Tether USD]-["smoke"]', async () => {
       const tokenDetails = {
         chain: 'ethereum',
         address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
@@ -149,6 +148,54 @@ if (process.env.NODE_ENV === 'mainnet') {
       const decimal = await page.$eval('#decimals', el => el.value)
       expect(decimal).to.equals(tokenDetails.decimal)
     })
+    it('ARBITRUM - ShushiToken token', async () => {
+      const tokenDetails = {
+        chain: 'arbitrum',
+        address: '0xd4d42F0b6DEF4CE0383636770eF773390d85c61A',
+        name: 'SushiToken',
+        symbol: 'SUSHI',
+        decimal: '18'
+      }
+
+      // Import wallet option
+      await homePage.ClickOnImportWallet(page)
+      // Enter seed words and submit
+      await homePage.EnterSeedWords(page, null)
+      // Create a password & submit
+      await passwordPage.SubmitPasswordDetails(page, password)
+      // overview page
+      await overviewPage.HasOverviewPageLoaded(page)
+      await overviewPage.CloseWatsNewModal(page)
+      // Select network(Only works against Mainnet)
+      await overviewPage.SelectNetwork(page, 'mainnet')
+      // check Send & Swap & Receive options have been displayed
+      await overviewPage.ValidateSendSwipeReceiveOptions(page)
+
+      // Click on Backup seed from Burger Icon menu
+      await overviewPage.ClickAddCustomToken(page)
+
+      // select chain
+      // await page.evaluate( () => document.getElementById("contractAddress").value = "")
+      await page.waitForSelector('#select_chain_dropdown', { visible: true })
+      await page.click('#select_chain_dropdown')
+      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
+      await page.click(`#${tokenDetails.chain}_chain`)
+      // paste address
+      await page.type('#contractAddress', tokenDetails.address)
+      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      await page.click('#tokenSymbol')
+      await page.click('#name')
+      await page.waitForTimeout(10000)
+      // Check Token name
+      const name = await page.$eval('#name', el => el.value)
+      expect(name).to.equals(tokenDetails.name)
+      // Check Token Symbol
+      const symbol = await page.$eval('#tokenSymbol', el => el.value)
+      expect(symbol).to.equals(tokenDetails.symbol)
+      // Check Token Symbol
+      const decimal = await page.$eval('#decimals', el => el.value)
+      expect(decimal).to.equals(tokenDetails.decimal)
+    })
     it('Polygon - USD Coin (USDC)', async () => {
       const tokenDetails = {
         chain: 'polygon',
@@ -205,12 +252,12 @@ if (process.env.NODE_ENV === 'mainnet') {
       const decimal = await page.$eval('#decimals', el => el.value)
       expect(decimal).to.equals(tokenDetails.decimal)
     })
-    it('Polygon - Dai Stablecoin (DAI)', async () => {
+    it.skip('Polygon - (PoS) EthLend Token', async () => {
       const tokenDetails = {
         chain: 'polygon',
-        address: '0x84000b263080BC37D1DD73A29D92794A6CF1564e',
-        name: 'Dai Stablecoin',
-        symbol: 'DAI',
+        address: '0x313d009888329C9d1cf4f75CA3f32566335bd604',
+        name: '(PoS) EthLend Token',
+        symbol: 'LEND',
         decimal: '18'
       }
       // Import wallet option
@@ -250,7 +297,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       console.log(chalk.green('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
-      await page.waitForTimeout(10000)
+      await page.waitForTimeout(30000)
       // Check Token name
       const name = await page.$eval('#name', el => el.value)
       expect(name).to.equals(tokenDetails.name)

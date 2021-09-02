@@ -2,7 +2,7 @@
   <Modal v-if="open" @close="close" body-class="">
     <template #header>
       <h6>
-        Wat's New
+        What's New
       </h6>
     </template>
     <template>
@@ -13,17 +13,10 @@
           </div>
           <div class="item-content">
             Liquality has integrated Uniswap, 1inch, and FastBTC so that you can
-            swap more pairs in one convenient location.
-          </div>
-        </div>
-        <div class="item">
-          <div class="item-icon">
-            <CircleDotsIcon/>
-          </div>
-          <div class="item-content">
-            Liquality is introducing additional swap types for easy completion
-            of trades Liquality is introducing additional swap types for easy
-            completion of trades.
+            swap more pairs in one convenient location. <a href="https://liquality.io/blog/liquality-raises-7-million-in-funding-round/"
+               target="_blank">
+              Learn more...
+            </a>
           </div>
         </div>
       </div>
@@ -43,7 +36,6 @@
 
 <script>
 import Modal from '@/components/Modal'
-import CircleDotsIcon from '@/assets/icons/circle_dots_icon.svg'
 import ChartIcon from '@/assets/icons/chart_icon.svg'
 import { version } from '../../package.json'
 import { mapActions, mapState } from 'vuex'
@@ -51,7 +43,6 @@ import { mapActions, mapState } from 'vuex'
 export default {
   components: {
     Modal,
-    CircleDotsIcon,
     ChartIcon
   },
   data: function () {
@@ -116,9 +107,6 @@ h6 {
 
     .item-content {
       padding: 0px 20px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
     }
   }
 }

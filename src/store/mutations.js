@@ -265,5 +265,8 @@ export default {
   },
   SET_WATS_NEW_MODAL_VERSION (state, { version }) {
     state.watsNewModalVersion = version
+  },
+  SET_RSK_LEGACY_DERIVATION_PATH_FLAG (state, { rskLegacyDerivation }) {
+    state.rskLegacyDerivation = rskLegacyDerivation
   }
 }

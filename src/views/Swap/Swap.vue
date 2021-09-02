@@ -144,10 +144,10 @@
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
         Swap
       </NavBar>
-      <div class="fee-wrapper" v-if="isHighFee">
+      <div class="fee-wrapper" id="fees_are_high" v-if="isHighFee">
         Fees are high.  Review transaction carefully.
       </div>
-      <div class="fee-wrapper" v-if="isSwapNegative">
+      <div class="fee-wrapper" id="swap_is_negative" v-if="isSwapNegative">
         Swap is negative.  Review transaction carefully.
       </div>
       <div class="swap-confirm wrapper form">
@@ -625,6 +625,7 @@ export default {
       if (!this.selectedQuote ||
           this.updatingQuotes ||
           this.ethRequired ||
+          this.showNoLiquidityMessage ||
           this.amountError ||
           BN(this.safeAmount).lte(0)) {
         return false
@@ -685,7 +686,6 @@ export default {
       'getQuotes',
       'updateFees',
       'newSwap',
-      'trackAnalytics',
       'updateFiatRates'
     ]),
     shortenAddress,
@@ -920,15 +920,6 @@ export default {
         })
 
         this.signRequestModalOpen = false
-        this.trackAnalytics({
-          event: 'Swap Created',
-          properties: {
-            category: 'Create Swap',
-            action: 'Swap View',
-            label: `Swap ${this.sendAmount} ${this.asset} to ${this.toAsset}`
-          }
-        })
-
         this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {
         console.error(error)

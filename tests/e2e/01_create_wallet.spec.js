@@ -3,7 +3,6 @@ const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const SeedWordsPage = require('../Pages/SeedWordsPage')
-const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
 
@@ -15,7 +14,7 @@ const seedWordsPage = new SeedWordsPage()
 
 let browser, page
 
-describe('Create wallet-["mainnet"]', async () => {
+describe('Create wallet-[mainnet, smoke]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -26,44 +25,18 @@ describe('Create wallet-["mainnet"]', async () => {
 
   after(async () => {
     try {
-      console.log('Cleaning up instances')
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup instances')
+      throw new Error(e)
     }
   })
 
-  it('Create a wallet with less that 8 or more characters password,validate button has been disabled', async () => {
-    const password = '1234567'
-    // Create new wallet
-    await homePage.ClickOnCreateNewWallet(page)
-    // Set password
-    await passwordPage.EnterPasswordDetails(page, password, password)
-    // confirm button has been disabled
-    await passwordPage.ValidateSubmitPasswordDisabled(page)
-  })
-  it('Create a wallet with mismatch password, validate button has been disabled', async () => {
-    const passwordInput = await page.$('#password')
-    const confirmPasswordInput = await page.$('#confirmPassword')
-    await passwordInput.click({ clickCount: 3 })
-    await confirmPasswordInput.click({ clickCount: 3 })
-    // Set password
-    await passwordPage.EnterPasswordDetails(page, 'testwallet1', 'testwallet2')
-    // check the password error message
-    await page.waitForSelector('#password_match_error', { visible: true })
-    expect(await page.$eval('#password_match_error', (el) => el.textContent))
-      .contains('Passwords don\'t match.')
-    // confirm button has been disabled
-    await passwordPage.ValidateSubmitPasswordDisabled(page)
-  })
   it('Create a new wallet with 12 words, validate overviewPage address for ETH and RSK', async () => {
     const password = '123123123'
 
-    const passwordInput = await page.$('#password')
-    const confirmPasswordInput = await page.$('#confirmPassword')
-    await passwordInput.click({ clickCount: 3 })
-    await confirmPasswordInput.click({ clickCount: 3 })
+    // Create new wallet
+    await homePage.ClickOnCreateNewWallet(page)
     // Set password
     await passwordPage.SubmitPasswordDetails(page, password)
 
@@ -88,8 +61,7 @@ describe('Create wallet-["mainnet"]', async () => {
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
-    // validate the testnet asserts count
-    const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
+    // validate the total assets on overview screen.
+    await overviewPage.ValidateTotalAssets(page)
   })
 })

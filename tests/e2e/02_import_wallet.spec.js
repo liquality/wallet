@@ -18,7 +18,7 @@ const seedWordsPage = new SeedWordsPage()
 let browser, page
 const password = '123123123'
 
-describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
+describe('Import wallet-["mainnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -29,11 +29,10 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
 
   afterEach(async () => {
     try {
-      console.log('Cleaning up instances')
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup instances')
+      throw new Error(e)
     }
   })
 
@@ -56,9 +55,8 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
-    // validate the testnet asserts count
-    const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
+    // validate the total assets on overview screen.
+    await overviewPage.ValidateTotalAssets(page)
   })
   it('Import wallet with random seed (phrase 11 words) and check continue is disabled', async () => {
     await homePage.ClickOnImportWallet(page)
@@ -75,7 +73,7 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
     await page.click('#import_wallet_continue_button:not([enabled])')
     console.log('Import wallet continue button has been disabled')
   })
-  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path', async () => {
+  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path-[smoke]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -92,9 +90,8 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
     }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
-    // validate the testnet asserts count
-    const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
+    // validate the total assets on overview screen.
+    await overviewPage.ValidateTotalAssets(page)
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')
@@ -108,6 +105,16 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
     expect(rskAddress, 'ETH & RSK Addresses should be different if balance >0').not.equals(ethAddress)
+
+    // Check RSK & ERC20 tokens
+    const rskTokens = ['RBTC', 'SOV', 'FISH']
+    if (process.env.NODE_ENV === 'mainnet') {
+      await page.click('#RSK')
+      for (let i = 0; i < rskTokens.length; i++) {
+        const token = rskTokens[i]
+        await page.waitForSelector(`#${token}`, { visible: true })
+      }
+    }
   })
   it('Import wallet with (24 seed words) and see balance', async () => {
     // Import wallet option
@@ -129,8 +136,7 @@ describe('Liquality wallet- Import wallet-["mainnet"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
-    const assetsCount = await overviewPage.GetTotalAssets(page)
-    expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
+    await overviewPage.ValidateTotalAssets(page)
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')

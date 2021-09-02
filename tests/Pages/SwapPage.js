@@ -107,6 +107,11 @@ class SwapPage {
     await page.waitForSelector('#network_speed_fee', { visible: true })
     await page.click('#network_speed_fee')
     console.log(chalk.green('user clicked on on Network fee options'))
+    const averageFee = await page.$eval('#average', (el) => el.getAttribute('class'))
+    expect(averageFee,
+      'Avg network speed/fee by default selected').contains('active')
+    expect(averageFee,
+      'Avg network speed/fee should have tooltip').contains('has-tooltip')
   }
 
   /**
@@ -199,6 +204,19 @@ class SwapPage {
   async GetSwapRate (page) {
     await page.waitForSelector('#swap-rate_value', { visible: true })
     return await page.$eval('#swap-rate_value', el => el.textContent)
+  }
+
+  /**
+   *  Fees are high. Review transaction carefully.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async CheckFeesAreHigh (page) {
+    await page.waitForSelector('#fees_are_high', { visible: true })
+    const messages = await page.$eval('#fees_are_high', el => el.textContent)
+    expect(messages.trim()).equals('Fees are high. Review transaction carefully.')
+    console.log(chalk.redBright('Fees are high. Review transaction carefully.'))
   }
 
   /**

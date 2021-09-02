@@ -1,9 +1,9 @@
 on:
-  pull_request:
-    branches:
-      - dev
+  schedule:
+    - cron: '0 8 * * *' # everyday at 8am
+    - cron: '0 22 * * *' # everyday at 10pm
 
-name: Build & Regression testnet
+name: Testnet tests
 
 jobs:
   regressiontest:
@@ -48,7 +48,7 @@ jobs:
           mkdir screenshots
 
       - name: Regression tests
-        uses: beemi/puppeteer-headful@master
+        uses: beemi/puppeteer-headful@v1.0.6
         env:
           CI: 'true'
           DISPLAY: :99

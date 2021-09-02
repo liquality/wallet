@@ -17,6 +17,8 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
+      'FISH',
+      'SOL',
       'FUSE'
     ],
     testnet: [
@@ -29,7 +31,8 @@ export default {
       'SOV',
       'MATIC',
       'PWETH',
-      'ARBETH'
+      'ARBETH',
+      'SOL'
     ]
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
@@ -69,6 +72,12 @@ export default {
         type: SwapProviderType.LIQUALITY,
         agent: 'https://liquality.io/swap/agent'
       },
+      liqualityBoost: {
+        name: 'Liquality Boost',
+        type: SwapProviderType.LIQUALITYBOOST,
+        network: 'mainnet',
+        icon: 'liqualityboost.svg'
+      },
       uniswapV2: {
         name: 'Uniswap V2',
         icon: 'uniswap.svg',
@@ -98,5 +107,5 @@ export default {
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'fuse']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'solana', 'fuse']
 }

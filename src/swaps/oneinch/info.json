@@ -1,15 +1,15 @@
 {
   "title": "1inch DEX Aggregator Swaps",
-  "description": "Aggregate of popular Ethereum only DEXes.",
+  "description": "Aggregate of popular DEXes",
   "pros": [
+    "Ethereum, Polygon, Binance Smart Chain",
     "Best exchange rates",
     "High liquidity",
     "Many pairs",
     "Fast"
   ],
   "cons": [
-    "Slippage",
-    "Ethereum tokens only"
+    "Slippage"
   ],
   "fees": [
     "Additional aggregator fees",

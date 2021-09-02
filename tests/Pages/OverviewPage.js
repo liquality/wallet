@@ -9,8 +9,6 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    const now = Date.now()
-    await page.screenshot({ path: `./screenshots/${now}_overviewPage.png` })
     await page.waitForSelector('#burger_icon_menu', {
       visible: true,
       timeout: 120000
@@ -166,6 +164,13 @@ class OverviewPage {
         await page.click(`#${chain}`)
         break
       }
+      case 'SOLANA': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const sol = await page.waitForSelector('#SOL', { visible: true })
+        await sol.click()
+        break
+      }
 
       default:
         throw Error(`Unsupported chain: ${chain}`)
@@ -230,14 +235,15 @@ class OverviewPage {
   }
 
   /**
-   * Get Total assets from overview page.
+   * Validate total asserts from overview page.
    * @param page
    * @returns {Promise<*>}
    * @constructor
    */
-  async GetTotalAssets (page) {
-    const assetsElement = await page.$('#total_assets')
-    return (await assetsElement.getProperty('innerText')).jsonValue()
+  async ValidateTotalAssets (page) {
+    await page.waitForSelector('#total_assets', { timeout: 60000 })
+    const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
+    expect(assetsCount, 'Total assets should be 8 on overview page').contain('8 Assets')
   }
 
   /**
@@ -327,6 +333,7 @@ class OverviewPage {
     // Click on Backup seed from Burger Icon menu
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')
+    console.log(chalk.green('User clicked on Burger Icon Menu'))
   }
 
   /**
@@ -339,6 +346,24 @@ class OverviewPage {
     const settings = await page.waitForSelector('#settings', { visible: true })
     await settings.click()
     await page.waitForSelector('#settings_item_default_wallet', { visible: true })
+  }
+
+  /**
+   * Click on Add Custom token from setting screen.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickAddCustomToken (page) {
+    await this.ClickOnBurgerIcon(page)
+    // Click Manage Assets
+    await page.waitForSelector('#manage_assets', { visible: true })
+    await page.click('#manage_assets')
+    console.log(chalk.green('User clicked on Manage Assets'))
+    // click on add custom token
+    await page.waitForSelector('#add_custom_token', { visible: true })
+    await page.click('#add_custom_token')
+    console.log(chalk.green('User clicked on Add Custom Token'))
   }
 }
 

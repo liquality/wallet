@@ -16,7 +16,7 @@ const seedWordsPage = new SeedWordsPage()
 let browser, page
 const password = '123123123'
 
-describe('Derived path address validation-["mainnet"]', async () => {
+describe('Derived path address validation-["mainnet","smoke"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -26,11 +26,10 @@ describe('Derived path address validation-["mainnet"]', async () => {
   })
   afterEach(async () => {
     try {
-      console.log('Cleaning up instances')
       await page.close()
       await browser.close()
     } catch (e) {
-      console.log('Cannot cleanup instances')
+      throw new Error(e)
     }
   })
 

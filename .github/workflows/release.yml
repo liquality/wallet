@@ -3,7 +3,7 @@ on:
     tags:
     - 'v*'
 
-name: Build Release
+name: TAG Release
 
 jobs:
   build:
@@ -50,6 +50,8 @@ jobs:
 
       - name: Set development agents
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+        env:
+          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
         run: |
             sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
       - run: |
@@ -62,8 +64,8 @@ jobs:
         run: |
           mkdir screenshots
 
-      - name: MainNet integration tests
-        uses: beemi/puppeteer-headful@master
+      - name: MainNet e2e tests
+        uses: beemi/puppeteer-headful@v1.0.6
         env:
           CI: 'true'
           DISPLAY: :99
