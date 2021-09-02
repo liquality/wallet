@@ -59,6 +59,5 @@ const derivationPaths = {
 }
 
 export const getDerivationPath = (chainId, network, index, accountType) => {
-  console.log('getDerivationPath', chainId, accountType)
   return derivationPaths[chainId](network, index, accountType)
 }

@@ -77,7 +77,7 @@ export default {
   methods: {
     next () {
       const passphrase = this.wordList.join(' ')
-      this.$router.push({ name: 'OnboardingSetup', params: { passphrase } })
+      this.$router.push({ name: 'OnboardingSetup', params: { passphrase, imported: true } })
     },
     setMnemonicLength (words) {
       this.numWords = words
