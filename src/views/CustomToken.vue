@@ -64,7 +64,7 @@
               </li>
               <li>
                 <a class="dropdown-item"
-                   id="arbitrum_chain"
+                   id="fuse_chain"
                    href="#"
                    @click="selectChain('fuse')"
                    :class="{active: chain === 'fuse'}">
