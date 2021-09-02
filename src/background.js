@@ -9,8 +9,6 @@ function asyncLoop (fn, delay) {
     .then(() => asyncLoop(fn, delay))
 }
 
-const network = store.state
-
 store.subscribe(async ({
   type,
   payload
@@ -28,8 +26,9 @@ store.subscribe(async ({
       store.dispatch('updateMarketData', { network: state.activeNetwork })
 
       store.dispatch('trackAnalytics', {
-        event: `Network Changed ${network} to ${state.activeNetwork}`
+        event: `Network Changed ${payload.currentNetwork} to ${payload.network}`
       })
+      console.log(this.state.activeNetwork)
 
       break
 
@@ -93,6 +92,17 @@ store.subscribe(async ({
     case 'LOCK_WALLET':
       store.dispatch('trackAnalytics', {
         event: 'Lock Wallet'
+      })
+      break
+
+    case 'ADD_EXTERNAL_CONNECTION':
+      store.dispatch('trackAnalytics', {
+        event: 'Connect to Dapp',
+        properties: {
+          action: `${payload.chain} Dapp connected`,
+          category: `Connect to Dapp on ${state.activeNetwork}`,
+          label: `Connect to ${payload.origin} (${payload.chain})`
+        }
       })
       break
   }
