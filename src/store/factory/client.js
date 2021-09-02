@@ -209,7 +209,7 @@ function createArbitrumClient (asset, network, mnemonic, indexPath = 0) {
 function createFuuseClient (asset, network, mnemonic, indexPath = 0) {
   const isTestnet = network === 'testnet'
   const fuseNetwork = ChainNetworks.fuse[network]
-  const rpcApi = isTestnet ? 'https://rpc.fuse.io/' : ' https://fuse-mainnet.gateway.pokt.network/'
+  const rpcApi = isTestnet ? 'https://rpc.fuse.io/' : 'https://fuse-testnet.gateway.pokt.network/'
   const scraperApi = isTestnet ? 'https://liquality.io/fuse-testnet-api' : 'https://liquality.io/fuse-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
