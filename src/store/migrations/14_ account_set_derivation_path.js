@@ -3,7 +3,7 @@ import { Networks } from '@/utils/networks'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
 import { ChainId, chains } from '@liquality/cryptoassets'
 
-export const rskDerivationPath = {
+export const accountSetDerivationPath = {
   version: 14,
   migrate: async (state) => {
     const hasAccounts = Object.keys(state.accounts || {}).length > 0
