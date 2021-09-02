@@ -3,6 +3,7 @@ import { version as walletVersion } from '../../../package.json'
 import amplitude from 'amplitude-js'
 
 const useAnalytics = !!process.env.VUE_APP_AMPLITUDE_API_KEY
+console.log('ANALITYCS_ENABLED', useAnalytics)
 
 export const initializeAnalyticsPreferences = ({ commit }, { accepted }) => {
   commit('SET_ANALYTICS_PREFERENCES', {
