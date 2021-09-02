@@ -2,6 +2,9 @@ on:
   push:
     tags:
     - 'v*'
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
 
 name: TAG Release
 
