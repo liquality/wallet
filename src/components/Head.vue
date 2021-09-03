@@ -50,7 +50,7 @@ export default {
       this.showNetworks = false
     },
     async switchNetwork (network) {
-      await this.changeActiveNetwork({ currentNetwork: this.activeNetwork, network })
+      await this.changeActiveNetwork({ network })
       this.showNetworks = false
     }
   }
