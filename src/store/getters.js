@@ -40,10 +40,13 @@ export default {
       const _accountType = account?.type || accountType
       const { chain } = cryptoassets[asset]
       let derivationPath
-      if (account && account.derivationPath) {
-        derivationPath = account.derivationPath
-      } else {
+
+      // when we ask for ledger accounts from the ledger device we don't have the derivation path
+      // the !account doesn't exist in this case
+      if (_accountType.includes('ledger') && !account) {
         derivationPath = getDerivationPath(chain, network, accountIndex, _accountType)
+      } else {
+        derivationPath = account.derivationPath
       }
       const cacheKey = [
         asset,
