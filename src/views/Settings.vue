@@ -98,7 +98,10 @@ export default {
     updateInjectEthereumChain (chain) {
       this.setEthereumInjectionChain({ chain })
       this.trackAnalytics({
-        event: `Web3 Network Update (${chain})`
+        event: `Web3 Network Update (${chain})`,
+        properties: {
+          label: `${chain}`
+        }
       })
     },
     async setAnalyticsEnable (enable) {

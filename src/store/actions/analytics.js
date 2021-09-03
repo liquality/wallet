@@ -2,7 +2,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { version as walletVersion } from '../../../package.json'
 import amplitude from 'amplitude-js'
 
-amplitude.getInstance().init(process.env.VUE_APP_AMPLITUDE_API_KEY)
+const useAnalytics = !!process.env.VUE_APP_AMPLITUDE_API_KEY
+console.log('ANALITYCS_ENABLED', useAnalytics)
 
 export const initializeAnalyticsPreferences = ({ commit }, { accepted }) => {
   commit('SET_ANALYTICS_PREFERENCES', {
@@ -39,8 +40,11 @@ export const initializeAnalytics = async ({
 }) => {
   if (!state.analytics || !state.analytics.userId) {
     await dispatch('initializeAnalyticsPreferences', { accepted: false })
-  } else if (state.analytics?.acceptedDate) {
-    amplitude.getInstance().setUserId(state.analytics?.userId)
+  } else if (state.analytics?.acceptedDate && useAnalytics) {
+    amplitude.getInstance().init(
+      process.env.VUE_APP_AMPLITUDE_API_KEY,
+      state.analytics?.userId
+    )
     commit('app/ANALITYCS_STARTED', null, { root: true })
   }
 }
@@ -52,7 +56,10 @@ export const trackAnalytics = ({
   event,
   properties = {}
 }) => {
-  if (state.analytics && state.analytics.acceptedDate && state.analytics.userId) {
+  if (useAnalytics &&
+    state.analytics &&
+    state.analytics.acceptedDate &&
+    state.analytics.userId) {
     const {
       activeNetwork,
       activeWalletId,
