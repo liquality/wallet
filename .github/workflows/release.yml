@@ -45,9 +45,9 @@ jobs:
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
-    # Set the Amplitude Analytics only for Major prod releases.
-      - name: Set development agents (major for Prod)
-        if: steps.semvers.outputs.v_major == steps.get_current_tag.outputs.tag
+    # Enable Amplitude Analytics only for minor prod releases.
+      - name: Enable Analytics & Set development agents (minor for Prod)
+        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
         run: |

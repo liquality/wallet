@@ -28,8 +28,6 @@ store.subscribe(async ({
       store.dispatch('trackAnalytics', {
         event: `Network Changed ${payload.currentNetwork} to ${payload.network}`
       })
-      console.log(this.state.activeNetwork)
-
       break
 
     case 'UNLOCK_WALLET':
@@ -77,6 +75,7 @@ store.subscribe(async ({
 
       break
     case 'NEW_SWAP':
+      debugger
 
       store.dispatch('trackAnalytics', {
         event: 'New SWAP',
