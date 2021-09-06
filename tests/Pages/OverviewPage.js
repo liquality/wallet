@@ -168,6 +168,10 @@ class OverviewPage {
         const eth = await page.waitForSelector('#SOLANA', { visible: true })
         await eth.click()
         await page.waitForSelector(`#${chain}`, { visible: true })
+        // check assert value
+        await page.waitForSelector('.list-item-detail', { visible: true })
+        // check assert fiat value
+        await page.waitForSelector('.list-item-detail-sub', { visible: true })
         await page.click(`#${chain}`)
         break
       }
