@@ -47,7 +47,7 @@ async function importWalletTestReceive (bitcoin) {
   await page.click('#wallet_header_logo')
 }
 
-describe('Liquality wallet- Receive tokens ["mainnet","smoke"]', async () => {
+describe('Receive tokens ["mainnet","smoke"]', async () => {
   describe('Create wallet and Check receive', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -102,7 +102,7 @@ describe('Liquality wallet- Receive tokens ["mainnet","smoke"]', async () => {
       await overviewPage.CheckAssertOverviewDetails(page, 'BTC')
     })
   })
-  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH']
+  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH', 'SOL']
   describe('Import wallet, Receive tokens', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
