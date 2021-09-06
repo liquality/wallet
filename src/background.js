@@ -32,11 +32,10 @@ store.subscribe(async ({
 
     case 'UNLOCK_WALLET':
       store.dispatch('trackAnalytics', {
-        event: 'Wallet Unlock',
+        event: 'Unlock wallet',
         properties: {
-          category: 'Unlock Wallet',
-          action: 'Unlock Wallet',
-          label: 'Unlock Wallet'
+          category: 'Lock/Unlock',
+          action: 'Wallet Unlocked'
         }
       })
       store.dispatch('checkAnalyticsOptIn')
@@ -79,9 +78,9 @@ store.subscribe(async ({
       store.dispatch('trackAnalytics', {
         event: 'New SWAP',
         properties: {
-          action: `Swap Created (${payload.swap.provider})`,
-          category: `Create Swap on ${state.activeNetwork}`,
-          label: `Swap ${payload.swap.from} to ${payload.swap.to}`
+          category: 'Swaps',
+          action: 'Swap Initiated',
+          label: `Swap ${payload.swap.from} to ${payload.swap.to}, (${payload.swap.provider}) on ${state.activeNetwork}`
         }
       })
 
@@ -90,9 +89,9 @@ store.subscribe(async ({
     case 'NEW_TRASACTION':
 
       store.dispatch('trackAnalytics', {
-        event: 'SEND',
+        event: 'Send',
         properties: {
-          action: `Send Created on ${state.activeNetwork}`,
+          action: 'Funds sent',
           label: `Send ${payload.transaction.from}`
         }
       })
@@ -101,17 +100,21 @@ store.subscribe(async ({
 
     case 'LOCK_WALLET':
       store.dispatch('trackAnalytics', {
-        event: 'Lock Wallet'
+        event: 'Wallet Lock',
+        properties: {
+          category: 'Lock/Unlock',
+          action: 'Wallet Locked'
+        }
       })
       break
 
     case 'ADD_EXTERNAL_CONNECTION':
       store.dispatch('trackAnalytics', {
-        event: 'Connect to Dapp',
+        event: 'Connect to Dapps',
         properties: {
-          action: `${payload.chain} Dapp connected`,
-          category: `Connect to Dapp on ${state.activeNetwork}`,
-          label: `Connect to ${payload.origin} (${payload.chain})`
+          category: 'Dapps',
+          action: 'Dapp Injected',
+          label: `Connect to ${payload.origin} (${payload.chain}) on ${state.activeNetwork}`
         }
       })
       break

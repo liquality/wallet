@@ -92,7 +92,12 @@ export default {
         this.disableEthereumInjection()
       }
       this.trackAnalytics({
-        event: `Default Web3 Wallet toggle (${enable})`
+        event: 'Settings',
+        properties: {
+          category: 'Settings',
+          action: 'Default Web3 Wallet Updated',
+          label: `${enable}`
+        }
       })
     },
     updateInjectEthereumChain (chain) {
@@ -100,6 +105,8 @@ export default {
       this.trackAnalytics({
         event: `Web3 Network Update (${chain})`,
         properties: {
+          category: 'Settings',
+          action: 'Web3 Network Updated',
           label: `${chain}`
         }
       })
@@ -118,7 +125,11 @@ export default {
         content: logs
       })
       this.trackAnalytics({
-        event: 'Download logs'
+        event: 'Download logs',
+        properties: {
+          category: 'Settings',
+          action: 'Wallet Logs Accessed'
+        }
       })
     }
   }
