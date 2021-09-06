@@ -75,7 +75,6 @@ store.subscribe(async ({
 
       break
     case 'NEW_SWAP':
-      debugger
 
       store.dispatch('trackAnalytics', {
         event: 'New SWAP',
@@ -83,6 +82,19 @@ store.subscribe(async ({
           action: `Swap Created (${payload.swap.provider})`,
           category: `Create Swap on ${state.activeNetwork}`,
           label: `Swap ${payload.swap.from} to ${payload.swap.to}`
+        }
+      })
+
+      break
+
+    case 'NEW_TRASACTION':
+
+      store.dispatch('trackAnalytics', {
+        event: 'SEND',
+        properties: {
+          action: `Send Created on ${state.activeNetwork}`,
+          category: `Send to ${payload.transaction.to}`,
+          label: `Send from ${payload.transaction.amount} ${payload.transaction.from}`
         }
       })
 
