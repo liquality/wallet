@@ -130,7 +130,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
       'Balance > 0 wallet should have same derived paths for chains-[ETHEREUM,BSC,POLYGON,ARBITRUM]')
       .eq(true)
     // ETH & RSK derived paths are different
-    expect(rskAddress, 'ETH & RSK Addresses should be different if balance >0')
+    expect(rskAddress, 'ETH & RSK Addresses should be equal')
       .not.equals(ethAddress)
     // Validate ERC20 derived path validations
     // RSK coins address validations
