@@ -221,9 +221,9 @@ export default {
       }
     })
 
-    if (this.balance > 0 ) {
+    if (this.balance > 0) {
       this.trackAnalytics({
-        event: `Holds ${this.asset}` ,
+        event: `Holds ${this.asset}`,
         properties: {
           category: `${this.activeNetwork}`,
           action: `${chain}`,

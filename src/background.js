@@ -93,8 +93,7 @@ store.subscribe(async ({
         event: 'SEND',
         properties: {
           action: `Send Created on ${state.activeNetwork}`,
-          category: `Send to ${payload.transaction.to}`,
-          label: `Send from ${payload.transaction.amount} ${payload.transaction.from}`
+          label: `Send ${payload.transaction.from}`
         }
       })
 
