@@ -42,19 +42,24 @@ jobs:
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
-      - name: Set development manifest
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        run: |
-            jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
-            mv ./src/manifest.tmp ./src/manifest.json
-
-      - name: Set development agents
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+    # Enable Amplitude Analytics only for minor prod releases.
+      - name: Enable Analytics & Set development agents (minor for Prod)
+        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
         run: |
-            sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
-      - run: |
+            echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY }} >> .env
+            npm ci
+            npm run lint
+            npm run build
+
+    # Build the extension for DEV store.
+      - name: Set development agents(patch for dev)
+        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+        run: |
+          jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
+          mv ./src/manifest.tmp ./src/manifest.json
+          sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
           npm ci
           npm run lint
           npm run build
