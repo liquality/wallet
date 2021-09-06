@@ -9,5 +9,8 @@ module.exports = {
     '^@/(.*svg)(\\?inline)$': '<rootDir>/src/$1',
     '^@/(.*)$': '<rootDir>/src/$1'
   },
-  testMatch: ['**/tests/**/*.[jt]s?(x)']
+  testMatch: [
+    '**/?(*.)+(spec|test).js?(x)',
+    '(**/tests/**/.*|(\\.|/)(test|spec))\\.[jt]s?(x)$'
+  ]
 }
