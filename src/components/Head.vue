@@ -10,7 +10,6 @@
         <li id="testnet_network" @click="switchNetwork('testnet')">Testnet</li>
       </ul>
     </div>
-    <HeadMenu />
   </div>
 </template>
 
@@ -21,7 +20,6 @@ import clickAway from '@/directives/clickAway'
 import LogoIcon from '@/assets/icons/logo_icon.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
-import HeadMenu from '@/components/HeadMenu'
 
 export default {
   directives: {
@@ -30,8 +28,7 @@ export default {
   components: {
     ChevronUpIcon,
     ChevronDownIcon,
-    LogoIcon,
-    HeadMenu
+    LogoIcon
   },
   data () {
     return {

@@ -13,6 +13,7 @@
       <div class="navbar_menu" id="burger_icon_menu" v-if="showMenu" @click.stop="showMenuList = !showMenuList"><HamburgerIcon class="navbar_menu_icon" /></div>
       <ul class="menu_list navbar_menu_list" v-if="showMenuList" v-click-away="hideMenu">
         <li id="manage_assets" @click="assets"><AssetsIcon />Manage Assets</li>
+        <li id="hardware_wallete" @click="hardware"><AssetsIcon />Hardware Wallet</li>
         <li id="settings" @click="settings"><SettingsIcon />Settings</li>
         <li id="backup_seed" @click="backup"><PaperIcon /> Backup Seed</li>
         <li id="lock" @click="lock"><LockIcon class="lock_icon"/> Lock</li>
@@ -64,6 +65,10 @@ export default {
     assets () {
       this.showMenuList = false
       this.$router.replace('/settings/manage-assets')
+    },
+    hardware () {
+      this.showMenuList = false
+      this.$router.replace('/accounts/hardware-wallet')
     },
     settings () {
       this.showMenuList = false
