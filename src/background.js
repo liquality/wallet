@@ -80,7 +80,7 @@ store.subscribe(async ({
         properties: {
           category: 'Swaps',
           action: 'Swap Initiated',
-          label: `Swap ${payload.swap.from} to ${payload.swap.to}, (${payload.swap.provider}) on ${state.activeNetwork}`
+          label: `Swap ${payload.swap.from} to ${payload.swap.to} (${payload.swap.provider})`
         }
       })
 
@@ -114,7 +114,7 @@ store.subscribe(async ({
         properties: {
           category: 'Dapps',
           action: 'Dapp Injected',
-          label: `Connect to ${payload.origin} (${payload.chain}) on ${state.activeNetwork}`
+          label: `Connect to ${payload.origin} (${payload.chain})`
         }
       })
       break
