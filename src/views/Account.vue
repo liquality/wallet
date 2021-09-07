@@ -220,6 +220,17 @@ export default {
         label: `Select ${this.asset} (${chain})`
       }
     })
+
+    if (this.balance > 0) {
+      this.trackAnalytics({
+        event: `Holds ${this.asset}`,
+        properties: {
+          category: `${this.activeNetwork}`,
+          action: `${chain}`,
+          label: `${this.asset} (${chain}) holds ${this.balance}`
+        }
+      })
+    }
   },
   watch: {
     activeNetwork () {
