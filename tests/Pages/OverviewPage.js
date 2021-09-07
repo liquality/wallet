@@ -320,8 +320,8 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async GetAssertAddress (page, assertName) {
-    const $parent = await page.$(`#${assertName}`)
+  async GetAssertAddress (page, assertName, accountIndex = 0) {
+    const $parent = await page.$(`#${assertName}-${accountIndex}`)
     const assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
     expect(assertAddress).not.equals(null)
     return assertAddress
