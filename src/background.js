@@ -91,6 +91,7 @@ store.subscribe(async ({
       store.dispatch('trackAnalytics', {
         event: 'Send',
         properties: {
+          category: 'Send/Receive',
           action: 'Funds sent',
           label: `Send ${payload.transaction.from}`
         }
