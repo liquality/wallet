@@ -244,10 +244,11 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async ValidateTotalAssets (page) {
+  async ValidateTotalAssets (page, newWallet = true) {
+    const assets = newWallet ? 8 : 9
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'Total assets should be 8 on overview page').contain('8 Assets')
+    expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(`${assets} Assets`)
   }
 
   /**

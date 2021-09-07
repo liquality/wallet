@@ -56,7 +56,7 @@ describe('Import wallet-["mainnet"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the total assets on overview screen.
-    await overviewPage.ValidateTotalAssets(page)
+    await overviewPage.ValidateTotalAssets(page, false) // 9 assets
   })
   it('Import wallet with random seed (phrase 11 words) and check continue is disabled', async () => {
     await homePage.ClickOnImportWallet(page)
@@ -91,7 +91,7 @@ describe('Import wallet-["mainnet"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the total assets on overview screen.
-    await overviewPage.ValidateTotalAssets(page)
+    await overviewPage.ValidateTotalAssets(page, false) // 9 assets
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')
@@ -104,7 +104,7 @@ describe('Import wallet-["mainnet"]', async () => {
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
-    expect(rskAddress, 'ETH & RSK Addresses should be different if balance >0').not.equals(ethAddress)
+    expect(rskAddress, 'ETH & RSK Addresses should be equal').equals(ethAddress)
 
     // Check RSK & ERC20 tokens
     const rskTokens = ['RBTC', 'SOV', 'FISH']
@@ -136,7 +136,7 @@ describe('Import wallet-["mainnet"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
-    await overviewPage.ValidateTotalAssets(page)
+    await overviewPage.ValidateTotalAssets(page, false) // 9 assets
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')

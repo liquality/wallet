@@ -4,8 +4,9 @@ import { createSwapProvider } from './factory/swapProvider'
 import { Object } from 'core-js'
 import BN from 'bignumber.js'
 import { cryptoToFiat } from '@/utils/coinFormatter'
-import { Networks } from './utils'
+import { Networks } from '@/utils/networks'
 import { uniq } from 'lodash-es'
+import { getDerivationPath } from '@/utils/derivationPath'
 
 const clientCache = {}
 const swapProviderCache = {}
@@ -32,18 +33,28 @@ export default {
       asset,
       accountId,
       useCache = true,
-      walletType = 'default',
-      index = 0
+      accountType = 'default',
+      accountIndex = 0
     }) => {
       const account = accountId ? getters.accountItem(accountId) : null
-      const accountType = account?.type || walletType
-      const accountIndex = account?.index || index
+      const _accountType = account?.type || accountType
+      const { chain } = cryptoassets[asset]
+      let derivationPath
+
+      // when we ask for ledger accounts from the ledger device we don't have the derivation path
+      // the !account doesn't exist in this case or if we call the getter with accountId equals to null
+      if (_accountType.includes('ledger') || !account) {
+        derivationPath = getDerivationPath(chain, network, accountIndex, _accountType)
+      } else {
+        derivationPath = account.derivationPath
+      }
       const cacheKey = [
         asset,
+        chain,
         network,
         walletId,
-        accountType,
-        accountIndex
+        derivationPath,
+        _accountType
       ].join('-')
 
       if (useCache) {
@@ -52,7 +63,7 @@ export default {
       }
 
       const { mnemonic } = state.wallets.find(w => w.id === walletId)
-      const client = createClient(asset, network, mnemonic, accountType, accountIndex)
+      const client = createClient(asset, network, mnemonic, _accountType, derivationPath)
       clientCache[cacheKey] = client
 
       return client
