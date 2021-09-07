@@ -42,7 +42,7 @@ jobs:
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
-    # Enable Amplitude Analytics only for minor prod releases.
+    # Minor PROD releases.
       - name: Enable Analytics & Set development agents (minor for Prod)
         if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         env:
@@ -53,7 +53,7 @@ jobs:
             npm run lint
             npm run build
 
-    # Build the extension for DEV store.
+    # Patch DEV release.
       - name: Set development agents(patch for dev)
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         env:
