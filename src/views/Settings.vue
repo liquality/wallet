@@ -116,6 +116,14 @@ export default {
       if (enable) {
         await this.initializeAnalytics()
       }
+      this.trackAnalytics({
+        event: 'Analytics Updated',
+        properties: {
+          category: 'Settings',
+          action: 'Analytics Updated',
+          label: `${enable}`
+        }
+      })
     },
     async downloadLogs () {
       const logs = await getWalletStateLogs()

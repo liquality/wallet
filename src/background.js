@@ -118,5 +118,15 @@ store.subscribe(async ({
         }
       })
       break
+    case 'ADD_CUSTOM_TOKEN':
+      store.dispatch('trackAnalytics', {
+        event: 'Custom Token Added',
+        properties: {
+          category: 'Settings',
+          action: 'Custom Token Added',
+          label: `${payload.customToken.name} (${payload.customToken.chain}) (${payload.customToken.symbol})`
+        }
+      })
+      break
   }
 })
