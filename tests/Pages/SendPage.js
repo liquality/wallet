@@ -137,6 +137,7 @@ class SendPage {
    * @constructor
    */
   async GetNetworkSpeedFee (page) {
+    // Send screen should have Network speed option
     await page.waitForSelector('#send_network_speed_avg_fee', { visible: true })
     await page.waitForTimeout(5000)
     return await page.$eval('#send_network_speed_avg_fee', el => el.innerText)
@@ -149,6 +150,7 @@ class SendPage {
    * @constructor
    */
   async ClickNetworkSpeedFee (page) {
+    await page.waitForSelector('#send_network_speed', { visible: true })
     await page.click('#send_network_speed')
     await page.waitForSelector('#average', { visible: true })
   }
