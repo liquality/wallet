@@ -1,0 +1,12 @@
+{
+  "title": "Sovryn AMM Swaps",
+  "description": "",
+  "pros": [
+  ],
+  "cons": [
+  ],
+  "fees": [
+    "0.3% liquidity provider fee",
+    "Slippage (up to 0.5% in Liquality)"
+  ]
+}
