@@ -134,8 +134,6 @@ describe('Dapp Injection-[mainnet]', async () => {
       width: 1366,
       height: 768
     })
-    // Sushi only works with mainnet
-    await overviewPage.SelectNetwork(page, 'mainnet')
     await dappPage.goto('https://app.sushi.com/swap')
     await dappPage.waitForSelector('#connect-wallet', { visible: true })
     // Before click on injected wallet option.
