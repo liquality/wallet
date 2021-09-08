@@ -17,6 +17,7 @@ export const enableAssets = async ({ state, commit, dispatch, getters }, { netwo
       const _account = accountCreator(
         {
           walletId,
+          network,
           account: {
             name: `${chain.name} 1`,
             chain: chainId,

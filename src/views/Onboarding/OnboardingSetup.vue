@@ -34,7 +34,8 @@ export default {
     return {
       mnemonic: null,
       currentStep: 'beginning',
-      password: null
+      password: null,
+      imported: false
     }
   },
   props: ['passphrase'],
@@ -46,6 +47,7 @@ export default {
   created () {
     if (this.passphrase) {
       this.mnemonic = this.passphrase
+      this.imported = true
     } else {
       this.mnemonic = generateMnemonic()
     }
@@ -63,7 +65,11 @@ export default {
     async confirmMnemonic () {
       this.currentStep = 'congrats'
       await this.setupWallet({ key: this.password })
-      await this.createWallet({ key: this.password, mnemonic: this.mnemonic }) // mnemonic prop can be null to generate new seed
+      await this.createWallet({
+        key: this.password,
+        mnemonic: this.mnemonic,
+        imported: this.imported
+      }) // mnemonic prop can be null to generate new seed
       setTimeout(() => {
         this.unlockWallet({ key: this.password })
       }, 1650)

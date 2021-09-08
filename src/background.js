@@ -13,50 +13,50 @@ store.subscribe(async ({
   type,
   payload
 }, state) => {
+  const { dispatch, commit, getters } = store
   switch (type) {
     case 'CHANGE_ACTIVE_NETWORK':
-      store.dispatch('initializeAddresses', {
+      dispatch('initializeAddresses', {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      store.dispatch('updateBalances', {
+      dispatch('updateBalances', {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      store.dispatch('updateMarketData', { network: state.activeNetwork })
+      dispatch('updateMarketData', { network: state.activeNetwork })
 
-      store.dispatch('trackAnalytics', {
+      dispatch('trackAnalytics', {
         event: `Network Changed ${payload.currentNetwork} to ${payload.network}`
       })
       break
 
     case 'UNLOCK_WALLET':
-      store.dispatch('trackAnalytics', {
-        event: 'Wallet Unlock',
+      dispatch('trackAnalytics', {
+        event: 'Unlock wallet',
         properties: {
-          category: 'Unlock Wallet',
-          action: 'Unlock Wallet',
-          label: 'Unlock Wallet'
+          category: 'Lock/Unlock',
+          action: 'Wallet Unlocked'
         }
       })
-      store.dispatch('checkAnalyticsOptIn')
-      store.dispatch('initializeAddresses', {
+      dispatch('checkAnalyticsOptIn')
+      dispatch('initializeAddresses', {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      store.dispatch('updateBalances', {
+      dispatch('updateBalances', {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      store.dispatch('updateFiatRates', { assets: store.getters.allNetworkAssets })
-      store.dispatch('updateMarketData', { network: state.activeNetwork })
-      store.dispatch('checkPendingActions', { walletId: state.activeWalletId })
+      dispatch('updateFiatRates', { assets: store.getters.allNetworkAssets })
+      dispatch('updateMarketData', { network: state.activeNetwork })
+      dispatch('checkPendingActions', { walletId: state.activeWalletId })
 
-      store.commit('app/SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
-      store.commit('app/SET_USB_BRIDGE_CREATED', { created: false })
+      commit('app/SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
+      commit('app/SET_USB_BRIDGE_CREATED', { created: false })
 
       asyncLoop(
-        () => store.dispatch('updateBalances', {
+        () => dispatch('updateBalances', {
           network: state.activeNetwork,
           walletId: state.activeWalletId
         }),
@@ -64,45 +64,90 @@ store.subscribe(async ({
       )
 
       asyncLoop(
-        () => store.dispatch('updateFiatRates', { assets: Object.keys(state.fiatRates) }),
+        () => dispatch('updateFiatRates', { assets: Object.keys(state.fiatRates) }),
         () => random(40000, 60000)
       )
 
       asyncLoop(
-        () => store.dispatch('updateMarketData', { network: state.activeNetwork }),
+        () => dispatch('updateMarketData', { network: state.activeNetwork }),
         () => random(40000, 60000)
       )
-
       break
     case 'NEW_SWAP':
-      debugger
-
-      store.dispatch('trackAnalytics', {
+      dispatch('trackAnalytics', {
         event: 'New SWAP',
         properties: {
-          action: `Swap Created (${payload.swap.provider})`,
-          category: `Create Swap on ${state.activeNetwork}`,
-          label: `Swap ${payload.swap.from} to ${payload.swap.to}`
+          category: 'Swaps',
+          action: 'Swap Initiated',
+          label: `Swap ${payload.swap.from} to ${payload.swap.to} (${payload.swap.provider})`
         }
       })
+      break
 
+    case 'NEW_TRASACTION':
+      dispatch('trackAnalytics', {
+        event: `Send ${payload.transaction.from}`,
+        properties: {
+          category: 'Send/Receive',
+          action: 'Funds sent',
+          label: `Send ${payload.transaction.from}`
+        }
+      })
       break
 
     case 'LOCK_WALLET':
-      store.dispatch('trackAnalytics', {
-        event: 'Lock Wallet'
+      dispatch('trackAnalytics', {
+        event: 'Wallet Lock',
+        properties: {
+          category: 'Lock/Unlock',
+          action: 'Wallet Locked'
+        }
       })
       break
 
     case 'ADD_EXTERNAL_CONNECTION':
-      store.dispatch('trackAnalytics', {
-        event: 'Connect to Dapp',
+      dispatch('trackAnalytics', {
+        event: 'Connect to Dapps',
         properties: {
-          action: `${payload.chain} Dapp connected`,
-          category: `Connect to Dapp on ${state.activeNetwork}`,
+          category: 'Dapps',
+          action: 'Dapp Injected',
           label: `Connect to ${payload.origin} (${payload.chain})`
         }
       })
+      break
+    case 'ADD_CUSTOM_TOKEN':
+      dispatch('trackAnalytics', {
+        event: 'Custom Token Added',
+        properties: {
+          category: 'Settings',
+          action: 'Custom Token Added',
+          label: `${payload.customToken.name} (${payload.customToken.chain}) (${payload.customToken.symbol})`
+        }
+      })
+      break
+    case 'UPDATE_HISTORY':
+      // eslint-disable-next-line
+      const item = getters.historyItemById(payload.network, payload.walletId, payload.id)
+      if (item.type === 'SWAP' && payload.updates) {
+        dispatch('trackAnalytics', {
+          event: `Swap status change ${payload.updates.status}`,
+          properties: {
+            category: 'Swaps',
+            action: `Swap ${payload.updates.status}`,
+            label: `${item.from} to ${item.to}`
+          }
+        })
+      }
+      if (item.type === 'SEND' && payload.updates) {
+        dispatch('trackAnalytics', {
+          event: `Send status change ${payload.updates.status}`,
+          properties: {
+            category: 'Send/Receive',
+            action: `Send ${payload.updates.status}`,
+            label: `${item.from} send status ${payload.updates.status} `
+          }
+        })
+      }
       break
   }
 })

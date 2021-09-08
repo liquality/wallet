@@ -213,6 +213,15 @@ export default {
     const { chain } = cryptoassets[this.asset]
 
     this.trackAnalytics({
+      event: 'Refresh balance',
+      properties: {
+        category: 'Send/Receive',
+        action: 'Update Balance',
+        label: `${this.asset} (${chain}) address ${this.address}`
+      }
+    })
+
+    this.trackAnalytics({
       event: 'Active Asset',
       properties: {
         category: `Select Asset on ${this.activeNetwork}`,
@@ -220,6 +229,17 @@ export default {
         label: `Select ${this.asset} (${chain})`
       }
     })
+
+    if (this.balance > 0) {
+      this.trackAnalytics({
+        event: `Holds ${this.asset}`,
+        properties: {
+          category: `${this.activeNetwork}`,
+          action: `${chain}`,
+          label: `${this.asset} (${chain}) holds ${this.balance}`
+        }
+      })
+    }
   },
   watch: {
     activeNetwork () {
