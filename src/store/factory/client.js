@@ -176,7 +176,7 @@ function createRskClient (asset, network, mnemonic, accountType, derivationPath)
   const rskNetwork = ChainNetworks.rsk[network]
   const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
   const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
-  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1.2, averageMultiplier: 1.3, fastMultiplier: 1.5 })
 
   return createEthereumClient(asset, network, rskNetwork, rpcApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath)
 }
@@ -186,7 +186,7 @@ function createBSCClient (asset, network, mnemonic, derivationPath) {
   const bnbNetwork = ChainNetworks.bsc[network]
   const rpcApi = isTestnet ? 'https://data-seed-prebsc-1-s1.binance.org:8545' : 'https://bsc-dataseed.binance.org'
   const scraperApi = isTestnet ? 'https://liquality.io/bsc-testnet-api' : 'https://liquality.io/bsc-mainnet-api'
-  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1.2, averageMultiplier: 1.3, fastMultiplier: 1.5 })
 
   return createEthereumClient(asset, network, bnbNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
@@ -196,7 +196,7 @@ function createPolygonClient (asset, network, mnemonic, derivationPath) {
   const polygonNetwork = ChainNetworks.polygon[network]
   const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com' : 'https://rpc-mainnet.maticvigil.com'
   const scraperApi = isTestnet ? 'https://liquality.io/polygon-testnet-api' : 'https://liquality.io/polygon-mainnet-api'
-  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1.2, averageMultiplier: 1.3, fastMultiplier: 1.5 })
 
   return createEthereumClient(asset, network, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
@@ -206,7 +206,7 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   const arbitrumNetwork = ChainNetworks.arbitrum[network]
   const rpcApi = isTestnet ? 'https://rinkeby.arbitrum.io/rpc' : `https://arbitrum-mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
   const scraperApi = isTestnet ? 'https://liquality.io/arbitrum-testnet-api' : 'https://liquality.io/arbitrum-mainnet-api'
-  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1.2, averageMultiplier: 1.3, fastMultiplier: 1.5 })
 
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
