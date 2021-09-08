@@ -76,6 +76,7 @@
           </template>
           <template #icon class="account-asset-item">
             <img :src="getAssetIcon(asset)" class="asset-icon" />
+            <img :src="getAccountIcon(account.chain)" class="chain-icon" />
           </template>
           {{ getAssetName(asset) }}
           <template #detail>
@@ -178,6 +179,16 @@ export default {
 
   .list-item-icon {
     margin-left: 33px !important;
+  }
+
+  .list-item-title {
+    margin-left: 27px !important
+  }
+
+  .chain-icon {
+    margin-left: -10px;
+    margin-top: 12px;
+    width: 24px;
   }
 }
 
