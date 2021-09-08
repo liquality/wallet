@@ -2,7 +2,7 @@
 import { assets, chains as chainList } from '@liquality/cryptoassets'
 export const getLedgerAccounts = async (
   { getters },
-  { network, walletId, asset, walletType, startingIndex, numAccounts }
+  { network, walletId, asset, accountType, startingIndex, numAccounts }
 ) => {
   const { client, networkAccounts } = getters
   const { chain } = assets[asset]
@@ -40,8 +40,8 @@ export const getLedgerAccounts = async (
         network,
         walletId,
         asset,
-        walletType,
-        index,
+        accountType,
+        accountIndex: index,
         useCache: false
       }
     )

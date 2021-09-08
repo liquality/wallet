@@ -18,8 +18,7 @@ export default {
       'PWETH',
       'ARBETH',
       'FISH',
-      'SOL',
-      'FUSE'
+      'SOL'
     ],
     testnet: [
       'BTC',
@@ -32,7 +31,8 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
-      'SOL'
+      'SOL',
+      'FUSE'
     ]
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',

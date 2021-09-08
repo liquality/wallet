@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.40.8",
+  "version": "0.40.16",
   "private": true,
   "license": "MIT",
   "author": "Liquality <info@liquality.io>",
@@ -17,6 +17,7 @@
     "lint": "vue-cli-service lint",
     "sync-versions": "node script/sync-versions.js",
     "test:unit": "jest tests/unit",
+    "jest": "jest",
     "test:integration": "jest tests/integration",
     "postinstall": "husky install",
     "test:testnet": "node_modules/mocha/bin/mocha --colors 'tests/**/*.spec.js'",

@@ -62,6 +62,6 @@ describe('Create wallet-[mainnet, smoke]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the total assets on overview screen.
-    await overviewPage.ValidateTotalAssets(page)
+    await overviewPage.ValidateTotalAssets(page) // 8 assets
   })
 })

@@ -164,11 +164,15 @@ class OverviewPage {
         await page.click(`#${chain}`)
         break
       }
-      case 'SOLANA': {
+      case 'SOL': {
+        const eth = await page.waitForSelector('#SOLANA', { visible: true })
+        await eth.click()
         await page.waitForSelector(`#${chain}`, { visible: true })
+        // check assert value
+        await page.waitForSelector('.list-item-detail', { visible: true })
+        // check assert fiat value
+        await page.waitForSelector('.list-item-detail-sub', { visible: true })
         await page.click(`#${chain}`)
-        const sol = await page.waitForSelector('#SOL', { visible: true })
-        await sol.click()
         break
       }
 
@@ -240,10 +244,11 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async ValidateTotalAssets (page) {
+  async ValidateTotalAssets (page, newWallet = true) {
+    const assets = newWallet ? 8 : 9
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'Total assets should be 8 on overview page').contain('8 Assets')
+    expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(`${assets} Assets`)
   }
 
   /**

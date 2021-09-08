@@ -119,7 +119,7 @@ export default {
 
       try {
         if (asset) {
-          const _walletType = walletType || asset.types[0]
+          const accountType = walletType || asset.types[0]
           let currentPage = (page || 0)
 
           if (currentPage <= 0) {
@@ -130,7 +130,7 @@ export default {
             network: this.activeNetwork,
             walletId: this.activeWalletId,
             asset: asset.name,
-            walletType: _walletType,
+            accountType,
             startingIndex,
             numAccounts: LEDGER_PER_PAGE
           }
@@ -187,6 +187,7 @@ export default {
             const index = item.index + 1
             const account = {
               name: `Ledger ${this.selectedAsset.name} ${index}`,
+              alias: '',
               chain,
               addresses: [item.account.address],
               assets,

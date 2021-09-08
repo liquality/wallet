@@ -1,4 +1,4 @@
-import { Networks } from '@/store/utils'
+import { Networks } from '@/utils/networks'
 
 const COMPLETED_STATES = [
   'SUCCESS',

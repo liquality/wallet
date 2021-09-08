@@ -92,13 +92,23 @@ export default {
         this.disableEthereumInjection()
       }
       this.trackAnalytics({
-        event: `Default Web3 Wallet toggle (${enable})`
+        event: 'Settings',
+        properties: {
+          category: 'Settings',
+          action: 'Default Web3 Wallet Updated',
+          label: `${enable}`
+        }
       })
     },
     updateInjectEthereumChain (chain) {
       this.setEthereumInjectionChain({ chain })
       this.trackAnalytics({
-        event: `Web3 Network Update (${chain})`
+        event: `Web3 Network Update (${chain})`,
+        properties: {
+          category: 'Settings',
+          action: 'Web3 Network Updated',
+          label: `${chain}`
+        }
       })
     },
     async setAnalyticsEnable (enable) {
@@ -106,6 +116,14 @@ export default {
       if (enable) {
         await this.initializeAnalytics()
       }
+      this.trackAnalytics({
+        event: 'Analytics Updated',
+        properties: {
+          category: 'Settings',
+          action: 'Analytics Updated',
+          label: `${enable}`
+        }
+      })
     },
     async downloadLogs () {
       const logs = await getWalletStateLogs()
@@ -115,7 +133,11 @@ export default {
         content: logs
       })
       this.trackAnalytics({
-        event: 'Download logs'
+        event: 'Download logs',
+        properties: {
+          category: 'Settings',
+          action: 'Wallet Logs Accessed'
+        }
       })
     }
   }
