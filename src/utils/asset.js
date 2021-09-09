@@ -196,7 +196,7 @@ export const tokenDetailProviders = {
   arbitrum: {
     async getDetails (contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://arb1.arbitrum.io/rpc')
-    } 
+    }
   },
   fuse: {
     async getDetails (contractAddress) {

@@ -112,8 +112,8 @@ export async function getPrices (baseCurrencies, toCurrency) {
   prices = mapValues(prices, rates => mapKeys(rates, (v, k) => k.toUpperCase()))
 
   for (const baseCurrency of baseCurrencies) {
-    if (!prices[baseCurrency] && cryptoassets[baseCurrency].matchingAsset) {
-      prices[baseCurrency] = prices[cryptoassets[baseCurrency].matchingAsset]
+    if (!prices[baseCurrency] && cryptoassets[baseCurrency]?.matchingAsset) {
+      prices[baseCurrency] = prices[cryptoassets[baseCurrency]?.matchingAsset]
     }
   }
   const symbolPrices = mapValues(prices, rates => rates[toCurrency.toUpperCase()])
