@@ -3,7 +3,7 @@ on:
     branches:
       - dev
 
-name: PullRequest tests
+name: PullRequest CI
 
 jobs:
   pull_request_tests:
@@ -42,15 +42,18 @@ jobs:
           npm run lint
           npm run build
 
-      - name: Run Integration Tests
-        run: npm run test:integration
-
       - name: screenshots directory
         if: always()
         run: |
           mkdir screenshots
 
-      - name: Smoke tests
+      - name: Unit tests
+        run: npm run test:integration
+
+      - name: Integration Tests
+        run: npm run test:integration
+
+      - name: E2E Smoke tests
         uses: beemi/puppeteer-headful@v1.0.6
         env:
           CI: 'true'
