@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { Client } from '@liquality/client'
 import { ChainNetworks } from '@/utils/networks'
 import { SolanaNetworks } from '@liquality/solana-networks'
@@ -5,6 +6,12 @@ import { SolanaRpcProvider } from '@liquality/solana-rpc-provider'
 import { SolanaWalletProvider } from '@liquality/solana-wallet-provider'
 import { SolanaSwapProvider } from '@liquality/solana-swap-provider'
 import { SolanaSwapFindProvider } from '@liquality/solana-swap-find-provider'
+const chrome = require('sinon-chrome')
+window.chrome = chrome
+
+beforeEach(async () => {
+  jest.spyOn(console, 'warn').mockImplementation(() => {})
+})
 
 test('Solana Network TesnetConfig', () => {
   expect(SolanaNetworks.solana_testnet).toEqual({
