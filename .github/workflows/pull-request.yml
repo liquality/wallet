@@ -48,7 +48,7 @@ jobs:
           mkdir screenshots
 
       - name: Unit tests
-        run: npm run test:integration
+        run: npm run test:unit
 
       - name: Integration Tests
         run: npm run test:integration
