@@ -1,5 +1,5 @@
 /* global chrome */
-import { inject } from './broker/utils'
+import {  inject } from './broker/utils'
 import Script from './broker/Script'
 import { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, terraProvider, paymentUriHandler } from './inject'
 import buildConfig from './build.config'
@@ -16,7 +16,7 @@ inject(bitcoinProvider())
 inject(nearProvider())
 inject(terraProvider())
 
-function injectEthereum (state, chain) {
+function injectEthereum(state, chain) {
   const network = ChainNetworks[chain][state.activeNetwork]
   inject(ethereumProvider({
     chain,
@@ -42,7 +42,9 @@ inject(paymentUriHandler())
 
 
 
+
 async function setupStreams() {
+
   const pageStream = new LocalMessageDuplexStream({
     name: 'station:content',
     target: 'station:inpage',
@@ -56,7 +58,8 @@ async function setupStreams() {
 
   extensionStream.pipe(pageStream)
   pageStream.pipe(extensionStream)
-  console.log('success')
+  console.log('Stream setup successfully')
 }
 
 setupStreams();
+

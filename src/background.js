@@ -1,11 +1,13 @@
 import 'setimmediate'
 import { random } from 'lodash-es'
-import store from './store'
-import { wait } from './store/utils'
 import extension from 'extensionizer'
 import PortStream from 'extension-port-stream'
+import store from './store'
+import { wait } from './store/utils'
+import { handleConnection } from './broker/utils'
 
-function asyncLoop (fn, delay) {
+
+function asyncLoop(fn, delay) {
   return wait(delay())
     .then(() => fn())
     .then(() => asyncLoop(fn, delay))
@@ -57,10 +59,8 @@ store.subscribe(async ({ type, payload }, state) => {
   }
 })
 
-
-
 const connectRemote = (remotePort) => {
-  console.log(remotePort)
+  console.log('REMOTE PORT', remotePort)
   if (remotePort.name !== 'TerraStationExtension') {
     return
   }
@@ -137,7 +137,7 @@ const connectRemote = (remotePort) => {
 
       extension.storage.local.get([key], handleGet)
     }
-
+    console.log(type)
     switch (type) {
       case 'info':
         extension.storage.local.get(['network'], ({ network }) => {
@@ -214,43 +214,5 @@ const connectRemote = (remotePort) => {
   })
 }
 
-extension.runtime.onConnect.addListener(connectRemote)
+handleConnection(connectRemote)
 
-/* popup */
-// TODO: Actions such as transaction rejection if user closes a popup
-let tabId = undefined
-// extension.tabs.onRemoved.addListener(() => (tabId = undefined))
-
-const POPUP_WIDTH = 420
-const POPUP_HEIGHT = 640
-
-const openPopup = () => {
-  const popup = {
-    type: 'popup',
-    focused: true,
-    width: POPUP_WIDTH,
-    height: POPUP_HEIGHT,
-  }
-  !tabId &&
-    extension.tabs.create(
-      { url: extension.extension.getURL('index.html'), active: false },
-      (tab) => {
-        tabId = tab.id
-        extension.windows.getCurrent((window) => {
-          const top = Math.max(window.top, 0) || 0
-          const left =
-            Math.max(window.left + (window.width - POPUP_WIDTH), 0) || 0
-
-          const config = { ...popup, tabId: tab.id, top, left }
-          extension.windows.create(config)
-        })
-      }
-    )
-}
-
-const closePopup = () => {
-  tabId && extension.tabs.remove(tabId)
-}
-
-/* utils */
-const capitalize = (string) => string.charAt(0).toUpperCase() + string.slice(1)

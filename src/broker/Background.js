@@ -3,8 +3,11 @@ import buildConfig from '../build.config'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { assets } from '@liquality/cryptoassets'
 
+
+
 class Background {
-  constructor (store) {
+  constructor(store) {
+    console.log('called')
     this.store = store
     this.internalConnections = []
     this.externalConnections = []
@@ -13,6 +16,7 @@ class Background {
     this.subscribeToWalletChanges()
 
     handleConnection(connection => {
+      console.log(connection)
       const { url } = connection.sender
       const isInternal = url.startsWith(getRootURL())
 
@@ -24,7 +28,7 @@ class Background {
     })
   }
 
-  subscribeToMutations () {
+  subscribeToMutations() {
     this.store.subscribe(mutation => {
       this.internalConnections.forEach(connection => {
         let { type } = mutation
@@ -38,13 +42,13 @@ class Background {
     })
   }
 
-  getChainIds (network) {
+  getChainIds(network) {
     return buildConfig.chains.reduce((chainIds, chain) => {
       return Object.assign({}, chainIds, { [chain]: ChainNetworks[chain][network].chainId })
     }, {})
   }
 
-  subscribeToWalletChanges () {
+  subscribeToWalletChanges() {
     this.store.subscribe((mutation, state) => {
       if (mutation.type === 'CHANGE_ACTIVE_NETWORK') {
         this.externalConnections.forEach(connection => {
@@ -65,7 +69,8 @@ class Background {
     })
   }
 
-  onInternalConnection (connection) {
+  onInternalConnection(connection) {
+    console.log(connection)
     this.internalConnections.push(connection)
 
     connection.onMessage.addListener(message => this.onInternalMessage(connection, message))
@@ -83,7 +88,7 @@ class Background {
     }))
   }
 
-  onExternalConnection (connection) {
+  onExternalConnection(connection) {
     this.externalConnections.push(connection)
 
     connection.onMessage.addListener(message => this.onExternalMessage(connection, message))
@@ -93,7 +98,7 @@ class Background {
     })
   }
 
-  bindMutation (connection) {
+  bindMutation(connection) {
     const { name } = connection
     const { _mutations: mutations } = this.store
 
@@ -106,7 +111,7 @@ class Background {
     })
   }
 
-  unbindMutation (connection) {
+  unbindMutation(connection) {
     const { name } = connection
     const { _mutations: mutations } = this.store
 
@@ -117,12 +122,12 @@ class Background {
     })
   }
 
-  onInternalDisconnect (connection) {
+  onInternalDisconnect(connection) {
     const index = this.internalConnections.findIndex(conn => conn.name === connection.name)
     if (index !== -1) this.internalConnections.splice(index, 1)
   }
 
-  onInternalMessage (connection, { id, type, data }) {
+  onInternalMessage(connection, { id, type, data }) {
     switch (type) {
       case 'ACTION_REQUEST':
         this.store.dispatch(data.type, data.payload)
@@ -149,7 +154,7 @@ class Background {
     }
   }
 
-  onExternalMessage (connection, { id, type, data }) {
+  onExternalMessage(connection, { id, type, data }) {
     const { url } = connection.sender
     const { origin } = new URL(url)
     let chain
@@ -161,7 +166,7 @@ class Background {
     }
     const { externalConnections, activeWalletId } = this.store.state
     const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
-                    Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
+      Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
 
     switch (type) {
       case 'ENABLE_REQUEST':
@@ -206,12 +211,12 @@ class Background {
     }
   }
 
-  onExternalDisconnect (connection) {
+  onExternalDisconnect(connection) {
     const index = this.externalConnections.findIndex(conn => conn.name === connection.name)
     if (index !== -1) this.externalConnections.splice(index, 1)
   }
 
-  storeProxy (id, connection, action, data) {
+  storeProxy(id, connection, action, data) {
     this.store.dispatch(action, data)
       .then(result => ({ result }))
       .catch(error => {
@@ -226,12 +231,13 @@ class Background {
       })
   }
 
-  sendMutation (connection, mutation) {
+  sendMutation(connection, mutation) {
     connection.postMessage({
       type: 'MUTATION',
       data: mutation
     })
   }
 }
+
 
 export default Background
