@@ -1,11 +1,14 @@
 <template>
-  <div class="notification-content">
-    <div>No liquidity.</div>
-    <div>Request liquidity for tokens via<button class="btn btn-option liq-telegram-btn"
+  <div  v-if='isPairAvailable' class="notification-content">
+    <div>Liquidity low, please try again later.</div>
+    <div>You can request liquidity for tokens via<button class="btn btn-option liq-telegram-btn"
               @click="openDiscordLink">
-        Liquality Discord
+        Liquality Discord.
       </button>
     </div>
+  </div>
+  <div v-else class="notification-content">
+    <div>Pair not supported. Coming Soon!</div>
   </div>
 </template>
 
@@ -17,6 +20,9 @@ export default {
     openDiscordLink () {
       chrome.tabs.create({ url: buildConfig.discordUrl })
     }
+  },
+  props: {
+    isPairAvailable: Boolean
   }
 }
 </script>

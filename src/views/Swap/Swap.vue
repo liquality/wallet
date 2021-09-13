@@ -17,7 +17,7 @@
       </InfoNotification>
 
       <InfoNotification v-else-if="showNoLiquidityMessage">
-        <NoLiquidityMessage />
+        <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
@@ -541,6 +541,13 @@ export default {
       } else {
         return BN(0)
       }
+    },
+    isPairAvailable () {
+      const liqualityMarket = this.networkMarketData?.find(pair =>
+        pair.from === this.asset &&
+        (pair.to === this.toAsset || pair.to === this.toAssetChain)
+      )
+      return !!(liqualityMarket)
     },
     min () {
       const liqualityMarket = this.networkMarketData?.find(pair =>
