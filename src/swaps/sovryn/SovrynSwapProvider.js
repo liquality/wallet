@@ -337,7 +337,7 @@ class SovrynSwapProvider extends SwapProvider {
       filterStatus: 'PENDING',
       notification () {
         return {
-          message: 'Engaging the unicorn'
+          message: 'Engaging Sovryn'
         }
       }
     },

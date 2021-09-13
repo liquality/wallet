@@ -65,7 +65,7 @@ export default {
       },
       sovryn: {
         name: 'Sovyrn',
-        icon: 'uniswap.svg', // TODO: find correct image
+        icon: 'sovryn.svg',
         type: SwapProviderType.SOVRYN,
         routerAddress: '0x61172B53423E205a399640e5283e51FE60EC2256',
         routerAddressRBTC: '0x2C468f9c82C20c37cd1606Cf3a09702f94910691',
@@ -113,7 +113,7 @@ export default {
       // TODO: MAINNET
       sovryn: {
         name: 'Sovyrn',
-        icon: 'uniswap.svg', // TODO: find correct image
+        icon: 'sovryn.svg',
         type: SwapProviderType.SOVRYN,
         routerAddress: '0x98aCE08D2b759a265ae326F010496bcD63C15afc',
         routerAddressRBTC: '0xa917BF723433d020a15629eba71f6C2a6B38e52d',
