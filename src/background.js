@@ -79,7 +79,9 @@ store.subscribe(async ({
         properties: {
           category: 'Swaps',
           action: 'Swap Initiated',
-          label: `Swap ${payload.swap.from} to ${payload.swap.to} (${payload.swap.provider})`
+          label: `Swap ${payload.swap.from} 
+                  to ${payload.swap.to} (${payload.swap.provider}) 
+                  with fee: ${payload.feeLabel} and claim fee: ${payload.claimFeeLabel}`
         }
       })
       break
@@ -90,7 +92,7 @@ store.subscribe(async ({
         properties: {
           category: 'Send/Receive',
           action: 'Funds sent',
-          label: `Send ${payload.transaction.from}`
+          label: `Send ${payload.transaction.from} with fee: ${payload.feeLabel}`
         }
       })
       break

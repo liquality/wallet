@@ -2,7 +2,19 @@ import { v4 as uuidv4 } from 'uuid'
 import { createHistoryNotification } from '../../broker/notification'
 import BN from 'bignumber.js'
 
-export const sendTransaction = async ({ dispatch, commit, getters }, { network, walletId, accountId, asset, to, amount, data, fee, gas }) => {
+export const sendTransaction = async ({ dispatch, commit, getters }, {
+  network,
+  walletId,
+  accountId,
+  asset,
+  to,
+  amount,
+  data,
+  fee,
+  gas,
+  feeLabel,
+  claimFeeLabel
+}) => {
   const client = getters.client(
     {
       network,
@@ -43,7 +55,14 @@ export const sendTransaction = async ({ dispatch, commit, getters }, { network, 
     accountId
   }
 
-  commit('NEW_TRASACTION', { network, walletId, accountId, transaction })
+  commit('NEW_TRASACTION', {
+    network,
+    walletId,
+    accountId,
+    transaction,
+    feeLabel,
+    claimFeeLabel
+  })
 
   dispatch('performNextAction', { network, walletId, id: transaction.id, accountId })
 

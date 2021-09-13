@@ -923,7 +923,9 @@ export default {
           walletId: this.activeWalletId,
           quote: this.selectedQuote,
           fee,
-          claimFee: toFee
+          claimFee: toFee,
+          feeLabel: this.selectedFee[this.assetChain],
+          claimFeeLabel: this.selectedFee[this.toAssetChain]
         })
 
         this.signRequestModalOpen = false

@@ -478,7 +478,8 @@ export default {
           to: this.address,
           accountId: this.account.id,
           amount,
-          fee
+          fee,
+          feeLabel: this.selectedFee
         })
 
         this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
