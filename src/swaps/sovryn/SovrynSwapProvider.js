@@ -1,8 +1,7 @@
 import BN from 'bignumber.js'
-// import JSBI from 'jsbi'
 import { v4 as uuidv4 } from 'uuid'
-
 import * as ethers from 'ethers'
+
 import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isERC20 } from '../../utils/asset'
@@ -33,8 +32,6 @@ class SovrynSwapProvider extends SwapProvider {
 
   // returns rates between tokens
   async getQuote ({ network, from, to, amount }) {
-    console.log('getQuote --> ', network, from, to, amount)
-
     const fromInfo = cryptoassets[from]
     const toInfo = cryptoassets[to]
 
@@ -62,8 +59,6 @@ class SovrynSwapProvider extends SwapProvider {
   }
 
   async newSwap ({ network, walletId, quote }) {
-    console.log('newSwap --> ', network, walletId, quote)
-
     const approvalRequired = isERC20(quote.from)
     const updates = approvalRequired
       ? await this.approveTokens({ network, walletId, quote })
@@ -80,7 +75,6 @@ class SovrynSwapProvider extends SwapProvider {
   // ======== APPROVAL ========
 
   async requiresApproval ({ network, walletId, quote }) {
-    console.log('requiresApproval')
     if (!isERC20(quote.from)) return false
 
     const fromInfo = cryptoassets[quote.from]
@@ -100,8 +94,6 @@ class SovrynSwapProvider extends SwapProvider {
   }
 
   async buildApprovalTx ({ network, walletId, quote }) {
-    console.log('buildApprovalTx')
-
     const fromInfo = cryptoassets[quote.from]
     const toInfo = cryptoassets[quote.to]
     const erc20 = new ethers.Contract(fromInfo.contractAddress.toLowerCase(), ERC20.abi, this._getApi(network, quote.from))
@@ -111,8 +103,6 @@ class SovrynSwapProvider extends SwapProvider {
     // in case native token is involved -> give allowance to wrapper contract
     const spender = ((fromInfo.type === 'native' || toInfo.type === 'native') ? this.config.routerAddressRBTC : this.config.routerAddress).toLowerCase()
     const encodedData = erc20.interface.encodeFunctionData('approve', [spender, inputAmountHex])
-
-    console.log('GAS: ', (await erc20.estimateGas.approve(spender, inputAmountHex)).toString())
 
     const fromChain = fromInfo.chain
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
@@ -128,8 +118,6 @@ class SovrynSwapProvider extends SwapProvider {
   }
 
   async approveTokens ({ network, walletId, quote }) {
-    console.log('approveTokens --> ', network, walletId, quote)
-
     const requiresApproval = await this.requiresApproval({ network, walletId, quote })
     if (!requiresApproval) {
       return {
@@ -151,8 +139,6 @@ class SovrynSwapProvider extends SwapProvider {
   // ======== SWAP ========
 
   async buildSwapTx ({ network, walletId, quote }) {
-    console.log('buildSwapTx')
-
     const fromInfo = cryptoassets[quote.from]
     const toInfo = cryptoassets[quote.to]
 
@@ -160,31 +146,30 @@ class SovrynSwapProvider extends SwapProvider {
     const coversionPath = quote.path
     const toAmountWithSlippage = this._calculateSlippage(quote.toAmount).toString()
 
-    console.log(coversionPath, quote.fromAmount, toAmountWithSlippage)
-
     let encodedData
     let routerAddress
     if (fromInfo.type === 'native' || toInfo.type === 'native') { // use routerAddressRBTC when native token is present in the swap
-      console.log('in native')
       routerAddress = this.config.routerAddressRBTC.toLowerCase()
       const wpContract = new ethers.Contract(routerAddress, RBTCWrapperProxyABI, api)
-
-      console.log('GAS: ', (await wpContract.estimateGas.convertByPath(coversionPath, quote.fromAmount, toAmountWithSlippage)).toString())
-
       encodedData = wpContract.interface.encodeFunctionData('convertByPath', [coversionPath, quote.fromAmount, toAmountWithSlippage])
     } else {
-      console.log('in non native')
       routerAddress = this.config.routerAddress.toLowerCase()
       const ssnContract = new ethers.Contract(routerAddress, SovrynSwapNetworkABI, api)
-      encodedData = ssnContract.interface.encodeFunctionData('convertByPath', [coversionPath, quote.fromAmount, toAmountWithSlippage, 0x0, 0x0, 0])
+      // ignore affiliate and beneficiary
+      encodedData = ssnContract.interface.encodeFunctionData('convertByPath', [
+        coversionPath,
+        quote.fromAmount,
+        toAmountWithSlippage,
+        '0x0000000000000000000000000000000000000000',
+        '0x0000000000000000000000000000000000000000',
+        0
+      ])
     }
 
     const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
 
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
     const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw)
-
-    console.log(fromAddress, routerAddress, value, encodedData, quote.fee)
 
     return {
       from: fromAddress, // Required for estimation only (not used in chain client)
@@ -196,7 +181,6 @@ class SovrynSwapProvider extends SwapProvider {
   }
 
   async sendSwap ({ network, walletId, quote }) {
-    console.log('sendSwap')
     const txData = await this.buildSwapTx({ network, walletId, quote })
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
 
@@ -213,8 +197,6 @@ class SovrynSwapProvider extends SwapProvider {
   //  ======== FEES ========
 
   async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
-    console.log('estimateFees ->', network, walletId, asset, txType, quote, feePrices, max)
-
     if (txType !== SovrynSwapProvider.fromTxType) throw new Error(`Invalid tx type ${txType}`)
 
     const nativeAsset = chains[cryptoassets[asset].chain].nativeAsset
@@ -232,7 +214,6 @@ class SovrynSwapProvider extends SwapProvider {
       }
 
       gasLimit += await client.getMethod('estimateGas')(rawApprovalTx)
-      console.log('gasLimit 1: ', gasLimit)
     }
 
     const swapTx = await this.buildSwapTx({ network, walletId, quote })
@@ -243,14 +224,11 @@ class SovrynSwapProvider extends SwapProvider {
       value: '0x' + swapTx.value.toString(16)
     }
     gasLimit += await client.getMethod('estimateGas')(rawSwapTx)
-    console.log('gasLimit 2: ', gasLimit)
 
     const fees = {}
     for (const feePrice of feePrices) {
-      console.log('feePrice: ', feePrice.toString())
       const gasPrice = BN(feePrice).times(1e9) // ETH fee price is in gwei
       const fee = BN(gasLimit).times(1.1).times(gasPrice)
-      console.log('fee: ', fee.toString())
       fees[feePrice] = unitToCurrency(cryptoassets[nativeAsset], fee)
     }
     return fees
@@ -259,8 +237,6 @@ class SovrynSwapProvider extends SwapProvider {
   // ======== STATE TRANSITIONS ========
 
   async waitForApproveConfirmations ({ swap, network, walletId }) {
-    console.log('waitForApproveConfirmations')
-
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
@@ -278,14 +254,10 @@ class SovrynSwapProvider extends SwapProvider {
   }
 
   async waitForSwapConfirmations ({ swap, network, walletId }) {
-    console.log('waitForSwapConfirmations')
-
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
-      console.log('getTransactionByHash')
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
-      console.log('tx: ', tx)
       if (tx && tx.confirmations > 0) {
         this.updateBalances({ network, walletId, assets: [swap.from] })
         return {
@@ -300,7 +272,6 @@ class SovrynSwapProvider extends SwapProvider {
   }
 
   async performNextSwapAction (store, { network, walletId, swap }) {
-    console.log('performNextSwapAction -->', store, network, walletId, swap)
     let updates
 
     switch (swap.status) {
@@ -335,7 +306,6 @@ class SovrynSwapProvider extends SwapProvider {
 
   // 0.5 slippage
   _calculateSlippage (amount) {
-    console.log('_calculateSlippage ---> ', amount)
     return BN(amount).times(new BN(0.995)).toFixed(0)
   }
 
