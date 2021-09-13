@@ -28,7 +28,6 @@ import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
-import ImportAccount from '@/views/Accounts/Import.vue'
 
 import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
 import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
@@ -113,11 +112,6 @@ const routes = [
   {
     path: '/accounts/create',
     component: CreateAccount,
-    props: true
-  },
-  {
-    path: '/accounts/import',
-    component: ImportAccount,
     props: true
   },
   {
