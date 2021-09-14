@@ -22,6 +22,24 @@
                          @chain-changed="updateInjectEthereumChain"/>
         </div>
       </div>
+      <div class="setting-item" id="settings_item_wallet_logs">
+        <div class="setting-item_title flex-fill mb-2">Dapp Connections
+          <span class="setting-item_sub">Forget all of the dapps connected.</span>
+        </div>
+        <div class="setting-item_control">
+          <button class="btn btn-outline-primary"
+                  id="forget_all_connections_button"
+                  @click="forgetAllDappConnections"
+                  v-tooltip="{
+                    trigger: 'manual',
+                    content: 'Done!',
+                    hideOnTargetClick: false,
+                    show: forgetAllDappsDone
+                  }">
+                  Forget all connections
+          </button>
+        </div>
+      </div>
       <div class="setting-item" id="settings_item_default_wallet_analytics">
         <div class="setting-item_title flex-fill mb-2">Analytics
           <span class="setting-item_sub">Share where you click. No identifying data is collected.</span>
@@ -36,14 +54,6 @@
         </div>
         <div class="setting-item_control">
           <button class="btn btn-outline-primary" id="download_logs_button" @click="downloadLogs">Download Logs</button>
-        </div>
-      </div>
-      <div class="setting-item" id="settings_item_wallet_logs">
-        <div class="setting-item_title flex-fill mb-2">Dapp Connections
-          <span class="setting-item_sub">Forget all of the dapps connected.</span>
-        </div>
-        <div class="setting-item_control">
-          <button class="btn btn-outline-primary" id="forget_all_connections_button" @click="forgetAllDappConnections">Forget all connections</button>
         </div>
       </div>
       <div class="settings-footer">
@@ -66,6 +76,11 @@ export default {
   components: {
     NavBar,
     ChainDropdown
+  },
+  data: function () {
+    return {
+      forgetAllDappsDone: false
+    }
   },
   computed: {
     ...mapState([
@@ -149,9 +164,17 @@ export default {
         }
       })
     },
-    forgetAllDappConnections () {
-      this.forgetDappConnections()
+    async forgetAllDappConnections () {
+      this.forgetAllDappsDone = false
+      await this.forgetDappConnections()
+      this.forgetAllDappsDone = true
+      setTimeout(() => {
+        this.forgetAllDappsDone = false
+      }, 4000)
     }
+  },
+  created () {
+    this.forgetAllDappsDone = false
   }
 }
 </script>
