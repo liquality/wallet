@@ -14,12 +14,12 @@ jobs:
         with:
           fetch-depth: 0
 
-#      - name: Build project
-#        uses: actions/setup-node@v1
-#        env:
-#          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
-#        with:
-#          args: install
+      - name: Build project
+        uses: actions/setup-node@v1
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
+        with:
+          args: install
 
       - uses: actions/cache@v2
         env:
@@ -68,31 +68,30 @@ jobs:
           npm run lint
           npm run build
 
-#      - run: mkdir screenshots
-#
-#      - name: MainNet e2e tests
-#        uses: beemi/puppeteer-headful@v1.0.6
-#        env:
-#          CI: 'true'
-#          DISPLAY: :99
-#          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-#          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-#        with:
-#          args: npm run test:mainnet
-#
-#      - name: Archive Mocha HTML report
-#        uses: actions/upload-artifact@v2
-#        if: always()
-#        with:
-#          name: mocha-html-test-report
-#          path: mochawesome-report
-#
-#      - name: Save Screenshots
-#        uses: actions/upload-artifact@v2
-#        if: always()
-#        with:
-#          name: screenshots
-#          path: screenshots
+      - run: mkdir screenshots
+      - name: MainNet e2e tests
+        uses: beemi/puppeteer-headful@v1.0.6
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: npm run test:mainnet
+
+      - name: Archive Mocha HTML report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: mocha-html-test-report
+          path: mochawesome-report
+
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots
 
       - name: Create Release
         id: create_release
