@@ -38,6 +38,14 @@
           <button class="btn btn-outline-primary" id="download_logs_button" @click="downloadLogs">Download Logs</button>
         </div>
       </div>
+      <div class="setting-item" id="settings_item_wallet_logs">
+        <div class="setting-item_title flex-fill mb-2">Dapp Connections
+          <span class="setting-item_sub">Forget all of the dapps connected.</span>
+        </div>
+        <div class="setting-item_control">
+          <button class="btn btn-outline-primary" id="forget_all_connections_button" @click="forgetAllDappConnections">Forget all connections</button>
+        </div>
+      </div>
       <div class="settings-footer">
         <div class="text-muted" id="settings_app_version">Version {{ appVersion }}</div>
       </div>
@@ -83,7 +91,8 @@ export default {
       'setEthereumInjectionChain',
       'setAnalyticsResponse',
       'initializeAnalytics',
-      'trackAnalytics'
+      'trackAnalytics',
+      'forgetDappConnections'
     ]),
     toggleInjectEthereum (enable) {
       if (enable) {
@@ -139,6 +148,9 @@ export default {
           action: 'Wallet Logs Accessed'
         }
       })
+    },
+    forgetAllDappConnections () {
+      this.forgetDappConnections()
     }
   }
 }
