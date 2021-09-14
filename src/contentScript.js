@@ -1,5 +1,5 @@
 /* global chrome */
-import {  inject } from './broker/utils'
+import { inject } from './broker/utils'
 import Script from './broker/Script'
 import { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, terraProvider, paymentUriHandler } from './inject'
 import buildConfig from './build.config'

@@ -60,7 +60,6 @@ store.subscribe(async ({ type, payload }, state) => {
 })
 
 const connectRemote = (remotePort) => {
-  console.log('REMOTE PORT', remotePort)
   if (remotePort.name !== 'TerraStationExtension') {
     return
   }
@@ -72,7 +71,8 @@ const connectRemote = (remotePort) => {
 
   const sendResponse = (name, payload) => {
     console.log(name, payload)
-    portStream.write({ name, payload })
+    const writed = portStream.write({ name, payload })
+    console.log(writed)
   }
 
   portStream.on('data', (data) => {
@@ -137,7 +137,7 @@ const connectRemote = (remotePort) => {
 
       extension.storage.local.get([key], handleGet)
     }
-    console.log(type)
+    console.log('TYPE', type)
     switch (type) {
       case 'info':
         extension.storage.local.get(['network'], ({ network }) => {
@@ -147,56 +147,8 @@ const connectRemote = (remotePort) => {
         break
 
       case 'connect':
-        const handleChangeConnect = (changes, namespace) => {
-          // It is recursive.
-          // After referring to a specific value in the storage, perform the function listed below again.
-          if (namespace === 'local') {
-            const { newValue, oldValue } = changes.connect
-
-            const denied =
-              oldValue &&
-              oldValue.request.length - 1 === newValue.request.length &&
-              oldValue.allowed.length === newValue.allowed.length
-
-            if (!denied)
-              extension.storage.local.get(
-                ['connect', 'wallet'],
-                handleGetConnect
-              )
-          }
-        }
-
-        const handleGetConnect = ({
-          connect = { request: [], allowed: [] },
-          wallet = {},
-        }) => {
-          // 1. If the address is authorized and the wallet exists
-          //    - send back the response and close the popup.
-          // 2. If not,
-          //    - store the address on the storage and open the popup to request it (only if it is not the requested address).
-          const isAllowed = connect.allowed.includes(origin)
-          const walletExists = wallet.address
-          const alreadyRequested = [
-            ...connect.request,
-            ...connect.allowed,
-          ].includes(origin)
-
-          if (isAllowed && walletExists) {
-            sendResponse('onConnect', wallet)
-            closePopup()
-            extension.storage.onChanged.removeListener(handleChangeConnect)
-          } else {
-            !alreadyRequested &&
-              extension.storage.local.set({
-                connect: { ...connect, request: [origin, ...connect.request] },
-              })
-
-            openPopup()
-            extension.storage.onChanged.addListener(handleChangeConnect)
-          }
-        }
-
-        extension.storage.local.get(['connect', 'wallet'], handleGetConnect)
+        const wallet = { address: 'terra1x2hvnrlt4tf6sm0uankwvr809427sx3hvjsq6m' }
+        sendResponse('onConnect', wallet)
 
         break
 

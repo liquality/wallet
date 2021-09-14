@@ -7,7 +7,6 @@ import { assets } from '@liquality/cryptoassets'
 
 class Background {
   constructor(store) {
-    console.log('called')
     this.store = store
     this.internalConnections = []
     this.externalConnections = []
@@ -16,7 +15,6 @@ class Background {
     this.subscribeToWalletChanges()
 
     handleConnection(connection => {
-      console.log(connection)
       const { url } = connection.sender
       const isInternal = url.startsWith(getRootURL())
 
@@ -70,7 +68,6 @@ class Background {
   }
 
   onInternalConnection(connection) {
-    console.log(connection)
     this.internalConnections.push(connection)
 
     connection.onMessage.addListener(message => this.onInternalMessage(connection, message))

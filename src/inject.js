@@ -282,9 +282,6 @@ window.terra = {
       method: req.method, params
     })
   },
-  connect() {
-    console.log('called')
-  }
 }
 `
 
