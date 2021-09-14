@@ -69,7 +69,7 @@ export default {
         type: SwapProviderType.SOVRYN,
         routerAddress: '0x61172B53423E205a399640e5283e51FE60EC2256',
         routerAddressRBTC: '0x2C468f9c82C20c37cd1606Cf3a09702f94910691',
-        rpcURL: 'https://testnet.sovryn.app/rpc'// 'https://public-node.testnet.rsk.co/'
+        rpcURL: 'https://public-node.testnet.rsk.co/'
       }
     },
     mainnet: {
@@ -110,7 +110,6 @@ export default {
         type: SwapProviderType.FASTBTC,
         bridgeEndpoint: 'http://3.131.33.161:3000/'
       },
-      // TODO: MAINNET
       sovryn: {
         name: 'Sovyrn',
         icon: 'sovryn.svg',

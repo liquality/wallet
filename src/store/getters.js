@@ -10,7 +10,6 @@ import { uniq } from 'lodash-es'
 const clientCache = {}
 const swapProviderCache = {}
 
-// TODO: add addresses
 const TESTNET_CONTRACT_ADDRESSES = {
   DAI: '0xad6d458402f60fd3bd25163575031acdce07538d',
   SOV: '0x6a9A07972D07E58f0daF5122D11e069288A375fB',
