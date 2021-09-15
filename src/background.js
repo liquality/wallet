@@ -152,5 +152,14 @@ store.subscribe(async ({
         })
       }
       break
+    case 'SETUP_WALLET':
+      dispatch('trackAnalytics', {
+        event: 'Onboarding',
+        properties: {
+          category: 'Onboarding',
+          action: 'User Onboarded'
+        }
+      })
+      break
   }
 })
