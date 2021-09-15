@@ -273,6 +273,7 @@ export default {
       'accountItem',
       'client'
     ]),
+    ...mapActions(['trackAnalytics']),
     account () {
       return this.accountItem(this.accountId)
     },
@@ -384,7 +385,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateFees', 'sendTransaction']),
+    ...mapActions(['updateFees', 'sendTransaction', 'trackAnalytics']),
     prettyBalance,
     dpUI,
     prettyFiatBalance,
@@ -554,6 +555,14 @@ export default {
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(0)
     await this.updateMaxSendFees()
+    await this.trackAnalytics({
+      event: 'Send screen',
+      properties: {
+        category: 'Send/Receive',
+        action: 'User on Send screen',
+        label: `${this.asset}`
+      }
+    })
   },
   watch: {
     selectedFee: {
