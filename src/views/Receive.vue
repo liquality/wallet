@@ -194,7 +194,7 @@ export default {
         event: 'Receive copy address',
         properties: {
           category: 'Send/Receive',
-          action: 'Use copied address',
+          action: 'User copied address',
           label: `${this.asset} (${this.chainName}) address ${this.address}`
         }
       })
