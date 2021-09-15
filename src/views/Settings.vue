@@ -165,6 +165,13 @@ export default {
       })
     },
     async forgetAllDappConnections () {
+      this.trackAnalytics({
+        event: 'Forgot all Dapp Connections',
+        properties: {
+          category: 'Settings',
+          action: 'Forgot all Dapp Connections'
+        }
+      })
       this.forgetAllDappsDone = false
       await this.forgetDappConnections()
       this.forgetAllDappsDone = true

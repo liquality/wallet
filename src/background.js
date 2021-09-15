@@ -79,9 +79,9 @@ store.subscribe(async ({
         properties: {
           category: 'Swaps',
           action: 'Swap Initiated',
-          label: `Swap ${payload.swap.from} 
-                  to ${payload.swap.to} (${payload.swap.provider}) 
-                  with fee: ${payload.feeLabel} and claim fee: ${payload.claimFeeLabel}`
+          label: [`Swap ${payload.swap.from} to ${payload.swap.to}`,
+                  `${payload.swap.provider}`,
+                  `with fee: ${payload.feeLabel} and claim fee: ${payload.claimFeeLabel}`]
         }
       })
       break
@@ -92,7 +92,8 @@ store.subscribe(async ({
         properties: {
           category: 'Send/Receive',
           action: 'Funds sent',
-          label: `Send ${payload.transaction.from} with fee: ${payload.feeLabel}`
+          label: [`Send ${payload.transaction.from}`,
+            `fee: ${payload.feeLabel}`]
         }
       })
       break
@@ -123,7 +124,7 @@ store.subscribe(async ({
         properties: {
           category: 'Settings',
           action: 'Custom Token Added',
-          label: `${payload.customToken.name} (${payload.customToken.chain}) (${payload.customToken.symbol})`
+          label: [`${payload.customToken.name}`, `(${payload.customToken.chain})`, `(${payload.customToken.symbol})`]
         }
       })
       break

@@ -59,8 +59,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['unlockWallet']),
+    ...mapActions(['unlockWallet', 'trackAnalytics']),
     async unlock () {
+      this.trackAnalytics({
+        event: 'Show Seed Phrase',
+        properties: {
+          category: 'BackupSeed',
+          action: 'Click I have Privacy',
+          label: ['I have Privacy']
+        }
+      })
       this.error = null
       this.loading = true
       try {

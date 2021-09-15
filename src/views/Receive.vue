@@ -180,13 +180,21 @@ export default {
     ...mapActions(['getUnusedAddresses', 'trackAnalytics']),
     getAssetIcon,
     async copy () {
+      this.trackAnalytics({
+        event: 'Receive screen',
+        properties: {
+          category: 'Send/Receive',
+          action: 'User on Receive screen',
+          label: `${this.asset}`
+        }
+      })
       await navigator.clipboard.writeText(this.address)
       this.copied = true
-      await this.trackAnalytics({
+      this.trackAnalytics({
         event: 'Receive copy address',
         properties: {
           category: 'Send/Receive',
-          action: 'Receive Copy address',
+          action: 'Use copied address',
           label: `${this.asset} (${this.chainName}) address ${this.address}`
         }
       })
