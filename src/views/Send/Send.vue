@@ -273,7 +273,6 @@ export default {
       'accountItem',
       'client'
     ]),
-    ...mapActions(['trackAnalytics']),
     account () {
       return this.accountItem(this.accountId)
     },
