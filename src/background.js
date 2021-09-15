@@ -127,6 +127,16 @@ store.subscribe(async ({
         }
       })
       break
+    case 'REMOVE_CUSTOM_TOKEN':
+      dispatch('trackAnalytics', {
+        event: 'Custom Token Removed',
+        properties: {
+          category: 'Settings',
+          action: 'Custom Token Removed',
+          label: `${payload.customToken.symbol})`
+        }
+      })
+      break
     case 'UPDATE_HISTORY':
       // eslint-disable-next-line
       const item = getters.historyItemById(payload.network, payload.walletId, payload.id)

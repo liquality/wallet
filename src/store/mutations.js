@@ -166,6 +166,13 @@ export default {
     ensureNetworkWalletTree(state.customTokens, network, walletId, [])
     state.customTokens[network][walletId].push(customToken)
   },
+  REMOVE_CUSTOM_TOKEN (state, { network, walletId, customToken }) {
+    ensureNetworkWalletTree(state.customTokens, network, walletId, [])
+    const indexOfToken = state.customTokens[network][walletId].findIndex(token => token.symbol === customToken.symbol)
+    if (indexOfToken !== -1) {
+      state.customTokens[network][walletId].splice(indexOfToken, 1)
+    }
+  },
 
   // ACCOUNTS
   CREATE_ACCOUNT (state, { network, walletId, account }) {

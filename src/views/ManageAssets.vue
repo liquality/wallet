@@ -32,6 +32,7 @@
         <div class="asset-item_toggle" :id="asset + '_toggle_button'">
           <toggle-button :css-colors="true" :value="isAssetEnabled(asset)" @change="e => toggleAsset(asset, e.value)" />
         </div>
+          <button v-if='isCustomToken(asset)' class="btn btn-outline-clear btn-sm"  :id="asset + '_remove_custom_token'" @click="removeToken(asset)" > Remove</button>
       </div>
     </div>
     <div v-if="search" class="wrapper manage-assets_bottomSection">
@@ -62,7 +63,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets', 'balances']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets', 'balances', 'customTokens']),
     networkAssets () {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
     },
@@ -84,7 +85,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['enableAssets', 'disableAssets']),
+    ...mapActions(['enableAssets', 'disableAssets', 'removeCustomToken']),
     getAssetIcon,
     getAssetName (asset) {
       return cryptoassets[asset]?.name || asset
@@ -98,6 +99,14 @@ export default {
     },
     clearSearch () {
       this.search = ''
+    },
+    removeToken (asset) {
+      const params = { network: this.activeNetwork, walletId: this.activeWalletId, symbol: asset }
+      this.removeCustomToken(params)
+    },
+    isCustomToken (asset) {
+      const customTokens = this.customTokens?.[this.activeNetwork]?.[this.activeWalletId]
+      return customTokens instanceof Array ? customTokens.findIndex(token => token.symbol === asset) !== -1 : false
     }
   },
   watch: {
@@ -114,6 +123,9 @@ export default {
   flex-direction: column;
   min-height: 0;
 
+  #remove_custom_token {
+    margin-left: 5px;
+  }
   &_customText {
     font-size: $font-size-lg;
   }
