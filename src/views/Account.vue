@@ -236,7 +236,7 @@ export default {
         properties: {
           category: `${this.activeNetwork}`,
           action: `${chain}`,
-          label: `${this.asset} (${chain}) holds ${this.balance}`
+          label: `${this.asset} (${chain})`
         }
       })
     }
