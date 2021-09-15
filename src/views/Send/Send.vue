@@ -400,7 +400,9 @@ export default {
           sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
         if (this.asset === 'BTC') {
-          const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)
+          const client = this.client({
+            network: this.activeNetwork, walletId: this.activeWalletId, asset: this.asset, accountId: this.account.id
+          })
           const feePerBytes = Object.values(this.assetFees).map(fee => fee.fee)
           const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
           try {
