@@ -5,7 +5,9 @@ import {
 import cryptoassets from '@/utils/cryptoassets'
 import * as ethers from 'ethers'
 import tokenABI from './tokenABI.json'
-import buildConfig from '../build.config'
+
+// Only bsc mainnet, ropsten testnet, eth mainnet & polygon mainnet are supported
+import { evmChainToRpcProviders } from '@utils/pocket-rpc'
 
 const EXPLORERS = {
   ethereum: {
@@ -165,12 +167,12 @@ export const getExplorerTransactionHash = (asset, hash) => {
 export const tokenDetailProviders = {
   ethereum: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, `https://eth-mainnet.gateway.pokt.network/v1/lb/${buildConfig.pocketApiKey}`)
+      return await fetchTokenDetails(contractAddress, evmChainToRpcProviders[1])
     }
   },
   polygon: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, `https://poly-mainnet.gateway.pokt.network/v1/lb/${buildConfig.pocketApiKey}`)
+      return await fetchTokenDetails(contractAddress, evmChainToRpcProviders[137])
     }
   },
   rsk: {
@@ -180,7 +182,7 @@ export const tokenDetailProviders = {
   },
   bsc: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, `https://bsc-mainnet.gateway.pokt.network/v1/lb/${buildConfig.pocketApiKey}`)
+      return await fetchTokenDetails(contractAddress, evmChainToRpcProviders[56])
     }
   },
   arbitrum: {
