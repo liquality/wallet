@@ -59,7 +59,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['unlockWallet']),
+    ...mapActions(['unlockWallet', 'trackAnalytics']),
     async unlock () {
       this.error = null
       this.loading = true
@@ -76,6 +76,14 @@ export default {
       } finally {
         this.loading = false
       }
+      this.trackAnalytics({
+        event: 'BackupSeed',
+        properties: {
+          category: 'Show Seed Phrase',
+          action: 'Click I have Privacy',
+          label: [`${this.error}`]
+        }
+      })
     }
   }
 }

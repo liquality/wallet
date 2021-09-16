@@ -22,7 +22,7 @@
                          @chain-changed="updateInjectEthereumChain"/>
         </div>
       </div>
-      <div class="setting-item" id="settings_item_wallet_logs">
+      <div class="setting-item" id="forgetAllDappsDone">
         <div class="setting-item_title flex-fill mb-2">Dapp Connections
           <span class="setting-item_sub">Forget all of the dapps connected.</span>
         </div>
@@ -127,7 +127,7 @@ export default {
     updateInjectEthereumChain (chain) {
       this.setEthereumInjectionChain({ chain })
       this.trackAnalytics({
-        event: `Web3 Network Update (${chain})`,
+        event: 'Web3 Network Update',
         properties: {
           category: 'Settings',
           action: 'Web3 Network Updated',
@@ -144,7 +144,7 @@ export default {
         event: 'Analytics Updated',
         properties: {
           category: 'Settings',
-          action: 'Analytics Updated',
+          action: 'Analytics toggle button on/off',
           label: `${enable}`
         }
       })
@@ -165,6 +165,13 @@ export default {
       })
     },
     async forgetAllDappConnections () {
+      this.trackAnalytics({
+        event: 'Forgot all Dapp Connections',
+        properties: {
+          category: 'Settings',
+          action: 'Forgot all Dapp Connections'
+        }
+      })
       this.forgetAllDappsDone = false
       await this.forgetDappConnections()
       this.forgetAllDappsDone = true
