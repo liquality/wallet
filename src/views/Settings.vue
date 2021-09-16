@@ -22,7 +22,7 @@
                          @chain-changed="updateInjectEthereumChain"/>
         </div>
       </div>
-      <div class="setting-item" id="settings_item_wallet_logs">
+      <div class="setting-item" id="forgetAllDappsDone">
         <div class="setting-item_title flex-fill mb-2">Dapp Connections
           <span class="setting-item_sub">Forget all of the dapps connected.</span>
         </div>
