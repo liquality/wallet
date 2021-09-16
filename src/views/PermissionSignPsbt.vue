@@ -85,6 +85,9 @@ export default {
     logo () {
       return LogoWallet
     },
+    accountId () {
+      return this.request.accountId
+    },
     asset () {
       return this.request.asset
     },
@@ -123,7 +126,9 @@ export default {
     }
   },
   async created () {
-    const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)
+    const client = this.client({
+      network: this.activeNetwork, walletId: this.activeWalletId, asset: this.asset, accountId: this.accountId
+    })
 
     const maxAddresses = 500
     const addressesPerCall = 50

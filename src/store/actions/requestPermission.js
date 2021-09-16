@@ -34,7 +34,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
     if (!state.unlockedAt) throw new Error('Wallet is locked. Unlock the wallet first.')
     if (!state.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
 
-    let { asset, method, args } = data
+    let { asset, accountId, method, args } = data
 
     if (!ALLOWED.some(re => re.test(method))) throw new Error('Method not allowed')
 
@@ -54,6 +54,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
     const request = {
       origin,
       asset,
+      accountId,
       network,
       walletId,
       method,

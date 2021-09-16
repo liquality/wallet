@@ -1,13 +1,7 @@
-import { assets } from '@liquality/cryptoassets'
-
 export const executeRequest = async ({ getters, dispatch, state, rootState }, { request }) => {
   // Send transactions through wallet managed action
-  const { network, walletId, asset, origin } = request
+  const { network, walletId, asset, accountId } = request
   const { accountItem } = getters
-  const { externalConnections, activeWalletId } = state
-  const chain = assets[asset].chain
-  const accountList = { ...externalConnections }[activeWalletId]?.[origin]?.[chain] || []
-  const [accountId] = accountList
   const account = accountItem(accountId)
   let call
   const result = await new Promise((resolve, reject) => {
@@ -16,12 +10,12 @@ export const executeRequest = async ({ getters, dispatch, state, rootState }, { 
         network,
         walletId,
         asset,
+        accountId,
         to: request.args[0].to,
         amount: request.args[0].value,
         data: request.args[0].data,
         fee: request.args[0].fee,
-        gas: request.args[0].gas,
-        accountId
+        gas: request.args[0].gas
       })
     } else {
     // Otherwise build client
