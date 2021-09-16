@@ -165,12 +165,12 @@ export const getExplorerTransactionHash = (asset, hash) => {
 export const tokenDetailProviders = {
   ethereum: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`)
+      return await fetchTokenDetails(contractAddress, `https://eth-mainnet.gateway.pokt.network/v1/lb/${buildConfig.pocketApiKey}`)
     }
   },
   polygon: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, 'https://rpc-mainnet.matic.network/')
+      return await fetchTokenDetails(contractAddress, `https://poly-mainnet.gateway.pokt.network/v1/lb/${buildConfig.pocketApiKey}`)
     }
   },
   rsk: {
@@ -180,7 +180,7 @@ export const tokenDetailProviders = {
   },
   bsc: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, 'https://bsc-dataseed.binance.org')
+      return await fetchTokenDetails(contractAddress, `https://bsc-mainnet.gateway.pokt.network/v1/lb/${buildConfig.pocketApiKey}`)
     }
   },
   arbitrum: {

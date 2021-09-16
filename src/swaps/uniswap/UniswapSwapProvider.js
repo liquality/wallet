@@ -9,7 +9,6 @@ import UniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import UniswapV2Router from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
 import * as ethers from 'ethers'
 
-import buildConfig from '../../build.config'
 import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isEthereumChain, isERC20 } from '../../utils/asset'
@@ -17,6 +16,9 @@ import { prettyBalance } from '../../utils/coinFormatter'
 import { ChainNetworks } from '@/utils/networks'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
 import { SwapProvider } from '../SwapProvider'
+
+// Only bsc mainnet, ropsten testnet, eth mainnet & polygon mainnet are supported
+import { evmChainToRpcProviders } from '@utils/pocket-rpc'
 
 const SWAP_DEADLINE = 30 * 60 // 30 minutes
 
@@ -36,7 +38,7 @@ class UniswapSwapProvider extends SwapProvider {
     if (chainId in this._apiCache) {
       return this._apiCache[chainId]
     } else {
-      const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
+      const api = new ethers.providers.StaticJsonRpcProvider(evmChainToRpcProviders[chainId])
       this._apiCache[chainId] = api
       return api
     }

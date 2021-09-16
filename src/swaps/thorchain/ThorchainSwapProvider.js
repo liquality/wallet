@@ -4,7 +4,6 @@ import * as ethers from 'ethers'
 import { v4 as uuidv4 } from 'uuid'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
-import buildConfig from '../../build.config'
 import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isERC20 } from '../../utils/asset'
@@ -16,6 +15,9 @@ import { baseAmount, baseToAsset, assetFromString } from '@xchainjs/xchain-util'
 import { SwapProvider } from '../SwapProvider'
 import { getTxFee } from '../../utils/fees'
 import { mapValues } from 'lodash-es'
+
+// Only bsc mainnet, ropsten testnet, eth mainnet & polygon mainnet are supported
+import { evmChainToRpcProviders } from '@utils/pocket-rpc'
 
 // Pool balances are denominated with 8 decimals
 const THORCHAIN_DECIMAL = 8
@@ -130,7 +132,7 @@ class ThorchainSwapProvider extends SwapProvider {
     const fromChain = cryptoassets[quote.from].chain
     const chainId = ChainNetworks[fromChain][network].chainId
 
-    const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
+    const api = new ethers.providers.StaticJsonRpcProvider(evmChainToRpcProviders[chainId])
     const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
 
     const inboundAddresses = await this._getInboundAddresses()
@@ -184,7 +186,7 @@ class ThorchainSwapProvider extends SwapProvider {
     const routerAddress = inboundAddresses.find(inbound => inbound.chain === fromThorchainAsset.chain).router
 
     const chainId = ChainNetworks[cryptoassets[quote.from].chain][network].chainId
-    const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
+    const api = new ethers.providers.StaticJsonRpcProvider(evmChainToRpcProviders[chainId])
     const tokenAddress = isERC20(quote.from) ? cryptoassets[quote.from].contractAddress : '0x0000000000000000000000000000000000000000'
     const thorchainRouter = new ethers.Contract(routerAddress, ['function deposit(address payable vault, address asset, uint amount, string memory memo) external payable'], api)
 

@@ -9,16 +9,13 @@ import { prettyBalance } from '../../utils/coinFormatter'
 import { isEthereumChain, isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import * as ethers from 'ethers'
-import buildConfig from '../../build.config'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
+
+// Only bsc mainnet, ropsten testnet, eth mainnet & polygon mainnet are supported
+import { evmChainToRpcProviders } from '@utils/pocket-rpc'
 
 const nativeAssetAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const slippagePercentage = 0.5
-const chainToRpcProviders = {
-  1: `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`,
-  56: 'https://bsc-dataseed.binance.org',
-  137: 'https://rpc-mainnet.matic.network'
-}
 
 class OneinchSwapProvider extends SwapProvider {
   async getSupportedPairs () {
@@ -43,7 +40,7 @@ class OneinchSwapProvider extends SwapProvider {
     const fromAmountInUnit = BN(currencyToUnit(cryptoassets[from], BN(amount)))
     const chainIdFrom = ChainNetworks[cryptoassets[from].chain][network].chainId
     const chainIdTo = ChainNetworks[cryptoassets[to].chain][network].chainId
-    if (chainIdFrom !== chainIdTo || !chainToRpcProviders[chainIdFrom]) return null
+    if (chainIdFrom !== chainIdTo || !evmChainToRpcProviders[chainIdFrom]) return null
 
     const trade = await this._getQuote(chainIdFrom, from, to, fromAmountInUnit.toNumber())
     const toAmountInUnit = BN(trade.data.toTokenAmount)
@@ -60,9 +57,9 @@ class OneinchSwapProvider extends SwapProvider {
     const fromChain = cryptoassets[quote.from].chain
     const toChain = cryptoassets[quote.to].chain
     const chainId = ChainNetworks[fromChain][network].chainId
-    if (fromChain !== toChain || !chainToRpcProviders[chainId]) return null
+    if (fromChain !== toChain || !evmChainToRpcProviders[chainId]) return null
 
-    const api = new ethers.providers.StaticJsonRpcProvider(chainToRpcProviders[chainId])
+    const api = new ethers.providers.StaticJsonRpcProvider(evmChainToRpcProviders[chainId])
     const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.toAccountId)
     const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
@@ -95,7 +92,7 @@ class OneinchSwapProvider extends SwapProvider {
     const toChain = cryptoassets[quote.to].chain
     const fromChain = cryptoassets[quote.from].chain
     const chainId = ChainNetworks[toChain][network].chainId
-    if (toChain !== fromChain || !chainToRpcProviders[chainId]) return null
+    if (toChain !== fromChain || !evmChainToRpcProviders[chainId]) return null
 
     const account = this.getAccount(quote.fromAccountId)
     const client = this.getClient(network, walletId, quote.from, account?.type)

@@ -33,6 +33,7 @@ export default {
     ]
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
+  pocketApiKey: '61439bb937e52c00344102a5',
   exploraApis: {
     testnet: 'https://liquality.io/testnet/electrs',
     mainnet: 'https://api-mainnet-bitcoin-electrs.liquality.io'
