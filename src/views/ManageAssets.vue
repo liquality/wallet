@@ -32,7 +32,7 @@
         <div class="asset-item_toggle" :id="asset + '_toggle_button'">
           <toggle-button :css-colors="true" :value="isAssetEnabled(asset)" @change="e => toggleAsset(asset, e.value)" />
         </div>
-          <button v-if='isCustomToken(asset)' class="btn btn-outline-clear btn-sm"  :id="asset + '_remove_custom_token'" @click="removeToken(asset)" > Remove</button>
+          <button v-if='isCustomToken(asset)' class="btn btn-outline-clear btn-sm remove-btn"  :id="asset + '_remove_custom_token'" @click="removeToken(asset)" > Remove</button>
       </div>
     </div>
     <div v-if="search" class="wrapper manage-assets_bottomSection">
@@ -123,7 +123,7 @@ export default {
   flex-direction: column;
   min-height: 0;
 
-  #remove_custom_token {
+  .remove-btn{
     margin-left: 5px;
   }
   &_customText {
