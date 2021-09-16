@@ -127,7 +127,7 @@ export default {
     updateInjectEthereumChain (chain) {
       this.setEthereumInjectionChain({ chain })
       this.trackAnalytics({
-        event: `Web3 Network Update (${chain})`,
+        event: 'Web3 Network Update',
         properties: {
           category: 'Settings',
           action: 'Web3 Network Updated',
@@ -144,7 +144,7 @@ export default {
         event: 'Analytics Updated',
         properties: {
           category: 'Settings',
-          action: 'Analytics Updated',
+          action: 'Analytics toggle button on/off',
           label: `${enable}`
         }
       })
