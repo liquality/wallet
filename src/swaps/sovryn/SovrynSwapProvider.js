@@ -15,7 +15,7 @@ import SovrynSwapNetworkABI from './abiSovrynSwapNetwork'
 import RBTCWrapperProxyABI from './abiRBTCWrapperProxy'
 
 // use WRBTC address for RBTC native token
-const nativeAssetAddress = {
+const wrappedRbtcAddress = {
   mainnet: '0x542fDA317318eBF1d3DEAf76E0b632741A7e677d',
   testnet: '0x69FE5cEC81D5eF92600c1A0dB1F11986AB3758Ab'
 }
@@ -36,16 +36,16 @@ class SovrynSwapProvider extends SwapProvider {
     const toInfo = cryptoassets[to]
 
     // only RSK network swaps
-    if (fromInfo.chain !== 'rsk' || toInfo.chain !== 'rsk' || amount < 0) return null
+    if (fromInfo.chain !== 'rsk' || toInfo.chain !== 'rsk' || amount <= 0) return null
 
-    const fromAddress = (fromInfo.contractAddress || nativeAssetAddress[network]).toLowerCase()
-    const toAddress = (toInfo.contractAddress || nativeAssetAddress[network]).toLowerCase()
+    const fromTokenAddress = (fromInfo.contractAddress || wrappedRbtcAddress[network]).toLowerCase()
+    const toTokenAddress = (toInfo.contractAddress || wrappedRbtcAddress[network]).toLowerCase()
     const fromAmountInUnit = currencyToUnit(fromInfo, BN(amount))
 
     const ssnContract = new ethers.Contract(this.config.routerAddress.toLowerCase(), SovrynSwapNetworkABI, this._getApi(network, from))
 
     // generate path
-    const path = await ssnContract.conversionPath(fromAddress, toAddress)
+    const path = await ssnContract.conversionPath(fromTokenAddress, toTokenAddress)
     // calculate rates
     const rate = await ssnContract.rateByPath(path, fromAmountInUnit.toString(10))
 
@@ -155,14 +155,15 @@ class SovrynSwapProvider extends SwapProvider {
     } else {
       routerAddress = this.config.routerAddress.toLowerCase()
       const ssnContract = new ethers.Contract(routerAddress, SovrynSwapNetworkABI, api)
+
       // ignore affiliate and beneficiary
       encodedData = ssnContract.interface.encodeFunctionData('convertByPath', [
         coversionPath,
         quote.fromAmount,
         toAmountWithSlippage,
-        '0x0000000000000000000000000000000000000000',
-        '0x0000000000000000000000000000000000000000',
-        0
+        '0x0000000000000000000000000000000000000000', // account that will receive the conversion result or 0x0 to send the result to the sender account
+        '0x0000000000000000000000000000000000000000', // wallet address to receive the affiliate fee or 0x0 to disable affiliate fee
+        0 // affiliate fee in PPM or 0 to disable affiliate fee
       ])
     }
 
