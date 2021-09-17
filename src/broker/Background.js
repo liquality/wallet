@@ -165,6 +165,13 @@ class Background {
     const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
                     Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
 
+    // Add `accountId` into the request if allowed
+    if (allowed) {
+      const accountList = { ...externalConnections }[activeWalletId]?.[origin]?.[chain] || []
+      const [accountId] = accountList
+      data = { ...data, accountId }
+    }
+
     switch (type) {
       case 'ENABLE_REQUEST':
         if (allowed) {

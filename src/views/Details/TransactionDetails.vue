@@ -224,11 +224,12 @@ export default {
       }
     },
     async updateTransaction () {
-      const client = this.client(
-        this.activeNetwork,
-        this.activeWalletId,
-        this.item.from
-      )
+      const client = this.client({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        asset: this.item.from,
+        accountId: this.item.accountId
+      })
       const transaction =
         (await client.chain.getTransactionByHash(this.item.txHash)) ||
         this.item.tx

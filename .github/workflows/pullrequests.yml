@@ -15,13 +15,13 @@ jobs:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           args: install
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules

@@ -22,6 +22,24 @@
                          @chain-changed="updateInjectEthereumChain"/>
         </div>
       </div>
+      <div class="setting-item" id="forgetAllDappsDone">
+        <div class="setting-item_title flex-fill mb-2">Dapp Connections
+          <span class="setting-item_sub">Forget all of the dapps connected.</span>
+        </div>
+        <div class="setting-item_control">
+          <button class="btn btn-outline-primary"
+                  id="forget_all_connections_button"
+                  @click="forgetAllDappConnections"
+                  v-tooltip="{
+                    trigger: 'manual',
+                    content: 'Done!',
+                    hideOnTargetClick: false,
+                    show: forgetAllDappsDone
+                  }">
+                  Forget all connections
+          </button>
+        </div>
+      </div>
       <div class="setting-item" id="settings_item_default_wallet_analytics">
         <div class="setting-item_title flex-fill mb-2">Analytics
           <span class="setting-item_sub">Share where you click. No identifying data is collected.</span>
@@ -59,6 +77,11 @@ export default {
     NavBar,
     ChainDropdown
   },
+  data: function () {
+    return {
+      forgetAllDappsDone: false
+    }
+  },
   computed: {
     ...mapState([
       'activeNetwork',
@@ -83,7 +106,8 @@ export default {
       'setEthereumInjectionChain',
       'setAnalyticsResponse',
       'initializeAnalytics',
-      'trackAnalytics'
+      'trackAnalytics',
+      'forgetDappConnections'
     ]),
     toggleInjectEthereum (enable) {
       if (enable) {
@@ -103,7 +127,7 @@ export default {
     updateInjectEthereumChain (chain) {
       this.setEthereumInjectionChain({ chain })
       this.trackAnalytics({
-        event: `Web3 Network Update (${chain})`,
+        event: 'Web3 Network Update',
         properties: {
           category: 'Settings',
           action: 'Web3 Network Updated',
@@ -120,7 +144,7 @@ export default {
         event: 'Analytics Updated',
         properties: {
           category: 'Settings',
-          action: 'Analytics Updated',
+          action: 'Analytics toggle button on/off',
           label: `${enable}`
         }
       })
@@ -139,7 +163,25 @@ export default {
           action: 'Wallet Logs Accessed'
         }
       })
+    },
+    async forgetAllDappConnections () {
+      this.trackAnalytics({
+        event: 'Forgot all Dapp Connections',
+        properties: {
+          category: 'Settings',
+          action: 'Forgot all Dapp Connections'
+        }
+      })
+      this.forgetAllDappsDone = false
+      await this.forgetDappConnections()
+      this.forgetAllDappsDone = true
+      setTimeout(() => {
+        this.forgetAllDappsDone = false
+      }, 4000)
     }
+  },
+  created () {
+    this.forgetAllDappsDone = false
   }
 }
 </script>
