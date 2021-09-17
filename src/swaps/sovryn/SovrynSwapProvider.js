@@ -40,20 +40,20 @@ class SovrynSwapProvider extends SwapProvider {
 
     const fromTokenAddress = (fromInfo.contractAddress || wrappedRbtcAddress[network]).toLowerCase()
     const toTokenAddress = (toInfo.contractAddress || wrappedRbtcAddress[network]).toLowerCase()
-    const fromAmountInUnit = currencyToUnit(fromInfo, BN(amount))
+    const fromAmountInUnit = currencyToUnit(fromInfo, BN(amount)).toFixed()
 
     const ssnContract = new ethers.Contract(this.config.routerAddress.toLowerCase(), SovrynSwapNetworkABI, this._getApi(network, from))
 
     // generate path
     const path = await ssnContract.conversionPath(fromTokenAddress, toTokenAddress)
     // calculate rates
-    const rate = await ssnContract.rateByPath(path, fromAmountInUnit.toString(10))
+    const rate = await ssnContract.rateByPath(path, fromAmountInUnit)
 
     return {
       from,
       to,
-      fromAmount: fromAmountInUnit.toString(10),
-      toAmount: rate.toString(10),
+      fromAmount: fromAmountInUnit,
+      toAmount: rate.toString(),
       path: path
     }
   }
