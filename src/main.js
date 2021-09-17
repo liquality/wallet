@@ -8,7 +8,7 @@ import Hotjar from 'vue-hotjar'
 
 import '@/assets/scss/style.scss'
 
-Vue.use (Hotjar, {
+Vue.use(Hotjar, {
   id: '1260353'
 })
 Vue.use(ToggleButton)
