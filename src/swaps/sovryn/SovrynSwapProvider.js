@@ -217,14 +217,10 @@ class SovrynSwapProvider extends SwapProvider {
       gasLimit += await client.getMethod('estimateGas')(rawApprovalTx)
     }
 
-    const swapTx = await this.buildSwapTx({ network, walletId, quote })
-    const rawSwapTx = {
-      from: swapTx.from,
-      to: swapTx.to,
-      data: swapTx.data,
-      value: '0x' + swapTx.value.toString(16)
-    }
-    gasLimit += await client.getMethod('estimateGas')(rawSwapTx)
+    // Due to a problem on RSK network with incorrect gas estimations, the gas used by swap transaction
+    // is hardcoded to 750k. This value is recommended by Sovryn team! Real gas usage is between 380k and 500k
+    // and it depends on the number of steps in the conversion path.
+    gasLimit += 750000
 
     const fees = {}
     for (const feePrice of feePrices) {
