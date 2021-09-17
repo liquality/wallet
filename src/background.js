@@ -116,7 +116,9 @@ store.subscribe(async ({
         properties: {
           category: 'Dapps',
           action: 'Dapp Injected',
-          label: `Connect to ${payload.origin} (${payload.chain})`
+          label: `Connect to ${payload.origin} (${payload.chain})`,
+          dappOrigin: `${payload.origin}`,
+          chain: `${payload.chain}`
         }
       })
       break
