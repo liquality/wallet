@@ -26,7 +26,6 @@ export default {
         testnet: []
       })
     }
-    state.rskLegacyDerivation = rskLegacyDerivation
   },
   ACCEPT_TNC (state) {
     state.termsAcceptedAt = Date.now()
@@ -167,6 +166,13 @@ export default {
     ensureNetworkWalletTree(state.customTokens, network, walletId, [])
     state.customTokens[network][walletId].push(customToken)
   },
+  REMOVE_CUSTOM_TOKEN (state, { network, walletId, customToken }) {
+    ensureNetworkWalletTree(state.customTokens, network, walletId, [])
+    const indexOfToken = state.customTokens[network][walletId].findIndex(token => token.symbol === customToken.symbol)
+    if (indexOfToken !== -1) {
+      state.customTokens[network][walletId].splice(indexOfToken, 1)
+    }
+  },
 
   // ACCOUNTS
   CREATE_ACCOUNT (state, { network, walletId, account }) {
@@ -257,6 +263,9 @@ export default {
     const accounts = state.externalConnections[activeWalletId]?.[origin]?.[chain] || []
     Vue.set(state.externalConnections[activeWalletId][origin], chain, [...new Set([...accounts, accountId])])
   },
+  REMOVE_EXTERNAL_CONNECTIONS (state, { activeWalletId }) {
+    Vue.set(state.externalConnections, activeWalletId, {})
+  },
   SET_ANALYTICS_PREFERENCES (state, payload) {
     state.analytics = {
       ...state.analytics,
@@ -265,8 +274,5 @@ export default {
   },
   SET_WATS_NEW_MODAL_VERSION (state, { version }) {
     state.watsNewModalVersion = version
-  },
-  SET_RSK_LEGACY_DERIVATION_PATH_FLAG (state, { rskLegacyDerivation }) {
-    state.rskLegacyDerivation = rskLegacyDerivation
   }
 }

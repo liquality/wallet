@@ -1,4 +1,4 @@
-import { ChainNetworks } from '../store/utils'
+import { ChainNetworks } from '@/utils/networks'
 import buildConfig from '../build.config'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { assets } from '@liquality/cryptoassets'
@@ -162,6 +162,13 @@ class Background {
     const { externalConnections, activeWalletId } = this.store.state
     const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
                     Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
+
+    // Add `accountId` into the request if allowed
+    if (allowed) {
+      const accountList = { ...externalConnections }[activeWalletId]?.[origin]?.[chain] || []
+      const [accountId] = accountList
+      data = { ...data, accountId }
+    }
 
     switch (type) {
       case 'ENABLE_REQUEST':

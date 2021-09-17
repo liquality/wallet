@@ -51,21 +51,49 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['lockWallet']),
+    ...mapActions(['lockWallet', 'trackAnalytics']),
     async lock () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Lock'
+        }
+      })
       this.showMenuList = false
       await this.lockWallet()
       this.$router.replace('/open')
     },
     backup () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Backup Seed'
+        }
+      })
       this.showMenuList = false
       this.$router.replace('/privacywarning')
     },
     assets () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Manage Assets'
+        }
+      })
       this.showMenuList = false
       this.$router.replace('/settings/manage-assets')
     },
     settings () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Settings'
+        }
+      })
       this.showMenuList = false
       this.$router.replace('/settings')
     },

@@ -686,7 +686,8 @@ export default {
       'getQuotes',
       'updateFees',
       'newSwap',
-      'updateFiatRates'
+      'updateFiatRates',
+      'trackAnalytics'
     ]),
     shortenAddress,
     dpUI,
@@ -729,6 +730,14 @@ export default {
       this.resetFees()
       this.updateQuotes()
       this.updateFiatRates({ assets: [toAsset] })
+      this.trackAnalytics({
+        event: 'Swap screen',
+        properties: {
+          category: 'Swap screen',
+          action: 'User on SWAP screen',
+          label: `${this.toAsset}`
+        }
+      })
     },
     setFromAsset (asset) {
       this.asset = asset
@@ -916,7 +925,9 @@ export default {
           walletId: this.activeWalletId,
           quote: this.selectedQuote,
           fee,
-          claimFee: toFee
+          claimFee: toFee,
+          feeLabel: this.selectedFee[this.assetChain],
+          claimFeeLabel: this.selectedFee[this.toAssetChain]
         })
 
         this.signRequestModalOpen = false

@@ -15,13 +15,13 @@ jobs:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           args: install
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules
@@ -36,14 +36,15 @@ jobs:
       - name: Get Previous tag
         id: previous_tag
         run: echo ::set-output name=tag::$(git tag --sort v:refname | tail -n 2 | head -n 1)
+
       - name: Get next version
         id: semvers
         uses: WyriHaximus/github-action-next-semvers@v1.0
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
-    # Enable Amplitude Analytics only for minor prod releases.
-      - name: Enable Analytics & Set development agents (minor for Prod)
+    # Minor PROD releases.
+      - name: Set development agents (minor for PROD)
         if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
@@ -53,10 +54,13 @@ jobs:
             npm run lint
             npm run build
 
-    # Build the extension for DEV store.
-      - name: Set development agents(patch for dev)
+    # Patch DEV release.
+      - name: Set development agents(patch for DEV)
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+        env:
+          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
         run: |
+          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
           sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
@@ -64,11 +68,7 @@ jobs:
           npm run lint
           npm run build
 
-      - name: screenshots directory
-        if: always()
-        run: |
-          mkdir screenshots
-
+      - run: mkdir screenshots
       - name: MainNet e2e tests
         uses: beemi/puppeteer-headful@v1.0.6
         env:
