@@ -153,7 +153,8 @@ export default {
         bsc: 1,
         polygon: 1,
         near: 0.00001,
-        solana: 0.00001
+        solana: 0.00001,
+        terra: 0.00001
       })[chainId] || 1
     }
   },

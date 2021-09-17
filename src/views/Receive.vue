@@ -106,7 +106,8 @@ export default {
         solana: 'solana',
         rsk: 'ethereum',
         bsc: 'ethereum',
-        polyon: 'ethereum'
+        polyon: 'ethereum',
+        terra: 'terra'
       })[cryptoassets[this.asset].chain]
     },
     faucet () {
@@ -143,7 +144,11 @@ export default {
           ARBETH: {
             name: 'ARBETH',
             url: 'https://faucet.rinkeby.io/'
-          }
+          },
+          ULUNA: { 
+            name: 'TERRA', 
+            url: 'https://faucet.terra.money/' 
+          },
         })[this.asset]
       }
       return null

@@ -28,6 +28,11 @@ import { SolanaWalletProvider } from '@liquality/solana-wallet-provider'
 import { SolanaSwapProvider } from '@liquality/solana-swap-provider'
 import { SolanaSwapFindProvider } from '@liquality/solana-swap-find-provider'
 
+import { TerraSwapProvider } from '@liquality/terra-swap-provider'
+import { TerraWalletProvider } from '@liquality/terra-wallet-provider'
+import { TerraRpcProvider } from '@liquality/terra-rpc-provider'
+import { TerraSwapFindProvider } from '@liquality/terra-swap-find-provider'
+
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
@@ -211,6 +216,30 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
+function createTerraClient(asset, network, mnemonic, indexPath = 0) {
+  const terraNetwork = ChainNetworks.terra[network]
+  const terraClient = new Client()
+  const derivationPath = ''
+
+  if (asset === 'UST') {
+    terraClient.addProvider(new TerraRpcProvider({ ...terraNetwork, asset: 'uusd' }))
+  } else {
+    terraClient.addProvider(new TerraRpcProvider(terraNetwork))
+  }
+
+  terraClient.addProvider(new TerraWalletProvider(
+    {
+      network: terraNetwork,
+      mnemonic,
+      derivationPath
+    }
+  ))
+  terraClient.addProvider(new TerraSwapProvider(terraNetwork))
+  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork))
+
+  return terraClient
+}
+
 export const createClient = (asset, network, mnemonic, accountType, derivationPath) => {
   const assetData = cryptoassets[asset]
 
@@ -221,6 +250,7 @@ export const createClient = (asset, network, mnemonic, accountType, derivationPa
   if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, derivationPath)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, derivationPath)
   if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
+  if (assetData.chain === 'terra') return createTerraClient(asset, network, mnemonic, indexPath)
 
   return createEthClient(asset, network, mnemonic, accountType, derivationPath)
 }

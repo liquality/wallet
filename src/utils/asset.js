@@ -87,7 +87,17 @@ const EXPLORERS = {
       tx: 'https://explorer.arbitrum.io/tx/0x',
       address: 'https://explorer.arbitrum.io/address/0x'
     }
-  }
+  },
+  terra: {
+    testnet: { // TODO: REplace with links for terra
+      tx: 'https://explorer.testnet.near.org/transactions/',
+      address: 'https://explorer.testnet.near.org/accounts/'
+    },
+    mainnet: {
+      tx: 'https://explorer.mainnet.near.org/transactions/',
+      address: 'https://explorer.mainnet.near.org/accounts/'
+    }
+  },
 }
 
 export const isERC20 = asset => {

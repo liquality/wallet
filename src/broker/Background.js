@@ -16,7 +16,9 @@ class Background {
       const { url } = connection.sender
       const isInternal = url.startsWith(getRootURL())
 
-      if (isInternal) {
+      if (connection.name === 'TerraStationExtension') {
+        connectRemote(connection, store)
+      } else if (isInternal) {
         this.onInternalConnection(connection)
       } else {
         this.onExternalConnection(connection)

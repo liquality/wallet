@@ -176,6 +176,14 @@ class OverviewPage {
         break
       }
 
+      case 'ULUNA': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const terra = await page.waitForSelector('#TERRA', { visible: true })
+        await terra.click()
+        break
+      }
+
       default:
         throw Error(`Unsupported chain: ${chain}`)
     }
