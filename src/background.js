@@ -94,7 +94,7 @@ store.subscribe(async ({
         properties: {
           category: 'Send/Receive',
           action: 'Funds sent',
-          from: `Send from ${payload.swap.from}`,
+          from: `Send from ${payload.transaction.from}`,
           fee: `${payload.feeLabel}`
         }
       })
