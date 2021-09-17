@@ -79,9 +79,11 @@ store.subscribe(async ({
         properties: {
           category: 'Swaps',
           action: 'Swap Initiated',
-          label: [`Swap ${payload.swap.from} to ${payload.swap.to}`,
-                  `${payload.swap.provider}`,
-                  `with fee: ${payload.feeLabel} and claim fee: ${payload.claimFeeLabel}`]
+          from: `Swap from ${payload.swap.from}`,
+          to: `Swap to ${payload.swap.to}`,
+          swapProvider: `${payload.swap.provider}`,
+          fee: `${payload.feeLabel}`,
+          claimFee: `${payload.claimFeeLabel}`
         }
       })
       break
@@ -92,8 +94,8 @@ store.subscribe(async ({
         properties: {
           category: 'Send/Receive',
           action: 'Funds sent',
-          label: [`Send ${payload.transaction.from}`,
-            `fee: ${payload.feeLabel}`]
+          from: `Send from ${payload.swap.from}`,
+          fee: `${payload.feeLabel}`
         }
       })
       break
@@ -143,21 +145,23 @@ store.subscribe(async ({
       const item = getters.historyItemById(payload.network, payload.walletId, payload.id)
       if (item.type === 'SWAP' && payload.updates) {
         dispatch('trackAnalytics', {
-          event: `Swap status change ${payload.updates.status}`,
+          event: 'Swap status change',
           properties: {
             category: 'Swaps',
-            action: `Swap ${payload.updates.status}`,
-            label: `${item.from} to ${item.to}`
+            action: 'Swap Status changed',
+            label: `${item.from} to ${item.to}`,
+            swapStatus: `${payload.updates.status}`
           }
         })
       }
       if (item.type === 'SEND' && payload.updates) {
         dispatch('trackAnalytics', {
-          event: `Send status change ${payload.updates.status}`,
+          event: 'Send status change',
           properties: {
             category: 'Send/Receive',
-            action: `Send ${payload.updates.status}`,
-            label: `${item.from} send status ${payload.updates.status} `
+            action: 'Send Status changed',
+            asset: `${item.from}`,
+            sendStatus: `${payload.updates.status}`
           }
         })
       }
