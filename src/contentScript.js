@@ -9,7 +9,7 @@ import extension from 'extensionizer'
 import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
 
-;(new Script()).start()
+  ; (new Script()).start()
 
 inject(providerManager())
 inject(bitcoinProvider())
@@ -61,5 +61,25 @@ async function setupStreams() {
   console.log('Stream setup successfully')
 }
 
-setupStreams();
+
+
+function domIsReady() {
+  // already loaded
+  if (['interactive', 'complete'].includes(document.readyState)) {
+    return Promise.resolve()
+  }
+
+  // wait for load
+  return new Promise((resolve) =>
+    window.addEventListener('DOMContentLoaded', resolve, { once: true })
+  )
+}
+
+async function start() {
+  await setupStreams()
+  await domIsReady()
+}
+
+start()
+
 

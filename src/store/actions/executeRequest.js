@@ -12,6 +12,7 @@ export const executeRequest = async ({ getters, dispatch, state, rootState }, { 
   let call
   const result = await new Promise((resolve, reject) => {
     if (request.method === 'chain.sendTransaction') {
+      console.log(request.args[0])
       call = dispatch('sendTransaction', {
         network,
         walletId,
@@ -24,7 +25,7 @@ export const executeRequest = async ({ getters, dispatch, state, rootState }, { 
         accountId
       })
     } else {
-    // Otherwise build client
+      // Otherwise build client
       const client = getters.client(
         {
           network,

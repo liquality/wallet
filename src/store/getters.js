@@ -13,7 +13,7 @@ const TESTNET_CONTRACT_ADDRESSES = {
   SOV: '0x6a9A07972D07E58f0daF5122D11e069288A375fB',
   PWETH: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa'
 }
-const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'ULUNA', 'MATIC', 'PWETH', 'ARBETH'].reduce((assets, asset) => {
+const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'ULUNA', 'MATIC', 'PWETH', 'ARBETH', 'UST'].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
       ...cryptoassets[asset],
@@ -23,7 +23,7 @@ const TESTNET_ASSETS = ['BTC', 'ETH', 'RBTC', 'DAI', 'BNB', 'SOV', 'NEAR', 'ULUN
 }, {})
 
 export default {
-  client (state, getters) {
+  client(state, getters) {
     return ({
       network,
       walletId,
@@ -56,7 +56,7 @@ export default {
       return client
     }
   },
-  swapProvider (state) {
+  swapProvider(state) {
     return (network, providerId) => {
       const cacheKey = [network, providerId]
 
@@ -69,10 +69,10 @@ export default {
       return swapProvider
     }
   },
-  historyItemById (state) {
+  historyItemById(state) {
     return (network, walletId, id) => state.history[network][walletId].find(i => i.id === id)
   },
-  cryptoassets (state) {
+  cryptoassets(state) {
     const { activeNetwork, activeWalletId } = state
 
     const baseAssets = state.activeNetwork === 'testnet' ? TESTNET_ASSETS : cryptoassets
@@ -89,21 +89,21 @@ export default {
 
     return Object.assign({}, baseAssets, customAssets)
   },
-  networkAccounts (state) {
+  networkAccounts(state) {
     const { activeNetwork, activeWalletId, accounts } = state
     return accounts[activeWalletId]?.[activeNetwork] || []
   },
-  networkAssets (state) {
+  networkAssets(state) {
     const { enabledAssets, activeNetwork, activeWalletId } = state
     return enabledAssets[activeNetwork][activeWalletId]
   },
-  activity (state) {
+  activity(state) {
     const { history, activeNetwork, activeWalletId } = state
     if (!history[activeNetwork]) return []
     if (!history[activeNetwork][activeWalletId]) return []
     return history[activeNetwork][activeWalletId].slice().reverse()
   },
-  totalFiatBalance (_state, getters) {
+  totalFiatBalance(_state, getters) {
     const { accountsData } = getters
     return accountsData
       .filter(a => a.type === 'default')
@@ -112,14 +112,14 @@ export default {
         return accum.plus(BN(balance || 0))
       }, BN(0))
   },
-  accountItem (state, getters) {
+  accountItem(state, getters) {
     const { accountsData } = getters
     return (accountId) => {
       const account = accountsData.find(a => a.id === accountId)
       return account
     }
   },
-  accountsWithBalance (state, getters) {
+  accountsWithBalance(state, getters) {
     const { accountsData } = getters
     return accountsData.map(account => {
       const balances = Object.entries(account.balances)
@@ -136,7 +136,7 @@ export default {
       }
     }).filter(account => account.balances && Object.keys(account.balances).length > 0)
   },
-  accountsData (state, getters) {
+  accountsData(state, getters) {
     const { accounts, activeNetwork, activeWalletId } = state
     const { accountFiatBalance, assetFiatBalance } = getters
     return accounts[activeWalletId]?.[activeNetwork]
@@ -164,7 +164,7 @@ export default {
         return 0
       })
   },
-  accountFiatBalance (state, getters) {
+  accountFiatBalance(state, getters) {
     const { accounts } = state
     const { assetFiatBalance } = getters
     return (walletId, network, accountId) => {
@@ -179,7 +179,7 @@ export default {
       return BN(0)
     }
   },
-  assetFiatBalance (state) {
+  assetFiatBalance(state) {
     const { fiatRates } = state
     return (asset, balance) => {
       if (fiatRates && fiatRates[asset] && balance) {
@@ -189,7 +189,7 @@ export default {
       return null
     }
   },
-  chainAssets (state, getters) {
+  chainAssets(state, getters) {
     const { cryptoassets } = getters
 
     const chainAssets = Object.entries(cryptoassets).reduce((chains, [asset, assetData]) => {
@@ -200,7 +200,7 @@ export default {
     }, {})
     return chainAssets
   },
-  analyticsEnabled (state) {
+  analyticsEnabled(state) {
     if (state.analytics && state.analytics.acceptedDate != null) {
       return true
     }

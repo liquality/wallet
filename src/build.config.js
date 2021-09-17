@@ -17,7 +17,7 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
-      'LUNA'
+      'ULUNA'
     ],
     testnet: [
       'BTC',
@@ -30,7 +30,8 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
-      'ULUNA'
+      'ULUNA',
+      'UST'
     ]
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',

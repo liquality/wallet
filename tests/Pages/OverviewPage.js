@@ -8,7 +8,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async HasOverviewPageLoaded (page) {
+  async HasOverviewPageLoaded(page) {
     await page.waitForSelector('#overview', {
       visible: true
     })
@@ -23,7 +23,7 @@ class OverviewPage {
    * @constructor
    * @example - SelectNetwork(page,'testnet')
    */
-  async SelectNetwork (page, network = 'testnet') {
+  async SelectNetwork(page, network = 'testnet') {
     await page.waitForSelector('#head_network', { visible: true })
     await page.click('#head_network', { delay: 5 })
     await page.waitForTimeout(1000)
@@ -62,7 +62,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ValidateSendSwipeReceiveOptions (page) {
+  async ValidateSendSwipeReceiveOptions(page) {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#send_action', {
       visible: true,
@@ -89,7 +89,7 @@ class OverviewPage {
    * @constructor
    * @example SelectChain(page,'BITCOIN')
    */
-  async SelectChain (page, chain) {
+  async SelectChain(page, chain) {
     await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
       case 'BTC': {
@@ -171,7 +171,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async HasViewExplorerDisplayed (page, asset) {
+  async HasViewExplorerDisplayed(page, asset) {
     const id = `#${asset}_view_in_explorer`
     await page.waitForSelector(id, { visible: true })
     const explorerLink = await page.$eval(id, el => el.href)
@@ -187,7 +187,7 @@ class OverviewPage {
    * @constructor
    * @example SelectChain(page,'BTC')
    */
-  async ClickChainReceive (page, chainCode) {
+  async ClickChainReceive(page, chainCode) {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
     expect(code).equals(chainCode)
@@ -204,7 +204,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async CheckAssertOverviewDetails (page, assertCode) {
+  async CheckAssertOverviewDetails(page, assertCode) {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
     expect(code, 'Assert Code wrong').equals(assertCode)
@@ -225,7 +225,7 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async GetTotalAssets (page) {
+  async GetTotalAssets(page) {
     const assetsElement = await page.$('#total_assets')
     return (await assetsElement.getProperty('innerText')).jsonValue()
   }
@@ -236,7 +236,7 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async GetTotalLiquidity (page) {
+  async GetTotalLiquidity(page) {
     // Check the Total amount - 10s wait to load amount
     await page.waitForSelector('.wallet-stats_total', { timeout: 60000 })
     await page.waitForTimeout(10000)
@@ -249,7 +249,7 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async GetCurrency (page) {
+  async GetCurrency(page) {
     return await page.$eval('.wallet-stats', el => el.innerText)
   }
 
@@ -259,7 +259,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickSend (page) {
+  async ClickSend(page) {
     await page.waitForSelector('#send_action', { visible: true })
     await page.click('#send_action')
   }
@@ -270,7 +270,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickSwipe (page) {
+  async ClickSwipe(page) {
     await page.waitForSelector('#swap_action', { visible: true })
     await page.click('#swap_action')
     console.log('User clicked on SWAP button from overview page')
@@ -283,7 +283,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickLock (page) {
+  async ClickLock(page) {
     // Lock
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')

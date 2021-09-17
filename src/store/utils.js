@@ -46,16 +46,16 @@ export const unlockAsset = key => {
 
 const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
 
-export async function getPrices (baseCurrencies, toCurrency) {
+export async function getPrices(baseCurrencies, toCurrency) {
   const coindIds = baseCurrencies.filter(currency => cryptoassets[currency]?.coinGeckoId)
     .map(currency => cryptoassets[currency].coinGeckoId)
   const { data } = await axios.get(`${COIN_GECKO_API}/simple/price?ids=${coindIds.join(',')}&vs_currencies=${toCurrency}`)
-  
+
   let prices = mapKeys(data, (v, coinGeckoId) => findKey(cryptoassets, asset => asset.coinGeckoId === coinGeckoId))
   prices = mapValues(prices, rates => mapKeys(rates, (v, k) => k.toUpperCase()))
 
   for (let baseCurrency of baseCurrencies) {
-    baseCurrency = baseCurrency === 'LUNA' ? 'ULUNA' : baseCurrency;
+    baseCurrency = baseCurrency === 'ULUNA' ? 'ULUNA' : baseCurrency;
     if (!prices[baseCurrency] && cryptoassets[baseCurrency].matchingAsset) {
       prices[baseCurrency] = prices[cryptoassets[baseCurrency].matchingAsset]
     }
@@ -65,7 +65,6 @@ export async function getPrices (baseCurrencies, toCurrency) {
 }
 
 export const Networks = ['mainnet', 'testnet']
-
 export const ChainNetworks = {
   bitcoin: {
     testnet: BitcoinNetworks.bitcoin_testnet,

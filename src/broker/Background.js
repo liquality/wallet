@@ -267,7 +267,7 @@ const connectRemote = (remotePort, store) => {
       if (key === 'post') {
         const { fee, gasAdjustment, msgs } = payload;
         const { value: { contract, coins } } = JSON.parse(msgs)
-        console.log(coins[0])
+
         const args = [{
           to: contract,
           value: coins[0].amount,
@@ -286,8 +286,10 @@ const connectRemote = (remotePort, store) => {
           sendResponse('onPost', { success: true })
         })
 
-        store.dispatch('requestPermission', { origin, data: { args, method: 'chain.sendTransaction', asset: 'LUNA' } })
+        store.dispatch('requestPermission', { origin, data: { args, method: 'chain.sendTransaction', asset: 'ULUNA' } })
 
+      } else {
+        // handle sign
       }
     }
 

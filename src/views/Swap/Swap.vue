@@ -529,6 +529,7 @@ export default {
       if (!min.eq(0)) {
         return BN(min)
       } else if (this.fiatRates[this.asset]) {
+        console.log(this.asset)
         return BN.min(fiatToCrypto(DEFAULT_SWAP_VALUE_USD, this.fiatRates[this.asset]), this.available)
       } else {
         return BN(0)
@@ -588,7 +589,7 @@ export default {
     },
     amountError () {
       const amount = BN(this.safeAmount)
-
+    console.log(amount.toString(), this.available.toString())
       if (amount.gt(this.available)) {
         return 'Lower amount. This exceeds available balance.'
       }
