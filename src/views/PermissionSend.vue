@@ -346,7 +346,6 @@ export default {
       }
 
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
-      console.log(txCost)
       return txCost.dp(6)
     }
   },
