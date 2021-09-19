@@ -233,6 +233,20 @@ class SwapPage {
       'Max slippage is 0.5%.'
     ])
   }
+
+  /**
+   * Validate Swap is negative. Review transaction carefully.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ValidateNegativeMessage (page) {
+    await page.waitForSelector('#swap_is_negative', { visible: true })
+    const message = await page.$eval('#swap_is_negative', el => el.textContent)
+    expect(message).contains(
+      'Swap is negative. Review transaction carefully.'
+    )
+  }
 }
 
 module.exports = SwapPage
