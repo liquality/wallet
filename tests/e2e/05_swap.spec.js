@@ -132,8 +132,8 @@ describe('SWAP feature', async () => {
     await overviewPage.SelectNetwork(page)
     // Click on ETH then click on SWAP button
     await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector('#ETH_swap_button', { visible: true })
-    await page.click('#ETH_swap_button')
+    await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
+    await page.click(`#${asset1}_swap_button`)
     console.log(chalk.green('User clicked on ETH SWAP button'))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
@@ -143,15 +143,16 @@ describe('SWAP feature', async () => {
     await page.click('.swap-receive-main-icon')
     await page.waitForSelector('#ETHEREUM', { visible: true })
     await page.click('#ETHEREUM')
-    await page.waitForSelector('#DAI', { visible: true })
-    await page.click('#DAI')
+    await page.waitForSelector(`#${asset2}`, { visible: true })
+    await page.click(`#${asset2}`)
     // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
     await page.waitForSelector('#selectedQuote_provider', {
       visible: true,
       timeout: 60000
     })
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'ETH->DAI, Supporting source should be chosen!').oneOf(['Uniswap V2', 'Thorchain', 'Liquality'])
+      'ETH->DAI, Supporting source should be chosen!')
+      .oneOf(['Uniswap V2', 'Thorchain', 'Liquality'])
 
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
@@ -162,6 +163,9 @@ describe('SWAP feature', async () => {
 
     // Review Button
     await swapPage.ClickSwapReviewButton(page)
+    // ETH-> DAI Swap is negative. Review transaction carefully.
+    await swapPage.ValidateNegativeMessage(page)
+
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
@@ -481,6 +485,7 @@ describe('SWAP feature', async () => {
     console.log(`${asset1} SEND Network Fee value on SWAP review page`, swapSendNetworkFeeValue)
     expect(swapSendNetworkFeeValue.trim()).contain(asset1)
 
+    await page.waitForTimeout(2000)
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
     expect(swapSendNetworkFeeInDollar.trim(), `Send Network fee should not be $0.00 for ${asset1}`)
       .not.contain('$0.00')
