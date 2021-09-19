@@ -166,7 +166,6 @@ describe('SWAP feature', async () => {
     // ETH-> DAI Swap is negative. Review transaction carefully.
     await swapPage.ValidateNegativeMessage(page)
 
-
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(asset1)

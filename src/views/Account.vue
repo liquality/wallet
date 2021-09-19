@@ -232,11 +232,11 @@ export default {
 
     if (this.balance > 0) {
       this.trackAnalytics({
-        event: 'Hold Value',
+        event: 'Hold Asset',
         properties: {
-          category: 'Hold Value',
-          action: 'Asset value greater than 0',
-          label: `${this.asset} (${chain}) on ${this.activeNetwork}`
+          category: 'Hold Asset',
+          action: 'Hold asset greater than 0',
+          asset: `${this.asset}`
         }
       })
     }
