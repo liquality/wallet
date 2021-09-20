@@ -19,8 +19,7 @@ export default {
       'ARBETH',
       'FISH',
       'SOL',
-      'LUNA',
-      'UST'
+      'LUNA'
     ],
     testnet: [
       'BTC',
@@ -34,8 +33,7 @@ export default {
       'PWETH',
       'ARBETH',
       'SOL',
-      'ULUNA',
-      'UST'
+      'ULUNA'
     ]
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
@@ -53,7 +51,7 @@ export default {
         name: 'Liquality',
         icon: 'liquality.svg',
         type: SwapProviderType.LIQUALITY,
-        agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'http://localhost:3030'
+        agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet/agent'
       },
       uniswapV2: {
         name: 'Uniswap V2',
