@@ -8,25 +8,31 @@ import { TerraSwapFindProvider } from '@liquality/terra-swap-find-provider'
 
 test('Terra Network TesnetConfig', () => {
   expect(TerraNetworks.terra_testnet).toEqual({
-    name: 'devnet',
-    nodeUrl: 'http://liquality.devnet.rpcpool.com/',
-    helperUrl: 'https://explorer-api.devnet.solana.com/',
-    coinType: '501',
+    name: 'testnet',
+    networkId: 'testnet',
+    nodeUrl: 'https://bombay-lcd.terra.dev',
+    helperUrl: 'https://bombay-fcd.terra.dev/v1',
+    gasPricesUrl: 'https://bombay-fcd.terra.dev/v1/txs/gas_prices',
+    coinType: '397',
     isTestnet: true,
-    walletIndex: 0,
-    programId: '4B9k2YntFxQC93MezXZB3AKLsLrEaqDdXEaPmgTTF5WX'
+    chainID: 'bombay-10',
+    asset: 'uluna',
+    codeId: 7685
   })
 })
 
 test('Terra Network Mainnet', () => {
   expect(TerraNetworks.terra_mainnet).toEqual({
     name: 'mainnet',
-    nodeUrl: 'https://api.mainnet-beta.solana.com',
-    helperUrl: 'https://explorer.solana.com/',
-    coinType: '501',
+    networkId: 'mainnet',
+    nodeUrl: 'https://lcd.terra.dev',
+    helperUrl: 'https://fcd.terra.dev/v1',
+    gasPricesUrl: 'https://fcd.terra.dev/v1/txs/gas_prices',
+    coinType: '397',
     isTestnet: false,
-    walletIndex: 0,
-    programId: '!!! TODO: REPLACE AFTER DEPLOY ON THE MAINNET !!!'
+    chainID: 'columbus-5',
+    asset: 'luna',
+    codeId: 6431
   })
 })
 
