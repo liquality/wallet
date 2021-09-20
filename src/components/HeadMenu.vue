@@ -3,10 +3,10 @@
       v-click-away="hide">
     <button class="btn dropdown-toggle"
             @click="toggle">
-          <div class="label-menu">Account</div>
-          <ChevronRightIcon class="chevron"
+      <div class="label-menu">Account</div>
+      <ChevronRightIcon class="chevron"
                         :class="{ open: dropdownOpen }"
-          />
+      />
     </button>
     <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
       <!-- <li>
@@ -26,6 +26,15 @@
               </div>
               Hardware
           </button>
+      </li>
+      <li>
+        <button class="dropdown-item"
+                @click="callSurvey">
+          <div class="head-option">
+            <HardwareIcon class="hardware-icon" />
+          </div>
+          Survey
+        </button>
       </li>
     </ul>
   </div>
@@ -61,6 +70,9 @@ export default {
     navigate (path) {
       this.hide()
       this.$router.push(path)
+    },
+    callSurvey () {
+      this.$hj('event', 'test_raj_brad_dev_event')
     }
   }
 }
