@@ -2,6 +2,7 @@ import { TerraNetworks } from '@liquality/terra-networks'
 
 import PortStream from 'extension-port-stream'
 import _ from 'lodash'
+import BN from 'bignumber.js'
 
 import { emitter } from '../store/utils'
 
@@ -31,10 +32,52 @@ const getConfig = (activeNetwork) => {
   }
 }
 
+const getExecutedMethod = (msgs) => {
+  const parsed = msgs.map(msg => JSON.parse(msg))
+
+  const executeMessages = parsed.map(({ type, value }) => {
+    if (type === 'wasm/MsgExecuteContract') {
+      return value
+    }
+  })
+
+  if (!executeMessages.filter(Boolean).length) {
+    return 'send'
+  }
+
+  return Object.keys(executeMessages[executeMessages.length - 1]?.execute_msg)?.[0]
+}
+
+const getArgs = (payload) => {
+  const { fee, gasAdjustment, msgs } = payload
+
+  const { value } = JSON.parse(msgs[0])
+  const { amount, gas } = JSON.parse(fee)
+
+  const _value = getValueForKey(value, 'amount')
+  const _to = getValueForKey(value, 'to_address') || getValueForKey(value, 'contract')
+  const _denom = getValueForKey(value, 'denom')
+  const _contractAddress = value.contract || getValueForKey(value, 'contract')
+  const _method = getExecutedMethod(msgs)
+  const _fee = new BN(amount[0].amount).div(new BN(gas)).toString()
+
+  return {
+    _value,
+    _to,
+    _denom,
+    _contractAddress,
+    _method,
+    _fee: _fee,
+    _gasAdjustment: gasAdjustment
+  }
+}
+
 export const connectRemote = (remotePort, store) => {
   if (remotePort.name !== 'TerraStationExtension') {
     return
   }
+
+  let config = getConfig(store.state.activeNetwork)
 
   const origin = remotePort.sender.origin
 
@@ -49,19 +92,16 @@ export const connectRemote = (remotePort, store) => {
 
     const handleRequest = async (key) => {
       if (key === 'post') {
-        const { fee, gasAdjustment, msgs } = payload
-        const objectData = JSON.parse(msgs[0]).value
-
-        const _value = getValueForKey(objectData, 'amount')
-        const _to = getValueForKey(objectData, 'to_address') || getValueForKey(objectData, 'contract')
-        // const _denom = getValueForKey(objectData, 'denom')
+        const { _to, _value, _gasAdjustment, _fee, _denom, _contractAddress, _method } = getArgs(payload)
 
         const args = [{
           to: _to,
           value: _value,
           data: payload,
-          gas: gasAdjustment,
-          fee
+          gas: _gasAdjustment,
+          fee: _fee,
+          asset: _denom || _contractAddress,
+          method: _method
         }]
 
         try {
@@ -74,8 +114,6 @@ export const connectRemote = (remotePort, store) => {
         // handle sign
       }
     }
-
-    let config = getConfig(store.state.activeNetwork)
 
     switch (type) {
       case 'info':

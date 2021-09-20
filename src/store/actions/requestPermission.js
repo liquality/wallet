@@ -79,9 +79,11 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
         })
 
         let permissionRoute = '/permission/default'
-        if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
-        if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
-        if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'
+
+        if (asset === 'LUNA' || asset === 'ULUNA') permissionRoute = '/permission/terra'
+        else if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
+        else if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
+        else if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'
 
         createPopup(`${permissionRoute}?${query}`)
       })
