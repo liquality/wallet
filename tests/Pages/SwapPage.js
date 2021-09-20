@@ -107,7 +107,7 @@ class SwapPage {
     await page.waitForSelector('#network_speed_fee', { visible: true })
     await page.click('#network_speed_fee')
     console.log(chalk.green('user clicked on on Network fee options'))
-    await page.waitForSelector('#network_speed_fee', { visible: true })
+    await page.waitForSelector('#average', { visible: true })
     const averageFee = await page.$eval('#average', (el) => el.getAttribute('class'))
     expect(averageFee,
       'Avg network speed/fee by default selected').contains('active')
