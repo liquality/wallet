@@ -268,17 +268,70 @@ async function handleRequest (req) {
   const method = REQUEST_MAP[req.method] || req.method
   return solana.getMethod(method)(...req.params)
 }
-window.sollet = {
-  enable: async () => {
-    const accepted = await window.providerManager.enable('solana')
-    if (!accepted) throw new Error('User rejected')
-    const solana = window.providerManager.getProviderFor('SOL')
-    return solana.getMethod('wallet.getAddresses')()
-  },
+window.solana = {
+  isPhantom: true,
+  publicKey: '',
+  isConnected: false,
   request: async (req) => {
     const params = req.params || []
     return handleRequest({
       method: req.method, params
+    })
+  },
+  async listeners(method) {
+    return {
+      jsonrpc: '2.0',
+      id,
+      method: 'connected',
+      params: {
+        publicKey: "CbLdxAGs9J4WBsFUMeBn23MVZDk8PX1YFpmnLgNLAPWv",
+        autoApprove: false
+      },
+    }
+  },
+  async on(method) {
+    return {
+      jsonrpc: '2.0',
+      id,
+      method: 'connected',
+      params: {
+        publicKey: "CbLdxAGs9J4WBsFUMeBn23MVZDk8PX1YFpmnLgNLAPWv",
+        autoApprove: false
+      },
+    }
+  },
+  async connect() {
+    console.log('connect called')
+    const accepted = await window.providerManager.enable('solana')
+    if (!accepted) throw new Error('User rejected')
+    const solana = window.providerManager.getProviderFor('SOL')
+    const address = await solana.getMethod('wallet.getAddresses')()
+    console.log(address)
+    const { publicKey } = address[0]
+    
+    const params = {
+      toBase58 () {
+        return publicKey
+      },
+      toString() {
+        return publicKey
+      }
+    }
+
+    this.publicKey = params
+
+    const id = Date.now() + '.' + Math.random()
+    
+
+
+    return window.postMessage({
+      jsonrpc: '2.0',
+      id,
+      method: 'connected',
+      params: {
+        publicKey: "CbLdxAGs9J4WBsFUMeBn23MVZDk8PX1YFpmnLgNLAPWv",
+        autoApprove: false
+      },
     })
   }
 }
