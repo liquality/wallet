@@ -47,7 +47,7 @@ async function importWalletTestReceive (bitcoin) {
   await page.click('#wallet_header_logo')
 }
 
-describe('Liquality wallet- Receive tokens ["mainnet","smoke"]', async () => {
+describe('Receive tokens ["mainnet","smoke"]', async () => {
   describe('Create wallet and Check receive', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -90,10 +90,6 @@ describe('Liquality wallet- Receive tokens ["mainnet","smoke"]', async () => {
       }
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
-      // validate the testnet asserts count
-      const assetsCount = await overviewPage.GetTotalAssets(page)
-      expect(assetsCount, 'Total assets in TESTNET should be 7').contain('7 Assets')
-
       // Select BTC
       await overviewPage.SelectChain(page, 'BTC')
       await overviewPage.ClickChainReceive(page, 'BTC')

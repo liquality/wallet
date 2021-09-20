@@ -1,4 +1,6 @@
 module.exports = {
+  testEnvironment: 'jest-environment-jsdom-fifteen',
+  moduleFileExtensions: ['js', 'vue'],
   preset: '@vue/cli-plugin-unit-jest',
   transformIgnorePatterns: [
     '/node_modules/(?!lodash-es)'
@@ -7,5 +9,8 @@ module.exports = {
     '^@/(.*svg)(\\?inline)$': '<rootDir>/src/$1',
     '^@/(.*)$': '<rootDir>/src/$1'
   },
-  testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)']
+  testMatch: [
+    '**/?(*.)+(spec|test).js?(x)',
+    '(**/tests/**/.*|(\\.|/)(test|spec))\\.[jt]s?(x)$'
+  ]
 }

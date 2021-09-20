@@ -15,7 +15,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
@@ -48,7 +48,7 @@ jobs:
           mkdir screenshots
 
       - name: Regression tests
-        uses: beemi/puppeteer-headful@master
+        uses: beemi/puppeteer-headful@v1.0.6
         env:
           CI: 'true'
           DISPLAY: :99

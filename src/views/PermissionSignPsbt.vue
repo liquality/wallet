@@ -43,7 +43,7 @@ import { Psbt } from 'bitcoinjs-lib'
 import { getAssetIcon } from '@/utils/asset'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { ChainNetworks } from '@/store/utils'
+import { ChainNetworks } from '@/utils/networks'
 import { prettyBalance } from '@/utils/coinFormatter'
 
 export default {
@@ -85,6 +85,9 @@ export default {
     logo () {
       return LogoWallet
     },
+    accountId () {
+      return this.request.accountId
+    },
     asset () {
       return this.request.asset
     },
@@ -123,7 +126,9 @@ export default {
     }
   },
   async created () {
-    const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)
+    const client = this.client({
+      network: this.activeNetwork, walletId: this.activeWalletId, asset: this.asset, accountId: this.accountId
+    })
 
     const maxAddresses = 500
     const addressesPerCall = 50

@@ -36,6 +36,7 @@ export const multipleAccountSupport = { // multiple account support
         const _account = accountCreator(
           {
             walletId,
+            network,
             account: {
               name: `${chain.name} 1`,
               chain: chainId,

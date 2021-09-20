@@ -43,7 +43,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWatsNewModal(page)
-      // Select mainnet for fastBTC integration
+      // Select mainnet for fastBTC e2e
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click asset 1
       await overviewPage.SelectChain(page, asset1)
@@ -86,7 +86,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWatsNewModal(page)
-      // Select MainBet for fastBTC integration
+      // Select MainBet for fastBTC e2e
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click asset 1
       await overviewPage.SelectChain(page, asset1)

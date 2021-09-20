@@ -15,13 +15,13 @@ jobs:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           args: install
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules
@@ -42,13 +42,16 @@ jobs:
           npm run lint
           npm run build
 
+      - name: Run Integration Tests
+        run: npm run test:integration
+
       - name: screenshots directory
         if: always()
         run: |
           mkdir screenshots
 
       - name: Smoke tests
-        uses: beemi/puppeteer-headful@master
+        uses: beemi/puppeteer-headful@v1.0.6
         env:
           CI: 'true'
           DISPLAY: :99

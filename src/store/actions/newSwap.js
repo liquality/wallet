@@ -5,7 +5,9 @@ export const newSwap = async (
     walletId,
     quote,
     fee,
-    claimFee
+    claimFee,
+    feeLabel,
+    claimFeeLabel
   }) => {
   const swap = { ...quote }
 
@@ -24,7 +26,13 @@ export const newSwap = async (
     ...initiationParams // TODO: Maybe move provider specific params to an inner property?
   }
 
-  store.commit('NEW_SWAP', { network, walletId, swap: createdSwap })
+  store.commit('NEW_SWAP', {
+    network,
+    walletId,
+    swap: createdSwap,
+    feeLabel,
+    claimFeeLabel
+  })
 
   store.dispatch('performNextAction', { network, walletId, id: createdSwap.id })
 

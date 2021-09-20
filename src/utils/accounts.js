@@ -1,11 +1,13 @@
 import { v4 as uuidv4 } from 'uuid'
 import { getAssetIcon } from '@/utils/asset'
+import { getDerivationPath } from '@/utils/derivationPath'
 import { chains } from '@liquality/cryptoassets'
 
 export const accountCreator = (payload) => {
-  const { walletId, account } = payload
+  const { network, walletId, account } = payload
   const {
     name,
+    alias,
     chain,
     index,
     addresses,
@@ -20,6 +22,14 @@ export const accountCreator = (payload) => {
     const address = formatAddress(a)
     return address.startsWith('0x') ? address.substring(2, address.length) : address
   })
+
+  let _derivationPath
+  if (account.derivationPath) {
+    _derivationPath = account.derivationPath
+  } else {
+    _derivationPath = getDerivationPath(chain, network, index, type)
+  }
+
   const id = uuidv4()
   const createdAt = Date.now()
   return {
@@ -27,8 +37,10 @@ export const accountCreator = (payload) => {
     walletId,
     type,
     name,
+    alias,
     chain,
     index,
+    derivationPath: _derivationPath,
     addresses: _addresses,
     assets,
     balances: balances || {},
@@ -60,6 +72,7 @@ export const chainDefaultColors = {
   rsk: '#3AB24D',
   bsc: '#F7CA4F',
   near: '#000000',
+  solana: '#008080',
   polygon: '#8247E5',
   arbitrum: '#28A0EF'
 }
@@ -71,6 +84,7 @@ export const getAccountIcon = (chain) => {
     bsc: getAssetIcon('bnb_account', 'png'),
     rsk: getAssetIcon('rsk_account'),
     near: getAssetIcon('NEAR'),
+    solana: getAssetIcon('SOL'),
     polygon: getAssetIcon('polygon_account'),
     arbitrum: getAssetIcon('ARBITRUM')
   }[chain]

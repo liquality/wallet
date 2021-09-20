@@ -2,13 +2,11 @@ import Vue from 'vue'
 import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
 import { assets as cryptoassets } from '@liquality/cryptoassets'
-import { BitcoinNetworks } from '@liquality/bitcoin-networks'
-import { EthereumNetworks } from '@liquality/ethereum-networks'
-import { NearNetworks } from '@liquality/near-networks'
 import { Client } from '@liquality/client'
 import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
 import { EthereumJsWalletProvider } from '@liquality/ethereum-js-wallet-provider'
 import { EthereumErc20Provider } from '@liquality/ethereum-erc20-provider'
+import { ChainNetworks } from '@/utils/networks'
 
 export const CHAIN_LOCK = {}
 
@@ -114,43 +112,10 @@ export async function getPrices (baseCurrencies, toCurrency) {
   prices = mapValues(prices, rates => mapKeys(rates, (v, k) => k.toUpperCase()))
 
   for (const baseCurrency of baseCurrencies) {
-    if (!prices[baseCurrency] && cryptoassets[baseCurrency].matchingAsset) {
-      prices[baseCurrency] = prices[cryptoassets[baseCurrency].matchingAsset]
+    if (!prices[baseCurrency] && cryptoassets[baseCurrency]?.matchingAsset) {
+      prices[baseCurrency] = prices[cryptoassets[baseCurrency]?.matchingAsset]
     }
   }
   const symbolPrices = mapValues(prices, rates => rates[toCurrency.toUpperCase()])
   return symbolPrices
-}
-
-export const Networks = ['mainnet', 'testnet']
-
-export const ChainNetworks = {
-  bitcoin: {
-    testnet: BitcoinNetworks.bitcoin_testnet,
-    mainnet: BitcoinNetworks.bitcoin
-  },
-  ethereum: {
-    testnet: EthereumNetworks.ropsten,
-    mainnet: EthereumNetworks.ethereum_mainnet
-  },
-  rsk: {
-    testnet: EthereumNetworks.rsk_testnet,
-    mainnet: EthereumNetworks.rsk_mainnet
-  },
-  bsc: {
-    testnet: EthereumNetworks.bsc_testnet,
-    mainnet: EthereumNetworks.bsc_mainnet
-  },
-  polygon: {
-    testnet: EthereumNetworks.polygon_testnet,
-    mainnet: EthereumNetworks.polygon_mainnet
-  },
-  arbitrum: {
-    testnet: EthereumNetworks.arbitrum_testnet,
-    mainnet: EthereumNetworks.arbitrum_mainnet
-  },
-  near: {
-    testnet: NearNetworks.near_testnet,
-    mainnet: NearNetworks.near_mainnet
-  }
 }
