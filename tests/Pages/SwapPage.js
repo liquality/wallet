@@ -107,6 +107,7 @@ class SwapPage {
     await page.waitForSelector('#network_speed_fee', { visible: true })
     await page.click('#network_speed_fee')
     console.log(chalk.green('user clicked on on Network fee options'))
+    await page.waitForSelector('#average', { visible: true })
     const averageFee = await page.$eval('#average', (el) => el.getAttribute('class'))
     expect(averageFee,
       'Avg network speed/fee by default selected').contains('active')
@@ -231,6 +232,20 @@ class SwapPage {
       'If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at',
       'Max slippage is 0.5%.'
     ])
+  }
+
+  /**
+   * Validate Swap is negative. Review transaction carefully.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ValidateNegativeMessage (page) {
+    await page.waitForSelector('#swap_is_negative', { visible: true })
+    const message = await page.$eval('#swap_is_negative', el => el.textContent)
+    expect(message).contains(
+      'Swap is negative. Review transaction carefully.'
+    )
   }
 }
 

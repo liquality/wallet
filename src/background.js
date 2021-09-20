@@ -79,18 +79,23 @@ store.subscribe(async ({
         properties: {
           category: 'Swaps',
           action: 'Swap Initiated',
-          label: `Swap ${payload.swap.from} to ${payload.swap.to} (${payload.swap.provider})`
+          from: `Swap from ${payload.swap.from}`,
+          to: `Swap to ${payload.swap.to}`,
+          swapProvider: `${payload.swap.provider}`,
+          fee: `${payload.feeLabel}`,
+          claimFee: `${payload.claimFeeLabel}`
         }
       })
       break
 
     case 'NEW_TRASACTION':
       dispatch('trackAnalytics', {
-        event: `Send ${payload.transaction.from}`,
+        event: 'Send',
         properties: {
           category: 'Send/Receive',
           action: 'Funds sent',
-          label: `Send ${payload.transaction.from}`
+          from: `Send from ${payload.transaction.from}`,
+          fee: `${payload.feeLabel}`
         }
       })
       break
@@ -111,7 +116,9 @@ store.subscribe(async ({
         properties: {
           category: 'Dapps',
           action: 'Dapp Injected',
-          label: `Connect to ${payload.origin} (${payload.chain})`
+          label: `Connect to ${payload.origin} (${payload.chain})`,
+          dappOrigin: `${payload.origin}`,
+          chain: `${payload.chain}`
         }
       })
       break
@@ -121,7 +128,17 @@ store.subscribe(async ({
         properties: {
           category: 'Settings',
           action: 'Custom Token Added',
-          label: `${payload.customToken.name} (${payload.customToken.chain}) (${payload.customToken.symbol})`
+          label: [`${payload.customToken.name}`, `(${payload.customToken.chain})`, `(${payload.customToken.symbol})`]
+        }
+      })
+      break
+    case 'REMOVE_CUSTOM_TOKEN':
+      dispatch('trackAnalytics', {
+        event: 'Custom Token Removed',
+        properties: {
+          category: 'Settings',
+          action: 'Custom Token Removed',
+          label: `${payload.customToken.symbol})`
         }
       })
       break
@@ -130,21 +147,44 @@ store.subscribe(async ({
       const item = getters.historyItemById(payload.network, payload.walletId, payload.id)
       if (item.type === 'SWAP' && payload.updates) {
         dispatch('trackAnalytics', {
-          event: `Swap status change ${payload.updates.status}`,
+          event: 'Swap status change',
           properties: {
             category: 'Swaps',
-            action: `Swap ${payload.updates.status}`,
-            label: `${item.from} to ${item.to}`
+            action: 'Swap Status changed',
+            label: `${item.from} to ${item.to}`,
+            swapStatus: `${payload.updates.status}`
           }
         })
       }
       if (item.type === 'SEND' && payload.updates) {
         dispatch('trackAnalytics', {
-          event: `Send status change ${payload.updates.status}`,
+          event: 'Send status change',
           properties: {
             category: 'Send/Receive',
-            action: `Send ${payload.updates.status}`,
-            label: `${item.from} send status ${payload.updates.status} `
+            action: 'Send Status changed',
+            asset: `${item.from}`,
+            sendStatus: `${payload.updates.status}`
+          }
+        })
+      }
+      break
+    case 'SETUP_WALLET':
+      dispatch('trackAnalytics', {
+        event: 'Onboarding',
+        properties: {
+          category: 'Onboarding',
+          action: 'User Onboarded'
+        }
+      })
+      break
+    case 'UPDATE_BALANCE':
+      if (payload.balance > 0) {
+        dispatch('trackAnalytics', {
+          event: 'Hold Asset',
+          properties: {
+            category: 'Hold Asset',
+            action: 'Hold asset greater than 0',
+            asset: `${payload.asset}`
           }
         })
       }

@@ -15,13 +15,13 @@ jobs:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           args: install
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules
@@ -36,6 +36,7 @@ jobs:
       - name: Get Previous tag
         id: previous_tag
         run: echo ::set-output name=tag::$(git tag --sort v:refname | tail -n 2 | head -n 1)
+
       - name: Get next version
         id: semvers
         uses: WyriHaximus/github-action-next-semvers@v1.0
@@ -43,7 +44,7 @@ jobs:
           version: ${{ steps.previous_tag.outputs.tag }}
 
     # Minor PROD releases.
-      - name: Enable Analytics & Set development agents (minor for Prod)
+      - name: Set development agents (minor for PROD)
         if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
@@ -54,7 +55,7 @@ jobs:
             npm run build
 
     # Patch DEV release.
-      - name: Set development agents(patch for dev)
+      - name: Set development agents(patch for DEV)
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
@@ -67,11 +68,7 @@ jobs:
           npm run lint
           npm run build
 
-      - name: screenshots directory
-        if: always()
-        run: |
-          mkdir screenshots
-
+      - run: mkdir screenshots
       - name: MainNet e2e tests
         uses: beemi/puppeteer-headful@v1.0.6
         env:

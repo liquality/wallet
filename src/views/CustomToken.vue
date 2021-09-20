@@ -88,7 +88,7 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <router-link :to="`/settings/manage-assets`"><button id="cancel_add_token_button" class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
-          <button id="add_token_button" class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd">Add Token</button>
+          <button id="add_token_button" class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd || existingAsset">Add Token</button>
         </div>
       </div>
     </div>
