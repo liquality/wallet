@@ -145,10 +145,10 @@ export default {
             name: 'ARBETH',
             url: 'https://faucet.rinkeby.io/'
           },
-          ULUNA: { 
-            name: 'TERRA', 
-            url: 'https://faucet.terra.money/' 
-          },
+          ULUNA: {
+            name: 'TERRA',
+            url: 'https://faucet.terra.money/'
+          }
         })[this.asset]
       }
       return null

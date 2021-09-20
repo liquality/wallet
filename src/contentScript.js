@@ -42,14 +42,14 @@ chrome.storage.local.get(['liquality-wallet'], (storage) => {
 
 inject(paymentUriHandler())
 
-async function setupStreams() {
+async function setupStreams () {
   const pageStream = new LocalMessageDuplexStream({
     name: 'station:content',
-    target: 'station:inpage',
+    target: 'station:inpage'
   })
 
   const extensionPort = extension.runtime.connect({
-    name: 'TerraStationExtension',
+    name: 'TerraStationExtension'
   })
 
   const extensionStream = new PortStream(extensionPort)
@@ -59,7 +59,7 @@ async function setupStreams() {
   console.log('Stream setup successfully')
 }
 
-function domIsReady() {
+function domIsReady () {
   // already loaded
   if (['interactive', 'complete'].includes(document.readyState)) {
     return Promise.resolve()
@@ -71,7 +71,7 @@ function domIsReady() {
   )
 }
 
-async function start() {
+async function start () {
   await setupStreams()
   await domIsReady()
 }

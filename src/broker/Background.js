@@ -2,6 +2,7 @@ import { ChainNetworks } from '@/utils/networks'
 import buildConfig from '../build.config'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { assets } from '@liquality/cryptoassets'
+import { connectRemote } from './terra-injection'
 
 class Background {
   constructor (store) {

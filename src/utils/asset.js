@@ -97,7 +97,7 @@ const EXPLORERS = {
       tx: 'https://explorer.mainnet.near.org/transactions/',
       address: 'https://explorer.mainnet.near.org/accounts/'
     }
-  },
+  }
 }
 
 export const isERC20 = asset => {

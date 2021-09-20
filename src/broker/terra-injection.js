@@ -1,9 +1,35 @@
+import { TerraNetworks } from '@liquality/terra-networks'
+
 import PortStream from 'extension-port-stream'
+import _ from 'lodash'
 
 import { emitter } from '../store/utils'
 
 let isConnected = false
 let _address
+
+_.mixin({
+  toPairsDeep: obj => _.flatMap(
+    _.toPairs(obj),
+    ([k, v]) => _.isObjectLike(v) ? _.toPairsDeep(v) : [[k, v]]
+  )
+})
+
+const getValueForKey = (obj, key) => new Map(_.toPairsDeep(obj)).get(key)
+
+const getConfig = (activeNetwork) => {
+  const networkConfig = TerraNetworks['terra_' + activeNetwork]
+
+  const { chainID, nodeUrl: lcd, helperUrl: fcd, name } = networkConfig
+
+  return {
+    chainID,
+    fcd,
+    lcd,
+    name: activeNetwork === 'testnet' ? 'bombay' : name,
+    localterra: false
+  }
+}
 
 export const connectRemote = (remotePort, store) => {
   if (remotePort.name !== 'TerraStationExtension') {
@@ -19,52 +45,49 @@ export const connectRemote = (remotePort, store) => {
   }
 
   portStream.on('data', (data) => {
-    // console.log('Station(background): portStream.on', data)
     const { type, ...payload } = data
 
-    /* handle sign & post */
-    const handleRequest = (key) => {
+    const handleRequest = async (key) => {
       if (key === 'post') {
-        const { fee, gasAdjustment, msgs } = payload;
-        const { value: { contract, coins } } = JSON.parse(msgs)
+        const { fee, gasAdjustment, msgs } = payload
+        const objectData = JSON.parse(msgs[0]).value
+
+        const _value = getValueForKey(objectData, 'amount')
+        const _to = getValueForKey(objectData, 'to_address') || getValueForKey(objectData, 'contract')
+        // const _denom = getValueForKey(objectData, 'denom')
 
         const args = [{
-          to: contract,
-          value: coins[0].amount,
+          to: _to,
+          value: _value,
           data: payload,
           gas: gasAdjustment,
           fee
         }]
 
-        const id = Date.now() + '.' + Math.random()
-
-        emitter.$once(`permission:${id}`, (response) => {
-          console.log('here?')
-          if (!response.allowed) reject(new Error('User denied'))
-          if (response.error) reject(new Error(response.error))
-          console.log('RESPONSE', response)
-          sendResponse('onPost', { success: true })
-        })
-
-        store.dispatch('requestPermission', { origin, data: { args, method: 'chain.sendTransaction', asset: 'ULUNA' } })
-
+        try {
+          const response = await store.dispatch('requestPermission', { origin, data: { args, method: 'chain.sendTransaction', asset: 'ULUNA' } })
+          sendResponse('onPost', { ...payload, success: true, result: { txhash: response.hash } })
+        } catch (e) {
+          sendResponse('onPost', { ...payload, success: false })
+        }
       } else {
         // handle sign
       }
     }
 
+    let config = getConfig(store.state.activeNetwork)
+
     switch (type) {
       case 'info':
-        sendResponse('onInfo', {
-          chainID: "bombay-10",
-          fcd: "https://bombay-fcd.terra.dev/v1",
-          lcd: "https://bombay-lcd.terra.dev",
-          localterra: false,
-          name: "bombay"
+        store.subscribe((mutation, state) => {
+          if (mutation.type === 'CHANGE_ACTIVE_NETWORK') {
+            config = getConfig(state.activeNetwork)
+          }
         })
 
-        break
+        sendResponse('onInfo', config)
 
+        break
       case 'connect':
         if (!isConnected) {
           emitter.$once(`origin:${origin}`, (allowed, accountId, chain) => {
@@ -72,17 +95,16 @@ export const connectRemote = (remotePort, store) => {
 
             const accountData = store.getters.accountItem(accountId)
             const [address] = accountData.addresses
-
             _address = address
 
             sendResponse('onConnect', { address })
-          });
-
-          store.dispatch('requestOriginAccess', { origin, chain: 'terra' })
+          })
         }
 
         if (_address) {
           sendResponse('onConnect', { address: _address })
+        } else {
+          store.dispatch('requestOriginAccess', { origin, chain: 'terra' })
         }
 
         break

@@ -75,7 +75,7 @@ export const chainDefaultColors = {
   solana: '#008080',
   polygon: '#8247E5',
   arbitrum: '#28A0EF',
-  terra: '#000000',
+  terra: '#008080'
 }
 
 export const getAccountIcon = (chain) => {
@@ -88,7 +88,7 @@ export const getAccountIcon = (chain) => {
     solana: getAssetIcon('SOL'),
     polygon: getAssetIcon('polygon_account'),
     arbitrum: getAssetIcon('ARBITRUM'),
-    terra: getAssetIcon('ULUNA'),
+    terra: getAssetIcon('ULUNA')
   }[chain]
 }
 

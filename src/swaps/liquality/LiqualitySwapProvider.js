@@ -503,6 +503,7 @@ class LiqualitySwapProvider extends SwapProvider {
       BNB: 165000,
       NEAR: 10000000000000,
       SOL: 2,
+      ULUNA: 2,
       MATIC: 165000,
       ERC20: 600000 + 94500, // Contract creation + erc20 transfer
       ARBETH: 2400000
@@ -515,6 +516,7 @@ class LiqualitySwapProvider extends SwapProvider {
       MATIC: 45000,
       NEAR: 8000000000000,
       SOL: 1,
+      ULUNA: 1,
       ERC20: 100000,
       ARBETH: 680000
     }
