@@ -6,18 +6,21 @@ import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
-import { ChainNetworks } from '../../store/utils'
+import { ChainNetworks } from '@/utils/networks'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
 import { SwapProvider } from '../SwapProvider'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
-import SovrynSwapNetworkABI from './abiSovrynSwapNetwork'
-import RBTCWrapperProxyABI from './abiRBTCWrapperProxy'
+import SovrynSwapNetworkABI from '@blobfishkate/sovryncontracts/abi/abiSovrynSwapNetwork.json'
+// '@blobfishkate/sovryncontracts/abi/abiRBTCWrapperProxy_old.json'
+import RBTCWrapperProxyABI from '@blobfishkate/sovryncontracts/abi/abiWrapperProxy_new.json'
+import SovrynMainnetAddresses from '@blobfishkate/sovryncontracts/contracts-mainnet.json'
+import SovrynTestnetAddresses from '@blobfishkate/sovryncontracts/contracts-testnet.json'
 
 // use WRBTC address for RBTC native token
 const wrappedRbtcAddress = {
-  mainnet: '0x542fDA317318eBF1d3DEAf76E0b632741A7e677d',
-  testnet: '0x69FE5cEC81D5eF92600c1A0dB1F11986AB3758Ab'
+  mainnet: SovrynMainnetAddresses.BTC_token,
+  testnet: SovrynTestnetAddresses.BTC_token
 }
 
 class SovrynSwapProvider extends SwapProvider {
@@ -225,9 +228,12 @@ class SovrynSwapProvider extends SwapProvider {
     const fees = {}
     for (const feePrice of feePrices) {
       const gasPrice = BN(feePrice).times(1e9) // ETH fee price is in gwei
+      console.log("gasPrice: ", gasPrice)
       const fee = BN(gasLimit).times(1.1).times(gasPrice)
-      fees[feePrice] = unitToCurrency(cryptoassets[nativeAsset], fee)
+      console.log("fee: ", fee)
+      fees[feePrice] = unitToCurrency(cryptoassets[nativeAsset], fee).toFixed()
     }
+    console.log('fees: ', fees)
     return fees
   }
 
