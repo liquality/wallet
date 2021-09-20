@@ -121,7 +121,7 @@ describe('SWAP feature', async () => {
     // Check SWAP Initiate option has been enabled
     await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
-  it('SWAP ETH to DAI - not cross chain (UNISWAP V2)-[smoke]', async () => {
+  it('ETH -> DAI - selectedQuoteProvider UNISWAP V2-[smoke]', async () => {
     const asset1 = 'ETH'
     const asset2 = 'DAI'
 
@@ -159,7 +159,6 @@ describe('SWAP feature', async () => {
     // Click on Network speed + FEE & Validate
     const networkSpeedFee = await page.$eval('#details_header_chevron_down_icon', el => el.textContent)
     expect(networkSpeedFee).contain(asset1 + ' Avg')
-    // expect(networkSpeedFee).contain(asset2 + ' Avg')
 
     // Review Button
     await swapPage.ClickSwapReviewButton(page)
