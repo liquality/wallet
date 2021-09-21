@@ -1,0 +1,15 @@
+{
+  "title": "Sovryn AMM Swaps",
+  "description": "Non-custodial and permissionless smart contract based system for Bitcoin lending, borrowing and margin trading.",
+  "pros": [
+    "Low liquidity provider fee",
+    "Margin Trading"
+  ],
+  "cons": [
+    "Slippage"
+  ],
+  "fees": [
+    "0.15% liquidity provider fee",
+    "Slippage (up to 0.5% in Liquality)"
+  ]
+}

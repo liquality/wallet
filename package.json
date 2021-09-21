@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.41.2",
+  "version": "0.43.0",
   "private": true,
   "license": "MIT",
   "author": "Liquality <info@liquality.io>",
@@ -25,6 +25,7 @@
     "test:mainnet": "NODE_ENV=mainnet node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/**/*.spec.js'"
   },
   "dependencies": {
+    "@blobfishkate/sovryncontracts": "^1.3.7",
     "@liquality/bitcoin-esplora-batch-api-provider": "^1.4.4",
     "@liquality/bitcoin-esplora-swap-find-provider": "^1.4.4",
     "@liquality/bitcoin-fee-api-provider": "^1.4.4",
