@@ -72,8 +72,8 @@ export default {
       return this.wallets.find(wallet => wallet.id === this.activeWalletId)
     },
     validMnemonic () {
-      return ( this.mnemonic.split(' ').length === 12 || this.mnemonic.split(' ').length === 24 )
-        && validateMnemonic(this.mnemonic)
+      return (this.mnemonic.split(' ').length === 12 || this.mnemonic.split(' ').length === 24) &&
+        validateMnemonic(this.mnemonic)
     },
     nextDisabled () {
       return this.mnemonic === '' || !this.validMnemonic
