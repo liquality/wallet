@@ -38,15 +38,15 @@ export default {
       imported: false
     }
   },
-  props: ['passphrase'],
+  props: ['seedphrase'],
   components: {
     ConfirmSeed,
     Congratulations,
     OnboardingPassword
   },
   created () {
-    if (this.passphrase) {
-      this.mnemonic = this.passphrase
+    if (this.seedphrase) {
+      this.mnemonic = this.seedphrase
       this.imported = true
     } else {
       this.mnemonic = generateMnemonic()
@@ -79,7 +79,7 @@ export default {
     },
     async onUnlock (password) {
       this.password = password
-      if (this.passphrase) {
+      if (this.seedphrase) {
         await this.confirmMnemonic()
       } else {
         this.currentStep = 'backup'

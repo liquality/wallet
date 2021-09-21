@@ -233,7 +233,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     await page.waitForSelector('#forgot_password_import_seed', { visible: true })
     await page.click('#forgot_password_import_seed')
     // some random seed phrase
-    const randomSeed = 'descry talky tend sudor jab nonmetal swipe maximin ecstatic bespeak trompe narcose'.split(' ')
+    const randomSeed = 'sense quality accuse asthma imitate rubber acquire surprise strategy whip harvest survey'.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')
     for (let i = 0; i < seedsWordsCount.length; i++) {
       const wordInput = seedsWordsCount[i]
