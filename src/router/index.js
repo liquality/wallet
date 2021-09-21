@@ -51,7 +51,7 @@ const routes = [
     component: UnlockWallet
   },
   {
-    path: '/onboarding/setup/:passphrase?',
+    path: '/onboarding/setup/:seedphrase?',
     component: OnboardingSetup,
     name: 'OnboardingSetup',
     props: true
