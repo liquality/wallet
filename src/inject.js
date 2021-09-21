@@ -292,7 +292,7 @@ const REQUEST_MAP = {
   wallet_sendTransaction: 'chain.sendTransaction',
 }
 async function handleRequest (req) {
-  const terraProvider = window.providerManager.getProviderFor('ULUNA')
+  const terraProvider = window.providerManager.getProviderFor('LUNA')
   const method = REQUEST_MAP[req.method] || req.method
   return terraProvider.getMethod(method)(...req.params)
 }
@@ -301,7 +301,7 @@ window.terra = {
   enable: async () => {
     const accepted = await window.providerManager.enable('terra')
     if (!accepted) throw new Error('User rejected')
-    const terra = window.providerManager.getProviderFor('ULUNA')
+    const terra = window.providerManager.getProviderFor('LUNA')
     return terra.getMethod('wallet.getAddresses')()
   },
   request: async (req) => {

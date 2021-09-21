@@ -145,7 +145,7 @@ export default {
             name: 'ARBETH',
             url: 'https://faucet.rinkeby.io/'
           },
-          ULUNA: {
+          LUNA: {
             name: 'TERRA',
             url: 'https://faucet.terra.money/'
           }

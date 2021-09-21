@@ -105,7 +105,7 @@ export const connectRemote = (remotePort, store) => {
         }]
 
         try {
-          const response = await store.dispatch('requestPermission', { origin, data: { args, method: 'chain.sendTransaction', asset: 'ULUNA' } })
+          const response = await store.dispatch('requestPermission', { origin, data: { args, method: 'chain.sendTransaction', asset: 'LUNA' } })
           sendResponse('onPost', { ...payload, success: true, result: { txhash: response.hash } })
         } catch (e) {
           sendResponse('onPost', { ...payload, success: false })

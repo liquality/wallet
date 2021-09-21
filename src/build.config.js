@@ -33,7 +33,7 @@ export default {
       'PWETH',
       'ARBETH',
       'SOL',
-      'ULUNA'
+      'LUNA'
     ]
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',

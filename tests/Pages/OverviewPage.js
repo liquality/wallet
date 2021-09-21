@@ -176,7 +176,7 @@ class OverviewPage {
         break
       }
 
-      case 'ULUNA': {
+      case 'LUNA': {
         await page.waitForSelector(`#${chain}`, { visible: true })
         await page.click(`#${chain}`)
         const terra = await page.waitForSelector('#TERRA', { visible: true })
