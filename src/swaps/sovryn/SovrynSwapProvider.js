@@ -228,12 +228,10 @@ class SovrynSwapProvider extends SwapProvider {
     const fees = {}
     for (const feePrice of feePrices) {
       const gasPrice = BN(feePrice).times(1e9) // ETH fee price is in gwei
-      console.log("gasPrice: ", gasPrice)
       const fee = BN(gasLimit).times(1.1).times(gasPrice)
-      console.log("fee: ", fee)
       fees[feePrice] = unitToCurrency(cryptoassets[nativeAsset], fee).toFixed()
     }
-    console.log('fees: ', fees)
+
     return fees
   }
 
