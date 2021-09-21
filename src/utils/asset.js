@@ -89,13 +89,13 @@ const EXPLORERS = {
     }
   },
   terra: {
-    testnet: { // TODO: REplace with links for terra
-      tx: 'https://explorer.testnet.near.org/transactions/',
-      address: 'https://explorer.testnet.near.org/accounts/'
+    testnet: {
+      tx: 'https://finder.terra.money/bombay-11/tx/{hash}',
+      address: 'https://finder.terra.money/bombay-11/address/{hash}'
     },
     mainnet: {
-      tx: 'https://explorer.mainnet.near.org/transactions/',
-      address: 'https://explorer.mainnet.near.org/accounts/'
+      tx: 'https://finder.terra.money/columbus-5/tx/{hash}',
+      address: 'https://finder.terra.money/columbus-5/address/{hash}'
     }
   }
 }

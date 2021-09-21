@@ -12,7 +12,7 @@ export const ChainNetworks = {
     mainnet: BitcoinNetworks.bitcoin
   },
   ethereum: {
-    testnet: EthereumNetworks.ropsten,
+    testnet: EthereumNetworks.rinkeby,
     mainnet: EthereumNetworks.ethereum_mainnet
   },
   rsk: {
