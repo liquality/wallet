@@ -1,5 +1,8 @@
 import { SwapProviderType } from './utils/swaps'
 
+import SovrynMainnetAddresses from '@blobfishkate/sovryncontracts/contracts-mainnet.json'
+import SovrynTestnetAddresses from '@blobfishkate/sovryncontracts/contracts-testnet.json'
+
 export default {
   defaultAssets: {
     mainnet: [
@@ -64,6 +67,14 @@ export default {
         icon: 'thorchain.svg',
         type: SwapProviderType.THORCHAIN,
         thornode: 'https://testnet.thornode.thorchain.info'
+      },
+      sovryn: {
+        name: 'Sovyrn',
+        icon: 'sovryn.svg',
+        type: SwapProviderType.SOVRYN,
+        routerAddress: SovrynTestnetAddresses.swapNetwork,
+        routerAddressRBTC: SovrynTestnetAddresses.proxy3,
+        rpcURL: 'https://public-node.testnet.rsk.co/'
       }
     },
     mainnet: {
@@ -103,6 +114,14 @@ export default {
         icon: 'sovryn.svg',
         type: SwapProviderType.FASTBTC,
         bridgeEndpoint: 'http://3.131.33.161:3000/'
+      },
+      sovryn: {
+        name: 'Sovyrn',
+        icon: 'sovryn.svg',
+        type: SwapProviderType.SOVRYN,
+        routerAddress: SovrynMainnetAddresses.swapNetwork,
+        routerAddressRBTC: SovrynMainnetAddresses.proxy3,
+        rpcURL: 'https://public-node.rsk.co/'
       }
     }
   },
