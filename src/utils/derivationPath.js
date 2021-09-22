@@ -57,7 +57,8 @@ const derivationPaths = {
     return `m/44'/501'/${solanaNetwork.walletIndex}'/${index}'`
   },
   [ChainId.Terra]: (network, index) => {
-    return ''
+    const terraNetwork = ChainNetworks[ChainId.Terra][network]
+    return `'m/44'/${terraNetwork.coinType}'/${index}'`
   }
 }
 

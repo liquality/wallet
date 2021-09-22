@@ -216,7 +216,7 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
-function createTerraClient (network, mnemonic, derivationPath) {
+function createTerraClient (network, mnemonic, baseDerivationPath) {
   const terraNetwork = ChainNetworks.terra[network]
   const terraClient = new Client()
 
@@ -225,7 +225,7 @@ function createTerraClient (network, mnemonic, derivationPath) {
     {
       network: terraNetwork,
       mnemonic,
-      derivationPath
+      baseDerivationPath
     }
   ))
   terraClient.addProvider(new TerraSwapProvider(terraNetwork))
