@@ -190,7 +190,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'total assets should be 8 on overview page').contain('8 Assets')
+    expect(assetsCount, 'total assets should be 9 on overview page').contain('9 Assets')
 
     const assertAddresses = []
 
