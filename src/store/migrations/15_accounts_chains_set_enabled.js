@@ -1,7 +1,7 @@
 import { Networks } from '@/utils/networks'
 import buildConfig from '@/build.config'
 
-export const accountSetEnabled = {
+export const accountsChainsSetEnabled = {
   version: 15,
   migrate: async (state) => {
     const accounts = {}

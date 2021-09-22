@@ -23,6 +23,7 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic,
   networks.forEach(network => {
     const assetKeys = defaultAssets[network]
     buildConfig.chains.forEach(async chainId => {
+      commit('TOOGLE_BLOCKCHAIN', { network, walletId: id, chainId, enable: true })
       const assets = assetKeys.filter(asset => {
         return cryptoassets[asset]?.chain === chainId
       })
@@ -41,7 +42,8 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic,
             balances: {},
             type: 'default',
             index: 0,
-            color: getNextAccountColor(chainId, 0)
+            color: getNextAccountColor(chainId, 0),
+            enabled: true
           }
         })
 

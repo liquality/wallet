@@ -14,30 +14,34 @@
       <div
         v-for="chain in chains"
         :key="chain.code"
-        class="chain-item d-flex align-items-center"
+        class="chain-item"
         :id="'chain-item-' + chain.code"
       >
-        <div class="chain-item-content">
-          <div class="chain-item-row">
-            <div class="chain-item-toggle" :id="'chain-item-toggle-' + chain.code">
+        <div class="chain-item-toggle" :id="'chain-item-toggle-' + chain.code">
           <toggle-button
             :css-colors="true"
             :value="isChainEnabled(chain.id)"
-            @change="(e) => toggleChain(chain.code, e.value)"
+            @change="(e) => toogleBlockchain(chain.id, e.value)"
           />
         </div>
-        <img :src="getAssetIcon(chain.nativeAsset)" class="asset-icon chain-item-icon" />
-        <div class="chain-item-name flex-fill" :id="'chain-item-name-' + chain.code">
-          {{ chain.name }}
-        </div>
+        <div class="chain-item-content">
+          <div class="chain-item-row">
+            <img
+              :src="getAssetIcon(chain.nativeAsset)"
+              class="asset-icon chain-item-icon"
+            />
+            <div
+              class="chain-item-name flex-fill"
+              :id="'chain-item-name-' + chain.code"
+            >
+              {{ chain.name }}
+            </div>
           </div>
           <div class="chain-item-row">
             ----
           </div>
         </div>
-        <div class="chain-item-accounts">
-
-        </div>
+        <div class="chain-item-accounts"></div>
       </div>
     </div>
   </div>
@@ -56,24 +60,14 @@ export default {
     NavBar
   },
   data () {
-    return {
-
-    }
+    return {}
   },
   computed: {
     ...mapGetters(['accountsData']),
-    ...mapState([
-      'activeNetwork',
-      'activeWalletId',
-      'enabledChains'
-    ]),
+    ...mapState(['activeNetwork', 'activeWalletId', 'enabledChains']),
     chains () {
-      return buildConfig.chains.map(chainId => {
-        const {
-          name,
-          code,
-          nativeAsset
-        } = chains[chainId]
+      return buildConfig.chains.map((chainId) => {
+        const { name, code, nativeAsset } = chains[chainId]
         return {
           id: chainId,
           name,
@@ -84,19 +78,32 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['toogleEnabledChain']),
+    ...mapActions({
+      _toogleBlockchain: 'toogleBlockchain',
+      _toogleAccount: 'toogleAccount'
+    }),
     getAssetIcon,
     getAssetName (asset) {
       return cryptoassets[asset]?.name || asset
     },
     isChainEnabled (chainId) {
-      return this.enabledChains[this.activeWalletId]?.[this.activeNetwork]?.includes(chainId)
+      return this.enabledChains[this.activeWalletId]?.[
+        this.activeNetwork
+      ]?.includes(chainId)
     },
-    toggleChain (chainId, enable) {
-      this.toogleEnabledChain({
+    toogleBlockchain (chainId, enable) {
+      this._toogleBlockchain({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
         chainId,
+        enable
+      })
+    },
+    toogleAccount (accountId, enable) {
+      this._toogleAccount({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        accountId,
         enable
       })
     }
@@ -126,7 +133,6 @@ export default {
 
   .chain-list {
     overflow-y: auto;
-
   }
 }
 
@@ -135,11 +141,12 @@ export default {
   border-bottom: 1px solid $hr-border-color;
   height: 60px;
   padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
 
   .chain-item-content {
     display: flex;
     width: 100%;
-    flex-direction: column;
 
     .chain-item-row {
       display: flex;
@@ -158,14 +165,12 @@ export default {
         //
       }
 
-       .chain-item-balance {
-    display: block;
-    font-size: $font-size-tiny;
-    color: $text-muted;
-  }
+      .chain-item-balance {
+        display: block;
+        font-size: $font-size-tiny;
+        color: $text-muted;
+      }
     }
-
   }
-
 }
 </style>

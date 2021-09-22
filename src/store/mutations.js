@@ -274,5 +274,41 @@ export default {
   },
   SET_WATS_NEW_MODAL_VERSION (state, { version }) {
     state.watsNewModalVersion = version
+  },
+  TOOGLE_BLOCKCHAIN (state, { network, walletId, chainId, enable }) {
+    if (!state.enabledChains) {
+      Vue.set(state, 'enabledChains', {})
+    }
+    if (!state.enabledChains[walletId]) {
+      Vue.set(state.enabledChains, walletId, {})
+    }
+    if (!state.enabledChains[walletId]?.[network]) {
+      Vue.set(state.enabledChains[walletId], network, [])
+    }
+
+    const chains = state.enabledChains.[walletId].[network]
+    if (enable) {
+      Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains, chainId])])
+    } else {
+      Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains.filter(c => c !== chainId)])])
+    }
+  },
+  TOOGLE_ACCOUNT (state, { network, walletId, accountId, enable }) {
+    const accounts = state.accounts[walletId][network]
+    if (accounts) {
+      const index = accounts.findIndex(
+        (a) => a.id === accountId
+      )
+
+      if (index >= 0) {
+        const _account = accounts[index]
+        const updatedAccount = {
+          ..._account,
+          enabled: !!enable
+        }
+
+        Vue.set(state.accounts[walletId][network], index, updatedAccount)
+      }
+    }
   }
 }
