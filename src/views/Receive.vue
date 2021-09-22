@@ -143,7 +143,7 @@ export default {
           },
           ARBETH: {
             name: 'ARBETH',
-            url: 'https://faucet.ropsten.io/'
+            url: 'https://faucet.rinkeby.io/'
           },
           LUNA: {
             name: 'TERRA',

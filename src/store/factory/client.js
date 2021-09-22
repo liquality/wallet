@@ -209,7 +209,7 @@ function createPolygonClient (asset, network, mnemonic, derivationPath) {
 function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const arbitrumNetwork = ChainNetworks.arbitrum[network]
-  const rpcApi = isTestnet ? 'https://ropsten.arbitrum.io/rpc' : `https://arbitrum-mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
+  const rpcApi = isTestnet ? 'https://rinkeby.arbitrum.io/rpc' : `https://arbitrum-mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
   const scraperApi = isTestnet ? 'https://liquality.io/arbitrum-testnet-api' : 'https://liquality.io/arbitrum-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
