@@ -48,7 +48,7 @@
       <div class="button-group">
         <button
           class="btn btn-light btn-outline-primary btn-lg"
-          @click="goToOverview"
+          @click="cancel"
         >
           Cancel
         </button>
@@ -103,8 +103,8 @@ export default {
   },
   methods: {
     getAssetIcon,
-    goToOverview () {
-      this.$router.replace('/wallet')
+    cancel () {
+      this.$router.back()
     },
     selectChain (chain) {
       this.selectedChain = chain

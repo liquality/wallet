@@ -25,23 +25,33 @@
           />
         </div>
         <div class="chain-item-content">
-          <div class="chain-item-row">
-            <img
+          <img
               :src="getAssetIcon(chain.nativeAsset)"
               class="asset-icon chain-item-icon"
             />
-            <div
-              class="chain-item-name flex-fill"
-              :id="'chain-item-name-' + chain.code"
+           <div class="chain-item-details">
+              <div
+              class="chain-item-name"
+              :id="'chain-item-name-' + chain.id"
             >
               {{ chain.name }}
             </div>
-          </div>
-          <div class="chain-item-row">
-            ----
-          </div>
+             <div
+              class="chain-item-balance"
+              :id="'chain-item-balance-' + chain.id"
+            >
+              {{ '$00.00' }}
+            </div>
+           </div>
+            <router-link to="/accounts/create"
+                         class="create-link"
+                         v-tooltip="'Create Account'">
+              <CreateIcon />
+            </router-link>
         </div>
-        <div class="chain-item-accounts"></div>
+        <div class="chain-item-accounts">
+
+        </div>
       </div>
     </div>
   </div>
@@ -54,10 +64,12 @@ import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import buildConfig from '@/build.config'
 import { chains } from '@liquality/cryptoassets'
+import CreateIcon from '@/assets/icons/create_icon.svg'
 
 export default {
   components: {
-    NavBar
+    NavBar,
+    CreateIcon
   },
   data () {
     return {}
@@ -139,30 +151,37 @@ export default {
 .chain-item {
   width: 100%;
   border-bottom: 1px solid $hr-border-color;
-  height: 60px;
-  padding: 16px 20px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 16px;
 
   .chain-item-content {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
     width: 100%;
 
-    .chain-item-row {
+     .chain-item-icon {
+        margin-right: 8px;
+      }
+
+      .create-link {
+        width: 20px;
+        svg {
+          width: 10px;
+        }
+      }
+
+    .chain-item-details {
       display: flex;
+      flex-direction: column;
       width: 100%;
 
-      .chain-item-icon {
-        margin-right: 8px;
-      }
-
-      .chain-item-toggle {
-        text-align: right;
-        margin-right: 8px;
-      }
-
       .chain-item-name {
-        //
+        color: $color-text-primary;
+        font-weight: 400;
       }
 
       .chain-item-balance {
@@ -170,6 +189,7 @@ export default {
         font-size: $font-size-tiny;
         color: $text-muted;
       }
+
     }
   }
 }
