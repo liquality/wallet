@@ -49,5 +49,6 @@ export default {
     askedTimes: 0,
     notAskAgain: false
   },
-  watsNewModalVersion: null
+  watsNewModalVersion: null,
+  enabledChains: []
 }

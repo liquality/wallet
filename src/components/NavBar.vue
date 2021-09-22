@@ -13,6 +13,7 @@
       <div class="navbar_menu" id="burger_icon_menu" v-if="showMenu" @click.stop="showMenuList = !showMenuList"><HamburgerIcon class="navbar_menu_icon" /></div>
       <ul class="menu_list navbar_menu_list" v-if="showMenuList" v-click-away="hideMenu">
         <li id="manage_assets" @click="assets"><AssetsIcon />Manage Assets</li>
+        <li id="manage_accounts" @click="manageAccounts"><AssetsIcon />Manage Accounts</li>
         <li id="settings" @click="settings"><SettingsIcon />Settings</li>
         <li id="backup_seed" @click="backup"><PaperIcon /> Backup Seed</li>
         <li id="lock" @click="lock"><LockIcon class="lock_icon"/> Lock</li>
@@ -96,6 +97,17 @@ export default {
       })
       this.showMenuList = false
       this.$router.replace('/settings')
+    },
+    manageAccounts () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Manage Accounts'
+        }
+      })
+      this.showMenuList = false
+      this.$router.replace('/accounts/management')
     },
     hideMenu () {
       this.showMenuList = false
