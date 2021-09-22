@@ -118,7 +118,7 @@ export default {
             url: 'https://testnet-faucet.mempool.co/'
           },
           ETH: {
-            name: 'Ethererum rinkeby',
+            name: 'Ethererum ropsten',
             url: 'https://faucet.dimensions.network/'
           },
           RBTC: {
@@ -143,7 +143,7 @@ export default {
           },
           ARBETH: {
             name: 'ARBETH',
-            url: 'https://faucet.rinkeby.io/'
+            url: 'https://faucet.ropsten.io/'
           },
           LUNA: {
             name: 'TERRA',
