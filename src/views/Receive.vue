@@ -118,7 +118,7 @@ export default {
             url: 'https://testnet-faucet.mempool.co/'
           },
           ETH: {
-            name: 'Ethererum ropsten',
+            name: 'Ethererum Ropsten',
             url: 'https://faucet.dimensions.network/'
           },
           RBTC: {
