@@ -10,9 +10,27 @@
         <strong>Manage Accounts</strong>
       </span>
     </NavBar>
+    <div class="account-search form wrapper">
+      <div class="input-group">
+        <SearchIcon />
+        <input
+          type="text"
+          id="search_for_an_assert_input"
+          autocomplete="off"
+          class="form-control form-control-sm"
+          v-model="search"
+          placeholder="Search for an Asset"
+        />
+      </div>
+      <div v-if="filteredChainAccounts.length === 0" class="mt-3 d-flex">
+        <div>
+          <h4>Can't find this asset or chain</h4>
+        </div>
+      </div>
+    </div>
     <div class="chain-list">
       <div
-        v-for="chain in chains"
+        v-for="chain in filteredChainAccounts"
         :key="chain.code"
         class="chain-item"
         :id="'chain-item-' + chain.code"
@@ -49,31 +67,32 @@
           </router-link>
         </div>
         <div class="chain-item-accounts">
-         <ListItem
+          <ListItem
             :item-class="'custom-item'"
             v-for="account in chain.accounts"
-            :key="account.id">
-          <template #prefix>
-             <div class="account-color"
-                 :style="{'background-color': account.color}">
-            </div>
-          </template>
-          <template #icon>
-            <img :src="getAccountIcon(account.chain)"
-                 class="asset-icon" />
-          </template>
-          {{ account.name }}
-          <template #sub-title v-if="account.totalFiatBalance">
-            ${{ formatFiat(account.totalFiatBalance) }}
-          </template>
-          <template #detail>
+            :key="account.id"
+          >
+            <template #prefix>
+              <div
+                class="account-color"
+                :style="{ 'background-color': account.color }"
+              ></div>
+            </template>
+            <template #icon>
+              <img :src="getAccountIcon(account.chain)" class="asset-icon" />
+            </template>
+            {{ account.name }}
+            <template #sub-title v-if="account.totalFiatBalance">
+              ${{ formatFiat(account.totalFiatBalance) }}
+            </template>
+            <template #detail>
               <toggle-button
                 :css-colors="true"
                 :value="account.enabled"
                 @change="(e) => toogleAccount(account.id, e.value)"
-            />
-          </template>
-      </ListItem>
+              />
+            </template>
+          </ListItem>
         </div>
       </div>
     </div>
@@ -90,15 +109,19 @@ import PlusIcon from '@/assets/icons/plus_icon.svg'
 import { formatFiat } from '@/utils/coinFormatter'
 import { getAccountIcon } from '@/utils/accounts'
 import ListItem from '@/components/ListItem'
+import SearchIcon from '@/assets/icons/search.svg'
 
 export default {
   components: {
     NavBar,
     PlusIcon,
-    ListItem
+    ListItem,
+    SearchIcon
   },
   data () {
-    return {}
+    return {
+      search: null
+    }
   },
   computed: {
     ...mapGetters(['accountFiatBalance']),
@@ -135,6 +158,27 @@ export default {
           }
         }
       )
+    },
+    filteredChainAccounts () {
+      if (!this.search) return this.chains
+      const _search = new RegExp(this.search.toUpperCase())
+      return this.chains.filter((chain) => {
+        const { name, id, nativeAsset } = chain
+        const accountCount = chain.accounts.filter((a) => {
+          return a.assets
+            .map((a) => cryptoassets[a]?.name.toUpperCase() || a.toUpperCase())
+            .some(a => a.match(_search))
+        })
+
+        return (
+          accountCount.length > 0 ||
+          [
+            name.toUpperCase(),
+            id.toUpperCase(),
+            nativeAsset.toUpperCase()
+          ].some(a => a.match(_search))
+        )
+      })
     }
   },
   methods: {
@@ -173,24 +217,36 @@ export default {
 </script>
 
 <style lang="scss">
+.account-search {
+  border-bottom: 1px solid $hr-border-color;
+  input {
+    margin-right: 8px;
+    padding-left: 20px;
+  }
+
+  a {
+    padding-top: 20px;
+  }
+
+  .input-group {
+    align-items: center;
+    svg {
+      position: absolute;
+      left: 0;
+      top: 5px;
+    }
+  }
+
+  svg {
+    width: 16px;
+    margin-right: 8px;
+  }
+}
+
 .manage-accounts {
   display: flex;
   flex-direction: column;
   min-height: 0;
-
-  .remove-btn {
-    margin-left: 5px;
-  }
-
-  &_customText {
-    font-size: $font-size-lg;
-  }
-
-  &_bottomSection {
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-  }
 
   .chain-list {
     overflow-y: auto;
@@ -259,8 +315,9 @@ export default {
 }
 
 .custom-item {
-  &:hover, &.active {
-    background-color: #FFFFFF;
+  &:hover,
+  &.active {
+    background-color: #ffffff;
     color: $color-text-primary;
     cursor: default;
   }
