@@ -19,7 +19,7 @@
           autocomplete="off"
           class="form-control form-control-sm"
           v-model="search"
-          placeholder="Search for an Asset"
+          placeholder="Search for an Asset, Account or Chain"
         />
       </div>
       <div v-if="filteredChainAccounts.length === 0" class="mt-3 d-flex">
