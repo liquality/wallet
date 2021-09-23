@@ -23,9 +23,7 @@ export function getSwapProviderConfig (network, providerId) {
 }
 
 export function getSwapDetailsComponent (network, providerId) {
-  const config = getSwapProviderConfig(network, providerId)
-  const root = swapProviderRoot[config.type]
-  return require(`../${root}/SwapDetails.vue`).default
+  return require('../swaps/views/SwapDetails.vue').default
 }
 
 export function getSwapProviderIcon (network, providerId) {

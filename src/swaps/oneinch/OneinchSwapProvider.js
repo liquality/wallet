@@ -277,6 +277,8 @@ class OneinchSwapProvider extends SwapProvider {
   static fromTxType = OneinchSwapProvider.txTypes.SWAP
   static toTxType = null
 
+  static timelineDiagramSteps = ['APPROVE', 'SWAP']
+
   static totalSteps = 3
 }
 

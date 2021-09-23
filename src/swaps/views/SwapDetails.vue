@@ -9,7 +9,7 @@
         </div>
         <div class="liquality-timeline_container"
              v-for="(step, id) in timeline" :key="id"
-             :class="{ [step.side]: true, completed: step.completed, pending: step.pending }">
+             :class="{ [step.side]: true, completed: step && step.completed, pending: step.pending }">
           <div class="content">
             <template v-if="step.tx">
               <h3 :id="step.tx.asset">
@@ -46,18 +46,18 @@
               </template>
             </template>
             <h3 v-else>
-              <span :class="{'text-muted': !step.completed}">{{ step.title }}</span>
+              <span :class="{'text-muted': !step || !step.completed}">{{ step.title }}</span>
             </h3>
           </div>
         </div>
-        <div class="liquality-timeline_container right" v-if="timeline.length == 4"
-             :class="{ completed: timeline[3].completed }">
+        <div class="liquality-timeline_container right"
+             :class="{ completed: !timeline[timeline.length -1] || timeline[timeline.length -1].completed }">
           <div class="content"></div>
         </div>
       </div>
-      <template v-if="timeline.length == 4">
-        <h3 :class="{ 'text-muted': !timeline[3].completed }">Done</h3>
-        <small v-if="timeline[3].completed">{{ prettyTime(item.endTime) }}</small>
+      <template>
+        <h3 :class="{ 'text-muted': !timeline[timeline.length -1] || !timeline[timeline.length -1].completed }">Done</h3>
+        <small v-if="!timeline[timeline.length -1] || timeline[timeline.length -1].completed">{{ prettyTime(item.endTime) }}</small>
       </template>
     </div>
     <div class="text-center">
@@ -90,7 +90,7 @@
         </tbody>
         <tbody class="font-weight-normal" v-if="item.type === 'SWAP'">
         <tr>
-          <td class="text-muted text-right small-12">Counter-party</td>
+          <td v-if="item.agent" class="text-muted text-right small-12">Counter-party</td>
           <td>{{ item.agent }}</td>
         </tr>
         <tr>
@@ -154,16 +154,28 @@
           <td id="from_funding_transaction">{{ item.fromFundHash }}</td>
         </tr>
         <tr v-if="item.toFundHash">
-          <td class="text-muted text-right small-12">Counter-party's {{ item.to }}<br>funding transaction</td>
+          <td class="text-muted text-right small-12">Counter-party's {{ item.bridgeAsset || item.to }}<br>funding transaction</td>
           <td id="to_funding_transaction">{{ item.toFundHash }}</td>
         </tr>
         <tr v-if="item.toClaimHash">
-          <td class="text-muted text-right small-12">Your {{ item.to }} claim<br>transaction</td>
+          <td class="text-muted text-right small-12">Your {{ item.bridgeAsset || item.to }} claim<br>transaction</td>
           <td id="to_claim_hash">{{ item.toClaimHash }}</td>
         </tr>
+        <tr v-if="item.bridgeAsset">
+          <td class="text-muted text-right small-12">Bridge asset</td>
+          <td id="bridge_asset">{{ item.bridgeAsset }}</td>
+        </tr>
+        <tr v-if="item.approveTxHash">
+          <td class="text-muted text-right small-12">Your {{item.from}} approve<br>transaction</td>
+          <td id="approve_transaction">{{ item.approveTxHash }}</td>
+        </tr>
         <tr v-if="item.swapTxHash">
-          <td class="text-muted text-right small-12">Your {{item.bridgeAsset}} to {{ item.to }} swap<br>transaction</td>
-          <td id="send_transaction">{{ item.swapTxHash }}</td>
+          <td class="text-muted text-right small-12">Swap Transaction</td>
+          <td id="swap_transaction">{{ item.swapTxHash }}</td>
+        </tr>
+        <tr v-if="item.receiveTxHash">
+          <td class="text-muted text-right small-12">Your {{ item.to }} receive<br>transaction</td>
+          <td id="receive_transaction">{{ item.receiveTxHash }}</td>
         </tr>
         <tr v-if="item.sendTx">
           <td class="text-muted text-right small-12">Your {{ item.to }} send<br>transaction</td>
@@ -222,6 +234,16 @@ const ACTIONS_TERMS = {
     pending: 'Claiming',
     completed: 'Claimed'
   },
+  approve: {
+    default: 'Approve Not Required',
+    pending: 'Approving',
+    completed: 'Approved'
+  },
+  receive: {
+    default: 'Receive',
+    pending: 'Receiving',
+    completed: 'Received'
+  },
   swap: {
     default: 'Swap',
     pending: 'Swapping',
@@ -252,7 +274,7 @@ export default {
   },
   props: ['id', 'retrySwap'],
   computed: {
-    ...mapGetters(['client', 'accountItem']),
+    ...mapGetters(['client', 'accountItem', 'swapProvider']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
     item () {
       return this.history[this.activeNetwork][this.activeWalletId]
@@ -271,6 +293,10 @@ export default {
     feeSelectorUnit () {
       const chain = cryptoassets[this.feeSelectorAsset].chain
       return chains[chain].fees.unit
+    },
+    timelineDiagramSteps () {
+      const swapProvider = this.swapProvider(this.item.network, this.item.provider)
+      return swapProvider.timelineDiagramSteps
     }
   },
   methods: {
@@ -324,36 +350,45 @@ export default {
       }
       return step
     },
-    async getInitiationStep (completed, pending) {
-      return this.getTransactionStep(completed, pending, 'left', this.item.fromFundHash, this.item.fromFundTx, this.item.from, 'lock')
+    async getInitiationStep (completed, pending, side) {
+      return this.getTransactionStep(completed, pending, side, this.item.fromFundHash, this.item.fromFundTx, this.item.from, 'lock')
     },
-    async getAgentInitiationStep (completed, pending) {
-      return this.getTransactionStep(completed, pending, 'right', this.item.toFundHash, null, this.item.bridgeAsset, 'lock')
+    async getAgentInitiationStep (completed, pending, side) {
+      return this.getTransactionStep(completed, pending, side, this.item.toFundHash, null, this.item.bridgeAsset, 'lock')
     },
-    async getClaimRefundStep (completed, pending) {
+    async getClaimRefundStep (completed, pending, side) {
       return this.item.refundHash
-        ? this.getTransactionStep(completed, pending, 'left', this.item.refundHash, this.item.refundTx, this.item.from, 'refund')
-        : this.getTransactionStep(completed, pending, 'left', this.item.toClaimHash, this.item.toClaimTx, this.item.bridgeAsset, 'claim')
+        ? this.getTransactionStep(completed, pending, side, this.item.refundHash, this.item.refundTx, this.item.from, 'refund')
+        : this.getTransactionStep(completed, pending, side, this.item.toClaimHash, this.item.toClaimTx, this.item.bridgeAsset, 'claim')
     },
-    async getSwapStep (completed, pending) {
+    async getApproveStep (completed, pending, side) {
+      return this.getTransactionStep(completed, pending, side, this.item.approveTxHash, null, this.item.from, 'approve')
+    },
+    async getSwapStep (completed, pending, side) {
       return this.item.refundHash
         ? { side: 'right', pending: false, completed: true, title: `${ACTIONS_TERMS.swap.pending} ${this.item.bridgeAsset} Interrupted` }
-        : this.getTransactionStep(completed, pending, 'right', this.item.swapTxHash, this.item.swapTxHash, this.item.bridgeAsset, 'swap')
+        : this.getTransactionStep(completed, pending, side, this.item.swapTxHash, this.item.swapTxHash, this.item.bridgeAsset || this.item.from, 'swap')
+    },
+    async getReceiveStep (completed, pending, side) {
+      return this.getTransactionStep(completed, pending, side, this.item.receiveTxHash, null, this.item.to, 'receive')
     },
     async updateTransactions () {
       const timeline = []
-
-      const steps = [
-        this.getInitiationStep,
-        this.getAgentInitiationStep,
-        this.getClaimRefundStep,
-        this.getSwapStep
-      ]
+      const supportedSteps = {
+        SWAP: this.getSwapStep,
+        APPROVE: this.getApproveStep,
+        RECEIVE: this.getReceiveStep,
+        INITIATION: this.getInitiationStep,
+        AGENT_INITIATION: this.getAgentInitiationStep,
+        CLAIM_OR_REFUND: this.getClaimRefundStep
+      }
+      const steps = this.timelineDiagramSteps.map(step => supportedSteps[step])
 
       for (let i = 0; i < steps.length; i++) {
         const completed = getStep(this.item) > i
         const pending = getStep(this.item) === i
-        const step = await steps[i](completed, pending)
+        const side = i % 2 === 0 ? 'left' : 'right'
+        const step = await steps[i](completed, pending, side)
         timeline.push(step)
       }
 
