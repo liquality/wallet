@@ -1,68 +1,91 @@
 <template>
-<div class="account-container">
+  <div class="account-container">
     <NavBar :showMenu="false" :showBack="false">
       <span class="account-title">
         Create Account
       </span>
     </NavBar>
     <div class="wrapper">
-    <div class="wrapper_top">
+      <div class="wrapper_top">
         <div class="create-item-row">
-          <div class="create-item-row-title">Select the corresponding Blockchain</div>
+          <div class="create-item-row-title">Select Network</div>
           <div class="dropdown" v-click-away="hideAssetList">
-          <button class="btn custom-dropdown-toggle" @click="toggleAssetList">
-            <div class="form" v-if="selectedChain">
-              <div class="input-group">
-                <img
-                  :src="getAssetIcon(selectedChain.nativeAsset)"
-                  class="asset-icon"
-                />
-                <span class="input-group-text">
-                  {{ selectedChain.name }}
-                </span>
+            <button class="btn custom-dropdown-toggle" @click="toggleAssetList">
+              <div class="form" v-if="selectedChain">
+                <div class="input-group">
+                  <img
+                    :src="getAssetIcon(selectedChain.nativeAsset)"
+                    class="asset-icon"
+                  />
+                  <span class="input-group-text">
+                    {{ selectedChain.name }}
+                  </span>
+                </div>
               </div>
+              <ChevronRightIcon :class="{ open: assetsDropdownOpen }" />
+            </button>
+            <ul
+              class="dropdown-menu custom-dropdown-menu"
+              :class="{ show: assetsDropdownOpen }"
+            >
+              <li v-for="chain in chains" :key="chain.code">
+                <a class="dropdown-item" href="#" @click="selectChain(chain)">
+                  <div class="form">
+                    <div class="input-group">
+                      <img
+                        :src="getAssetIcon(chain.nativeAsset)"
+                        class="asset-icon"
+                      />
+                      <span class="input-group-text">
+                        {{ chain.name }}
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="create-item-row">
+          <div class="create-item-row-title">Choose Account Name</div>
+          <div class="form">
+            <div class="input-group">
+               <div class="input-group-prepend">
+    <span class="input-group-text account-name">
+       {{ accountName }}
+    </span>
+  </div>
+              <input
+                type="text"
+                autocomplete="off"
+                class="form-control form-control-sm"
+                v-model="accountAlias"
+                placeholder="Choose name"
+                required
+              />
             </div>
-            <ChevronRightIcon :class="{ open: assetsDropdownOpen }" />
+          </div>
+        </div>
+      </div>
+      <div class="wrapper_bottom">
+        <div class="button-group">
+          <button
+            class="btn btn-light btn-outline-primary btn-lg"
+            @click="cancel"
+          >
+            Cancel
           </button>
-          <ul class="dropdown-menu custom-dropdown-menu" :class="{ show: assetsDropdownOpen }">
-            <li v-for="chain in chains" :key="chain.code">
-              <a class="dropdown-item" href="#" @click="selectChain(chain)">
-                 <div class="form">
-              <div class="input-group">
-                <img
-                  :src="getAssetIcon(chain.nativeAsset)"
-                  class="asset-icon"
-                />
-                <span class="input-group-text">
-                  {{ chain.name }}
-                </span>
-              </div>
-            </div>
-              </a>
-            </li>
-          </ul>
+          <button
+            class="btn btn-primary btn-lg btn-icon"
+            @click="createNewAccount"
+            :disabled="loading || !selectedChain"
+          >
+            <SpinnerIcon class="btn-loading" v-if="loading" />
+            <template v-else>Create</template>
+          </button>
         </div>
-        </div>
-    </div>
-    <div class="wrapper_bottom">
-      <div class="button-group">
-        <button
-          class="btn btn-light btn-outline-primary btn-lg"
-          @click="cancel"
-        >
-          Cancel
-        </button>
-        <button
-          class="btn btn-primary btn-lg btn-icon"
-          @click="createAccount"
-          :disabled="loading || !selectedChain"
-        >
-          <SpinnerIcon class="btn-loading" v-if="loading" />
-          <template v-else>Create</template>
-        </button>
       </div>
     </div>
-  </div>
   </div>
 </template>
 
@@ -71,9 +94,12 @@ import NavBar from '@/components/NavBar.vue'
 import { getAssetIcon } from '@/utils/asset'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import clickAway from '@/directives/clickAway'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { chains } from '@liquality/cryptoassets'
+import buildConfig from '@/build.config'
+import { getNextAccountColor } from '@/utils/accounts'
+import cryptoassets from '@/utils/cryptoassets'
 
 export default {
   directives: {
@@ -84,24 +110,72 @@ export default {
     ChevronRightIcon,
     SpinnerIcon
   },
+  props: {
+    chainId: String
+  },
   data () {
     return {
       loading: false,
       selectedChain: null,
-      assetsDropdownOpen: false
+      assetsDropdownOpen: false,
+      accountAlias: ''
     }
   },
   computed: {
+    ...mapState([
+      'accounts',
+      'activeWalletId',
+      'activeNetwork',
+      'enabledAssets'
+    ]),
     ...mapGetters(['networkAssets']),
     chains () {
-      return Object.values(chains)
-        .filter(chain => chain.code !== this.selectedChain?.code)
+      return buildConfig.chains
+        .map((chainId) => {
+          const { name, code, nativeAsset } = chains[chainId]
+          return {
+            id: chainId,
+            name,
+            code,
+            nativeAsset
+          }
+        })
+        .filter((chain) => chain.id !== this.selectedChain?.id)
+    },
+    accountIndex () {
+      const _accounts = this.accounts[this.activeWalletId]?.[this.activeNetwork]
+        .filter(a => a.chain === this.selectedChain?.id) || []
+      if (_accounts.length <= 0) {
+        return 0
+      }
+
+      const lastAccount = _accounts.sort((a, b) => {
+        if (a.index > b.index) {
+          return -1
+        }
+
+        return 0
+      })[0]
+
+      return lastAccount.index + 1
+    },
+    accountName () {
+      return `${this.selectedChain?.name} ${this.accountIndex + 1}`
     }
   },
   created () {
-    this.selectedChain = Object.values(chains)[0]
+    let chain
+    if (this.chainId) {
+      chain = this.chains.find((c) => c.id === this.chainId)
+    }
+    this.selectedChain = chain || Object.values(chains)[0]
   },
   methods: {
+    ...mapActions([
+      'createAccount',
+      'getUnusedAddresses',
+      'updateAccountBalance'
+    ]),
     getAssetIcon,
     cancel () {
       this.$router.back()
@@ -115,11 +189,44 @@ export default {
     hideAssetList () {
       this.assetsDropdownOpen = false
     },
-    createAccount () {
-      // TODO: implement create account
-    },
-    getNextAccountIndex () {
-      //
+    async createNewAccount () {
+      const assetKeys =
+            this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
+
+      const assets = assetKeys.filter((asset) => {
+        return cryptoassets[asset].chain === this.selectedChain.id
+      })
+      const account = {
+        name: this.accountName,
+        alias: this.accountAlias,
+        chain: this.selectedChain.id,
+        addresses: [],
+        assets,
+        index: this.accountIndex,
+        type: 'default',
+        enabled: true,
+        color: getNextAccountColor(this.selectedChain.id, this.accountIndex - 1)
+      }
+      const createdAccount = await this.createAccount({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        account
+      })
+
+      await this.getUnusedAddresses({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        assets,
+        accountId: createdAccount.id
+      })
+
+      this.updateAccountBalance({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        accountId: createdAccount.id
+      })
+
+      this.cancel()
     }
   }
 }
@@ -139,22 +246,42 @@ export default {
 .custom-dropdown-menu {
   max-width: 100% !important;
   max-height: 250px !important;
+  min-width: 11rem;
+
+  .dropdown-item {
+    padding: 0.3rem 1em;
+  }
 }
 
 .wrapper {
   padding-top: 0 !important;
-  .create-item-row-title {
-    display: flex;
+
+  .wrapper_top {
+    position: absolute;
+    width: 100%;
+    left: 0;
   }
 
   .create-item-row {
-    padding: 26px 0px;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 12px;
-    line-height: 16px;
-    text-transform: uppercase;
-    color: #3D4767;
+    padding: 26px 20px;
+    border-bottom: 1px solid $hr-border-color;
+
+    .create-item-row-title,
+    .account-name {
+      font-style: normal;
+      font-weight: bold;
+      font-size: 12px;
+      line-height: 16px;
+      color: #3d4767;
+      display: flex;
+    }
+
+    .create-item-row-title {
+      text-transform: uppercase;
+    }
+    .account-name {
+      margin-right: 8px;
+    }
   }
 }
 </style>

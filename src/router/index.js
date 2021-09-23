@@ -116,8 +116,9 @@ const routes = [
     props: true
   },
   {
-    path: '/accounts/create',
+    path: '/accounts/create/:chainId?',
     component: CreateAccount,
+    name: 'CreateAccount',
     props: true
   },
   {

@@ -59,7 +59,7 @@
             }})
           </div>
           <router-link
-            to="/accounts/create"
+            :to="{ name: 'CreateAccount', params: { chainId: chain.id }}"
             class="create-link"
             v-tooltip="'Create Account'"
           >

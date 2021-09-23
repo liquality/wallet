@@ -193,7 +193,10 @@ export default {
           totalFiatBalance
         }
       }).sort((a, b) => {
-        if (a.type.includes('ledger')) {
+        if (
+          a.type.includes('ledger') ||
+          a.chain > b.chain
+        ) {
           return -1
         }
 
