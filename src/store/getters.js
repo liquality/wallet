@@ -169,10 +169,14 @@ export default {
     }).filter(account => account.balances && Object.keys(account.balances).length > 0)
   },
   accountsData (state, getters) {
-    const { accounts, activeNetwork, activeWalletId } = state
+    const { accounts, activeNetwork, activeWalletId, enabledChains } = state
     const { accountFiatBalance, assetFiatBalance } = getters
     return accounts[activeWalletId]?.[activeNetwork]
-      .filter(account => account.assets && account.assets.length > 0)
+      .filter(account => account.assets &&
+              account.enabled &&
+              account.assets.length > 0 &&
+              enabledChains[activeWalletId]?.[activeNetwork]?.includes(account.chain)
+      )
       .map(account => {
         const totalFiatBalance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
         const fiatBalances = Object.entries(account.balances)

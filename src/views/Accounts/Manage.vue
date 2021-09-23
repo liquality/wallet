@@ -17,40 +17,63 @@
         class="chain-item"
         :id="'chain-item-' + chain.code"
       >
-        <div class="chain-item-toggle" :id="'chain-item-toggle-' + chain.code">
-          <toggle-button
-            :css-colors="true"
-            :value="isChainEnabled(chain.id)"
-            @change="(e) => toogleBlockchain(chain.id, e.value)"
-          />
-        </div>
         <div class="chain-item-content">
-          <img
-              :src="getAssetIcon(chain.nativeAsset)"
-              class="asset-icon chain-item-icon"
+          <div
+            class="chain-item-toggle"
+            :id="'chain-item-toggle-' + chain.code"
+          >
+            <toggle-button
+              :css-colors="true"
+              :value="isChainEnabled(chain.id)"
+              @change="(e) => toogleBlockchain(chain.id, e.value)"
             />
-           <div class="chain-item-details">
-              <div
-              class="chain-item-name"
-              :id="'chain-item-name-' + chain.id"
-            >
-              {{ chain.name }}
-            </div>
-             <div
-              class="chain-item-balance"
-              :id="'chain-item-balance-' + chain.id"
-            >
-              {{ '$00.00' }}
-            </div>
-           </div>
-            <router-link to="/accounts/create"
-                         class="create-link"
-                         v-tooltip="'Create Account'">
-              <CreateIcon />
-            </router-link>
+          </div>
+          <img
+            :src="getAccountIcon(chain.id)"
+            class="asset-icon chain-item-icon"
+          />
+          <div class="chain-item-name" :id="'chain-item-name-' + chain.id">
+            {{ chain.name }}
+            ({{
+              `${chain.accounts.length} Account${
+                chain.accounts.length > 1 ? 's' : ''
+              }`
+            }})
+          </div>
+          <router-link
+            to="/accounts/create"
+            class="create-link"
+            v-tooltip="'Create Account'"
+          >
+            <PlusIcon />
+          </router-link>
         </div>
         <div class="chain-item-accounts">
-
+         <ListItem
+            :item-class="'custom-item'"
+            v-for="account in chain.accounts"
+            :key="account.id">
+          <template #prefix>
+             <div class="account-color"
+                 :style="{'background-color': account.color}">
+            </div>
+          </template>
+          <template #icon>
+            <img :src="getAccountIcon(account.chain)"
+                 class="asset-icon" />
+          </template>
+          {{ account.name }}
+          <template #sub-title v-if="account.totalFiatBalance">
+            ${{ formatFiat(account.totalFiatBalance) }}
+          </template>
+          <template #detail>
+              <toggle-button
+                :css-colors="true"
+                :value="account.enabled"
+                @change="(e) => toogleAccount(account.id, e.value)"
+            />
+          </template>
+      </ListItem>
         </div>
       </div>
     </div>
@@ -60,33 +83,58 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import buildConfig from '@/build.config'
 import { chains } from '@liquality/cryptoassets'
-import CreateIcon from '@/assets/icons/create_icon.svg'
+import PlusIcon from '@/assets/icons/plus_icon.svg'
+import { formatFiat } from '@/utils/coinFormatter'
+import { getAccountIcon } from '@/utils/accounts'
+import ListItem from '@/components/ListItem'
 
 export default {
   components: {
     NavBar,
-    CreateIcon
+    PlusIcon,
+    ListItem
   },
   data () {
     return {}
   },
   computed: {
-    ...mapGetters(['accountsData']),
-    ...mapState(['activeNetwork', 'activeWalletId', 'enabledChains']),
+    ...mapGetters(['accountFiatBalance']),
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId',
+      'enabledChains',
+      'accounts'
+    ]),
     chains () {
       return buildConfig.chains.map((chainId) => {
         const { name, code, nativeAsset } = chains[chainId]
+        const accounts = this.accountList.filter((a) => a.chain === chainId)
         return {
           id: chainId,
           name,
           code,
-          nativeAsset
+          nativeAsset,
+          accounts
         }
       })
+    },
+    accountList () {
+      return this.accounts[this.activeWalletId]?.[this.activeNetwork].map(
+        (account) => {
+          const totalFiatBalance = this.accountFiatBalance(
+            this.activeWalletId,
+            this.activeNetwork,
+            account.id
+          )
+          return {
+            ...account,
+            totalFiatBalance
+          }
+        }
+      )
     }
   },
   methods: {
@@ -94,7 +142,8 @@ export default {
       _toogleBlockchain: 'toogleBlockchain',
       _toogleAccount: 'toogleAccount'
     }),
-    getAssetIcon,
+    getAccountIcon,
+    formatFiat,
     getAssetName (asset) {
       return cryptoassets[asset]?.name || asset
     },
@@ -149,30 +198,38 @@ export default {
 }
 
 .chain-item {
-  width: 100%;
-  border-bottom: 1px solid $hr-border-color;
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding-left: 16px;
+  flex-direction: column;
+
+  .list-item-icon {
+    margin-left: 41px !important;
+  }
 
   .chain-item-content {
+    border-top: 1px solid $hr-border-color;
+    border-bottom: 1px solid $hr-border-color;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 20px;
+    padding: 12px 20px;
     width: 100%;
 
-     .chain-item-icon {
-        margin-right: 8px;
-      }
+    .chain-item-icon {
+      margin-right: 8px;
+      margin-left: 8px;
+    }
 
-      .create-link {
-        width: 20px;
-        svg {
-          width: 10px;
-        }
+    .chain-item-name {
+      width: 100%;
+    }
+
+    .create-link {
+      width: 20px;
+      height: 20px;
+      svg {
+        width: 12px;
       }
+    }
 
     .chain-item-details {
       display: flex;
@@ -189,8 +246,23 @@ export default {
         font-size: $font-size-tiny;
         color: $text-muted;
       }
-
     }
+  }
+}
+
+.account-color {
+  width: 5px;
+  height: 60px;
+  position: absolute;
+  left: 0;
+  margin-right: 5px;
+}
+
+.custom-item {
+  &:hover, &.active {
+    background-color: #FFFFFF;
+    color: $color-text-primary;
+    cursor: default;
   }
 }
 </style>
