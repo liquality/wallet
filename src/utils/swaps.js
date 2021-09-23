@@ -6,7 +6,8 @@ export const SwapProviderType = {
   ONEINCHV3: 'ONEINCHV3',
   THORCHAIN: 'THORCHAIN',
   LIQUALITYBOOST: 'LIQUALITYBOOST',
-  FASTBTC: 'FASTBTC'
+  FASTBTC: 'FASTBTC',
+  SOVRYN: 'SOVRYN'
 }
 
 const swapProviderRoot = {
@@ -15,7 +16,8 @@ const swapProviderRoot = {
   [SwapProviderType.ONEINCHV3]: 'swaps/oneinch',
   [SwapProviderType.THORCHAIN]: 'swaps/thorchain',
   [SwapProviderType.FASTBTC]: 'swaps/fastbtc',
-  [SwapProviderType.LIQUALITYBOOST]: 'swaps/liqualityboost'
+  [SwapProviderType.LIQUALITYBOOST]: 'swaps/liqualityboost',
+  [SwapProviderType.SOVRYN]: 'swaps/sovryn'
 }
 
 export function getSwapProviderConfig (network, providerId) {
