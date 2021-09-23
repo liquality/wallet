@@ -49,7 +49,7 @@
             <img :src="getAccountIcon(account.chain)"
                  class="asset-icon" />
           </template>
-          {{ account.name }}
+          {{ `${account.name} - ${account.alias}` }}
           <template #sub-title>
             {{ account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : '' }}
           </template>
