@@ -67,7 +67,8 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic,
             type: 'default',
             index: 0,
             derivationPath: `m/44'/${coinType}'/0'/0/0`,
-            color: getNextAccountColor(ChainId.Rootstock, 1)
+            color: getNextAccountColor(ChainId.Rootstock, 1),
+            enabled: true
           }
         })
         commit('CREATE_ACCOUNT', { network, walletId: id, account: _account })

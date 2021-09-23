@@ -50,17 +50,31 @@
           <div class="create-item-row-title">Choose Account Name</div>
           <div class="form">
             <div class="input-group">
-               <div class="input-group-prepend">
-    <span class="input-group-text account-name">
-       {{ accountName }}
-    </span>
-  </div>
+              <div class="input-group-prepend">
+                <span class="input-group-text account-name">
+                  {{ accountName }}
+                </span>
+              </div>
               <input
                 type="text"
                 autocomplete="off"
                 class="form-control form-control-sm"
                 v-model="accountAlias"
                 placeholder="Choose name"
+                required
+              />
+            </div>
+          </div>
+        </div>
+        <div class="create-item-row">
+          <div class="create-item-row-title">Choose the Color</div>
+          <div class="form">
+            <div class="input-group">
+              <input
+                type="color"
+                class="form-control form-control-sm"
+                v-model="accountColor"
+                placeholder="Choose color"
                 required
               />
             </div>
@@ -78,7 +92,7 @@
           <button
             class="btn btn-primary btn-lg btn-icon"
             @click="createNewAccount"
-            :disabled="loading || !selectedChain"
+            :disabled="loading || !inputsValidated"
           >
             <SpinnerIcon class="btn-loading" v-if="loading" />
             <template v-else>Create</template>
@@ -118,7 +132,8 @@ export default {
       loading: false,
       selectedChain: null,
       assetsDropdownOpen: false,
-      accountAlias: ''
+      accountAlias: '',
+      accountColor: ''
     }
   },
   computed: {
@@ -143,8 +158,10 @@ export default {
         .filter((chain) => chain.id !== this.selectedChain?.id)
     },
     accountIndex () {
-      const _accounts = this.accounts[this.activeWalletId]?.[this.activeNetwork]
-        .filter(a => a.chain === this.selectedChain?.id) || []
+      const _accounts =
+        this.accounts[this.activeWalletId]?.[this.activeNetwork].filter(
+          (a) => a.chain === this.selectedChain?.id
+        ) || []
       if (_accounts.length <= 0) {
         return 0
       }
@@ -161,6 +178,13 @@ export default {
     },
     accountName () {
       return `${this.selectedChain?.name} ${this.accountIndex + 1}`
+    },
+    inputsValidated () {
+      return this.selectedChain &&
+          this.accountAlias &&
+          this.accountAlias.length > 5 &&
+          this.accountColor &&
+          this.accountColor.length > 5
     }
   },
   created () {
@@ -169,6 +193,10 @@ export default {
       chain = this.chains.find((c) => c.id === this.chainId)
     }
     this.selectedChain = chain || Object.values(chains)[0]
+    this.accountColor = getNextAccountColor(
+      this.selectedChain.id,
+      this.accountIndex - 1
+    )
   },
   methods: {
     ...mapActions([
@@ -190,8 +218,9 @@ export default {
       this.assetsDropdownOpen = false
     },
     async createNewAccount () {
+      this.loading = true
       const assetKeys =
-            this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
+        this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
 
       const assets = assetKeys.filter((asset) => {
         return cryptoassets[asset].chain === this.selectedChain.id
@@ -205,7 +234,7 @@ export default {
         index: this.accountIndex,
         type: 'default',
         enabled: true,
-        color: getNextAccountColor(this.selectedChain.id, this.accountIndex - 1)
+        color: this.accountColor
       }
       const createdAccount = await this.createAccount({
         network: this.activeNetwork,
@@ -225,6 +254,8 @@ export default {
         walletId: this.activeWalletId,
         accountId: createdAccount.id
       })
+
+      this.loading = false
 
       this.cancel()
     }
@@ -265,6 +296,13 @@ export default {
   .create-item-row {
     padding: 26px 20px;
     border-bottom: 1px solid $hr-border-color;
+
+    input[type=color] {
+      height: 40px;
+      border: none;
+      max-width: 40px !important;
+      cursor: pointer;
+    }
 
     .create-item-row-title,
     .account-name {
