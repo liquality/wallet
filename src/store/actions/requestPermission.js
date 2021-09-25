@@ -34,7 +34,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
     if (!state.unlockedAt) throw new Error('Wallet is locked. Unlock the wallet first.')
     if (!state.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
 
-    let { asset, accountId, method, args } = data
+    let { asset, accountId, method, args, chain } = data
 
     if (!ALLOWED.some(re => re.test(method))) throw new Error('Method not allowed')
 
@@ -80,7 +80,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
 
         let permissionRoute = '/permission/default'
 
-        if (asset === 'LUNA') permissionRoute = '/permission/terra'
+        if (chain === 'terra') permissionRoute = '/permission/terra'
         else if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
         else if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
         else if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'

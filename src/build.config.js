@@ -20,9 +20,7 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
-      'FISH',
-      'SOL',
-      'LUNA'
+      'FISH'
     ],
     testnet: [
       'BTC',

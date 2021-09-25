@@ -108,7 +108,6 @@ export default {
       this.showData = !this.showData
     },
     getMessageType (messageType) {
-      console.log(messageType)
       return message[messageType]
     },
     async reply (allowed) {

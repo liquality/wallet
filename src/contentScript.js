@@ -5,7 +5,6 @@ import { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, n
 import buildConfig from './build.config'
 import { ChainNetworks } from '@/utils/networks'
 import { chains, isEthereumChain } from '@liquality/cryptoassets'
-import extension from 'extensionizer'
 import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
 
@@ -48,7 +47,9 @@ async function setupStreams () {
     target: 'station:inpage'
   })
 
-  const extensionPort = extension.runtime.connect({
+  
+
+  const extensionPort = chrome.extension.connect({
     name: 'TerraStationExtension'
   })
 
@@ -59,21 +60,8 @@ async function setupStreams () {
   console.log('Stream setup successfully')
 }
 
-function domIsReady () {
-  // already loaded
-  if (['interactive', 'complete'].includes(document.readyState)) {
-    return Promise.resolve()
-  }
-
-  // wait for load
-  return new Promise((resolve) =>
-    window.addEventListener('DOMContentLoaded', resolve, { once: true })
-  )
-}
-
 async function start () {
   await setupStreams()
-  await domIsReady()
 }
 
 start()
