@@ -970,6 +970,17 @@ export default {
         this.fromAssetChanged(accountId, asset)
       }
       this.currentStep = 'inputs'
+
+      if (this.showNoLiquidityMessage) {
+        this.trackAnalytics({
+          event: 'No Liquidity',
+          properties: {
+            category: 'Swap screen',
+            action: 'No Liquidity for pairs',
+            label: `No Liquidity for ${this.asset} to ${this.toAsset}`
+          }
+        })
+      }
     },
     closeSwapErrorModal () {
       this.swapErrorModalOpen = false
