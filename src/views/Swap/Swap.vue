@@ -450,6 +450,7 @@ export default {
     this.sendAmount = dpUI(this.defaultAmount)
 
     this.resetQuoteTimer()
+    this.trackNoLiquidity()
   },
   beforeDestroy () {
     clearInterval(this.interval)
@@ -971,16 +972,7 @@ export default {
       }
       this.currentStep = 'inputs'
 
-      if (this.showNoLiquidityMessage) {
-        this.trackAnalytics({
-          event: 'No Liquidity',
-          properties: {
-            category: 'Swap screen',
-            action: 'No Liquidity for pairs',
-            label: `No Liquidity for ${this.asset} to ${this.toAsset}`
-          }
-        })
-      }
+      this.trackNoLiquidity()
     },
     closeSwapErrorModal () {
       this.swapErrorModalOpen = false
@@ -1031,6 +1023,18 @@ export default {
     closeBridgeModal () {
       this.loading = false
       this.bridgeModalOpen = false
+    },
+    trackNoLiquidity () {
+      if (this.showNoLiquidityMessage) {
+        this.trackAnalytics({
+          event: 'No Liquidity',
+          properties: {
+            category: 'Swap screen',
+            action: 'No Liquidity for pairs',
+            label: `No Liquidity for ${this.asset} to ${this.toAsset}`
+          }
+        })
+      }
     }
   },
   watch: {
