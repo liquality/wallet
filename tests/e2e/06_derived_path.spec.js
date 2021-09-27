@@ -121,7 +121,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed (RSK & RSK legacy)
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'total assets should be 9 on overview page').contain('9 Assets')
+    expect(assetsCount, 'total assets should be 10 on overview page').contain('10 Assets')
 
     const assertAddresses = []
 
@@ -190,7 +190,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount).contain(' 8 Assets ')
+    expect(assetsCount).contain(' 9 Assets ')
 
     const assertAddresses = []
 
