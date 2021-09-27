@@ -44,7 +44,7 @@ describe('RSK Bridge Injection-[mainnet]', async () => {
     // toggle web3 wallet option
     await page.click('#default_web3_wallet_toggle_button > label > div')
   })
-  it('SOVRYN injection - RSK', async () => {
+  it('SOVRYN Bridge injection - RSK', async () => {
     // Select RSK network
     await page.click('#dropdown-item')
     await page.waitForSelector('#rsk_web_network', { visible: true })
