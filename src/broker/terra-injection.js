@@ -1,22 +1,12 @@
 import { TerraNetworks } from '@liquality/terra-networks'
 
 import PortStream from 'extension-port-stream'
-import _ from 'lodash'
 import BN from 'bignumber.js'
 
 import { emitter } from '../store/utils'
 
 let isConnected = false
 let _address
-
-_.mixin({
-  toPairsDeep: obj => _.flatMap(
-    _.toPairs(obj),
-    ([k, v]) => _.isObjectLike(v) ? _.toPairsDeep(v) : [[k, v]]
-  )
-})
-
-const getValueForKey = (obj, key) => new Map(_.toPairsDeep(obj)).get(key)
 
 const getConfig = (activeNetwork) => {
   const networkConfig = TerraNetworks['terra_' + activeNetwork]
@@ -48,27 +38,29 @@ const getExecutedMethod = (msgs) => {
   return Object.keys(executeMessages[executeMessages.length - 1]?.execute_msg)?.[0]
 }
 
-const getArgs = (payload) => {
+const getTransactionParams = (payload) => {
   const { fee, gasAdjustment, msgs } = payload
 
-  const { value } = JSON.parse(msgs[0])
+  const msg = JSON.parse(msgs[0]).value
   const { amount, gas } = JSON.parse(fee)
 
-  const _value = getValueForKey(value, 'amount')
-  const _to = getValueForKey(value, 'to_address') || getValueForKey(value, 'contract')
-  const _denom = getValueForKey(value, 'denom')
-  const _contractAddress = value.contract || getValueForKey(value, 'contract')
-  const _method = getExecutedMethod(msgs)
+  const value = msg.coins?.[0]?.amount || msg.amount?.[0]?.amount || msg.execute_msg?.transfer?.amount || msg.execute_msg?.send?.amount || 0
+  const denom = msg.coins?.[0]?.denom || msg.amount?.[0]?.denom
+  const to = msg.to_address || msg.execute_msg?.send?.contract || msg.execute_msg?.transfer?.recipient || msg.contract
+  const contractAddress = msg.contract
+  
+  const method = getExecutedMethod(msgs)
   const _fee = new BN(amount[0].amount).div(new BN(gas)).toString()
+  
+  const asset = !value ? 'uusd' : denom || contractAddress || 'luna'
 
   return {
-    _value,
-    _to,
-    _denom,
-    _contractAddress,
-    _method,
-    _fee: _fee,
-    _gasAdjustment: gasAdjustment
+    value,
+    asset,
+    to,
+    method,
+    fee: _fee,
+    gasAdjustment: gasAdjustment
   }
 }
 
@@ -92,16 +84,16 @@ export const connectRemote = (remotePort, store) => {
 
     const handleRequest = async (key) => {
       if (key === 'post') {
-        const { _to, _value, _gasAdjustment, _fee, _denom, _contractAddress, _method } = getArgs(payload)
+        const { to, value, gasAdjustment, fee, asset, method } = getTransactionParams(payload)
 
         const args = [{
-          to: _to,
-          value: _value,
+          to,
+          value,
+          fee,
+          asset,
+          method,
           data: payload,
-          gas: _gasAdjustment,
-          fee: _fee,
-          asset: _denom || _contractAddress,
-          method: _method
+          gas: gasAdjustment,
         }]
 
         try {
