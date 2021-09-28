@@ -1031,7 +1031,7 @@ export default {
           properties: {
             category: 'Swap screen',
             action: 'No Liquidity for pairs',
-            label: `No Liquidity for ${this.asset} to ${this.toAsset}`
+            label: `from ${this.asset} to ${this.toAsset}`
           }
         })
       }
