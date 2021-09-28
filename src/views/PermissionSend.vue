@@ -144,6 +144,13 @@ export default {
         } catch {
           this.symbol = 'ETH'
         }
+      } else if (this.assetChain === 'RBTC') {
+        try {
+          const data = await tokenDetailProviders.rsk.getDetails(this.request.args[0].to)
+          this.symbol = data.symbol
+        } catch {
+          this.symbol = 'RBTC'
+        }
       }
     },
     async getLabel () {
