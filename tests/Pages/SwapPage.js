@@ -29,6 +29,17 @@ class SwapPage {
   }
 
   /**
+   * Click on Max from swap screen.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnMax (page) {
+    await page.waitForSelector('#max_amount_send_button', { visible: true })
+    await page.click('#max_amount_send_button')
+  }
+
+  /**
    * Get SWAP send errors
    * @param page
    * @returns {Promise<*>}
