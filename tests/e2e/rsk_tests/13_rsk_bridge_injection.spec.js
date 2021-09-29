@@ -14,7 +14,7 @@ let browser, page, dappPage
 const password = '123123123'
 let bridgeUrl = 'https://bridge.test.sovryn.app/'
 
-describe('RSK Bridge Injection-[mainnet]', async () => {
+describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()

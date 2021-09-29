@@ -15,7 +15,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
-describe('SWAP Sovryn AMM service Provider', async () => {
+describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
