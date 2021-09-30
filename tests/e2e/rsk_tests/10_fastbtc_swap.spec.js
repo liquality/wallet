@@ -80,9 +80,6 @@ if (process.env.NODE_ENV === 'mainnet') {
         visible: true,
         timeout: 60000
       })
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'BTC->RBTC,fastBTC swap source should be chosen if BTC=0.0004').oneOf(['FastBTC'])
-      console.log(chalk.green('FastBTC service provider selected for BTC->RBTC'))
       // Click on BTC Max amount
       await swapPage.ClickOnMax(page)
       await page.waitForTimeout(2000)
