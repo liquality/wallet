@@ -12,7 +12,6 @@ import { SwapProvider } from '../SwapProvider'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
 import SovrynSwapNetworkABI from '@blobfishkate/sovryncontracts/abi/abiSovrynSwapNetwork.json'
-// '@blobfishkate/sovryncontracts/abi/abiRBTCWrapperProxy_old.json'
 import RBTCWrapperProxyABI from '@blobfishkate/sovryncontracts/abi/abiWrapperProxy_new.json'
 import SovrynMainnetAddresses from '@blobfishkate/sovryncontracts/contracts-mainnet.json'
 import SovrynTestnetAddresses from '@blobfishkate/sovryncontracts/contracts-testnet.json'
