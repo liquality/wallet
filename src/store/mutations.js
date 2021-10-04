@@ -10,6 +10,18 @@ const ensureOriginWalletTree = (ref, walletId, origin, initialValue) => {
   if (!ref[walletId][origin]) Vue.set(ref[walletId], origin, initialValue)
 }
 
+const ensureEnableChainsWalletTree = (ref, walletId, network) => {
+  if (!ref.enabledChains) {
+    Vue.set(ref, 'enabledChains', {})
+  }
+  if (!ref.enabledChains[walletId]) {
+    Vue.set(ref.enabledChains, walletId, {})
+  }
+  if (!ref.enabledChains[walletId]?.[network]) {
+    Vue.set(ref.enabledChains[walletId], network, [])
+  }
+}
+
 export default {
   SETUP_WALLET (state, { key }) {
     state.key = key
@@ -276,15 +288,7 @@ export default {
     state.watsNewModalVersion = version
   },
   TOGGLE_BLOCKCHAIN (state, { network, walletId, chainId, enable }) {
-    if (!state.enabledChains) {
-      Vue.set(state, 'enabledChains', {})
-    }
-    if (!state.enabledChains[walletId]) {
-      Vue.set(state.enabledChains, walletId, {})
-    }
-    if (!state.enabledChains[walletId]?.[network]) {
-      Vue.set(state.enabledChains[walletId], network, [])
-    }
+    ensureEnableChainsWalletTree(state, walletId, network)
 
     const chains = state.enabledChains.[walletId].[network]
     if (enable) {
