@@ -43,7 +43,7 @@
             <toggle-button
               :css-colors="true"
               :value="isChainEnabled(chain.id)"
-              @change="(e) => toogleBlockchain(chain.id, e.value)"
+              @change="(e) => toggleBlockchain(chain.id, e.value)"
             />
           </div>
           <img
@@ -89,7 +89,7 @@
               <toggle-button
                 :css-colors="true"
                 :value="account.enabled"
-                @change="(e) => toogleAccount(account.id, e.value)"
+                @change="(e) => toggleAccount(account.id, e.value)"
               />
             </template>
           </ListItem>
@@ -183,8 +183,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      _toogleBlockchain: 'toogleBlockchain',
-      _toogleAccount: 'toogleAccount'
+      _toggleBlockchain: 'toggleBlockchain',
+      _toggleAccount: 'toggleAccount'
     }),
     getAccountIcon,
     formatFiat,
@@ -196,16 +196,16 @@ export default {
         this.activeNetwork
       ]?.includes(chainId)
     },
-    toogleBlockchain (chainId, enable) {
-      this._toogleBlockchain({
+    toggleBlockchain (chainId, enable) {
+      this._toggleBlockchain({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
         chainId,
         enable
       })
     },
-    toogleAccount (accountId, enable) {
-      this._toogleAccount({
+    toggleAccount (accountId, enable) {
+      this._toggleAccount({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
         accountId,

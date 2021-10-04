@@ -275,7 +275,7 @@ export default {
   SET_WATS_NEW_MODAL_VERSION (state, { version }) {
     state.watsNewModalVersion = version
   },
-  TOOGLE_BLOCKCHAIN (state, { network, walletId, chainId, enable }) {
+  TOGGLE_BLOCKCHAIN (state, { network, walletId, chainId, enable }) {
     if (!state.enabledChains) {
       Vue.set(state, 'enabledChains', {})
     }
@@ -293,7 +293,7 @@ export default {
       Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains.filter(c => c !== chainId)])])
     }
   },
-  TOOGLE_ACCOUNT (state, { network, walletId, accountId, enable }) {
+  TOGGLE_ACCOUNT (state, { network, walletId, accountId, enable }) {
     const accounts = state.accounts[walletId][network]
     if (accounts) {
       const index = accounts.findIndex(
