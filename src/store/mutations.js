@@ -10,6 +10,11 @@ const ensureOriginWalletTree = (ref, walletId, origin, initialValue) => {
   if (!ref[walletId][origin]) Vue.set(ref[walletId], origin, initialValue)
 }
 
+const ensureAccountsWalletTree = (ref, walletId, network, initialValue) => {
+  if (!ref[walletId]) Vue.set(ref, walletId, {})
+  if (!ref[walletId][network]) Vue.set(ref[walletId], network, initialValue)
+}
+
 const ensureEnableChainsWalletTree = (ref, walletId, network) => {
   if (!ref.enabledChains) {
     Vue.set(ref, 'enabledChains', {})
@@ -298,6 +303,8 @@ export default {
     }
   },
   TOGGLE_ACCOUNT (state, { network, walletId, accountId, enable }) {
+    ensureAccountsWalletTree(state.accounts, walletId, network, [])
+
     const accounts = state.accounts[walletId][network]
     if (accounts) {
       const index = accounts.findIndex(
