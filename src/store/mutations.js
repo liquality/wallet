@@ -305,21 +305,18 @@ export default {
   TOGGLE_ACCOUNT (state, { network, walletId, accountId, enable }) {
     ensureAccountsWalletTree(state.accounts, walletId, network, [])
 
-    const accounts = state.accounts[walletId][network]
-    if (accounts) {
-      const index = accounts.findIndex(
-        (a) => a.id === accountId
-      )
+    const index = state.accounts[walletId][network].findIndex(
+      (a) => a.id === accountId
+    )
 
-      if (index >= 0) {
-        const _account = accounts[index]
-        const updatedAccount = {
-          ..._account,
-          enabled: enable
-        }
-
-        Vue.set(state.accounts[walletId][network], index, updatedAccount)
+    if (index >= 0) {
+      const _account = state.accounts[walletId][network][index]
+      const updatedAccount = {
+        ..._account,
+        enabled: enable
       }
+
+      Vue.set(state.accounts[walletId][network], index, updatedAccount)
     }
   }
 }
