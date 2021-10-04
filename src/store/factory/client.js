@@ -194,7 +194,7 @@ function createBSCClient (asset, network, mnemonic, derivationPath) {
 function createPolygonClient (asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const polygonNetwork = ChainNetworks.polygon[network]
-  const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com' : 'https://rpc-mainnet.maticvigil.com'
+  const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com' : 'https://polygon-rpc.com'
   const scraperApi = isTestnet ? 'https://liquality.io/polygon-testnet-api' : 'https://liquality.io/polygon-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
