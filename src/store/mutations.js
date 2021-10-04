@@ -315,7 +315,7 @@ export default {
         const _account = accounts[index]
         const updatedAccount = {
           ..._account,
-          enabled: !!enable
+          enabled: enable
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
