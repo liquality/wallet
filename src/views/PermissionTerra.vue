@@ -6,7 +6,7 @@
       <div class="wrapper_top form">
         <div class="form-group">
           <label>{{method}}</label>
-          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{asset}}</p>
+          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{asset}}</p>
         </div>
         <div class="form-group">
           <label>To</label>
@@ -153,18 +153,6 @@ export default {
     },
     shortAddress () {
       return this.address ? shortenAddress(this.address) : 'New Contract'
-    },
-    value () {
-      const value = this.request.args[0].value
-      return value
-    },
-    amount () {
-      if (!this.value) return 0
-
-      const multiplier = new BN(10).pow(6)
-      const amount = new BN(this.value).dividedBy(multiplier)
-
-      return amount
     },
     data () {
       return this.request.args[0].data.msgs.map(msg => JSON.parse(msg))

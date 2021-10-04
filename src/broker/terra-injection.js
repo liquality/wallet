@@ -5,9 +5,6 @@ import BN from 'bignumber.js'
 
 import { emitter } from '../store/utils'
 
-let isConnected = false
-let _address
-
 const getConfig = (activeNetwork) => {
   const networkConfig = TerraNetworks['terra_' + activeNetwork]
 
@@ -44,7 +41,6 @@ const getTransactionParams = (payload) => {
   const msg = JSON.parse(msgs[0]).value
   const { amount, gas } = JSON.parse(fee)
 
-  const value = msg.coins?.[0]?.amount || msg.amount?.[0]?.amount || msg.execute_msg?.transfer?.amount || msg.execute_msg?.send?.amount || 0
   const denom = msg.coins?.[0]?.denom || msg.amount?.[0]?.denom
   const to = msg.to_address || msg.execute_msg?.send?.contract || msg.execute_msg?.transfer?.recipient || msg.contract
   const contractAddress = msg.contract
@@ -55,7 +51,6 @@ const getTransactionParams = (payload) => {
   const asset = !value ? 'uusd' : denom || contractAddress || 'luna'
 
   return {
-    value,
     asset,
     to,
     method,
@@ -84,11 +79,10 @@ export const connectRemote = (remotePort, store) => {
 
     const handleRequest = async (key) => {
       if (key === 'post') {
-        const { to, value, gasAdjustment, fee, asset, method } = getTransactionParams(payload)
+        const { to, gasAdjustment, fee, asset, method } = getTransactionParams(payload)
 
         const args = [{
           to,
-          value,
           fee,
           asset,
           method,
@@ -119,26 +113,26 @@ export const connectRemote = (remotePort, store) => {
 
         break
       case 'connect':
-        if (!isConnected) {
-          emitter.$once(`origin:${origin}`, (allowed, accountId, chain) => {
-            isConnected = true
+        const { externalConnections, activeWalletId } = store.state
 
-            const accountData = store.getters.accountItem(accountId)
-            const [address] = accountData.addresses
-            _address = address
+        const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
+        Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes('terra')
+        
+        emitter.$once(`origin:${origin}`, (allowed, accountId, chain) => {
+          const accountData = store.getters.accountItem(accountId)
+          const [address] = accountData.addresses
+          
+          sendResponse('onConnect', { address })
+        })
 
-            sendResponse('onConnect', { address })
-          })
-        }
-
-        if (_address) {
-          sendResponse('onConnect', { address: _address })
+        if(allowed) {
+          const [address] = store.getters.accountsData.filter(e => e.chain === 'terra')[0].addresses
+          sendResponse('onConnect', { address })
         } else {
           store.dispatch('requestOriginAccess', { origin, chain: 'terra' })
         }
 
         break
-
       case 'sign':
         handleRequest('sign')
         break
