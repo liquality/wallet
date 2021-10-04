@@ -118,7 +118,7 @@ export default {
   },
   networkAccounts (state) {
     const { activeNetwork, activeWalletId, accounts } = state
-    return accounts[activeWalletId]?.[activeNetwork] || []
+    return accounts[activeWalletId]?.[activeNetwork]?.filter(a => a.enabled) || []
   },
   networkAssets (state) {
     const { enabledAssets, activeNetwork, activeWalletId } = state
@@ -147,7 +147,7 @@ export default {
   accountItem (state, getters) {
     const { accountsData } = getters
     return (accountId) => {
-      const account = accountsData.find(a => a.id === accountId)
+      const account = accountsData.find(a => a.id === accountId && a.enabled)
       return account
     }
   },
@@ -195,7 +195,7 @@ export default {
       }).sort((a, b) => {
         if (
           a.type.includes('ledger') ||
-          a.chain > b.chain
+          a.chain < b.chain
         ) {
           return -1
         }
