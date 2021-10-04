@@ -200,9 +200,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'createAccount',
-      'getUnusedAddresses',
-      'updateAccountBalance'
+      'createAccount'
     ]),
     getAssetIcon,
     cancel () {
@@ -236,23 +234,11 @@ export default {
         enabled: true,
         color: this.accountColor
       }
-      const createdAccount = await this.createAccount({
+
+      await this.createAccount({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
         account
-      })
-
-      await this.getUnusedAddresses({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        assets,
-        accountId: createdAccount.id
-      })
-
-      this.updateAccountBalance({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        accountId: createdAccount.id
       })
 
       this.loading = false
