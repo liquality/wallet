@@ -10,8 +10,8 @@ import buildConfig from '../build.config'
 const EXPLORERS = {
   ethereum: {
     testnet: {
-      tx: 'https://ropsten.etherscan.io/tx/0x{hash}',
-      address: 'https://ropsten.etherscan.io/address/{hash}'
+      tx: 'https://rinkeby.etherscan.io/tx/0x{hash}',
+      address: 'https://rinkeby.etherscan.io/address/{hash}'
     },
     mainnet: {
       tx: 'https://etherscan.io/tx/0x{hash}',
@@ -90,8 +90,8 @@ const EXPLORERS = {
   },
   terra: {
     testnet: {
-      tx: 'https://finder.terra.money/bombay-11/tx/{hash}',
-      address: 'https://finder.terra.money/bombay-11/address/{hash}'
+      tx: 'https://finder.terra.money/bombay-12/tx/{hash}',
+      address: 'https://finder.terra.money/bombay-12/address/{hash}'
     },
     mainnet: {
       tx: 'https://finder.terra.money/columbus-5/tx/{hash}',
