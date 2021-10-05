@@ -61,6 +61,7 @@
           <router-link
             :to="{ name: 'CreateAccount', params: { chainId: chain.id }}"
             class="create-link"
+            :id="'create-account-plus-icon-' + chain.id"
             v-tooltip="'Create Account'"
           >
             <PlusIcon />
@@ -71,6 +72,7 @@
             :item-class="'custom-item'"
             v-for="account in chain.accounts"
             :key="account.id"
+            :id="`${account.name}`"
           >
             <template #prefix>
               <div
