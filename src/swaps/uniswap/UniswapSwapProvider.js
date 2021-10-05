@@ -383,6 +383,8 @@ class UniswapSwapProvider extends SwapProvider {
   static fromTxType = UniswapSwapProvider.txTypes.SWAP
   static toTxType = null
 
+  static timelineDiagramSteps = ['APPROVE', 'SWAP']
+
   static totalSteps = 3
 }
 
