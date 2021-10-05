@@ -62,8 +62,12 @@
                 v-model="accountAlias"
                 placeholder="Choose name"
                 required
+                :class="{ 'is-invalid': (accountAlias.length < 5) }"
               />
             </div>
+            <small class="text-danger form-text text-right" v-if="(accountAlias.length < 5)">
+                Name should have 5 or more charecters
+              </small>
           </div>
         </div>
         <div class="create-item-row">
