@@ -1,5 +1,4 @@
 import buildConfig from '../build.config'
-import Timeline from '@/swaps/views/Timeline.vue'
 
 export const SwapProviderType = {
   LIQUALITY: 'LIQUALITY',
@@ -23,10 +22,6 @@ const swapProviderRoot = {
 
 export function getSwapProviderConfig (network, providerId) {
   return buildConfig.swapProviders[network][providerId]
-}
-
-export function getSwapDetailsComponent () {
-  return Timeline
 }
 
 export function getSwapProviderIcon (network, providerId) {
