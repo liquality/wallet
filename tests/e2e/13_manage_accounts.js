@@ -57,5 +57,11 @@ describe('Manage Accounts ["smoke"]', async () => {
     await page.click('#manage_accounts')
     console.log(chalk.green('User clicked on Manage Accounts'))
     await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
+    // Click on Plus
+    await page.click('#create-account-plus-icon-rsk')
+    await page.waitForSelector('#choose-account-name')
+    // Cancel button
+    await page.click('#cancel-button')
+    await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
   })
 })

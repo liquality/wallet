@@ -61,6 +61,7 @@
                 class="form-control form-control-sm"
                 v-model="accountAlias"
                 placeholder="Choose name"
+                id="choose-account-name"
                 required
                 :class="{ 'is-invalid': (accountAlias.length < 5) }"
               />
@@ -77,6 +78,7 @@
               <input
                 type="color"
                 class="form-control form-control-sm"
+                id="choose-color"
                 v-model="accountColor"
                 placeholder="Choose color"
                 required
@@ -89,12 +91,14 @@
         <div class="button-group">
           <button
             class="btn btn-light btn-outline-primary btn-lg"
+            id="cancel-button"
             @click="cancel"
           >
             Cancel
           </button>
           <button
             class="btn btn-primary btn-lg btn-icon"
+            id="create-button"
             @click="createNewAccount"
             :disabled="loading || !inputsValidated"
           >
