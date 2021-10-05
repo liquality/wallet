@@ -354,12 +354,12 @@ export default {
       return this.getTransactionStep(completed, pending, side, this.item.fromFundHash, this.item.fromFundTx, this.item.from, 'lock')
     },
     async getAgentInitiationStep (completed, pending, side) {
-      return this.getTransactionStep(completed, pending, side, this.item.toFundHash, null, this.item.bridgeAsset, 'lock')
+      return this.getTransactionStep(completed, pending, side, this.item.toFundHash, null, this.item.bridgeAsset || this.item.to, 'lock')
     },
     async getClaimRefundStep (completed, pending, side) {
       return this.item.refundHash
         ? this.getTransactionStep(completed, pending, side, this.item.refundHash, this.item.refundTx, this.item.from, 'refund')
-        : this.getTransactionStep(completed, pending, side, this.item.toClaimHash, this.item.toClaimTx, this.item.bridgeAsset, 'claim')
+        : this.getTransactionStep(completed, pending, side, this.item.toClaimHash, this.item.toClaimTx, this.item.bridgeAsset || this.item.to, 'claim')
     },
     async getApproveStep (completed, pending, side) {
       return this.getTransactionStep(completed, pending, side, this.item.approveTxHash, null, this.item.from, 'approve')
