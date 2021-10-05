@@ -14,7 +14,7 @@
       </div>
       <div class="setting-item">
         <div class="setting-item_title flex-fill" id="settings_item_web_network">Web3 Network
-          <span class="setting-item_sub">Select which ethereum based network should be used for dapps.</span>
+          <span class="setting-item_sub">Select which Web3 network should be used for dapps.</span>
         </div>
         <div class="setting-item_control">
           <ChainDropdown :chains="ethereumChains"

@@ -61,7 +61,7 @@ describe('Hamburger menu options', async () => {
 
     // Web3 Network dropdown
     const settingsItemWebNetwork = await page.$eval('#settings_item_web_network', (el) => el.textContent)
-    expect(settingsItemWebNetwork).contains('Select which ethereum based network should be used for dapps.')
+    expect(settingsItemWebNetwork).contains('Select which Web3 network should be used for dapps.')
 
     // Check the Analytics toggle option has been added
     await page.waitForSelector('#analytics_toggle_button', { visible: true })
