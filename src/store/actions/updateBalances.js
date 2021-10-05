@@ -14,6 +14,15 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
     const { assets, type } = account
     await Bluebird.map(assets, async asset => {
       let addresses = []
+      const _client = client(
+        {
+          network,
+          walletId,
+          asset,
+          accountId: account.id
+        }
+      )
+
       if (type.includes('ledger')) {
         addresses = account.addresses
           .filter(a => typeof a === 'string')
@@ -23,26 +32,12 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
             })
           })
       } else {
-        addresses = await client(
-          {
-            network,
-            walletId,
-            asset,
-            accountId: account.id
-          }
-        ).wallet.getUsedAddresses()
+        addresses = await _client.wallet.getUsedAddresses()
       }
 
       const balance = addresses.length === 0
         ? 0
-        : (await client(
-          {
-            network,
-            walletId,
-            asset,
-            accountId: account.id
-          }
-        ).chain.getBalance(addresses)).toNumber()
+        : (await _client.chain.getBalance(addresses)).toNumber()
 
       commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance })
 
