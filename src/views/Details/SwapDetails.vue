@@ -43,7 +43,7 @@
           </div>
         </div>
       </div>
-      <component v-bind:is="swapDetailsComponent" :id="id" @retrySwap="retry()"></component>
+      <Timeline :id="id" @retrySwap="retry()"/>
     </div>
     <Modal v-if="ledgerSignRequired && showLedgerModal" @close="showLedgerModal = false">
       <template #header>
@@ -94,13 +94,14 @@ import Modal from '@/components/Modal'
 import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
 
-import { getSwapDetailsComponent } from '../../utils/swaps'
+import Timeline from '@/swaps/views/Timeline.vue'
 
 export default {
   components: {
     CompletedIcon,
     SpinnerIcon,
     NavBar,
+    Timeline,
     Modal,
     LedgerSignRquest,
     SwapProviderLabel
@@ -118,9 +119,6 @@ export default {
     item () {
       return this.history[this.activeNetwork][this.activeWalletId]
         .find((item) => item.id === this.id)
-    },
-    swapDetailsComponent () {
-      return getSwapDetailsComponent(this.item.network, this.item.provider)
     },
     status () {
       return getStatusLabel(this.item)

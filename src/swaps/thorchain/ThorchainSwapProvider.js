@@ -431,6 +431,8 @@ class ThorchainSwapProvider extends SwapProvider {
   static fromTxType = ThorchainSwapProvider.txTypes.SWAP
   static toTxType = null
 
+  static timelineDiagramSteps = ['APPROVE', 'SWAP', 'RECEIVE']
+
   static totalSteps = 4
 }
 
