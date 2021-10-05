@@ -220,7 +220,7 @@ import { getNativeAsset, getTransactionExplorerLink } from '@/utils/asset'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
-import { getSwapProviderConfig } from '../../utils/swaps'
+import { getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate } from '@/utils/quotes'
 
 const ACTIONS_TERMS = {

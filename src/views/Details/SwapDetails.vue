@@ -120,7 +120,7 @@ export default {
         .find((item) => item.id === this.id)
     },
     swapDetailsComponent () {
-      return getSwapDetailsComponent(this.item.network, this.item.provider)
+      return getSwapDetailsComponent()
     },
     status () {
       return getStatusLabel(this.item)
