@@ -113,6 +113,7 @@ const routes = [
   {
     path: '/accounts/management',
     component: ManageAccounts,
+    name: 'ManageAccounts',
     props: true
   },
   {
