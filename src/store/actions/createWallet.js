@@ -23,7 +23,7 @@ export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic,
   networks.forEach(network => {
     const assetKeys = defaultAssets[network]
     buildConfig.chains.forEach(async chainId => {
-      commit('TOOGLE_BLOCKCHAIN', { network, walletId: id, chainId, enable: true })
+      commit('TOGGLE_BLOCKCHAIN', { network, walletId: id, chainId, enable: true })
       const assets = assetKeys.filter(asset => {
         return cryptoassets[asset]?.chain === chainId
       })
