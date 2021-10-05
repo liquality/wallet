@@ -125,9 +125,15 @@ export const connectRemote = (remotePort, store) => {
           sendResponse('onConnect', { address })
         })
 
+        
         if(allowed) {
-          const [address] = store.getters.accountsData.filter(e => e.chain === 'terra')[0].addresses
-          sendResponse('onConnect', { address })
+          const addresses = store.getters.accountsData.filter(e => e.chain === 'terra')[0]
+          if(!addresses?.length) {
+            store.dispatch('requestOriginAccess', { origin, chain: 'terra' })
+          } else {
+            const [address] = addresses 
+            sendResponse('onConnect', { address })
+          }
         } else {
           store.dispatch('requestOriginAccess', { origin, chain: 'terra' })
         }
