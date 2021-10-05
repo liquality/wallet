@@ -204,7 +204,7 @@ export default {
     ]),
     getAssetIcon,
     cancel () {
-      this.$router.back()
+      this.$router.replace({ name: 'ManageAccounts' })
     },
     selectChain (chain) {
       this.selectedChain = chain
