@@ -67,12 +67,12 @@
             <PlusIcon />
           </router-link>
         </div>
-        <div class="chain-item-accounts">
+        <div class="chain-item-accounts" :id="'chain-item-accounts-' + chain.id">
           <ListItem
             :item-class="'custom-item'"
             v-for="account in chain.accounts"
             :key="account.id"
-            :id="`${account.name}`"
+            :id="'account-name-id-' + chain.id"
           >
             <template #prefix>
               <div
