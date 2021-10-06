@@ -64,6 +64,12 @@ class SwapPage {
     console.log(chalk.green('SWAP review button has been disabled'))
   }
 
+  /**
+   * Receive asset icon click.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
   async SelectSwapReceiveCoin (page) {
     await page.click('.swap-receive-main-icon', { slowMo: 20 })
     await page.waitForSelector('#search_for_a_currency', { visible: true })
