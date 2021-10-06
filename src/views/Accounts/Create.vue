@@ -186,8 +186,8 @@ export default {
       this.accountIndex - 1
     )
 
-    this.debouncedCheckIfAccountAlias = _.debounce(this.checkIfAccountAlias, 500)
-    this.checkIfAccountAlias()
+    this.debouncedCheckAccountAlias = _.debounce(this.checkAccountAlias, 500)
+    this.checkAccountAlias()
   },
   methods: {
     ...mapActions([
@@ -272,7 +272,7 @@ export default {
   watch: {
     accountAlias (newVal, oldVal) {
       if (newVal !== oldVal) {
-        this.debouncedCheckIfAccountAlias()
+        this.debouncedCheckAccountAlias()
       }
     }
   }
