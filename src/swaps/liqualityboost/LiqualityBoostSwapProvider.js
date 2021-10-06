@@ -131,6 +131,13 @@ class LiqualityBoostSwapProvider extends SwapProvider {
   static fromTxType = LiqualityBoostSwapProvider.txTypes.SWAP_INITIATION
   static toTxType = LiqualityBoostSwapProvider.txTypes.SWAP
 
+  static timelineDiagramSteps = [
+    'INITIATION',
+    'AGENT_INITIATION',
+    'CLAIM_OR_REFUND',
+    'SWAP'
+  ]
+
   static totalSteps = 5
 }
 

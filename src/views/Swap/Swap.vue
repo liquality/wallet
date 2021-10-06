@@ -421,18 +421,20 @@ export default {
       await this.updateMaxSwapFees()
     })()
 
-    const toAsset = this.asset === 'BTC' ? 'ETH' : 'BTC'
-    if (this.account &&
-        this.account.assets &&
-        this.account.assets.includes(toAsset)) {
+    // Try to use the same account for (from and to) if it has more than one asset
+    let toAsset = null
+    if (this.account?.assets.length > 0 &&
+        !this.account?.assets.includes(this.asset)) {
       this.toAccountId = this.accountId
+      toAsset = this.account?.assets.find(a => a !== this.asset)
     } else {
       if (this.networkAccounts.length > 0) {
         const toAccount = this.networkAccounts.find(account => account.assets &&
-                                      account.assets.includes(toAsset) &&
+                                      !account.assets.includes(this.asset) &&
                                       account.id !== this.accountId)
         if (toAccount) {
           this.toAccountId = toAccount.id
+          toAsset = toAccount.assets.find(a => a !== this.asset)
         }
       }
     }
@@ -450,6 +452,7 @@ export default {
     this.sendAmount = dpUI(this.defaultAmount)
 
     this.resetQuoteTimer()
+    this.trackNoLiquidity()
   },
   beforeDestroy () {
     clearInterval(this.interval)
@@ -970,6 +973,8 @@ export default {
         this.fromAssetChanged(accountId, asset)
       }
       this.currentStep = 'inputs'
+
+      this.trackNoLiquidity()
     },
     closeSwapErrorModal () {
       this.swapErrorModalOpen = false
@@ -1020,6 +1025,18 @@ export default {
     closeBridgeModal () {
       this.loading = false
       this.bridgeModalOpen = false
+    },
+    trackNoLiquidity () {
+      if (this.showNoLiquidityMessage) {
+        this.trackAnalytics({
+          event: 'No Liquidity',
+          properties: {
+            category: 'Swap screen',
+            action: 'No Liquidity for pairs',
+            label: `from ${this.asset} to ${this.toAsset}`
+          }
+        })
+      }
     }
   },
   watch: {
