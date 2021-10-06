@@ -81,7 +81,9 @@
             <template #icon>
               <img :src="getAccountIcon(account.chain)" class="asset-icon" />
             </template>
-            {{ `${account.name} - ${account.alias}` }}
+
+            {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
+
             <template #sub-title v-if="account.totalFiatBalance">
               ${{ formatFiat(account.totalFiatBalance) }}
             </template>
