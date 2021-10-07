@@ -3,7 +3,6 @@ const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const expect = require('chai').expect
-const chalk = require('chalk')
 
 const puppeteer = require('puppeteer')
 
@@ -49,20 +48,28 @@ describe('Manage Accounts ["smoke"]', async () => {
     expect(rskAccounts.length).to.equals(2)
 
     // Click on Backup seed from Burger Icon menu
-    await page.waitForSelector('#burger_icon_menu', { visible: true })
-    await page.click('#burger_icon_menu')
-    console.log(chalk.green('User clicked on Burger Icon Menu'))
-    // Click Manage Accounts
-    await page.waitForSelector('#manage_accounts', { visible: true })
-    await page.click('#manage_accounts')
-    console.log(chalk.green('User clicked on Manage Accounts'))
-    await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
+    await overviewPage.ClickOnManageAccounts(page)
+    expect(await page.$eval('#chain-item-toggle-RSK > label', el => el.getAttribute('class'))).contain('toggled')
     // Click on Plus
     await page.click('#create-account-plus-icon-rsk')
     await page.waitForSelector('#choose-account-name')
     // Cancel button
     await page.click('#cancel-button')
     await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
+    // Toggle off RSK and validate the number of chains from overview page
+    await page.click('#chain-item-toggle-RSK')
+    expect(await page.$eval('#chain-item-toggle-RSK > label', el => el.getAttribute('class'))).not.contain('toggled')
+    await page.click('#previous_nav_bar')
+    // overview-screen-chain-section , RSK should be hidden
+    let accounts = await page.$$('.overview-screen-chain-section')
+    expect(accounts.length).to.equals(6)
+    // Go back to Manage account & toggle on
+    await overviewPage.ClickOnManageAccounts(page)
+    // Chain RSK toggle on but not accounts
+    await page.click('#chain-item-toggle-RSK')
+    await page.click('#previous_nav_bar')
+    accounts = await page.$$('.overview-screen-chain-section')
+    expect(accounts.length).to.equals(6)
   })
   it('RSK - create new account, validate accounts', async () => {
     // Import wallet option
@@ -82,13 +89,7 @@ describe('Manage Accounts ["smoke"]', async () => {
     expect(rskAccounts.length).to.equals(2)
 
     // Click on Backup seed from Burger Icon menu
-    await page.waitForSelector('#burger_icon_menu', { visible: true })
-    await page.click('#burger_icon_menu')
-    console.log(chalk.green('User clicked on Burger Icon Menu'))
-    // Click Manage Accounts
-    await page.waitForSelector('#manage_accounts', { visible: true })
-    await page.click('#manage_accounts')
-    console.log(chalk.green('User clicked on Manage Accounts'))
+    await overviewPage.ClickOnManageAccounts(page)
     await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true })
     // Click on Plus
     await page.click('#create-account-plus-icon-rsk')
