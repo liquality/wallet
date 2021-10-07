@@ -80,7 +80,7 @@ export default {
         name: 'Liquality',
         icon: 'liquality.svg',
         type: SwapProviderType.LIQUALITY,
-        agent: 'https://liquality.io/swap/agent'
+        agent: 'https://liquality.io/swap-dev/agent'
       },
       liqualityBoost: {
         name: 'Liquality Boost',

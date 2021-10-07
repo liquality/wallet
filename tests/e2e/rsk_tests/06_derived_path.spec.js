@@ -1,8 +1,8 @@
-const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
-const SeedWordsPage = require('../Pages/SeedWordsPage')
+const TestUtil = require('../../utils/TestUtils')
+const OverviewPage = require('../../Pages/OverviewPage')
+const HomePage = require('../../Pages/HomePage')
+const PasswordPage = require('../../Pages/PasswordPage')
+const SeedWordsPage = require('../../Pages/SeedWordsPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -33,7 +33,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     }
   })
 
-  // Create a new wallet
+  // Create a new wallet - ETH & RSK addresses are equal
   it('Validate derived path address are equal for ETH & RSK chains if balance is 0', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
@@ -64,7 +64,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'total assets should be 8 on overview page').contain('9 Assets')
+    expect(assetsCount, 'total assets validation on overview page').contain('7 Assets')
 
     const assertAddresses = []
 
@@ -78,6 +78,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     const polygonAddress = await overviewPage.GetAssertAddress(page, 'POLYGON')
     // ARBITRUM
     const arbitrumAddress = await overviewPage.GetAssertAddress(page, 'ARBITRUM')
+
     assertAddresses.push(ethAddress, rskAddress, bscAddress, polygonAddress, arbitrumAddress)
     expect(assertAddresses.every((val, i, arr) => val === arr[0]),
       'Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]')
@@ -97,11 +98,11 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     await page.click('#SOV')
     await page.waitForSelector('#SOV_address_container', { visible: true })
     const sovAddress = await page.$eval('#SOV_address_container', (el) => el.textContent)
-
+    // SOV & RBTC address are equal
     expect(sovAddress, 'SOV & RBTC address are equal').eq(rbtcAddress)
   })
-  // Import wallet
-  it('Balance > 0 wallet, validate ETH & RSK derived path not same', async () => {
+  // Import wallet with existing RSK & RSK legacy accounts
+  it('Balance > 0 wallet, validate ETH & RSK & RSK regency derived path not same', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -121,7 +122,11 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed (RSK & RSK legacy)
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'total assets should be 10').contain('10 Assets')
+    expect(assetsCount, 'validate total assets on overview page').contain('8 Assets')
+
+    // Validate RSK & RSK legacy chains listed
+    const rskAccounts = await page.$$('#RSK')
+    expect(rskAccounts.length, 'RSK & RSK legacy chains not listed').eqls(2)
 
     const assertAddresses = []
 

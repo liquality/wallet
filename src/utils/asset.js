@@ -180,7 +180,7 @@ export const tokenDetailProviders = {
   },
   polygon: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, 'https://rpc-mainnet.matic.network/')
+      return await fetchTokenDetails(contractAddress, 'https://polygon-rpc.com')
     }
   },
   rsk: {

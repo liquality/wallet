@@ -378,6 +378,23 @@ class OverviewPage {
     await page.click('#add_custom_token')
     console.log(chalk.green('User clicked on Add Custom Token'))
   }
+
+  /**
+   * Click on Manage Accounts from Overview page.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnManageAccounts (page) {
+    await page.waitForSelector('#burger_icon_menu', { visible: true })
+    await page.click('#burger_icon_menu')
+    console.log(chalk.green('User clicked on Burger Icon Menu'))
+    // Click Manage Accounts
+    await page.waitForSelector('#manage_accounts', { visible: true })
+    await page.click('#manage_accounts')
+    console.log(chalk.green('User clicked on Manage Accounts'))
+    await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
+  }
 }
 
 module.exports = OverviewPage

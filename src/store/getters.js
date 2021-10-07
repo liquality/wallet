@@ -119,7 +119,7 @@ export default {
   },
   networkAccounts (state) {
     const { activeNetwork, activeWalletId, accounts } = state
-    return accounts[activeWalletId]?.[activeNetwork] || []
+    return accounts[activeWalletId]?.[activeNetwork]?.filter(a => a.enabled) || []
   },
   networkAssets (state) {
     const { enabledAssets, activeNetwork, activeWalletId } = state
@@ -148,7 +148,7 @@ export default {
   accountItem (state, getters) {
     const { accountsData } = getters
     return (accountId) => {
-      const account = accountsData.find(a => a.id === accountId)
+      const account = accountsData.find(a => a.id === accountId && a.enabled)
       return account
     }
   },
@@ -170,10 +170,14 @@ export default {
     }).filter(account => account.balances && Object.keys(account.balances).length > 0)
   },
   accountsData (state, getters) {
-    const { accounts, activeNetwork, activeWalletId } = state
+    const { accounts, activeNetwork, activeWalletId, enabledChains } = state
     const { accountFiatBalance, assetFiatBalance } = getters
     return accounts[activeWalletId]?.[activeNetwork]
-      .filter(account => account.assets && account.assets.length > 0)
+      .filter(account => account.assets &&
+              account.enabled &&
+              account.assets.length > 0 &&
+              enabledChains[activeWalletId]?.[activeNetwork]?.includes(account.chain)
+      )
       .map(account => {
         const totalFiatBalance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
         const fiatBalances = Object.entries(account.balances)
@@ -190,7 +194,10 @@ export default {
           totalFiatBalance
         }
       }).sort((a, b) => {
-        if (a.type.includes('ledger')) {
+        if (
+          a.type.includes('ledger') ||
+          a.chain < b.chain
+        ) {
           return -1
         }
 

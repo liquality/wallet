@@ -618,6 +618,12 @@ class LiqualitySwapProvider extends SwapProvider {
   static fromTxType = LiqualitySwapProvider.txTypes.SWAP_INITIATION
   static toTxType = LiqualitySwapProvider.txTypes.SWAP_CLAIM
 
+  static timelineDiagramSteps = [
+    'INITIATION',
+    'AGENT_INITIATION',
+    'CLAIM_OR_REFUND'
+  ]
+
   static totalSteps = 4
 }
 

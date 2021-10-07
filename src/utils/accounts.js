@@ -14,7 +14,8 @@ export const accountCreator = (payload) => {
     assets,
     balances,
     type,
-    color
+    color,
+    enabled
   } = account
 
   const { formatAddress } = chains[chain]
@@ -46,7 +47,8 @@ export const accountCreator = (payload) => {
     balances: balances || {},
     createdAt,
     updatedAt: null,
-    color
+    color,
+    enabled
   }
 }
 

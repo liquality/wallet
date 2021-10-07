@@ -22,7 +22,7 @@
               <slot name="sub-title"></slot>
             </div>
           </div>
-          <div class="d-flex flex-column justify-content-end"
+          <div class="d-flex flex-column justify-content-end" id="chain-account-toggle-on-off"
                :class="{ 'list-item-detail-mr': !hasSlot('detail-icon') }">
             <div class="list-item-detail" v-if="hasSlot('detail')">
               <slot name="detail"></slot>

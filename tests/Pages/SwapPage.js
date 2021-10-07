@@ -29,6 +29,17 @@ class SwapPage {
   }
 
   /**
+   * Click on Max from swap screen.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnMax (page) {
+    await page.waitForSelector('#max_amount_send_button', { visible: true })
+    await page.click('#max_amount_send_button')
+  }
+
+  /**
    * Get SWAP send errors
    * @param page
    * @returns {Promise<*>}
@@ -53,6 +64,12 @@ class SwapPage {
     console.log(chalk.green('SWAP review button has been disabled'))
   }
 
+  /**
+   * Receive asset icon click.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
   async SelectSwapReceiveCoin (page) {
     await page.click('.swap-receive-main-icon', { slowMo: 20 })
     await page.waitForSelector('#search_for_a_currency', { visible: true })

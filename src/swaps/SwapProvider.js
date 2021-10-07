@@ -142,6 +142,12 @@ class SwapProvider {
     return toTxType
   }
 
+  get timelineDiagramSteps () {
+    const timelineDiagramSteps = this.constructor.timelineDiagramSteps
+    if (typeof timelineDiagramSteps === 'undefined') throw new Error('`timelineDiagramSteps` is not defined. e.g. ["APPROVE","SWAP"]')
+    return timelineDiagramSteps
+  }
+
   get totalSteps () {
     const totalSteps = this.constructor.totalSteps
     if (typeof totalSteps === 'undefined') throw new Error('`totalSteps` is not defined. e.g. 2')

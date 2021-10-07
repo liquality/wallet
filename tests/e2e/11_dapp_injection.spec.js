@@ -240,38 +240,6 @@ describe('Dapp Injection-[mainnet]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector("[class$='account-button ng-star-inserted']", { visible: true })
   })
-  it.skip('SOVRYN injection - RSK', async () => {
-    // Select RSK network
-    await page.click('#dropdown-item')
-    await page.waitForSelector('#rsk_web_network', { visible: true })
-    await page.click('#rsk_web_network')
-
-    // Go to SOVRYN app
-    const dappPage = await browser.newPage()
-    await dappPage.setViewport({
-      width: 1366,
-      height: 768
-    })
-    await dappPage.goto('https://live.sovryn.app/')
-    await dappPage.waitForSelector('#connect-wallet', { visible: true })
-    // Before click on injected wallet option.
-    const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.evaluate(
-      () => {
-        window.polygon.enable()
-      })
-    // await walletConnect[0].click()
-    const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#POLYGON', { visible: true })
-    await connectRequestWindow.click('#POLYGON')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
-    // Check web3 status as connected
-    await dappPage.reload()
-    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
-  })
-
   afterEach(async () => {
     await page.close()
     await browser.close()
