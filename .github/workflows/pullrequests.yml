@@ -35,7 +35,7 @@ jobs:
           mv ./src/manifest.tmp ./src/manifest.json
 
       - name: Build
-      - run: |
+        run: |
           npm ci
           npm run lint
           npm run build
