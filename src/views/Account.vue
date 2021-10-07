@@ -13,7 +13,7 @@
         <div class="account-container_balance">
           <div class="account-container_balance_fiat" :id="`${asset}_fiat_value`">
             <span v-if="fiatRates[asset]">
-              ${{ prettyFiatBalance(balance, fiatRates[asset]) }}
+              ${{ formatFiat(fiat) }}
             </span>
             <span v-else>&nbsp;</span>
           </div>
@@ -90,13 +90,14 @@ import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
-import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
 import { getAssetIcon, getAddressExplorerLink } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
+import BN from 'bignumber.js'
 
 import amplitude from 'amplitude-js'
 
@@ -134,6 +135,9 @@ export default {
     ]),
     account () {
       return this.accountItem(this.accountId)
+    },
+    fiat() {
+      return this.account?.fiatBalances?.[this.asset] || BN(0)
     },
     balance () {
       return prettyBalance(this.account?.balances[this.asset] || 0, this.asset)
@@ -174,7 +178,7 @@ export default {
     ]),
     getAssetIcon,
     shortenAddress,
-    prettyFiatBalance,
+    formatFiat,
     async copyAddress () {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true
