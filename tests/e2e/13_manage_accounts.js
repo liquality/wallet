@@ -63,6 +63,12 @@ describe('Manage Accounts ["smoke"]', async () => {
     // Cancel button
     await page.click('#cancel-button')
     await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
+    // Toggle off RSK and validate the number of chains from overview page
+    await page.click('#chain-item-toggle-RSK')
+    await page.click('#previous_nav_bar')
+    //overview-screen-chain-section , RSK should be hidden
+    const accounts = await page.$$('.overview-screen-chain-section')
+    expect(accounts.length).to.equals(6)
   })
   it('RSK - create new account, validate accounts', async () => {
     // Import wallet option
