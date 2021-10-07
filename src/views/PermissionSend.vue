@@ -75,11 +75,11 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-import { unitToCurrency } from '@liquality/cryptoassets'
+import { unitToCurrency, chainToTokenAddressMap } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
-import { getNativeAsset, getAssetColorStyle, tokenDetailProviders, estimateGas } from '@/utils/asset'
+import { getNativeAsset, getAssetColorStyle, estimateGas } from '@/utils/asset'
 import { parseTokenTx } from '@/utils/parseTokenTx'
 
 import { shortenAddress } from '@/utils/address'
@@ -137,20 +137,11 @@ export default {
       this.showData = !this.showData
     },
     async getSymbol () {
-      if (this.assetChain === 'ETH') {
-        try {
-          const data = await tokenDetailProviders.ethereum.getDetails(this.request.args[0].to)
-          this.symbol = data.symbol
-        } catch {
-          this.symbol = 'ETH'
-        }
-      } else if (this.assetChain === 'RBTC') {
-        try {
-          const data = await tokenDetailProviders.rsk.getDetails(this.request.args[0].to)
-          this.symbol = data.symbol
-        } catch {
-          this.symbol = 'RBTC'
-        }
+      try {
+        const token = chainToTokenAddressMap[cryptoassets[this.asset].chain][this.request.args[0].to]
+        this.symbol = token.code
+      } catch {
+        this.symbol = 'ETH'
       }
     },
     async getLabel () {
