@@ -61,16 +61,18 @@
           <router-link
             :to="{ name: 'CreateAccount', params: { chainId: chain.id }}"
             class="create-link"
+            :id="'create-account-plus-icon-' + chain.id"
             v-tooltip="'Create Account'"
           >
             <PlusIcon />
           </router-link>
         </div>
-        <div class="chain-item-accounts">
+        <div class="chain-item-accounts" :id="'chain-item-accounts-' + chain.id">
           <ListItem
             :item-class="'custom-item'"
             v-for="account in chain.accounts"
             :key="account.id"
+            :id="'account-name-id-' + chain.id"
           >
             <template #prefix>
               <div
@@ -81,7 +83,9 @@
             <template #icon>
               <img :src="getAccountIcon(account.chain)" class="asset-icon" />
             </template>
-            {{ `${account.name} - ${account.alias}` }}
+
+            {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
+
             <template #sub-title v-if="account.totalFiatBalance">
               ${{ formatFiat(account.totalFiatBalance) }}
             </template>

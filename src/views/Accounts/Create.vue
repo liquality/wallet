@@ -61,12 +61,13 @@
                 class="form-control form-control-sm"
                 v-model="accountAlias"
                 placeholder="Choose name"
+                id="choose-account-name"
                 required
-                :class="{ 'is-invalid': (accountAlias.length < 5) }"
+                :class="{ 'is-invalid': accountAliasError }"
               />
             </div>
-            <small class="text-danger form-text text-right" v-if="(accountAlias.length < 5)">
-                Name should have 5 or more characters
+            <small class="text-danger form-text text-right" v-if="accountAliasError">
+                {{ accountAliasError }}
               </small>
           </div>
         </div>
@@ -77,6 +78,7 @@
               <input
                 type="color"
                 class="form-control form-control-sm"
+                id="choose-color"
                 v-model="accountColor"
                 placeholder="Choose color"
                 required
@@ -89,12 +91,14 @@
         <div class="button-group">
           <button
             class="btn btn-light btn-outline-primary btn-lg"
+            id="cancel-button"
             @click="cancel"
           >
             Cancel
           </button>
           <button
             class="btn btn-primary btn-lg btn-icon"
+            id="create-button"
             @click="createNewAccount"
             :disabled="loading || !inputsValidated"
           >
@@ -118,6 +122,7 @@ import { chains } from '@liquality/cryptoassets'
 import buildConfig from '@/build.config'
 import { getNextAccountColor } from '@/utils/accounts'
 import cryptoassets from '@/utils/cryptoassets'
+import _ from 'lodash'
 
 export default {
   directives: {
@@ -137,7 +142,9 @@ export default {
       selectedChain: null,
       assetsDropdownOpen: false,
       accountAlias: '',
-      accountColor: ''
+      accountColor: '',
+      accountAliasError: null,
+      accountIndex: 0
     }
   },
   computed: {
@@ -161,32 +168,12 @@ export default {
         })
         .filter((chain) => chain.id !== this.selectedChain?.id)
     },
-    accountIndex () {
-      const _accounts =
-        this.accounts[this.activeWalletId]?.[this.activeNetwork].filter(
-          (a) => a.chain === this.selectedChain?.id
-        ) || []
-      if (_accounts.length <= 0) {
-        return 0
-      }
-
-      const lastAccount = _accounts.sort((a, b) => {
-        if (a.index > b.index) {
-          return -1
-        }
-
-        return 0
-      })[0]
-
-      return lastAccount.index + 1
-    },
     accountName () {
       return `${this.selectedChain?.name} ${this.accountIndex + 1}`
     },
     inputsValidated () {
       return this.selectedChain &&
-          this.accountAlias &&
-          this.accountAlias.length > 5 &&
+          !this.accountAliasError &&
           this.accountColor &&
           this.accountColor.length > 5
     }
@@ -197,10 +184,14 @@ export default {
       chain = this.chains.find((c) => c.id === this.chainId)
     }
     this.selectedChain = chain || Object.values(chains)[0]
+    this.accountIndex = this.getAccountIndex()
     this.accountColor = getNextAccountColor(
       this.selectedChain.id,
       this.accountIndex - 1
     )
+
+    this.debouncedCheckAccountAlias = _.debounce(this.checkAccountAlias, 500)
+    this.checkAccountAlias()
   },
   methods: {
     ...mapActions([
@@ -218,6 +209,26 @@ export default {
     },
     hideAssetList () {
       this.assetsDropdownOpen = false
+    },
+    getAccountIndex () {
+      const _accounts =
+        this.accounts[this.activeWalletId]?.[this.activeNetwork]?.filter(
+          (a) => a.chain === this.selectedChain?.id
+        ) || []
+
+      if (_accounts.length <= 0) {
+        return 0
+      }
+
+      const lastAccount = _accounts.sort((a, b) => {
+        if (a.index > b.index) {
+          return -1
+        }
+
+        return 0
+      })[0]
+
+      return lastAccount.index + 1
     },
     async createNewAccount () {
       this.loading = true
@@ -248,6 +259,25 @@ export default {
       this.loading = false
 
       this.cancel()
+    },
+    checkIfAccountAlias () {
+      if (!this.accountAlias || this.accountAlias.length < 5) {
+        this.accountAliasError = 'Name should have 5 or more characters'
+      } else if (this.accounts[this.activeWalletId]?.[this.activeNetwork]?.findIndex(
+        a => a.alias?.toLowerCase() === this.accountAlias.toLowerCase() ||
+        a.index === this.accountIndex
+      ) >= 0) {
+        this.accountAliasError = 'Existing account with the same name or path'
+      } else {
+        this.accountAliasError = null
+      }
+    }
+  },
+  watch: {
+    accountAlias (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.debouncedCheckAccountAlias()
+      }
     }
   }
 }
