@@ -47,8 +47,6 @@ async function setupStreams () {
     target: 'station:inpage'
   })
 
-  
-
   const extensionPort = chrome.extension.connect({
     name: 'TerraStationExtension'
   })

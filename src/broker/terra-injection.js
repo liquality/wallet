@@ -45,10 +45,10 @@ const getTransactionParams = (payload) => {
   const denom = msg.coins?.[0]?.denom || msg.amount?.[0]?.denom
   const to = msg.to_address || msg.execute_msg?.send?.contract || msg.execute_msg?.transfer?.recipient || msg.contract
   const contractAddress = msg.contract
-  
+
   const method = getExecutedMethod(msgs)
   const _fee = new BN(amount[0].amount).div(new BN(gas)).toString()
-  
+
   const asset = !value ? 'uusd' : denom || contractAddress || 'luna'
 
   return {
@@ -88,7 +88,7 @@ export const connectRemote = (remotePort, store) => {
           asset,
           method,
           data: payload,
-          gas: gasAdjustment,
+          gas: gasAdjustment
         }]
 
         try {
@@ -102,6 +102,11 @@ export const connectRemote = (remotePort, store) => {
       }
     }
 
+    const { externalConnections, activeWalletId } = store.state
+
+    const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
+    Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes('terra')
+
     switch (type) {
       case 'info':
         store.subscribe((mutation, state) => {
@@ -114,26 +119,20 @@ export const connectRemote = (remotePort, store) => {
 
         break
       case 'connect':
-        const { externalConnections, activeWalletId } = store.state
-
-        const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
-        Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes('terra')
-        
         emitter.$once(`origin:${origin}`, (allowed, accountId, chain) => {
           const accountData = store.getters.accountItem(accountId)
           const [address] = accountData.addresses
-          
+
           sendResponse('onConnect', { address })
         })
 
-      
-        if(allowed) {
+        if (allowed) {
           const accountData = store.getters.accountsData.filter(e => e.chain === 'terra')[0]
-          
-          if(!accountData?.addresses?.length) {
+
+          if (!accountData?.addresses?.length) {
             store.dispatch('requestOriginAccess', { origin, chain: 'terra' })
           } else {
-            const [address] = accountData.addresses 
+            const [address] = accountData.addresses
             sendResponse('onConnect', { address })
           }
         } else {

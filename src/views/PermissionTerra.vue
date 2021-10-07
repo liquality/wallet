@@ -52,7 +52,6 @@ import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
-import BN from 'bignumber.js'
 
 const assets = {
   luna: 'Luna',
