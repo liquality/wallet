@@ -79,7 +79,7 @@ import { unitToCurrency, chainToTokenAddressMap } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
-import { getNativeAsset, getAssetColorStyle, estimateGas } from '@/utils/asset'
+import { getNativeAsset, getAssetColorStyle, tokenDetailProviders, estimateGas } from '@/utils/asset'
 import { parseTokenTx } from '@/utils/parseTokenTx'
 
 import { shortenAddress } from '@/utils/address'
@@ -137,11 +137,18 @@ export default {
       this.showData = !this.showData
     },
     async getSymbol () {
-      try {
-        const token = chainToTokenAddressMap[cryptoassets[this.asset].chain][this.request.args[0].to]
-        this.symbol = token.code
-      } catch {
-        this.symbol = this.assetChain
+      const chain = cryptoassets[this.asset].chain
+      const tokenAddress = this.request.args[0].to
+
+      try { // try to get token from cryptoassets
+        this.symbol = chainToTokenAddressMap[chain][tokenAddress].code
+      } catch { // in case token doesn't exist in cryptoassets
+        try {
+          const tokeData = await tokenDetailProviders[chain].getDetails(tokenAddress)
+          this.symbol = tokeData.symbol + ' (Unverified)'
+        } catch {
+          this.symbol = this.assetChain
+        }
       }
     },
     async getLabel () {
