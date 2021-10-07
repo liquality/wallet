@@ -141,7 +141,7 @@ export default {
         const token = chainToTokenAddressMap[cryptoassets[this.asset].chain][this.request.args[0].to]
         this.symbol = token.code
       } catch {
-        this.symbol = 'ETH'
+        this.symbol = this.assetChain
       }
     },
     async getLabel () {
