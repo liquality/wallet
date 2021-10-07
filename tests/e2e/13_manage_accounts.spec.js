@@ -49,7 +49,7 @@ describe('Manage Accounts ["smoke"]', async () => {
 
     // Click on Backup seed from Burger Icon menu
     await overviewPage.ClickOnManageAccounts(page)
-    expect(await page.$eval('#chain-item-toggle-RSK > label', el =>el.getAttribute('class'))).contain('toggled')
+    expect(await page.$eval('#chain-item-toggle-RSK > label', el => el.getAttribute('class'))).contain('toggled')
     // Click on Plus
     await page.click('#create-account-plus-icon-rsk')
     await page.waitForSelector('#choose-account-name')
@@ -58,7 +58,7 @@ describe('Manage Accounts ["smoke"]', async () => {
     await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
     // Toggle off RSK and validate the number of chains from overview page
     await page.click('#chain-item-toggle-RSK')
-    expect(await page.$eval('#chain-item-toggle-RSK > label', el =>el.getAttribute('class'))).not.contain('toggled')
+    expect(await page.$eval('#chain-item-toggle-RSK > label', el => el.getAttribute('class'))).not.contain('toggled')
     await page.click('#previous_nav_bar')
     // overview-screen-chain-section , RSK should be hidden
     let accounts = await page.$$('.overview-screen-chain-section')
