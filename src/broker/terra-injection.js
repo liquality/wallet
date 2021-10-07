@@ -41,6 +41,7 @@ const getTransactionParams = (payload) => {
   const msg = JSON.parse(msgs[0]).value
   const { amount, gas } = JSON.parse(fee)
 
+  const value = msg.coins?.[0]?.amount || msg.amount?.[0]?.amount || msg.execute_msg?.transfer?.amount || msg.execute_msg?.send?.amount || 0
   const denom = msg.coins?.[0]?.denom || msg.amount?.[0]?.denom
   const to = msg.to_address || msg.execute_msg?.send?.contract || msg.execute_msg?.transfer?.recipient || msg.contract
   const contractAddress = msg.contract
