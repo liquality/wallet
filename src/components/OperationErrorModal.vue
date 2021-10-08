@@ -28,7 +28,7 @@
           </p>
       </div>
       <div v-else class="justify-content-center">
-        <p class="text-truncate">
+        <p class="text-break">
             {{ error }}
           </p>
       </div>
