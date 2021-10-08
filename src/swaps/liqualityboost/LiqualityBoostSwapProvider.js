@@ -50,8 +50,8 @@ class LiqualityBoostSwapProvider extends SwapProvider {
   }
 
   async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
-    const liqualityFees = await this.liqualitySwapProvider.estimateFees({ network, walletId, asset, txType, quote: { ...quote, to: quote.bridgeAsset, toAmount: quote.bridgeAssetAmount }, feePrices, max })
-    if (isERC20(asset) && txType === LiqualityBoostSwapProvider.txTypes.SWAP_CLAIM) {
+    const liqualityFees = await this.liqualitySwapProvider.estimateFees({ network, walletId, asset, txType: txType === LiqualityBoostSwapProvider.txTypes.SWAP ? LiqualityBoostSwapProvider.txTypes.SWAP_CLAIM : txType, quote: { ...quote, to: quote.bridgeAsset, toAmount: quote.bridgeAssetAmount }, feePrices, max })
+    if (isERC20(asset) && txType === LiqualityBoostSwapProvider.txTypes.SWAP) {
       const oneinchFees = await this.oneinchSwapProvider.estimateFees({ network, walletId, asset, txType: LiqualityBoostSwapProvider.txTypes.SWAP, quote: { ...quote, from: quote.bridgeAsset, fromAmount: quote.bridgeAssetAmount, fromAccountId: quote.toAccountId, slippagePercentage }, feePrices, max })
       const totalFees = {}
       for (const key in oneinchFees) {
