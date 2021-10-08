@@ -69,7 +69,7 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
     await page.click('#chain-item-toggle-RSK')
     await page.click('#previous_nav_bar')
     accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(6)
+    expect(accounts.length).to.equals(8)
   })
   it('RSK - create new account, validate accounts', async () => {
     // Import wallet option
