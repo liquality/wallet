@@ -516,7 +516,7 @@ class LiqualitySwapProvider extends SwapProvider {
       MATIC: 45000,
       NEAR: 8000000000000,
       SOL: 1,
-      LUNA: 1,
+      LUNA: 200000,
       ERC20: 100000,
       ARBETH: 680000
     }
