@@ -17,7 +17,7 @@ let browser, page
 const password = '123123123'
 
 // Only works on Mainnet
-describe.only('Liquality Booster Service Provider-[mainnet]', async () => {
+describe('Liquality Booster Service Provider-[mainnet]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
