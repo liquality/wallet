@@ -77,7 +77,6 @@
             <div class="input-group">
               <input
                 type="color"
-                class="form-control form-control-sm"
                 id="choose-color"
                 v-model="accountColor"
                 placeholder="Choose color"
@@ -260,9 +259,11 @@ export default {
 
       this.cancel()
     },
-    checkIfAccountAlias () {
+    checkAccountAlias () {
       if (!this.accountAlias || this.accountAlias.length < 5) {
         this.accountAliasError = 'Name should have 5 or more characters'
+      } else if (this.accountAlias.length > 20) {
+        this.accountAliasError = 'Name shouldn\'t have more than 20 characters'
       } else if (this.accounts[this.activeWalletId]?.[this.activeNetwork]?.findIndex(
         a => a.alias?.toLowerCase() === this.accountAlias.toLowerCase() ||
         a.index === this.accountIndex
@@ -320,8 +321,22 @@ export default {
     input[type=color] {
       height: 40px;
       border: none;
+      border-radius: 20px;
       max-width: 40px !important;
       cursor: pointer;
+
+    }
+
+    input[type=color]::-webkit-color-swatch {
+      border: none;
+      border-radius: 50%;
+      padding: 0;
+    }
+
+    input[type=color]::-webkit-color-swatch-wrapper {
+        border: none;
+        border-radius: 50%;
+        padding: 0;
     }
 
     .create-item-row-title,

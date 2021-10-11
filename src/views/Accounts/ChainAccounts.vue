@@ -5,7 +5,7 @@
       >
         <div class="chain-item-content">
           <img
-            :src="getAccountIcon(chain.id)"
+            :src="getChainIcon(chain.id)"
             class="asset-icon chain-item-icon"
           />
            <div class="d-flex flex-column mr-auto justify-content-start">
@@ -81,7 +81,7 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_circle.svg'
 import { formatFiat } from '@/utils/coinFormatter'
-import { getAccountIcon } from '@/utils/accounts'
+import { getAccountIcon, getChainIcon } from '@/utils/accounts'
 import ListItem from '@/components/ListItem'
 
 export default {
@@ -121,6 +121,7 @@ export default {
       _toggleAccount: 'toggleAccount'
     }),
     getAccountIcon,
+    getChainIcon,
     formatFiat,
     getAssetName (asset) {
       return cryptoassets[asset]?.name || asset

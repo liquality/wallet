@@ -92,6 +92,19 @@ export const getAccountIcon = (chain) => {
   }[chain]
 }
 
+export const getChainIcon = (chainId) => {
+  return {
+    bitcoin: getAssetIcon(`${chainId}_chain`),
+    ethereum: getAssetIcon(`${chainId}_chain`),
+    bsc: getAssetIcon(`${chainId}_chain`),
+    rsk: getAssetIcon(`${chainId}_chain`),
+    near: getAssetIcon(`${chainId}_chain`),
+    solana: getAssetIcon('SOL'),
+    polygon: getAssetIcon(`${chainId}_chain`),
+    arbitrum: getAssetIcon('ARBITRUM')
+  }[chainId]
+}
+
 export const getNextAccountColor = (chain, index) => {
   const defaultColor = chainDefaultColors[chain]
   const defaultIndex = accountColors.findIndex(c => c === defaultColor)
