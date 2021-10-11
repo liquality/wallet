@@ -13,6 +13,7 @@ const passwordPage = new PasswordPage()
 
 let browser, page
 const password = '123123123'
+const uniswapDappUrl = 'https://app.uniswap.org/#/swap'
 
 describe('Dapp Injection-[mainnet]', async () => {
   beforeEach(async () => {
@@ -52,12 +53,12 @@ describe('Dapp Injection-[mainnet]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto('https://app.uniswap.org/#/swap')
+    await dappPage.goto(uniswapDappUrl)
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true })
     } catch (e) {
-      let pageTitle = await dappPage.title()
-      let pageUrl = await dappPage.url()
+      const pageTitle = await dappPage.title()
+      const pageUrl = await dappPage.url()
       console.log(chalk.red(pageTitle))
       console.log(chalk.red(pageUrl))
       expect(e, 'Uniswap dapp UI not loading.....').equals(null)
@@ -90,7 +91,7 @@ describe('Dapp Injection-[mainnet]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto('https://app.uniswap.org/#/swap')
+    await dappPage.goto(uniswapDappUrl)
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true })
     } catch (e) {
