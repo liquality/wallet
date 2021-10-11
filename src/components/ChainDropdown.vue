@@ -114,7 +114,12 @@ export default {
   methods: {
     getAssetColorStyle,
     getChainName (chain) {
-      return chains[chain].name
+      const { name } = chains[chain]
+      switch (name) {
+        case 'Rootstock':
+          return `${name} (RSK)`
+      }
+      return name
     },
     getChainIcon (chain) {
       return getAccountIcon(chain)
