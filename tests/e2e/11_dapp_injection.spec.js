@@ -50,13 +50,13 @@ describe('Dapp Injection-[mainnet]', async () => {
       height: 768
     })
     await dappPage.goto('https://app.uniswap.org/#/swap')
-    await dappPage.waitForSelector('#connect-wallet', { visible: true })
-    await dappPage.click('#connect-wallet')
-    await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
-
+    await dappPage.waitForSelector('#swap-nav-link', { visible: true })
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.click('#connect-INJECTED')
+    await dappPage.evaluate(
+      () => {
+        window.ethereum.enable()
+      })
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
     await connectRequestWindow.click('#ETHEREUM')
@@ -64,6 +64,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     // Check web3 status as connected
+    await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
   it('UNISWAP Injection - ARBITRUM', async () => {
@@ -79,13 +80,14 @@ describe('Dapp Injection-[mainnet]', async () => {
       height: 768
     })
     await dappPage.goto('https://app.uniswap.org/#/swap')
-    await dappPage.waitForSelector('#connect-wallet', { visible: true })
-    await dappPage.click('#connect-wallet')
-    await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
+    await dappPage.waitForSelector('#swap-nav-link', { visible: true })
 
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.click('#connect-INJECTED')
+    await dappPage.evaluate(
+      () => {
+        window.arbitrum.enable()
+      })
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true })
     await connectRequestWindow.click('#ARBITRUM')
@@ -93,6 +95,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     // Check web3 status as connected
+    await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
   it('Sushi injection - ETH', async () => {
