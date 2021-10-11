@@ -136,7 +136,7 @@ export default {
     account () {
       return this.accountItem(this.accountId)
     },
-    fiat() {
+    fiat () {
       return this.account?.fiatBalances?.[this.asset] || BN(0)
     },
     balance () {
