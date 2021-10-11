@@ -46,7 +46,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await page.waitForTimeout(1000)
   })
 
-  it('UNISWAP Injection-ETH-[smoke]', async () => {
+  it.skip('UNISWAP Injection-ETH-[smoke]', async () => {
     // Go to uniSwap app
     const dappPage = await browser.newPage()
     await dappPage.setViewport({
