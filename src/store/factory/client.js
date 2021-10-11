@@ -216,8 +216,9 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
-function createTerraClient (network, mnemonic, baseDerivationPath) {
-  const terraNetwork = ChainNetworks.terra[network]
+function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
+  const terraNetwork =  asset === 'UST' ? {...ChainNetworks.terra[network], asset: 'uusd'} : ChainNetworks.terra[network]
+
   const terraClient = new Client()
 
   terraClient.addProvider(new TerraRpcProvider(terraNetwork))
@@ -244,7 +245,7 @@ export const createClient = (asset, network, mnemonic, accountType, derivationPa
   if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, derivationPath)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, derivationPath)
   if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
-  if (assetData.chain === 'terra') return createTerraClient(network, mnemonic, derivationPath)
+  if (assetData.chain === 'terra') return createTerraClient(network, mnemonic, derivationPath, asset)
 
   return createEthClient(asset, network, mnemonic, accountType, derivationPath)
 }
