@@ -3,6 +3,8 @@ const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const puppeteer = require('puppeteer')
+const { expect } = require('chai')
+const chalk = require('chalk')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
@@ -11,6 +13,7 @@ const passwordPage = new PasswordPage()
 
 let browser, page
 const password = '123123123'
+const uniswapDappUrl = 'https://app.uniswap.org/#/swap'
 
 describe('Dapp Injection-[mainnet]', async () => {
   beforeEach(async () => {
@@ -40,23 +43,36 @@ describe('Dapp Injection-[mainnet]', async () => {
     await overviewPage.SelectSettings(page)
     // toggle web3 wallet option
     await page.click('#default_web3_wallet_toggle_button > label > div')
+    await page.waitForTimeout(1000)
   })
 
-  it('UNISWAP Injection - ETH-[smoke]', async () => {
+  it('UNISWAP Injection-ETH-[smoke]', async () => {
     // Go to uniSwap app
     const dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
       height: 768
     })
-    await dappPage.goto('https://app.uniswap.org/#/swap')
-    await dappPage.waitForSelector('#swap-nav-link', { visible: true })
+    await dappPage.goto(uniswapDappUrl)
+    try {
+      await dappPage.waitForSelector('#swap-nav-link', { visible: true })
+      await dappPage.waitForSelector('#connect-wallet', { visible: true })
+    } catch (e) {
+      const pageTitle = await dappPage.title()
+      const pageUrl = await dappPage.url()
+      console.log(chalk.red(pageTitle))
+      console.log(chalk.red(pageUrl))
+      expect(e, 'Uniswap dapp UI not loading.....').equals(null)
+    }
+    await dappPage.click('#connect-wallet')
+    await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.evaluate(
-      () => {
-        window.ethereum.enable()
-      })
+    await dappPage.click('#connect-INJECTED')
+    // await dappPage.evaluate(
+    //   () => {
+    //     window.ethereum.enable()
+    //   })
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
     await connectRequestWindow.click('#ETHEREUM')
@@ -64,10 +80,9 @@ describe('Dapp Injection-[mainnet]', async () => {
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     // Check web3 status as connected
-    await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  it('UNISWAP Injection - ARBITRUM', async () => {
+  it('UNISWAP Injection-ARBITRUM', async () => {
     // Select polygon network
     await page.click('#dropdown-item')
     await page.waitForSelector('#arbitrum_web_network', { visible: true })
@@ -79,15 +94,22 @@ describe('Dapp Injection-[mainnet]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto('https://app.uniswap.org/#/swap')
-    await dappPage.waitForSelector('#swap-nav-link', { visible: true })
-
+    await dappPage.goto(uniswapDappUrl)
+    try {
+      await dappPage.waitForSelector('#swap-nav-link', { visible: true })
+      await dappPage.waitForSelector('#connect-wallet', { visible: true })
+    } catch (e) {
+      const pageTitle = await dappPage.title()
+      const pageUrl = await dappPage.url()
+      console.log(chalk.red(pageTitle))
+      console.log(chalk.red(pageUrl))
+      expect(e, 'Uniswap dapp UI not loading.....').equals(null)
+    }
+    await dappPage.click('#connect-wallet')
+    await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.evaluate(
-      () => {
-        window.arbitrum.enable()
-      })
+    await dappPage.click('#connect-INJECTED')
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true })
     await connectRequestWindow.click('#ARBITRUM')
@@ -95,7 +117,6 @@ describe('Dapp Injection-[mainnet]', async () => {
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     // Check web3 status as connected
-    await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
   it('Sushi injection - ETH', async () => {
@@ -123,7 +144,6 @@ describe('Dapp Injection-[mainnet]', async () => {
     // Check web3 status as connected
     await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
-    debugger
   })
   it('Sushi injection - Polygon-[smoke]', async () => {
     // Select polygon network
