@@ -57,6 +57,7 @@
       </div>
       <template>
         <h3 :class="{ 'text-muted': !timeline[timeline.length -1] || !timeline[timeline.length -1].completed }">Done</h3>
+        <small v-if="!timeline[timeline.length -1] || timeline[timeline.length -1].completed">Swap Status: {{item.status.toLowerCase()}}</small> <br>
         <small v-if="!timeline[timeline.length -1] || timeline[timeline.length -1].completed">{{ prettyTime(item.endTime) }}</small>
       </template>
     </div>
@@ -245,9 +246,9 @@ const ACTIONS_TERMS = {
     completed: 'Received'
   },
   swap: {
-    default: 'Swap',
-    pending: 'Swapping',
-    completed: 'Swapped'
+    default: 'Collect',
+    pending: 'Collecting',
+    completed: 'Collected'
   },
   refund: {
     default: 'Refund',
@@ -366,8 +367,8 @@ export default {
     },
     async getSwapStep (completed, pending, side) {
       return this.item.refundHash
-        ? { side: 'right', pending: false, completed: true, title: `${ACTIONS_TERMS.swap.pending} ${this.item.bridgeAsset} Interrupted` }
-        : this.getTransactionStep(completed, pending, side, this.item.swapTxHash, this.item.swapTxHash, this.item.bridgeAsset || this.item.from, 'swap')
+        ? { side: 'right', pending: false, completed: true, title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted` }
+        : this.getTransactionStep(completed, pending, side, this.item.swapTxHash, this.item.swapTxHash, this.item.to, 'swap')
     },
     async getReceiveStep (completed, pending, side) {
       return this.getTransactionStep(completed, pending, side, this.item.receiveTxHash, null, this.item.to, 'receive')
