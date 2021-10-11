@@ -154,8 +154,6 @@ describe('SWAP feature', async () => {
       'ETH->DAI, Supporting source should be chosen!')
       .oneOf(['Uniswap V2', 'Thorchain', 'Liquality'])
 
-    // Click on Network speed + FEE
-    await swapPage.ValidateNetworkFeeTab(page)
     // Click on Network speed + FEE & Validate
     const networkSpeedFee = await page.$eval('#details_header_chevron_down_icon', el => el.textContent)
     expect(networkSpeedFee).contain(asset1 + ' Avg')
