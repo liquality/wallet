@@ -4,6 +4,7 @@ const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
+const chalk = require('chalk')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
@@ -41,6 +42,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await overviewPage.SelectSettings(page)
     // toggle web3 wallet option
     await page.click('#default_web3_wallet_toggle_button > label > div')
+    await page.waitForTimeout(1000)
   })
 
   it('UNISWAP Injection - ETH-[smoke]', async () => {
@@ -54,6 +56,10 @@ describe('Dapp Injection-[mainnet]', async () => {
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true })
     } catch (e) {
+      let pageTitle = await dappPage.title()
+      let pageUrl = await dappPage.url()
+      console.log(chalk.red(pageTitle))
+      console.log(chalk.red(pageUrl))
       expect(e, 'Uniswap dapp UI not loading.....').equals(null)
     }
     // Before click on injected wallet option.
