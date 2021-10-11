@@ -3,6 +3,7 @@ const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const puppeteer = require('puppeteer')
+const { expect } = require('chai')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
@@ -50,7 +51,11 @@ describe('Dapp Injection-[mainnet]', async () => {
       height: 768
     })
     await dappPage.goto('https://app.uniswap.org/#/swap')
-    await dappPage.waitForSelector('#swap-nav-link', { visible: true })
+    try {
+      await dappPage.waitForSelector('#swap-nav-link', { visible: true })
+    } catch (e) {
+      expect(e, 'Uniswap dapp UI not loading.....').equals(null)
+    }
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.evaluate(
@@ -80,8 +85,11 @@ describe('Dapp Injection-[mainnet]', async () => {
       height: 768
     })
     await dappPage.goto('https://app.uniswap.org/#/swap')
-    await dappPage.waitForSelector('#swap-nav-link', { visible: true })
-
+    try {
+      await dappPage.waitForSelector('#swap-nav-link', { visible: true })
+    } catch (e) {
+      expect(e, 'Uniswap dapp UI not loading.....').equals(null)
+    }
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.evaluate(
