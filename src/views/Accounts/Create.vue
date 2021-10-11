@@ -14,7 +14,7 @@
               <div class="form" v-if="selectedChain">
                 <div class="input-group">
                   <img
-                    :src="getAssetIcon(selectedChain.nativeAsset)"
+                    :src="getChainIcon(selectedChain.id)"
                     class="asset-icon"
                   />
                   <span class="input-group-text">
@@ -33,7 +33,7 @@
                   <div class="form">
                     <div class="input-group">
                       <img
-                        :src="getAssetIcon(chain.nativeAsset)"
+                        :src="getChainIcon(chain.id)"
                         class="asset-icon"
                       />
                       <span class="input-group-text">
@@ -112,14 +112,13 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
-import { getAssetIcon } from '@/utils/asset'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import clickAway from '@/directives/clickAway'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { chains } from '@liquality/cryptoassets'
 import buildConfig from '@/build.config'
-import { getNextAccountColor } from '@/utils/accounts'
+import { getChainIcon, getNextAccountColor } from '@/utils/accounts'
 import cryptoassets from '@/utils/cryptoassets'
 import _ from 'lodash'
 
@@ -196,7 +195,7 @@ export default {
     ...mapActions([
       'createAccount'
     ]),
-    getAssetIcon,
+    getChainIcon,
     cancel () {
       this.$router.replace({ name: 'ManageAccounts' })
     },
