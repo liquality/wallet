@@ -176,7 +176,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  it.only('1Inch injection - ETH', async () => {
+  it.skip('1Inch injection - ETH', async () => {
     // Go to 1inch app
     const dappPage = await browser.newPage()
     await dappPage.goto('https://app.1inch.io/')
