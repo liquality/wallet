@@ -10,8 +10,8 @@ import buildConfig from '../build.config'
 const EXPLORERS = {
   ethereum: {
     testnet: {
-      tx: 'https://rinkeby.etherscan.io/tx/0x{hash}',
-      address: 'https://rinkeby.etherscan.io/address/{hash}'
+      tx: 'https://ropsten.etherscan.io/tx/0x{hash}',
+      address: 'https://ropsten.etherscan.io/address/{hash}'
     },
     mainnet: {
       tx: 'https://etherscan.io/tx/0x{hash}',
