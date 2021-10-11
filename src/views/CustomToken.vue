@@ -23,7 +23,7 @@
                    href="#"
                    @click="selectChain('ethereum')"
                    :class="{active: chain === 'ethereum'}">
-                   Ethereum
+                  Ethereum (ETH)
                 </a>
               </li>
               <li>
@@ -32,7 +32,7 @@
                    href="#"
                    @click="selectChain('rsk')"
                    :class="{active: chain === 'rsk'}">
-                   RSK
+                  Rootstock (RSK)
                 </a>
               </li>
               <li>
@@ -41,7 +41,7 @@
                    href="#"
                    @click="selectChain('bsc')"
                    :class="{active: chain === 'bsc'}">
-                   BSC
+                  Binance Smart Chain (BSC)
                 </a>
               </li>
               <li>
@@ -50,7 +50,7 @@
                    href="#"
                    @click="selectChain('polygon')"
                    :class="{active: chain === 'polygon'}">
-                   POLYGON
+                  Polygon (MATIC)
                 </a>
               </li>
               <li>
@@ -59,7 +59,7 @@
                    href="#"
                    @click="selectChain('arbitrum')"
                    :class="{active: chain === 'arbitrum'}">
-                   ARBITRUM
+                  Arbitrum
                 </a>
               </li>
             </ul>

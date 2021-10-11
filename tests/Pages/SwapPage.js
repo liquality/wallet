@@ -109,9 +109,7 @@ class SwapPage {
    */
   async ClickInitiateSwapButton (page) {
     await page.waitForSelector('#initiate_swap_button:not([disabled]', { visible: true })
-    console.log(chalk.green('Initiate swap button has been enabled, almost there...'))
     await page.click('#initiate_swap_button')
-    console.log(chalk.green('User clicked on initiate_swap_button option'))
   }
 
   /**
@@ -123,7 +121,6 @@ class SwapPage {
   async ValidateNetworkFeeTab (page) {
     await page.waitForSelector('#network_speed_fee', { visible: true })
     await page.click('#network_speed_fee')
-    console.log(chalk.green('user clicked on on Network fee options'))
     await page.waitForSelector('#average', { visible: true })
     const averageFee = await page.$eval('#average', (el) => el.getAttribute('class'))
     expect(averageFee,
@@ -140,7 +137,6 @@ class SwapPage {
    */
   async GetSwapSendAmount (page) {
     await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
-    console.log('SWAP screen has been displayed with send amount input field')
     return await page.$eval('#swap_send_amount_input_field', el => el.value)
   }
 
