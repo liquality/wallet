@@ -84,7 +84,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await swapPage.ClickOnMax(page)
       await page.waitForTimeout(2000)
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'BTC->RBTC,fastBTC swap source should be chosen if BTC max').oneOf(['FastBTC'])
+        'BTC->RBTC,fastBTC swap source should be chosen if BTC max').oneOf(['Liquality', 'FastBTC'])
     })
   })
 }
