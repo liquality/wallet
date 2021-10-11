@@ -5,6 +5,7 @@ const PasswordPage = require('../Pages/PasswordPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
+const chalk = require('chalk')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
@@ -149,7 +150,16 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
       height: 768
     })
     await dappPage.goto('https://app.uniswap.org/#/swap')
-    await dappPage.waitForSelector('#connect-wallet', { visible: true })
+    try {
+      await dappPage.waitForSelector('#swap-nav-link', { visible: true })
+      await dappPage.waitForSelector('#connect-wallet', { visible: true })
+    } catch (e) {
+      const pageTitle = await dappPage.title()
+      const pageUrl = await dappPage.url()
+      console.log(chalk.red(pageTitle))
+      console.log(chalk.red(pageUrl))
+      expect(e, 'Uniswap dapp UI not loading.....').equals(null)
+    }
     await dappPage.click('#connect-wallet')
     await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
 
