@@ -127,6 +127,10 @@ export const getNativeAsset = asset => {
   return chainId ? chains[chainId].nativeAsset : asset
 }
 
+export const getFeeAsset = asset => {
+  return cryptoassets[asset]?.feeAsset
+}
+
 export const getAssetColorStyle = asset => {
   const assetData = cryptoassets[asset]
   if (assetData && assetData.color) {
