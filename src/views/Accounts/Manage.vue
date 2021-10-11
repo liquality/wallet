@@ -10,27 +10,9 @@
         <strong>Manage Accounts</strong>
       </span>
     </NavBar>
-    <div class="account-search form wrapper">
-      <div class="input-group">
-        <SearchIcon />
-        <input
-          type="text"
-          id="search_for_an_assert_input"
-          autocomplete="off"
-          class="form-control form-control-sm"
-          v-model="search"
-          placeholder="Search for an Asset, Account or Chain"
-        />
-      </div>
-      <div v-if="filteredChainAccounts.length === 0" class="mt-3 d-flex">
-        <div>
-          <h4>Can't find this asset or chain</h4>
-        </div>
-      </div>
-    </div>
     <div class="chain-list">
       <div
-        v-for="chain in filteredChainAccounts"
+        v-for="chain in chains"
         :key="chain.code"
         class="chain-item"
         :id="'chain-item-' + chain.code"
@@ -113,14 +95,12 @@ import PlusIcon from '@/assets/icons/plus_icon.svg'
 import { formatFiat } from '@/utils/coinFormatter'
 import { getAccountIcon } from '@/utils/accounts'
 import ListItem from '@/components/ListItem'
-import SearchIcon from '@/assets/icons/search.svg'
 
 export default {
   components: {
     NavBar,
     PlusIcon,
-    ListItem,
-    SearchIcon
+    ListItem
   },
   data () {
     return {
@@ -162,27 +142,6 @@ export default {
           }
         }
       )
-    },
-    filteredChainAccounts () {
-      if (!this.search) return this.chains
-      const _search = new RegExp(this.search.toUpperCase())
-      return this.chains.filter((chain) => {
-        const { name, id, nativeAsset } = chain
-        const accountCount = chain.accounts.filter((a) => {
-          return a.assets
-            .map((a) => cryptoassets[a]?.name.toUpperCase() || a.toUpperCase())
-            .some(a => a.match(_search))
-        })
-
-        return (
-          accountCount.length > 0 ||
-          [
-            name.toUpperCase(),
-            id.toUpperCase(),
-            nativeAsset.toUpperCase()
-          ].some(a => a.match(_search))
-        )
-      })
     }
   },
   methods: {
