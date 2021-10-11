@@ -151,7 +151,7 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
     })
     await dappPage.goto('https://app.uniswap.org/#/swap')
     try {
-      await dappPage.waitForSelector('#swap-nav-link', { visible: true })
+      await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
     } catch (e) {
       const pageTitle = await dappPage.title()
