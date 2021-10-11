@@ -94,7 +94,7 @@
           <td v-if="item.agent" class="text-muted text-right small-12">Counter-party</td>
           <td>{{ item.agent }}</td>
         </tr>
-        <tr>
+        <tr v-if="orderLink">
           <td class="text-muted text-right small-12">Order ID</td>
           <td id="swap_details_order_id"><a :href="orderLink" id="order_id_href_link" rel="noopener" target="_blank">{{ item.id }}</a></td>
         </tr>
@@ -285,6 +285,9 @@ export default {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
     },
     orderLink () {
+      if (this.item.provider !== 'liquality') {
+        return ''
+      }
       const agent = getSwapProviderConfig(this.item.network, this.item.provider).agent
       return agent + '/api/swap/order/' + this.item.id + '?verbose=true'
     },
