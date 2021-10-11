@@ -59,7 +59,7 @@
                    href="#"
                    @click="selectChain('arbitrum')"
                    :class="{active: chain === 'arbitrum'}">
-                  Arbitrum
+                  Arbitrum (ARB)
                 </a>
               </li>
             </ul>
