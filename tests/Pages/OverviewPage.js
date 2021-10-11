@@ -80,6 +80,12 @@ class OverviewPage {
    */
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
+    try {
+      await page.waitForSelector('#send_action', { visible: true })
+    } catch (e) {
+      expect(e, 'No Liquidity.....').equals(null)
+    }
+
     await page.waitForSelector('#send_action', {
       visible: true,
       timeout: 60000

@@ -57,6 +57,7 @@
       </div>
       <template>
         <h3 :class="{ 'text-muted': !timeline[timeline.length -1] || !timeline[timeline.length -1].completed }">Done</h3>
+        <small v-if="!timeline[timeline.length -1] || timeline[timeline.length -1].completed">Swap Status: {{item.status.toLowerCase()}}</small> <br>
         <small v-if="!timeline[timeline.length -1] || timeline[timeline.length -1].completed">{{ prettyTime(item.endTime) }}</small>
       </template>
     </div>
@@ -93,7 +94,7 @@
           <td v-if="item.agent" class="text-muted text-right small-12">Counter-party</td>
           <td>{{ item.agent }}</td>
         </tr>
-        <tr>
+        <tr v-if="orderLink">
           <td class="text-muted text-right small-12">Order ID</td>
           <td id="swap_details_order_id"><a :href="orderLink" id="order_id_href_link" rel="noopener" target="_blank">{{ item.id }}</a></td>
         </tr>
@@ -245,9 +246,9 @@ const ACTIONS_TERMS = {
     completed: 'Received'
   },
   swap: {
-    default: 'Swap',
-    pending: 'Swapping',
-    completed: 'Swapped'
+    default: 'Collect',
+    pending: 'Collecting',
+    completed: 'Collected'
   },
   refund: {
     default: 'Refund',
@@ -284,6 +285,9 @@ export default {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
     },
     orderLink () {
+      if (this.item.provider !== 'liquality') {
+        return ''
+      }
       const agent = getSwapProviderConfig(this.item.network, this.item.provider).agent
       return agent + '/api/swap/order/' + this.item.id + '?verbose=true'
     },
@@ -366,8 +370,8 @@ export default {
     },
     async getSwapStep (completed, pending, side) {
       return this.item.refundHash
-        ? { side: 'right', pending: false, completed: true, title: `${ACTIONS_TERMS.swap.pending} ${this.item.bridgeAsset} Interrupted` }
-        : this.getTransactionStep(completed, pending, side, this.item.swapTxHash, this.item.swapTxHash, this.item.bridgeAsset || this.item.from, 'swap')
+        ? { side: 'right', pending: false, completed: true, title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted` }
+        : this.getTransactionStep(completed, pending, side, this.item.swapTxHash, this.item.swapTxHash, this.item.to, 'swap')
     },
     async getReceiveStep (completed, pending, side) {
       return this.getTransactionStep(completed, pending, side, this.item.receiveTxHash, null, this.item.to, 'receive')
