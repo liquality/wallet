@@ -100,6 +100,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
+      await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-true.png' })
     } catch (e) {
       await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-false.png' })
       const pageTitle = await dappPage.title()
