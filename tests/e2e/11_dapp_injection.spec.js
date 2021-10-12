@@ -50,7 +50,7 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
     await browser.close()
   })
 
-  it('UNISWAP Injection-ETH', async () => {
+  it.skip('UNISWAP Injection-ETH', async () => {
     // Go to uniSwap app
     dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -86,7 +86,7 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  it('UNISWAP Injection-ARBITRUM', async () => {
+  it.skip('UNISWAP Injection-ARBITRUM', async () => {
     // Select polygon network
     await page.click('#dropdown-item')
     await page.waitForSelector('#arbitrum_web_network', { visible: true })
