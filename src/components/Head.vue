@@ -66,7 +66,7 @@ export default {
 
    &_logo {
     position: absolute;
-    left: 10;
+    left: 10px;
   }
 
   &_logo, &_logo svg {

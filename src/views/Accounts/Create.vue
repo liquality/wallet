@@ -201,6 +201,8 @@ export default {
     },
     selectChain (chain) {
       this.selectedChain = chain
+      this.accountIndex = this.getAccountIndex()
+      this.checkAccountAlias()
     },
     toggleAssetList () {
       this.assetsDropdownOpen = !this.assetsDropdownOpen
@@ -264,8 +266,8 @@ export default {
       } else if (this.accountAlias.length > 20) {
         this.accountAliasError = 'Name shouldn\'t have more than 20 characters'
       } else if (this.accounts[this.activeWalletId]?.[this.activeNetwork]?.findIndex(
-        a => a.alias?.toLowerCase() === this.accountAlias.toLowerCase() ||
-        a.index === this.accountIndex
+        a => (a.alias && a.alias?.toLowerCase() === this.accountAlias.toLowerCase()) ||
+        (a.index === this.accountIndex && a.chain === this.selectedChain.id)
       ) >= 0) {
         this.accountAliasError = 'Existing account with the same name or path'
       } else {

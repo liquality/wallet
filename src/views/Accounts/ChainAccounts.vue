@@ -60,7 +60,7 @@
             {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
 
             <template #sub-title v-if="account.totalFiatBalance">
-              ${{ formatFiat(account.totalFiatBalance) }} - {{ account.enabled }}
+              ${{ formatFiat(account.totalFiatBalance) }}
             </template>
             <template #detail>
               <toggle-button
