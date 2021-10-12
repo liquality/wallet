@@ -83,6 +83,7 @@ class OverviewPage {
     try {
       await page.waitForSelector('#send_action', { visible: true, timeout: 60000 })
     } catch (e) {
+      await page.screenshot({ path: 'screenshots/overview-page-loading-issue.png' })
       expect(e, 'Overview page still Loading.....didn\'t load send/receive/swap option').equals(null)
     }
 
