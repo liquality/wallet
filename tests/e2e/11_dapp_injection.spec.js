@@ -4,7 +4,6 @@ const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
-const chalk = require('chalk')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
@@ -15,7 +14,7 @@ let browser, page, dappPage
 const password = '123123123'
 const uniswapDappUrl = 'https://app.uniswap.org/#/swap'
 
-describe('Dapp Injection-[mainnet]', async () => {
+describe.only('Dapp Injection-[mainnet]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -58,7 +57,7 @@ describe('Dapp Injection-[mainnet]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto(uniswapDappUrl)
+    await dappPage.goto(uniswapDappUrl, { timeout: 60000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
@@ -67,9 +66,7 @@ describe('Dapp Injection-[mainnet]', async () => {
       await dappPage.screenshot({ path: 'screenshots/uniswap-eth-false.png', fullscreen: true })
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
-      console.log(chalk.red(pageTitle))
-      console.log(chalk.red(pageUrl))
-      expect(e, 'Uniswap dapp UI not loading.....').equals(null)
+      expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
     }
     await dappPage.click('#connect-wallet')
     await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
@@ -101,7 +98,7 @@ describe('Dapp Injection-[mainnet]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto(uniswapDappUrl)
+    await dappPage.goto(uniswapDappUrl, { timeout: 60000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
@@ -110,9 +107,7 @@ describe('Dapp Injection-[mainnet]', async () => {
       await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-false.png', fullscreen: true })
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
-      console.log(chalk.red(pageTitle))
-      console.log(chalk.red(pageUrl))
-      expect(e, 'Uniswap dapp UI not loading.....').equals(null)
+      expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
     }
     await dappPage.click('#connect-wallet')
     await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
