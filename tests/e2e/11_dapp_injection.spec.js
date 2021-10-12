@@ -57,9 +57,9 @@ describe('Dapp Injection-[mainnet]', async () => {
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
-      await dappPage.screenshot({ path: 'screenshots/uniswap-eth-true.png' })
+      await dappPage.screenshot({ path: 'screenshots/uniswap-eth-true.png', fullscreen: true })
     } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/uniswap-eth-false.png' })
+      await dappPage.screenshot({ path: 'screenshots/uniswap-eth-false.png', fullscreen: true })
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       console.log(chalk.red(pageTitle))
@@ -100,9 +100,9 @@ describe('Dapp Injection-[mainnet]', async () => {
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
-      await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-true.png' })
+      await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-true.png', fullscreen: true })
     } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-false.png' })
+      await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-false.png', fullscreen: true })
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       console.log(chalk.red(pageTitle))
