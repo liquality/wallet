@@ -97,7 +97,7 @@
           </button>
           <button
             class="btn btn-primary btn-lg btn-icon"
-            id="create-button"
+            id="create-account-button"
             @click="createNewAccount"
             :disabled="loading || !inputsValidated"
           >
@@ -263,7 +263,7 @@ export default {
     checkAccountAlias () {
       if (!this.accountAlias ||
           this.accountAlias.length < 5 ||
-          (this.accountAlias.match(/^$|\s+/) || []).length > 0) {
+          (this.accountAlias.match(/^[^\s]+(\s+[^\s]+)*$/) || []).length <= 0) {
         this.accountAliasError = 'Name should have 5 or more characters'
       } else if (this.accountAlias.length > 20) {
         this.accountAliasError = 'Name shouldn\'t have more than 20 characters'
