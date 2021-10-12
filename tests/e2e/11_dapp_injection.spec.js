@@ -11,11 +11,11 @@ const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
-let browser, page
+let browser, page, dappPage
 const password = '123123123'
 const uniswapDappUrl = 'https://app.uniswap.org/#/swap'
 
-describe('Dapp Injection-[mainnet]', async () => {
+describe.only('Dapp Injection-[mainnet]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -45,10 +45,15 @@ describe('Dapp Injection-[mainnet]', async () => {
     await page.click('#default_web3_wallet_toggle_button > label > div')
     await page.waitForTimeout(1000)
   })
+  afterEach(async () => {
+    await page.close()
+    await dappPage.close()
+    await browser.close()
+  })
 
   it('UNISWAP Injection-ETH-[smoke]', async () => {
     // Go to uniSwap app
-    const dappPage = await browser.newPage()
+    dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
       height: 768
@@ -91,7 +96,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await page.click('#arbitrum_web_network')
 
     // Go to uniSwap app
-    const dappPage = await browser.newPage()
+    dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
       height: 768
@@ -125,7 +130,7 @@ describe('Dapp Injection-[mainnet]', async () => {
   })
   it('Sushi injection - ETH', async () => {
     // Go to Sushi app
-    const dappPage = await browser.newPage()
+    dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
       height: 768
@@ -156,7 +161,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await page.click('#polygon_web_network')
 
     // Go to Sushi app
-    const dappPage = await browser.newPage()
+    dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
       height: 768
@@ -266,9 +271,5 @@ describe('Dapp Injection-[mainnet]', async () => {
 
     // Check web3 status as connected
     await dappPage.waitForSelector("[class$='account-button ng-star-inserted']", { visible: true })
-  })
-  afterEach(async () => {
-    await page.close()
-    await browser.close()
   })
 })
