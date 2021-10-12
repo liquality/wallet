@@ -100,8 +100,9 @@ export default {
     clearSearch () {
       this.search = ''
     },
-    removeToken (asset) {
+    async removeToken (asset) {
       const params = { network: this.activeNetwork, walletId: this.activeWalletId, symbol: asset }
+      await this.disableAssets({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [asset] })
       this.removeCustomToken(params)
     },
     isCustomToken (asset) {
