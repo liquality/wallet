@@ -91,7 +91,7 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
 
     // Click on Backup seed from Burger Icon menu
     await overviewPage.ClickOnManageAccounts(page)
-    await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true })
+    await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true, timeout: 60000 })
     // Click on Plus
     await page.click('#create-account-plus-icon-rsk')
     await page.waitForSelector('#choose-account-name')
@@ -99,7 +99,7 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
     await page.type('#choose-account-name', accountName)
     // Cancel button
     await page.click('#create-button')
-    await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true })
+    await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true, timeout: 60000 })
     // check new account added
     // Validate number of RSK counts
     rskAccounts = await page.$$('#account-name-id-rsk')
