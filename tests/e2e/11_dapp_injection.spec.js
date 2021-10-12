@@ -46,7 +46,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await page.waitForTimeout(1000)
   })
 
-  it.skip('UNISWAP Injection-ETH-[smoke]', async () => {
+  it('UNISWAP Injection-ETH-[smoke]', async () => {
     // Go to uniSwap app
     const dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -57,7 +57,9 @@ describe('Dapp Injection-[mainnet]', async () => {
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
+      await dappPage.screenshot({ path: 'screenshots/uniswap-eth-true.png' })
     } catch (e) {
+      await dappPage.screenshot({ path: 'screenshots/uniswap-eth-false.png' })
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       console.log(chalk.red(pageTitle))
@@ -99,6 +101,7 @@ describe('Dapp Injection-[mainnet]', async () => {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
     } catch (e) {
+      await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-false.png' })
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       console.log(chalk.red(pageTitle))
