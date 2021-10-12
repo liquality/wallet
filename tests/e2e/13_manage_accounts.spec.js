@@ -50,7 +50,7 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
 
     // Click on Backup seed from Burger Icon menu
     await overviewPage.ClickOnManageAccounts(page)
-    expect(await page.$eval('#chain-item-toggle-RSK > label', el => el.getAttribute('class'))).contain('toggled')
+    expect(await page.$eval('#chain-item-toggle-rsk > label', el => el.getAttribute('class'))).contain('toggled')
     // Click on Plus
     await page.click('#create-account-plus-icon-rsk')
     await page.waitForSelector('#choose-account-name')
@@ -58,8 +58,8 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
     await page.click('#cancel-button')
     await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
     // Toggle off RSK and validate the number of chains from overview page
-    await page.click('#chain-item-toggle-RSK')
-    expect(await page.$eval('#chain-item-toggle-RSK > label', el => el.getAttribute('class'))).not.contain('toggled')
+    await page.click('#chain-item-toggle-rsk')
+    expect(await page.$eval('#chain-item-toggle-rsk > label', el => el.getAttribute('class'))).not.contain('toggled')
     await page.click('#previous_nav_bar')
     // overview-screen-chain-section , RSK should be hidden
     let accounts = await page.$$('.overview-screen-chain-section')
@@ -67,10 +67,10 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
     // Go back to Manage account & toggle on
     await overviewPage.ClickOnManageAccounts(page)
     // Chain RSK toggle on but not accounts
-    await page.click('#chain-item-toggle-RSK')
+    await page.click('#chain-item-toggle-rsk')
     await page.click('#previous_nav_bar')
     accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(6)
+    expect(accounts.length).to.equals(8)
   })
   it('RSK - create new account, validate accounts', async () => {
     // Import wallet option

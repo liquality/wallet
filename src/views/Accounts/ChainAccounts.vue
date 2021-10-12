@@ -31,7 +31,7 @@
           </router-link>
           <div
             class="chain-item-toggle"
-            :id="'chain-item-toggle-' + chain.code"
+            :id="'chain-item-toggle-' + chain.id"
           >
             <toggle-button
               :css-colors="true"
