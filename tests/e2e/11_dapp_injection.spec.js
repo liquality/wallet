@@ -14,7 +14,7 @@ let browser, page, dappPage
 const password = '123123123'
 const uniswapDappUrl = 'https://app.uniswap.org/#/swap'
 
-describe('Dapp Injection-[mainnet]', async () => {
+describe('Dapp Injection-[mainnet,dappTest]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -50,8 +50,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await browser.close()
   })
 
-  // TODO: skip uniswap injection test
-  it.skip('UNISWAP Injection-ETH-[smoke]', async () => {
+  it('UNISWAP Injection-ETH', async () => {
     // Go to uniSwap app
     dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -87,8 +86,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  // TODO: skip uniswap injection test
-  it.skip('UNISWAP Injection-ARBITRUM-[smoke]', async () => {
+  it('UNISWAP Injection-ARBITRUM', async () => {
     // Select polygon network
     await page.click('#dropdown-item')
     await page.waitForSelector('#arbitrum_web_network', { visible: true })
@@ -125,7 +123,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  it('Sushi injection - ETH-[smoke]', async () => {
+  it('Sushi injection - ETH', async () => {
     // Go to Sushi app
     dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -151,7 +149,7 @@ describe('Dapp Injection-[mainnet]', async () => {
     await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  it('Sushi injection - Polygon-[smoke]', async () => {
+  it('Sushi injection - Polygon', async () => {
     // Select polygon network
     await page.click('#dropdown-item')
     await page.waitForSelector('#polygon_web_network', { visible: true })
