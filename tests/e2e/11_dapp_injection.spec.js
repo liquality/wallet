@@ -4,18 +4,17 @@ const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
-const chalk = require('chalk')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
-let browser, page
+let browser, page, dappPage
 const password = '123123123'
 const uniswapDappUrl = 'https://app.uniswap.org/#/swap'
 
-describe('Dapp Injection-[mainnet]', async () => {
+describe('Dapp Injection-[mainnet,dappTest]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -45,24 +44,29 @@ describe('Dapp Injection-[mainnet]', async () => {
     await page.click('#default_web3_wallet_toggle_button > label > div')
     await page.waitForTimeout(1000)
   })
+  afterEach(async () => {
+    await page.close()
+    await dappPage.close()
+    await browser.close()
+  })
 
-  it.skip('UNISWAP Injection-ETH-[smoke]', async () => {
+  it.skip('UNISWAP Injection-ETH', async () => {
     // Go to uniSwap app
-    const dappPage = await browser.newPage()
+    dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
       height: 768
     })
-    await dappPage.goto(uniswapDappUrl)
+    await dappPage.goto(uniswapDappUrl, { timeout: 60000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
+      await dappPage.screenshot({ path: 'screenshots/uniswap-eth-true.png', fullscreen: true })
     } catch (e) {
+      await dappPage.screenshot({ path: 'screenshots/uniswap-eth-false.png', fullscreen: true })
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
-      console.log(chalk.red(pageTitle))
-      console.log(chalk.red(pageUrl))
-      expect(e, 'Uniswap dapp UI not loading.....').equals(null)
+      expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
     }
     await dappPage.click('#connect-wallet')
     await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
@@ -82,28 +86,28 @@ describe('Dapp Injection-[mainnet]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  it('UNISWAP Injection-ARBITRUM', async () => {
+  it.skip('UNISWAP Injection-ARBITRUM', async () => {
     // Select polygon network
     await page.click('#dropdown-item')
     await page.waitForSelector('#arbitrum_web_network', { visible: true })
     await page.click('#arbitrum_web_network')
 
     // Go to uniSwap app
-    const dappPage = await browser.newPage()
+    dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
       height: 768
     })
-    await dappPage.goto(uniswapDappUrl)
+    await dappPage.goto(uniswapDappUrl, { timeout: 60000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
+      await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-true.png', fullscreen: true })
     } catch (e) {
+      await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-false.png', fullscreen: true })
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
-      console.log(chalk.red(pageTitle))
-      console.log(chalk.red(pageUrl))
-      expect(e, 'Uniswap dapp UI not loading.....').equals(null)
+      expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
     }
     await dappPage.click('#connect-wallet')
     await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
@@ -121,7 +125,7 @@ describe('Dapp Injection-[mainnet]', async () => {
   })
   it('Sushi injection - ETH', async () => {
     // Go to Sushi app
-    const dappPage = await browser.newPage()
+    dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
       height: 768
@@ -145,14 +149,14 @@ describe('Dapp Injection-[mainnet]', async () => {
     await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  it('Sushi injection - Polygon-[smoke]', async () => {
+  it('Sushi injection - Polygon', async () => {
     // Select polygon network
     await page.click('#dropdown-item')
     await page.waitForSelector('#polygon_web_network', { visible: true })
     await page.click('#polygon_web_network')
 
     // Go to Sushi app
-    const dappPage = await browser.newPage()
+    dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
       height: 768
@@ -262,9 +266,5 @@ describe('Dapp Injection-[mainnet]', async () => {
 
     // Check web3 status as connected
     await dappPage.waitForSelector("[class$='account-button ng-star-inserted']", { visible: true })
-  })
-  afterEach(async () => {
-    await page.close()
-    await browser.close()
   })
 })

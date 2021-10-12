@@ -40,15 +40,15 @@ jobs:
           npm run lint
           npm run build
 
-      - name: Run Integration Tests
-        run: npm run test:integration
+#      - name: Run Integration Tests
+#        run: npm run test:integration
 
       - name: screenshots directory
         if: always()
         run: |
           mkdir screenshots
 
-      - name: Smoke tests
+      - name: Run Smoke tests againt PullRequest
         uses: beemi/puppeteer-headful@v1.0.6
         env:
           CI: 'true'
@@ -57,6 +57,16 @@ jobs:
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
           args: npm run test:pullrequest:smoke
+
+      - name: Run Dapp Injection Tests
+        uses: beemi/puppeteer-headful@v1.0.6
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: npm run test:dappinjection
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2
