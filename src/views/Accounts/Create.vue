@@ -261,7 +261,9 @@ export default {
       this.cancel()
     },
     checkAccountAlias () {
-      if (!this.accountAlias || this.accountAlias.length < 5) {
+      if (!this.accountAlias ||
+          this.accountAlias.length < 5 ||
+          (this.accountAlias.match(/^$|\s+/) || []).length > 0) {
         this.accountAliasError = 'Name should have 5 or more characters'
       } else if (this.accountAlias.length > 20) {
         this.accountAliasError = 'Name shouldn\'t have more than 20 characters'
