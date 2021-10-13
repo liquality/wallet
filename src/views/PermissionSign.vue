@@ -104,12 +104,6 @@ export default {
         args: JSON.parse(this.$route.query.args)
       }
     }
-  },
-  beforeDestroy () {
-    // TODO: need to reply correctly when window is closed
-    if (this.replied) return
-
-    this.reply(false)
   }
 }
 </script>
