@@ -77,8 +77,8 @@ export default {
   },
   methods: {
     ...mapActions(['replyOriginAccess']),
-    reply (allowed) {
-      this.replyOriginAccess({
+    async reply (allowed) {
+      await this.replyOriginAccess({
         origin: this.origin,
         allowed,
         chain: this.chain,
@@ -92,12 +92,6 @@ export default {
     onAccountSelected ({ account }) {
       this.accountId = account?.id
     }
-  },
-  beforeDestroy () {
-    if (this.replied) return
-
-    this.reply(false)
-    this.accountId = null
   }
 }
 </script>
