@@ -20,14 +20,19 @@ export default {
     unlocked () {
       this.reply(true)
     },
-    async reply (unlocked) {
+    reply (unlocked) {
       const { id } = this.$route.query
-      await this.replyUnlockWallet({ id, unlocked })
+      this.replyUnlockWallet({ id, unlocked })
 
       this.replied = true
 
       window.close()
     }
+  },
+  beforeDestroy () {
+    if (this.replied) return
+
+    this.reply(false)
   }
 }
 </script>

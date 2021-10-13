@@ -46,12 +46,12 @@ export default {
   methods: {
     ...mapActions(['replyPermission']),
     getAssetIcon,
-    async reply (allowed) {
+    reply (allowed) {
       if (this.loading) return
       this.loading = true
 
       try {
-        await this.replyPermission({
+        this.replyPermission({
           request: this.request,
           allowed
         })
@@ -81,6 +81,11 @@ export default {
     args () {
       return this.request.args.map(a => typeof a !== 'string' ? JSON.stringify(a) : a)
     }
+  },
+  beforeDestroy () {
+    if (this.replied) return
+
+    this.reply(false)
   }
 }
 </script>

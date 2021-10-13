@@ -63,12 +63,12 @@ export default {
     ...mapActions(['replyPermission']),
     prettyBalance,
     getAssetIcon,
-    async reply (allowed) {
+    reply (allowed) {
       if (this.loading) return
       this.loading = true
 
       try {
-        await this.replyPermission({
+        this.replyPermission({
           request: this.request,
           allowed
         })
@@ -142,6 +142,11 @@ export default {
     this.scanningChangeOutput = false
 
     this.externalAddresses = (await client.wallet.getAddresses(0, maxAddresses, false)).map(a => a.address)
+  },
+  beforeDestroy () {
+    if (this.replied) return
+
+    this.reply(false)
   }
 }
 </script>

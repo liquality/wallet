@@ -3,7 +3,7 @@ import { stringify } from 'qs'
 import { emitter } from '../utils'
 import { createPopup } from '../../broker/utils'
 
-export const requestUnlockWallet = async ({ state, commit }) => {
+export const requestUnlockWallet = async ({ state }) => {
   if (!state.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
 
   if (!state.unlockedAt) {
@@ -14,8 +14,7 @@ export const requestUnlockWallet = async ({ state, commit }) => {
         else reject(new Error('Wallet is locked. Unlock the wallet first.'))
       })
       const query = stringify({ id })
-
-      createPopup(`/request-unlock?${query}`, () => reject(new Error('Wallet is locked. Unlock the wallet first.')))
+      createPopup(`/request-unlock?${query}`)
     })
   }
 }
