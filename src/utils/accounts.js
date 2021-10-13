@@ -14,9 +14,12 @@ export const accountCreator = (payload) => {
     assets,
     balances,
     type,
-    color,
-    enabled
+    color
   } = account
+
+  const enabled = (
+    account.enabled !== null && account.enabled !== undefined
+  ) ? account.enabled : true
 
   const { formatAddress } = chains[chain]
   const _addresses = addresses.map(a => {
@@ -24,15 +27,10 @@ export const accountCreator = (payload) => {
     return address.startsWith('0x') ? address.substring(2, address.length) : address
   })
 
-  let _derivationPath
-  if (account.derivationPath) {
-    _derivationPath = account.derivationPath
-  } else {
-    _derivationPath = getDerivationPath(chain, network, index, type)
-  }
-
+  const derivationPath = account.derivationPath ? account.derivationPath : getDerivationPath(chain, network, index, type)
   const id = uuidv4()
   const createdAt = Date.now()
+
   return {
     id,
     walletId,
@@ -41,7 +39,7 @@ export const accountCreator = (payload) => {
     alias,
     chain,
     index,
-    derivationPath: _derivationPath,
+    derivationPath,
     addresses: _addresses,
     assets,
     balances: balances || {},

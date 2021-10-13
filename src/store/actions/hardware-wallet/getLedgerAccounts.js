@@ -1,37 +1,16 @@
 
-import { assets, chains as chainList } from '@liquality/cryptoassets'
+import { assets, ChainId } from '@liquality/cryptoassets'
 export const getLedgerAccounts = async (
   { getters },
   { network, walletId, asset, accountType, startingIndex, numAccounts }
 ) => {
   const { client, networkAccounts } = getters
   const { chain } = assets[asset]
-  const { formatAddress } = chainList[chain]
   const results = []
-  const usedAddresses = []
 
   const existingAccounts = networkAccounts.filter(account => {
     return account.chain === chain
   })
-
-  // get all the used addresses in the same chain
-  for (const account of existingAccounts) {
-    if (account.type.includes('ledger')) {
-      usedAddresses.push(...account.addresses.map(address => formatAddress(address)))
-    } else {
-      const _client = client(
-        {
-          network,
-          walletId,
-          asset,
-          accountId: account.id,
-          useCache: false
-        }
-      )
-      const addresses = await _client.wallet.getUsedAddresses()
-      usedAddresses.push(...addresses.map(a => formatAddress(a.address)))
-    }
-  }
 
   const pageIndexes = [...Array(numAccounts || 5).keys()].map(i => i + startingIndex)
   for (const index of pageIndexes) {
@@ -47,11 +26,18 @@ export const getLedgerAccounts = async (
     )
     const addresses = await _client.wallet.getAddresses()
     if (addresses && addresses.length > 0) {
-      const formatedAddress = formatAddress(addresses[0].address)
+      const account = addresses[0]
+      // For bitcoin we use the base derivation path
+      // Example: derivation path "84'/0'/0'/0/0" => base  "84'/0'/0'"
+      const pathToCompare = chain === ChainId.Bitcoin ? account.derivationPath.substr(0, account.derivationPath.length - 4) : account.derivationPath
+      const exists = existingAccounts.findIndex(
+        a => a.derivationPath === pathToCompare
+      ) >= 0
+
       results.push({
-        account: addresses[0],
+        account,
         index,
-        exists: usedAddresses.includes(formatedAddress)
+        exists
       })
     }
   }
