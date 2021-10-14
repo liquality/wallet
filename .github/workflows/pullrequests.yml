@@ -48,12 +48,8 @@ jobs:
           DISPLAY: :99
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        run: |
-          npm run pretest
-          npm run test:pullrequest:smoke
-          npm run report
-#        with:
-#          args: npm run test:pullrequest:smoke
+        with:
+          args: npm run pretest && npm run test:pullrequest:smoke
 
       - name: Run Dapp Injection Tests
         uses: beemi/puppeteer-headful@v1.0.6
@@ -62,12 +58,14 @@ jobs:
           DISPLAY: :99
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        run: |
-          npm run test:dappinjection
-#        with:
-#          args: npm run test:dappinjection
+        with:
+          args: npm run test:dappinjection
 
-      - name: Allure report
+      - name: Allure report generation
+        run: |
+          - npm run report
+
+      - name: Allure report archive
         uses: actions/upload-artifact@v2
         if: always()
         with:
