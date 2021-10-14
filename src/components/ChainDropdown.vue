@@ -59,8 +59,8 @@
 </template>
 
 <script>
-import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { getAccountIcon } from '@/utils/accounts'
+import { getAssetColorStyle } from '@/utils/asset'
+import { getChainIcon } from '@/utils/accounts'
 import { chains } from '@liquality/cryptoassets'
 import SearchIcon from '@/assets/icons/search.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
@@ -113,18 +113,10 @@ export default {
   },
   methods: {
     getAssetColorStyle,
+    getChainIcon,
     getChainName (chain) {
       const { name } = chains[chain]
-      if (chain === 'rsk') {
-        return `${name} (RSK)`
-      }
       return name
-    },
-    getChainIcon (chain) {
-      if (chain === 'rsk') {
-        return getAssetIcon('rsk')
-      }
-      return getAccountIcon(chain)
     },
     selectItem (chain) {
       this.$emit('chain-changed', chain)
