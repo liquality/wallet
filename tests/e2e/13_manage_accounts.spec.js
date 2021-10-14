@@ -15,7 +15,8 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Manage Accounts-[mainnet,smoke]', async () => {
+// TODO: once multi account enable lets start the test
+describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
