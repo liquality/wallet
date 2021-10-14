@@ -71,17 +71,26 @@ jobs:
           allure_report: allure-report
           allure_history: allure-history
 
-      - name: Allure report archive
-        uses: actions/upload-artifact@v2
+      - name: Deploy report to Github Pages
         if: always()
-        with:
-          name: allure-report
-          path: allure-report
+        uses: peaceiris/actions-gh-pages@v2
+        env:
+          PERSONAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PUBLISH_BRANCH: gh-pages
+          PUBLISH_DIR: allure-history
 
-      - name: Save Screenshots
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: screenshots
-          path: screenshots
+
+#      - name: Allure report archive
+#        uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: allure-report
+#          path: allure-report
+#
+#      - name: Save Screenshots
+#        uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: screenshots
+#          path: screenshots
 
