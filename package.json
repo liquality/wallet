@@ -10,6 +10,7 @@
   },
   "scripts": {
     "clean": "rm -rf node_modules",
+    "pretest": "rm -rf allure-results",
     "reinstall": "npm run clean && npm install",
     "dev": "vue-cli-service build --mode development --watch",
     "build:staging": "vue-cli-service build --mode staging",
@@ -23,7 +24,8 @@
     "test:testnet": "node_modules/mocha/bin/mocha --colors 'tests/**/*.spec.js'",
     "test:pullrequest:smoke": "node_modules/mocha/bin/mocha --colors --grep 'smoke' 'tests/**/*.spec.js'",
     "test:mainnet": "NODE_ENV=mainnet node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/**/*.spec.js'",
-    "test:dappinjection": "NODE_ENV=mainnet node_modules/mocha/bin/mocha --colors --grep 'dappTest' 'tests/**/*.spec.js'"
+    "test:dappinjection": "NODE_ENV=mainnet node_modules/mocha/bin/mocha --colors --grep 'dappTest' 'tests/**/*.spec.js'",
+    "report": "allure generate allure-results --clean -o allure-report && allure open allure-report"
   },
   "dependencies": {
     "@blobfishkate/sovryncontracts": "^1.3.7",

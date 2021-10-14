@@ -5,6 +5,7 @@ const PasswordPage = require('../Pages/PasswordPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
+const allure = require('mocha-allure-reporter')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
@@ -34,6 +35,12 @@ describe('Import wallet-["mainnet"]', async () => {
 
   // https://www.notion.so/Wallet-should-validate-mnemonic-per-BIP-39-dac68dd41c664f24a7b4e657fc546281
   it('01-Import wallet with random seed (phrase 11 words) and check continue is disabled', async () => {
+    // allure
+    allure.description('Import wallet feature')
+    allure.severity('blocker')
+    allure.feature('ImportWallet')
+    allure.story('LIQ-001')
+
     await homePage.ClickOnImportWallet(page)
     console.log('Import wallet page hase been loaded')
     // check continue button has been disabled
