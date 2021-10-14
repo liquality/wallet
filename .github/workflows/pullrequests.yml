@@ -63,9 +63,9 @@ jobs:
 
       - name: Allure report generation
         run: |
-          apt-add-repository ppa:qameta/allure
-          apt-get update
-          apt-get install allure
+          sudo apt-add-repository ppa:qameta/allure
+          sudo apt-get update
+          sudo apt-get install allure
           npm run report
 
       - name: Allure report archive
