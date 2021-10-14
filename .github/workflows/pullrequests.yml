@@ -63,7 +63,10 @@ jobs:
 
       - name: Allure report generation
         run: |
-          - npm run report
+          apt-add-repository ppa:qameta/allure
+          apt-get update
+          apt-get install allure
+          npm run report
 
       - name: Allure report archive
         uses: actions/upload-artifact@v2
