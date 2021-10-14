@@ -543,11 +543,14 @@ export default {
       }
     },
     min () {
-      const liqualityMarket = this.networkMarketData?.find(pair =>
-        pair.from === this.asset &&
-        pair.to === this.toAsset &&
-        getSwapProviderConfig(this.activeNetwork, pair.provider).type === SwapProviderType.LIQUALITY)
-      const min = liqualityMarket ? BN(liqualityMarket.min) : BN(0)
+      const market = this.networkMarketData?.filter(pair => (
+        this.selectedQuote?.provider.toUpperCase() || SwapProviderType.LIQUALITY) === getSwapProviderConfig(this.activeNetwork, pair.provider)?.type
+      )
+
+      const pair = market.find(pair => pair.from === this.asset && pair.to === this.toAsset)
+      
+      const min = pair ? BN(pair.min) : BN(0)
+      
       return dpUI(min)
     },
     max () {

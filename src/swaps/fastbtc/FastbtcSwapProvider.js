@@ -34,7 +34,7 @@ class FastbtcSwapProvider extends SwapProvider {
       to: 'RBTC',
       rate: 0.998,
       max: currencyToUnit(cryptoassets.BTC, BN(validAmountRange.max)).toFixed(),
-      min: currencyToUnit(cryptoassets.BTC, BN(validAmountRange.min)).toFixed()
+      min: validAmountRange.min
     }]
   }
 
