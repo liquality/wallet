@@ -409,7 +409,8 @@ export default {
           hash,
           newFee: this.newFeePrice
         })
-        await this.checkPendingActions({ walletId: this.activeWalletId })
+        // TODO decide if this is a safe option or change approach
+        // await this.checkPendingActions({ walletId: this.activeWalletId })
       } finally {
         this.updateTransactions()
         this.feeSelectorLoading = false

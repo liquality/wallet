@@ -77,7 +77,7 @@ class OneinchSwapProvider extends SwapProvider {
     const callData = await axios({
       url: this.config.agent + `/${chainId}/approve/calldata`,
       method: 'get',
-      params: { tokenAddress: cryptoassets[quote.from].contractAddress, amount: inputAmount.toNumber() }
+      params: { tokenAddress: cryptoassets[quote.from].contractAddress, amount: inputAmount.toString() }
     })
 
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
@@ -96,7 +96,7 @@ class OneinchSwapProvider extends SwapProvider {
     const chainId = ChainNetworks[toChain][network].chainId
     if (toChain !== fromChain || !chainToRpcProviders[chainId]) return null
 
-    const account = this.getAccount(quote.accountId)
+    const account = this.getAccount(quote.fromAccountId)
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
     const fromAddress = chains[toChain].formatAddress(fromAddressRaw)
@@ -166,7 +166,7 @@ class OneinchSwapProvider extends SwapProvider {
   }
 
   async waitForApproveConfirmations ({ swap, network, walletId }) {
-    const client = this.getClient(network, walletId, swap.from, swap.accountId)
+    const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
@@ -183,7 +183,7 @@ class OneinchSwapProvider extends SwapProvider {
   }
 
   async waitForSwapConfirmations ({ swap, network, walletId }) {
-    const client = this.getClient(network, walletId, swap.from, swap.accountId)
+    const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
