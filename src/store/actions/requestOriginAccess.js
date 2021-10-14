@@ -5,6 +5,8 @@ import { createPopup } from '../../broker/utils'
 export const requestOriginAccess = async ({ state, dispatch, commit }, { origin, chain }) => {
   const { requestOriginAccessActive } = state.app
 
+  console.log('requesting origin access for ', origin, chain)
+
   if (!requestOriginAccessActive) {
     commit('app/SET_ORIGIN_ACCESS_ACTIVE', { active: true }, { root: true })
     try {
@@ -20,7 +22,10 @@ export const requestOriginAccess = async ({ state, dispatch, commit }, { origin,
         if (allowed) {
           const { activeWalletId } = state
           commit('ADD_EXTERNAL_CONNECTION', { origin, activeWalletId, accountId, chain })
-          resolve(true)
+          resolve({
+            accepted: true,
+            chain
+          })
         } else {
           reject(new Error('User denied'))
         }

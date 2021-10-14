@@ -176,7 +176,10 @@ class Background {
           connection.postMessage({
             id,
             data: {
-              result: true
+              result: { 
+                accepted: true,
+                chain: Object.keys(externalConnections[activeWalletId][origin])[0] // TODO: only the first chain?
+              }
             }
           })
           return

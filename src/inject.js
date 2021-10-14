@@ -103,7 +103,9 @@ window[injectionName] = {
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
   enable: async () => {
-    const accepted = await window.providerManager.enable('${chain}')
+    const result = await window.providerManager.enable('${chain}')
+    console.log(result)
+    const { accepted } = result
     if (!accepted) throw new Error('User rejected')
     return getAddresses()
   },
@@ -144,6 +146,7 @@ window[injectionName] = {
 `
 
 const overrideEthereum = (chain) => `
+let currentSelectedChain = '${chain}'
 function proxyEthereum(chain) {
   window.ethereumProxyChain = chain
   const overrideHandler = {
@@ -160,6 +163,21 @@ function proxyEthereum(chain) {
           })
         }
       }
+      if (prop === 'enable') {
+        return async () => {
+          const { accepted, chain } = await window.providerManager.enable(currentSelectedChain)
+          if (!accepted) throw new Error('User rejected')
+          currentSelectedChain = chain
+          console.log(accepted, chain)
+          const injectionName = window.providerManager.getInjectionName(chain)
+          console.log(window[injectionName], overrideHandler)
+          window.ethereum = new Proxy(window[injectionName], overrideHandler)
+          console.log('proxied')
+          return window[injectionName].enable()
+        }
+      }
+
+      // TODO: add request accounts here too
       return Reflect.get(...arguments)
     }
   }
@@ -214,7 +232,7 @@ async function handleRequest (req) {
 
 window.bitcoin = {
   enable: async () => {
-    const accepted = await window.providerManager.enable('bitcoin')
+    const { accepted } = await window.providerManager.enable('bitcoin')
     if (!accepted) throw new Error('User rejected')
     const btc = window.providerManager.getProviderFor('BTC')
     return btc.getMethod('wallet.getAddresses')()
@@ -242,7 +260,7 @@ async function handleRequest (req) {
 }
 window.near = {
   enable: async () => {
-    const accepted = await window.providerManager.enable('near')
+    const { accepted } = await window.providerManager.enable('near')
     if (!accepted) throw new Error('User rejected')
     const near = window.providerManager.getProviderFor('NEAR')
     return near.getMethod('wallet.getAddresses')()
@@ -270,7 +288,7 @@ async function handleRequest (req) {
 }
 window.sollet = {
   enable: async () => {
-    const accepted = await window.providerManager.enable('solana')
+    const { accepted } = await window.providerManager.enable('solana')
     if (!accepted) throw new Error('User rejected')
     const solana = window.providerManager.getProviderFor('SOL')
     return solana.getMethod('wallet.getAddresses')()

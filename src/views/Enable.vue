@@ -14,8 +14,8 @@
       <div class="list-items">
         <NetworkAccounts @item-selected="onAccountSelected"
                          :search="search"
-                         :account-id="accountId"
-                         :accounts="accounts"/>
+                         :account-id="selectedAccount ? selectedAccount.id : null"
+                         :accounts="accounts" />
       </div>
     </div>
       <div class="wrapper_bottom">
@@ -24,7 +24,7 @@
           <button class="btn btn-primary btn-lg btn-icon"
                   id="connect_request_button"
                   @click="reply(true)"
-                  :disabled="loading || !accountId">
+                  :disabled="loading || !selectedAccount">
             <SpinnerIcon class="btn-loading" v-if="loading" />
             <template v-else>Connect</template>
           </button>
@@ -36,6 +36,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import { isEthereumChain } from '@liquality/cryptoassets'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import NetworkAccounts from '@/components/NetworkAccounts'
 
@@ -48,13 +49,17 @@ export default {
       replied: false,
       loading: false,
       search: '',
-      accountId: null
+      selectedAccount: null
     }
   },
   computed: {
-    ...mapGetters(['accountsData']),
+    ...mapGetters(['accountsData', 'accountItem']),
     accounts () {
-      return this.accountsData.filter(a => a.chain === this.chain)
+      if (isEthereumChain(this.chain)) {
+        return this.accountsData.filter(account => isEthereumChain(account.chain))
+      } else {
+        return this.accountsData.filter(account =>  this.chain === account.chain)
+      }
     },
     logo () {
       return LogoWallet
@@ -81,8 +86,7 @@ export default {
       await this.replyOriginAccess({
         origin: this.origin,
         allowed,
-        chain: this.chain,
-        accountId: this.accountId
+        accountId: this.selectedAccount ? this.selectedAccount.id : null
       })
 
       this.replied = true
@@ -90,7 +94,7 @@ export default {
       window.close()
     },
     onAccountSelected ({ account }) {
-      this.accountId = account?.id
+      this.selectedAccount = account
     }
   }
 }
