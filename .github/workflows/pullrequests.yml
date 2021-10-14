@@ -40,14 +40,7 @@ jobs:
           npm run lint
           npm run build
 
-#      - name: Run Integration Tests
-#        run: npm run test:integration
-
-      - name: screenshots directory
-        if: always()
-        run: |
-          mkdir screenshots
-
+      - run: mkdir screenshots
       - name: Run Smoke tests againt PullRequest
         uses: beemi/puppeteer-headful@v1.0.6
         env:
