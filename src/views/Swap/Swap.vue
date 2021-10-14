@@ -548,9 +548,9 @@ export default {
       )
 
       const pair = market.find(pair => pair.from === this.asset && pair.to === this.toAsset)
-      
+
       const min = pair ? BN(pair.min) : BN(0)
-      
+
       return dpUI(min)
     },
     max () {
