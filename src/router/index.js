@@ -27,6 +27,7 @@ import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
+import ExportAccount from '@/views/Accounts/Export.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
 import ManageAccounts from '@/views/Accounts/Manage.vue'
 
@@ -143,6 +144,12 @@ const routes = [
     name: 'Receive',
     path: '/accounts/:accountId/:asset/receive',
     component: Receive,
+    props: true
+  },
+  {
+    name: 'Export',
+    path: '/accounts/:accountId/:asset/export',
+    component: ExportAccount,
     props: true
   },
   {

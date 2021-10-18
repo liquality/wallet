@@ -32,11 +32,13 @@
                   v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
             {{ shortenAddress(address) }}
           </button>
-          <button class="btn export-btn"
-             :id="`${asset}_export_private_key`"
-             v-tooltip.bottom="{ content: 'Export Private Key' }">
-            <ExportIcon />
-          </button>
+          <router-link :to="`/accounts/${accountId}/${asset}/export`">
+            <button class="btn export-btn"
+              :id="`${asset}_export_private_key`"
+              v-tooltip.bottom="{ content: 'Export Private Key' }">
+              <ExportIcon />
+            </button>
+          </router-link>
           <a class="eye-btn"
              :id="`${asset}_view_in_explorer`"
              @click="copyAddress"
@@ -359,13 +361,15 @@ export default {
     .export-btn {
       svg {
         width: 20px;
+
+        position: relative;
+        top: 4px;
         path {
           stroke: $danger;
           fill: $danger;
         }
       }
 
-      margin-bottom: -8px;
       opacity: 0.3;
       &:hover {
         opacity: 1;
