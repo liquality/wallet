@@ -18,8 +18,8 @@ const getFeatureFlag = (client, { key, defaultValue }) => {
 const FeatureFlags = {
   install: function (Vue, options) {
     Vue.prototype.$featureFlagReady = featureFlagReady
-    const user = { key: options.key }
-    const LaunchDarklyClient = LaunchDarkly.initialize('61672acc7a090f3159d47b8a', user)
+    const user = { key: options.userId }
+    const LaunchDarklyClient = LaunchDarkly.initialize(options.key, user)
 
     LaunchDarklyClient.on('ready', function () {
       featureFlagReady = true

@@ -11,7 +11,8 @@ import FeatureFlags from './utils/featureFlags'
 Vue.use(ToggleButton)
 Vue.use(VTooltip)
 Vue.use(FeatureFlags, {
-  key: 'aa0ceb'
+  userId: 'aa0ceb',
+  key: '61672acc7a090f3159d47b8a'
 })
 Vue.config.productionTip = false
 
