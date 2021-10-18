@@ -43,16 +43,17 @@
           <AssetsIcon />
           Manage Assets
         </li>
-        <!-- <li id="manage_accounts" @click="manageAccounts">
+        <li id="manage_accounts"
+            v-if="multiAccountFeatureFlag"
+            @click="manageAccounts">
           <AccountsIcon />
           Manage Accounts
-        </li> -->
+        </li>
         <li id="settings" @click="settings">
           <SettingsIcon />
           Settings
         </li>
         <li id="ledger"
-            v-if-feature-flag="{ key: 'wallet-ledger-option', val: true }"
             @click="ledger">
           <LedgerIcon />
           Ledger
@@ -80,7 +81,7 @@ import PaperIcon from '@/assets/icons/paper.svg'
 import ChevronLeftIcon from '@/assets/icons/chevron_left.svg'
 import SettingsIcon from '@/assets/icons/settings.svg'
 import AssetsIcon from '@/assets/icons/assets.svg'
-// import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
+import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
 
 export default {
@@ -94,7 +95,7 @@ export default {
     PaperIcon,
     AssetsIcon,
     SettingsIcon,
-    // AccountsIcon,
+    AccountsIcon,
     LedgerIcon
   },
   props: [
@@ -108,12 +109,12 @@ export default {
   data () {
     return {
       showMenuList: false,
-      showLaunchDarkly: false
+      multiAccountFeatureFlag: false
     }
   },
   async created () {
-    this.showLaunchDarkly = await this.$getFeatureFlag('wallet-ledger-option', false)
-    console.log('this.showLaunchDarkly', this.showLaunchDarkly)
+    this.multiAccountFeatureFlag = await this.$getFeatureFlag('multi-account-feature', false)
+    console.log('this.multiAccountFeatureFlag', this.multiAccountFeatureFlag)
   },
   methods: {
     ...mapActions(['lockWallet', 'trackAnalytics']),
