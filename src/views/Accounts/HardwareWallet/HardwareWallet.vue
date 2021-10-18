@@ -193,6 +193,8 @@ export default {
               assets,
               index: item.index,
               type: walletType || this.selectedAsset.types[0],
+              enabled: true,
+              derivationPath: item.account.derivationPath,
               color: getNextAccountColor(chain, item.index)
             }
             const createdAccount = await this.createAccount({

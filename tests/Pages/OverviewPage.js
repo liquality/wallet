@@ -80,6 +80,14 @@ class OverviewPage {
    */
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
+    try {
+      await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
+    } catch (e) {
+      const ts = Math.round((new Date()).getTime() / 1000)
+      await page.screenshot({ path: `screenshots/overview-page-loading-issue-${ts}.png` })
+      expect(e, 'Overview page still Loading.....didn\'t load send/receive/swap option').equals(null)
+    }
+
     await page.waitForSelector('#send_action', {
       visible: true,
       timeout: 60000
@@ -289,7 +297,14 @@ class OverviewPage {
    * @constructor
    */
   async ClickSend (page) {
-    await page.waitForSelector('#send_action', { visible: true })
+    try {
+      await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
+    } catch (e) {
+      const ts = Math.round((new Date()).getTime() / 1000)
+      await page.screenshot({ path: `screenshots/send-button-not-loaded-${ts}.png` })
+      expect(e, 'Send button not loaded....').equals(null)
+    }
+
     await page.click('#send_action')
   }
 

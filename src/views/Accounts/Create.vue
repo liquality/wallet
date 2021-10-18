@@ -14,7 +14,7 @@
               <div class="form" v-if="selectedChain">
                 <div class="input-group">
                   <img
-                    :src="getAssetIcon(selectedChain.nativeAsset)"
+                    :src="getChainIcon(selectedChain.id)"
                     class="asset-icon"
                   />
                   <span class="input-group-text">
@@ -33,7 +33,7 @@
                   <div class="form">
                     <div class="input-group">
                       <img
-                        :src="getAssetIcon(chain.nativeAsset)"
+                        :src="getChainIcon(chain.id)"
                         class="asset-icon"
                       />
                       <span class="input-group-text">
@@ -77,7 +77,6 @@
             <div class="input-group">
               <input
                 type="color"
-                class="form-control form-control-sm"
                 id="choose-color"
                 v-model="accountColor"
                 placeholder="Choose color"
@@ -98,7 +97,7 @@
           </button>
           <button
             class="btn btn-primary btn-lg btn-icon"
-            id="create-button"
+            id="create-account-button"
             @click="createNewAccount"
             :disabled="loading || !inputsValidated"
           >
@@ -113,14 +112,13 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
-import { getAssetIcon } from '@/utils/asset'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import clickAway from '@/directives/clickAway'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { chains } from '@liquality/cryptoassets'
 import buildConfig from '@/build.config'
-import { getNextAccountColor } from '@/utils/accounts'
+import { getChainIcon, getNextAccountColor } from '@/utils/accounts'
 import cryptoassets from '@/utils/cryptoassets'
 import _ from 'lodash'
 
@@ -197,12 +195,14 @@ export default {
     ...mapActions([
       'createAccount'
     ]),
-    getAssetIcon,
+    getChainIcon,
     cancel () {
       this.$router.replace({ name: 'ManageAccounts' })
     },
     selectChain (chain) {
       this.selectedChain = chain
+      this.accountIndex = this.getAccountIndex()
+      this.checkAccountAlias()
     },
     toggleAssetList () {
       this.assetsDropdownOpen = !this.assetsDropdownOpen
@@ -260,12 +260,16 @@ export default {
 
       this.cancel()
     },
-    checkIfAccountAlias () {
-      if (!this.accountAlias || this.accountAlias.length < 5) {
+    checkAccountAlias () {
+      if (!this.accountAlias ||
+          this.accountAlias.length < 5 ||
+          (this.accountAlias.match(/^[^\s]+(\s+[^\s]+)*$/) || []).length <= 0) {
         this.accountAliasError = 'Name should have 5 or more characters'
+      } else if (this.accountAlias.length > 20) {
+        this.accountAliasError = 'Name shouldn\'t have more than 20 characters'
       } else if (this.accounts[this.activeWalletId]?.[this.activeNetwork]?.findIndex(
-        a => a.alias?.toLowerCase() === this.accountAlias.toLowerCase() ||
-        a.index === this.accountIndex
+        a => (a.alias && a.alias?.toLowerCase() === this.accountAlias.toLowerCase()) ||
+        (a.index === this.accountIndex && a.chain === this.selectedChain.id)
       ) >= 0) {
         this.accountAliasError = 'Existing account with the same name or path'
       } else {
@@ -320,8 +324,22 @@ export default {
     input[type=color] {
       height: 40px;
       border: none;
+      border-radius: 20px;
       max-width: 40px !important;
       cursor: pointer;
+
+    }
+
+    input[type=color]::-webkit-color-swatch {
+      border: none;
+      border-radius: 50%;
+      padding: 0;
+    }
+
+    input[type=color]::-webkit-color-swatch-wrapper {
+        border: none;
+        border-radius: 50%;
+        padding: 0;
     }
 
     .create-item-row-title,

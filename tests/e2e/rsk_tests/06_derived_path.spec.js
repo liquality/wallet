@@ -210,6 +210,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // ARBITRUM
     const arbitrumAddress = await overviewPage.GetAssertAddress(page, 'ARBITRUM')
     assertAddresses.push(ethAddress, rskAddress, bscAddress, polygonAddress, arbitrumAddress)
+    console.log('assertAddresses', assertAddresses)
     expect(assertAddresses.every((val, i, arr) => val === arr[0]),
       'Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]')
       .eq(true)

@@ -85,7 +85,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
         else if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
         else if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'
 
-        createPopup(`${permissionRoute}?${query}`)
+        createPopup(`${permissionRoute}?${query}`, () => reject(new Error('User denied')))
       })
     } else {
       commit('app/SET_REQUEST_PERMISSION_ACTIVE', { active: false }, { root: true })
