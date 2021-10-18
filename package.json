@@ -81,6 +81,7 @@
     "date-fns": "^2.14.0",
     "ethers": "^5.4.1",
     "human-standard-token-abi": "^2.0.0",
+    "launchdarkly-node-client-sdk": "^1.5.2",
     "lodash-es": "^4.17.15",
     "log": "^6.0.0",
     "memoizee": "^0.4.15",

@@ -51,7 +51,7 @@
           <SettingsIcon />
           Settings
         </li>
-        <li id="ledger" @click="ledger">
+        <li id="ledger"  v-if="showLaunchDarkly" @click="ledger">
           <LedgerIcon />
           Ledger
         </li>
@@ -80,6 +80,13 @@ import SettingsIcon from '@/assets/icons/settings.svg'
 import AssetsIcon from '@/assets/icons/assets.svg'
 import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
+import * as LaunchDarkly from 'launchdarkly-node-client-sdk'
+
+const user = {
+  key: 'aa0ceb'
+}
+
+const client = LaunchDarkly.initialize('61672acc7a090f3159d47b8a', user)
 
 export default {
   directives: {
@@ -105,8 +112,15 @@ export default {
   ],
   data () {
     return {
-      showMenuList: false
+      showMenuList: false,
+      showLaunchDarkly: false
     }
+  },
+  created () {
+    client.on('ready', function () {
+      console.log("It's now safe to request feature flags")
+      this.showLaunchDarkly = client.variation('wallet-ledger-option', false)
+    })
   },
   methods: {
     ...mapActions(['lockWallet', 'trackAnalytics']),
