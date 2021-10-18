@@ -6,25 +6,63 @@
       :backPath="backPath"
     >
       <span class="wallet_header">
-        <strong>Export Private Key</strong>
+        <strong>Export private key</strong>
       </span>
     </NavBar>
-    <h1>hello world</h1>
+    <main>
+      <div v-if="!keyVisible">
+        <h1>Are you sure?</h1>
+        <p>{{chainId}} <code>{{accountId}}</code></p>
+      </div>
+      <p>The private key is a string that can be copied and used to seed another wallet.</p>
+      <div v-if="keyVisible">
+        <textarea readonly rows="10" @click="selectTextarea" v-model="privateKey" />
+        <button type="button" class="btn btn-secondary" @click="goback">Done</button>
+      </div>
+      <div v-else>
+        <button type="button" class="btn btn-warning" @click="keyVisible = true">Yes, show it</button>
+      </div>
+    </main>
   </div>
 </template>
 
 <script>
 import NavBar from '@/components/NavBar.vue'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   components: {
     NavBar
   },
-  props: ['accountId', 'asset'],
+  data () {
+    return {
+      backPath: '/accounts/management',
+      keyVisible: false
+    }
+  },
+  props: ['accountId', 'chainId'],
   computed: {
-    backPath () {
-      const { accountId, asset } = this.$props
-      return `/accounts/${accountId}/${asset}`
+    ...mapGetters([
+      'client'
+    ]),
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId'
+    ]),
+    privateKey () {
+      const { chainId, accountId, activeNetwork, activeWalletId } = this
+      return JSON.stringify({ chainId, accountId, activeNetwork, activeWalletId }, null, 2)
+    }
+  },
+  updated () {
+    this.$nextTick(this.selectTextarea)
+  },
+  methods: {
+    goback () {
+      this.$router.replace(this.backPath)
+    },
+    selectTextarea () {
+      this.$el.querySelector('textarea')?.select()
     }
   }
 }
@@ -32,10 +70,20 @@ export default {
 
 <style lang="scss">
 .export-account {
-  h1 {
-    padding: 1em;
-    text-align: center;
-    color: $text-muted;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  main {
+    flex: 1;
+    overflow: auto;
+    padding: $wrapper-padding;
+
+    textarea {
+      font-family: monospace;
+      width: 100%;
+    }
   }
 }
 </style>

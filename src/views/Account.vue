@@ -32,13 +32,6 @@
                   v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
             {{ shortenAddress(address) }}
           </button>
-          <router-link :to="`/accounts/${accountId}/${asset}/export`">
-            <button class="btn export-btn"
-              :id="`${asset}_export_private_key`"
-              v-tooltip.bottom="{ content: 'Export Private Key' }">
-              <ExportIcon />
-            </button>
-          </router-link>
           <a class="eye-btn"
              :id="`${asset}_view_in_explorer`"
              @click="copyAddress"
@@ -104,7 +97,6 @@ import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
-import ExportIcon from '@/assets/icons/export.svg'
 import BN from 'bignumber.js'
 
 import amplitude from 'amplitude-js'
@@ -120,8 +112,7 @@ export default {
     SwapIcon,
     ActivityFilter,
     TransactionList,
-    EyeIcon,
-    ExportIcon
+    EyeIcon
   },
   data () {
     return {
@@ -356,24 +347,6 @@ export default {
       border: 0;
       background: none;
       outline: none;
-    }
-
-    .export-btn {
-      svg {
-        width: 20px;
-
-        position: relative;
-        top: 4px;
-        path {
-          stroke: $danger;
-          fill: $danger;
-        }
-      }
-
-      opacity: 0.3;
-      &:hover {
-        opacity: 1;
-      }
     }
 
     .eye-btn {

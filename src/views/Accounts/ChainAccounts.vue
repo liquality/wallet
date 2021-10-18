@@ -63,6 +63,14 @@
               ${{ formatFiat(account.totalFiatBalance) }}
             </template>
             <template #detail>
+              <div class="account-detail">
+              <router-link
+                :to="{ name: 'ExportAccount', params: { chainId: chain.id, accountId: account.id }}"
+                :id="'export-account-icon-' + account.id"
+                v-tooltip="'Export Private Key'"
+              >
+                <ExportIcon />
+              </router-link>
               <toggle-button
                 :css-colors="true"
                 :value="account.enabled"
@@ -70,6 +78,7 @@
                 :disabled="!isChainEnabled(chain.id)"
                 @change="(e) => toggleAccount([account.id], e.value)"
               />
+              </div>
             </template>
           </ListItem>
         </div>
@@ -80,6 +89,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_circle.svg'
+import ExportIcon from '@/assets/icons/export.svg'
 import { formatFiat } from '@/utils/coinFormatter'
 import { getAccountIcon, getChainIcon } from '@/utils/accounts'
 import ListItem from '@/components/ListItem'
@@ -87,6 +97,7 @@ import ListItem from '@/components/ListItem'
 export default {
   components: {
     PlusIcon,
+    ExportIcon,
     ListItem
   },
   props: {
@@ -212,6 +223,20 @@ export default {
   position: absolute;
   left: 0;
   margin-right: 5px;
+}
+
+.account-detail {
+  margin-right: -2px;
+  display: flex;
+
+  a {
+    display: flex;
+    margin-right: 24px;
+    svg {
+      stroke: $text-muted;
+      width: 12px;
+    }
+  }
 }
 
 .custom-item {

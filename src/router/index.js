@@ -118,6 +118,13 @@ const routes = [
     props: true
   },
   {
+    path: '/accounts/management/:chainId/:accountId/export',
+    component: ExportAccount,
+    name: 'ExportAccount',
+    props: true
+  },
+
+  {
     path: '/accounts/create/:chainId?',
     component: CreateAccount,
     name: 'CreateAccount',
@@ -144,12 +151,6 @@ const routes = [
     name: 'Receive',
     path: '/accounts/:accountId/:asset/receive',
     component: Receive,
-    props: true
-  },
-  {
-    name: 'Export',
-    path: '/accounts/:accountId/:asset/export',
-    component: ExportAccount,
     props: true
   },
   {
