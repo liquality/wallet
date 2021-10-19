@@ -115,8 +115,8 @@ export default {
     getAssetColorStyle,
     getChainIcon,
     getChainName (chain) {
-      const { name, nativeAsset } = chains[chain]
-      return `${name} (${nativeAsset})`
+      const { name, code } = chains[chain]
+      return `${name} (${code})`
     },
     selectItem (chain) {
       this.$emit('chain-changed', chain)
