@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'mainnet') {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl)
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle0' })
       await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
       // Import wallet option
@@ -124,7 +124,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         await checkBooster()
       }
     })
-    it('SWAP (RBTC->PWETH (Polygon))', async () => {
+    it.only('SWAP (RBTC->PWETH (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PWETH'
       // overview page
@@ -149,12 +149,13 @@ if (process.env.NODE_ENV === 'mainnet') {
         await testUtil.takeScreenshot(page, 'no-Liquidity')
         expect(e, 'No Liquidity.....').equals(null)
       }
-      await page.waitForTimeout(5000)
+      await page.waitForTimeout(10000)
       const selectedQuoteProviderText = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
       if (selectedQuoteProviderText === liqualityBooster) {
         // Check source name
         await checkBooster()
       } else if (selectedQuoteProviderText === 'Liquality') {
+        await testUtil.takeScreenshot(page, 'rbtc-pweth-lb-test')
         await page.click('#see_all_quotes')
         await page.waitForSelector('#liqualityBoost_rate_provider', { visible: true })
         await page.click('#liqualityBoost_rate_provider')
