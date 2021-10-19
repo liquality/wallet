@@ -140,7 +140,12 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
       })
 
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
+    try {
+      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
+    } catch (e) {
+      await testUtil.takeScreenshot(connectRequestWindow, 'sushi-ethereum-loading-issue')
+      expect(e, 'sushi ethereum loading issue').equals(null)
+    }
     await connectRequestWindow.click('#ETHEREUM')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)

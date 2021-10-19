@@ -1,3 +1,6 @@
+const TestUtil = require('../utils/TestUtils')
+
+const testUtil = new TestUtil()
 const chalk = require('chalk')
 const expect = require('chai').expect
 
@@ -71,8 +74,17 @@ class SwapPage {
    * @constructor
    */
   async SelectSwapReceiveCoin (page) {
-    await page.click('.swap-receive-main-icon', { slowMo: 20 })
-    await page.waitForSelector('#search_for_a_currency', { visible: true })
+    await page.waitForTimeout(2000)
+    await page.click('.swap-receive-main-icon')
+    try {
+      await page.waitForSelector('#search_for_a_currency', {
+        visible: true,
+        timeout: 60000
+      })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'search_for_a_currency-issue')
+      expect(e, 'Search for a currency not loaded').equals(null)
+    }
   }
 
   /**
