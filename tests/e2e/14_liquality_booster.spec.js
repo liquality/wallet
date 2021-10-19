@@ -124,7 +124,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         await checkBooster()
       }
     })
-    it.only('SWAP (RBTC->PWETH (Polygon))', async () => {
+    it('SWAP (RBTC->PWETH (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PWETH'
       // overview page
