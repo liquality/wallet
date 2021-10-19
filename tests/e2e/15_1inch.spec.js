@@ -29,7 +29,7 @@ const swapPairMap = [
 
 if (process.env.NODE_ENV === 'mainnet') {
 // Only works on Mainnet
-  describe.skip('1Inch Service Provider-[mainnet]', async () => {
+  describe('1Inch Service Provider-[mainnet]', async () => {
     swapPairMap.forEach(obj => {
       it(`SWAP (${obj.assert1}->${obj.assert2})`, async () => {
         const assert1 = obj.assert1
@@ -63,12 +63,16 @@ if (process.env.NODE_ENV === 'mainnet') {
         await page.click(`#${assert2}`)
         await swapPage.ClickOnMax(page)
         // 1inch
-        await page.waitForTimeout(5000)
+        await page.waitForTimeout(10000)
         await page.waitForSelector('#selectedQuote_provider', { visible: true })
-        expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-          'MATIC->PUSDT swap, Oneinch V3 should be chosen!')
-          .oneOf(['Oneinch V3'])
-
+        try {
+          expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+            'MATIC->PUSDT swap, Oneinch V3 should be chosen!')
+            .oneOf(['Oneinch V3'])
+        } catch (e) {
+          await testUtil.takeScreenshot(page, '1inch-issue')
+          expect(e, '1inch V3 should be chosen').equals(null)
+        }
         try {
           await page.close()
           await browser.close()
