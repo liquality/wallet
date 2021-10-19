@@ -80,6 +80,14 @@ class OverviewPage {
    */
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
+    try {
+      await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
+    } catch (e) {
+      const ts = Math.round((new Date()).getTime() / 1000)
+      await page.screenshot({ path: `screenshots/overview-page-loading-issue-${ts}.png` })
+      expect(e, 'Overview page still Loading.....didn\'t load send/receive/swap option').equals(null)
+    }
+
     await page.waitForSelector('#send_action', {
       visible: true,
       timeout: 60000
@@ -281,7 +289,14 @@ class OverviewPage {
    * @constructor
    */
   async ClickSend (page) {
-    await page.waitForSelector('#send_action', { visible: true })
+    try {
+      await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
+    } catch (e) {
+      const ts = Math.round((new Date()).getTime() / 1000)
+      await page.screenshot({ path: `screenshots/send-button-not-loaded-${ts}.png` })
+      expect(e, 'Send button not loaded....').equals(null)
+    }
+
     await page.click('#send_action')
   }
 
@@ -369,6 +384,23 @@ class OverviewPage {
     await page.waitForSelector('#add_custom_token', { visible: true })
     await page.click('#add_custom_token')
     console.log(chalk.green('User clicked on Add Custom Token'))
+  }
+
+  /**
+   * Click on Manage Accounts from Overview page.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnManageAccounts (page) {
+    await page.waitForSelector('#burger_icon_menu', { visible: true })
+    await page.click('#burger_icon_menu')
+    console.log(chalk.green('User clicked on Burger Icon Menu'))
+    // Click Manage Accounts
+    await page.waitForSelector('#manage_accounts', { visible: true })
+    await page.click('#manage_accounts')
+    console.log(chalk.green('User clicked on Manage Accounts'))
+    await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
   }
 }
 

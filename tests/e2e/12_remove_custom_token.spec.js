@@ -104,9 +104,8 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Remove token
       await page.waitForSelector('#' + tokenDetails.symbol + '_remove_custom_token', { visible: true })
       await page.click('#' + tokenDetails.symbol + '_remove_custom_token')
-      expect(await page.$(`#${symbol}_toggle_button`),
-        'Custom token is removed')
-        .to.equal(null)
+      await page.type('#search_for_an_assert_input', tokenDetails.symbol)
+      await page.waitForSelector('.manage-assets_customText', { visible: true })
       console.log(chalk.green.underline.bold('Remove token clicked!'))
     })
 
@@ -180,9 +179,8 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Remove token
       await page.waitForSelector('#' + tokenDetails.symbol + '_remove_custom_token', { visible: true })
       await page.click('#' + tokenDetails.symbol + '_remove_custom_token')
-      expect(await page.$(`#${symbol}_toggle_button`),
-        'Custom token is removed')
-        .to.equal(null)
+      await page.type('#search_for_an_assert_input', tokenDetails.symbol)
+      await page.waitForSelector('.manage-assets_customText', { visible: true })
       console.log(chalk.green.underline.bold('Remove token clicked!'))
     })
   })

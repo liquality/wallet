@@ -10,211 +10,60 @@
         <strong>Manage Accounts</strong>
       </span>
     </NavBar>
-    <div class="account-search form wrapper">
-      <div class="input-group">
-        <SearchIcon />
-        <input
-          type="text"
-          id="search_for_an_assert_input"
-          autocomplete="off"
-          class="form-control form-control-sm"
-          v-model="search"
-          placeholder="Search for an Asset, Account or Chain"
-        />
-      </div>
-      <div v-if="filteredChainAccounts.length === 0" class="mt-3 d-flex">
-        <div>
-          <h4>Can't find this asset or chain</h4>
-        </div>
-      </div>
-    </div>
     <div class="chain-list">
-      <div
-        v-for="chain in filteredChainAccounts"
-        :key="chain.code"
-        class="chain-item"
-        :id="'chain-item-' + chain.code"
-      >
-        <div class="chain-item-content">
-          <div
-            class="chain-item-toggle"
-            :id="'chain-item-toggle-' + chain.code"
-          >
-            <toggle-button
-              :css-colors="true"
-              :value="isChainEnabled(chain.id)"
-              @change="(e) => toggleBlockchain(chain.id, e.value)"
-            />
-          </div>
-          <img
-            :src="getAccountIcon(chain.id)"
-            class="asset-icon chain-item-icon"
-          />
-          <div class="chain-item-name" :id="'chain-item-name-' + chain.id">
-            {{ chain.name }}
-            ({{
-              `${chain.accounts.length} Account${
-                chain.accounts.length > 1 ? 's' : ''
-              }`
-            }})
-          </div>
-          <router-link
-            :to="{ name: 'CreateAccount', params: { chainId: chain.id }}"
-            class="create-link"
-            :id="'create-account-plus-icon-' + chain.id"
-            v-tooltip="'Create Account'"
-          >
-            <PlusIcon />
-          </router-link>
-        </div>
-        <div class="chain-item-accounts" :id="'chain-item-accounts-' + chain.id">
-          <ListItem
-            :item-class="'custom-item'"
-            v-for="account in chain.accounts"
-            :key="account.id"
-            :id="'account-name-id-' + chain.id"
-          >
-            <template #prefix>
-              <div
-                class="account-color"
-                :style="{ 'background-color': account.color }"
-              ></div>
-            </template>
-            <template #icon>
-              <img :src="getAccountIcon(account.chain)" class="asset-icon" />
-            </template>
-
-            {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
-
-            <template #sub-title v-if="account.totalFiatBalance">
-              ${{ formatFiat(account.totalFiatBalance) }}
-            </template>
-            <template #detail>
-              <toggle-button
-                :css-colors="true"
-                :value="account.enabled"
-                @change="(e) => toggleAccount(account.id, e.value)"
-              />
-            </template>
-          </ListItem>
-        </div>
-      </div>
-    </div>
+      <ChainAccounts
+        v-for="chain in chains"
+        :chain="chain"
+        :key="chain.id"
+      />
+  </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import buildConfig from '@/build.config'
 import { chains } from '@liquality/cryptoassets'
-import PlusIcon from '@/assets/icons/plus_icon.svg'
 import { formatFiat } from '@/utils/coinFormatter'
 import { getAccountIcon } from '@/utils/accounts'
-import ListItem from '@/components/ListItem'
-import SearchIcon from '@/assets/icons/search.svg'
+import ChainAccounts from './ChainAccounts.vue'
 
 export default {
   components: {
     NavBar,
-    PlusIcon,
-    ListItem,
-    SearchIcon
-  },
-  data () {
-    return {
-      search: null
-    }
+    ChainAccounts
   },
   computed: {
-    ...mapGetters(['accountFiatBalance']),
     ...mapState([
       'activeNetwork',
       'activeWalletId',
-      'enabledChains',
       'accounts'
     ]),
     chains () {
       return buildConfig.chains.map((chainId) => {
         const { name, code, nativeAsset } = chains[chainId]
-        const accounts = this.accountList.filter((a) => a.chain === chainId)
         return {
           id: chainId,
           name,
           code,
           nativeAsset,
-          accounts
+          accounts: this.getChainAccounts(chainId)
         }
-      })
-    },
-    accountList () {
-      return this.accounts[this.activeWalletId]?.[this.activeNetwork].map(
-        (account) => {
-          const totalFiatBalance = this.accountFiatBalance(
-            this.activeWalletId,
-            this.activeNetwork,
-            account.id
-          )
-          return {
-            ...account,
-            totalFiatBalance
-          }
-        }
-      )
-    },
-    filteredChainAccounts () {
-      if (!this.search) return this.chains
-      const _search = new RegExp(this.search.toUpperCase())
-      return this.chains.filter((chain) => {
-        const { name, id, nativeAsset } = chain
-        const accountCount = chain.accounts.filter((a) => {
-          return a.assets
-            .map((a) => cryptoassets[a]?.name.toUpperCase() || a.toUpperCase())
-            .some(a => a.match(_search))
-        })
-
-        return (
-          accountCount.length > 0 ||
-          [
-            name.toUpperCase(),
-            id.toUpperCase(),
-            nativeAsset.toUpperCase()
-          ].some(a => a.match(_search))
-        )
       })
     }
   },
   methods: {
-    ...mapActions({
-      _toggleBlockchain: 'toggleBlockchain',
-      _toggleAccount: 'toggleAccount'
-    }),
     getAccountIcon,
     formatFiat,
     getAssetName (asset) {
       return cryptoassets[asset]?.name || asset
     },
-    isChainEnabled (chainId) {
-      return this.enabledChains[this.activeWalletId]?.[
-        this.activeNetwork
-      ]?.includes(chainId)
-    },
-    toggleBlockchain (chainId, enable) {
-      this._toggleBlockchain({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        chainId,
-        enable
-      })
-    },
-    toggleAccount (accountId, enable) {
-      this._toggleAccount({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        accountId,
-        enable
-      })
+    getChainAccounts (chainId) {
+      return this.accounts[this.activeWalletId]
+        ?.[this.activeNetwork]
+        .filter(a => a.chain === chainId)
     }
   }
 }
@@ -262,7 +111,7 @@ export default {
   flex-direction: column;
 
   .list-item-icon {
-    margin-left: 41px !important;
+    margin-left: 30px !important;
   }
 
   .chain-item-content {
@@ -271,7 +120,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 20px;
+    padding: 12px 10px;
     width: 100%;
 
     .chain-item-icon {
@@ -280,31 +129,28 @@ export default {
     }
 
     .chain-item-name {
-      width: 100%;
-    }
-
-    .create-link {
-      width: 20px;
-      height: 20px;
-      svg {
-        width: 12px;
-      }
-    }
-
-    .chain-item-details {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-
-      .chain-item-name {
+       width: 100%;
         color: $color-text-primary;
         font-weight: 400;
+      }
+
+      .chain-item-accounts-len {
+          font-size: $font-size-tiny !important;
+          color: $text-muted !important;
       }
 
       .chain-item-balance {
         display: block;
         font-size: $font-size-tiny;
         color: $text-muted;
+      }
+
+    .create-link {
+      width: 20px;
+      height: 20px;
+      margin-right: 20px;
+      svg {
+        width: 20px;
       }
     }
   }
