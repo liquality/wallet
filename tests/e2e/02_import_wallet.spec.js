@@ -14,7 +14,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe.only('Import wallet-["mainnet"]', async () => {
+describe('Import wallet-["mainnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
