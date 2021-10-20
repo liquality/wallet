@@ -28,7 +28,7 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   components: {
@@ -37,27 +37,35 @@ export default {
   data () {
     return {
       backPath: '/accounts/management',
+      privateKey: '',
       keyVisible: false
     }
   },
   props: ['accountId', 'chainId'],
   computed: {
-    ...mapGetters([
-      'client'
-    ]),
     ...mapState([
       'activeNetwork',
       'activeWalletId'
-    ]),
-    privateKey () {
-      const { chainId, accountId, activeNetwork, activeWalletId } = this
-      return JSON.stringify({ chainId, accountId, activeNetwork, activeWalletId }, null, 2)
-    }
+    ])
+  },
+  created () {
+    const { chainId, accountId, activeNetwork, activeWalletId } = this
+    this.exportPrivateKey({
+      walletId: activeWalletId,
+      network: activeNetwork,
+      chainId,
+      accountId
+    }).then(key => {
+      this.privateKey = key
+    })
   },
   updated () {
     this.$nextTick(this.selectTextarea)
   },
   methods: {
+    ...mapActions([
+      'exportPrivateKey'
+    ]),
     goback () {
       this.$router.replace(this.backPath)
     },
