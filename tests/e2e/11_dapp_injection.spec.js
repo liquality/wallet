@@ -18,7 +18,7 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle0' })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
 
@@ -45,9 +45,11 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
     await page.waitForTimeout(1000)
   })
   afterEach(async () => {
-    await page.close()
-    await dappPage.close()
-    await browser.close()
+    if (page != null && dappPage != null) {
+      await page.close()
+      await dappPage.close()
+      await browser.close()
+    }
   })
 
   it.skip('UNISWAP Injection-ETH', async () => {

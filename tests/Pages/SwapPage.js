@@ -242,8 +242,7 @@ class SwapPage {
     try {
       await page.waitForSelector('#fees_are_high', { visible: true })
     } catch (e) {
-      const ts = Math.round((new Date()).getTime() / 1000)
-      await page.screenshot({ path: `screenshots/fee-are-high-not-displayed-${ts}.png` })
+      await testUtil.takeScreenshot(page, 'fee-are-high-not-displayed')
       expect(e, 'Fees are high. Review transaction carefully messages not displayed....').equals(null)
     }
     const messages = await page.$eval('#fees_are_high', el => el.textContent)
