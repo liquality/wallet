@@ -85,7 +85,7 @@ export default {
         type: SwapProviderType.LIQUALITYBOOST,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: { MATIC: true, ETH: false, BNB: false }
+        supportedBridgeAssets: ['MATIC']
       },
       uniswapV2: {
         name: 'Uniswap V2',
