@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'mainnet') {
     }
   }
   // Only works on Mainnet
-  describe('Liquality Booster-[mainnet]', async () => {
+  describe.skip('Liquality Booster-[mainnet]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()

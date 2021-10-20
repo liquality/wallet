@@ -19,7 +19,7 @@ const password = '123123123'
 
 if (process.env.NODE_ENV === 'mainnet') {
   // fastBTC service provider only in mainnet
-  describe('FastBTC swap provider-["mainnet","smoke"]', async () => {
+  describe.skip('FastBTC swap provider-["mainnet","smoke"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
