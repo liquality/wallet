@@ -18,7 +18,7 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
 
@@ -45,9 +45,11 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
     await page.waitForTimeout(1000)
   })
   afterEach(async () => {
-    await page.close()
-    await dappPage.close()
-    await browser.close()
+    if (page != null && dappPage != null) {
+      await page.close()
+      await dappPage.close()
+      await browser.close()
+    }
   })
 
   it.skip('UNISWAP Injection-ETH', async () => {
@@ -140,7 +142,12 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
       })
 
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
+    try {
+      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
+    } catch (e) {
+      await testUtil.takeScreenshot(connectRequestWindow, 'sushi-ethereum-loading-issue')
+      expect(e, 'sushi ethereum loading issue').equals(null)
+    }
     await connectRequestWindow.click('#ETHEREUM')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
