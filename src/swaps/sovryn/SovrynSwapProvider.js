@@ -84,7 +84,7 @@ class SovrynSwapProvider extends SwapProvider {
     const erc20 = new ethers.Contract(fromInfo.contractAddress.toLowerCase(), ERC20.abi, this._getApi(network, quote.from))
 
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
-    const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw)
+    const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw, fromInfo.chain, network)
     const spender = ((fromInfo.type === 'native' || toInfo.type === 'native') ? this.config.routerAddressRBTC : this.config.routerAddress).toLowerCase()
     const allowance = await erc20.allowance(fromAddress.toLowerCase(), spender)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
@@ -108,7 +108,7 @@ class SovrynSwapProvider extends SwapProvider {
 
     const fromChain = fromInfo.chain
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
-    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, fromInfo.chain, network)
 
     return {
       from: fromAddress, // Required for estimation only (not used in chain client)
@@ -172,7 +172,7 @@ class SovrynSwapProvider extends SwapProvider {
     const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
 
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
-    const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw)
+    const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw, fromInfo.chain, network)
 
     return {
       from: fromAddress, // Required for estimation only (not used in chain client)
