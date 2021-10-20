@@ -37,7 +37,7 @@ export default {
   data () {
     return {
       backPath: '/accounts/management',
-      privateKey: '',
+      privateKey: 'n/a',
       keyVisible: false
     }
   },

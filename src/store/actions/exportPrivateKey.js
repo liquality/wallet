@@ -1,6 +1,6 @@
 export const exportPrivateKey = async ({ getters }, args) => {
   const { network, walletId, accountId, chainId } = args
-  console.log('here', this, args)
+  console.log('here', chainId)
 
   const client = getters.client({
     network,
