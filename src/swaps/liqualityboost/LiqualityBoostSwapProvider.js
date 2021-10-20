@@ -24,6 +24,7 @@ class LiqualityBoostSwapProvider extends SwapProvider {
   async getQuote ({ network, from, to, amount }) {
     if (isERC20(from) || !isERC20(to) || amount <= 0) return null
     const bridgeAsset = getNativeAsset(to)
+    if (bridgeAsset !== 'MATIC') return null
     const quote = await this.liqualitySwapProvider.getQuote({ network, from, to: bridgeAsset, amount })
     if (!quote) return null
     const bridgeAssetQuantity = unitToCurrency(assets[bridgeAsset], quote.toAmount)
