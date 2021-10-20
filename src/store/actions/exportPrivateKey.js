@@ -12,4 +12,4 @@ export const exportPrivateKey = async ({ getters }, args) => {
   console.log(client)
 
   return 'wtf'
-};
+}
