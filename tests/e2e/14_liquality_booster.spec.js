@@ -125,7 +125,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       }
     })
     it('SWAP (RBTC->PWETH (Polygon))', async () => {
-      const assert1 = 'BTC'
+      const assert1 = 'RBTC'
       const assert2 = 'PWETH'
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
