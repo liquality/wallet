@@ -274,6 +274,11 @@ export default {
   SET_USB_BRIDGE_WINDOWS_ID (state, { id }) {
     state.usbBridgeWindowsId = id
   },
+  SET_EXTERNAL_CONNECTION_DEFAULT (state, { origin, activeWalletId, accountId }) {
+    ensureOriginWalletTree(state.externalConnections, activeWalletId, origin, {})
+
+    Vue.set(state.externalConnections[activeWalletId][origin], 'defaultEthereum', accountId)
+  },
   ADD_EXTERNAL_CONNECTION (state, { origin, activeWalletId, accountId, chain }) {
     ensureOriginWalletTree(state.externalConnections, activeWalletId, origin, {})
 

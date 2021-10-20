@@ -58,7 +58,7 @@ export default {
       if (isEthereumChain(this.chain)) {
         return this.accountsData.filter(account => isEthereumChain(account.chain))
       } else {
-        return this.accountsData.filter(account =>  this.chain === account.chain)
+        return this.accountsData.filter(account => this.chain === account.chain)
       }
     },
     logo () {
@@ -96,6 +96,9 @@ export default {
     onAccountSelected ({ account }) {
       this.selectedAccount = account
     }
+  },
+  created () {
+    this.selectedAccount = this.accountsData.filter(account => account.chain === this.chain)[0]
   }
 }
 </script>

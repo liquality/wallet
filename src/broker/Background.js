@@ -1,7 +1,6 @@
 import { ChainNetworks } from '@/utils/networks'
 import buildConfig from '../build.config'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
-import { assets } from '@liquality/cryptoassets'
 
 class Background {
   constructor (store) {
@@ -51,14 +50,6 @@ class Background {
           connection.postMessage({
             id: 'liqualityChainChanged',
             data: { chainIds: this.getChainIds(state.activeNetwork) }
-          })
-        })
-      }
-      if (mutation.type === 'SET_ETHEREUM_INJECTION_CHAIN') {
-        this.externalConnections.forEach(connection => {
-          connection.postMessage({
-            id: 'liqualityEthereumOverrideChanged',
-            data: { chain: state.injectEthereumChain, chainIds: this.getChainIds(state.activeNetwork) }
           })
         })
       }
@@ -152,14 +143,23 @@ class Background {
   onExternalMessage (connection, { id, type, data }) {
     const { url } = connection.sender
     const { origin } = new URL(url)
-    let chain
-    if (data.chain) {
-      chain = data.chain
-    } else {
-      const { asset } = data
-      chain = assets[asset].chain
+    const { externalConnections, activeWalletId, injectEthereumChain } = this.store.state
+
+    let setDefault = false
+    let { chain } = data
+    if (!chain) {
+      const defaultAccount = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
+      if (defaultAccount) {
+        const defaultChain = this.store.getters.accountItem(defaultAccount).chain
+        chain = defaultChain
+        setDefault = true
+      }
     }
-    const { externalConnections, activeWalletId } = this.store.state
+    if (!chain) {
+      chain = injectEthereumChain
+      setDefault = true
+    }
+
     const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
                     Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
 
@@ -176,16 +176,16 @@ class Background {
           connection.postMessage({
             id,
             data: {
-              result: { 
+              result: {
                 accepted: true,
-                chain: Object.keys(externalConnections[activeWalletId][origin])[0] // TODO: only the first chain?
+                chain
               }
             }
           })
           return
         }
 
-        this.storeProxy(id, connection, 'requestOriginAccess', { origin, chain })
+        this.storeProxy(id, connection, 'requestOriginAccess', { origin, chain, setDefault })
         break
 
       case 'CAL_REQUEST':
