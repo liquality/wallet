@@ -159,7 +159,8 @@ export default {
         assets: [this.asset],
         accountId: this.accountId
       })
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(addresses[0])
+      const chainId = cryptoassets[this.asset]?.chain
+      this.address = chains[chainId]?.formatAddress(addresses[0], chainId, this.activeNetwork)
     }
 
     const uri = [
