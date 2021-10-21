@@ -113,8 +113,12 @@ export default {
     }
   },
   async created () {
-    this.multiAccountFeatureFlag = await this.$getFeatureFlag('multi-account-feature', false)
-    console.log('this.multiAccountFeatureFlag', this.multiAccountFeatureFlag)
+    this.$onFeatureFlagReady(
+      async () => {
+        this.multiAccountFeatureFlag = await this.$getFeatureFlag('multi-account-feature', false)
+        console.log('multiAccountFeatureFlag', this.multiAccountFeatureFlag)
+      }
+    )
   },
   methods: {
     ...mapActions(['lockWallet', 'trackAnalytics']),
