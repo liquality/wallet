@@ -1,6 +1,7 @@
 import { ChainNetworks } from '@/utils/networks'
 import buildConfig from '../build.config'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
+import { assets } from '@liquality/cryptoassets'
 
 class Background {
   constructor (store) {
@@ -146,7 +147,10 @@ class Background {
     const { externalConnections, activeWalletId, injectEthereumChain } = this.store.state
 
     let setDefault = false
-    let { chain } = data
+    let { chain, asset } = data
+    if (asset) {
+      chain = assets[asset].chain
+    }
     if (!chain) {
       const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
       if (defaultAccountId) {
