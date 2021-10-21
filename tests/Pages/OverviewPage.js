@@ -1,3 +1,6 @@
+const TestUtil = require('../utils/TestUtils')
+
+const testUtil = new TestUtil()
 const chalk = require('chalk')
 const expect = require('chai').expect
 
@@ -9,11 +12,15 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    await page.waitForSelector('#burger_icon_menu', {
-      visible: true,
-      timeout: 120000
-    })
-    console.log(chalk.green('User logged successfully, overview page has been loaded'))
+    try {
+      await page.waitForSelector('#burger_icon_menu', {
+        visible: true,
+        timeout: 120000
+      })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
+      expect(e, 'Hamburger icon loading issue').equals(null)
+    }
   }
 
   /**

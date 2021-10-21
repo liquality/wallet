@@ -15,6 +15,7 @@ class LiqualityBoostSwapProvider extends SwapProvider {
     super(config)
     this.liqualitySwapProvider = createSwapProvider(this.config.network, 'liquality')
     this.oneinchSwapProvider = createSwapProvider(this.config.network, 'oneinchV3')
+    this.supportedBridgeAssets = this.config.supportedBridgeAssets
   }
 
   async getSupportedPairs () {
@@ -24,6 +25,7 @@ class LiqualityBoostSwapProvider extends SwapProvider {
   async getQuote ({ network, from, to, amount }) {
     if (isERC20(from) || !isERC20(to) || amount <= 0) return null
     const bridgeAsset = getNativeAsset(to)
+    if (!(this.supportedBridgeAssets.includes(bridgeAsset))) return null
     const quote = await this.liqualitySwapProvider.getQuote({ network, from, to: bridgeAsset, amount })
     if (!quote) return null
     const bridgeAssetQuantity = unitToCurrency(assets[bridgeAsset], quote.toAmount)
