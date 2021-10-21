@@ -2,7 +2,7 @@ import { stringify } from 'qs'
 import { emitter } from '../utils'
 import { createPopup } from '../../broker/utils'
 
-export const requestOriginAccess = async ({ state, dispatch, commit }, { origin, chain }) => {
+export const requestOriginAccess = async ({ state, dispatch, commit }, { origin, chain, setDefault }) => {
   const { requestOriginAccessActive } = state.app
 
   if (!requestOriginAccessActive) {
@@ -19,8 +19,14 @@ export const requestOriginAccess = async ({ state, dispatch, commit }, { origin,
         commit('app/SET_ORIGIN_ACCESS_ACTIVE', { active: false }, { root: true })
         if (allowed) {
           const { activeWalletId } = state
+
           commit('ADD_EXTERNAL_CONNECTION', { origin, activeWalletId, accountId, chain })
-          resolve(true)
+          if (setDefault) commit('SET_EXTERNAL_CONNECTION_DEFAULT', { origin, activeWalletId, accountId })
+
+          resolve({
+            accepted: true,
+            chain
+          })
         } else {
           reject(new Error('User denied'))
         }
