@@ -81,11 +81,11 @@ const EXPLORERS = {
   arbitrum: {
     testnet: {
       tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x{hash}',
-      address: 'https://rinkeby-explorer.arbitrum.io/address/0x{hash}'
+      address: 'https://rinkeby-explorer.arbitrum.io/address/{hash}'
     },
     mainnet: {
-      tx: 'https://explorer.arbitrum.io/tx/0x',
-      address: 'https://explorer.arbitrum.io/address/0x'
+      tx: 'https://explorer.arbitrum.io/tx/0x{hash}',
+      address: 'https://explorer.arbitrum.io/address/{hash}'
     }
   }
 }

@@ -63,6 +63,17 @@ class TestUtils {
     const id = this.extensionId
     return `chrome-extension://${id}/index.html#/`
   }
+
+  /**
+   * Take screenshots on failures.
+   * @param page
+   * @param screenshotName
+   * @returns {Promise<void>}
+   */
+  async takeScreenshot (page, screenshotName) {
+    const ts = Math.round((new Date()).getTime() / 1000)
+    await page.screenshot({ path: `screenshots/${screenshotName}-${ts}.png` })
+  }
 }
 
 module.exports = TestUtils

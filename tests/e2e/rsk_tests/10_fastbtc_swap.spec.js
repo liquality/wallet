@@ -19,11 +19,11 @@ const password = '123123123'
 
 if (process.env.NODE_ENV === 'mainnet') {
   // fastBTC service provider only in mainnet
-  describe('FastBTC swap provider-["mainnet","smoke"]', async () => {
+  describe.skip('FastBTC swap provider-["mainnet","smoke"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl)
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
       await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
       // Import wallet option
