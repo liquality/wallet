@@ -234,7 +234,7 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
     const dappPage = await browser.newPage()
     await dappPage.goto('https://app.1inch.io/', { timeout: 60000 })
     try {
-      await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true, timeout: 60000})
+      await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true, timeout: 60000 })
     } catch (e) {
       await dappPage.screenshot({ path: 'screenshots/1inch-dapp-load-issue.png', fullscreen: true })
       const pageTitle = await dappPage.title()
