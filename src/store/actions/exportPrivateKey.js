@@ -2,12 +2,12 @@ import { chains } from '@liquality/cryptoassets'
 
 export const exportPrivateKey = async ({ getters }, args) => {
   const { network, walletId, accountId, chainId } = args
-  console.log('here', chainId)
 
   const asset = chains[chainId]?.nativeAsset
   if (!asset) {
-    // throw error
+    throw new Error(`missing nativeAsset for ${chainId}`)
   }
+
   const client = getters.client({
     network,
     walletId,
@@ -15,7 +15,5 @@ export const exportPrivateKey = async ({ getters }, args) => {
     asset
   })
 
-  console.log(client)
-
-  return 'wtf'
+  return client.wallet.exportPrivateKey()
 }
