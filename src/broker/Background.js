@@ -148,11 +148,13 @@ class Background {
     let setDefault = false
     let { chain } = data
     if (!chain) {
-      const defaultAccount = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
-      if (defaultAccount) {
-        const defaultChain = this.store.getters.accountItem(defaultAccount).chain
-        chain = defaultChain
-        setDefault = true
+      const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
+      if (defaultAccountId) {
+        const defaultAccount = this.store.getters.accountItem(defaultAccountId)
+        if (defaultAccount) {
+          chain = defaultAccount.chain
+          setDefault = true
+        }
       }
     }
     if (!chain) {
