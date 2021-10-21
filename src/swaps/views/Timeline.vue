@@ -304,7 +304,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateTransactionFee', 'updateFees']),
+    ...mapActions(['updateTransactionFee', 'updateFees', 'checkPendingActions']),
     getNativeAsset,
     prettyBalance,
     prettyTime (timestamp) {
@@ -409,6 +409,8 @@ export default {
           hash,
           newFee: this.newFeePrice
         })
+        // TODO decide if this is a safe option or change approach
+        // await this.checkPendingActions({ walletId: this.activeWalletId })
       } finally {
         this.updateTransactions()
         this.feeSelectorLoading = false

@@ -1,3 +1,6 @@
+const TestUtil = require('../utils/TestUtils')
+
+const testUtil = new TestUtil()
 const chalk = require('chalk')
 const expect = require('chai').expect
 
@@ -9,11 +12,15 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    await page.waitForSelector('#burger_icon_menu', {
-      visible: true,
-      timeout: 120000
-    })
-    console.log(chalk.green('User logged successfully, overview page has been loaded'))
+    try {
+      await page.waitForSelector('#burger_icon_menu', {
+        visible: true,
+        timeout: 120000
+      })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
+      expect(e, 'Hamburger icon loading issue').equals(null)
+    }
   }
 
   /**
@@ -289,7 +296,14 @@ class OverviewPage {
    * @constructor
    */
   async ClickSend (page) {
-    await page.waitForSelector('#send_action', { visible: true })
+    try {
+      await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
+    } catch (e) {
+      const ts = Math.round((new Date()).getTime() / 1000)
+      await page.screenshot({ path: `screenshots/send-button-not-loaded-${ts}.png` })
+      expect(e, 'Send button not loaded....').equals(null)
+    }
+
     await page.click('#send_action')
   }
 
