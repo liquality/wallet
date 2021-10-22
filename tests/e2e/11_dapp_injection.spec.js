@@ -63,7 +63,7 @@ describe('Dapp Injection-[mainnet,dappTest,smoke]', async () => {
       await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
       await dappPage.click('#connect-wallet')
     } catch (e) {
-      await testUtil.takeScreenshot(dappPage,'sushi-dapp-load-issue')
+      await testUtil.takeScreenshot(dappPage, 'sushi-dapp-load-issue')
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       expect(e, `Sushi dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
