@@ -21,9 +21,8 @@ export const accountCreator = (payload) => {
     account.enabled !== null && account.enabled !== undefined
   ) ? account.enabled : true
 
-  const { formatAddress } = chains[chain]
   const _addresses = addresses.map(a => {
-    const address = formatAddress(a, network)
+    const address = chains[chain].formatAddress(a, network)
     return address.startsWith('0x') ? address.substring(2, address.length) : address
   })
 
