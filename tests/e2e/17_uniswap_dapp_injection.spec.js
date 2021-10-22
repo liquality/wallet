@@ -45,11 +45,7 @@ describe('Uniswap Dapp Injection-[mainnet,smoke]', async () => {
     await page.waitForTimeout(1000)
   })
   afterEach(async () => {
-    if (page != null && dappPage != null) {
-      await page.close()
-      await dappPage.close()
-      await browser.close()
-    }
+    await browser.close()
   })
 
   it('UNISWAP Injection-ETH', async () => {
@@ -75,11 +71,15 @@ describe('Uniswap Dapp Injection-[mainnet,smoke]', async () => {
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.click('#connect-INJECTED')
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
-    await connectRequestWindow.click('#ETHEREUM')
+    try {
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 60000 })
+      await connectRequestWindow.click('#ETHEREUM')
+    } catch (e) {
+      await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-ethereum-connect-request-window-issue')
+      expect(e, 'Uniswap injection ethereum not listed.....').equals(null)
+    }
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
@@ -106,6 +106,14 @@ describe('Uniswap Dapp Injection-[mainnet,smoke]', async () => {
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.click('#connect-INJECTED')
     const connectRequestWindow = await newPagePromise
+    try {
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 60000 })
+      await connectRequestWindow.click('#ARBITRUM')
+    } catch (e) {
+      await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-arbitrum-connect-request-window-issue')
+      expect(e, 'Uniswap injection arbitrum not listed.....').equals(null)
+    }
+
     await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true })
     await connectRequestWindow.click('#ARBITRUM')
     // Check connect button is enabled

@@ -110,8 +110,6 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
   afterEach(async () => {
-    await page.close()
-    await dappPage.close()
     await browser.close()
   })
 })

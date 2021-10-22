@@ -10,7 +10,7 @@ const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
-let browser, page, dappPage
+let browser, page
 const password = '123123123'
 
 describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
@@ -44,13 +44,9 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     await page.waitForTimeout(1000)
   })
   afterEach(async () => {
-    if (page != null && dappPage != null) {
-      await page.close()
-      await dappPage.close()
-      await browser.close()
-    }
+    await browser.close()
   })
-  it.skip('1Inch injection - ETH', async () => {
+  it('1Inch injection - ETH', async () => {
     // Go to 1inch app
     const dappPage = await browser.newPage()
     await dappPage.goto('https://app.1inch.io/', { timeout: 60000 })
@@ -58,7 +54,7 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
       await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true, timeout: 60000 })
       await dappPage.click('[data-id$="header.connect-wallet-button"]')
     } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/1inch-dapp-load-issue.png', fullscreen: true })
+      await testUtil.takeScreenshot(dappPage, '1inch-dapp-load-issue')
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       expect(e, `1inch dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
@@ -78,19 +74,14 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector("[class$='account-button ng-star-inserted']", { visible: true })
   })
-  it.skip('1Inch injection - Polygon', async () => {
-    // Select polygon network
-    await page.click('#dropdown-item')
-    await page.waitForSelector('#polygon_web_network', { visible: true })
-    await page.click('#polygon_web_network')
-
+  it('1Inch injection - Polygon', async () => {
     // Go to 1inch app
     const dappPage = await browser.newPage()
     await dappPage.goto('https://app.1inch.io/', { timeout: 60000 })
     try {
       await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true, timeout: 60000 })
     } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/1inch-dapp-load-issue.png', fullscreen: true })
+      await testUtil.takeScreenshot(dappPage, '1inch-dapp-load-issue')
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       expect(e, `1inch dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
@@ -99,8 +90,7 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     await dappPage.waitForSelector('[data-id*="connect-wallet-button"]', { visible: true })
     await dappPage.click("[data-id$='header.switch-network-button']")
     await dappPage.click("[data-id$='Polygon Network']")
-    await dappPage.waitForTimeout(5000)
-
+    await dappPage.waitForTimeout(1000)
     await dappPage.click('[data-id$="header.connect-wallet-button"]')
     await dappPage.waitForSelector("[data-id$='Ethereum']")
     await dappPage.click('.mat-checkbox-inner-container')
@@ -114,16 +104,10 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     await connectRequestWindow.click('#POLYGON')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
     // Check web3 status as connected
     await dappPage.waitForSelector("[class$='account-button ng-star-inserted']", { visible: true })
   })
   it.skip('1Inch injection - BSC', async () => {
-    // Select polygon network
-    await page.click('#dropdown-item')
-    await page.waitForSelector('#bsc_web_network', { visible: true })
-    await page.click('#bsc_web_network')
-
     // Go to 1inch app
     const dappPage = await browser.newPage()
     await dappPage.goto('https://app.1inch.io/')

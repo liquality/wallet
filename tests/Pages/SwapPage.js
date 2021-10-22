@@ -170,8 +170,8 @@ class SwapPage {
         timeout: 60000
       })
     } catch (e) {
-      await testUtil.takeScreenshot(page, 'send-swap-review-amount-value-issue')
-      expect(e, 'Swap screen send confirm value issue!').equals(null)
+      await testUtil.takeScreenshot(page, 'send-swap-review-amount-screen-issue')
+      expect(e, 'Click Swap initiated not working!!!').equals(null)
     }
     return await page.$eval('#send_swap_confirm_value', el => el.textContent)
   }

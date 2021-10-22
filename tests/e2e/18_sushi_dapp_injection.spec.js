@@ -44,11 +44,7 @@ describe('Sushi Dapp Injection-[mainnet,smoke]', async () => {
     await page.waitForTimeout(1000)
   })
   afterEach(async () => {
-    if (page != null && dappPage != null) {
-      await page.close()
-      await dappPage.close()
-      await browser.close()
-    }
+    await browser.close()
   })
 
   it('Sushi injection - ETH', async () => {
