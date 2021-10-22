@@ -53,16 +53,15 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     try {
       await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true, timeout: 60000 })
       await dappPage.click('[data-id$="header.connect-wallet-button"]')
+      await dappPage.waitForSelector("[data-id$='Ethereum']")
+      await dappPage.click('.mat-checkbox-inner-container')
+      await dappPage.click("[data-id$='Ethereum']")
     } catch (e) {
       await testUtil.takeScreenshot(dappPage, '1inch-dapp-load-issue')
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       expect(e, `1inch dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
     }
-    await dappPage.waitForSelector("[data-id$='Ethereum']")
-    await dappPage.click('.mat-checkbox-inner-container')
-    await dappPage.click("[data-id$='Ethereum']")
-
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.click("[data-id$='Web3']")
@@ -89,12 +88,19 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     // Change to polygon from 1inch
     await dappPage.waitForSelector('[data-id*="connect-wallet-button"]', { visible: true })
     await dappPage.click("[data-id$='header.switch-network-button']")
-    await dappPage.click("[data-id$='Polygon Network']")
+    await dappPage.click("[data-id*='Polygon']")
     await dappPage.waitForTimeout(1000)
-    await dappPage.click('[data-id$="header.connect-wallet-button"]')
-    await dappPage.waitForSelector("[data-id$='Ethereum']")
-    await dappPage.click('.mat-checkbox-inner-container')
-    await dappPage.click("[data-id$='Polygon Network']")
+    try {
+      await dappPage.click('[data-id$="header.connect-wallet-button"]')
+      await dappPage.waitForSelector("[data-id$='Ethereum']")
+      await dappPage.click('.mat-checkbox-inner-container')
+      await dappPage.click("[data-id$='Polygon Network']")
+    } catch (e) {
+      await testUtil.takeScreenshot(dappPage, '1inch-dapp-load-issue')
+      const pageTitle = await dappPage.title()
+      const pageUrl = await dappPage.url()
+      expect(e, `1inch dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
+    }
 
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
