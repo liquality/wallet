@@ -20,7 +20,6 @@ jobs:
         with:
           node-version: '14'
           cache: 'npm'
-      - run: npm install
         # Create screenshots directory
       - run: mkdir screenshots
 
@@ -50,7 +49,8 @@ jobs:
           DISPLAY: :99
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-      - run: npm run test:pullrequest:smoke
+        with:
+          entrypoint: npm run test:pullrequest:smoke
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2.2.4
