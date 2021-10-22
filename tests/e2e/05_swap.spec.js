@@ -484,7 +484,7 @@ describe('SWAP feature', async () => {
     await page.waitForTimeout(2000)
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
     expect(swapSendNetworkFeeInDollar.trim(), `Send Network fee should not be $0.00 for ${asset1}`)
-      .not.contain('$0.00')
+      .not.contain('NaN')
 
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
     expect(swapSendAccountFeesValue.trim()).contain(asset1)
