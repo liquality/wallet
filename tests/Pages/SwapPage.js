@@ -105,12 +105,17 @@ class SwapPage {
    * @constructor
    */
   async ClickSwapReviewButton (page) {
-    console.log('User checking for SWAP Review button is enabled or disabled')
-    await page.waitForSelector('#swap_review_button:not([disabled])', {
-      timeout: 60000
-    })
-    await page.click('#swap_review_button')
-    console.log(chalk.green('User clicked on SWAP review button'))
+    try {
+      console.log('User checking for SWAP Review button is enabled or disabled')
+      await page.waitForSelector('#swap_review_button:not([disabled])', {
+        timeout: 60000
+      })
+      await page.click('#swap_review_button')
+      console.log(chalk.green('User clicked on SWAP review button'))
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'swap-review-button-disabled-issue')
+      expect(e, 'swap review button is disabled!!').equals(null)
+    }
   }
 
   /**
