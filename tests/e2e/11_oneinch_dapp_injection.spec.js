@@ -13,7 +13,7 @@ const passwordPage = new PasswordPage()
 let browser, page, dappPage
 const password = '123123123'
 
-describe('Dapp Injection-[mainnet,dappTest,smoke]', async () => {
+describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -49,78 +49,6 @@ describe('Dapp Injection-[mainnet,dappTest,smoke]', async () => {
       await dappPage.close()
       await browser.close()
     }
-  })
-
-  it('Sushi injection - ETH', async () => {
-    // Go to Sushi app
-    dappPage = await browser.newPage()
-    await dappPage.setViewport({
-      width: 1366,
-      height: 768
-    })
-    await dappPage.goto('https://app.sushi.com/swap', { timeout: 60000 })
-    try {
-      await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
-      await dappPage.click('#connect-wallet')
-    } catch (e) {
-      await testUtil.takeScreenshot(dappPage, 'sushi-dapp-load-issue')
-      const pageTitle = await dappPage.title()
-      const pageUrl = await dappPage.url()
-      expect(e, `Sushi dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
-    }
-    // Before click on injected wallet option.
-    const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    // Click on Injected Option
-    const injectedOption = await dappPage.$x("//*[text()='Injected']")
-    injectedOption[0].click()
-    // select ETH from connected
-    const connectRequestWindow = await newPagePromise
-    try {
-      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
-    } catch (e) {
-      await testUtil.takeScreenshot(connectRequestWindow, 'sushi-ethereum-loading-issue')
-      expect(e, 'sushi ethereum loading issue').equals(null)
-    }
-    await connectRequestWindow.click('#ETHEREUM')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
-    // Check web3 status as connected
-    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
-  })
-  it('Sushi injection - Polygon', async () => {
-    // Select polygon network
-    await page.click('#dropdown-item')
-    await page.waitForSelector('#polygon_web_network', { visible: true })
-    await page.click('#polygon_web_network')
-
-    // Go to Sushi app
-    dappPage = await browser.newPage()
-    await dappPage.setViewport({
-      width: 1366,
-      height: 768
-    })
-    await dappPage.goto('https://app.sushi.com/swap', { timeout: 60000 })
-    try {
-      await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
-      await dappPage.click('#connect-wallet')
-    } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/sushi-dapp-load-issue.png', fullscreen: true })
-      const pageTitle = await dappPage.title()
-      const pageUrl = await dappPage.url()
-      expect(e, `Sushi dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
-    }
-    // Before click on injected wallet option.
-    const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    // Click on Injected Option
-    const injectedOption = await dappPage.$x("//*[text()='Injected']")
-    injectedOption[0].click()
-    const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#POLYGON', { visible: true })
-    await connectRequestWindow.click('#POLYGON')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
-    // Check web3 status as connected
-    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
   it.skip('1Inch injection - ETH', async () => {
     // Go to 1inch app
