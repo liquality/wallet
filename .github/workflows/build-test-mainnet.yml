@@ -14,12 +14,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build project
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2.4.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
-          args: install
+          node-version: '14'
+        # Create screenshots directory
+      - run: mkdir screenshots
 
       - uses: actions/cache@v1
         env:
@@ -52,18 +53,19 @@ jobs:
           args: npm run test:mainnet
 
       - name: Archive Mocha HTML report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
           name: mocha-html-test-report
           path: mochawesome-report
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
           name: screenshots
           path: screenshots
+          if-no-files-found: ignore
 
 
 

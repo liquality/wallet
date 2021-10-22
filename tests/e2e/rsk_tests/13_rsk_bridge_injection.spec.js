@@ -67,13 +67,14 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     await dappPage.click('button[type="button"]')
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#RSK', { visible: true })
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true })
     } catch (e) {
       await connectRequestWindow.screenshot({ path: 'screenshots/sovryn-bridge-show-rskAccounts-issue.png', fullscreen: true })
-      expect(e, 'Sovryn bridgeUI not loading RSK accounts').equals(null)
+      expect(e, 'Sovryn bridge UI not loading RSK accounts').equals(null)
     }
     const rskAccounts = await connectRequestWindow.$$('#RSK')
-    expect(rskAccounts.length).to.equals(2)
+    expect(rskAccounts.length, '2 RSK accounts should be listed under Connect request popupWindow')
+      .to.equals(2) // RSK & RSK legacy
     await connectRequestWindow.click('#RSK')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
@@ -108,9 +109,7 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     await dappPage.waitForTimeout(10000)
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-
   afterEach(async () => {
-    await page.close()
     await browser.close()
   })
 })
