@@ -10,18 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.5
         with:
           fetch-depth: 0
 
-      - name: Build project
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2.4.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
-          args: install
+          node-version: '14'
+        # Create screenshots directory
+      - run: mkdir screenshots
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.6
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules
@@ -68,7 +69,6 @@ jobs:
           npm run lint
           npm run build
 
-      - run: mkdir screenshots
       - name: MainNet e2e tests
         uses: beemi/puppeteer-headful@v1.0.6
         env:
@@ -80,18 +80,19 @@ jobs:
           args: npm run test:mainnet
 
       - name: Archive Mocha HTML report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
           name: mocha-html-test-report
           path: mochawesome-report
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
           name: screenshots
           path: screenshots
+          if-no-files-found: ignore
 
       - name: Create Release
         id: create_release

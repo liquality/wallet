@@ -19,10 +19,8 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           node-version: '14'
-          cache: 'npm'
-      - run: npm install
-      # Create screenshots directory
-      - run: mkdir screenshots
+        # Create screenshots directory
+        - run: mkdir screenshots
 
       - uses: actions/cache@v2.1.6
         env:

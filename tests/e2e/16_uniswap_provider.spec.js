@@ -14,7 +14,6 @@ const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
 
-
 let browser, page
 const password = '123123123'
 

@@ -12,7 +12,6 @@ const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
 const password = '123123123'
-const uniswapDappUrl = 'https://app.uniswap.org/#/swap'
 
 describe('Dapp Injection-[mainnet,dappTest,smoke]', async () => {
   beforeEach(async () => {
@@ -52,78 +51,6 @@ describe('Dapp Injection-[mainnet,dappTest,smoke]', async () => {
     }
   })
 
-  it.skip('UNISWAP Injection-ETH', async () => {
-    // Go to uniSwap app
-    dappPage = await browser.newPage()
-    await dappPage.setViewport({
-      width: 1366,
-      height: 768
-    })
-    await dappPage.goto(uniswapDappUrl, { timeout: 60000 })
-    try {
-      await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
-      await dappPage.waitForSelector('#connect-wallet', { visible: true })
-    } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/uniswap-eth-false.png', fullscreen: true })
-      const pageTitle = await dappPage.title()
-      const pageUrl = await dappPage.url()
-      expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
-    }
-    await dappPage.click('#connect-wallet')
-    await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
-    // Before click on injected wallet option.
-    const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.click('#connect-INJECTED')
-    // await dappPage.evaluate(
-    //   () => {
-    //     window.ethereum.enable()
-    //   })
-    const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
-    await connectRequestWindow.click('#ETHEREUM')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
-    // Check web3 status as connected
-    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
-  })
-  it.skip('UNISWAP Injection-ARBITRUM', async () => {
-    // Select polygon network
-    await page.click('#dropdown-item')
-    await page.waitForSelector('#arbitrum_web_network', { visible: true })
-    await page.click('#arbitrum_web_network')
-
-    // Go to uniSwap app
-    dappPage = await browser.newPage()
-    await dappPage.setViewport({
-      width: 1366,
-      height: 768
-    })
-    await dappPage.goto(uniswapDappUrl, { timeout: 60000 })
-    try {
-      await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
-      await dappPage.waitForSelector('#connect-wallet', { visible: true })
-      await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-true.png', fullscreen: true })
-    } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/uniswap-arbitrum-false.png', fullscreen: true })
-      const pageTitle = await dappPage.title()
-      const pageUrl = await dappPage.url()
-      expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
-    }
-    await dappPage.click('#connect-wallet')
-    await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
-    // Before click on injected wallet option.
-    const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.click('#connect-INJECTED')
-    const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true })
-    await connectRequestWindow.click('#ARBITRUM')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
-    // Check web3 status as connected
-    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
-  })
   it('Sushi injection - ETH', async () => {
     // Go to Sushi app
     dappPage = await browser.newPage()
@@ -136,7 +63,7 @@ describe('Dapp Injection-[mainnet,dappTest,smoke]', async () => {
       await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
       await dappPage.click('#connect-wallet')
     } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/sushi-dapp-load-issue.png', fullscreen: true })
+      await testUtil.takeScreenshot(dappPage,'sushi-dapp-load-issue')
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       expect(e, `Sushi dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)

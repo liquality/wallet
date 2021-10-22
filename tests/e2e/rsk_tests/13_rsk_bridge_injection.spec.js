@@ -73,7 +73,7 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
       expect(e, 'Sovryn bridge UI not loading RSK accounts').equals(null)
     }
     const rskAccounts = await connectRequestWindow.$$('#RSK')
-    expect(rskAccounts.length , '2 RSK accounts should be listed under Connect request popupWindow')
+    expect(rskAccounts.length, '2 RSK accounts should be listed under Connect request popupWindow')
       .to.equals(2) // RSK & RSK legacy
     await connectRequestWindow.click('#RSK')
     // Check connect button is enabled
