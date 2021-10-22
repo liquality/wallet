@@ -19,8 +19,8 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           node-version: '14'
-          # Create screenshots directory
-        - run: mkdir screenshots
+        # Create screenshots directory
+      - run: mkdir screenshots
 
       - uses: actions/cache@v1
         env:
