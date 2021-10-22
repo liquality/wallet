@@ -33,11 +33,11 @@ if (process.env.NODE_ENV === 'mainnet') {
     }
   }
   // Only works on Mainnet
-  describe('Liquality Booster-[mainnet]', async () => {
+  describe.skip('Liquality Booster-[mainnet]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle0' })
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
       await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
       // Import wallet option

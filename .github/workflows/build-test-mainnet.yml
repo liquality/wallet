@@ -1,5 +1,4 @@
 on:
-  push:
   schedule:
     - cron: '0 9 * * *' # everyday at 9am
     - cron: '0 23 * * *' # everyday at 11pm
