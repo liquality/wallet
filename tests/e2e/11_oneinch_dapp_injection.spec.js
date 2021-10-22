@@ -54,9 +54,9 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     await dappPage.goto('https://app.1inch.io/', { timeout: 60000 })
     try {
       // Connect wallet button
-      await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true, timeout: 60000 })
+      await dappPage.waitForSelector('[data-id*="connect-wallet-button"]', { visible: true, timeout: 60000 })
       console.log(chalk.green('Connect wallet option is displayed on 1inch app'))
-      await dappPage.click('[data-id$="header.connect-wallet-button"]')
+      await dappPage.click('[data-id*="connect-wallet-button"]')
       // accepts terms & condition
       await dappPage.waitForSelector('.mat-checkbox-inner-container', { visible: true, timeout: 60000 })
       await dappPage.click('.mat-checkbox-inner-container')
@@ -92,13 +92,13 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     await dappPage.goto('https://app.1inch.io/', { timeout: 60000 })
     try {
       // Connect wallet button
-      await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true, timeout: 60000 })
+      await dappPage.waitForSelector('[data-id*="connect-wallet-button"]', { visible: true, timeout: 60000 })
       console.log(chalk.green('Connect wallet option is displayed on 1inch app'))
       // Change to polygon from 1inch
-      await dappPage.click("[data-id$='header.switch-network-button']")
+      await dappPage.click("[data-id*='switch-network-button']")
       await dappPage.waitForSelector("[data-id*='Polygon']", { visible: true })
       await dappPage.click("[data-id*='Polygon']")
-      await dappPage.click('[data-id$="header.connect-wallet-button"]')
+      await dappPage.click('[data-id*="connect-wallet-button"]')
       // accepts terms & condition
       await dappPage.waitForSelector('.mat-checkbox-inner-container', { visible: true, timeout: 60000 })
       await dappPage.click('.mat-checkbox-inner-container')
@@ -133,13 +133,13 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     await dappPage.goto('https://app.1inch.io/', { timeout: 60000 })
     try {
       // Connect wallet button
-      await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true, timeout: 60000 })
+      await dappPage.waitForSelector('[data-id*="connect-wallet-button"]', { visible: true, timeout: 60000 })
       console.log(chalk.green('Connect wallet option is displayed on 1inch app'))
       // Change to polygon from 1inch
-      await dappPage.click("[data-id$='header.switch-network-button']")
+      await dappPage.click("[data-id*='switch-network-button']")
       await dappPage.waitForSelector("[data-id*='BSC']", { visible: true })
       await dappPage.click("[data-id*='BSC']")
-      await dappPage.click('[data-id$="header.connect-wallet-button"]')
+      await dappPage.click('[data-id*="connect-wallet-button"]')
       // accepts terms & condition
       await dappPage.waitForSelector('.mat-checkbox-inner-container', { visible: true, timeout: 60000 })
       await dappPage.click('.mat-checkbox-inner-container')
