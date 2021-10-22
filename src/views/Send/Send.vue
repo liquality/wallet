@@ -335,7 +335,7 @@ export default {
     },
     isValidAddress () {
       const chain = cryptoassets[this.asset].chain
-      return chains[chain].isValidAddress(this.address, chain, this.activeNetwork)
+      return chains[chain].isValidAddress(this.address, this.activeNetwork)
     },
     addressError () {
       if (!this.isValidAddress) {
