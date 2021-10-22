@@ -138,13 +138,13 @@ describe('SWAP feature', async () => {
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'ETH to DAI SWAP min value not set in input').not.equals('0.0000')
-    await swapPage.ClickOnMin(page)
     // Select 2nd Pair (DAI)
     await page.click('.swap-receive-main-icon')
     await page.waitForSelector('#ETHEREUM', { visible: true })
     await page.click('#ETHEREUM')
     await page.waitForSelector(`#${asset2}`, { visible: true })
     await page.click(`#${asset2}`)
+    await swapPage.ClickOnMax(page)
     // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
     await page.waitForSelector('#selectedQuote_provider', {
       visible: true,
@@ -160,8 +160,6 @@ describe('SWAP feature', async () => {
 
     // Review Button
     await swapPage.ClickSwapReviewButton(page)
-    // ETH-> DAI Swap is negative. Review transaction carefully.
-    await swapPage.ValidateNegativeMessage(page)
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)

@@ -54,7 +54,7 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
   it('SOVRYN Bridge injection', async () => {
     await dappPage.goto(bridgeUrl, { timeout: 60000, waitUntil: 'load' })
     try {
-      await dappPage.waitForSelector('button[type="button"]', { visible: true, timeout: 60000 })
+      await dappPage.waitForSelector('#connect_request_button', { visible: true, timeout: 60000 })
     } catch (e) {
       await dappPage.screenshot({ path: 'screenshots/sovryn-bridge-loading-issue.png', fullscreen: true })
       const pageTitle = await dappPage.title()
@@ -108,9 +108,9 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     await dappPage.waitForTimeout(10000)
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-
   afterEach(async () => {
     await page.close()
+    await dappPage.close()
     await browser.close()
   })
 })
