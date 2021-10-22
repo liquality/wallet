@@ -110,7 +110,7 @@ class SwapPage {
       await page.waitForSelector('#swap_review_button:not([disabled])', {
         timeout: 60000
       })
-      await page.click('#swap_review_button')
+      await page.click('#swap_review_button', { clickCount: 2 })
       console.log(chalk.green('User clicked on SWAP review button'))
     } catch (e) {
       await testUtil.takeScreenshot(page, 'swap-review-button-disabled-issue')
@@ -165,7 +165,10 @@ class SwapPage {
    */
   async GetSwapSendAmountValue (page) {
     try {
-      await page.waitForSelector('#send_swap_confirm_value', { visible: true, timeout: 60000 })
+      await page.waitForSelector('#send_swap_confirm_value', {
+        visible: true,
+        timeout: 60000
+      })
     } catch (e) {
       await testUtil.takeScreenshot(page, 'send-swap-review-amount-value-issue')
       expect(e, 'Swap screen send confirm value issue!').equals(null)
