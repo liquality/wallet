@@ -14,7 +14,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
+describe.skip('1Inch Dapp Injection-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
