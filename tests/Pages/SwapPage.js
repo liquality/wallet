@@ -105,7 +105,7 @@ class SwapPage {
    * @constructor
    */
   async ClickSwapReviewButton (page) {
-    try{
+    try {
       console.log('User checking for SWAP Review button is enabled or disabled')
       await page.waitForSelector('#swap_review_button:not([disabled])', {
         timeout: 60000
