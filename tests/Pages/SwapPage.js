@@ -164,8 +164,12 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendAmountValue (page) {
-    await page.waitForTimeout(5000)
-    await page.waitForSelector('#send_swap_confirm_value', { visible: true })
+    try {
+      await page.waitForSelector('#send_swap_confirm_value', { visible: true, timeout: 60000 })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'send-swap-review-amount-value-issue')
+      expect(e, 'Swap screen send confirm value issue!').equals(null)
+    }
     return await page.$eval('#send_swap_confirm_value', el => el.textContent)
   }
 
