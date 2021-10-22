@@ -19,14 +19,11 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           node-version: '14'
-          cache: 'npm'
         # Create screenshots directory
       - run: mkdir screenshots
 
       - uses: actions/cache@v2.1.6
-        env:
-          node-version: 14.1.0
-          cache-name: cache-node-modules
+        id: cache
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
@@ -50,7 +47,7 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          entrypoint: npm run test:pullrequest:smoke
+          args: npm run test:pullrequest:smoke
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2.2.4
