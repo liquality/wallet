@@ -43,10 +43,7 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     await overviewPage.SelectSettings(page)
     // toggle web3 wallet option
     await page.click('#default_web3_wallet_toggle_button > label > div')
-    // Select RSK network
-    await page.click('#dropdown-item')
-    await page.waitForSelector('#rsk_web_network', { visible: true })
-    await page.click('#rsk_web_network')
+
     // Go to SOVRYN app
     dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -55,14 +52,26 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     })
   })
   it('SOVRYN Bridge injection', async () => {
-    await dappPage.goto(bridgeUrl)
-    await dappPage.waitForSelector('button[type="button"]', { visible: true })
+    await dappPage.goto(bridgeUrl, { timeout: 60000, waitUntil: 'load' })
+    try {
+      await dappPage.waitForSelector('button[type="button"]', { visible: true, timeout: 60000 })
+    } catch (e) {
+      await dappPage.screenshot({ path: 'screenshots/sovryn-bridge-loading-issue.png', fullscreen: true })
+      const pageTitle = await dappPage.title()
+      const pageUrl = await dappPage.url()
+      expect(e, `Sovryn bridgeUI not loading.....${pageTitle}...${pageUrl}`).equals(null)
+    }
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     // Click on Connect wallet option from bridge
     await dappPage.click('button[type="button"]')
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#RSK', { visible: true })
+    try {
+      await connectRequestWindow.waitForSelector('#RSK', { visible: true })
+    } catch (e) {
+      await connectRequestWindow.screenshot({ path: 'screenshots/sovryn-bridge-show-rskAccounts-issue.png', fullscreen: true })
+      expect(e, 'Sovryn bridgeUI not loading RSK accounts').equals(null)
+    }
     const rskAccounts = await connectRequestWindow.$$('#RSK')
     expect(rskAccounts.length).to.equals(2)
     await connectRequestWindow.click('#RSK')
