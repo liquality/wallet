@@ -132,15 +132,22 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto('https://app.sushi.com/swap')
-    await dappPage.waitForSelector('#connect-wallet', { visible: true })
+    await dappPage.goto('https://app.sushi.com/swap', { timeout: 60000 })
+    try {
+      await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
+      await dappPage.click('#connect-wallet')
+    } catch (e) {
+      await dappPage.screenshot({ path: 'screenshots/sushi-dapp-load-issue.png', fullscreen: true })
+      const pageTitle = await dappPage.title()
+      const pageUrl = await dappPage.url()
+      expect(e, `Sushi dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
+    }
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.evaluate(
-      () => {
-        window.ethereum.enable()
-      })
-
+    // Click on Injected Option
+    const injectedOption = await dappPage.$x("//*[text()='Injected']")
+    injectedOption[0].click()
+    // select ETH from connected
     const connectRequestWindow = await newPagePromise
     try {
       await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
@@ -151,9 +158,7 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
     await connectRequestWindow.click('#ETHEREUM')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
     // Check web3 status as connected
-    await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
   it('Sushi injection - Polygon', async () => {
@@ -168,31 +173,42 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto('https://app.sushi.com/swap')
-    await dappPage.waitForSelector('#connect-wallet', { visible: true })
+    await dappPage.goto('https://app.sushi.com/swap', { timeout: 60000 })
+    try {
+      await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
+      await dappPage.click('#connect-wallet')
+    } catch (e) {
+      await dappPage.screenshot({ path: 'screenshots/sushi-dapp-load-issue.png', fullscreen: true })
+      const pageTitle = await dappPage.title()
+      const pageUrl = await dappPage.url()
+      expect(e, `Sushi dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
+    }
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.evaluate(
-      () => {
-        window.polygon.enable()
-      })
-    // await walletConnect[0].click()
+    // Click on Injected Option
+    const injectedOption = await dappPage.$x("//*[text()='Injected']")
+    injectedOption[0].click()
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#POLYGON', { visible: true })
     await connectRequestWindow.click('#POLYGON')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
     // Check web3 status as connected
-    await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
   it.skip('1Inch injection - ETH', async () => {
     // Go to 1inch app
     const dappPage = await browser.newPage()
-    await dappPage.goto('https://app.1inch.io/')
-    await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true })
-    await dappPage.click('[data-id$="header.connect-wallet-button"]')
+    await dappPage.goto('https://app.1inch.io/', { timeout: 60000 })
+    try {
+      await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true, timeout: 60000 })
+      await dappPage.click('[data-id$="header.connect-wallet-button"]')
+    } catch (e) {
+      await dappPage.screenshot({ path: 'screenshots/1inch-dapp-load-issue.png', fullscreen: true })
+      const pageTitle = await dappPage.title()
+      const pageUrl = await dappPage.url()
+      expect(e, `1inch dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
+    }
     await dappPage.waitForSelector("[data-id$='Ethereum']")
     await dappPage.click('.mat-checkbox-inner-container')
     await dappPage.click("[data-id$='Ethereum']")
@@ -205,7 +221,6 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
     await connectRequestWindow.click('#ETHEREUM')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
     // Check web3 status as connected
     await dappPage.waitForSelector("[class$='account-button ng-star-inserted']", { visible: true })
   })
@@ -217,14 +232,22 @@ describe('Dapp Injection-[mainnet,dappTest]', async () => {
 
     // Go to 1inch app
     const dappPage = await browser.newPage()
-    await dappPage.goto('https://app.1inch.io/')
-    // Change to polygon
+    await dappPage.goto('https://app.1inch.io/', { timeout: 60000 })
+    try {
+      await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]', { visible: true, timeout: 60000 })
+    } catch (e) {
+      await dappPage.screenshot({ path: 'screenshots/1inch-dapp-load-issue.png', fullscreen: true })
+      const pageTitle = await dappPage.title()
+      const pageUrl = await dappPage.url()
+      expect(e, `1inch dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
+    }
+    // Change to polygon from 1inch
     await dappPage.waitForSelector('[data-id*="connect-wallet-button"]', { visible: true })
     await dappPage.click("[data-id$='header.switch-network-button']")
     await dappPage.click("[data-id$='Polygon Network']")
-    await dappPage.waitForTimeout(2000)
+    await dappPage.waitForTimeout(5000)
 
-    await dappPage.click('[data-id*="connect-wallet-button"]')
+    await dappPage.click('[data-id$="header.connect-wallet-button"]')
     await dappPage.waitForSelector("[data-id$='Ethereum']")
     await dappPage.click('.mat-checkbox-inner-container')
     await dappPage.click("[data-id$='Polygon Network']")

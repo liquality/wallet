@@ -77,7 +77,7 @@ async function handleRequest (req) {
   if(req.method.startsWith('metamask_')) return null
 
   if(req.method === 'eth_requestAccounts') {
-    return await window[injectionName].enable()
+    return await window[injectionName].enable('${chain}')
   }
   if(req.method === 'personal_sign') { 
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
@@ -103,7 +103,7 @@ window[injectionName] = {
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
   enable: async () => {
-    const accepted = await window.providerManager.enable('${chain}')
+    const { accepted, chain } = await window.providerManager.enable('${chain}')
     if (!accepted) throw new Error('User rejected')
     return getAddresses()
   },
@@ -146,32 +146,76 @@ window[injectionName] = {
 const overrideEthereum = (chain) => `
 function proxyEthereum(chain) {
   window.ethereumProxyChain = chain
+
+  const enable = async () => {
+    const { accepted, chain } = await window.providerManager.enable()
+    if (!accepted) throw new Error('User rejected')
+    const chainChanged = window.ethereumProxyChain !== chain
+    window.ethereumProxyChain = chain
+    const injectionName = window.providerManager.getInjectionName(chain)
+    if (chainChanged) {
+      window.dispatchEvent(new CustomEvent('liqualityChainChanged', { detail: JSON.stringify({ chainIds: { [chain]: window[injectionName].chainId } }) }))
+    }
+    return window[injectionName].enable(chain)
+  }
+
   const overrideHandler = {
-    get: function (target, prop, receiver) {
+    get: function (_target, prop, receiver) {
+      const injectionName = window.providerManager.getInjectionName(window.ethereumProxyChain)
+      const target = window[injectionName]
+
       if (prop === 'on') {
         return (method, callback) => {
-          window.addEventListener('liqualityChainChanged', ({ detail }) => {
-            const result = JSON.parse(detail)
-            callback('0x' + result.chainIds[window.ethereumProxyChain].toString(16))
-          })
-          window.addEventListener('liqualityEthereumOverrideChanged', ({ detail }) => {
-            const result = JSON.parse(detail)
-            callback('0x' + result.chainIds[result.chain].toString(16))
-          })
+          if (method === 'chainChanged') {
+            window.addEventListener('liqualityChainChanged', ({ detail }) => {
+              const result = JSON.parse(detail)
+              callback('0x' + result.chainIds[window.ethereumProxyChain].toString(16))
+            })
+          }
         }
       }
-      return Reflect.get(...arguments)
+
+      if (prop === 'enable') {
+        return async () => {
+          return enable()
+        }
+      }
+
+      if (prop === 'request') { 
+        return async (req) => {
+          if(req.method === 'eth_requestAccounts') {
+              return enable()
+          }
+          return target[prop](req)
+        }
+      }
+
+      if (prop === 'send') {
+        return async (req, _paramsOrCallback) => {
+          const method = typeof req === 'string' ? req : req.method
+          if(method === 'eth_requestAccounts') {
+            if (typeof _paramsOrCallback === 'function') {
+              const callback = _paramsOrCallback
+              return enable().then((result) => callback(null, {
+                id: req.id,
+                jsonrpc: '2.0',
+                result
+              }))
+              .catch((err) => callback(err))
+            }
+            return enable()
+          }
+          return target[prop](req, _paramsOrCallback)
+        }
+      }
+
+      return target[prop]
     }
   }
-  const injectionName = window.providerManager.getInjectionName(chain)
-  window.ethereum = new Proxy(window[injectionName], overrideHandler)
+  window.ethereum = new Proxy({}, overrideHandler)
 }
 
 function overrideEthereum(chain) {
-  window.addEventListener('liqualityEthereumOverrideChanged', ({ detail }) => {
-    const result = JSON.parse(detail)
-    proxyEthereum(result.chain)
-  })
   proxyEthereum(chain)
 }
 
@@ -214,7 +258,7 @@ async function handleRequest (req) {
 
 window.bitcoin = {
   enable: async () => {
-    const accepted = await window.providerManager.enable('bitcoin')
+    const { accepted } = await window.providerManager.enable('bitcoin')
     if (!accepted) throw new Error('User rejected')
     const btc = window.providerManager.getProviderFor('BTC')
     return btc.getMethod('wallet.getAddresses')()
@@ -242,7 +286,7 @@ async function handleRequest (req) {
 }
 window.near = {
   enable: async () => {
-    const accepted = await window.providerManager.enable('near')
+    const { accepted } = await window.providerManager.enable('near')
     if (!accepted) throw new Error('User rejected')
     const near = window.providerManager.getProviderFor('NEAR')
     return near.getMethod('wallet.getAddresses')()
@@ -270,7 +314,7 @@ async function handleRequest (req) {
 }
 window.sollet = {
   enable: async () => {
-    const accepted = await window.providerManager.enable('solana')
+    const { accepted } = await window.providerManager.enable('solana')
     if (!accepted) throw new Error('User rejected')
     const solana = window.providerManager.getProviderFor('SOL')
     return solana.getMethod('wallet.getAddresses')()
