@@ -64,7 +64,7 @@ describe('Uniswap Dapp Injection-[mainnet,smoke]', async () => {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
     } catch (e) {
-      await testUtil.takeScreenshot(dappPage,'uniswap-arbitrum-loading-issue')
+      await testUtil.takeScreenshot(dappPage, 'uniswap-arbitrum-loading-issue')
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
@@ -95,7 +95,7 @@ describe('Uniswap Dapp Injection-[mainnet,smoke]', async () => {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
     } catch (e) {
-      await testUtil.takeScreenshot(dappPage,'uniswap-arbitrum-loading-issue')
+      await testUtil.takeScreenshot(dappPage, 'uniswap-arbitrum-loading-issue')
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
