@@ -87,6 +87,16 @@ const EXPLORERS = {
       tx: 'https://explorer.arbitrum.io/tx/0x{hash}',
       address: 'https://explorer.arbitrum.io/address/{hash}'
     }
+  },
+  terra: {
+    testnet: {
+      tx: 'https://finder.terra.money/bombay-12/tx/{hash}',
+      address: 'https://finder.terra.money/bombay-12/address/{hash}'
+    },
+    mainnet: {
+      tx: 'https://finder.terra.money/columbus-5/tx/{hash}',
+      address: 'https://finder.terra.money/columbus-5/address/{hash}'
+    }
   }
 }
 
@@ -115,6 +125,10 @@ export const isEthereumNativeAsset = asset => {
 export const getNativeAsset = asset => {
   const chainId = cryptoassets[asset]?.chain
   return chainId ? chains[chainId].nativeAsset : asset
+}
+
+export const getFeeAsset = asset => {
+  return cryptoassets[asset]?.feeAsset
 }
 
 export const getAssetColorStyle = asset => {

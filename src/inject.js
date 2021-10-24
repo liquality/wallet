@@ -328,6 +328,35 @@ window.sollet = {
 }
 `
 
+const terraProvider = () => `
+const REQUEST_MAP = {
+  wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
+  wallet_getAddresses: 'wallet.getAddresses',
+  wallet_signMessage: 'wallet.signMessage',
+  wallet_sendTransaction: 'chain.sendTransaction',
+}
+async function handleRequest (req) {
+  const terraProvider = window.providerManager.getProviderFor('LUNA')
+  const method = REQUEST_MAP[req.method] || req.method
+  return terraProvider.getMethod(method)(...req.params)
+}
+window.isTerraExtensionAvailable = true
+window.terra = {
+  enable: async () => {
+    const accepted = await window.providerManager.enable('terra')
+    if (!accepted) throw new Error('User rejected')
+    const terra = window.providerManager.getProviderFor('LUNA')
+    return terra.getMethod('wallet.getAddresses')()
+  },
+  request: async (req) => {
+    const params = req.params || []
+    return handleRequest({
+      method: req.method, params
+    })
+  },
+}
+`
+
 const paymentUriHandler = () => `
 document.addEventListener('DOMContentLoaded', () => {
   document.body.addEventListener('click', async (e) => {
@@ -347,4 +376,4 @@ document.addEventListener('DOMContentLoaded', () => {
 }, { once: true })
 `
 
-export { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, paymentUriHandler, solanaProvider }
+export { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, paymentUriHandler, solanaProvider, terraProvider }

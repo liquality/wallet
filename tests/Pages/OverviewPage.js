@@ -191,6 +191,14 @@ class OverviewPage {
         break
       }
 
+      case 'LUNA': {
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        const terra = await page.waitForSelector('#TERRA', { visible: true })
+        await terra.click()
+        break
+      }
+
       default:
         throw Error(`Unsupported chain: ${chain}`)
     }
@@ -260,7 +268,7 @@ class OverviewPage {
    * @constructor
    */
   async ValidateTotalAssets (page, newWallet = true) {
-    const assets = newWallet ? 7 : 8
+    const assets = newWallet ? 8 : 9
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(`${assets} Assets`)

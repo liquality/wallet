@@ -52,7 +52,7 @@ export default {
     return {
       loading: false,
       error: null,
-      password: null
+      password: ''
     }
   },
   methods: {
