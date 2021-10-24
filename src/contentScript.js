@@ -35,7 +35,20 @@ chrome.storage.local.get(['liquality-wallet'], (storage) => {
     })
 
   if (state.injectEthereum && state.injectEthereumChain) {
-    inject(overrideEthereum(state.injectEthereumChain))
+    const { externalConnections, activeWalletId, activeNetwork } = state
+
+    let ethereumChain = state.injectEthereumChain
+    const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
+
+    if (defaultAccountId) {
+      const defaultAccount = state.accounts[activeWalletId][activeNetwork].find(account => account.id === defaultAccountId)
+      if (defaultAccount) {
+        const selectedEthereumChain = defaultAccount.chain
+        ethereumChain = selectedEthereumChain
+      }
+    }
+
+    inject(overrideEthereum(ethereumChain))
   }
 })
 

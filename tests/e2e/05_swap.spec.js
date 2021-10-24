@@ -121,94 +121,6 @@ describe('SWAP feature', async () => {
     // Check SWAP Initiate option has been enabled
     await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
-  it('ETH -> DAI - selectedQuoteProvider UNISWAP V2-[smoke]', async () => {
-    const asset1 = 'ETH'
-    const asset2 = 'DAI'
-
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
-    // Click on ETH then click on SWAP button
-    await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
-    await page.click(`#${asset1}_swap_button`)
-    console.log(chalk.green('User clicked on ETH SWAP button'))
-    // Validate min SEND amount from text field & check Min is Active
-    const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-    expect(swapSendAmountField, 'ETH to DAI SWAP min value not set in input').not.equals('0.0000')
-    await swapPage.ClickOnMin(page)
-    // Select 2nd Pair (DAI)
-    await page.click('.swap-receive-main-icon')
-    await page.waitForSelector('#ETHEREUM', { visible: true })
-    await page.click('#ETHEREUM')
-    await page.waitForSelector(`#${asset2}`, { visible: true })
-    await page.click(`#${asset2}`)
-    // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
-    await page.waitForSelector('#selectedQuote_provider', {
-      visible: true,
-      timeout: 60000
-    })
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'ETH->DAI, Supporting source should be chosen!')
-      .oneOf(['Uniswap V2', 'Thorchain', 'Liquality'])
-
-    // Click on Network speed + FEE & Validate
-    const networkSpeedFee = await page.$eval('#details_header_chevron_down_icon', el => el.textContent)
-    expect(networkSpeedFee).contain(asset1 + ' Avg')
-
-    // Review Button
-    await swapPage.ClickSwapReviewButton(page)
-    // ETH-> DAI Swap is negative. Review transaction carefully.
-    await swapPage.ValidateNegativeMessage(page)
-
-    // SWAP SEND details validation
-    const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
-    expect(sendAmountValue.trim()).contain(asset1)
-
-    const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
-    expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00').not.contain('$00.00')
-
-    const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
-    expect(swapSendNetworkFeeValue.trim()).contain(asset1)
-
-    const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
-    expect(swapSendNetworkFeeInDollar.trim(),
-      'Send network fee can not be $0.00').not.contain('$0.0000000')
-    expect(swapSendNetworkFeeInDollar.trim(),
-      'Send network fee can not be $0.00').not.contain('NaN')
-
-    const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
-    expect(swapSendAccountFeesValue.trim()).contain(asset1)
-
-    const swapSendAccountFeesInDollar = await swapPage.GetSwapSendAccountFeesInDollar(page)
-    expect(swapSendAccountFeesInDollar.trim()).not.contain('$00.00')
-    expect(swapSendAccountFeesInDollar.trim()).not.contain('NaN')
-
-    // Receive details validation
-    const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
-    expect(receiveAmountValue.trim()).contain(asset2)
-
-    const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    expect(receiveAmountInDollar.trim()).not.contain('$00.00')
-    expect(receiveAmountInDollar.trim()).not.contain('NaN')
-
-    const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
-    expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
-
-    const receiveAccountFeesValue = await swapPage.GetSwapReceiveAccountFeeValue(page)
-    expect(receiveAccountFeesValue.trim()).contain(asset2)
-
-    // RATE
-    await page.waitForSelector('#swap_review_rate_block')
-
-    // Validate message
-    await swapPage.ValidateMessage(page)
-    // Check SWAP Initiate option has been enabled
-    await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
-  })
   it('SWAP SOV to BTC', async () => {
     const asset1 = 'SOV'
     const asset2 = 'BTC'
@@ -484,7 +396,7 @@ describe('SWAP feature', async () => {
     await page.waitForTimeout(2000)
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
     expect(swapSendNetworkFeeInDollar.trim(), `Send Network fee should not be $0.00 for ${asset1}`)
-      .not.contain('$0.00')
+      .not.contain('NaN')
 
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
     expect(swapSendAccountFeesValue.trim()).contain(asset1)
