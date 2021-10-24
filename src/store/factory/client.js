@@ -217,7 +217,7 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
 }
 
 function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
-  const terraNetwork =  asset === 'UST' ? {...ChainNetworks.terra[network], asset: 'uusd'} : ChainNetworks.terra[network]
+  const terraNetwork = asset === 'UST' ? { ...ChainNetworks.terra[network], asset: 'uusd' } : ChainNetworks.terra[network]
 
   const terraClient = new Client()
 
