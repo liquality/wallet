@@ -11,7 +11,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async HasOverviewPageLoaded (page) {
+  async HasOverviewPageLoaded(page) {
     try {
       await page.waitForSelector('#burger_icon_menu', {
         visible: true,
@@ -31,7 +31,7 @@ class OverviewPage {
    * @constructor
    * @example - SelectNetwork(page,'testnet')
    */
-  async SelectNetwork (page, network = 'testnet') {
+  async SelectNetwork(page, network = 'testnet') {
     await page.waitForSelector('#head_network', { visible: true })
     await page.click('#head_network', { delay: 5 })
     await page.waitForTimeout(1000)
@@ -70,7 +70,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async CloseWatsNewModal (page) {
+  async CloseWatsNewModal(page) {
     await page.waitForSelector('#wats_new_close_btn', {
       visible: true,
       timeout: 60000
@@ -85,7 +85,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ValidateSendSwipeReceiveOptions (page) {
+  async ValidateSendSwipeReceiveOptions(page) {
     // check Send & Swap & Receive options have been displayed
     try {
       await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
@@ -120,7 +120,7 @@ class OverviewPage {
    * @constructor
    * @example SelectChain(page,'BITCOIN')
    */
-  async SelectChain (page, chain) {
+  async SelectChain(page, chain) {
     await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
       case 'BTC': {
@@ -213,7 +213,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async HasViewExplorerDisplayed (page, asset) {
+  async HasViewExplorerDisplayed(page, asset) {
     const id = `#${asset}_view_in_explorer`
     await page.waitForSelector(id, { visible: true })
     const explorerLink = await page.$eval(id, el => el.href)
@@ -229,7 +229,7 @@ class OverviewPage {
    * @constructor
    * @example SelectChain(page,'BTC')
    */
-  async ClickChainReceive (page, chainCode) {
+  async ClickChainReceive(page, chainCode) {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
     expect(code).equals(chainCode)
@@ -246,7 +246,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async CheckAssertOverviewDetails (page, assertCode) {
+  async CheckAssertOverviewDetails(page, assertCode) {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     const code = await page.$eval('.account-container_balance_code', el => el.textContent)
     expect(code, 'Assert Code wrong').equals(assertCode)
@@ -267,8 +267,8 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async ValidateTotalAssets (page, newWallet = true) {
-    const assets = newWallet ? 8 : 9
+  async ValidateTotalAssets(page, newWallet = true) {
+    const assets = newWallet ? 7 : 8
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(`${assets} Assets`)
@@ -280,7 +280,7 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async GetTotalLiquidity (page) {
+  async GetTotalLiquidity(page) {
     // Check the Total amount - 10s wait to load amount
     await page.waitForSelector('.wallet-stats_total', { timeout: 60000 })
     await page.waitForTimeout(10000)
@@ -293,7 +293,7 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async GetCurrency (page) {
+  async GetCurrency(page) {
     return await page.$eval('.wallet-stats', el => el.innerText)
   }
 
@@ -303,7 +303,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickSend (page) {
+  async ClickSend(page) {
     try {
       await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
     } catch (e) {
@@ -321,7 +321,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickSwipe (page) {
+  async ClickSwipe(page) {
     await page.waitForSelector('#swap_action', { visible: true })
     await page.click('#swap_action')
     console.log('User clicked on SWAP button from overview page')
@@ -334,7 +334,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickLock (page) {
+  async ClickLock(page) {
     // Lock
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')
@@ -351,7 +351,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async GetAssertAddress (page, assertName) {
+  async GetAssertAddress(page, assertName) {
     const $parent = await page.$(`#${assertName}`)
     const assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
     expect(assertAddress).not.equals(null)
@@ -364,7 +364,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnBurgerIcon (page) {
+  async ClickOnBurgerIcon(page) {
     // Click on Backup seed from Burger Icon menu
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')
@@ -377,7 +377,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async SelectSettings (page) {
+  async SelectSettings(page) {
     const settings = await page.waitForSelector('#settings', { visible: true })
     await settings.click()
     await page.waitForSelector('#settings_item_default_wallet', { visible: true })
@@ -389,7 +389,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickAddCustomToken (page) {
+  async ClickAddCustomToken(page) {
     await this.ClickOnBurgerIcon(page)
     // Click Manage Assets
     await page.waitForSelector('#manage_assets', { visible: true })
@@ -407,7 +407,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnManageAccounts (page) {
+  async ClickOnManageAccounts(page) {
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')
     console.log(chalk.green('User clicked on Burger Icon Menu'))

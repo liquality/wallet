@@ -64,7 +64,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'total assets validation on overview page').contain('8 Assets')
+    expect(assetsCount, 'total assets validation on overview page').contain('7 Assets')
 
     const assertAddresses = []
 
@@ -122,7 +122,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed (RSK & RSK legacy)
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'validate total assets on overview page').contain('9 Assets')
+    expect(assetsCount, 'validate total assets on overview page').contain('8 Assets')
 
     // Validate RSK & RSK legacy chains listed
     const rskAccounts = await page.$$('#RSK')
@@ -195,7 +195,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount).contain(' 8 Assets ')
+    expect(assetsCount).contain(' 7 Assets ')
 
     const assertAddresses = []
 
@@ -241,7 +241,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // some random seed phrase
     const randomSeed = 'sense quality accuse asthma imitate rubber acquire surprise strategy whip harvest survey'.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')
-    for (let i = 0; i < seedsWordsCount.length; i++) {
+    for (let i = 0;i < seedsWordsCount.length;i++) {
       const wordInput = seedsWordsCount[i]
       await wordInput.type(randomSeed[i])
     }
