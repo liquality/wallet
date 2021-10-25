@@ -97,6 +97,16 @@ const EXPLORERS = {
       tx: 'https://finder.terra.money/columbus-5/tx/{hash}',
       address: 'https://finder.terra.money/columbus-5/address/{hash}'
     }
+  },
+  fuse: {
+    testnet: {
+      tx: 'https://explorer.fusespark.io/tx/0x{hash}',
+      address: 'https://explorer.fusespark.io/address/{hash}'
+    },
+    mainnet: {
+      tx: 'https://explorer.fuse.io/tx/0x{hash}',
+      address: 'https://explorer.fuse.io/address/{hash}'
+    }
   }
 }
 
@@ -200,6 +210,11 @@ export const tokenDetailProviders = {
   arbitrum: {
     async getDetails (contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://arb1.arbitrum.io/rpc')
+    }
+  },
+  fuse: {
+    async getDetails (contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://rpc.fuse.io')
     }
   }
 }
