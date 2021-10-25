@@ -532,7 +532,7 @@ class LiqualitySwapProvider extends SwapProvider {
       step: 0,
       label: 'Locking {from}',
       filterStatus: 'PENDING',
-      notification() {
+      notification () {
         return {
           message: 'Swap initiated'
         }
@@ -552,7 +552,7 @@ class LiqualitySwapProvider extends SwapProvider {
       step: 1,
       label: 'Locking {to}',
       filterStatus: 'PENDING',
-      notification(swap) {
+      notification (swap) {
         return {
           message: `Counterparty sent ${prettyBalance(swap.toAmount, swap.to)} ${swap.to} to escrow`
         }
@@ -562,7 +562,7 @@ class LiqualitySwapProvider extends SwapProvider {
       step: 2,
       label: 'Claiming {to}',
       filterStatus: 'PENDING',
-      notification() {
+      notification () {
         return {
           message: 'Claiming funds'
         }
@@ -592,7 +592,7 @@ class LiqualitySwapProvider extends SwapProvider {
       step: 3,
       label: 'Refunded',
       filterStatus: 'REFUNDED',
-      notification(swap) {
+      notification (swap) {
         return {
           message: `Swap refunded, ${prettyBalance(swap.fromAmount, swap.from)} ${swap.from} returned`
         }
@@ -602,7 +602,7 @@ class LiqualitySwapProvider extends SwapProvider {
       step: 3,
       label: 'Completed',
       filterStatus: 'COMPLETED',
-      notification(swap) {
+      notification (swap) {
         return {
           message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to} ready to use`
         }
