@@ -121,7 +121,7 @@ describe('SEND feature', async () => {
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
-    const sendToAddress = testDataUtils.getRandomAddress('ethereum')
+    const sendToAddress = testDataUtils.getRandomAddress('rsk')
     await sendPage.EnterSendToAddress(page, sendToAddress)
     // Click Review Button
     await sendPage.ClickSendReview(page)
