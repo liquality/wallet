@@ -43,7 +43,7 @@ class TestDataUtils {
    * @param network - testnet/mainnet
    * @returns {string}
    */
-  getRandomRSKAddress (network) {
+  getRandomRSKAddress (network = 'testnet') {
     const EthWallet = Wallet.default.generate()
 
     return chains.rsk.formatAddress(EthWallet.getAddressString(), network)
