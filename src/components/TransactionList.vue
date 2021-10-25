@@ -20,7 +20,7 @@
       </template>
       <template #detail-sub>
        <span v-if="getUIStatus(item) === 'COMPLETED'">
-         ${{ getCompletedAmount(item) }}
+         {{ getCompletedAmount(item) }}
        </span>
        <span v-else> {{ getDetailSub(item) }} </span>
       </template>
@@ -80,6 +80,9 @@ export default {
     },
     getDetail (item) {
       const amount = item.type === 'SWAP' ? item.fromAmount : item.amount
+
+      if (!amount) return `${item.from}`
+
       return `${this.prettyBalance(amount, item.from)} ${item.from}`
     },
     getDetailSub (item) {
@@ -130,7 +133,9 @@ export default {
     getCompletedAmount (item) {
       const amount = item.type === 'SWAP' ? item.fromAmount : item.amount
 
-      return prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[item.from])
+      if (!amount) return ''
+
+      return `$${prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[item.from])}`
     }
   }
 }

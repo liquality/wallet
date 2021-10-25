@@ -208,7 +208,8 @@ import { prettyBalance, prettyFiatBalance, dpUI, fiatToCrypto } from '@/utils/co
 import {
   getNativeAsset,
   getAssetColorStyle,
-  getAssetIcon
+  getAssetIcon,
+  getFeeAsset
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import {
@@ -309,7 +310,7 @@ export default {
       return this.$route.query.source || null
     },
     assetChain () {
-      return getNativeAsset(this.asset)
+      return getFeeAsset(this.asset) || getNativeAsset(this.asset)
     },
     assetFees () {
       const assetFees = {}

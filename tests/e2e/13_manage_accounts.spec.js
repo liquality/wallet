@@ -64,7 +64,7 @@ describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
     await page.click('#previous_nav_bar')
     // overview-screen-chain-section , RSK should be hidden
     let accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(6)
+    expect(accounts.length).to.equals(8)
     // Go back to Manage account & toggle on
     await overviewPage.ClickOnManageAccounts(page)
     // Chain RSK toggle on but not accounts

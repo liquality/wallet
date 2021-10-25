@@ -2,6 +2,7 @@ import { ChainNetworks } from '@/utils/networks'
 import buildConfig from '../build.config'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { assets } from '@liquality/cryptoassets'
+import { connectRemote } from './terra-injection'
 
 class Background {
   constructor (store) {
@@ -16,7 +17,9 @@ class Background {
       const { url } = connection.sender
       const isInternal = url.startsWith(getRootURL())
 
-      if (isInternal) {
+      if (connection.name === 'TerraStationExtension') {
+        connectRemote(connection, store)
+      } else if (isInternal) {
         this.onInternalConnection(connection)
       } else {
         this.onExternalConnection(connection)
