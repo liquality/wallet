@@ -156,7 +156,7 @@ export default {
   },
   async created () {
     if (this.account && this.account.type.includes('ledger')) {
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0], this.activeNetwork)
     } else {
       const addresses = await this.getUnusedAddresses({
         network: this.activeNetwork,
