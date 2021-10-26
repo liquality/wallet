@@ -63,7 +63,7 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     await dappPage.click('button[type="button"]')
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true })
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000})
     } catch (e) {
       await connectRequestWindow.screenshot({ path: 'screenshots/sovryn-bridge-show-rskAccounts-issue.png', fullscreen: true })
       expect(e, 'Sovryn bridge UI not loading RSK accounts').equals(null)
