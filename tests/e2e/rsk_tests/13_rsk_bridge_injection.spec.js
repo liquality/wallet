@@ -37,12 +37,8 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     } else {
       await overviewPage.SelectNetwork(page)
     }
-    // Click on Backup seed from Burger Icon menu
-    await overviewPage.ClickOnBurgerIcon(page)
-    // Click on Settings
-    await overviewPage.SelectSettings(page)
-    // toggle web3 wallet option
-    await page.click('#default_web3_wallet_toggle_button > label > div')
+    // Web3 toggle on
+    await overviewPage.ClickWeb3WalletToggle(page)
 
     // Go to SOVRYN app
     dappPage = await browser.newPage()

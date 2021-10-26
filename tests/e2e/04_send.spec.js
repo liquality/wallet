@@ -22,7 +22,7 @@ const transactionDetailsPage = new TransactionDetailsPage()
 let browser, page
 const password = '123123123'
 
-describe('SEND feature', async () => {
+describe('SEND feature[smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
