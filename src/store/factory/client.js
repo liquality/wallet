@@ -216,6 +216,18 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
+function createFuseClient (asset, network, mnemonic, derivationPath) {
+  const isTestnet = network === 'testnet'
+  const fuseNetwork = ChainNetworks.fuse[network]
+  const rpcApi = isTestnet ? 'https://fuse-testnet.gateway.pokt.network/' : 'https://rpc.fuse.io'
+  const scraperApi = isTestnet ? 'https://liquality.io/polygon-testnet-api' : 'https://liquality.io/polygon-mainnet-api' // TODO: Change this
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
+
+  console.log('smth')
+
+  return createEthereumClient(asset, network, fuseNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
+}
+
 function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
   const terraNetwork = asset === 'UST' ? { ...ChainNetworks.terra[network], asset: 'uusd' } : ChainNetworks.terra[network]
 
@@ -243,6 +255,7 @@ export const createClient = (asset, network, mnemonic, accountType, derivationPa
   if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic, derivationPath)
   if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, derivationPath)
   if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, derivationPath)
+  if (assetData.chain === 'fuse') return createFuseClient(asset, network, mnemonic, derivationPath)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, derivationPath)
   if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
   if (assetData.chain === 'terra') return createTerraClient(network, mnemonic, derivationPath, asset)
