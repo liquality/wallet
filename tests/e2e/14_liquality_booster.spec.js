@@ -111,17 +111,22 @@ if (process.env.NODE_ENV === 'mainnet') {
         expect(e, 'No Liquidity.....').equals(null)
       }
       await page.waitForTimeout(5000)
-      const selectedQuoteProviderText = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
-      if (selectedQuoteProviderText === liqualityBooster) {
-        // Check source name
-        await checkBooster()
-      } else if (selectedQuoteProviderText === 'Liquality') {
-        await page.click('#see_all_quotes')
-        await page.waitForSelector('#liqualityBoost_rate_provider', { visible: true })
-        await page.click('#liqualityBoost_rate_provider')
-        await page.click('#select_quote_button')
-        // Check source name
-        await checkBooster()
+      try {
+        const selectedQuoteProviderText = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
+        if (selectedQuoteProviderText === liqualityBooster) {
+          // Check source name
+          await checkBooster()
+        } else if (selectedQuoteProviderText === 'Liquality') {
+          await page.click('#see_all_quotes')
+          await page.waitForSelector('#liqualityBoost_rate_provider', { visible: true })
+          await page.click('#liqualityBoost_rate_provider')
+          await page.click('#select_quote_button')
+          // Check source name
+          await checkBooster()
+        }
+      } catch (e) {
+        await testUtil.takeScreenshot(page, 'liqualityBooster-selected-error')
+        expect(e, 'Liquality Boost selected quote provider error!!').equals(null)
       }
     })
     it('SWAP (RBTC->PWETH (Polygon))', async () => {
@@ -149,19 +154,23 @@ if (process.env.NODE_ENV === 'mainnet') {
         await testUtil.takeScreenshot(page, 'no-Liquidity')
         expect(e, 'No Liquidity.....').equals(null)
       }
-      await page.waitForTimeout(10000)
-      const selectedQuoteProviderText = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
-      if (selectedQuoteProviderText === liqualityBooster) {
-        // Check source name
-        await checkBooster()
-      } else if (selectedQuoteProviderText === 'Liquality') {
-        await testUtil.takeScreenshot(page, 'rbtc-pweth-lb-test')
-        await page.click('#see_all_quotes')
-        await page.waitForSelector('#liqualityBoost_rate_provider', { visible: true })
-        await page.click('#liqualityBoost_rate_provider')
-        await page.click('#select_quote_button')
-        // Check source name
-        await checkBooster()
+      await page.waitForTimeout(5000)
+      try {
+        const selectedQuoteProviderText = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
+        if (selectedQuoteProviderText === liqualityBooster) {
+          // Check source name
+          await checkBooster()
+        } else if (selectedQuoteProviderText === 'Liquality') {
+          await page.click('#see_all_quotes')
+          await page.waitForSelector('#liqualityBoost_rate_provider', { visible: true })
+          await page.click('#liqualityBoost_rate_provider')
+          await page.click('#select_quote_button')
+          // Check source name
+          await checkBooster()
+        }
+      } catch (e) {
+        await testUtil.takeScreenshot(page, 'liqualityBooster-selected-error')
+        expect(e, 'Liquality Boost selected quote provider error!!').equals(null)
       }
     })
   })
