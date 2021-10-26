@@ -50,7 +50,7 @@ export default {
     }
   },
   async created () {
-    this.initializeAnalytics()
+    await this.initializeAnalytics()
     await this.initializeLaunchDarkly()
   }
 }
