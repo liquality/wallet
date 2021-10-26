@@ -29,7 +29,9 @@ const TESTNET_ASSETS = [
   'PWETH',
   'ARBETH',
   'SOL',
-  'SUSHI'
+  'SUSHI',
+  'LUNA',
+  'UST'
 ].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
@@ -232,6 +234,7 @@ export default {
     const { cryptoassets } = getters
 
     const chainAssets = Object.entries(cryptoassets).reduce((chains, [asset, assetData]) => {
+      console.log(assetData, chains)
       const assets = assetData.chain in chains ? chains[assetData.chain] : []
       return Object.assign({}, chains, {
         [assetData.chain]: [...assets, asset]
