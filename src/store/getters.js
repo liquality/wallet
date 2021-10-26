@@ -31,7 +31,8 @@ const TESTNET_ASSETS = [
   'SOL',
   'SUSHI',
   'LUNA',
-  'UST'
+  'UST',
+  'FUSE'
 ].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
