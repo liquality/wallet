@@ -10,20 +10,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v2.4.1
+#      # LaunchDarkly Code References
+#      - name: LaunchDarkly Code References
+#        uses: launchdarkly/find-code-references@v12
+#        with:
+#          githubToken: ${{ secrets.GITHUB_TOKEN }}
+#          accessToken: ${{ secrets.LD_ACCESS_TOKEN }}
+#          projKey: test
+#          debug: true
+
+      - name: Build project
+        uses: actions/setup-node@v2
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
-          node-version: '14'
-        # Create screenshots directory
-      - run: mkdir screenshots
+          args: install
 
-      - uses: actions/cache@v2.1.6
-        id: cache
+      - uses: actions/cache@v2
+        env:
+          node-version: 14.1.0
+          cache-name: cache-node-modules
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
@@ -33,12 +43,13 @@ jobs:
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
 
-      - name: Build Project
+      - name: Build
         run: |
           npm ci
           npm run lint
           npm run build
 
+      - run: mkdir screenshots
       - name: Run Smoke tests againt PullRequest
         uses: beemi/puppeteer-headful@v1.0.6
         env:
@@ -49,18 +60,27 @@ jobs:
         with:
           args: npm run test:pullrequest:smoke
 
+      - name: Run Dapp Injection Tests
+        uses: beemi/puppeteer-headful@v1.0.6
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: npm run test:dappinjection
+
       - name: Archive Mocha HTML report
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v2
         if: always()
         with:
           name: mocha-html-test-report
           path: mochawesome-report
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v2
         if: always()
         with:
           name: screenshots
           path: screenshots
-          if-no-files-found: ignore
 
