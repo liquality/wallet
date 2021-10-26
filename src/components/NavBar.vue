@@ -44,11 +44,11 @@
           Manage Assets
         </li>
         <li id="manage_accounts"
-            v-if="multiAccountFeatureFlag"
-            @click="manageAccounts">
-          <AccountsIcon />
-          Manage Accounts
-        </li>
+             v-if="multiAccountFeatureFlag"
+             @click="manageAccounts">
+           <AccountsIcon />
+           Manage Accounts
+         </li>
         <li id="settings" @click="settings">
           <SettingsIcon />
           Settings
