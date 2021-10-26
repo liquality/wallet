@@ -36,7 +36,7 @@ export default {
     ])
   },
   methods: {
-    ...mapActions(['initializeAnalytics'])
+    ...mapActions(['initializeAnalytics', 'initializeLaunchDarkly'])
   },
   watch: {
     unlockedAt: function (unlocked) {
@@ -49,8 +49,9 @@ export default {
       }
     }
   },
-  created () {
+  async created () {
     this.initializeAnalytics()
+    await this.initializeLaunchDarkly()
   }
 }
 </script>

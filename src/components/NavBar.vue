@@ -113,15 +113,11 @@ export default {
     }
   },
   async created () {
-    this.$onFeatureFlagReady(
-      async () => {
-        this.multiAccountFeatureFlag = await this.$getFeatureFlag('multi-account-feature', false)
-        console.log('multiAccountFeatureFlag', this.multiAccountFeatureFlag)
-      }
-    )
+    this.multiAccountFeatureFlag = await this.getFeatureFlag({ key: 'multi-account-feature', defaultValue: false })
+    console.log('multiAccountFeatureFlag', this.multiAccountFeatureFlag)
   },
   methods: {
-    ...mapActions(['lockWallet', 'trackAnalytics']),
+    ...mapActions(['lockWallet', 'trackAnalytics', 'getFeatureFlag']),
     async lock () {
       this.trackAnalytics({
         event: 'HamburgerIcon',
