@@ -86,7 +86,6 @@
     "ethers": "^5.4.1",
     "extension-port-stream": "^2.0.1",
     "human-standard-token-abi": "^2.0.0",
-    "launchdarkly-js-client-sdk": "^2.20.0",
     "lodash-es": "^4.17.15",
     "log": "^6.0.0",
     "memoizee": "^0.4.15",
