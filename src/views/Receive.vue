@@ -106,7 +106,8 @@ export default {
         solana: 'solana',
         rsk: 'ethereum',
         bsc: 'ethereum',
-        polyon: 'ethereum'
+        polyon: 'ethereum',
+        terra: 'terra'
       })[cryptoassets[this.asset].chain]
     },
     faucet () {
@@ -143,6 +144,10 @@ export default {
           ARBETH: {
             name: 'ARBETH',
             url: 'https://faucet.rinkeby.io/'
+          },
+          LUNA: {
+            name: 'TERRA',
+            url: 'https://faucet.terra.money/'
           }
         })[this.asset]
       }
@@ -180,13 +185,21 @@ export default {
     ...mapActions(['getUnusedAddresses', 'trackAnalytics']),
     getAssetIcon,
     async copy () {
+      this.trackAnalytics({
+        event: 'Receive screen',
+        properties: {
+          category: 'Send/Receive',
+          action: 'User on Receive screen',
+          label: `${this.asset}`
+        }
+      })
       await navigator.clipboard.writeText(this.address)
       this.copied = true
-      await this.trackAnalytics({
+      this.trackAnalytics({
         event: 'Receive copy address',
         properties: {
           category: 'Send/Receive',
-          action: 'Receive Copy address',
+          action: 'User copied address',
           label: `${this.asset} (${this.chainName}) address ${this.address}`
         }
       })

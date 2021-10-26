@@ -33,7 +33,7 @@
     <div class="footer-container bg-white">
         <div class="footer-content">
           <button id="import_wallet_cancel_button" class="btn btn-light btn-outline-primary btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
-          <button id="import_wallet_continue_button" class="btn btn-primary btn-lg btn-footer ml-2" :disabled="disableNext" @click="next">Continue</button>
+          <button id="import_wallet_continue_button" class="btn btn-primary btn-lg btn-footer ml-2" :disabled="nextDisabled" @click="next">Continue</button>
         </div>
     </div>
   </div>
@@ -42,6 +42,7 @@
 <script>
 import { mapState } from 'vuex'
 import LogoWallet from '@/assets/icons/logo_wallet.svg'
+import { validateMnemonic } from 'bip39'
 
 export default {
   components: {
@@ -56,7 +57,7 @@ export default {
   updated: function () {
   },
   watch: {
-    wordList: function (newList, oldList) {
+    wordList: function (newList) {
       var words = newList[0].split(' ')
       if (words.length === this.numWords) {
         for (var m = 0; m < words.length; m++) {
@@ -67,17 +68,23 @@ export default {
   },
   computed: {
     ...mapState(['wallets', 'activeWalletId']),
-    wallet: function () {
+    wallet () {
       return this.wallets.find(wallet => wallet.id === this.activeWalletId)
     },
-    disableNext: function () {
-      return this.wordList.filter(word => word === '' || /\s/.test(word)).length > 0 // TODO: this should actually validate bip39
+    validMnemonic () {
+      return (this.mnemonic.split(' ').length === 12 || this.mnemonic.split(' ').length === 24) &&
+        validateMnemonic(this.mnemonic)
+    },
+    nextDisabled () {
+      return this.mnemonic === '' || !this.validMnemonic
+    },
+    mnemonic () {
+      return this.wordList.join(' ')
     }
   },
   methods: {
     next () {
-      const passphrase = this.wordList.join(' ')
-      this.$router.push({ name: 'OnboardingSetup', params: { passphrase } })
+      this.$router.push({ name: 'OnboardingSetup', params: { seedphrase: this.mnemonic } })
     },
     setMnemonicLength (words) {
       this.numWords = words

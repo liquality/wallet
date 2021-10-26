@@ -22,13 +22,14 @@ import Enable from '@/views/Enable.vue'
 import PermissionSend from '@/views/PermissionSend.vue'
 import PermissionSign from '@/views/PermissionSign.vue'
 import PermissionSignPsbt from '@/views/PermissionSignPsbt.vue'
+import PermissionTerra from '@/views/PermissionTerra.vue'
 import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
-import ImportAccount from '@/views/Accounts/Import.vue'
+import ManageAccounts from '@/views/Accounts/Manage.vue'
 
 import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
 import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
@@ -51,7 +52,7 @@ const routes = [
     component: UnlockWallet
   },
   {
-    path: '/onboarding/setup/:passphrase?',
+    path: '/onboarding/setup/:seedphrase?',
     component: OnboardingSetup,
     name: 'OnboardingSetup',
     props: true
@@ -111,13 +112,15 @@ const routes = [
 
   // Accounts
   {
-    path: '/accounts/create',
-    component: CreateAccount,
+    path: '/accounts/management',
+    component: ManageAccounts,
+    name: 'ManageAccounts',
     props: true
   },
   {
-    path: '/accounts/import',
-    component: ImportAccount,
+    path: '/accounts/create/:chainId?',
+    component: CreateAccount,
+    name: 'CreateAccount',
     props: true
   },
   {
@@ -170,6 +173,10 @@ const routes = [
   {
     path: '/permission/send',
     component: PermissionSend
+  },
+  {
+    path: '/permission/terra',
+    component: PermissionTerra
   },
   {
     path: '/permission/sign',

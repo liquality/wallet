@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="account in filteredItems" :key="account.id" :id="account.chain.toUpperCase()">
+    <div v-for="account in filteredItems" :key="account.id" class="overview-screen-chain-section" :id="account.chain.toUpperCase()">
       <ListItem v-if="account.chain === 'bitcoin'"
                 @item-selected="selectItem(account)">
           <template #prefix>
@@ -12,7 +12,7 @@
             <img :src="getAccountIcon(account.chain)"
                  class="asset-icon" />
           </template>
-          {{ account.name }}
+          {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
           <template #sub-title>
             {{ account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : '' }}
           </template>
@@ -49,7 +49,7 @@
             <img :src="getAccountIcon(account.chain)"
                  class="asset-icon" />
           </template>
-          {{ account.name }}
+          {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
           <template #sub-title>
             {{ account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : '' }}
           </template>

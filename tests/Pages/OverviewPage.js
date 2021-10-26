@@ -1,3 +1,6 @@
+const TestUtil = require('../utils/TestUtils')
+
+const testUtil = new TestUtil()
 const chalk = require('chalk')
 const expect = require('chai').expect
 
@@ -9,11 +12,15 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    await page.waitForSelector('#burger_icon_menu', {
-      visible: true,
-      timeout: 120000
-    })
-    console.log(chalk.green('User logged successfully, overview page has been loaded'))
+    try {
+      await page.waitForSelector('#burger_icon_menu', {
+        visible: true,
+        timeout: 120000
+      })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
+      expect(e, 'Hamburger icon loading issue').equals(null)
+    }
   }
 
   /**
@@ -80,6 +87,14 @@ class OverviewPage {
    */
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
+    try {
+      await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
+    } catch (e) {
+      const ts = Math.round((new Date()).getTime() / 1000)
+      await page.screenshot({ path: `screenshots/overview-page-loading-issue-${ts}.png` })
+      expect(e, 'Overview page still Loading.....didn\'t load send/receive/swap option').equals(null)
+    }
+
     await page.waitForSelector('#send_action', {
       visible: true,
       timeout: 60000
@@ -176,6 +191,16 @@ class OverviewPage {
         break
       }
 
+      case 'LUNA':
+      case 'UST': {
+        const terra = await page.waitForSelector('#TERRA', { visible: true })
+        await terra.click()
+        // click on token
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
       default:
         throw Error(`Unsupported chain: ${chain}`)
     }
@@ -245,7 +270,7 @@ class OverviewPage {
    * @constructor
    */
   async ValidateTotalAssets (page, newWallet = true) {
-    const assets = newWallet ? 7 : 8
+    const assets = newWallet ? 8 : 9
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(`${assets} Assets`)
@@ -281,7 +306,14 @@ class OverviewPage {
    * @constructor
    */
   async ClickSend (page) {
-    await page.waitForSelector('#send_action', { visible: true })
+    try {
+      await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
+    } catch (e) {
+      const ts = Math.round((new Date()).getTime() / 1000)
+      await page.screenshot({ path: `screenshots/send-button-not-loaded-${ts}.png` })
+      expect(e, 'Send button not loaded....').equals(null)
+    }
+
     await page.click('#send_action')
   }
 
@@ -369,6 +401,36 @@ class OverviewPage {
     await page.waitForSelector('#add_custom_token', { visible: true })
     await page.click('#add_custom_token')
     console.log(chalk.green('User clicked on Add Custom Token'))
+  }
+
+  /**
+   * Click on Manage Accounts from Overview page.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnManageAccounts (page) {
+    await page.waitForSelector('#burger_icon_menu', { visible: true })
+    await page.click('#burger_icon_menu')
+    console.log(chalk.green('User clicked on Burger Icon Menu'))
+    // Click Manage Accounts
+    await page.waitForSelector('#manage_accounts', { visible: true })
+    await page.click('#manage_accounts')
+    console.log(chalk.green('User clicked on Manage Accounts'))
+    await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
+  }
+
+  /**
+   * Toggle on Web3 Wallet from setting screen.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickWeb3WalletToggle (page) {
+    await this.ClickOnBurgerIcon(page)
+    await this.SelectSettings(page)
+    // toggle web3 wallet option
+    await page.click('#default_web3_wallet_toggle_button > label > div')
   }
 }
 

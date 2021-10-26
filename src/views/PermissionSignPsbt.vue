@@ -63,12 +63,12 @@ export default {
     ...mapActions(['replyPermission']),
     prettyBalance,
     getAssetIcon,
-    reply (allowed) {
+    async reply (allowed) {
       if (this.loading) return
       this.loading = true
 
       try {
-        this.replyPermission({
+        await this.replyPermission({
           request: this.request,
           allowed
         })
@@ -84,6 +84,9 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId']),
     logo () {
       return LogoWallet
+    },
+    accountId () {
+      return this.request.accountId
     },
     asset () {
       return this.request.asset
@@ -123,7 +126,9 @@ export default {
     }
   },
   async created () {
-    const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)
+    const client = this.client({
+      network: this.activeNetwork, walletId: this.activeWalletId, asset: this.asset, accountId: this.accountId
+    })
 
     const maxAddresses = 500
     const addressesPerCall = 50
@@ -137,11 +142,6 @@ export default {
     this.scanningChangeOutput = false
 
     this.externalAddresses = (await client.wallet.getAddresses(0, maxAddresses, false)).map(a => a.address)
-  },
-  beforeDestroy () {
-    if (this.replied) return
-
-    this.reply(false)
   }
 }
 </script>

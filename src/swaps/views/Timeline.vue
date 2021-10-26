@@ -9,7 +9,7 @@
         </div>
         <div class="liquality-timeline_container"
              v-for="(step, id) in timeline" :key="id"
-             :class="{ [step.side]: true, completed: step.completed, pending: step.pending }">
+             :class="{ [step.side]: true, completed: step && step.completed, pending: step.pending }">
           <div class="content">
             <template v-if="step.tx">
               <h3 :id="step.tx.asset">
@@ -46,18 +46,19 @@
               </template>
             </template>
             <h3 v-else>
-              <span :class="{'text-muted': !step.completed}">{{ step.title }}</span>
+              <span :class="{'text-muted': !step || !step.completed}">{{ step.title }}</span>
             </h3>
           </div>
         </div>
-        <div class="liquality-timeline_container right" v-if="timeline.length == 3"
-             :class="{ completed: timeline[2].completed }">
+        <div class="liquality-timeline_container right"
+             :class="{ completed: !timeline[timeline.length -1] || timeline[timeline.length -1].completed }">
           <div class="content"></div>
         </div>
       </div>
-      <template v-if="timeline.length == 3">
-        <h3 :class="{ 'text-muted': !timeline[2].completed }">Done</h3>
-        <small v-if="timeline[2].completed">{{ prettyTime(item.endTime) }}</small>
+      <template>
+        <h3 :class="{ 'text-muted': !timeline[timeline.length -1] || !timeline[timeline.length -1].completed }">Done</h3>
+        <small v-if="!timeline[timeline.length -1] || timeline[timeline.length -1].completed">Swap Status: {{item.status.toLowerCase()}}</small> <br>
+        <small v-if="!timeline[timeline.length -1] || timeline[timeline.length -1].completed">{{ prettyTime(item.endTime) }}</small>
       </template>
     </div>
     <div class="text-center">
@@ -90,10 +91,10 @@
         </tbody>
         <tbody class="font-weight-normal" v-if="item.type === 'SWAP'">
         <tr>
-          <td class="text-muted text-right small-12">Counter-party</td>
+          <td v-if="item.agent" class="text-muted text-right small-12">Counter-party</td>
           <td>{{ item.agent }}</td>
         </tr>
-        <tr>
+        <tr v-if="orderLink">
           <td class="text-muted text-right small-12">Order ID</td>
           <td id="swap_details_order_id"><a :href="orderLink" id="order_id_href_link" rel="noopener" target="_blank">{{ item.id }}</a></td>
         </tr>
@@ -154,16 +155,36 @@
           <td id="from_funding_transaction">{{ item.fromFundHash }}</td>
         </tr>
         <tr v-if="item.toFundHash">
-          <td class="text-muted text-right small-12">Counter-party's {{ item.to }}<br>funding transaction</td>
+          <td class="text-muted text-right small-12">Counter-party's {{ item.bridgeAsset || item.to }}<br>funding transaction</td>
           <td id="to_funding_transaction">{{ item.toFundHash }}</td>
         </tr>
         <tr v-if="item.toClaimHash">
-          <td class="text-muted text-right small-12">Your {{ item.to }} claim<br>transaction</td>
+          <td class="text-muted text-right small-12">Your {{ item.bridgeAsset || item.to }} claim<br>transaction</td>
           <td id="to_claim_hash">{{ item.toClaimHash }}</td>
+        </tr>
+        <tr v-if="item.bridgeAsset">
+          <td class="text-muted text-right small-12">Bridge asset</td>
+          <td id="bridge_asset">{{ item.bridgeAsset }}</td>
+        </tr>
+        <tr v-if="item.approveTxHash">
+          <td class="text-muted text-right small-12">Your {{item.from}} approve<br>transaction</td>
+          <td id="approve_transaction">{{ item.approveTxHash }}</td>
+        </tr>
+        <tr v-if="item.swapTxHash">
+          <td class="text-muted text-right small-12">Swap Transaction</td>
+          <td id="swap_transaction">{{ item.swapTxHash }}</td>
+        </tr>
+        <tr v-if="item.receiveTxHash">
+          <td class="text-muted text-right small-12">Your {{ item.to }} receive<br>transaction</td>
+          <td id="receive_transaction">{{ item.receiveTxHash }}</td>
         </tr>
         <tr v-if="item.sendTx">
           <td class="text-muted text-right small-12">Your {{ item.to }} send<br>transaction</td>
           <td id="send_transaction">{{ item.sendTx }}</td>
+        </tr>
+        <tr v-if="item.refundHash">
+          <td class="text-muted text-right small-12">Your {{ item.from }} refund<br>transaction</td>
+          <td id="to_claim_hash">{{ item.refundHash }}</td>
         </tr>
         <tr v-if="false">
           <td class="text-muted text-right small-12">Actions</td>
@@ -200,7 +221,8 @@ import { getNativeAsset, getTransactionExplorerLink } from '@/utils/asset'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
-import { getSwapProviderConfig } from '../../utils/swaps'
+import { getSwapProviderConfig } from '@/utils/swaps'
+import { calculateQuoteRate } from '@/utils/quotes'
 
 const ACTIONS_TERMS = {
   lock: {
@@ -212,6 +234,21 @@ const ACTIONS_TERMS = {
     default: 'Claim',
     pending: 'Claiming',
     completed: 'Claimed'
+  },
+  approve: {
+    default: 'Approve Not Required',
+    pending: 'Approving',
+    completed: 'Approved'
+  },
+  receive: {
+    default: 'Receive',
+    pending: 'Receiving',
+    completed: 'Received'
+  },
+  swap: {
+    default: 'Collect',
+    pending: 'Collecting',
+    completed: 'Collected'
   },
   refund: {
     default: 'Refund',
@@ -238,16 +275,19 @@ export default {
   },
   props: ['id', 'retrySwap'],
   computed: {
-    ...mapGetters(['client', 'accountItem']),
+    ...mapGetters(['client', 'accountItem', 'swapProvider']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
     item () {
       return this.history[this.activeNetwork][this.activeWalletId]
         .find((item) => item.id === this.id)
     },
     reverseRate () {
-      return BN(1).div(this.item.rate).dp(8)
+      return BN(1).div(calculateQuoteRate(this.item)).dp(8)
     },
     orderLink () {
+      if (this.item.provider !== 'liquality') {
+        return ''
+      }
       const agent = getSwapProviderConfig(this.item.network, this.item.provider).agent
       return agent + '/api/swap/order/' + this.item.id + '?verbose=true'
     },
@@ -257,10 +297,14 @@ export default {
     feeSelectorUnit () {
       const chain = cryptoassets[this.feeSelectorAsset].chain
       return chains[chain].fees.unit
+    },
+    timelineDiagramSteps () {
+      const swapProvider = this.swapProvider(this.item.network, this.item.provider)
+      return swapProvider.timelineDiagramSteps
     }
   },
   methods: {
-    ...mapActions(['updateTransactionFee', 'updateFees']),
+    ...mapActions(['updateTransactionFee', 'updateFees', 'checkPendingActions']),
     getNativeAsset,
     prettyBalance,
     prettyTime (timestamp) {
@@ -270,7 +314,7 @@ export default {
       await navigator.clipboard.writeText(text)
     },
     canUpdateFee (step) {
-      return step.side === 'left' && (!step.tx.confirmations || step.tx.confirmations === 0)
+      return (step.side === 'left' || step.title.indexOf(ACTIONS_TERMS.swap.pending) !== -1) && (!step.tx.confirmations || step.tx.confirmations === 0)
     },
     feeSelectorEnabled (step) {
       return this.canUpdateFee(step) && this.feeSelectorAsset === step.tx.asset && this.showFeeSelector
@@ -310,30 +354,45 @@ export default {
       }
       return step
     },
-    async getInitiationStep (completed, pending) {
-      return this.getTransactionStep(completed, pending, 'left', this.item.fromFundHash, this.item.fromFundTx, this.item.from, 'lock')
+    async getInitiationStep (completed, pending, side) {
+      return this.getTransactionStep(completed, pending, side, this.item.fromFundHash, this.item.fromFundTx, this.item.from, 'lock')
     },
-    async getAgentInitiationStep (completed, pending) {
-      return this.getTransactionStep(completed, pending, 'right', this.item.toFundHash, null, this.item.to, 'lock')
+    async getAgentInitiationStep (completed, pending, side) {
+      return this.getTransactionStep(completed, pending, side, this.item.toFundHash, null, this.item.bridgeAsset || this.item.to, 'lock')
     },
-    async getClaimRefundStep (completed, pending) {
+    async getClaimRefundStep (completed, pending, side) {
       return this.item.refundHash
-        ? this.getTransactionStep(completed, pending, 'left', this.item.refundHash, this.item.refundTx, this.item.from, 'refund')
-        : this.getTransactionStep(completed, pending, 'left', this.item.toClaimHash, this.item.toClaimTx, this.item.to, 'claim')
+        ? this.getTransactionStep(completed, pending, side, this.item.refundHash, this.item.refundTx, this.item.from, 'refund')
+        : this.getTransactionStep(completed, pending, side, this.item.toClaimHash, this.item.toClaimTx, this.item.bridgeAsset || this.item.to, 'claim')
+    },
+    async getApproveStep (completed, pending, side) {
+      return this.getTransactionStep(completed, pending, side, this.item.approveTxHash, null, this.item.from, 'approve')
+    },
+    async getSwapStep (completed, pending, side) {
+      return this.item.refundHash
+        ? { side: 'right', pending: false, completed: true, title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted` }
+        : this.getTransactionStep(completed, pending, side, this.item.swapTxHash, this.item.swapTxHash, this.item.to, 'swap')
+    },
+    async getReceiveStep (completed, pending, side) {
+      return this.getTransactionStep(completed, pending, side, this.item.receiveTxHash, null, this.item.to, 'receive')
     },
     async updateTransactions () {
       const timeline = []
-
-      const steps = [
-        this.getInitiationStep,
-        this.getAgentInitiationStep,
-        this.getClaimRefundStep
-      ]
+      const supportedSteps = {
+        SWAP: this.getSwapStep,
+        APPROVE: this.getApproveStep,
+        RECEIVE: this.getReceiveStep,
+        INITIATION: this.getInitiationStep,
+        AGENT_INITIATION: this.getAgentInitiationStep,
+        CLAIM_OR_REFUND: this.getClaimRefundStep
+      }
+      const steps = this.timelineDiagramSteps.map(step => supportedSteps[step])
 
       for (let i = 0; i < steps.length; i++) {
         const completed = getStep(this.item) > i
         const pending = getStep(this.item) === i
-        const step = await steps[i](completed, pending)
+        const side = i % 2 === 0 ? 'left' : 'right'
+        const step = await steps[i](completed, pending, side)
         timeline.push(step)
       }
 
@@ -350,6 +409,8 @@ export default {
           hash,
           newFee: this.newFeePrice
         })
+        // TODO decide if this is a safe option or change approach
+        // await this.checkPendingActions({ walletId: this.activeWalletId })
       } finally {
         this.updateTransactions()
         this.feeSelectorLoading = false

@@ -1,7 +1,4 @@
-## What?
-
-
-#Notion/ Trello
+#Linear Ticket
 
 
 ## Why?

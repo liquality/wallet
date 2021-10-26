@@ -10,6 +10,23 @@ const ensureOriginWalletTree = (ref, walletId, origin, initialValue) => {
   if (!ref[walletId][origin]) Vue.set(ref[walletId], origin, initialValue)
 }
 
+const ensureAccountsWalletTree = (ref, walletId, network, initialValue) => {
+  if (!ref[walletId]) Vue.set(ref, walletId, {})
+  if (!ref[walletId][network]) Vue.set(ref[walletId], network, initialValue)
+}
+
+const ensureEnableChainsWalletTree = (ref, walletId, network) => {
+  if (!ref.enabledChains) {
+    Vue.set(ref, 'enabledChains', {})
+  }
+  if (!ref.enabledChains[walletId]) {
+    Vue.set(ref.enabledChains, walletId, {})
+  }
+  if (!ref.enabledChains[walletId]?.[network]) {
+    Vue.set(ref.enabledChains[walletId], network, [])
+  }
+}
+
 export default {
   SETUP_WALLET (state, { key }) {
     state.key = key
@@ -166,6 +183,13 @@ export default {
     ensureNetworkWalletTree(state.customTokens, network, walletId, [])
     state.customTokens[network][walletId].push(customToken)
   },
+  REMOVE_CUSTOM_TOKEN (state, { network, walletId, customToken }) {
+    ensureNetworkWalletTree(state.customTokens, network, walletId, [])
+    const indexOfToken = state.customTokens[network][walletId].findIndex(token => token.symbol === customToken.symbol)
+    if (indexOfToken !== -1) {
+      state.customTokens[network][walletId].splice(indexOfToken, 1)
+    }
+  },
 
   // ACCOUNTS
   CREATE_ACCOUNT (state, { network, walletId, account }) {
@@ -250,11 +274,19 @@ export default {
   SET_USB_BRIDGE_WINDOWS_ID (state, { id }) {
     state.usbBridgeWindowsId = id
   },
+  SET_EXTERNAL_CONNECTION_DEFAULT (state, { origin, activeWalletId, accountId }) {
+    ensureOriginWalletTree(state.externalConnections, activeWalletId, origin, {})
+
+    Vue.set(state.externalConnections[activeWalletId][origin], 'defaultEthereum', accountId)
+  },
   ADD_EXTERNAL_CONNECTION (state, { origin, activeWalletId, accountId, chain }) {
     ensureOriginWalletTree(state.externalConnections, activeWalletId, origin, {})
 
     const accounts = state.externalConnections[activeWalletId]?.[origin]?.[chain] || []
     Vue.set(state.externalConnections[activeWalletId][origin], chain, [...new Set([...accounts, accountId])])
+  },
+  REMOVE_EXTERNAL_CONNECTIONS (state, { activeWalletId }) {
+    Vue.set(state.externalConnections, activeWalletId, {})
   },
   SET_ANALYTICS_PREFERENCES (state, payload) {
     state.analytics = {
@@ -264,5 +296,32 @@ export default {
   },
   SET_WATS_NEW_MODAL_VERSION (state, { version }) {
     state.watsNewModalVersion = version
+  },
+  TOGGLE_BLOCKCHAIN (state, { network, walletId, chainId, enable }) {
+    ensureEnableChainsWalletTree(state, walletId, network)
+
+    const chains = state.enabledChains.[walletId].[network]
+    if (enable) {
+      Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains, chainId])])
+    } else {
+      Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains.filter(c => c !== chainId)])])
+    }
+  },
+  TOGGLE_ACCOUNT (state, { network, walletId, accountId, enable }) {
+    ensureAccountsWalletTree(state.accounts, walletId, network, [])
+
+    const index = state.accounts[walletId][network].findIndex(
+      (a) => a.id === accountId
+    )
+
+    if (index >= 0) {
+      const _account = state.accounts[walletId][network][index]
+      const updatedAccount = {
+        ..._account,
+        enabled: enable
+      }
+
+      Vue.set(state.accounts[walletId][network], index, updatedAccount)
+    }
   }
 }

@@ -53,6 +53,9 @@ git tag <TAG NAME>
 git push origin <TAG NAME>
 ```
 
+### Linear.app integration
+branch name format: username/liq-xx-title
+eg: b0b/liq-21-integrate-github-with-linear
 
 
 ## License

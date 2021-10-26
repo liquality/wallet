@@ -1,21 +1,68 @@
 <template>
   <div>
     <div class="navbar">
-      <router-link v-if="showBack" class="navbar_prev" id="previous_nav_bar" v-bind:to="backPath">
-        <div><ChevronLeftIcon class="navbar_prev_icon" />{{ backLabel }}</div>
+      <router-link
+        v-if="showBack"
+        class="navbar_prev"
+        id="previous_nav_bar"
+        v-bind:to="backPath"
+      >
+        <div>
+          <ChevronLeftIcon class="navbar_prev_icon" />
+          {{ backLabel }}
+        </div>
       </router-link>
-      <a v-else-if="showBackButton" class="navbar_prev" href="#" @click="backClick">
-        <div><ChevronLeftIcon class="navbar_prev_icon" />{{ backLabel }}</div>
+      <a
+        v-else-if="showBackButton"
+        class="navbar_prev"
+        href="#"
+        @click="backClick"
+      >
+        <div>
+          <ChevronLeftIcon class="navbar_prev_icon" />
+          {{ backLabel }}
+        </div>
       </a>
       <div class="navbar_title" id="overview">
         <slot></slot>
       </div>
-      <div class="navbar_menu" id="burger_icon_menu" v-if="showMenu" @click.stop="showMenuList = !showMenuList"><HamburgerIcon class="navbar_menu_icon" /></div>
-      <ul class="menu_list navbar_menu_list" v-if="showMenuList" v-click-away="hideMenu">
-        <li id="manage_assets" @click="assets"><AssetsIcon />Manage Assets</li>
-        <li id="settings" @click="settings"><SettingsIcon />Settings</li>
-        <li id="backup_seed" @click="backup"><PaperIcon /> Backup Seed</li>
-        <li id="lock" @click="lock"><LockIcon class="lock_icon"/> Lock</li>
+      <div
+        class="navbar_menu"
+        id="burger_icon_menu"
+        v-if="showMenu"
+        @click.stop="showMenuList = !showMenuList"
+      >
+        <HamburgerIcon class="navbar_menu_icon" />
+      </div>
+      <ul
+        class="menu_list navbar_menu_list"
+        v-if="showMenuList"
+        v-click-away="hideMenu"
+      >
+       <li id="manage_assets" @click="assets">
+          <AssetsIcon />
+          Manage Assets
+        </li>
+        <!-- <li id="manage_accounts" @click="manageAccounts">
+          <AccountsIcon />
+          Manage Accounts
+        </li> -->
+        <li id="settings" @click="settings">
+          <SettingsIcon />
+          Settings
+        </li>
+        <li id="ledger" @click="ledger">
+          <LedgerIcon />
+          Ledger
+        </li>
+        <li id="backup_seed" @click="backup">
+          <PaperIcon />
+          Backup Seed
+        </li>
+        <li id="lock" @click="lock">
+          <LockIcon class="lock_icon" />
+          Lock
+        </li>
       </ul>
     </div>
   </div>
@@ -31,6 +78,8 @@ import PaperIcon from '@/assets/icons/paper.svg'
 import ChevronLeftIcon from '@/assets/icons/chevron_left.svg'
 import SettingsIcon from '@/assets/icons/settings.svg'
 import AssetsIcon from '@/assets/icons/assets.svg'
+// import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
+import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
 
 export default {
   directives: {
@@ -42,32 +91,91 @@ export default {
     LockIcon,
     PaperIcon,
     AssetsIcon,
-    SettingsIcon
+    SettingsIcon,
+    // AccountsIcon,
+    LedgerIcon
   },
-  props: ['showMenu', 'showBack', 'backPath', 'backLabel', 'showBackButton', 'backClick'],
+  props: [
+    'showMenu',
+    'showBack',
+    'backPath',
+    'backLabel',
+    'showBackButton',
+    'backClick'
+  ],
   data () {
     return {
       showMenuList: false
     }
   },
   methods: {
-    ...mapActions(['lockWallet']),
+    ...mapActions(['lockWallet', 'trackAnalytics']),
     async lock () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Lock'
+        }
+      })
       this.showMenuList = false
       await this.lockWallet()
       this.$router.replace('/open')
     },
     backup () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Backup Seed'
+        }
+      })
       this.showMenuList = false
       this.$router.replace('/privacywarning')
     },
     assets () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Manage Assets'
+        }
+      })
       this.showMenuList = false
       this.$router.replace('/settings/manage-assets')
     },
     settings () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Settings'
+        }
+      })
       this.showMenuList = false
       this.$router.replace('/settings')
+    },
+    manageAccounts () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Manage Accounts'
+        }
+      })
+      this.showMenuList = false
+      this.$router.replace('/accounts/management')
+    },
+    ledger () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Ledger'
+        }
+      })
+      this.showMenuList = false
+      this.$router.replace('/accounts/hardware-wallet')
     },
     hideMenu () {
       this.showMenuList = false
@@ -90,7 +198,8 @@ export default {
     text-transform: uppercase;
   }
 
-  &_menu, &_prev {
+  &_menu,
+  &_prev {
     position: absolute;
     color: $color-text-muted;
     font-size: $font-size-sm;

@@ -19,7 +19,7 @@ export const getAppId = () => browser.runtime.id
 
 export const getRootURL = () => browser.runtime.getURL('/')
 
-export const createPopup = url => {
+export const createPopup = (url, closeCallback = undefined) => {
   const options = {
     url: `./index.html#${url}`,
     type: 'popup',
@@ -31,7 +31,12 @@ export const createPopup = url => {
     options.focused = true
   }
 
-  browser.windows.create(options)
+  const creation = browser.windows.create(options)
+  if (closeCallback) {
+    creation.then(popupWindow => chrome.windows.onRemoved.addListener(windowId => {
+      if (windowId === popupWindow.id) closeCallback()
+    }))
+  }
 }
 
 export const connectToBackground = name => browser.runtime.connect({ name })

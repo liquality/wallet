@@ -235,6 +235,8 @@ class FastbtcSwapProvider extends SwapProvider {
   static fromTxType = FastbtcSwapProvider.txTypes.SWAP
   static toTxType = null
 
+  static timelineDiagramSteps = ['SWAP']
+
   static totalSteps = 3
 }
 

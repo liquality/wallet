@@ -23,12 +23,12 @@
            Once connected follow the prompts on the Ledger
           </li>
         </ul>
-        <p class="text-center">
+        <p class="text-center text-break">
             {{ error }}
           </p>
       </div>
       <div v-else class="justify-content-center">
-        <p class="text-center">
+        <p class="text-center text-break">
             {{ error }}
           </p>
       </div>

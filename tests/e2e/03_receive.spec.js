@@ -35,7 +35,7 @@ async function importWalletTestReceive (bitcoin) {
   expect(yourCurrentAddress).contains(bitcoin)
   await receivePage.HasQRCodeDisplayed(page)
   if (bitcoin === 'ETH' || bitcoin === 'ARBETH' || bitcoin === 'RBTC' ||
-    bitcoin === 'BNB' || bitcoin === 'MATIC' || bitcoin === 'ARBETH') {
+    bitcoin === 'BNB' || bitcoin === 'MATIC' || bitcoin === 'ARBETH' || bitcoin === 'LUNA') {
     await receivePage.CheckReceiveURL(page)
   }
   await receivePage.CheckReceiveAddresses(page)
@@ -52,7 +52,7 @@ describe('Receive tokens ["mainnet","smoke"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl)
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
       await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
     })
@@ -102,12 +102,12 @@ describe('Receive tokens ["mainnet","smoke"]', async () => {
       await overviewPage.CheckAssertOverviewDetails(page, 'BTC')
     })
   })
-  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH']
+  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH', 'LUNA', 'UST']
   describe('Import wallet, Receive tokens', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl)
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
       await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
       // Import wallet option
@@ -130,7 +130,6 @@ describe('Receive tokens ["mainnet","smoke"]', async () => {
     })
 
     afterEach(async () => {
-      await page.close()
       await browser.close()
     })
 

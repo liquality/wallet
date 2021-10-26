@@ -297,10 +297,12 @@ class UniswapSwapProvider extends SwapProvider {
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
       if (tx && tx.confirmations > 0) {
+        // Check transaction status - it may fail due to slippage
+        const { status } = await client.getMethod('getTransactionReceipt')(swap.swapTxHash)
         this.updateBalances({ network, walletId, assets: [swap.from] })
         return {
           endTime: Date.now(),
-          status: 'SUCCESS'
+          status: Number(status) === 1 ? 'SUCCESS' : 'FAILED'
         }
       }
     } catch (e) {
@@ -382,6 +384,8 @@ class UniswapSwapProvider extends SwapProvider {
 
   static fromTxType = UniswapSwapProvider.txTypes.SWAP
   static toTxType = null
+
+  static timelineDiagramSteps = ['APPROVE', 'SWAP']
 
   static totalSteps = 3
 }

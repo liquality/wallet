@@ -25,7 +25,7 @@ describe('Custom fee feature', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
 
@@ -61,8 +61,8 @@ describe('Custom fee feature', async () => {
       .contains('has-tooltip')
     // Check Network Speed/FEE
     const avgNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
-    expect(avgNetworkSpeedFee, 'SOV Avg Network Speed validation')
-      .equals('(Avg / 0.000001 RBTC)')
+    expect(avgNetworkSpeedFee, 'SOV->SOV send Network Fee should be 0.000001 RBTC')
+      .contains('0.000001 RBTC')
 
     // Select Custom network speed fee
     await page.click('#custom_network_speed_button')

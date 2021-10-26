@@ -208,7 +208,8 @@ import { prettyBalance, prettyFiatBalance, dpUI, fiatToCrypto } from '@/utils/co
 import {
   getNativeAsset,
   getAssetColorStyle,
-  getAssetIcon
+  getAssetIcon,
+  getFeeAsset
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import {
@@ -309,7 +310,7 @@ export default {
       return this.$route.query.source || null
     },
     assetChain () {
-      return getNativeAsset(this.asset)
+      return getFeeAsset(this.asset) || getNativeAsset(this.asset)
     },
     assetFees () {
       const assetFees = {}
@@ -384,7 +385,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateFees', 'sendTransaction']),
+    ...mapActions(['updateFees', 'sendTransaction', 'trackAnalytics']),
     prettyBalance,
     dpUI,
     prettyFiatBalance,
@@ -400,7 +401,9 @@ export default {
           sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
         if (this.asset === 'BTC') {
-          const client = this.client(this.activeNetwork, this.activeWalletId, this.asset)
+          const client = this.client({
+            network: this.activeNetwork, walletId: this.activeWalletId, asset: this.asset, accountId: this.account.id
+          })
           const feePerBytes = Object.values(this.assetFees).map(fee => fee.fee)
           const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
           try {
@@ -554,6 +557,14 @@ export default {
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(0)
     await this.updateMaxSendFees()
+    await this.trackAnalytics({
+      event: 'Send screen',
+      properties: {
+        category: 'Send/Receive',
+        action: 'User on Send screen',
+        label: `${this.asset}`
+      }
+    })
   },
   watch: {
     selectedFee: {
