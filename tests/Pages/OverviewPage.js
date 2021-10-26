@@ -191,11 +191,13 @@ class OverviewPage {
         break
       }
 
-      case 'LUNA': {
-        await page.waitForSelector(`#${chain}`, { visible: true })
-        await page.click(`#${chain}`)
+      case 'LUNA':
+      case 'UST': {
         const terra = await page.waitForSelector('#TERRA', { visible: true })
         await terra.click()
+        // click on token
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
         break
       }
 
@@ -416,6 +418,19 @@ class OverviewPage {
     await page.click('#manage_accounts')
     console.log(chalk.green('User clicked on Manage Accounts'))
     await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
+  }
+
+  /**
+   * Toggle on Web3 Wallet from setting screen.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickWeb3WalletToggle (page) {
+    await this.ClickOnBurgerIcon(page)
+    await this.SelectSettings(page)
+    // toggle web3 wallet option
+    await page.click('#default_web3_wallet_toggle_button > label > div')
   }
 }
 
