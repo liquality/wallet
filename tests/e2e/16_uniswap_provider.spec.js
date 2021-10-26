@@ -76,7 +76,7 @@ describe('UNISWAP service Provider-[smoke]', async () => {
     // Click on Network speed + FEE & Validate
     const networkSpeedFee = await page.$eval('#details_header_chevron_down_icon', el => el.textContent)
     expect(networkSpeedFee).contain(asset1 + ' Avg')
-    await page.waitForTimeout(3000)
+    await page.waitForTimeout(8000)
 
     // Review Button
     await swapPage.ClickSwapReviewButton(page)
