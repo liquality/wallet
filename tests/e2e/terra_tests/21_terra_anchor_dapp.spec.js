@@ -66,7 +66,7 @@ describe('Terra Anchor Dapp injection-[testnet,smoke]', async () => {
     await dappPage.click("button[class*='connect-chrome-extension']")
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000})
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
     } catch (e) {
       await connectRequestWindow.screenshot({ path: 'screenshots/terra-show-terra-issue.png', fullscreen: true })
       expect(e, 'Anchor app UI not loading TERRA accounts').equals(null)
