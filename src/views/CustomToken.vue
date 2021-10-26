@@ -76,7 +76,7 @@
           </div>
           <div class="form-group">
             <label for="tokenSymbol">Token Symbol</label>
-            <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled">
+            <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled && !existingNetworkAsset">
             <small v-if="symbol && symbolError" class="text-danger form-text text-right">{{ symbolError }}</small>
           </div>
           <div class="form-group">
@@ -88,7 +88,7 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <router-link :to="`/settings/manage-assets`"><button id="cancel_add_token_button" class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
-          <button id="add_token_button" class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd || existingAsset">Add Token</button>
+          <button id="add_token_button" class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd || existingAsset || existingNetworkAsset">Add Token</button>
         </div>
       </div>
     </div>
@@ -118,11 +118,15 @@ export default {
       decimals: null,
       chain: null,
       autofilled: false,
-      chainDropdownOpen: false
+      chainDropdownOpen: false,
+      existingNetworkAsset: false
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets']),
+    networkAssets () {
+      return this.enabledAssets[this.activeNetwork][this.activeWalletId]
+    },
     symbolError () {
       if (!this.autofilled && Object.keys(cryptoassets).includes(this.symbol)) {
         return 'Token with this symbol exists.'
@@ -202,6 +206,11 @@ export default {
       this.chainDropdownOpen = false
       this.resetFields()
       this.fetchToken()
+    },
+  },
+  watch: {
+    symbol(newValue, _) {
+      this.existingNetworkAsset = Boolean(this.networkAssets.find(_symbol => _symbol === newValue))
     }
   }
 }
