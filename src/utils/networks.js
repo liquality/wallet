@@ -42,5 +42,9 @@ export const ChainNetworks = {
   terra: {
     testnet: TerraNetworks.terra_testnet,
     mainnet: TerraNetworks.terra_mainnet
+  },
+  fuse: {
+    testnet: EthereumNetworks.fuse_testnet,
+    mainnet: EthereumNetworks.fuse_mainnent // TODO: change to fuse_mainnet after it's fixed in CAL
   }
 }
