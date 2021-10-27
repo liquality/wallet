@@ -49,6 +49,7 @@ describe('Terra Anchor Dapp injection-[testnet,smoke]', async () => {
     await dappPage.goto(dappUrl, { timeout: 60000, waitUntil: 'load' })
     try {
       await dappPage.waitForSelector("a[href='/mypage']", { visible: true, timeout: 60000 })
+      await dappPage.waitForSelector("section[class$='wallet']", { visible: true, timeout: 60000 })
     } catch (e) {
       await dappPage.screenshot({ path: 'screenshots/anchorprotocol-dapp-loading-issue.png', fullscreen: true })
       const pageTitle = await dappPage.title()
@@ -58,15 +59,14 @@ describe('Terra Anchor Dapp injection-[testnet,smoke]', async () => {
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     // Click on Connect wallet option
-    const connectWallet = await dappPage.$x("//button[contains(.,'Connect Wallet')]")
-    connectWallet[0].click()
+    await dappPage.click("section[class$='wallet']")
     // span[normalize-space()='Terra Station (extension)']
+    await dappPage.waitForSelector("button[class*='connect-chrome-extension']")
     await dappPage.waitForTimeout(2000)
-    const terraStation = await dappPage.$x("//span[normalize-space()='Terra Station (extension)']")
-    terraStation[0].click()
+    await dappPage.click("button[class*='connect-chrome-extension']")
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true })
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
     } catch (e) {
       await connectRequestWindow.screenshot({ path: 'screenshots/terra-show-terra-issue.png', fullscreen: true })
       expect(e, 'Anchor app UI not loading TERRA accounts').equals(null)
@@ -78,7 +78,7 @@ describe('Terra Anchor Dapp injection-[testnet,smoke]', async () => {
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
-    await dappPage.waitForTimeout(10000)
+    await dappPage.waitForSelector('.wallet-balance', { visible: true, timeout: 60000 })
     // Check Transfer button on Bridge is displayed
     expect(await dappPage.$eval('.wallet-balance', el => el.textContent), 'Terra anchor injection failed!')
       .contains('UST')
