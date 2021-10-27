@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'mainnet') {
     }
   }
   // Only works on Mainnet
-  describe.only('Liquality Booster-[mainnet]', async () => {
+  describe('Liquality Booster-[mainnet]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -55,7 +55,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         throw new Error(e)
       }
     })
-    it('SWAP (BTC->PUSDC (Polygon))', async () => {
+    it.skip('SWAP (BTC->PUSDC (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PUSDC'
       // overview page
