@@ -38,15 +38,15 @@ const getExecutedMethod = (msgs) => {
 const getTransactionParams = (payload) => {
   const { fee, gasAdjustment, msgs } = payload
   const msg = JSON.parse(msgs[0]).value || JSON.parse(msgs[0])
+  const { amount, gas, gas_limit } = JSON.parse(fee) 
   
-  const { amount, gas } = JSON.parse(fee) 
   const value = msg.coins?.[0]?.amount || msg.amount?.[0]?.amount || msg.execute_msg?.transfer?.amount || msg.execute_msg?.send?.amount || 0
   const denom = msg.coins?.[0]?.denom || msg.amount?.[0]?.denom
   const to = msg.to_address || msg.execute_msg?.send?.contract || msg.execute_msg?.transfer?.recipient || msg.contract
   const contractAddress = msg.contract
 
   const method = getExecutedMethod(msgs)
-  const _fee = new BN(amount[0].amount).div(new BN(gas)).toString()
+  const _fee = new BN(amount[0].amount).div(new BN(gas || gas_limit)).toString()
 
   const asset = !value ? 'uusd' : denom || contractAddress || 'luna'
 
