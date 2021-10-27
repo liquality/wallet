@@ -3,19 +3,16 @@
     <div>Liquidity low, please try again later.</div>
   </div>
   <div v-else class="notification-content">
-    <div>Pair not supported. Coming Soon!</div>
+    <div>Pair not yet supported - coming soon. See our list of compatible pairs
+      <a href="https://liquality.io/blog/how-to-use-the-liquality-wallet-101/#q-which-token-pairs-can-i-swap-within-the-liquality-wallet"
+      target="_blank">here.</a>
+    </div>
   </div>
 </template>
 
 <script>
-import buildConfig from '../build.config'
 
 export default {
-  methods: {
-    openDiscordLink () {
-      chrome.tabs.create({ url: buildConfig.discordUrl })
-    }
-  },
   props: {
     isPairAvailable: Boolean
   }

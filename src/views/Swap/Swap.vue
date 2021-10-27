@@ -468,7 +468,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage () {
-      return BN(this.sendAmount).gt(0) && (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
+      return BN(this.sendAmount).gt(this.min) && (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
     sendAmount: {
       get () {
