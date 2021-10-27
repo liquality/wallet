@@ -18,6 +18,7 @@ import {
 import { rskFishToken } from './13_rsk_fish_token'
 import { accountSetDerivationPath } from './14_account_set_derivation_path'
 import { accountsChainsSetEnabled } from './15_accounts_chains_set_enabled'
+import { enableTerraChain } from './16_enable_terra_chain'
 
 const migrations = [
   firstMigration, // v1
@@ -34,7 +35,8 @@ const migrations = [
   rskLegacyDerivationPathFix, // v12
   rskFishToken, // v13
   accountSetDerivationPath, // v14
-  accountsChainsSetEnabled // v15
+  accountsChainsSetEnabled, // v15
+  enableTerraChain // v16
 ]
 
 const LATEST_VERSION = migrations[migrations.length - 1].version
