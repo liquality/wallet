@@ -78,7 +78,7 @@ describe('Terra Anchor Dapp injection-[testnet,smoke]', async () => {
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
-    await dappPage.waitForTimeout(10000)
+    await dappPage.waitForSelector('.wallet-balance', { visible: true, timeout: 60000 })
     // Check Transfer button on Bridge is displayed
     expect(await dappPage.$eval('.wallet-balance', el => el.textContent), 'Terra anchor injection failed!')
       .contains('UST')
