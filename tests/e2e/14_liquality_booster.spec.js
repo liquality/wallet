@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'mainnet') {
     }
   }
   // Only works on Mainnet
-  describe('Liquality Booster-[mainnet]', async () => {
+  describe.only('Liquality Booster-[mainnet]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -55,7 +55,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         throw new Error(e)
       }
     })
-    it.skip('SWAP (BTC->PUSDC (Polygon))', async () => {
+    it('SWAP (BTC->PUSDC (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PUSDC'
       // overview page
@@ -72,7 +72,11 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.waitForSelector('#search_for_a_currency', { visible: true })
       await page.type('#search_for_a_currency', assert2)
       await page.click(`#${assert2}`)
-      await swapPage.EnterSendAmountOnSwap(page, '0.01')
+      if (process.env.NODE_AGENT === 'prodagent') {
+        await swapPage.EnterSendAmountOnSwap(page, '0.01')
+      } else {
+        await swapPage.ClickOnMax(page)
+      }
       await page.waitForSelector('#see_all_quotes', { visible: true })
       await swapPage.ClickOnMin(page)
 
