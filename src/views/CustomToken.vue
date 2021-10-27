@@ -128,6 +128,10 @@ export default {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
     },
     isExistingNetworkAsset () {
+      if (!this.isSymbolEditable) {
+        this.isSymbolEditable = Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
+      }
+
       return Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
     },
     symbolError () {
@@ -210,13 +214,6 @@ export default {
       this.resetFields()
       this.fetchToken()
     },
-  },
-   watch: {
-    symbol(newValue, _) {
-      if (!this.isSymbolEditable) {
-        this.isSymbolEditable = Boolean(this.networkAssets.find(_symbol => _symbol === newValue))
-      }
-    }
   }
 }
 </script>
