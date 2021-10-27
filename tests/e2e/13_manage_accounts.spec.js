@@ -15,11 +15,12 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Manage Accounts-[mainnet,smoke]', async () => {
+// TODO: once multi account enable lets start the test
+describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
@@ -50,7 +51,7 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
 
     // Click on Backup seed from Burger Icon menu
     await overviewPage.ClickOnManageAccounts(page)
-    expect(await page.$eval('#chain-item-toggle-RSK > label', el => el.getAttribute('class'))).contain('toggled')
+    expect(await page.$eval('#chain-item-toggle-rsk > label', el => el.getAttribute('class'))).contain('toggled')
     // Click on Plus
     await page.click('#create-account-plus-icon-rsk')
     await page.waitForSelector('#choose-account-name')
@@ -58,19 +59,19 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
     await page.click('#cancel-button')
     await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
     // Toggle off RSK and validate the number of chains from overview page
-    await page.click('#chain-item-toggle-RSK')
-    expect(await page.$eval('#chain-item-toggle-RSK > label', el => el.getAttribute('class'))).not.contain('toggled')
+    await page.click('#chain-item-toggle-rsk')
+    expect(await page.$eval('#chain-item-toggle-rsk > label', el => el.getAttribute('class'))).not.contain('toggled')
     await page.click('#previous_nav_bar')
     // overview-screen-chain-section , RSK should be hidden
     let accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(6)
+    expect(accounts.length).to.equals(8)
     // Go back to Manage account & toggle on
     await overviewPage.ClickOnManageAccounts(page)
     // Chain RSK toggle on but not accounts
-    await page.click('#chain-item-toggle-RSK')
+    await page.click('#chain-item-toggle-rsk')
     await page.click('#previous_nav_bar')
     accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(6)
+    expect(accounts.length).to.equals(8)
   })
   it('RSK - create new account, validate accounts', async () => {
     // Import wallet option
@@ -91,18 +92,19 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
 
     // Click on Backup seed from Burger Icon menu
     await overviewPage.ClickOnManageAccounts(page)
-    await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true })
+    await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true, timeout: 60000 })
     // Click on Plus
     await page.click('#create-account-plus-icon-rsk')
     await page.waitForSelector('#choose-account-name')
     const accountName = 'automation test'
     await page.type('#choose-account-name', accountName)
     // Cancel button
-    await page.click('#create-button')
-    await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true })
+    await page.waitForTimeout(5000)
+    await page.click('#create-account-button')
+    await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true, timeout: 60000 })
     // check new account added
     // Validate number of RSK counts
-    rskAccounts = await page.$$('#account-name-id-rsk')
+    rskAccounts = await page.$$('.account-item-rsk')
     expect(rskAccounts.length).to.equals(3)
   })
   it.skip('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
@@ -130,12 +132,13 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
     await page.waitForSelector('#choose-account-name')
     const accountName = 'automation test'
     await page.type('#choose-account-name', accountName)
+    await page.waitForTimeout(5000)
     // Cancel button
-    await page.click('#create-button')
+    await page.click('#create-account-button')
     await page.waitForSelector('#create-account-plus-icon-ethereum', { visible: true })
     // check new account added
     // Validate number of ETH counts
-    ethAccounts = await page.$$('#account-name-id-ethereum')
+    ethAccounts = await page.$$('#account-item-ethereum')
     expect(ethAccounts.length).to.equals(2)
     // Click on Backup seed from Burger Icon menu
     await overviewPage.ClickOnBurgerIcon(page)

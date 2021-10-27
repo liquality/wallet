@@ -274,6 +274,11 @@ export default {
   SET_USB_BRIDGE_WINDOWS_ID (state, { id }) {
     state.usbBridgeWindowsId = id
   },
+  SET_EXTERNAL_CONNECTION_DEFAULT (state, { origin, activeWalletId, accountId }) {
+    ensureOriginWalletTree(state.externalConnections, activeWalletId, origin, {})
+
+    Vue.set(state.externalConnections[activeWalletId][origin], 'defaultEthereum', accountId)
+  },
   ADD_EXTERNAL_CONNECTION (state, { origin, activeWalletId, accountId, chain }) {
     ensureOriginWalletTree(state.externalConnections, activeWalletId, origin, {})
 
@@ -295,11 +300,11 @@ export default {
   TOGGLE_BLOCKCHAIN (state, { network, walletId, chainId, enable }) {
     ensureEnableChainsWalletTree(state, walletId, network)
 
-    const chains = state.enabledChains.[walletId].[network]
+    const chains = state.enabledChains[walletId][network]
     if (enable) {
-      Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains, chainId])])
+      Vue.set(state.enabledChains[walletId], network, [...new Set([...chains, chainId])])
     } else {
-      Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains.filter(c => c !== chainId)])])
+      Vue.set(state.enabledChains[walletId], network, [...new Set([...chains.filter(c => c !== chainId)])])
     }
   },
   TOGGLE_ACCOUNT (state, { network, walletId, accountId, enable }) {

@@ -28,6 +28,11 @@ import { SolanaWalletProvider } from '@liquality/solana-wallet-provider'
 import { SolanaSwapProvider } from '@liquality/solana-swap-provider'
 import { SolanaSwapFindProvider } from '@liquality/solana-swap-find-provider'
 
+import { TerraSwapProvider } from '@liquality/terra-swap-provider'
+import { TerraWalletProvider } from '@liquality/terra-wallet-provider'
+import { TerraRpcProvider } from '@liquality/terra-rpc-provider'
+import { TerraSwapFindProvider } from '@liquality/terra-swap-find-provider'
+
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
@@ -132,7 +137,7 @@ function createEthClient (asset, network, mnemonic, accountType, derivationPath)
   const ethereumNetwork = ChainNetworks.ethereum[network]
   const infuraApi = isTestnet ? `https://ropsten.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
   const scraperApi = isTestnet ? 'https://liquality.io/eth-ropsten-api' : 'https://liquality.io/eth-mainnet-api'
-  const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider()
+  const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider('https://gasoracle.liquality.io')
 
   return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath)
 }
@@ -211,6 +216,25 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
+function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
+  const terraNetwork = asset === 'UST' ? { ...ChainNetworks.terra[network], asset: 'uusd' } : ChainNetworks.terra[network]
+
+  const terraClient = new Client()
+
+  terraClient.addProvider(new TerraRpcProvider(terraNetwork))
+  terraClient.addProvider(new TerraWalletProvider(
+    {
+      network: terraNetwork,
+      mnemonic,
+      baseDerivationPath
+    }
+  ))
+  terraClient.addProvider(new TerraSwapProvider(terraNetwork))
+  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork))
+
+  return terraClient
+}
+
 export const createClient = (asset, network, mnemonic, accountType, derivationPath) => {
   const assetData = cryptoassets[asset]
 
@@ -221,6 +245,7 @@ export const createClient = (asset, network, mnemonic, accountType, derivationPa
   if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, derivationPath)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, derivationPath)
   if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
+  if (assetData.chain === 'terra') return createTerraClient(network, mnemonic, derivationPath, asset)
 
   return createEthClient(asset, network, mnemonic, accountType, derivationPath)
 }

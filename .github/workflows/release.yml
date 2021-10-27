@@ -10,18 +10,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.5
         with:
           fetch-depth: 0
 
-      - name: Build project
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2.4.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
-          args: install
+          node-version: '14'
+        # Create screenshots directory
+      - run: mkdir screenshots
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.6
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules
@@ -48,8 +49,10 @@ jobs:
         if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
+          VUE_APP_LD_CLIENT_SIDE_ID_API_KEY: ${{ secrets.VUE_APP_LAUNCH_DARKLY_CLIENT_API_KEY_PROD }}
         run: |
-            echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY }} >> .env
+            echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
+            echo VUE_APP_LD_CLIENT_SIDE_ID_API_KEY =${{ secrets.VUE_APP_LAUNCH_DARKLY_CLIENT_API_KEY_PROD }} >> .env
             sed -i "s/\/swap-testnet-dev\/agent/\/swap-testnet\/agent/g; s/\/swap-dev\/agent/\/swap\/agent/g" src/build.config.js
             npm ci
             npm run lint
@@ -60,16 +63,18 @@ jobs:
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
+          VUE_APP_LD_CLIENT_SIDE_ID_API_KEY: ${{ secrets.VUE_APP_LAUNCH_DARKLY_CLIENT_API_KEY_DEV }}
         run: |
           echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
+          echo VUE_APP_LD_CLIENT_SIDE_ID_API_KEY =${{ secrets.VUE_APP_LAUNCH_DARKLY_CLIENT_API_KEY_DEV }} >> .env
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
           npm ci
           npm run lint
           npm run build
 
-      - run: mkdir screenshots
-      - name: MainNet e2e tests
+      - name: E2E tests against Dev Mainnet Agent
+        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         uses: beemi/puppeteer-headful@v1.0.6
         env:
           CI: 'true'
@@ -77,21 +82,33 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:mainnet
+          args: npm run test:mainnet:devagent
+
+      - name: E2E tests against Prod Mainnet Agent
+        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
+        uses: beemi/puppeteer-headful@v1.0.6
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: npm run test:mainnet:prodagent
 
       - name: Archive Mocha HTML report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
           name: mocha-html-test-report
           path: mochawesome-report
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
           name: screenshots
           path: screenshots
+          if-no-files-found: ignore
 
       - name: Create Release
         id: create_release

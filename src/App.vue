@@ -36,7 +36,7 @@ export default {
     ])
   },
   methods: {
-    ...mapActions(['initializeAnalytics'])
+    ...mapActions(['initializeAnalytics', 'initializeLaunchDarkly'])
   },
   watch: {
     unlockedAt: function (unlocked) {
@@ -44,13 +44,14 @@ export default {
       if (unlocked) this.$router.replace('/wallet')
     },
     activeNetwork: function (_network) {
-      if (['Send', 'Receive', 'Swap'].includes(this.$route.name)) {
+      if (['Send', 'Receive', 'Swap', 'Account'].includes(this.$route.name)) {
         this.$router.replace('/wallet')
       }
     }
   },
-  created () {
-    this.initializeAnalytics()
+  async created () {
+    await this.initializeAnalytics()
+    await this.initializeLaunchDarkly()
   }
 }
 </script>

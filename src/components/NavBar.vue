@@ -39,17 +39,24 @@
         v-if="showMenuList"
         v-click-away="hideMenu"
       >
-        <li id="manage_accounts" @click="manageAccounts">
-          <AccountIcon />
-          Manage Accounts
-        </li>
-        <li id="manage_assets" @click="assets">
+       <li id="manage_assets" @click="assets">
           <AssetsIcon />
           Manage Assets
         </li>
+        <li id="manage_accounts"
+             v-if="multiAccountFeatureFlag"
+             @click="manageAccounts">
+           <AccountsIcon />
+           Manage Accounts
+         </li>
         <li id="settings" @click="settings">
           <SettingsIcon />
           Settings
+        </li>
+        <li id="ledger"
+            @click="ledger">
+          <LedgerIcon />
+          Ledger
         </li>
         <li id="backup_seed" @click="backup">
           <PaperIcon />
@@ -74,7 +81,8 @@ import PaperIcon from '@/assets/icons/paper.svg'
 import ChevronLeftIcon from '@/assets/icons/chevron_left.svg'
 import SettingsIcon from '@/assets/icons/settings.svg'
 import AssetsIcon from '@/assets/icons/assets.svg'
-import AccountIcon from '@/assets/icons/chart_icon.svg'
+import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
+import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
 
 export default {
   directives: {
@@ -87,7 +95,8 @@ export default {
     PaperIcon,
     AssetsIcon,
     SettingsIcon,
-    AccountIcon
+    AccountsIcon,
+    LedgerIcon
   },
   props: [
     'showMenu',
@@ -99,11 +108,16 @@ export default {
   ],
   data () {
     return {
-      showMenuList: false
+      showMenuList: false,
+      multiAccountFeatureFlag: false
     }
   },
+  async created () {
+    this.multiAccountFeatureFlag = await this.getFeatureFlag({ key: 'multi-account-feature', defaultValue: false })
+    console.log('multiAccountFeatureFlag', this.multiAccountFeatureFlag)
+  },
   methods: {
-    ...mapActions(['lockWallet', 'trackAnalytics']),
+    ...mapActions(['lockWallet', 'trackAnalytics', 'getFeatureFlag']),
     async lock () {
       this.trackAnalytics({
         event: 'HamburgerIcon',
@@ -159,6 +173,17 @@ export default {
       })
       this.showMenuList = false
       this.$router.replace('/accounts/management')
+    },
+    ledger () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Ledger'
+        }
+      })
+      this.showMenuList = false
+      this.$router.replace('/accounts/hardware-wallet')
     },
     hideMenu () {
       this.showMenuList = false

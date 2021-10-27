@@ -10,21 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.3.5
         with:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v2.4.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
-          args: install
+          node-version: '14'
+        # Create screenshots directory
+      - run: mkdir screenshots
 
-      - uses: actions/cache@v2
-        env:
-          node-version: 14.1.0
-          cache-name: cache-node-modules
+      - uses: actions/cache@v2.1.6
+        id: cache
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
@@ -33,22 +33,12 @@ jobs:
         run: |
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
-
-      - name: Build
+      - name: Build Project
         run: |
           npm ci
           npm run lint
           npm run build
-
-      - name: Run Integration Tests
-        run: npm run test:integration
-
-      - name: screenshots directory
-        if: always()
-        run: |
-          mkdir screenshots
-
-      - name: Smoke tests
+      - name: Run Smoke tests againt PullRequest
         uses: beemi/puppeteer-headful@v1.0.6
         env:
           CI: 'true'
@@ -59,16 +49,16 @@ jobs:
           args: npm run test:pullrequest:smoke
 
       - name: Archive Mocha HTML report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
           name: mocha-html-test-report
           path: mochawesome-report
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.2.4
         if: always()
         with:
           name: screenshots
           path: screenshots
-
+          if-no-files-found: ignore

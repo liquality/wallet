@@ -20,7 +20,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
@@ -64,7 +64,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'total assets validation on overview page').contain('7 Assets')
+    expect(assetsCount, 'total assets validation on overview page').contain('8 Assets')
 
     const assertAddresses = []
 
@@ -122,7 +122,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed (RSK & RSK legacy)
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'validate total assets on overview page').contain('8 Assets')
+    expect(assetsCount, 'validate total assets on overview page').contain('9 Assets')
 
     // Validate RSK & RSK legacy chains listed
     const rskAccounts = await page.$$('#RSK')
@@ -195,7 +195,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'total assets should be 7 on overview page').contain('7 Assets')
+    expect(assetsCount).contain(' 8 Assets ')
 
     const assertAddresses = []
 
@@ -210,6 +210,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // ARBITRUM
     const arbitrumAddress = await overviewPage.GetAssertAddress(page, 'ARBITRUM')
     assertAddresses.push(ethAddress, rskAddress, bscAddress, polygonAddress, arbitrumAddress)
+    console.log('assertAddresses', assertAddresses)
     expect(assertAddresses.every((val, i, arr) => val === arr[0]),
       'Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]')
       .eq(true)
@@ -256,6 +257,6 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // After enter new seed phrase wallet will have RSK & RSK legacy accounts
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCountNew = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCountNew, 'total assets should be 8 on overview page').contain('8 Assets')
+    expect(assetsCountNew, 'total assets should be 8 on overview page').contain('9 Assets')
   })
 })

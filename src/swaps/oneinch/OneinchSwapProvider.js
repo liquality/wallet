@@ -77,11 +77,10 @@ class OneinchSwapProvider extends SwapProvider {
     const callData = await axios({
       url: this.config.agent + `/${chainId}/approve/calldata`,
       method: 'get',
-      params: { tokenAddress: cryptoassets[quote.from].contractAddress, amount: inputAmount }
+      params: { tokenAddress: cryptoassets[quote.from].contractAddress, amount: inputAmount.toString() }
     })
 
-    const account = this.getAccount(quote.fromAccountId)
-    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const approveTx = await client.chain.sendTransaction({ to: callData.data?.to, value: callData.data?.value, data: callData.data?.data, fee: quote.fee })
 
     return {
@@ -98,7 +97,7 @@ class OneinchSwapProvider extends SwapProvider {
     if (toChain !== fromChain || !chainToRpcProviders[chainId]) return null
 
     const account = this.getAccount(quote.fromAccountId)
-    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
     const fromAddress = chains[toChain].formatAddress(fromAddressRaw)
 
@@ -167,8 +166,7 @@ class OneinchSwapProvider extends SwapProvider {
   }
 
   async waitForApproveConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.accountId)
-    const client = this.getClient(network, walletId, swap.from, account?.type)
+    const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
@@ -185,8 +183,7 @@ class OneinchSwapProvider extends SwapProvider {
   }
 
   async waitForSwapConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.accountId)
-    const client = this.getClient(network, walletId, swap.from, account?.type)
+    const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
