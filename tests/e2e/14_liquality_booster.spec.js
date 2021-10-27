@@ -75,7 +75,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       if (process.env.NODE_AGENT === 'prodagent') {
         await swapPage.EnterSendAmountOnSwap(page, '0.01')
       } else {
-        await swapPage.ClickOnMax(page)
+        await swapPage.EnterSendAmountOnSwap(page, '0.00001')
       }
       await page.waitForSelector('#see_all_quotes', { visible: true })
       await swapPage.ClickOnMin(page)
@@ -109,7 +109,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       if (process.env.NODE_AGENT === 'prodagent') {
         await swapPage.EnterSendAmountOnSwap(page, '0.01')
       } else {
-        await swapPage.ClickOnMax(page)
+        await swapPage.EnterSendAmountOnSwap(page, '0.00001')
       }
       // Select Liquality Boost
       try {
