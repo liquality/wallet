@@ -8,7 +8,6 @@ export const enableTerraChain = {
   migrate: async (state) => {
     const accounts = {}
     const enabledChains = {}
-
     for (const walletId in state.accounts) {
       accounts[walletId] = {}
       enabledChains[walletId] = {}
@@ -37,9 +36,18 @@ export const enableTerraChain = {
       }
     }
 
+    const enabledAssets = {}
+    for (const network of Networks) {
+      enabledAssets[network] = {}
+      for (const walletId in state.enabledAssets[network]) {
+        enabledAssets[network][walletId] = [...state.enabledAssets[network][walletId], 'LUNA', 'UST']
+      }
+    }
+
     return {
       ...state,
       enabledChains,
+      enabledAssets,
       accounts
     }
   }
