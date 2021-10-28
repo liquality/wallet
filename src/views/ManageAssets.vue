@@ -16,7 +16,7 @@
         </div>
       </div>
       </div>
-          <div class="manage-assets_list">
+      <div class="manage-assets_list">
       <div v-for="asset in sortedFilteredAssets" :key="asset" class="asset-item d-flex align-items-center" id="asset_item">
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
         <div class="asset-item_name flex-fill" :id="asset">{{getAssetName(asset)}} ({{asset}})
@@ -28,7 +28,7 @@
           <button v-if='isCustomToken(asset)' class="btn btn-outline-clear btn-sm remove-btn"  :id="asset + '_remove_custom_token'" @click="removeToken(asset)" > Remove</button>
       </div>
     </div>
-    <div v-if="search" class="wrapper manage-assets_bottomSection">
+    <div v-if="search" class="wrapper" :class="Object.keys(sortedFilteredAssets).length? 'manage-assets_bottomSectionWithItems': 'manage-assets_bottomSection'">
       <button class="btn btn-light btn-outline-primary btn-lg btn-block" @click="clearSearch">Done</button>
     </div>
   </div>
@@ -128,6 +128,10 @@ export default {
     width: 100%;
     position: absolute;
     bottom: 0;
+  }
+
+  &_bottomSectionWithItems {
+    width: 100%;
   }
 
   &_search {
