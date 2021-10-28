@@ -37,6 +37,7 @@ const getExecutedMethod = (msgs) => {
 
 const getTransactionParams = (payload) => {
   const { fee, gasAdjustment, msgs } = payload
+
   const msg = JSON.parse(msgs[0]).value
   const { amount, gas } = JSON.parse(fee)
 
