@@ -323,5 +323,11 @@ export default {
 
       Vue.set(state.accounts[walletId][network], index, updatedAccount)
     }
+  },
+  TERRA_TOKEN (state, {symbol, tokenAddress}) {
+    state.terraToken = { 
+      ...state.terraToken,
+      [symbol]: tokenAddress
+    }
   }
 }

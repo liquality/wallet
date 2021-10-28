@@ -46,6 +46,7 @@ import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
 import { ChainNetworks } from '@/utils/networks'
+import store from '../'
 
 function createBtcClient (network, mnemonic, accountType, derivationPath) {
   const isTestnet = network === 'testnet'
@@ -216,9 +217,24 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
-function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
-  const terraNetwork = asset === 'UST' ? { ...ChainNetworks.terra[network], asset: 'uusd' } : ChainNetworks.terra[network]
+function createTerraClient (network, mnemonic, baseDerivationPath, asset, tokenAddress) {
+  let terraNetwork;
 
+  switch (asset) {
+    case 'LUNA': {
+      terraNetwork = ChainNetworks.terra[network]
+      break
+    } case 'UST': {
+      terraNetwork = { ...ChainNetworks.terra[network], asset: 'uusd' }
+      break;
+    } default: {
+      const tokenAddress = store.state.terraToken[asset];
+      terraNetwork = { ...ChainNetworks.terra[network], asset, tokenAddress }
+      break
+    }
+  }
+
+  console.log('asset', asset)
   const terraClient = new Client()
 
   terraClient.addProvider(new TerraRpcProvider(terraNetwork))

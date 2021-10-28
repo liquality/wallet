@@ -50,5 +50,6 @@ export default {
     notAskAgain: false
   },
   watsNewModalVersion: null,
-  enabledChains: {}
+  enabledChains: {},
+  terraToken: {}
 }

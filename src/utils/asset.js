@@ -4,8 +4,10 @@ import {
 } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import * as ethers from 'ethers'
+import axios from 'axios'
 import tokenABI from './tokenABI.json'
 import buildConfig from '../build.config'
+import store from '../store'
 
 const EXPLORERS = {
   ethereum: {
@@ -227,4 +229,19 @@ export const estimateGas = async ({ data, to, value }) => {
   const provider = ethers.getDefaultProvider()
 
   return await provider.estimateGas(paramsForGasEstimate)
+}
+
+export const fetchTerraToken = async (address, network) => {
+  const { data: { [network]: tokens } } = await axios.get('https://assets.terra.money/cw20/tokens.json')
+  const token = tokens[address]
+
+  const { name, symbol, token: tokenAddress } = token
+
+  store.commit('TERRA_TOKEN', { symbol, tokenAddress })
+
+  return {
+    name: name || symbol,
+    symbol,
+    decimals: 6
+  }
 }

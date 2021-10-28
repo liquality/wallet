@@ -62,6 +62,15 @@
                   Arbitrum (ARB)
                 </a>
               </li>
+              <li>
+                <a class="dropdown-item"
+                   id="terra_chain"
+                   href="#"
+                   @click="selectChain('terra')"
+                   :class="{active: chain === 'terra'}">
+                  Terra
+                </a>
+              </li>
             </ul>
           </div>
         </div>
@@ -99,7 +108,7 @@
 import { mapState, mapActions } from 'vuex'
 import { debounce } from 'lodash-es'
 import cryptoassets from '@/utils/cryptoassets'
-import { tokenDetailProviders } from '@/utils/asset'
+import { tokenDetailProviders, fetchTerraToken } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
@@ -185,9 +194,19 @@ export default {
 
       if (this.existingAsset) {
         customToken = this.existingAsset
-      } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
-        const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
-        customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
+      // else if (this.activeNetwork === 'mainnet' && this.contractAddress)
+      } else if (this.contractAddress) {
+        switch(this.chain) {
+          case 'terra': {
+            const { symbol, name, decimals } = await fetchTerraToken(this.contractAddress, this.activeNetwork)
+            customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
+            break
+          } default: {
+            const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
+            customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
+            break
+          }
+        }
       }
 
       if (customToken) {
