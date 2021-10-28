@@ -367,7 +367,7 @@ class SovrynSwapProvider extends SwapProvider {
 
   static fromTxType = SovrynSwapProvider.txTypes.SWAP
   static toTxType = null
-
+  static timelineDiagramSteps = ['APPROVE', 'SWAP']
   static totalSteps = 3
 }
 
