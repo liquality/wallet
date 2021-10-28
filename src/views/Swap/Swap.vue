@@ -16,7 +16,7 @@
         <EthRequiredMessage :account-id="account.id"/>
       </InfoNotification>
 
-      <InfoNotification v-else-if="showNoLiquidityMessage">
+      <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount > min">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
       <div class="wrapper form">
@@ -468,7 +468,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage () {
-      return BN(this.sendAmount).gt(this.min) && (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
+      return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
     sendAmount: {
       get () {
@@ -612,9 +612,6 @@ export default {
       return !this.ethRequired
     },
     amountError () {
-      if (this.showNoLiquidityMessage) {
-        return null
-      }
       const amount = BN(this.safeAmount)
 
       if (amount.gt(this.available)) {
@@ -625,7 +622,7 @@ export default {
         return 'Please reduce amount. It exceeds maximum.'
       }
 
-      if (amount.lt(this.min)) {
+      if (amount.lt(this.min) || amount.lte(0)) {
         return 'Please increase amount. It is below minimum.'
       }
 
