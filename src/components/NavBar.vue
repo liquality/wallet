@@ -43,12 +43,11 @@
           <AssetsIcon />
           Manage Assets
         </li>
-        <li id="manage_accounts"
-             v-if="multiAccountFeatureFlag"
-             @click="manageAccounts">
-           <AccountsIcon />
-           Manage Accounts
-         </li>
+<!--        <li id="manage_accounts"-->
+<!--             @click="manageAccounts">-->
+<!--           <AccountsIcon />-->
+<!--           Manage Accounts-->
+<!--         </li>-->
         <li id="settings" @click="settings">
           <SettingsIcon />
           Settings
@@ -81,7 +80,7 @@ import PaperIcon from '@/assets/icons/paper.svg'
 import ChevronLeftIcon from '@/assets/icons/chevron_left.svg'
 import SettingsIcon from '@/assets/icons/settings.svg'
 import AssetsIcon from '@/assets/icons/assets.svg'
-import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
+// import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
 
 export default {
@@ -95,7 +94,7 @@ export default {
     PaperIcon,
     AssetsIcon,
     SettingsIcon,
-    AccountsIcon,
+    // AccountsIcon,
     LedgerIcon
   },
   props: [
@@ -108,16 +107,11 @@ export default {
   ],
   data () {
     return {
-      showMenuList: false,
-      multiAccountFeatureFlag: false
+      showMenuList: false
     }
   },
-  async created () {
-    this.multiAccountFeatureFlag = await this.getFeatureFlag({ key: 'multi-account-feature', defaultValue: false })
-    console.log('multiAccountFeatureFlag', this.multiAccountFeatureFlag)
-  },
   methods: {
-    ...mapActions(['lockWallet', 'trackAnalytics', 'getFeatureFlag']),
+    ...mapActions(['lockWallet', 'trackAnalytics']),
     async lock () {
       this.trackAnalytics({
         event: 'HamburgerIcon',
