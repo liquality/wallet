@@ -35,15 +35,11 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
         addresses = await _client.wallet.getUsedAddresses()
       }
 
-      try {
-        const balance = addresses.length === 0
-          ? 0
-          : (await _client.chain.getBalance(addresses)).toNumber()
+      const balance = addresses.length === 0
+        ? 0
+        : (await _client.chain.getBalance(addresses)).toNumber()
 
-        commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance })
-      } catch (err) {
-        console.error(err)
-      }
+      commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance })
 
       // Commit to the state the addresses
       let updatedAddresses = []
