@@ -42,7 +42,7 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
 
         commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance }) 
       } catch (err) {
-        console.log(err)
+        console.error(err)
        }
 
       // Commit to the state the addresses
