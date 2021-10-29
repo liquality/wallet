@@ -128,16 +128,13 @@ export default {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
     },
     isExistingNetworkAsset () {
-      if (!this.isSymbolEditable) {
-        this.isSymbolEditable = Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
-      }
-
       return Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
     },
     symbolError () {
-      if (!this.autofilled && Object.keys(cryptoassets).includes(this.symbol)) {
+      if (!this.autofilled && Object.keys(cryptoassets).includes(this.symbol) || this.isSymbolEditable) {
         return 'Token with this symbol exists.'
       }
+
       return null
     },
     canAdd () {
@@ -206,6 +203,7 @@ export default {
         this.name = customToken.name
         this.decimals = customToken.decimals
         this.autofilled = true
+        this.isSymbolEditable = Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
       }
     }, 500),
     async selectChain (chain) {
