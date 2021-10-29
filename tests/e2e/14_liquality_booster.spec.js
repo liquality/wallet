@@ -72,7 +72,11 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.waitForSelector('#search_for_a_currency', { visible: true })
       await page.type('#search_for_a_currency', assert2)
       await page.click(`#${assert2}`)
-      await swapPage.EnterSendAmountOnSwap(page, '0.0001')
+      if (process.env.NODE_AGENT === 'prodagent') {
+        await swapPage.EnterSendAmountOnSwap(page, '0.01')
+      } else {
+        await swapPage.EnterSendAmountOnSwap(page, '0.00001')
+      }
       await page.waitForSelector('#see_all_quotes', { visible: true })
       await swapPage.ClickOnMin(page)
 
@@ -102,51 +106,11 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.waitForSelector('#search_for_a_currency', { visible: true })
       await page.type('#search_for_a_currency', assert2)
       await page.click(`#${assert2}`)
-      await swapPage.EnterSendAmountOnSwap(page, '0.0001')
-      // Select Liquality Boost
-      try {
-        await page.waitForSelector('#selectedQuote_provider', { visible: true })
-      } catch (e) {
-        await testUtil.takeScreenshot(page, 'no-Liquidity')
-        expect(e, 'No Liquidity.....').equals(null)
+      if (process.env.NODE_AGENT === 'prodagent') {
+        await swapPage.EnterSendAmountOnSwap(page, '0.01')
+      } else {
+        await swapPage.EnterSendAmountOnSwap(page, '0.00001')
       }
-      await page.waitForTimeout(5000)
-      try {
-        const selectedQuoteProviderText = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
-        if (selectedQuoteProviderText === liqualityBooster) {
-          // Check source name
-          await checkBooster()
-        } else if (selectedQuoteProviderText === 'Liquality') {
-          await page.click('#see_all_quotes')
-          await page.waitForSelector('#liqualityBoost_rate_provider', { visible: true })
-          await page.click('#liqualityBoost_rate_provider')
-          await page.click('#select_quote_button')
-          // Check source name
-          await checkBooster()
-        }
-      } catch (e) {
-        await testUtil.takeScreenshot(page, 'liqualityBooster-selected-error')
-        expect(e, 'Liquality Boost selected quote provider error!!').equals(null)
-      }
-    })
-    it('SWAP (RBTC->PWETH (Polygon))', async () => {
-      const assert1 = 'RBTC'
-      const assert2 = 'PWETH'
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
-      // Select testnet
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      // Click on BTC then click on SWAP button
-      await overviewPage.SelectChain(page, assert1)
-      await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
-      await page.click(`#${assert1}_swap_button`)
-      // Select PWETH
-      await swapPage.SelectSwapReceiveCoin(page)
-      await page.waitForSelector('#search_for_a_currency', { visible: true })
-      await page.type('#search_for_a_currency', assert2)
-      await page.click(`#${assert2}`)
-      await swapPage.ClickOnMax(page)
       // Select Liquality Boost
       try {
         await page.waitForSelector('#selectedQuote_provider', { visible: true })
