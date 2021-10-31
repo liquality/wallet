@@ -14,7 +14,7 @@ let browser, page, dappPage
 const password = '123123123'
 const dappUrl = 'https://app.uniswap.org/#/swap'
 
-describe('Uniswap Dapp Injection-[mainnet,smoke]', async () => {
+describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -36,19 +36,15 @@ describe('Uniswap Dapp Injection-[mainnet,smoke]', async () => {
     } else {
       await overviewPage.SelectNetwork(page)
     }
-    // Click on Backup seed from Burger Icon menu
-    await overviewPage.ClickOnBurgerIcon(page)
-    // Click on Settings
-    await overviewPage.SelectSettings(page)
-    // toggle web3 wallet option
-    await page.click('#default_web3_wallet_toggle_button > label > div')
+    // Web3 toggle on
+    await overviewPage.ClickWeb3WalletToggle(page)
     await page.waitForTimeout(1000)
   })
   afterEach(async () => {
     await browser.close()
   })
 
-  it('UNISWAP Injection-ETH', async () => {
+  it('UNISWAP Injection-ETH["smoke"]', async () => {
     // Go to uniSwap app
     dappPage = await browser.newPage()
     await dappPage.setViewport({

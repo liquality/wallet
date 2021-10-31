@@ -50,7 +50,7 @@ jobs:
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
         run: |
-            echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY }} >> .env
+            echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
             sed -i "s/\/swap-testnet-dev\/agent/\/swap-testnet\/agent/g; s/\/swap-dev\/agent/\/swap\/agent/g" src/build.config.js
             npm ci
             npm run lint
@@ -69,7 +69,8 @@ jobs:
           npm run lint
           npm run build
 
-      - name: MainNet e2e tests
+      - name: E2E tests against Dev Mainnet Agent
+        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         uses: beemi/puppeteer-headful@v1.0.6
         env:
           CI: 'true'
@@ -77,7 +78,18 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:mainnet
+          args: npm run test:mainnet:devagent
+
+      - name: E2E tests against Prod Mainnet Agent
+        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
+        uses: beemi/puppeteer-headful@v1.0.6
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: npm run test:mainnet:prodagent
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2.2.4

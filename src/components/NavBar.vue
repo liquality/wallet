@@ -43,15 +43,17 @@
           <AssetsIcon />
           Manage Assets
         </li>
-        <!-- <li id="manage_accounts" @click="manageAccounts">
-          <AccountsIcon />
-          Manage Accounts
-        </li> -->
+<!--        <li id="manage_accounts"-->
+<!--             @click="manageAccounts">-->
+<!--           <AccountsIcon />-->
+<!--           Manage Accounts-->
+<!--         </li>-->
         <li id="settings" @click="settings">
           <SettingsIcon />
           Settings
         </li>
-        <li id="ledger" @click="ledger">
+        <li id="ledger"
+            @click="ledger">
           <LedgerIcon />
           Ledger
         </li>

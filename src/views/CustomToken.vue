@@ -85,7 +85,7 @@
           </div>
           <div class="form-group">
             <label for="tokenSymbol">Token Symbol</label>
-            <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled">
+            <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled && !isSymbolEditable">
             <small v-if="symbol && symbolError" class="text-danger form-text text-right">{{ symbolError }}</small>
           </div>
           <div class="form-group">
@@ -97,7 +97,7 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <router-link :to="`/settings/manage-assets`"><button id="cancel_add_token_button" class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
-          <button id="add_token_button" class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd || existingAsset">Add Token</button>
+          <button id="add_token_button" class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd || existingAsset || isExistingNetworkAsset">Add Token</button>
         </div>
       </div>
     </div>
@@ -127,13 +127,20 @@ export default {
       decimals: null,
       chain: null,
       autofilled: false,
-      chainDropdownOpen: false
+      chainDropdownOpen: false,
+      isSymbolEditable: false
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets']),
+    networkAssets () {
+      return this.enabledAssets[this.activeNetwork][this.activeWalletId]
+    },
+    isExistingNetworkAsset () {
+      return Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
+    },
     symbolError () {
-      if (!this.autofilled && Object.keys(cryptoassets).includes(this.symbol)) {
+      if (!this.autofilled && Object.keys(cryptoassets).includes(this.symbol) || this.isSymbolEditable) {
         return 'Token with this symbol exists.'
       }
       return null
@@ -204,6 +211,7 @@ export default {
         this.name = customToken.name
         this.decimals = customToken.decimals
         this.autofilled = true
+        this.isSymbolEditable = Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
       }
     }, 500),
     async selectChain (chain) {

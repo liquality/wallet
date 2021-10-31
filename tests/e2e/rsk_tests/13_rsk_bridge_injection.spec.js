@@ -37,12 +37,8 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     } else {
       await overviewPage.SelectNetwork(page)
     }
-    // Click on Backup seed from Burger Icon menu
-    await overviewPage.ClickOnBurgerIcon(page)
-    // Click on Settings
-    await overviewPage.SelectSettings(page)
-    // toggle web3 wallet option
-    await page.click('#default_web3_wallet_toggle_button > label > div')
+    // Web3 toggle on
+    await overviewPage.ClickWeb3WalletToggle(page)
 
     // Go to SOVRYN app
     dappPage = await browser.newPage()
@@ -67,7 +63,7 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     await dappPage.click('button[type="button"]')
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true })
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
     } catch (e) {
       await connectRequestWindow.screenshot({ path: 'screenshots/sovryn-bridge-show-rskAccounts-issue.png', fullscreen: true })
       expect(e, 'Sovryn bridge UI not loading RSK accounts').equals(null)
