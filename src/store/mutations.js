@@ -300,11 +300,11 @@ export default {
   TOGGLE_BLOCKCHAIN (state, { network, walletId, chainId, enable }) {
     ensureEnableChainsWalletTree(state, walletId, network)
 
-    const chains = state.enabledChains.[walletId].[network]
+    const chains = state.enabledChains[walletId][network]
     if (enable) {
-      Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains, chainId])])
+      Vue.set(state.enabledChains[walletId], network, [...new Set([...chains, chainId])])
     } else {
-      Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains.filter(c => c !== chainId)])])
+      Vue.set(state.enabledChains[walletId], network, [...new Set([...chains.filter(c => c !== chainId)])])
     }
   },
   TOGGLE_ACCOUNT (state, { network, walletId, accountId, enable }) {
