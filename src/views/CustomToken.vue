@@ -140,7 +140,7 @@ export default {
       return Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
     },
     symbolError () {
-      if (!this.autofilled && Object.keys(cryptoassets).includes(this.symbol) || this.isSymbolEditable) {
+      if (!this.autofilled && (Object.keys(cryptoassets).includes(this.symbol) || this.isSymbolEditable)) {
         return 'Token with this symbol exists.'
       }
       return null
@@ -201,9 +201,8 @@ export default {
 
       if (this.existingAsset) {
         customToken = this.existingAsset
-      // else if (this.activeNetwork === 'mainnet' && this.contractAddress)
-      } else if (this.contractAddress) {
-        switch(this.chain) {
+      } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
+        switch (this.chain) {
           case 'terra': {
             const { symbol, name, decimals } = await fetchTerraToken(this.contractAddress, this.activeNetwork)
             customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }

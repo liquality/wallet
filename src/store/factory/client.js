@@ -217,8 +217,8 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
-function createTerraClient (network, mnemonic, baseDerivationPath, asset, tokenAddress) {
-  let terraNetwork;
+function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
+  let terraNetwork
 
   switch (asset) {
     case 'LUNA': {
@@ -226,9 +226,9 @@ function createTerraClient (network, mnemonic, baseDerivationPath, asset, tokenA
       break
     } case 'UST': {
       terraNetwork = { ...ChainNetworks.terra[network], asset: 'uusd' }
-      break;
+      break
     } default: {
-      const tokenAddress = store.state.terraToken[asset];
+      const tokenAddress = store.state.terraToken[asset]
       terraNetwork = { ...ChainNetworks.terra[network], asset, tokenAddress }
       break
     }
