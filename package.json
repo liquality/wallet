@@ -36,7 +36,7 @@
     "@liquality/bitcoin-rpc-fee-provider": "1.6.11",
     "@liquality/bitcoin-rpc-provider": "1.6.11",
     "@liquality/bitcoin-swap-provider": "1.6.11",
-    "@liquality/client": "1.6.11",
+    "@liquality/client": "1.8.0",
     "@liquality/crypto": "1.6.11",
     "@liquality/cryptoassets": "^1.4.1",
     "@liquality/ethereum-erc20-provider": "1.6.11",
