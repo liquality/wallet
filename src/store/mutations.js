@@ -294,6 +294,13 @@ export default {
       ...payload
     }
   },
+  TOGGLE_EXPERIMENT (state, { name }) {
+    const { experiments } = state
+    state.experiments = {
+      ...experiments,
+      [name]: experiments ? !experiments[name] : true
+    }
+  },
   SET_WATS_NEW_MODAL_VERSION (state, { version }) {
     state.watsNewModalVersion = version
   },

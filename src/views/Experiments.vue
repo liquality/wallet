@@ -11,17 +11,18 @@
     <div class="experiments">
       <div class="setting-item">
         <div class="setting-item_title flex-fill mb-2">
-          Do Something Experimental
+          Multi-Accounts
           <span class="setting-item_sub">
-            Description of the setting.
+            Allow account management and multiple accounts per network
           </span>
         </div>
         <div
           class="setting-item_control"
-          id="default_web3_wallet_toggle_button"
         >
           <toggle-button
             :css-colors="true"
+            :value="experiments['manageAccounts']"
+            @change="toggleExperiment({ name: 'manageAccounts'})"
           />
         </div>
       </div>
@@ -31,10 +32,17 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   components: {
     NavBar
+  },
+  computed: {
+    ...mapState(['experiments'])
+  },
+  methods: {
+    ...mapActions(['toggleExperiment'])
   }
 }
 </script>
@@ -42,6 +50,7 @@ export default {
 <style lang="scss">
 .experiments {
   overflow-y: auto;
+  flex: 1;
 
   .setting-item {
     border-bottom: 1px solid $hr-border-color;
