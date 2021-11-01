@@ -16,7 +16,7 @@ let browser, page
 const password = '123123123'
 
 if (process.env.NODE_ENV === 'mainnet') {
-  describe('Import wallet - fetch custom token details against and add custom token ["devagent","prodagent"]', async () => {
+  describe('Import wallet - fetch custom token details against and add custom token', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()

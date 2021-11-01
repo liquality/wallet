@@ -20,7 +20,7 @@ const password = '123123123'
 if (process.env.NODE_ENV === 'mainnet') {
   // fastBTC service provider only in mainnet(dev & prod)
   describe('FastBTC swap provider-["mainnet","smoke"]', async () => {
-    beforeEach(async () => {
+    before(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Create a password & submit
       await passwordPage.SubmitPasswordDetails(page, password)
     })
-    afterEach(async () => {
+    after(async () => {
       await page.close()
       await browser.close()
     })
