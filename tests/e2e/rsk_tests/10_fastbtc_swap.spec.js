@@ -69,8 +69,8 @@ if (process.env.NODE_ENV === 'mainnet') {
           timeout: 60000
         })
       } catch (e) {
-        await testUtil.takeScreenshot(page,'fastbtc-swap-issue')
-        expect(e, `fastbtc swp between BTC->RBTC failed, may be No Liquidity.....`).equals(null)
+        await testUtil.takeScreenshot(page, 'fastbtc-swap-issue')
+        expect(e, 'fastbtc swp between BTC->RBTC failed, may be No Liquidity.....').equals(null)
       }
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')

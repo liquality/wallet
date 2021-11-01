@@ -43,11 +43,11 @@
           <AssetsIcon />
           Manage Assets
         </li>
-<!--        <li id="manage_accounts"-->
-<!--             @click="manageAccounts">-->
-<!--           <AccountsIcon />-->
-<!--           Manage Accounts-->
-<!--         </li>-->
+        <li id="manage_accounts"
+             @click="manageAccounts">
+           <AccountsIcon />
+           Manage Accounts
+         </li>
         <li id="settings" @click="settings">
           <SettingsIcon />
           Settings
