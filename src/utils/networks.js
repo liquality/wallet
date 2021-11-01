@@ -45,6 +45,6 @@ export const ChainNetworks = {
   },
   fuse: {
     testnet: EthereumNetworks.fuse_testnet,
-    mainnet: EthereumNetworks.fuse_mainnet // TODO: change to fuse_mainnet after it's fixed in CAL
+    mainnet: EthereumNetworks.fuse_mainnet
   }
 }
