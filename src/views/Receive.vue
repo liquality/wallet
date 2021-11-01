@@ -152,7 +152,7 @@ export default {
           },
           FUSE: {
             name: 'FUSE',
-            url: 'https://fuse.io/TODO'
+            url: 'https://get.fusespark.io/'
           }
         })[this.asset]
       }
