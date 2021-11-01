@@ -63,7 +63,7 @@ const derivationPaths = {
   [ChainId.Fuse]: (network, index) => {
     const ethNetwork = ChainNetworks[ChainId.Fuse][network]
     return getEthereumBasedDerivationPath(ethNetwork.coinType, index)
-  },
+  }
 
 }
 

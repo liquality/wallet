@@ -129,5 +129,5 @@ export default {
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra', 'fuse']
 }
