@@ -16,7 +16,7 @@ let browser, page
 const password = '123123123'
 
 if (process.env.NODE_ENV === 'mainnet') {
-  describe('Import wallet - fetch custom token details against and add custom token ["mainnet"]', async () => {
+  describe('Import wallet - fetch custom token details against and add custom token', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -511,66 +511,6 @@ if (process.env.NODE_ENV === 'mainnet') {
       expect(await page.$eval(`#${symbol}_toggle_button > label`, el => el.getAttribute('class')),
         'Added custom token toggled automatically')
         .contains('vue-js-switch toggled')
-    })
-    it('Custom token cancel button', async () => {
-      const tokenDetails = {
-        chain: 'rsk',
-        address: '0x967f8799aF07DF1534d48A95a5C9FEBE92c53ae0',
-        name: 'Wrapped RBTC',
-        symbol: 'WRBTC',
-        decimal: '18'
-      }
-      // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
-      // Select network(Only works against Mainnet)
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      // check Send & Swap & Receive options have been displayed
-      await overviewPage.ValidateSendSwipeReceiveOptions(page)
-
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
-
-      // select chain
-      await page.waitForSelector('#select_chain_dropdown', { visible: true })
-      await page.click('#select_chain_dropdown')
-      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
-      await page.click(`#${tokenDetails.chain}_chain`)
-      // paste address
-      await page.type('#contractAddress', tokenDetails.address)
-      console.log(chalk.green('User enter token address as'), tokenDetails.address)
-      await page.click('#tokenSymbol')
-      await page.click('#name')
-      await page.waitForTimeout(10000)
-      // Check Token name
-      const name = await page.$eval('#name', el => el.value)
-      expect(name).to.equals(tokenDetails.name)
-      // Check Token Symbol
-      const symbol = await page.$eval('#tokenSymbol', el => el.value)
-      expect(symbol).to.equals(tokenDetails.symbol)
-      // Check Token Symbol
-      const decimal = await page.$eval('#decimals', el => el.value)
-      expect(decimal).to.equals(tokenDetails.decimal)
-
-      // Click on Cancel
-      await page.click('#cancel_add_token_button')
-      await page.waitForSelector('#add_custom_token', { visible: true })
     })
   })
 }

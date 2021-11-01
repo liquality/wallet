@@ -18,9 +18,9 @@ let browser, page
 const password = '123123123'
 
 if (process.env.NODE_ENV === 'mainnet') {
-  // fastBTC service provider only in mainnet
+  // fastBTC service provider only in mainnet(dev & prod)
   describe('FastBTC swap provider-["mainnet","smoke"]', async () => {
-    beforeEach(async () => {
+    before(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Create a password & submit
       await passwordPage.SubmitPasswordDetails(page, password)
     })
-    afterEach(async () => {
+    after(async () => {
       await page.close()
       await browser.close()
     })
@@ -63,12 +63,18 @@ if (process.env.NODE_ENV === 'mainnet') {
       console.log('User selected RBTC as 2nd pair for swap')
 
       // (Liquality swap provider)
-      await page.waitForSelector('#selectedQuote_provider', {
-        visible: true,
-        timeout: 60000
-      })
+      try {
+        await page.waitForSelector('#selectedQuote_provider', {
+          visible: true,
+          timeout: 60000
+        })
+      } catch (e) {
+        await testUtil.takeScreenshot(page, 'fastbtc-swap-issue')
+        expect(e, 'fastbtc swp between BTC->RBTC failed, may be No Liquidity.....').equals(null)
+      }
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'BTC->RBTC,Liquality swap source should be chosen!').equals('Liquality')
+
       console.log(chalk.green('Liquality service provider selected for BTC->RBTC by default'))
 
       // Update the SWAP value to 0.0004
