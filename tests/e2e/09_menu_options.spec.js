@@ -15,11 +15,11 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Hamburger menu options', async () => {
+describe('Hamburger menu options["testnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
@@ -71,7 +71,7 @@ describe('Hamburger menu options', async () => {
     const appVersion = await page.$eval('#settings_app_version', (el) => el.textContent)
     expect(appVersion).contain('Version')
   })
-  it('should be able to test backup seed feature', async () => {
+  it('should be able to test backup seed feature["smoke"]', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit

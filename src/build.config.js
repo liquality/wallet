@@ -20,7 +20,9 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
-      'FISH'
+      'FISH',
+      'LUNA',
+      'UST'
     ],
     testnet: [
       'BTC',
@@ -32,7 +34,10 @@ export default {
       'SOV',
       'MATIC',
       'PWETH',
-      'ARBETH'
+      'ARBETH',
+      'SOL',
+      'LUNA',
+      'UST'
     ]
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
@@ -84,7 +89,8 @@ export default {
         name: 'Liquality Boost',
         type: SwapProviderType.LIQUALITYBOOST,
         network: 'mainnet',
-        icon: 'liqualityboost.svg'
+        icon: 'liqualityboost.svg',
+        supportedBridgeAssets: ['MATIC']
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -123,5 +129,5 @@ export default {
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra']
 }

@@ -1,3 +1,6 @@
+const TestUtil = require('../utils/TestUtils')
+
+const testUtil = new TestUtil()
 const chalk = require('chalk')
 const expect = require('chai').expect
 
@@ -9,11 +12,15 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    await page.waitForSelector('#burger_icon_menu', {
-      visible: true,
-      timeout: 120000
-    })
-    console.log(chalk.green('User logged successfully, overview page has been loaded'))
+    try {
+      await page.waitForSelector('#burger_icon_menu', {
+        visible: true,
+        timeout: 120000
+      })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
+      expect(e, 'Hamburger icon loading issue').equals(null)
+    }
   }
 
   /**
@@ -184,6 +191,16 @@ class OverviewPage {
         break
       }
 
+      case 'LUNA':
+      case 'UST': {
+        const terra = await page.waitForSelector('#TERRA', { visible: true })
+        await terra.click()
+        // click on token
+        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
       default:
         throw Error(`Unsupported chain: ${chain}`)
     }
@@ -253,7 +270,7 @@ class OverviewPage {
    * @constructor
    */
   async ValidateTotalAssets (page, newWallet = true) {
-    const assets = newWallet ? 7 : 8
+    const assets = newWallet ? 8 : 9
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(`${assets} Assets`)
@@ -401,6 +418,19 @@ class OverviewPage {
     await page.click('#manage_accounts')
     console.log(chalk.green('User clicked on Manage Accounts'))
     await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
+  }
+
+  /**
+   * Toggle on Web3 Wallet from setting screen.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickWeb3WalletToggle (page) {
+    await this.ClickOnBurgerIcon(page)
+    await this.SelectSettings(page)
+    // toggle web3 wallet option
+    await page.click('#default_web3_wallet_toggle_button > label > div')
   }
 }
 

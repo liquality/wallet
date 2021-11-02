@@ -19,7 +19,7 @@
 <script>
 import BN from 'bignumber.js'
 import { prettyFiatBalance } from '@/utils/coinFormatter'
-import { getNativeAsset } from '@/utils/asset'
+import { getNativeAsset, getFeeAsset } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
@@ -29,7 +29,8 @@ export default {
     'value',
     'fees',
     'totalFees',
-    'fiatRates'
+    'fiatRates',
+    'swap'
   ],
   methods: {
     getTooltip (name) {
@@ -38,7 +39,7 @@ export default {
         content += `${this.fees[name].wait} sec<br />`
       }
 
-      const nativeAsset = getNativeAsset(this.asset)
+      const nativeAsset = this.swap ? getNativeAsset(this.asset) : getFeeAsset(this.asset) || getNativeAsset(this.asset)
       if (this.totalFees && name in this.totalFees) {
         const total = this.totalFees[name]
         const totalFiat = prettyFiatBalance(total, this.fiatRates[nativeAsset])
