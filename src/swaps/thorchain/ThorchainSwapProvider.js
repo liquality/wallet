@@ -69,12 +69,20 @@ const convertBaseAmountDecimal = (amount, decimal) => {
 }
 
 class ThorchainSwapProvider extends SwapProvider {
+  constructor (config) {
+    super(config)
+    this.pools = null
+  }
+
   async getSupportedPairs () {
     return []
   }
 
   async _getPools () {
-    return (await axios.get(`${this.config.thornode}/thorchain/pools`)).data
+    if (!this.pools) {
+      this.pools = (await axios.get(`${this.config.thornode}/thorchain/pools`)).data
+    }
+    return this.pools
   }
 
   async _getInboundAddresses () {
@@ -93,7 +101,7 @@ class ThorchainSwapProvider extends SwapProvider {
     // Only ethereum and bitcoin chains are supported
     if (!SUPPORTED_CHAINS.includes(cryptoassets[from].chain) || !SUPPORTED_CHAINS.includes(cryptoassets[to].chain)) return null
 
-    const pools = await this._getPools() // Cache it
+    const pools = await this._getPools()
 
     const fromPoolData = pools.find((pool) => pool.asset === toThorchainAsset(from))
     const toPoolData = pools.find((pool) => pool.asset === toThorchainAsset(to))
