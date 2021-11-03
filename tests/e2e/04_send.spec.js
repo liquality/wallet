@@ -22,7 +22,7 @@ const transactionDetailsPage = new TransactionDetailsPage()
 let browser, page
 const password = '123123123'
 
-describe('SEND feature', async () => {
+describe('SEND feature["testnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -97,7 +97,7 @@ describe('SEND feature', async () => {
     // Check Send Review option has been disabled
     await sendPage.HasReviewButtonDisabled(page)
   })
-  it('Send SOV to random ETH address-[smoke]', async () => {
+  it('Send SOV to random ETH address', async () => {
     const bitCoinName = 'SOV'
     const coinsToSend = '1'
 
@@ -121,7 +121,7 @@ describe('SEND feature', async () => {
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
-    const sendToAddress = testDataUtils.getRandomAddress('ethereum')
+    const sendToAddress = testDataUtils.getRandomAddress('rsk')
     await sendPage.EnterSendToAddress(page, sendToAddress)
     // Click Review Button
     await sendPage.ClickSendReview(page)
@@ -136,7 +136,7 @@ describe('SEND feature', async () => {
     await transactionDetailsPage.ValidateStatus(page)
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
   })
-  it('Send BNB to another BNB wallet', async () => {
+  it('Send BNB to another BNB wallet[smoke]', async () => {
     const bitCoinName = 'BNB'
     const coinsToSend = '0.0000001'
 

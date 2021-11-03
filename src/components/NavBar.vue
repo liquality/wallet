@@ -43,15 +43,18 @@
           <AssetsIcon />
           Manage Assets
         </li>
-        <li id="manage_accounts" @click="manageAccounts">
-          <AccountsIcon />
-          Manage Accounts
-        </li>
+        <li id="manage_accounts"
+          v-if="experiments.manageAccounts"
+             @click="manageAccounts">
+           <AccountsIcon />
+           Manage Accounts
+         </li>
         <li id="settings" @click="settings">
           <SettingsIcon />
           Settings
         </li>
-        <li id="ledger" @click="ledger">
+        <li id="ledger"
+            @click="ledger">
           <LedgerIcon />
           Ledger
         </li>
@@ -69,7 +72,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import clickAway from '@/directives/clickAway'
 import HamburgerIcon from '@/assets/icons/hamburger.svg'
@@ -107,6 +110,9 @@ export default {
     return {
       showMenuList: false
     }
+  },
+  computed: {
+    ...mapState(['experiments'])
   },
   methods: {
     ...mapActions(['lockWallet', 'trackAnalytics']),
@@ -218,6 +224,8 @@ export default {
     top: 44px;
     right: 0;
     left: auto;
+    border-left: 1px solid $hr-border-color;
+    border-top: 0 none;
 
     li {
       justify-content: start;

@@ -2,6 +2,7 @@ const Wallet = require('ethereumjs-wallet')
 const bitcoin = require('bitcoinjs-lib')
 const bip39 = require('bip39')
 const crypto = require('crypto')
+const chains = require('@liquality/cryptoassets').chains
 
 class TestDataUtils {
   /**
@@ -13,6 +14,10 @@ class TestDataUtils {
     switch (name) {
       case 'ethereum': {
         return this.getRandomEthereumAddress()
+      }
+
+      case 'rsk': {
+        return this.getRandomRSKAddress()
       }
 
       case 'bitcoin': {
@@ -31,6 +36,17 @@ class TestDataUtils {
   getRandomEthereumAddress () {
     const EthWallet = Wallet.default.generate()
     return EthWallet.getAddressString()
+  }
+
+  /**
+   * Generate random RSK address with EIP-1191 checksum
+   * @param network - testnet/mainnet
+   * @returns {string}
+   */
+  getRandomRSKAddress (network = 'testnet') {
+    const EthWallet = Wallet.default.generate()
+
+    return chains.rsk.formatAddress(EthWallet.getAddressString(), network)
   }
 
   /**

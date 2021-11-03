@@ -59,7 +59,7 @@
                   <div class="send_fees">
                     <span class="selectors-asset">{{ assetChain }}</span>
                     <div class="custom-fees" v-if="customFee">
-                    {{ currentFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
+                    {{ prettyFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
                     <button class="btn btn-link" @click="resetCustomFee">
                       Reset
                     </button>
@@ -208,7 +208,8 @@ import { prettyBalance, prettyFiatBalance, dpUI, fiatToCrypto } from '@/utils/co
 import {
   getNativeAsset,
   getAssetColorStyle,
-  getAssetIcon
+  getAssetIcon,
+  getFeeAsset
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import {
@@ -309,7 +310,7 @@ export default {
       return this.$route.query.source || null
     },
     assetChain () {
-      return getNativeAsset(this.asset)
+      return getFeeAsset(this.asset) || getNativeAsset(this.asset)
     },
     assetFees () {
       const assetFees = {}
@@ -334,7 +335,7 @@ export default {
       return (this.selectedFee in fees) ? fees[this.selectedFee] : BN(0)
     },
     isValidAddress () {
-      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address)
+      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
     },
     addressError () {
       if (!this.isValidAddress) {
