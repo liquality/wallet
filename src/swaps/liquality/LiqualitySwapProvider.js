@@ -628,7 +628,10 @@ class LiqualitySwapProvider extends SwapProvider {
 
   static totalSteps = 4
 
-  static feeType = 2
+  static feeType = {
+    fromSideFee: true,
+    toSideFee: true
+  }
 }
 
 export { LiqualitySwapProvider }

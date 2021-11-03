@@ -651,8 +651,8 @@ export default {
       const availableFees = new Set([])
       const fees = this.getAssetFees(this.assetChain)
       const toFees = this.getAssetFees(this.toAssetChain)
-      if (fees && Object.keys(fees).length && this.selectedQuoteProvider.feeType >= 1) availableFees.add(this.assetChain)
-      if (toFees && Object.keys(toFees).length && this.selectedQuoteProvider.feeType === 2) availableFees.add(this.toAssetChain)
+      if (fees && Object.keys(fees).length && this.selectedQuoteProvider.feeType.fromSideFee) availableFees.add(this.assetChain)
+      if (toFees && Object.keys(toFees).length && this.selectedQuoteProvider.feeType.toSideFee) availableFees.add(this.toAssetChain)
       return availableFees
     },
     sendAmountSameAsset () {

@@ -89,7 +89,7 @@ class ThorchainSwapProvider extends SwapProvider {
     }
   }
 
-  async getQuote ({ network, from, to, amount }) {
+  async getQuote ({ network, from, to, amount }) { // TODO: add bnb
     // Only ethereum and bitcoin chains are supported
     if (!SUPPORTED_CHAINS.includes(cryptoassets[from].chain) || !SUPPORTED_CHAINS.includes(cryptoassets[to].chain)) return null
 
@@ -448,7 +448,10 @@ class ThorchainSwapProvider extends SwapProvider {
 
   static totalSteps = 4
 
-  static feeType = 1
+  static feeType = {
+    fromSideFee: true,
+    toSideFee: false
+  }
 }
 
 export { ThorchainSwapProvider }

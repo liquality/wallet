@@ -280,7 +280,10 @@ class OneinchSwapProvider extends SwapProvider {
 
   static totalSteps = 3
 
-  static feeType = 1
+  static feeType = {
+    fromSideFee: true,
+    toSideFee: false
+  }
 }
 
 export { OneinchSwapProvider }

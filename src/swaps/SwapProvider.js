@@ -154,12 +154,9 @@ class SwapProvider {
     return totalSteps
   }
 
-  // 0 for no fee on swap
-  // 1 for single side fee on swap
-  // 2 for double side fee on swap
   get feeType () {
     const feeType = this.constructor.feeType
-    if (typeof feeType === 'undefined') throw new Error('`feeType` is not defined. e.g. 0')
+    if (typeof feeType === 'undefined') throw new Error('`feeType` is not defined. e.g. { fromSideFee: true, toSideFee: false }')
     return feeType
   }
 }
