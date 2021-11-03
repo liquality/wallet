@@ -124,6 +124,12 @@ export default {
         routerAddress: SovrynMainnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynMainnetAddresses.proxy3,
         rpcURL: 'https://public-node.rsk.co/'
+      },
+      thorchain: {
+        name: 'Thorchain',
+        icon: 'thorchain.svg',
+        type: SwapProviderType.THORCHAIN,
+        thornode: 'https://thornode.thorchain.info'
       }
     }
   },
