@@ -335,7 +335,7 @@ export default {
       return (this.selectedFee in fees) ? fees[this.selectedFee] : BN(0)
     },
     isValidAddress () {
-      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address)
+      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
     },
     addressError () {
       if (!this.isValidAddress) {
