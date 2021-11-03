@@ -388,6 +388,7 @@ class UniswapSwapProvider extends SwapProvider {
   static timelineDiagramSteps = ['APPROVE', 'SWAP']
 
   static totalSteps = 3
+  static feeType = 1
 }
 
 export { UniswapSwapProvider }

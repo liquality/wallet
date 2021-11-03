@@ -238,6 +238,8 @@ class FastbtcSwapProvider extends SwapProvider {
   static timelineDiagramSteps = ['SWAP']
 
   static totalSteps = 3
+
+  static feeType = 1
 }
 
 export { FastbtcSwapProvider }

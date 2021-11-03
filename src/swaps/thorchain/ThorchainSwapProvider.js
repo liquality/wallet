@@ -447,6 +447,8 @@ class ThorchainSwapProvider extends SwapProvider {
   static timelineDiagramSteps = ['APPROVE', 'SWAP', 'RECEIVE']
 
   static totalSteps = 4
+
+  static feeType = 1
 }
 
 export { ThorchainSwapProvider }
