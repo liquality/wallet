@@ -60,7 +60,7 @@
 
 <script>
 import { getAssetColorStyle } from '@/utils/asset'
-import { getAccountIcon } from '@/utils/accounts'
+import { getChainIcon } from '@/utils/accounts'
 import { chains } from '@liquality/cryptoassets'
 import SearchIcon from '@/assets/icons/search.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
@@ -113,11 +113,10 @@ export default {
   },
   methods: {
     getAssetColorStyle,
+    getChainIcon,
     getChainName (chain) {
-      return chains[chain].name
-    },
-    getChainIcon (chain) {
-      return getAccountIcon(chain)
+      const { name, code } = chains[chain]
+      return `${name} (${code})`
     },
     selectItem (chain) {
       this.$emit('chain-changed', chain)
@@ -170,6 +169,8 @@ export default {
     padding-bottom: 0;
     padding-top: 0;
     margin: 0;
+    right: 0;
+    left: auto;
     border: 1px solid #D9DFE5;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
