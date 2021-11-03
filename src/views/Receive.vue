@@ -167,10 +167,7 @@ export default {
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(addresses[0])
     }
 
-    const uri = [
-      this.chainName,
-      this.address
-    ].join(':')
+    const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')
 
     QRCode.toString(uri, {
       type: 'svg',
