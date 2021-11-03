@@ -13,7 +13,7 @@ const passwordPage = new PasswordPage()
 let browser, page, dappPage
 const password = '123123123'
 
-describe('Sushi Dapp Injection-[mainnet,smoke]', async () => {
+describe('Sushi Dapp Injection-[mainnet,testnet]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -43,7 +43,7 @@ describe('Sushi Dapp Injection-[mainnet,smoke]', async () => {
     await browser.close()
   })
 
-  it('Sushi injection - ETH', async () => {
+  it('Sushi injection - ETH["smoke"]', async () => {
     // Go to Sushi app
     dappPage = await browser.newPage()
     await dappPage.setViewport({

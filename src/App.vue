@@ -49,8 +49,8 @@ export default {
       }
     }
   },
-  created () {
-    this.initializeAnalytics()
+  async created () {
+    await this.initializeAnalytics()
   }
 }
 </script>

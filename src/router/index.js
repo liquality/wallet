@@ -14,6 +14,7 @@ import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap/Swap.vue'
 
 import Settings from '@/views/Settings'
+import Experiments from '@/views/Experiments'
 import ManageAssets from '@/views/ManageAssets'
 import CustomToken from '@/views/CustomToken'
 
@@ -63,6 +64,10 @@ const routes = [
   {
     path: '/settings',
     component: Settings
+  },
+  {
+    path: '/settings/experiments',
+    component: Experiments
   },
   {
     path: '/settings/manage-assets',

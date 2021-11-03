@@ -294,17 +294,24 @@ export default {
       ...payload
     }
   },
+  TOGGLE_EXPERIMENT (state, { name }) {
+    const { experiments } = state
+    state.experiments = {
+      ...experiments,
+      [name]: experiments ? !experiments[name] : true
+    }
+  },
   SET_WATS_NEW_MODAL_VERSION (state, { version }) {
     state.watsNewModalVersion = version
   },
   TOGGLE_BLOCKCHAIN (state, { network, walletId, chainId, enable }) {
     ensureEnableChainsWalletTree(state, walletId, network)
 
-    const chains = state.enabledChains.[walletId].[network]
+    const chains = state.enabledChains[walletId][network]
     if (enable) {
-      Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains, chainId])])
+      Vue.set(state.enabledChains[walletId], network, [...new Set([...chains, chainId])])
     } else {
-      Vue.set(state.enabledChains.[walletId], network, [...new Set([...chains.filter(c => c !== chainId)])])
+      Vue.set(state.enabledChains[walletId], network, [...new Set([...chains.filter(c => c !== chainId)])])
     }
   },
   TOGGLE_ACCOUNT (state, { network, walletId, accountId, enable }) {
