@@ -18,14 +18,14 @@ const transactionDetailsPage = new TransactionDetailsPage()
 let browser, page
 const password = '123123123'
 
-describe('Custom fee feature', async () => {
+describe('Custom fee feature["testnet"]', async () => {
   const coinName = 'SOV'
   const coinsToSend = '0.001'
 
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle0' })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
 
@@ -49,7 +49,7 @@ describe('Custom fee feature', async () => {
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address to another SOV
-    await sendPage.EnterSendToAddress(page, '0x9d0023Bd55ab3647f6C591DA6d46e5A6128d33d1')
+    await sendPage.EnterSendToAddress(page, '0x9D0023bD55AB3647F6c591dA6D46E5A6128D33D1')
   })
 
   it('Send SOV to another SOV with custom fee (Fast)-[smoke]', async () => {

@@ -20,7 +20,7 @@ describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle0' })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
@@ -64,7 +64,7 @@ describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
     await page.click('#previous_nav_bar')
     // overview-screen-chain-section , RSK should be hidden
     let accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(6)
+    expect(accounts.length).to.equals(8)
     // Go back to Manage account & toggle on
     await overviewPage.ClickOnManageAccounts(page)
     // Chain RSK toggle on but not accounts

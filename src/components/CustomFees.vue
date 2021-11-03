@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import { getAssetIcon, getNativeAsset } from '@/utils/asset'
+import { getAssetIcon, getNativeAsset, getFeeAsset } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import { getFeeLabel } from '@/utils/fees'
 import BN from 'bignumber.js'
@@ -128,13 +128,13 @@ export default {
   },
   computed: {
     nativeAsset () {
-      return getNativeAsset(this.asset)
+      return getFeeAsset(this.asset) || getNativeAsset(this.asset)
     },
     gasUnit () {
       const chainId = cryptoassets[this.asset]?.chain
       if (chainId) {
         const { unit } = chains[chainId]?.fees || ''
-        return unit
+        return getFeeAsset(this.asset) || unit
       }
       return ''
     },
@@ -153,7 +153,8 @@ export default {
         bsc: 1,
         polygon: 1,
         near: 0.00001,
-        solana: 0.00001
+        solana: 0.00001,
+        terra: 1
       })[chainId] || 1
     }
   },
@@ -196,7 +197,7 @@ export default {
       } else {
         const chainId = cryptoassets[this.asset].chain
         const { unit } = chains[chainId].fees
-        return `${this.fee} ${unit}`
+        return `${this.fee || 0} ${unit}`
       }
     },
     getFiatAmount (name) {

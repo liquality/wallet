@@ -128,6 +128,9 @@ store.subscribe(async ({
         properties: {
           category: 'Settings',
           action: 'Custom Token Added',
+          customTokenName: `${payload.customToken.name}`,
+          customTokenChain: `${payload.customToken.chain}`,
+          customTokenSymbol: `${payload.customToken.symbol}`,
           label: [`${payload.customToken.name}`, `(${payload.customToken.chain})`, `(${payload.customToken.symbol})`]
         }
       })

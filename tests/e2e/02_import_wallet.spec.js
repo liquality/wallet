@@ -14,7 +14,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Import wallet-["mainnet"]', async () => {
+describe('Import wallet-["mainnet","testnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -22,7 +22,6 @@ describe('Import wallet-["mainnet"]', async () => {
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
-
   afterEach(async () => {
     try {
       await page.close()
@@ -166,7 +165,7 @@ describe('Import wallet-["mainnet"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the total assets on overview screen.
-    await overviewPage.ValidateTotalAssets(page, false) // 9 assets
+    await overviewPage.ValidateTotalAssets(page, false) // 10 assets
     // Check the currency
     expect(await overviewPage.GetCurrency(page),
       'Wallet stats has currency should be USD').contain('USD')
