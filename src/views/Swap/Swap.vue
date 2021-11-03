@@ -499,7 +499,7 @@ export default {
       }
     },
     receiveAmount () {
-      return this.selectedQuote ? unitToCurrency(cryptoassets[this.toAsset], this.selectedQuote.toAmount) : BN(0)
+      return this.selectedQuote ? unitToCurrency(cryptoassets[this.toAsset], this.selectedQuote.toAmount).toFixed() : BN(0)
     },
     receiveAmountFiat () {
       return cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
@@ -605,7 +605,7 @@ export default {
     showErrors () {
       return !this.ethRequired
     },
-    amountError () {
+    amountError () { // TODO:
       if (this.showNoLiquidityMessage) {
         return null
       }
@@ -648,7 +648,7 @@ export default {
       const fees = this.getAssetFees(this.assetChain)
       const toFees = this.getAssetFees(this.toAssetChain)
       if (fees && Object.keys(fees).length) availableFees.add(this.assetChain)
-      if (toFees && Object.keys(toFees).length) {
+      if (toFees && Object.keys(toFees).length && (this.selectedQuoteProvider.config.type !== 'THORCHAIN')) {
         availableFees.add(this.toAssetChain)
       }
       return availableFees
@@ -662,7 +662,7 @@ export default {
       return send.plus(fee).toFormat(2)
     },
     receiveAmountSameAsset () {
-      return BN(this.receiveAmount).minus(this.toSwapFee)
+      return BN(this.receiveAmount).minus(this.toSwapFee).toFixed()
     },
     totalToReceiveInFiat () {
       const receive = cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
