@@ -219,6 +219,8 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
 
 function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
   let terraNetwork
+  let _asset = asset
+  let tokenAddress = ''
 
   switch (asset) {
     case 'LUNA': {
@@ -228,24 +230,26 @@ function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
       terraNetwork = { ...ChainNetworks.terra[network], asset: 'uusd' }
       break
     } default: {
-      const tokenAddress = store.state.terraToken[asset]
-      terraNetwork = { ...ChainNetworks.terra[network], asset, tokenAddress }
+      _asset = 'uluna'
+      tokenAddress = store.state.terraToken[asset]
       break
     }
   }
 
   const terraClient = new Client()
 
-  terraClient.addProvider(new TerraRpcProvider(terraNetwork))
+  terraClient.addProvider(new TerraRpcProvider(terraNetwork, _asset))
   terraClient.addProvider(new TerraWalletProvider(
     {
       network: terraNetwork,
       mnemonic,
-      baseDerivationPath
+      baseDerivationPath,
+      asset: _asset,
+      tokenAddress
     }
   ))
-  terraClient.addProvider(new TerraSwapProvider(terraNetwork))
-  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork))
+  terraClient.addProvider(new TerraSwapProvider(terraNetwork, _asset))
+  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork, _asset))
 
   return terraClient
 }
