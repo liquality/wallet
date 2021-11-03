@@ -59,7 +59,7 @@
                   <div class="send_fees">
                     <span class="selectors-asset">{{ assetChain }}</span>
                     <div class="custom-fees" v-if="customFee">
-                    {{ currentFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
+                    {{ prettyFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
                     <button class="btn btn-link" @click="resetCustomFee">
                       Reset
                     </button>
