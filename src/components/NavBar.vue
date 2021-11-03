@@ -44,7 +44,7 @@
           Manage Assets
         </li>
         <li id="manage_accounts"
-             v-if="multiAccountFeatureFlag"
+          v-if="experiments.manageAccounts"
              @click="manageAccounts">
            <AccountsIcon />
            Manage Accounts
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import clickAway from '@/directives/clickAway'
 import HamburgerIcon from '@/assets/icons/hamburger.svg'
@@ -108,16 +108,14 @@ export default {
   ],
   data () {
     return {
-      showMenuList: false,
-      multiAccountFeatureFlag: false
+      showMenuList: false
     }
   },
-  async created () {
-    this.multiAccountFeatureFlag = await this.getFeatureFlag({ key: 'multi-account-feature', defaultValue: false })
-    console.log('multiAccountFeatureFlag', this.multiAccountFeatureFlag)
+  computed: {
+    ...mapState(['experiments'])
   },
   methods: {
-    ...mapActions(['lockWallet', 'trackAnalytics', 'getFeatureFlag']),
+    ...mapActions(['lockWallet', 'trackAnalytics']),
     async lock () {
       this.trackAnalytics({
         event: 'HamburgerIcon',
@@ -226,6 +224,8 @@ export default {
     top: 44px;
     right: 0;
     left: auto;
+    border-left: 1px solid $hr-border-color;
+    border-top: 0 none;
 
     li {
       justify-content: start;

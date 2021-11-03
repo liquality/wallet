@@ -106,7 +106,7 @@ class UniswapSwapProvider extends SwapProvider {
     const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
 
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
-    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
     const allowance = await erc20.allowance(fromAddress, this.config.routerAddress)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     if (allowance.gte(inputAmount)) {
@@ -124,7 +124,7 @@ class UniswapSwapProvider extends SwapProvider {
 
     const fromChain = cryptoassets[quote.from].chain
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
-    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
 
     return {
       from: fromAddress, // Required for estimation only (not used in chain client)
@@ -176,7 +176,7 @@ class UniswapSwapProvider extends SwapProvider {
     const outputAmountHex = ethers.BigNumber.from(minimumOutputInUnit.toFixed()).toHexString()
 
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
-    const toAddress = chains[toChain].formatAddress(toAddressRaw)
+    const toAddress = chains[toChain].formatAddress(toAddressRaw, network)
 
     const api = this.getApi(network, quote.to)
     const uniswap = new ethers.Contract(this.config.routerAddress, UniswapV2Router.abi, api)
@@ -197,7 +197,7 @@ class UniswapSwapProvider extends SwapProvider {
 
     const fromChain = cryptoassets[quote.from].chain
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
-    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
 
     return {
       from: fromAddress, // Required for estimation only (not used in chain client)

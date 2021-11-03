@@ -36,8 +36,7 @@ export default {
     ])
   },
   methods: {
-    ...mapActions(['initializeAnalytics', 'initializeLaunchDarkly']),
-    ...mapActions('app', ['startBridgeListener'])
+    ...mapActions(['initializeAnalytics'])
   },
   watch: {
     unlockedAt: function (unlocked) {
@@ -52,7 +51,6 @@ export default {
   },
   async created () {
     await this.initializeAnalytics()
-    await this.initializeLaunchDarkly()
   }
 }
 </script>
