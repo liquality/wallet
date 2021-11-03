@@ -54,6 +54,7 @@ store.subscribe(async ({
 
       commit('app/SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
       commit('app/SET_USB_BRIDGE_CREATED', { created: false })
+      dispatch('app/startBridgeListener')
 
       asyncLoop(
         () => dispatch('updateBalances', {

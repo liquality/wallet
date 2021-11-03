@@ -15,28 +15,35 @@ bridgeEmiter.on('TRANSPORT_CREATED', () => {
 })
 
 export const setLedgerBridgeListener = () => {
-  if (!CHROME_PORT) {
-    chrome.runtime.onConnectExternal.addListener(port => {
-      port.onDisconnect.addListener(() => {
-        CHROME_PORT = null
-        bridgeEmiter.emit('DISCONNECTED_PORT')
-        return true
-      })
-      CHROME_PORT = port
-      port.onMessage.addListener(
-        async (request) => {
-          if (!request) {
-            return
-          }
-
-          const {
-            action
-          } = request
-          console.log('action', action)
-          bridgeEmiter.emit(action, request)
-        })
+  const listener = port => {
+    console.log('onConnectExternal', port)
+    port.onDisconnect.addListener(() => {
+      console.log('onDisconnect extension', port)
+      CHROME_PORT = null
+      bridgeEmiter.emit('DISCONNECTED_PORT')
     })
+    CHROME_PORT = port
+    console.log('started port', CHROME_PORT)
+    port.onMessage.addListener(
+      async (request) => {
+        console.log('request', request)
+        if (!request) {
+          return
+        }
+
+        const {
+          action
+        } = request
+        console.log('action', action)
+        bridgeEmiter.emit(action, request)
+      })
   }
+
+  if (chrome.runtime.onConnectExternal.hasListener(listener)) {
+    chrome.runtime.onConnectExternal.removeListener(listener)
+  }
+  chrome.runtime.onConnectExternal.addListener(listener)
+  console.log('setLedgerBridgeListener', CHROME_PORT)
   return bridgeEmiter
 }
 
