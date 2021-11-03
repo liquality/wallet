@@ -98,6 +98,18 @@ export default {
     routeSource () {
       return this.$route.query.source || null
     },
+    prefix() {
+      return ({
+        bitcoin: 'bitcoin:',
+        ethereum: 'ethereum:',
+        near: 'near:',
+        solana: 'solana:',
+        rsk: 'ethereum:',
+        bsc: 'ethereum:',
+        polyon: 'ethereum:',
+        terra: ''
+      })
+    },
     chainName () {
       return ({
         bitcoin: 'bitcoin',
@@ -168,11 +180,8 @@ export default {
       this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
     }
 
-    const uri = [
-      this.chainName,
-      this.address
-    ].join(':')
-
+    const uri = this.prefix[this.chainName] + this.address
+    
     QRCode.toString(uri, {
       type: 'svg',
       margin: 0
