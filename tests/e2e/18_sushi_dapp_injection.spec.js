@@ -12,6 +12,7 @@ const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
 const password = '123123123'
+const dappUrl = 'https://app.sushi.com/swap'
 
 describe('Sushi Dapp Injection-[mainnet,testnet]', async () => {
   beforeEach(async () => {
@@ -50,7 +51,7 @@ describe('Sushi Dapp Injection-[mainnet,testnet]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto('https://app.sushi.com/swap', { timeout: 60000 })
+    await dappPage.goto(dappUrl, { timeout: 60000 })
     try {
       await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
       await dappPage.click('#connect-wallet')
@@ -80,18 +81,10 @@ describe('Sushi Dapp Injection-[mainnet,testnet]', async () => {
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
   it('Sushi injection - Polygon', async () => {
-    // Select polygon network
-    await page.click('#dropdown-item')
-    await page.waitForSelector('#polygon_web_network', { visible: true })
-    await page.click('#polygon_web_network')
-
     // Go to Sushi app
     dappPage = await browser.newPage()
-    await dappPage.setViewport({
-      width: 1366,
-      height: 768
-    })
-    await dappPage.goto('https://app.sushi.com/swap', { timeout: 60000 })
+    await dappPage.setViewport({ width: 1440, height: 700 })
+    await dappPage.goto(dappUrl, { timeout: 60000 })
     try {
       await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
       await dappPage.click('#connect-wallet')
@@ -107,7 +100,13 @@ describe('Sushi Dapp Injection-[mainnet,testnet]', async () => {
     const injectedOption = await dappPage.$x("//*[text()='Injected']")
     injectedOption[0].click()
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#POLYGON', { visible: true })
+    try {
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 60000 })
+      await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true, timeout: 60000 })
+    } catch (e) {
+      await testUtil.takeScreenshot(connectRequestWindow, 'sushi-dapp-polygon-issue')
+      expect(e, 'Sushi injection ARBITRUM not listed, connect request window loading issue.....').equals(null)
+    }
     await connectRequestWindow.click('#POLYGON')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
