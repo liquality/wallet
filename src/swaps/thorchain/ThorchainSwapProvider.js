@@ -20,7 +20,7 @@ import { mapValues } from 'lodash-es'
 // Pool balances are denominated with 8 decimals
 const THORCHAIN_DECIMAL = 8
 
-const SUPPORTED_CHAINS = ['bitcoin', 'ethereum']
+const SUPPORTED_CHAINS = ['bitcoin', 'ethereum', 'bsc']
 
 const OUT_MEMO_TO_STATUS = {
   OUT: 'SUCCESS',
@@ -98,7 +98,7 @@ class ThorchainSwapProvider extends SwapProvider {
   }
 
   async getQuote ({ network, from, to, amount }) { // TODO: add bnb
-    // Only ethereum and bitcoin chains are supported
+    // Only ethereum, bitcoin and bsc chains are supported
     if (!SUPPORTED_CHAINS.includes(cryptoassets[from].chain) || !SUPPORTED_CHAINS.includes(cryptoassets[to].chain)) return null
 
     const pools = await this._getPools()
@@ -125,7 +125,7 @@ class ThorchainSwapProvider extends SwapProvider {
     // For RUNE it's `getSwapOutput`
     const swapOutput = getDoubleSwapOutput(inputAmount, fromPool, toPool)
 
-    const networkFee = await this.networkFees(network, cryptoassets[to].code)
+    const networkFee = await this.networkFees(cryptoassets[to].code)
     const toAmountInUnit = currencyToUnit(cryptoassets[to], baseToAsset(swapOutput).amount())
     return {
       from,
@@ -136,7 +136,7 @@ class ThorchainSwapProvider extends SwapProvider {
     }
   }
 
-  async networkFees (network, chainCode) {
+  async networkFees (chainCode) {
     const inboundAddresses = await this._getInboundAddresses()
     const gasRate = inboundAddresses.find(inbound => inbound.chain === chainCode).gas_rate
 
@@ -145,6 +145,7 @@ class ThorchainSwapProvider extends SwapProvider {
     // gas/bytes * gas_rate * 3
     if (chainCode === 'BTC') return BN(250 * gasRate * 3)
     if (chainCode === 'ETH') return BN(38000 * gasRate * 3)
+    if (chainCode === 'BNB') return BN(10 * gasRate * 3)
   }
 
   async approveTokens ({ network, walletId, quote }) {
