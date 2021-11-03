@@ -117,13 +117,26 @@ class ThorchainSwapProvider extends SwapProvider {
     // For RUNE it's `getSwapOutput`
     const swapOutput = getDoubleSwapOutput(inputAmount, fromPool, toPool)
 
+    const networkFee = await this.networkFees(network, cryptoassets[to].code)
     const toAmountInUnit = currencyToUnit(cryptoassets[to], baseToAsset(swapOutput).amount())
     return {
       from,
       to,
       fromAmount: fromAmountInUnit,
-      toAmount: toAmountInUnit
+      toAmount: toAmountInUnit,
+      coversNetworkFees: swapOutput.amount().gte(networkFee)
     }
+  }
+
+  async networkFees (network, chainCode) {
+    const inboundAddresses = await this._getInboundAddresses()
+    const gasRate = inboundAddresses.find(inbound => inbound.chain === chainCode).gas_rate
+
+    // This magic numbers are gas or bytes cost for transfer
+    // Formula to calculate network fees:
+    // gas/bytes * gas_rate * 3
+    if (chainCode === 'BTC') return BN(250 * gasRate * 3)
+    if (chainCode === 'ETH') return BN(38000 * gasRate * 3)
   }
 
   async approveTokens ({ network, walletId, quote }) {

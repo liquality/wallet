@@ -605,7 +605,7 @@ export default {
     showErrors () {
       return !this.ethRequired
     },
-    amountError () { // TODO:
+    amountError () {
       if (this.showNoLiquidityMessage) {
         return null
       }
@@ -621,6 +621,10 @@ export default {
 
       if (amount.lt(this.min)) {
         return 'Please increase amount. It is below minimum.'
+      }
+
+      if (this.selectedQuote?.coversNetworkFees === false) {
+        return 'Please increase amount. Does not cover network fees on recieve chain.'
       }
 
       return null
