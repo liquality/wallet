@@ -36,7 +36,7 @@ export default {
     ])
   },
   methods: {
-    ...mapActions(['initializeAnalytics', 'initializeLaunchDarkly', 'startBridgeListener']),
+    ...mapActions(['initializeAnalytics', 'initializeLaunchDarkly']),
     ...mapActions('app', ['startBridgeListener'])
   },
   watch: {
@@ -53,8 +53,6 @@ export default {
   async created () {
     await this.initializeAnalytics()
     await this.initializeLaunchDarkly()
-    await this.startBridgeListener()
-    console.log('VUE_APP_LEDGER_BRIDGE_URL', process.env.VUE_APP_LEDGER_BRIDGE_URL)
   }
 }
 </script>
