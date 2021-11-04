@@ -154,7 +154,7 @@ describe('SWAP feature["testnet"]', async () => {
     console.log(chalk.green('SEND Swap value: ' + sendAmountValue))
 
     // Check Fees are high. Review transaction carefully.
-    await swapPage.CheckFeesAreHigh(page)
+    // await swapPage.CheckFeesAreHigh(page)
 
     // Send confirm USD value
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
@@ -376,7 +376,7 @@ describe('SWAP feature["testnet"]', async () => {
 
     // Click SWAP review button
     await swapPage.ClickSwapReviewButton(page)
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(5000)
 
     // SWAP review screen validations
     // SWAP SEND details validation

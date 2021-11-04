@@ -32,16 +32,13 @@ jobs:
 
       - name: Set development manifest
         run: |
+          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
-
-      - name: Build
-        run: |
           npm ci
           npm run lint
           npm run build
 
-      - run: mkdir screenshots
       - name: Regression tests against Mainnet
         uses: beemi/puppeteer-headful@v1.0.6
         env:
@@ -50,7 +47,7 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: test:mainnet:devagent
+          args: test:mainnet:devagent # Run tests against dev mainnet
 
       - name: Archive Mocha HTML report
         uses: actions/upload-artifact@v2.2.4
