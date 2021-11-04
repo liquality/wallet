@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
 import buildConfig from '../../build.config'
-import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import { chains, currencyToUnit, unitToCurrency, isEthereumChain } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
@@ -21,6 +21,7 @@ import { mapValues } from 'lodash-es'
 const THORCHAIN_DECIMAL = 8
 
 const SUPPORTED_CHAINS = ['bitcoin', 'ethereum']
+const safeFeeMultiplier = 1.5
 
 const OUT_MEMO_TO_STATUS = {
   OUT: 'SUCCESS',
@@ -132,19 +133,19 @@ class ThorchainSwapProvider extends SwapProvider {
       to,
       fromAmount: fromAmountInUnit,
       toAmount: toAmountInUnit,
-      coversNetworkFees: swapOutput.amount().gte(networkFee)
+      coversNetworkFees: swapOutput.amount().gte(networkFee.times(safeFeeMultiplier))
     }
   }
 
   async networkFees (asset) {
-    const assetCode = isERC20(asset) ? 'ETH' : cryptoassets[asset].code
+    const assetCode = isERC20(asset) ? chains[cryptoassets[asset].chain].nativeAsset : cryptoassets[asset].code
     const inboundAddresses = await this._getInboundAddresses()
     const gasRate = inboundAddresses.find(inbound => inbound.chain === assetCode).gas_rate
 
     // https://github.com/thorchain/asgardex-electron/issues/1381
-    if (isERC20(asset) && assetCode === 'ETH') return BN(70000 * gasRate * 3)
-    if (assetCode === 'ETH') return BN(38000 * gasRate * 3)
-    if (assetCode === 'BTC') return BN(250 * gasRate * 3)
+    if (isERC20(asset) && isEthereumChain(cryptoassets[asset].chain)) return BN(70000).times(gasRate).times(3)
+    if (assetCode === 'ETH') return BN(38000).times(gasRate).times(3)
+    if (assetCode === 'BTC') return BN(250).times(gasRate).times(3)
   }
 
   async approveTokens ({ network, walletId, quote }) {
@@ -192,8 +193,8 @@ class ThorchainSwapProvider extends SwapProvider {
     const encodedMemo = Buffer.from(memo, 'utf-8').toString('hex')
 
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
-    const swapTx = await client.chain.sendTransaction({ to: to, value, data: encodedMemo, fee: quote.fee })
-    return swapTx
+    const fromFundTx = await client.chain.sendTransaction({ to: to, value, data: encodedMemo, fee: quote.fee })
+    return fromFundTx
   }
 
   async sendEthereumSwap ({ quote, network, walletId, memo }) {
@@ -215,9 +216,9 @@ class ThorchainSwapProvider extends SwapProvider {
     const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
 
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
-    const swapTx = await client.chain.sendTransaction({ to: routerAddress, value, data: encodedData, fee: quote.fee })
+    const fromFundTx = await client.chain.sendTransaction({ to: routerAddress, value, data: encodedData, fee: quote.fee })
 
-    return swapTx
+    return fromFundTx
   }
 
   async makeMemo ({ network, walletId, quote }) {
@@ -233,17 +234,17 @@ class ThorchainSwapProvider extends SwapProvider {
 
   async sendSwap ({ network, walletId, quote }) {
     const memo = await this.makeMemo({ network, walletId, quote })
-    let swapTx
+    let fromFundTx
     if (quote.from === 'BTC') {
-      swapTx = await this.sendBitcoinSwap({ quote, network, walletId, memo })
+      fromFundTx = await this.sendBitcoinSwap({ quote, network, walletId, memo })
     } else if (quote.from === 'ETH' || isERC20(quote.from)) {
-      swapTx = await this.sendEthereumSwap({ quote, network, walletId, memo })
+      fromFundTx = await this.sendEthereumSwap({ quote, network, walletId, memo })
     }
 
     return {
       status: 'WAITING_FOR_SEND_CONFIRMATIONS',
-      swapTx,
-      swapTxHash: swapTx.hash
+      fromFundTx,
+      fromFundHash: fromFundTx.hash
     }
   }
 
@@ -302,7 +303,7 @@ class ThorchainSwapProvider extends SwapProvider {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
-      const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
+      const tx = await client.chain.getTransactionByHash(swap.fromFundHash)
       if (tx && tx.confirmations > 0) {
         return {
           endTime: Date.now(),
@@ -317,7 +318,7 @@ class ThorchainSwapProvider extends SwapProvider {
 
   async waitForReceive ({ swap, network, walletId }) {
     try {
-      const thorchainTx = await this._getTransaction(swap.swapTxHash)
+      const thorchainTx = await this._getTransaction(swap.fromFundHash)
       const receiveHash = thorchainTx.observed_tx?.out_hashes?.[0]
       if (receiveHash) {
         const thorchainReceiveTx = await this._getTransaction(receiveHash)
@@ -452,7 +453,7 @@ class ThorchainSwapProvider extends SwapProvider {
   static fromTxType = ThorchainSwapProvider.txTypes.SWAP
   static toTxType = null
 
-  static timelineDiagramSteps = ['APPROVE', 'SWAP', 'RECEIVE']
+  static timelineDiagramSteps = ['APPROVE', 'INITIATION', 'RECEIVE']
 
   static totalSteps = 4
 
