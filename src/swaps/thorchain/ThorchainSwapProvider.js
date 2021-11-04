@@ -125,7 +125,7 @@ class ThorchainSwapProvider extends SwapProvider {
     // For RUNE it's `getSwapOutput`
     const swapOutput = getDoubleSwapOutput(inputAmount, fromPool, toPool)
 
-    const networkFee = await this.networkFees(cryptoassets[to].code)
+    const networkFee = await this.networkFees(to)
     const toAmountInUnit = currencyToUnit(cryptoassets[to], baseToAsset(swapOutput).amount())
     return {
       from,
@@ -136,16 +136,16 @@ class ThorchainSwapProvider extends SwapProvider {
     }
   }
 
-  async networkFees (chainCode) {
+  async networkFees (asset) {
+    const assetCode = cryptoassets[asset].code
     const inboundAddresses = await this._getInboundAddresses()
-    const gasRate = inboundAddresses.find(inbound => inbound.chain === chainCode).gas_rate
+    const gasRate = inboundAddresses.find(inbound => inbound.chain === assetCode).gas_rate
 
-    // This magic numbers are gas or bytes cost for transfer
-    // Formula to calculate network fees:
-    // gas/bytes * gas_rate * 3
-    if (chainCode === 'BTC') return BN(250 * gasRate * 3)
-    if (chainCode === 'ETH') return BN(38000 * gasRate * 3)
-    if (chainCode === 'BNB') return BN(10 * gasRate * 3)
+    // https://github.com/thorchain/asgardex-electron/issues/1381
+    if (isERC20(asset) && assetCode === 'ETH') return BN(70000 * gasRate * 3)
+    if (assetCode === 'ETH') return BN(38000 * gasRate * 3)
+    if (assetCode === 'BTC') return BN(250 * gasRate * 3)
+    if (assetCode === 'BNB') return BN(1 * gasRate * 3)
   }
 
   async approveTokens ({ network, walletId, quote }) {
