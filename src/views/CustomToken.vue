@@ -68,7 +68,7 @@
                    href="#"
                    @click="selectChain('terra')"
                    :class="{active: chain === 'terra'}">
-                  Terra
+                  Terra (Terra)
                 </a>
               </li>
             </ul>
@@ -201,7 +201,8 @@ export default {
 
       if (this.existingAsset) {
         customToken = this.existingAsset
-      } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
+        // else if (this.activeNetwork === 'mainnet' && this.contractAddress)
+      } else if (this.contractAddress) {
         switch (this.chain) {
           case 'terra': {
             const { symbol, name, decimals } = await fetchTerraToken(this.contractAddress, this.activeNetwork)
