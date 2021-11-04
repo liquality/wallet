@@ -89,7 +89,7 @@ class ThorchainSwapProvider extends SwapProvider {
     }
   }
 
-  async getQuote ({ network, from, to, amount }) { // TODO: add bnb
+  async getQuote ({ network, from, to, amount }) {
     // Only ethereum, bitcoin and bsc chains are supported
     if (!SUPPORTED_CHAINS.includes(cryptoassets[from].chain) || !SUPPORTED_CHAINS.includes(cryptoassets[to].chain)) return null
 
