@@ -331,7 +331,7 @@ describe('SWAP feature["testnet"]', async () => {
     // Check review button has been disabled
     await swapPage.HasReviewButtonDisabled(page)
   })
-  it.only('SWAP (NEAR->BTC)', async () => {
+  it('SWAP (NEAR->BTC)', async () => {
     const asset1 = 'NEAR'
     const asset2 = 'BTC'
 
