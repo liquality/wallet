@@ -97,7 +97,7 @@ class ThorchainSwapProvider extends SwapProvider {
     }
   }
 
-  async getQuote ({ network, from, to, amount }) { // TODO: add bnb
+  async getQuote ({ network, from, to, amount }) {
     // Only ethereum, bitcoin and bsc chains are supported
     if (!SUPPORTED_CHAINS.includes(cryptoassets[from].chain) || !SUPPORTED_CHAINS.includes(cryptoassets[to].chain)) return null
 
@@ -137,7 +137,7 @@ class ThorchainSwapProvider extends SwapProvider {
   }
 
   async networkFees (asset) {
-    const assetCode = cryptoassets[asset].code
+    const assetCode = isERC20(asset) ? 'ETH' : cryptoassets[asset].code
     const inboundAddresses = await this._getInboundAddresses()
     const gasRate = inboundAddresses.find(inbound => inbound.chain === assetCode).gas_rate
 
