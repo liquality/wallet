@@ -20,7 +20,7 @@ import { mapValues } from 'lodash-es'
 // Pool balances are denominated with 8 decimals
 const THORCHAIN_DECIMAL = 8
 
-const SUPPORTED_CHAINS = ['bitcoin', 'ethereum', 'bsc']
+const SUPPORTED_CHAINS = ['bitcoin', 'ethereum']
 
 const OUT_MEMO_TO_STATUS = {
   OUT: 'SUCCESS',
@@ -137,7 +137,6 @@ class ThorchainSwapProvider extends SwapProvider {
     if (isERC20(asset) && assetCode === 'ETH') return BN(70000 * gasRate * 3)
     if (assetCode === 'ETH') return BN(38000 * gasRate * 3)
     if (assetCode === 'BTC') return BN(250 * gasRate * 3)
-    if (assetCode === 'BNB') return BN(1 * gasRate * 3)
   }
 
   async approveTokens ({ network, walletId, quote }) {
