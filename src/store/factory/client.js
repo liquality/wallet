@@ -136,8 +136,8 @@ function createEthereumClient (
 function createEthClient (asset, network, mnemonic, accountType, derivationPath) {
   const isTestnet = network === 'testnet'
   const ethereumNetwork = ChainNetworks.ethereum[network]
-  const infuraApi = isTestnet ? `https://ropsten.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
-  const scraperApi = isTestnet ? 'https://liquality.io/eth-ropsten-api' : 'https://liquality.io/eth-mainnet-api'
+  const infuraApi = isTestnet ? `https://rinkeby.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
+  const scraperApi = isTestnet ? 'http://localhost:8080' : 'https://liquality.io/eth-mainnet-api'
   const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider('https://gasoracle.liquality.io')
 
   return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath)
@@ -253,8 +253,8 @@ function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
       tokenAddress
     }
   ))
-  terraClient.addProvider(new TerraSwapProvider(terraNetwork, asset))
-  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork, asset))
+  terraClient.addProvider(new TerraSwapProvider(terraNetwork, _asset))
+  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork, _asset))
 
   return terraClient
 }

@@ -49,6 +49,7 @@ export default {
     askedTimes: 0,
     notAskAgain: false
   },
+  experiments: {},
   watsNewModalVersion: null,
   enabledChains: {},
   terraToken: {}

@@ -1,3 +1,7 @@
+const TestUtil = require('../utils/TestUtils')
+
+const testUtil = new TestUtil()
+
 const chalk = require('chalk')
 const expect = require('chai').expect
 
@@ -59,8 +63,13 @@ class SendPage {
       visible: true,
       timeout: 120000
     })
-    await page.click('.transaction-status')
-    console.log('User clicked on transaction status icon from Transaction details')
+    try {
+      await page.waitForSelector('.transaction-status', { visible: true, timeout: 60000 })
+      await page.click('.transaction-status')
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'send-transaction-status-issue')
+      expect(e, 'send transaction status issue..').equals(null)
+    }
   }
 
   /**
