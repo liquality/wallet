@@ -129,7 +129,7 @@ class ThorchainSwapProvider extends SwapProvider {
   }
 
   async networkFees (asset) {
-    const assetCode = cryptoassets[asset].code
+    const assetCode = isERC20(asset) ? 'ETH' : cryptoassets[asset].code
     const inboundAddresses = await this._getInboundAddresses()
     const gasRate = inboundAddresses.find(inbound => inbound.chain === assetCode).gas_rate
 
