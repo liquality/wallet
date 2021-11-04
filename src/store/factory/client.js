@@ -47,7 +47,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
 import { ChainNetworks } from '@/utils/networks'
 
-function createBtcClient(network, mnemonic, accountType, derivationPath) {
+function createBtcClient (network, mnemonic, accountType, derivationPath) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = ChainNetworks.bitcoin[network]
   const esploraApi = buildConfig.exploraApis[network]
@@ -85,7 +85,7 @@ function createBtcClient(network, mnemonic, accountType, derivationPath) {
   return btcClient
 }
 
-function createEthereumClient(
+function createEthereumClient (
   asset,
   network,
   ethereumNetwork,
@@ -132,7 +132,7 @@ function createEthereumClient(
   return ethClient
 }
 
-function createEthClient(asset, network, mnemonic, accountType, derivationPath) {
+function createEthClient (asset, network, mnemonic, accountType, derivationPath) {
   const isTestnet = network === 'testnet'
   const ethereumNetwork = ChainNetworks.ethereum[network]
   const infuraApi = isTestnet ? `https://ropsten.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
@@ -142,7 +142,7 @@ function createEthClient(asset, network, mnemonic, accountType, derivationPath) 
   return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath)
 }
 
-function createNearClient(network, mnemonic, derivationPath) {
+function createNearClient (network, mnemonic, derivationPath) {
   const nearNetwork = ChainNetworks.near[network]
   const nearClient = new Client()
   nearClient.addProvider(new NearRpcProvider(nearNetwork))
@@ -159,7 +159,7 @@ function createNearClient(network, mnemonic, derivationPath) {
   return nearClient
 }
 
-function createSolanaClient(network, mnemonic, derivationPath) {
+function createSolanaClient (network, mnemonic, derivationPath) {
   const solanaNetwork = ChainNetworks.solana[network]
   const solanaClient = new Client()
   solanaClient.addProvider(new SolanaRpcProvider(solanaNetwork))
@@ -176,7 +176,7 @@ function createSolanaClient(network, mnemonic, derivationPath) {
   return solanaClient
 }
 
-function createRskClient(asset, network, mnemonic, accountType, derivationPath) {
+function createRskClient (asset, network, mnemonic, accountType, derivationPath) {
   const isTestnet = network === 'testnet'
   const rskNetwork = ChainNetworks.rsk[network]
   const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
@@ -186,7 +186,7 @@ function createRskClient(asset, network, mnemonic, accountType, derivationPath) 
   return createEthereumClient(asset, network, rskNetwork, rpcApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath)
 }
 
-function createBSCClient(asset, network, mnemonic, derivationPath) {
+function createBSCClient (asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const bnbNetwork = ChainNetworks.bsc[network]
   const rpcApi = isTestnet ? 'https://data-seed-prebsc-1-s1.binance.org:8545' : 'https://bsc-dataseed.binance.org'
@@ -196,7 +196,7 @@ function createBSCClient(asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, bnbNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
-function createPolygonClient(asset, network, mnemonic, derivationPath) {
+function createPolygonClient (asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const polygonNetwork = ChainNetworks.polygon[network]
   const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com' : 'https://polygon-rpc.com'
@@ -206,7 +206,7 @@ function createPolygonClient(asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
-function createArbitrumClient(asset, network, mnemonic, derivationPath) {
+function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const arbitrumNetwork = ChainNetworks.arbitrum[network]
   const rpcApi = isTestnet ? 'https://rinkeby.arbitrum.io/rpc' : `https://arbitrum-mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
@@ -216,7 +216,7 @@ function createArbitrumClient(asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
-function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
+function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
   let terraNetwork, _asset, feeAsset, tokenAddress
 
   switch (asset) {
