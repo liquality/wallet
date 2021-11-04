@@ -18,6 +18,7 @@ let browser, page
 const password = '123123123'
 const liqualityBooster = 'Liquality Boost'
 
+// https://docs.google.com/spreadsheets/d/18c-B2jYeyxoRTNI0yuFWsltSXYQ3quObxacXEx42N5g/edit#gid=0
 if (process.env.NODE_ENV === 'mainnet') {
   // eslint-disable-next-line no-inner-declarations
   async function checkBooster () {

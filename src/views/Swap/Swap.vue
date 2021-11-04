@@ -100,6 +100,7 @@
                     :totalFees="amountOption === 'max' ? maxSwapFees[assetFee] : swapFees[assetFee]"
                     :fiatRates="fiatRates"
                     @custom-selected="onCustomFeeSelected"
+                    :swap="true"
                   />
                 </li>
               </ul>
