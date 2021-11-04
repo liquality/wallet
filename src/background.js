@@ -2,6 +2,7 @@ import 'setimmediate'
 import { random } from 'lodash-es'
 import store from './store'
 import { wait } from './store/utils'
+import cryptoassets from '@/utils/cryptoassets'
 
 function asyncLoop (fn, delay) {
   return wait(delay())
@@ -80,26 +81,29 @@ store.subscribe(async ({
           category: 'Swaps',
           action: 'Swap Initiated',
           from: `Swap from ${payload.swap.from}`,
+          swapFrom: `${payload.swap.from}`,
           to: `Swap to ${payload.swap.to}`,
+          swapTo: `${payload.swap.to}`,
+          fromAddress: `${payload.swap.fromAddress}`,
+          toAddress: `${payload.swap.toAddress}`,
           swapProvider: `${payload.swap.provider}`,
           fee: `${payload.feeLabel}`,
           claimFee: `${payload.claimFeeLabel}`
         }
       })
       break
-
     case 'NEW_TRASACTION':
       dispatch('trackAnalytics', {
         event: 'Send',
         properties: {
           category: 'Send/Receive',
           action: 'Funds sent',
-          from: `Send from ${payload.transaction.from}`,
+          fromChain: cryptoassets[payload.transaction.from],
+          toChain: cryptoassets[payload.transaction.to],
           fee: `${payload.feeLabel}`
         }
       })
       break
-
     case 'LOCK_WALLET':
       dispatch('trackAnalytics', {
         event: 'Wallet Lock',
@@ -109,7 +113,6 @@ store.subscribe(async ({
         }
       })
       break
-
     case 'ADD_EXTERNAL_CONNECTION':
       dispatch('trackAnalytics', {
         event: 'Connect to Dapps',
@@ -141,6 +144,9 @@ store.subscribe(async ({
         properties: {
           category: 'Settings',
           action: 'Custom Token Removed',
+          customTokenName: `${payload.customToken.name}`,
+          customTokenChain: `${payload.customToken.chain}`,
+          customTokenSymbol: `${payload.customToken.symbol}`,
           label: `${payload.customToken.symbol})`
         }
       })
