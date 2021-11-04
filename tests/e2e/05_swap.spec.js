@@ -145,7 +145,7 @@ describe('SWAP feature["testnet"]', async () => {
     await swapPage.ValidateNetworkFeeTab(page)
     // Click on SWAP Review button
     await swapPage.ClickSwapReviewButton(page)
-    await page.waitForTimeout(1000)
+    await page.waitForTimeout(7000)
 
     // SWAP SEND details validation
     // Send confirm value
