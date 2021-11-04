@@ -235,7 +235,6 @@ export const fetchTerraToken = async (address, network) => {
   const { data: { [network]: tokens } } = await axios.get('https://assets.terra.money/cw20/tokens.json')
   const token = tokens[address]
   const { symbol, token: tokenAddress } = token
-  console.log('fetched token', token)
   store.commit('TERRA_TOKEN', { symbol, tokenAddress })
 
   return {

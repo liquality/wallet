@@ -218,14 +218,8 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
 }
 
 function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
-  let terraNetwork
-  let _asset;
-  let feeAsset
-  let tokenAddress;
+  let terraNetwork, _asset, feeAsset, tokenAddress
   
-
-  
-
   switch (asset) {
     case 'LUNA': {
       _asset = 'uluna'
@@ -240,6 +234,7 @@ function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
     } default: {
       _asset = asset
       feeAsset = 'uluna'
+      tokenAddress = store.state.terraToken[asset]
       terraNetwork = { ...ChainNetworks.terra[network] }
       break
     }
