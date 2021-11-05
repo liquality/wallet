@@ -202,17 +202,8 @@ export default {
       if (this.existingAsset) {
         customToken = this.existingAsset
       } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
-        switch (this.chain) {
-          case 'terra': {
-            const { symbol, name, decimals } = await fetchTerraToken(this.contractAddress, this.activeNetwork)
-            customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
-            break
-          } default: {
-            const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
-            customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
-            break
-          }
-        }
+        const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
+        customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
       }
 
       if (customToken) {

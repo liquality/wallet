@@ -51,6 +51,5 @@ export default {
   },
   experiments: {},
   watsNewModalVersion: null,
-  enabledChains: {},
-  terraToken: {}
+  enabledChains: {}
 }
