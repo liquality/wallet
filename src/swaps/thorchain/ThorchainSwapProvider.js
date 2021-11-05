@@ -11,7 +11,7 @@ import { isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
 import { ChainNetworks } from '@/utils/networks'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
-import { getDoubleSwapOutput, getSwapMemo } from '@thorchain/asgardex-util'
+import { getDoubleSwapOutput, getSwapMemo, getValueOfAsset1InAsset2 } from '@thorchain/asgardex-util'
 import { baseAmount, baseToAsset, assetFromString } from '@xchainjs/xchain-util'
 import { SwapProvider } from '../SwapProvider'
 import { getTxFee } from '../../utils/fees'
@@ -21,7 +21,6 @@ import { mapValues } from 'lodash-es'
 const THORCHAIN_DECIMAL = 8
 
 const SUPPORTED_CHAINS = ['bitcoin', 'ethereum']
-const safeFeeMultiplier = 1.5
 
 const OUT_MEMO_TO_STATUS = {
   OUT: 'SUCCESS',
@@ -109,15 +108,15 @@ class ThorchainSwapProvider extends SwapProvider {
 
     if (!fromPoolData || !toPoolData) return // Pool doesn't exist
 
-    const fromPool = {
-      assetBalance: toPoolBalance(fromPoolData.balance_asset),
-      runeBalance: toPoolBalance(fromPoolData.balance_rune)
+    const getPool = (poolData) => {
+      return {
+        assetBalance: toPoolBalance(poolData.balance_asset),
+        runeBalance: toPoolBalance(poolData.balance_rune)
+      }
     }
 
-    const toPool = {
-      assetBalance: toPoolBalance(toPoolData.balance_asset),
-      runeBalance: toPoolBalance(toPoolData.balance_rune)
-    }
+    const fromPool = getPool(fromPoolData)
+    const toPool = getPool(toPoolData)
 
     const fromAmountInUnit = currencyToUnit(cryptoassets[from], BN(amount))
     const baseInputAmount = baseAmount(fromAmountInUnit, cryptoassets[from].decimals)
@@ -126,14 +125,20 @@ class ThorchainSwapProvider extends SwapProvider {
     // For RUNE it's `getSwapOutput`
     const swapOutput = getDoubleSwapOutput(inputAmount, fromPool, toPool)
 
-    const networkFee = await this.networkFees(to)
+    let networkFee = await this.networkFees(to) // in case of Native
+    if (isERC20(to)) { // in case of ERC20
+      const ethPool = toThorchainAsset(from) !== 'ETH.ETH' ? getPool(pools.find((pool) => pool.asset === 'ETH.ETH')) : fromPool
+      networkFee = getValueOfAsset1InAsset2(networkFee, ethPool, toPool)
+    }
+
+    const toSwapFeesInUnit = currencyToUnit(cryptoassets[to], baseToAsset(networkFee).amount())
     const toAmountInUnit = currencyToUnit(cryptoassets[to], baseToAsset(swapOutput).amount())
     return {
       from,
       to,
       fromAmount: fromAmountInUnit,
       toAmount: toAmountInUnit,
-      coversNetworkFees: swapOutput.amount().gte(networkFee.times(safeFeeMultiplier))
+      toSwapFees: toSwapFeesInUnit
     }
   }
 
@@ -143,9 +148,9 @@ class ThorchainSwapProvider extends SwapProvider {
     const gasRate = inboundAddresses.find(inbound => inbound.chain === assetCode).gas_rate
 
     // https://github.com/thorchain/asgardex-electron/issues/1381
-    if (isERC20(asset) && isEthereumChain(cryptoassets[asset].chain)) return BN(70000).times(gasRate).times(3)
-    if (assetCode === 'ETH') return BN(38000).times(gasRate).times(3)
-    if (assetCode === 'BTC') return BN(250).times(gasRate).times(3)
+    if (isERC20(asset) && isEthereumChain(cryptoassets[asset].chain)) return baseAmount(BN(70000 * gasRate * 3), 18)
+    if (assetCode === 'ETH') return baseAmount(BN(38000 * gasRate * 3), 18)
+    if (assetCode === 'BTC') return baseAmount(BN(250 * gasRate * 3), 8)
   }
 
   async approveTokens ({ network, walletId, quote }) {
@@ -456,11 +461,6 @@ class ThorchainSwapProvider extends SwapProvider {
   static timelineDiagramSteps = ['APPROVE', 'INITIATION', 'RECEIVE']
 
   static totalSteps = 4
-
-  static feeType = {
-    fromSideFee: true,
-    toSideFee: false
-  }
 }
 
 export { ThorchainSwapProvider }

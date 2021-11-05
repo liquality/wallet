@@ -153,12 +153,6 @@ class SwapProvider {
     if (typeof totalSteps === 'undefined') throw new Error('`totalSteps` is not defined. e.g. 2')
     return totalSteps
   }
-
-  get feeType () {
-    const feeType = this.constructor.feeType
-    if (typeof feeType === 'undefined') throw new Error('`feeType` is not defined. e.g. { fromSideFee: true, toSideFee: false }')
-    return feeType
-  }
 }
 
 export { SwapProvider }

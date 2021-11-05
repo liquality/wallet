@@ -566,6 +566,8 @@ export default {
       return fee || BN(0)
     },
     toSwapFee () {
+      if (this.selectedQuote?.toSwapFees) return unitToCurrency(cryptoassets[this.toAsset], this.selectedQuote.toSwapFees).toFixed() // Thorchain case workaround
+
       if (!this.receiveFeeRequired) return BN(0)
       const selectedSpeed = this.selectedFee[this.toAssetChain]
       const fee = this.amountOption === 'max' ? this.maxSwapFees[this.toAssetChain]?.[selectedSpeed] : this.swapFees[this.toAssetChain]?.[selectedSpeed]
@@ -623,7 +625,7 @@ export default {
         return 'Please increase amount. It is below minimum.'
       }
 
-      if (this.selectedQuote?.coversNetworkFees === false) {
+      if (this.selectedQuote?.toSwapFees && this.selectedQuote.toAmount - this.selectedQuote.toSwapFees < 0) {
         return 'Please increase amount. Does not cover network fees on recieve chain.'
       }
 
@@ -631,11 +633,11 @@ export default {
     },
     canSwap () {
       if (!this.selectedQuote ||
-          this.updatingQuotes ||
-          this.ethRequired ||
-          this.showNoLiquidityMessage ||
-          this.amountError ||
-          BN(this.safeAmount).lte(0)) {
+        this.updatingQuotes ||
+        this.ethRequired ||
+        this.showNoLiquidityMessage ||
+        this.amountError ||
+        BN(this.safeAmount).lte(0)) {
         return false
       }
 
@@ -651,8 +653,8 @@ export default {
       const availableFees = new Set([])
       const fees = this.getAssetFees(this.assetChain)
       const toFees = this.getAssetFees(this.toAssetChain)
-      if (fees && Object.keys(fees).length && this.selectedQuoteProvider.feeType.fromSideFee) availableFees.add(this.assetChain)
-      if (toFees && Object.keys(toFees).length && this.selectedQuoteProvider.feeType.toSideFee) availableFees.add(this.toAssetChain)
+      if (fees && Object.keys(fees).length) availableFees.add(this.assetChain)
+      if (toFees && Object.keys(toFees).length && this.receiveFeeRequired) availableFees.add(this.toAssetChain)
       return availableFees
     },
     sendAmountSameAsset () {
