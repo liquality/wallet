@@ -56,7 +56,7 @@ export default {
       const _accountType = account?.type || accountType
       const { chain } = getters.cryptoassets[asset]
       let derivationPath
-
+      console.log('account chain', account, chain)
       // when we ask for ledger accounts from the ledger device we don't have the derivation path
       // the !account doesn't exist in this case or if we call the getter with accountId equals to null
       if (_accountType.includes('ledger') || !account) {

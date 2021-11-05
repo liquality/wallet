@@ -693,6 +693,10 @@ export default {
       'updateFiatRates',
       'trackAnalytics'
     ]),
+    ...mapActions('app', [
+      'startBridgeListener',
+      'openUSBBridgeWindow'
+    ]),
     shortenAddress,
     dpUI,
     prettyBalance,
@@ -837,6 +841,8 @@ export default {
       if (this.account?.type.includes('ledger') && !this.usbBridgeTransportCreated) {
         this.loading = true
         this.bridgeModalOpen = true
+        await this.startBridgeListener()
+        await this.openUSBBridgeWindow()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
           if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
           payload.created === true) {

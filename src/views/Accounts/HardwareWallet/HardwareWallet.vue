@@ -13,6 +13,7 @@
     />
     <Unlock v-else
            :loading="loading"
+           :creating-account="creatingAccount"
            :accounts="accounts"
            :selected-accounts="selectedAccounts"
            :selected-asset="selectedAsset"
@@ -55,6 +56,7 @@ export default {
     return {
       currentStep: 'connect',
       loading: false,
+      creatingAccount: false,
       selectedAsset: null,
       accounts: [],
       selectedAccounts: {},
@@ -93,12 +95,18 @@ export default {
       'updateAccountBalance',
       'trackAnalytics'
     ]),
+    ...mapActions('app', [
+      'startBridgeListener',
+      'openUSBBridgeWindow'
+    ]),
     async tryToConnect ({ asset, walletType, page }) {
       if (this.usbBridgeTransportCreated) {
         await this.connect({ asset, walletType, page })
       } else {
         this.loading = true
         this.bridgeModalOpen = true
+        await this.startBridgeListener()
+        await this.openUSBBridgeWindow()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
           if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
           payload.created === true) {
@@ -172,7 +180,7 @@ export default {
     async addAccount ({ walletType }) {
       if (Object.keys(this.selectedAccounts).length > 0) {
         try {
-          this.loading = true
+          this.creatingAccount = true
           const { chain } = this.selectedAsset
           const assetKeys =
             this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
@@ -209,12 +217,12 @@ export default {
             })
           }
 
-          this.loading = false
+          this.creatingAccount = false
           this.goToOverview()
         } catch (error) {
           this.ledgerError = { message: 'Error creating accounts' }
           console.error('error creating accounts', error)
-          this.loading = false
+          this.creatingAccount = false
         }
       }
     },

@@ -386,6 +386,10 @@ export default {
   },
   methods: {
     ...mapActions(['updateFees', 'sendTransaction', 'trackAnalytics']),
+    ...mapActions('app', [
+      'startBridgeListener',
+      'openUSBBridgeWindow'
+    ]),
     prettyBalance,
     dpUI,
     prettyFiatBalance,
@@ -435,6 +439,8 @@ export default {
       if (this.account?.type.includes('ledger') && !this.usbBridgeTransportCreated) {
         this.loading = true
         this.bridgeModalOpen = true
+        await this.startBridgeListener()
+        await this.openUSBBridgeWindow()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
           if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
           payload.created === true) {
