@@ -14,7 +14,7 @@ let browser, page, dappPage
 const password = '123123123'
 const dappUrl = 'https://terra.mirror.finance/'
 
-describe.skip('Terra Mirror Finance DAPP injection-[mainnet,smoke]', async () => {
+describe('Terra Mirror Finance DAPP injection-[mainnet,smoke]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -64,13 +64,12 @@ describe.skip('Terra Mirror Finance DAPP injection-[mainnet,smoke]', async () =>
     connectionListButtons[0].click()
 
     await dappPage.waitForTimeout(2000)
-    await dappPage.click("button[class*='connect-chrome-extension']")
     const connectRequestWindow = await newPagePromise
     try {
       await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
     } catch (e) {
-      await connectRequestWindow.screenshot({ path: 'screenshots/terra-show-terra-issue.png', fullscreen: true })
-      expect(e, 'Anchor app UI not loading TERRA accounts').equals(null)
+      await connectRequestWindow.screenshot({ path: 'screenshots/terra-mirror-finance--issue.png', fullscreen: true })
+      expect(e, 'Terra mirror finance app UI not loading TERRA accounts').equals(null)
     }
     const rskAccounts = await connectRequestWindow.$$('#TERRA')
     expect(rskAccounts.length, '1 TERRA accounts should be listed under Connect request popupWindow')
@@ -79,13 +78,9 @@ describe.skip('Terra Mirror Finance DAPP injection-[mainnet,smoke]', async () =>
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
-    await dappPage.waitForSelector('.wallet-balance', { visible: true, timeout: 60000 })
-    // Check Transfer button on Bridge is displayed
-    expect(await dappPage.$eval('.wallet-balance', el => el.textContent), 'Terra anchor injection failed!')
-      .contains('UST')
+    await dappPage.waitForSelector('div[class*="Connected_button"]', { visible: true, timeout: 60000 })
   })
   after(async () => {
     await browser.close()
-    await dappPage.close()
   })
 })
