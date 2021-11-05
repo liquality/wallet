@@ -38,6 +38,7 @@ jobs:
           npm ci
           npm run lint
           npm run build
+
       - name: Run Smoke tests againt PullRequest
         uses: beemi/puppeteer-headful@v1.0.6
         env:

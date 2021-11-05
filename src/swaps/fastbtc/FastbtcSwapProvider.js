@@ -92,7 +92,7 @@ class FastbtcSwapProvider extends SwapProvider {
     const account = this.getAccount(quote.fromAccountId)
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
-    const toAddress = chains[toChain].formatAddress(toAddressRaw)
+    const toAddress = chains[toChain].formatAddress(toAddressRaw, network)
     const relayAddress = await this._getAddress(toAddress)
 
     await this.sendLedgerNotification(quote, account, 'Signing required to complete the swap.')
@@ -147,7 +147,7 @@ class FastbtcSwapProvider extends SwapProvider {
     try {
       const toChain = cryptoassets[swap.to].chain
       const toAddressRaw = await this.getSwapAddress(network, walletId, swap.to, swap.toAccountId)
-      const toAddress = chains[toChain].formatAddress(toAddressRaw)
+      const toAddress = chains[toChain].formatAddress(toAddressRaw, network)
       const addressHistory = (await this._getHistory(toAddress)).sort((a, b) => new Date(a.dateAdded).getTime() > new Date(b.dateAdded).getTime() ? 1 : -1)
       let isDepositConfirmed = false
       let isReceiveConfirmed = false
