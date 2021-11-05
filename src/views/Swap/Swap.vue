@@ -353,6 +353,7 @@ import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
+import buildConfig from '@/build.config'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
@@ -549,7 +550,7 @@ export default {
     isPairAvailable () {
       const liqualityMarket = this.networkMarketData?.find(pair =>
         pair.from === this.asset &&
-        (pair.to === this.toAsset || pair.to === this.toAssetChain)
+        (pair.to === this.toAsset || buildConfig.supportedBridgeAssets.indexOf(this.toAssetChain) !== -1)
       )
       return !!(liqualityMarket)
     },
