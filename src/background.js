@@ -98,8 +98,8 @@ store.subscribe(async ({
         properties: {
           category: 'Send/Receive',
           action: 'Funds sent',
-          fromChain: cryptoassets[payload.transaction.from],
-          toChain: cryptoassets[payload.transaction.to],
+          fromAsset: cryptoassets[payload.transaction.from],
+          toAsset: cryptoassets[payload.transaction.to],
           fee: `${payload.feeLabel}`
         }
       })
