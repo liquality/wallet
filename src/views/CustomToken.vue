@@ -108,7 +108,7 @@
 import { mapState, mapActions } from 'vuex'
 import { debounce } from 'lodash-es'
 import cryptoassets from '@/utils/cryptoassets'
-import { tokenDetailProviders, fetchTerraToken } from '@/utils/asset'
+import { tokenDetailProviders } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'

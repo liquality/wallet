@@ -7,7 +7,7 @@ import * as ethers from 'ethers'
 import axios from 'axios'
 import tokenABI from './tokenABI.json'
 import buildConfig from '../build.config'
-import store from '../store'
+
 
 const EXPLORERS = {
   ethereum: {
