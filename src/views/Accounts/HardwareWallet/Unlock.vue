@@ -48,7 +48,7 @@
           <CircleProgressBar class="circle-progress infinity-rotate" />
           <div class="loading-message">
             <div>
-              <span class="loading-message-title">...</span>
+              <span class="loading-message-title">Creating</span>
               <span class="loading-message-text">Creating your new account</span>
             </div>
           </div>

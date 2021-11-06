@@ -100,6 +100,7 @@ export default {
       'openUSBBridgeWindow'
     ]),
     async tryToConnect ({ asset, walletType, page }) {
+      debugger
       if (this.usbBridgeTransportCreated) {
         await this.connect({ asset, walletType, page })
       } else {
@@ -189,8 +190,10 @@ export default {
             return cryptoassets[asset].chain === this.selectedAsset.chain
           })
 
-          for (const key in this.selectedAccounts) {
-            const item = this.selectedAccounts[key]
+          const selectedAccounts = { ...this.selectedAccounts }
+          debugger
+          for (const key in selectedAccounts) {
+            const item = selectedAccounts[key]
 
             const index = item.index + 1
             const account = {
@@ -205,15 +208,10 @@ export default {
               derivationPath: item.account.derivationPath,
               color: getNextAccountColor(chain, item.index)
             }
-            const createdAccount = await this.createAccount({
+            await this.createAccount({
               network: this.activeNetwork,
               walletId: this.activeWalletId,
               account
-            })
-            await this.updateAccountBalance({
-              network: this.activeNetwork,
-              walletId: this.activeWalletId,
-              accountId: createdAccount.id
             })
           }
 
