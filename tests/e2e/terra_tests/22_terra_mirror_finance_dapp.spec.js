@@ -68,7 +68,7 @@ describe('Terra Mirror Finance DAPP injection-[mainnet,smoke]', async () => {
     try {
       await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
     } catch (e) {
-      await connectRequestWindow.screenshot({ path: 'screenshots/terra-mirror-finance--issue.png', fullscreen: true })
+      await testUtil.takeScreenshot(dappPage, 'terra-mirror-finance--issue.png')
       expect(e, 'Terra mirror finance app UI not loading TERRA accounts').equals(null)
     }
     const rskAccounts = await connectRequestWindow.$$('#TERRA')
@@ -78,7 +78,12 @@ describe('Terra Mirror Finance DAPP injection-[mainnet,smoke]', async () => {
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
-    await dappPage.waitForSelector('div[class*="Connected_button"]', { visible: true, timeout: 60000 })
+    try {
+      await dappPage.waitForSelector('div[class*="Connected_button"]', { visible: true, timeout: 60000 })
+    } catch (e) {
+      await testUtil.takeScreenshot(dappPage, 'terra-mirror-finance-connected-issue.png')
+      expect(e, 'Terra mirror finance app UI not connected with TERRA accounts').equals(null)
+    }
   })
   after(async () => {
     await browser.close()
