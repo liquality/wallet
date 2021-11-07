@@ -79,7 +79,7 @@ describe('Terra Mirror Finance DAPP injection-[mainnet,smoke]', async () => {
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     try {
-      await dappPage.waitForSelector('div[class*="Connected_button"]', { visible: true, timeout: 60000 })
+      await dappPage.waitForSelector('button[class*="ConnectButton"]', { visible: true, timeout: 60000 })
     } catch (e) {
       await testUtil.takeScreenshot(dappPage, 'terra-mirror-finance-connected-issue.png')
       expect(e, 'Terra mirror finance app UI not connected with TERRA accounts').equals(null)
