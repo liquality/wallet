@@ -90,7 +90,7 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
     await dappPage.goto(dappUrl, { timeout: 60000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
-      await dappPage.waitForSelector('#connect-wallet', { visible: true })
+      await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
     } catch (e) {
       await testUtil.takeScreenshot(dappPage, 'uniswap-arbitrum-loading-issue')
       const pageTitle = await dappPage.title()
