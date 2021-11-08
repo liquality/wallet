@@ -14,7 +14,7 @@ let browser, page, dappPage
 const password = '123123123'
 const dappUrl = 'https://terra.mirror.finance/'
 
-describe('Terra Mirror Finance DAPP injection-[mainnet,smoke]', async () => {
+describe('Terra Mirror Finance DAPP injection-[mainnet]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
