@@ -47,6 +47,9 @@ export default {
     const chainId = this.accounts[activeWalletId][activeNetwork]
       .find(a => a.id === accountId)?.chain
 
+    if (!chainId) {
+      return this.goback()
+    }
     this.exportPrivateKey({
       walletId: activeWalletId,
       network: activeNetwork,
