@@ -44,7 +44,7 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
     await browser.close()
   })
 
-  it('UNISWAP Injection-ETH["smoke"]', async () => {
+  it('UNISWAP Injection-ETH', async () => {
     // Go to uniSwap app
     dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -68,18 +68,19 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
     await dappPage.click('#connect-INJECTED')
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 60000 })
-      await connectRequestWindow.click('#ETHEREUM')
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
+      await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true, timeout: 60000 })
     } catch (e) {
       await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-ethereum-connect-request-window-issue')
-      expect(e, 'Uniswap injection ethereum not listed.....').equals(null)
+      expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(null)
     }
     // Check connect button is enabled
+    await connectRequestWindow.click('#ETHEREUM')
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  it('UNISWAP Injection-ARBITRUM', async () => {
+  it('UNISWAP Injection-ARBITRUM-["smoke"]', async () => {
     // Go to uniSwap app
     dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -89,7 +90,7 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
     await dappPage.goto(dappUrl, { timeout: 60000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
-      await dappPage.waitForSelector('#connect-wallet', { visible: true })
+      await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
     } catch (e) {
       await testUtil.takeScreenshot(dappPage, 'uniswap-arbitrum-loading-issue')
       const pageTitle = await dappPage.title()
@@ -103,14 +104,13 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
     await dappPage.click('#connect-INJECTED')
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 60000 })
-      await connectRequestWindow.click('#ARBITRUM')
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
+      await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true, timeout: 60000 })
     } catch (e) {
       await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-arbitrum-connect-request-window-issue')
-      expect(e, 'Uniswap injection arbitrum not listed.....').equals(null)
+      expect(e, 'Uniswap injection ARBITRUM not listed, connect request window loading issue.....').equals(null)
     }
 
-    await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true })
     await connectRequestWindow.click('#ARBITRUM')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)

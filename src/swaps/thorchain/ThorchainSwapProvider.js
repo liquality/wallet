@@ -167,7 +167,7 @@ class ThorchainSwapProvider extends SwapProvider {
     const routerAddress = inboundAddresses.find(inbound => inbound.chain === fromThorchainAsset.chain).router
 
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.toAccountId)
-    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
     const allowance = await erc20.allowance(fromAddress, routerAddress)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     if (allowance.gte(inputAmount)) {
@@ -231,7 +231,7 @@ class ThorchainSwapProvider extends SwapProvider {
   async makeMemo ({ network, walletId, quote }) {
     const toChain = cryptoassets[quote.to].chain
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
-    const toAddress = chains[toChain].formatAddress(toAddressRaw)
+    const toAddress = chains[toChain].formatAddress(toAddressRaw, network)
     const baseOutputAmount = baseAmount(quote.toAmount, cryptoassets[quote.to].decimals)
     const minimumOutput = baseOutputAmount.amount().multipliedBy(0.995).dp(0) // 50 bips slippage
     const limit = convertBaseAmountDecimal(baseAmount(minimumOutput, cryptoassets[quote.to].decimals), 8)

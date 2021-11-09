@@ -62,6 +62,15 @@
                   Arbitrum (ARB)
                 </a>
               </li>
+              <li>
+                <a class="dropdown-item"
+                   id="terra_chain"
+                   href="#"
+                   @click="selectChain('terra')"
+                   :class="{active: chain === 'terra'}">
+                  Terra (Terra)
+                </a>
+              </li>
             </ul>
           </div>
         </div>

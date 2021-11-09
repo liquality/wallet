@@ -197,7 +197,7 @@ export default {
       } else {
         const chainId = cryptoassets[this.asset].chain
         const { unit } = chains[chainId].fees
-        return `${this.fee} ${unit}`
+        return `${this.fee || 0} ${unit}`
       }
     },
     getFiatAmount (name) {
