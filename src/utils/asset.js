@@ -8,7 +8,6 @@ import axios from 'axios'
 import tokenABI from './tokenABI.json'
 import buildConfig from '../build.config'
 
-
 const EXPLORERS = {
   ethereum: {
     testnet: {
