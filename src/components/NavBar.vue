@@ -52,7 +52,7 @@
           Manage Accounts
         </li>
         <li
-          id="manage_accounts"
+          id="export_privkey"
           v-if="$route.params.accountId"
           @click="exportPrivateKey"
         >
