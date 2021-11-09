@@ -432,6 +432,31 @@ class OverviewPage {
     // toggle web3 wallet option
     await page.click('#default_web3_wallet_toggle_button > label > div')
   }
+
+  /**
+   * Click on version under settings.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnVersionButton (page) {
+    await this.ClickOnBurgerIcon(page)
+    await this.SelectSettings(page)
+    await page.click('#settings_app_version')
+  }
+
+  /**
+   * Toggle on/off experiment option.
+   * @param page
+   * @param option
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ToggleExperimentButton (page, option) {
+    await this.ClickOnVersionButton(page)
+    await page.waitForSelector(`#${option}`)
+    await page.click(`#${option}`)
+  }
 }
 
 module.exports = OverviewPage
