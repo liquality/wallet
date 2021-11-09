@@ -61,7 +61,6 @@ export default {
     const chainId = this.accounts[activeWalletId][activeNetwork]
       .find(a => a.id === accountId)?.chain
 
-    console.log('setChainIdAndPrivateKey', activeNetwork, chainId)
     this.exportPrivateKey({
       walletId: activeWalletId,
       network: activeNetwork,
