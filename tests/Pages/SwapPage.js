@@ -234,6 +234,12 @@ class SwapPage {
     return await page.$eval('#swap_receive_amount_fee_value', el => el.textContent)
   }
 
+  /**
+   * Get Swap receive fiat amount.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
   async GetSwapReceiveAccountFeeInDollar (page) {
     await page.waitForSelector('#swap_receive_total_amount_in_fiat', { visible: true })
     return await page.$eval('#swap_receive_total_amount_in_fiat', el => el.textContent)

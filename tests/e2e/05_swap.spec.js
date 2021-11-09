@@ -32,7 +32,7 @@ describe('SWAP feature["testnet"]', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
   })
-  after(async () => {
+  afterEach(async () => {
     try {
       await page.close()
       await browser.close()
@@ -184,7 +184,8 @@ describe('SWAP feature["testnet"]', async () => {
 
     // Receive fiat amount in $
     const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    expect(receiveAmountInDollar.trim()).not.contain('$0.00')
+    expect(receiveAmountInDollar.trim(),'Swap receive fiat amount should not be 0.00')
+      .not.contain('$0.00')
     expect(receiveAmountInDollar.trim()).not.contain('NaN')
     // Receive Network Fee
     const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
