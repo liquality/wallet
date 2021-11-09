@@ -8,7 +8,7 @@
     >
       <span class="wallet_header"><strong>Experiments</strong></span>
     </NavBar>
-    <div class="experiments">
+    <div class="experiments" id="experiments">
       <div class="setting-item">
         <div class="setting-item_title flex-fill mb-2">
           Multi-Accounts
@@ -20,6 +20,7 @@
           class="setting-item_control"
         >
           <toggle-button
+            id="exp-manageAccounts-toggle-switch"
             :css-colors="true"
             :value="experiments['manageAccounts']"
             @change="toggleExperiment({ name: 'manageAccounts'})"
