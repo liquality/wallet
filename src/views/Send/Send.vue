@@ -199,7 +199,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
-import BN, { BigNumber } from 'bignumber.js'
+import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'

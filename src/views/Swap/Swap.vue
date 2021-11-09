@@ -564,9 +564,9 @@ export default {
       return dpUI(min)
     },
     max () {
-      let max = this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
+      const max = this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
 
-      if(max && this.asset === 'UST') {
+      if (max && this.asset === 'UST') {
         max.minus(this.ustTax)
       }
 
@@ -800,7 +800,7 @@ export default {
           fees[chain][speed] = fees[chain][speed].plus(totalFees[fee.fee])
         }
 
-        if(asset === 'UST' && chain === 'LUNA') {
+        if (asset === 'UST' && chain === 'LUNA') {
           const accountId = this.assetChain === chain ? this.fromAccountId : this.toAccountId
 
           const client = this.client({
