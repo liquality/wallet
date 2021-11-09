@@ -384,6 +384,7 @@ export default {
     return {
       stateSendAmount: 0,
       stateSendAmountFiat: 0,
+      ustTax: 0,
       amountOption: null,
       asset: null,
       toAsset: null,
@@ -563,7 +564,13 @@ export default {
       return dpUI(min)
     },
     max () {
-      return this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
+      let max = this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
+
+      if(max && this.asset === 'UST') {
+        max.minus(this.ustTax)
+      }
+
+      return max
     },
     safeAmount () {
       return this.sendAmount || 0
@@ -791,6 +798,18 @@ export default {
 
         for (const [speed, fee] of Object.entries(assetFees)) {
           fees[chain][speed] = fees[chain][speed].plus(totalFees[fee.fee])
+        }
+
+        if(asset === 'UST' && chain === 'LUNA') {
+          const accountId = this.assetChain === chain ? this.fromAccountId : this.toAccountId
+
+          const client = this.client({
+            network: this.activeNetwork, walletId: this.activeWalletId, asset, accountId
+          })
+
+          const balance = this.networkWalletBalances[this.asset]
+
+          this.ustTax = await client.getMethod('getTaxFees')(balance)
         }
       }
 

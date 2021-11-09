@@ -199,7 +199,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
-import BN from 'bignumber.js'
+import BN, { BigNumber } from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
@@ -400,6 +400,7 @@ export default {
           const feePrice = fee.fee
           sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
+
         if (this.asset === 'BTC') {
           const client = this.client({
             network: this.activeNetwork, walletId: this.activeWalletId, asset: this.asset, accountId: this.account.id
@@ -415,6 +416,15 @@ export default {
             }
           } catch (e) {
             console.error(e)
+          }
+        } else if (this.asset === 'UST') {
+          const client = this.client({
+            network: this.activeNetwork, walletId: this.activeWalletId, asset: this.asset, accountId: this.account.id
+          })
+          const tax = await client.getMethod('getTaxFees')((getMax || !amount) ? this.balance : amount)
+
+          for (const [speed] of Object.entries(this.assetFees)) {
+            sendFees[speed] = sendFees[speed].plus(tax)
           }
         }
 
@@ -581,10 +591,12 @@ export default {
     amount: function (val) {
       const amount = BN(val)
       const available = dpUI(this.available)
+
       if (!amount.eq(available)) {
         this.maxOptionActive = false
-        this.updateSendFees(this.amount)
       }
+
+      this.updateSendFees(this.amount)
     },
     available: function () {
       if (this.maxOptionActive) {
