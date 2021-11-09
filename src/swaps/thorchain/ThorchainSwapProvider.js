@@ -125,7 +125,9 @@ class ThorchainSwapProvider extends SwapProvider {
     // For RUNE it's `getSwapOutput`
     const swapOutput = getDoubleSwapOutput(inputAmount, fromPool, toPool)
 
-    let networkFee = await this.networkFees(to) // in case of Native
+    const baseNetworkFee = await this.networkFees(to)
+    let networkFee = convertBaseAmountDecimal(baseNetworkFee, 8)
+
     if (isERC20(to)) { // in case of ERC20
       const ethPool = toThorchainAsset(from) !== 'ETH.ETH' ? getPool(pools.find((pool) => pool.asset === 'ETH.ETH')) : fromPool
       networkFee = getValueOfAsset1InAsset2(networkFee, ethPool, toPool)
@@ -148,8 +150,8 @@ class ThorchainSwapProvider extends SwapProvider {
     const gasRate = inboundAddresses.find(inbound => inbound.chain === assetCode).gas_rate
 
     // https://github.com/thorchain/asgardex-electron/issues/1381
-    if (isERC20(asset) && isEthereumChain(cryptoassets[asset].chain)) return baseAmount(BN(70000 * gasRate * 3), 18)
-    if (assetCode === 'ETH') return baseAmount(BN(38000 * gasRate * 3), 18)
+    if (isERC20(asset) && isEthereumChain(cryptoassets[asset].chain)) return baseAmount(BN(70000 * gasRate * 1000000000 * 3), 18)
+    if (assetCode === 'ETH') return baseAmount(BN(38000 * gasRate * 1000000000 * 3), 18)
     if (assetCode === 'BTC') return baseAmount(BN(250 * gasRate * 3), 8)
   }
 

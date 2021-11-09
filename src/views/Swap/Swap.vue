@@ -670,7 +670,8 @@ export default {
     },
     totalToReceiveInFiat () {
       const receive = cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
-      const fee = cryptoToFiat(this.toSwapFee, this.fiatRates[this.toAssetChain])
+      const fee = cryptoToFiat(this.toSwapFee, this.selectedQuote?.toSwapFees ? this.fiatRates[this.toAsset] : this.fiatRates[this.toAssetChain]) // Thorchain case workaround
+
       return receive.minus(fee).toFormat(2)
     },
     assetsFeeSelector () {
