@@ -11,7 +11,7 @@ import { isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
 import { ChainNetworks } from '@/utils/networks'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
-import { getDoubleSwapOutput, getSwapMemo, getValueOfAsset1InAsset2 } from '@thorchain/asgardex-util'
+import { getDoubleSwapOutput, getSwapMemo, getValueOfAsset1InAsset2, getDoubleSwapSlip } from '@thorchain/asgardex-util'
 import { baseAmount, baseToAsset, assetFromString } from '@xchainjs/xchain-util'
 import { SwapProvider } from '../SwapProvider'
 import { getTxFee } from '../../utils/fees'
@@ -124,6 +124,7 @@ class ThorchainSwapProvider extends SwapProvider {
 
     // For RUNE it's `getSwapOutput`
     const swapOutput = getDoubleSwapOutput(inputAmount, fromPool, toPool)
+    const slippage = BN(getDoubleSwapSlip(inputAmount, fromPool, toPool))
 
     const baseNetworkFee = await this.networkFees(to)
     let networkFee = convertBaseAmountDecimal(baseNetworkFee, 8)
@@ -140,7 +141,8 @@ class ThorchainSwapProvider extends SwapProvider {
       to,
       fromAmount: fromAmountInUnit,
       toAmount: toAmountInUnit,
-      toSwapFees: toSwapFeesInUnit
+      toSwapFees: toSwapFeesInUnit,
+      slippage
     }
   }
 
@@ -233,7 +235,8 @@ class ThorchainSwapProvider extends SwapProvider {
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
     const toAddress = chains[toChain].formatAddress(toAddressRaw, network)
     const baseOutputAmount = baseAmount(quote.toAmount, cryptoassets[quote.to].decimals)
-    const minimumOutput = baseOutputAmount.amount().multipliedBy(0.995).dp(0) // 50 bips slippage
+    const slippageCoefficient = BN(1).minus(quote.slippage)
+    const minimumOutput = baseOutputAmount.amount().multipliedBy(slippageCoefficient).dp(0)
     const limit = convertBaseAmountDecimal(baseAmount(minimumOutput, cryptoassets[quote.to].decimals), 8)
     const thorchainAsset = assetFromString(toThorchainAsset(quote.to))
     return getSwapMemo({ asset: thorchainAsset, address: toAddress, limit })
