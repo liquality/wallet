@@ -31,7 +31,7 @@ import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
 import ManageAccounts from '@/views/Accounts/Manage.vue'
-
+import ExportPrivateKey from '@/views/Accounts/ExportPrivateKey.vue'
 import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
 import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
 import PhraseReveal from '@/views/Onboarding/SeedPhrase/PhraseReveal'
@@ -120,6 +120,12 @@ const routes = [
     path: '/accounts/management',
     component: ManageAccounts,
     name: 'ManageAccounts',
+    props: true
+  },
+  {
+    path: '/accounts/export/:accountId',
+    component: ExportPrivateKey,
+    name: 'ExportPrivateKey',
     props: true
   },
   {

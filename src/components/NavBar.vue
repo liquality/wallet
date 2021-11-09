@@ -39,22 +39,31 @@
         v-if="showMenuList"
         v-click-away="hideMenu"
       >
-       <li id="manage_assets" @click="assets">
+        <li id="manage_assets" @click="assets">
           <AssetsIcon />
           Manage Assets
         </li>
-        <li id="manage_accounts"
+        <li
+          id="manage_accounts"
           v-if="experiments.manageAccounts"
-             @click="manageAccounts">
-           <AccountsIcon />
-           Manage Accounts
-         </li>
+          @click="manageAccounts"
+        >
+          <AccountsIcon />
+          Manage Accounts
+        </li>
+        <li
+          id="manage_accounts"
+          v-if="$route.params.accountId"
+          @click="exportPrivateKey"
+        >
+          <SettingsIcon />
+          Export Private Key
+        </li>
         <li id="settings" @click="settings">
           <SettingsIcon />
           Settings
         </li>
-        <li id="ledger"
-            @click="ledger">
+        <li id="ledger" @click="ledger">
           <LedgerIcon />
           Ledger
         </li>
@@ -160,6 +169,18 @@ export default {
       })
       this.showMenuList = false
       this.$router.replace('/settings')
+    },
+    exportPrivateKey () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Export Private Key'
+        }
+      })
+      this.showMenuList = false
+      const { accountId } = this.$route.params
+      this.$router.replace(`/accounts/export/${accountId}`)
     },
     manageAccounts () {
       this.trackAnalytics({
