@@ -16,7 +16,7 @@
         <EthRequiredMessage :account-id="account.id"/>
       </InfoNotification>
 
-      <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount > min">
+      <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
       <div class="wrapper form">
@@ -555,11 +555,12 @@ export default {
       return !!(liqualityMarket)
     },
     min () {
+      const toQuoteAsset = this.selectedQuoteProvider?.config?.type === SwapProviderType.LIQUALITYBOOST ? this.toAssetChain : this.toAsset
       const liqualityMarket = this.networkMarketData?.find(pair =>
         pair.from === this.asset &&
-        pair.to === this.toAsset &&
+        pair.to === toQuoteAsset &&
         getSwapProviderConfig(this.activeNetwork, pair.provider).type === SwapProviderType.LIQUALITY)
-      const min = liqualityMarket ? BN(liqualityMarket.min) : BN(0)
+      const min = liqualityMarket ? BN(liqualityMarket.min) : (buildConfig.defaultMinSwapValues[this.asset] || BN(0))
       return dpUI(min)
     },
     max () {

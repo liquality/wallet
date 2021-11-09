@@ -130,5 +130,24 @@ export default {
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
   chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra'],
-  supportedBridgeAssets: ['MATIC']
+  supportedBridgeAssets: ['MATIC'],
+  defaultMinSwapValues: {
+    BTC: 0.00003,
+    ETH: 0.0005,
+    DAI: 2,
+    USDC: 2,
+    USDT: 2,
+    WBTC: 0.00003,
+    UNI: 0.08,
+    RBTC: 0.00003,
+    SOV: 0.08,
+    BNB: 0.003,
+    NEAR: 0.2,
+    MATIC: 1,
+    PWETH: 0.0005,
+    ARBETH: 0.0005,
+    FISH: 2,
+    LUNA: 0.04,
+    UST: 2
+  }
 }
