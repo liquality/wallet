@@ -184,7 +184,7 @@ describe('SWAP feature["testnet"]', async () => {
 
     // Receive fiat amount in $
     const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    expect(receiveAmountInDollar.trim(),'Swap receive fiat amount should not be 0.00')
+    expect(receiveAmountInDollar.trim(), 'Swap receive fiat amount should not be 0.00')
       .not.contain('$0.00')
     expect(receiveAmountInDollar.trim()).not.contain('NaN')
     // Receive Network Fee
