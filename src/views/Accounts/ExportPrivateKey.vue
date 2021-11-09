@@ -1,31 +1,18 @@
 <template>
   <div class="export-account">
-    <NavBar
-      backLabel="Cancel"
-      :showBack="!keyVisible"
-      :backPath="backPath"
-    >
+    <NavBar>
       <span class="wallet_header">
         <strong>{{chainId}} private key</strong>
       </span>
     </NavBar>
     <main>
-      <div v-if="!keyVisible">
-        <h1>Are you sure?</h1>
-        <ul>
-          <li>account: <code>{{accountId}}</code>
-          <li>chain: <code>{{chainId}}</code></li>
-          <li>network: <code>{{activeNetwork}}</code></li>
-        </ul>
-      </div>
-      <p>The private key is a string that can be copied and used to seed another wallet.</p>
-      <div v-if="keyVisible">
-        <textarea readonly rows="10" @click="selectTextarea" v-model="privateKey" />
-        <button type="button" class="btn btn-secondary" @click="goback">Done</button>
-      </div>
-      <div v-else>
-        <button type="button" class="btn btn-warning" @click="keyVisible = true">Yes, show it</button>
-      </div>
+      <ul>
+        <li>account: <code>{{accountId}}</code>
+        <li>chain: <code>{{chainId}}</code></li>
+        <li>network: <code>{{activeNetwork}}</code></li>
+      </ul>
+      <textarea readonly rows="10" @click="selectTextarea" v-model="privateKey" />
+      <button type="button" class="btn btn-secondary" @click="goback">Done</button>
     </main>
   </div>
 </template>
@@ -41,8 +28,7 @@ export default {
     return {
       backPath: '/wallet/assets',
       chainId: '',
-      privateKey: 'n/a',
-      keyVisible: false
+      privateKey: 'n/a'
     }
   },
   props: ['accountId'],

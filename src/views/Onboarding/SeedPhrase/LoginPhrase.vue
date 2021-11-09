@@ -4,7 +4,7 @@
             <img :src="logo"/>
         </div>
         <div class="login-phrase_middle-text mx-auto mt-1">
-            <h2 class="mt-4 px-4">Sign-in to See Seed Phrase</h2>
+            <h2 class="mt-4 px-4">{{title}}</h2>
             <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
                 <div class="form-group mt-2">
                     <label for="password">Password</label>
@@ -43,8 +43,17 @@
 
 import { mapActions } from 'vuex'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
-
 export default {
+  props: {
+    title: {
+      type: String,
+      default: 'Sign-in to See Seed Phrase'
+    },
+    nextPath: {
+      type: String,
+      default: '/seedLogin'
+    }
+  },
   data () {
     return {
       loading: false,
@@ -66,7 +75,7 @@ export default {
       try {
         if (this.checkbox === true) {
           await this.unlockWallet({ key: this.password })
-          this.$router.push('/seedreveal')
+          this.$router.push(this.nextPath)
         } else {
           this.error = 'Please Accept Terms'
         }
@@ -79,7 +88,7 @@ export default {
       this.trackAnalytics({
         event: 'BackupSeed',
         properties: {
-          category: 'Show Seed Phrase',
+          category: this.nextPath === '/seedLogin' ? 'Show Seed Phrase' : this.title,
           action: 'Click I have Privacy',
           label: [`${this.error}`]
         }

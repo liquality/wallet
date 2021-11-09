@@ -123,12 +123,6 @@ const routes = [
     props: true
   },
   {
-    path: '/accounts/export/:accountId',
-    component: ExportPrivateKey,
-    name: 'ExportPrivateKey',
-    props: true
-  },
-  {
     path: '/accounts/create/:chainId?',
     component: CreateAccount,
     name: 'CreateAccount',
@@ -215,8 +209,31 @@ const routes = [
   {
     path: '/seedreveal',
     component: PhraseReveal
-  }
+  },
 
+  // Export Private Key
+  {
+    path: '/export/:accountId',
+    component: Warning,
+    props: ({ params: { accountId } }) => ({
+      title: 'Show Private Key?',
+      nextPath: `/export/${accountId}/login`
+    })
+  },
+  {
+    path: '/export/:accountId/login',
+    component: LoginPhrase,
+    props: ({ params: { accountId } }) => ({
+      title: 'Sign-in to Export Private Key',
+      nextPath: `/export/${accountId}/reveal`
+    })
+  },
+  {
+    path: '/export/:accountId/reveal',
+    component: ExportPrivateKey,
+    name: 'ExportPrivateKey',
+    props: true
+  }
 ]
 
 const router = new VueRouter({

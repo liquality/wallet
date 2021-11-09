@@ -1,25 +1,25 @@
 <template>
     <div class="wallet warning-phrase">
         <NavBar showMenu="true">
-            <strong>Warning</strong>
+          <strong>Warning</strong>
         </NavBar>
         <div class="warning-phrase_warning-line w-100"></div>
         <div class="mx-auto mt-2 px-2 mb-5 text-center">
-            <h1 class="my-2" id="show_seed_phrase">Show Seed Phrase?</h1>
-            <h4 id="show_seed_phrase_warning">Anyone who has this seed phrase can steal your funds!</h4>
+          <h1 class="my-2" id="show_seed_phrase">{{title}}</h1>
+          <h4 id="show_seed_phrase_warning">Anyone who has this can steal your funds!</h4>
         </div>
         <div class="warning-phrase_eye-svg mx-auto mt-4">
-            <Eye />
+          <Eye />
         </div>
         <div class="mx-auto text-center">
-            <h5 class="mx-auto px-5">
-                View it in private without cameras around.
-            </h5>
+          <h5 class="mx-auto px-5">
+            View it in private without cameras around.
+          </h5>
         </div>
         <div class="wrapper_bottom">
         <div class="button-group">
-            <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg width-button" id="show_seed_phrase_cancel_button">Cancel</button></router-link>
-            <router-link to="/seedLogin"><button class="btn btn-primary btn-lg width-button" id="i_have_privacy_button">I have privacy</button></router-link>
+          <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg width-button" id="show_seed_phrase_cancel_button">Cancel</button></router-link>
+          <router-link :to="nextPath"><button class="btn btn-primary btn-lg width-button" id="i_have_privacy_button">I have privacy</button></router-link>
         </div>
         </div>
     </div>
@@ -33,6 +33,16 @@ export default {
   components: {
     NavBar,
     Eye
+  },
+  props: {
+    title: {
+      type: String,
+      default: 'Show Seed Phrase?'
+    },
+    nextPath: {
+      type: String,
+      default: '/seedLogin'
+    }
   }
 }
 </script>

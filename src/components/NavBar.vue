@@ -180,7 +180,7 @@ export default {
       })
       this.showMenuList = false
       const { accountId } = this.$route.params
-      this.$router.replace(`/accounts/export/${accountId}`)
+      this.$router.replace(`/export/${accountId}`)
     },
     manageAccounts () {
       this.trackAnalytics({
