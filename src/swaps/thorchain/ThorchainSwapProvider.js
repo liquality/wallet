@@ -150,9 +150,9 @@ class ThorchainSwapProvider extends SwapProvider {
     const gasRate = inboundAddresses.find(inbound => inbound.chain === assetCode).gas_rate
 
     // https://github.com/thorchain/asgardex-electron/issues/1381
-    if (isERC20(asset) && isEthereumChain(cryptoassets[asset].chain)) return baseAmount(BN(70000 * gasRate * 1000000000 * 3), 18)
-    if (assetCode === 'ETH') return baseAmount(BN(38000 * gasRate * 1000000000 * 3), 18)
-    if (assetCode === 'BTC') return baseAmount(BN(250 * gasRate * 3), 8)
+    if (isERC20(asset) && isEthereumChain(cryptoassets[asset].chain)) return baseAmount(BN(70000).times(gasRate).times(1000000000).times(3), 18)
+    if (assetCode === 'ETH') return baseAmount(BN(38000).times(gasRate).times(1000000000).times(3), 18)
+    if (assetCode === 'BTC') return baseAmount(BN(250).times(gasRate).times(3), 8)
   }
 
   async approveTokens ({ network, walletId, quote }) {
