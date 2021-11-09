@@ -140,7 +140,7 @@ export default {
       return Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
     },
     symbolError () {
-      if ((!this.autofilled && Object.keys(cryptoassets).includes(this.symbol)) || this.isSymbolEditable) {
+      if ((!this.autofilled && Object.keys(cryptoassets).includes(this.symbol)) || this.isExistingNetworkAsset) {
         return 'Token with this symbol exists.'
       }
       return null
