@@ -792,7 +792,6 @@ export default {
         for (const [speed, fee] of Object.entries(assetFees)) {
           fees[chain][speed] = fees[chain][speed].plus(totalFees[fee.fee])
         }
-
       }
 
       if (fromTxType && this.availableFees.has(this.assetChain)) {
