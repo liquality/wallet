@@ -140,6 +140,21 @@ class LiqualitySwapProvider extends SwapProvider {
       return mapValues(totalFees, f => unitToCurrency(cryptoassets[asset], f))
     }
 
+    if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'UST') {
+      const client = this.getClient(network, walletId, asset, quote.fromAccountId)
+      const value = max ? undefined : BN(quote.fromAmount)
+      const taxFees = await client.getMethod('getTaxFees')(value, 'uusd', (max || !value))
+
+      const fees = {}
+
+      for (const feePrice of feePrices) {
+        fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice)
+          .plus(taxFees)
+      }
+
+      return fees
+    }
+
     if (txType in LiqualitySwapProvider.feeUnits) {
       const fees = {}
       for (const feePrice of feePrices) {
