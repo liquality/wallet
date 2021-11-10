@@ -72,10 +72,8 @@ export default {
       'activeWalletId',
       'enabledAssets'
     ]),
-    ...mapState({
-      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
-    }),
     ...mapGetters(['networkAccounts']),
+    ...mapGetters('app', ['ledgerBridgeReady']),
     ledgerOptions () {
       return LEDGER_OPTIONS
     },
@@ -96,21 +94,18 @@ export default {
       'trackAnalytics'
     ]),
     ...mapActions('app', [
-      'startBridgeListener',
-      'openUSBBridgeWindow'
+      'startBridgeListener'
     ]),
     async tryToConnect ({ asset, walletType, page }) {
-      debugger
-      if (this.usbBridgeTransportCreated) {
+      if (this.ledgerBridgeReady) {
         await this.connect({ asset, walletType, page })
       } else {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        await this.openUSBBridgeWindow()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
-          payload.created === true) {
+          if (type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
+          payload.connected === true) {
             this.bridgeModalOpen = false
             await this.connect({ asset, walletType, page })
             if (unsubscribe) {

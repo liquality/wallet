@@ -2,11 +2,13 @@ import {
   createClient
 } from '@liquality/hw-web-bridge'
 
-let bridgeClient
+let bridgeClient = null
 
-export const setLedgerBridgeListener = () => {
-  bridgeClient = createClient()
-  console.log('bridge client created')
+export const setLedgerBridgeListener = (connected) => {
+  if (!connected || !bridgeClient) {
+    bridgeClient = createClient()
+  }
+
   return bridgeClient
 }
 

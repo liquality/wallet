@@ -513,9 +513,7 @@ export default {
       'activeWalletId',
       'activeNetwork'
     ]),
-    ...mapState({
-      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
-    }),
+    ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'swapProvider', 'accountItem', 'networkAccounts']),
     networkMarketData () {
       return this.marketData[this.activeNetwork]
@@ -694,8 +692,7 @@ export default {
       'trackAnalytics'
     ]),
     ...mapActions('app', [
-      'startBridgeListener',
-      'openUSBBridgeWindow'
+      'startBridgeListener'
     ]),
     shortenAddress,
     dpUI,
@@ -838,14 +835,13 @@ export default {
       this.selectedFee[asset] = 'average'
     },
     async tryToSwap () {
-      if (this.account?.type.includes('ledger') && !this.usbBridgeTransportCreated) {
+      if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        await this.openUSBBridgeWindow()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
           if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
-          payload.created === true) {
+          payload.connected === true) {
             this.bridgeModalOpen = false
             await this.swap()
             if (unsubscribe) {

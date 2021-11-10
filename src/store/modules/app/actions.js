@@ -15,13 +15,24 @@ const closeExistingBridgeWindow = async (windowsId) => {
 }
 
 export const actions = {
-  openUSBBridgeWindow: async ({ rootState, commit }) => {
+  openLedgerBridgeWindow: async ({ rootState, commit }) => {
     const { usbBridgeWindowsId } = rootState
     let existingWindow = null
+    const win = await browser.windows.getCurrent()
+    const top = win.top + 50
+    const left = win.left + 40
+
     if (usbBridgeWindowsId && usbBridgeWindowsId > 0) {
       try {
         existingWindow = await browser.windows.get(usbBridgeWindowsId)
-        browser.windows.update(usbBridgeWindowsId, { focused: true })
+        browser.windows.update(usbBridgeWindowsId,
+          {
+            focused: true,
+            height: 600,
+            width: 360,
+            top,
+            left
+          })
       } catch (error) {
         console.log(error)
       }
@@ -35,32 +46,40 @@ export const actions = {
           focused: true,
           type: 'popup',
           height: 600,
-          width: 360
+          width: 360,
+          top,
+          left
         }
       )
       commit('SET_USB_BRIDGE_WINDOWS_ID', { id: win.id }, { root: true })
     }
   },
-  startBridgeListener: ({ rootState, commit }, payload) => {
-    const bridgeClient = setLedgerBridgeListener()
-    console.log('bridgeClient')
+  startBridgeListener: ({ rootState, commit, dispatch }, payload) => {
+    const { ledgerBridgeConnected } = rootState.app
+    const bridgeClient = setLedgerBridgeListener(ledgerBridgeConnected)
     bridgeClient.onConnect(() => {
-      commit('SET_USB_BRIDGE_CREATED', { created: true })
-    }).onTransportCreated(() => {
-      commit('SET_USB_BRIDGE_TRANSPORT_CREATED', { created: true })
-      if (payload && payload.onTransportCreated) {
-        payload.onTransportCreated()
+      commit('SET_LEDGER_BRIDGE_CONNECTED', { connected: true })
+      if (payload && payload.onConnect) {
+        payload.onConnect()
       }
-    }).onTransportDisconnected(() => {
-      commit('SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
     }).onDisconnect(async (error) => {
       console.error('onDisconnect ledger bridge', error)
-      commit('SET_USB_BRIDGE_CREATED', { created: false })
-      commit('SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
+      commit('SET_LEDGER_BRIDGE_CONNECTED', { connected: false })
+      commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected: false })
       const { usbBridgeWindowsId } = rootState
       await closeExistingBridgeWindow(usbBridgeWindowsId)
       commit('SET_USB_BRIDGE_WINDOWS_ID', { id: 0 }, { root: true })
+    }).onTransportConnect(() => {
+      commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected: true })
+      if (payload && payload.onTransportConnect) {
+        payload.onTransportConnect()
+      }
+    }).onTransportDisconnected(() => {
+      console.error('onTransportDisconnected ledger bridge')
+      commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected: false })
     })
+
+    dispatch('openLedgerBridgeWindow')
   },
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
     commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
