@@ -186,7 +186,6 @@ export default {
           })
 
           const selectedAccounts = { ...this.selectedAccounts }
-          debugger
           for (const key in selectedAccounts) {
             const item = selectedAccounts[key]
 
