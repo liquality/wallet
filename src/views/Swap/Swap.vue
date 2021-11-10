@@ -564,13 +564,7 @@ export default {
       return dpUI(min)
     },
     max () {
-      const max = this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
-
-      if (max && this.asset === 'UST') {
-        max.minus(this.ustTax)
-      }
-
-      return max
+      return this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
     },
     safeAmount () {
       return this.sendAmount || 0
