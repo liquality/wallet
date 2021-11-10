@@ -5,18 +5,17 @@ const PasswordPage = require('../Pages/PasswordPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
-const chalk = require('chalk')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
-let browser, page
+let browser, page, dappPage
 const password = '123123123'
+const dappUrl = 'https://app.uniswap.org/#/swap'
 
-// TODO: once multi account enable lets start the test
-describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
+describe('Manage Accounts-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -49,7 +48,8 @@ describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
     const rskAccounts = await page.$$('#RSK')
     expect(rskAccounts.length).to.equals(2)
 
-    // Click on Backup seed from Burger Icon menu
+    // Click on Manage accounts option
+    await overviewPage.ToggleExperimentButton(page, 'exp-manageAccounts-toggle-switch')
     await overviewPage.ClickOnManageAccounts(page)
     expect(await page.$eval('#chain-item-toggle-rsk > label', el => el.getAttribute('class'))).contain('toggled')
     // Click on Plus
@@ -64,16 +64,16 @@ describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
     await page.click('#previous_nav_bar')
     // overview-screen-chain-section , RSK should be hidden
     let accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(8)
+    expect(accounts.length).to.equals(7)
     // Go back to Manage account & toggle on
     await overviewPage.ClickOnManageAccounts(page)
     // Chain RSK toggle on but not accounts
     await page.click('#chain-item-toggle-rsk')
     await page.click('#previous_nav_bar')
     accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(8)
+    expect(accounts.length).to.equals(9)
   })
-  it('RSK - create new account, validate accounts', async () => {
+  it('RSK - create new account, validate RSK 3 accounts', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -90,7 +90,8 @@ describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
     let rskAccounts = await page.$$('#RSK')
     expect(rskAccounts.length).to.equals(2)
 
-    // Click on Backup seed from Burger Icon menu
+    // Select Manage accounts options
+    await overviewPage.ToggleExperimentButton(page, 'exp-manageAccounts-toggle-switch')
     await overviewPage.ClickOnManageAccounts(page)
     await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true, timeout: 60000 })
     // Click on Plus
@@ -104,10 +105,10 @@ describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
     await page.waitForSelector('#create-account-plus-icon-rsk', { visible: true, timeout: 60000 })
     // check new account added
     // Validate number of RSK counts
-    rskAccounts = await page.$$('.account-item-rsk')
+    rskAccounts = await page.$$('#account-item-rsk')
     expect(rskAccounts.length).to.equals(3)
   })
-  it.skip('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
+  it('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
@@ -124,7 +125,8 @@ describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
     let ethAccounts = await page.$$('#ETH')
     expect(ethAccounts.length).to.equals(1)
 
-    // Click on Backup seed from Burger Icon menu
+    // Select manage accounts option under settings
+    await overviewPage.ToggleExperimentButton(page, 'exp-manageAccounts-toggle-switch')
     await overviewPage.ClickOnManageAccounts(page)
     await page.waitForSelector('#create-account-plus-icon-ethereum', { visible: true })
     // Click on Plus
@@ -133,7 +135,7 @@ describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
     const accountName = 'automation test'
     await page.type('#choose-account-name', accountName)
     await page.waitForTimeout(5000)
-    // Cancel button
+    // Click button
     await page.click('#create-account-button')
     await page.waitForSelector('#create-account-plus-icon-ethereum', { visible: true })
     // check new account added
@@ -146,37 +148,42 @@ describe.skip('Manage Accounts-[mainnet,smoke]', async () => {
     await overviewPage.SelectSettings(page)
     // toggle web3 wallet option
     await page.click('#default_web3_wallet_toggle_button > label > div')
+
     // Go to uniSwap app
-    const dappPage = await browser.newPage()
+    dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
       height: 768
     })
-    await dappPage.goto('https://app.uniswap.org/#/swap')
+    await dappPage.goto(dappUrl, { timeout: 60000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
     } catch (e) {
+      await testUtil.takeScreenshot(dappPage, 'uniswap-arbitrum-loading-issue')
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
-      console.log(chalk.red(pageTitle))
-      console.log(chalk.red(pageUrl))
-      expect(e, 'Uniswap dapp UI not loading.....').equals(null)
+      expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
     }
     await dappPage.click('#connect-wallet')
     await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
-
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.click('#connect-INJECTED')
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
-    ethAccounts = await connectRequestWindow.$$('#ETHEREUM')
-    expect(ethAccounts.length).to.equals(2)
-    await connectRequestWindow.click('#ETHEREUM')
+    try {
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
+      await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true, timeout: 60000 })
+    } catch (e) {
+      await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-ethereum-connect-request-window-issue')
+      expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(null)
+    }
     // Check connect button is enabled
+    ethAccounts = await connectRequestWindow.$$('#ETHEREUM')
+    expect(ethAccounts.length, 'ethAccounts should have length 2 on dapp connect request')
+      .to.equals(2)
+    await connectRequestWindow.click('#ETHEREUM')
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })

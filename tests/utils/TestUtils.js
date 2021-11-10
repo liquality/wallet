@@ -72,7 +72,7 @@ class TestUtils {
    */
   async takeScreenshot (page, screenshotName) {
     const ts = Math.round((new Date()).getTime() / 1000)
-    await page.screenshot({ path: `screenshots/${screenshotName}-${ts}.png` })
+    await page.screenshot({ path: `screenshots/${screenshotName}-${ts}.png`, fullscreen: true })
   }
 }
 
