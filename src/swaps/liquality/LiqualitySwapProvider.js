@@ -170,8 +170,8 @@ class LiqualitySwapProvider extends SwapProvider {
     return timestamp() >= swap.expiresAt
   }
 
-  async hasChainTimePassed ({ network, walletId, asset, timestamp, fromAccountId }) {
-    const client = this.getClient(network, walletId, asset, fromAccountId)
+  async hasChainTimePassed ({ network, walletId, asset, timestamp, accountId }) {
+    const client = this.getClient(network, walletId, asset, accountId)
     const maxTries = 3
     let tries = 0
     while (tries < maxTries) {
@@ -191,11 +191,11 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async canRefund ({ network, walletId, swap }) {
-    return this.hasChainTimePassed({ network, walletId, asset: swap.from, timestamp: swap.swapExpiration, fromAccountId: swap.fromAccountId })
+    return this.hasChainTimePassed({ network, walletId, asset: swap.from, timestamp: swap.swapExpiration, accountId: swap.fromAccountId })
   }
 
   async hasSwapExpired ({ network, walletId, swap }) {
-    return this.hasChainTimePassed({ network, walletId, asset: swap.to, timestamp: swap.nodeSwapExpiration, fromAccountId: swap.fromAccountId })
+    return this.hasChainTimePassed({ network, walletId, asset: swap.to, timestamp: swap.nodeSwapExpiration, accountId: swap.toAccountId })
   }
 
   async handleExpirations ({ network, walletId, swap }) {
