@@ -384,7 +384,6 @@ export default {
     return {
       stateSendAmount: 0,
       stateSendAmountFiat: 0,
-      ustTax: 0,
       amountOption: null,
       asset: null,
       toAsset: null,
@@ -794,17 +793,6 @@ export default {
           fees[chain][speed] = fees[chain][speed].plus(totalFees[fee.fee])
         }
 
-        if (asset === 'UST' && chain === 'LUNA') {
-          const accountId = this.assetChain === chain ? this.fromAccountId : this.toAccountId
-
-          const client = this.client({
-            network: this.activeNetwork, walletId: this.activeWalletId, asset, accountId
-          })
-
-          const balance = this.networkWalletBalances[this.asset]
-
-          this.ustTax = await client.getMethod('getTaxFees')(balance)
-        }
       }
 
       if (fromTxType && this.availableFees.has(this.assetChain)) {
