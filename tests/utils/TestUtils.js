@@ -14,9 +14,11 @@ class TestUtils {
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--font-render-hinting=none',
+        '--window-size=1920,1080',
         '--disable-extensions-except=' + this.extensionPathBuildPath,
         '--load-extension=' + this.extensionPathBuildPath
-      ]
+      ],
+      defaultViewport: null
     }
   }
 
