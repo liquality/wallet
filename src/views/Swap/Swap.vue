@@ -630,8 +630,8 @@ export default {
         return 'Please increase amount. It is below minimum.'
       }
 
-      if (this.selectedQuote?.toSwapFees && this.selectedQuote.toAmount - this.selectedQuote.toSwapFees < 0) {
-        return 'Please increase amount. Does not cover network fees on recieve chain.'
+      if (this.selectedQuote?.toSwapFees && BN(this.selectedQuote.toAmount).lt(this.selectedQuote.toSwapFees)) {
+        return 'Please increase amount. It won`t cover swap fee.'
       }
 
       return null

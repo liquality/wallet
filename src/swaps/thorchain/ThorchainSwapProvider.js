@@ -19,6 +19,7 @@ import { mapValues } from 'lodash-es'
 
 // Pool balances are denominated with 8 decimals
 const THORCHAIN_DECIMAL = 8
+const SAFE_FEE_MULTIPLIER = 1.3
 
 const SUPPORTED_CHAINS = ['bitcoin', 'ethereum']
 
@@ -98,7 +99,7 @@ class ThorchainSwapProvider extends SwapProvider {
   }
 
   async getQuote ({ network, from, to, amount }) {
-    // Only ethereum, bitcoin and bsc chains are supported
+    // Only ethereum, bitcoin and bc chains are supported
     if (!SUPPORTED_CHAINS.includes(cryptoassets[from].chain) || !SUPPORTED_CHAINS.includes(cryptoassets[to].chain)) return null
 
     const pools = await this._getPools()
@@ -134,7 +135,7 @@ class ThorchainSwapProvider extends SwapProvider {
       networkFee = getValueOfAsset1InAsset2(networkFee, ethPool, toPool)
     }
 
-    const toSwapFeesInUnit = currencyToUnit(cryptoassets[to], baseToAsset(networkFee).amount())
+    const toSwapFeesInUnit = currencyToUnit(cryptoassets[to], baseToAsset(networkFee).amount()).times(SAFE_FEE_MULTIPLIER)
     const toAmountInUnit = currencyToUnit(cryptoassets[to], baseToAsset(swapOutput).amount())
     return {
       from,
