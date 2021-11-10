@@ -22,7 +22,9 @@ class Background {
       } else if (isInternal) {
         this.onInternalConnection(connection)
       } else {
-        this.onExternalConnection(connection)
+        if (connection.name !== 'HW-BRIDGE') {
+          this.onExternalConnection(connection)
+        }
       }
     })
   }

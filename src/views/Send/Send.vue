@@ -267,9 +267,7 @@ export default {
       'fees',
       'fiatRates'
     ]),
-    ...mapState({
-      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
-    }),
+    ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters([
       'accountItem',
       'client'
@@ -386,6 +384,9 @@ export default {
   },
   methods: {
     ...mapActions(['updateFees', 'sendTransaction', 'trackAnalytics']),
+    ...mapActions('app', [
+      'startBridgeListener'
+    ]),
     prettyBalance,
     dpUI,
     prettyFiatBalance,
@@ -442,12 +443,13 @@ export default {
       await this._updateSendFees()
     },
     async tryToSend () {
-      if (this.account?.type.includes('ledger') && !this.usbBridgeTransportCreated) {
+      if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
         this.loading = true
         this.bridgeModalOpen = true
+        await this.startBridgeListener()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
-          payload.created === true) {
+          if (type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
+          payload.connected === true) {
             this.bridgeModalOpen = false
             await this.send()
             if (unsubscribe) {
