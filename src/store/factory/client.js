@@ -40,7 +40,7 @@ import {
   EthereumLedgerBridgeApp,
   LEDGER_BITCOIN_OPTIONS
 } from '@/utils/ledger-bridge-provider'
-import { chains } from '@liquality/cryptoassets'
+import { ChainId } from '@liquality/cryptoassets'
 
 import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
@@ -61,7 +61,7 @@ function createBtcClient (network, mnemonic, accountType, derivationPath) {
   if (accountType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === accountType)
     const { addressType } = option
-    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(network)
+    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(network, ChainId.Bitcoin)
     const ledger = new BitcoinLedgerBridgeProvider(
       {
         network: bitcoinNetwork,
@@ -101,9 +101,7 @@ function createEthereumClient (
 
   if (accountType === 'ethereum_ledger' || accountType === 'rsk_ledger') {
     const assetData = cryptoassets[asset]
-    const chainData = chains?.[assetData.chain]
-    const { nativeAsset } = chainData || 'ETH'
-    const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, nativeAsset)
+    const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, assetData.chain || ChainId.Ethereum)
     const ledger = new EthereumLedgerBridgeProvider(
       {
         network: ethereumNetwork,

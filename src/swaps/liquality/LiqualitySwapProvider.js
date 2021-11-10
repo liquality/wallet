@@ -140,6 +140,21 @@ class LiqualitySwapProvider extends SwapProvider {
       return mapValues(totalFees, f => unitToCurrency(cryptoassets[asset], f))
     }
 
+    if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'UST') {
+      const client = this.getClient(network, walletId, asset, quote.fromAccountId)
+      const value = max ? undefined : BN(quote.fromAmount)
+      const taxFees = await client.getMethod('getTaxFees')(value, 'uusd', (max || !value))
+
+      const fees = {}
+
+      for (const feePrice of feePrices) {
+        fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice)
+          .plus(taxFees)
+      }
+
+      return fees
+    }
+
     if (txType in LiqualitySwapProvider.feeUnits) {
       const fees = {}
       for (const feePrice of feePrices) {
@@ -170,8 +185,8 @@ class LiqualitySwapProvider extends SwapProvider {
     return timestamp() >= swap.expiresAt
   }
 
-  async hasChainTimePassed ({ network, walletId, asset, timestamp, fromAccountId }) {
-    const client = this.getClient(network, walletId, asset, fromAccountId)
+  async hasChainTimePassed ({ network, walletId, asset, timestamp, accountId }) {
+    const client = this.getClient(network, walletId, asset, accountId)
     const maxTries = 3
     let tries = 0
     while (tries < maxTries) {
@@ -191,11 +206,11 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async canRefund ({ network, walletId, swap }) {
-    return this.hasChainTimePassed({ network, walletId, asset: swap.from, timestamp: swap.swapExpiration, fromAccountId: swap.fromAccountId })
+    return this.hasChainTimePassed({ network, walletId, asset: swap.from, timestamp: swap.swapExpiration, accountId: swap.fromAccountId })
   }
 
   async hasSwapExpired ({ network, walletId, swap }) {
-    return this.hasChainTimePassed({ network, walletId, asset: swap.to, timestamp: swap.nodeSwapExpiration, fromAccountId: swap.fromAccountId })
+    return this.hasChainTimePassed({ network, walletId, asset: swap.to, timestamp: swap.nodeSwapExpiration, accountId: swap.toAccountId })
   }
 
   async handleExpirations ({ network, walletId, swap }) {
