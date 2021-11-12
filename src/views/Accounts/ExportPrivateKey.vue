@@ -6,12 +6,11 @@
       </span>
     </NavBar>
     <main>
-      <ul>
-        <li>account: <code>{{accountId}}</code>
-        <li>chain: <code>{{chainId}}</code></li>
-        <li>network: <code>{{activeNetwork}}</code></li>
-      </ul>
-      <textarea readonly rows="10" @click="selectTextarea" v-model="privateKey" />
+      <p class="account">
+        <code v-if="account.addresses[0]">{{ shortenAddress(account.addresses[0]) }}</code>
+        <img :src="getAccountIcon(account.chain)" class="asset-icon" />
+      </p>
+      <textarea readonly rows="3" @click="selectTextarea" v-model="privateKey" />
       <button type="button" class="btn btn-secondary" @click="goback">Done</button>
     </main>
   </div>
@@ -19,6 +18,8 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
+import { getAccountIcon } from '@/utils/accounts'
+import { shortenAddress } from '@/utils/address'
 import { mapActions, mapState } from 'vuex'
 export default {
   components: {
@@ -26,7 +27,6 @@ export default {
   },
   data () {
     return {
-      backPath: '/wallet/assets',
       chainId: '',
       privateKey: 'n/a'
     }
@@ -37,15 +37,17 @@ export default {
       'accounts',
       'activeNetwork',
       'activeWalletId'
-    ])
+    ]),
+    account () {
+      return this.$store.getters.accountItem(this.accountId)
+    }
   },
   watch: {
     activeNetwork: 'goback'
   },
   created () {
     const { activeWalletId, activeNetwork, accountId } = this
-    const chainId = this.accounts[activeWalletId][activeNetwork]
-      .find(a => a.id === accountId)?.chain
+    const chainId = this.account?.chain
 
     if (!chainId) {
       return this.goback()
@@ -64,11 +66,13 @@ export default {
     this.$nextTick(this.selectTextarea)
   },
   methods: {
+    getAccountIcon,
+    shortenAddress,
     ...mapActions([
       'exportPrivateKey'
     ]),
     goback () {
-      this.$router.replace(this.backPath)
+      this.$router.replace('/wallet/assets')
     },
     selectTextarea () {
       this.$el.querySelector('textarea')?.select()
@@ -86,6 +90,13 @@ export default {
     flex: 1;
     overflow: auto;
     padding: $wrapper-padding;
+
+    p.account {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     textarea {
       font-family: monospace;
       width: 100%;
