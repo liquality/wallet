@@ -628,8 +628,8 @@ export default {
         return 'Please increase amount. It is below minimum.'
       }
 
-      if (this.selectedQuote?.toSwapFees && BN(this.selectedQuote.toAmount).lt(this.selectedQuote.toSwapFees)) {
-        return 'Please increase amount. It won`t cover swap fee.'
+      if (this.selectedQuote?.maxFeePercentage && (BN(this.selectedQuote.toAmount).times(this.selectedQuote?.maxFeePercentage)).lt(this.selectedQuote.toSwapFees)) {
+        return `Increase amount. Fee exceeds ${this.selectedQuote.maxFeePercentage * 100}% of the swap.`
       }
 
       return null
