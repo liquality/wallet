@@ -14,7 +14,7 @@ class LiqualityBoostSwapProvider extends SwapProvider {
   constructor (config) {
     super(config)
     this.liqualitySwapProvider = createSwapProvider(this.config.network, 'liquality')
-    this.oneinchSwapProvider = createSwapProvider(this.config.network, 'oneinchV3')
+    this.oneinchSwapProvider = createSwapProvider(this.config.network, 'oneinchV4')
     this.supportedBridgeAssets = this.config.supportedBridgeAssets
   }
 
