@@ -121,10 +121,8 @@ describe('SWAP feature["testnet"]', async () => {
     // Check SWAP Initiate option has been enabled
     await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
-  it('SWAP SOV to BTC', async () => {
+  it.only('SWAP SOV to BTC', async () => {
     const asset1 = 'SOV'
-    const asset2 = 'BTC'
-
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
@@ -145,69 +143,6 @@ describe('SWAP feature["testnet"]', async () => {
     await swapPage.ValidateNetworkFeeTab(page)
     // Click on SWAP Review button
     await swapPage.ClickSwapReviewButton(page)
-    await page.waitForTimeout(7000)
-
-    // SWAP SEND details validation
-    // Send confirm value
-    const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
-    expect(sendAmountValue.trim()).contain(asset1)
-    console.log(chalk.green('SEND Swap value: ' + sendAmountValue))
-
-    // Check Fees are high. Review transaction carefully.
-    // await swapPage.CheckFeesAreHigh(page)
-
-    // Send confirm USD value
-    const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
-    expect(swapSendAmountInDollar.trim(), `Send Network fee should not be $0.00 for ${asset1}`)
-      .not.equals('$0.00')
-    console.log(chalk.green('User SEND Swap value in USD: ' + swapSendAmountInDollar))
-    // Send Network Fee
-    const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
-    expect(swapSendNetworkFeeValue.trim()).contain('RBTC')
-    console.log(chalk.green('User SEND Swap Network Fee value: ' + swapSendNetworkFeeValue))
-    // Send Network Fee in USD
-    const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
-    expect(swapSendNetworkFeeInDollar.trim(), `Send ${asset1} network fee can not be $0.00`).not.contain('$0.00')
-    console.log(chalk.green('User SEND Swap Network Fee value in USD: ' + swapSendNetworkFeeInDollar))
-    // Send Account+FEES
-    const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
-    expect(swapSendAccountFeesValue.trim()).contain('RBTC')
-    console.log(chalk.green('User SEND Account+FEES value: ' + swapSendAccountFeesValue))
-    // Send Accounts+FEES in USD
-    const swapSendAccountFeesInDollar = await swapPage.GetSwapSendAccountFeesInDollar(page)
-    expect(swapSendAccountFeesInDollar.trim()).not.contain('$00.00')
-    console.log(chalk.green('User SEND Account+FEES value in USD: ' + swapSendAccountFeesInDollar))
-
-    // Receive details validation
-    const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
-    expect(receiveAmountValue.trim()).contain(asset2)
-
-    // Receive fiat amount in $
-    const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    expect(receiveAmountInDollar.trim(), 'Swap receive fiat amount should not be 0.00')
-      .not.contain('$0.00')
-    expect(receiveAmountInDollar.trim()).not.contain('NaN')
-    // Receive Network Fee
-    const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
-    expect(receiveNetworkFeeValue.trim()).contain(asset2)
-    // Receive Network Fee fiat total
-    const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
-    expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
-    // Receive Amount+Fees fee
-    const receiveAccountFeesValue = await swapPage.GetSwapReceiveNetworkValue(page)
-    expect(receiveAccountFeesValue.trim()).contain(asset2)
-    // Receive Amount+Fees fiat value
-    const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
-    expect(receiveAccountFeesInDollar.trim(), `Receive Network fee should not be $0.00 for ${asset2}`)
-      .not.contain('$0.00')
-    expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
-    // RATE
-    await page.waitForSelector('#swap_review_rate_block')
-
-    // Validate message
-    await swapPage.ValidateMessage(page)
-
     // Click on Initiate SWAP button
     await swapPage.ClickInitiateSwapButton(page)
 
