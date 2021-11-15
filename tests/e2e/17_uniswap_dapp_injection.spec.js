@@ -75,11 +75,16 @@ describe('Uniswap Dapp Injection-[mainnet,testnet,smoke]', async () => {
     await connectRequestWindow.click('#ETHEREUM')
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     // Check web3 status as connected
-    const chainID = await dappPage.evaluate(async () => {
+    const connectedChainDetails = await dappPage.evaluate(async () => {
       const chainIDHexadecimal = await window.ethereum.request({ method: 'eth_chainId', params: [] })
-      return parseInt(chainIDHexadecimal, 16)
+      return {
+        chainId: parseInt(chainIDHexadecimal, 16),
+        connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
+      }
     })
-    expect(chainID, 'Uniswap ethereum dapp connection issue').equals(3)
+    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(3)
+    expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
+      .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })
   it('UNISWAP Injection-ARBITRUM', async () => {
     // Select ARBITRUM
@@ -120,10 +125,15 @@ describe('Uniswap Dapp Injection-[mainnet,testnet,smoke]', async () => {
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     // Check web3 status as connected
-    const chainID = await dappPage.evaluate(async () => {
+    const connectedChainDetails = await dappPage.evaluate(async () => {
       const chainIDHexadecimal = await window.ethereum.request({ method: 'eth_chainId', params: [] })
-      return parseInt(chainIDHexadecimal, 16)
+      return {
+        chainId: parseInt(chainIDHexadecimal, 16),
+        connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
+      }
     })
-    expect(chainID, 'Uniswap arbitrum dapp connection issue').equals(421611)
+    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(421611)
+    expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
+      .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })
 })
