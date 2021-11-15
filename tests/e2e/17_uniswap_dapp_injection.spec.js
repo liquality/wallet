@@ -61,10 +61,9 @@ describe('Uniswap Dapp Injection-[mainnet,testnet,smoke]', async () => {
       expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
     }
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.evaluate(
-      () => {
-        window.ethereum.enable()
-      })
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable()
+    })
     const connectRequestWindow = await newPagePromise
     try {
       await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
@@ -105,10 +104,9 @@ describe('Uniswap Dapp Injection-[mainnet,testnet,smoke]', async () => {
       expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
     }
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.evaluate(
-      () => {
-        window.ethereum.enable()
-      })
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable()
+    })
     const connectRequestWindow = await newPagePromise
     try {
       await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
