@@ -83,5 +83,8 @@ export const actions = {
   },
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
     commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
+  },
+  setLedgerSignRequestModalOpen: ({ commit }, { open }) => {
+    commit('SET_LEDGER_SIGN_REQUEST_MODAL_OPEN', { open })
   }
 }
