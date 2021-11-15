@@ -3,12 +3,14 @@ import store from '@/store'
 
 export const SEND_STATUS_STEP_MAP = {
   WAITING_FOR_CONFIRMATIONS: 0,
-  SUCCESS: 1
+  SUCCESS: 1,
+  FAILED: 2
 }
 
 export const SEND_STATUS_LABEL_MAP = {
   WAITING_FOR_CONFIRMATIONS: 'Pending',
-  SUCCESS: 'Completed'
+  SUCCESS: 'Completed',
+  FAILED: 'Failed'
 }
 
 export function getStatusLabel (item) {
@@ -55,6 +57,10 @@ export const ACTIVITY_STATUSES = {
     label: 'Completed',
     icon: 'completed'
   },
+  FAILED: {
+    label: 'Failed',
+    icon: 'failed'
+  },
   NEEDS_ATTENTION: {
     label: 'Needs Attention',
     icon: 'needs_attention'
@@ -67,7 +73,8 @@ export const ACTIVITY_STATUSES = {
 
 export const SEND_STATUS_FILTER_MAP = {
   WAITING_FOR_CONFIRMATIONS: 'PENDING',
-  SUCCESS: 'COMPLETED'
+  SUCCESS: 'COMPLETED',
+  FAILED: 'FAILED'
 }
 
 export const getItemIcon = (name) => {

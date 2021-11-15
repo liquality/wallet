@@ -8,6 +8,7 @@
             <span class="error-indicator"></span>
         </div>
         <CompletedIcon v-else-if="status === 'COMPLETED'" />
+        <CanceledIcon v-else-if="status === 'FAILED'" />
         <RefundedIcon v-else-if="status === 'REFUNDED'" />
         <CanceledIcon v-else-if="status === 'CANCELED'" />
         <div class="transaction-confirming" v-else-if="status === 'PENDING'">

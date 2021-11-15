@@ -81,6 +81,10 @@
               v-if="item.status === 'SUCCESS'"
               class="tx-details_status-icon"
             />
+            <FailedIcon
+              v-else-if="item.status === 'FAILED'"
+              class="tx-details_status-icon"
+            />
             <SpinnerIcon v-else class="tx-details_status-icon" />
           </div>
         </div>
@@ -114,6 +118,7 @@ import {
 
 import FeeSelector from '@/components/FeeSelector'
 import CompletedIcon from '@/assets/icons/completed.svg'
+import FailedIcon from '@/assets/icons/close.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import NavBar from '@/components/NavBar.vue'
@@ -122,6 +127,7 @@ export default {
   components: {
     FeeSelector,
     CompletedIcon,
+    FailedIcon,
     SpinnerIcon,
     CopyIcon,
     NavBar
