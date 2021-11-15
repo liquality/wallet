@@ -51,7 +51,7 @@ export default {
     },
     nextPath: {
       type: String,
-      default: '/seedLogin'
+      default: '/seedreveal'
     }
   },
   data () {

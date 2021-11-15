@@ -2,17 +2,23 @@
   <div class="export-account">
     <NavBar>
       <span class="wallet_header">
-        <strong>{{chainId}} private key</strong>
+        <strong>{{chainId}} Private Key</strong>
       </span>
     </NavBar>
+    <div class="export-account_top login-wrapper">
+      <Eye class="export-account_eye" />
+      <p class="mt-3">Keep this away from prying eyes!</p>
+    </div>
     <main>
       <p class="account">
         <code v-if="account.addresses[0]">{{ shortenAddress(account.addresses[0]) }}</code>
         <img :src="getAccountIcon(account.chain)" class="asset-icon" />
       </p>
       <textarea readonly rows="3" @click="selectTextarea" v-model="privateKey" />
-      <button type="button" class="btn btn-secondary" @click="goback">Done</button>
     </main>
+    <div class="p-3 pb-1">
+      <button class="btn btn-primary btn-lg btn-block" @click="goback">Done</button>
+    </div>
   </div>
 </template>
 
@@ -21,9 +27,12 @@ import NavBar from '@/components/NavBar.vue'
 import { getAccountIcon } from '@/utils/accounts'
 import { shortenAddress } from '@/utils/address'
 import { mapActions, mapState } from 'vuex'
+import Eye from '../../assets/icons/eye.svg'
+
 export default {
   components: {
-    NavBar
+    NavBar,
+    Eye
   },
   data () {
     return {
@@ -86,6 +95,14 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+
+  &_top {
+    align-items: center;
+  }
+  &_eye {
+    width: 115px;
+  }
+
   main {
     flex: 1;
     overflow: auto;
