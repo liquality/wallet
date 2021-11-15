@@ -17,7 +17,7 @@ async function waitForConfirmations ({ getters, dispatch }, { transaction, netwo
 
       return {
         endTime: Date.now(),
-        status: tx.status ? 'SUCCESS' : 'FAILED'
+        status: tx.status
       }
     }
   } catch (e) {
