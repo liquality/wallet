@@ -41,7 +41,7 @@ export default {
     wallet: function () {
       return this.wallets.find(wallet => wallet.id === this.activeWalletId)
     },
-    currentRoute() {
+    currentRoute () {
       return this.$router.currentRoute.fullPath
     }
   },
