@@ -15,7 +15,7 @@ let browser, page
 const password = '123123123'
 const dappUrl = 'https://app.1inch.io/'
 
-describe.skip('1Inch Dapp Injection-[mainnet,smoke]', async () => {
+describe.only('1Inch Dapp Injection-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -49,12 +49,18 @@ describe.skip('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     // // Go to 1inch app
     const dappPage = await browser.newPage()
     await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 90000 })
+    try {
+      await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]')
+    } catch (e) {
+      await testUtil.takeScreenshot(dappPage, '1inch-wallet-button-issue')
+      expect(e).equals(null)
+    }
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
+      dappPage.waitForTimeout(2000)
     })
-    // console.log(chalk.green('user clicked on 1inch web3'))
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
     await connectRequestWindow.click('#ETHEREUM')
@@ -75,10 +81,17 @@ describe.skip('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     // Go to 1inch app
     const dappPage = await browser.newPage()
     await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 90000 })
+    try {
+      await dappPage.waitForSelector('[data-id$="header.connect-wallet-button"]')
+    } catch (e) {
+      await testUtil.takeScreenshot(dappPage, '1inch-wallet-button-issue')
+      expect(e).equals(null)
+    }
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
+      dappPage.waitForTimeout(2000)
     })
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#BSC', { visible: true })
