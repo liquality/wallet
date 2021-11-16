@@ -14,7 +14,7 @@ let browser, page, dappPage
 const password = '123123123'
 const dappUrl = 'https://terra.mirror.finance/'
 
-describe('Terra Mirror Finance DAPP injection-[mainnet]', async () => {
+describe.skip('Terra Mirror Finance DAPP injection-[mainnet]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -46,7 +46,7 @@ describe('Terra Mirror Finance DAPP injection-[mainnet]', async () => {
     })
   })
   it('Terra mirror finance', async () => {
-    await dappPage.goto(dappUrl, { timeout: 60000, waitUntil: 'load' })
+    await dappPage.goto(dappUrl, { timeout: 90000, waitUntil: 'load' })
     try {
       await dappPage.waitForSelector("button[class*='ConnectButton']", { visible: true, timeout: 60000 })
     } catch (e) {
