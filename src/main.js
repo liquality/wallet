@@ -1,5 +1,12 @@
-import devtools from '@vue/devtools'
+/* eslint-disable import/first */
+// import devtools from '@vue/devtools'
+let devtools
+if (process.env.NODE_ENV === 'development') devtools = require('@vue/devtools')
 import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex) // must call before a store instance is created
+
 import App from './App.vue'
 import store from './store'
 import router from './router'

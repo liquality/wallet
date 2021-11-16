@@ -15,6 +15,7 @@
     "build:staging": "vue-cli-service build --mode staging",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "lint-no-fix": "vue-cli-service lint --no-fix -v",
     "sync-versions": "node script/sync-versions.js",
     "test:unit": "jest tests/unit",
     "jest": "jest",
