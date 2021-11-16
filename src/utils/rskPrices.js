@@ -39,11 +39,12 @@ export const fetchRskTokenPrices = async (
 
     if (_toCurrency) {
       const coins = baseCurrencies.filter(currency => {
-        return (
-          cryptoassets[currency].chain === 'rsk' &&
-          !cryptoassets[currency].coinGeckoId &&
-          cryptoassets[currency].contractAddress
-        )
+        const coin = cryptoassets[currency]
+        if (coin) {
+          return (
+            coin.chain === 'rsk' && !coin.coinGeckoId && coin.contractAddress
+          )
+        }
       })
 
       const symbolPrices = {}
