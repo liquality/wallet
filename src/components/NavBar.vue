@@ -107,7 +107,7 @@ export default {
     SettingsIcon,
     AccountsIcon,
     LedgerIcon,
-    KeyIcon,
+    KeyIcon
   },
   props: [
     'showMenu',
