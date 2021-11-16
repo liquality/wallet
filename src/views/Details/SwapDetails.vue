@@ -12,7 +12,7 @@
           </div>
           <div class="col">
             <CompletedIcon v-if="item.status === 'SUCCESS'" class="swap-details_status-icon"/>
-            <RefundedIcon v-else-if="item.status === 'REFUNDED'" class="swap-details_status-icon"/>
+            <RefundedIcon v-else-if="['FAILED', 'REFUNDED', 'QUOTE_EXPIRED'].includes(item.status)" class="swap-details_status-icon"/>
             <SpinnerIcon v-else class="swap-details_status-icon" />
           </div>
         </div>
