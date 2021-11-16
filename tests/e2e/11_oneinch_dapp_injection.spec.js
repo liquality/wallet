@@ -59,7 +59,6 @@ describe.only('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
-      dappPage.waitForTimeout(2000)
     })
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
@@ -91,7 +90,6 @@ describe.only('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
-      dappPage.waitForTimeout(2000)
     })
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#BSC', { visible: true })
