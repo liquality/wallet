@@ -56,7 +56,7 @@
           v-if="$route.params.accountId"
           @click="exportPrivateKey"
         >
-          <SettingsIcon />
+          <KeyIcon />
           Export Private Key
         </li>
         <li id="settings" @click="settings">
@@ -92,6 +92,7 @@ import SettingsIcon from '@/assets/icons/settings.svg'
 import AssetsIcon from '@/assets/icons/assets.svg'
 import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
+import KeyIcon from '@/assets/icons/key.svg'
 
 export default {
   directives: {
@@ -105,7 +106,8 @@ export default {
     AssetsIcon,
     SettingsIcon,
     AccountsIcon,
-    LedgerIcon
+    LedgerIcon,
+    KeyIcon,
   },
   props: [
     'showMenu',
