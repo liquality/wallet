@@ -26,6 +26,38 @@ npm run build
 npm run lint
 ```
 
+> **NOTE:** You can run `npm run lint-no-fix` to perform linting without auto-fix
+
+### Develop via browser (and use Vue devtools)
+
+For developer convenience, you can run the built package within your browser and connect to Vue devtools.
+
+You can leave `npm run dev` running as you develop with this procedure.
+
+**(1)**
+
+Install the extension:
+
+* Open a browser to `chrome://extensions`
+
+* Install the built `dist` package as a Chrome extension (using the "Load unpacked" option). You must have "Developer Mode" enabled.
+
+**(2)**
+
+Run the Vue devtools stand-alone app by executing the following command from the root of the repo:
+
+`./node_modules/.bin/vue-devtools`
+
+> This will automatically load devtools as an Electron app (included as a dev dependency)
+
+**(3)**
+
+* Copy the "ID" from the loaded extension and open a browser to: `chrome-extension://<extension_id>/index.html`
+
+> Where <extension_id> is the "ID" from the loaded Chrome extension
+
+* Open Chrome Developer Tools
+
 ### Run Integration __tests__
 
 [Wallet](https://liquality.io/wallet.html) Integration __tests__ have been written using [puppeteer](https://developers.google.com/web/tools/puppeteer)
