@@ -45,7 +45,7 @@ describe.skip('Terra Mirror Finance DAPP injection-[mainnet]', async () => {
       height: 800
     })
   })
-  it.only('Terra mirror finance', async () => {
+  it('Terra mirror finance', async () => {
     await dappPage.goto(dappUrl, { timeout: 90000, waitUntil: 'load' })
     try {
       await dappPage.waitForSelector("button[class*='ConnectButton']", { visible: true, timeout: 60000 })
