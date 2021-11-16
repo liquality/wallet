@@ -48,7 +48,7 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
   it('1Inch injection - ETH', async () => {
     // // Go to 1inch app
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { timeout: 60000 })
+    await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 90000 })
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.evaluate(async () => {
@@ -74,7 +74,7 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
   it('1Inch injection - BSC', async () => {
     // Go to 1inch app
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { timeout: 60000 })
+    await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 90000 })
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.evaluate(async () => {
