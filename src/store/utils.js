@@ -7,6 +7,7 @@ import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
 import { EthereumJsWalletProvider } from '@liquality/ethereum-js-wallet-provider'
 import { EthereumErc20Provider } from '@liquality/ethereum-erc20-provider'
 import { ChainNetworks } from '@/utils/networks'
+import { fetchRskTokenPrices } from '../utils/rskPrices'
 
 export const CHAIN_LOCK = {}
 
@@ -104,7 +105,7 @@ export const shouldApplyRskLegacyDerivation = async (accounts, mnemonic, indexPa
   return balances.some(amount => amount.isGreaterThan(0))
 }
 
-export async function getPrices (baseCurrencies, toCurrency) {
+export async function getPrices (baseCurrencies, toCurrency, activeNetwork) {
   const coindIds = baseCurrencies.filter(currency => cryptoassets[currency]?.coinGeckoId)
     .map(currency => cryptoassets[currency].coinGeckoId)
   const { data } = await axios.get(`${COIN_GECKO_API}/simple/price?ids=${coindIds.join(',')}&vs_currencies=${toCurrency}`)
@@ -117,5 +118,6 @@ export async function getPrices (baseCurrencies, toCurrency) {
     }
   }
   const symbolPrices = mapValues(prices, rates => rates[toCurrency.toUpperCase()])
-  return symbolPrices
+  const rskTokenPrices = await fetchRskTokenPrices(baseCurrencies, toCurrency, activeNetwork)
+  return { ...symbolPrices, ...rskTokenPrices }
 }
