@@ -13,12 +13,14 @@ export const updateTransactionFee = async ({ dispatch, commit, getters }, { netw
     refundTx: 'fee'
   }[txKey]
 
+  const accountId = txKey === 'toClaimTx' ? this.item.toAccountId : this.item.fromAccountId
+
   const client = getters.client(
     {
       network,
       walletId,
       asset,
-      accountId: item.fromAccountId // TODO: confirm if the from account should be used here
+      accountId
     }
   )
 
