@@ -9,6 +9,7 @@
         <li id="mainnet_network" @click="switchNetwork('mainnet')">Mainnet</li>
         <li id="testnet_network" @click="switchNetwork('testnet')">Testnet</li>
       </ul>
+      <span style="margin-left:10px">{{ currentRoute }}</span>
     </div>
   </div>
 </template>
@@ -39,6 +40,9 @@ export default {
     ...mapState(['wallets', 'activeWalletId', 'activeNetwork']),
     wallet: function () {
       return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+    },
+    currentRoute() {
+      return this.$router.currentRoute.fullPath
     }
   },
   methods: {
