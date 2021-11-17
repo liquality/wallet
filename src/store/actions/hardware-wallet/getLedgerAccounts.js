@@ -1,5 +1,6 @@
 
-import { assets } from '@liquality/cryptoassets'
+import { assets, chains } from '@liquality/cryptoassets'
+
 export const getLedgerAccounts = async (
   { getters },
   { network, walletId, asset, accountType, startingIndex, numAccounts }
@@ -26,6 +27,7 @@ export const getLedgerAccounts = async (
     const addresses = await _client.wallet.getAddresses()
     if (addresses && addresses.length > 0) {
       const account = addresses[0]
+      const normalizedAddress = chains[chain].formatAddress(account.address, network)
       const exists = existingAccounts.findIndex((a) => {
         if (a.addresses.length <= 0) {
           if (a.type.includes('ledger')) {
@@ -41,12 +43,14 @@ export const getLedgerAccounts = async (
             )
 
             const [address] = accountClient.wallet.getAddresses(0, 1)
-            return address === account.address
+            return chains[chain].formatAddress(address, network) === normalizedAddress
           }
 
           return false
         }
-        return a.addresses[0] === account.address
+
+        const addresses = a.addresses.map(a => chains[chain].formatAddress(a, network))
+        return addresses.includes(normalizedAddress)
       }
       ) >= 0
 
