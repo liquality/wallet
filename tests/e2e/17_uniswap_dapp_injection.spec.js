@@ -13,8 +13,9 @@ const passwordPage = new PasswordPage()
 let browser, page, dappPage
 const password = '123123123'
 const dappUrl = 'https://app.uniswap.org/#/swap'
+let ethereumChainId, arbitrumChainId
 
-describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
+describe('Uniswap Dapp Injection-[mainnet,testnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -33,8 +34,12 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
     await overviewPage.CloseWatsNewModal(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+      ethereumChainId = 1
+      arbitrumChainId = 42161
     } else {
       await overviewPage.SelectNetwork(page)
+      ethereumChainId = 3
+      arbitrumChainId = 421611
     }
     // Web3 toggle on
     await overviewPage.ClickWeb3WalletToggle(page)
@@ -43,7 +48,6 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
   afterEach(async () => {
     await browser.close()
   })
-
   it('UNISWAP Injection-ETH', async () => {
     // Go to uniSwap app
     dappPage = await browser.newPage()
@@ -61,11 +65,10 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
       const pageUrl = await dappPage.url()
       expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
     }
-    await dappPage.click('#connect-wallet')
-    await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
-    // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.click('#connect-INJECTED')
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable()
+    })
     const connectRequestWindow = await newPagePromise
     try {
       await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
@@ -74,13 +77,26 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
       await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-ethereum-connect-request-window-issue')
       expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(null)
     }
-    // Check connect button is enabled
     await connectRequestWindow.click('#ETHEREUM')
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     // Check web3 status as connected
-    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
+    const connectedChainDetails = await dappPage.evaluate(async () => {
+      const chainIDHexadecimal = await window.ethereum.request({ method: 'eth_chainId', params: [] })
+      return {
+        chainId: parseInt(chainIDHexadecimal, 16),
+        connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
+      }
+    })
+    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(ethereumChainId)
+    expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
+      .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })
-  it('UNISWAP Injection-ARBITRUM-["smoke"]', async () => {
+  it('UNISWAP Injection-ARBITRUM', async () => {
+    // Select ARBITRUM
+    await page.click('#dropdown-item')
+    await page.waitForSelector('#arbitrum_web_network', { visible: true })
+    await page.click('#arbitrum_web_network')
+
     // Go to uniSwap app
     dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -97,11 +113,10 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
       const pageUrl = await dappPage.url()
       expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
     }
-    await dappPage.click('#connect-wallet')
-    await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
-    // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    await dappPage.click('#connect-INJECTED')
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable()
+    })
     const connectRequestWindow = await newPagePromise
     try {
       await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
@@ -110,12 +125,20 @@ describe('Uniswap Dapp Injection-[mainnet,testnet]', async () => {
       await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-arbitrum-connect-request-window-issue')
       expect(e, 'Uniswap injection ARBITRUM not listed, connect request window loading issue.....').equals(null)
     }
-
     await connectRequestWindow.click('#ARBITRUM')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     // Check web3 status as connected
-    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
+    const connectedChainDetails = await dappPage.evaluate(async () => {
+      const chainIDHexadecimal = await window.ethereum.request({ method: 'eth_chainId', params: [] })
+      return {
+        chainId: parseInt(chainIDHexadecimal, 16),
+        connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
+      }
+    })
+    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(arbitrumChainId)
+    expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
+      .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })
 })
