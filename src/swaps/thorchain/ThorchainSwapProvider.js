@@ -101,6 +101,7 @@ class ThorchainSwapProvider extends SwapProvider {
     const toPoolData = pools.find((pool) => pool.asset === toThorchainAsset(to))
 
     if (!fromPoolData || !toPoolData) return // Pool doesn't exist
+    if (fromPoolData.status.toLowerCase() !== 'available' || toPoolData.status.toLowerCase() !== 'available') return // Pool is not available
 
     const getPool = (poolData) => {
       return {
