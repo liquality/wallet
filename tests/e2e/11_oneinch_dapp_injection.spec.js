@@ -4,7 +4,6 @@ const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
-const chalk = require('chalk')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
@@ -39,8 +38,6 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     }
     // Web3 toggle on
     await overviewPage.ClickWeb3WalletToggle(page)
-    await page.waitForTimeout(1000)
-    console.log(chalk.green('Web3 toggled on'))
   })
   afterEach(async () => {
     await browser.close()
@@ -60,9 +57,14 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
     })
+    await dappPage.waitForTimeout(5000)
     const connectRequestWindow = await newPagePromise
+    await connectRequestWindow.setViewport({
+      width: 1300,
+      height: 768
+    })
     try {
-      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
+      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000})
       await connectRequestWindow.click('#ETHEREUM')
     } catch (e) {
       await testUtil.takeScreenshot(dappPage, '1inch-wallet-ethereum-issue')
@@ -77,8 +79,8 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
         connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
       }
     })
-    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(3)
-    expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
+    expect(connectedChainDetails.chainId, '1inch ethereum dapp connection issue').equals(3)
+    expect(connectedChainDetails.connectedAddress[0], '1inch ethereum dapp connection issue')
       .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })
   it('1Inch injection - BSC', async () => {
