@@ -199,11 +199,15 @@
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Started At</td>
-            <td id="swap_details_started_at">{{ new Date(item.startTime) }}</td>
+            <td id="swap_details_started_at" class="text-break">
+              {{ new Date(item.startTime) }}
+            </td>
           </tr>
           <tr v-if="item.endTime">
             <td class="text-muted text-right small-12">Finished At</td>
-            <td id="swap_details_finished_at">{{ new Date(item.endTime) }}</td>
+            <td id="swap_details_finished_at" class="text-break">
+              {{ new Date(item.endTime) }}
+            </td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Rate</td>
@@ -237,19 +241,19 @@
             <td class="text-muted text-right small-12">
               Your {{ item.from }}<br />address
             </td>
-            <td id="from_address">{{ item.fromAddress }}</td>
+            <td id="from_address" class="text-break">{{ item.fromAddress }}</td>
           </tr>
           <tr v-if="item.toAddress">
             <td class="text-muted text-right small-12">
               Your {{ item.to }}<br />address
             </td>
-            <td id="to_address">{{ item.toAddress }}</td>
+            <td id="to_address" class="text-break">{{ item.toAddress }}</td>
           </tr>
           <tr v-if="item.secret">
             <td class="text-muted text-right small-12">Secret</td>
             <td id="secret_key">
               <span
-                class="cursor-pointer text-muted font-weight-light"
+                class="cursor-pointer text-muted font-weight-light text-break"
                 v-if="secretHidden"
                 @click="secretHidden = false"
               >
@@ -262,26 +266,32 @@
           </tr>
           <tr v-if="item.secretHash">
             <td class="text-muted text-right small-12">Secret Hash</td>
-            <td id="secretHash">{{ item.secretHash }}</td>
+            <td id="secretHash" class="text-break">{{ item.secretHash }}</td>
           </tr>
           <tr v-if="item.fromFundHash">
             <td class="text-muted text-right small-12">
               Your {{ item.from }} funding<br />transaction
             </td>
-            <td id="from_funding_transaction">{{ item.fromFundHash }}</td>
+            <td id="from_funding_transaction" class="text-break">
+              {{ item.fromFundHash }}
+            </td>
           </tr>
           <tr v-if="item.toFundHash">
             <td class="text-muted text-right small-12">
               Counter-party's {{ item.bridgeAsset || item.to }}<br />funding
               transaction
             </td>
-            <td id="to_funding_transaction">{{ item.toFundHash }}</td>
+            <td id="to_funding_transaction" class="text-break">
+              {{ item.toFundHash }}
+            </td>
           </tr>
           <tr v-if="item.toClaimHash">
             <td class="text-muted text-right small-12">
               Your {{ item.bridgeAsset || item.to }} claim<br />transaction
             </td>
-            <td id="to_claim_hash">{{ item.toClaimHash }}</td>
+            <td id="to_claim_hash" class="text-break">
+              {{ item.toClaimHash }}
+            </td>
           </tr>
           <tr v-if="item.bridgeAsset">
             <td class="text-muted text-right small-12">Bridge asset</td>
