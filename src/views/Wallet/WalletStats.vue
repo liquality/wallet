@@ -1,35 +1,49 @@
 <template>
-   <div class="wallet-stats">
-     <span v-if="loading">Loading ...</span>
-      <div v-else>
-        <div>
-            <span class="wallet-stats_total">
-                {{ total }}
-            </span>
-            <span>USD</span>
-        </div>
-        <span id="total_assets">
-            {{accountsData.length}} Asset{{ accountsData.length === 1 ? '' : 's' }}
+  <div class="wallet-stats">
+    <span v-if="loading">Loading ...</span>
+    <div v-else>
+      <div>
+        <span
+          class="wallet-stats_total"
+          :style="{ fontSize: formatFontSize(total) }"
+        >
+          {{ total }}
         </span>
-         <div class="wallet-actions">
-          <router-link to="/assets/send"
-                       class="wallet-actions-item send-action" id="send_action">
-            <SendIcon/>
-            Send
-          </router-link>
-          <router-link to="/assets/swap.send"
-                       class="wallet-actions-item swap-action" id="swap_action">
-            <SwapIcon/>
-            Swap
-          </router-link>
-          <router-link to="/assets/receive"
-                       class="wallet-actions-item receive-action" id="receive_action">
-            <ReceiveIcon/>
-            Receive
-          </router-link>
-        </div>
+        <span>USD</span>
+      </div>
+      <span id="total_assets">
+        {{ accountsData.length }} Asset{{
+          accountsData.length === 1 ? "" : "s"
+        }}
+      </span>
+      <div class="wallet-actions">
+        <router-link
+          to="/assets/send"
+          class="wallet-actions-item send-action"
+          id="send_action"
+        >
+          <SendIcon />
+          Send
+        </router-link>
+        <router-link
+          to="/assets/swap.send"
+          class="wallet-actions-item swap-action"
+          id="swap_action"
+        >
+          <SwapIcon />
+          Swap
+        </router-link>
+        <router-link
+          to="/assets/receive"
+          class="wallet-actions-item receive-action"
+          id="receive_action"
+        >
+          <ReceiveIcon />
+          Receive
+        </router-link>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -57,63 +71,63 @@ export default {
 
 <style lang="scss">
 .wallet-stats {
+  display: flex;
+  height: 225px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: $brand-gradient-primary;
+  color: $color-text-secondary;
+  font-size: $font-size-lg;
+
+  &_total {
+    font-size: 50px;
+    line-height: 61px;
+  }
+
+  .wallet-actions {
     display: flex;
-    height: 225px;
     justify-content: center;
-    align-items: center;
-    text-align: center;
-    background: $brand-gradient-primary;
-    color: $color-text-secondary;
-    font-size: $font-size-lg;
+    align-items: flex-end;
+    padding-top: 10px;
 
-    &_total {
-      font-size: 50px;
-      line-height: 61px;
-    }
-
-    .wallet-actions {
+    .wallet-actions-item {
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
       display: flex;
+      flex-direction: column;
       justify-content: center;
-      align-items: flex-end;
-      padding-top: 10px;
+      align-items: center;
+      width: 57px;
 
-      .wallet-actions-item {
-        color: #ffffff;
-        font-weight: 600;
-        font-size: 13px;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 57px;
+      svg {
+        margin-bottom: 5px;
+      }
 
+      &.send-action {
         svg {
-          margin-bottom: 5px;
+          width: 44px;
+          height: 44px;
         }
+        margin-right: 14px;
+      }
 
-        &.send-action {
-          svg {
-            width: 44px;
-            height: 44px;
-          }
-          margin-right: 14px;
+      &.swap-action {
+        svg {
+          width: 57px;
+          height: 57px;
         }
+      }
 
-        &.swap-action {
-          svg {
-            width: 57px;
-            height: 57px;
-          }
+      &.receive-action {
+        margin-left: 14px;
+        svg {
+          width: 44px;
+          height: 44px;
         }
-
-        &.receive-action {
-          margin-left: 14px;
-          svg {
-            width: 44px;
-            height: 44px;
-          }
-        }
+      }
     }
   }
 }
