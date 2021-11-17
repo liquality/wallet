@@ -61,8 +61,13 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
       window.ethereum.enable()
     })
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
-    await connectRequestWindow.click('#ETHEREUM')
+    try {
+      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
+      await connectRequestWindow.click('#ETHEREUM')
+    } catch (e) {
+      await testUtil.takeScreenshot(dappPage, '1inch-wallet-ethereum-issue')
+      expect(e).equals(null)
+    }
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     const connectedChainDetails = await dappPage.evaluate(async () => {
@@ -92,8 +97,13 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
       window.ethereum.enable()
     })
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#BSC', { visible: true })
-    await connectRequestWindow.click('#BSC')
+    try {
+      await connectRequestWindow.waitForSelector('#BSC', { visible: true })
+      await connectRequestWindow.click('#BSC')
+    } catch (e) {
+      await testUtil.takeScreenshot(dappPage, '1inch-wallet-bsc-issue')
+      expect(e).equals(null)
+    }
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     const connectedChainDetails = await dappPage.evaluate(async () => {
