@@ -374,7 +374,7 @@ export default {
         : this.getTransactionStep(completed, pending, side, this.item.swapTxHash, this.item.swapTxHash, this.item.to, 'swap')
     },
     async getReceiveStep (completed, pending, side) {
-      return this.item.status === 'FAILED'
+      return this.item.status === 'REFUNDED'
         ? this.getTransactionStep(completed, pending, side, this.item.receiveTxHash, null, this.item.from, 'refund')
         : this.getTransactionStep(completed, pending, side, this.item.receiveTxHash, null, this.item.to, 'receive')
     },

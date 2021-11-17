@@ -26,7 +26,7 @@ const SUPPORTED_CHAINS = ['bitcoin', 'ethereum']
 
 const OUT_MEMO_TO_STATUS = {
   OUT: 'SUCCESS',
-  REFUND: 'FAILED'
+  REFUND: 'REFUNDED'
 }
 
 /**
@@ -130,14 +130,14 @@ class ThorchainSwapProvider extends SwapProvider {
       networkFee = getValueOfAsset1InAsset2(networkFee, ethPool, toPool)
     }
 
-    const toSwapFeesInUnit = currencyToUnit(cryptoassets[to], baseToAsset(networkFee).amount()).times(SAFE_FEE_MULTIPLIER)
+    const receiveFeeInUnit = currencyToUnit(cryptoassets[to], baseToAsset(networkFee).amount()).times(SAFE_FEE_MULTIPLIER)
     const toAmountInUnit = currencyToUnit(cryptoassets[to], baseToAsset(swapOutput).amount())
     return {
       from,
       to,
       fromAmount: fromAmountInUnit,
       toAmount: toAmountInUnit,
-      toSwapFees: toSwapFeesInUnit,
+      receiveFee: receiveFeeInUnit,
       slippage,
       maxFeePercentage: MAX_FEE_PERCENTAGE
     }
@@ -445,13 +445,13 @@ class ThorchainSwapProvider extends SwapProvider {
         }
       }
     },
-    FAILED: {
+    REFUNDED: {
       step: 3,
-      label: 'Swap Failed',
+      label: 'Refunded',
       filterStatus: 'REFUNDED',
       notification () {
         return {
-          message: 'Swap failed'
+          message: 'Swap refunded'
         }
       }
     }

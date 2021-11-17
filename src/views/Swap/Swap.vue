@@ -103,6 +103,9 @@
                     :swap="true"
                   />
                 </li>
+                <li v-if="hasPredefinedReceiveFee">
+                <span class="selectors-asset">{{toAssetChain}} </span>{{receiveFee}} / {{getTotalSwapFeeInFiat(toAssetChain)}} USD
+                </li>
               </ul>
             </template>
           </DetailsContainer>
@@ -203,17 +206,17 @@
               <div class="details-text" id="receive_swap_amount_fiat">{{ '$' + formatFiat(receiveAmountFiat) }}</div>
             </div>
           </div>
-          <div class="detail-group" v-if="receiveFeeRequired">
-            <label class="text-muted">Network Fee</label>
+          <div class="detail-group" v-if="receiveFeeRequired || hasPredefinedReceiveFee">
+            <label class="text-muted">{{hasPredefinedReceiveFee? 'Receive Fee' : 'Network Fee'}}</label>
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
               id="swap_receive_network_fee_value"
             >
-              <div>~{{ toSwapFee }} {{ toAssetChain }}</div>
+              <div>~{{ receiveFee }} {{ toAssetChain }}</div>
               <div class="details-text" id="swap_receive_network_fee_fiat_rate">
                 ${{
                   prettyFiatBalance(
-                    toSwapFee,
+                    receiveFee,
                     fiatRates[toAssetChain],
                   )
                 }}
@@ -229,7 +232,7 @@
                 </span>
                 <span v-else>
                   {{ receiveAmount }} {{ toAsset }} -
-                  {{ toSwapFee }} {{ toAssetChain }}
+                  {{ receiveFee }} {{ toAssetChain }}
                 </span>
               </div>
               <div class="font-weight-bold" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
@@ -571,13 +574,15 @@ export default {
       const fee = this.amountOption === 'max' ? this.maxSwapFees[this.assetChain]?.[selectedSpeed] : this.swapFees[this.assetChain]?.[selectedSpeed]
       return fee || BN(0)
     },
-    toSwapFee () {
-      if (this.selectedQuote?.toSwapFees) return unitToCurrency(cryptoassets[this.toAsset], this.selectedQuote.toSwapFees).toFixed() // Thorchain case workaround
-
+    receiveFee () {
+      if (this.selectedQuote?.receiveFee) return unitToCurrency(cryptoassets[this.toAsset], this.selectedQuote.receiveFee).toFixed()
       if (!this.receiveFeeRequired) return BN(0)
       const selectedSpeed = this.selectedFee[this.toAssetChain]
       const fee = this.amountOption === 'max' ? this.maxSwapFees[this.toAssetChain]?.[selectedSpeed] : this.swapFees[this.toAssetChain]?.[selectedSpeed]
       return fee || BN(0)
+    },
+    hasPredefinedReceiveFee () {
+      return this.selectedQuote.receiveFee
     },
     maxFee () {
       const selectedSpeed = this.selectedFee[this.assetChain]
@@ -628,10 +633,6 @@ export default {
         return 'Please increase amount. It is below minimum.'
       }
 
-      if (this.selectedQuote?.maxFeePercentage && (BN(this.selectedQuote.toAmount).times(this.selectedQuote?.maxFeePercentage)).lt(this.selectedQuote.toSwapFees)) {
-        return `Increase amount. Fee exceeds ${this.selectedQuote.maxFeePercentage * 100}% of the swap.`
-      }
-
       return null
     },
     canSwap () {
@@ -669,11 +670,11 @@ export default {
       return send.plus(fee).toFormat(2)
     },
     receiveAmountSameAsset () {
-      return BN(this.receiveAmount).minus(this.toSwapFee).toFixed()
+      return BN(this.receiveAmount).minus(this.receiveFee).toFixed()
     },
     totalToReceiveInFiat () {
       const receive = cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
-      const fee = cryptoToFiat(this.toSwapFee, this.selectedQuote?.toSwapFees ? this.fiatRates[this.toAsset] : this.fiatRates[this.toAssetChain]) // Thorchain case workaround
+      const fee = cryptoToFiat(this.receiveFee, this.fiatRates[this.toAssetChain])
 
       return receive.minus(fee).toFormat(2)
     },
@@ -684,7 +685,7 @@ export default {
       }
     },
     isHighFee () {
-      const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
+      const feeTotal = cryptoToFiat(this.receiveFee, this.fiatRates[this.assetChain]).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
       const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
       return feeTotal.gte(BN(receiveTotalPercentage))
     },
@@ -998,10 +999,10 @@ export default {
       this.loading = false
     },
     getTotalSwapFee (asset) {
-      if (asset === this.assetChain) {
+      if (asset === this.assetChain && !this.receiveFee) {
         return this.fromSwapFee
       } else if (asset === this.toAssetChain) {
-        return this.toSwapFee
+        return this.receiveFee
       }
     },
     getTotalSwapFeeInFiat (asset) {
