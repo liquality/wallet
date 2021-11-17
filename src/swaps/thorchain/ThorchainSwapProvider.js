@@ -71,20 +71,12 @@ const convertBaseAmountDecimal = (amount, decimal) => {
 }
 
 class ThorchainSwapProvider extends SwapProvider {
-  constructor (config) {
-    super(config)
-    this.pools = null
-  }
-
   async getSupportedPairs () {
     return []
   }
 
   async _getPools () {
-    if (!this.pools) {
-      this.pools = (await axios.get(`${this.config.thornode}/thorchain/pools`)).data
-    }
-    return this.pools
+    return (await axios.get(`${this.config.thornode}/thorchain/pools`)).data
   }
 
   async _getInboundAddresses () {
