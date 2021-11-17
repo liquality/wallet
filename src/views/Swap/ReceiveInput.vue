@@ -38,7 +38,7 @@
             v-else
             type="number"
             class="form-control swap-receive-main-input"
-            :value="receiveAmount"
+            :value="receiveAmountValue"
             placeholder=""
             :style="getAssetColorStyle(toAsset)"
             autocomplete="off"
@@ -88,11 +88,10 @@ export default {
   computed: {
     receiveAmountFiatValue () {
       return '$' + dpUI(this.receiveAmountFiat, 2)
+    },
+    receiveAmountValue () {
+      return this.receiveAmount.gt(0) ? dpUI(this.receiveAmount) : ''
     }
-    // receiveAmountValue () {
-    // TODO: this.receiveAmount is already formated via dpUI
-    //  return this.receiveAmount.gt(0) ? dpUI(this.receiveAmount) : ''
-    // }
   },
   methods: {
     formatFiat,
