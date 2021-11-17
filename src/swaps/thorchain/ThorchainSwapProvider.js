@@ -119,7 +119,8 @@ class ThorchainSwapProvider extends SwapProvider {
 
     // For RUNE it's `getSwapOutput`
     const swapOutput = getDoubleSwapOutput(inputAmount, fromPool, toPool)
-    const slippage = BN(getDoubleSwapSlip(inputAmount, fromPool, toPool))
+    // TODO: test slippage
+    const slippage = getDoubleSwapSlip(inputAmount, fromPool, toPool)
 
     const baseNetworkFee = await this.networkFees(to)
     let networkFee = convertBaseAmountDecimal(baseNetworkFee, 8)
