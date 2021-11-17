@@ -98,7 +98,12 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
     })
+    await dappPage.waitForTimeout(5000)
     const connectRequestWindow = await newPagePromise
+    await connectRequestWindow.setViewport({
+      width: 1300,
+      height: 768
+    })
     try {
       await connectRequestWindow.waitForSelector('#BSC', { visible: true })
       await connectRequestWindow.click('#BSC')
