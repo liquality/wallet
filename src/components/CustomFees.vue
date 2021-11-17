@@ -3,6 +3,22 @@
     <NavBar :showBackButton="false" :showBack="false" :showMenuList="false">
       Network Speed/Fee
     </NavBar>
+    <div class="fee-tabs">
+      <div
+        class="fee-tab"
+        v-bind:class="{ selected: tab === 'basic' }"
+        @click="switchTab('basic')"
+      >
+        BASIC
+      </div>
+      <div
+        class="fee-tab"
+        v-bind:class="{ selected: tab === 'customize' }"
+        @click="switchTab('customize')"
+      >
+        CUSTOMIZE
+      </div>
+    </div>
     <div class="wrapper form">
       <div class="wrapper_top">
         <div class="selected-asset" id="custom_fee_selected_asset">
@@ -11,13 +27,16 @@
             {{ asset }}
           </span>
         </div>
-        <!-- Presets -->
-        <div class="custom-fee-title">Presets</div>
+      </div>
+
+      <!-- Presets -->
+      <div v-if="tab === 'basic'">
+        <span class="custom-fee-title">Presets</span>
         <div class="custom-fee-presets">
           <div
             class="custom-fee-presets-option"
             v-for="name in ['slow', 'average', 'fast']"
-            :id=name
+            :id="name"
             :key="name"
             :class="{ active: name === preset }"
             @click="setPreset(name)"
@@ -36,45 +55,114 @@
             </div>
           </div>
         </div>
-        <!-- Customized -->
-        <div class="custom-fee-title">Customized Setting</div>
-        <div class="custom-fee-customized">
-          <div class="custom-fee-details">
-            <div class="custom-fee-details-item">
-              <div class="gas-price-label">Gas Price</div>
-              <div class="gas-price-amount" v-if="customFiatAmount">
-                $ {{ customFiatAmount }}
-              </div>
-            </div>
-            <div class="custom-fee-details-item">
-              <div class="gas-unit-label">{{ gasUnit }}</div>
-              <div class="input-group">
-                <input type="number"
-                     class="form-control"
-                       id="custom_fee_input_field"
-                     :step="stepSize"
-                     :value="fee"
-                     @input="setCustomFee(parseFloat($event.target.value))" />
-                <div class="input-group-text fee-input-controls">
-                  <ChevronUpIcon @click="incrementFee"/>
-                  <ChevronDownIcon  @click="decrementFee"/>
-                </div>
+      </div>
+
+      <!-- Customized -->
+
+      <div v-if="tab === 'customize'" class="current-base-fee">
+        <span class="custom-fee-title">
+          <strong>CURRENT BASE FEE</strong>
+          PER GAS
+        </span>
+        <span>GWEI <span>151</span></span>
+      </div>
+
+      <div v-if="tab === 'customize'" class="custom-fee-inputs">
+        <div class="input-wrapper">
+          <p><strong>MINER TIP</strong> TO SPEED UP</p>
+          <span>1.10$</span>
+          <div class="custom-fee-details-item">
+            <div class="gas-unit-label">{{ gasUnit.toUpperCase() }}</div>
+            <div class="input-group">
+              <input
+                type="number"
+                class="form-control"
+                id="custom_fee_input_field"
+                :step="stepSize"
+                :value="tipFee"
+                @input="
+                  setTipFee(parseFloat($event.target.value))
+                "
+              />
+              <div class="input-group-text fee-input-controls">
+                <ChevronUpIcon @click="incrementTipFee()" />
+                <ChevronDownIcon @click="decrementTipFee()" />
               </div>
             </div>
           </div>
         </div>
+        <div class="input-wrapper">
+          <p><strong>MAX FEE</strong> PER GAS</p>
+          <span>1.10$</span>
+          <div class="custom-fee-details-item">
+            <div class="gas-unit-label">{{ gasUnit.toUpperCase() }}</div>
+            <div class="input-group">
+              <input
+                type="number"
+                class="form-control"
+                id="custom_fee_input_field"
+                :step="stepSize"
+                :value="maxFee"
+                @input="
+                  setMaxFee(parseFloat($event.target.value))
+                "
+              />
+              <div class="input-group-text fee-input-controls">
+                <ChevronUpIcon @click="incrementMaxFee()" />
+                <ChevronDownIcon @click="decrementTipFee()" />
+              </div>
+            </div>
+          </div>
 
-        <!-- Result -->
-        <div class="custom-fee-result" id="custom_speed_fee_results">
-          <div class="custom-fee-result-title">
-            New Speed/Fee
-          </div>
-          <div class="custom-fee-result-amount">{{ customFeeAmount }}</div>
-          <div class="custom-fee-result-fiat" v-if="customFiatAmount">
-            {{ customFiatAmount }}
-          </div>
+          <!-- Result -->
         </div>
       </div>
+
+      <div class="speed-wrapper">
+        <button
+          v-bind:class="{ selected: tipSpeed === 'low' }"
+          @click="selectTipSpeed('low')"
+        >
+          Low
+        </button>
+        <button
+          v-bind:class="{ selected: tipSpeed === 'medium' }"
+          @click="selectTipSpeed('medium')"
+        >
+          Med
+        </button>
+        <button
+          v-bind:class="{ selected: tipSpeed === 'high' }"
+          @click="selectTipSpeed('high')"
+        >
+          High
+        </button>
+      </div>
+
+      <div class="error-messages-wrapper">
+        <p class="error" v-if="noTipError">{{ noTipError }}</p>
+        <p class="error" v-if="veryLowTipError">{{ veryLowTipError }}</p>
+        <p class="warning" v-if="veryHighTipWarning">
+          {{ veryHighTipWarning }}
+        </p>
+        <p class="error" v-if="veryLowMaxFeeError">{{ veryLowMaxFeeError }}</p>
+        <p class="warning" v-if="veryHighFeeWarning">
+          {{ veryHighFeeWarning }}
+        </p>
+      </div>
+
+      <div
+        v-if="tab === 'customize'"
+        class="custom-fee-result"
+        id="custom_speed_fee_results"
+      >
+        <div class="custom-fee-result-title">New Speed/Fee</div>
+        <div class="custom-fee-result-amount">{{ customFeeAmount }}</div>
+        <div class="custom-fee-result-fiat" v-if="customFiatAmount">
+          {{ customFiatAmount }}
+        </div>
+      </div>
+
       <div class="wrapper_bottom">
         <div class="button-group">
           <button
@@ -99,109 +187,148 @@
 </template>
 
 <script>
-import { getAssetIcon, getNativeAsset, getFeeAsset } from '@/utils/asset'
-import NavBar from '@/components/NavBar'
-import { getFeeLabel } from '@/utils/fees'
-import BN from 'bignumber.js'
-import { prettyFiatBalance } from '@/utils/coinFormatter'
-import cryptoassets from '@/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
-import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
-import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import { getAssetIcon } from "@/utils/asset"
+import NavBar from "@/components/NavBar"
+import { getFeeLabel } from "@/utils/fees"
+import BN from "bignumber.js"
+import { prettyFiatBalance } from "@/utils/coinFormatter"
+import cryptoassets from "@/utils/cryptoassets"
+import { chains } from "@liquality/cryptoassets"
+import ChevronUpIcon from "@/assets/icons/chevron_up.svg"
+import ChevronDownIcon from "@/assets/icons/chevron_down.svg"
 
 export default {
   components: {
     NavBar,
     ChevronUpIcon,
-    ChevronDownIcon
+    ChevronDownIcon,
   },
-  data () {
+  data() {
     return {
+      preset: null,
       fee: null,
-      preset: null
+      tab: "basic",
+      tipSpeed: "low",
+      tipFee: null,
+      maxFee: null
     }
   },
-  props: ['asset', 'selectedFee', 'fees', 'totalFees', 'fiatRates'],
-  created () {
-    this.preset = this.selectedFee || 'average'
-    this.fee = this.fees[this.preset]?.fee
+  props: ["asset", "selectedFee", "fees", "totalFees", "fiatRates"],
+  created() {
+    this.preset = this.selectedFee || "average"
+    this.maxFee = this.fees[this.preset]?.fee
   },
   computed: {
-    nativeAsset () {
-      return getFeeAsset(this.asset) || getNativeAsset(this.asset)
+    getTotalFee() {
+      this.fee = this.maxFee + this.tipFee
+      return this.fee
     },
-    gasUnit () {
-      const chainId = cryptoassets[this.asset]?.chain
-      if (chainId) {
-        const { unit } = chains[chainId]?.fees || ''
-        return getFeeAsset(this.asset) || unit
-      }
-      return ''
+    noTipError() {
+      return !this.tipFee
+        ? "Miner tip must be greater than 0 GWEI"
+        : null
     },
-    customFiatAmount () {
+    veryLowTipError() {
+      return !this.noTipError && this.tipFee < 10
+        ? "Miner tip is extremely low and the transaction could fail. Use ‘Low’."
+        : null
+    },
+    veryHighTipWarning() {
+      return this.tipFee > 20
+        ? "Miner tip is higher than necessary. You may pay more than needed. Use ‘High’."
+        : null
+    },
+    veryLowMaxFeeError() {
+      return this.getTotalFee < 20
+        ? "Max fee too low. Must be > 152.5 GWEI (Base Fee plus Miner Tip)."
+        : null
+    },
+    veryHighFeeWarning() {
+      return this.getTotalFee > 40
+        ? "Max fee is higher than necessary 152.5 GWEI (Base Fee plus Miner Tip). Review  your maximum ‘New Fee Total’."
+        : null
+    },
+    nativeAsset() {
+      return "ETH"
+    },
+    gasUnit() {
+      return "gwei"
+    },
+    customFiatAmount() {
       return this.getFiatAmount()
     },
-    customFeeAmount () {
+    customFeeAmount() {
       return this.getFeeAmount()
     },
-    stepSize () {
-      const chainId = cryptoassets[this.asset].chain
-      return ({
-        bitcoin: 1,
-        ethereum: 1,
-        rsk: 1,
-        bsc: 1,
-        polygon: 1,
-        near: 0.00001,
-        solana: 0.00001,
-        terra: 1
-      })[chainId] || 1
-    }
+    stepSize() {
+      return 1
+    },
   },
   methods: {
     getFeeLabel,
     getAssetIcon,
-    cancel () {
-      this.$emit('cancel')
+    cancel() {
+      this.$emit("cancel")
     },
-    apply () {
-      this.$emit('apply', {
+    switchTab(tab) {
+      this.tab = tab
+    },
+    selectTipSpeed(speed) {
+      this.tipSpeed = speed
+    },
+    apply() {
+      this.$emit("apply", {
         asset: this.asset,
-        fee: this.fee
+        fee: this.fee,
       })
     },
-    setCustomFee (fee) {
-      this.fee = fee
-      this.$emit('update', {
+    setTipFee(fee) {
+      this.tipFee = fee
+      this.$emit("update", {
         asset: this.asset,
-        fee: this.fee
+        fee: this.getTotalFee,
       })
     },
-    setPreset (name) {
-      this.preset = name
-      this.fee = this.fees[name]?.fee
+    setMaxFee(fee) {
+      this.maxFee = fee
+      this.$emit("update", {
+        asset: this.asset,
+        fee: this.getTotalFee,
+      })
     },
-    incrementFee () {
-      this.setCustomFee(this.fee + this.stepSize)
+    incrementTipFee() {
+      this.setTipFee(this.tipFee + this.stepSize)
     },
-    decrementFee () {
-      if (this.fee && this.fee > 0) {
-        this.setCustomFee(this.fee - this.stepSize)
+    incrementMaxFee() {
+      this.setMaxFee(this.maxFee + this.stepSize)
+    },
+    decrementTipFee() {
+      if (this.tipFee) {
+        this.setTipFee(this.tipFee - this.stepSize)
       }
     },
-    getFeeAmount (name) {
-      if (!name) name = this.preset || 'custom'
+    decrementMaxFee() {
+      if (this.maxFee) {
+        this.setMaxFee(this.maxFee - this.stepSize)
+      }
+    },
+    setPreset(name) {
+      this.preset = name
+      this.maxFee = this.fees[name]?.fee
+    },
+    getFeeAmount(name) {
+      if (!name) name = this.preset || "custom"
       if (this.totalFees && this.totalFees[name]) {
         const totalFee = this.totalFees[name]
         return `${BN(totalFee).dp(6)} ${this.nativeAsset}`
       } else {
         const chainId = cryptoassets[this.asset].chain
         const { unit } = chains[chainId].fees
-        return `${this.fee || 0} ${unit}`
+        return `${this.getTotalFee || 0} ${unit}`
       }
     },
-    getFiatAmount (name) {
-      if (!name) name = this.preset || 'custom'
+    getFiatAmount(name) {
+      if (!name) name = this.preset || "custom"
       if (this.totalFees && this.totalFees[name]) {
         const totalFiat = prettyFiatBalance(
           this.totalFees[name],
@@ -209,24 +336,149 @@ export default {
         )
         return `${totalFiat} USD`
       }
-      return ''
-    }
+      return ""
+    },
   },
   watch: {
     fee: function (val) {
       if (this.fees) {
-        this.preset = ({
-          [this.fees?.slow?.fee]: 'slow',
-          [this.fees?.average?.fee]: 'average',
-          [this.fees?.fast?.fee]: 'fast'
-        })[val || 0]
+        this.preset = {
+          [this.fees?.slow?.fee]: "slow",
+          [this.fees?.average?.fee]: "average",
+          [this.fees?.fast?.fee]: "fast",
+        }[val || 0]
+      }
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.fee-tabs {
+  display: flex;
+  align-items: center;
+
+  .fee-tab {
+    width: 50%;
+    text-align: center;
+    line-height: 18px;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    padding-top: 15px;
+    height: 50px;
+    border-bottom: 1px solid #d9dfe5;
+  }
+
+  .selected {
+    font-weight: 600;
+    border-bottom: 1px solid #1d1e21;
+  }
+}
+
+#custom_fee_input_field {
+  width: 0;
+}
+
+.wrapper {
+  overflow-y: auto;
+  height: auto;
+  max-height: 400px;
+}
+
+.wrapper_top {
+  flex: 0;
+}
+
+.custom-fee-inputs {
+  display: flex;
+
+  .input-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+
+    &:last-child {
+      margin-left: 17px;
+    }
+
+    p {
+      margin-bottom: 0;
+    }
+
+    span {
+      text-align: right;
+      width: 136px;
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+
+      span {
+        width: 34px;
+      }
+
+      input {
+        width: 100px;
+        font-size: 14px !important;
+        line-height: 18px !important;
+        text-align: right;
       }
     }
   }
 }
-</script>
 
-<style lang="scss">
+.input-group-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 20px;
+  height: 25px;
+  & svg {
+    cursor: pointer;
+    width: 12px;
+    height: 8px;
+  }
+}
+
+.speed-wrapper {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+
+  button {
+    border: 1px solid #d9dfe5;
+    border-radius: 26px;
+    width: 45px;
+    background-color: transparent;
+  }
+
+  .selected {
+    background-color: #d9dfe5;
+  }
+}
+
+.error-messages-wrapper {
+  margin-top: 1rem;
+
+  .error {
+    color: #ff007a;
+  }
+
+  .warning {
+    color: #f57a08;
+  }
+}
+
+.current-base-fee {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .selected-asset {
   display: flex;
   align-items: flex-end;
@@ -240,8 +492,11 @@ export default {
 
   div {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    height: 24px;
+    justify-content: space-between;
+    width: 20px;
+    height: 25px;
 
     svg {
       width: 8px;
@@ -263,6 +518,11 @@ export default {
   color: #3d4767;
   margin-top: 10px;
   margin-bottom: 10px;
+
+  span {
+    margin-left: 4px;
+    font-weight: 500;
+  }
 }
 
 .custom-fee-presets {
@@ -334,27 +594,6 @@ export default {
       line-height: 150%;
     }
 
-    .gas-price-label {
-      font-style: normal;
-      font-weight: bold;
-      font-size: 12px;
-      line-height: 18px;
-      display: flex;
-      align-items: center;
-      letter-spacing: -0.08px;
-    }
-
-    .gas-price-amount {
-      font-style: normal;
-      font-weight: 300;
-      font-size: 12px;
-      line-height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      text-align: right;
-    }
-
     & input {
       height: 25px !important;
       align-items: flex-end;
@@ -366,8 +605,8 @@ export default {
       margin-left: 4px;
     }
 
-    & input[type=number]::-webkit-inner-spin-button,
-    & input[type=number]::-webkit-outer-spin-button {
+    & input[type="number"]::-webkit-inner-spin-button,
+    & input[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
@@ -384,21 +623,14 @@ export default {
       justify-content: space-between;
       width: 20px;
       height: 25px;
-
-      & svg {
-        cursor: pointer;
-        width: 12px;
-        height: 8px;
-      }
     }
   }
 }
 
 .custom-fee-result {
-  background: #F0F7F9;
-  border: 1px solid #D9DFE5;
+  background: #f0f7f9;
+  border: 1px solid #d9dfe5;
   display: flex;
-  margin-top: 30px;
   padding: 10px;
   flex-direction: column;
 
@@ -415,11 +647,10 @@ export default {
     font-weight: 300;
     font-size: 12px;
     line-height: 16px;
-
   }
 
   .custom-fee-result-fiat {
-    color: #646F85;
+    color: #646f85;
   }
 }
 </style>
