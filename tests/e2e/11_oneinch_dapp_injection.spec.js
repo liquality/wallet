@@ -64,7 +64,7 @@ describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
       height: 768
     })
     try {
-      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000})
+      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
       await connectRequestWindow.click('#ETHEREUM')
     } catch (e) {
       await testUtil.takeScreenshot(dappPage, '1inch-wallet-ethereum-issue')
