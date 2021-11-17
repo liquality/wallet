@@ -18,7 +18,7 @@
         </div>
         <div class="wrapper_bottom">
         <div class="button-group">
-          <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg width-button" id="show_seed_phrase_cancel_button">Cancel</button></router-link>
+          <button @click="$router.back()" class="btn btn-outline-primary btn-lg width-button" id="show_seed_phrase_cancel_button">Cancel</button>
           <router-link :to="nextPath"><button class="btn btn-primary btn-lg width-button" id="i_have_privacy_button">I have privacy</button></router-link>
         </div>
         </div>
