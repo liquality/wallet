@@ -1,11 +1,9 @@
 import { LedgerBridgeApp } from './LedgerBridgeApp'
-import {
-  ExecutionMode
-} from '@liquality/hw-web-bridge'
+import { ExecutionMode } from '@liquality/hw-web-bridge'
 
 export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   async signMessageNew (...payload) {
-    return await this.callToBridge({
+    return this.callToBridge({
       action: 'signMessageNew',
       execMode: ExecutionMode.Async,
       payload
@@ -13,7 +11,7 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async getWalletPublicKey (...payload) {
-    return await this.callToBridge({
+    return this.callToBridge({
       action: 'getWalletPublicKey',
       execMode: ExecutionMode.Async,
       payload
@@ -21,7 +19,7 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async splitTransaction (...payload) {
-    return await this.callToBridge({
+    return this.callToBridge({
       action: 'splitTransaction',
       execMode: ExecutionMode.Sync,
       payload
@@ -29,7 +27,7 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async createPaymentTransactionNew (...payload) {
-    return await this.callToBridge({
+    return this.callToBridge({
       action: 'createPaymentTransactionNew',
       execMode: ExecutionMode.Async,
       payload
@@ -37,10 +35,12 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async serializeTransactionOutputs (...payload) {
-    return await this.callToBridge({
+    const result = await this.callToBridge({
       action: 'serializeTransactionOutputs',
-      execMode: ExecutionMode.Sync,
+      execMode: ExecutionMode.Async,
       payload
     })
+    debugger
+    return result
   }
 }
