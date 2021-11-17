@@ -199,11 +199,15 @@
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Started At</td>
-            <td id="swap_details_started_at">{{ new Date(item.startTime) }}</td>
+            <td id="swap_details_started_at" class="text-break">
+              {{ new Date(item.startTime) }}
+            </td>
           </tr>
           <tr v-if="item.endTime">
             <td class="text-muted text-right small-12">Finished At</td>
-            <td id="swap_details_finished_at">{{ new Date(item.endTime) }}</td>
+            <td id="swap_details_finished_at" class="text-break">
+              {{ new Date(item.endTime) }}
+            </td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Rate</td>
@@ -237,19 +241,19 @@
             <td class="text-muted text-right small-12">
               Your {{ item.from }}<br />address
             </td>
-            <td id="from_address">{{ item.fromAddress }}</td>
+            <td id="from_address" class="text-break">{{ item.fromAddress }}</td>
           </tr>
           <tr v-if="item.toAddress">
             <td class="text-muted text-right small-12">
               Your {{ item.to }}<br />address
             </td>
-            <td id="to_address">{{ item.toAddress }}</td>
+            <td id="to_address" class="text-break">{{ item.toAddress }}</td>
           </tr>
           <tr v-if="item.secret">
             <td class="text-muted text-right small-12">Secret</td>
             <td id="secret_key">
               <span
-                class="cursor-pointer text-muted font-weight-light"
+                class="cursor-pointer text-muted font-weight-light text-break"
                 v-if="secretHidden"
                 @click="secretHidden = false"
               >
@@ -262,26 +266,32 @@
           </tr>
           <tr v-if="item.secretHash">
             <td class="text-muted text-right small-12">Secret Hash</td>
-            <td id="secretHash">{{ item.secretHash }}</td>
+            <td id="secretHash" class="text-break">{{ item.secretHash }}</td>
           </tr>
           <tr v-if="item.fromFundHash">
             <td class="text-muted text-right small-12">
               Your {{ item.from }} funding<br />transaction
             </td>
-            <td id="from_funding_transaction">{{ item.fromFundHash }}</td>
+            <td id="from_funding_transaction" class="text-break">
+              {{ item.fromFundHash }}
+            </td>
           </tr>
           <tr v-if="item.toFundHash">
             <td class="text-muted text-right small-12">
               Counter-party's {{ item.bridgeAsset || item.to }}<br />funding
               transaction
             </td>
-            <td id="to_funding_transaction">{{ item.toFundHash }}</td>
+            <td id="to_funding_transaction" class="text-break">
+              {{ item.toFundHash }}
+            </td>
           </tr>
           <tr v-if="item.toClaimHash">
             <td class="text-muted text-right small-12">
               Your {{ item.bridgeAsset || item.to }} claim<br />transaction
             </td>
-            <td id="to_claim_hash">{{ item.toClaimHash }}</td>
+            <td id="to_claim_hash" class="text-break">
+              {{ item.toClaimHash }}
+            </td>
           </tr>
           <tr v-if="item.bridgeAsset">
             <td class="text-muted text-right small-12">Bridge asset</td>
@@ -351,60 +361,60 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapGetters } from "vuex";
-import BN from "bignumber.js";
-import moment from "@/utils/moment";
-import cryptoassets from "@/utils/cryptoassets";
-import { chains } from "@liquality/cryptoassets";
+import { mapActions, mapState, mapGetters } from 'vuex'
+import BN from 'bignumber.js'
+import moment from '@/utils/moment'
+import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
-import { prettyBalance } from "@/utils/coinFormatter";
-import { getStep } from "@/utils/history";
-import { getNativeAsset, getTransactionExplorerLink } from "@/utils/asset";
+import { prettyBalance } from '@/utils/coinFormatter'
+import { getStep } from '@/utils/history'
+import { getNativeAsset, getTransactionExplorerLink } from '@/utils/asset'
 
-import SpinnerIcon from "@/assets/icons/spinner.svg";
-import CopyIcon from "@/assets/icons/copy.svg";
-import { getSwapProviderConfig } from "@/utils/swaps";
-import { calculateQuoteRate } from "@/utils/quotes";
+import SpinnerIcon from '@/assets/icons/spinner.svg'
+import CopyIcon from '@/assets/icons/copy.svg'
+import { getSwapProviderConfig } from '@/utils/swaps'
+import { calculateQuoteRate } from '@/utils/quotes'
 
 const ACTIONS_TERMS = {
   lock: {
-    default: "Lock",
-    pending: "Locking",
-    completed: "Locked",
+    default: 'Lock',
+    pending: 'Locking',
+    completed: 'Locked'
   },
   claim: {
-    default: "Claim",
-    pending: "Claiming",
-    completed: "Claimed",
+    default: 'Claim',
+    pending: 'Claiming',
+    completed: 'Claimed'
   },
   approve: {
-    default: "Approve Not Required",
-    pending: "Approving",
-    completed: "Approved",
+    default: 'Approve Not Required',
+    pending: 'Approving',
+    completed: 'Approved'
   },
   receive: {
-    default: "Receive",
-    pending: "Receiving",
-    completed: "Received",
+    default: 'Receive',
+    pending: 'Receiving',
+    completed: 'Received'
   },
   swap: {
-    default: "Collect",
-    pending: "Collecting",
-    completed: "Collected",
+    default: 'Collect',
+    pending: 'Collecting',
+    completed: 'Collected'
   },
   refund: {
-    default: "Refund",
-    pending: "Refunding",
-    completed: "Refunded",
-  },
-};
+    default: 'Refund',
+    pending: 'Refunding',
+    completed: 'Refunded'
+  }
+}
 
 export default {
   components: {
     SpinnerIcon,
-    CopyIcon,
+    CopyIcon
   },
-  data() {
+  data () {
     return {
       advanced: false,
       secretHidden: true,
@@ -412,109 +422,109 @@ export default {
       showFeeSelector: false,
       feeSelectorLoading: false,
       feeSelectorAsset: null,
-      newFeePrice: null,
-    };
+      newFeePrice: null
+    }
   },
-  props: ["id", "retrySwap"],
+  props: ['id', 'retrySwap'],
   computed: {
-    ...mapGetters(["client", "accountItem", "swapProvider"]),
+    ...mapGetters(['client', 'accountItem', 'swapProvider']),
     ...mapState([
-      "activeWalletId",
-      "activeNetwork",
-      "balances",
-      "history",
-      "fees",
+      'activeWalletId',
+      'activeNetwork',
+      'balances',
+      'history',
+      'fees'
     ]),
-    item() {
+    item () {
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
-      );
+      )
     },
-    reverseRate() {
-      return BN(1).div(calculateQuoteRate(this.item)).dp(8);
+    reverseRate () {
+      return BN(1).div(calculateQuoteRate(this.item)).dp(8)
     },
-    orderLink() {
-      if (this.item.provider !== "liquality") {
-        return "";
+    orderLink () {
+      if (this.item.provider !== 'liquality') {
+        return ''
       }
       const agent = getSwapProviderConfig(
         this.item.network,
         this.item.provider
-      ).agent;
-      return agent + "/api/swap/order/" + this.item.id + "?verbose=true";
+      ).agent
+      return agent + '/api/swap/order/' + this.item.id + '?verbose=true'
     },
-    feeSelectorFees() {
+    feeSelectorFees () {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         getNativeAsset(this.feeSelectorAsset)
-      ];
+      ]
     },
-    feeSelectorUnit() {
-      const chain = cryptoassets[this.feeSelectorAsset].chain;
-      return chains[chain].fees.unit;
+    feeSelectorUnit () {
+      const chain = cryptoassets[this.feeSelectorAsset].chain
+      return chains[chain].fees.unit
     },
-    timelineDiagramSteps() {
+    timelineDiagramSteps () {
       const swapProvider = this.swapProvider(
         this.item.network,
         this.item.provider
-      );
-      return swapProvider.timelineDiagramSteps;
-    },
+      )
+      return swapProvider.timelineDiagramSteps
+    }
   },
   methods: {
     ...mapActions([
-      "updateTransactionFee",
-      "updateFees",
-      "checkPendingActions",
+      'updateTransactionFee',
+      'updateFees',
+      'checkPendingActions'
     ]),
     getNativeAsset,
     prettyBalance,
-    prettyTime(timestamp) {
-      return moment(timestamp).format("L, LT");
+    prettyTime (timestamp) {
+      return moment(timestamp).format('L, LT')
     },
-    async copy(text) {
-      await navigator.clipboard.writeText(text);
+    async copy (text) {
+      await navigator.clipboard.writeText(text)
     },
-    canUpdateFee(step) {
+    canUpdateFee (step) {
       return (
-        (step.side === "left" ||
+        (step.side === 'left' ||
           step.title.indexOf(ACTIONS_TERMS.swap.pending) !== -1) &&
         (!step.tx.confirmations || step.tx.confirmations === 0)
-      );
+      )
     },
-    feeSelectorEnabled(step) {
+    feeSelectorEnabled (step) {
       return (
         this.canUpdateFee(step) &&
         this.feeSelectorAsset === step.tx.asset &&
         this.showFeeSelector
-      );
+      )
     },
-    openFeeSelector(step) {
-      this.showFeeSelector = true;
-      this.newFeePrice = step.tx.feePrice;
-      this.feeSelectorAsset = step.tx.asset;
-      this.updateFees({ asset: getNativeAsset(step.tx.asset) });
+    openFeeSelector (step) {
+      this.showFeeSelector = true
+      this.newFeePrice = step.tx.feePrice
+      this.feeSelectorAsset = step.tx.asset
+      this.updateFees({ asset: getNativeAsset(step.tx.asset) })
     },
-    closeFeeSelector() {
-      this.showFeeSelector = false;
-      this.newFeePrice = null;
+    closeFeeSelector () {
+      this.showFeeSelector = false
+      this.newFeePrice = null
     },
-    async getTransaction(hash, asset, defaultTx) {
+    async getTransaction (hash, asset, defaultTx) {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
-        asset,
-      });
+        asset
+      })
       const transaction =
-        (await client.chain.getTransactionByHash(hash)) || defaultTx;
+        (await client.chain.getTransactionByHash(hash)) || defaultTx
       transaction.explorerLink = getTransactionExplorerLink(
         hash,
         asset,
         this.activeNetwork
-      );
-      transaction.asset = asset;
-      return transaction;
+      )
+      transaction.asset = asset
+      return transaction
     },
-    async getTransactionStep(
+    async getTransactionStep (
       completed,
       pending,
       side,
@@ -529,20 +539,20 @@ export default {
         completed,
         title: pending
           ? `${ACTIONS_TERMS[action].pending} ${asset}`
-          : `${ACTIONS_TERMS[action].default} ${asset}`,
-      };
-      if (hash) {
-        const tx = await this.getTransaction(hash, asset, defaultTx);
-        if (tx && tx.confirmations > 0) {
-          step.title = `${ACTIONS_TERMS[action].completed} ${asset}`;
-        } else {
-          step.title = `${ACTIONS_TERMS[action].pending} ${asset}`;
-        }
-        step.tx = tx || { hash: hash };
+          : `${ACTIONS_TERMS[action].default} ${asset}`
       }
-      return step;
+      if (hash) {
+        const tx = await this.getTransaction(hash, asset, defaultTx)
+        if (tx && tx.confirmations > 0) {
+          step.title = `${ACTIONS_TERMS[action].completed} ${asset}`
+        } else {
+          step.title = `${ACTIONS_TERMS[action].pending} ${asset}`
+        }
+        step.tx = tx || { hash: hash }
+      }
+      return step
     },
-    async getInitiationStep(completed, pending, side) {
+    async getInitiationStep (completed, pending, side) {
       return this.getTransactionStep(
         completed,
         pending,
@@ -550,10 +560,10 @@ export default {
         this.item.fromFundHash,
         this.item.fromFundTx,
         this.item.from,
-        "lock"
-      );
+        'lock'
+      )
     },
-    async getAgentInitiationStep(completed, pending, side) {
+    async getAgentInitiationStep (completed, pending, side) {
       return this.getTransactionStep(
         completed,
         pending,
@@ -561,31 +571,31 @@ export default {
         this.item.toFundHash,
         null,
         this.item.bridgeAsset || this.item.to,
-        "lock"
-      );
+        'lock'
+      )
     },
-    async getClaimRefundStep(completed, pending, side) {
+    async getClaimRefundStep (completed, pending, side) {
       return this.item.refundHash
         ? this.getTransactionStep(
-            completed,
-            pending,
-            side,
-            this.item.refundHash,
-            this.item.refundTx,
-            this.item.from,
-            "refund"
-          )
+          completed,
+          pending,
+          side,
+          this.item.refundHash,
+          this.item.refundTx,
+          this.item.from,
+          'refund'
+        )
         : this.getTransactionStep(
-            completed,
-            pending,
-            side,
-            this.item.toClaimHash,
-            this.item.toClaimTx,
-            this.item.bridgeAsset || this.item.to,
-            "claim"
-          );
+          completed,
+          pending,
+          side,
+          this.item.toClaimHash,
+          this.item.toClaimTx,
+          this.item.bridgeAsset || this.item.to,
+          'claim'
+        )
     },
-    async getApproveStep(completed, pending, side) {
+    async getApproveStep (completed, pending, side) {
       return this.getTransactionStep(
         completed,
         pending,
@@ -593,28 +603,28 @@ export default {
         this.item.approveTxHash,
         null,
         this.item.from,
-        "approve"
-      );
+        'approve'
+      )
     },
-    async getSwapStep(completed, pending, side) {
+    async getSwapStep (completed, pending, side) {
       return this.item.refundHash
         ? {
-            side: "right",
-            pending: false,
-            completed: true,
-            title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted`,
-          }
+          side: 'right',
+          pending: false,
+          completed: true,
+          title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted`
+        }
         : this.getTransactionStep(
-            completed,
-            pending,
-            side,
-            this.item.swapTxHash,
-            this.item.swapTxHash,
-            this.item.to,
-            "swap"
-          );
+          completed,
+          pending,
+          side,
+          this.item.swapTxHash,
+          this.item.swapTxHash,
+          this.item.to,
+          'swap'
+        )
     },
-    async getReceiveStep(completed, pending, side) {
+    async getReceiveStep (completed, pending, side) {
       return this.getTransactionStep(
         completed,
         pending,
@@ -622,35 +632,35 @@ export default {
         this.item.receiveTxHash,
         null,
         this.item.to,
-        "receive"
-      );
+        'receive'
+      )
     },
-    async updateTransactions() {
-      const timeline = [];
+    async updateTransactions () {
+      const timeline = []
       const supportedSteps = {
         SWAP: this.getSwapStep,
         APPROVE: this.getApproveStep,
         RECEIVE: this.getReceiveStep,
         INITIATION: this.getInitiationStep,
         AGENT_INITIATION: this.getAgentInitiationStep,
-        CLAIM_OR_REFUND: this.getClaimRefundStep,
-      };
+        CLAIM_OR_REFUND: this.getClaimRefundStep
+      }
       const steps = this.timelineDiagramSteps.map(
         (step) => supportedSteps[step]
-      );
+      )
 
       for (let i = 0; i < steps.length; i++) {
-        const completed = getStep(this.item) > i;
-        const pending = getStep(this.item) === i;
-        const side = i % 2 === 0 ? "left" : "right";
-        const step = await steps[i](completed, pending, side);
-        timeline.push(step);
+        const completed = getStep(this.item) > i
+        const pending = getStep(this.item) === i
+        const side = i % 2 === 0 ? 'left' : 'right'
+        const step = await steps[i](completed, pending, side)
+        timeline.push(step)
       }
 
-      this.timeline = timeline;
+      this.timeline = timeline
     },
-    async updateFee(asset, hash) {
-      this.feeSelectorLoading = true;
+    async updateFee (asset, hash) {
+      this.feeSelectorLoading = true
       try {
         await this.updateTransactionFee({
           network: this.activeNetwork,
@@ -658,27 +668,27 @@ export default {
           asset,
           id: this.item.id,
           hash,
-          newFee: this.newFeePrice,
-        });
+          newFee: this.newFeePrice
+        })
         // TODO decide if this is a safe option or change approach
         // await this.checkPendingActions({ walletId: this.activeWalletId })
       } finally {
-        this.updateTransactions();
-        this.feeSelectorLoading = false;
-        this.showFeeSelector = false;
+        this.updateTransactions()
+        this.feeSelectorLoading = false
+        this.showFeeSelector = false
       }
-    },
+    }
   },
-  created() {
-    this.updateTransactions();
+  created () {
+    this.updateTransactions()
     this.interval = setInterval(() => {
-      this.updateTransactions();
-    }, 5000);
+      this.updateTransactions()
+    }, 5000)
   },
-  beforeDestroy() {
-    clearInterval(this.interval);
-  },
-};
+  beforeDestroy () {
+    clearInterval(this.interval)
+  }
+}
 </script>
 
 <style lang="scss">
