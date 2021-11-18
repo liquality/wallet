@@ -633,6 +633,10 @@ export default {
         return 'Please increase amount. It is below minimum.'
       }
 
+      if (this.selectedQuote?.receiveFee && BN(this.selectedQuote.toAmount).lt(this.selectedQuote.receiveFee)) {
+        return 'Increase amount. It won`t cover receive fee.'
+      }
+
       return null
     },
     canSwap () {
