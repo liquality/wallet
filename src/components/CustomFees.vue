@@ -118,28 +118,20 @@
         </div>
       </div>
 
-      <div class="speed-wrapper">
+      <div v-if="tab === 'customize'" class="speed-wrapper">
         <button
-          v-bind:class="{ selected: tipSpeed === 'low' }"
-          @click="selectTipSpeed('low')"
-        >
-          Low
-        </button>
-        <button
-          v-bind:class="{ selected: tipSpeed === 'medium' }"
-          @click="selectTipSpeed('medium')"
-        >
-          Med
-        </button>
-        <button
-          v-bind:class="{ selected: tipSpeed === 'high' }"
-          @click="selectTipSpeed('high')"
-        >
-          High
+            class="custom-fee-presets-option"
+            v-for="name in ['slow', 'average', 'fast']"
+            :id="name"
+            :key="name"
+            :class="{ selected: name === preset }"
+            @click="setPreset(name)"
+          >
+          {{ getLabel(name) }}
         </button>
       </div>
 
-      <div class="error-messages-wrapper">
+      <div v-if="tab === 'customize'" class="error-messages-wrapper">
         <p class="error" v-if="noTipError">{{ noTipError }}</p>
         <p class="error" v-if="veryLowTipError">{{ veryLowTipError }}</p>
         <p class="warning" v-if="veryHighTipWarning">
@@ -208,7 +200,6 @@ export default {
       preset: null,
       fee: null,
       tab: "basic",
-      tipSpeed: "low",
       tipFee: null,
       maxFee: null
     }
@@ -216,7 +207,8 @@ export default {
   props: ["asset", "selectedFee", "fees", "totalFees", "fiatRates"],
   created() {
     this.preset = this.selectedFee || "average"
-    this.maxFee = this.fees[this.preset]?.fee
+    this.tipFee = this.fees[this.preset]?.fee.maxPriorityFeePerGas
+    this.maxFee = this.fees[this.preset]?.fee.maxFeePerGas
   },
   computed: {
     getTotalFee() {
@@ -229,22 +221,25 @@ export default {
         : null
     },
     veryLowTipError() {
-      return !this.noTipError && this.tipFee < 10
+      return !this.noTipError && this.tipFee < this.fees.slow.fee.maxPriorityFeePerGas
         ? "Miner tip is extremely low and the transaction could fail. Use ‘Low’."
         : null
     },
     veryHighTipWarning() {
-      return this.tipFee > 20
+      return this.tipFee > this.fees.fast.fee.maxPriorityFeePerGas
         ? "Miner tip is higher than necessary. You may pay more than needed. Use ‘High’."
         : null
     },
+    noMaxFeeError() {
+      return !this.maxFee ? "Max fee must be greater than 0 GWEI" : null
+    },
     veryLowMaxFeeError() {
-      return this.getTotalFee < 20
+      return this.maxFee < this.fees.slow.fee.maxFeePerGas
         ? "Max fee too low. Must be > 152.5 GWEI (Base Fee plus Miner Tip)."
         : null
     },
     veryHighFeeWarning() {
-      return this.getTotalFee > 40
+      return this.maxFee > this.fees.fast.fee.maxFeePerGas
         ? "Max fee is higher than necessary 152.5 GWEI (Base Fee plus Miner Tip). Review  your maximum ‘New Fee Total’."
         : null
     },
@@ -267,14 +262,18 @@ export default {
   methods: {
     getFeeLabel,
     getAssetIcon,
+    getLabel(label) {
+      return {
+        slow: 'Low',
+        average: 'Med',
+        fast: 'High'
+      }[label]
+    },
     cancel() {
       this.$emit("cancel")
     },
     switchTab(tab) {
       this.tab = tab
-    },
-    selectTipSpeed(speed) {
-      this.tipSpeed = speed
     },
     apply() {
       this.$emit("apply", {
@@ -314,14 +313,16 @@ export default {
     },
     setPreset(name) {
       this.preset = name
-      this.maxFee = this.fees[name]?.fee
+      this.tipFee = this.fees[name]?.fee.maxPriorityFeePerGas
     },
     getFeeAmount(name) {
       if (!name) name = this.preset || "custom"
       if (this.totalFees && this.totalFees[name]) {
+        console.log(1)
         const totalFee = this.totalFees[name]
         return `${BN(totalFee).dp(6)} ${this.nativeAsset}`
       } else {
+        console.log(2)
         const chainId = cryptoassets[this.asset].chain
         const { unit } = chains[chainId].fees
         return `${this.getTotalFee || 0} ${unit}`
@@ -340,15 +341,15 @@ export default {
     },
   },
   watch: {
-    fee: function (val) {
-      if (this.fees) {
-        this.preset = {
-          [this.fees?.slow?.fee]: "slow",
-          [this.fees?.average?.fee]: "average",
-          [this.fees?.fast?.fee]: "fast",
-        }[val || 0]
-      }
-    },
+    // fee: function () {
+    //   if (this.fees) {
+    //     this.preset = {
+    //       [this.fees?.slow?.fee.maxPriorityFeePerGas]: "slow",
+    //       [this.fees?.average?.fee.maxPriorityFeePerGas]: "average",
+    //       [this.fees?.fast?.fee.maxPriorityFeePerGas]: "fast",
+    //     }[this.tipFee || 0]
+    //   }
+    // },
   },
 }
 </script>
@@ -457,7 +458,7 @@ export default {
   }
 
   .selected {
-    background-color: #d9dfe5;
+    background-color: #f0f7f9;
   }
 }
 

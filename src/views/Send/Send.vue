@@ -241,6 +241,7 @@ export default {
     return {
       sendFees: {},
       maxSendFees: {},
+      eip1559fees: {},
       stateAmount: 0,
       stateAmountFiat: 0,
       address: null,
@@ -397,9 +398,17 @@ export default {
       const getMax = amount === undefined
       if (this.feesAvailable) {
         const sendFees = {}
+        
         for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee
+          const feePrice = fee.fee.maxPriorityFeePerGas
           sendFees[speed] = getSendFee(this.assetChain, feePrice)
+        }
+
+        if(this.assetChain === 'ETH') {
+          for (const [speed, fee] of Object.entries(this.assetFees)) {
+            const feePrice = fee.fee.maxPriorityFeePerGas
+            sendFees[speed] = getSendFee(this.assetChain, feePrice)
+          }
         }
 
         if (this.asset === 'BTC') {
