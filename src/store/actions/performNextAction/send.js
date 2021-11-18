@@ -15,7 +15,7 @@ async function waitForConfirmations ({ getters, dispatch }, { transaction, netwo
   try {
     const tx = await client.chain.getTransactionByHash(transaction.txHash)
 
-    // In case transaction doesn't exist: wait for 30 minutes then return failed state
+    // In case transaction doesn't exist: wait for fixed amount of time then return failed state
     // Could happen on Dropped&Replaced
     if (!tx && hasTimedOut(transaction)) {
       return {
