@@ -14,7 +14,7 @@
           :class="{
             [step.side]: true,
             completed: step && step.completed,
-            pending: step.pending,
+            pending: step.pending
           }"
         >
           <div class="content">
@@ -104,7 +104,7 @@
           :class="{
             completed:
               !timeline[timeline.length - 1] ||
-              timeline[timeline.length - 1].completed,
+              timeline[timeline.length - 1].completed
           }"
         >
           <div class="content"></div>
@@ -115,7 +115,7 @@
           :class="{
             'text-muted':
               !timeline[timeline.length - 1] ||
-              !timeline[timeline.length - 1].completed,
+              !timeline[timeline.length - 1].completed
           }"
         >
           Done
@@ -702,7 +702,7 @@ export default {
     margin: 8px 0;
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       width: 0px;
       border-right: 1px dashed $color-secondary;
@@ -724,7 +724,7 @@ export default {
     width: 50%;
 
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       width: 11px;
       height: 11px;
