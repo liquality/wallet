@@ -104,7 +104,7 @@
                   />
                 </li>
                 <li v-if="hasPredefinedReceiveFee">
-                <span class="selectors-asset">{{toAssetChain}} </span>{{receiveFee}} / {{getTotalSwapFeeInFiat(toAssetChain)}} USD
+                <span class="selectors-asset">{{toAsset}} </span>{{receiveFee}} / {{getTotalSwapFeeInFiat(toAsset)}} USD
                 </li>
               </ul>
             </template>
@@ -212,12 +212,12 @@
               class="d-flex align-items-center justify-content-between my-0 py-0"
               id="swap_receive_network_fee_value"
             >
-              <div>~{{ receiveFee }} {{ toAssetChain }}</div>
+              <div>~{{ receiveFee }} {{ hasPredefinedReceiveFee? toAsset : toAssetChain }}</div>
               <div class="details-text" id="swap_receive_network_fee_fiat_rate">
                 ${{
                   prettyFiatBalance(
                     receiveFee,
-                    fiatRates[toAssetChain],
+                    fiatRates[hasPredefinedReceiveFee? toAsset : toAssetChain],
                   )
                 }}
               </div>
@@ -232,7 +232,7 @@
                 </span>
                 <span v-else>
                   {{ receiveAmount }} {{ toAsset }} -
-                  {{ receiveFee }} {{ toAssetChain }}
+                  {{ receiveFee }} {{ hasPredefinedReceiveFee? toAsset : toAssetChain }}
                 </span>
               </div>
               <div class="font-weight-bold" id="swap_receive_total_amount_in_fiat">${{ totalToReceiveInFiat }}</div>
@@ -674,7 +674,7 @@ export default {
     },
     totalToReceiveInFiat () {
       const receive = cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
-      const fee = cryptoToFiat(this.receiveFee, this.fiatRates[this.toAssetChain])
+      const fee = cryptoToFiat(this.receiveFee, this.fiatRates[this.hasPredefinedReceiveFee ? this.toAsset : this.toAssetChain])
 
       return receive.minus(fee).toFormat(2)
     },
@@ -999,9 +999,9 @@ export default {
       this.loading = false
     },
     getTotalSwapFee (asset) {
-      if (asset === this.assetChain && !this.receiveFee) {
+      if (asset === this.assetChain) {
         return this.fromSwapFee
-      } else if (asset === this.toAssetChain) {
+      } else if (asset === this.toAsset && this.receiveFee) {
         return this.receiveFee
       }
     },
