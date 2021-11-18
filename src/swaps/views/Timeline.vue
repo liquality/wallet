@@ -7,37 +7,84 @@
         <div class="liquality-timeline_container left completed">
           <div class="content" id="swap_details_content"></div>
         </div>
-        <div class="liquality-timeline_container"
-             v-for="(step, id) in timeline" :key="id"
-             :class="{ [step.side]: true, completed: step && step.completed, pending: step.pending }">
+        <div
+          class="liquality-timeline_container"
+          v-for="(step, id) in timeline"
+          :key="id"
+          :class="{
+            [step.side]: true,
+            completed: step && step.completed,
+            pending: step.pending
+          }"
+        >
           <div class="content">
             <template v-if="step.tx">
               <h3 :id="step.tx.asset">
-                <a :href="step.tx.explorerLink" target="_blank" :id="step.title">{{ step.title }}</a>
-                <CopyIcon @click="copy(step.tx.hash)"/>
+                <a
+                  :href="step.tx.explorerLink"
+                  target="_blank"
+                  :id="step.title"
+                  >{{ step.title }}</a
+                >
+                <CopyIcon @click="copy(step.tx.hash)" />
               </h3>
-              <p class="text-muted" v-if="step.tx.fee && !feeSelectorEnabled(step)">Fee:
-                {{ prettyBalance(step.tx.fee, step.tx.asset) }} {{ getNativeAsset(step.tx.asset) }}</p>
-              <p id="confirmations_asset_number" class="text-muted" v-if="!feeSelectorEnabled(step)">Confirmations: {{ step.tx.confirmations || 0 }}</p>
+              <p
+                class="text-muted"
+                v-if="step.tx.fee && !feeSelectorEnabled(step)"
+              >
+                Fee: {{ prettyBalance(step.tx.fee, step.tx.asset) }}
+                {{ getNativeAsset(step.tx.asset) }}
+              </p>
+              <p
+                id="confirmations_asset_number"
+                class="text-muted"
+                v-if="!feeSelectorEnabled(step)"
+              >
+                Confirmations: {{ step.tx.confirmations || 0 }}
+              </p>
               <template v-if="canUpdateFee(step)">
                 <div v-if="feeSelectorEnabled(step)" class="form fee-update">
                   <div class="input-group">
-                    <input type="number" v-model="newFeePrice" class="form-control form-control-sm" autocomplete="off"/>
+                    <input
+                      type="number"
+                      v-model="newFeePrice"
+                      class="form-control form-control-sm"
+                      autocomplete="off"
+                    />
                     <div class="input-group-append">
-                      <span class="input-group-text"><small>{{ feeSelectorUnit }}</small></span>
+                      <span class="input-group-text"
+                        ><small>{{ feeSelectorUnit }}</small></span
+                      >
                     </div>
                   </div>
-                  <div class="fee-update_fees d-flex justify-content-between" v-if="feeSelectorFees">
-                    <a @click="newFeePrice = feeSelectorFees.average.fee">Average: {{ feeSelectorFees.average.fee }}</a>
-                    <a @click="newFeePrice = feeSelectorFees.fast.fee">Fast: {{ feeSelectorFees.fast.fee }}</a>
+                  <div
+                    class="fee-update_fees d-flex justify-content-between"
+                    v-if="feeSelectorFees"
+                  >
+                    <a @click="newFeePrice = feeSelectorFees.average.fee"
+                      >Average: {{ feeSelectorFees.average.fee }}</a
+                    >
+                    <a @click="newFeePrice = feeSelectorFees.fast.fee"
+                      >Fast: {{ feeSelectorFees.fast.fee }}</a
+                    >
                   </div>
                   <div>
-                    <button class="btn btn-sm btn-outline-primary" v-if="!feeSelectorLoading"
-                            @click="closeFeeSelector()">Cancel
+                    <button
+                      class="btn btn-sm btn-outline-primary"
+                      v-if="!feeSelectorLoading"
+                      @click="closeFeeSelector()"
+                    >
+                      Cancel
                     </button>
-                    <button class="btn btn-sm btn-primary btn-icon" :disabled="feeSelectorLoading"
-                            @click="updateFee(step.tx.asset, step.tx.hash)">
-                      <SpinnerIcon class="btn-loading" v-if="feeSelectorLoading"/>
+                    <button
+                      class="btn btn-sm btn-primary btn-icon"
+                      :disabled="feeSelectorLoading"
+                      @click="updateFee(step.tx.asset, step.tx.hash)"
+                    >
+                      <SpinnerIcon
+                        class="btn-loading"
+                        v-if="feeSelectorLoading"
+                      />
                       <template v-else>Update</template>
                     </button>
                   </div>
@@ -46,162 +93,267 @@
               </template>
             </template>
             <h3 v-else>
-              <span :class="{'text-muted': !step || !step.completed}">{{ step.title }}</span>
+              <span :class="{ 'text-muted': !step || !step.completed }">{{
+                step.title
+              }}</span>
             </h3>
           </div>
         </div>
-        <div class="liquality-timeline_container right"
-             :class="{ completed: !timeline[timeline.length -1] || timeline[timeline.length -1].completed }">
+        <div
+          class="liquality-timeline_container right"
+          :class="{
+            completed:
+              !timeline[timeline.length - 1] ||
+              timeline[timeline.length - 1].completed
+          }"
+        >
           <div class="content"></div>
         </div>
       </div>
       <template>
-        <h3 :class="{ 'text-muted': !timeline[timeline.length -1] || !timeline[timeline.length -1].completed }">Done</h3>
-        <small v-if="!timeline[timeline.length -1] || timeline[timeline.length -1].completed">Swap Status: {{item.status.toLowerCase()}}</small> <br>
-        <small v-if="!timeline[timeline.length -1] || timeline[timeline.length -1].completed">{{ prettyTime(item.endTime) }}</small>
+        <h3
+          :class="{
+            'text-muted':
+              !timeline[timeline.length - 1] ||
+              !timeline[timeline.length - 1].completed
+          }"
+        >
+          Done
+        </h3>
+        <small
+          v-if="
+            !timeline[timeline.length - 1] ||
+            timeline[timeline.length - 1].completed
+          "
+          >Swap Status: {{ item.status.toLowerCase() }}</small
+        >
+        <br />
+        <small
+          v-if="
+            !timeline[timeline.length - 1] ||
+            timeline[timeline.length - 1].completed
+          "
+          >{{ prettyTime(item.endTime) }}</small
+        >
       </template>
     </div>
     <div class="text-center">
-      <button class="btn btn-sm btn-outline-primary" id="advanced_button" @click="advanced = !advanced">Advanced
+      <button
+        class="btn btn-sm btn-outline-primary"
+        id="advanced_button"
+        @click="advanced = !advanced"
+      >
+        Advanced
       </button>
     </div>
     <div class="table" v-if="advanced">
       <table class="table bg-white border-0 mb-1 mt-1">
         <tbody class="font-weight-normal" v-if="item.type === 'SEND'">
-        <tr>
-          <td class="text-muted text-right small-12">Amount</td>
-          <td>{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</td>
-        </tr>
-        <tr v-if="item.fromAddress">
-          <td class="text-muted text-right small-12">Your {{ item.from }}<br>from address</td>
-          <td>{{ item.fromAddress }}</td>
-        </tr>
-        <tr>
-          <td class="text-muted text-right small-12">Your {{ item.to }}<br>to address</td>
-          <td>{{ item.toAddress }}</td>
-        </tr>
-        <tr>
-          <td class="text-muted text-right small-12">Your {{ item.to }} send<br>transaction</td>
-          <td>{{ item.txHash }}</td>
-        </tr>
-        <tr v-if="false">
-          <td class="text-muted text-right small-12">Actions</td>
-          <td class="cursor-pointer text-danger" @click="remove">Remove this item</td>
-        </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Amount</td>
+            <td>{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</td>
+          </tr>
+          <tr v-if="item.fromAddress">
+            <td class="text-muted text-right small-12">
+              Your {{ item.from }}<br />from address
+            </td>
+            <td>{{ item.fromAddress }}</td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">
+              Your {{ item.to }}<br />to address
+            </td>
+            <td>{{ item.toAddress }}</td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">
+              Your {{ item.to }} send<br />transaction
+            </td>
+            <td>{{ item.txHash }}</td>
+          </tr>
+          <tr v-if="false">
+            <td class="text-muted text-right small-12">Actions</td>
+            <td class="cursor-pointer text-danger" @click="remove">
+              Remove this item
+            </td>
+          </tr>
         </tbody>
         <tbody class="font-weight-normal" v-if="item.type === 'SWAP'">
-        <tr>
-          <td v-if="item.agent" class="text-muted text-right small-12">Counter-party</td>
-          <td>{{ item.agent }}</td>
-        </tr>
-        <tr v-if="orderLink">
-          <td class="text-muted text-right small-12">Order ID</td>
-          <td id="swap_details_order_id"><a :href="orderLink" id="order_id_href_link" rel="noopener" target="_blank">{{ item.id }}</a></td>
-        </tr>
-        <tr>
-          <td class="text-muted text-right small-12">Started At</td>
-          <td id="swap_details_started_at">{{ new Date(item.startTime) }}</td>
-        </tr>
-        <tr v-if="item.endTime">
-          <td class="text-muted text-right small-12">Finished At</td>
-          <td id="swap_details_finished_at">{{ new Date(item.endTime) }}</td>
-        </tr>
-        <tr>
-          <td class="text-muted text-right small-12">Rate</td>
-          <td id="swap_details_rate">1 {{ item.to }} = {{ reverseRate }} {{ item.from }}</td>
-        </tr>
-        <tr>
-          <td class="text-muted text-right small-12">Status</td>
-          <td id="swap_details_status">{{ item.status }}</td>
-        </tr>
-        <tr>
-          <td class="text-muted text-right small-12">Buy</td>
-          <td id="swap_details_buy">{{ prettyBalance(item.toAmount, item.to) }} {{ item.to }}</td>
-        </tr>
-        <tr>
-          <td class="text-muted text-right small-12">Sell</td>
-          <td id="swap_details_sell">{{ prettyBalance(item.fromAmount, item.from) }} {{ item.from }}</td>
-        </tr>
-        <tr v-if="item.minConf">
-          <td class="text-muted text-right small-12">Minimum<br>confirmations</td>
-          <td id="confirmations">{{ item.minConf }}</td>
-        </tr>
-        <tr v-if="item.fromAddress">
-          <td class="text-muted text-right small-12">Your {{ item.from }}<br>address</td>
-          <td id="from_address">{{ item.fromAddress }}</td>
-        </tr>
-        <tr v-if="item.toAddress">
-          <td class="text-muted text-right small-12">Your {{ item.to }}<br>address</td>
-          <td id="to_address">{{ item.toAddress }}</td>
-        </tr>
-        <tr v-if="item.secret">
-          <td class="text-muted text-right small-12">Secret</td>
-          <td id="secret_key">
-              <span class="cursor-pointer text-muted font-weight-light" v-if="secretHidden"
-                    @click="secretHidden = false">
+          <tr>
+            <td v-if="item.agent" class="text-muted text-right small-12">
+              Counter-party
+            </td>
+            <td>{{ item.agent }}</td>
+          </tr>
+          <tr v-if="orderLink">
+            <td class="text-muted text-right small-12">Order ID</td>
+            <td id="swap_details_order_id">
+              <a
+                :href="orderLink"
+                id="order_id_href_link"
+                rel="noopener"
+                target="_blank"
+                >{{ item.id }}</a
+              >
+            </td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Started At</td>
+            <td id="swap_details_started_at" class="text-break">
+              {{ new Date(item.startTime) }}
+            </td>
+          </tr>
+          <tr v-if="item.endTime">
+            <td class="text-muted text-right small-12">Finished At</td>
+            <td id="swap_details_finished_at" class="text-break">
+              {{ new Date(item.endTime) }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Rate</td>
+            <td id="swap_details_rate">
+              1 {{ item.to }} = {{ reverseRate }} {{ item.from }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Status</td>
+            <td id="swap_details_status">{{ item.status }}</td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Buy</td>
+            <td id="swap_details_buy">
+              {{ prettyBalance(item.toAmount, item.to) }} {{ item.to }}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Sell</td>
+            <td id="swap_details_sell">
+              {{ prettyBalance(item.fromAmount, item.from) }} {{ item.from }}
+            </td>
+          </tr>
+          <tr v-if="item.minConf">
+            <td class="text-muted text-right small-12">
+              Minimum<br />confirmations
+            </td>
+            <td id="confirmations">{{ item.minConf }}</td>
+          </tr>
+          <tr v-if="item.fromAddress">
+            <td class="text-muted text-right small-12">
+              Your {{ item.from }}<br />address
+            </td>
+            <td id="from_address" class="text-break">{{ item.fromAddress }}</td>
+          </tr>
+          <tr v-if="item.toAddress">
+            <td class="text-muted text-right small-12">
+              Your {{ item.to }}<br />address
+            </td>
+            <td id="to_address" class="text-break">{{ item.toAddress }}</td>
+          </tr>
+          <tr v-if="item.secret">
+            <td class="text-muted text-right small-12">Secret</td>
+            <td id="secret_key">
+              <span
+                class="cursor-pointer text-muted font-weight-light text-break"
+                v-if="secretHidden"
+                @click="secretHidden = false"
+              >
                 Click to reveal the secret
               </span>
-            <span v-else>
+              <span v-else>
                 {{ item.secret }}
               </span>
-          </td>
-        </tr>
-        <tr v-if="item.secretHash">
-          <td class="text-muted text-right small-12">Secret Hash</td>
-          <td id="secretHash">{{ item.secretHash }}</td>
-        </tr>
-        <tr v-if="item.fromFundHash">
-          <td class="text-muted text-right small-12">Your {{ item.from }} funding<br>transaction</td>
-          <td id="from_funding_transaction">{{ item.fromFundHash }}</td>
-        </tr>
-        <tr v-if="item.toFundHash">
-          <td class="text-muted text-right small-12">Counter-party's {{ item.bridgeAsset || item.to }}<br>funding transaction</td>
-          <td id="to_funding_transaction">{{ item.toFundHash }}</td>
-        </tr>
-        <tr v-if="item.toClaimHash">
-          <td class="text-muted text-right small-12">Your {{ item.bridgeAsset || item.to }} claim<br>transaction</td>
-          <td id="to_claim_hash">{{ item.toClaimHash }}</td>
-        </tr>
-        <tr v-if="item.bridgeAsset">
-          <td class="text-muted text-right small-12">Bridge asset</td>
-          <td id="bridge_asset">{{ item.bridgeAsset }}</td>
-        </tr>
-        <tr v-if="item.approveTxHash">
-          <td class="text-muted text-right small-12">Your {{item.from}} approve<br>transaction</td>
-          <td id="approve_transaction">{{ item.approveTxHash }}</td>
-        </tr>
-        <tr v-if="item.swapTxHash">
-          <td class="text-muted text-right small-12">Swap Transaction</td>
-          <td id="swap_transaction">{{ item.swapTxHash }}</td>
-        </tr>
-        <tr v-if="item.receiveTxHash">
-          <td class="text-muted text-right small-12">Your {{ item.to }} receive<br>transaction</td>
-          <td id="receive_transaction">{{ item.receiveTxHash }}</td>
-        </tr>
-        <tr v-if="item.sendTx">
-          <td class="text-muted text-right small-12">Your {{ item.to }} send<br>transaction</td>
-          <td id="send_transaction">{{ item.sendTx }}</td>
-        </tr>
-        <tr v-if="item.refundHash">
-          <td class="text-muted text-right small-12">Your {{ item.from }} refund<br>transaction</td>
-          <td id="to_claim_hash">{{ item.refundHash }}</td>
-        </tr>
-        <tr v-if="false">
-          <td class="text-muted text-right small-12">Actions</td>
-          <td class="cursor-pointer text-danger" id="remove_this_item" @click="remove">Remove this item</td>
-        </tr>
-        <tr v-if="item.error">
-          <td class="text-danger text-right small-12">Error</td>
-          <td class="text-danger" id="item_error">
-            <pre>{{ item.error }}</pre>
-          </td>
-        </tr>
-        <tr>
-          <td class="text-muted text-right small-12">Actions</td>
-          <td class="text-danger">
-            <span class="cursor-pointer mr-3" v-if="item.error" @click="$emit('retrySwap')">Retry</span>
-          </td>
-        </tr>
+            </td>
+          </tr>
+          <tr v-if="item.secretHash">
+            <td class="text-muted text-right small-12">Secret Hash</td>
+            <td id="secretHash" class="text-break">{{ item.secretHash }}</td>
+          </tr>
+          <tr v-if="item.fromFundHash">
+            <td class="text-muted text-right small-12">
+              Your {{ item.from }} funding<br />transaction
+            </td>
+            <td id="from_funding_transaction" class="text-break">
+              {{ item.fromFundHash }}
+            </td>
+          </tr>
+          <tr v-if="item.toFundHash">
+            <td class="text-muted text-right small-12">
+              Counter-party's {{ item.bridgeAsset || item.to }}<br />funding
+              transaction
+            </td>
+            <td id="to_funding_transaction" class="text-break">
+              {{ item.toFundHash }}
+            </td>
+          </tr>
+          <tr v-if="item.toClaimHash">
+            <td class="text-muted text-right small-12">
+              Your {{ item.bridgeAsset || item.to }} claim<br />transaction
+            </td>
+            <td id="to_claim_hash" class="text-break">
+              {{ item.toClaimHash }}
+            </td>
+          </tr>
+          <tr v-if="item.bridgeAsset">
+            <td class="text-muted text-right small-12">Bridge asset</td>
+            <td id="bridge_asset">{{ item.bridgeAsset }}</td>
+          </tr>
+          <tr v-if="item.approveTxHash">
+            <td class="text-muted text-right small-12">
+              Your {{ item.from }} approve<br />transaction
+            </td>
+            <td id="approve_transaction">{{ item.approveTxHash }}</td>
+          </tr>
+          <tr v-if="item.swapTxHash">
+            <td class="text-muted text-right small-12">Swap Transaction</td>
+            <td id="swap_transaction" class="text-break">
+              {{ item.swapTxHash }}
+            </td>
+          </tr>
+          <tr v-if="item.receiveTxHash">
+            <td class="text-muted text-right small-12">
+              Your {{ item.to }} receive<br />transaction
+            </td>
+            <td id="receive_transaction">{{ item.receiveTxHash }}</td>
+          </tr>
+          <tr v-if="item.sendTx">
+            <td class="text-muted text-right small-12">
+              Your {{ item.to }} send<br />transaction
+            </td>
+            <td id="send_transaction">{{ item.sendTx }}</td>
+          </tr>
+          <tr v-if="item.refundHash">
+            <td class="text-muted text-right small-12">
+              Your {{ item.from }} refund<br />transaction
+            </td>
+            <td id="to_claim_hash">{{ item.refundHash }}</td>
+          </tr>
+          <tr v-if="false">
+            <td class="text-muted text-right small-12">Actions</td>
+            <td
+              class="cursor-pointer text-danger"
+              id="remove_this_item"
+              @click="remove"
+            >
+              Remove this item
+            </td>
+          </tr>
+          <tr v-if="item.error">
+            <td class="text-danger text-right small-12">Error</td>
+            <td class="text-danger" id="item_error">
+              <pre>{{ item.error }}</pre>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-muted text-right small-12">Actions</td>
+            <td class="text-danger">
+              <span
+                class="cursor-pointer mr-3"
+                v-if="item.error"
+                @click="$emit('retrySwap')"
+                >Retry</span
+              >
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -276,10 +428,17 @@ export default {
   props: ['id', 'retrySwap'],
   computed: {
     ...mapGetters(['client', 'accountItem', 'swapProvider']),
-    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
+    ...mapState([
+      'activeWalletId',
+      'activeNetwork',
+      'balances',
+      'history',
+      'fees'
+    ]),
     item () {
-      return this.history[this.activeNetwork][this.activeWalletId]
-        .find((item) => item.id === this.id)
+      return this.history[this.activeNetwork][this.activeWalletId].find(
+        (item) => item.id === this.id
+      )
     },
     reverseRate () {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
@@ -288,23 +447,35 @@ export default {
       if (this.item.provider !== 'liquality') {
         return ''
       }
-      const agent = getSwapProviderConfig(this.item.network, this.item.provider).agent
+      const agent = getSwapProviderConfig(
+        this.item.network,
+        this.item.provider
+      ).agent
       return agent + '/api/swap/order/' + this.item.id + '?verbose=true'
     },
     feeSelectorFees () {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[getNativeAsset(this.feeSelectorAsset)]
+      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
+        getNativeAsset(this.feeSelectorAsset)
+      ]
     },
     feeSelectorUnit () {
       const chain = cryptoassets[this.feeSelectorAsset].chain
       return chains[chain].fees.unit
     },
     timelineDiagramSteps () {
-      const swapProvider = this.swapProvider(this.item.network, this.item.provider)
+      const swapProvider = this.swapProvider(
+        this.item.network,
+        this.item.provider
+      )
       return swapProvider.timelineDiagramSteps
     }
   },
   methods: {
-    ...mapActions(['updateTransactionFee', 'updateFees', 'checkPendingActions']),
+    ...mapActions([
+      'updateTransactionFee',
+      'updateFees',
+      'checkPendingActions'
+    ]),
     getNativeAsset,
     prettyBalance,
     prettyTime (timestamp) {
@@ -314,10 +485,18 @@ export default {
       await navigator.clipboard.writeText(text)
     },
     canUpdateFee (step) {
-      return (step.side === 'left' || step.title.indexOf(ACTIONS_TERMS.swap.pending) !== -1) && (!step.tx.confirmations || step.tx.confirmations === 0)
+      return (
+        (step.side === 'left' ||
+          step.title.indexOf(ACTIONS_TERMS.swap.pending) !== -1) &&
+        (!step.tx.confirmations || step.tx.confirmations === 0)
+      )
     },
     feeSelectorEnabled (step) {
-      return this.canUpdateFee(step) && this.feeSelectorAsset === step.tx.asset && this.showFeeSelector
+      return (
+        this.canUpdateFee(step) &&
+        this.feeSelectorAsset === step.tx.asset &&
+        this.showFeeSelector
+      )
     },
     openFeeSelector (step) {
       this.showFeeSelector = true
@@ -330,18 +509,37 @@ export default {
       this.newFeePrice = null
     },
     async getTransaction (hash, asset, defaultTx) {
-      const client = this.client({ network: this.activeNetwork, walletId: this.activeWalletId, asset })
-      const transaction = await client.chain.getTransactionByHash(hash) || defaultTx
-      transaction.explorerLink = getTransactionExplorerLink(hash, asset, this.activeNetwork)
+      const client = this.client({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        asset
+      })
+      const transaction =
+        (await client.chain.getTransactionByHash(hash)) || defaultTx
+      transaction.explorerLink = getTransactionExplorerLink(
+        hash,
+        asset,
+        this.activeNetwork
+      )
       transaction.asset = asset
       return transaction
     },
-    async getTransactionStep (completed, pending, side, hash, defaultTx, asset, action) {
+    async getTransactionStep (
+      completed,
+      pending,
+      side,
+      hash,
+      defaultTx,
+      asset,
+      action
+    ) {
       const step = {
         side,
         pending,
         completed,
-        title: pending ? `${ACTIONS_TERMS[action].pending} ${asset}` : `${ACTIONS_TERMS[action].default} ${asset}`
+        title: pending
+          ? `${ACTIONS_TERMS[action].pending} ${asset}`
+          : `${ACTIONS_TERMS[action].default} ${asset}`
       }
       if (hash) {
         const tx = await this.getTransaction(hash, asset, defaultTx)
@@ -355,23 +553,76 @@ export default {
       return step
     },
     async getInitiationStep (completed, pending, side) {
-      return this.getTransactionStep(completed, pending, side, this.item.fromFundHash, this.item.fromFundTx, this.item.from, 'lock')
+      return this.getTransactionStep(
+        completed,
+        pending,
+        side,
+        this.item.fromFundHash,
+        this.item.fromFundTx,
+        this.item.from,
+        'lock'
+      )
     },
     async getAgentInitiationStep (completed, pending, side) {
-      return this.getTransactionStep(completed, pending, side, this.item.toFundHash, null, this.item.bridgeAsset || this.item.to, 'lock')
+      return this.getTransactionStep(
+        completed,
+        pending,
+        side,
+        this.item.toFundHash,
+        null,
+        this.item.bridgeAsset || this.item.to,
+        'lock'
+      )
     },
     async getClaimRefundStep (completed, pending, side) {
       return this.item.refundHash
-        ? this.getTransactionStep(completed, pending, side, this.item.refundHash, this.item.refundTx, this.item.from, 'refund')
-        : this.getTransactionStep(completed, pending, side, this.item.toClaimHash, this.item.toClaimTx, this.item.bridgeAsset || this.item.to, 'claim')
+        ? this.getTransactionStep(
+          completed,
+          pending,
+          side,
+          this.item.refundHash,
+          this.item.refundTx,
+          this.item.from,
+          'refund'
+        )
+        : this.getTransactionStep(
+          completed,
+          pending,
+          side,
+          this.item.toClaimHash,
+          this.item.toClaimTx,
+          this.item.bridgeAsset || this.item.to,
+          'claim'
+        )
     },
     async getApproveStep (completed, pending, side) {
-      return this.getTransactionStep(completed, pending, side, this.item.approveTxHash, null, this.item.from, 'approve')
+      return this.getTransactionStep(
+        completed,
+        pending,
+        side,
+        this.item.approveTxHash,
+        null,
+        this.item.from,
+        'approve'
+      )
     },
     async getSwapStep (completed, pending, side) {
       return this.item.refundHash
-        ? { side: 'right', pending: false, completed: true, title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted` }
-        : this.getTransactionStep(completed, pending, side, this.item.swapTxHash, this.item.swapTxHash, this.item.to, 'swap')
+        ? {
+          side: 'right',
+          pending: false,
+          completed: true,
+          title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted`
+        }
+        : this.getTransactionStep(
+          completed,
+          pending,
+          side,
+          this.item.swapTxHash,
+          this.item.swapTxHash,
+          this.item.to,
+          'swap'
+        )
     },
     async getReceiveStep (completed, pending, side) {
       return this.item.status === 'REFUNDED'
@@ -388,7 +639,9 @@ export default {
         AGENT_INITIATION: this.getAgentInitiationStep,
         CLAIM_OR_REFUND: this.getClaimRefundStep
       }
-      const steps = this.timelineDiagramSteps.map(step => supportedSteps[step])
+      const steps = this.timelineDiagramSteps.map(
+        (step) => supportedSteps[step]
+      )
 
       for (let i = 0; i < steps.length; i++) {
         const completed = getStep(this.item) > i
@@ -476,12 +729,14 @@ export default {
       z-index: 1;
     }
 
-    &.completed::after, &.pending::after {
+    &.completed::after,
+    &.pending::after {
       background-color: $color-secondary;
       border: 1px solid $hr-border-color;
     }
 
-    &.completed:first-child::after, &.completed:last-child::after {
+    &.completed:first-child::after,
+    &.completed:last-child::after {
       background-color: $color-secondary;
       border: 0;
     }
