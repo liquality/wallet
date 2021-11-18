@@ -275,6 +275,7 @@ class LiqualitySwapProvider extends SwapProvider {
       const tx = await fromClient.chain.getTransactionByHash(swap.fromFundHash)
       if (!tx && hasTimedOut(swap)) {
         return {
+          endTime: Date.now(),
           status: 'REFUNDED'
         }
       }
@@ -354,6 +355,7 @@ class LiqualitySwapProvider extends SwapProvider {
     const tx = await toClient.chain.getTransactionByHash(swap.toFundHash)
     if (!tx && hasTimedOut(swap)) {
       return {
+        endTime: Date.now(),
         status: 'REFUNDED'
       }
     }
@@ -403,6 +405,7 @@ class LiqualitySwapProvider extends SwapProvider {
       const tx = await toClient.chain.getTransactionByHash(swap.toClaimHash)
       if (!tx && hasTimedOut(swap)) {
         return {
+          endTime: Date.now(),
           status: 'REFUNDED'
         }
       }
@@ -436,6 +439,7 @@ class LiqualitySwapProvider extends SwapProvider {
       const tx = await fromClient.chain.getTransactionByHash(swap.refundHash)
       if (!tx && hasTimedOut(swap)) {
         return {
+          endTime: Date.now(),
           status: 'REFUNDED'
         }
       }
