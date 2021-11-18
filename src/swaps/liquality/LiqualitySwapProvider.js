@@ -11,6 +11,7 @@ import { prettyBalance } from '../../utils/coinFormatter'
 import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import { getTxFee } from '../../utils/fees'
+import { hasTimedOut } from '@/utils/hasTimedOut'
 
 export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@liquality/client'].replace('^', '').replace('~', '')})`
 
@@ -272,7 +273,11 @@ class LiqualitySwapProvider extends SwapProvider {
 
     try {
       const tx = await fromClient.chain.getTransactionByHash(swap.fromFundHash)
-
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          status: 'REFUNDED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         return {
           status: 'INITIATION_CONFIRMED'
@@ -347,7 +352,11 @@ class LiqualitySwapProvider extends SwapProvider {
     const toClient = this.getClient(network, walletId, swap.to, swap.toAccountId)
 
     const tx = await toClient.chain.getTransactionByHash(swap.toFundHash)
-
+    if (!tx && hasTimedOut(swap)) {
+      return {
+        status: 'REFUNDED'
+      }
+    }
     if (tx && tx.confirmations >= chains[cryptoassets[swap.to].chain].safeConfirmations) {
       return {
         status: 'READY_TO_CLAIM'
@@ -392,7 +401,11 @@ class LiqualitySwapProvider extends SwapProvider {
 
     try {
       const tx = await toClient.chain.getTransactionByHash(swap.toClaimHash)
-
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          status: 'REFUNDED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         this.updateBalances({ network, walletId, assets: [swap.to, swap.from] })
 
@@ -421,7 +434,11 @@ class LiqualitySwapProvider extends SwapProvider {
     const fromClient = this.getClient(network, walletId, swap.from, swap.fromAccountId)
     try {
       const tx = await fromClient.chain.getTransactionByHash(swap.refundHash)
-
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          status: 'REFUNDED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         return {
           endTime: Date.now(),

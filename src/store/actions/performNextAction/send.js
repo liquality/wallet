@@ -1,6 +1,7 @@
 
 import { withInterval } from './utils'
 import { TxStatus } from '@liquality/types'
+import { hasTimedOut } from '@/utils/hasTimedOut'
 
 async function waitForConfirmations ({ getters, dispatch }, { transaction, network, walletId }) {
   const client = getters.client(
@@ -16,7 +17,7 @@ async function waitForConfirmations ({ getters, dispatch }, { transaction, netwo
 
     // In case transaction doesn't exist: wait for 30 minutes then return failed state
     // Could happen on Dropped&Replaced
-    if (!tx && Date.now() - transaction.startTime > 1800000) {
+    if (!tx && hasTimedOut(transaction)) {
       return {
         endTime: Date.now(),
         status: TxStatus.Failed

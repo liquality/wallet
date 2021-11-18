@@ -17,6 +17,7 @@ import { prettyBalance } from '../../utils/coinFormatter'
 import { ChainNetworks } from '@/utils/networks'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
 import { SwapProvider } from '../SwapProvider'
+import { hasTimedOut } from '@/utils/hasTimedOut'
 
 const SWAP_DEADLINE = 30 * 60 // 30 minutes
 
@@ -279,6 +280,12 @@ class UniswapSwapProvider extends SwapProvider {
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          endTime: Date.now(),
+          status: 'FAILED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         return {
           endTime: Date.now(),
@@ -296,6 +303,12 @@ class UniswapSwapProvider extends SwapProvider {
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          endTime: Date.now(),
+          status: 'FAILED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         // Check transaction status - it may fail due to slippage
         const { status } = await client.getMethod('getTransactionReceipt')(swap.swapTxHash)

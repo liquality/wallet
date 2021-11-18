@@ -10,6 +10,7 @@ import { ChainNetworks } from '@/utils/networks'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
 import { SwapProvider } from '../SwapProvider'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
+import { hasTimedOut } from '@/utils/hasTimedOut'
 
 import SovrynSwapNetworkABI from '@blobfishkate/sovryncontracts/abi/abiSovrynSwapNetwork.json'
 import RBTCWrapperProxyABI from '@blobfishkate/sovryncontracts/abi/abiWrapperProxy_new.json'
@@ -241,6 +242,12 @@ class SovrynSwapProvider extends SwapProvider {
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          endTime: Date.now(),
+          status: 'FAILED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         return {
           endTime: Date.now(),
@@ -258,6 +265,12 @@ class SovrynSwapProvider extends SwapProvider {
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          endTime: Date.now(),
+          status: 'FAILED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         // Check transaction status - it may fail due to slippage
         const { status } = await client.getMethod('getTransactionReceipt')(swap.swapTxHash)

@@ -16,6 +16,7 @@ import { baseAmount, baseToAsset, assetFromString } from '@xchainjs/xchain-util'
 import { SwapProvider } from '../SwapProvider'
 import { getTxFee } from '../../utils/fees'
 import { mapValues } from 'lodash-es'
+import { hasTimedOut } from '@/utils/hasTimedOut'
 
 // Pool balances are denominated with 8 decimals
 const THORCHAIN_DECIMAL = 8
@@ -265,6 +266,12 @@ class ThorchainSwapProvider extends SwapProvider {
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          endTime: Date.now(),
+          status: 'FAILED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         return {
           endTime: Date.now(),
@@ -282,6 +289,12 @@ class ThorchainSwapProvider extends SwapProvider {
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          endTime: Date.now(),
+          status: 'FAILED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         return {
           endTime: Date.now(),
@@ -316,7 +329,12 @@ class ThorchainSwapProvider extends SwapProvider {
 
           const client = this.getClient(network, walletId, asset, accountId)
           const receiveTx = await client.chain.getTransactionByHash(receiveHash)
-
+          if (!receiveTx && hasTimedOut(swap)) {
+            return {
+              endTime: Date.now(),
+              status: 'FAILED'
+            }
+          }
           if (receiveTx && receiveTx.confirmations > 0) {
             this.updateBalances({ network, walletId, assets: [asset] })
             const status = OUT_MEMO_TO_STATUS[memoAction]

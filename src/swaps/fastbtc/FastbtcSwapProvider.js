@@ -7,6 +7,7 @@ import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import { withInterval } from '../../store/actions/performNextAction/utils'
 import { prettyBalance } from '../../utils/coinFormatter'
 import cryptoassets from '@/utils/cryptoassets'
+import { hasTimedOut } from '@/utils/hasTimedOut'
 
 const fastBtcSatoshiFee = 5000
 const fastBtcPercentageFee = 0.2
@@ -131,6 +132,12 @@ class FastbtcSwapProvider extends SwapProvider {
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          endTime: Date.now(),
+          status: 'FAILED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         return {
           endTime: Date.now(),

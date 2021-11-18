@@ -11,6 +11,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import * as ethers from 'ethers'
 import buildConfig from '../../build.config'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
+import { hasTimedOut } from '@/utils/hasTimedOut'
 
 const nativeAssetAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 const slippagePercentage = 0.5
@@ -170,6 +171,12 @@ class OneinchSwapProvider extends SwapProvider {
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          endTime: Date.now(),
+          status: 'FAILED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         return {
           endTime: Date.now(),
@@ -187,6 +194,12 @@ class OneinchSwapProvider extends SwapProvider {
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
+      if (!tx && hasTimedOut(swap)) {
+        return {
+          endTime: Date.now(),
+          status: 'FAILED'
+        }
+      }
       if (tx && tx.confirmations > 0) {
         // Check transaction status - it may fail due to slippage
         const { status } = await client.getMethod('getTransactionReceipt')(swap.swapTxHash)
