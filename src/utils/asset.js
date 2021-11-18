@@ -4,6 +4,7 @@ import {
 } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import * as ethers from 'ethers'
+import axios from 'axios'
 import tokenABI from './tokenABI.json'
 import buildConfig from '../build.config'
 
@@ -81,11 +82,21 @@ const EXPLORERS = {
   arbitrum: {
     testnet: {
       tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x{hash}',
-      address: 'https://rinkeby-explorer.arbitrum.io/address/0x{hash}'
+      address: 'https://rinkeby-explorer.arbitrum.io/address/{hash}'
     },
     mainnet: {
-      tx: 'https://explorer.arbitrum.io/tx/0x',
-      address: 'https://explorer.arbitrum.io/address/0x'
+      tx: 'https://explorer.arbitrum.io/tx/0x{hash}',
+      address: 'https://explorer.arbitrum.io/address/{hash}'
+    }
+  },
+  terra: {
+    testnet: {
+      tx: 'https://finder.terra.money/bombay-12/tx/{hash}',
+      address: 'https://finder.terra.money/bombay-12/address/{hash}'
+    },
+    mainnet: {
+      tx: 'https://finder.terra.money/columbus-5/tx/{hash}',
+      address: 'https://finder.terra.money/columbus-5/address/{hash}'
     }
   }
 }
@@ -115,6 +126,10 @@ export const isEthereumNativeAsset = asset => {
 export const getNativeAsset = asset => {
   const chainId = cryptoassets[asset]?.chain
   return chainId ? chains[chainId].nativeAsset : asset
+}
+
+export const getFeeAsset = asset => {
+  return cryptoassets[asset]?.feeAsset
 }
 
 export const getAssetColorStyle = asset => {
@@ -187,6 +202,11 @@ export const tokenDetailProviders = {
     async getDetails (contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://arb1.arbitrum.io/rpc')
     }
+  },
+  terra: {
+    async getDetails (contractAddress) {
+      return await fetchTerraToken(contractAddress, 'https://arb1.arbitrum.io/rpc')
+    }
   }
 }
 
@@ -213,4 +233,16 @@ export const estimateGas = async ({ data, to, value }) => {
   const provider = ethers.getDefaultProvider()
 
   return await provider.estimateGas(paramsForGasEstimate)
+}
+
+export const fetchTerraToken = async (address) => {
+  const { data: { mainnet: tokens } } = await axios.get('https://assets.terra.money/cw20/tokens.json')
+  const token = tokens[address]
+  const { symbol } = token
+
+  return {
+    name: symbol,
+    symbol,
+    decimals: 6
+  }
 }

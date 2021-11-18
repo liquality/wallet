@@ -105,12 +105,17 @@ class SwapPage {
    * @constructor
    */
   async ClickSwapReviewButton (page) {
-    console.log('User checking for SWAP Review button is enabled or disabled')
-    await page.waitForSelector('#swap_review_button:not([disabled])', {
-      timeout: 60000
-    })
-    await page.click('#swap_review_button')
-    console.log(chalk.green('User clicked on SWAP review button'))
+    try {
+      console.log('User checking for SWAP Review button is enabled or disabled')
+      await page.waitForSelector('#swap_review_button', {
+        timeout: 60000
+      })
+      await page.click('#swap_review_button')
+      console.log(chalk.green('User clicked on SWAP review button'))
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'swap-review-button-disabled-issue')
+      expect(e, 'swap review button is disabled!!').equals(null)
+    }
   }
 
   /**
@@ -159,8 +164,15 @@ class SwapPage {
    * @constructor
    */
   async GetSwapSendAmountValue (page) {
-    await page.waitForTimeout(5000)
-    await page.waitForSelector('#send_swap_confirm_value', { visible: true })
+    try {
+      await page.waitForSelector('#send_swap_confirm_value', {
+        visible: true,
+        timeout: 60000
+      })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'send-swap-review-amount-screen-issue')
+      expect(e, 'Click Swap initiated not working!!!').equals(null)
+    }
     return await page.$eval('#send_swap_confirm_value', el => el.textContent)
   }
 
@@ -222,6 +234,12 @@ class SwapPage {
     return await page.$eval('#swap_receive_amount_fee_value', el => el.textContent)
   }
 
+  /**
+   * Get Swap receive fiat amount.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
   async GetSwapReceiveAccountFeeInDollar (page) {
     await page.waitForSelector('#swap_receive_total_amount_in_fiat', { visible: true })
     return await page.$eval('#swap_receive_total_amount_in_fiat', el => el.textContent)
@@ -242,8 +260,7 @@ class SwapPage {
     try {
       await page.waitForSelector('#fees_are_high', { visible: true })
     } catch (e) {
-      const ts = Math.round((new Date()).getTime() / 1000)
-      await page.screenshot({ path: `screenshots/fee-are-high-not-displayed-${ts}.png` })
+      await testUtil.takeScreenshot(page, 'fee-are-high-not-displayed')
       expect(e, 'Fees are high. Review transaction carefully messages not displayed....').equals(null)
     }
     const messages = await page.$eval('#fees_are_high', el => el.textContent)

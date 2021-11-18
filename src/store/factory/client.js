@@ -28,6 +28,11 @@ import { SolanaWalletProvider } from '@liquality/solana-wallet-provider'
 import { SolanaSwapProvider } from '@liquality/solana-swap-provider'
 import { SolanaSwapFindProvider } from '@liquality/solana-swap-find-provider'
 
+import { TerraSwapProvider } from '@liquality/terra-swap-provider'
+import { TerraWalletProvider } from '@liquality/terra-wallet-provider'
+import { TerraRpcProvider } from '@liquality/terra-rpc-provider'
+import { TerraSwapFindProvider } from '@liquality/terra-swap-find-provider'
+
 import {
   BitcoinLedgerBridgeProvider,
   EthereumLedgerBridgeProvider,
@@ -35,7 +40,7 @@ import {
   EthereumLedgerBridgeApp,
   LEDGER_BITCOIN_OPTIONS
 } from '@/utils/ledger-bridge-provider'
-import { chains } from '@liquality/cryptoassets'
+import { ChainId } from '@liquality/cryptoassets'
 
 import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
@@ -56,7 +61,7 @@ function createBtcClient (network, mnemonic, accountType, derivationPath) {
   if (accountType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === accountType)
     const { addressType } = option
-    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(network)
+    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(network, ChainId.Bitcoin)
     const ledger = new BitcoinLedgerBridgeProvider(
       {
         network: bitcoinNetwork,
@@ -96,9 +101,7 @@ function createEthereumClient (
 
   if (accountType === 'ethereum_ledger' || accountType === 'rsk_ledger') {
     const assetData = cryptoassets[asset]
-    const chainData = chains?.[assetData.chain]
-    const { nativeAsset } = chainData || 'ETH'
-    const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, nativeAsset)
+    const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, assetData.chain || ChainId.Ethereum)
     const ledger = new EthereumLedgerBridgeProvider(
       {
         network: ethereumNetwork,
@@ -211,6 +214,47 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
+function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
+  let _asset, feeAsset, tokenAddress
+
+  const terraNetwork = ChainNetworks.terra[network]
+
+  switch (asset) {
+    case 'LUNA': {
+      _asset = 'uluna'
+      feeAsset = 'uluna'
+      break
+    } case 'UST': {
+      _asset = 'uusd'
+      feeAsset = 'uusd'
+      break
+    } default: {
+      _asset = asset
+      feeAsset = 'uluna'
+      tokenAddress = cryptoassets[asset].contractAddress
+      break
+    }
+  }
+
+  const terraClient = new Client()
+
+  terraClient.addProvider(new TerraRpcProvider(terraNetwork, _asset, feeAsset, tokenAddress))
+  terraClient.addProvider(new TerraWalletProvider(
+    {
+      network: terraNetwork,
+      mnemonic,
+      baseDerivationPath,
+      asset: _asset,
+      feeAsset,
+      tokenAddress
+    }
+  ))
+  terraClient.addProvider(new TerraSwapProvider(terraNetwork, _asset))
+  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork, _asset))
+
+  return terraClient
+}
+
 export const createClient = (asset, network, mnemonic, accountType, derivationPath) => {
   const assetData = cryptoassets[asset]
 
@@ -221,6 +265,7 @@ export const createClient = (asset, network, mnemonic, accountType, derivationPa
   if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, derivationPath)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, derivationPath)
   if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
+  if (assetData.chain === 'terra') return createTerraClient(network, mnemonic, derivationPath, asset)
 
   return createEthClient(asset, network, mnemonic, accountType, derivationPath)
 }

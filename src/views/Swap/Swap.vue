@@ -16,8 +16,8 @@
         <EthRequiredMessage :account-id="account.id"/>
       </InfoNotification>
 
-      <InfoNotification v-else-if="showNoLiquidityMessage">
-        <NoLiquidityMessage />
+      <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount > min">
+        <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
@@ -100,6 +100,7 @@
                     :totalFees="amountOption === 'max' ? maxSwapFees[assetFee] : swapFees[assetFee]"
                     :fiatRates="fiatRates"
                     @custom-selected="onCustomFeeSelected"
+                    :swap="true"
                   />
                 </li>
               </ul>
@@ -352,6 +353,7 @@ import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
+import buildConfig from '@/build.config'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
@@ -468,7 +470,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage () {
-      return BN(this.sendAmount).gt(0) && (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
+      return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
     sendAmount: {
       get () {
@@ -512,9 +514,7 @@ export default {
       'activeWalletId',
       'activeNetwork'
     ]),
-    ...mapState({
-      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
-    }),
+    ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'swapProvider', 'accountItem', 'networkAccounts']),
     networkMarketData () {
       return this.marketData[this.activeNetwork]
@@ -544,6 +544,13 @@ export default {
       } else {
         return BN(0)
       }
+    },
+    isPairAvailable () {
+      const liqualityMarket = this.networkMarketData?.find(pair =>
+        pair.from === this.asset &&
+        (pair.to === this.toAsset || buildConfig.supportedBridgeAssets.indexOf(this.toAssetChain) !== -1)
+      )
+      return !!(liqualityMarket)
     },
     min () {
       const liqualityMarket = this.networkMarketData?.find(pair =>
@@ -605,9 +612,6 @@ export default {
       return !this.ethRequired
     },
     amountError () {
-      if (this.showNoLiquidityMessage) {
-        return null
-      }
       const amount = BN(this.safeAmount)
 
       if (amount.gt(this.available)) {
@@ -618,7 +622,7 @@ export default {
         return 'Please reduce amount. It exceeds maximum.'
       }
 
-      if (amount.lt(this.min)) {
+      if (amount.lt(this.min) || amount.lte(0)) {
         return 'Please increase amount. It is below minimum.'
       }
 
@@ -691,6 +695,9 @@ export default {
       'newSwap',
       'updateFiatRates',
       'trackAnalytics'
+    ]),
+    ...mapActions('app', [
+      'startBridgeListener'
     ]),
     shortenAddress,
     dpUI,
@@ -833,12 +840,13 @@ export default {
       this.selectedFee[asset] = 'average'
     },
     async tryToSwap () {
-      if (this.account?.type.includes('ledger') && !this.usbBridgeTransportCreated) {
+      if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
         this.loading = true
         this.bridgeModalOpen = true
+        await this.startBridgeListener()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
           if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
-          payload.created === true) {
+          payload.connected === true) {
             this.bridgeModalOpen = false
             await this.swap()
             if (unsubscribe) {

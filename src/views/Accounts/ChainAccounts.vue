@@ -46,6 +46,7 @@
             v-for="account in accountList"
             :key="account.id"
             :class="'account-item-' + chain.id"
+            :id="'account-item-' + chain.id"
           >
             <template #prefix>
               <div

@@ -8,7 +8,12 @@
         <strong>Select Asset</strong>
       </span>
     </NavBar>
-    <div class="main-content">
+    <div v-if="!accounts.length">
+      <p class="no-funds-msg">
+        No funds in the wallet
+      </p>
+    </div>
+    <div v-else class="main-content">
       <div class="form asset-list-header">
         <div class="input-group">
               <SearchIcon/>
@@ -42,9 +47,6 @@ export default {
   computed: {
     ...mapGetters(['accountsData', 'accountsWithBalance']),
     accounts () {
-      if (this.action === 'swap.send') {
-        return this.accountsWithBalance
-      }
       return this.accountsData
     }
   },
@@ -69,7 +71,7 @@ export default {
     }
   },
   created () {
-    this.$nextTick(() => this.$refs.search.focus())
+    this.$nextTick(() => this.$refs.search?.focus())
   }
 }
 </script>
@@ -84,6 +86,13 @@ export default {
   .asset-list-nav {
     font-weight: normal;
     text-transform: uppercase;
+  }
+
+  .no-funds-msg {
+    text-align: center;
+    font-size: 0.8125rem;
+    margin-top: 20px;
+    font-weight: bold;
   }
 
   .main-content {

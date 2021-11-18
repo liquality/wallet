@@ -16,10 +16,10 @@ let browser, page
 const password = '123123123'
 
 describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
-  beforeEach(async () => {
+  before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle0' })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
     // Import wallet option
@@ -39,8 +39,10 @@ describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
   })
   it('should be able to SWAP using sovryn AMM', async () => {
     const asset1 = 'RBTC'
-    const asset2 = 'SOV'
-
+    const asset2 = {
+      chain: 'RSK',
+      coin: 'SOV'
+    }
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
@@ -52,24 +54,24 @@ describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
     await page.click(`#${asset1}_swap_button`)
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-    expect(swapSendAmountField, 'ETH to DAI SWAP min value not set in input').not.equals('0.0000')
+    expect(swapSendAmountField, `${asset1} to ${asset2} SWAP min value not set in input`)
+      .not.equals('0.0000')
     await swapPage.ClickOnMin(page)
-    // Select 2nd Pair (DAI)
+    // Select 2nd Pair
     await page.click('.swap-receive-main-icon')
-    await page.waitForSelector('#RSK', { visible: true })
-    await page.click('#RSK')
-    await page.waitForSelector(`#${asset2}`, { visible: true })
-    await page.click(`#${asset2}`)
+    await page.waitForSelector(`#${asset2.chain}`, { visible: true })
+    await page.click(`#${asset2.chain}`)
+    await page.waitForSelector(`#${asset2.coin}`, { visible: true })
+    await page.click(`#${asset2.coin}`)
     // Enter RSK amount
     await swapPage.EnterSendAmountOnSwap(page, '0.0000001')
     await page.waitForSelector('#selectedQuote_provider', {
       visible: true,
       timeout: 60000
     })
-    await page.waitForTimeout(10000)
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'RBTC->SOV, Supporting source should be chosen!')
-      .oneOf(['Sovyrn'])
+      .oneOf(['Sovyrn', 'Liquality'])
 
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
@@ -107,7 +109,7 @@ describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
 
     // Receive details validation
     const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
-    expect(receiveAmountValue.trim()).contain(asset2)
+    expect(receiveAmountValue.trim()).contain(asset2.coin)
 
     const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
     expect(receiveAmountInDollar.trim()).not.contain('$00.00')
@@ -118,7 +120,7 @@ describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
     expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
 
     const receiveAccountFeesValue = await swapPage.GetSwapReceiveAccountFeeValue(page)
-    expect(receiveAccountFeesValue.trim()).contain(asset2)
+    expect(receiveAccountFeesValue.trim()).contain(asset2.coin)
 
     // RATE
     await page.waitForSelector('#swap_review_rate_block')

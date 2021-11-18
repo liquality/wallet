@@ -14,6 +14,7 @@ import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap/Swap.vue'
 
 import Settings from '@/views/Settings'
+import Experiments from '@/views/Experiments'
 import ManageAssets from '@/views/ManageAssets'
 import CustomToken from '@/views/CustomToken'
 
@@ -22,6 +23,7 @@ import Enable from '@/views/Enable.vue'
 import PermissionSend from '@/views/PermissionSend.vue'
 import PermissionSign from '@/views/PermissionSign.vue'
 import PermissionSignPsbt from '@/views/PermissionSignPsbt.vue'
+import PermissionTerra from '@/views/PermissionTerra.vue'
 import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
@@ -62,6 +64,10 @@ const routes = [
   {
     path: '/settings',
     component: Settings
+  },
+  {
+    path: '/settings/experiments',
+    component: Experiments
   },
   {
     path: '/settings/manage-assets',
@@ -172,6 +178,10 @@ const routes = [
   {
     path: '/permission/send',
     component: PermissionSend
+  },
+  {
+    path: '/permission/terra',
+    component: PermissionTerra
   },
   {
     path: '/permission/sign',

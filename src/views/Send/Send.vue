@@ -59,7 +59,7 @@
                   <div class="send_fees">
                     <span class="selectors-asset">{{ assetChain }}</span>
                     <div class="custom-fees" v-if="customFee">
-                    {{ currentFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
+                    {{ prettyFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
                     <button class="btn btn-link" @click="resetCustomFee">
                       Reset
                     </button>
@@ -208,7 +208,8 @@ import { prettyBalance, prettyFiatBalance, dpUI, fiatToCrypto } from '@/utils/co
 import {
   getNativeAsset,
   getAssetColorStyle,
-  getAssetIcon
+  getAssetIcon,
+  getFeeAsset
 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import {
@@ -266,9 +267,7 @@ export default {
       'fees',
       'fiatRates'
     ]),
-    ...mapState({
-      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
-    }),
+    ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters([
       'accountItem',
       'client'
@@ -309,7 +308,7 @@ export default {
       return this.$route.query.source || null
     },
     assetChain () {
-      return getNativeAsset(this.asset)
+      return getFeeAsset(this.asset) || getNativeAsset(this.asset)
     },
     assetFees () {
       const assetFees = {}
@@ -334,7 +333,7 @@ export default {
       return (this.selectedFee in fees) ? fees[this.selectedFee] : BN(0)
     },
     isValidAddress () {
-      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address)
+      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
     },
     addressError () {
       if (!this.isValidAddress) {
@@ -385,6 +384,9 @@ export default {
   },
   methods: {
     ...mapActions(['updateFees', 'sendTransaction', 'trackAnalytics']),
+    ...mapActions('app', [
+      'startBridgeListener'
+    ]),
     prettyBalance,
     dpUI,
     prettyFiatBalance,
@@ -399,6 +401,7 @@ export default {
           const feePrice = fee.fee
           sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
+
         if (this.asset === 'BTC') {
           const client = this.client({
             network: this.activeNetwork, walletId: this.activeWalletId, asset: this.asset, accountId: this.account.id
@@ -414,6 +417,15 @@ export default {
             }
           } catch (e) {
             console.error(e)
+          }
+        } else if (this.asset === 'UST') {
+          const client = this.client({
+            network: this.activeNetwork, walletId: this.activeWalletId, asset: this.asset, accountId: this.account.id
+          })
+          const tax = await client.getMethod('getTaxFees')(amount, 'uusd', (getMax || !amount))
+
+          for (const [speed] of Object.entries(this.assetFees)) {
+            sendFees[speed] = sendFees[speed].plus(tax)
           }
         }
 
@@ -431,12 +443,13 @@ export default {
       await this._updateSendFees()
     },
     async tryToSend () {
-      if (this.account?.type.includes('ledger') && !this.usbBridgeTransportCreated) {
+      if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
         this.loading = true
         this.bridgeModalOpen = true
+        await this.startBridgeListener()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
-          payload.created === true) {
+          if (type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
+          payload.connected === true) {
             this.bridgeModalOpen = false
             await this.send()
             if (unsubscribe) {
@@ -580,10 +593,12 @@ export default {
     amount: function (val) {
       const amount = BN(val)
       const available = dpUI(this.available)
+
       if (!amount.eq(available)) {
         this.maxOptionActive = false
-        this.updateSendFees(this.amount)
       }
+
+      this.updateSendFees(this.amount)
     },
     available: function () {
       if (this.maxOptionActive) {
