@@ -91,39 +91,39 @@
 </template>
 
 <script>
-import { getAssetColorStyle, getAssetIcon } from "@/utils/asset";
-import { dpUI } from "@/utils/coinFormatter";
-import AccountTooltip from "@/components/AccountTooltip";
+import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
+import { dpUI } from '@/utils/coinFormatter'
+import AccountTooltip from '@/components/AccountTooltip'
 
 export default {
   components: {
-    AccountTooltip,
+    AccountTooltip
   },
-  data() {
+  data () {
     return {
-      showAmountsInFiat: false,
-    };
+      showAmountsInFiat: false
+    }
   },
   props: [
-    "asset",
-    "amount",
-    "account",
-    "amountFiat",
-    "max",
-    "available",
-    "maxFiat",
-    "amountError",
-    "maxActive",
+    'asset',
+    'amount',
+    'account',
+    'amountFiat',
+    'max',
+    'available',
+    'maxFiat',
+    'amountError',
+    'maxActive'
   ],
   methods: {
     dpUI,
     getAssetColorStyle,
     getAssetIcon,
-    toggleShowAmountsFiat() {
-      this.showAmountsInFiat = !this.showAmountsInFiat;
-    },
-  },
-};
+    toggleShowAmountsFiat () {
+      this.showAmountsInFiat = !this.showAmountsInFiat
+    }
+  }
+}
 </script>
 
 <style lang="scss">
