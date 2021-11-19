@@ -13,7 +13,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Private key exports-[mainnet,smoke]', async () => {
+describe.only('Private key exports-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -56,7 +56,9 @@ describe('Private key exports-[mainnet,smoke]', async () => {
     // Private key screen
     await page.waitForSelector('#private-key-textarea', { visible: true })
     const privateKeyTextArea = await page.$eval('#private-key-textarea', el => el.getAttribute('readonly'))
+    const privateKey = await page.$eval('#private-key-textarea', el => el.value)
     expect(privateKeyTextArea).equals('readonly')
+    expect(privateKey).to.not.contain.oneOf(['n/a', 'NaN', null])
     await page.click('#done_button')
     await page.waitForSelector('#BITCOIN')
   })
