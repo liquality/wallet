@@ -106,7 +106,7 @@
       </div>
       <div class="swap-send-bottom-available">
         <span class="text-muted">Available</span>
-        {{ isNaN(available) ? "0" : dpUI(available) || "0" }} {{ asset }}
+        {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
       </div>
     </div>
   </div>

@@ -309,7 +309,7 @@ export default {
         return this.stateAmountFiat
       },
       set (newValue) {
-        const value = (newValue || '0').replace('$', '')
+        const value = (newValue || '0')
         this.stateAmountFiat = value
         this.stateAmount = fiatToCrypto(value, this.fiatRates[this.asset])
       }
