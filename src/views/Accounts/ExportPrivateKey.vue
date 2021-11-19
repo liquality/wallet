@@ -14,10 +14,10 @@
         <code v-if="account.addresses[0]">{{ shortenAddress(account.addresses[0]) }}</code>
         <img :src="getAccountIcon(account.chain)" class="asset-icon" />
       </p>
-      <textarea readonly rows="3" @click="selectTextarea" v-model="privateKey" />
+      <textarea readonly rows="3" @click="selectTextarea" id="private-key-textarea" v-model="privateKey" />
     </main>
     <div class="p-3 pb-1">
-      <button class="btn btn-primary btn-lg btn-block" @click="goback">Done</button>
+      <button id="done_button" class="btn btn-primary btn-lg btn-block" @click="goback">Done</button>
     </div>
   </div>
 </template>
