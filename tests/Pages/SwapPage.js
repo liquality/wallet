@@ -2,6 +2,7 @@ const TestUtil = require('../utils/TestUtils')
 
 const testUtil = new TestUtil()
 const chalk = require('chalk')
+const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 
 class SwapPage {
@@ -258,10 +259,12 @@ class SwapPage {
    */
   async CheckFeesAreHigh (page) {
     try {
-      await page.waitForSelector('#fees_are_high', { visible: true })
+      await page.waitForSelector('#fees_are_high', { visible: true, timeout: 90000 })
     } catch (e) {
-      await testUtil.takeScreenshot(page, 'fee-are-high-not-displayed')
-      expect(e, 'Fees are high. Review transaction carefully messages not displayed....').equals(null)
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'fee-are-high-not-displayed')
+        expect(e, 'Fees are high. Review transaction carefully messages not displayed....').equals(null)
+      }
     }
     const messages = await page.$eval('#fees_are_high', el => el.textContent)
     expect(messages.trim()).equals('Fees are high. Review transaction carefully.')
