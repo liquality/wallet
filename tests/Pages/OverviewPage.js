@@ -2,6 +2,7 @@ const TestUtil = require('../utils/TestUtils')
 
 const testUtil = new TestUtil()
 const chalk = require('chalk')
+const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 
 class OverviewPage {
@@ -18,8 +19,10 @@ class OverviewPage {
         timeout: 120000
       })
     } catch (e) {
-      await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
-      expect(e, 'Hamburger icon loading issue').equals(null)
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
+        expect(e, 'Hamburger icon loading issue').equals(null)
+      }
     }
   }
 
