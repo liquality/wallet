@@ -84,46 +84,46 @@
       </div>
       <div class="send-bottom-available" id="send_available_balance">
         <span class="text-muted">Available</span>
-        {{ isNaN(available) ? "0" : dpUI(available) || "0" }} {{ asset }}
+        {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getAssetColorStyle, getAssetIcon } from "@/utils/asset";
-import { dpUI } from "@/utils/coinFormatter";
-import AccountTooltip from "@/components/AccountTooltip";
+import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
+import { dpUI } from '@/utils/coinFormatter'
+import AccountTooltip from '@/components/AccountTooltip'
 
 export default {
   components: {
-    AccountTooltip,
+    AccountTooltip
   },
-  data() {
+  data () {
     return {
-      showAmountsInFiat: false,
-    };
+      showAmountsInFiat: false
+    }
   },
   props: [
-    "asset",
-    "amount",
-    "account",
-    "amountFiat",
-    "max",
-    "available",
-    "maxFiat",
-    "amountError",
-    "maxActive",
+    'asset',
+    'amount',
+    'account',
+    'amountFiat',
+    'max',
+    'available',
+    'maxFiat',
+    'amountError',
+    'maxActive'
   ],
   methods: {
     dpUI,
     getAssetColorStyle,
     getAssetIcon,
-    toggleShowAmountsFiat() {
-      this.showAmountsInFiat = !this.showAmountsInFiat;
-    },
-  },
-};
+    toggleShowAmountsFiat () {
+      this.showAmountsInFiat = !this.showAmountsInFiat
+    }
+  }
+}
 </script>
 
 <style lang="scss">
