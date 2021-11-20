@@ -8,7 +8,7 @@
        <div class="justify-content-center"
             v-if="account && account.type.includes('ledger')">
          <div class="modal-title d-flex justify-content-center">
-          Can’t find the ledger Account
+          We weren’t able to get a list of accounts. Please try again, check on the ledger if the right app/asset was selected or cancel and choose a different asset.
         </div>
          <div class="step-icon d-flex justify-content-center">
           <LedgerIcon />
