@@ -15,6 +15,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
+// Sovryn AMM works against RSK chain
 describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -47,26 +48,26 @@ describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
     }
   })
   it('should be able to SWAP using sovryn AMM', async () => {
-    const asset1 = 'RBTC'
-    const asset2 = {
+    const fromAsset = 'RBTC'
+    const toAsset = {
       chain: 'RSK',
       coin: 'SOV'
     }
     // Click on ETH then click on SWAP button
-    await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
-    await page.click(`#${asset1}_swap_button`)
+    await overviewPage.SelectChain(page, fromAsset)
+    await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+    await page.click(`#${fromAsset}_swap_button`)
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-    expect(swapSendAmountField, `${asset1} to ${asset2} SWAP min value not set in input`)
+    expect(swapSendAmountField, `${fromAsset} to ${toAsset} SWAP min value not set in input`)
       .not.equals('0.0000')
     await swapPage.ClickOnMin(page)
     // Select 2nd Pair
     await page.click('.swap-receive-main-icon')
-    await page.waitForSelector(`#${asset2.chain}`, { visible: true })
-    await page.click(`#${asset2.chain}`)
-    await page.waitForSelector(`#${asset2.coin}`, { visible: true })
-    await page.click(`#${asset2.coin}`)
+    await page.waitForSelector(`#${toAsset.chain}`, { visible: true })
+    await page.click(`#${toAsset.chain}`)
+    await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
+    await page.click(`#${toAsset.coin}`)
     // Enter RSK amount
     await swapPage.EnterSendAmountOnSwap(page, '0.0000001')
     await page.waitForSelector('#selectedQuote_provider', {
@@ -81,7 +82,7 @@ describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
     await swapPage.ValidateNetworkFeeTab(page)
     // Click on Network speed + FEE & Validate
     const networkSpeedFee = await page.$eval('#details_header_chevron_down_icon', el => el.textContent)
-    expect(networkSpeedFee).contain(asset1 + ' Avg')
+    expect(networkSpeedFee).contain(fromAsset + ' Avg')
 
     // Review Button
     await swapPage.ClickSwapReviewButton(page)
@@ -90,44 +91,39 @@ describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
-    expect(sendAmountValue.trim()).contain(asset1)
+    expect(sendAmountValue.trim()).contain(fromAsset)
 
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
     expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00').not.contain('$00.00')
 
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
-    expect(swapSendNetworkFeeValue.trim()).contain(asset1)
+    expect(swapSendNetworkFeeValue.trim()).contain(fromAsset)
 
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
     expect(swapSendNetworkFeeInDollar.trim(),
-      'Send network fee can not be $0.00').not.contain('$0.0000000')
-    expect(swapSendNetworkFeeInDollar.trim(),
-      'Send network fee can not be $0.00').not.contain('NaN')
+      'Send network fee can not be $0.00').to.not.contain.oneOf(['$0.0000000', 'NaN', null])
 
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
-    expect(swapSendAccountFeesValue.trim()).contain(asset1)
+    expect(swapSendAccountFeesValue.trim()).contain(fromAsset)
 
     const swapSendAccountFeesInDollar = await swapPage.GetSwapSendAccountFeesInDollar(page)
-    expect(swapSendAccountFeesInDollar.trim()).not.contain('$00.00')
-    expect(swapSendAccountFeesInDollar.trim()).not.contain('NaN')
+    expect(swapSendAccountFeesInDollar.trim()).to.not.contain.oneOf(['$00.00', 'NaN', null])
 
     // Receive details validation
     const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
-    expect(receiveAmountValue.trim()).contain(asset2.coin)
+    expect(receiveAmountValue.trim()).contain(toAsset.coin)
 
     const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    expect(receiveAmountInDollar.trim()).not.contain('$00.00')
-    expect(receiveAmountInDollar.trim()).not.contain('NaN')
+    expect(receiveAmountInDollar.trim()).to.not.contain.oneOf(['$0.00', 'NaN', null])
 
     const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
-    expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
+    expect(receiveNetworkFeeInDollar.trim()).to.not.contain.oneOf(['$0.00', 'NaN', null])
 
     const receiveAccountFeesValue = await swapPage.GetSwapReceiveAccountFeeValue(page)
-    expect(receiveAccountFeesValue.trim()).contain(asset2.coin)
+    expect(receiveAccountFeesValue.trim()).contain(toAsset.coin)
 
     // RATE
-    await page.waitForSelector('#swap_review_rate_block')
+    await page.waitForSelector('#swap_review_rate_block', { visible: true })
 
     // Validate message
     await swapPage.ValidateMessage(page)

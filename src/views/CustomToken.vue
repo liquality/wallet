@@ -68,7 +68,7 @@
                    href="#"
                    @click="selectChain('terra')"
                    :class="{active: chain === 'terra'}">
-                  Terra (Terra)
+                  Terra (LUNA)
                 </a>
               </li>
             </ul>
