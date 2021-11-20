@@ -97,7 +97,7 @@
             </div>
           </div>
           <div v-else class="account-message">
-            {{ ledgerError && ledgerError.message ? ledgerError.message : 'No Accounts Found' }}
+            We weren’t able to get a list of accounts. Please try again, check on the ledger if the right app/asset was selected or cancel and choose a different asset.
           </div>
         </div>
       </div>
