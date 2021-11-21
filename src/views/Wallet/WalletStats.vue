@@ -47,32 +47,32 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import SendIcon from "@/assets/icons/send_o.svg";
-import ReceiveIcon from "@/assets/icons/receive_o.svg";
-import SwapIcon from "@/assets/icons/swap_o.svg";
-import { formatFiat } from "@/utils/coinFormatter";
-import { formatFontSize } from "@/utils/fontSize";
+import { mapGetters } from 'vuex'
+import SendIcon from '@/assets/icons/send_o.svg'
+import ReceiveIcon from '@/assets/icons/receive_o.svg'
+import SwapIcon from '@/assets/icons/swap_o.svg'
+import { formatFiat } from '@/utils/coinFormatter'
+import { formatFontSize } from '@/utils/fontSize'
 
 export default {
   components: {
     SendIcon,
     ReceiveIcon,
-    SwapIcon,
+    SwapIcon
   },
-  props: ["loading"],
+  props: ['loading'],
   computed: {
-    ...mapGetters(["totalFiatBalance", "accountsData"]),
-    total() {
-      return formatFiat(this.totalFiatBalance);
-    },
+    ...mapGetters(['totalFiatBalance', 'accountsData']),
+    total () {
+      return formatFiat(this.totalFiatBalance)
+    }
   },
   methods: {
-    formatFontSize(value) {
-      return formatFontSize(value);
-    },
-  },
-};
+    formatFontSize (value) {
+      return formatFontSize(value)
+    }
+  }
+}
 </script>
 
 <style lang="scss">
