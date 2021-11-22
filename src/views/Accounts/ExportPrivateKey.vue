@@ -5,7 +5,7 @@
         <strong>{{chainId}} Private Key</strong>
       </span>
     </NavBar>
-    <div class="export-account_top login-wrapper">
+    <div class="export-account_top login-wrapper" v-if="!ledgerAccount">
       <Eye class="export-account_eye" />
       <p class="mt-3">Keep this away from prying eyes!</p>
     </div>
@@ -14,7 +14,11 @@
         <code v-if="account.addresses[0]">{{ shortenAddress(account.addresses[0]) }}</code>
         <img :src="getAccountIcon(account.chain)" class="asset-icon" />
       </p>
-      <textarea readonly rows="3" @click="selectTextarea" id="private-key-textarea" v-model="privateKey" />
+      <p class="mt-3 alert alert-warning"
+          v-if="ledgerAccount">
+        Cannot export from a Ledger account
+      </p>
+      <textarea v-else readonly rows="3" @click="selectTextarea" id="private-key-textarea" v-model="privateKey" />
     </main>
     <div class="p-3 pb-1">
       <button id="done_button" class="btn btn-primary btn-lg btn-block" @click="goback">Done</button>
@@ -49,6 +53,10 @@ export default {
     ]),
     account () {
       return this.$store.getters.accountItem(this.accountId)
+    },
+    ledgerAccount () {
+      const { type } = this.account
+      return type && type.includes('ledger')
     }
   },
   watch: {
@@ -112,6 +120,11 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      code {
+        font-weight: bold;
+        color: $color-text-primary;
+      }
     }
 
     textarea {
