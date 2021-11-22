@@ -2,7 +2,21 @@ import { v4 as uuidv4 } from 'uuid'
 import { encrypt } from '../../utils/crypto'
 import buildConfig from '../../build.config'
 import { accountCreator, getNextAccountColor } from '@/utils/accounts'
-import { ChainId, chains, assets as cryptoassets } from '@liquality/cryptoassets'
+import { ChainId, chains, assets as cryptoassetsOrigin } from '@liquality/cryptoassets'
+
+// TO-DO: remove this after npm package is updated.
+const cryptoassets = Object.assign(cryptoassetsOrigin, {
+  ZERO: {
+    name: 'ZERO',
+    code: 'ZERO',
+    decimals: 18,
+    contractAddress: '0x139483e22575826183F5b56dd242f8f2C1AEf327',
+    color: '#000000',
+    coinGeckoId: 'zero',
+    chain: 'rsk',
+    type: 'erc20'
+  }
+})
 
 export const createWallet = async ({ state, commit, dispatch }, { key, mnemonic, imported = false }) => {
   const id = uuidv4()

@@ -22,7 +22,8 @@ export default {
       'ARBETH',
       'FISH',
       'LUNA',
-      'UST'
+      'UST',
+      'ZERO'
     ],
     testnet: [
       'BTC',
@@ -37,7 +38,8 @@ export default {
       'ARBETH',
       'SOL',
       'LUNA',
-      'UST'
+      'UST',
+      'ZERO'
     ]
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
@@ -75,6 +77,14 @@ export default {
         type: SwapProviderType.SOVRYN,
         routerAddress: SovrynTestnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynTestnetAddresses.proxy3,
+        rpcURL: 'https://public-node.testnet.rsk.co/'
+      },
+      origins: {
+        name: 'Origins',
+        icon: 'origins.svg',
+        type: SwapProviderType.ORIGINS,
+        routerAddress: SovrynTestnetAddresses.swapNetwork,
+        // routerAddressRBTC: SovrynTestnetAddresses.proxy3,
         rpcURL: 'https://public-node.testnet.rsk.co/'
       }
     },
@@ -124,6 +134,14 @@ export default {
         routerAddress: SovrynMainnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynMainnetAddresses.proxy3,
         rpcURL: 'https://public-node.rsk.co/'
+      },
+      origins: {
+        name: 'Origins',
+        icon: 'origins.svg',
+        type: SwapProviderType.ORIGINS,
+        routerAddress: SovrynTestnetAddresses.swapNetwork,
+        // routerAddressRBTC: SovrynTestnetAddresses.proxy3,
+        rpcURL: 'https://public-node.testnet.rsk.co/'
       }
     }
   },
