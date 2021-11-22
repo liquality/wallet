@@ -167,6 +167,7 @@ export default {
       this.$emit("cancel");
     },
     apply() {
+      console.log('apply', this.fee)
       this.$emit("apply", {
         asset: this.asset,
         fee: this.fee,
@@ -174,6 +175,7 @@ export default {
     },
     setCustomFee(fee) {
       this.fee = fee;
+      console.log('update', this.fee)
       this.$emit("update", {
         asset: this.asset,
         fee: this.fee,
