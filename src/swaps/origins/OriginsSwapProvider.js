@@ -13,14 +13,6 @@ import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
 import SovrynSwapNetworkABI from '@blobfishkate/sovryncontracts/abi/abiSovrynSwapNetwork.json'
 import RBTCWrapperProxyABI from '@blobfishkate/sovryncontracts/abi/abiWrapperProxy_new.json'
-import SovrynMainnetAddresses from '@blobfishkate/sovryncontracts/contracts-mainnet.json'
-import SovrynTestnetAddresses from '@blobfishkate/sovryncontracts/contracts-testnet.json'
-
-// use WRBTC address for RBTC native token
-const wrappedRbtcAddress = {
-  mainnet: SovrynMainnetAddresses.BTC_token,
-  testnet: SovrynTestnetAddresses.BTC_token
-}
 
 class OriginsSwapProvider extends SwapProvider {
   constructor (config) {
@@ -29,7 +21,13 @@ class OriginsSwapProvider extends SwapProvider {
   }
 
   async getSupportedPairs () {
-    return []
+    return [{
+      from: 'SOV',
+      to: 'ZERO',
+      rate: 100,
+      max: currencyToUnit(cryptoassets.SOV, 100000).toFixed(),
+      min: currencyToUnit(cryptoassets.SOV, 0).toFixed()
+    }]
   }
 
   // returns rates between tokens
@@ -40,23 +38,17 @@ class OriginsSwapProvider extends SwapProvider {
     // only RSK network swaps
     if (fromInfo.chain !== 'rsk' || toInfo.chain !== 'rsk' || amount <= 0) return null
 
-    const fromTokenAddress = (fromInfo.contractAddress || wrappedRbtcAddress[network]).toLowerCase()
-    const toTokenAddress = (toInfo.contractAddress || wrappedRbtcAddress[network]).toLowerCase()
-    const fromAmountInUnit = currencyToUnit(fromInfo, BN(amount)).toFixed()
-
-    const ssnContract = new ethers.Contract(this.config.routerAddress.toLowerCase(), SovrynSwapNetworkABI, this._getApi(network, from))
-
-    // generate path
-    const path = await ssnContract.conversionPath(fromTokenAddress, toTokenAddress)
     // calculate rates
-    const rate = await ssnContract.rateByPath(path, fromAmountInUnit)
+    const rate = 100
+
+    const fromAmountInUnit = currencyToUnit(fromInfo, BN(amount)).toFixed()
+    const toAmountInUnit = BN(fromAmountInUnit).times(rate)
 
     return {
       from,
       to,
       fromAmount: fromAmountInUnit,
-      toAmount: rate.toString(),
-      path: path
+      toAmount: toAmountInUnit
     }
   }
 
