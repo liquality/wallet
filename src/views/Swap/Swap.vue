@@ -357,6 +357,7 @@ import buildConfig from '@/build.config'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
+const MIN_SWAP_VALUE_USD = 2
 
 export default {
   components: {
@@ -560,8 +561,8 @@ export default {
         pair.from === this.asset &&
         pair.to === toQuoteAsset &&
         getSwapProviderConfig(this.activeNetwork, pair.provider).type === SwapProviderType.LIQUALITY)
-      const min = liqualityMarket ? BN(liqualityMarket.min) : (buildConfig.defaultMinSwapValues[this.asset] || BN(0))
-      return dpUI(min)
+      const min = liqualityMarket ? BN(liqualityMarket.min) : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]), this.available)
+      return isNaN(min) ? BN(0) : dpUI(min)
     },
     max () {
       return this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
