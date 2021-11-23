@@ -3,6 +3,14 @@ import { SwapProviderType } from './utils/swaps'
 import SovrynMainnetAddresses from '@blobfishkate/sovryncontracts/contracts-mainnet.json'
 import SovrynTestnetAddresses from '@blobfishkate/sovryncontracts/contracts-testnet.json'
 
+export const OriginsContractAddresses = {
+  mainnet: {},
+  testnet: {
+    ZERO_token: '0x139483e22575826183f5b56dd242f8f2c1aef327',
+    ZERO_controller: '0x6f62d2f571bce7187cdfdd4b1e5e53cfd7d14dd2'
+  }
+}
+
 export default {
   defaultAssets: {
     mainnet: [
@@ -83,8 +91,7 @@ export default {
         name: 'Origins',
         icon: 'origins.svg',
         type: SwapProviderType.ORIGINS,
-        routerAddress: SovrynTestnetAddresses.swapNetwork,
-        // routerAddressRBTC: SovrynTestnetAddresses.proxy3,
+        routerAddress: OriginsContractAddresses.testnet.ZERO_controller,
         rpcURL: 'https://public-node.testnet.rsk.co/'
       }
     },
