@@ -15,6 +15,7 @@ let browser, page, dappPage
 const password = '123123123'
 const dappUrl = 'https://app.uniswap.org/#/swap'
 
+// Manage accounts experimental feature
 describe('Manage Accounts-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
