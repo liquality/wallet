@@ -146,7 +146,7 @@ class SwapPage {
     }
 
     try {
-      await page.waitForSelector('#average', { visible: true })
+      await page.waitForSelector('#average', { visible: true, timeout: 90000 })
     } catch (e) {
       await testUtil.takeScreenshot(page, 'average-fee-tab-issue')
       expect(e, 'Average fee tab not loaded').equals(null)
