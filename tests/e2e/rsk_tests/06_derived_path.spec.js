@@ -120,7 +120,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // check Send & Swap & Receive options have been displayed (RSK & RSK legacy)
-    await page.waitForSelector('#total_assets', { timeout: 60000 })
+    await page.waitForSelector('#total_assets', { timeout: 120000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, 'validate total assets on overview page').contain('9 Assets')
 
@@ -130,22 +130,34 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
 
     const assertAddresses = []
 
+    await page.waitForTimeout(30000)
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
+    expect(ethAddress, 'ETHEREUM address is empty on overview page').to.contain.oneOf(['...'])
     // GET the RSK Address
-    const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
+    const rskChains = await page.$$('#RSK')
+    const rsk1Address = await rskChains[0].$eval('#assert_address', (el) => el.textContent.trim())
+    const rskLegacyAddress = await rskChains[1].$eval('#assert_address', (el) => el.textContent.trim())
+    expect(rsk1Address, 'RSK and RSK legacy addresses should n\'t be same').not.equals(rskLegacyAddress)
     // BSC
     const bscAddress = await overviewPage.GetAssertAddress(page, 'BSC')
+    expect(bscAddress, 'BSC address is empty on overview page').to.contain.oneOf(['...'])
     // POLYGON
     const polygonAddress = await overviewPage.GetAssertAddress(page, 'POLYGON')
+    expect(polygonAddress, 'POLYGON address is empty on overview page').to.contain.oneOf(['...'])
     // ARBITRUM
     const arbitrumAddress = await overviewPage.GetAssertAddress(page, 'ARBITRUM')
-    assertAddresses.push(ethAddress, bscAddress, polygonAddress, arbitrumAddress)
+    expect(arbitrumAddress, 'ARBITRUM address is empty on overview page').to.contain.oneOf(['...'])
+
+    assertAddresses.push(ethAddress, bscAddress, polygonAddress, arbitrumAddress, rsk1Address)
+    expect(assertAddresses.length).to.equals(5)
+    console.log(assertAddresses)
     expect(assertAddresses.every((val, i, arr) => val === arr[0]),
-      'Balance > 0 wallet should have same derived paths for chains-[ETHEREUM,BSC,POLYGON,ARBITRUM]')
+      `Balance > 0 wallet should have same derived paths for chains-[ETHEREUM,BSC,POLYGON,ARBITRUM,RSK] ${assertAddresses}`)
       .eq(true)
     // ETH & RSK derived paths are different
-    expect(rskAddress, 'ETH & RSK Addresses should be equal').equals(ethAddress)
+    expect(rsk1Address, 'ETH & RSK Addresses should be equal').equals(ethAddress)
+
     // Validate ERC20 derived path validations
     // RSK coins address validations
     await page.click('#RSK')
