@@ -104,9 +104,23 @@
         id="custom_speed_fee_results"
       >
         <div class="custom-fee-result-title">New Speed/Fee</div>
-        <div class="custom-fee-result-amount">{{ customFeeAmount }}</div>
-        <div class="custom-fee-result-fiat" v-if="customFiatAmount">
-          {{ customFiatAmount }}
+        <div class="custom-fee-estimation">
+          <div>
+            <span>minimum</span>
+            <span>~Likely in &lt; 30 sec</span>
+            <div class="custom-fee-result-amount">~{{ minimum.amount }}</div>
+            <div class="custom-fee-result-fiat" v-if="minimum.fiat">
+              ~{{ minimum.fiat }} USD
+            </div>
+          </div>
+          <div>
+            <span>maximum</span>
+            <span>~Likely in &lt; 15 sec</span>
+            <div class="custom-fee-result-amount">~{{ maximum.amount }}</div>
+            <div class="custom-fee-result-fiat" v-if="maximum.fiat">
+              ~{{ maximum.fiat }} USD
+            </div>
+          </div>
         </div>
       </div>
 
@@ -137,10 +151,7 @@
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import { getFeeLabel, getSendFee } from '@/utils/fees'
-import BN from 'bignumber.js'
 import { prettyFiatBalance } from '@/utils/coinFormatter'
-import cryptoassets from '@/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 
@@ -205,12 +216,6 @@ export default {
     gasUnit () {
       return 'gwei'
     },
-    customFiatAmount () {
-      return this.getFiatAmount()
-    },
-    customFeeAmount () {
-      return this.getFeeAmount()
-    },
     stepSize () {
       return 1
     },
@@ -222,14 +227,32 @@ export default {
       return isNaN(fiat) ? 0 : fiat
     },
     maxFiat () {
-      console.log('max fee', this.maxFee)
-      console.log('base fee', this.baseFee)
       const fiat = prettyFiatBalance(
         getSendFee(this.nativeAsset, this.maxFee),
         this.fiatRates[this.nativeAsset]
       )
       return isNaN(fiat) ? 0 : fiat
     },
+    minimum() {
+      const totalMinFee = getSendFee(this.nativeAsset, this.baseFee).plus(this.totalFees.slow)
+      return {
+        amount: totalMinFee,
+        fiat: prettyFiatBalance(
+          this.totalFees.slow,
+          this.fiatRates[this.nativeAsset]
+        ) 
+      }
+    },
+    maximum() {
+      const totalMaxFee = getSendFee(this.nativeAsset, this.baseFee).plus(this.totalFees.fast)
+      return {
+        amount: totalMaxFee,
+        fiat: prettyFiatBalance(
+          this.totalFees.fast,
+          this.fiatRates[this.nativeAsset]
+        ) 
+      }
+    }
   },
   methods: {
     getFeeLabel,
@@ -276,28 +299,6 @@ export default {
     setPreset (name) {
       this.preset = name
       this.tipFee = this.fees[name]?.fee.maxPriorityFeePerGas
-    },
-    getFeeAmount (name) {
-      if (!name) name = this.preset || 'custom'
-      if (this.totalFees && this.totalFees[name]) {
-        const totalFee = this.totalFees[name]
-        return `${BN(totalFee).dp(6)} ${this.nativeAsset}`
-      } else {
-        const chainId = cryptoassets[this.asset].chain
-        const { unit } = chains[chainId].fees
-        return `${this.getTotalFee || 0} ${unit}`
-      }
-    },
-    getFiatAmount (name) {
-      if (!name) name = this.preset || 'custom'
-      if (this.totalFees && this.totalFees[name]) {
-        const totalFiat = prettyFiatBalance(
-          this.totalFees[name],
-          this.fiatRates[this.nativeAsset]
-        )
-        return `${totalFiat || 0} USD`
-      }
-      return ''
     }
   },
   watch: {
@@ -583,6 +584,22 @@ export default {
       justify-content: space-between;
       width: 20px;
       height: 25px;
+    }
+  }
+}
+
+.custom-fee-estimation {
+  display: flex;
+  justify-content: space-between;
+
+  div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  span {
+    &:nth-of-type(2) {
+      color: #088513;
     }
   }
 }
