@@ -18,15 +18,15 @@ const password = '123123123'
 
 const swapPairMap = [
   {
-    assert1: 'BTC',
-    assert2: 'LUNA'
+    fromAsset: 'BTC',
+    toAsset: 'LUNA'
   }
 ]
 describe('Terra swaps-[smoke,testnet]', async () => {
   swapPairMap.forEach(obj => {
-    it(`SWAP (${obj.assert1}->${obj.assert2})`, async () => {
-      const assert1 = obj.assert1
-      const assert2 = obj.assert2
+    it(`SWAP (${obj.fromAsset}->${obj.toAsset})`, async () => {
+      const assert1 = obj.fromAsset
+      const assert2 = obj.toAsset
 
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -60,10 +60,10 @@ describe('Terra swaps-[smoke,testnet]', async () => {
       await page.waitForSelector('#selectedQuote_provider', { visible: true })
       try {
         expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-          `SWAP (${obj.assert1}->${obj.assert2}), Liquality should be chosen!`)
+          `SWAP (${obj.fromAsset}->${obj.toAsset}), Liquality should be chosen!`)
           .oneOf(['Liquality'])
       } catch (e) {
-        await testUtil.takeScreenshot(page, `${obj.assert1}->${obj.assert2})-swap-issue`)
+        await testUtil.takeScreenshot(page, `${obj.fromAsset}->${obj.toAsset})-swap-issue`)
         expect(e, 'Liquality should be chosen').equals(null)
       }
       try {
