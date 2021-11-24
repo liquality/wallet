@@ -247,7 +247,7 @@ export default {
       }
     }
   },
-  UPDATE_ACCOUNT_ADDRESSES (state, { network, accountId, walletId, asset, addresses }) {
+  UPDATE_ACCOUNT_ADDRESSES (state, { network, accountId, walletId, asset, addresses, publicKey }) {
     const accounts = state.accounts[walletId][network]
     if (accounts) {
       const index = accounts.findIndex(
@@ -258,7 +258,8 @@ export default {
         const _account = accounts[index]
         const updatedAccount = {
           ..._account,
-          addresses: [...new Set(addresses)]
+          addresses: [...new Set(addresses)],
+          publicKey: publicKey || _account.publicKey
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)

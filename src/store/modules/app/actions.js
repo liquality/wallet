@@ -1,5 +1,5 @@
 /* global browser */
-
+import { createBridgeClient } from '@/utils/ledger-bridge-provider/utils'
 export const actions = {
   openLedgerBridgeWindow: async ({ rootState, commit }) => {
     const { usbBridgeWindowsId } = rootState
@@ -59,7 +59,8 @@ export const actions = {
     commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected })
   },
   startBridgeListener: ({ rootState, commit, dispatch }, payload) => {
-  //
+    createBridgeClient()
+    dispatch('openLedgerBridgeWindow')
   },
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
     commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })

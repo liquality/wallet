@@ -58,13 +58,15 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
         updatedAddresses = [...addresses.map(a => a.address)]
       }
 
+      const publicKey = addresses.length > 0 && addresses[0].publicKey ? addresses[0].publicKey : null
       commit('UPDATE_ACCOUNT_ADDRESSES',
         {
           network,
           accountId: account.id,
           walletId,
           asset,
-          addresses: updatedAddresses
+          addresses: updatedAddresses,
+          publicKey
         })
     }, { concurrency: 1 })
   }, { concurrency: 1 })

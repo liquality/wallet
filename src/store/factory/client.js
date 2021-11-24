@@ -47,7 +47,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
 import { ChainNetworks } from '@/utils/networks'
 
-function createBtcClient (network, mnemonic, accountType, derivationPath) {
+function createBtcClient (network, mnemonic, accountType, derivationPath, publicKey) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = ChainNetworks.bitcoin[network]
   const esploraApi = buildConfig.exploraApis[network]
@@ -68,7 +68,8 @@ function createBtcClient (network, mnemonic, accountType, derivationPath) {
         addressType,
         baseDerivationPath: derivationPath
       },
-      bitcoinLedgerApp
+      bitcoinLedgerApp,
+      publicKey
     )
     btcClient.addProvider(ledger)
   } else {
@@ -255,17 +256,24 @@ function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
   return terraClient
 }
 
-export const createClient = (asset, network, mnemonic, accountType, derivationPath) => {
+export const createClient = ({
+  asset,
+  network,
+  mnemonic,
+  accountType,
+  derivationPath,
+  publicKey
+}) => {
   const assetData = cryptoassets[asset]
 
-  if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, accountType, derivationPath)
-  if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic, accountType, derivationPath)
-  if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic, derivationPath)
-  if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, derivationPath)
-  if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, derivationPath)
-  if (assetData.chain === 'near') return createNearClient(network, mnemonic, derivationPath)
-  if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
-  if (assetData.chain === 'terra') return createTerraClient(network, mnemonic, derivationPath, asset)
+  if (assetData.chain === 'bitcoin') return createBtcClient(network, mnemonic, accountType, derivationPath, publicKey)
+  if (assetData.chain === 'rsk') return createRskClient(asset, network, mnemonic, accountType, derivationPath, publicKey)
+  if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic, derivationPath, publicKey)
+  if (assetData.chain === 'polygon') return createPolygonClient(asset, network, mnemonic, derivationPath, publicKey)
+  if (assetData.chain === 'arbitrum') return createArbitrumClient(asset, network, mnemonic, derivationPath, publicKey)
+  if (assetData.chain === 'near') return createNearClient(network, mnemonic, derivationPath, publicKey)
+  if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath, publicKey)
+  if (assetData.chain === 'terra') return createTerraClient(network, mnemonic, derivationPath, asset, publicKey)
 
-  return createEthClient(asset, network, mnemonic, accountType, derivationPath)
+  return createEthClient(asset, network, mnemonic, accountType, derivationPath, publicKey)
 }

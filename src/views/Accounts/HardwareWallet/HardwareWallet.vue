@@ -190,17 +190,20 @@ export default {
             const item = selectedAccounts[key]
 
             const index = item.index + 1
+            const { publicKey, address } = item.account
+
             const account = {
               name: `Ledger ${this.selectedAsset.name} ${index}`,
               alias: '',
               chain,
-              addresses: [item.account.address],
+              addresses: [address],
               assets,
               index: item.index,
               type: walletType || this.selectedAsset.types[0],
               enabled: true,
               derivationPath: item.account.derivationPath,
-              color: getNextAccountColor(chain, item.index)
+              color: getNextAccountColor(chain, item.index),
+              publicKey
             }
             await this.createAccount({
               network: this.activeNetwork,

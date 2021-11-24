@@ -40,7 +40,6 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
       execMode: ExecutionMode.Async,
       payload
     })
-    debugger
     return result
   }
 }

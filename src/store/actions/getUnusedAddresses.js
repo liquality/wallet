@@ -17,6 +17,7 @@ export const getUnusedAddresses = async ({ state, commit, getters }, { network, 
         }
       ).wallet.getUnusedAddress()
 
+      const { publicKey } = result
       const address = isEthereumChain(asset) ? result.address.replace('0x', '') : result.address // TODO: Should not require removing 0x
       let updatedAddresses = []
       if (account.chain === ChainId.Bitcoin) {
@@ -35,7 +36,8 @@ export const getUnusedAddresses = async ({ state, commit, getters }, { network, 
           accountId: account.id,
           walletId,
           asset,
-          addresses: updatedAddresses
+          addresses: updatedAddresses,
+          publicKey
         })
 
       return address
