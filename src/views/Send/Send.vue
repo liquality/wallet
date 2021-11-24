@@ -99,8 +99,20 @@
         </div>
       </div>
     </div>
-    <div class="send" v-else-if="currentStep === 'custom-fees'">
+    <div class="send" v-else-if="currentStep === 'custom-fees' && assetChain !== 'ETH'">
       <CustomFees
+        @apply="applyCustomFee"
+        @update="setCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="assetChain"
+        :selected-fee="selectedFee"
+        :fees="assetFees"
+        :totalFees="maxOptionActive ? maxSendFees : sendFees"
+        :fiatRates="fiatRates"
+      />
+    </div>
+    <div class="send" v-else-if="currentStep === 'custom-fees' && assetChain === 'ETH'">
+      <CustomFeesEIP1559
         @apply="applyCustomFee"
         @update="setCustomFee"
         @cancel="cancelCustomFee"
@@ -222,6 +234,7 @@ import SendInput from './SendInput'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
+import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
 
@@ -235,6 +248,7 @@ export default {
     OperationErrorModal,
     LedgerSignRequestModal,
     CustomFees,
+    CustomFeesEIP1559,
     LedgerBridgeModal
   },
   data () {
@@ -316,7 +330,6 @@ export default {
       if (this.customFee) {
         assetFees.custom = { fee: this.customFee }
       }
-
       const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         this.assetChain
       ]
@@ -398,17 +411,10 @@ export default {
       const getMax = amount === undefined
       if (this.feesAvailable) {
         const sendFees = {}
-        
-        for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee
-          sendFees[speed] = getSendFee(this.assetChain, feePrice)
-        }
 
-        if(this.assetChain === 'ETH') {
-          for (const [speed, fee] of Object.entries(this.assetFees)) {
-            const feePrice = fee.fee.maxPriorityFeePerGas
-            sendFees[speed] = getSendFee(this.assetChain, feePrice)
-          }
+        for (const [speed, fee] of Object.entries(this.assetFees)) {
+          const feePrice = fee.fee.maxPriorityFeePerGas || fee.fee
+          sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
 
         if (this.asset === 'BTC') {
@@ -549,7 +555,7 @@ export default {
       }
     }, 800),
     applyCustomFee ({ fee }) {
-      const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee)
+      const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && (speedFee.fee === fee || speedFee.fee.maxPriorityFeePerGas === fee))
       if (presetFee) {
         const [speed] = presetFee
         this.selectedFee = speed

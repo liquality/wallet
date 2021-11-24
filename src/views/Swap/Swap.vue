@@ -129,11 +129,23 @@
         </div>
       </div>
     </div>
-    <div class="swap" v-else-if="currentStep === 'custom-fees'">
+    <div class="swap" v-else-if="currentStep === 'custom-fees' && assetChain !== 'ETH'">
       <CustomFees
         @apply="applyCustomFee"
         @update="setCustomFee"
         @cancel="cancelCustomFee(customFeeAssetSelected)"
+        :asset="customFeeAssetSelected"
+        :selected-fee="selectedFee[customFeeAssetSelected]"
+        :fees="getAssetFees(customFeeAssetSelected)"
+        :totalFees="amountOption === 'max' ? maxSwapFees[customFeeAssetSelected] : swapFees[customFeeAssetSelected]"
+        :fiatRates="fiatRates"
+      />
+    </div>
+    <div class="swap" v-else-if="currentStep === 'custom-fees' && assetChain === 'ETH'">
+      <CustomFeesEIP1559
+        @apply="applyCustomFee"
+        @update="setCustomFee"
+        @cancel="cancelCustomFee"
         :asset="customFeeAssetSelected"
         :selected-fee="selectedFee[customFeeAssetSelected]"
         :fees="getAssetFees(customFeeAssetSelected)"
@@ -349,6 +361,7 @@ import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
+import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
@@ -375,6 +388,7 @@ export default {
     LedgerSignRequestModal,
     OperationErrorModal,
     CustomFees,
+    CustomFeesEIP1559,
     LedgerBridgeModal,
     QuotesModal,
     SwapProvidersInfoModal,
@@ -784,14 +798,15 @@ export default {
           asset,
           txType,
           quote: this.selectedQuote,
-          feePrices: Object.values(assetFees).map(fee => fee.fee),
+          feePrices: Object.values(assetFees).map(fee => fee.fee.maxPriorityFeePerGas || fee.fee),
           max
         })
 
         if (!totalFees) return
 
         for (const [speed, fee] of Object.entries(assetFees)) {
-          fees[chain][speed] = fees[chain][speed].plus(totalFees[fee.fee])
+          const feePrice = fee.fee.maxPriorityFeePerGas || fee.fee
+          fees[chain][speed] = fees[chain][speed].plus(totalFees[feePrice])
         }
       }
 

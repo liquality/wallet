@@ -11,9 +11,8 @@ import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
 import { EthereumJsWalletProvider } from '@liquality/ethereum-js-wallet-provider'
 import { EthereumSwapProvider } from '@liquality/ethereum-swap-provider'
 import { EthereumScraperSwapFindProvider } from '@liquality/ethereum-scraper-swap-find-provider'
-import { EthereumGasNowFeeProvider } from '@liquality/ethereum-gas-now-fee-provider'
 import { EthereumRpcFeeProvider } from '@liquality/ethereum-rpc-fee-provider'
-import { EthereumEIP1559FeeProvider } from '@liquality/ethereum-eip1559-fee-provider'; 
+import { EthereumEIP1559FeeProvider } from '@liquality/ethereum-eip1559-fee-provider'
 
 import { EthereumErc20Provider } from '@liquality/ethereum-erc20-provider'
 import { EthereumErc20SwapProvider } from '@liquality/ethereum-erc20-swap-provider'
@@ -127,7 +126,7 @@ function createEthereumClient (
     ethClient.addProvider(new EthereumSwapProvider())
     if (scraperApi) ethClient.addProvider(new EthereumScraperSwapFindProvider(scraperApi))
   }
-  
+
   ethClient.addProvider(feeProvider)
 
   return ethClient
@@ -138,9 +137,9 @@ function createEthClient (asset, network, mnemonic, accountType, derivationPath)
   const ethereumNetwork = ChainNetworks.ethereum[network]
   const infuraApi = isTestnet ? `https://ropsten.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
   const scraperApi = isTestnet ? 'https://liquality.io/eth-ropsten-api' : 'https://liquality.io/eth-mainnet-api'
-  const feeProvider = isTestnet ? new EthereumEIP1559FeeProvider({ uri: infuraApi }) : new EthereumEIP1559FeeProvider({uri: 'https://gasoracle.liquality.io'})
+  const feeProvider = new EthereumEIP1559FeeProvider({ uri: infuraApi })
   // const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider('https://gasoracle.liquality.io')
-  
+
   return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath)
 }
 
