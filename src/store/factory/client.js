@@ -98,7 +98,6 @@ function createEthereumClient (
 ) {
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
-  // ethClient.addProvider(new EthereumEIP1559FeeProvider({ uri: rpcApi }))
 
   if (accountType === 'ethereum_ledger' || accountType === 'rsk_ledger') {
     const assetData = cryptoassets[asset]

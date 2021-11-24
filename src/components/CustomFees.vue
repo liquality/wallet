@@ -17,8 +17,8 @@
           <div
             class="custom-fee-presets-option"
             v-for="name in ['slow', 'average', 'fast']"
-            :id="name"
-            :key="name"
+            :id='name'
+            :key='name'
             :class="{ active: name === preset }"
             @click="setPreset(name)"
           >
@@ -167,7 +167,6 @@ export default {
       this.$emit('cancel')
     },
     apply () {
-      console.log('apply', this.fee)
       this.$emit('apply', {
         asset: this.asset,
         fee: this.fee
@@ -175,7 +174,6 @@ export default {
     },
     setCustomFee (fee) {
       this.fee = fee
-      console.log('update', this.fee)
       this.$emit('update', {
         asset: this.asset,
         fee: this.fee
@@ -399,8 +397,8 @@ export default {
 }
 
 .custom-fee-result {
-  background: #f0f7f9;
-  border: 1px solid #d9dfe5;
+  background: #F0F7F9;
+  border: 1px solid #D9DFE5;
   display: flex;
   margin-top: 30px;
   padding: 10px;
@@ -422,7 +420,7 @@ export default {
   }
 
   .custom-fee-result-fiat {
-    color: #646f85;
+    color: #646F85;
   }
 }
 </style>
