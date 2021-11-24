@@ -940,14 +940,14 @@ export default {
           asset,
           txType,
           quote: this.selectedQuote,
-          feePrices: Object.values(assetFees).map(fee => fee.fee.maxPriorityFeePerGas || fee.fee),
+          feePrices: Object.values(assetFees).map(fee => fee.fee.maxPriorityFeePerGas + fee.fee.baseFee || fee.fee),
           max
         })
 
         if (!totalFees) return
 
         for (const [speed, fee] of Object.entries(assetFees)) {
-          const feePrice = fee.fee.maxPriorityFeePerGas || fee.fee
+          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.baseFee || fee.fee
           fees[chain][speed] = fees[chain][speed].plus(totalFees[feePrice])
         }
       }

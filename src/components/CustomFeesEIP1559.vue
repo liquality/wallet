@@ -222,15 +222,14 @@ export default {
       return isNaN(fiat) ? 0 : fiat
     },
     maxFiat () {
+      console.log('max fee', this.maxFee)
+      console.log('base fee', this.baseFee)
       const fiat = prettyFiatBalance(
         getSendFee(this.nativeAsset, this.maxFee),
         this.fiatRates[this.nativeAsset]
       )
       return isNaN(fiat) ? 0 : fiat
     },
-    baseSendAmount () {
-      return getSendFee(this.nativeAsset, this.baseFee)
-    }
   },
   methods: {
     getFeeLabel,
@@ -241,14 +240,14 @@ export default {
     apply () {
       this.$emit('apply', {
         asset: this.asset,
-        fee: this.tipFee
+        fee: this.tipFee + this.baseFee
       })
     },
     setTipFee (fee) {
       this.tipFee = fee
       this.$emit('update', {
         asset: this.asset,
-        fee: this.tipFee
+        fee: this.tipFee + this.baseFee
       })
     },
     setMaxFee (fee) {
@@ -281,7 +280,7 @@ export default {
     getFeeAmount (name) {
       if (!name) name = this.preset || 'custom'
       if (this.totalFees && this.totalFees[name]) {
-        const totalFee = this.totalFees[name].plus(this.baseSendAmount)
+        const totalFee = this.totalFees[name]
         return `${BN(totalFee).dp(6)} ${this.nativeAsset}`
       } else {
         const chainId = cryptoassets[this.asset].chain
@@ -293,7 +292,7 @@ export default {
       if (!name) name = this.preset || 'custom'
       if (this.totalFees && this.totalFees[name]) {
         const totalFiat = prettyFiatBalance(
-          this.totalFees[name].plus(this.baseSendAmount),
+          this.totalFees[name],
           this.fiatRates[this.nativeAsset]
         )
         return `${totalFiat || 0} USD`
