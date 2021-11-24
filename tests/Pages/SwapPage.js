@@ -137,9 +137,20 @@ class SwapPage {
    * @constructor
    */
   async ValidateNetworkFeeTab (page) {
-    await page.waitForSelector('#network_speed_fee', { visible: true })
-    await page.click('#network_speed_fee')
-    await page.waitForSelector('#average', { visible: true })
+    try {
+      await page.waitForSelector('#network_speed_fee', { visible: true })
+      await page.click('#network_speed_fee')
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'network_speed_fee-issue')
+      expect(e, 'Network speed fee tab not loaded').equals(null)
+    }
+
+    try {
+      await page.waitForSelector('#average', { visible: true })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'average-fee-tab-issue')
+      expect(e, 'Average fee tab not loaded').equals(null)
+    }
     const averageFee = await page.$eval('#average', (el) => el.getAttribute('class'))
     expect(averageFee,
       'Avg network speed/fee by default selected').contains('active')

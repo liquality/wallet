@@ -49,13 +49,6 @@ jobs:
         with:
           args: npm run test:pullrequest:smoke
 
-#      - name: Archive Mocha HTML report
-#        uses: actions/upload-artifact@v2.2.4
-#        if: always()
-#        with:
-#          name: mocha-html-test-report
-#          path: mochawesome-report
-
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.2.4
         if: always()
