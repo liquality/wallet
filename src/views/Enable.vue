@@ -4,37 +4,55 @@
       <img :src="logo"/>
     </div>
     <div class="enable-screen wrapper">
+
       <h2 class="text-center">Connect Request</h2>
       <div class="enable-screen_icon mt-2 text-center">{{originShort}}</div>
       <p class="mt-1 mb-2 text-center">{{originDomain}}</p>
-      <div class="enable-chain_selector" id="enable_item_web_network">
-        <span class="enable-selector_text">Select Accounts</span>
-        <div class="enable-selector_control">
-          <ChainDropdown :chains="chains"
-                         :selected="selectedChain"
-                         @chain-changed="updateSelectedChain"
-                         :hideElements="true" />
+
+      <div v-if="!confirmedAccount" class="main-content">
+
+        <div class="enable-chain_selector" id="enable_item_web_network">
+          <span class="enable-selector_text">Select Accounts</span>
+          <div class="enable-selector_control">
+            <ChainDropdown :chains="chains"
+                          :selected="selectedChain"
+                          @chain-changed="updateSelectedChain"
+                          :hideElements="true" />
+          </div>
         </div>
+
+        <div class="list-items">
+          <AccountsListByNetwork @item-selected="onAccountSelected"
+                                :search="selectedChain"
+                                :account-id="selectedAccount ? selectedAccount.id : null"
+                                :accounts="accounts" />
+        </div>
+
       </div>
-      <div class="main-content">
-      <div class="list-items">
-        <AccountsListByNetwork @item-selected="onAccountSelected"
-                               :search="selectedChain"
-                               :account-id="selectedAccount ? selectedAccount.id : null"
-                               :accounts="accounts" />
+
+      <div v-else class="confirmation-content">
+        <p class="mb-2">By granting permission to <strong>{{origin}}</strong>, they can read your public account addresses.</p>
+        <p class="text-primary text-center mb-4">Make sure you trust this site</p>
       </div>
+
     </div>
-      <div class="wrapper_bottom">
-        <div class="button-group">
-          <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Deny</button>
-          <button class="btn btn-primary btn-lg btn-icon"
-                  id="connect_request_button"
-                  @click="reply(true)"
-                  :disabled="loading || !selectedAccount">
-            <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>Next</template>
-          </button>
-        </div>
+
+    <div class="wrapper_bottom">
+      <div class="button-group">
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Deny</button>
+        <button v-if="!confirmedAccount" class="btn btn-primary btn-lg btn-icon"
+                id="next_button"
+                @click="confirm()"
+                :disabled="loading || !selectedAccount">
+          <template>Next</template>
+        </button>
+        <button v-else class="btn btn-primary btn-lg btn-icon"
+                id="connect_request_button"
+                @click="reply(true)"
+                :disabled="loading || !selectedAccount">
+          <SpinnerIcon class="btn-loading" v-if="loading" />
+          <template v-else>Connect</template>
+        </button>
       </div>
     </div>
   </div>
@@ -58,7 +76,8 @@ export default {
       replied: false,
       loading: false,
       selectedChain: 'ethereum',
-      selectedAccount: null
+      selectedAccount: null,
+      confirmedAccount: false
     }
   },
   computed: {
@@ -104,6 +123,9 @@ export default {
       this.replied = true
 
       window.close()
+    },
+    confirm () {
+      this.confirmedAccount = true
     },
     onAccountSelected ({ account }) {
       this.selectedAccount = account
