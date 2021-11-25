@@ -1,8 +1,10 @@
 {
   "timezone": "America/New_York",
+  "baseBranches": ["dev"],
   "extends": [
     "config:base",
-    "group:monorepos"
+    ":dependencyDashboard",
+    "github>whitesource/merge-confidence:beta"
   ],
   "includePaths": [
     "package.json"
@@ -10,32 +12,33 @@
   "schedule": [
     "every weekend"
   ],
+  "major": {
+    "dependencyDashboardApproval": true
+  },
   "semanticCommits": "auto",
   "rangeStrategy": "bump",
   "rebaseLabel": "rebase",
   "rebaseWhen": "auto",
   "requiredStatusChecks": [],
+  "commitBody": "[skip ci]",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
   "packageRules": [
     {
-      "updateTypes": [
-        "minor",
-        "patch",
-        "pin",
-        "digest"
-      ],
-      "automerge": true
-    },
-    {
-      "depTypeList": [
+      "matchDepTypes": [
         "devDependencies"
       ],
       "automerge": true
     },
     {
-      "packagePatterns": [
-        "eslint"
-      ],
-      "groupName": "eslint"
+      "matchPackagePatterns": ["lint", "prettier"]
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
     }
   ]
 }
