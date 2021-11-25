@@ -76,7 +76,7 @@ export default {
     ChevronDownIcon,
     ChevronUpIcon
   },
-  props: ['chains', 'selected', 'showSearch'],
+  props: ['chains', 'selected', 'showSearch', 'hideElements'],
   data () {
     return {
       dropdownOpen: false,
@@ -116,7 +116,7 @@ export default {
     getChainIcon,
     getChainName (chain) {
       const { name, code } = chains[chain]
-      return `${name} (${code})`
+      return this.hideElements ? `${name}` : `${name} (${code})`
     },
     selectItem (chain) {
       this.$emit('chain-changed', chain)

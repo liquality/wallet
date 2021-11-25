@@ -5,17 +5,23 @@
     </div>
     <div class="enable-screen wrapper">
       <h2 class="text-center">Connect Request</h2>
-
       <div class="enable-screen_icon mt-2 text-center">{{originShort}}</div>
       <p class="mt-1 mb-2 text-center">{{originDomain}}</p>
-      <p class="mb-2">By granting permission to <strong>{{origin}}</strong>, they can read your public account addresses.</p>
-      <p class="text-primary text-center mb-4">Make sure you trust this site</p>
+      <div class="enable-chain_selector" id="enable_item_web_network">
+        <span class="enable-selector_text">Select Accounts</span>
+        <div class="enable-selector_control">
+          <ChainDropdown :chains="chains"
+                         :selected="selectedChain"
+                         @chain-changed="updateSelectedChain"
+                         :hideElements="true" />
+        </div>
+      </div>
       <div class="main-content">
       <div class="list-items">
-        <NetworkAccounts @item-selected="onAccountSelected"
-                         :search="search"
-                         :account-id="selectedAccount ? selectedAccount.id : null"
-                         :accounts="accounts" />
+        <AccountsListByNetwork @item-selected="onAccountSelected"
+                               :search="selectedChain"
+                               :account-id="selectedAccount ? selectedAccount.id : null"
+                               :accounts="accounts" />
       </div>
     </div>
       <div class="wrapper_bottom">
@@ -26,7 +32,7 @@
                   @click="reply(true)"
                   :disabled="loading || !selectedAccount">
             <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>Connect</template>
+            <template v-else>Next</template>
           </button>
         </div>
       </div>
@@ -38,27 +44,30 @@
 import { mapActions, mapGetters } from 'vuex'
 import { isEthereumChain } from '@liquality/cryptoassets'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
-import NetworkAccounts from '@/components/NetworkAccounts'
+import AccountsListByNetwork from '@/components/AccountsListByNetwork'
+import ChainDropdown from '@/components/ChainDropdown'
+import buildConfig from '@/build.config'
 
 export default {
   components: {
-    NetworkAccounts
+    AccountsListByNetwork,
+    ChainDropdown
   },
   data () {
     return {
       replied: false,
       loading: false,
-      search: '',
+      selectedChain: 'ethereum',
       selectedAccount: null
     }
   },
   computed: {
     ...mapGetters(['accountsData', 'accountItem']),
     accounts () {
-      if (isEthereumChain(this.chain)) {
+      if (isEthereumChain(this.selectedChain)) {
         return this.accountsData.filter(account => isEthereumChain(account.chain))
       } else {
-        return this.accountsData.filter(account => this.chain === account.chain)
+        return this.accountsData.filter(account => this.selectedChain === account.chain)
       }
     },
     logo () {
@@ -78,6 +87,9 @@ export default {
     },
     originIcon () {
       return `https://s2.googleusercontent.com/s2/favicons?domain_url=${this.origin}`
+    },
+    chains () {
+      return buildConfig.chains
     }
   },
   methods: {
@@ -95,10 +107,11 @@ export default {
     },
     onAccountSelected ({ account }) {
       this.selectedAccount = account
+    },
+    updateSelectedChain (chain) {
+      this.selectedAccount = null
+      this.selectedChain = chain
     }
-  },
-  created () {
-    this.selectedAccount = this.accountsData.filter(account => account.chain === this.chain)[0]
   }
 }
 </script>
@@ -156,6 +169,19 @@ export default {
     .list-items {
       overflow-y: auto;
       padding-bottom: 80px;
+    }
+  }
+
+  .enable-chain_selector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .enable-selector_text {
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .enable-selector_control {
+      font-size: 12px;
     }
   }
 }
