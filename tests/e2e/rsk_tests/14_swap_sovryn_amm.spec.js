@@ -16,7 +16,7 @@ let browser, page
 const password = '123123123'
 
 // Sovryn AMM works against RSK chain
-describe('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
+describe.skip('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
