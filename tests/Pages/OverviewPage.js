@@ -2,6 +2,7 @@ const TestUtil = require('../utils/TestUtils')
 
 const testUtil = new TestUtil()
 const chalk = require('chalk')
+const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 
 class OverviewPage {
@@ -18,8 +19,10 @@ class OverviewPage {
         timeout: 120000
       })
     } catch (e) {
-      await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
-      expect(e, 'Hamburger icon loading issue').equals(null)
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
+        expect(e, 'Hamburger icon loading issue').equals(null)
+      }
     }
   }
 
@@ -88,10 +91,10 @@ class OverviewPage {
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
     try {
-      await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
+      // TODO: Most of the times overview screen takes more time to load total assets & fiat values
+      await page.waitForSelector('#send_action', { visible: true, timeout: 240000 })
     } catch (e) {
-      const ts = Math.round((new Date()).getTime() / 1000)
-      await page.screenshot({ path: `screenshots/overview-page-loading-issue-${ts}.png` })
+      await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
       expect(e, 'Overview page still Loading.....didn\'t load send/receive/swap option').equals(null)
     }
 
@@ -431,6 +434,31 @@ class OverviewPage {
     await this.SelectSettings(page)
     // toggle web3 wallet option
     await page.click('#default_web3_wallet_toggle_button > label > div')
+  }
+
+  /**
+   * Click on version under settings.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnVersionButton (page) {
+    await this.ClickOnBurgerIcon(page)
+    await this.SelectSettings(page)
+    await page.click('#settings_app_version')
+  }
+
+  /**
+   * Toggle on/off experiment option.
+   * @param page
+   * @param option
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ToggleExperimentButton (page, option) {
+    await this.ClickOnVersionButton(page)
+    await page.waitForSelector(`#${option}`)
+    await page.click(`#${option}`)
   }
 }
 

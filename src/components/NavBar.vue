@@ -39,21 +39,31 @@
         v-if="showMenuList"
         v-click-away="hideMenu"
       >
-       <li id="manage_assets" @click="assets">
+        <li id="manage_assets" @click="assets">
           <AssetsIcon />
           Manage Assets
         </li>
-<!--        <li id="manage_accounts"-->
-<!--             @click="manageAccounts">-->
-<!--           <AccountsIcon />-->
-<!--           Manage Accounts-->
-<!--         </li>-->
+        <li
+          id="manage_accounts"
+          v-if="experiments.manageAccounts"
+          @click="manageAccounts"
+        >
+          <AccountsIcon />
+          Manage Accounts
+        </li>
+        <li
+          id="export_privkey"
+          v-if="$route.params.accountId"
+          @click="exportPrivateKey"
+        >
+          <KeyIcon />
+          Export Private Key
+        </li>
         <li id="settings" @click="settings">
           <SettingsIcon />
           Settings
         </li>
-        <li id="ledger"
-            @click="ledger">
+        <li id="ledger" @click="ledger">
           <LedgerIcon />
           Ledger
         </li>
@@ -71,7 +81,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import clickAway from '@/directives/clickAway'
 import HamburgerIcon from '@/assets/icons/hamburger.svg'
@@ -80,8 +90,9 @@ import PaperIcon from '@/assets/icons/paper.svg'
 import ChevronLeftIcon from '@/assets/icons/chevron_left.svg'
 import SettingsIcon from '@/assets/icons/settings.svg'
 import AssetsIcon from '@/assets/icons/assets.svg'
-// import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
+import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
+import KeyIcon from '@/assets/icons/key.svg'
 
 export default {
   directives: {
@@ -94,8 +105,9 @@ export default {
     PaperIcon,
     AssetsIcon,
     SettingsIcon,
-    // AccountsIcon,
-    LedgerIcon
+    AccountsIcon,
+    LedgerIcon,
+    KeyIcon
   },
   props: [
     'showMenu',
@@ -109,6 +121,9 @@ export default {
     return {
       showMenuList: false
     }
+  },
+  computed: {
+    ...mapState(['experiments'])
   },
   methods: {
     ...mapActions(['lockWallet', 'trackAnalytics']),
@@ -156,6 +171,18 @@ export default {
       })
       this.showMenuList = false
       this.$router.replace('/settings')
+    },
+    exportPrivateKey () {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Export Private Key'
+        }
+      })
+      this.showMenuList = false
+      const { accountId } = this.$route.params
+      this.$router.push(`/export/${accountId}`)
     },
     manageAccounts () {
       this.trackAnalytics({
@@ -220,6 +247,8 @@ export default {
     top: 44px;
     right: 0;
     left: auto;
+    border-left: 1px solid $hr-border-color;
+    border-top: 0 none;
 
     li {
       justify-content: start;

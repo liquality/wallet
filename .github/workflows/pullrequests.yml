@@ -38,6 +38,7 @@ jobs:
           npm ci
           npm run lint
           npm run build
+
       - name: Run Smoke tests againt PullRequest
         uses: beemi/puppeteer-headful@v1.0.6
         env:
@@ -47,13 +48,6 @@ jobs:
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
           args: npm run test:pullrequest:smoke
-
-      - name: Archive Mocha HTML report
-        uses: actions/upload-artifact@v2.2.4
-        if: always()
-        with:
-          name: mocha-html-test-report
-          path: mochawesome-report
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.2.4

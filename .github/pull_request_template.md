@@ -1,14 +1,2 @@
-#Linear Ticket
+# :books: Linear Ticket :books:
 
-
-## Why?
-
-## How?
-
-## Testing?
-- [ ] Run tests locally
-
-## Screenshots (optional)
-0
-
-## Anything Else?

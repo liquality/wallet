@@ -10,11 +10,11 @@
       <div class="phrase-reveal_seed pl-0 mb-1">
         <span v-for="word in seedList" id="seed_word_mouse_hover" :key="word">{{ word }}</span>
       </div>
-    <div class="button-group">
-          <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg btn-block" id="cancel_button">Cancel</button></router-link>
-          <router-link to="/wallet"><button class="btn btn-primary btn-lg btn-block" id="i_saved_the_seed">I saved the seed</button></router-link>
+      <div class="button-group">
+        <router-link to="/wallet"><button class="btn btn-outline-primary btn-lg btn-block" id="cancel_button">Cancel</button></router-link>
+        <router-link to="/wallet"><button class="btn btn-primary btn-lg btn-block" id="i_saved_the_seed">I saved the seed</button></router-link>
+      </div>
     </div>
-  </div>
   </div>
 </template>
 

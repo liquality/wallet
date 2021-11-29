@@ -15,7 +15,8 @@ const TESTNET_CONTRACT_ADDRESSES = {
   DAI: '0xad6d458402f60fd3bd25163575031acdce07538d',
   SOV: '0x6a9A07972D07E58f0daF5122D11e069288A375fB',
   PWETH: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
-  SUSHI: '0x0769fd68dFb93167989C6f7254cd0D766Fb2841F'
+  SUSHI: '0x0769fd68dFb93167989C6f7254cd0D766Fb2841F',
+  ANC: 'terra1747mad58h0w4y589y3sk84r5efqdev9q4r02pc'
 }
 const TESTNET_ASSETS = [
   'BTC',
@@ -31,7 +32,8 @@ const TESTNET_ASSETS = [
   'SOL',
   'SUSHI',
   'LUNA',
-  'UST'
+  'UST',
+  'ANC'
 ].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
@@ -54,13 +56,13 @@ export default {
     }) => {
       const account = accountId ? getters.accountItem(accountId) : null
       const _accountType = account?.type || accountType
+      const _accountIndex = account?.index || accountIndex
       const { chain } = getters.cryptoassets[asset]
       let derivationPath
-
       // when we ask for ledger accounts from the ledger device we don't have the derivation path
       // the !account doesn't exist in this case or if we call the getter with accountId equals to null
       if (_accountType.includes('ledger') || !account) {
-        derivationPath = getDerivationPath(chain, network, accountIndex, _accountType)
+        derivationPath = getDerivationPath(chain, network, _accountIndex, _accountType)
       } else {
         derivationPath = account.derivationPath
       }
@@ -234,7 +236,6 @@ export default {
     const { cryptoassets } = getters
 
     const chainAssets = Object.entries(cryptoassets).reduce((chains, [asset, assetData]) => {
-      console.log(assetData, chains)
       const assets = assetData.chain in chains ? chains[assetData.chain] : []
       return Object.assign({}, chains, {
         [assetData.chain]: [...assets, asset]

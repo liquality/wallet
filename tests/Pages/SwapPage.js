@@ -2,6 +2,7 @@ const TestUtil = require('../utils/TestUtils')
 
 const testUtil = new TestUtil()
 const chalk = require('chalk')
+const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 
 class SwapPage {
@@ -136,9 +137,20 @@ class SwapPage {
    * @constructor
    */
   async ValidateNetworkFeeTab (page) {
-    await page.waitForSelector('#network_speed_fee', { visible: true })
-    await page.click('#network_speed_fee')
-    await page.waitForSelector('#average', { visible: true })
+    try {
+      await page.waitForSelector('#network_speed_fee', { visible: true })
+      await page.click('#network_speed_fee')
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'network_speed_fee-issue')
+      expect(e, 'Network speed fee tab not loaded').equals(null)
+    }
+
+    try {
+      await page.waitForSelector('#average', { visible: true, timeout: 90000 })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'average-fee-tab-issue')
+      expect(e, 'Average fee tab not loaded').equals(null)
+    }
     const averageFee = await page.$eval('#average', (el) => el.getAttribute('class'))
     expect(averageFee,
       'Avg network speed/fee by default selected').contains('active')
@@ -234,6 +246,12 @@ class SwapPage {
     return await page.$eval('#swap_receive_amount_fee_value', el => el.textContent)
   }
 
+  /**
+   * Get Swap receive fiat amount.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
   async GetSwapReceiveAccountFeeInDollar (page) {
     await page.waitForSelector('#swap_receive_total_amount_in_fiat', { visible: true })
     return await page.$eval('#swap_receive_total_amount_in_fiat', el => el.textContent)
@@ -252,10 +270,12 @@ class SwapPage {
    */
   async CheckFeesAreHigh (page) {
     try {
-      await page.waitForSelector('#fees_are_high', { visible: true })
+      await page.waitForSelector('#fees_are_high', { visible: true, timeout: 90000 })
     } catch (e) {
-      await testUtil.takeScreenshot(page, 'fee-are-high-not-displayed')
-      expect(e, 'Fees are high. Review transaction carefully messages not displayed....').equals(null)
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'fee-are-high-not-displayed')
+        expect(e, 'Fees are high. Review transaction carefully messages not displayed....').equals(null)
+      }
     }
     const messages = await page.$eval('#fees_are_high', el => el.textContent)
     expect(messages.trim()).equals('Fees are high. Review transaction carefully.')

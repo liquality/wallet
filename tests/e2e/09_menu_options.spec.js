@@ -15,7 +15,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Hamburger menu options["testnet","mainnet"]', async () => {
+describe('Hamburger menu options["testnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -99,7 +99,7 @@ describe('Hamburger menu options["testnet","mainnet"]', async () => {
     await page.waitForSelector('#i_have_privacy_button', { visible: true })
     expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals('Show Seed Phrase?')
     expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent))
-      .equals('Anyone who has this seed phrase can steal your funds!')
+      .equals('Anyone who has this can steal your funds!')
     await page.click('#i_have_privacy_button')
     await page.waitForSelector('#password', { visible: true })
     await page.type('#password', password)
@@ -149,7 +149,7 @@ describe('Hamburger menu options["testnet","mainnet"]', async () => {
     await page.waitForSelector('#i_have_privacy_button', { visible: true })
     expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals('Show Seed Phrase?')
     expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent))
-      .equals('Anyone who has this seed phrase can steal your funds!')
+      .equals('Anyone who has this can steal your funds!')
     await page.click('#i_have_privacy_button')
     await page.waitForSelector('#password', { visible: true })
     await page.type('#password', 'testwallet00001')

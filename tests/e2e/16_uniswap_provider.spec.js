@@ -18,7 +18,7 @@ let browser, page
 const password = '123123123'
 
 describe('UNISWAP service Provider-[smoke]', async () => {
-  beforeEach(async () => {
+  before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })

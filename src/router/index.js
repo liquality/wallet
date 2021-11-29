@@ -14,6 +14,7 @@ import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap/Swap.vue'
 
 import Settings from '@/views/Settings'
+import Experiments from '@/views/Experiments'
 import ManageAssets from '@/views/ManageAssets'
 import CustomToken from '@/views/CustomToken'
 
@@ -30,7 +31,7 @@ import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
 import ManageAccounts from '@/views/Accounts/Manage.vue'
-
+import ExportPrivateKey from '@/views/Accounts/ExportPrivateKey.vue'
 import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
 import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
 import PhraseReveal from '@/views/Onboarding/SeedPhrase/PhraseReveal'
@@ -63,6 +64,10 @@ const routes = [
   {
     path: '/settings',
     component: Settings
+  },
+  {
+    path: '/settings/experiments',
+    component: Experiments
   },
   {
     path: '/settings/manage-assets',
@@ -204,8 +209,31 @@ const routes = [
   {
     path: '/seedreveal',
     component: PhraseReveal
-  }
+  },
 
+  // Export Private Key
+  {
+    path: '/export/:accountId',
+    component: Warning,
+    props: ({ params: { accountId } }) => ({
+      title: 'Show Private Key?',
+      nextPath: `/export/${accountId}/login`
+    })
+  },
+  {
+    path: '/export/:accountId/login',
+    component: LoginPhrase,
+    props: ({ params: { accountId } }) => ({
+      title: 'Sign-in to Export Private Key',
+      nextPath: `/export/${accountId}/reveal`
+    })
+  },
+  {
+    path: '/export/:accountId/reveal',
+    component: ExportPrivateKey,
+    name: 'ExportPrivateKey',
+    props: true
+  }
 ]
 
 const router = new VueRouter({

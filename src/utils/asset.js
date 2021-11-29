@@ -4,6 +4,7 @@ import {
 } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import * as ethers from 'ethers'
+import axios from 'axios'
 import tokenABI from './tokenABI.json'
 import buildConfig from '../build.config'
 
@@ -189,7 +190,7 @@ export const tokenDetailProviders = {
   },
   rsk: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, 'https://public-node.rsk.co')
+      return await fetchTokenDetails(contractAddress, process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET)
     }
   },
   bsc: {
@@ -200,6 +201,11 @@ export const tokenDetailProviders = {
   arbitrum: {
     async getDetails (contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://arb1.arbitrum.io/rpc')
+    }
+  },
+  terra: {
+    async getDetails (contractAddress) {
+      return await fetchTerraToken(contractAddress, 'https://arb1.arbitrum.io/rpc')
     }
   }
 }
@@ -227,4 +233,16 @@ export const estimateGas = async ({ data, to, value }) => {
   const provider = ethers.getDefaultProvider()
 
   return await provider.estimateGas(paramsForGasEstimate)
+}
+
+export const fetchTerraToken = async (address) => {
+  const { data: { mainnet: tokens } } = await axios.get('https://assets.terra.money/cw20/tokens.json')
+  const token = tokens[address]
+  const { symbol } = token
+
+  return {
+    name: symbol,
+    symbol,
+    decimals: 6
+  }
 }
