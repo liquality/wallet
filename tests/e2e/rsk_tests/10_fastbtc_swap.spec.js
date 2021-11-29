@@ -75,7 +75,7 @@ if (process.env.NODE_ENV === 'mainnet') {
 
       // Update the SWAP value to 0.0004
       let swapAmount = '0.0004'
-      if (process.env.NODE_ENV === 'prodagent') {
+      if (process.env.NODE_AGENT === 'prodagent') {
         swapAmount = '0.01'
       }
       await swapPage.EnterSendAmountOnSwap(page, swapAmount)
