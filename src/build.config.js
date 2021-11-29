@@ -6,8 +6,8 @@ import SovrynTestnetAddresses from '@blobfishkate/sovryncontracts/contracts-test
 export const OriginsContractAddresses = {
   mainnet: {},
   testnet: {
-    ZERO_token: '0x139483e22575826183f5b56dd242f8f2c1aef327',
-    ZERO_controller: '0x6f62d2f571bce7187cdfdd4b1e5e53cfd7d14dd2'
+    ZERO_token: '0xac5c5917e713581c8c8b78c7b12f2d67da0323f0',
+    ZERO_controller: '0x75e28c6fa259811862bb65f7cc02c683deca7f96'
   }
 }
 
