@@ -43,7 +43,7 @@
             :id="`${asset}_address_container`"
             @click="copyAddress"
             v-tooltip.bottom="{
-              content: addressCopied ? 'Copied!' : 'Copy',
+              content: addressCopied ? 'Copied!' : 'Click to copy',
               hideOnTargetClick: false,
             }"
           >
