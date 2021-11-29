@@ -15,8 +15,8 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-if (process.env.NODE_ENV === 'mainnet') {
-  describe('Import wallet - fetch custom token details against and add custom token', async () => {
+describe('Fetch custom token details and add custom token-["mainnet"]', async () => {
+  if (process.env.NODE_ENV === 'mainnet') {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -88,6 +88,11 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Check Token Symbol
       const decimal = await page.$eval('#decimals', el => el.value)
       expect(decimal).to.equals(tokenDetails.decimal)
+      // Check Token with this symbol exists.
+      await page.waitForSelector('#token_with_this_symbol_exits', { visible: true })
+      // Add token button is disabled
+      const addTokenDetails = await page.$eval('#add_token_button', el => el.getAttribute('disabled'))
+      expect(addTokenDetails).to.eq('disabled')
     })
     it('BSC - PancakeSwap token', async () => {
       const tokenDetails = {
@@ -512,5 +517,5 @@ if (process.env.NODE_ENV === 'mainnet') {
         'Added custom token toggled automatically')
         .contains('vue-js-switch toggled')
     })
-  })
-}
+  }
+})

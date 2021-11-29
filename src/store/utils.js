@@ -72,7 +72,7 @@ export const shouldApplyRskLegacyDerivation = async (accounts, mnemonic, indexPa
 
   const client = new Client()
     .addProvider(
-      new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' })
+      new EthereumRpcProvider({ uri: process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET })
     )
 
   if (mnemonic) {

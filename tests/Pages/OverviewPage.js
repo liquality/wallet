@@ -91,10 +91,10 @@ class OverviewPage {
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
     try {
-      await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
+      // TODO: Most of the times overview screen takes more time to load total assets & fiat values
+      await page.waitForSelector('#send_action', { visible: true, timeout: 240000 })
     } catch (e) {
-      const ts = Math.round((new Date()).getTime() / 1000)
-      await page.screenshot({ path: `screenshots/overview-page-loading-issue-${ts}.png` })
+      await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
       expect(e, 'Overview page still Loading.....didn\'t load send/receive/swap option').equals(null)
     }
 
