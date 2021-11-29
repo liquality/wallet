@@ -74,7 +74,11 @@ if (process.env.NODE_ENV === 'mainnet') {
       }
 
       // Update the SWAP value to 0.0004
-      await swapPage.EnterSendAmountOnSwap(page, '0.0004')
+      let swapAmount = '0.0004'
+      if (process.env.NODE_ENV === 'prodagent') {
+        swapAmount = '0.01'
+      }
+      await swapPage.EnterSendAmountOnSwap(page, swapAmount)
       // (fastBTC swap provider)
       try {
         await page.waitForSelector('#see_all_quotes', {
