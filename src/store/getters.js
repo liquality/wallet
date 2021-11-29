@@ -7,7 +7,7 @@ import { cryptoToFiat } from '@/utils/coinFormatter'
 import { Networks } from '@/utils/networks'
 import { uniq } from 'lodash-es'
 import { getDerivationPath } from '@/utils/derivationPath'
-import { OriginsContractAddresses } from '@/build.config';
+import { OriginsContractAddresses } from '@/build.config'
 
 // TO-DO: remove this after npm package is updated.
 const cryptoassets = Object.assign(cryptoassetsOrigin, {
@@ -15,7 +15,7 @@ const cryptoassets = Object.assign(cryptoassetsOrigin, {
     name: 'ZERO',
     code: 'ZERO',
     decimals: 18,
-    contractAddress: OriginsContractAddresses.testnet.ZERO_token, //'0xac5c5917e713581c8c8b78c7b12f2d67da0323f0',
+    contractAddress: OriginsContractAddresses.testnet.ZERO_token, // '0xac5c5917e713581c8c8b78c7b12f2d67da0323f0',
     color: '#000000',
     coinGeckoId: 'zero',
     chain: 'rsk',
