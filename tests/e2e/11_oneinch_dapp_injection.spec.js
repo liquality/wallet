@@ -2,6 +2,7 @@ const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
+const ConnectionPage = require('../Pages/ConnectionPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
 const chalk = require('chalk')
@@ -10,12 +11,13 @@ const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
+const connectionPage = new ConnectionPage()
 
 let browser, page
 const password = '123123123'
 const dappUrl = 'https://app.1inch.io/'
 
-describe.skip('1Inch Dapp Injection-[mainnet,smoke]', async () => {
+describe('1Inch Dapp Injection-[mainnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -55,11 +57,9 @@ describe.skip('1Inch Dapp Injection-[mainnet,smoke]', async () => {
       window.ethereum.enable()
     })
     // console.log(chalk.green('user clicked on 1inch web3'))
-    const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
-    await connectRequestWindow.click('#ETHEREUM')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+
+    await connectionPage.selectAccount(await newPagePromise, 'ETHEREUM')
+
     const connectedChainDetails = await dappPage.evaluate(async () => {
       const chainIDHexadecimal = await window.ethereum.request({ method: 'eth_chainId', params: [] })
       return {
@@ -80,11 +80,9 @@ describe.skip('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
     })
-    const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#BSC', { visible: true })
-    await connectRequestWindow.click('#BSC')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+
+    await connectionPage.selectAccount(await newPagePromise, 'BSC')
+
     const connectedChainDetails = await dappPage.evaluate(async () => {
       const chainIDHexadecimal = await window.ethereum.request({ method: 'eth_chainId', params: [] })
       return {

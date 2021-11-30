@@ -2,6 +2,7 @@ const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
+const ConnectionPage = require('../Pages/ConnectionPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
 
@@ -9,6 +10,7 @@ const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
+const connectionPage = new ConnectionPage()
 
 let browser, page, dappPage
 const password = '123123123'
@@ -66,17 +68,10 @@ describe('Sushi Dapp Injection-[mainnet,testnet]', async () => {
     // Click on Injected Option
     const injectedOption = await dappPage.$x("//*[text()='Injected']")
     injectedOption[0].click()
+
     // select ETH from connected
-    const connectRequestWindow = await newPagePromise
-    try {
-      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
-    } catch (e) {
-      await testUtil.takeScreenshot(connectRequestWindow, 'sushi-ethereum-loading-issue')
-      expect(e, 'sushi ethereum loading issue').equals(null)
-    }
-    await connectRequestWindow.click('#ETHEREUM')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectionPage.selectAccount(await newPagePromise, 'ETHEREUM')
+
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
@@ -99,17 +94,10 @@ describe('Sushi Dapp Injection-[mainnet,testnet]', async () => {
     // Click on Injected Option
     const injectedOption = await dappPage.$x("//*[text()='Injected']")
     injectedOption[0].click()
-    const connectRequestWindow = await newPagePromise
-    try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 60000 })
-      await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true, timeout: 60000 })
-    } catch (e) {
-      await testUtil.takeScreenshot(connectRequestWindow, 'sushi-dapp-polygon-issue')
-      expect(e, 'Sushi injection ARBITRUM not listed, connect request window loading issue.....').equals(null)
-    }
-    await connectRequestWindow.click('#POLYGON')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+
+    // select POLYGON from connected
+    await connectionPage.selectAccount(await newPagePromise, 'POLYGON')
+
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })

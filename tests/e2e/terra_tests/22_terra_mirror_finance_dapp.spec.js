@@ -2,6 +2,7 @@ const TestUtil = require('../../utils/TestUtils')
 const OverviewPage = require('../../Pages/OverviewPage')
 const HomePage = require('../../Pages/HomePage')
 const PasswordPage = require('../../Pages/PasswordPage')
+const ConnectionPage = require('../../Pages/ConnectionPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
 
@@ -9,6 +10,7 @@ const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
+const connectionPage = new ConnectionPage()
 
 let browser, page, dappPage
 const password = '123123123'
@@ -64,19 +66,7 @@ describe.skip('Terra Mirror Finance DAPP injection-[mainnet]', async () => {
     connectionListButtons[0].click()
 
     await dappPage.waitForTimeout(2000)
-    const connectRequestWindow = await newPagePromise
-    try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
-    } catch (e) {
-      await testUtil.takeScreenshot(dappPage, 'terra-mirror-finance--issue.png')
-      expect(e, 'Terra mirror finance app UI not loading TERRA accounts').equals(null)
-    }
-    const rskAccounts = await connectRequestWindow.$$('#TERRA')
-    expect(rskAccounts.length, '1 TERRA accounts should be listed under Connect request popupWindow')
-      .to.equals(1)
-    await connectRequestWindow.click('#TERRA')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectionPage.selectAccount(await newPagePromise, 'TERRA', 1)
 
     try {
       await dappPage.waitForSelector('button[class*="ConnectButton"]', { visible: true, timeout: 60000 })

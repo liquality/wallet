@@ -2,14 +2,15 @@ const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
+const ConnectionPage = require('../Pages/ConnectionPage')
 const expect = require('chai').expect
-
 const puppeteer = require('puppeteer')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
+const connectionPage = new ConnectionPage()
 
 let browser, page, dappPage
 const password = '123123123'
@@ -171,20 +172,9 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.click('#connect-INJECTED')
-    const connectRequestWindow = await newPagePromise
-    try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
-      await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true, timeout: 60000 })
-    } catch (e) {
-      await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-ethereum-connect-request-window-issue')
-      expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(null)
-    }
-    // Check connect button is enabled
-    ethAccounts = await connectRequestWindow.$$('#ETHEREUM')
-    expect(ethAccounts.length, 'ethAccounts should have length 2 on dapp connect request')
-      .to.equals(2)
-    await connectRequestWindow.click('#ETHEREUM')
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+
+    await connectionPage.selectAccount(await newPagePromise, 'ETHEREUM', 2)
+
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })

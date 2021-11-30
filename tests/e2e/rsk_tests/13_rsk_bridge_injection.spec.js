@@ -2,6 +2,7 @@ const TestUtil = require('../../utils/TestUtils')
 const OverviewPage = require('../../Pages/OverviewPage')
 const HomePage = require('../../Pages/HomePage')
 const PasswordPage = require('../../Pages/PasswordPage')
+const ConnectionPage = require('../../Pages/ConnectionPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
 
@@ -9,10 +10,12 @@ const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
+const connectionPage = new ConnectionPage()
 
 let browser, page, dappPage
 const password = '123123123'
 let bridgeUrl = 'https://bridge.test.sovryn.app/'
+let swapURL = 'https://test.sovryn.app/'
 
 describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
   beforeEach(async () => {
@@ -34,6 +37,7 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
       bridgeUrl = 'https://bridge.sovryn.app/'
+      swapURL = 'https://live.sovryn.app/'
     } else {
       await overviewPage.SelectNetwork(page)
     }
@@ -61,19 +65,8 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     // Click on Connect wallet option from bridge
     await dappPage.click('button[type="button"]')
-    const connectRequestWindow = await newPagePromise
-    try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
-    } catch (e) {
-      await connectRequestWindow.screenshot({ path: 'screenshots/sovryn-bridge-show-rskAccounts-issue.png', fullscreen: true })
-      expect(e, 'Sovryn bridge UI not loading RSK accounts').equals(null)
-    }
-    const rskAccounts = await connectRequestWindow.$$('#RSK')
-    expect(rskAccounts.length, '2 RSK accounts should be listed under Connect request popupWindow')
-      .to.equals(2) // RSK & RSK legacy
-    await connectRequestWindow.click('#RSK')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+
+    await connectionPage.selectAccount(await newPagePromise, 'RSK', 2)
 
     await dappPage.waitForTimeout(10000)
     // Check Transfer button on Bridge is displayed
@@ -81,29 +74,52 @@ describe('RSK Bridge Injection-[mainnet,smoke]', async () => {
       'Transfer button not displayed')
       .contains('Transfer')
   })
-  it.skip('SOVRYN dApp injection', async () => {
-    await dappPage.goto('https://live.sovryn.app/')
+  it('SOVRYN dApp injection', async () => {
+    await dappPage.goto(swapURL)
+    await dappPage.waitForTimeout(1000)
+
+    const iUnderstandCheckbox = await dappPage.$x('//label[.=\'I have read and understand that I am responsible for my own Sovrynity\']')
+    iUnderstandCheckbox[0].click()
+
+    const iUnderstandButton = await dappPage.$x('//button[.=\'I Understand\']')
+    iUnderstandButton[0].click()
+
     const closeATradeOption = await dappPage.$x('//button[.=\'Please let me close a trade\']')
-    closeATradeOption[0].click()
-    const engageWallet = await dappPage.$x('//span[.=\'Engage wallet\']')
-    engageWallet[0].click()
-    const browser = await dappPage.$x('//div[text()=\'Browser\']')
-    browser[0].click()
+    if (closeATradeOption.length !== 0) {
+      closeATradeOption[0].click()
+    }
+
+    await dappPage.waitForTimeout(1000)
+    const connectWalletButton = await dappPage.$x('//span[.=\'Connect wallet\']')
+    connectWalletButton[0].click()
+
+    await dappPage.waitForTimeout(1000)
+    const connectionTypeSelector = await dappPage.$x('//div[text()=\'Browser\']')
+    connectionTypeSelector[0].click()
+
+    await dappPage.waitForTimeout(1000)
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    // Click on Connect wallet option from bridge
-    const liquality = await dappPage.$x('//div[.=\'Liquality\']')
-    liquality[0].click()
-    const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#RSK', { visible: true })
-    const rskAccounts = await connectRequestWindow.$$('#RSK')
-    expect(rskAccounts.length).to.equals(2)
-    await connectRequestWindow.click('#RSK')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable()
+    })
 
+    // Click on Connect wallet option from bridge.
+    const liquality = await dappPage.$x('//div[text()=\'Liquality\']')
+    liquality[0].click()
+
+    await connectionPage.selectAccount(await newPagePromise, 'RSK', 2)
+
+    // Click once again if needed.
+    const liquality1 = await dappPage.$x('//div[text()=\'Liquality\']')
+    if (liquality1.length !== 0) {
+      liquality1[0].click()
+    }
+
+    // Check if 'Deposit' button appeared.
     await dappPage.waitForTimeout(10000)
-    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
+    const depositButton = await dappPage.$x('//span[text()=\'Deposit\']')
+    expect(depositButton.length).equals(1)
   })
   afterEach(async () => {
     await browser.close()
