@@ -75,7 +75,7 @@ export default {
     return {
       replied: false,
       loading: false,
-      selectedChain: 'ethereum',
+      selectedChain: '',
       selectedAccount: null,
       confirmedAccount: false
     }
@@ -134,6 +134,9 @@ export default {
       this.selectedAccount = null
       this.selectedChain = chain
     }
+  },
+  created () {
+    this.selectedChain = 'ethereum'
   }
 }
 </script>
