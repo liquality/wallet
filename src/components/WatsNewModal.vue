@@ -11,10 +11,7 @@
           <div class="item-icon">
             <ChartIcon />
           </div>
-          <div class="item-content">
-            <pre>Ability to export private keys</pre>
-            <pre>Terra integration</pre>
-            <pre>Bug fixes and improvements</pre>
+          <div class="item-content" v-html="changelogContent">
           </div>
         </div>
       </div>
@@ -35,7 +32,6 @@
 <script>
 import Modal from '@/components/Modal'
 import ChartIcon from '@/assets/icons/chart_icon.svg'
-import { version } from '../../package.json'
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -45,25 +41,28 @@ export default {
   },
   data: function () {
     return {
-      open: false
+      open: false,
+      changelogContent: null
     }
   },
   computed: {
-    ...mapState(['watsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
-    appVersion () {
-      return version
-    }
+    ...mapState(['changelogVersion', 'termsAcceptedAt', 'unlockedAt'])
   },
   methods: {
-    ...mapActions(['setWatsNewModalShowed']),
+    ...mapActions([
+      'setChangelogVersion',
+      'getChangelog'
+    ]),
     close () {
       this.open = false
     }
   },
-  created () {
-    if (this.watsNewModalVersion !== this.appVersion) {
+  async created () {
+    const { version, changeLog } = await this.getChangelog()
+    if (this.watsNewModalVersion !== version) {
+      this.changelogContent = changeLog
       this.open = true
-      this.setWatsNewModalShowed({ version: this.appVersion })
+      this.setChangelogVersion({ version })
     }
   }
 }

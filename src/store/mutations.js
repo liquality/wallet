@@ -301,8 +301,8 @@ export default {
       [name]: experiments ? !experiments[name] : true
     }
   },
-  SET_WATS_NEW_MODAL_VERSION (state, { version }) {
-    state.watsNewModalVersion = version
+  SET_CHANGELOG_VERSION (state, { version }) {
+    state.changeLogVersion = version
   },
   TOGGLE_BLOCKCHAIN (state, { network, walletId, chainId, enable }) {
     ensureEnableChainsWalletTree(state, walletId, network)

@@ -50,6 +50,6 @@ export default {
     notAskAgain: false
   },
   experiments: {},
-  watsNewModalVersion: null,
+  changelogVersion: null,
   enabledChains: {}
 }
