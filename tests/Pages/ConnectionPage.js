@@ -35,7 +35,7 @@ class ConnectionPage {
     }
 
     if (expectedAccounts) {
-      const accounts = await page.$$('#ETHEREUM')
+      const accounts = await page.$$(`#${chain}`)
       expect(accounts.length, `List should include ${expectedAccounts} accounts`).to.equals(expectedAccounts)
     }
 
