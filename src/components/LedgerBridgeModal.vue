@@ -1,11 +1,10 @@
 <template>
    <Modal v-if="open" @close="onClose">
       <template v-slot:title>
-        Ledger USB Web Bridge
+        Connect Ledger via USB WEB BRIDge
       </template>
       <p>
-        This allows to connect to your Ledger device.
-        Please click on Enable USB button inside the bridge
+        This allows to connect to your Ledger device. Please click on the ‘Connect’ button. in the window next to it.
       </p>
     </Modal>
 </template>
