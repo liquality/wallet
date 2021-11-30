@@ -1,6 +1,6 @@
 export function shortenAddress (address) {
   const prefix = address.startsWith('0x') ? '0x' : ''
-  return `${prefix}${address.replace('0x', '').substring(0, 6)}...${address.substring(address.length - 4)}`
+  return `${prefix}${address.replace('0x', '').substring(0, prefix ? 6 : 4)}...${address.substring(address.length - 4)}`
 }
 
 export const BTC_ADDRESS_TYPE_TO_PREFIX = {
