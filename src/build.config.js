@@ -82,7 +82,7 @@ export default {
         type: SwapProviderType.SOVRYN,
         routerAddress: SovrynTestnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynTestnetAddresses.proxy3,
-        rpcURL: process.envVUE_APP_SOVRYN_RPC_URL_TESTNET
+        rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_TESTNET
       }
     },
     mainnet: {
