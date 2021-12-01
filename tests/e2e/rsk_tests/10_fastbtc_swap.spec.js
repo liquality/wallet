@@ -40,16 +40,16 @@ if (process.env.NODE_ENV === 'mainnet') {
     })
 
     it('SWAP BTC to RBTC - fastBTC', async () => {
-      const asset1 = 'BTC'
+      const fromAsset = 'BTC'
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWatsNewModal(page)
       // Select mainnet for fastBTC e2e
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click asset 1
-      await overviewPage.SelectChain(page, asset1)
-      await page.waitForSelector('#' + asset1 + '_swap_button', { visible: true })
-      await page.click('#' + asset1 + '_swap_button')
+      await overviewPage.SelectChain(page, fromAsset)
+      await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
+      await page.click('#' + fromAsset + '_swap_button')
       console.log(chalk.green('User clicked on BTC SWAP button'))
 
       await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
@@ -74,7 +74,11 @@ if (process.env.NODE_ENV === 'mainnet') {
       }
 
       // Update the SWAP value to 0.0004
-      await swapPage.EnterSendAmountOnSwap(page, '0.0004')
+      let swapAmount = '0.0004'
+      if (process.env.NODE_AGENT === 'prodagent') {
+        swapAmount = '0.01'
+      }
+      await swapPage.EnterSendAmountOnSwap(page, swapAmount)
       // (fastBTC swap provider)
       try {
         await page.waitForSelector('#see_all_quotes', {
