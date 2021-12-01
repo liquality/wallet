@@ -1,0 +1,44 @@
+{
+  "timezone": "America/New_York",
+  "baseBranches": ["dev"],
+  "extends": [
+    "config:base",
+    ":dependencyDashboard",
+    "github>whitesource/merge-confidence:beta"
+  ],
+  "includePaths": [
+    "package.json"
+  ],
+  "schedule": [
+    "every weekend"
+  ],
+  "major": {
+    "dependencyDashboardApproval": true
+  },
+  "semanticCommits": "auto",
+  "rangeStrategy": "bump",
+  "rebaseLabel": "rebase",
+  "rebaseWhen": "auto",
+  "requiredStatusChecks": [],
+  "commitBody": "[skip ci]",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "matchDepTypes": [
+        "devDependencies"
+      ],
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": ["lint", "prettier"]
+    },
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    }
+  ]
+}

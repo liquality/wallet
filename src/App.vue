@@ -44,7 +44,7 @@ export default {
       if (unlocked) this.$router.replace('/wallet')
     },
     activeNetwork: function (_network) {
-      if (['Send', 'Receive', 'Swap', 'Account'].includes(this.$route.name)) {
+      if (['Send', 'Receive', 'Swap', 'Account', 'SwapDetails', 'WalletActivity'].includes(this.$route.name)) {
         this.$router.replace('/wallet')
       }
     }
