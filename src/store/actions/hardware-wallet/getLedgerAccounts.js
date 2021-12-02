@@ -7,11 +7,11 @@ import {
   ExecutionMode
 } from '@liquality/hw-web-bridge'
 import { findCryptoCurrencyById } from '@ledgerhq/cryptoassets'
+import BN from 'bignumber.js'
 
-const getXPUBVersion = (network) => {
+const getXPubVersion = (network) => {
   const id = network === 'mainnet' ? 'bitcoin' : 'bitcoin_testnet'
   const { bitcoinLikeInfo: { XPUBVersion } } = findCryptoCurrencyById(id)
-
   return XPUBVersion
 }
 
@@ -19,7 +19,7 @@ export const getLedgerAccounts = async (
   { getters },
   { network, walletId, asset, accountType, startingIndex, numAccounts }
 ) => {
-  const { client, networkAccounts } = getters
+  const { client, networkAccounts, assetFiatBalance } = getters
   const { chain } = assets[asset]
   const results = []
   const existingAccounts = networkAccounts.filter(account => {
@@ -27,35 +27,20 @@ export const getLedgerAccounts = async (
   })
 
   const pageIndexes = [...Array(numAccounts || 5).keys()].map(i => i + startingIndex)
-  const xpubVersion = getXPUBVersion(network)
-  console.log('xpubVersion', xpubVersion, parseInt(xpubVersion, 10).toString(16))
-  for (const index of pageIndexes) {
-    let addresses = []
+  const xpubVersion = getXPubVersion(network)
 
-    if (chain === ChainId.Bitcoin) {
-      const path = getDerivationPath(chain, network, index, accountType)
-      const xPub = await callToBridge({
-        namespace: RequestNamespace.App,
+  for (const index of pageIndexes) {
+    const _client = client(
+      {
         network,
-        chainId: chain,
-        action: 'getWalletXpub',
-        execMode: ExecutionMode.Async,
-        payload: [{ path, xpubVersion }]
-      })
-      console.log('xPub', xPub)
-    } else {
-      const _client = client(
-        {
-          network,
-          walletId,
-          asset,
-          accountType,
-          accountIndex: index,
-          useCache: false
-        }
-      )
-      addresses = await _client.wallet.getAddresses()
-    }
+        walletId,
+        asset,
+        accountType,
+        accountIndex: index,
+        useCache: false
+      }
+    )
+    const addresses = await _client.wallet.getAddresses()
 
     if (addresses && addresses.length > 0) {
       const account = addresses[0]
@@ -86,11 +71,37 @@ export const getLedgerAccounts = async (
       }
       ) >= 0
 
-      results.push({
+      // Get the account balance
+      const balance = addresses.length === 0
+        ? 0
+        : (await _client.chain.getBalance(
+          addresses
+        ))
+
+      const fiatBalance = BN(assetFiatBalance(asset, balance))
+      const result = {
         account,
+        balance,
+        fiatBalance,
         index,
         exists
-      })
+      }
+      // For BTC we need to get the xPub to store it
+      // and then we don't need to call again the ledger device to get all addresses
+      if (chain === ChainId.Bitcoin) {
+        const path = getDerivationPath(chain, network, index, accountType)
+        const xPub = await callToBridge({
+          namespace: RequestNamespace.App,
+          network,
+          chainId: chain,
+          action: 'getWalletXpub',
+          execMode: ExecutionMode.Async,
+          payload: [{ path, xpubVersion }]
+        })
+        result.xPub = xPub
+      }
+
+      results.push(result)
     }
   }
   return results

@@ -157,7 +157,7 @@ export default {
     },
     async unlock ({ walletType }) {
       if (this.selectedAsset) {
-        await this.addAccount({ walletType })
+        await this.addAccounts({ walletType })
         await this.trackAnalytics({
           event: 'Ledger Connect',
           properties: {
@@ -173,7 +173,7 @@ export default {
       this.currentStep = 'token-management'
       this.selectedWalletType = walletType
     },
-    async addAccount ({ walletType }) {
+    async addAccounts ({ walletType }) {
       if (Object.keys(this.selectedAccounts).length > 0) {
         try {
           this.creatingAccount = true
@@ -190,7 +190,7 @@ export default {
             const item = selectedAccounts[key]
 
             const index = item.index + 1
-            const { publicKey, address } = item.account
+            const { address } = item.account
 
             const account = {
               name: `Ledger ${this.selectedAsset.name} ${index}`,
@@ -203,8 +203,9 @@ export default {
               enabled: true,
               derivationPath: item.account.derivationPath,
               color: getNextAccountColor(chain, item.index),
-              publicKey
+              xPub: item.xPub
             }
+
             await this.createAccount({
               network: this.activeNetwork,
               walletId: this.activeWalletId,
@@ -241,17 +242,9 @@ export default {
           ...this.selectedAccounts
         }
       } else {
-        // with BTC we can select more than one account
-        // with ETH we can select only one account
-        if (this.selectedAsset?.name === 'ETH') {
-          this.selectedAccounts = {
-            [item.account.address]: item
-          }
-        } else {
-          this.selectedAccounts = {
-            ...this.selectedAccounts,
-            [item.account.address]: item
-          }
+        this.selectedAccounts = {
+          ...this.selectedAccounts,
+          [item.account.address]: item
         }
       }
     }
