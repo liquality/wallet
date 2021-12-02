@@ -55,6 +55,7 @@ export default {
     },
     passwordLengthError () {
       if (this.password && this.password.length < 8) return true
+      return false
     },
     disableNext () {
       if (!this.password || !this.confirmPassword) return true

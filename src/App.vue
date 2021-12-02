@@ -1,7 +1,6 @@
 <template>
   <div id="app" v-if="brokerReady">
     <Head v-if="unlockedAt" />
-
     <router-view />
     <template v-if="unlockedAt && termsAcceptedAt">
       <AnalyticsOptInModal/>
@@ -14,14 +13,12 @@
 import { mapState, mapActions } from 'vuex'
 
 import Head from '@/components/Head.vue'
-import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 import AnalyticsOptInModal from '@/components/AnalyticsOptInModal.vue'
 import WatsNewModal from '@/components/WatsNewModal.vue'
 
 export default {
   components: {
     Head,
-    OnboardingHome,
     AnalyticsOptInModal,
     WatsNewModal
   },

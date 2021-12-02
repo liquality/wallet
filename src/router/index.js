@@ -62,7 +62,7 @@ const routes = [
   {
     path: '/onboarding/home',
     component: OnboardingHome,
-    name: 'OnboardingHome',
+    name: 'OnboardingHome'
   },
   // Onboarding
 

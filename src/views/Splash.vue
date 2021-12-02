@@ -33,7 +33,7 @@ export default {
     WalletText,
     NewWalletText
   },
-  computed: mapState(['keyUpdatedAt','termsAcceptedAt']),
+  computed: mapState(['keyUpdatedAt', 'termsAcceptedAt']),
   created () {
     if (this.keyUpdatedAt) {
       this.$router.replace('/open')
