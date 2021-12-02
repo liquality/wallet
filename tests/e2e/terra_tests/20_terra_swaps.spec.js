@@ -20,6 +20,10 @@ const swapPairMap = [
   {
     fromAsset: 'BTC',
     toAsset: 'LUNA'
+  },
+  {
+    fromAsset: 'LUNA',
+    toAsset: 'BTC'
   }
 ]
 describe('Terra swaps-[smoke,testnet]', async () => {
@@ -54,8 +58,9 @@ describe('Terra swaps-[smoke,testnet]', async () => {
       await page.waitForSelector('#search_for_a_currency', { visible: true })
       await page.type('#search_for_a_currency', assert2)
       await page.click(`#${assert2}`)
-      await swapPage.ClickOnMax(page)
-      // 1inch
+      if (assert2 === 'BTC') {
+        await swapPage.EnterSendAmountOnSwap(page, '0.01')
+      }
       await page.waitForTimeout(10000)
       await page.waitForSelector('#selectedQuote_provider', { visible: true })
       try {
@@ -66,6 +71,27 @@ describe('Terra swaps-[smoke,testnet]', async () => {
         await testUtil.takeScreenshot(page, `${obj.fromAsset}->${obj.toAsset})-swap-issue`)
         expect(e, 'Liquality should be chosen').equals(null)
       }
+      // Click on SWAP Review button
+      await swapPage.ClickSwapReviewButton(page)
+      // Click on Initiate SWAP button
+      await swapPage.ClickInitiateSwapButton(page)
+      // Wait for Activity tab list of items - Transaction items
+      try {
+        await page.waitForSelector('.transaction-list', { visible: true, timeout: 1200000 })
+        await page.waitForSelector('.transaction-steps', { visible: true, timeout: 600000 })
+      } catch (e) {
+        if (e instanceof puppeteer.errors.TimeoutError) {
+          await testUtil.takeScreenshot(page, 'sov-btc-swap-transaction-not-found')
+          expect(e, `SWAP (${obj.fromAsset}->${obj.toAsset}) transaction not found under Activity tab`).equals(null)
+        }
+      }
+      const transactionSteps = await page.$eval('.transaction-steps', el => el.textContent)
+      expect(transactionSteps).not.contains('NaN')
+
+      const transactions = await page.$$('.transaction-status')
+      await transactions[0].click()
+      await page.waitForSelector('.swap-details_info', { visible: true })
+      // Close
       try {
         await page.close()
         await browser.close()
