@@ -7,11 +7,12 @@
       <h2>Create New Password</h2>
     </div>
     <form class="form" autocomplete="off" v-on:submit.prevent="generate">
-      <div class="form-group">
+      <div class="form-group mb-4">
         <label for="password">Choose Password ( At least 8 characters )</label>
         <div class="input-group">
           <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required>
         </div>
+        <small v-show="passwordLengthError" class="onboading-password_errorLength form-text hidden">Password must be at least 8 characters.</small>
       </div>
       <div class="form-group">
         <label for="confirmPassword">Confirm Password</label>
@@ -19,7 +20,6 @@
           <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" autocomplete="off" required>
         </div>
         <small v-show="passwordMatch" class="onboading-password_errorLength form-text hidden" id="password_match_error">Passwords don't match.</small>
-        <small class="form-text">Password must be at least 8 characters.</small>
       </div>
     </form>
     <div class="footer-container">
@@ -52,6 +52,9 @@ export default {
       if (!this.password || !this.confirmPassword) return false
       if ((this.password.length === this.confirmPassword.length) && (this.password !== this.confirmPassword)) return true
       return false
+    },
+    passwordLengthError () {
+      if (this.password && this.password.length < 8) return true
     },
     disableNext () {
       if (!this.password || !this.confirmPassword) return true

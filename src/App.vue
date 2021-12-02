@@ -2,8 +2,7 @@
   <div id="app" v-if="brokerReady">
     <Head v-if="unlockedAt" />
 
-    <router-view v-if="termsAcceptedAt" />
-    <OnboardingHome v-else />
+    <router-view />
     <template v-if="unlockedAt && termsAcceptedAt">
       <AnalyticsOptInModal/>
       <WatsNewModal/>
