@@ -9,6 +9,7 @@
         <p>The atomic swap enabled <br/>
         multi-crypto wallet</p>
       </template>
+      
       <template v-else>
         <NewWalletText class="splash_tagline_wallet mt-4"/>
       </template>
