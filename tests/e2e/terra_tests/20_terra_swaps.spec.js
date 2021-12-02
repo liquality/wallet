@@ -71,26 +71,28 @@ describe('Terra swaps-[smoke,testnet]', async () => {
         await testUtil.takeScreenshot(page, `${obj.fromAsset}->${obj.toAsset})-swap-issue`)
         expect(e, 'Liquality should be chosen').equals(null)
       }
-      // Click on SWAP Review button
-      await swapPage.ClickSwapReviewButton(page)
-      // Click on Initiate SWAP button
-      await swapPage.ClickInitiateSwapButton(page)
-      // Wait for Activity tab list of items - Transaction items
-      try {
-        await page.waitForSelector('.transaction-list', { visible: true, timeout: 1200000 })
-        await page.waitForSelector('.transaction-steps', { visible: true, timeout: 600000 })
-      } catch (e) {
-        if (e instanceof puppeteer.errors.TimeoutError) {
-          await testUtil.takeScreenshot(page, 'sov-btc-swap-transaction-not-found')
-          expect(e, `SWAP (${obj.fromAsset}->${obj.toAsset}) transaction not found under Activity tab`).equals(null)
+      if (assert2 === 'BTC') {
+        // Click on SWAP Review button
+        await swapPage.ClickSwapReviewButton(page)
+        // Click on Initiate SWAP button
+        await swapPage.ClickInitiateSwapButton(page)
+        // Wait for Activity tab list of items - Transaction items
+        try {
+          await page.waitForSelector('.transaction-list', { visible: true, timeout: 1200000 })
+          await page.waitForSelector('.transaction-steps', { visible: true, timeout: 600000 })
+        } catch (e) {
+          if (e instanceof puppeteer.errors.TimeoutError) {
+            await testUtil.takeScreenshot(page, 'sov-btc-swap-transaction-not-found')
+            expect(e, `SWAP (${obj.fromAsset}->${obj.toAsset}) transaction not found under Activity tab`).equals(null)
+          }
         }
-      }
-      const transactionSteps = await page.$eval('.transaction-steps', el => el.textContent)
-      expect(transactionSteps).not.contains('NaN')
+        const transactionSteps = await page.$eval('.transaction-steps', el => el.textContent)
+        expect(transactionSteps).not.contains('NaN')
 
-      const transactions = await page.$$('.transaction-status')
-      await transactions[0].click()
-      await page.waitForSelector('.swap-details_info', { visible: true })
+        const transactions = await page.$$('.transaction-status')
+        await transactions[0].click()
+        await page.waitForSelector('.swap-details_info', { visible: true })
+      }
       // Close
       try {
         await page.close()
