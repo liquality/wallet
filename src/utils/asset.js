@@ -124,6 +124,8 @@ export const isEthereumNativeAsset = asset => {
 }
 
 export const getNativeAsset = asset => {
+  if (cryptoassets[asset]?.type === 'native') return asset
+
   const chainId = cryptoassets[asset]?.chain
   return chainId ? chains[chainId].nativeAsset : asset
 }

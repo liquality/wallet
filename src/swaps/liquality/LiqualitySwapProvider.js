@@ -85,7 +85,6 @@ class LiqualitySwapProvider extends SwapProvider {
       ..._quote,
       ...lockedQuote
     }
-
     if (await this.hasQuoteExpired({ network, walletId, swap: quote })) {
       throw new Error('The quote is expired.')
     }
@@ -142,11 +141,10 @@ class LiqualitySwapProvider extends SwapProvider {
 
     if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'UST') {
       const client = this.getClient(network, walletId, asset, quote.fromAccountId)
-      const value = max ? undefined : BN(quote.fromAmount)
-      const taxFees = await client.getMethod('getTaxFees')(value, 'uusd', (max || !value))
+      const value = max ? undefined : BN(quote.fromAmount).dividedBy(1_000_000) // format in UST
+      const taxFees = await client.getMethod('getTaxFees')(value?.toFixed(), 'uusd', (max || !value))
 
       const fees = {}
-
       for (const feePrice of feePrices) {
         fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice)
           .plus(taxFees)
@@ -160,6 +158,7 @@ class LiqualitySwapProvider extends SwapProvider {
       for (const feePrice of feePrices) {
         fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice)
       }
+
       return fees
     }
   }
