@@ -76,6 +76,7 @@
     "@xchainjs/xchain-util": "^0.2.8",
     "amplitude-js": "^8.5.0",
     "bignumber.js": "^9.0.0",
+    "bip32": "^3.0.1",
     "bip39": "^3.0.2",
     "bitcoinjs-lib": "^5.2.0",
     "bluebird": "^3.7.2",

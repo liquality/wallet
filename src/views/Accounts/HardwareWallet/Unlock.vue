@@ -7,7 +7,7 @@
       </div>
       <div
         class="step-text"
-        v-if="selectedAsset && selectedAsset.chain === 'BTC'"
+        v-if="selectedAsset && selectedAsset.chain === 'bitcoin'"
       >
         <div>
           If you don’t see your existing Ledger accounts below, switch path to
@@ -15,7 +15,7 @@
         </div>
         <div
           class="step-path"
-          v-if="selectedAsset && selectedAsset.chain === 'BTC'"
+          v-if="selectedAsset && selectedAsset.chain === 'bitcoin'"
         >
           <div class="btn-group" v-click-away="hideLedgerBitcoinOptions">
             <button
@@ -310,12 +310,12 @@ export default {
     justify-content: center;
     width: 100%;
     color: #1d1e21;
-    height: 55px;
+    height: 120px;
     background-color: rgba($color: #fff3bc, $alpha: 0.5);
     padding: 5px 20px 5px 20px;
     font-style: normal;
     font-weight: 300;
-    font-size: 11px;
+    font-size: 14px;
     line-height: 16px;
   }
 
