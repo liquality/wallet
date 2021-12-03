@@ -11,7 +11,7 @@
       </template>
       
       <template v-else>
-        <NewWalletText class="splash_tagline_wallet mt-4"/>
+        <NewWalletText class="mt-4"/>
       </template>
     </div>
     <div class="footer-container">
@@ -26,7 +26,7 @@
 import { mapState } from 'vuex'
 import Logo from '@/assets/icons/logo.svg'
 import WalletText from '@/assets/icons/wallet_text.svg'
-import NewWalletText from '@/assets/icons/new_wallet_text.svg'
+import NewWalletText from '@/assets/icons/wallet_tagline.svg'
 
 export default {
   components: {
