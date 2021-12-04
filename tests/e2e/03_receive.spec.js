@@ -53,8 +53,6 @@ describe('Receive tokens ["mainnet","testnet"]', async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-      await homePage.ScrollToEndOfTerms(page)
-      await homePage.ClickOnAcceptPrivacy(page)
     })
     afterEach(async () => {
       try {
@@ -68,6 +66,9 @@ describe('Receive tokens ["mainnet","testnet"]', async () => {
     it('Create a new wallet and check Receive for BTC', async () => {
       // Create new wallet
       await homePage.ClickOnCreateNewWallet(page)
+      // Terms & conditions
+      await homePage.ScrollToEndOfTerms(page)
+      await homePage.ClickOnAcceptPrivacy(page)
       // Set password
       await passwordPage.SubmitPasswordDetails(page, password)
       // Unlocking wallet...
@@ -108,8 +109,6 @@ describe('Receive tokens ["mainnet","testnet"]', async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-      await homePage.ScrollToEndOfTerms(page)
-      await homePage.ClickOnAcceptPrivacy(page)
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
       // Enter seed words and submit
