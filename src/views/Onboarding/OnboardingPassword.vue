@@ -54,7 +54,7 @@ export default {
       return false
     },
     passwordLengthError () {
-      if (this.password && this.password?.length < 8) {
+      if (this.password?.length < 8) {
         return true
       }
       return false
