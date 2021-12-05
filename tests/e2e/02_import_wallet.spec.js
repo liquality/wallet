@@ -19,8 +19,14 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-    await homePage.ScrollToEndOfTerms(page)
-    await homePage.ClickOnAcceptPrivacy(page)
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page, null)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // await homePage.ScrollToEndOfTerms(page)
+    // await homePage.ClickOnAcceptPrivacy(page)
   })
   afterEach(async () => {
     try {
@@ -148,12 +154,6 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
       .contains('disabled')
   })
   it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path-[smoke]', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page, null)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
