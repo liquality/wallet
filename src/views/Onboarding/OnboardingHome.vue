@@ -1197,18 +1197,13 @@ export default {
       scrolledToEnd: false
     }
   },
-  computed: {
-    isImport () {
-      return this.$route.query?.isImport
-    }
-  },
   methods: {
     ...mapActions(['acceptTermsAndConditions']),
     async acceptTnC () {
       await this.acceptTermsAndConditions({
         analyticsAccepted: this.analyticsAccepted
       })
-      this.$router.push(`/onboarding/${this.isImport ? 'import' : 'setup'}`)
+      this.$router.push(`/onboarding/${this.$route.query?.isImport ? 'import' : 'setup'}`)
     },
     setAnalyticsOption (accepted) {
       this.analyticsAccepted = accepted
