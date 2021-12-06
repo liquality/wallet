@@ -25,14 +25,17 @@ if (process.env.NODE_ENV === 'mainnet') {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-      await homePage.ScrollToEndOfTerms(page)
-      await homePage.ClickOnAcceptPrivacy(page)
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
+      await homePage.ScrollToEndOfTerms(page)
+      await homePage.ClickOnAcceptPrivacy(page)
       // Enter seed words and submit
       await homePage.EnterSeedWords(page)
       // Create a password & submit
       await passwordPage.SubmitPasswordDetails(page, password)
+      // overview page
+      await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.HasOverviewPageLoaded(page)
     })
     after(async () => {
       await page.close()
@@ -41,9 +44,6 @@ if (process.env.NODE_ENV === 'mainnet') {
 
     it('SWAP BTC to RBTC - fastBTC', async () => {
       const fromAsset = 'BTC'
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select mainnet for fastBTC e2e
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click asset 1
