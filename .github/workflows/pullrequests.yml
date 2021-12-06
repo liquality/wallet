@@ -14,15 +14,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Discord notification
-        uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
-          title: "${{ github.workflow}}"
-          description: |
-            `Pullrequest created`
-
       - name: Build project
         uses: actions/setup-node@v2.4.1
         env:
@@ -65,4 +56,13 @@ jobs:
           name: screenshots
           path: screenshots
           if-no-files-found: ignore
+
+      - name: Discord notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
+          title: "${{ github.workflow}}"
+          description: |
+            `Pullrequest created`
 
