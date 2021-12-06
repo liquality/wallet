@@ -62,16 +62,6 @@ export default {
       let xPub = null
       // when we ask for ledger accounts from the ledger device we don't have the derivation path
       // the !account doesn't exist in this case or if we call the getter with accountId equals to null
-      if (asset === 'BTC') {
-        console.log(
-          'client getter',
-          network,
-          walletId,
-          asset,
-          accountId,
-          _accountType,
-          account)
-      }
       if (_accountType.includes('ledger') || !account) {
         derivationPath = getDerivationPath(chain, network, _accountIndex, _accountType)
         xPub = account?.xPub
