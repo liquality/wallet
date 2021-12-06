@@ -1,6 +1,5 @@
 import { BitcoinLedgerProvider } from '@liquality/bitcoin-ledger-provider'
 import { fromBase58 } from 'bip32'
-import bitcoin from 'bitcoinjs-lib'
 
 export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
   _ledgerApp
@@ -23,24 +22,6 @@ export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
 
   async getApp () {
     return Promise.resolve(this._ledgerApp)
-  }
-
-  async _getWalletPublicKey (path) {
-    debugger
-    if (this._xPub) {
-      const baseNode = await this.baseDerivationNode()
-      const childNode = baseNode.derivePath(path)
-      const childKey = bitcoin.payments.p2pkh({
-        pubkey: childNode.publicKey,
-        network: this.network
-      })
-      return {
-        publicKey: childNode.publicKey,
-        bitcoinAddress: childKey.address,
-        chainCode: ''
-      }
-    }
-    return super._getWalletPublicKey(path)
   }
 
   async _getBaseDerivationNode () {
