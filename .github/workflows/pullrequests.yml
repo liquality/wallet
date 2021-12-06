@@ -14,6 +14,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: "https://discord.com/api/webhooks/917485021378535514/gmtui0-PQXna7col2MXgx-cO7CBjWS230CIVvu6JpLX2cZQ05NO9Zm0Gm7ZUJWswSW07"
+          title: "${{ github.workflow}}"
+          description: |
+            `Pullrequest created`
+
       - name: Build project
         uses: actions/setup-node@v2.4.1
         env:
@@ -56,3 +64,4 @@ jobs:
           name: screenshots
           path: screenshots
           if-no-files-found: ignore
+
