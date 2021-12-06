@@ -375,6 +375,7 @@ import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import { getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate } from '@/utils/quotes'
+import { isObject } from 'lodash-es'
 
 const ACTIONS_TERMS = {
   lock: {
@@ -662,13 +663,22 @@ export default {
     async updateFee (asset, hash) {
       this.feeSelectorLoading = true
       try {
+        const txKey = Object.keys(this.item).find(
+          (key) => isObject(this.item[key]) && this.item[key].hash === hash
+        )
+        const accountId =
+          txKey === 'toClaimTx'
+            ? this.item.toAccountId
+            : this.item.fromAccountId
+
         await this.updateTransactionFee({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset,
           id: this.item.id,
           hash,
-          newFee: this.newFeePrice
+          newFee: this.newFeePrice,
+          accountId
         })
         // TODO decide if this is a safe option or change approach
         // await this.checkPendingActions({ walletId: this.activeWalletId })

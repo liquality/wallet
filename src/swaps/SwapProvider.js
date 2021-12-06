@@ -120,6 +120,11 @@ class SwapProvider {
    * @returns string address
    */
   async getSwapAddress (network, walletId, asset, accountId) {
+    const account = this.getAccount(accountId)
+    if (account && account.type.includes('ledger')) {
+      return account.addresses[account.addresses.length - 1]
+    }
+
     const [address] = await store.dispatch('getUnusedAddresses', { network, walletId, assets: [asset], accountId })
     return address
   }

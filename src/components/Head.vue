@@ -1,11 +1,22 @@
 <template>
   <div class="head">
-    <router-link to="/wallet" class="head_logo" id="wallet_header_logo"><LogoIcon /></router-link>
-    <div id="head_network" class="head_network" @click.stop="showNetworks = !showNetworks">
+    <router-link to="/wallet" class="head_logo" id="wallet_header_logo"
+      ><LogoIcon
+    /></router-link>
+    <div
+      id="head_network"
+      class="head_network"
+      @click.stop="showNetworks = !showNetworks"
+    >
       {{ activeNetwork }}
       <ChevronUpIcon v-if="showNetworks" />
       <ChevronDownIcon v-else />
-      <ul class="menu_list" id="list_of_networks" v-if="showNetworks" v-click-away="hideNetworks">
+      <ul
+        class="menu_list"
+        id="list_of_networks"
+        v-if="showNetworks"
+        v-click-away="hideNetworks"
+      >
         <li id="mainnet_network" @click="switchNetwork('mainnet')">Mainnet</li>
         <li id="testnet_network" @click="switchNetwork('testnet')">Testnet</li>
       </ul>
@@ -38,7 +49,7 @@ export default {
   computed: {
     ...mapState(['wallets', 'activeWalletId', 'activeNetwork']),
     wallet: function () {
-      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+      return this.wallets.find((wallet) => wallet.id === this.activeWalletId)
     }
   },
   methods: {
@@ -64,14 +75,14 @@ export default {
   align-items: center;
   padding: 0 20px;
 
-   &_logo {
+  &_logo {
     position: absolute;
     left: 10px;
   }
 
-  &_logo, &_logo svg {
+  &_logo,
+  &_logo svg {
     height: 12px;
-
   }
 
   &_network {

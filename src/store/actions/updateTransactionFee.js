@@ -1,7 +1,7 @@
 import { isObject } from 'lodash-es'
 import { unlockAsset } from '../utils'
 
-export const updateTransactionFee = async ({ dispatch, commit, getters }, { network, walletId, asset, id, hash, newFee }) => {
+export const updateTransactionFee = async ({ dispatch, commit, getters }, { network, walletId, asset, id, hash, newFee, accountId }) => {
   const item = getters.historyItemById(network, walletId, id)
 
   const hashKey = Object.keys(item).find(key => item[key] === hash)
@@ -18,7 +18,7 @@ export const updateTransactionFee = async ({ dispatch, commit, getters }, { netw
       network,
       walletId,
       asset,
-      accountId: item.fromAccountId // TODO: confirm if the from account should be used here
+      accountId
     }
   )
 
