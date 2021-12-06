@@ -25,11 +25,8 @@ describe('Terra Custom token-["mainnet"]', async () => {
       await homePage.ClickOnAcceptPrivacy(page)
     })
     afterEach(async () => {
-      try {
+      if (page != null) {
         await page.close()
-        await browser.close()
-      } catch (e) {
-        throw new Error(e)
       }
     })
     it('Terra Mirror custom token add', async () => {
