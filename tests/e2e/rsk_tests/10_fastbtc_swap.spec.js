@@ -80,22 +80,33 @@ if (process.env.NODE_ENV === 'mainnet') {
       }
       await swapPage.EnterSendAmountOnSwap(page, swapAmount)
       // (fastBTC swap provider)
-      try {
-        await page.waitForSelector('#see_all_quotes', {
-          visible: true,
-          timeout: 60000
-        })
-        await page.click('#see_all_quotes')
-        await page.waitForSelector('#fastBTC_rate_provider')
-        await page.click('#fastBTC_rate_provider')
-        await page.click('#select_quote_button')
-      } catch (e) {
-        await testUtil.takeScreenshot(page, 'fastbtc-see-all-quotes')
-        expect(e, 'fastbtc swp between BTC->RBTC failed, sell all quotes not displayed.....').equals(null)
-      }
+      await page.waitForSelector('#selectedQuote_provider', {
+        visible: true,
+        timeout: 60000
+      })
+      await page.waitForTimeout(5000)
+      const quoteProvider = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
+      if (quoteProvider === 'FastBTC') {
+        expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+          'BTC->RBTC,fastBTC swap Provider!!').oneOf(['FastBTC'])
+      } else {
+        try {
+          await page.waitForSelector('#see_all_quotes', {
+            visible: true,
+            timeout: 60000
+          })
+          await page.click('#see_all_quotes')
+          await page.waitForSelector('#fastBTC_rate_provider')
+          await page.click('#fastBTC_rate_provider')
+          await page.click('#select_quote_button')
+        } catch (e) {
+          await testUtil.takeScreenshot(page, 'fastbtc-see-all-quotes')
+          expect(e, 'fastbtc swp between BTC->RBTC failed, sell all quotes not displayed.....').equals(null)
+        }
 
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'BTC->RBTC,fastBTC swap Provider!!').oneOf(['FastBTC'])
+        expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+          'BTC->RBTC,fastBTC swap Provider!!').oneOf(['FastBTC'])
+      }
     })
   })
 }
