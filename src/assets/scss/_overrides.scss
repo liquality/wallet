@@ -1,3 +1,5 @@
+@use "sass:math";
+
 $brand-gradient-primary: linear-gradient(180deg, #302E78 0%, #4866D3 52.08%, #2FAFCA 100%);
 $brand-gradient-secondary: linear-gradient(360deg, #1CE4C3 -10.66%, #4866D3 31.99%, #302E78 81.56%);
 
@@ -75,7 +77,7 @@ $label-margin-bottom: 0;
 
 $wrapper-padding: 20px;
 $grid-gutter-width: 40px;
-$modal-inner-padding: $grid-gutter-width / 2;
+$modal-inner-padding: math.div($grid-gutter-width, 2);
 $modal-footer-margin-between: 4px;
 
 $container-max-widths: (

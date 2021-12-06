@@ -132,7 +132,6 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
-    debugger
     if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'BTC') {
       const client = this.getClient(network, walletId, asset, quote.fromAccountId)
       const value = max ? undefined : BN(quote.fromAmount)
