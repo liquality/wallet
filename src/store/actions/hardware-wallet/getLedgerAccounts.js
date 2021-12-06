@@ -1,19 +1,12 @@
 
 import { assets, chains, ChainId } from '@liquality/cryptoassets'
-import { callToBridge } from '@/utils/ledger-bridge-provider'
+import { callToBridge, getXPubVersion } from '@/utils/ledger-bridge-provider'
 import { getDerivationPath } from '@/utils/derivationPath'
 import {
   RequestNamespace,
   ExecutionMode
 } from '@liquality/hw-web-bridge'
-import { findCryptoCurrencyById } from '@ledgerhq/cryptoassets'
 import BN from 'bignumber.js'
-
-const getXPubVersion = (network) => {
-  const id = network === 'mainnet' ? 'bitcoin' : 'bitcoin_testnet'
-  const { bitcoinLikeInfo: { XPUBVersion } } = findCryptoCurrencyById(id)
-  return XPUBVersion
-}
 
 export const getLedgerAccounts = async (
   { getters },

@@ -24,13 +24,17 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
       )
 
       if (type.includes('ledger')) {
-        addresses = account.addresses
-          .filter(a => typeof a === 'string')
-          .map(address => {
-            return new Address({
-              address: `${address}`
+        if (account.chain === ChainId.Bitcoin && account.xPub) {
+          addresses = await _client.wallet.getUsedAddresses()
+        } else {
+          addresses = account.addresses
+            .filter(a => typeof a === 'string')
+            .map(address => {
+              return new Address({
+                address: `${address}`
+              })
             })
-          })
+        }
       } else {
         addresses = await _client.wallet.getUsedAddresses()
       }
@@ -58,7 +62,7 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
         updatedAddresses = [...addresses.map(a => a.address)]
       }
 
-      const publicKey = addresses.length > 0 && addresses[0].publicKey ? addresses[0].publicKey : null
+      const xPub = addresses.length > 0 && addresses[0].xPub ? addresses[0].xPub : null
       commit('UPDATE_ACCOUNT_ADDRESSES',
         {
           network,
@@ -66,7 +70,7 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
           walletId,
           asset,
           addresses: updatedAddresses,
-          publicKey
+          xPub
         })
     }, { concurrency: 1 })
   }, { concurrency: 1 })

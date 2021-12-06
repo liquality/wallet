@@ -2,6 +2,7 @@ import {
   createClient
 } from '@liquality/hw-web-bridge'
 import store from '@/store'
+import { findCryptoCurrencyById } from '@ledgerhq/cryptoassets'
 
 let bridgeClient = null
 const onTransportConnect = () => {
@@ -56,4 +57,10 @@ export const callToBridge = async (message) => {
       resolve(await bridgeClient.sendMessage(message))
     })
   })
+}
+
+export const getXPubVersion = (network) => {
+  const id = network === 'mainnet' ? 'bitcoin' : 'bitcoin_testnet'
+  const { bitcoinLikeInfo: { XPUBVersion } } = findCryptoCurrencyById(id)
+  return XPUBVersion
 }
