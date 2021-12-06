@@ -27,8 +27,17 @@ describe('SEND feature["testnet"]', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
     try {
@@ -42,16 +51,6 @@ describe('SEND feature["testnet"]', async () => {
   it('Send BTC to another Wrong address. check Review option has been disabled', async () => {
     const bitCoinName = 'BTC'
     const coinsToSend = '0.000001'
-
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
@@ -71,16 +70,6 @@ describe('SEND feature["testnet"]', async () => {
   it('Send BTC to another address,Lower amount. This exceeds available balance.', async () => {
     const bitCoinName = 'BTC'
     const coinsToSend = '10'
-
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
@@ -100,16 +89,6 @@ describe('SEND feature["testnet"]', async () => {
   it('Send SOV to random ETH address', async () => {
     const bitCoinName = 'SOV'
     const coinsToSend = '1'
-
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on bitcoin & Click on Send option
@@ -139,16 +118,6 @@ describe('SEND feature["testnet"]', async () => {
   it('Send BNB to another BNB wallet[smoke]', async () => {
     const bitCoinName = 'BNB'
     const coinsToSend = '0.0000001'
-
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     await overviewPage.SelectChain(page, bitCoinName)
@@ -174,16 +143,6 @@ describe('SEND feature["testnet"]', async () => {
   it.skip('Send BTC to another BTC wallet', async () => {
     const bitCoinName = 'BTC'
     const coinsToSend = '0.0000001'
-
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
@@ -211,16 +170,6 @@ describe('SEND feature["testnet"]', async () => {
   })
   it('ETH Send Max value check against Available Balance', async () => {
     const bitCoinName = 'ETH'
-
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     await overviewPage.SelectChain(page, bitCoinName)
