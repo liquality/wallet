@@ -14,7 +14,6 @@
   "major": {
     "dependencyDashboardApproval": true
   },
-  "commitBody": "[skip ci]",
   "packageRules": [
     {
       "matchDepTypes": [
