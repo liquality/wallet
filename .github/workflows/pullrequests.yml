@@ -14,10 +14,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: sarisia/actions-status-discord@v1
+      - name: Discord notification
+        uses: sarisia/actions-status-discord@v1
         if: always()
         with:
-          webhook: "https://discord.com/api/webhooks/917485021378535514/gmtui0-PQXna7col2MXgx-cO7CBjWS230CIVvu6JpLX2cZQ05NO9Zm0Gm7ZUJWswSW07"
+          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
           title: "${{ github.workflow}}"
           description: |
             `Pullrequest created`
