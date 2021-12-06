@@ -1203,6 +1203,7 @@ export default {
       await this.acceptTermsAndConditions({
         analyticsAccepted: this.analyticsAccepted
       })
+      this.$router.push(`/onboarding/${this.$route.query?.isImport ? 'import' : 'setup'}`)
     },
     setAnalyticsOption (accepted) {
       this.analyticsAccepted = accepted

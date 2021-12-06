@@ -136,3 +136,12 @@ jobs:
           zip: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
           extension: bkhfdnhibdhkbfihmljakbgnldoikgbm
           publishTarget: trustedTesters
+
+      - name: Discord notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
+          title: "${{ github.workflow}}"
+          description: |
+            Release `liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip`

@@ -21,8 +21,17 @@ if (process.env.NODE_ENV === 'mainnet') {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+      // Import wallet option
+      await homePage.ClickOnImportWallet(page)
       await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
+      // Enter seed words and submit
+      await homePage.EnterSeedWords(page)
+      // Create a password & submit
+      await passwordPage.SubmitPasswordDetails(page, password)
+      // overview page
+      await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.HasOverviewPageLoaded(page)
     })
     afterEach(async () => {
       try {
@@ -40,15 +49,6 @@ if (process.env.NODE_ENV === 'mainnet') {
         symbol: 'PRARE',
         decimal: '18'
       }
-      // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
@@ -100,14 +100,6 @@ if (process.env.NODE_ENV === 'mainnet') {
     })
 
     it('BSC - PancakeSwap token remove', async () => { // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
