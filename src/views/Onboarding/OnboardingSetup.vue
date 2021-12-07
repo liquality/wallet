@@ -1,7 +1,7 @@
 <template>
 <div>
-  <OnboardingPassword v-if="currentStep === 'beginning'" @on-unlock="onUnlock"/>
-  <div class="backup-wallet login-wrapper no-outer-pad" v-if="currentStep === 'backup'">
+  <OnboardingPassword v-show="currentStep === 'beginning'" @on-unlock="onUnlock"/>
+  <div class="backup-wallet login-wrapper no-outer-pad" v-show="currentStep === 'backup'">
     <div class="backup-wallet_logo-wrap mx-auto">
         <img :src="logo"/>
     </div>
@@ -13,11 +13,16 @@
       <div class="backup-wallet_seed pt-1" id="backup-wallet_seed_wordlist">
         <span v-for="word in seedList" :key="word" id="backup_seed_word">{{ word }}</span>
       </div>
-      <button class="btn btn-primary btn-lg btn-block btn-icon" id="backup_your_wallet_next_button" @click="pushToConfirm">Next</button>
+      <div class="footer-container">
+        <div class="footer-content">
+          <button class="btn btn-outline-primary btn-lg btn-footer btn-icon" @click="currentStep = 'beginning'">Cancel</button>
+          <button class="btn btn-primary btn-lg btn-footer btn-icon" id="backup_your_wallet_next_button" @click="pushToConfirm">Next</button>
+        </div>
+      </div>
     </div>
   </div>
-  <ConfirmSeed v-if="currentStep === 'confirm'" @on-confirm="confirmMnemonic" @on-cancel="currentStep = 'backup'" :mnemonic="mnemonic" />
-  <Congratulations v-if="currentStep === 'congrats'" />
+  <ConfirmSeed v-show="currentStep === 'confirm'" @on-confirm="confirmMnemonic" @on-cancel="currentStep = 'backup'" :mnemonic="mnemonic" />
+  <Congratulations v-show="currentStep === 'congrats'" />
 </div>
 </template>
 

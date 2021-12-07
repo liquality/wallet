@@ -13,28 +13,32 @@ const passwordPage = new PasswordPage()
 let browser, page, dappPage
 const password = '123123123'
 const dappUrl = 'https://app.uniswap.org/#/swap'
+let ethereumChainId, arbitrumChainId
 
 describe('Uniswap Dapp Injection-[mainnet,testnet,smoke]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-    await homePage.ScrollToEndOfTerms(page)
-    await homePage.ClickOnAcceptPrivacy(page)
-
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
+    await homePage.ScrollToEndOfTerms(page)
+    await homePage.ClickOnAcceptPrivacy(page)
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.HasOverviewPageLoaded(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
+      ethereumChainId = 1
+      arbitrumChainId = 42161
     } else {
       await overviewPage.SelectNetwork(page)
+      ethereumChainId = 3
+      arbitrumChainId = 421611
     }
     // Web3 toggle on
     await overviewPage.ClickWeb3WalletToggle(page)
@@ -82,7 +86,7 @@ describe('Uniswap Dapp Injection-[mainnet,testnet,smoke]', async () => {
         connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
       }
     })
-    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(3)
+    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(ethereumChainId)
     expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
       .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })
@@ -132,7 +136,7 @@ describe('Uniswap Dapp Injection-[mainnet,testnet,smoke]', async () => {
         connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
       }
     })
-    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(421611)
+    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(arbitrumChainId)
     expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
       .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })

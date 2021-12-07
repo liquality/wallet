@@ -75,7 +75,7 @@ export default {
         type: SwapProviderType.SOVRYN,
         routerAddress: SovrynTestnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynTestnetAddresses.proxy3,
-        rpcURL: 'https://public-node.testnet.rsk.co/'
+        rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_TESTNET
       }
     },
     mainnet: {
@@ -123,7 +123,7 @@ export default {
         type: SwapProviderType.SOVRYN,
         routerAddress: SovrynMainnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynMainnetAddresses.proxy3,
-        rpcURL: 'https://public-node.rsk.co/'
+        rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET
       }
     }
   },
