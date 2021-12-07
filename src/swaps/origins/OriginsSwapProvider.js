@@ -13,6 +13,7 @@ import { SwapProvider } from '../SwapProvider'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
 import controllerABI from './abi/controllerAbi.json'
+import presaleABI from './abi/presale.json'
 
 class OriginsSwapProvider extends SwapProvider {
   constructor (config) {
@@ -36,7 +37,7 @@ class OriginsSwapProvider extends SwapProvider {
     if (from !== 'SOV' || to !== 'ZERO') return null
 
     // calculate rates
-    const rate = 100
+    const rate = await this.getDepositRate(network)
 
     const fromAmountInUnit = currencyToUnit(fromInfo, BN(amount)).toFixed()
     const toAmountInUnit = BN(fromAmountInUnit).times(rate)
@@ -47,6 +48,14 @@ class OriginsSwapProvider extends SwapProvider {
       fromAmount: fromAmountInUnit,
       toAmount: toAmountInUnit
     }
+  }
+
+  async getDepositRate (network) {
+    const erc20 = new ethers.Contract(this.config.presaleAddress, presaleABI, this._getApi(network, 'ZERO'))
+
+    const PPM = (await erc20.PPM()).toString()
+    const exchangeRate = (await erc20.exchangeRate()).toString()
+    return BN(exchangeRate).dividedBy(BN(PPM)).toNumber()
   }
 
   async newSwap ({ network, walletId, quote }) {
