@@ -8,12 +8,11 @@ import { isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
 import { ChainNetworks } from '@/utils/networks'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
+import store from '../../store'
 import { SwapProvider } from '../SwapProvider'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
-import { OriginsContractAddresses } from '@/build.config'
 import controllerABI from './abi/controllerAbi.json'
-import tokenABI from './abi/token.json'
 
 class OriginsSwapProvider extends SwapProvider {
   constructor (config) {
@@ -73,12 +72,10 @@ class OriginsSwapProvider extends SwapProvider {
     if (!isERC20(quote.from)) return false
 
     const fromInfo = cryptoassets[quote.from]
-    const toInfo = cryptoassets[quote.to]
     const erc20 = new ethers.Contract(fromInfo.contractAddress.toLowerCase(), ERC20.abi, this._getApi(network, quote.from))
 
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
-    const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw, network)
-    const spender = ((fromInfo.type === 'native' || toInfo.type === 'native') ? this.config.routerAddressRBTC : this.config.routerAddress).toLowerCase()
+    const [fromAddress] = await store.dispatch('getUnusedAddresses', { network, walletId, assets: [quote.from], accountId: quote.toAccountId })
+    const spender = this.config.presaleAddress.toLowerCase()
     const allowance = await erc20.allowance(fromAddress.toLowerCase(), spender)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     if (allowance.gte(inputAmount)) {
@@ -90,17 +87,14 @@ class OriginsSwapProvider extends SwapProvider {
 
   async buildApprovalTx ({ network, walletId, quote }) {
     const fromInfo = cryptoassets[quote.from]
-    const erc20 = new ethers.Contract(OriginsContractAddresses[network].ZERO_token, tokenABI, this._getApi(network, quote.from))
+    const [fromAddress] = await store.dispatch('getUnusedAddresses', { network, walletId, assets: [quote.from], accountId: quote.toAccountId })
+    const erc20 = new ethers.Contract(fromAddress, ERC20.abi, this._getApi(network, quote.from))
 
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     const inputAmountHex = inputAmount.toHexString()
     // in case native token is involved -> give allowance to wrapper contract
-    const spender = OriginsContractAddresses[network].ZERO_controller // ((fromInfo.type === 'native' || toInfo.type === 'native') ? this.config.routerAddressRBTC : this.config.routerAddress).toLowerCase()
+    const spender = this.config.presaleAddress.toLowerCase()
     const encodedData = erc20.interface.encodeFunctionData('approve', [spender, inputAmountHex])
-
-    const fromChain = fromInfo.chain
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
-    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
 
     return {
       from: fromAddress, // Required for estimation only (not used in chain client)
@@ -133,14 +127,16 @@ class OriginsSwapProvider extends SwapProvider {
   // ======== SWAP ========
 
   async buildSwapTx ({ network, walletId, quote }) {
-    const ctrlContract = new ethers.Contract(OriginsContractAddresses[network].ZERO_controller, controllerABI, this._getApi(network, quote.from))
-    const currencyAmount = unitToCurrency(cryptoassets[quote.from], quote.fromAmount).toFixed()
-    const encodedData = ctrlContract.interface.encodeFunctionData('contribute', [currencyAmount])
+    const ctrlContract = new ethers.Contract(this.config.controllerAddress, controllerABI, this._getApi(network, quote.from))
+    const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
+    const inputAmountHex = inputAmount.toHexString()
+    const encodedData = ctrlContract.interface.encodeFunctionData('contribute', [inputAmountHex])
+    const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
 
     return {
       from: quote.fromAccountId, // Required for estimation only (not used in chain client)
-      to: OriginsContractAddresses[network].ZERO_controller,
-      value: currencyAmount,
+      to: this.config.controllerAddress,
+      value: value,
       data: encodedData,
       fee: quote.fee
     }

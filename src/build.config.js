@@ -7,7 +7,8 @@ export const OriginsContractAddresses = {
   mainnet: {},
   testnet: {
     ZERO_token: '0xac5c5917e713581c8c8b78c7b12f2d67da0323f0',
-    ZERO_controller: '0x75e28c6fa259811862bb65f7cc02c683deca7f96'
+    ZERO_controller: '0x75e28c6fa259811862bb65f7cc02c683deca7f96',
+    ZERO_presale: '0xC4C82fE6d6D531cf7bE8DaC7F9F0Ba63FED4c8d0'
   }
 }
 
@@ -91,7 +92,8 @@ export default {
         name: 'Origins',
         icon: 'origins.svg',
         type: SwapProviderType.ORIGINS,
-        routerAddress: OriginsContractAddresses.testnet.ZERO_controller,
+        controllerAddress: OriginsContractAddresses.testnet.ZERO_controller,
+        presaleAddress: OriginsContractAddresses.testnet.ZERO_presale,
         rpcURL: 'https://public-node.testnet.rsk.co/'
       }
     },
