@@ -21,13 +21,7 @@ class OriginsSwapProvider extends SwapProvider {
   }
 
   async getSupportedPairs () {
-    return [{
-      from: 'SOV',
-      to: 'ZERO',
-      rate: 100,
-      max: currencyToUnit(cryptoassets.SOV, 100000).toFixed(),
-      min: currencyToUnit(cryptoassets.SOV, 0).toFixed()
-    }]
+    return []
   }
 
   // returns rates between tokens
@@ -37,6 +31,9 @@ class OriginsSwapProvider extends SwapProvider {
 
     // only RSK network swaps
     if (fromInfo.chain !== 'rsk' || toInfo.chain !== 'rsk' || amount <= 0) return null
+
+    // this provider supports only SOV->ZERO.
+    if (from !== 'SOV' || to !== 'ZERO') return null
 
     // calculate rates
     const rate = 100
