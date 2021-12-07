@@ -97,7 +97,7 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <router-link :to="`/settings/manage-assets`"><button id="cancel_add_token_button" class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
-          <button id="add_token_button" class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd || existingAsset || isExistingNetworkAsset">Add Token</button>
+          <button id="add_token_button" class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd || existingAsset">Add Token</button>
         </div>
       </div>
     </div>
@@ -136,11 +136,18 @@ export default {
     networkAssets () {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
     },
-    isExistingNetworkAsset () {
-      return Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
+    chainNativeAsset() {
+      return {
+        ethereum: 'ETH',
+        rsk: 'RSK',
+        bsc: 'BSC',
+        polygon: 'MATIC',
+        arbitrum: 'ARB',
+        terra: 'LUNA'
+      }[this.chain]
     },
     symbolError () {
-      if ((!this.autofilled && Object.keys(cryptoassets).includes(this.symbol)) || this.isExistingNetworkAsset) {
+      if ((!this.autofilled && Object.keys(cryptoassets).includes(this.symbol))) {
         return 'Token with this symbol exists.'
       }
       return null
@@ -194,6 +201,9 @@ export default {
       this.assetExists = false
       this.autofilled = false
     },
+    existingSymbol(symbol) {
+      return Boolean(this.networkAssets.find(_symbol => _symbol === symbol))
+    },
     fetchToken: debounce(async function () {
       this.resetFields()
 
@@ -203,7 +213,10 @@ export default {
         customToken = this.existingAsset
       } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
         const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
-        customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
+        
+        const symbolWithPrefix = this.existingSymbol(symbol) ? this.chainNativeAsset + '-' + symbol : symbol
+
+        customToken = { symbol: symbolWithPrefix, name, decimals: parseInt(decimals), chain: this.chain }
       }
 
       if (customToken) {
