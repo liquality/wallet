@@ -21,7 +21,7 @@
                 <a class="dropdown-item"
                    id="ethereum_chain"
                    href="#"
-                   @click="selectChain('ethereum')"
+                   @click="selectChain('ethereum', 'ETH')"
                    :class="{active: chain === 'ethereum'}">
                   Ethereum (ETH)
                 </a>
@@ -30,7 +30,7 @@
                 <a class="dropdown-item"
                    id="rsk_chain"
                    href="#"
-                   @click="selectChain('rsk')"
+                   @click="selectChain('rsk', 'RBTC')"
                    :class="{active: chain === 'rsk'}">
                   Rootstock (RSK)
                 </a>
@@ -39,7 +39,7 @@
                 <a class="dropdown-item"
                    id="bsc_chain"
                    href="#"
-                   @click="selectChain('bsc')"
+                   @click="selectChain('bsc', 'BSC')"
                    :class="{active: chain === 'bsc'}">
                   Binance Smart Chain (BSC)
                 </a>
@@ -48,7 +48,7 @@
                 <a class="dropdown-item"
                    id="polygon_chain"
                    href="#"
-                   @click="selectChain('polygon')"
+                   @click="selectChain('polygon', 'MATIC')"
                    :class="{active: chain === 'polygon'}">
                   Polygon (MATIC)
                 </a>
@@ -57,7 +57,7 @@
                 <a class="dropdown-item"
                    id="arbitrum_chain"
                    href="#"
-                   @click="selectChain('arbitrum')"
+                   @click="selectChain('arbitrum', 'ARB')"
                    :class="{active: chain === 'arbitrum'}">
                   Arbitrum (ARB)
                 </a>
@@ -66,7 +66,7 @@
                 <a class="dropdown-item"
                    id="terra_chain"
                    href="#"
-                   @click="selectChain('terra')"
+                   @click="selectChain('terra', 'LUNA')"
                    :class="{active: chain === 'terra'}">
                   Terra (LUNA)
                 </a>
@@ -128,23 +128,14 @@ export default {
       chain: null,
       autofilled: false,
       chainDropdownOpen: false,
-      isSymbolEditable: false
+      isSymbolEditable: false,
+      nativeAsset: ''
     }
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets']),
     networkAssets () {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
-    },
-    chainNativeAsset() {
-      return {
-        ethereum: 'ETH',
-        rsk: 'RSK',
-        bsc: 'BSC',
-        polygon: 'MATIC',
-        arbitrum: 'ARB',
-        terra: 'LUNA'
-      }[this.chain]
     },
     symbolError () {
       if ((!this.autofilled && Object.keys(cryptoassets).includes(this.symbol))) {
@@ -214,7 +205,7 @@ export default {
       } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
         const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
         
-        const symbolWithPrefix = this.existingSymbol(symbol) ? this.chainNativeAsset + '-' + symbol : symbol
+        const symbolWithPrefix = this.existingSymbol(symbol) ? this.nativeAsset + '-' + symbol : symbol
 
         customToken = { symbol: symbolWithPrefix, name, decimals: parseInt(decimals), chain: this.chain }
       }
@@ -227,8 +218,9 @@ export default {
         this.isSymbolEditable = Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
       }
     }, 500),
-    async selectChain (chain) {
+    async selectChain (chain, nativeAsset) {
       this.chain = chain
+      this.nativeAsset = nativeAsset
       this.chainDropdownOpen = false
       this.resetFields()
       this.fetchToken()
