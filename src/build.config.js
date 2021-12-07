@@ -4,7 +4,11 @@ import SovrynMainnetAddresses from '@blobfishkate/sovryncontracts/contracts-main
 import SovrynTestnetAddresses from '@blobfishkate/sovryncontracts/contracts-testnet.json'
 
 export const OriginsContractAddresses = {
-  mainnet: {},
+  mainnet: {
+    ZERO_token: '0x-mainnet-address-here',
+    ZERO_controller: '0x-mainnet-address-here',
+    ZERO_presale: '0x-mainnet-address-here'
+  },
   testnet: {
     ZERO_token: '0xac5c5917e713581c8c8b78c7b12f2d67da0323f0',
     ZERO_controller: '0x75e28c6fa259811862bb65f7cc02c683deca7f96',
@@ -148,8 +152,8 @@ export default {
         name: 'Origins',
         icon: 'origins.svg',
         type: SwapProviderType.ORIGINS,
-        routerAddress: SovrynTestnetAddresses.swapNetwork,
-        // routerAddressRBTC: SovrynTestnetAddresses.proxy3,
+        controllerAddress: OriginsContractAddresses.mainnet.ZERO_controller,
+        presaleAddress: OriginsContractAddresses.mainnet.ZERO_presale,
         rpcURL: 'https://public-node.testnet.rsk.co/'
       }
     }
