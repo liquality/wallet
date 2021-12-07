@@ -54,18 +54,8 @@ if (process.env.NODE_ENV === 'mainnet') {
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
       // Add Custom token screen
       await page.waitForSelector('#contractAddress', { visible: true })
       // select chain

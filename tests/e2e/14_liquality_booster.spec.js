@@ -93,9 +93,6 @@ if (process.env.NODE_ENV === 'mainnet') {
     it('SWAP (BTC->PUSDT (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PUSDT'
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select testnet
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click on BTC then click on SWAP button
