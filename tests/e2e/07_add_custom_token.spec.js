@@ -54,18 +54,8 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
       // Add Custom token screen
       await page.waitForSelector('#contractAddress', { visible: true })
       // select chain
@@ -107,19 +97,8 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
-
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
       // select chain
       // await page.evaluate( () => document.getElementById("contractAddress").value = "")
       await page.waitForSelector('#select_chain_dropdown', { visible: true })
@@ -193,18 +172,8 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
 
       // select chain
       await page.waitForSelector('#select_chain_dropdown', { visible: true })
@@ -240,18 +209,8 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
 
       // select chain
       await page.waitForSelector('#select_chain_dropdown', { visible: true })
@@ -287,19 +246,8 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
-
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
       // select chain
       await page.waitForSelector('#select_chain_dropdown', { visible: true })
       await page.click('#select_chain_dropdown')
@@ -334,18 +282,8 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
       // Add Custom token screen
       await page.waitForSelector('#contractAddress', { visible: true })
       // select chain
@@ -401,18 +339,8 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
         symbol: 'Cake',
         decimal: '18'
       }
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
 
       // select chain
       await page.waitForSelector('#select_chain_dropdown', { visible: true })
