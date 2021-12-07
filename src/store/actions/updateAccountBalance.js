@@ -28,7 +28,7 @@ export const updateAccountBalance = async ({ state, commit, getters }, { network
         ? 0
         : (await _client.chain.getBalance(
           addresses
-        )).toNumber()
+        )).toString()
 
       commit('UPDATE_BALANCE', { network, accountId, walletId, asset, balance })
     })

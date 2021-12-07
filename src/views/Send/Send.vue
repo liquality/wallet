@@ -524,7 +524,7 @@ export default {
         const amount = currencyToUnit(
           cryptoassets[this.asset],
           amountToSend
-        ).toNumber()
+        ).toString()
 
         // validate for custom fees
         const fee = this.feesAvailable

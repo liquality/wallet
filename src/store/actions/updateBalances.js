@@ -38,7 +38,7 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
       try {
         const balance = addresses.length === 0
           ? 0
-          : (await _client.chain.getBalance(addresses)).toNumber()
+          : (await _client.chain.getBalance(addresses)).toString()
 
         commit('UPDATE_BALANCE', { network, accountId: account.id, walletId, asset, balance })
       } catch (err) {
