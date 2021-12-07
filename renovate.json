@@ -1,29 +1,18 @@
 {
-  "timezone": "America/New_York",
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "baseBranches": ["dev"],
   "extends": [
     "config:base",
     ":dependencyDashboard",
-    "github>whitesource/merge-confidence:beta"
-  ],
-  "includePaths": [
-    "package.json"
+    ":dependencyDashboardApproval"
   ],
   "schedule": [
+    "after 10pm every weekday",
+    "before 5am every weekday",
     "every weekend"
   ],
   "major": {
     "dependencyDashboardApproval": true
-  },
-  "semanticCommits": "auto",
-  "rangeStrategy": "bump",
-  "rebaseLabel": "rebase",
-  "rebaseWhen": "auto",
-  "requiredStatusChecks": [],
-  "commitBody": "[skip ci]",
-  "lockFileMaintenance": {
-    "enabled": true,
-    "automerge": true
   },
   "packageRules": [
     {
@@ -33,11 +22,7 @@
       "automerge": true
     },
     {
-      "matchPackagePatterns": ["lint", "prettier"]
-    },
-    {
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchCurrentVersion": "!/^0/",
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
     }
   ]
