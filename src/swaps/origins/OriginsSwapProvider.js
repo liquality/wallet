@@ -36,6 +36,9 @@ class OriginsSwapProvider extends SwapProvider {
     // this provider supports only SOV->ZERO.
     if (from !== 'SOV' || to !== 'ZERO') return null
 
+    const isClosed = await this.checkSaleClosed(network)
+    if (isClosed) return null
+
     // calculate rates
     const rate = await this.getDepositRate(network)
 
@@ -48,6 +51,12 @@ class OriginsSwapProvider extends SwapProvider {
       fromAmount: fromAmountInUnit,
       toAmount: toAmountInUnit
     }
+  }
+
+  async checkSaleClosed (network) {
+    const erc20 = new ethers.Contract(this.config.presaleAddress, presaleABI, this._getApi(network, 'ZERO'))
+    const isClosed = await erc20.isClosed()
+    return isClosed
   }
 
   async getDepositRate (network) {
