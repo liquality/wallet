@@ -23,7 +23,7 @@ jobs:
         # Create screenshots directory
       - run: mkdir screenshots
 
-      - uses: actions/cache@v2.1.6
+      - uses: actions/cache@v2.1.7
         id: cache
         with:
           path: ~/.npm
