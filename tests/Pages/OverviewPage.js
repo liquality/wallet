@@ -124,83 +124,83 @@ class OverviewPage {
    * @example SelectChain(page,'BITCOIN')
    */
   async SelectChain (page, chain) {
-    const timeout = 120000
+    const elementVisibleTimeout = 120000
     await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
       case 'BTC': {
-        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
-        await page.click(`#${chain}`)
+        await page.waitForSelector('#BITCOIN', { timeout: elementVisibleTimeout, visible: true })
+        await page.click('#BITCOIN')
         break
       }
 
       case 'DAI':
       case 'ETH': {
-        const eth = await page.waitForSelector('#ETHEREUM', { timeout, visible: true })
+        const eth = await page.waitForSelector('#ETHEREUM', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'BNB': {
-        const eth = await page.waitForSelector('#BSC', { timeout, visible: true })
+        const eth = await page.waitForSelector('#BSC', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'NEAR': {
-        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
-        const eth = await page.waitForSelector('#NEAR', { timeout, visible: true })
+        const eth = await page.waitForSelector('#NEAR', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
         break
       }
 
       case 'ARBETH': {
-        const eth = await page.waitForSelector('#ARBITRUM', { timeout, visible: true })
+        const eth = await page.waitForSelector('#ARBITRUM', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'SOV':
       case 'RBTC': {
-        const eth = await page.waitForSelector('#RSK', { timeout, visible: true })
+        const eth = await page.waitForSelector('#RSK', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'MATIC':
       case 'PWETH': {
-        const eth = await page.waitForSelector('#POLYGON', { timeout, visible: true })
+        const eth = await page.waitForSelector('#POLYGON', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
       case 'SOL': {
-        const eth = await page.waitForSelector('#SOLANA', { timeout, visible: true })
+        const eth = await page.waitForSelector('#SOLANA', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         // check assert value
-        await page.waitForSelector('.list-item-detail', { timeout, visible: true })
+        await page.waitForSelector('.list-item-detail', { timeout: elementVisibleTimeout, visible: true })
         // check assert fiat value
-        await page.waitForSelector('.list-item-detail-sub', { timeout, visible: true })
+        await page.waitForSelector('.list-item-detail-sub', { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'LUNA':
       case 'UST': {
-        const terra = await page.waitForSelector('#TERRA', { timeout, visible: true })
+        const terra = await page.waitForSelector('#TERRA', { timeout: elementVisibleTimeout, visible: true })
         await terra.click()
         // click on token
-        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }

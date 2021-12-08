@@ -68,14 +68,14 @@ describe('SEND feature["testnet"]', async () => {
     await sendPage.HasReviewButtonDisabled(page)
   })
   it('Send BTC to another address,Lower amount. This exceeds available balance.', async () => {
-    const bitCoinName = 'BTC'
+    const assetName = 'BTC'
     const coinsToSend = '10'
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
+    await searchAssetPage.SearchForAnAsset(page, assetName)
 
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
@@ -87,15 +87,15 @@ describe('SEND feature["testnet"]', async () => {
     await sendPage.HasReviewButtonDisabled(page)
   })
   it('Send SOV to random ETH address', async () => {
-    const bitCoinName = 'SOV'
+    const assetName = 'SOV'
     const coinsToSend = '1'
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on bitcoin & Click on Send option
-    await overviewPage.SelectChain(page, bitCoinName)
+    await overviewPage.SelectChain(page, assetName)
     await page.waitForSelector('#SOV_send_button', { visible: true })
     // Check view explorer
-    await overviewPage.HasViewExplorerDisplayed(page, bitCoinName)
+    await overviewPage.HasViewExplorerDisplayed(page, assetName)
     await page.click('#SOV_send_button')
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
@@ -116,11 +116,11 @@ describe('SEND feature["testnet"]', async () => {
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
   })
   it('Send BNB to another BNB wallet[smoke]', async () => {
-    const bitCoinName = 'BNB'
+    const assetName = 'BNB'
     const coinsToSend = '0.0000001'
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    await overviewPage.SelectChain(page, bitCoinName)
+    await overviewPage.SelectChain(page, assetName)
     await page.waitForSelector('#BNB_send_button', { visible: true })
     await page.click('#BNB_send_button')
     // Enter send amount (or) coins
@@ -141,14 +141,14 @@ describe('SEND feature["testnet"]', async () => {
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
   })
   it.skip('Send BTC to another BTC wallet', async () => {
-    const bitCoinName = 'BTC'
+    const assetName = 'BTC'
     const coinsToSend = '0.0000001'
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
+    await searchAssetPage.SearchForAnAsset(page, assetName)
 
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
@@ -169,12 +169,12 @@ describe('SEND feature["testnet"]', async () => {
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
   })
   it('ETH Send Max value check against Available Balance', async () => {
-    const bitCoinName = 'ETH'
+    const assetName = 'ETH'
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    await overviewPage.SelectChain(page, bitCoinName)
-    await page.waitForSelector(`#${bitCoinName}_send_button`, { visible: true })
-    await page.click(`#${bitCoinName}_send_button`)
+    await overviewPage.SelectChain(page, assetName)
+    await page.waitForSelector(`#${assetName}_send_button`, { visible: true })
+    await page.click(`#${assetName}_send_button`)
     // Click on Max
     await sendPage.SelectMaxSend(page)
     // Validate Available amount vs send amount
