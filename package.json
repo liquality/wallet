@@ -131,7 +131,7 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
     "ethereumjs-wallet": "^1.0.1",
-    "husky": "^5.0.4",
+    "husky": "7.0.4",
     "jest": "^26.4.2",
     "jest-environment-jsdom-fifteen": "^1.0.2",
     "kcd-scripts": "^11.2.0",
