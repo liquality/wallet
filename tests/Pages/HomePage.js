@@ -65,7 +65,9 @@ class HomePage {
     const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', { visible: true })
     await importWithSeedOptionElement.click()
     console.log('Import with seed phrase option has been displayed')
-    await page.waitForSelector('#import-wallet_top', { visible: true })
+    await page.waitForSelector('#terms_privacy_accept_button', {
+      visible: true
+    })
   }
 
   /**

@@ -68,7 +68,7 @@
                    href="#"
                    @click="selectChain('terra')"
                    :class="{active: chain === 'terra'}">
-                  Terra (Terra)
+                  Terra (LUNA)
                 </a>
               </li>
             </ul>
@@ -86,7 +86,7 @@
           <div class="form-group">
             <label for="tokenSymbol">Token Symbol</label>
             <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled && !isSymbolEditable">
-            <small v-if="symbol && symbolError" class="text-danger form-text text-right">{{ symbolError }}</small>
+            <small v-if="symbol && symbolError" id="token_with_this_symbol_exits" class="text-danger form-text text-right">{{ symbolError }}</small>
           </div>
           <div class="form-group">
             <label for="decimals">Decimals</label>

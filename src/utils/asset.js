@@ -190,7 +190,7 @@ export const tokenDetailProviders = {
   },
   rsk: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, 'https://public-node.rsk.co')
+      return await fetchTokenDetails(contractAddress, process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET)
     }
   },
   bsc: {

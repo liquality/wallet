@@ -91,13 +91,6 @@ jobs:
         with:
           args: npm run test:mainnet:prodagent #Run tests against Prod mainnet
 
-      - name: Archive Mocha HTML report
-        uses: actions/upload-artifact@v2.2.4
-        if: always()
-        with:
-          name: mocha-html-test-report
-          path: mochawesome-report
-
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.2.4
         if: always()
@@ -105,6 +98,12 @@ jobs:
           name: screenshots
           path: screenshots
           if-no-files-found: ignore
+
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
+        id: Changelog
+        env:
+          REPO: ${{ github.repository }}
 
       - name: Create Release
         id: create_release
@@ -114,6 +113,8 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
+          body: |
+            ${{ steps.Changelog.outputs.changelog }}
 
       - name: Upload release
         uses: actions/upload-release-asset@v1
@@ -135,3 +136,12 @@ jobs:
           zip: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
           extension: bkhfdnhibdhkbfihmljakbgnldoikgbm
           publishTarget: trustedTesters
+
+      - name: Discord notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
+          title: "${{ github.workflow}}"
+          description: |
+            Release `liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip`

@@ -23,14 +23,17 @@ describe('SWAP feature["testnet"]', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-    await homePage.ScrollToEndOfTerms(page)
-    await homePage.ClickOnAcceptPrivacy(page)
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
+    await homePage.ScrollToEndOfTerms(page)
+    await homePage.ClickOnAcceptPrivacy(page)
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
     try {
@@ -44,10 +47,6 @@ describe('SWAP feature["testnet"]', async () => {
   it.skip('SWAP BTC to ETH (LIQUALITY)', async () => {
     const asset1 = 'BTC'
     const asset2 = 'ETH'
-
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -122,17 +121,14 @@ describe('SWAP feature["testnet"]', async () => {
     await page.waitForSelector('#initiate_swap_button:not([disabled])', { timeout: 5000 })
   })
   it('SWAP SOV to BTC', async () => {
-    const asset1 = 'SOV'
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
+    const fromAsset = 'SOV'
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on SOV then click on SWAP button
-    await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
-    await page.click(`#${asset1}_swap_button`)
-    console.log(chalk.green(`User clicked on ${asset1} SWAP button`))
+    await overviewPage.SelectChain(page, fromAsset)
+    await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+    await page.click(`#${fromAsset}_swap_button`)
+    console.log(chalk.green(`User clicked on ${fromAsset} SWAP button`))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'SOV to BTC SWAP min value not set in input')
@@ -146,9 +142,16 @@ describe('SWAP feature["testnet"]', async () => {
     // Click on Initiate SWAP button
     await swapPage.ClickInitiateSwapButton(page)
 
-    // Wait for Activity tab list of items
-    await page.waitForSelector('.transaction-list', { visible: true, timeout: 600000 })
-    await page.waitForSelector('.transaction-steps', { visible: true, timeout: 600000 })
+    // Wait for Activity tab list of items - Transaction items
+    try {
+      await page.waitForSelector('.transaction-list', { visible: true, timeout: 1200000 })
+      await page.waitForSelector('.transaction-steps', { visible: true, timeout: 600000 })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'sov-btc-swap-transaction-not-found')
+        expect(e, 'sov to btc swap transaction not found under Activity tab').equals(null)
+      }
+    }
     const transactionSteps = await page.$eval('.transaction-steps', el => el.textContent)
     expect(transactionSteps).not.contains('NaN')
 
@@ -185,9 +188,6 @@ describe('SWAP feature["testnet"]', async () => {
     })
   })
   it('SWAP (BTC->ETH) - Thorchain-[smoke]', async () => {
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -206,9 +206,6 @@ describe('SWAP feature["testnet"]', async () => {
     await swapPage.HasReviewButtonDisabled(page)
   })
   it('SWAP (ETH->BTC) - Thorchain', async () => {
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -225,9 +222,6 @@ describe('SWAP feature["testnet"]', async () => {
       'ETH->BTC swap, Thorchain source should be chosen!').oneOf(['Thorchain', 'Liquality'])
   })
   it('SWAP (ETHEREUM),Please increase amount. It is below minimum.', async () => {
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on ETH then click on SWAP button
@@ -244,9 +238,6 @@ describe('SWAP feature["testnet"]', async () => {
     await swapPage.HasReviewButtonDisabled(page)
   })
   it('SWAP(ETHEREUM),Lower amount. This exceeds available balance.(Thorchain)', async () => {
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     await overviewPage.SelectChain(page, 'ETH')
@@ -268,32 +259,26 @@ describe('SWAP feature["testnet"]', async () => {
     await swapPage.HasReviewButtonDisabled(page)
   })
   it('SWAP (NEAR->BTC)', async () => {
-    const asset1 = 'NEAR'
-    const asset2 = 'BTC'
-
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
-
+    const fromAsset = 'NEAR'
+    const toAsset = 'BTC'
     // Select testnet
     await overviewPage.SelectNetwork(page)
-
     // Click first assert then click on SWAP button
-    await overviewPage.SelectChain(page, asset1)
-    await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
-    await page.click(`#${asset1}_swap_button`)
-    console.log(chalk.green(`User clicked on ${asset1} SWAP button`))
+    await overviewPage.SelectChain(page, fromAsset)
+    await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+    await page.click(`#${fromAsset}_swap_button`)
+    console.log(chalk.green(`User clicked on ${fromAsset} SWAP button`))
 
     // Swap screen
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-    expect(swapSendAmountField, `${asset1} to ${asset2} SWAP min value not set in input`)
+    expect(swapSendAmountField, `${fromAsset} to ${toAsset} SWAP min value not set in input`)
       .not.equals('0.0000')
     // Validate Min has been active
     expect(await page.$eval('#min_amount_send_button', (el) => el.getAttribute('class'))).contain('active')
 
     // Check source name
     expect(await swapPage.GetSelectedServiceProvider(page),
-      `${asset1}->${asset2} swap, source should be chosen!`).oneOf(['Thorchain', 'Liquality'])
+      `${fromAsset}->${toAsset} swap, source should be chosen!`).oneOf(['Thorchain', 'Liquality'])
 
     // Click on selected Quote service provider
     await page.click('#selectedQuote_provider')
@@ -317,50 +302,46 @@ describe('SWAP feature["testnet"]', async () => {
     // SWAP review screen validations
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
-    expect(sendAmountValue.trim()).contain(asset1)
-    console.log(`${asset1} SEND value on SWAP review page`, sendAmountValue)
+    expect(sendAmountValue.trim()).contain(fromAsset)
+    console.log(`${fromAsset} SEND value on SWAP review page`, sendAmountValue)
 
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
-    console.log(`${asset1} SEND value in USD on SWAP review page`, swapSendAmountInDollar)
+    console.log(`${fromAsset} SEND value in USD on SWAP review page`, swapSendAmountInDollar)
     expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00')
       .not.contain('$0.00')
 
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
-    console.log(`${asset1} SEND Network Fee value on SWAP review page`, swapSendNetworkFeeValue)
-    expect(swapSendNetworkFeeValue.trim()).contain(asset1)
+    console.log(`${fromAsset} SEND Network Fee value on SWAP review page`, swapSendNetworkFeeValue)
+    expect(swapSendNetworkFeeValue.trim()).contain(fromAsset)
 
     await page.waitForTimeout(2000)
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
-    expect(swapSendNetworkFeeInDollar.trim(), `Send Network fee should not be $0.00 for ${asset1}`)
+    expect(swapSendNetworkFeeInDollar.trim(), `Send Network fee should not be $0.00 for ${fromAsset}`)
       .not.contain('NaN')
 
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
-    expect(swapSendAccountFeesValue.trim()).contain(asset1)
+    expect(swapSendAccountFeesValue.trim()).contain(fromAsset)
 
     const swapSendAccountFeesInDollar = await swapPage.GetSwapSendAccountFeesInDollar(page)
-    // expect(swapSendAccountFeesInDollar.trim()).not.contain('$0.00')
     expect(swapSendAccountFeesInDollar.trim()).not.contain('NaN')
 
     // Receive details validation
     const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
-    expect(receiveAmountValue.trim()).contain(asset2)
+    expect(receiveAmountValue.trim()).contain(toAsset)
 
     const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    // expect(receiveAmountInDollar.trim()).not.contain('$0.00')
     expect(receiveAmountInDollar.trim()).not.contain('NaN')
 
     const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
-    expect(receiveNetworkFeeValue.trim()).contain(asset2)
+    expect(receiveNetworkFeeValue.trim()).contain(toAsset)
 
     const receiveNetworkFeeInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    // expect(receiveNetworkFeeInDollar.trim()).not.contain('$0.00')
     expect(receiveNetworkFeeInDollar.trim()).not.contain('NaN')
 
     const receiveAccountFeesValue = await swapPage.GetSwapReceiveNetworkValue(page)
-    expect(receiveAccountFeesValue.trim()).contain(asset2)
+    expect(receiveAccountFeesValue.trim()).contain(toAsset)
 
     const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
-    // expect(receiveAccountFeesInDollar.trim()).not.contain('$0.00')
     expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
     // RATE
     await page.waitForSelector('#swap_review_rate_block')
