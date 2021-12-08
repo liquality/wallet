@@ -92,7 +92,7 @@ jobs:
           args: npm run test:mainnet:prodagent #Run tests against Prod mainnet
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v2.3.0
         if: always()
         with:
           name: screenshots
