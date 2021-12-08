@@ -53,10 +53,17 @@ describe('Terra swaps-[smoke,testnet]', async () => {
       await page.waitForSelector(`#${swapFromAsset}_swap_button`, { visible: true })
       await page.click(`#${swapFromAsset}_swap_button`)
       // Select PUSDT
-      await swapPage.SelectSwapReceiveCoin(page)
-      await page.waitForSelector('#search_for_a_currency', { visible: true })
-      await page.type('#search_for_a_currency', swapToAsset)
-      await page.click(`#${swapToAsset}`)
+      try {
+        await swapPage.SelectSwapReceiveCoin(page)
+        await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
+        await page.type('#search_for_a_currency', swapToAsset, { delay: 60000 })
+        await page.click(`#${swapToAsset}`)
+      } catch (e) {
+        if (e instanceof puppeteer.errors.TimeoutError) {
+          await testUtil.takeScreenshot(page, `${swapToAsset}-swap-issue`)
+          expect(e, `${swapFromAsset} to ${swapToAsset} swap issue`).equals(null)
+        }
+      }
       if (swapToAsset === 'BTC') {
         await swapPage.EnterSendAmountOnSwap(page, '0.01')
       }
