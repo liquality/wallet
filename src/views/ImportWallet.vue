@@ -4,7 +4,7 @@
       <LogoWallet />
     </div>
     <div class="import-wallet_top" id="import-wallet_top">
-      <h2>Import wallet</h2>
+      <h2>Unlock wallet</h2>
       <p>Enter the seed phrase, in the same order saved when creating your wallet.</p>
     </div>
     <div class="import-wallet_bottom">
@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     next () {
-      this.$router.push({ name: 'OnboardingSetup', params: { seedphrase: this.mnemonic } })
+      this.$router.push({ name: 'OnboardingSetup', params: { seedphrase: this.mnemonic }, query: { isNewUser: this.$route?.query?.isNewUser } })
     },
     setMnemonicLength (words) {
       this.numWords = words

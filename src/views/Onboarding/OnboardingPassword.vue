@@ -4,15 +4,15 @@
       <LogoWallet />
     </div>
     <div>
-      <h2>Create New Password</h2>
+      <h2>Create {{isNewUser ? 'New' : ''}} Password</h2>
     </div>
     <form class="form" autocomplete="off" v-on:submit.prevent="generate">
       <div class="form-group mb-4">
-        <label for="password">Choose Password ( At least 8 characters )</label>
+        <label for="password">Choose Password ( at least 8 characters )</label>
         <div class="input-group">
-          <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required>
+          <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" @blur="validatePasswordLength" required>
         </div>
-        <small v-show="passwordLengthError" class="onboading-password_errorLength form-text hidden">Password must be at least 8 characters.</small>
+        <small v-show="showPasswordLengthError && validatePasswordLength" class="onboading-password_errorLength form-text hidden">Password must be at least 8 characters.</small>
       </div>
       <div class="form-group">
         <label for="confirmPassword">Confirm Password</label>
@@ -38,10 +38,12 @@
 import LogoWallet from '@/assets/icons/logo_wallet.svg'
 
 export default {
+  props: ['isNewUser'],
   data () {
     return {
       password: null,
-      confirmPassword: null
+      confirmPassword: null,
+      showPasswordLengthError: false
     }
   },
   components: {
@@ -51,12 +53,6 @@ export default {
     passwordMatch () {
       if (!this.password || !this.confirmPassword) return false
       if ((this.password.length === this.confirmPassword.length) && (this.password !== this.confirmPassword)) return true
-      return false
-    },
-    passwordLengthError () {
-      if (this.password?.length < 8) {
-        return true
-      }
       return false
     },
     disableNext () {
@@ -70,6 +66,14 @@ export default {
   methods: {
     next () {
       this.$emit('on-unlock', this.password)
+    },
+    validatePasswordLength () {
+      if (this.password?.length < 8) {
+        this.showPasswordLengthError = true
+        return false
+      }
+      this.showPasswordLengthError = false
+      return true
     }
   }
 }

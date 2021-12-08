@@ -1,6 +1,6 @@
 <template>
 <div>
-  <OnboardingPassword v-show="currentStep === 'beginning'" @on-unlock="onUnlock"/>
+  <OnboardingPassword v-show="currentStep === 'beginning'" @on-unlock="onUnlock" :isNewUser="isNewUser"/>
   <div class="backup-wallet login-wrapper no-outer-pad" v-show="currentStep === 'backup'">
     <div class="backup-wallet_logo-wrap mx-auto">
         <img :src="logo"/>
@@ -63,6 +63,9 @@ export default {
     },
     logo () {
       return LogoWallet
+    },
+    isNewUser () {
+      return this.$route.query?.isNewUser
     }
   },
   methods: {
