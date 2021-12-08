@@ -124,82 +124,83 @@ class OverviewPage {
    * @example SelectChain(page,'BITCOIN')
    */
   async SelectChain (page, chain) {
+    const timeout = 120000
     await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
       case 'BTC': {
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'DAI':
       case 'ETH': {
-        const eth = await page.waitForSelector('#ETHEREUM', { visible: true })
+        const eth = await page.waitForSelector('#ETHEREUM', { timeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'BNB': {
-        const eth = await page.waitForSelector('#BSC', { visible: true })
+        const eth = await page.waitForSelector('#BSC', { timeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'NEAR': {
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
         await page.click(`#${chain}`)
-        const eth = await page.waitForSelector('#NEAR', { visible: true })
+        const eth = await page.waitForSelector('#NEAR', { timeout, visible: true })
         await eth.click()
         break
       }
 
       case 'ARBETH': {
-        const eth = await page.waitForSelector('#ARBITRUM', { visible: true })
+        const eth = await page.waitForSelector('#ARBITRUM', { timeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'SOV':
       case 'RBTC': {
-        const eth = await page.waitForSelector('#RSK', { visible: true })
+        const eth = await page.waitForSelector('#RSK', { timeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'MATIC':
       case 'PWETH': {
-        const eth = await page.waitForSelector('#POLYGON', { visible: true })
+        const eth = await page.waitForSelector('#POLYGON', { timeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
       case 'SOL': {
-        const eth = await page.waitForSelector('#SOLANA', { visible: true })
+        const eth = await page.waitForSelector('#SOLANA', { timeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
         // check assert value
-        await page.waitForSelector('.list-item-detail', { visible: true })
+        await page.waitForSelector('.list-item-detail', { timeout, visible: true })
         // check assert fiat value
-        await page.waitForSelector('.list-item-detail-sub', { visible: true })
+        await page.waitForSelector('.list-item-detail-sub', { timeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'LUNA':
       case 'UST': {
-        const terra = await page.waitForSelector('#TERRA', { visible: true })
+        const terra = await page.waitForSelector('#TERRA', { timeout, visible: true })
         await terra.click()
         // click on token
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
@@ -359,7 +360,7 @@ class OverviewPage {
   async GetAssertAddress (page, assertName) {
     const $parent = await page.$(`#${assertName}`)
     const assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
-    expect(assertAddress).not.equals(null)
+    expect(assertAddress, `${assertName} address is null`).not.equals(null)
     return assertAddress
   }
 

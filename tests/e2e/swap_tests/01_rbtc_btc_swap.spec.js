@@ -43,18 +43,17 @@ describe('RBTC->BTC swap-["smoke"]', async () => {
     const fromAsset = 'RBTC'
     const toAsset = 'BTC'
     await overviewPage.SelectNetwork(page)
-    // Click asset 1
+    // Click fromAsset
     await overviewPage.SelectChain(page, fromAsset)
     await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
     await page.click('#' + fromAsset + '_swap_button')
     console.log(chalk.green(`User clicked on ${fromAsset} SWAP button`))
-
     await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
     console.log('SWAP screen has been displayed with send amount input field')
 
-    // Select 2nd Pair (BTC)
+    // Select toAsset
     await page.click('.swap-receive-main-icon')
-    await page.waitForSelector(`#${toAsset}`, { visible: true })
+    await page.waitForSelector(`#${toAsset}`, { timeout: 60000, visible: true })
     await page.click(`#${toAsset}`)
     console.log(`User selected ${toAsset} as 2nd pair for swap`)
 
