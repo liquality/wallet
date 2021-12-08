@@ -21,8 +21,6 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-    await homePage.ScrollToEndOfTerms(page)
-    await homePage.ClickOnAcceptPrivacy(page)
   })
   afterEach(async () => {
     try {
@@ -34,12 +32,14 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
   })
 
   // Create a new wallet - ETH & RSK addresses are equal
-  it('Validate derived path address are equal for ETH & RSK chains if balance is 0', async () => {
+  it('Create wallet & validate derived path address are equal for ETH & RSK chains if balance is 0', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
-    // Set password & submit details
+    // Terms & conditions
+    await homePage.ScrollToEndOfTerms(page)
+    await homePage.ClickOnAcceptPrivacy(page)
+    // Set password
     await passwordPage.SubmitPasswordDetails(page, password)
-
     // Unlocking wallet...
     const seed1 = (await seedWordsPage.GetBackupSeedWords(page)).seed1
     const seed5 = (await seedWordsPage.GetBackupSeedWords(page)).seed5
@@ -102,16 +102,18 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     expect(sovAddress, 'SOV & RBTC address are equal').eq(rbtcAddress)
   })
   // Import wallet with existing RSK & RSK legacy accounts
-  it('Balance > 0 wallet, validate ETH & RSK & RSK regency derived path not same', async () => {
+  it('Import wallet & balance > 0 wallet, validate ETH & RSK & RSK regency derived path not same', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
+    await homePage.ScrollToEndOfTerms(page)
+    await homePage.ClickOnAcceptPrivacy(page)
     // Enter seed words and submit
-    await homePage.EnterSeedWords(page, null)
+    await homePage.EnterSeedWords(page)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.HasOverviewPageLoaded(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     } else {
@@ -177,10 +179,13 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     expect(sovValue, 'SOV value shouldn\'t be 0').not.equals('0')
   })
   // Create a new wallet & forgot password & enter new seedpharse
-  it('Validate derived path address after user enter new seedpharse after lock', async () => {
+  it('Create wallet & Validate derived path address after user enter new seedpharse after lock', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
-    // Set password & submit details
+    // Terms & conditions
+    await homePage.ScrollToEndOfTerms(page)
+    await homePage.ClickOnAcceptPrivacy(page)
+    // Set password
     await passwordPage.SubmitPasswordDetails(page, password)
 
     // Unlocking wallet...

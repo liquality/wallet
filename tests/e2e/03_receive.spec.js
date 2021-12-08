@@ -111,13 +111,15 @@ describe('Receive tokens ["mainnet","testnet"]', async () => {
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
+      await homePage.ScrollToEndOfTerms(page)
+      await homePage.ClickOnAcceptPrivacy(page)
       // Enter seed words and submit
       await homePage.EnterSeedWords(page)
       // Create a password & submit
       await passwordPage.SubmitPasswordDetails(page, password)
       // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.HasOverviewPageLoaded(page)
       // Select Network
       if (process.env.NODE_ENV === 'mainnet') {
         await overviewPage.SelectNetwork(page, 'mainnet')
