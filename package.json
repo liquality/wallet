@@ -136,7 +136,7 @@
     "jest-environment-jsdom-fifteen": "^1.0.2",
     "kcd-scripts": "^11.2.0",
     "mocha-allure-reporter": "^1.4.0",
-    "mochawesome": "^6.2.2",
+    "mochawesome": "7.0.1",
     "puppeteer": "11.0.0",
     "puppeteer-core": "11.0.0",
     "sass": "^1.35.2",
