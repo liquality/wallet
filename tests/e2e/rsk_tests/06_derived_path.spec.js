@@ -132,7 +132,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
 
     const assertAddresses = []
 
-    await page.waitForTimeout(30000)
+    await page.waitForTimeout(80000)
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
     expect(ethAddress, 'ETHEREUM address is empty on overview page').to.contain.oneOf(['...'])
