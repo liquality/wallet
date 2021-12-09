@@ -83,7 +83,7 @@
     "chalk": "^2.4.2",
     "core-js": "^3.15.2",
     "crypto-js": "^4.0.0",
-    "cryptocurrency-icons": "^0.16.1",
+    "cryptocurrency-icons": "0.18.0",
     "date-fns": "^2.14.0",
     "ethers": "^5.4.1",
     "extension-port-stream": "^2.0.1",
