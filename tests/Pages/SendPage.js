@@ -1,8 +1,6 @@
 const TestUtil = require('../utils/TestUtils')
 
 const testUtil = new TestUtil()
-
-const chalk = require('chalk')
 const expect = require('chai').expect
 
 class SendPage {
@@ -79,10 +77,11 @@ class SendPage {
    * @constructor
    */
   async HasReviewButtonDisabled (page) {
-    expect(await page.$('#send_review_button[disabled]'),
+    expect(await page.$('#send_review_button'),
       'Send Review Button should be disabled if address wrong format (or) send limit is higher than')
       .not.to.equal(null)
-    console.log(chalk.green.underline.bold('Send Review Button disabled!'))
+    const sendReviewButton = await page.$eval('#send_review_button', el => el.getAttribute('disabled'))
+    expect(sendReviewButton).to.eq('disabled')
   }
 
   /**
