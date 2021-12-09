@@ -76,7 +76,7 @@
     "amplitude-js": "^8.5.0",
     "bignumber.js": "^9.0.0",
     "bip39": "^3.0.2",
-    "bitcoinjs-lib": "^5.2.0",
+    "bitcoinjs-lib": "6.0.1",
     "bluebird": "^3.7.2",
     "bootstrap": "^4.5.0",
     "chai": "^4.3.4",
