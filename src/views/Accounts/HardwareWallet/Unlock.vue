@@ -19,7 +19,7 @@
         >
         <div class="btn-group" v-click-away="hideLedgerBitcoinOptions">
           <button class="btn dropdown-toggle custom-dropdown-toggle"
-                  :disabled="loading"
+                  :disabled="loading || creatingAccount"
                   @click="toggleLedgerBitcoinOptions">
             BTC Version (HD Path): {{ ledgerBitcoinOption.label }}
             <ChevronUpIcon v-if="ledgerBitcoinOptionsOpen" />
@@ -41,6 +41,15 @@
             <div>
               <span class="loading-message-title">Loading</span>
               <span class="loading-message-text">Finding Accounts</span>
+            </div>
+          </div>
+        </div>
+        <div v-else-if="creatingAccount" class="progress-container">
+          <CircleProgressBar class="circle-progress infinity-rotate" />
+          <div class="loading-message">
+            <div>
+              <span class="loading-message-title">Creating</span>
+              <span class="loading-message-text">Creating your new account</span>
             </div>
           </div>
         </div>
@@ -104,7 +113,7 @@
             v-if="ledgerError"
             class="btn btn-primary btn-lg btn-icon"
             @click="getCurrentPage"
-            :disabled="loading || !selectedAsset"
+            :disabled="loading || creatingAccount || !selectedAsset"
           >
             <SpinnerIcon class="btn-loading" v-if="loading" />
             <template v-else>Try Again</template>
@@ -113,7 +122,7 @@
             v-else
             class="btn btn-primary btn-lg btn-icon"
             @click="unlock"
-            :disabled="loading || Object.keys(selectedAccounts).length <= 0"
+            :disabled="loading || creatingAccount || Object.keys(selectedAccounts).length <= 0"
           >
             <SpinnerIcon class="btn-loading" v-if="loading" />
             <template v-else>Unlock</template>
@@ -146,6 +155,7 @@ export default {
   },
   props: [
     'loading',
+    'creatingAccount',
     'accounts',
     'selectedAccounts',
     'selectedAsset',

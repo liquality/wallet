@@ -14,14 +14,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build project
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2.5.0
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
-          args: install
+          node-version: '14'
+      # Create screenshots directory
+      - run: mkdir screenshots
 
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2.1.7
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules
@@ -31,23 +32,14 @@ jobs:
 
       - name: Set development manifest
         run: |
+          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
-
-      - name: Set development agents
-        run: |
-          sed -i "s/\/swap-testnet\/agent/\/swap-testnet-dev\/agent/g; s/\/swap\/agent/\/swap-dev\/agent/g" src/build.config.js
-      - run: |
           npm ci
           npm run lint
           npm run build
 
-      - name: screenshots directory
-        if: always()
-        run: |
-          mkdir screenshots
-
-      - name: Regression tests
+      - name: Regression tests against Testnet
         uses: beemi/puppeteer-headful@v1.0.6
         env:
           CI: 'true'
@@ -57,19 +49,20 @@ jobs:
         with:
           args: npm run test:testnet
 
-      - name: Archive Mocha HTML report
-        uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: mocha-html-test-report
-          path: mochawesome-report
+#      - name: Archive Mocha HTML report
+#        uses: actions/upload-artifact@v2.2.4
+#        if: always()
+#        with:
+#          name: mocha-html-test-report
+#          path: mochawesome-report
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.3.0
         if: always()
         with:
           name: screenshots
           path: screenshots
+          if-no-files-found: ignore
 
 
 

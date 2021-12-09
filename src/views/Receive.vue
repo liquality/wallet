@@ -106,7 +106,8 @@ export default {
         solana: 'solana',
         rsk: 'ethereum',
         bsc: 'ethereum',
-        polyon: 'ethereum'
+        polyon: 'ethereum',
+        terra: 'terra'
       })[cryptoassets[this.asset].chain]
     },
     faucet () {
@@ -143,6 +144,10 @@ export default {
           ARBETH: {
             name: 'ARBETH',
             url: 'https://faucet.rinkeby.io/'
+          },
+          LUNA: {
+            name: 'TERRA',
+            url: 'https://faucet.terra.money/'
           }
         })[this.asset]
       }
@@ -151,7 +156,7 @@ export default {
   },
   async created () {
     if (this.account && this.account.type.includes('ledger')) {
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0], this.activeNetwork)
     } else {
       const addresses = await this.getUnusedAddresses({
         network: this.activeNetwork,
@@ -159,13 +164,11 @@ export default {
         assets: [this.asset],
         accountId: this.accountId
       })
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(addresses[0])
+      const chainId = cryptoassets[this.asset]?.chain
+      this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
     }
 
-    const uri = [
-      this.chainName,
-      this.address
-    ].join(':')
+    const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')
 
     QRCode.toString(uri, {
       type: 'svg',

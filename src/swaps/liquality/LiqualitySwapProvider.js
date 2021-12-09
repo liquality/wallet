@@ -140,6 +140,21 @@ class LiqualitySwapProvider extends SwapProvider {
       return mapValues(totalFees, f => unitToCurrency(cryptoassets[asset], f))
     }
 
+    if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'UST') {
+      const client = this.getClient(network, walletId, asset, quote.fromAccountId)
+      const value = max ? undefined : BN(quote.fromAmount)
+      const taxFees = await client.getMethod('getTaxFees')(value, 'uusd', (max || !value))
+
+      const fees = {}
+
+      for (const feePrice of feePrices) {
+        fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice)
+          .plus(taxFees)
+      }
+
+      return fees
+    }
+
     if (txType in LiqualitySwapProvider.feeUnits) {
       const fees = {}
       for (const feePrice of feePrices) {
@@ -170,8 +185,8 @@ class LiqualitySwapProvider extends SwapProvider {
     return timestamp() >= swap.expiresAt
   }
 
-  async hasChainTimePassed ({ network, walletId, asset, timestamp, fromAccountId }) {
-    const client = this.getClient(network, walletId, asset, fromAccountId)
+  async hasChainTimePassed ({ network, walletId, asset, timestamp, accountId }) {
+    const client = this.getClient(network, walletId, asset, accountId)
     const maxTries = 3
     let tries = 0
     while (tries < maxTries) {
@@ -191,11 +206,11 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async canRefund ({ network, walletId, swap }) {
-    return this.hasChainTimePassed({ network, walletId, asset: swap.from, timestamp: swap.swapExpiration, fromAccountId: swap.fromAccountId })
+    return this.hasChainTimePassed({ network, walletId, asset: swap.from, timestamp: swap.swapExpiration, accountId: swap.fromAccountId })
   }
 
   async hasSwapExpired ({ network, walletId, swap }) {
-    return this.hasChainTimePassed({ network, walletId, asset: swap.to, timestamp: swap.nodeSwapExpiration, fromAccountId: swap.fromAccountId })
+    return this.hasChainTimePassed({ network, walletId, asset: swap.to, timestamp: swap.nodeSwapExpiration, accountId: swap.toAccountId })
   }
 
   async handleExpirations ({ network, walletId, swap }) {
@@ -503,6 +518,8 @@ class LiqualitySwapProvider extends SwapProvider {
       BNB: 165000,
       NEAR: 10000000000000,
       SOL: 2,
+      LUNA: 800000,
+      UST: 800000,
       MATIC: 165000,
       ERC20: 600000 + 94500, // Contract creation + erc20 transfer
       ARBETH: 2400000
@@ -515,6 +532,8 @@ class LiqualitySwapProvider extends SwapProvider {
       MATIC: 45000,
       NEAR: 8000000000000,
       SOL: 1,
+      LUNA: 440000,
+      UST: 440000,
       ERC20: 100000,
       ARBETH: 680000
     }
@@ -615,6 +634,12 @@ class LiqualitySwapProvider extends SwapProvider {
 
   static fromTxType = LiqualitySwapProvider.txTypes.SWAP_INITIATION
   static toTxType = LiqualitySwapProvider.txTypes.SWAP_CLAIM
+
+  static timelineDiagramSteps = [
+    'INITIATION',
+    'AGENT_INITIATION',
+    'CLAIM_OR_REFUND'
+  ]
 
   static totalSteps = 4
 }

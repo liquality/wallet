@@ -1,0 +1,9 @@
+{
+  "extends": ["config:base"],
+  "ignoreTests": true,
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
+  "semanticCommits": "disabled",
+  "commitBody": "[skip ci]"
+}

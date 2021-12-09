@@ -1,20 +1,24 @@
 import { callToBridge } from './utils'
+import {
+  RequestNamespace
+} from '@liquality/hw-web-bridge'
 
 export class LedgerBridgeApp {
   _network
-  _app
+  _chainId
 
-  constructor (network, app) {
+  constructor (network, chainId) {
     this._network = network
-    this._app = app
+    this._chainId = chainId
   }
 
-  async callToBridge ({ method, callType, payload }) {
+  async callToBridge ({ action, execMode, payload }) {
     return callToBridge({
+      namespace: RequestNamespace.App,
       network: this._network,
-      app: this._app,
-      method,
-      callType,
+      chainId: this._chainId,
+      action,
+      execMode,
       payload
     })
   }

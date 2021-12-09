@@ -1,5 +1,8 @@
 import { SwapProviderType } from './utils/swaps'
 
+import SovrynMainnetAddresses from '@blobfishkate/sovryncontracts/contracts-mainnet.json'
+import SovrynTestnetAddresses from '@blobfishkate/sovryncontracts/contracts-testnet.json'
+
 export default {
   defaultAssets: {
     mainnet: [
@@ -17,7 +20,9 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
-      'FISH'
+      'FISH',
+      'LUNA',
+      'UST'
     ],
     testnet: [
       'BTC',
@@ -29,7 +34,10 @@ export default {
       'SOV',
       'MATIC',
       'PWETH',
-      'ARBETH'
+      'ARBETH',
+      'SOL',
+      'LUNA',
+      'UST'
     ]
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
@@ -47,7 +55,7 @@ export default {
         name: 'Liquality',
         icon: 'liquality.svg',
         type: SwapProviderType.LIQUALITY,
-        agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet/agent'
+        agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -60,6 +68,14 @@ export default {
         icon: 'thorchain.svg',
         type: SwapProviderType.THORCHAIN,
         thornode: 'https://testnet.thornode.thorchain.info'
+      },
+      sovryn: {
+        name: 'Sovyrn',
+        icon: 'sovryn.svg',
+        type: SwapProviderType.SOVRYN,
+        routerAddress: SovrynTestnetAddresses.swapNetwork,
+        routerAddressRBTC: SovrynTestnetAddresses.proxy3,
+        rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_TESTNET
       }
     },
     mainnet: {
@@ -67,13 +83,14 @@ export default {
         name: 'Liquality',
         icon: 'liquality.svg',
         type: SwapProviderType.LIQUALITY,
-        agent: 'https://liquality.io/swap/agent'
+        agent: 'https://liquality.io/swap-dev/agent'
       },
       liqualityBoost: {
         name: 'Liquality Boost',
         type: SwapProviderType.LIQUALITYBOOST,
         network: 'mainnet',
-        icon: 'liqualityboost.svg'
+        icon: 'liqualityboost.svg',
+        supportedBridgeAssets: ['MATIC']
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -99,10 +116,19 @@ export default {
         icon: 'sovryn.svg',
         type: SwapProviderType.FASTBTC,
         bridgeEndpoint: 'http://3.131.33.161:3000/'
+      },
+      sovryn: {
+        name: 'Sovyrn',
+        icon: 'sovryn.svg',
+        type: SwapProviderType.SOVRYN,
+        routerAddress: SovrynMainnetAddresses.swapNetwork,
+        routerAddressRBTC: SovrynMainnetAddresses.proxy3,
+        rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET
       }
     }
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'solana']
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra'],
+  supportedBridgeAssets: ['MATIC']
 }

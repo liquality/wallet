@@ -49,5 +49,7 @@ export default {
     askedTimes: 0,
     notAskAgain: false
   },
-  watsNewModalVersion: null
+  experiments: {},
+  watsNewModalVersion: null,
+  enabledChains: {}
 }

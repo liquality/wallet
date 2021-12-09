@@ -15,15 +15,8 @@
           <a target="_blank" href="https://liquality.io/blog/how-to-use-the-liquality-wallet-101/#q-how-can-i-add-custom-tokens-to-my-liquality-wallet">Learn how</a>
         </div>
       </div>
-       <div v-if="sortedFilteredAssets.length === 0" class="mt-5 d-flex">
-        <div class="manage-assets_noneBottom">
-          <h5 class="manage-assets_noneBottomText">INQUIRE</h5>
-          <a target="_blank" href="https://forms.gle/nsHeZFGgT3y7hwKp6">Enable other tokens</a><br />
-          <a href="mailto:info@liquality.io">Offer liquidity</a>
-        </div>
       </div>
-      </div>
-          <div class="manage-assets_list">
+      <div class="manage-assets_list">
       <div v-for="asset in sortedFilteredAssets" :key="asset" class="asset-item d-flex align-items-center" id="asset_item">
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
         <div class="asset-item_name flex-fill" :id="asset">{{getAssetName(asset)}} ({{asset}})
@@ -35,7 +28,7 @@
           <button v-if='isCustomToken(asset)' class="btn btn-outline-clear btn-sm remove-btn"  :id="asset + '_remove_custom_token'" @click="removeToken(asset)" > Remove</button>
       </div>
     </div>
-    <div v-if="search" class="wrapper manage-assets_bottomSection">
+    <div v-if="search" class="wrapper" :class="Object.keys(sortedFilteredAssets).length? 'manage-assets_bottomSectionWithItems': 'manage-assets_bottomSection'">
       <button class="btn btn-light btn-outline-primary btn-lg btn-block" @click="clearSearch">Done</button>
     </div>
   </div>
@@ -100,8 +93,9 @@ export default {
     clearSearch () {
       this.search = ''
     },
-    removeToken (asset) {
+    async removeToken (asset) {
       const params = { network: this.activeNetwork, walletId: this.activeWalletId, symbol: asset }
+      await this.disableAssets({ network: this.activeNetwork, walletId: this.activeWalletId, assets: [asset] })
       this.removeCustomToken(params)
     },
     isCustomToken (asset) {
@@ -134,6 +128,10 @@ export default {
     width: 100%;
     position: absolute;
     bottom: 0;
+  }
+
+  &_bottomSectionWithItems {
+    width: 100%;
   }
 
   &_search {

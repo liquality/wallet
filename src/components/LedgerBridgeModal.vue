@@ -7,17 +7,11 @@
         This allows to connect to your Ledger device.
         Please click on Enable USB button inside the bridge
       </p>
-       <template v-slot:footer>
-       <button class="btn btn-outline-clear" @click="openBridgeWindow">
-         Open Ledger USB Bridge
-       </button>
-      </template>
     </Modal>
 </template>
 
 <script>
 import Modal from '@/components/Modal'
-import { mapActions } from 'vuex'
 
 export default {
   components: {
@@ -30,14 +24,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions('app', [
-      'startBridgeListener',
-      'openUSBBridgeWindow'
-    ]),
-    async openBridgeWindow () {
-      await this.startBridgeListener()
-      await this.openUSBBridgeWindow()
-    },
     onClose () {
       this.$emit('close')
     }

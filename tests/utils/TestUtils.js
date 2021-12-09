@@ -14,9 +14,12 @@ class TestUtils {
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--font-render-hinting=none',
+        '--window-size=1920,1080',
+        '--disable-notifications',
         '--disable-extensions-except=' + this.extensionPathBuildPath,
         '--load-extension=' + this.extensionPathBuildPath
-      ]
+      ],
+      defaultViewport: null
     }
   }
 
@@ -62,6 +65,17 @@ class TestUtils {
   get extensionRootUrl () {
     const id = this.extensionId
     return `chrome-extension://${id}/index.html#/`
+  }
+
+  /**
+   * Take screenshots on failures.
+   * @param page
+   * @param screenshotName
+   * @returns {Promise<void>}
+   */
+  async takeScreenshot (page, screenshotName) {
+    const ts = Math.round((new Date()).getTime() / 1000)
+    await page.screenshot({ path: `screenshots/${screenshotName}-${ts}.png`, fullscreen: true })
   }
 }
 

@@ -15,13 +15,22 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Hamburger menu options', async () => {
+describe('Hamburger menu options["testnet"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
+    // Enter seed words and submit
+    await homePage.EnterSeedWords(page)
+    // Create a password & submit
+    await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
     try {
@@ -33,15 +42,6 @@ describe('Hamburger menu options', async () => {
   })
 
   it('should be able to see Settings page, validate options under settings screen', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page, null)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
@@ -61,7 +61,7 @@ describe('Hamburger menu options', async () => {
 
     // Web3 Network dropdown
     const settingsItemWebNetwork = await page.$eval('#settings_item_web_network', (el) => el.textContent)
-    expect(settingsItemWebNetwork).contains('Select which ethereum based network should be used for dapps.')
+    expect(settingsItemWebNetwork).contains('Select which Web3 network should be used for dapps.')
 
     // Check the Analytics toggle option has been added
     await page.waitForSelector('#analytics_toggle_button', { visible: true })
@@ -71,16 +71,7 @@ describe('Hamburger menu options', async () => {
     const appVersion = await page.$eval('#settings_app_version', (el) => el.textContent)
     expect(appVersion).contain('Version')
   })
-  it('should be able to test backup seed feature', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page, null)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
+  it('should be able to test backup seed feature["smoke"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
@@ -99,7 +90,7 @@ describe('Hamburger menu options', async () => {
     await page.waitForSelector('#i_have_privacy_button', { visible: true })
     expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals('Show Seed Phrase?')
     expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent))
-      .equals('Anyone who has this seed phrase can steal your funds!')
+      .equals('Anyone who has this can steal your funds!')
     await page.click('#i_have_privacy_button')
     await page.waitForSelector('#password', { visible: true })
     await page.type('#password', password)
@@ -126,15 +117,6 @@ describe('Hamburger menu options', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
   })
   it('Backup seed test validate password wrong error message', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page, null)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
@@ -149,7 +131,7 @@ describe('Hamburger menu options', async () => {
     await page.waitForSelector('#i_have_privacy_button', { visible: true })
     expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals('Show Seed Phrase?')
     expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent))
-      .equals('Anyone who has this seed phrase can steal your funds!')
+      .equals('Anyone who has this can steal your funds!')
     await page.click('#i_have_privacy_button')
     await page.waitForSelector('#password', { visible: true })
     await page.type('#password', 'testwallet00001')
@@ -161,15 +143,6 @@ describe('Hamburger menu options', async () => {
       .contains('Try Again. Enter the right password (it has 8 or more characters).')
   })
   it('Import wallet,lock wallet and unlock wallet-["smoke","mainnet"]', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
@@ -184,15 +157,6 @@ describe('Hamburger menu options', async () => {
     await passwordPage.ClickUnlock(page, password)
   })
   it('Import wallet,lock wallet and while unlock wallet check password error', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
@@ -212,15 +176,6 @@ describe('Hamburger menu options', async () => {
     expect(error).contains('Try Again. Enter the right password (it has 8 or more characters).')
   })
   it('Import wallet,lock wallet and forgot password while unlock wallet', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page)
-    // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')

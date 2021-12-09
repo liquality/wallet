@@ -1,4 +1,8 @@
+const TestUtil = require('../utils/TestUtils')
+
+const testUtil = new TestUtil()
 const chalk = require('chalk')
+const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 
 class OverviewPage {
@@ -9,11 +13,17 @@ class OverviewPage {
    * @constructor
    */
   async HasOverviewPageLoaded (page) {
-    await page.waitForSelector('#burger_icon_menu', {
-      visible: true,
-      timeout: 120000
-    })
-    console.log(chalk.green('User logged successfully, overview page has been loaded'))
+    try {
+      await page.waitForSelector('#burger_icon_menu', {
+        visible: true,
+        timeout: 120000
+      })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
+        expect(e, 'Hamburger icon loading issue').equals(null)
+      }
+    }
   }
 
   /**
@@ -80,6 +90,14 @@ class OverviewPage {
    */
   async ValidateSendSwipeReceiveOptions (page) {
     // check Send & Swap & Receive options have been displayed
+    try {
+      // TODO: Most of the times overview screen takes more time to load total assets & fiat values
+      await page.waitForSelector('#send_action', { visible: true, timeout: 240000 })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
+      expect(e, 'Overview page still Loading.....didn\'t load send/receive/swap option').equals(null)
+    }
+
     await page.waitForSelector('#send_action', {
       visible: true,
       timeout: 60000
@@ -106,72 +124,83 @@ class OverviewPage {
    * @example SelectChain(page,'BITCOIN')
    */
   async SelectChain (page, chain) {
+    const elementVisibleTimeout = 120000
     await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
       case 'BTC': {
-        await page.waitForSelector(`#${chain}`, { visible: true })
-        await page.click(`#${chain}`)
+        await page.waitForSelector('#BITCOIN', { timeout: elementVisibleTimeout, visible: true })
+        await page.click('#BITCOIN')
         break
       }
 
       case 'DAI':
       case 'ETH': {
-        const eth = await page.waitForSelector('#ETHEREUM', { visible: true })
+        const eth = await page.waitForSelector('#ETHEREUM', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'BNB': {
-        const eth = await page.waitForSelector('#BSC', { visible: true })
+        const eth = await page.waitForSelector('#BSC', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'NEAR': {
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
-        const eth = await page.waitForSelector('#NEAR', { visible: true })
+        const eth = await page.waitForSelector('#NEAR', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
         break
       }
 
       case 'ARBETH': {
-        const eth = await page.waitForSelector('#ARBITRUM', { visible: true })
+        const eth = await page.waitForSelector('#ARBITRUM', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'SOV':
       case 'RBTC': {
-        const eth = await page.waitForSelector('#RSK', { visible: true })
+        const eth = await page.waitForSelector('#RSK', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
 
       case 'MATIC':
       case 'PWETH': {
-        const eth = await page.waitForSelector('#POLYGON', { visible: true })
+        const eth = await page.waitForSelector('#POLYGON', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
       case 'SOL': {
-        const eth = await page.waitForSelector('#SOLANA', { visible: true })
+        const eth = await page.waitForSelector('#SOLANA', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { visible: true })
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         // check assert value
-        await page.waitForSelector('.list-item-detail', { visible: true })
+        await page.waitForSelector('.list-item-detail', { timeout: elementVisibleTimeout, visible: true })
         // check assert fiat value
-        await page.waitForSelector('.list-item-detail-sub', { visible: true })
+        await page.waitForSelector('.list-item-detail-sub', { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${chain}`)
+        break
+      }
+
+      case 'LUNA':
+      case 'UST': {
+        const terra = await page.waitForSelector('#TERRA', { timeout: elementVisibleTimeout, visible: true })
+        await terra.click()
+        // click on token
+        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${chain}`)
         break
       }
@@ -245,7 +274,7 @@ class OverviewPage {
    * @constructor
    */
   async ValidateTotalAssets (page, newWallet = true) {
-    const assets = newWallet ? 7 : 8
+    const assets = newWallet ? 8 : 9
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(`${assets} Assets`)
@@ -281,7 +310,14 @@ class OverviewPage {
    * @constructor
    */
   async ClickSend (page) {
-    await page.waitForSelector('#send_action', { visible: true })
+    try {
+      await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
+    } catch (e) {
+      const ts = Math.round((new Date()).getTime() / 1000)
+      await page.screenshot({ path: `screenshots/send-button-not-loaded-${ts}.png` })
+      expect(e, 'Send button not loaded....').equals(null)
+    }
+
     await page.click('#send_action')
   }
 
@@ -324,7 +360,7 @@ class OverviewPage {
   async GetAssertAddress (page, assertName) {
     const $parent = await page.$(`#${assertName}`)
     const assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
-    expect(assertAddress).not.equals(null)
+    expect(assertAddress, `${assertName} address is null`).not.equals(null)
     return assertAddress
   }
 
@@ -369,6 +405,61 @@ class OverviewPage {
     await page.waitForSelector('#add_custom_token', { visible: true })
     await page.click('#add_custom_token')
     console.log(chalk.green('User clicked on Add Custom Token'))
+  }
+
+  /**
+   * Click on Manage Accounts from Overview page.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnManageAccounts (page) {
+    await page.waitForSelector('#burger_icon_menu', { visible: true })
+    await page.click('#burger_icon_menu')
+    console.log(chalk.green('User clicked on Burger Icon Menu'))
+    // Click Manage Accounts
+    await page.waitForSelector('#manage_accounts', { visible: true })
+    await page.click('#manage_accounts')
+    console.log(chalk.green('User clicked on Manage Accounts'))
+    await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
+  }
+
+  /**
+   * Toggle on Web3 Wallet from setting screen.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickWeb3WalletToggle (page) {
+    await this.ClickOnBurgerIcon(page)
+    await this.SelectSettings(page)
+    // toggle web3 wallet option
+    await page.click('#default_web3_wallet_toggle_button > label > div')
+  }
+
+  /**
+   * Click on version under settings.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnVersionButton (page) {
+    await this.ClickOnBurgerIcon(page)
+    await this.SelectSettings(page)
+    await page.click('#settings_app_version')
+  }
+
+  /**
+   * Toggle on/off experiment option.
+   * @param page
+   * @param option
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ToggleExperimentButton (page, option) {
+    await this.ClickOnVersionButton(page)
+    await page.waitForSelector(`#${option}`)
+    await page.click(`#${option}`)
   }
 }
 

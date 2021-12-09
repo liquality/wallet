@@ -13,6 +13,7 @@
     />
     <Unlock v-else
            :loading="loading"
+           :creating-account="creatingAccount"
            :accounts="accounts"
            :selected-accounts="selectedAccounts"
            :selected-asset="selectedAsset"
@@ -55,6 +56,7 @@ export default {
     return {
       currentStep: 'connect',
       loading: false,
+      creatingAccount: false,
       selectedAsset: null,
       accounts: [],
       selectedAccounts: {},
@@ -70,10 +72,8 @@ export default {
       'activeWalletId',
       'enabledAssets'
     ]),
-    ...mapState({
-      usbBridgeTransportCreated: state => state.app.usbBridgeTransportCreated
-    }),
     ...mapGetters(['networkAccounts']),
+    ...mapGetters('app', ['ledgerBridgeReady']),
     ledgerOptions () {
       return LEDGER_OPTIONS
     },
@@ -93,15 +93,19 @@ export default {
       'updateAccountBalance',
       'trackAnalytics'
     ]),
+    ...mapActions('app', [
+      'startBridgeListener'
+    ]),
     async tryToConnect ({ asset, walletType, page }) {
-      if (this.usbBridgeTransportCreated) {
+      if (this.ledgerBridgeReady) {
         await this.connect({ asset, walletType, page })
       } else {
         this.loading = true
         this.bridgeModalOpen = true
+        await this.startBridgeListener()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
-          payload.created === true) {
+          if (type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
+          payload.connected === true) {
             this.bridgeModalOpen = false
             await this.connect({ asset, walletType, page })
             if (unsubscribe) {
@@ -172,7 +176,7 @@ export default {
     async addAccount ({ walletType }) {
       if (Object.keys(this.selectedAccounts).length > 0) {
         try {
-          this.loading = true
+          this.creatingAccount = true
           const { chain } = this.selectedAsset
           const assetKeys =
             this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
@@ -181,8 +185,9 @@ export default {
             return cryptoassets[asset].chain === this.selectedAsset.chain
           })
 
-          for (const key in this.selectedAccounts) {
-            const item = this.selectedAccounts[key]
+          const selectedAccounts = { ...this.selectedAccounts }
+          for (const key in selectedAccounts) {
+            const item = selectedAccounts[key]
 
             const index = item.index + 1
             const account = {
@@ -193,26 +198,23 @@ export default {
               assets,
               index: item.index,
               type: walletType || this.selectedAsset.types[0],
+              enabled: true,
+              derivationPath: item.account.derivationPath,
               color: getNextAccountColor(chain, item.index)
             }
-            const createdAccount = await this.createAccount({
+            await this.createAccount({
               network: this.activeNetwork,
               walletId: this.activeWalletId,
               account
             })
-            await this.updateAccountBalance({
-              network: this.activeNetwork,
-              walletId: this.activeWalletId,
-              accountId: createdAccount.id
-            })
           }
 
-          this.loading = false
+          this.creatingAccount = false
           this.goToOverview()
         } catch (error) {
           this.ledgerError = { message: 'Error creating accounts' }
           console.error('error creating accounts', error)
-          this.loading = false
+          this.creatingAccount = false
         }
       }
     },

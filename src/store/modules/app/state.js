@@ -1,6 +1,6 @@
 export const state = () => ({
-  usbBridgeCreated: false,
-  usbBridgeTransportCreated: false,
+  ledgerBridgeConnected: false,
+  ledgerBridgeTransportConnected: false,
   analyticsStarted: false,
   analyticsOptInModalOpen: false,
   requestOriginAccessActive: false,

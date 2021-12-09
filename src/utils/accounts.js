@@ -17,21 +17,19 @@ export const accountCreator = (payload) => {
     color
   } = account
 
-  const { formatAddress } = chains[chain]
+  const enabled = (
+    account.enabled !== null && account.enabled !== undefined
+  ) ? account.enabled : true
+
   const _addresses = addresses.map(a => {
-    const address = formatAddress(a)
+    const address = chains[chain].formatAddress(a, network)
     return address.startsWith('0x') ? address.substring(2, address.length) : address
   })
 
-  let _derivationPath
-  if (account.derivationPath) {
-    _derivationPath = account.derivationPath
-  } else {
-    _derivationPath = getDerivationPath(chain, network, index, type)
-  }
-
+  const derivationPath = account.derivationPath ? account.derivationPath : getDerivationPath(chain, network, index, type)
   const id = uuidv4()
   const createdAt = Date.now()
+
   return {
     id,
     walletId,
@@ -40,13 +38,14 @@ export const accountCreator = (payload) => {
     alias,
     chain,
     index,
-    derivationPath: _derivationPath,
+    derivationPath,
     addresses: _addresses,
     assets,
     balances: balances || {},
     createdAt,
     updatedAt: null,
-    color
+    color,
+    enabled
   }
 }
 
@@ -74,7 +73,8 @@ export const chainDefaultColors = {
   near: '#000000',
   solana: '#008080',
   polygon: '#8247E5',
-  arbitrum: '#28A0EF'
+  arbitrum: '#28A0EF',
+  terra: '#008080'
 }
 
 export const getAccountIcon = (chain) => {
@@ -86,8 +86,23 @@ export const getAccountIcon = (chain) => {
     near: getAssetIcon('NEAR'),
     solana: getAssetIcon('SOL'),
     polygon: getAssetIcon('polygon_account'),
-    arbitrum: getAssetIcon('ARBITRUM')
+    arbitrum: getAssetIcon('ARBITRUM'),
+    terra: getAssetIcon('TERRA')
   }[chain]
+}
+
+export const getChainIcon = (chainId) => {
+  return {
+    bitcoin: getAssetIcon(`${chainId}_chain`),
+    ethereum: getAssetIcon(`${chainId}_chain`),
+    bsc: getAssetIcon(`${chainId}_chain`),
+    rsk: getAssetIcon(`${chainId}_chain`),
+    near: getAssetIcon(`${chainId}_chain`),
+    solana: getAssetIcon('SOL'),
+    polygon: getAssetIcon(`${chainId}_chain`),
+    arbitrum: getAssetIcon('ARBITRUM'),
+    terra: getAssetIcon(`${chainId}_chain`)
+  }[chainId]
 }
 
 export const getNextAccountColor = (chain, index) => {

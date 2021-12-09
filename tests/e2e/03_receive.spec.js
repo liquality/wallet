@@ -35,7 +35,7 @@ async function importWalletTestReceive (bitcoin) {
   expect(yourCurrentAddress).contains(bitcoin)
   await receivePage.HasQRCodeDisplayed(page)
   if (bitcoin === 'ETH' || bitcoin === 'ARBETH' || bitcoin === 'RBTC' ||
-    bitcoin === 'BNB' || bitcoin === 'MATIC' || bitcoin === 'ARBETH') {
+    bitcoin === 'BNB' || bitcoin === 'MATIC' || bitcoin === 'ARBETH' || bitcoin === 'LUNA') {
     await receivePage.CheckReceiveURL(page)
   }
   await receivePage.CheckReceiveAddresses(page)
@@ -47,14 +47,12 @@ async function importWalletTestReceive (bitcoin) {
   await page.click('#wallet_header_logo')
 }
 
-describe('Receive tokens ["mainnet","smoke"]', async () => {
+describe('Receive tokens ["mainnet","testnet"]', async () => {
   describe('Create wallet and Check receive', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl)
-      await homePage.ScrollToEndOfTerms(page)
-      await homePage.ClickOnAcceptPrivacy(page)
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
     })
     afterEach(async () => {
       try {
@@ -68,6 +66,9 @@ describe('Receive tokens ["mainnet","smoke"]', async () => {
     it('Create a new wallet and check Receive for BTC', async () => {
       // Create new wallet
       await homePage.ClickOnCreateNewWallet(page)
+      // Terms & conditions
+      await homePage.ScrollToEndOfTerms(page)
+      await homePage.ClickOnAcceptPrivacy(page)
       // Set password
       await passwordPage.SubmitPasswordDetails(page, password)
       // Unlocking wallet...
@@ -102,23 +103,23 @@ describe('Receive tokens ["mainnet","smoke"]', async () => {
       await overviewPage.CheckAssertOverviewDetails(page, 'BTC')
     })
   })
-  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH']
+  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH', 'LUNA', 'UST']
   describe('Import wallet, Receive tokens', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl)
-      await homePage.ScrollToEndOfTerms(page)
-      await homePage.ClickOnAcceptPrivacy(page)
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
+      await homePage.ScrollToEndOfTerms(page)
+      await homePage.ClickOnAcceptPrivacy(page)
       // Enter seed words and submit
       await homePage.EnterSeedWords(page)
       // Create a password & submit
       await passwordPage.SubmitPasswordDetails(page, password)
       // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.HasOverviewPageLoaded(page)
       // Select Network
       if (process.env.NODE_ENV === 'mainnet') {
         await overviewPage.SelectNetwork(page, 'mainnet')
@@ -130,7 +131,6 @@ describe('Receive tokens ["mainnet","smoke"]', async () => {
     })
 
     afterEach(async () => {
-      await page.close()
       await browser.close()
     })
 

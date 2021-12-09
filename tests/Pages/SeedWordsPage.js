@@ -45,17 +45,21 @@ class SeedWordsPage {
    * @constructor
    */
   async EnterSeedWords (page, seed1, seed5, seed12) {
+    const timeout = 2000
     const firstWord = await page.$x(`//button[text()='${seed1}']`)
     await firstWord[0].click()
     console.log('User enter 1st seed word')
+    await page.waitForTimeout(timeout)
 
     const fifthWord = await page.$x(`//button[text()='${seed5}']`)
     await fifthWord[0].click()
     console.log('User enter 5th seed word')
+    await page.waitForTimeout(timeout)
 
     const twelveWord = await page.$x(`//button[text()='${seed12}']`)
     await twelveWord[0].click()
     console.log('User enter 12th seed word')
+    await page.waitForTimeout(timeout)
   }
 
   /**

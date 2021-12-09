@@ -15,6 +15,7 @@ class LiqualityBoostSwapProvider extends SwapProvider {
     super(config)
     this.liqualitySwapProvider = createSwapProvider(this.config.network, 'liquality')
     this.oneinchSwapProvider = createSwapProvider(this.config.network, 'oneinchV3')
+    this.supportedBridgeAssets = this.config.supportedBridgeAssets
   }
 
   async getSupportedPairs () {
@@ -24,6 +25,7 @@ class LiqualityBoostSwapProvider extends SwapProvider {
   async getQuote ({ network, from, to, amount }) {
     if (isERC20(from) || !isERC20(to) || amount <= 0) return null
     const bridgeAsset = getNativeAsset(to)
+    if (!(this.supportedBridgeAssets.includes(bridgeAsset))) return null
     const quote = await this.liqualitySwapProvider.getQuote({ network, from, to: bridgeAsset, amount })
     if (!quote) return null
     const bridgeAssetQuantity = unitToCurrency(assets[bridgeAsset], quote.toAmount)
@@ -49,9 +51,13 @@ class LiqualityBoostSwapProvider extends SwapProvider {
     }
   }
 
+  async updateOrder (order) {
+    return await (this.liqualitySwapProvider.updateOrder(order))
+  }
+
   async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
-    const liqualityFees = await this.liqualitySwapProvider.estimateFees({ network, walletId, asset, txType, quote: { ...quote, to: quote.bridgeAsset, toAmount: quote.bridgeAssetAmount }, feePrices, max })
-    if (isERC20(asset) && txType === LiqualityBoostSwapProvider.txTypes.SWAP_CLAIM) {
+    const liqualityFees = await this.liqualitySwapProvider.estimateFees({ network, walletId, asset, txType: txType === LiqualityBoostSwapProvider.txTypes.SWAP ? LiqualityBoostSwapProvider.txTypes.SWAP_CLAIM : txType, quote: { ...quote, to: quote.bridgeAsset, toAmount: quote.bridgeAssetAmount }, feePrices, max })
+    if (isERC20(asset) && txType === LiqualityBoostSwapProvider.txTypes.SWAP) {
       const oneinchFees = await this.oneinchSwapProvider.estimateFees({ network, walletId, asset, txType: LiqualityBoostSwapProvider.txTypes.SWAP, quote: { ...quote, from: quote.bridgeAsset, fromAmount: quote.bridgeAssetAmount, fromAccountId: quote.toAccountId, slippagePercentage }, feePrices, max })
       const totalFees = {}
       for (const key in oneinchFees) {
@@ -70,7 +76,7 @@ class LiqualityBoostSwapProvider extends SwapProvider {
   async performNextSwapAction (store, { network, walletId, swap }) {
     let updates
     const swapLiqualityFormat = { ...swap, to: swap.bridgeAsset, toAmount: swap.bridgeAssetAmount, slippagePercentage }
-    const swapOneInchFormat = { ...swap, from: swap.bridgeAsset, fromAmount: swap.bridgeAssetAmount, fromAccountId: swap.toAccountId, slippagePercentage }
+    const swapOneInchFormat = { ...swap, from: swap.bridgeAsset, fromAmount: swap.bridgeAssetAmount, fromAccountId: swap.toAccountId, slippagePercentage, fee: swap.claimFee }
     if (swap.status === 'WAITING_FOR_CLAIM_CONFIRMATIONS') {
       updates = await withInterval(async () => this.finalizeLiqualitySwapAndStartOneinch({ swap: swapLiqualityFormat, network, walletId }))
     } else {
@@ -123,13 +129,23 @@ class LiqualityBoostSwapProvider extends SwapProvider {
     },
     SUCCESS: {
       ...LiqualitySwapProvider.statuses.SUCCESS,
-      step: 4,
-      label: 'Completed'
+      step: 4
+    },
+    FAILED: {
+      ...OneinchSwapProvider.statuses.FAILED,
+      step: 4
     }
   }
 
   static fromTxType = LiqualityBoostSwapProvider.txTypes.SWAP_INITIATION
   static toTxType = LiqualityBoostSwapProvider.txTypes.SWAP
+
+  static timelineDiagramSteps = [
+    'INITIATION',
+    'AGENT_INITIATION',
+    'CLAIM_OR_REFUND',
+    'SWAP'
+  ]
 
   static totalSteps = 5
 }

@@ -14,7 +14,7 @@
       </div>
       <div class="setting-item">
         <div class="setting-item_title flex-fill" id="settings_item_web_network">Web3 Network
-          <span class="setting-item_sub">Select which ethereum based network should be used for dapps.</span>
+          <span class="setting-item_sub">Select which Web3 network should be used for dapps.</span>
         </div>
         <div class="setting-item_control">
           <ChainDropdown :chains="ethereumChains"
@@ -57,7 +57,13 @@
         </div>
       </div>
       <div class="settings-footer">
-        <div class="text-muted" id="settings_app_version">Version {{ appVersion }}</div>
+        <div id="settings_app_version">
+          <router-link to="/settings/experiments">
+            <span class="text-muted">
+              Version {{ appVersion }}
+            </span>
+          </router-link>
+          </div>
       </div>
     </div>
   </div>
@@ -189,14 +195,8 @@ export default {
 <style lang="scss">
 .settings {
   overflow-y: auto;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 100%;
-  padding-bottom: 40px;
 
   .setting-item {
-    width: 100%;
     border-bottom: 1px solid $hr-border-color;
     padding: 16px 20px;
 
@@ -214,8 +214,6 @@ export default {
   }
 
   .settings-footer {
-    width: 100%;
-    bottom: 0;
     margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;

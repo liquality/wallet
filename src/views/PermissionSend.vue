@@ -75,7 +75,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-import { unitToCurrency } from '@liquality/cryptoassets'
+import { unitToCurrency, chainToTokenAddressMap } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
@@ -137,12 +137,17 @@ export default {
       this.showData = !this.showData
     },
     async getSymbol () {
-      if (this.assetChain === 'ETH') {
+      const chain = cryptoassets[this.asset].chain
+      const tokenAddress = this.request.args[0].to
+
+      try { // try to get token from cryptoassets
+        this.symbol = chainToTokenAddressMap[chain][tokenAddress].code
+      } catch { // in case token doesn't exist in cryptoassets
         try {
-          const data = await tokenDetailProviders.ethereum.getDetails(this.request.args[0].to)
-          this.symbol = data.symbol
+          const tokeData = await tokenDetailProviders[chain].getDetails(tokenAddress)
+          this.symbol = tokeData.symbol + ' (Unverified)'
         } catch {
-          this.symbol = 'ETH'
+          this.symbol = this.assetChain
         }
       }
     },
@@ -342,12 +347,6 @@ export default {
       this.updateMaxSendFees(),
       this.calculateGas()
     ])
-  },
-  beforeDestroy () {
-    // TODO: need to reply correctly when window is closed
-    if (this.replied) return
-
-    this.reply(false)
   }
 }
 </script>

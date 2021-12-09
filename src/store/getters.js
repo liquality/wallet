@@ -15,7 +15,8 @@ const TESTNET_CONTRACT_ADDRESSES = {
   DAI: '0xad6d458402f60fd3bd25163575031acdce07538d',
   SOV: '0x6a9A07972D07E58f0daF5122D11e069288A375fB',
   PWETH: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
-  SUSHI: '0x0769fd68dFb93167989C6f7254cd0D766Fb2841F'
+  SUSHI: '0x0769fd68dFb93167989C6f7254cd0D766Fb2841F',
+  ANC: 'terra1747mad58h0w4y589y3sk84r5efqdev9q4r02pc'
 }
 const TESTNET_ASSETS = [
   'BTC',
@@ -29,7 +30,10 @@ const TESTNET_ASSETS = [
   'PWETH',
   'ARBETH',
   'SOL',
-  'SUSHI'
+  'SUSHI',
+  'LUNA',
+  'UST',
+  'ANC'
 ].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
@@ -52,13 +56,13 @@ export default {
     }) => {
       const account = accountId ? getters.accountItem(accountId) : null
       const _accountType = account?.type || accountType
+      const _accountIndex = account?.index || accountIndex
       const { chain } = getters.cryptoassets[asset]
       let derivationPath
-
       // when we ask for ledger accounts from the ledger device we don't have the derivation path
       // the !account doesn't exist in this case or if we call the getter with accountId equals to null
       if (_accountType.includes('ledger') || !account) {
-        derivationPath = getDerivationPath(chain, network, accountIndex, _accountType)
+        derivationPath = getDerivationPath(chain, network, _accountIndex, _accountType)
       } else {
         derivationPath = account.derivationPath
       }
@@ -118,7 +122,7 @@ export default {
   },
   networkAccounts (state) {
     const { activeNetwork, activeWalletId, accounts } = state
-    return accounts[activeWalletId]?.[activeNetwork] || []
+    return accounts[activeWalletId]?.[activeNetwork]?.filter(a => a.enabled) || []
   },
   networkAssets (state) {
     const { enabledAssets, activeNetwork, activeWalletId } = state
@@ -147,7 +151,7 @@ export default {
   accountItem (state, getters) {
     const { accountsData } = getters
     return (accountId) => {
-      const account = accountsData.find(a => a.id === accountId)
+      const account = accountsData.find(a => a.id === accountId && a.enabled)
       return account
     }
   },
@@ -169,10 +173,14 @@ export default {
     }).filter(account => account.balances && Object.keys(account.balances).length > 0)
   },
   accountsData (state, getters) {
-    const { accounts, activeNetwork, activeWalletId } = state
+    const { accounts, activeNetwork, activeWalletId, enabledChains } = state
     const { accountFiatBalance, assetFiatBalance } = getters
     return accounts[activeWalletId]?.[activeNetwork]
-      .filter(account => account.assets && account.assets.length > 0)
+      .filter(account => account.assets &&
+              account.enabled &&
+              account.assets.length > 0 &&
+              enabledChains[activeWalletId]?.[activeNetwork]?.includes(account.chain)
+      )
       .map(account => {
         const totalFiatBalance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
         const fiatBalances = Object.entries(account.balances)
@@ -189,7 +197,10 @@ export default {
           totalFiatBalance
         }
       }).sort((a, b) => {
-        if (a.type.includes('ledger')) {
+        if (
+          a.type.includes('ledger') ||
+          a.chain < b.chain
+        ) {
           return -1
         }
 

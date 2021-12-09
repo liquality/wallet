@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="account in filteredItems" :key="account.id" :id="account.chain.toUpperCase()">
+    <div v-for="account in filteredItems" :key="account.id" class="overview-screen-chain-section" :id="account.chain.toUpperCase()">
       <ListItem v-if="account.chain === 'bitcoin'"
                 @item-selected="selectItem(account)">
           <template #prefix>
@@ -12,7 +12,7 @@
             <img :src="getAccountIcon(account.chain)"
                  class="asset-icon" />
           </template>
-          {{ account.name }}
+          {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
           <template #sub-title>
             {{ account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : '' }}
           </template>
@@ -22,13 +22,16 @@
                    v-if="account.type && account.type.includes('ledger')">
               Ledger
             </div>
-            <div :id="account.assets[0]">
+            <div :id="account.assets[0]" v-if="account.balances[account.assets[0]]">
               {{ prettyBalance(account.balances[account.assets[0]], account.assets[0]) }} {{account.assets[0]}}
             </div>
             </div>
           </template>
-          <template #detail-sub v-if="account.totalFiatBalance">
+          <template #detail-sub v-if="account.totalFiatBalance && account.loadingInitialBalance === false">
             ${{ formatFiat(account.totalFiatBalance) }}
+          </template>
+          <template v-else>
+            Loading...
           </template>
       </ListItem>
       <div v-else>
@@ -49,7 +52,7 @@
             <img :src="getAccountIcon(account.chain)"
                  class="asset-icon" />
           </template>
-          {{ account.name }}
+          {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
           <template #sub-title>
             {{ account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : '' }}
           </template>
@@ -59,8 +62,11 @@
               Ledger
             </div>
           </template>
-          <template #detail-sub v-if="account.totalFiatBalance">
+          <template #detail-sub v-if="account.totalFiatBalance && account.loadingInitialBalance === false">
             ${{ formatFiat(account.totalFiatBalance) }}
+          </template>
+          <template v-else>
+            Loading...
           </template>
       </ListItem>
       <div class="account-assets"

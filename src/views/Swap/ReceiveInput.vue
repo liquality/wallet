@@ -4,9 +4,7 @@
       <div class="swap-receive-main-input-container">
         <div class="swap-send-main-input">
           <div class="swap-receive-top">
-            <div class="swap-receive-top-label">
-              Receive
-            </div>
+            <div class="swap-receive-top-label">Receive</div>
             <div class="swap-receive-top-amount">
               <div
                 class="btn btn-option label-append"
@@ -18,22 +16,21 @@
                 >
                   {{ `${toAsset} ${receiveAmount}` }}
                 </span>
-                <span v-else>
-                  ${{ formatFiat(receiveAmountFiat) }}
-                </span>
+                <span v-else> ${{ formatFiat(receiveAmountFiat) }} </span>
               </div>
             </div>
           </div>
-          <input
-            v-if="showAmountsInFiat"
-            type="text"
-            class="form-control swap-receive-main-input"
-            :value="receiveAmountFiatValue"
-            @input="$emit('update:receiveAmountFiat', $event.target.value)"
-            placeholder="0.00"
-            autocomplete="off"
-            :disabled="disabled"
-          />
+          <div class="input-group mb-3" v-if="showAmountsInFiat">
+            <span class="input-group-text">$</span>
+            <input
+              type="number"
+              class="form-control swap-receive-main-input"
+              :value="receiveAmountFiat"
+              @input="$emit('update:receiveAmountFiat', $event.target.value)"
+              autocomplete="off"
+              :disabled="disabled"
+            />
+          </div>
           <input
             v-else
             type="number"

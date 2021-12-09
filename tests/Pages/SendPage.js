@@ -1,4 +1,6 @@
-const chalk = require('chalk')
+const TestUtil = require('../utils/TestUtils')
+
+const testUtil = new TestUtil()
 const expect = require('chai').expect
 
 class SendPage {
@@ -59,8 +61,13 @@ class SendPage {
       visible: true,
       timeout: 120000
     })
-    await page.click('.transaction-status')
-    console.log('User clicked on transaction status icon from Transaction details')
+    try {
+      await page.waitForSelector('.transaction-status', { visible: true, timeout: 60000 })
+      await page.click('.transaction-status')
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'send-transaction-status-issue')
+      expect(e, 'send transaction status issue..').equals(null)
+    }
   }
 
   /**
@@ -70,10 +77,11 @@ class SendPage {
    * @constructor
    */
   async HasReviewButtonDisabled (page) {
-    expect(await page.$('#send_review_button[disabled]'),
+    expect(await page.$('#send_review_button'),
       'Send Review Button should be disabled if address wrong format (or) send limit is higher than')
       .not.to.equal(null)
-    console.log(chalk.green.underline.bold('Send Review Button disabled!'))
+    const sendReviewButton = await page.$eval('#send_review_button', el => el.getAttribute('disabled'))
+    expect(sendReviewButton).to.eq('disabled')
   }
 
   /**

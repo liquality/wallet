@@ -2,6 +2,7 @@ import { ChainNetworks } from '@/utils/networks'
 import buildConfig from '../build.config'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { assets } from '@liquality/cryptoassets'
+import { connectRemote } from './terra-injection'
 
 class Background {
   constructor (store) {
@@ -16,10 +17,14 @@ class Background {
       const { url } = connection.sender
       const isInternal = url.startsWith(getRootURL())
 
-      if (isInternal) {
+      if (connection.name === 'TerraStationExtension') {
+        connectRemote(connection, store)
+      } else if (isInternal) {
         this.onInternalConnection(connection)
       } else {
-        this.onExternalConnection(connection)
+        if (connection.name !== 'HW-BRIDGE') {
+          this.onExternalConnection(connection)
+        }
       }
     })
   }
@@ -51,14 +56,6 @@ class Background {
           connection.postMessage({
             id: 'liqualityChainChanged',
             data: { chainIds: this.getChainIds(state.activeNetwork) }
-          })
-        })
-      }
-      if (mutation.type === 'SET_ETHEREUM_INJECTION_CHAIN') {
-        this.externalConnections.forEach(connection => {
-          connection.postMessage({
-            id: 'liqualityEthereumOverrideChanged',
-            data: { chain: state.injectEthereumChain, chainIds: this.getChainIds(state.activeNetwork) }
           })
         })
       }
@@ -152,14 +149,28 @@ class Background {
   onExternalMessage (connection, { id, type, data }) {
     const { url } = connection.sender
     const { origin } = new URL(url)
-    let chain
-    if (data.chain) {
-      chain = data.chain
-    } else {
-      const { asset } = data
+    const { externalConnections, activeWalletId, injectEthereumChain } = this.store.state
+
+    let setDefault = false
+    let { chain, asset } = data
+    if (asset) {
       chain = assets[asset].chain
     }
-    const { externalConnections, activeWalletId } = this.store.state
+    if (!chain) {
+      const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
+      if (defaultAccountId) {
+        const defaultAccount = this.store.getters.accountItem(defaultAccountId)
+        if (defaultAccount) {
+          chain = defaultAccount.chain
+          setDefault = true
+        }
+      }
+    }
+    if (!chain) {
+      chain = injectEthereumChain
+      setDefault = true
+    }
+
     const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
                     Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
 
@@ -176,13 +187,16 @@ class Background {
           connection.postMessage({
             id,
             data: {
-              result: true
+              result: {
+                accepted: true,
+                chain
+              }
             }
           })
           return
         }
 
-        this.storeProxy(id, connection, 'requestOriginAccess', { origin, chain })
+        this.storeProxy(id, connection, 'requestOriginAccess', { origin, chain, setDefault })
         break
 
       case 'CAL_REQUEST':

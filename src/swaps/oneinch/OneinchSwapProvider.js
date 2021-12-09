@@ -17,7 +17,7 @@ const slippagePercentage = 0.5
 const chainToRpcProviders = {
   1: `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`,
   56: 'https://bsc-dataseed.binance.org',
-  137: 'https://rpc-mainnet.matic.network'
+  137: 'https://polygon-rpc.com'
 }
 
 class OneinchSwapProvider extends SwapProvider {
@@ -65,7 +65,7 @@ class OneinchSwapProvider extends SwapProvider {
     const api = new ethers.providers.StaticJsonRpcProvider(chainToRpcProviders[chainId])
     const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.toAccountId)
-    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw)
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
     const allowance = await erc20.allowance(fromAddress, this.config.routerAddress)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     if (allowance.gte(inputAmount)) {
@@ -77,11 +77,10 @@ class OneinchSwapProvider extends SwapProvider {
     const callData = await axios({
       url: this.config.agent + `/${chainId}/approve/calldata`,
       method: 'get',
-      params: { tokenAddress: cryptoassets[quote.from].contractAddress, amount: inputAmount }
+      params: { tokenAddress: cryptoassets[quote.from].contractAddress, amount: inputAmount.toString() }
     })
 
-    const account = this.getAccount(quote.fromAccountId)
-    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const approveTx = await client.chain.sendTransaction({ to: callData.data?.to, value: callData.data?.value, data: callData.data?.data, fee: quote.fee })
 
     return {
@@ -98,9 +97,9 @@ class OneinchSwapProvider extends SwapProvider {
     if (toChain !== fromChain || !chainToRpcProviders[chainId]) return null
 
     const account = this.getAccount(quote.fromAccountId)
-    const client = this.getClient(network, walletId, quote.from, account?.type)
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
-    const fromAddress = chains[toChain].formatAddress(fromAddressRaw)
+    const fromAddress = chains[toChain].formatAddress(fromAddressRaw, network)
 
     const swapParams = {
       fromTokenAddress: cryptoassets[quote.from].contractAddress || nativeAssetAddress,
@@ -167,8 +166,7 @@ class OneinchSwapProvider extends SwapProvider {
   }
 
   async waitForApproveConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.accountId)
-    const client = this.getClient(network, walletId, swap.from, account?.type)
+    const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
@@ -185,16 +183,17 @@ class OneinchSwapProvider extends SwapProvider {
   }
 
   async waitForSwapConfirmations ({ swap, network, walletId }) {
-    const account = this.getAccount(swap.accountId)
-    const client = this.getClient(network, walletId, swap.from, account?.type)
+    const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
       if (tx && tx.confirmations > 0) {
+        // Check transaction status - it may fail due to slippage
+        const { status } = await client.getMethod('getTransactionReceipt')(swap.swapTxHash)
         this.updateBalances({ network, walletId, assets: [swap.from] })
         return {
           endTime: Date.now(),
-          status: 'SUCCESS'
+          status: Number(status) === 1 ? 'SUCCESS' : 'FAILED'
         }
       }
     } catch (e) {
@@ -276,6 +275,8 @@ class OneinchSwapProvider extends SwapProvider {
 
   static fromTxType = OneinchSwapProvider.txTypes.SWAP
   static toTxType = null
+
+  static timelineDiagramSteps = ['APPROVE', 'SWAP']
 
   static totalSteps = 3
 }

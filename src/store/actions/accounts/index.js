@@ -1,5 +1,5 @@
 export * from './createAccount'
-export * from './getAccount'
-export * from './getAccounts'
 export * from './removeAccount'
 export * from './updateAccount'
+export * from './toggleBlockchain'
+export * from './toggleAccount'
