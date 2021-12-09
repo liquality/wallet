@@ -5,5 +5,8 @@
     "enabled": true
   },
   "semanticCommits": "disabled",
-  "commitBody": "[skip ci]"
+  "commitBody": "[skip ci]",
+  "separateMajorMinor": true,
+  "separateMultipleMajor": true,
+  "schedule": ["before 2am"]
 }
