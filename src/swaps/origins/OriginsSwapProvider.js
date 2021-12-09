@@ -64,7 +64,7 @@ class OriginsSwapProvider extends SwapProvider {
 
     const PPM = (await erc20.PPM()).toString()
     const exchangeRate = (await erc20.exchangeRate()).toString()
-    return BN(exchangeRate).dividedBy(BN(PPM)).toNumber()
+    return BN(exchangeRate).dividedBy(BN(PPM)).toString()
   }
 
   async newSwap ({ network, walletId, quote }) {
