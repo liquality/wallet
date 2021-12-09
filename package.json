@@ -138,7 +138,7 @@
     "mocha-allure-reporter": "^1.4.0",
     "mochawesome": "^6.2.2",
     "puppeteer": "12.0.1",
-    "puppeteer-core": "11.0.0",
+    "puppeteer-core": "12.0.1",
     "sass": "^1.35.2",
     "sass-loader": "^8.0.2",
     "sinon-chrome": "^3.0.1",
