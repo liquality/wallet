@@ -101,7 +101,8 @@ export default {
         }
         const updatedAccount = {
           ..._account,
-          balances
+          balances,
+          loadingInitialBalance: false
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)
