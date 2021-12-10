@@ -4,7 +4,7 @@
       <LogoWallet />
     </div>
     <div>
-      <h2>Create {{isNewUser ? 'New' : ''}} Password</h2>
+      <h2>Create {{!imported ? 'New' : ''}} Password</h2>
     </div>
     <form class="form" autocomplete="off" v-on:submit.prevent="generate">
       <div class="form-group mb-4">
@@ -38,7 +38,7 @@
 import LogoWallet from '@/assets/icons/logo_wallet.svg'
 
 export default {
-  props: ['isNewUser'],
+  props: ['imported'],
   data () {
     return {
       password: null,

@@ -21,7 +21,7 @@
     </div>
   </div>
   <ConfirmSeed v-show="currentStep === 'confirm'" @on-confirm="currentStep='password'" @on-cancel="currentStep = 'backup'" :mnemonic="mnemonic" />
-  <OnboardingPassword v-show="currentStep === 'password'" :isNewUser="isNewUser" @on-unlock="onUnlock" @currentStep="currentStep='confirm'"/>
+  <OnboardingPassword v-show="currentStep === 'password'" :imported="imported" @on-unlock="onUnlock" @currentStep="currentStep='confirm'"/>
   <Congratulations v-show="currentStep === 'congrats'" />
 </div>
 </template>
@@ -38,7 +38,7 @@ export default {
   data () {
     return {
       mnemonic: null,
-      currentStep: 'backup',
+      currentStep: '',
       password: null,
       imported: false
     }
@@ -53,8 +53,10 @@ export default {
     if (this.seedphrase) {
       this.mnemonic = this.seedphrase
       this.imported = true
+      this.currentStep = 'password'
     } else {
       this.mnemonic = generateMnemonic()
+      this.currentStep = 'backup'
     }
   },
   computed: {
@@ -63,14 +65,12 @@ export default {
     },
     logo () {
       return LogoWallet
-    },
-    isNewUser () {
-      return this.$route.query?.isNewUser
     }
   },
   methods: {
     ...mapActions(['setupWallet', 'createWallet', 'unlockWallet']),
     async confirmMnemonic () {
+      debugger;
       this.currentStep = 'congrats'
       await this.setupWallet({ key: this.password })
       await this.createWallet({

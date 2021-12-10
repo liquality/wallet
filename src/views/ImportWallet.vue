@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     next () {
-      this.$router.push({ name: 'OnboardingSetup', params: { seedphrase: this.mnemonic }, query: { isNewUser: this.$route?.query?.isNewUser } })
+      this.$router.push({ name: 'OnboardingSetup', params: { seedphrase: this.mnemonic } })
     },
     setMnemonicLength (words) {
       this.numWords = words
