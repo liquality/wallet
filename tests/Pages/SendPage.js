@@ -1,4 +1,5 @@
 const TestUtil = require('../utils/TestUtils')
+const puppeteer = require('puppeteer')
 
 const testUtil = new TestUtil()
 const expect = require('chai').expect
@@ -40,10 +41,17 @@ class SendPage {
    */
   async ClickSendReview (page) {
     // Wait for Review button Enabled
-    await page.waitForSelector('#send_review_button', { visible: true, timeout: 120000 })
-    await page.click('#send_review_button')
-    await page.waitForSelector('.confirm-address', { visible: true, timeout: 120000 })
-    console.log('User clicked on confirm SEND review button')
+    try {
+      await page.waitForSelector('#send_review_button', { visible: true, timeout: 120000 })
+      await page.click('#send_review_button')
+      await page.waitForSelector('.confirm-address', { visible: true, timeout: 120000 })
+      console.log('User clicked on confirm SEND review button')
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'click-on-send-review-button')
+        expect(e, 'Click SEND review button failed').equals(null)
+      }
+    }
   }
 
   /**
