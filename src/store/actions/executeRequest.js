@@ -38,27 +38,13 @@ export const executeRequest = async ({ getters, dispatch, state, rootState }, { 
       call = methodFunc(...request.args)
     }
 
-    const { ledgerBridgeConnected, ledgerBridgeTransportConnected } = rootState.app
-    if (account?.type.includes('ledger')) {
-      if (!ledgerBridgeConnected) {
-        dispatch('app/startBridgeListener', {
-          onConnect: () => {
-            resolve(call)
-          }
-        }).then(() => {
-          dispatch('app/openUSBBridgeWindow')
-        })
-      } else if (!ledgerBridgeTransportConnected) {
-        dispatch('app/startBridgeListener', {
-          onTransportConnect: () => {
-            resolve(call)
-          }
-        }).then(() => {
-          dispatch('app/openUSBBridgeWindow')
-        })
-      } else {
-        resolve(call)
-      }
+    const { ledgerBridgeTransportConnected } = rootState.app
+    if (account?.type.includes('ledger') && !ledgerBridgeTransportConnected) {
+      dispatch('app/startBridgeListener', {
+        onConnect: () => {
+          resolve(call)
+        }
+      })
     } else {
       resolve(call)
     }

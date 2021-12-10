@@ -988,7 +988,7 @@ export default {
         await this.startBridgeListener()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
           if (
-            type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
+            type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
             payload.connected === true
           ) {
             this.bridgeModalOpen = false

@@ -59,7 +59,7 @@ export const actions = {
     commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected })
   },
   startBridgeListener: ({ rootState, commit, dispatch }, payload) => {
-    createBridgeClient()
+    createBridgeClient(payload)
     dispatch('openLedgerBridgeWindow')
   },
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {

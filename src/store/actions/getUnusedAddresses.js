@@ -15,7 +15,7 @@ export const getUnusedAddresses = async ({ state, commit, getters }, { network, 
     if (index >= 0 && asset) {
       const account = accounts[index]
       let xPub = null
-      if (account.chain === ChainId.Bitcoin && !account.xPub) {
+      if (account.type.includes('ledger') && account.chain === ChainId.Bitcoin && !account.xPub) {
         const path = getDerivationPath(account.chain, network, 0, account.type)
         const xpubVersion = getXPubVersion(network)
         xPub = await callToBridge({

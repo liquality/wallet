@@ -5,20 +5,32 @@ import store from '@/store'
 import { findCryptoCurrencyById } from '@ledgerhq/cryptoassets'
 
 let bridgeClient = null
-const onTransportConnect = () => {
-  store.dispatch('app/setLedgerBridgeTransportConnected', { connected: true })
-}
 
-export const createBridgeClient = () => {
+export const createBridgeClient = ({
+  onTransportConnect,
+  onConnect
+} = {}) => {
+  const { usbBridgeWindowsId } = store.state
+  store.dispatch('app/closeExistingBridgeWindow', { windowsId: usbBridgeWindowsId })
   bridgeClient = createClient()
   bridgeClient.onConnect(() => {
     store.dispatch('app/setLedgerBridgeConnected', { connected: true })
+    if (onConnect) {
+      onConnect()
+    }
   }).onDisconnect(() => {
     store.dispatch('app/setLedgerBridgeConnected', { connected: false })
     store.dispatch('app/setLedgerBridgeTransportConnected', { connected: false })
     const { usbBridgeWindowsId } = store.state
     store.dispatch('app/closeExistingBridgeWindow', { windowsId: usbBridgeWindowsId })
-  }).onTransportConnect(onTransportConnect)
+  }).onTransportConnect(
+    () => {
+      store.dispatch('app/setLedgerBridgeTransportConnected', { connected: true })
+      if (onTransportConnect) {
+        onTransportConnect()
+      }
+    }
+  )
     .onTransportDisconnected(() => {
       store.dispatch('app/setLedgerBridgeTransportConnected', { connected: false })
       const { usbBridgeWindowsId } = store.state
@@ -44,22 +56,7 @@ export const createBridgeClient = () => {
 * @returns Promise<any>
 */
 export const callToBridge = async (message) => {
-  if (!bridgeClient) {
-    createBridgeClient()
-  }
-
-  const { ledgerBridgeConnected, ledgerBridgeTransportConnected } = store.state.app
-  if (ledgerBridgeConnected && ledgerBridgeTransportConnected) {
-    return bridgeClient.sendMessage(message)
-  }
-
-  await store.dispatch('app/openLedgerBridgeWindow')
-  return new Promise((resolve) => {
-    bridgeClient.onTransportConnect(async () => {
-      await store.dispatch('app/setLedgerBridgeTransportConnected', { connected: true })
-      resolve(await bridgeClient.sendMessage(message))
-    })
-  })
+  return bridgeClient.sendMessage(message)
 }
 
 export const getXPubVersion = (network) => {
