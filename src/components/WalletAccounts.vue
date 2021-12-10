@@ -22,13 +22,16 @@
                    v-if="account.type && account.type.includes('ledger')">
               Ledger
             </div>
-            <div :id="account.assets[0]">
+            <div :id="account.assets[0]" v-if="account.balances[account.assets[0]]">
               {{ prettyBalance(account.balances[account.assets[0]], account.assets[0]) }} {{account.assets[0]}}
             </div>
             </div>
           </template>
-          <template #detail-sub v-if="account.totalFiatBalance">
+          <template #detail-sub v-if="account.totalFiatBalance && account.loadingInitialBalance === false">
             ${{ formatFiat(account.totalFiatBalance) }}
+          </template>
+          <template v-else>
+            Loading...
           </template>
       </ListItem>
       <div v-else>
@@ -59,8 +62,11 @@
               Ledger
             </div>
           </template>
-          <template #detail-sub v-if="account.totalFiatBalance">
+          <template #detail-sub v-if="account.totalFiatBalance && account.loadingInitialBalance === false">
             ${{ formatFiat(account.totalFiatBalance) }}
+          </template>
+          <template v-else>
+            Loading...
           </template>
       </ListItem>
       <div class="account-assets"

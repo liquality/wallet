@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import Splash from '@/views/Splash.vue'
 import OnboardingSetup from '@/views/Onboarding/OnboardingSetup.vue'
+import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 import ImportWallet from '@/views/ImportWallet.vue'
 import UnlockWallet from '@/views/UnlockWallet.vue'
 import Wallet from '@/views/Wallet/Wallet.vue'
@@ -57,6 +58,11 @@ const routes = [
     component: OnboardingSetup,
     name: 'OnboardingSetup',
     props: true
+  },
+  {
+    path: '/onboarding/home',
+    component: OnboardingHome,
+    name: 'OnboardingHome'
   },
   // Onboarding
 

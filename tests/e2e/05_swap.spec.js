@@ -23,14 +23,17 @@ describe('SWAP feature["testnet"]', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-    await homePage.ScrollToEndOfTerms(page)
-    await homePage.ClickOnAcceptPrivacy(page)
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
+    await homePage.ScrollToEndOfTerms(page)
+    await homePage.ClickOnAcceptPrivacy(page)
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
     try {
@@ -44,10 +47,6 @@ describe('SWAP feature["testnet"]', async () => {
   it.skip('SWAP BTC to ETH (LIQUALITY)', async () => {
     const asset1 = 'BTC'
     const asset2 = 'ETH'
-
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -123,9 +122,6 @@ describe('SWAP feature["testnet"]', async () => {
   })
   it('SWAP SOV to BTC', async () => {
     const fromAsset = 'SOV'
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on SOV then click on SWAP button
@@ -192,9 +188,6 @@ describe('SWAP feature["testnet"]', async () => {
     })
   })
   it('SWAP (BTC->ETH) - Thorchain-[smoke]', async () => {
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -213,9 +206,6 @@ describe('SWAP feature["testnet"]', async () => {
     await swapPage.HasReviewButtonDisabled(page)
   })
   it('SWAP (ETH->BTC) - Thorchain', async () => {
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
@@ -232,9 +222,6 @@ describe('SWAP feature["testnet"]', async () => {
       'ETH->BTC swap, Thorchain source should be chosen!').oneOf(['Thorchain', 'Liquality'])
   })
   it('SWAP (ETHEREUM),Please increase amount. It is below minimum.', async () => {
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on ETH then click on SWAP button
@@ -251,9 +238,6 @@ describe('SWAP feature["testnet"]', async () => {
     await swapPage.HasReviewButtonDisabled(page)
   })
   it('SWAP(ETHEREUM),Lower amount. This exceeds available balance.(Thorchain)', async () => {
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     await overviewPage.SelectChain(page, 'ETH')
@@ -277,14 +261,8 @@ describe('SWAP feature["testnet"]', async () => {
   it('SWAP (NEAR->BTC)', async () => {
     const fromAsset = 'NEAR'
     const toAsset = 'BTC'
-
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
-
     // Select testnet
     await overviewPage.SelectNetwork(page)
-
     // Click first assert then click on SWAP button
     await overviewPage.SelectChain(page, fromAsset)
     await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
