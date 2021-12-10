@@ -1,4 +1,3 @@
-const chalk = require('chalk')
 const expect = require('chai').expect
 
 class TransactionDetailsPage {
@@ -25,7 +24,7 @@ class TransactionDetailsPage {
   async ValidateSentToLink (page, domain) {
     await page.waitForSelector('#transaction_details_send_to_link', { visible: true })
     const sedToHrefLink = await page.$eval('#transaction_details_send_to_link', el => el.href)
-    console.log(chalk.blueBright(sedToHrefLink))
+    console.log(sedToHrefLink)
     expect(sedToHrefLink).contain(domain)
   }
 
@@ -38,7 +37,7 @@ class TransactionDetailsPage {
   async ValidateNetworkSpeedFee (page) {
     await page.waitForSelector('#transaction_details_network_speed_fee', { visible: true })
     const sendNetworkSpeedFee = await page.$eval('#transaction_details_network_speed_fee', el => el.innerText)
-    console.log(chalk.blueBright(sendNetworkSpeedFee))
+    console.log(sendNetworkSpeedFee)
   }
 
   /**
@@ -71,7 +70,7 @@ class TransactionDetailsPage {
     await page.waitForSelector('#transaction_details_transaction_id', { visible: true })
     const transactionIdHrefLink = await page.$eval('#transactionLink', el => el.href)
     expect(transactionIdHrefLink).contain(domain)
-    console.log(chalk.blueBright(transactionIdHrefLink))
+    console.log(transactionIdHrefLink)
   }
 }
 

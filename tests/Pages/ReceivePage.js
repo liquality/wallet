@@ -1,6 +1,5 @@
 const expect = require('chai').expect
 const assert = require('chai').assert
-const chalk = require('chalk')
 
 class ReceivePage {
   /**
@@ -12,7 +11,6 @@ class ReceivePage {
   async CheckReceiveAddresses (page) {
     await page.waitForSelector('.receive_address:not(:empty)')
     const addressText = await page.$eval('#receive_address', (el) => el.textContent.trim())
-    console.log(chalk.gray('Receive address: ' + addressText))
     expect(addressText, 'Receive address must be string and not undefined')
       .to.be.a('string')
     assert.isNotNull(addressText, 'Receive address not null')
@@ -41,7 +39,7 @@ class ReceivePage {
         timeout: 5000
       })
       const url = await page.$eval('#receive_url', (el) => el.textContent)
-      console.log(chalk.green('receive address url:', url))
+      console.log('receive address url:', url)
     }
     return null
   }

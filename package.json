@@ -80,7 +80,6 @@
     "bluebird": "^3.7.2",
     "bootstrap": "^4.5.0",
     "chai": "^4.3.4",
-    "chalk": "5.0.0",
     "core-js": "^3.15.2",
     "crypto-js": "^4.0.0",
     "cryptocurrency-icons": "0.18.0",
