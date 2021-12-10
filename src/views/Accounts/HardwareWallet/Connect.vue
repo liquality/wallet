@@ -14,9 +14,6 @@
         <li>
           On the device, navigate to the asset that you want to access
         </li>
-        <li v-if="isEthereumChain(selectedAsset.name)">
-          To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Allow Contract Data'
-        </li>
       </ul>
       <div class="options">
         <div class="options-text">
