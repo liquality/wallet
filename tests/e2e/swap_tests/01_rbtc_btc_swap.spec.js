@@ -52,7 +52,7 @@ describe('RBTC->BTC swap-["smoke"]', async () => {
 
     // Select toAsset
     await page.click('.swap-receive-main-icon')
-    await page.waitForSelector(`#${toAsset}`, { timeout: 60000, visible: true })
+    await page.waitForSelector(`#${toAsset}`, { timeout: 120000, visible: true })
     await page.click(`#${toAsset}`)
     console.log(`User selected ${toAsset} as 2nd pair for swap`)
 

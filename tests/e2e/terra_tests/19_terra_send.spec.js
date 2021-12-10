@@ -19,7 +19,7 @@ let browser, page
 const password = '123123123'
 
 // https://linear.app/liquality/issue/LIQ-358/exploratory-report-on-terra
-describe('Terra SEND feature[smoke,testnet]', async () => {
+describe.only('Terra SEND feature[smoke,testnet]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -44,7 +44,7 @@ describe('Terra SEND feature[smoke,testnet]', async () => {
       throw new Error(e)
     }
   })
-  it('Send LUNA', async () => {
+  it.only('Send LUNA', async () => {
     const bitCoinName = 'LUNA'
     const coinsToSend = '1'
     // Select testnet

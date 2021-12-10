@@ -40,9 +40,9 @@ class SendPage {
    */
   async ClickSendReview (page) {
     // Wait for Review button Enabled
-    await page.waitForSelector('#send_review_button:not([disabled])', { visible: true })
+    await page.waitForSelector('#send_review_button', { visible: true, timeout: 120000 })
     await page.click('#send_review_button')
-    await page.waitForSelector('.confirm-address', { visible: true })
+    await page.waitForSelector('.confirm-address', { visible: true, timeout: 120000 })
     console.log('User clicked on confirm SEND review button')
   }
 
