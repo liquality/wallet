@@ -6,11 +6,19 @@ const testUtils = new PlaywrightTestUtils()
 let page
 let browser
 
-test.beforeEach(async () => {
+test.beforeAll(async () => {
   const userDataDir = testUtils.extensionPathBuildPath
-  browser = await chromium.launchPersistentContext(userDataDir, {
+  browser = await chromium.launch({
     headless: false,
     args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--font-render-hinting=none',
+      '--window-size=1920,1080',
+      '--disable-notifications',
+      '--disable-extensions',
+      '--disable-extensions-file-access-check',
+      '-disable-popup-blocking',
       '--disable-extensions-except=' + userDataDir,
       '--load-extension=' + userDataDir
     ]
@@ -19,10 +27,10 @@ test.beforeEach(async () => {
   await page.goto(testUtils.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
 })
 
-test.afterEach(async () => {
+test.afterAll(async () => {
   await browser.close()
 })
-test('playwright chrome wallet test new new', async () => {
+test.only('playwright chrome wallet test new new', async () => {
   const importWallet = await page.waitForSelector('#import_with_seed_phrase_option')
   await importWallet.click()
   const termsPrivacyAcceptButton = await page.isVisible('#terms_privacy_accept_button')

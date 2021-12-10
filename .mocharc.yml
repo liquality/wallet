@@ -5,13 +5,9 @@ color: true
 inline-diffs: true
 allow-uncaught: true
 async-only: true
-parallel: false
+parallel: true
 jobs: 5
-#reporter: mochawesome
-#reporter-option:
-#  - 'reportPageTitle=Liquality Wallet Test Report'
-#  - 'reportTitle=Liquality Wallet Test Report'
-#  - 'code=false'
-#  - 'charts=true'
-#require:
-#  - mochawesome/register
+spec:
+  - 'tests/e2e/*.spec.js'
+ignore:
+  - 'tests/playwright_tests/*'

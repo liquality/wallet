@@ -24,7 +24,8 @@
     "test:pullrequest:smoke": "node_modules/mocha/bin/mocha --colors --grep 'smoke' 'tests/**/*.spec.js'",
     "test:mainnet:devagent": "NODE_ENV=mainnet NODE_AGENT=devagent node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/**/*.spec.js'",
     "test:mainnet:prodagent": "NODE_ENV=mainnet NODE_AGENT=prodagent node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/**/*.spec.js'",
-    "playwright:test": "npx playwright test --headed"
+    "playwright:test": "npx playwright test --headed",
+    "allure:report": "allure generate allure-results --clean -o allure-report"
   },
   "dependencies": {
     "@blobfishkate/sovryncontracts": "1.3.17",
@@ -124,6 +125,7 @@
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/test-utils": "^1.1.0",
     "allure-commandline": "^2.13.8",
+    "allure-playwright": "^2.0.0-beta.14",
     "babel-eslint": "^10.1.0",
     "chai-match": "^1.1.1",
     "eslint": "^7.29.0",
