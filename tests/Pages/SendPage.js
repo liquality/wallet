@@ -1,8 +1,7 @@
 const TestUtil = require('../utils/TestUtils')
+const puppeteer = require('puppeteer')
 
 const testUtil = new TestUtil()
-
-const chalk = require('chalk')
 const expect = require('chai').expect
 
 class SendPage {
@@ -42,10 +41,17 @@ class SendPage {
    */
   async ClickSendReview (page) {
     // Wait for Review button Enabled
-    await page.waitForSelector('#send_review_button:not([disabled])', { visible: true })
-    await page.click('#send_review_button')
-    await page.waitForSelector('.confirm-address', { visible: true })
-    console.log('User clicked on confirm SEND review button')
+    try {
+      await page.waitForSelector('#send_review_button', { visible: true, timeout: 120000 })
+      await page.click('#send_review_button')
+      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 120000 })
+      console.log('User clicked on confirm SEND review button')
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'click-on-send-review-button')
+        expect(e, 'Click SEND review button failed').equals(null)
+      }
+    }
   }
 
   /**
@@ -79,10 +85,11 @@ class SendPage {
    * @constructor
    */
   async HasReviewButtonDisabled (page) {
-    expect(await page.$('#send_review_button[disabled]'),
+    expect(await page.$('#send_review_button'),
       'Send Review Button should be disabled if address wrong format (or) send limit is higher than')
       .not.to.equal(null)
-    console.log(chalk.green.underline.bold('Send Review Button disabled!'))
+    const sendReviewButton = await page.$eval('#send_review_button', el => el.getAttribute('disabled'))
+    expect(sendReviewButton).to.eq('disabled')
   }
 
   /**

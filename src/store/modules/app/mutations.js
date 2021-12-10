@@ -1,9 +1,9 @@
 export const mutations = {
-  SET_USB_BRIDGE_CREATED (state, { created }) {
-    state.usbBridgeCreated = created
+  SET_LEDGER_BRIDGE_CONNECTED (state, { connected }) {
+    state.ledgerBridgeConnected = connected
   },
-  SET_USB_BRIDGE_TRANSPORT_CREATED (state, { created }) {
-    state.usbBridgeTransportCreated = created
+  SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED (state, { connected }) {
+    state.ledgerBridgeTransportConnected = connected
   },
   ANALITYCS_STARTED (state) {
     state.analyticsStarted = true

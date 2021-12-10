@@ -3,7 +3,6 @@ const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const expect = require('chai').expect
-const chalk = require('chalk')
 
 const puppeteer = require('puppeteer')
 
@@ -15,14 +14,23 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-if (process.env.NODE_ENV === 'mainnet') {
-  describe('Import wallet - fetch custom token details against and add custom token', async () => {
+describe('Fetch custom token details and add custom token-["mainnet"]', async () => {
+  if (process.env.NODE_ENV === 'mainnet') {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+      // Import wallet option
+      await homePage.ClickOnImportWallet(page)
       await homePage.ScrollToEndOfTerms(page)
       await homePage.ClickOnAcceptPrivacy(page)
+      // Enter seed words and submit
+      await homePage.EnterSeedWords(page)
+      // Create a password & submit
+      await passwordPage.SubmitPasswordDetails(page, password)
+      // overview page
+      await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.HasOverviewPageLoaded(page)
     })
     afterEach(async () => {
       try {
@@ -40,32 +48,13 @@ if (process.env.NODE_ENV === 'mainnet') {
         symbol: 'USDT',
         decimal: '6'
       }
-      // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
       // Add Custom token screen
       await page.waitForSelector('#contractAddress', { visible: true })
       // select chain
@@ -75,7 +64,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${tokenDetails.chain}_chain`)
       // paste address
       await page.type('#contractAddress', tokenDetails.address)
-      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      console.log(('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
       await page.waitForTimeout(10000)
@@ -88,6 +77,11 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Check Token Symbol
       const decimal = await page.$eval('#decimals', el => el.value)
       expect(decimal).to.equals(tokenDetails.decimal)
+      // Check Token with this symbol exists.
+      await page.waitForSelector('#token_with_this_symbol_exits', { visible: true })
+      // Add token button is disabled
+      const addTokenDetails = await page.$eval('#add_token_button', el => el.getAttribute('disabled'))
+      expect(addTokenDetails).to.eq('disabled')
     })
     it('BSC - PancakeSwap token', async () => {
       const tokenDetails = {
@@ -97,33 +91,13 @@ if (process.env.NODE_ENV === 'mainnet') {
         symbol: 'Cake',
         decimal: '18'
       }
-      // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
-
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
       // select chain
       // await page.evaluate( () => document.getElementById("contractAddress").value = "")
       await page.waitForSelector('#select_chain_dropdown', { visible: true })
@@ -132,7 +106,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${tokenDetails.chain}_chain`)
       // paste address
       await page.type('#contractAddress', tokenDetails.address)
-      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      console.log(('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
       await page.waitForTimeout(10000)
@@ -154,16 +128,6 @@ if (process.env.NODE_ENV === 'mainnet') {
         symbol: 'SUSHI',
         decimal: '18'
       }
-
-      // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
@@ -180,7 +144,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${tokenDetails.chain}_chain`)
       // paste address
       await page.type('#contractAddress', tokenDetails.address)
-      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      console.log(('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
       await page.waitForTimeout(10000)
@@ -202,32 +166,13 @@ if (process.env.NODE_ENV === 'mainnet') {
         symbol: 'USDC',
         decimal: '6'
       }
-      // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
 
       // select chain
       await page.waitForSelector('#select_chain_dropdown', { visible: true })
@@ -236,7 +181,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${tokenDetails.chain}_chain`)
       // paste address
       await page.type('#contractAddress', tokenDetails.address)
-      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      console.log(('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
       await page.waitForTimeout(10000)
@@ -258,32 +203,13 @@ if (process.env.NODE_ENV === 'mainnet') {
         symbol: 'LEND',
         decimal: '18'
       }
-      // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
 
       // select chain
       await page.waitForSelector('#select_chain_dropdown', { visible: true })
@@ -292,7 +218,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${tokenDetails.chain}_chain`)
       // paste address
       await page.type('#contractAddress', tokenDetails.address)
-      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      console.log(('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
       await page.waitForTimeout(30000)
@@ -314,33 +240,13 @@ if (process.env.NODE_ENV === 'mainnet') {
         symbol: 'WRBTC',
         decimal: '18'
       }
-      // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
-
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
       // select chain
       await page.waitForSelector('#select_chain_dropdown', { visible: true })
       await page.click('#select_chain_dropdown')
@@ -348,7 +254,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${tokenDetails.chain}_chain`)
       // paste address
       await page.type('#contractAddress', tokenDetails.address)
-      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      console.log(('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
       await page.waitForTimeout(10000)
@@ -370,32 +276,13 @@ if (process.env.NODE_ENV === 'mainnet') {
         symbol: 'PRARE',
         decimal: '18'
       }
-      // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
       // Add Custom token screen
       await page.waitForSelector('#contractAddress', { visible: true })
       // select chain
@@ -405,7 +292,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${tokenDetails.chain}_chain`)
       // paste address
       await page.type('#contractAddress', tokenDetails.address)
-      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      console.log(('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
       await page.waitForTimeout(10000)
@@ -425,11 +312,11 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Click on Backup Burger Icon menu
       await page.waitForSelector('#burger_icon_menu', { visible: true })
       await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
+      console.log(('User clicked on Burger Icon Menu'))
       // Click Manage Assets
       await page.waitForSelector('#manage_assets', { visible: true })
       await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
+      console.log(('User clicked on Manage Assets'))
 
       // Search with token symbol and the token should be enabled with toggled switch
       await page.type('#search_for_an_assert_input', symbol)
@@ -439,14 +326,6 @@ if (process.env.NODE_ENV === 'mainnet') {
         .contains('vue-js-switch toggled')
     })
     it('BSC - PancakeSwap token add', async () => { // Import wallet option
-      await homePage.ClickOnImportWallet(page)
-      // Enter seed words and submit
-      await homePage.EnterSeedWords(page, null)
-      // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
       // Select network(Only works against Mainnet)
       await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
@@ -459,18 +338,8 @@ if (process.env.NODE_ENV === 'mainnet') {
         symbol: 'Cake',
         decimal: '18'
       }
-      // Click on Backup seed from Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
-      // click on add custom token
-      await page.waitForSelector('#add_custom_token', { visible: true })
-      await page.click('#add_custom_token')
-      console.log(chalk.green('User clicked on Add Custom Token'))
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
 
       // select chain
       await page.waitForSelector('#select_chain_dropdown', { visible: true })
@@ -479,7 +348,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${tokenDetails.chain}_chain`)
       // paste address
       await page.type('#contractAddress', tokenDetails.address)
-      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      console.log(('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
       await page.waitForTimeout(10000)
@@ -499,11 +368,11 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Click on Backup Burger Icon menu
       await page.waitForSelector('#burger_icon_menu', { visible: true })
       await page.click('#burger_icon_menu')
-      console.log(chalk.green('User clicked on Burger Icon Menu'))
+      console.log(('User clicked on Burger Icon Menu'))
       // Click Manage Assets
       await page.waitForSelector('#manage_assets', { visible: true })
       await page.click('#manage_assets')
-      console.log(chalk.green('User clicked on Manage Assets'))
+      console.log(('User clicked on Manage Assets'))
 
       // Search with token symbol and the token should be enabled with toggled switch
       await page.type('#search_for_an_assert_input', symbol)
@@ -512,5 +381,5 @@ if (process.env.NODE_ENV === 'mainnet') {
         'Added custom token toggled automatically')
         .contains('vue-js-switch toggled')
     })
-  })
-}
+  }
+})

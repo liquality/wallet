@@ -8,7 +8,6 @@ import axios from 'axios'
 import tokenABI from './tokenABI.json'
 import buildConfig from '../build.config'
 
-
 const EXPLORERS = {
   ethereum: {
     testnet: {
@@ -191,7 +190,7 @@ export const tokenDetailProviders = {
   },
   rsk: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, 'https://public-node.rsk.co')
+      return await fetchTokenDetails(contractAddress, process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET)
     }
   },
   bsc: {

@@ -1,5 +1,5 @@
 
-import { assets, ChainId } from '@liquality/cryptoassets'
+import { assets } from '@liquality/cryptoassets'
 export const getLedgerAccounts = async (
   { getters },
   { network, walletId, asset, accountType, startingIndex, numAccounts }
@@ -7,7 +7,6 @@ export const getLedgerAccounts = async (
   const { client, networkAccounts } = getters
   const { chain } = assets[asset]
   const results = []
-
   const existingAccounts = networkAccounts.filter(account => {
     return account.chain === chain
   })
@@ -27,11 +26,28 @@ export const getLedgerAccounts = async (
     const addresses = await _client.wallet.getAddresses()
     if (addresses && addresses.length > 0) {
       const account = addresses[0]
-      // For bitcoin we use the base derivation path
-      // Example: derivation path "84'/0'/0'/0/0" => base  "84'/0'/0'"
-      const pathToCompare = chain === ChainId.Bitcoin ? account.derivationPath.substr(0, account.derivationPath.length - 4) : account.derivationPath
-      const exists = existingAccounts.findIndex(
-        a => a.derivationPath === pathToCompare
+      const exists = existingAccounts.findIndex((a) => {
+        if (a.addresses.length <= 0) {
+          if (a.type.includes('ledger')) {
+            const accountClient = client(
+              {
+                network,
+                walletId,
+                asset,
+                accountType,
+                accountIndex: index,
+                useCache: false
+              }
+            )
+
+            const [address] = accountClient.wallet.getAddresses(0, 1)
+            return address === account.address
+          }
+
+          return false
+        }
+        return a.addresses[0] === account.address
+      }
       ) >= 0
 
       results.push({

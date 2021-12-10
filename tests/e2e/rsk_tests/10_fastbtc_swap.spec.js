@@ -4,7 +4,6 @@ const HomePage = require('../../Pages/HomePage')
 const PasswordPage = require('../../Pages/PasswordPage')
 const SwapPage = require('../../Pages/SwapPage')
 const expect = require('chai').expect
-const chalk = require('chalk')
 
 const puppeteer = require('puppeteer')
 
@@ -25,14 +24,17 @@ if (process.env.NODE_ENV === 'mainnet') {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-      await homePage.ScrollToEndOfTerms(page)
-      await homePage.ClickOnAcceptPrivacy(page)
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
+      await homePage.ScrollToEndOfTerms(page)
+      await homePage.ClickOnAcceptPrivacy(page)
       // Enter seed words and submit
       await homePage.EnterSeedWords(page)
       // Create a password & submit
       await passwordPage.SubmitPasswordDetails(page, password)
+      // overview page
+      await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.HasOverviewPageLoaded(page)
     })
     after(async () => {
       await page.close()
@@ -40,17 +42,14 @@ if (process.env.NODE_ENV === 'mainnet') {
     })
 
     it('SWAP BTC to RBTC - fastBTC', async () => {
-      const asset1 = 'BTC'
-      // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
+      const fromAsset = 'BTC'
       // Select mainnet for fastBTC e2e
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click asset 1
-      await overviewPage.SelectChain(page, asset1)
-      await page.waitForSelector('#' + asset1 + '_swap_button', { visible: true })
-      await page.click('#' + asset1 + '_swap_button')
-      console.log(chalk.green('User clicked on BTC SWAP button'))
+      await overviewPage.SelectChain(page, fromAsset)
+      await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
+      await page.click('#' + fromAsset + '_swap_button')
+      console.log(('User clicked on BTC SWAP button'))
 
       await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
       console.log('SWAP screen has been displayed with send amount input field')
@@ -74,24 +73,39 @@ if (process.env.NODE_ENV === 'mainnet') {
       }
 
       // Update the SWAP value to 0.0004
-      await swapPage.EnterSendAmountOnSwap(page, '0.0004')
-      // (fastBTC swap provider)
-      try {
-        await page.waitForSelector('#see_all_quotes', {
-          visible: true,
-          timeout: 60000
-        })
-        await page.click('#see_all_quotes')
-        await page.waitForSelector('#fastBTC_rate_provider')
-        await page.click('#fastBTC_rate_provider')
-        await page.click('#select_quote_button')
-      } catch (e) {
-        await testUtil.takeScreenshot(page, 'fastbtc-see-all-quotes')
-        expect(e, 'fastbtc swp between BTC->RBTC failed, sell all quotes not displayed.....').equals(null)
+      let swapAmount = '0.0004'
+      if (process.env.NODE_AGENT === 'prodagent') {
+        swapAmount = '0.01'
       }
+      await swapPage.EnterSendAmountOnSwap(page, swapAmount)
+      // (fastBTC swap provider)
+      await page.waitForSelector('#selectedQuote_provider', {
+        visible: true,
+        timeout: 60000
+      })
+      await page.waitForTimeout(5000)
+      const quoteProvider = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
+      if (quoteProvider === 'FastBTC') {
+        expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+          'BTC->RBTC,fastBTC swap Provider!!').oneOf(['FastBTC'])
+      } else {
+        try {
+          await page.waitForSelector('#see_all_quotes', {
+            visible: true,
+            timeout: 60000
+          })
+          await page.click('#see_all_quotes')
+          await page.waitForSelector('#fastBTC_rate_provider')
+          await page.click('#fastBTC_rate_provider')
+          await page.click('#select_quote_button')
+        } catch (e) {
+          await testUtil.takeScreenshot(page, 'fastbtc-see-all-quotes')
+          expect(e, 'fastbtc swp between BTC->RBTC failed, sell all quotes not displayed.....').equals(null)
+        }
 
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'BTC->RBTC,fastBTC swap Provider!!').oneOf(['FastBTC'])
+        expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+          'BTC->RBTC,fastBTC swap Provider!!').oneOf(['FastBTC'])
+      }
     })
   })
 }

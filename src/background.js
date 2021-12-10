@@ -14,7 +14,7 @@ store.subscribe(async ({
   type,
   payload
 }, state) => {
-  const { dispatch, commit, getters } = store
+  const { dispatch, getters } = store
   switch (type) {
     case 'CHANGE_ACTIVE_NETWORK':
       dispatch('initializeAddresses', {
@@ -52,9 +52,6 @@ store.subscribe(async ({
       dispatch('updateFiatRates', { assets: store.getters.allNetworkAssets })
       dispatch('updateMarketData', { network: state.activeNetwork })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
-
-      commit('app/SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
-      commit('app/SET_USB_BRIDGE_CREATED', { created: false })
 
       asyncLoop(
         () => dispatch('updateBalances', {
