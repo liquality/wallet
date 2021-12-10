@@ -1,6 +1,6 @@
 const crypto = require('crypto')
 
-class TestUtils {
+class PlaywrightTestUtils {
   /**
    * Get Chrome options
    * @returns {{slowMo: number, headless: boolean, args: string[], executablePath: string}}
@@ -46,7 +46,7 @@ class TestUtils {
    * Generate Extension build path.
    * @returns {string} - extension dist path.
    */
-  extensionPathBuildPath () {
+  get extensionPathBuildPath () {
     return require('path').join(__dirname, '..', '..', 'dist')
   }
 
@@ -79,4 +79,4 @@ class TestUtils {
   }
 }
 
-module.exports = TestUtils
+module.exports = PlaywrightTestUtils
