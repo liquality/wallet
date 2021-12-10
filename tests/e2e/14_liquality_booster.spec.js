@@ -12,7 +12,6 @@ const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
-const chalk = require('chalk')
 
 let browser, page
 const password = '123123123'
@@ -27,7 +26,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'Liquality Boost source should be chosen!')
         .oneOf([liqualityBooster])
-      console.log(chalk.green('Liquality Boost Quote loaded successfully'))
+      console.log(('Liquality Boost Quote loaded successfully'))
     } catch (e) {
       await testUtil.takeScreenshot(page, 'liqualityBoost-rate-provider-issue')
       expect(e, 'Liquality Boost should chosen').equals(null)
