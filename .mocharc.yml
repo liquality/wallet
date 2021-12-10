@@ -7,5 +7,3 @@ allow-uncaught: true
 async-only: true
 parallel: true
 jobs: 5
-ignore:
-  - 'tests/playwright_tests/*'
