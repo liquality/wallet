@@ -21,6 +21,9 @@ export const createBridgeClient = () => {
   }).onTransportConnect(onTransportConnect)
     .onTransportDisconnected(() => {
       store.dispatch('app/setLedgerBridgeTransportConnected', { connected: false })
+      const { usbBridgeWindowsId } = store.state
+      store.dispatch('app/closeExistingBridgeWindow', { windowsId: usbBridgeWindowsId })
+      bridgeClient = null
     })
   return bridgeClient
 }

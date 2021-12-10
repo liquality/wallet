@@ -209,7 +209,7 @@
                 {{ sendAmount }} {{ asset }}
               </div>
               <div class="details-text" id="send_swap_amount_fiat">
-                {{ sendAmountFiat }}
+                ${{ sendAmountFiat }}
               </div>
             </div>
           </div>
@@ -264,7 +264,7 @@
                 {{ dpUI(receiveAmount) }} {{ toAsset }}
               </div>
               <div class="details-text" id="receive_swap_amount_fiat">
-                {{ "$" + formatFiat(receiveAmountFiat) }}
+                ${{ formatFiat(receiveAmountFiat) }}
               </div>
             </div>
           </div>
