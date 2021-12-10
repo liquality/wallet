@@ -9,14 +9,16 @@
         class="step-text"
         v-if="selectedAsset && selectedAsset.chain === 'bitcoin'"
       >
-        <div>
-          If you don’t see your existing Ledger accounts below, switch path to
-          Legacy vs Native Segwit
-        </div>
-        <div
-          class="step-path"
-          v-if="selectedAsset && selectedAsset.chain === 'bitcoin'"
-        >
+        <div class="step-path">
+          <button
+            class="btn btn-link"
+            v-tooltip.top="{
+              content:
+                'If you don’t see your existing Ledger accounts below, switch path to Legacy vs Native Segwit'
+            }"
+          >
+            <InfoIcon class="info-icon" />
+          </button>
           <div class="btn-group" v-click-away="hideLedgerBitcoinOptions">
             <button
               class="btn dropdown-toggle custom-dropdown-toggle"
@@ -78,7 +80,10 @@
             <tbody>
               <tr
                 @click="selectAccount(item)"
-                :class="{ disabled: item.exists }"
+                :class="{
+                  disabled: item.exists,
+                  selected: selectedAccounts[item.account.address]
+                }"
                 v-for="item in accounts"
                 :key="item.account.address"
               >
@@ -178,6 +183,7 @@ import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import CheckRightIcon from '@/assets/icons/check.svg'
 import { shortenAddress } from '@/utils/address'
 import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
+import InfoIcon from '@/assets/icons/info.svg'
 
 export default {
   directives: {
@@ -188,7 +194,8 @@ export default {
     CircleProgressBar,
     ChevronDownIcon,
     ChevronUpIcon,
-    CheckRightIcon
+    CheckRightIcon,
+    InfoIcon
   },
   props: [
     'loading',
@@ -320,9 +327,15 @@ export default {
   }
 
   .accounts-table {
+    margin-bottom: 0.3rem;
+
     tr {
-      height: 35px;
       cursor: pointer;
+      &:hover,
+      &.selected {
+        background-color: #f0f7f9;
+        color: $color-text-primary;
+      }
     }
 
     th,
@@ -387,5 +400,9 @@ export default {
       height: 9px;
     }
   }
+}
+
+.info-icon {
+  width: 20px;
 }
 </style>
