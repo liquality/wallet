@@ -1,7 +1,6 @@
 const TestUtil = require('../utils/TestUtils')
 
 const testUtil = new TestUtil()
-const chalk = require('chalk')
 const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 
@@ -241,7 +240,6 @@ class OverviewPage {
     expect(code).equals(chainCode)
     // Click Receive button
     await page.click(`#${chainCode}_receive_button`)
-    console.log(chalk.green('User clicked on receive option for ' + chainCode))
     await page.waitForSelector('.receive_address', { visible: true })
   }
 
@@ -270,6 +268,7 @@ class OverviewPage {
   /**
    * Validate total asserts from overview page.
    * @param page
+   * @param newWallet
    * @returns {Promise<*>}
    * @constructor
    */
@@ -346,7 +345,6 @@ class OverviewPage {
     await page.click('#burger_icon_menu')
     await page.waitForSelector('#lock', { visible: true })
     await page.click('#lock')
-    console.log(chalk.green('User clicked on lock option'))
     await page.waitForSelector('#password', { visible: true })
   }
 
@@ -374,7 +372,6 @@ class OverviewPage {
     // Click on Backup seed from Burger Icon menu
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')
-    console.log(chalk.green('User clicked on Burger Icon Menu'))
   }
 
   /**
@@ -400,11 +397,9 @@ class OverviewPage {
     // Click Manage Assets
     await page.waitForSelector('#manage_assets', { visible: true })
     await page.click('#manage_assets')
-    console.log(chalk.green('User clicked on Manage Assets'))
     // click on add custom token
     await page.waitForSelector('#add_custom_token', { visible: true })
     await page.click('#add_custom_token')
-    console.log(chalk.green('User clicked on Add Custom Token'))
   }
 
   /**
@@ -416,11 +411,9 @@ class OverviewPage {
   async ClickOnManageAccounts (page) {
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')
-    console.log(chalk.green('User clicked on Burger Icon Menu'))
     // Click Manage Accounts
     await page.waitForSelector('#manage_accounts', { visible: true })
     await page.click('#manage_accounts')
-    console.log(chalk.green('User clicked on Manage Accounts'))
     await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
   }
 

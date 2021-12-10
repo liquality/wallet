@@ -3,7 +3,6 @@ const OverviewPage = require('../Pages/OverviewPage')
 const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const expect = require('chai').expect
-const chalk = require('chalk')
 
 const puppeteer = require('puppeteer')
 
@@ -86,7 +85,7 @@ describe('Hamburger menu options["testnet"]', async () => {
     await page.click('#burger_icon_menu')
     await page.waitForSelector('#backup_seed', { visible: true })
     await page.click('#backup_seed')
-    console.log(chalk.green('User clicked on Backup Seed option'))
+    console.log(('User clicked on Backup Seed option'))
     await page.waitForSelector('#i_have_privacy_button', { visible: true })
     expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals('Show Seed Phrase?')
     expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent))
@@ -127,7 +126,7 @@ describe('Hamburger menu options["testnet"]', async () => {
     await page.click('#burger_icon_menu')
     await page.waitForSelector('#backup_seed', { visible: true })
     await page.click('#backup_seed')
-    console.log(chalk.green('User clicked on Backup Seed option'))
+    console.log(('User clicked on Backup Seed option'))
     await page.waitForSelector('#i_have_privacy_button', { visible: true })
     expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals('Show Seed Phrase?')
     expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent))

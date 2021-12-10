@@ -1,7 +1,7 @@
 const TestUtil = require('../utils/TestUtils')
 
 const testUtil = new TestUtil()
-const chalk = require('chalk')
+
 const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 
@@ -18,7 +18,6 @@ class SwapPage {
     const addressInputField = await page.$('#swap_send_amount_input_field')
     await addressInputField.click({ clickCount: 3 })
     await addressInputField.type(amountToSend)
-    console.log(chalk.green('User enters SWAP send amount as ' + amountToSend))
   }
 
   /**
@@ -64,8 +63,10 @@ class SwapPage {
    * @constructor
    */
   async HasReviewButtonDisabled (page) {
-    await page.waitForSelector('#swap_review_button:not([enabled]')
-    console.log(chalk.green('SWAP review button has been disabled'))
+    await page.waitForSelector('#swap_review_button')
+    expect(await page.$eval('#swap_review_button', (el) => el.getAttribute('disabled')),
+      'Swap review button should be disabled')
+      .contains('disabled')
   }
 
   /**
@@ -112,7 +113,6 @@ class SwapPage {
         timeout: 60000
       })
       await page.click('#swap_review_button')
-      console.log(chalk.green('User clicked on SWAP review button'))
     } catch (e) {
       await testUtil.takeScreenshot(page, 'swap-review-button-disabled-issue')
       expect(e, 'swap review button is disabled!!').equals(null)
@@ -279,7 +279,6 @@ class SwapPage {
     }
     const messages = await page.$eval('#fees_are_high', el => el.textContent)
     expect(messages.trim()).equals('Fees are high. Review transaction carefully.')
-    console.log(chalk.redBright('Fees are high. Review transaction carefully.'))
   }
 
   /**
