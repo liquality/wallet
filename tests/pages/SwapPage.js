@@ -115,7 +115,7 @@ class SwapPage {
       await page.click('#swap_review_button')
     } catch (e) {
       await testUtil.takeScreenshot(page, 'swap-review-button-disabled-issue')
-      expect(e, 'swap review button is disabled!!').equals(null)
+      expect(e, 'Click SWAP review button not working properly').equals(null)
     }
   }
 
@@ -183,7 +183,7 @@ class SwapPage {
       })
     } catch (e) {
       await testUtil.takeScreenshot(page, 'send-swap-review-amount-screen-issue')
-      expect(e, 'Click Swap initiated not working!!!').equals(null)
+      expect(e, 'Click Swap initiated not worked, swap review screen not loaded').equals(null)
     }
     return await page.$eval('#send_swap_confirm_value', el => el.textContent)
   }
@@ -293,20 +293,6 @@ class SwapPage {
       'If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at',
       'Max slippage is 0.5%.'
     ])
-  }
-
-  /**
-   * Validate Swap is negative. Review transaction carefully.
-   * @param page
-   * @returns {Promise<void>}
-   * @constructor
-   */
-  async ValidateNegativeMessage (page) {
-    await page.waitForSelector('#swap_is_negative', { visible: true })
-    const message = await page.$eval('#swap_is_negative', el => el.textContent)
-    expect(message).contains(
-      'Swap is negative. Review transaction carefully.'
-    )
   }
 }
 

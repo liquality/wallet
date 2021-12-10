@@ -60,7 +60,7 @@ class SendPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async SendConfirmButton (page) {
+  async ConfirmSend (page) {
     await page.waitForSelector('#send_button_confirm', { visible: true })
     await page.click('#send_button_confirm')
     console.log('User clicked on SEND button Confirm...waiting for Transaction Status')

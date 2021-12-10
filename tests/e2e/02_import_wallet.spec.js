@@ -1,7 +1,7 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -16,6 +16,8 @@ const password = '123123123'
 
 describe('Import wallet-["mainnet","testnet"]', async () => {
   beforeEach(async () => {
+    console.log(testUtil.getChromeOptions())
+    console.log(testUtil.extensionRootUrl)
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
