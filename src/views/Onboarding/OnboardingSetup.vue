@@ -70,7 +70,6 @@ export default {
   methods: {
     ...mapActions(['setupWallet', 'createWallet', 'unlockWallet']),
     async confirmMnemonic () {
-      debugger;
       this.currentStep = 'congrats'
       await this.setupWallet({ key: this.password })
       await this.createWallet({
