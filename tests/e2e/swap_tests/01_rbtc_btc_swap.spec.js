@@ -22,14 +22,17 @@ describe('RBTC->BTC swap-["smoke"]', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-    await homePage.ScrollToEndOfTerms(page)
-    await homePage.ClickOnAcceptPrivacy(page)
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
+    await homePage.ScrollToEndOfTerms(page)
+    await homePage.ClickOnAcceptPrivacy(page)
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
+    // overview page
+    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.HasOverviewPageLoaded(page)
   })
   after(async () => {
     await page.close()
@@ -39,22 +42,18 @@ describe('RBTC->BTC swap-["smoke"]', async () => {
   it('SWAP RBTC to BTC - liquality', async () => {
     const fromAsset = 'RBTC'
     const toAsset = 'BTC'
-    // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
     await overviewPage.SelectNetwork(page)
-    // Click asset 1
+    // Click fromAsset
     await overviewPage.SelectChain(page, fromAsset)
     await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
     await page.click('#' + fromAsset + '_swap_button')
     console.log(chalk.green(`User clicked on ${fromAsset} SWAP button`))
-
     await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
     console.log('SWAP screen has been displayed with send amount input field')
 
-    // Select 2nd Pair (BTC)
+    // Select toAsset
     await page.click('.swap-receive-main-icon')
-    await page.waitForSelector(`#${toAsset}`, { visible: true })
+    await page.waitForSelector(`#${toAsset}`, { timeout: 60000, visible: true })
     await page.click(`#${toAsset}`)
     console.log(`User selected ${toAsset} as 2nd pair for swap`)
 

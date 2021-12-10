@@ -75,7 +75,7 @@ class SwapPage {
    * @constructor
    */
   async SelectSwapReceiveCoin (page) {
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(3000)
     await page.click('.swap-receive-main-icon')
     try {
       await page.waitForSelector('#search_for_a_currency', {
