@@ -44,7 +44,7 @@ class SendPage {
     try {
       await page.waitForSelector('#send_review_button', { visible: true, timeout: 120000 })
       await page.click('#send_review_button')
-      await page.waitForSelector('.confirm-address', { visible: true, timeout: 120000 })
+      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 120000 })
       console.log('User clicked on confirm SEND review button')
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
