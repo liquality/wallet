@@ -7,7 +7,5 @@ allow-uncaught: true
 async-only: true
 parallel: true
 jobs: 5
-spec:
-  - 'tests/e2e/*.spec.js'
 ignore:
   - 'tests/playwright_tests/*'

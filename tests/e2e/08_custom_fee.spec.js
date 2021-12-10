@@ -1,9 +1,9 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
-const SendPage = require('../Pages/SendPage')
-const TransactionDetailsPage = require('../Pages/TransactionDetailsPage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
+const SendPage = require('../pages/SendPage')
+const TransactionDetailsPage = require('../pages/TransactionDetailsPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
