@@ -665,13 +665,9 @@ export default {
       return !!liqualityMarket
     },
     min () {
-      const market = this.networkMarketData?.filter(pair => (
-        this.selectedQuote?.provider.toUpperCase() || SwapProviderType.LIQUALITY) === getSwapProviderConfig(this.activeNetwork, pair.provider)?.type
-      )
+      const markets = this.networkMarketData?.filter(quote => quote.from === this.asset && quote.to === this.toAsset)
 
-      const pair = market.find(pair => pair.from === this.asset && pair.to === this.toAsset)
-
-      const min = pair ? BN(pair.min) : BN(0)
+      const min = BN.min(...markets.map(data => BN(data.min)))
 
       return dpUI(min)
     },
