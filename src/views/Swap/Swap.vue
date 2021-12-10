@@ -666,7 +666,7 @@ export default {
     min () {
       const markets = this.networkMarketData?.filter(quote => quote.from === this.asset && quote.to === this.toAsset)
 
-      const min = BN.min(...markets.map(data => BN(data.min)))
+      const min = BN.min(...markets.map(data => BN(data.min))) || BN(0)
 
       return dpUI(min)
     },
