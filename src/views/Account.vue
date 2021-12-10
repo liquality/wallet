@@ -386,7 +386,7 @@ export default {
 
     .eye-btn {
       position: absolute;
-      right: 70px;
+      right: 60px;
       height: 40px;
       width: 35px;
       background-color: transparent;
