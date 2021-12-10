@@ -88,7 +88,7 @@ describe('Custom fee feature["testnet"]', async () => {
     // Click Review Button
     await sendPage.ClickSendReview(page)
     // Confirm SEND button & Review
-    await sendPage.SendConfirmButton(page)
+    await sendPage.ConfirmSend(page)
     // Transaction details page validations
     const domain = 'https://explorer.testnet.rsk.co'
     await transactionDetailsPage.ValidateSentAmount(page, `${coinsToSend} ${coinName}`)
@@ -124,7 +124,7 @@ describe('Custom fee feature["testnet"]', async () => {
     // Click Review Button
     await sendPage.ClickSendReview(page)
     // Confirm SEND button & Review
-    await sendPage.SendConfirmButton(page)
+    await sendPage.ConfirmSend(page)
     // Transaction details page validations
     const domain = 'https://explorer.testnet.rsk.co'
     await transactionDetailsPage.ValidateSentAmount(page, `${coinsToSend} ${coinName}`)

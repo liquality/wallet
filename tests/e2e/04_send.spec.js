@@ -99,7 +99,7 @@ describe('SEND feature["testnet"]', async () => {
     // Click Review Button
     await sendPage.ClickSendReview(page)
     // Confirm SEND
-    await sendPage.SendConfirmButton(page)
+    await sendPage.ConfirmSend(page)
     // Transaction details page validations
     const domain = 'https://testnet.bscscan.com'
     await transactionDetailsPage.ValidateSentAmount(page, '0 BNB')

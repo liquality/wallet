@@ -19,7 +19,7 @@ let browser, page
 const password = '123123123'
 
 // https://linear.app/liquality/issue/LIQ-358/exploratory-report-on-terra
-describe.skip('Terra SEND feature[smoke,testnet]', async () => {
+describe.only('Terra SEND feature[smoke,testnet]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -37,22 +37,17 @@ describe.skip('Terra SEND feature[smoke,testnet]', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
-    try {
-      await page.close()
-      await browser.close()
-    } catch (e) {
-      throw new Error(e)
-    }
+    await page.close()
   })
   it('Send LUNA', async () => {
-    const bitCoinName = 'LUNA'
+    const assertName = 'LUNA'
     const coinsToSend = '1'
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
-    await searchAssetPage.SearchForAnAsset(page, bitCoinName)
+    await searchAssetPage.SearchForAnAsset(page, assertName)
 
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
@@ -61,7 +56,7 @@ describe.skip('Terra SEND feature[smoke,testnet]', async () => {
     // Click Review Button
     await sendPage.ClickSendReview(page)
     // Confirm SEND
-    await sendPage.SendConfirmButton(page)
+    await sendPage.ConfirmSend(page)
     // Transaction details page validations
     const domain = 'https://finder.terra.money/bombay-12'
     await transactionDetailsPage.ValidateSentAmount(page, '1 LUNA')
