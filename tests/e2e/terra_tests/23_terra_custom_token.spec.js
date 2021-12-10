@@ -3,7 +3,6 @@ const OverviewPage = require('../../Pages/OverviewPage')
 const HomePage = require('../../Pages/HomePage')
 const PasswordPage = require('../../Pages/PasswordPage')
 const expect = require('chai').expect
-const chalk = require('chalk')
 
 const puppeteer = require('puppeteer')
 
@@ -62,7 +61,7 @@ describe('Terra Custom token-["mainnet"]', async () => {
       await page.click(`#${tokenDetails.chain}_chain`)
       // paste address
       await page.type('#contractAddress', tokenDetails.address)
-      console.log(chalk.green('User enter token address as'), tokenDetails.address)
+      console.log(('User enter token address as'), tokenDetails.address)
       await page.click('#tokenSymbol')
       await page.click('#name')
       await page.waitForTimeout(10000)

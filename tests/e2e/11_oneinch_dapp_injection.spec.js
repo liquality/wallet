@@ -4,7 +4,6 @@ const HomePage = require('../Pages/HomePage')
 const PasswordPage = require('../Pages/PasswordPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
-const chalk = require('chalk')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
@@ -39,7 +38,7 @@ describe.skip('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     // Web3 toggle on
     await overviewPage.ClickWeb3WalletToggle(page)
     await page.waitForTimeout(1000)
-    console.log(chalk.green('Web3 toggled on'))
+    console.log(('Web3 toggled on'))
   })
   afterEach(async () => {
     await browser.close()
@@ -53,7 +52,7 @@ describe.skip('1Inch Dapp Injection-[mainnet,smoke]', async () => {
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
     })
-    // console.log(chalk.green('user clicked on 1inch web3'))
+    // console.log(('user clicked on 1inch web3'))
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
     await connectRequestWindow.click('#ETHEREUM')

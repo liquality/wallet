@@ -1,5 +1,3 @@
-const chalk = require('chalk')
-
 class SeedWordsPage {
   /**
    * Get Backup seed words 1,5 12 for next stage.
@@ -9,7 +7,6 @@ class SeedWordsPage {
    */
   async GetBackupSeedWords (page) {
     await page.waitForSelector('#backup-wallet_seed_wordlist', { visible: true })
-    console.log(chalk.green('Backup seed words list has been displayed'))
     const allSeedPhases = await page.$$eval('#backup_seed_word', elements => elements.map(item => item.textContent))
 
     const seed1 = allSeedPhases[0]
