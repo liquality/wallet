@@ -1,4 +1,4 @@
-const chalk = require('chalk')
+
 const expect = require('chai').expect
 
 class SearchAssetPage {
@@ -33,11 +33,9 @@ class SearchAssetPage {
         await page.waitForSelector(`#${asset}`, { visible: true })
         await page.click('#' + asset)
     }
-    console.log(chalk.blue('User search for assert: ' + asset))
     await page.waitForTimeout(2000)
     expect(await page.$eval('#overview', el => el.innerText), 'SEND/SWAP page not loaded correctly')
       .to.be.oneOf(['SEND', 'SWAP'])
-    console.log(chalk.blue('Waiting to load Network fee:' + asset))
     await page.waitForTimeout(10000)
   }
 }
