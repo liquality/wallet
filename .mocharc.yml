@@ -1,9 +1,9 @@
+allow-uncaught: false
 ui: 'bdd'
 timeout: 0
 full-trace: true
 color: true
 inline-diffs: true
-allow-uncaught: true
 async-only: true
 parallel: true
 jobs: 5

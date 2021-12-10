@@ -46,7 +46,7 @@ class TestUtils {
    * Generate Extension build path.
    * @returns {string} - extension dist path.
    */
-  extensionPathBuildPath () {
+  get extensionPathBuildPath () {
     return require('path').join(__dirname, '..', '..', 'dist')
   }
 

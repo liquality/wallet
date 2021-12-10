@@ -16,6 +16,8 @@ const password = '123123123'
 
 describe('Import wallet-["mainnet","testnet"]', async () => {
   beforeEach(async () => {
+    console.log(testUtil.getChromeOptions())
+    console.log(testUtil.extensionRootUrl)
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
