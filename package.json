@@ -29,7 +29,7 @@
     "@blobfishkate/sovryncontracts": "1.3.17",
     "@liquality/bitcoin-esplora-batch-api-provider": "1.11.0",
     "@liquality/bitcoin-esplora-swap-find-provider": "1.11.0",
-    "@liquality/bitcoin-fee-api-provider": "1.11.0",
+    "@liquality/bitcoin-fee-api-provider": "1.11.1",
     "@liquality/bitcoin-js-wallet-provider": "1.11.0",
     "@liquality/bitcoin-ledger-provider": "1.11.0",
     "@liquality/bitcoin-networks": "1.11.0",
