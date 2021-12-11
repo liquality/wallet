@@ -36,6 +36,7 @@ class AddCustomTokenPage {
    * @param page
    * @returns {Promise<{tokenSymbol: *, tokenName: *, tokenDecimal: *}>}
    * @constructor
+   *
    */
   async GetTokenDetails (page) {
     // Check Token name
@@ -85,6 +86,22 @@ class AddCustomTokenPage {
     // Add token button is disabled
     const addTokenDetails = await page.$eval('#add_token_button', el => el.getAttribute('disabled'))
     expect(addTokenDetails).to.eq('disabled')
+  }
+
+  /**
+   * Remove custom token after added.
+   * @param page
+   * @param tokenSymbol
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async RemoveCustomToken (page, tokenSymbol) {
+    // Remove token
+    await page.waitForSelector('#' + tokenSymbol + '_remove_custom_token', { visible: true })
+    await page.click('#' + tokenSymbol + '_remove_custom_token')
+    await page.type('#search_for_an_assert_input', tokenSymbol)
+    await page.waitForSelector('.manage-assets_customText', { visible: true })
+    console.log(('Remove token clicked!'))
   }
 }
 
