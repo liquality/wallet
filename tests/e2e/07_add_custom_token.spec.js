@@ -2,6 +2,7 @@ const TestUtil = require('../utils/TestUtils')
 const OverviewPage = require('../pages/OverviewPage')
 const HomePage = require('../pages/HomePage')
 const PasswordPage = require('../pages/PasswordPage')
+const AddCustomTokenPage = require('../pages/AddCustomTokenPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -10,11 +11,50 @@ const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
+const addCustomTokenPage = new AddCustomTokenPage()
 
 let browser, page
 const password = '123123123'
 
-describe('Fetch custom token details and add custom token-["mainnet"]', async () => {
+const customTokensDetails = [
+  {
+    chain: 'ethereum',
+    address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    name: 'Tether USD',
+    symbol: 'USDT',
+    decimal: '6'
+  },
+  {
+    chain: 'bsc',
+    address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
+    name: 'PancakeSwap Token',
+    symbol: 'Cake',
+    decimal: '18'
+  },
+  {
+    chain: 'arbitrum',
+    address: '0xd4d42F0b6DEF4CE0383636770eF773390d85c61A',
+    name: 'SushiToken',
+    symbol: 'SUSHI',
+    decimal: '18'
+  },
+  {
+    chain: 'polygon',
+    address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+    name: 'Polygon USD Coin',
+    symbol: 'USDC',
+    decimal: '6'
+  },
+  {
+    chain: 'rsk',
+    address: '0x967f8799aF07DF1534d48A95a5C9FEBE92c53ae0',
+    name: 'Wrapped RBTC',
+    symbol: 'WRBTC',
+    decimal: '18'
+  }
+]
+
+describe('Custom Token add-["mainnet"]', async () => {
   if (process.env.NODE_ENV === 'mainnet') {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -31,242 +71,30 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
       // overview page
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
+      // Network selection
+      await overviewPage.SelectNetwork(page, 'mainnet')
+      // Click on add custom token option
+      await overviewPage.ClickAddCustomToken(page)
     })
     afterEach(async () => {
-      try {
-        await page.close()
-        await browser.close()
-      } catch (e) {
-        throw new Error(e)
-      }
+      await browser.close()
     })
-    it('ETHEREUM - [Tether USD]-["smoke"]', async () => {
-      const tokenDetails = {
-        chain: 'ethereum',
-        address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-        name: 'Tether USD',
-        symbol: 'USDT',
-        decimal: '6'
-      }
-      // Select network(Only works against Mainnet)
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      // check Send & Swap & Receive options have been displayed
-      await overviewPage.ValidateSendSwipeReceiveOptions(page)
-
-      // Click on add custom token option
-      await overviewPage.ClickAddCustomToken(page)
-      // Add Custom token screen
-      await page.waitForSelector('#contractAddress', { visible: true })
-      // select chain
-      await page.waitForSelector('#select_chain_dropdown', { visible: true })
-      await page.click('#select_chain_dropdown')
-      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
-      await page.click(`#${tokenDetails.chain}_chain`)
-      // paste address
-      await page.type('#contractAddress', tokenDetails.address)
-      console.log(('User enter token address as'), tokenDetails.address)
-      await page.click('#tokenSymbol')
-      await page.click('#name')
-      await page.waitForTimeout(10000)
-      // Check Token name
-      const name = await page.$eval('#name', el => el.value)
-      expect(name).to.equals(tokenDetails.name)
-      // Check Token Symbol
-      const symbol = await page.$eval('#tokenSymbol', el => el.value)
-      expect(symbol).to.equals(tokenDetails.symbol)
-      // Check Token Symbol
-      const decimal = await page.$eval('#decimals', el => el.value)
-      expect(decimal).to.equals(tokenDetails.decimal)
-      // Check Token with this symbol exists.
-      await page.waitForSelector('#token_with_this_symbol_exits', { visible: true })
-      // Add token button is disabled
-      const addTokenDetails = await page.$eval('#add_token_button', el => el.getAttribute('disabled'))
-      expect(addTokenDetails).to.eq('disabled')
-    })
-    it('BSC - PancakeSwap token', async () => {
-      const tokenDetails = {
-        chain: 'bsc',
-        address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
-        name: 'PancakeSwap Token',
-        symbol: 'Cake',
-        decimal: '18'
-      }
-      // Select network(Only works against Mainnet)
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      // check Send & Swap & Receive options have been displayed
-      await overviewPage.ValidateSendSwipeReceiveOptions(page)
-
-      // Click on add custom token option
-      await overviewPage.ClickAddCustomToken(page)
-      // select chain
-      // await page.evaluate( () => document.getElementById("contractAddress").value = "")
-      await page.waitForSelector('#select_chain_dropdown', { visible: true })
-      await page.click('#select_chain_dropdown')
-      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
-      await page.click(`#${tokenDetails.chain}_chain`)
-      // paste address
-      await page.type('#contractAddress', tokenDetails.address)
-      console.log(('User enter token address as'), tokenDetails.address)
-      await page.click('#tokenSymbol')
-      await page.click('#name')
-      await page.waitForTimeout(10000)
-      // Check Token name
-      const name = await page.$eval('#name', el => el.value)
-      expect(name).to.equals(tokenDetails.name)
-      // Check Token Symbol
-      const symbol = await page.$eval('#tokenSymbol', el => el.value)
-      expect(symbol).to.equals(tokenDetails.symbol)
-      // Check Token Symbol
-      const decimal = await page.$eval('#decimals', el => el.value)
-      expect(decimal).to.equals(tokenDetails.decimal)
-    })
-    it('ARBITRUM - ShushiToken token', async () => {
-      const tokenDetails = {
-        chain: 'arbitrum',
-        address: '0xd4d42F0b6DEF4CE0383636770eF773390d85c61A',
-        name: 'SushiToken',
-        symbol: 'SUSHI',
-        decimal: '18'
-      }
-      // Select network(Only works against Mainnet)
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      // check Send & Swap & Receive options have been displayed
-      await overviewPage.ValidateSendSwipeReceiveOptions(page)
-
-      // Click on Backup seed from Burger Icon menu
-      await overviewPage.ClickAddCustomToken(page)
-
-      // select chain
-      // await page.evaluate( () => document.getElementById("contractAddress").value = "")
-      await page.waitForSelector('#select_chain_dropdown', { visible: true })
-      await page.click('#select_chain_dropdown')
-      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
-      await page.click(`#${tokenDetails.chain}_chain`)
-      // paste address
-      await page.type('#contractAddress', tokenDetails.address)
-      console.log(('User enter token address as'), tokenDetails.address)
-      await page.click('#tokenSymbol')
-      await page.click('#name')
-      await page.waitForTimeout(10000)
-      // Check Token name
-      const name = await page.$eval('#name', el => el.value)
-      expect(name).to.equals(tokenDetails.name)
-      // Check Token Symbol
-      const symbol = await page.$eval('#tokenSymbol', el => el.value)
-      expect(symbol).to.equals(tokenDetails.symbol)
-      // Check Token Symbol
-      const decimal = await page.$eval('#decimals', el => el.value)
-      expect(decimal).to.equals(tokenDetails.decimal)
-    })
-    it('Polygon - USD Coin (USDC)', async () => {
-      const tokenDetails = {
-        chain: 'polygon',
-        address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-        name: 'Polygon USD Coin',
-        symbol: 'USDC',
-        decimal: '6'
-      }
-      // Select network(Only works against Mainnet)
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      // check Send & Swap & Receive options have been displayed
-      await overviewPage.ValidateSendSwipeReceiveOptions(page)
-
-      // Click on add custom token option
-      await overviewPage.ClickAddCustomToken(page)
-
-      // select chain
-      await page.waitForSelector('#select_chain_dropdown', { visible: true })
-      await page.click('#select_chain_dropdown')
-      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
-      await page.click(`#${tokenDetails.chain}_chain`)
-      // paste address
-      await page.type('#contractAddress', tokenDetails.address)
-      console.log(('User enter token address as'), tokenDetails.address)
-      await page.click('#tokenSymbol')
-      await page.click('#name')
-      await page.waitForTimeout(10000)
-      // Check Token name
-      const name = await page.$eval('#name', el => el.value)
-      expect(name).to.equals(tokenDetails.name)
-      // Check Token Symbol
-      const symbol = await page.$eval('#tokenSymbol', el => el.value)
-      expect(symbol).to.equals(tokenDetails.symbol)
-      // Check Token Symbol
-      const decimal = await page.$eval('#decimals', el => el.value)
-      expect(decimal).to.equals(tokenDetails.decimal)
-    })
-    it.skip('Polygon - (PoS) EthLend Token', async () => {
-      const tokenDetails = {
-        chain: 'polygon',
-        address: '0x313d009888329C9d1cf4f75CA3f32566335bd604',
-        name: '(PoS) EthLend Token',
-        symbol: 'LEND',
-        decimal: '18'
-      }
-      // Select network(Only works against Mainnet)
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      // check Send & Swap & Receive options have been displayed
-      await overviewPage.ValidateSendSwipeReceiveOptions(page)
-
-      // Click on add custom token option
-      await overviewPage.ClickAddCustomToken(page)
-
-      // select chain
-      await page.waitForSelector('#select_chain_dropdown', { visible: true })
-      await page.click('#select_chain_dropdown')
-      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
-      await page.click(`#${tokenDetails.chain}_chain`)
-      // paste address
-      await page.type('#contractAddress', tokenDetails.address)
-      console.log(('User enter token address as'), tokenDetails.address)
-      await page.click('#tokenSymbol')
-      await page.click('#name')
-      await page.waitForTimeout(30000)
-      // Check Token name
-      const name = await page.$eval('#name', el => el.value)
-      expect(name).to.equals(tokenDetails.name)
-      // Check Token Symbol
-      const symbol = await page.$eval('#tokenSymbol', el => el.value)
-      expect(symbol).to.equals(tokenDetails.symbol)
-      // Check Token Symbol
-      const decimal = await page.$eval('#decimals', el => el.value)
-      expect(decimal).to.equals(tokenDetails.decimal)
-    })
-    it('RSK - Wrapped RBTC', async () => {
-      const tokenDetails = {
-        chain: 'rsk',
-        address: '0x967f8799aF07DF1534d48A95a5C9FEBE92c53ae0',
-        name: 'Wrapped RBTC',
-        symbol: 'WRBTC',
-        decimal: '18'
-      }
-      // Select network(Only works against Mainnet)
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      // check Send & Swap & Receive options have been displayed
-      await overviewPage.ValidateSendSwipeReceiveOptions(page)
-
-      // Click on add custom token option
-      await overviewPage.ClickAddCustomToken(page)
-      // select chain
-      await page.waitForSelector('#select_chain_dropdown', { visible: true })
-      await page.click('#select_chain_dropdown')
-      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
-      await page.click(`#${tokenDetails.chain}_chain`)
-      // paste address
-      await page.type('#contractAddress', tokenDetails.address)
-      console.log(('User enter token address as'), tokenDetails.address)
-      await page.click('#tokenSymbol')
-      await page.click('#name')
-      await page.waitForTimeout(10000)
-      // Check Token name
-      const name = await page.$eval('#name', el => el.value)
-      expect(name).to.equals(tokenDetails.name)
-      // Check Token Symbol
-      const symbol = await page.$eval('#tokenSymbol', el => el.value)
-      expect(symbol).to.equals(tokenDetails.symbol)
-      // Check Token Symbol
-      const decimal = await page.$eval('#decimals', el => el.value)
-      expect(decimal).to.equals(tokenDetails.decimal)
+    customTokensDetails.forEach((tokenDetails) => {
+      it(`${tokenDetails.chain} - ${tokenDetails.symbol}-Custom token add-["smoke"]`, async () => {
+        // Add Custom token screen
+        await addCustomTokenPage.SelectChainDropdown(page, `${tokenDetails.chain}`)
+        // paste address
+        await addCustomTokenPage.EnterCustomTokenAddress(page, tokenDetails.address)
+        // Validated the token details
+        const fetchedTokenDetails = await addCustomTokenPage.GetTokenDetails(page)
+        expect(fetchedTokenDetails.tokenName).to.equals(tokenDetails.name)
+        expect(fetchedTokenDetails.tokenSymbol).to.equals(tokenDetails.symbol)
+        expect(fetchedTokenDetails.tokenDecimal).to.equals(tokenDetails.decimal)
+        // Check Token with this symbol exists.
+        if (tokenDetails.chain === 'ethereum') {
+          await addCustomTokenPage.ValidateTokenAlreadyAdded(page)
+        }
+      })
     })
     it('ETHEREUM - PolkaRare Token Add', async () => {
       const tokenDetails = {
@@ -276,38 +104,17 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
         symbol: 'PRARE',
         decimal: '18'
       }
-      // Select network(Only works against Mainnet)
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      // check Send & Swap & Receive options have been displayed
-      await overviewPage.ValidateSendSwipeReceiveOptions(page)
-
-      // Click on add custom token option
-      await overviewPage.ClickAddCustomToken(page)
       // Add Custom token screen
-      await page.waitForSelector('#contractAddress', { visible: true })
-      // select chain
-      await page.waitForSelector('#select_chain_dropdown', { visible: true })
-      await page.click('#select_chain_dropdown')
-      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
-      await page.click(`#${tokenDetails.chain}_chain`)
+      await addCustomTokenPage.SelectChainDropdown(page, `${tokenDetails.chain}`)
       // paste address
-      await page.type('#contractAddress', tokenDetails.address)
-      console.log(('User enter token address as'), tokenDetails.address)
-      await page.click('#tokenSymbol')
-      await page.click('#name')
-      await page.waitForTimeout(10000)
-      // Check Token name
-      const name = await page.$eval('#name', el => el.value)
-      expect(name).to.equals(tokenDetails.name)
-      // Check Token Symbol
-      const symbol = await page.$eval('#tokenSymbol', el => el.value)
-      expect(symbol).to.equals(tokenDetails.symbol)
-      // Check Token Symbol
-      const decimal = await page.$eval('#decimals', el => el.value)
-      expect(decimal).to.equals(tokenDetails.decimal)
-
+      await addCustomTokenPage.EnterCustomTokenAddress(page, tokenDetails.address)
+      // Validated the token details
+      const fetchedTokenDetails = await addCustomTokenPage.GetTokenDetails(page)
+      expect(fetchedTokenDetails.tokenName).to.equals(tokenDetails.name)
+      expect(fetchedTokenDetails.tokenSymbol).to.equals(tokenDetails.symbol)
+      expect(fetchedTokenDetails.tokenDecimal).to.equals(tokenDetails.decimal)
       // Click on Add Token button
-      await page.click('#add_token_button')
+      await addCustomTokenPage.AddTokenButton(page)
 
       // Click on Backup Burger Icon menu
       await page.waitForSelector('#burger_icon_menu', { visible: true })
@@ -319,18 +126,13 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
       console.log(('User clicked on Manage Assets'))
 
       // Search with token symbol and the token should be enabled with toggled switch
-      await page.type('#search_for_an_assert_input', symbol)
-      await page.waitForSelector(`#${symbol}`, { visible: true })
-      expect(await page.$eval(`#${symbol}_toggle_button > label`, el => el.getAttribute('class')),
+      await page.type('#search_for_an_assert_input', tokenDetails.symbol)
+      await page.waitForSelector(`#${tokenDetails.symbol}`, { visible: true })
+      expect(await page.$eval(`#${tokenDetails.symbol}_toggle_button > label`, el => el.getAttribute('class')),
         'Added custom token toggled automatically')
         .contains('vue-js-switch toggled')
     })
     it('BSC - PancakeSwap token add', async () => { // Import wallet option
-      // Select network(Only works against Mainnet)
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      // check Send & Swap & Receive options have been displayed
-      await overviewPage.ValidateSendSwipeReceiveOptions(page)
-
       const tokenDetails = {
         chain: 'bsc',
         address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
@@ -338,32 +140,17 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
         symbol: 'Cake',
         decimal: '18'
       }
-      // Click on add custom token option
-      await overviewPage.ClickAddCustomToken(page)
-
-      // select chain
-      await page.waitForSelector('#select_chain_dropdown', { visible: true })
-      await page.click('#select_chain_dropdown')
-      await page.waitForSelector(`#${tokenDetails.chain}_chain`, { visible: true })
-      await page.click(`#${tokenDetails.chain}_chain`)
+      // Add Custom token screen
+      await addCustomTokenPage.SelectChainDropdown(page, `${tokenDetails.chain}`)
       // paste address
-      await page.type('#contractAddress', tokenDetails.address)
-      console.log(('User enter token address as'), tokenDetails.address)
-      await page.click('#tokenSymbol')
-      await page.click('#name')
-      await page.waitForTimeout(10000)
-      // Check Token name
-      const name = await page.$eval('#name', el => el.value)
-      expect(name).to.equals(tokenDetails.name)
-      // Check Token Symbol
-      const symbol = await page.$eval('#tokenSymbol', el => el.value)
-      expect(symbol).to.equals(tokenDetails.symbol)
-      // Check Token Symbol
-      const decimal = await page.$eval('#decimals', el => el.value)
-      expect(decimal).to.equals(tokenDetails.decimal)
-
+      await addCustomTokenPage.EnterCustomTokenAddress(page, tokenDetails.address)
+      // Validated the token details
+      const fetchedTokenDetails = await addCustomTokenPage.GetTokenDetails(page)
+      expect(fetchedTokenDetails.tokenName).to.equals(tokenDetails.name)
+      expect(fetchedTokenDetails.tokenSymbol).to.equals(tokenDetails.symbol)
+      expect(fetchedTokenDetails.tokenDecimal).to.equals(tokenDetails.decimal)
       // Click on Add Token button
-      await page.click('#add_token_button')
+      await addCustomTokenPage.AddTokenButton(page)
 
       // Click on Backup Burger Icon menu
       await page.waitForSelector('#burger_icon_menu', { visible: true })
@@ -375,9 +162,9 @@ describe('Fetch custom token details and add custom token-["mainnet"]', async ()
       console.log(('User clicked on Manage Assets'))
 
       // Search with token symbol and the token should be enabled with toggled switch
-      await page.type('#search_for_an_assert_input', symbol)
-      await page.waitForSelector(`#${symbol}`, { visible: true })
-      expect(await page.$eval(`#${symbol}_toggle_button > label`, el => el.getAttribute('class')),
+      await page.type('#search_for_an_assert_input', tokenDetails.symbol)
+      await page.waitForSelector(`#${tokenDetails.symbol}`, { visible: true })
+      expect(await page.$eval(`#${tokenDetails.symbol}_toggle_button > label`, el => el.getAttribute('class')),
         'Added custom token toggled automatically')
         .contains('vue-js-switch toggled')
     })
