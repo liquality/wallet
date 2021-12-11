@@ -42,6 +42,7 @@ describe('Terra SEND feature[smoke,testnet]', async () => {
   it('Send LUNA', async () => {
     const assertName = 'LUNA'
     const coinsToSend = '1'
+    const sendAddress = 'terra1mecrspqx809t7ah9dyhc3cdgpylxvrq5k2fak5'
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
@@ -52,7 +53,7 @@ describe('Terra SEND feature[smoke,testnet]', async () => {
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
-    await sendPage.EnterSendToAddress(page, 'terra1mecrspqx809t7ah9dyhc3cdgpylxvrq5k2fak5')
+    await sendPage.EnterSendToAddress(page, sendAddress)
     // Click Review Button
     await sendPage.ClickSendReview(page)
     // Confirm SEND

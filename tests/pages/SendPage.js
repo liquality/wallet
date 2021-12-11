@@ -30,7 +30,8 @@ class SendPage {
    */
   async EnterSendToAddress (page, sendToAddress) {
     await page.waitForSelector('#address')
-    await page.type('#address', sendToAddress)
+    await page.type('#address', sendToAddress, { delay: 100 })
+    await page.waitForTimeout(1000)
   }
 
   /**
