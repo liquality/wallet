@@ -132,7 +132,7 @@ describe('Custom Token add-["mainnet"]', async () => {
         'Added custom token toggled automatically')
         .contains('vue-js-switch toggled')
     })
-    it('BSC - PancakeSwap token add', async () => { // Import wallet option
+    it('BSC - PancakeSwap token add, remove custom token after', async () => { // Import wallet option
       const tokenDetails = {
         chain: 'bsc',
         address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
@@ -152,14 +152,8 @@ describe('Custom Token add-["mainnet"]', async () => {
       // Click on Add Token button
       await addCustomTokenPage.AddTokenButton(page)
 
-      // Click on Backup Burger Icon menu
-      await page.waitForSelector('#burger_icon_menu', { visible: true })
-      await page.click('#burger_icon_menu')
-      console.log(('User clicked on Burger Icon Menu'))
-      // Click Manage Assets
-      await page.waitForSelector('#manage_assets', { visible: true })
-      await page.click('#manage_assets')
-      console.log(('User clicked on Manage Assets'))
+      // Click on mange assets
+      await overviewPage.ClickManageAssets(page)
 
       // Search with token symbol and the token should be enabled with toggled switch
       await page.type('#search_for_an_assert_input', tokenDetails.symbol)
@@ -167,6 +161,8 @@ describe('Custom Token add-["mainnet"]', async () => {
       expect(await page.$eval(`#${tokenDetails.symbol}_toggle_button > label`, el => el.getAttribute('class')),
         'Added custom token toggled automatically')
         .contains('vue-js-switch toggled')
+      // Remove token
+      await addCustomTokenPage.RemoveCustomToken(page, tokenDetails.symbol)
     })
   }
 })
