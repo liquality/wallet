@@ -80,7 +80,7 @@ describe('Custom Token add-["mainnet"]', async () => {
       await browser.close()
     })
     customTokensDetails.forEach((tokenDetails) => {
-      it.only(`${tokenDetails.chain} - ${tokenDetails.symbol}-Custom token add-["smoke"]`, async () => {
+      it(`${tokenDetails.chain} - ${tokenDetails.symbol}-Custom token add-["smoke"]`, async () => {
         // Add Custom token screen
         await addCustomTokenPage.SelectChainDropdown(page, `${tokenDetails.chain}`)
         // paste address

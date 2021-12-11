@@ -74,6 +74,18 @@ class AddCustomTokenPage {
     const addTokenDetails = await page.$eval('#add_token_button', el => el.getAttribute('disabled'))
     expect(addTokenDetails).to.eq('disabled')
   }
+
+  /**
+   * Check Add token button is Disabled.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async DisabledAddTokenButton (page) {
+    // Add token button is disabled
+    const addTokenDetails = await page.$eval('#add_token_button', el => el.getAttribute('disabled'))
+    expect(addTokenDetails).to.eq('disabled')
+  }
 }
 
 module.exports = AddCustomTokenPage
