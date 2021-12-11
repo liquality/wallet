@@ -14,6 +14,9 @@
         <li>
           On the device, navigate to the asset that you want to access
         </li>
+        <li v-if="isEthereumChain(selectedAsset.name)">
+          To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Allow Contract Data'
+        </li>
       </ul>
       <div class="options">
         <div class="options-text">
@@ -37,14 +40,17 @@
           <ul class="dropdown-menu lg" :class="{ show: assetsDropdownOpen }">
             <li v-for="asset in assetList" :key="asset.name">
               <a class="dropdown-item" href="#" @click="selectAsset(asset)">
-                <div class="form">
-                  <div class="input-group">
-                    <img :src="getAssetIcon(asset.name)" class="asset-icon" />
-                    <span class="input-group-text">
-                      {{ asset.label }}
-                    </span>
-                  </div>
-                </div>
+                 <div class="form">
+              <div class="input-group">
+                <img
+                  :src="getAssetIcon(asset.name)"
+                  class="asset-icon"
+                />
+                <span class="input-group-text">
+                  {{ asset.label }}
+                </span>
+              </div>
+            </div>
               </a>
             </li>
           </ul>
@@ -124,4 +130,6 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+
+</style>

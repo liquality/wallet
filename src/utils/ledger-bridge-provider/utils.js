@@ -3,21 +3,16 @@ import {
 } from '@liquality/hw-web-bridge'
 import store from '@/store'
 import { findCryptoCurrencyById } from '@ledgerhq/cryptoassets'
+import { BG_PREFIX } from '@/broker/utils'
 
 let bridgeClient = null
 
-export const createBridgeClient = ({
-  onTransportConnect,
-  onConnect
-} = {}) => {
+export const createBridgeClient = () => {
   const { usbBridgeWindowsId } = store.state
   store.dispatch('app/closeExistingBridgeWindow', { windowsId: usbBridgeWindowsId })
   bridgeClient = createClient()
   bridgeClient.onConnect(() => {
     store.dispatch('app/setLedgerBridgeConnected', { connected: true })
-    if (onConnect) {
-      onConnect()
-    }
   }).onDisconnect(() => {
     store.dispatch('app/setLedgerBridgeConnected', { connected: false })
     store.dispatch('app/setLedgerBridgeTransportConnected', { connected: false })
@@ -26,17 +21,10 @@ export const createBridgeClient = ({
   }).onTransportConnect(
     () => {
       store.dispatch('app/setLedgerBridgeTransportConnected', { connected: true })
-      if (onTransportConnect) {
-        onTransportConnect()
-      }
     }
-  )
-    .onTransportDisconnected(() => {
-      store.dispatch('app/setLedgerBridgeTransportConnected', { connected: false })
-      const { usbBridgeWindowsId } = store.state
-      store.dispatch('app/closeExistingBridgeWindow', { windowsId: usbBridgeWindowsId })
-      bridgeClient = null
-    })
+  ).onTransportDisconnected(() => {
+    store.dispatch('app/setLedgerBridgeTransportConnected', { connected: false })
+  })
   return bridgeClient
 }
 
@@ -56,11 +44,24 @@ export const createBridgeClient = ({
 * @returns Promise<any>
 */
 export const callToBridge = async (message) => {
-  return bridgeClient.sendMessage(message)
+  return bridgeClient?.sendMessage(message)
 }
 
 export const getXPubVersion = (network) => {
   const id = network === 'mainnet' ? 'bitcoin' : 'bitcoin_testnet'
   const { bitcoinLikeInfo: { XPUBVersion } } = findCryptoCurrencyById(id)
   return XPUBVersion
+}
+
+export const createConnectSubscription = (onConnect) => {
+  const unsubscribe = store.subscribe(async ({ type, payload }) => {
+    if (type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
+    payload.connected === true) {
+      onConnect()
+      if (unsubscribe) {
+        unsubscribe()
+      }
+    }
+  })
+  return unsubscribe
 }
