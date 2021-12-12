@@ -1,5 +1,7 @@
 import { BitcoinLedgerProvider } from '@liquality/bitcoin-ledger-provider'
 import { fromBase58 } from 'bip32'
+// import { bitcoin } from '@liquality/types'
+// import { address } from 'bitcoinjs-lib'
 
 export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
   _ledgerApp
@@ -25,8 +27,12 @@ export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
   }
 
   async _getBaseDerivationNode () {
-    if (this._baseDerivationNode) return this._baseDerivationNode
-    this._baseDerivationNode = fromBase58(this._xPub, this._network)
+    if (!this._baseDerivationNode) {
+      this._baseDerivationNode = fromBase58(
+        this._xPub, this._network
+      ).derivePath(this.baseDerivationPath)
+    }
+
     return this._baseDerivationNode
   }
 
