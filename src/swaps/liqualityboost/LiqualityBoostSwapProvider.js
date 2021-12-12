@@ -140,6 +140,11 @@ class LiqualityBoostSwapProvider extends SwapProvider {
     },
     WAITING_FOR_SWAP_CONFIRMATIONS: {
       ...OneinchSwapProvider.statuses.WAITING_FOR_SWAP_CONFIRMATIONS,
+      notification () {
+        return {
+          message: 'Engaging Automated Market Maker'
+        }
+      },
       step: 3
     },
     SUCCESS: {
