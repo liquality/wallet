@@ -1,6 +1,3 @@
-const log = console.log
-const chalk = require('chalk')
-
 class HomePage {
   /**
    * Scroll to the end of the terms
@@ -25,7 +22,7 @@ class HomePage {
       })
     }, scrollSelector)
 
-    log(chalk.green(`ScrollToEndOfTerms: ${result}`))
+    console.log(`ScrollToEndOfTerms: ${result}`)
   }
 
   /**
@@ -40,7 +37,6 @@ class HomePage {
       visible: true
     })
     await page.click('#terms_privacy_accept_button')
-    log(chalk.green('User click on Terms & Privacy accept option'))
   }
 
   /**
@@ -52,7 +48,6 @@ class HomePage {
   async ClickOnCreateNewWallet (page) {
     await page.waitForSelector('#create_new_wallet_option', { visible: true })
     await page.click('#create_new_wallet_option')
-    log(chalk.greenBright('User click on create new wallet option'))
   }
 
   /**

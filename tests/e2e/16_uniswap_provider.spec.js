@@ -1,10 +1,9 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
-const SwapPage = require('../Pages/SwapPage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
+const SwapPage = require('../pages/SwapPage')
 const expect = require('chai').expect
-const chalk = require('chalk')
 
 const puppeteer = require('puppeteer')
 
@@ -52,7 +51,7 @@ describe('UNISWAP service Provider-[smoke]', async () => {
     await overviewPage.SelectChain(page, asset1)
     await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
     await page.click(`#${asset1}_swap_button`)
-    console.log(chalk.green('User clicked on ETH SWAP button'))
+    console.log(('User clicked on ETH SWAP button'))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'ETH to DAI SWAP min value not set in input').not.equals('0.0000')
