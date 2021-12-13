@@ -35,7 +35,7 @@
     "@liquality/bitcoin-networks": "1.11.0",
     "@liquality/bitcoin-rpc-fee-provider": "1.11.0",
     "@liquality/bitcoin-rpc-provider": "1.11.0",
-    "@liquality/bitcoin-swap-provider": "1.11.0",
+    "@liquality/bitcoin-swap-provider": "1.11.1",
     "@liquality/client": "1.11.0",
     "@liquality/crypto": "1.11.0",
     "@liquality/cryptoassets": "^1.7.1",
