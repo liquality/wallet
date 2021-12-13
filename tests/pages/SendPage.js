@@ -30,7 +30,8 @@ class SendPage {
    */
   async EnterSendToAddress (page, sendToAddress) {
     await page.waitForSelector('#address')
-    await page.type('#address', sendToAddress)
+    await page.type('#address', sendToAddress, { delay: 100 })
+    await page.waitForTimeout(1000)
   }
 
   /**
@@ -60,7 +61,7 @@ class SendPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async SendConfirmButton (page) {
+  async ConfirmSend (page) {
     await page.waitForSelector('#send_button_confirm', { visible: true })
     await page.click('#send_button_confirm')
     console.log('User clicked on SEND button Confirm...waiting for Transaction Status')
