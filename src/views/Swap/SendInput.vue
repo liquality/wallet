@@ -4,58 +4,59 @@
       <div class="swap-send-main-input-container">
         <div class="swap-send-main-input">
           <div class="swap-send-top">
-          <div class="swap-send-top-label">
-            Send
-          </div>
-          <div class="swap-send-top-amount">
-            <div class="btn btn-option label-append" @click="toggleShowAmountsFiat">
-              <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
-                {{ `${asset} ${sendAmount}` }}
-              </span>
-              <span v-else>
-                {{ sendAmountFiat }}
-              </span>
+            <div class="swap-send-top-label">Send</div>
+            <div class="swap-send-top-amount">
+              <div
+                class="btn btn-option label-append"
+                @click="toggleShowAmountsFiat"
+              >
+                <span
+                  v-if="showAmountsInFiat"
+                  :style="getAssetColorStyle(asset)"
+                >
+                  {{ `${asset} ${sendAmount}` }}
+                </span>
+                <span v-else> ${{ sendAmountFiat }} </span>
+              </div>
             </div>
           </div>
-      </div>
+          <div class="input-group mb-3" v-if="showAmountsInFiat">
+            <span class="input-group-text">$</span>
+            <input
+              type="number"
+              class="form-control"
+              :class="{ 'is-invalid': showErrors && amountError }"
+              :value="sendAmountFiat"
+              @input="$emit('update:sendAmountFiat', $event.target.value)"
+              placeholder="0.00"
+              autocomplete="off"
+              :disabled="disabled"
+            />
+          </div>
           <input
-          v-if="showAmountsInFiat"
-          type="text"
-          class="form-control"
-          :class="{ 'is-invalid': showErrors && amountError }"
-          :value="sendAmountFiat"
-          @input="$emit('update:sendAmountFiat', $event.target.value)"
-          placeholder="0.00"
-          autocomplete="off"
-          :disabled="disabled"
-        />
-        <input
-          v-else
-          type="number"
-          class="form-control"
-          id="swap_send_amount_input_field"
-          :class="{ 'is-invalid': showErrors && amountError }"
-          :value="sendAmount"
-          @input="$emit('update:sendAmount', $event.target.value)"
-          placeholder="0.00"
-          :style="getAssetColorStyle(asset)"
-          autocomplete="off"
-          :disabled="disabled"
-        />
+            v-else
+            type="number"
+            class="form-control"
+            id="swap_send_amount_input_field"
+            :class="{ 'is-invalid': showErrors && amountError }"
+            :value="sendAmount"
+            @input="$emit('update:sendAmount', $event.target.value)"
+            placeholder="0.00"
+            :style="getAssetColorStyle(asset)"
+            autocomplete="off"
+            :disabled="disabled"
+          />
         </div>
         <AccountTooltip :account="account" :asset="asset">
           <div class="swap-send-main-icon" @click="assetIconClick">
-          <img
-                :src="getAssetIcon(asset)"
-                class="asset-icon"
-              />
-          <span class="asset-name">
-            {{ asset }}
-          </span>
-          <div>
-            <ChevronRightIcon />
+            <img :src="getAssetIcon(asset)" class="asset-icon" />
+            <span class="asset-name">
+              {{ asset }}
+            </span>
+            <div>
+              <ChevronRightIcon />
+            </div>
           </div>
-        </div>
         </AccountTooltip>
       </div>
       <div class="swap-send-main-errors" v-if="showErrors && amountError">
@@ -223,7 +224,6 @@ export default {
       display: flex;
       width: 100%;
     }
-
   }
 
   .swap-send-bottom {
@@ -237,7 +237,6 @@ export default {
       font-weight: normal;
       font-size: $font-size-tiny;
     }
-
   }
 }
 </style>

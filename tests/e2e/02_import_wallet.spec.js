@@ -1,7 +1,7 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -16,9 +16,13 @@ const password = '123123123'
 
 describe('Import wallet-["mainnet","testnet"]', async () => {
   beforeEach(async () => {
+    console.log(testUtil.getChromeOptions())
+    console.log(testUtil.extensionRootUrl)
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    // Import wallet option
+    await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
   })
@@ -33,8 +37,6 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
 
   // https://www.notion.so/Wallet-should-validate-mnemonic-per-BIP-39-dac68dd41c664f24a7b4e657fc546281
   it('01-Import wallet with random seed (phrase 11 words) and check continue is disabled', async () => {
-    await homePage.ClickOnImportWallet(page)
-    console.log('Import wallet page hase been loaded')
     // check continue button has been disabled
     const seedWords = 'blouse sort ice forward ivory enrich connect mimic apple setup level'
     const enterWord = seedWords.split(' ')
@@ -44,15 +46,12 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    // Continue button has been Disabled
     expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
       'Import wallet continue button has been disabled if the mnemonic is revered change')
       .contains('disabled')
   })
   // https://www.notion.so/Wallet-should-validate-mnemonic-per-BIP-39-dac68dd41c664f24a7b4e657fc546281
   it('02-Import wallet with random numbers (phrase 12 words) and check continue is disabled', async () => {
-    await homePage.ClickOnImportWallet(page)
-    // check continue button has been disabled
     const seedWords = '1 2 3 4 5 6 7 8 9 10 11 12'
     const enterWord = seedWords.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')
@@ -61,14 +60,11 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    // Continue button has been Disabled
     expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
       'Import wallet continue button has been disabled if the mnemonic is revered change')
       .contains('disabled')
   })
   it('03-Import wallet with random seed (phrase 12 words) and check continue is disabled', async () => {
-    await homePage.ClickOnImportWallet(page)
-    // check continue button has been disabled
     const seedWords = 'PSYOF MLIVD WYKYV LTSXE YJKAS AORWH AEHMI LITKC JKKKK SQYGK AJJSO YCNSX'
     const enterWord = seedWords.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')
@@ -77,14 +73,11 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    // Continue button has been Disabled
     expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
       'Import wallet continue button has been disabled if the mnemonic is revered change')
       .contains('disabled')
   })
   it('04-Import wallet with random seed (phrase 12 words) and check continue is disabled', async () => {
-    await homePage.ClickOnImportWallet(page)
-    // check continue button has been disabled
     const seedWords = 'spawp cage misery pave blue uncle pilot upon talent caution return fat'
     const enterWord = seedWords.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')
@@ -93,14 +86,11 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    // Continue button has been Disabled
     expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
       'Import wallet continue button has been disabled if the mnemonic is revered change')
       .contains('disabled')
   })
   it('05-Import wallet with random seed (phrase 12 words reverse order) and check continue is disabled', async () => {
-    await homePage.ClickOnImportWallet(page)
-    // check continue button has been disabled
     // correct one - seminar amount airport narrow noble uncle inside matrix short moral change donor
     // changed order - seminar amount airport narrow noble uncle inside matrix short moral donor change
     const seedWords = 'seminar amount airport narrow noble uncle inside matrix short moral donor change'
@@ -116,7 +106,6 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
       .contains('disabled')
   })
   it('06-Import wallet with correct mnemonic (phrase 12 words) and check continue is enabled', async () => {
-    await homePage.ClickOnImportWallet(page)
     const seedWords = 'ski crush picture rail time lion receive biology hire egg volume inner'
     const enterWord = seedWords.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')
@@ -129,8 +118,6 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
     await page.waitForSelector('#password', { visible: true })
   })
   it('06-Import wallet with random seed (phrase 24 words) and check continue is disabled', async () => {
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit, select 24 seed option
     await page.waitForSelector('#word_button_group', { visible: true })
     await page.click('#twenty_four_words_option')
     // check continue button has been disabled
@@ -142,21 +129,16 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    // Continue button has been Disabled
     expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
       'Import wallet continue button has been disabled if the mnemonic is revered change')
       .contains('disabled')
   })
   it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path-[smoke]', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
-    // Enter seed words and submit
-    await homePage.EnterSeedWords(page, null)
-    // Create a password & submit
+    await homePage.EnterSeedWords(page)
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.HasOverviewPageLoaded(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     } else {
@@ -178,7 +160,8 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
-    expect(rskAddress, 'ETH & RSK Addresses should be equal').equals(ethAddress)
+    expect(rskAddress, `ETH address ${ethAddress}& RSK address ${rskAddress} should be equal if balance is greater than 0`)
+      .equals(ethAddress)
 
     // Check RSK & ERC20 tokens
     const rskTokens = ['RBTC', 'SOV', 'FISH']
@@ -191,8 +174,6 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
     }
   })
   it('Import wallet with (24 seed words) and see balance', async () => {
-    // Import wallet option
-    await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit, select 24 seed option
     await page.waitForSelector('#word_button_group', { visible: true })
     await page.click('#twenty_four_words_option')
@@ -203,8 +184,8 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed

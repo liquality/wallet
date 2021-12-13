@@ -1,67 +1,100 @@
 <template>
   <div class="account-container">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account-title"><img :src="getAssetIcon(asset)" class="asset-icon"/> {{ asset }}</span>
+    <NavBar
+      showMenu="true"
+      showBack="true"
+      backPath="/wallet"
+      backLabel="Overview"
+    >
+      <span class="account-title"
+        ><img :src="getAssetIcon(asset)" class="asset-icon" /> {{ asset }}</span
+      >
     </NavBar>
     <div class="account-content">
       <div class="account-content-top">
-        <RefreshIcon @click.stop="refresh"
-                     class="account-container_refresh-icon"
-                     id="refresh-icon"
-                     :class="{ 'infinity-rotate': updatingBalances }"
+        <RefreshIcon
+          @click.stop="refresh"
+          class="account-container_refresh-icon"
+          id="refresh-icon"
+          :class="{ 'infinity-rotate': updatingBalances }"
         />
         <div class="account-container_balance">
-          <div class="account-container_balance_fiat" :id="`${asset}_fiat_value`">
-            <span v-if="fiatRates[asset]">
-              ${{ formatFiat(fiat) }}
-            </span>
+          <div
+            class="account-container_balance_fiat"
+            :id="`${asset}_fiat_value`"
+          >
+            <span v-if="fiatRates[asset]"> ${{ formatFiat(fiat) }} </span>
             <span v-else>&nbsp;</span>
           </div>
           <div>
-            <span class="account-container_balance_value"
-                  :id="`${asset}_balance_value`"
-                  :style="{ fontSize: balanceFontSize }">
+            <span
+              class="account-container_balance_value"
+              :id="`${asset}_balance_value`"
+              :style="{ fontSize: formatFontSize(balance) }"
+            >
               {{ balance }}
             </span>
             <span class="account-container_balance_code">{{ asset }}</span>
           </div>
         </div>
         <div v-if="address" class="account-container_address">
-          <button class="btn btn-outline-light" :id="`${asset}_address_container`"
-                  @click="copyAddress"
-                  v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
+          <button
+            class="btn btn-outline-light"
+            :id="`${asset}_address_container`"
+            @click="copyAddress"
+            v-tooltip.bottom="{
+              content: addressCopied ? 'Copied!' : 'Copy',
+              hideOnTargetClick: false,
+            }"
+          >
             {{ shortenAddress(address) }}
           </button>
-          <a class="eye-btn"
-             :id="`${asset}_view_in_explorer`"
-             @click="copyAddress"
-             :href="addressLink"
-             target="_blank"
-             v-tooltip.bottom="{ content: 'View in Explorer' }">
-            <EyeIcon/>
+          <a
+            class="eye-btn"
+            :id="`${asset}_view_in_explorer`"
+            @click="copyAddress"
+            :href="addressLink"
+            target="_blank"
+            v-tooltip.bottom="{ content: 'View in Explorer' }"
+          >
+            <EyeIcon />
           </a>
         </div>
         <div class="account-container_actions">
           <router-link :to="`/accounts/${accountId}/${asset}/send`">
             <button class="account-container_actions_button">
-              <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`">
-                <SendIcon class="account-container_actions_button_icon"/>
+              <div
+                class="account-container_actions_button_wrapper"
+                :id="`${asset}_send_button`"
+              >
+                <SendIcon class="account-container_actions_button_icon" />
               </div>
               Send
             </button>
           </router-link>
           <router-link :to="`/accounts/${accountId}/${asset}/swap`">
             <button class="account-container_actions_button">
-              <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
-                <SwapIcon class="account-container_actions_button_icon account-container_actions_button_swap"/>
+              <div
+                class="account-container_actions_button_wrapper"
+                :id="`${asset}_swap_button`"
+              >
+                <SwapIcon
+                  class="
+                    account-container_actions_button_icon
+                    account-container_actions_button_swap
+                  "
+                />
               </div>
               Swap
             </button>
           </router-link>
           <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`">
             <button class="account-container_actions_button">
-              <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
-                <ReceiveIcon class="account-container_actions_button_icon"/>
+              <div
+                class="account-container_actions_button_wrapper"
+                :id="`${asset}_receive_button`"
+              >
+                <ReceiveIcon class="account-container_actions_button_icon" />
               </div>
               Receive
             </button>
@@ -69,10 +102,12 @@
         </div>
       </div>
       <div class="account-container_transactions">
-        <ActivityFilter @filters-changed="applyFilters"
-                        :activity-data="activityData"
-                        v-if="activityData.length > 0"/>
-        <TransactionList :transactions="activityData"/>
+        <ActivityFilter
+          @filters-changed="applyFilters"
+          :activity-data="activityData"
+          v-if="activityData.length > 0"
+        />
+        <TransactionList :transactions="activityData" />
         <div class="activity-empty" v-if="activityData.length <= 0">
           Once you start using your wallet you will see the activity here
         </div>
@@ -98,6 +133,7 @@ import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
+import { formatFontSize } from '@/utils/fontSize'
 
 import amplitude from 'amplitude-js'
 
@@ -148,16 +184,6 @@ export default {
     assetHistory () {
       return this.activity.filter((item) => item.from === this.asset)
     },
-    balanceFontSize () {
-      let fontSize = 50
-      if (this.balance.length > 6) {
-        fontSize = 30
-      } else if (this.balance.length > 13) {
-        fontSize = 15
-      }
-
-      return `${fontSize}px`
-    },
     addressLink () {
       if (this.account) {
         return getAddressExplorerLink(
@@ -178,11 +204,14 @@ export default {
     ]),
     getAssetIcon,
     shortenAddress,
+    formatFontSize,
     formatFiat,
     async copyAddress () {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true
-      setTimeout(() => { this.addressCopied = false }, 2000)
+      setTimeout(() => {
+        this.addressCopied = false
+      }, 2000)
     },
     async refresh () {
       if (this.updatingBalances) return
@@ -201,7 +230,10 @@ export default {
   },
   async created () {
     if (this.account && this.account.type.includes('ledger')) {
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0], this.activeNetwork)
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
+        this.account.addresses[0],
+        this.activeNetwork
+      )
     } else {
       const addresses = await this.getUnusedAddresses({
         network: this.activeNetwork,
@@ -210,7 +242,10 @@ export default {
         accountId: this.accountId
       })
       const chainId = cryptoassets[this.asset]?.chain
-      this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
+      this.address = chains[chainId]?.formatAddress(
+        addresses[0],
+        this.activeNetwork
+      )
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
@@ -245,7 +280,6 @@ export default {
 
 <style lang="scss">
 .account-container {
-
   .account-content-top {
     height: 220px;
     display: flex;
@@ -380,5 +414,4 @@ export default {
     }
   }
 }
-
 </style>
