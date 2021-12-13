@@ -634,7 +634,7 @@ export default {
       }
 
       if (this.selectedQuote?.receiveFee && BN(this.selectedQuote.toAmount).lt(this.selectedQuote.receiveFee)) {
-        return 'Increase amount. It won`t cover receive fee.'
+        return "Increase amount. It won't cover receive fee."
       }
 
       return null
