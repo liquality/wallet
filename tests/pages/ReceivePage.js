@@ -36,7 +36,7 @@ class ReceivePage {
     if (process.env.NODE_ENV !== 'mainnet') {
       await page.waitForSelector('#receive_url', {
         visible: true,
-        timeout: 5000
+        timeout: 60000
       })
       const url = await page.$eval('#receive_url', (el) => el.textContent)
       console.log('receive address url:', url)

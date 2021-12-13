@@ -387,6 +387,21 @@ class OverviewPage {
   }
 
   /**
+   * Click Manage asset option under burger menu.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickManageAssets (page) {
+    await this.ClickOnBurgerIcon(page)
+    // Click Manage Assets
+    await page.waitForSelector('#manage_assets', { visible: true })
+    await page.click('#manage_assets')
+    // click on add custom token
+    await page.waitForSelector('#add_custom_token', { visible: true })
+  }
+
+  /**
    * Click on Add Custom token from setting screen.
    * @param page
    * @returns {Promise<void>}

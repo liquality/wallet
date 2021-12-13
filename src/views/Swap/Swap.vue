@@ -16,7 +16,7 @@
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
 
-      <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount > min">
+      <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
       <div class="wrapper form">
@@ -452,6 +452,7 @@ import buildConfig from '@/build.config'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
+const MIN_SWAP_VALUE_USD = 2
 
 export default {
   components: {
@@ -665,15 +666,13 @@ export default {
       return !!liqualityMarket
     },
     min () {
-      const liqualityMarket = this.networkMarketData?.find(
-        (pair) =>
-          pair.from === this.asset &&
-          pair.to === this.toAsset &&
-          getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
-            SwapProviderType.LIQUALITY
-      )
-      const min = liqualityMarket ? BN(liqualityMarket.min) : BN(0)
-      return dpUI(min)
+      const toQuoteAsset = this.selectedQuoteProvider?.config?.type === SwapProviderType.LIQUALITYBOOST ? this.toAssetChain : this.toAsset
+      const liqualityMarket = this.networkMarketData?.find(pair =>
+        pair.from === this.asset &&
+        pair.to === toQuoteAsset &&
+        getSwapProviderConfig(this.activeNetwork, pair.provider).type === SwapProviderType.LIQUALITY)
+      const min = liqualityMarket ? BN(liqualityMarket.min) : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]), this.available)
+      return isNaN(min) ? BN(0) : dpUI(min)
     },
     max () {
       return this.available && !isNaN(this.available)
