@@ -151,25 +151,25 @@
         <tbody class="font-weight-normal" v-if="item.type === 'SEND'">
           <tr>
             <td class="text-muted text-right small-12">Amount</td>
-            <td>{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</td>
+            <td class="text-break">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</td>
           </tr>
           <tr v-if="item.fromAddress">
             <td class="text-muted text-right small-12">
               Your {{ item.from }}<br />from address
             </td>
-            <td>{{ item.fromAddress }}</td>
+            <td class="text-break">{{ item.fromAddress }}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">
               Your {{ item.to }}<br />to address
             </td>
-            <td>{{ item.toAddress }}</td>
+            <td class="text-break">{{ item.toAddress }}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">
               Your {{ item.to }} send<br />transaction
             </td>
-            <td>{{ item.txHash }}</td>
+            <td class="text-break">{{ item.txHash }}</td>
           </tr>
           <tr v-if="false">
             <td class="text-muted text-right small-12">Actions</td>
@@ -183,7 +183,7 @@
             <td v-if="item.agent" class="text-muted text-right small-12">
               Counter-party
             </td>
-            <td>{{ item.agent }}</td>
+            <td class="text-break">{{ item.agent }}</td>
           </tr>
           <tr v-if="orderLink">
             <td class="text-muted text-right small-12">Order ID</td>
@@ -217,17 +217,17 @@
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Status</td>
-            <td id="swap_details_status">{{ item.status }}</td>
+            <td id="swap_details_status" class="text-break">{{ item.status }}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Buy</td>
-            <td id="swap_details_buy">
+            <td id="swap_details_buy" class="text-break">
               {{ prettyBalance(item.toAmount, item.to) }} {{ item.to }}
             </td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Sell</td>
-            <td id="swap_details_sell">
+            <td id="swap_details_sell" class="text-break">
               {{ prettyBalance(item.fromAmount, item.from) }} {{ item.from }}
             </td>
           </tr>
@@ -301,7 +301,7 @@
             <td class="text-muted text-right small-12">
               Your {{ item.from }} approve<br />transaction
             </td>
-            <td id="approve_transaction">{{ item.approveTxHash }}</td>
+            <td id="approve_transaction" class="text-break">{{ item.approveTxHash }}</td>
           </tr>
           <tr v-if="item.swapTxHash">
             <td class="text-muted text-right small-12">Swap Transaction</td>
@@ -313,19 +313,19 @@
             <td class="text-muted text-right small-12">
               Your {{ item.to }} receive<br />transaction
             </td>
-            <td id="receive_transaction">{{ item.receiveTxHash }}</td>
+            <td id="receive_transaction" class="text-break">{{ item.receiveTxHash }}</td>
           </tr>
           <tr v-if="item.sendTx">
             <td class="text-muted text-right small-12">
               Your {{ item.to }} send<br />transaction
             </td>
-            <td id="send_transaction">{{ item.sendTx }}</td>
+            <td id="send_transaction" class="text-break">{{ item.sendTx }}</td>
           </tr>
           <tr v-if="item.refundHash">
             <td class="text-muted text-right small-12">
               Your {{ item.from }} refund<br />transaction
             </td>
-            <td id="to_claim_hash">{{ item.refundHash }}</td>
+            <td id="to_claim_hash" class="text-break">{{ item.refundHash }}</td>
           </tr>
           <tr v-if="false">
             <td class="text-muted text-right small-12">Actions</td>

@@ -539,7 +539,8 @@ export default {
           accountId: this.account.id,
           amount,
           fee,
-          feeLabel: this.selectedFee
+          feeLabel: this.selectedFee,
+          fiatRate: this.fiatRates[this.asset]
         })
 
         this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)

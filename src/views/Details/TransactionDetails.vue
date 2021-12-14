@@ -1,37 +1,61 @@
 <template>
   <div class="details-wrapper">
     <NavBar :showBackButton="true" :backClick="goBack" :backLabel="'Back'">
-      Transaction Detail
+      <img :src="getAssetIcon(item.from)" class="asset-icon mr-2" />
+      <span class="mr-2">{{item.from}}</span>
+      <img :src="typeIcon" />
     </NavBar>
     <div class="tx-details">
       <div class="tx-details_info">
+        <div class="row" id="transaction_details_status">
+          <div class="col-10">
+            <h2>Status</h2>
+            <p class="text-grey">
+              {{ status }}
+              <span
+                v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"
+              >
+                / {{ tx.confirmations }} Confirmations
+              </span>
+            </p>
+          </div>
+          <div class="col-2">
+            <CompletedIcon
+              v-if="item.status === 'SUCCESS'"
+              class="tx-details_status-icon"
+            />
+            <SpinnerIcon v-else class="tx-details_status-icon" />
+          </div>
+        </div>
+        <div class="row" id="transaction_details_date_time">
+          <div class="col">
+            <h2>Time</h2>
+            <p>{{ prettyTime(item.endTime || item.startTime) }}</p>
+          </div>
+        </div>
         <div class="row">
           <div class="col">
             <h2>Sent</h2>
-            <p id="transaction_detail_sent_amount">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</p>
+            <p id="transaction_detail_sent_amount" class="font-weight-bold mb-1">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</p>
+            <p id="transaction_detail_sent_amount">${{ prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from]) }} / today</p>
+            <p id="transaction_detail_sent_amount" v-if="item.fiatRate">${{ prettyFiatBalance(prettyBalance(item.amount, item.from), item.fiatRate) }} / then</p>
           </div>
         </div>
-        <div class="row">
-          <div class="col tx-details_link" id="send_to_tx_details_link">
-            <h2>Sent To</h2>
-            <p>
-              <a :href="addressLink" target="_blank" id="transaction_details_send_to_link">{{ item.toAddress }}</a>
-              <CopyIcon @click="copy(item.toAddress)" />
-            </p>
-          </div>
-        </div>
+        <hr>
         <div class="row" id="transaction_details_network_speed_fee">
           <div class="col">
             <h2>Network Speed/Fee</h2>
-            <p>
-              {{ prettyBalance(tx ? tx.fee : item.tx.fee, item.from) }}
-              {{ assetChain }} | {{ item.fee }} {{ feeUnit }}
-              <a
-                v-if="canUpdateFee && !showFeeSelector"
-                @click="openFeeSelector()"
-              >
-                Speed up
-              </a>
+            <p class="d-flex justify-content-between">
+              <span>{{ assetChain }} Speed: <span class="text-capitalize">{{ item.feeLabel }}</span></span>
+              <span>Fee: {{ item.fee }} {{ feeUnit}}</span>
+              <span>
+                <a
+                  v-if="canUpdateFee && !showFeeSelector"
+                  @click="openFeeSelector()"
+                >
+                  Speed up
+                </a>
+              </span>
             </p>
             <div v-if="showFeeSelector" class="mt-2">
               <FeeSelector
@@ -58,41 +82,17 @@
             </div>
           </div>
         </div>
-        <div class="row" id="transaction_details_date_time">
-          <div class="col">
-            <h2>Time</h2>
-            <p>{{ prettyTime(item.endTime || item.startTime) }}</p>
-          </div>
-        </div>
-        <div class="row" id="transaction_details_status">
-          <div class="col-10">
-            <h2>Status</h2>
-            <p>
-              {{ status }}
-              <span
-                v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"
-              >
-                / {{ tx.confirmations }} Confirmations
-              </span>
-            </p>
-          </div>
-          <div class="col">
-            <CompletedIcon
-              v-if="item.status === 'SUCCESS'"
-              class="tx-details_status-icon"
-            />
-            <SpinnerIcon v-else class="tx-details_status-icon" />
-          </div>
-        </div>
+        <hr>
         <div class="row">
-          <div class="col tx-details_link" id="transaction_details_transaction_id">
-            <h2>Transaction ID</h2>
+          <div class="col tx-details_link d-flex align-items-start" id="transaction_details_transaction_id">
+            <h2 class="mr-4">Transaction ID</h2>
             <p>
-              <a :href="transactionLink" target="_blank" id="transactionLink">{{ item.txHash }}</a>
+              <a :href="transactionLink" target="_blank" id="transactionLink">{{ shortenAddress(item.txHash) }}</a>
               <CopyIcon @click="copy(item.txHash)" />
             </p>
           </div>
         </div>
+        <Timeline :id="id" :tx="tx"/>
       </div>
     </div>
   </div>
@@ -104,12 +104,16 @@ import moment from '@/utils/moment'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
-import { prettyBalance } from '@/utils/coinFormatter'
-import { getStatusLabel } from '@/utils/history'
+import {
+  prettyBalance,
+  prettyFiatBalance
+} from '@/utils/coinFormatter'
+import { getStatusLabel, ACTIVITY_FILTER_TYPES, getItemIcon } from '@/utils/history'
 import {
   getNativeAsset,
   getTransactionExplorerLink,
   getAddressExplorerLink
+  , getAssetIcon
 } from '@/utils/asset'
 
 import FeeSelector from '@/components/FeeSelector'
@@ -117,6 +121,9 @@ import CompletedIcon from '@/assets/icons/completed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import NavBar from '@/components/NavBar.vue'
+import { shortenAddress } from '@/utils/address'
+
+import Timeline from '@/transactions/views/Timeline.vue'
 
 export default {
   components: {
@@ -124,7 +131,8 @@ export default {
     CompletedIcon,
     SpinnerIcon,
     CopyIcon,
-    NavBar
+    NavBar,
+    Timeline
   },
   data () {
     return {
@@ -148,6 +156,9 @@ export default {
       return getNativeAsset(this.item.from)
     },
     item () {
+      console.log(this.history[this.activeNetwork][this.activeWalletId].find(
+        (item) => item.id === this.id
+      ))
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )
@@ -157,6 +168,9 @@ export default {
     },
     feeUnit () {
       return chains[cryptoassets[this.item.from].chain].fees.unit
+    },
+    chainId () {
+      return cryptoassets[this.item.from].chain
     },
     addressLink () {
       return getAddressExplorerLink(
@@ -186,14 +200,22 @@ export default {
     },
     feesAvailable () {
       return this.assetFees && Object.keys(this.assetFees).length
+    },
+    typeIcon () {
+      const filter = ACTIVITY_FILTER_TYPES[this.item.type]
+      return this.getItemIcon(filter?.icon)
     }
   },
   methods: {
     ...mapActions(['updateTransactionFee', 'updateFees']),
     getNativeAsset,
     prettyBalance,
+    shortenAddress,
+    getAssetIcon,
+    prettyFiatBalance,
+    getItemIcon,
     prettyTime (timestamp) {
-      return moment(timestamp).format('L, LT')
+      return moment(timestamp).format('MMM D YYYY, h:mm a')
     },
     async copy (text) {
       await navigator.clipboard.writeText(text)
@@ -269,7 +291,6 @@ export default {
       a {
         display: block;
         text-overflow: ellipsis;
-        overflow: hidden;
       }
     }
 

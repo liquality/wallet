@@ -13,7 +13,7 @@ export const sendTransaction = async ({ dispatch, commit, getters }, {
   fee,
   gas,
   feeLabel,
-  claimFeeLabel
+  fiatRate
 }) => {
   const client = getters.client(
     {
@@ -52,16 +52,16 @@ export const sendTransaction = async ({ dispatch, commit, getters }, {
     txHash: tx.hash,
     startTime: Date.now(),
     status: 'WAITING_FOR_CONFIRMATIONS',
-    accountId
+    accountId,
+    feeLabel,
+    fiatRate
   }
 
   commit('NEW_TRASACTION', {
     network,
     walletId,
     accountId,
-    transaction,
-    feeLabel,
-    claimFeeLabel
+    transaction
   })
 
   dispatch('performNextAction', { network, walletId, id: transaction.id, accountId })
