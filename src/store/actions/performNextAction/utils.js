@@ -6,8 +6,6 @@ export async function withLock ({ dispatch }, { item, network, walletId, asset }
   const lock = await dispatch('getLockForAsset', { item, network, walletId, asset })
   try {
     return await func()
-  } catch (e) {
-    return { error: e.toString() }
   } finally {
     unlockAsset(lock)
   }

@@ -1,10 +1,10 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
-const SearchAssetPage = require('../Pages/SearchAssetPage')
-const SendPage = require('../Pages/SendPage')
-const TransactionDetailsPage = require('../Pages/TransactionDetailsPage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
+const SearchAssetPage = require('../pages/SearchAssetPage')
+const SendPage = require('../pages/SendPage')
+const TransactionDetailsPage = require('../pages/TransactionDetailsPage')
 const expect = require('chai').expect
 
 const testUtil = new TestUtil()
@@ -99,7 +99,7 @@ describe('SEND feature["testnet"]', async () => {
     // Click Review Button
     await sendPage.ClickSendReview(page)
     // Confirm SEND
-    await sendPage.SendConfirmButton(page)
+    await sendPage.ConfirmSend(page)
     // Transaction details page validations
     const domain = 'https://testnet.bscscan.com'
     await transactionDetailsPage.ValidateSentAmount(page, '0 BNB')

@@ -1,8 +1,8 @@
 const TestUtil = require('../../utils/TestUtils')
-const OverviewPage = require('../../Pages/OverviewPage')
-const HomePage = require('../../Pages/HomePage')
-const PasswordPage = require('../../Pages/PasswordPage')
-const SwapPage = require('../../Pages/SwapPage')
+const OverviewPage = require('../../pages/OverviewPage')
+const HomePage = require('../../pages/HomePage')
+const PasswordPage = require('../../pages/PasswordPage')
+const SwapPage = require('../../pages/SwapPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -32,16 +32,16 @@ describe('RBTC->BTC swap-["smoke"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.SelectNetwork(page)
   })
   after(async () => {
     await page.close()
-    await browser.close()
   })
 
   it('SWAP RBTC to BTC - liquality', async () => {
     const fromAsset = 'RBTC'
     const toAsset = 'BTC'
-    await overviewPage.SelectNetwork(page)
+
     // Click fromAsset
     await overviewPage.SelectChain(page, fromAsset)
     await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
@@ -73,7 +73,7 @@ describe('RBTC->BTC swap-["smoke"]', async () => {
 
     // Click on SWAP Review button
     await swapPage.ClickSwapReviewButton(page)
-    await page.waitForTimeout(7000)
+    await page.waitForTimeout(10000)
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
