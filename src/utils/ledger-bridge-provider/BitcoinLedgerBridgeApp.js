@@ -35,7 +35,7 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async serializeTransactionOutputs (...payload) {
-    return this.callToBridge({
+    return await this.callToBridge({
       action: 'serializeTransactionOutputs',
       execMode: ExecutionMode.Async,
       payload
