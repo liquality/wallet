@@ -70,22 +70,19 @@ function createBtcClient (
   )
 
   if (accountType.includes('bitcoin_ledger')) {
+    console.log('derivationPath', derivationPath)
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === accountType)
     const { addressType } = option
-    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(
-      network,
-      ChainId.Bitcoin
-    )
-    const ledger = new BitcoinLedgerBridgeProvider(
-      {
+    const ledgerApp = new BitcoinLedgerBridgeApp(network, ChainId.Bitcoin)
+    btcClient.addProvider(
+      new BitcoinLedgerBridgeProvider({
         network: bitcoinNetwork,
         addressType,
-        baseDerivationPath: derivationPath
-      },
-      bitcoinLedgerApp,
-      xPub
+        baseDerivationPath: derivationPath,
+        ledgerApp,
+        xPub
+      })
     )
-    btcClient.addProvider(ledger)
   } else {
     btcClient.addProvider(
       new BitcoinJsWalletProvider({
