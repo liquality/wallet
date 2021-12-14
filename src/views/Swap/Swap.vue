@@ -715,6 +715,12 @@ export default {
         : BN.max(BN(balance).minus(this.maxFee), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
     },
+    canCoverAmmFee () {
+      if (!this.selectedQuote.bridgeAsset) return true
+      const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
+      const toSwapFeeInUnits = currencyToUnit(cryptoassets[this.selectedQuote.bridgeAsset], this.toSwapFee)
+      return (BN(balance).plus(this.selectedQuote.bridgeAssetAmount)).gt(toSwapFeeInUnits)
+    },
     availableAmount () {
       return dpUI(this.available, VALUE_DECIMALS)
     },
@@ -758,6 +764,7 @@ export default {
         !this.selectedQuote ||
         this.updatingQuotes ||
         this.ethRequired ||
+        !this.canCoverAmmFee ||
         this.showNoLiquidityMessage ||
         this.amountError ||
         BN(this.safeAmount).lte(0)
