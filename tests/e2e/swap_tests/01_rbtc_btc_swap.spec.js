@@ -1,10 +1,9 @@
 const TestUtil = require('../../utils/TestUtils')
-const OverviewPage = require('../../Pages/OverviewPage')
-const HomePage = require('../../Pages/HomePage')
-const PasswordPage = require('../../Pages/PasswordPage')
-const SwapPage = require('../../Pages/SwapPage')
+const OverviewPage = require('../../pages/OverviewPage')
+const HomePage = require('../../pages/HomePage')
+const PasswordPage = require('../../pages/PasswordPage')
+const SwapPage = require('../../pages/SwapPage')
 const expect = require('chai').expect
-const chalk = require('chalk')
 
 const puppeteer = require('puppeteer')
 
@@ -33,28 +32,27 @@ describe('RBTC->BTC swap-["smoke"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.SelectNetwork(page)
   })
   after(async () => {
     await page.close()
-    await browser.close()
   })
 
   it('SWAP RBTC to BTC - liquality', async () => {
     const fromAsset = 'RBTC'
     const toAsset = 'BTC'
-    await overviewPage.SelectNetwork(page)
-    // Click asset 1
+
+    // Click fromAsset
     await overviewPage.SelectChain(page, fromAsset)
     await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
     await page.click('#' + fromAsset + '_swap_button')
-    console.log(chalk.green(`User clicked on ${fromAsset} SWAP button`))
-
+    console.log(`User clicked on ${fromAsset} SWAP button`)
     await page.waitForSelector('#swap_send_amount_input_field', { visible: true })
     console.log('SWAP screen has been displayed with send amount input field')
 
-    // Select 2nd Pair (BTC)
+    // Select toAsset
     await page.click('.swap-receive-main-icon')
-    await page.waitForSelector(`#${toAsset}`, { visible: true })
+    await page.waitForSelector(`#${toAsset}`, { timeout: 120000, visible: true })
     await page.click(`#${toAsset}`)
     console.log(`User selected ${toAsset} as 2nd pair for swap`)
 
@@ -75,34 +73,34 @@ describe('RBTC->BTC swap-["smoke"]', async () => {
 
     // Click on SWAP Review button
     await swapPage.ClickSwapReviewButton(page)
-    await page.waitForTimeout(7000)
+    await page.waitForTimeout(10000)
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(fromAsset)
-    console.log(chalk.green('SEND Swap value: ' + sendAmountValue))
+    console.log(('SEND Swap value: ' + sendAmountValue))
     // Send confirm USD value
     const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
     expect(swapSendAmountInDollar.trim(), `Send Network fee should not be $0.00 for ${fromAsset}`)
       .not.equals('$0.00')
-    console.log(chalk.green('User SEND Swap value in USD: ' + swapSendAmountInDollar))
+    console.log(('User SEND Swap value in USD: ' + swapSendAmountInDollar))
     // Send Network Fee
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
     expect(swapSendNetworkFeeValue.trim()).contain('RBTC')
-    console.log(chalk.green('User SEND Swap Network Fee value: ' + swapSendNetworkFeeValue))
+    console.log(('User SEND Swap Network Fee value: ' + swapSendNetworkFeeValue))
     // Send Network Fee in USD
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
     expect(swapSendNetworkFeeInDollar.trim(), `Send ${fromAsset} network fee can not be $0.00`)
       .not.contain('$0.00')
-    console.log(chalk.green('User SEND Swap Network Fee value in USD: ' + swapSendNetworkFeeInDollar))
+    console.log(('User SEND Swap Network Fee value in USD: ' + swapSendNetworkFeeInDollar))
     // Send Account+FEES
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
     expect(swapSendAccountFeesValue.trim()).contain('RBTC')
-    console.log(chalk.green('User SEND Account+FEES value: ' + swapSendAccountFeesValue))
+    console.log(('User SEND Account+FEES value: ' + swapSendAccountFeesValue))
     // Send Accounts+FEES in USD
     const swapSendAccountFeesInDollar = await swapPage.GetSwapSendAccountFeesInDollar(page)
     expect(swapSendAccountFeesInDollar.trim()).not.contain('$00.00')
-    console.log(chalk.green('User SEND Account+FEES value in USD: ' + swapSendAccountFeesInDollar))
+    console.log(('User SEND Account+FEES value in USD: ' + swapSendAccountFeesInDollar))
 
     // Receive details validation
     const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
