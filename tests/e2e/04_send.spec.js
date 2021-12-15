@@ -89,7 +89,7 @@ describe('SEND feature["testnet"]', async () => {
     const coinsToSend = '0.0000001'
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    await overviewPage.SelectChain(page, assetName)
+    await overviewPage.SelectAssetFromOverview(page, assetName)
     await page.waitForSelector('#BNB_send_button', { visible: true })
     await page.click('#BNB_send_button')
     // Enter send amount (or) coins
@@ -113,7 +113,7 @@ describe('SEND feature["testnet"]', async () => {
     const assetName = 'ETH'
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    await overviewPage.SelectChain(page, assetName)
+    await overviewPage.SelectAssetFromOverview(page, assetName)
     await page.waitForSelector(`#${assetName}_send_button`, { visible: true })
     await page.click(`#${assetName}_send_button`)
     // Click on Max

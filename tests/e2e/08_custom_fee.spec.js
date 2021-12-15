@@ -40,7 +40,7 @@ describe('Custom fee feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on bitcoin & Click on Send option
-    await overviewPage.SelectChain(page, coinName)
+    await overviewPage.SelectAssetFromOverview(page, coinName)
     await page.waitForSelector(`#${coinName}_send_button`, { visible: true })
     // Check view explorer
     await overviewPage.HasViewExplorerDisplayed(page, coinName)

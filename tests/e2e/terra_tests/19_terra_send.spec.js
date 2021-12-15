@@ -54,6 +54,7 @@ describe('Terra SEND feature[smoke,testnet]', async () => {
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
     await sendPage.EnterSendToAddress(page, sendAddress)
+    await page.waitForTimeout(10000)
     // Click Review Button
     await sendPage.ClickSendReview(page)
     // Confirm SEND
