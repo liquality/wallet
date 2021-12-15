@@ -64,7 +64,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Select testnet
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click on BTC then click on SWAP button
-      await overviewPage.SelectChain(page, assert1)
+      await overviewPage.SelectAssetFromOverview(page, assert1)
       await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
       await page.click(`#${assert1}_swap_button`)
       // Select PUSDC
@@ -95,7 +95,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Select testnet
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click on BTC then click on SWAP button
-      await overviewPage.SelectChain(page, assert1)
+      await overviewPage.SelectAssetFromOverview(page, assert1)
       await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
       await page.click(`#${assert1}_swap_button`)
       // Select PUSDT

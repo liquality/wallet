@@ -43,7 +43,7 @@ describe('RBTC->BTC swap-["smoke"]', async () => {
     const toAsset = 'BTC'
 
     // Click fromAsset
-    await overviewPage.SelectChain(page, fromAsset)
+    await overviewPage.SelectAssetFromOverview(page, fromAsset)
     await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
     await page.click('#' + fromAsset + '_swap_button')
     console.log(`User clicked on ${fromAsset} SWAP button`)
