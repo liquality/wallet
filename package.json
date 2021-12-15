@@ -26,7 +26,7 @@
     "test:mainnet:prodagent": "NODE_ENV=mainnet NODE_AGENT=prodagent node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/e2e/*.spec.js'"
   },
   "dependencies": {
-    "@blobfishkate/sovryncontracts": "1.3.17",
+    "@blobfishkate/sovryncontracts": "1.3.18",
     "@liquality/bitcoin-esplora-batch-api-provider": "1.11.2",
     "@liquality/bitcoin-esplora-swap-find-provider": "1.11.2",
     "@liquality/bitcoin-fee-api-provider": "1.11.2",
