@@ -23,23 +23,16 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
   })
   afterEach(async () => {
-    try {
-      await page.close()
-      await browser.close()
-    } catch (e) {
-      throw new Error(e)
-    }
+    await browser.close()
   })
 
   // Create a new wallet - ETH & RSK addresses are equal
-  it('Create wallet & validate derived path address are equal for ETH & RSK chains if balance is 0', async () => {
+  it.only('Create wallet & validate derived path address are equal for ETH & RSK chains if balance is 0', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
     // Terms & conditions
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
-    // Set password
-    await passwordPage.SubmitPasswordDetails(page, password)
     // Unlocking wallet...
     const seed1 = (await seedWordsPage.GetBackupSeedWords(page)).seed1
     const seed5 = (await seedWordsPage.GetBackupSeedWords(page)).seed5
@@ -48,8 +41,9 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
     await seedWordsPage.ClickOnWalletNextButton(page)
     // Enter seed1,5,.12
     await seedWordsPage.EnterSeedWords(page, seed1, seed5, seed12)
-    // continue
     await seedWordsPage.ClickContinueButton(page)
+    // Set password & click next
+    await passwordPage.SubmitPasswordDetails(page, password)
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
