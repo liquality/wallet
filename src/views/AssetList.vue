@@ -47,9 +47,6 @@ export default {
   computed: {
     ...mapGetters(['accountsData', 'accountsWithBalance']),
     accounts () {
-      if (this.action === 'swap.send') {
-        return this.accountsWithBalance
-      }
       return this.accountsData
     }
   },

@@ -1,7 +1,8 @@
 const TestUtil = require('../utils/TestUtils')
 
 const testUtil = new TestUtil()
-const chalk = require('chalk')
+
+const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 
 class SwapPage {
@@ -17,7 +18,6 @@ class SwapPage {
     const addressInputField = await page.$('#swap_send_amount_input_field')
     await addressInputField.click({ clickCount: 3 })
     await addressInputField.type(amountToSend)
-    console.log(chalk.green('User enters SWAP send amount as ' + amountToSend))
   }
 
   /**
@@ -63,8 +63,10 @@ class SwapPage {
    * @constructor
    */
   async HasReviewButtonDisabled (page) {
-    await page.waitForSelector('#swap_review_button:not([enabled]')
-    console.log(chalk.green('SWAP review button has been disabled'))
+    await page.waitForSelector('#swap_review_button')
+    expect(await page.$eval('#swap_review_button', (el) => el.getAttribute('disabled')),
+      'Swap review button should be disabled')
+      .contains('disabled')
   }
 
   /**
@@ -74,7 +76,7 @@ class SwapPage {
    * @constructor
    */
   async SelectSwapReceiveCoin (page) {
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(3000)
     await page.click('.swap-receive-main-icon')
     try {
       await page.waitForSelector('#search_for_a_currency', {
@@ -111,10 +113,9 @@ class SwapPage {
         timeout: 60000
       })
       await page.click('#swap_review_button')
-      console.log(chalk.green('User clicked on SWAP review button'))
     } catch (e) {
       await testUtil.takeScreenshot(page, 'swap-review-button-disabled-issue')
-      expect(e, 'swap review button is disabled!!').equals(null)
+      expect(e, 'Click SWAP review button not working properly').equals(null)
     }
   }
 
@@ -136,9 +137,20 @@ class SwapPage {
    * @constructor
    */
   async ValidateNetworkFeeTab (page) {
-    await page.waitForSelector('#network_speed_fee', { visible: true })
-    await page.click('#network_speed_fee')
-    await page.waitForSelector('#average', { visible: true })
+    try {
+      await page.waitForSelector('#network_speed_fee', { visible: true })
+      await page.click('#network_speed_fee')
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'network_speed_fee-issue')
+      expect(e, 'Network speed fee tab not loaded').equals(null)
+    }
+
+    try {
+      await page.waitForSelector('#average', { visible: true, timeout: 90000 })
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'average-fee-tab-issue')
+      expect(e, 'Average fee tab not loaded').equals(null)
+    }
     const averageFee = await page.$eval('#average', (el) => el.getAttribute('class'))
     expect(averageFee,
       'Avg network speed/fee by default selected').contains('active')
@@ -171,7 +183,7 @@ class SwapPage {
       })
     } catch (e) {
       await testUtil.takeScreenshot(page, 'send-swap-review-amount-screen-issue')
-      expect(e, 'Click Swap initiated not working!!!').equals(null)
+      expect(e, 'Click Swap initiated not worked, swap review screen not loaded').equals(null)
     }
     return await page.$eval('#send_swap_confirm_value', el => el.textContent)
   }
@@ -234,6 +246,12 @@ class SwapPage {
     return await page.$eval('#swap_receive_amount_fee_value', el => el.textContent)
   }
 
+  /**
+   * Get Swap receive fiat amount.
+   * @param page
+   * @returns {Promise<*>}
+   * @constructor
+   */
   async GetSwapReceiveAccountFeeInDollar (page) {
     await page.waitForSelector('#swap_receive_total_amount_in_fiat', { visible: true })
     return await page.$eval('#swap_receive_total_amount_in_fiat', el => el.textContent)
@@ -252,14 +270,15 @@ class SwapPage {
    */
   async CheckFeesAreHigh (page) {
     try {
-      await page.waitForSelector('#fees_are_high', { visible: true })
+      await page.waitForSelector('#fees_are_high', { visible: true, timeout: 90000 })
     } catch (e) {
-      await testUtil.takeScreenshot(page, 'fee-are-high-not-displayed')
-      expect(e, 'Fees are high. Review transaction carefully messages not displayed....').equals(null)
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'fee-are-high-not-displayed')
+        expect(e, 'Fees are high. Review transaction carefully messages not displayed....').equals(null)
+      }
     }
     const messages = await page.$eval('#fees_are_high', el => el.textContent)
     expect(messages.trim()).equals('Fees are high. Review transaction carefully.')
-    console.log(chalk.redBright('Fees are high. Review transaction carefully.'))
   }
 
   /**
@@ -274,20 +293,6 @@ class SwapPage {
       'If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at',
       'Max slippage is 0.5%.'
     ])
-  }
-
-  /**
-   * Validate Swap is negative. Review transaction carefully.
-   * @param page
-   * @returns {Promise<void>}
-   * @constructor
-   */
-  async ValidateNegativeMessage (page) {
-    await page.waitForSelector('#swap_is_negative', { visible: true })
-    const message = await page.$eval('#swap_is_negative', el => el.textContent)
-    expect(message).contains(
-      'Swap is negative. Review transaction carefully.'
-    )
   }
 }
 

@@ -1,4 +1,3 @@
-const chalk = require('chalk')
 const expect = require('chai').expect
 
 class PasswordPage {
@@ -14,7 +13,6 @@ class PasswordPage {
     await page.type('#password', password)
     await page.type('#confirmPassword', password)
     await page.click('#next_button')
-    console.log(chalk.green('User submit the password details'))
   }
 
   /**
@@ -55,7 +53,7 @@ class PasswordPage {
     await page.type('#password', password)
     await page.click('#unlock_button')
     // overview page after unlock
-    await page.waitForSelector('#overview', { visible: true })
+    await page.waitForSelector('#overview', { visible: true, timeout: 60000 })
     console.log('User successfully loggedIn after unlock')
   }
 

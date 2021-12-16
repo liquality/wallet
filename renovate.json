@@ -1,0 +1,12 @@
+{
+  "extends": ["config:base"],
+  "ignoreTests": true,
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
+  "semanticCommits": "disabled",
+  "commitBody": "[skip ci]",
+  "separateMajorMinor": true,
+  "separateMultipleMajor": true,
+  "schedule": ["before 2am"]
+}

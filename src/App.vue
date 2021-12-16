@@ -1,9 +1,7 @@
 <template>
   <div id="app" v-if="brokerReady">
     <Head v-if="unlockedAt" />
-
-    <router-view v-if="termsAcceptedAt" />
-    <OnboardingHome v-else />
+    <router-view />
     <template v-if="unlockedAt && termsAcceptedAt">
       <AnalyticsOptInModal/>
       <WatsNewModal/>
@@ -15,14 +13,12 @@
 import { mapState, mapActions } from 'vuex'
 
 import Head from '@/components/Head.vue'
-import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 import AnalyticsOptInModal from '@/components/AnalyticsOptInModal.vue'
 import WatsNewModal from '@/components/WatsNewModal.vue'
 
 export default {
   components: {
     Head,
-    OnboardingHome,
     AnalyticsOptInModal,
     WatsNewModal
   },
@@ -44,7 +40,7 @@ export default {
       if (unlocked) this.$router.replace('/wallet')
     },
     activeNetwork: function (_network) {
-      if (['Send', 'Receive', 'Swap', 'Account'].includes(this.$route.name)) {
+      if (['Send', 'Receive', 'Swap', 'Account', 'SwapDetails', 'WalletActivity'].includes(this.$route.name)) {
         this.$router.replace('/wallet')
       }
     }

@@ -4,7 +4,7 @@
       <LogoWallet />
     </div>
     <div class="onboading-home_tnc">
-      <h4 class="mb-3 font-weight-normal">Terms &amp; Privacy</h4>
+      <h4 class="font-weight-bold">Terms &amp; Privacy</h4>
       <div class="onboading-home_tnc__text mb-3"
           id="onboarding_home_text_container"
            @scroll="handleScroll">
@@ -1203,6 +1203,7 @@ export default {
       await this.acceptTermsAndConditions({
         analyticsAccepted: this.analyticsAccepted
       })
+      this.$router.push(`/onboarding/${this.$route.query?.isImport ? 'import' : 'setup'}`)
     },
     setAnalyticsOption (accepted) {
       this.analyticsAccepted = accepted
@@ -1230,7 +1231,7 @@ export default {
     color: $color-primary !important;
   }
   &_header {
-    flex-grow: 1;
+    margin-bottom: 30px;
 
     svg {
       width: 100px;
@@ -1245,12 +1246,17 @@ export default {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    flex-grow: 1;
     padding-top: 1.5em;
+
+    h4 {
+      font-size: 25px;
+    }
 
     &__text {
       position: relative;
       padding: $wrapper-padding;
-      max-height: 200px;
+      max-height: 290px;
       overflow-y: auto;
       text-align: left;
     }

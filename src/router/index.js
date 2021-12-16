@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import Splash from '@/views/Splash.vue'
 import OnboardingSetup from '@/views/Onboarding/OnboardingSetup.vue'
+import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 import ImportWallet from '@/views/ImportWallet.vue'
 import UnlockWallet from '@/views/UnlockWallet.vue'
 import Wallet from '@/views/Wallet/Wallet.vue'
@@ -31,7 +32,7 @@ import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
 import ManageAccounts from '@/views/Accounts/Manage.vue'
-
+import ExportPrivateKey from '@/views/Accounts/ExportPrivateKey.vue'
 import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
 import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
 import PhraseReveal from '@/views/Onboarding/SeedPhrase/PhraseReveal'
@@ -57,6 +58,11 @@ const routes = [
     component: OnboardingSetup,
     name: 'OnboardingSetup',
     props: true
+  },
+  {
+    path: '/onboarding/home',
+    component: OnboardingHome,
+    name: 'OnboardingHome'
   },
   // Onboarding
 
@@ -209,8 +215,31 @@ const routes = [
   {
     path: '/seedreveal',
     component: PhraseReveal
-  }
+  },
 
+  // Export Private Key
+  {
+    path: '/export/:accountId',
+    component: Warning,
+    props: ({ params: { accountId } }) => ({
+      title: 'Show Private Key?',
+      nextPath: `/export/${accountId}/login`
+    })
+  },
+  {
+    path: '/export/:accountId/login',
+    component: LoginPhrase,
+    props: ({ params: { accountId } }) => ({
+      title: 'Sign-in to Export Private Key',
+      nextPath: `/export/${accountId}/reveal`
+    })
+  },
+  {
+    path: '/export/:accountId/reveal',
+    component: ExportPrivateKey,
+    name: 'ExportPrivateKey',
+    props: true
+  }
 ]
 
 const router = new VueRouter({

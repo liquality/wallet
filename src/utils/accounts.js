@@ -103,7 +103,8 @@ export const getChainIcon = (chainId) => {
     solana: getAssetIcon('SOL'),
     polygon: getAssetIcon(`${chainId}_chain`),
     fuse: getAssetIcon('FUSE'),
-    arbitrum: getAssetIcon('ARBITRUM')
+    arbitrum: getAssetIcon('ARBITRUM'),
+    terra: getAssetIcon(`${chainId}_chain`)
   }[chainId]
 }
 

@@ -1,7 +1,7 @@
 const TestUtil = require('../../utils/TestUtils')
-const OverviewPage = require('../../Pages/OverviewPage')
-const HomePage = require('../../Pages/HomePage')
-const PasswordPage = require('../../Pages/PasswordPage')
+const OverviewPage = require('../../pages/OverviewPage')
+const HomePage = require('../../pages/HomePage')
+const PasswordPage = require('../../pages/PasswordPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
 
@@ -15,22 +15,21 @@ const password = '123123123'
 const dappUrl = 'https://app.anchorprotocol.com/'
 
 describe('Terra Anchor Dapp injection-[testnet,smoke]', async () => {
-  beforeEach(async () => {
+  before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
-    await homePage.ScrollToEndOfTerms(page)
-    await homePage.ClickOnAcceptPrivacy(page)
-
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
+    await homePage.ScrollToEndOfTerms(page)
+    await homePage.ClickOnAcceptPrivacy(page)
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.HasOverviewPageLoaded(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
     } else {
@@ -49,7 +48,7 @@ describe('Terra Anchor Dapp injection-[testnet,smoke]', async () => {
     await dappPage.goto(dappUrl, { timeout: 60000, waitUntil: 'load' })
     try {
       await dappPage.waitForSelector("a[href='/mypage']", { visible: true, timeout: 60000 })
-      await dappPage.waitForSelector("section[class$='wallet']", { visible: true, timeout: 60000 })
+      await dappPage.waitForSelector('.wallet-icon', { visible: true, timeout: 60000 })
     } catch (e) {
       await dappPage.screenshot({ path: 'screenshots/anchorprotocol-dapp-loading-issue.png', fullscreen: true })
       const pageTitle = await dappPage.title()
@@ -59,11 +58,15 @@ describe('Terra Anchor Dapp injection-[testnet,smoke]', async () => {
     // Before click on injected wallet option.
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     // Click on Connect wallet option
-    await dappPage.click("section[class$='wallet']")
-    // span[normalize-space()='Terra Station (extension)']
-    await dappPage.waitForSelector("button[class*='connect-chrome-extension']")
-    await dappPage.waitForTimeout(2000)
-    await dappPage.click("button[class*='connect-chrome-extension']")
+    try {
+      await dappPage.waitForXPath("//span[normalize-space()='Connect Wallet']")
+      await dappPage.click('.wallet')
+      const walletConnect = await dappPage.waitForXPath("//span[normalize-space()='Terra Station']", { visible: true, timeout: 60000 })
+      await walletConnect.click()
+    } catch (e) {
+      await testUtil.takeScreenshot(page, 'anchorprotocol-dapp-connect-chrome-extension-issue')
+      expect(e, 'Terra anchorprotocol not connect.....').equals(null)
+    }
     const connectRequestWindow = await newPagePromise
     try {
       await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
@@ -83,7 +86,7 @@ describe('Terra Anchor Dapp injection-[testnet,smoke]', async () => {
     expect(await dappPage.$eval('.wallet-balance', el => el.textContent), 'Terra anchor injection failed!')
       .contains('UST')
   })
-  afterEach(async () => {
+  after(async () => {
     await browser.close()
   })
 })
