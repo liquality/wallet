@@ -49,7 +49,7 @@ describe('Terra swaps-[smoke,testnet]', async () => {
       // Select testnet
       await overviewPage.SelectNetwork(page)
       // Click on BTC then click on SWAP button
-      await overviewPage.SelectChain(page, swapFromAsset)
+      await overviewPage.SelectAssetFromOverview(page, swapFromAsset)
       await page.waitForSelector(`#${swapFromAsset}_swap_button`, { visible: true })
       await page.click(`#${swapFromAsset}_swap_button`)
       // Select PUSDT

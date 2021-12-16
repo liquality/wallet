@@ -25,7 +25,7 @@ const password = '123123123'
  */
 async function importWalletTestReceive (bitcoin) {
   // Select code
-  await overviewPage.SelectChain(page, bitcoin)
+  await overviewPage.SelectAssetFromOverview(page, bitcoin)
   // Validate details about assert on overview page
   await overviewPage.CheckAssertOverviewDetails(page, bitcoin)
   // Click on Receive
@@ -92,7 +92,7 @@ describe('Receive tokens ["mainnet","testnet"]', async () => {
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
       // Select BTC
-      await overviewPage.SelectChain(page, 'BTC')
+      await overviewPage.SelectAssetFromOverview(page, 'BTC')
       await overviewPage.ClickChainReceive(page, 'BTC')
       // Receive validations
       await receivePage.HasQRCodeDisplayed(page)
