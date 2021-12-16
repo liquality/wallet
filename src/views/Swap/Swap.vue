@@ -217,7 +217,7 @@
             <label class="text-muted">Network Fee</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div id="swap_send_network_fee_value">
-                ~{{ fromSwapFee }} {{ assetChain }}
+                ~{{ dpUI(fromSwapFee) }} {{ assetChain }}
               </div>
               <div class="details-text" id="swap_send_network_fee_fiat_rate">
                 ${{ prettyFiatBalance(fromSwapFee, fiatRates[assetChain]) }}
@@ -229,10 +229,10 @@
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold" id="swap_send_amount_fees_value">
                 <span v-if="asset === assetChain">
-                  {{ sendAmountSameAsset }} {{ assetChain }}
+                  {{ dpUI(sendAmountSameAsset) }} {{ assetChain }}
                 </span>
                 <span v-else>
-                  {{ sendAmount }} {{ asset }} + {{ fromSwapFee }}
+                  {{ dpUI(sendAmount) }} {{ asset }} + {{ dpUI(fromSwapFee) }}
                   {{ assetChain }}
                 </span>
               </div>
@@ -264,7 +264,7 @@
                 {{ dpUI(receiveAmount) }} {{ toAsset }}
               </div>
               <div class="details-text" id="receive_swap_amount_fiat">
-                {{ "$" + formatFiat(receiveAmountFiat) }}
+                {{ '$ ' + formatFiat(receiveAmountFiat) }}
               </div>
             </div>
           </div>
@@ -280,7 +280,7 @@
               "
               id="swap_receive_network_fee_value"
             >
-              <div>~{{ toSwapFee }} {{ toAssetChain }}</div>
+              <div>~{{ dpUI(toSwapFee) }} {{ toAssetChain }}</div>
               <div class="details-text" id="swap_receive_network_fee_fiat_rate">
                 ${{ prettyFiatBalance(toSwapFee, fiatRates[toAssetChain]) }}
               </div>
@@ -291,10 +291,10 @@
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold" id="swap_receive_amount_fee_value">
                 <span v-if="toAsset === toAssetChain || !receiveFeeRequired">
-                  {{ receiveAmountSameAsset }} {{ toAsset }}
+                  {{ dpUI(receiveAmountSameAsset) }} {{ toAsset }}
                 </span>
                 <span v-else>
-                  {{ receiveAmount }} {{ toAsset }} - {{ toSwapFee }}
+                  {{ dpUI(receiveAmount) }} {{ toAsset }} - {{ dpUI(toSwapFee) }}
                   {{ toAssetChain }}
                 </span>
               </div>
@@ -302,7 +302,7 @@
                 class="font-weight-bold"
                 id="swap_receive_total_amount_in_fiat"
               >
-                ${{ totalToReceiveInFiat }}
+                {{'$ ' + totalToReceiveInFiat }}
               </div>
             </div>
           </div>
@@ -798,6 +798,8 @@ export default {
         BN(this.stateSendAmount),
         this.fiatRates[this.asset]
       )
+      if (isNaN(send)) return send
+
       const fee = cryptoToFiat(
         this.fromSwapFee,
         this.fiatRates[this.assetChain]
@@ -812,6 +814,7 @@ export default {
         this.receiveAmount,
         this.fiatRates[this.toAsset]
       )
+      if (isNaN(receive)) return receive
       const fee = cryptoToFiat(
         this.toSwapFee,
         this.fiatRates[this.toAssetChain]
@@ -829,7 +832,7 @@ export default {
         this.toSwapFee,
         this.fiatRates[this.assetChain]
       ).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
-      const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
+      const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat) ? 0 : this.totalToReceiveInFiat * 0.25
       return feeTotal.gte(BN(receiveTotalPercentage))
     },
     isSwapNegative () {
