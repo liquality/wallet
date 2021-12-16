@@ -46,7 +46,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Select mainnet for fastBTC e2e
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click asset 1
-      await overviewPage.SelectChain(page, fromAsset)
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
       await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
       await page.click('#' + fromAsset + '_swap_button')
       console.log(('User clicked on BTC SWAP button'))
