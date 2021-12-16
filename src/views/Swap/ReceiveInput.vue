@@ -84,7 +84,7 @@ export default {
   created () {},
   computed: {
     receiveAmountFiatValue () {
-      return isNaN(this.receiveAmountFiat) ? this.receiveAmountFiat : ('$' + dpUI(this.receiveAmountFiat, 2))
+      return isNaN(this.receiveAmountFiat) ? this.receiveAmountFiat : ('$ ' + dpUI(this.receiveAmountFiat, 2))
     },
     receiveAmountValue () {
       return this.receiveAmount.gt(0) ? dpUI(this.receiveAmount) : ''
