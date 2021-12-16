@@ -1,8 +1,8 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
-const SwapPage = require('../Pages/SwapPage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
+const SwapPage = require('../pages/SwapPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -48,7 +48,7 @@ describe('UNISWAP service Provider-[smoke]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on ETH then click on SWAP button
-    await overviewPage.SelectChain(page, asset1)
+    await overviewPage.SelectAssetFromOverview(page, asset1)
     await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
     await page.click(`#${asset1}_swap_button`)
     console.log(('User clicked on ETH SWAP button'))

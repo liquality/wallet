@@ -1,8 +1,8 @@
 const TestUtil = require('../../utils/TestUtils')
-const OverviewPage = require('../../Pages/OverviewPage')
-const HomePage = require('../../Pages/HomePage')
-const PasswordPage = require('../../Pages/PasswordPage')
-const SwapPage = require('../../Pages/SwapPage')
+const OverviewPage = require('../../pages/OverviewPage')
+const HomePage = require('../../pages/HomePage')
+const PasswordPage = require('../../pages/PasswordPage')
+const SwapPage = require('../../pages/SwapPage')
 const expect = require('chai').expect
 const puppeteer = require('puppeteer')
 
@@ -54,7 +54,7 @@ describe.skip('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
       coin: 'SOV'
     }
     // Click on ETH then click on SWAP button
-    await overviewPage.SelectChain(page, fromAsset)
+    await overviewPage.SelectAssetFromOverview(page, fromAsset)
     await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
     await page.click(`#${fromAsset}_swap_button`)
     // Validate min SEND amount from text field & check Min is Active

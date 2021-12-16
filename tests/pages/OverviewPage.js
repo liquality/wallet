@@ -122,7 +122,7 @@ class OverviewPage {
    * @constructor
    * @example SelectChain(page,'BITCOIN')
    */
-  async SelectChain (page, chain) {
+  async SelectAssetFromOverview (page, chain) {
     const elementVisibleTimeout = 120000
     await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {
@@ -384,6 +384,21 @@ class OverviewPage {
     const settings = await page.waitForSelector('#settings', { visible: true })
     await settings.click()
     await page.waitForSelector('#settings_item_default_wallet', { visible: true })
+  }
+
+  /**
+   * Click Manage asset option under burger menu.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickManageAssets (page) {
+    await this.ClickOnBurgerIcon(page)
+    // Click Manage Assets
+    await page.waitForSelector('#manage_assets', { visible: true })
+    await page.click('#manage_assets')
+    // click on add custom token
+    await page.waitForSelector('#add_custom_token', { visible: true })
   }
 
   /**

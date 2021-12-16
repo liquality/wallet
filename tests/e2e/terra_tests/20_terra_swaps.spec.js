@@ -1,8 +1,8 @@
 const TestUtil = require('../../utils/TestUtils')
-const OverviewPage = require('../../Pages/OverviewPage')
-const HomePage = require('../../Pages/HomePage')
-const PasswordPage = require('../../Pages/PasswordPage')
-const SwapPage = require('../../Pages/SwapPage')
+const OverviewPage = require('../../pages/OverviewPage')
+const HomePage = require('../../pages/HomePage')
+const PasswordPage = require('../../pages/PasswordPage')
+const SwapPage = require('../../pages/SwapPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -49,7 +49,7 @@ describe('Terra swaps-[smoke,testnet]', async () => {
       // Select testnet
       await overviewPage.SelectNetwork(page)
       // Click on BTC then click on SWAP button
-      await overviewPage.SelectChain(page, swapFromAsset)
+      await overviewPage.SelectAssetFromOverview(page, swapFromAsset)
       await page.waitForSelector(`#${swapFromAsset}_swap_button`, { visible: true })
       await page.click(`#${swapFromAsset}_swap_button`)
       // Select PUSDT

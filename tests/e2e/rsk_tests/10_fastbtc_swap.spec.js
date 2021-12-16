@@ -1,8 +1,8 @@
 const TestUtil = require('../../utils/TestUtils')
-const OverviewPage = require('../../Pages/OverviewPage')
-const HomePage = require('../../Pages/HomePage')
-const PasswordPage = require('../../Pages/PasswordPage')
-const SwapPage = require('../../Pages/SwapPage')
+const OverviewPage = require('../../pages/OverviewPage')
+const HomePage = require('../../pages/HomePage')
+const PasswordPage = require('../../pages/PasswordPage')
+const SwapPage = require('../../pages/SwapPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -46,7 +46,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Select mainnet for fastBTC e2e
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click asset 1
-      await overviewPage.SelectChain(page, fromAsset)
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
       await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
       await page.click('#' + fromAsset + '_swap_button')
       console.log(('User clicked on BTC SWAP button'))

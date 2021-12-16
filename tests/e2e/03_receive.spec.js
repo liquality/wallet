@@ -1,9 +1,9 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
-const SeedWordsPage = require('../Pages/SeedWordsPage')
-const ReceivePage = require('../Pages/ReceivePage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
+const SeedWordsPage = require('../pages/SeedWordsPage')
+const ReceivePage = require('../pages/ReceivePage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -25,7 +25,7 @@ const password = '123123123'
  */
 async function importWalletTestReceive (bitcoin) {
   // Select code
-  await overviewPage.SelectChain(page, bitcoin)
+  await overviewPage.SelectAssetFromOverview(page, bitcoin)
   // Validate details about assert on overview page
   await overviewPage.CheckAssertOverviewDetails(page, bitcoin)
   // Click on Receive
@@ -92,7 +92,7 @@ describe('Receive tokens ["mainnet","testnet"]', async () => {
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
       // Select BTC
-      await overviewPage.SelectChain(page, 'BTC')
+      await overviewPage.SelectAssetFromOverview(page, 'BTC')
       await overviewPage.ClickChainReceive(page, 'BTC')
       // Receive validations
       await receivePage.HasQRCodeDisplayed(page)
