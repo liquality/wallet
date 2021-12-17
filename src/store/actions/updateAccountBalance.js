@@ -20,7 +20,7 @@ export const updateAccountBalance = async (
         accountId
       })
       let addresses = []
-      if (type.includes('ledger') && !account.xPub) {
+      if (type.includes('ledger') && (!account.publicKey && !account.chainCode)) {
         addresses = account.addresses.map(
           a =>
             new Address({

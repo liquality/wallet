@@ -15,7 +15,8 @@ export const accountCreator = (payload) => {
     balances,
     type,
     color,
-    xPub
+    publicKey,
+    chainCode
   } = account
 
   const enabled = (
@@ -47,7 +48,8 @@ export const accountCreator = (payload) => {
     updatedAt: null,
     color,
     enabled,
-    xPub
+    publicKey,
+    chainCode
   }
 }
 

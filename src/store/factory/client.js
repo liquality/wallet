@@ -52,7 +52,8 @@ function createBtcClient (
   mnemonic,
   accountType,
   derivationPath,
-  xPub
+  publicKey,
+  chainCode
 ) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = ChainNetworks.bitcoin[network]
@@ -80,7 +81,8 @@ function createBtcClient (
         addressType,
         baseDerivationPath: derivationPath,
         ledgerApp,
-        xPub
+        basePublicKey: publicKey,
+        baseChainCode: chainCode
       })
     )
   } else {
@@ -400,7 +402,8 @@ export const createClient = ({
   mnemonic,
   accountType,
   derivationPath,
-  xPub
+  chainCode,
+  publicKey
 }) => {
   const assetData = cryptoassets[asset]
   switch (assetData.chain) {
@@ -410,7 +413,8 @@ export const createClient = ({
         mnemonic,
         accountType,
         derivationPath,
-        xPub
+        publicKey,
+        chainCode
       )
     case 'rsk':
       return createRskClient(

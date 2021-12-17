@@ -30,7 +30,7 @@ export const updateBalances = async (
             accountId: account.id
           })
 
-          if (type.includes('ledger') && !account.xPub) {
+          if (type.includes('ledger') && (!account.publicKey && !account.chainCode)) {
             addresses = account.addresses
               .filter(a => typeof a === 'string')
               .map(address => {
@@ -47,7 +47,6 @@ export const updateBalances = async (
               addresses.length === 0
                 ? 0
                 : (await _client.chain.getBalance(addresses)).toNumber()
-            console.log('addresses', addresses, balance)
             commit('UPDATE_BALANCE', {
               network,
               accountId: account.id,

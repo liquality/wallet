@@ -182,7 +182,7 @@ export default {
           const selectedAccounts = { ...this.selectedAccounts }
           for (const key in selectedAccounts) {
             const item = selectedAccounts[key]
-
+            const { publicKey, chainCode } = item
             const index = item.index + 1
             const { address } = item.account
 
@@ -197,7 +197,8 @@ export default {
               enabled: true,
               derivationPath: item.account.derivationPath,
               color: getNextAccountColor(chain, item.index),
-              xPub: item.xPub
+              publicKey,
+              chainCode
             }
 
             await this.createAccount({
