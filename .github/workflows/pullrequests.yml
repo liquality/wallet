@@ -63,6 +63,4 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
           title: "${{ github.workflow}}"
-          description: |
-            `Pullrequest created`
 
