@@ -26,7 +26,7 @@ const swapPairMap = [
     toAsset: 'BTC'
   }
 ]
-describe('Terra swaps-[smoke]', async () => {
+describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
   swapPairMap.forEach(obj => {
     it(`SWAP (${obj.fromAsset}->${obj.toAsset})`, async () => {
       const swapFromAsset = obj.fromAsset

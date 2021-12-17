@@ -21,7 +21,7 @@ let page
 
 const password = '123123123'
 
-describe('SEND feature["smoke"]', async () => {
+describe('SEND feature["TESTNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -84,7 +84,7 @@ describe('SEND feature["smoke"]', async () => {
     // Check Send Review option has been disabled
     await sendPage.HasReviewButtonDisabled(page)
   })
-  it('Send BNB to another BNB wallet[smoke]', async () => {
+  it('Send BNB to another BNB wallet["PULL_REQUEST_TEST"]', async () => {
     const assetName = 'BNB'
     const coinsToSend = '0.0000001'
     // Select testnet

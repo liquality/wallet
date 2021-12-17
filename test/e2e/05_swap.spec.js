@@ -186,7 +186,7 @@ describe('SWAP feature', async () => {
       console.log('Error: ' + err.message)
     })
   })
-  it('SWAP (BTC->ETH) - Thorchain-[smoke]', async () => {
+  it('SWAP (BTC->ETH) - Thorchain-["PULL_REQUEST_TEST"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button

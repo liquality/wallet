@@ -14,7 +14,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Import wallet-["mainnet","smoke"]', async () => {
+describe('Import wallet-["MAINNET","TESTNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -130,7 +130,7 @@ describe('Import wallet-["mainnet","smoke"]', async () => {
       'Import wallet continue button has been disabled if the mnemonic is revered change')
       .contains('disabled')
   })
-  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path-[smoke]', async () => {
+  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path-["PULL_REQUEST_TEST"]', async () => {
     await homePage.EnterSeedWords(page)
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page

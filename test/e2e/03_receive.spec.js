@@ -47,8 +47,8 @@ async function importWalletTestReceive (bitcoin) {
   await page.click('#wallet_header_logo')
 }
 
-describe('Receive tokens ["mainnet"]', async () => {
-  describe('Create wallet and Check receive', async () => {
+describe('Receive tokens ["TESTNET","MAINNET"]', async () => {
+  describe('Create wallet and Check receive["PULL_REQUEST_TEST"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()

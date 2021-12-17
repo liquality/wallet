@@ -17,7 +17,7 @@ const addCustomTokenPage = new AddCustomTokenPage()
 let browser, page
 const password = '123123123'
 
-describe('Terra Custom token-["mainnet"]', async () => {
+describe('Terra Custom token-["MAINNET"]', async () => {
   if (process.env.NODE_ENV === 'mainnet') {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())

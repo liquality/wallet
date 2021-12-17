@@ -54,7 +54,7 @@ const customTokensDetails = [
   }
 ]
 
-describe('Custom Token add-["mainnet"]', async () => {
+describe('Custom Token add-["MAINNET"]', async () => {
   if (process.env.NODE_ENV === 'mainnet') {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())

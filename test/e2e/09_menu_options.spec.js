@@ -14,7 +14,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Hamburger menu options["smoke"]', async () => {
+describe('Hamburger menu options["MAINNET","TESTNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -140,7 +140,7 @@ describe('Hamburger menu options["smoke"]', async () => {
     expect(await page.$eval('#password_error', (el) => el.textContent))
       .contains('Try Again. Enter the right password (it has 8 or more characters).')
   })
-  it('Import wallet,lock wallet and unlock wallet', async () => {
+  it('Import wallet,lock wallet and unlock wallet["PULL_REQUEST_TEST"]', async () => {
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')

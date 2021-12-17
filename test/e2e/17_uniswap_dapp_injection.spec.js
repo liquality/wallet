@@ -47,7 +47,7 @@ describe('Uniswap Dapp Injection-[mainnet]', async () => {
   afterEach(async () => {
     await browser.close()
   })
-  it('UNISWAP Injection-ETH["smoke"]', async () => {
+  it('UNISWAP Injection-ETH["PULL_REQUEST_TEST"]', async () => {
     // Go to uniSwap app
     dappPage = await browser.newPage()
     await dappPage.setViewport({

@@ -18,7 +18,7 @@ const transactionDetailsPage = new TransactionDetailsPage()
 let browser, page
 const password = '123123123'
 
-describe('Custom fee feature["smoke"]', async () => {
+describe('Custom fee feature["TESTNET"]', async () => {
   const coinName = 'SOV'
   const coinsToSend = '0.001'
 
@@ -51,7 +51,7 @@ describe('Custom fee feature["smoke"]', async () => {
     await sendPage.EnterSendToAddress(page, '0x9D0023bD55AB3647F6c591dA6D46E5A6128D33D1')
   })
 
-  it('Send SOV to another SOV with custom fee (Fast)', async () => {
+  it('Send SOV to another SOV with custom fee (Fast)["PULL_REQUEST_TEST"]', async () => {
     // Network speed
     await sendPage.ClickNetworkSpeedFee(page)
     expect(await page.$eval('#average', (el) => el.getAttribute('class')),
