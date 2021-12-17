@@ -11,6 +11,5 @@ recursive: true
 diff: true
 spec:
   - 'test/**/*.spec.js'
-  - 'test/*.spec.js'
 extension:
   - js

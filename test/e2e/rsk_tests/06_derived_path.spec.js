@@ -16,7 +16,7 @@ const seedWordsPage = new SeedWordsPage()
 let browser, page
 const password = '123123123'
 
-describe('Derived path address validation-["mainnet","PULL_REQUEST_TEST"]', async () => {
+describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -179,9 +179,6 @@ describe('Derived path address validation-["mainnet","PULL_REQUEST_TEST"]', asyn
     // Terms & conditions
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
-    // Set password
-    await passwordPage.SubmitPasswordDetails(page, password)
-
     // Unlocking wallet...
     const seed1 = (await seedWordsPage.GetBackupSeedWords(page)).seed1
     const seed5 = (await seedWordsPage.GetBackupSeedWords(page)).seed5
@@ -192,7 +189,8 @@ describe('Derived path address validation-["mainnet","PULL_REQUEST_TEST"]', asyn
     await seedWordsPage.EnterSeedWords(page, seed1, seed5, seed12)
     // continue
     await seedWordsPage.ClickContinueButton(page)
-
+    // Set password
+    await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)

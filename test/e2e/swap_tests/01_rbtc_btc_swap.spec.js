@@ -16,7 +16,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
-describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
+describe.only('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -73,7 +73,7 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
 
     // Click on SWAP Review button
     await swapPage.ClickSwapReviewButton(page)
-    await page.waitForTimeout(10000)
+    await page.waitForTimeout(20000)
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)

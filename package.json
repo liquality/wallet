@@ -20,7 +20,7 @@
     "jest": "jest",
     "test:integration": "jest tests/integration",
     "postinstall": "husky install",
-    "test:testnet": "node_modules/mocha/bin/mocha --colors 'tests/**/*.spec.js'",
+    "test:testnet": "node_modules/mocha/bin/mocha",
     "test:pullrequest": "node_modules/mocha/bin/mocha --grep 'PULL_REQUEST_TEST'",
     "test:mainnet:devagent": "NODE_ENV=mainnet NODE_AGENT=devagent node_modules/mocha/bin/mocha --grep 'mainnet'",
     "test:mainnet:prodagent": "NODE_ENV=mainnet NODE_AGENT=prodagent node_modules/mocha/bin/mocha --grep 'mainnet'"
@@ -120,8 +120,6 @@
     "@vue/cli-service": "~4.3.0",
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/test-utils": "^1.1.0",
-    "allure-commandline": "^2.13.8",
-    "allure-playwright": "^2.0.0-beta.14",
     "babel-eslint": "^10.1.0",
     "chai-match": "^1.1.1",
     "eslint": "^7.29.0",
