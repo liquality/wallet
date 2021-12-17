@@ -33,7 +33,6 @@ describe('Hamburger menu options["testnet"]', async () => {
   })
   afterEach(async () => {
     try {
-      await page.close()
       await browser.close()
     } catch (e) {
       console.log('Cleaning up instances')

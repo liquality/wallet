@@ -5,5 +5,8 @@ full-trace: true
 color: true
 inline-diffs: true
 async-only: true
+spec:
+  - 'tests/e2e/*.spec.js'
+  - 'tests/e2e/**/*.spec.js'
 parallel: true
 jobs: 5

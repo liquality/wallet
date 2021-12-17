@@ -52,7 +52,6 @@ if (process.env.NODE_ENV === 'mainnet') {
     })
     afterEach(async () => {
       try {
-        await page.close()
         await browser.close()
       } catch (e) {
         throw new Error(e)

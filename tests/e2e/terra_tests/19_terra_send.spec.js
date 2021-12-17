@@ -37,7 +37,7 @@ describe('Terra SEND feature[smoke,testnet]', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
-    await page.close()
+    await browser.close()
   })
   it('Send LUNA', async () => {
     const assertName = 'LUNA'

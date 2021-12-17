@@ -101,7 +101,6 @@ describe('Terra swaps-[smoke,testnet]', async () => {
       }
       // Close
       try {
-        await page.close()
         await browser.close()
       } catch (e) {
         throw new Error(e)

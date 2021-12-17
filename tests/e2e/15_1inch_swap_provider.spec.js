@@ -73,7 +73,6 @@ if (process.env.NODE_ENV === 'mainnet') {
           expect(e, '1inch V3 should be chosen').equals(null)
         }
         try {
-          await page.close()
           await browser.close()
         } catch (e) {
           throw new Error(e)

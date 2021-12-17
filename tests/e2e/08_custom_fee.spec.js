@@ -137,7 +137,6 @@ describe('Custom fee feature["testnet"]', async () => {
 
   after(async () => {
     try {
-      await page.close()
       await browser.close()
     } catch (e) {
       throw new Error(e)

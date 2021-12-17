@@ -28,7 +28,6 @@ describe('Import wallet-["mainnet","testnet"]', async () => {
   })
   afterEach(async () => {
     try {
-      await page.close()
       await browser.close()
     } catch (e) {
       throw new Error(e)
