@@ -14,7 +14,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Import wallet-["mainnet","testnet"]', async () => {
+describe('Import wallet-["mainnet","smoke"]', async () => {
   beforeEach(async () => {
     console.log(testUtil.getChromeOptions())
     console.log(testUtil.extensionRootUrl)

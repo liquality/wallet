@@ -13,7 +13,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Private key exports-[mainnet,smoke]', async () => {
+describe('Private key exports-[mainnet]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -51,7 +51,7 @@ describe('Private key exports-[mainnet,smoke]', async () => {
     await page.click('#continue_button_to_see_seed_phrase')
   }
 
-  it('BTC export private key', async () => {
+  it('BTC export private key["smoke"]', async () => {
     await overviewPage.SelectAssetFromOverview(page, 'BTC')
     await page.waitForSelector('#BTC_swap_button', { visible: true })
     // Click on Export Private Key

@@ -14,7 +14,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Hamburger menu options["testnet"]', async () => {
+describe('Hamburger menu options["smoke"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -69,7 +69,7 @@ describe('Hamburger menu options["testnet"]', async () => {
     const appVersion = await page.$eval('#settings_app_version', (el) => el.textContent)
     expect(appVersion).contain('Version')
   })
-  it('should be able to test backup seed feature["smoke"]', async () => {
+  it('should be able to test backup seed feature', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
@@ -140,7 +140,7 @@ describe('Hamburger menu options["testnet"]', async () => {
     expect(await page.$eval('#password_error', (el) => el.textContent))
       .contains('Try Again. Enter the right password (it has 8 or more characters).')
   })
-  it('Import wallet,lock wallet and unlock wallet-["smoke","mainnet"]', async () => {
+  it('Import wallet,lock wallet and unlock wallet', async () => {
     // Select network
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')

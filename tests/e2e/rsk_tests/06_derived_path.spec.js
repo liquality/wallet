@@ -27,7 +27,7 @@ describe('Derived path address validation-["mainnet","smoke"]', async () => {
   })
 
   // Create a new wallet - ETH & RSK addresses are equal
-  it.only('Create wallet & validate derived path address are equal for ETH & RSK chains if balance is 0', async () => {
+  it('Create wallet & validate derived path address are equal for ETH & RSK chains if balance is 0', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
     // Terms & conditions
