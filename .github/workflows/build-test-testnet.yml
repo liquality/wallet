@@ -3,6 +3,7 @@ on:
     - cron: '0 8 * * *' # everyday at 8am
     - cron: '0 22 * * *' # everyday at 10pm
 
+#Dev testnet tests
 name: Testnet tests
 
 jobs:
@@ -14,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v2.4.1
+      - uses: actions/setup-node@v2.5.0
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
@@ -22,7 +23,7 @@ jobs:
       # Create screenshots directory
       - run: mkdir screenshots
 
-      - uses: actions/cache@v2.1.6
+      - uses: actions/cache@v2.1.7
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules
@@ -57,7 +58,7 @@ jobs:
 #          path: mochawesome-report
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v2.3.1
         if: always()
         with:
           name: screenshots

@@ -1,8 +1,8 @@
 const TestUtil = require('../../utils/TestUtils')
-const OverviewPage = require('../../Pages/OverviewPage')
-const HomePage = require('../../Pages/HomePage')
-const PasswordPage = require('../../Pages/PasswordPage')
-const SwapPage = require('../../Pages/SwapPage')
+const OverviewPage = require('../../pages/OverviewPage')
+const HomePage = require('../../pages/HomePage')
+const PasswordPage = require('../../pages/PasswordPage')
+const SwapPage = require('../../pages/SwapPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -29,8 +29,8 @@ const swapPairMap = [
 describe('Terra swaps-[smoke,testnet]', async () => {
   swapPairMap.forEach(obj => {
     it(`SWAP (${obj.fromAsset}->${obj.toAsset})`, async () => {
-      const assert1 = obj.fromAsset
-      const assert2 = obj.toAsset
+      const swapFromAsset = obj.fromAsset
+      const swapToAsset = obj.toAsset
 
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -49,15 +49,22 @@ describe('Terra swaps-[smoke,testnet]', async () => {
       // Select testnet
       await overviewPage.SelectNetwork(page)
       // Click on BTC then click on SWAP button
-      await overviewPage.SelectChain(page, assert1)
-      await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
-      await page.click(`#${assert1}_swap_button`)
+      await overviewPage.SelectAssetFromOverview(page, swapFromAsset)
+      await page.waitForSelector(`#${swapFromAsset}_swap_button`, { visible: true })
+      await page.click(`#${swapFromAsset}_swap_button`)
       // Select PUSDT
-      await swapPage.SelectSwapReceiveCoin(page)
-      await page.waitForSelector('#search_for_a_currency', { visible: true })
-      await page.type('#search_for_a_currency', assert2)
-      await page.click(`#${assert2}`)
-      if (assert2 === 'BTC') {
+      try {
+        await swapPage.SelectSwapReceiveCoin(page)
+        await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
+        await page.type('#search_for_a_currency', swapToAsset, { delay: 60000 })
+        await page.click(`#${swapToAsset}`)
+      } catch (e) {
+        if (e instanceof puppeteer.errors.TimeoutError) {
+          await testUtil.takeScreenshot(page, `${swapToAsset}-swap-issue`)
+          expect(e, `${swapFromAsset} to ${swapToAsset} swap issue`).equals(null)
+        }
+      }
+      if (swapToAsset === 'BTC') {
         await swapPage.EnterSendAmountOnSwap(page, '0.01')
       }
       await page.waitForTimeout(10000)
@@ -70,7 +77,7 @@ describe('Terra swaps-[smoke,testnet]', async () => {
         await testUtil.takeScreenshot(page, `${obj.fromAsset}->${obj.toAsset})-swap-issue`)
         expect(e, 'Liquality should be chosen').equals(null)
       }
-      if (assert2 === 'BTC') {
+      if (swapToAsset === 'BTC') {
         // Click on SWAP Review button
         await swapPage.ClickSwapReviewButton(page)
         // Click on Initiate SWAP button

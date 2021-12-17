@@ -1,8 +1,8 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
-const SwapPage = require('../Pages/SwapPage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
+const SwapPage = require('../pages/SwapPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -12,7 +12,6 @@ const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
-const chalk = require('chalk')
 
 let browser, page
 const password = '123123123'
@@ -27,7 +26,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'Liquality Boost source should be chosen!')
         .oneOf([liqualityBooster])
-      console.log(chalk.green('Liquality Boost Quote loaded successfully'))
+      console.log(('Liquality Boost Quote loaded successfully'))
     } catch (e) {
       await testUtil.takeScreenshot(page, 'liqualityBoost-rate-provider-issue')
       expect(e, 'Liquality Boost should chosen').equals(null)
@@ -65,7 +64,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Select testnet
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click on BTC then click on SWAP button
-      await overviewPage.SelectChain(page, assert1)
+      await overviewPage.SelectAssetFromOverview(page, assert1)
       await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
       await page.click(`#${assert1}_swap_button`)
       // Select PUSDC
@@ -96,7 +95,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Select testnet
       await overviewPage.SelectNetwork(page, 'mainnet')
       // Click on BTC then click on SWAP button
-      await overviewPage.SelectChain(page, assert1)
+      await overviewPage.SelectAssetFromOverview(page, assert1)
       await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
       await page.click(`#${assert1}_swap_button`)
       // Select PUSDT

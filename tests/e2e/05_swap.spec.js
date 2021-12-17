@@ -1,10 +1,10 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
-const SwapPage = require('../Pages/SwapPage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
+const SwapPage = require('../pages/SwapPage')
 const expect = require('chai').expect
-const chalk = require('chalk')
+
 const https = require('https')
 
 const puppeteer = require('puppeteer')
@@ -50,10 +50,10 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
-    await overviewPage.SelectChain(page, asset1)
+    await overviewPage.SelectAssetFromOverview(page, asset1)
     await page.waitForSelector('#BTC_swap_button', { visible: true })
     await page.click('#BTC_swap_button')
-    console.log(chalk.green('User clicked on BTC SWAP button'))
+    console.log(('User clicked on BTC SWAP button'))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
@@ -125,10 +125,10 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on SOV then click on SWAP button
-    await overviewPage.SelectChain(page, fromAsset)
+    await overviewPage.SelectAssetFromOverview(page, fromAsset)
     await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
     await page.click(`#${fromAsset}_swap_button`)
-    console.log(chalk.green(`User clicked on ${fromAsset} SWAP button`))
+    console.log((`User clicked on ${fromAsset} SWAP button`))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'SOV to BTC SWAP min value not set in input')
@@ -166,11 +166,11 @@ describe('SWAP feature["testnet"]', async () => {
 
     // Advanced option
     const advancedButton = await page.waitForSelector('#advanced_button', { visible: true })
-    console.log(chalk.green('Swap details Advanced button has been displayed'))
+    console.log(('Swap details Advanced button has been displayed'))
     await advancedButton.click()
 
     const orderIdHref = await page.$eval('#order_id_href_link', (el) => el.href)
-    console.log(chalk.green('SWAP Order ID href:' + orderIdHref))
+    console.log(('SWAP Order ID href:' + orderIdHref))
     https.get(orderIdHref, (resp) => {
       console.log('Status Code:', resp.statusCode)
       expect(resp.statusCode).equals(200)
@@ -191,10 +191,10 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
-    await overviewPage.SelectChain(page, 'BTC')
+    await overviewPage.SelectAssetFromOverview(page, 'BTC')
     await page.waitForSelector('#BTC_swap_button', { visible: true })
     await page.click('#BTC_swap_button')
-    console.log(chalk.green('User clicked on BTC SWAP button'))
+    console.log(('User clicked on BTC SWAP button'))
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     await swapPage.EnterSendAmountOnSwap(page, '1')
@@ -209,10 +209,10 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
-    await overviewPage.SelectChain(page, 'ETH')
+    await overviewPage.SelectAssetFromOverview(page, 'ETH')
     await page.waitForSelector('#ETH_swap_button', { visible: true })
     await page.click('#ETH_swap_button')
-    console.log(chalk.green('User clicked on ETH SWAP button'))
+    console.log(('User clicked on ETH SWAP button'))
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     await swapPage.EnterSendAmountOnSwap(page, '1')
@@ -225,10 +225,10 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on ETH then click on SWAP button
-    await overviewPage.SelectChain(page, 'ETH')
+    await overviewPage.SelectAssetFromOverview(page, 'ETH')
     await page.waitForSelector('#ETH_swap_button', { visible: true })
     await page.click('#ETH_swap_button')
-    console.log(chalk.green('User clicked on ETH SWAP button'))
+    console.log(('User clicked on ETH SWAP button'))
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'ETH to BTC SWAP min value not set in input').not.equals('0.0000')
     await swapPage.EnterSendAmountOnSwap(page, '0.000002')
@@ -240,10 +240,10 @@ describe('SWAP feature["testnet"]', async () => {
   it('SWAP(ETHEREUM),Lower amount. This exceeds available balance.(Thorchain)', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    await overviewPage.SelectChain(page, 'ETH')
+    await overviewPage.SelectAssetFromOverview(page, 'ETH')
     await page.waitForSelector('#ETH_swap_button', { visible: true })
     await page.click('#ETH_swap_button')
-    console.log(chalk.green('User clicked on ETH SWAP button'))
+    console.log(('User clicked on ETH SWAP button'))
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'ETH SWAP min value not set in input').not.equals('0.0000')
     // Enter 1000
@@ -264,10 +264,10 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click first assert then click on SWAP button
-    await overviewPage.SelectChain(page, fromAsset)
+    await overviewPage.SelectAssetFromOverview(page, fromAsset)
     await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
     await page.click(`#${fromAsset}_swap_button`)
-    console.log(chalk.green(`User clicked on ${fromAsset} SWAP button`))
+    console.log((`User clicked on ${fromAsset} SWAP button`))
 
     // Swap screen
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
@@ -292,7 +292,7 @@ describe('SWAP feature["testnet"]', async () => {
     // Click on Swap Types
     await page.click('#swap_types_option')
     await page.waitForSelector('#learn_about_swaps_types_header', { visible: true })
-    console.log(chalk.green('Learn about Swaps Types model has been displayed'))
+    console.log(('Learn about Swaps Types model has been displayed'))
     await page.click('.modal-close')
 
     // Click SWAP review button

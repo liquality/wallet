@@ -1,9 +1,9 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
-const SendPage = require('../Pages/SendPage')
-const TransactionDetailsPage = require('../Pages/TransactionDetailsPage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
+const SendPage = require('../pages/SendPage')
+const TransactionDetailsPage = require('../pages/TransactionDetailsPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -40,7 +40,7 @@ describe('Custom fee feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on bitcoin & Click on Send option
-    await overviewPage.SelectChain(page, coinName)
+    await overviewPage.SelectAssetFromOverview(page, coinName)
     await page.waitForSelector(`#${coinName}_send_button`, { visible: true })
     // Check view explorer
     await overviewPage.HasViewExplorerDisplayed(page, coinName)
@@ -88,7 +88,7 @@ describe('Custom fee feature["testnet"]', async () => {
     // Click Review Button
     await sendPage.ClickSendReview(page)
     // Confirm SEND button & Review
-    await sendPage.SendConfirmButton(page)
+    await sendPage.ConfirmSend(page)
     // Transaction details page validations
     const domain = 'https://explorer.testnet.rsk.co'
     await transactionDetailsPage.ValidateSentAmount(page, `${coinsToSend} ${coinName}`)
@@ -124,7 +124,7 @@ describe('Custom fee feature["testnet"]', async () => {
     // Click Review Button
     await sendPage.ClickSendReview(page)
     // Confirm SEND button & Review
-    await sendPage.SendConfirmButton(page)
+    await sendPage.ConfirmSend(page)
     // Transaction details page validations
     const domain = 'https://explorer.testnet.rsk.co'
     await transactionDetailsPage.ValidateSentAmount(page, `${coinsToSend} ${coinName}`)

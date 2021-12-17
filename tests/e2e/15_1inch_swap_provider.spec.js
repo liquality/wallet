@@ -1,8 +1,8 @@
 const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../Pages/OverviewPage')
-const HomePage = require('../Pages/HomePage')
-const PasswordPage = require('../Pages/PasswordPage')
-const SwapPage = require('../Pages/SwapPage')
+const OverviewPage = require('../pages/OverviewPage')
+const HomePage = require('../pages/HomePage')
+const PasswordPage = require('../pages/PasswordPage')
+const SwapPage = require('../pages/SwapPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -52,7 +52,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         // Select testnet
         await overviewPage.SelectNetwork(page, 'mainnet')
         // Click on BTC then click on SWAP button
-        await overviewPage.SelectChain(page, assert1)
+        await overviewPage.SelectAssetFromOverview(page, assert1)
         await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
         await page.click(`#${assert1}_swap_button`)
         // Select PUSDT

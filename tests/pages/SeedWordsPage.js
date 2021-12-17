@@ -1,5 +1,3 @@
-const chalk = require('chalk')
-
 class SeedWordsPage {
   /**
    * Get Backup seed words 1,5 12 for next stage.
@@ -9,7 +7,6 @@ class SeedWordsPage {
    */
   async GetBackupSeedWords (page) {
     await page.waitForSelector('#backup-wallet_seed_wordlist', { visible: true })
-    console.log(chalk.green('Backup seed words list has been displayed'))
     const allSeedPhases = await page.$$eval('#backup_seed_word', elements => elements.map(item => item.textContent))
 
     const seed1 = allSeedPhases[0]
@@ -24,7 +21,7 @@ class SeedWordsPage {
   }
 
   /**
-   * Click on Next button
+   * Click on Next button from back up your wallet screen
    * @param page
    * @returns {Promise<void>}
    * @constructor
@@ -45,22 +42,26 @@ class SeedWordsPage {
    * @constructor
    */
   async EnterSeedWords (page, seed1, seed5, seed12) {
+    const timeout = 2000
     const firstWord = await page.$x(`//button[text()='${seed1}']`)
     await firstWord[0].click()
     console.log('User enter 1st seed word')
+    await page.waitForTimeout(timeout)
 
     const fifthWord = await page.$x(`//button[text()='${seed5}']`)
     await fifthWord[0].click()
     console.log('User enter 5th seed word')
+    await page.waitForTimeout(timeout)
 
     const twelveWord = await page.$x(`//button[text()='${seed12}']`)
     await twelveWord[0].click()
     console.log('User enter 12th seed word')
+    await page.waitForTimeout(timeout)
   }
 
   /**
    * Continue button after enter seed(1,5,12) words
-   * @param page
+   * @param page - Confirm seed phrase.
    * @returns {Promise<void>}
    * @constructor
    */
