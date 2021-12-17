@@ -57,7 +57,7 @@ describe('Receive tokens ["mainnet"]', async () => {
     afterEach(async () => {
       await browser.close()
     })
-    it('Create a new wallet and check Receive for BTC', async () => {
+    it('Create a new wallet and check Receive for BTC["PULL_REQUEST_TEST"]', async () => {
       // Create new wallet
       await homePage.ClickOnCreateNewWallet(page)
       // Terms & conditions

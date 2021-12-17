@@ -21,7 +21,7 @@
     "test:integration": "jest tests/integration",
     "postinstall": "husky install",
     "test:testnet": "node_modules/mocha/bin/mocha --colors 'tests/**/*.spec.js'",
-    "test:pullrequest:smoke": "node_modules/mocha/bin/mocha --grep 'smoke'",
+    "test:pullrequest": "node_modules/mocha/bin/mocha --grep 'PULL_REQUEST_TEST'",
     "test:mainnet:devagent": "NODE_ENV=mainnet NODE_AGENT=devagent node_modules/mocha/bin/mocha --grep 'mainnet'",
     "test:mainnet:prodagent": "NODE_ENV=mainnet NODE_AGENT=prodagent node_modules/mocha/bin/mocha --grep 'mainnet'"
   },
