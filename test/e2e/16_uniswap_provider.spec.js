@@ -16,7 +16,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
-describe('UNISWAP service Provider-[PULL_REQUEST_TEST]', async () => {
+describe('UNISWAP service Provider-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()

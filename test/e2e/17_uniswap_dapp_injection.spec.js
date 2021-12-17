@@ -15,7 +15,7 @@ const password = '123123123'
 const dappUrl = 'https://app.uniswap.org/#/swap'
 let ethereumChainId, arbitrumChainId
 
-describe('Uniswap Dapp Injection-[mainnet]', async () => {
+describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()

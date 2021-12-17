@@ -14,7 +14,7 @@ let browser, page
 const password = '123123123'
 const dappUrl = 'https://app.1inch.io/'
 
-describe.skip('1Inch Dapp Injection-[mainnet,"PULL_REQUEST_TEST"]', async () => {
+describe.skip('1Inch Dapp Injection-["MAINNET","TESTNET",PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()

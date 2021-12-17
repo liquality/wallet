@@ -16,7 +16,7 @@ const password = '123123123'
 const dappUrl = 'https://app.uniswap.org/#/swap'
 
 // Manage accounts experimental feature
-describe('Manage Accounts-[mainnet,"PULL_REQUEST_TEST"]', async () => {
+describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()

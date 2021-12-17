@@ -14,7 +14,7 @@ let browser, page, dappPage
 const password = '123123123'
 const dappUrl = 'https://app.anchorprotocol.com/'
 
-describe('Terra Anchor Dapp injection-[PULL_REQUEST_TEST]', async () => {
+describe('Terra Anchor Dapp injection-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
