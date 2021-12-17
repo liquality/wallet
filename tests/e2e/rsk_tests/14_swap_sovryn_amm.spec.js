@@ -40,12 +40,7 @@ describe.skip('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
     }
   })
   after(async () => {
-    try {
-      await page.close()
-      await browser.close()
-    } catch (e) {
-      throw new Error(e)
-    }
+    await browser.close()
   })
   it('should be able to SWAP using sovryn AMM', async () => {
     const fromAsset = 'RBTC'
