@@ -35,7 +35,7 @@ describe('RBTC->BTC swap-["smoke"]', async () => {
     await overviewPage.SelectNetwork(page)
   })
   after(async () => {
-    await page.close()
+    await browser.close()
   })
 
   it('SWAP RBTC to BTC - liquality', async () => {

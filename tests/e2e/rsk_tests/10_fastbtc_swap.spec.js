@@ -37,7 +37,6 @@ if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.HasOverviewPageLoaded(page)
     })
     after(async () => {
-      await page.close()
       await browser.close()
     })
 

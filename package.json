@@ -21,9 +21,9 @@
     "test:integration": "jest tests/integration",
     "postinstall": "husky install",
     "test:testnet": "node_modules/mocha/bin/mocha --colors 'tests/**/*.spec.js'",
-    "test:pullrequest:smoke": "node_modules/mocha/bin/mocha --colors --grep 'smoke' 'tests/e2e/*.spec.js'",
-    "test:mainnet:devagent": "NODE_ENV=mainnet NODE_AGENT=devagent node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/e2e/*.spec.js'",
-    "test:mainnet:prodagent": "NODE_ENV=mainnet NODE_AGENT=prodagent node_modules/mocha/bin/mocha --colors --grep 'mainnet' 'tests/e2e/*.spec.js'"
+    "test:pullrequest:smoke": "node_modules/mocha/bin/mocha --grep 'smoke'",
+    "test:mainnet:devagent": "NODE_ENV=mainnet NODE_AGENT=devagent node_modules/mocha/bin/mocha --grep 'mainnet'",
+    "test:mainnet:prodagent": "NODE_ENV=mainnet NODE_AGENT=prodagent node_modules/mocha/bin/mocha --grep 'mainnet'"
   },
   "dependencies": {
     "@blobfishkate/sovryncontracts": "1.3.18",
