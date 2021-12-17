@@ -19,18 +19,18 @@ export const getLedgerAccounts = async (
     i => i + startingIndex
   )
 
-  const path = getDerivationPath(chain, network, 0, accountType)
-  const action = ChainId.Bitcoin ? 'getWalletPublicKey' : 'getAddress'
-  const ledgerAccount = await callToBridge({
-    namespace: RequestNamespace.App,
-    network,
-    chainId: chain,
-    action,
-    execMode: ExecutionMode.Async,
-    payload: [path]
-  })
-
   for (const index of pageIndexes) {
+    const derivationPath = getDerivationPath(chain, network, index, accountType)
+    const action = chain === ChainId.Bitcoin ? 'getWalletPublicKey' : 'getAddress'
+    const ledgerAccount = await callToBridge({
+      namespace: RequestNamespace.App,
+      network,
+      chainId: chain,
+      action,
+      execMode: ExecutionMode.Async,
+      payload: [derivationPath]
+    })
+
     if (ledgerAccount) {
       const { chainCode, publicKey } = ledgerAccount
       const _client = client({
@@ -40,7 +40,8 @@ export const getLedgerAccounts = async (
         accountType,
         accountIndex: index,
         chainCode,
-        publicKey
+        publicKey,
+        useCache: false
       })
 
       const addresses = await _client.wallet.getAddresses()
@@ -64,7 +65,7 @@ export const getLedgerAccounts = async (
                   useCache: false
                 })
 
-                const [address] = accountClient.wallet.getAddresses(0, 1)
+                const [address] = accountClient.wallet.getAddresses()
                 return (
                   chains[chain].formatAddress(address, network) ===
                   normalizedAddress
@@ -81,14 +82,6 @@ export const getLedgerAccounts = async (
           }) >= 0
 
         // Get the account balance
-        const _client = client({
-          network,
-          walletId,
-          asset,
-          accountType,
-          accountIndex: index,
-          useCache: false
-        })
         const balance =
           addresses.length === 0 ? 0 : await _client.chain.getBalance(addresses)
 
@@ -100,7 +93,8 @@ export const getLedgerAccounts = async (
           index,
           exists,
           chainCode,
-          publicKey
+          publicKey,
+          derivationPath
         }
         results.push(result)
       }

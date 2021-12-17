@@ -182,7 +182,7 @@ export default {
           const selectedAccounts = { ...this.selectedAccounts }
           for (const key in selectedAccounts) {
             const item = selectedAccounts[key]
-            const { publicKey, chainCode } = item
+            const { publicKey, chainCode, derivationPath } = item
             const index = item.index + 1
             const { address } = item.account
 
@@ -195,7 +195,7 @@ export default {
               index: item.index,
               type: walletType || this.selectedAsset.types[0],
               enabled: true,
-              derivationPath: item.account.derivationPath,
+              derivationPath,
               color: getNextAccountColor(chain, item.index),
               publicKey,
               chainCode
