@@ -19,7 +19,7 @@ const password = '123123123'
 // https://wiki.sovryn.app/en/sovryn-dapp/fast_btc
 if (process.env.NODE_ENV === 'mainnet') {
   // fastBTC service provider only in mainnet(dev & prod)
-  describe('FastBTC swap provider-["mainnet","smoke"]', async () => {
+  describe('FastBTC swap provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     before(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()

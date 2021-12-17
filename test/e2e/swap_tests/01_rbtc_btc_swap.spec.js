@@ -73,7 +73,6 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
 
     // Click on SWAP Review button
     await swapPage.ClickSwapReviewButton(page)
-    await page.waitForTimeout(20000)
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
