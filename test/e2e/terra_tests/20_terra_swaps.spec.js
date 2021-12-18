@@ -52,7 +52,6 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
       await overviewPage.SelectAssetFromOverview(page, swapFromAsset)
       await page.waitForSelector(`#${swapFromAsset}_swap_button`, { visible: true })
       await page.click(`#${swapFromAsset}_swap_button`)
-      // Select PUSDT
       try {
         await swapPage.SelectSwapReceiveCoin(page)
         await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
@@ -60,8 +59,8 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
         await page.click(`#${swapToAsset}`)
       } catch (e) {
         if (e instanceof puppeteer.errors.TimeoutError) {
-          await testUtil.takeScreenshot(page, `${swapToAsset}-swap-issue`)
-          expect(e, `${swapFromAsset} to ${swapToAsset} swap issue`).equals(null)
+          await testUtil.takeScreenshot(page, 'terra-swap-issue')
+          expect(e, 'terra swap issue').equals(null)
         }
       }
       // if (swapToAsset === 'BTC') {
@@ -74,7 +73,7 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
           `SWAP (${obj.fromAsset}->${obj.toAsset}), Liquality should be chosen!`)
           .oneOf(['Liquality'])
       } catch (e) {
-        await testUtil.takeScreenshot(page, `${obj.fromAsset}->${obj.toAsset})-swap-issue`)
+        await testUtil.takeScreenshot(page, 'terra-swap--quote-issue')
         expect(e, 'Liquality should be chosen').equals(null)
       }
       if (swapToAsset === 'BTC') {
