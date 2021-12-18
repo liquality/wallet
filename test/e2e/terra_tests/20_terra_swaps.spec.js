@@ -64,9 +64,9 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
           expect(e, `${swapFromAsset} to ${swapToAsset} swap issue`).equals(null)
         }
       }
-      if (swapToAsset === 'BTC') {
-        await swapPage.EnterSendAmountOnSwap(page, '0.01')
-      }
+      // if (swapToAsset === 'BTC') {
+      //   await swapPage.EnterSendAmountOnSwap(page, '0.01')
+      // }
       await page.waitForTimeout(10000)
       await page.waitForSelector('#selectedQuote_provider', { visible: true })
       try {
