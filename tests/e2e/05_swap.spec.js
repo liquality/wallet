@@ -50,7 +50,7 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
-    await overviewPage.SelectChain(page, asset1)
+    await overviewPage.SelectAssetFromOverview(page, asset1)
     await page.waitForSelector('#BTC_swap_button', { visible: true })
     await page.click('#BTC_swap_button')
     console.log(('User clicked on BTC SWAP button'))
@@ -125,7 +125,7 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on SOV then click on SWAP button
-    await overviewPage.SelectChain(page, fromAsset)
+    await overviewPage.SelectAssetFromOverview(page, fromAsset)
     await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
     await page.click(`#${fromAsset}_swap_button`)
     console.log((`User clicked on ${fromAsset} SWAP button`))
@@ -191,7 +191,7 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
-    await overviewPage.SelectChain(page, 'BTC')
+    await overviewPage.SelectAssetFromOverview(page, 'BTC')
     await page.waitForSelector('#BTC_swap_button', { visible: true })
     await page.click('#BTC_swap_button')
     console.log(('User clicked on BTC SWAP button'))
@@ -209,7 +209,7 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on BTC then click on SWAP button
-    await overviewPage.SelectChain(page, 'ETH')
+    await overviewPage.SelectAssetFromOverview(page, 'ETH')
     await page.waitForSelector('#ETH_swap_button', { visible: true })
     await page.click('#ETH_swap_button')
     console.log(('User clicked on ETH SWAP button'))
@@ -225,7 +225,7 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on ETH then click on SWAP button
-    await overviewPage.SelectChain(page, 'ETH')
+    await overviewPage.SelectAssetFromOverview(page, 'ETH')
     await page.waitForSelector('#ETH_swap_button', { visible: true })
     await page.click('#ETH_swap_button')
     console.log(('User clicked on ETH SWAP button'))
@@ -240,7 +240,7 @@ describe('SWAP feature["testnet"]', async () => {
   it('SWAP(ETHEREUM),Lower amount. This exceeds available balance.(Thorchain)', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
-    await overviewPage.SelectChain(page, 'ETH')
+    await overviewPage.SelectAssetFromOverview(page, 'ETH')
     await page.waitForSelector('#ETH_swap_button', { visible: true })
     await page.click('#ETH_swap_button')
     console.log(('User clicked on ETH SWAP button'))
@@ -264,7 +264,7 @@ describe('SWAP feature["testnet"]', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click first assert then click on SWAP button
-    await overviewPage.SelectChain(page, fromAsset)
+    await overviewPage.SelectAssetFromOverview(page, fromAsset)
     await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
     await page.click(`#${fromAsset}_swap_button`)
     console.log((`User clicked on ${fromAsset} SWAP button`))

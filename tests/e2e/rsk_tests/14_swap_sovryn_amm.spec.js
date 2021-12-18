@@ -40,12 +40,7 @@ describe.skip('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
     }
   })
   after(async () => {
-    try {
-      await page.close()
-      await browser.close()
-    } catch (e) {
-      throw new Error(e)
-    }
+    await browser.close()
   })
   it('should be able to SWAP using sovryn AMM', async () => {
     const fromAsset = 'RBTC'
@@ -54,7 +49,7 @@ describe.skip('SWAP Sovryn AMM service Provider-[mainnet,smoke]', async () => {
       coin: 'SOV'
     }
     // Click on ETH then click on SWAP button
-    await overviewPage.SelectChain(page, fromAsset)
+    await overviewPage.SelectAssetFromOverview(page, fromAsset)
     await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
     await page.click(`#${fromAsset}_swap_button`)
     // Validate min SEND amount from text field & check Min is Active

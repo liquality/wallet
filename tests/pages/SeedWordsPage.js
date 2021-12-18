@@ -21,7 +21,7 @@ class SeedWordsPage {
   }
 
   /**
-   * Click on Next button
+   * Click on Next button from back up your wallet screen
    * @param page
    * @returns {Promise<void>}
    * @constructor
@@ -61,7 +61,7 @@ class SeedWordsPage {
 
   /**
    * Continue button after enter seed(1,5,12) words
-   * @param page
+   * @param page - Confirm seed phrase.
    * @returns {Promise<void>}
    * @constructor
    */

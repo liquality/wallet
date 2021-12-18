@@ -1,6 +1,5 @@
 <template>
 <div>
-  <OnboardingPassword v-show="currentStep === 'beginning'" @on-unlock="onUnlock"/>
   <div class="backup-wallet login-wrapper no-outer-pad" v-show="currentStep === 'backup'">
     <div class="backup-wallet_logo-wrap mx-auto">
         <img :src="logo"/>
@@ -15,13 +14,14 @@
       </div>
       <div class="footer-container">
         <div class="footer-content">
-          <button class="btn btn-outline-primary btn-lg btn-footer btn-icon" @click="currentStep = 'beginning'">Cancel</button>
+          <button class="btn btn-outline-primary btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
           <button class="btn btn-primary btn-lg btn-footer btn-icon" id="backup_your_wallet_next_button" @click="pushToConfirm">Next</button>
         </div>
       </div>
     </div>
   </div>
-  <ConfirmSeed v-show="currentStep === 'confirm'" @on-confirm="confirmMnemonic" @on-cancel="currentStep = 'backup'" :mnemonic="mnemonic" />
+  <ConfirmSeed v-show="currentStep === 'confirm'" @on-confirm="currentStep='password'" @on-cancel="currentStep = 'backup'" :mnemonic="mnemonic" />
+  <OnboardingPassword v-show="currentStep === 'password'" :imported="imported" @on-unlock="onUnlock" @currentStep="currentStep='confirm'"/>
   <Congratulations v-show="currentStep === 'congrats'" />
 </div>
 </template>
@@ -38,7 +38,7 @@ export default {
   data () {
     return {
       mnemonic: null,
-      currentStep: 'beginning',
+      currentStep: '',
       password: null,
       imported: false
     }
@@ -53,8 +53,10 @@ export default {
     if (this.seedphrase) {
       this.mnemonic = this.seedphrase
       this.imported = true
+      this.currentStep = 'password'
     } else {
       this.mnemonic = generateMnemonic()
+      this.currentStep = 'backup'
     }
   },
   computed: {
@@ -84,11 +86,7 @@ export default {
     },
     async onUnlock (password) {
       this.password = password
-      if (this.seedphrase) {
-        await this.confirmMnemonic()
-      } else {
-        this.currentStep = 'backup'
-      }
+      await this.confirmMnemonic()
     }
   }
 }

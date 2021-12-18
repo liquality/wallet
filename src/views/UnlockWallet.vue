@@ -4,10 +4,7 @@
       <LogoWalletMain />
     </div>
     <div class="wallet-title-container">
-      <WalletTitle class="wallet-title"/>
-      <p class="wallet-desc">
-        The atomic swap enabled multi-crypto wallet
-      </p>
+      <NewWalletText class="mb-4"/>
     </div>
     <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
       <div class="form-group">
@@ -20,7 +17,7 @@
         </p>
       </div>
       <div class="footer-container">
-        <p><router-link to="/onboarding/import" id="forgot_password_import_seed">Forgot password? Import with seed phrase</router-link></p>
+        <p><router-link :to="{path: '/onboarding/import', query: {isNewUser: false}}" id="forgot_password_import_seed">Forgot password? Import with seed phrase</router-link></p>
         <div class="footer-content">
           <button class="btn btn-primary btn-lg btn-block btn-icon"
                   id="unlock_button"
@@ -39,14 +36,14 @@
 <script>
 import { mapActions } from 'vuex'
 import LogoWalletMain from '@/assets/icons/logo_wallet_main.svg'
-import WalletTitle from '@/assets/icons/wallet_title.svg'
+import NewWalletText from '@/assets/icons/wallet_tagline.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   components: {
     LogoWalletMain,
     SpinnerIcon,
-    WalletTitle
+    NewWalletText
   },
   data () {
     return {

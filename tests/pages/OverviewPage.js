@@ -122,7 +122,7 @@ class OverviewPage {
    * @constructor
    * @example SelectChain(page,'BITCOIN')
    */
-  async SelectChain (page, chain) {
+  async SelectAssetFromOverview (page, chain) {
     const elementVisibleTimeout = 120000
     await page.waitForSelector('.wallet-tab-content', { visible: true })
     switch (chain) {

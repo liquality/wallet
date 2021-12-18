@@ -1,3 +1,7 @@
+const TestUtil = require('../utils/TestUtils')
+const testUtil = new TestUtil()
+
+const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 
 class PasswordPage {
@@ -9,9 +13,17 @@ class PasswordPage {
    * @constructor
    */
   async SubmitPasswordDetails (page, password) {
-    await page.waitForSelector('#password', { visible: true })
+    try {
+      await page.waitForSelector('#password', { visible: true, timeout: 60000 })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'password-screen-issue')
+        expect(e, 'password screen not loaded').equals(null)
+      }
+    }
     await page.type('#password', password)
     await page.type('#confirmPassword', password)
+    // Click next button
     await page.click('#next_button')
   }
 
