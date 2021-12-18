@@ -68,8 +68,8 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
       //   await swapPage.EnterSendAmountOnSwap(page, '0.01')
       // }
       await page.waitForTimeout(10000)
-      await page.waitForSelector('#selectedQuote_provider', { visible: true })
       try {
+        await page.waitForSelector('#selectedQuote_provider', { visible: true })
         expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
           `SWAP (${obj.fromAsset}->${obj.toAsset}), Liquality should be chosen!`)
           .oneOf(['Liquality'])
