@@ -68,6 +68,7 @@ describe('RBTC->BTC swap-["TESTNET","PULL_REQUEST_TEST"]', async () => {
       expect(e, 'BTC->RBTC failed, quote not displayed.....').equals(null)
     }
 
+    await page.waitForTimeout(10000)
     expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'BTC->RBTC,Liquality swap Provider!!').oneOf(['Liquality'])
 

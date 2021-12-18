@@ -17,6 +17,8 @@ class SwapPage {
     // Enter send amount (or) coins
     const addressInputField = await page.$('#swap_send_amount_input_field')
     await addressInputField.click({ clickCount: 3 })
+    await addressInputField.press('Backspace')
+    await addressInputField.press('Backspace')
     await addressInputField.type(amountToSend)
   }
 
@@ -108,7 +110,6 @@ class SwapPage {
    */
   async ClickSwapReviewButton (page) {
     try {
-      console.log('User checking for SWAP Review button is enabled or disabled')
       await page.waitForSelector('#swap_review_button', {
         visible: true,
         timeout: 60000
