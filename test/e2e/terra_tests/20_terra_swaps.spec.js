@@ -55,9 +55,8 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
       try {
         await swapPage.SelectSwapReceiveCoin(page)
         await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
-        await page.waitForTimeout(1000)
         await page.type('#search_for_a_currency', swapToAsset)
-        await page.waitForTimeout(2000)
+        await page.waitForTimeout(10000)
         await page.click(`#${swapToAsset}`)
         await page.waitForTimeout(1000)
       } catch (e) {
