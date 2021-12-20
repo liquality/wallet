@@ -57,6 +57,13 @@ export default {
         type: SwapProviderType.LIQUALITY,
         agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
       },
+      liqualityBoost: {
+        name: 'Liquality Boost',
+        type: SwapProviderType.LIQUALITYBOOST,
+        network: 'testnet',
+        icon: 'liqualityboost.svg',
+        supportedBridgeAssets: ['RBTC']
+      },
       uniswapV2: {
         name: 'Uniswap V2',
         icon: 'uniswap.svg',
@@ -90,7 +97,7 @@ export default {
         type: SwapProviderType.LIQUALITYBOOST,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['MATIC']
+        supportedBridgeAssets: ['MATIC', 'RBTC']
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -130,5 +137,5 @@ export default {
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
   chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra'],
-  supportedBridgeAssets: ['MATIC']
+  supportedBridgeAssets: ['MATIC', 'RBTC']
 }

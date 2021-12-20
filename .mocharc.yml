@@ -1,17 +1,15 @@
+allow-uncaught: false
 ui: 'bdd'
 timeout: 0
 full-trace: true
 color: true
 inline-diffs: true
-allow-uncaught: true
 async-only: true
 parallel: true
 jobs: 10
-#reporter: mochawesome
-#reporter-option:
-#  - 'reportPageTitle=Liquality Wallet Test Report'
-#  - 'reportTitle=Liquality Wallet Test Report'
-#  - 'code=false'
-#  - 'charts=true'
-#require:
-#  - mochawesome/register
+recursive: true
+diff: true
+spec:
+  - 'test/**/*.spec.js'
+extension:
+  - js

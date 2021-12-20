@@ -16,11 +16,11 @@
                 >
                   {{ `${toAsset} ${receiveAmount}` }}
                 </span>
-                <span v-else> ${{ formatFiat(receiveAmountFiat) }} </span>
+                <span v-else> {{'$ ' + formatFiat(receiveAmountFiat) }} </span>
               </div>
             </div>
           </div>
-          <div class="input-group mb-3" v-if="showAmountsInFiat">
+          <div class="input-group mb-3" v-if="showAmountsInFiat && !isNaN(receiveAmountFiat)">
             <span class="input-group-text">$</span>
             <input
               type="number"
@@ -84,7 +84,7 @@ export default {
   created () {},
   computed: {
     receiveAmountFiatValue () {
-      return '$' + dpUI(this.receiveAmountFiat, 2)
+      return isNaN(this.receiveAmountFiat) ? this.receiveAmountFiat : ('$ ' + dpUI(this.receiveAmountFiat, 2))
     },
     receiveAmountValue () {
       return this.receiveAmount.gt(0) ? dpUI(this.receiveAmount) : ''
