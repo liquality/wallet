@@ -17,7 +17,7 @@ const password = '123123123'
 
 if (process.env.NODE_ENV === 'mainnet') {
 // Sovryn AMM works against RSK chain
-  describe.only('SWAP Sovryn AMM service Provider-["MAINNET"]', async () => {
+  describe('SWAP Sovryn AMM service Provider-["MAINNET"]', async () => {
     before(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -36,14 +36,12 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Select correct network based on Env
       if (process.env.NODE_ENV === 'mainnet') {
         await overviewPage.SelectNetwork(page, 'mainnet')
-      } else {
-        await overviewPage.SelectNetwork(page)
       }
     })
     after(async () => {
       await browser.close()
     })
-    it('SWAP using sovryn AMM', async () => {
+    it('Sovryn AMM(RBTC->SOV) quote check', async () => {
       const fromAsset = 'RBTC'
       const toAsset = {
         chain: 'RSK',
@@ -70,9 +68,34 @@ if (process.env.NODE_ENV === 'mainnet') {
         visible: true,
         timeout: 60000
       })
+      await page.waitForTimeout(5000)
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'RBTC->SOV, Supporting source should be chosen!')
-        .oneOf(['Sovyrn', 'Liquality'])
+        .oneOf(['Sovyrn'])
+    })
+    it('Sovryn AMM(SOV->FISH) quote check', async () => {
+      const fromAsset = 'SOV'
+      const toAsset = {
+        chain: 'RSK',
+        coin: 'FISH'
+      }
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
+      await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+      await page.click(`#${fromAsset}_swap_button`)
+      // Select 2nd Pair
+      await page.click('.swap-receive-main-icon')
+      await page.waitForSelector(`#${toAsset.chain}`, { visible: true })
+      await page.click(`#${toAsset.chain}`)
+      await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
+      await page.click(`#${toAsset.coin}`)
+      await page.waitForSelector('#selectedQuote_provider', {
+        visible: true,
+        timeout: 60000
+      })
+      await page.waitForTimeout(5000)
+      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+        'SOV->FISH, Supporting source should be chosen!')
+        .oneOf(['Sovyrn'])
     })
   })
 }
