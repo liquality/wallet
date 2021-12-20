@@ -16,7 +16,7 @@
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
 
-      <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount > min">
+      <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
       <div class="wrapper form">
@@ -217,7 +217,7 @@
             <label class="text-muted">Network Fee</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div id="swap_send_network_fee_value">
-                ~{{ fromSwapFee }} {{ assetChain }}
+                ~{{ dpUI(fromSwapFee) }} {{ assetChain }}
               </div>
               <div class="details-text" id="swap_send_network_fee_fiat_rate">
                 ${{ prettyFiatBalance(fromSwapFee, fiatRates[assetChain]) }}
@@ -229,10 +229,10 @@
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold" id="swap_send_amount_fees_value">
                 <span v-if="asset === assetChain">
-                  {{ sendAmountSameAsset }} {{ assetChain }}
+                  {{ dpUI(sendAmountSameAsset) }} {{ assetChain }}
                 </span>
                 <span v-else>
-                  {{ sendAmount }} {{ asset }} + {{ fromSwapFee }}
+                  {{ dpUI(sendAmount) }} {{ asset }} + {{ dpUI(fromSwapFee) }}
                   {{ assetChain }}
                 </span>
               </div>
@@ -280,7 +280,7 @@
               "
               id="swap_receive_network_fee_value"
             >
-              <div>~{{ toSwapFee }} {{ toAssetChain }}</div>
+              <div>~{{ dpUI(toSwapFee) }} {{ toAssetChain }}</div>
               <div class="details-text" id="swap_receive_network_fee_fiat_rate">
                 ${{ prettyFiatBalance(toSwapFee, fiatRates[toAssetChain]) }}
               </div>
@@ -291,10 +291,10 @@
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold" id="swap_receive_amount_fee_value">
                 <span v-if="toAsset === toAssetChain || !receiveFeeRequired">
-                  {{ receiveAmountSameAsset }} {{ toAsset }}
+                  {{ dpUI(receiveAmountSameAsset) }} {{ toAsset }}
                 </span>
                 <span v-else>
-                  {{ receiveAmount }} {{ toAsset }} - {{ toSwapFee }}
+                  {{ dpUI(receiveAmount) }} {{ toAsset }} - {{ dpUI(toSwapFee) }}
                   {{ toAssetChain }}
                 </span>
               </div>
@@ -302,7 +302,7 @@
                 class="font-weight-bold"
                 id="swap_receive_total_amount_in_fiat"
               >
-                ${{ totalToReceiveInFiat }}
+                {{'$ ' + totalToReceiveInFiat }}
               </div>
             </div>
           </div>
@@ -452,6 +452,7 @@ import buildConfig from '@/build.config'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
+const MIN_SWAP_VALUE_USD = 2
 
 export default {
   components: {
@@ -665,15 +666,13 @@ export default {
       return !!liqualityMarket
     },
     min () {
-      const liqualityMarket = this.networkMarketData?.find(
-        (pair) =>
-          pair.from === this.asset &&
-          pair.to === this.toAsset &&
-          getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
-            SwapProviderType.LIQUALITY
-      )
-      const min = liqualityMarket ? BN(liqualityMarket.min) : BN(0)
-      return dpUI(min)
+      const toQuoteAsset = this.selectedQuoteProvider?.config?.type === SwapProviderType.LIQUALITYBOOST ? this.toAssetChain : this.toAsset
+      const liqualityMarket = this.networkMarketData?.find(pair =>
+        pair.from === this.asset &&
+        pair.to === toQuoteAsset &&
+        getSwapProviderConfig(this.activeNetwork, pair.provider).type === SwapProviderType.LIQUALITY)
+      const min = liqualityMarket ? BN(liqualityMarket.min) : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]), this.available)
+      return isNaN(min) ? BN(0) : dpUI(min)
     },
     max () {
       return this.available && !isNaN(this.available)
@@ -715,6 +714,12 @@ export default {
         ? BN(balance)
         : BN.max(BN(balance).minus(this.maxFee), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
+    },
+    canCoverAmmFee () {
+      if (!this.selectedQuote.bridgeAsset) return true
+      const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
+      const toSwapFeeInUnits = currencyToUnit(cryptoassets[this.selectedQuote.bridgeAsset], this.toSwapFee)
+      return (BN(balance).plus(this.selectedQuote.bridgeAssetAmount)).gt(toSwapFeeInUnits)
     },
     availableAmount () {
       return dpUI(this.available, VALUE_DECIMALS)
@@ -759,6 +764,7 @@ export default {
         !this.selectedQuote ||
         this.updatingQuotes ||
         this.ethRequired ||
+        !this.canCoverAmmFee ||
         this.showNoLiquidityMessage ||
         this.amountError ||
         BN(this.safeAmount).lte(0)
@@ -792,6 +798,8 @@ export default {
         BN(this.stateSendAmount),
         this.fiatRates[this.asset]
       )
+      if (isNaN(send)) return send
+
       const fee = cryptoToFiat(
         this.fromSwapFee,
         this.fiatRates[this.assetChain]
@@ -806,6 +814,7 @@ export default {
         this.receiveAmount,
         this.fiatRates[this.toAsset]
       )
+      if (isNaN(receive)) return receive
       const fee = cryptoToFiat(
         this.toSwapFee,
         this.fiatRates[this.toAssetChain]
@@ -823,7 +832,7 @@ export default {
         this.toSwapFee,
         this.fiatRates[this.assetChain]
       ).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
-      const receiveTotalPercentage = this.totalToReceiveInFiat * 0.25
+      const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat) ? 0 : this.totalToReceiveInFiat * 0.25
       return feeTotal.gte(BN(receiveTotalPercentage))
     },
     isSwapNegative () {
