@@ -13,7 +13,7 @@
          <div class="ledger-options-instructions">
           Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag.
         </div>
-        <p>
+        <p class="ledger-icon">
           <LedgerSignRquest class="ledger-sign-request"/>
         </p>
       </div>

@@ -3,13 +3,13 @@ import {
 } from '@liquality/hw-web-bridge'
 import store from '@/store'
 import { findCryptoCurrencyById } from '@ledgerhq/cryptoassets'
+import { BG_PREFIX } from '@/broker/utils'
 
 let bridgeClient = null
-const onTransportConnect = () => {
-  store.dispatch('app/setLedgerBridgeTransportConnected', { connected: true })
-}
 
 export const createBridgeClient = () => {
+  const { usbBridgeWindowsId } = store.state
+  store.dispatch('app/closeExistingBridgeWindow', { windowsId: usbBridgeWindowsId })
   bridgeClient = createClient()
   bridgeClient.onConnect(() => {
     store.dispatch('app/setLedgerBridgeConnected', { connected: true })
@@ -18,10 +18,13 @@ export const createBridgeClient = () => {
     store.dispatch('app/setLedgerBridgeTransportConnected', { connected: false })
     const { usbBridgeWindowsId } = store.state
     store.dispatch('app/closeExistingBridgeWindow', { windowsId: usbBridgeWindowsId })
-  }).onTransportConnect(onTransportConnect)
-    .onTransportDisconnected(() => {
-      store.dispatch('app/setLedgerBridgeTransportConnected', { connected: false })
-    })
+  }).onTransportConnect(
+    () => {
+      store.dispatch('app/setLedgerBridgeTransportConnected', { connected: true })
+    }
+  ).onTransportDisconnected(() => {
+    store.dispatch('app/setLedgerBridgeTransportConnected', { connected: false })
+  })
   return bridgeClient
 }
 
@@ -41,26 +44,24 @@ export const createBridgeClient = () => {
 * @returns Promise<any>
 */
 export const callToBridge = async (message) => {
-  if (!bridgeClient) {
-    createBridgeClient()
-  }
-
-  const { ledgerBridgeConnected, ledgerBridgeTransportConnected } = store.state.app
-  if (ledgerBridgeConnected && ledgerBridgeTransportConnected) {
-    return bridgeClient.sendMessage(message)
-  }
-
-  await store.dispatch('app/openLedgerBridgeWindow')
-  return new Promise((resolve) => {
-    bridgeClient.onTransportConnect(async () => {
-      await store.dispatch('app/setLedgerBridgeTransportConnected', { connected: true })
-      resolve(await bridgeClient.sendMessage(message))
-    })
-  })
+  return bridgeClient?.sendMessage(message)
 }
 
 export const getXPubVersion = (network) => {
   const id = network === 'mainnet' ? 'bitcoin' : 'bitcoin_testnet'
   const { bitcoinLikeInfo: { XPUBVersion } } = findCryptoCurrencyById(id)
   return XPUBVersion
+}
+
+export const createConnectSubscription = (onConnect) => {
+  const unsubscribe = store.subscribe(async ({ type, payload }) => {
+    if (type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
+    payload.connected === true) {
+      onConnect()
+      if (unsubscribe) {
+        unsubscribe()
+      }
+    }
+  })
+  return unsubscribe
 }

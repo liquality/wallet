@@ -35,13 +35,13 @@ import Connect from './Connect'
 import Unlock from './Unlock'
 import {
   LEDGER_BITCOIN_OPTIONS,
-  LEDGER_OPTIONS
+  LEDGER_OPTIONS,
+  createConnectSubscription
 } from '@/utils/ledger-bridge-provider'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import { getNextAccountColor } from '@/utils/accounts'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { BG_PREFIX } from '@/broker/utils'
 
 const LEDGER_PER_PAGE = 5
 
@@ -103,15 +103,9 @@ export default {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
-          payload.connected === true) {
-            this.bridgeModalOpen = false
-            await this.connect({ asset, walletType, page })
-            if (unsubscribe) {
-              unsubscribe()
-            }
-          }
+        createConnectSubscription(() => {
+          this.bridgeModalOpen = false
+          this.connect({ asset, walletType, page })
         })
       }
     },
@@ -188,7 +182,7 @@ export default {
           const selectedAccounts = { ...this.selectedAccounts }
           for (const key in selectedAccounts) {
             const item = selectedAccounts[key]
-
+            const { publicKey, chainCode, derivationPath } = item
             const index = item.index + 1
             const { address } = item.account
 
@@ -201,9 +195,10 @@ export default {
               index: item.index,
               type: walletType || this.selectedAsset.types[0],
               enabled: true,
-              derivationPath: item.account.derivationPath,
+              derivationPath,
               color: getNextAccountColor(chain, item.index),
-              xPub: item.xPub
+              publicKey,
+              chainCode
             }
 
             await this.createAccount({

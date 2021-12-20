@@ -19,7 +19,7 @@ class FastbtcSwapProvider extends SwapProvider {
     })
 
     this.socketConnection.on('connect', function () {
-      console.log('FatBtc socket connected')
+      console.log('FastBtc socket connected')
     })
 
     this.socketConnection.on('disconnect', function () {

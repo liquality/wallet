@@ -52,7 +52,8 @@ function createBtcClient (
   mnemonic,
   accountType,
   derivationPath,
-  xPub
+  publicKey,
+  chainCode
 ) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = ChainNetworks.bitcoin[network]
@@ -72,20 +73,17 @@ function createBtcClient (
   if (accountType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === accountType)
     const { addressType } = option
-    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(
-      network,
-      ChainId.Bitcoin
-    )
-    const ledger = new BitcoinLedgerBridgeProvider(
-      {
+    const ledgerApp = new BitcoinLedgerBridgeApp(network, ChainId.Bitcoin)
+    btcClient.addProvider(
+      new BitcoinLedgerBridgeProvider({
         network: bitcoinNetwork,
         addressType,
-        baseDerivationPath: derivationPath
-      },
-      bitcoinLedgerApp,
-      xPub
+        baseDerivationPath: derivationPath,
+        ledgerApp,
+        basePublicKey: publicKey,
+        baseChainCode: chainCode
+      })
     )
-    btcClient.addProvider(ledger)
   } else {
     btcClient.addProvider(
       new BitcoinJsWalletProvider({
@@ -403,7 +401,8 @@ export const createClient = ({
   mnemonic,
   accountType,
   derivationPath,
-  xPub
+  chainCode,
+  publicKey
 }) => {
   const assetData = cryptoassets[asset]
   switch (assetData.chain) {
@@ -413,7 +412,8 @@ export const createClient = ({
         mnemonic,
         accountType,
         derivationPath,
-        xPub
+        publicKey,
+        chainCode
       )
     case 'rsk':
       return createRskClient(

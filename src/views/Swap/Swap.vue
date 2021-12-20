@@ -209,7 +209,7 @@
                 {{ sendAmount }} {{ asset }}
               </div>
               <div class="details-text" id="send_swap_amount_fiat">
-                {{ sendAmountFiat }}
+                ${{ sendAmountFiat }}
               </div>
             </div>
           </div>
@@ -264,7 +264,7 @@
                 {{ dpUI(receiveAmount) }} {{ toAsset }}
               </div>
               <div class="details-text" id="receive_swap_amount_fiat">
-                {{ '$ ' + formatFiat(receiveAmountFiat) }}
+                ${{ formatFiat(receiveAmountFiat) }}
               </div>
             </div>
           </div>
@@ -447,7 +447,7 @@ import CustomFees from '@/components/CustomFees'
 import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { BG_PREFIX } from '@/broker/utils'
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import buildConfig from '@/build.config'
 
 const DEFAULT_SWAP_VALUE_USD = 100
@@ -995,17 +995,9 @@ export default {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (
-            type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
-            payload.connected === true
-          ) {
-            this.bridgeModalOpen = false
-            await this.swap()
-            if (unsubscribe) {
-              unsubscribe()
-            }
-          }
+        const unsubscribe = createConnectSubscription(() => {
+          this.bridgeModalOpen = false
+          this.swap()
         })
         setTimeout(() => {
           if (unsubscribe) {

@@ -52,22 +52,15 @@ export default {
       accountId,
       useCache = true,
       accountType = 'default',
-      accountIndex = 0
+      accountIndex = 0,
+      chainCode,
+      publicKey
     }) => {
       const account = accountId ? getters.accountItem(accountId) : null
       const _accountType = account?.type || accountType
       const _accountIndex = account?.index || accountIndex
       const { chain } = cryptoassets[asset]
-      let derivationPath
-      let xPub = null
-      // when we ask for ledger accounts from the ledger device we don't have the derivation path
-      // the !account doesn't exist in this case or if we call the getter with accountId equals to null
-      if (_accountType.includes('ledger') || !account) {
-        derivationPath = getDerivationPath(chain, network, _accountIndex, _accountType)
-        xPub = account?.xPub
-      } else {
-        derivationPath = account.derivationPath
-      }
+      const derivationPath = account?.derivationPath || getDerivationPath(chain, network, _accountIndex, _accountType)
 
       const cacheKey = [
         asset,
@@ -90,7 +83,8 @@ export default {
         mnemonic,
         accountType: _accountType,
         derivationPath,
-        xPub
+        chainCode: account?.chainCode || chainCode,
+        publicKey: account?.publicKey || publicKey
       })
       clientCache[cacheKey] = client
 
