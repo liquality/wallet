@@ -8,6 +8,7 @@ name: Mainnet tests
 
 jobs:
   regressiontest:
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
