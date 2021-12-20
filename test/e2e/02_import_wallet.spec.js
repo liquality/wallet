@@ -156,8 +156,10 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
 
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
+    expect(ethAddress, 'ETH address should not be null').not.equals(null)
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
-    expect(rskAddress, `ETH address ${ethAddress}& RSK address ${rskAddress} should be equal if balance is greater than 0`)
+    expect(rskAddress, 'RSK address should not be null').not.equals(null)
+    expect(rskAddress, `ETH address ${ethAddress} & RSK address ${rskAddress} should be equal if balance is greater than 0`)
       .equals(ethAddress)
 
     // Check RSK & ERC20 tokens

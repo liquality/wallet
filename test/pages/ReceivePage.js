@@ -1,3 +1,8 @@
+const TestUtil = require('../utils/TestUtils')
+
+const testUtil = new TestUtil()
+
+const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 const assert = require('chai').assert
 
@@ -23,7 +28,14 @@ class ReceivePage {
    * @constructor
    */
   async HasQRCodeDisplayed (page) {
-    await page.waitForSelector('.receive_qr', { visible: true, timeout: 60000 })
+    try {
+      await page.waitForSelector('.receive_qr', { visible: true, timeout: 120000 })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'QR-code-issue')
+        expect(e, 'Receive QR code not available').equals(null)
+      }
+    }
   }
 
   /**
