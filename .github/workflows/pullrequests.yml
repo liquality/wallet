@@ -1,9 +1,8 @@
 on:
   pull_request:
-    branches-ignore:
-      - master
     branches:
       - dev
+      - "!master"
 
 name: PullRequest tests
 
