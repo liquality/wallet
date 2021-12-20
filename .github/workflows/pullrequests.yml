@@ -2,6 +2,7 @@ on:
   pull_request:
     branches:
       - dev
+      - "!master"
 
 name: PullRequest tests
 

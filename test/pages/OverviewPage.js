@@ -166,6 +166,7 @@ class OverviewPage {
       }
 
       case 'SOV':
+      case 'FISH':
       case 'RBTC': {
         const eth = await page.waitForSelector('#RSK', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
