@@ -127,7 +127,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "5.2.0",
     "eslint-plugin-standard": "^4.0.0",
-    "eslint-plugin-vue": "^6.2.2",
+    "eslint-plugin-vue": "7.20.0",
     "ethereumjs-wallet": "^1.0.1",
     "husky": "7.0.4",
     "jest": "^26.4.2",
