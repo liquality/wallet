@@ -8,6 +8,7 @@ name: Testnet tests
 
 jobs:
   regressiontest:
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -49,13 +50,6 @@ jobs:
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
           args: npm run test:testnet
-
-#      - name: Archive Mocha HTML report
-#        uses: actions/upload-artifact@v2.2.4
-#        if: always()
-#        with:
-#          name: mocha-html-test-report
-#          path: mochawesome-report
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1

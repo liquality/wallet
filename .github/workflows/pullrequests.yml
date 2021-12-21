@@ -2,6 +2,7 @@ on:
   pull_request:
     branches:
       - dev
+      - "!master"
 
 name: PullRequest tests
 
@@ -47,7 +48,7 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:pullrequest:smoke
+          args: npm run test:pullrequest
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1
