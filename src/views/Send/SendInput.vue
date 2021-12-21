@@ -94,6 +94,7 @@
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
 import { dpUI } from '@/utils/coinFormatter'
 import AccountTooltip from '@/components/AccountTooltip'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -115,12 +116,19 @@ export default {
     'amountError',
     'maxActive'
   ],
+  computed: {
+    ...mapState([
+      'fiatRates'
+    ])
+  },
   methods: {
     dpUI,
     getAssetColorStyle,
     getAssetIcon,
     toggleShowAmountsFiat () {
-      this.showAmountsInFiat = !this.showAmountsInFiat
+      if (this.fiatRates[this.asset]) {
+        this.showAmountsInFiat = !this.showAmountsInFiat
+      }
     }
   }
 }

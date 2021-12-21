@@ -149,7 +149,9 @@ export default {
     getAssetColorStyle,
     getAssetIcon,
     toggleShowAmountsFiat () {
-      this.showAmountsInFiat = !this.showAmountsInFiat
+      if (!isNaN(this.sendAmountFiat)) {
+        this.showAmountsInFiat = !this.showAmountsInFiat
+      }
     },
     setSendAmount (amount) {
       this.$emit('send-amount-change', amount)
