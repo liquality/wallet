@@ -30,8 +30,9 @@ class SendPage {
    */
   async EnterSendToAddress (page, sendToAddress) {
     await page.waitForSelector('#address', { visible: true })
-    await page.focus('#address')
-    page.keyboard.type(sendToAddress)
+    const elementHandle = await page.$('#address');
+    await elementHandle.type(sendToAddress);
+    await page.waitForTimeout(1000)
   }
 
   /**
@@ -44,7 +45,7 @@ class SendPage {
     // Wait for Review button Enabled
     await page.waitForSelector('#send_review_button', { visible: true, timeout: 60000 })
     try {
-      await page.$eval('#send_review_button', el => el.click())
+      await page.click('#send_review_button',{button:'left',clickCount:2})
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         await page.$eval('#send_review_button', el => el.click())
