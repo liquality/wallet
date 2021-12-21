@@ -29,9 +29,9 @@ class SendPage {
    * @constructor
    */
   async EnterSendToAddress (page, sendToAddress) {
-    await page.waitForSelector('#address')
-    await page.type('#address', sendToAddress, { delay: 100 })
-    await page.waitForTimeout(1000)
+    await page.waitForSelector('#address', { visible: true })
+    await page.focus('#address')
+    page.keyboard.type(sendToAddress)
   }
 
   /**
@@ -42,11 +42,17 @@ class SendPage {
    */
   async ClickSendReview (page) {
     // Wait for Review button Enabled
+    await page.waitForSelector('#send_review_button', { visible: true, timeout: 60000 })
     try {
-      await page.waitForSelector('#send_review_button', { visible: true, timeout: 120000 })
-      await page.click('#send_review_button')
-      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 120000 })
-      console.log('User clicked on confirm SEND review button')
+      await page.$eval('#send_review_button', el => el.click())
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await page.$eval('#send_review_button', el => el.click())
+      }
+    }
+    console.log('User clicked on confirm SEND review button')
+    try {
+      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         await testUtil.takeScreenshot(page, 'click-on-send-review-button')
