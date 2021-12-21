@@ -124,7 +124,7 @@ class OverviewPage {
    */
   async SelectAssetFromOverview (page, chain) {
     const elementVisibleTimeout = 120000
-    await page.waitForSelector('.wallet-tab-content', { visible: true })
+    await page.waitForSelector('#asserts_tab', { visible: true, timeout: 60000})
     switch (chain) {
       case 'BTC': {
         await page.waitForSelector('#BITCOIN', { timeout: elementVisibleTimeout, visible: true })
