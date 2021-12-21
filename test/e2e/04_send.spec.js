@@ -37,6 +37,8 @@ describe('SEND feature["TESTNET"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page)
   })
   afterEach(async () => {
     try {
@@ -49,8 +51,7 @@ describe('SEND feature["TESTNET"]', async () => {
   it('Send BTC to another Wrong address. check Review option has been disabled', async () => {
     const assetName = 'BTC'
     const coinsToSend = '0.000001'
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
+
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
@@ -68,8 +69,6 @@ describe('SEND feature["TESTNET"]', async () => {
   it('Send BTC to another address,Lower amount. This exceeds available balance.', async () => {
     const assetName = 'BTC'
     const coinsToSend = '10'
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin
@@ -87,8 +86,6 @@ describe('SEND feature["TESTNET"]', async () => {
   it('Send BNB to another BNB wallet["PULL_REQUEST_TEST"]', async () => {
     const assetName = 'BNB'
     const coinsToSend = '0.0000001'
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
     await overviewPage.SelectAssetFromOverview(page, assetName)
     await page.waitForSelector('#BNB_send_button', { visible: true })
     await page.click('#BNB_send_button')
@@ -111,8 +108,6 @@ describe('SEND feature["TESTNET"]', async () => {
   })
   it('ETH Send Max value check against Available Balance', async () => {
     const assetName = 'ETH'
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
     await overviewPage.SelectAssetFromOverview(page, assetName)
     await page.waitForSelector(`#${assetName}_send_button`, { visible: true })
     await page.click(`#${assetName}_send_button`)
