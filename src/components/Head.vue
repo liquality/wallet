@@ -10,6 +10,11 @@
         <li id="testnet_network" @click="switchNetwork('testnet')">Testnet</li>
       </ul>
     </div>
+    <div class="head_connection float-right">
+      <template v-if="dappConnected"><ConnectionConnected class="mr-1 connection-icon" /> dApp Connected</template>
+      <template v-else><ConnectionDisconnected class="mr-1 connection-icon" /> Connect dApp</template>
+      <ChevronDownIcon class="ml-1" />
+    </div>
   </div>
 </template>
 
@@ -20,6 +25,8 @@ import clickAway from '@/directives/clickAway'
 import LogoIcon from '@/assets/icons/logo_icon.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import ConnectionDisconnected from '@/assets/icons/connection_disconnected.svg'
+import ConnectionConnected from '@/assets/icons/connection_connected.svg'
 
 export default {
   directives: {
@@ -28,17 +35,26 @@ export default {
   components: {
     ChevronUpIcon,
     ChevronDownIcon,
-    LogoIcon
+    LogoIcon,
+    ConnectionDisconnected,
+    ConnectionConnected,
   },
   data () {
     return {
-      showNetworks: false
+      showNetworks: false,
+      currentOrigin: null
     }
   },
   computed: {
-    ...mapState(['wallets', 'activeWalletId', 'activeNetwork']),
+    ...mapState(['wallets', 'activeWalletId', 'activeNetwork', 'externalConnections']),
     wallet: function () {
       return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+    },
+    dappConnected () {
+      if (!this.currentOrigin) return false
+      if (!(this.currentOrigin in this.externalConnections[this.activeWalletId])) return false
+      const chains = Object.keys(this.externalConnections[this.activeWalletId][this.currentOrigin])
+      return chains.length > 0
     }
   },
   methods: {
@@ -50,6 +66,14 @@ export default {
       await this.changeActiveNetwork({ network })
       this.showNetworks = false
     }
+  },
+  created () {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length > 0) {
+        const { origin } = new URL(tabs[0].url)
+        this.currentOrigin = origin
+      }
+    })
   }
 }
 </script>
@@ -64,14 +88,31 @@ export default {
   align-items: center;
   padding: 0 20px;
 
-   &_logo {
+  &_logo {
     position: absolute;
     left: 10px;
   }
 
   &_logo, &_logo svg {
     height: 12px;
+  }
 
+  &_connection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: 10px;
+
+
+    svg {
+      height: 5px;
+      width: 8px;
+    }
+
+    svg.connection-icon {
+      height: 8px;
+    }
   }
 
   &_network {
