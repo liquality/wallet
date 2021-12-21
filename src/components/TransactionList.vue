@@ -135,7 +135,7 @@ export default {
 
       if (!amount) return ''
 
-      return `$ ${prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[item.from])}`
+      return `$${prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[item.from])}`
     }
   }
 }

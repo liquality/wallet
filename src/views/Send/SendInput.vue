@@ -6,9 +6,10 @@
           <div class="send-top">
             <div class="send-top-label">Send</div>
             <div class="send-top-amount">
-              <div
+              <button
                 class="btn btn-option label-append"
                 @click="toggleShowAmountsFiat"
+                :disabled="!fiatRates[asset]"
               >
                 <span
                   v-if="showAmountsInFiat"
@@ -16,8 +17,8 @@
                 >
                   {{ `${asset} ${amount}` }}
                 </span>
-                <span v-else> $ {{ amountFiat }} </span>
-              </div>
+                <span v-else> ${{ amountFiat }} </span>
+              </button>
             </div>
           </div>
           <div class="input-group mb-3" v-if="showAmountsInFiat">
@@ -126,9 +127,7 @@ export default {
     getAssetColorStyle,
     getAssetIcon,
     toggleShowAmountsFiat () {
-      if (this.fiatRates[this.asset]) {
-        this.showAmountsInFiat = !this.showAmountsInFiat
-      }
+      this.showAmountsInFiat = !this.showAmountsInFiat
     }
   }
 }

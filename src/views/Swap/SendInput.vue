@@ -6,9 +6,10 @@
           <div class="swap-send-top">
             <div class="swap-send-top-label">Send</div>
             <div class="swap-send-top-amount">
-              <div
+              <button
                 class="btn btn-option label-append"
                 @click="toggleShowAmountsFiat"
+                :disabled="isNaN(sendAmountFiat)"
               >
                 <span
                   v-if="showAmountsInFiat"
@@ -17,7 +18,7 @@
                   {{ `${asset} ${sendAmount}` }}
                 </span>
                 <span v-else> ${{ sendAmountFiat }} </span>
-              </div>
+              </button>
             </div>
           </div>
           <div class="input-group mb-3" v-if="showAmountsInFiat">
@@ -149,9 +150,7 @@ export default {
     getAssetColorStyle,
     getAssetIcon,
     toggleShowAmountsFiat () {
-      if (!isNaN(this.sendAmountFiat)) {
-        this.showAmountsInFiat = !this.showAmountsInFiat
-      }
+      this.showAmountsInFiat = !this.showAmountsInFiat
     },
     setSendAmount (amount) {
       this.$emit('send-amount-change', amount)

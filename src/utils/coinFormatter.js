@@ -30,7 +30,7 @@ export const prettyFiatBalance = (amount, rate) => {
 }
 
 export const cryptoToFiat = (amount, rate) => {
-  if (!rate) return 'Rate missing'
+  if (!rate) return '___'
   return BN(amount).times(rate)
 }
 
