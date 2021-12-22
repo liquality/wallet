@@ -115,17 +115,24 @@ class OverviewPage {
   }
 
   /**
-   * Click on Chain
+   * Select Native or ERC20 tokens from overviewPage
    * @param page
-   * @param chain - chain name
+   * @param assetName - asset name
    * @returns {Promise<void>}
    * @constructor
    * @example SelectChain(page,'BITCOIN')
    */
-  async SelectAssetFromOverview (page, chain) {
+  async SelectAssetFromOverview (page, assetName) {
     const elementVisibleTimeout = 120000
-    await page.waitForSelector('.wallet-tab-content', { visible: true })
-    switch (chain) {
+    try {
+      await page.waitForSelector('#asserts_tab', { visible: true, timeout: 60000})
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'click-asset-from-overview-issue')
+        expect(e, 'Overview clicking on particular asset issue!').equals(null)
+      }
+    }
+    switch (assetName) {
       case 'BTC': {
         await page.waitForSelector('#BITCOIN', { timeout: elementVisibleTimeout, visible: true })
         await page.click('#BITCOIN')
@@ -136,22 +143,22 @@ class OverviewPage {
       case 'ETH': {
         const eth = await page.waitForSelector('#ETHEREUM', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
-        await page.click(`#${chain}`)
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
         break
       }
 
       case 'BNB': {
         const eth = await page.waitForSelector('#BSC', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
-        await page.click(`#${chain}`)
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
         break
       }
 
       case 'NEAR': {
-        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
-        await page.click(`#${chain}`)
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
         const eth = await page.waitForSelector('#NEAR', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
         break
@@ -160,8 +167,8 @@ class OverviewPage {
       case 'ARBETH': {
         const eth = await page.waitForSelector('#ARBITRUM', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
-        await page.click(`#${chain}`)
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
         break
       }
 
@@ -170,8 +177,8 @@ class OverviewPage {
       case 'RBTC': {
         const eth = await page.waitForSelector('#RSK', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
-        await page.click(`#${chain}`)
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
         break
       }
 
@@ -179,19 +186,19 @@ class OverviewPage {
       case 'PWETH': {
         const eth = await page.waitForSelector('#POLYGON', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
-        await page.click(`#${chain}`)
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
         break
       }
       case 'SOL': {
         const eth = await page.waitForSelector('#SOLANA', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
-        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
         // check assert value
         await page.waitForSelector('.list-item-detail', { timeout: elementVisibleTimeout, visible: true })
         // check assert fiat value
         await page.waitForSelector('.list-item-detail-sub', { timeout: elementVisibleTimeout, visible: true })
-        await page.click(`#${chain}`)
+        await page.click(`#${assetName}`)
         break
       }
 
@@ -200,13 +207,13 @@ class OverviewPage {
         const terra = await page.waitForSelector('#TERRA', { timeout: elementVisibleTimeout, visible: true })
         await terra.click()
         // click on token
-        await page.waitForSelector(`#${chain}`, { timeout: elementVisibleTimeout, visible: true })
-        await page.click(`#${chain}`)
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
         break
       }
 
       default:
-        throw Error(`Unsupported chain: ${chain}`)
+        throw Error(`Unsupported chain: ${assetName}`)
     }
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     await page.waitForSelector('#refresh-icon', { visible: true })
@@ -358,8 +365,9 @@ class OverviewPage {
    */
   async GetAssertAddress (page, assertName) {
     const $parent = await page.$(`#${assertName}`)
+    await page.waitForTimeout(15000)
     const assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
-    expect(assertAddress, `${assertName} address is empty on overview page!`).not.empty
+    expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.empty
     return assertAddress
   }
 

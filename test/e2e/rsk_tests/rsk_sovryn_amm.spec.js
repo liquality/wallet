@@ -47,7 +47,6 @@ if (process.env.NODE_ENV === 'mainnet') {
         chain: 'RSK',
         coin: 'SOV'
       }
-      // Click on ETH then click on SWAP button
       await overviewPage.SelectAssetFromOverview(page, fromAsset)
       await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
       await page.click(`#${fromAsset}_swap_button`)
