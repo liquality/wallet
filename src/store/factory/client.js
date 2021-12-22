@@ -141,8 +141,10 @@ function createEthClient (asset, network, mnemonic, accountType, derivationPath)
 }
 
 function createNearClient (network, mnemonic, derivationPath) {
-  const nearNetwork = ChainNetworks.near[network]
+  const nearConfig = ChainNetworks.near[network]
   const nearClient = new Client()
+  const nodeUrl = network === 'testnet' ? nearConfig.nodeUrl : 'https://archival-rpc.mainnet.near.org'
+  const nearNetwork = { ...nearConfig, nodeUrl }
   nearClient.addProvider(new NearRpcProvider(nearNetwork))
   nearClient.addProvider(new NearJsWalletProvider(
     {
