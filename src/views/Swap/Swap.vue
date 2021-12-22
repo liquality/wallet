@@ -209,7 +209,7 @@
                 {{ sendAmount }} {{ asset }}
               </div>
               <div class="details-text" id="send_swap_amount_fiat">
-                {{ sendAmountFiat }}
+                {{ formatFiatUI(sendAmountFiat) }}
               </div>
             </div>
           </div>
@@ -220,7 +220,7 @@
                 ~{{ dpUI(fromSwapFee) }} {{ assetChain }}
               </div>
               <div class="details-text" id="swap_send_network_fee_fiat_rate">
-                ${{ prettyFiatBalance(fromSwapFee, fiatRates[assetChain]) }}
+                {{ formatFiatUI(prettyFiatBalance(fromSwapFee, fiatRates[assetChain])) }}
               </div>
             </div>
           </div>
@@ -240,7 +240,7 @@
                 class="font-weight-bold"
                 id="swap_send_amount_fees_fiat_rate"
               >
-                ${{ totalToSendInFiat }}
+                {{ formatFiatUI(totalToSendInFiat) }}
               </div>
             </div>
           </div>
@@ -264,7 +264,7 @@
                 {{ dpUI(receiveAmount) }} {{ toAsset }}
               </div>
               <div class="details-text" id="receive_swap_amount_fiat">
-                {{ '$' + formatFiat(receiveAmountFiat) }}
+                {{ formatFiatUI(formatFiat(receiveAmountFiat)) }}
               </div>
             </div>
           </div>
@@ -282,7 +282,7 @@
             >
               <div>~{{ dpUI(toSwapFee) }} {{ toAssetChain }}</div>
               <div class="details-text" id="swap_receive_network_fee_fiat_rate">
-                ${{ prettyFiatBalance(toSwapFee, fiatRates[toAssetChain]) }}
+                {{ formatFiatUI(prettyFiatBalance(toSwapFee, fiatRates[toAssetChain])) }}
               </div>
             </div>
           </div>
@@ -302,7 +302,7 @@
                 class="font-weight-bold"
                 id="swap_receive_total_amount_in_fiat"
               >
-                {{'$' + totalToReceiveInFiat }}
+                {{formatFiatUI(totalToReceiveInFiat) }}
               </div>
             </div>
           </div>
@@ -418,6 +418,7 @@ import {
   dpUI,
   prettyBalance,
   prettyFiatBalance,
+  formatFiatUI,
   cryptoToFiat,
   fiatToCrypto,
   formatFiat,
@@ -853,6 +854,7 @@ export default {
     dpUI,
     prettyBalance,
     prettyFiatBalance,
+    formatFiatUI,
     getAssetIcon,
     getAssetColorStyle,
     formatFiat,

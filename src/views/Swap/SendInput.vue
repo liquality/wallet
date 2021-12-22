@@ -17,7 +17,7 @@
                 >
                   {{ `${asset} ${sendAmount}` }}
                 </span>
-                <span v-else> ${{ sendAmountFiat }} </span>
+                <span v-else> {{ formatFiatUI(sendAmountFiat) }} </span>
               </button>
             </div>
           </div>
@@ -115,7 +115,7 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { dpUI } from '@/utils/coinFormatter'
+import { dpUI, formatFiatUI } from '@/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import AccountTooltip from '@/components/AccountTooltip'
 
@@ -147,6 +147,7 @@ export default {
   created () {},
   methods: {
     dpUI,
+    formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
     toggleShowAmountsFiat () {

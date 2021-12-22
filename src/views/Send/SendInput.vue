@@ -17,12 +17,12 @@
                 >
                   {{ `${asset} ${amount}` }}
                 </span>
-                <span v-else> ${{ amountFiat }} </span>
+                <span v-else> {{formatFiatUI(amountFiat) }} </span>
               </button>
             </div>
           </div>
           <div class="input-group mb-3" v-if="showAmountsInFiat">
-            <span class="input-group-text">$</span>
+            <span class="input-group-text">{{isNaN(amountFiat)? '' : '$'}}</span>
             <input
               type="number"
               class="form-control"
@@ -93,7 +93,7 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { dpUI } from '@/utils/coinFormatter'
+import { dpUI, formatFiatUI } from '@/utils/coinFormatter'
 import AccountTooltip from '@/components/AccountTooltip'
 import { mapState } from 'vuex'
 
@@ -124,6 +124,7 @@ export default {
   },
   methods: {
     dpUI,
+    formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
     toggleShowAmountsFiat () {
