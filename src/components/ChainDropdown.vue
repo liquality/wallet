@@ -14,8 +14,8 @@
               </span>
         </div>
       </div>
-       <ChevronUpIcon v-if="dropdownOpen" />
-        <ChevronDownIcon v-else />
+      <ChevronUpIcon v-if="dropdownOpen" />
+      <ChevronDownIcon v-else />
   </button>
   <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
     <li v-if="showSearch">
@@ -149,14 +149,18 @@ export default {
       display: none;
     }
 
+    .asset-icon {
+      height: 22px;
+    }
+
     .input-group-text {
-      font-size: $font-size-lg;
+      font-size: $font-size-base;
       margin-left: 5px;
     }
 
     svg {
-        width: 16px;
-        margin-left: 4px;
+      height: 6px;
+      margin-left: 4px;
     }
   }
 
@@ -169,7 +173,6 @@ export default {
     padding-bottom: 0;
     padding-top: 0;
     margin: 0;
-    right: 0;
     left: auto;
     border: 1px solid #D9DFE5;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);

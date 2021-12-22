@@ -12,16 +12,6 @@
           <toggle-button :css-colors="true" :value="injectEthereum" @change="e => toggleInjectEthereum(e.value)"/>
         </div>
       </div>
-      <div class="setting-item">
-        <div class="setting-item_title flex-fill" id="settings_item_web_network">Web3 Network
-          <span class="setting-item_sub">Select which Web3 network should be used for dapps.</span>
-        </div>
-        <div class="setting-item_control">
-          <ChainDropdown :chains="ethereumChains"
-                         :selected="injectEthereumChain"
-                         @chain-changed="updateInjectEthereumChain"/>
-        </div>
-      </div>
       <div class="setting-item" id="forgetAllDappsDone">
         <div class="setting-item_title flex-fill mb-2">Dapp Connections
           <span class="setting-item_sub">Forget all of the dapps connected.</span>
@@ -72,16 +62,12 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { version } from '../../package.json'
-import { isEthereumChain } from '@liquality/cryptoassets'
-import buildConfig from '@/build.config'
 import { downloadFile, getWalletStateLogs } from '@/utils/export'
 import NavBar from '@/components/NavBar.vue'
-import ChainDropdown from '@/components/ChainDropdown'
 
 export default {
   components: {
-    NavBar,
-    ChainDropdown
+    NavBar
   },
   data: function () {
     return {
@@ -92,15 +78,11 @@ export default {
     ...mapState([
       'activeNetwork',
       'activeWalletId',
-      'injectEthereum',
-      'injectEthereumChain'
+      'injectEthereum'
     ]),
     ...mapGetters([
       'analyticsEnabled'
     ]),
-    ethereumChains () {
-      return buildConfig.chains.filter(isEthereumChain)
-    },
     appVersion () {
       return version
     }
@@ -109,7 +91,6 @@ export default {
     ...mapActions([
       'enableEthereumInjection',
       'disableEthereumInjection',
-      'setEthereumInjectionChain',
       'setAnalyticsResponse',
       'initializeAnalytics',
       'trackAnalytics',
@@ -127,17 +108,6 @@ export default {
           category: 'Settings',
           action: 'Default Web3 Wallet Updated',
           label: `${enable}`
-        }
-      })
-    },
-    updateInjectEthereumChain (chain) {
-      this.setEthereumInjectionChain({ chain })
-      this.trackAnalytics({
-        event: 'Web3 Network Update',
-        properties: {
-          category: 'Settings',
-          action: 'Web3 Network Updated',
-          label: `${chain}`
         }
       })
     },
