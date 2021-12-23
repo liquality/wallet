@@ -109,7 +109,7 @@ describe('Manage Accounts-[mainnet,smoke]', async () => {
     rskAccounts = await page.$$('#account-item-rsk')
     expect(rskAccounts.length).to.equals(3)
   })
-  it('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
+  it.skip('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     // Enter seed words and submit
