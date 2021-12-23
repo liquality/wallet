@@ -223,15 +223,17 @@ export default {
   &_title {
     width: 100%;
     text-align: center;
-    font-weight: bold;
+    font-weight: $headings-font-weight;
     text-transform: uppercase;
+    font-size: $font-size-sm;
   }
 
   &_menu,
   &_prev {
     position: absolute;
     color: $color-text-muted;
-    font-size: $font-size-sm;
+    font-size: $font-size-tiny;
+    font-weight: $font-weight-light;
     cursor: pointer;
   }
 

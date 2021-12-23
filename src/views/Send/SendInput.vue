@@ -16,13 +16,14 @@
                 >
                   {{ `${asset} ${amount}` }}
                 </span>
-                <span v-else> $ {{ amountFiat }} </span>
+                <span v-else> ${{ amountFiat }} </span>
               </div>
             </div>
           </div>
-          <div class="input-group mb-3" v-if="showAmountsInFiat">
-            <span class="input-group-text">$</span>
+          <div class="input-group">
+            <span v-if="showAmountsInFiat" class="input-group-text">$</span>
             <input
+              v-if="showAmountsInFiat"
               type="number"
               class="form-control"
               :class="{ 'is-invalid': amountError }"
@@ -32,20 +33,21 @@
               autocomplete="off"
               aria-label="Amount (to the nearest dollar)"
             />
+            <input
+              v-else
+              type="number"
+              class="form-control"
+              id="send_amount_input_field"
+              :class="{ 'is-invalid': amountError }"
+              :value="amount"
+              @input="$emit('update:amount', $event.target.value)"
+              placeholder="0.00"
+              :style="getAssetColorStyle(asset)"
+              autocomplete="off"
+            />
           </div>
-          <input
-            v-else
-            type="number"
-            class="form-control"
-            id="send_amount_input_field"
-            :class="{ 'is-invalid': amountError }"
-            :value="amount"
-            @input="$emit('update:amount', $event.target.value)"
-            placeholder="0.00"
-            :style="getAssetColorStyle(asset)"
-            autocomplete="off"
-          />
         </div>
+
         <AccountTooltip :account="account" :asset="asset">
           <div class="send-main-icon">
             <img :src="getAssetIcon(asset)" class="asset-icon" />
@@ -62,6 +64,10 @@
       </div>
     </div>
     <div class="send-bottom">
+      <div class="send-bottom-available" id="send_available_balance">
+        <span class="text-muted">Available</span>
+        {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
+      </div>
       <div class="send-bottom-options">
         <div class="btn-group">
           <v-popover offset="1" trigger="hover focus">
@@ -81,10 +87,6 @@
             </template>
           </v-popover>
         </div>
-      </div>
-      <div class="send-bottom-available" id="send_available_balance">
-        <span class="text-muted">Available</span>
-        {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
       </div>
     </div>
   </div>
@@ -134,11 +136,12 @@ export default {
 
   .send-top {
     display: flex;
+    align-items: center;
     justify-content: space-between;
 
     .send-top-label {
-      font-size: 0.75rem;
-      font-weight: bold;
+      font-size: $font-size-tiny;
+      font-weight: $headings-font-weight;
       text-transform: uppercase;
     }
   }
@@ -148,12 +151,18 @@ export default {
     flex-direction: column;
     .send-main-input-container {
       display: flex;
-      justify-content: space-between;
+      align-items: flex-end;
+      justify-content: flex-start;
 
       .send-main-input {
         display: flex;
         flex-direction: column;
         max-width: 190px;
+
+        .form-control {
+          margin-top: 5px;
+          text-align: right;
+        }
       }
     }
 
@@ -192,13 +201,15 @@ export default {
 
   .send-bottom {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     margin-top: 10px;
+    max-width: 190px;
 
     .send-bottom-available {
       line-height: 15px;
       text-transform: none;
-      font-weight: normal;
+      font-weight: $font-weight-light;
       font-size: $font-size-tiny;
     }
   }

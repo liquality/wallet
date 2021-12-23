@@ -1,13 +1,13 @@
 <template>
  <div class="details-container">
-          <div class="details-header" id="details_header_chevron_down_icon" @click.stop="showDetails = !showDetails">
-            <ChevronDownIcon :class="showDetails ? '' : 'right'"/>
-            &nbsp;  <slot name="header"></slot>
-          </div>
-          <div class="details-content" v-if="showDetails">
-            <slot name="content"></slot>
-          </div>
-        </div>
+    <div class="details-header" id="details_header_chevron_down_icon" @click.stop="showDetails = !showDetails">
+      <ChevronDownIcon :class="showDetails ? '' : 'right'"/>
+      <slot name="header"></slot>
+    </div>
+    <div class="details-content" v-if="showDetails">
+      <slot name="content"></slot>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -39,7 +39,6 @@ export default {
   .details-header {
     cursor: pointer;
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
     align-content: space-between;
     font-size: $font-size-tiny;
@@ -48,6 +47,7 @@ export default {
     svg {
       height: 5px;
       margin-right: 10px;
+      margin-top: 2px;
     }
 
     svg.right {

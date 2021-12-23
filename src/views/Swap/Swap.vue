@@ -8,7 +8,7 @@
             ? '/wallet'
             : `/accounts/${account.id}/${asset}`
         "
-        :backLabel="routeSource === 'assets' ? 'Overview' : asset"
+        backLabel="Back"
       >
         Swap
       </NavBar>

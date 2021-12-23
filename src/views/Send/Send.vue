@@ -8,7 +8,7 @@
             ? '/wallet'
             : `/accounts/${account.id}/${asset}`
         "
-        :backLabel="routeSource === 'assets' ? 'Overview' : asset"
+        backLabel="Back"
       >
         Send
       </NavBar>
@@ -52,12 +52,14 @@
           <div class="form-group mt-150">
             <DetailsContainer v-if="feesAvailable">
               <template v-slot:header>
-                <span class="details-title" id="send_network_speed"
-                  >Network Speed/Fee</span
-                >
+                <div class="network-header-container">
+                <span class="details-title" id="send_network_speed">
+                  Network Speed/Fee
+                </span>
                 <span class="text-muted" id="send_network_speed_avg_fee">
                   ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
                 </span>
+                </div>
               </template>
               <template v-slot:content>
                 <ul class="selectors">
@@ -678,6 +680,12 @@ export default {
       font-weight: normal;
     }
   }
+}
+
+.network-header-container {
+  display: flex;
+  flex-flow: column;
+  gap: 5px;
 }
 
 /* Chrome, Safari, Edge, Opera */

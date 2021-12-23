@@ -64,20 +64,20 @@ export default {
   align-items: center;
   padding: 0 20px;
 
-   &_logo {
+  &_logo {
     position: absolute;
     left: 10px;
   }
 
   &_logo, &_logo svg {
     height: 12px;
-
   }
 
   &_network {
     height: 36px;
     display: flex;
     font-size: $font-size-tiny;
+    font-weight: $font-weight-base;
     justify-content: center;
     align-items: center;
     text-transform: capitalize;
