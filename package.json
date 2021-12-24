@@ -135,7 +135,7 @@
     "kcd-scripts": "^11.2.0",
     "mochawesome": "7.0.1",
     "puppeteer": "13.0.1",
-    "puppeteer-core": "13.0.0",
+    "puppeteer-core": "13.0.1",
     "sass": "1.45.1",
     "sass-loader": "^8.0.2",
     "sinon-chrome": "^3.0.1",
