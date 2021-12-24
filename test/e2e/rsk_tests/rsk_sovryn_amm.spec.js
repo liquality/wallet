@@ -83,7 +83,8 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${fromAsset}_swap_button`)
       // Select 2nd Pair (FISH)
       try {
-        await page.click('.swap-receive-main-icon', { button: 'middle' })
+        await page.waitForTimeout(5000)
+        await page.click('#swap-receive-main-icon')
         await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
         await page.type('#search_for_a_currency', toAsset.coin)
         await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
