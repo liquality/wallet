@@ -71,6 +71,15 @@
                   Terra (LUNA)
                 </a>
               </li>
+              <li>
+                <a class="dropdown-item"
+                   id="fuse"
+                   href="#"
+                   @click="selectChain('fuse')"
+                   :class="{active: chain === 'fuse'}">
+                  Fuse (FUSE)
+                </a>
+              </li>
             </ul>
           </div>
         </div>
