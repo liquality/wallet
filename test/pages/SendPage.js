@@ -30,8 +30,8 @@ class SendPage {
    */
   async EnterSendToAddress (page, sendToAddress) {
     await page.waitForSelector('#address', { visible: true })
-    const elementHandle = await page.$('#address');
-    await elementHandle.type(sendToAddress);
+    const elementHandle = await page.$('#address')
+    await elementHandle.type(sendToAddress)
     await page.waitForTimeout(1000)
   }
 
@@ -45,7 +45,7 @@ class SendPage {
     // Wait for Review button Enabled
     await page.waitForSelector('#send_review_button', { visible: true, timeout: 60000 })
     try {
-      await page.click('#send_review_button',{button:'left',clickCount:2})
+      await page.click('#send_review_button', { button: 'left', clickCount: 3 })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         await page.$eval('#send_review_button', el => el.click())
@@ -63,7 +63,7 @@ class SendPage {
   }
 
   /**
-   * Confirm SEND button.
+   * Confirm SEND button, waiting for transaction to show under activity tab.
    * @param page
    * @returns {Promise<void>}
    * @constructor
@@ -72,10 +72,9 @@ class SendPage {
     await page.waitForSelector('#send_button_confirm', { visible: true })
     await page.click('#send_button_confirm')
     console.log('User clicked on SEND button Confirm...waiting for Transaction Status')
-    await page.waitForTimeout(10000)
     await page.waitForSelector('.transaction-list', {
       visible: true,
-      timeout: 120000
+      timeout: 240000
     })
     try {
       await page.waitForSelector('.transaction-status', { visible: true, timeout: 60000 })
