@@ -45,7 +45,7 @@ class SendPage {
     // Wait for Review button Enabled
     await page.waitForSelector('#send_review_button', { visible: true, timeout: 60000 })
     try {
-      await page.click('#send_review_button', { button: 'left', clickCount: 3 })
+      await page.click('#send_review_button', {clickCount: 5 })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         await page.$eval('#send_review_button', el => el.click())

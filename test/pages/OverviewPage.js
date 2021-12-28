@@ -364,11 +364,24 @@ class OverviewPage {
    * @constructor
    */
   async GetAssertAddress (page, assertName) {
-    const $parent = await page.$(`#${assertName}`)
-    await page.waitForTimeout(15000)
-    const assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
-    expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.empty
-    return assertAddress
+    let assertAddress
+
+    try{
+      await page.waitForSelector(`#${assertName}`, { visible: true })
+      const $parent = await page.$(`#${assertName}`)
+      await page.waitForTimeout(10000)
+      assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
+      if (assertAddress == null || assertAddress === '') {
+        await page.waitForTimeout(10000)
+      }
+      expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.empty
+    } catch (e) {
+    if (e instanceof puppeteer.errors.TimeoutError) {
+      await testUtil.takeScreenshot(page, 'get-address-from-overview-page')
+      expect(e, `${assertName} get address from overview page should not empty!`).equals(null)
+    }
+  }
+  return assertAddress
   }
 
   /**
