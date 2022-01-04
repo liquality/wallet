@@ -27,7 +27,7 @@
               type="number"
               class="form-control"
               :class="{ 'is-invalid': amountError }"
-              :value="amountFiat.replaceAll(',', '')"
+              :value="amountFiatInputFormat()"
               @input="$emit('update:amountFiat', $event.target.value)"
               placeholder="0.00"
               autocomplete="off"
@@ -123,6 +123,10 @@ export default {
     getAssetIcon,
     toggleShowAmountsFiat () {
       this.showAmountsInFiat = !this.showAmountsInFiat
+    },
+    amountFiatInputFormat () {
+      // in case of undefined/NaN value for amount in fiat, present the placeholder value
+      return !this.amountFiat ? '' : this.amountFiat.replaceAll(',', '')
     }
   }
 }

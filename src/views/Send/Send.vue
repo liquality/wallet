@@ -264,8 +264,8 @@ export default {
     return {
       sendFees: {},
       maxSendFees: {},
-      stateAmount: 0,
-      stateAmountFiat: 0,
+      stateAmount: 0.0,
+      stateAmountFiat: 0.00,
       address: null,
       selectedFee: 'average',
       currentStep: 'inputs',
@@ -311,9 +311,14 @@ export default {
         return this.stateAmountFiat
       },
       set (newValue) {
-        const value = (newValue || '0')
-        this.stateAmountFiat = value
-        this.stateAmount = fiatToCrypto(value.replaceAll(',', ''), this.fiatRates[this.asset])
+        if (!newValue) {
+          // keep it as a number instead of string, otherwise the placeholder of input won't appear
+          this.stateAmountFiat = 0.00
+          this.stateAmount = 0.0
+        } else {
+          this.stateAmountFiat = newValue
+          this.stateAmount = fiatToCrypto(this.stateAmountFiat?.replaceAll(',', ''), this.fiatRates[this.asset])
+        }
       }
     },
     balance () {
