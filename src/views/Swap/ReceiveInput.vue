@@ -2,7 +2,7 @@
   <div class="swap-receive-container">
     <div class="swap-receive-main">
       <div class="swap-receive-main-input-container">
-        <div class="swap-send-main-input">
+        <div class="swap-receive-main-input">
           <div class="swap-receive-top">
             <div class="swap-receive-top-label">Receive</div>
             <div class="swap-receive-top-amount">
@@ -16,11 +16,11 @@
                 >
                   {{ `${toAsset} ${receiveAmount}` }}
                 </span>
-                <span v-else> {{'$ ' + formatFiat(receiveAmountFiat) }} </span>
+                <span v-else> {{'$' + formatFiat(receiveAmountFiat) }} </span>
               </div>
             </div>
           </div>
-          <div class="input-group mb-3" v-if="showAmountsInFiat && !isNaN(receiveAmountFiat)">
+          <div class="input-group" v-if="showAmountsInFiat && !isNaN(receiveAmountFiat)">
             <span class="input-group-text">$</span>
             <input
               type="number"
@@ -126,12 +126,22 @@ export default {
     flex-direction: column;
     .swap-receive-main-input-container {
       display: flex;
-      justify-content: space-between;
+      align-items: flex-end;
+      justify-content: flex-start;
 
       .swap-receive-main-input {
         display: flex;
         flex-direction: column;
         max-width: 190px;
+
+        .input-group {
+          align-items: flex-end;
+        }
+      }
+
+      .form-control {
+        margin-top: 5px;
+        text-align: right;
       }
     }
 

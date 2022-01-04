@@ -20,13 +20,13 @@
               </div>
             </div>
           </div>
-          <div class="input-group mb-3" v-if="showAmountsInFiat">
+          <div class="input-group" v-if="showAmountsInFiat">
             <span class="input-group-text">$</span>
             <input
               type="number"
               class="form-control"
               :class="{ 'is-invalid': showErrors && amountError }"
-              :value="sendAmountFiat"
+              :value="sendAmountFiatInputFormat()"
               @input="$emit('update:sendAmountFiat', $event.target.value)"
               placeholder="0.00"
               autocomplete="off"
@@ -156,6 +156,10 @@ export default {
     },
     assetIconClick () {
       this.$emit('from-asset-click')
+    },
+    sendAmountFiatInputFormat () {
+      // in case of undefined/NaN value for amount in fiat, present the placeholder value
+      return !this.sendAmountFiat ? '' : this.sendAmountFiat.replaceAll(',', '')
     }
   }
 }
@@ -183,12 +187,22 @@ export default {
     flex-direction: column;
     .swap-send-main-input-container {
       display: flex;
-      justify-content: space-between;
+      align-items: flex-end;
+      justify-content: flex-start;
 
       .swap-send-main-input {
         display: flex;
         flex-direction: column;
         max-width: 190px;
+
+        .input-group {
+          align-items: flex-end;
+        }
+
+        .form-control {
+          margin-top: 5px;
+          text-align: right;
+        }
       }
     }
 

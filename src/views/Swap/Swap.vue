@@ -90,32 +90,34 @@
         >
           <DetailsContainer>
             <template v-slot:header>
-              <span class="details-title" id="network_speed_fee"
-                >Network Speed/Fee</span
-              >
-              <span class="text-muted">
-                {{ assetChain }}
-                {{
-                  assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : ""
-                }}
-              </span>
-              <span
-                class="text-muted"
-                v-if="toAssetChain && assetChain != toAssetChain"
-              >
-                /{{ toAssetChain }}
-                {{
-                  toAssetChain
-                    ? getSelectedFeeLabel(selectedFee[toAssetChain])
-                    : ""
-                }}
-              </span>
+              <div class="network-header-container">
+                <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
+                <div class="network-header-state">
+                  <span class="text-muted">
+                    {{ assetChain }}
+                    {{
+                      assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : ""
+                    }}
+                  </span>
+                  <span
+                    class="text-muted"
+                    v-if="toAssetChain && assetChain != toAssetChain"
+                  >
+                    / {{ toAssetChain }}
+                    {{
+                      toAssetChain
+                        ? getSelectedFeeLabel(selectedFee[toAssetChain])
+                        : ""
+                    }}
+                  </span>
+                </div>
+              </div>
             </template>
             <template v-slot:content>
               <ul class="selectors">
                 <li v-for="assetFee in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
-                  <div v-if="customFees[assetFee]">
+                  <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     {{ getTotalSwapFee(assetFee) }} {{ assetFee }} /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
                     <button
@@ -478,8 +480,8 @@ export default {
   },
   data () {
     return {
-      stateSendAmount: 0,
-      stateSendAmountFiat: 0,
+      stateSendAmount: 0.0,
+      stateSendAmountFiat: 0.00,
       amountOption: null,
       asset: null,
       toAsset: null,
@@ -597,9 +599,13 @@ export default {
         return this.stateSendAmountFiat
       },
       set (newValue) {
-        const value = (newValue || '0').replace('$', '')
-        this.stateSendAmountFiat = value
-        this.stateSendAmount = fiatToCrypto(value, this.fiatRates[this.asset])
+        if (!newValue) {
+          this.stateAmountFiat = 0.00
+          this.stateAmount = 0.0
+        } else {
+          this.stateSendAmountFiat = newValue.replace('$', '')
+          this.stateSendAmount = fiatToCrypto(this.stateSendAmountFiat?.replaceAll(',', ''), this.fiatRates[this.asset])
+        }
       }
     },
     receiveAmount () {
@@ -1335,5 +1341,20 @@ export default {
       transform: rotate(180deg);
     }
   }
+}
+
+.network-header-container {
+  display: flex;
+  flex-flow: column;
+  gap: 5px;
+
+  .network-header-state {
+    margin-top: 5px;
+  }
+}
+
+.selector-asset-switch {
+  display: flex;
+  align-items: center;
 }
 </style>
