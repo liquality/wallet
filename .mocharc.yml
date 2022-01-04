@@ -9,6 +9,7 @@ parallel: true
 jobs: 10
 recursive: true
 diff: true
+retries: 1
 spec:
   - 'test/**/*.spec.js'
 extension:

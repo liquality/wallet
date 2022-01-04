@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v2.5.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:

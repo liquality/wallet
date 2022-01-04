@@ -44,9 +44,9 @@
           />
         </div>
         <AccountTooltip :account="account" :asset="toAsset">
-          <div class="swap-receive-main-icon" @click="assetIconClick">
+          <div class="swap-receive-main-icon" id="swap-receive-main-icon" @click="assetIconClick">
             <img :src="getAssetIcon(toAsset)" class="asset-icon" />
-            <span class="asset-name">
+            <span class="asset-name"  :id="`${toAsset}_swap_receive_pair_asset`">
               {{ toAsset }}
             </span>
             <div>

@@ -18,7 +18,7 @@ const password = '123123123'
 if (process.env.NODE_ENV === 'mainnet') {
 // Sovryn AMM works against RSK chain
   describe('SWAP Sovryn AMM service Provider-["MAINNET"]', async () => {
-    before(async () => {
+    beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         await overviewPage.SelectNetwork(page, 'mainnet')
       }
     })
-    after(async () => {
+    afterEach(async () => {
       await browser.close()
     })
     it('Sovryn AMM(RBTC->SOV) quote check', async () => {
@@ -81,12 +81,20 @@ if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectAssetFromOverview(page, fromAsset)
       await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
       await page.click(`#${fromAsset}_swap_button`)
-      // Select 2nd Pair
-      await page.click('.swap-receive-main-icon')
-      await page.waitForSelector(`#${toAsset.chain}`, { visible: true })
-      await page.click(`#${toAsset.chain}`)
-      await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
-      await page.click(`#${toAsset.coin}`)
+      // Select 2nd Pair (FISH)
+      try {
+        await page.waitForTimeout(5000)
+        await page.click('#swap-receive-main-icon')
+        await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
+        await page.type('#search_for_a_currency', toAsset.coin)
+        await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
+        await page.click(`#${toAsset.coin}`)
+      } catch (e) {
+        if (e instanceof puppeteer.errors.TimeoutError) {
+          await testUtil.takeScreenshot(page, 'click-fish-asset-swap-issue')
+          expect(e, 'Select FISH assert for SWAP').equals(null)
+        }
+      }
       await page.waitForSelector('#selectedQuote_provider', {
         visible: true,
         timeout: 60000
