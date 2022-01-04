@@ -27,7 +27,7 @@
               type="number"
               class="form-control"
               :class="{ 'is-invalid': amountError }"
-              :value="amountFiat"
+              :value="amountFiat.replaceAll(',', '')"
               @input="$emit('update:amountFiat', $event.target.value)"
               placeholder="0.00"
               autocomplete="off"
