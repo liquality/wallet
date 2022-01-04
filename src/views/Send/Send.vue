@@ -53,12 +53,12 @@
             <DetailsContainer v-if="feesAvailable">
               <template v-slot:header>
                 <div class="network-header-container">
-                <span class="details-title" id="send_network_speed">
-                  Network Speed/Fee
-                </span>
-                <span class="text-muted" id="send_network_speed_avg_fee">
-                  ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
-                </span>
+                  <span class="details-title" id="send_network_speed">
+                    Network Speed/Fee
+                  </span>
+                  <span class="text-muted" id="send_network_speed_avg_fee">
+                    ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
+                  </span>
                 </div>
               </template>
               <template v-slot:content>
@@ -691,6 +691,10 @@ export default {
   display: flex;
   flex-flow: column;
   gap: 5px;
+
+  .text-muted {
+    margin-top: 5px;
+  }
 }
 
 /* Chrome, Safari, Edge, Opera */

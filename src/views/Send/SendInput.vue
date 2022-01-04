@@ -163,6 +163,10 @@ export default {
         flex-direction: column;
         max-width: 190px;
 
+        .input-group {
+          align-items: flex-end;
+        }
+
         .form-control {
           margin-top: 5px;
           text-align: right;
