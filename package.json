@@ -130,7 +130,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "ethereumjs-wallet": "^1.0.1",
     "husky": "7.0.4",
-    "jest": "27.4.5",
+    "jest": "27.4.6",
     "jest-environment-jsdom-fifteen": "^1.0.2",
     "kcd-scripts": "^11.2.0",
     "mochawesome": "7.0.1",
