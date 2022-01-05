@@ -720,7 +720,7 @@ export default {
       if (!this.selectedQuote.bridgeAsset) return true
       const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
       const toSwapFeeInUnits = currencyToUnit(cryptoassets[this.selectedQuote.bridgeAsset], this.toSwapFee)
-      return (BN(balance).plus(this.selectedQuote.bridgeAssetAmount)).gt(toSwapFeeInUnits)
+      return BN(balance).gt(toSwapFeeInUnits)
     },
     availableAmount () {
       return dpUI(this.available, VALUE_DECIMALS)
