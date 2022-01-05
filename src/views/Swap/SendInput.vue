@@ -6,9 +6,10 @@
           <div class="swap-send-top">
             <div class="swap-send-top-label">Send</div>
             <div class="swap-send-top-amount">
-              <div
+              <button
                 class="btn btn-option label-append"
                 @click="toggleShowAmountsFiat"
+                :disabled="isNaN(sendAmountFiat)"
               >
                 <span
                   v-if="showAmountsInFiat"
@@ -16,8 +17,8 @@
                 >
                   {{ `${asset} ${sendAmount}` }}
                 </span>
-                <span v-else> ${{ sendAmountFiat }} </span>
-              </div>
+                <span v-else> {{ formatFiatUI(sendAmountFiat) }} </span>
+              </button>
             </div>
           </div>
           <div class="input-group mb-3" v-if="showAmountsInFiat">
@@ -114,7 +115,7 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { dpUI } from '@/utils/coinFormatter'
+import { dpUI, formatFiatUI } from '@/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import AccountTooltip from '@/components/AccountTooltip'
 
@@ -146,6 +147,7 @@ export default {
   created () {},
   methods: {
     dpUI,
+    formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
     toggleShowAmountsFiat () {
