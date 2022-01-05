@@ -1369,6 +1369,7 @@ export default {
     svg {
       width: 20px;
       height: 18px;
+      fill: #A8AEB7;
     }
 }
 </style>
