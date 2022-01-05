@@ -45,7 +45,6 @@
         </li>
         <li
           id="manage_accounts"
-          v-if="experiments.manageAccounts"
           @click="manageAccounts"
         >
           <AccountsIcon />
