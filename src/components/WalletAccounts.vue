@@ -28,7 +28,7 @@
             </div>
           </template>
           <template #detail-sub v-if="account.totalFiatBalance && account.loadingInitialBalance === false">
-            ${{ formatFiat(account.totalFiatBalance) }}
+            {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
           </template>
           <template v-else>
             Loading...
@@ -63,7 +63,7 @@
             </div>
           </template>
           <template #detail-sub v-if="account.totalFiatBalance && account.loadingInitialBalance === false">
-            ${{ formatFiat(account.totalFiatBalance) }}
+            {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
           </template>
           <template v-else>
             Loading...
@@ -88,7 +88,7 @@
             {{ prettyBalance(account.balances[asset], asset) }} {{asset}}
           </template>
           <template #detail-sub v-if="account.fiatBalances[asset]">
-            ${{ formatFiat(account.fiatBalances[asset]) }}
+            {{ formatFiatUI(formatFiat(account.fiatBalances[asset])) }}
           </template>
       </ListItem>
       </div>
@@ -99,7 +99,7 @@
 
 <script>
 import ListItem from '@/components/ListItem'
-import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
+import { prettyBalance, formatFiat, formatFiatUI } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import { getAccountIcon } from '@/utils/accounts'
 import cryptoassets from '@/utils/cryptoassets'
@@ -138,6 +138,7 @@ export default {
     getAssetIcon,
     prettyBalance,
     formatFiat,
+    formatFiatUI,
     shortenAddress,
     getAssetName (asset) {
       return cryptoassets[asset] ? cryptoassets[asset].name : asset
