@@ -39,7 +39,9 @@
             :amount-option="amountOption"
             @send-amount-change="setSendAmount"
           />
-
+          <div class="arrow-down">
+            <ArrowDown />
+          </div>
           <ReceiveInput
             class="mt-30"
             :account="toAccount"
@@ -435,6 +437,7 @@ import { shortenAddress } from '@/utils/address'
 import { getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import ArrowDown from '@/assets/icons/arrow-down.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import ReceiveInput from './ReceiveInput'
@@ -465,6 +468,7 @@ export default {
     FeeSelector,
     SwapIcon,
     SpinnerIcon,
+    ArrowDown,
     DetailsContainer,
     SendInput,
     ReceiveInput,
@@ -1356,5 +1360,15 @@ export default {
 .selector-asset-switch {
   display: flex;
   align-items: center;
+}
+
+.arrow-down {
+    margin-top: 27px;
+    display: flex;
+    justify-content: center;
+    svg {
+      width: 20px;
+      height: 18px;
+    }
 }
 </style>
