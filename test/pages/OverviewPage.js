@@ -37,29 +37,28 @@ class OverviewPage {
     await page.waitForSelector('#head_network', { visible: true })
     await page.click('#head_network', { delay: 5 })
     await page.waitForTimeout(1000)
+    let overviewText
     switch (network) {
-      case 'testnet': {
+      case 'testnet':
         await page.waitForSelector('#testnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
         await page.click('#testnet_network', { delay: 10 })
         await page.waitForTimeout(2000)
         await page.waitForSelector('#active_network', { visible: true })
-        const overviewText = await page.$eval('#active_network', el => el.innerText)
+        overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Testnet overview header').contain('TESTNET')
         console.log('user successfully changed to TESTNET')
         break
-      }
 
-      case 'mainnet': {
+      case 'mainnet':
         await page.waitForSelector('#mainnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
         await page.click('#mainnet_network')
         await page.waitForSelector('#active_network', { visible: true })
-        const overviewText = await page.$eval('#active_network', el => el.innerText)
+        overviewText = await page.$eval('#active_network', el => el.innerText)
         expect(overviewText, 'Mainnet overview header').contain('MAINNET')
         console.log('user successfully changed to MAINNET')
         break
-      }
 
       default:
         throw Error(`Unsupported Network: ${network}`)
@@ -133,66 +132,60 @@ class OverviewPage {
       }
     }
     switch (assetName) {
-      case 'BTC': {
+      case 'BTC':
         await page.waitForSelector('#BITCOIN', { timeout: elementVisibleTimeout, visible: true })
         await page.click('#BITCOIN')
         break
-      }
 
       case 'DAI':
-      case 'ETH': {
+      case 'ETH':
         const eth = await page.waitForSelector('#ETHEREUM', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
         await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${assetName}`)
         break
-      }
 
-      case 'BNB': {
-        const eth = await page.waitForSelector('#BSC', { timeout: elementVisibleTimeout, visible: true })
-        await eth.click()
+      case 'BNB':
+        const bsc = await page.waitForSelector('#BSC', { timeout: elementVisibleTimeout, visible: true })
+        await bsc.click()
         await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${assetName}`)
         break
-      }
 
-      case 'NEAR': {
+      case 'NEAR':
         await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${assetName}`)
-        const eth = await page.waitForSelector('#NEAR', { timeout: elementVisibleTimeout, visible: true })
-        await eth.click()
+        const near = await page.waitForSelector('#NEAR', { timeout: elementVisibleTimeout, visible: true })
+        await near.click()
         break
-      }
 
-      case 'ARBETH': {
-        const eth = await page.waitForSelector('#ARBITRUM', { timeout: elementVisibleTimeout, visible: true })
-        await eth.click()
+      case 'ARBETH':
+        const arbeth = await page.waitForSelector('#ARBITRUM', { timeout: elementVisibleTimeout, visible: true })
+        await arbeth.click()
         await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${assetName}`)
         break
-      }
 
       case 'SOV':
       case 'FISH':
-      case 'RBTC': {
-        const eth = await page.waitForSelector('#RSK', { timeout: elementVisibleTimeout, visible: true })
-        await eth.click()
+      case 'RBTC':
+        const rsk = await page.waitForSelector('#RSK', { timeout: elementVisibleTimeout, visible: true })
+        await rsk.click()
         await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${assetName}`)
         break
-      }
 
       case 'MATIC':
-      case 'PWETH': {
-        const eth = await page.waitForSelector('#POLYGON', { timeout: elementVisibleTimeout, visible: true })
-        await eth.click()
+      case 'PWETH':
+        const polygon = await page.waitForSelector('#POLYGON', { timeout: elementVisibleTimeout, visible: true })
+        await polygon.click()
         await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${assetName}`)
         break
-      }
-      case 'SOL': {
-        const eth = await page.waitForSelector('#SOLANA', { timeout: elementVisibleTimeout, visible: true })
-        await eth.click()
+
+      case 'SOL':
+        const solana = await page.waitForSelector('#SOLANA', { timeout: elementVisibleTimeout, visible: true })
+        await solana.click()
         await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
         // check assert value
         await page.waitForSelector('.list-item-detail', { timeout: elementVisibleTimeout, visible: true })
@@ -200,17 +193,15 @@ class OverviewPage {
         await page.waitForSelector('.list-item-detail-sub', { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${assetName}`)
         break
-      }
 
       case 'LUNA':
-      case 'UST': {
+      case 'UST':
         const terra = await page.waitForSelector('#TERRA', { timeout: elementVisibleTimeout, visible: true })
         await terra.click()
         // click on token
         await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${assetName}`)
         break
-      }
 
       default:
         throw Error(`Unsupported chain: ${assetName}`)
