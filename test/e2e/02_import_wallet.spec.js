@@ -131,7 +131,7 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
       'Import wallet continue button has been disabled if the mnemonic is revered change')
       .contains('disabled')
   })
-  it.only('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path-["PULL_REQUEST_TEST"]', async () => {
+  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path-["PULL_REQUEST_TEST"]', async () => {
     await homePage.EnterSeedWords(page)
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
