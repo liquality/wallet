@@ -353,7 +353,7 @@ class OverviewPage {
    */
   async GetTotalLiquidity (page) {
     // Check the Total amount - 10s wait to load amount
-    await page.waitForSelector('.wallet-stats_total', { timeout: 60000 })
+    await page.waitForSelector('.wallet-stats_total', { timeout: 30000 })
     await page.waitForTimeout(10000)
     return await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g, ''))
   }

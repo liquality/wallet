@@ -148,6 +148,7 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
 
     // Check the Total amount - 10s wait to load amount
     const totalAmount = await overviewPage.GetTotalLiquidity(page)
+    console.log('total wallet fiat amount', parseInt(totalAmount))
     expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 0 USD').greaterThanOrEqual(0)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
 
