@@ -429,10 +429,10 @@ class OverviewPage {
       const $parent = await page.$(`#${assertName}`)
       await page.waitForTimeout(5000)
       assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
-      if (assertAddress) {
+      if (assertAddress === "''") {
         await page.waitForTimeout(10000)
       }
-      expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.empty
+      expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.equals("''")
     } catch (e) {
     if (e instanceof puppeteer.errors.TimeoutError) {
       await testUtil.takeScreenshot(page, 'get-address-from-overview-page')
