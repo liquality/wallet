@@ -371,7 +371,7 @@ class OverviewPage {
       const $parent = await page.$(`#${assertName}`)
       await page.waitForTimeout(5000)
       assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
-      if (assertAddress === empty || assertAddress === "") {
+      if (assertAddress) {
         await page.waitForTimeout(10000)
       }
       expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.empty
