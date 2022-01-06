@@ -26,11 +26,7 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
     await homePage.ClickOnAcceptPrivacy(page)
   })
   afterEach(async () => {
-    try {
-      await browser.close()
-    } catch (e) {
-      throw new Error(e)
-    }
+    await browser.close()
   })
 
   // https://www.notion.so/Wallet-should-validate-mnemonic-per-BIP-39-dac68dd41c664f24a7b4e657fc546281
@@ -157,6 +153,7 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
 
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
+    await testUtil.takeScreenshot(page, 'ethAddress-takeScreenshot')
     assert.isNotEmpty(ethAddress, 'ETH address should not be empty')
     // expect(ethAddress, 'ETH address should not be null').not.to.be.empty
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')

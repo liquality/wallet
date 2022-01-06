@@ -125,7 +125,7 @@ class OverviewPage {
   async SelectAssetFromOverview (page, assetName) {
     const elementVisibleTimeout = 120000
     try {
-      await page.waitForSelector('#asserts_tab', { visible: true, timeout: 60000})
+      await page.waitForSelector('#asserts_tab', { visible: true, timeout: 60000 })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         await testUtil.takeScreenshot(page, `click-asset-from-${assetName}-overview-issue`)
@@ -139,7 +139,7 @@ class OverviewPage {
           visible: true
         })
         await page.click('#BITCOIN')
-        break;
+        break
       }
 
       case 'DAI':
@@ -154,8 +154,8 @@ class OverviewPage {
           visible: true
         })
         await page.click(`#${assetName}`)
-        break;
-    }
+        break
+      }
 
       case 'BNB': {
         const bsc = await page.waitForSelector('#BSC', {
@@ -168,7 +168,7 @@ class OverviewPage {
           visible: true
         })
         await page.click(`#${assetName}`)
-        break;
+        break
       }
 
       case 'NEAR': {
@@ -182,7 +182,7 @@ class OverviewPage {
           visible: true
         })
         await near.click()
-        break;
+        break
       }
 
       case 'ARBETH': {
@@ -196,7 +196,7 @@ class OverviewPage {
           visible: true
         })
         await page.click(`#${assetName}`)
-        break;
+        break
       }
 
       case 'SOV':
@@ -212,7 +212,7 @@ class OverviewPage {
           visible: true
         })
         await page.click(`#${assetName}`)
-        break;
+        break
       }
 
       case 'MATIC':
@@ -227,7 +227,7 @@ class OverviewPage {
           visible: true
         })
         await page.click(`#${assetName}`)
-        break;
+        break
       }
 
       case 'SOL': {
@@ -251,7 +251,7 @@ class OverviewPage {
           visible: true
         })
         await page.click(`#${assetName}`)
-        break;
+        break
       }
 
       case 'LUNA':
@@ -267,7 +267,7 @@ class OverviewPage {
           visible: true
         })
         await page.click(`#${assetName}`)
-        break;
+        break
       }
 
       default:
@@ -424,7 +424,7 @@ class OverviewPage {
   async GetAssertAddress (page, assertName) {
     let assertAddress
 
-    try{
+    try {
       await page.waitForSelector(`#${assertName}`, { visible: true })
       const $parent = await page.$(`#${assertName}`)
       await page.waitForTimeout(5000)
@@ -434,12 +434,12 @@ class OverviewPage {
       }
       expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.equals("''")
     } catch (e) {
-    if (e instanceof puppeteer.errors.TimeoutError) {
-      await testUtil.takeScreenshot(page, 'get-address-from-overview-page')
-      expect(e, `${assertName} get address from overview page should not empty!`).equals(null)
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, 'get-address-from-overview-page')
+        expect(e, `${assertName} get address from overview page should not empty!`).equals(null)
+      }
     }
-  }
-  return assertAddress
+    return assertAddress
   }
 
   /**
