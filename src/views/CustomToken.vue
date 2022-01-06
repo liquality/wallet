@@ -168,7 +168,7 @@ export default {
           contractAddress: this.contractAddress,
           name: this.name,
           symbol: this.symbol,
-          decimals: this.decimals
+          decimals: Number(this.decimals)
         })
       }
       await this.enableAssets({

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
-import { assets as cryptoassets } from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 import { Client } from '@liquality/client'
 import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
 import { EthereumJsWalletProvider } from '@liquality/ethereum-js-wallet-provider'

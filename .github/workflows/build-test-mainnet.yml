@@ -3,10 +3,12 @@ on:
     - cron: '0 9 * * *' # everyday at 9am
     - cron: '0 23 * * *' # everyday at 11pm
 
+# Dev maninet tests
 name: Mainnet tests
 
 jobs:
-  regressiontest:
+  regressiontest_dev_mainnet:
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -14,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v2.5.0
+      - uses: actions/setup-node@v2.5.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
@@ -49,15 +51,8 @@ jobs:
         with:
           args: npm run test:mainnet:devagent # Run tests against dev mainnet
 
-#      - name: Archive Mocha HTML report
-#        uses: actions/upload-artifact@v2.2.4
-#        if: always()
-#        with:
-#          name: mocha-html-test-report
-#          path: mochawesome-report
-
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2.3.0
+        uses: actions/upload-artifact@v2.3.1
         if: always()
         with:
           name: screenshots
