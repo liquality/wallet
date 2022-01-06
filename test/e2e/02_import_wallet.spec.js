@@ -157,10 +157,10 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
 
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
-    assert.isNotEmpty(ethAddress,'ETH address should not be empty')
+    assert.isNotEmpty(ethAddress, 'ETH address should not be empty')
     // expect(ethAddress, 'ETH address should not be null').not.to.be.empty
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
-    assert.isNotEmpty(rskAddress,'RSK address should not be empty')
+    assert.isNotEmpty(rskAddress, 'RSK address should not be empty')
     // expect(rskAddress, 'RSK address should not be null').not.to.be.empty
     expect(rskAddress, `ETH address ${ethAddress} & RSK address ${rskAddress} should be equal if balance is greater than 0`)
       .equals(ethAddress)
