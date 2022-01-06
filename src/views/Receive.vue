@@ -16,7 +16,7 @@
                 class="copy-icon"
                 @click="copy"
                 v-tooltip.bottom="{
-                    content: copied ? 'Copied!' : 'Copy',
+                    content: copied ? 'Copied!' : 'Click to copy',
                     hideOnTargetClick: false,
                   }"
             />
@@ -168,10 +168,7 @@ export default {
       this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
     }
 
-    const uri = [
-      this.chainName,
-      this.address
-    ].join(':')
+    const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')
 
     QRCode.toString(uri, {
       type: 'svg',

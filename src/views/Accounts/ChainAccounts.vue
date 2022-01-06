@@ -61,7 +61,7 @@
             {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
 
             <template #sub-title v-if="account.totalFiatBalance">
-              ${{ formatFiat(account.totalFiatBalance) }}
+              {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
             </template>
             <template #detail>
               <toggle-button
@@ -81,7 +81,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_circle.svg'
-import { formatFiat } from '@/utils/coinFormatter'
+import { formatFiat, formatFiatUI } from '@/utils/coinFormatter'
 import { getAccountIcon, getChainIcon } from '@/utils/accounts'
 import ListItem from '@/components/ListItem'
 
@@ -124,6 +124,7 @@ export default {
     getAccountIcon,
     getChainIcon,
     formatFiat,
+    formatFiatUI,
     getAssetName (asset) {
       return cryptoassets[asset]?.name || asset
     },

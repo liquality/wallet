@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
-import { assets as cryptoassets } from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 import { Client } from '@liquality/client'
 import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
 import { EthereumJsWalletProvider } from '@liquality/ethereum-js-wallet-provider'
@@ -72,7 +72,7 @@ export const shouldApplyRskLegacyDerivation = async (accounts, mnemonic, indexPa
 
   const client = new Client()
     .addProvider(
-      new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' })
+      new EthereumRpcProvider({ uri: process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET })
     )
 
   if (mnemonic) {

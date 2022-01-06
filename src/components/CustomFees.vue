@@ -43,7 +43,7 @@
             <div class="custom-fee-details-item">
               <div class="gas-price-label">Gas Price</div>
               <div class="gas-price-amount" v-if="customFiatAmount">
-                $ {{ customFiatAmount }}
+                ${{ customFiatAmount }}
               </div>
             </div>
             <div class="custom-fee-details-item">

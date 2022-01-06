@@ -51,8 +51,8 @@ const EXPLORERS = {
   },
   polygon: {
     testnet: {
-      tx: 'https://polygonscan.com/tx/0x{hash}',
-      address: 'https://polygonscan.com/address/{hash}'
+      tx: 'https://mumbai.polygonscan.com/tx/0x{hash}',
+      address: 'https://mumbai.polygonscan.com/address/{hash}'
     },
     mainnet: {
       tx: 'https://polygonscan.com/tx/0x{hash}',
@@ -190,7 +190,7 @@ export const tokenDetailProviders = {
   },
   rsk: {
     async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, 'https://public-node.rsk.co')
+      return await fetchTokenDetails(contractAddress, process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET)
     }
   },
   bsc: {

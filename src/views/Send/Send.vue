@@ -155,14 +155,14 @@
               >
                 {{ dpUI(amount) }} {{ asset }}
               </div>
-              <div class="details-text">${{ amountInFiat }}</div>
+              <div class="details-text">{{ formatFiatUI(amountInFiat) }}</div>
             </div>
           </div>
           <div class="detail-group" id="detail_group_network_fee">
             <label class="text-muted"> Network Fee </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div>~{{ prettyFee }} {{ assetChain }}</div>
-              <div class="details-text">${{ totalFeeInFiat }}</div>
+              <div class="details-text">{{formatFiatUI(totalFeeInFiat) }}</div>
             </div>
           </div>
           <div class="detail-group" id="detail_group_account_fee">
@@ -175,7 +175,7 @@
                 {{ dpUI(amount) }} {{ asset }} + {{ prettyFee }}
                 {{ assetChain }}
               </div>
-              <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold">{{formatFiatUI(totalToSendInFiat) }}</div>
             </div>
           </div>
           <div class="mt-40">
@@ -239,6 +239,7 @@ import {
   prettyBalance,
   prettyFiatBalance,
   dpUI,
+  formatFiatUI,
   fiatToCrypto
 } from '@/utils/coinFormatter'
 import {
@@ -404,7 +405,7 @@ export default {
       return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
     totalFeeInFiat () {
-      return prettyFiatBalance(this.currentFee, this.fiatRates[this.asset])
+      return prettyFiatBalance(this.currentFee, this.fiatRates[this.assetChain])
     },
     selectedFeeLabel () {
       return getFeeLabel(this.selectedFee)
@@ -422,6 +423,7 @@ export default {
     ...mapActions('app', ['startBridgeListener']),
     prettyBalance,
     dpUI,
+    formatFiatUI,
     prettyFiatBalance,
     getAssetIcon,
     getAssetColorStyle,

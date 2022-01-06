@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v2.4.1
+      - uses: actions/setup-node@v2.5.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
@@ -22,7 +22,7 @@ jobs:
         # Create screenshots directory
       - run: mkdir screenshots
 
-      - uses: actions/cache@v2.1.6
+      - uses: actions/cache@v2.1.7
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules
@@ -40,7 +40,7 @@ jobs:
 
       - name: Get next version
         id: semvers
-        uses: WyriHaximus/github-action-next-semvers@v1.0
+        uses: WyriHaximus/github-action-next-semvers@v1.1
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
@@ -91,20 +91,19 @@ jobs:
         with:
           args: npm run test:mainnet:prodagent #Run tests against Prod mainnet
 
-      - name: Archive Mocha HTML report
-        uses: actions/upload-artifact@v2.2.4
-        if: always()
-        with:
-          name: mocha-html-test-report
-          path: mochawesome-report
-
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v2.3.1
         if: always()
         with:
           name: screenshots
           path: screenshots
           if-no-files-found: ignore
+
+      - name: Changelog
+        uses: scottbrenner/generate-changelog-action@master
+        id: Changelog
+        env:
+          REPO: ${{ github.repository }}
 
       - name: Create Release
         id: create_release
@@ -114,6 +113,8 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
+          body: |
+            ${{ steps.Changelog.outputs.changelog }}
 
       - name: Upload release
         uses: actions/upload-release-asset@v1
@@ -135,3 +136,12 @@ jobs:
           zip: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
           extension: bkhfdnhibdhkbfihmljakbgnldoikgbm
           publishTarget: trustedTesters
+
+      - name: Discord notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
+          title: "${{ github.workflow}}"
+          description: |
+            Release `liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip`

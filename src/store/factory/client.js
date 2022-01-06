@@ -143,8 +143,10 @@ function createEthClient (asset, network, mnemonic, accountType, derivationPath)
 }
 
 function createNearClient (network, mnemonic, derivationPath) {
-  const nearNetwork = ChainNetworks.near[network]
+  const nearConfig = ChainNetworks.near[network]
   const nearClient = new Client()
+  const nodeUrl = network === 'testnet' ? nearConfig.nodeUrl : 'https://archival-rpc.mainnet.near.org'
+  const nearNetwork = { ...nearConfig, nodeUrl }
   nearClient.addProvider(new NearRpcProvider(nearNetwork))
   nearClient.addProvider(new NearJsWalletProvider(
     {
@@ -179,7 +181,7 @@ function createSolanaClient (network, mnemonic, derivationPath) {
 function createRskClient (asset, network, mnemonic, accountType, derivationPath) {
   const isTestnet = network === 'testnet'
   const rskNetwork = ChainNetworks.rsk[network]
-  const rpcApi = isTestnet ? 'https://public-node.testnet.rsk.co' : 'https://public-node.rsk.co'
+  const rpcApi = isTestnet ? process.env.VUE_APP_SOVRYN_RPC_URL_TESTNET : process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET
   const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 

@@ -57,6 +57,13 @@ export default {
         type: SwapProviderType.LIQUALITY,
         agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
       },
+      liqualityBoost: {
+        name: 'Liquality Boost',
+        type: SwapProviderType.LIQUALITYBOOST,
+        network: 'testnet',
+        icon: 'liqualityboost.svg',
+        supportedBridgeAssets: ['RBTC']
+      },
       uniswapV2: {
         name: 'Uniswap V2',
         icon: 'uniswap.svg',
@@ -75,7 +82,7 @@ export default {
         type: SwapProviderType.SOVRYN,
         routerAddress: SovrynTestnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynTestnetAddresses.proxy3,
-        rpcURL: 'https://public-node.testnet.rsk.co/'
+        rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_TESTNET
       }
     },
     mainnet: {
@@ -90,7 +97,7 @@ export default {
         type: SwapProviderType.LIQUALITYBOOST,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['MATIC']
+        supportedBridgeAssets: ['MATIC', 'RBTC']
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -123,12 +130,12 @@ export default {
         type: SwapProviderType.SOVRYN,
         routerAddress: SovrynMainnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynMainnetAddresses.proxy3,
-        rpcURL: 'https://public-node.rsk.co/'
+        rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET
       }
     }
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
   chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra'],
-  supportedBridgeAssets: ['MATIC']
+  supportedBridgeAssets: ['MATIC', 'RBTC']
 }
