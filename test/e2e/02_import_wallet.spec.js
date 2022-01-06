@@ -3,6 +3,7 @@ const OverviewPage = require('../pages/OverviewPage')
 const HomePage = require('../pages/HomePage')
 const PasswordPage = require('../pages/PasswordPage')
 const expect = require('chai').expect
+const assert = require('chai').assert
 
 const puppeteer = require('puppeteer')
 
@@ -156,9 +157,11 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
 
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
-    expect(ethAddress, 'ETH address should not be null').not.to.be.empty
+    assert.isNotEmpty(ethAddress,'ETH address should not be empty')
+    // expect(ethAddress, 'ETH address should not be null').not.to.be.empty
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
-    expect(rskAddress, 'RSK address should not be null').not.to.be.empty
+    assert.isNotEmpty(rskAddress,'RSK address should not be empty')
+    // expect(rskAddress, 'RSK address should not be null').not.to.be.empty
     expect(rskAddress, `ETH address ${ethAddress} & RSK address ${rskAddress} should be equal if balance is greater than 0`)
       .equals(ethAddress)
 

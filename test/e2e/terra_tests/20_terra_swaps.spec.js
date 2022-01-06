@@ -75,7 +75,7 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
           `SWAP (${obj.fromAsset}->${obj.toAsset}), Liquality should be chosen!`)
           .oneOf(['Liquality'])
       } catch (e) {
-        await testUtil.takeScreenshot(page, `terra-swap-quote-issue-${obj.fromAsset}->${obj.toAsset}`)
+        await testUtil.takeScreenshot(page, `terra-swap-quote-issue-${obj.fromAsset}-${obj.toAsset}`)
         expect(e, `${obj.fromAsset}->${obj.toAsset} SWAP issue, Liquality Quote service provider should be chosen`).equals(null)
       }
       if (swapToAsset === 'BTC') {
