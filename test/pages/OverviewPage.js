@@ -128,7 +128,7 @@ class OverviewPage {
       await page.waitForSelector('#asserts_tab', { visible: true, timeout: 60000})
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
-        await testUtil.takeScreenshot(page, 'click-asset-from-overview-issue')
+        await testUtil.takeScreenshot(page, `click-asset-from-${assetName}-overview-issue`)
         expect(e, 'Overview clicking on particular asset issue!').equals(null)
       }
     }
@@ -369,9 +369,9 @@ class OverviewPage {
     try{
       await page.waitForSelector(`#${assertName}`, { visible: true })
       const $parent = await page.$(`#${assertName}`)
-      await page.waitForTimeout(10000)
+      await page.waitForTimeout(5000)
       assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
-      if (assertAddress == null || assertAddress === '') {
+      if (assertAddress === empty || assertAddress === "") {
         await page.waitForTimeout(10000)
       }
       expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.empty
