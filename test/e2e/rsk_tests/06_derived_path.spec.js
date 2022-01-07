@@ -6,6 +6,7 @@ const SeedWordsPage = require('../../pages/SeedWordsPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
+const { assert } = require('chai')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
@@ -61,15 +62,8 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     expect(assetsCount, 'total assets validation on overview page').contain('8 Assets')
 
     // Check the Total amount - 10s wait to load amount
-    let totalAmount
-    totalAmount = await overviewPage.GetTotalLiquidity(page)
-    console.log('after create wallet total wallet fiat amount', parseInt(totalAmount, 10))
-    await page.waitForTimeout(180000)
-    totalAmount = await overviewPage.GetTotalLiquidity(page)
-    console.log('after create wallet total wallet fiat amount', parseInt(totalAmount, 10))
-    await testUtil.takeScreenshot(page, 'ethAddress-takeScreenshot')
-    expect(parseInt(totalAmount, 10), 'Funds in my wallet should be greater than 0 USD').greaterThan(0)
-    console.log('After Import wallet, the funds in the wallet:', totalAmount)
+    const totalAmount = parseInt(await overviewPage.GetTotalLiquidity(page), 10)
+    expect(totalAmount, 'Create wallet first time has 0 fiat values').equals(0)
 
     const assertAddresses = []
 
@@ -93,11 +87,15 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
       polygon_address: polygonAddress,
       arbitrum_address: arbitrumAddress
     }
-
-    console.log('Address after new wallet creation: ' + assertAddressesMap)
+    console.log('Address after new wallet creation: ' + JSON.stringify(assertAddressesMap))
+    assert.isNotEmpty(ethAddress, 'create wallet ETH address should not be empty')
+    assert.isNotEmpty(rskAddress, 'create wallet RSK address should not be empty')
+    assert.isNotEmpty(bscAddress, 'create wallet BSC address should not be empty')
+    assert.isNotEmpty(polygonAddress, 'create wallet POLYGON address should not be empty')
+    assert.isNotEmpty(arbitrumAddress, 'create wallet ARBITRUM address should not be empty')
 
     expect(assertAddresses.every((val, i, arr) => val === arr[0]),
-      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${assertAddressesMap}`)
+      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${JSON.stringify(assertAddressesMap)}`)
       .eq(true)
     expect(rskAddress, 'ETH & RSK Address are same if the wallet created with 0 balance')
       .equals(ethAddress)
