@@ -51,12 +51,12 @@
           Manage Accounts
         </li>
         <li
-          id="export_privkey"
+          id="show_account_details"
           v-if="$route.params.accountId"
-          @click="exportPrivateKey"
+          @click="showAccountDetails"
         >
-          <KeyIcon />
-          Export Private Key
+          <AccountDetailsIcon />
+          Account Details
         </li>
         <li id="settings" @click="settings">
           <SettingsIcon />
@@ -91,7 +91,7 @@ import SettingsIcon from '@/assets/icons/settings.svg'
 import AssetsIcon from '@/assets/icons/assets.svg'
 import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
-import KeyIcon from '@/assets/icons/key.svg'
+import AccountDetailsIcon from '@/assets/icons/circle_dots_icon.svg'
 
 export default {
   directives: {
@@ -106,7 +106,7 @@ export default {
     SettingsIcon,
     AccountsIcon,
     LedgerIcon,
-    KeyIcon
+    AccountDetailsIcon
   },
   props: [
     'showMenu',
@@ -171,17 +171,17 @@ export default {
       this.showMenuList = false
       this.$router.replace('/settings')
     },
-    exportPrivateKey () {
+    showAccountDetails () {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
           category: 'HamburgerIcon',
-          action: 'Click on Export Private Key'
+          action: 'Click on Account Details'
         }
       })
       this.showMenuList = false
-      const { accountId } = this.$route.params
-      this.$router.push(`/export/${accountId}`)
+      const { accountId, asset } = this.$route.params
+      this.$router.replace({ name: 'AccountDetails', params: { accountId, asset } })
     },
     manageAccounts () {
       this.trackAnalytics({

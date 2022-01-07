@@ -7,7 +7,14 @@ import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 import ImportWallet from '@/views/ImportWallet.vue'
 import UnlockWallet from '@/views/UnlockWallet.vue'
 import Wallet from '@/views/Wallet/Wallet.vue'
-import Account from '@/views/Account.vue'
+import AccountDetails from '@/views/Accounts/Details/Details.vue'
+import AccountDetailsOptions from '@/views/Accounts/Details/Options.vue'
+import AccountDetailsNotes from '@/views/Accounts/Details/Notes.vue'
+import AccountAsset from '@/views/Accounts/Asset.vue'
+import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
+import CreateAccount from '@/views/Accounts/Create.vue'
+import ManageAccounts from '@/views/Accounts/Manage.vue'
+import ExportPrivateKey from '@/views/Accounts/ExportPrivateKey.vue'
 import SwapDetails from '@/views/Details/SwapDetails.vue'
 import TransactionDetails from '@/views/Details/TransactionDetails.vue'
 import Send from '@/views/Send/Send.vue'
@@ -29,10 +36,6 @@ import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import AssetList from '@/views/AssetList.vue'
-import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
-import CreateAccount from '@/views/Accounts/Create.vue'
-import ManageAccounts from '@/views/Accounts/Manage.vue'
-import ExportPrivateKey from '@/views/Accounts/ExportPrivateKey.vue'
 import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
 import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
 import PhraseReveal from '@/views/Onboarding/SeedPhrase/PhraseReveal'
@@ -140,9 +143,9 @@ const routes = [
     props: true
   },
   {
-    name: 'Account',
+    name: 'AccountAsset',
     path: '/accounts/:accountId/:asset',
-    component: Account,
+    component: AccountAsset,
     props: true
   },
   {
@@ -162,6 +165,28 @@ const routes = [
     path: '/accounts/:accountId/:routeAsset/swap',
     component: Swap,
     props: true
+  },
+  {
+    name: 'AccountDetails',
+    path: '/accounts/:accountId/:asset/details',
+    component: AccountDetails,
+    props: true,
+    children: [
+      {
+        path: 'options',
+        component: AccountDetailsOptions,
+        name: 'AccountDetailsOptions'
+      },
+      {
+        path: 'notes',
+        component: AccountDetailsNotes,
+        name: 'AccountDetailsNotes'
+      },
+      {
+        path: '',
+        redirect: 'options'
+      }
+    ]
   },
 
   // Assets list
