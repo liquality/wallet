@@ -45,7 +45,7 @@ import {
   ACTIVITY_FILTER_TYPES,
   SEND_STATUS_FILTER_MAP
 } from '@/utils/history'
-import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance, formatFiatUI } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
 import { mapState, mapGetters } from 'vuex'
 
@@ -63,6 +63,7 @@ export default {
     getItemIcon,
     prettyBalance,
     prettyFiatBalance,
+    formatFiatUI,
     getTitle (item) {
       switch (item.type) {
         case 'SWAP':
@@ -135,7 +136,7 @@ export default {
 
       if (!amount) return ''
 
-      return `$ ${prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[item.from])}`
+      return !this.fiatRates[item.from] ? '' : `${formatFiatUI(prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[item.from]))}`
     }
   }
 }

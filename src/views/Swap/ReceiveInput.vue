@@ -6,9 +6,10 @@
           <div class="swap-receive-top">
             <div class="swap-receive-top-label">Receive</div>
             <div class="swap-receive-top-amount">
-              <div
+              <button
                 class="btn btn-option label-append"
                 @click="toggleShowAmountsFiat"
+                :disabled="isNaN(receiveAmountFiat)"
               >
                 <span
                   v-if="showAmountsInFiat"
@@ -16,8 +17,8 @@
                 >
                   {{ `${toAsset} ${receiveAmount}` }}
                 </span>
-                <span v-else> {{'$ ' + formatFiat(receiveAmountFiat) }} </span>
-              </div>
+                <span v-else> {{formatFiatUI(formatFiat(receiveAmountFiat)) }} </span>
+              </button>
             </div>
           </div>
           <div class="input-group mb-3" v-if="showAmountsInFiat && !isNaN(receiveAmountFiat)">
@@ -60,7 +61,7 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { formatFiat, dpUI } from '@/utils/coinFormatter'
+import { formatFiat, dpUI, formatFiatUI } from '@/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import AccountTooltip from '@/components/AccountTooltip'
 
@@ -84,7 +85,7 @@ export default {
   created () {},
   computed: {
     receiveAmountFiatValue () {
-      return isNaN(this.receiveAmountFiat) ? this.receiveAmountFiat : ('$ ' + dpUI(this.receiveAmountFiat, 2))
+      return isNaN(this.receiveAmountFiat) ? this.receiveAmountFiat : ('$' + dpUI(this.receiveAmountFiat, 2))
     },
     receiveAmountValue () {
       return this.receiveAmount.gt(0) ? dpUI(this.receiveAmount) : ''
@@ -92,6 +93,7 @@ export default {
   },
   methods: {
     formatFiat,
+    formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
     toggleShowAmountsFiat () {

@@ -28,7 +28,7 @@
             </div>
           </template>
           <template #detail-sub v-if="account.totalFiatBalance">
-            ${{ formatFiat(account.totalFiatBalance) }}
+           {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
           </template>
       </ListItem>
     </div>
@@ -37,7 +37,7 @@
 
 <script>
 import ListItem from '@/components/ListItem'
-import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
+import { prettyBalance, formatFiat, formatFiatUI } from '@/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import { getAccountIcon } from '@/utils/accounts'
 import { shortenAddress } from '@/utils/address'
@@ -57,6 +57,7 @@ export default {
     getAssetIcon,
     prettyBalance,
     formatFiat,
+    formatFiatUI,
     shortenAddress,
     selectItem (account) {
       this.$emit('item-selected', { account })

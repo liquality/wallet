@@ -6,9 +6,10 @@
           <div class="send-top">
             <div class="send-top-label">Send</div>
             <div class="send-top-amount">
-              <div
+              <button
                 class="btn btn-option label-append"
                 @click="toggleShowAmountsFiat"
+                :disabled="!fiatRates[asset]"
               >
                 <span
                   v-if="showAmountsInFiat"
@@ -16,12 +17,12 @@
                 >
                   {{ `${asset} ${amount}` }}
                 </span>
-                <span v-else> $ {{ amountFiat }} </span>
-              </div>
+                <span v-else> {{formatFiatUI(amountFiat) }} </span>
+              </button>
             </div>
           </div>
           <div class="input-group mb-3" v-if="showAmountsInFiat">
-            <span class="input-group-text">$</span>
+            <span class="input-group-text">{{isNaN(amountFiat)? '' : '$'}}</span>
             <input
               type="number"
               class="form-control"
@@ -92,8 +93,9 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { dpUI } from '@/utils/coinFormatter'
+import { dpUI, formatFiatUI } from '@/utils/coinFormatter'
 import AccountTooltip from '@/components/AccountTooltip'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -115,8 +117,14 @@ export default {
     'amountError',
     'maxActive'
   ],
+  computed: {
+    ...mapState([
+      'fiatRates'
+    ])
+  },
   methods: {
     dpUI,
+    formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
     toggleShowAmountsFiat () {

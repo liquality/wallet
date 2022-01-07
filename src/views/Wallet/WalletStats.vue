@@ -4,6 +4,7 @@
       <div>
         <span
           class="wallet-stats_total"
+          id="overview-wallet-fiat-total"
           :style="{ fontSize: formatFontSize(total) }"
         >
           {{ total }}
