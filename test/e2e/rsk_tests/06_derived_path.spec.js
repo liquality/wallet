@@ -60,6 +60,17 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, 'total assets validation on overview page').contain('8 Assets')
 
+    // Check the Total amount - 10s wait to load amount
+    let totalAmount
+    totalAmount = await overviewPage.GetTotalLiquidity(page)
+    console.log('total wallet fiat amount', parseInt(totalAmount, 10))
+    await page.waitForTimeout(120000)
+    totalAmount = await overviewPage.GetTotalLiquidity(page)
+    console.log('total wallet fiat amount after 2 min wait', parseInt(totalAmount, 10))
+    await testUtil.takeScreenshot(page, 'ethAddress-takeScreenshot')
+    expect(parseInt(totalAmount, 10), 'Funds in my wallet should be greater than 0 USD').greaterThan(0)
+    console.log('After Import wallet, the funds in the wallet:', totalAmount)
+
     const assertAddresses = []
 
     // GET the ETHEREUM Address
@@ -74,8 +85,19 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     const arbitrumAddress = await overviewPage.GetAssertAddress(page, 'ARBITRUM')
 
     assertAddresses.push(ethAddress, rskAddress, bscAddress, polygonAddress, arbitrumAddress)
+
+    const assertAddressesMap = {
+      eth_address: ethAddress,
+      rsk_address: rskAddress,
+      bsc_address: bscAddress,
+      polygon_address: polygonAddress,
+      arbitrum_address: arbitrumAddress
+    }
+
+    console.log('Address after new wallet creation: ' + assertAddressesMap)
+
     expect(assertAddresses.every((val, i, arr) => val === arr[0]),
-      'Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]')
+      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${assertAddressesMap}`)
       .eq(true)
     expect(rskAddress, 'ETH & RSK Address are same if the wallet created with 0 balance')
       .equals(ethAddress)
