@@ -149,18 +149,16 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
     // Check the Total amount - 10s wait to load amount
     let totalAmount
     totalAmount = await overviewPage.GetTotalLiquidity(page)
-    console.log('total wallet fiat amount', parseInt(totalAmount))
-    if (totalAmount === 0) {
-      await page.waitForTimeout(120000)
-    }
+    console.log('total wallet fiat amount', parseInt(totalAmount, 10))
+    await page.waitForTimeout(120000)
     totalAmount = await overviewPage.GetTotalLiquidity(page)
     console.log('total wallet fiat amount after 2 min wait', parseInt(totalAmount, 10))
+    await testUtil.takeScreenshot(page, 'ethAddress-takeScreenshot')
     expect(parseInt(totalAmount, 10), 'Funds in my wallet should be greater than 0 USD').greaterThan(0)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
 
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
-    await testUtil.takeScreenshot(page, 'ethAddress-takeScreenshot')
     assert.isNotEmpty(ethAddress, 'ETH address should not be empty')
     // expect(ethAddress, 'ETH address should not be null').not.to.be.empty
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
