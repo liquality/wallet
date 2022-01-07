@@ -115,7 +115,7 @@
         </div>
       </div>
     </div>
-    <div class="send" v-else-if="currentStep === 'custom-fees' && assetChain !== 'ETH'">
+    <div class="send" v-else-if="currentStep === 'custom-fees' && !isEIP1559Fees">
       <CustomFees
         @apply="applyCustomFee"
         @update="setCustomFee"
@@ -127,7 +127,7 @@
         :fiatRates="fiatRates"
       />
     </div>
-    <div class="send" v-else-if="currentStep === 'custom-fees' && assetChain === 'ETH'">
+    <div class="send" v-else-if="currentStep === 'custom-fees' && isEIP1559Fees">
       <CustomFeesEIP1559
         @apply="applyCustomFee"
         @update="setCustomFee"
@@ -416,6 +416,9 @@ export default {
     },
     amountWithFee () {
       return BN(this.amount).plus(BN(this.currentFee))
+    },
+    isEIP1559Fees () {
+      return this.assetChain === 'ETH' || (this.assetChain === 'MATIC' && this.activeNetwork === 'testnet')
     }
   },
   methods: {
@@ -434,7 +437,7 @@ export default {
         const sendFees = {}
 
         for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.baseFee || fee.fee
+          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
           sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
 

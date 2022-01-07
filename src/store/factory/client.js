@@ -94,10 +94,12 @@ function createEthereumClient (
   feeProvider,
   mnemonic,
   accountType,
-  derivationPath
+  derivationPath,
+  hardfork
 ) {
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
+  ethClient.addProvider(feeProvider)
 
   if (accountType === 'ethereum_ledger' || accountType === 'rsk_ledger') {
     const assetData = cryptoassets[asset]
@@ -112,7 +114,7 @@ function createEthereumClient (
     ethClient.addProvider(ledger)
   } else {
     ethClient.addProvider(new EthereumJsWalletProvider(
-      { network: ethereumNetwork, mnemonic, derivationPath }
+      { network: ethereumNetwork, mnemonic, derivationPath, hardfork }
     ))
   }
 
@@ -126,8 +128,6 @@ function createEthereumClient (
     if (scraperApi) ethClient.addProvider(new EthereumScraperSwapFindProvider(scraperApi))
   }
 
-  ethClient.addProvider(feeProvider)
-
   return ethClient
 }
 
@@ -137,9 +137,8 @@ function createEthClient (asset, network, mnemonic, accountType, derivationPath)
   const infuraApi = isTestnet ? `https://ropsten.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
   const scraperApi = isTestnet ? 'https://liquality.io/eth-ropsten-api' : 'https://liquality.io/eth-mainnet-api'
   const feeProvider = new EthereumEIP1559FeeProvider({ uri: infuraApi })
-  // const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider('https://gasoracle.liquality.io')
 
-  return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath)
+  return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath, 'london')
 }
 
 function createNearClient (network, mnemonic, derivationPath) {
@@ -203,9 +202,10 @@ function createPolygonClient (asset, network, mnemonic, derivationPath) {
   const polygonNetwork = ChainNetworks.polygon[network]
   const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com' : 'https://polygon-rpc.com'
   const scraperApi = isTestnet ? 'https://liquality.io/polygon-testnet-api' : 'https://liquality.io/polygon-mainnet-api'
-  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 2, fastMultiplier: 2.2 })
 
-  return createEthereumClient(asset, network, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
+  const feeProvider = isTestnet ? new EthereumEIP1559FeeProvider({ uri: rpcApi }) : new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 2, fastMultiplier: 2.2 })
+
+  return createEthereumClient(asset, network, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath, isTestnet ? 'london' : '')
 }
 
 function createArbitrumClient (asset, network, mnemonic, derivationPath) {

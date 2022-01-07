@@ -174,7 +174,7 @@ export default {
   props: ['asset', 'selectedFee', 'fees', 'totalFees', 'fiatRates'],
   created () {
     this.preset = this.selectedFee || 'average'
-    this.baseFee = this.fees[this.preset].fee.baseFee
+    this.baseFee = this.fees[this.preset].fee.suggestedBaseFeePerGas
     this.tipFee = this.fees[this.preset].fee.maxPriorityFeePerGas
     this.maxFee = this.fees[this.preset].fee.maxFeePerGas
   },
@@ -233,24 +233,24 @@ export default {
       )
       return isNaN(fiat) ? 0 : fiat
     },
-    minimum() {
+    minimum () {
       const totalMinFee = getSendFee(this.nativeAsset, this.baseFee).plus(this.totalFees.slow)
       return {
         amount: totalMinFee,
         fiat: prettyFiatBalance(
           this.totalFees.slow,
           this.fiatRates[this.nativeAsset]
-        ) 
+        )
       }
     },
-    maximum() {
+    maximum () {
       const totalMaxFee = getSendFee(this.nativeAsset, this.baseFee).plus(this.totalFees.fast)
       return {
         amount: totalMaxFee,
         fiat: prettyFiatBalance(
           this.totalFees.fast,
           this.fiatRates[this.nativeAsset]
-        ) 
+        )
       }
     }
   },

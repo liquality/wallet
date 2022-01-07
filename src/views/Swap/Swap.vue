@@ -170,7 +170,7 @@
         </div>
       </div>
     </div>
-    <div class="swap" v-else-if="currentStep === 'custom-fees' && assetChain !== 'ETH'">
+    <div class="swap" v-else-if="currentStep === 'custom-fees' && !isEIP1559Fees">
       <CustomFees
         @apply="applyCustomFee"
         @update="setCustomFee"
@@ -186,7 +186,7 @@
         :fiatRates="fiatRates"
       />
     </div>
-    <div class="swap" v-else-if="currentStep === 'custom-fees' && assetChain === 'ETH'">
+    <div class="swap" v-else-if="currentStep === 'custom-fees' && isEIP1559Fees">
       <CustomFeesEIP1559
         @apply="applyCustomFee"
         @update="setCustomFee"
@@ -852,6 +852,9 @@ export default {
     },
     isSwapNegative () {
       return this.totalToReceiveInFiat <= 0
+    },
+    isEIP1559Fees () {
+      return this.assetChain === 'ETH' || (this.assetChain === 'MATIC' && this.activeNetwork === 'testnet')
     }
   },
   methods: {
@@ -951,14 +954,14 @@ export default {
           asset,
           txType,
           quote: this.selectedQuote,
-          feePrices: Object.values(assetFees).map(fee => fee.fee.maxPriorityFeePerGas + fee.fee.baseFee || fee.fee),
+          feePrices: Object.values(assetFees).map(fee => fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee),
           max
         })
 
         if (!totalFees) return
 
         for (const [speed, fee] of Object.entries(assetFees)) {
-          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.baseFee || fee.fee
+          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
           fees[chain][speed] = fees[chain][speed].plus(totalFees[feePrice])
         }
       }
