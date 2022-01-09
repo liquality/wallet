@@ -145,6 +145,10 @@ export default {
             name: 'ARBETH',
             url: 'https://faucet.rinkeby.io/'
           },
+          AVAX: {
+            name: 'AVAX',
+            url: 'https://faucet.avax-test.network/'
+          },
           LUNA: {
             name: 'TERRA',
             url: 'https://faucet.terra.money/'

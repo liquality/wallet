@@ -89,6 +89,16 @@ const EXPLORERS = {
       address: 'https://explorer.arbitrum.io/address/{hash}'
     }
   },
+  avalanche: {
+    testnet: {
+      tx: 'https://testnet.snowtrace.io/tx/0x{hash}',
+      address: 'https://testnet.snowtrace.io/address/{hash}'
+    },
+    mainnet: {
+      tx: 'https://snowtrace.io/tx/0x{hash}',
+      address: 'https://snowtrace.io/address/{hash}'
+    }
+  },
   terra: {
     testnet: {
       tx: 'https://finder.terra.money/bombay-12/tx/{hash}',
@@ -201,6 +211,11 @@ export const tokenDetailProviders = {
   arbitrum: {
     async getDetails (contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://arb1.arbitrum.io/rpc')
+    }
+  },
+  avalanche: {
+    async getDetails (contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://api.avax.network/ext/bc/C/rpc')
     }
   },
   terra: {

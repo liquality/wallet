@@ -64,6 +64,15 @@
               </li>
               <li>
                 <a class="dropdown-item"
+                   id="avalanche_chain"
+                   href="#"
+                   @click="selectChain('avalanche')"
+                   :class="{active: chain === 'avalanche'}">
+                  Avalanche (AVAX)
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item"
                    id="terra_chain"
                    href="#"
                    @click="selectChain('terra')"

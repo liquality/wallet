@@ -39,6 +39,13 @@ const customTokensDetails = [
     decimal: '18'
   },
   {
+    chain: 'avalanche',
+    address: '0x0b9d5d9136855f6fec3c0993fee6e9ce8a297846',
+    name: 'LINK',
+    symbol: 'LINK',
+    decimal: '18'
+  },
+  {
     chain: 'polygon',
     address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
     name: 'Polygon USD Coin',

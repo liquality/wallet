@@ -216,6 +216,16 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
 }
 
+function createAvalancheClient (asset, network, mnemonic, derivationPath) {
+  const isTestnet = network === 'testnet'
+  const avalancheNetwork = ChainNetworks.avalanche[network]
+  const rpcApi = isTestnet ? 'https://api.avax-test.network/ext/bc/C/rpc' : 'https://api.avax.network/ext/bc/C/rpc'
+  const scraperApi = isTestnet ? 'https://liquality.io/avalanche-testnet-api' : 'https://liquality.io/avalanche-mainnet-api'
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 2, fastMultiplier: 2.2 })
+
+  return createEthereumClient(asset, network, avalancheNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
+}
+
 function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
   let _asset, feeAsset, tokenAddress
 
@@ -268,6 +278,7 @@ export const createClient = (asset, network, mnemonic, accountType, derivationPa
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, derivationPath)
   if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
   if (assetData.chain === 'terra') return createTerraClient(network, mnemonic, derivationPath, asset)
+  if (assetData.chain === 'avalanche') return createAvalancheClient(asset, network, mnemonic, derivationPath)
 
   return createEthClient(asset, network, mnemonic, accountType, derivationPath)
 }

@@ -125,7 +125,7 @@ class OverviewPage {
   async SelectAssetFromOverview (page, assetName) {
     const elementVisibleTimeout = 120000
     try {
-      await page.waitForSelector('#asserts_tab', { visible: true, timeout: 60000})
+      await page.waitForSelector('#asserts_tab', { visible: true, timeout: 60000 })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         await testUtil.takeScreenshot(page, 'click-asset-from-overview-issue')
@@ -166,6 +166,14 @@ class OverviewPage {
 
       case 'ARBETH': {
         const eth = await page.waitForSelector('#ARBITRUM', { timeout: elementVisibleTimeout, visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
+        break
+      }
+
+      case 'AVAX': {
+        const eth = await page.waitForSelector('#AVALANCHE', { timeout: elementVisibleTimeout, visible: true })
         await eth.click()
         await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
         await page.click(`#${assetName}`)
