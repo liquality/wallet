@@ -42,7 +42,7 @@ jobs:
           npm run build
 
       - name: Regression tests against Testnet
-        uses: beemi/puppeteer-headful@v1.0.6
+        uses: beemi/puppeteer-headful@v1.0.11
         env:
           CI: 'true'
           DISPLAY: :99
