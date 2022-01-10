@@ -51,8 +51,8 @@ const EXPLORERS = {
   },
   polygon: {
     testnet: {
-      tx: 'https://polygonscan.com/tx/0x{hash}',
-      address: 'https://polygonscan.com/address/{hash}'
+      tx: 'https://mumbai.polygonscan.com/tx/0x{hash}',
+      address: 'https://mumbai.polygonscan.com/address/{hash}'
     },
     mainnet: {
       tx: 'https://polygonscan.com/tx/0x{hash}',

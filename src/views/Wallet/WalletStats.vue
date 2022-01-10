@@ -1,10 +1,10 @@
 <template>
   <div class="wallet-stats">
-    <span v-if="loading">Loading ...</span>
-    <div v-else>
+    <div>
       <div>
         <span
           class="wallet-stats_total"
+          id="overview-wallet-fiat-total"
           :style="{ fontSize: formatFontSize(total) }"
         >
           {{ total }}
@@ -60,7 +60,6 @@ export default {
     ReceiveIcon,
     SwapIcon
   },
-  props: ['loading'],
   computed: {
     ...mapGetters(['totalFiatBalance', 'accountsData']),
     total () {
