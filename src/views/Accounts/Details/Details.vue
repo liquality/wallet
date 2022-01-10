@@ -27,10 +27,13 @@
                 required
                 :class="{ 'is-invalid': accountAliasError }"
               />
-              <span v-else>{{ account.alias }}</span>
+              <span v-else>{{ account.alias || 'Choose name' }}</span>
               <div class="input-group-append">
                 <button class="btn btn-icon"
-                @click="toogleEditAccountAlias">/</button>
+                @click="toogleEditAccountAlias">
+                <font-awesome-icon :icon="['fas', 'save']" v-if="editingAccountAlias"/>
+                <font-awesome-icon :icon="['fas', 'pencil-alt']" v-else/>
+                </button>
               </div>
             </div>
           </div>
