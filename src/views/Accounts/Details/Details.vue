@@ -1,5 +1,5 @@
 <template>
-  <div class="account-container">
+  <div class="account-details-container">
     <NavBar
       :showMenu="false"
       :showBack="false"
@@ -7,41 +7,76 @@
       :backClick="back"
       backLabel="Back"
     >
-      <span class="account-title"
-        >Account Details</span
-      >
+      <span class="account-title">Account Details</span>
     </NavBar>
-    <div class="account-content">
-      <div class="account-content-top">
-        account info
+    <div class="account-details-content">
+      <div class="account-details-top">
+        <div class="account-info">
+          <img :src="getAccountIcon(account.chain)" class="asset-icon" />
+          <div class="account-name">
+             <div class="input-group">
+              {{ account.name }} -
+              <input
+                type="text"
+                autocomplete="off"
+                class="form-control form-control-sm"
+                v-model="accountAlias"
+                placeholder="Choose name"
+                id="choose-account-name"
+                v-if="editingAccountAlias"
+                required
+                :class="{ 'is-invalid': accountAliasError }"
+              />
+              <span v-else>{{ account.alias }}</span>
+              <div class="input-group-append">
+                <button class="btn btn-icon"
+                @click="toogleEditAccountAlias">/</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="account-address">
+          <button
+            class="btn btn-light btn-outline-primary"
+            @click="copyAddress"
+            v-tooltip.bottom="{
+              content: addressCopied ? 'Copied!' : 'Click to copy',
+              hideOnTargetClick: false
+            }"
+          >
+            {{ shortenAddress(address) }}
+          </button>
+        </div>
+        <div class="account-qr">
+          <div v-html="qrcode" class="qr-code" id="qr-code"></div>
+        </div>
       </div>
       <div class="details-tabs">
-    <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <router-link
-        class="nav-link"
-        id="details-options-tab"
-        :to="{ name: 'AccountDetailsOptions' }"
-      >
-        Options
-      </router-link>
-    </li>
-    <li class="nav-item">
-      <router-link
-        class="nav-link"
-        id="details-notes-tab"
-        :to="{ name: 'AccountDetailsNotes' }"
-      >
-        Notes
-      </router-link>
-    </li>
-  </ul>
-   <div class="details-tab-content">
-      <router-view></router-view>
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <router-link
+              class="nav-link"
+              id="details-options-tab"
+              :to="{ name: 'AccountDetailsOptions' }"
+            >
+              Options
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link
+              class="nav-link"
+              id="details-notes-tab"
+              :to="{ name: 'AccountDetailsNotes' }"
+            >
+              Notes
+            </router-link>
+          </li>
+        </ul>
+        <div class="details-tab-content">
+          <router-view></router-view>
+        </div>
+      </div>
     </div>
-  </div>
-    </div>
-
   </div>
 </template>
 
@@ -51,8 +86,10 @@ import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import { shortenAddress } from '@/utils/address'
-import { getAssetIcon, getAddressExplorerLink } from '@/utils/asset'
+import { getAddressExplorerLink } from '@/utils/asset'
+import { getAccountIcon } from '@/utils/accounts'
 import { formatFontSize } from '@/utils/fontSize'
+import QRCode from 'qrcode'
 
 export default {
   components: {
@@ -62,16 +99,17 @@ export default {
     return {
       allowExportPrivateKey: false,
       addressCopied: false,
-      address: null
+      address: null,
+      qrcode: null,
+      accountAlias: '',
+      accountAliasError: false,
+      editingAccountAlias: false
     }
   },
   props: ['accountId', 'asset'],
   computed: {
     ...mapGetters(['accountItem']),
-    ...mapState([
-      'activeWalletId',
-      'activeNetwork'
-    ]),
+    ...mapState(['activeWalletId', 'activeNetwork']),
     account () {
       return this.accountItem(this.accountId)
     },
@@ -85,13 +123,23 @@ export default {
       }
 
       return '#'
+    },
+    chainName () {
+      return {
+        bitcoin: 'bitcoin',
+        ethereum: 'ethereum',
+        near: 'near',
+        solana: 'solana',
+        rsk: 'ethereum',
+        bsc: 'ethereum',
+        polyon: 'ethereum',
+        terra: 'terra'
+      }[cryptoassets[this.asset].chain]
     }
   },
   methods: {
-    ...mapActions([
-      'getUnusedAddresses'
-    ]),
-    getAssetIcon,
+    ...mapActions(['getUnusedAddresses']),
+    getAccountIcon,
     shortenAddress,
     formatFontSize,
     async copyAddress () {
@@ -104,6 +152,9 @@ export default {
     back () {
       const { accountId, asset } = this.$route.params
       this.$router.push({ name: 'AccountAsset', params: { accountId, asset } })
+    },
+    toogleEditAccountAlias () {
+      this.editingAccountAlias = !this.editingAccountAlias
     }
   },
   async created () {
@@ -127,101 +178,140 @@ export default {
         this.activeNetwork
       )
     }
+
+    this.accountAlias = this.account?.alias || ''
+
+    const uri =
+      this.chainName === 'terra'
+        ? this.address
+        : [this.chainName, this.address].join(':')
+
+    QRCode.toString(
+      uri,
+      {
+        type: 'svg',
+        margin: 0
+      },
+      (err, svg) => {
+        if (err) throw err
+
+        this.qrcode = svg
+      }
+    )
   }
 }
 </script>
 
 <style lang="scss">
-.account-container {
-  .account-content-top {
-    height: 220px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px 0;
-    background: $brand-gradient-primary;
-    color: $color-text-secondary;
-    text-align: center;
-    position: relative;
-  }
+.account-details-container {
+  .account-details-content {
+    .account-details-top {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0 0 20px 0;
+      background: #ffffff !important;
+      color: $color-text-primary !important;
+      text-align: center;
+      position: relative;
 
-  &_actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
+      .account-info {
+        padding: 15px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
-    &_button {
+        .account-name,
+        .account-name > .input-group {
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .qr-code {
+        margin: 15px auto 0 auto;
+        width: 75px;
+      }
+    }
+
+    &_actions {
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
-      width: 70px;
-      border: 0;
-      cursor: pointer;
-      color: $color-text-secondary;
-      background: none;
-      font-weight: 600;
-      font-size: 13px;
+      margin: 0 auto;
 
-      &.disabled {
-        opacity: 0.5;
-        cursor: auto;
-      }
-
-      &_wrapper {
+      &_button {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 44px;
-        height: 44px;
-        background: #ffffff;
-        border-radius: 50%;
-        margin-bottom: 4px;
-      }
+        flex-direction: column;
+        width: 70px;
+        border: 0;
+        cursor: pointer;
+        color: $color-text-secondary;
+        background: none;
+        font-weight: 600;
+        font-size: 13px;
 
-      &_icon {
-        width: 16px;
-        height: 16px;
-      }
+        &.disabled {
+          opacity: 0.5;
+          cursor: auto;
+        }
 
-      &_swap {
-        height: 30px;
+        &_wrapper {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 44px;
+          height: 44px;
+          background: #ffffff;
+          border-radius: 50%;
+          margin-bottom: 4px;
+        }
+
+        &_icon {
+          width: 16px;
+          height: 16px;
+        }
+
+        &_swap {
+          height: 30px;
+        }
       }
     }
-  }
 
-  &_address {
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-
-    button {
-      font-size: $h4-font-size;
-      font-weight: normal;
-      color: $color-text-secondary;
-      border: 0;
-      background: none;
-      outline: none;
-    }
-
-    .eye-btn {
-      position: absolute;
-      right: 60px;
-      height: 40px;
-      width: 35px;
-      background-color: transparent;
+    &_address {
+      text-align: center;
       display: flex;
       align-items: center;
+      justify-content: center;
+      position: relative;
 
-      svg {
-        width: 20px;
+      button {
+        font-size: $h4-font-size;
+        font-weight: normal;
+        color: $color-text-secondary;
+        border: 0;
+        background: none;
+        outline: none;
       }
 
-      &:hover {
-        opacity: 0.8;
+      .eye-btn {
+        position: absolute;
+        right: 60px;
+        height: 40px;
+        width: 35px;
+        background-color: transparent;
+        display: flex;
+        align-items: center;
+
+        svg {
+          width: 20px;
+        }
+
+        &:hover {
+          opacity: 0.8;
+        }
       }
     }
   }
@@ -265,11 +355,11 @@ export default {
 }
 
 .details-tab-content {
-    a {
-      color: $color-text-primary;
-    }
-    a:hover {
-      text-decoration: none;
-    }
+  a {
+    color: $color-text-primary;
   }
+  a:hover {
+    text-decoration: none;
+  }
+}
 </style>

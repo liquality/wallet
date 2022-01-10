@@ -289,6 +289,7 @@ textarea {
   border-color: $primary;
   background-color: #F8FAFF;
   border: 1px solid $primary;
+  border-radius: 1rem;
 
   @include hover() {
     color: #BA62FE;
