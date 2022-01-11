@@ -207,12 +207,7 @@ export default {
   },
   UPDATE_ACCOUNT (state, { network, walletId, account }) {
     const {
-      id,
-      name,
-      addresses,
-      assets,
-      balances,
-      updatedAt
+      id
     } = account
     const accounts = state.accounts[walletId][network]
     if (accounts) {
@@ -224,11 +219,8 @@ export default {
         const _account = accounts[index]
         const updatedAccount = {
           ..._account,
-          name,
-          addresses,
-          balances,
-          assets,
-          updatedAt
+          ...account,
+          id
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)

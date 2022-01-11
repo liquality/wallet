@@ -4,6 +4,6 @@ export const updateAccount = async ({ commit }, { network, walletId, account }) 
     ...account,
     updatedAt
   }
-  commit('UPDATED_ACCOUNT', { network, walletId, account: updatedAccount })
+  commit('UPDATE_ACCOUNT', { network, walletId, account: updatedAccount })
   return updatedAccount
 }

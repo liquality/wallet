@@ -193,7 +193,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'createAccount'
+      'createAccount',
+      'validateAccountAlias'
     ]),
     getChainIcon,
     cancel () {
@@ -260,21 +261,8 @@ export default {
 
       this.cancel()
     },
-    checkAccountAlias () {
-      if (!this.accountAlias ||
-          this.accountAlias.length < 5 ||
-          (this.accountAlias.match(/^[^\s]+(\s+[^\s]+)*$/) || []).length <= 0) {
-        this.accountAliasError = 'Name should have 5 or more characters'
-      } else if (this.accountAlias.length > 20) {
-        this.accountAliasError = 'Name shouldn\'t have more than 20 characters'
-      } else if (this.accounts[this.activeWalletId]?.[this.activeNetwork]?.findIndex(
-        a => (a.alias && a.alias?.toLowerCase() === this.accountAlias.toLowerCase()) ||
-        (a.index === this.accountIndex && a.chain === this.selectedChain.id)
-      ) >= 0) {
-        this.accountAliasError = 'Existing account with the same name or path'
-      } else {
-        this.accountAliasError = null
-      }
+    async checkAccountAlias () {
+      this.accountAliasError = await this.validateAccountAlias({ accountAlias: this.accountAlias })
     }
   },
   watch: {

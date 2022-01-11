@@ -14,12 +14,12 @@
         <div class="account-info">
           <img :src="getAccountIcon(account.chain)" class="asset-icon" />
           <div class="account-name">
-             <div class="input-group">
+            <div class="input-group">
               {{ account.name }} -
               <input
                 type="text"
                 autocomplete="off"
-                class="form-control form-control-sm"
+                class="form-control form-control-sm account-name-text"
                 v-model="accountAlias"
                 placeholder="Choose name"
                 id="choose-account-name"
@@ -27,15 +27,31 @@
                 required
                 :class="{ 'is-invalid': accountAliasError }"
               />
-              <span v-else>{{ account.alias || 'Choose name' }}</span>
+              <span v-else class="account-name-text">{{ account.alias }}</span>
               <div class="input-group-append">
-                <button class="btn btn-icon"
-                @click="toogleEditAccountAlias">
-                <font-awesome-icon :icon="['fas', 'save']" v-if="editingAccountAlias"/>
-                <font-awesome-icon :icon="['fas', 'pencil-alt']" v-else/>
+                <button
+                  v-if="!editingAccountAlias"
+                  class="btn btn-icon"
+                  @click="setEditAccountAlias"
+                >
+                  <font-awesome-icon :icon="faPencilAlt" />
+                </button>
+                <button
+                  class="btn btn-icon"
+                  @click="updateAccountAlias"
+                  v-else
+                >
+                  <SpinnerIcon class="btn-loading" v-if="updatingAccount" />
+                  <font-awesome-icon :icon="faSave" v-else />
                 </button>
               </div>
             </div>
+            <small
+              class="text-danger form-text text-right"
+              v-if="accountAliasError"
+            >
+              {{ accountAliasError }}
+            </small>
           </div>
         </div>
         <div class="account-address">
@@ -47,7 +63,7 @@
               hideOnTargetClick: false
             }"
           >
-            {{ shortenAddress(address) }}
+            {{ address ? shortenAddress(address) : '' }}
           </button>
         </div>
         <div class="account-qr">
@@ -93,10 +109,16 @@ import { getAddressExplorerLink } from '@/utils/asset'
 import { getAccountIcon } from '@/utils/accounts'
 import { formatFontSize } from '@/utils/fontSize'
 import QRCode from 'qrcode'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faPencilAlt, faSave } from '@fortawesome/free-solid-svg-icons'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
+import _ from 'lodash'
 
 export default {
   components: {
-    NavBar
+    NavBar,
+    SpinnerIcon,
+    FontAwesomeIcon
   },
   data () {
     return {
@@ -106,7 +128,10 @@ export default {
       qrcode: null,
       accountAlias: '',
       accountAliasError: false,
-      editingAccountAlias: false
+      editingAccountAlias: false,
+      updatingAccount: false,
+      faPencilAlt,
+      faSave
     }
   },
   props: ['accountId', 'asset'],
@@ -141,7 +166,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getUnusedAddresses']),
+    ...mapActions([
+      'getUnusedAddresses',
+      'updateAccount',
+      'validateAccountAlias'
+    ]),
     getAccountIcon,
     shortenAddress,
     formatFontSize,
@@ -156,8 +185,38 @@ export default {
       const { accountId, asset } = this.$route.params
       this.$router.push({ name: 'AccountAsset', params: { accountId, asset } })
     },
-    toogleEditAccountAlias () {
-      this.editingAccountAlias = !this.editingAccountAlias
+    setEditAccountAlias () {
+      this.editingAccountAlias = true
+    },
+    async updateAccountAlias () {
+      if (
+        !this.accountAliasError &&
+        this.account?.alias !== this.accountAlias
+      ) {
+        this.updatingAccount = true
+        const account = {
+          ...this.account,
+          alias: this.accountAlias
+        }
+        await this.updateAccount({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          account
+        })
+
+        this.updatingAccount = false
+      }
+
+      this.editingAccountAlias = false
+    },
+    async checkAccountAlias () {
+      if (this.editingAccountAlias) {
+        this.accountAliasError = await this.validateAccountAlias({
+          accountAlias: this.accountAlias
+        })
+      } else {
+        this.accountAliasError = null
+      }
     }
   },
   async created () {
@@ -181,6 +240,9 @@ export default {
         this.activeNetwork
       )
     }
+
+    this.debouncedCheckAccountAlias = _.debounce(this.checkAccountAlias, 500)
+    this.checkAccountAlias()
 
     this.accountAlias = this.account?.alias || ''
 
@@ -223,6 +285,15 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
+
+        .account-name {
+          max-width: 280px;
+          .account-name-text {
+            text-align: left;
+            min-width: 15px;
+            margin-left: 5px;
+          }
+        }
 
         .account-name,
         .account-name > .input-group {
