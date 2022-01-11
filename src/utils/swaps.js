@@ -3,7 +3,7 @@ import buildConfig from '../build.config'
 export const SwapProviderType = {
   LIQUALITY: 'LIQUALITY',
   UNISWAPV2: 'UNISWAPV2',
-  ONEINCHV4: 'ONEINCHV4',
+  ONEINCHV3: 'ONEINCHV3',
   THORCHAIN: 'THORCHAIN',
   LIQUALITYBOOST: 'LIQUALITYBOOST',
   FASTBTC: 'FASTBTC',
@@ -13,7 +13,7 @@ export const SwapProviderType = {
 const swapProviderRoot = {
   [SwapProviderType.LIQUALITY]: 'swaps/liquality',
   [SwapProviderType.UNISWAPV2]: 'swaps/uniswap',
-  [SwapProviderType.ONEINCHV4]: 'swaps/oneinch',
+  [SwapProviderType.ONEINCHV3]: 'swaps/oneinch',
   [SwapProviderType.THORCHAIN]: 'swaps/thorchain',
   [SwapProviderType.FASTBTC]: 'swaps/fastbtc',
   [SwapProviderType.LIQUALITYBOOST]: 'swaps/liqualityboost',
