@@ -2,6 +2,7 @@ on:
   pull_request:
     branches:
       - dev
+      - "!master"
 
 name: PullRequest tests
 
@@ -10,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v2.4.1
+        uses: actions/setup-node@v2.5.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
@@ -23,7 +24,7 @@ jobs:
         # Create screenshots directory
       - run: mkdir screenshots
 
-      - uses: actions/cache@v2.1.6
+      - uses: actions/cache@v2.1.7
         id: cache
         with:
           path: ~/.npm
@@ -40,19 +41,27 @@ jobs:
           npm run build
 
       - name: Run Smoke tests againt PullRequest
-        uses: beemi/puppeteer-headful@v1.0.6
+        uses: beemi/puppeteer-headful@v1.0.11
         env:
           CI: 'true'
           DISPLAY: :99
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:pullrequest:smoke
+          args: npm run test:pullrequest
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v2.3.1
         if: always()
         with:
           name: screenshots
           path: screenshots
           if-no-files-found: ignore
+
+      - name: Discord notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
+          title: "${{ github.workflow}}"
+

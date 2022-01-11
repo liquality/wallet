@@ -112,6 +112,8 @@ class UniswapSwapProvider extends SwapProvider {
     if (allowance.gte(inputAmount)) {
       return false
     }
+
+    return true
   }
 
   async buildApprovalTx ({ network, walletId, quote }) {

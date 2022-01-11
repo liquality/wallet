@@ -16,7 +16,7 @@
                 class="copy-icon"
                 @click="copy"
                 v-tooltip.bottom="{
-                    content: copied ? 'Copied!' : 'Copy',
+                    content: copied ? 'Copied!' : 'Click to copy',
                     hideOnTargetClick: false,
                   }"
             />

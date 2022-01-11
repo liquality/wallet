@@ -12,7 +12,7 @@
       <LedgerRequestMessage :item="ledgerItem" />
     </InfoNotification>
     <div class="wallet-content">
-      <WalletStats :loading="loadingBalances"/>
+      <WalletStats />
       <AssetsChart />
       <WalletTabs />
     </div>
@@ -38,25 +38,18 @@ export default {
     InfoNotification,
     LedgerRequestMessage
   },
-  data () {
-    return {
-      loadingBalances: false
-    }
-  },
   async created () {
-    this.loadingBalances = true
     try {
       await this.updateBalances(
         {
           network: this.activeNetwork,
-          walletId: this.activeWalletId
+          walletId: this.activeWalletId,
+          loadingInitialBalance: true
         }
       )
     } catch (error) {
       // TODO: manage error
       console.error(error)
-    } finally {
-      this.loadingBalances = false
     }
   },
   computed: {
