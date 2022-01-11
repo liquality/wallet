@@ -284,7 +284,7 @@ export default {
     ensureOriginWalletTree(state.externalConnections, activeWalletId, origin, {})
 
     const accounts = state.externalConnections[activeWalletId]?.[origin]?.[chain] || []
-    Vue.set(state.externalConnections[activeWalletId][origin], chain, [...new Set([...accounts, accountId])])
+    Vue.set(state.externalConnections[activeWalletId][origin], chain, [...new Set([accountId, ...accounts])])
   },
   REMOVE_EXTERNAL_CONNECTIONS (state, { activeWalletId }) {
     Vue.set(state.externalConnections, activeWalletId, {})

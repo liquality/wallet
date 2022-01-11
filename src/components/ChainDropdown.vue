@@ -1,7 +1,7 @@
 <template>
  <div class="dropdown chain-list-search"
       v-click-away="hide">
-  <button class="btn dropdown-toggle"
+  <button class="btn dropdown-toggle p-0"
           @click="toggle">
      <div class="form" id="dropdown-item" v-if="selected">
         <div class="input-group">
@@ -139,8 +139,6 @@ export default {
 <style lang="scss">
 .chain-list-search {
   .dropdown-toggle {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
     font-weight: 300;
     display: flex;
     align-items: center;

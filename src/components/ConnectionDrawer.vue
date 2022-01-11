@@ -30,7 +30,7 @@
       <div><strong>Granted Connection</strong></div>
       <p class="text-muted">Connected sites can see your account address.</p>
       <div class="connection-drawer_connections_origin">
-        {{ currentOrigin }}
+        <strong>{{ currentOrigin }}</strong>
       </div>
     </div>
     <div class="connection-drawer_accounts" v-if="dappConnected">
@@ -107,7 +107,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setEthereumInjectionChain']),
+    ...mapActions(['setEthereumInjectionChain', 'addExternalConnection']),
     toggleManageDappConnection (enable) {
       this.manageDappConnection = enable
     },
@@ -131,7 +131,7 @@ export default {
       )
     },
     switchAccount (account) {
-      console.log('switch account')
+      this.addExternalConnection({ origin: this.currentOrigin, chain: account.chain, accountId: account.id, setDefaultEthereum: true })
     }
   },
   created () {
