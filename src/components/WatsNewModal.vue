@@ -12,9 +12,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre>Ability to export private keys</pre>
-            <pre>Terra integration</pre>
-            <pre>Bug fixes and improvements</pre>
+            <pre>Ability to remove custom tokens</pre>
+            <pre>Minor bug fixes</pre>
+            <pre>Overview screen performance enhancement</pre>
           </div>
         </div>
       </div>
