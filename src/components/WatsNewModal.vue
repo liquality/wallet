@@ -14,7 +14,7 @@
           <div class="item-content">
             <pre>Ability to remove custom tokens</pre>
             <pre>Minor bug fixes</pre>
-            <pre>Overview screen performance enhancement</pre>
+            <pre class="text-wrap">Overview screen performance enhancement</pre>
           </div>
         </div>
       </div>
