@@ -42,12 +42,12 @@ export default {
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
   exploraApis: {
-    testnet: 'https://electrs-testnet-api.liq-chainhub.net/',
-    mainnet: 'https://electrs-mainnet-api.liq-chainhub.net/'
+    testnet: 'https://liquality.io/testnet/electrs',
+    mainnet: 'https://api-mainnet-bitcoin-electrs.liquality.io'
   },
   batchEsploraApis: {
-    testnet: 'https://electrs-batch-testnet-api.liq-chainhub.net/',
-    mainnet: 'https://electrs-batch-mainnet-api.liq-chainhub.net/'
+    testnet: 'https://liquality.io/electrs-testnet-batch',
+    mainnet: 'https://api-mainnet-bitcoin-electrs-batch.liquality.io'
   },
   swapProviders: {
     testnet: {
