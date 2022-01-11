@@ -11,7 +11,7 @@ import buildConfig from '@/build.config'
 const providers = {
   [SwapProviderType.LIQUALITY]: LiqualitySwapProvider,
   [SwapProviderType.UNISWAPV2]: UniswapSwapProvider,
-  [SwapProviderType.ONEINCHV4]: OneinchSwapProvider,
+  [SwapProviderType.ONEINCHV3]: OneinchSwapProvider,
   [SwapProviderType.THORCHAIN]: ThorchainSwapProvider,
   [SwapProviderType.LIQUALITYBOOST]: LiqualityBoostSwapProvider,
   [SwapProviderType.FASTBTC]: FastbtcSwapProvider,
