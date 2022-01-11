@@ -36,11 +36,7 @@
                 >
                   <font-awesome-icon :icon="faPencilAlt" />
                 </button>
-                <button
-                  class="btn btn-icon"
-                  @click="updateAccountAlias"
-                  v-else
-                >
+                <button class="btn btn-icon" @click="updateAccountAlias" v-else>
                   <SpinnerIcon class="btn-loading" v-if="updatingAccount" />
                   <font-awesome-icon :icon="faSave" v-else />
                 </button>
@@ -76,20 +72,32 @@
             <router-link
               class="nav-link"
               id="details-options-tab"
-              :to="{ name: 'AccountDetailsOptions' }"
+              :to="{
+                name: 'AccountDetailsOptions',
+                params: {
+                  accountId,
+                  asset
+                }
+              }"
             >
               Options
             </router-link>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <router-link
               class="nav-link"
               id="details-notes-tab"
-              :to="{ name: 'AccountDetailsNotes' }"
+              :to="{
+                name: 'AccountDetailsNotes',
+                params: {
+                  accountId,
+                  asset
+                }
+              }"
             >
               Notes
             </router-link>
-          </li>
+          </li> -->
         </ul>
         <div class="details-tab-content">
           <router-view></router-view>
@@ -105,9 +113,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import { shortenAddress } from '@/utils/address'
-import { getAddressExplorerLink } from '@/utils/asset'
 import { getAccountIcon } from '@/utils/accounts'
-import { formatFontSize } from '@/utils/fontSize'
 import QRCode from 'qrcode'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faPencilAlt, faSave } from '@fortawesome/free-solid-svg-icons'
@@ -122,7 +128,6 @@ export default {
   },
   data () {
     return {
-      allowExportPrivateKey: false,
       addressCopied: false,
       address: null,
       qrcode: null,
@@ -140,17 +145,6 @@ export default {
     ...mapState(['activeWalletId', 'activeNetwork']),
     account () {
       return this.accountItem(this.accountId)
-    },
-    addressLink () {
-      if (this.account) {
-        return getAddressExplorerLink(
-          this.address,
-          this.asset,
-          this.activeNetwork
-        )
-      }
-
-      return '#'
     },
     chainName () {
       return {
@@ -173,7 +167,6 @@ export default {
     ]),
     getAccountIcon,
     shortenAddress,
-    formatFontSize,
     async copyAddress () {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true
@@ -221,13 +214,11 @@ export default {
   },
   async created () {
     if (this.account?.type.includes('ledger')) {
-      this.allowExportPrivateKey = false
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
         this.account.addresses[0],
         this.activeNetwork
       )
     } else {
-      this.allowExportPrivateKey = true
       const addresses = await this.getUnusedAddresses({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
@@ -269,6 +260,8 @@ export default {
 
 <style lang="scss">
 .account-details-container {
+  overflow-y: auto;
+  overflow-x: hidden;
   .account-details-content {
     .account-details-top {
       display: flex;

@@ -181,7 +181,7 @@ export default {
       })
       this.showMenuList = false
       const { accountId, asset } = this.$route.params
-      this.$router.replace({ name: 'AccountDetails', params: { accountId, asset } })
+      this.$router.replace({ name: 'AccountDetailsOptions', params: { accountId, asset } })
     },
     manageAccounts () {
       this.trackAnalytics({

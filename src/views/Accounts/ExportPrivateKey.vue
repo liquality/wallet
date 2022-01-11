@@ -2,7 +2,7 @@
   <div class="export-account">
     <NavBar>
       <span class="wallet_header">
-        <strong>{{chainId}} Private Key</strong>
+        <strong>{{ chainId }} Private Key</strong>
       </span>
     </NavBar>
     <div class="export-account_top login-wrapper">
@@ -11,13 +11,27 @@
     </div>
     <main>
       <p class="account">
-        <code v-if="account.addresses[0]">{{ shortenAddress(account.addresses[0]) }}</code>
+        <code v-if="account.addresses[0]">{{
+          shortenAddress(account.addresses[0])
+        }}</code>
         <img :src="getAccountIcon(account.chain)" class="asset-icon" />
       </p>
-      <textarea readonly rows="3" @click="selectTextarea" id="private-key-textarea" v-model="privateKey" />
+      <textarea
+        readonly
+        rows="3"
+        @click="selectTextarea"
+        id="private-key-textarea"
+        v-model="privateKey"
+      />
     </main>
     <div class="p-3 pb-1">
-      <button id="done_button" class="btn btn-primary btn-lg btn-block" @click="goback">Done</button>
+      <button
+        id="done_button"
+        class="btn btn-primary btn-lg btn-block"
+        @click="goback"
+      >
+        Done
+      </button>
     </div>
   </div>
 </template>
@@ -26,7 +40,7 @@
 import NavBar from '@/components/NavBar.vue'
 import { getAccountIcon } from '@/utils/accounts'
 import { shortenAddress } from '@/utils/address'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import Eye from '../../assets/icons/eye.svg'
 
 export default {
@@ -42,13 +56,10 @@ export default {
   },
   props: ['accountId'],
   computed: {
-    ...mapState([
-      'accounts',
-      'activeNetwork',
-      'activeWalletId'
-    ]),
+    ...mapState(['accounts', 'activeNetwork', 'activeWalletId']),
+    ...mapGetters(['accountItem']),
     account () {
-      return this.$store.getters.accountItem(this.accountId)
+      return this.accountItem(this.accountId)
     }
   },
   watch: {
@@ -77,9 +88,7 @@ export default {
   methods: {
     getAccountIcon,
     shortenAddress,
-    ...mapActions([
-      'exportPrivateKey'
-    ]),
+    ...mapActions(['exportPrivateKey']),
     goback () {
       this.$router.replace('/wallet/assets')
     },

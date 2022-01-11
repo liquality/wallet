@@ -80,7 +80,8 @@ const routes = [
   },
   {
     path: '/settings/manage-assets',
-    component: ManageAssets
+    component: ManageAssets,
+    name: 'ManageAssets'
   },
   {
     path: '/settings/manage-assets/custom-token',
@@ -175,12 +176,14 @@ const routes = [
       {
         path: 'options',
         component: AccountDetailsOptions,
-        name: 'AccountDetailsOptions'
+        name: 'AccountDetailsOptions',
+        props: true
       },
       {
         path: 'notes',
         component: AccountDetailsNotes,
-        name: 'AccountDetailsNotes'
+        name: 'AccountDetailsNotes',
+        props: true
       },
       {
         path: '',
@@ -246,6 +249,7 @@ const routes = [
   {
     path: '/export/:accountId',
     component: Warning,
+    name: 'ExportPrivateKeyWarning',
     props: ({ params: { accountId } }) => ({
       title: 'Show Private Key?',
       nextPath: `/export/${accountId}/login`

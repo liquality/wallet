@@ -235,8 +235,8 @@ export default {
         (account) => account.id === id
       )
       if (index >= 0) {
-        const updatedAccounts = accounts.splice(index, 1)
-        Vue.set(state.accounts[walletId], network, [...updatedAccounts])
+        accounts.splice(index, 1)
+        Vue.set(state.accounts[walletId], network, [...accounts])
       }
     }
   },
