@@ -148,7 +148,9 @@
 </template>
 
 <script>
-import { getAssetIcon } from '@/utils/asset'
+import { getAssetIcon, getFeeAsset, getNativeAsset } from '@/utils/asset'
+import cryptoassets from '@/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import { getFeeLabel, getSendFee } from '@/utils/fees'
 import { prettyFiatBalance } from '@/utils/coinFormatter'
@@ -208,10 +210,15 @@ export default {
         : null
     },
     nativeAsset () {
-      return 'ETH'
+      return getFeeAsset(this.asset) || getNativeAsset(this.asset)
     },
     gasUnit () {
-      return 'gwei'
+      const chainId = cryptoassets[this.asset]?.chain
+      if (chainId) {
+        const { unit } = chains[chainId]?.fees || ''
+        return getFeeAsset(this.asset) || unit
+      }
+      return ''
     },
     stepSize () {
       return 1
