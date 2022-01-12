@@ -603,7 +603,7 @@ export default {
       }
     }, 800),
     applyCustomFee ({ fee }) {
-      const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && (speedFee.fee === fee || speedFee.fee.maxPriorityFeePerGas === fee))
+      const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && (speedFee.fee === fee || (speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas && speedFee.fee.maxFeePerGas === fee.maxFeePerGas)))
       if (presetFee) {
         const [speed] = presetFee
         this.selectedFee = speed
@@ -611,7 +611,7 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = fee
+        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
         this.selectedFee = 'custom'
       }
       this.currentStep = 'inputs'

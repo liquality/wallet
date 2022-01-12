@@ -25,7 +25,7 @@
             <h2>Network Speed/Fee</h2>
             <p>
               {{ prettyBalance(tx ? tx.fee : item.tx.fee, item.from) }}
-              {{ assetChain }} | {{ item.fee }} {{ feeUnit }}
+              {{ assetChain }} | {{ itemFee }} {{ feeUnit }}
               <a
                 v-if="canUpdateFee && !showFeeSelector"
                 @click="openFeeSelector()"
@@ -146,6 +146,11 @@ export default {
     ]),
     assetChain () {
       return getNativeAsset(this.item.from)
+    },
+    itemFee () {
+      return typeof this.item.fee !== 'object'
+        ? this.item.fee
+        : this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
     },
     item () {
       return this.history[this.activeNetwork][this.activeWalletId].find(

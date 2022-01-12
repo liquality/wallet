@@ -20,13 +20,13 @@
           <strong>CURRENT BASE FEE</strong>
           PER GAS
         </span>
-        <span>GWEI <span>{{ baseFee }}</span></span>
+        <span>GWEI <span>{{ suggestedBaseFeePerGas }}</span></span>
       </div>
 
       <div class="custom-fee-inputs">
         <div class="input-wrapper">
           <p><strong>MINER TIP</strong> TO SPEED UP</p>
-          <span>${{tipFiat}}</span>
+          <span>${{minerTipFiat}}</span>
           <div class="custom-fee-details-item">
             <div class="gas-unit-label">{{ gasUnit.toUpperCase() }}</div>
             <div class="input-group">
@@ -35,14 +35,14 @@
                 class="form-control"
                 id="custom_fee_input_field"
                 :step="stepSize"
-                :value="tipFee"
+                :value="minerTip"
                 @input="
                   setTipFee(parseFloat($event.target.value))
                 "
               />
               <div class="input-group-text fee-input-controls">
-                <ChevronUpIcon @click="incrementTipFee()" />
-                <ChevronDownIcon @click="decrementTipFee()" />
+                <ChevronUpIcon @click="incrementMinerTipFee()" />
+                <ChevronDownIcon @click="decrementMinerTipFee()" />
               </div>
             </div>
           </div>
@@ -58,14 +58,14 @@
                 class="form-control"
                 id="custom_fee_input_field"
                 :step="stepSize"
-                :value="maxFee"
+                :value="maximumFee"
                 @input="
                   setMaxFee(parseFloat($event.target.value))
                 "
               />
               <div class="input-group-text fee-input-controls">
-                <ChevronUpIcon @click="incrementMaxFee()" />
-                <ChevronDownIcon @click="decrementMaxFee()" />
+                <ChevronUpIcon @click="incrementMaximumFee()" />
+                <ChevronDownIcon @click="decrementMaximumFee()" />
               </div>
             </div>
           </div>
@@ -165,7 +165,7 @@ export default {
     return {
       preset: null,
       fee: null,
-      baseFee: null,
+      suggestedBaseFeePerGas: null,
       tipFee: null,
       maxFee: null,
       hasError: false
@@ -174,14 +174,11 @@ export default {
   props: ['asset', 'selectedFee', 'fees', 'totalFees', 'fiatRates'],
   created () {
     this.preset = this.selectedFee || 'average'
-    this.baseFee = this.fees[this.preset].fee.suggestedBaseFeePerGas
+    this.suggestedBaseFeePerGas = this.fees[this.preset].fee.suggestedBaseFeePerGas
     this.tipFee = this.fees[this.preset].fee.maxPriorityFeePerGas
     this.maxFee = this.fees[this.preset].fee.maxFeePerGas
   },
   computed: {
-    getTotalFee () {
-      return this.baseFee + this.tipFee
-    },
     noTipError () {
       return !this.tipFee
         ? 'Miner tip must be greater than 0 GWEI'
@@ -219,22 +216,29 @@ export default {
     stepSize () {
       return 1
     },
-    tipFiat () {
+    minerTip () {
+      return this.fees[this.preset]?.fee.maxPriorityFeePerGas || this.tipFee
+    },
+    maximumFee () {
+      return this.fees[this.preset]?.fee.maxFeePerGas || this.maxFee
+    },
+    minerTipFiat () {
       const fiat = prettyFiatBalance(
-        getSendFee(this.nativeAsset, this.tipFee),
+        getSendFee(this.nativeAsset, this.minerTip),
         this.fiatRates[this.nativeAsset]
       )
       return isNaN(fiat) ? 0 : fiat
     },
     maxFiat () {
       const fiat = prettyFiatBalance(
-        getSendFee(this.nativeAsset, this.maxFee),
+        getSendFee(this.nativeAsset, this.maximumFee),
         this.fiatRates[this.nativeAsset]
       )
       return isNaN(fiat) ? 0 : fiat
     },
     minimum () {
-      const totalMinFee = getSendFee(this.nativeAsset, this.baseFee).plus(this.totalFees.slow)
+      const minimumFee = this.minerTip + this.suggestedBaseFeePerGas
+      const totalMinFee = getSendFee(this.nativeAsset, minimumFee).plus(this.totalFees.slow)
       return {
         amount: totalMinFee,
         fiat: prettyFiatBalance(
@@ -244,7 +248,9 @@ export default {
       }
     },
     maximum () {
-      const totalMaxFee = getSendFee(this.nativeAsset, this.baseFee).plus(this.totalFees.fast)
+      const maximumFee = this.maximumFee
+      console.log(maximumFee)
+      const totalMaxFee = getSendFee(this.nativeAsset, maximumFee).plus(this.totalFees.fast)
       return {
         amount: totalMaxFee,
         fiat: prettyFiatBalance(
@@ -263,35 +269,44 @@ export default {
     apply () {
       this.$emit('apply', {
         asset: this.asset,
-        fee: this.tipFee + this.baseFee
+        fee: {
+          maxPriorityFeePerGas: this.minerTip,
+          maxFeePerGas: this.maximumFee
+        }
       })
     },
     setTipFee (fee) {
       this.tipFee = fee
       this.$emit('update', {
         asset: this.asset,
-        fee: this.tipFee + this.baseFee
+        fee: {
+          maxPriorityFeePerGas: this.minerTip,
+          maxFeePerGas: this.maximumFee
+        }
       })
     },
     setMaxFee (fee) {
       this.maxFee = fee
       this.$emit('update', {
         asset: this.asset,
-        fee: this.maxFee
+        fee: {
+          maxPriorityFeePerGas: this.minerTip,
+          maxFeePerGas: this.maximumFee
+        }
       })
     },
-    incrementTipFee () {
+    incrementMinerTipFee () {
       this.setTipFee(this.tipFee + this.stepSize)
     },
-    incrementMaxFee () {
-      this.setMaxFee(this.maxFee + this.stepSize)
-    },
-    decrementTipFee () {
+    decrementMinerTipFee () {
       if (this.tipFee) {
         this.setTipFee(this.tipFee - this.stepSize)
       }
     },
-    decrementMaxFee () {
+    incrementMaximumFee () {
+      this.setMaxFee(this.maxFee + this.stepSize)
+    },
+    decrementMaximumFee () {
       if (this.maxFee) {
         this.setMaxFee(this.maxFee - this.stepSize)
       }
@@ -313,6 +328,9 @@ export default {
     }
   }
 }
+
+// Lower bound = suggestedBaseFeePerGas + maxPriorityFeePerGas
+// Upper bound = maxFeePerGas
 </script>
 
 <style lang="scss" scoped>
