@@ -20,7 +20,7 @@ const password = '123123123'
 if (process.env.NODE_ENV === 'mainnet') {
   // fastBTC service provider only in mainnet(dev & prod)
   describe('FastBTC swap provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
-    before(async () => {
+    beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
@@ -36,14 +36,12 @@ if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
     })
-    after(async () => {
+    afterEach(async () => {
       await browser.close()
     })
 
     it('SWAP BTC to RBTC - fastBTC', async () => {
       const fromAsset = 'BTC'
-      // Select mainnet for fastBTC e2e
-      await overviewPage.SelectNetwork(page, 'mainnet')
       // Click asset 1
       await overviewPage.SelectAssetFromOverview(page, fromAsset)
       await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
