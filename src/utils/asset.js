@@ -41,11 +41,11 @@ const EXPLORERS = {
   },
   bsc: {
     testnet: {
-      tx: 'https://testnet.bscscan.com/tx/{hash}',
+      tx: 'https://testnet.bscscan.com/tx/0x{hash}',
       address: 'https://testnet.bscscan.com/address/{hash}'
     },
     mainnet: {
-      tx: 'https://bscscan.com/tx/{hash}',
+      tx: 'https://bscscan.com/tx/0x{hash}',
       address: 'https://bscscan.com/address/{hash}'
     }
   },
