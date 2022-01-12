@@ -43,6 +43,10 @@ const TESTNET_ASSETS = [
   })
 }, {})
 
+const mapLegacyProvidersToSupported = {
+  oneinchV3: 'oneinchV4'
+}
+
 export default {
   client (state, getters) {
     return ({
@@ -89,12 +93,13 @@ export default {
   },
   swapProvider (state) {
     return (network, providerId) => {
-      const cacheKey = [network, providerId]
+      const supportedProviderId = mapLegacyProvidersToSupported[providerId] ? mapLegacyProvidersToSupported[providerId] : providerId
+      const cacheKey = [network, supportedProviderId]
 
       const cachedSwapProvider = swapProviderCache[cacheKey]
       if (cachedSwapProvider) return cachedSwapProvider
 
-      const swapProvider = createSwapProvider(network, providerId)
+      const swapProvider = createSwapProvider(network, supportedProviderId)
       swapProviderCache[cacheKey] = swapProvider
 
       return swapProvider

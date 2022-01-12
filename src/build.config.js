@@ -105,12 +105,12 @@ export default {
         type: SwapProviderType.UNISWAPV2,
         routerAddress: '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D'
       },
-      oneinchV3: {
-        name: 'Oneinch V3',
+      oneinchV4: {
+        name: 'Oneinch V4',
         icon: 'oneinch.svg',
-        type: SwapProviderType.ONEINCHV3,
-        agent: 'https://api.1inch.exchange/v3.0',
-        routerAddress: '0x11111112542d85b3ef69ae05771c2dccff4faa26',
+        type: SwapProviderType.ONEINCHV4,
+        agent: 'https://api.1inch.exchange/v4.0',
+        routerAddress: '0x1111111254fb6c44bac0bed2854e76f90643097d',
         referrerAddress: {
           ethereum: '0xaf2C465dC79DeDf7305CDe782439171D147Abac7',
           polygon: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
