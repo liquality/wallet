@@ -64,7 +64,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         await page.waitForSelector('#selectedQuote_provider', { visible: true })
         try {
           expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-            'MATIC->PUSDT swap, Oneinch V4 should be chosen!')
+            `${obj.assert1}->${obj.assert2}) swap, Oneinch V4 should be chosen!`)
             .equals('Oneinch V4')
         } catch (e) {
           await testUtil.takeScreenshot(page, '1inch-issue')
