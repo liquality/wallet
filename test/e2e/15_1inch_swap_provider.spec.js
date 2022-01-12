@@ -65,7 +65,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         try {
           expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
             'MATIC->PUSDT swap, Oneinch V4 should be chosen!')
-            .oneOf(['Oneinch V4'])
+            .equals('Oneinch V4')
         } catch (e) {
           await testUtil.takeScreenshot(page, '1inch-issue')
           expect(e, '1inch V4 should be chosen').equals(null)
