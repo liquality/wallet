@@ -171,7 +171,7 @@ export default {
       })
     },
     setCustomFee (fee) {
-      this.fee = fee
+      this.fee = Math.abs(fee)
       this.$emit('update', {
         asset: this.asset,
         fee: this.fee
