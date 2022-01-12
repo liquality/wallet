@@ -17,7 +17,7 @@
         <div class="form-group">
           <label>{{label}}</label>
           <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{symbol}}</p>
-          <p class="text-muted">${{prettyFiatBalance(amount, fiatRates[asset])}}</p>
+          <p class="text-muted">{{formatFiatUI(prettyFiatBalance(amount, fiatRates[asset]))}}</p>
         </div>
         <div class="form-group">
           <label>To</label>
@@ -78,7 +78,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import { unitToCurrency, chainToTokenAddressMap } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
-import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance, formatFiatUI } from '@/utils/coinFormatter'
 import { getNativeAsset, getAssetColorStyle, tokenDetailProviders, estimateGas } from '@/utils/asset'
 import { parseTokenTx } from '@/utils/parseTokenTx'
 
@@ -125,6 +125,7 @@ export default {
     ...mapActions(['replyPermission', 'updateFees']),
     prettyBalance,
     prettyFiatBalance,
+    formatFiatUI,
     getAssetColorStyle,
     onCustomFeeSelected () {
       this.currentStep = 'custom-fees'

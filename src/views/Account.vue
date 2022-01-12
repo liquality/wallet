@@ -23,7 +23,7 @@
             class="account-container_balance_fiat"
             :id="`${asset}_fiat_value`"
           >
-            <span v-if="fiatRates[asset]"> ${{ formatFiat(fiat) }} </span>
+            <span v-if="fiatRates[asset]"> {{ formatFiatUI(formatFiat(fiat)) }} </span>
             <span v-else>&nbsp;</span>
           </div>
           <div>
@@ -125,7 +125,7 @@ import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
-import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
+import { prettyBalance, formatFiat, formatFiatUI } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
 import { getAssetIcon, getAddressExplorerLink } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
@@ -206,6 +206,7 @@ export default {
     shortenAddress,
     formatFontSize,
     formatFiat,
+    formatFiatUI,
     async copyAddress () {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true

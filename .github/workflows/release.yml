@@ -14,7 +14,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v2.5.0
+      - uses: actions/setup-node@v2.5.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
@@ -71,7 +71,7 @@ jobs:
 
       - name: E2E tests against Dev Mainnet Agent
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        uses: beemi/puppeteer-headful@v1.0.6
+        uses: beemi/puppeteer-headful@v1.0.11
         env:
           CI: 'true'
           DISPLAY: :99
@@ -82,7 +82,7 @@ jobs:
 
       - name: E2E tests against Prod Mainnet Agent
         if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
-        uses: beemi/puppeteer-headful@v1.0.6
+        uses: beemi/puppeteer-headful@v1.0.11
         env:
           CI: 'true'
           DISPLAY: :99
@@ -112,7 +112,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: ${{ github.ref }}
           body: |
             ${{ steps.Changelog.outputs.changelog }}
 

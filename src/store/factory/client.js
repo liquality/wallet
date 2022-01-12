@@ -134,15 +134,17 @@ function createEthClient (asset, network, mnemonic, accountType, derivationPath)
   const isTestnet = network === 'testnet'
   const ethereumNetwork = ChainNetworks.ethereum[network]
   const infuraApi = isTestnet ? `https://ropsten.infura.io/v3/${buildConfig.infuraApiKey}` : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
-  const scraperApi = isTestnet ? 'https://liquality.io/eth-ropsten-api' : 'https://liquality.io/eth-mainnet-api'
+  const scraperApi = isTestnet ? 'https://eth-ropsten-api.liq-chainhub.net/' : 'https://eth-mainnet-api.liq-chainhub.net/'
   const feeProvider = isTestnet ? new EthereumRpcFeeProvider() : new EthereumGasNowFeeProvider('https://gasoracle.liquality.io')
 
   return createEthereumClient(asset, network, ethereumNetwork, infuraApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath)
 }
 
 function createNearClient (network, mnemonic, derivationPath) {
-  const nearNetwork = ChainNetworks.near[network]
+  const nearConfig = ChainNetworks.near[network]
   const nearClient = new Client()
+  const nodeUrl = network === 'testnet' ? nearConfig.nodeUrl : 'https://archival-rpc.mainnet.near.org'
+  const nearNetwork = { ...nearConfig, nodeUrl }
   nearClient.addProvider(new NearRpcProvider(nearNetwork))
   nearClient.addProvider(new NearJsWalletProvider(
     {
@@ -178,7 +180,7 @@ function createRskClient (asset, network, mnemonic, accountType, derivationPath)
   const isTestnet = network === 'testnet'
   const rskNetwork = ChainNetworks.rsk[network]
   const rpcApi = isTestnet ? process.env.VUE_APP_SOVRYN_RPC_URL_TESTNET : process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET
-  const scraperApi = isTestnet ? 'https://liquality.io/rsk-testnet-api' : 'https://liquality.io/rsk-mainnet-api'
+  const scraperApi = isTestnet ? 'https://rsk-testnet-api.liq-chainhub.net/' : 'https://rsk-mainnet-api.liq-chainhub.net/'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
   return createEthereumClient(asset, network, rskNetwork, rpcApi, scraperApi, feeProvider, mnemonic, accountType, derivationPath)
@@ -198,7 +200,7 @@ function createPolygonClient (asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const polygonNetwork = ChainNetworks.polygon[network]
   const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com' : 'https://polygon-rpc.com'
-  const scraperApi = isTestnet ? 'https://liquality.io/polygon-testnet-api' : 'https://liquality.io/polygon-mainnet-api'
+  const scraperApi = isTestnet ? 'https://polygon-mumbai-api.liq-chainhub.net/' : 'https://polygon-mainnet-api.liq-chainhub.net/'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 2, fastMultiplier: 2.2 })
 
   return createEthereumClient(asset, network, polygonNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
@@ -208,7 +210,7 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const arbitrumNetwork = ChainNetworks.arbitrum[network]
   const rpcApi = isTestnet ? 'https://rinkeby.arbitrum.io/rpc' : `https://arbitrum-mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
-  const scraperApi = isTestnet ? 'https://liquality.io/arbitrum-testnet-api' : 'https://liquality.io/arbitrum-mainnet-api'
+  const scraperApi = isTestnet ? 'https://arbitrum-rinkeby-api.liq-chainhub.net/' : 'https://arbitrum-mainnet-api.liq-chainhub.net/'
   const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
 
   return createEthereumClient(asset, network, arbitrumNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
