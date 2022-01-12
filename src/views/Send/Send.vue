@@ -418,7 +418,7 @@ export default {
       return BN(this.amount).plus(BN(this.currentFee))
     },
     isEIP1559Fees () {
-      return this.assetChain === 'ETH' || this.assetChain === 'MATIC'
+      return this.assetChain === 'ETH' || (this.assetChain === 'MATIC' && this.activeNetwork === 'testnet')
     }
   },
   methods: {
