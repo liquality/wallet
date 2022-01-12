@@ -10,51 +10,7 @@ import LocalMessageDuplexStream from 'post-message-stream'
 
 ;(new Script()).start()
 
-inject(providerManager())
-inject(bitcoinProvider())
-inject(nearProvider())
-inject(solanaProvider())
-inject(terraProvider())
-
-function injectEthereum (state, chain) {
-  const network = ChainNetworks[chain][state.activeNetwork]
-  inject(ethereumProvider({
-    chain,
-    asset: chains[chain].nativeAsset,
-    network
-  }))
-}
-
-chrome.storage.local.get(['liquality-wallet'], (storage) => {
-  const state = storage['liquality-wallet']
-
-  buildConfig.chains
-    .filter(isEthereumChain)
-    .forEach(chain => {
-      injectEthereum(state, chain)
-    })
-
-  if (state.injectEthereum && state.injectEthereumChain) {
-    const { externalConnections, activeWalletId, activeNetwork } = state
-
-    let ethereumChain = state.injectEthereumChain
-    const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
-
-    if (defaultAccountId) {
-      const defaultAccount = state.accounts[activeWalletId][activeNetwork].find(account => account.id === defaultAccountId)
-      if (defaultAccount) {
-        const selectedEthereumChain = defaultAccount.chain
-        ethereumChain = selectedEthereumChain
-      }
-    }
-
-    inject(overrideEthereum(ethereumChain))
-  }
-})
-
-inject(paymentUriHandler())
-
-async function setupStreams () {
+async function setupTerraStreams () {
   const pageStream = new LocalMessageDuplexStream({
     name: 'station:content',
     target: 'station:inpage'
@@ -71,8 +27,58 @@ async function setupStreams () {
   console.log('Stream setup successfully')
 }
 
-async function start () {
-  await setupStreams()
+function injectEthereum (state, chain) {
+  const network = ChainNetworks[chain][state.activeNetwork]
+  inject(ethereumProvider({
+    chain,
+    asset: chains[chain].nativeAsset,
+    network
+  }))
 }
 
-start()
+function injectProviders (state) {
+  inject(providerManager())
+  inject(bitcoinProvider())
+  inject(nearProvider())
+  inject(solanaProvider())
+
+  setupTerraStreams()
+  inject(terraProvider())
+  
+  buildConfig.chains
+  .filter(isEthereumChain)
+  .forEach(chain => {
+    injectEthereum(state, chain)
+  })
+
+  inject(paymentUriHandler())
+}
+
+function overrideEthereumInjection (state) {
+  const { externalConnections, activeWalletId, activeNetwork } = state
+
+  let ethereumChain = state.injectEthereumChain
+  const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
+
+  if (defaultAccountId) {
+    const defaultAccount = state.accounts[activeWalletId][activeNetwork].find(account => account.id === defaultAccountId)
+    if (defaultAccount) {
+      const selectedEthereumChain = defaultAccount.chain
+      ethereumChain = selectedEthereumChain
+    }
+  }
+
+  inject(overrideEthereum(ethereumChain))
+}
+
+chrome.storage.local.get(['liquality-wallet'], (storage) => {
+  const state = storage['liquality-wallet']
+
+  if (state.injectionEnabled) {
+    injectProviders(state)
+
+    if (state.injectEthereum && state.injectEthereumChain) {
+      overrideEthereumInjection(state)
+    }
+  }
+})

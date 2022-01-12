@@ -9,8 +9,8 @@
         </p>
         <toggle-button
           :css-colors="true"
-          :value="manageDappConnection"
-          @change="(e) => toggleManageDappConnection(e.value)"
+          :value="injectionEnabled"
+          @change="(e) => toggleManageDappConnection()"
         />
       </div>
       <div class="connection-drawer_settings_item">
@@ -65,8 +65,7 @@ export default {
   },
   data () {
     return {
-      currentOrigin: null,
-      manageDappConnection: true
+      currentOrigin: null
     }
   },
   computed: {
@@ -75,6 +74,7 @@ export default {
       'activeWalletId',
       'activeNetwork',
       'externalConnections',
+      'injectionEnabled',
       'injectEthereumChain'
     ]),
     ...mapGetters(['accountItem', 'accountsData']),
@@ -107,9 +107,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setEthereumInjectionChain', 'addExternalConnection']),
-    toggleManageDappConnection (enable) {
-      this.manageDappConnection = enable
+    ...mapActions(['setEthereumInjectionChain', 'addExternalConnection', 'toggleInjection']),
+    toggleManageDappConnection () {
+      this.toggleInjection()
     },
     updateInjectEthereumChain (chain) {
       this.setEthereumInjectionChain({ chain })
