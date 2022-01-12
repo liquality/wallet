@@ -75,7 +75,7 @@ class OneinchSwapProvider extends SwapProvider {
     }
 
     const callData = await axios({
-      url: this.config.agent + `/${chainId}/approve/calldata`,
+      url: this.config.agent + `/${chainId}/approve/transaction`,
       method: 'get',
       params: { tokenAddress: cryptoassets[quote.from].contractAddress, amount: inputAmount.toString() }
     })
