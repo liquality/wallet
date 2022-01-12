@@ -18,7 +18,7 @@ class LiqualityBoostSwapProvider extends SwapProvider {
     this.supportedBridgeAssets = this.config.supportedBridgeAssets
 
     if (this.config.network === 'mainnet') {
-      this.oneinchSwapProvider = createSwapProvider(this.config.network, 'oneinchV3')
+      this.oneinchSwapProvider = createSwapProvider(this.config.network, 'oneinchV4')
       this.bridgeAssetToAutomatedMarketMaker = {
         MATIC: this.oneinchSwapProvider,
         ETH: this.oneinchSwapProvider,
