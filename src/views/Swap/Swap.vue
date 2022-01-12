@@ -854,7 +854,7 @@ export default {
       return this.totalToReceiveInFiat <= 0
     },
     isEIP1559Fees () {
-      return this.assetChain === 'ETH' || (this.assetChain === 'MATIC' && this.activeNetwork === 'testnet')
+      return this.assetChain === 'ETH' || this.assetChain === 'MATIC'
     }
   },
   methods: {
