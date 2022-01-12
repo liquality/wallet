@@ -33,10 +33,6 @@ if (process.env.NODE_ENV === 'mainnet') {
       // overview page
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
-      // Select correct network based on Env
-      if (process.env.NODE_ENV === 'mainnet') {
-        await overviewPage.SelectNetwork(page, 'mainnet')
-      }
     })
     afterEach(async () => {
       await browser.close()

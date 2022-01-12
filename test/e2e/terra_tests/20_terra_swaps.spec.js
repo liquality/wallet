@@ -101,7 +101,7 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
         await page.waitForSelector('.swap-details_info', { visible: true })
       }
       // Close
-        await browser.close()
+      await browser.close()
     })
   })
 })
