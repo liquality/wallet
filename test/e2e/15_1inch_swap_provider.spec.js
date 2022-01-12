@@ -49,8 +49,6 @@ if (process.env.NODE_ENV === 'mainnet') {
         // overview page
         await overviewPage.CloseWatsNewModal(page)
         await overviewPage.HasOverviewPageLoaded(page)
-        // Select testnet
-        await overviewPage.SelectNetwork(page, 'mainnet')
         // Click on BTC then click on SWAP button
         await overviewPage.SelectAssetFromOverview(page, assert1)
         await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
@@ -66,11 +64,11 @@ if (process.env.NODE_ENV === 'mainnet') {
         await page.waitForSelector('#selectedQuote_provider', { visible: true })
         try {
           expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-            'MATIC->PUSDT swap, Oneinch V3 should be chosen!')
-            .oneOf(['Oneinch V3'])
+            `${obj.assert1}->${obj.assert2}) swap, Oneinch V4 should be chosen!`)
+            .equals('Oneinch V4')
         } catch (e) {
           await testUtil.takeScreenshot(page, '1inch-issue')
-          expect(e, '1inch V3 should be chosen').equals(null)
+          expect(e, '1inch V4 should be chosen').equals(null)
         }
         try {
           await browser.close()
