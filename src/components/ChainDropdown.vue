@@ -1,9 +1,7 @@
 <template>
- <div class="dropdown chain-list-search"
-      v-click-away="hide">
-  <button class="btn dropdown-toggle p-0"
-          @click="toggle">
-     <div class="form" id="dropdown-item" v-if="selected">
+  <div class="dropdown chain-list-search" v-click-away="hide">
+    <button class="btn dropdown-toggle p-0" @click="toggle">
+      <div class="form" id="dropdown-item" v-if="selected">
         <div class="input-group">
           <img :src="getChainIcon(selected)" class="asset-icon" />
           <span class="input-group-text">
@@ -13,19 +11,20 @@
       </div>
       <ChevronUpIcon v-if="dropdownOpen" />
       <ChevronDownIcon v-else />
-  </button>
-  <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
-    <li v-if="showSearch">
-      <div class="form dropdown-header">
-        <div class="input-group">
-              <SearchIcon/>
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                v-model="search"
-                placeholder="Search"
-                autocomplete="off"
-              />
+    </button>
+    <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
+      <li v-if="showSearch">
+        <div class="form dropdown-header">
+          <div class="input-group">
+            <SearchIcon />
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              v-model="search"
+              placeholder="Search"
+              autocomplete="off"
+            />
+          </div>
         </div>
       </li>
       <li v-for="chain in filteredItems" :key="chain">
