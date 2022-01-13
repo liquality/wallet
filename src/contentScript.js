@@ -16,7 +16,7 @@ async function setupTerraStreams () {
     target: 'station:inpage'
   })
 
-  const extensionPort = chrome.extension.connect({
+  const extensionPort = browser.extension.connect({
     name: 'TerraStationExtension'
   })
 
@@ -44,12 +44,12 @@ function injectProviders (state) {
 
   setupTerraStreams()
   inject(terraProvider())
-  
+
   buildConfig.chains
-  .filter(isEthereumChain)
-  .forEach(chain => {
-    injectEthereum(state, chain)
-  })
+    .filter(isEthereumChain)
+    .forEach(chain => {
+      injectEthereum(state, chain)
+    })
 
   inject(paymentUriHandler())
 }
