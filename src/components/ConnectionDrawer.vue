@@ -4,8 +4,8 @@
       <div class="connection-drawer_settings_item pb-3">
         <div class="mb-2"><strong>Manage dApp Connection</strong></div>
         <p class="text-muted">
-          Allow the wallet to connect to a dApp. Switch on, refresh site to
-          connect to Liquality wallet.
+          Allow the wallet to connect to a dApp. Switch on, refresh site to connect to Liquality
+          wallet.
         </p>
         <toggle-button
           :css-colors="true"
@@ -16,8 +16,8 @@
       <div class="connection-drawer_settings_item">
         <div class="mb-2"><strong>dApp Network</strong></div>
         <p class="text-muted">
-          Find the connection button on the site. If you can’t connect try again
-          after switching the network.
+          Find the connection button on the site. If you can’t connect try again after switching the
+          network.
         </p>
         <ChainDropdown
           :chains="ethereumChains"
@@ -35,10 +35,17 @@
     </div>
     <div class="connection-drawer_accounts" v-if="dappConnected">
       <ul class="connection-drawer_accounts_list p-0 m-0">
-        <li v-for="account in accounts" :key="account.id" class="m-0 p-3" :class="{ selected: selectedAccount.id === account.id }">
+        <li
+          v-for="account in accounts"
+          :key="account.id"
+          class="m-0 p-3"
+          :class="{ selected: selectedAccount.id === account.id }"
+        >
           {{ formatAddress(account) }}
           <TickBlue class="float-right" v-if="selectedAccount.id === account.id" />
-          <button v-else class="btn btn-option float-right" @click="switchAccount(account)">Switch account</button>
+          <button v-else class="btn btn-option float-right" @click="switchAccount(account)">
+            Switch account
+          </button>
         </li>
       </ul>
     </div>
@@ -63,7 +70,7 @@ export default {
     TickBlue,
     ChainDropdown
   },
-  data () {
+  data() {
     return {
       currentOrigin: null
     }
@@ -78,40 +85,39 @@ export default {
       'injectEthereumChain'
     ]),
     ...mapGetters(['accountItem', 'accountsData']),
-    dappConnected () {
+    dappConnected() {
       if (!this.currentOrigin) return false
-      if (
-        !(this.currentOrigin in this.externalConnections[this.activeWalletId])
-      ) { return false }
-      const chains = Object.keys(
-        this.externalConnections[this.activeWalletId][this.currentOrigin]
-      )
+      if (!(this.currentOrigin in this.externalConnections[this.activeWalletId])) {
+        return false
+      }
+      const chains = Object.keys(this.externalConnections[this.activeWalletId][this.currentOrigin])
       return chains.length > 0
     },
-    ethereumChains () {
+    ethereumChains() {
       return buildConfig.chains.filter(isEthereumChain)
     },
-    selectedAccount () {
+    selectedAccount() {
       if (!this.dappConnected) {
         return null
       }
-      const accountId = this.externalConnections[this.activeWalletId][this.currentOrigin].defaultEthereum
+      const accountId =
+        this.externalConnections[this.activeWalletId][this.currentOrigin].defaultEthereum
       return this.accountItem(accountId)
     },
-    accounts () {
+    accounts() {
       if (!this.selectedAccount) {
         return []
       }
 
-      return this.accountsData.filter(account => account.chain === this.selectedAccount.chain)
+      return this.accountsData.filter((account) => account.chain === this.selectedAccount.chain)
     }
   },
   methods: {
     ...mapActions(['setEthereumInjectionChain', 'addExternalConnection', 'toggleInjection']),
-    toggleManageDappConnection () {
+    toggleManageDappConnection() {
       this.toggleInjection()
     },
-    updateInjectEthereumChain (chain) {
+    updateInjectEthereumChain(chain) {
       this.setEthereumInjectionChain({ chain })
       this.trackAnalytics({
         event: 'Web3 Network Update',
@@ -122,19 +128,21 @@ export default {
         }
       })
     },
-    formatAddress (account) {
+    formatAddress(account) {
       return shortenAddress(
-        chains[account.chain].formatAddress(
-          account.addresses[0],
-          this.activeNetwork
-        )
+        chains[account.chain].formatAddress(account.addresses[0], this.activeNetwork)
       )
     },
-    switchAccount (account) {
-      this.addExternalConnection({ origin: this.currentOrigin, chain: account.chain, accountId: account.id, setDefaultEthereum: true })
+    switchAccount(account) {
+      this.addExternalConnection({
+        origin: this.currentOrigin,
+        chain: account.chain,
+        accountId: account.id,
+        setDefaultEthereum: true
+      })
     }
   },
-  created () {
+  created() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length > 0) {
         const { origin } = new URL(tabs[0].url)
@@ -163,7 +171,7 @@ export default {
       li {
         border-top: 1px solid $hr-border-color;
         &.selected {
-          background: #F0F7F9;
+          background: #f0f7f9;
         }
         svg {
           height: 12px;

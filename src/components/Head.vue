@@ -1,6 +1,8 @@
 <template>
   <div class="head">
-    <router-link to="/wallet" class="head_logo ml-3" id="wallet_header_logo"><LogoIcon /></router-link>
+    <router-link to="/wallet" class="head_logo ml-3" id="wallet_header_logo"
+      ><LogoIcon
+    /></router-link>
     <div id="head_network" class="head_network" @click.stop="showNetworks = !showNetworks">
       {{ activeNetwork }}
       <ChevronUpIcon v-if="showNetworks" />
@@ -10,9 +12,16 @@
         <li id="testnet_network" @click="switchNetwork('testnet')">Testnet</li>
       </ul>
     </div>
-    <div class="head_connection float-right mr-3" @click="showConnectionDrawer = !showConnectionDrawer">
-      <template v-if="dappConnected"><ConnectionConnected class="mr-1 connection-icon" /> dApp Connected</template>
-      <template v-else><ConnectionDisconnected class="mr-1 connection-icon" /> Connect dApp</template>
+    <div
+      class="head_connection float-right mr-3"
+      @click="showConnectionDrawer = !showConnectionDrawer"
+    >
+      <template v-if="dappConnected"
+        ><ConnectionConnected class="mr-1 connection-icon" /> dApp Connected</template
+      >
+      <template v-else
+        ><ConnectionDisconnected class="mr-1 connection-icon" /> Connect dApp</template
+      >
       <ChevronUpIcon class="ml-1" v-if="showConnectionDrawer" />
       <ChevronDownIcon class="ml-1" v-else />
     </div>
@@ -43,7 +52,7 @@ export default {
     ConnectionConnected,
     ConnectionDrawer
   },
-  data () {
+  data() {
     return {
       showNetworks: false,
       showConnectionDrawer: false,
@@ -53,9 +62,9 @@ export default {
   computed: {
     ...mapState(['wallets', 'activeWalletId', 'activeNetwork', 'externalConnections']),
     wallet: function () {
-      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+      return this.wallets.find((wallet) => wallet.id === this.activeWalletId)
     },
-    dappConnected () {
+    dappConnected() {
       if (!this.currentOrigin) return false
       if (!(this.currentOrigin in this.externalConnections[this.activeWalletId])) return false
       const chains = Object.keys(this.externalConnections[this.activeWalletId][this.currentOrigin])
@@ -64,15 +73,15 @@ export default {
   },
   methods: {
     ...mapActions(['changeActiveNetwork']),
-    hideNetworks () {
+    hideNetworks() {
       this.showNetworks = false
     },
-    async switchNetwork (network) {
+    async switchNetwork(network) {
       await this.changeActiveNetwork({ network })
       this.showNetworks = false
     }
   },
-  created () {
+  created() {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length > 0) {
         const { origin } = new URL(tabs[0].url)
@@ -98,7 +107,8 @@ export default {
     left: 0;
   }
 
-  &_logo, &_logo svg {
+  &_logo,
+  &_logo svg {
     height: 12px;
   }
 

@@ -6,6 +6,7 @@ const SeedWordsPage = require('../../pages/SeedWordsPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
+const { assert } = require('chai')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
@@ -60,6 +61,10 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, 'total assets validation on overview page').contain('8 Assets')
 
+    // Check the Total amount - 10s wait to load amount
+    const totalAmount = parseInt(await overviewPage.GetTotalLiquidity(page), 10)
+    expect(totalAmount, 'Create wallet first time has 0 fiat values').equals(0)
+
     const assertAddresses = []
 
     // GET the ETHEREUM Address
@@ -74,8 +79,23 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     const arbitrumAddress = await overviewPage.GetAssertAddress(page, 'ARBITRUM')
 
     assertAddresses.push(ethAddress, rskAddress, bscAddress, polygonAddress, arbitrumAddress)
+
+    const assertAddressesMap = {
+      eth_address: ethAddress,
+      rsk_address: rskAddress,
+      bsc_address: bscAddress,
+      polygon_address: polygonAddress,
+      arbitrum_address: arbitrumAddress
+    }
+    console.log('Address after new wallet creation: ' + JSON.stringify(assertAddressesMap))
+    assert.isNotEmpty(ethAddress, 'create wallet ETH address should not be empty')
+    assert.isNotEmpty(rskAddress, 'create wallet RSK address should not be empty')
+    assert.isNotEmpty(bscAddress, 'create wallet BSC address should not be empty')
+    assert.isNotEmpty(polygonAddress, 'create wallet POLYGON address should not be empty')
+    assert.isNotEmpty(arbitrumAddress, 'create wallet ARBITRUM address should not be empty')
+
     expect(assertAddresses.every((val, i, arr) => val === arr[0]),
-      'Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]')
+      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${JSON.stringify(assertAddressesMap)}`)
       .eq(true)
     expect(rskAddress, 'ETH & RSK Address are same if the wallet created with 0 balance')
       .equals(ethAddress)
@@ -126,7 +146,7 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
 
     const assertAddresses = []
 
-    await page.waitForTimeout(80000)
+    await page.waitForTimeout(120000)
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
     expect(ethAddress, 'ETHEREUM address is empty on overview page').to.contain.oneOf(['...'])

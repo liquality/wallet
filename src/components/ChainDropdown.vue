@@ -5,13 +5,10 @@
           @click="toggle">
      <div class="form" id="dropdown-item" v-if="selected">
         <div class="input-group">
-                <img
-                :src="getChainIcon(selected)"
-                class="asset-icon"
-              />
-              <span class="input-group-text">
-                {{ getChainName(selected) }}
-              </span>
+          <img :src="getChainIcon(selected)" class="asset-icon" />
+          <span class="input-group-text">
+            {{ getChainName(selected) }}
+          </span>
         </div>
       </div>
       <ChevronUpIcon v-if="dropdownOpen" />
@@ -30,32 +27,22 @@
                 autocomplete="off"
               />
         </div>
-      </div>
-    </li>
-    <li v-for="chain in filteredItems" :key="chain">
-      <a class="dropdown-item"
-         :id="`${chain}_web_network`"
-         href="#"
-         @click="selectItem(chain)">
-           <div class="dropdown-item-chain-item">
-             <img
-                :src="getChainIcon(chain)"
-                class="asset-icon"
-              />
-              {{ getChainName(chain) }}
-           </div>
-      </a>
-    </li>
-    <li v-if="filteredItems.length <= 0">
-      <span class="dropdown-item"
-         href="#">
-           <div class="dropdown-item-chain-item">
-             No items
-           </div>
-      </span>
-    </li>
-  </ul>
-</div>
+      </li>
+      <li v-for="chain in filteredItems" :key="chain">
+        <a class="dropdown-item" :id="`${chain}_web_network`" href="#" @click="selectItem(chain)">
+          <div class="dropdown-item-chain-item">
+            <img :src="getChainIcon(chain)" class="asset-icon" />
+            {{ getChainName(chain) }}
+          </div>
+        </a>
+      </li>
+      <li v-if="filteredItems.length <= 0">
+        <span class="dropdown-item" href="#">
+          <div class="dropdown-item-chain-item">No items</div>
+        </span>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -77,7 +64,7 @@ export default {
     ChevronUpIcon
   },
   props: ['chains', 'selected', 'showSearch'],
-  data () {
+  data() {
     return {
       dropdownOpen: false,
       search: '',
@@ -85,25 +72,25 @@ export default {
     }
   },
   computed: {
-    items () {
-      return this.chains.filter(a => a !== this.selected)
+    items() {
+      return this.chains.filter((a) => a !== this.selected)
     }
   },
   watch: {
-    search (newSearch, oldSearch) {
+    search(newSearch, oldSearch) {
       if (newSearch && newSearch !== oldSearch) {
-        this.filteredItems = this.items.filter(
-          a => chains[a].name.toUpperCase().includes(newSearch.toUpperCase())
+        this.filteredItems = this.items.filter((a) =>
+          chains[a].name.toUpperCase().includes(newSearch.toUpperCase())
         )
       } else {
         this.filteredItems = [...this.items]
       }
     },
-    chains (newChains, oldChains) {
+    chains(newChains, oldChains) {
       if (newChains && newChains !== oldChains) {
         if (this.search) {
-          this.filteredItems = this.items.filter(
-            a => chains[a].name.toUpperCase().includes(this.search.toUpperCase())
+          this.filteredItems = this.items.filter((a) =>
+            chains[a].name.toUpperCase().includes(this.search.toUpperCase())
           )
         } else {
           this.filteredItems = [...this.items]
@@ -114,23 +101,23 @@ export default {
   methods: {
     getAssetColorStyle,
     getChainIcon,
-    getChainName (chain) {
+    getChainName(chain) {
       const { name, code } = chains[chain]
       return `${name} (${code})`
     },
-    selectItem (chain) {
+    selectItem(chain) {
       this.$emit('chain-changed', chain)
       this.dropdownOpen = false
-      this.filteredItems = this.chains.filter(a => a !== chain)
+      this.filteredItems = this.chains.filter((a) => a !== chain)
     },
-    toggle () {
+    toggle() {
       this.dropdownOpen = !this.dropdownOpen
     },
-    hide () {
+    hide() {
       this.dropdownOpen = false
     }
   },
-  created () {
+  created() {
     this.filteredItems = [...this.items]
   }
 }
@@ -172,7 +159,7 @@ export default {
     padding-top: 0;
     margin: 0;
     left: auto;
-    border: 1px solid #D9DFE5;
+    border: 1px solid #d9dfe5;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
     .dropdown-header {
@@ -201,8 +188,9 @@ export default {
       height: 30px;
       border-bottom: 1px solid $hr-border-color;
 
-      &:hover, &.active {
-        background-color: #F0F7F9;
+      &:hover,
+      &.active {
+        background-color: #f0f7f9;
         color: $color-text-primary;
       }
 
@@ -215,6 +203,6 @@ export default {
         }
       }
     }
-}
+  }
 }
 </style>

@@ -29,8 +29,9 @@ class SendPage {
    * @constructor
    */
   async EnterSendToAddress (page, sendToAddress) {
-    await page.waitForSelector('#address')
-    await page.type('#address', sendToAddress, { delay: 100 })
+    await page.waitForSelector('#address', { visible: true })
+    const elementHandle = await page.$('#address')
+    await elementHandle.type(sendToAddress)
     await page.waitForTimeout(1000)
   }
 
@@ -42,11 +43,18 @@ class SendPage {
    */
   async ClickSendReview (page) {
     // Wait for Review button Enabled
+    await page.waitForSelector('#send_review_button', { visible: true, timeout: 60000 })
     try {
-      await page.waitForSelector('#send_review_button', { visible: true, timeout: 120000 })
-      await page.click('#send_review_button')
-      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 120000 })
-      console.log('User clicked on confirm SEND review button')
+      await page.click('#send_review_button', { clickCount: 5 })
+      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await page.$eval('#send_review_button', el => el.click())
+      }
+    }
+    console.log('User clicked on confirm SEND review button')
+    try {
+      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         await testUtil.takeScreenshot(page, 'click-on-send-review-button')
@@ -56,7 +64,7 @@ class SendPage {
   }
 
   /**
-   * Confirm SEND button.
+   * Confirm SEND button, waiting for transaction to show under activity tab.
    * @param page
    * @returns {Promise<void>}
    * @constructor
@@ -65,10 +73,9 @@ class SendPage {
     await page.waitForSelector('#send_button_confirm', { visible: true })
     await page.click('#send_button_confirm')
     console.log('User clicked on SEND button Confirm...waiting for Transaction Status')
-    await page.waitForTimeout(10000)
     await page.waitForSelector('.transaction-list', {
       visible: true,
-      timeout: 120000
+      timeout: 240000
     })
     try {
       await page.waitForSelector('.transaction-status', { visible: true, timeout: 60000 })

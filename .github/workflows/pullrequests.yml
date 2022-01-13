@@ -2,6 +2,7 @@ on:
   pull_request:
     branches:
       - dev
+      - "!master"
 
 name: PullRequest tests
 
@@ -15,7 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v2.5.0
+        uses: actions/setup-node@v2.5.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
@@ -40,7 +41,7 @@ jobs:
           npm run build
 
       - name: Run Smoke tests againt PullRequest
-        uses: beemi/puppeteer-headful@v1.0.6
+        uses: beemi/puppeteer-headful@v1.0.11
         env:
           CI: 'true'
           DISPLAY: :99

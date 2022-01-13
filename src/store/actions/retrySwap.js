@@ -8,5 +8,9 @@ export const retrySwap = async ({ dispatch, commit }, { swap }) => {
     }
   })
 
-  return dispatch('performNextAction', { network: swap.network, walletId: swap.walletId, id: swap.id })
+  return dispatch('performNextAction', {
+    network: swap.network,
+    walletId: swap.walletId,
+    id: swap.id
+  })
 }

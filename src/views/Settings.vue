@@ -5,55 +5,77 @@
     </NavBar>
     <div class="settings">
       <div class="setting-item" id="settings_item_default_wallet">
-        <div class="setting-item_title flex-fill mb-2">Default Web3 Wallet
-          <span class="setting-item_sub">Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.</span>
+        <div class="setting-item_title flex-fill mb-2">
+          Default Web3 Wallet
+          <span class="setting-item_sub"
+            >Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps
+            while this is enabled.</span
+          >
         </div>
         <div class="setting-item_control" id="default_web3_wallet_toggle_button">
-          <toggle-button :css-colors="true" :value="injectEthereum" @change="e => toggleInjectEthereum(e.value)"/>
+          <toggle-button
+            :css-colors="true"
+            :value="injectEthereum"
+            @change="(e) => toggleInjectEthereum(e.value)"
+          />
         </div>
       </div>
       <div class="setting-item" id="forgetAllDappsDone">
-        <div class="setting-item_title flex-fill mb-2">Dapp Connections
+        <div class="setting-item_title flex-fill mb-2">
+          Dapp Connections
           <span class="setting-item_sub">Forget all of the dapps connected.</span>
         </div>
         <div class="setting-item_control">
-          <button class="btn btn-outline-primary"
-                  id="forget_all_connections_button"
-                  @click="forgetAllDappConnections"
-                  v-tooltip="{
-                    trigger: 'manual',
-                    content: 'Done!',
-                    hideOnTargetClick: false,
-                    show: forgetAllDappsDone
-                  }">
-                  Forget all connections
+          <button
+            class="btn btn-outline-primary"
+            id="forget_all_connections_button"
+            @click="forgetAllDappConnections"
+            v-tooltip="{
+              trigger: 'manual',
+              content: 'Done!',
+              hideOnTargetClick: false,
+              show: forgetAllDappsDone
+            }"
+          >
+            Forget all connections
           </button>
         </div>
       </div>
       <div class="setting-item" id="settings_item_default_wallet_analytics">
-        <div class="setting-item_title flex-fill mb-2">Analytics
-          <span class="setting-item_sub">Share where you click. No identifying data is collected.</span>
+        <div class="setting-item_title flex-fill mb-2">
+          Analytics
+          <span class="setting-item_sub"
+            >Share where you click. No identifying data is collected.</span
+          >
         </div>
         <div class="setting-item_control" id="analytics_toggle_button">
-          <toggle-button :css-colors="true" :value="analyticsEnabled" @change="e => setAnalyticsEnable(e.value)"/>
+          <toggle-button
+            :css-colors="true"
+            :value="analyticsEnabled"
+            @change="(e) => setAnalyticsEnable(e.value)"
+          />
         </div>
       </div>
       <div class="setting-item" id="settings_item_wallet_logs">
-        <div class="setting-item_title flex-fill mb-2">Wallet Logs
-          <span class="setting-item_sub">The wallet logs contain your public information such as addresses and transactions.</span>
+        <div class="setting-item_title flex-fill mb-2">
+          Wallet Logs
+          <span class="setting-item_sub"
+            >The wallet logs contain your public information such as addresses and
+            transactions.</span
+          >
         </div>
         <div class="setting-item_control">
-          <button class="btn btn-outline-primary" id="download_logs_button" @click="downloadLogs">Download Logs</button>
+          <button class="btn btn-outline-primary" id="download_logs_button" @click="downloadLogs">
+            Download Logs
+          </button>
         </div>
       </div>
       <div class="settings-footer">
         <div id="settings_app_version">
           <router-link to="/settings/experiments">
-            <span class="text-muted">
-              Version {{ appVersion }}
-            </span>
+            <span class="text-muted"> Version {{ appVersion }} </span>
           </router-link>
-          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -75,15 +97,9 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'activeNetwork',
-      'activeWalletId',
-      'injectEthereum'
-    ]),
-    ...mapGetters([
-      'analyticsEnabled'
-    ]),
-    appVersion () {
+    ...mapState(['activeNetwork', 'activeWalletId', 'injectEthereum']),
+    ...mapGetters(['analyticsEnabled']),
+    appVersion() {
       return version
     }
   },
@@ -96,7 +112,7 @@ export default {
       'trackAnalytics',
       'forgetDappConnections'
     ]),
-    toggleInjectEthereum (enable) {
+    toggleInjectEthereum(enable) {
       if (enable) {
         this.enableEthereumInjection()
       } else {
@@ -111,7 +127,7 @@ export default {
         }
       })
     },
-    async setAnalyticsEnable (enable) {
+    async setAnalyticsEnable(enable) {
       await this.setAnalyticsResponse({ accepted: enable })
       if (enable) {
         await this.initializeAnalytics()
@@ -125,7 +141,7 @@ export default {
         }
       })
     },
-    async downloadLogs () {
+    async downloadLogs() {
       const logs = await getWalletStateLogs()
       downloadFile({
         filename: 'Liquality Wallet Logs.json',
@@ -140,7 +156,7 @@ export default {
         }
       })
     },
-    async forgetAllDappConnections () {
+    async forgetAllDappConnections() {
       this.trackAnalytics({
         event: 'Forgot all Dapp Connections',
         properties: {
@@ -156,7 +172,7 @@ export default {
       }, 4000)
     }
   },
-  created () {
+  created() {
     this.forgetAllDappsDone = false
   }
 }
