@@ -1,11 +1,6 @@
 <template>
   <div class="view-container">
-    <NavBar
-      showMenu="true"
-      showBack="true"
-      backPath="/settings"
-      backLabel="Settings"
-    >
+    <NavBar showMenu="true" showBack="true" backPath="/settings" backLabel="Settings">
       <span class="wallet_header"><strong>Experiments</strong></span>
     </NavBar>
     <div class="experiments" id="experiments">
@@ -16,14 +11,12 @@
             Allow account management and multiple accounts per network
           </span>
         </div>
-        <div
-          class="setting-item_control"
-        >
+        <div class="setting-item_control">
           <toggle-button
             id="exp-manageAccounts-toggle-switch"
             :css-colors="true"
             :value="experiments['manageAccounts']"
-            @change="toggleExperiment({ name: 'manageAccounts'})"
+            @change="toggleExperiment({ name: 'manageAccounts' })"
           />
         </div>
       </div>

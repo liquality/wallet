@@ -11,18 +11,15 @@
                 @click="toggleShowAmountsFiat"
                 :disabled="!fiatRates[asset]"
               >
-                <span
-                  v-if="showAmountsInFiat"
-                  :style="getAssetColorStyle(asset)"
-                >
+                <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
                   {{ `${asset} ${amount}` }}
                 </span>
-                <span v-else> {{formatFiatUI(amountFiat) }} </span>
+                <span v-else> {{ formatFiatUI(amountFiat) }} </span>
               </button>
             </div>
           </div>
           <div class="input-group mb-3" v-if="showAmountsInFiat">
-            <span class="input-group-text">{{isNaN(amountFiat)? '' : '$'}}</span>
+            <span class="input-group-text">{{ isNaN(amountFiat) ? '' : '$' }}</span>
             <input
               type="number"
               class="form-control"
@@ -68,7 +65,7 @@
           <v-popover offset="1" trigger="hover focus">
             <button
               :class="{
-                active: maxActive,
+                active: maxActive
               }"
               class="btn btn-option tooltip-target"
               id="max_send_amount_button"
@@ -101,7 +98,7 @@ export default {
   components: {
     AccountTooltip
   },
-  data () {
+  data() {
     return {
       showAmountsInFiat: false
     }
@@ -118,16 +115,14 @@ export default {
     'maxActive'
   ],
   computed: {
-    ...mapState([
-      'fiatRates'
-    ])
+    ...mapState(['fiatRates'])
   },
   methods: {
     dpUI,
     formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
-    toggleShowAmountsFiat () {
+    toggleShowAmountsFiat() {
       this.showAmountsInFiat = !this.showAmountsInFiat
     }
   }

@@ -17,16 +17,14 @@
           <div
             class="custom-fee-presets-option"
             v-for="name in ['slow', 'average', 'fast']"
-            :id=name
+            :id="name"
             :key="name"
             :class="{ active: name === preset }"
             @click="setPreset(name)"
           >
             <div class="custom-fee-name">{{ getFeeLabel(name) }}</div>
             <div class="custom-fee-time">
-              <span v-if="fees[name] && fees[name].wait">
-                ~ {{ fees[name].wait }} sec
-              </span>
+              <span v-if="fees[name] && fees[name].wait"> ~ {{ fees[name].wait }} sec </span>
             </div>
             <div class="custom-fee-amount">
               {{ getFeeAmount(name) }}
@@ -42,22 +40,22 @@
           <div class="custom-fee-details">
             <div class="custom-fee-details-item">
               <div class="gas-price-label">Gas Price</div>
-              <div class="gas-price-amount" v-if="customFiatAmount">
-                ${{ customFiatAmount }}
-              </div>
+              <div class="gas-price-amount" v-if="customFiatAmount">${{ customFiatAmount }}</div>
             </div>
             <div class="custom-fee-details-item">
               <div class="gas-unit-label">{{ gasUnit }}</div>
               <div class="input-group">
-                <input type="number"
-                     class="form-control"
-                       id="custom_fee_input_field"
-                     :step="stepSize"
-                     :value="fee"
-                     @input="setCustomFee(parseFloat($event.target.value))" />
+                <input
+                  type="number"
+                  class="form-control"
+                  id="custom_fee_input_field"
+                  :step="stepSize"
+                  :value="fee"
+                  @input="setCustomFee(parseFloat($event.target.value))"
+                />
                 <div class="input-group-text fee-input-controls">
-                  <ChevronUpIcon @click="incrementFee"/>
-                  <ChevronDownIcon  @click="decrementFee"/>
+                  <ChevronUpIcon @click="incrementFee" />
+                  <ChevronDownIcon @click="decrementFee" />
                 </div>
               </div>
             </div>
@@ -66,9 +64,7 @@
 
         <!-- Result -->
         <div class="custom-fee-result" id="custom_speed_fee_results">
-          <div class="custom-fee-result-title">
-            New Speed/Fee
-          </div>
+          <div class="custom-fee-result-title">New Speed/Fee</div>
           <div class="custom-fee-result-amount">{{ customFeeAmount }}</div>
           <div class="custom-fee-result-fiat" v-if="customFiatAmount">
             {{ customFiatAmount }}
@@ -115,22 +111,22 @@ export default {
     ChevronUpIcon,
     ChevronDownIcon
   },
-  data () {
+  data() {
     return {
       fee: null,
       preset: null
     }
   },
   props: ['asset', 'selectedFee', 'fees', 'totalFees', 'fiatRates'],
-  created () {
+  created() {
     this.preset = this.selectedFee || 'average'
     this.fee = this.fees[this.preset]?.fee
   },
   computed: {
-    nativeAsset () {
+    nativeAsset() {
       return getFeeAsset(this.asset) || getNativeAsset(this.asset)
     },
-    gasUnit () {
+    gasUnit() {
       const chainId = cryptoassets[this.asset]?.chain
       if (chainId) {
         const { unit } = chains[chainId]?.fees || ''
@@ -138,58 +134,60 @@ export default {
       }
       return ''
     },
-    customFiatAmount () {
+    customFiatAmount() {
       return this.getFiatAmount()
     },
-    customFeeAmount () {
+    customFeeAmount() {
       return this.getFeeAmount()
     },
-    stepSize () {
+    stepSize() {
       const chainId = cryptoassets[this.asset].chain
-      return ({
-        bitcoin: 1,
-        ethereum: 1,
-        rsk: 1,
-        bsc: 1,
-        polygon: 1,
-        near: 0.00001,
-        solana: 0.00001,
-        terra: 1
-      })[chainId] || 1
+      return (
+        {
+          bitcoin: 1,
+          ethereum: 1,
+          rsk: 1,
+          bsc: 1,
+          polygon: 1,
+          near: 0.00001,
+          solana: 0.00001,
+          terra: 1
+        }[chainId] || 1
+      )
     }
   },
   methods: {
     getFeeLabel,
     getAssetIcon,
-    cancel () {
+    cancel() {
       this.$emit('cancel')
     },
-    apply () {
+    apply() {
       this.$emit('apply', {
         asset: this.asset,
         fee: this.fee
       })
     },
-    setCustomFee (fee) {
+    setCustomFee(fee) {
       this.fee = fee
       this.$emit('update', {
         asset: this.asset,
         fee: this.fee
       })
     },
-    setPreset (name) {
+    setPreset(name) {
       this.preset = name
       this.fee = this.fees[name]?.fee
     },
-    incrementFee () {
+    incrementFee() {
       this.setCustomFee(this.fee + this.stepSize)
     },
-    decrementFee () {
+    decrementFee() {
       if (this.fee && this.fee > 0) {
         this.setCustomFee(this.fee - this.stepSize)
       }
     },
-    getFeeAmount (name) {
+    getFeeAmount(name) {
       if (!name) name = this.preset || 'custom'
       if (this.totalFees && this.totalFees[name]) {
         const totalFee = this.totalFees[name]
@@ -200,13 +198,10 @@ export default {
         return `${this.fee || 0} ${unit}`
       }
     },
-    getFiatAmount (name) {
+    getFiatAmount(name) {
       if (!name) name = this.preset || 'custom'
       if (this.totalFees && this.totalFees[name]) {
-        const totalFiat = prettyFiatBalance(
-          this.totalFees[name],
-          this.fiatRates[this.nativeAsset]
-        )
+        const totalFiat = prettyFiatBalance(this.totalFees[name], this.fiatRates[this.nativeAsset])
         return `${totalFiat} USD`
       }
       return ''
@@ -215,11 +210,11 @@ export default {
   watch: {
     fee: function (val) {
       if (this.fees) {
-        this.preset = ({
+        this.preset = {
           [this.fees?.slow?.fee]: 'slow',
           [this.fees?.average?.fee]: 'average',
           [this.fees?.fast?.fee]: 'fast'
-        })[val || 0]
+        }[val || 0]
       }
     }
   }
@@ -366,8 +361,8 @@ export default {
       margin-left: 4px;
     }
 
-    & input[type=number]::-webkit-inner-spin-button,
-    & input[type=number]::-webkit-outer-spin-button {
+    & input[type='number']::-webkit-inner-spin-button,
+    & input[type='number']::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
@@ -395,8 +390,8 @@ export default {
 }
 
 .custom-fee-result {
-  background: #F0F7F9;
-  border: 1px solid #D9DFE5;
+  background: #f0f7f9;
+  border: 1px solid #d9dfe5;
   display: flex;
   margin-top: 30px;
   padding: 10px;
@@ -415,11 +410,10 @@ export default {
     font-weight: 300;
     font-size: 12px;
     line-height: 16px;
-
   }
 
   .custom-fee-result-fiat {
-    color: #646F85;
+    color: #646f85;
   }
 }
 </style>

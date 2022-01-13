@@ -11,9 +11,7 @@
       <ul class="step-instructions">
         <li>Plug the Ledger into the computer</li>
         <li>Enter pin to unlock it</li>
-        <li>
-          On the device, navigate to the asset that you want to access
-        </li>
+        <li>On the device, navigate to the asset that you want to access</li>
         <li v-if="isEthereumChain(selectedAsset.name)">
           To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Allow Contract Data'
         </li>
@@ -26,10 +24,7 @@
           <button class="btn dropdown-toggle lg" @click="toggleAssetList">
             <div class="form" v-if="selectedAsset">
               <div class="input-group">
-                <img
-                  :src="getAssetIcon(selectedAsset.name)"
-                  class="asset-icon"
-                />
+                <img :src="getAssetIcon(selectedAsset.name)" class="asset-icon" />
                 <span class="input-group-text">
                   {{ selectedAsset.label }}
                 </span>
@@ -40,17 +35,14 @@
           <ul class="dropdown-menu lg" :class="{ show: assetsDropdownOpen }">
             <li v-for="asset in assetList" :key="asset.name">
               <a class="dropdown-item" href="#" @click="selectAsset(asset)">
-                 <div class="form">
-              <div class="input-group">
-                <img
-                  :src="getAssetIcon(asset.name)"
-                  class="asset-icon"
-                />
-                <span class="input-group-text">
-                  {{ asset.label }}
-                </span>
-              </div>
-            </div>
+                <div class="form">
+                  <div class="input-group">
+                    <img :src="getAssetIcon(asset.name)" class="asset-icon" />
+                    <span class="input-group-text">
+                      {{ asset.label }}
+                    </span>
+                  </div>
+                </div>
               </a>
             </li>
           </ul>
@@ -59,10 +51,7 @@
     </div>
     <div class="wrapper_bottom">
       <div class="button-group">
-        <button
-          class="btn btn-light btn-outline-primary btn-lg"
-          @click="goToOverview"
-        >
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="goToOverview">
           Cancel
         </button>
         <button
@@ -95,7 +84,7 @@ export default {
     ChevronRightIcon
   },
   props: ['selectedAsset', 'loading'],
-  data () {
+  data() {
     return {
       assetsDropdownOpen: false
     }
@@ -103,33 +92,31 @@ export default {
   methods: {
     getAssetIcon,
     isEthereumChain,
-    connect () {
+    connect() {
       if (this.selectedAsset) {
         this.$emit('on-connect', { asset: this.selectedAsset })
       }
     },
-    goToOverview () {
+    goToOverview() {
       this.$router.replace('/wallet')
     },
-    selectAsset (asset) {
+    selectAsset(asset) {
       this.$emit('on-select-asset', asset)
       this.hideAssetList()
     },
-    toggleAssetList () {
+    toggleAssetList() {
       this.assetsDropdownOpen = !this.assetsDropdownOpen
     },
-    hideAssetList () {
+    hideAssetList() {
       this.assetsDropdownOpen = false
     }
   },
   computed: {
-    assetList () {
-      return LEDGER_OPTIONS.filter(i => i.name !== this.selectedAsset?.name)
+    assetList() {
+      return LEDGER_OPTIONS.filter((i) => i.name !== this.selectedAsset?.name)
     }
   }
 }
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>
