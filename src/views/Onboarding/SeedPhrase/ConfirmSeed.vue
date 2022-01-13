@@ -20,7 +20,7 @@
                 <input
                   type="text"
                   class="form-control text-center w-75 mx-auto form-control-sm"
-                  id="1st_word"
+                  id="first_seed_word_input"
                   v-model="phraseIndex[0]"
                   @click="remove(0)"
                   autocomplete="off"
@@ -32,7 +32,7 @@
                 <input
                   type="text"
                   class="form-control text-center w-75 mx-auto form-control-sm"
-                  id="5th_word"
+                  id="fifth_seed_word_input"
                   v-model="phraseIndex[1]"
                   @click="remove(1)"
                   autocomplete="off"
@@ -44,7 +44,7 @@
                 <input
                   type="text"
                   class="form-control text-center w-75 mx-auto form-control-sm"
-                  id="12th_word"
+                  id="twelveWord_seed_word_input"
                   v-model="phraseIndex[2]"
                   @click="remove(2)"
                   autocomplete="off"
