@@ -9,9 +9,7 @@ const rskLegacyDerivationMigration = async (state) => {
     }
   }
 
-  const rskLegacyDerivation = await shouldApplyRskLegacyDerivation(
-    state.accounts
-  )
+  const rskLegacyDerivation = await shouldApplyRskLegacyDerivation(state.accounts)
 
   return {
     ...state,

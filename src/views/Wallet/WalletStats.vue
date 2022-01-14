@@ -12,16 +12,10 @@
         <span>USD</span>
       </div>
       <span id="total_assets">
-        {{ accountsData.length }} Asset{{
-          accountsData.length === 1 ? "" : "s"
-        }}
+        {{ accountsData.length }} Asset{{ accountsData.length === 1 ? '' : 's' }}
       </span>
       <div class="wallet-actions">
-        <router-link
-          to="/assets/send"
-          class="wallet-actions-item send-action"
-          id="send_action"
-        >
+        <router-link to="/assets/send" class="wallet-actions-item send-action" id="send_action">
           <SendIcon />
           Send
         </router-link>
@@ -62,12 +56,12 @@ export default {
   },
   computed: {
     ...mapGetters(['totalFiatBalance', 'accountsData']),
-    total () {
+    total() {
       return formatFiat(this.totalFiatBalance)
     }
   },
   methods: {
-    formatFontSize (value) {
+    formatFontSize(value) {
       return formatFontSize(value)
     }
   }

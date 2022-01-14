@@ -1,9 +1,7 @@
 <template>
   <div class="account-container">
     <NavBar :showMenu="false" :showBack="false">
-      <span class="account-title">
-        Create Account
-      </span>
+      <span class="account-title"> Create Account </span>
     </NavBar>
     <div class="wrapper">
       <div class="wrapper_top">
@@ -13,10 +11,7 @@
             <button class="btn custom-dropdown-toggle" @click="toggleAssetList">
               <div class="form" v-if="selectedChain">
                 <div class="input-group">
-                  <img
-                    :src="getChainIcon(selectedChain.id)"
-                    class="asset-icon"
-                  />
+                  <img :src="getChainIcon(selectedChain.id)" class="asset-icon" />
                   <span class="input-group-text">
                     {{ selectedChain.name }}
                   </span>
@@ -24,18 +19,12 @@
               </div>
               <ChevronRightIcon :class="{ open: assetsDropdownOpen }" />
             </button>
-            <ul
-              class="dropdown-menu custom-dropdown-menu"
-              :class="{ show: assetsDropdownOpen }"
-            >
+            <ul class="dropdown-menu custom-dropdown-menu" :class="{ show: assetsDropdownOpen }">
               <li v-for="chain in chains" :key="chain.code">
                 <a class="dropdown-item" href="#" @click="selectChain(chain)">
                   <div class="form">
                     <div class="input-group">
-                      <img
-                        :src="getChainIcon(chain.id)"
-                        class="asset-icon"
-                      />
+                      <img :src="getChainIcon(chain.id)" class="asset-icon" />
                       <span class="input-group-text">
                         {{ chain.name }}
                       </span>
@@ -67,8 +56,8 @@
               />
             </div>
             <small class="text-danger form-text text-right" v-if="accountAliasError">
-                {{ accountAliasError }}
-              </small>
+              {{ accountAliasError }}
+            </small>
           </div>
         </div>
         <div class="create-item-row">
@@ -134,7 +123,7 @@ export default {
   props: {
     chainId: String
   },
-  data () {
+  data() {
     return {
       loading: false,
       selectedChain: null,
@@ -146,14 +135,9 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'accounts',
-      'activeWalletId',
-      'activeNetwork',
-      'enabledAssets'
-    ]),
+    ...mapState(['accounts', 'activeWalletId', 'activeNetwork', 'enabledAssets']),
     ...mapGetters(['networkAssets']),
-    chains () {
+    chains() {
       return buildConfig.chains
         .map((chainId) => {
           const { name, code, nativeAsset } = chains[chainId]
@@ -166,51 +150,48 @@ export default {
         })
         .filter((chain) => chain.id !== this.selectedChain?.id)
     },
-    accountName () {
+    accountName() {
       return `${this.selectedChain?.name} ${this.accountIndex + 1}`
     },
-    inputsValidated () {
-      return this.selectedChain &&
-          !this.accountAliasError &&
-          this.accountColor &&
-          this.accountColor.length > 5
+    inputsValidated() {
+      return (
+        this.selectedChain &&
+        !this.accountAliasError &&
+        this.accountColor &&
+        this.accountColor.length > 5
+      )
     }
   },
-  created () {
+  created() {
     let chain
     if (this.chainId) {
       chain = this.chains.find((c) => c.id === this.chainId)
     }
     this.selectedChain = chain || Object.values(chains)[0]
     this.accountIndex = this.getAccountIndex()
-    this.accountColor = getNextAccountColor(
-      this.selectedChain.id,
-      this.accountIndex - 1
-    )
+    this.accountColor = getNextAccountColor(this.selectedChain.id, this.accountIndex - 1)
 
     this.debouncedCheckAccountAlias = _.debounce(this.checkAccountAlias, 500)
     this.checkAccountAlias()
   },
   methods: {
-    ...mapActions([
-      'createAccount'
-    ]),
+    ...mapActions(['createAccount']),
     getChainIcon,
-    cancel () {
+    cancel() {
       this.$router.replace({ name: 'ManageAccounts' })
     },
-    selectChain (chain) {
+    selectChain(chain) {
       this.selectedChain = chain
       this.accountIndex = this.getAccountIndex()
       this.checkAccountAlias()
     },
-    toggleAssetList () {
+    toggleAssetList() {
       this.assetsDropdownOpen = !this.assetsDropdownOpen
     },
-    hideAssetList () {
+    hideAssetList() {
       this.assetsDropdownOpen = false
     },
-    getAccountIndex () {
+    getAccountIndex() {
       const _accounts =
         this.accounts[this.activeWalletId]?.[this.activeNetwork]?.filter(
           (a) => a.chain === this.selectedChain?.id
@@ -230,10 +211,9 @@ export default {
 
       return lastAccount.index + 1
     },
-    async createNewAccount () {
+    async createNewAccount() {
       this.loading = true
-      const assetKeys =
-        this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
+      const assetKeys = this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
 
       const assets = assetKeys.filter((asset) => {
         return cryptoassets[asset].chain === this.selectedChain.id
@@ -260,17 +240,22 @@ export default {
 
       this.cancel()
     },
-    checkAccountAlias () {
-      if (!this.accountAlias ||
-          this.accountAlias.length < 5 ||
-          (this.accountAlias.match(/^[^\s]+(\s+[^\s]+)*$/) || []).length <= 0) {
+    checkAccountAlias() {
+      if (
+        !this.accountAlias ||
+        this.accountAlias.length < 5 ||
+        (this.accountAlias.match(/^[^\s]+(\s+[^\s]+)*$/) || []).length <= 0
+      ) {
         this.accountAliasError = 'Name should have 5 or more characters'
       } else if (this.accountAlias.length > 20) {
-        this.accountAliasError = 'Name shouldn\'t have more than 20 characters'
-      } else if (this.accounts[this.activeWalletId]?.[this.activeNetwork]?.findIndex(
-        a => (a.alias && a.alias?.toLowerCase() === this.accountAlias.toLowerCase()) ||
-        (a.index === this.accountIndex && a.chain === this.selectedChain.id)
-      ) >= 0) {
+        this.accountAliasError = "Name shouldn't have more than 20 characters"
+      } else if (
+        this.accounts[this.activeWalletId]?.[this.activeNetwork]?.findIndex(
+          (a) =>
+            (a.alias && a.alias?.toLowerCase() === this.accountAlias.toLowerCase()) ||
+            (a.index === this.accountIndex && a.chain === this.selectedChain.id)
+        ) >= 0
+      ) {
         this.accountAliasError = 'Existing account with the same name or path'
       } else {
         this.accountAliasError = null
@@ -278,7 +263,7 @@ export default {
     }
   },
   watch: {
-    accountAlias (newVal, oldVal) {
+    accountAlias(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.debouncedCheckAccountAlias()
       }
@@ -321,25 +306,24 @@ export default {
     padding: 26px 20px;
     border-bottom: 1px solid $hr-border-color;
 
-    input[type=color] {
+    input[type='color'] {
       height: 40px;
       border: none;
       border-radius: 20px;
       max-width: 40px !important;
       cursor: pointer;
-
     }
 
-    input[type=color]::-webkit-color-swatch {
+    input[type='color']::-webkit-color-swatch {
       border: none;
       border-radius: 50%;
       padding: 0;
     }
 
-    input[type=color]::-webkit-color-swatch-wrapper {
-        border: none;
-        border-radius: 50%;
-        padding: 0;
+    input[type='color']::-webkit-color-swatch-wrapper {
+      border: none;
+      border-radius: 50%;
+      padding: 0;
     }
 
     .create-item-row-title,

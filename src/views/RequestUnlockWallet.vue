@@ -10,17 +10,17 @@ export default {
   components: {
     UnlockWallet
   },
-  data () {
+  data() {
     return {
       replied: false
     }
   },
   methods: {
     ...mapActions(['replyUnlockWallet']),
-    unlocked () {
+    unlocked() {
       this.reply(true)
     },
-    async reply (unlocked) {
+    async reply(unlocked) {
       const { id } = this.$route.query
       await this.replyUnlockWallet({ id, unlocked })
 
