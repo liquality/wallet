@@ -108,7 +108,7 @@ function createEthereumClient (
       {
         network: ethereumNetwork,
         derivationPath,
-        hardfork: 'london'
+        hardfork
       },
       ethereumLedgerApp
     )
