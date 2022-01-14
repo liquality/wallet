@@ -4,8 +4,8 @@ import { remove0x } from '@liquality/ethereum-utils'
 export class EthereumLedgerBridgeProvider extends EthereumLedgerProvider {
   _ledgerApp
 
-  constructor ({ network, derivationPath, Transport }, ledgerApp) {
-    super({ network, derivationPath, Transport })
+  constructor ({ network, derivationPath, Transport, hardfork }, ledgerApp) {
+    super({ network, derivationPath, Transport, hardfork })
     this._ledgerApp = new Proxy(ledgerApp, { get: this.errorProxy.bind(this) })
   }
 

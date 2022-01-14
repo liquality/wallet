@@ -107,7 +107,8 @@ function createEthereumClient (
     const ledger = new EthereumLedgerBridgeProvider(
       {
         network: ethereumNetwork,
-        derivationPath
+        derivationPath,
+        hardfork: 'london'
       },
       ethereumLedgerApp
     )
