@@ -552,9 +552,11 @@ export default {
         ([speed, speedFee]) =>
           speed !== 'custom' &&
           (speedFee.fee === fee ||
-            (speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas &&
+            (fee.maxPriorityFeePerGas &&
+              speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas &&
               speedFee.fee.maxFeePerGas === fee.maxFeePerGas))
       )
+
       if (presetFee) {
         const [speed] = presetFee
         this.selectedFee = speed
