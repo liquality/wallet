@@ -4,28 +4,59 @@
       <LogoWallet />
     </div>
     <div>
-      <h2>Create {{!imported ? 'New' : ''}} Password</h2>
+      <h2>Create {{ !imported ? 'New' : '' }} Password</h2>
     </div>
     <form class="form" autocomplete="off" v-on:submit.prevent="generate">
       <div class="form-group mb-4">
         <label for="password">Choose Password ( at least 8 characters )</label>
         <div class="input-group">
-          <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" @blur="validatePasswordLength" required>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            v-model="password"
+            autocomplete="off"
+            @blur="validatePasswordLength"
+            required
+          />
         </div>
-        <small v-show="showPasswordLengthError && validatePasswordLength" class="onboading-password_errorLength form-text hidden">Password must be at least 8 characters.</small>
+        <small
+          v-show="showPasswordLengthError && validatePasswordLength"
+          class="onboading-password_errorLength form-text hidden"
+          >Password must be at least 8 characters.</small
+        >
       </div>
       <div class="form-group">
         <label for="confirmPassword">Confirm Password</label>
         <div class="input-group">
-          <input type="password" class="form-control" id="confirmPassword" v-model="confirmPassword" autocomplete="off" required>
+          <input
+            type="password"
+            class="form-control"
+            id="confirmPassword"
+            v-model="confirmPassword"
+            autocomplete="off"
+            required
+          />
         </div>
-        <small v-show="passwordMatch" class="onboading-password_errorLength form-text hidden" id="password_match_error">Passwords don't match.</small>
+        <small
+          v-show="passwordMatch"
+          class="onboading-password_errorLength form-text hidden"
+          id="password_match_error"
+          >Passwords don't match.</small
+        >
       </div>
     </form>
     <div class="footer-container">
       <div class="footer-content">
-        <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$emit('currentStep')">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-footer btn-icon" id="next_button" :disabled="disableNext" @click="next">
+        <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$emit('currentStep')">
+          Cancel
+        </button>
+        <button
+          class="btn btn-primary btn-lg btn-footer btn-icon"
+          id="next_button"
+          :disabled="disableNext"
+          @click="next"
+        >
           Continue
         </button>
       </div>
@@ -34,12 +65,11 @@
 </template>
 
 <script>
-
 import LogoWallet from '@/assets/icons/logo_wallet.svg'
 
 export default {
   props: ['imported'],
-  data () {
+  data() {
     return {
       password: null,
       confirmPassword: null,
@@ -50,12 +80,16 @@ export default {
     LogoWallet
   },
   computed: {
-    passwordMatch () {
+    passwordMatch() {
       if (!this.password || !this.confirmPassword) return false
-      if ((this.password.length === this.confirmPassword.length) && (this.password !== this.confirmPassword)) return true
+      if (
+        this.password.length === this.confirmPassword.length &&
+        this.password !== this.confirmPassword
+      )
+        return true
       return false
     },
-    disableNext () {
+    disableNext() {
       if (!this.password || !this.confirmPassword) return true
       if (this.password !== this.confirmPassword) return true
       if (this.password.length < 8) return true
@@ -64,10 +98,10 @@ export default {
     }
   },
   methods: {
-    next () {
+    next() {
       this.$emit('on-unlock', this.password)
     },
-    validatePasswordLength () {
+    validatePasswordLength() {
       if (this.password?.length < 8) {
         this.showPasswordLengthError = true
         return false
@@ -80,9 +114,8 @@ export default {
 </script>
 
 <style lang="scss">
-
 .hidden {
-  display:none;
+  display: none;
 }
 
 .onboading-password {

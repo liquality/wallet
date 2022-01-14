@@ -21,24 +21,29 @@ const chainToRpcProviders = {
 }
 
 class OneinchSwapProvider extends SwapProvider {
-  async getSupportedPairs () {
+  async getSupportedPairs() {
     return []
   }
 
-  async _getQuote (chainIdFrom, from, to, amount) {
+  async _getQuote(chainIdFrom, from, to, amount) {
     const fromToken = cryptoassets[from].contractAddress
     const toToken = cryptoassets[to].contractAddress
     const referrerAddress = this.config.referrerAddress?.[cryptoassets[from].chain]
     const fee = referrerAddress && this.config.referrerFee
 
-    return (await axios({
+    return await axios({
       url: this.config.agent + `/${chainIdFrom}/quote`,
       method: 'get',
-      params: { fromTokenAddress: fromToken || nativeAssetAddress, toTokenAddress: toToken || nativeAssetAddress, amount, fee }
-    }))
+      params: {
+        fromTokenAddress: fromToken || nativeAssetAddress,
+        toTokenAddress: toToken || nativeAssetAddress,
+        amount,
+        fee
+      }
+    })
   }
 
-  async getQuote ({ network, from, to, amount }) {
+  async getQuote({ network, from, to, amount }) {
     if (!isEthereumChain(from) || !isEthereumChain(to) || amount <= 0) return null
     const fromAmountInUnit = BN(currencyToUnit(cryptoassets[from], BN(amount)))
     const chainIdFrom = ChainNetworks[cryptoassets[from].chain][network].chainId
@@ -56,7 +61,7 @@ class OneinchSwapProvider extends SwapProvider {
     }
   }
 
-  async approveTokens ({ network, walletId, quote }) {
+  async approveTokens({ network, walletId, quote }) {
     const fromChain = cryptoassets[quote.from].chain
     const toChain = cryptoassets[quote.to].chain
     const chainId = ChainNetworks[fromChain][network].chainId
@@ -64,7 +69,12 @@ class OneinchSwapProvider extends SwapProvider {
 
     const api = new ethers.providers.StaticJsonRpcProvider(chainToRpcProviders[chainId])
     const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.toAccountId)
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.toAccountId
+    )
     const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
     const allowance = await erc20.allowance(fromAddress, this.config.routerAddress)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
@@ -77,11 +87,19 @@ class OneinchSwapProvider extends SwapProvider {
     const callData = await axios({
       url: this.config.agent + `/${chainId}/approve/transaction`,
       method: 'get',
-      params: { tokenAddress: cryptoassets[quote.from].contractAddress, amount: inputAmount.toString() }
+      params: {
+        tokenAddress: cryptoassets[quote.from].contractAddress,
+        amount: inputAmount.toString()
+      }
     })
 
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
-    const approveTx = await client.chain.sendTransaction({ to: callData.data?.to, value: callData.data?.value, data: callData.data?.data, fee: quote.fee })
+    const approveTx = await client.chain.sendTransaction({
+      to: callData.data?.to,
+      value: callData.data?.value,
+      data: callData.data?.data,
+      fee: quote.fee
+    })
 
     return {
       status: 'WAITING_FOR_APPROVE_CONFIRMATIONS',
@@ -90,7 +108,7 @@ class OneinchSwapProvider extends SwapProvider {
     }
   }
 
-  async sendSwap ({ network, walletId, quote }) {
+  async sendSwap({ network, walletId, quote }) {
     const toChain = cryptoassets[quote.to].chain
     const fromChain = cryptoassets[quote.from].chain
     const chainId = ChainNetworks[toChain][network].chainId
@@ -98,7 +116,12 @@ class OneinchSwapProvider extends SwapProvider {
 
     const account = this.getAccount(quote.fromAccountId)
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.fromAccountId
+    )
     const fromAddress = chains[toChain].formatAddress(fromAddressRaw, network)
 
     const swapParams = {
@@ -121,12 +144,23 @@ class OneinchSwapProvider extends SwapProvider {
       params: swapParams
     })
 
-    if (BN(quote.toAmount).times(1 - swapParams.slippage / 100).gt(trade.data.toTokenAmount)) {
-      throw new Error(`Slippage is too high. You expect ${quote.toAmount} but you are going to receive ${trade.data.toTokenAmount} ${quote.to}`)
+    if (
+      BN(quote.toAmount)
+        .times(1 - swapParams.slippage / 100)
+        .gt(trade.data.toTokenAmount)
+    ) {
+      throw new Error(
+        `Slippage is too high. You expect ${quote.toAmount} but you are going to receive ${trade.data.toTokenAmount} ${quote.to}`
+      )
     }
 
     await this.sendLedgerNotification(quote, account, 'Signing required to complete the swap.')
-    const swapTx = await client.chain.sendTransaction({ to: trade.data.tx?.to, value: trade.data.tx?.value, data: trade.data.tx?.data, fee: quote.fee })
+    const swapTx = await client.chain.sendTransaction({
+      to: trade.data.tx?.to,
+      value: trade.data.tx?.value,
+      data: trade.data.tx?.data,
+      fee: quote.fee
+    })
     return {
       status: 'WAITING_FOR_SWAP_CONFIRMATIONS',
       swapTx,
@@ -134,7 +168,7 @@ class OneinchSwapProvider extends SwapProvider {
     }
   }
 
-  async newSwap ({ network, walletId, quote }) {
+  async newSwap({ network, walletId, quote }) {
     const approvalRequired = isERC20(quote.from)
     const updates = approvalRequired
       ? await this.approveTokens({ network, walletId, quote })
@@ -148,7 +182,7 @@ class OneinchSwapProvider extends SwapProvider {
     }
   }
 
-  async estimateFees ({ network, walletId, asset, accountId, txType, quote, feePrices, max }) {
+  async estimateFees({ network, txType, quote, feePrices }) {
     const chain = cryptoassets[quote.from].chain
     const chainId = ChainNetworks[chain][network].chainId
     const nativeAsset = chains[chain].nativeAsset
@@ -165,7 +199,7 @@ class OneinchSwapProvider extends SwapProvider {
     }
   }
 
-  async waitForApproveConfirmations ({ swap, network, walletId }) {
+  async waitForApproveConfirmations({ swap, network, walletId }) {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
@@ -182,7 +216,7 @@ class OneinchSwapProvider extends SwapProvider {
     }
   }
 
-  async waitForSwapConfirmations ({ swap, network, walletId }) {
+  async waitForSwapConfirmations({ swap, network, walletId }) {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
@@ -202,19 +236,26 @@ class OneinchSwapProvider extends SwapProvider {
     }
   }
 
-  async performNextSwapAction (store, { network, walletId, swap }) {
+  async performNextSwapAction(store, { network, walletId, swap }) {
     let updates
 
     switch (swap.status) {
       case 'WAITING_FOR_APPROVE_CONFIRMATIONS':
-        updates = await withInterval(async () => this.waitForApproveConfirmations({ swap, network, walletId }))
+        updates = await withInterval(async () =>
+          this.waitForApproveConfirmations({ swap, network, walletId })
+        )
         break
       case 'APPROVE_CONFIRMED':
-        updates = await withLock(store, { item: swap, network, walletId, asset: swap.from },
-          async () => this.sendSwap({ quote: swap, network, walletId }))
+        updates = await withLock(
+          store,
+          { item: swap, network, walletId, asset: swap.from },
+          async () => this.sendSwap({ quote: swap, network, walletId })
+        )
         break
       case 'WAITING_FOR_SWAP_CONFIRMATIONS':
-        updates = await withInterval(async () => this.waitForSwapConfirmations({ swap, network, walletId }))
+        updates = await withInterval(async () =>
+          this.waitForSwapConfirmations({ swap, network, walletId })
+        )
         break
     }
 
@@ -230,7 +271,7 @@ class OneinchSwapProvider extends SwapProvider {
       step: 0,
       label: 'Approving {from}',
       filterStatus: 'PENDING',
-      notification (swap) {
+      notification(swap) {
         return {
           message: `Approving ${swap.from}`
         }
@@ -245,7 +286,7 @@ class OneinchSwapProvider extends SwapProvider {
       step: 1,
       label: 'Swapping {from}',
       filterStatus: 'PENDING',
-      notification () {
+      notification() {
         return {
           message: 'Engaging oneinch'
         }
@@ -255,9 +296,11 @@ class OneinchSwapProvider extends SwapProvider {
       step: 2,
       label: 'Completed',
       filterStatus: 'COMPLETED',
-      notification (swap) {
+      notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to} ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
+            swap.to
+          } ready to use`
         }
       }
     },
@@ -265,7 +308,7 @@ class OneinchSwapProvider extends SwapProvider {
       step: 2,
       label: 'Swap Failed',
       filterStatus: 'REFUNDED',
-      notification () {
+      notification() {
         return {
           message: 'Swap failed'
         }

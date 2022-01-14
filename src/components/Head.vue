@@ -30,7 +30,7 @@ export default {
     ChevronDownIcon,
     LogoIcon
   },
-  data () {
+  data() {
     return {
       showNetworks: false
     }
@@ -38,15 +38,15 @@ export default {
   computed: {
     ...mapState(['wallets', 'activeWalletId', 'activeNetwork']),
     wallet: function () {
-      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+      return this.wallets.find((wallet) => wallet.id === this.activeWalletId)
     }
   },
   methods: {
     ...mapActions(['changeActiveNetwork']),
-    hideNetworks () {
+    hideNetworks() {
       this.showNetworks = false
     },
-    async switchNetwork (network) {
+    async switchNetwork(network) {
       await this.changeActiveNetwork({ network })
       this.showNetworks = false
     }
@@ -64,14 +64,14 @@ export default {
   align-items: center;
   padding: 0 20px;
 
-   &_logo {
+  &_logo {
     position: absolute;
     left: 10px;
   }
 
-  &_logo, &_logo svg {
+  &_logo,
+  &_logo svg {
     height: 12px;
-
   }
 
   &_network {

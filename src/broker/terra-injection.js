@@ -20,7 +20,7 @@ const getConfig = (activeNetwork) => {
 }
 
 const getExecutedMethod = (msgs) => {
-  const parsed = msgs.map(msg => JSON.parse(msg))
+  const parsed = msgs.map((msg) => JSON.parse(msg))
 
   const executeMessages = parsed.map(({ type, value }) => {
     if (type === 'wasm/MsgExecuteContract') {
@@ -40,9 +40,18 @@ const getTransactionParams = (payload) => {
   const msg = JSON.parse(msgs[0]).value || JSON.parse(msgs[0])
   const { amount, gas, gas_limit: gasLimit } = JSON.parse(fee)
 
-  const value = msg.coins?.[0]?.amount || msg.amount?.[0]?.amount || msg.execute_msg?.transfer?.amount || msg.execute_msg?.send?.amount || 0
+  const value =
+    msg.coins?.[0]?.amount ||
+    msg.amount?.[0]?.amount ||
+    msg.execute_msg?.transfer?.amount ||
+    msg.execute_msg?.send?.amount ||
+    0
   const denom = msg.coins?.[0]?.denom || msg.amount?.[0]?.denom
-  const to = msg.to_address || msg.execute_msg?.send?.contract || msg.execute_msg?.transfer?.recipient || msg.contract
+  const to =
+    msg.to_address ||
+    msg.execute_msg?.send?.contract ||
+    msg.execute_msg?.transfer?.recipient ||
+    msg.contract
   const contractAddress = msg.contract
 
   const method = getExecutedMethod(msgs)
@@ -81,18 +90,32 @@ export const connectRemote = (remotePort, store) => {
       if (key === 'post') {
         const { to, gasAdjustment, fee, asset, method } = getTransactionParams(payload)
 
-        const args = [{
-          to,
-          fee,
-          asset,
-          method,
-          data: payload,
-          gas: gasAdjustment
-        }]
+        const args = [
+          {
+            to,
+            fee,
+            asset,
+            method,
+            data: payload,
+            gas: gasAdjustment
+          }
+        ]
 
         try {
-          const response = await store.dispatch('requestPermission', { origin, data: { args, method: 'chain.sendTransaction', asset: 'LUNA', chain: 'terra' } })
-          sendResponse('onPost', { ...payload, success: true, result: { txhash: response.hash } })
+          const response = await store.dispatch('requestPermission', {
+            origin,
+            data: {
+              args,
+              method: 'chain.sendTransaction',
+              asset: 'LUNA',
+              chain: 'terra'
+            }
+          })
+          sendResponse('onPost', {
+            ...payload,
+            success: true,
+            result: { txhash: response.hash }
+          })
         } catch (e) {
           sendResponse('onPost', { ...payload, success: false })
         }
@@ -103,8 +126,9 @@ export const connectRemote = (remotePort, store) => {
 
     const { externalConnections, activeWalletId } = store.state
 
-    const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
-    Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes('terra')
+    const allowed =
+      Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
+      Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes('terra')
 
     switch (type) {
       case 'info':
@@ -118,7 +142,7 @@ export const connectRemote = (remotePort, store) => {
 
         break
       case 'connect':
-        emitter.$once(`origin:${origin}`, (allowed, accountId, chain) => {
+        emitter.$once(`origin:${origin}`, (_allowed, accountId) => {
           const accountData = store.getters.accountItem(accountId)
           const [address] = accountData.addresses
 
@@ -126,7 +150,7 @@ export const connectRemote = (remotePort, store) => {
         })
 
         if (allowed) {
-          const accountData = store.getters.accountsData.filter(e => e.chain === 'terra')[0]
+          const accountData = store.getters.accountsData.filter((e) => e.chain === 'terra')[0]
 
           if (!accountData?.addresses?.length) {
             store.dispatch('requestOriginAccess', { origin, chain: 'terra' })

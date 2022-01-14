@@ -3,22 +3,20 @@
     <div class="main-content">
       <div class="form asset-list-header">
         <div class="input-group">
-              <SearchIcon/>
-              <input
-                type="text"
-                ref="search"
-                class="form-control form-control-sm"
-                id="search_for_a_currency"
-                v-model="search"
-                placeholder="Search for a Currency"
-                autocomplete="off"
-              />
+          <SearchIcon />
+          <input
+            type="text"
+            ref="search"
+            class="form-control form-control-sm"
+            id="search_for_a_currency"
+            v-model="search"
+            placeholder="Search for a Currency"
+            autocomplete="off"
+          />
         </div>
       </div>
       <div class="list-items">
-        <WalletAccounts @item-selected="onAccountSelected"
-                        :search="search"
-                        :accounts="accounts"/>
+        <WalletAccounts @item-selected="onAccountSelected" :search="search" :accounts="accounts" />
       </div>
     </div>
   </div>
@@ -32,12 +30,12 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters(['accountsData', 'accountsWithBalance', 'chainAssets']),
-    accounts () {
+    accounts() {
       let _accounts = []
       if (this.assetSelection === 'from') {
-        _accounts = this.accountsWithBalance.map(account => {
+        _accounts = this.accountsWithBalance.map((account) => {
           const assets = this.chainAssets[account.chain].filter(
-            asset => asset !== this.excludeAsset
+            (asset) => asset !== this.excludeAsset
           )
           return {
             ...account,
@@ -45,8 +43,10 @@ export default {
           }
         })
       } else {
-        _accounts = this.accountsData.map(account => {
-          const assets = this.chainAssets[account.chain].filter(asset => asset !== this.excludeAsset)
+        _accounts = this.accountsData.map((account) => {
+          const assets = this.chainAssets[account.chain].filter(
+            (asset) => asset !== this.excludeAsset
+          )
           return {
             ...account,
             assets
@@ -54,24 +54,21 @@ export default {
         })
       }
 
-      return _accounts.filter(account => account.assets.length > 0)
+      return _accounts.filter((account) => account.assets.length > 0)
     }
   },
   components: {
     WalletAccounts,
     SearchIcon
   },
-  props: [
-    'excludeAsset',
-    'assetSelection'
-  ],
-  data () {
+  props: ['excludeAsset', 'assetSelection'],
+  data() {
     return {
       search: ''
     }
   },
   methods: {
-    onAccountSelected ({ account, asset }) {
+    onAccountSelected({ account, asset }) {
       const _asset = asset || account.assets[0]
       this.$emit('asset-selected', {
         accountId: account.id,
@@ -79,7 +76,7 @@ export default {
       })
     }
   },
-  created () {
+  created() {
     this.$nextTick(() => this.$refs.search.focus())
   }
 }
@@ -130,6 +127,6 @@ export default {
     .list-items {
       overflow-y: auto;
     }
-}
+  }
 }
 </style>
