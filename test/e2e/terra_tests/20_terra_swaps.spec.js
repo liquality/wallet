@@ -26,7 +26,7 @@ const swapPairMap = [
     toAsset: 'BTC'
   }
 ]
-describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
+describe.skip('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
   swapPairMap.forEach(obj => {
     it(`SWAP (${obj.fromAsset}->${obj.toAsset})`, async () => {
       const swapFromAsset = obj.fromAsset
@@ -101,7 +101,7 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
         await page.waitForSelector('.swap-details_info', { visible: true })
       }
       // Close
-        await browser.close()
+      await browser.close()
     })
   })
 })
