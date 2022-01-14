@@ -6,7 +6,9 @@
       </span>
     </div>
     <template slot="popover">
-      <p class="mb-0 text-left"><strong>{{ info.title }}</strong></p>
+      <p class="mb-0 text-left">
+        <strong>{{ info.title }}</strong>
+      </p>
       <p class="mb-0 text-left">{{ info.description }}</p>
     </template>
   </v-popover>
@@ -18,13 +20,13 @@ import { getSwapProviderConfig, getSwapProviderIcon, getSwapProviderInfo } from 
 export default {
   props: ['provider', 'network'],
   computed: {
-    label () {
+    label() {
       return getSwapProviderConfig(this.network, this.provider).name
     },
-    icon () {
+    icon() {
       return getSwapProviderIcon(this.network, this.provider)
     },
-    info () {
+    info() {
       return getSwapProviderInfo(this.network, this.provider)
     }
   }

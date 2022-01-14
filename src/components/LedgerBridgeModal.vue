@@ -1,13 +1,11 @@
 <template>
-   <Modal v-if="open" @close="onClose">
-      <template v-slot:title>
-        Ledger USB Web Bridge
-      </template>
-      <p>
-        This allows to connect to your Ledger device.
-        Please click on Enable USB button inside the bridge
-      </p>
-    </Modal>
+  <Modal v-if="open" @close="onClose">
+    <template v-slot:title> Ledger USB Web Bridge </template>
+    <p>
+      This allows to connect to your Ledger device. Please click on Enable USB button inside the
+      bridge
+    </p>
+  </Modal>
 </template>
 
 <script>
@@ -24,13 +22,11 @@ export default {
     }
   },
   methods: {
-    onClose () {
+    onClose() {
       this.$emit('close')
     }
   }
 }
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

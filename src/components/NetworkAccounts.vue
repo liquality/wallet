@@ -1,35 +1,36 @@
 <template>
   <div>
     <div v-for="account in filteredItems" :key="account.id" :id="account.chain.toUpperCase()">
-      <ListItem @item-selected="selectItem(account)"
-                :item-class="account.id === accountId ? 'active' : ''">
-          <template #prefix>
-            <div class="account-color"
-                 :style="{'background-color': account.color}">
-            </div>
-          </template>
-          <template #icon>
-            <img :src="getAccountIcon(account.chain)"
-                 class="asset-icon" />
-          </template>
-          {{ account.name }}
-          <template #sub-title>
-            {{ account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : '' }}
-          </template>
-          <template #detail>
-            <div class="detail-content">
-              <div class="ledger-tag"
-                   v-if="account.type && account.type.includes('ledger')">
+      <ListItem
+        @item-selected="selectItem(account)"
+        :item-class="account.id === accountId ? 'active' : ''"
+      >
+        <template #prefix>
+          <div class="account-color" :style="{ 'background-color': account.color }"></div>
+        </template>
+        <template #icon>
+          <img :src="getAccountIcon(account.chain)" class="asset-icon" />
+        </template>
+        {{ account.name }}
+        <template #sub-title>
+          {{
+            account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : ''
+          }}
+        </template>
+        <template #detail>
+          <div class="detail-content">
+            <div class="ledger-tag" v-if="account.type && account.type.includes('ledger')">
               Ledger
-              </div>
-              <div :id="account.assets[0]">
-                {{ prettyBalance(account.balances[account.assets[0]], account.assets[0]) }} {{account.assets[0]}}
-              </div>
             </div>
-          </template>
-          <template #detail-sub v-if="account.totalFiatBalance">
-           {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
-          </template>
+            <div :id="account.assets[0]">
+              {{ prettyBalance(account.balances[account.assets[0]], account.assets[0]) }}
+              {{ account.assets[0] }}
+            </div>
+          </div>
+        </template>
+        <template #detail-sub v-if="account.totalFiatBalance">
+          {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
+        </template>
       </ListItem>
     </div>
   </div>
@@ -47,7 +48,7 @@ export default {
     ListItem
   },
   props: ['search', 'accounts', 'accountId'],
-  data () {
+  data() {
     return {
       filteredItems: []
     }
@@ -59,37 +60,37 @@ export default {
     formatFiat,
     formatFiatUI,
     shortenAddress,
-    selectItem (account) {
+    selectItem(account) {
       this.$emit('item-selected', { account })
     },
-    makeSearch (newSearch) {
+    makeSearch(newSearch) {
       if (newSearch) {
-        this.filteredItems = this.accounts.filter(
-          account => {
-            const search = newSearch.toUpperCase()
-            return account.chain?.toUpperCase().includes(search) ||
-                   account.assets.includes(search) ||
-                   account.name?.toUpperCase().includes(search)
-          }
-        )
+        this.filteredItems = this.accounts.filter((account) => {
+          const search = newSearch.toUpperCase()
+          return (
+            account.chain?.toUpperCase().includes(search) ||
+            account.assets.includes(search) ||
+            account.name?.toUpperCase().includes(search)
+          )
+        })
       } else {
         this.filteredItems = [...this.accounts]
       }
     },
-    onUpdateAccounts () {
+    onUpdateAccounts() {
       this.makeSearch(this.search)
     }
   },
-  created () {
+  created() {
     this.onUpdateAccounts()
   },
   watch: {
-    search (newSearch, oldSearch) {
+    search(newSearch, oldSearch) {
       if (newSearch !== oldSearch) {
         this.makeSearch(newSearch)
       }
     },
-    accounts () {
+    accounts() {
       this.onUpdateAccounts()
     }
   }
@@ -97,7 +98,7 @@ export default {
 </script>
 <style lang="scss">
 .ledger-tag {
-  color: #4763CD;
+  color: #4763cd;
 }
 .detail-content {
   display: flex;
@@ -142,6 +143,6 @@ export default {
 }
 
 .selected-item {
-        background-color: #ffffff;
+  background-color: #ffffff;
 }
 </style>

@@ -17,16 +17,14 @@
           <div
             class="custom-fee-presets-option"
             v-for="name in ['slow', 'average', 'fast']"
-            :id='name'
-            :key='name'
+            :id="name"
+            :key="name"
             :class="{ active: name === preset }"
             @click="setPreset(name)"
           >
             <div class="custom-fee-name">{{ getFeeLabel(name) }}</div>
             <div class="custom-fee-time">
-              <span v-if="fees[name] && fees[name].wait">
-                ~ {{ fees[name].wait }} sec
-              </span>
+              <span v-if="fees[name] && fees[name].wait"> ~ {{ fees[name].wait }} sec </span>
             </div>
             <div class="custom-fee-amount">
               {{ getFeeAmount(name) }}
@@ -42,9 +40,7 @@
           <div class="custom-fee-details">
             <div class="custom-fee-details-item">
               <div class="gas-price-label">Gas Price</div>
-              <div class="gas-price-amount" v-if="customFiatAmount">
-                ${{ customFiatAmount }}
-              </div>
+              <div class="gas-price-amount" v-if="customFiatAmount">${{ customFiatAmount }}</div>
             </div>
             <div class="custom-fee-details-item">
               <div class="gas-unit-label">{{ gasUnit }}</div>
@@ -115,22 +111,22 @@ export default {
     ChevronUpIcon,
     ChevronDownIcon
   },
-  data () {
+  data() {
     return {
       fee: null,
       preset: null
     }
   },
   props: ['asset', 'selectedFee', 'fees', 'totalFees', 'fiatRates'],
-  created () {
+  created() {
     this.preset = this.selectedFee || 'average'
     this.fee = this.fees[this.preset]?.fee
   },
   computed: {
-    nativeAsset () {
+    nativeAsset() {
       return getFeeAsset(this.asset) || getNativeAsset(this.asset)
     },
-    gasUnit () {
+    gasUnit() {
       const chainId = cryptoassets[this.asset]?.chain
       if (chainId) {
         const { unit } = chains[chainId]?.fees || ''
@@ -138,13 +134,13 @@ export default {
       }
       return ''
     },
-    customFiatAmount () {
+    customFiatAmount() {
       return this.getFiatAmount()
     },
-    customFeeAmount () {
+    customFeeAmount() {
       return this.getFeeAmount()
     },
-    stepSize () {
+    stepSize() {
       const chainId = cryptoassets[this.asset].chain
       return (
         {
@@ -163,35 +159,35 @@ export default {
   methods: {
     getFeeLabel,
     getAssetIcon,
-    cancel () {
+    cancel() {
       this.$emit('cancel')
     },
-    apply () {
+    apply() {
       this.$emit('apply', {
         asset: this.asset,
         fee: this.fee
       })
     },
-    setCustomFee (fee) {
-      this.fee = fee
+    setCustomFee(fee) {
+      this.fee = Math.abs(fee)
       this.$emit('update', {
         asset: this.asset,
         fee: this.fee
       })
     },
-    setPreset (name) {
+    setPreset(name) {
       this.preset = name
       this.fee = this.fees[name]?.fee
     },
-    incrementFee () {
+    incrementFee() {
       this.setCustomFee(this.fee + this.stepSize)
     },
-    decrementFee () {
+    decrementFee() {
       if (this.fee && this.fee > 0) {
         this.setCustomFee(this.fee - this.stepSize)
       }
     },
-    getFeeAmount (name) {
+    getFeeAmount(name) {
       if (!name) name = this.preset || 'custom'
       if (this.totalFees && this.totalFees[name]) {
         const totalFee = this.totalFees[name]
@@ -202,13 +198,10 @@ export default {
         return `${this.fee || 0} ${unit}`
       }
     },
-    getFiatAmount (name) {
+    getFiatAmount(name) {
       if (!name) name = this.preset || 'custom'
       if (this.totalFees && this.totalFees[name]) {
-        const totalFiat = prettyFiatBalance(
-          this.totalFees[name],
-          this.fiatRates[this.nativeAsset]
-        )
+        const totalFiat = prettyFiatBalance(this.totalFees[name], this.fiatRates[this.nativeAsset])
         return `${totalFiat} USD`
       }
       return ''
@@ -368,8 +361,8 @@ export default {
       margin-left: 4px;
     }
 
-    & input[type="number"]::-webkit-inner-spin-button,
-    & input[type="number"]::-webkit-outer-spin-button {
+    & input[type='number']::-webkit-inner-spin-button,
+    & input[type='number']::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
@@ -397,8 +390,8 @@ export default {
 }
 
 .custom-fee-result {
-  background: #F0F7F9;
-  border: 1px solid #D9DFE5;
+  background: #f0f7f9;
+  border: 1px solid #d9dfe5;
   display: flex;
   margin-top: 30px;
   padding: 10px;
@@ -420,7 +413,7 @@ export default {
   }
 
   .custom-fee-result-fiat {
-    color: #646F85;
+    color: #646f85;
   }
 }
 </style>

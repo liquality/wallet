@@ -1,13 +1,11 @@
 <template>
   <div class="info-notification">
-      <slot />
+    <slot />
   </div>
 </template>
 
 <script>
-
-export default {
-}
+export default {}
 </script>
 
 <style lang="scss" scoped>

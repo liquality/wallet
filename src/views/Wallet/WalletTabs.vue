@@ -1,34 +1,25 @@
 <template>
   <div class="wallet-tabs">
     <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <router-link
-        class="nav-link"
-        id="asserts_tab"
-        :to="{ name: 'WalletAssets' }"
-      >
-        Assets
-      </router-link>
-    </li>
-    <li class="nav-item">
-      <router-link
-        class="nav-link"
-        id="activity_tab"
-        :to="{ name: 'WalletActivity' }"
-      >
-        Activity
-      </router-link>
-    </li>
-  </ul>
-   <div class="wallet-tab-content">
+      <li class="nav-item">
+        <router-link class="nav-link" id="asserts_tab" :to="{ name: 'WalletAssets' }">
+          Assets
+        </router-link>
+      </li>
+      <li class="nav-item">
+        <router-link class="nav-link" id="activity_tab" :to="{ name: 'WalletActivity' }">
+          Activity
+        </router-link>
+      </li>
+    </ul>
+    <div class="wallet-tab-content">
       <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
-export default {
-}
+export default {}
 </script>
 
 <style lang="scss">
@@ -70,11 +61,11 @@ export default {
 }
 
 .wallet-tab-content {
-    a {
-      color: $color-text-primary;
-    }
-    a:hover {
-      text-decoration: none;
-    }
+  a {
+    color: $color-text-primary;
   }
+  a:hover {
+    text-decoration: none;
+  }
+}
 </style>
