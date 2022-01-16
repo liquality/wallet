@@ -52,17 +52,19 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
       await overviewPage.SelectAssetFromOverview(page, swapFromAsset)
       await page.waitForSelector(`#${swapFromAsset}_swap_button`, { visible: true })
       await page.click(`#${swapFromAsset}_swap_button`)
-      try {
-        await swapPage.SelectSwapReceiveCoin(page)
-        await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
-        await page.type('#search_for_a_currency', swapToAsset)
-        await page.waitForTimeout(5000)
-        await page.click(`#${swapToAsset}`)
-        await page.waitForTimeout(1000)
-      } catch (e) {
-        if (e instanceof puppeteer.errors.TimeoutError) {
-          await testUtil.takeScreenshot(page, `terra-swap-issue-${obj.fromAsset}->${obj.toAsset}`)
-          expect(e, 'terra swap issue').equals(null)
+      if (obj.toAsset !== 'BTC') {
+        try {
+          await swapPage.SelectSwapReceiveCoin(page)
+          await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
+          await page.type('#search_for_a_currency', swapToAsset)
+          await page.waitForTimeout(5000)
+          await page.click(`#${swapToAsset}`)
+          await page.waitForTimeout(1000)
+        } catch (e) {
+          if (e instanceof puppeteer.errors.TimeoutError) {
+            await testUtil.takeScreenshot(page, `terra-swap-issue-${obj.fromAsset}->${obj.toAsset}`)
+            expect(e, 'terra swap issue').equals(null)
+          }
         }
       }
       // if (swapToAsset === 'BTC') {
@@ -73,7 +75,7 @@ describe('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
         await page.waitForSelector('#selectedQuote_provider', { visible: true })
         expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
           `SWAP (${obj.fromAsset}->${obj.toAsset}), Liquality should be chosen!`)
-          .oneOf(['Liquality'])
+          .equals('Liquality')
       } catch (e) {
         await testUtil.takeScreenshot(page, `terra-swap-quote-issue-${obj.fromAsset}-${obj.toAsset}`)
         expect(e, `${obj.fromAsset}->${obj.toAsset} SWAP issue, Liquality Quote service provider should be chosen`).equals(null)

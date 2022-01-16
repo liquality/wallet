@@ -4,27 +4,41 @@
       <LogoWalletMain />
     </div>
     <div class="wallet-title-container">
-      <NewWalletText class="mb-4"/>
+      <NewWalletText class="mb-4" />
     </div>
     <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
       <div class="form-group">
         <label for="password">Password</label>
         <div class="input-group">
-          <input type="password" class="form-control" id="password" v-model="password" autocomplete="off" required :readonly="loading">
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            v-model="password"
+            autocomplete="off"
+            required
+            :readonly="loading"
+          />
         </div>
         <p v-if="error" class="mt-3" id="password_error">
           {{ error }}
         </p>
       </div>
       <div class="footer-container">
-        <p><router-link :to="{path: '/onboarding/import', query: {isNewUser: false}}" id="forgot_password_import_seed">Forgot password? Import with seed phrase</router-link></p>
+        <p>
+          <router-link
+            :to="{ path: '/onboarding/import', query: { isNewUser: false } }"
+            id="forgot_password_import_seed"
+            >Forgot password? Import with seed phrase</router-link
+          >
+        </p>
         <div class="footer-content">
-          <button class="btn btn-primary btn-lg btn-block btn-icon"
-                  id="unlock_button"
-                  :disabled="loading">
-            <span v-if="loading">
-              <SpinnerIcon /> &nbsp;
-            </span>
+          <button
+            class="btn btn-primary btn-lg btn-block btn-icon"
+            id="unlock_button"
+            :disabled="loading"
+          >
+            <span v-if="loading"> <SpinnerIcon /> &nbsp; </span>
             <template v-else>Unlock</template>
           </button>
         </div>
@@ -45,7 +59,7 @@ export default {
     SpinnerIcon,
     NewWalletText
   },
-  data () {
+  data() {
     return {
       loading: false,
       error: null,
@@ -54,7 +68,7 @@ export default {
   },
   methods: {
     ...mapActions(['unlockWallet']),
-    async unlock () {
+    async unlock() {
       this.error = null
       this.loading = true
       try {
@@ -71,6 +85,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

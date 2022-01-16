@@ -376,4 +376,13 @@ document.addEventListener('DOMContentLoaded', () => {
 }, { once: true })
 `
 
-export { providerManager, ethereumProvider, overrideEthereum, bitcoinProvider, nearProvider, paymentUriHandler, solanaProvider, terraProvider }
+export {
+  providerManager,
+  ethereumProvider,
+  overrideEthereum,
+  bitcoinProvider,
+  nearProvider,
+  paymentUriHandler,
+  solanaProvider,
+  terraProvider
+}

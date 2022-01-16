@@ -1,6 +1,9 @@
 <template>
   <div class="warning">
-     <div class="media"><WarningIcon /><p class="text-muted media-body">Experimental software, use at own risk</p></div>
+    <div class="media">
+      <WarningIcon />
+      <p class="text-muted media-body">Experimental software, use at own risk</p>
+    </div>
   </div>
 </template>
 

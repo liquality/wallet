@@ -1,22 +1,13 @@
 <template>
   <div class="manage-accounts">
-    <NavBar
-      showMenu="false"
-      showBack="true"
-      backPath="/wallet"
-      backLabel="Back"
-    >
+    <NavBar showMenu="false" showBack="true" backPath="/wallet" backLabel="Back">
       <span class="wallet_header">
         <strong>Manage Accounts</strong>
       </span>
     </NavBar>
     <div class="chain-list">
-      <ChainAccounts
-        v-for="chain in chains"
-        :chain="chain"
-        :key="chain.id"
-      />
-  </div>
+      <ChainAccounts v-for="chain in chains" :chain="chain" :key="chain.id" />
+    </div>
   </div>
 </template>
 
@@ -36,12 +27,8 @@ export default {
     ChainAccounts
   },
   computed: {
-    ...mapState([
-      'activeNetwork',
-      'activeWalletId',
-      'accounts'
-    ]),
-    chains () {
+    ...mapState(['activeNetwork', 'activeWalletId', 'accounts']),
+    chains() {
       return buildConfig.chains.map((chainId) => {
         const { name, code, nativeAsset } = chains[chainId]
         return {
@@ -57,13 +44,13 @@ export default {
   methods: {
     getAccountIcon,
     formatFiat,
-    getAssetName (asset) {
+    getAssetName(asset) {
       return cryptoassets[asset]?.name || asset
     },
-    getChainAccounts (chainId) {
-      return this.accounts[this.activeWalletId]
-        ?.[this.activeNetwork]
-        .filter(a => a.chain === chainId)
+    getChainAccounts(chainId) {
+      return this.accounts[this.activeWalletId]?.[this.activeNetwork].filter(
+        (a) => a.chain === chainId
+      )
     }
   }
 }
@@ -129,21 +116,21 @@ export default {
     }
 
     .chain-item-name {
-       width: 100%;
-        color: $color-text-primary;
-        font-weight: 400;
-      }
+      width: 100%;
+      color: $color-text-primary;
+      font-weight: 400;
+    }
 
-      .chain-item-accounts-len {
-          font-size: $font-size-tiny !important;
-          color: $text-muted !important;
-      }
+    .chain-item-accounts-len {
+      font-size: $font-size-tiny !important;
+      color: $text-muted !important;
+    }
 
-      .chain-item-balance {
-        display: block;
-        font-size: $font-size-tiny;
-        color: $text-muted;
-      }
+    .chain-item-balance {
+      display: block;
+      font-size: $font-size-tiny;
+      color: $text-muted;
+    }
 
     .create-link {
       width: 20px;
