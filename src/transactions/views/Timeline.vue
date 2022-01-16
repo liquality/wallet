@@ -8,9 +8,12 @@
           <div class="content">
             <h3 :id="item.from">
               From:
-              <a :href="addressLink(fromAddress, item.from)" target="_blank" :id="fromAddress">{{
-                shortenAddress(fromAddress)
-              }}</a>
+              <a
+                :href="addressLink(fromAddress, item.from)"
+                target="_blank"
+                id="transaction_details_send_from_link"
+                >{{ shortenAddress(fromAddress) }}</a
+              >
               <CopyIcon @click="copy(fromAddress)" />
             </h3>
           </div>
@@ -25,7 +28,7 @@
               <a
                 :href="addressLink(item.toAddress, item.to)"
                 target="_blank"
-                :id="item.toAddress"
+                id="transaction_details_send_to_link"
                 >{{ shortenAddress(item.toAddress) }}</a
               >
               <CopyIcon @click="copy(item.toAddress)" />

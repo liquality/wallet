@@ -10,7 +10,7 @@
         <div class="row" id="transaction_details_status">
           <div class="col-10">
             <h2>Status</h2>
-            <p class="text-grey">
+            <p class="text-grey" id="transaction_details_status_number_of_confirmations">
               {{ status }}
               <span v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
                 / {{ tx.confirmations }} Confirmations
@@ -40,11 +40,6 @@
             </p>
             <p id="transaction_detail_sent_amount" v-if="item.fiatRate">
               ${{ prettyFiatBalance(prettyBalance(item.amount, item.from), item.fiatRate) }} / then
-            </p>
-            <p class="d-none">
-              <a :href="addressLink" target="_blank" id="transaction_details_send_to_link">{{
-                item.toAddress
-              }}</a>
             </p>
           </div>
         </div>
