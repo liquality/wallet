@@ -33,7 +33,12 @@ export const sendTransaction = async ({ dispatch, commit, getters }, {
 
   let tx
   try {
-    tx = await client.chain.sendTransaction({ to, value: BN(amount), data, fee })
+    tx = await client.chain.sendTransaction({
+      to,
+      value: BN(amount),
+      data,
+      fee
+    })
   } finally {
     client._providers[0].estimateGas = originalEstimateGas
   }
@@ -64,7 +69,12 @@ export const sendTransaction = async ({ dispatch, commit, getters }, {
     transaction
   })
 
-  dispatch('performNextAction', { network, walletId, id: transaction.id, accountId })
+  dispatch('performNextAction', {
+    network,
+    walletId,
+    id: transaction.id,
+    accountId
+  })
 
   createHistoryNotification(transaction)
 

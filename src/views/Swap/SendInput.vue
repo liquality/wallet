@@ -6,18 +6,16 @@
           <div class="swap-send-top">
             <div class="swap-send-top-label">Send</div>
             <div class="swap-send-top-amount">
-              <div
+              <button
                 class="btn btn-option label-append"
                 @click="toggleShowAmountsFiat"
+                :disabled="isNaN(sendAmountFiat)"
               >
-                <span
-                  v-if="showAmountsInFiat"
-                  :style="getAssetColorStyle(asset)"
-                >
+                <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
                   {{ `${asset} ${sendAmount}` }}
                 </span>
-                <span v-else> ${{ sendAmountFiat }} </span>
-              </div>
+                <span v-else> {{ formatFiatUI(sendAmountFiat) }} </span>
+              </button>
             </div>
           </div>
           <div class="input-group mb-3" v-if="showAmountsInFiat">
@@ -71,7 +69,7 @@
           <v-popover offset="1" trigger="hover focus" class="mr-2">
             <button
               :class="{
-                active: amountOption === 'min' && !disabled,
+                active: amountOption === 'min' && !disabled
               }"
               :disabled="disabled"
               class="btn btn-option"
@@ -88,7 +86,7 @@
           <v-popover offset="1" trigger="hover focus">
             <button
               :class="{
-                active: amountOption === 'max' && !disabled,
+                active: amountOption === 'max' && !disabled
               }"
               :disabled="disabled"
               class="btn btn-option tooltip-target"
@@ -114,7 +112,7 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { dpUI } from '@/utils/coinFormatter'
+import { dpUI, formatFiatUI } from '@/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import AccountTooltip from '@/components/AccountTooltip'
 
@@ -123,7 +121,7 @@ export default {
     ChevronRightIcon,
     AccountTooltip
   },
-  data () {
+  data() {
     return {
       showAmountsInFiat: false
     }
@@ -143,18 +141,19 @@ export default {
     'disabled',
     'amountOption'
   ],
-  created () {},
+  created() {},
   methods: {
     dpUI,
+    formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
-    toggleShowAmountsFiat () {
+    toggleShowAmountsFiat() {
       this.showAmountsInFiat = !this.showAmountsInFiat
     },
-    setSendAmount (amount) {
+    setSendAmount(amount) {
       this.$emit('send-amount-change', amount)
     },
-    assetIconClick () {
+    assetIconClick() {
       this.$emit('from-asset-click')
     }
   }

@@ -3,7 +3,7 @@
     <ListItem
       v-for="item in transactions"
       :key="item.id"
-      :id="item.type+'_'+item.from+'_'+item.to"
+      :id="item.type + '_' + item.from + '_' + item.to"
       :to="getDetailsUrl(item)"
       :container-class="{ 'text-danger': item.error }"
       :item-class="'h-padding'"
@@ -19,17 +19,18 @@
         {{ getDetail(item) }}
       </template>
       <template #detail-sub>
-       <span v-if="getUIStatus(item) === 'COMPLETED'">
-         {{ getCompletedAmount(item) }}
-       </span>
-       <span v-else> {{ getDetailSub(item) }} </span>
+        <span v-if="getUIStatus(item) === 'COMPLETED'">
+          {{ getCompletedAmount(item) }}
+        </span>
+        <span v-else> {{ getDetailSub(item) }} </span>
       </template>
       <template #detail-icon>
         <TransactionStatus
-            :step="getTransactionStep(item)"
-            :total-steps="getTotalSteps(item)"
-            :status="getUIStatus(item)"
-            :error="item.error"/>
+          :step="getTransactionStep(item)"
+          :total-steps="getTotalSteps(item)"
+          :status="getUIStatus(item)"
+          :error="item.error"
+        />
       </template>
     </ListItem>
   </div>
@@ -45,7 +46,7 @@ import {
   ACTIVITY_FILTER_TYPES,
   SEND_STATUS_FILTER_MAP
 } from '@/utils/history'
-import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance, formatFiatUI } from '@/utils/coinFormatter'
 import moment from '@/utils/moment'
 import { mapState, mapGetters } from 'vuex'
 
@@ -63,7 +64,8 @@ export default {
     getItemIcon,
     prettyBalance,
     prettyFiatBalance,
-    getTitle (item) {
+    formatFiatUI,
+    getTitle(item) {
       switch (item.type) {
         case 'SWAP':
           return `${item.from} to ${item.to}`
@@ -75,17 +77,17 @@ export default {
           return ''
       }
     },
-    getSubTitle (item) {
+    getSubTitle(item) {
       return moment(item.startTime).format('L, LT')
     },
-    getDetail (item) {
+    getDetail(item) {
       const amount = item.type === 'SWAP' ? item.fromAmount : item.amount
 
       if (!amount) return `${item.from}`
 
       return `${this.prettyBalance(amount, item.from)} ${item.from}`
     },
-    getDetailSub (item) {
+    getDetailSub(item) {
       const status = this.getUIStatus(item)
 
       if (status) {
@@ -97,7 +99,7 @@ export default {
 
       return ''
     },
-    getUIStatus (item) {
+    getUIStatus(item) {
       if (item.type === 'SEND') {
         return SEND_STATUS_FILTER_MAP[item.status]
       } else if (item.type === 'SWAP') {
@@ -105,20 +107,20 @@ export default {
         return swapProvider.statuses[item.status].filterStatus
       }
     },
-    getDetailsUrl (item) {
+    getDetailsUrl(item) {
       return {
         SEND: `/details/transaction/${item.id}`,
         SWAP: `/details/swap/${item.id}`
       }[item.type]
     },
-    getTypeIcon (type) {
+    getTypeIcon(type) {
       const filter = ACTIVITY_FILTER_TYPES[type]
       return this.getItemIcon(filter?.icon)
     },
-    getTransactionStep (item) {
+    getTransactionStep(item) {
       return getStep(item) + 1
     },
-    getTotalSteps (item) {
+    getTotalSteps(item) {
       switch (item.type) {
         case 'SEND':
           return 2
@@ -130,16 +132,19 @@ export default {
           return 0
       }
     },
-    getCompletedAmount (item) {
+    getCompletedAmount(item) {
       const amount = item.type === 'SWAP' ? item.fromAmount : item.amount
 
       if (!amount) return ''
 
-      return `$${prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[item.from])}`
+      return !this.fiatRates[item.from]
+        ? ''
+        : `${formatFiatUI(
+            prettyFiatBalance(prettyBalance(amount, item.from), this.fiatRates[item.from])
+          )}`
     }
   }
 }
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

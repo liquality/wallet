@@ -1,10 +1,10 @@
-export const executeRequest = async ({ getters, dispatch, state, rootState }, { request }) => {
+export const executeRequest = async ({ getters, dispatch, rootState }, { request }) => {
   // Send transactions through wallet managed action
   const { network, walletId, asset, accountId } = request
   const { accountItem } = getters
   const account = accountItem(accountId)
   let call
-  const result = await new Promise((resolve, reject) => {
+  const result = await new Promise((resolve) => {
     if (request.method === 'chain.sendTransaction') {
       call = dispatch('sendTransaction', {
         network,
@@ -19,15 +19,13 @@ export const executeRequest = async ({ getters, dispatch, state, rootState }, { 
         gas: request.args[0].gas
       })
     } else {
-    // Otherwise build client
-      const client = getters.client(
-        {
-          network,
-          walletId,
-          asset,
-          accountId
-        }
-      )
+      // Otherwise build client
+      const client = getters.client({
+        network,
+        walletId,
+        asset,
+        accountId
+      })
       let methodFunc
       if (request.method.includes('.')) {
         const [namespace, fnName] = request.method.split('.')

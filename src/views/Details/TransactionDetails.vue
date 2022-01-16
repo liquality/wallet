@@ -134,7 +134,7 @@ export default {
     NavBar,
     Timeline
   },
-  data () {
+  data() {
     return {
       tx: null,
       showFeeSelector: false,
@@ -145,28 +145,19 @@ export default {
   props: ['id'],
   computed: {
     ...mapGetters(['client']),
-    ...mapState([
-      'activeWalletId',
-      'activeNetwork',
-      'history',
-      'fees',
-      'fiatRates'
-    ]),
-    assetChain () {
+    ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
+    assetChain() {
       return getNativeAsset(this.item.from)
     },
     item () {
-      console.log(this.history[this.activeNetwork][this.activeWalletId].find(
-        (item) => item.id === this.id
-      ))
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )
     },
-    status () {
+    status() {
       return getStatusLabel(this.item)
     },
-    feeUnit () {
+    feeUnit() {
       return chains[cryptoassets[this.item.from].chain].fees.unit
     },
     chainId () {
@@ -179,26 +170,18 @@ export default {
         this.activeNetwork
       )
     },
-    transactionLink () {
-      return getTransactionExplorerLink(
-        this.item.txHash,
-        this.item.from,
-        this.activeNetwork
-      )
+    transactionLink() {
+      return getTransactionExplorerLink(this.item.txHash, this.item.from, this.activeNetwork)
     },
-    canUpdateFee () {
+    canUpdateFee() {
       return (
-        this.feesAvailable &&
-        this.tx &&
-        (!this.tx.confirmations || this.tx.confirmations === 0)
+        this.feesAvailable && this.tx && (!this.tx.confirmations || this.tx.confirmations === 0)
       )
     },
-    assetFees () {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
-        this.assetChain
-      ]
+    assetFees() {
+      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
     },
-    feesAvailable () {
+    feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
     },
     typeIcon () {
@@ -217,18 +200,18 @@ export default {
     prettyTime (timestamp) {
       return moment(timestamp).format('MMM D YYYY, h:mm a')
     },
-    async copy (text) {
+    async copy(text) {
       await navigator.clipboard.writeText(text)
     },
-    openFeeSelector () {
+    openFeeSelector() {
       this.showFeeSelector = true
       this.updateFees({ asset: this.assetChain })
     },
-    closeFeeSelector () {
+    closeFeeSelector() {
       this.showFeeSelector = false
       this.selectedFee = 'average'
     },
-    async updateFee () {
+    async updateFee() {
       this.feeSelectorLoading = true
       const newFee = this.assetFees[this.selectedFee].fee
       try {
@@ -245,7 +228,7 @@ export default {
         this.closeFeeSelector()
       }
     },
-    async updateTransaction () {
+    async updateTransaction() {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
@@ -253,19 +236,18 @@ export default {
         accountId: this.item.accountId
       })
       const transaction =
-        (await client.chain.getTransactionByHash(this.item.txHash)) ||
-        this.item.tx
+        (await client.chain.getTransactionByHash(this.item.txHash)) || this.item.tx
       this.tx = transaction
     },
-    goBack () {
+    goBack() {
       this.$router.go(-1)
     }
   },
-  created () {
+  created() {
     this.updateTransaction()
     this.interval = setInterval(() => this.updateTransaction(), 10000)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     clearInterval(this.interval)
   }
 }

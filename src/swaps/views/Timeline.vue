@@ -20,18 +20,12 @@
           <div class="content">
             <template v-if="step.tx">
               <h3 :id="step.tx.asset">
-                <a
-                  :href="step.tx.explorerLink"
-                  target="_blank"
-                  :id="step.title"
-                  >{{ step.title }}</a
-                >
+                <a :href="step.tx.explorerLink" target="_blank" :id="step.title">{{
+                  step.title
+                }}</a>
                 <CopyIcon @click="copy(step.tx.hash)" />
               </h3>
-              <p
-                class="text-muted"
-                v-if="step.tx.fee && !feeSelectorEnabled(step)"
-              >
+              <p class="text-muted" v-if="step.tx.fee && !feeSelectorEnabled(step)">
                 Fee: {{ prettyBalance(step.tx.fee, step.tx.asset) }}
                 {{ getNativeAsset(step.tx.asset) }}
               </p>
@@ -81,10 +75,7 @@
                       :disabled="feeSelectorLoading"
                       @click="updateFee(step.tx.asset, step.tx.hash)"
                     >
-                      <SpinnerIcon
-                        class="btn-loading"
-                        v-if="feeSelectorLoading"
-                      />
+                      <SpinnerIcon class="btn-loading" v-if="feeSelectorLoading" />
                       <template v-else>Update</template>
                     </button>
                   </div>
@@ -93,18 +84,14 @@
               </template>
             </template>
             <h3 v-else>
-              <span :class="{ 'text-muted': !step || !step.completed }">{{
-                step.title
-              }}</span>
+              <span :class="{ 'text-muted': !step || !step.completed }">{{ step.title }}</span>
             </h3>
           </div>
         </div>
         <div
           class="liquality-timeline_container right"
           :class="{
-            completed:
-              !timeline[timeline.length - 1] ||
-              timeline[timeline.length - 1].completed
+            completed: !timeline[timeline.length - 1] || timeline[timeline.length - 1].completed
           }"
         >
           <div class="content"></div>
@@ -113,28 +100,18 @@
       <template>
         <h3
           :class="{
-            'text-muted':
-              !timeline[timeline.length - 1] ||
-              !timeline[timeline.length - 1].completed
+            'text-muted': !timeline[timeline.length - 1] || !timeline[timeline.length - 1].completed
           }"
         >
           Done
         </h3>
-        <small
-          v-if="
-            !timeline[timeline.length - 1] ||
-            timeline[timeline.length - 1].completed
-          "
+        <small v-if="!timeline[timeline.length - 1] || timeline[timeline.length - 1].completed"
           >Swap Status: {{ item.status.toLowerCase() }}</small
         >
         <br />
-        <small
-          v-if="
-            !timeline[timeline.length - 1] ||
-            timeline[timeline.length - 1].completed
-          "
-          >{{ prettyTime(item.endTime) }}</small
-        >
+        <small v-if="!timeline[timeline.length - 1] || timeline[timeline.length - 1].completed">{{
+          prettyTime(item.endTime)
+        }}</small>
       </template>
     </div>
     <div class="text-center">
@@ -173,9 +150,7 @@
           </tr>
           <tr v-if="false">
             <td class="text-muted text-right small-12">Actions</td>
-            <td class="cursor-pointer text-danger" @click="remove">
-              Remove this item
-            </td>
+            <td class="cursor-pointer text-danger" @click="remove">Remove this item</td>
           </tr>
         </tbody>
         <tbody class="font-weight-normal" v-if="item.type === 'SWAP'">
@@ -188,13 +163,9 @@
           <tr v-if="orderLink">
             <td class="text-muted text-right small-12">Order ID</td>
             <td id="swap_details_order_id">
-              <a
-                :href="orderLink"
-                id="order_id_href_link"
-                rel="noopener"
-                target="_blank"
-                >{{ item.id }}</a
-              >
+              <a :href="orderLink" id="order_id_href_link" rel="noopener" target="_blank">{{
+                item.id
+              }}</a>
             </td>
           </tr>
           <tr>
@@ -211,9 +182,7 @@
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Rate</td>
-            <td id="swap_details_rate">
-              1 {{ item.to }} = {{ reverseRate }} {{ item.from }}
-            </td>
+            <td id="swap_details_rate">1 {{ item.to }} = {{ reverseRate }} {{ item.from }}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Status</td>
@@ -232,21 +201,15 @@
             </td>
           </tr>
           <tr v-if="item.minConf">
-            <td class="text-muted text-right small-12">
-              Minimum<br />confirmations
-            </td>
+            <td class="text-muted text-right small-12">Minimum<br />confirmations</td>
             <td id="confirmations">{{ item.minConf }}</td>
           </tr>
           <tr v-if="item.fromAddress">
-            <td class="text-muted text-right small-12">
-              Your {{ item.from }}<br />address
-            </td>
+            <td class="text-muted text-right small-12">Your {{ item.from }}<br />address</td>
             <td id="from_address" class="text-break">{{ item.fromAddress }}</td>
           </tr>
           <tr v-if="item.toAddress">
-            <td class="text-muted text-right small-12">
-              Your {{ item.to }}<br />address
-            </td>
+            <td class="text-muted text-right small-12">Your {{ item.to }}<br />address</td>
             <td id="to_address" class="text-break">{{ item.toAddress }}</td>
           </tr>
           <tr v-if="item.secret">
@@ -278,8 +241,7 @@
           </tr>
           <tr v-if="item.toFundHash">
             <td class="text-muted text-right small-12">
-              Counter-party's {{ item.bridgeAsset || item.to }}<br />funding
-              transaction
+              Counter-party's {{ item.bridgeAsset || item.to }}<br />funding transaction
             </td>
             <td id="to_funding_transaction" class="text-break">
               {{ item.toFundHash }}
@@ -329,11 +291,7 @@
           </tr>
           <tr v-if="false">
             <td class="text-muted text-right small-12">Actions</td>
-            <td
-              class="cursor-pointer text-danger"
-              id="remove_this_item"
-              @click="remove"
-            >
+            <td class="cursor-pointer text-danger" id="remove_this_item" @click="remove">
               Remove this item
             </td>
           </tr>
@@ -346,10 +304,7 @@
           <tr>
             <td class="text-muted text-right small-12">Actions</td>
             <td class="text-danger">
-              <span
-                class="cursor-pointer mr-3"
-                v-if="item.error"
-                @click="$emit('retrySwap')"
+              <span class="cursor-pointer mr-3" v-if="item.error" @click="$emit('retrySwap')"
                 >Retry</span
               >
             </td>
@@ -414,7 +369,7 @@ export default {
     SpinnerIcon,
     CopyIcon
   },
-  data () {
+  data() {
     return {
       advanced: false,
       secretHidden: true,
@@ -428,111 +383,79 @@ export default {
   props: ['id', 'retrySwap'],
   computed: {
     ...mapGetters(['client', 'accountItem', 'swapProvider']),
-    ...mapState([
-      'activeWalletId',
-      'activeNetwork',
-      'balances',
-      'history',
-      'fees'
-    ]),
-    item () {
+    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
+    item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )
     },
-    reverseRate () {
+    reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
     },
-    orderLink () {
+    orderLink() {
       if (this.item.provider !== 'liquality') {
         return ''
       }
-      const agent = getSwapProviderConfig(
-        this.item.network,
-        this.item.provider
-      ).agent
+      const agent = getSwapProviderConfig(this.item.network, this.item.provider).agent
       return agent + '/api/swap/order/' + this.item.id + '?verbose=true'
     },
-    feeSelectorFees () {
+    feeSelectorFees() {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         getNativeAsset(this.feeSelectorAsset)
       ]
     },
-    feeSelectorUnit () {
+    feeSelectorUnit() {
       const chain = cryptoassets[this.feeSelectorAsset].chain
       return chains[chain].fees.unit
     },
-    timelineDiagramSteps () {
-      const swapProvider = this.swapProvider(
-        this.item.network,
-        this.item.provider
-      )
+    timelineDiagramSteps() {
+      const swapProvider = this.swapProvider(this.item.network, this.item.provider)
       return swapProvider.timelineDiagramSteps
     }
   },
   methods: {
-    ...mapActions([
-      'updateTransactionFee',
-      'updateFees',
-      'checkPendingActions'
-    ]),
+    ...mapActions(['updateTransactionFee', 'updateFees', 'checkPendingActions']),
     getNativeAsset,
     prettyBalance,
-    prettyTime (timestamp) {
+    prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
-    async copy (text) {
+    async copy(text) {
       await navigator.clipboard.writeText(text)
     },
-    canUpdateFee (step) {
+    canUpdateFee(step) {
       return (
-        (step.side === 'left' ||
-          step.title.indexOf(ACTIONS_TERMS.swap.pending) !== -1) &&
+        (step.side === 'left' || step.title.indexOf(ACTIONS_TERMS.swap.pending) !== -1) &&
         (!step.tx.confirmations || step.tx.confirmations === 0)
       )
     },
-    feeSelectorEnabled (step) {
+    feeSelectorEnabled(step) {
       return (
-        this.canUpdateFee(step) &&
-        this.feeSelectorAsset === step.tx.asset &&
-        this.showFeeSelector
+        this.canUpdateFee(step) && this.feeSelectorAsset === step.tx.asset && this.showFeeSelector
       )
     },
-    openFeeSelector (step) {
+    openFeeSelector(step) {
       this.showFeeSelector = true
       this.newFeePrice = step.tx.feePrice
       this.feeSelectorAsset = step.tx.asset
       this.updateFees({ asset: getNativeAsset(step.tx.asset) })
     },
-    closeFeeSelector () {
+    closeFeeSelector() {
       this.showFeeSelector = false
       this.newFeePrice = null
     },
-    async getTransaction (hash, asset, defaultTx) {
+    async getTransaction(hash, asset, defaultTx) {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
         asset
       })
-      const transaction =
-        (await client.chain.getTransactionByHash(hash)) || defaultTx
-      transaction.explorerLink = getTransactionExplorerLink(
-        hash,
-        asset,
-        this.activeNetwork
-      )
+      const transaction = (await client.chain.getTransactionByHash(hash)) || defaultTx
+      transaction.explorerLink = getTransactionExplorerLink(hash, asset, this.activeNetwork)
       transaction.asset = asset
       return transaction
     },
-    async getTransactionStep (
-      completed,
-      pending,
-      side,
-      hash,
-      defaultTx,
-      asset,
-      action
-    ) {
+    async getTransactionStep(completed, pending, side, hash, defaultTx, asset, action) {
       const step = {
         side,
         pending,
@@ -552,7 +475,7 @@ export default {
       }
       return step
     },
-    async getInitiationStep (completed, pending, side) {
+    async getInitiationStep(completed, pending, side) {
       return this.getTransactionStep(
         completed,
         pending,
@@ -563,7 +486,7 @@ export default {
         'lock'
       )
     },
-    async getAgentInitiationStep (completed, pending, side) {
+    async getAgentInitiationStep(completed, pending, side) {
       return this.getTransactionStep(
         completed,
         pending,
@@ -574,28 +497,28 @@ export default {
         'lock'
       )
     },
-    async getClaimRefundStep (completed, pending, side) {
+    async getClaimRefundStep(completed, pending, side) {
       return this.item.refundHash
         ? this.getTransactionStep(
-          completed,
-          pending,
-          side,
-          this.item.refundHash,
-          this.item.refundTx,
-          this.item.from,
-          'refund'
-        )
+            completed,
+            pending,
+            side,
+            this.item.refundHash,
+            this.item.refundTx,
+            this.item.from,
+            'refund'
+          )
         : this.getTransactionStep(
-          completed,
-          pending,
-          side,
-          this.item.toClaimHash,
-          this.item.toClaimTx,
-          this.item.bridgeAsset || this.item.to,
-          'claim'
-        )
+            completed,
+            pending,
+            side,
+            this.item.toClaimHash,
+            this.item.toClaimTx,
+            this.item.bridgeAsset || this.item.to,
+            'claim'
+          )
     },
-    async getApproveStep (completed, pending, side) {
+    async getApproveStep(completed, pending, side) {
       return this.getTransactionStep(
         completed,
         pending,
@@ -606,25 +529,25 @@ export default {
         'approve'
       )
     },
-    async getSwapStep (completed, pending, side) {
+    async getSwapStep(completed, pending, side) {
       return this.item.refundHash
         ? {
-          side: 'right',
-          pending: false,
-          completed: true,
-          title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted`
-        }
+            side: 'right',
+            pending: false,
+            completed: true,
+            title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted`
+          }
         : this.getTransactionStep(
-          completed,
-          pending,
-          side,
-          this.item.swapTxHash,
-          this.item.swapTxHash,
-          this.item.to,
-          'swap'
-        )
+            completed,
+            pending,
+            side,
+            this.item.swapTxHash,
+            this.item.swapTxHash,
+            this.item.to,
+            'swap'
+          )
     },
-    async getReceiveStep (completed, pending, side) {
+    async getReceiveStep(completed, pending, side) {
       return this.getTransactionStep(
         completed,
         pending,
@@ -635,7 +558,7 @@ export default {
         'receive'
       )
     },
-    async updateTransactions () {
+    async updateTransactions() {
       const timeline = []
       const supportedSteps = {
         SWAP: this.getSwapStep,
@@ -645,9 +568,7 @@ export default {
         AGENT_INITIATION: this.getAgentInitiationStep,
         CLAIM_OR_REFUND: this.getClaimRefundStep
       }
-      const steps = this.timelineDiagramSteps.map(
-        (step) => supportedSteps[step]
-      )
+      const steps = this.timelineDiagramSteps.map((step) => supportedSteps[step])
 
       for (let i = 0; i < steps.length; i++) {
         const completed = getStep(this.item) > i
@@ -659,7 +580,7 @@ export default {
 
       this.timeline = timeline
     },
-    async updateFee (asset, hash) {
+    async updateFee(asset, hash) {
       this.feeSelectorLoading = true
       try {
         await this.updateTransactionFee({
@@ -679,13 +600,13 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.updateTransactions()
     this.interval = setInterval(() => {
       this.updateTransactions()
     }, 5000)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     clearInterval(this.interval)
   }
 }
