@@ -150,7 +150,6 @@ export default {
       await navigator.clipboard.writeText(text)
     },
     addressLink(address, asset) {
-      console.log('address, asset', address, asset)
       if (this.item.accountId) {
         return getAddressExplorerLink(address, asset, this.activeNetwork)
       }

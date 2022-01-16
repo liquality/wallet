@@ -41,6 +41,11 @@
             <p id="transaction_detail_sent_amount" v-if="item.fiatRate">
               ${{ prettyFiatBalance(prettyBalance(item.amount, item.from), item.fiatRate) }} / then
             </p>
+            <p class="d-none">
+              <a :href="addressLink" target="_blank" id="transaction_details_send_to_link">{{
+                item.toAddress
+              }}</a>
+            </p>
           </div>
         </div>
         <hr />
