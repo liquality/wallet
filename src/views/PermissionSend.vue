@@ -197,7 +197,12 @@ export default {
     },
     async reply(allowed) {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
-      const optionsWithFee = { ...this.request.args[0], value: this.value, fee, feeLabel: this.selectedFee }
+      const optionsWithFee = {
+        ...this.request.args[0],
+        value: this.value,
+        fee,
+        feeLabel: this.selectedFee
+      }
 
       const requestWithFee = {
         ...this.request,

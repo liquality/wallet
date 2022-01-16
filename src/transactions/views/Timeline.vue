@@ -8,21 +8,21 @@
           <div class="content">
             <h3 :id="item.from">
               From:
-               <a
-                :href="addressLink(fromAddress, item.from)"
-                target="_blank"
-                :id="fromAddress"
-                >{{ shortenAddress(fromAddress) }}</a
-              >
+              <a :href="addressLink(fromAddress, item.from)" target="_blank" :id="fromAddress">{{
+                shortenAddress(fromAddress)
+              }}</a>
               <CopyIcon @click="copy(fromAddress)" />
             </h3>
           </div>
         </div>
-        <div class="liquality-timeline_container right" :class="{completed: item.status === 'SUCCESS' && tx && tx.confirmations > 0}">
+        <div
+          class="liquality-timeline_container right"
+          :class="{ completed: item.status === 'SUCCESS' && tx && tx.confirmations > 0 }"
+        >
           <div class="content">
             <h3 :id="item.to">
               To:
-               <a
+              <a
                 :href="addressLink(item.toAddress, item.to)"
                 target="_blank"
                 :id="item.toAddress"
@@ -34,13 +34,9 @@
         </div>
       </div>
       <div v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
-        <small
-          >Received</small
-        >
+        <small>Received</small>
         <br />
-        <small
-          >{{ prettyTime(item.endTime) }}</small
-        >
+        <small>{{ prettyTime(item.endTime) }}</small>
       </div>
     </div>
     <div class="text-center">
@@ -60,28 +56,20 @@
             <td class="text-break">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</td>
           </tr>
           <tr v-if="fromAddress">
-            <td class="text-muted text-right small-12">
-              Your {{ item.from }}<br />from address
-            </td>
+            <td class="text-muted text-right small-12">Your {{ item.from }}<br />from address</td>
             <td class="text-break">{{ fromAddress }}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">
-              Your {{ item.to }}<br />to address
-            </td>
+            <td class="text-muted text-right small-12">Your {{ item.to }}<br />to address</td>
             <td class="text-break">{{ item.toAddress }}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">
-              Your {{ item.to }} send<br />transaction
-            </td>
+            <td class="text-muted text-right small-12">Your {{ item.to }} send<br />transaction</td>
             <td class="text-break">{{ item.txHash }}</td>
           </tr>
           <tr v-if="false">
             <td class="text-muted text-right small-12">Actions</td>
-            <td class="cursor-pointer text-danger" @click="remove">
-              Remove this item
-            </td>
+            <td class="cursor-pointer text-danger" @click="remove">Remove this item</td>
           </tr>
         </tbody>
       </table>
@@ -108,7 +96,7 @@ export default {
   components: {
     CopyIcon
   },
-  data () {
+  data() {
     return {
       advanced: false,
       secretHidden: true,
@@ -121,79 +109,62 @@ export default {
   props: ['id', 'tx'],
   computed: {
     ...mapGetters(['client', 'accountItem', 'swapProvider']),
-    ...mapState([
-      'activeWalletId',
-      'activeNetwork',
-      'balances',
-      'history',
-      'fees'
-    ]),
-    item () {
+    ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
+    item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )
     },
-    fromAddress () {
+    fromAddress() {
       return this.accountItem(this.item.accountId)?.addresses[0]
     },
-    reverseRate () {
+    reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
     },
-    orderLink () {
+    orderLink() {
       if (this.item.provider !== 'liquality') {
         return ''
       }
-      const agent = getSwapProviderConfig(
-        this.item.network,
-        this.item.provider
-      ).agent
+      const agent = getSwapProviderConfig(this.item.network, this.item.provider).agent
       return agent + '/api/swap/order/' + this.item.id + '?verbose=true'
     },
-    feeSelectorFees () {
+    feeSelectorFees() {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         getNativeAsset(this.feeSelectorAsset)
       ]
     },
-    feeSelectorUnit () {
+    feeSelectorUnit() {
       const chain = cryptoassets[this.feeSelectorAsset].chain
       return chains[chain].fees.unit
     }
   },
   methods: {
-    ...mapActions([
-      'updateTransactionFee',
-      'updateFees',
-      'checkPendingActions'
-    ]),
+    ...mapActions(['updateTransactionFee', 'updateFees', 'checkPendingActions']),
     getNativeAsset,
     prettyBalance,
     shortenAddress,
-    prettyTime (timestamp) {
+    prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
-    async copy (text) {
+    async copy(text) {
       await navigator.clipboard.writeText(text)
     },
-    addressLink (address, asset) {
+    addressLink(address, asset) {
       console.log('address, asset', address, asset)
       if (this.item.accountId) {
-        return getAddressExplorerLink(
-          address,
-          asset,
-          this.activeNetwork
-        )
+        return getAddressExplorerLink(address, asset, this.activeNetwork)
       }
 
       return '#'
     }
   },
-  created () {
+  created() {
     // this.updateTransactions()
     // this.interval = setInterval(() => {
     //   this.updateTransactions()
     // }, 5000)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     // clearInterval(this.interval)
   }
 }

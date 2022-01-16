@@ -2,7 +2,7 @@
   <div class="details-wrapper">
     <NavBar :showBackButton="true" :backClick="goBack" :backLabel="'Back'">
       <img :src="getAssetIcon(item.from)" class="asset-icon mr-2" />
-      <span class="mr-2">{{item.from}}</span>
+      <span class="mr-2">{{ item.from }}</span>
       <img :src="typeIcon" />
     </NavBar>
     <div class="tx-details">
@@ -12,18 +12,13 @@
             <h2>Status</h2>
             <p class="text-grey">
               {{ status }}
-              <span
-                v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"
-              >
+              <span v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
                 / {{ tx.confirmations }} Confirmations
               </span>
             </p>
           </div>
           <div class="col-2">
-            <CompletedIcon
-              v-if="item.status === 'SUCCESS'"
-              class="tx-details_status-icon"
-            />
+            <CompletedIcon v-if="item.status === 'SUCCESS'" class="tx-details_status-icon" />
             <SpinnerIcon v-else class="tx-details_status-icon" />
           </div>
         </div>
@@ -36,25 +31,30 @@
         <div class="row">
           <div class="col">
             <h2>Sent</h2>
-            <p id="transaction_detail_sent_amount" class="font-weight-bold mb-1">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</p>
-            <p id="transaction_detail_sent_amount">${{ prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from]) }} / today</p>
-            <p id="transaction_detail_sent_amount" v-if="item.fiatRate">${{ prettyFiatBalance(prettyBalance(item.amount, item.from), item.fiatRate) }} / then</p>
+            <p id="transaction_detail_sent_amount" class="font-weight-bold mb-1">
+              {{ prettyBalance(item.amount, item.from) }} {{ item.from }}
+            </p>
+            <p id="transaction_detail_sent_amount">
+              ${{ prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from]) }}
+              / today
+            </p>
+            <p id="transaction_detail_sent_amount" v-if="item.fiatRate">
+              ${{ prettyFiatBalance(prettyBalance(item.amount, item.from), item.fiatRate) }} / then
+            </p>
           </div>
         </div>
-        <hr>
+        <hr />
         <div class="row" id="transaction_details_network_speed_fee">
           <div class="col">
             <h2>Network Speed/Fee</h2>
             <p class="d-flex justify-content-between">
-              <span>{{ assetChain }} Speed: <span class="text-capitalize">{{ item.feeLabel }}</span></span>
-              <span>Fee: {{ item.fee }} {{ feeUnit}}</span>
+              <span
+                >{{ assetChain }} Speed:
+                <span class="text-capitalize">{{ item.feeLabel }}</span></span
+              >
+              <span>Fee: {{ item.fee }} {{ feeUnit }}</span>
               <span>
-                <a
-                  v-if="canUpdateFee && !showFeeSelector"
-                  @click="openFeeSelector()"
-                >
-                  Speed up
-                </a>
+                <a v-if="canUpdateFee && !showFeeSelector" @click="openFeeSelector()"> Speed up </a>
               </span>
             </p>
             <div v-if="showFeeSelector" class="mt-2">
@@ -82,17 +82,22 @@
             </div>
           </div>
         </div>
-        <hr>
+        <hr />
         <div class="row">
-          <div class="col tx-details_link d-flex align-items-start" id="transaction_details_transaction_id">
+          <div
+            class="col tx-details_link d-flex align-items-start"
+            id="transaction_details_transaction_id"
+          >
             <h2 class="mr-4">Transaction ID</h2>
             <p>
-              <a :href="transactionLink" target="_blank" id="transactionLink">{{ shortenAddress(item.txHash) }}</a>
+              <a :href="transactionLink" target="_blank" id="transactionLink">{{
+                shortenAddress(item.txHash)
+              }}</a>
               <CopyIcon @click="copy(item.txHash)" />
             </p>
           </div>
         </div>
-        <Timeline :id="id" :tx="tx"/>
+        <Timeline :id="id" :tx="tx" />
       </div>
     </div>
   </div>
@@ -104,16 +109,13 @@ import moment from '@/utils/moment'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
-import {
-  prettyBalance,
-  prettyFiatBalance
-} from '@/utils/coinFormatter'
+import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getStatusLabel, ACTIVITY_FILTER_TYPES, getItemIcon } from '@/utils/history'
 import {
   getNativeAsset,
   getTransactionExplorerLink,
-  getAddressExplorerLink
-  , getAssetIcon
+  getAddressExplorerLink,
+  getAssetIcon
 } from '@/utils/asset'
 
 import FeeSelector from '@/components/FeeSelector'
@@ -149,7 +151,7 @@ export default {
     assetChain() {
       return getNativeAsset(this.item.from)
     },
-    item () {
+    item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )
@@ -160,15 +162,11 @@ export default {
     feeUnit() {
       return chains[cryptoassets[this.item.from].chain].fees.unit
     },
-    chainId () {
+    chainId() {
       return cryptoassets[this.item.from].chain
     },
-    addressLink () {
-      return getAddressExplorerLink(
-        this.item.toAddress,
-        this.item.from,
-        this.activeNetwork
-      )
+    addressLink() {
+      return getAddressExplorerLink(this.item.toAddress, this.item.from, this.activeNetwork)
     },
     transactionLink() {
       return getTransactionExplorerLink(this.item.txHash, this.item.from, this.activeNetwork)
@@ -184,7 +182,7 @@ export default {
     feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
     },
-    typeIcon () {
+    typeIcon() {
       const filter = ACTIVITY_FILTER_TYPES[this.item.type]
       return this.getItemIcon(filter?.icon)
     }
@@ -197,7 +195,7 @@ export default {
     getAssetIcon,
     prettyFiatBalance,
     getItemIcon,
-    prettyTime (timestamp) {
+    prettyTime(timestamp) {
       return moment(timestamp).format('MMM D YYYY, h:mm a')
     },
     async copy(text) {

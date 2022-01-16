@@ -131,21 +131,15 @@
             <td class="text-break">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</td>
           </tr>
           <tr v-if="item.fromAddress">
-            <td class="text-muted text-right small-12">
-              Your {{ item.from }}<br />from address
-            </td>
+            <td class="text-muted text-right small-12">Your {{ item.from }}<br />from address</td>
             <td class="text-break">{{ item.fromAddress }}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">
-              Your {{ item.to }}<br />to address
-            </td>
+            <td class="text-muted text-right small-12">Your {{ item.to }}<br />to address</td>
             <td class="text-break">{{ item.toAddress }}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">
-              Your {{ item.to }} send<br />transaction
-            </td>
+            <td class="text-muted text-right small-12">Your {{ item.to }} send<br />transaction</td>
             <td class="text-break">{{ item.txHash }}</td>
           </tr>
           <tr v-if="false">
@@ -155,9 +149,7 @@
         </tbody>
         <tbody class="font-weight-normal" v-if="item.type === 'SWAP'">
           <tr>
-            <td v-if="item.agent" class="text-muted text-right small-12">
-              Counter-party
-            </td>
+            <td v-if="item.agent" class="text-muted text-right small-12">Counter-party</td>
             <td class="text-break">{{ item.agent }}</td>
           </tr>
           <tr v-if="orderLink">
@@ -278,9 +270,7 @@
             <td id="receive_transaction" class="text-break">{{ item.receiveTxHash }}</td>
           </tr>
           <tr v-if="item.sendTx">
-            <td class="text-muted text-right small-12">
-              Your {{ item.to }} send<br />transaction
-            </td>
+            <td class="text-muted text-right small-12">Your {{ item.to }} send<br />transaction</td>
             <td id="send_transaction" class="text-break">{{ item.sendTx }}</td>
           </tr>
           <tr v-if="item.refundHash">
