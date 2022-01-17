@@ -77,7 +77,14 @@
             </p>
           </div>
           <div class="col">
-            <CompletedIcon v-if="item.status === 'SUCCESS'" class="tx-details_status-icon" />
+            <CompletedIcon
+              v-if="item.status === 'SUCCESS'"
+              class="tx-details_status-icon"
+            />
+            <FailedIcon
+              v-else-if="item.status === 'FAILED'"
+              class="tx-details_status-icon"
+            />
             <SpinnerIcon v-else class="tx-details_status-icon" />
           </div>
         </div>
@@ -107,6 +114,7 @@ import { getNativeAsset, getTransactionExplorerLink, getAddressExplorerLink } fr
 
 import FeeSelector from '@/components/FeeSelector'
 import CompletedIcon from '@/assets/icons/completed.svg'
+import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import NavBar from '@/components/NavBar.vue'
@@ -115,6 +123,7 @@ export default {
   components: {
     FeeSelector,
     CompletedIcon,
+    FailedIcon,
     SpinnerIcon,
     CopyIcon,
     NavBar
@@ -133,6 +142,11 @@ export default {
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     assetChain() {
       return getNativeAsset(this.item.from)
+    },
+    itemFee() {
+      return typeof this.item.fee !== 'object'
+        ? this.item.fee
+        : this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
     },
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
