@@ -16,7 +16,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
-describe('RBTC->BTC swap-["TESTNET","PULL_REQUEST_TEST"]', async () => {
+describe.skip('RBTC->BTC swap-["TESTNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()

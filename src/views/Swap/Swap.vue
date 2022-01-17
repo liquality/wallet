@@ -138,11 +138,27 @@
         </div>
       </div>
     </div>
-    <div class="swap" v-else-if="currentStep === 'custom-fees'">
+    <div class="swap" v-else-if="currentStep === 'custom-fees' && !isEIP1559Fees">
       <CustomFees
         @apply="applyCustomFee"
         @update="setCustomFee"
         @cancel="cancelCustomFee(customFeeAssetSelected)"
+        :asset="customFeeAssetSelected"
+        :selected-fee="selectedFee[customFeeAssetSelected]"
+        :fees="getAssetFees(customFeeAssetSelected)"
+        :totalFees="
+          amountOption === 'max'
+            ? maxSwapFees[customFeeAssetSelected]
+            : swapFees[customFeeAssetSelected]
+        "
+        :fiatRates="fiatRates"
+      />
+    </div>
+    <div class="swap" v-else-if="currentStep === 'custom-fees' && isEIP1559Fees">
+      <CustomFeesEIP1559
+        @apply="applyCustomFee"
+        @update="setCustomFee"
+        @cancel="cancelCustomFee"
         :asset="customFeeAssetSelected"
         :selected-fee="selectedFee[customFeeAssetSelected]"
         :fees="getAssetFees(customFeeAssetSelected)"
@@ -370,6 +386,7 @@ import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
+import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
@@ -397,6 +414,7 @@ export default {
     LedgerSignRequestModal,
     OperationErrorModal,
     CustomFees,
+    CustomFeesEIP1559,
     LedgerBridgeModal,
     QuotesModal,
     SwapProvidersInfoModal,
@@ -746,6 +764,12 @@ export default {
     },
     isSwapNegative() {
       return this.totalToReceiveInFiat <= 0
+    },
+    isEIP1559Fees() {
+      return (
+        this.assetChain === 'ETH' ||
+        (this.assetChain === 'MATIC' && this.activeNetwork === 'testnet')
+      )
     }
   },
   methods: {
@@ -844,14 +868,17 @@ export default {
           asset,
           txType,
           quote: this.selectedQuote,
-          feePrices: Object.values(assetFees).map((fee) => fee.fee),
+          feePrices: Object.values(assetFees).map(
+            (fee) => fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+          ),
           max
         })
 
         if (!totalFees) return
 
         for (const [speed, fee] of Object.entries(assetFees)) {
-          fees[chain][speed] = fees[chain][speed].plus(totalFees[fee.fee])
+          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+          fees[chain][speed] = fees[chain][speed].plus(totalFees[feePrice])
         }
       }
 
@@ -1075,7 +1102,12 @@ export default {
     applyCustomFee({ asset, fee }) {
       const assetFees = this.getAssetFees(asset)
       const presetFee = Object.entries(assetFees).find(
-        ([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee
+        ([speed, speedFee]) =>
+          speed !== 'custom' &&
+          (speedFee.fee === fee ||
+            (fee.maxPriorityFeePerGas &&
+              speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas &&
+              speedFee.fee.maxFeePerGas === fee.maxFeePerGas))
       )
       if (presetFee) {
         const [speed] = presetFee
@@ -1084,7 +1116,8 @@ export default {
       } else {
         this.updateMaxSwapFees()
         this.updateSwapFees()
-        this.customFees[asset] = fee
+        this.customFees[asset] =
+          typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
         this.selectedFee[asset] = 'custom'
       }
       this.currentStep = 'inputs'

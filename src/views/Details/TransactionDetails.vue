@@ -143,6 +143,11 @@ export default {
     assetChain() {
       return getNativeAsset(this.item.from)
     },
+    itemFee() {
+      return typeof this.item.fee !== 'object'
+        ? this.item.fee
+        : this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
+    },
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
