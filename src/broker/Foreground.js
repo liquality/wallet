@@ -2,7 +2,7 @@ import EventEmitter from 'events'
 import { BG_PREFIX, connectToBackground, newConnectId } from './utils'
 
 class Foreground {
-  constructor (store) {
+  constructor(store) {
     this.store = store
     this.name = newConnectId()
     this.connection = null
@@ -14,9 +14,9 @@ class Foreground {
     this.bindActions()
 
     this.connection = connectToBackground(this.name)
-    this.connection.onMessage.addListener(message => this.onMessage(message))
+    this.connection.onMessage.addListener((message) => this.onMessage(message))
 
-    this.store.subscribe(mutation => {
+    this.store.subscribe((mutation) => {
       // do not emit mutations starting with BG_PREFIX
       // and UI shoulnd't access mutations with BG_PREFIX
       if (mutation.type.startsWith(BG_PREFIX)) return
@@ -32,7 +32,7 @@ class Foreground {
     })
   }
 
-  bindMutation () {
+  bindMutation() {
     const { _mutations: mutations } = this.store
 
     // copy mutations to BG_PREFIX namespace
@@ -41,18 +41,18 @@ class Foreground {
     })
   }
 
-  bindActions () {
+  bindActions() {
     const { _actions: actions } = this.store
 
     // overwrite actions with proxy
     // all actions are performed in Background
     // and result is sent back to Foreground
-    Object.entries(actions).forEach(([type, funcList]) => {
+    Object.entries(actions).forEach(([type]) => {
       actions[type] = [this.prepareAction(type)]
     })
   }
 
-  onMessage ({ id, type, data }) {
+  onMessage({ id, type, data }) {
     switch (type) {
       case 'ACTION_RESPONSE':
         this.emitter.emit(id, data)
@@ -80,33 +80,34 @@ class Foreground {
     }
   }
 
-  prepareAction (type) {
-    return payload => new Promise((resolve, reject) => {
-      const id = Date.now() + '.' + Math.random()
+  prepareAction(type) {
+    return (payload) =>
+      new Promise((resolve, reject) => {
+        const id = Date.now() + '.' + Math.random()
 
-      // wait for the result
-      this.emitter.once(id, result => {
-        if (result.error) reject(new Error(result.error))
-        else resolve(result.result)
-      })
+        // wait for the result
+        this.emitter.once(id, (result) => {
+          if (result.error) reject(new Error(result.error))
+          else resolve(result.result)
+        })
 
-      this.connection.postMessage({
-        id,
-        type: 'ACTION_REQUEST',
-        data: { type, payload }
+        this.connection.postMessage({
+          id,
+          type: 'ACTION_REQUEST',
+          data: { type, payload }
+        })
       })
-    })
   }
 
-  sendMutation (mutation) {
+  sendMutation(mutation) {
     this.connection.postMessage({
       type: 'MUTATION',
       data: mutation
     })
   }
 
-  processPendingMutations () {
-    this.pendingMutations = this.pendingMutations.filter(mutation => {
+  processPendingMutations() {
+    this.pendingMutations = this.pendingMutations.filter((mutation) => {
       this.store.commit(mutation.type, mutation.payload)
       return false
     })

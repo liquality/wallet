@@ -3,10 +3,7 @@
     <div class="notification-text">
       A balance is required to swap and you need ETH to pay for gas.
     </div>
-    <router-link :to="accountUrl"
-                 class="btn btn-option get-eth-btn">
-      Get ETH
-    </router-link>
+    <router-link :to="accountUrl" class="btn btn-option get-eth-btn"> Get ETH </router-link>
   </div>
 </template>
 
@@ -16,7 +13,7 @@ export default {
     accountId: String
   },
   computed: {
-    accountUrl () {
+    accountUrl() {
       return `/accounts/${this.accountId}/ETH/receive`
     }
   }

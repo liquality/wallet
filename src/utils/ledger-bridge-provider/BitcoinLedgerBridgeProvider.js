@@ -3,13 +3,7 @@ import { BitcoinLedgerProvider } from '@liquality/bitcoin-ledger-provider'
 export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
   _ledgerApp
 
-  constructor ({
-    network,
-    Transport,
-    baseDerivationPath,
-    addressType
-  },
-  ledgerApp) {
+  constructor({ network, Transport, baseDerivationPath, addressType }, ledgerApp) {
     super({
       network,
       Transport,
@@ -19,7 +13,7 @@ export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
     this._ledgerApp = new Proxy(ledgerApp, { get: this.errorProxy.bind(this) })
   }
 
-  async getApp () {
+  async getApp() {
     return Promise.resolve(this._ledgerApp)
   }
 }
