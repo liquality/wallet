@@ -10,7 +10,7 @@
         <div class="row" id="transaction_details_status">
           <div class="col-10">
             <h2>Status</h2>
-            <p class="text-grey" id="transaction_details_status_number_of_confirmations">
+            <p class="text-grey" id="transaction_details_status_and_confirmations">
               {{ status }}
               <span v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
                 / {{ tx.confirmations }} Confirmations
