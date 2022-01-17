@@ -4,7 +4,7 @@ import BN from 'bignumber.js'
 
 export const sendTransaction = async (
   { dispatch, commit, getters },
-  { network, walletId, accountId, asset, to, amount, data, fee, gas, feeLabel, claimFeeLabel }
+  { network, walletId, accountId, asset, to, amount, data, fee, gas, feeLabel, fiatRate }
 ) => {
   const client = getters.client({
     network,
@@ -46,16 +46,16 @@ export const sendTransaction = async (
     txHash: tx.hash,
     startTime: Date.now(),
     status: 'WAITING_FOR_CONFIRMATIONS',
-    accountId
+    accountId,
+    feeLabel,
+    fiatRate
   }
 
   commit('NEW_TRASACTION', {
     network,
     walletId,
     accountId,
-    transaction,
-    feeLabel,
-    claimFeeLabel
+    transaction
   })
 
   dispatch('performNextAction', {

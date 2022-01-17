@@ -9,13 +9,15 @@ const SEND_STATUS_MAP = {
       message: `Sending ${prettyBalance(item.amount, item.from)} ${item.from} to ${item.toAddress}`
     }
   },
-  Failed (item) {
+  Failed(item) {
     return {
       title: `${item.from} Transaction Failed`,
-      message: `Failed to send ${prettyBalance(item.amount, item.from)} ${item.from} to ${item.toAddress}`
+      message: `Failed to send ${prettyBalance(item.amount, item.from)} ${item.from} to ${
+        item.toAddress
+      }`
     }
   },
-  SUCCESS (item) {
+  SUCCESS(item) {
     return {
       title: `${item.from} Transaction Confirmed`,
       message: `Sent ${prettyBalance(item.amount, item.from)} ${item.from} to ${item.toAddress}`

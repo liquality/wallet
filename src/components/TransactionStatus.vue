@@ -1,21 +1,17 @@
 <template>
   <div class="transaction-status">
     <div class="transaction-confirming" v-if="error || status === 'NEEDS_ATTENTION'">
-        <SpinnerIcon />
-        <span class="transaction-steps" v-if="totalSteps > 2">
-            {{ step }} / {{ totalSteps }}
-        </span>
-        <span class="error-indicator"></span>
+      <SpinnerIcon />
+      <span class="transaction-steps" v-if="totalSteps > 2"> {{ step }} / {{ totalSteps }} </span>
+      <span class="error-indicator"></span>
     </div>
     <CompletedIcon v-else-if="status === 'COMPLETED'" />
     <FailedIcon v-else-if="status === 'FAILED'" />
     <RefundedIcon v-else-if="status === 'REFUNDED'" />
     <CanceledIcon v-else-if="status === 'CANCELED'" />
     <div class="transaction-confirming" v-else-if="status === 'PENDING'">
-        <SpinnerIcon />
-        <span class="transaction-steps" v-if="totalSteps > 2">
-            {{ step }} / {{ totalSteps }}
-        </span>
+      <SpinnerIcon />
+      <span class="transaction-steps" v-if="totalSteps > 2"> {{ step }} / {{ totalSteps }} </span>
     </div>
     <CompletedIcon v-else-if="status === 'COMPLETED'" />
     <RefundedIcon v-else-if="status === 'REFUNDED'" />
