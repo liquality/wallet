@@ -3,6 +3,7 @@ on:
     branches:
       - dev
       - "!master"
+      - '!renovate/**'
 
 name: PullRequest tests
 
