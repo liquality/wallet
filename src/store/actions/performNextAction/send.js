@@ -18,7 +18,7 @@ async function waitForConfirmations({ getters, dispatch }, { transaction, networ
 
       return {
         endTime: Date.now(),
-        status: 'SUCCESS'
+        status: tx.status
       }
     }
   } catch (e) {
