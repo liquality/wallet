@@ -1,24 +1,53 @@
 <template>
-<div>
-  <OnboardingPassword v-if="currentStep === 'beginning'" @on-unlock="onUnlock"/>
-  <div class="backup-wallet login-wrapper no-outer-pad" v-if="currentStep === 'backup'">
-    <div class="backup-wallet_logo-wrap mx-auto">
-        <img :src="logo"/>
-    </div>
-    <div class="backup-wallet_top">
-      <h2 class="p-1">Backup your Wallet</h2>
-      <p class="mb-3 backup-wallet_description">The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.</p>
-    </div>
-    <div class="backup-wallet_bottom">
-      <div class="backup-wallet_seed pt-1" id="backup-wallet_seed_wordlist">
-        <span v-for="word in seedList" :key="word" id="backup_seed_word">{{ word }}</span>
+  <div>
+    <div class="backup-wallet login-wrapper no-outer-pad" v-show="currentStep === 'backup'">
+      <div class="backup-wallet_logo-wrap mx-auto">
+        <img :src="logo" />
       </div>
-      <button class="btn btn-primary btn-lg btn-block btn-icon" id="backup_your_wallet_next_button" @click="pushToConfirm">Next</button>
+      <div class="backup-wallet_top">
+        <h2 class="p-1">Backup your Wallet</h2>
+        <p class="mb-3 backup-wallet_description">
+          The seed phrase is the only way to restore your wallet. Write it down, verify it and then
+          store it securely.
+        </p>
+      </div>
+      <div class="backup-wallet_bottom">
+        <div class="backup-wallet_seed pt-1" id="backup-wallet_seed_wordlist">
+          <span v-for="word in seedList" :key="word" id="backup_seed_word">{{ word }}</span>
+        </div>
+        <div class="footer-container">
+          <div class="footer-content">
+            <button
+              class="btn btn-outline-primary btn-lg btn-footer btn-icon"
+              @click="$router.go(-1)"
+            >
+              Cancel
+            </button>
+            <button
+              class="btn btn-primary btn-lg btn-footer btn-icon"
+              id="backup_your_wallet_next_button"
+              @click="pushToConfirm"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+    <ConfirmSeed
+      v-show="currentStep === 'confirm'"
+      @on-confirm="currentStep = 'password'"
+      @on-cancel="currentStep = 'backup'"
+      :mnemonic="mnemonic"
+    />
+    <OnboardingPassword
+      v-show="currentStep === 'password'"
+      :imported="imported"
+      @on-unlock="onUnlock"
+      @currentStep="currentStep = 'confirm'"
+    />
+    <Congratulations v-show="currentStep === 'congrats'" />
   </div>
-  <ConfirmSeed v-if="currentStep === 'confirm'" @on-confirm="confirmMnemonic" @on-cancel="currentStep = 'backup'" :mnemonic="mnemonic" />
-  <Congratulations v-if="currentStep === 'congrats'" />
-</div>
 </template>
 
 <script>
@@ -30,10 +59,10 @@ import OnboardingPassword from './OnboardingPassword'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 
 export default {
-  data () {
+  data() {
     return {
       mnemonic: null,
-      currentStep: 'beginning',
+      currentStep: '',
       password: null,
       imported: false
     }
@@ -44,25 +73,27 @@ export default {
     Congratulations,
     OnboardingPassword
   },
-  created () {
+  created() {
     if (this.seedphrase) {
       this.mnemonic = this.seedphrase
       this.imported = true
+      this.currentStep = 'password'
     } else {
       this.mnemonic = generateMnemonic()
+      this.currentStep = 'backup'
     }
   },
   computed: {
     seedList: function () {
       return this.mnemonic.split(' ')
     },
-    logo () {
+    logo() {
       return LogoWallet
     }
   },
   methods: {
     ...mapActions(['setupWallet', 'createWallet', 'unlockWallet']),
-    async confirmMnemonic () {
+    async confirmMnemonic() {
       this.currentStep = 'congrats'
       await this.setupWallet({ key: this.password })
       await this.createWallet({
@@ -74,16 +105,12 @@ export default {
         this.unlockWallet({ key: this.password })
       }, 1650)
     },
-    pushToConfirm () {
+    pushToConfirm() {
       this.currentStep = 'confirm'
     },
-    async onUnlock (password) {
+    async onUnlock(password) {
       this.password = password
-      if (this.seedphrase) {
-        await this.confirmMnemonic()
-      } else {
-        this.currentStep = 'backup'
-      }
+      await this.confirmMnemonic()
     }
   }
 }

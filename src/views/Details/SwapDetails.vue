@@ -3,7 +3,7 @@
     <NavBar :showBackButton="true" :backClick="goBack" :backLabel="'Back'">
       {{ `Swap ${item.from} to ${item.to}` }}
     </NavBar>
-   <div class="swap-details">
+    <div class="swap-details">
       <div class="swap-details_info">
         <div class="row">
           <div class="col" id="swap-details-status-section">
@@ -11,25 +11,35 @@
             <p>{{ status }}</p>
           </div>
           <div class="col">
-            <CompletedIcon v-if="['SUCCESS', 'REFUNDED'].includes(item.status)" class="swap-details_status-icon" />
+            <CompletedIcon
+              v-if="['SUCCESS', 'REFUNDED'].includes(item.status)"
+              class="swap-details_status-icon"
+            />
             <SpinnerIcon v-else class="swap-details_status-icon" />
           </div>
         </div>
         <div class="row">
           <div class="col">
             <h2>Sent</h2>
-            <p :id="'sent-'+item.from">{{prettyBalance(item.fromAmount, item.from)}} {{ item.from }}</p>
+            <p :id="'sent-' + item.from">
+              {{ prettyBalance(item.fromAmount, item.from) }} {{ item.from }}
+            </p>
           </div>
           <div class="col" id="pending_receipt_section">
             <h2 v-if="['SUCCESS', 'REFUNDED'].includes(item.status)">Received</h2>
             <h2 v-else>Pending Receipt</h2>
-            <p>{{prettyBalance(item.toAmount, item.to)}} {{ item.to }}</p>
+            <p>{{ prettyBalance(item.toAmount, item.to) }} {{ item.to }}</p>
           </div>
         </div>
         <div class="row">
           <div class="col">
-            <h2 class="d-flex align-items-center">Rate <SwapProviderLabel class="ml-2" :provider="item.provider" :network="activeNetwork" /></h2>
-            <p>1 {{item.from}} = <span class="swap-details_rate">{{ rate }}</span> {{ item.to }}</p>
+            <h2 class="d-flex align-items-center">
+              Rate
+              <SwapProviderLabel class="ml-2" :provider="item.provider" :network="activeNetwork" />
+            </h2>
+            <p>
+              1 {{ item.from }} = <span class="swap-details_rate">{{ rate }}</span> {{ item.to }}
+            </p>
           </div>
         </div>
       </div>
@@ -37,40 +47,35 @@
         <div class="row">
           <div class="col">
             <h2>Network Speed/Fee</h2>
-            <p v-for="fee in txFees" :key="fee.asset" :id="'network_fee_'+fee.asset">
+            <p v-for="fee in txFees" :key="fee.asset" :id="'network_fee_' + fee.asset">
               {{ fee.asset }} Fee: {{ fee.fee }} {{ fee.unit }}
             </p>
           </div>
         </div>
       </div>
-      <Timeline :id="id" @retrySwap="retry()"/>
+      <Timeline :id="id" @retrySwap="retry()" />
     </div>
     <Modal v-if="ledgerSignRequired && showLedgerModal" @close="showLedgerModal = false">
       <template #header>
-        <h5>
-          Sign to {{ ledgerModalTitle }}
-        </h5>
+        <h5>Sign to {{ ledgerModalTitle }}</h5>
       </template>
-       <template>
-         <div class="modal-title">
-           On Your Ledger
-         </div>
-         <div class="ledger-options-container">
-         <div class="ledger-options-instructions">
-          Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag.
+      <template>
+        <div class="modal-title">On Your Ledger</div>
+        <div class="ledger-options-container">
+          <div class="ledger-options-instructions">
+            Follow prompts to verify and accept the amount, then confirm the transaction. There may
+            be a lag.
+          </div>
+          <p>
+            <LedgerSignRquest class="ledger-sign-request" />
+          </p>
         </div>
-        <p>
-          <LedgerSignRquest class="ledger-sign-request"/>
-        </p>
-      </div>
-       </template>
-       <template #footer>
-          <button class="btn btn-outline-clear"
-                  @click="retry"
-                  :disabled="retryingSwap">
-            <template v-if="retryingSwap">...</template>
-            <template v-else>Sign</template>
-       </button>
+      </template>
+      <template #footer>
+        <button class="btn btn-outline-clear" @click="retry" :disabled="retryingSwap">
+          <template v-if="retryingSwap">...</template>
+          <template v-else>Sign</template>
+        </button>
       </template>
     </Modal>
   </div>
@@ -106,7 +111,7 @@ export default {
     LedgerSignRquest,
     SwapProviderLabel
   },
-  data () {
+  data() {
     return {
       showLedgerModal: false,
       retryingSwap: false
@@ -116,14 +121,15 @@ export default {
   computed: {
     ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
-    item () {
-      return this.history[this.activeNetwork][this.activeWalletId]
-        .find((item) => item.id === this.id)
+    item() {
+      return this.history[this.activeNetwork][this.activeWalletId].find(
+        (item) => item.id === this.id
+      )
     },
-    status () {
+    status() {
       return getStatusLabel(this.item)
     },
-    txFees () {
+    txFees() {
       const fees = []
       const fromChain = cryptoassets[this.item.from].chain
       const toChain = cryptoassets[this.item.to].chain
@@ -141,11 +147,11 @@ export default {
       }
       return fees
     },
-    rate () {
+    rate() {
       const rate = calculateQuoteRate(this.item)
       return dpUI(rate)
     },
-    ledgerModalTitle () {
+    ledgerModalTitle() {
       if (this.item.status === 'INITIATION_CONFIRMED') {
         return 'Fund'
       } else if (this.item.status === 'READY_TO_CLAIM') {
@@ -157,13 +163,18 @@ export default {
       return null
     },
     // TODO: should work for uniswap too
-    ledgerSignRequired () {
+    ledgerSignRequired() {
       // :::::: Show the modal for ledger if we need it ::::::
       // Apply only for ledger accounts but the order should have an account id:
-      if (this.item && (this.item.error || this.retryingSwap) && this.item.fromAccountId && this.item.toAccountId) {
-      // Check the status and get the account related
+      if (
+        this.item &&
+        (this.item.error || this.retryingSwap) &&
+        this.item.fromAccountId &&
+        this.item.toAccountId
+      ) {
+        // Check the status and get the account related
         if (this.item.status === 'INITIATION_CONFIRMED') {
-        // fund transaction only apply for erc20
+          // fund transaction only apply for erc20
           if (isERC20(this.item.from)) {
             const fromAccount = this.accountItem(this.item.fromAccountId)
             if (fromAccount?.type.includes('ledger')) {
@@ -190,16 +201,16 @@ export default {
     ...mapActions(['retrySwap', 'updateTransactionFee', 'updateFees']),
     getNativeAsset,
     prettyBalance,
-    prettyTime (timestamp) {
+    prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
-    async copy (text) {
+    async copy(text) {
       await navigator.clipboard.writeText(text)
     },
-    goBack () {
+    goBack() {
       this.$router.go(-1)
     },
-    async retry () {
+    async retry() {
       if (this.retryingSwap) return
       this.retryingSwap = true
       try {
@@ -212,7 +223,7 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     if (this.ledgerSignRequired) {
       this.showLedgerModal = true
     }
@@ -262,7 +273,9 @@ export default {
     float: right;
   }
 
-  &_info, &_fee, &_timeline {
+  &_info,
+  &_fee,
+  &_timeline {
     border-bottom: 1px solid $hr-border-color;
     margin-bottom: $wrapper-padding;
   }
@@ -310,12 +323,14 @@ export default {
         z-index: 1;
       }
 
-      &.completed::after, &.pending::after {
+      &.completed::after,
+      &.pending::after {
         background-color: $color-secondary;
         border: 1px solid $hr-border-color;
       }
 
-      &.completed:first-child::after, &.completed:last-child::after {
+      &.completed:first-child::after,
+      &.completed:last-child::after {
         background-color: $color-secondary;
         border: 0;
       }
@@ -368,12 +383,10 @@ export default {
     .left::after {
       right: -6px;
     }
-
   }
-
 }
 .border-0 {
-  box-shadow: none!important;
+  box-shadow: none !important;
 
   tr:first-child {
     td {

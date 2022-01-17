@@ -2,14 +2,14 @@ import store from '../store'
 import { createNotification } from '../broker/notification'
 
 class SwapProvider {
-  constructor (config) {
+  constructor(config) {
     if (this.constructor === SwapProvider) {
       throw new TypeError('Abstract class "SwapProvider" cannot be instantiated directly.')
     }
     this.config = config
   }
 
-  async sendLedgerNotification (accountId, message) {
+  async sendLedgerNotification(accountId, message) {
     const account = store.getters.accountItem(accountId)
     if (account?.type.includes('ledger')) {
       const notificationId = await createNotification({
@@ -30,7 +30,8 @@ class SwapProvider {
    * Get the supported pairs of this provider for this network
    * @param {{ network }} network
    */
-  getSupportedPairs ({ network }) {
+  // eslint-disable-next-line no-unused-vars
+  getSupportedPairs({ network }) {
     throw new Error('`getSupportedPairs` not implemented')
   }
 
@@ -38,7 +39,8 @@ class SwapProvider {
    * Get a quote for the specified parameters
    * @param {{ network, from, to, amount }} options
    */
-  getQuote ({ network, from, to, amount }) {
+  // eslint-disable-next-line no-unused-vars
+  getQuote({ network, from, to, amount }) {
     throw new Error('`getQuote` not implemented')
   }
 
@@ -46,7 +48,8 @@ class SwapProvider {
    * Create a new swap for the given quote
    * @param {{ network, walletId, quote }} options
    */
-  newSwap ({ network, walletId, quote }) {
+  // eslint-disable-next-line no-unused-vars
+  newSwap({ network, walletId, quote }) {
     throw new Error('`newSwap` not implemented')
   }
 
@@ -55,7 +58,8 @@ class SwapProvider {
    * @param {{ network, walletId, asset, fromAccountId, toAccountId, txType, amount, feePrices[], max }} options
    * @return Object of key feePrice and value fee
    */
-  async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
+  // eslint-disable-next-line no-unused-vars
+  async estimateFees({ network, walletId, asset, txType, quote, feePrices, max }) {
     throw new Error('`estimateFee` not implemented')
   }
 
@@ -65,7 +69,8 @@ class SwapProvider {
    * @param {{ network, walletId, swap }}
    * @return updates An object representing updates to the current swap in the history
    */
-  async performNextSwapAction (store, { network, walletId, swap }) {
+  // eslint-disable-next-line no-unused-vars
+  async performNextSwapAction(store, { network, walletId, swap }) {
     throw new Error('`newSwap` not implemented')
   }
 
@@ -74,22 +79,20 @@ class SwapProvider {
    * @param {string} network
    * @return account
    */
-  getMarketData (network) {
+  getMarketData(network) {
     return store.state.marketData[network]
   }
 
   /**
    * Get blockchain client
    */
-  getClient (network, walletId, asset, accountId) {
-    return store.getters.client(
-      {
-        network,
-        walletId,
-        asset,
-        accountId
-      }
-    )
+  getClient(network, walletId, asset, accountId) {
+    return store.getters.client({
+      network,
+      walletId,
+      asset,
+      accountId
+    })
   }
 
   /**
@@ -97,7 +100,7 @@ class SwapProvider {
    * @param {string} accountId
    * @return account
    */
-  getAccount (accountId) {
+  getAccount(accountId) {
     return store.getters.accountItem(accountId)
   }
 
@@ -107,7 +110,7 @@ class SwapProvider {
    * @param {string} walletId
    * @param {string[]} assets
    */
-  async updateBalances (network, walletId, assets) {
+  async updateBalances(network, walletId, assets) {
     return store.dispatch('updateBalances', { network, walletId, assets })
   }
 
@@ -119,36 +122,46 @@ class SwapProvider {
    * @param {string} accountId
    * @returns string address
    */
-  async getSwapAddress (network, walletId, asset, accountId) {
-    const [address] = await store.dispatch('getUnusedAddresses', { network, walletId, assets: [asset], accountId })
+  async getSwapAddress(network, walletId, asset, accountId) {
+    const [address] = await store.dispatch('getUnusedAddresses', {
+      network,
+      walletId,
+      assets: [asset],
+      accountId
+    })
     return address
   }
 
-  get statuses () {
+  get statuses() {
     const statuses = this.constructor.statuses
-    if (typeof statuses === 'undefined') throw new Error('`statuses` is not defined. Shape: { STATUS: { step: number, label: string, filterStatus: string, notification () : ({ message }) } }')
+    if (typeof statuses === 'undefined')
+      throw new Error(
+        '`statuses` is not defined. Shape: { STATUS: { step: number, label: string, filterStatus: string, notification () : ({ message }) } }'
+      )
     return statuses
   }
 
-  get fromTxType () {
+  get fromTxType() {
     const fromTxType = this.constructor.fromTxType
-    if (typeof fromTxType === 'undefined') throw new Error('`fromTxType` is not defined. e.g. "INITIATE"')
+    if (typeof fromTxType === 'undefined')
+      throw new Error('`fromTxType` is not defined. e.g. "INITIATE"')
     return fromTxType
   }
 
-  get toTxType () {
+  get toTxType() {
     const toTxType = this.constructor.toTxType
     if (typeof toTxType === 'undefined') throw new Error('`toTxType` is not defined. e.g. "REDEEM"')
     return toTxType
   }
 
-  get timelineDiagramSteps () {
+  get timelineDiagramSteps() {
     const timelineDiagramSteps = this.constructor.timelineDiagramSteps
-    if (typeof timelineDiagramSteps === 'undefined') throw new Error('`timelineDiagramSteps` is not defined. e.g. ["APPROVE","SWAP"]')
+    if (typeof timelineDiagramSteps === 'undefined')
+      throw new Error('`timelineDiagramSteps` is not defined. e.g. ["APPROVE","SWAP"]')
     return timelineDiagramSteps
   }
 
-  get totalSteps () {
+  get totalSteps() {
     const totalSteps = this.constructor.totalSteps
     if (typeof totalSteps === 'undefined') throw new Error('`totalSteps` is not defined. e.g. 2')
     return totalSteps

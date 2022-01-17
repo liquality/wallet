@@ -8,14 +8,18 @@
         <div class="row">
           <div class="col">
             <h2>Sent</h2>
-            <p id="transaction_detail_sent_amount">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</p>
+            <p id="transaction_detail_sent_amount">
+              {{ prettyBalance(item.amount, item.from) }} {{ item.from }}
+            </p>
           </div>
         </div>
         <div class="row">
           <div class="col tx-details_link" id="send_to_tx_details_link">
             <h2>Sent To</h2>
             <p>
-              <a :href="addressLink" target="_blank" id="transaction_details_send_to_link">{{ item.toAddress }}</a>
+              <a :href="addressLink" target="_blank" id="transaction_details_send_to_link">{{
+                item.toAddress
+              }}</a>
               <CopyIcon @click="copy(item.toAddress)" />
             </p>
           </div>
@@ -26,12 +30,7 @@
             <p>
               {{ prettyBalance(tx ? tx.fee : item.tx.fee, item.from) }}
               {{ assetChain }} | {{ item.fee }} {{ feeUnit }}
-              <a
-                v-if="canUpdateFee && !showFeeSelector"
-                @click="openFeeSelector()"
-              >
-                Speed up
-              </a>
+              <a v-if="canUpdateFee && !showFeeSelector" @click="openFeeSelector()"> Speed up </a>
             </p>
             <div v-if="showFeeSelector" class="mt-2">
               <FeeSelector
@@ -67,9 +66,10 @@
         <div class="row" id="transaction_details_status">
           <div class="col-10">
             <h2>Status</h2>
-            <p>
+            <p id="transaction_details_status_and_confirmations">
               {{ status }}
               <span
+                id="transaction_details_status_number_of_confirmations"
                 v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"
               >
                 / {{ tx.confirmations }} Confirmations
@@ -110,11 +110,7 @@ import { chains } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStatusLabel } from '@/utils/history'
-import {
-  getNativeAsset,
-  getTransactionExplorerLink,
-  getAddressExplorerLink
-} from '@/utils/asset'
+import { getNativeAsset, getTransactionExplorerLink, getAddressExplorerLink } from '@/utils/asset'
 
 import FeeSelector from '@/components/FeeSelector'
 import CompletedIcon from '@/assets/icons/completed.svg'
@@ -132,7 +128,7 @@ export default {
     CopyIcon,
     NavBar
   },
-  data () {
+  data() {
     return {
       tx: null,
       showFeeSelector: false,
@@ -143,54 +139,36 @@ export default {
   props: ['id'],
   computed: {
     ...mapGetters(['client']),
-    ...mapState([
-      'activeWalletId',
-      'activeNetwork',
-      'history',
-      'fees',
-      'fiatRates'
-    ]),
-    assetChain () {
+    ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
+    assetChain() {
       return getNativeAsset(this.item.from)
     },
-    item () {
+    item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )
     },
-    status () {
+    status() {
       return getStatusLabel(this.item)
     },
-    feeUnit () {
+    feeUnit() {
       return chains[cryptoassets[this.item.from].chain].fees.unit
     },
-    addressLink () {
-      return getAddressExplorerLink(
-        this.item.toAddress,
-        this.item.from,
-        this.activeNetwork
-      )
+    addressLink() {
+      return getAddressExplorerLink(this.item.toAddress, this.item.from, this.activeNetwork)
     },
-    transactionLink () {
-      return getTransactionExplorerLink(
-        this.item.txHash,
-        this.item.from,
-        this.activeNetwork
-      )
+    transactionLink() {
+      return getTransactionExplorerLink(this.item.txHash, this.item.from, this.activeNetwork)
     },
-    canUpdateFee () {
+    canUpdateFee() {
       return (
-        this.feesAvailable &&
-        this.tx &&
-        (!this.tx.confirmations || this.tx.confirmations === 0)
+        this.feesAvailable && this.tx && (!this.tx.confirmations || this.tx.confirmations === 0)
       )
     },
-    assetFees () {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
-        this.assetChain
-      ]
+    assetFees() {
+      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
     },
-    feesAvailable () {
+    feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
     }
   },
@@ -198,21 +176,21 @@ export default {
     ...mapActions(['updateTransactionFee', 'updateFees']),
     getNativeAsset,
     prettyBalance,
-    prettyTime (timestamp) {
+    prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
-    async copy (text) {
+    async copy(text) {
       await navigator.clipboard.writeText(text)
     },
-    openFeeSelector () {
+    openFeeSelector() {
       this.showFeeSelector = true
       this.updateFees({ asset: this.assetChain })
     },
-    closeFeeSelector () {
+    closeFeeSelector() {
       this.showFeeSelector = false
       this.selectedFee = 'average'
     },
-    async updateFee () {
+    async updateFee() {
       this.feeSelectorLoading = true
       const newFee = this.assetFees[this.selectedFee].fee
       try {
@@ -229,7 +207,7 @@ export default {
         this.closeFeeSelector()
       }
     },
-    async updateTransaction () {
+    async updateTransaction() {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
@@ -237,19 +215,18 @@ export default {
         accountId: this.item.accountId
       })
       const transaction =
-        (await client.chain.getTransactionByHash(this.item.txHash)) ||
-        this.item.tx
+        (await client.chain.getTransactionByHash(this.item.txHash)) || this.item.tx
       this.tx = transaction
     },
-    goBack () {
+    goBack() {
       this.$router.go(-1)
     }
   },
-  created () {
+  created() {
     this.updateTransaction()
     this.interval = setInterval(() => this.updateTransaction(), 10000)
   },
-  beforeDestroy () {
+  beforeDestroy() {
     clearInterval(this.interval)
   }
 }

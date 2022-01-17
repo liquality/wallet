@@ -1,23 +1,13 @@
 <template>
   <div>
     <div class="navbar">
-      <router-link
-        v-if="showBack"
-        class="navbar_prev"
-        id="previous_nav_bar"
-        v-bind:to="backPath"
-      >
+      <router-link v-if="showBack" class="navbar_prev" id="previous_nav_bar" v-bind:to="backPath">
         <div>
           <ChevronLeftIcon class="navbar_prev_icon" />
           {{ backLabel }}
         </div>
       </router-link>
-      <a
-        v-else-if="showBackButton"
-        class="navbar_prev"
-        href="#"
-        @click="backClick"
-      >
+      <a v-else-if="showBackButton" class="navbar_prev" href="#" @click="backClick">
         <div>
           <ChevronLeftIcon class="navbar_prev_icon" />
           {{ backLabel }}
@@ -34,27 +24,24 @@
       >
         <HamburgerIcon class="navbar_menu_icon" />
       </div>
-      <ul
-        class="menu_list navbar_menu_list"
-        v-if="showMenuList"
-        v-click-away="hideMenu"
-      >
-       <li id="manage_assets" @click="assets">
+      <ul class="menu_list navbar_menu_list" v-if="showMenuList" v-click-away="hideMenu">
+        <li id="manage_assets" @click="assets">
           <AssetsIcon />
           Manage Assets
         </li>
-        <li id="manage_accounts"
-          v-if="experiments.manageAccounts"
-             @click="manageAccounts">
-           <AccountsIcon />
-           Manage Accounts
-         </li>
+        <li id="manage_accounts" v-if="experiments.manageAccounts" @click="manageAccounts">
+          <AccountsIcon />
+          Manage Accounts
+        </li>
+        <li id="export_privkey" v-if="$route.params.accountId" @click="exportPrivateKey">
+          <KeyIcon />
+          Export Private Key
+        </li>
         <li id="settings" @click="settings">
           <SettingsIcon />
           Settings
         </li>
-        <li id="ledger"
-            @click="ledger">
+        <li id="ledger" @click="ledger">
           <LedgerIcon />
           Ledger
         </li>
@@ -83,6 +70,7 @@ import SettingsIcon from '@/assets/icons/settings.svg'
 import AssetsIcon from '@/assets/icons/assets.svg'
 import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
+import KeyIcon from '@/assets/icons/key.svg'
 
 export default {
   directives: {
@@ -96,17 +84,11 @@ export default {
     AssetsIcon,
     SettingsIcon,
     AccountsIcon,
-    LedgerIcon
+    LedgerIcon,
+    KeyIcon
   },
-  props: [
-    'showMenu',
-    'showBack',
-    'backPath',
-    'backLabel',
-    'showBackButton',
-    'backClick'
-  ],
-  data () {
+  props: ['showMenu', 'showBack', 'backPath', 'backLabel', 'showBackButton', 'backClick'],
+  data() {
     return {
       showMenuList: false
     }
@@ -116,7 +98,7 @@ export default {
   },
   methods: {
     ...mapActions(['lockWallet', 'trackAnalytics']),
-    async lock () {
+    async lock() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -128,7 +110,7 @@ export default {
       await this.lockWallet()
       this.$router.replace('/open')
     },
-    backup () {
+    backup() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -139,7 +121,7 @@ export default {
       this.showMenuList = false
       this.$router.replace('/privacywarning')
     },
-    assets () {
+    assets() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -150,7 +132,7 @@ export default {
       this.showMenuList = false
       this.$router.replace('/settings/manage-assets')
     },
-    settings () {
+    settings() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -161,7 +143,19 @@ export default {
       this.showMenuList = false
       this.$router.replace('/settings')
     },
-    manageAccounts () {
+    exportPrivateKey() {
+      this.trackAnalytics({
+        event: 'HamburgerIcon',
+        properties: {
+          category: 'HamburgerIcon',
+          action: 'Click on Export Private Key'
+        }
+      })
+      this.showMenuList = false
+      const { accountId } = this.$route.params
+      this.$router.push(`/export/${accountId}`)
+    },
+    manageAccounts() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -172,7 +166,7 @@ export default {
       this.showMenuList = false
       this.$router.replace('/accounts/management')
     },
-    ledger () {
+    ledger() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -183,7 +177,7 @@ export default {
       this.showMenuList = false
       this.$router.replace('/accounts/hardware-wallet')
     },
-    hideMenu () {
+    hideMenu() {
       this.showMenuList = false
     }
   }

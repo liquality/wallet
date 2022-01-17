@@ -5,17 +5,24 @@ const PBKDF2_ITERATIONS = 1000000
 const PBKDF2_LENGTH = 32
 const PBKDF2_DIGEST = 'sha256'
 
-async function pbkdf2 (password, salt) {
+async function pbkdf2(password, salt) {
   return new Promise((resolve, reject) => {
-    _pbkdf2.pbkdf2(password, salt, PBKDF2_ITERATIONS, PBKDF2_LENGTH, PBKDF2_DIGEST, (err, derivedKey) => {
-      if (err) reject(err)
-      else resolve(Buffer.from(derivedKey).toString('hex'))
-    })
+    _pbkdf2.pbkdf2(
+      password,
+      salt,
+      PBKDF2_ITERATIONS,
+      PBKDF2_LENGTH,
+      PBKDF2_DIGEST,
+      (err, derivedKey) => {
+        if (err) reject(err)
+        else resolve(Buffer.from(derivedKey).toString('hex'))
+      }
+    )
   })
 }
 
 const JsonFormatter = {
-  stringify (cipherParams) {
+  stringify(cipherParams) {
     const jsonObj = {
       ct: cipherParams.ciphertext.toString(Enc.Base64)
     }
@@ -30,7 +37,7 @@ const JsonFormatter = {
 
     return JSON.stringify(jsonObj)
   },
-  parse (jsonStr) {
+  parse(jsonStr) {
     const jsonObj = JSON.parse(jsonStr)
 
     const cipherParams = Lib.CipherParams.create({
@@ -49,7 +56,7 @@ const JsonFormatter = {
   }
 }
 
-async function encrypt (value, key) {
+async function encrypt(value, key) {
   const keySalt = Enc.Hex.stringify(Lib.WordArray.random(16))
   const derivedKey = await pbkdf2(key, keySalt)
   const rawEncryptedValue = AES.encrypt(value, derivedKey)
@@ -59,7 +66,7 @@ async function encrypt (value, key) {
   }
 }
 
-async function decrypt (encrypted, key, keySalt) {
+async function decrypt(encrypted, key, keySalt) {
   if (!keySalt) return false
 
   const encryptedValue = JsonFormatter.parse(encrypted)
@@ -73,7 +80,7 @@ async function decrypt (encrypted, key, keySalt) {
 }
 
 // TODO: to be removed
-async function decryptLegacy (value, key) {
+async function decryptLegacy(value, key) {
   try {
     const encryptedValue = JsonFormatter.parse(value)
     const decryptedValue = AES.decrypt(encryptedValue, key)
@@ -84,8 +91,4 @@ async function decryptLegacy (value, key) {
   }
 }
 
-export {
-  encrypt,
-  decrypt,
-  decryptLegacy
-}
+export { encrypt, decrypt, decryptLegacy }

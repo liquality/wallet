@@ -13,17 +13,22 @@ export const SEND_STATUS_LABEL_MAP = {
   FAILED: 'Failed'
 }
 
-export function getStatusLabel (item) {
+export function getStatusLabel(item) {
   if (item.type === 'SEND') {
     return SEND_STATUS_LABEL_MAP[item.status] || ''
   }
   if (item.type === 'SWAP') {
     const swapProvider = store.getters.swapProvider(item.network, item.provider)
-    return swapProvider.statuses[item.status].label.replace('{from}', item.from).replace('{to}', item.to).replace('{bridgeAsset}', item.bridgeAsset || '') || ''
+    return (
+      swapProvider.statuses[item.status].label
+        .replace('{from}', item.from)
+        .replace('{to}', item.to)
+        .replace('{bridgeAsset}', item.bridgeAsset || '') || ''
+    )
   }
 }
 
-export function getStep (item) {
+export function getStep(item) {
   if (item.type === 'SEND') {
     return SEND_STATUS_STEP_MAP[item.status]
   }
@@ -89,11 +94,11 @@ export const applyActivityFilters = (activity, filters) => {
   const { types, statuses, dates } = filters
   let data = [...activity]
   if (types.length > 0) {
-    data = data.filter(i => types.includes(i.type))
+    data = data.filter((i) => types.includes(i.type))
   }
 
   if (statuses.length > 0) {
-    data = data.filter(i => {
+    data = data.filter((i) => {
       if (i.type === 'SWAP') {
         const swapProvider = store.getters.swapProvider(i.network, i.provider)
         return statuses.includes(swapProvider.statuses[i.status].filterStatus)
@@ -109,7 +114,7 @@ export const applyActivityFilters = (activity, filters) => {
 
   if (dates.start) {
     const filter = moment(dates.start)
-    data = data.filter(i => {
+    data = data.filter((i) => {
       const start = moment(i.startTime)
       return filter >= start
     })
@@ -117,7 +122,7 @@ export const applyActivityFilters = (activity, filters) => {
 
   if (dates.end) {
     const filter = moment(dates.end)
-    data = data.filter(i => {
+    data = data.filter((i) => {
       const end = moment(i.startTime)
       return filter <= end
     })
