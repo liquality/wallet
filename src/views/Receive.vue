@@ -14,7 +14,7 @@
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </div>
           <label id="your_current_asset_address">Your Current {{ asset }} Address</label>
-          <p class="receive_address" id="receive_address">
+          <p class="receive_address text-break" id="receive_address">
             {{ address }}
             <CopyIcon
               class="copy-icon"
@@ -134,7 +134,7 @@ export default {
           },
           NEAR: {
             name: 'NEAR',
-            url: ''
+            url: 'https://wallet.testnet.near.org/'
           },
           SOL: {
             name: 'SOLANA',
