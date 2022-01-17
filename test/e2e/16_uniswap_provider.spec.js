@@ -17,7 +17,7 @@ let browser, page
 const password = '123123123'
 
 describe('UNISWAP service Provider-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () => {
-  before(async () => {
+  beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
@@ -33,19 +33,19 @@ describe('UNISWAP service Provider-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', a
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
   })
-  after(async () => {
-    try {
+  afterEach(async () => {
       await browser.close()
-    } catch (e) {
-      throw new Error(e)
-    }
   })
 
   it('ETH->DAI swap - UNISWAP V2', async () => {
     const asset1 = 'ETH'
     const asset2 = 'DAI'
     // Select testnet
-    await overviewPage.SelectNetwork(page)
+    if (process.env.NODE_ENV === 'mainnet') {
+      await overviewPage.SelectNetwork(page, 'mainnet')
+    } else {
+      await overviewPage.SelectNetwork(page)
+    }
     // Click on ETH then click on SWAP button
     await overviewPage.SelectAssetFromOverview(page, asset1)
     await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
