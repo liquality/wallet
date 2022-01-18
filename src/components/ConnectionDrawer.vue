@@ -29,7 +29,7 @@
     <div class="connection-drawer_connections p-3" v-if="dappConnected">
       <div><strong>Granted Connection</strong></div>
       <p class="text-muted">Connected sites can see your account address.</p>
-      <div class="connection-drawer_connections_origin">
+      <div class="connection-drawer_connections_origin" id="granted-connection-list">
         <strong>{{ currentOrigin }}</strong>
       </div>
     </div>

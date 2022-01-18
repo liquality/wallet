@@ -40,9 +40,12 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
       ethereumChainId = 3
       arbitrumChainId = 421611
     }
-    // Web3 toggle on
+    // Default web3 option toggled on
     await overviewPage.ClickWeb3WalletToggle(page)
-    await page.waitForTimeout(1000)
+    await page.waitForTimeout(2000)
+    // Connected dapp option
+    await page.click('#connect_dapp_main_option')
+    await page.waitForSelector('.v-switch-core', { visible: true })
   })
   afterEach(async () => {
     await browser.close()
