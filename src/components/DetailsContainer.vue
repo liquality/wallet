@@ -1,7 +1,11 @@
 <template>
- <div class="details-container">
-    <div class="details-header" id="details_header_chevron_down_icon" @click.stop="showDetails = !showDetails">
-      <ChevronDownIcon :class="showDetails ? '' : 'right'"/>
+  <div class="details-container">
+    <div
+      class="details-header"
+      id="details_header_chevron_down_icon"
+      @click.stop="showDetails = !showDetails"
+    >
+      <ChevronDownIcon :class="showDetails ? '' : 'right'" />
       <slot name="header"></slot>
     </div>
     <div class="details-content" v-if="showDetails">
@@ -19,11 +23,11 @@ export default {
   },
   props: ['open'],
   methods: {
-    mounted () {
+    mounted() {
       this.showDetails = this.open || false
     }
   },
-  data () {
+  data() {
     return {
       showDetails: false
     }
@@ -65,10 +69,10 @@ export default {
     padding: 0;
     font-size: $font-size-tiny;
     ul {
-    list-style-type: none;
-    background: #ffffff;
-    border: none;
-    padding: 0;
+      list-style-type: none;
+      background: #ffffff;
+      border: none;
+      padding: 0;
 
       li {
         display: flex;
