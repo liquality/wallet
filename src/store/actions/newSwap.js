@@ -20,15 +20,15 @@ export const newSwap = async (
 
   const createdSwap = {
     ...swap,
-    ...initiationParams // TODO: Maybe move provider specific params to an inner property?
+    ...initiationParams, // TODO: Maybe move provider specific params to an inner property?
+    feeLabel,
+    claimFeeLabel
   }
 
   store.commit('NEW_SWAP', {
     network,
     walletId,
-    swap: createdSwap,
-    feeLabel,
-    claimFeeLabel
+    swap: createdSwap
   })
 
   store.dispatch('performNextAction', {

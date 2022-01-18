@@ -11,6 +11,9 @@
       <InfoNotification v-if="ethRequired">
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
+      <InfoNotification v-if="!canCoverAmmFee">
+        <BridgeAssetRequiredMessage :account-id="toAccount.id" :asset="selectedQuote.bridgeAsset" />
+      </InfoNotification>
 
       <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
@@ -365,6 +368,7 @@ import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
+import BridgeAssetRequiredMessage from '@/components/BridgeAssetRequiredMessage'
 import NoLiquidityMessage from '@/components/NoLiquidityMessage'
 import {
   dpUI,
@@ -409,6 +413,7 @@ export default {
     NavBar,
     InfoNotification,
     EthRequiredMessage,
+    BridgeAssetRequiredMessage,
     NoLiquidityMessage,
     FeeSelector,
     SwapIcon,
@@ -669,8 +674,9 @@ export default {
         : BN.max(BN(balance).minus(this.maxFee), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
     },
+
     canCoverAmmFee() {
-      if (!this.selectedQuote.bridgeAsset) return true
+      if (!this.selectedQuote?.bridgeAsset) return true
       const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
       const toSwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],

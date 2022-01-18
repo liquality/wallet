@@ -36,6 +36,7 @@ export default {
   termsAcceptedAt: null,
   setupAt: null,
 
+  injectionEnabled: true,
   injectEthereum: false,
   injectEthereumChain: 'ethereum',
   usbBridgeWindowsId: 0,

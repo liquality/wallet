@@ -200,7 +200,8 @@ export default {
       const optionsWithFee = {
         ...this.request.args[0],
         value: this.value,
-        fee
+        fee,
+        feeLabel: this.selectedFee
       }
 
       const requestWithFee = {

@@ -17,11 +17,22 @@ import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
 new Script().start()
 
-inject(providerManager())
-inject(bitcoinProvider())
-inject(nearProvider())
-inject(solanaProvider())
-inject(terraProvider())
+async function setupTerraStreams() {
+  const pageStream = new LocalMessageDuplexStream({
+    name: 'station:content',
+    target: 'station:inpage'
+  })
+
+  const extensionPort = browser.extension.connect({
+    name: 'TerraStationExtension'
+  })
+
+  const extensionStream = new PortStream(extensionPort)
+
+  extensionStream.pipe(pageStream)
+  pageStream.pipe(extensionStream)
+  console.log('Stream setup successfully')
+}
 
 function injectEthereum(state, chain) {
   const network = ChainNetworks[chain][state.activeNetwork]
@@ -34,54 +45,49 @@ function injectEthereum(state, chain) {
   )
 }
 
-chrome.storage.local.get(['liquality-wallet'], (storage) => {
-  const state = storage['liquality-wallet']
+function injectProviders(state) {
+  inject(providerManager())
+  inject(bitcoinProvider())
+  inject(nearProvider())
+  inject(solanaProvider())
+
+  setupTerraStreams()
+  inject(terraProvider())
 
   buildConfig.chains.filter(isEthereumChain).forEach((chain) => {
     injectEthereum(state, chain)
   })
 
-  if (state.injectEthereum && state.injectEthereumChain) {
-    const { externalConnections, activeWalletId, activeNetwork } = state
+  inject(paymentUriHandler())
+}
 
-    let ethereumChain = state.injectEthereumChain
-    const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
+function overrideEthereumInjection(state) {
+  const { externalConnections, activeWalletId, activeNetwork } = state
 
-    if (defaultAccountId) {
-      const defaultAccount = state.accounts[activeWalletId][activeNetwork].find(
-        (account) => account.id === defaultAccountId
-      )
-      if (defaultAccount) {
-        const selectedEthereumChain = defaultAccount.chain
-        ethereumChain = selectedEthereumChain
-      }
+  let ethereumChain = state.injectEthereumChain
+  const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
+
+  if (defaultAccountId) {
+    const defaultAccount = state.accounts[activeWalletId][activeNetwork].find(
+      (account) => account.id === defaultAccountId
+    )
+    if (defaultAccount) {
+      const selectedEthereumChain = defaultAccount.chain
+      ethereumChain = selectedEthereumChain
     }
+  }
 
-    inject(overrideEthereum(ethereumChain))
+  inject(overrideEthereum(ethereumChain))
+}
+
+chrome.storage.local.get(['liquality-wallet'], (storage) => {
+  const state = storage['liquality-wallet']
+
+  if (state.injectionEnabled) {
+    injectProviders(state)
+
+    if (state.injectEthereum && state.injectEthereumChain) {
+      overrideEthereumInjection(state)
+    }
   }
 })
-
-inject(paymentUriHandler())
-
-async function setupStreams() {
-  const pageStream = new LocalMessageDuplexStream({
-    name: 'station:content',
-    target: 'station:inpage'
-  })
-
-  const extensionPort = chrome.extension.connect({
-    name: 'TerraStationExtension'
-  })
-
-  const extensionStream = new PortStream(extensionPort)
-
-  extensionStream.pipe(pageStream)
-  pageStream.pipe(extensionStream)
-  console.log('Stream setup successfully')
-}
-
-async function start() {
-  await setupStreams()
-}
-
-start()

@@ -1,20 +1,23 @@
 <template>
   <div class="notification-content">
     <div class="notification-text">
-      A balance is required to swap and you need ETH to pay for gas.
+      A balance is required to swap and you need {{ asset }} to pay for gas.
     </div>
-    <router-link :to="accountUrl" class="btn btn-option get-eth-btn"> Get ETH </router-link>
+    <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
+      Get {{ asset }}
+    </router-link>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    accountId: String
+    accountId: String,
+    asset: String
   },
   computed: {
     accountUrl() {
-      return `/accounts/${this.accountId}/ETH/receive`
+      return `/accounts/${this.accountId}/${this.asset}/receive`
     }
   }
 }
@@ -26,7 +29,7 @@ export default {
   justify-content: space-between;
   align-items: center;
 
-  .get-eth-btn {
+  .get-bridgeAsset-btn {
     width: 90px;
     display: inline-block;
   }

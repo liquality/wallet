@@ -61,6 +61,15 @@ class Background {
           })
         })
       }
+
+      if (mutation.type === 'ADD_EXTERNAL_CONNECTION') {
+        this.externalConnections.forEach((connection) => {
+          connection.postMessage({
+            id: 'liqualityAccountsChanged',
+            data: {}
+          })
+        })
+      }
     })
   }
 
@@ -156,7 +165,7 @@ class Background {
     const { origin } = new URL(url)
     const { externalConnections, activeWalletId, injectEthereumChain } = this.store.state
 
-    let setDefault = false
+    let setDefaultEthereum = false
     let { chain, asset } = data
     if (asset) {
       chain = assets[asset].chain
@@ -167,13 +176,13 @@ class Background {
         const defaultAccount = this.store.getters.accountItem(defaultAccountId)
         if (defaultAccount) {
           chain = defaultAccount.chain
-          setDefault = true
+          setDefaultEthereum = true
         }
       }
     }
     if (!chain) {
       chain = injectEthereumChain
-      setDefault = true
+      setDefaultEthereum = true
     }
 
     const allowed =
@@ -205,7 +214,7 @@ class Background {
         this.storeProxy(id, connection, 'requestOriginAccess', {
           origin,
           chain,
-          setDefault
+          setDefaultEthereum
         })
         break
 
