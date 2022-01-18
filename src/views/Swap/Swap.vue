@@ -660,7 +660,7 @@ export default {
       return unitToCurrency(cryptoassets[this.asset], available)
     },
 
-    canCoverAmmFee () {
+    canCoverAmmFee() {
       if (!this.selectedQuote?.bridgeAsset) return true
       const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
       const toSwapFeeInUnits = currencyToUnit(
@@ -772,10 +772,7 @@ export default {
       return this.totalToReceiveInFiat <= 0
     },
     isEIP1559Fees() {
-      return (
-        this.assetChain === 'ETH' ||
-        (this.assetChain === 'MATIC' && this.activeNetwork === 'testnet')
-      )
+      return this.assetChain === 'ETH' || this.assetChain === 'MATIC'
     }
   },
   methods: {
