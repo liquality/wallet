@@ -24,7 +24,6 @@
             <span
               class="account-container_balance_value"
               :id="`${asset}_balance_value`"
-              :style="{ fontSize: '30px' }"
             >
               {{ balance }}
             </span>
@@ -275,6 +274,7 @@ export default {
     &_value {
       line-height: 36px;
       margin-right: 8px;
+      font-size: 30px;
     }
 
     &_code {
