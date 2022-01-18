@@ -27,7 +27,9 @@
             </p>
           </div>
           <div class="col" id="pending_receipt_section">
-            <h2 v-if="['SUCCESS', 'REFUNDED'].includes(item.status)">Received</h2>
+            <h2 v-if="['SUCCESS', 'REFUNDED', 'FAILED'].includes(item.status)">
+              {{ item.status }}
+            </h2>
             <h2 v-else>Pending Receipt</h2>
             <p>{{ prettyBalance(item.toAmount, item.to) }} {{ item.to }}</p>
           </div>
