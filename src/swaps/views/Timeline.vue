@@ -323,32 +323,38 @@ const ACTIONS_TERMS = {
   lock: {
     default: 'Lock',
     pending: 'Locking',
-    completed: 'Locked'
+    completed: 'Locked',
+    failed: 'Failed Locking'
   },
   claim: {
     default: 'Claim',
     pending: 'Claiming',
-    completed: 'Claimed'
+    completed: 'Claimed',
+    failed: 'Failed Claiming'
   },
   approve: {
     default: 'Approve Not Required',
     pending: 'Approving',
-    completed: 'Approved'
+    completed: 'Approved',
+    failed: 'Failed Approving'
   },
   receive: {
     default: 'Receive',
     pending: 'Receiving',
-    completed: 'Received'
+    completed: 'Received',
+    failed: 'Failed Receiving'
   },
   swap: {
     default: 'Collect',
     pending: 'Collecting',
-    completed: 'Collected'
+    completed: 'Collected',
+    failed: 'Failed Collecting'
   },
   refund: {
     default: 'Refund',
     pending: 'Refunding',
-    completed: 'Refunded'
+    completed: 'Refunded',
+    failed: 'Failed Refunding'
   }
 }
 
@@ -455,7 +461,11 @@ export default {
       if (hash) {
         const tx = await this.getTransaction(hash, asset, defaultTx)
         if (tx && tx.confirmations > 0) {
-          step.title = `${ACTIONS_TERMS[action].completed} ${asset}`
+          if (tx.status === 'FAILED') {
+            step.title = `${ACTIONS_TERMS[action].failed} ${asset}`
+          } else {
+            step.title = `${ACTIONS_TERMS[action].completed} ${asset}`
+          }
         } else {
           step.title = `${ACTIONS_TERMS[action].pending} ${asset}`
         }
