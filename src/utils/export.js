@@ -1,6 +1,5 @@
 import { version } from '../../package.json'
 
-/* global chrome */
 export const downloadFile = ({ filename, type, content }) => {
   const blob = new Blob([content], { type })
   const url = URL.createObjectURL(blob)
@@ -37,7 +36,7 @@ export const getCSVContent = (data, headers) => {
   const columnDelimiter = ','
   const lineDelimiter = '\n'
 
-  let result = `${headers.map(h => (h.label)).join(columnDelimiter)}${lineDelimiter}`
+  let result = `${headers.map((h) => h.label).join(columnDelimiter)}${lineDelimiter}`
 
   data.forEach((item) => {
     let ctr = 0

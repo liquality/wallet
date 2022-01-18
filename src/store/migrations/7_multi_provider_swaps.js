@@ -1,4 +1,5 @@
-export const multiProviderSwaps = { // Multi provider swaps
+export const multiProviderSwaps = {
+  // Multi provider swaps
   version: 7,
   migrate: async (state) => {
     const walletId = state.activeWalletId
@@ -6,7 +7,9 @@ export const multiProviderSwaps = { // Multi provider swaps
     const migrateHistory = (state, network, walletId) => {
       const walletHistory = state.history[network]?.[walletId]
       return walletHistory && walletHistory.length
-        ? walletHistory.map(item => item.type === 'SWAP' ? { ...item, provider: 'liquality' } : item)
+        ? walletHistory.map((item) =>
+            item.type === 'SWAP' ? { ...item, provider: 'liquality' } : item
+          )
         : []
     }
 

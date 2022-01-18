@@ -1,4 +1,4 @@
-export function formatFontSize (numbers) {
+export function formatFontSize(numbers) {
   let fontSize = 50
   if (numbers.length > 6) {
     fontSize = 30
