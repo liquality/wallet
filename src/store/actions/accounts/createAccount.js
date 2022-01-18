@@ -1,7 +1,6 @@
 import { accountCreator } from '@/utils/accounts'
 
-export const createAccount = async (
-  { commit, dispatch }, payload) => {
+export const createAccount = async ({ commit, dispatch }, payload) => {
   const { walletId, network, account } = payload
   const _account = accountCreator({ network, walletId, account })
 

@@ -1,0 +1,5 @@
+script
+public
+dist
+artifacts
+node_modules

@@ -1,15 +1,16 @@
 <template>
-   <div class="wallet-divider">
-     <div class="divider-color"
-          v-for="items in items"
-          :key="items.asset"
-          :style="{
-            width: `${items.percentage}%`,
-            backgroundColor: items.color
-          }"
-           v-tooltip="{ content: `${items.asset}: ${items.percentageRounded}%`} ">
-    </div>
-   </div>
+  <div class="wallet-divider">
+    <div
+      class="divider-color"
+      v-for="items in items"
+      :key="items.asset"
+      :style="{
+        width: `${items.percentage}%`,
+        backgroundColor: items.color
+      }"
+      v-tooltip="{ content: `${items.asset}: ${items.percentageRounded}%` }"
+    ></div>
+  </div>
 </template>
 
 <script>
@@ -22,7 +23,7 @@ export default {
   computed: {
     ...mapState(['fiatRates']),
     ...mapGetters([]),
-    items () {
+    items() {
       // const top = [...this.assetsWithBalance].splice(0, 9)
       // const total = top.reduce((accum, [asset, balance]) => {
       //   const value = unitToCurrency(cryptoassets[asset], balance)
@@ -52,13 +53,13 @@ export default {
 
 <style lang="scss">
 .wallet-divider {
-    width: 100%;
-    height: 9px;
-    border-top: 1px solid $hr-border-color;
-    display: flex;
+  width: 100%;
+  height: 9px;
+  border-top: 1px solid $hr-border-color;
+  display: flex;
 
-    .divider-color {
-      height: 9px;
-    }
+  .divider-color {
+    height: 9px;
   }
+}
 </style>
