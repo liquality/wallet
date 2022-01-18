@@ -58,6 +58,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.v-popover {
+  display: flex;
+}
+
 .tooltip-wrapper {
   display: flex;
   flex-direction: row;

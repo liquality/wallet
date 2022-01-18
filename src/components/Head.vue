@@ -116,6 +116,7 @@ export default {
     height: 36px;
     display: flex;
     font-size: $font-size-tiny;
+    font-weight: $font-weight-base;
     justify-content: center;
     align-items: center;
     text-transform: capitalize;

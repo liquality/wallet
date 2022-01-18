@@ -4,7 +4,7 @@
       <NavBar
         showBack="true"
         :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
-        :backLabel="routeSource === 'assets' ? 'Overview' : asset"
+        backLabel="Back"
       >
         Swap
       </NavBar>
@@ -38,7 +38,9 @@
             :amount-option="amountOption"
             @send-amount-change="setSendAmount"
           />
-
+          <div class="arrow-down">
+            <ArrowDown />
+          </div>
           <ReceiveInput
             class="mt-30"
             :account="toAccount"
@@ -85,21 +87,25 @@
         <div class="form-group swap_fees mt-30" v-if="selectedQuote && availableFees.size">
           <DetailsContainer>
             <template v-slot:header>
-              <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
-              <span class="text-muted">
-                {{ assetChain }}
-                {{ assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : '' }}
-              </span>
-              <span class="text-muted" v-if="toAssetChain && assetChain != toAssetChain">
-                /{{ toAssetChain }}
-                {{ toAssetChain ? getSelectedFeeLabel(selectedFee[toAssetChain]) : '' }}
-              </span>
+              <div class="network-header-container">
+                <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
+                <div class="network-header-state">
+                  <span class="text-muted">
+                    {{ assetChain }}
+                    {{ assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : '' }}
+                  </span>
+                  <span class="text-muted" v-if="toAssetChain && assetChain != toAssetChain">
+                    / {{ toAssetChain }}
+                    {{ toAssetChain ? getSelectedFeeLabel(selectedFee[toAssetChain]) : '' }}
+                  </span>
+                </div>
+              </div>
             </template>
             <template v-slot:content>
               <ul class="selectors">
                 <li v-for="assetFee in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
-                  <div v-if="customFees[assetFee]">
+                  <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     {{ getTotalSwapFee(assetFee) }} {{ assetFee }} /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
                     <button class="btn btn-link" @click="resetCustomFee(assetFee)">Reset</button>
@@ -379,6 +385,7 @@ import { shortenAddress } from '@/utils/address'
 import { getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import ArrowDown from '@/assets/icons/arrow-down.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
 import ReceiveInput from './ReceiveInput'
@@ -411,6 +418,7 @@ export default {
     FeeSelector,
     SwapIcon,
     SpinnerIcon,
+    ArrowDown,
     DetailsContainer,
     SendInput,
     ReceiveInput,
@@ -427,8 +435,8 @@ export default {
   },
   data() {
     return {
-      stateSendAmount: 0,
-      stateSendAmountFiat: 0,
+      stateSendAmount: 0.0,
+      stateSendAmountFiat: 0.0,
       amountOption: null,
       asset: null,
       toAsset: null,
@@ -538,9 +546,16 @@ export default {
         return this.stateSendAmountFiat
       },
       set(newValue) {
-        const value = (newValue || '0').replace('$', '')
-        this.stateSendAmountFiat = value
-        this.stateSendAmount = fiatToCrypto(value, this.fiatRates[this.asset])
+        if (!newValue) {
+          this.stateAmountFiat = 0.0
+          this.stateAmount = 0.0
+        } else {
+          this.stateSendAmountFiat = newValue.replace('$', '')
+          this.stateSendAmount = fiatToCrypto(
+            this.stateSendAmountFiat?.replaceAll(',', ''),
+            this.fiatRates[this.asset]
+          )
+        }
       }
     },
     receiveAmount() {
@@ -1274,6 +1289,36 @@ export default {
     &.up {
       transform: rotate(180deg);
     }
+  }
+}
+
+.network-header-container {
+  display: flex;
+  flex-flow: column;
+  gap: 5px;
+
+  .network-header-state {
+    margin-top: 5px;
+  }
+}
+
+.selectors-asset {
+  width: 55px !important;
+}
+
+.selector-asset-switch {
+  display: flex;
+  align-items: center;
+}
+
+.arrow-down {
+  margin-top: 27px;
+  display: flex;
+  justify-content: center;
+  svg {
+    width: 20px;
+    height: 18px;
+    fill: #a8aeb7;
   }
 }
 </style>
