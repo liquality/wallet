@@ -368,6 +368,16 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
   return terraClient
 }
 
+function createFuseClient (asset, network, mnemonic, derivationPath) {
+  const isTestnet = network === 'testnet'
+  const fuseNetwork = ChainNetworks.fuse[network]
+  const rpcApi = isTestnet ? 'https://rpc.fusespark.io' : 'https://rpc.fuse.io'
+  const scraperApi = undefined
+  const feeProvider = new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 1, fastMultiplier: 1.25 })
+
+  return createEthereumClient(asset, network, fuseNetwork, rpcApi, scraperApi, feeProvider, mnemonic, 'default', derivationPath)
+}
+
 export const createClient = (asset, network, mnemonic, accountType, derivationPath) => {
   const assetData = cryptoassets[asset]
 
@@ -382,8 +392,8 @@ export const createClient = (asset, network, mnemonic, accountType, derivationPa
     return createArbitrumClient(asset, network, mnemonic, derivationPath)
   if (assetData.chain === 'near') return createNearClient(network, mnemonic, derivationPath)
   if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
-  if (assetData.chain === 'terra')
-    return createTerraClient(network, mnemonic, derivationPath, asset)
+  if (assetData.chain === 'terra') return createTerraClient(network, mnemonic, derivationPath, asset)
+  if (assetData.chain === 'fuse') return createFuseClient(asset, network, mnemonic, derivationPath)
 
   return createEthClient(asset, network, mnemonic, accountType, derivationPath)
 }

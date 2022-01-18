@@ -151,7 +151,8 @@ export default {
           polygon: 1,
           near: 0.00001,
           solana: 0.00001,
-          terra: 1
+          terra: 1,
+          fuse: 1
         }[chainId] || 1
       )
     }
