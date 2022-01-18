@@ -27,7 +27,7 @@
       <div class="footer-container">
         <p>
           <router-link
-            :to="{ path: '/onboarding/import', query: { isNewUser: false } }"
+            :to="{ path: '/onboarding/home', query: { isImport: true } }"
             id="forgot_password_import_seed"
             >Forgot password? Import with seed phrase</router-link
           >

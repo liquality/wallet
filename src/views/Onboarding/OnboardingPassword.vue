@@ -23,7 +23,7 @@
         <small
           v-show="showPasswordLengthError && validatePasswordLength"
           class="onboading-password_errorLength form-text hidden"
-          >Password must be at least 8 characters.</small
+          >Password is too short</small
         >
       </div>
       <div class="form-group">
