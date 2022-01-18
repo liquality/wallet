@@ -11,7 +11,12 @@ import { isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
 import { ChainNetworks } from '@/utils/networks'
 import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
-import { getDoubleSwapOutput, getSwapMemo, getValueOfAsset1InAsset2, getDoubleSwapSlip } from '@thorchain/asgardex-util'
+import {
+  getDoubleSwapOutput,
+  getSwapMemo,
+  getValueOfAsset1InAsset2,
+  getDoubleSwapSlip
+} from '@thorchain/asgardex-util'
 import { baseAmount, baseToAsset, assetFromString } from '@xchainjs/xchain-util'
 import { SwapProvider } from '../SwapProvider'
 import { getTxFee } from '../../utils/fees'
@@ -94,9 +99,13 @@ class ThorchainSwapProvider extends SwapProvider {
     }
   }
 
-  async getQuote ({ network, from, to, amount }) {
+  async getQuote({ from, to, amount }) {
     // Only ethereum, bitcoin and bc chains are supported
-    if (!SUPPORTED_CHAINS.includes(cryptoassets[from].chain) || !SUPPORTED_CHAINS.includes(cryptoassets[to].chain)) return null
+    if (
+      !SUPPORTED_CHAINS.includes(cryptoassets[from].chain) ||
+      !SUPPORTED_CHAINS.includes(cryptoassets[to].chain)
+    )
+      return null
 
     const pools = await this._getPools()
 
@@ -104,7 +113,11 @@ class ThorchainSwapProvider extends SwapProvider {
     const toPoolData = pools.find((pool) => pool.asset === toThorchainAsset(to))
 
     if (!fromPoolData || !toPoolData) return // Pool doesn't exist
-    if (fromPoolData.status.toLowerCase() !== 'available' || toPoolData.status.toLowerCase() !== 'available') return // Pool is not available
+    if (
+      fromPoolData.status.toLowerCase() !== 'available' ||
+      toPoolData.status.toLowerCase() !== 'available'
+    )
+      return // Pool is not available
 
     const getPool = (poolData) => {
       return {
@@ -128,12 +141,19 @@ class ThorchainSwapProvider extends SwapProvider {
     const baseNetworkFee = await this.networkFees(to)
     let networkFee = convertBaseAmountDecimal(baseNetworkFee, 8)
 
-    if (isERC20(to)) { // in case of ERC20
-      const ethPool = toThorchainAsset(from) !== 'ETH.ETH' ? getPool(pools.find((pool) => pool.asset === 'ETH.ETH')) : fromPool
+    if (isERC20(to)) {
+      // in case of ERC20
+      const ethPool =
+        toThorchainAsset(from) !== 'ETH.ETH'
+          ? getPool(pools.find((pool) => pool.asset === 'ETH.ETH'))
+          : fromPool
       networkFee = getValueOfAsset1InAsset2(networkFee, ethPool, toPool)
     }
 
-    const receiveFeeInUnit = currencyToUnit(cryptoassets[to], baseToAsset(networkFee).amount()).times(SAFE_FEE_MULTIPLIER)
+    const receiveFeeInUnit = currencyToUnit(
+      cryptoassets[to],
+      baseToAsset(networkFee).amount()
+    ).times(SAFE_FEE_MULTIPLIER)
     const toAmountInUnit = currencyToUnit(cryptoassets[to], baseToAsset(swapOutput).amount())
     return {
       from,
@@ -146,18 +166,22 @@ class ThorchainSwapProvider extends SwapProvider {
     }
   }
 
-  async networkFees (asset) {
-    const assetCode = isERC20(asset) ? chains[cryptoassets[asset].chain].nativeAsset : cryptoassets[asset].code
+  async networkFees(asset) {
+    const assetCode = isERC20(asset)
+      ? chains[cryptoassets[asset].chain].nativeAsset
+      : cryptoassets[asset].code
     const inboundAddresses = await this._getInboundAddresses()
-    const gasRate = inboundAddresses.find(inbound => inbound.chain === assetCode).gas_rate
+    const gasRate = inboundAddresses.find((inbound) => inbound.chain === assetCode).gas_rate
 
     // https://github.com/thorchain/asgardex-electron/issues/1381
-    if (isERC20(asset) && isEthereumChain(cryptoassets[asset].chain)) return baseAmount(BN(70000).times(gasRate).times(1000000000).times(3), 18)
-    if (assetCode === 'ETH') return baseAmount(BN(38000).times(gasRate).times(1000000000).times(3), 18)
+    if (isERC20(asset) && isEthereumChain(cryptoassets[asset].chain))
+      return baseAmount(BN(70000).times(gasRate).times(1000000000).times(3), 18)
+    if (assetCode === 'ETH')
+      return baseAmount(BN(38000).times(gasRate).times(1000000000).times(3), 18)
     if (assetCode === 'BTC') return baseAmount(BN(250).times(gasRate).times(3), 8)
   }
 
-  async approveTokens ({ network, walletId, quote }) {
+  async approveTokens({ network, walletId, quote }) {
     const fromChain = cryptoassets[quote.from].chain
     const chainId = ChainNetworks[fromChain][network].chainId
 
@@ -219,7 +243,12 @@ class ThorchainSwapProvider extends SwapProvider {
     const encodedMemo = Buffer.from(memo, 'utf-8').toString('hex')
 
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
-    const fromFundTx = await client.chain.sendTransaction({ to: to, value, data: encodedMemo, fee: quote.fee })
+    const fromFundTx = await client.chain.sendTransaction({
+      to: to,
+      value,
+      data: encodedMemo,
+      fee: quote.fee
+    })
     return fromFundTx
   }
 
@@ -259,7 +288,12 @@ class ThorchainSwapProvider extends SwapProvider {
     const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
 
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
-    const fromFundTx = await client.chain.sendTransaction({ to: routerAddress, value, data: encodedData, fee: quote.fee })
+    const fromFundTx = await client.chain.sendTransaction({
+      to: routerAddress,
+      value,
+      data: encodedData,
+      fee: quote.fee
+    })
 
     return fromFundTx
   }
@@ -271,7 +305,10 @@ class ThorchainSwapProvider extends SwapProvider {
     const baseOutputAmount = baseAmount(quote.toAmount, cryptoassets[quote.to].decimals)
     const slippageCoefficient = BN(1).minus(quote.slippage)
     const minimumOutput = baseOutputAmount.amount().multipliedBy(slippageCoefficient).dp(0)
-    const limit = convertBaseAmountDecimal(baseAmount(minimumOutput, cryptoassets[quote.to].decimals), 8)
+    const limit = convertBaseAmountDecimal(
+      baseAmount(minimumOutput, cryptoassets[quote.to].decimals),
+      8
+    )
     const thorchainAsset = assetFromString(toThorchainAsset(quote.to))
     return getSwapMemo({ asset: thorchainAsset, address: toAddress, limit })
   }

@@ -21,10 +21,7 @@
             <span v-else>&nbsp;</span>
           </div>
           <div>
-            <span
-              class="account-container_balance_value"
-              :id="`${asset}_balance_value`"
-            >
+            <span class="account-container_balance_value" :id="`${asset}_balance_value`">
               {{ balance }}
             </span>
             <span class="account-container_balance_code">{{ asset }}</span>

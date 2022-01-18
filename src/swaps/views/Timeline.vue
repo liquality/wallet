@@ -537,10 +537,26 @@ export default {
             'swap'
           )
     },
-    async getReceiveStep (completed, pending, side) {
+    async getReceiveStep(completed, pending, side) {
       return this.item.status === 'REFUNDED'
-        ? this.getTransactionStep(completed, pending, side, this.item.receiveTxHash, null, this.item.from, 'refund')
-        : this.getTransactionStep(completed, pending, side, this.item.receiveTxHash, null, this.item.to, 'receive')
+        ? this.getTransactionStep(
+            completed,
+            pending,
+            side,
+            this.item.receiveTxHash,
+            null,
+            this.item.from,
+            'refund'
+          )
+        : this.getTransactionStep(
+            completed,
+            pending,
+            side,
+            this.item.receiveTxHash,
+            null,
+            this.item.to,
+            'receive'
+          )
     },
     async updateTransactions() {
       const timeline = []
