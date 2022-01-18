@@ -2,7 +2,7 @@
   <div class="export-account">
     <NavBar>
       <span class="wallet_header">
-        <strong>{{chainId}} Private Key</strong>
+        <strong>{{ chainId }} Private Key</strong>
       </span>
     </NavBar>
     <div class="export-account_top login-wrapper" v-if="!ledgerAccount">
@@ -18,10 +18,19 @@
           v-if="ledgerAccount">
         Cannot export from a Ledger account
       </p>
-      <textarea v-else readonly rows="3" @click="selectTextarea" id="private-key-textarea" v-model="privateKey" />
+      <textarea
+        v-else
+        readonly
+        rows="3"
+        @click="selectTextarea"
+        id="private-key-textarea"
+        v-model="privateKey"
+      />
     </main>
     <div class="p-3 pb-1">
-      <button id="done_button" class="btn btn-primary btn-lg btn-block" @click="goback">Done</button>
+      <button id="done_button" class="btn btn-primary btn-lg btn-block" @click="goback">
+        Done
+      </button>
     </div>
   </div>
 </template>
@@ -38,7 +47,7 @@ export default {
     NavBar,
     Eye
   },
-  data () {
+  data() {
     return {
       chainId: '',
       privateKey: 'n/a'
@@ -46,12 +55,8 @@ export default {
   },
   props: ['accountId'],
   computed: {
-    ...mapState([
-      'accounts',
-      'activeNetwork',
-      'activeWalletId'
-    ]),
-    account () {
+    ...mapState(['accounts', 'activeNetwork', 'activeWalletId']),
+    account() {
       return this.$store.getters.accountItem(this.accountId)
     },
     ledgerAccount () {
@@ -62,7 +67,7 @@ export default {
   watch: {
     activeNetwork: 'goback'
   },
-  created () {
+  created() {
     const { activeWalletId, activeNetwork, accountId } = this
     const chainId = this.account?.chain
 
@@ -74,24 +79,22 @@ export default {
       network: activeNetwork,
       chainId,
       accountId
-    }).then(key => {
+    }).then((key) => {
       this.chainId = chainId
       this.privateKey = key
     })
   },
-  updated () {
+  updated() {
     this.$nextTick(this.selectTextarea)
   },
   methods: {
     getAccountIcon,
     shortenAddress,
-    ...mapActions([
-      'exportPrivateKey'
-    ]),
-    goback () {
+    ...mapActions(['exportPrivateKey']),
+    goback() {
       this.$router.replace('/wallet/assets')
     },
-    selectTextarea () {
+    selectTextarea() {
       this.$el.querySelector('textarea')?.select()
     }
   }

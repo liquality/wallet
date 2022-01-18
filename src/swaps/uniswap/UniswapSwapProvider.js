@@ -21,16 +21,16 @@ import { SwapProvider } from '../SwapProvider'
 const SWAP_DEADLINE = 30 * 60 // 30 minutes
 
 class UniswapSwapProvider extends SwapProvider {
-  constructor (config) {
+  constructor(config) {
     super(config)
     this._apiCache = {}
   }
 
-  async getSupportedPairs () {
+  async getSupportedPairs() {
     return []
   }
 
-  getApi (network, asset) {
+  getApi(network, asset) {
     const fromChain = cryptoassets[asset].chain
     const chainId = ChainNetworks[fromChain][network].chainId
     if (chainId in this._apiCache) {
@@ -42,14 +42,23 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  getUniswapToken (chainId, asset) {
-    if (asset === 'ETH') { return WETH9[chainId] }
+  getUniswapToken(chainId, asset) {
+    if (asset === 'ETH') {
+      return WETH9[chainId]
+    }
     const assetData = cryptoassets[asset]
 
-    return new Token(chainId, assetData.contractAddress, assetData.decimals, assetData.code, assetData.name)
+    return new Token(
+      chainId,
+      assetData.contractAddress,
+      assetData.decimals,
+      assetData.code,
+      assetData.name
+    )
   }
 
-  getMinimumOutput (outputAmount) { // TODO: configurable slippage?
+  getMinimumOutput(outputAmount) {
+    // TODO: configurable slippage?
     const slippageTolerance = new Percent('50', '10000') // 0.5%
     const slippageAdjustedAmountOut = new Fraction(JSBI.BigInt(1))
       .add(slippageTolerance)
@@ -58,11 +67,12 @@ class UniswapSwapProvider extends SwapProvider {
     return CurrencyAmount.fromRawAmount(outputAmount.currency, slippageAdjustedAmountOut)
   }
 
-  async getQuote ({ network, from, to, amount }) {
+  async getQuote({ network, from, to, amount }) {
     // Uniswap only provides liquidity for ethereum tokens
     if (!isEthereumChain(from) || !isEthereumChain(to)) return null
     // Only uniswap on ethereum is supported atm
-    if (cryptoassets[from].chain !== 'ethereum' || cryptoassets[to].chain !== 'ethereum') return null
+    if (cryptoassets[from].chain !== 'ethereum' || cryptoassets[to].chain !== 'ethereum')
+      return null
 
     const chainId = ChainNetworks[cryptoassets[from].chain][network].chainId
 
@@ -76,8 +86,8 @@ class UniswapSwapProvider extends SwapProvider {
     const reserves = await contract.getReserves()
     const token0Address = await contract.token0()
     const token1Address = await contract.token1()
-    const token0 = [tokenA, tokenB].find(token => token.address === token0Address)
-    const token1 = [tokenA, tokenB].find(token => token.address === token1Address)
+    const token0 = [tokenA, tokenB].find((token) => token.address === token0Address)
+    const token1 = [tokenA, tokenB].find((token) => token.address === token1Address)
     const pair = new Pair(
       CurrencyAmount.fromRawAmount(token0, reserves.reserve0.toString()),
       CurrencyAmount.fromRawAmount(token1, reserves.reserve1.toString())
@@ -98,14 +108,19 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  async requiresApproval ({ network, walletId, quote }) {
+  async requiresApproval({ network, walletId, quote }) {
     if (!isERC20(quote.from)) return false
 
     const fromChain = cryptoassets[quote.from].chain
     const api = this.getApi(network, quote.from)
     const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
 
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.fromAccountId
+    )
     const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
     const allowance = await erc20.allowance(fromAddress, this.config.routerAddress)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
@@ -116,16 +131,24 @@ class UniswapSwapProvider extends SwapProvider {
     return true
   }
 
-  async buildApprovalTx ({ network, walletId, quote }) {
+  async buildApprovalTx({ network, walletId, quote }) {
     const api = this.getApi(network, quote.from)
     const erc20 = new ethers.Contract(cryptoassets[quote.from].contractAddress, ERC20.abi, api)
 
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     const inputAmountHex = inputAmount.toHexString()
-    const encodedData = erc20.interface.encodeFunctionData('approve', [this.config.routerAddress, inputAmountHex])
+    const encodedData = erc20.interface.encodeFunctionData('approve', [
+      this.config.routerAddress,
+      inputAmountHex
+    ])
 
     const fromChain = cryptoassets[quote.from].chain
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.fromAccountId
+    )
     const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
 
     return {
@@ -137,8 +160,12 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  async approveTokens ({ network, walletId, quote }) {
-    const requiresApproval = await this.requiresApproval({ network, walletId, quote })
+  async approveTokens({ network, walletId, quote }) {
+    const requiresApproval = await this.requiresApproval({
+      network,
+      walletId,
+      quote
+    })
     if (!requiresApproval) {
       return {
         status: 'APPROVE_CONFIRMED'
@@ -157,7 +184,7 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  async buildSwapTx ({ network, walletId, quote }) {
+  async buildSwapTx({ network, walletId, quote }) {
     const toChain = cryptoassets[quote.to].chain
     const chainId = ChainNetworks[toChain][network].chainId
 
@@ -185,20 +212,34 @@ class UniswapSwapProvider extends SwapProvider {
 
     let encodedData
     if (isERC20(quote.from)) {
-      const swapTokensMethod = isERC20(quote.to) ? 'swapExactTokensForTokens' : 'swapExactTokensForETH'
+      const swapTokensMethod = isERC20(quote.to)
+        ? 'swapExactTokensForTokens'
+        : 'swapExactTokensForETH'
       encodedData = uniswap.interface.encodeFunctionData(swapTokensMethod, [
-        inputAmountHex, outputAmountHex, path, toAddress, deadline
+        inputAmountHex,
+        outputAmountHex,
+        path,
+        toAddress,
+        deadline
       ])
     } else {
       encodedData = uniswap.interface.encodeFunctionData('swapExactETHForTokens', [
-        outputAmountHex, path, toAddress, deadline
+        outputAmountHex,
+        path,
+        toAddress,
+        deadline
       ])
     }
 
     const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
 
     const fromChain = cryptoassets[quote.from].chain
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.fromAccountId
+    )
     const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
 
     return {
@@ -210,7 +251,7 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  async sendSwap ({ network, walletId, quote }) {
+  async sendSwap({ network, walletId, quote }) {
     const txData = await this.buildSwapTx({ network, walletId, quote })
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
 
@@ -224,7 +265,7 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  async newSwap ({ network, walletId, quote }) {
+  async newSwap({ network, walletId, quote }) {
     const approvalRequired = isERC20(quote.from)
     const updates = approvalRequired
       ? await this.approveTokens({ network, walletId, quote })
@@ -238,7 +279,7 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
+  async estimateFees({ network, walletId, asset, txType, quote, feePrices }) {
     if (txType !== UniswapSwapProvider.fromTxType) throw new Error(`Invalid tx type ${txType}`)
 
     const nativeAsset = chains[cryptoassets[asset].chain].nativeAsset
@@ -247,7 +288,11 @@ class UniswapSwapProvider extends SwapProvider {
 
     let gasLimit = 0
     if (await this.requiresApproval({ network, walletId, quote })) {
-      const approvalTx = await this.buildApprovalTx({ network, walletId, quote })
+      const approvalTx = await this.buildApprovalTx({
+        network,
+        walletId,
+        quote
+      })
       const rawApprovalTx = {
         from: approvalTx.from,
         to: approvalTx.to,
@@ -276,7 +321,7 @@ class UniswapSwapProvider extends SwapProvider {
     return fees
   }
 
-  async waitForApproveConfirmations ({ swap, network, walletId }) {
+  async waitForApproveConfirmations({ swap, network, walletId }) {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
@@ -293,7 +338,7 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  async waitForSwapConfirmations ({ swap, network, walletId }) {
+  async waitForSwapConfirmations({ swap, network, walletId }) {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
@@ -313,19 +358,26 @@ class UniswapSwapProvider extends SwapProvider {
     }
   }
 
-  async performNextSwapAction (store, { network, walletId, swap }) {
+  async performNextSwapAction(store, { network, walletId, swap }) {
     let updates
 
     switch (swap.status) {
       case 'WAITING_FOR_APPROVE_CONFIRMATIONS':
-        updates = await withInterval(async () => this.waitForApproveConfirmations({ swap, network, walletId }))
+        updates = await withInterval(async () =>
+          this.waitForApproveConfirmations({ swap, network, walletId })
+        )
         break
       case 'APPROVE_CONFIRMED':
-        updates = await withLock(store, { item: swap, network, walletId, asset: swap.from },
-          async () => this.sendSwap({ quote: swap, network, walletId }))
+        updates = await withLock(
+          store,
+          { item: swap, network, walletId, asset: swap.from },
+          async () => this.sendSwap({ quote: swap, network, walletId })
+        )
         break
       case 'WAITING_FOR_SWAP_CONFIRMATIONS':
-        updates = await withInterval(async () => this.waitForSwapConfirmations({ swap, network, walletId }))
+        updates = await withInterval(async () =>
+          this.waitForSwapConfirmations({ swap, network, walletId })
+        )
         break
     }
 
@@ -341,7 +393,7 @@ class UniswapSwapProvider extends SwapProvider {
       step: 0,
       label: 'Approving {from}',
       filterStatus: 'PENDING',
-      notification (swap) {
+      notification(swap) {
         return {
           message: `Approving ${swap.from}`
         }
@@ -356,7 +408,7 @@ class UniswapSwapProvider extends SwapProvider {
       step: 1,
       label: 'Swapping {from}',
       filterStatus: 'PENDING',
-      notification () {
+      notification() {
         return {
           message: 'Engaging the unicorn'
         }
@@ -366,9 +418,11 @@ class UniswapSwapProvider extends SwapProvider {
       step: 2,
       label: 'Completed',
       filterStatus: 'COMPLETED',
-      notification (swap) {
+      notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to} ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
+            swap.to
+          } ready to use`
         }
       }
     },
@@ -376,7 +430,7 @@ class UniswapSwapProvider extends SwapProvider {
       step: 2,
       label: 'Swap Failed',
       filterStatus: 'REFUNDED',
-      notification () {
+      notification() {
         return {
           message: 'Swap failed'
         }

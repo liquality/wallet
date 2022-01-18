@@ -36,18 +36,18 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
 
     let { asset, accountId, method, args, chain } = data
 
-    if (!ALLOWED.some(re => re.test(method))) throw new Error('Method not allowed')
+    if (!ALLOWED.some((re) => re.test(method))) throw new Error('Method not allowed')
 
     const { activeNetwork: network, activeWalletId: walletId } = state
 
-    args = args.map(a => {
+    args = args.map((a) => {
       if (a === null) return undefined
       return a
     })
 
     let printArgs = args
 
-    if (printArgs.every(a => a === undefined)) {
+    if (printArgs.every((a) => a === undefined)) {
       printArgs = []
     }
 
@@ -61,7 +61,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
       args: printArgs
     }
 
-    if (CONFIRM_REQUIRED.some(re => re.test(method))) {
+    if (CONFIRM_REQUIRED.some((re) => re.test(method))) {
       const id = Date.now() + '.' + Math.random()
 
       return new Promise((resolve, reject) => {

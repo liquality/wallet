@@ -23,17 +23,17 @@ const wrappedRbtcAddress = {
 }
 
 class SovrynSwapProvider extends SwapProvider {
-  constructor (config) {
+  constructor(config) {
     super(config)
     this._apiCache = {} // chainId to RPC provider
   }
 
-  async getSupportedPairs () {
+  async getSupportedPairs() {
     return []
   }
 
   // returns rates between tokens
-  async getQuote ({ network, from, to, amount }) {
+  async getQuote({ network, from, to, amount }) {
     const fromInfo = cryptoassets[from]
     const toInfo = cryptoassets[to]
 
@@ -44,7 +44,11 @@ class SovrynSwapProvider extends SwapProvider {
     const toTokenAddress = (toInfo.contractAddress || wrappedRbtcAddress[network]).toLowerCase()
     const fromAmountInUnit = currencyToUnit(fromInfo, BN(amount)).toFixed()
 
-    const ssnContract = new ethers.Contract(this.config.routerAddress.toLowerCase(), SovrynSwapNetworkABI, this._getApi(network, from))
+    const ssnContract = new ethers.Contract(
+      this.config.routerAddress.toLowerCase(),
+      SovrynSwapNetworkABI,
+      this._getApi(network, from)
+    )
 
     // generate path
     const path = await ssnContract.conversionPath(fromTokenAddress, toTokenAddress)
@@ -60,7 +64,7 @@ class SovrynSwapProvider extends SwapProvider {
     }
   }
 
-  async newSwap ({ network, walletId, quote }) {
+  async newSwap({ network, walletId, quote }) {
     const approvalRequired = isERC20(quote.from)
     const updates = approvalRequired
       ? await this.approveTokens({ network, walletId, quote })
@@ -76,16 +80,29 @@ class SovrynSwapProvider extends SwapProvider {
 
   // ======== APPROVAL ========
 
-  async requiresApproval ({ network, walletId, quote }) {
+  async requiresApproval({ network, walletId, quote }) {
     if (!isERC20(quote.from)) return false
 
     const fromInfo = cryptoassets[quote.from]
     const toInfo = cryptoassets[quote.to]
-    const erc20 = new ethers.Contract(fromInfo.contractAddress.toLowerCase(), ERC20.abi, this._getApi(network, quote.from))
+    const erc20 = new ethers.Contract(
+      fromInfo.contractAddress.toLowerCase(),
+      ERC20.abi,
+      this._getApi(network, quote.from)
+    )
 
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.fromAccountId
+    )
     const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw, network)
-    const spender = ((fromInfo.type === 'native' || toInfo.type === 'native') ? this.config.routerAddressRBTC : this.config.routerAddress).toLowerCase()
+    const spender = (
+      fromInfo.type === 'native' || toInfo.type === 'native'
+        ? this.config.routerAddressRBTC
+        : this.config.routerAddress
+    ).toLowerCase()
     const allowance = await erc20.allowance(fromAddress.toLowerCase(), spender)
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     if (allowance.gte(inputAmount)) {
@@ -95,19 +112,32 @@ class SovrynSwapProvider extends SwapProvider {
     return true
   }
 
-  async buildApprovalTx ({ network, walletId, quote }) {
+  async buildApprovalTx({ network, walletId, quote }) {
     const fromInfo = cryptoassets[quote.from]
     const toInfo = cryptoassets[quote.to]
-    const erc20 = new ethers.Contract(fromInfo.contractAddress.toLowerCase(), ERC20.abi, this._getApi(network, quote.from))
+    const erc20 = new ethers.Contract(
+      fromInfo.contractAddress.toLowerCase(),
+      ERC20.abi,
+      this._getApi(network, quote.from)
+    )
 
     const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
     const inputAmountHex = inputAmount.toHexString()
     // in case native token is involved -> give allowance to wrapper contract
-    const spender = ((fromInfo.type === 'native' || toInfo.type === 'native') ? this.config.routerAddressRBTC : this.config.routerAddress).toLowerCase()
+    const spender = (
+      fromInfo.type === 'native' || toInfo.type === 'native'
+        ? this.config.routerAddressRBTC
+        : this.config.routerAddress
+    ).toLowerCase()
     const encodedData = erc20.interface.encodeFunctionData('approve', [spender, inputAmountHex])
 
     const fromChain = fromInfo.chain
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.fromAccountId
+    )
     const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
 
     return {
@@ -119,8 +149,12 @@ class SovrynSwapProvider extends SwapProvider {
     }
   }
 
-  async approveTokens ({ network, walletId, quote }) {
-    const requiresApproval = await this.requiresApproval({ network, walletId, quote })
+  async approveTokens({ network, walletId, quote }) {
+    const requiresApproval = await this.requiresApproval({
+      network,
+      walletId,
+      quote
+    })
     if (!requiresApproval) {
       return {
         status: 'APPROVE_CONFIRMED'
@@ -140,7 +174,7 @@ class SovrynSwapProvider extends SwapProvider {
 
   // ======== SWAP ========
 
-  async buildSwapTx ({ network, walletId, quote }) {
+  async buildSwapTx({ network, walletId, quote }) {
     const fromInfo = cryptoassets[quote.from]
     const toInfo = cryptoassets[quote.to]
 
@@ -150,10 +184,15 @@ class SovrynSwapProvider extends SwapProvider {
 
     let encodedData
     let routerAddress
-    if (fromInfo.type === 'native' || toInfo.type === 'native') { // use routerAddressRBTC when native token is present in the swap
+    if (fromInfo.type === 'native' || toInfo.type === 'native') {
+      // use routerAddressRBTC when native token is present in the swap
       routerAddress = this.config.routerAddressRBTC.toLowerCase()
       const wpContract = new ethers.Contract(routerAddress, RBTCWrapperProxyABI, api)
-      encodedData = wpContract.interface.encodeFunctionData('convertByPath', [coversionPath, quote.fromAmount, toAmountWithSlippage])
+      encodedData = wpContract.interface.encodeFunctionData('convertByPath', [
+        coversionPath,
+        quote.fromAmount,
+        toAmountWithSlippage
+      ])
     } else {
       routerAddress = this.config.routerAddress.toLowerCase()
       const ssnContract = new ethers.Contract(routerAddress, SovrynSwapNetworkABI, api)
@@ -171,7 +210,12 @@ class SovrynSwapProvider extends SwapProvider {
 
     const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
 
-    const fromAddressRaw = await this.getSwapAddress(network, walletId, quote.from, quote.fromAccountId)
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.fromAccountId
+    )
     const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw, network)
 
     return {
@@ -183,7 +227,7 @@ class SovrynSwapProvider extends SwapProvider {
     }
   }
 
-  async sendSwap ({ network, walletId, quote }) {
+  async sendSwap({ network, walletId, quote }) {
     const txData = await this.buildSwapTx({ network, walletId, quote })
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
 
@@ -199,7 +243,7 @@ class SovrynSwapProvider extends SwapProvider {
 
   //  ======== FEES ========
 
-  async estimateFees ({ network, walletId, asset, txType, quote, feePrices, max }) {
+  async estimateFees({ network, walletId, asset, txType, quote, feePrices }) {
     if (txType !== SovrynSwapProvider.fromTxType) throw new Error(`Invalid tx type ${txType}`)
 
     const nativeAsset = chains[cryptoassets[asset].chain].nativeAsset
@@ -208,7 +252,11 @@ class SovrynSwapProvider extends SwapProvider {
 
     let gasLimit = 0
     if (await this.requiresApproval({ network, walletId, quote })) {
-      const approvalTx = await this.buildApprovalTx({ network, walletId, quote })
+      const approvalTx = await this.buildApprovalTx({
+        network,
+        walletId,
+        quote
+      })
       const rawApprovalTx = {
         from: approvalTx.from,
         to: approvalTx.to,
@@ -236,7 +284,7 @@ class SovrynSwapProvider extends SwapProvider {
 
   // ======== STATE TRANSITIONS ========
 
-  async waitForApproveConfirmations ({ swap, network, walletId }) {
+  async waitForApproveConfirmations({ swap, network, walletId }) {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
@@ -253,7 +301,7 @@ class SovrynSwapProvider extends SwapProvider {
     }
   }
 
-  async waitForSwapConfirmations ({ swap, network, walletId }) {
+  async waitForSwapConfirmations({ swap, network, walletId }) {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
 
     try {
@@ -273,19 +321,26 @@ class SovrynSwapProvider extends SwapProvider {
     }
   }
 
-  async performNextSwapAction (store, { network, walletId, swap }) {
+  async performNextSwapAction(store, { network, walletId, swap }) {
     let updates
 
     switch (swap.status) {
       case 'WAITING_FOR_APPROVE_CONFIRMATIONS':
-        updates = await withInterval(async () => this.waitForApproveConfirmations({ swap, network, walletId }))
+        updates = await withInterval(async () =>
+          this.waitForApproveConfirmations({ swap, network, walletId })
+        )
         break
       case 'APPROVE_CONFIRMED':
-        updates = await withLock(store, { item: swap, network, walletId, asset: swap.from },
-          async () => this.sendSwap({ quote: swap, network, walletId }))
+        updates = await withLock(
+          store,
+          { item: swap, network, walletId, asset: swap.from },
+          async () => this.sendSwap({ quote: swap, network, walletId })
+        )
         break
       case 'WAITING_FOR_SWAP_CONFIRMATIONS':
-        updates = await withInterval(async () => this.waitForSwapConfirmations({ swap, network, walletId }))
+        updates = await withInterval(async () =>
+          this.waitForSwapConfirmations({ swap, network, walletId })
+        )
         break
     }
 
@@ -294,7 +349,7 @@ class SovrynSwapProvider extends SwapProvider {
 
   // ======== HELPER METHODS ========
 
-  _getApi (network, asset) {
+  _getApi(network, asset) {
     const chain = cryptoassets[asset].chain
     const chainId = ChainNetworks[chain][network].chainId
     if (chainId in this._apiCache) {
@@ -307,7 +362,7 @@ class SovrynSwapProvider extends SwapProvider {
   }
 
   // 0.5 slippage
-  _calculateSlippage (amount) {
+  _calculateSlippage(amount) {
     return BN(amount).times(new BN(0.995)).toFixed(0)
   }
 
@@ -322,7 +377,7 @@ class SovrynSwapProvider extends SwapProvider {
       step: 0,
       label: 'Approving {from}',
       filterStatus: 'PENDING',
-      notification (swap) {
+      notification(swap) {
         return {
           message: `Approving ${swap.from}`
         }
@@ -337,7 +392,7 @@ class SovrynSwapProvider extends SwapProvider {
       step: 1,
       label: 'Swapping {from}',
       filterStatus: 'PENDING',
-      notification () {
+      notification() {
         return {
           message: 'Engaging Sovryn'
         }
@@ -347,9 +402,11 @@ class SovrynSwapProvider extends SwapProvider {
       step: 2,
       label: 'Completed',
       filterStatus: 'COMPLETED',
-      notification (swap) {
+      notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to} ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
+            swap.to
+          } ready to use`
         }
       }
     },
@@ -357,7 +414,7 @@ class SovrynSwapProvider extends SwapProvider {
       step: 2,
       label: 'Swap Failed',
       filterStatus: 'REFUNDED',
-      notification () {
+      notification() {
         return {
           message: 'Swap failed'
         }

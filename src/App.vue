@@ -3,8 +3,8 @@
     <Head v-if="unlockedAt" />
     <router-view />
     <template v-if="unlockedAt && termsAcceptedAt">
-      <AnalyticsOptInModal/>
-      <WatsNewModal/>
+      <AnalyticsOptInModal />
+      <WatsNewModal />
     </template>
   </div>
 </template>
@@ -23,29 +23,32 @@ export default {
     WatsNewModal
   },
   computed: {
-    ...mapState([
-      'activeNetwork',
-      'brokerReady',
-      'keyUpdatedAt',
-      'termsAcceptedAt',
-      'unlockedAt'
-    ])
+    ...mapState(['activeNetwork', 'brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt'])
   },
   methods: {
     ...mapActions(['initializeAnalytics'])
   },
   watch: {
     unlockedAt: function (unlocked) {
-      if (this.$route.path.startsWith('/permission') || this.$route.path.startsWith('/enable') || this.$route.path.startsWith('/request-unlock')) return
+      if (
+        this.$route.path.startsWith('/permission') ||
+        this.$route.path.startsWith('/enable') ||
+        this.$route.path.startsWith('/request-unlock')
+      )
+        return
       if (unlocked) this.$router.replace('/wallet')
     },
-    activeNetwork: function (_network) {
-      if (['Send', 'Receive', 'Swap', 'Account', 'SwapDetails', 'WalletActivity'].includes(this.$route.name)) {
+    activeNetwork: function () {
+      if (
+        ['Send', 'Receive', 'Swap', 'Account', 'SwapDetails', 'WalletActivity'].includes(
+          this.$route.name
+        )
+      ) {
         this.$router.replace('/wallet')
       }
     }
   },
-  async created () {
+  async created() {
     await this.initializeAnalytics()
   }
 }
@@ -66,7 +69,7 @@ export default {
     opacity: 1;
   }
   100% {
-    opacity: .99;
+    opacity: 0.99;
   }
 }
 html {

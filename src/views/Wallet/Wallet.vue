@@ -3,9 +3,7 @@
     <NavBar showMenu="true">
       <span class="wallet-header">
         <strong>Overview</strong>
-          <span class="text-muted" id="active_network">
-            ({{ activeNetwork }})
-          </span>
+        <span class="text-muted" id="active_network"> ({{ activeNetwork }}) </span>
       </span>
     </NavBar>
     <InfoNotification v-if="showLedgerRequest">
@@ -38,15 +36,13 @@ export default {
     InfoNotification,
     LedgerRequestMessage
   },
-  async created () {
+  async created() {
     try {
-      await this.updateBalances(
-        {
-          network: this.activeNetwork,
-          walletId: this.activeWalletId,
-          loadingInitialBalance: true
-        }
-      )
+      await this.updateBalances({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        loadingInitialBalance: true
+      })
     } catch (error) {
       // TODO: manage error
       console.error(error)
@@ -55,20 +51,22 @@ export default {
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),
     ...mapGetters(['accountItem']),
-    ledgerItem () {
-      return this.history[this.activeNetwork]?.[this.activeWalletId]?.find((item) => this.ledgerSignRequired(item))
+    ledgerItem() {
+      return this.history[this.activeNetwork]?.[this.activeWalletId]?.find((item) =>
+        this.ledgerSignRequired(item)
+      )
     },
-    showLedgerRequest () {
+    showLedgerRequest() {
       return this.ledgerItem
     }
   },
   methods: {
     ...mapActions(['updateBalances']),
-    ledgerSignRequired (item) {
+    ledgerSignRequired(item) {
       if (item && item.fromAccountId && item.toAccountId) {
-      // Check the status and get the account related
+        // Check the status and get the account related
         if (item.status === 'INITIATION_CONFIRMED') {
-        // fund transaction only apply for erc20
+          // fund transaction only apply for erc20
           if (isERC20(item.from)) {
             const fromAccount = this.accountItem(item.fromAccountId)
             if (fromAccount?.type.includes('ledger')) {
@@ -102,8 +100,8 @@ export default {
   padding-bottom: 44px;
 
   .wallet-content {
-     overflow: auto;
-   }
+    overflow: auto;
+  }
 
   .wallet-header {
     font-weight: normal;

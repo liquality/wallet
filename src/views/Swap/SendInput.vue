@@ -11,10 +11,7 @@
                 @click="toggleShowAmountsFiat"
                 :disabled="isNaN(sendAmountFiat)"
               >
-                <span
-                  v-if="showAmountsInFiat"
-                  :style="getAssetColorStyle(asset)"
-                >
+                <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
                   {{ `${asset} ${sendAmount}` }}
                 </span>
                 <span v-else> {{ formatFiatUI(sendAmountFiat) }} </span>
@@ -72,7 +69,7 @@
           <v-popover offset="1" trigger="hover focus" class="mr-2">
             <button
               :class="{
-                active: amountOption === 'min' && !disabled,
+                active: amountOption === 'min' && !disabled
               }"
               :disabled="disabled"
               class="btn btn-option"
@@ -89,7 +86,7 @@
           <v-popover offset="1" trigger="hover focus">
             <button
               :class="{
-                active: amountOption === 'max' && !disabled,
+                active: amountOption === 'max' && !disabled
               }"
               :disabled="disabled"
               class="btn btn-option tooltip-target"
@@ -124,7 +121,7 @@ export default {
     ChevronRightIcon,
     AccountTooltip
   },
-  data () {
+  data() {
     return {
       showAmountsInFiat: false
     }
@@ -144,19 +141,19 @@ export default {
     'disabled',
     'amountOption'
   ],
-  created () {},
+  created() {},
   methods: {
     dpUI,
     formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
-    toggleShowAmountsFiat () {
+    toggleShowAmountsFiat() {
       this.showAmountsInFiat = !this.showAmountsInFiat
     },
-    setSendAmount (amount) {
+    setSendAmount(amount) {
       this.$emit('send-amount-change', amount)
     },
-    assetIconClick () {
+    assetIconClick() {
       this.$emit('from-asset-click')
     }
   }
