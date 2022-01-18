@@ -159,7 +159,7 @@ class LiqualitySwapProvider extends SwapProvider {
     if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'UST') {
       const client = this.getClient(network, walletId, asset, quote.fromAccountId)
       const value = max ? undefined : BN(quote.fromAmount).dividedBy(1_000_000) // format in UST
-      const taxFees = await client.getMethod('getTaxFees')(value?.toFixed(), 'uusd', (max || !value))
+      const taxFees = await client.getMethod('getTaxFees')(value?.toFixed(), 'uusd', max || !value)
 
       const fees = {}
       for (const feePrice of feePrices) {
