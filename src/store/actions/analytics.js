@@ -15,17 +15,11 @@ export const initializeAnalyticsPreferences = ({ commit }, { accepted }) => {
   })
 }
 
-export const updateAnalyticsPreferences = ({
-  commit,
-  state
-}, payload) => {
+export const updateAnalyticsPreferences = ({ commit }, payload) => {
   commit('SET_ANALYTICS_PREFERENCES', { ...payload })
 }
 
-export const setAnalyticsResponse = async ({
-  commit,
-  state
-}, { accepted }) => {
+export const setAnalyticsResponse = async ({ commit }, { accepted }) => {
   if (accepted) {
     commit('SET_ANALYTICS_PREFERENCES', { acceptedDate: Date.now() })
   } else {
@@ -33,38 +27,18 @@ export const setAnalyticsResponse = async ({
   }
 }
 
-export const initializeAnalytics = async ({
-  commit,
-  dispatch,
-  state
-}) => {
+export const initializeAnalytics = async ({ commit, dispatch, state }) => {
   if (!state.analytics || !state.analytics.userId) {
     await dispatch('initializeAnalyticsPreferences', { accepted: false })
   } else if (state.analytics?.acceptedDate && useAnalytics) {
-    amplitude.getInstance().init(
-      process.env.VUE_APP_AMPLITUDE_API_KEY,
-      state.analytics?.userId
-    )
+    amplitude.getInstance().init(process.env.VUE_APP_AMPLITUDE_API_KEY, state.analytics?.userId)
     commit('app/ANALITYCS_STARTED', null, { root: true })
   }
 }
 
-export const trackAnalytics = ({
-  state,
-  commit
-}, {
-  event,
-  properties = {}
-}) => {
-  if (useAnalytics &&
-    state.analytics &&
-    state.analytics.acceptedDate &&
-    state.analytics.userId) {
-    const {
-      activeNetwork,
-      activeWalletId,
-      version
-    } = state
+export const trackAnalytics = ({ state }, { event, properties = {} }) => {
+  if (useAnalytics && state.analytics && state.analytics.acceptedDate && state.analytics.userId) {
+    const { activeNetwork, activeWalletId, version } = state
     return amplitude.getInstance().logEvent(event, {
       ...properties,
       network: activeNetwork,
@@ -75,11 +49,7 @@ export const trackAnalytics = ({
   }
 }
 
-export const checkAnalyticsOptIn = ({
-  state,
-  commit,
-  dispatch
-}) => {
+export const checkAnalyticsOptIn = ({ state, commit, dispatch }) => {
   const { acceptedDate } = state.analytics
 
   if (!acceptedDate) {
@@ -96,12 +66,12 @@ export const checkAnalyticsOptIn = ({
 
     if (currentMonth === pastMonth) {
       // check for every two weeks
-      if (currentDayOfMonth >= (pastDayOfMonth + 15)) {
+      if (currentDayOfMonth >= pastDayOfMonth + 15) {
         commit('SET_ANALYTICS_PREFERENCES', {
           askedDate: Date.now()
         })
         dispatch('app/setAnalyticsOptInModalOpen', { open: true }, { root: true })
-      } else if (currentDay >= (pastDay + 2)) {
+      } else if (currentDay >= pastDay + 2) {
         // check for not to exceed 2x a/week
         commit('SET_ANALYTICS_PREFERENCES', {
           askedDate: Date.now()

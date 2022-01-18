@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { random, findKey, mapKeys, mapValues } from 'lodash-es'
 import axios from 'axios'
-import { assets as cryptoassets } from '@liquality/cryptoassets'
+import cryptoassets from '@/utils/cryptoassets'
 import { Client } from '@liquality/client'
 import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
 import { EthereumJsWalletProvider } from '@liquality/ethereum-js-wallet-provider'
@@ -12,7 +12,7 @@ export const CHAIN_LOCK = {}
 
 export const emitter = new Vue()
 
-const wait = (millis) => new Promise(resolve => setTimeout(() => resolve(), millis))
+const wait = (millis) => new Promise((resolve) => setTimeout(() => resolve(), millis))
 
 export { wait }
 
@@ -39,7 +39,7 @@ export const attemptToLockAsset = (network, walletId, asset) => {
   }
 }
 
-export const unlockAsset = key => {
+export const unlockAsset = (key) => {
   CHAIN_LOCK[key] = false
 
   emitter.$emit(`unlock:${key}`)
@@ -48,10 +48,11 @@ export const unlockAsset = key => {
 const COIN_GECKO_API = 'https://api.coingecko.com/api/v3'
 
 const getRskERC20Assets = () => {
-  const erc20 = Object.keys(cryptoassets)
-    .filter(asset => cryptoassets[asset].chain === 'rsk' && cryptoassets[asset].type === 'erc20')
+  const erc20 = Object.keys(cryptoassets).filter(
+    (asset) => cryptoassets[asset].chain === 'rsk' && cryptoassets[asset].type === 'erc20'
+  )
 
-  return erc20.map(erc => cryptoassets[erc])
+  return erc20.map((erc) => cryptoassets[erc])
 }
 
 export const shouldApplyRskLegacyDerivation = async (accounts, mnemonic, indexPath = 0) => {
@@ -63,17 +64,16 @@ export const shouldApplyRskLegacyDerivation = async (accounts, mnemonic, indexPa
   walletIds.forEach((wallet) => {
     const walletAccounts = accounts[wallet].mainnet
 
-    walletAccounts.forEach(account => {
+    walletAccounts.forEach((account) => {
       if (account.chain === 'rsk') {
         addresses.push(...account.addresses)
       }
     })
   })
 
-  const client = new Client()
-    .addProvider(
-      new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' })
-    )
+  const client = new Client().addProvider(
+    new EthereumRpcProvider({ uri: process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET })
+  )
 
   if (mnemonic) {
     client.addProvider(
@@ -81,14 +81,15 @@ export const shouldApplyRskLegacyDerivation = async (accounts, mnemonic, indexPa
         network: ChainNetworks.rsk.mainnet,
         mnemonic,
         derivationPath: `m/44'/137'/${indexPath}'/0/0`
-      }))
+      })
+    )
 
     const _addresses = await client.wallet.getAddresses()
 
-    addresses.push(..._addresses.map(e => e.address))
+    addresses.push(..._addresses.map((e) => e.address))
   }
 
-  const erc20BalancesPromises = rskERC20Assets.map(asset => {
+  const erc20BalancesPromises = rskERC20Assets.map((asset) => {
     const client = new Client()
       .addProvider(new EthereumRpcProvider({ uri: 'https://public-node.rsk.co' }))
       .addProvider(new EthereumErc20Provider(asset.contractAddress))
@@ -96,26 +97,28 @@ export const shouldApplyRskLegacyDerivation = async (accounts, mnemonic, indexPa
     return client.chain.getBalance(addresses)
   })
 
-  const balances = await Promise.all([
-    client.chain.getBalance(addresses),
-    ...erc20BalancesPromises
-  ])
+  const balances = await Promise.all([client.chain.getBalance(addresses), ...erc20BalancesPromises])
 
-  return balances.some(amount => amount.isGreaterThan(0))
+  return balances.some((amount) => amount.isGreaterThan(0))
 }
 
-export async function getPrices (baseCurrencies, toCurrency) {
-  const coindIds = baseCurrencies.filter(currency => cryptoassets[currency]?.coinGeckoId)
-    .map(currency => cryptoassets[currency].coinGeckoId)
-  const { data } = await axios.get(`${COIN_GECKO_API}/simple/price?ids=${coindIds.join(',')}&vs_currencies=${toCurrency}`)
-  let prices = mapKeys(data, (v, coinGeckoId) => findKey(cryptoassets, asset => asset.coinGeckoId === coinGeckoId))
-  prices = mapValues(prices, rates => mapKeys(rates, (v, k) => k.toUpperCase()))
+export async function getPrices(baseCurrencies, toCurrency) {
+  const coindIds = baseCurrencies
+    .filter((currency) => cryptoassets[currency]?.coinGeckoId)
+    .map((currency) => cryptoassets[currency].coinGeckoId)
+  const { data } = await axios.get(
+    `${COIN_GECKO_API}/simple/price?ids=${coindIds.join(',')}&vs_currencies=${toCurrency}`
+  )
+  let prices = mapKeys(data, (v, coinGeckoId) =>
+    findKey(cryptoassets, (asset) => asset.coinGeckoId === coinGeckoId)
+  )
+  prices = mapValues(prices, (rates) => mapKeys(rates, (v, k) => k.toUpperCase()))
 
   for (const baseCurrency of baseCurrencies) {
     if (!prices[baseCurrency] && cryptoassets[baseCurrency]?.matchingAsset) {
       prices[baseCurrency] = prices[cryptoassets[baseCurrency]?.matchingAsset]
     }
   }
-  const symbolPrices = mapValues(prices, rates => rates[toCurrency.toUpperCase()])
+  const symbolPrices = mapValues(prices, (rates) => rates[toCurrency.toUpperCase()])
   return symbolPrices
 }

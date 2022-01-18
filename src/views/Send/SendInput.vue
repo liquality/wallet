@@ -4,49 +4,49 @@
       <div class="send-main-input-container">
         <div class="send-main-input">
           <div class="send-top">
-          <div class="send-top-label">
-            Send
-          </div>
-          <div class="send-top-amount">
-            <div class="btn btn-option label-append" @click="toggleShowAmountsFiat">
-              <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
-                {{ `${asset} ${amount}` }}
-              </span>
-              <span v-else>
-                {{ amountFiat }}
-              </span>
+            <div class="send-top-label">Send</div>
+            <div class="send-top-amount">
+              <button
+                class="btn btn-option label-append"
+                @click="toggleShowAmountsFiat"
+                :disabled="!fiatRates[asset]"
+              >
+                <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
+                  {{ `${asset} ${amount}` }}
+                </span>
+                <span v-else> {{ formatFiatUI(amountFiat) }} </span>
+              </button>
             </div>
           </div>
-      </div>
+          <div class="input-group mb-3" v-if="showAmountsInFiat">
+            <span class="input-group-text">{{ isNaN(amountFiat) ? '' : '$' }}</span>
+            <input
+              type="number"
+              class="form-control"
+              :class="{ 'is-invalid': amountError }"
+              :value="amountFiat"
+              @input="$emit('update:amountFiat', $event.target.value)"
+              placeholder="0.00"
+              autocomplete="off"
+              aria-label="Amount (to the nearest dollar)"
+            />
+          </div>
           <input
-          v-if="showAmountsInFiat"
-          type="text"
-          class="form-control"
-          :class="{ 'is-invalid': amountError }"
-          :value="amountFiat"
-          @input="$emit('update:amountFiat', $event.target.value)"
-          placeholder="0.00"
-          autocomplete="off"
-        />
-        <input
-          v-else
-          type="number"
-          class="form-control"
-          id="send_amount_input_field"
-          :class="{ 'is-invalid': amountError }"
-          :value="amount"
-          @input="$emit('update:amount', $event.target.value)"
-          placeholder="0.00"
-          :style="getAssetColorStyle(asset)"
-          autocomplete="off"
-        />
+            v-else
+            type="number"
+            class="form-control"
+            id="send_amount_input_field"
+            :class="{ 'is-invalid': amountError }"
+            :value="amount"
+            @input="$emit('update:amount', $event.target.value)"
+            placeholder="0.00"
+            :style="getAssetColorStyle(asset)"
+            autocomplete="off"
+          />
         </div>
         <AccountTooltip :account="account" :asset="asset">
           <div class="send-main-icon">
-            <img
-              :src="getAssetIcon(asset)"
-              class="asset-icon"
-            />
+            <img :src="getAssetIcon(asset)" class="asset-icon" />
             <span class="asset-name">
               {{ asset }}
             </span>
@@ -90,14 +90,15 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { dpUI } from '@/utils/coinFormatter'
+import { dpUI, formatFiatUI } from '@/utils/coinFormatter'
 import AccountTooltip from '@/components/AccountTooltip'
+import { mapState } from 'vuex'
 
 export default {
   components: {
     AccountTooltip
   },
-  data () {
+  data() {
     return {
       showAmountsInFiat: false
     }
@@ -113,11 +114,15 @@ export default {
     'amountError',
     'maxActive'
   ],
+  computed: {
+    ...mapState(['fiatRates'])
+  },
   methods: {
     dpUI,
+    formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
-    toggleShowAmountsFiat () {
+    toggleShowAmountsFiat() {
       this.showAmountsInFiat = !this.showAmountsInFiat
     }
   }
@@ -186,7 +191,6 @@ export default {
       display: flex;
       width: 100%;
     }
-
   }
 
   .send-bottom {
@@ -200,7 +204,6 @@ export default {
       font-weight: normal;
       font-size: $font-size-tiny;
     }
-
   }
 }
 </style>

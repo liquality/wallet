@@ -21,10 +21,7 @@ export const LEDGER_OPTIONS = [
   {
     name: 'BTC',
     label: 'BTC',
-    types: [
-      'bitcoin_ledger_nagive_segwit',
-      'bitcoin_ledger_legacy'
-    ],
+    types: ['bitcoin_ledger_nagive_segwit', 'bitcoin_ledger_legacy'],
     chain: 'bitcoin'
   },
   {

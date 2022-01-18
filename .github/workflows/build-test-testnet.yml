@@ -3,10 +3,12 @@ on:
     - cron: '0 8 * * *' # everyday at 8am
     - cron: '0 22 * * *' # everyday at 10pm
 
+#Dev testnet tests
 name: Testnet tests
 
 jobs:
-  regressiontest:
+  regressiontest_testnet:
+    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -14,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-node@v2.4.1
+      - uses: actions/setup-node@v2.5.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
@@ -22,7 +24,7 @@ jobs:
       # Create screenshots directory
       - run: mkdir screenshots
 
-      - uses: actions/cache@v2.1.6
+      - uses: actions/cache@v2.1.7
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules
@@ -40,7 +42,7 @@ jobs:
           npm run build
 
       - name: Regression tests against Testnet
-        uses: beemi/puppeteer-headful@v1.0.6
+        uses: beemi/puppeteer-headful@v1.0.11
         env:
           CI: 'true'
           DISPLAY: :99
@@ -49,15 +51,8 @@ jobs:
         with:
           args: npm run test:testnet
 
-      - name: Archive Mocha HTML report
-        uses: actions/upload-artifact@v2.2.4
-        if: always()
-        with:
-          name: mocha-html-test-report
-          path: mochawesome-report
-
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v2.3.1
         if: always()
         with:
           name: screenshots
