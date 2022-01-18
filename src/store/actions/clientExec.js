@@ -1,4 +1,7 @@
-export const clientExec = async ({ getters }, { network, walletId, asset, method, args, returnType, accountId }) => {
+export const clientExec = async (
+  { getters },
+  { network, walletId, asset, method, args, returnType, accountId }
+) => {
   const client = getters.client({ network, walletId, asset, accountId })
 
   const [namespace, fnName] = method.split('.')
@@ -12,7 +15,7 @@ export const clientExec = async ({ getters }, { network, walletId, asset, method
         break
 
       case 'Addresses':
-        result = result.map(item => item.address)
+        result = result.map((item) => item.address)
         break
 
       case 'BigNumber':

@@ -1,9 +1,7 @@
 <template>
   <Modal v-if="open" @close="close" body-class="">
     <template #header>
-      <h6>
-        What's New
-      </h6>
+      <h6>What's New</h6>
     </template>
     <template>
       <div class="items">
@@ -12,22 +10,18 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre>Ability to export private keys</pre>
-            <pre>Terra integration</pre>
-            <pre>Bug fixes and improvements</pre>
+            <pre>Ability to remove custom tokens</pre>
+            <pre>Minor bug fixes</pre>
+            <pre class="text-wrap">Overview screen performance enhancement</pre>
           </div>
         </div>
       </div>
     </template>
     <template #footer>
-     <div class="footer">
-       <div class="text-muted">Version {{ appVersion }}</div>
-        <button class="btn btn-outline-clear"
-                id="wats_new_close_btn"
-                @click="close">
-        Close
-      </button>
-     </div>
+      <div class="footer">
+        <div class="text-muted">Version {{ appVersion }}</div>
+        <button class="btn btn-outline-clear" id="wats_new_close_btn" @click="close">Close</button>
+      </div>
     </template>
   </Modal>
 </template>
@@ -50,17 +44,17 @@ export default {
   },
   computed: {
     ...mapState(['watsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
-    appVersion () {
+    appVersion() {
       return version
     }
   },
   methods: {
     ...mapActions(['setWatsNewModalShowed']),
-    close () {
+    close() {
       this.open = false
     }
   },
-  created () {
+  created() {
     if (this.watsNewModalVersion !== this.appVersion) {
       this.open = true
       this.setWatsNewModalShowed({ version: this.appVersion })
@@ -110,14 +104,14 @@ h6 {
 }
 
 .footer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
 
-    .btn {
-      margin-top: 20px;
-    }
+  .btn {
+    margin-top: 20px;
+  }
 }
 </style>

@@ -1,22 +1,21 @@
 <template>
   <v-popover offset="1" trigger="hover" :placement="'top'">
-    <slot>
-    </slot>
+    <slot> </slot>
     <template slot="popover">
       <div class="tooltip-wrapper">
-        <div class="color" :style="{ 'background-color': account.color }">
-      </div>
-      <div class="icon">
-        <img :src="getAccountIcon(account.chain)"
-                 class="asset-icon" />
-      </div>
-      <div class="content">
-        <p class="my-0 text-left">{{ account.name }}</p>
-        <p class="text-muted my-0 text-left">{{ address ? shortenAddress(address) : '' }}</p>
-        <p class="text-muted my-0 text-left" v-if="isEthereumChain(asset)">
-          Available Gas {{ nativeAssetBalance }} {{ nativeAsset }}
-        </p>
-      </div>
+        <div class="color" :style="{ 'background-color': account.color }"></div>
+        <div class="icon">
+          <img :src="getAccountIcon(account.chain)" class="asset-icon" />
+        </div>
+        <div class="content">
+          <p class="my-0 text-left">{{ account.name }}</p>
+          <p class="text-muted my-0 text-left">
+            {{ address ? shortenAddress(address) : '' }}
+          </p>
+          <p class="text-muted my-0 text-left" v-if="isEthereumChain(asset)">
+            Available Gas {{ nativeAssetBalance }} {{ nativeAsset }}
+          </p>
+        </div>
       </div>
     </template>
   </v-popover>
@@ -38,13 +37,13 @@ export default {
     }
   },
   computed: {
-    address () {
+    address() {
       return (this.account?.addresses.length || 0) > 0 ? this.account?.addresses[0] : null
     },
-    nativeAsset () {
+    nativeAsset() {
       return this.getNativeAsset(this.asset)
     },
-    nativeAssetBalance () {
+    nativeAssetBalance() {
       const balance = this.account.balances?.[this.nativeAsset] || 0
       return prettyBalance(balance, this.nativeAsset)
     }

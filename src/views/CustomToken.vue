@@ -8,66 +8,80 @@
         <div class="form-group">
           <label for="chain">Chain</label>
           <div class="dropdown">
-            <button class="btn dropdown-toggle"
-                    id="select_chain_dropdown"
-                    type="button"
-                    @click.stop="chainDropdownOpen = !chainDropdownOpen">
+            <button
+              class="btn dropdown-toggle"
+              id="select_chain_dropdown"
+              type="button"
+              @click.stop="chainDropdownOpen = !chainDropdownOpen"
+            >
               {{ chain || 'Select chain...' }}
               <ChevronUpIcon v-if="chainDropdownOpen" />
               <ChevronDownIcon v-else />
             </button>
             <ul class="dropdown-menu" :class="{ show: chainDropdownOpen }">
               <li>
-                <a class="dropdown-item"
-                   id="ethereum_chain"
-                   href="#"
-                   @click="selectChain('ethereum')"
-                   :class="{active: chain === 'ethereum'}">
+                <a
+                  class="dropdown-item"
+                  id="ethereum_chain"
+                  href="#"
+                  @click="selectChain('ethereum')"
+                  :class="{ active: chain === 'ethereum' }"
+                >
                   Ethereum (ETH)
                 </a>
               </li>
               <li>
-                <a class="dropdown-item"
-                   id="rsk_chain"
-                   href="#"
-                   @click="selectChain('rsk')"
-                   :class="{active: chain === 'rsk'}">
+                <a
+                  class="dropdown-item"
+                  id="rsk_chain"
+                  href="#"
+                  @click="selectChain('rsk')"
+                  :class="{ active: chain === 'rsk' }"
+                >
                   Rootstock (RSK)
                 </a>
               </li>
               <li>
-                <a class="dropdown-item"
-                   id="bsc_chain"
-                   href="#"
-                   @click="selectChain('bsc')"
-                   :class="{active: chain === 'bsc'}">
+                <a
+                  class="dropdown-item"
+                  id="bsc_chain"
+                  href="#"
+                  @click="selectChain('bsc')"
+                  :class="{ active: chain === 'bsc' }"
+                >
                   Binance Smart Chain (BSC)
                 </a>
               </li>
               <li>
-                <a class="dropdown-item"
-                   id="polygon_chain"
-                   href="#"
-                   @click="selectChain('polygon')"
-                   :class="{active: chain === 'polygon'}">
+                <a
+                  class="dropdown-item"
+                  id="polygon_chain"
+                  href="#"
+                  @click="selectChain('polygon')"
+                  :class="{ active: chain === 'polygon' }"
+                >
                   Polygon (MATIC)
                 </a>
               </li>
               <li>
-                <a class="dropdown-item"
-                   id="arbitrum_chain"
-                   href="#"
-                   @click="selectChain('arbitrum')"
-                   :class="{active: chain === 'arbitrum'}">
+                <a
+                  class="dropdown-item"
+                  id="arbitrum_chain"
+                  href="#"
+                  @click="selectChain('arbitrum')"
+                  :class="{ active: chain === 'arbitrum' }"
+                >
                   Arbitrum (ARB)
                 </a>
               </li>
               <li>
-                <a class="dropdown-item"
-                   id="terra_chain"
-                   href="#"
-                   @click="selectChain('terra')"
-                   :class="{active: chain === 'terra'}">
+                <a
+                  class="dropdown-item"
+                  id="terra_chain"
+                  href="#"
+                  @click="selectChain('terra')"
+                  :class="{ active: chain === 'terra' }"
+                >
                   Terra (LUNA)
                 </a>
               </li>
@@ -77,27 +91,78 @@
         <fieldset :disabled="!chain">
           <div class="form-group">
             <label for="contractAddress">Token Contract Address</label>
-            <input type="text" @change="contractAddressChange" @paste="contractAddressPaste" class="form-control form-control-sm" id="contractAddress" placeholder="Address" autocomplete="off" required>
+            <input
+              type="text"
+              @change="contractAddressChange"
+              @paste="contractAddressPaste"
+              class="form-control form-control-sm"
+              id="contractAddress"
+              placeholder="Address"
+              autocomplete="off"
+              required
+            />
           </div>
           <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" v-model="name" class="form-control form-control-sm" id="name" placeholder="Name" autocomplete="off" required :disabled="autofilled">
+            <input
+              type="text"
+              v-model="name"
+              class="form-control form-control-sm"
+              id="name"
+              placeholder="Name"
+              autocomplete="off"
+              required
+              :disabled="autofilled"
+            />
           </div>
           <div class="form-group">
             <label for="tokenSymbol">Token Symbol</label>
-            <input type="text" v-model="symbol" class="form-control form-control-sm" id="tokenSymbol" placeholder="ABC" autocomplete="off" required :disabled="autofilled && !isSymbolEditable">
-            <small v-if="symbol && symbolError" id="token_with_this_symbol_exits" class="text-danger form-text text-right">{{ symbolError }}</small>
+            <input
+              type="text"
+              v-model="symbol"
+              class="form-control form-control-sm"
+              id="tokenSymbol"
+              placeholder="ABC"
+              autocomplete="off"
+              required
+              :disabled="autofilled && !isSymbolEditable"
+            />
+            <small
+              v-if="symbol && symbolError"
+              id="token_with_this_symbol_exits"
+              class="text-danger form-text text-right"
+              >{{ symbolError }}</small
+            >
           </div>
           <div class="form-group">
             <label for="decimals">Decimals</label>
-            <input type="text" v-model="decimals" class="form-control form-control-sm" id="decimals" autocomplete="off" required :disabled="autofilled">
+            <input
+              type="text"
+              v-model="decimals"
+              class="form-control form-control-sm"
+              id="decimals"
+              autocomplete="off"
+              required
+              :disabled="autofilled"
+            />
           </div>
         </fieldset>
       </div>
       <div class="wrapper_bottom">
         <div class="button-group">
-          <router-link :to="`/settings/manage-assets`"><button id="cancel_add_token_button" class="btn btn-light btn-outline-primary btn-lg">Cancel</button></router-link>
-          <button id="add_token_button" class="btn btn-primary btn-lg" @click="addToken" :disabled="!canAdd || existingAsset || isExistingNetworkAsset">Add Token</button>
+          <router-link :to="`/settings/manage-assets`"
+            ><button id="cancel_add_token_button" class="btn btn-light btn-outline-primary btn-lg">
+              Cancel
+            </button></router-link
+          >
+          <button
+            id="add_token_button"
+            class="btn btn-primary btn-lg"
+            @click="addToken"
+            :disabled="!canAdd || existingAsset || isExistingNetworkAsset"
+          >
+            Add Token
+          </button>
         </div>
       </div>
     </div>
@@ -119,7 +184,7 @@ export default {
     ChevronDownIcon,
     ChevronUpIcon
   },
-  data () {
+  data() {
     return {
       contractAddress: '',
       name: null,
@@ -133,34 +198,43 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets']),
-    networkAssets () {
+    networkAssets() {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
     },
-    isExistingNetworkAsset () {
-      return Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
+    isExistingNetworkAsset() {
+      return Boolean(this.networkAssets.find((_symbol) => _symbol === this.symbol))
     },
-    symbolError () {
-      if ((!this.autofilled && Object.keys(cryptoassets).includes(this.symbol)) || this.isExistingNetworkAsset) {
+    symbolError() {
+      if (
+        (!this.autofilled && Object.keys(cryptoassets).includes(this.symbol)) ||
+        this.isExistingNetworkAsset
+      ) {
         return 'Token with this symbol exists.'
       }
       return null
     },
-    canAdd () {
-      if (!this.symbol || !this.name || !this.chain || !this.contractAddress || !this.decimals) return false
+    canAdd() {
+      if (!this.symbol || !this.name || !this.chain || !this.contractAddress || !this.decimals)
+        return false
       if (this.symbolError) return false
 
       return true
     },
-    existingAsset () {
-      const existingAsset = Object.values(cryptoassets).find(asset =>
-        asset.type === 'erc20' && asset.contractAddress.toLowerCase() === this.contractAddress.toLowerCase() && asset.chain === this.chain)
+    existingAsset() {
+      const existingAsset = Object.values(cryptoassets).find(
+        (asset) =>
+          asset.type === 'erc20' &&
+          asset.contractAddress.toLowerCase() === this.contractAddress.toLowerCase() &&
+          asset.chain === this.chain
+      )
       return existingAsset ? { ...existingAsset, symbol: existingAsset.code } : null
     }
   },
   methods: {
     ...mapActions(['enableAssets', 'addCustomToken']),
-    async addToken () {
-      if (!this.existingAsset) { // Add only if it does not already exist
+    async addToken() {
+      if (!this.existingAsset) {
+        // Add only if it does not already exist
         await this.addCustomToken({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
@@ -168,7 +242,7 @@ export default {
           contractAddress: this.contractAddress,
           name: this.name,
           symbol: this.symbol,
-          decimals: this.decimals
+          decimals: Number(this.decimals)
         })
       }
       await this.enableAssets({
@@ -178,16 +252,16 @@ export default {
       })
       this.$router.replace('/settings/manage-assets')
     },
-    contractAddressPaste (e) {
+    contractAddressPaste(e) {
       this.contractAddress = e.clipboardData.getData('text')
       this.fetchToken()
     },
-    contractAddressChange (e) {
+    contractAddressChange(e) {
       if (this.contractAddress === e.target.value) return
       this.contractAddress = e.target.value
       this.fetchToken()
     },
-    resetFields () {
+    resetFields() {
       this.symbol = null
       this.name = null
       this.decimals = null
@@ -202,8 +276,15 @@ export default {
       if (this.existingAsset) {
         customToken = this.existingAsset
       } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
-        const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(this.contractAddress)
-        customToken = { symbol, name, decimals: parseInt(decimals), chain: this.chain }
+        const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(
+          this.contractAddress
+        )
+        customToken = {
+          symbol,
+          name,
+          decimals: parseInt(decimals),
+          chain: this.chain
+        }
       }
 
       if (customToken) {
@@ -211,10 +292,12 @@ export default {
         this.name = customToken.name
         this.decimals = customToken.decimals
         this.autofilled = true
-        this.isSymbolEditable = Boolean(this.networkAssets.find(_symbol => _symbol === this.symbol))
+        this.isSymbolEditable = Boolean(
+          this.networkAssets.find((_symbol) => _symbol === this.symbol)
+        )
       }
     }, 500),
-    async selectChain (chain) {
+    async selectChain(chain) {
       this.chain = chain
       this.chainDropdownOpen = false
       this.resetFields()
@@ -235,9 +318,9 @@ export default {
   }
 
   .dropdown {
-      .dropdown-menu {
+    .dropdown-menu {
       min-width: 2rem;
-      border: 1px solid #D9DFE5;
+      border: 1px solid #d9dfe5;
       border-radius: 0;
       padding: 0;
       margin: 0;
@@ -252,8 +335,9 @@ export default {
         border-bottom: 1px solid $hr-border-color;
       }
 
-      &:hover, &.active {
-        background-color: #F0F7F9;
+      &:hover,
+      &.active {
+        background-color: #f0f7f9;
         color: $color-text-primary;
       }
     }
@@ -270,11 +354,11 @@ export default {
       display: none;
     }
 
-   svg {
+    svg {
       width: 8px;
       height: 4px;
       margin-left: 2px;
     }
-}
+  }
 }
 </style>

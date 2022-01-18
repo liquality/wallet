@@ -3,11 +3,7 @@
     <div class="send" v-if="currentStep === 'inputs'">
       <NavBar
         showBack="true"
-        :backPath="
-          routeSource === 'assets'
-            ? '/wallet'
-            : `/accounts/${account.id}/${asset}`
-        "
+        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Send
@@ -52,9 +48,7 @@
           <div class="form-group mt-150">
             <DetailsContainer v-if="feesAvailable">
               <template v-slot:header>
-                <span class="details-title" id="send_network_speed"
-                  >Network Speed/Fee</span
-                >
+                <span class="details-title" id="send_network_speed">Network Speed/Fee</span>
                 <span class="text-muted" id="send_network_speed_avg_fee">
                   ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
                 </span>
@@ -65,11 +59,8 @@
                     <div class="send_fees">
                       <span class="selectors-asset">{{ assetChain }}</span>
                       <div class="custom-fees" v-if="customFee">
-                        {{ prettyFee }} {{ assetChain }} /
-                        {{ totalFeeInFiat }} USD
-                        <button class="btn btn-link" @click="resetCustomFee">
-                          Reset
-                        </button>
+                        {{ prettyFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
+                        <button class="btn btn-link" @click="resetCustomFee">Reset</button>
                       </div>
                       <FeeSelector
                         v-else
@@ -90,16 +81,9 @@
         <div class="wrapper_bottom">
           <div class="button-group">
             <router-link
-              :to="
-                routeSource === 'assets'
-                  ? '/wallet'
-                  : `/accounts/${this.account.id}/${asset}`
-              "
+              :to="routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${asset}`"
             >
-              <button
-                class="btn btn-light btn-outline-primary btn-lg"
-                id="send_cancel_button"
-              >
+              <button class="btn btn-light btn-outline-primary btn-lg" id="send_cancel_button">
                 Cancel
               </button>
             </router-link>
@@ -115,7 +99,7 @@
         </div>
       </div>
     </div>
-    <div class="send" v-else-if="currentStep === 'custom-fees'">
+    <div class="send" v-else-if="currentStep === 'custom-fees' && !isEIP1559Fees">
       <CustomFees
         @apply="applyCustomFee"
         @update="setCustomFee"
@@ -127,30 +111,40 @@
         :fiatRates="fiatRates"
       />
     </div>
+    <div class="send" v-else-if="currentStep === 'custom-fees' && isEIP1559Fees">
+      <CustomFeesEIP1559
+        @apply="applyCustomFee"
+        @update="setCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="assetChain"
+        :selected-fee="selectedFee"
+        :fees="assetFees"
+        :totalFees="maxOptionActive ? maxSendFees : sendFees"
+        :fiatRates="fiatRates"
+      />
+    </div>
     <div class="send" v-else>
-      <NavBar :showBackButton="true" :backClick="back" backLabel="Back">
-        Send
-      </NavBar>
+      <NavBar :showBackButton="true" :backClick="back" backLabel="Back"> Send </NavBar>
       <div class="send-confirm wrapper form">
         <div class="wrapper_top form">
           <div>
             <label> Send </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
-              <div
-                id="confirm_send_value"
-                class="confirm-value"
-                :style="getAssetColorStyle(asset)"
-              >
+              <div id="confirm_send_value" class="confirm-value" :style="getAssetColorStyle(asset)">
                 {{ dpUI(amount) }} {{ asset }}
               </div>
-              <div class="details-text">${{ amountInFiat }}</div>
+              <div class="details-text" id="send_value_in_fiat">
+                {{ formatFiatUI(amountInFiat) }}
+              </div>
             </div>
           </div>
           <div class="detail-group" id="detail_group_network_fee">
             <label class="text-muted"> Network Fee </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div>~{{ prettyFee }} {{ assetChain }}</div>
-              <div class="details-text">${{ totalFeeInFiat }}</div>
+              <div class="details-text" id="send_network_fee_in_fiat">
+                {{ formatFiatUI(totalFeeInFiat) }}
+              </div>
             </div>
           </div>
           <div class="detail-group" id="detail_group_account_fee">
@@ -163,13 +157,15 @@
                 {{ dpUI(amount) }} {{ asset }} + {{ prettyFee }}
                 {{ assetChain }}
               </div>
-              <div class="font-weight-bold">${{ totalToSendInFiat }}</div>
+              <div class="font-weight-bold" id="total_to_send_in_fiat">
+                {{ formatFiatUI(totalToSendInFiat) }}
+              </div>
             </div>
           </div>
           <div class="mt-40">
             <label>Send To</label>
             <p class="confirm-address" id="confirm-address">
-              {{ this.address ? shortenAddress(this.address) : "" }}
+              {{ this.address ? shortenAddress(this.address) : '' }}
             </p>
           </div>
         </div>
@@ -203,10 +199,7 @@
       @close="closeSendErrorModal"
       :error="sendErrorMessage"
     />
-    <LedgerSignRequestModal
-      :open="signRequestModalOpen"
-      @close="closeSignRequestModal"
-    />
+    <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
     <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
@@ -216,25 +209,17 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
-import {
-  chains,
-  currencyToUnit,
-  unitToCurrency
-} from '@liquality/cryptoassets'
+import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
 import {
   prettyBalance,
   prettyFiatBalance,
   dpUI,
+  formatFiatUI,
   fiatToCrypto
 } from '@/utils/coinFormatter'
-import {
-  getNativeAsset,
-  getAssetColorStyle,
-  getAssetIcon,
-  getFeeAsset
-} from '@/utils/asset'
+import { getNativeAsset, getAssetColorStyle, getAssetIcon, getFeeAsset } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import { getSendFee, getFeeLabel } from '@/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -243,6 +228,7 @@ import SendInput from './SendInput'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
+import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
 
@@ -256,12 +242,14 @@ export default {
     OperationErrorModal,
     LedgerSignRequestModal,
     CustomFees,
+    CustomFeesEIP1559,
     LedgerBridgeModal
   },
-  data () {
+  data() {
     return {
       sendFees: {},
       maxSendFees: {},
+      eip1559fees: {},
       stateAmount: 0,
       stateAmountFiat: 0,
       address: null,
@@ -285,121 +273,118 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
     ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['accountItem', 'client']),
-    account () {
+    account() {
       return this.accountItem(this.accountId)
     },
     amount: {
-      get () {
+      get() {
         return this.stateAmount
       },
-      set (newValue) {
+      set(newValue) {
         if (newValue && !isNaN(newValue)) {
           this.stateAmount = newValue
         } else {
           this.stateAmount = 0.0
         }
-        this.stateAmountFiat = prettyFiatBalance(
-          this.stateAmount,
-          this.fiatRates[this.asset]
-        )
+        this.stateAmountFiat = prettyFiatBalance(this.stateAmount, this.fiatRates[this.asset])
       }
     },
     amountFiat: {
-      get () {
+      get() {
         return this.stateAmountFiat
       },
-      set (newValue) {
-        const value = (newValue || '0')
+      set(newValue) {
+        const value = newValue || '0'
         this.stateAmountFiat = value
         this.stateAmount = fiatToCrypto(value, this.fiatRates[this.asset])
       }
     },
-    balance () {
+    balance() {
       return this.account.balances[this.asset] || 0
     },
-    routeSource () {
+    routeSource() {
       return this.$route.query.source || null
     },
-    assetChain () {
+    assetChain() {
       return getFeeAsset(this.asset) || getNativeAsset(this.asset)
     },
-    assetFees () {
+    assetFees() {
       const assetFees = {}
       if (this.customFee) {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees =
-        this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
       if (fees) {
         Object.assign(assetFees, fees)
       }
 
       return assetFees
     },
-    feesAvailable () {
+    feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
     },
-    currentFee () {
+    currentFee() {
       const fees = this.maxOptionActive ? this.maxSendFees : this.sendFees
       return this.selectedFee in fees ? fees[this.selectedFee] : BN(0)
     },
-    isValidAddress () {
-      return chains[cryptoassets[this.asset].chain].isValidAddress(
-        this.address,
-        this.activeNetwork
-      )
+    isValidAddress() {
+      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
     },
-    addressError () {
+    addressError() {
       if (!this.isValidAddress) {
         return 'Wrong format. Please check the address.'
       }
       return null
     },
-    amountError () {
+    amountError() {
       const amount = BN(this.amount)
       if (amount.gt(this.available)) {
         return 'Lower amount. This exceeds available balance.'
       }
       return null
     },
-    canSend () {
+    canSend() {
       if (!this.address || this.addressError) return false
       if (BN(this.amount).lte(0) || this.amountError) return false
 
       return true
     },
-    prettyFee () {
+    prettyFee() {
       return this.currentFee.dp(6)
     },
-    available () {
+    available() {
       if (cryptoassets[this.asset].type === 'erc20') {
         return unitToCurrency(cryptoassets[this.asset], this.balance)
       } else {
         const maxSendFee =
-          this.selectedFee in this.maxSendFees
-            ? this.maxSendFees[this.selectedFee]
-            : BN(0)
+          this.selectedFee in this.maxSendFees ? this.maxSendFees[this.selectedFee] : BN(0)
         const fee = currencyToUnit(cryptoassets[this.assetChain], maxSendFee)
         const available = BN.max(BN(this.balance).minus(fee), 0)
         return unitToCurrency(cryptoassets[this.asset], available)
       }
     },
-    amountInFiat () {
+    amountInFiat() {
       return prettyFiatBalance(this.amount, this.fiatRates[this.asset])
     },
-    totalFeeInFiat () {
-      return prettyFiatBalance(this.currentFee, this.fiatRates[this.asset])
+    totalFeeInFiat() {
+      return prettyFiatBalance(this.currentFee, this.fiatRates[this.assetChain])
     },
-    selectedFeeLabel () {
+    selectedFeeLabel() {
       return getFeeLabel(this.selectedFee)
     },
-    totalToSendInFiat () {
+    totalToSendInFiat() {
       const total = BN(this.amount).plus(BN(this.currentFee))
       return prettyFiatBalance(total, this.fiatRates[this.asset])
     },
-    amountWithFee () {
+    amountWithFee() {
       return BN(this.amount).plus(BN(this.currentFee))
+    },
+    isEIP1559Fees() {
+      return (
+        this.assetChain === 'ETH' ||
+        (this.assetChain === 'MATIC' && this.activeNetwork === 'testnet')
+      )
     }
   },
   methods: {
@@ -407,16 +392,18 @@ export default {
     ...mapActions('app', ['startBridgeListener']),
     prettyBalance,
     dpUI,
+    formatFiatUI,
     prettyFiatBalance,
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
-    async _updateSendFees (amount) {
+    async _updateSendFees(amount) {
       const getMax = amount === undefined
       if (this.feesAvailable) {
         const sendFees = {}
+
         for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee
+          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
           sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
 
@@ -427,23 +414,13 @@ export default {
             asset: this.asset,
             accountId: this.account.id
           })
-          const feePerBytes = Object.values(this.assetFees).map(
-            (fee) => fee.fee
-          )
-          const value = getMax
-            ? undefined
-            : currencyToUnit(cryptoassets[this.asset], BN(amount))
+          const feePerBytes = Object.values(this.assetFees).map((fee) => fee.fee)
+          const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
           try {
             const txs = feePerBytes.map((fee) => ({ value, fee }))
-            const totalFees = await client.getMethod('getTotalFees')(
-              txs,
-              getMax
-            )
+            const totalFees = await client.getMethod('getTotalFees')(txs, getMax)
             for (const [speed, fee] of Object.entries(this.assetFees)) {
-              const totalFee = unitToCurrency(
-                cryptoassets[this.asset],
-                totalFees[fee.fee]
-              )
+              const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
               sendFees[speed] = totalFee
             }
           } catch (e) {
@@ -456,11 +433,7 @@ export default {
             asset: this.asset,
             accountId: this.account.id
           })
-          const tax = await client.getMethod('getTaxFees')(
-            amount,
-            'uusd',
-            getMax || !amount
-          )
+          const tax = await client.getMethod('getTaxFees')(amount, 'uusd', getMax || !amount)
 
           for (const [speed] of Object.entries(this.assetFees)) {
             sendFees[speed] = sendFees[speed].plus(tax)
@@ -477,10 +450,10 @@ export default {
     updateSendFees: _.debounce(async function (amount) {
       await this._updateSendFees(amount)
     }, 800),
-    async updateMaxSendFees () {
+    async updateMaxSendFees() {
       await this._updateSendFees()
     },
-    async tryToSend () {
+    async tryToSend() {
       if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
         this.loading = true
         this.bridgeModalOpen = true
@@ -509,7 +482,7 @@ export default {
         await this.send()
       }
     },
-    async send () {
+    async send() {
       this.sendErrorMessage = ''
       this.loading = true
       if (this.account?.type.includes('ledger')) {
@@ -517,19 +490,12 @@ export default {
       }
 
       try {
-        const amountToSend = this.maxOptionActive
-          ? this.available
-          : this.amount
+        const amountToSend = this.maxOptionActive ? this.available : this.amount
 
-        const amount = currencyToUnit(
-          cryptoassets[this.asset],
-          amountToSend
-        ).toNumber()
+        const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toNumber()
 
         // validate for custom fees
-        const fee = this.feesAvailable
-          ? this.assetFees[this.selectedFee].fee
-          : undefined
+        const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
 
         await this.sendTransaction({
           network: this.activeNetwork,
@@ -539,7 +505,8 @@ export default {
           accountId: this.account.id,
           amount,
           fee,
-          feeLabel: this.selectedFee
+          feeLabel: this.selectedFee,
+          fiatRate: this.fiatRates[this.asset]
         })
 
         this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
@@ -552,24 +519,24 @@ export default {
         this.sendErrorModalOpen = true
       }
     },
-    toggleMaxAmount () {
+    toggleMaxAmount() {
       this.maxOptionActive = !this.maxOptionActive
       if (this.maxOptionActive) {
         this.amount = BN.min(BN(this.available), dpUI(this.available))
       }
     },
-    back () {
+    back() {
       this.currentStep = 'inputs'
     },
-    closeSendErrorModal () {
+    closeSendErrorModal() {
       this.sendErrorModalOpen = false
       this.loading = false
     },
-    closeSignRequestModal () {
+    closeSignRequestModal() {
       this.signRequestModalOpen = false
       this.loading = false
     },
-    cancelCustomFee () {
+    cancelCustomFee() {
       this.currentStep = 'inputs'
       this.selectedFee = 'average'
     },
@@ -581,10 +548,16 @@ export default {
         this.updateSendFees(this.amount)
       }
     }, 800),
-    applyCustomFee ({ fee }) {
+    applyCustomFee({ fee }) {
       const presetFee = Object.entries(this.assetFees).find(
-        ([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee
+        ([speed, speedFee]) =>
+          speed !== 'custom' &&
+          (speedFee.fee === fee ||
+            (fee.maxPriorityFeePerGas &&
+              speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas &&
+              speedFee.fee.maxFeePerGas === fee.maxFeePerGas))
       )
+
       if (presetFee) {
         const [speed] = presetFee
         this.selectedFee = speed
@@ -592,24 +565,24 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = fee
+        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
         this.selectedFee = 'custom'
       }
       this.currentStep = 'inputs'
     },
-    onCustomFeeSelected () {
+    onCustomFeeSelected() {
       this.currentStep = 'custom-fees'
     },
-    resetCustomFee () {
+    resetCustomFee() {
       this.customFee = null
       this.selectedFee = 'average'
     },
-    closeBridgeModal () {
+    closeBridgeModal() {
       this.loading = false
       this.bridgeModalOpen = false
     }
   },
-  async created () {
+  async created() {
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(0)
     await this.updateMaxSendFees()
@@ -624,7 +597,7 @@ export default {
   },
   watch: {
     selectedFee: {
-      handler () {
+      handler() {
         if (this.maxOptionActive) {
           this.amount = BN.min(BN(this.available), dpUI(this.available))
         }
@@ -688,7 +661,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type="number"] {
+input[type='number'] {
   -moz-appearance: textfield;
 }
 </style>
