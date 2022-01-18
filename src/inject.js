@@ -138,6 +138,13 @@ window[injectionName] = {
         callback('0x' + result.chainIds['${chain}'].toString(16))
       })
     }
+
+    if (method === 'accountsChanged') {
+      window.addEventListener('liqualityAccountsChanged', () => {
+        const addresses = getAddresses()
+        callback(addresses)
+      })
+    }
   },
   autoRefreshOnNetworkChange: false
 }
@@ -170,6 +177,14 @@ function proxyEthereum(chain) {
             window.addEventListener('liqualityChainChanged', ({ detail }) => {
               const result = JSON.parse(detail)
               callback('0x' + result.chainIds[window.ethereumProxyChain].toString(16))
+            })
+          }
+
+          if (method === 'accountsChanged') {
+            window.addEventListener('liqualityAccountsChanged', () => {
+              target.request({ method: 'eth_accounts', params: [] }).then((newAccounts) => {
+                callback(newAccounts)
+              })
             })
           }
         }

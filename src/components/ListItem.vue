@@ -34,7 +34,11 @@
         <div class="list-item-detail" v-if="hasSlot('detail')">
           <slot name="detail"></slot>
         </div>
-        <div class="list-item-detail-sub" id="overview-screen-asset-total-fiat-value" v-if="hasSlot('detail-sub')">
+        <div
+          class="list-item-detail-sub"
+          id="overview-screen-asset-total-fiat-value"
+          v-if="hasSlot('detail-sub')"
+        >
           <slot name="detail-sub"></slot>
         </div>
       </div>

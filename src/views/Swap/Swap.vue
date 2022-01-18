@@ -660,7 +660,7 @@ export default {
       return unitToCurrency(cryptoassets[this.asset], available)
     },
 
-    canCoverAmmFee () {
+    canCoverAmmFee() {
       if (!this.selectedQuote?.bridgeAsset) return true
       const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
       const toSwapFeeInUnits = currencyToUnit(
