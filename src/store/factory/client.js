@@ -326,7 +326,7 @@ function createArbitrumClient(asset, network, mnemonic, derivationPath) {
 }
 
 function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
-  let _asset, feeAsset, tokenAddress
+  let _asset, feeAsset, tokenAddress, stableFee
 
   const terraNetwork = ChainNetworks.terra[network]
 
@@ -339,6 +339,7 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
     case 'UST': {
       _asset = 'uusd'
       feeAsset = 'uusd'
+      stableFee = true
       break
     }
     default: {
@@ -359,7 +360,8 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
       baseDerivationPath,
       asset: _asset,
       feeAsset,
-      tokenAddress
+      tokenAddress,
+      stableFee
     })
   )
   terraClient.addProvider(new TerraSwapProvider(terraNetwork, _asset))
