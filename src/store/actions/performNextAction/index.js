@@ -11,10 +11,18 @@ export const performNextAction = async (store, { network, walletId, id }) => {
   try {
     if (item.type === 'SWAP') {
       const swapProvider = store.getters.swapProvider(network, item.provider)
-      updates = await swapProvider.performNextSwapAction(store, { network, walletId, swap: item })
+      updates = await swapProvider.performNextSwapAction(store, {
+        network,
+        walletId,
+        swap: item
+      })
     }
     if (item.type === 'SEND') {
-      updates = await performNextTransactionAction(store, { network, walletId, transaction: item })
+      updates = await performNextTransactionAction(store, {
+        network,
+        walletId,
+        transaction: item
+      })
     }
   } catch (e) {
     updates = { error: e.toString() }

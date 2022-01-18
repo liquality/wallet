@@ -13,7 +13,7 @@ export const getLockForAsset = async ({ dispatch, commit }, { network, walletId,
       }
     })
 
-    await new Promise(resolve => emitter.$once(`unlock:${key}`, () => resolve()))
+    await new Promise((resolve) => emitter.$once(`unlock:${key}`, () => resolve()))
 
     return dispatch('getLockForAsset', { network, walletId, asset, item })
   }

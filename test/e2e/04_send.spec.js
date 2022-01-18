@@ -41,11 +41,7 @@ describe('SEND feature["TESTNET"]', async () => {
     await overviewPage.SelectNetwork(page)
   })
   afterEach(async () => {
-    try {
-      await browser.close()
-    } catch (e) {
-      throw new Error(e)
-    }
+    await browser.close()
   })
 
   it('Send BTC to another Wrong address. check Review option has been disabled', async () => {
@@ -87,8 +83,8 @@ describe('SEND feature["TESTNET"]', async () => {
     const assetName = 'BNB'
     const coinsToSend = '0.0000001'
     await overviewPage.SelectAssetFromOverview(page, assetName)
-    await page.waitForSelector('#BNB_send_button', { visible: true })
-    await page.click('#BNB_send_button')
+    await page.waitForSelector(`#${assetName}_send_button`, { visible: true })
+    await page.click(`#${assetName}_send_button`)
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
@@ -105,6 +101,46 @@ describe('SEND feature["TESTNET"]', async () => {
     await transactionDetailsPage.ValidateTime(page)
     await transactionDetailsPage.ValidateStatus(page)
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
+  })
+  it('Send RBTC to another RBTC wallet["PULL_REQUEST_TEST"]', async () => {
+    const assetName = 'RBTC'
+    const coinsToSend = '0.0000001'
+    await overviewPage.SelectAssetFromOverview(page, assetName)
+    await page.waitForSelector(`#${assetName}_send_button`, { visible: true })
+    await page.click(`#${assetName}_send_button`)
+    // Enter send amount (or) coins
+    await sendPage.EnterSendAmount(page, coinsToSend)
+    // Send address
+    await sendPage.EnterSendToAddress(page, '0x172E90C757c66f0D93e96165FdB7b3C03337Be6a')
+    // Click Send Review Button
+    await page.waitForSelector('#send_review_button', { visible: true, timeout: 60000 })
+    try {
+      await page.click('#send_review_button', { clickCount: 5 })
+      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await page.$eval('#send_review_button', el => el.click())
+      }
+    }
+    // Confirm SEND & validate send fiat details
+    await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
+    const sentFiatAmount = await page.$eval('#send_value_in_fiat', el => el.innerText)
+    expect(sentFiatAmount.toString().trim().replace('$', '')).not.equals('0.00')
+
+    const sentNetworkFiatAmount = await page.$eval('#send_network_fee_in_fiat', el => el.innerText)
+    expect(sentNetworkFiatAmount.toString().trim().replace('$', '')).not.equals('0.00')
+
+    const totalSendAmountFiat = await page.$eval('#total_to_send_in_fiat', el => el.innerText)
+    expect(totalSendAmountFiat.toString().trim().replace('$', '')).not.equals('0.00')
+
+    await page.click('#send_button_confirm')
+    await page.waitForSelector('#SEND_RBTC_RBTC', { visible: true, timeout: 60000 })
+    await page.click('#SEND_RBTC_RBTC')
+
+    // Transaction details page validations
+    await page.waitForSelector('#transaction_details_status_number_of_confirmations', { visible: true, timeout: 180000 })
+    const sendStatus = await page.$eval('#transaction_details_status_and_confirmations', el => el.innerText)
+    expect(sendStatus).contains('Completed')
   })
   it('ETH Send Max value check against Available Balance', async () => {
     const assetName = 'ETH'

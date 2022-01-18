@@ -3,6 +3,7 @@ const OverviewPage = require('../pages/OverviewPage')
 const HomePage = require('../pages/HomePage')
 const PasswordPage = require('../pages/PasswordPage')
 const expect = require('chai').expect
+const assert = require('chai').assert
 
 const puppeteer = require('puppeteer')
 
@@ -25,11 +26,7 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
     await homePage.ClickOnAcceptPrivacy(page)
   })
   afterEach(async () => {
-    try {
-      await browser.close()
-    } catch (e) {
-      throw new Error(e)
-    }
+    await browser.close()
   })
 
   // https://www.notion.so/Wallet-should-validate-mnemonic-per-BIP-39-dac68dd41c664f24a7b4e657fc546281
@@ -150,15 +147,23 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
       'Wallet stats has currency should be USD').contain('USD')
 
     // Check the Total amount - 10s wait to load amount
-    const totalAmount = await overviewPage.GetTotalLiquidity(page)
-    expect(parseInt(totalAmount), 'Funds in my wallet should be greater than 0 USD').greaterThanOrEqual(0)
+    let totalAmount
+    totalAmount = await overviewPage.GetTotalLiquidity(page)
+    console.log('total wallet fiat amount', parseInt(totalAmount, 10))
+    await page.waitForTimeout(120000)
+    totalAmount = await overviewPage.GetTotalLiquidity(page)
+    console.log('total wallet fiat amount after 2 min wait', parseInt(totalAmount, 10))
+    await testUtil.takeScreenshot(page, 'ethAddress-takeScreenshot')
+    expect(parseInt(totalAmount, 10), 'Funds in my wallet should be greater than 0 USD').greaterThan(0)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
 
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
-    expect(ethAddress, 'ETH address should not be null').not.equals(null)
+    assert.isNotEmpty(ethAddress, 'ETH address should not be empty')
+    // expect(ethAddress, 'ETH address should not be null').not.to.be.empty
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
-    expect(rskAddress, 'RSK address should not be null').not.equals(null)
+    assert.isNotEmpty(rskAddress, 'RSK address should not be empty')
+    // expect(rskAddress, 'RSK address should not be null').not.to.be.empty
     expect(rskAddress, `ETH address ${ethAddress} & RSK address ${rskAddress} should be equal if balance is greater than 0`)
       .equals(ethAddress)
 
