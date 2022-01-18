@@ -1,9 +1,7 @@
-import {
-  chains,
-  isEthereumChain as _isEthereumChain
-} from '@liquality/cryptoassets'
+import { chains, isEthereumChain as _isEthereumChain } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import * as ethers from 'ethers'
+import axios from 'axios'
 import tokenABI from './tokenABI.json'
 import buildConfig from '../build.config'
 
@@ -40,18 +38,18 @@ const EXPLORERS = {
   },
   bsc: {
     testnet: {
-      tx: 'https://testnet.bscscan.com/tx/{hash}',
+      tx: 'https://testnet.bscscan.com/tx/0x{hash}',
       address: 'https://testnet.bscscan.com/address/{hash}'
     },
     mainnet: {
-      tx: 'https://bscscan.com/tx/{hash}',
+      tx: 'https://bscscan.com/tx/0x{hash}',
       address: 'https://bscscan.com/address/{hash}'
     }
   },
   polygon: {
     testnet: {
-      tx: 'https://polygonscan.com/tx/0x{hash}',
-      address: 'https://polygonscan.com/address/{hash}'
+      tx: 'https://mumbai.polygonscan.com/tx/0x{hash}',
+      address: 'https://mumbai.polygonscan.com/address/{hash}'
     },
     mainnet: {
       tx: 'https://polygonscan.com/tx/0x{hash}',
@@ -81,43 +79,53 @@ const EXPLORERS = {
   arbitrum: {
     testnet: {
       tx: 'https://rinkeby-explorer.arbitrum.io/tx/0x{hash}',
-      address: 'https://rinkeby-explorer.arbitrum.io/address/0x{hash}'
+      address: 'https://rinkeby-explorer.arbitrum.io/address/{hash}'
     },
     mainnet: {
-      tx: 'https://explorer.arbitrum.io/tx/0x',
-      address: 'https://explorer.arbitrum.io/address/0x'
+      tx: 'https://explorer.arbitrum.io/tx/0x{hash}',
+      address: 'https://explorer.arbitrum.io/address/{hash}'
+    }
+  },
+  terra: {
+    testnet: {
+      tx: 'https://finder.terra.money/bombay-12/tx/{hash}',
+      address: 'https://finder.terra.money/bombay-12/address/{hash}'
+    },
+    mainnet: {
+      tx: 'https://finder.terra.money/columbus-5/tx/{hash}',
+      address: 'https://finder.terra.money/columbus-5/address/{hash}'
     }
   }
 }
 
-export const isERC20 = asset => {
+export const isERC20 = (asset) => {
   return cryptoassets[asset]?.type === 'erc20'
 }
 
-export const isEthereumChain = asset => {
+export const isEthereumChain = (asset) => {
   const chain = cryptoassets[asset]?.chain
   return _isEthereumChain(chain)
 }
 
-export const isEthereumNativeAsset = asset => {
+export const isEthereumNativeAsset = (asset) => {
   const chainId = cryptoassets[asset]?.chain
-  if (
-    chainId &&
-    _isEthereumChain(chainId) &&
-    chains[chainId].nativeAsset === asset
-  ) {
+  if (chainId && _isEthereumChain(chainId) && chains[chainId].nativeAsset === asset) {
     return true
   }
 
   return false
 }
 
-export const getNativeAsset = asset => {
+export const getNativeAsset = (asset) => {
   const chainId = cryptoassets[asset]?.chain
   return chainId ? chains[chainId].nativeAsset : asset
 }
 
-export const getAssetColorStyle = asset => {
+export const getFeeAsset = (asset) => {
+  return cryptoassets[asset]?.feeAsset
+}
+
+export const getAssetColorStyle = (asset) => {
   const assetData = cryptoassets[asset]
   if (assetData && assetData.color) {
     return { color: assetData.color }
@@ -164,28 +172,36 @@ export const getExplorerTransactionHash = (asset, hash) => {
 
 export const tokenDetailProviders = {
   ethereum: {
-    async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`)
+    async getDetails(contractAddress) {
+      return await fetchTokenDetails(
+        contractAddress,
+        `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
+      )
     }
   },
   polygon: {
-    async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, 'https://rpc-mainnet.matic.network/')
+    async getDetails(contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://polygon-rpc.com')
     }
   },
   rsk: {
-    async getDetails (contractAddress) {
-      return await fetchTokenDetails(contractAddress, 'https://public-node.rsk.co')
+    async getDetails(contractAddress) {
+      return await fetchTokenDetails(contractAddress, process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET)
     }
   },
   bsc: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://bsc-dataseed.binance.org')
     }
   },
   arbitrum: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://arb1.arbitrum.io/rpc')
+    }
+  },
+  terra: {
+    async getDetails(contractAddress) {
+      return await fetchTerraToken(contractAddress, 'https://arb1.arbitrum.io/rpc')
     }
   }
 }
@@ -213,4 +229,18 @@ export const estimateGas = async ({ data, to, value }) => {
   const provider = ethers.getDefaultProvider()
 
   return await provider.estimateGas(paramsForGasEstimate)
+}
+
+export const fetchTerraToken = async (address) => {
+  const {
+    data: { mainnet: tokens }
+  } = await axios.get('https://assets.terra.money/cw20/tokens.json')
+  const token = tokens[address]
+  const { symbol } = token
+
+  return {
+    name: symbol,
+    symbol,
+    decimals: 6
+  }
 }

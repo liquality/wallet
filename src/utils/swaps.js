@@ -3,37 +3,33 @@ import buildConfig from '../build.config'
 export const SwapProviderType = {
   LIQUALITY: 'LIQUALITY',
   UNISWAPV2: 'UNISWAPV2',
-  ONEINCHV3: 'ONEINCHV3',
+  ONEINCHV4: 'ONEINCHV4',
   THORCHAIN: 'THORCHAIN',
   LIQUALITYBOOST: 'LIQUALITYBOOST',
-  FASTBTC: 'FASTBTC'
+  FASTBTC: 'FASTBTC',
+  SOVRYN: 'SOVRYN'
 }
 
 const swapProviderRoot = {
   [SwapProviderType.LIQUALITY]: 'swaps/liquality',
   [SwapProviderType.UNISWAPV2]: 'swaps/uniswap',
-  [SwapProviderType.ONEINCHV3]: 'swaps/oneinch',
+  [SwapProviderType.ONEINCHV4]: 'swaps/oneinch',
   [SwapProviderType.THORCHAIN]: 'swaps/thorchain',
   [SwapProviderType.FASTBTC]: 'swaps/fastbtc',
-  [SwapProviderType.LIQUALITYBOOST]: 'swaps/liqualityboost'
+  [SwapProviderType.LIQUALITYBOOST]: 'swaps/liqualityboost',
+  [SwapProviderType.SOVRYN]: 'swaps/sovryn'
 }
 
-export function getSwapProviderConfig (network, providerId) {
+export function getSwapProviderConfig(network, providerId) {
   return buildConfig.swapProviders[network][providerId]
 }
 
-export function getSwapDetailsComponent (network, providerId) {
-  const config = getSwapProviderConfig(network, providerId)
-  const root = swapProviderRoot[config.type]
-  return require(`../${root}/SwapDetails.vue`).default
-}
-
-export function getSwapProviderIcon (network, providerId) {
+export function getSwapProviderIcon(network, providerId) {
   const config = getSwapProviderConfig(network, providerId)
   return require(`../assets/icons/swapProviders/${config.icon}?inline`)
 }
 
-export function getSwapProviderInfo (network, providerId) {
+export function getSwapProviderInfo(network, providerId) {
   const config = getSwapProviderConfig(network, providerId)
   const root = swapProviderRoot[config.type]
   return require(`../${root}/info.json`)

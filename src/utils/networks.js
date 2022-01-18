@@ -2,6 +2,7 @@ import { BitcoinNetworks } from '@liquality/bitcoin-networks'
 import { EthereumNetworks } from '@liquality/ethereum-networks'
 import { NearNetworks } from '@liquality/near-networks'
 import { SolanaNetworks } from '@liquality/solana-networks'
+import { TerraNetworks } from '@liquality/terra-networks'
 
 export const Networks = ['mainnet', 'testnet']
 
@@ -37,5 +38,9 @@ export const ChainNetworks = {
   solana: {
     testnet: SolanaNetworks.solana_testnet,
     mainnet: SolanaNetworks.solana_mainnet
+  },
+  terra: {
+    testnet: TerraNetworks.terra_testnet,
+    mainnet: TerraNetworks.terra_mainnet
   }
 }

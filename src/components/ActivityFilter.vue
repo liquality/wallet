@@ -3,12 +3,10 @@
     <div class="activity-filter-header h-padding">
       <div class="activity-filter-header-actions">
         <div @click.stop="open = !open" class="filter-action">
-        <ChevronDownIcon :class="open ? '' : 'right'" />
-        Filters {{ filterCount > 0 ? `(${filterCount})` : '' }}
-      </div>
-      <div @click.stop="resetFilters"
-           class="reset-action"
-           v-if="filterCount > 0">
+          <ChevronDownIcon :class="open ? '' : 'right'" />
+          Filters {{ filterCount > 0 ? `(${filterCount})` : '' }}
+        </div>
+        <div @click.stop="resetFilters" class="reset-action" v-if="filterCount > 0">
           <CloseIcon :class="open ? '' : 'right'" />
           <span class="text-muted">Reset</span>
         </div>
@@ -23,59 +21,79 @@
         <div class="activity-filter-section-title-dates h-padding">Date Range</div>
         <div class="date-filter-inputs h-padding form">
           <date-pick v-model="dateFilters.start">
-              <template v-slot:default="{toggle, inputValue, inputEvents}">
-                  <div class="input-group" @click="toggle">
-                    <input type="text" class="form-control form-control-sm" placeholder="Start" :value="inputValue" v-on="inputEvents">
-                    <CalendarIcon />
-                  </div>
-              </template>
+            <template v-slot:default="{ toggle, inputValue, inputEvents }">
+              <div class="input-group" @click="toggle">
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  placeholder="Start"
+                  :value="inputValue"
+                  v-on="inputEvents"
+                />
+                <CalendarIcon />
+              </div>
+            </template>
           </date-pick>
           <date-pick v-model="dateFilters.end">
-              <template v-slot:default="{toggle, inputValue, inputEvents}">
-                  <div class="input-group" @click="toggle">
-                    <input type="text" class="form-control form-control-sm" placeholder="End" :value="inputValue" v-on="inputEvents">
-                    <CalendarIcon />
-                  </div>
-              </template>
+            <template v-slot:default="{ toggle, inputValue, inputEvents }">
+              <div class="input-group" @click="toggle">
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  placeholder="End"
+                  :value="inputValue"
+                  v-on="inputEvents"
+                />
+                <CalendarIcon />
+              </div>
+            </template>
           </date-pick>
         </div>
       </div>
       <div class="activity-filter-type">
-        <div class="activity-filter-section-title h-padding">
-          Type
-        </div>
-        <ListItem v-for="(filter, key) in typeFilters"
-                  :key="key"
-                  @item-selected="toggleTypeFilter(key)"
-                  :container-class="filter.selected ? 'selected-item' : ''"
-                  :item-class="'h-padding'"
-                  h-padding
-                  :item-styles="{ height: '40px', paddingTop: '10px', paddingBottom: '10px'}">
-            <template #icon>
-              <img :src="getItemIcon(filter.icon)"/>
-            </template>
-            {{ filter.label }}
-            <template #detail-icon>
-              <img :src="getItemIcon('selected')" v-if="filter.selected"/>
-            </template>
+        <div class="activity-filter-section-title h-padding">Type</div>
+        <ListItem
+          v-for="(filter, key) in typeFilters"
+          :key="key"
+          @item-selected="toggleTypeFilter(key)"
+          :container-class="filter.selected ? 'selected-item' : ''"
+          :item-class="'h-padding'"
+          h-padding
+          :item-styles="{
+            height: '40px',
+            paddingTop: '10px',
+            paddingBottom: '10px'
+          }"
+        >
+          <template #icon>
+            <img :src="getItemIcon(filter.icon)" />
+          </template>
+          {{ filter.label }}
+          <template #detail-icon>
+            <img :src="getItemIcon('selected')" v-if="filter.selected" />
+          </template>
         </ListItem>
       </div>
       <div class="activity-filter-type">
-        <div class="activity-filter-section-title h-padding">
-          Status
-        </div>
-        <ListItem v-for="(filter, key) in statusFilters"
-                  :key="key"
-                  @item-selected="toggleStatusFilter(key)"
-                  :item-class="filter.selected ? 'selected-item' : ''"
-                  :item-styles="{ height: '40px', paddingTop: '10px', paddingBottom: '10px'}">
-            <template #icon>
-              <img :src="getItemIcon(filter.icon)"/>
-            </template>
-            {{ filter.label }}
-            <template #detail-icon>
-                <img :src="getItemIcon('selected')" v-if="filter.selected"/>
-            </template>
+        <div class="activity-filter-section-title h-padding">Status</div>
+        <ListItem
+          v-for="(filter, key) in statusFilters"
+          :key="key"
+          @item-selected="toggleStatusFilter(key)"
+          :item-class="filter.selected ? 'selected-item' : ''"
+          :item-styles="{
+            height: '40px',
+            paddingTop: '10px',
+            paddingBottom: '10px'
+          }"
+        >
+          <template #icon>
+            <img :src="getItemIcon(filter.icon)" />
+          </template>
+          {{ filter.label }}
+          <template #detail-icon>
+            <img :src="getItemIcon('selected')" v-if="filter.selected" />
+          </template>
         </ListItem>
       </div>
     </div>
@@ -162,7 +180,7 @@ export default {
     ListItem,
     DatePick
   },
-  data () {
+  data() {
     return {
       headers: [...CSV_HEADERS],
       open: false,
@@ -179,46 +197,46 @@ export default {
     }
   },
   computed: {
-    filterCount () {
+    filterCount() {
       const count = this.typeFiltersCount + this.statusFiltersCount
       if (this.dateFilters.start !== null || this.dateFilters.end !== null) {
         return count + 1
       }
       return count
     },
-    typeFiltersCount () {
-      return Object.values(this.typeFilters)
-        .filter(f => f.selected === true)
-        .length
+    typeFiltersCount() {
+      return Object.values(this.typeFilters).filter((f) => f.selected === true).length
     },
-    statusFiltersCount () {
-      return Object.values(this.statusFilters)
-        .filter(f => f.selected === true)
-        .length
+    statusFiltersCount() {
+      return Object.values(this.statusFilters).filter((f) => f.selected === true).length
     }
   },
   methods: {
     getCSVContent,
     getItemIcon,
-    toggleTypeFilter (key) {
+    toggleTypeFilter(key) {
       if (key in this.typeFilters) {
         this.typeFilters[key].selected = !this.typeFilters[key].selected
         this.typeFilters = { ...this.typeFilters }
         this.applyFilters()
       }
     },
-    toggleStatusFilter (key) {
+    toggleStatusFilter(key) {
       if (key in this.statusFilters) {
         this.statusFilters[key].selected = !this.statusFilters[key].selected
         this.statusFilters = { ...this.statusFilters }
         this.applyFilters()
       }
     },
-    exportActivity () {
+    exportActivity() {
       const content = this.getCSVContent(this.activityData, this.headers)
-      downloadFile({ filename: 'activity.csv', type: 'text/csv;charset=utf-8;', content })
+      downloadFile({
+        filename: 'activity.csv',
+        type: 'text/csv;charset=utf-8;',
+        content
+      })
     },
-    resetFilters () {
+    resetFilters() {
       this.dateFilters = { start: null, end: null }
       for (const key in this.typeFilters) {
         this.typeFilters[key].selected = false
@@ -231,7 +249,7 @@ export default {
       this.statusFilters = { ...this.statusFilters }
       this.applyFilters()
     },
-    applyFilters () {
+    applyFilters() {
       const types = []
       const statuses = []
       for (const key in this.typeFilters) {
@@ -292,14 +310,14 @@ export default {
     }
 
     .reset-action {
-        display: flex;
-        cursor: pointer;
-        svg {
-          width: 10px;
-          margin-right: 5px;
-          vertical-align: middle;
-        }
+      display: flex;
+      cursor: pointer;
+      svg {
+        width: 10px;
+        margin-right: 5px;
+        vertical-align: middle;
       }
+    }
 
     .filter-export {
       font-size: $font-size-tiny;

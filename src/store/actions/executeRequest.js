@@ -1,10 +1,10 @@
-export const executeRequest = async ({ getters, dispatch, state, rootState }, { request }) => {
+export const executeRequest = async ({ getters, dispatch, rootState }, { request }) => {
   // Send transactions through wallet managed action
   const { network, walletId, asset, accountId } = request
   const { accountItem } = getters
   const account = accountItem(accountId)
   let call
-  const result = await new Promise((resolve, reject) => {
+  const result = await new Promise((resolve) => {
     if (request.method === 'chain.sendTransaction') {
       call = dispatch('sendTransaction', {
         network,
@@ -15,18 +15,17 @@ export const executeRequest = async ({ getters, dispatch, state, rootState }, { 
         amount: request.args[0].value,
         data: request.args[0].data,
         fee: request.args[0].fee,
+        feeLabel: request.args[0].feeLabel,
         gas: request.args[0].gas
       })
     } else {
-    // Otherwise build client
-      const client = getters.client(
-        {
-          network,
-          walletId,
-          asset,
-          accountId
-        }
-      )
+      // Otherwise build client
+      const client = getters.client({
+        network,
+        walletId,
+        asset,
+        accountId
+      })
       let methodFunc
       if (request.method.includes('.')) {
         const [namespace, fnName] = request.method.split('.')
@@ -38,14 +37,27 @@ export const executeRequest = async ({ getters, dispatch, state, rootState }, { 
       call = methodFunc(...request.args)
     }
 
-    const { usbBridgeTransportCreated } = rootState.app
-    if (account?.type.includes('ledger') && !usbBridgeTransportCreated) {
-      dispatch('app/startBridgeListener').then((bridgeEmiter) => {
-        bridgeEmiter.once('TRANSPORT_CREATED', () => {
-          resolve(call)
+    const { ledgerBridgeConnected, ledgerBridgeTransportConnected } = rootState.app
+    if (account?.type.includes('ledger')) {
+      if (!ledgerBridgeConnected) {
+        dispatch('app/startBridgeListener', {
+          onConnect: () => {
+            resolve(call)
+          }
+        }).then(() => {
+          dispatch('app/openUSBBridgeWindow')
         })
-        dispatch('app/openUSBBridgeWindow')
-      })
+      } else if (!ledgerBridgeTransportConnected) {
+        dispatch('app/startBridgeListener', {
+          onTransportConnect: () => {
+            resolve(call)
+          }
+        }).then(() => {
+          dispatch('app/openUSBBridgeWindow')
+        })
+      } else {
+        resolve(call)
+      }
     } else {
       resolve(call)
     }

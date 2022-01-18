@@ -7,7 +7,7 @@
       <div class="wrapper_top form">
         <h2>Request to Sign</h2>
         <img :src="getAssetIcon(asset)" class="permission-sign_icon mt-4 mb-2" />
-        <p class="permission-sign_address">{{shortenAddress(address)}}</p>
+        <p class="permission-sign_address">{{ shortenAddress(address) }}</p>
         <div class="permission-sign_message mt-4">
           <p class="text-left mb-1">Message:</p>
           <textarea v-model="message" readonly></textarea>
@@ -16,8 +16,14 @@
 
       <div class="wrapper_bottom">
         <div class="button-group">
-          <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Cancel</button>
-          <button class="btn btn-primary btn-lg btn-icon" @click.stop="reply(true)" :disabled="loading">
+          <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary btn-lg btn-icon"
+            @click.stop="reply(true)"
+            :disabled="loading"
+          >
             <SpinnerIcon class="btn-loading" v-if="loading" />
             <template v-else>Sign</template>
           </button>
@@ -34,11 +40,11 @@ import { shortenAddress } from '@/utils/address'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 
-function isHex (str) {
+function isHex(str) {
   return Boolean(str.match(/^[0-9a-f]+$/i))
 }
 
-function hexToAscii (hex) {
+function hexToAscii(hex) {
   hex = hex.replace('0x', '')
   if (!isHex(hex)) return hex
 
@@ -54,7 +60,7 @@ export default {
   components: {
     SpinnerIcon
   },
-  data () {
+  data() {
     return {
       loading: false,
       replied: false
@@ -65,7 +71,7 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
-    async reply (allowed) {
+    async reply(allowed) {
       if (this.loading) return
       this.loading = true
 
@@ -86,30 +92,24 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId']),
-    logo () {
+    logo() {
       return LogoWallet
     },
-    asset () {
+    asset() {
       return this.request.asset
     },
-    address () {
+    address() {
       return this.request.args[1]
     },
-    message () {
+    message() {
       return hexToAscii(this.request.args[0])
     },
-    request () {
+    request() {
       return {
         ...this.$route.query,
         args: JSON.parse(this.$route.query.args)
       }
     }
-  },
-  beforeDestroy () {
-    // TODO: need to reply correctly when window is closed
-    if (this.replied) return
-
-    this.reply(false)
   }
 }
 </script>

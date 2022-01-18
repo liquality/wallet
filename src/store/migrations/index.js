@@ -17,6 +17,8 @@ import {
 } from './11_12_rsk_legacy_derivation_path'
 import { rskFishToken } from './13_rsk_fish_token'
 import { accountSetDerivationPath } from './14_account_set_derivation_path'
+import { accountsChainsSetEnabled } from './15_accounts_chains_set_enabled'
+import { enableTerraChain } from './16_enable_terra_chain'
 
 const migrations = [
   firstMigration, // v1
@@ -32,24 +34,26 @@ const migrations = [
   rskLegacyDerivationPath, // v11
   rskLegacyDerivationPathFix, // v12
   rskFishToken, // v13
-  accountSetDerivationPath // v14
+  accountSetDerivationPath, // v14
+  accountsChainsSetEnabled, // v15
+  enableTerraChain // v16
 ]
 
 const LATEST_VERSION = migrations[migrations.length - 1].version
 
-function isMigrationNeeded (state) {
+function isMigrationNeeded(state) {
   const currentVersion = state.version || 0
   return currentVersion < LATEST_VERSION
 }
 
-async function processMigrations (state) {
+async function processMigrations(state) {
   const currentVersion = state.version || 0
 
   let newState = cloneDeep(state)
   for (const migration of migrations) {
     if (currentVersion < migration.version) {
       try {
-        newState = await migration.migrate(cloneDeep(state))
+        newState = await migration.migrate(cloneDeep(newState))
         newState.version = migration.version
       } catch (e) {
         console.error(`Failed to migrate to v${migration.version}`, e)

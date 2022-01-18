@@ -1,51 +1,63 @@
 <template>
   <div class="account-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account-title"><img :src="getAssetIcon(asset)" class="asset-icon"/> {{ asset }}</span>
+      <span class="account-title"
+        ><img :src="getAssetIcon(asset)" class="asset-icon" /> {{ asset }}</span
+      >
     </NavBar>
     <div class="account-content">
       <div class="account-content-top">
-        <RefreshIcon @click.stop="refresh"
-                     class="account-container_refresh-icon"
-                     id="refresh-icon"
-                     :class="{ 'infinity-rotate': updatingBalances }"
+        <RefreshIcon
+          @click.stop="refresh"
+          class="account-container_refresh-icon"
+          id="refresh-icon"
+          :class="{ 'infinity-rotate': updatingBalances }"
         />
         <div class="account-container_balance">
           <div class="account-container_balance_fiat" :id="`${asset}_fiat_value`">
             <span v-if="fiatRates[asset]">
-              ${{ prettyFiatBalance(balance, fiatRates[asset]) }}
+              {{ formatFiatUI(formatFiat(fiat)) }}
             </span>
             <span v-else>&nbsp;</span>
           </div>
           <div>
-            <span class="account-container_balance_value"
-                  :id="`${asset}_balance_value`"
-                  :style="{ fontSize: balanceFontSize }">
+            <span
+              class="account-container_balance_value"
+              :id="`${asset}_balance_value`"
+            >
               {{ balance }}
             </span>
             <span class="account-container_balance_code">{{ asset }}</span>
           </div>
         </div>
         <div v-if="address" class="account-container_address">
-          <button class="btn btn-outline-light" :id="`${asset}_address_container`"
-                  @click="copyAddress"
-                  v-tooltip.bottom="{ content: addressCopied ? 'Copied!' : 'Copy', hideOnTargetClick: false }">
+          <button
+            class="btn btn-outline-light"
+            :id="`${asset}_address_container`"
+            @click="copyAddress"
+            v-tooltip.bottom="{
+              content: addressCopied ? 'Copied!' : 'Click to copy',
+              hideOnTargetClick: false
+            }"
+          >
             {{ shortenAddress(address) }}
           </button>
-          <a class="eye-btn"
-             :id="`${asset}_view_in_explorer`"
-             @click="copyAddress"
-             :href="addressLink"
-             target="_blank"
-             v-tooltip.bottom="{ content: 'View in Explorer' }">
-            <EyeIcon/>
+          <a
+            class="eye-btn"
+            :id="`${asset}_view_in_explorer`"
+            @click="copyAddress"
+            :href="addressLink"
+            target="_blank"
+            v-tooltip.bottom="{ content: 'View in Explorer' }"
+          >
+            <EyeIcon />
           </a>
         </div>
         <div class="account-container_actions">
           <router-link :to="`/accounts/${accountId}/${asset}/send`">
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`">
-                <SendIcon class="account-container_actions_button_icon"/>
+                <SendIcon class="account-container_actions_button_icon" />
               </div>
               Send
             </button>
@@ -53,7 +65,11 @@
           <router-link :to="`/accounts/${accountId}/${asset}/swap`">
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
-                <SwapIcon class="account-container_actions_button_icon account-container_actions_button_swap"/>
+                <SwapIcon
+                  class="
+                    account-container_actions_button_icon account-container_actions_button_swap
+                  "
+                />
               </div>
               Swap
             </button>
@@ -61,7 +77,7 @@
           <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`">
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
-                <ReceiveIcon class="account-container_actions_button_icon"/>
+                <ReceiveIcon class="account-container_actions_button_icon" />
               </div>
               Receive
             </button>
@@ -69,10 +85,12 @@
         </div>
       </div>
       <div class="account-container_transactions">
-        <ActivityFilter @filters-changed="applyFilters"
-                        :activity-data="activityData"
-                        v-if="activityData.length > 0"/>
-        <TransactionList :transactions="activityData"/>
+        <ActivityFilter
+          @filters-changed="applyFilters"
+          :activity-data="activityData"
+          v-if="activityData.length > 0"
+        />
+        <TransactionList :transactions="activityData" />
         <div class="activity-empty" v-if="activityData.length <= 0">
           Once you start using your wallet you will see the activity here
         </div>
@@ -90,13 +108,15 @@ import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
-import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyBalance, formatFiat, formatFiatUI } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
 import { getAssetIcon, getAddressExplorerLink } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
+import BN from 'bignumber.js'
+import { formatFontSize } from '@/utils/fontSize'
 
 import amplitude from 'amplitude-js'
 
@@ -113,7 +133,7 @@ export default {
     TransactionList,
     EyeIcon
   },
-  data () {
+  data() {
     return {
       addressCopied: false,
       activityData: [],
@@ -132,55 +152,44 @@ export default {
       'fiatRates',
       'marketData'
     ]),
-    account () {
+    account() {
       return this.accountItem(this.accountId)
     },
-    balance () {
+    fiat() {
+      return this.account?.fiatBalances?.[this.asset] || BN(0)
+    },
+    balance() {
       return prettyBalance(this.account?.balances[this.asset] || 0, this.asset)
     },
-    markets () {
+    markets() {
       return this.marketData[this.activeNetwork][this.asset]
     },
-    assetHistory () {
+    assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
     },
-    balanceFontSize () {
-      let fontSize = 50
-      if (this.balance.length > 6) {
-        fontSize = 30
-      } else if (this.balance.length > 13) {
-        fontSize = 15
-      }
-
-      return `${fontSize}px`
-    },
-    addressLink () {
+    addressLink() {
       if (this.account) {
-        return getAddressExplorerLink(
-          this.address,
-          this.asset,
-          this.activeNetwork
-        )
+        return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
       }
 
       return '#'
     }
   },
   methods: {
-    ...mapActions([
-      'updateAccountBalance',
-      'getUnusedAddresses',
-      'trackAnalytics'
-    ]),
+    ...mapActions(['updateAccountBalance', 'getUnusedAddresses', 'trackAnalytics']),
     getAssetIcon,
     shortenAddress,
-    prettyFiatBalance,
-    async copyAddress () {
+    formatFontSize,
+    formatFiat,
+    formatFiatUI,
+    async copyAddress() {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true
-      setTimeout(() => { this.addressCopied = false }, 2000)
+      setTimeout(() => {
+        this.addressCopied = false
+      }, 2000)
     },
-    async refresh () {
+    async refresh() {
       if (this.updatingBalances) return
 
       this.updatingBalances = true
@@ -191,13 +200,16 @@ export default {
       })
       this.updatingBalances = false
     },
-    applyFilters (filters) {
+    applyFilters(filters) {
       this.activityData = applyActivityFilters([...this.assetHistory], filters)
     }
   },
-  async created () {
+  async created() {
     if (this.account && this.account.type.includes('ledger')) {
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0])
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
+        this.account.addresses[0],
+        this.activeNetwork
+      )
     } else {
       const addresses = await this.getUnusedAddresses({
         network: this.activeNetwork,
@@ -205,7 +217,8 @@ export default {
         assets: [this.asset],
         accountId: this.accountId
       })
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(addresses[0])
+      const chainId = cryptoassets[this.asset]?.chain
+      this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
@@ -229,20 +242,9 @@ export default {
         label: `Select ${this.asset} (${chain})`
       }
     })
-
-    if (this.balance > 0) {
-      this.trackAnalytics({
-        event: 'Hold Value',
-        properties: {
-          category: 'Hold Value',
-          action: 'Asset value greater than 0',
-          label: `${this.asset} (${chain}) on ${this.activeNetwork}`
-        }
-      })
-    }
   },
   watch: {
-    activeNetwork () {
+    activeNetwork() {
       this.activityData = [...this.assetHistory]
     }
   }
@@ -251,7 +253,6 @@ export default {
 
 <style lang="scss">
 .account-container {
-
   .account-content-top {
     height: 220px;
     display: flex;
@@ -273,6 +274,7 @@ export default {
     &_value {
       line-height: 36px;
       margin-right: 8px;
+      font-size: 30px;
     }
 
     &_code {
@@ -358,7 +360,7 @@ export default {
 
     .eye-btn {
       position: absolute;
-      right: 70px;
+      right: 60px;
       height: 40px;
       width: 35px;
       background-color: transparent;
@@ -386,5 +388,4 @@ export default {
     }
   }
 }
-
 </style>

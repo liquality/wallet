@@ -6,7 +6,7 @@ import { LEDGER_BITCOIN_OPTIONS } from '@/utils/ledger-bridge-provider'
 
 const getBitcoinDerivationPath = (accountType, coinType, index) => {
   if (accountType.includes('ledger')) {
-    const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === accountType)
+    const option = LEDGER_BITCOIN_OPTIONS.find((o) => o.name === accountType)
     const { addressType } = option
     return `${BTC_ADDRESS_TYPE_TO_PREFIX[addressType]}'/${coinType}'/${index}'`
   } else {
@@ -55,6 +55,10 @@ const derivationPaths = {
   [ChainId.Solana]: (network, index) => {
     const solanaNetwork = ChainNetworks[ChainId.Solana][network]
     return `m/44'/501'/${solanaNetwork.walletIndex}'/${index}'`
+  },
+  [ChainId.Terra]: (network, index) => {
+    const terraNetwork = ChainNetworks[ChainId.Terra][network]
+    return `'m/44'/${terraNetwork.coinType}'/${index}'`
   }
 }
 

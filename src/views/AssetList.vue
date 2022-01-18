@@ -1,32 +1,30 @@
 <template>
   <div class="asset-list">
-    <NavBar showMenu="true"
-            showBack="true"
-            backPath="/wallet"
-            backLabel="Overview">
+    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
       <span class="asset-list-nav">
         <strong>Select Asset</strong>
       </span>
     </NavBar>
-    <div class="main-content">
+    <div v-if="!accounts.length">
+      <p class="no-funds-msg">No funds in the wallet</p>
+    </div>
+    <div v-else class="main-content">
       <div class="form asset-list-header">
         <div class="input-group">
-              <SearchIcon/>
-              <input
-                type="text"
-                ref="search"
-                class="form-control form-control-sm"
-                id="search_for_a_currency_search"
-                v-model="search"
-                placeholder="Search for a Currency"
-                autocomplete="off"
-              />
+          <SearchIcon />
+          <input
+            type="text"
+            ref="search"
+            class="form-control form-control-sm"
+            id="search_for_a_currency_search"
+            v-model="search"
+            placeholder="Search for a Currency"
+            autocomplete="off"
+          />
         </div>
       </div>
       <div class="list-items">
-        <WalletAccounts @item-selected="onAccountSelected"
-                        :search="search"
-                        :accounts="accounts"/>
+        <WalletAccounts @item-selected="onAccountSelected" :search="search" :accounts="accounts" />
       </div>
     </div>
   </div>
@@ -41,10 +39,7 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters(['accountsData', 'accountsWithBalance']),
-    accounts () {
-      if (this.action === 'swap.send') {
-        return this.accountsWithBalance
-      }
+    accounts() {
       return this.accountsData
     }
   },
@@ -53,23 +48,21 @@ export default {
     WalletAccounts,
     SearchIcon
   },
-  props: [
-    'action'
-  ],
-  data () {
+  props: ['action'],
+  data() {
     return {
       search: ''
     }
   },
   methods: {
-    onAccountSelected ({ account, asset }) {
+    onAccountSelected({ account, asset }) {
       const _asset = asset || account.assets[0]
       const _action = this.action === 'swap.send' ? 'swap' : this.action
       this.$router.push(`/accounts/${account.id}/${_asset}/${_action}?source=assets`)
     }
   },
-  created () {
-    this.$nextTick(() => this.$refs.search.focus())
+  created() {
+    this.$nextTick(() => this.$refs.search?.focus())
   }
 }
 </script>
@@ -84,6 +77,13 @@ export default {
   .asset-list-nav {
     font-weight: normal;
     text-transform: uppercase;
+  }
+
+  .no-funds-msg {
+    text-align: center;
+    font-size: 0.8125rem;
+    margin-top: 20px;
+    font-weight: bold;
   }
 
   .main-content {
@@ -119,6 +119,6 @@ export default {
     .list-items {
       overflow-y: auto;
     }
-}
+  }
 }
 </style>

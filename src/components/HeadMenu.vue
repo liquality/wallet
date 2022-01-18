@@ -1,31 +1,17 @@
 <template>
-  <div id="account" class="dropdown head-menu"
-      v-click-away="hide">
-    <button class="btn dropdown-toggle"
-            @click="toggle">
-          <div class="label-menu">Account</div>
-          <ChevronRightIcon class="chevron"
-                        :class="{ open: dropdownOpen }"
-          />
+  <div id="account" class="dropdown head-menu" v-click-away="hide">
+    <button class="btn dropdown-toggle" @click="toggle">
+      <div class="label-menu">Account</div>
+      <ChevronRightIcon class="chevron" :class="{ open: dropdownOpen }" />
     </button>
     <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
-      <!-- <li>
-          <button class="dropdown-item"
-                  @click="navigate('/accounts/create')">
-              <div class="head-option">
-                <CreateIcon class="create-icon" />
-              </div>
-              Create
-          </button>
-      </li> -->
       <li>
-          <button class="dropdown-item"
-                  @click="navigate('/accounts/hardware-wallet')">
-              <div class="head-option">
-                <HardwareIcon class="hardware-icon" />
-              </div>
-              Hardware
-          </button>
+        <button class="dropdown-item" @click="navigate('/accounts/hardware-wallet')">
+          <div class="head-option">
+            <HardwareIcon class="hardware-icon" />
+          </div>
+          Hardware
+        </button>
       </li>
     </ul>
   </div>
@@ -35,30 +21,28 @@
 import clickAway from '@/directives/clickAway'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import HardwareIcon from '@/assets/icons/hardware_icon.svg'
-// import CreateIcon from '@/assets/icons/create_icon.svg'
 
 export default {
   components: {
     ChevronRightIcon,
     HardwareIcon
-    // CreateIcon
   },
   directives: {
     clickAway
   },
-  data () {
+  data() {
     return {
       dropdownOpen: false
     }
   },
   methods: {
-    toggle () {
+    toggle() {
       this.dropdownOpen = !this.dropdownOpen
     },
-    hide () {
+    hide() {
       this.dropdownOpen = false
     },
-    navigate (path) {
+    navigate(path) {
       this.hide()
       this.$router.push(path)
     }
@@ -68,37 +52,37 @@ export default {
 
 <style lang="scss">
 .head-menu {
-    .dropdown-toggle {
-      padding-left: 0 !important;
-      padding-right: 0 !important;
+  .dropdown-toggle {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    display: flex;
+    align-items: center;
+
+    &::after {
+      display: none;
+    }
+
+    .label-menu {
+      font-weight: 300;
+      font-size: 12px;
+      line-height: 14px;
       display: flex;
       align-items: center;
+      text-align: right;
+      color: #646f85;
+    }
 
-      &::after {
-        display: none;
+    .chevron {
+      width: 5px;
+      margin: 0 0 0 8px !important;
+      padding: 0 !important;
+      vertical-align: middle;
+      transform: rotate(90deg);
+
+      &.open {
+        transform: rotate(-90deg);
       }
-
-      .label-menu {
-        font-weight: 300;
-        font-size: 12px;
-        line-height: 14px;
-        display: flex;
-        align-items: center;
-        text-align: right;
-        color: #646F85;
-      }
-
-      .chevron {
-          width: 5px;
-          margin: 0 0 0 8px !important;
-          padding: 0 !important;
-          vertical-align: middle;
-          transform: rotate(90deg);
-
-          &.open {
-            transform: rotate(-90deg);
-          }
-      }
+    }
   }
 
   .dropdown-menu {
@@ -123,14 +107,15 @@ export default {
       text-transform: uppercase;
       padding: 5px 15px;
       height: 30px;
-      border-left: 1px solid $hr-border-color;;
+      border-left: 1px solid $hr-border-color;
       border-right: 1px solid $hr-border-color;
       border-bottom: 1px solid $hr-border-color;
       display: flex;
       align-items: center;
 
-      &:hover, &.active {
-        background-color: #F0F7F9;
+      &:hover,
+      &.active {
+        background-color: #f0f7f9;
         color: $color-text-primary;
       }
 

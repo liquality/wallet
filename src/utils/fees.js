@@ -12,7 +12,9 @@ const SEND_FEE_UNITS = {
   SOL: 1000000,
   MATIC: 21000,
   ERC20: 90000,
-  ARBETH: 620000
+  ARBETH: 620000,
+  LUNA: 100000,
+  UST: 100000
 }
 
 const FEE_OPTIONS = {
@@ -22,11 +24,11 @@ const FEE_OPTIONS = {
   CUSTOM: { name: 'Custom', label: 'Custom' }
 }
 
-function getSendFee (asset, feePrice) {
+function getSendFee(asset, feePrice) {
   return getTxFee(SEND_FEE_UNITS, asset, feePrice)
 }
 
-function getTxFee (units, _asset, _feePrice) {
+function getTxFee(units, _asset, _feePrice) {
   const chainId = cryptoassets[_asset].chain
   const nativeAsset = chains[chainId].nativeAsset
   const feePrice = isEthereumChain(_asset) ? BN(_feePrice).times(1e9) : _feePrice // ETH fee price is in gwei
@@ -36,7 +38,7 @@ function getTxFee (units, _asset, _feePrice) {
   return unitToCurrency(cryptoassets[nativeAsset], fee)
 }
 
-function getFeeLabel (fee) {
+function getFeeLabel(fee) {
   const name = fee?.toUpperCase() || ''
   return FEE_OPTIONS?.[name]?.label || ''
 }

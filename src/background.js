@@ -2,18 +2,16 @@ import 'setimmediate'
 import { random } from 'lodash-es'
 import store from './store'
 import { wait } from './store/utils'
+import cryptoassets from '@/utils/cryptoassets'
 
-function asyncLoop (fn, delay) {
+function asyncLoop(fn, delay) {
   return wait(delay())
     .then(() => fn())
     .then(() => asyncLoop(fn, delay))
 }
 
-store.subscribe(async ({
-  type,
-  payload
-}, state) => {
-  const { dispatch, commit, getters } = store
+store.subscribe(async ({ type, payload }, state) => {
+  const { dispatch, getters } = store
   switch (type) {
     case 'CHANGE_ACTIVE_NETWORK':
       dispatch('initializeAddresses', {
@@ -52,14 +50,12 @@ store.subscribe(async ({
       dispatch('updateMarketData', { network: state.activeNetwork })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
 
-      commit('app/SET_USB_BRIDGE_TRANSPORT_CREATED', { created: false })
-      commit('app/SET_USB_BRIDGE_CREATED', { created: false })
-
       asyncLoop(
-        () => dispatch('updateBalances', {
-          network: state.activeNetwork,
-          walletId: state.activeWalletId
-        }),
+        () =>
+          dispatch('updateBalances', {
+            network: state.activeNetwork,
+            walletId: state.activeWalletId
+          }),
         () => random(400000, 600000)
       )
 
@@ -79,25 +75,30 @@ store.subscribe(async ({
         properties: {
           category: 'Swaps',
           action: 'Swap Initiated',
-          label: [`Swap ${payload.swap.from} to ${payload.swap.to}`,
-                  `${payload.swap.provider}`,
-                  `with fee: ${payload.feeLabel} and claim fee: ${payload.claimFeeLabel}`]
+          from: `Swap from ${payload.swap.from}`,
+          swapFrom: `${payload.swap.from}`,
+          to: `Swap to ${payload.swap.to}`,
+          swapTo: `${payload.swap.to}`,
+          fromAddress: `${payload.swap.fromAddress}`,
+          toAddress: `${payload.swap.toAddress}`,
+          swapProvider: `${payload.swap.provider}`,
+          fee: `${payload.feeLabel}`,
+          claimFee: `${payload.claimFeeLabel}`
         }
       })
       break
-
     case 'NEW_TRASACTION':
       dispatch('trackAnalytics', {
         event: 'Send',
         properties: {
           category: 'Send/Receive',
           action: 'Funds sent',
-          label: [`Send ${payload.transaction.from}`,
-            `fee: ${payload.feeLabel}`]
+          fromAsset: cryptoassets[payload.transaction.from],
+          toAsset: cryptoassets[payload.transaction.to],
+          fee: `${payload.feeLabel}`
         }
       })
       break
-
     case 'LOCK_WALLET':
       dispatch('trackAnalytics', {
         event: 'Wallet Lock',
@@ -107,14 +108,15 @@ store.subscribe(async ({
         }
       })
       break
-
     case 'ADD_EXTERNAL_CONNECTION':
       dispatch('trackAnalytics', {
         event: 'Connect to Dapps',
         properties: {
           category: 'Dapps',
           action: 'Dapp Injected',
-          label: `Connect to ${payload.origin} (${payload.chain})`
+          label: `Connect to ${payload.origin} (${payload.chain})`,
+          dappOrigin: `${payload.origin}`,
+          chain: `${payload.chain}`
         }
       })
       break
@@ -124,7 +126,14 @@ store.subscribe(async ({
         properties: {
           category: 'Settings',
           action: 'Custom Token Added',
-          label: [`${payload.customToken.name}`, `(${payload.customToken.chain})`, `(${payload.customToken.symbol})`]
+          customTokenName: `${payload.customToken.name}`,
+          customTokenChain: `${payload.customToken.chain}`,
+          customTokenSymbol: `${payload.customToken.symbol}`,
+          label: [
+            `${payload.customToken.name}`,
+            `(${payload.customToken.chain})`,
+            `(${payload.customToken.symbol})`
+          ]
         }
       })
       break
@@ -134,6 +143,9 @@ store.subscribe(async ({
         properties: {
           category: 'Settings',
           action: 'Custom Token Removed',
+          customTokenName: `${payload.customToken.name}`,
+          customTokenChain: `${payload.customToken.chain}`,
+          customTokenSymbol: `${payload.customToken.symbol}`,
           label: `${payload.customToken.symbol})`
         }
       })
@@ -143,21 +155,23 @@ store.subscribe(async ({
       const item = getters.historyItemById(payload.network, payload.walletId, payload.id)
       if (item.type === 'SWAP' && payload.updates) {
         dispatch('trackAnalytics', {
-          event: `Swap status change ${payload.updates.status}`,
+          event: 'Swap status change',
           properties: {
             category: 'Swaps',
-            action: `Swap ${payload.updates.status}`,
-            label: `${item.from} to ${item.to}`
+            action: 'Swap Status changed',
+            label: `${item.from} to ${item.to}`,
+            swapStatus: `${payload.updates.status}`
           }
         })
       }
       if (item.type === 'SEND' && payload.updates) {
         dispatch('trackAnalytics', {
-          event: `Send status change ${payload.updates.status}`,
+          event: 'Send status change',
           properties: {
             category: 'Send/Receive',
-            action: `Send ${payload.updates.status}`,
-            label: `${item.from} send status ${payload.updates.status} `
+            action: 'Send Status changed',
+            asset: `${item.from}`,
+            sendStatus: `${payload.updates.status}`
           }
         })
       }
@@ -170,6 +184,18 @@ store.subscribe(async ({
           action: 'User Onboarded'
         }
       })
+      break
+    case 'UPDATE_BALANCE':
+      if (payload.balance > 0) {
+        dispatch('trackAnalytics', {
+          event: 'Hold Asset',
+          properties: {
+            category: 'Hold Asset',
+            action: 'Hold asset greater than 0',
+            asset: `${payload.asset}`
+          }
+        })
+      }
       break
   }
 })

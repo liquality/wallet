@@ -1,0 +1,6 @@
+# These owners will be the default owners for everything in the repo.
+* @bradleySuira @monokh @b0b4456 @tima-t @AndonMitev @Jennievon @skeremidchiev @kraikov @beemi
+
+/tests/* @beemi
+
+/.github/* @beemi

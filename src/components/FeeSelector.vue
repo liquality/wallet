@@ -1,44 +1,48 @@
 <template>
-<div class="fee-selector">
+  <div class="fee-selector">
     <div class="btn-group btn-group-toggle" data-toggle="buttons">
-    <label class="btn btn-option btn-option-lg"
-        v-for="name in ['slow', 'average', 'fast']" :key="name"
-           :id="name"
-        :class="{ active: (name === value)}"
+      <label
+        class="btn btn-option btn-option-lg"
+        v-for="name in ['slow', 'average', 'fast']"
+        :key="name"
+        :id="name"
+        :class="{ active: name === value }"
         v-tooltip="{ content: getTooltip(name) }"
-        @click="$emit('input', name)">
-        <input type="radio" name="fee" autocomplete="off" :checked="name === value"> {{name}}
-    </label>
+        @click="$emit('input', name)"
+      >
+        <input type="radio" name="fee" autocomplete="off" :checked="name === value" />
+        {{ name }}
+      </label>
+    </div>
+    <button
+      id="custom_network_speed_button"
+      class="btn btn-link"
+      @click="$emit('custom-selected', asset)"
+    >
+      Custom
+    </button>
   </div>
-  <button id="custom_network_speed_button" class="btn btn-link" @click="$emit('custom-selected', asset)">
-    Custom
-  </button>
-</div>
 </template>
 
 <script>
 import BN from 'bignumber.js'
 import { prettyFiatBalance } from '@/utils/coinFormatter'
-import { getNativeAsset } from '@/utils/asset'
+import { getNativeAsset, getFeeAsset } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
 export default {
-  props: [
-    'asset',
-    'value',
-    'fees',
-    'totalFees',
-    'fiatRates'
-  ],
+  props: ['asset', 'value', 'fees', 'totalFees', 'fiatRates', 'swap'],
   methods: {
-    getTooltip (name) {
+    getTooltip(name) {
       let content = '<div class="text-right">'
       if (this.fees[name].wait) {
         content += `${this.fees[name].wait} sec<br />`
       }
 
-      const nativeAsset = getNativeAsset(this.asset)
+      const nativeAsset = this.swap
+        ? getNativeAsset(this.asset)
+        : getFeeAsset(this.asset) || getNativeAsset(this.asset)
       if (this.totalFees && name in this.totalFees) {
         const total = this.totalFees[name]
         const totalFiat = prettyFiatBalance(total, this.fiatRates[nativeAsset])

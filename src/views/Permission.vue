@@ -6,18 +6,27 @@
     <div class="permission-screen wrapper text-center">
       <div class="wrapper_top">
         <h2>Request</h2>
-        <p class="text-muted">{{$route.query.origin}}</p>
+        <p class="text-muted">{{ $route.query.origin }}</p>
         <img :src="getAssetIcon(asset)" class="permission-screen_icon mb-2" />
         <p>{{ method }}</p>
         <div class="permission-screen_args">
-          <div v-for="(arg, index) in args" :key="arg" class="permission-screen_arg"><span class="arg_index">{{index}}</span><span class="arg_value ml-2">{{arg}}</span></div>
+          <div v-for="(arg, index) in args" :key="arg" class="permission-screen_arg">
+            <span class="arg_index">{{ index }}</span
+            ><span class="arg_value ml-2">{{ arg }}</span>
+          </div>
         </div>
       </div>
 
       <div class="wrapper_bottom">
         <div class="button-group">
-          <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Cancel</button>
-          <button class="btn btn-primary btn-lg btn-icon" @click.stop="reply(true)" :disabled="loading">
+          <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary btn-lg btn-icon"
+            @click.stop="reply(true)"
+            :disabled="loading"
+          >
             <SpinnerIcon class="btn-loading" v-if="loading" />
             <template v-else>Sign</template>
           </button>
@@ -37,7 +46,7 @@ export default {
   components: {
     SpinnerIcon
   },
-  data () {
+  data() {
     return {
       loading: false,
       replied: false
@@ -46,12 +55,12 @@ export default {
   methods: {
     ...mapActions(['replyPermission']),
     getAssetIcon,
-    reply (allowed) {
+    async reply(allowed) {
       if (this.loading) return
       this.loading = true
 
       try {
-        this.replyPermission({
+        await this.replyPermission({
           request: this.request,
           allowed
         })
@@ -63,29 +72,24 @@ export default {
     }
   },
   computed: {
-    logo () {
+    logo() {
       return LogoWallet
     },
-    asset () {
+    asset() {
       return this.request.asset
     },
-    request () {
+    request() {
       return {
         ...this.$route.query,
         args: JSON.parse(this.$route.query.args)
       }
     },
-    method () {
+    method() {
       return this.request.method
     },
-    args () {
-      return this.request.args.map(a => typeof a !== 'string' ? JSON.stringify(a) : a)
+    args() {
+      return this.request.args.map((a) => (typeof a !== 'string' ? JSON.stringify(a) : a))
     }
-  },
-  beforeDestroy () {
-    if (this.replied) return
-
-    this.reply(false)
   }
 }
 </script>
@@ -110,8 +114,8 @@ export default {
 
     &::-webkit-scrollbar-thumb {
       border-radius: 4px;
-      background-color: rgba(0,0,0,.5);
-      -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+      background-color: rgba(0, 0, 0, 0.5);
+      -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
     }
   }
 
