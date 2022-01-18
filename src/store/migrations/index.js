@@ -53,7 +53,7 @@ async function processMigrations(state) {
   for (const migration of migrations) {
     if (currentVersion < migration.version) {
       try {
-        newState = await migration.migrate(cloneDeep(state))
+        newState = await migration.migrate(cloneDeep(newState))
         newState.version = migration.version
       } catch (e) {
         console.error(`Failed to migrate to v${migration.version}`, e)
