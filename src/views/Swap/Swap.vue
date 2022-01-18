@@ -1296,6 +1296,10 @@ export default {
   }
 }
 
+.selectors-asset {
+  width: 55px !important;
+}
+
 .selector-asset-switch {
   display: flex;
   align-items: center;

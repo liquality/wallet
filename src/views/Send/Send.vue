@@ -656,7 +656,12 @@ export default {
     .fee-selector {
       margin-left: 6px;
     }
+    .selectors-asset {
+      width: 55px;
+    }
     .custom-fees {
+      display: flex;
+      align-items: center;
       font-weight: normal;
     }
   }
