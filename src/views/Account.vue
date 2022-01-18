@@ -21,11 +21,7 @@
             <span v-else>&nbsp;</span>
           </div>
           <div>
-            <span
-              class="account-container_balance_value"
-              :id="`${asset}_balance_value`"
-              :style="{ fontSize: formatFontSize(balance) }"
-            >
+            <span class="account-container_balance_value" :id="`${asset}_balance_value`">
               {{ balance }}
             </span>
             <span class="account-container_balance_code">{{ asset }}</span>
@@ -275,6 +271,7 @@ export default {
     &_value {
       line-height: 36px;
       margin-right: 8px;
+      font-size: 30px;
     }
 
     &_code {

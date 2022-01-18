@@ -132,6 +132,12 @@ export default {
         routerAddress: SovrynMainnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynMainnetAddresses.proxy3,
         rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET
+      },
+      thorchain: {
+        name: 'Thorchain',
+        icon: 'thorchain.svg',
+        type: SwapProviderType.THORCHAIN,
+        thornode: 'https://thornode.thorchain.info'
       }
     }
   },
