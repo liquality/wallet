@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import LogoWalletMain from '@/assets/icons/logo_wallet_main.svg'
 import NewWalletText from '@/assets/icons/wallet_tagline.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -66,7 +66,6 @@ export default {
       password: ''
     }
   },
-  computed: mapState(['termsAcceptedAt']),
   methods: {
     ...mapActions(['unlockWallet']),
     async unlock() {

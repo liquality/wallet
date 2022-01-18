@@ -14,7 +14,7 @@
             : { path: '/onboarding/home', query: { isImport: true } }
         "
         ><p class="text-center" id="import_with_seed_phrase_option">
-          Forgot password? Import with seed phrase
+          Import with seed phrase
         </p></router-link
       >
       <p v-if="keyUpdatedAt">
