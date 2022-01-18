@@ -1,44 +1,30 @@
 {
-  "timezone": "America/New_York",
-  "baseBranches": ["dev"],
   "extends": [
     "config:base",
     ":dependencyDashboard",
-    "github>whitesource/merge-confidence:beta"
+    ":semanticCommitType(chore)"
   ],
-  "includePaths": [
-    "package.json"
-  ],
-  "schedule": [
-    "every weekend"
-  ],
-  "major": {
-    "dependencyDashboardApproval": true
+  "ignoreTests": true,
+  "vulnerabilityAlerts": {
+    "enabled": true
   },
-  "semanticCommits": "auto",
-  "rangeStrategy": "bump",
-  "rebaseLabel": "rebase",
-  "rebaseWhen": "auto",
-  "requiredStatusChecks": [],
+  "semanticCommits": "disabled",
   "commitBody": "[skip ci]",
-  "lockFileMaintenance": {
-    "enabled": true,
+  "separateMajorMinor": true,
+  "separateMultipleMajor": true,
+  "minor": {
     "automerge": true
   },
-  "packageRules": [
-    {
-      "matchDepTypes": [
-        "devDependencies"
-      ],
-      "automerge": true
-    },
-    {
-      "matchPackagePatterns": ["lint", "prettier"]
-    },
-    {
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchCurrentVersion": "!/^0/",
-      "automerge": true
-    }
+  "patch": {
+    "automerge": true
+  },
+  "pin": {
+    "automerge": true
+  },
+  "lockFileMaintenance": {
+    "automerge": true
+  },
+  "schedule": [
+    "every weekend"
   ]
 }

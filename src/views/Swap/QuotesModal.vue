@@ -1,38 +1,55 @@
 <template>
   <Modal @close="$emit('close')">
     <template #header>
-        <h5 id="available_quotes_header">
-          {{ quotes.length }} AVAILABLE QUOTES
-        </h5>
+      <h5 id="available_quotes_header">{{ quotes.length }} AVAILABLE QUOTES</h5>
     </template>
-      <template>
-        <div>
-          <p>These quotes are from different swap providers.</p>
-          <div class="quote-list">
-            <div class="row quote-list_header pb-2">
-              <div class="col-5">Rate</div>
-              <div class="col-7">Provider</div>
+    <template>
+      <div>
+        <p>These quotes are from different swap providers.</p>
+        <div class="quote-list">
+          <div class="row quote-list_header pb-2">
+            <div class="col-5">Rate</div>
+            <div class="col-7">Provider</div>
+          </div>
+          <div
+            class="row quote-list_quote"
+            v-for="quote in sortedQuotes"
+            :key="quote.provider"
+            :id="`${quote.provider}_rate_provider`"
+            :class="{
+              'quote-list_quote_active': quote.provider === selectedProvider
+            }"
+            @click="setSelectedProvider(quote.provider)"
+          >
+            <div class="col-5 quote-list_quote_rate d-flex align-items-center">
+              {{ getProviderRate(quote) }}
             </div>
-            <div class="row quote-list_quote" v-for="quote in sortedQuotes" :key="quote.provider" :id="`${quote.provider}_rate_provider`" :class="{ 'quote-list_quote_active': quote.provider === selectedProvider }" @click="setSelectedProvider(quote.provider)">
-              <div class="col-5 quote-list_quote_rate d-flex align-items-center">{{ getProviderRate(quote) }}</div>
-              <div class="col-5 quote-list_quote_provider d-flex align-items-center">
-                <img :src="getProviderIcon(quote)" class="mr-2" />
-                {{ getProviderName(quote) }}
-              </div>
-              <div class="col-2 d-flex align-items-center"><TickBlue v-if="quote.provider === selectedProvider" class="quote-list_tick" /></div>
+            <div class="col-5 quote-list_quote_provider d-flex align-items-center">
+              <img :src="getProviderIcon(quote)" class="mr-2" />
+              {{ getProviderName(quote) }}
+            </div>
+            <div class="col-2 d-flex align-items-center">
+              <TickBlue v-if="quote.provider === selectedProvider" class="quote-list_tick" />
             </div>
           </div>
         </div>
-      </template>
-      <template #footer>
-        <div>
-          <button class="btn btn-primary btn-block btn-lg"
-                  id="select_quote_button"
-                  @click="selectQuote">
-              Select Quote
-          </button>
-          <div class="mt-3"><a href="#" @click="$emit('click-learn-more')" class="text-muted">Learn about swap types</a></div>
+      </div>
+    </template>
+    <template #footer>
+      <div>
+        <button
+          class="btn btn-primary btn-block btn-lg"
+          id="select_quote_button"
+          @click="selectQuote"
+        >
+          Select Quote
+        </button>
+        <div class="mt-3">
+          <a href="#" @click="$emit('click-learn-more')" class="text-muted"
+            >Learn about swap types</a
+          >
         </div>
+      </div>
     </template>
   </Modal>
 </template>
@@ -50,7 +67,7 @@ export default {
     Modal,
     TickBlue
   },
-  data () {
+  data() {
     return {
       selectedProvider: null
     }
@@ -58,29 +75,29 @@ export default {
   props: ['quotes', 'presetProvider'],
   computed: {
     ...mapState(['activeNetwork']),
-    sortedQuotes () {
+    sortedQuotes() {
       return sortQuotes(this.quotes, this.activeNetwork)
     }
   },
   methods: {
-    getProviderName (quote) {
+    getProviderName(quote) {
       const config = getSwapProviderConfig(this.activeNetwork, quote.provider)
       return config.name
     },
-    getProviderIcon (quote) {
+    getProviderIcon(quote) {
       return getSwapProviderIcon(this.activeNetwork, quote.provider)
     },
-    getProviderRate (quote) {
+    getProviderRate(quote) {
       return dpUI(calculateQuoteRate(quote))
     },
-    setSelectedProvider (provider) {
+    setSelectedProvider(provider) {
       this.selectedProvider = provider
     },
-    selectQuote () {
+    selectQuote() {
       this.$emit('select-quote', this.selectedProvider)
     }
   },
-  created () {
+  created() {
     this.selectedProvider = this.presetProvider
   }
 }
@@ -104,8 +121,9 @@ export default {
       font-size: $font-size-head-title;
     }
 
-    &_active, &:hover {
-      background: #F0F7F9;
+    &_active,
+    &:hover {
+      background: #f0f7f9;
     }
 
     &_provider {
