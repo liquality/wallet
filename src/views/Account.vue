@@ -24,7 +24,7 @@
             <span
               class="account-container_balance_value"
               :id="`${asset}_balance_value`"
-              :style="{ fontSize: formatFontSize(balance) }"
+              :style="{ fontSize: '30px' }"
             >
               {{ balance }}
             </span>
@@ -67,7 +67,9 @@
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
                 <SwapIcon
-                  class="account-container_actions_button_icon account-container_actions_button_swap"
+                  class="
+                    account-container_actions_button_icon account-container_actions_button_swap
+                  "
                 />
               </div>
               Swap
