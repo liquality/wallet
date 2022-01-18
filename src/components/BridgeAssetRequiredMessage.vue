@@ -1,11 +1,10 @@
 <template>
   <div class="notification-content">
     <div class="notification-text">
-      A balance is required to swap and you need {{asset}} to pay for gas.
+      A balance is required to swap and you need {{ asset }} to pay for gas.
     </div>
-    <router-link :to="accountUrl"
-                 class="btn btn-option get-bridgeAsset-btn">
-      Get {{asset}}
+    <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
+      Get {{ asset }}
     </router-link>
   </div>
 </template>
@@ -17,7 +16,7 @@ export default {
     asset: String
   },
   computed: {
-    accountUrl () {
+    accountUrl() {
       return `/accounts/${this.accountId}/${this.asset}/receive`
     }
   }
