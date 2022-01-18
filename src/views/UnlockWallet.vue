@@ -27,7 +27,7 @@
       <div class="footer-container">
         <p>
           <router-link
-            :to="{ path: '/onboarding/import', query: { isNewUser: false } }"
+            :to="{ path: '/onboarding/home', query: { isImport: true } }"
             id="forgot_password_import_seed"
             >Forgot password? Import with seed phrase</router-link
           >
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import LogoWalletMain from '@/assets/icons/logo_wallet_main.svg'
 import NewWalletText from '@/assets/icons/wallet_tagline.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -66,6 +66,7 @@ export default {
       password: ''
     }
   },
+  computed: mapState(['termsAcceptedAt']),
   methods: {
     ...mapActions(['unlockWallet']),
     async unlock() {
