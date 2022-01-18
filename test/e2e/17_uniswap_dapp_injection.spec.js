@@ -142,5 +142,7 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
     expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(arbitrumChainId)
     expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
       .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
+
+    await page.bringToFront()
   })
 })
