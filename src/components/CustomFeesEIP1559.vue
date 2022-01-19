@@ -35,9 +35,10 @@
               <input
                 type="number"
                 class="form-control"
+                v-bind:class="{ errorInput: noTipError || veryLowTipError, warningInput: veryHighTipWarning }"
                 id="custom_fee_input_field"
                 :step="stepSize"
-                :value="minerTip"
+                :value="formatedMinerTip"
                 @input="setTipFee(parseFloat($event.target.value))"
               />
               <div class="input-group-text fee-input-controls">
@@ -56,9 +57,10 @@
               <input
                 type="number"
                 class="form-control"
+                v-bind:class="{ errorInput: veryLowMaxFeeError, warningInput: veryHighFeeWarning }"
                 id="custom_fee_input_field"
                 :step="stepSize"
-                :value="maximumFee"
+                :value="formatedMaximum"
                 @input="setMaxFee(parseFloat($event.target.value))"
               />
               <div class="input-group-text fee-input-controls">
@@ -143,6 +145,7 @@ import { getAssetIcon, getFeeAsset, getNativeAsset } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
+import BN from 'bignumber.js'
 import { getFeeLabel, getSendFee } from '@/utils/fees'
 import { prettyFiatBalance } from '@/utils/coinFormatter'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
@@ -236,7 +239,7 @@ export default {
       const minimumFee = this.minerTip + this.suggestedBaseFeePerGas
       const totalMinFee = getSendFee(this.nativeAsset, minimumFee).plus(this.totalFees.slow)
       return {
-        amount: totalMinFee,
+        amount: BN(totalMinFee).dp(6),
         fiat: prettyFiatBalance(this.totalFees.slow, this.fiatRates[this.nativeAsset])
       }
     },
@@ -244,9 +247,15 @@ export default {
       const maximumFee = this.maximumFee
       const totalMaxFee = getSendFee(this.nativeAsset, maximumFee).plus(this.totalFees.fast)
       return {
-        amount: totalMaxFee,
+        amount: BN(totalMaxFee).dp(6),
         fiat: prettyFiatBalance(this.totalFees.fast, this.fiatRates[this.nativeAsset])
       }
+    },
+    formatedMinerTip() {
+      return BN(this.minerTip).dp(6)
+    },
+    formatedMaximum() {
+      return BN(this.maximumFee).dp(6)
     }
   },
   methods: {
@@ -303,7 +312,8 @@ export default {
     setPreset(name) {
       this.preset = name
       this.tipFee = this.fees[name]?.fee.maxPriorityFeePerGas
-    }
+    },
+    
   },
   watch: {
     tipFee(val) {
@@ -449,6 +459,20 @@ export default {
     color: #f57a08;
   }
 }
+
+.warningInput {
+  color: #f57a08;
+  border: 0 solid #f57a08;
+  border-width: 0 0 1px 0;
+}
+
+.errorInput {
+  color: #ff007a;
+  border: 0 solid #ff007a;
+  border-width: 0 0 1px 0;
+}
+
+
 
 .current-base-fee {
   display: flex;
