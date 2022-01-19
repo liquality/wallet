@@ -357,7 +357,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
-import { currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import { currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
@@ -772,7 +772,14 @@ export default {
       return this.totalToReceiveInFiat <= 0
     },
     isEIP1559Fees() {
+<<<<<<< Updated upstream
       return this.assetChain === 'ETH' || this.assetChain === 'MATIC'
+=======
+      return (
+        cryptoassets[this.asset].chain === ChainId.Ethereum ||
+        cryptoassets[this.asset].chain === ChainId.Polygon
+      )
+>>>>>>> Stashed changes
     }
   },
   methods: {
