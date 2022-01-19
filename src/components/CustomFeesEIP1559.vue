@@ -35,7 +35,10 @@
               <input
                 type="number"
                 class="form-control"
-                v-bind:class="{ errorInput: noTipError || veryLowTipError, warningInput: veryHighTipWarning }"
+                v-bind:class="{
+                  errorInput: noTipError || veryLowTipError,
+                  warningInput: veryHighTipWarning
+                }"
                 id="custom_fee_input_field"
                 :step="stepSize"
                 :value="formatedMinerTip"
@@ -58,7 +61,7 @@
                 type="number"
                 class="form-control"
                 v-bind:class="{ errorInput: veryLowMaxFeeError, warningInput: veryHighFeeWarning }"
-                id="custom_fee_input_field"
+                id="custom_fee_input_field_new"
                 :step="stepSize"
                 :value="formatedMaximum"
                 @input="setMaxFee(parseFloat($event.target.value))"
@@ -312,8 +315,7 @@ export default {
     setPreset(name) {
       this.preset = name
       this.tipFee = this.fees[name]?.fee.maxPriorityFeePerGas
-    },
-    
+    }
   },
   watch: {
     tipFee(val) {
@@ -471,8 +473,6 @@ export default {
   border: 0 solid #ff007a;
   border-width: 0 0 1px 0;
 }
-
-
 
 .current-base-fee {
   display: flex;
