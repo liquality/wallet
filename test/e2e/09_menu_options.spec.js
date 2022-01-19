@@ -167,9 +167,7 @@ describe('Hamburger menu options["MAINNET","TESTNET"]', async () => {
   })
   it('Import wallet,lock wallet and forgot password while unlock wallet', async () => {
     // Select network
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
+    if (process.env.NODE_ENV === 'testnet') {
       await overviewPage.SelectNetwork(page)
     }
     // check Send & Swap & Receive options have been displayed
@@ -178,6 +176,8 @@ describe('Hamburger menu options["MAINNET","TESTNET"]', async () => {
     await overviewPage.ClickLock(page)
     // Click on Forgot password? Import with seed phrase
     await passwordPage.ClickOnForgotPassword(page)
+    await homePage.ScrollToEndOfTerms(page)
+    await homePage.ClickOnAcceptPrivacy(page)
     // Enter the seed phrase & submit password details
     await homePage.EnterSeedWords(page)
     await passwordPage.SubmitPasswordDetails(page, password)

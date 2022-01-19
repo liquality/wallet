@@ -52,7 +52,7 @@ if (process.env.NODE_ENV === 'mainnet') {
     afterEach(async () => {
         await browser.close()
     })
-    it('SWAP (BTC->PUSDC (Polygon))', async () => {
+    it.skip('SWAP (BTC->PUSDC (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PUSDC'
       // Click on BTC then click on SWAP button
@@ -81,7 +81,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Check source name
       await checkBooster()
     })
-    it('SWAP (BTC->PUSDT (Polygon))', async () => {
+    it.skip('SWAP (BTC->PUSDT (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PUSDT'
       // Select testnet

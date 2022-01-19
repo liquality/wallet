@@ -37,19 +37,17 @@ describe('UNISWAP service Provider-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', a
       await browser.close()
   })
 
-  it('ETH->DAI swap - UNISWAP V2', async () => {
-    const asset1 = 'ETH'
-    const asset2 = 'DAI'
+  it.skip('ETH->DAI swap - UNISWAP V2', async () => {
+    const fromAsset = 'ETH'
+    const toAsset = 'DAI'
     // Select testnet
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
+    if (process.env.NODE_ENV === 'testnet') {
       await overviewPage.SelectNetwork(page)
     }
     // Click on ETH then click on SWAP button
-    await overviewPage.SelectAssetFromOverview(page, asset1)
-    await page.waitForSelector(`#${asset1}_swap_button`, { visible: true })
-    await page.click(`#${asset1}_swap_button`)
+    await overviewPage.SelectAssetFromOverview(page, fromAsset)
+    await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+    await page.click(`#${fromAsset}_swap_button`)
     console.log(('User clicked on ETH SWAP button'))
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
@@ -58,8 +56,8 @@ describe('UNISWAP service Provider-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', a
     await page.click('.swap-receive-main-icon')
     await page.waitForSelector('#ETHEREUM', { visible: true })
     await page.click('#ETHEREUM')
-    await page.waitForSelector(`#${asset2}`, { visible: true })
-    await page.click(`#${asset2}`)
+    await page.waitForSelector(`#${toAsset}`, { visible: true })
+    await page.click(`#${toAsset}`)
     await swapPage.ClickOnMax(page)
     // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
     await page.waitForSelector('#selectedQuote_provider', {
@@ -72,6 +70,6 @@ describe('UNISWAP service Provider-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', a
 
     // Click on Network speed + FEE & Validate
     const networkSpeedFee = await page.$eval('#details_header_chevron_down_icon', el => el.textContent)
-    expect(networkSpeedFee).contain(asset1 + ' Avg')
+    expect(networkSpeedFee).contain(fromAsset + ' Avg')
   })
 })
