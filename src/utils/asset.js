@@ -217,7 +217,7 @@ export const tokenDetailProviders = {
     }
   },
   fuse: {
-    async getDetails (contractAddress) {
+    async getDetails(contractAddress) {
       return await fetchTokenDetails(contractAddress, 'https://rpc.fuse.io')
     }
   }
