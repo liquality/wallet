@@ -381,14 +381,10 @@ export default {
       return BN(this.amount).plus(BN(this.currentFee))
     },
     isEIP1559Fees() {
-<<<<<<< Updated upstream
-      return this.assetChain === 'ETH' || this.assetChain === 'MATIC'
-=======
       return (
         cryptoassets[this.asset].chain === ChainId.Ethereum ||
         cryptoassets[this.asset].chain === ChainId.Polygon
       )
->>>>>>> Stashed changes
     }
   },
   methods: {

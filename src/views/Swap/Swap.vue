@@ -772,14 +772,10 @@ export default {
       return this.totalToReceiveInFiat <= 0
     },
     isEIP1559Fees() {
-<<<<<<< Updated upstream
-      return this.assetChain === 'ETH' || this.assetChain === 'MATIC'
-=======
       return (
         cryptoassets[this.asset].chain === ChainId.Ethereum ||
         cryptoassets[this.asset].chain === ChainId.Polygon
       )
->>>>>>> Stashed changes
     }
   },
   methods: {
