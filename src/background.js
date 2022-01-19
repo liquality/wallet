@@ -4,16 +4,13 @@ import store from './store'
 import { wait } from './store/utils'
 import cryptoassets from '@/utils/cryptoassets'
 
-function asyncLoop (fn, delay) {
+function asyncLoop(fn, delay) {
   return wait(delay())
     .then(() => fn())
     .then(() => asyncLoop(fn, delay))
 }
 
-store.subscribe(async ({
-  type,
-  payload
-}, state) => {
+store.subscribe(async ({ type, payload }, state) => {
   const { dispatch, getters } = store
   switch (type) {
     case 'CHANGE_ACTIVE_NETWORK':
@@ -54,10 +51,11 @@ store.subscribe(async ({
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
 
       asyncLoop(
-        () => dispatch('updateBalances', {
-          network: state.activeNetwork,
-          walletId: state.activeWalletId
-        }),
+        () =>
+          dispatch('updateBalances', {
+            network: state.activeNetwork,
+            walletId: state.activeWalletId
+          }),
         () => random(400000, 600000)
       )
 
@@ -131,7 +129,11 @@ store.subscribe(async ({
           customTokenName: `${payload.customToken.name}`,
           customTokenChain: `${payload.customToken.chain}`,
           customTokenSymbol: `${payload.customToken.symbol}`,
-          label: [`${payload.customToken.name}`, `(${payload.customToken.chain})`, `(${payload.customToken.symbol})`]
+          label: [
+            `${payload.customToken.name}`,
+            `(${payload.customToken.chain})`,
+            `(${payload.customToken.symbol})`
+          ]
         }
       })
       break

@@ -1,7 +1,4 @@
-export const changeActiveNetwork = async ({ state, commit }, {
-  currentNetwork,
-  network
-}) => {
+export const changeActiveNetwork = async ({ state, commit }, { network }) => {
   const { activeNetwork } = state
   commit('CHANGE_ACTIVE_NETWORK', {
     currentNetwork: activeNetwork,

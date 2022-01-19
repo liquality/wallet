@@ -78,8 +78,6 @@ describe('Custom Token add-["MAINNET"]', async () => {
       // overview page
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
-      // Network selection
-      await overviewPage.SelectNetwork(page, 'mainnet')
       // Click on add custom token option
       await overviewPage.ClickAddCustomToken(page)
     })

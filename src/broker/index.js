@@ -7,13 +7,13 @@ import { isBackgroundScript } from './utils'
 import Storage from './Storage'
 import { isMigrationNeeded, processMigrations } from '../store/migrations'
 
-const Broker = state => {
+const Broker = (state) => {
   if (isBackgroundScript(window)) {
     const vuexPersist = new VuexPersist({
       key: 'liquality-wallet',
       storage: Storage,
       asyncStorage: true,
-      reducer: s => omit(s, ['key', 'wallets', 'unlockedAt', 'app']) // do not persist these states
+      reducer: (s) => omit(s, ['key', 'wallets', 'unlockedAt', 'app']) // do not persist these states
     })
 
     /**
@@ -33,7 +33,7 @@ const Broker = state => {
     }
 
     return {
-      plugin: store => {
+      plugin: (store) => {
         vuexPersist.plugin(store)
         return new Background(store)
       },
@@ -42,7 +42,7 @@ const Broker = state => {
   }
 
   return {
-    plugin: store => new Foreground(store),
+    plugin: (store) => new Foreground(store),
     state: {}
   }
 }

@@ -9,32 +9,54 @@
     </div>
     <div class="import-wallet_bottom">
       <div class="btn-group" id="word_button_group">
-         <button
-                    :class="{ active: numWords === 12 }"
-                    class="btn btn-option"
-                    id="twelve_words_option"
-                    @click="setMnemonicLength(12)"
-                  >
-                    12 words
-                  </button>
-          <button
-                    :class="{ active: numWords === 24 }"
-                    class="btn btn-option"
-                    id="twenty_four_words_option"
-                    @click="setMnemonicLength(24)"
-                  >
-                    24 words
-                  </button>
+        <button
+          :class="{ active: numWords === 12 }"
+          class="btn btn-option"
+          id="twelve_words_option"
+          @click="setMnemonicLength(12)"
+        >
+          12 words
+        </button>
+        <button
+          :class="{ active: numWords === 24 }"
+          class="btn btn-option"
+          id="twenty_four_words_option"
+          @click="setMnemonicLength(24)"
+        >
+          24 words
+        </button>
       </div>
       <form class="form import-wallet_seed" autocomplete="off">
-        <div v-for="(e, n) in numWords" :key="n"><input type="text" class="form-control form-control-sm" id="import_wallet_word" v-model="wordList[n]" autocomplete="off" required /></div>
+        <div v-for="(e, n) in numWords" :key="n">
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            id="import_wallet_word"
+            v-model="wordList[n]"
+            autocomplete="off"
+            required
+          />
+        </div>
       </form>
     </div>
     <div class="footer-container bg-white">
-        <div class="footer-content">
-          <button id="import_wallet_cancel_button" class="btn btn-light btn-outline-primary btn-lg btn-footer btn-icon" @click="$router.go(-1)">Cancel</button>
-          <button id="import_wallet_continue_button" class="btn btn-primary btn-lg btn-footer ml-2" :disabled="nextDisabled" @click="next">Continue</button>
-        </div>
+      <div class="footer-content">
+        <button
+          id="import_wallet_cancel_button"
+          class="btn btn-light btn-outline-primary btn-lg btn-footer btn-icon"
+          @click="$router.go(-1)"
+        >
+          Cancel
+        </button>
+        <button
+          id="import_wallet_continue_button"
+          class="btn btn-primary btn-lg btn-footer ml-2"
+          :disabled="nextDisabled"
+          @click="next"
+        >
+          Continue
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -54,8 +76,7 @@ export default {
       numWords: 12
     }
   },
-  updated: function () {
-  },
+  updated: function () {},
   watch: {
     wordList: function (newList) {
       var words = newList[0].split(' ')
@@ -68,25 +89,30 @@ export default {
   },
   computed: {
     ...mapState(['wallets', 'activeWalletId']),
-    wallet () {
-      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+    wallet() {
+      return this.wallets.find((wallet) => wallet.id === this.activeWalletId)
     },
-    validMnemonic () {
-      return (this.mnemonic.split(' ').length === 12 || this.mnemonic.split(' ').length === 24) &&
+    validMnemonic() {
+      return (
+        (this.mnemonic.split(' ').length === 12 || this.mnemonic.split(' ').length === 24) &&
         validateMnemonic(this.mnemonic)
+      )
     },
-    nextDisabled () {
+    nextDisabled() {
       return this.mnemonic === '' || !this.validMnemonic
     },
-    mnemonic () {
+    mnemonic() {
       return this.wordList.join(' ')
     }
   },
   methods: {
-    next () {
-      this.$router.push({ name: 'OnboardingSetup', params: { seedphrase: this.mnemonic } })
+    next() {
+      this.$router.push({
+        name: 'OnboardingSetup',
+        params: { seedphrase: this.mnemonic }
+      })
     },
-    setMnemonicLength (words) {
+    setMnemonicLength(words) {
       this.numWords = words
       this.wordList = Array(this.numWords).fill('')
     }
@@ -95,10 +121,8 @@ export default {
 </script>
 
 <style lang="scss">
-
 .num-words {
   background: $color-text-primary;
-
 }
 
 .import-wallet {
@@ -124,14 +148,13 @@ export default {
   }
 
   .import-wallet_bottom {
-    background: #FFFFFF;
+    background: #ffffff;
     color: $color-text-primary;
     padding: $wrapper-padding;
 
     .btn-group {
       margin-bottom: 20px;
     }
-
   }
 
   &_icon {

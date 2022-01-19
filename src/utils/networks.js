@@ -46,5 +46,15 @@ export const ChainNetworks = {
   terra: {
     testnet: TerraNetworks.terra_testnet,
     mainnet: TerraNetworks.terra_mainnet
+  },
+  fuse: {
+    testnet: {
+      name: 'fuse_testnet',
+      coinType: '60',
+      networkId: 123,
+      chainId: 123,
+      isTestnet: true
+    }, // TODO: change to EthereumNetworks.fuse_testnet after chainabstractionlayer/pull/491 is merged
+    mainnet: EthereumNetworks.fuse_mainnet
   }
 }

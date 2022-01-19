@@ -1,28 +1,28 @@
 <template>
   <div class="account-container">
     <NavBar :showMenu="false">
-      <span class="account-title">
-        Add Ledger Accounts
-      </span>
+      <span class="account-title"> Add Ledger Accounts </span>
     </NavBar>
-    <Connect v-if="currentStep === 'connect'"
-           :loading="loading"
-           :selected-asset="selectedAsset"
-           @on-connect="tryToConnect"
-           @on-select-asset="setLedgerAsset"
+    <Connect
+      v-if="currentStep === 'connect'"
+      :loading="loading"
+      :selected-asset="selectedAsset"
+      @on-connect="tryToConnect"
+      @on-select-asset="setLedgerAsset"
     />
-    <Unlock v-else
-           :loading="loading"
-           :creating-account="creatingAccount"
-           :accounts="accounts"
-           :selected-accounts="selectedAccounts"
-           :selected-asset="selectedAsset"
-           :ledger-error="ledgerError"
-           :current-page="ledgerPage"
-           @on-connect="tryToConnect"
-           @on-unlock="unlock"
-           @on-cancel="cancel"
-           @on-select-account="selectAccount"
+    <Unlock
+      v-else
+      :loading="loading"
+      :creating-account="creatingAccount"
+      :accounts="accounts"
+      :selected-accounts="selectedAccounts"
+      :selected-asset="selectedAsset"
+      :ledger-error="ledgerError"
+      :current-page="ledgerPage"
+      @on-connect="tryToConnect"
+      @on-unlock="unlock"
+      @on-cancel="cancel"
+      @on-select-account="selectAccount"
     />
     <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
@@ -33,10 +33,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar'
 import Connect from './Connect'
 import Unlock from './Unlock'
-import {
-  LEDGER_BITCOIN_OPTIONS,
-  LEDGER_OPTIONS
-} from '@/utils/ledger-bridge-provider'
+import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@/utils/ledger-bridge-provider'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import { getNextAccountColor } from '@/utils/accounts'
@@ -52,7 +49,7 @@ export default {
     Unlock,
     LedgerBridgeModal
   },
-  data () {
+  data() {
     return {
       currentStep: 'connect',
       loading: false,
@@ -67,36 +64,25 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'activeNetwork',
-      'activeWalletId',
-      'enabledAssets'
-    ]),
+    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets']),
     ...mapGetters(['networkAccounts']),
     ...mapGetters('app', ['ledgerBridgeReady']),
-    ledgerOptions () {
+    ledgerOptions() {
       return LEDGER_OPTIONS
     },
-    bitcoinOptions () {
+    bitcoinOptions() {
       return LEDGER_BITCOIN_OPTIONS
     }
   },
   methods: {
     getAssetIcon,
-    closeBridgeModal () {
+    closeBridgeModal() {
       this.loading = false
       this.bridgeModalOpen = false
     },
-    ...mapActions([
-      'createAccount',
-      'getLedgerAccounts',
-      'updateAccountBalance',
-      'trackAnalytics'
-    ]),
-    ...mapActions('app', [
-      'startBridgeListener'
-    ]),
-    async tryToConnect ({ asset, walletType, page }) {
+    ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance', 'trackAnalytics']),
+    ...mapActions('app', ['startBridgeListener']),
+    async tryToConnect({ asset, walletType, page }) {
       if (this.ledgerBridgeReady) {
         await this.connect({ asset, walletType, page })
       } else {
@@ -104,8 +90,10 @@ export default {
         this.bridgeModalOpen = true
         await this.startBridgeListener()
         const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
-          payload.connected === true) {
+          if (
+            type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
+            payload.connected === true
+          ) {
             this.bridgeModalOpen = false
             await this.connect({ asset, walletType, page })
             if (unsubscribe) {
@@ -115,7 +103,7 @@ export default {
         })
       }
     },
-    async connect ({ asset, walletType, page }) {
+    async connect({ asset, walletType, page }) {
       this.selectedAsset = asset
       this.loading = true
       this.ledgerError = null
@@ -124,7 +112,7 @@ export default {
       try {
         if (asset) {
           const accountType = walletType || asset.types[0]
-          let currentPage = (page || 0)
+          let currentPage = page || 0
 
           if (currentPage <= 0) {
             currentPage = 1
@@ -150,12 +138,14 @@ export default {
         }
         this.loading = false
       } catch (error) {
-        this.ledgerError = { message: error.message || 'Error getting accounts' }
+        this.ledgerError = {
+          message: error.message || 'Error getting accounts'
+        }
         console.error('error getting accounts', error)
         this.loading = false
       }
     },
-    async unlock ({ walletType }) {
+    async unlock({ walletType }) {
       if (this.selectedAsset) {
         await this.addAccount({ walletType })
         await this.trackAnalytics({
@@ -168,18 +158,17 @@ export default {
         })
       }
     },
-    showTokenManagement ({ walletType }) {
+    showTokenManagement({ walletType }) {
       this.loading = false
       this.currentStep = 'token-management'
       this.selectedWalletType = walletType
     },
-    async addAccount ({ walletType }) {
+    async addAccount({ walletType }) {
       if (Object.keys(this.selectedAccounts).length > 0) {
         try {
           this.creatingAccount = true
           const { chain } = this.selectedAsset
-          const assetKeys =
-            this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
+          const assetKeys = this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
 
           const assets = assetKeys.filter((asset) => {
             return cryptoassets[asset].chain === this.selectedAsset.chain
@@ -218,20 +207,20 @@ export default {
         }
       }
     },
-    goToOverview () {
+    goToOverview() {
       this.$router.replace('/wallet')
     },
-    cancel () {
+    cancel() {
       this.loading = false
       this.ledgerError = null
       this.accounts = []
       this.selectedAccount = {}
       this.currentStep = 'connect'
     },
-    setLedgerAsset (asset) {
+    setLedgerAsset(asset) {
       this.selectedAsset = asset
     },
-    selectAccount (item) {
+    selectAccount(item) {
       if (this.selectedAccounts[[item.account.address]]) {
         delete this.selectedAccounts[item.account.address]
         this.selectedAccounts = {
@@ -253,11 +242,10 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.selectedAsset = this.ledgerOptions[0]
   }
 }
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

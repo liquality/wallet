@@ -7,11 +7,6 @@ module.exports = {
     mocha: true
   },
 
-  extends: [
-    'plugin:vue/essential',
-    '@vue/standard'
-  ],
-
   parserOptions: {
     parser: 'babel-eslint'
   },
@@ -23,12 +18,18 @@ module.exports = {
 
   overrides: [
     {
-      files: [
-        '**/tests/**/*.[jt]s?(x)'
-      ],
+      files: ['**/tests/**/*.[jt]s?(x)'],
+      env: {
+        jest: true
+      }
+    },
+    {
+      files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
       env: {
         jest: true
       }
     }
-  ]
+  ],
+
+  extends: ['plugin:vue/essential', 'eslint:recommended', '@vue/prettier']
 }
