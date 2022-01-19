@@ -242,7 +242,6 @@ export default {
     },
     maximum() {
       const maximumFee = this.maximumFee
-      console.log(maximumFee)
       const totalMaxFee = getSendFee(this.nativeAsset, maximumFee).plus(this.totalFees.fast)
       return {
         amount: totalMaxFee,
@@ -313,6 +312,15 @@ export default {
           [this.fees?.slow?.fee.maxPriorityFeePerGas]: 'slow',
           [this.fees?.average?.fee.maxPriorityFeePerGas]: 'average',
           [this.fees?.fast?.fee.maxPriorityFeePerGas]: 'fast'
+        }[val || 0]
+      }
+    },
+    maxFee(val) {
+      if (this.fees) {
+        this.preset = {
+          [this.fees?.slow?.fee.maxFeePerGas]: 'slow',
+          [this.fees?.average?.fee.maxFeePerGas]: 'average',
+          [this.fees?.fast?.fee.maxFeePerGas]: 'fast'
         }[val || 0]
       }
     }
