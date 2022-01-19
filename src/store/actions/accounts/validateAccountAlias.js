@@ -9,7 +9,7 @@ export const validateAccountAlias = async (_context, { accountAlias }) => {
     return "Name shouldn't have more than 20 characters"
   } else if (
     this.accounts[this.activeWalletId]?.[this.activeNetwork]?.findIndex(
-      a =>
+      (a) =>
         (a.alias && a.alias?.toLowerCase() === accountAlias.toLowerCase()) ||
         (a.index === this.accountIndex && a.chain === this.selectedChain.id)
     ) >= 0

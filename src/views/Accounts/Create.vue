@@ -175,10 +175,7 @@ export default {
     this.checkAccountAlias()
   },
   methods: {
-    ...mapActions([
-      'createAccount',
-      'validateAccountAlias'
-    ]),
+    ...mapActions(['createAccount', 'validateAccountAlias']),
     getChainIcon,
     cancel() {
       this.$router.replace({ name: 'ManageAccounts' })
@@ -243,7 +240,7 @@ export default {
 
       this.cancel()
     },
-    async checkAccountAlias () {
+    async checkAccountAlias() {
       this.accountAliasError = await this.validateAccountAlias({ accountAlias: this.accountAlias })
     }
   },

@@ -1,15 +1,13 @@
 <template>
-  <div class="account-notes-container">
-  </div>
+  <div class="account-notes-container"></div>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
-  components: {
-  },
-  data () {
+  components: {},
+  data() {
     return {
       notes: null
     }
@@ -17,20 +15,15 @@ export default {
   props: ['accountId', 'asset'],
   computed: {
     ...mapGetters(['accountItem']),
-    ...mapState([
-      'activeWalletId',
-      'activeNetwork'
-    ]),
-    account () {
+    ...mapState(['activeWalletId', 'activeNetwork']),
+    account() {
       return this.accountItem(this.accountId)
     }
   },
   methods: {
-    ...mapActions([
-      'getUnusedAddresses'
-    ])
+    ...mapActions(['getUnusedAddresses'])
   },
-  async created () {
+  async created() {
     this.notes = this.account?.notes || ''
   }
 }

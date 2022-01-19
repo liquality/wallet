@@ -11,9 +11,7 @@
     </div>
     <main>
       <p class="account">
-        <code v-if="account.addresses[0]">{{
-          shortenAddress(account.addresses[0])
-        }}</code>
+        <code v-if="account.addresses[0]">{{ shortenAddress(account.addresses[0]) }}</code>
         <img :src="getAccountIcon(account.chain)" class="asset-icon" />
       </p>
       <textarea
@@ -25,11 +23,7 @@
       />
     </main>
     <div class="p-3 pb-1">
-      <button
-        id="done_button"
-        class="btn btn-primary btn-lg btn-block"
-        @click="goback"
-      >
+      <button id="done_button" class="btn btn-primary btn-lg btn-block" @click="goback">
         Done
       </button>
     </div>
@@ -58,7 +52,7 @@ export default {
   computed: {
     ...mapState(['accounts', 'activeNetwork', 'activeWalletId']),
     ...mapGetters(['accountItem']),
-    account () {
+    account() {
       return this.accountItem(this.accountId)
     },
     ledgerAccount() {
@@ -93,7 +87,7 @@ export default {
     getAccountIcon,
     shortenAddress,
     ...mapActions(['exportPrivateKey']),
-    goback () {
+    goback() {
       this.$router.replace('/wallet/assets')
     },
     selectTextarea() {

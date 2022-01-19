@@ -42,10 +42,7 @@
                 </button>
               </div>
             </div>
-            <small
-              class="text-danger form-text text-right"
-              v-if="accountAliasError"
-            >
+            <small class="text-danger form-text text-right" v-if="accountAliasError">
               {{ accountAliasError }}
             </small>
           </div>
@@ -126,7 +123,7 @@ export default {
     SpinnerIcon,
     FontAwesomeIcon
   },
-  data () {
+  data() {
     return {
       addressCopied: false,
       address: null,
@@ -143,10 +140,10 @@ export default {
   computed: {
     ...mapGetters(['accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork']),
-    account () {
+    account() {
       return this.accountItem(this.accountId)
     },
-    chainName () {
+    chainName() {
       return {
         bitcoin: 'bitcoin',
         ethereum: 'ethereum',
@@ -160,32 +157,25 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'getUnusedAddresses',
-      'updateAccount',
-      'validateAccountAlias'
-    ]),
+    ...mapActions(['getUnusedAddresses', 'updateAccount', 'validateAccountAlias']),
     getAccountIcon,
     shortenAddress,
-    async copyAddress () {
+    async copyAddress() {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true
       setTimeout(() => {
         this.addressCopied = false
       }, 2000)
     },
-    back () {
+    back() {
       const { accountId, asset } = this.$route.params
       this.$router.push({ name: 'AccountAsset', params: { accountId, asset } })
     },
-    setEditAccountAlias () {
+    setEditAccountAlias() {
       this.editingAccountAlias = true
     },
-    async updateAccountAlias () {
-      if (
-        !this.accountAliasError &&
-        this.account?.alias !== this.accountAlias
-      ) {
+    async updateAccountAlias() {
+      if (!this.accountAliasError && this.account?.alias !== this.accountAlias) {
         this.updatingAccount = true
         const account = {
           ...this.account,
@@ -202,7 +192,7 @@ export default {
 
       this.editingAccountAlias = false
     },
-    async checkAccountAlias () {
+    async checkAccountAlias() {
       if (this.editingAccountAlias) {
         this.accountAliasError = await this.validateAccountAlias({
           accountAlias: this.accountAlias
@@ -212,7 +202,7 @@ export default {
       }
     }
   },
-  async created () {
+  async created() {
     if (this.account?.type.includes('ledger')) {
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
         this.account.addresses[0],
@@ -226,10 +216,7 @@ export default {
         accountId: this.accountId
       })
       const chainId = cryptoassets[this.asset]?.chain
-      this.address = chains[chainId]?.formatAddress(
-        addresses[0],
-        this.activeNetwork
-      )
+      this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
     }
 
     this.debouncedCheckAccountAlias = _.debounce(this.checkAccountAlias, 500)
@@ -237,10 +224,7 @@ export default {
 
     this.accountAlias = this.account?.alias || ''
 
-    const uri =
-      this.chainName === 'terra'
-        ? this.address
-        : [this.chainName, this.address].join(':')
+    const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')
 
     QRCode.toString(
       uri,

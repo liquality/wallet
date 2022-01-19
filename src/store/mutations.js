@@ -216,10 +216,8 @@ export default {
 
     state.accounts[walletId][network].push(account)
   },
-  UPDATE_ACCOUNT (state, { network, walletId, account }) {
-    const {
-      id
-    } = account
+  UPDATE_ACCOUNT(state, { network, walletId, account }) {
+    const { id } = account
     const accounts = state.accounts[walletId][network]
     if (accounts) {
       const index = accounts.findIndex((a) => a.id === id)

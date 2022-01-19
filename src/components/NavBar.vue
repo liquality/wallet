@@ -29,18 +29,11 @@
           <AssetsIcon />
           Manage Assets
         </li>
-        <li
-          id="manage_accounts"
-          @click="manageAccounts"
-        >
+        <li id="manage_accounts" @click="manageAccounts">
           <AccountsIcon />
           Manage Accounts
         </li>
-        <li
-          id="show_account_details"
-          v-if="$route.params.accountId"
-          @click="showAccountDetails"
-        >
+        <li id="show_account_details" v-if="$route.params.accountId" @click="showAccountDetails">
           <AccountDetailsIcon />
           Account Details
         </li>
@@ -150,7 +143,7 @@ export default {
       this.showMenuList = false
       this.$router.replace('/settings')
     },
-    showAccountDetails () {
+    showAccountDetails() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {

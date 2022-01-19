@@ -1,8 +1,6 @@
 <template>
   <div class="account-options-container">
-    <ListItem :to="{ name: 'ManageAssets' }" :item-class="'h-padding'">
-      Manage Assets
-    </ListItem>
+    <ListItem :to="{ name: 'ManageAssets' }" :item-class="'h-padding'"> Manage Assets </ListItem>
     <ListItem :to="{ name: 'ManageAccounts' }" :item-class="'h-padding'">
       Hide/Show Accounts
     </ListItem>
@@ -16,15 +14,13 @@
       Private Key
       <template #sub-title v-if="isLedgerAccount">
         <InfoNotification>
-          We can’t access your private keys on ledger. It’s designed like that
-          to keep them safe.
+          We can’t access your private keys on ledger. It’s designed like that to keep them safe.
         </InfoNotification>
       </template>
       <template #sub-title v-else>
         <div class="account-options-section">
           <div>
-            Everone with your private key will have full access to your account.
-            Be prepared.
+            Everone with your private key will have full access to your account. Be prepared.
           </div>
           <router-link
             class="btn btn-light btn-outline-primary"
@@ -47,13 +43,10 @@
       <template #sub-title>
         <div class="account-options-section">
           <div>
-            You can remove a disconnected ledger from the wallet at any time. It
-            will automatically appear again the next time you’ll use it.
+            You can remove a disconnected ledger from the wallet at any time. It will automatically
+            appear again the next time you’ll use it.
           </div>
-          <button
-            class="btn btn-light btn-outline-primary"
-            @click="tryToRemoveLedgerAccount"
-          >
+          <button class="btn btn-light btn-outline-primary" @click="tryToRemoveLedgerAccount">
             Remove Ledger account from View
           </button>
         </div>
@@ -67,14 +60,10 @@
       <template #sub-title>
         <div class="account-options-section">
           <div>
-            See all account related transactions and history on the Explorer.
-            Remember, everone can see it.
+            See all account related transactions and history on the Explorer. Remember, everone can
+            see it.
           </div>
-          <a
-            target="_blank"
-            class="btn btn-light btn-outline-primary"
-            :href="explorerLink"
-          >
+          <a target="_blank" class="btn btn-light btn-outline-primary" :href="explorerLink">
             Go to the Explorer
           </a>
         </div>
@@ -82,18 +71,14 @@
     </ListItem>
     <Modal v-if="removeLedgerAccountModalOpen" @close="closeRemoveLedgerModal">
       <template #header>
-        <h6>
-          REMOVE Ledger Account?
-        </h6>
+        <h6>REMOVE Ledger Account?</h6>
       </template>
       <template>
-        You can use this account again by connecting the Ledger with this wallet
-        .Your funds will be safe.
+        You can use this account again by connecting the Ledger with this wallet .Your funds will be
+        safe.
       </template>
       <template #footer>
-        <button class="btn btn-primary btn-lg" @click="removeLedgerAccount">
-          Remove
-        </button>
+        <button class="btn btn-primary btn-lg" @click="removeLedgerAccount">Remove</button>
       </template>
     </Modal>
   </div>
@@ -114,7 +99,7 @@ export default {
     InfoNotification,
     Modal
   },
-  data () {
+  data() {
     return {
       isLedgerAccount: false,
       address: null,
@@ -125,16 +110,12 @@ export default {
   computed: {
     ...mapGetters(['accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork']),
-    account () {
+    account() {
       return this.accountItem(this.accountId)
     },
-    explorerLink () {
+    explorerLink() {
       if (this.account) {
-        return getAddressExplorerLink(
-          this.address,
-          this.asset,
-          this.activeNetwork
-        )
+        return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
       }
 
       return '#'
@@ -142,13 +123,13 @@ export default {
   },
   methods: {
     ...mapActions(['getUnusedAddresses', 'removeAccount']),
-    closeRemoveLedgerModal () {
+    closeRemoveLedgerModal() {
       this.removeLedgerAccountModalOpen = false
     },
-    tryToRemoveLedgerAccount () {
+    tryToRemoveLedgerAccount() {
       this.removeLedgerAccountModalOpen = true
     },
-    async removeLedgerAccount () {
+    async removeLedgerAccount() {
       await this.removeAccount({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
@@ -158,7 +139,7 @@ export default {
       this.$router.replace('/wallet')
     }
   },
-  async created () {
+  async created() {
     if (this.account?.type.includes('ledger')) {
       this.isLedgerAccount = true
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
@@ -174,10 +155,7 @@ export default {
         accountId: this.accountId
       })
       const chainId = cryptoassets[this.asset]?.chain
-      this.address = chains[chainId]?.formatAddress(
-        addresses[0],
-        this.activeNetwork
-      )
+      this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
     }
   }
 }
