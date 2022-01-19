@@ -14,8 +14,7 @@
         <code v-if="account.addresses[0]">{{ shortenAddress(account.addresses[0]) }}</code>
         <img :src="getAccountIcon(account.chain)" class="asset-icon" />
       </p>
-      <p class="mt-3 alert alert-warning"
-          v-if="ledgerAccount">
+      <p class="mt-3 alert alert-warning" v-if="ledgerAccount">
         Cannot export from a Ledger account
       </p>
       <textarea
@@ -59,7 +58,7 @@ export default {
     account() {
       return this.$store.getters.accountItem(this.accountId)
     },
-    ledgerAccount () {
+    ledgerAccount() {
       const { type } = this.account
       return type && type.includes('ledger')
     }
