@@ -86,7 +86,7 @@ export default {
     ]),
     ...mapGetters(['accountItem', 'accountsData']),
     dappConnected() {
-      if (!this.currentOrigin) return false
+      if (!this.currentOrigin || !this.externalConnections[this.activeWalletId]) return false
       if (!(this.currentOrigin in this.externalConnections[this.activeWalletId])) {
         return false
       }
