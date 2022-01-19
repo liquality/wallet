@@ -244,3 +244,30 @@ export const fetchTerraToken = async (address) => {
     decimals: 6
   }
 }
+
+export const escapeSpecialSymbolsURL = (asset) => {
+  if (!asset) return asset
+  asset = asset
+    .replaceAll(' ', '%20')
+    .replaceAll('<', '%3C')
+    .replaceAll('>', '%3E')
+    .replaceAll('#', '%23')
+    .replaceAll('%', '%25')
+    .replaceAll('+', '%2B')
+    .replaceAll('{', '%7B')
+    .replaceAll('}', '%7D')
+    .replaceAll('|', '%7C')
+    .replaceAll('\\', '%5C')
+    .replaceAll('^', '%5E')
+    .replaceAll('~', '%7E')
+    .replaceAll('[', '%5B')
+    .replaceAll(']', '%5D')
+    .replaceAll("'", '%60')
+    .replaceAll('/', '%2F')
+    .replaceAll('?', '%3F')
+    .replaceAll(':', '%3A')
+    .replaceAll('@', '%3D')
+    .replaceAll('&', '%26')
+    .replaceAll('$', '%24')
+  return asset
+}
