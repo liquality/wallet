@@ -62,12 +62,12 @@ export default {
   },
   props: ['to', 'itemClass', 'itemStyles', 'containerClass'],
   methods: {
-    hasSlot (name) {
+    hasSlot(name) {
       return this.$slots[name]
     }
   },
   computed: {
-    itemComponent () {
+    itemComponent() {
       if (this.to) {
         return 'router-link'
       }

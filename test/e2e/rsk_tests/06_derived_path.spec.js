@@ -267,6 +267,9 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     // forgot_password_import_seed
     await page.waitForSelector('#forgot_password_import_seed', { visible: true })
     await page.click('#forgot_password_import_seed')
+    // Terms & conditions
+    await homePage.ScrollToEndOfTerms(page)
+    await homePage.ClickOnAcceptPrivacy(page)
     // some random seed phrase
     const randomSeed = 'sense quality accuse asthma imitate rubber acquire surprise strategy whip harvest survey'.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')

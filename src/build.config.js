@@ -42,12 +42,12 @@ export default {
   },
   infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
   exploraApis: {
-    testnet: 'https://liquality.io/testnet/electrs',
-    mainnet: 'https://api-mainnet-bitcoin-electrs.liquality.io'
+    testnet: 'https://electrs-testnet-api.liq-chainhub.net/',
+    mainnet: 'https://electrs-mainnet-api.liq-chainhub.net/'
   },
   batchEsploraApis: {
-    testnet: 'https://liquality.io/electrs-testnet-batch',
-    mainnet: 'https://api-mainnet-bitcoin-electrs-batch.liquality.io'
+    testnet: 'https://electrs-batch-testnet-api.liq-chainhub.net/',
+    mainnet: 'https://electrs-batch-mainnet-api.liq-chainhub.net/'
   },
   swapProviders: {
     testnet: {
@@ -55,7 +55,8 @@ export default {
         name: 'Liquality',
         icon: 'liquality.svg',
         type: SwapProviderType.LIQUALITY,
-        agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
+        agent:
+          process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
       },
       liqualityBoost: {
         name: 'Liquality Boost',
@@ -131,11 +132,17 @@ export default {
         routerAddress: SovrynMainnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynMainnetAddresses.proxy3,
         rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET
+      },
+      thorchain: {
+        name: 'Thorchain',
+        icon: 'thorchain.svg',
+        type: SwapProviderType.THORCHAIN,
+        thornode: 'https://thornode.thorchain.info'
       }
     }
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra'],
+  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra', 'fuse'],
   supportedBridgeAssets: ['MATIC', 'RBTC']
 }

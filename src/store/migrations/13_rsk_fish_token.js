@@ -4,7 +4,7 @@ export const rskFishToken = {
   version: 13,
   migrate: async (state) => {
     const { activeWalletId, enabledAssets } = state
-    const mainnetAccounts = state.accounts[activeWalletId].mainnet.map(account => {
+    const mainnetAccounts = state.accounts[activeWalletId].mainnet.map((account) => {
       if (account.chain === ChainId.Rootstock) {
         return {
           ...account,

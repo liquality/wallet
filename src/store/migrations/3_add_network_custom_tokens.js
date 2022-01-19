@@ -4,14 +4,14 @@ export const addNetworkCustomTokens = {
   migrate: async (state) => {
     const customTokens = {
       mainnet: {
-        [state.activeWalletId]: state.customTokens?.mainnet?.[
-          state.activeWalletId
-        ].map((token) => ({ ...token, network: 'ethereum' }))
+        [state.activeWalletId]: state.customTokens?.mainnet?.[state.activeWalletId].map(
+          (token) => ({ ...token, network: 'ethereum' })
+        )
       },
       testnet: {
-        [state.activeWalletId]: state.customTokens?.testnet?.[
-          state.activeWalletId
-        ].map((token) => ({ ...token, network: 'ethereum' }))
+        [state.activeWalletId]: state.customTokens?.testnet?.[state.activeWalletId].map(
+          (token) => ({ ...token, network: 'ethereum' })
+        )
       }
     }
     return { ...state, customTokens }

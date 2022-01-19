@@ -1,23 +1,13 @@
 <template>
   <div>
     <div class="navbar">
-      <router-link
-        v-if="showBack"
-        class="navbar_prev"
-        id="previous_nav_bar"
-        v-bind:to="backPath"
-      >
+      <router-link v-if="showBack" class="navbar_prev" id="previous_nav_bar" v-bind:to="backPath">
         <div>
           <ChevronLeftIcon class="navbar_prev_icon" />
           {{ backLabel }}
         </div>
       </router-link>
-      <a
-        v-else-if="showBackButton"
-        class="navbar_prev"
-        href="#"
-        @click="backClick"
-      >
+      <a v-else-if="showBackButton" class="navbar_prev" href="#" @click="backClick">
         <div>
           <ChevronLeftIcon class="navbar_prev_icon" />
           {{ backLabel }}
@@ -34,11 +24,7 @@
       >
         <HamburgerIcon class="navbar_menu_icon" />
       </div>
-      <ul
-        class="menu_list navbar_menu_list"
-        v-if="showMenuList"
-        v-click-away="hideMenu"
-      >
+      <ul class="menu_list navbar_menu_list" v-if="showMenuList" v-click-away="hideMenu">
         <li id="manage_assets" @click="assets">
           <AssetsIcon />
           Manage Assets
@@ -108,15 +94,8 @@ export default {
     LedgerIcon,
     AccountDetailsIcon
   },
-  props: [
-    'showMenu',
-    'showBack',
-    'backPath',
-    'backLabel',
-    'showBackButton',
-    'backClick'
-  ],
-  data () {
+  props: ['showMenu', 'showBack', 'backPath', 'backLabel', 'showBackButton', 'backClick'],
+  data() {
     return {
       showMenuList: false
     }
@@ -126,7 +105,7 @@ export default {
   },
   methods: {
     ...mapActions(['lockWallet', 'trackAnalytics']),
-    async lock () {
+    async lock() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -138,7 +117,7 @@ export default {
       await this.lockWallet()
       this.$router.replace('/open')
     },
-    backup () {
+    backup() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -149,7 +128,7 @@ export default {
       this.showMenuList = false
       this.$router.replace('/privacywarning')
     },
-    assets () {
+    assets() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -160,7 +139,7 @@ export default {
       this.showMenuList = false
       this.$router.replace('/settings/manage-assets')
     },
-    settings () {
+    settings() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -183,7 +162,7 @@ export default {
       const { accountId, asset } = this.$route.params
       this.$router.replace({ name: 'AccountDetailsOptions', params: { accountId, asset } })
     },
-    manageAccounts () {
+    manageAccounts() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -194,7 +173,7 @@ export default {
       this.showMenuList = false
       this.$router.replace('/accounts/management')
     },
-    ledger () {
+    ledger() {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
@@ -205,7 +184,7 @@ export default {
       this.showMenuList = false
       this.$router.replace('/accounts/hardware-wallet')
     },
-    hideMenu () {
+    hideMenu() {
       this.showMenuList = false
     }
   }
@@ -222,15 +201,17 @@ export default {
   &_title {
     width: 100%;
     text-align: center;
-    font-weight: bold;
+    font-weight: $headings-font-weight;
     text-transform: uppercase;
+    font-size: $font-size-sm;
   }
 
   &_menu,
   &_prev {
     position: absolute;
     color: $color-text-muted;
-    font-size: $font-size-sm;
+    font-size: $font-size-tiny;
+    font-weight: $font-weight-light;
     cursor: pointer;
   }
 

@@ -41,19 +41,19 @@ const migrations = [
 
 const LATEST_VERSION = migrations[migrations.length - 1].version
 
-function isMigrationNeeded (state) {
+function isMigrationNeeded(state) {
   const currentVersion = state.version || 0
   return currentVersion < LATEST_VERSION
 }
 
-async function processMigrations (state) {
+async function processMigrations(state) {
   const currentVersion = state.version || 0
 
   let newState = cloneDeep(state)
   for (const migration of migrations) {
     if (currentVersion < migration.version) {
       try {
-        newState = await migration.migrate(cloneDeep(state))
+        newState = await migration.migrate(cloneDeep(newState))
         newState.version = migration.version
       } catch (e) {
         console.error(`Failed to migrate to v${migration.version}`, e)

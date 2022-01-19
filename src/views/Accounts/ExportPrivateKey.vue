@@ -5,7 +5,7 @@
         <strong>{{ chainId }} Private Key</strong>
       </span>
     </NavBar>
-    <div class="export-account_top login-wrapper">
+    <div class="export-account_top login-wrapper" v-if="!ledgerAccount">
       <Eye class="export-account_eye" />
       <p class="mt-3">Keep this away from prying eyes!</p>
     </div>
@@ -48,7 +48,7 @@ export default {
     NavBar,
     Eye
   },
-  data () {
+  data() {
     return {
       chainId: '',
       privateKey: 'n/a'
@@ -60,12 +60,16 @@ export default {
     ...mapGetters(['accountItem']),
     account () {
       return this.accountItem(this.accountId)
+    },
+    ledgerAccount() {
+      const { type } = this.account
+      return type && type.includes('ledger')
     }
   },
   watch: {
     activeNetwork: 'goback'
   },
-  created () {
+  created() {
     const { activeWalletId, activeNetwork, accountId } = this
     const chainId = this.account?.chain
 
@@ -77,12 +81,12 @@ export default {
       network: activeNetwork,
       chainId,
       accountId
-    }).then(key => {
+    }).then((key) => {
       this.chainId = chainId
       this.privateKey = key
     })
   },
-  updated () {
+  updated() {
     this.$nextTick(this.selectTextarea)
   },
   methods: {
@@ -92,7 +96,7 @@ export default {
     goback () {
       this.$router.replace('/wallet/assets')
     },
-    selectTextarea () {
+    selectTextarea() {
       this.$el.querySelector('textarea')?.select()
     }
   }
@@ -121,6 +125,11 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      code {
+        font-weight: bold;
+        color: $color-text-primary;
+      }
     }
 
     textarea {

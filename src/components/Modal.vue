@@ -1,30 +1,35 @@
 <template>
   <div>
     <div class="modal-backdrop"></div>
-    <div class="modal d-block"
-         tabindex="-1"
-         role="dialog"
-         @click.passive="closeOutside ? close() : () => {}">
-      <div :class="{
-        'modal-dialog modal-dialog-centered': true,
-        [type]: true
-      }" role="document">
+    <div
+      class="modal d-block"
+      tabindex="-1"
+      role="dialog"
+      @click.passive="closeOutside ? close() : () => {}"
+    >
+      <div
+        :class="{
+          'modal-dialog modal-dialog-centered': true,
+          [type]: true
+        }"
+        role="document"
+      >
         <div class="modal-content">
           <div class="modal-header">
             <div class="modal-header-container" v-if="hasSlot('header')">
-               <slot name="header"></slot>
-             </div>
-             <h5 class="modal-title" v-else-if="hasSlot('title')">
-               <slot name="title"></slot>
-             </h5>
-              <ModalClose class="modal-close" @click="close"/>
+              <slot name="header"></slot>
+            </div>
+            <h5 class="modal-title" v-else-if="hasSlot('title')">
+              <slot name="title"></slot>
+            </h5>
+            <ModalClose class="modal-close" @click="close" />
           </div>
-           <div :class="bodyClass">
-             <slot></slot>
-           </div>
-           <div class="modal-footer"  v-if="hasSlot('footer')">
-              <slot name="footer"></slot>
-           </div>
+          <div :class="bodyClass">
+            <slot></slot>
+          </div>
+          <div class="modal-footer" v-if="hasSlot('footer')">
+            <slot name="footer"></slot>
+          </div>
         </div>
       </div>
     </div>
@@ -52,10 +57,10 @@ export default {
     }
   },
   methods: {
-    hasSlot (name) {
+    hasSlot(name) {
       return this.$slots[name]
     },
-    close () {
+    close() {
       this.$emit('close')
     }
   }
@@ -64,7 +69,7 @@ export default {
 
 <style lang="scss">
 .modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.1)!important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 .modal-dialog {
@@ -76,12 +81,12 @@ export default {
 }
 
 .modal {
-  overflow: auto!important;
+  overflow: auto !important;
 }
 
 .modal-content {
   border-radius: 0 !important;
-  border: 1px solid #D9DFE5;
+  border: 1px solid #d9dfe5;
   box-sizing: border-box;
   box-shadow: 2px 4px 4px rgba(46, 44, 44, 0.25);
 
