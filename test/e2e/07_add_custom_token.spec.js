@@ -40,9 +40,9 @@ const customTokensDetails = [
   },
   {
     chain: 'avalanche',
-    address: '0x0b9d5d9136855f6fec3c0993fee6e9ce8a297846',
-    name: 'LINK',
-    symbol: 'LINK',
+    address: '0x5947bb275c521040051d82396192181b413227a3',
+    name: 'LINK.e',
+    symbol: 'LINK.e',
     decimal: '18'
   },
   {
