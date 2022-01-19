@@ -83,7 +83,7 @@
               Options
             </router-link>
           </li>
-          <!-- <li class="nav-item">
+          <li class="nav-item">
             <router-link
               class="nav-link"
               id="details-notes-tab"
@@ -97,7 +97,7 @@
             >
               Notes
             </router-link>
-          </li> -->
+          </li>
         </ul>
         <div class="details-tab-content">
           <router-view></router-view>
