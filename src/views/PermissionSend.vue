@@ -44,7 +44,12 @@
       </div>
 
       <div class="form-group mt-4">
-        <label>Network Speed / Fee</label>
+        <label
+          >Network Speed / Fee
+          <span class="text-muted fee-info"
+            >({{ selectedFee }} / {{ feeInUnits }} {{ assetChain }})</span
+          ></label
+        >
         <div class="permission-send_fees">
           <FeeSelector
             :asset="asset"
@@ -367,6 +372,25 @@ export default {
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
 
       return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
+    },
+    feeInUnits() {
+      if (!this.gas) {
+        return
+      }
+
+      let feePerGas
+
+      if (this.selectedFee === 'custom') {
+        feePerGas = this.customFee
+      } else {
+        feePerGas =
+          this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[
+            this.selectedFee
+          ]?.fee
+      }
+
+      const txCost = this.gas.times(BN(feePerGas).div(1e9))
+      return txCost.dp(6)
     }
   },
   async created() {
@@ -445,5 +469,9 @@ export default {
       font-size: $font-size-sm;
     }
   }
+}
+
+.fee-info {
+  font-size: 10px;
 }
 </style>

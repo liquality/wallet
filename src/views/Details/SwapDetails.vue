@@ -11,8 +11,9 @@
             <p>{{ status }}</p>
           </div>
           <div class="col">
-            <CompletedIcon
-              v-if="['SUCCESS', 'REFUNDED'].includes(item.status)"
+            <CompletedIcon v-if="item.status === 'SUCCESS'" class="swap-details_status-icon" />
+            <RefundedIcon
+              v-else-if="['FAILED', 'REFUNDED', 'QUOTE_EXPIRED'].includes(item.status)"
               class="swap-details_status-icon"
             />
             <SpinnerIcon v-else class="swap-details_status-icon" />
@@ -26,7 +27,9 @@
             </p>
           </div>
           <div class="col" id="pending_receipt_section">
-            <h2 v-if="['SUCCESS', 'REFUNDED'].includes(item.status)">Received</h2>
+            <h2 v-if="['SUCCESS', 'REFUNDED', 'FAILED'].includes(item.status)">
+              {{ item.status }}
+            </h2>
             <h2 v-else>Pending Receipt</h2>
             <p>{{ prettyBalance(item.toAmount, item.to) }} {{ item.to }}</p>
           </div>
@@ -93,6 +96,7 @@ import { getStatusLabel } from '@/utils/history'
 import { isERC20, getNativeAsset } from '@/utils/asset'
 
 import CompletedIcon from '@/assets/icons/completed.svg'
+import RefundedIcon from '@/assets/icons/refunded.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
 import Modal from '@/components/Modal'
@@ -104,6 +108,7 @@ import Timeline from '@/swaps/views/Timeline.vue'
 export default {
   components: {
     CompletedIcon,
+    RefundedIcon,
     SpinnerIcon,
     NavBar,
     Timeline,

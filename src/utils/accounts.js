@@ -64,7 +64,8 @@ export const chainDefaultColors = {
   solana: '#008080',
   polygon: '#8247E5',
   arbitrum: '#28A0EF',
-  terra: '#008080'
+  terra: '#008080',
+  fuse: '#46e8b6'
 }
 
 export const getAccountIcon = (chain) => {
@@ -77,7 +78,8 @@ export const getAccountIcon = (chain) => {
     solana: getAssetIcon('SOL'),
     polygon: getAssetIcon('polygon_account'),
     arbitrum: getAssetIcon('ARBITRUM'),
-    terra: getAssetIcon('TERRA')
+    terra: getAssetIcon('TERRA'),
+    fuse: getAssetIcon('FUSE')
   }[chain]
 }
 
@@ -91,7 +93,8 @@ export const getChainIcon = (chainId) => {
     solana: getAssetIcon('SOL'),
     polygon: getAssetIcon(`${chainId}_chain`),
     arbitrum: getAssetIcon('ARBITRUM'),
-    terra: getAssetIcon(`${chainId}_chain`)
+    terra: getAssetIcon(`${chainId}_chain`),
+    fuse: getAssetIcon('FUSE')
   }[chainId]
 }
 

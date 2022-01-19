@@ -43,7 +43,7 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
     await browser.close()
   })
 
-  it('Sushi injection - ETH["smoke"]', async () => {
+  it('Sushi injection - ETH["PULL_REQUEST_TEST"]', async () => {
     // Go to Sushi app
     dappPage = await browser.newPage()
     await dappPage.setViewport({

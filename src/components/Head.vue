@@ -13,14 +13,17 @@
       </ul>
     </div>
     <div
+      id="connect_dapp_main_option"
       class="head_connection float-right mr-3"
       @click="showConnectionDrawer = !showConnectionDrawer"
     >
       <template v-if="dappConnected"
-        ><ConnectionConnected class="mr-1 connection-icon" /> dApp Connected</template
+        ><ConnectionConnected class="mr-1 connection-icon" id="dappConnected" /> dApp
+        Connected</template
       >
       <template v-else
-        ><ConnectionDisconnected class="mr-1 connection-icon" /> Connect dApp</template
+        ><ConnectionDisconnected class="mr-1 connection-icon" id="connect_dapp" /> Connect
+        dApp</template
       >
       <ChevronUpIcon class="ml-1" v-if="showConnectionDrawer" />
       <ChevronDownIcon class="ml-1" v-else />
@@ -65,7 +68,7 @@ export default {
       return this.wallets.find((wallet) => wallet.id === this.activeWalletId)
     },
     dappConnected() {
-      if (!this.currentOrigin) return false
+      if (!this.currentOrigin || !this.externalConnections[this.activeWalletId]) return false
       if (!(this.currentOrigin in this.externalConnections[this.activeWalletId])) return false
       const chains = Object.keys(this.externalConnections[this.activeWalletId][this.currentOrigin])
       return chains.length > 0
@@ -116,6 +119,7 @@ export default {
     height: 36px;
     display: flex;
     font-size: $font-size-tiny;
+    font-weight: $font-weight-base;
     justify-content: center;
     align-items: center;
     text-transform: capitalize;
