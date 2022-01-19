@@ -34,6 +34,7 @@
 import SearchIcon from '@/assets/icons/search.svg'
 import WalletAccounts from '@/components/WalletAccounts'
 import NavBar from '@/components/NavBar'
+import { escapeSpecialSymbolsURL } from '@/utils/asset'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -55,10 +56,13 @@ export default {
     }
   },
   methods: {
+    escapeSpecialSymbolsURL,
     onAccountSelected({ account, asset }) {
       const _asset = asset || account.assets[0]
       const _action = this.action === 'swap.send' ? 'swap' : this.action
-      this.$router.push(`/accounts/${account.id}/${_asset}/${_action}?source=assets`)
+      this.$router.push(
+        `/accounts/${account.id}/${escapeSpecialSymbolsURL(_asset)}/${_action}?source=assets`
+      )
     }
   },
   created() {

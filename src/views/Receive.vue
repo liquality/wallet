@@ -2,7 +2,11 @@
   <div class="receive">
     <NavBar
       showBack="true"
-      :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
+      :backPath="
+        routeSource === 'assets'
+          ? '/wallet'
+          : `/accounts/${account.id}/${escapeSpecialSymbolsURL(asset)}`
+      "
       :backLabel="routeSource === 'assets' ? 'Overview' : asset"
     >
       Receive {{ asset }}
@@ -43,7 +47,11 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <router-link
-            :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
+            :to="
+              routeSource === 'assets'
+                ? '/wallet'
+                : `/accounts/${account.id}/${escapeSpecialSymbolsURL(asset)}`
+            "
           >
             <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">Done</button>
           </router-link>
@@ -66,7 +74,7 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import QRCode from 'qrcode'
-import { getAssetIcon } from '@/utils/asset'
+import { getAssetIcon, escapeSpecialSymbolsURL } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
@@ -192,6 +200,7 @@ export default {
   methods: {
     ...mapActions(['getUnusedAddresses', 'trackAnalytics']),
     getAssetIcon,
+    escapeSpecialSymbolsURL,
     async copy() {
       this.trackAnalytics({
         event: 'Receive screen',

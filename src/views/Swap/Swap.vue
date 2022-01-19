@@ -3,7 +3,11 @@
     <div class="swap" v-if="currentStep === 'inputs'">
       <NavBar
         showBack="true"
-        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
+        :backPath="
+          routeSource === 'assets'
+            ? '/wallet'
+            : `/accounts/${account.id}/${escapeSpecialSymbolsURL(asset)}`
+        "
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Swap
@@ -124,7 +128,9 @@
           <div class="button-group">
             <router-link
               :to="
-                routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${this.asset}`
+                routeSource === 'assets'
+                  ? '/wallet'
+                  : `/accounts/${this.account.id}/${escapeSpecialSymbolsURL(this.asset)}`
               "
             >
               <button class="btn btn-light btn-outline-primary btn-lg">Cancel</button>
@@ -374,7 +380,13 @@ import {
   formatFiat,
   VALUE_DECIMALS
 } from '@/utils/coinFormatter'
-import { isERC20, getNativeAsset, getAssetColorStyle, getAssetIcon } from '@/utils/asset'
+import {
+  isERC20,
+  getNativeAsset,
+  getAssetColorStyle,
+  getAssetIcon,
+  escapeSpecialSymbolsURL
+} from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import { getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
@@ -660,7 +672,7 @@ export default {
       return unitToCurrency(cryptoassets[this.asset], available)
     },
 
-    canCoverAmmFee () {
+    canCoverAmmFee() {
       if (!this.selectedQuote?.bridgeAsset) return true
       const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
       const toSwapFeeInUnits = currencyToUnit(
@@ -796,6 +808,7 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     formatFiat,
+    escapeSpecialSymbolsURL,
     getAssetFees(asset) {
       const assetFees = {}
       if (this.customFees[asset]) {
@@ -1036,7 +1049,7 @@ export default {
         })
 
         this.signRequestModalOpen = false
-        this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
+        this.$router.replace(`/accounts/${this.account?.id}/${escapeSpecialSymbolsURL(this.asset)}`)
       } catch (error) {
         console.error(error)
         const { message } = error
