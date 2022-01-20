@@ -77,6 +77,25 @@ class TestUtils {
     const ts = Math.round((new Date()).getTime() / 1000)
     await page.screenshot({ path: `screenshots/${screenshotName}-${ts}.png`, fullscreen: true })
   }
+
+  /**
+   * Get coin fiat rate & coin value from page after select coin.
+   * @param page
+   * @param assetSelector - coin selector.
+   * @return {Promise<*[]|*>} - [coinValue, fiatRate]
+   */
+  async getAssetValues(page, assetSelector) {
+    if (!assetSelector) {
+      return []
+    }
+    let coinValue = await page.$eval(`#${assetSelector}_balance_value`, (el) => el.textContent)
+    let coinFiatValue = await page.$eval(`#${assetSelector}_fiat_value`, (el) => el.textContent)
+
+    return {
+      coinValue: coinValue.replace(/[^0-9.]/g, ''),
+      coinFiatValue: coinFiatValue.replace(/[^0-9.]/g, '')
+    }
+  }
 }
 
 module.exports = TestUtils
