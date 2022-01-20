@@ -699,7 +699,7 @@ export default {
       const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
       const toSwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
-        this.toSwapFee
+        this.receiveFee
       )
       return BN(balance).gt(toSwapFeeInUnits)
     },
