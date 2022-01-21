@@ -75,7 +75,10 @@ class TestUtils {
    */
   async takeScreenshot (page, screenshotName) {
     const ts = Math.round((new Date()).getTime() / 1000)
-    await page.screenshot({ path: `screenshots/${screenshotName}-${ts}.png`, fullscreen: true })
+    await page.screenshot({
+      path: `screenshots/${screenshotName}-${ts}.png`,
+      fullscreen: true
+    })
   }
 
   /**
@@ -84,7 +87,7 @@ class TestUtils {
    * @param assetSelector - coin selector.
    * @return {Promise<*[]|*>} - [coinValue, fiatRate]
    */
-  async getAssetValues(page, assetSelector) {
+  async getAssetValues (page, assetSelector) {
     if (!assetSelector) {
       return []
     }
@@ -95,6 +98,24 @@ class TestUtils {
       coinValue: coinValue.replace(/[^0-9.]/g, ''),
       coinFiatValue: coinFiatValue.replace(/[^0-9.]/g, '')
     }
+  }
+
+  /**
+   * Get all chain addresses from overview page.
+   * @param page
+   * @return {Promise<*|*[]>}
+   * @constructor
+   */
+  async getAllChainAddresses (page) {
+    let assertAddress = []
+
+    await page.waitForSelector(`#asset_list_item`, { visible: true })
+    const totalAddress = await page.$$('#assert_address') // get all addresses
+    for (const address of totalAddress) {
+      const addressText = await page.evaluate(el => el.textContent, address)
+      assertAddress.push(addressText)
+    }
+    return assertAddress
   }
 }
 

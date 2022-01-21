@@ -12,7 +12,7 @@ const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
 const password = '123123123'
-let bridgeUrl = 'https://bridge.test.sovryn.app/'
+let bridgeUrl = 'https://bridge.sovryn.app/'
 
 describe('RSK Bridge Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
@@ -30,12 +30,6 @@ describe('RSK Bridge Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      bridgeUrl = 'https://bridge.sovryn.app/'
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
     // Web3 toggle on
     await overviewPage.ClickWeb3WalletToggle(page)
 

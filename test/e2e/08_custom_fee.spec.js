@@ -44,6 +44,7 @@ describe('Custom fee feature["TESTNET"]', async () => {
     await page.waitForSelector(`#${coinName}_send_button`, { visible: true })
     // Check view explorer
     await overviewPage.HasViewExplorerDisplayed(page, coinName)
+    // Validate fiat & coin value is displayed & not 0
     let coinDetails = await testUtil.getAssetValues(page, coinName)
     expect(coinDetails.coinValue,`${coinName} value shouldn't be 0`).not.to.equal('0')
     expect(coinDetails.coinFiatValue, `${coinName} fiat value shouldn't be 0`).not.to.equal('0.00')
