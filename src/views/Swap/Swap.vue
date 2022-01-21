@@ -262,7 +262,7 @@
                 ~{{ dpUI(receiveFee) }} {{ hasPredefinedReceiveFee ? toAsset : toAssetChain }}
               </div>
               <div class="details-text" id="swap_receive_network_fee_fiat_rate">
-                ${{
+                {{
                   formatFiatUI(
                     prettyFiatBalance(
                       receiveFee,
