@@ -52,6 +52,7 @@
         >
         <div class="permission-send_fees">
           <FeeSelector
+            :totalFees="maxOptionActive ? maxSendFees : sendFees"
             :asset="asset"
             v-model="selectedFee"
             v-bind:fees="assetFees"
@@ -62,7 +63,7 @@
       </div>
     </div>
 
-    <div class="send" v-else-if="currentStep === 'custom-fees'">
+    <div class="send" v-else-if="currentStep === 'custom-fees' && !isEIP1559Fees">
       <CustomFees
         @apply="applyCustomFee"
         @update="setCustomFee"
@@ -72,6 +73,20 @@
         :fees="assetFees"
         :totalFees="maxOptionActive ? maxSendFees : sendFees"
         :fiatRates="fiatRates"
+      />
+    </div>
+
+    <div class="send" v-else-if="currentStep === 'custom-fees' && isEIP1559Fees">
+      <CustomFeesEIP1559
+        @apply="applyCustomFee"
+        @update="setCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="assetChain"
+        :selected-fee="selectedFee"
+        :fees="assetFees"
+        :totalFees="maxOptionActive ? maxSendFees : sendFees"
+        :fiatRates="fiatRates"
+        :promiseSendView="true"
       />
     </div>
 
@@ -96,9 +111,10 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-import { unitToCurrency, chainToTokenAddressMap } from '@liquality/cryptoassets'
+import { unitToCurrency, chainToTokenAddressMap, ChainId } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
+import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { prettyBalance, prettyFiatBalance, formatFiatUI } from '@/utils/coinFormatter'
 import {
   getNativeAsset,
@@ -126,7 +142,8 @@ export default {
     ChevronDown,
     ChevronRight,
     FeeSelector,
-    CustomFees
+    CustomFees,
+    CustomFeesEIP1559
   },
   data() {
     return {
@@ -242,7 +259,8 @@ export default {
         const sendFees = {}
 
         for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePerGas = BN(fee.fee).div(1e9)
+          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+          const feePerGas = BN(feePrice).div(1e9)
           const txCost = this.gas.times(feePerGas)
           sendFees[speed] = txCost
         }
@@ -271,7 +289,12 @@ export default {
     },
     applyCustomFee({ fee }) {
       const presetFee = Object.entries(this.assetFees).find(
-        ([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee
+        ([speed, speedFee]) =>
+          speed !== 'custom' &&
+          (speedFee.fee === fee ||
+            (fee.maxPriorityFeePerGas &&
+              speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas &&
+              speedFee.fee.maxFeePerGas === fee.maxFeePerGas))
       )
       if (presetFee) {
         const [speed] = presetFee
@@ -280,7 +303,7 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = fee
+        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
         this.selectedFee = 'custom'
       }
       this.currentStep = 'inputs'
@@ -317,6 +340,12 @@ export default {
     },
     shortAddress() {
       return this.address ? shortenAddress(this.address) : 'New Contract'
+    },
+    isEIP1559Fees() {
+      return (
+        cryptoassets[this.asset].chain === ChainId.Ethereum ||
+        cryptoassets[this.asset].chain === ChainId.Polygon
+      )
     },
     value() {
       // Parse SendOptions.value into BN
@@ -369,6 +398,10 @@ export default {
           ]?.fee
       }
 
+      feePerGas = feePerGas.suggestedBaseFeePerGas
+        ? feePerGas.suggestedBaseFeePerGas + feePerGas.maxPriorityFeePerGas
+        : feePerGas
+
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
 
       return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
@@ -389,8 +422,17 @@ export default {
           ]?.fee
       }
 
+      feePerGas = feePerGas.suggestedBaseFeePerGas
+        ? feePerGas.suggestedBaseFeePerGas + feePerGas.maxPriorityFeePerGas
+        : feePerGas
+
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
       return txCost.dp(6)
+    },
+    calculateFee(fee) {
+      return fee.suggestedBaseFeePerGas
+        ? fee.suggestedBaseFeePerGas + fee.maxPriorityFeePerGas
+        : fee
     }
   },
   async created() {
@@ -406,7 +448,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .send {
   &_asset {
     &.input-group {
@@ -473,5 +515,9 @@ export default {
 
 .fee-info {
   font-size: 10px;
+}
+
+.wrapper {
+  padding: 10px !important;
 }
 </style>
