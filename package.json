@@ -132,7 +132,7 @@
     "lint-staged": "^9.5.0",
     "mochawesome": "7.0.1",
     "prettier": "^2.2.1",
-    "puppeteer": "13.1.0",
+    "puppeteer": "13.1.1",
     "puppeteer-core": "13.1.0",
     "sass": "1.48.0",
     "sass-loader": "^8.0.2",
