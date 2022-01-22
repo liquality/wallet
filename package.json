@@ -131,7 +131,7 @@
     "kcd-scripts": "12.0.0",
     "lint-staged": "^9.5.0",
     "mochawesome": "7.0.1",
-    "prettier": "^2.2.1",
+    "prettier": "2.5.1",
     "puppeteer": "13.1.0",
     "puppeteer-core": "13.1.0",
     "sass": "1.48.0",
