@@ -228,9 +228,18 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST"]', asyn
     const polygonAddress = await overviewPage.GetAssertAddress(page, 'POLYGON')
     // ARBITRUM
     const arbitrumAddress = await overviewPage.GetAssertAddress(page, 'ARBITRUM')
+
+    let details =  {
+      'ETH': ethAddress,
+      'RSK': rskAddress,
+      'BSC': bscAddress,
+      'POLYGON': polygonAddress,
+      'ARBITRUM': arbitrumAddress
+    }
+
     assertAddresses.push(ethAddress, rskAddress, bscAddress, polygonAddress, arbitrumAddress)
     expect(assertAddresses.every((val, i, arr) => val === arr[0]),
-      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${assertAddresses} \n
+      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${JSON.stringify(details)} \n
       'all addresses ${allAddresses}`).eq(true)
     expect(rskAddress, `ETH ${ethAddress} & RSK ${rskAddress} Address are same if the wallet created with 0 balance`)
       .equals(ethAddress)
