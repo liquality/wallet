@@ -8,15 +8,18 @@ class SeedWordsPage {
   async GetBackupSeedWords (page) {
     await page.waitForSelector('#backup-wallet_seed_wordlist', { visible: true })
     const allSeedPhases = await page.$$eval('#backup_seed_word', elements => elements.map(item => item.textContent))
+    if (allSeedPhases.length !== 12) {
+      throw new Error('Seed words not found')
+    }
 
-    const seed1 = allSeedPhases[0]
-    const seed5 = allSeedPhases[4]
-    const seed12 = allSeedPhases[11]
+    const seed_one = allSeedPhases[0]
+    const seed_five = allSeedPhases[4]
+    const seed_twelve = allSeedPhases[11]
 
     return {
-      seed1,
-      seed5,
-      seed12
+      seed1: seed_one,
+      seed5: seed_five,
+      seed12: seed_twelve
     }
   }
 
