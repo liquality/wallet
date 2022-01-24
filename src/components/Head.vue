@@ -63,11 +63,18 @@ export default {
     }
   },
   computed: {
-    ...mapState(['wallets', 'activeWalletId', 'activeNetwork', 'externalConnections']),
+    ...mapState([
+      'wallets',
+      'activeWalletId',
+      'activeNetwork',
+      'externalConnections',
+      'injectionEnabled'
+    ]),
     wallet: function () {
       return this.wallets.find((wallet) => wallet.id === this.activeWalletId)
     },
     dappConnected() {
+      if (!this.injectionEnabled) return false
       if (!this.currentOrigin || !this.externalConnections[this.activeWalletId]) return false
       if (!(this.currentOrigin in this.externalConnections[this.activeWalletId])) return false
       const chains = Object.keys(this.externalConnections[this.activeWalletId][this.currentOrigin])
