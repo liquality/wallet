@@ -30,11 +30,8 @@ export const updateAccountBalance = async (
       } else {
         addresses = await _client.wallet.getUsedAddresses()
       }
-      const balance = addresses.length === 0
-        ? 0
-        : (await _client.chain.getBalance(
-          addresses
-        )).toString()
+      const balance =
+        addresses.length === 0 ? 0 : (await _client.chain.getBalance(addresses)).toString()
 
       commit('UPDATE_BALANCE', {
         network,
