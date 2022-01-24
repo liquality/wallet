@@ -1,12 +1,12 @@
 import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 
-export const executeRequest = async ({ getters, dispatch, state, rootGetters }, { request }) => {
+export const executeRequest = async ({ getters, dispatch, rootGetters }, { request }) => {
   // Send transactions through wallet managed action
   const { network, walletId, asset, accountId } = request
   const { accountItem } = getters
   const account = accountItem(accountId)
   let call
-  const result = await new Promise((resolve, reject) => {
+  const result = await new Promise((resolve) => {
     if (request.method === 'chain.sendTransaction') {
       call = dispatch('sendTransaction', {
         network,
@@ -17,18 +17,17 @@ export const executeRequest = async ({ getters, dispatch, state, rootGetters }, 
         amount: request.args[0].value,
         data: request.args[0].data,
         fee: request.args[0].fee,
+        feeLabel: request.args[0].feeLabel,
         gas: request.args[0].gas
       })
     } else {
-    // Otherwise build client
-      const client = getters.client(
-        {
-          network,
-          walletId,
-          asset,
-          accountId
-        }
-      )
+      // Otherwise build client
+      const client = getters.client({
+        network,
+        walletId,
+        asset,
+        accountId
+      })
       let methodFunc
       if (request.method.includes('.')) {
         const [namespace, fnName] = request.method.split('.')
@@ -42,10 +41,9 @@ export const executeRequest = async ({ getters, dispatch, state, rootGetters }, 
 
     const ledgerBridgeReady = rootGetters['app/ledgerBridgeReady']
     if (!ledgerBridgeReady && account?.type.includes('ledger')) {
-      dispatch('app/startBridgeListener')
-        .then(() => {
-          createConnectSubscription(() => resolve(call))
-        })
+      dispatch('app/startBridgeListener').then(() => {
+        createConnectSubscription(() => resolve(call))
+      })
     } else {
       resolve(call)
     }

@@ -1,11 +1,14 @@
 import { isObject } from 'lodash-es'
 import { unlockAsset } from '../utils'
 
-export const updateTransactionFee = async ({ dispatch, commit, getters }, { network, walletId, asset, id, hash, newFee, accountId }) => {
+export const updateTransactionFee = async (
+  { dispatch, commit, getters },
+  { network, walletId, asset, id, hash, newFee, accountId }
+) => {
   const item = getters.historyItemById(network, walletId, id)
 
-  const hashKey = Object.keys(item).find(key => item[key] === hash)
-  const txKey = Object.keys(item).find(key => isObject(item[key]) && item[key].hash === hash)
+  const hashKey = Object.keys(item).find((key) => item[key] === hash)
+  const txKey = Object.keys(item).find((key) => isObject(item[key]) && item[key].hash === hash)
   const feeKey = {
     tx: 'fee',
     fromFundTx: 'fee',
@@ -13,19 +16,22 @@ export const updateTransactionFee = async ({ dispatch, commit, getters }, { netw
     refundTx: 'fee'
   }[txKey]
 
-  const client = getters.client(
-    {
-      network,
-      walletId,
-      asset,
-      accountId
-    }
-  )
+  const client = getters.client({
+    network,
+    walletId,
+    asset,
+    accountId
+  })
 
   const oldTx = item[txKey]
 
   let newTx
-  const lock = await dispatch('getLockForAsset', { item, network, walletId, asset })
+  const lock = await dispatch('getLockForAsset', {
+    item,
+    network,
+    walletId,
+    asset
+  })
   try {
     newTx = await client.chain.updateTransactionFee(oldTx, newFee)
   } catch (e) {

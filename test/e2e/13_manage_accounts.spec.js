@@ -34,11 +34,7 @@ describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () =
     await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
-    try {
-      await browser.close()
-    } catch (e) {
-      throw new Error(e)
-    }
+    await browser.close()
   })
   it('RSK - toggle on/off validate accounts', async () => {
     await overviewPage.SelectNetwork(page)
@@ -137,7 +133,7 @@ describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () =
       width: 1366,
       height: 768
     })
-    await dappPage.goto(dappUrl, { timeout: 60000 })
+    await dappPage.goto(dappUrl, { timeout: 60000, waitUntil: 'networkidle0' })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })

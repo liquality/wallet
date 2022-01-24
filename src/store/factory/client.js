@@ -11,8 +11,8 @@ import { EthereumRpcProvider } from '@liquality/ethereum-rpc-provider'
 import { EthereumJsWalletProvider } from '@liquality/ethereum-js-wallet-provider'
 import { EthereumSwapProvider } from '@liquality/ethereum-swap-provider'
 import { EthereumScraperSwapFindProvider } from '@liquality/ethereum-scraper-swap-find-provider'
-import { EthereumGasNowFeeProvider } from '@liquality/ethereum-gas-now-fee-provider'
 import { EthereumRpcFeeProvider } from '@liquality/ethereum-rpc-fee-provider'
+import { EthereumEIP1559FeeProvider } from '@liquality/ethereum-eip1559-fee-provider'
 
 import { EthereumErc20Provider } from '@liquality/ethereum-erc20-provider'
 import { EthereumErc20SwapProvider } from '@liquality/ethereum-erc20-swap-provider'
@@ -47,14 +47,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
 import { ChainNetworks } from '@/utils/networks'
 
-function createBtcClient (
-  network,
-  mnemonic,
-  accountType,
-  derivationPath,
-  publicKey,
-  chainCode
-) {
+function createBtcClient(network, mnemonic, accountType, derivationPath, publicKey, chainCode) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = ChainNetworks.bitcoin[network]
   const esploraApi = buildConfig.exploraApis[network]
@@ -71,7 +64,7 @@ function createBtcClient (
   )
 
   if (accountType.includes('bitcoin_ledger')) {
-    const option = LEDGER_BITCOIN_OPTIONS.find(o => o.name === accountType)
+    const option = LEDGER_BITCOIN_OPTIONS.find((o) => o.name === accountType)
     const { addressType } = option
     const ledgerApp = new BitcoinLedgerBridgeApp(network, ChainId.Bitcoin)
     btcClient.addProvider(
@@ -99,16 +92,14 @@ function createBtcClient (
   if (isTestnet) btcClient.addProvider(new BitcoinRpcFeeProvider())
   else {
     btcClient.addProvider(
-      new BitcoinFeeApiProvider(
-        'https://liquality.io/swap/mempool/v1/fees/recommended'
-      )
+      new BitcoinFeeApiProvider('https://liquality.io/swap/mempool/v1/fees/recommended')
     )
   }
 
   return btcClient
 }
 
-function createEthereumClient (
+function createEthereumClient(
   asset,
   network,
   ethereumNetwork,
@@ -117,10 +108,12 @@ function createEthereumClient (
   feeProvider,
   mnemonic,
   accountType,
-  derivationPath
+  derivationPath,
+  hardfork
 ) {
   const ethClient = new Client()
   ethClient.addProvider(new EthereumRpcProvider({ uri: rpcApi }))
+  ethClient.addProvider(feeProvider)
 
   if (accountType === 'ethereum_ledger' || accountType === 'rsk_ledger') {
     const assetData = cryptoassets[asset]
@@ -131,7 +124,8 @@ function createEthereumClient (
     const ledger = new EthereumLedgerBridgeProvider(
       {
         network: ethereumNetwork,
-        derivationPath
+        derivationPath,
+        hardfork
       },
       ethereumLedgerApp
     )
@@ -141,7 +135,8 @@ function createEthereumClient (
       new EthereumJsWalletProvider({
         network: ethereumNetwork,
         mnemonic,
-        derivationPath
+        derivationPath,
+        hardfork
       })
     )
   }
@@ -151,9 +146,7 @@ function createEthereumClient (
     ethClient.addProvider(new EthereumErc20Provider(contractAddress))
     ethClient.addProvider(new EthereumErc20SwapProvider())
     if (scraperApi) {
-      ethClient.addProvider(
-        new EthereumErc20ScraperSwapFindProvider(scraperApi)
-      )
+      ethClient.addProvider(new EthereumErc20ScraperSwapFindProvider(scraperApi))
     }
   } else {
     ethClient.addProvider(new EthereumSwapProvider())
@@ -161,29 +154,21 @@ function createEthereumClient (
       ethClient.addProvider(new EthereumScraperSwapFindProvider(scraperApi))
     }
   }
-  ethClient.addProvider(feeProvider)
 
   return ethClient
 }
 
-function createEthClient (
-  asset,
-  network,
-  mnemonic,
-  accountType,
-  derivationPath
-) {
+function createEthClient(asset, network, mnemonic, accountType, derivationPath) {
   const isTestnet = network === 'testnet'
   const ethereumNetwork = ChainNetworks.ethereum[network]
   const infuraApi = isTestnet
     ? `https://ropsten.infura.io/v3/${buildConfig.infuraApiKey}`
     : `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
   const scraperApi = isTestnet
-    ? 'https://liquality.io/eth-ropsten-api'
-    : 'https://liquality.io/eth-mainnet-api'
-  const feeProvider = isTestnet
-    ? new EthereumRpcFeeProvider()
-    : new EthereumGasNowFeeProvider('https://gasoracle.liquality.io')
+    ? 'https://eth-ropsten-api.liq-chainhub.net/'
+    : 'https://eth-mainnet-api.liq-chainhub.net/'
+
+  const feeProvider = new EthereumEIP1559FeeProvider({ uri: infuraApi })
 
   return createEthereumClient(
     asset,
@@ -194,13 +179,17 @@ function createEthClient (
     feeProvider,
     mnemonic,
     accountType,
-    derivationPath
+    derivationPath,
+    'london'
   )
 }
 
-function createNearClient (network, mnemonic, derivationPath) {
-  const nearNetwork = ChainNetworks.near[network]
+function createNearClient(network, mnemonic, derivationPath) {
+  const nearConfig = ChainNetworks.near[network]
   const nearClient = new Client()
+  const nodeUrl =
+    network === 'testnet' ? nearConfig.nodeUrl : 'https://archival-rpc.mainnet.near.org'
+  const nearNetwork = { ...nearConfig, nodeUrl }
   nearClient.addProvider(new NearRpcProvider(nearNetwork))
   nearClient.addProvider(
     new NearJsWalletProvider({
@@ -215,7 +204,7 @@ function createNearClient (network, mnemonic, derivationPath) {
   return nearClient
 }
 
-function createSolanaClient (network, mnemonic, derivationPath) {
+function createSolanaClient(network, mnemonic, derivationPath) {
   const solanaNetwork = ChainNetworks.solana[network]
   const solanaClient = new Client()
   solanaClient.addProvider(new SolanaRpcProvider(solanaNetwork))
@@ -232,21 +221,15 @@ function createSolanaClient (network, mnemonic, derivationPath) {
   return solanaClient
 }
 
-function createRskClient (
-  asset,
-  network,
-  mnemonic,
-  accountType,
-  derivationPath
-) {
+function createRskClient(asset, network, mnemonic, accountType, derivationPath) {
   const isTestnet = network === 'testnet'
   const rskNetwork = ChainNetworks.rsk[network]
   const rpcApi = isTestnet
     ? process.env.VUE_APP_SOVRYN_RPC_URL_TESTNET
     : process.env.VUE_APP_SOVRYN_RPC_URL_MAINNET
   const scraperApi = isTestnet
-    ? 'https://liquality.io/rsk-testnet-api'
-    : 'https://liquality.io/rsk-mainnet-api'
+    ? 'https://rsk-testnet-api.liq-chainhub.net/'
+    : 'https://rsk-mainnet-api.liq-chainhub.net/'
   const feeProvider = new EthereumRpcFeeProvider({
     slowMultiplier: 1,
     averageMultiplier: 1,
@@ -266,7 +249,7 @@ function createRskClient (
   )
 }
 
-function createBSCClient (asset, network, mnemonic, derivationPath) {
+function createBSCClient(asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const bnbNetwork = ChainNetworks.bsc[network]
   const rpcApi = isTestnet
@@ -294,20 +277,17 @@ function createBSCClient (asset, network, mnemonic, derivationPath) {
   )
 }
 
-function createPolygonClient (asset, network, mnemonic, derivationPath) {
+function createPolygonClient(asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const polygonNetwork = ChainNetworks.polygon[network]
-  const rpcApi = isTestnet
-    ? 'https://rpc-mumbai.maticvigil.com'
-    : 'https://polygon-rpc.com'
+  const rpcApi = isTestnet ? 'https://rpc-mumbai.maticvigil.com' : 'https://polygon-rpc.com'
   const scraperApi = isTestnet
-    ? 'https://liquality.io/polygon-testnet-api'
-    : 'https://liquality.io/polygon-mainnet-api'
-  const feeProvider = new EthereumRpcFeeProvider({
-    slowMultiplier: 1,
-    averageMultiplier: 2,
-    fastMultiplier: 2.2
-  })
+    ? 'https://polygon-mumbai-api.liq-chainhub.net/'
+    : 'https://polygon-mainnet-api.liq-chainhub.net/'
+
+  const feeProvider = isTestnet
+    ? new EthereumEIP1559FeeProvider({ uri: rpcApi })
+    : new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 2, fastMultiplier: 2.2 })
 
   return createEthereumClient(
     asset,
@@ -318,19 +298,20 @@ function createPolygonClient (asset, network, mnemonic, derivationPath) {
     feeProvider,
     mnemonic,
     'default',
-    derivationPath
+    derivationPath,
+    'london'
   )
 }
 
-function createArbitrumClient (asset, network, mnemonic, derivationPath) {
+function createArbitrumClient(asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const arbitrumNetwork = ChainNetworks.arbitrum[network]
   const rpcApi = isTestnet
     ? 'https://rinkeby.arbitrum.io/rpc'
     : `https://arbitrum-mainnet.infura.io/v3/${buildConfig.infuraApiKey}`
   const scraperApi = isTestnet
-    ? 'https://liquality.io/arbitrum-testnet-api'
-    : 'https://liquality.io/arbitrum-mainnet-api'
+    ? 'https://arbitrum-rinkeby-api.liq-chainhub.net/'
+    : 'https://arbitrum-mainnet-api.liq-chainhub.net/'
   const feeProvider = new EthereumRpcFeeProvider({
     slowMultiplier: 1,
     averageMultiplier: 1,
@@ -350,8 +331,8 @@ function createArbitrumClient (asset, network, mnemonic, derivationPath) {
   )
 }
 
-function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
-  let _asset, feeAsset, tokenAddress
+function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
+  let _asset, feeAsset, tokenAddress, stableFee
 
   const terraNetwork = ChainNetworks.terra[network]
 
@@ -364,6 +345,7 @@ function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
     case 'UST': {
       _asset = 'uusd'
       feeAsset = 'uusd'
+      stableFee = true
       break
     }
     default: {
@@ -376,9 +358,7 @@ function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
 
   const terraClient = new Client()
 
-  terraClient.addProvider(
-    new TerraRpcProvider(terraNetwork, _asset, feeAsset, tokenAddress)
-  )
+  terraClient.addProvider(new TerraRpcProvider(terraNetwork, _asset, feeAsset, tokenAddress))
   terraClient.addProvider(
     new TerraWalletProvider({
       network: terraNetwork,
@@ -386,13 +366,38 @@ function createTerraClient (network, mnemonic, baseDerivationPath, asset) {
       baseDerivationPath,
       asset: _asset,
       feeAsset,
-      tokenAddress
+      tokenAddress,
+      stableFee
     })
   )
   terraClient.addProvider(new TerraSwapProvider(terraNetwork, _asset))
   terraClient.addProvider(new TerraSwapFindProvider(terraNetwork, _asset))
 
   return terraClient
+}
+
+function createFuseClient(asset, network, mnemonic, derivationPath) {
+  const isTestnet = network === 'testnet'
+  const fuseNetwork = ChainNetworks.fuse[network]
+  const rpcApi = isTestnet ? 'https://rpc.fusespark.io' : 'https://rpc.fuse.io'
+  const scraperApi = undefined
+  const feeProvider = new EthereumRpcFeeProvider({
+    slowMultiplier: 1,
+    averageMultiplier: 1,
+    fastMultiplier: 1.25
+  })
+
+  return createEthereumClient(
+    asset,
+    network,
+    fuseNetwork,
+    rpcApi,
+    scraperApi,
+    feeProvider,
+    mnemonic,
+    'default',
+    derivationPath
+  )
 }
 
 export const createClient = ({
@@ -407,22 +412,9 @@ export const createClient = ({
   const assetData = cryptoassets[asset]
   switch (assetData.chain) {
     case 'bitcoin':
-      return createBtcClient(
-        network,
-        mnemonic,
-        accountType,
-        derivationPath,
-        publicKey,
-        chainCode
-      )
+      return createBtcClient(network, mnemonic, accountType, derivationPath, publicKey, chainCode)
     case 'rsk':
-      return createRskClient(
-        asset,
-        network,
-        mnemonic,
-        accountType,
-        derivationPath
-      )
+      return createRskClient(asset, network, mnemonic, accountType, derivationPath)
     case 'bsc':
       return createBSCClient(asset, network, mnemonic, derivationPath)
     case 'polygon':
@@ -435,14 +427,9 @@ export const createClient = ({
       return createSolanaClient(network, mnemonic, derivationPath)
     case 'terra':
       return createTerraClient(network, mnemonic, derivationPath, asset)
-
+    case 'fuse':
+      return createFuseClient(asset, network, mnemonic, derivationPath)
     default:
-      return createEthClient(
-        asset,
-        network,
-        mnemonic,
-        accountType,
-        derivationPath
-      )
+      return createEthClient(asset, network, mnemonic, accountType, derivationPath)
   }
 }

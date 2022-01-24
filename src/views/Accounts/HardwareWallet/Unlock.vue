@@ -5,10 +5,7 @@
         <div class="step-number">2</div>
         <div class="step-name">Unlock Account</div>
       </div>
-      <div
-        class="step-text"
-        v-if="selectedAsset && selectedAsset.chain === 'bitcoin'"
-      >
+      <div class="step-text" v-if="selectedAsset && selectedAsset.chain === 'bitcoin'">
         <div class="step-path">
           <button
             class="btn btn-link"
@@ -33,10 +30,7 @@
               class="dropdown-menu dropdown-menu-end custom-dropdown-menu"
               :class="{ show: ledgerBitcoinOptionsOpen }"
             >
-              <li
-                v-for="option in ledgerBitcoinOptions"
-                :key="option.addressType"
-              >
+              <li v-for="option in ledgerBitcoinOptions" :key="option.addressType">
                 <a
                   class="dropdown-item custom-dropdown-item"
                   href="#"
@@ -68,9 +62,7 @@
         </div>
       </div>
       <div v-else class="account-list">
-        <span class="indications">
-          Select Account
-        </span>
+        <span class="indications"> Select Account </span>
         <p v-if="selectedAsset">
           <img :src="getAccountIcon(selectedAsset.chain)" class="asset-icon" />
           {{ accountsLabel }} Accounts
@@ -109,43 +101,29 @@
                   </div>
                 </td>
                 <td class="account-selected-mark">
-                  <CheckRightIcon
-                    v-if="selectedAccounts[item.account.address]"
-                  />
+                  <CheckRightIcon v-if="selectedAccounts[item.account.address]" />
                   <span v-else>&nbsp;</span>
                 </td>
               </tr>
             </tbody>
           </table>
           <div class="account-nav">
-            <button
-              class="btn btn-link"
-              @click="prev"
-              :disabled="currentPage <= 1"
-            >
+            <button class="btn btn-link" @click="prev" :disabled="currentPage <= 1">
               Previous
             </button>
 
-            <button class="btn btn-link" @click="next">
-              Next
-            </button>
+            <button class="btn btn-link" @click="next">Next</button>
           </div>
         </div>
         <div v-else class="account-message">
-          We weren’t able to get a list of accounts. Please try again, check on
-          the ledger if the right app/asset was selected or cancel and choose a
-          different asset.
+          We weren’t able to get a list of accounts. Please try again, check on the ledger if the
+          right app/asset was selected or cancel and choose a different asset.
         </div>
       </div>
     </div>
     <div class="wrapper_bottom">
       <div class="button-group">
-        <button
-          class="btn btn-light btn-outline-primary btn-lg"
-          @click="cancel"
-        >
-          Cancel
-        </button>
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="cancel">Cancel</button>
         <button
           v-if="ledgerError"
           class="btn btn-primary btn-lg btn-icon"
@@ -159,11 +137,7 @@
           v-else
           class="btn btn-primary btn-lg btn-icon"
           @click="unlock"
-          :disabled="
-            loading ||
-              creatingAccount ||
-              Object.keys(selectedAccounts).length <= 0
-          "
+          :disabled="loading || creatingAccount || Object.keys(selectedAccounts).length <= 0"
         >
           <SpinnerIcon class="btn-loading" v-if="loading" />
           <template v-else>Unlock</template>
@@ -206,13 +180,13 @@ export default {
     'ledgerError',
     'currentPage'
   ],
-  data () {
+  data() {
     return {
       ledgerBitcoinOption: null,
       ledgerBitcoinOptionsOpen: false
     }
   },
-  created () {
+  created() {
     this.ledgerBitcoinOption = this.ledgerBitcoinOptions[0]
   },
   methods: {
@@ -220,16 +194,16 @@ export default {
     formatFiat,
     getAccountIcon,
     shortenAddress,
-    unlock () {
+    unlock() {
       const walletType = this.getWalletType()
       this.$emit('on-unlock', { walletType })
     },
-    selectAccount (item) {
+    selectAccount(item) {
       if (!item.exists) {
         this.$emit('on-select-account', item)
       }
     },
-    connect (nextPage) {
+    connect(nextPage) {
       const walletType = this.getWalletType()
       this.$emit('on-connect', {
         asset: this.selectedAsset,
@@ -237,29 +211,29 @@ export default {
         page: nextPage || this.currentPage
       })
     },
-    prev () {
+    prev() {
       this.connect(this.currentPage - 1)
     },
-    next () {
+    next() {
       this.connect(this.currentPage + 1)
     },
-    getCurrentPage () {
+    getCurrentPage() {
       this.connect(this.currentPage)
     },
-    cancel () {
+    cancel() {
       this.$emit('on-cancel')
     },
-    selectLedgerBitcoinOption (option) {
+    selectLedgerBitcoinOption(option) {
       this.ledgerBitcoinOption = option
       this.hideLedgerBitcoinOptions()
     },
-    toggleLedgerBitcoinOptions () {
+    toggleLedgerBitcoinOptions() {
       this.ledgerBitcoinOptionsOpen = !this.ledgerBitcoinOptionsOpen
     },
-    hideLedgerBitcoinOptions () {
+    hideLedgerBitcoinOptions() {
       this.ledgerBitcoinOptionsOpen = false
     },
-    getWalletType () {
+    getWalletType() {
       return {
         BTC: this.ledgerBitcoinOption?.name,
         ETH: null
@@ -267,12 +241,10 @@ export default {
     }
   },
   computed: {
-    ledgerBitcoinOptions () {
-      return LEDGER_BITCOIN_OPTIONS.filter(
-        o => o.name !== this.ledgerBitcoinOption?.name
-      )
+    ledgerBitcoinOptions() {
+      return LEDGER_BITCOIN_OPTIONS.filter((o) => o.name !== this.ledgerBitcoinOption?.name)
     },
-    accountsLabel () {
+    accountsLabel() {
       return {
         BTC: 'Bitcoin',
         ETH: 'Ethereum'
@@ -280,7 +252,7 @@ export default {
     }
   },
   watch: {
-    ledgerBitcoinOption: async function (val) {
+    ledgerBitcoinOption: async function () {
       if (!this.loading) {
         await this.connect(1)
       }

@@ -19,8 +19,8 @@ const password = '123123123'
 // https://wiki.sovryn.app/en/sovryn-dapp/fast_btc
 if (process.env.NODE_ENV === 'mainnet') {
   // fastBTC service provider only in mainnet(dev & prod)
-  describe('FastBTC swap provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
-    before(async () => {
+  describe('FastBTC swap provider-["MAINNET"]', async () => {
+    beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
@@ -36,14 +36,13 @@ if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
     })
-    after(async () => {
+    afterEach(async () => {
       await browser.close()
     })
 
     it('SWAP BTC to RBTC - fastBTC', async () => {
       const fromAsset = 'BTC'
-      // Select mainnet for fastBTC e2e
-      await overviewPage.SelectNetwork(page, 'mainnet')
+      const toAsset = 'RBTC'
       // Click asset 1
       await overviewPage.SelectAssetFromOverview(page, fromAsset)
       await page.waitForSelector('#' + fromAsset + '_swap_button', { visible: true })
@@ -57,8 +56,8 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click('.swap-receive-main-icon')
       await page.waitForSelector('#RSK', { visible: true })
       await page.click('#RSK')
-      await page.waitForSelector('#RBTC', { visible: true })
-      await page.click('#RBTC')
+      await page.waitForSelector(`#${toAsset}`, { visible: true })
+      await page.click(`#${toAsset}`)
       console.log('User selected RBTC as 2nd pair for swap')
 
       try {
@@ -72,9 +71,9 @@ if (process.env.NODE_ENV === 'mainnet') {
       }
 
       // Update the SWAP value to 0.0004
-      let swapAmount = '0.0004'
+      let swapAmount = '0.001'
       if (process.env.NODE_AGENT === 'prodagent') {
-        swapAmount = '0.01'
+        swapAmount = '0.002'
       }
       await swapPage.EnterSendAmountOnSwap(page, swapAmount)
       // (fastBTC swap provider)

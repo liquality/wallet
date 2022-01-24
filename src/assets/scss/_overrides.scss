@@ -77,7 +77,7 @@ $label-margin-bottom: 0;
 
 $wrapper-padding: 20px;
 $grid-gutter-width: 40px;
-$modal-inner-padding: math.div($grid-gutter-width, 2);
+$modal-inner-padding: $grid-gutter-width * 0.5;
 $modal-footer-margin-between: 4px;
 
 $container-max-widths: (

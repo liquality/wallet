@@ -1,4 +1,3 @@
-/* global browser */
 import { createBridgeClient } from '@/utils/ledger-bridge-provider/utils'
 export const actions = {
   openLedgerBridgeWindow: async ({ rootState, commit }) => {
@@ -11,14 +10,13 @@ export const actions = {
     if (usbBridgeWindowsId && usbBridgeWindowsId > 0) {
       try {
         existingWindow = await browser.windows.get(usbBridgeWindowsId)
-        browser.windows.update(usbBridgeWindowsId,
-          {
-            focused: true,
-            height: 600,
-            width: 360,
-            top,
-            left
-          })
+        browser.windows.update(usbBridgeWindowsId, {
+          focused: true,
+          height: 600,
+          width: 360,
+          top,
+          left
+        })
       } catch (error) {
         console.log(error)
       }
@@ -26,17 +24,15 @@ export const actions = {
 
     if (!existingWindow) {
       const url = process.env.VUE_APP_LEDGER_BRIDGE_URL
-      const win = await browser.windows.create(
-        {
-          url: `${url}?extensionId=${browser.runtime.id}`,
-          focused: true,
-          type: 'popup',
-          height: 600,
-          width: 360,
-          top,
-          left
-        }
-      )
+      const win = await browser.windows.create({
+        url: `${url}?extensionId=${browser.runtime.id}`,
+        focused: true,
+        type: 'popup',
+        height: 600,
+        width: 360,
+        top,
+        left
+      })
       commit('SET_USB_BRIDGE_WINDOWS_ID', { id: win.id }, { root: true })
     }
   },
@@ -58,7 +54,7 @@ export const actions = {
   setLedgerBridgeTransportConnected: ({ commit }, { connected }) => {
     commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected })
   },
-  startBridgeListener: ({ rootState, commit, dispatch }, payload) => {
+  startBridgeListener: ({ dispatch }, payload) => {
     createBridgeClient(payload)
     dispatch('openLedgerBridgeWindow')
   },

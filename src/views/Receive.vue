@@ -1,33 +1,38 @@
 <template>
   <div class="receive">
     <NavBar
-        showBack="true"
-        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
-        :backLabel="routeSource === 'assets' ? 'Overview' : asset">
+      showBack="true"
+      :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
+      :backLabel="routeSource === 'assets' ? 'Overview' : asset"
+    >
       Receive {{ asset }}
     </NavBar>
     <div class="wrapper form text-center">
       <div class="wrapper_top form">
         <div class="form-group">
-          <div class="receive_asset"><img :src="getAssetIcon(asset)" class="asset-icon"/></div>
+          <div class="receive_asset">
+            <img :src="getAssetIcon(asset)" class="asset-icon" />
+          </div>
           <label id="your_current_asset_address">Your Current {{ asset }} Address</label>
-          <p class="receive_address" id="receive_address">{{ address }}
+          <p class="receive_address text-break" id="receive_address">
+            {{ address }}
             <CopyIcon
-                class="copy-icon"
-                @click="copy"
-                v-tooltip.bottom="{
-                    content: copied ? 'Copied!' : 'Click to copy',
-                    hideOnTargetClick: false,
-                  }"
+              class="copy-icon"
+              @click="copy"
+              v-tooltip.bottom="{
+                content: copied ? 'Copied!' : 'Click to copy',
+                hideOnTargetClick: false
+              }"
             />
           </p>
-          <p class="receive_message">Scan this QR code with a mobile wallet to send funds to this address.</p>
+          <p class="receive_message">
+            Scan this QR code with a mobile wallet to send funds to this address.
+          </p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
           <div v-if="faucet" class="testnet_message">
             <div>{{ faucet.name }} testnet faucet</div>
             <div id="receive_url">
-              <a :href="faucet.url"
-                 target="_blank">
+              <a :href="faucet.url" target="_blank">
                 {{ faucet.url }}
               </a>
             </div>
@@ -37,18 +42,18 @@
 
       <div class="wrapper_bottom">
         <div class="button-group">
-          <router-link :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`">
-            <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">
-              Done
-            </button>
+          <router-link
+            :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
+          >
+            <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">Done</button>
           </router-link>
           <button class="btn btn-primary btn-lg btn-icon" id="copy_address_button" @click="copy">
             <template v-if="copied">
-              <TickIcon/>
+              <TickIcon />
               Copied!
             </template>
             <template v-else>
-              <CopyWhiteIcon class="no-stroke"/>
+              <CopyWhiteIcon class="no-stroke" />
               Copy Address
             </template>
           </button>
@@ -76,7 +81,7 @@ export default {
     CopyWhiteIcon,
     TickIcon
   },
-  data () {
+  data() {
     return {
       address: null,
       qrcode: null,
@@ -89,17 +94,15 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId']),
-    ...mapGetters([
-      'accountItem'
-    ]),
-    account () {
+    ...mapGetters(['accountItem']),
+    account() {
       return this.accountItem(this.accountId)
     },
-    routeSource () {
+    routeSource() {
       return this.$route.query.source || null
     },
-    chainName () {
-      return ({
+    chainName() {
+      return {
         bitcoin: 'bitcoin',
         ethereum: 'ethereum',
         near: 'near',
@@ -107,12 +110,13 @@ export default {
         rsk: 'ethereum',
         bsc: 'ethereum',
         polyon: 'ethereum',
-        terra: 'terra'
-      })[cryptoassets[this.asset].chain]
+        terra: 'terra',
+        fuse: 'ethereum'
+      }[cryptoassets[this.asset].chain]
     },
-    faucet () {
+    faucet() {
       if (this.activeNetwork === 'testnet') {
-        return ({
+        return {
           BTC: {
             name: 'Bitcoin',
             url: 'https://testnet-faucet.mempool.co/'
@@ -131,7 +135,7 @@ export default {
           },
           NEAR: {
             name: 'NEAR',
-            url: ''
+            url: 'https://wallet.testnet.near.org/'
           },
           SOL: {
             name: 'SOLANA',
@@ -148,15 +152,22 @@ export default {
           LUNA: {
             name: 'TERRA',
             url: 'https://faucet.terra.money/'
+          },
+          FUSE: {
+            name: 'FUSE',
+            url: 'https://get.fusespark.io/'
           }
-        })[this.asset]
+        }[this.asset]
       }
       return null
     }
   },
-  async created () {
+  async created() {
     if (this.account && this.account.type.includes('ledger')) {
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(this.account.addresses[0], this.activeNetwork)
+      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
+        this.account.addresses[0],
+        this.activeNetwork
+      )
     } else {
       const addresses = await this.getUnusedAddresses({
         network: this.activeNetwork,
@@ -170,19 +181,23 @@ export default {
 
     const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')
 
-    QRCode.toString(uri, {
-      type: 'svg',
-      margin: 0
-    }, (err, svg) => {
-      if (err) throw err
+    QRCode.toString(
+      uri,
+      {
+        type: 'svg',
+        margin: 0
+      },
+      (err, svg) => {
+        if (err) throw err
 
-      this.qrcode = svg
-    })
+        this.qrcode = svg
+      }
+    )
   },
   methods: {
     ...mapActions(['getUnusedAddresses', 'trackAnalytics']),
     getAssetIcon,
-    async copy () {
+    async copy() {
       this.trackAnalytics({
         event: 'Receive screen',
         properties: {
@@ -201,7 +216,9 @@ export default {
           label: `${this.asset} (${this.chainName}) address ${this.address}`
         }
       })
-      setTimeout(() => { this.copied = false }, 3000)
+      setTimeout(() => {
+        this.copied = false
+      }, 3000)
     }
   }
 }

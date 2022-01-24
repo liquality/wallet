@@ -2,10 +2,10 @@
   <div class="export-account">
     <NavBar>
       <span class="wallet_header">
-        <strong>{{chainId}} Private Key</strong>
+        <strong>{{ chainId }} Private Key</strong>
       </span>
     </NavBar>
-    <div class="export-account_top login-wrapper">
+    <div class="export-account_top login-wrapper" v-if="!ledgerAccount">
       <Eye class="export-account_eye" />
       <p class="mt-3">Keep this away from prying eyes!</p>
     </div>
@@ -14,10 +14,22 @@
         <code v-if="account.addresses[0]">{{ shortenAddress(account.addresses[0]) }}</code>
         <img :src="getAccountIcon(account.chain)" class="asset-icon" />
       </p>
-      <textarea readonly rows="3" @click="selectTextarea" id="private-key-textarea" v-model="privateKey" />
+      <p class="mt-3 alert alert-warning" v-if="ledgerAccount">
+        Cannot export from a Ledger account
+      </p>
+      <textarea
+        v-else
+        readonly
+        rows="3"
+        @click="selectTextarea"
+        id="private-key-textarea"
+        v-model="privateKey"
+      />
     </main>
     <div class="p-3 pb-1">
-      <button id="done_button" class="btn btn-primary btn-lg btn-block" @click="goback">Done</button>
+      <button id="done_button" class="btn btn-primary btn-lg btn-block" @click="goback">
+        Done
+      </button>
     </div>
   </div>
 </template>
@@ -34,7 +46,7 @@ export default {
     NavBar,
     Eye
   },
-  data () {
+  data() {
     return {
       chainId: '',
       privateKey: 'n/a'
@@ -42,19 +54,19 @@ export default {
   },
   props: ['accountId'],
   computed: {
-    ...mapState([
-      'accounts',
-      'activeNetwork',
-      'activeWalletId'
-    ]),
-    account () {
+    ...mapState(['accounts', 'activeNetwork', 'activeWalletId']),
+    account() {
       return this.$store.getters.accountItem(this.accountId)
+    },
+    ledgerAccount() {
+      const { type } = this.account
+      return type && type.includes('ledger')
     }
   },
   watch: {
     activeNetwork: 'goback'
   },
-  created () {
+  created() {
     const { activeWalletId, activeNetwork, accountId } = this
     const chainId = this.account?.chain
 
@@ -66,24 +78,22 @@ export default {
       network: activeNetwork,
       chainId,
       accountId
-    }).then(key => {
+    }).then((key) => {
       this.chainId = chainId
       this.privateKey = key
     })
   },
-  updated () {
+  updated() {
     this.$nextTick(this.selectTextarea)
   },
   methods: {
     getAccountIcon,
     shortenAddress,
-    ...mapActions([
-      'exportPrivateKey'
-    ]),
-    goback () {
+    ...mapActions(['exportPrivateKey']),
+    goback() {
       this.$router.replace('/wallet/assets')
     },
-    selectTextarea () {
+    selectTextarea() {
       this.$el.querySelector('textarea')?.select()
     }
   }
@@ -112,6 +122,11 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      code {
+        font-weight: bold;
+        color: $color-text-primary;
+      }
     }
 
     textarea {

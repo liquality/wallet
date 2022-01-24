@@ -6,13 +6,13 @@ export const updateAccountBalance = async (
 ) => {
   const accounts =
     state.accounts[walletId]?.[network].filter(
-      a => a.assets && a.assets.length > 0 && a.enabled
+      (a) => a.assets && a.assets.length > 0 && a.enabled
     ) || []
-  const index = accounts?.findIndex(a => a.id === accountId)
+  const index = accounts?.findIndex((a) => a.id === accountId)
   if (index >= 0) {
     const account = accounts[index]
     const { assets, type } = account
-    assets.forEach(async asset => {
+    assets.forEach(async (asset) => {
       const _client = getters.client({
         network,
         walletId,
@@ -20,9 +20,9 @@ export const updateAccountBalance = async (
         accountId
       })
       let addresses = []
-      if (type.includes('ledger') && (!account.publicKey && !account.chainCode)) {
+      if (type.includes('ledger') && !account.publicKey && !account.chainCode) {
         addresses = account.addresses.map(
-          a =>
+          (a) =>
             new Address({
               address: `${a}`
             })
@@ -31,11 +31,15 @@ export const updateAccountBalance = async (
         addresses = await _client.wallet.getUsedAddresses()
       }
       const balance =
-        addresses.length === 0
-          ? 0
-          : (await _client.chain.getBalance(addresses)).toNumber()
+        addresses.length === 0 ? 0 : (await _client.chain.getBalance(addresses)).toNumber()
 
-      commit('UPDATE_BALANCE', { network, accountId, walletId, asset, balance })
+      commit('UPDATE_BALANCE', {
+        network,
+        accountId,
+        walletId,
+        asset,
+        balance
+      })
     })
   }
 }

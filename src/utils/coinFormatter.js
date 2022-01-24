@@ -30,7 +30,7 @@ export const prettyFiatBalance = (amount, rate) => {
 }
 
 export const cryptoToFiat = (amount, rate) => {
-  if (!rate) return 'Rate missing'
+  if (!rate) return '--'
   return BN(amount).times(rate)
 }
 
@@ -42,4 +42,8 @@ export const fiatToCrypto = (amount, rate) => {
 export const formatFiat = (amount) => {
   if (isNaN(amount)) return amount
   return BN(amount).toFormat(2, BN.ROUND_CEIL)
+}
+
+export const formatFiatUI = (amount) => {
+  return isNaN(amount) ? amount : '$' + amount
 }

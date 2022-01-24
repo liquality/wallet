@@ -6,27 +6,25 @@
           <div class="swap-send-top">
             <div class="swap-send-top-label">Send</div>
             <div class="swap-send-top-amount">
-              <div
+              <button
                 class="btn btn-option label-append"
                 @click="toggleShowAmountsFiat"
+                :disabled="isNaN(sendAmountFiat)"
               >
-                <span
-                  v-if="showAmountsInFiat"
-                  :style="getAssetColorStyle(asset)"
-                >
+                <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
                   {{ `${asset} ${sendAmount}` }}
                 </span>
-                <span v-else> ${{ sendAmountFiat }} </span>
-              </div>
+                <span v-else> {{ formatFiatUI(sendAmountFiat) }} </span>
+              </button>
             </div>
           </div>
-          <div class="input-group mb-3" v-if="showAmountsInFiat">
+          <div class="input-group" v-if="showAmountsInFiat">
             <span class="input-group-text">$</span>
             <input
               type="number"
               class="form-control"
               :class="{ 'is-invalid': showErrors && amountError }"
-              :value="sendAmountFiat"
+              :value="sendAmountFiatInputFormat()"
               @input="$emit('update:sendAmountFiat', $event.target.value)"
               placeholder="0.00"
               autocomplete="off"
@@ -71,7 +69,7 @@
           <v-popover offset="1" trigger="hover focus" class="mr-2">
             <button
               :class="{
-                active: amountOption === 'min' && !disabled,
+                active: amountOption === 'min' && !disabled
               }"
               :disabled="disabled"
               class="btn btn-option"
@@ -88,7 +86,7 @@
           <v-popover offset="1" trigger="hover focus">
             <button
               :class="{
-                active: amountOption === 'max' && !disabled,
+                active: amountOption === 'max' && !disabled
               }"
               :disabled="disabled"
               class="btn btn-option tooltip-target"
@@ -114,7 +112,7 @@
 
 <script>
 import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { dpUI } from '@/utils/coinFormatter'
+import { dpUI, formatFiatUI } from '@/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import AccountTooltip from '@/components/AccountTooltip'
 
@@ -123,7 +121,7 @@ export default {
     ChevronRightIcon,
     AccountTooltip
   },
-  data () {
+  data() {
     return {
       showAmountsInFiat: false
     }
@@ -143,19 +141,24 @@ export default {
     'disabled',
     'amountOption'
   ],
-  created () {},
+  created() {},
   methods: {
     dpUI,
+    formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
-    toggleShowAmountsFiat () {
+    toggleShowAmountsFiat() {
       this.showAmountsInFiat = !this.showAmountsInFiat
     },
-    setSendAmount (amount) {
+    setSendAmount(amount) {
       this.$emit('send-amount-change', amount)
     },
-    assetIconClick () {
+    assetIconClick() {
       this.$emit('from-asset-click')
+    },
+    sendAmountFiatInputFormat() {
+      // in case of undefined/NaN value for amount in fiat, present the placeholder value
+      return !this.sendAmountFiat ? '' : this.sendAmountFiat.replaceAll(',', '')
     }
   }
 }
@@ -183,12 +186,22 @@ export default {
     flex-direction: column;
     .swap-send-main-input-container {
       display: flex;
-      justify-content: space-between;
+      align-items: flex-end;
+      justify-content: flex-start;
 
       .swap-send-main-input {
         display: flex;
         flex-direction: column;
         max-width: 190px;
+
+        .input-group {
+          align-items: flex-end;
+        }
+
+        .form-control {
+          margin-top: 5px;
+          text-align: right;
+        }
       }
     }
 

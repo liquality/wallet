@@ -5,7 +5,7 @@ import { address } from 'bitcoinjs-lib'
 export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
   _ledgerApp
 
-  constructor ({
+  constructor({
     network,
     Transport,
     baseDerivationPath,
@@ -31,25 +31,20 @@ export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
     }
   }
 
-  async getApp () {
+  async getApp() {
     return Promise.resolve(this._ledgerApp)
   }
 
-  async _buildTransaction (targets, feePerByte, fixedInputs) {
+  async _buildTransaction(targets, feePerByte, fixedInputs) {
     const app = await this.getApp()
 
     const unusedAddress = await this.getUnusedAddress(true)
-    const { inputs, change, fee } = await this.getInputsForAmount(
-      targets,
-      feePerByte,
-      fixedInputs
-    )
+    const { inputs, change, fee } = await this.getInputsForAmount(targets, feePerByte, fixedInputs)
     const ledgerInputs = await this.getLedgerInputs(inputs)
-    const paths = inputs.map(utxo => utxo.derivationPath)
+    const paths = inputs.map((utxo) => utxo.derivationPath)
 
-    const outputs = targets.map(output => {
-      const outputScript =
-        output.script || address.toOutputScript(output.address, this._network)
+    const outputs = targets.map((output) => {
+      const outputScript = output.script || address.toOutputScript(output.address, this._network)
       return {
         amount: this.getAmountBuffer(output.value),
         script: outputScript
@@ -65,10 +60,9 @@ export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
 
     const transactionOutput = await app.serializeTransactionOutputs({ outputs })
     const outputScriptHex = transactionOutput.toString('hex')
-    const isSegwit = [
-      bitcoin.AddressType.BECH32,
-      bitcoin.AddressType.P2SH_SEGWIT
-    ].includes(this._addressType)
+    const isSegwit = [bitcoin.AddressType.BECH32, bitcoin.AddressType.P2SH_SEGWIT].includes(
+      this._addressType
+    )
 
     const txHex = await app.createPaymentTransactionNew({
       // @ts-ignore
@@ -78,8 +72,7 @@ export class BitcoinLedgerBridgeProvider extends BitcoinLedgerProvider {
       outputScriptHex,
       segwit: isSegwit,
       useTrustedInputForSegwit: isSegwit,
-      additionals:
-        this._addressType === bitcoin.AddressType.BECH32 ? ['bech32'] : []
+      additionals: this._addressType === bitcoin.AddressType.BECH32 ? ['bech32'] : []
     })
 
     return { hex: txHex, fee }

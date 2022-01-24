@@ -11,13 +11,11 @@ export const getLedgerAccounts = async (
   const { client, networkAccounts, assetFiatBalance } = getters
   const { chain } = assets[asset]
   const results = []
-  const existingAccounts = networkAccounts.filter(account => {
+  const existingAccounts = networkAccounts.filter((account) => {
     return account.chain === chain
   })
 
-  const pageIndexes = [...Array(numAccounts || 5).keys()].map(
-    i => i + startingIndex
-  )
+  const pageIndexes = [...Array(numAccounts || 5).keys()].map((i) => i + startingIndex)
 
   for (const index of pageIndexes) {
     const derivationPath = getDerivationPath(chain, network, index, accountType)
@@ -48,12 +46,9 @@ export const getLedgerAccounts = async (
 
       if (addresses && addresses.length > 0) {
         const [account] = addresses
-        const normalizedAddress = chains[chain].formatAddress(
-          account.address,
-          network
-        )
+        const normalizedAddress = chains[chain].formatAddress(account.address, network)
         const exists =
-          existingAccounts.findIndex(a => {
+          existingAccounts.findIndex((a) => {
             if (a.addresses.length <= 0) {
               if (a.type.includes('ledger') && a.publicKey && a.chainCode) {
                 const accountClient = client({
@@ -66,24 +61,18 @@ export const getLedgerAccounts = async (
                 })
 
                 const [address] = accountClient.wallet.getAddresses()
-                return (
-                  chains[chain].formatAddress(address, network) ===
-                  normalizedAddress
-                )
+                return chains[chain].formatAddress(address, network) === normalizedAddress
               }
 
               return false
             }
 
-            const addresses = a.addresses.map(a =>
-              chains[chain].formatAddress(a, network)
-            )
+            const addresses = a.addresses.map((a) => chains[chain].formatAddress(a, network))
             return addresses.includes(normalizedAddress)
           }) >= 0
 
         // Get the account balance
-        const balance =
-          addresses.length === 0 ? 0 : await _client.chain.getBalance(addresses)
+        const balance = addresses.length === 0 ? 0 : await _client.chain.getBalance(addresses)
 
         const fiatBalance = BN(assetFiatBalance(asset, balance))
         const result = {

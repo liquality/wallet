@@ -15,7 +15,7 @@ const swapPage = new SwapPage()
 
 let browser, page
 const password = '123123123'
-const liqualityBooster = 'Liquality Boost'
+const BOOSTER = 'Liquality Boost'
 
 // https://docs.google.com/spreadsheets/d/18c-B2jYeyxoRTNI0yuFWsltSXYQ3quObxacXEx42N5g/edit#gid=0
 if (process.env.NODE_ENV === 'mainnet') {
@@ -25,8 +25,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.waitForSelector('#selectedQuote_provider', { visible: true })
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'Liquality Boost source should be chosen!')
-        .oneOf([liqualityBooster])
-      console.log(('Liquality Boost Quote loaded successfully'))
+        .contain(BOOSTER)
     } catch (e) {
       await testUtil.takeScreenshot(page, 'liqualityBoost-rate-provider-issue')
       expect(e, 'Liquality Boost should chosen').equals(null)
@@ -51,17 +50,11 @@ if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.HasOverviewPageLoaded(page)
     })
     afterEach(async () => {
-      try {
         await browser.close()
-      } catch (e) {
-        throw new Error(e)
-      }
     })
     it.skip('SWAP (BTC->PUSDC (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PUSDC'
-      // Select testnet
-      await overviewPage.SelectNetwork(page, 'mainnet')
       // Click on BTC then click on SWAP button
       await overviewPage.SelectAssetFromOverview(page, assert1)
       await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
@@ -88,7 +81,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Check source name
       await checkBooster()
     })
-    it('SWAP (BTC->PUSDT (Polygon))', async () => {
+    it.skip('SWAP (BTC->PUSDT (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PUSDT'
       // Select testnet
@@ -118,6 +111,51 @@ if (process.env.NODE_ENV === 'mainnet') {
       try {
         const selectedQuoteProviderText = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
         if (selectedQuoteProviderText === liqualityBooster) {
+          // Check source name
+          await checkBooster()
+        } else if (selectedQuoteProviderText === 'Liquality') {
+          await page.click('#see_all_quotes')
+          await page.waitForSelector('#liqualityBoost_rate_provider', { visible: true })
+          await page.click('#liqualityBoost_rate_provider')
+          await page.click('#select_quote_button')
+          // Check source name
+          await checkBooster()
+        }
+      } catch (e) {
+        await testUtil.takeScreenshot(page, 'liqualityBooster-selected-error')
+        expect(e, 'Liquality Boost selected quote provider error!!').equals(null)
+      }
+    })
+    it('SWAP (RBTC->PWETH (Polygon))', async () => {
+      const fromAsset = 'RBTC'
+      const toAsset = 'PWETH'
+      // Select testnet
+      await overviewPage.SelectNetwork(page, 'mainnet')
+      // Click on BTC then click on SWAP button
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
+      await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+      await page.click(`#${fromAsset}_swap_button`)
+      // Select PWETH
+      await swapPage.SelectSwapReceiveCoin(page)
+      await page.waitForSelector('#search_for_a_currency', { visible: true })
+      await page.type('#search_for_a_currency', toAsset)
+      await page.click(`#${toAsset}`)
+      if (process.env.NODE_AGENT === 'prodagent') {
+        await swapPage.EnterSendAmountOnSwap(page, '0.01')
+      } else {
+        await swapPage.EnterSendAmountOnSwap(page, '0.00001')
+      }
+      // Select Liquality Boost
+      try {
+        await page.waitForSelector('#selectedQuote_provider', { visible: true })
+      } catch (e) {
+        await testUtil.takeScreenshot(page, 'no-Liquidity')
+        expect(e, 'No Liquidity.....').equals(null)
+      }
+      await page.waitForTimeout(5000)
+      try {
+        const selectedQuoteProviderText = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
+        if (selectedQuoteProviderText === BOOSTER) {
           // Check source name
           await checkBooster()
         } else if (selectedQuoteProviderText === 'Liquality') {
