@@ -10,10 +10,10 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre>(EIP) 1559 upgrade</pre>
-            <pre>Send transaction timeline details</pre>
-            <pre>Updated loading/start screen</pre>
-            <pre class="text-wrap">Infrastructure migration</pre>
+            <pre>Upgraded EIP-1559 compatibility</pre>
+            <pre>Detailed "send" transaction timeline</pre>
+            <pre>Faster loading/start screens</pre>
+            <pre class="text-wrap">Fewer node errors</pre>
             <pre class="text-wrap">Minor bug fixes</pre>
           </div>
         </div>
