@@ -3,7 +3,7 @@
     <router-link to="/wallet" class="head_logo ml-3" id="wallet_header_logo"
       ><LogoIcon
     /></router-link>
-    <div id="head_network" class="head_network" @click.stop="showNetworks = !showNetworks">
+    <div id="head_network" class="head_network" @click.stop="toggleShowNetworks">
       {{ activeNetwork }}
       <ChevronUpIcon v-if="showNetworks" />
       <ChevronDownIcon v-else />
@@ -15,7 +15,7 @@
     <div
       id="connect_dapp_main_option"
       class="head_connection float-right mr-3"
-      @click="showConnectionDrawer = !showConnectionDrawer"
+      @click.stop="toggleShowConnectionDrawer"
     >
       <template v-if="dappConnected"
         ><ConnectionConnected class="mr-1 connection-icon" id="dappConnected" /> dApp
@@ -28,7 +28,11 @@
       <ChevronUpIcon class="ml-1" v-if="showConnectionDrawer" />
       <ChevronDownIcon class="ml-1" v-else />
     </div>
-    <ConnectionDrawer v-if="showConnectionDrawer" class="head_connection-drawer" />
+    <ConnectionDrawer
+      v-if="showConnectionDrawer"
+      class="head_connection-drawer"
+      v-click-away="hideConnectionDrawer"
+    />
   </div>
 </template>
 
@@ -83,8 +87,23 @@ export default {
   },
   methods: {
     ...mapActions(['changeActiveNetwork']),
+    toggleShowNetworks() {
+      this.showNetworks = !this.showNetworks
+      if (this.showNetworks) {
+        this.showConnectionDrawer = false
+      }
+    },
     hideNetworks() {
       this.showNetworks = false
+    },
+    toggleShowConnectionDrawer() {
+      this.showConnectionDrawer = !this.showConnectionDrawer
+      if (this.showConnectionDrawer) {
+        this.showNetworks = false
+      }
+    },
+    hideConnectionDrawer() {
+      this.showConnectionDrawer = false
     },
     async switchNetwork(network) {
       await this.changeActiveNetwork({ network })
