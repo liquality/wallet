@@ -143,13 +143,16 @@ export default {
     if (!history[activeNetwork][activeWalletId]) return []
     return history[activeNetwork][activeWalletId].slice().reverse()
   },
-  totalFiatBalance(_state, getters) {
-    const { accountsData } = getters
+  totalFiatBalance(state, getters) {
+    const { activeNetwork, activeWalletId } = state
+    const { accountsData, accountFiatBalance } = getters
     return accountsData
-      .filter((a) => a.type === 'default')
-      .map((a) => a.totalFiatBalance)
-      .reduce((accum, balance) => {
-        return accum.plus(BN(balance || 0))
+      .filter((a) => a.type === 'default' && a.enabled)
+      .map((a) => accountFiatBalance(activeWalletId, activeNetwork, a.id))
+      .reduce((accum, rawBalance) => {
+        const convertedBalance = BN(rawBalance)
+        const balance = convertedBalance.isNaN() ? 0 : convertedBalance
+        return accum.plus(balance || 0)
       }, BN(0))
   },
   accountItem(state, getters) {
