@@ -135,12 +135,14 @@ export default {
       return getStatusLabel(this.item)
     },
     txFees() {
-      const fromFee = this.item.fee.suggestedBaseFeePerGas ? 
-          this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas : this.item.fee
+      const fromFee = this.item.fee.suggestedBaseFeePerGas
+        ? this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
+        : this.item.fee
 
-      const toFee = this.item.claimFee.suggestedBaseFeePerGas ? 
-          this.item.claimFee.suggestedBaseFeePerGas + this.item.claimFee.maxPriorityFeePerGas : this.item.claimFee
-      
+      const toFee = this.item.claimFee.suggestedBaseFeePerGas
+        ? this.item.claimFee.suggestedBaseFeePerGas + this.item.claimFee.maxPriorityFeePerGas
+        : this.item.claimFee
+
       const fees = []
       const fromChain = cryptoassets[this.item.from].chain
       const toChain = cryptoassets[this.item.to].chain
