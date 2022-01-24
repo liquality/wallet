@@ -74,7 +74,7 @@ describe('SWAP feature["TESTNET"]', async () => {
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(asset1)
 
-    const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
+    const swapSendAmountInDollar = await swapPage.getSwapFromFiatValue(page)
     expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00').not.contain('$00.00')
 
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
@@ -304,7 +304,7 @@ describe('SWAP feature["TESTNET"]', async () => {
     expect(sendAmountValue.trim()).contain(fromAsset)
     console.log(`${fromAsset} SEND value on SWAP review page`, sendAmountValue)
 
-    const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
+    const swapSendAmountInDollar = await swapPage.getSwapFromFiatValue(page)
     console.log(`${fromAsset} SEND value in USD on SWAP review page`, swapSendAmountInDollar)
     expect(swapSendAmountInDollar.trim(), 'SWAP send amount not to be 0.00')
       .not.contain('$0.00')

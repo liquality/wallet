@@ -494,7 +494,7 @@ export default {
       try {
         const amountToSend = this.maxOptionActive ? this.available : this.amount
 
-        const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toNumber()
+        const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toString()
 
         // validate for custom fees
         const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined

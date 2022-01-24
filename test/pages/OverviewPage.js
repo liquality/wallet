@@ -47,14 +47,14 @@ class OverviewPage {
         await page.waitForTimeout(2000)
         await page.waitForSelector('#active_network', { visible: true })
         overviewText = await page.$eval('#active_network', el => el.innerText)
-        expect(overviewText, 'Testnet overview header').contain('TESTNET')
+        expect(overviewText, 'switch to testnet failed').contain('TESTNET')
         console.log('user successfully changed to TESTNET')
         break
 
       case 'mainnet':
         await page.waitForSelector('#active_network', { visible: true })
         overviewText = await page.$eval('#active_network', el => el.innerText)
-        expect(overviewText, 'Mainnet overview header').contain('MAINNET')
+        expect(overviewText, 'mainnet change failed').contain('MAINNET')
         console.log('user successfully changed to MAINNET')
         break
 
@@ -213,6 +213,7 @@ class OverviewPage {
       }
 
       case 'MATIC':
+      case 'PUSDT':
       case 'PWETH': {
         const polygon = await page.waitForSelector('#POLYGON', {
           timeout: elementVisibleTimeout,

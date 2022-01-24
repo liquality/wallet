@@ -106,7 +106,7 @@
                 <li v-for="assetFee in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
-                    {{ getTotalSwapFee(assetFee) }} {{ assetFee }} /
+                    {{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }} /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
                     <button class="btn btn-link" @click="resetCustomFee(assetFee)">Reset</button>
                   </div>

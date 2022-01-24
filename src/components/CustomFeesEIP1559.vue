@@ -30,7 +30,7 @@
           <p><strong>MINER TIP</strong> TO SPEED UP</p>
           <span>${{ minerTipFiat }}</span>
           <div class="custom-fee-details-item">
-            <div class="gas-unit-label">{{ gasUnit.toUpperCase() }}</div>
+            <span class="gas-unit-label">{{ gasUnit.toUpperCase() }}</span>
             <div class="input-group">
               <input
                 type="number"
@@ -55,7 +55,7 @@
           <p><strong>MAX FEE</strong> PER GAS</p>
           <span>${{ maxFiat }}</span>
           <div class="custom-fee-details-item">
-            <div class="gas-unit-label">{{ gasUnit.toUpperCase() }}</div>
+            <span class="gas-unit-label">{{ gasUnit.toUpperCase() }}</span>
             <div class="input-group">
               <input
                 type="number"
@@ -401,11 +401,13 @@ export default {
     }
 
     div {
-      display: flex;
-      align-items: center;
+      position: relative;
+      bottom: 4px;
 
       span {
         width: 34px;
+        position: relative;
+        top: 15px;
       }
 
       input {
