@@ -47,7 +47,7 @@ async function importWalletTestReceive (bitcoin) {
   await page.click('#wallet_header_logo')
 }
 
-describe('Receive tokens ["TESTNET","MAINNET"]', async () => {
+describe('Receive tokens ["MAINNET"]', async () => {
   describe('Create wallet and Check receive["PULL_REQUEST_TEST"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -113,11 +113,7 @@ describe('Receive tokens ["TESTNET","MAINNET"]', async () => {
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
       // Select Network
-      if (process.env.NODE_ENV === 'mainnet') {
-        await overviewPage.SelectNetwork(page, 'mainnet')
-      } else {
-        await overviewPage.SelectNetwork(page)
-      }
+      await overviewPage.SelectNetwork(page, 'mainnet')
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
     })

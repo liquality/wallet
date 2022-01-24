@@ -4,7 +4,7 @@ import { createPopup } from '../../broker/utils'
 
 export const requestOriginAccess = async (
   { state, dispatch, commit },
-  { origin, chain, setDefault }
+  { origin, chain, setDefaultEthereum }
 ) => {
   const { requestOriginAccessActive } = state.app
 
@@ -21,21 +21,7 @@ export const requestOriginAccess = async (
       emitter.$once(`origin:${origin}`, (allowed, accountId, chain) => {
         commit('app/SET_ORIGIN_ACCESS_ACTIVE', { active: false }, { root: true })
         if (allowed) {
-          const { activeWalletId } = state
-
-          commit('ADD_EXTERNAL_CONNECTION', {
-            origin,
-            activeWalletId,
-            accountId,
-            chain
-          })
-          if (setDefault)
-            commit('SET_EXTERNAL_CONNECTION_DEFAULT', {
-              origin,
-              activeWalletId,
-              accountId
-            })
-
+          dispatch('addExternalConnection', { origin, accountId, chain, setDefaultEthereum })
           resolve({
             accepted: true,
             chain

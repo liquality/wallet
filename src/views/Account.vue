@@ -21,11 +21,7 @@
             <span v-else>&nbsp;</span>
           </div>
           <div>
-            <span
-              class="account-container_balance_value"
-              :id="`${asset}_balance_value`"
-              :style="{ fontSize: formatFontSize(balance) }"
-            >
+            <span class="account-container_balance_value" :id="`${asset}_balance_value`">
               {{ balance }}
             </span>
             <span class="account-container_balance_code">{{ asset }}</span>
@@ -67,7 +63,9 @@
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
                 <SwapIcon
-                  class="account-container_actions_button_icon account-container_actions_button_swap"
+                  class="
+                    account-container_actions_button_icon account-container_actions_button_swap
+                  "
                 />
               </div>
               Swap
@@ -273,6 +271,7 @@ export default {
     &_value {
       line-height: 36px;
       margin-right: 8px;
+      font-size: 30px;
     }
 
     &_code {

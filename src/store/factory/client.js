@@ -326,7 +326,7 @@ function createArbitrumClient(asset, network, mnemonic, derivationPath) {
 }
 
 function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
-  let _asset, feeAsset, tokenAddress
+  let _asset, feeAsset, tokenAddress, stableFee
 
   const terraNetwork = ChainNetworks.terra[network]
 
@@ -339,6 +339,7 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
     case 'UST': {
       _asset = 'uusd'
       feeAsset = 'uusd'
+      stableFee = true
       break
     }
     default: {
@@ -359,13 +360,38 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
       baseDerivationPath,
       asset: _asset,
       feeAsset,
-      tokenAddress
+      tokenAddress,
+      stableFee
     })
   )
   terraClient.addProvider(new TerraSwapProvider(terraNetwork, _asset))
   terraClient.addProvider(new TerraSwapFindProvider(terraNetwork, _asset))
 
   return terraClient
+}
+
+function createFuseClient(asset, network, mnemonic, derivationPath) {
+  const isTestnet = network === 'testnet'
+  const fuseNetwork = ChainNetworks.fuse[network]
+  const rpcApi = isTestnet ? 'https://rpc.fusespark.io' : 'https://rpc.fuse.io'
+  const scraperApi = undefined
+  const feeProvider = new EthereumRpcFeeProvider({
+    slowMultiplier: 1,
+    averageMultiplier: 1,
+    fastMultiplier: 1.25
+  })
+
+  return createEthereumClient(
+    asset,
+    network,
+    fuseNetwork,
+    rpcApi,
+    scraperApi,
+    feeProvider,
+    mnemonic,
+    'default',
+    derivationPath
+  )
 }
 
 export const createClient = (asset, network, mnemonic, accountType, derivationPath) => {
@@ -384,6 +410,7 @@ export const createClient = (asset, network, mnemonic, accountType, derivationPa
   if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
   if (assetData.chain === 'terra')
     return createTerraClient(network, mnemonic, derivationPath, asset)
+  if (assetData.chain === 'fuse') return createFuseClient(asset, network, mnemonic, derivationPath)
 
   return createEthClient(asset, network, mnemonic, accountType, derivationPath)
 }

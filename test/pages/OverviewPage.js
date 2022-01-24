@@ -35,29 +35,26 @@ class OverviewPage {
    */
   async SelectNetwork (page, network = 'testnet') {
     await page.waitForSelector('#head_network', { visible: true })
-    await page.click('#head_network', { delay: 5 })
-    await page.waitForTimeout(1000)
     let overviewText
 
     switch (network) {
       case 'testnet':
+        await page.click('#head_network', { delay: 5 })
+        await page.waitForTimeout(1000)
         await page.waitForSelector('#testnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
         await page.click('#testnet_network', { delay: 10 })
         await page.waitForTimeout(2000)
         await page.waitForSelector('#active_network', { visible: true })
         overviewText = await page.$eval('#active_network', el => el.innerText)
-        expect(overviewText, 'Testnet overview header').contain('TESTNET')
+        expect(overviewText, 'switch to testnet failed').contain('TESTNET')
         console.log('user successfully changed to TESTNET')
         break
 
       case 'mainnet':
-        await page.waitForSelector('#mainnet_network', { visible: true })
-        console.log('user successfully logged in after import wallet')
-        await page.click('#mainnet_network')
         await page.waitForSelector('#active_network', { visible: true })
         overviewText = await page.$eval('#active_network', el => el.innerText)
-        expect(overviewText, 'Mainnet overview header').contain('MAINNET')
+        expect(overviewText, 'mainnet change failed').contain('MAINNET')
         console.log('user successfully changed to MAINNET')
         break
 
@@ -276,7 +273,6 @@ class OverviewPage {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     await page.waitForSelector('#refresh-icon', { visible: true })
   }
-
   /**
    * Validate view explorer href for each assert on overview page.
    * @param page

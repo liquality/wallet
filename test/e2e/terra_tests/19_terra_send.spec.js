@@ -19,7 +19,7 @@ let browser, page
 const password = '123123123'
 
 // https://linear.app/liquality/issue/LIQ-358/exploratory-report-on-terra
-describe('Terra SEND feature["TESTNET", "PULL_REQUEST_TEST"]', async () => {
+describe.skip('Terra SEND feature["TESTNET", "PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -35,6 +35,8 @@ describe('Terra SEND feature["TESTNET", "PULL_REQUEST_TEST"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
+    // Select testnet
+    await overviewPage.SelectNetwork(page)
   })
   afterEach(async () => {
     await browser.close()
@@ -43,8 +45,6 @@ describe('Terra SEND feature["TESTNET", "PULL_REQUEST_TEST"]', async () => {
     const assertName = 'LUNA'
     const coinsToSend = '1'
     const sendAddress = 'terra1mecrspqx809t7ah9dyhc3cdgpylxvrq5k2fak5'
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ClickSend(page)
     // Search for coin & select coin

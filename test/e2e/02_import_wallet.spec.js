@@ -153,7 +153,6 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
     await page.waitForTimeout(120000)
     totalAmount = await overviewPage.GetTotalLiquidity(page)
     console.log('total wallet fiat amount after 2 min wait', parseInt(totalAmount, 10))
-    await testUtil.takeScreenshot(page, 'ethAddress-takeScreenshot')
     expect(parseInt(totalAmount, 10), 'Funds in my wallet should be greater than 0 USD').greaterThan(0)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
 

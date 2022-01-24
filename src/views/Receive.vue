@@ -110,7 +110,8 @@ export default {
         rsk: 'ethereum',
         bsc: 'ethereum',
         polyon: 'ethereum',
-        terra: 'terra'
+        terra: 'terra',
+        fuse: 'ethereum'
       }[cryptoassets[this.asset].chain]
     },
     faucet() {
@@ -151,6 +152,10 @@ export default {
           LUNA: {
             name: 'TERRA',
             url: 'https://faucet.terra.money/'
+          },
+          FUSE: {
+            name: 'FUSE',
+            url: 'https://get.fusespark.io/'
           }
         }[this.asset]
       }
