@@ -15,6 +15,7 @@
     <div
       id="connect_dapp_main_option"
       class="head_connection float-right mr-3"
+      v-if="showDappConnections"
       @click.stop="toggleShowConnectionDrawer"
     >
       <template v-if="dappConnected"
@@ -59,6 +60,7 @@ export default {
     ConnectionConnected,
     ConnectionDrawer
   },
+  props: ['showDappConnections'],
   data() {
     return {
       showNetworks: false,
@@ -111,12 +113,14 @@ export default {
     }
   },
   created() {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length > 0) {
-        const { origin } = new URL(tabs[0].url)
-        this.currentOrigin = origin
-      }
-    })
+    if (this.showDappConnections) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs.length > 0) {
+          const { origin } = new URL(tabs[0].url)
+          this.currentOrigin = origin
+        }
+      })
+    }
   }
 }
 </script>

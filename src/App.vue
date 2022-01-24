@@ -1,6 +1,6 @@
 <template>
   <div id="app" v-if="brokerReady">
-    <Head v-if="unlockedAt" />
+    <Head v-if="unlockedAt" :show-dapp-connections="showDappConnections" />
     <router-view />
     <template v-if="unlockedAt && termsAcceptedAt">
       <AnalyticsOptInModal />
@@ -23,7 +23,10 @@ export default {
     WatsNewModal
   },
   computed: {
-    ...mapState(['activeNetwork', 'brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt'])
+    ...mapState(['activeNetwork', 'brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
+    showDappConnections() {
+      return !this.$route.path.startsWith('/permission') && !this.$route.path.startsWith('/enable')
+    }
   },
   methods: {
     ...mapActions(['initializeAnalytics'])
