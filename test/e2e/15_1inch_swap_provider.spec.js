@@ -24,13 +24,21 @@ const swapPairMap = [
   {
     from: 'MATIC',
     to: 'PWETH'
+  },
+  {
+    from: 'PWETH',
+    to: 'MATIC'
+  },
+  {
+    from: 'PWETH',
+    to: 'PUSDT'
   }
 ]
 
 if (process.env.NODE_ENV === 'mainnet') {
   // Skip as 1inch api unreliable
   // Only works on Mainnet
-  describe.only('1Inch Service Provider-["MAINNET"]', async () => {
+  describe('1Inch Service Provider-["MAINNET"]', async () => {
     swapPairMap.forEach((obj) => {
       it(`SWAP (${obj.from}->${obj.to})`, async () => {
         const fromAsset = obj.from

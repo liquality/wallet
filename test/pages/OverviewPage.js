@@ -213,6 +213,7 @@ class OverviewPage {
       }
 
       case 'MATIC':
+      case 'PUSDT':
       case 'PWETH': {
         const polygon = await page.waitForSelector('#POLYGON', {
           timeout: elementVisibleTimeout,
