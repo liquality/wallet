@@ -13,6 +13,9 @@ class PasswordPage {
    * @constructor
    */
   async SubmitPasswordDetails (page, password) {
+    if (!password) {
+      return Promise.reject(new Error('Password is required'))
+    }
     try {
       await page.waitForSelector('#password', { visible: true, timeout: 60000 })
     } catch (e) {
