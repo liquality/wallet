@@ -28,10 +28,10 @@ const swapPairMap = [
 ]
 
 if (process.env.NODE_ENV === 'mainnet') {
-// Skip as 1inch api unreliable
-// Only works on Mainnet
+  // Skip as 1inch api unreliable
+  // Only works on Mainnet
   describe.only('1Inch Service Provider-["MAINNET"]', async () => {
-    swapPairMap.forEach(obj => {
+    swapPairMap.forEach((obj) => {
       it(`SWAP (${obj.from}->${obj.to})`, async () => {
         const fromAsset = obj.from
         const toAsset = obj.to
@@ -64,31 +64,36 @@ if (process.env.NODE_ENV === 'mainnet') {
         await page.waitForTimeout(10000)
         await page.waitForSelector('#selectedQuote_provider', { visible: true })
         try {
-          expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-            `${obj.from}->${obj.to}) swap, Oneinch V4 should be chosen!`)
-            .equals('Oneinch V4')
+          expect(
+            await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+            `${obj.from}->${obj.to}) swap, Oneinch V4 should be chosen!`
+          ).equals('Oneinch V4')
         } catch (e) {
           await testUtil.takeScreenshot(page, '1inch-issue')
           expect(e, '1inch V4 should be chosen').equals(null)
         }
         // validate Send & To fiat values
-        const details = await swapPage.getSwapFiatValues(page)
+        const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
 
-        expect(details.sendFromFiat,
-          `${obj.from}->${obj.to}) swap, Send fiat amount should be correct!`)
-          .not.equals('$0.00')
-        expect(details.sendFromFiat,
-          `${obj.from}->${obj.to}) swap, To fiat amount should be correct!`)
-          .not.equals('NaN')
+        expect(
+          sendFromFiat,
+          `${obj.from}->${obj.to}) swap, Send fiat amount should be correct!`
+        ).not.equals('$0.00')
+        expect(
+          sendFromFiat,
+          `${obj.from}->${obj.to}) swap, To fiat amount should be correct!`
+        ).not.equals('NaN')
         // validate Receive fiat amount
-        expect(details.toFiat,
-          `${obj.from}->${obj.to}) swap, Receive fiat amount should be correct!`)
-          .not.equals('$0.00')
-        expect(details.toFiat,
-          `${obj.from}->${obj.to}) swap, Receive fiat amount should be correct!`)
-          .not.equals('NaN')
+        expect(
+          toFiat,
+          `${obj.from}->${obj.to}) swap, Receive fiat amount should be correct!`
+        ).not.equals('$0.00')
+        expect(
+          toFiat,
+          `${obj.from}->${obj.to}) swap, Receive fiat amount should be correct!`
+        ).not.equals('NaN')
       })
-      })
+    })
     afterEach(async () => {
       await browser.close()
     })
