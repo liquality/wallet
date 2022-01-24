@@ -190,7 +190,13 @@ class SwapPage {
     return await page.$eval('#send_swap_confirm_value', el => el.textContent)
   }
 
-  async GetSwapSendAmountInDollar (page) {
+  /**
+   * Get the SEND amount value from review page.
+   * @param page
+   * @return {Promise<*>}
+   * @constructor
+   */
+  async getSwapFromFiatValue (page) {
     await page.waitForTimeout(5000)
     await page.waitForSelector('#send_swap_amount_fiat', { visible: true })
     return await page.$eval('#send_swap_amount_fiat', el => el.textContent)
@@ -199,6 +205,21 @@ class SwapPage {
   async GetSwapSendNetworkFeeValue (page) {
     await page.waitForSelector('#swap_send_network_fee_value', { visible: true })
     return await page.$eval('#swap_send_network_fee_value', el => el.textContent)
+  }
+
+  /**
+   * Get fiat values from SWAP page
+   * @param page
+   * @return {Promise<{sendFromFiat: *, toFiat: *}>}
+   */
+  async getSwapFiatValues (page) {
+    await page.waitForSelector('.swap-send-top-amount', { visible: true })
+    let sendFromFiat = await page.$eval('.swap-send-top-amount', el => el.textContent)
+    let toFiat = await page.$eval('.swap-receive-top-amount', el => el.textContent)
+    return {
+      sendFromFiat,
+      toFiat
+    }
   }
 
   /**
@@ -228,7 +249,13 @@ class SwapPage {
     return await page.$eval('#receive_swap_confirm_value', el => el.textContent)
   }
 
-  async GetSwapReceiveAmountInDollar (page) {
+  /**
+   * Get the SEND to amount value from review page.
+   * @param page
+   * @return {Promise<*>}
+   * @constructor
+   */
+  async getSwapToAssetFiatValue (page) {
     await page.waitForSelector('#receive_swap_amount_fiat', { visible: true })
     return await page.$eval('#receive_swap_amount_fiat', el => el.textContent)
   }
