@@ -4,7 +4,6 @@ const testUtil = new TestUtil()
 
 const puppeteer = require('puppeteer')
 const expect = require('chai').expect
-const assert = require('chai').assert
 
 class SwapPage {
   /**
@@ -232,7 +231,7 @@ class SwapPage {
     await page.waitForSelector('.swap-send-bottom-available', { visible: true })
     let availableBalance = await page.$eval('.swap-send-bottom-available', (el) => el.textContent)
     if(availableBalance.includes('NaN')){
-      assert.fail('Available balance is not a number ' + availableBalance)
+      expect.fail('Available balance is NaN')
     }
     let balance = availableBalance.replace(/[^\d.-]/g, '')
     return {
