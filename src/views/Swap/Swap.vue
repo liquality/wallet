@@ -660,7 +660,7 @@ export default {
       return unitToCurrency(cryptoassets[this.asset], available)
     },
 
-    canCoverAmmFee () {
+    canCoverAmmFee() {
       if (!this.selectedQuote?.bridgeAsset) return true
       const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
       const toSwapFeeInUnits = currencyToUnit(
@@ -760,9 +760,10 @@ export default {
       }
     },
     isHighFee() {
-      const feeTotal = cryptoToFiat(this.toSwapFee, this.fiatRates[this.toAssetChain]).plus(
-        cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain])
-      )
+      const feeTotal = cryptoToFiat(
+        this.toSwapFee,
+        this.fiatRates[this.selectedQuote?.bridgeAsset || this.toAssetChain]
+      ).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
       const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat)
         ? 0
         : this.totalToReceiveInFiat * 0.25
