@@ -10,9 +10,11 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre>Ability to remove custom tokens</pre>
-            <pre>Minor bug fixes</pre>
-            <pre class="text-wrap">Overview screen performance enhancement</pre>
+            <pre>(EIP) 1559 upgrade</pre>
+            <pre>Send transaction timeline details</pre>
+            <pre>Updated loading/start screen</pre>
+            <pre class="text-wrap">Infrastructure migration</pre>
+            <pre class="text-wrap">Minor bug fixes</pre>
           </div>
         </div>
       </div>
