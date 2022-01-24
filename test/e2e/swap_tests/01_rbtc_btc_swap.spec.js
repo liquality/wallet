@@ -80,7 +80,7 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
     expect(sendAmountValue.trim()).contain(fromAsset)
     console.log(('SEND Swap value: ' + sendAmountValue))
     // Send confirm USD value
-    const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
+    const swapSendAmountInDollar = await swapPage.getSwapFromFiatValue(page)
     expect(swapSendAmountInDollar.trim(), `Send Network fee should not be $0.00 for ${fromAsset}`)
       .not.equals('$0.00')
     console.log(('User SEND Swap value in USD: ' + swapSendAmountInDollar))
