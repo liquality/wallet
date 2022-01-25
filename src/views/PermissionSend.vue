@@ -86,7 +86,7 @@
         :fees="assetFees"
         :totalFees="maxOptionActive ? maxSendFees : sendFees"
         :fiatRates="fiatRates"
-        :promiseSendView="true"
+        :padLabels="true"
       />
     </div>
 
@@ -288,14 +288,15 @@ export default {
       return BN(gas, 16)
     },
     applyCustomFee({ fee }) {
-      const presetFee = Object.entries(this.assetFees).find(
-        ([speed, speedFee]) =>
-          speed !== 'custom' &&
-          (speedFee.fee === fee ||
-            (fee.maxPriorityFeePerGas &&
-              speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas &&
-              speedFee.fee.maxFeePerGas === fee.maxFeePerGas))
-      )
+      const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => {
+        const isLegacyFee = speedFee.fee === fee
+        const isEIP1559Fee =
+          fee.maxPriorityFeePerGas &&
+          speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas &&
+          speedFee.fee.maxFeePerGas === fee.maxFeePerGas
+        
+        return speed !== 'custom' && (isLegacyFee || isEIP1559Fee)
+      })
       if (presetFee) {
         const [speed] = presetFee
         this.selectedFee = speed
