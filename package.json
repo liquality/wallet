@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@blobfishkate/sovryncontracts": "1.3.27",
-    "@liquality/bitcoin-esplora-batch-api-provider": "1.12.0",
+    "@liquality/bitcoin-esplora-batch-api-provider": "1.13.0",
     "@liquality/bitcoin-esplora-swap-find-provider": "1.12.0",
     "@liquality/bitcoin-fee-api-provider": "1.12.0",
     "@liquality/bitcoin-js-wallet-provider": "1.12.0",
