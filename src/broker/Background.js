@@ -139,15 +139,20 @@ class Background {
           .dispatch(data.type, data.payload)
           .then((result) => ({ result }))
           .catch((error) => {
-            console.error(error) /* eslint-disable-line */
+            console.error(error)
             return { error: error.message }
           })
           .then((response) => {
-            connection.postMessage({
-              id,
-              type: 'ACTION_RESPONSE',
-              data: response
-            })
+            try {
+              connection.postMessage({
+                id,
+                type: 'ACTION_RESPONSE',
+                data: response
+              })
+            } catch (e) {
+              // Guard against popup being disconnected
+              console.warn(e)
+            }
           })
         break
 
