@@ -17,7 +17,7 @@ const seedWordsPage = new SeedWordsPage()
 let browser, page
 const password = '123123123'
 
-describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () => {
+describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -49,11 +49,7 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
+    await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // check Send & Swap & Receive options have been displayed
@@ -128,11 +124,7 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
+    await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // check Send & Swap & Receive options have been displayed (RSK & RSK legacy)
@@ -192,7 +184,7 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     expect(rbtcValue, 'RBTC value shouldn\'t be 0').not.equals('0')
     expect(sovValue, 'SOV value shouldn\'t be 0').not.equals('0')
   })
-  // Create a new wallet & forgot password & enter new seedpharse
+  // Create a new wallet & forgot password & enter new seed pharse
   it('Create wallet & Validate derived path address after user enter new seedpharse after lock', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
@@ -214,17 +206,16 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
+    await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount).contain(' 8 Assets ')
+
+    let allAddresses = await testUtil.getAllChainAddresses(page)
+    console.log(allAddresses)
 
     const assertAddresses = []
 
@@ -238,12 +229,19 @@ describe('Derived path address validation-["MAINNET","TESTNET","PULL_REQUEST_TES
     const polygonAddress = await overviewPage.GetAssertAddress(page, 'POLYGON')
     // ARBITRUM
     const arbitrumAddress = await overviewPage.GetAssertAddress(page, 'ARBITRUM')
+
+    let details =  {
+      'ETH': ethAddress,
+      'RSK': rskAddress,
+      'BSC': bscAddress,
+      'POLYGON': polygonAddress,
+      'ARBITRUM': arbitrumAddress
+    }
+
     assertAddresses.push(ethAddress, rskAddress, bscAddress, polygonAddress, arbitrumAddress)
-    console.log('assertAddresses', assertAddresses)
     expect(assertAddresses.every((val, i, arr) => val === arr[0]),
-      'Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]')
-      .eq(true)
-    expect(rskAddress, 'ETH & RSK Address are same if the wallet created with 0 balance')
+      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${details}`).eq(true)
+    expect(rskAddress, `ETH ${ethAddress} & RSK ${rskAddress} Address are same if the wallet created with 0 balance`)
       .equals(ethAddress)
 
     // Validate ERC20 derived path validations

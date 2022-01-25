@@ -147,13 +147,9 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
       'Wallet stats has currency should be USD').contain('USD')
 
     // Check the Total amount - 10s wait to load amount
-    let totalAmount
-    totalAmount = await overviewPage.GetTotalLiquidity(page)
-    console.log('total wallet fiat amount', parseInt(totalAmount, 10))
-    await page.waitForTimeout(120000)
-    totalAmount = await overviewPage.GetTotalLiquidity(page)
-    console.log('total wallet fiat amount after 2 min wait', parseInt(totalAmount, 10))
-    expect(parseInt(totalAmount, 10), 'Funds in my wallet should be greater than 0 USD').greaterThan(0)
+    let totalAmount = await overviewPage.GetTotalLiquidity(page)
+    console.log('total wallet fiat amount', totalAmount)
+    expect(totalAmount, 'Funds in my wallet should be greater than 0 USD').greaterThan(0)
     console.log('After Import wallet, the funds in the wallet:', totalAmount)
 
     // GET the ETHEREUM assert Address

@@ -408,10 +408,13 @@ export default {
     }
 
     div {
+      position: relative;
+      bottom: 4px;
+
       span {
         width: 34px;
         position: relative;
-        top: 17px;
+        top: 15px;
       }
 
       input {
