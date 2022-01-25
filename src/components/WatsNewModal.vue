@@ -10,7 +10,10 @@
             <ChartIcon />
           </div>
           <div class="item-content">
+            <pre>Integrated Thorchain for cross-chain swaps</pre>
             <pre>Upgraded EIP-1559 compatibility</pre>
+            <pre>Updated 1inch integration to v4</pre>
+            <pre>Improved dapp injection UI/UX</pre>
             <pre>Detailed "send" transaction timeline</pre>
             <pre>Faster loading/start screens</pre>
             <pre class="text-wrap">Fewer node errors</pre>
