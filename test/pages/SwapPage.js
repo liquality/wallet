@@ -230,8 +230,8 @@ class SwapPage {
   async getSwapAvailableBalance(page) {
     await page.waitForSelector('.swap-send-bottom-available', { visible: true })
     let availableBalance = await page.$eval('.swap-send-bottom-available', (el) => el.textContent)
-    if(availableBalance.contains('NaN')){
-      assert.fail('Available balance is not a number ' + availableBalance)
+    if(availableBalance.includes('NaN')){
+      expect.fail('Available balance is NaN')
     }
     let balance = availableBalance.replace(/[^\d.-]/g, '')
     return {

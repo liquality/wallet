@@ -804,9 +804,11 @@ export default {
       }
     },
     isHighFee() {
-      const feeTotal = cryptoToFiat(this.receiveFee, this.fiatRates[this.assetChain]).plus(
-        cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain])
-      )
+      const feeTotal = cryptoToFiat(
+        this.toSwapFee,
+        this.fiatRates[this.selectedQuote?.bridgeAsset || this.toAssetChain]
+      ).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
+      
       const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat)
         ? 0
         : this.totalToReceiveInFiat * 0.25
@@ -1125,7 +1127,7 @@ export default {
     getTotalSwapFee(asset) {
       if (asset === this.assetChain) {
         return this.fromSwapFee
-      } else if (asset === this.toAsset && this.receiveFee) {
+      } else if (asset === this.toAssetChain && this.receiveFee) {
         return this.receiveFee
       }
     },

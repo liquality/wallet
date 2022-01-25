@@ -3,7 +3,7 @@
     <NavBar :showBackButton="false" :showBack="false" :showMenuList="false">
       Network Speed/Fee
     </NavBar>
-    <div class="wrapper form">
+    <div class="wrapper form" :class="{ wrapperSend: padLabels }">
       <div class="wrapper_top">
         <div class="selected-asset" id="custom_fee_selected_asset">
           <img :src="getAssetIcon(asset)" class="asset-icon" />
@@ -17,8 +17,7 @@
 
       <div class="current-base-fee">
         <span class="custom-fee-title">
-          <strong>CURRENT BASE FEE</strong>
-          PER GAS
+          <strong>CURRENT BASE FEE PER GAS</strong>
         </span>
         <span
           >GWEI <span>{{ suggestedBaseFeePerGas }}</span></span
@@ -30,7 +29,9 @@
           <p><strong>MINER TIP</strong> TO SPEED UP</p>
           <span>${{ minerTipFiat }}</span>
           <div class="custom-fee-details-item">
-            <span class="gas-unit-label">{{ gasUnit.toUpperCase() }}</span>
+            <span class="gas-unit-label" :class="{ gasUnitLabel: padLabels }">{{
+              gasUnit.toUpperCase()
+            }}</span>
             <div class="input-group">
               <input
                 type="number"
@@ -55,7 +56,9 @@
           <p><strong>MAX FEE</strong> PER GAS</p>
           <span>${{ maxFiat }}</span>
           <div class="custom-fee-details-item">
-            <span class="gas-unit-label">{{ gasUnit.toUpperCase() }}</span>
+            <span class="gas-unit-label" :class="{ gasUnitLabel: padLabels }">{{
+              gasUnit.toUpperCase()
+            }}</span>
             <div class="input-group">
               <input
                 type="number"
@@ -170,7 +173,7 @@ export default {
       hasError: false
     }
   },
-  props: ['asset', 'selectedFee', 'fees', 'totalFees', 'fiatRates'],
+  props: ['asset', 'selectedFee', 'fees', 'totalFees', 'fiatRates', 'padLabels'],
   created() {
     this.preset = this.selectedFee || 'average'
     this.suggestedBaseFeePerGas = this.fees[this.preset].fee.suggestedBaseFeePerGas
@@ -368,6 +371,10 @@ export default {
 
 #custom_fee_input_field {
   width: 0;
+}
+
+.wrapperSend {
+  padding: 10px;
 }
 
 .wrapper {
@@ -595,6 +602,8 @@ export default {
       font-weight: 300;
       font-size: 14px;
       line-height: 150%;
+      position: relative;
+      top: 18px;
     }
 
     & input {
@@ -671,5 +680,8 @@ export default {
   .custom-fee-result-fiat {
     color: #646f85;
   }
+}
+.gasUnitLabel {
+  right: 60px;
 }
 </style>
