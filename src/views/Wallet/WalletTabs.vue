@@ -7,6 +7,11 @@
         </router-link>
       </li>
       <li class="nav-item">
+        <router-link class="nav-link" id="asserts_tab" :to="{ name: 'WalletNFTs' }">
+          NFTs
+        </router-link>
+      </li>
+      <li class="nav-item">
         <router-link class="nav-link" id="activity_tab" :to="{ name: 'WalletActivity' }">
           Activity
         </router-link>
@@ -32,7 +37,7 @@ export default {}
   border-bottom: none !important;
 
   .nav-item {
-    width: 50%;
+    width: 33%;
     height: 100%;
     margin-bottom: none !important;
 
