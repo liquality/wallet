@@ -80,6 +80,9 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
       expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(null)
     }
     await connectRequestWindow.click('#ETHEREUM')
+    // click Next button
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     // Check web3 status as connected
     const connectedChainDetails = await dappPage.evaluate(async () => {

@@ -14,7 +14,7 @@
             By granting permission to <strong>{{ origin }}</strong
             >, they can read your public account addresses.
           </p>
-          <p class="text-primary text-center mb-4">Make sure you trust this site.</p>
+          <p class="text-primary text-center mb-4" id="make_sure_you_trust_this_site">Make sure you trust this site.</p>
         </div>
         <div v-else>
           <div class="d-flex justify-content-between">
