@@ -9,10 +9,11 @@
           </span>
         </div>
       </div>
+      <div v-else-if="selectLabel">{{ selectLabel }}</div>
       <ChevronUpIcon v-if="dropdownOpen" />
       <ChevronDownIcon v-else />
     </button>
-    <ul class="dropdown-menu" :class="{ show: dropdownOpen }">
+    <ul class="dropdown-menu" :class="{ show: dropdownOpen, right }">
       <li v-if="showSearch">
         <div class="form dropdown-header">
           <div class="input-group">
@@ -62,7 +63,7 @@ export default {
     ChevronDownIcon,
     ChevronUpIcon
   },
-  props: ['chains', 'selected', 'showSearch'],
+  props: ['chains', 'selected', 'showSearch', 'selectLabel', 'right'],
   data() {
     return {
       dropdownOpen: false,
@@ -149,7 +150,6 @@ export default {
   }
 
   .dropdown-menu {
-    max-width: 215px;
     min-width: 8rem;
     max-height: 185px;
     overflow: auto;
@@ -157,9 +157,13 @@ export default {
     padding-bottom: 0;
     padding-top: 0;
     margin: 0;
-    left: auto;
     border: 1px solid #d9dfe5;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+    &.right {
+      right: 0;
+      left: auto;
+    }
 
     .dropdown-header {
       margin-top: 10px;
