@@ -75,9 +75,7 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Swaps',
           action: 'Swap Initiated',
-          from: `Swap from ${payload.swap.from}`,
           swapFrom: `${payload.swap.from}`,
-          to: `Swap to ${payload.swap.to}`,
           swapTo: `${payload.swap.to}`,
           fromAddress: `${payload.swap.fromAddress}`,
           toAddress: `${payload.swap.toAddress}`,

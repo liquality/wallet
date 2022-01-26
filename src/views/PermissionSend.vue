@@ -294,7 +294,7 @@ export default {
           fee.maxPriorityFeePerGas &&
           speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas &&
           speedFee.fee.maxFeePerGas === fee.maxFeePerGas
-        
+
         return speed !== 'custom' && (isLegacyFee || isEIP1559Fee)
       })
       if (presetFee) {
