@@ -44,7 +44,7 @@
       v-show="currentStep === 'password'"
       :imported="imported"
       @on-unlock="onUnlock"
-      @currentStep="currentStep = imported ? $router.go(-1) : 'confirm'"
+      @currentStep="changeCurrentStep"
     />
     <Congratulations v-show="currentStep === 'congrats'" />
   </div>
@@ -111,6 +111,13 @@ export default {
     async onUnlock(password) {
       this.password = password
       await this.confirmMnemonic()
+    },
+    changeCurrentStep() {
+      if (this.imported) {
+        this.$router.go(-1)
+      } else {
+        this.currentStep = 'confirm'
+      }
     }
   }
 }
