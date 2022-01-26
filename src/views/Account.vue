@@ -55,7 +55,7 @@
           </a>
         </div>
         <div class="account-container_actions">
-          <router-link :to="`/accounts/${accountId}/${escapeSpecialSymbolsURL(asset)}/send`">
+          <router-link :to="`/accounts/${accountId}/${asset}/send`">
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`">
                 <SendIcon class="account-container_actions_button_icon" />
@@ -63,7 +63,7 @@
               Send
             </button>
           </router-link>
-          <router-link :to="`/accounts/${accountId}/${escapeSpecialSymbolsURL(asset)}/swap`">
+          <router-link :to="`/accounts/${accountId}/${asset}/swap`">
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
                 <SwapIcon
@@ -76,7 +76,7 @@
             </button>
           </router-link>
           <router-link
-            v-bind:to="`/accounts/${accountId}/${escapeSpecialSymbolsURL(asset)}/receive`"
+            v-bind:to="`/accounts/${accountId}/${asset}/receive`"
           >
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
@@ -113,7 +113,7 @@ import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import { prettyBalance, formatFiat, formatFiatUI } from '@/utils/coinFormatter'
 import { shortenAddress } from '@/utils/address'
-import { getAssetIcon, getAddressExplorerLink, escapeSpecialSymbolsURL } from '@/utils/asset'
+import { getAssetIcon, getAddressExplorerLink } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
@@ -172,10 +172,8 @@ export default {
     },
     addressLink() {
       if (this.account) {
-        console.log('addressLink()', this.asset)
         return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
       }
-
       return '#'
     }
   },
@@ -186,7 +184,6 @@ export default {
     formatFontSize,
     formatFiat,
     formatFiatUI,
-    escapeSpecialSymbolsURL,
     async copyAddress() {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true

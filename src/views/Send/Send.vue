@@ -3,11 +3,7 @@
     <div class="send" v-if="currentStep === 'inputs'">
       <NavBar
         showBack="true"
-        :backPath="
-          routeSource === 'assets'
-            ? '/wallet'
-            : `/accounts/${account.id}/${escapeSpecialSymbolsURL(asset)}`
-        "
+        :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
         Send
@@ -85,11 +81,7 @@
         <div class="wrapper_bottom">
           <div class="button-group">
             <router-link
-              :to="
-                routeSource === 'assets'
-                  ? '/wallet'
-                  : `/accounts/${this.account.id}/${escapeSpecialSymbolsURL(asset)}`
-              "
+              :to="routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${asset}`"
             >
               <button class="btn btn-light btn-outline-primary btn-lg" id="send_cancel_button">
                 Cancel
@@ -227,13 +219,7 @@ import {
   formatFiatUI,
   fiatToCrypto
 } from '@/utils/coinFormatter'
-import {
-  getNativeAsset,
-  getAssetColorStyle,
-  getAssetIcon,
-  getFeeAsset,
-  escapeSpecialSymbolsURL
-} from '@/utils/asset'
+import { getNativeAsset, getAssetColorStyle, getAssetIcon, getFeeAsset } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import { getSendFee, getFeeLabel } from '@/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -411,7 +397,6 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
-    escapeSpecialSymbolsURL,
     async _updateSendFees(amount) {
       const getMax = amount === undefined
       if (this.feesAvailable) {
@@ -524,7 +509,7 @@ export default {
           fiatRate: this.fiatRates[this.asset]
         })
 
-        this.$router.replace(`/accounts/${this.accountId}/${escapeSpecialSymbolsURL(this.asset)}`)
+        this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
       } catch (error) {
         console.error(error)
         const { message } = error

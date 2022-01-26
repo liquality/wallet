@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 <template>
   <div class="view-container">
     <div class="swap" v-if="currentStep === 'inputs'">
@@ -6,7 +7,7 @@
         :backPath="
           routeSource === 'assets'
             ? '/wallet'
-            : `/accounts/${account.id}/${escapeSpecialSymbolsURL(asset)}`
+            : `/accounts/${account.id}/${asset}`
         "
         :backLabel="routeSource === 'assets' ? 'Overview' : asset"
       >
@@ -130,7 +131,7 @@
               :to="
                 routeSource === 'assets'
                   ? '/wallet'
-                  : `/accounts/${this.account.id}/${escapeSpecialSymbolsURL(this.asset)}`
+                  : `/accounts/${this.account.id}/${this.asset}`
               "
             >
               <button class="btn btn-light btn-outline-primary btn-lg">Cancel</button>
@@ -380,13 +381,7 @@ import {
   formatFiat,
   VALUE_DECIMALS
 } from '@/utils/coinFormatter'
-import {
-  isERC20,
-  getNativeAsset,
-  getAssetColorStyle,
-  getAssetIcon,
-  escapeSpecialSymbolsURL
-} from '@/utils/asset'
+import { isERC20, getNativeAsset, getAssetColorStyle, getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import { getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
@@ -808,7 +803,6 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     formatFiat,
-    escapeSpecialSymbolsURL,
     getAssetFees(asset) {
       const assetFees = {}
       if (this.customFees[asset]) {
@@ -1049,7 +1043,7 @@ export default {
         })
 
         this.signRequestModalOpen = false
-        this.$router.replace(`/accounts/${this.account?.id}/${escapeSpecialSymbolsURL(this.asset)}`)
+        this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {
         console.error(error)
         const { message } = error

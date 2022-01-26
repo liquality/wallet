@@ -242,7 +242,6 @@ export default {
     },
     maximum() {
       const maximumFee = this.maximumFee
-      console.log(maximumFee)
       const totalMaxFee = getSendFee(this.nativeAsset, maximumFee).plus(this.totalFees.fast)
       return {
         amount: totalMaxFee,

@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import { escapeSpecialSymbolsURL } from '@/utils/asset'
 
 export default {
   props: {
@@ -19,7 +18,7 @@ export default {
   },
   computed: {
     accountUrl() {
-      return `/accounts/${this.accountId}/${escapeSpecialSymbolsURL(this.asset)}/receive`
+      return `/accounts/${this.accountId}/${this.asset}/receive`
     }
   }
 }

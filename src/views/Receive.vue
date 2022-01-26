@@ -5,7 +5,7 @@
       :backPath="
         routeSource === 'assets'
           ? '/wallet'
-          : `/accounts/${account.id}/${escapeSpecialSymbolsURL(asset)}`
+          : `/accounts/${account.id}/${asset}`
       "
       :backLabel="routeSource === 'assets' ? 'Overview' : asset"
     >
@@ -50,7 +50,7 @@
             :to="
               routeSource === 'assets'
                 ? '/wallet'
-                : `/accounts/${account.id}/${escapeSpecialSymbolsURL(asset)}`
+                : `/accounts/${account.id}/${asset}`
             "
           >
             <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">Done</button>
@@ -74,7 +74,7 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import QRCode from 'qrcode'
-import { getAssetIcon, escapeSpecialSymbolsURL } from '@/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
@@ -200,7 +200,6 @@ export default {
   methods: {
     ...mapActions(['getUnusedAddresses', 'trackAnalytics']),
     getAssetIcon,
-    escapeSpecialSymbolsURL,
     async copy() {
       this.trackAnalytics({
         event: 'Receive screen',

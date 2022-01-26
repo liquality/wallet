@@ -5,7 +5,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import WalletAccounts from '@/components/WalletAccounts'
-import { escapeSpecialSymbolsURL } from '@/utils/asset'
 
 export default {
   computed: {
@@ -16,8 +15,8 @@ export default {
   },
   methods: {
     onAccountSelected({ account, asset }) {
-      const _asset = escapeSpecialSymbolsURL(asset || account.assets[0])
-      this.$router.push(`/accounts/${account.id}/${_asset}`)
+      const _asset = asset || account.assets[0]
+      this.$router.push(`/accounts/${account.id}/${_asset}`).catch((e) => e)
     }
   }
 }
