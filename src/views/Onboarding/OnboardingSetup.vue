@@ -44,7 +44,7 @@
       v-show="currentStep === 'password'"
       :imported="imported"
       @on-unlock="onUnlock"
-      @currentStep="currentStep = 'confirm'"
+      @currentStep="currentStep = imported ? $router.go(-1) : 'confirm'"
     />
     <Congratulations v-show="currentStep === 'congrats'" />
   </div>
