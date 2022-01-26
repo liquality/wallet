@@ -808,7 +808,7 @@ export default {
         this.toSwapFee,
         this.fiatRates[this.selectedQuote?.bridgeAsset || this.toAssetChain]
       ).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
-      
+
       const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat)
         ? 0
         : this.totalToReceiveInFiat * 0.25
