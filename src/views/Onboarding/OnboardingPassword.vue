@@ -48,7 +48,7 @@
     </form>
     <div class="footer-container">
       <div class="footer-content">
-        <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$emit('currentStep')">
+        <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$emit('on-cancel')">
           Cancel
         </button>
         <button
