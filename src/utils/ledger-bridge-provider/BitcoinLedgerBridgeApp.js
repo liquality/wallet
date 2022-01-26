@@ -41,4 +41,12 @@ export class BitcoinLedgerBridgeApp extends LedgerBridgeApp {
       payload
     })
   }
+
+  async signP2SHTransaction(...payload) {
+    return await this.callToBridge({
+      action: 'signP2SHTransaction',
+      execMode: ExecutionMode.Async,
+      payload
+    })
+  }
 }
