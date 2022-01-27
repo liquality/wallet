@@ -39,7 +39,7 @@
           />
         </div>
         <small
-          v-show="passwordMatch"
+          v-show="!passwordMatch"
           class="onboading-password_errorLength form-text hidden"
           id="password_match_error"
           >Passwords don't match.</small
@@ -81,13 +81,9 @@ export default {
   },
   computed: {
     passwordMatch() {
-      if (!this.password || !this.confirmPassword) return false
-      if (
-        this.password.length === this.confirmPassword.length &&
-        this.password !== this.confirmPassword
-      )
-        return true
-      return false
+      if (!this.password || !this.confirmPassword) return true
+      if (this.password !== this.confirmPassword) return false
+      return true
     },
     disableNext() {
       if (!this.password || !this.confirmPassword) return true
