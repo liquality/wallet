@@ -114,6 +114,13 @@ export default {
         fuse: 'ethereum'
       }[cryptoassets[this.asset].chain]
     },
+    qrPrefix() {
+      return {
+        bitcoin: 'bitcoin',
+        near: 'near',
+        solana: 'solana'
+      }[cryptoassets[this.asset].chain]
+    },
     faucet() {
       if (this.activeNetwork === 'testnet') {
         return {
@@ -179,7 +186,7 @@ export default {
       this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
     }
 
-    const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')
+    const uri = this.qrPrefix ? this.address : [this.qrPrefix, this.address].join(':')
 
     QRCode.toString(
       uri,
