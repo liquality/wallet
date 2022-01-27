@@ -3,6 +3,8 @@ import { random } from 'lodash-es'
 import store from './store'
 import { wait } from './store/utils'
 import cryptoassets from '@/utils/cryptoassets'
+import { unitToCurrency } from '@liquality/cryptoassets'
+import { fiatToCrypto } from '@/utils/coinFormatter'
 
 function asyncLoop(fn, delay) {
   return wait(delay())
@@ -77,11 +79,9 @@ store.subscribe(async ({ type, payload }, state) => {
           action: 'Swap Initiated',
           swapFrom: `${payload.swap.from}`,
           swapTo: `${payload.swap.to}`,
-          fromAddress: `${payload.swap.fromAddress}`,
-          toAddress: `${payload.swap.toAddress}`,
           swapProvider: `${payload.swap.provider}`,
-          fee: `${payload.feeLabel}`,
-          claimFee: `${payload.claimFeeLabel}`
+          fromAmount: unitToCurrency(cryptoassets[payload.swap.from], payload.swap.fromAmount),
+          fromAmountFiat: fiatToCrypto(payload.swap.fromAmount, payload.swap.from, state.fiatRates)
         }
       })
       break
@@ -150,7 +150,7 @@ store.subscribe(async ({ type, payload }, state) => {
       break
     case 'UPDATE_HISTORY':
       // eslint-disable-next-line
-      const item = getters.historyItemById(payload.network, payload.walletId, payload.id)
+      const item = getters.historyItemById(payload.network, payload.walletId, payload.id);
       if (item.type === 'SWAP' && payload.updates) {
         dispatch('trackAnalytics', {
           event: 'Swap status change',
