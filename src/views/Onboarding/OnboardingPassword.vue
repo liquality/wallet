@@ -82,11 +82,7 @@ export default {
   computed: {
     passwordMatch() {
       if (!this.password || !this.confirmPassword) return false
-      if (
-        this.password.length === this.confirmPassword.length &&
-        this.password !== this.confirmPassword
-      )
-        return true
+      if (this.password !== this.confirmPassword) return true
       return false
     },
     disableNext() {
