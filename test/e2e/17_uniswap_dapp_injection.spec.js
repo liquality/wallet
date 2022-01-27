@@ -131,7 +131,8 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
       expect(e, 'Uniswap injection ARBITRUM not listed, connect request window loading issue.....').equals(null)
     }
     await connectRequestWindow.click('#ARBITRUM')
-    // Check connect button is enabled
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     // Check web3 status as connected

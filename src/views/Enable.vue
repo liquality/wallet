@@ -11,7 +11,7 @@
       <div class="main-content">
         <div v-if="confirmStep">
           <p class="mt-2 mb-4 text-center">
-            By granting permission to <strong>{{ origin }}</strong
+            By granting permission to <strong id="origin_url">{{ origin }}</strong
             >, they can read your public account addresses.
           </p>
           <p class="text-primary text-center mb-4" id="make_sure_you_trust_this_site">Make sure you trust this site.</p>
@@ -19,7 +19,7 @@
         <div v-else>
           <div class="d-flex justify-content-between">
             <h5>Select accounts</h5>
-            <div v-if="isEthereumConnection">
+            <div v-if="isEthereumConnection" id="filter_by_chain">
               <ChainDropdown
                 :chains="ethereumChains"
                 :selected="selectedChain"
