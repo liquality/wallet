@@ -44,7 +44,7 @@
       v-show="currentStep === 'password'"
       :imported="imported"
       @on-unlock="onUnlock"
-      @currentStep="changeCurrentStep"
+      @on-cancel="onCancel"
     />
     <Congratulations v-show="currentStep === 'congrats'" />
   </div>
@@ -112,7 +112,7 @@ export default {
       this.password = password
       await this.confirmMnemonic()
     },
-    changeCurrentStep() {
+    onCancel() {
       if (this.imported) {
         this.$router.push('/onboarding/import')
       } else {
