@@ -32,12 +32,13 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
+
+    await overviewPage.SelectNetwork(page, 'mainnet')
   })
   afterEach(async () => {
     await browser.close()
   })
   it('RSK - toggle on/off validate accounts', async () => {
-    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate RSK accounts on overview page first time
@@ -70,7 +71,6 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     expect(accounts.length).to.equals(9)
   })
   it('RSK - create new account, validate RSK 3 accounts', async () => {
-    await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate RSK accounts on overview page first time
@@ -96,7 +96,6 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     expect(rskAccounts.length).to.equals(3)
   })
   it('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
-    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate ETH accounts on overview page first time
