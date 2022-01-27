@@ -65,7 +65,9 @@ describe('RSK Bridge Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     expect(rskAccounts.length, '2 RSK accounts should be listed under Connect request popupWindow')
       .to.equals(2) // RSK & RSK legacy
     await connectRequestWindow.click('#RSK')
-    // Check connect button is enabled
+    // click Next button
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     await dappPage.waitForTimeout(10000)

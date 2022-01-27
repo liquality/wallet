@@ -4,7 +4,7 @@ import { connectToBackground } from './utils'
 class Script {
   constructor() {
     this.emitter = new EventEmitter()
-    this.background = connectToBackground()
+    this.background = connectToBackground(`injection|${window.location.href}`)
     this.background.onMessage.addListener((message) => this.onMessage(message))
   }
 

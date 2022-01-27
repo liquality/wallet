@@ -285,7 +285,7 @@ function createPolygonClient(asset, network, mnemonic, derivationPath) {
     ? 'https://polygon-mumbai-api.liq-chainhub.net/'
     : 'https://polygon-mainnet-api.liq-chainhub.net/'
 
-  const feeProvider = isTestnet
+    const feeProvider = isTestnet
     ? new EthereumEIP1559FeeProvider({ uri: rpcApi })
     : new EthereumRpcFeeProvider({ slowMultiplier: 1, averageMultiplier: 2, fastMultiplier: 2.2 })
 

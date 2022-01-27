@@ -140,9 +140,10 @@ export default {
         ? this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
         : this.item.fee
 
-      const toFee = this.item.claimFee.suggestedBaseFeePerGas
-        ? this.item.claimFee.suggestedBaseFeePerGas + this.item.claimFee.maxPriorityFeePerGas
-        : this.item.claimFee
+      const claimFee = this.item.claimFee || 0
+      const toFee = claimFee.suggestedBaseFeePerGas
+        ? claimFee.suggestedBaseFeePerGas + claimFee.maxPriorityFeePerGas
+        : claimFee
 
       const fees = []
       const fromChain = cryptoassets[this.item.from].chain
