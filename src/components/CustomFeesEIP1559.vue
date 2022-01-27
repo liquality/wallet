@@ -159,7 +159,7 @@
         </div>
 
         <div class="custom-fee-result" id="custom_speed_fee_results">
-          <div class="custom-fee-result-title">New Speed/Fee</div>
+          <div class="custom-fee-result-title">New Fee Total</div>
           <div class="custom-fee-estimation">
             <div>
               <span>minimum</span>
@@ -847,7 +847,7 @@ export default {
   flex-direction: column;
 
   .custom-fee-result-title {
-    font-weight: 500;
+    font-weight: bold;
     font-size: 14px;
     line-height: 26px;
   }
