@@ -61,7 +61,11 @@
                     <div class="send_fees">
                       <span class="selectors-asset">{{ assetChain }}</span>
                       <div class="custom-fees" v-if="customFee">
-                        {{ prettyFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
+                        <span v-if="prettyFee.eq(0)"
+                          >{{ currentChainAssetFee }} {{ currentChainUnit }}</span
+                        >
+                        <span v-else>{{ prettyFee }} {{ assetChain }}</span> /
+                        {{ totalFeeInFiat }} USD
                         <button class="btn btn-link" @click="resetCustomFee">Reset</button>
                       </div>
                       <FeeSelector
@@ -337,6 +341,14 @@ export default {
     currentFee() {
       const fees = this.maxOptionActive ? this.maxSendFees : this.sendFees
       return this.selectedFee in fees ? fees[this.selectedFee] : BN(0)
+    },
+    currentChainAssetFee() {
+      const fees = this.assetFees
+      return fees[this.selectedFee]?.fee || BN(0)
+    },
+    currentChainUnit() {
+      const { unit } = chains[cryptoassets[this.asset].chain].fees || ''
+      return unit
     },
     isValidAddress() {
       return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)

@@ -51,7 +51,7 @@
                   id="custom_fee_input_field"
                   :step="stepSize"
                   :value="fee"
-                  @input="setCustomFee(parseFloat($event.target.value))"
+                  @input="setCustomFee(parseFloat($event.target.value).toFixed(6))"
                 />
                 <div class="input-group-text fee-input-controls">
                   <ChevronUpIcon @click="incrementFee" />
@@ -191,8 +191,11 @@ export default {
     getFeeAmount(name) {
       if (!name) name = this.preset || 'custom'
       if (this.totalFees && this.totalFees[name]) {
-        const totalFee = this.totalFees[name]
-        return `${BN(totalFee).dp(6)} ${this.nativeAsset}`
+        const totalFee = BN(this.totalFees[name]).dp(6)
+        if (totalFee.eq(0)) {
+          return `${BN(this.fee).dp(6)} ${this.gasUnit} ${this.nativeAsset}`
+        }
+        return `${totalFee} ${this.nativeAsset}`
       } else {
         const chainId = cryptoassets[this.asset].chain
         const { unit } = chains[chainId].fees
