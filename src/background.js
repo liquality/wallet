@@ -4,7 +4,7 @@ import store from './store'
 import { wait } from './store/utils'
 import cryptoassets from '@/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
-import { fiatToCrypto } from '@/utils/coinFormatter'
+import { fiatToCrypto, prettyFiatBalance } from "@/utils/coinFormatter";
 
 function asyncLoop(fn, delay) {
   return wait(delay())
@@ -72,6 +72,9 @@ store.subscribe(async ({ type, payload }, state) => {
       )
       break
     case 'NEW_SWAP':
+      let fromAmountValue = unitToCurrency(cryptoassets[payload.swap.from], payload.swap.fromAmount)
+      let toAmountValue = unitToCurrency(cryptoassets[payload.swap.to], payload.swap.toAmount)
+
       dispatch('trackAnalytics', {
         event: 'New SWAP',
         properties: {
@@ -80,8 +83,10 @@ store.subscribe(async ({ type, payload }, state) => {
           swapFrom: `${payload.swap.from}`,
           swapTo: `${payload.swap.to}`,
           swapProvider: `${payload.swap.provider}`,
-          fromAmount: unitToCurrency(cryptoassets[payload.swap.from], payload.swap.fromAmount),
-          fromAmountFiat: fiatToCrypto(payload.swap.fromAmount, payload.swap.from, state.fiatRates)
+          fromAmount: fromAmountValue,
+          toAmount: toAmountValue,
+          fromAmountFiat: prettyFiatBalance(fromAmountValue,state.fiatRates[payload.swap.from]),
+          toAmountFiat: prettyFiatBalance(toAmountValue,state.fiatRates[payload.swap.to])
         }
       })
       break
@@ -152,15 +157,17 @@ store.subscribe(async ({ type, payload }, state) => {
       // eslint-disable-next-line
       const item = getters.historyItemById(payload.network, payload.walletId, payload.id);
       if (item.type === 'SWAP' && payload.updates) {
-        dispatch('trackAnalytics', {
-          event: 'Swap status change',
-          properties: {
-            category: 'Swaps',
-            action: 'Swap Status changed',
-            label: `${item.from} to ${item.to}`,
-            swapStatus: `${payload.updates.status}`
-          }
-        })
+        if (payload.updates.status !== undefined) {
+          dispatch('trackAnalytics', {
+            event: 'Swap status change',
+            properties: {
+              category: 'Swaps',
+              action: 'Swap Status changed',
+              label: `${item.from} to ${item.to}`,
+              swapStatus: `${payload.updates.status}`
+            }
+          })
+        }
       }
       if (item.type === 'SEND' && payload.updates) {
         dispatch('trackAnalytics', {
