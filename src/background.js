@@ -4,7 +4,7 @@ import store from './store'
 import { wait } from './store/utils'
 import cryptoassets from '@/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
-import { fiatToCrypto, prettyFiatBalance } from "@/utils/coinFormatter";
+import { prettyFiatBalance } from '@/utils/coinFormatter'
 
 function asyncLoop(fn, delay) {
   return wait(delay())
@@ -72,7 +72,9 @@ store.subscribe(async ({ type, payload }, state) => {
       )
       break
     case 'NEW_SWAP':
+      // eslint-disable-next-line no-case-declarations
       let fromAmountValue = unitToCurrency(cryptoassets[payload.swap.from], payload.swap.fromAmount)
+      // eslint-disable-next-line no-case-declarations
       let toAmountValue = unitToCurrency(cryptoassets[payload.swap.to], payload.swap.toAmount)
 
       dispatch('trackAnalytics', {
@@ -85,8 +87,8 @@ store.subscribe(async ({ type, payload }, state) => {
           swapProvider: `${payload.swap.provider}`,
           fromAmount: fromAmountValue,
           toAmount: toAmountValue,
-          fromAmountFiat: prettyFiatBalance(fromAmountValue,state.fiatRates[payload.swap.from]),
-          toAmountFiat: prettyFiatBalance(toAmountValue,state.fiatRates[payload.swap.to])
+          fromAmountFiat: prettyFiatBalance(fromAmountValue, state.fiatRates[payload.swap.from]),
+          toAmountFiat: prettyFiatBalance(toAmountValue, state.fiatRates[payload.swap.to])
         }
       })
       break
