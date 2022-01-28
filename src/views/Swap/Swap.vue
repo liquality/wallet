@@ -473,8 +473,7 @@ export default {
       swapErrorMessage: '',
       customFeeAssetSelected: null,
       customFees: {},
-      bridgeModalOpen: false,
-      selectedAssetForCustomFee: null
+      bridgeModalOpen: false
     }
   },
   props: {
@@ -822,8 +821,8 @@ export default {
     },
     isEIP1559Fees() {
       return (
-        cryptoassets[this.selectedAssetForCustomFee].chain === ChainId.Ethereum ||
-        cryptoassets[this.selectedAssetForCustomFee].chain === ChainId.Polygon
+        cryptoassets[this.customFeeAssetSelected].chain === ChainId.Ethereum ||
+        cryptoassets[this.customFeeAssetSelected].chain === ChainId.Polygon
       )
     }
   },
@@ -1178,7 +1177,6 @@ export default {
       this.currentStep = 'inputs'
     },
     onCustomFeeSelected(asset) {
-      this.selectedAssetForCustomFee = asset
       this.customFeeAssetSelected = getNativeAsset(asset)
       this.currentStep = 'custom-fees'
     },
