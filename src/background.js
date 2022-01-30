@@ -14,6 +14,7 @@ function asyncLoop(fn, delay) {
 
 store.subscribe(async ({ type, payload }, state) => {
   const { dispatch, getters } = store
+  let fromAmountValue, toAmountValue
   switch (type) {
     case 'CHANGE_ACTIVE_NETWORK':
       dispatch('initializeAddresses', {
@@ -72,8 +73,8 @@ store.subscribe(async ({ type, payload }, state) => {
       )
       break
     case 'NEW_SWAP':
-      let fromAmountValue = unitToCurrency(cryptoassets[payload.swap.from], payload.swap.fromAmount)
-      let toAmountValue = unitToCurrency(cryptoassets[payload.swap.to], payload.swap.toAmount)
+      fromAmountValue = unitToCurrency(cryptoassets[payload.swap.from], payload.swap.fromAmount)
+      toAmountValue = unitToCurrency(cryptoassets[payload.swap.to], payload.swap.toAmount)
 
       dispatch('trackAnalytics', {
         event: 'New SWAP',
