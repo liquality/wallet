@@ -23,7 +23,7 @@
         <small
           v-show="showPasswordLengthError && validatePasswordLength"
           class="onboading-password_errorLength form-text hidden"
-          >Password must be at least 8 characters.</small
+          >Password is too short</small
         >
       </div>
       <div class="form-group">
@@ -39,7 +39,7 @@
           />
         </div>
         <small
-          v-show="passwordMatch"
+          v-show="!passwordMatch"
           class="onboading-password_errorLength form-text hidden"
           id="password_match_error"
           >Passwords don't match.</small
@@ -48,7 +48,7 @@
     </form>
     <div class="footer-container">
       <div class="footer-content">
-        <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$emit('currentStep')">
+        <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$emit('on-cancel')">
           Cancel
         </button>
         <button
@@ -81,13 +81,9 @@ export default {
   },
   computed: {
     passwordMatch() {
-      if (!this.password || !this.confirmPassword) return false
-      if (
-        this.password.length === this.confirmPassword.length &&
-        this.password !== this.confirmPassword
-      )
-        return true
-      return false
+      if (!this.password || !this.confirmPassword) return true
+      if (this.password !== this.confirmPassword) return false
+      return true
     },
     disableNext() {
       if (!this.password || !this.confirmPassword) return true

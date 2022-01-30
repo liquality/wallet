@@ -33,7 +33,8 @@ const TESTNET_ASSETS = [
   'SUSHI',
   'LUNA',
   'UST',
-  'ANC'
+  'ANC',
+  'FUSE'
 ].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
@@ -61,7 +62,7 @@ export default {
       const account = accountId ? getters.accountItem(accountId) : null
       const _accountType = account?.type || accountType
       const _accountIndex = account?.index || accountIndex
-      const { chain } = getters.cryptoassets[asset]
+      const { chain } = getters.cryptoassets[asset] || cryptoassets[asset]
       let derivationPath
       // when we ask for ledger accounts from the ledger device we don't have the derivation path
       // the !account doesn't exist in this case or if we call the getter with accountId equals to null
@@ -142,13 +143,16 @@ export default {
     if (!history[activeNetwork][activeWalletId]) return []
     return history[activeNetwork][activeWalletId].slice().reverse()
   },
-  totalFiatBalance(_state, getters) {
-    const { accountsData } = getters
+  totalFiatBalance(state, getters) {
+    const { activeNetwork, activeWalletId } = state
+    const { accountsData, accountFiatBalance } = getters
     return accountsData
-      .filter((a) => a.type === 'default')
-      .map((a) => a.totalFiatBalance)
-      .reduce((accum, balance) => {
-        return accum.plus(BN(balance || 0))
+      .filter((a) => a.type === 'default' && a.enabled)
+      .map((a) => accountFiatBalance(activeWalletId, activeNetwork, a.id))
+      .reduce((accum, rawBalance) => {
+        const convertedBalance = BN(rawBalance)
+        const balance = convertedBalance.isNaN() ? 0 : convertedBalance
+        return accum.plus(balance || 0)
       }, BN(0))
   },
   accountItem(state, getters) {

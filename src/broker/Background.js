@@ -61,6 +61,15 @@ class Background {
           })
         })
       }
+
+      if (mutation.type === 'ADD_EXTERNAL_CONNECTION') {
+        this.externalConnections.forEach((connection) => {
+          connection.postMessage({
+            id: 'liqualityAccountsChanged',
+            data: {}
+          })
+        })
+      }
     })
   }
 
@@ -130,15 +139,20 @@ class Background {
           .dispatch(data.type, data.payload)
           .then((result) => ({ result }))
           .catch((error) => {
-            console.error(error) /* eslint-disable-line */
+            console.error(error)
             return { error: error.message }
           })
           .then((response) => {
-            connection.postMessage({
-              id,
-              type: 'ACTION_RESPONSE',
-              data: response
-            })
+            try {
+              connection.postMessage({
+                id,
+                type: 'ACTION_RESPONSE',
+                data: response
+              })
+            } catch (e) {
+              // Guard against popup being disconnected
+              console.warn(e)
+            }
           })
         break
 
@@ -156,7 +170,7 @@ class Background {
     const { origin } = new URL(url)
     const { externalConnections, activeWalletId, injectEthereumChain } = this.store.state
 
-    let setDefault = false
+    let setDefaultEthereum = false
     let { chain, asset } = data
     if (asset) {
       chain = assets[asset].chain
@@ -167,13 +181,13 @@ class Background {
         const defaultAccount = this.store.getters.accountItem(defaultAccountId)
         if (defaultAccount) {
           chain = defaultAccount.chain
-          setDefault = true
+          setDefaultEthereum = true
         }
       }
     }
     if (!chain) {
       chain = injectEthereumChain
-      setDefault = true
+      setDefaultEthereum = true
     }
 
     const allowed =
@@ -205,7 +219,7 @@ class Background {
         this.storeProxy(id, connection, 'requestOriginAccess', {
           origin,
           chain,
-          setDefault
+          setDefaultEthereum
         })
         break
 

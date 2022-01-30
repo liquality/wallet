@@ -43,7 +43,7 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
     await browser.close()
   })
 
-  it('Sushi injection - ETH["smoke"]', async () => {
+  it('Sushi injection - ETH["PULL_REQUEST_TEST"]', async () => {
     // Go to Sushi app
     dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -74,8 +74,11 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
       expect(e, 'sushi ethereum loading issue').equals(null)
     }
     await connectRequestWindow.click('#ETHEREUM')
-    // Check connect button is enabled
+    // click Next button
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
@@ -107,7 +110,9 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
       expect(e, 'Sushi injection ARBITRUM not listed, connect request window loading issue.....').equals(null)
     }
     await connectRequestWindow.click('#POLYGON')
-    // Check connect button is enabled
+    // click Next button
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })

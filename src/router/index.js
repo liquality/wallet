@@ -242,7 +242,7 @@ const routes = [
   },
   {
     path: '*',
-    name: '404', 
+    name: '404',
     beforeEnter: (to, from, next) => {
       const _path = to?.path?.split('/').filter((e) => e)
       if (_path?.[0] === 'accounts' && _path?.length >= 4) {
@@ -264,12 +264,12 @@ const routes = [
         switch (suffix) {
           case 'send':
           case 'receive':
-          case 'swap': 
+          case 'swap':
             next({ path: `/accounts/${account}/${encodeAsset(_path, _path.length - 1)}/${suffix}` })
-            break;
-          default: 
+            break
+          default:
             next({ path: `/accounts/${account}/${encodeAsset(_path, _path.length)}` })
-            break;
+            break
         }
       } else {
         next()

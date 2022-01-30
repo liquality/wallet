@@ -44,7 +44,7 @@
         <button
           id="import_wallet_cancel_button"
           class="btn btn-light btn-outline-primary btn-lg btn-footer btn-icon"
-          @click="$router.go(-1)"
+          @click="$router.push('/onboarding/home')"
         >
           Cancel
         </button>

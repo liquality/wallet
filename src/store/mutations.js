@@ -122,6 +122,9 @@ export default {
   UPDATE_MARKET_DATA(state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
   },
+  TOGGLE_INJECTION(state) {
+    state.injectionEnabled = !state.injectionEnabled
+  },
   SET_ETHEREUM_INJECTION_CHAIN(state, { chain }) {
     state.injectEthereumChain = chain
   },
@@ -280,7 +283,7 @@ export default {
 
     const accounts = state.externalConnections[activeWalletId]?.[origin]?.[chain] || []
     Vue.set(state.externalConnections[activeWalletId][origin], chain, [
-      ...new Set([...accounts, accountId])
+      ...new Set([accountId, ...accounts])
     ])
   },
   REMOVE_EXTERNAL_CONNECTIONS(state, { activeWalletId }) {

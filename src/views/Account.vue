@@ -21,11 +21,7 @@
             <span v-else>&nbsp;</span>
           </div>
           <div>
-            <span
-              class="account-container_balance_value"
-              :id="`${asset}_balance_value`"
-              :style="{ fontSize: formatFontSize(balance) }"
-            >
+            <span class="account-container_balance_value" :id="`${asset}_balance_value`">
               {{ balance }}
             </span>
             <span class="account-container_balance_code">{{ asset }}</span>
@@ -75,9 +71,7 @@
               Swap
             </button>
           </router-link>
-          <router-link
-            v-bind:to="`/accounts/${accountId}/${asset}/receive`"
-          >
+          <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`">
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
                 <ReceiveIcon class="account-container_actions_button_icon" />
@@ -276,6 +270,7 @@ export default {
     &_value {
       line-height: 36px;
       margin-right: 8px;
+      font-size: 30px;
     }
 
     &_code {

@@ -2,11 +2,7 @@
   <div class="receive">
     <NavBar
       showBack="true"
-      :backPath="
-        routeSource === 'assets'
-          ? '/wallet'
-          : `/accounts/${account.id}/${asset}`
-      "
+      :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
       :backLabel="routeSource === 'assets' ? 'Overview' : asset"
     >
       Receive {{ asset }}
@@ -47,11 +43,7 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <router-link
-            :to="
-              routeSource === 'assets'
-                ? '/wallet'
-                : `/accounts/${account.id}/${asset}`
-            "
+            :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
           >
             <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">Done</button>
           </router-link>
@@ -118,7 +110,8 @@ export default {
         rsk: 'ethereum',
         bsc: 'ethereum',
         polyon: 'ethereum',
-        terra: 'terra'
+        terra: 'terra',
+        fuse: 'ethereum'
       }[cryptoassets[this.asset].chain]
     },
     faucet() {
@@ -159,6 +152,10 @@ export default {
           LUNA: {
             name: 'TERRA',
             url: 'https://faucet.terra.money/'
+          },
+          FUSE: {
+            name: 'FUSE',
+            url: 'https://get.fusespark.io/'
           }
         }[this.asset]
       }

@@ -95,6 +95,16 @@ const EXPLORERS = {
       tx: 'https://finder.terra.money/columbus-5/tx/{hash}',
       address: 'https://finder.terra.money/columbus-5/address/{hash}'
     }
+  },
+  fuse: {
+    testnet: {
+      tx: 'https://explorer.fusespark.io/tx/0x{hash}',
+      address: 'https://explorer.fusespark.io/address/{hash}'
+    },
+    mainnet: {
+      tx: 'https://explorer.fuse.io/tx/0x{hash}',
+      address: 'https://explorer.fuse.io/address/{hash}'
+    }
   }
 }
 
@@ -117,6 +127,8 @@ export const isEthereumNativeAsset = (asset) => {
 }
 
 export const getNativeAsset = (asset) => {
+  if (cryptoassets[asset]?.type === 'native') return asset
+
   const chainId = cryptoassets[asset]?.chain
   return chainId ? chains[chainId].nativeAsset : asset
 }
@@ -203,6 +215,11 @@ export const tokenDetailProviders = {
     async getDetails(contractAddress) {
       return await fetchTerraToken(contractAddress, 'https://arb1.arbitrum.io/rpc')
     }
+  },
+  fuse: {
+    async getDetails(contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://rpc.fuse.io')
+    }
   }
 }
 
@@ -244,4 +261,3 @@ export const fetchTerraToken = async (address) => {
     decimals: 6
   }
 }
-

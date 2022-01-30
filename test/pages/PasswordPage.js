@@ -13,6 +13,9 @@ class PasswordPage {
    * @constructor
    */
   async SubmitPasswordDetails (page, password) {
+    if (!password) {
+      return Promise.reject(new Error('Password is required'))
+    }
     try {
       await page.waitForSelector('#password', { visible: true, timeout: 60000 })
     } catch (e) {
@@ -78,7 +81,7 @@ class PasswordPage {
   async ClickOnForgotPassword (page) {
     const forgotPassword = await page.waitForSelector('#forgot_password_import_seed', { visible: true })
     await forgotPassword.click()
-    await page.waitForSelector('.import-wallet_bottom', { visible: true })
+    await page.waitForSelector('#terms_privacy_accept_button', { visible: true })
   }
 }
 

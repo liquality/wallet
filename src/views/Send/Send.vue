@@ -4,7 +4,7 @@
       <NavBar
         showBack="true"
         :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
-        :backLabel="routeSource === 'assets' ? 'Overview' : asset"
+        backLabel="Back"
       >
         Send
       </NavBar>
@@ -48,10 +48,12 @@
           <div class="form-group mt-150">
             <DetailsContainer v-if="feesAvailable">
               <template v-slot:header>
-                <span class="details-title" id="send_network_speed">Network Speed/Fee</span>
-                <span class="text-muted" id="send_network_speed_avg_fee">
-                  ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
-                </span>
+                <div class="network-header-container">
+                  <span class="details-title" id="send_network_speed"> Network Speed/Fee </span>
+                  <span class="text-muted" id="send_network_speed_avg_fee">
+                    ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
+                  </span>
+                </div>
               </template>
               <template v-slot:content>
                 <ul class="selectors">
@@ -209,7 +211,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
-import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
 import {
@@ -250,8 +252,8 @@ export default {
       sendFees: {},
       maxSendFees: {},
       eip1559fees: {},
-      stateAmount: 0,
-      stateAmountFiat: 0,
+      stateAmount: 0.0,
+      stateAmountFiat: 0.0,
       address: null,
       selectedFee: 'average',
       currentStep: 'inputs',
@@ -294,9 +296,17 @@ export default {
         return this.stateAmountFiat
       },
       set(newValue) {
-        const value = newValue || '0'
-        this.stateAmountFiat = value
-        this.stateAmount = fiatToCrypto(value, this.fiatRates[this.asset])
+        if (!newValue) {
+          // keep it as a number instead of string, otherwise the placeholder of input won't appear
+          this.stateAmountFiat = 0.0
+          this.stateAmount = 0.0
+        } else {
+          this.stateAmountFiat = newValue
+          this.stateAmount = fiatToCrypto(
+            this.stateAmountFiat?.replaceAll(',', ''),
+            this.fiatRates[this.asset]
+          )
+        }
       }
     },
     balance() {
@@ -382,8 +392,8 @@ export default {
     },
     isEIP1559Fees() {
       return (
-        this.assetChain === 'ETH' ||
-        (this.assetChain === 'MATIC' && this.activeNetwork === 'testnet')
+        cryptoassets[this.asset].chain === ChainId.Ethereum ||
+        cryptoassets[this.asset].chain === ChainId.Polygon
       )
     }
   },
@@ -492,7 +502,7 @@ export default {
       try {
         const amountToSend = this.maxOptionActive ? this.available : this.amount
 
-        const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toNumber()
+        const amount = currencyToUnit(cryptoassets[this.asset], amountToSend).toString()
 
         // validate for custom fees
         const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
@@ -647,9 +657,24 @@ export default {
     .fee-selector {
       margin-left: 6px;
     }
+    .selectors-asset {
+      width: 55px;
+    }
     .custom-fees {
+      display: flex;
+      align-items: center;
       font-weight: normal;
     }
+  }
+}
+
+.network-header-container {
+  display: flex;
+  flex-flow: column;
+  gap: 5px;
+
+  .text-muted {
+    margin-top: 5px;
   }
 }
 
