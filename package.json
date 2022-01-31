@@ -75,7 +75,7 @@
     "bitcoinjs-lib": "6.0.1",
     "bluebird": "^3.7.2",
     "bootstrap": "4.6.1",
-    "chai": "^4.3.4",
+    "chai": "4.3.6",
     "core-js": "3.20.3",
     "crypto-js": "^4.0.0",
     "cryptocurrency-icons": "0.18.0",
