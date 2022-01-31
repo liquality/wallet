@@ -25,7 +25,7 @@ import { mapValues } from 'lodash-es'
 // Pool balances are denominated with 8 decimals
 const THORCHAIN_DECIMAL = 8
 const SAFE_FEE_MULTIPLIER = 1.3
-const MAX_FEE_PERCENTAGE = 0.15
+const MAX_FEE_SLIPPAGE_MULTIPLIER = 3
 
 const SUPPORTED_CHAINS = ['bitcoin', 'ethereum']
 
@@ -162,7 +162,7 @@ class ThorchainSwapProvider extends SwapProvider {
       toAmount: toAmountInUnit,
       receiveFee: receiveFeeInUnit,
       slippage,
-      maxFeePercentage: MAX_FEE_PERCENTAGE
+      maxFeeSlippageMultiplier: MAX_FEE_SLIPPAGE_MULTIPLIER
     }
   }
 
