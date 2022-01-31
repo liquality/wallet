@@ -27,14 +27,26 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
             accountId: account.id
           })
 
-          if (type.includes('ledger') && !account.publicKey && !account.chainCode) {
-            addresses = account.addresses
-              .filter((a) => typeof a === 'string')
-              .map((address) => {
-                return new Address({
-                  address: `${address}`
-                })
-              })
+          if (type.includes('ledger')) {
+            if (account.chain === ChainId.Bitcoin) {
+              if (account.chainCode && account.publicKey) {
+                addresses = await _client.wallet.getUsedAddresses()
+              } else {
+                addresses = account.addresses.map(
+                  (a) =>
+                    new Address({
+                      address: `${a}`
+                    })
+                )
+              }
+            } else {
+              addresses = account.addresses.map(
+                (a) =>
+                  new Address({
+                    address: `${a}`
+                  })
+              )
+            }
           } else {
             addresses = await _client.wallet.getUsedAddresses()
           }
@@ -57,12 +69,10 @@ export const updateBalances = async ({ state, commit, getters }, { network, wall
           // Commit to the state the addresses
           let updatedAddresses = []
           if (account.chain === ChainId.Bitcoin) {
-            const addressExists = addresses.some((a) => account.addresses.includes(a.address))
-            if (!addressExists) {
-              updatedAddresses = [...account.addresses, ...addresses.map((a) => a.address)]
-            } else {
-              updatedAddresses = [...account.addresses]
-            }
+            const _addresses = addresses
+              .filter((a) => !account.addresses.includes(a.address))
+              .map((a) => a.address)
+            updatedAddresses = [...account.addresses, ..._addresses]
           } else {
             updatedAddresses = [...addresses.map((a) => a.address)]
           }

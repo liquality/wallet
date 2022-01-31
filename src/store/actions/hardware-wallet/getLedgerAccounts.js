@@ -42,7 +42,7 @@ export const getLedgerAccounts = async (
         useCache: false
       })
 
-      const addresses = await _client.wallet.getAddresses()
+      const addresses = await _client.wallet.getAddresses(0, 100)
 
       if (addresses && addresses.length > 0) {
         const [account] = addresses

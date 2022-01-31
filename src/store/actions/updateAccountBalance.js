@@ -1,4 +1,5 @@
 import { Address } from '@liquality/types'
+import { ChainId } from '@liquality/cryptoassets'
 
 export const updateAccountBalance = async (
   { state, commit, getters },
@@ -11,7 +12,7 @@ export const updateAccountBalance = async (
   const index = accounts?.findIndex((a) => a.id === accountId)
   if (index >= 0) {
     const account = accounts[index]
-    const { assets, type } = account
+    const { assets, type, chain } = account
     assets.forEach(async (asset) => {
       const _client = getters.client({
         network,
@@ -20,13 +21,26 @@ export const updateAccountBalance = async (
         accountId
       })
       let addresses = []
-      if (type.includes('ledger') && !account.publicKey && !account.chainCode) {
-        addresses = account.addresses.map(
-          (a) =>
-            new Address({
-              address: `${a}`
-            })
-        )
+      if (type.includes('ledger')) {
+        if (chain === ChainId.Bitcoin) {
+          if (account.chainCode && account.publicKey) {
+            addresses = await _client.wallet.getUsedAddresses()
+          } else {
+            addresses = account.addresses.map(
+              (a) =>
+                new Address({
+                  address: `${a}`
+                })
+            )
+          }
+        } else {
+          addresses = account.addresses.map(
+            (a) =>
+              new Address({
+                address: `${a}`
+              })
+          )
+        }
       } else {
         addresses = await _client.wallet.getUsedAddresses()
       }
@@ -39,6 +53,25 @@ export const updateAccountBalance = async (
         walletId,
         asset,
         balance
+      })
+
+      // Commit to the state the addresses
+      let updatedAddresses = []
+      if (account.chain === ChainId.Bitcoin) {
+        const _addresses = addresses
+          .filter((a) => !account.addresses.includes(a.address))
+          .map((a) => a.address)
+        updatedAddresses = [...account.addresses, ..._addresses]
+      } else {
+        updatedAddresses = [...addresses.map((a) => a.address)]
+      }
+
+      commit('UPDATE_ACCOUNT_ADDRESSES', {
+        network,
+        accountId,
+        walletId,
+        asset,
+        addresses: updatedAddresses
       })
     })
   }
