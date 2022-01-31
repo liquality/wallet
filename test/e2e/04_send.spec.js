@@ -167,13 +167,13 @@ describe('SEND feature["TESTNET"]', async () => {
     }
     // Confirm SEND & validate send fiat details
     await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
-    const sentFiatAmount = await page.$eval('#send_value_in_fiat', el => el.innerText)
+    const sentFiatAmount = await page.$eval('#send_value_in_fiat', (el) => el.innerText)
     expect(sentFiatAmount.toString().trim().replace('$', '')).equals('0.01')
 
-    const sentNetworkFiatAmount = await page.$eval('#send_network_fee_in_fiat', el => el.innerText)
+    const sentNetworkFiatAmount = await page.$eval('#send_network_fee_in_fiat', (el) => el.innerText)
     expect(sentNetworkFiatAmount.toString().trim().replace('$', '')).equals('0.01')
 
-    const totalSendAmountFiat = await page.$eval('#total_to_send_in_fiat', el => el.innerText)
+    const totalSendAmountFiat = await page.$eval('#total_to_send_in_fiat', (el) => el.innerText)
     expect(totalSendAmountFiat.toString().trim().replace('$', '')).equals('0.01')
 
     await page.click('#send_button_confirm')
@@ -182,14 +182,14 @@ describe('SEND feature["TESTNET"]', async () => {
 
     // Transaction details page validations
     await page.waitForSelector('#transaction_details_status_number_of_confirmations', { visible: true, timeout: 180000 })
-    const sendStatus = await page.$eval('#transaction_details_status_and_confirmations', el => el.innerText)
+    const sendStatus = await page.$eval('#transaction_details_status_and_confirmations', (el) => el.innerText)
     expect(sendStatus).contains('Completed')
     // Validate Send transaction timeline
     await page.waitForSelector('#transaction_details_date_time')
-    expect(await page.$eval('#transaction_detail_sent_amount',el => el.innerText)).contains(coinsToSend)
-    expect(await page.$eval('#transaction_detail_sent_amount_today',el => el.innerText)).contains('0.01')
-    expect(await page.$eval('#transaction_detail_sent_amount_then',el => el.innerText)).contains('0.01')
-    expect(await page.$eval('#transaction_detail_network_speed',el => el.innerText.toLowerCase())).contains('average')
+    expect(await page.$eval('#transaction_detail_sent_amount',(el) => el.innerText)).contains(coinsToSend)
+    expect(await page.$eval('#transaction_detail_sent_amount_today',(el) => el.innerText)).contains('0.01')
+    expect(await page.$eval('#transaction_detail_sent_amount_then',(el) => el.innerText)).contains('0.01')
+    expect(await page.$eval('#transaction_detail_network_speed',(el) => el.innerText.toLowerCase())).contains('average')
 
   })
   it('ETH Send Max value check against Available Balance', async () => {
