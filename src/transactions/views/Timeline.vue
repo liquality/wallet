@@ -63,7 +63,9 @@
             <td class="text-break">{{ fromAddress }}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12" id="your_to_address">Your {{ item.to }}<br />to address</td>
+            <td class="text-muted text-right small-12" id="your_to_address">
+              Your {{ item.to }}<br />to address
+            </td>
             <td class="text-break">{{ item.toAddress }}</td>
           </tr>
           <tr>

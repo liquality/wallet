@@ -538,12 +538,13 @@ export default {
             title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted`
           }
         : this.getTransactionStep(
+            // LOOK
             completed,
             pending,
             side,
             this.item.swapTxHash,
             this.item.swapTxHash,
-            this.item.to,
+            this.item.bridgeAsset || this.item.to,
             'swap'
           )
     },
