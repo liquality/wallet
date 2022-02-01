@@ -36,7 +36,6 @@ const swapPairMap = [
 ]
 
 if (process.env.NODE_ENV === 'mainnet') {
-  // Skip as 1inch api unreliable
   // Only works on Mainnet
   describe('1Inch Service Provider-["MAINNET"]', async () => {
     swapPairMap.forEach((obj) => {

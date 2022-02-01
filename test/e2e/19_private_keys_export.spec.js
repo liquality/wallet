@@ -13,7 +13,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Private key exports-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () => {
+describe('Private key exports-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -29,11 +29,7 @@ describe('Private key exports-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async 
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
+    await overviewPage.SelectNetwork(page, 'mainnet')
   })
   afterEach(async () => {
     await browser.close()
