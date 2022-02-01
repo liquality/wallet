@@ -409,7 +409,7 @@ class ThorchainSwapProvider extends SwapProvider {
       if (receiveHash) {
         const thorchainReceiveTx = await this._getTransaction(receiveHash)
         if (thorchainReceiveTx) {
-          const memo = thorchainReceiveTx?.observed_tx?.tx?.memo
+          const memo = thorchainReceiveTx.observed_tx?.tx?.memo
           const memoAction = memo.split(':')[0]
 
           let asset
