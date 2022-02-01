@@ -105,6 +105,7 @@ describe('SEND feature["TESTNET"]', async () => {
   it('Send RBTC to another RBTC wallet["PULL_REQUEST_TEST"]', async () => {
     const assetName = 'RBTC'
     const coinsToSend = '0.0000001'
+
     await overviewPage.SelectAssetFromOverview(page, assetName)
     await page.waitForSelector(`#${assetName}_send_button`, { visible: true })
     await page.click(`#${assetName}_send_button`)
@@ -141,6 +142,55 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.waitForSelector('#transaction_details_status_number_of_confirmations', { visible: true, timeout: 180000 })
     const sendStatus = await page.$eval('#transaction_details_status_and_confirmations', el => el.innerText)
     expect(sendStatus).contains('Completed')
+  })
+  it('Send MATIC to MATIC-["PULL_REQUEST_TEST"]', async () => {
+    const assetName = 'MATIC'
+    const coinsToSend = '0.000001'
+    const addressToSend = '0x8bacCa9f607025974AbE1c486E45F7CeD02f54Ce'
+
+    await overviewPage.SelectAssetFromOverview(page, assetName)
+    await page.waitForSelector(`#${assetName}_send_button`, { visible: true })
+    await page.click(`#${assetName}_send_button`)
+    // Enter send amount (or) coins
+    await sendPage.EnterSendAmount(page, coinsToSend)
+    // Send address
+    await sendPage.EnterSendToAddress(page, addressToSend)
+    // Click Send Review Button
+    await page.waitForSelector('#send_review_button', { visible: true, timeout: 60000 })
+    try {
+      await page.click('#send_review_button', { clickCount: 5 })
+      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await page.$eval('#send_review_button', el => el.click())
+      }
+    }
+    // Confirm SEND & validate send fiat details
+    await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
+    const sentFiatAmount = await page.$eval('#send_value_in_fiat', (el) => el.innerText)
+    expect(sentFiatAmount.toString().trim().replace('$', '')).equals('0.01')
+
+    const sentNetworkFiatAmount = await page.$eval('#send_network_fee_in_fiat', (el) => el.innerText)
+    expect(sentNetworkFiatAmount.toString().trim().replace('$', '')).equals('0.01')
+
+    const totalSendAmountFiat = await page.$eval('#total_to_send_in_fiat', (el) => el.innerText)
+    expect(totalSendAmountFiat.toString().trim().replace('$', '')).equals('0.01')
+
+    await page.click('#send_button_confirm')
+    await page.waitForSelector(`#SEND_${assetName}_${assetName}`, { visible: true, timeout: 60000 })
+    await page.click(`#SEND_${assetName}_${assetName}`)
+
+    // Transaction details page validations
+    await page.waitForSelector('#transaction_details_status_number_of_confirmations', { visible: true, timeout: 180000 })
+    const sendStatus = await page.$eval('#transaction_details_status_and_confirmations', (el) => el.innerText)
+    expect(sendStatus).contains('Completed')
+    // Validate Send transaction timeline
+    await page.waitForSelector('#transaction_details_date_time')
+    expect(await page.$eval('#transaction_detail_sent_amount',(el) => el.innerText)).contains(coinsToSend)
+    expect(await page.$eval('#transaction_detail_sent_amount_today',(el) => el.innerText)).contains('0.01')
+    expect(await page.$eval('#transaction_detail_sent_amount_then',(el) => el.innerText)).contains('0.01')
+    expect(await page.$eval('#transaction_detail_network_speed',(el) => el.innerText.toLowerCase())).contains('average')
+
   })
   it('ETH Send Max value check against Available Balance', async () => {
     const assetName = 'ETH'

@@ -7,12 +7,7 @@
       <NewWalletText class="mt-4" />
     </div>
     <div class="footer-container">
-      <router-link
-        :to="
-          termsAcceptedAt
-            ? { path: '/onboarding/import' }
-            : { path: '/onboarding/home', query: { isImport: true } }
-        "
+      <router-link :to="{ path: '/onboarding/home', query: { isImport: true } }"
         ><p class="text-center" id="import_with_seed_phrase_option">
           Import with seed phrase
         </p></router-link

@@ -13,10 +13,10 @@ const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
 const password = '123123123'
-const dappUrl = 'https://app.uniswap.org/#/swap'
+const dappUrl = 'https://app.uniswap.org'
 
 // Manage accounts experimental feature
-describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () => {
+describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -32,12 +32,13 @@ describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () =
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
+
+    await overviewPage.SelectNetwork(page, 'mainnet')
   })
   afterEach(async () => {
     await browser.close()
   })
   it('RSK - toggle on/off validate accounts', async () => {
-    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate RSK accounts on overview page first time
@@ -70,7 +71,6 @@ describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () =
     expect(accounts.length).to.equals(9)
   })
   it('RSK - create new account, validate RSK 3 accounts', async () => {
-    await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate RSK accounts on overview page first time
@@ -96,7 +96,6 @@ describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () =
     expect(rskAccounts.length).to.equals(3)
   })
   it('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
-    await overviewPage.SelectNetwork(page)
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate ETH accounts on overview page first time
@@ -112,7 +111,7 @@ describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () =
     await page.waitForSelector('#choose-account-name')
     const accountName = 'automation test'
     await page.type('#choose-account-name', accountName)
-    await page.waitForTimeout(5000)
+    await page.waitForTimeout(2000)
     // Click button
     await page.click('#create-account-button')
     await page.waitForSelector('#create-account-plus-icon-ethereum', { visible: true })
@@ -120,12 +119,13 @@ describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () =
     // Validate number of ETH counts
     ethAccounts = await page.$$('#account-item-ethereum')
     expect(ethAccounts.length).to.equals(2)
-    // Click on Backup seed from Burger Icon menu
-    await overviewPage.ClickOnBurgerIcon(page)
-    // Click on Settings
-    await overviewPage.SelectSettings(page)
-    // toggle web3 wallet option
-    await page.click('#default_web3_wallet_toggle_button > label > div')
+    // Default web3 option toggled on
+    await overviewPage.ClickWeb3WalletToggle(page)
+    await page.waitForTimeout(2000)
+    // Connected dapp option
+    await page.click('#connect_dapp_main_option')
+    await page.waitForSelector('.v-switch-core', { visible: true })
+    await page.waitForTimeout(2000)
 
     // Go to uniSwap app
     dappPage = await browser.newPage()
@@ -133,12 +133,12 @@ describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () =
       width: 1366,
       height: 768
     })
-    await dappPage.goto(dappUrl, { timeout: 60000, waitUntil: 'networkidle0' })
+    await dappPage.goto(dappUrl)
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
     } catch (e) {
-      await testUtil.takeScreenshot(dappPage, 'uniswap-arbitrum-loading-issue')
+      await testUtil.takeScreenshot(dappPage, 'uniswap-dapp-loading-issue')
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
       expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
@@ -156,11 +156,23 @@ describe('Manage Accounts-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () =
       await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-ethereum-connect-request-window-issue')
       expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(null)
     }
+    //Filter by chain
+    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true, timeout: 60000 })
+    await connectRequestWindow.click('#filter_by_chain')
+    await connectRequestWindow.waitForSelector('#ethereum_web_network', { visible: true, timeout: 60000 })
+    await connectRequestWindow.click('#ethereum_web_network')
+
     // Check connect button is enabled
     ethAccounts = await connectRequestWindow.$$('#ETHEREUM')
     expect(ethAccounts.length, 'ethAccounts should have length 2 on dapp connect request')
       .to.equals(2)
     await connectRequestWindow.click('#ETHEREUM')
+    // click Next button
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
+    // check origin url
+    await connectRequestWindow.$eval('#origin_url', el => el.innerText)
+      .then(text => expect(text).to.equals(dappUrl))
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
