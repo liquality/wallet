@@ -221,7 +221,7 @@ class LiqualityBoostSwapProvider_Rev extends SwapProvider {
       })
     }
 
-    if (!updates) {
+    if (!updates && !LiqualityBoostSwapProvider_Rev.lspEndStates.includes(swap.status)) {
       updates = await this.bridgeAssetToAutomatedMarketMaker[
         swap.bridgeAsset
       ].performNextSwapAction(store, {
@@ -231,7 +231,17 @@ class LiqualityBoostSwapProvider_Rev extends SwapProvider {
       })
     }
 
-    return updates
+    if (!updates) return
+
+    return {
+      ...updates,
+      // reset from and to assets and values
+      from: swap.from,
+      fromAmount: swap.fromAmount,
+      to: swap.to,
+      // keep toAmount from updates object only in case swap transitioned from AMM to LSP
+      toAmount: updates.status === 'INITIATED' ? updates.toAmount : swap.toAmount
+    }
   }
 
   static txTypes = {
@@ -272,7 +282,6 @@ class LiqualityBoostSwapProvider_Rev extends SwapProvider {
       step: 2,
       label: 'Locking {bridgeAsset}'
     },
-
     FUNDED: {
       ...LiqualitySwapProvider.statuses.FUNDED,
       step: 3,
@@ -290,7 +299,6 @@ class LiqualityBoostSwapProvider_Rev extends SwapProvider {
       },
       step: 3
     },
-
     READY_TO_CLAIM: {
       ...LiqualitySwapProvider.statuses.READY_TO_CLAIM,
       step: 4
@@ -313,7 +321,7 @@ class LiqualityBoostSwapProvider_Rev extends SwapProvider {
       label: 'Refunding {bridgeAsset}',
       step: 4
     },
-
+    // final states
     REFUNDED: {
       ...LiqualitySwapProvider.statuses.REFUNDED,
       step: 5
@@ -331,6 +339,8 @@ class LiqualityBoostSwapProvider_Rev extends SwapProvider {
       step: 5
     }
   }
+
+  static lspEndStates = ['REFUNDED', 'SUCCESS', 'QUOTE_EXPIRED']
 
   static fromTxType = LiqualityBoostSwapProvider_Rev.txTypes.SWAP
   static toTxType = LiqualityBoostSwapProvider_Rev.txTypes.SWAP_CLAIM
