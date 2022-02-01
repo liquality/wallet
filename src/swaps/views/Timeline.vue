@@ -314,7 +314,7 @@ import { chains } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStep } from '@/utils/history'
-import { getNativeAsset, getTransactionExplorerLink } from '@/utils/asset'
+import { isERC20, getNativeAsset, getTransactionExplorerLink } from '@/utils/asset'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
@@ -413,6 +413,27 @@ export default {
     ...mapActions(['updateTransactionFee', 'updateFees', 'checkPendingActions']),
     getNativeAsset,
     prettyBalance,
+    // get to asset when liquality boost provider is swapping from Native to ERC20
+    getToAssetWhenSwappingFromNative() {
+      if (this.item.provider === 'liqualityBoost' && !isERC20(this.item.from)) {
+        return this.item.bridgeAsset
+      }
+      return this.item.to
+    },
+    // get to asset when liquality boost provider is swapping from ERC20 to Native
+    getToAssetWhenSwappingFromERC20() {
+      if (this.item.provider === 'liqualityBoost' && isERC20(this.item.from)) {
+        return this.item.bridgeAsset
+      }
+      return this.item.to
+    },
+    // get from asset when liquality boost provider is swapping from ERC20 to Native
+    getFromAssetWhenSwappingFromERC20() {
+      if (this.item.provider === 'liqualityBoost' && isERC20(this.item.from)) {
+        return this.item.bridgeAsset
+      }
+      return this.item.from
+    },
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
@@ -482,7 +503,7 @@ export default {
         side,
         this.item.fromFundHash,
         this.item.fromFundTx,
-        this.item.from,
+        this.getFromAssetWhenSwappingFromERC20(),
         'lock'
       )
     },
@@ -493,7 +514,7 @@ export default {
         side,
         this.item.toFundHash,
         null,
-        this.item.bridgeAsset || this.item.to,
+        this.getToAssetWhenSwappingFromNative(),
         'lock'
       )
     },
@@ -514,7 +535,7 @@ export default {
             side,
             this.item.toClaimHash,
             this.item.toClaimTx,
-            this.item.bridgeAsset || this.item.to,
+            this.getToAssetWhenSwappingFromNative(),
             'claim'
           )
     },
@@ -538,13 +559,12 @@ export default {
             title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted`
           }
         : this.getTransactionStep(
-            // LOOK
             completed,
             pending,
             side,
             this.item.swapTxHash,
             this.item.swapTxHash,
-            this.item.bridgeAsset || this.item.to,
+            this.getToAssetWhenSwappingFromERC20(),
             'swap'
           )
     },

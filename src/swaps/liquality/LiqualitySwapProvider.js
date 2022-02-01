@@ -182,7 +182,6 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   updateOrder(order) {
-    console.log('updateOrder order id: ', order.id, order.orderId)
     return axios({
       url: this.config.agent + '/api/swap/order/' + order.orderId,
       method: 'post',
@@ -282,7 +281,6 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async reportInitiation({ swap, network, walletId }) {
-    console.log('reportInitiation: ', { swap, network, walletId })
     if (await this.hasQuoteExpired({ network, walletId, swap })) {
       return { status: 'WAITING_FOR_REFUND' }
     }
@@ -320,19 +318,9 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async findCounterPartyInitiation({ swap, network, walletId }) {
-    console.log('findCounterPartyInitiation')
     const toClient = this.getClient(network, walletId, swap.to, swap.toAccountId)
 
     try {
-      console.log(
-        'findInitiateSwapTransaction: ',
-        swap.toAmount,
-        swap.toAddress,
-        swap.toCounterPartyAddress,
-        swap.secretHash,
-        swap.nodeSwapExpiration
-      )
-
       const tx = await toClient.swap.findInitiateSwapTransaction({
         value: BN(swap.toAmount),
         recipientAddress: swap.toAddress,
@@ -341,12 +329,8 @@ class LiqualitySwapProvider extends SwapProvider {
         expiration: swap.nodeSwapExpiration
       })
 
-      console.log('findInitiateSwapTransaction: ', tx)
-
       if (tx) {
         const toFundHash = tx.hash
-
-        console.log('verifyInitiateSwapTransaction')
 
         const isVerified = await toClient.swap.verifyInitiateSwapTransaction(
           {
@@ -358,8 +342,6 @@ class LiqualitySwapProvider extends SwapProvider {
           },
           toFundHash
         )
-
-        console.log('findFundSwapTransaction')
 
         // ERC20 swaps have separate funding tx. Ensures funding tx has enough confirmations
         const fundingTransaction = await toClient.swap.findFundSwapTransaction(
@@ -377,7 +359,6 @@ class LiqualitySwapProvider extends SwapProvider {
             chains[cryptoassets[swap.to].chain].safeConfirmations
           : true
 
-        console.log('isVerified: ', isVerified, 'fundingConfirmed:', fundingConfirmed)
         if (isVerified && fundingConfirmed) {
           return {
             toFundHash,
@@ -391,16 +372,12 @@ class LiqualitySwapProvider extends SwapProvider {
       else throw e
     }
 
-    console.log('expirationUpdates expirationUpdates: ', expirationUpdates)
-
     // Expiration check should only happen if tx not found
     const expirationUpdates = await this.handleExpirations({
       swap,
       network,
       walletId
     })
-
-    console.log('expirationUpdates: ', expirationUpdates)
 
     if (expirationUpdates) {
       return expirationUpdates
