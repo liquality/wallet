@@ -83,8 +83,7 @@ if (process.env.NODE_ENV === 'mainnet') {
     it.skip('SWAP (BTC->PUSDT (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PUSDT'
-      // Select testnet
-      await overviewPage.SelectNetwork(page, 'mainnet')
+
       // Click on BTC then click on SWAP button
       await overviewPage.SelectAssetFromOverview(page, assert1)
       await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
@@ -128,8 +127,7 @@ if (process.env.NODE_ENV === 'mainnet') {
     it.skip('SWAP (RBTC->PWETH (Polygon))', async () => {
       const fromAsset = 'RBTC'
       const toAsset = 'PWETH'
-      // Select testnet
-      await overviewPage.SelectNetwork(page, 'mainnet')
+
       // Click on BTC then click on SWAP button
       await overviewPage.SelectAssetFromOverview(page, fromAsset)
       await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
