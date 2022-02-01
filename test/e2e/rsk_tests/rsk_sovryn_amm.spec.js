@@ -92,7 +92,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
-    it('Sovryn AMM(RBTC->SOV) quote check', async () => {
+    it('Sovryn AMM(RBTC->RIF) quote check', async () => {
       const fromAsset = 'RBTC'
       const toAsset = {
         chain: 'RSK',
