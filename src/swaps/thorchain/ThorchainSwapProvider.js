@@ -405,11 +405,11 @@ class ThorchainSwapProvider extends SwapProvider {
   async waitForReceive({ swap, network, walletId }) {
     try {
       const thorchainTx = await this._getTransaction(swap.fromFundHash)
-      const receiveHash = thorchainTx.observed_tx?.out_hashes?.[0]
+      const receiveHash = thorchainTx?.observed_tx?.out_hashes?.[0]
       if (receiveHash) {
         const thorchainReceiveTx = await this._getTransaction(receiveHash)
         if (thorchainReceiveTx) {
-          const memo = thorchainReceiveTx.observed_tx.tx.memo
+          const memo = thorchainReceiveTx?.observed_tx?.tx?.memo
           const memoAction = memo.split(':')[0]
 
           let asset
