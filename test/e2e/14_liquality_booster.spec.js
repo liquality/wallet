@@ -126,7 +126,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         expect(e, 'Liquality Boost selected quote provider error!!').equals(null)
       }
     })
-    it('SWAP (RBTC->PWETH (Polygon))', async () => {
+    it.skip('SWAP (RBTC->PWETH (Polygon))', async () => {
       const fromAsset = 'RBTC'
       const toAsset = 'PWETH'
       // Select testnet
