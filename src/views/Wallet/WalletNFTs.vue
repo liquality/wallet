@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import WalletBalanceEye from '@/assets/icons/nft-wallet-eye.svg'
 import NFTAssets from '../../components/NFTAssets.vue'
 export default {
