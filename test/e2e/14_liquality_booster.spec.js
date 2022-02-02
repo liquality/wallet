@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'mainnet') {
     }
   }
   // Only works on Mainnet
-  describe('Liquality Booster-["MAINNET"]', async () => {
+  describe.skip('Liquality Booster-["MAINNET"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -53,39 +53,37 @@ if (process.env.NODE_ENV === 'mainnet') {
         await browser.close()
     })
     it.skip('SWAP (BTC->PUSDC (Polygon))', async () => {
-      const assert1 = 'BTC'
-      const assert2 = 'PUSDC'
+      const fromAsset = 'BTC'
+      const toAsset = 'PUSDC'
+
       // Click on BTC then click on SWAP button
-      await overviewPage.SelectAssetFromOverview(page, assert1)
-      await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
-      await page.click(`#${assert1}_swap_button`)
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
+      await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+      await page.click(`#${fromAsset}_swap_button`)
       // Select PUSDC
       await swapPage.SelectSwapReceiveCoin(page)
       await page.waitForSelector('#search_for_a_currency', { visible: true })
-      await page.type('#search_for_a_currency', assert2)
-      await page.click(`#${assert2}`)
-      if (process.env.NODE_AGENT === 'prodagent') {
-        await swapPage.EnterSendAmountOnSwap(page, '0.01')
-      } else {
-        await swapPage.EnterSendAmountOnSwap(page, '0.00001')
+      await page.type('#search_for_a_currency', toAsset)
+      await page.click(`#${toAsset}`)
+      let serviceProvider = await swapPage.GetSelectedServiceProvider(page)
+      if (serviceProvider !== BOOSTER) {
+        await swapPage.ClickOnMin(page)
+      } else if (serviceProvider === 'Liquality') {
+        await page.waitForSelector('#see_all_quotes', { visible: true })
+        // Select Liquality Boost
+        await page.waitForSelector('#see_all_quotes', { visible: true })
+        await page.click('#see_all_quotes')
+        await page.waitForSelector('#liqualityBoost_rate_provider', { visible: true })
+        await page.click('#liqualityBoost_rate_provider')
+        await page.click('#select_quote_button')
       }
-      await page.waitForSelector('#see_all_quotes', { visible: true })
-      await swapPage.ClickOnMin(page)
-
-      // Select Liquality Boost
-      await page.waitForSelector('#see_all_quotes', { visible: true })
-      await page.click('#see_all_quotes')
-      await page.waitForSelector('#liqualityBoost_rate_provider', { visible: true })
-      await page.click('#liqualityBoost_rate_provider')
-      await page.click('#select_quote_button')
       // Check source name
       await checkBooster()
     })
     it.skip('SWAP (BTC->PUSDT (Polygon))', async () => {
       const assert1 = 'BTC'
       const assert2 = 'PUSDT'
-      // Select testnet
-      await overviewPage.SelectNetwork(page, 'mainnet')
+
       // Click on BTC then click on SWAP button
       await overviewPage.SelectAssetFromOverview(page, assert1)
       await page.waitForSelector(`#${assert1}_swap_button`, { visible: true })
@@ -126,11 +124,10 @@ if (process.env.NODE_ENV === 'mainnet') {
         expect(e, 'Liquality Boost selected quote provider error!!').equals(null)
       }
     })
-    it('SWAP (RBTC->PWETH (Polygon))', async () => {
+    it.skip('SWAP (RBTC->PWETH (Polygon))', async () => {
       const fromAsset = 'RBTC'
       const toAsset = 'PWETH'
-      // Select testnet
-      await overviewPage.SelectNetwork(page, 'mainnet')
+
       // Click on BTC then click on SWAP button
       await overviewPage.SelectAssetFromOverview(page, fromAsset)
       await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })

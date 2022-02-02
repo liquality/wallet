@@ -36,11 +36,7 @@ describe('SWAP feature["TESTNET"]', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
-    try {
       await browser.close()
-    } catch (e) {
-      throw new Error(e)
-    }
   })
 
   it.skip('SWAP BTC to ETH (LIQUALITY)', async () => {
@@ -121,6 +117,7 @@ describe('SWAP feature["TESTNET"]', async () => {
   })
   it('SWAP SOV to BTC', async () => {
     const fromAsset = 'SOV'
+
     // Select testnet
     await overviewPage.SelectNetwork(page)
     // Click on SOV then click on SWAP button
@@ -128,6 +125,10 @@ describe('SWAP feature["TESTNET"]', async () => {
     await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
     await page.click(`#${fromAsset}_swap_button`)
     console.log((`User clicked on ${fromAsset} SWAP button`))
+
+    // Validate available balance before swap
+    const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
+    expect(availableBalance,'SOV available balance 0 on swap screen, please check').gt(0)
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'SOV to BTC SWAP min value not set in input')
