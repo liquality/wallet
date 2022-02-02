@@ -265,9 +265,11 @@ export default {
         : null
     },
     slowPreset() {
+      const slowPreset = this.fees?.slow || {}
+
       const defaultFee =
-        this.fees.slow.fee.suggestedBaseFeePerGas + this.fees.slow.fee.maxPriorityFeePerGas
-      const maximumFee = this.fees.slow.fee.suggestedBaseFeePerGas + this.fees.slow.fee.maxFeePerGas
+        slowPreset.fee?.suggestedBaseFeePerGas + slowPreset.fee?.maxPriorityFeePerGas || 0
+      const maximumFee = slowPreset.fee?.suggestedBaseFeePerGas + slowPreset.fee?.maxFeePerGas || 0
       const sendFee = getSendFee(this.nativeAsset, defaultFee)
 
       return {
@@ -280,10 +282,12 @@ export default {
       }
     },
     averagePreset() {
+      const averagePreset = this.fees?.average || {}
+
       const defaultFee =
-        this.fees.average.fee.suggestedBaseFeePerGas + this.fees.average.fee.maxPriorityFeePerGas
+        averagePreset.fee?.suggestedBaseFeePerGas + averagePreset.fee?.maxPriorityFeePerGas || 0
       const maximumFee =
-        this.fees.average.fee.suggestedBaseFeePerGas + this.fees.average.fee.maxFeePerGas
+        averagePreset.fee?.suggestedBaseFeePerGas + averagePreset.fee?.maxFeePerGas || 0
       const sendFee = getSendFee(this.nativeAsset, defaultFee)
 
       return {
@@ -296,9 +300,11 @@ export default {
       }
     },
     fastPreset() {
+      const fastPreset = this.fees?.fast || {}
+
       const defaultFee =
-        this.fees.fast.fee.suggestedBaseFeePerGas + this.fees.fast.fee.maxPriorityFeePerGas
-      const maximumFee = this.fees.fast.fee.suggestedBaseFeePerGas + this.fees.fast.fee.maxFeePerGas
+        fastPreset.fee?.suggestedBaseFeePerGas + fastPreset.fee?.maxPriorityFeePerGas || 0
+      const maximumFee = fastPreset.fee?.suggestedBaseFeePerGas + fastPreset.fee?.maxFeePerGas || 0
       const sendFee = getSendFee(this.nativeAsset, defaultFee)
 
       return {
