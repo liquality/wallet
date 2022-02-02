@@ -98,7 +98,7 @@ class SwapPage {
    * @returns {Promise<*>} - Liquality, Thorchain....
    * @constructor
    */
-  async GetSelectedServiceProvider(page) {
+  async getSelectedServiceProvider(page) {
     await page.waitForSelector('#selectedQuote_provider', { visible: true })
     return await page.$eval('#selectedQuote_provider', (el) => el.textContent)
   }
@@ -109,7 +109,7 @@ class SwapPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickSwapReviewButton(page) {
+  async clickSwapReviewButton(page) {
     try {
       await page.waitForSelector('#swap_review_button', {
         visible: true,

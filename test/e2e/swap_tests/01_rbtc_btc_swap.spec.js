@@ -73,7 +73,7 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
       'BTC->RBTC,Liquality swap Provider!!').oneOf(['Liquality'])
 
     // Click on SWAP Review button
-    await swapPage.ClickSwapReviewButton(page)
+    await swapPage.clickSwapReviewButton(page)
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)

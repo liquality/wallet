@@ -64,7 +64,7 @@ describe('SWAP feature["TESTNET"]', async () => {
     expect(networkSpeedFee).contain(asset1 + ' Avg')
     expect(networkSpeedFee).contain(asset2 + ' Avg')
     // Review Button
-    await swapPage.ClickSwapReviewButton(page)
+    await swapPage.clickSwapReviewButton(page)
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
@@ -138,7 +138,7 @@ describe('SWAP feature["TESTNET"]', async () => {
     // Click on Network speed + FEE
     await swapPage.ValidateNetworkFeeTab(page)
     // Click on SWAP Review button
-    await swapPage.ClickSwapReviewButton(page)
+    await swapPage.clickSwapReviewButton(page)
     // Click on Initiate SWAP button
     await swapPage.ClickInitiateSwapButton(page)
 
@@ -277,7 +277,7 @@ describe('SWAP feature["TESTNET"]', async () => {
     expect(await page.$eval('#min_amount_send_button', (el) => el.getAttribute('class'))).contain('active')
 
     // Check source name
-    expect(await swapPage.GetSelectedServiceProvider(page),
+    expect(await swapPage.getSelectedServiceProvider(page),
       `${fromAsset}->${toAsset} swap, source should be chosen!`).oneOf(['Thorchain', 'Liquality'])
 
     // Click on selected Quote service provider
@@ -296,7 +296,7 @@ describe('SWAP feature["TESTNET"]', async () => {
     await page.click('.modal-close')
 
     // Click SWAP review button
-    await swapPage.ClickSwapReviewButton(page)
+    await swapPage.clickSwapReviewButton(page)
     await page.waitForTimeout(5000)
 
     // SWAP review screen validations

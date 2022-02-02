@@ -65,7 +65,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.waitForSelector('#search_for_a_currency', { visible: true })
       await page.type('#search_for_a_currency', toAsset)
       await page.click(`#${toAsset}`)
-      let serviceProvider = await swapPage.GetSelectedServiceProvider(page)
+      let serviceProvider = await swapPage.getSelectedServiceProvider(page)
       if (serviceProvider !== BOOSTER) {
         await swapPage.ClickOnMin(page)
       } else if (serviceProvider === 'Liquality') {
