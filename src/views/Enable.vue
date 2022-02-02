@@ -80,7 +80,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { isEthereumChain } from '@liquality/cryptoassets'
+import { isEthereumChain, dappChains } from '@liquality/cryptoassets'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import NetworkAccounts from '@/components/NetworkAccounts'
 import ChainDropdown from '@/components/ChainDropdown'
@@ -165,6 +165,16 @@ export default {
   },
   created() {
     this.selectedAccount = this.accountsData.filter((account) => account.chain === this.chain)[0]
+    const { hostname } = new URL(this.origin)
+    const dapp = Object.keys(dappChains).find((origin) => {
+      return hostname.includes(origin)
+    })
+    if (dapp) {
+      const chainHasAccount = dappChains[dapp].find((chain) =>
+        this.accountsData.find((account) => account.chain === chain)
+      )
+      if (chainHasAccount) this.selectedChain = chainHasAccount
+    }
   }
 }
 </script>
