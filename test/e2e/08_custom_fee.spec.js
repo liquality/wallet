@@ -18,7 +18,7 @@ const transactionDetailsPage = new TransactionDetailsPage()
 let browser, page
 const password = '123123123'
 
-describe('Custom fee feature["TESTNET"]', async () => {
+describe.skip('Custom fee feature["TESTNET"]', async () => {
   const coinName = 'SOV'
   const coinsToSend = '0.001'
 
@@ -46,7 +46,7 @@ describe('Custom fee feature["TESTNET"]', async () => {
     await overviewPage.HasViewExplorerDisplayed(page, coinName)
     // Validate fiat & coin value is displayed & not 0
     let coinDetails = await testUtil.getAssetValues(page, coinName)
-    expect(coinDetails.coinValue,`${coinName} value shouldn't be 0`).not.to.equal('0')
+    expect(coinDetails.coinValue, `${coinName} value shouldn't be 0`).not.to.equal('0')
     expect(coinDetails.coinFiatValue, `${coinName} fiat value shouldn't be 0`).not.to.equal('0.00')
     await page.click(`#${coinName}_send_button`)
     // Enter send amount (or) coins

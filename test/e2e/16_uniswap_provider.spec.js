@@ -16,7 +16,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
-describe('UNISWAP service Provider-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () => {
+describe('UNISWAP service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -32,6 +32,7 @@ describe('UNISWAP service Provider-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', a
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
+    await overviewPage.SelectNetwork(page,'mainnet')
   })
   afterEach(async () => {
       await browser.close()
@@ -40,15 +41,11 @@ describe('UNISWAP service Provider-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', a
   it.skip('ETH->DAI swap - UNISWAP V2', async () => {
     const fromAsset = 'ETH'
     const toAsset = 'DAI'
-    // Select testnet
-    if (process.env.NODE_ENV === 'testnet') {
-      await overviewPage.SelectNetwork(page)
-    }
     // Click on ETH then click on SWAP button
     await overviewPage.SelectAssetFromOverview(page, fromAsset)
     await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
     await page.click(`#${fromAsset}_swap_button`)
-    console.log(('User clicked on ETH SWAP button'))
+
     // Validate min SEND amount from text field & check Min is Active
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'ETH to DAI SWAP min value not set in input').not.equals('0.0000')

@@ -58,17 +58,19 @@
             <td class="text-muted text-right small-12">Amount</td>
             <td class="text-break">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</td>
           </tr>
-          <tr v-if="fromAddress">
+          <tr v-if="fromAddress" id="your_from_address">
             <td class="text-muted text-right small-12">Your {{ item.from }}<br />from address</td>
             <td class="text-break">{{ fromAddress }}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">Your {{ item.to }}<br />to address</td>
+            <td class="text-muted text-right small-12" id="your_to_address">
+              Your {{ item.to }}<br />to address
+            </td>
             <td class="text-break">{{ item.toAddress }}</td>
           </tr>
           <tr>
             <td class="text-muted text-right small-12">Your {{ item.to }} send<br />transaction</td>
-            <td class="text-break">{{ item.txHash }}</td>
+            <td class="text-break" id="send_transaction_hash">{{ item.txHash }}</td>
           </tr>
           <tr v-if="false">
             <td class="text-muted text-right small-12">Actions</td>

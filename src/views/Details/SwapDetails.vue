@@ -53,6 +53,7 @@
             <p v-for="fee in txFees" :key="fee.asset" :id="'network_fee_' + fee.asset">
               {{ fee.asset }} Fee: {{ fee.fee }} {{ fee.unit }}
             </p>
+            <p v-if="receiveFee">{{ this.item.to }} Receive Fee: {{ receiveFee }}</p>
           </div>
         </div>
       </div>
@@ -88,7 +89,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import moment from '@/utils/moment'
 import cryptoassets from '@/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { chains, unitToCurrency } from '@liquality/cryptoassets'
 
 import { prettyBalance, dpUI } from '@/utils/coinFormatter'
 import { calculateQuoteRate } from '@/utils/quotes'
@@ -139,9 +140,10 @@ export default {
         ? this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
         : this.item.fee
 
-      const toFee = this.item.claimFee.suggestedBaseFeePerGas
-        ? this.item.claimFee.suggestedBaseFeePerGas + this.item.claimFee.maxPriorityFeePerGas
-        : this.item.claimFee
+      const claimFee = this.item.claimFee || 0
+      const toFee = claimFee.suggestedBaseFeePerGas
+        ? claimFee.suggestedBaseFeePerGas + claimFee.maxPriorityFeePerGas
+        : claimFee
 
       const fees = []
       const fromChain = cryptoassets[this.item.from].chain
@@ -163,6 +165,12 @@ export default {
     rate() {
       const rate = calculateQuoteRate(this.item)
       return dpUI(rate)
+    },
+    receiveFee() {
+      if (this.item.receiveFee && cryptoassets[this.item.to]) {
+        return unitToCurrency(cryptoassets[this.item.to], this.item.receiveFee).toFixed()
+      }
+      return 0
     },
     ledgerModalTitle() {
       if (this.item.status === 'INITIATION_CONFIRMED') {

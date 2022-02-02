@@ -28,17 +28,16 @@ const swapPairMap = [
   {
     from: 'PWETH',
     to: 'MATIC'
-  },
-  {
-    from: 'PWETH',
-    to: 'PUSDT'
   }
+  // {
+  //   from: 'PWETH',
+  //   to: 'PUSDT'
+  // }
 ]
 
 if (process.env.NODE_ENV === 'mainnet') {
-  // Skip as 1inch api unreliable
   // Only works on Mainnet
-  describe('1Inch Service Provider-["MAINNET"]', async () => {
+  describe.skip('1Inch Service Provider-["MAINNET"]', async () => {
     swapPairMap.forEach((obj) => {
       it(`SWAP (${obj.from}->${obj.to})`, async () => {
         const fromAsset = obj.from
@@ -67,7 +66,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         await page.waitForSelector('#search_for_a_currency', { visible: true })
         await page.type('#search_for_a_currency', toAsset)
         await page.click(`#${toAsset}`)
-        await swapPage.ClickOnMax(page)
+        await swapPage.ClickOnMin(page)
         // 1inch
         await page.waitForTimeout(10000)
         await page.waitForSelector('#selectedQuote_provider', { visible: true })

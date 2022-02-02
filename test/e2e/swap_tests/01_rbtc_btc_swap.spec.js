@@ -32,7 +32,7 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.SelectNetwork(page)
+    await overviewPage.SelectNetwork(page,'mainnet')
   })
   afterEach(async () => {
     await browser.close()
@@ -73,7 +73,7 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
       'BTC->RBTC,Liquality swap Provider!!').oneOf(['Liquality'])
 
     // Click on SWAP Review button
-    await swapPage.ClickSwapReviewButton(page)
+    await swapPage.clickSwapReviewButton(page)
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
