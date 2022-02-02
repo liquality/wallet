@@ -8,36 +8,30 @@
         <span>23,253.89 USD</span>
       </div>
     </div>
-    <template v-for="asset in NFTAssetsList">
-      <NFTAssets :nftAsset="asset" :key="asset.id" />
-    </template>
+    <div class="nft-collection">
+      <NFTAsset v-for="asset in nftCollection.number" :key="asset.id" :nftAsset="nftCollection" />
+    </div>
   </div>
 </template>
 
 <script>
 import WalletBalanceEye from '@/assets/icons/nft-wallet-eye.svg'
-import NFTAssets from '../../components/NFTAssets.vue'
+import NFTAsset from '../../components/NFTAsset.vue'
+
 export default {
   components: {
     WalletBalanceEye,
-    NFTAssets
+    NFTAsset
   },
   data() {
-    return {
-      NFTAssetsList: [
-        {
-          name: 'CryptoKitties',
-          number: 8
-        },
-        {
-          name: 'Pancakes',
-          number: 3
-        },
-        {
-          name: 'CryptoPunks',
-          number: 10
-        }
-      ]
+    return {}
+  },
+  created() {
+    console.log('NFTAssets created', this.$route)
+  },
+  computed: {
+    nftCollection() {
+      return this.$route.query.nftAsset
     }
   }
 }
@@ -76,6 +70,12 @@ export default {
         font-weight: 300;
       }
     }
+  }
+  .nft-collection {
+    padding: 0 10px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5px;
   }
 }
 </style>

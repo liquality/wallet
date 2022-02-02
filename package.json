@@ -52,6 +52,7 @@
     "@liquality/near-rpc-provider": "1.12.0",
     "@liquality/near-swap-find-provider": "1.12.0",
     "@liquality/near-swap-provider": "1.12.0",
+    "@liquality/nft-provider": "^1.13.1",
     "@liquality/solana-networks": "1.12.0",
     "@liquality/solana-rpc-provider": "1.12.0",
     "@liquality/solana-swap-find-provider": "1.12.0",

@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from 'vuex'
 import WalletBalanceEye from '@/assets/icons/nft-wallet-eye.svg'
 import NFTAssets from '../../components/NFTAssets.vue'
 export default {
@@ -27,7 +28,14 @@ export default {
       NFTAssetsList: [
         {
           name: 'CryptoKitties',
-          number: 8
+          number: 8,
+          nft: [
+            {
+              name: 'Habibi Mehrain',
+              collection: 'CryptoKitties',
+              number: '#4243, X Gen6'
+            }
+          ]
         },
         {
           name: 'Pancakes',
@@ -38,6 +46,31 @@ export default {
           number: 10
         }
       ]
+    }
+  },
+  mounted() {
+    this.getNftCollections()
+  },
+  computed: {
+    ...mapState([
+      'activeWalletId',
+      'activeNetwork',
+      'addresses',
+      'history',
+      'fiatRates',
+      'marketData'
+    ]),
+    ...mapGetters(['client'])
+  },
+  methods: {
+    getNftCollections() {
+      const client = this.client({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        asset: 'ETH'
+      })
+      const nft = client.nft.fetch()
+      console.log('🚀 ~ file: WalletNFTs.vue ~ line 58 ~ nft ~ nft', nft)
     }
   }
 }

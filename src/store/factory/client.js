@@ -23,6 +23,8 @@ import { NearJsWalletProvider } from '@liquality/near-js-wallet-provider'
 import { NearRpcProvider } from '@liquality/near-rpc-provider'
 import { NearSwapFindProvider } from '@liquality/near-swap-find-provider'
 
+import { NftProvider } from '@liquality/nft-provider'
+
 import { SolanaRpcProvider } from '@liquality/solana-rpc-provider'
 import { SolanaWalletProvider } from '@liquality/solana-wallet-provider'
 import { SolanaSwapProvider } from '@liquality/solana-swap-provider'
@@ -148,6 +150,9 @@ function createEthereumClient(
     ethClient.addProvider(new EthereumSwapProvider())
     if (scraperApi) ethClient.addProvider(new EthereumScraperSwapFindProvider(scraperApi))
   }
+
+  const openSeaAPI = 'https://rinkeby-api.opensea.io/api/v1/'
+  ethClient.addProvider(new NftProvider(openSeaAPI))
 
   return ethClient
 }

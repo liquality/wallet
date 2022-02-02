@@ -10,7 +10,7 @@
       </div>
       <div class="nft-assets__container__images">
         <div class="img-items" v-for="nft in nftAsset.number" :key="nft.id">
-          <img src="@/assets/images/nft.png" alt="" style="--img-width: 112px" />
+          <NFTAsset :nftAsset="nftAsset" />
         </div>
       </div>
     </div>
@@ -19,19 +19,24 @@
 
 <script>
 import ChevronRight from '@/assets/icons/chevron_right_gray.svg'
+import NFTAsset from './NFTAsset.vue'
 export default {
   props: {
     nftAsset: {
-      type: Array,
+      type: Object,
       required: true
     }
   },
   components: {
-    ChevronRight
+    ChevronRight,
+    NFTAsset
   },
   methods: {
     goToNFTCollection() {
-      this.$router.push({ name: 'NFTCollection' })
+      this.$router.push({
+        path: `/details/nft-collection/${this.nftAsset.name}`,
+        query: { nftAsset: this.nftAsset }
+      })
     }
   }
 }
@@ -55,7 +60,7 @@ export default {
     }
     &__images {
       display: flex;
-      column-gap: 20px;
+      column-gap: 12px;
       width: 100%;
       overflow: auto;
       justify-content: start;
