@@ -14,14 +14,13 @@ const providers = {
   [SwapProviderType.UNISWAPV2]: UniswapSwapProvider,
   [SwapProviderType.ONEINCHV4]: OneinchSwapProvider,
   [SwapProviderType.THORCHAIN]: ThorchainSwapProvider,
-  [SwapProviderType.LIQUALITYBOOST_TYPE1]: LbspERC20toNative,
-  [SwapProviderType.LIQUALITYBOOST_TYPE2]: LbspNativeToERC20,
+  [SwapProviderType.LIQUALITYBOOST_TYPE1]: LbspNativeToERC20,
+  [SwapProviderType.LIQUALITYBOOST_TYPE2]: LbspERC20toNative,
   [SwapProviderType.FASTBTC]: FastbtcSwapProvider,
   [SwapProviderType.SOVRYN]: SovrynSwapProvider
 }
 
 export const createSwapProvider = (network, providerId) => {
-  console.log('network, providerId', network, providerId)
   const swapProviderConfig = buildConfig.swapProviders[network][providerId]
   const SwapProvider = providers[swapProviderConfig.type]
   return new SwapProvider({ ...swapProviderConfig, providerId })

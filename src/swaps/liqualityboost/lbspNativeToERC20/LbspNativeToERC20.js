@@ -11,13 +11,6 @@ import { createSwapProvider } from '../../../store/factory/swapProvider'
 const slippagePercentage = 3
 
 class LbspNativeToERC20 extends SwapProvider {
-  // constructor(config, bridgeAssetToAMM, liqualitySwapProvider) {
-  //   super(config)
-  //   this.supportedBridgeAssets = this.config.supportedBridgeAssets
-  //   this.bridgeAssetToAutomatedMarketMaker = bridgeAssetToAMM
-  //   this.liqualitySwapProvider = liqualitySwapProvider
-  // }
-
   constructor(config) {
     super(config)
     this.liqualitySwapProvider = createSwapProvider(this.config.network, 'liquality')

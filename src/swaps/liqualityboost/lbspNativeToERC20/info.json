@@ -1,10 +1,10 @@
 {
-  "title": "LiqualityBoost Atomic Swaps",
+  "title": "LiqualityBoost Atomic Swaps (type 1)",
   "description": "The most secure, non-custodial way to swap across blockchains. Swap any native asset to hundreds of erc20 tokens ",
   "pros": [
     "Cross-chain",
     "Secure",
-    "Native assets and erc20 tokens"
+    "Native assets to erc20 tokens"
   ],
   "cons": [
     "Low liquidity",

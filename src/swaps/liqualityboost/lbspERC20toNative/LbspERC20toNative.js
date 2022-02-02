@@ -11,13 +11,6 @@ import { createSwapProvider } from '../../../store/factory/swapProvider'
 const slippagePercentage = 3
 
 class LbspERC20toNative extends SwapProvider {
-  // constructor(config, bridgeAssetToAMM, liqualitySwapProvider) {
-  //   super(config)
-  //   this.supportedBridgeAssets = this.config.supportedBridgeAssets
-  //   this.bridgeAssetToAutomatedMarketMaker = bridgeAssetToAMM
-  //   this.liqualitySwapProvider = liqualitySwapProvider
-  // }
-
   constructor(config) {
     super(config)
     this.liqualitySwapProvider = createSwapProvider(this.config.network, 'liquality')
@@ -165,21 +158,12 @@ class LbspERC20toNative extends SwapProvider {
       walletId
     })
 
-    console.log('finalizeAutomatedMarketMakerAndStartLiqualitySwap: result: ', result)
     if (result?.status === 'SUCCESS') {
       result = await this.liqualitySwapProvider.newSwap({
         network,
         walletId,
         quote: swapLiqualityFormat
       })
-
-      console.log('finalizeAutomatedMarketMakerAndStartLiqualitySwap: result1: ', result)
-
-      console.log(
-        'finalizeAutomatedMarketMakerAndStartLiqualitySwap swapLiqualityFormat: ',
-        swapLiqualityFormat
-      )
-      console.log('finalizeAutomatedMarketMakerAndStartLiqualitySwap result: ', result)
 
       return {
         ...result,
@@ -191,8 +175,6 @@ class LbspERC20toNative extends SwapProvider {
   }
 
   async performNextSwapAction(store, { network, walletId, swap }) {
-    console.log('performNextSwapAction: status', swap.status)
-
     let updates
     const swapLiqualityFormat = {
       ...swap,
@@ -244,7 +226,7 @@ class LbspERC20toNative extends SwapProvider {
       from: swap.from,
       fromAmount: swap.fromAmount,
       to: swap.to,
-      // keep toAmount from updates object only in case swap transitioned from AMM to LSP
+      // keep `toAmount` (from updates object) only in case swap transitioned from AMM to LSP
       toAmount: updates.status === 'INITIATED' ? updates.toAmount : swap.toAmount
     }
   }
