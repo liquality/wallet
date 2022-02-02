@@ -88,8 +88,7 @@ class LbspERC20toNative extends SwapProvider {
     return {
       ...result,
       ..._quote,
-      slippage: slippagePercentage * 100 // TODO: check slippage value
-      // bridgeAssetAmount: result.toAmount // TODO: where should it be moved
+      slippage: slippagePercentage * 100
     }
   }
 
