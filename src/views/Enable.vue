@@ -161,20 +161,27 @@ export default {
     },
     onChainSelected(chain) {
       this.selectedChain = chain
+      this.selectedAccount = this.accountsData.find(
+        (account) => account.chain === this.selectedChain
+      )
+    },
+    setDefaultSelectedChain() {
+      const { hostname } = new URL(this.origin)
+      const dapp = Object.keys(dappChains).find((origin) => {
+        return hostname.includes(origin)
+      })
+      if (dapp) {
+        const chainHasAccount = dappChains[dapp].find((chain) =>
+          this.accountsData.find((account) => account.chain === chain)
+        )
+        if (chainHasAccount) {
+          this.onChainSelected(chainHasAccount)
+        }
+      }
     }
   },
   created() {
-    this.selectedAccount = this.accountsData.filter((account) => account.chain === this.chain)[0]
-    const { hostname } = new URL(this.origin)
-    const dapp = Object.keys(dappChains).find((origin) => {
-      return hostname.includes(origin)
-    })
-    if (dapp) {
-      const chainHasAccount = dappChains[dapp].find((chain) =>
-        this.accountsData.find((account) => account.chain === chain)
-      )
-      if (chainHasAccount) this.selectedChain = chainHasAccount
-    }
+    this.setDefaultSelectedChain()
   }
 }
 </script>
