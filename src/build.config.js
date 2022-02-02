@@ -58,9 +58,16 @@ export default {
         agent:
           process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
       },
-      liqualityBoost: {
-        name: 'Liquality Boost',
-        type: SwapProviderType.LIQUALITYBOOST,
+      liqualityBoost_type1: {
+        name: 'Liquality Boost T1',
+        type: SwapProviderType.LIQUALITYBOOST_TYPE1,
+        network: 'testnet',
+        icon: 'liqualityboost.svg',
+        supportedBridgeAssets: ['RBTC']
+      },
+      liqualityBoost_type2: {
+        name: 'Liquality Boost T2',
+        type: SwapProviderType.LIQUALITYBOOST_TYPE2,
         network: 'testnet',
         icon: 'liqualityboost.svg',
         supportedBridgeAssets: ['RBTC']
@@ -93,9 +100,16 @@ export default {
         type: SwapProviderType.LIQUALITY,
         agent: 'https://liquality.io/swap-dev/agent'
       },
-      liqualityBoost: {
-        name: 'Liquality Boost',
-        type: SwapProviderType.LIQUALITYBOOST,
+      liqualityBoost_type1: {
+        name: 'Liquality Boost T1',
+        type: SwapProviderType.LIQUALITYBOOST_TYPE1,
+        network: 'mainnet',
+        icon: 'liqualityboost.svg',
+        supportedBridgeAssets: ['MATIC', 'RBTC']
+      },
+      liqualityBoost_type2: {
+        name: 'Liquality Boost T2',
+        type: SwapProviderType.LIQUALITYBOOST_TYPE2,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
         supportedBridgeAssets: ['MATIC', 'RBTC']
