@@ -302,7 +302,11 @@ class ThorchainSwapProvider extends SwapProvider {
     const toChain = cryptoassets[quote.to].chain
     const toAddressRaw = await this.getSwapAddress(network, walletId, quote.to, quote.toAccountId)
     const toAddress = chains[toChain].formatAddress(toAddressRaw, network)
-    const baseOutputAmount = baseAmount(quote.toAmount, cryptoassets[quote.to].decimals)
+    //Substract quote.receiveFee  fom toAmount as this is the minimum limit that you are going to receive
+    const baseOutputAmount = baseAmount(
+      quote.toAmount - quote.receiveFee,
+      cryptoassets[quote.to].decimals
+    )
     const slippageCoefficient = BN(1).minus(quote.slippage)
     const minimumOutput = baseOutputAmount.amount().multipliedBy(slippageCoefficient).dp(0)
     const limit = convertBaseAmountDecimal(
