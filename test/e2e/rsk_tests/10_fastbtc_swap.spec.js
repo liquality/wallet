@@ -95,11 +95,11 @@ if (process.env.NODE_ENV === 'mainnet') {
             visible: true,
             timeout: 60000
           })
-          await page.click('#see_all_quotes', {delay: 1000})
+          await page.click('#see_all_quotes', { delay: 1000 })
           await page.waitForSelector('#fastBTC_rate_provider', { visible: true })
-          await page.click('#fastBTC_rate_provider', {delay: 1000})
+          await page.click('#fastBTC_rate_provider', { delay: 1000 })
           await page.waitForSelector('#select_quote_button', { visible: true })
-          await page.click('#select_quote_button', {delay: 2000})
+          await page.click('#select_quote_button', { delay: 2000 })
         } catch (e) {
           await testUtil.takeScreenshot(page, 'fastbtc-see-all-quotes')
           asset.fail('fastbtc see all quotes failed')
@@ -108,7 +108,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         expect(
           await swapPage.getSelectedServiceProvider(page),
           'BTC->RBTC,fastBTC swap Provider!!'
-        ).equals('FastBTC')
+        ).oneOf(['FastBTC', 'Liquality'])
       }
     })
   })
