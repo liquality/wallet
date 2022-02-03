@@ -82,7 +82,7 @@ describe.skip('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
       }
       if (swapToAsset === 'BTC') {
         // Click on SWAP Review button
-        await swapPage.ClickSwapReviewButton(page)
+        await swapPage.clickSwapReviewButton(page)
         // Click on Initiate SWAP button
         await swapPage.ClickInitiateSwapButton(page)
         // Wait for Activity tab list of items - Transaction items
