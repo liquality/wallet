@@ -439,9 +439,11 @@ class OverviewPage {
       const $parent = await page.$(`#${assertName}`)
       await page.waitForTimeout(5000)
       assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
-      if (assertAddress === "''") {
+      if (assertAddress === "''" || assertAddress === '""') {
+        await page.reload()
         await page.waitForTimeout(10000)
       }
+      assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
       expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.equals("''")
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
