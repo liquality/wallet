@@ -3,17 +3,16 @@ import { random } from 'lodash-es'
 import store from './store'
 import { wait } from './store/utils'
 import cryptoassets from '@/utils/cryptoassets'
+import { unitToCurrency } from '@liquality/cryptoassets'
+import { prettyFiatBalance } from '@/utils/coinFormatter'
 
-function asyncLoop (fn, delay) {
+function asyncLoop(fn, delay) {
   return wait(delay())
     .then(() => fn())
     .then(() => asyncLoop(fn, delay))
 }
 
-store.subscribe(async ({
-  type,
-  payload
-}, state) => {
+store.subscribe(async ({ type, payload }, state) => {
   const { dispatch, getters } = store
   switch (type) {
     case 'CHANGE_ACTIVE_NETWORK':
@@ -54,10 +53,11 @@ store.subscribe(async ({
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
 
       asyncLoop(
-        () => dispatch('updateBalances', {
-          network: state.activeNetwork,
-          walletId: state.activeWalletId
-        }),
+        () =>
+          dispatch('updateBalances', {
+            network: state.activeNetwork,
+            walletId: state.activeWalletId
+          }),
         () => random(400000, 600000)
       )
 
@@ -72,20 +72,23 @@ store.subscribe(async ({
       )
       break
     case 'NEW_SWAP':
+      // eslint-disable-next-line no-case-declarations
+      let fromAmountValue = unitToCurrency(cryptoassets[payload.swap.from], payload.swap.fromAmount)
+      // eslint-disable-next-line no-case-declarations
+      let toAmountValue = unitToCurrency(cryptoassets[payload.swap.to], payload.swap.toAmount)
+
       dispatch('trackAnalytics', {
         event: 'New SWAP',
         properties: {
           category: 'Swaps',
           action: 'Swap Initiated',
-          from: `Swap from ${payload.swap.from}`,
           swapFrom: `${payload.swap.from}`,
-          to: `Swap to ${payload.swap.to}`,
           swapTo: `${payload.swap.to}`,
-          fromAddress: `${payload.swap.fromAddress}`,
-          toAddress: `${payload.swap.toAddress}`,
           swapProvider: `${payload.swap.provider}`,
-          fee: `${payload.feeLabel}`,
-          claimFee: `${payload.claimFeeLabel}`
+          fromAmount: fromAmountValue,
+          toAmount: toAmountValue,
+          fromAmountFiat: prettyFiatBalance(fromAmountValue, state.fiatRates[payload.swap.from]),
+          toAmountFiat: prettyFiatBalance(toAmountValue, state.fiatRates[payload.swap.to])
         }
       })
       break
@@ -131,7 +134,11 @@ store.subscribe(async ({
           customTokenName: `${payload.customToken.name}`,
           customTokenChain: `${payload.customToken.chain}`,
           customTokenSymbol: `${payload.customToken.symbol}`,
-          label: [`${payload.customToken.name}`, `(${payload.customToken.chain})`, `(${payload.customToken.symbol})`]
+          label: [
+            `${payload.customToken.name}`,
+            `(${payload.customToken.chain})`,
+            `(${payload.customToken.symbol})`
+          ]
         }
       })
       break
@@ -150,17 +157,19 @@ store.subscribe(async ({
       break
     case 'UPDATE_HISTORY':
       // eslint-disable-next-line
-      const item = getters.historyItemById(payload.network, payload.walletId, payload.id)
+      const item = getters.historyItemById(payload.network, payload.walletId, payload.id);
       if (item.type === 'SWAP' && payload.updates) {
-        dispatch('trackAnalytics', {
-          event: 'Swap status change',
-          properties: {
-            category: 'Swaps',
-            action: 'Swap Status changed',
-            label: `${item.from} to ${item.to}`,
-            swapStatus: `${payload.updates.status}`
-          }
-        })
+        if (payload.updates.status !== undefined) {
+          dispatch('trackAnalytics', {
+            event: 'Swap status change',
+            properties: {
+              category: 'Swaps',
+              action: 'Swap Status changed',
+              label: `${item.from} to ${item.to}`,
+              swapStatus: `${payload.updates.status}`
+            }
+          })
+        }
       }
       if (item.type === 'SEND' && payload.updates) {
         dispatch('trackAnalytics', {

@@ -13,7 +13,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Private key exports-["MAINNET","TESTNET"]', async () => {
+describe('Private key exports-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -29,11 +29,7 @@ describe('Private key exports-["MAINNET","TESTNET"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
+    await overviewPage.SelectNetwork(page, 'mainnet')
   })
   afterEach(async () => {
     await browser.close()
@@ -51,7 +47,7 @@ describe('Private key exports-["MAINNET","TESTNET"]', async () => {
     await page.click('#continue_button_to_see_seed_phrase')
   }
 
-  it('BTC export private key["PULL_REQUEST_TEST"]', async () => {
+  it('BTC export private key', async () => {
     await overviewPage.SelectAssetFromOverview(page, 'BTC')
     await page.waitForSelector('#BTC_swap_button', { visible: true })
     // Click on Export Private Key

@@ -4,8 +4,7 @@
     <div class="notification-text">
       <strong>Sign to {{ action }} Swap</strong>
     </div>
-    <router-link :to="`/details/swap/${item.id}`"
-                 class="btn btn-sm btn-outline-primary">
+    <router-link :to="`/details/swap/${item.id}`" class="btn btn-sm btn-outline-primary">
       Sign Now
     </router-link>
   </div>
@@ -20,7 +19,7 @@ export default {
     SpinnerIcon
   },
   computed: {
-    action () {
+    action() {
       if (this.item.status === 'INITIATION_CONFIRMED') {
         return 'Fund'
       } else if (this.item.status === 'READY_TO_CLAIM') {

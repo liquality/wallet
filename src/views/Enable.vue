@@ -1,32 +1,76 @@
 <template>
-  <div class="enable">
+  <div class="enable d-flex flex-column flex-grow-1">
     <div class="popup-logo">
-      <img :src="logo"/>
+      <img :src="logo" />
     </div>
     <div class="enable-screen wrapper">
       <h2 class="text-center">Connect Request</h2>
 
-      <div class="enable-screen_icon mt-2 text-center">{{originShort}}</div>
-      <p class="mt-1 mb-2 text-center">{{originDomain}}</p>
-      <p class="mb-2">By granting permission to <strong>{{origin}}</strong>, they can read your public account addresses.</p>
-      <p class="text-primary text-center mb-4">Make sure you trust this site</p>
+      <div class="enable-screen_icon mt-2 text-center">{{ originShort }}</div>
+      <p class="mt-1 mb-2 text-center">{{ originDomain }}</p>
       <div class="main-content">
-      <div class="list-items">
-        <NetworkAccounts @item-selected="onAccountSelected"
-                         :search="search"
-                         :account-id="selectedAccount ? selectedAccount.id : null"
-                         :accounts="accounts" />
+        <div v-if="confirmStep">
+          <p class="mt-2 mb-4 text-center">
+            By granting permission to <strong id="origin_url">{{ origin }}</strong
+            >, they can read your public account addresses.
+          </p>
+          <p class="text-primary text-center mb-4" id="make_sure_you_trust_this_site">
+            Make sure you trust this site.
+          </p>
+        </div>
+        <div v-else>
+          <div class="d-flex justify-content-between">
+            <h5>Select accounts</h5>
+            <div v-if="isEthereumConnection" id="filter_by_chain">
+              <ChainDropdown
+                :chains="ethereumChains"
+                :selected="selectedChain"
+                @chain-changed="onChainSelected"
+                select-label="Filter by chain"
+                :right="true"
+              />
+            </div>
+          </div>
+
+          <div class="list-items">
+            <NetworkAccounts
+              @item-selected="onAccountSelected"
+              :search="search"
+              :account-id="selectedAccount ? selectedAccount.id : null"
+              :accounts="accounts"
+            />
+          </div>
+        </div>
       </div>
-    </div>
       <div class="wrapper_bottom">
         <div class="button-group">
-          <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Deny</button>
-          <button class="btn btn-primary btn-lg btn-icon"
-                  id="connect_request_button"
-                  @click="reply(true)"
-                  :disabled="loading || !selectedAccount">
-            <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>Connect</template>
+          <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">
+            Deny
+          </button>
+          <button
+            v-if="loading"
+            class="btn btn-primary btn-lg btn-icon loading"
+            id="connect_request_button"
+            disabled
+          >
+            <SpinnerIcon class="btn-loading" />
+          </button>
+          <button
+            v-else-if="confirmStep"
+            @click="reply(true)"
+            id="connect_request_button"
+            class="btn btn-primary btn-lg btn-icon"
+          >
+            Connect
+          </button>
+          <button
+            v-else
+            @click="confirmStep = true"
+            id="connect_request_button"
+            class="btn btn-primary btn-lg btn-icon"
+            :disabled="!selectedAccount"
+          >
+            Next
           </button>
         </div>
       </div>
@@ -39,50 +83,69 @@ import { mapActions, mapGetters } from 'vuex'
 import { isEthereumChain } from '@liquality/cryptoassets'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import NetworkAccounts from '@/components/NetworkAccounts'
+import ChainDropdown from '@/components/ChainDropdown'
+import buildConfig from '@/build.config'
 
 export default {
   components: {
-    NetworkAccounts
+    NetworkAccounts,
+    ChainDropdown
   },
-  data () {
+  data() {
     return {
+      confirmStep: false,
       replied: false,
       loading: false,
       search: '',
-      selectedAccount: null
+      selectedAccount: null,
+      selectedChain: null
     }
   },
   computed: {
     ...mapGetters(['accountsData', 'accountItem']),
-    accounts () {
-      if (isEthereumChain(this.chain)) {
-        return this.accountsData.filter(account => isEthereumChain(account.chain))
+    isEthereumConnection() {
+      return isEthereumChain(this.chain)
+    },
+    accounts() {
+      if (this.isEthereumConnection) {
+        const ethereumAccounts = this.accountsData.filter((account) =>
+          isEthereumChain(account.chain)
+        )
+
+        if (!this.selectedChain) {
+          return ethereumAccounts
+        }
+
+        return ethereumAccounts.filter((account) => account.chain === this.selectedChain)
       } else {
-        return this.accountsData.filter(account => this.chain === account.chain)
+        return this.accountsData.filter((account) => this.chain === account.chain)
       }
     },
-    logo () {
+    logo() {
       return LogoWallet
     },
-    origin () {
+    origin() {
       return this.$route.query.origin
     },
-    chain () {
+    chain() {
       return this.$route.query.chain
     },
-    originShort () {
+    originShort() {
       return this.originDomain[0].toUpperCase()
     },
-    originDomain () {
-      return (new URL(this.origin)).hostname
+    originDomain() {
+      return new URL(this.origin).hostname
     },
-    originIcon () {
+    originIcon() {
       return `https://s2.googleusercontent.com/s2/favicons?domain_url=${this.origin}`
+    },
+    ethereumChains() {
+      return buildConfig.chains.filter(isEthereumChain)
     }
   },
   methods: {
     ...mapActions(['replyOriginAccess']),
-    async reply (allowed) {
+    async reply(allowed) {
       await this.replyOriginAccess({
         origin: this.origin,
         allowed,
@@ -93,12 +156,15 @@ export default {
 
       window.close()
     },
-    onAccountSelected ({ account }) {
+    onAccountSelected({ account }) {
       this.selectedAccount = account
+    },
+    onChainSelected(chain) {
+      this.selectedChain = chain
     }
   },
-  created () {
-    this.selectedAccount = this.accountsData.filter(account => account.chain === this.chain)[0]
+  created() {
+    this.selectedAccount = this.accountsData.filter((account) => account.chain === this.chain)[0]
   }
 }
 </script>
@@ -126,7 +192,6 @@ export default {
   .main-content {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 
     .asset-list-header {
       display: flex;

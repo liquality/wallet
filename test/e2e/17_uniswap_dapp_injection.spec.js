@@ -40,9 +40,12 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
       ethereumChainId = 3
       arbitrumChainId = 421611
     }
-    // Web3 toggle on
+    // Default web3 option toggled on
     await overviewPage.ClickWeb3WalletToggle(page)
-    await page.waitForTimeout(1000)
+    await page.waitForTimeout(2000)
+    // Connected dapp option
+    await page.click('#connect_dapp_main_option')
+    await page.waitForSelector('.v-switch-core', { visible: true })
   })
   afterEach(async () => {
     await browser.close()
@@ -77,6 +80,9 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
       expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(null)
     }
     await connectRequestWindow.click('#ETHEREUM')
+    // click Next button
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     // Check web3 status as connected
     const connectedChainDetails = await dappPage.evaluate(async () => {
@@ -125,7 +131,8 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
       expect(e, 'Uniswap injection ARBITRUM not listed, connect request window loading issue.....').equals(null)
     }
     await connectRequestWindow.click('#ARBITRUM')
-    // Check connect button is enabled
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     // Check web3 status as connected
@@ -139,5 +146,7 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
     expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(arbitrumChainId)
     expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
       .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
+
+    await page.bringToFront()
   })
 })

@@ -15,7 +15,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Import wallet-["MAINNET","TESTNET"]', async () => {
+describe('Import wallet-["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -40,9 +40,10 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
-      'Import wallet continue button has been disabled if the mnemonic is revered change')
-      .contains('disabled')
+    expect(
+      await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
+      'Import wallet continue button has been disabled if the mnemonic is revered change'
+    ).contains('disabled')
   })
   // https://www.notion.so/Wallet-should-validate-mnemonic-per-BIP-39-dac68dd41c664f24a7b4e657fc546281
   it('02-Import wallet with random numbers (phrase 12 words) and check continue is disabled', async () => {
@@ -54,9 +55,10 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
-      'Import wallet continue button has been disabled if the mnemonic is revered change')
-      .contains('disabled')
+    expect(
+      await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
+      'Import wallet continue button has been disabled if the mnemonic is revered change'
+    ).contains('disabled')
   })
   it('03-Import wallet with random seed (phrase 12 words) and check continue is disabled', async () => {
     const seedWords = 'PSYOF MLIVD WYKYV LTSXE YJKAS AORWH AEHMI LITKC JKKKK SQYGK AJJSO YCNSX'
@@ -67,9 +69,10 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
-      'Import wallet continue button has been disabled if the mnemonic is revered change')
-      .contains('disabled')
+    expect(
+      await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
+      'Import wallet continue button has been disabled if the mnemonic is revered change'
+    ).contains('disabled')
   })
   it('04-Import wallet with random seed (phrase 12 words) and check continue is disabled', async () => {
     const seedWords = 'spawp cage misery pave blue uncle pilot upon talent caution return fat'
@@ -80,14 +83,16 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
-      'Import wallet continue button has been disabled if the mnemonic is revered change')
-      .contains('disabled')
+    expect(
+      await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
+      'Import wallet continue button has been disabled if the mnemonic is revered change'
+    ).contains('disabled')
   })
   it('05-Import wallet with random seed (phrase 12 words reverse order) and check continue is disabled', async () => {
     // correct one - seminar amount airport narrow noble uncle inside matrix short moral change donor
     // changed order - seminar amount airport narrow noble uncle inside matrix short moral donor change
-    const seedWords = 'seminar amount airport narrow noble uncle inside matrix short moral donor change'
+    const seedWords =
+      'seminar amount airport narrow noble uncle inside matrix short moral donor change'
     const enterWord = seedWords.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')
     for (let i = 0; i < enterWord.length; i++) {
@@ -95,9 +100,10 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
-      'Import wallet continue button has been disabled if the mnemonic is revered change')
-      .contains('disabled')
+    expect(
+      await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
+      'Import wallet continue button has been disabled if the mnemonic is revered change'
+    ).contains('disabled')
   })
   it('06-Import wallet with correct mnemonic (phrase 12 words) and check continue is enabled', async () => {
     const seedWords = 'ski crush picture rail time lion receive biology hire egg volume inner'
@@ -115,7 +121,8 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
     await page.waitForSelector('#word_button_group', { visible: true })
     await page.click('#twenty_four_words_option')
     // check continue button has been disabled
-    const seedWords = 'correce paper dust pyramid quarter legal test legend solar knife rack finish because list confirm expose sniff sure plastic humor eight mask company mosquito'
+    const seedWords =
+      'correce paper dust pyramid quarter legal test legend solar knife rack finish because list confirm expose sniff sure plastic humor eight mask company mosquito'
     const enterWord = seedWords.split(' ')
     const seedsWordsCount = await page.$$('#import_wallet_word')
     for (let i = 0; i < enterWord.length; i++) {
@@ -123,39 +130,33 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
       await wordInput.type(enterWord[i])
     }
     // Continue button has been Disabled
-    expect(await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
-      'Import wallet continue button has been disabled if the mnemonic is revered change')
-      .contains('disabled')
+    expect(
+      await page.$eval('#import_wallet_continue_button', (el) => el.getAttribute('disabled')),
+      'Import wallet continue button has been disabled if the mnemonic is revered change'
+    ).contains('disabled')
   })
-  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path-["PULL_REQUEST_TEST"]', async () => {
+  it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path["PULL_REQUEST_TEST"]', async () => {
     await homePage.EnterSeedWords(page)
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
+    await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the total assets on overview screen.
     await overviewPage.ValidateTotalAssets(page, false) // 10 assets
     // Check the currency
-    expect(await overviewPage.GetCurrency(page),
-      'Wallet stats has currency should be USD').contain('USD')
+    expect(await overviewPage.GetCurrency(page), 'Wallet stats has currency should be USD').contain(
+      'USD'
+    )
 
     // Check the Total amount - 10s wait to load amount
-    let totalAmount
-    totalAmount = await overviewPage.GetTotalLiquidity(page)
-    console.log('total wallet fiat amount', parseInt(totalAmount, 10))
-    await page.waitForTimeout(120000)
-    totalAmount = await overviewPage.GetTotalLiquidity(page)
-    console.log('total wallet fiat amount after 2 min wait', parseInt(totalAmount, 10))
-    await testUtil.takeScreenshot(page, 'ethAddress-takeScreenshot')
-    expect(parseInt(totalAmount, 10), 'Funds in my wallet should be greater than 0 USD').greaterThan(0)
-    console.log('After Import wallet, the funds in the wallet:', totalAmount)
+    let totalAmount = await overviewPage.GetTotalLiquidity(page)
+    if (totalAmount === 0) {
+      await testUtil.takeScreenshot(page, 'balance-total-is-zero')
+    }
+    expect(totalAmount, 'Funds in my wallet should be greater than 0 USD').greaterThan(0)
 
     // GET the ETHEREUM assert Address
     const ethAddress = await overviewPage.GetAssertAddress(page, 'ETHEREUM')
@@ -164,8 +165,10 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
     const rskAddress = await overviewPage.GetAssertAddress(page, 'RSK')
     assert.isNotEmpty(rskAddress, 'RSK address should not be empty')
     // expect(rskAddress, 'RSK address should not be null').not.to.be.empty
-    expect(rskAddress, `ETH address ${ethAddress} & RSK address ${rskAddress} should be equal if balance is greater than 0`)
-      .equals(ethAddress)
+    expect(
+      rskAddress,
+      `ETH address ${ethAddress} & RSK address ${rskAddress} should be equal if balance is greater than 0`
+    ).equals(ethAddress)
 
     // Check RSK & ERC20 tokens
     const rskTokens = ['RBTC', 'SOV', 'FISH']
@@ -177,7 +180,7 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
       }
     }
   })
-  it('Import wallet with (24 seed words) and see balance', async () => {
+  it('Import wallet with (24 seed words) and see balance["PULL_REQUEST_TEST"]', async () => {
     // Enter seed words and submit, select 24 seed option
     await page.waitForSelector('#word_button_group', { visible: true })
     await page.click('#twenty_four_words_option')
@@ -191,13 +194,14 @@ describe('Import wallet-["MAINNET","TESTNET"]', async () => {
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page)
+    await overviewPage.SelectNetwork(page,'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
     await overviewPage.ValidateTotalAssets(page, false) // 9 assets
     // Check the currency
-    expect(await overviewPage.GetCurrency(page),
-      'Wallet stats has currency should be USD').contain('USD')
+    expect(await overviewPage.GetCurrency(page), 'Wallet stats has currency should be USD').contain(
+      'USD'
+    )
   })
 })

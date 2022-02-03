@@ -5,7 +5,7 @@ import { assets } from '@liquality/cryptoassets'
 import { connectRemote } from './terra-injection'
 
 class Background {
-  constructor (store) {
+  constructor(store) {
     this.store = store
     this.internalConnections = []
     this.externalConnections = []
@@ -13,7 +13,7 @@ class Background {
     this.subscribeToMutations()
     this.subscribeToWalletChanges()
 
-    handleConnection(connection => {
+    handleConnection((connection) => {
       const { url } = connection.sender
       const isInternal = url.startsWith(getRootURL())
 
@@ -29,9 +29,9 @@ class Background {
     })
   }
 
-  subscribeToMutations () {
-    this.store.subscribe(mutation => {
-      this.internalConnections.forEach(connection => {
+  subscribeToMutations() {
+    this.store.subscribe((mutation) => {
+      this.internalConnections.forEach((connection) => {
         let { type } = mutation
 
         if (type.startsWith(connection.name)) return
@@ -43,29 +43,40 @@ class Background {
     })
   }
 
-  getChainIds (network) {
+  getChainIds(network) {
     return buildConfig.chains.reduce((chainIds, chain) => {
-      return Object.assign({}, chainIds, { [chain]: ChainNetworks[chain][network].chainId })
+      return Object.assign({}, chainIds, {
+        [chain]: ChainNetworks[chain][network].chainId
+      })
     }, {})
   }
 
-  subscribeToWalletChanges () {
+  subscribeToWalletChanges() {
     this.store.subscribe((mutation, state) => {
       if (mutation.type === 'CHANGE_ACTIVE_NETWORK') {
-        this.externalConnections.forEach(connection => {
+        this.externalConnections.forEach((connection) => {
           connection.postMessage({
             id: 'liqualityChainChanged',
             data: { chainIds: this.getChainIds(state.activeNetwork) }
           })
         })
       }
+
+      if (mutation.type === 'ADD_EXTERNAL_CONNECTION') {
+        this.externalConnections.forEach((connection) => {
+          connection.postMessage({
+            id: 'liqualityAccountsChanged',
+            data: {}
+          })
+        })
+      }
     })
   }
 
-  onInternalConnection (connection) {
+  onInternalConnection(connection) {
     this.internalConnections.push(connection)
 
-    connection.onMessage.addListener(message => this.onInternalMessage(connection, message))
+    connection.onMessage.addListener((message) => this.onInternalMessage(connection, message))
 
     connection.onDisconnect.addListener(() => {
       this.onInternalDisconnect(connection)
@@ -74,28 +85,30 @@ class Background {
 
     this.bindMutation(connection)
 
-    this.store.restored.then(() => connection.postMessage({
-      type: 'REHYDRATE_STATE',
-      data: this.store.state
-    }))
+    this.store.restored.then(() =>
+      connection.postMessage({
+        type: 'REHYDRATE_STATE',
+        data: this.store.state
+      })
+    )
   }
 
-  onExternalConnection (connection) {
+  onExternalConnection(connection) {
     this.externalConnections.push(connection)
 
-    connection.onMessage.addListener(message => this.onExternalMessage(connection, message))
+    connection.onMessage.addListener((message) => this.onExternalMessage(connection, message))
 
     connection.onDisconnect.addListener(() => {
       this.onExternalDisconnect(connection)
     })
   }
 
-  bindMutation (connection) {
+  bindMutation(connection) {
     const { name } = connection
     const { _mutations: mutations } = this.store
 
     Object.entries(mutations).forEach(([type, funcList]) => {
-      const isProxyMutation = this.internalConnections.some(conn => type.startsWith(conn.name))
+      const isProxyMutation = this.internalConnections.some((conn) => type.startsWith(conn.name))
 
       if (!isProxyMutation) {
         mutations[name + type] = funcList
@@ -103,37 +116,43 @@ class Background {
     })
   }
 
-  unbindMutation (connection) {
+  unbindMutation(connection) {
     const { name } = connection
     const { _mutations: mutations } = this.store
 
-    Object.entries(mutations).forEach(([type, funcList]) => {
+    Object.entries(mutations).forEach(([type]) => {
       if (type.startsWith(name)) {
         delete mutations[type]
       }
     })
   }
 
-  onInternalDisconnect (connection) {
-    const index = this.internalConnections.findIndex(conn => conn.name === connection.name)
+  onInternalDisconnect(connection) {
+    const index = this.internalConnections.findIndex((conn) => conn.name === connection.name)
     if (index !== -1) this.internalConnections.splice(index, 1)
   }
 
-  onInternalMessage (connection, { id, type, data }) {
+  onInternalMessage(connection, { id, type, data }) {
     switch (type) {
       case 'ACTION_REQUEST':
-        this.store.dispatch(data.type, data.payload)
-          .then(result => ({ result }))
-          .catch(error => {
-            console.error(error) /* eslint-disable-line */
+        this.store
+          .dispatch(data.type, data.payload)
+          .then((result) => ({ result }))
+          .catch((error) => {
+            console.error(error)
             return { error: error.message }
           })
-          .then(response => {
-            connection.postMessage({
-              id,
-              type: 'ACTION_RESPONSE',
-              data: response
-            })
+          .then((response) => {
+            try {
+              connection.postMessage({
+                id,
+                type: 'ACTION_RESPONSE',
+                data: response
+              })
+            } catch (e) {
+              // Guard against popup being disconnected
+              console.warn(e)
+            }
           })
         break
 
@@ -146,12 +165,12 @@ class Background {
     }
   }
 
-  onExternalMessage (connection, { id, type, data }) {
+  onExternalMessage(connection, { id, type, data }) {
     const { url } = connection.sender
     const { origin } = new URL(url)
     const { externalConnections, activeWalletId, injectEthereumChain } = this.store.state
 
-    let setDefault = false
+    let setDefaultEthereum = false
     let { chain, asset } = data
     if (asset) {
       chain = assets[asset].chain
@@ -162,17 +181,18 @@ class Background {
         const defaultAccount = this.store.getters.accountItem(defaultAccountId)
         if (defaultAccount) {
           chain = defaultAccount.chain
-          setDefault = true
+          setDefaultEthereum = true
         }
       }
     }
     if (!chain) {
       chain = injectEthereumChain
-      setDefault = true
+      setDefaultEthereum = true
     }
 
-    const allowed = Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
-                    Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
+    const allowed =
+      Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
+      Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
 
     // Add `accountId` into the request if allowed
     if (allowed) {
@@ -196,12 +216,19 @@ class Background {
           return
         }
 
-        this.storeProxy(id, connection, 'requestOriginAccess', { origin, chain, setDefault })
+        this.storeProxy(id, connection, 'requestOriginAccess', {
+          origin,
+          chain,
+          setDefaultEthereum
+        })
         break
 
       case 'CAL_REQUEST':
         if (allowed || data.method === 'jsonrpc') {
-          this.storeProxy(id, connection, 'requestPermission', { origin, data })
+          this.storeProxy(id, connection, 'requestPermission', {
+            origin,
+            data
+          })
         } else {
           connection.postMessage({
             id,
@@ -227,19 +254,20 @@ class Background {
     }
   }
 
-  onExternalDisconnect (connection) {
-    const index = this.externalConnections.findIndex(conn => conn.name === connection.name)
+  onExternalDisconnect(connection) {
+    const index = this.externalConnections.findIndex((conn) => conn.name === connection.name)
     if (index !== -1) this.externalConnections.splice(index, 1)
   }
 
-  storeProxy (id, connection, action, data) {
-    this.store.dispatch(action, data)
-      .then(result => ({ result }))
-      .catch(error => {
+  storeProxy(id, connection, action, data) {
+    this.store
+      .dispatch(action, data)
+      .then((result) => ({ result }))
+      .catch((error) => {
         console.error(error) /* eslint-disable-line */
         return { error: error.toString() }
       })
-      .then(response => {
+      .then((response) => {
         connection.postMessage({
           id,
           data: response
@@ -247,7 +275,7 @@ class Background {
       })
   }
 
-  sendMutation (connection, mutation) {
+  sendMutation(connection, mutation) {
     connection.postMessage({
       type: 'MUTATION',
       data: mutation

@@ -14,7 +14,7 @@ let browser, page, dappPage
 const password = '123123123'
 const dappUrl = 'https://app.anchorprotocol.com/'
 
-describe('Terra Anchor Dapp injection-["MAINNET","TESTNET","PULL_REQUEST_TEST"]', async () => {
+describe('Terra Anchor Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -30,14 +30,10 @@ describe('Terra Anchor Dapp injection-["MAINNET","TESTNET","PULL_REQUEST_TEST"]'
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
+    await overviewPage.SelectNetwork(page, 'mainnet')
     // Web3 toggle on
     await overviewPage.ClickWeb3WalletToggle(page)
-    // Go to SOVRYN app
+    // Go to dpp app
     dappPage = await browser.newPage()
     await dappPage.setViewport({
       width: 1366,
@@ -78,7 +74,9 @@ describe('Terra Anchor Dapp injection-["MAINNET","TESTNET","PULL_REQUEST_TEST"]'
     expect(rskAccounts.length, '1 TERRA accounts should be listed under Connect request popupWindow')
       .to.equals(1)
     await connectRequestWindow.click('#TERRA')
-    // Check connect button is enabled
+    // click Next button
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
 
     await dappPage.waitForSelector('.wallet-balance', { visible: true, timeout: 60000 })

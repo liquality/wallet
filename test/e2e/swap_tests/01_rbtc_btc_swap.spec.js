@@ -16,7 +16,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 
-describe('RBTC->BTC swap-["TESTNET","PULL_REQUEST_TEST"]', async () => {
+describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -32,7 +32,7 @@ describe('RBTC->BTC swap-["TESTNET","PULL_REQUEST_TEST"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.SelectNetwork(page)
+    await overviewPage.SelectNetwork(page,'mainnet')
   })
   afterEach(async () => {
     await browser.close()
@@ -73,14 +73,14 @@ describe('RBTC->BTC swap-["TESTNET","PULL_REQUEST_TEST"]', async () => {
       'BTC->RBTC,Liquality swap Provider!!').oneOf(['Liquality'])
 
     // Click on SWAP Review button
-    await swapPage.ClickSwapReviewButton(page)
+    await swapPage.clickSwapReviewButton(page)
 
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(fromAsset)
     console.log(('SEND Swap value: ' + sendAmountValue))
     // Send confirm USD value
-    const swapSendAmountInDollar = await swapPage.GetSwapSendAmountInDollar(page)
+    const swapSendAmountInDollar = await swapPage.getSwapFromFiatValue(page)
     expect(swapSendAmountInDollar.trim(), `Send Network fee should not be $0.00 for ${fromAsset}`)
       .not.equals('$0.00')
     console.log(('User SEND Swap value in USD: ' + swapSendAmountInDollar))

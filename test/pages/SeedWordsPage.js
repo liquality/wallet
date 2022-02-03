@@ -8,15 +8,18 @@ class SeedWordsPage {
   async GetBackupSeedWords (page) {
     await page.waitForSelector('#backup-wallet_seed_wordlist', { visible: true })
     const allSeedPhases = await page.$$eval('#backup_seed_word', elements => elements.map(item => item.textContent))
+    if (allSeedPhases.length !== 12) {
+      throw new Error('Seed words not found')
+    }
 
-    const seed1 = allSeedPhases[0]
-    const seed5 = allSeedPhases[4]
-    const seed12 = allSeedPhases[11]
+    const seed_one = allSeedPhases[0]
+    const seed_five = allSeedPhases[4]
+    const seed_twelve = allSeedPhases[11]
 
     return {
-      seed1,
-      seed5,
-      seed12
+      seed1: seed_one,
+      seed5: seed_five,
+      seed12: seed_twelve
     }
   }
 
@@ -43,19 +46,13 @@ class SeedWordsPage {
    */
   async EnterSeedWords (page, seed1, seed5, seed12) {
     const timeout = 2000
-    const firstWord = await page.$x(`//button[text()='${seed1}']`)
-    await firstWord[0].click()
-    console.log('User enter 1st seed word')
+    await page.type('#first_seed_word_input',seed1)
     await page.waitForTimeout(timeout)
 
-    const fifthWord = await page.$x(`//button[text()='${seed5}']`)
-    await fifthWord[0].click()
-    console.log('User enter 5th seed word')
+    await page.type('#fifth_seed_word_input',seed5)
     await page.waitForTimeout(timeout)
 
-    const twelveWord = await page.$x(`//button[text()='${seed12}']`)
-    await twelveWord[0].click()
-    console.log('User enter 12th seed word')
+    await page.type('#twelveWord_seed_word_input',seed12)
     await page.waitForTimeout(timeout)
   }
 

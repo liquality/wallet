@@ -33,10 +33,6 @@ if (process.env.NODE_ENV === 'mainnet') {
       // overview page
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
-      // Select correct network based on Env
-      if (process.env.NODE_ENV === 'mainnet') {
-        await overviewPage.SelectNetwork(page, 'mainnet')
-      }
     })
     afterEach(async () => {
       await browser.close()
@@ -62,15 +58,94 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
       await page.click(`#${toAsset.coin}`)
       // Enter RSK amount
-      await swapPage.EnterSendAmountOnSwap(page, '0.0000001')
+      // await swapPage.EnterSendAmountOnSwap(page, '0.0000001')
       await page.waitForSelector('#selectedQuote_provider', {
         visible: true,
         timeout: 60000
       })
+      // Validate available balance
+      const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
+      expect(availableBalance, `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`).to.be.above(
+        0
+      )
       await page.waitForTimeout(5000)
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'RBTC->SOV, Supporting source should be chosen!')
         .oneOf(['Sovyrn'])
+      // validate Send & To fiat values
+      const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
+      expect(
+        sendFromFiat,
+        `${fromAsset}->${toFiat}) swap, Send fiat amount should be correct!`
+      ).not.equals('$0.00')
+      expect(
+        sendFromFiat,
+        `${fromAsset}->${toFiat}) swap, To fiat amount should be correct!`
+      ).not.equals('NaN')
+      // validate Receive fiat amount
+      expect(
+        toFiat,
+        `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
+      ).not.equals('$0.00')
+      expect(
+        toFiat,
+        `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
+      ).not.equals('NaN')
+    })
+    it('Sovryn AMM(RBTC->RIF) quote check', async () => {
+      const fromAsset = 'RBTC'
+      const toAsset = {
+        chain: 'RSK',
+        coin: 'RIF'
+      }
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
+      await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+      await page.click(`#${fromAsset}_swap_button`)
+      // Validate min SEND amount from text field & check Min is Active
+      const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
+      expect(swapSendAmountField, `${fromAsset} to ${toAsset} SWAP min value not set in input`)
+        .not.equals('0.0000')
+      await swapPage.ClickOnMin(page)
+      // Select 2nd Pair
+      await page.click('.swap-receive-main-icon')
+      await page.waitForSelector(`#${toAsset.chain}`, { visible: true })
+      await page.click(`#${toAsset.chain}`)
+      await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
+      await page.click(`#${toAsset.coin}`)
+      // Enter RSK amount
+      // await swapPage.EnterSendAmountOnSwap(page, '0.0000001')
+      await page.waitForSelector('#selectedQuote_provider', {
+        visible: true,
+        timeout: 60000
+      })
+      // Validate available balance
+      const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
+      expect(availableBalance, `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`).to.be.above(
+        0
+      )
+      await page.waitForTimeout(5000)
+      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+        'RBTC->SOV, Supporting source should be chosen!')
+        .oneOf(['Sovyrn'])
+      // validate Send & To fiat values
+      const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
+      expect(
+        sendFromFiat,
+        `${fromAsset}->${toFiat}) swap, Send fiat amount should be correct!`
+      ).not.equals('$0.00')
+      expect(
+        sendFromFiat,
+        `${fromAsset}->${toFiat}) swap, To fiat amount should be correct!`
+      ).not.equals('NaN')
+      // validate Receive fiat amount
+      expect(
+        toFiat,
+        `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
+      ).not.equals('$0.00')
+      expect(
+        toFiat,
+        `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
+      ).not.equals('NaN')
     })
     it('Sovryn AMM(SOV->FISH) quote check', async () => {
       const fromAsset = 'SOV'

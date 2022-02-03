@@ -2,7 +2,7 @@
   <div class="swap-receive-container">
     <div class="swap-receive-main">
       <div class="swap-receive-main-input-container">
-        <div class="swap-send-main-input">
+        <div class="swap-receive-main-input">
           <div class="swap-receive-top">
             <div class="swap-receive-top-label">Receive</div>
             <div class="swap-receive-top-amount">
@@ -11,17 +11,14 @@
                 @click="toggleShowAmountsFiat"
                 :disabled="isNaN(receiveAmountFiat)"
               >
-                <span
-                  v-if="showAmountsInFiat"
-                  :style="getAssetColorStyle(toAsset)"
-                >
+                <span v-if="showAmountsInFiat" :style="getAssetColorStyle(toAsset)">
                   {{ `${toAsset} ${receiveAmount}` }}
                 </span>
-                <span v-else> {{formatFiatUI(formatFiat(receiveAmountFiat)) }} </span>
+                <span v-else> {{ formatFiatUI(formatFiat(receiveAmountFiat)) }} </span>
               </button>
             </div>
           </div>
-          <div class="input-group mb-3" v-if="showAmountsInFiat && !isNaN(receiveAmountFiat)">
+          <div class="input-group" v-if="showAmountsInFiat && !isNaN(receiveAmountFiat)">
             <span class="input-group-text">$</span>
             <input
               type="number"
@@ -46,7 +43,7 @@
         <AccountTooltip :account="account" :asset="toAsset">
           <div class="swap-receive-main-icon" id="swap-receive-main-icon" @click="assetIconClick">
             <img :src="getAssetIcon(toAsset)" class="asset-icon" />
-            <span class="asset-name"  :id="`${toAsset}_swap_receive_pair_asset`">
+            <span class="asset-name" :id="`${toAsset}_swap_receive_pair_asset`">
               {{ toAsset }}
             </span>
             <div>
@@ -70,24 +67,22 @@ export default {
     ChevronRightIcon,
     AccountTooltip
   },
-  data () {
+  data() {
     return {
       showAmountsInFiat: false
     }
   },
-  props: [
-    'account',
-    'toAsset',
-    'receiveAmount',
-    'receiveAmountFiat',
-    'disabled'
-  ],
-  created () {},
+  props: ['account', 'toAsset', 'receiveAmount', 'receiveAmountFiat', 'disabled'],
+  created() {
+    this.someshit = true
+  },
   computed: {
-    receiveAmountFiatValue () {
-      return isNaN(this.receiveAmountFiat) ? this.receiveAmountFiat : ('$' + dpUI(this.receiveAmountFiat, 2))
+    receiveAmountFiatValue() {
+      return isNaN(this.receiveAmountFiat)
+        ? this.receiveAmountFiat
+        : '$' + dpUI(this.receiveAmountFiat, 2)
     },
-    receiveAmountValue () {
+    receiveAmountValue() {
       return this.receiveAmount.gt(0) ? dpUI(this.receiveAmount) : ''
     }
   },
@@ -96,10 +91,10 @@ export default {
     formatFiatUI,
     getAssetColorStyle,
     getAssetIcon,
-    toggleShowAmountsFiat () {
+    toggleShowAmountsFiat() {
       this.showAmountsInFiat = !this.showAmountsInFiat
     },
-    assetIconClick () {
+    assetIconClick() {
       this.$emit('to-asset-click')
     }
   }
@@ -128,12 +123,22 @@ export default {
     flex-direction: column;
     .swap-receive-main-input-container {
       display: flex;
-      justify-content: space-between;
+      align-items: flex-end;
+      justify-content: flex-start;
 
       .swap-receive-main-input {
         display: flex;
         flex-direction: column;
         max-width: 190px;
+
+        .input-group {
+          align-items: flex-end;
+        }
+      }
+
+      .form-control {
+        margin-top: 5px;
+        text-align: right;
       }
     }
 

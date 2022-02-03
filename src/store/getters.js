@@ -33,7 +33,8 @@ const TESTNET_ASSETS = [
   'SUSHI',
   'LUNA',
   'UST',
-  'ANC'
+  'ANC',
+  'FUSE'
 ].reduce((assets, asset) => {
   return Object.assign(assets, {
     [asset]: {
@@ -43,8 +44,12 @@ const TESTNET_ASSETS = [
   })
 }, {})
 
+const mapLegacyProvidersToSupported = {
+  oneinchV3: 'oneinchV4'
+}
+
 export default {
-  client (state, getters) {
+  client(state, getters) {
     return ({
       network,
       walletId,
@@ -57,7 +62,7 @@ export default {
       const account = accountId ? getters.accountItem(accountId) : null
       const _accountType = account?.type || accountType
       const _accountIndex = account?.index || accountIndex
-      const { chain } = getters.cryptoassets[asset]
+      const { chain } = getters.cryptoassets[asset] || cryptoassets[asset]
       let derivationPath
       // when we ask for ledger accounts from the ledger device we don't have the derivation path
       // the !account doesn't exist in this case or if we call the getter with accountId equals to null
@@ -66,163 +71,165 @@ export default {
       } else {
         derivationPath = account.derivationPath
       }
-      const cacheKey = [
-        asset,
-        chain,
-        network,
-        walletId,
-        derivationPath,
-        _accountType
-      ].join('-')
+      const cacheKey = [asset, chain, network, walletId, derivationPath, _accountType].join('-')
 
       if (useCache) {
         const cachedClient = clientCache[cacheKey]
         if (cachedClient) return cachedClient
       }
 
-      const { mnemonic } = state.wallets.find(w => w.id === walletId)
+      const { mnemonic } = state.wallets.find((w) => w.id === walletId)
       const client = createClient(asset, network, mnemonic, _accountType, derivationPath)
       clientCache[cacheKey] = client
 
       return client
     }
   },
-  swapProvider (state) {
+  swapProvider() {
     return (network, providerId) => {
-      const cacheKey = [network, providerId]
+      const supportedProviderId = mapLegacyProvidersToSupported[providerId]
+        ? mapLegacyProvidersToSupported[providerId]
+        : providerId
+      const cacheKey = [network, supportedProviderId]
 
       const cachedSwapProvider = swapProviderCache[cacheKey]
       if (cachedSwapProvider) return cachedSwapProvider
 
-      const swapProvider = createSwapProvider(network, providerId)
+      const swapProvider = createSwapProvider(network, supportedProviderId)
       swapProviderCache[cacheKey] = swapProvider
 
       return swapProvider
     }
   },
-  historyItemById (state) {
-    return (network, walletId, id) => state.history[network][walletId].find(i => i.id === id)
+  historyItemById(state) {
+    return (network, walletId, id) => state.history[network][walletId].find((i) => i.id === id)
   },
-  cryptoassets (state) {
+  cryptoassets(state) {
     const { activeNetwork, activeWalletId } = state
 
     const baseAssets = state.activeNetwork === 'testnet' ? TESTNET_ASSETS : cryptoassets
 
-    const customAssets = state.customTokens[activeNetwork]?.[activeWalletId]?.reduce((assets, token) => {
-      return Object.assign(assets, {
-        [token.symbol]: {
-          ...baseAssets.DAI, // Use DAI as template for custom tokens
-          ...token,
-          code: token.symbol
-        }
-      })
-    }, {})
+    const customAssets = state.customTokens[activeNetwork]?.[activeWalletId]?.reduce(
+      (assets, token) => {
+        return Object.assign(assets, {
+          [token.symbol]: {
+            ...baseAssets.DAI, // Use DAI as template for custom tokens
+            ...token,
+            code: token.symbol
+          }
+        })
+      },
+      {}
+    )
 
     return Object.assign({}, baseAssets, customAssets)
   },
-  networkAccounts (state) {
+  networkAccounts(state) {
     const { activeNetwork, activeWalletId, accounts } = state
-    return accounts[activeWalletId]?.[activeNetwork]?.filter(a => a.enabled) || []
+    return accounts[activeWalletId]?.[activeNetwork]?.filter((a) => a.enabled) || []
   },
-  networkAssets (state) {
+  networkAssets(state) {
     const { enabledAssets, activeNetwork, activeWalletId } = state
     return enabledAssets[activeNetwork][activeWalletId]
   },
-  allNetworkAssets (state) {
+  allNetworkAssets(state) {
     return Networks.reduce((result, network) => {
       return uniq(result.concat(state.enabledAssets[network][state.activeWalletId]))
     }, [])
   },
-  activity (state) {
+  activity(state) {
     const { history, activeNetwork, activeWalletId } = state
     if (!history[activeNetwork]) return []
     if (!history[activeNetwork][activeWalletId]) return []
     return history[activeNetwork][activeWalletId].slice().reverse()
   },
-  totalFiatBalance (_state, getters) {
-    const { accountsData } = getters
+  totalFiatBalance(state, getters) {
+    const { activeNetwork, activeWalletId } = state
+    const { accountsData, accountFiatBalance } = getters
     return accountsData
-      .filter(a => a.type === 'default')
-      .map(a => a.totalFiatBalance)
-      .reduce((accum, balance) => {
-        return accum.plus(BN(balance || 0))
+      .filter((a) => a.type === 'default' && a.enabled)
+      .map((a) => accountFiatBalance(activeWalletId, activeNetwork, a.id))
+      .reduce((accum, rawBalance) => {
+        const convertedBalance = BN(rawBalance)
+        const balance = convertedBalance.isNaN() ? 0 : convertedBalance
+        return accum.plus(balance || 0)
       }, BN(0))
   },
-  accountItem (state, getters) {
+  accountItem(state, getters) {
     const { accountsData } = getters
     return (accountId) => {
-      const account = accountsData.find(a => a.id === accountId && a.enabled)
+      const account = accountsData.find((a) => a.id === accountId && a.enabled)
       return account
     }
   },
-  accountsWithBalance (state, getters) {
+  accountsWithBalance(state, getters) {
     const { accountsData } = getters
-    return accountsData.map(account => {
-      const balances = Object.entries(account.balances)
-        .filter(([_, balance]) => BN(balance).gt(0))
-        .reduce((accum, [asset, balance]) => {
-          return {
-            ...accum,
-            [asset]: balance
-          }
-        }, {})
-      return {
-        ...account,
-        balances
-      }
-    }).filter(account => account.balances && Object.keys(account.balances).length > 0)
+    return accountsData
+      .map((account) => {
+        const balances = Object.entries(account.balances)
+          .filter(([, balance]) => BN(balance).gt(0))
+          .reduce((accum, [asset, balance]) => {
+            return {
+              ...accum,
+              [asset]: balance
+            }
+          }, {})
+        return {
+          ...account,
+          balances
+        }
+      })
+      .filter((account) => account.balances && Object.keys(account.balances).length > 0)
   },
-  accountsData (state, getters) {
+  accountsData(state, getters) {
     const { accounts, activeNetwork, activeWalletId, enabledChains } = state
     const { accountFiatBalance, assetFiatBalance } = getters
     return accounts[activeWalletId]?.[activeNetwork]
-      .filter(account => account.assets &&
-              account.enabled &&
-              account.assets.length > 0 &&
-              enabledChains[activeWalletId]?.[activeNetwork]?.includes(account.chain)
+      .filter(
+        (account) =>
+          account.assets &&
+          account.enabled &&
+          account.assets.length > 0 &&
+          enabledChains[activeWalletId]?.[activeNetwork]?.includes(account.chain)
       )
-      .map(account => {
+      .map((account) => {
         const totalFiatBalance = accountFiatBalance(activeWalletId, activeNetwork, account.id)
-        const fiatBalances = Object.entries(account.balances)
-          .reduce((accum, [asset, balance]) => {
-            const fiat = assetFiatBalance(asset, balance)
-            return {
-              ...accum,
-              [asset]: fiat
-            }
-          }, {})
+        const fiatBalances = Object.entries(account.balances).reduce((accum, [asset, balance]) => {
+          const fiat = assetFiatBalance(asset, balance)
+          return {
+            ...accum,
+            [asset]: fiat
+          }
+        }, {})
         return {
           ...account,
           fiatBalances,
           totalFiatBalance
         }
-      }).sort((a, b) => {
-        if (
-          a.type.includes('ledger') ||
-          a.chain < b.chain
-        ) {
+      })
+      .sort((a, b) => {
+        if (a.type.includes('ledger') || a.chain < b.chain) {
           return -1
         }
 
         return 0
       })
   },
-  accountFiatBalance (state, getters) {
+  accountFiatBalance(state, getters) {
     const { accounts } = state
     const { assetFiatBalance } = getters
     return (walletId, network, accountId) => {
-      const account = accounts[walletId]?.[network].find(a => a.id === accountId)
+      const account = accounts[walletId]?.[network].find((a) => a.id === accountId)
       if (account) {
-        return Object.entries(account.balances)
-          .reduce((accum, [asset, balance]) => {
-            const fiat = assetFiatBalance(asset, balance)
-            return accum.plus(fiat || 0)
-          }, BN(0))
+        return Object.entries(account.balances).reduce((accum, [asset, balance]) => {
+          const fiat = assetFiatBalance(asset, balance)
+          return accum.plus(fiat || 0)
+        }, BN(0))
       }
       return BN(0)
     }
   },
-  assetFiatBalance (state) {
+  assetFiatBalance(state) {
     const { fiatRates } = state
     return (asset, balance) => {
       if (fiatRates && fiatRates[asset] && balance) {
@@ -232,7 +239,7 @@ export default {
       return null
     }
   },
-  chainAssets (state, getters) {
+  chainAssets(state, getters) {
     const { cryptoassets } = getters
 
     const chainAssets = Object.entries(cryptoassets).reduce((chains, [asset, assetData]) => {
@@ -243,7 +250,7 @@ export default {
     }, {})
     return chainAssets
   },
-  analyticsEnabled (state) {
+  analyticsEnabled(state) {
     if (state.analytics && state.analytics.acceptedDate != null) {
       return true
     }

@@ -1,5 +1,9 @@
 {
-  "extends": ["config:base"],
+  "extends": [
+    "config:base",
+    ":dependencyDashboard",
+    ":semanticCommitType(chore)"
+  ],
   "ignoreTests": true,
   "vulnerabilityAlerts": {
     "enabled": true
@@ -8,5 +12,19 @@
   "commitBody": "[skip ci]",
   "separateMajorMinor": true,
   "separateMultipleMajor": true,
-  "schedule": ["before 2am"]
+  "minor": {
+    "automerge": true
+  },
+  "patch": {
+    "automerge": true
+  },
+  "pin": {
+    "automerge": true
+  },
+  "lockFileMaintenance": {
+    "automerge": true
+  },
+  "schedule": [
+    "every weekend"
+  ]
 }

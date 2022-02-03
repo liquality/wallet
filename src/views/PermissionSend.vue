@@ -1,53 +1,69 @@
 <template>
   <div class="permission-send wrapper form text-center">
-    <div v-if="currentStep === 'inputs'"  class="wrapper_top form">
+    <div v-if="currentStep === 'inputs'" class="wrapper_top form">
       <div v-if="error" class="mt-4 text-danger"><strong>Error:</strong> {{ error }}</div>
       <div v-if="isApprove">
         <div class="form-group">
-        <label>{{label}}</label>
-        <label>{{subLabel}}</label>
-        <p class="confirm-value" :style="getAssetColorStyle(asset)">{{symbol}}</p>
-      </div>
-      <div class="form-group">
-        <label v-if="feeInUsdValue">Transaction fee {{feeInUsdValue}} USD</label>
-      </div>
+          <label>{{ label }}</label>
+          <label>{{ subLabel }}</label>
+          <p class="confirm-value" :style="getAssetColorStyle(asset)">
+            {{ symbol }}
+          </p>
+        </div>
+        <div class="form-group">
+          <label v-if="feeInUsdValue">Transaction fee {{ feeInUsdValue }} USD</label>
+        </div>
       </div>
 
       <div v-else class="wrapper_top form">
         <div class="form-group">
-          <label>{{label}}</label>
-          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{amount}} {{symbol}}</p>
-          <p class="text-muted">{{formatFiatUI(prettyFiatBalance(amount, fiatRates[asset]))}}</p>
+          <label>{{ label }}</label>
+          <p class="confirm-value" :style="getAssetColorStyle(asset)">{{ amount }} {{ symbol }}</p>
+          <p class="text-muted">
+            {{ formatFiatUI(prettyFiatBalance(amount, fiatRates[asset])) }}
+          </p>
         </div>
         <div class="form-group">
           <label>To</label>
-          <p class="confirm-value">{{shortAddress}}</p>
+          <p class="confirm-value">{{ shortAddress }}</p>
         </div>
         <div class="form-group">
-          <label v-if="feeInUsdValue">Transaction fee {{feeInUsdValue}} USD</label>
+          <label v-if="feeInUsdValue">Transaction fee {{ feeInUsdValue }} USD</label>
         </div>
         <div v-if="data" class="permission-send_data">
-          <label @click="toggleshowData"><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight class="permission-send_data_icon-right" v-else />Data</label>
-          <div class="permission-send_data_code" v-if="showData">{{data}}</div>
+          <label @click="toggleshowData"
+            ><ChevronDown v-if="showData" class="permission-send_data_icon-down" /><ChevronRight
+              class="permission-send_data_icon-right"
+              v-else
+            />Data</label
+          >
+          <div class="permission-send_data_code" v-if="showData">
+            {{ data }}
+          </div>
         </div>
-
       </div>
 
       <div class="form-group mt-4">
-        <label>Network Speed / Fee</label>
+        <label
+          >Network Speed / Fee
+          <span class="text-muted fee-info"
+            >({{ selectedFee }} / {{ feeInUnits }} {{ assetChain }})</span
+          ></label
+        >
         <div class="permission-send_fees">
           <FeeSelector
+            :totalFees="maxOptionActive ? maxSendFees : sendFees"
             :asset="asset"
             v-model="selectedFee"
             v-bind:fees="assetFees"
             v-bind:fiatRates="fiatRates"
             @custom-selected="onCustomFeeSelected(asset)"
-            />
+          />
         </div>
       </div>
     </div>
 
-    <div class="send" v-else-if="currentStep === 'custom-fees'">
+    <div class="send" v-else-if="currentStep === 'custom-fees' && !isEIP1559Fees">
       <CustomFees
         @apply="applyCustomFee"
         @update="setCustomFee"
@@ -60,10 +76,30 @@
       />
     </div>
 
+    <div class="send" v-else-if="currentStep === 'custom-fees' && isEIP1559Fees">
+      <CustomFeesEIP1559
+        @apply="applyCustomFee"
+        @update="setCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="assetChain"
+        :selected-fee="selectedFee"
+        :fees="assetFees"
+        :totalFees="maxOptionActive ? maxSendFees : sendFees"
+        :fiatRates="fiatRates"
+        :padLabels="true"
+      />
+    </div>
+
     <div v-if="currentStep === 'inputs'" class="wrapper_bottom">
       <div class="button-group">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">Cancel</button>
-        <button class="btn btn-primary btn-lg btn-icon" @click.stop="reply(true)" :disabled="loading">
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">
+          Cancel
+        </button>
+        <button
+          class="btn btn-primary btn-lg btn-icon"
+          @click.stop="reply(true)"
+          :disabled="loading"
+        >
           <SpinnerIcon class="btn-loading" v-if="loading" />
           <template v-else>Confirm</template>
         </button>
@@ -75,11 +111,17 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-import { unitToCurrency, chainToTokenAddressMap } from '@liquality/cryptoassets'
+import { unitToCurrency, chainToTokenAddressMap, ChainId } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
+import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { prettyBalance, prettyFiatBalance, formatFiatUI } from '@/utils/coinFormatter'
-import { getNativeAsset, getAssetColorStyle, tokenDetailProviders, estimateGas } from '@/utils/asset'
+import {
+  getNativeAsset,
+  getAssetColorStyle,
+  tokenDetailProviders,
+  estimateGas
+} from '@/utils/asset'
 import { parseTokenTx } from '@/utils/parseTokenTx'
 
 import { shortenAddress } from '@/utils/address'
@@ -100,9 +142,10 @@ export default {
     ChevronDown,
     ChevronRight,
     FeeSelector,
-    CustomFees
+    CustomFees,
+    CustomFeesEIP1559
   },
-  data () {
+  data() {
     return {
       showData: false,
       selectedFee: 'average',
@@ -127,23 +170,25 @@ export default {
     prettyFiatBalance,
     formatFiatUI,
     getAssetColorStyle,
-    onCustomFeeSelected () {
+    onCustomFeeSelected() {
       this.currentStep = 'custom-fees'
     },
-    cancelCustomFee () {
+    cancelCustomFee() {
       this.currentStep = 'inputs'
       this.selectedFee = 'average'
     },
-    toggleshowData () {
+    toggleshowData() {
       this.showData = !this.showData
     },
-    async getSymbol () {
+    async getSymbol() {
       const chain = cryptoassets[this.asset].chain
       const tokenAddress = this.request.args[0].to
 
-      try { // try to get token from cryptoassets
+      try {
+        // try to get token from cryptoassets
         this.symbol = chainToTokenAddressMap[chain][tokenAddress].code
-      } catch { // in case token doesn't exist in cryptoassets
+      } catch {
+        // in case token doesn't exist in cryptoassets
         try {
           const tokeData = await tokenDetailProviders[chain].getDetails(tokenAddress)
           this.symbol = tokeData.symbol + ' (Unverified)'
@@ -152,7 +197,7 @@ export default {
         }
       }
     },
-    async getLabel () {
+    async getLabel() {
       try {
         const txType = parseTokenTx(this.request.args[0]?.data)?.name || 'send'
 
@@ -162,7 +207,8 @@ export default {
             this.label = `${TRANSACTION_TYPES[txType]}`
             this.subLabel = this.request.origin
             return
-          } default: {
+          }
+          default: {
             this.label = TRANSACTION_TYPES.send
             return
           }
@@ -171,9 +217,14 @@ export default {
         this.label = TRANSACTION_TYPES.send
       }
     },
-    async reply (allowed) {
+    async reply(allowed) {
       const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
-      const optionsWithFee = { ...this.request.args[0], value: this.value, fee }
+      const optionsWithFee = {
+        ...this.request.args[0],
+        value: this.value,
+        fee,
+        feeLabel: this.selectedFee
+      }
 
       const requestWithFee = {
         ...this.request,
@@ -198,7 +249,7 @@ export default {
         this.loading = false
       }
     },
-    async _updateSendFees (amount) {
+    async _updateSendFees(amount) {
       if (!this.gas) {
         return
       }
@@ -208,7 +259,8 @@ export default {
         const sendFees = {}
 
         for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePerGas = BN(fee.fee).div(1e9)
+          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+          const feePerGas = BN(feePrice).div(1e9)
           const txCost = this.gas.times(feePerGas)
           sendFees[speed] = txCost
         }
@@ -220,7 +272,7 @@ export default {
         }
       }
     },
-    async estimateGas () {
+    async estimateGas() {
       let gas = this.request.args[0].gas
 
       if (!gas) {
@@ -235,8 +287,16 @@ export default {
 
       return BN(gas, 16)
     },
-    applyCustomFee ({ fee }) {
-      const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => speed !== 'custom' && speedFee.fee === fee)
+    applyCustomFee({ fee }) {
+      const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => {
+        const isLegacyFee = speedFee.fee === fee
+        const isEIP1559Fee =
+          fee.maxPriorityFeePerGas &&
+          speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas &&
+          speedFee.fee.maxFeePerGas === fee.maxFeePerGas
+
+        return speed !== 'custom' && (isLegacyFee || isEIP1559Fee)
+      })
       if (presetFee) {
         const [speed] = presetFee
         this.selectedFee = speed
@@ -244,7 +304,7 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = fee
+        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
         this.selectedFee = 'custom'
       }
       this.currentStep = 'inputs'
@@ -252,7 +312,7 @@ export default {
     updateSendFees: _.debounce(async function (amount) {
       await this._updateSendFees(amount)
     }, 800),
-    async updateMaxSendFees () {
+    async updateMaxSendFees() {
       await this._updateSendFees()
     },
     setCustomFee: _.debounce(async function ({ fee }) {
@@ -263,48 +323,50 @@ export default {
         this.updateSendFees(this.amount)
       }
     }, 800),
-    async calculateGas () {
+    async calculateGas() {
       this.gas = await this.estimateGas()
     }
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
-    ...mapGetters([
-      'client'
-    ]),
-    asset () {
+    ...mapGetters(['client']),
+    asset() {
       return this.request.asset
     },
-    assetChain () {
+    assetChain() {
       return getNativeAsset(this.asset)
     },
-    address () {
+    address() {
       return this.request.args[0].to
     },
-    shortAddress () {
+    shortAddress() {
       return this.address ? shortenAddress(this.address) : 'New Contract'
     },
-    value () {
+    isEIP1559Fees() {
+      return (
+        cryptoassets[this.asset].chain === ChainId.Ethereum ||
+        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
+      )
+    },
+    value() {
       // Parse SendOptions.value into BN
       const value = this.request.args[0].value
       return BN(value ? '0x' + value : 0)
     },
-    amount () {
+    amount() {
       if (!this.value) return 0
       return unitToCurrency(cryptoassets[this.asset], this.value).toNumber()
     },
-    data () {
+    data() {
       return this.request.args[0].data
     },
-    assetFees () {
+    assetFees() {
       const assetFees = {}
       if (this.customFee) {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
-        this.assetChain
-      ]
+      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
 
       if (fees) {
         Object.assign(assetFees, fees)
@@ -312,16 +374,16 @@ export default {
 
       return assetFees
     },
-    feesAvailable () {
+    feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
     },
-    request () {
+    request() {
       return {
         ...this.$route.query,
         args: JSON.parse(this.$route.query.args)
       }
     },
-    feeInUsdValue () {
+    feeInUsdValue() {
       if (!this.gas) {
         return
       }
@@ -331,15 +393,50 @@ export default {
       if (this.selectedFee === 'custom') {
         feePerGas = this.customFee
       } else {
-        feePerGas = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[this.selectedFee]?.fee
+        feePerGas =
+          this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[
+            this.selectedFee
+          ]?.fee
       }
+
+      feePerGas = feePerGas.suggestedBaseFeePerGas
+        ? feePerGas.suggestedBaseFeePerGas + feePerGas.maxPriorityFeePerGas
+        : feePerGas
 
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
 
       return prettyFiatBalance(txCost, this.fiatRates[this.assetChain])
+    },
+    feeInUnits() {
+      if (!this.gas) {
+        return
+      }
+
+      let feePerGas
+
+      if (this.selectedFee === 'custom') {
+        feePerGas = this.customFee
+      } else {
+        feePerGas =
+          this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[
+            this.selectedFee
+          ]?.fee
+      }
+
+      feePerGas = feePerGas.suggestedBaseFeePerGas
+        ? feePerGas.suggestedBaseFeePerGas + feePerGas.maxPriorityFeePerGas
+        : feePerGas
+
+      const txCost = this.gas.times(BN(feePerGas).div(1e9))
+      return txCost.dp(6)
+    },
+    calculateFee(fee) {
+      return fee.suggestedBaseFeePerGas
+        ? fee.suggestedBaseFeePerGas + fee.maxPriorityFeePerGas
+        : fee
     }
   },
-  async created () {
+  async created() {
     await Promise.all([
       this.getSymbol(),
       this.getLabel(),
@@ -352,7 +449,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .send {
   &_asset {
     &.input-group {
@@ -415,5 +512,13 @@ export default {
       font-size: $font-size-sm;
     }
   }
+}
+
+.fee-info {
+  font-size: 10px;
+}
+
+.wrapper {
+  padding: 10px !important;
 }
 </style>

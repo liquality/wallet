@@ -5,28 +5,18 @@ import { chains } from '@liquality/cryptoassets'
 
 export const accountCreator = (payload) => {
   const { network, walletId, account } = payload
-  const {
-    name,
-    alias,
-    chain,
-    index,
-    addresses,
-    assets,
-    balances,
-    type,
-    color
-  } = account
+  const { name, alias, chain, index, addresses, assets, balances, type, color } = account
 
-  const enabled = (
-    account.enabled !== null && account.enabled !== undefined
-  ) ? account.enabled : true
+  const enabled = account.enabled !== null && account.enabled !== undefined ? account.enabled : true
 
-  const _addresses = addresses.map(a => {
+  const _addresses = addresses.map((a) => {
     const address = chains[chain].formatAddress(a, network)
     return address.startsWith('0x') ? address.substring(2, address.length) : address
   })
 
-  const derivationPath = account.derivationPath ? account.derivationPath : getDerivationPath(chain, network, index, type)
+  const derivationPath = account.derivationPath
+    ? account.derivationPath
+    : getDerivationPath(chain, network, index, type)
   const id = uuidv4()
   const createdAt = Date.now()
 
@@ -74,7 +64,8 @@ export const chainDefaultColors = {
   solana: '#008080',
   polygon: '#8247E5',
   arbitrum: '#28A0EF',
-  terra: '#008080'
+  terra: '#008080',
+  fuse: '#46e8b6'
 }
 
 export const getAccountIcon = (chain) => {
@@ -87,7 +78,8 @@ export const getAccountIcon = (chain) => {
     solana: getAssetIcon('SOL'),
     polygon: getAssetIcon('polygon_account'),
     arbitrum: getAssetIcon('ARBITRUM'),
-    terra: getAssetIcon('TERRA')
+    terra: getAssetIcon('TERRA'),
+    fuse: getAssetIcon('FUSE')
   }[chain]
 }
 
@@ -101,13 +93,14 @@ export const getChainIcon = (chainId) => {
     solana: getAssetIcon('SOL'),
     polygon: getAssetIcon(`${chainId}_chain`),
     arbitrum: getAssetIcon('ARBITRUM'),
-    terra: getAssetIcon(`${chainId}_chain`)
+    terra: getAssetIcon(`${chainId}_chain`),
+    fuse: getAssetIcon('FUSE')
   }[chainId]
 }
 
 export const getNextAccountColor = (chain, index) => {
   const defaultColor = chainDefaultColors[chain]
-  const defaultIndex = accountColors.findIndex(c => c === defaultColor)
+  const defaultIndex = accountColors.findIndex((c) => c === defaultColor)
   if (defaultIndex === -1) {
     return defaultColor
   }

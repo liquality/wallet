@@ -13,7 +13,9 @@ export const enableTerraChain = {
       enabledChains[walletId] = {}
 
       for (const network of Networks) {
-        const accountExists = state.accounts[walletId][network].find(account => account.chain === ChainId.Terra)
+        const accountExists = state.accounts[walletId][network].find(
+          (account) => account.chain === ChainId.Terra
+        )
         if (accountExists) {
           accounts[walletId][network] = [...state.accounts[walletId][network]]
         } else {
@@ -42,7 +44,10 @@ export const enableTerraChain = {
         if (chainEnabled) {
           enabledChains[walletId][network] = [...state.enabledChains[walletId][network]]
         } else {
-          enabledChains[walletId][network] = [...state.enabledChains[walletId][network], ChainId.Terra]
+          enabledChains[walletId][network] = [
+            ...state.enabledChains[walletId][network],
+            ChainId.Terra
+          ]
         }
       }
     }
@@ -52,8 +57,10 @@ export const enableTerraChain = {
       enabledAssets[network] = {}
       for (const walletId in state.enabledAssets[network]) {
         enabledAssets[network][walletId] = [...state.enabledAssets[network][walletId]]
-        if (!enabledAssets[network][walletId].includes('LUNA')) enabledAssets[network][walletId].push('LUNA')
-        if (!enabledAssets[network][walletId].includes('UST')) enabledAssets[network][walletId].push('UST')
+        if (!enabledAssets[network][walletId].includes('LUNA'))
+          enabledAssets[network][walletId].push('LUNA')
+        if (!enabledAssets[network][walletId].includes('UST'))
+          enabledAssets[network][walletId].push('UST')
       }
     }
 

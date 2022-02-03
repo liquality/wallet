@@ -1,11 +1,6 @@
 <template>
   <div class="account-container">
-    <NavBar
-      showMenu="true"
-      showBack="true"
-      backPath="/wallet"
-      backLabel="Overview"
-    >
+    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
       <span class="account-title"
         ><img :src="getAssetIcon(asset)" class="asset-icon" /> {{ asset }}</span
       >
@@ -19,19 +14,14 @@
           :class="{ 'infinity-rotate': updatingBalances }"
         />
         <div class="account-container_balance">
-          <div
-            class="account-container_balance_fiat"
-            :id="`${asset}_fiat_value`"
-          >
-            <span v-if="fiatRates[asset]"> {{ formatFiatUI(formatFiat(fiat)) }} </span>
+          <div class="account-container_balance_fiat" :id="`${asset}_fiat_value`">
+            <span v-if="fiatRates[asset]">
+              {{ formatFiatUI(formatFiat(fiat)) }}
+            </span>
             <span v-else>&nbsp;</span>
           </div>
           <div>
-            <span
-              class="account-container_balance_value"
-              :id="`${asset}_balance_value`"
-              :style="{ fontSize: formatFontSize(balance) }"
-            >
+            <span class="account-container_balance_value" :id="`${asset}_balance_value`">
               {{ balance }}
             </span>
             <span class="account-container_balance_code">{{ asset }}</span>
@@ -44,7 +34,7 @@
             @click="copyAddress"
             v-tooltip.bottom="{
               content: addressCopied ? 'Copied!' : 'Click to copy',
-              hideOnTargetClick: false,
+              hideOnTargetClick: false
             }"
           >
             {{ shortenAddress(address) }}
@@ -63,10 +53,7 @@
         <div class="account-container_actions">
           <router-link :to="`/accounts/${accountId}/${asset}/send`">
             <button class="account-container_actions_button">
-              <div
-                class="account-container_actions_button_wrapper"
-                :id="`${asset}_send_button`"
-              >
+              <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`">
                 <SendIcon class="account-container_actions_button_icon" />
               </div>
               Send
@@ -74,14 +61,10 @@
           </router-link>
           <router-link :to="`/accounts/${accountId}/${asset}/swap`">
             <button class="account-container_actions_button">
-              <div
-                class="account-container_actions_button_wrapper"
-                :id="`${asset}_swap_button`"
-              >
+              <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
                 <SwapIcon
                   class="
-                    account-container_actions_button_icon
-                    account-container_actions_button_swap
+                    account-container_actions_button_icon account-container_actions_button_swap
                   "
                 />
               </div>
@@ -90,10 +73,7 @@
           </router-link>
           <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`">
             <button class="account-container_actions_button">
-              <div
-                class="account-container_actions_button_wrapper"
-                :id="`${asset}_receive_button`"
-              >
+              <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
                 <ReceiveIcon class="account-container_actions_button_icon" />
               </div>
               Receive
@@ -150,7 +130,7 @@ export default {
     TransactionList,
     EyeIcon
   },
-  data () {
+  data() {
     return {
       addressCopied: false,
       activityData: [],
@@ -169,52 +149,44 @@ export default {
       'fiatRates',
       'marketData'
     ]),
-    account () {
+    account() {
       return this.accountItem(this.accountId)
     },
-    fiat () {
+    fiat() {
       return this.account?.fiatBalances?.[this.asset] || BN(0)
     },
-    balance () {
+    balance() {
       return prettyBalance(this.account?.balances[this.asset] || 0, this.asset)
     },
-    markets () {
+    markets() {
       return this.marketData[this.activeNetwork][this.asset]
     },
-    assetHistory () {
+    assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
     },
-    addressLink () {
+    addressLink() {
       if (this.account) {
-        return getAddressExplorerLink(
-          this.address,
-          this.asset,
-          this.activeNetwork
-        )
+        return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
       }
 
       return '#'
     }
   },
   methods: {
-    ...mapActions([
-      'updateAccountBalance',
-      'getUnusedAddresses',
-      'trackAnalytics'
-    ]),
+    ...mapActions(['updateAccountBalance', 'getUnusedAddresses', 'trackAnalytics']),
     getAssetIcon,
     shortenAddress,
     formatFontSize,
     formatFiat,
     formatFiatUI,
-    async copyAddress () {
+    async copyAddress() {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true
       setTimeout(() => {
         this.addressCopied = false
       }, 2000)
     },
-    async refresh () {
+    async refresh() {
       if (this.updatingBalances) return
 
       this.updatingBalances = true
@@ -225,11 +197,11 @@ export default {
       })
       this.updatingBalances = false
     },
-    applyFilters (filters) {
+    applyFilters(filters) {
       this.activityData = applyActivityFilters([...this.assetHistory], filters)
     }
   },
-  async created () {
+  async created() {
     if (this.account && this.account.type.includes('ledger')) {
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
         this.account.addresses[0],
@@ -243,10 +215,7 @@ export default {
         accountId: this.accountId
       })
       const chainId = cryptoassets[this.asset]?.chain
-      this.address = chains[chainId]?.formatAddress(
-        addresses[0],
-        this.activeNetwork
-      )
+      this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
@@ -272,7 +241,7 @@ export default {
     })
   },
   watch: {
-    activeNetwork () {
+    activeNetwork() {
       this.activityData = [...this.assetHistory]
     }
   }
@@ -302,6 +271,7 @@ export default {
     &_value {
       line-height: 36px;
       margin-right: 8px;
+      font-size: 30px;
     }
 
     &_code {
