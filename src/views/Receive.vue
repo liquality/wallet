@@ -29,6 +29,11 @@
             Scan this QR code with a mobile wallet to send funds to this address.
           </p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
+          <div class="buy-crypto-container">
+            <div class="text-uppercase font-weight-bold">Or</div>
+            <BuyCryptoButton :asset="asset" :chain="chain" :address="address" />
+            <TransakBrand />
+          </div>
           <div v-if="faucet" class="testnet_message">
             <div>{{ faucet.name }} testnet faucet</div>
             <div id="receive_url">
@@ -68,6 +73,8 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import QRCode from 'qrcode'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
+import BuyCryptoButton from '@/components/BuyCrypto/BuyCryptoButton'
+import TransakBrand from '@/components/BuyCrypto/TransakBrand'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
@@ -79,7 +86,9 @@ export default {
     NavBar,
     CopyIcon,
     CopyWhiteIcon,
-    TickIcon
+    TickIcon,
+    BuyCryptoButton,
+    TransakBrand
   },
   data() {
     return {
@@ -101,6 +110,9 @@ export default {
     routeSource() {
       return this.$route.query.source || null
     },
+    chain() {
+      return cryptoassets[this.asset]?.chain
+    },
     chainName() {
       return {
         bitcoin: 'bitcoin',
@@ -112,7 +124,7 @@ export default {
         polyon: 'ethereum',
         terra: 'terra',
         fuse: 'ethereum'
-      }[cryptoassets[this.asset].chain]
+      }[this.chain]
     },
     faucet() {
       if (this.activeNetwork === 'testnet') {
@@ -175,8 +187,7 @@ export default {
         assets: [this.asset],
         accountId: this.accountId
       })
-      const chainId = cryptoassets[this.asset]?.chain
-      this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
+      this.address = chains[this.chain]?.formatAddress(addresses[0], this.activeNetwork)
     }
 
     const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')
@@ -236,8 +247,8 @@ export default {
   }
 
   &_qr {
-    margin: 25px auto 0 auto;
-    width: 196px;
+    margin: 17px auto 0 auto;
+    width: 120px;
   }
 
   &_address {
@@ -252,6 +263,18 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+  }
+
+  .buy-crypto-container {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.2em;
+
+    .btn,
+    & > div {
+      margin-top: 5px;
+    }
   }
 }
 </style>

@@ -4,5 +4,7 @@ export const state = () => ({
   analyticsStarted: false,
   analyticsOptInModalOpen: false,
   requestOriginAccessActive: false,
-  requestPermissionActive: false
+  requestPermissionActive: false,
+  buyCryptoModalData: {},
+  buyCryptoModalOpen: false
 })

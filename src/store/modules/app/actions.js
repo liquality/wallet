@@ -83,5 +83,14 @@ export const actions = {
   },
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
     commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
+  },
+  setBuyCryptoModalOpen: ({ commit }, { open, chain, asset, address }) => {
+    commit('SET_BUY_CRYPTO_MODAL_OPEN', { open, chain, asset, address })
+  },
+  openTransakWidgetTab: (_, { chain, asset, address }) => {
+    const widgetUrl = process.env.VUE_APP_TRANSAK_WIDGET_URL
+    const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
+    const url = `${widgetUrl}?apiKey=${apiKey}&network=${chain}&cryptoCurrencyCode=${asset}&walletAddress${address}`
+    chrome.tabs.create({ url })
   }
 }
