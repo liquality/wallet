@@ -853,7 +853,6 @@ export default {
       if (this.customFees[asset]) {
         assetFees.custom = { fee: this.customFees[asset] }
       }
-
       const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
       if (fees) {
         Object.assign(assetFees, fees)
@@ -1141,8 +1140,9 @@ export default {
     getTotalSwapFee(asset) {
       if (asset === this.assetChain) {
         return this.fromSwapFee
-      } else if (asset === this.toAssetChain && this.receiveFee) {
+      } else if ((asset === this.toAssetChain || asset === this.toAsset) && this.receiveFee) {
         return this.receiveFee
+
       }
     },
     getTotalSwapFeeInFiat(asset) {
