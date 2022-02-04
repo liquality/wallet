@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.54.2",
+  "version": "0.54.3",
   "private": true,
   "author": "Liquality <info@liquality.io>",
   "scripts": {
@@ -68,7 +68,7 @@
     "@uniswap/v2-core": "^1.0.1",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@uniswap/v2-sdk": "^3.0.0",
-    "@xchainjs/xchain-util": "0.5.0",
+    "@xchainjs/xchain-util": "0.5.1",
     "amplitude-js": "8.16.1",
     "bignumber.js": "9.0.2",
     "bip39": "^3.0.2",
@@ -80,7 +80,7 @@
     "crypto-js": "^4.0.0",
     "cryptocurrency-icons": "0.18.0",
     "date-fns": "2.28.0",
-    "ethers": "5.5.3",
+    "ethers": "5.5.4",
     "extension-port-stream": "^2.0.1",
     "human-standard-token-abi": "^2.0.0",
     "lodash-es": "^4.17.15",
