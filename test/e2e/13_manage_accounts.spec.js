@@ -95,7 +95,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     rskAccounts = await page.$$('#account-item-rsk')
     expect(rskAccounts.length).to.equals(3)
   })
-  it.only('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
+  it('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate ETH accounts on overview page first time
