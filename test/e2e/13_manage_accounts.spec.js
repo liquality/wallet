@@ -95,7 +95,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     rskAccounts = await page.$$('#account-item-rsk')
     expect(rskAccounts.length).to.equals(3)
   })
-  it.skip('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
+  it.only('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate ETH accounts on overview page first time
@@ -151,7 +151,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     const connectRequestWindow = await newPagePromise
     try {
       await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
-      await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true, timeout: 60000 })
+      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
     } catch (e) {
       await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-ethereum-connect-request-window-issue')
       expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(null)
