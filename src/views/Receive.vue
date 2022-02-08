@@ -147,7 +147,7 @@ export default {
           },
           ARBETH: {
             name: 'ARBETH',
-            url: 'https://faucet.rinkeby.io/'
+            url: 'https://faucet.paradigm.xyz/'
           },
           LUNA: {
             name: 'TERRA',
