@@ -77,10 +77,6 @@ describe('Receive tokens ["MAINNET"]', async () => {
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWatsNewModal(page)
-      // Select network
-      if (process.env.NODE_ENV === 'mainnet') {
-        await overviewPage.SelectNetwork(page, 'mainnet')
-      }
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
       // Select BTC
