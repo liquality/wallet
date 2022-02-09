@@ -31,8 +31,12 @@ describe('Terra Anchor Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async ()
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.SelectNetwork(page, 'mainnet')
-    // Web3 toggle on
+    // Default web3 option toggled on
     await overviewPage.ClickWeb3WalletToggle(page)
+    await page.waitForTimeout(2000)
+    // Connected dapp option
+    await page.click('#connect_dapp_main_option')
+    await page.waitForSelector('.v-switch-core', { visible: true })
     // Go to dpp app
     dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -42,33 +46,18 @@ describe('Terra Anchor Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async ()
   })
   it('Terra anchorprotocol injection', async () => {
     await dappPage.goto(dappUrl, { timeout: 60000, waitUntil: 'load' })
-    try {
-      await dappPage.waitForSelector("a[href='/mypage']", { visible: true, timeout: 60000 })
-      await dappPage.waitForSelector('.wallet-icon', { visible: true, timeout: 60000 })
-    } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/anchorprotocol-dapp-loading-issue.png', fullscreen: true })
-      const pageTitle = await dappPage.title()
-      const pageUrl = await dappPage.url()
-      expect(e, `Terra anchorprotocol not loading.....${pageTitle}...${pageUrl}`).equals(null)
-    }
     // Before click on injected wallet option.
+    await dappPage.evaluate(async () => {
+      window.terra.enable()
+    })
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    // Click on Connect wallet option
-    try {
-      await dappPage.waitForXPath("//span[normalize-space()='Connect Wallet']")
-      await dappPage.click('.wallet')
-      const walletConnect = await dappPage.waitForXPath("//span[normalize-space()='Terra Station']", { visible: true, timeout: 60000 })
-      await walletConnect.click()
-    } catch (e) {
-      await testUtil.takeScreenshot(page, 'anchorprotocol-dapp-connect-chrome-extension-issue')
-      expect(e, 'Terra anchorprotocol not connect.....').equals(null)
-    }
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
+      await connectRequestWindow.waitForSelector('#TERRA', { visible: true, timeout: 60000 })
     } catch (e) {
-      await connectRequestWindow.screenshot({ path: 'screenshots/terra-show-terra-issue.png', fullscreen: true })
-      expect(e, 'Anchor app UI not loading TERRA accounts').equals(null)
+      await testUtil.takeScreenshot(connectRequestWindow, 'terra-anchorprotocol-dapp-connect-request-issue')
+      expect(e, 'Terra anchorprotocol sovryn injection LUNA not listed, connected window not loaded.....').equals(null)
     }
     const rskAccounts = await connectRequestWindow.$$('#TERRA')
     expect(rskAccounts.length, '1 TERRA accounts should be listed under Connect request popupWindow')
@@ -78,11 +67,6 @@ describe('Terra Anchor Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async ()
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
-    await dappPage.waitForSelector('.wallet-balance', { visible: true, timeout: 60000 })
-    // Check Transfer button on Bridge is displayed
-    expect(await dappPage.$eval('.wallet-balance', el => el.textContent), 'Terra anchor injection failed!')
-      .contains('UST')
   })
   after(async () => {
     await browser.close()
