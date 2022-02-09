@@ -12,9 +12,11 @@ const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
 const password = '123123123'
-let bridgeUrl = 'https://bridge.sovryn.app/'
 
-describe('RSK Bridge Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
+let bridgeUrl = 'https://bridge.sovryn.app/'
+let sovrynUrl = 'https://live.sovryn.app/'
+
+describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -30,8 +32,17 @@ describe('RSK Bridge Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    // Web3 toggle on
+    // Default web3 option toggled on
     await overviewPage.ClickWeb3WalletToggle(page)
+    await page.waitForTimeout(2000)
+    // Connected dapp option
+    await page.click('#connect_dapp_main_option')
+    await page.waitForSelector('.v-switch-core', { visible: true })
+
+    // Select rsk
+    await page.click('#dropdown-item', {delay: 1000})
+    await page.waitForSelector('#rsk_web_network', { visible: true })
+    await page.click('#rsk_web_network', {delay: 1000})
 
     // Go to SOVRYN app
     dappPage = await browser.newPage()
@@ -41,64 +52,74 @@ describe('RSK Bridge Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     })
   })
   it('SOVRYN Bridge injection', async () => {
-    await dappPage.goto(bridgeUrl, { timeout: 60000, waitUntil: 'load' })
-    try {
-      await dappPage.waitForSelector('button[type="button"]', { visible: true, timeout: 60000 })
-    } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/sovryn-bridge-loading-issue.png', fullscreen: true })
-      const pageTitle = await dappPage.title()
-      const pageUrl = await dappPage.url()
-      expect(e, `Sovryn bridgeUI not loading.....${pageTitle}...${pageUrl}`).equals(null)
-    }
+    await dappPage.goto(bridgeUrl,{ timeout: 60000, waitUntil: 'load' })
     // Before click on injected wallet option.
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable()
+    })
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    // Click on Connect wallet option from bridge
-    await dappPage.click('button[type="button"]')
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
+      await connectRequestWindow.waitForSelector('#RSK', { visible: true, timeout: 60000 })
     } catch (e) {
-      await connectRequestWindow.screenshot({ path: 'screenshots/sovryn-bridge-show-rskAccounts-issue.png', fullscreen: true })
-      expect(e, 'Sovryn bridge UI not loading RSK accounts').equals(null)
+      await testUtil.takeScreenshot(connectRequestWindow, 'rsk-sovryn-dapp-connect-request-issue')
+      expect(e, 'RSK sovryn injection ethereum not listed, connected window not loaded.....').equals(null)
     }
+
     const rskAccounts = await connectRequestWindow.$$('#RSK')
-    expect(rskAccounts.length, '2 RSK accounts should be listed under Connect request popupWindow')
-      .to.equals(2) // RSK & RSK legacy
-    await connectRequestWindow.click('#RSK')
+    expect(rskAccounts.length, 'rsk & rsk legacy accounts not listed after dapp connection').to.equals(2)
+
+    await connectRequestWindow.waitForSelector('#dropdown-item', { visible: true})
+    let filterValues = await connectRequestWindow.evaluate(() => {
+      const dropdownItems = document.querySelectorAll('#dropdown-item')
+      const filterValues = []
+      for (let i = 0; i < dropdownItems.length; i++) {
+        filterValues.push(dropdownItems[i].innerText)
+      }
+      return filterValues
+    })
+    expect(filterValues, 'Sovryn dapp injection RSK not listed, connected window not loaded.....').to.include('Rootstock (RSK)')
+
     // click Next button
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
-    await dappPage.waitForTimeout(10000)
-    // Check Transfer button on Bridge is displayed
-    expect(await dappPage.$eval('button[type="button"]', el => el.textContent), 'Sovryn bridge is not displayed, ' +
-      'Transfer button not displayed')
-      .contains('Transfer')
   })
-  it.skip('SOVRYN dApp injection', async () => {
-    await dappPage.goto('https://live.sovryn.app/')
-    const closeATradeOption = await dappPage.$x('//button[.=\'Please let me close a trade\']')
-    closeATradeOption[0].click()
-    const engageWallet = await dappPage.$x('//span[.=\'Engage wallet\']')
-    engageWallet[0].click()
-    const browser = await dappPage.$x('//div[text()=\'Browser\']')
-    browser[0].click()
+  it('SOVRYN dApp injection', async () => {
+    await dappPage.goto(sovrynUrl,{ timeout: 60000, waitUntil: 'load' })
     // Before click on injected wallet option.
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable()
+    })
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    // Click on Connect wallet option from bridge
-    const liquality = await dappPage.$x('//div[.=\'Liquality\']')
-    liquality[0].click()
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#RSK', { visible: true })
-    const rskAccounts = await connectRequestWindow.$$('#RSK')
-    expect(rskAccounts.length).to.equals(2)
-    await connectRequestWindow.click('#RSK')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    try {
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
+      await connectRequestWindow.waitForSelector('#RSK', { visible: true, timeout: 60000 })
+    } catch (e) {
+      await testUtil.takeScreenshot(connectRequestWindow, 'rsk-sovryn-dapp-connect-request-issue')
+      expect(e, 'RSK sovryn injection ethereum not listed, connected window not loaded.....').equals(null)
+    }
 
-    await dappPage.waitForTimeout(10000)
-    await dappPage.waitForSelector('#web3-status-connected', { visible: true })
+    const rskAccounts = await connectRequestWindow.$$('#RSK')
+    expect(rskAccounts.length, 'rsk & rsk legacy accounts not listed after dapp connection').to.equals(2)
+
+    await connectRequestWindow.waitForSelector('#dropdown-item', { visible: true})
+    let filterValues = await connectRequestWindow.evaluate(() => {
+      const dropdownItems = document.querySelectorAll('#dropdown-item')
+      const filterValues = []
+      for (let i = 0; i < dropdownItems.length; i++) {
+        filterValues.push(dropdownItems[i].innerText)
+      }
+      return filterValues
+    })
+    expect(filterValues, 'Sovryn dapp injection RSK not listed, connected window not loaded.....').to.include('Rootstock (RSK)')
+
+    // click Next button
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
   })
   afterEach(async () => {
     await browser.close()
