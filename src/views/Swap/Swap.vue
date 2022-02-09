@@ -1142,7 +1142,6 @@ export default {
         return this.fromSwapFee
       } else if ((asset === this.toAssetChain || asset === this.toAsset) && this.receiveFee) {
         return this.receiveFee
-
       }
     },
     getTotalSwapFeeInFiat(asset) {

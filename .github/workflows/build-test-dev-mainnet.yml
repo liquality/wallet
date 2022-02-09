@@ -3,8 +3,8 @@ on:
     - cron: '0 9 * * *' # everyday at 9am
     - cron: '0 23 * * *' # everyday at 11pm
 
-# Dev maninet tests
-name: Mainnet tests
+# Dev Mainnet tests
+name: DEV Mainnet tests
 
 jobs:
   regressiontest_dev_mainnet:
