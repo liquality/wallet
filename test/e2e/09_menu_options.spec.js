@@ -14,7 +14,7 @@ const passwordPage = new PasswordPage()
 let browser, page
 const password = '123123123'
 
-describe('Hamburger menu options["MAINNET","TESTNET"]', async () => {
+describe('Hamburger menu options["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -133,12 +133,6 @@ describe('Hamburger menu options["MAINNET","TESTNET"]', async () => {
       .contains('Try Again. Enter the right password (it has 8 or more characters).')
   })
   it('Import wallet,lock wallet and unlock wallet["PULL_REQUEST_TEST"]', async () => {
-    // Select network
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Clock on Lock
@@ -147,12 +141,6 @@ describe('Hamburger menu options["MAINNET","TESTNET"]', async () => {
     await passwordPage.ClickUnlock(page, password)
   })
   it('Import wallet,lock wallet and while unlock wallet check password error', async () => {
-    // Select network
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Clock on Lock
@@ -166,10 +154,6 @@ describe('Hamburger menu options["MAINNET","TESTNET"]', async () => {
     expect(error).contains('Try Again. Enter the right password (it has 8 or more characters).')
   })
   it('Import wallet,lock wallet and forgot password while unlock wallet', async () => {
-    // Select network
-    if (process.env.NODE_ENV === 'testnet') {
-      await overviewPage.SelectNetwork(page)
-    }
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Clock on Lock

@@ -74,12 +74,21 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
     const connectRequestWindow = await newPagePromise
     try {
       await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
-      await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true, timeout: 60000 })
+      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
     } catch (e) {
       await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-ethereum-connect-request-window-issue')
       expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(null)
     }
-    await connectRequestWindow.click('#ETHEREUM')
+    await connectRequestWindow.waitForSelector('#dropdown-item', { visible: true})
+    let filterValues = await connectRequestWindow.evaluate(() => {
+      const dropdownItems = document.querySelectorAll('#dropdown-item')
+      const filterValues = []
+      for (let i = 0; i < dropdownItems.length; i++) {
+        filterValues.push(dropdownItems[i].innerText)
+      }
+      return filterValues
+    })
+    expect(filterValues, 'Uniswap injection ethereum not listed, connected window not loaded.....').to.include('Ethereum (ETH)')
     // click Next button
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
@@ -96,7 +105,7 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
     expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
       .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })
-  it('UNISWAP Injection-ARBITRUM', async () => {
+  it.skip('UNISWAP Injection-ARBITRUM', async () => {
     // Select ARBITRUM
     await page.click('#dropdown-item')
     await page.waitForSelector('#arbitrum_web_network', { visible: true })
@@ -120,7 +129,7 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
     }
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.evaluate(async () => {
-      window.ethereum.enable()
+      window.arbitrum.enable()
     })
     const connectRequestWindow = await newPagePromise
     try {
@@ -130,7 +139,16 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
       await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-arbitrum-connect-request-window-issue')
       expect(e, 'Uniswap injection ARBITRUM not listed, connect request window loading issue.....').equals(null)
     }
-    await connectRequestWindow.click('#ARBITRUM')
+    await connectRequestWindow.waitForSelector('#dropdown-item', { visible: true})
+    let filterValues = await connectRequestWindow.evaluate(() => {
+      const dropdownItems = document.querySelectorAll('#dropdown-item')
+      const filterValues = []
+      for (let i = 0; i < dropdownItems.length; i++) {
+        filterValues.push(dropdownItems[i].innerText)
+      }
+      return filterValues
+    })
+    expect(filterValues, 'Uniswap injection arbitrum not listed, connected window not loaded.....').to.include('Ethereum (ETH)')
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)

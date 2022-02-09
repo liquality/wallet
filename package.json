@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.53.26",
+  "version": "0.54.4",
   "private": true,
   "author": "Liquality <info@liquality.io>",
   "scripts": {
@@ -33,7 +33,7 @@
     "@liquality/bitcoin-swap-provider": "1.13.4",
     "@liquality/client": "1.13.4",
     "@liquality/crypto": "1.13.4",
-    "@liquality/cryptoassets": "1.7.3",
+    "@liquality/cryptoassets": "1.7.5",
     "@liquality/ethereum-eip1559-fee-provider": "1.13.4",
     "@liquality/ethereum-erc20-provider": "1.13.4",
     "@liquality/ethereum-erc20-scraper-swap-find-provider": "1.13.4",
@@ -68,7 +68,7 @@
     "@uniswap/v2-core": "^1.0.1",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
     "@uniswap/v2-sdk": "^3.0.0",
-    "@xchainjs/xchain-util": "0.3.1",
+    "@xchainjs/xchain-util": "0.6.0",
     "amplitude-js": "8.16.1",
     "bignumber.js": "9.0.2",
     "bip39": "^3.0.2",
@@ -80,7 +80,7 @@
     "crypto-js": "^4.0.0",
     "cryptocurrency-icons": "0.18.0",
     "date-fns": "2.28.0",
-    "ethers": "5.5.3",
+    "ethers": "5.5.4",
     "extension-port-stream": "^2.0.1",
     "human-standard-token-abi": "^2.0.0",
     "lodash-es": "^4.17.15",
@@ -107,7 +107,7 @@
     "vuex-persist": "3.1.3"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "5.16.1",
+    "@testing-library/jest-dom": "5.16.2",
     "@vue/cli-plugin-babel": "4.5.15",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "4.5.15",
@@ -131,7 +131,7 @@
     "kcd-scripts": "12.0.0",
     "lint-staged": "^9.5.0",
     "mochawesome": "7.0.1",
-    "prettier": "^2.2.1",
+    "prettier": "2.5.1",
     "puppeteer": "13.1.3",
     "puppeteer-core": "13.1.3",
     "sass": "1.49.0",

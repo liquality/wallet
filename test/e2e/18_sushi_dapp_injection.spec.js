@@ -73,7 +73,16 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
       await testUtil.takeScreenshot(connectRequestWindow, 'sushi-ethereum-loading-issue')
       expect(e, 'sushi ethereum loading issue').equals(null)
     }
-    await connectRequestWindow.click('#ETHEREUM')
+    await connectRequestWindow.waitForSelector('#dropdown-item', { visible: true})
+    let filterValues = await connectRequestWindow.evaluate(() => {
+      const dropdownItems = document.querySelectorAll('#dropdown-item')
+      const filterValues = []
+      for (let i = 0; i < dropdownItems.length; i++) {
+        filterValues.push(dropdownItems[i].innerText)
+      }
+      return filterValues
+    })
+    expect(filterValues, 'Sushiswap injection ethereum not listed, connected window not loaded.....').to.include('Ethereum (ETH)')
     // click Next button
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
@@ -82,7 +91,7 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
-  it('Sushi injection - Polygon', async () => {
+  it.skip('Sushi injection - Polygon', async () => {
     // Go to Sushi app
     dappPage = await browser.newPage()
     await dappPage.setViewport({ width: 1440, height: 700 })

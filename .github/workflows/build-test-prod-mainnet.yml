@@ -3,11 +3,11 @@ on:
     - cron: '0 8 * * *' # everyday at 8am
     - cron: '0 22 * * *' # everyday at 10pm
 
-#Dev testnet tests
-name: Testnet tests
+# Prod Mainnet tests
+name: Prod Mainnet tests
 
 jobs:
-  regressiontest_testnet:
+  regressiontest_Prod_mainnet:
     if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
@@ -21,10 +21,10 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           node-version: '14'
-      # Create screenshots directory
+        # Create screenshots directory
       - run: mkdir screenshots
 
-      - uses: actions/cache@v2.1.7
+      - uses: actions/cache@v2
         env:
           node-version: 14.1.0
           cache-name: cache-node-modules
@@ -32,16 +32,17 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
 
-      - name: Set development manifest
+      - name: Set production agents
+        env:
+          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
         run: |
-          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
-          jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
-          mv ./src/manifest.tmp ./src/manifest.json
+          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
+          sed -i "s/\/swap-testnet-dev\/agent/\/swap-testnet\/agent/g; s/\/swap-dev\/agent/\/swap\/agent/g" src/build.config.js
           npm ci
           npm run lint
           npm run build
 
-      - name: Regression tests against Testnet
+      - name: Regression tests against (Prod) Mainnet
         uses: beemi/puppeteer-headful@v1.0.11
         env:
           CI: 'true'
@@ -49,7 +50,7 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:testnet
+          args: npm run test:mainnet:prodagent # Run tests against Prod mainnet
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1
