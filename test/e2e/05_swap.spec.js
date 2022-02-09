@@ -187,40 +187,6 @@ describe('SWAP feature["TESTNET"]', async () => {
       console.log('Error: ' + err.message)
     })
   })
-  it('SWAP (BTC->ETH) - Thorchain-["PULL_REQUEST_TEST"]', async () => {
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
-    // Click on BTC then click on SWAP button
-    await overviewPage.SelectAssetFromOverview(page, 'BTC')
-    await page.waitForSelector('#BTC_swap_button', { visible: true })
-    await page.click('#BTC_swap_button')
-    console.log(('User clicked on BTC SWAP button'))
-    const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
-    await swapPage.EnterSendAmountOnSwap(page, '1')
-    // Check source name
-    await page.waitForSelector('#selectedQuote_provider', { visible: true })
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'BTC->ETH swap, Thorchain source should be chosen!').oneOf(['Thorchain', 'Liquality'])
-    // Check review button has been disabled
-    await swapPage.HasReviewButtonDisabled(page)
-  })
-  it('SWAP (ETH->BTC) - Thorchain', async () => {
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
-    // Click on BTC then click on SWAP button
-    await overviewPage.SelectAssetFromOverview(page, 'ETH')
-    await page.waitForSelector('#ETH_swap_button', { visible: true })
-    await page.click('#ETH_swap_button')
-    console.log(('User clicked on ETH SWAP button'))
-    const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-    expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
-    await swapPage.EnterSendAmountOnSwap(page, '1')
-    // Check source name
-    await page.waitForSelector('#selectedQuote_provider', { visible: true })
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'ETH->BTC swap, Thorchain source should be chosen!').oneOf(['Thorchain', 'Liquality'])
-  })
   it('SWAP (ETHEREUM),Please increase amount. It is below minimum.', async () => {
     // Select testnet
     await overviewPage.SelectNetwork(page)
