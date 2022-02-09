@@ -55,10 +55,10 @@
                     class="fee-update_fees d-flex justify-content-between"
                     v-if="feeSelectorFees"
                   >
-                    <a @click="newFeePrice = feeSelectorFees.average.fee"
+                    <a class="align-left" @click="newFeePrice = feeSelectorFees.average.fee"
                       >Average: {{ feeSelectorFees.average.fee }}</a
                     >
-                    <a @click="newFeePrice = feeSelectorFees.fast.fee"
+                    <a class="align-left" @click="newFeePrice = feeSelectorFees.fast.fee"
                       >Fast: {{ feeSelectorFees.fast.fee }}</a
                     >
                   </div>
@@ -646,6 +646,10 @@ export default {
   h3 {
     margin: 2px 0;
     font-size: $font-size-base;
+  }
+
+  .align-left {
+    text-align: left !important;
   }
 
   /* Container around content */
