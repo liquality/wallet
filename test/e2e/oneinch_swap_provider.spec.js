@@ -37,7 +37,7 @@ const swapPairMap = [
 
 if (process.env.NODE_ENV === 'mainnet') {
   // Only works on Mainnet
-  describe.skip('1Inch Service Provider-["MAINNET"]', async () => {
+  describe('1Inch Service Provider-["MAINNET"]', async () => {
     swapPairMap.forEach((obj) => {
       it(`SWAP (${obj.from}->${obj.to})`, async () => {
         const fromAsset = obj.from
