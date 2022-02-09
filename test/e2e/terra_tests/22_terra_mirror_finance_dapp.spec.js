@@ -12,9 +12,9 @@ const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
 const password = '123123123'
-const dappUrl = 'https://terra.mirror.finance/'
+const dappUrl = 'https://mirrorprotocol.app/#/trade/'
 
-describe.skip('Terra Mirror Finance DAPP injection-["MAINNET"]', async () => {
+describe('Terra Mirror Finance DAPP injection-["MAINNET"]', async () => {
   before(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -30,13 +30,12 @@ describe.skip('Terra Mirror Finance DAPP injection-["MAINNET"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-    } else {
-      await overviewPage.SelectNetwork(page)
-    }
-    // Web3 toggle on
+    // Default web3 option toggled on
     await overviewPage.ClickWeb3WalletToggle(page)
+    await page.waitForTimeout(2000)
+    // Connected dapp option
+    await page.click('#connect_dapp_main_option')
+    await page.waitForSelector('.v-switch-core', { visible: true })
     // Navigate to dapp
     dappPage = await browser.newPage()
     await dappPage.setViewport({
@@ -46,43 +45,28 @@ describe.skip('Terra Mirror Finance DAPP injection-["MAINNET"]', async () => {
   })
   it('Terra mirror finance', async () => {
     await dappPage.goto(dappUrl, { timeout: 90000, waitUntil: 'load' })
-    try {
-      await dappPage.waitForSelector("button[class*='ConnectButton']", { visible: true, timeout: 60000 })
-    } catch (e) {
-      await dappPage.screenshot({ path: 'screenshots/terra-mirror-finance-dapp-loading-issue.png', fullscreen: true })
-      const pageTitle = await dappPage.title()
-      const pageUrl = await dappPage.url()
-      expect(e, `Terra mirror finance not loading.....${pageTitle}...${pageUrl}`).equals(null)
-    }
     // Before click on injected wallet option.
+    await dappPage.evaluate(async () => {
+      window.terra.enable()
+    })
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
-    // Click on Connect wallet option
-    await dappPage.click("button[class*='ConnectButton']")
-    await dappPage.waitForSelector("button[class*='ConnectList_button']")
-    const connectionListButtons = await dappPage.$$("button[class*='ConnectList_button']")
-    connectionListButtons[0].click()
-
-    await dappPage.waitForTimeout(2000)
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 90000 })
+      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
+      await connectRequestWindow.waitForSelector('#TERRA', { visible: true, timeout: 60000 })
     } catch (e) {
-      await testUtil.takeScreenshot(dappPage, 'terra-mirror-finance--issue.png')
-      expect(e, 'Terra mirror finance app UI not loading TERRA accounts').equals(null)
+      await testUtil.takeScreenshot(connectRequestWindow, 'rsk-sovryn-dapp-connect-request-issue')
+      expect(e, 'RSK sovryn injection ethereum not listed, connected window not loaded.....').equals(null)
     }
+
     const rskAccounts = await connectRequestWindow.$$('#TERRA')
     expect(rskAccounts.length, '1 TERRA accounts should be listed under Connect request popupWindow')
       .to.equals(1)
     await connectRequestWindow.click('#TERRA')
-    // Check connect button is enabled
+    // click Next button
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
-    try {
-      await dappPage.waitForSelector('button[class*="ConnectButton"]', { visible: true, timeout: 60000 })
-    } catch (e) {
-      await testUtil.takeScreenshot(dappPage, 'terra-mirror-finance-connected-issue.png')
-      expect(e, 'Terra mirror finance app UI not connected with TERRA accounts').equals(null)
-    }
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
+    await connectRequestWindow.click('#connect_request_button').catch(e => e)
   })
   after(async () => {
     await browser.close()
