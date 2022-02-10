@@ -14,7 +14,9 @@
             By granting permission to <strong id="origin_url">{{ origin }}</strong
             >, they can read your public account addresses.
           </p>
-          <p class="text-primary text-center mb-4" id="make_sure_you_trust_this_site">Make sure you trust this site.</p>
+          <p class="text-primary text-center mb-4" id="make_sure_you_trust_this_site">
+            Make sure you trust this site.
+          </p>
         </div>
         <div v-else>
           <div class="d-flex justify-content-between">
@@ -78,7 +80,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import { isEthereumChain } from '@liquality/cryptoassets'
+import { isEthereumChain, dappChains } from '@liquality/cryptoassets'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import NetworkAccounts from '@/components/NetworkAccounts'
 import ChainDropdown from '@/components/ChainDropdown'
@@ -159,10 +161,27 @@ export default {
     },
     onChainSelected(chain) {
       this.selectedChain = chain
+      this.selectedAccount = this.accountsData.find(
+        (account) => account.chain === this.selectedChain
+      )
+    },
+    setDefaultSelectedChain() {
+      const { hostname } = new URL(this.origin)
+      const dapp = Object.keys(dappChains).find((origin) => {
+        return hostname.includes(origin)
+      })
+      if (dapp) {
+        const chainHasAccount = dappChains[dapp].find((chain) =>
+          this.accountsData.find((account) => account.chain === chain)
+        )
+        if (chainHasAccount) {
+          this.onChainSelected(chainHasAccount)
+        }
+      }
     }
   },
   created() {
-    this.selectedAccount = this.accountsData.filter((account) => account.chain === this.chain)[0]
+    this.setDefaultSelectedChain()
   }
 }
 </script>
