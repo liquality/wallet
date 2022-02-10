@@ -1,8 +1,8 @@
-const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../pages/OverviewPage')
-const HomePage = require('../pages/HomePage')
-const PasswordPage = require('../pages/PasswordPage')
-const SwapPage = require('../pages/SwapPage')
+const TestUtil = require('../../utils/TestUtils')
+const OverviewPage = require('../../pages/OverviewPage')
+const HomePage = require('../../pages/HomePage')
+const PasswordPage = require('../../pages/PasswordPage')
+const SwapPage = require('../../pages/SwapPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')

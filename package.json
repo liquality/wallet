@@ -5,7 +5,7 @@
   "author": "Liquality <info@liquality.io>",
   "scripts": {
     "build": "vue-cli-service build",
-    "test:unit": "jest tests/unit",
+    "test:unit": "jest test/unit/*.test.js",
     "lint": "vue-cli-service lint",
     "build:staging": "vue-cli-service build --mode staging",
     "clean": "rm -rf node_modules",
@@ -126,7 +126,6 @@
     "eslint-plugin-vue": "^6.2.2",
     "ethereumjs-wallet": "^1.0.1",
     "husky": "7.0.4",
-    "jest": "27.5.1",
     "jest": "27.5.1",
     "jest-environment-jsdom-fifteen": "^1.0.2",
     "kcd-scripts": "12.0.0",
