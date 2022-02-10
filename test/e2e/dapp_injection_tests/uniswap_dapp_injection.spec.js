@@ -1,7 +1,7 @@
-const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../pages/OverviewPage')
-const HomePage = require('../pages/HomePage')
-const PasswordPage = require('../pages/PasswordPage')
+const TestUtil = require('../../utils/TestUtils')
+const OverviewPage = require('../../pages/OverviewPage')
+const HomePage = require('../../pages/HomePage')
+const PasswordPage = require('../../pages/PasswordPage')
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
 
@@ -13,9 +13,10 @@ const passwordPage = new PasswordPage()
 let browser, page, dappPage
 const password = '123123123'
 const dappUrl = 'https://app.uniswap.org/#/swap'
-let ethereumChainId, arbitrumChainId
+let ethereumChainId = 1
+let arbitrumChainId = 42161
 
-describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
+describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -31,15 +32,6 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    if (process.env.NODE_ENV === 'mainnet') {
-      await overviewPage.SelectNetwork(page, 'mainnet')
-      ethereumChainId = 1
-      arbitrumChainId = 42161
-    } else {
-      await overviewPage.SelectNetwork(page)
-      ethereumChainId = 3
-      arbitrumChainId = 421611
-    }
     // Default web3 option toggled on
     await overviewPage.ClickWeb3WalletToggle(page)
     await page.waitForTimeout(2000)
@@ -105,11 +97,11 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
     expect(connectedChainDetails.connectedAddress[0], 'Uniswap ethereum dapp connection issue')
       .equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })
-  it.skip('UNISWAP Injection-ARBITRUM', async () => {
+  it('UNISWAP Injection-ARBITRUM', async () => {
     // Select ARBITRUM
-    await page.click('#dropdown-item')
+    await page.click('#dropdown-item', {delay: 1000})
     await page.waitForSelector('#arbitrum_web_network', { visible: true })
-    await page.click('#arbitrum_web_network')
+    await page.click('#arbitrum_web_network', {delay: 1000})
 
     // Go to uniSwap app
     dappPage = await browser.newPage()
@@ -134,7 +126,7 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
     const connectRequestWindow = await newPagePromise
     try {
       await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
-      await connectRequestWindow.waitForSelector('#ARBITRUM', { visible: true, timeout: 60000 })
+      await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
     } catch (e) {
       await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-arbitrum-connect-request-window-issue')
       expect(e, 'Uniswap injection ARBITRUM not listed, connect request window loading issue.....').equals(null)
@@ -149,10 +141,14 @@ describe('Uniswap Dapp Injection-["MAINNET","TESTNET"]', async () => {
       return filterValues
     })
     expect(filterValues, 'Uniswap injection arbitrum not listed, connected window not loaded.....').to.include('Ethereum (ETH)')
+    await connectRequestWindow.click('#filter_by_chain').catch(e => e)
+    await connectRequestWindow.waitForSelector('#arbitrum_web_network', { visible: true})
+    await connectRequestWindow.click('#arbitrum_web_network', {delay: 1000})
+
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
     await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
     await connectRequestWindow.click('#connect_request_button').catch(e => e)
-
+    await connectRequestWindow.click('#ARBITRUM').catch(e => e)
     // Check web3 status as connected
     const connectedChainDetails = await dappPage.evaluate(async () => {
       const chainIDHexadecimal = await window.ethereum.request({ method: 'eth_chainId', params: [] })
