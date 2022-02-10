@@ -106,7 +106,7 @@
                 <li v-for="assetFee in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
-                    {{ getTotalSwapFee(assetFee) }} {{ assetFee }} /
+                    {{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }} /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
                     <button class="btn btn-link" @click="resetCustomFee(assetFee)">Reset</button>
                   </div>
@@ -184,7 +184,7 @@
       />
     </div>
     <div class="swap" v-else-if="currentStep === 'confirm'">
-      <NavBar :showBackButton="true" :backClick="back" backLabel="Back"> Swap </NavBar>
+      <NavBar :showBackButton="true" :backClick="back" backLabel="Back"> Swap</NavBar>
       <div class="fee-wrapper" id="fees_are_high" v-if="isHighFee">
         Fees are high. Review transaction carefully.
       </div>
@@ -262,7 +262,7 @@
                 ~{{ dpUI(receiveFee) }} {{ hasPredefinedReceiveFee ? toAsset : toAssetChain }}
               </div>
               <div class="details-text" id="swap_receive_network_fee_fiat_rate">
-                ${{
+                {{
                   formatFiatUI(
                     prettyFiatBalance(
                       receiveFee,
@@ -336,7 +336,7 @@
       </div>
     </div>
     <div class="swap" v-else>
-      <NavBar :showBackButton="true" :backClick="back" backLabel="Back"> Select Asset </NavBar>
+      <NavBar :showBackButton="true" :backClick="back" backLabel="Back"> Select Asset</NavBar>
       <Accounts
         :exclude-asset="assetSelection === 'to' ? asset : toAsset"
         :asset-selection="assetSelection"
@@ -373,11 +373,11 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@/utils/cryptoassets'
-import { currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import { ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
@@ -385,16 +385,16 @@ import EthRequiredMessage from '@/components/EthRequiredMessage'
 import BridgeAssetRequiredMessage from '@/components/BridgeAssetRequiredMessage'
 import NoLiquidityMessage from '@/components/NoLiquidityMessage'
 import {
-  dpUI,
-  prettyBalance,
-  prettyFiatBalance,
-  formatFiatUI,
   cryptoToFiat,
+  dpUI,
   fiatToCrypto,
   formatFiat,
+  formatFiatUI,
+  prettyBalance,
+  prettyFiatBalance,
   VALUE_DECIMALS
 } from '@/utils/coinFormatter'
-import { isERC20, getNativeAsset, getAssetColorStyle, getAssetIcon } from '@/utils/asset'
+import { getAssetColorStyle, getAssetIcon, getNativeAsset, isERC20 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import { getFeeLabel } from '@/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
@@ -412,7 +412,7 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import { SwapProviderType, getSwapProviderConfig } from '@/utils/swaps'
+import { getSwapProviderConfig, SwapProviderType } from '@/utils/swaps'
 import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
@@ -664,8 +664,9 @@ export default {
       return fee || BN(0)
     },
     receiveFee() {
-      if (this.selectedQuote?.receiveFee)
+      if (this.selectedQuote?.receiveFee) {
         return unitToCurrency(cryptoassets[this.toAsset], this.selectedQuote.receiveFee).toFixed()
+      }
       if (!this.receiveFeeRequired) return BN(0)
       const selectedSpeed = this.selectedFee[this.toAssetChain]
       const fee =
@@ -699,7 +700,7 @@ export default {
       const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
       const toSwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
-        this.toSwapFee
+        this.receiveFee
       )
       return BN(balance).gt(toSwapFeeInUnits)
     },
@@ -737,9 +738,13 @@ export default {
 
       if (
         this.selectedQuote?.receiveFee &&
-        BN(this.selectedQuote.toAmount).lt(this.selectedQuote.receiveFee)
+        BN(this.selectedQuote.toAmount).lt(
+          BN(this.selectedQuote.receiveFee).times(this.selectedQuote?.maxFeeSlippageMultiplier || 1)
+        )
       ) {
-        return "Increase amount. It won't cover receive fee."
+        return `Increase amount. Should cover ${
+          this.selectedQuote?.maxFeeSlippageMultiplier || 1
+        }x ${this.toAssetChain} fee.`
       }
 
       return null
@@ -770,8 +775,9 @@ export default {
       const fees = this.getAssetFees(this.assetChain)
       const toFees = this.getAssetFees(this.toAssetChain)
       if (fees && Object.keys(fees).length) availableFees.add(this.assetChain)
-      if (toFees && Object.keys(toFees).length && this.receiveFeeRequired)
+      if (toFees && Object.keys(toFees).length && this.receiveFeeRequired) {
         availableFees.add(this.toAssetChain)
+      }
       return availableFees
     },
     sendAmountSameAsset() {
@@ -804,9 +810,11 @@ export default {
       }
     },
     isHighFee() {
-      const feeTotal = cryptoToFiat(this.receiveFee, this.fiatRates[this.assetChain]).plus(
-        cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain])
-      )
+      const feeTotal = cryptoToFiat(
+        this.toSwapFee,
+        this.fiatRates[this.selectedQuote?.bridgeAsset || this.toAssetChain]
+      ).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
+
       const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat)
         ? 0
         : this.totalToReceiveInFiat * 0.25
@@ -817,8 +825,8 @@ export default {
     },
     isEIP1559Fees() {
       return (
-        this.assetChain === 'ETH' ||
-        (this.assetChain === 'MATIC' && this.activeNetwork === 'testnet')
+        cryptoassets[this.customFeeAssetSelected].chain === ChainId.Ethereum ||
+        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
       )
     }
   },
@@ -845,7 +853,6 @@ export default {
       if (this.customFees[asset]) {
         assetFees.custom = { fee: this.customFees[asset] }
       }
-
       const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
       if (fees) {
         Object.assign(assetFees, fees)
@@ -1133,7 +1140,7 @@ export default {
     getTotalSwapFee(asset) {
       if (asset === this.assetChain) {
         return this.fromSwapFee
-      } else if (asset === this.toAsset && this.receiveFee) {
+      } else if ((asset === this.toAssetChain || asset === this.toAsset) && this.receiveFee) {
         return this.receiveFee
       }
     },
@@ -1187,7 +1194,8 @@ export default {
           properties: {
             category: 'Swap screen',
             action: 'No Liquidity for pairs',
-            label: `from ${this.asset} to ${this.toAsset}`
+            from: this.asset,
+            to: this.toAsset
           }
         })
       }
@@ -1215,8 +1223,11 @@ export default {
       if (amount.eq(max)) {
         this.amountOption = 'max'
       } else {
-        if (amount.eq(min)) this.amountOption = 'min'
-        else this.amountOption = null
+        if (amount.eq(min)) {
+          this.amountOption = 'min'
+        } else {
+          this.amountOption = null
+        }
       }
       this.updateQuotes()
     },
@@ -1315,6 +1326,7 @@ export default {
   svg {
     cursor: pointer;
     height: 18px;
+
     &.up {
       transform: rotate(180deg);
     }
@@ -1344,6 +1356,7 @@ export default {
   margin-top: 27px;
   display: flex;
   justify-content: center;
+
   svg {
     width: 20px;
     height: 18px;

@@ -3,6 +3,7 @@ const TestUtil = require('../utils/TestUtils')
 const testUtil = new TestUtil()
 const puppeteer = require('puppeteer')
 const expect = require('chai').expect
+const assert = require('chai').assert
 
 class OverviewPage {
   /**
@@ -11,7 +12,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async HasOverviewPageLoaded (page) {
+  async HasOverviewPageLoaded(page) {
     try {
       await page.waitForSelector('#burger_icon_menu', {
         visible: true,
@@ -33,31 +34,28 @@ class OverviewPage {
    * @constructor
    * @example - SelectNetwork(page,'testnet')
    */
-  async SelectNetwork (page, network = 'testnet') {
+  async SelectNetwork(page, network = 'testnet') {
     await page.waitForSelector('#head_network', { visible: true })
-    await page.click('#head_network', { delay: 5 })
-    await page.waitForTimeout(1000)
     let overviewText
 
     switch (network) {
       case 'testnet':
+        await page.click('#head_network', { delay: 5 })
+        await page.waitForTimeout(1000)
         await page.waitForSelector('#testnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
         await page.click('#testnet_network', { delay: 10 })
         await page.waitForTimeout(2000)
         await page.waitForSelector('#active_network', { visible: true })
-        overviewText = await page.$eval('#active_network', el => el.innerText)
-        expect(overviewText, 'Testnet overview header').contain('TESTNET')
+        overviewText = await page.$eval('#active_network', (el) => el.innerText)
+        expect(overviewText, 'switch to testnet failed').contain('TESTNET')
         console.log('user successfully changed to TESTNET')
         break
 
       case 'mainnet':
-        await page.waitForSelector('#mainnet_network', { visible: true })
-        console.log('user successfully logged in after import wallet')
-        await page.click('#mainnet_network')
         await page.waitForSelector('#active_network', { visible: true })
-        overviewText = await page.$eval('#active_network', el => el.innerText)
-        expect(overviewText, 'Mainnet overview header').contain('MAINNET')
+        overviewText = await page.$eval('#active_network', (el) => el.innerText)
+        expect(overviewText, 'mainnet change failed').contain('MAINNET')
         console.log('user successfully changed to MAINNET')
         break
 
@@ -72,13 +70,13 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async CloseWatsNewModal (page) {
+  async CloseWatsNewModal(page) {
     await page.waitForSelector('#wats_new_close_btn', {
       visible: true,
       timeout: 60000
     })
     await page.click('#wats_new_close_btn')
-    console.log('Wat\'s new Modal closed')
+    console.log("Wat's new Modal closed")
   }
 
   /**
@@ -87,14 +85,14 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ValidateSendSwipeReceiveOptions (page) {
+  async ValidateSendSwipeReceiveOptions(page) {
     // check Send & Swap & Receive options have been displayed
     try {
       // TODO: Most of the times overview screen takes more time to load total assets & fiat values
       await page.waitForSelector('#send_action', { visible: true, timeout: 240000 })
     } catch (e) {
       await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
-      expect(e, 'Overview page still Loading.....didn\'t load send/receive/swap option').equals(null)
+      expect(e, "Overview page still Loading.....didn't load send/receive/swap option").equals(null)
     }
 
     await page.waitForSelector('#send_action', {
@@ -122,7 +120,7 @@ class OverviewPage {
    * @constructor
    * @example SelectChain(page,'BITCOIN')
    */
-  async SelectAssetFromOverview (page, assetName) {
+  async SelectAssetFromOverview(page, assetName) {
     const elementVisibleTimeout = 120000
     try {
       await page.waitForSelector('#asserts_tab', { visible: true, timeout: 60000 })
@@ -224,6 +222,7 @@ class OverviewPage {
       }
 
       case 'MATIC':
+      case 'PUSDT':
       case 'PWETH': {
         const polygon = await page.waitForSelector('#POLYGON', {
           timeout: elementVisibleTimeout,
@@ -284,7 +283,6 @@ class OverviewPage {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
     await page.waitForSelector('#refresh-icon', { visible: true })
   }
-
   /**
    * Validate view explorer href for each assert on overview page.
    * @param page
@@ -292,10 +290,10 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async HasViewExplorerDisplayed (page, asset) {
+  async HasViewExplorerDisplayed(page, asset) {
     const id = `#${asset}_view_in_explorer`
     await page.waitForSelector(id, { visible: true })
-    const explorerLink = await page.$eval(id, el => el.href)
+    const explorerLink = await page.$eval(id, (el) => el.href)
     expect(explorerLink).contains('https://')
     console.log('View explorer link:' + explorerLink)
   }
@@ -308,9 +306,9 @@ class OverviewPage {
    * @constructor
    * @example SelectChain(page,'BTC')
    */
-  async ClickChainReceive (page, chainCode) {
+  async ClickChainReceive(page, chainCode) {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
-    const code = await page.$eval('.account-container_balance_code', el => el.textContent)
+    const code = await page.$eval('.account-container_balance_code', (el) => el.textContent)
     expect(code).equals(chainCode)
     // Click Receive button
     await page.click(`#${chainCode}_receive_button`)
@@ -324,19 +322,23 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async CheckAssertOverviewDetails (page, assertCode) {
+  async CheckAssertOverviewDetails(page, assertCode) {
     await page.waitForSelector('.account-container_balance_code', { visible: true })
-    const code = await page.$eval('.account-container_balance_code', el => el.textContent)
+    const code = await page.$eval('.account-container_balance_code', (el) => el.textContent)
     expect(code, 'Assert Code wrong').equals(assertCode)
     // Check assert account title
-    const title = await page.$eval('.account-title', el => el.textContent)
+    const title = await page.$eval('.account-title', (el) => el.textContent)
     expect(title).contains(assertCode)
     // Check fiat balance not NaN
-    expect(await page.$eval('.account-container_balance_fiat', el => el.textContent), 'Balance $ not be NaN')
-      .not.equals('NaN')
+    expect(
+      await page.$eval('.account-container_balance_fiat', (el) => el.textContent),
+      'Balance $ not be NaN'
+    ).not.equals('NaN')
     // account balance is not NaN
-    expect(await page.$eval('.account-container_balance_value', el => el.textContent), 'Balance value not be NaN')
-      .not.equals('NaN')
+    expect(
+      await page.$eval('.account-container_balance_value', (el) => el.textContent),
+      'Balance value not be NaN'
+    ).not.equals('NaN')
   }
 
   /**
@@ -346,11 +348,13 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async ValidateTotalAssets (page, newWallet = true) {
+  async ValidateTotalAssets(page, newWallet = true) {
     const assets = newWallet ? 8 : 9
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(`${assets} Assets`)
+    expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(
+      `${assets} Assets`
+    )
   }
 
   /**
@@ -359,11 +363,17 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async GetTotalLiquidity (page) {
+  async GetTotalLiquidity(page) {
     // Check the Total amount - 10s wait to load amount
     await page.waitForSelector('.wallet-stats_total', { timeout: 30000 })
-    await page.waitForTimeout(10000)
-    return await page.$eval('.wallet-stats_total', el => (el.innerText).replace(/[.,\s]/g, ''))
+    await page.waitForTimeout(60000)
+    let walletTotal = await page.$eval('.wallet-stats_total', (el) =>
+      el.innerText.replace(/[.,\s]/g, '')
+    )
+    if (walletTotal.includes('NaN')) {
+      assert.fail('Total Liquidity is NaN')
+    }
+    return parseInt(walletTotal, 10)
   }
 
   /**
@@ -372,8 +382,8 @@ class OverviewPage {
    * @returns {Promise<*>}
    * @constructor
    */
-  async GetCurrency (page) {
-    return await page.$eval('.wallet-stats', el => el.innerText)
+  async GetCurrency(page) {
+    return await page.$eval('.wallet-stats', (el) => el.innerText)
   }
 
   /**
@@ -382,11 +392,11 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickSend (page) {
+  async ClickSend(page) {
     try {
       await page.waitForSelector('#send_action', { visible: true, timeout: 180000 })
     } catch (e) {
-      const ts = Math.round((new Date()).getTime() / 1000)
+      const ts = Math.round(new Date().getTime() / 1000)
       await page.screenshot({ path: `screenshots/send-button-not-loaded-${ts}.png` })
       expect(e, 'Send button not loaded....').equals(null)
     }
@@ -400,7 +410,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickSwipe (page) {
+  async ClickSwipe(page) {
     await page.waitForSelector('#swap_action', { visible: true })
     await page.click('#swap_action')
     console.log('User clicked on SWAP button from overview page')
@@ -413,7 +423,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickLock (page) {
+  async ClickLock(page) {
     // Lock
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')
@@ -429,7 +439,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async GetAssertAddress (page, assertName) {
+  async GetAssertAddress(page, assertName) {
     let assertAddress
 
     try {
@@ -437,9 +447,11 @@ class OverviewPage {
       const $parent = await page.$(`#${assertName}`)
       await page.waitForTimeout(5000)
       assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
-      if (assertAddress === "''") {
+      if (assertAddress === "''" || assertAddress === '""') {
+        await page.reload()
         await page.waitForTimeout(10000)
       }
+      assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
       expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.equals("''")
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
@@ -456,7 +468,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnBurgerIcon (page) {
+  async ClickOnBurgerIcon(page) {
     // Click on Backup seed from Burger Icon menu
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')
@@ -468,7 +480,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async SelectSettings (page) {
+  async SelectSettings(page) {
     const settings = await page.waitForSelector('#settings', { visible: true })
     await settings.click()
     await page.waitForSelector('#settings_item_default_wallet', { visible: true })
@@ -480,7 +492,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickManageAssets (page) {
+  async ClickManageAssets(page) {
     await this.ClickOnBurgerIcon(page)
     // Click Manage Assets
     await page.waitForSelector('#manage_assets', { visible: true })
@@ -495,7 +507,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickAddCustomToken (page) {
+  async ClickAddCustomToken(page) {
     await this.ClickOnBurgerIcon(page)
     // Click Manage Assets
     await page.waitForSelector('#manage_assets', { visible: true })
@@ -511,7 +523,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnManageAccounts (page) {
+  async ClickOnManageAccounts(page) {
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')
     // Click Manage Accounts
@@ -526,7 +538,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickWeb3WalletToggle (page) {
+  async ClickWeb3WalletToggle(page) {
     await this.ClickOnBurgerIcon(page)
     await this.SelectSettings(page)
     // toggle web3 wallet option
@@ -539,7 +551,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnVersionButton (page) {
+  async ClickOnVersionButton(page) {
     await this.ClickOnBurgerIcon(page)
     await this.SelectSettings(page)
     await page.click('#settings_app_version')
@@ -552,7 +564,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ToggleExperimentButton (page, option) {
+  async ToggleExperimentButton(page, option) {
     await this.ClickOnVersionButton(page)
     await page.waitForSelector(`#${option}`)
     await page.click(`#${option}`)

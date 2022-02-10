@@ -38,11 +38,11 @@
             <p id="transaction_detail_sent_amount" class="font-weight-bold mb-1">
               {{ prettyBalance(item.amount, item.from) }} {{ item.from }}
             </p>
-            <p id="transaction_detail_sent_amount">
+            <p id="transaction_detail_sent_amount_today">
               ${{ prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from]) }}
               / today
             </p>
-            <p id="transaction_detail_sent_amount" v-if="item.fiatRate">
+            <p id="transaction_detail_sent_amount_then" v-if="item.fiatRate">
               ${{ prettyFiatBalance(prettyBalance(item.amount, item.from), item.fiatRate) }} / then
             </p>
           </div>
@@ -52,18 +52,25 @@
           <div class="col">
             <h2>Network Speed/Fee</h2>
             <p class="d-flex justify-content-between">
-              <span
+              <span id="transaction_detail_network_speed"
                 >{{ assetChain }} Speed:
                 <span class="text-capitalize">{{ item.feeLabel }}</span></span
               >
-              <span>Fee: {{ item.fee }} {{ feeUnit }}</span>
+              <span id="transaction_detail_fee_units">Fee: {{ itemFee }} {{ feeUnit }}</span>
               <span>
-                <a v-if="canUpdateFee && !showFeeSelector" @click="openFeeSelector()"> Speed up </a>
+                <a
+                  class="speed-up"
+                  v-if="canUpdateFee && !showFeeSelector"
+                  @click="openFeeSelector()"
+                >
+                  Speed up
+                </a>
               </span>
             </p>
             <div v-if="showFeeSelector" class="mt-2">
               <FeeSelector
                 :asset="item.from"
+                :totalFees="sendFees"
                 v-model="selectedFee"
                 v-bind:fees="assetFees"
                 v-bind:fiatRates="fiatRates"
@@ -112,7 +119,8 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import moment from '@/utils/moment'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
-
+import BN from 'bignumber.js'
+import { getSendFee } from '@/utils/fees'
 import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
 import { getStatusLabel, ACTIVITY_FILTER_TYPES, getItemIcon } from '@/utils/history'
 import {
@@ -160,7 +168,7 @@ export default {
     itemFee() {
       return typeof this.item.fee !== 'object'
         ? this.item.fee
-        : this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
+        : BN(this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas).dp(3)
     },
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
@@ -196,6 +204,16 @@ export default {
     typeIcon() {
       const filter = ACTIVITY_FILTER_TYPES[this.item.type]
       return this.getItemIcon(filter?.icon)
+    },
+    sendFees() {
+      const sendFees = {}
+
+      for (const [speed, fee] of Object.entries(this.assetFees)) {
+        const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+        sendFees[speed] = getSendFee(this.assetChain, feePrice)
+      }
+
+      return sendFees
     }
   },
   methods: {
@@ -269,6 +287,10 @@ export default {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+.speed-up {
+  color: #9d4dfa;
 }
 .tx-details {
   padding: $wrapper-padding 0;

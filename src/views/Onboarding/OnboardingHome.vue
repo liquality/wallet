@@ -967,7 +967,7 @@
         <button
           id="terms_privacy_cancel_button"
           class="btn btn-light btn-outline-primary btn-lg"
-          @click="$router.go(-1)"
+          @click="$router.push('/')"
         >
           Cancel
         </button>
