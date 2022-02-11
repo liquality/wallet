@@ -4,7 +4,7 @@ import store from './store'
 import { wait } from './store/utils'
 import cryptoassets from '@/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
-import { fiatToCrypto, prettyFiatBalance } from "@/utils/coinFormatter";
+import { prettyFiatBalance } from '@/utils/coinFormatter'
 
 function asyncLoop(fn, delay) {
   return wait(delay())
@@ -72,7 +72,9 @@ store.subscribe(async ({ type, payload }, state) => {
       )
       break
     case 'NEW_SWAP':
+      // eslint-disable-next-line no-case-declarations
       let fromAmountValue = unitToCurrency(cryptoassets[payload.swap.from], payload.swap.fromAmount)
+      // eslint-disable-next-line no-case-declarations
       let toAmountValue = unitToCurrency(cryptoassets[payload.swap.to], payload.swap.toAmount)
 
       dispatch('trackAnalytics', {
@@ -85,8 +87,8 @@ store.subscribe(async ({ type, payload }, state) => {
           swapProvider: `${payload.swap.provider}`,
           fromAmount: fromAmountValue,
           toAmount: toAmountValue,
-          fromAmountFiat: prettyFiatBalance(fromAmountValue,state.fiatRates[payload.swap.from]),
-          toAmountFiat: prettyFiatBalance(toAmountValue,state.fiatRates[payload.swap.to])
+          fromAmountFiat: prettyFiatBalance(fromAmountValue, state.fiatRates[payload.swap.from]),
+          toAmountFiat: prettyFiatBalance(toAmountValue, state.fiatRates[payload.swap.to])
         }
       })
       break
@@ -96,6 +98,7 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Send/Receive',
           action: 'Funds sent',
+          fiatRate: payload.transaction.fiatRate,
           fromAsset: cryptoassets[payload.transaction.from],
           toAsset: cryptoassets[payload.transaction.to],
           fee: `${payload.feeLabel}`
@@ -157,12 +160,13 @@ store.subscribe(async ({ type, payload }, state) => {
       // eslint-disable-next-line
       const item = getters.historyItemById(payload.network, payload.walletId, payload.id);
       if (item.type === 'SWAP' && payload.updates) {
-        if (payload.updates.status !== undefined) {
+        if (!payload.updates.status) {
           dispatch('trackAnalytics', {
             event: 'Swap status change',
             properties: {
               category: 'Swaps',
               action: 'Swap Status changed',
+              swapProvider: `${item.provider}`,
               label: `${item.from} to ${item.to}`,
               swapStatus: `${payload.updates.status}`
             }
@@ -170,15 +174,17 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       }
       if (item.type === 'SEND' && payload.updates) {
-        dispatch('trackAnalytics', {
-          event: 'Send status change',
-          properties: {
-            category: 'Send/Receive',
-            action: 'Send Status changed',
-            asset: `${item.from}`,
-            sendStatus: `${payload.updates.status}`
-          }
-        })
+        if (!payload.updates.status) {
+          dispatch('trackAnalytics', {
+            event: 'Send status change',
+            properties: {
+              category: 'Send/Receive',
+              action: 'Send Status changed',
+              asset: `${item.from}`,
+              sendStatus: `${payload.updates.status}`
+            }
+          })
+        }
       }
       break
     case 'SETUP_WALLET':

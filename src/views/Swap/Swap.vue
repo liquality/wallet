@@ -738,9 +738,13 @@ export default {
 
       if (
         this.selectedQuote?.receiveFee &&
-        BN(this.selectedQuote.toAmount).lt(this.selectedQuote.receiveFee)
+        BN(this.selectedQuote.toAmount).lt(
+          BN(this.selectedQuote.receiveFee).times(this.selectedQuote?.maxFeeSlippageMultiplier || 1)
+        )
       ) {
-        return "Increase amount. It won't cover receive fee."
+        return `Increase amount. Should cover ${
+          this.selectedQuote?.maxFeeSlippageMultiplier || 1
+        }x ${this.toAssetChain} fee.`
       }
 
       return null
@@ -821,8 +825,8 @@ export default {
     },
     isEIP1559Fees() {
       return (
-        cryptoassets[this.asset].chain === ChainId.Ethereum ||
-        cryptoassets[this.asset].chain === ChainId.Polygon
+        cryptoassets[this.customFeeAssetSelected].chain === ChainId.Ethereum ||
+        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
       )
     }
   },
@@ -849,7 +853,6 @@ export default {
       if (this.customFees[asset]) {
         assetFees.custom = { fee: this.customFees[asset] }
       }
-
       const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
       if (fees) {
         Object.assign(assetFees, fees)
@@ -1137,7 +1140,7 @@ export default {
     getTotalSwapFee(asset) {
       if (asset === this.assetChain) {
         return this.fromSwapFee
-      } else if (asset === this.toAssetChain && this.receiveFee) {
+      } else if ((asset === this.toAssetChain || asset === this.toAsset) && this.receiveFee) {
         return this.receiveFee
       }
     },

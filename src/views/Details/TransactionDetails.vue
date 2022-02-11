@@ -38,11 +38,11 @@
             <p id="transaction_detail_sent_amount" class="font-weight-bold mb-1">
               {{ prettyBalance(item.amount, item.from) }} {{ item.from }}
             </p>
-            <p id="transaction_detail_sent_amount">
+            <p id="transaction_detail_sent_amount_today">
               ${{ prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from]) }}
               / today
             </p>
-            <p id="transaction_detail_sent_amount" v-if="item.fiatRate">
+            <p id="transaction_detail_sent_amount_then" v-if="item.fiatRate">
               ${{ prettyFiatBalance(prettyBalance(item.amount, item.from), item.fiatRate) }} / then
             </p>
           </div>
@@ -52,11 +52,11 @@
           <div class="col">
             <h2>Network Speed/Fee</h2>
             <p class="d-flex justify-content-between">
-              <span
+              <span id="transaction_detail_network_speed"
                 >{{ assetChain }} Speed:
                 <span class="text-capitalize">{{ item.feeLabel }}</span></span
               >
-              <span>Fee: {{ itemFee }} {{ feeUnit }}</span>
+              <span id="transaction_detail_fee_units">Fee: {{ itemFee }} {{ feeUnit }}</span>
               <span>
                 <a
                   class="speed-up"
