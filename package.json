@@ -62,6 +62,7 @@
     "@liquality/terra-swap-find-provider": "1.13.1",
     "@liquality/terra-swap-provider": "1.13.1",
     "@liquality/terra-wallet-provider": "1.13.1",
+    "@terra-money/terra.js": "^3.0.7",
     "@testing-library/vue": "^5.8.2",
     "@thorchain/asgardex-util": "^0.9.1",
     "@uniswap/sdk-core": "^3.0.0",
