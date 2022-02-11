@@ -1,8 +1,8 @@
-const TestUtil = require('../utils/TestUtils')
-const OverviewPage = require('../pages/OverviewPage')
-const HomePage = require('../pages/HomePage')
-const PasswordPage = require('../pages/PasswordPage')
-const SwapPage = require('../pages/SwapPage')
+const TestUtil = require('../../utils/TestUtils')
+const OverviewPage = require('../../pages/OverviewPage')
+const HomePage = require('../../pages/HomePage')
+const PasswordPage = require('../../pages/PasswordPage')
+const SwapPage = require('../../pages/SwapPage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -32,7 +32,6 @@ describe('UNISWAP service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.SelectNetwork(page,'mainnet')
   })
   afterEach(async () => {
       await browser.close()

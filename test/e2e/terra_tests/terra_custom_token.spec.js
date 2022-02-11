@@ -34,8 +34,6 @@ describe('Terra Custom token-["MAINNET"]', async () => {
       // overview page
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
-      // Select network(Only works against Mainnet)
-      await overviewPage.SelectNetwork(page, 'mainnet')
       // Click on add custom token option
       await overviewPage.ClickAddCustomToken(page)
     })
