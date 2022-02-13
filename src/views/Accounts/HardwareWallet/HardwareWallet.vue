@@ -99,6 +99,13 @@ export default {
       }
     },
     async connect({ asset, walletType, page }) {
+      await this.trackAnalytics({
+        event: 'HD Ledger Connect',
+        properties: {
+          category: 'HD connect clicked',
+          asset: `${this.selectedAsset.name}`
+        }
+      })
       this.selectedAsset = asset
       this.loading = true
       this.ledgerError = null
