@@ -99,11 +99,13 @@ export default {
       }
     },
     async connect({ asset, walletType, page }) {
+      // connect to ledger
       await this.trackAnalytics({
-        event: 'HD Ledger Connect',
+        event: 'Connect Ledger button clicked',
         properties: {
-          category: 'HD connect clicked',
-          asset: `${this.selectedAsset.name}`
+          category: 'Connect Ledger',
+          asset: `${this.selectedAsset.name}`,
+          chain: `${this.selectedAsset.chain}`
         }
       })
       this.selectedAsset = asset
@@ -134,6 +136,15 @@ export default {
           if (accounts && accounts.length > 0) {
             this.accounts = accounts
             this.ledgerPage = currentPage
+            await this.trackAnalytics({
+              event: 'Ledger connected successfully',
+              properties: {
+                category: 'Connect Ledger',
+                asset: `${this.selectedAsset.name}`,
+                chain: `${this.selectedAsset.chain}`,
+                numberOfAccounts: accounts.length
+              }
+            })
           } else {
             this.ledgerError = { message: 'No accounts found' }
           }
@@ -144,6 +155,15 @@ export default {
           message: error.message || 'Error getting accounts'
         }
         console.error('error getting accounts', error)
+        await this.trackAnalytics({
+          event: 'HD Wallet Ledger error',
+          properties: {
+            category: 'Error getting accounts',
+            asset: `${this.selectedAsset.name}`,
+            chain: `${this.selectedAsset.chain}`,
+            error: [error.name, error.message, error.stack]
+          }
+        })
         this.loading = false
       }
     },
@@ -151,11 +171,11 @@ export default {
       if (this.selectedAsset) {
         await this.addAccounts({ walletType })
         await this.trackAnalytics({
-          event: 'Ledger Connect',
+          event: 'Ledger account added successfully',
           properties: {
-            category: 'Hardware Wallet',
-            action: 'Add Ledger Account',
-            label: `Asset ${this.selectedAsset.name}`
+            category: 'Connect Ledger',
+            asset: `${this.selectedAsset.name}`,
+            chain: `${this.selectedAsset.chain}`
           }
         })
       }
@@ -211,6 +231,15 @@ export default {
           this.ledgerError = { message: 'Error creating accounts' }
           console.error('error creating accounts', error)
           this.creatingAccount = false
+          this.trackAnalytics({
+            event: 'Ledger error creating accounts',
+            properties: {
+              category: 'Connect Ledger',
+              asset: `${this.selectedAsset.name}`,
+              chain: `${this.selectedAsset.chain}`,
+              error: [error.name, error.message, error.stack]
+            }
+          })
         }
       }
     },

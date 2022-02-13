@@ -198,16 +198,16 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'UPDATE_BALANCE':
-      if (payload.balance > 0) {
-        dispatch('trackAnalytics', {
-          event: 'Hold Asset',
-          properties: {
-            category: 'Hold Asset',
-            action: 'Hold asset greater than 0',
-            asset: `${payload.asset}`
-          }
-        })
-      }
+      // if (payload.balance > 0) {
+      //   dispatch('trackAnalytics', {
+      //     event: 'Hold Asset',
+      //     properties: {
+      //       category: 'Hold Asset',
+      //       action: 'Hold asset greater than 0',
+      //       asset: `${payload.asset}`
+      //     }
+      //   })
+      // }
       break
   }
 })
