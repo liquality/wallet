@@ -136,6 +136,7 @@ import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import NavBar from '@/components/NavBar.vue'
+import { isObject } from 'lodash-es'
 import { shortenAddress } from '@/utils/address'
 
 import Timeline from '@/transactions/views/Timeline.vue'
@@ -241,6 +242,11 @@ export default {
     async updateFee() {
       this.feeSelectorLoading = true
       const newFee = this.assetFees[this.selectedFee].fee
+      const txKey = Object.keys(this.item).find(
+        (key) => isObject(this.item[key]) && this.item[key].hash === this.item.txHash
+      )
+      const accountId = txKey === 'toClaimTx' ? this.item.toAccountId : this.item.fromAccountId
+
       try {
         this.tx = await this.updateTransactionFee({
           network: this.activeNetwork,
@@ -248,7 +254,8 @@ export default {
           asset: this.item.from,
           id: this.item.id,
           hash: this.item.txHash,
-          newFee
+          newFee,
+          accountId
         })
       } finally {
         this.feeSelectorLoading = false

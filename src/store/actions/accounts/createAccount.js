@@ -6,14 +6,12 @@ export const createAccount = async ({ commit, dispatch }, payload) => {
 
   commit('CREATE_ACCOUNT', { network, walletId, account: _account })
 
-  if (!account.addresses || account.addresses.length <= 0) {
-    await dispatch('getUnusedAddresses', {
-      network,
-      walletId,
-      assets: _account.assets,
-      accountId: _account.id
-    })
-  }
+  await dispatch('getUnusedAddresses', {
+    network,
+    walletId,
+    assets: _account.assets,
+    accountId: _account.id
+  })
   await dispatch('updateAccountBalance', {
     network,
     walletId,
