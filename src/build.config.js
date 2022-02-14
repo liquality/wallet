@@ -131,7 +131,7 @@ export default {
         agent: 'https://api.1inch.exchange/v4.0',
         routerAddress: '0x1111111254fb6c44bac0bed2854e76f90643097d',
         referrerAddress: {
-          ethereum: '0xaf2C465dC79DeDf7305CDe782439171D147Abac7',
+          ethereum: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
           polygon: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
           bsc: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5'
         },
