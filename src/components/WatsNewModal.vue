@@ -10,9 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Ledger connectivity</pre>
-            <pre>Ledger dApp injection</pre>
-            <pre>Ledger send/Receive</pre>
+            <pre class="text-wrap">Send/Receive with Ledger devices</pre>
+            <pre>Connect to dapps with Ledger devices</pre>
             <pre class="text-wrap">Minor bug fixes</pre>
           </div>
         </div>
