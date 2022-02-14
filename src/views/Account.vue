@@ -59,15 +59,19 @@
               Send
             </button>
           </router-link>
-          <router-link :to="`/accounts/${accountId}/${asset}/swap`">
-            <button class="account-container_actions_button">
-              <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
-                <SwapIcon
-                  class="account-container_actions_button_icon account-container_actions_button_swap"
-                />
-              </div>
-              Swap
-            </button>
+          <router-link
+            class="account-container_actions_button"
+            active-class=""
+            tag="button"
+            :disabled="swapDisabled"
+            :to="`/accounts/${accountId}/${asset}/swap`"
+          >
+            <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
+              <SwapIcon
+                class="account-container_actions_button_icon account-container_actions_button_swap"
+              />
+            </div>
+            Swap
           </router-link>
           <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`">
             <button class="account-container_actions_button">
@@ -147,6 +151,9 @@ export default {
       'fiatRates',
       'marketData'
     ]),
+    swapDisabled() {
+      return this.account?.type.includes('ledger')
+    },
     account() {
       return this.accountItem(this.accountId)
     },
