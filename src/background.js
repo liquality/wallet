@@ -95,7 +95,10 @@ store.subscribe(async ({ type, payload }, state) => {
       break
     case 'NEW_TRASACTION':
       // eslint-disable-next-line no-case-declarations
-      let sendValue = unitToCurrency(cryptoassets[payload.transaction.from], payload.transaction.amount)
+      let sendValue = unitToCurrency(
+        cryptoassets[payload.transaction.from],
+        payload.transaction.amount
+      )
       dispatch('trackAnalytics', {
         event: 'Send',
         properties: {
