@@ -415,21 +415,21 @@ export default {
     prettyBalance,
     // get to asset when liquality boost provider is swapping from Native to ERC20
     getToAssetWhenSwappingFromNative() {
-      if (this.item.provider === 'liqualityBoost' && !isERC20(this.item.from)) {
+      if (this.item.provider.includes('liqualityBoost') && !isERC20(this.item.from)) {
         return this.item.bridgeAsset
       }
       return this.item.to
     },
     // get to asset when liquality boost provider is swapping from ERC20 to Native
     getToAssetWhenSwappingFromERC20() {
-      if (this.item.provider === 'liqualityBoost' && isERC20(this.item.from)) {
+      if (this.item.provider.includes('liqualityBoost') && isERC20(this.item.from)) {
         return this.item.bridgeAsset
       }
       return this.item.to
     },
     // get from asset when liquality boost provider is swapping from ERC20 to Native
     getFromAssetWhenSwappingFromERC20() {
-      if (this.item.provider === 'liqualityBoost' && isERC20(this.item.from)) {
+      if (this.item.provider.includes('liqualityBoost') && isERC20(this.item.from)) {
         return this.item.bridgeAsset
       }
       return this.item.from

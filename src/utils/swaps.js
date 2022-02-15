@@ -5,8 +5,8 @@ export const SwapProviderType = {
   UNISWAPV2: 'UNISWAPV2',
   ONEINCHV4: 'ONEINCHV4',
   THORCHAIN: 'THORCHAIN',
-  LIQUALITYBOOST_TYPE1: 'LIQUALITYBOOST_TYPE1',
-  LIQUALITYBOOST_TYPE2: 'LIQUALITYBOOST_TYPE2',
+  LIQUALITYBOOST_NATIVE_TO_ERC20: 'LIQUALITYBOOST_NATIVE_TO_ERC20',
+  LIQUALITYBOOST_ERC20_TO_NATIVE: 'LIQUALITYBOOST_ERC20_TO_NATIVE',
   FASTBTC: 'FASTBTC',
   SOVRYN: 'SOVRYN'
 }
@@ -17,8 +17,10 @@ const swapProviderRoot = {
   [SwapProviderType.ONEINCHV4]: 'swaps/oneinch',
   [SwapProviderType.THORCHAIN]: 'swaps/thorchain',
   [SwapProviderType.FASTBTC]: 'swaps/fastbtc',
-  [SwapProviderType.LIQUALITYBOOST_TYPE1]: 'swaps/liqualityboost/lbspNativeToERC20',
-  [SwapProviderType.LIQUALITYBOOST_TYPE2]: 'swaps/liqualityboost/lbspERC20toNative',
+  [SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20]:
+    'swaps/liqualityboost/liqualityBoostNativeToERC20',
+  [SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE]:
+    'swaps/liqualityboost/liqualityBoostERC20toNative',
   [SwapProviderType.SOVRYN]: 'swaps/sovryn'
 }
 

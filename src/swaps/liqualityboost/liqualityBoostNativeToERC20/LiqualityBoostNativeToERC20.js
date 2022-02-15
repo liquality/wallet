@@ -10,7 +10,7 @@ import { createSwapProvider } from '../../../store/factory/swapProvider'
 
 const slippagePercentage = 3
 
-class LbspERC20toNative extends SwapProvider {
+class LiqualityBoostNativeToERC20 extends SwapProvider {
   constructor(config) {
     super(config)
     this.liqualitySwapProvider = createSwapProvider(this.config.network, 'liquality')
@@ -37,31 +37,24 @@ class LbspERC20toNative extends SwapProvider {
   }
 
   async getQuote({ network, from, to, amount }) {
-    if (!isERC20(from) || isERC20(to) || amount <= 0) return null
-
-    // get native asset of ERC20 network
-    const bridgeAsset = getNativeAsset(from)
+    if (isERC20(from) || !isERC20(to) || amount <= 0) return null
+    const bridgeAsset = getNativeAsset(to)
     if (!this.supportedBridgeAssets.includes(bridgeAsset)) return null
-
-    // get rate between ERC20 and it's native token (aka bridge asset)
-    const quote = await this.bridgeAssetToAutomatedMarketMaker[bridgeAsset].getQuote({
+    const quote = await this.liqualitySwapProvider.getQuote({
       network,
       from,
       to: bridgeAsset,
       amount
     })
     if (!quote) return null
-
-    // get rate between native asset and 'to' asset (which is native too)
     const bridgeAssetQuantity = unitToCurrency(assets[bridgeAsset], quote.toAmount)
-    const finalQuote = await this.liqualitySwapProvider.getQuote({
+    const finalQuote = await this.bridgeAssetToAutomatedMarketMaker[bridgeAsset].getQuote({
       network,
       from: bridgeAsset,
       to,
       amount: bridgeAssetQuantity.toNumber()
     })
     if (!finalQuote) return null
-
     return {
       from,
       to,
@@ -69,13 +62,12 @@ class LbspERC20toNative extends SwapProvider {
       toAmount: finalQuote.toAmount,
       bridgeAsset,
       bridgeAssetAmount: quote.toAmount,
-      path: quote.path
+      path: finalQuote.path
     }
   }
 
   async newSwap({ network, walletId, quote: _quote }) {
-    // ERC20 -> Bridge asset
-    const result = await this.bridgeAssetToAutomatedMarketMaker[_quote.bridgeAsset].newSwap({
+    const result = await this.liqualitySwapProvider.newSwap({
       network,
       walletId,
       quote: {
@@ -84,11 +76,11 @@ class LbspERC20toNative extends SwapProvider {
         toAmount: _quote.bridgeAssetAmount
       }
     })
-
     return {
       ...result,
       ..._quote,
-      slippage: slippagePercentage * 100
+      slippage: slippagePercentage * 100,
+      bridgeAssetAmount: result.toAmount
     }
   }
 
@@ -97,36 +89,35 @@ class LbspERC20toNative extends SwapProvider {
   }
 
   async estimateFees({ network, walletId, asset, txType, quote, feePrices, max }) {
-    // bridge asset -> 'to' asset
     const liqualityFees = await this.liqualitySwapProvider.estimateFees({
       network,
       walletId,
       asset,
       txType:
-        txType === LbspERC20toNative.txTypes.SWAP ? LbspERC20toNative.txTypes.SWAP_CLAIM : txType,
+        txType === LiqualityBoostNativeToERC20.txTypes.SWAP
+          ? LiqualityBoostNativeToERC20.txTypes.SWAP_CLAIM
+          : txType,
       quote: {
         ...quote,
-        from: quote.bridgeAsset,
-        toAmount: quote.bridgeAssetAmount,
-        toAccountId: quote.fromAccountId
+        to: quote.bridgeAsset,
+        toAmount: quote.bridgeAssetAmount
       },
       feePrices,
       max
     })
-
-    // 'from' asset -> bridge asset
-    if (!isERC20(asset) && txType === LbspERC20toNative.txTypes.SWAP) {
+    if (isERC20(asset) && txType === LiqualityBoostNativeToERC20.txTypes.SWAP) {
       const automatedMarketMakerFees = await this.bridgeAssetToAutomatedMarketMaker[
         quote.bridgeAsset
       ].estimateFees({
         network,
         walletId,
         asset,
-        txType: LbspERC20toNative.txTypes.SWAP,
+        txType: LiqualityBoostNativeToERC20.txTypes.SWAP,
         quote: {
           ...quote,
-          to: quote.bridgeAsset,
-          toAmount: quote.bridgeAssetAmount,
+          from: quote.bridgeAsset,
+          fromAmount: quote.bridgeAssetAmount,
+          fromAccountId: quote.toAccountId,
           slippagePercentage
         },
         feePrices,
@@ -136,65 +127,40 @@ class LbspERC20toNative extends SwapProvider {
       for (const key in automatedMarketMakerFees) {
         totalFees[key] = BN(automatedMarketMakerFees[key]).plus(liqualityFees[key])
       }
-
       return totalFees
     }
-
     return liqualityFees
   }
 
-  async finalizeAutomatedMarketMakerAndStartLiqualitySwap({
-    swapLiqualityFormat,
-    swapAMMFormat,
-    network,
-    walletId
-  }) {
-    let result = await this.bridgeAssetToAutomatedMarketMaker[
-      swapAMMFormat.bridgeAsset
-    ].waitForSwapConfirmations({
-      swap: swapAMMFormat,
+  async finalizeLiqualitySwapAndStartAutomatedMarketMaker({ swap, network, walletId }) {
+    const result = await this.liqualitySwapProvider.waitForClaimConfirmations({
+      swap,
       network,
       walletId
     })
-
-    if (result?.status === 'SUCCESS') {
-      result = await this.liqualitySwapProvider.newSwap({
-        network,
-        walletId,
-        quote: swapLiqualityFormat
-      })
-
-      return {
-        ...result,
-        ...swapLiqualityFormat,
-        toAmount: result.toAmount,
-        status: result.status
-      }
-    }
+    if (result?.status === 'SUCCESS') return { endTime: Date.now(), status: 'APPROVE_CONFIRMED' }
   }
 
   async performNextSwapAction(store, { network, walletId, swap }) {
     let updates
     const swapLiqualityFormat = {
       ...swap,
-      from: swap.bridgeAsset,
-      fromAmount: swap.bridgeAssetAmount,
-      toAccountId: swap.fromAccountId,
-      slippagePercentage
-    }
-
-    const swapAutomatedMarketMakerFormat = {
-      ...swap,
       to: swap.bridgeAsset,
       toAmount: swap.bridgeAssetAmount,
       slippagePercentage
     }
-
-    if (swap.status === 'WAITING_FOR_SWAP_CONFIRMATIONS') {
+    const swapAutomatedMarketMakerFormat = {
+      ...swap,
+      from: swap.bridgeAsset,
+      fromAmount: swap.bridgeAssetAmount,
+      fromAccountId: swap.toAccountId,
+      slippagePercentage,
+      fee: swap.claimFee
+    }
+    if (swap.status === 'WAITING_FOR_CLAIM_CONFIRMATIONS') {
       updates = await withInterval(async () =>
-        this.finalizeAutomatedMarketMakerAndStartLiqualitySwap({
-          swapLiqualityFormat,
-          swapAMMFormat: swapAutomatedMarketMakerFormat,
+        this.finalizeLiqualitySwapAndStartAutomatedMarketMaker({
+          swap: swapLiqualityFormat,
           network,
           walletId
         })
@@ -207,7 +173,7 @@ class LbspERC20toNative extends SwapProvider {
       })
     }
 
-    if (!updates && !LbspERC20toNative.lspEndStates.includes(swap.status)) {
+    if (!updates) {
       updates = await this.bridgeAssetToAutomatedMarketMaker[
         swap.bridgeAsset
       ].performNextSwapAction(store, {
@@ -216,18 +182,7 @@ class LbspERC20toNative extends SwapProvider {
         swap: swapAutomatedMarketMakerFormat
       })
     }
-
-    if (!updates) return
-
-    return {
-      ...updates,
-      // reset from and to assets and values
-      from: swap.from,
-      fromAmount: swap.fromAmount,
-      to: swap.to,
-      // keep `toAmount` (from updates object) only in case swap transitioned from AMM to LSP
-      toAmount: updates.status === 'INITIATED' ? updates.toAmount : swap.toAmount
-    }
+    return updates
   }
 
   static txTypes = {
@@ -238,39 +193,8 @@ class LbspERC20toNative extends SwapProvider {
   static statuses = {
     ...LiqualitySwapProvider.statuses,
     ...OneinchSwapProvider.statuses,
-    // AAM states
-    APPROVE_CONFIRMED: {
-      ...OneinchSwapProvider.statuses.APPROVE_CONFIRMED,
-      label: 'Swapping {from} for {bridgeAsset}'
-    },
-    WAITING_FOR_SWAP_CONFIRMATIONS: {
-      ...OneinchSwapProvider.statuses.WAITING_FOR_SWAP_CONFIRMATIONS,
-      label: 'Swapping {from} for {bridgeAsset}',
-      notification() {
-        return {
-          message: 'Engaging Automated Market Maker'
-        }
-      }
-    },
-    // Liquality swap states
-    INITIATED: {
-      ...LiqualitySwapProvider.statuses.INITIATED,
-      step: 2,
-      label: 'Locking {bridgeAsset}'
-    },
-    INITIATION_REPORTED: {
-      ...LiqualitySwapProvider.statuses.INITIATION_REPORTED,
-      step: 2,
-      label: 'Locking {bridgeAsset}'
-    },
-    INITIATION_CONFIRMED: {
-      ...LiqualitySwapProvider.statuses.INITIATION_CONFIRMED,
-      step: 2,
-      label: 'Locking {bridgeAsset}'
-    },
     FUNDED: {
       ...LiqualitySwapProvider.statuses.FUNDED,
-      step: 3,
       label: 'Locking {bridgeAsset}'
     },
     CONFIRM_COUNTER_PARTY_INITIATION: {
@@ -282,64 +206,46 @@ class LbspERC20toNative extends SwapProvider {
             swap.bridgeAsset
           } to escrow`
         }
-      },
-      step: 3
+      }
     },
     READY_TO_CLAIM: {
       ...LiqualitySwapProvider.statuses.READY_TO_CLAIM,
-      step: 4
+      label: 'Claiming {bridgeAsset}'
     },
     WAITING_FOR_CLAIM_CONFIRMATIONS: {
       ...LiqualitySwapProvider.statuses.WAITING_FOR_CLAIM_CONFIRMATIONS,
-      step: 4
+      label: 'Claiming {bridgeAsset}'
     },
-    WAITING_FOR_REFUND: {
-      ...LiqualitySwapProvider.statuses.WAITING_FOR_REFUND,
-      step: 4
+    APPROVE_CONFIRMED: {
+      ...OneinchSwapProvider.statuses.APPROVE_CONFIRMED,
+      step: 3,
+      label: 'Swapping {bridgeAsset} for {to}'
     },
-    GET_REFUND: {
-      ...LiqualitySwapProvider.statuses.GET_REFUND,
-      label: 'Refunding {bridgeAsset}',
-      step: 4
-    },
-    WAITING_FOR_REFUND_CONFIRMATIONS: {
-      ...LiqualitySwapProvider.statuses.WAITING_FOR_REFUND_CONFIRMATIONS,
-      label: 'Refunding {bridgeAsset}',
-      step: 4
-    },
-    // final states
-    REFUNDED: {
-      ...LiqualitySwapProvider.statuses.REFUNDED,
-      step: 5
+    WAITING_FOR_SWAP_CONFIRMATIONS: {
+      ...OneinchSwapProvider.statuses.WAITING_FOR_SWAP_CONFIRMATIONS,
+      notification() {
+        return {
+          message: 'Engaging Automated Market Maker'
+        }
+      },
+      step: 3
     },
     SUCCESS: {
       ...LiqualitySwapProvider.statuses.SUCCESS,
-      step: 5
-    },
-    QUOTE_EXPIRED: {
-      ...LiqualitySwapProvider.statuses.QUOTE_EXPIRED,
-      step: 5
+      step: 4
     },
     FAILED: {
       ...OneinchSwapProvider.statuses.FAILED,
-      step: 5
+      step: 4
     }
   }
 
-  static lspEndStates = ['REFUNDED', 'SUCCESS', 'QUOTE_EXPIRED']
+  static fromTxType = LiqualityBoostNativeToERC20.txTypes.SWAP_INITIATION
+  static toTxType = LiqualityBoostNativeToERC20.txTypes.SWAP
 
-  static fromTxType = LbspERC20toNative.txTypes.SWAP
-  static toTxType = LbspERC20toNative.txTypes.SWAP_CLAIM
+  static timelineDiagramSteps = ['INITIATION', 'AGENT_INITIATION', 'CLAIM_OR_REFUND', 'SWAP']
 
-  static timelineDiagramSteps = [
-    'APPROVE',
-    'SWAP',
-    'INITIATION',
-    'AGENT_INITIATION',
-    'CLAIM_OR_REFUND'
-  ]
-
-  static totalSteps = 6
+  static totalSteps = 5
 }
 
-export { LbspERC20toNative }
+export { LiqualityBoostNativeToERC20 }

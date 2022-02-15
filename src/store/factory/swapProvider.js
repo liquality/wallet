@@ -1,7 +1,7 @@
 import { SwapProviderType } from '@/utils/swaps'
 import { LiqualitySwapProvider } from '@/swaps/liquality/LiqualitySwapProvider'
-import { LbspERC20toNative } from '@/swaps/liqualityboost/lbspERC20toNative/LbspERC20toNative'
-import { LbspNativeToERC20 } from '@/swaps/liqualityboost/lbspNativeToERC20/LbspNativeToERC20'
+import { LiqualityBoostERC20toNative } from '@/swaps/liqualityboost/liqualityBoostERC20toNative/LiqualityBoostERC20toNative'
+import { LiqualityBoostNativeToERC20 } from '@/swaps/liqualityboost/liqualityBoostNativeToERC20/LiqualityBoostNativeToERC20'
 import { UniswapSwapProvider } from '@/swaps/uniswap/UniswapSwapProvider'
 import { OneinchSwapProvider } from '@/swaps/oneinch/OneinchSwapProvider'
 import { ThorchainSwapProvider } from '@/swaps/thorchain/ThorchainSwapProvider'
@@ -14,8 +14,8 @@ const providers = {
   [SwapProviderType.UNISWAPV2]: UniswapSwapProvider,
   [SwapProviderType.ONEINCHV4]: OneinchSwapProvider,
   [SwapProviderType.THORCHAIN]: ThorchainSwapProvider,
-  [SwapProviderType.LIQUALITYBOOST_TYPE1]: LbspNativeToERC20,
-  [SwapProviderType.LIQUALITYBOOST_TYPE2]: LbspERC20toNative,
+  [SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20]: LiqualityBoostNativeToERC20,
+  [SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE]: LiqualityBoostERC20toNative,
   [SwapProviderType.FASTBTC]: FastbtcSwapProvider,
   [SwapProviderType.SOVRYN]: SovrynSwapProvider
 }
