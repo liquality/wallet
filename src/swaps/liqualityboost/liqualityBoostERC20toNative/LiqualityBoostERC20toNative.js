@@ -103,7 +103,9 @@ class LiqualityBoostERC20toNative extends SwapProvider {
       walletId,
       asset,
       txType:
-        txType === LiqualityBoostERC20toNative.txTypes.SWAP ? LiqualityBoostERC20toNative.txTypes.SWAP_CLAIM : txType,
+        txType === LiqualityBoostERC20toNative.txTypes.SWAP
+          ? LiqualityBoostERC20toNative.txTypes.SWAP_CLAIM
+          : txType,
       quote: {
         ...quote,
         from: quote.bridgeAsset,
