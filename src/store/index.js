@@ -12,7 +12,7 @@ Vue.use(Vuex)
 
 const broker = Broker(state)
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: broker.state,
   getters,
   actions,
@@ -22,3 +22,5 @@ export default new Vuex.Store({
     app: appModule
   }
 })
+
+export default store

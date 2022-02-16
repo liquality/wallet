@@ -38,7 +38,6 @@ export const getUnusedAddresses = async (
           network,
           accountId: account.id,
           walletId,
-          asset,
           addresses: updatedAddresses
         })
 

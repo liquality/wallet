@@ -47,7 +47,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import buildConfig from '../../build.config'
 import { ChainNetworks } from '@/utils/networks'
 
-function createBtcClient(network, mnemonic, accountType, derivationPath) {
+function createBtcClient(network, mnemonic, accountType, derivationPath, publicKey, chainCode) {
   const isTestnet = network === 'testnet'
   const bitcoinNetwork = ChainNetworks.bitcoin[network]
   const esploraApi = buildConfig.exploraApis[network]
@@ -66,16 +66,17 @@ function createBtcClient(network, mnemonic, accountType, derivationPath) {
   if (accountType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find((o) => o.name === accountType)
     const { addressType } = option
-    const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(network, ChainId.Bitcoin)
-    const ledger = new BitcoinLedgerBridgeProvider(
-      {
+    const ledgerApp = new BitcoinLedgerBridgeApp(network, ChainId.Bitcoin)
+    btcClient.addProvider(
+      new BitcoinLedgerBridgeProvider({
         network: bitcoinNetwork,
         addressType,
-        baseDerivationPath: derivationPath
-      },
-      bitcoinLedgerApp
+        baseDerivationPath: derivationPath,
+        ledgerApp,
+        basePublicKey: publicKey,
+        baseChainCode: chainCode
+      })
     )
-    btcClient.addProvider(ledger)
   } else {
     btcClient.addProvider(
       new BitcoinJsWalletProvider({
@@ -89,10 +90,11 @@ function createBtcClient(network, mnemonic, accountType, derivationPath) {
   btcClient.addProvider(new BitcoinSwapProvider({ network: bitcoinNetwork }))
   btcClient.addProvider(new BitcoinEsploraSwapFindProvider(esploraApi))
   if (isTestnet) btcClient.addProvider(new BitcoinRpcFeeProvider())
-  else
+  else {
     btcClient.addProvider(
       new BitcoinFeeApiProvider('https://liquality.io/swap/mempool/v1/fees/recommended')
     )
+  }
 
   return btcClient
 }
@@ -143,10 +145,14 @@ function createEthereumClient(
     const contractAddress = cryptoassets[asset].contractAddress
     ethClient.addProvider(new EthereumErc20Provider(contractAddress))
     ethClient.addProvider(new EthereumErc20SwapProvider())
-    if (scraperApi) ethClient.addProvider(new EthereumErc20ScraperSwapFindProvider(scraperApi))
+    if (scraperApi) {
+      ethClient.addProvider(new EthereumErc20ScraperSwapFindProvider(scraperApi))
+    }
   } else {
     ethClient.addProvider(new EthereumSwapProvider())
-    if (scraperApi) ethClient.addProvider(new EthereumScraperSwapFindProvider(scraperApi))
+    if (scraperApi) {
+      ethClient.addProvider(new EthereumScraperSwapFindProvider(scraperApi))
+    }
   }
 
   return ethClient
@@ -394,23 +400,36 @@ function createFuseClient(asset, network, mnemonic, derivationPath) {
   )
 }
 
-export const createClient = (asset, network, mnemonic, accountType, derivationPath) => {
+export const createClient = ({
+  asset,
+  network,
+  mnemonic,
+  accountType,
+  derivationPath,
+  chainCode,
+  publicKey
+}) => {
   const assetData = cryptoassets[asset]
-
-  if (assetData.chain === 'bitcoin')
-    return createBtcClient(network, mnemonic, accountType, derivationPath)
-  if (assetData.chain === 'rsk')
-    return createRskClient(asset, network, mnemonic, accountType, derivationPath)
-  if (assetData.chain === 'bsc') return createBSCClient(asset, network, mnemonic, derivationPath)
-  if (assetData.chain === 'polygon')
-    return createPolygonClient(asset, network, mnemonic, derivationPath)
-  if (assetData.chain === 'arbitrum')
-    return createArbitrumClient(asset, network, mnemonic, derivationPath)
-  if (assetData.chain === 'near') return createNearClient(network, mnemonic, derivationPath)
-  if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
-  if (assetData.chain === 'terra')
-    return createTerraClient(network, mnemonic, derivationPath, asset)
-  if (assetData.chain === 'fuse') return createFuseClient(asset, network, mnemonic, derivationPath)
-
-  return createEthClient(asset, network, mnemonic, accountType, derivationPath)
+  switch (assetData.chain) {
+    case 'bitcoin':
+      return createBtcClient(network, mnemonic, accountType, derivationPath, publicKey, chainCode)
+    case 'rsk':
+      return createRskClient(asset, network, mnemonic, accountType, derivationPath)
+    case 'bsc':
+      return createBSCClient(asset, network, mnemonic, derivationPath)
+    case 'polygon':
+      return createPolygonClient(asset, network, mnemonic, derivationPath)
+    case 'arbitrum':
+      return createArbitrumClient(asset, network, mnemonic, derivationPath)
+    case 'near':
+      return createNearClient(network, mnemonic, derivationPath)
+    case 'solana':
+      return createSolanaClient(network, mnemonic, derivationPath)
+    case 'terra':
+      return createTerraClient(network, mnemonic, derivationPath, asset)
+    case 'fuse':
+      return createFuseClient(asset, network, mnemonic, derivationPath)
+    default:
+      return createEthClient(asset, network, mnemonic, accountType, derivationPath)
+  }
 }
