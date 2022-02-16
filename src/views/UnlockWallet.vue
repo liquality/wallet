@@ -63,7 +63,7 @@ export default {
     return {
       loading: false,
       error: null,
-      password: 'andon940410'
+      password: ''
     }
   },
   methods: {

@@ -84,13 +84,6 @@ export default {
         routerAddress: SovrynTestnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynTestnetAddresses.proxy3,
         rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_TESTNET
-      },
-      astroport: {
-        name: 'Astroport',
-        icon: 'thorchain.svg', // TODO: Find image
-        type: SwapProviderType.ASTROPORT,
-        URL: "https://bombay-lcd.terra.dev/",
-        chainID: "bombay-12",
       }
     },
     mainnet: {
@@ -148,7 +141,7 @@ export default {
       },
       astroport: {
         name: 'Astroport',
-        icon: 'thorchain.svg', // TODO: Find image
+        icon: 'astroport.svg',
         type: SwapProviderType.ASTROPORT,
         URL: "https://lcd.terra.dev",
         chainID: "columbus-5",
