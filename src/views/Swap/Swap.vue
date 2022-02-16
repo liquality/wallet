@@ -415,7 +415,7 @@ import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { getSwapProviderConfig, SwapProviderType } from '@/utils/swaps'
 import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { BG_PREFIX } from '@/broker/utils'
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import buildConfig from '@/build.config'
 
 const DEFAULT_SWAP_VALUE_USD = 100
@@ -988,17 +988,9 @@ export default {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (
-            type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
-            payload.connected === true
-          ) {
-            this.bridgeModalOpen = false
-            await this.swap()
-            if (unsubscribe) {
-              unsubscribe()
-            }
-          }
+        const unsubscribe = createConnectSubscription(() => {
+          this.bridgeModalOpen = false
+          this.swap()
         })
         setTimeout(() => {
           if (unsubscribe) {
