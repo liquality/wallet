@@ -196,18 +196,5 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       })
       break
-    case 'UPDATE_BALANCE':
-      // TODO: can be removed later
-      // if (payload.balance > 0) {
-      //   dispatch('trackAnalytics', {
-      //     event: 'Hold Asset',
-      //     properties: {
-      //       category: 'Hold Asset',
-      //       action: 'Hold asset greater than 0',
-      //       asset: `${payload.asset}`
-      //     }
-      //   })
-      // }
-      break
   }
 })
