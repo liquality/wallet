@@ -1,6 +1,6 @@
 <template>
   <div class="nft-image" style="--img-width: 110px" @click="viewNFTDetails">
-    <img src="@/assets/images/nft.png" alt="" />
+    <img :src="nftAssetImageSource" alt="" />
   </div>
 </template>
 
@@ -10,12 +10,30 @@ export default {
     nftAsset: {
       type: Object,
       required: true
+    },
+    mode: {
+      type: String,
+      required: true
+    }
+  },
+  created() {
+    console.log('NFTAsset created', this.nftAsset)
+  },
+  computed: {
+    nftAssetImageSource() {
+      if (this.mode === 'thumbnail') {
+        return this.nftAsset.image_thumbnail_url
+      } else if (this.mode === 'preview') {
+        return this.nftAsset.image_preview_url
+      } else {
+        return this.nftAsset.image_url
+      }
     }
   },
   methods: {
     viewNFTDetails() {
       this.$router.push({
-        path: `/details/nft-collection/${this.nftAsset.nft[0].collection}/${this.nftAsset.nft[0].name}`,
+        path: `/details/nft-collection/${this.nftAsset.collection.name}/${this.nftAsset.name}`,
         query: { nftAsset: this.nftAsset }
       })
     }

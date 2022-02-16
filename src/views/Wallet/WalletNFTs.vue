@@ -1,15 +1,7 @@
 <template>
   <div class="nft-collectibles">
-    <h1 class="section-header">Collectibles</h1>
-    <div class="wallet-info-heading">
-      <h5>Total Value of Collectibles</h5>
-      <div class="total-balance">
-        <WalletBalanceEye class="icon" />
-        <span>23,253.89 USD</span>
-      </div>
-    </div>
-    <template v-for="asset in NFTAssetsList">
-      <NFTAssets :nftAsset="asset" :key="asset.id" />
+    <template v-for="(asset, key) in assets">
+      <NFTAssets :nftAsset="asset" :collectionName="key" :key="asset.id" />
     </template>
   </div>
 </template>
@@ -25,6 +17,7 @@ export default {
   },
   data() {
     return {
+      assets: [],
       NFTAssetsList: [
         {
           name: 'CryptoKitties',
@@ -63,14 +56,25 @@ export default {
     ...mapGetters(['client'])
   },
   methods: {
-    getNftCollections() {
+    async getNftCollections() {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
         asset: 'ETH'
       })
-      const nft = client.nft.fetch()
-      console.log('🚀 ~ file: WalletNFTs.vue ~ line 58 ~ nft ~ nft', nft)
+      const nft = await client.nft.fetch()
+      console.log(
+        '🚀 ~ file: WalletNFTs.vue ~ line 75 ~ getNftCollections ~ nft.assets',
+        nft.assets
+      )
+      const result = nft.assets.reduce(function (r, a) {
+        r[a.collection.name] = r[a.collection.name] || []
+        r[a.collection.name].push(a)
+        return r
+      }, Object.create(null))
+
+      console.log(result)
+      this.assets = result
     }
   }
 }

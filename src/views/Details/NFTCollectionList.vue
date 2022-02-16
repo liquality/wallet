@@ -1,15 +1,14 @@
 <template>
   <div class="nft-collectibles">
-    <h1 class="section-header">Cryptokitties</h1>
-    <div class="wallet-info-heading">
-      <h5>Total Value of Cryptokitties</h5>
-      <div class="total-balance">
-        <WalletBalanceEye class="icon" />
-        <span>23,253.89 USD</span>
-      </div>
-    </div>
+    <NavBar showBack="true" :backPath="'/wallet/nfts'" :backLabel="''"> </NavBar>
+    <h1 class="section-header">{{ nftCollection[0].collection.name }}</h1>
     <div class="nft-collection">
-      <NFTAsset v-for="asset in nftCollection.number" :key="asset.id" :nftAsset="nftCollection" />
+      <NFTAsset
+        v-for="asset in nftCollection"
+        :key="asset.id"
+        :nftAsset="asset"
+        :mode="'thumbnail'"
+      />
     </div>
   </div>
 </template>
@@ -17,11 +16,13 @@
 <script>
 import WalletBalanceEye from '@/assets/icons/nft-wallet-eye.svg'
 import NFTAsset from '../../components/NFTAsset.vue'
+import NavBar from '../../components/NavBar.vue'
 
 export default {
   components: {
     WalletBalanceEye,
-    NFTAsset
+    NFTAsset,
+    NavBar
   },
   data() {
     return {}

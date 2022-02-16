@@ -2,15 +2,15 @@
   <div class="nft-assets">
     <div class="nft-assets__container">
       <div class="nft-assets__container__heading">
-        <h5>{{ nftAsset.name }} ({{ nftAsset.number }})</h5>
+        <h5>{{ collectionName }} ({{ nftAsset.length }})</h5>
         <span class="d-flex align-items-center">
           <ChevronRight />
           <button class="d-flex align-items-center" @click="goToNFTCollection">all</button>
         </span>
       </div>
       <div class="nft-assets__container__images">
-        <div class="img-items" v-for="nft in nftAsset.number" :key="nft.id">
-          <NFTAsset :nftAsset="nftAsset" />
+        <div class="img-items" v-for="nft in nftAsset" :key="nft.id">
+          <NFTAsset :nftAsset="nft" :mode="'thumbnail'" />
         </div>
       </div>
     </div>
@@ -23,9 +23,16 @@ import NFTAsset from './NFTAsset.vue'
 export default {
   props: {
     nftAsset: {
-      type: Object,
+      type: Array,
+      required: true
+    },
+    collectionName: {
+      type: String,
       required: true
     }
+  },
+  created() {
+    console.log('NFTAssets created', this.nftAsset)
   },
   components: {
     ChevronRight,
@@ -34,7 +41,7 @@ export default {
   methods: {
     goToNFTCollection() {
       this.$router.push({
-        path: `/details/nft-collection/${this.nftAsset.name}`,
+        path: `/details/nft-collection/${this.nftAsset[0].collection.name}`,
         query: { nftAsset: this.nftAsset }
       })
     }
@@ -66,7 +73,7 @@ export default {
       justify-content: start;
       align-items: center;
       .img-items {
-        width: 100%;
+        margin-right: 20px;
         img {
           width: var(--img-width);
           border-radius: 10px;

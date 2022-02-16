@@ -90,6 +90,18 @@
               {{ formatFiatUI(formatFiat(account.fiatBalances[asset])) }}
             </template>
           </ListItem>
+          <ListItem
+            v-if="account.chain === 'ethereum'"
+            @item-selected="$router.push({ path: 'nfts' })"
+          >
+            <template #prefix>
+              <div class="account-color" :style="{ 'background-color': account.color }"></div>
+            </template>
+            <template #icon class="account-asset-item">
+              <img :src="getAccountIcon(account.chain)" class="asset-icon" />
+            </template>
+            NFT
+          </ListItem>
         </div>
       </div>
     </div>
