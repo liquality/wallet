@@ -2,7 +2,7 @@ on:
   pull_request:
     branches:
       - master
-      - 'release-candidate-**'
+      - 'release-candidate*'
       - '!renovate/**'
 
 name: PullRequest tests
@@ -10,6 +10,7 @@ name: PullRequest tests
 jobs:
   pull_request_tests:
     runs-on: ubuntu-latest
+    if: git.r
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.4.0
