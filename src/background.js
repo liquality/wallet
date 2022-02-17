@@ -93,15 +93,24 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'NEW_TRASACTION':
+      // eslint-disable-next-line no-case-declarations
+      const itemDetails = getters.accountItem(payload.transaction.accountId)
+      // eslint-disable-next-line no-case-declarations
+      const sendValue = unitToCurrency(
+        cryptoassets[payload.transaction.from],
+        payload.transaction.amount
+      )
       dispatch('trackAnalytics', {
         event: 'Send',
         properties: {
           category: 'Send/Receive',
           action: 'Funds sent',
-          fiatRate: payload.transaction.fiatRate,
+          fiatRate: prettyFiatBalance(sendValue, state.fiatRates[payload.transaction.from]),
           fromAsset: cryptoassets[payload.transaction.from],
           toAsset: cryptoassets[payload.transaction.to],
-          fee: `${payload.feeLabel}`
+          fee: `${payload.feeLabel}`,
+          typeOfAccount: itemDetails.type,
+          nameOfAccount: itemDetails.name
         }
       })
       break
