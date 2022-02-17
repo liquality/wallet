@@ -4,6 +4,7 @@ on:
       - master
       - 'release-candidate*'
       - '!renovate/**'
+      - '!dependabot/**'
 
 name: PullRequest tests
 
