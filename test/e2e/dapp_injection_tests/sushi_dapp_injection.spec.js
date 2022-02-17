@@ -36,8 +36,7 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
       await overviewPage.SelectNetwork(page)
     }
     // Web3 toggle on
-    await overviewPage.ClickWeb3WalletToggle(page)
-    await page.waitForTimeout(1000)
+    await overviewPage.CheckWeb3ToggleOn(page)
   })
   afterEach(async () => {
     await browser.close()

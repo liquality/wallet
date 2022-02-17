@@ -120,8 +120,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     ethAccounts = await page.$$('#account-item-ethereum')
     expect(ethAccounts.length).to.equals(2)
     // Default web3 option toggled on
-    await overviewPage.ClickWeb3WalletToggle(page)
-    await page.waitForTimeout(2000)
+    await overviewPage.CheckWeb3ToggleOn(page)
     // Connected dapp option
     await page.click('#connect_dapp_main_option')
     await page.waitForSelector('.v-switch-core', { visible: true })

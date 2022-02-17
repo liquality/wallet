@@ -82,12 +82,9 @@ function overrideEthereumInjection(state) {
 
 chrome.storage.local.get(['liquality-wallet'], (storage) => {
   const state = storage['liquality-wallet']
+  injectProviders(state)
 
-  if (state.injectionEnabled) {
-    injectProviders(state)
-
-    if (state.injectEthereum && state.injectEthereumChain) {
-      overrideEthereumInjection(state)
-    }
+  if (state.injectEthereum && state.injectEthereumChain) {
+    overrideEthereumInjection(state)
   }
 })

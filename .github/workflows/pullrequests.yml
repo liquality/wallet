@@ -2,6 +2,7 @@ on:
   pull_request:
     branches:
       - master
+      - 'release-candidate*'
       - '!renovate/**'
 
 name: PullRequest tests

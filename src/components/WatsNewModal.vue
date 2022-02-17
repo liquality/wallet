@@ -10,14 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Integrated Thorchain for cross-chain swaps</pre>
-            <pre>Upgraded EIP-1559 compatibility</pre>
-            <pre>Updated 1inch integration to v4</pre>
-            <pre>Improved dapp injection UI/UX</pre>
-            <pre class="text-wrap">Detailed "send" transaction timeline</pre>
-            <pre>Faster loading/start screens</pre>
-            <pre class="text-wrap">Fewer node errors</pre>
-            <pre class="text-wrap">Minor bug fixes</pre>
+            <pre class="text-wrap">Remove global connection toggle</pre>
+            <pre class="text-wrap">Prioritise Liquality wallet as default</pre>
           </div>
         </div>
       </div>
