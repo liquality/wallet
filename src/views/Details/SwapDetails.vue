@@ -10,8 +10,15 @@
             <h2>Status</h2>
             <p>{{ status }}</p>
           </div>
-          <div class="col">
-            <CompletedIcon v-if="item.status === 'SUCCESS'" class="swap-details_status-icon" />
+          <div class="status_col">
+            <button
+              class="retry_button btn btn-sm btn-outline-primary"
+              v-if="item.error"
+              @click="$emit('retrySwap')"
+            >
+              Retry
+            </button>
+            <CompletedIcon v-else-if="item.status === 'SUCCESS'" class="swap-details_status-icon" />
             <RefundedIcon
               v-else-if="['FAILED', 'REFUNDED', 'QUOTE_EXPIRED'].includes(item.status)"
               class="swap-details_status-icon"
@@ -260,6 +267,7 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
 .swap-details {
   padding: $wrapper-padding 0;
   overflow-y: auto;
@@ -406,21 +414,6 @@ export default {
     }
   }
 }
-.border-0 {
-  box-shadow: none !important;
-
-  tr:first-child {
-    td {
-      border-top: 0;
-    }
-  }
-
-  tr:last-child {
-    td {
-      border-bottom: 0;
-    }
-  }
-}
 
 .fee-update {
   padding-left: 10px;
@@ -434,5 +427,18 @@ export default {
     font-size: $font-size-tiny;
     margin: 6px 0;
   }
+}
+
+.retry_button {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.status_col {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding-right: 20px;
 }
 </style>
