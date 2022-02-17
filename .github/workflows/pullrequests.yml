@@ -1,8 +1,7 @@
 on:
   pull_request:
     branches:
-      - dev
-      - "!master"
+      - master
       - '!renovate/**'
 
 name: PullRequest tests
