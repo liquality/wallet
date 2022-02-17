@@ -10,8 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Remove global connection toggle</pre>
-            <pre class="text-wrap">Prioritise Liquality wallet as default</pre>
+            <pre class="text-wrap">This is release candidate for 0.56.0</pre>
+            <pre class="text-wrap">Update this copy just before release</pre>
           </div>
         </div>
       </div>
