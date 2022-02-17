@@ -8,7 +8,7 @@ name: Prod Mainnet tests
 
 jobs:
   regressiontest_Prod_mainnet:
-    if: github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

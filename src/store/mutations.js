@@ -122,9 +122,6 @@ export default {
   UPDATE_MARKET_DATA(state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
   },
-  TOGGLE_INJECTION(state) {
-    state.injectionEnabled = !state.injectionEnabled
-  },
   SET_ETHEREUM_INJECTION_CHAIN(state, { chain }) {
     state.injectEthereumChain = chain
   },
