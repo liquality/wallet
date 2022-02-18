@@ -300,3 +300,23 @@ export const buildSwapFromContractTokenToUSTMsg = (
     }
   }
 }
+
+
+
+// ============== Get Pair Address ==============
+export const getPairAddressQuery = (tokenAddress) => ({
+  pair: {
+    asset_infos: [
+      {
+        token: {
+          contract_addr: tokenAddress
+        }
+      },
+      {
+        native_token: {
+          denom: 'uusd'
+        }
+      }
+    ]
+  }
+})

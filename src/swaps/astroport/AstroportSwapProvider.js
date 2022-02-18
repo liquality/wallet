@@ -13,7 +13,8 @@ import {
   getRateERC20ToERC20,
   buildSwapFromNativeTokenMsg,
   buildSwapFromContractTokenMsg,
-  buildSwapFromContractTokenToUSTMsg
+  buildSwapFromContractTokenToUSTMsg,
+  getPairAddressQuery
 } from './queries'
 import { SwapProvider } from '../SwapProvider'
 
@@ -225,22 +226,9 @@ class AstroportSwapProvider extends SwapProvider {
   async _getPairAddress(tokenAddress) {
     const rpc = this._getRPC()
 
-    const resp = await rpc.wasm.contractQuery('terra1fnywlw4edny3vw44x04xd67uzkdqluymgreu7g', {
-      pair: {
-        asset_infos: [
-          {
-            token: {
-              contract_addr: tokenAddress
-            }
-          },
-          {
-            native_token: {
-              denom: 'uusd'
-            }
-          }
-        ]
-      }
-    })
+    const query = getPairAddressQuery(tokenAddress)
+
+    const resp = await rpc.wasm.contractQuery('terra1fnywlw4edny3vw44x04xd67uzkdqluymgreu7g', query)
 
     return resp.contract_addr
   }
@@ -268,9 +256,8 @@ class AstroportSwapProvider extends SwapProvider {
       filterStatus: 'COMPLETED',
       notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
-            swap.to
-          } ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to
+            } ready to use`
         }
       }
     },
