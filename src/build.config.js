@@ -143,8 +143,8 @@ export default {
         name: 'Astroport',
         icon: 'astroport.svg',
         type: SwapProviderType.ASTROPORT,
-        URL: "https://lcd.terra.dev",
-        chainID: "columbus-5",
+        URL: 'https://lcd.terra.dev',
+        chainID: 'columbus-5'
       }
     }
   },
