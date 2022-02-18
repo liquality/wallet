@@ -138,6 +138,13 @@ export default {
         icon: 'thorchain.svg',
         type: SwapProviderType.THORCHAIN,
         thornode: 'https://thornode.thorchain.info'
+      },
+      astroport: {
+        name: 'Astroport',
+        icon: 'astroport.svg',
+        type: SwapProviderType.ASTROPORT,
+        URL: "https://lcd.terra.dev",
+        chainID: "columbus-5",
       }
     }
   },
