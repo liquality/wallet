@@ -115,13 +115,13 @@
       </template>
     </div>
     <div class="text-center">
-      <table class="retry_button_table table bg-white border-0 mb-0 mt-0">
+      <table class="retry-button-table table bg-white border-0 mb-0 mt-0">
         <tbody class="font-weight-normal" v-if="item.type === 'SWAP' && item.error">
           <tr>
             <td class="text-muted text-left small-12">Actions</td>
             <td class="text-danger">
               <button
-                class="retry_button btn btn-sm btn-outline-primary"
+                class="retry-button btn btn-sm btn-outline-primary"
                 v-if="item.error"
                 @click="$emit('retrySwap')"
               >
@@ -132,8 +132,8 @@
         </tbody>
       </table>
 
-      <div class="advanced_button" @click="advanced = !advanced">
-        <div class="advanced_arrow">
+      <div class="advanced-button" @click="advanced = !advanced">
+        <div class="advanced-arrow">
           <ChevronRightIcon v-if="!advanced" />
           <ChevronDownIcon v-else />
         </div>
@@ -142,28 +142,6 @@
     </div>
     <div class="table" v-if="advanced">
       <table class="table bg-white border-0 mb-1 mt-1">
-        <tbody class="font-weight-normal" v-if="item.type === 'SEND'">
-          <tr>
-            <td class="text-muted text-left small-12">Amount</td>
-            <td class="text-break">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</td>
-          </tr>
-          <tr v-if="item.fromAddress">
-            <td class="text-muted text-left small-12">Your {{ item.from }} from address</td>
-            <td class="text-break">{{ item.fromAddress }}</td>
-          </tr>
-          <tr>
-            <td class="text-muted text-left small-12">Your {{ item.to }} to address</td>
-            <td class="text-break">{{ item.toAddress }}</td>
-          </tr>
-          <tr>
-            <td class="text-muted text-left small-12">Your {{ item.to }} send transaction</td>
-            <td class="text-break">{{ item.txHash }}</td>
-          </tr>
-          <tr v-if="false">
-            <td class="text-muted text-left small-12">Actions</td>
-            <td class="cursor-pointer text-danger" @click="remove">Remove this item</td>
-          </tr>
-        </tbody>
         <tbody class="font-weight-normal" v-if="item.type === 'SWAP'">
           <tr v-if="item.agent">
             <td class="text-muted text-left small-12">Counter-party</td>
@@ -175,6 +153,7 @@
               <a :href="orderLink" id="order_id_href_link" rel="noopener" target="_blank">{{
                 item.id
               }}</a>
+              <CopyIcon class="copy-icon" @click="copy(item.id)" />
             </td>
           </tr>
           <tr>
@@ -215,11 +194,27 @@
           </tr>
           <tr v-if="item.fromAddress">
             <td class="text-muted text-left small-12">Your {{ item.from }} address</td>
-            <td id="from_address" class="text-break">{{ item.fromAddress }}</td>
+            <td id="from_address" class="text-break">
+              <a
+                :href="addressLink(item.fromAddress, item.from, item.toAccountId)"
+                target="_blank"
+                id="transaction_details_send_to_link"
+                >{{ shortenAddress(item.fromAddress) }}</a
+              >
+              <CopyIcon class="copy-icon" @click="copy(item.fromAddress)" />
+            </td>
           </tr>
           <tr v-if="item.toAddress">
             <td class="text-muted text-left small-12">Your {{ item.to }} address</td>
-            <td id="to_address" class="text-break">{{ item.toAddress }}</td>
+            <td id="to_address" class="text-break">
+              <a
+                :href="addressLink(item.toAddress, item.to, item.toAccountId)"
+                target="_blank"
+                id="transaction_details_send_to_link"
+                >{{ shortenAddress(item.toAddress) }}</a
+              >
+              <CopyIcon class="copy-icon" @click="copy(item.toAddress)" />
+            </td>
           </tr>
           <tr v-if="item.secret">
             <td class="text-muted text-left small-12">Secret</td>
@@ -304,7 +299,7 @@
             <td class="text-muted text-left small-12">Actions</td>
             <td class="text-danger">
               <button
-                class="retry_button btn btn-sm btn-outline-primary"
+                class="retry-button btn btn-sm btn-outline-primary"
                 v-if="item.error"
                 @click="$emit('retrySwap')"
               >
@@ -327,7 +322,7 @@ import { chains } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStep } from '@/utils/history'
-import { getNativeAsset, getTransactionExplorerLink } from '@/utils/asset'
+import { getNativeAsset, getTransactionExplorerLink, getAddressExplorerLink } from '@/utils/asset'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
@@ -336,6 +331,7 @@ import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate } from '@/utils/quotes'
 import { isObject } from 'lodash-es'
+import { shortenAddress } from '@/utils/address'
 
 const ACTIONS_TERMS = {
   lock: {
@@ -431,6 +427,7 @@ export default {
     ...mapActions(['updateTransactionFee', 'updateFees', 'checkPendingActions']),
     getNativeAsset,
     prettyBalance,
+    shortenAddress,
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
@@ -632,6 +629,13 @@ export default {
         this.feeSelectorLoading = false
         this.showFeeSelector = false
       }
+    },
+    addressLink(address, asset, accountId) {
+      if (accountId) {
+        return getAddressExplorerLink(address, asset, this.activeNetwork)
+      }
+
+      return '#'
     }
   },
   created() {
@@ -771,13 +775,26 @@ export default {
     width: 305px;
     word-wrap: break-word;
 
+    .copy-icon {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      margin: 0px 0px 0px 6px;
+    }
+
     pre {
       margin: 0px;
     }
   }
+
+  #secret_key {
+    .cursor-pointer {
+      color: #9d4dfa !important;
+    }
+  }
 }
 
-.retry_button {
+.retry-button {
   background-color: #9d4dfa !important;
   border: none !important;
   color: white !important;
@@ -791,7 +808,7 @@ export default {
   width: 90px;
 }
 
-.advanced_button {
+.advanced-button {
   padding: 19px 20px;
   font-weight: bold;
   font-size: 12px;
@@ -799,7 +816,7 @@ export default {
   gap: 6.5px;
   border-top: 1px solid #d9dfe5;
 
-  .advanced_arrow {
+  .advanced-arrow {
     display: flex;
     align-items: center;
 

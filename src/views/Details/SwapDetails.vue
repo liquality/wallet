@@ -12,7 +12,7 @@
           </div>
           <div class="status_col">
             <button
-              class="retry_button btn btn-sm btn-outline-primary"
+              class="retry-button btn btn-sm btn-outline-primary"
               v-if="item.error"
               @click="$emit('retrySwap')"
             >
@@ -448,7 +448,7 @@ export default {
   }
 }
 
-.retry_button {
+.retry-button {
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
