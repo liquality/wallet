@@ -2,7 +2,7 @@ on:
   pull_request:
     branches:
       - master
-      - 'release-candidate*'
+      - '!release-candidate*'
       - '!renovate/**'
       - '!dependabot/**'
 

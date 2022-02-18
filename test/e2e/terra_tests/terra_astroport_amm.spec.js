@@ -229,5 +229,37 @@ if (process.env.NODE_ENV === 'mainnet') {
         'ANC->STT, Supporting source should be chosen!')
         .oneOf(['Astroport'])
     })
+    it('Astroport AMM(LUNA->STT) quote check', async () => {
+      const fromAsset = 'LUNA'
+      const toAsset = {
+        chain: 'TERRA',
+        coin: 'STT'
+      }
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
+      await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+      await page.click(`#${fromAsset}_swap_button`)
+
+      try {
+        await page.waitForTimeout(5000)
+        await page.click('#swap-receive-main-icon')
+        await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
+        await page.type('#search_for_a_currency', toAsset.coin)
+        await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
+        await page.click(`#${toAsset.coin}`)
+      } catch (e) {
+        if (e instanceof puppeteer.errors.TimeoutError) {
+          await testUtil.takeScreenshot(page, 'click-fish-asset-swap-issue')
+          expect(e, 'Select ANC assert for SWAP').equals(null)
+        }
+      }
+      await page.waitForSelector('#selectedQuote_provider', {
+        visible: true,
+        timeout: 60000
+      })
+      await page.waitForTimeout(5000)
+      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+        'ANC->STT, Supporting source should be chosen!')
+        .oneOf(['Astroport'])
+    })
   })
 }
