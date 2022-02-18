@@ -16,12 +16,15 @@ jobs:
         uses: tj-actions/branch-names@v5.1
 
       - name: create artifact name
-        id: create-artifact-name
+        id: findandreplace
         uses: mad9000/actions-find-and-replace-string@2
         with:
           source: ${{ steps.branch-name.outputs.current_branch }}
           find: '/'
           replace: '-'
+
+      - name: Get the above output
+        run: echo "The replaced value is ${{ steps.findandreplace.outputs.value }}"
 
       - name: Checkout code
         uses: actions/checkout@v2.4.0
@@ -45,16 +48,16 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
 
     # just DEV release.
-      - name: Set development manifest (DEV)
-        env:
-          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
-        run: |
-          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
-          jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
-          mv ./src/manifest.tmp ./src/manifest.json
-          npm ci
-          npm run lint
-          npm run build
+#      - name: Set development manifest (DEV)
+#        env:
+#          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
+#        run: |
+#          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
+#          jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
+#          mv ./src/manifest.tmp ./src/manifest.json
+#          npm ci
+#          npm run lint
+#          npm run build
 #
 #      - name: E2E tests against Dev Mainnet Agent
 #        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
@@ -75,13 +78,13 @@ jobs:
 #          path: screenshots
 #          if-no-files-found: ignore
 
-      - name: Create wallet artifact
-        uses: actions/upload-artifact@v2.3.1
-        if: always()
-        with:
-          name: ${{ steps.create-artifact-name.value }}
-          path: dist
-          if-no-files-found: ignore
+#      - name: Create wallet artifact
+#        uses: actions/upload-artifact@v2.3.1
+#        if: always()
+#        with:
+#          name: ${{ steps.findandreplace.outputs.value }}
+#          path: dist
+#          if-no-files-found: ignore
 
 
 
