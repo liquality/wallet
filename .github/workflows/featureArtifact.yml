@@ -15,13 +15,13 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v5.1
 
-    - name: create artifact name
-      id: create-artifact-name
-      uses: mad9000/actions-find-and-replace-string@2
-      with:
-        source: ${{ steps.branch-name.outputs.current_branch }}
-        find: '/'
-        replace: '-'
+      - name: create artifact name
+        id: create-artifact-name
+        uses: mad9000/actions-find-and-replace-string@2
+        with:
+          source: ${{ steps.branch-name.outputs.current_branch }}
+          find: '/'
+          replace: '-'
 
       - name: Checkout code
         uses: actions/checkout@v2.4.0
