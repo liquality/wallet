@@ -15,7 +15,7 @@ const swapPage = new SwapPage()
 let browser, page
 const password = '123123123'
 if (process.env.NODE_ENV === 'mainnet') {
-  // Astroport AMM works against RSK chain
+  // Astroport AMM works against Terra chain
   describe('SWAP Astroport AMM service Provider-["MAINNET"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -57,8 +57,6 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${toAsset.chain}`)
       await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
       await page.click(`#${toAsset.coin}`)
-      // Enter RSK amount
-      // await swapPage.EnterSendAmountOnSwap(page, '0.0000001')
       await page.waitForSelector('#selectedQuote_provider', {
         visible: true,
         timeout: 60000
@@ -92,7 +90,60 @@ if (process.env.NODE_ENV === 'mainnet') {
         `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
+    it('Astroport AMM(UST->LUNA) quote check', async () => {
+      const fromAsset = 'UST'
+      const toAsset = {
+        chain: 'TERRA',
+        coin: 'LUNA'
+      }
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
+      await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+      await page.click(`#${fromAsset}_swap_button`)
+      // Validate min SEND amount from text field & check Min is Active
+      const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
+      expect(swapSendAmountField, `${fromAsset} to ${toAsset} SWAP min value not set in input`)
+        .not.equals('0.0000')
+      await swapPage.ClickOnMin(page)
+      // Select 2nd Pair
+      await page.click('.swap-receive-main-icon')
+      await page.waitForSelector(`#${toAsset.chain}`, { visible: true })
+      await page.click(`#${toAsset.chain}`)
+      await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
+      await page.click(`#${toAsset.coin}`)
 
+      await page.waitForSelector('#selectedQuote_provider', {
+        visible: true,
+        timeout: 60000
+      })
+      // Validate available balance
+      const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
+      expect(availableBalance, `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`).to.be.above(
+        0
+      )
+      await page.waitForTimeout(5000)
+      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+        'LUNA->UST, Supporting source should be chosen!')
+        .oneOf(['Astroport'])
+      // validate Send & To fiat values
+      const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
+      expect(
+        sendFromFiat,
+        `${fromAsset}->${toFiat}) swap, Send fiat amount should be correct!`
+      ).not.equals('$0.00')
+      expect(
+        sendFromFiat,
+        `${fromAsset}->${toFiat}) swap, To fiat amount should be correct!`
+      ).not.equals('NaN')
+      // validate Receive fiat amount
+      expect(
+        toFiat,
+        `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
+      ).not.equals('$0.00')
+      expect(
+        toFiat,
+        `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
+      ).not.equals('NaN')
+    })
     it('Astroport AMM(LUNA->ANC) quote check', async () => {
       const fromAsset = 'LUNA'
       const toAsset = {
@@ -113,8 +164,6 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${toAsset.chain}`)
       await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
       await page.click(`#${toAsset.coin}`)
-      // Enter RSK amount
-      // await swapPage.EnterSendAmountOnSwap(page, '0.0000001')
       await page.waitForSelector('#selectedQuote_provider', {
         visible: true,
         timeout: 60000
@@ -148,7 +197,6 @@ if (process.env.NODE_ENV === 'mainnet') {
         `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
-
     it('Astroport AMM(ANC->STT) quote check', async () => {
       const fromAsset = 'ANC'
       const toAsset = {
