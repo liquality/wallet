@@ -1,5 +1,7 @@
 on:
   pull_request:
+    paths-ignore:
+      - '**.md'
     branches:
       - 'release-candidate*'
       - '!renovate/**'

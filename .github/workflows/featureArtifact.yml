@@ -2,6 +2,8 @@ name: Feature branch artifact workflow
 
 on:
   push:
+    paths-ignore:
+      - '**.md'
     branches:
       - 'feature/*'
       - 'feat/*'
