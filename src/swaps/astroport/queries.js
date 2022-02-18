@@ -2,7 +2,7 @@ import { MsgExecuteContract } from '@terra-money/terra.js'
 
 // ============== Get Rate Queries ==============
 
-/* 
+/*
   This can handle rates for:
     1. UST <-> LUNA
     2. UST -> ERC20
@@ -46,9 +46,9 @@ export const getRateNativeToAsset = (fromAmount, asset, pairAddress) => {
   return { query, address }
 }
 
-/* 
+/*
   This can handle rates for:
-    1. ERC20 <-> LUNA 
+    1. ERC20 <-> LUNA
     2. ERC20 <-> ERC20
     3. ERC20 -> UST
  */
@@ -300,8 +300,6 @@ export const buildSwapFromContractTokenToUSTMsg = (
     }
   }
 }
-
-
 
 // ============== Get Pair Address ==============
 export const getPairAddressQuery = (tokenAddress) => ({
