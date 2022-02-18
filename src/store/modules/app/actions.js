@@ -1,18 +1,4 @@
-import { setLedgerBridgeListener } from '@/utils/ledger-bridge-provider'
-
-const closeExistingBridgeWindow = async (windowsId) => {
-  if (windowsId && windowsId > 0) {
-    try {
-      const existingWindow = await browser.windows.get(windowsId)
-      if (existingWindow) {
-        await browser.windows.remove(windowsId)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-}
-
+import { createBridgeClient } from '@/utils/ledger-bridge-provider/utils'
 export const actions = {
   openLedgerBridgeWindow: async ({ rootState, commit }) => {
     const { usbBridgeWindowsId } = rootState
@@ -50,35 +36,26 @@ export const actions = {
       commit('SET_USB_BRIDGE_WINDOWS_ID', { id: win.id }, { root: true })
     }
   },
-  startBridgeListener: ({ rootState, commit, dispatch }, payload) => {
-    const { ledgerBridgeConnected } = rootState.app
-    const bridgeClient = setLedgerBridgeListener(ledgerBridgeConnected)
-    bridgeClient
-      .onConnect(() => {
-        commit('SET_LEDGER_BRIDGE_CONNECTED', { connected: true })
-        if (payload && payload.onConnect) {
-          payload.onConnect()
+  closeExistingBridgeWindow: async ({ windowsId }) => {
+    if (windowsId && windowsId > 0) {
+      try {
+        const existingWindow = await browser.windows.get(windowsId)
+        if (existingWindow) {
+          await browser.windows.remove(windowsId)
         }
-      })
-      .onDisconnect(async (error) => {
-        console.error('onDisconnect ledger bridge', error)
-        commit('SET_LEDGER_BRIDGE_CONNECTED', { connected: false })
-        commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected: false })
-        const { usbBridgeWindowsId } = rootState
-        await closeExistingBridgeWindow(usbBridgeWindowsId)
-        commit('SET_USB_BRIDGE_WINDOWS_ID', { id: 0 }, { root: true })
-      })
-      .onTransportConnect(() => {
-        commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected: true })
-        if (payload && payload.onTransportConnect) {
-          payload.onTransportConnect()
-        }
-      })
-      .onTransportDisconnected(() => {
-        console.error('onTransportDisconnected ledger bridge')
-        commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected: false })
-      })
-
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  },
+  setLedgerBridgeConnected: ({ commit }, { connected }) => {
+    commit('SET_LEDGER_BRIDGE_CONNECTED', { connected })
+  },
+  setLedgerBridgeTransportConnected: ({ commit }, { connected }) => {
+    commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected })
+  },
+  startBridgeListener: ({ dispatch }, payload) => {
+    createBridgeClient(payload)
     dispatch('openLedgerBridgeWindow')
   },
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
@@ -93,5 +70,8 @@ export const actions = {
     const fiatCurrency = process.env.VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY
     const url = `${widgetUrl}?apiKey=${apiKey}&fiatCurrency=${fiatCurrency}&network=${chain}&cryptoCurrencyCode=${asset}&walletAddress=${address}`
     chrome.tabs.create({ url })
+  },
+  setLedgerSignRequestModalOpen: ({ commit }, { open }) => {
+    commit('SET_LEDGER_SIGN_REQUEST_MODAL_OPEN', { open })
   }
 }

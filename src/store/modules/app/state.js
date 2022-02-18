@@ -6,5 +6,6 @@ export const state = () => ({
   requestOriginAccessActive: false,
   requestPermissionActive: false,
   buyCryptoModalData: {},
-  buyCryptoModalOpen: false
+  buyCryptoModalOpen: false,
+  ledgertSignRequestModalOpen: false
 })

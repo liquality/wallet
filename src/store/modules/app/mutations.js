@@ -24,5 +24,8 @@ export const mutations = {
       state.buyCryptoModalData = {}
     }
     state.buyCryptoModalOpen = open
+  },
+  SET_LEDGER_SIGN_REQUEST_MODAL_OPEN(state, { open }) {
+    state.ledgertSignRequestModalOpen = open
   }
 }
