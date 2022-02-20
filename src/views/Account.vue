@@ -221,20 +221,11 @@ export default {
     const { chain } = cryptoassets[this.asset]
 
     this.trackAnalytics({
-      event: 'Refresh balance',
-      properties: {
-        category: 'Send/Receive',
-        action: 'Update Balance',
-        label: `${this.asset} (${chain}) address ${this.address}`
-      }
-    })
-
-    this.trackAnalytics({
       event: 'Active Asset',
       properties: {
-        category: `Select Asset on ${this.activeNetwork}`,
-        action: `Active Asset on ${chain}`,
-        label: `Select ${this.asset} (${chain})`
+        category: 'Click on Asset',
+        chain: chain,
+        asset: `${this.asset}`
       }
     })
   },
