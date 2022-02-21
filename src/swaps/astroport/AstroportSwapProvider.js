@@ -116,11 +116,15 @@ class AstroportSwapProvider extends SwapProvider {
   }
 
   async performNextSwapAction(store, { network, walletId, swap }) {
+    let updates
+
     if (swap.status === 'WAITING_FOR_SWAP_CONFIRMATIONS') {
-      return await withInterval(async () =>
+      updates = await withInterval(async () =>
         this.waitForSwapConfirmations({ swap, network, walletId })
       )
     }
+
+    return updates
   }
 
   // ========= FEES ========
@@ -256,9 +260,8 @@ class AstroportSwapProvider extends SwapProvider {
       filterStatus: 'COMPLETED',
       notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
-            swap.to
-          } ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to
+            } ready to use`
         }
       }
     },
