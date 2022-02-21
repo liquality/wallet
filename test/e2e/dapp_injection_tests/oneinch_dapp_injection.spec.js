@@ -30,11 +30,8 @@ describe.skip('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () =
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.SelectNetwork(page, 'mainnet')
     // Web3 toggle on
     await overviewPage.CheckWeb3ToggleOn(page)
-    await page.waitForTimeout(1000)
-    console.log('Web3 toggled on')
   })
   afterEach(async () => {
     await browser.close()
@@ -42,7 +39,7 @@ describe.skip('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () =
   it('1Inch injection - ETH', async () => {
     // // Go to 1inch app
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 90000 })
+    await dappPage.goto(dappUrl, { waitUntil: 'networkidle0', timeout: 90000 })
     // Before click on injected wallet option.
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
@@ -50,7 +47,7 @@ describe.skip('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () =
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
     })
-    // console.log(('user clicked on 1inch web3'))
+
     const connectRequestWindow = await newPagePromise
     await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
     await connectRequestWindow.click('#ETHEREUM')
@@ -66,10 +63,10 @@ describe.skip('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () =
         connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
       }
     })
-    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(3)
+    expect(connectedChainDetails.chainId, 'oneinch ethereum dapp connection issue').equals(3)
     expect(
       connectedChainDetails.connectedAddress[0],
-      'Uniswap ethereum dapp connection issue'
+      'oneinch ethereum dapp connection issue'
     ).equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })
   it('1Inch injection - BSC', async () => {

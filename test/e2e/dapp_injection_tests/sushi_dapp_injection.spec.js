@@ -49,7 +49,7 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto(dappUrl, { timeout: 60000 })
+    await dappPage.goto(dappUrl, { waitUntil: "networkidle0",  timeout: 60000 })
     try {
       await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
       await dappPage.click('#connect-wallet')
@@ -72,7 +72,7 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
       await testUtil.takeScreenshot(connectRequestWindow, 'sushi-ethereum-loading-issue')
       expect(e, 'sushi ethereum loading issue').equals(null)
     }
-    await connectRequestWindow.waitForSelector('#dropdown-item', { visible: true})
+    await connectRequestWindow.waitForSelector('#dropdown-item', { visible: true, timeout: 60000})
     let filterValues = await connectRequestWindow.evaluate(() => {
       const dropdownItems = document.querySelectorAll('#dropdown-item')
       const filterValues = []
