@@ -6,9 +6,7 @@
       v-if="activityData.length > 0"
     />
     <TransactionList :transactions="activityData" />
-    <div class="activity-empty" v-if="activityData.length <= 0">
-      Once you start using your wallet you will see the activity here
-    </div>
+    <EmptyActivity v-show="activityData.length <= 0" :active-network="activeNetwork" />
   </div>
 </template>
 
@@ -17,11 +15,13 @@ import ActivityFilter from '@/components/ActivityFilter'
 import TransactionList from '@/components/TransactionList'
 import { mapGetters, mapState } from 'vuex'
 import { applyActivityFilters } from '@/utils/history'
+import EmptyActivity from '@/components/EmptyActivity'
 
 export default {
   components: {
     ActivityFilter,
-    TransactionList
+    TransactionList,
+    EmptyActivity
   },
   data() {
     return {

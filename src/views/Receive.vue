@@ -29,9 +29,14 @@
             Scan this QR code with a mobile wallet to send funds to this address.
           </p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
-          <div class="buy-crypto-container">
+          <div class="buy-crypto-container" v-show="activeNetwork === 'mainnet'">
             <div class="text-uppercase font-weight-bold">Or</div>
-            <BuyCryptoButton :asset="asset" :chain="chain" :address="address" />
+            <BuyCryptoButton
+              :btn-class="['btn-light', 'btn-outline-primary']"
+              :asset="asset"
+              :chain="chain"
+              :address="address"
+            />
             <TransakBrand />
           </div>
           <div v-if="faucet" class="testnet_message">

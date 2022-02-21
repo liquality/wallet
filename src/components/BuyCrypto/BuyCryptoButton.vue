@@ -1,11 +1,13 @@
 <template>
-  <button @click="open" class="btn btn-light btn-outline-primary">Buy Crypto</button>
+  <button @click="open" class="btn" :class="btnClass">
+    {{ asset ? `Buy ${asset}` : 'Buy Crypto' }}
+  </button>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 export default {
-  props: ['asset', 'chain', 'address'],
+  props: ['asset', 'chain', 'address', 'btnClass'],
   methods: {
     ...mapActions('app', ['setBuyCryptoModalOpen']),
     open() {

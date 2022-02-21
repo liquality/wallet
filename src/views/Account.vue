@@ -90,9 +90,13 @@
           v-if="activityData.length > 0"
         />
         <TransactionList :transactions="activityData" />
-        <div class="activity-empty" v-if="activityData.length <= 0">
-          Once you start using your wallet you will see the activity here
-        </div>
+        <EmptyActivity
+          v-show="activityData.length <= 0"
+          :active-network="activeNetwork"
+          :asset="asset"
+          :chain="chain"
+          :address="address"
+        />
       </div>
     </div>
   </div>
@@ -116,7 +120,7 @@ import { applyActivityFilters } from '@/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
-
+import EmptyActivity from '@/components/EmptyActivity'
 import amplitude from 'amplitude-js'
 
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
@@ -130,7 +134,8 @@ export default {
     SwapIcon,
     ActivityFilter,
     TransactionList,
-    EyeIcon
+    EyeIcon,
+    EmptyActivity
   },
   data() {
     return {
@@ -175,6 +180,9 @@ export default {
       }
 
       return '#'
+    },
+    chain() {
+      return cryptoassets[this.asset]?.chain
     }
   },
   methods: {

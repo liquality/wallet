@@ -567,15 +567,6 @@ svg.qr-icon {
 @keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { transform:rotate(360deg); } }
 
 
-
-
-.activity-empty {
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .wallet-title-container {
   width: 100%;
   display: flex;
