@@ -3,6 +3,7 @@
     <AnalyticsOptInModal />
     <WatsNewModal />
     <BuyCryptoModal />
+    <BuyCryptoOverviewModal />
   </div>
 </template>
 
@@ -10,12 +11,14 @@
 import AnalyticsOptInModal from '@/components/AnalyticsOptInModal.vue'
 import WatsNewModal from '@/components/WatsNewModal.vue'
 import BuyCryptoModal from '@/components/BuyCrypto/BuyCryptoModal.vue'
+import BuyCryptoOverviewModal from '@/components/BuyCrypto/BuyCryptoOverviewModal.vue'
 
 export default {
   components: {
     AnalyticsOptInModal,
     WatsNewModal,
-    BuyCryptoModal
+    BuyCryptoModal,
+    BuyCryptoOverviewModal
   }
 }
 </script>
