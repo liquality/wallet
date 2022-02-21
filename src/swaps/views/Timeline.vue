@@ -199,9 +199,9 @@
                 :href="addressLink(item.fromAddress, item.from, item.toAccountId)"
                 target="_blank"
                 id="transaction_details_send_to_link"
-                >{{ shortenAddress(item.fromAddress) }}</a
+                >{{ shortenAddress(addPrefix(item.fromAddress, item.from)) }}</a
               >
-              <CopyIcon class="copy-icon" @click="copy(item.fromAddress)" />
+              <CopyIcon class="copy-icon" @click="copy(addPrefix(item.fromAddress, item.from))" />
             </td>
           </tr>
           <tr v-if="item.toAddress">
@@ -211,9 +211,9 @@
                 :href="addressLink(item.toAddress, item.to, item.toAccountId)"
                 target="_blank"
                 id="transaction_details_send_to_link"
-                >{{ shortenAddress(item.toAddress) }}</a
+                >{{ shortenAddress(addPrefix(item.toAddress, item.to)) }}</a
               >
-              <CopyIcon class="copy-icon" @click="copy(item.toAddress)" />
+              <CopyIcon class="copy-icon" @click="copy(addPrefix(item.toAddress, item.to))" />
             </td>
           </tr>
           <tr v-if="item.secret">
@@ -322,7 +322,12 @@ import { chains } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStep } from '@/utils/history'
-import { getNativeAsset, getTransactionExplorerLink, getAddressExplorerLink } from '@/utils/asset'
+import {
+  isEthereumChain,
+  getNativeAsset,
+  getTransactionExplorerLink,
+  getAddressExplorerLink
+} from '@/utils/asset'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
@@ -427,6 +432,7 @@ export default {
     getNativeAsset,
     prettyBalance,
     shortenAddress,
+    isEthereumChain,
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
@@ -629,6 +635,9 @@ export default {
       }
 
       return '#'
+    },
+    addPrefix(address, asset) {
+      return !address.startsWith('0x') && isEthereumChain(asset) ? '0x' + address : address
     }
   },
   created() {

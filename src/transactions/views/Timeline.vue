@@ -12,9 +12,9 @@
                 :href="addressLink(fromAddress, item.from)"
                 target="_blank"
                 id="transaction_details_send_from_link"
-                >{{ shortenAddress(fromAddress) }}</a
+                >{{ shortenAddress(addPrefix(fromAddress, item.from)) }}</a
               >
-              <CopyIcon @click="copy(fromAddress)" />
+              <CopyIcon @click="copy(addPrefix(fromAddress, item.from))" />
             </h3>
           </div>
         </div>
@@ -29,9 +29,9 @@
                 :href="addressLink(item.toAddress, item.to)"
                 target="_blank"
                 id="transaction_details_send_to_link"
-                >{{ shortenAddress(item.toAddress) }}</a
+                >{{ shortenAddress(addPrefix(item.toAddress, item.to)) }}</a
               >
-              <CopyIcon @click="copy(item.toAddress)" />
+              <CopyIcon @click="copy(addPrefix(item.toAddress, item.to))" />
             </h3>
           </div>
         </div>
@@ -60,7 +60,7 @@
           </tr>
           <tr v-if="fromAddress" id="your_from_address">
             <td class="text-muted text-left small-12">Your {{ item.from }} from address</td>
-            <td class="text-break">{{ fromAddress }}</td>
+            <td class="text-break">{{ addPrefix(fromAddress, item.from) }}</td>
           </tr>
           <tr>
             <td class="text-muted text-left small-12" id="your_to_address">
@@ -86,11 +86,10 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import moment from '@/utils/moment'
-// import cryptoassets from '@/utils/cryptoassets'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@/utils/coinFormatter'
-import { getNativeAsset, getAddressExplorerLink } from '@/utils/asset'
+import { isEthereumChain, getNativeAsset, getAddressExplorerLink } from '@/utils/asset'
 
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
@@ -152,6 +151,7 @@ export default {
     getNativeAsset,
     prettyBalance,
     shortenAddress,
+    isEthereumChain,
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
@@ -164,6 +164,9 @@ export default {
       }
 
       return '#'
+    },
+    addPrefix(address, asset) {
+      return !address.startsWith('0x') && isEthereumChain(asset) ? '0x' + address : address
     }
   },
   created() {
