@@ -1,7 +1,11 @@
 <template>
   <div class="nft-asset">
+    <NavBar showBack="true" :backPath="'/wallet/nfts'" :backLabel="''">
+    </NavBar>
     <template v-if="showFullscreen === false">
-      <img :src="nftAsset.image_thumbnail_url" alt="image" />
+      <div class="nft-img">
+        <img :src="nftAsset.image_url" alt="image" />
+      </div>
       <div class="drawer nft-details">
         <div class="d-flex justify-content-between pointer-cursor">
           <h1 class="nft-details_name" v-if="nftAsset.name">{{ nftAsset.name }}</h1>
@@ -18,11 +22,13 @@
       </div>
     </template>
     <template v-else-if="showFullscreen === true">
-      <img :src="nftAsset.image_preview_url" alt="image" />
+      <div class="nft-img__open">
+        <img :src="nftAsset.image_preview_url" alt="image" />
+      </div>
       <div class="drawer drawer-open nft-details">
         <div class="d-flex justify-content-between pointer-cursor">
           <h1 class="nft-details_name" v-if="nftAsset.name">{{ nftAsset.name }}</h1>
-          <ArrowDown class="nft-details_arrow" @click="showFullscreen = false" />
+          <ArrowDown class="nft-details_arrow cursor-pointer" @click="showFullscreen = false" />
         </div>
         <h5 class="nft-details_collection-details" v-if="nftAsset.collection">
           {{ nftAsset.collection.name }}
@@ -32,23 +38,48 @@
           <ul class="nav nav-tabs">
             <li class="nav-item">
               <span
-                :class="activeTab === 'overview' ? 'nav-link' : 'nav-link active'"
-                id="asserts_tab"
+                :class="activeTab === 'overview' ? 'nav-link active' : 'nav-link'"
+                id="overview_tab"
                 @click="activeTab = 'overview'"
               >
                 Overview
               </span>
             </li>
             <li class="nav-item">
-              <span class="nav-link" id="asserts_tab" @click="activeTab = 'details'">
-                Details
-              </span>
+                <span :class="activeTab === 'details' ? 'nav-link active' : 'nav-link'" id="details_tab" @click="activeTab = 'details'">
+                  Details
+                </span>
             </li>
           </ul>
           <div class="wallet-tab-content">
             <div class="mt-2">
-              <h1 class="nft-details_name">Bio</h1>
-              <p class="nft-details_name" v-if="nftAsset.description">{{ nftAsset.description }}</p>
+              <template v-if="activeTab === 'overview'">
+                  <h5 class="nft-details_name">Bio</h5>
+                  <p class="nft-details_name" v-if="nftAsset.description">{{ nftAsset.description }}</p>
+               </template>
+              <template v-if="activeTab === 'details'">
+                <!-- <ul></ul> -->
+                <div class="d-flex justify-content-between">
+                  <h5 class="nft-details_name">Creator</h5>
+                  <p class="nft-details_name text-underline" v-if="nftAsset.creator">{{ shortenAddress(nftAsset.creator.address) }}</p>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <h5 class="nft-details_name">Contract Address</h5>
+                  <p class="nft-details_name text-underline" v-if="nftAsset.asset_contract">{{ shortenAddress(nftAsset.asset_contract.address) }}</p>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <h5 class="nft-details_name">Token ID</h5>
+                  <p class="nft-details_name text-underline" v-if="nftNumber"> {{ nftNumber }} </p>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <h5 class="nft-details_name">Token Standard</h5>
+                  <p class="nft-details_name text-underline" v-if="nftAsset.asset_contract"> {{ nftAsset.asset_contract.schema_name }} </p>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <h5 class="nft-details_name">Blockchain</h5>
+                  <p class="nft-details_name text-underline"> Ethereum </p>
+                </div>
+              </template>
             </div>
           </div>
         </div>
@@ -58,7 +89,9 @@
 </template>
 
 <script>
+import { shortenAddress } from '@/utils/address'
 import ArrowDown from '@/assets/icons/arrow-down.svg'
+import NavBar from '../../components/NavBar.vue'
 export default {
   data() {
     return {
@@ -67,7 +100,8 @@ export default {
     }
   },
   components: {
-    ArrowDown
+    ArrowDown,
+    NavBar
   },
   created() {
     console.log('NFTAsssetDetails', this.$route)
@@ -82,6 +116,7 @@ export default {
     }
   },
   methods: {
+    shortenAddress,
     nftAssetImageSource(mode) {
       if (mode === 'thumbnail') {
         return this.nftAsset.image_thumbnail_url
@@ -102,12 +137,30 @@ export default {
   justify-content: center;
   position: relative;
 
+  .nft-img {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    &__open {
+      width: 100%;
+      height: 25%;
+      display: flex;
+      justify-content: center;
+    }
+
+    img {
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
   .drawer.nft-details {
     background: #ffffff;
     position: fixed;
     bottom: 0;
     width: 100%;
-    height: 120px;
+    height: 20%;
     padding: 1rem 2rem;
     border-radius: 15px 15px 0 0;
     &_name {
@@ -123,7 +176,7 @@ export default {
   }
 
   .drawer-open {
-    height: 400px !important;
+    height: 75% !important;
   }
 
   &::after {
@@ -137,8 +190,8 @@ export default {
 }
 
 .wallet-tabs {
-  margin: 0;
-  padding: -1rem -2rem;
+  // margin: 0;
+  margin: 0 -2rem;
 }
 .nav-tabs {
   height: 48px;
@@ -161,22 +214,18 @@ export default {
       border: none !important;
       border-bottom: 1px solid $hr-border-color !important;
       padding: 0 !important;
-      & .active {
-        color: initial !important;
+      &.active,&:hover {
+        color: #000d35 !important;
+        font-weight: 600;
+        border: none !important;
+        border-bottom: 1px solid #1d1e21 !important;
       }
-    }
-
-    .nav-link:hover,
-    .router-link-active {
-      color: #000d35;
-      font-weight: 600;
-      border: none !important;
-      border-bottom: 1px solid #1d1e21 !important;
     }
   }
 }
 
 .wallet-tab-content {
+  padding: 1rem 2rem;
   a {
     color: $color-text-primary;
   }

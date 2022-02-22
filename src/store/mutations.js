@@ -44,6 +44,12 @@ export default {
       })
     }
   },
+  SET_NFT_ASSETS(state, payload) {
+    state.nftAssets = payload
+  },
+  SET_NFT_ASSETS_NUMBER(state, payload) {
+    state.nftAssetsNumber = payload
+  },
   ACCEPT_TNC(state) {
     state.termsAcceptedAt = Date.now()
   },

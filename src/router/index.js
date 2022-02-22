@@ -31,6 +31,7 @@ import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletNFTs from '@/views/Wallet/WalletNFTs.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
+import NFTActivity from '@/views/Wallet/NFTActivity.vue'
 import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
@@ -114,6 +115,11 @@ const routes = [
         redirect: 'assets'
       }
     ]
+  },
+  {
+    path: '/nft-activity',
+    component: NFTActivity,
+    name: 'NFTActivity'
   },
   // Details
   {

@@ -92,7 +92,7 @@
           </ListItem>
           <ListItem
             v-if="account.chain === 'ethereum'"
-            @item-selected="$router.push({ path: 'nfts' })"
+            @item-selected="$router.push({ path: '/nft-activity' })"
           >
             <template #prefix>
               <div class="account-color" :style="{ 'background-color': account.color }"></div>

@@ -7,38 +7,15 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
-import WalletBalanceEye from '@/assets/icons/nft-wallet-eye.svg'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import NFTAssets from '../../components/NFTAssets.vue'
 export default {
   components: {
-    WalletBalanceEye,
     NFTAssets
   },
   data() {
     return {
-      assets: [],
-      NFTAssetsList: [
-        {
-          name: 'CryptoKitties',
-          number: 8,
-          nft: [
-            {
-              name: 'Habibi Mehrain',
-              collection: 'CryptoKitties',
-              number: '#4243, X Gen6'
-            }
-          ]
-        },
-        {
-          name: 'Pancakes',
-          number: 3
-        },
-        {
-          name: 'CryptoPunks',
-          number: 10
-        }
-      ]
+      assets: []
     }
   },
   mounted() {
@@ -48,33 +25,19 @@ export default {
     ...mapState([
       'activeWalletId',
       'activeNetwork',
-      'addresses',
-      'history',
-      'fiatRates',
-      'marketData'
+      'nftAssetsNumber'
     ]),
-    ...mapGetters(['client'])
+    ...mapGetters(['client']),
   },
   methods: {
+    ...mapActions(['getNFTAssets']),
     async getNftCollections() {
-      const client = this.client({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        asset: 'ETH'
-      })
-      const nft = await client.nft.fetch()
-      console.log(
-        '🚀 ~ file: WalletNFTs.vue ~ line 75 ~ getNftCollections ~ nft.assets',
-        nft.assets
-      )
-      const result = nft.assets.reduce(function (r, a) {
-        r[a.collection.name] = r[a.collection.name] || []
-        r[a.collection.name].push(a)
-        return r
-      }, Object.create(null))
-
-      console.log(result)
-      this.assets = result
+      try {
+        const nftAssets = await this.getNFTAssets({network: this.activeNetwork, walletId: this.activeWalletId})
+        this.assets = nftAssets
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }

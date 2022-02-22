@@ -52,5 +52,8 @@ export default {
   },
   experiments: {},
   watsNewModalVersion: null,
-  enabledChains: {}
+  enabledChains: {},
+
+  nftAssets: null,
+  nftAssetsNumber: 0
 }

@@ -29,10 +29,11 @@ export default {
     collectionName: {
       type: String,
       required: true
+    },
+    source: {
+      type: String,
+      required: false
     }
-  },
-  created() {
-    console.log('NFTAssets created', this.nftAsset)
   },
   components: {
     ChevronRight,
@@ -42,7 +43,7 @@ export default {
     goToNFTCollection() {
       this.$router.push({
         path: `/details/nft-collection/${this.nftAsset[0].collection.name}`,
-        query: { nftAsset: this.nftAsset }
+        query: { nftAsset: this.nftAsset, routeSource: this.source }
       })
     }
   }

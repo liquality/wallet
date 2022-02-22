@@ -1,31 +1,38 @@
 <template>
   <div class="nft-collectibles">
-    <NavBar showBack="true" :backPath="'/wallet/nfts'" :backLabel="''"> </NavBar>
-    <h1 class="section-header">{{ nftCollection[0].collection.name }}</h1>
-    <div class="nft-collection">
-      <NFTAsset
-        v-for="asset in nftCollection"
-        :key="asset.id"
-        :nftAsset="asset"
-        :mode="'thumbnail'"
-      />
-    </div>
+    <NavBar showBack="true" :backPath="routeSource === 'NFTActivity' ? '/nft-activity' : '/wallet/nfts'" :backLabel="'Back'">
+    <span class="wallet-header">
+     <strong class="text-uppercase"> {{nftCollection[0].collection.name}}{{ (nftCollection.length)}}</strong>
+    </span>
+    </NavBar>
+    <template v-if="nftCollection.length > 0">
+      <div class="nft-collection mt-3">
+        <NFTAsset
+          v-for="asset in nftCollection"
+          :key="asset.id"
+          :nftAsset="asset"
+          :mode="'thumbnail'"
+          v-tooltip.bottom="{
+              content: asset ?  asset.name : '',
+              hideOnTargetClick: false
+            }"
+        />
+      </div>
+    </template>
+    <template v-else>
+      <div class="loader">Loading...</div>
+    </template>
   </div>
 </template>
 
 <script>
-import WalletBalanceEye from '@/assets/icons/nft-wallet-eye.svg'
 import NFTAsset from '../../components/NFTAsset.vue'
 import NavBar from '../../components/NavBar.vue'
 
 export default {
   components: {
-    WalletBalanceEye,
     NFTAsset,
     NavBar
-  },
-  data() {
-    return {}
   },
   created() {
     console.log('NFTAssets created', this.$route)
@@ -33,7 +40,10 @@ export default {
   computed: {
     nftCollection() {
       return this.$route.query.nftAsset
-    }
+    },
+    routeSource() {
+      return this.$route.query.source || null
+    },
   }
 }
 </script>
