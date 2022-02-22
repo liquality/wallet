@@ -10,8 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">This is release candidate for 0.56.0</pre>
-            <pre class="text-wrap">Update this copy just before release</pre>
+            <pre class="text-wrap">Astroport automated swapProvider</pre>
           </div>
         </div>
       </div>
