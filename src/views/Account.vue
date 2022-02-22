@@ -52,7 +52,7 @@
         </div>
         <div class="account-container_actions">
           <router-link :to="`/accounts/${accountId}/${asset}/send`">
-            <button class="account-container_actions_button" :disabled="asset === 'NFTs'">
+            <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`">
                 <SendIcon class="account-container_actions_button_icon" />
               </div>
@@ -74,7 +74,7 @@
             Swap
           </router-link>
           <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`">
-            <button class="account-container_actions_button" :disabled="asset === 'NFTs'">
+            <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
                 <ReceiveIcon class="account-container_actions_button_icon" />
               </div>
