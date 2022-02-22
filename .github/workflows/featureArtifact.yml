@@ -10,8 +10,6 @@ on:
 
 jobs:
   feature-artifact-build:
-    # create artifact once pull_request is merged
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Get branch name
@@ -58,25 +56,6 @@ jobs:
           npm ci
           npm run lint
           npm run build
-
-      - name: E2E tests against Dev Mainnet Agent
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        uses: beemi/puppeteer-headful@v1.0.11
-        env:
-          CI: 'true'
-          DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        with:
-          args: npm run test:mainnet:devagent
-
-      - name: Save Screenshots
-        uses: actions/upload-artifact@v2.3.1
-        if: always()
-        with:
-          name: screenshots
-          path: screenshots
-          if-no-files-found: ignore
 
       - name: Create wallet artifact
         uses: actions/upload-artifact@v2.3.1
