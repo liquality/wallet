@@ -197,11 +197,11 @@ if (process.env.NODE_ENV === 'mainnet') {
         `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
-    it('Astroport AMM(ANC->STT) quote check', async () => {
-      const fromAsset = 'ANC'
+    it('Astroport AMM(UST->ANC) quote check', async () => {
+      const fromAsset = 'UST'
       const toAsset = {
         chain: 'TERRA',
-        coin: 'STT'
+        coin: 'ANC'
       }
       await overviewPage.SelectAssetFromOverview(page, fromAsset)
       await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
