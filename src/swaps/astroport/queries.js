@@ -1,5 +1,10 @@
 import { MsgExecuteContract } from '@terra-money/terra.js'
 
+const ADDRESSES = {
+  ASSETS_CONTRACT: 'terra1m6ywlgn6wrjuagcmmezzz2a029gtldhey5k552',
+  FACTORY_CONTRACT: 'terra16t7dpwwgx9n3lq6l6te3753lsjqwhxwpday9zx',
+}
+
 // ============== Get Rate Queries ==============
 
 /*
@@ -36,7 +41,7 @@ export const getRateNativeToAsset = (fromAmount, asset, pairAddress) => {
 
   // This address is for following pairs
   // UST <-> Luna
-  let address = 'terra1m6ywlgn6wrjuagcmmezzz2a029gtldhey5k552'
+  let address = ADDRESSES.ASSETS_CONTRACT
 
   // This address is for UST -> ERC20
   if (pairAddress) {
@@ -113,7 +118,7 @@ export const getRateERC20ToERC20 = (fromAmount, firstAsset, secondAsset, pairAdd
   // This address is for following pairs
   // Luna <-> ERC20
   // ERC20 <-> ERC20
-  let address = 'terra16t7dpwwgx9n3lq6l6te3753lsjqwhxwpday9zx'
+  let address = ADDRESSES.FACTORY_CONTRACT
 
   // This address is used for ERC20 -> UST
   if (pairAddress) {
@@ -131,7 +136,7 @@ export const getRateERC20ToERC20 = (fromAmount, firstAsset, secondAsset, pairAdd
     1. UST -> ERC20
 */
 export const buildSwapFromNativeTokenMsg = (quote, denom, address, pairAddress) => {
-  const to = pairAddress ? pairAddress : 'terra1m6ywlgn6wrjuagcmmezzz2a029gtldhey5k552' // This address is for UST <-> Luna pair
+  const to = pairAddress ? pairAddress : ADDRESSES.ASSETS_CONTRACT // This address is for UST <-> Luna pair
 
   return {
     data: {
@@ -242,7 +247,7 @@ export const buildSwapFromContractTokenMsg = (
             send: {
               msg: msgInBase64,
               amount: quote.fromAmount,
-              contract: 'terra16t7dpwwgx9n3lq6l6te3753lsjqwhxwpday9zx' // USE FOR ERC20 <-> ERC20 AND ERC20 <-> LUNA Swaps
+              contract: ADDRESSES.FACTORY_CONTRACT // USE FOR ERC20 <-> ERC20 AND ERC20 <-> LUNA Swaps
             }
           })
         ],
@@ -257,7 +262,7 @@ export const buildSwapFromContractTokenMsg = (
       msgs: [
         new MsgExecuteContract(
           recipient,
-          'terra16t7dpwwgx9n3lq6l6te3753lsjqwhxwpday9zx', // USE for Luna <-> ERC20 Swaps
+          ADDRESSES.FACTORY_CONTRACT, // USE for Luna <-> ERC20 Swaps
           swapMsg,
           { ['uluna']: Number(quote.fromAmount) }
         )

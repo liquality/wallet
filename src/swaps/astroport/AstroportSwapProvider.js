@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { LCDClient } from '@terra-money/terra.js'
 
 import cryptoassets from '@/utils/cryptoassets'
-import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import { ChainId, chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import { TerraNetworks } from '@liquality/terra-networks'
 import { withInterval } from '../../store/actions/performNextAction/utils'
 import { prettyBalance } from '../../utils/coinFormatter'
@@ -32,7 +32,7 @@ class AstroportSwapProvider extends SwapProvider {
     const toInfo = cryptoassets[to]
 
     // only for Terra network swaps
-    if (fromInfo.chain !== 'terra' || toInfo.chain !== 'terra' || amount <= 0) {
+    if (fromInfo.chain !== ChainId.Terra || toInfo.chain !== ChainId.Terra || amount <= 0) {
       return null
     }
 
