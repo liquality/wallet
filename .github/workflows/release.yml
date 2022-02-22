@@ -56,30 +56,6 @@ jobs:
             npm run lint
             npm run build
 
-    # Patch DEV release.
-      - name: Set development manifest (patch for DEV)
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        env:
-          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
-        run: |
-          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
-          jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
-          mv ./src/manifest.tmp ./src/manifest.json
-          npm ci
-          npm run lint
-          npm run build
-
-      - name: E2E tests against Dev Mainnet Agent
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        uses: beemi/puppeteer-headful@v1.0.11
-        env:
-          CI: 'true'
-          DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        with:
-          args: npm run test:mainnet:devagent #Run tests against dev mainnet
-
       - name: E2E tests against Prod Mainnet Agent
         if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         uses: beemi/puppeteer-headful@v1.0.11
@@ -89,7 +65,7 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: test:mainnet:prodagent:release #Run tests against Prod mainnet
+          args: npm run test:mainnet:prodagent:release #Run tests against Prod mainnet
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1
@@ -125,17 +101,6 @@ jobs:
           asset_path: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
           asset_name: liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           asset_content_type: application/zip
-
-      - name: Chrome Extension Publish
-        uses: SebastienGllmt/chrome-addon@v3
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        with:
-          client-id: ${{ secrets.WEB_STORE_CLIENT_ID }}
-          client-secret: ${{ secrets.WEB_STORE_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.WEB_STORE_REFRESH_TOKEN }}
-          zip: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
-          extension: bkhfdnhibdhkbfihmljakbgnldoikgbm
-          publishTarget: trustedTesters
 
       - name: Discord notification
         uses: sarisia/actions-status-discord@v1
