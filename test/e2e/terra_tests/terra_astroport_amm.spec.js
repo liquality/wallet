@@ -37,7 +37,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await browser.close()
     })
 
-    it('Astroport AMM(LUNA->UST) quote check', async () => {
+    it('Astroport AMM(LUNA->UST) quote check["MAINNET_RELEASE"]', async () => {
       const fromAsset = 'LUNA'
       const toAsset = {
         chain: 'TERRA',
@@ -90,7 +90,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
-    it('Astroport AMM(UST->LUNA) quote check', async () => {
+    it('Astroport AMM(UST->LUNA) quote check[""MAINNET_RELEASE""]', async () => {
       const fromAsset = 'UST'
       const toAsset = {
         chain: 'TERRA',

@@ -17,7 +17,7 @@ const password = '123123123'
 
 if (process.env.NODE_ENV === 'mainnet') {
 // Sovryn AMM works against RSK chain
-  describe('SWAP Sovryn AMM service Provider-["MAINNET"]', async () => {
+  describe('SWAP Sovryn AMM service Provider-["MAINNET","MAINNET_RELEASE"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()

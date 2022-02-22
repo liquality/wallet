@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - master
+      - 
     tags:
     - 'v*'
 
@@ -91,7 +91,7 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:mainnet:prodagent #Run tests against Prod mainnet
+          args: test:mainnet:prodagent:release #Run tests against Prod mainnet
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1

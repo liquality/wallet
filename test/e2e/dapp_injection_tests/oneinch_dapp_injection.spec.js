@@ -39,7 +39,7 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   afterEach(async () => {
     await browser.close()
   })
-  it('1Inch injection - ETH', async () => {
+  it('1Inch injection - ETH["MAINNET_RELEASE"]', async () => {
     let chain = 'ethereum'
 
     // Go to 1inch app
