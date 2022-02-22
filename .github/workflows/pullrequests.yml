@@ -1,7 +1,8 @@
 on:
   pull_request:
+    paths-ignore:
+      - '**.md'
     branches:
-      - master
       - 'release-candidate*'
       - '!renovate/**'
       - '!dependabot/**'
@@ -41,6 +42,14 @@ jobs:
           npm ci
           npm run lint
           npm run build
+      - name: Create wallet artifact
+        uses: actions/upload-artifact@v2.3.1
+        if: always()
+        with:
+          name: pull-request-wallet
+          path: dist
+          if-no-files-found: ignore
+          retention-days: 30
 
       - name: Run Smoke tests againt PullRequest
         uses: beemi/puppeteer-headful@v1.0.11

@@ -51,7 +51,7 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
       window.ethereum.enable()
     })
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true })
+    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true, timeout: 90000})
     try {
       await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
     } catch (e) {
