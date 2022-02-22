@@ -22,18 +22,17 @@ export default {
     this.getNftCollections()
   },
   computed: {
-    ...mapState([
-      'activeWalletId',
-      'activeNetwork',
-      'nftAssetsNumber'
-    ]),
-    ...mapGetters(['client']),
+    ...mapState(['activeWalletId', 'activeNetwork', 'nftAssetsNumber']),
+    ...mapGetters(['client'])
   },
   methods: {
     ...mapActions(['getNFTAssets']),
     async getNftCollections() {
       try {
-        const nftAssets = await this.getNFTAssets({network: this.activeNetwork, walletId: this.activeWalletId})
+        const nftAssets = await this.getNFTAssets({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId
+        })
         this.assets = nftAssets
       } catch (error) {
         console.error(error)

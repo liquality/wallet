@@ -1,9 +1,7 @@
 <template>
   <div class="account-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account-title"
-        ><img :src="getAssetIcon(asset)" class="asset-icon" /> NFTs</span
-      >
+      <span class="account-title"><img :src="getAssetIcon(asset)" class="asset-icon" /> NFTs</span>
     </NavBar>
     <div class="account-content">
       <div class="account-content-top">
@@ -12,45 +10,43 @@
             <span class="account-container_balance_value">
               {{ nftAssetsNumber }}
             </span>
-            <span class="account-container_balance_code">NFT<span v-if="balance !== 1">s</span></span>
+            <span class="account-container_balance_code"
+              >NFT<span v-if="balance !== 1">s</span></span
+            >
           </div>
         </div>
         <div class="account-container_actions">
-            <button class="account-container_actions_button" disabled>
-              <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`">
-                <SendIcon class="account-container_actions_button_icon" />
-              </div>
-              Send
-            </button>
-            <button class="account-container_actions_button" disabled>
-              <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
-                <SwapIcon
-                  class="
-                    account-container_actions_button_icon account-container_actions_button_swap
-                  "
-                />
-              </div>
-              Swap
-            </button>
-            <button class="account-container_actions_button" disabled>
-              <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
-                <ReceiveIcon class="account-container_actions_button_icon" />
-              </div>
-              Receive
-            </button>
+          <button class="account-container_actions_button" disabled>
+            <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`">
+              <SendIcon class="account-container_actions_button_icon" />
+            </div>
+            Send
+          </button>
+          <button class="account-container_actions_button" disabled>
+            <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
+              <SwapIcon
+                class="account-container_actions_button_icon account-container_actions_button_swap"
+              />
+            </div>
+            Swap
+          </button>
+          <button class="account-container_actions_button" disabled>
+            <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
+              <ReceiveIcon class="account-container_actions_button_icon" />
+            </div>
+            Receive
+          </button>
         </div>
       </div>
       <div class="wallet-tabs">
         <ul class="nav nav-tabs">
           <li class="nav-item" @click="activeTab = 'activity'">
-              <span :class="activeTab === 'activity' ? 'nav-link active' : 'nav-link'">
-                Activity
-              </span>
+            <span :class="activeTab === 'activity' ? 'nav-link active' : 'nav-link'">
+              Activity
+            </span>
           </li>
           <li class="nav-item" @click="activeTab = 'nfts'">
-            <span :class="activeTab === 'nfts' ? 'nav-link active' : 'nav-link'">
-                NFTs
-            </span>
+            <span :class="activeTab === 'nfts' ? 'nav-link active' : 'nav-link'"> NFTs </span>
           </li>
         </ul>
         <div class="account-container_transactions" v-if="activeTab === 'activity'">
@@ -65,7 +61,7 @@
           </div>
         </div>
         <div v-if="activeTab === 'nfts'">
-            <WalletNFTs :source="'NFTActivity'" />
+          <WalletNFTs :source="'NFTActivity'" />
         </div>
       </div>
     </div>
@@ -113,7 +109,7 @@ export default {
       'history',
       'fiatRates',
       'marketData',
-      'nftAssetsNumber',
+      'nftAssetsNumber'
     ]),
     account() {
       return this.accountItem(this.accountId)
@@ -221,16 +217,17 @@ export default {
   }
 }
 .nav-item {
-    width: 50%;
+  width: 50%;
 
-    .nav-link {
-        cursor: pointer;
-        &.active,&:hover {
-        color: #000d35 !important;
-        font-weight: 600;
-        border: none !important;
-        border-bottom: 1px solid #1d1e21 !important;
-        }
+  .nav-link {
+    cursor: pointer;
+    &.active,
+    &:hover {
+      color: #000d35 !important;
+      font-weight: 600;
+      border: none !important;
+      border-bottom: 1px solid #1d1e21 !important;
     }
+  }
 }
 </style>

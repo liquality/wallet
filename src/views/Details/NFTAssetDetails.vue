@@ -1,7 +1,6 @@
 <template>
   <div class="nft-asset">
-    <NavBar showBack="true" :backPath="'/wallet/nfts'" :backLabel="''">
-    </NavBar>
+    <NavBar showBack="true" :backPath="'/wallet/nfts'" :backLabel="''"> </NavBar>
     <template v-if="showFullscreen === false">
       <div class="nft-img">
         <img :src="nftAsset.image_url" alt="image" />
@@ -46,38 +45,50 @@
               </span>
             </li>
             <li class="nav-item">
-                <span :class="activeTab === 'details' ? 'nav-link active' : 'nav-link'" id="details_tab" @click="activeTab = 'details'">
-                  Details
-                </span>
+              <span
+                :class="activeTab === 'details' ? 'nav-link active' : 'nav-link'"
+                id="details_tab"
+                @click="activeTab = 'details'"
+              >
+                Details
+              </span>
             </li>
           </ul>
           <div class="wallet-tab-content">
             <div class="mt-2">
               <template v-if="activeTab === 'overview'">
-                  <h5 class="nft-details_name">Bio</h5>
-                  <p class="nft-details_name" v-if="nftAsset.description">{{ nftAsset.description }}</p>
-               </template>
+                <h5 class="nft-details_name">Bio</h5>
+                <p class="nft-details_name" v-if="nftAsset.description">
+                  {{ nftAsset.description }}
+                </p>
+              </template>
               <template v-if="activeTab === 'details'">
                 <!-- <ul></ul> -->
                 <div class="d-flex justify-content-between">
                   <h5 class="nft-details_name">Creator</h5>
-                  <p class="nft-details_name text-underline" v-if="nftAsset.creator">{{ shortenAddress(nftAsset.creator.address) }}</p>
+                  <p class="nft-details_name text-underline" v-if="nftAsset.creator">
+                    {{ shortenAddress(nftAsset.creator.address) }}
+                  </p>
                 </div>
                 <div class="d-flex justify-content-between">
                   <h5 class="nft-details_name">Contract Address</h5>
-                  <p class="nft-details_name text-underline" v-if="nftAsset.asset_contract">{{ shortenAddress(nftAsset.asset_contract.address) }}</p>
+                  <p class="nft-details_name text-underline" v-if="nftAsset.asset_contract">
+                    {{ shortenAddress(nftAsset.asset_contract.address) }}
+                  </p>
                 </div>
                 <div class="d-flex justify-content-between">
                   <h5 class="nft-details_name">Token ID</h5>
-                  <p class="nft-details_name text-underline" v-if="nftNumber"> {{ nftNumber }} </p>
+                  <p class="nft-details_name text-underline" v-if="nftNumber">{{ nftNumber }}</p>
                 </div>
                 <div class="d-flex justify-content-between">
                   <h5 class="nft-details_name">Token Standard</h5>
-                  <p class="nft-details_name text-underline" v-if="nftAsset.asset_contract"> {{ nftAsset.asset_contract.schema_name }} </p>
+                  <p class="nft-details_name text-underline" v-if="nftAsset.asset_contract">
+                    {{ nftAsset.asset_contract.schema_name }}
+                  </p>
                 </div>
                 <div class="d-flex justify-content-between">
                   <h5 class="nft-details_name">Blockchain</h5>
-                  <p class="nft-details_name text-underline"> Ethereum </p>
+                  <p class="nft-details_name text-underline">Ethereum</p>
                 </div>
               </template>
             </div>
@@ -214,7 +225,8 @@ export default {
       border: none !important;
       border-bottom: 1px solid $hr-border-color !important;
       padding: 0 !important;
-      &.active,&:hover {
+      &.active,
+      &:hover {
         color: #000d35 !important;
         font-weight: 600;
         border: none !important;

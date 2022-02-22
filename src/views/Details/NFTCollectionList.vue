@@ -1,9 +1,15 @@
 <template>
   <div class="nft-collectibles">
-    <NavBar showBack="true" :backPath="routeSource === 'NFTActivity' ? '/nft-activity' : '/wallet/nfts'" :backLabel="'Back'">
-    <span class="wallet-header">
-     <strong class="text-uppercase"> {{nftCollection[0].collection.name}}{{ (nftCollection.length)}}</strong>
-    </span>
+    <NavBar
+      showBack="true"
+      :backPath="routeSource === 'NFTActivity' ? '/nft-activity' : '/wallet/nfts'"
+      :backLabel="'Back'"
+    >
+      <span class="wallet-header">
+        <strong class="text-uppercase">
+          {{ nftCollection[0].collection.name }}{{ nftCollection.length }}</strong
+        >
+      </span>
     </NavBar>
     <template v-if="nftCollection.length > 0">
       <div class="nft-collection mt-3">
@@ -13,9 +19,9 @@
           :nftAsset="asset"
           :mode="'thumbnail'"
           v-tooltip.bottom="{
-              content: asset ?  asset.name : '',
-              hideOnTargetClick: false
-            }"
+            content: asset ? asset.name : '',
+            hideOnTargetClick: false
+          }"
         />
       </div>
     </template>
@@ -43,7 +49,7 @@ export default {
     },
     routeSource() {
       return this.$route.query.source || null
-    },
+    }
   }
 }
 </script>
