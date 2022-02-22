@@ -197,6 +197,14 @@ class OverviewPage {
         break
       }
 
+      case 'AVAX': {
+        const eth = await page.waitForSelector('#AVALANCHE', { timeout: elementVisibleTimeout, visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
+        break
+      }
+
       case 'SOV':
       case 'FISH':
       case 'RBTC': {

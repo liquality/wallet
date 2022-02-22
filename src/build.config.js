@@ -20,6 +20,7 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
+      'AVAX',
       'FISH',
       'LUNA',
       'UST'
@@ -35,6 +36,7 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
+      'AVAX',
       'SOL',
       'LUNA',
       'UST'
@@ -143,6 +145,17 @@ export default {
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra', 'fuse'],
+  chains: [
+    'bitcoin',
+    'ethereum',
+    'rsk',
+    'bsc',
+    'near',
+    'polygon',
+    'arbitrum',
+    'terra',
+    'fuse',
+    'avalanche'
+  ],
   supportedBridgeAssets: ['MATIC', 'RBTC']
 }

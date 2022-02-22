@@ -29,6 +29,7 @@ const TESTNET_ASSETS = [
   'MATIC',
   'PWETH',
   'ARBETH',
+  'AVAX',
   'SOL',
   'SUSHI',
   'LUNA',
