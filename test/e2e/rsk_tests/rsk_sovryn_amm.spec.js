@@ -71,7 +71,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.waitForTimeout(5000)
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'RBTC->SOV, Supporting source should be chosen!')
-        .oneOf(['Sovyrn'])
+        .oneOf(['Sovryn'])
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
@@ -126,7 +126,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.waitForTimeout(5000)
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'RBTC->SOV, Supporting source should be chosen!')
-        .oneOf(['Sovyrn'])
+        .oneOf(['Sovryn'])
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
@@ -177,7 +177,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.waitForTimeout(5000)
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'SOV->FISH, Supporting source should be chosen!')
-        .oneOf(['Sovyrn'])
+        .oneOf(['Sovryn'])
     })
   })
 }
