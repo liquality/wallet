@@ -25,6 +25,6 @@
     "automerge": true
   },
   "schedule": [
-    "every weekend"
+    "before 3am on the first day of the month"
   ]
 }

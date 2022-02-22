@@ -103,7 +103,7 @@ import NavBar from '@/components/NavBar.vue'
 import Modal from '@/components/Modal'
 import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
-
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import Timeline from '@/swaps/views/Timeline.vue'
 
 export default {
@@ -125,6 +125,7 @@ export default {
   },
   props: ['id'],
   computed: {
+    ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
     item() {
@@ -219,7 +220,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['retrySwap', 'updateTransactionFee', 'updateFees']),
+    ...mapActions(['retrySwap', 'updateFees']),
+    ...mapActions('app', ['startBridgeListener']),
     getNativeAsset,
     prettyBalance,
     prettyTime(timestamp) {
@@ -234,10 +236,27 @@ export default {
     async retry() {
       if (this.retryingSwap) return
       this.retryingSwap = true
+
       try {
-        await this.retrySwap({ swap: this.item })
-        if (!this.item.error) {
-          this.showLedgerModal = false
+        if (!this.ledgerBridgeReady && this.ledgerSignRequired) {
+          await this.startBridgeListener()
+          const unsubscribe = createConnectSubscription(async () => {
+            await this.retrySwap({ swap: this.item })
+            if (!this.item.error) {
+              this.showLedgerModal = false
+            }
+          })
+
+          setTimeout(() => {
+            if (unsubscribe) {
+              unsubscribe()
+            }
+          }, 25000)
+        } else {
+          await this.retrySwap({ swap: this.item })
+          if (!this.item.error) {
+            this.showLedgerModal = false
+          }
         }
       } finally {
         this.retryingSwap = false

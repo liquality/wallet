@@ -1,4 +1,6 @@
-export const executeRequest = async ({ getters, dispatch, rootState }, { request }) => {
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
+
+export const executeRequest = async ({ getters, dispatch, rootGetters }, { request }) => {
   // Send transactions through wallet managed action
   const { network, walletId, asset, accountId } = request
   const { accountItem } = getters
@@ -37,27 +39,11 @@ export const executeRequest = async ({ getters, dispatch, rootState }, { request
       call = methodFunc(...request.args)
     }
 
-    const { ledgerBridgeConnected, ledgerBridgeTransportConnected } = rootState.app
-    if (account?.type.includes('ledger')) {
-      if (!ledgerBridgeConnected) {
-        dispatch('app/startBridgeListener', {
-          onConnect: () => {
-            resolve(call)
-          }
-        }).then(() => {
-          dispatch('app/openUSBBridgeWindow')
-        })
-      } else if (!ledgerBridgeTransportConnected) {
-        dispatch('app/startBridgeListener', {
-          onTransportConnect: () => {
-            resolve(call)
-          }
-        }).then(() => {
-          dispatch('app/openUSBBridgeWindow')
-        })
-      } else {
-        resolve(call)
-      }
+    const ledgerBridgeReady = rootGetters['app/ledgerBridgeReady']
+    if (!ledgerBridgeReady && account?.type.includes('ledger')) {
+      dispatch('app/startBridgeListener').then(() => {
+        createConnectSubscription(() => resolve(call))
+      })
     } else {
       resolve(call)
     }

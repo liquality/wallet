@@ -40,6 +40,9 @@ export default {
   computed: {
     ...mapGetters(['accountsData', 'accountsWithBalance']),
     accounts() {
+      if (['swap.send', 'swap'].includes(this.action)) {
+        return this.accountsData.filter((a) => !a.type.includes('ledger'))
+      }
       return this.accountsData
     }
   },
