@@ -19,10 +19,6 @@ import {
 import { SwapProvider } from '../SwapProvider'
 
 class AstroportSwapProvider extends SwapProvider {
-  pairAddress
-  fromTokenAddress
-  toTokenAddress
-
   async getSupportedPairs() {
     return []
   }
@@ -37,13 +33,16 @@ class AstroportSwapProvider extends SwapProvider {
     }
 
     const fromAmountInUnit = currencyToUnit(fromInfo, BN(amount)).toFixed()
-    const rate = await this._getSwapRate(fromAmountInUnit, fromInfo, toInfo)
+    const { rate, fromTokenAddress, toTokenAddress, pairAddress } = await this._getSwapRate(fromAmountInUnit, fromInfo, toInfo)
 
     return {
       from,
       to,
       fromAmount: fromAmountInUnit,
-      toAmount: rate.amount?.toString() || rate.return_amount?.toString()
+      toAmount: rate.amount?.toString() || rate.return_amount?.toString(),
+      fromTokenAddress,
+      toTokenAddress,
+      pairAddress
     }
   }
 
@@ -51,28 +50,31 @@ class AstroportSwapProvider extends SwapProvider {
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const [{ address }] = await client.wallet.getAddresses()
 
+
     const denom = this._getDenom(quote.from)
 
+    const { fromTokenAddress, toTokenAddress, pairAddress } = quote;
+
     const isFromNative = quote.from === 'UST' || (quote.from === 'LUNA' && quote.to === 'UST')
-    const isFromERC20ToUST = this.fromTokenAddress && quote.to === 'UST'
+    const isFromERC20ToUST = fromTokenAddress && quote.to === 'UST'
 
     let txData
 
     if (isFromNative) {
-      txData = buildSwapFromNativeTokenMsg(quote, denom, address, this.pairAddress)
+      txData = buildSwapFromNativeTokenMsg(quote, denom, address, pairAddress)
     } else if (isFromERC20ToUST) {
       txData = buildSwapFromContractTokenToUSTMsg(
         quote,
         address,
-        this.fromTokenAddress,
-        this.pairAddress
+        fromTokenAddress,
+        pairAddress
       )
     } else {
       txData = buildSwapFromContractTokenMsg(
         quote,
         address,
-        this.fromTokenAddress,
-        this.toTokenAddress
+        fromTokenAddress,
+        toTokenAddress
       )
     }
 
@@ -180,51 +182,50 @@ class AstroportSwapProvider extends SwapProvider {
       query: ''
     }
 
-    if (nativeToNative) {
-      this.fromTokenAddress = ''
-      this.toTokenAddress = ''
+    let pairAddress, fromTokenAddress, toTokenAddress
 
+    if (nativeToNative) {
       const fromDenom = this._getDenom(fromInfo.code)
 
       contractData = getRateNativeToAsset(fromAmount, fromDenom)
     } else if (erc20ToErc20) {
-      this.fromTokenAddress = fromInfo.contractAddress
-      this.toTokenAddress = toInfo.contractAddress
+      fromTokenAddress = fromInfo.contractAddress
+      toTokenAddress = toInfo.contractAddress
 
-      contractData = getRateERC20ToERC20(fromAmount, this.fromTokenAddress, this.toTokenAddress)
+      contractData = getRateERC20ToERC20(fromAmount, fromTokenAddress, toTokenAddress)
     } else if (nativeToErc20) {
-      this.fromTokenAddress = ''
-      this.toTokenAddress = toInfo.contractAddress
+      toTokenAddress = toInfo.contractAddress
 
       const fromDenom = this._getDenom(fromInfo.code)
 
-      const pairAddress = await this._getPairAddress(this.toTokenAddress)
+      const pairAddress = await this._getPairAddress(toTokenAddress)
 
       contractData =
         fromInfo.code === 'LUNA'
-          ? getRateERC20ToERC20(fromAmount, fromDenom, this.toTokenAddress)
+          ? getRateERC20ToERC20(fromAmount, fromDenom, toTokenAddress)
           : getRateNativeToAsset(fromAmount, fromDenom, pairAddress)
     } else if (erc20ToNative) {
-      this.fromTokenAddress = fromInfo.contractAddress
-      this.toTokenAddress = ''
+      fromTokenAddress = fromInfo.contractAddress
 
       const toDenom = this._getDenom(toInfo.code)
 
-      const pairAddress = await this._getPairAddress(this.fromTokenAddress)
+      const pairAddress = await this._getPairAddress(fromTokenAddress)
 
       contractData =
         toInfo.code === 'LUNA'
-          ? getRateERC20ToERC20(fromAmount, this.fromTokenAddress, toDenom)
-          : getRateNativeToAsset(fromAmount, this.fromTokenAddress, pairAddress)
+          ? getRateERC20ToERC20(fromAmount, fromTokenAddress, toDenom)
+          : getRateNativeToAsset(fromAmount, fromTokenAddress, pairAddress)
     } else {
       throw new Error(`From: ${fromInfo.type} To: ${toInfo.type}`)
     }
 
     const { address, query } = contractData
 
-    this.pairAddress = address
+    pairAddress = address
 
-    return await rpc.wasm.contractQuery(address, query)
+    const rate = await rpc.wasm.contractQuery(address, query)
+
+    return { rate, fromTokenAddress, toTokenAddress, pairAddress }
   }
 
   async _getPairAddress(tokenAddress) {
