@@ -2,7 +2,7 @@ import { MsgExecuteContract } from '@terra-money/terra.js'
 
 const ADDRESSES = {
   ASSETS_CONTRACT: 'terra1m6ywlgn6wrjuagcmmezzz2a029gtldhey5k552',
-  FACTORY_CONTRACT: 'terra16t7dpwwgx9n3lq6l6te3753lsjqwhxwpday9zx',
+  FACTORY_CONTRACT: 'terra16t7dpwwgx9n3lq6l6te3753lsjqwhxwpday9zx'
 }
 
 // ============== Get Rate Queries ==============

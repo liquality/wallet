@@ -33,7 +33,11 @@ class AstroportSwapProvider extends SwapProvider {
     }
 
     const fromAmountInUnit = currencyToUnit(fromInfo, BN(amount)).toFixed()
-    const { rate, fromTokenAddress, toTokenAddress, pairAddress } = await this._getSwapRate(fromAmountInUnit, fromInfo, toInfo)
+    const { rate, fromTokenAddress, toTokenAddress, pairAddress } = await this._getSwapRate(
+      fromAmountInUnit,
+      fromInfo,
+      toInfo
+    )
 
     return {
       from,
@@ -50,10 +54,9 @@ class AstroportSwapProvider extends SwapProvider {
     const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
     const [{ address }] = await client.wallet.getAddresses()
 
-
     const denom = this._getDenom(quote.from)
 
-    const { fromTokenAddress, toTokenAddress, pairAddress } = quote;
+    const { fromTokenAddress, toTokenAddress, pairAddress } = quote
 
     const isFromNative = quote.from === 'UST' || (quote.from === 'LUNA' && quote.to === 'UST')
     const isFromERC20ToUST = fromTokenAddress && quote.to === 'UST'
@@ -63,19 +66,9 @@ class AstroportSwapProvider extends SwapProvider {
     if (isFromNative) {
       txData = buildSwapFromNativeTokenMsg(quote, denom, address, pairAddress)
     } else if (isFromERC20ToUST) {
-      txData = buildSwapFromContractTokenToUSTMsg(
-        quote,
-        address,
-        fromTokenAddress,
-        pairAddress
-      )
+      txData = buildSwapFromContractTokenToUSTMsg(quote, address, fromTokenAddress, pairAddress)
     } else {
-      txData = buildSwapFromContractTokenMsg(
-        quote,
-        address,
-        fromTokenAddress,
-        toTokenAddress
-      )
+      txData = buildSwapFromContractTokenMsg(quote, address, fromTokenAddress, toTokenAddress)
     }
 
     await this.sendLedgerNotification(quote.fromAccountId, 'Signing required to complete the swap.')
@@ -261,8 +254,9 @@ class AstroportSwapProvider extends SwapProvider {
       filterStatus: 'COMPLETED',
       notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to
-            } ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
+            swap.to
+          } ready to use`
         }
       }
     },
