@@ -59,6 +59,9 @@ class HopSwapProvider extends SwapProvider {
         _to = to.substring(1, to.length)
       }
       if (_from !== _to) return null
+    } else {
+      _from = from
+      _to = to
     }
     return { _from, _to }
   }
