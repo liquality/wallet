@@ -34,7 +34,7 @@
     "@liquality/bitcoin-swap-provider": "1.13.6",
     "@liquality/client": "1.13.6",
     "@liquality/crypto": "1.13.6",
-    "@liquality/cryptoassets": "1.7.5",
+    "@liquality/cryptoassets": "1.10.0",
     "@liquality/ethereum-eip1559-fee-provider": "1.13.6",
     "@liquality/ethereum-erc20-provider": "1.13.6",
     "@liquality/ethereum-erc20-scraper-swap-find-provider": "1.13.6",
