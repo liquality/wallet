@@ -70,8 +70,7 @@ export const actions = {
   openTransakWidgetTab: (_, { chain, asset, address }) => {
     const widgetUrl = process.env.VUE_APP_TRANSAK_WIDGET_URL
     const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
-    const fiatCurrency = process.env.VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY
-    const url = `${widgetUrl}?apiKey=${apiKey}&fiatCurrency=${fiatCurrency}&network=${chain}&cryptoCurrencyCode=${asset}&walletAddress=${address}`
+    const url = `${widgetUrl}?apiKey=${apiKey}&network=${chain}&cryptoCurrencyCode=${asset}&walletAddress=${address}`
     chrome.tabs.create({ url })
   },
   setLedgerSignRequestModalOpen: ({ commit }, { open }) => {
