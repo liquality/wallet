@@ -17,7 +17,7 @@ const seedWordsPage = new SeedWordsPage()
 let browser, page
 const password = '123123123'
 
-describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST"]', async () => {
+describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()

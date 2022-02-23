@@ -85,7 +85,7 @@ export default {
         thornode: 'https://testnet.thornode.thorchain.info'
       },
       sovryn: {
-        name: 'Sovyrn',
+        name: 'Sovryn',
         icon: 'sovryn.svg',
         type: SwapProviderType.SOVRYN,
         routerAddress: SovrynTestnetAddresses.swapNetwork,
@@ -140,7 +140,7 @@ export default {
         bridgeEndpoint: 'http://3.131.33.161:3000/'
       },
       sovryn: {
-        name: 'Sovyrn',
+        name: 'Sovryn',
         icon: 'sovryn.svg',
         type: SwapProviderType.SOVRYN,
         routerAddress: SovrynMainnetAddresses.swapNetwork,
@@ -152,6 +152,13 @@ export default {
         icon: 'thorchain.svg',
         type: SwapProviderType.THORCHAIN,
         thornode: 'https://thornode.thorchain.info'
+      },
+      astroport: {
+        name: 'Astroport',
+        icon: 'astroport.svg',
+        type: SwapProviderType.ASTROPORT,
+        URL: 'https://lcd.terra.dev',
+        chainID: 'columbus-5'
       }
     }
   },

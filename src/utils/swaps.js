@@ -8,7 +8,8 @@ export const SwapProviderType = {
   LIQUALITYBOOST_NATIVE_TO_ERC20: 'LIQUALITYBOOST_NATIVE_TO_ERC20',
   LIQUALITYBOOST_ERC20_TO_NATIVE: 'LIQUALITYBOOST_ERC20_TO_NATIVE',
   FASTBTC: 'FASTBTC',
-  SOVRYN: 'SOVRYN'
+  SOVRYN: 'SOVRYN',
+  ASTROPORT: 'ASTROPORT'
 }
 
 const swapProviderRoot = {
@@ -21,7 +22,8 @@ const swapProviderRoot = {
     'swaps/liqualityboost/liqualityBoostNativeToERC20',
   [SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE]:
     'swaps/liqualityboost/liqualityBoostERC20toNative',
-  [SwapProviderType.SOVRYN]: 'swaps/sovryn'
+  [SwapProviderType.SOVRYN]: 'swaps/sovryn',
+  [SwapProviderType.ASTROPORT]: 'swaps/astroport'
 }
 
 export function getSwapProviderConfig(network, providerId) {

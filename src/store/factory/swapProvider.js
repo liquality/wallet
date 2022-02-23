@@ -7,6 +7,7 @@ import { OneinchSwapProvider } from '@/swaps/oneinch/OneinchSwapProvider'
 import { ThorchainSwapProvider } from '@/swaps/thorchain/ThorchainSwapProvider'
 import { FastbtcSwapProvider } from '@/swaps/fastbtc/FastbtcSwapProvider'
 import { SovrynSwapProvider } from '@/swaps/sovryn/SovrynSwapProvider'
+import { AstroportSwapProvider } from '@/swaps/astroport/AstroportSwapProvider'
 import buildConfig from '@/build.config'
 
 const providers = {
@@ -17,7 +18,8 @@ const providers = {
   [SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20]: LiqualityBoostNativeToERC20,
   [SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE]: LiqualityBoostERC20toNative,
   [SwapProviderType.FASTBTC]: FastbtcSwapProvider,
-  [SwapProviderType.SOVRYN]: SovrynSwapProvider
+  [SwapProviderType.SOVRYN]: SovrynSwapProvider,
+  [SwapProviderType.ASTROPORT]: AstroportSwapProvider
 }
 
 export const createSwapProvider = (network, providerId) => {
