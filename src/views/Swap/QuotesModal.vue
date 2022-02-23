@@ -76,11 +76,13 @@ export default {
   computed: {
     ...mapState(['activeNetwork']),
     sortedQuotes() {
+      console.log('this.quotes ->', this.quotes)
       return sortQuotes(this.quotes, this.activeNetwork)
     }
   },
   methods: {
     getProviderName(quote) {
+      console.log('quote ->', quote)
       const config = getSwapProviderConfig(this.activeNetwork, quote.provider)
       return config.name
     },

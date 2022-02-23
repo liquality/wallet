@@ -84,6 +84,11 @@ export default {
         routerAddress: SovrynTestnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynTestnetAddresses.proxy3,
         rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_TESTNET
+      },
+      hop: {
+        name: 'Hop',
+        icon: 'hop.svg',
+        type: SwapProviderType.HOP
       }
     },
     mainnet: {
@@ -138,6 +143,11 @@ export default {
         icon: 'thorchain.svg',
         type: SwapProviderType.THORCHAIN,
         thornode: 'https://thornode.thorchain.info'
+      },
+      hop: {
+        name: 'Hop',
+        icon: 'hop.svg',
+        type: SwapProviderType.HOP
       }
     }
   },

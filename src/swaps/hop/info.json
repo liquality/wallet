@@ -1,0 +1,17 @@
+{
+  "title": "Hop Exchange Cross-chain Swaps",
+  "description": "Hop Exchange Cross-chain Swaps",
+  "pros": [
+    "Ethereum, Polygon, Binance Smart Chain",
+    "Best exchange rates",
+    "High liquidity",
+    "Fast"
+  ],
+  "cons": [
+    "Slippage"
+  ],
+  "fees": [
+    "Additional aggregator fees",
+    "Slippage (up to 0.5% in Liquality)"
+  ]
+}
