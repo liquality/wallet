@@ -36,8 +36,7 @@ export default {
   termsAcceptedAt: null,
   setupAt: null,
 
-  injectionEnabled: true,
-  injectEthereum: false,
+  injectEthereum: true,
   injectEthereumChain: 'ethereum',
   usbBridgeWindowsId: 0,
 
@@ -51,6 +50,6 @@ export default {
     notAskAgain: false
   },
   experiments: {},
-  watsNewModalVersion: null,
+  WhatsNewModalVersion: null,
   enabledChains: {}
 }

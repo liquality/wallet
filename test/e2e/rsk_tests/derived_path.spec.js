@@ -48,7 +48,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST"]', asyn
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
@@ -122,7 +122,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST"]', asyn
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
@@ -205,7 +205,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST"]', asyn
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)

@@ -10,9 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Send/Receive with Ledger devices</pre>
-            <pre>Connect to dapps with Ledger devices</pre>
-            <pre class="text-wrap">Minor bug fixes</pre>
+            <pre class="text-wrap">Remove global connection toggle</pre>
+            <pre class="text-wrap">Prioritise Liquality wallet as default</pre>
           </div>
         </div>
       </div>
@@ -43,21 +42,21 @@ export default {
     }
   },
   computed: {
-    ...mapState(['watsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
+    ...mapState(['WhatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
     appVersion() {
       return version
     }
   },
   methods: {
-    ...mapActions(['setWatsNewModalShowed']),
+    ...mapActions(['setWhatsNewModalShowed']),
     close() {
       this.open = false
     }
   },
   created() {
-    if (this.watsNewModalVersion !== this.appVersion) {
+    if (this.WhatsNewModalVersion !== this.appVersion) {
       this.open = true
-      this.setWatsNewModalShowed({ version: this.appVersion })
+      this.setWhatsNewModalShowed({ version: this.appVersion })
     }
   }
 }

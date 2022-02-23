@@ -28,11 +28,11 @@ describe.skip('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () =
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.SelectNetwork(page, 'mainnet')
     // Web3 toggle on
-    await overviewPage.ClickWeb3WalletToggle(page)
+    await overviewPage.CheckWeb3ToggleOn(page)
     await page.waitForTimeout(1000)
     console.log('Web3 toggled on')
   })

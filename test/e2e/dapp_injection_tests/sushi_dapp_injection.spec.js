@@ -28,7 +28,7 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.SelectNetwork(page, 'mainnet')
@@ -36,8 +36,7 @@ describe('Sushi Dapp Injection-["MAINNET","TESTNET"]', async () => {
       await overviewPage.SelectNetwork(page)
     }
     // Web3 toggle on
-    await overviewPage.ClickWeb3WalletToggle(page)
-    await page.waitForTimeout(1000)
+    await overviewPage.CheckWeb3ToggleOn(page)
   })
   afterEach(async () => {
     await browser.close()

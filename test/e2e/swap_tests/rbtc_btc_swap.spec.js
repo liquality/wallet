@@ -30,7 +30,7 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page, password)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.SelectNetwork(page,'mainnet')
   })
