@@ -91,7 +91,7 @@ export default {
   box-shadow: 2px 4px 4px rgba(46, 44, 44, 0.25);
 
   .modal-body {
-    padding: 20px 20px 0 20px;
+    padding: 5px 20px 0 20px;
   }
 }
 

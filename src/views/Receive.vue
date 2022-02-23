@@ -30,7 +30,7 @@
           </p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
           <div class="buy-crypto-container" v-show="activeNetwork === 'mainnet'">
-            <div class="text-uppercase font-weight-bold">Or</div>
+            <div class="mt-2 text-uppercase font-weight-bold">Or</div>
             <BuyCryptoButton
               :btn-class="['btn-light', 'btn-outline-primary']"
               :asset="asset"
@@ -278,11 +278,10 @@ export default {
     display: inline-flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 0.2em;
+    padding: 0.1em;
 
-    .btn,
-    & > div {
-      margin-top: 5px;
+    .btn {
+      max-width: 120px;
     }
   }
 }

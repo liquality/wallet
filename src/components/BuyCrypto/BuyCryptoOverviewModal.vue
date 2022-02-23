@@ -53,13 +53,10 @@ export default {
     },
     openTransakTab() {
       this.openTransakWidgetTab({ ...this.data })
-      setTimeout(() => {
-        this.setBuyCryptoOverviewModalOpen({ open: false })
-      }, 2000)
     },
     receive() {
-      this.$router.go('/assets/receive')
       this.setBuyCryptoOverviewModalOpen({ open: false })
+      this.$router.go('/assets/receive')
     }
   }
 }
@@ -70,7 +67,6 @@ h6 {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
-  line-height: 20px;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
@@ -91,6 +87,7 @@ h6 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-bottom: 1em;
 
   svg {
     height: 50px;

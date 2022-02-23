@@ -1,6 +1,6 @@
 <template>
   <div class="empty-activity">
-    <div>Once you start using your wallet you will see the activity here</div>
+    <div>Once you start using your wallet you will see the activity here.</div>
     <div v-show="activeNetwork === 'mainnet'" class="buy-crypto-container">
       <CartIcon />
       <BuyCryptoButton

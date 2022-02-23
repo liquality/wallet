@@ -67,11 +67,13 @@ export const actions = {
   setBuyCryptoOverviewModalOpen: ({ commit }, { open }) => {
     commit('SET_BUY_CRYPTO_OVERVIEW_MODAL_OPEN', { open })
   },
-  openTransakWidgetTab: (_, { chain, asset, address }) => {
+  openTransakWidgetTab: ({ dispatch }, { chain, asset, address }) => {
     const widgetUrl = process.env.VUE_APP_TRANSAK_WIDGET_URL
     const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
     const url = `${widgetUrl}?apiKey=${apiKey}&network=${chain}&cryptoCurrencyCode=${asset}&walletAddress=${address}`
     chrome.tabs.create({ url })
+    dispatch('setBuyCryptoModalOpen', { open: false })
+    dispatch('setBuyCryptoOverviewModalOpen', { open: false })
   },
   setLedgerSignRequestModalOpen: ({ commit }, { open }) => {
     commit('SET_LEDGER_SIGN_REQUEST_MODAL_OPEN', { open })

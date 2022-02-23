@@ -17,7 +17,7 @@
     <template #footer>
       <div class="footer">
         <TransakBrand />
-        <button class="btn btn-primary btn-lg" id="open_transak_tab_btn" @click="openTransakTab">
+        <button class="btn btn-primary" id="open_transak_tab_btn" @click="openTransakTab">
           Continue to Transak
         </button>
       </div>
@@ -48,9 +48,6 @@ export default {
     },
     openTransakTab() {
       this.openTransakWidgetTab({ ...this.data })
-      setTimeout(() => {
-        this.setBuyCryptoModalOpen({ open: false })
-      }, 2000)
     }
   }
 }
@@ -61,7 +58,6 @@ h6 {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
-  line-height: 20px;
   text-transform: uppercase;
 }
 
@@ -89,6 +85,7 @@ h6 {
 
   .btn {
     margin-top: 20px;
+    width: 100%;
     padding: 0.5rem 1.5rem;
   }
 }
