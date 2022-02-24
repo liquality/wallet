@@ -48,7 +48,7 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto(dappUrl, { timeout: 60000 })
+    await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 60000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
@@ -56,7 +56,7 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       await testUtil.takeScreenshot(dappPage, 'uniswap-arbitrum-loading-issue')
       const pageTitle = await dappPage.title()
       const pageUrl = await dappPage.url()
-      expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
+      expect(e, `Uniswap dapp UI not loading, seems to blank page.....${pageTitle}...${pageUrl}`).equals(null)
     }
     const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
     await dappPage.evaluate(async () => {
