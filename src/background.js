@@ -170,7 +170,7 @@ store.subscribe(async ({ type, payload }, state) => {
       // eslint-disable-next-line
       const item = getters.historyItemById(payload.network, payload.walletId, payload.id);
       if (item.type === 'SWAP' && payload.updates) {
-        if (!payload.updates.status) {
+        if (payload.updates.status !== 'undefined') {
           dispatch('trackAnalytics', {
             event: 'Swap status change',
             properties: {
@@ -184,7 +184,7 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       }
       if (item.type === 'SEND' && payload.updates) {
-        if (!payload.updates.status) {
+        if (payload.updates.status !== 'undefined') {
           dispatch('trackAnalytics', {
             event: 'Send status change',
             properties: {

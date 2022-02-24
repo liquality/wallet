@@ -10,8 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Remove global connection toggle</pre>
-            <pre class="text-wrap">Prioritise Liquality wallet as default</pre>
+            <pre class="text-wrap">Astroport integration: swap all Terra tokens with one click</pre>
+            <pre class="text-wrap">Minor bug fixes</pre>
           </div>
         </div>
       </div>

@@ -7,7 +7,8 @@ export const SwapProviderType = {
   THORCHAIN: 'THORCHAIN',
   LIQUALITYBOOST: 'LIQUALITYBOOST',
   FASTBTC: 'FASTBTC',
-  SOVRYN: 'SOVRYN'
+  SOVRYN: 'SOVRYN',
+  ASTROPORT: 'ASTROPORT'
 }
 
 const swapProviderRoot = {
@@ -17,7 +18,8 @@ const swapProviderRoot = {
   [SwapProviderType.THORCHAIN]: 'swaps/thorchain',
   [SwapProviderType.FASTBTC]: 'swaps/fastbtc',
   [SwapProviderType.LIQUALITYBOOST]: 'swaps/liqualityboost',
-  [SwapProviderType.SOVRYN]: 'swaps/sovryn'
+  [SwapProviderType.SOVRYN]: 'swaps/sovryn',
+  [SwapProviderType.ASTROPORT]: 'swaps/astroport'
 }
 
 export function getSwapProviderConfig(network, providerId) {
