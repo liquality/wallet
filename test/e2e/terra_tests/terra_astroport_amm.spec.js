@@ -16,7 +16,7 @@ let browser, page
 const password = '123123123'
 if (process.env.NODE_ENV === 'mainnet') {
   // Astroport AMM works against Terra chain
-  describe('SWAP Astroport AMM service Provider-["MAINNET"]', async () => {
+  describe.skip('SWAP Astroport AMM service Provider-["MAINNET"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
