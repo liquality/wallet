@@ -90,7 +90,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
-    it('Astroport AMM(UST->LUNA) quote check[""MAINNET_RELEASE""]', async () => {
+    it.skip('Astroport AMM(UST->LUNA) quote check[""MAINNET_RELEASE""]', async () => {
       const fromAsset = 'UST'
       const toAsset = {
         chain: 'TERRA',
@@ -197,7 +197,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
-    it('Astroport AMM(UST->ANC) quote check', async () => {
+    it.skip('Astroport AMM(UST->ANC) quote check', async () => {
       const fromAsset = 'UST'
       const toAsset = {
         chain: 'TERRA',
