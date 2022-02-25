@@ -161,7 +161,7 @@ export const buildSwapFromNativeTokenMsg = (quote, denom, address, pairAddress) 
           { [denom]: Number(quote.fromAmount) }
         )
       ],
-      gasLimit: 500_000
+      gasLimit: 400_000
     }
   }
 }
