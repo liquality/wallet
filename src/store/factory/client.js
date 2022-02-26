@@ -367,7 +367,7 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
     case 'UST': {
       _asset = 'uusd'
       feeAsset = 'uusd'
-      stableFee = true
+      stableFee = false
       break
     }
     default: {

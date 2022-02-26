@@ -117,16 +117,12 @@ const CSV_HEADERS = [
     key: 'id'
   },
   {
-    label: 'Order ID',
-    key: 'orderId'
-  },
-  {
     label: 'Network',
     key: 'network'
   },
   {
     label: 'Created',
-    key: 'createdAt'
+    key: 'startTime'
   },
   {
     label: 'From Asset',
@@ -137,14 +133,6 @@ const CSV_HEADERS = [
     key: 'to'
   },
   {
-    label: 'From',
-    key: 'fromAddress'
-  },
-  {
-    label: 'To',
-    key: 'toAddress'
-  },
-  {
     label: 'Send Amount',
     key: 'fromAmount'
   },
@@ -153,16 +141,12 @@ const CSV_HEADERS = [
     key: 'toAmount'
   },
   {
-    label: 'Send Amount USD',
-    key: 'fromAmountUsd'
-  },
-  {
-    label: 'Receive Amount USD',
-    key: 'toAmountUsd'
+    label: 'Swap Tx HASH',
+    key: 'swapTxHash'
   },
   {
     label: 'Status',
-    key: 'fromAmountUsd'
+    key: 'status'
   },
   {
     label: 'Wallet ID',

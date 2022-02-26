@@ -100,7 +100,6 @@ export default {
   &_links {
     ul {
       list-style-type: none;
-      text-align: center;
       padding: 0;
 
       li {

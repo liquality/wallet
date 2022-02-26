@@ -10,8 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">This is release candidate for 0.56.0</pre>
-            <pre class="text-wrap">Update this copy just before release</pre>
+            <pre class="text-wrap">Astroport integration: swap all Terra tokens with one click</pre>
+            <pre class="text-wrap">Minor bug fixes</pre>
           </div>
         </div>
       </div>
