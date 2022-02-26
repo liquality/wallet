@@ -55,7 +55,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'total assets validation on overview page').contain('8 Assets')
+    expect(assetsCount, 'total assets validation on overview page').contain('9 Assets')
 
     // Check the Total amount - 10s wait to load amount
     const totalAmount = parseInt(await overviewPage.GetTotalLiquidity(page), 10)
@@ -130,7 +130,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // check Send & Swap & Receive options have been displayed (RSK & RSK legacy)
     await page.waitForSelector('#total_assets', { timeout: 120000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'validate total assets on overview page').contain('9 Assets')
+    expect(assetsCount, 'validate total assets on overview page').contain('10 Assets')
 
     // Validate RSK & RSK legacy chains listed
     const rskAccounts = await page.$$('#RSK')
@@ -212,7 +212,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount).contain(' 8 Assets ')
+    expect(assetsCount).contain(' 9 Assets ')
 
     let allAddresses = await testUtil.getAllChainAddresses(page)
     console.log(allAddresses)
@@ -287,6 +287,6 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // After enter new seed phrase wallet will have RSK & RSK legacy accounts
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCountNew = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCountNew, 'total assets should be 8 on overview page').contain('9 Assets')
+    expect(assetsCountNew, 'total assets should be 8 on overview page').contain('10 Assets')
   })
 })
