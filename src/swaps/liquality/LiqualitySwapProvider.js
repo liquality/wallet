@@ -18,17 +18,25 @@ export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@l
 
 class LiqualitySwapProvider extends SwapProvider {
   async _getQuote({ from, to, amount }) {
-    return (
-      await axios({
-        url: this.config.agent + '/api/swap/order',
-        method: 'post',
-        data: { from, to, fromAmount: amount },
-        headers: {
-          'x-requested-with': VERSION_STRING,
-          'x-liquality-user-agent': VERSION_STRING
-        }
-      })
-    ).data
+    try {
+      return (
+        await axios({
+          url: this.config.agent + '/api/swap/order',
+          method: 'post',
+          data: { from, to, fromAmount: amount },
+          headers: {
+            'x-requested-with': VERSION_STRING,
+            'x-liquality-user-agent': VERSION_STRING
+          }
+        })
+      ).data
+    } catch (e) {
+      if (e?.response?.data?.error) {
+        throw new Error(e.response.data.error)
+      } else {
+        throw e
+      }
+    }
   }
 
   async getSupportedPairs() {
