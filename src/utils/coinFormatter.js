@@ -41,7 +41,7 @@ export const fiatToCrypto = (amount, rate) => {
 
 export const formatFiat = (amount) => {
   if (isNaN(amount)) return amount
-  return amount.toFormat(2, BN.ROUND_CEIL)
+  return BN(amount).toFormat(2, BN.ROUND_CEIL)
 }
 
 export const formatFiatUI = (amount) => {

@@ -757,7 +757,6 @@ svg.qr-icon {
       line-height: 24px;
       text-align: center;
       text-transform: uppercase;
-      margin-top: 10px;
     }
 
     .step-text {
@@ -840,6 +839,10 @@ svg.qr-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.ledger-icon {
+  margin-top: 1.5em;
 }
 
 .custom-dropdown-toggle {

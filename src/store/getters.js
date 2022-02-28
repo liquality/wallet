@@ -57,20 +57,17 @@ export default {
       accountId,
       useCache = true,
       accountType = 'default',
-      accountIndex = 0
+      accountIndex = 0,
+      chainCode,
+      publicKey
     }) => {
       const account = accountId ? getters.accountItem(accountId) : null
       const _accountType = account?.type || accountType
       const _accountIndex = account?.index || accountIndex
-      const { chain } = getters.cryptoassets[asset] || cryptoassets[asset]
-      let derivationPath
-      // when we ask for ledger accounts from the ledger device we don't have the derivation path
-      // the !account doesn't exist in this case or if we call the getter with accountId equals to null
-      if (_accountType.includes('ledger') || !account) {
-        derivationPath = getDerivationPath(chain, network, _accountIndex, _accountType)
-      } else {
-        derivationPath = account.derivationPath
-      }
+      const { chain } = cryptoassets[asset]
+      const derivationPath =
+        account?.derivationPath || getDerivationPath(chain, network, _accountIndex, _accountType)
+
       const cacheKey = [asset, chain, network, walletId, derivationPath, _accountType].join('-')
 
       if (useCache) {
@@ -79,7 +76,15 @@ export default {
       }
 
       const { mnemonic } = state.wallets.find((w) => w.id === walletId)
-      const client = createClient(asset, network, mnemonic, _accountType, derivationPath)
+      const client = createClient({
+        asset,
+        network,
+        mnemonic,
+        accountType: _accountType,
+        derivationPath,
+        chainCode: account?.chainCode || chainCode,
+        publicKey: account?.publicKey || publicKey
+      })
       clientCache[cacheKey] = client
 
       return client

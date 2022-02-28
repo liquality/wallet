@@ -72,7 +72,7 @@ import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { chains, ChainId } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -147,7 +147,7 @@ export default {
           },
           ARBETH: {
             name: 'ARBETH',
-            url: 'https://faucet.rinkeby.io/'
+            url: 'https://faucet.paradigm.xyz/'
           },
           LUNA: {
             name: 'TERRA',
@@ -163,7 +163,11 @@ export default {
     }
   },
   async created() {
-    if (this.account && this.account.type.includes('ledger')) {
+    if (
+      this.account &&
+      this.account?.type.includes('ledger') &&
+      this.account?.chain !== ChainId.Bitcoin
+    ) {
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
         this.account.addresses[0],
         this.activeNetwork

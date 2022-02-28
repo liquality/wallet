@@ -3,7 +3,7 @@ import { unlockAsset } from '../utils'
 
 export const updateTransactionFee = async (
   { dispatch, commit, getters },
-  { network, walletId, asset, id, hash, newFee }
+  { network, walletId, asset, id, hash, newFee, accountId }
 ) => {
   const item = getters.historyItemById(network, walletId, id)
 
@@ -20,7 +20,7 @@ export const updateTransactionFee = async (
     network,
     walletId,
     asset,
-    accountId: item.fromAccountId // TODO: confirm if the from account should be used here
+    accountId
   })
 
   const oldTx = item[txKey]

@@ -5,7 +5,19 @@ import { chains } from '@liquality/cryptoassets'
 
 export const accountCreator = (payload) => {
   const { network, walletId, account } = payload
-  const { name, alias, chain, index, addresses, assets, balances, type, color } = account
+  const {
+    name,
+    alias,
+    chain,
+    index,
+    addresses,
+    assets,
+    balances,
+    type,
+    color,
+    publicKey,
+    chainCode
+  } = account
 
   const enabled = account.enabled !== null && account.enabled !== undefined ? account.enabled : true
 
@@ -35,7 +47,9 @@ export const accountCreator = (payload) => {
     createdAt,
     updatedAt: null,
     color,
-    enabled
+    enabled,
+    publicKey,
+    chainCode
   }
 }
 
