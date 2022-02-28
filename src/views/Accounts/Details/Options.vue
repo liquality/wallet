@@ -8,11 +8,11 @@
     <ListItem
       :item-class="'h-padding no-pointer'"
       :item-styles="{
-        height: isLedgerAccount ? '125px' : '155px'
+        height: exportEnabled ? '125px' : '155px'
       }"
     >
       Private Key
-      <template #sub-title v-if="isLedgerAccount">
+      <template #sub-title v-if="exportEnabled">
         <InfoNotification>
           We can’t access your private keys on ledger. It’s designed like that to keep them safe.
         </InfoNotification>
@@ -87,7 +87,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { chains, ChainId } from '@liquality/cryptoassets'
 import { getAddressExplorerLink } from '@/utils/asset'
 import ListItem from '@/components/ListItem'
 import InfoNotification from '@/components/InfoNotification'
@@ -101,7 +101,7 @@ export default {
   },
   data() {
     return {
-      isLedgerAccount: false,
+      exportEnabled: true,
       address: null,
       removeLedgerAccountModalOpen: false
     }
@@ -141,20 +141,24 @@ export default {
   },
   async created() {
     if (this.account?.type.includes('ledger')) {
-      this.isLedgerAccount = true
+      this.exportEnabled = false
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
         this.account.addresses[0],
         this.activeNetwork
       )
     } else {
-      this.isLedgerAccount = false
+      const chainId = cryptoassets[this.asset]?.chain
+      if (chainId === ChainId.Bitcoin) {
+        this.exportEnabled = false
+      } else {
+        this.exportEnabled = true
+      }
       const addresses = await this.getUnusedAddresses({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
         assets: [this.asset],
         accountId: this.accountId
       })
-      const chainId = cryptoassets[this.asset]?.chain
       this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
     }
   }
