@@ -22,6 +22,7 @@
     "test:testnet": "node_modules/mocha/bin/mocha --grep 'TESTNET'"
   },
   "dependencies": {
+    "@anchor-protocol/anchor-earn": "^2.0.0",
     "@blobfishkate/sovryncontracts": "1.3.27",
     "@liquality/bitcoin-esplora-batch-api-provider": "1.13.6",
     "@liquality/bitcoin-esplora-swap-find-provider": "1.13.6",

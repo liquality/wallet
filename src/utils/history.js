@@ -34,7 +34,8 @@ export function getStep(item) {
   }
   if (item.type === 'SWAP') {
     const swapProvider = store.getters.swapProvider(item.network, item.provider)
-    return swapProvider.statuses[item.status].step
+
+    return item.status ? swapProvider.statuses[item.status].step : 1
   }
 }
 

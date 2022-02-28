@@ -13,6 +13,7 @@ import TransactionDetails from '@/views/Details/TransactionDetails.vue'
 import Send from '@/views/Send/Send.vue'
 import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap/Swap.vue'
+import Anchor from '@/views/Anchor/Anchor.vue'
 
 import Settings from '@/views/Settings'
 import Experiments from '@/views/Experiments'
@@ -238,6 +239,14 @@ const routes = [
     path: '/export/:accountId/reveal',
     component: ExportPrivateKey,
     name: 'ExportPrivateKey',
+    props: true
+  },
+
+  // Anchor
+  {
+    path: '/anchor/:accountId',
+    component: Anchor,
+    name: 'Anchor',
     props: true
   }
 ]
