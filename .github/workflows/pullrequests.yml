@@ -1,8 +1,8 @@
 on:
   pull_request:
     branches:
-      - dev
-      - "!master"
+      - master
+      - 'release-candidate*'
       - '!renovate/**'
 
 name: PullRequest tests
