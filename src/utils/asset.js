@@ -221,6 +221,11 @@ export const tokenDetailProviders = {
       return await fetchTokenDetails(contractAddress, 'https://arb1.arbitrum.io/rpc')
     }
   },
+  avalanche: {
+    async getDetails(contractAddress) {
+      return await fetchTokenDetails(contractAddress, 'https://api.avax.network/ext/bc/C/rpc')
+    }
+  },
   terra: {
     async getDetails(contractAddress) {
       return await fetchTerraToken(contractAddress, 'https://arb1.arbitrum.io/rpc')

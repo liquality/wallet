@@ -155,8 +155,8 @@ export default {
     'polygon',
     'arbitrum',
     'terra',
-    'fuse',
-    'avalanche'
+    'avalanche',
+    'fuse'
   ],
   supportedBridgeAssets: ['MATIC', 'RBTC']
 }

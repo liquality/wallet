@@ -65,8 +65,8 @@ export const chainDefaultColors = {
   polygon: '#8247E5',
   arbitrum: '#28A0EF',
   terra: '#008080',
-  fuse: '#46e8b6',
-  avalanche: '#E84141'
+  avalanche: '#E84141',
+  fuse: '#46e8b6'
 }
 
 export const getAccountIcon = (chain) => {

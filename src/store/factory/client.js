@@ -355,7 +355,6 @@ function createAvalancheClient(asset, network, mnemonic, derivationPath) {
 
 function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
   let _asset, feeAsset, tokenAddress, stableFee
-
   const terraNetwork = ChainNetworks.terra[network]
 
   switch (asset) {
