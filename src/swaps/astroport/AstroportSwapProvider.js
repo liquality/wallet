@@ -6,7 +6,7 @@ import cryptoassets from '@/utils/cryptoassets'
 import { ChainId, chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import { TerraNetworks } from '@liquality/terra-networks'
 import { withInterval } from '../../store/actions/performNextAction/utils'
-import { prettyBalance } from '../../utils/coinFormatter'
+import { prettyBalance, fiatToCrypto } from '../../utils/coinFormatter'
 
 import {
   getRateNativeToAsset,
@@ -120,6 +120,12 @@ class AstroportSwapProvider extends SwapProvider {
     }
 
     return updates
+  }
+
+  // ======== MIN AMOUNT =======
+
+  getSwapLimit(from, to) {
+    return 2 // Min swap amount in USD
   }
 
   // ========= FEES ========
@@ -254,9 +260,8 @@ class AstroportSwapProvider extends SwapProvider {
       filterStatus: 'COMPLETED',
       notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
-            swap.to
-          } ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to
+            } ready to use`
         }
       }
     },
