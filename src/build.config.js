@@ -117,7 +117,9 @@ export default {
         referrerAddress: {
           ethereum: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
           polygon: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
-          bsc: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5'
+          bsc: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
+          avalanche: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
+
         },
         referrerFee: 0.3
       },
