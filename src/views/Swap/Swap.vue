@@ -637,16 +637,28 @@ export default {
         this.selectedQuoteProvider?.config?.type === SwapProviderType.LIQUALITYBOOST
           ? this.toAssetChain
           : this.toAsset
-      const liqualityMarket = this.networkMarketData?.find(
-        (pair) =>
+      const liqualityMarket = this.networkMarketData?.find((pair) => {
+        return (
           pair.from === this.asset &&
           pair.to === toQuoteAsset &&
           getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
             SwapProviderType.LIQUALITY
-      )
-      const min = liqualityMarket
-        ? BN(liqualityMarket.min)
-        : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]), this.available)
+        )
+      })
+
+      const getSwapLimit = this.selectedQuoteProvider?.getSwapLimit
+
+      let min
+
+      if (getSwapLimit) {
+        const minUsdValue = getSwapLimit()
+        min = BN.min(fiatToCrypto(minUsdValue, this.fiatRates[this.asset]))
+      } else {
+        min = liqualityMarket
+          ? BN(liqualityMarket.min)
+          : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]))
+      }
+
       return isNaN(min) ? BN(0) : dpUI(min)
     },
     max() {

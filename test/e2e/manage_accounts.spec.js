@@ -95,7 +95,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     rskAccounts = await page.$$('#account-item-rsk')
     expect(rskAccounts.length).to.equals(3)
   })
-  it.skip('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
+  it('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate ETH accounts on overview page first time
@@ -120,12 +120,10 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     ethAccounts = await page.$$('#account-item-ethereum')
     expect(ethAccounts.length).to.equals(2)
     // Default web3 option toggled on
-    await overviewPage.ClickWeb3WalletToggle(page)
-    await page.waitForTimeout(2000)
+    await overviewPage.CheckWeb3ToggleOn(page)
     // Connected dapp option
     await page.click('#connect_dapp_main_option')
     await page.waitForSelector('.v-switch-core', { visible: true })
-    await page.waitForTimeout(2000)
 
     // Go to uniSwap app
     dappPage = await browser.newPage()
@@ -133,7 +131,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto(dappUrl)
+    await dappPage.goto(dappUrl, { waitUntil: 'networkidle0', timeout: 90000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })
@@ -158,10 +156,6 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     }
     //Filter by chain
     await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true, timeout: 60000 })
-    await connectRequestWindow.click('#filter_by_chain')
-    await connectRequestWindow.waitForSelector('#ethereum_web_network', { visible: true, timeout: 60000 })
-    await connectRequestWindow.click('#ethereum_web_network')
-
     // Check connect button is enabled
     ethAccounts = await connectRequestWindow.$$('#ETHEREUM')
     expect(ethAccounts.length, 'ethAccounts should have length 2 on dapp connect request')

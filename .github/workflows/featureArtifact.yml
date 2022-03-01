@@ -1,34 +1,46 @@
+name: Feature branch artifact workflow
+
 on:
-  pull_request:
+  push:
     paths-ignore:
       - '**.md'
     branches:
-      - 'release-candidate-*'
-      - '!renovate/**'
-      - '!dependabot/**'
-
-name: PullRequest tests
+      - 'feature/*'
+      - 'feat/*'
 
 jobs:
-  pull_request_tests:
+  feature-artifact-build:
     runs-on: ubuntu-latest
     steps:
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v5.1
+
+      - name: create artifact name
+        id: findandreplace
+        uses: mad9000/actions-find-and-replace-string@2
+        with:
+          source: ${{ steps.branch-name.outputs.current_branch }}
+          find: '/'
+          replace: '-'
+
       - name: Checkout code
         uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 0
 
-      - name: Build project
-        uses: actions/setup-node@v2.5.1
+      - uses: actions/setup-node@v2.5.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           node-version: '14'
-        # Create screenshots directory
+
       - run: mkdir screenshots
 
       - uses: actions/cache@v2.1.7
-        id: cache
+        env:
+          node-version: 14.1.0
+          cache-name: cache-node-modules
         with:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
@@ -49,33 +61,10 @@ jobs:
         uses: actions/upload-artifact@v2.3.1
         if: always()
         with:
-          name: pull-request-wallet
+          name: ${{ steps.findandreplace.outputs.value }}
           path: dist
           if-no-files-found: ignore
           retention-days: 30
 
-      - name: Run Smoke tests againt PullRequest
-        uses: beemi/puppeteer-headful@v1.0.11
-        env:
-          CI: 'true'
-          DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        with:
-          args: npm run test:pullrequest
 
-      - name: Save Screenshots
-        uses: actions/upload-artifact@v2.3.1
-        if: always()
-        with:
-          name: screenshots
-          path: screenshots
-          if-no-files-found: ignore
-
-      - name: Discord notification
-        uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
-          title: "${{ github.workflow}}"
 

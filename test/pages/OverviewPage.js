@@ -254,6 +254,7 @@ class OverviewPage {
       }
 
       case 'LUNA':
+      case 'ANC':
       case 'UST': {
         const terra = await page.waitForSelector('#TERRA', {
           timeout: elementVisibleTimeout,
@@ -525,16 +526,19 @@ class OverviewPage {
   }
 
   /**
-   * Toggle on Web3 Wallet from setting screen.
+   * Toggle on Web3 Wallet from setting screen, by default on
    * @param page
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickWeb3WalletToggle(page) {
+  async CheckWeb3ToggleOn(page) {
     await this.ClickOnBurgerIcon(page)
     await this.SelectSettings(page)
     // toggle web3 wallet option
-    await page.click('#default_web3_wallet_toggle_button > label > div')
+    let defaultWeb3Toggle = await page.$eval('#default_web3_wallet_toggle_button > label', (el) =>
+      el.getAttribute('class')
+    )
+    expect(defaultWeb3Toggle, 'Default Web3 Wallet toggle should be on').to.contains('toggled')
   }
 
   /**

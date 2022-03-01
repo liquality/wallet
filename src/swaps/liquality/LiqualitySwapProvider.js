@@ -18,17 +18,25 @@ export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@l
 
 class LiqualitySwapProvider extends SwapProvider {
   async _getQuote({ from, to, amount }) {
-    return (
-      await axios({
-        url: this.config.agent + '/api/swap/order',
-        method: 'post',
-        data: { from, to, fromAmount: amount },
-        headers: {
-          'x-requested-with': VERSION_STRING,
-          'x-liquality-user-agent': VERSION_STRING
-        }
-      })
-    ).data
+    try {
+      return (
+        await axios({
+          url: this.config.agent + '/api/swap/order',
+          method: 'post',
+          data: { from, to, fromAmount: amount },
+          headers: {
+            'x-requested-with': VERSION_STRING,
+            'x-liquality-user-agent': VERSION_STRING
+          }
+        })
+      ).data
+    } catch (e) {
+      if (e?.response?.data?.error) {
+        throw new Error(e.response.data.error)
+      } else {
+        throw e
+      }
+    }
   }
 
   async getSupportedPairs() {
@@ -154,21 +162,6 @@ class LiqualitySwapProvider extends SwapProvider {
       const txs = feePrices.map((fee) => ({ to: '', value, fee }))
       const totalFees = await client.getMethod('getTotalFees')(txs, max)
       return mapValues(totalFees, (f) => unitToCurrency(cryptoassets[asset], f))
-    }
-
-    if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'UST') {
-      const client = this.getClient(network, walletId, asset, quote.fromAccountId)
-      const value = max ? undefined : BN(quote.fromAmount).dividedBy(1_000_000) // format in UST
-      const taxFees = await client.getMethod('getTaxFees')(value?.toFixed(), 'uusd', max || !value)
-
-      const fees = {}
-      for (const feePrice of feePrices) {
-        fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice).plus(
-          taxFees
-        )
-      }
-
-      return fees
     }
 
     if (txType in LiqualitySwapProvider.feeUnits) {

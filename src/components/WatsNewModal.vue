@@ -10,8 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Send/Receive with Ledger devices</pre>
-            <pre>Connect to dapps with Ledger devices</pre>
+            <pre class="text-wrap">Astroport integration: swap all Terra tokens with one click</pre>
             <pre class="text-wrap">Minor bug fixes</pre>
           </div>
         </div>
