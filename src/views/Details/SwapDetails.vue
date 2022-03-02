@@ -14,7 +14,7 @@
             <button
               class="retry-button btn btn-sm btn-outline-primary"
               v-if="item.error"
-              @click="$emit('retrySwap')"
+              @click="retry"
             >
               Retry
             </button>
