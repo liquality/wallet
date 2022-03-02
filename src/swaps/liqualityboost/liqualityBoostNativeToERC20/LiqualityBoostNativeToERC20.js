@@ -1,16 +1,16 @@
 import BN from 'bignumber.js'
-import { SwapProvider } from '../SwapProvider'
+import { SwapProvider } from '../../SwapProvider'
 import { unitToCurrency, assets } from '@liquality/cryptoassets'
-import { withInterval } from '../../store/actions/performNextAction/utils'
-import { prettyBalance } from '../../utils/coinFormatter'
+import { withInterval } from '../../../store/actions/performNextAction/utils'
+import { prettyBalance } from '../../../utils/coinFormatter'
 import { isERC20, getNativeAsset } from '@/utils/asset'
-import { createSwapProvider } from '../../store/factory/swapProvider'
-import { LiqualitySwapProvider } from '../liquality/LiqualitySwapProvider'
-import { OneinchSwapProvider } from '../oneinch/OneinchSwapProvider'
+import { LiqualitySwapProvider } from '../../liquality/LiqualitySwapProvider'
+import { OneinchSwapProvider } from '../../oneinch/OneinchSwapProvider'
+import { createSwapProvider } from '../../../store/factory/swapProvider'
 
 const slippagePercentage = 3
 
-class LiqualityBoostSwapProvider extends SwapProvider {
+class LiqualityBoostNativeToERC20 extends SwapProvider {
   constructor(config) {
     super(config)
     this.liqualitySwapProvider = createSwapProvider(this.config.network, 'liquality')
@@ -94,8 +94,8 @@ class LiqualityBoostSwapProvider extends SwapProvider {
       walletId,
       asset,
       txType:
-        txType === LiqualityBoostSwapProvider.txTypes.SWAP
-          ? LiqualityBoostSwapProvider.txTypes.SWAP_CLAIM
+        txType === LiqualityBoostNativeToERC20.txTypes.SWAP
+          ? LiqualityBoostNativeToERC20.txTypes.SWAP_CLAIM
           : txType,
       quote: {
         ...quote,
@@ -105,14 +105,14 @@ class LiqualityBoostSwapProvider extends SwapProvider {
       feePrices,
       max
     })
-    if (isERC20(asset) && txType === LiqualityBoostSwapProvider.txTypes.SWAP) {
+    if (isERC20(asset) && txType === LiqualityBoostNativeToERC20.txTypes.SWAP) {
       const automatedMarketMakerFees = await this.bridgeAssetToAutomatedMarketMaker[
         quote.bridgeAsset
       ].estimateFees({
         network,
         walletId,
         asset,
-        txType: LiqualityBoostSwapProvider.txTypes.SWAP,
+        txType: LiqualityBoostNativeToERC20.txTypes.SWAP,
         quote: {
           ...quote,
           from: quote.bridgeAsset,
@@ -240,12 +240,12 @@ class LiqualityBoostSwapProvider extends SwapProvider {
     }
   }
 
-  static fromTxType = LiqualityBoostSwapProvider.txTypes.SWAP_INITIATION
-  static toTxType = LiqualityBoostSwapProvider.txTypes.SWAP
+  static fromTxType = LiqualityBoostNativeToERC20.txTypes.SWAP_INITIATION
+  static toTxType = LiqualityBoostNativeToERC20.txTypes.SWAP
 
   static timelineDiagramSteps = ['INITIATION', 'AGENT_INITIATION', 'CLAIM_OR_REFUND', 'SWAP']
 
   static totalSteps = 5
 }
 
-export { LiqualityBoostSwapProvider }
+export { LiqualityBoostNativeToERC20 }
