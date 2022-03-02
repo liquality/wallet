@@ -42,16 +42,19 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
 
   it('Sushi injection - ETH["PULL_REQUEST_TEST"]', async () => {
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { waitUntil: 'networkidle0', timeout: 90000 })
+    await dappPage.goto(dappUrl, { waitUntil: 'load'})
+    await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 90000})
+    await dappPage.click('#connect-wallet')
     // Before click on injected wallet option.
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
     ) /* eslint-disable-line */
-    await dappPage.evaluate(async () => {
-      window.ethereum.enable()
-    })
+    // Click on Injected Option
+    const injectedOption = await dappPage.$x("//*[text()='Injected']")
+    injectedOption[0].click()
+
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true })
+    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true, timeout: 90000})
     try {
       await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
     } catch (e) {
@@ -85,16 +88,19 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
     await page.click(`#${chain}_web_network`, {delay: 2000})
 
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { waitUntil: 'networkidle0', timeout: 90000 })
+    await dappPage.goto(dappUrl, { waitUntil: 'load'})
+    await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 90000})
+    await dappPage.click('#connect-wallet')
     // Before click on injected wallet option.
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
     ) /* eslint-disable-line */
-    await dappPage.evaluate(async () => {
-      window.ethereum.enable()
-    })
+    // Click on Injected Option
+    const injectedOption = await dappPage.$x("//*[text()='Injected']")
+    injectedOption[0].click()
+
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true })
+    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true, timeout: 90000})
     await connectRequestWindow.click('#filter_by_chain').catch((e) => e)
     await connectRequestWindow.waitForSelector(`#${chain}_web_network`, { visible: true })
     await connectRequestWindow.click(`#${chain}_web_network`, { delay: 1000 })

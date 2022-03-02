@@ -18,7 +18,7 @@ let sovrynUrl = 'https://live.sovryn.app/'
 let tropykusUrl = 'https://app.tropykus.com'
 let alphaMoneyOnChains = 'https://alpha.moneyonchain.com/'
 
-describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
+describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
