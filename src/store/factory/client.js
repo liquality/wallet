@@ -354,8 +354,6 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
     }
   }
 
-  console.log(network, nodeUrl)
-
   const terraClient = new Client()
 
   terraClient.addProvider(new TerraRpcProvider({ ...terraNetwork, nodeUrl }, _asset, feeAsset, tokenAddress))
