@@ -706,14 +706,16 @@ export default {
         : BN.max(BN(balance).minus(this.maxFee), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
     },
-
     canCoverAmmFee() {
       if (!this.selectedQuote?.bridgeAsset) return true
-      const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
+
+      const account = isERC20(this.asset) ? this.account : this.toAccount
+      const balance = account?.balances[this.selectedQuote.bridgeAsset]
       const toSwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
         this.receiveFee
       )
+
       return BN(balance).gt(toSwapFeeInUnits)
     },
     availableAmount() {
