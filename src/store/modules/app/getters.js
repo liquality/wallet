@@ -4,7 +4,7 @@ export const getters = {
     return ledgerBridgeTransportConnected && ledgerBridgeConnected
   },
   isSettingsModalOpen(state) {
-    const { settingsModalOpen } = state;
+    const { settingsModalOpen } = state
     return settingsModalOpen
   }
 }
