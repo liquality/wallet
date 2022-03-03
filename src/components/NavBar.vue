@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 
 import clickAway from '@/directives/clickAway'
 import HamburgerIcon from '@/assets/icons/hamburger.svg'
@@ -90,11 +90,13 @@ export default {
   props: ['showMenu', 'showBack', 'backPath', 'backLabel', 'showBackButton', 'backClick'],
   data() {
     return {
-      showMenuList: false
+      showMenuList: false,
+      unsubscribe: null
     }
   },
   computed: {
-    ...mapState(['experiments'])
+    ...mapState(['experiments']),
+    ...mapGetters('app', ['isSettingsModalOpen'])
   },
   methods: {
     ...mapActions(['lockWallet', 'trackAnalytics']),
@@ -180,6 +182,15 @@ export default {
     hideMenu() {
       this.showMenuList = false
     }
+  },
+  created() {
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+      const { type, payload } = mutation
+
+      if (type === '##BACKGROUND##app/SET_SETTINGS_MODAL_OPEN') {
+        this.showMenuList = payload
+      }
+    })
   }
 }
 </script>
