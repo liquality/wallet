@@ -184,7 +184,7 @@ export default {
     }
   },
   created() {
-    this.unsubscribe = this.$store.subscribe((mutation, state) => {
+    this.unsubscribe = this.$store.subscribe((mutation) => {
       const { type, payload } = mutation
 
       if (type === '##BACKGROUND##app/SET_SETTINGS_MODAL_OPEN') {
