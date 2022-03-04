@@ -83,5 +83,8 @@ export const actions = {
   },
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
     commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
+  },
+  settingsModalOpen: ({ commit }, isOpen) => {
+    commit('SET_SETTINGS_MODAL_OPEN', isOpen)
   }
 }

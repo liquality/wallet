@@ -82,6 +82,7 @@ export default {
   },
   methods: {
     ...mapActions(['changeActiveNetwork']),
+    ...mapActions('app', ['settingsModalOpen']),
     toggleShowNetworks() {
       this.showNetworks = !this.showNetworks
       if (this.showNetworks) {
@@ -96,6 +97,7 @@ export default {
       if (this.showConnectionDrawer) {
         this.showNetworks = false
       }
+      this.settingsModalOpen(false)
     },
     hideConnectionDrawer() {
       this.showConnectionDrawer = false
