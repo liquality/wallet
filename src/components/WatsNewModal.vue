@@ -10,9 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Astroport integration: swap all Terra tokens with one click</pre>
-            <pre class="text-wrap">Atomic swap UST, LUNA cross chain</pre>
-            <pre class="text-wrap">Minor bug fixes</pre>
+            <pre class="text-wrap">Next release candidate 0.57.0</pre>
           </div>
         </div>
       </div>
