@@ -25,7 +25,7 @@ describe('SEND feature["TESTNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -102,7 +102,7 @@ describe('SEND feature["TESTNET"]', async () => {
     await transactionDetailsPage.ValidateStatus(page)
     await transactionDetailsPage.ValidateTransactionIDLink(page, `${domain}/tx`)
   })
-  it('Send RBTC to another RBTC wallet["PULL_REQUEST_TEST"]', async () => {
+  it('Send RBTC to another RBTC wallet["PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
     const assetName = 'RBTC'
     const coinsToSend = '0.0000001'
 
@@ -143,7 +143,7 @@ describe('SEND feature["TESTNET"]', async () => {
     const sendStatus = await page.$eval('#transaction_details_status_and_confirmations', el => el.innerText)
     expect(sendStatus).contains('Completed')
   })
-  it('Send MATIC to MATIC-["PULL_REQUEST_TEST"]', async () => {
+  it('Send MATIC to MATIC-["PULL_REQUEST_TEST",""MAINNET_RELEASE""]', async () => {
     const assetName = 'MATIC'
     const coinsToSend = '0.000001'
     const addressToSend = '0x8bacCa9f607025974AbE1c486E45F7CeD02f54Ce'

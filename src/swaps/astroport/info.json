@@ -1,0 +1,7 @@
+{
+  "title": "Astroport AMM Swaps",
+  "description": "Decentralized, permissionless and open-source, Astroport’s marketplace is a public good governed by its community of token holders",
+  "pros": ["Low liquidity provider fee", "Margin Trading"],
+  "cons": ["Slippage"],
+  "fees": ["0.15% liquidity provider fee", "Slippage (up to 0.5% in Liquality)"]
+}

@@ -18,17 +18,25 @@ export const VERSION_STRING = `Wallet ${pkg.version} (CAL ${pkg.dependencies['@l
 
 class LiqualitySwapProvider extends SwapProvider {
   async _getQuote({ from, to, amount }) {
-    return (
-      await axios({
-        url: this.config.agent + '/api/swap/order',
-        method: 'post',
-        data: { from, to, fromAmount: amount },
-        headers: {
-          'x-requested-with': VERSION_STRING,
-          'x-liquality-user-agent': VERSION_STRING
-        }
-      })
-    ).data
+    try {
+      return (
+        await axios({
+          url: this.config.agent + '/api/swap/order',
+          method: 'post',
+          data: { from, to, fromAmount: amount },
+          headers: {
+            'x-requested-with': VERSION_STRING,
+            'x-liquality-user-agent': VERSION_STRING
+          }
+        })
+      ).data
+    } catch (e) {
+      if (e?.response?.data?.error) {
+        throw new Error(e.response.data.error)
+      } else {
+        throw e
+      }
+    }
   }
 
   async getSupportedPairs() {
@@ -156,21 +164,6 @@ class LiqualitySwapProvider extends SwapProvider {
       return mapValues(totalFees, (f) => unitToCurrency(cryptoassets[asset], f))
     }
 
-    if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'UST') {
-      const client = this.getClient(network, walletId, asset, quote.fromAccountId)
-      const value = max ? undefined : BN(quote.fromAmount).dividedBy(1_000_000) // format in UST
-      const taxFees = await client.getMethod('getTaxFees')(value?.toFixed(), 'uusd', max || !value)
-
-      const fees = {}
-      for (const feePrice of feePrices) {
-        fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice).plus(
-          taxFees
-        )
-      }
-
-      return fees
-    }
-
     if (txType in LiqualitySwapProvider.feeUnits) {
       const fees = {}
       for (const feePrice of feePrices) {
@@ -183,7 +176,7 @@ class LiqualitySwapProvider extends SwapProvider {
 
   updateOrder(order) {
     return axios({
-      url: this.config.agent + '/api/swap/order/' + order.id,
+      url: this.config.agent + '/api/swap/order/' + order.orderId,
       method: 'post',
       data: {
         fromAddress: order.fromAddress,
@@ -331,6 +324,7 @@ class LiqualitySwapProvider extends SwapProvider {
 
       if (tx) {
         const toFundHash = tx.hash
+
         const isVerified = await toClient.swap.verifyInitiateSwapTransaction(
           {
             value: BN(swap.toAmount),
@@ -355,7 +349,7 @@ class LiqualitySwapProvider extends SwapProvider {
         )
         const fundingConfirmed = fundingTransaction
           ? fundingTransaction.confirmations >=
-            chains[cryptoassets[swap.to].chain].safeConfirmations
+          chains[cryptoassets[swap.to].chain].safeConfirmations
           : true
 
         if (isVerified && fundingConfirmed) {
@@ -377,6 +371,7 @@ class LiqualitySwapProvider extends SwapProvider {
       network,
       walletId
     })
+
     if (expirationUpdates) {
       return expirationUpdates
     }
@@ -612,8 +607,8 @@ class LiqualitySwapProvider extends SwapProvider {
       MATIC: 45000,
       NEAR: 8000000000000,
       SOL: 1,
-      LUNA: 440000,
-      UST: 440000,
+      LUNA: 800000,
+      UST: 800000,
       ERC20: 100000,
       ARBETH: 680000
     }
@@ -640,6 +635,7 @@ class LiqualitySwapProvider extends SwapProvider {
       label: 'Locking {from}',
       filterStatus: 'PENDING'
     },
+
     FUNDED: {
       step: 1,
       label: 'Locking {to}',
@@ -655,6 +651,7 @@ class LiqualitySwapProvider extends SwapProvider {
         }
       }
     },
+
     READY_TO_CLAIM: {
       step: 2,
       label: 'Claiming {to}',
@@ -685,15 +682,15 @@ class LiqualitySwapProvider extends SwapProvider {
       label: 'Refunding {from}',
       filterStatus: 'PENDING'
     },
+
     REFUNDED: {
       step: 3,
       label: 'Refunded',
       filterStatus: 'REFUNDED',
       notification(swap) {
         return {
-          message: `Swap refunded, ${prettyBalance(swap.fromAmount, swap.from)} ${
-            swap.from
-          } returned`
+          message: `Swap refunded, ${prettyBalance(swap.fromAmount, swap.from)} ${swap.from
+            } returned`
         }
       }
     },
@@ -703,9 +700,8 @@ class LiqualitySwapProvider extends SwapProvider {
       filterStatus: 'COMPLETED',
       notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
-            swap.to
-          } ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to
+            } ready to use`
         }
       }
     },
