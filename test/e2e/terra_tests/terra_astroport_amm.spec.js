@@ -261,5 +261,103 @@ if (process.env.NODE_ENV === 'mainnet') {
         'ANC->STT, Supporting source should be chosen!')
         .oneOf(['Astroport'])
     })
+    it('LUNA->BTC quote check', async () => {
+      const fromAsset = 'LUNA'
+      const toAsset = {
+        coin: 'BTC'
+      }
+
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
+      await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+      await page.click(`#${fromAsset}_swap_button`)
+
+      try {
+        await page.waitForTimeout(5000)
+        await page.click('#swap-receive-main-icon')
+        await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
+        await page.type('#search_for_a_currency', toAsset.coin)
+        await page.waitForSelector(`#${toAsset.coin}`, { visible: true })
+        await page.click(`#${toAsset.coin}`)
+      } catch (e) {
+        if (e instanceof puppeteer.errors.TimeoutError) {
+          await testUtil.takeScreenshot(page, `click-${toAsset.coin}-asset-swap-issue`)
+          expect(e, `Select ${toAsset.coin} assert as 2nd asset swap`).equals(null)
+        }
+      }
+      await page.waitForSelector('#selectedQuote_provider', {
+        visible: true,
+        timeout: 60000
+      })
+      // Check source name
+      expect(await swapPage.getSelectedServiceProvider(page),
+        `${fromAsset}->${toAsset} swap, source should be chosen!`).oneOf(['Liquality'])
+    })
+    it('UST->ETH quote check', async () => {
+      const fromAsset = 'UST'
+      const toAsset = {
+        chain: 'ETHEREUM',
+        coin: 'ETH'
+      }
+
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
+      await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+      await page.click(`#${fromAsset}_swap_button`)
+
+      try {
+        await page.waitForTimeout(5000)
+        await page.click('#swap-receive-main-icon')
+        await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
+        await page.type('#search_for_a_currency', toAsset.coin)
+        await page.waitForSelector(`#${toAsset.chain}`, { visible: true })
+        await page.click(`#${toAsset.chain}`)
+        await page.click(`#${toAsset.coin}`)
+      } catch (e) {
+        if (e instanceof puppeteer.errors.TimeoutError) {
+          await testUtil.takeScreenshot(page, `click-${toAsset.coin}-asset-swap-issue`)
+          expect(e, `Select ${toAsset.coin} assert as 2nd asset swap`).equals(null)
+        }
+      }
+      await page.waitForSelector('#selectedQuote_provider', {
+        visible: true,
+        timeout: 60000
+      })
+      // Check source name
+      expect(await swapPage.getSelectedServiceProvider(page),
+        `${fromAsset}->${toAsset} swap, source should be chosen!`).oneOf(['Liquality'])
+    })
+    it('UST->MATIC quote check', async () => {
+      const fromAsset = 'UST'
+      const toAsset = {
+        chain: 'POLYGON',
+        coin: 'MATIC'
+      }
+
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
+      await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+      await page.click(`#${fromAsset}_swap_button`)
+
+      try {
+        await page.waitForTimeout(5000)
+        await page.click('#swap-receive-main-icon')
+        await page.waitForSelector('#search_for_a_currency', { visible: true, timeout: 60000 })
+        await page.type('#search_for_a_currency', toAsset.coin)
+        await page.waitForSelector(`#${toAsset.chain}`, { visible: true })
+        await page.click(`#${toAsset.chain}`)
+        await page.click(`#${toAsset.coin}`)
+      } catch (e) {
+        if (e instanceof puppeteer.errors.TimeoutError) {
+          await testUtil.takeScreenshot(page, `click-${toAsset.coin}-asset-swap-issue`)
+          expect(e, `Select ${toAsset.coin} assert as 2nd asset swap`).equals(null)
+        }
+      }
+      await page.waitForSelector('#selectedQuote_provider', {
+        visible: true,
+        timeout: 60000
+      })
+      // Check source name
+      expect(await swapPage.getSelectedServiceProvider(page),
+        `${fromAsset}->${toAsset} swap, source should be chosen!`).oneOf(['Liquality'])
+      await swapPage.clickSwapReviewButton(page)
+    })
   })
 }
