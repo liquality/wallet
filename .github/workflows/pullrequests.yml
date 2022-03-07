@@ -37,8 +37,14 @@ jobs:
         id: buildWallet
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
+          VUE_APP_TRANSAK_WIDGET_URL: ${{ secrets.VUE_APP_TRANSAK_WIDGET_URL_DEV }}
+          VUE_APP_TRANSAK_API_KEY: ${{ secrets.VUE_APP_TRANSAK_API_KEY_DEV }}
+          VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY: ${{ secrets.VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY_DEV }}
         run: |
           echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
+          echo VUE_APP_TRANSAK_WIDGET_URL =${{ secrets.VUE_APP_TRANSAK_WIDGET_URL_DEV }} >> .env
+          echo VUE_APP_TRANSAK_API_KEY =${{ secrets.VUE_APP_TRANSAK_API_KEY_DEV }} >> .env
+          echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =${{ secrets.VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY_DEV }} >> .env
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
           npm ci
