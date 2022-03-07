@@ -16,7 +16,7 @@ let browser, page
 const password = '123123123'
 if (process.env.NODE_ENV === 'mainnet') {
   // Astroport AMM works against Terra chain
-  describe.skip('SWAP Astroport AMM service Provider-["MAINNET"]', async () => {
+  describe('SWAP Astroport AMM service Provider-["MAINNET"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -90,7 +90,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
-    it.skip('Astroport AMM(UST->LUNA) quote check[""MAINNET_RELEASE""]', async () => {
+    it('Astroport AMM(UST->LUNA) quote check[""MAINNET_RELEASE""]', async () => {
       const fromAsset = 'UST'
       const toAsset = {
         chain: 'TERRA',
@@ -123,7 +123,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.waitForTimeout(5000)
       expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
         'LUNA->UST, Supporting source should be chosen!')
-        .oneOf(['Astroport'])
+        .oneOf(['Liquality','Astroport'])
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
@@ -197,7 +197,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
-    it.skip('Astroport AMM(UST->ANC) quote check', async () => {
+    it('Astroport AMM(UST->ANC) quote check', async () => {
       const fromAsset = 'UST'
       const toAsset = {
         chain: 'TERRA',
