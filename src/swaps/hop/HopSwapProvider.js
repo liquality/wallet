@@ -354,7 +354,6 @@ class HopSwapProvider extends SwapProvider {
 
   async waitForApproveConfirmations({ swap, network, walletId }) {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
-    console.log('waitForApproveConfirmations swap ->', swap, client);
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
       if (tx && tx.confirmations > 0) {
@@ -375,33 +374,6 @@ class HopSwapProvider extends SwapProvider {
     })
   }
 
-  // async waitForSendSwapConfirmations({ swap, network, walletId }) {
-  //   const { hopAsset, hopChainFrom, hopChainTo, swapTxHash } = swap
-  //   const hop = this._getHop(network)
-  //   const chainFrom = this._getChain(hopChainFrom.slug)
-  //   const chainTo = this._getChain(hopChainTo.slug)
-  //   try {
-  //     let info = null
-  //     await hop.watch(swapTxHash, hopAsset, chainFrom, chainTo).on('receipt', (data) => {
-  //       const {
-  //         receipt: { status, confirmations }
-  //       } = data
-  //       console.log('swapTx Wait data ->', data);
-  //       if (confirmations > 0) {
-  //         this.updateBalances(network, walletId, [swap.from])
-  //         info = {
-  //           endTime: Date.now(),
-  //           status: Number(status) === 1 ? 'WAITING_FOR_RECIEVE_SWAP_CONFIRMATIONS' : 'FAILED'
-  //         }
-  //       }
-  //     })
-  //     await this.sleep(1000)
-  //     return info
-  //   } catch (e) {
-  //     if (e.name === 'TxNotFoundError') console.warn(e)
-  //     else throw e
-  //   }
-  // }
   async waitForSendSwapConfirmations({ swap, network, walletId }) {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
     try {
