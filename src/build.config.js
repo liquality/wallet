@@ -60,9 +60,16 @@ export default {
         agent:
           process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
       },
-      liqualityBoost: {
+      liqualityBoostNativeToERC20: {
         name: 'Liquality Boost',
-        type: SwapProviderType.LIQUALITYBOOST,
+        type: SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20,
+        network: 'testnet',
+        icon: 'liqualityboost.svg',
+        supportedBridgeAssets: ['RBTC']
+      },
+      liqualityBoostERC20toNative: {
+        name: 'Liquality Boost',
+        type: SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE,
         network: 'testnet',
         icon: 'liqualityboost.svg',
         supportedBridgeAssets: ['RBTC']
@@ -95,9 +102,16 @@ export default {
         type: SwapProviderType.LIQUALITY,
         agent: 'https://liquality.io/swap-dev/agent'
       },
-      liqualityBoost: {
+      liqualityBoostNativeToERC20: {
         name: 'Liquality Boost',
-        type: SwapProviderType.LIQUALITYBOOST,
+        type: SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20,
+        network: 'mainnet',
+        icon: 'liqualityboost.svg',
+        supportedBridgeAssets: ['MATIC', 'RBTC']
+      },
+      liqualityBoostERC20toNative: {
+        name: 'Liquality Boost',
+        type: SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
         supportedBridgeAssets: ['MATIC', 'RBTC']

@@ -8,14 +8,13 @@ name: DEV Mainnet tests
 
 jobs:
   regressiontest_dev_mainnet:
-    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: 'release-candidate-0.56.0'
+          ref: 'release-candidate-0.57.0'
 
       - uses: actions/setup-node@v2.5.1
         env:

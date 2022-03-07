@@ -27,7 +27,6 @@ export const performNextAction = async (store, { network, walletId, id }) => {
   } catch (e) {
     updates = { error: e.toString() }
   }
-
   if (updates) {
     commit('UPDATE_HISTORY', {
       network,
@@ -40,7 +39,6 @@ export const performNextAction = async (store, { network, walletId, id }) => {
       ...item,
       ...updates
     })
-
     if (!updates.error) {
       dispatch('performNextAction', { network, walletId, id })
     }
