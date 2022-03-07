@@ -96,6 +96,7 @@
     "setimmediate": "^1.0.5",
     "socket.io-client": "4.4.1",
     "svg-url-loader": "7.1.1",
+    "urql": "^2.2.0",
     "uuid": "^8.1.0",
     "v-tooltip": "^2.0.3",
     "vue": "^2.6.11",
