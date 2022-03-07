@@ -36,7 +36,6 @@ jobs:
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
         run: |
-          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
           sed -i "s/\/swap-testnet-dev\/agent/\/swap-testnet\/agent/g; s/\/swap-dev\/agent/\/swap\/agent/g" src/build.config.js
           npm ci
           npm run lint

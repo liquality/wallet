@@ -333,7 +333,6 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
 
   const nodeUrl = isTestnet ? terraNetwork.nodeUrl : process.env.VUE_APP_TERRA_NODE_URL
 
-
   switch (asset) {
     case 'LUNA': {
       _asset = 'uluna'
@@ -356,7 +355,9 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
 
   const terraClient = new Client()
 
-  terraClient.addProvider(new TerraRpcProvider({ ...terraNetwork, nodeUrl }, _asset, feeAsset, tokenAddress))
+  terraClient.addProvider(
+    new TerraRpcProvider({ ...terraNetwork, nodeUrl }, _asset, feeAsset, tokenAddress)
+  )
   terraClient.addProvider(
     new TerraWalletProvider({
       network: { ...terraNetwork, nodeUrl },

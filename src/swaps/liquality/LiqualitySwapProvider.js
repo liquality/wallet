@@ -349,7 +349,7 @@ class LiqualitySwapProvider extends SwapProvider {
         )
         const fundingConfirmed = fundingTransaction
           ? fundingTransaction.confirmations >=
-          chains[cryptoassets[swap.to].chain].safeConfirmations
+            chains[cryptoassets[swap.to].chain].safeConfirmations
           : true
 
         if (isVerified && fundingConfirmed) {
@@ -689,8 +689,9 @@ class LiqualitySwapProvider extends SwapProvider {
       filterStatus: 'REFUNDED',
       notification(swap) {
         return {
-          message: `Swap refunded, ${prettyBalance(swap.fromAmount, swap.from)} ${swap.from
-            } returned`
+          message: `Swap refunded, ${prettyBalance(swap.fromAmount, swap.from)} ${
+            swap.from
+          } returned`
         }
       }
     },
@@ -700,8 +701,9 @@ class LiqualitySwapProvider extends SwapProvider {
       filterStatus: 'COMPLETED',
       notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to
-            } ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
+            swap.to
+          } ready to use`
         }
       }
     },
