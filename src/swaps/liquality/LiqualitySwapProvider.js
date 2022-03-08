@@ -192,7 +192,7 @@ class LiqualitySwapProvider extends SwapProvider {
   }
 
   async hasQuoteExpired({ swap }) {
-    return timestamp() >= swap.expiresAt * 1000
+    return timestamp() >= swap.expiresAt
   }
 
   async hasChainTimePassed({ network, walletId, asset, timestamp, accountId }) {
