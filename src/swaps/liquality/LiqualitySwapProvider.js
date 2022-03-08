@@ -164,6 +164,19 @@ class LiqualitySwapProvider extends SwapProvider {
       return mapValues(totalFees, (f) => unitToCurrency(cryptoassets[asset], f))
     }
 
+    if (txType === LiqualitySwapProvider.txTypes.SWAP_INITIATION && asset === 'NEAR') {
+      const fees = {}
+      // default storage fee recommended by NEAR dev team
+      // It leaves 0.02$ dust in the wallet on max value
+      const storageFee = BN(0.00125)
+      for (const feePrice of feePrices) {
+        fees[feePrice] = getTxFee(LiqualitySwapProvider.feeUnits[txType], asset, feePrice).plus(
+          storageFee
+        )
+      }
+      return fees
+    }
+
     if (txType in LiqualitySwapProvider.feeUnits) {
       const fees = {}
       for (const feePrice of feePrices) {
