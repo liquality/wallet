@@ -17,7 +17,8 @@ const slippagePercentage = 0.5
 const chainToRpcProviders = {
   1: `https://mainnet.infura.io/v3/${buildConfig.infuraApiKey}`,
   56: 'https://bsc-dataseed.binance.org',
-  137: 'https://polygon-rpc.com'
+  137: 'https://polygon-rpc.com',
+  43114: 'https://api.avax.network/ext/bc/C/rpc'
 }
 
 class OneinchSwapProvider extends SwapProvider {
