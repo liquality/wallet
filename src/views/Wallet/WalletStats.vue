@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import SendIcon from '@/assets/icons/send_o.svg'
 import ReceiveIcon from '@/assets/icons/receive_o.svg'
 import SwapIcon from '@/assets/icons/swap_o.svg'
@@ -71,11 +71,12 @@ export default {
   },
   computed: {
     ...mapGetters(['totalFiatBalance', 'accountsData']),
+    ...mapState(['activeNetwork']),
     total() {
       return formatFiat(this.totalFiatBalance)
     },
     showByCryptoBanner() {
-      return this.totalFiatBalance?.lte(0)
+      return this.activeNetwork === 'mainnet' && this.totalFiatBalance?.lte(0)
     }
   },
   methods: {
