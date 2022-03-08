@@ -527,7 +527,7 @@ export default {
           fee,
           feeLabel: this.selectedFee,
           fiatRate: this.fiatRates[this.asset],
-          data: this.showMemoInput && this.memoData
+          ...(this.showMemoInput && { data: this.memoData })
         })
 
         this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
