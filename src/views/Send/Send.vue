@@ -45,17 +45,17 @@
               >{{ addressError }}</small
             >
           </div>
-          <div class="form-group mt-40" v-if="showMemoInput">
+          <div class="form-group mt-20" v-if="showMemoInput">
             <label for="memo">Memo (Optional)</label>
             <div class="input-group">
-              <input
+              <textarea
                 type="text"
                 v-model="memo"
                 class="form-control form-control-sm"
                 id="memo"
-                placeholder="Memo"
                 autocomplete="off"
-              />
+                rows="5"
+              ></textarea>
             </div>
           </div>
           <div class="form-group mt-150" v-bind:class="[showMemoInput ? 'adjustFeePosition' : '']">
@@ -690,7 +690,12 @@ export default {
 }
 
 .adjustFeePosition {
-  margin-top: 5.375rem !important;
+  margin-top: 2rem !important;
+}
+
+#memo {
+  border: 1px solid #a8aeb7;
+  resize: none;
 }
 
 /* Chrome, Safari, Edge, Opera */
