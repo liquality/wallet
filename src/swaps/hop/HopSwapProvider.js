@@ -1,15 +1,13 @@
 import BN from 'bignumber.js'
 import { Hop } from '@hop-protocol/sdk'
 import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
-import { ethers, Wallet } from 'ethers'
 import { v4 as uuidv4 } from 'uuid'
 import { createClient } from 'urql'
+import { ethers, Wallet } from 'ethers'
 import { SwapProvider } from '../SwapProvider'
 import cryptoassets from '../../utils/cryptoassets'
-import { ChainNetworks } from '@/utils/networks'
-import buildConfig from '../../build.config'
-import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
 import { prettyBalance } from '../../utils/coinFormatter'
+import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
 
 class HopSwapProvider extends SwapProvider {
   constructor(config) {
@@ -36,7 +34,15 @@ class HopSwapProvider extends SwapProvider {
     xdai: 'hop-xdai',
     arbitrum: 'hop-arbitrum',
     polygon: 'hop-polygon',
-    optimism: 'hop-optimism',
+    optimism: 'hop-optimism'
+  }
+
+  gasPrice = ethers.utils.hexlify(35000000000) // 35 gwei
+
+  confirmationsSendCount = {
+    ethereum: 1,
+    arbitrum: 20,
+    polygon: 256,
   }
 
   // L2->L1 or L2->L2
@@ -95,22 +101,10 @@ class HopSwapProvider extends SwapProvider {
     `
   }
 
-  getDestinationTxGQL(transferId, recipient, isFromL1Source) {
+  _getDestinationTxGQL(transferId, recipient, isFromL1Source) {
     return isFromL1Source
       ? this.GQL_getDestinationTxHashFromL1Source(recipient)
       : this.GQL_getDestinationTxHashFromL2Source(transferId)
-  }
-
-  _getApi(network, asset) {
-    const fromChain = cryptoassets[asset].chain
-    const chainId = ChainNetworks[fromChain][network].chainId
-    if (chainId in this._apiCache) {
-      return this._apiCache[chainId]
-    } else {
-      const api = new ethers.providers.InfuraProvider(chainId, buildConfig.infuraApiKey)
-      this._apiCache[chainId] = api
-      return api
-    }
   }
 
   _getHop(network, signer = undefined) {
@@ -176,15 +170,21 @@ class HopSwapProvider extends SwapProvider {
     return name
   }
 
+  async _getSigner(network, walletId, from, fromAccountId, provider = undefined) {
+    const client = this.getClient(network, walletId, from, fromAccountId)
+    const privKey = await client.wallet.exportPrivateKey()
+    return new Wallet(privKey, provider)
+  }
+
   async _getBridgeWithSigner(hopAsset, hopChainFrom, network, walletId, from, fromAccountId) {
     const chainFrom = this._getChain(hopChainFrom.slug)
     const client = this.getClient(network, walletId, from, fromAccountId)
     const privKey = await client.wallet.exportPrivateKey()
     const hop = this._getHop(network)
-    const provider = hop.getChainProvider(chainFrom)
-    const signer = new Wallet(privKey, provider)
+    const signer = new Wallet(privKey, hop.getChainProvider(chainFrom))
     const bridge = hop.connect(signer).bridge(hopAsset)
     return bridge
+
   }
 
   _getBridgeAsset(chainFrom, chainTo, assetFrom, assetTo, hop) {
@@ -237,7 +237,7 @@ class HopSwapProvider extends SwapProvider {
     return { bridgeAsset, _chainFrom, _chainTo }
   }
 
-  getSendInfo(assetFrom, assetTo, hop) {
+  _getSendInfo(assetFrom, assetTo, hop) {
     const info = this._getInfo(assetFrom.chain, assetTo.chain, hop, assetFrom, assetTo)
     if (!info?.bridgeAsset || !info?._chainFrom || !info?._chainTo) return null
     return { bridgeAsset: info.bridgeAsset, chainFrom: info._chainFrom, chainTo: info._chainTo }
@@ -251,7 +251,7 @@ class HopSwapProvider extends SwapProvider {
     const fromAmountInUnit = currencyToUnit(cryptoassets[from], BN(amount))
     const hop = this._getHop(network)
     if (!hop || !hop.isValidChain(assetFrom.chain) || !hop.isValidChain(assetTo.chain)) return null
-    const info = this.getSendInfo(assetFrom, assetTo, hop)
+    const info = this._getSendInfo(assetFrom, assetTo, hop)
     if (!info?.bridgeAsset || !info?.chainFrom || !info?.chainTo) return null
     const { bridgeAsset, chainFrom, chainTo } = info
     const bridge = hop.bridge(bridgeAsset)
@@ -272,17 +272,18 @@ class HopSwapProvider extends SwapProvider {
     }
   }
 
-
-  async approveToken(bridge, chainFrom, chainTo, fromAmount) {
-    const approveTx = await bridge.sendApproval(fromAmount, chainFrom, chainTo)
+  async _approveToken(bridge, chainFrom, fromAmount, signer) {
+    const txData = await bridge.populateSendApprovalTx(fromAmount, chainFrom)
+    const approveTx = await signer.sendTransaction({
+      ...txData,
+      gasPrice: this.gasPrice
+    })
     return {
       status: 'WAITING_FOR_APPROVE_CONFIRMATIONS',
       approveTx,
       approveTxHash: approveTx?.hash
     }
   }
-
-  
 
   async sendSwap({ network, walletId, quote }) {
     const { hopAsset, hopChainFrom, hopChainTo, from, fromAccountId, fromAmount } = quote
@@ -296,7 +297,19 @@ class HopSwapProvider extends SwapProvider {
       from,
       fromAccountId
     )
-    const swapTx = await bridge.send(fromAmount, chainFrom, chainTo)
+    const hop = this._getHop(network)
+    const signer = await this._getSigner(
+      network,
+      walletId,
+      from,
+      fromAccountId,
+      hop.getChainProvider(chainFrom)
+    )
+    const txData = await bridge.populateSendTx(fromAmount, chainFrom, chainTo)
+    const swapTx = await signer.sendTransaction({
+      ...txData,
+      gasPrice: this.gasPrice
+    })
     return {
       status: 'WAITING_FOR_SEND_SWAP_CONFIRMATIONS',
       swapTx,
@@ -321,7 +334,15 @@ class HopSwapProvider extends SwapProvider {
       from,
       fromAccountId
     )
-    const updates = await this.approveToken(bridge, chainFrom, chainTo, fromAmount)
+    const hop = this._getHop(network)
+    const signer = await this._getSigner(
+      network,
+      walletId,
+      from,
+      fromAccountId,
+      hop.getChainProvider(chainFrom)
+    )
+    const updates = await this._approveToken(bridge, chainFrom, fromAmount, signer)
     return {
       id: uuidv4(),
       fee: quote.fee,
@@ -356,7 +377,7 @@ class HopSwapProvider extends SwapProvider {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
-      if (tx && tx.confirmations > 0) {
+      if (tx && tx.confirmations > 1) {
         return {
           endTime: Date.now(),
           status: 'APPROVE_CONFIRMED'
@@ -368,21 +389,18 @@ class HopSwapProvider extends SwapProvider {
     }
   }
 
-  sleep(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms)
-    })
-  }
-
   async waitForSendSwapConfirmations({ swap, network, walletId }) {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
-      if (tx && tx.confirmations > 0) {
+      if (tx && tx.confirmations > this.confirmationsSendCount[swap.hopChainFrom.slug]) {
         this.updateBalances(network, walletId, [swap.from])
         return {
           endTime: Date.now(),
-          status: Number(tx.status) === 1 ? 'WAITING_FOR_RECIEVE_SWAP_CONFIRMATIONS' : 'FAILED'
+          status:
+            tx.status === 'SUCCESS' || Number(tx.status) === 1
+              ? 'WAITING_FOR_RECIEVE_SWAP_CONFIRMATIONS'
+              : 'FAILED'
         }
       }
     } catch (e) {
@@ -409,25 +427,23 @@ class HopSwapProvider extends SwapProvider {
         const { data } = await clientGQL
           .query(this.GQL_getTransferIdByTxHash(swapTxHash))
           .toPromise()
-
         transferId = data.transferSents?.[0].transferId
       }
       clientGQL = createClient({
         url: `${this.graphqlURLs.url}/${this.graphqlURLs[chainTo.slug]}`
       })
       const { data } = await clientGQL
-        .query(this.getDestinationTxGQL(transferId, signer.address, isFromL1Source))
+        .query(this._getDestinationTxGQL(transferId, signer.address, isFromL1Source))
         .toPromise()
-
+      const methodName = !isFromL1Source ? 'withdrawalBondeds' : 'transferFromL1Completeds'
+      const destinationTxHash = data[methodName]?.[0]?.transactionHash
+      if (!destinationTxHash) return
       const client = this.getClient(network, walletId, to, fromAccountId)
-      const tx = await client.chain.getTransactionByHash(
-        data[!isFromL1Source ? 'withdrawalBondeds' : 'transferFromL1Completeds']?.[0]
-          .transactionHash
-      )
-      if (tx && tx.confirmations > 0) {
+      const tx = await client.chain.getTransactionByHash(data[methodName]?.[0]?.transactionHash)
+      if (tx && tx.confirmations > 1) {
         return {
           endTime: Date.now(),
-          status: tx.status === 'SUCCESS' ? 'SUCCESS' : 'FAILED'
+          status: tx.status === 'SUCCESS' || Number(tx.status) === 1 ? 'SUCCESS' : 'FAILED'
         }
       }
     } catch (e) {
@@ -456,14 +472,13 @@ class HopSwapProvider extends SwapProvider {
         updates = await withLock(
           store,
           { item: swap, network, walletId, asset: swap.from },
-          async () => this.sendSwap({ quote: swap, network, walletId,  })
+          async () => this.sendSwap({ quote: swap, network, walletId })
         )
         break
       case 'WAITING_FOR_SEND_SWAP_CONFIRMATIONS':
         updates = await withInterval(async () =>
           this.waitForSendSwapConfirmations({ swap, network, walletId })
         )
-        console.log('updates ->', updates)
         break
       case 'WAITING_FOR_RECIEVE_SWAP_CONFIRMATIONS':
         updates = await withInterval(async () =>
@@ -519,7 +534,6 @@ class HopSwapProvider extends SwapProvider {
       label: 'Completed',
       filterStatus: 'COMPLETED',
       notification(swap) {
-        console.log('swap ->', swap);
         return {
           message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
             swap.to
