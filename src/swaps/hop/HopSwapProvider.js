@@ -42,7 +42,7 @@ class HopSwapProvider extends SwapProvider {
   confirmationsSendCount = {
     ethereum: 1,
     arbitrum: 20,
-    polygon: 256,
+    polygon: 256
   }
 
   // L2->L1 or L2->L2
@@ -184,7 +184,6 @@ class HopSwapProvider extends SwapProvider {
     const signer = new Wallet(privKey, hop.getChainProvider(chainFrom))
     const bridge = hop.connect(signer).bridge(hopAsset)
     return bridge
-
   }
 
   _getBridgeAsset(chainFrom, chainTo, assetFrom, assetTo, hop) {
@@ -377,7 +376,7 @@ class HopSwapProvider extends SwapProvider {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
     try {
       const tx = await client.chain.getTransactionByHash(swap.approveTxHash)
-      if (tx && tx.confirmations > 1) {
+      if (tx && tx.confirmations >= 1) {
         return {
           endTime: Date.now(),
           status: 'APPROVE_CONFIRMED'
@@ -393,7 +392,7 @@ class HopSwapProvider extends SwapProvider {
     const client = this.getClient(network, walletId, swap.from, swap.fromAccountId)
     try {
       const tx = await client.chain.getTransactionByHash(swap.swapTxHash)
-      if (tx && tx.confirmations > this.confirmationsSendCount[swap.hopChainFrom.slug]) {
+      if (tx && tx.confirmations >= this.confirmationsSendCount[swap.hopChainFrom.slug]) {
         this.updateBalances(network, walletId, [swap.from])
         return {
           endTime: Date.now(),
@@ -440,7 +439,7 @@ class HopSwapProvider extends SwapProvider {
       if (!destinationTxHash) return
       const client = this.getClient(network, walletId, to, fromAccountId)
       const tx = await client.chain.getTransactionByHash(data[methodName]?.[0]?.transactionHash)
-      if (tx && tx.confirmations > 1) {
+      if (tx && tx.confirmations >= 1) {
         return {
           endTime: Date.now(),
           status: tx.status === 'SUCCESS' || Number(tx.status) === 1 ? 'SUCCESS' : 'FAILED'
