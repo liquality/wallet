@@ -637,16 +637,28 @@ export default {
         this.selectedQuoteProvider?.config?.type === SwapProviderType.LIQUALITYBOOST
           ? this.toAssetChain
           : this.toAsset
-      const liqualityMarket = this.networkMarketData?.find(
-        (pair) =>
+      const liqualityMarket = this.networkMarketData?.find((pair) => {
+        return (
           pair.from === this.asset &&
           pair.to === toQuoteAsset &&
           getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
             SwapProviderType.LIQUALITY
-      )
-      const min = liqualityMarket
-        ? BN(liqualityMarket.min)
-        : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]), this.available)
+        )
+      })
+
+      const getSwapLimit = this.selectedQuoteProvider?.getSwapLimit
+
+      let min
+
+      if (getSwapLimit) {
+        const minUsdValue = getSwapLimit()
+        min = BN.min(fiatToCrypto(minUsdValue, this.fiatRates[this.asset]))
+      } else {
+        min = liqualityMarket
+          ? BN(liqualityMarket.min)
+          : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]))
+      }
+
       return isNaN(min) ? BN(0) : dpUI(min)
     },
     max() {
@@ -694,14 +706,16 @@ export default {
         : BN.max(BN(balance).minus(this.maxFee), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
     },
-
     canCoverAmmFee() {
       if (!this.selectedQuote?.bridgeAsset) return true
-      const balance = this.toAccount?.balances[this.selectedQuote.bridgeAsset]
+
+      const account = isERC20(this.asset) ? this.account : this.toAccount
+      const balance = account?.balances[this.selectedQuote.bridgeAsset]
       const toSwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
         this.receiveFee
       )
+
       return BN(balance).gt(toSwapFeeInUnits)
     },
     availableAmount() {

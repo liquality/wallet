@@ -77,5 +77,8 @@ export const actions = {
   },
   setLedgerSignRequestModalOpen: ({ commit }, { open }) => {
     commit('SET_LEDGER_SIGN_REQUEST_MODAL_OPEN', { open })
+  },
+  settingsModalOpen: ({ commit }, isOpen) => {
+    commit('SET_SETTINGS_MODAL_OPEN', isOpen)
   }
 }

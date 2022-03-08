@@ -64,7 +64,7 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
       expect(e, 'Thorchain quote provider error!!').equals(null)
     }
 
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+    expect(await swapPage.getSelectedServiceProvider(page),
       'BTC->ETH swap, Thorchain source should be chosen!').oneOf(['Thorchain'])
   })
   it('ETH->BTC - Thorchain', async () => {
@@ -91,7 +91,7 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
       expect(e, 'Thorchain quote provider error!!').equals(null)
     }
 
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+    expect(await swapPage.getSelectedServiceProvider(page),
       'ETH->BTC swap, Thorchain source should be chosen!').oneOf(['Thorchain'])
   })
 })

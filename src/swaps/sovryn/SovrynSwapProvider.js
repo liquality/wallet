@@ -179,7 +179,7 @@ class SovrynSwapProvider extends SwapProvider {
     const toInfo = cryptoassets[quote.to]
 
     const api = this._getApi(network, quote.from)
-    const coversionPath = quote.path
+    const conversionPath = quote.path
     const toAmountWithSlippage = this._calculateSlippage(quote.toAmount).toString()
 
     let encodedData
@@ -189,7 +189,7 @@ class SovrynSwapProvider extends SwapProvider {
       routerAddress = this.config.routerAddressRBTC.toLowerCase()
       const wpContract = new ethers.Contract(routerAddress, RBTCWrapperProxyABI, api)
       encodedData = wpContract.interface.encodeFunctionData('convertByPath', [
-        coversionPath,
+        conversionPath,
         quote.fromAmount,
         toAmountWithSlippage
       ])
@@ -199,7 +199,7 @@ class SovrynSwapProvider extends SwapProvider {
 
       // ignore affiliate and beneficiary
       encodedData = ssnContract.interface.encodeFunctionData('convertByPath', [
-        coversionPath,
+        conversionPath,
         quote.fromAmount,
         toAmountWithSlippage,
         '0x0000000000000000000000000000000000000000', // account that will receive the conversion result or 0x0 to send the result to the sender account

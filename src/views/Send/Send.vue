@@ -436,18 +436,6 @@ export default {
           } catch (e) {
             console.error(e)
           }
-        } else if (this.asset === 'UST') {
-          const client = this.client({
-            network: this.activeNetwork,
-            walletId: this.activeWalletId,
-            asset: this.asset,
-            accountId: this.account.id
-          })
-          const tax = await client.getMethod('getTaxFees')(amount, 'uusd', getMax || !amount)
-
-          for (const [speed] of Object.entries(this.assetFees)) {
-            sendFees[speed] = sendFees[speed].plus(tax)
-          }
         }
 
         if (getMax) {
