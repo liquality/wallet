@@ -48,7 +48,7 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 60000 })
+    await dappPage.goto(dappUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true })

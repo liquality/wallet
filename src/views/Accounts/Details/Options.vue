@@ -12,12 +12,12 @@
       }"
     >
       Private Key
-      <template #sub-title v-if="exportEnabled">
+      <template #sub-title v-if="isLedgerAccount">
         <InfoNotification>
           We can’t access your private keys on ledger. It’s designed like that to keep them safe.
         </InfoNotification>
       </template>
-      <template #sub-title v-else>
+      <template #sub-title v-if="exportEnabled">
         <div class="account-options-section">
           <div>
             Everone with your private key will have full access to your account. Be prepared.
@@ -103,7 +103,8 @@ export default {
     return {
       exportEnabled: true,
       address: null,
-      removeLedgerAccountModalOpen: false
+      removeLedgerAccountModalOpen: false,
+      isLedgerAccount: false
     }
   },
   props: ['accountId', 'asset'],
@@ -140,14 +141,13 @@ export default {
     }
   },
   async created() {
+    const chainId = cryptoassets[this.asset]?.chain
     if (this.account?.type.includes('ledger')) {
+      this.isLedgerAccount = true
       this.exportEnabled = false
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
-        this.account.addresses[0],
-        this.activeNetwork
-      )
+      this.address = chains[chainId]?.formatAddress(this.account.addresses[0], this.activeNetwork)
     } else {
-      const chainId = cryptoassets[this.asset]?.chain
+      this.isLedgerAccount = false
       if (chainId === ChainId.Bitcoin) {
         this.exportEnabled = false
       } else {

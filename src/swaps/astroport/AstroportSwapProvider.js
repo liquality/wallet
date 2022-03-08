@@ -124,8 +124,7 @@ class AstroportSwapProvider extends SwapProvider {
 
   // ======== MIN AMOUNT =======
 
-  // eslint-disable-next-line no-unused-vars
-  getSwapLimit(from, to) {
+  getSwapLimit() {
     return 2 // Min swap amount in USD
   }
 

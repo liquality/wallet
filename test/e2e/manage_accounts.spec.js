@@ -20,7 +20,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
