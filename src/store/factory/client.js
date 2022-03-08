@@ -331,8 +331,7 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
 
   let _asset, feeAsset, tokenAddress, stableFee
 
-  const nodeUrl = isTestnet ? terraNetwork.nodeUrl : process.env.VUE_APP_TERRA_NODE_URL
-
+  const nodeUrl = isTestnet ? terraNetwork.nodeUrl : process.env.VUE_APP_TERRA_NODE_URL || terraNetwork.nodeUrl
 
   switch (asset) {
     case 'LUNA': {
