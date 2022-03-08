@@ -14,10 +14,11 @@ const swapPage = new SwapPage()
 
 let browser, page
 const password = '123123123'
+const SOVRYN_AMM = 'Sovryn'
 
 if (process.env.NODE_ENV === 'mainnet') {
 // Sovryn AMM works against RSK chain
-  describe('SWAP Sovryn AMM service Provider-["MAINNET"]', async () => {
+  describe('SWAP Sovryn AMM service Provider-["MAINNET","MAINNET_RELEASE"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -69,9 +70,8 @@ if (process.env.NODE_ENV === 'mainnet') {
         0
       )
       await page.waitForTimeout(5000)
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'RBTC->SOV, Supporting source should be chosen!')
-        .oneOf(['Sovyrn'])
+      expect(await swapPage.getSelectedServiceProvider(page), 'RBTC->SOV, Supporting source should be chosen!')
+        .oneOf([SOVRYN_AMM])
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
@@ -124,9 +124,9 @@ if (process.env.NODE_ENV === 'mainnet') {
         0
       )
       await page.waitForTimeout(5000)
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+      expect(await swapPage.getSelectedServiceProvider(page),
         'RBTC->SOV, Supporting source should be chosen!')
-        .oneOf(['Sovyrn'])
+        .oneOf(['Sovryn'])
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
@@ -175,9 +175,9 @@ if (process.env.NODE_ENV === 'mainnet') {
         timeout: 60000
       })
       await page.waitForTimeout(5000)
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+      expect(await swapPage.getSelectedServiceProvider(page),
         'SOV->FISH, Supporting source should be chosen!')
-        .oneOf(['Sovyrn'])
+        .oneOf(['Sovryn'])
     })
   })
 }

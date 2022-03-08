@@ -10,8 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">This is release candidate for 0.56.0</pre>
-            <pre class="text-wrap">Update this copy just before release</pre>
+            <pre class="text-wrap">Next release candidate 0.57.0</pre>
           </div>
         </div>
       </div>

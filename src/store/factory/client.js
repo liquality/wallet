@@ -354,9 +354,12 @@ function createAvalancheClient(asset, network, mnemonic, derivationPath) {
 }
 
 function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
+  const isTestnet = network === 'testnet'
+  const terraNetwork = ChainNetworks.terra[network]
+
   let _asset, feeAsset, tokenAddress, stableFee
 
-  const terraNetwork = ChainNetworks.terra[network]
+  const nodeUrl = isTestnet ? terraNetwork.nodeUrl : process.env.VUE_APP_TERRA_NODE_URL
 
   switch (asset) {
     case 'LUNA': {
@@ -367,7 +370,7 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
     case 'UST': {
       _asset = 'uusd'
       feeAsset = 'uusd'
-      stableFee = true
+      stableFee = false
       break
     }
     default: {
@@ -380,10 +383,12 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
 
   const terraClient = new Client()
 
-  terraClient.addProvider(new TerraRpcProvider(terraNetwork, _asset, feeAsset, tokenAddress))
+  terraClient.addProvider(
+    new TerraRpcProvider({ ...terraNetwork, nodeUrl }, _asset, feeAsset, tokenAddress)
+  )
   terraClient.addProvider(
     new TerraWalletProvider({
-      network: terraNetwork,
+      network: { ...terraNetwork, nodeUrl },
       mnemonic,
       baseDerivationPath,
       asset: _asset,
@@ -392,8 +397,8 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
       stableFee
     })
   )
-  terraClient.addProvider(new TerraSwapProvider(terraNetwork, _asset))
-  terraClient.addProvider(new TerraSwapFindProvider(terraNetwork, _asset))
+  terraClient.addProvider(new TerraSwapProvider({ ...terraNetwork, nodeUrl }, _asset))
+  terraClient.addProvider(new TerraSwapFindProvider({ ...terraNetwork, nodeUrl }, _asset))
 
   return terraClient
 }
