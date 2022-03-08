@@ -198,7 +198,7 @@ describe('Import wallet-["MAINNET"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
-    await overviewPage.ValidateTotalAssets(page, false) // 9 assets
+    await overviewPage.ValidateTotalAssets(page, false) // 10 Assets
     // Check the currency
     expect(await overviewPage.GetCurrency(page), 'Wallet stats has currency should be USD').contain(
       'USD'

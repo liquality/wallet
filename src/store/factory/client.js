@@ -325,6 +325,34 @@ function createArbitrumClient(asset, network, mnemonic, derivationPath) {
   )
 }
 
+function createAvalancheClient(asset, network, mnemonic, derivationPath) {
+  const isTestnet = network === 'testnet'
+  const avalancheNetwork = ChainNetworks.avalanche[network]
+  const rpcApi = isTestnet
+    ? 'https://api.avax-test.network/ext/bc/C/rpc'
+    : 'https://api.avax.network/ext/bc/C/rpc'
+  const scraperApi = isTestnet
+    ? 'http://avax-testnet-api.liq-chainhub.net/'
+    : 'http://avax-mainnet-api.liq-chainhub.net/'
+  const feeProvider = new EthereumRpcFeeProvider({
+    slowMultiplier: 1,
+    averageMultiplier: 2,
+    fastMultiplier: 2.2
+  })
+
+  return createEthereumClient(
+    asset,
+    network,
+    avalancheNetwork,
+    rpcApi,
+    scraperApi,
+    feeProvider,
+    mnemonic,
+    'default',
+    derivationPath
+  )
+}
+
 function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
   const isTestnet = network === 'testnet'
   const terraNetwork = ChainNetworks.terra[network]
@@ -415,6 +443,8 @@ export const createClient = (asset, network, mnemonic, accountType, derivationPa
   if (assetData?.chain === 'solana') return createSolanaClient(network, mnemonic, derivationPath)
   if (assetData.chain === 'terra')
     return createTerraClient(network, mnemonic, derivationPath, asset)
+  if (assetData.chain === 'avalanche')
+    return createAvalancheClient(asset, network, mnemonic, derivationPath)
   if (assetData.chain === 'fuse') return createFuseClient(asset, network, mnemonic, derivationPath)
 
   return createEthClient(asset, network, mnemonic, accountType, derivationPath)
