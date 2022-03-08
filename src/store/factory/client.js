@@ -332,8 +332,8 @@ function createAvalancheClient(asset, network, mnemonic, derivationPath) {
     ? 'https://api.avax-test.network/ext/bc/C/rpc'
     : 'https://api.avax.network/ext/bc/C/rpc'
   const scraperApi = isTestnet
-    ? 'https://liquality.io/avalanche-testnet-api'
-    : 'https://liquality.io/avalanche-mainnet-api'
+    ? 'http://avax-testnet-api.liq-chainhub.net/'
+    : 'http://avax-mainnet-api.liq-chainhub.net/'
   const feeProvider = new EthereumRpcFeeProvider({
     slowMultiplier: 1,
     averageMultiplier: 2,

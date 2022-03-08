@@ -12,9 +12,9 @@ const passwordPage = new PasswordPage()
 
 let browser, page
 const password = '123123123'
-const dappUrl = 'https://app.1inch.io/'
+const dappUrl = 'https://app.1inch.io'
 
-describe.skip('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
+describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -30,49 +30,18 @@ describe.skip('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () =
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.SelectNetwork(page, 'mainnet')
-    // Web3 toggle on
+    // Web3 toggle on by default
     await overviewPage.CheckWeb3ToggleOn(page)
-    await page.waitForTimeout(1000)
-    console.log('Web3 toggled on')
+    // Connected dapp option
+    await page.click('#connect_dapp_main_option')
+    await page.waitForSelector('.v-switch-core', { visible: true })
   })
   afterEach(async () => {
     await browser.close()
   })
   it('1Inch injection - ETH', async () => {
-    // // Go to 1inch app
-    const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 90000 })
-    // Before click on injected wallet option.
-    const newPagePromise = new Promise((x) =>
-      browser.once('targetcreated', (target) => x(target.page()))
-    ) /* eslint-disable-line */
-    await dappPage.evaluate(async () => {
-      window.ethereum.enable()
-    })
-    // console.log(('user clicked on 1inch web3'))
-    const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
-    await connectRequestWindow.click('#ETHEREUM')
-    // Check connect button is enabled
-    await connectRequestWindow.click('#connect_request_button').catch((e) => e)
-    const connectedChainDetails = await dappPage.evaluate(async () => {
-      const chainIDHexadecimal = await window.ethereum.request({
-        method: 'eth_chainId',
-        params: []
-      })
-      return {
-        chainId: parseInt(chainIDHexadecimal, 16),
-        connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
-      }
-    })
-    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(3)
-    expect(
-      connectedChainDetails.connectedAddress[0],
-      'Uniswap ethereum dapp connection issue'
-    ).equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
-  })
-  it('1Inch injection - BSC', async () => {
+    let chain = 'ethereum'
+
     // Go to 1inch app
     const dappPage = await browser.newPage()
     await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 90000 })
@@ -84,9 +53,23 @@ describe.skip('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () =
       window.ethereum.enable()
     })
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#BSC', { visible: true })
-    await connectRequestWindow.click('#BSC')
+    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true })
+    await connectRequestWindow.click('#filter_by_chain').catch((e) => e)
+    await connectRequestWindow.waitForSelector(`#${chain}_web_network`, { visible: true })
+    await connectRequestWindow.click(`#${chain}_web_network`, { delay: 1000 })
+
+    await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true })
+    await connectRequestWindow.click('#ETHEREUM')
     // Check connect button is enabled
+    await connectRequestWindow.click('#connect_request_button').catch((e) => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', {
+      visible: false,
+      timeout: 60000
+    })
+    // check origin url
+    await connectRequestWindow
+      .$eval('#origin_url', (el) => el.innerText)
+      .then((text) => expect(text).to.contains(dappUrl))
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
     const connectedChainDetails = await dappPage.evaluate(async () => {
       const chainIDHexadecimal = await window.ethereum.request({
@@ -98,7 +81,60 @@ describe.skip('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () =
         connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
       }
     })
-    expect(connectedChainDetails.chainId, 'Uniswap bsc dapp connection issue').equals(97)
+    expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(1)
+    expect(
+      connectedChainDetails.connectedAddress[0],
+      'Uniswap ethereum dapp connection issue'
+    ).equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
+  })
+  it('1Inch injection - BSC', async () => {
+    let chain = 'bsc'
+
+    // Select correct network
+    await page.click('#dropdown-item', {delay: 1000})
+    await page.waitForSelector(`#${chain}_web_network`, { visible: true })
+    await page.click(`#${chain}_web_network`, {delay: 2000})
+
+    // Go to 1inch app
+    const dappPage = await browser.newPage()
+    await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 90000 })
+    // Before click on injected wallet option.
+    const newPagePromise = new Promise((x) =>
+      browser.once('targetcreated', (target) => x(target.page()))
+    ) /* eslint-disable-line */
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable()
+    })
+    const connectRequestWindow = await newPagePromise
+    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true })
+    await connectRequestWindow.click('#filter_by_chain').catch((e) => e)
+    await connectRequestWindow.waitForSelector(`#${chain}_web_network`, { visible: true })
+    await connectRequestWindow.click(`#${chain}_web_network`, { delay: 1000 })
+
+    await connectRequestWindow.waitForSelector('#BSC', { visible: true })
+    await connectRequestWindow.click('#BSC')
+    // Check connect button is enabled
+    await connectRequestWindow.click('#connect_request_button').catch((e) => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', {
+      visible: false,
+      timeout: 60000
+    })
+    // check origin url
+    await connectRequestWindow
+      .$eval('#origin_url', (el) => el.innerText)
+      .then((text) => expect(text).to.contains(dappUrl))
+    await connectRequestWindow.click('#connect_request_button').catch((e) => e)
+    const connectedChainDetails = await dappPage.evaluate(async () => {
+      const chainIDHexadecimal = await window.ethereum.request({
+        method: 'eth_chainId',
+        params: []
+      })
+      return {
+        chainId: parseInt(chainIDHexadecimal, 16),
+        connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
+      }
+    })
+    expect(connectedChainDetails.chainId, 'Uniswap bsc dapp connection issue').equals(56)
     expect(connectedChainDetails.connectedAddress[0], 'Uniswap bsc dapp connection issue').equals(
       '0x3f429e2212718a717bd7f9e83ca47dab7956447b'
     )

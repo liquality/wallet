@@ -109,6 +109,7 @@ export default {
         solana: 'solana',
         rsk: 'ethereum',
         bsc: 'ethereum',
+        avalanche: 'ethereum',
         polyon: 'ethereum',
         terra: 'terra',
         fuse: 'ethereum'
