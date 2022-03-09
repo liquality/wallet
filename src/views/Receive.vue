@@ -126,6 +126,7 @@ export default {
         solana: 'solana',
         rsk: 'ethereum',
         bsc: 'ethereum',
+        avalanche: 'ethereum',
         polyon: 'ethereum',
         terra: 'terra',
         fuse: 'ethereum'
@@ -165,6 +166,10 @@ export default {
           ARBETH: {
             name: 'ARBETH',
             url: 'https://faucet.paradigm.xyz/'
+          },
+          AVAX: {
+            name: 'AVAX',
+            url: 'https://faucet.avax-test.network/'
           },
           LUNA: {
             name: 'TERRA',

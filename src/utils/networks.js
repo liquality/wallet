@@ -31,6 +31,10 @@ export const ChainNetworks = {
     testnet: EthereumNetworks.arbitrum_testnet,
     mainnet: EthereumNetworks.arbitrum_mainnet
   },
+  avalanche: {
+    testnet: EthereumNetworks.avax_testnet,
+    mainnet: EthereumNetworks.avax_mainnet
+  },
   near: {
     testnet: NearNetworks.near_testnet,
     mainnet: NearNetworks.near_mainnet

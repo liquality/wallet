@@ -331,13 +331,43 @@ function createArbitrumClient(asset, network, mnemonic, derivationPath) {
   )
 }
 
+function createAvalancheClient(asset, network, mnemonic, derivationPath) {
+  const isTestnet = network === 'testnet'
+  const avalancheNetwork = ChainNetworks.avalanche[network]
+  const rpcApi = isTestnet
+    ? 'https://api.avax-test.network/ext/bc/C/rpc'
+    : 'https://api.avax.network/ext/bc/C/rpc'
+  const scraperApi = isTestnet
+    ? 'http://avax-testnet-api.liq-chainhub.net/'
+    : 'http://avax-mainnet-api.liq-chainhub.net/'
+  const feeProvider = new EthereumRpcFeeProvider({
+    slowMultiplier: 1,
+    averageMultiplier: 2,
+    fastMultiplier: 2.2
+  })
+
+  return createEthereumClient(
+    asset,
+    network,
+    avalancheNetwork,
+    rpcApi,
+    scraperApi,
+    feeProvider,
+    mnemonic,
+    'default',
+    derivationPath
+  )
+}
+
 function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
   const isTestnet = network === 'testnet'
   const terraNetwork = ChainNetworks.terra[network]
 
   let _asset, feeAsset, tokenAddress, stableFee
 
-  const nodeUrl = isTestnet ? terraNetwork.nodeUrl : process.env.VUE_APP_TERRA_NODE_URL
+  const nodeUrl = isTestnet
+    ? terraNetwork.nodeUrl
+    : process.env.VUE_APP_TERRA_NODE_URL || terraNetwork.nodeUrl
 
   switch (asset) {
     case 'LUNA': {
@@ -415,6 +445,7 @@ export const createClient = ({
   publicKey
 }) => {
   const assetData = cryptoassets[asset]
+
   switch (assetData.chain) {
     case 'bitcoin':
       return createBtcClient(network, mnemonic, accountType, derivationPath, publicKey, chainCode)
@@ -432,6 +463,8 @@ export const createClient = ({
       return createSolanaClient(network, mnemonic, derivationPath)
     case 'terra':
       return createTerraClient(network, mnemonic, derivationPath, asset)
+    case 'avalanche':
+      return createAvalancheClient(asset, network, mnemonic, derivationPath)
     case 'fuse':
       return createFuseClient(asset, network, mnemonic, derivationPath)
     default:

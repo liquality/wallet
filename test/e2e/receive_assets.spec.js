@@ -34,7 +34,7 @@ async function importWalletTestReceive (bitcoin) {
   const yourCurrentAddress = await page.$eval('#your_current_asset_address', (el) => el.textContent)
   expect(yourCurrentAddress).contains(bitcoin)
   await receivePage.HasQRCodeDisplayed(page)
-  if (bitcoin === 'ETH' || bitcoin === 'ARBETH' || bitcoin === 'RBTC' ||
+  if (bitcoin === 'ETH' || bitcoin === 'ARBETH' || bitcoin === 'AVAX' || bitcoin === 'RBTC' ||
     bitcoin === 'BNB' || bitcoin === 'MATIC' || bitcoin === 'ARBETH' || bitcoin === 'LUNA') {
     await receivePage.CheckReceiveURL(page)
   }
@@ -91,7 +91,7 @@ describe('Receive tokens ["MAINNET"]', async () => {
       await overviewPage.CheckAssertOverviewDetails(page, 'BTC')
     })
   })
-  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH', 'LUNA', 'UST']
+  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH', 'AVAX', 'LUNA', 'UST']
   describe('Import wallet, Receive tokens', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())

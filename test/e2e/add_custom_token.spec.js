@@ -46,6 +46,13 @@ const customTokensDetails = [
     decimal: '6'
   },
   {
+    chain: 'avalanche',
+    address: '0x5947bb275c521040051d82396192181b413227a3',
+    name: 'LINK.e',
+    symbol: 'LINK.e',
+    decimal: '18'
+  },
+  {
     chain: 'rsk',
     address: '0x967f8799aF07DF1534d48A95a5C9FEBE92c53ae0',
     name: 'Wrapped RBTC',

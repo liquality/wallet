@@ -197,6 +197,14 @@ class OverviewPage {
         break
       }
 
+      case 'AVAX': {
+        const eth = await page.waitForSelector('#AVALANCHE', { timeout: elementVisibleTimeout, visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
+        break
+      }
+
       case 'SOV':
       case 'FISH':
       case 'RBTC': {
@@ -342,7 +350,7 @@ class OverviewPage {
    * @constructor
    */
   async ValidateTotalAssets(page, newWallet = true) {
-    const assets = newWallet ? 8 : 9
+    const assets = newWallet ? 9 : 10
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(
