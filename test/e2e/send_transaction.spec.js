@@ -26,7 +26,9 @@ describe('SEND feature["TESTNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
+    // Configure the navigation timeout
+    await page.setDefaultNavigationTimeout(0);
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
