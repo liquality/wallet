@@ -20,6 +20,7 @@ import { accountSetDerivationPath } from './14_account_set_derivation_path'
 import { accountsChainsSetEnabled } from './15_accounts_chains_set_enabled'
 import { enableTerraChain } from './16_enable_terra_chain'
 import { removeInjectionEnabled } from './17_remove_injection_enabled'
+import { enableAvalancheChain } from './18_enable_avalanche_chain'
 
 const migrations = [
   firstMigration, // v1
@@ -38,7 +39,8 @@ const migrations = [
   accountSetDerivationPath, // v14
   accountsChainsSetEnabled, // v15
   enableTerraChain, // v16
-  removeInjectionEnabled // v17
+  removeInjectionEnabled, // v17
+  enableAvalancheChain // v18
 ]
 
 const LATEST_VERSION = migrations[migrations.length - 1].version
