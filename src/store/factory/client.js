@@ -334,11 +334,12 @@ function createAvalancheClient(asset, network, mnemonic, derivationPath) {
   const scraperApi = isTestnet
     ? 'http://avax-testnet-api.liq-chainhub.net/'
     : 'http://avax-mainnet-api.liq-chainhub.net/'
-  const feeProvider = new EthereumRpcFeeProvider({
-    slowMultiplier: 1,
-    averageMultiplier: 2,
-    fastMultiplier: 2.2
-  })
+  const feeProvider = new EthereumEIP1559FeeProvider({ uri: rpcApi })
+  // new EthereumRpcFeeProvider({
+  //   slowMultiplier: 1,
+  //   averageMultiplier: 2,
+  //   fastMultiplier: 2.2
+  // })
 
   return createEthereumClient(
     asset,
@@ -349,7 +350,8 @@ function createAvalancheClient(asset, network, mnemonic, derivationPath) {
     feeProvider,
     mnemonic,
     'default',
-    derivationPath
+    derivationPath,
+    'london'
   )
 }
 

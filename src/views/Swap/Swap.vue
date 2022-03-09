@@ -840,7 +840,8 @@ export default {
     isEIP1559Fees() {
       return (
         cryptoassets[this.customFeeAssetSelected].chain === ChainId.Ethereum ||
-        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
+        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet') ||
+        cryptoassets[this.asset].chain === ChainId.Avalanche
       )
     }
   },
