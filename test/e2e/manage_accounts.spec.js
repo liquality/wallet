@@ -20,7 +20,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -61,14 +61,14 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await page.click('#previous_nav_bar')
     // overview-screen-chain-section , RSK should be hidden
     let accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(7)
+    expect(accounts.length).to.equals(8)
     // Go back to Manage account & toggle on
     await overviewPage.ClickOnManageAccounts(page)
     // Chain RSK toggle on but not accounts
     await page.click('#chain-item-toggle-rsk')
     await page.click('#previous_nav_bar')
     accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(9)
+    expect(accounts.length).to.equals(10)
   })
   it('RSK - create new account, validate RSK 3 accounts', async () => {
     // check Send & Swap & Receive options have been displayed

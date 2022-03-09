@@ -349,7 +349,7 @@ class LiqualitySwapProvider extends SwapProvider {
         )
         const fundingConfirmed = fundingTransaction
           ? fundingTransaction.confirmations >=
-          chains[cryptoassets[swap.to].chain].safeConfirmations
+            chains[cryptoassets[swap.to].chain].safeConfirmations
           : true
 
         if (isVerified && fundingConfirmed) {
@@ -597,7 +597,8 @@ class LiqualitySwapProvider extends SwapProvider {
       UST: 800000,
       MATIC: 165000,
       ERC20: 600000 + 94500, // Contract creation + erc20 transfer
-      ARBETH: 2400000
+      ARBETH: 2400000,
+      AVAX: 165000
     },
     SWAP_CLAIM: {
       BTC: 143,
@@ -610,7 +611,8 @@ class LiqualitySwapProvider extends SwapProvider {
       LUNA: 800000,
       UST: 800000,
       ERC20: 100000,
-      ARBETH: 680000
+      ARBETH: 680000,
+      AVAX: 45000
     }
   }
 
@@ -689,8 +691,9 @@ class LiqualitySwapProvider extends SwapProvider {
       filterStatus: 'REFUNDED',
       notification(swap) {
         return {
-          message: `Swap refunded, ${prettyBalance(swap.fromAmount, swap.from)} ${swap.from
-            } returned`
+          message: `Swap refunded, ${prettyBalance(swap.fromAmount, swap.from)} ${
+            swap.from
+          } returned`
         }
       }
     },
@@ -700,8 +703,9 @@ class LiqualitySwapProvider extends SwapProvider {
       filterStatus: 'COMPLETED',
       notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to
-            } ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
+            swap.to
+          } ready to use`
         }
       }
     },

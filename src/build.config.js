@@ -20,6 +20,7 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
+      'AVAX',
       'FISH',
       'LUNA',
       'UST'
@@ -35,6 +36,7 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
+      'AVAX',
       'SOL',
       'LUNA',
       'UST'
@@ -129,7 +131,8 @@ export default {
         referrerAddress: {
           ethereum: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
           polygon: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
-          bsc: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5'
+          bsc: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
+          avalanche: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5'
         },
         referrerFee: 0.3
       },
@@ -164,6 +167,17 @@ export default {
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra', 'fuse'],
+  chains: [
+    'bitcoin',
+    'ethereum',
+    'rsk',
+    'bsc',
+    'near',
+    'polygon',
+    'arbitrum',
+    'terra',
+    'fuse',
+    'avalanche'
+  ],
   supportedBridgeAssets: ['MATIC', 'RBTC']
 }
