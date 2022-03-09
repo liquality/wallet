@@ -129,6 +129,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 0 20px;
+  z-index: 9999;
 
   &_logo {
     position: absolute;
