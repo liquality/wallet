@@ -65,14 +65,14 @@ export default {
         type: SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20,
         network: 'testnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['RBTC']
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
       },
       liqualityBoostERC20toNative: {
         name: 'Liquality Boost',
         type: SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE,
         network: 'testnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['RBTC']
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -107,14 +107,14 @@ export default {
         type: SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['MATIC', 'RBTC']
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
       },
       liqualityBoostERC20toNative: {
         name: 'Liquality Boost',
         type: SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['MATIC', 'RBTC']
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -179,5 +179,5 @@ export default {
     'fuse',
     'avalanche'
   ],
-  supportedBridgeAssets: ['MATIC', 'RBTC']
+  supportedBridgeAssets: ['MATIC', 'RBTC', 'AVAX']
 }
