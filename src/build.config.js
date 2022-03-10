@@ -100,7 +100,7 @@ export default {
         name: 'Liquality',
         icon: 'liquality.svg',
         type: SwapProviderType.LIQUALITY,
-        agent: 'https://liquality.io/swap-dev/agent'
+        agent: 'https://mainnet-dev-agent.liq-chainhub.net'
       },
       liqualityBoostNativeToERC20: {
         name: 'Liquality Boost',
