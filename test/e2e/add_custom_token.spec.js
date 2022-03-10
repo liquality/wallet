@@ -48,7 +48,7 @@ const customTokensDetails = [
   {
     chain: 'avalanche',
     address: '0x5947bb275c521040051d82396192181b413227a3',
-    name: 'LINK.e',
+    name: 'Chainlink Token',
     symbol: 'LINK.e',
     decimal: '18'
   },
