@@ -74,11 +74,11 @@ export const actions = {
     chrome.tabs.create({ url })
     dispatch('setBuyCryptoModalOpen', { open: false })
     dispatch('setBuyCryptoOverviewModalOpen', { open: false })
-    dispatch('trackAnalytics',{
+    dispatch('trackAnalytics', {
       event: 'buy_crypto_modal_close',
       chain: chain,
-      asset:asset,
-      address:address
+      asset: asset,
+      address: address
     })
   },
   setLedgerSignRequestModalOpen: ({ commit }, { open }) => {

@@ -24,7 +24,7 @@ export const mutations = {
         action: open ? 'open' : 'close',
         category: 'Buy Crypto options clicked from receive screen',
         chain: chain,
-        asset:  asset
+        asset: asset
       }
     })
     if (open) {
