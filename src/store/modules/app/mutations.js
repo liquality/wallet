@@ -18,6 +18,15 @@ export const mutations = {
     state.requestPermissionActive = active
   },
   SET_BUY_CRYPTO_MODAL_OPEN(state, { open, chain, asset, address }) {
+    this.trackAnalytics({
+      event: 'Buy Crypto',
+      properties: {
+        action: open ? 'open' : 'close',
+        category: 'Buy Crypto options clicked from receive screen',
+        chain: chain,
+        asset:  asset
+      }
+    })
     if (open) {
       state.buyCryptoModalData = { chain, asset, address }
     } else {

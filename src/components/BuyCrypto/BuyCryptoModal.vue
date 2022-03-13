@@ -26,10 +26,11 @@
 </template>
 
 <script>
-import Modal from '@/components/Modal'
-import TransakBrand from '@/components/BuyCrypto/TransakBrand'
+import Modal from "@/components/Modal";
+import TransakBrand from "@/components/BuyCrypto/TransakBrand";
 
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState } from "vuex";
+
 export default {
   components: {
     Modal,
@@ -42,15 +43,15 @@ export default {
     })
   },
   methods: {
-    ...mapActions('app', ['setBuyCryptoModalOpen', 'openTransakWidgetTab']),
+    ...mapActions("app", ["setBuyCryptoModalOpen", "openTransakWidgetTab", "trackAnalytics"]),
     close() {
-      this.setBuyCryptoModalOpen({ open: false })
+      this.setBuyCryptoModalOpen({ open: false });
     },
     openTransakTab() {
-      this.openTransakWidgetTab({ ...this.data })
+      this.openTransakWidgetTab({ ...this.data });
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -68,6 +69,7 @@ h6 {
   line-height: 20px;
   color: #000d35;
 }
+
 .secondary-message {
   font-style: normal;
   font-weight: 300;
