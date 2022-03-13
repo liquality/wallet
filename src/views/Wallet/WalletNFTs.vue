@@ -1,13 +1,13 @@
 <template>
   <div class="nft-collectibles">
     <template v-for="(asset, key) in assets">
-      <NFTAssets :nftAsset="asset" :collectionName="key" :key="asset.id" />
+      <NFTAssets :nftAssets="asset" :collectionName="key" :key="asset.id" :source="source" />
     </template>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import NFTAssets from '../../components/NFTAssets.vue'
 export default {
   components: {
@@ -23,7 +23,9 @@ export default {
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork', 'nftAssetsNumber']),
-    ...mapGetters(['client'])
+    source() {
+      return this.$route.query.source
+    }
   },
   methods: {
     ...mapActions(['getNFTAssets']),
@@ -33,6 +35,10 @@ export default {
           network: this.activeNetwork,
           walletId: this.activeWalletId
         })
+        console.log(
+          '🚀 ~ file: WalletNFTs.vue ~ line 36 ~ getNftCollections ~ nftAssets',
+          nftAssets
+        )
         this.assets = nftAssets
       } catch (error) {
         console.error(error)

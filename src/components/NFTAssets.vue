@@ -2,14 +2,25 @@
   <div class="nft-assets">
     <div class="nft-assets__container">
       <div class="nft-assets__container__heading">
-        <h5>{{ collectionName }} ({{ nftAsset.length }})</h5>
+        <h5>{{ collectionName }} ({{ nftAssets.length }})</h5>
         <span class="d-flex align-items-center">
           <ChevronRight />
-          <button class="d-flex align-items-center" @click="goToNFTCollection">all</button>
+          <router-link
+            class="d-flex align-items-center"
+            :to="{
+              path: `/details/nft-collection/${this.nftAssets[0].collection.name}`,
+              query: {
+                nftAsset: this.nftAssets,
+                collectionName: this.collectionName,
+                source: this.source
+              }
+            }"
+            >all</router-link
+          >
         </span>
       </div>
       <div class="nft-assets__container__images">
-        <div class="img-items" v-for="nft in nftAsset" :key="nft.id">
+        <div class="img-items" v-for="nft in nftAssets" :key="nft.id">
           <NFTAsset :nftAsset="nft" :mode="'thumbnail'" />
         </div>
       </div>
@@ -22,7 +33,7 @@ import ChevronRight from '@/assets/icons/chevron_right_gray.svg'
 import NFTAsset from './NFTAsset.vue'
 export default {
   props: {
-    nftAsset: {
+    nftAssets: {
       type: Array,
       required: true
     },
@@ -39,13 +50,8 @@ export default {
     ChevronRight,
     NFTAsset
   },
-  methods: {
-    goToNFTCollection() {
-      this.$router.push({
-        path: `/details/nft-collection/${this.nftAsset[0].collection.name}`,
-        query: { nftAsset: this.nftAsset, routeSource: this.source }
-      })
-    }
+  created() {
+    console.log('created', this.nftAssets)
   }
 }
 </script>

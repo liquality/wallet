@@ -141,7 +141,7 @@ const routes = [
     props: true
   },
   {
-    path: '/details/nft-collection/:id/:idx',
+    path: '/details/nft-asset/:id',
     component: NFTAssetDetails,
     name: 'NFTAssetDetails',
     props: true

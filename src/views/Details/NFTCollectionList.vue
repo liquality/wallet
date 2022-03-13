@@ -3,12 +3,10 @@
     <NavBar
       showBack="true"
       :backPath="routeSource === 'NFTActivity' ? '/nft-activity' : '/wallet/nfts'"
-      :backLabel="'Back'"
+      :backLabel="''"
     >
       <span class="wallet-header">
-        <strong class="text-uppercase">
-          {{ nftCollection[0].collection.name }}{{ nftCollection.length }}</strong
-        >
+        <strong class="text-uppercase"> {{ collectionName }}{{ nftCollection.length }}</strong>
       </span>
     </NavBar>
     <template v-if="nftCollection.length > 0">
@@ -41,11 +39,14 @@ export default {
     NavBar
   },
   created() {
-    console.log('NFTAssets created', this.$route)
+    console.log('NFTCollection created', this.$route.query.nftAsset)
   },
   computed: {
     nftCollection() {
       return this.$route.query.nftAsset
+    },
+    collectionName() {
+      return this.$route.query.collectionName
     },
     routeSource() {
       return this.$route.query.source || null

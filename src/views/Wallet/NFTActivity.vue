@@ -22,33 +22,22 @@
             </div>
             Send
           </button>
-          <button class="account-container_actions_button" disabled>
-            <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
-              <SwapIcon
-                class="account-container_actions_button_icon account-container_actions_button_swap"
-              />
-            </div>
-            Swap
-          </button>
-          <button class="account-container_actions_button" disabled>
-            <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
-              <ReceiveIcon class="account-container_actions_button_icon" />
-            </div>
-            Receive
-          </button>
         </div>
       </div>
       <div class="wallet-tabs">
         <ul class="nav nav-tabs">
+          <li class="nav-item" @click="activeTab = 'nfts'">
+            <span :class="activeTab === 'nfts' ? 'nav-link active' : 'nav-link'"> NFTs </span>
+          </li>
           <li class="nav-item" @click="activeTab = 'activity'">
             <span :class="activeTab === 'activity' ? 'nav-link active' : 'nav-link'">
               Activity
             </span>
           </li>
-          <li class="nav-item" @click="activeTab = 'nfts'">
-            <span :class="activeTab === 'nfts' ? 'nav-link active' : 'nav-link'"> NFTs </span>
-          </li>
         </ul>
+        <div v-if="activeTab === 'nfts'">
+          <WalletNFTs :source="'NFTActivity'" />
+        </div>
         <div class="account-container_transactions" v-if="activeTab === 'activity'">
           <ActivityFilter
             @filters-changed="applyFilters"
@@ -60,9 +49,6 @@
             Once you start using your NFTs you will see the activity here
           </div>
         </div>
-        <div v-if="activeTab === 'nfts'">
-          <WalletNFTs :source="'NFTActivity'" />
-        </div>
       </div>
     </div>
   </div>
@@ -72,8 +58,6 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
 import SendIcon from '@/assets/icons/arrow_send.svg'
-import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
-import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
@@ -89,14 +73,12 @@ export default {
     ActivityFilter,
     TransactionList,
     WalletNFTs,
-    SendIcon,
-    ReceiveIcon,
-    SwapIcon
+    SendIcon
   },
   data() {
     return {
       activityData: [],
-      activeTab: 'activity'
+      activeTab: 'nfts'
     }
   },
   props: ['accountId', 'asset'],
@@ -113,9 +95,6 @@ export default {
     ]),
     account() {
       return this.accountItem(this.accountId)
-    },
-    markets() {
-      return this.marketData[this.activeNetwork][this.asset]
     },
     assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
@@ -141,6 +120,9 @@ export default {
 
 <style lang="scss" scoped>
 .account-container {
+  overflow-y: scroll;
+  padding-bottom: 2rem;
+
   .account-content-top {
     height: 220px;
     display: flex;
