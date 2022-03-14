@@ -40,8 +40,6 @@ const getTransactionParams = (payload) => {
   const msg = JSON.parse(msgs[0]).value || JSON.parse(msgs[0])
   const { amount, gas, gas_limit: gasLimit } = JSON.parse(fee)
 
-  console.log(msg)
-
   const value =
     msg.coins?.[0]?.amount ||
     msg.amount?.[0]?.amount ||
