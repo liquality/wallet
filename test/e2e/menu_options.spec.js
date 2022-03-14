@@ -18,7 +18,7 @@ describe('Hamburger menu options["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.setDefaultNavigationTimeout(0);
+    await page.setDefaultNavigationTimeout(0)
     await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
@@ -33,7 +33,7 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
-      await browser.close()
+    await browser.close()
   })
 
   it('should be able to see Settings page, validate options under settings screen', async () => {
@@ -51,8 +51,13 @@ describe('Hamburger menu options["MAINNET"]', async () => {
 
     // Default Web3 Wallet
     await page.waitForSelector('#settings_item_default_wallet', { visible: true })
-    const settingDefaultWebWallet = await page.$eval('#settings_item_default_wallet', (el) => el.textContent)
-    expect(settingDefaultWebWallet).contains('Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.')
+    const settingDefaultWebWallet = await page.$eval(
+      '#settings_item_default_wallet',
+      (el) => el.textContent
+    )
+    expect(settingDefaultWebWallet).contains(
+      'Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.'
+    )
 
     // Check the Analytics toggle option has been added
     await page.waitForSelector('#analytics_toggle_button', { visible: true })
@@ -69,19 +74,23 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
 
     // Check the currency
-    expect(await overviewPage.GetCurrency(page),
-      'Wallet stats has currency should be USD').contain('USD')
+    expect(await overviewPage.GetCurrency(page), 'Wallet stats has currency should be USD').contain(
+      'USD'
+    )
 
     // Click on Backup seed from Burger Icon menu
     await page.waitForSelector('#burger_icon_menu', { visible: true })
     await page.click('#burger_icon_menu')
     await page.waitForSelector('#backup_seed', { visible: true })
     await page.click('#backup_seed')
-    console.log(('User clicked on Backup Seed option'))
+    console.log('User clicked on Backup Seed option')
     await page.waitForSelector('#i_have_privacy_button', { visible: true })
-    expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals('Show Seed Phrase?')
-    expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent))
-      .equals('Anyone who has this can steal your funds!')
+    expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals(
+      'Show Seed Phrase?'
+    )
+    expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent)).equals(
+      'Anyone who has this can steal your funds!'
+    )
     await page.click('#i_have_privacy_button')
     await page.waitForSelector('#password', { visible: true })
     await page.type('#password', password)
@@ -92,7 +101,7 @@ describe('Hamburger menu options["MAINNET"]', async () => {
 
     const result = await page.evaluate(() => {
       const elements = Array.from(document.querySelectorAll('#seed_word_mouse_hover'))
-      return elements.map(element => {
+      return elements.map((element) => {
         return element.innerText
       })
     })
@@ -118,11 +127,14 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     await page.click('#burger_icon_menu')
     await page.waitForSelector('#backup_seed', { visible: true })
     await page.click('#backup_seed')
-    console.log(('User clicked on Backup Seed option'))
+    console.log('User clicked on Backup Seed option')
     await page.waitForSelector('#i_have_privacy_button', { visible: true })
-    expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals('Show Seed Phrase?')
-    expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent))
-      .equals('Anyone who has this can steal your funds!')
+    expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals(
+      'Show Seed Phrase?'
+    )
+    expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent)).equals(
+      'Anyone who has this can steal your funds!'
+    )
     await page.click('#i_have_privacy_button')
     await page.waitForSelector('#password', { visible: true })
     await page.type('#password', 'testwallet00001')
@@ -130,8 +142,9 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     await page.waitForSelector('#continue_button_to_see_seed_phrase:not([disabled])')
     await page.click('#continue_button_to_see_seed_phrase')
     await page.waitForSelector('#password_error', { visible: true })
-    expect(await page.$eval('#password_error', (el) => el.textContent))
-      .contains('Try Again. Enter the right password (it has 8 or more characters).')
+    expect(await page.$eval('#password_error', (el) => el.textContent)).contains(
+      'Try Again. Enter the right password (it has 8 or more characters).'
+    )
   })
   it('Import wallet,lock wallet and unlock wallet["PULL_REQUEST_TEST"]', async () => {
     // check Send & Swap & Receive options have been displayed

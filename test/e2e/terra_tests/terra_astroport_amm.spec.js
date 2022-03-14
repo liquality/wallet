@@ -48,8 +48,10 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${fromAsset}_swap_button`)
       // Validate min SEND amount from text field & check Min is Active
       const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-      expect(swapSendAmountField, `${fromAsset} to ${toAsset} SWAP min value not set in input`)
-        .not.equals('0.0000')
+      expect(
+        swapSendAmountField,
+        `${fromAsset} to ${toAsset} SWAP min value not set in input`
+      ).not.equals('0.0000')
       await swapPage.ClickOnMin(page)
       // Select 2nd Pair
       await page.click('.swap-receive-main-icon')
@@ -63,13 +65,15 @@ if (process.env.NODE_ENV === 'mainnet') {
       })
       // Validate available balance
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
-      expect(availableBalance, `${fromAsset}->${toAsset.coin}) swap, available balance should be greater than 0`).to.be.above(
-        0
-      )
+      expect(
+        availableBalance,
+        `${fromAsset}->${toAsset.coin}) swap, available balance should be greater than 0`
+      ).to.be.above(0)
       await page.waitForTimeout(5000)
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'LUNA->UST, Supporting source should be chosen!')
-        .oneOf(['Astroport'])
+      expect(
+        await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+        'LUNA->UST, Supporting source should be chosen!'
+      ).oneOf(['Astroport'])
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
@@ -101,8 +105,10 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${fromAsset}_swap_button`)
       // Validate min SEND amount from text field & check Min is Active
       const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-      expect(swapSendAmountField, `${fromAsset} to ${toAsset} SWAP min value not set in input`)
-        .not.equals('0.0000')
+      expect(
+        swapSendAmountField,
+        `${fromAsset} to ${toAsset} SWAP min value not set in input`
+      ).not.equals('0.0000')
       await swapPage.ClickOnMin(page)
       // Select 2nd Pair
       await page.click('.swap-receive-main-icon')
@@ -117,13 +123,15 @@ if (process.env.NODE_ENV === 'mainnet') {
       })
       // Validate available balance
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
-      expect(availableBalance, `${fromAsset}->${toAsset.coin}) swap, available balance should be greater than 0`).to.be.above(
-        0
-      )
+      expect(
+        availableBalance,
+        `${fromAsset}->${toAsset.coin}) swap, available balance should be greater than 0`
+      ).to.be.above(0)
       await page.waitForTimeout(5000)
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'LUNA->UST, Supporting source should be chosen!')
-        .oneOf(['Liquality','Astroport'])
+      expect(
+        await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+        'LUNA->UST, Supporting source should be chosen!'
+      ).oneOf(['Liquality', 'Astroport'])
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
@@ -155,8 +163,10 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${fromAsset}_swap_button`)
       // Validate min SEND amount from text field & check Min is Active
       const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-      expect(swapSendAmountField, `${fromAsset} to ${toAsset} SWAP min value not set in input`)
-        .not.equals('0.0000')
+      expect(
+        swapSendAmountField,
+        `${fromAsset} to ${toAsset} SWAP min value not set in input`
+      ).not.equals('0.0000')
       await swapPage.ClickOnMin(page)
       // Select 2nd Pair
       await page.click('.swap-receive-main-icon')
@@ -170,13 +180,15 @@ if (process.env.NODE_ENV === 'mainnet') {
       })
       // Validate available balance
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
-      expect(availableBalance, `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`).to.be.above(
-        0
-      )
+      expect(
+        availableBalance,
+        `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`
+      ).to.be.above(0)
       await page.waitForTimeout(5000)
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'LUNA->ANC, Supporting source should be chosen!')
-        .oneOf(['Astroport'])
+      expect(
+        await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+        'LUNA->ANC, Supporting source should be chosen!'
+      ).oneOf(['Astroport'])
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
@@ -225,9 +237,10 @@ if (process.env.NODE_ENV === 'mainnet') {
         timeout: 60000
       })
       await page.waitForTimeout(5000)
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'ANC->STT, Supporting source should be chosen!')
-        .oneOf(['Astroport'])
+      expect(
+        await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+        'ANC->STT, Supporting source should be chosen!'
+      ).oneOf(['Astroport'])
     })
     it('Astroport AMM(LUNA->STT) quote check', async () => {
       const fromAsset = 'LUNA'
@@ -257,9 +270,10 @@ if (process.env.NODE_ENV === 'mainnet') {
         timeout: 60000
       })
       await page.waitForTimeout(5000)
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'ANC->STT, Supporting source should be chosen!')
-        .oneOf(['Astroport'])
+      expect(
+        await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+        'ANC->STT, Supporting source should be chosen!'
+      ).oneOf(['Astroport'])
     })
     it('LUNA->BTC quote check', async () => {
       const fromAsset = 'LUNA'
@@ -289,8 +303,10 @@ if (process.env.NODE_ENV === 'mainnet') {
         timeout: 60000
       })
       // Check source name
-      expect(await swapPage.getSelectedServiceProvider(page),
-        `${fromAsset}->${toAsset} swap, source should be chosen!`).oneOf(['Liquality'])
+      expect(
+        await swapPage.getSelectedServiceProvider(page),
+        `${fromAsset}->${toAsset} swap, source should be chosen!`
+      ).oneOf(['Liquality'])
     })
     it('UST->ETH quote check', async () => {
       const fromAsset = 'UST'
@@ -322,8 +338,10 @@ if (process.env.NODE_ENV === 'mainnet') {
         timeout: 60000
       })
       // Check source name
-      expect(await swapPage.getSelectedServiceProvider(page),
-        `${fromAsset}->${toAsset} swap, source should be chosen!`).oneOf(['Liquality'])
+      expect(
+        await swapPage.getSelectedServiceProvider(page),
+        `${fromAsset}->${toAsset} swap, source should be chosen!`
+      ).oneOf(['Liquality'])
     })
     it('UST->MATIC quote check', async () => {
       const fromAsset = 'UST'
@@ -355,8 +373,10 @@ if (process.env.NODE_ENV === 'mainnet') {
         timeout: 60000
       })
       // Check source name
-      expect(await swapPage.getSelectedServiceProvider(page),
-        `${fromAsset}->${toAsset} swap, source should be chosen!`).oneOf(['Liquality'])
+      expect(
+        await swapPage.getSelectedServiceProvider(page),
+        `${fromAsset}->${toAsset} swap, source should be chosen!`
+      ).oneOf(['Liquality'])
       await swapPage.clickSwapReviewButton(page)
     })
   })

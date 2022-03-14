@@ -124,20 +124,24 @@ describe('Custom Token add-["MAINNET"]', async () => {
       // Click on Backup Burger Icon menu
       await page.waitForSelector('#burger_icon_menu', { visible: true })
       await page.click('#burger_icon_menu')
-      console.log(('User clicked on Burger Icon Menu'))
+      console.log('User clicked on Burger Icon Menu')
       // Click Manage Assets
       await page.waitForSelector('#manage_assets', { visible: true })
       await page.click('#manage_assets')
-      console.log(('User clicked on Manage Assets'))
+      console.log('User clicked on Manage Assets')
 
       // Search with token symbol and the token should be enabled with toggled switch
       await page.type('#search_for_an_assert_input', tokenDetails.symbol)
       await page.waitForSelector(`#${tokenDetails.symbol}`, { visible: true })
-      expect(await page.$eval(`#${tokenDetails.symbol}_toggle_button > label`, el => el.getAttribute('class')),
-        'Added custom token toggled automatically')
-        .contains('vue-js-switch toggled')
+      expect(
+        await page.$eval(`#${tokenDetails.symbol}_toggle_button > label`, (el) =>
+          el.getAttribute('class')
+        ),
+        'Added custom token toggled automatically'
+      ).contains('vue-js-switch toggled')
     })
-    it('BSC - PancakeSwap token add, remove custom token after', async () => { // Import wallet option
+    it('BSC - PancakeSwap token add, remove custom token after', async () => {
+      // Import wallet option
       const tokenDetails = {
         chain: 'bsc',
         address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
@@ -163,9 +167,12 @@ describe('Custom Token add-["MAINNET"]', async () => {
       // Search with token symbol and the token should be enabled with toggled switch
       await page.type('#search_for_an_assert_input', tokenDetails.symbol)
       await page.waitForSelector(`#${tokenDetails.symbol}`, { visible: true })
-      expect(await page.$eval(`#${tokenDetails.symbol}_toggle_button > label`, el => el.getAttribute('class')),
-        'Added custom token toggled automatically')
-        .contains('vue-js-switch toggled')
+      expect(
+        await page.$eval(`#${tokenDetails.symbol}_toggle_button > label`, (el) =>
+          el.getAttribute('class')
+        ),
+        'Added custom token toggled automatically'
+      ).contains('vue-js-switch toggled')
       // Remove token
       await addCustomTokenPage.RemoveCustomToken(page, tokenDetails.symbol)
     })
