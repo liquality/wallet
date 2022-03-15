@@ -151,7 +151,7 @@ export const connectRemote = (remotePort, store) => {
 
         break
       case 'connect':
-        emitter.$once(`origin:${origin}`, (_allowed, _accountId) => {
+        emitter.$once(`origin:${origin}`, (_, accountId) => {
           const accountData = store.getters.accountItem(accountId)
           const [address] = accountData.addresses
 
