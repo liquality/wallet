@@ -29,6 +29,7 @@ const TESTNET_ASSETS = [
   'MATIC',
   'PWETH',
   'ARBETH',
+  'AVAX',
   'SOL',
   'SUSHI',
   'LUNA',
@@ -45,7 +46,8 @@ const TESTNET_ASSETS = [
 }, {})
 
 const mapLegacyProvidersToSupported = {
-  oneinchV3: 'oneinchV4'
+  oneinchV3: 'oneinchV4',
+  liqualityBoost: 'liqualityBoostNativeToERC20'
 }
 
 export default {

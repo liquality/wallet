@@ -45,7 +45,20 @@
               >{{ addressError }}</small
             >
           </div>
-          <div class="form-group mt-150">
+          <div class="form-group mt-20" v-if="showMemoInput">
+            <label for="memo">Memo (Optional)</label>
+            <div class="input-group">
+              <textarea
+                type="text"
+                v-model="memo"
+                class="form-control form-control-sm"
+                id="memo"
+                autocomplete="off"
+                rows="5"
+              ></textarea>
+            </div>
+          </div>
+          <div class="form-group mt-150" v-bind:class="[showMemoInput ? 'adjustFeePosition' : '']">
             <DetailsContainer v-if="feesAvailable">
               <template v-slot:header>
                 <div class="network-header-container">
@@ -264,7 +277,8 @@ export default {
       sendErrorMessage: '',
       customFeeAssetSelected: null,
       customFee: null,
-      bridgeModalOpen: false
+      bridgeModalOpen: false,
+      memo: ''
     }
   },
   props: {
@@ -395,6 +409,14 @@ export default {
         cryptoassets[this.asset].chain === ChainId.Ethereum ||
         (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
       )
+    },
+    showMemoInput() {
+      return cryptoassets[this.asset].chain === ChainId.Terra
+    },
+    memoData() {
+      return {
+        memo: this.memo
+      }
     }
   },
   methods: {
@@ -504,7 +526,8 @@ export default {
           amount,
           fee,
           feeLabel: this.selectedFee,
-          fiatRate: this.fiatRates[this.asset]
+          fiatRate: this.fiatRates[this.asset],
+          ...(this.showMemoInput && { data: this.memoData })
         })
 
         this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
@@ -664,6 +687,15 @@ export default {
   .text-muted {
     margin-top: 5px;
   }
+}
+
+.adjustFeePosition {
+  margin-top: 2rem !important;
+}
+
+#memo {
+  border: 1px solid #a8aeb7;
+  resize: none;
 }
 
 /* Chrome, Safari, Edge, Opera */

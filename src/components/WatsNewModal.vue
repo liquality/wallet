@@ -10,8 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Astroport integration: swap all Terra tokens with one click</pre>
-            <pre class="text-wrap">Minor bug fixes</pre>
+            <pre class="text-wrap">Avalanche network Integration</pre>
+            <pre class="text-wrap">Avalanche swaps with 1Inch</pre>
+            <pre class="text-wrap">Avalanche swaps enabled with Boost</pre>
           </div>
         </div>
       </div>
