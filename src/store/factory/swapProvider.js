@@ -7,6 +7,7 @@ import { OneinchSwapProvider } from '@/swaps/oneinch/OneinchSwapProvider'
 import { ThorchainSwapProvider } from '@/swaps/thorchain/ThorchainSwapProvider'
 import { FastbtcSwapProvider } from '@/swaps/fastbtc/FastbtcSwapProvider'
 import { SovrynSwapProvider } from '@/swaps/sovryn/SovrynSwapProvider'
+import { WormholeSwapProvider } from '@/swaps/wormhole/WormholeSwapProvider'
 import { AstroportSwapProvider } from '@/swaps/astroport/AstroportSwapProvider'
 import buildConfig from '@/build.config'
 
@@ -19,6 +20,7 @@ const providers = {
   [SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE]: LiqualityBoostERC20toNative,
   [SwapProviderType.FASTBTC]: FastbtcSwapProvider,
   [SwapProviderType.SOVRYN]: SovrynSwapProvider,
+  [SwapProviderType.WORMHOLE]: WormholeSwapProvider,
   [SwapProviderType.ASTROPORT]: AstroportSwapProvider
 }
 

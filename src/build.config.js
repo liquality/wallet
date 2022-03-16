@@ -3,6 +3,8 @@ import { SwapProviderType } from './utils/swaps'
 import SovrynMainnetAddresses from '@blobfishkate/sovryncontracts/contracts-mainnet.json'
 import SovrynTestnetAddresses from '@blobfishkate/sovryncontracts/contracts-testnet.json'
 
+const infuraApiKey = 'da99ebc8c0964bb8bb757b6f8cc40f1f'
+
 export default {
   defaultAssets: {
     mainnet: [
@@ -42,7 +44,7 @@ export default {
       'UST'
     ]
   },
-  infuraApiKey: 'da99ebc8c0964bb8bb757b6f8cc40f1f',
+  infuraApiKey,
   exploraApis: {
     testnet: 'https://electrs-testnet-api.liq-chainhub.net/',
     mainnet: 'https://electrs-mainnet-api.liq-chainhub.net/'
@@ -92,6 +94,12 @@ export default {
         routerAddress: SovrynTestnetAddresses.swapNetwork,
         routerAddressRBTC: SovrynTestnetAddresses.proxy3,
         rpcURL: process.env.VUE_APP_SOVRYN_RPC_URL_TESTNET
+      },
+      wormhole: {
+        name: 'Wormhole',
+        icon: 'sovryn.svg',
+        type: SwapProviderType.WORMHOLE,
+        infuraApiKey
       }
     },
     mainnet: {
@@ -161,6 +169,12 @@ export default {
         type: SwapProviderType.ASTROPORT,
         URL: 'https://lcd.terra.dev',
         chainID: 'columbus-5'
+      },
+      wormhole: {
+        name: 'Wormhole',
+        icon: 'sovryn.svg',
+        type: SwapProviderType.WORMHOLE,
+        infuraApiKey
       }
     }
   },

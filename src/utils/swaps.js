@@ -9,6 +9,7 @@ export const SwapProviderType = {
   LIQUALITYBOOST_ERC20_TO_NATIVE: 'LIQUALITYBOOST_ERC20_TO_NATIVE',
   FASTBTC: 'FASTBTC',
   SOVRYN: 'SOVRYN',
+  WORMHOLE: 'WORMHOLE',
   ASTROPORT: 'ASTROPORT'
 }
 
@@ -23,6 +24,7 @@ const swapProviderRoot = {
   [SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE]:
     'swaps/liqualityboost/liqualityBoostERC20toNative',
   [SwapProviderType.SOVRYN]: 'swaps/sovryn',
+  [SwapProviderType.WORMHOLE]: 'swaps/wormhole',
   [SwapProviderType.ASTROPORT]: 'swaps/astroport'
 }
 
