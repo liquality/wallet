@@ -197,7 +197,7 @@
             <button
               class="btn btn-primary btn-lg btn-icon"
               id="send_button_confirm"
-              @click="tryToSend"
+              @click="send"
               :disabled="loading"
             >
               <SpinnerIcon class="btn-loading" v-if="loading" />
@@ -215,7 +215,6 @@
       :error="sendErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
-    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
@@ -244,8 +243,6 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 
 export default {
   components: {
@@ -257,8 +254,7 @@ export default {
     OperationErrorModal,
     LedgerSignRequestModal,
     CustomFees,
-    CustomFeesEIP1559,
-    LedgerBridgeModal
+    CustomFeesEIP1559
   },
   data() {
     return {
@@ -277,7 +273,6 @@ export default {
       sendErrorMessage: '',
       customFeeAssetSelected: null,
       customFee: null,
-      bridgeModalOpen: false,
       memo: ''
     }
   },
@@ -473,27 +468,6 @@ export default {
     async updateMaxSendFees() {
       await this._updateSendFees()
     },
-    async tryToSend() {
-      if (!this.ledgerBridgeReady && this.account?.type.includes('ledger')) {
-        this.loading = true
-        this.bridgeModalOpen = true
-        await this.startBridgeListener()
-        const unsubscribe = createConnectSubscription(() => {
-          this.bridgeModalOpen = false
-          this.send()
-        })
-
-        setTimeout(() => {
-          if (unsubscribe) {
-            this.bridgeModalOpen = false
-            this.loading = false
-            unsubscribe()
-          }
-        }, 25000)
-      } else {
-        await this.send()
-      }
-    },
     async send() {
       this.sendErrorMessage = ''
       this.loading = true
@@ -590,10 +564,6 @@ export default {
       this.customFee = null
       this.selectedFee = 'average'
     },
-    closeBridgeModal() {
-      this.loading = false
-      this.bridgeModalOpen = false
-    }
   },
   async created() {
     await this.updateFees({ asset: this.assetChain })

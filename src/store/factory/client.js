@@ -34,13 +34,10 @@ import { TerraRpcProvider } from '@liquality/terra-rpc-provider'
 import { TerraSwapFindProvider } from '@liquality/terra-swap-find-provider'
 
 import {
-  BitcoinLedgerBridgeProvider,
-  EthereumLedgerBridgeProvider,
-  BitcoinLedgerBridgeApp,
-  EthereumLedgerBridgeApp,
+  CustomBitcoinLedgerProvider,
+  CustomEthereumLedgerProvider,
   LEDGER_BITCOIN_OPTIONS
-} from '@/utils/ledger-bridge-provider'
-import { ChainId } from '@liquality/cryptoassets'
+} from '@/utils/hardware-wallet'
 
 import { isERC20 } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
@@ -66,13 +63,11 @@ function createBtcClient(network, mnemonic, accountType, derivationPath, publicK
   if (accountType.includes('bitcoin_ledger')) {
     const option = LEDGER_BITCOIN_OPTIONS.find((o) => o.name === accountType)
     const { addressType } = option
-    const ledgerApp = new BitcoinLedgerBridgeApp(network, ChainId.Bitcoin)
     btcClient.addProvider(
-      new BitcoinLedgerBridgeProvider({
+      new CustomBitcoinLedgerProvider({
         network: bitcoinNetwork,
         addressType,
         baseDerivationPath: derivationPath,
-        ledgerApp,
         basePublicKey: publicKey,
         baseChainCode: chainCode
       })
@@ -116,20 +111,13 @@ function createEthereumClient(
   ethClient.addProvider(feeProvider)
 
   if (accountType === 'ethereum_ledger' || accountType === 'rsk_ledger') {
-    const assetData = cryptoassets[asset]
-    const ethereumLedgerApp = new EthereumLedgerBridgeApp(
-      network,
-      assetData.chain || ChainId.Ethereum
-    )
-    const ledger = new EthereumLedgerBridgeProvider(
-      {
+    ethClient.addProvider(
+      new CustomEthereumLedgerProvider({
         network: ethereumNetwork,
         derivationPath,
         hardfork
-      },
-      ethereumLedgerApp
+      })
     )
-    ethClient.addProvider(ledger)
   } else {
     ethClient.addProvider(
       new EthereumJsWalletProvider({

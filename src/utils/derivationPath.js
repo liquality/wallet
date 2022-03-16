@@ -2,7 +2,7 @@ import { ChainId } from '@liquality/cryptoassets'
 import { ChainNetworks } from '@/utils/networks'
 import { BTC_ADDRESS_TYPE_TO_PREFIX } from '@/utils/address'
 import { bitcoin } from '@liquality/types'
-import { LEDGER_BITCOIN_OPTIONS } from '@/utils/ledger-bridge-provider'
+import { LEDGER_BITCOIN_OPTIONS } from '@/utils/hardware-wallet'
 
 const getBitcoinDerivationPath = (accountType, coinType, index) => {
   if (accountType.includes('ledger')) {

@@ -39,7 +39,6 @@ store.subscribe(async ({ type, payload }, state) => {
           action: 'Wallet Unlocked'
         }
       })
-      dispatch('app/closeExistingBridgeWindow', { windowsId: store.state.usbBridgeWindowsId })
       dispatch('checkAnalyticsOptIn')
       dispatch('initializeAddresses', {
         network: state.activeNetwork,

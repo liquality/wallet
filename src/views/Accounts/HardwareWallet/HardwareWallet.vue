@@ -7,7 +7,7 @@
       v-if="currentStep === 'connect'"
       :loading="loading"
       :selected-asset="selectedAsset"
-      @on-connect="tryToConnect"
+      @on-connect="connect"
       @on-select-asset="setLedgerAsset"
     />
     <Unlock
@@ -19,12 +19,11 @@
       :selected-asset="selectedAsset"
       :ledger-error="ledgerError"
       :current-page="ledgerPage"
-      @on-connect="tryToConnect"
+      @on-connect="connect"
       @on-unlock="unlock"
       @on-cancel="cancel"
       @on-select-account="selectAccount"
     />
-    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
@@ -33,15 +32,10 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar'
 import Connect from './Connect'
 import Unlock from './Unlock'
-import {
-  LEDGER_BITCOIN_OPTIONS,
-  LEDGER_OPTIONS,
-  createConnectSubscription
-} from '@/utils/ledger-bridge-provider'
+import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@/utils/hardware-wallet'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import { getNextAccountColor } from '@/utils/accounts'
-import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 
 const LEDGER_PER_PAGE = 5
 
@@ -49,8 +43,7 @@ export default {
   components: {
     NavBar,
     Connect,
-    Unlock,
-    LedgerBridgeModal
+    Unlock
   },
   data() {
     return {
@@ -62,8 +55,7 @@ export default {
       selectedAccounts: {},
       ledgerError: null,
       ledgerPage: 0,
-      selectedWalletType: null,
-      bridgeModalOpen: false
+      selectedWalletType: null
     }
   },
   computed: {
@@ -79,26 +71,9 @@ export default {
   },
   methods: {
     getAssetIcon,
-    closeBridgeModal() {
-      this.loading = false
-      this.bridgeModalOpen = false
-    },
     ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance', 'trackAnalytics']),
-    ...mapActions('app', ['startBridgeListener']),
-    async tryToConnect({ asset, walletType, page }) {
-      if (this.ledgerBridgeReady) {
-        await this.connect({ asset, walletType, page })
-      } else {
-        this.loading = true
-        this.bridgeModalOpen = true
-        await this.startBridgeListener()
-        createConnectSubscription(() => {
-          this.bridgeModalOpen = false
-          this.connect({ asset, walletType, page })
-        })
-      }
-    },
     async connect({ asset, walletType, page }) {
+      this.loading = true
       // connect to ledger
       await this.trackAnalytics({
         event: 'Connect Ledger button clicked',
@@ -109,7 +84,6 @@ export default {
         }
       })
       this.selectedAsset = asset
-      this.loading = true
       this.ledgerError = null
       this.accounts = []
 
@@ -149,7 +123,6 @@ export default {
             this.ledgerError = { message: 'No accounts found' }
           }
         }
-        this.loading = false
       } catch (error) {
         this.ledgerError = {
           message: error.message || 'Error getting accounts'
@@ -164,6 +137,7 @@ export default {
             error: [error.name, error.message, error.stack]
           }
         })
+      } finally {
         this.loading = false
       }
     },

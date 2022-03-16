@@ -322,7 +322,7 @@
             <button
               class="btn btn-primary btn-lg btn-block btn-icon"
               id="initiate_swap_button"
-              @click.stop="tryToSwap"
+              @click.stop="swap"
               :disabled="loading"
             >
               <SpinnerIcon class="btn-loading" v-if="loading" />
@@ -368,7 +368,6 @@
       :error="swapErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
-    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
@@ -414,8 +413,6 @@ import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { getSwapProviderConfig, SwapProviderType } from '@/utils/swaps'
 import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
-import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import buildConfig from '@/build.config'
 
 const DEFAULT_SWAP_VALUE_USD = 100
@@ -442,7 +439,6 @@ export default {
     OperationErrorModal,
     CustomFees,
     CustomFeesEIP1559,
-    LedgerBridgeModal,
     QuotesModal,
     SwapProvidersInfoModal,
     SwapInfo
@@ -472,8 +468,7 @@ export default {
       signRequestModalOpen: false,
       swapErrorMessage: '',
       customFeeAssetSelected: null,
-      customFees: {},
-      bridgeModalOpen: false
+      customFees: {}
     }
   },
   props: {
@@ -997,26 +992,6 @@ export default {
       this.currentStep = 'inputs'
       this.selectedFee[asset] = 'average'
     },
-    async tryToSwap() {
-      if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
-        this.loading = true
-        this.bridgeModalOpen = true
-        await this.startBridgeListener()
-        const unsubscribe = createConnectSubscription(() => {
-          this.bridgeModalOpen = false
-          this.swap()
-        })
-        setTimeout(() => {
-          if (unsubscribe) {
-            this.bridgeModalOpen = false
-            this.loading = false
-            unsubscribe()
-          }
-        }, 25000)
-      } else {
-        await this.swap()
-      }
-    },
     resetQuoteTimer() {
       clearTimeout(this.quoteTimer)
       this.quoteTimer = setTimeout(() => {
@@ -1188,10 +1163,6 @@ export default {
     onCustomFeeSelected(asset) {
       this.customFeeAssetSelected = getNativeAsset(asset)
       this.currentStep = 'custom-fees'
-    },
-    closeBridgeModal() {
-      this.loading = false
-      this.bridgeModalOpen = false
     },
     trackNoLiquidity() {
       if (this.showNoLiquidityMessage) {

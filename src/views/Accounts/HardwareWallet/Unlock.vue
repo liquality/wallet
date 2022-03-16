@@ -148,7 +148,7 @@
 </template>
 <script>
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { LEDGER_BITCOIN_OPTIONS } from '@/utils/ledger-bridge-provider'
+import { LEDGER_BITCOIN_OPTIONS } from '@/utils/hardware-wallet'
 import clickAway from '@/directives/clickAway'
 import { getAccountIcon } from '@/utils/accounts'
 import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'

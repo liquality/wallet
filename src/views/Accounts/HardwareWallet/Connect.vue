@@ -75,7 +75,7 @@
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import LedgerIcon from '@/assets/icons/ledger_icon.svg'
-import { LEDGER_OPTIONS } from '@/utils/ledger-bridge-provider'
+import { LEDGER_OPTIONS } from '@/utils/hardware-wallet'
 import clickAway from '@/directives/clickAway'
 import { isEthereumChain, getAssetIcon } from '@/utils/asset'
 

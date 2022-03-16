@@ -110,7 +110,6 @@ import NavBar from '@/components/NavBar.vue'
 import Modal from '@/components/Modal'
 import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
-import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import Timeline from '@/swaps/views/Timeline.vue'
 
 export default {
@@ -132,7 +131,6 @@ export default {
   },
   props: ['id'],
   computed: {
-    ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
     item() {
@@ -245,26 +243,10 @@ export default {
       this.retryingSwap = true
 
       try {
-        if (!this.ledgerBridgeReady && this.ledgerSignRequired) {
-          await this.startBridgeListener()
-          const unsubscribe = createConnectSubscription(async () => {
-            await this.retrySwap({ swap: this.item })
-            if (!this.item.error) {
-              this.showLedgerModal = false
-            }
-          })
-
-          setTimeout(() => {
-            if (unsubscribe) {
-              unsubscribe()
-            }
-          }, 25000)
-        } else {
-          await this.retrySwap({ swap: this.item })
-          if (!this.item.error) {
-            this.showLedgerModal = false
-          }
+        if (this.ledgerSignRequired) {
+          this.showLedgerModal = true
         }
+        await this.retrySwap({ swap: this.item })
       } finally {
         this.retryingSwap = false
       }
