@@ -194,7 +194,7 @@ describe('Import wallet-["MAINNET"]', async () => {
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page,'mainnet')
+    await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count

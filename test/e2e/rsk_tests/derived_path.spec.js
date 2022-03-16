@@ -21,7 +21,8 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.setDefaultNavigationTimeout(0)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
   })
   afterEach(async () => {
     await browser.close()
@@ -90,11 +91,15 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     assert.isNotEmpty(polygonAddress, 'create wallet POLYGON address should not be empty')
     assert.isNotEmpty(arbitrumAddress, 'create wallet ARBITRUM address should not be empty')
 
-    expect(assertAddresses.every((val, i, arr) => val === arr[0]),
-      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${JSON.stringify(assertAddressesMap)}`)
-      .eq(true)
-    expect(rskAddress, 'ETH & RSK Address are same if the wallet created with 0 balance')
-      .equals(ethAddress)
+    expect(
+      assertAddresses.every((val, i, arr) => val === arr[0]),
+      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${JSON.stringify(
+        assertAddressesMap
+      )}`
+    ).eq(true)
+    expect(rskAddress, 'ETH & RSK Address are same if the wallet created with 0 balance').equals(
+      ethAddress
+    )
 
     // Validate ERC20 derived path validations
     // RSK coins address validations
@@ -145,8 +150,12 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // GET the RSK Address
     const rskChains = await page.$$('#RSK')
     const rsk1Address = await rskChains[0].$eval('#assert_address', (el) => el.textContent.trim())
-    const rskLegacyAddress = await rskChains[1].$eval('#assert_address', (el) => el.textContent.trim())
-    expect(rsk1Address, 'RSK and RSK legacy addresses should n\'t be same').not.equals(rskLegacyAddress)
+    const rskLegacyAddress = await rskChains[1].$eval('#assert_address', (el) =>
+      el.textContent.trim()
+    )
+    expect(rsk1Address, "RSK and RSK legacy addresses should n't be same").not.equals(
+      rskLegacyAddress
+    )
     // BSC
     const bscAddress = await overviewPage.GetAssertAddress(page, 'BSC')
     expect(bscAddress, 'BSC address is empty on overview page').to.contain.oneOf(['...'])
@@ -160,9 +169,10 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     assertAddresses.push(ethAddress, bscAddress, polygonAddress, arbitrumAddress, rsk1Address)
     expect(assertAddresses.length).to.equals(5)
     console.log(assertAddresses)
-    expect(assertAddresses.every((val, i, arr) => val === arr[0]),
-      `Balance > 0 wallet should have same derived paths for chains-[ETHEREUM,BSC,POLYGON,ARBITRUM,RSK] ${assertAddresses}`)
-      .eq(true)
+    expect(
+      assertAddresses.every((val, i, arr) => val === arr[0]),
+      `Balance > 0 wallet should have same derived paths for chains-[ETHEREUM,BSC,POLYGON,ARBITRUM,RSK] ${assertAddresses}`
+    ).eq(true)
     // ETH & RSK derived paths are different
     expect(rsk1Address, 'ETH & RSK Addresses should be equal').equals(ethAddress)
 
@@ -181,8 +191,8 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     const sovAddress = await page.$eval('#SOV_address_container', (el) => el.textContent)
     const sovValue = await page.$eval('#SOV_balance_value', (el) => el.textContent)
     expect(sovAddress, 'SOV & RBTC address are equal').eq(rbtcAddress)
-    expect(rbtcValue, 'RBTC value shouldn\'t be 0').not.equals('0')
-    expect(sovValue, 'SOV value shouldn\'t be 0').not.equals('0')
+    expect(rbtcValue, "RBTC value shouldn't be 0").not.equals('0')
+    expect(sovValue, "SOV value shouldn't be 0").not.equals('0')
   })
   // Create a new wallet & forgot password & enter new seed pharse
   it('Create wallet & Validate derived path address after user enter new seedpharse after lock', async () => {
@@ -230,19 +240,25 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // ARBITRUM
     const arbitrumAddress = await overviewPage.GetAssertAddress(page, 'ARBITRUM')
 
-    let details =  {
-      'ETH': ethAddress,
-      'RSK': rskAddress,
-      'BSC': bscAddress,
-      'POLYGON': polygonAddress,
-      'ARBITRUM': arbitrumAddress
+    let details = {
+      ETH: ethAddress,
+      RSK: rskAddress,
+      BSC: bscAddress,
+      POLYGON: polygonAddress,
+      ARBITRUM: arbitrumAddress
     }
 
     assertAddresses.push(ethAddress, rskAddress, bscAddress, polygonAddress, arbitrumAddress)
-    expect(assertAddresses.every((val, i, arr) => val === arr[0]),
-      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${JSON.stringify(details)}`).eq(true)
-    expect(rskAddress, `ETH ${ethAddress} & RSK ${rskAddress} Address are same if the wallet created with 0 balance`)
-      .equals(ethAddress)
+    expect(
+      assertAddresses.every((val, i, arr) => val === arr[0]),
+      `Balance 0 wallet should have same derived paths for chains-[ETHEREUM,RSK,BSC,POLYGON,ARBITRUM]- ${JSON.stringify(
+        details
+      )}`
+    ).eq(true)
+    expect(
+      rskAddress,
+      `ETH ${ethAddress} & RSK ${rskAddress} Address are same if the wallet created with 0 balance`
+    ).equals(ethAddress)
 
     // Validate ERC20 derived path validations
     // RSK coins address validations
@@ -269,7 +285,10 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
     // some random seed phrase
-    const randomSeed = 'sense quality accuse asthma imitate rubber acquire surprise strategy whip harvest survey'.split(' ')
+    const randomSeed =
+      'sense quality accuse asthma imitate rubber acquire surprise strategy whip harvest survey'.split(
+        ' '
+      )
     const seedsWordsCount = await page.$$('#import_wallet_word')
     for (let i = 0; i < seedsWordsCount.length; i++) {
       const wordInput = seedsWordsCount[i]

@@ -26,7 +26,9 @@ describe('SEND feature["TESTNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
+    // Configure the navigation timeout
+    await page.setDefaultNavigationTimeout(0)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -121,18 +123,21 @@ describe('SEND feature["TESTNET"]', async () => {
       await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
-        await page.$eval('#send_review_button', el => el.click())
+        await page.$eval('#send_review_button', (el) => el.click())
       }
     }
     // Confirm SEND & validate send fiat details
     await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
-    const sentFiatAmount = await page.$eval('#send_value_in_fiat', el => el.innerText)
+    const sentFiatAmount = await page.$eval('#send_value_in_fiat', (el) => el.innerText)
     expect(sentFiatAmount.toString().trim().replace('$', '')).not.equals('0.00')
 
-    const sentNetworkFiatAmount = await page.$eval('#send_network_fee_in_fiat', el => el.innerText)
+    const sentNetworkFiatAmount = await page.$eval(
+      '#send_network_fee_in_fiat',
+      (el) => el.innerText
+    )
     expect(sentNetworkFiatAmount.toString().trim().replace('$', '')).not.equals('0.00')
 
-    const totalSendAmountFiat = await page.$eval('#total_to_send_in_fiat', el => el.innerText)
+    const totalSendAmountFiat = await page.$eval('#total_to_send_in_fiat', (el) => el.innerText)
     expect(totalSendAmountFiat.toString().trim().replace('$', '')).not.equals('0.00')
 
     await page.click('#send_button_confirm')
@@ -140,8 +145,14 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.click('#SEND_RBTC_RBTC')
 
     // Transaction details page validations
-    await page.waitForSelector('#transaction_details_status_number_of_confirmations', { visible: true, timeout: 180000 })
-    const sendStatus = await page.$eval('#transaction_details_status_and_confirmations', el => el.innerText)
+    await page.waitForSelector('#transaction_details_status_number_of_confirmations', {
+      visible: true,
+      timeout: 180000
+    })
+    const sendStatus = await page.$eval(
+      '#transaction_details_status_and_confirmations',
+      (el) => el.innerText
+    )
     expect(sendStatus).contains('Completed')
   })
   it('Send MATIC to MATIC-["PULL_REQUEST_TEST",""MAINNET_RELEASE""]', async () => {
@@ -163,7 +174,7 @@ describe('SEND feature["TESTNET"]', async () => {
       await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
-        await page.$eval('#send_review_button', el => el.click())
+        await page.$eval('#send_review_button', (el) => el.click())
       }
     }
     // Confirm SEND & validate send fiat details
@@ -171,7 +182,10 @@ describe('SEND feature["TESTNET"]', async () => {
     const sentFiatAmount = await page.$eval('#send_value_in_fiat', (el) => el.innerText)
     expect(sentFiatAmount.toString().trim().replace('$', '')).equals('0.01')
 
-    const sentNetworkFiatAmount = await page.$eval('#send_network_fee_in_fiat', (el) => el.innerText)
+    const sentNetworkFiatAmount = await page.$eval(
+      '#send_network_fee_in_fiat',
+      (el) => el.innerText
+    )
     expect(sentNetworkFiatAmount.toString().trim().replace('$', '')).equals('0.01')
 
     const totalSendAmountFiat = await page.$eval('#total_to_send_in_fiat', (el) => el.innerText)
@@ -182,16 +196,29 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.click(`#SEND_${assetName}_${assetName}`)
 
     // Transaction details page validations
-    await page.waitForSelector('#transaction_details_status_number_of_confirmations', { visible: true, timeout: 180000 })
-    const sendStatus = await page.$eval('#transaction_details_status_and_confirmations', (el) => el.innerText)
+    await page.waitForSelector('#transaction_details_status_number_of_confirmations', {
+      visible: true,
+      timeout: 180000
+    })
+    const sendStatus = await page.$eval(
+      '#transaction_details_status_and_confirmations',
+      (el) => el.innerText
+    )
     expect(sendStatus).contains('Completed')
     // Validate Send transaction timeline
     await page.waitForSelector('#transaction_details_date_time')
-    expect(await page.$eval('#transaction_detail_sent_amount',(el) => el.innerText)).contains(coinsToSend)
-    expect(await page.$eval('#transaction_detail_sent_amount_today',(el) => el.innerText)).contains('0.01')
-    expect(await page.$eval('#transaction_detail_sent_amount_then',(el) => el.innerText)).contains('0.01')
-    expect(await page.$eval('#transaction_detail_network_speed',(el) => el.innerText.toLowerCase())).contains('average')
-
+    expect(await page.$eval('#transaction_detail_sent_amount', (el) => el.innerText)).contains(
+      coinsToSend
+    )
+    expect(
+      await page.$eval('#transaction_detail_sent_amount_today', (el) => el.innerText)
+    ).contains('0.01')
+    expect(await page.$eval('#transaction_detail_sent_amount_then', (el) => el.innerText)).contains(
+      '0.01'
+    )
+    expect(
+      await page.$eval('#transaction_detail_network_speed', (el) => el.innerText.toLowerCase())
+    ).contains('average')
   })
   it('Send AVAX-AVAX["PULL_REQUEST_TEST",""MAINNET_RELEASE""]', async () => {
     const assetName = 'AVAX'
@@ -212,7 +239,7 @@ describe('SEND feature["TESTNET"]', async () => {
       await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
-        await page.$eval('#send_review_button', el => el.click())
+        await page.$eval('#send_review_button', (el) => el.click())
       }
     }
     // Confirm SEND & validate send fiat details
@@ -220,7 +247,10 @@ describe('SEND feature["TESTNET"]', async () => {
     const sentFiatAmount = await page.$eval('#send_value_in_fiat', (el) => el.innerText)
     expect(sentFiatAmount.toString().trim().replace('$', '')).not.equals('0.00')
 
-    const sentNetworkFiatAmount = await page.$eval('#send_network_fee_in_fiat', (el) => el.innerText)
+    const sentNetworkFiatAmount = await page.$eval(
+      '#send_network_fee_in_fiat',
+      (el) => el.innerText
+    )
     expect(sentNetworkFiatAmount.toString().trim().replace('$', '')).not.equals('0.00')
 
     const totalSendAmountFiat = await page.$eval('#total_to_send_in_fiat', (el) => el.innerText)
@@ -231,17 +261,32 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.click(`#SEND_${assetName}_${assetName}`)
 
     // Transaction details page validations
-    assert.isOk(await page.waitForSelector('#transaction_details_status_number_of_confirmations',
-        { visible: true , timeout: 180000}),
-      'Transaction details page is not loaded, confirmations are not available')
-    const sendStatus = await page.$eval('#transaction_details_status_and_confirmations', (el) => el.innerText)
+    assert.isOk(
+      await page.waitForSelector('#transaction_details_status_number_of_confirmations', {
+        visible: true,
+        timeout: 180000
+      }),
+      'Transaction details page is not loaded, confirmations are not available'
+    )
+    const sendStatus = await page.$eval(
+      '#transaction_details_status_and_confirmations',
+      (el) => el.innerText
+    )
     expect(sendStatus).contains('Completed')
     // Validate Send transaction timeline
     await page.waitForSelector('#transaction_details_date_time')
-    expect(await page.$eval('#transaction_detail_sent_amount',(el) => el.innerText)).contains(coinsToSend)
-    expect(await page.$eval('#transaction_detail_sent_amount_today',(el) => el.innerText)).not.contains('0.00')
-    expect(await page.$eval('#transaction_detail_sent_amount_then',(el) => el.innerText)).not.contains('0.00')
-    expect(await page.$eval('#transaction_detail_network_speed',(el) => el.innerText.toLowerCase())).contains('average')
+    expect(await page.$eval('#transaction_detail_sent_amount', (el) => el.innerText)).contains(
+      coinsToSend
+    )
+    expect(
+      await page.$eval('#transaction_detail_sent_amount_today', (el) => el.innerText)
+    ).not.contains('0.00')
+    expect(
+      await page.$eval('#transaction_detail_sent_amount_then', (el) => el.innerText)
+    ).not.contains('0.00')
+    expect(
+      await page.$eval('#transaction_detail_network_speed', (el) => el.innerText.toLowerCase())
+    ).contains('average')
   })
   it('ETH Send Max value check against Available Balance', async () => {
     const assetName = 'ETH'
@@ -253,7 +298,9 @@ describe('SEND feature["TESTNET"]', async () => {
     // Validate Available amount vs send amount
     const sendAmount = await sendPage.GetSendAmount(page)
     const availableAmount = await sendPage.GetSendAvailableBalance(page)
-    expect(availableAmount,
-      'Available balance and Max send amount are equal for ethereum').contains(sendAmount)
+    expect(
+      availableAmount,
+      'Available balance and Max send amount are equal for ethereum'
+    ).contains(sendAmount)
   })
 })

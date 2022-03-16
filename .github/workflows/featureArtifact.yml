@@ -48,13 +48,11 @@ jobs:
       - name: Set development manifest (DEV)
         id: buildWallet
         env:
-          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
           VUE_APP_TERRA_NODE_URL: ${{ secrets.VUE_APP_TERRA_NODE_URL }}
           VUE_APP_TRANSAK_WIDGET_URL: ${{ secrets.VUE_APP_TRANSAK_WIDGET_URL_DEV }}
           VUE_APP_TRANSAK_API_KEY: ${{ secrets.VUE_APP_TRANSAK_API_KEY_DEV }}
           VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY: ${{ secrets.VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY_DEV }}
         run: |
-          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
           echo VUE_APP_TERRA_NODE_URL =${{ secrets.VUE_APP_TERRA_NODE_URL }} >> .env
           echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
           echo VUE_APP_TRANSAK_WIDGET_URL =${{ secrets.VUE_APP_TRANSAK_WIDGET_URL_DEV }} >> .env

@@ -17,7 +17,7 @@ const password = '123123123'
 const SOVRYN_AMM = 'Sovryn'
 
 if (process.env.NODE_ENV === 'mainnet') {
-// Sovryn AMM works against RSK chain
+  // Sovryn AMM works against RSK chain
   describe('SWAP Sovryn AMM service Provider-["MAINNET","MAINNET_RELEASE"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
@@ -49,8 +49,10 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${fromAsset}_swap_button`)
       // Validate min SEND amount from text field & check Min is Active
       const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-      expect(swapSendAmountField, `${fromAsset} to ${toAsset} SWAP min value not set in input`)
-        .not.equals('0.0000')
+      expect(
+        swapSendAmountField,
+        `${fromAsset} to ${toAsset} SWAP min value not set in input`
+      ).not.equals('0.0000')
       await swapPage.ClickOnMin(page)
       // Select 2nd Pair
       await page.click('.swap-receive-main-icon')
@@ -66,12 +68,15 @@ if (process.env.NODE_ENV === 'mainnet') {
       })
       // Validate available balance
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
-      expect(availableBalance, `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`).to.be.above(
-        0
-      )
+      expect(
+        availableBalance,
+        `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`
+      ).to.be.above(0)
       await page.waitForTimeout(5000)
-      expect(await swapPage.getSelectedServiceProvider(page), 'RBTC->SOV, Supporting source should be chosen!')
-        .oneOf([SOVRYN_AMM])
+      expect(
+        await swapPage.getSelectedServiceProvider(page),
+        'RBTC->SOV, Supporting source should be chosen!'
+      ).oneOf([SOVRYN_AMM])
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
@@ -103,8 +108,10 @@ if (process.env.NODE_ENV === 'mainnet') {
       await page.click(`#${fromAsset}_swap_button`)
       // Validate min SEND amount from text field & check Min is Active
       const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
-      expect(swapSendAmountField, `${fromAsset} to ${toAsset} SWAP min value not set in input`)
-        .not.equals('0.0000')
+      expect(
+        swapSendAmountField,
+        `${fromAsset} to ${toAsset} SWAP min value not set in input`
+      ).not.equals('0.0000')
       await swapPage.ClickOnMin(page)
       // Select 2nd Pair
       await page.click('.swap-receive-main-icon')
@@ -120,13 +127,15 @@ if (process.env.NODE_ENV === 'mainnet') {
       })
       // Validate available balance
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
-      expect(availableBalance, `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`).to.be.above(
-        0
-      )
+      expect(
+        availableBalance,
+        `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`
+      ).to.be.above(0)
       await page.waitForTimeout(5000)
-      expect(await swapPage.getSelectedServiceProvider(page),
-        'RBTC->SOV, Supporting source should be chosen!')
-        .oneOf(['Sovryn'])
+      expect(
+        await swapPage.getSelectedServiceProvider(page),
+        'RBTC->SOV, Supporting source should be chosen!'
+      ).oneOf(['Sovryn'])
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
@@ -175,9 +184,10 @@ if (process.env.NODE_ENV === 'mainnet') {
         timeout: 60000
       })
       await page.waitForTimeout(5000)
-      expect(await swapPage.getSelectedServiceProvider(page),
-        'SOV->FISH, Supporting source should be chosen!')
-        .oneOf(['Sovryn'])
+      expect(
+        await swapPage.getSelectedServiceProvider(page),
+        'SOV->FISH, Supporting source should be chosen!'
+      ).oneOf(['Sovryn'])
     })
   })
 }

@@ -53,7 +53,10 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
       window.ethereum.enable()
     })
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true, timeout: 90000})
+    await connectRequestWindow.waitForSelector('#filter_by_chain', {
+      visible: true,
+      timeout: 90000
+    })
     await connectRequestWindow.click('#filter_by_chain').catch((e) => e)
     await connectRequestWindow.waitForSelector(`#${chain}_web_network`, { visible: true })
     await connectRequestWindow.click(`#${chain}_web_network`, { delay: 1000 })
@@ -91,9 +94,9 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     let chain = 'bsc'
 
     // Select correct network
-    await page.click('#dropdown-item', {delay: 1000})
+    await page.click('#dropdown-item', { delay: 1000 })
     await page.waitForSelector(`#${chain}_web_network`, { visible: true })
-    await page.click(`#${chain}_web_network`, {delay: 2000})
+    await page.click(`#${chain}_web_network`, { delay: 2000 })
 
     // Go to 1inch app
     const dappPage = await browser.newPage()

@@ -23,7 +23,8 @@ class LiqualityBoostNativeToERC20 extends SwapProvider {
         MATIC: this.oneinchSwapProvider,
         ETH: this.oneinchSwapProvider,
         BNB: this.oneinchSwapProvider,
-        RBTC: this.sovrynSwapProvider
+        RBTC: this.sovrynSwapProvider,
+        AVAX: this.oneinchSwapProvider
       }
     } else if (this.config.network === 'testnet') {
       this.bridgeAssetToAutomatedMarketMaker = {

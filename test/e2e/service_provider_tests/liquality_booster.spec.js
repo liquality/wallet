@@ -20,12 +20,13 @@ const BOOSTER = 'Liquality Boost'
 // https://docs.google.com/spreadsheets/d/18c-B2jYeyxoRTNI0yuFWsltSXYQ3quObxacXEx42N5g/edit#gid=0
 if (process.env.NODE_ENV === 'mainnet') {
   // eslint-disable-next-line no-inner-declarations
-  async function checkBooster () {
+  async function checkBooster() {
     try {
       await page.waitForSelector('#selectedQuote_provider', { visible: true })
-      expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-        'Liquality Boost source should be chosen!')
-        .contain(BOOSTER)
+      expect(
+        await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+        'Liquality Boost source should be chosen!'
+      ).contain(BOOSTER)
     } catch (e) {
       await testUtil.takeScreenshot(page, 'liqualityBoost-rate-provider-issue')
       expect(e, 'Liquality Boost should chosen').equals(null)
@@ -50,7 +51,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await overviewPage.HasOverviewPageLoaded(page)
     })
     afterEach(async () => {
-        await browser.close()
+      await browser.close()
     })
     it.skip('SWAP (BTC->PUSDC (Polygon))', async () => {
       const fromAsset = 'BTC'
@@ -107,7 +108,10 @@ if (process.env.NODE_ENV === 'mainnet') {
       }
       await page.waitForTimeout(5000)
       try {
-        const selectedQuoteProviderText = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
+        const selectedQuoteProviderText = await page.$eval(
+          '#selectedQuote_provider',
+          (el) => el.textContent
+        )
         if (selectedQuoteProviderText === liqualityBooster) {
           // Check source name
           await checkBooster()
@@ -151,7 +155,10 @@ if (process.env.NODE_ENV === 'mainnet') {
       }
       await page.waitForTimeout(5000)
       try {
-        const selectedQuoteProviderText = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
+        const selectedQuoteProviderText = await page.$eval(
+          '#selectedQuote_provider',
+          (el) => el.textContent
+        )
         if (selectedQuoteProviderText === BOOSTER) {
           // Check source name
           await checkBooster()

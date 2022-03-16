@@ -501,8 +501,5 @@ describe('SWAP feature["TESTNET"]', async () => {
       await swapPage.getSelectedServiceProvider(page),
       `${fromAsset}->${toAsset} swap, source should be chosen!`
     ).equals('Liquality')
-
-    // Get the quote value
-    const quoteValueOnSwapScreen = await page.$eval('.swap-rate_value', (el) => el.textContent)
   })
 })
