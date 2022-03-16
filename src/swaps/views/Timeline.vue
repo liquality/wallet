@@ -866,6 +866,6 @@ export default {
 }
 
 #fastFee {
-  padding-left: .6em;
+  padding-left: 0.6em;
 }
 </style>
