@@ -63,6 +63,5 @@ class CustomBitcoinLedgerProvider extends BitcoinLedgerProvider {
   // }
 }
 
-
 Object.assign(CustomBitcoinLedgerProvider.prototype, createTransportMixin)
 export { CustomBitcoinLedgerProvider }

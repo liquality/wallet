@@ -563,7 +563,7 @@ export default {
     resetCustomFee() {
       this.customFee = null
       this.selectedFee = 'average'
-    },
+    }
   },
   async created() {
     await this.updateFees({ asset: this.assetChain })
