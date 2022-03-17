@@ -11,6 +11,7 @@ export default {
   methods: {
     ...mapActions('app', ['setBuyCryptoModalOpen']),
     open() {
+      debugger
       const { asset, chain, address } = this
       this.setBuyCryptoModalOpen({ open: true, asset, chain, address })
     }

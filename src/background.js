@@ -205,5 +205,15 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       })
       break
+    case 'SET_BUY_CRYPTO_MODAL_OPEN':
+      debugger
+      dispatch('trackAnalytics', {
+        event: 'Buy Crypto',
+        properties: {
+          category: 'Buy Crypto',
+          action: 'Buy Crypto Modal Opened'
+        }
+      })
+      break
   }
 })

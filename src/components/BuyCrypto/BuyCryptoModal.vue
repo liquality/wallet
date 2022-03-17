@@ -30,6 +30,7 @@ import Modal from '@/components/Modal'
 import TransakBrand from '@/components/BuyCrypto/TransakBrand'
 
 import { mapActions, mapState } from 'vuex'
+
 export default {
   components: {
     Modal,
@@ -42,7 +43,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('app', ['setBuyCryptoModalOpen', 'openTransakWidgetTab']),
+    ...mapActions('app', ['setBuyCryptoModalOpen', 'openTransakWidgetTab', 'trackAnalytics']),
     close() {
       this.setBuyCryptoModalOpen({ open: false })
     },
@@ -68,6 +69,7 @@ h6 {
   line-height: 20px;
   color: #000d35;
 }
+
 .secondary-message {
   font-style: normal;
   font-weight: 300;
@@ -87,6 +89,7 @@ h6 {
     margin-top: 20px;
     width: 100%;
     padding: 0.5rem 1.5rem;
+    border-radius: 22px;
   }
 }
 </style>
