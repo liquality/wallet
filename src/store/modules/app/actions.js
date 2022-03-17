@@ -61,8 +61,21 @@ export const actions = {
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
     commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
   },
-  setBuyCryptoModalOpen: ({ commit }, { open, chain, asset, address }) => {
+  setBuyCryptoModalOpen: ({ commit, dispatch }, { open, chain, asset, address }) => {
     commit('SET_BUY_CRYPTO_MODAL_OPEN', { open, chain, asset, address })
+    dispatch(
+      'trackAnalytics',
+      {
+        event: 'Buy Crypto',
+        properties: {
+          action: open ? 'open' : 'close',
+          category: 'Buy Crypto options clicked from receive screen',
+          chain: chain,
+          asset: asset
+        }
+      },
+      { root: true }
+    )
   },
   setBuyCryptoOverviewModalOpen: ({ commit }, { open }) => {
     commit('SET_BUY_CRYPTO_OVERVIEW_MODAL_OPEN', { open })

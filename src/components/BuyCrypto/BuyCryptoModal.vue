@@ -89,6 +89,7 @@ h6 {
     margin-top: 20px;
     width: 100%;
     padding: 0.5rem 1.5rem;
+    border-radius: 22px;
   }
 }
 </style>

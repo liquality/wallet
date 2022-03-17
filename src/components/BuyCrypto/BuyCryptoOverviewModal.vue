@@ -56,7 +56,7 @@ export default {
     },
     receive() {
       this.setBuyCryptoOverviewModalOpen({ open: false })
-      this.$router.go('/assets/receive')
+      this.$router.push('/assets/receive')
     }
   }
 }
