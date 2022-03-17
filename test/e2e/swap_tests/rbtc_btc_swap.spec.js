@@ -32,7 +32,7 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.SelectNetwork(page,'mainnet')
+    await overviewPage.SelectNetwork(page, 'mainnet')
   })
   afterEach(async () => {
     await browser.close()
@@ -69,8 +69,10 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
     }
 
     await page.waitForTimeout(10000)
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'BTC->RBTC,Liquality swap Provider!!').oneOf(['Liquality'])
+    expect(
+      await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+      'BTC->RBTC,Liquality swap Provider!!'
+    ).oneOf(['Liquality'])
 
     // Click on SWAP Review button
     await swapPage.clickSwapReviewButton(page)
@@ -78,29 +80,33 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
     // SWAP SEND details validation
     const sendAmountValue = await swapPage.GetSwapSendAmountValue(page)
     expect(sendAmountValue.trim()).contain(fromAsset)
-    console.log(('SEND Swap value: ' + sendAmountValue))
+    console.log('SEND Swap value: ' + sendAmountValue)
     // Send confirm USD value
     const swapSendAmountInDollar = await swapPage.getSwapFromFiatValue(page)
-    expect(swapSendAmountInDollar.trim(), `Send Network fee should not be $0.00 for ${fromAsset}`)
-      .not.equals('$0.00')
-    console.log(('User SEND Swap value in USD: ' + swapSendAmountInDollar))
+    expect(
+      swapSendAmountInDollar.trim(),
+      `Send Network fee should not be $0.00 for ${fromAsset}`
+    ).not.equals('$0.00')
+    console.log('User SEND Swap value in USD: ' + swapSendAmountInDollar)
     // Send Network Fee
     const swapSendNetworkFeeValue = await swapPage.GetSwapSendNetworkFeeValue(page)
     expect(swapSendNetworkFeeValue.trim()).contain('RBTC')
-    console.log(('User SEND Swap Network Fee value: ' + swapSendNetworkFeeValue))
+    console.log('User SEND Swap Network Fee value: ' + swapSendNetworkFeeValue)
     // Send Network Fee in USD
     const swapSendNetworkFeeInDollar = await swapPage.GetSwapSendNetworkFeeInDollar(page)
-    expect(swapSendNetworkFeeInDollar.trim(), `Send ${fromAsset} network fee can not be $0.00`)
-      .not.contain('$0.00')
-    console.log(('User SEND Swap Network Fee value in USD: ' + swapSendNetworkFeeInDollar))
+    expect(
+      swapSendNetworkFeeInDollar.trim(),
+      `Send ${fromAsset} network fee can not be $0.00`
+    ).not.contain('$0.00')
+    console.log('User SEND Swap Network Fee value in USD: ' + swapSendNetworkFeeInDollar)
     // Send Account+FEES
     const swapSendAccountFeesValue = await swapPage.GetSwapSendAccountFeesValue(page)
     expect(swapSendAccountFeesValue.trim()).contain('RBTC')
-    console.log(('User SEND Account+FEES value: ' + swapSendAccountFeesValue))
+    console.log('User SEND Account+FEES value: ' + swapSendAccountFeesValue)
     // Send Accounts+FEES in USD
     const swapSendAccountFeesInDollar = await swapPage.GetSwapSendAccountFeesInDollar(page)
     expect(swapSendAccountFeesInDollar.trim()).not.contain('$00.00')
-    console.log(('User SEND Account+FEES value in USD: ' + swapSendAccountFeesInDollar))
+    console.log('User SEND Account+FEES value in USD: ' + swapSendAccountFeesInDollar)
 
     // Receive details validation
     const receiveAmountValue = await swapPage.GetSwapReceiveAmountValue(page)
@@ -108,8 +114,9 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
 
     // Receive fiat amount in $
     const receiveAmountInDollar = await swapPage.GetSwapReceiveAccountFeeInDollar(page)
-    expect(receiveAmountInDollar.trim(), 'Swap receive fiat amount should not be 0.00')
-      .not.contain('$0.00')
+    expect(receiveAmountInDollar.trim(), 'Swap receive fiat amount should not be 0.00').not.contain(
+      '$0.00'
+    )
     expect(receiveAmountInDollar.trim()).not.contain('NaN')
     // Receive Network Fee
     const receiveNetworkFeeValue = await swapPage.GetSwapReceiveNetworkValue(page)
@@ -123,8 +130,10 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
     expect(receiveAccountFeesValue.trim()).contain(toAsset)
     // Receive Amount+Fees fiat value
     const receiveAccountFeesInDollar = await swapPage.GetSwapReceiveNetworkInDollar(page)
-    expect(receiveAccountFeesInDollar.trim(), `Receive Network fee should not be $0.00 for ${toAsset}`)
-      .not.contain('$0.00')
+    expect(
+      receiveAccountFeesInDollar.trim(),
+      `Receive Network fee should not be $0.00 for ${toAsset}`
+    ).not.contain('$0.00')
     expect(receiveAccountFeesInDollar.trim()).not.contain('NaN')
     // RATE
     await page.waitForSelector('#swap_review_rate_block')

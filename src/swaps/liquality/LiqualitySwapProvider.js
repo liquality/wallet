@@ -610,7 +610,8 @@ class LiqualitySwapProvider extends SwapProvider {
       UST: 800000,
       MATIC: 165000,
       ERC20: 600000 + 94500, // Contract creation + erc20 transfer
-      ARBETH: 2400000
+      ARBETH: 2400000,
+      AVAX: 165000
     },
     SWAP_CLAIM: {
       BTC: 143,
@@ -623,7 +624,8 @@ class LiqualitySwapProvider extends SwapProvider {
       LUNA: 800000,
       UST: 800000,
       ERC20: 100000,
-      ARBETH: 680000
+      ARBETH: 680000,
+      AVAX: 45000
     }
   }
 

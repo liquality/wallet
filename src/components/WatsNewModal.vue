@@ -10,7 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Next release candidate 0.57.0</pre>
+            <pre class="text-wrap">Avalanche network Integration</pre>
+            <pre class="text-wrap">Avalanche swaps with 1Inch</pre>
+            <pre class="text-wrap">Avalanche swaps enabled with Boost</pre>
           </div>
         </div>
       </div>
