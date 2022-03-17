@@ -13,6 +13,7 @@ export const createLedgerTransport = async (onDisconnect) => {
         console.log('on disconnect')
         cb()
       })
+      transport.close()
     })
   }
 
