@@ -83,7 +83,15 @@ export const actions = {
   openTransakWidgetTab: ({ dispatch }, { chain, asset, address }) => {
     const widgetUrl = process.env.VUE_APP_TRANSAK_WIDGET_URL
     const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
-    const url = `${widgetUrl}?apiKey=${apiKey}&network=${chain}&cryptoCurrencyCode=${asset}&walletAddress=${address}`
+    let url = `${widgetUrl}?apiKey=${apiKey}`
+    if (asset) {
+      url = `${url}&cryptoCurrencyCode=${asset}`
+    }
+
+    if (address) {
+      url = `${url}&walletAddress=${address}`
+    }
+
     chrome.tabs.create({ url })
     dispatch('setBuyCryptoModalOpen', { open: false })
     dispatch('setBuyCryptoOverviewModalOpen', { open: false })
