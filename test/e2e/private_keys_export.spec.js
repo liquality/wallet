@@ -34,7 +34,7 @@ describe('Private key exports-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await browser.close()
   })
 
-  async function clickExportKeyOption (page) {
+  async function clickExportKeyOption(page) {
     await overviewPage.ClickOnBurgerIcon(page)
     await page.waitForSelector('#export_privkey', { visible: true })
     await page.click('#export_privkey')
@@ -53,11 +53,16 @@ describe('Private key exports-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await clickExportKeyOption(page)
     // Private key screen
     await page.waitForSelector('#private-key-textarea', { visible: true })
-    const privateKeyTextArea = await page.$eval('#private-key-textarea', el => el.getAttribute('readonly'))
-    const privateKey = await page.$eval('#private-key-textarea', el => el.value)
+    const privateKeyTextArea = await page.$eval('#private-key-textarea', (el) =>
+      el.getAttribute('readonly')
+    )
+    const privateKey = await page.$eval('#private-key-textarea', (el) => el.value)
     expect(privateKeyTextArea).equals('readonly')
-    expect(privateKey, 'Private key export value shouldn\'t be n/a')
-      .to.not.contain.oneOf(['n/a', 'NaN', null])
+    expect(privateKey, "Private key export value shouldn't be n/a").to.not.contain.oneOf([
+      'n/a',
+      'NaN',
+      null
+    ])
     await page.click('#done_button')
     await page.waitForSelector('#BITCOIN')
   })
@@ -67,10 +72,15 @@ describe('Private key exports-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await clickExportKeyOption(page)
     // Private key screen
     await page.waitForSelector('#private-key-textarea', { visible: true })
-    const privateKeyTextArea = await page.$eval('#private-key-textarea', el => el.getAttribute('readonly'))
-    const privateKey = await page.$eval('#private-key-textarea', el => el.value)
+    const privateKeyTextArea = await page.$eval('#private-key-textarea', (el) =>
+      el.getAttribute('readonly')
+    )
+    const privateKey = await page.$eval('#private-key-textarea', (el) => el.value)
     expect(privateKeyTextArea).equals('readonly')
-    expect(privateKey, 'Private key export value shouldn\'t be n/a')
-      .to.not.contain.oneOf(['n/a', 'NaN', null])
+    expect(privateKey, "Private key export value shouldn't be n/a").to.not.contain.oneOf([
+      'n/a',
+      'NaN',
+      null
+    ])
   })
 })

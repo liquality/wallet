@@ -20,7 +20,9 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
+    // Configure the navigation timeout
+    await page.setDefaultNavigationTimeout(0)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -48,7 +50,9 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // Click on Manage accounts option
     await overviewPage.ToggleExperimentButton(page, 'exp-manageAccounts-toggle-switch')
     await overviewPage.ClickOnManageAccounts(page)
-    expect(await page.$eval('#chain-item-toggle-rsk > label', el => el.getAttribute('class'))).contain('toggled')
+    expect(
+      await page.$eval('#chain-item-toggle-rsk > label', (el) => el.getAttribute('class'))
+    ).contain('toggled')
     // Click on Plus
     await page.click('#create-account-plus-icon-rsk')
     await page.waitForSelector('#choose-account-name')
@@ -57,7 +61,9 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true })
     // Toggle off RSK and validate the number of chains from overview page
     await page.click('#chain-item-toggle-rsk')
-    expect(await page.$eval('#chain-item-toggle-rsk > label', el => el.getAttribute('class'))).not.contain('toggled')
+    expect(
+      await page.$eval('#chain-item-toggle-rsk > label', (el) => el.getAttribute('class'))
+    ).not.contain('toggled')
     await page.click('#previous_nav_bar')
     // overview-screen-chain-section , RSK should be hidden
     let accounts = await page.$$('.overview-screen-chain-section')
@@ -144,30 +150,49 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await dappPage.click('#connect-wallet')
     await dappPage.waitForSelector('#connect-INJECTED', { visible: true })
     // Before click on injected wallet option.
-    const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page()))) /* eslint-disable-line */
+    const newPagePromise = new Promise((x) =>
+      browser.once('targetcreated', (target) => x(target.page()))
+    ) /* eslint-disable-line */
     await dappPage.click('#connect-INJECTED')
     const connectRequestWindow = await newPagePromise
     try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', { visible: true, timeout: 120000 })
+      await connectRequestWindow.waitForSelector('#connect_request_button', {
+        visible: true,
+        timeout: 120000
+      })
       await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
     } catch (e) {
-      await testUtil.takeScreenshot(connectRequestWindow, 'uniswap-ethereum-connect-request-window-issue')
-      expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(null)
+      await testUtil.takeScreenshot(
+        connectRequestWindow,
+        'uniswap-ethereum-connect-request-window-issue'
+      )
+      expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(
+        null
+      )
     }
     //Filter by chain
-    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true, timeout: 60000 })
+    await connectRequestWindow.waitForSelector('#filter_by_chain', {
+      visible: true,
+      timeout: 60000
+    })
     // Check connect button is enabled
     ethAccounts = await connectRequestWindow.$$('#ETHEREUM')
-    expect(ethAccounts.length, 'ethAccounts should have length 2 on dapp connect request')
-      .to.equals(2)
+    expect(
+      ethAccounts.length,
+      'ethAccounts should have length 2 on dapp connect request'
+    ).to.equals(2)
     await connectRequestWindow.click('#ETHEREUM')
     // click Next button
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
-    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
+    await connectRequestWindow.click('#connect_request_button').catch((e) => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', {
+      visible: false,
+      timeout: 60000
+    })
     // check origin url
-    await connectRequestWindow.$eval('#origin_url', el => el.innerText)
-      .then(text => expect(text).to.equals(dappUrl))
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow
+      .$eval('#origin_url', (el) => el.innerText)
+      .then((text) => expect(text).to.equals(dappUrl))
+    await connectRequestWindow.click('#connect_request_button').catch((e) => e)
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })

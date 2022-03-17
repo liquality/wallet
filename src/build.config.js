@@ -57,22 +57,21 @@ export default {
         name: 'Liquality',
         icon: 'liquality.svg',
         type: SwapProviderType.LIQUALITY,
-        agent:
-          process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
+        agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://testnet-dev-agent.liq-chainhub.net'
       },
       liqualityBoostNativeToERC20: {
         name: 'Liquality Boost',
         type: SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20,
         network: 'testnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['RBTC']
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
       },
       liqualityBoostERC20toNative: {
         name: 'Liquality Boost',
         type: SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE,
         network: 'testnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['RBTC']
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -100,21 +99,21 @@ export default {
         name: 'Liquality',
         icon: 'liquality.svg',
         type: SwapProviderType.LIQUALITY,
-        agent: 'https://liquality.io/swap-dev/agent'
+        agent: process.env.VUE_APP_AGENT_MAINNET_URL || 'https://mainnet-dev-agent.liq-chainhub.net'
       },
       liqualityBoostNativeToERC20: {
         name: 'Liquality Boost',
         type: SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['MATIC', 'RBTC']
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
       },
       liqualityBoostERC20toNative: {
         name: 'Liquality Boost',
         type: SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['MATIC', 'RBTC']
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -179,5 +178,5 @@ export default {
     'fuse',
     'avalanche'
   ],
-  supportedBridgeAssets: ['MATIC', 'RBTC']
+  supportedBridgeAssets: ['MATIC', 'RBTC', 'AVAX']
 }

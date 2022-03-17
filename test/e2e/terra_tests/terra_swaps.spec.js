@@ -27,7 +27,7 @@ const swapPairMap = [
   }
 ]
 describe.skip('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
-  swapPairMap.forEach(obj => {
+  swapPairMap.forEach((obj) => {
     it(`SWAP (${obj.fromAsset}->${obj.toAsset})`, async () => {
       const swapFromAsset = obj.fromAsset
       const swapToAsset = obj.toAsset
@@ -73,12 +73,19 @@ describe.skip('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
       await page.waitForTimeout(10000)
       try {
         await page.waitForSelector('#selectedQuote_provider', { visible: true })
-        expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-          `SWAP (${obj.fromAsset}->${obj.toAsset}), Liquality should be chosen!`)
-          .equals('Liquality')
+        expect(
+          await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+          `SWAP (${obj.fromAsset}->${obj.toAsset}), Liquality should be chosen!`
+        ).equals('Liquality')
       } catch (e) {
-        await testUtil.takeScreenshot(page, `terra-swap-quote-issue-${obj.fromAsset}-${obj.toAsset}`)
-        expect(e, `${obj.fromAsset}->${obj.toAsset} SWAP issue, Liquality Quote service provider should be chosen`).equals(null)
+        await testUtil.takeScreenshot(
+          page,
+          `terra-swap-quote-issue-${obj.fromAsset}-${obj.toAsset}`
+        )
+        expect(
+          e,
+          `${obj.fromAsset}->${obj.toAsset} SWAP issue, Liquality Quote service provider should be chosen`
+        ).equals(null)
       }
       if (swapToAsset === 'BTC') {
         // Click on SWAP Review button
@@ -92,10 +99,13 @@ describe.skip('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
         } catch (e) {
           if (e instanceof puppeteer.errors.TimeoutError) {
             await testUtil.takeScreenshot(page, 'sov-btc-swap-transaction-not-found')
-            expect(e, `SWAP (${obj.fromAsset}->${obj.toAsset}) transaction not found under Activity tab`).equals(null)
+            expect(
+              e,
+              `SWAP (${obj.fromAsset}->${obj.toAsset}) transaction not found under Activity tab`
+            ).equals(null)
           }
         }
-        const transactionSteps = await page.$eval('.transaction-steps', el => el.textContent)
+        const transactionSteps = await page.$eval('.transaction-steps', (el) => el.textContent)
         expect(transactionSteps).not.contains('NaN')
 
         const transactions = await page.$$('.transaction-status')

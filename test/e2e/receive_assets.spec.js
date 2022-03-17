@@ -23,7 +23,7 @@ const password = '123123123'
  * @param bitcoin
  * @returns {Promise<void>}
  */
-async function importWalletTestReceive (bitcoin) {
+async function importWalletTestReceive(bitcoin) {
   // Select code
   await overviewPage.SelectAssetFromOverview(page, bitcoin)
   // Validate details about assert on overview page
@@ -34,8 +34,16 @@ async function importWalletTestReceive (bitcoin) {
   const yourCurrentAddress = await page.$eval('#your_current_asset_address', (el) => el.textContent)
   expect(yourCurrentAddress).contains(bitcoin)
   await receivePage.HasQRCodeDisplayed(page)
-  if (bitcoin === 'ETH' || bitcoin === 'ARBETH' || bitcoin === 'AVAX' || bitcoin === 'RBTC' ||
-    bitcoin === 'BNB' || bitcoin === 'MATIC' || bitcoin === 'ARBETH' || bitcoin === 'LUNA') {
+  if (
+    bitcoin === 'ETH' ||
+    bitcoin === 'ARBETH' ||
+    bitcoin === 'AVAX' ||
+    bitcoin === 'RBTC' ||
+    bitcoin === 'BNB' ||
+    bitcoin === 'MATIC' ||
+    bitcoin === 'ARBETH' ||
+    bitcoin === 'LUNA'
+  ) {
     await receivePage.CheckReceiveURL(page)
   }
   await receivePage.CheckReceiveAddresses(page)
@@ -52,7 +60,8 @@ describe('Receive tokens ["MAINNET"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+      await page.setDefaultNavigationTimeout(0)
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
     })
     afterEach(async () => {
       await browser.close()
@@ -91,7 +100,22 @@ describe('Receive tokens ["MAINNET"]', async () => {
       await overviewPage.CheckAssertOverviewDetails(page, 'BTC')
     })
   })
-  const tokens = ['BTC', 'ETH', 'DAI', 'BNB', 'NEAR', 'ARBETH', 'RBTC', 'SOV', 'MATIC', 'PWETH', 'ARBETH', 'AVAX', 'LUNA', 'UST']
+  const tokens = [
+    'BTC',
+    'ETH',
+    'DAI',
+    'BNB',
+    'NEAR',
+    'ARBETH',
+    'RBTC',
+    'SOV',
+    'MATIC',
+    'PWETH',
+    'ARBETH',
+    'AVAX',
+    'LUNA',
+    'UST'
+  ]
   describe('Import wallet, Receive tokens', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())

@@ -42,8 +42,8 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
 
   it('Sushi injection - ETH["PULL_REQUEST_TEST"]', async () => {
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { waitUntil: 'load'})
-    await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 90000})
+    await dappPage.goto(dappUrl, { waitUntil: 'load' })
+    await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 90000 })
     await dappPage.click('#connect-wallet')
     // Before click on injected wallet option.
     const newPagePromise = new Promise((x) =>
@@ -54,14 +54,17 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
     injectedOption[0].click()
 
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true, timeout: 90000})
+    await connectRequestWindow.waitForSelector('#filter_by_chain', {
+      visible: true,
+      timeout: 90000
+    })
     try {
       await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
     } catch (e) {
       await testUtil.takeScreenshot(connectRequestWindow, 'sushi-ethereum-loading-issue')
       expect(e, 'sushi ethereum loading issue').equals(null)
     }
-    await connectRequestWindow.waitForSelector('#dropdown-item', { visible: true})
+    await connectRequestWindow.waitForSelector('#dropdown-item', { visible: true })
     let filterValues = await connectRequestWindow.evaluate(() => {
       const dropdownItems = document.querySelectorAll('#dropdown-item')
       const filterValues = []
@@ -70,11 +73,17 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
       }
       return filterValues
     })
-    expect(filterValues, 'Sushiswap injection ethereum not listed, connected window not loaded.....').to.include('Ethereum (ETH)')
+    expect(
+      filterValues,
+      'Sushiswap injection ethereum not listed, connected window not loaded.....'
+    ).to.include('Ethereum (ETH)')
     // click Next button
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
-    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', { visible: false, timeout: 60000 })
-    await connectRequestWindow.click('#connect_request_button').catch(e => e)
+    await connectRequestWindow.click('#connect_request_button').catch((e) => e)
+    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', {
+      visible: false,
+      timeout: 60000
+    })
+    await connectRequestWindow.click('#connect_request_button').catch((e) => e)
 
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
@@ -83,13 +92,13 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
     let chain = 'polygon'
 
     // Select correct network
-    await page.click('#dropdown-item', {delay: 1000})
+    await page.click('#dropdown-item', { delay: 1000 })
     await page.waitForSelector(`#${chain}_web_network`, { visible: true })
-    await page.click(`#${chain}_web_network`, {delay: 2000})
+    await page.click(`#${chain}_web_network`, { delay: 2000 })
 
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { waitUntil: 'load'})
-    await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 90000})
+    await dappPage.goto(dappUrl, { waitUntil: 'load' })
+    await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 90000 })
     await dappPage.click('#connect-wallet')
     // Before click on injected wallet option.
     const newPagePromise = new Promise((x) =>
@@ -100,12 +109,15 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
     injectedOption[0].click()
 
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#filter_by_chain', { visible: true, timeout: 90000})
+    await connectRequestWindow.waitForSelector('#filter_by_chain', {
+      visible: true,
+      timeout: 90000
+    })
     await connectRequestWindow.click('#filter_by_chain').catch((e) => e)
     await connectRequestWindow.waitForSelector(`#${chain}_web_network`, { visible: true })
     await connectRequestWindow.click(`#${chain}_web_network`, { delay: 1000 })
 
-    await connectRequestWindow.waitForSelector('#POLYGON', {visible: true})
+    await connectRequestWindow.waitForSelector('#POLYGON', { visible: true })
     await connectRequestWindow.click('#POLYGON')
     // Check connect button is enabled
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)

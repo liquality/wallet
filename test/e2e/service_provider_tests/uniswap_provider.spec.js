@@ -34,7 +34,7 @@ describe('UNISWAP service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
-      await browser.close()
+    await browser.close()
   })
 
   it.skip('ETH->DAI swap - UNISWAP V2', async () => {
@@ -60,12 +60,16 @@ describe('UNISWAP service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () =>
       visible: true,
       timeout: 60000
     })
-    expect(await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-      'ETH->DAI, Supporting source should be chosen!')
-      .oneOf(['Uniswap V2', 'Thorchain', 'Liquality'])
+    expect(
+      await page.$eval('#selectedQuote_provider', (el) => el.textContent),
+      'ETH->DAI, Supporting source should be chosen!'
+    ).oneOf(['Uniswap V2', 'Thorchain', 'Liquality'])
 
     // Click on Network speed + FEE & Validate
-    const networkSpeedFee = await page.$eval('#details_header_chevron_down_icon', el => el.textContent)
+    const networkSpeedFee = await page.$eval(
+      '#details_header_chevron_down_icon',
+      (el) => el.textContent
+    )
     expect(networkSpeedFee).contain(fromAsset + ' Avg')
   })
 })
