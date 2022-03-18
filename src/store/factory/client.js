@@ -181,8 +181,7 @@ function createEthClient(asset, network, mnemonic, accountType, derivationPath) 
 function createNearClient(network, mnemonic, derivationPath) {
   const nearConfig = ChainNetworks.near[network]
   const nearClient = new Client()
-  const nodeUrl =
-    network === 'testnet' ? nearConfig.nodeUrl : 'https://archival-rpc.mainnet.near.org'
+  const nodeUrl = network === 'testnet' ? nearConfig.nodeUrl : 'https://rpc.ankr.com/near'
   const nearNetwork = { ...nearConfig, nodeUrl }
   nearClient.addProvider(new NearRpcProvider(nearNetwork))
   nearClient.addProvider(
@@ -329,7 +328,8 @@ function createAvalancheClient(asset, network, mnemonic, derivationPath) {
   const isTestnet = network === 'testnet'
   const avalancheNetwork = ChainNetworks.avalanche[network]
   const rpcApi = isTestnet
-    ? process.env.VUE_APP_AVALANCHE_TESTNET_MORALIS_NODE || 'https://api.avax-test.network/ext/bc/C/rpc'
+    ? process.env.VUE_APP_AVALANCHE_TESTNET_MORALIS_NODE ||
+      'https://api.avax-test.network/ext/bc/C/rpc'
     : process.env.VUE_APP_AVALANCHE_MAINNET_MORALIS_NODE || 'https://api.avax.network/ext/bc/C/rpc'
   const scraperApi = isTestnet
     ? 'http://avax-testnet-api.liq-chainhub.net/'
