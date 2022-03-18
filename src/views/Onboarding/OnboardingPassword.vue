@@ -71,8 +71,8 @@ export default {
   props: ['imported'],
   data() {
     return {
-      password: null,
-      confirmPassword: null,
+      password: 'andon940410',
+      confirmPassword: 'andon940410',
       showPasswordLengthError: false
     }
   },

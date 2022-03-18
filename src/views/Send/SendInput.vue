@@ -4,7 +4,7 @@
       <div class="send-main-input-container">
         <div class="send-main-input">
           <div class="send-top">
-            <div class="send-top-label">Send</div>
+            <div class="send-top-label">{{ label || 'Send' }}</div>
             <div class="send-top-amount">
               <button
                 class="btn btn-option label-append"
@@ -116,7 +116,8 @@ export default {
     'available',
     'maxFiat',
     'amountError',
-    'maxActive'
+    'maxActive',
+    'label'
   ],
   computed: {
     ...mapState(['fiatRates'])

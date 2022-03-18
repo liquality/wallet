@@ -13,7 +13,9 @@ import TransactionDetails from '@/views/Details/TransactionDetails.vue'
 import Send from '@/views/Send/Send.vue'
 import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap/Swap.vue'
-import Anchor from '@/views/Anchor/Anchor.vue'
+import Overview from '@/views/Anchor/Overview.vue'
+import AnchorDeposit from '@/views/Anchor/Deposit.vue'
+import AnchorWithdraw from '@/views/Anchor/Withdraw.vue'
 
 import Settings from '@/views/Settings'
 import Experiments from '@/views/Experiments'
@@ -244,9 +246,21 @@ const routes = [
 
   // Anchor
   {
-    path: '/anchor/:accountId',
-    component: Anchor,
-    name: 'Anchor',
+    path: '/anchor/overview/:accountId',
+    component: Overview,
+    name: 'Overview',
+    props: true
+  },
+  {
+    path: '/anchor/deposit/:accountId',
+    component: AnchorDeposit,
+    name: 'AnchorDeposit',
+    props: true
+  },
+  {
+    path: '/anchor/withdraw/:accountId',
+    component: AnchorWithdraw,
+    name: 'AnchorWithdraw',
     props: true
   }
 ]

@@ -36,7 +36,7 @@ export const getDepositedAmount = async () => {
     ],
   })
 
-  return balanceInfo.balances[0].deposit_balance
+  return Number(balanceInfo.balances[0].deposit_balance)
 }
 
 export const makeDeposit = async (amount = '0.1') => {

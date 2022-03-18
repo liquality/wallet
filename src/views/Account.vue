@@ -77,7 +77,7 @@
               Receive
             </button>
           </router-link>
-          <router-link v-if="asset === 'UST'" v-bind:to="`/anchor/${accountId}`">
+          <router-link v-if="asset === 'UST'" v-bind:to="`/anchor/overview/${accountId}`">
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
                 <ReceiveIcon class="account-container_actions_button_icon" />
