@@ -2,17 +2,17 @@ import BN from 'bignumber.js'
 // import { v4 as uuidv4 } from 'uuid'
 // import * as ethers from 'ethers'
 
-import { /* chains, */ currencyToUnit /* , unitToCurrency */ } from '@liquality/cryptoassets'
+import { chains, currencyToUnit /* , unitToCurrency */ } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
-import { tokenDetailProviders /*, isERC20 */ } from '../../utils/asset'
+import { isERC20 } from '../../utils/asset'
 import { enableAssets, addCustomToken } from '../../store/actions'
 
 import { prettyBalance } from '../../utils/coinFormatter'
-import tokenABI from '../../utils/tokenABI.json'
+// import tokenABI from '../../utils/tokenABI.json'
 import { ChainNetworks } from '@/utils/networks'
 // import { withInterval, withLock } from '../../store/actions/performNextAction/utils'
 import { SwapProvider } from '../SwapProvider'
-// import ERC20 from '@uniswap/v2-core/build/ERC20.json'
+import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
 import * as wormhole from '@certusone/wormhole-sdk'
 // import { Connection } from '@solana/web3.js' // TODO: import package when solana is integrated
@@ -126,136 +126,139 @@ class WormholeSwapProvider extends SwapProvider {
   // ======== APPROVAL ========
 
   async requiresApproval({ network, walletId, quote }) {
-    // if (!isERC20(quote.from)) return false
-    // const fromInfo = cryptoassets[quote.from]
-    // const toInfo = cryptoassets[quote.to]
-    // const erc20 = new ethers.Contract(
-    //   fromInfo.contractAddress.toLowerCase(),
-    //   ERC20.abi,
-    //   this._getApi(network, quote.from)
-    // )
-    // const fromAddressRaw = await this.getSwapAddress(
-    //   network,
-    //   walletId,
-    //   quote.from,
-    //   quote.fromAccountId
-    // )
-    // const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw, network)
-    // const spender = (
-    //   fromInfo.type === 'native' || toInfo.type === 'native'
-    //     ? this.config.routerAddressRBTC
-    //     : this.config.routerAddress
-    // ).toLowerCase()
-    // const allowance = await erc20.allowance(fromAddress.toLowerCase(), spender)
-    // const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
-    // if (allowance.gte(inputAmount)) {
-    //   return false
-    // }
-    // return true
+    const fromInfo = cryptoassets[quote.from]
+    const fromChain = fromInfo.chain
+
+    // skip approval in case of native asset or in case of non EVM chain
+    if (!isERC20(quote.from) || !wormhole.isEVMChain(chainsConfig[fromChain]?.WormholeChainID)) {
+      return false
+    }
+
+    const erc20 = new ethers.Contract(
+      fromInfo.contractAddress.toLowerCase(),
+      ERC20.abi,
+      this._getApi(network, fromChain)
+    )
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.fromAccountId
+    )
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
+    const spender = chainsConfig[fromChain][network].tokenBridge
+    const allowance = await erc20.allowance(fromAddress.toLowerCase(), spender.toLowerCase())
+    const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
+
+    return allowance.gte(inputAmount) ? false : true
   }
 
   async buildApprovalTx({ network, walletId, quote }) {
-    // const fromInfo = cryptoassets[quote.from]
-    // const toInfo = cryptoassets[quote.to]
-    // const erc20 = new ethers.Contract(
-    //   fromInfo.contractAddress.toLowerCase(),
-    //   ERC20.abi,
-    //   this._getApi(network, quote.from)
-    // )
-    // const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
-    // const inputAmountHex = inputAmount.toHexString()
-    // // in case native token is involved -> give allowance to wrapper contract
-    // const spender = (
-    //   fromInfo.type === 'native' || toInfo.type === 'native'
-    //     ? this.config.routerAddressRBTC
-    //     : this.config.routerAddress
-    // ).toLowerCase()
-    // const encodedData = erc20.interface.encodeFunctionData('approve', [spender, inputAmountHex])
-    // const fromChain = fromInfo.chain
-    // const fromAddressRaw = await this.getSwapAddress(
-    //   network,
-    //   walletId,
-    //   quote.from,
-    //   quote.fromAccountId
-    // )
-    // const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
-    // return {
-    //   from: fromAddress, // Required for estimation only (not used in chain client)
-    //   to: fromInfo.contractAddress,
-    //   value: 0,
-    //   data: encodedData,
-    //   fee: quote.fee
-    // }
+    const fromInfo = cryptoassets[quote.from]
+    const fromChain = fromInfo.chain
+
+    const erc20 = new ethers.Contract(
+      fromInfo.contractAddress.toLowerCase(),
+      ERC20.abi,
+      this._getApi(network, quote.from)
+    )
+    const inputAmount = ethers.BigNumber.from(BN(quote.fromAmount).toFixed())
+    const inputAmountHex = inputAmount.toHexString()
+    const spender = chainsConfig[fromChain][network].tokenBridge.toLowerCase()
+    const encodedData = erc20.interface.encodeFunctionData('approve', [spender, inputAmountHex])
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.fromAccountId
+    )
+    const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
+
+    return {
+      from: fromAddress, // Required for estimation only (not used in chain client)
+      to: fromInfo.contractAddress,
+      value: 0,
+      data: encodedData,
+      fee: quote.fee
+    }
   }
 
   async approveTokens({ network, walletId, quote }) {
-    // const requiresApproval = await this.requiresApproval({
-    //   network,
-    //   walletId,
-    //   quote
-    // })
-    // if (!requiresApproval) {
-    //   return {
-    //     status: 'APPROVE_CONFIRMED'
-    //   }
-    // }
-    // const txData = await this.buildApprovalTx({ network, walletId, quote })
-    // const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
-    // const approveTx = await client.chain.sendTransaction(txData)
-    // return {
-    //   status: 'WAITING_FOR_APPROVE_CONFIRMATIONS',
-    //   approveTx,
-    //   approveTxHash: approveTx.hash
-    // }
+    const requiresApproval = await this.requiresApproval({
+      network,
+      walletId,
+      quote
+    })
+    if (!requiresApproval) {
+      return {
+        status: 'APPROVE_CONFIRMED'
+      }
+    }
+    const txData = await this.buildApprovalTx({ network, walletId, quote })
+    const client = this.getClient(network, walletId, quote.from, quote.fromAccountId)
+    const approveTx = await client.chain.sendTransaction(txData)
+    return {
+      status: 'WAITING_FOR_APPROVE_CONFIRMATIONS',
+      approveTx,
+      approveTxHash: approveTx.hash
+    }
   }
 
-  // ======== SWAP ========
+  // ======== SEND ========
 
-  async buildSwapTx({ network, walletId, quote }) {
-    // const fromInfo = cryptoassets[quote.from]
-    // const toInfo = cryptoassets[quote.to]
-    // const api = this._getApi(network, quote.from)
-    // const coversionPath = quote.path
-    // const toAmountWithSlippage = this._calculateSlippage(quote.toAmount).toString()
-    // let encodedData
-    // let routerAddress
-    // if (fromInfo.type === 'native' || toInfo.type === 'native') {
-    //   // use routerAddressRBTC when native token is present in the swap
-    //   routerAddress = this.config.routerAddressRBTC.toLowerCase()
-    //   const wpContract = new ethers.Contract(routerAddress, RBTCWrapperProxyABI, api)
-    //   encodedData = wpContract.interface.encodeFunctionData('convertByPath', [
-    //     coversionPath,
-    //     quote.fromAmount,
-    //     toAmountWithSlippage
-    //   ])
-    // } else {
-    //   routerAddress = this.config.routerAddress.toLowerCase()
-    //   const ssnContract = new ethers.Contract(routerAddress, SovrynSwapNetworkABI, api)
-    //   // ignore affiliate and beneficiary
-    //   encodedData = ssnContract.interface.encodeFunctionData('convertByPath', [
-    //     coversionPath,
-    //     quote.fromAmount,
-    //     toAmountWithSlippage,
-    //     '0x0000000000000000000000000000000000000000', // account that will receive the conversion result or 0x0 to send the result to the sender account
-    //     '0x0000000000000000000000000000000000000000', // wallet address to receive the affiliate fee or 0x0 to disable affiliate fee
-    //     0 // affiliate fee in PPM or 0 to disable affiliate fee
-    //   ])
-    // }
-    // const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
-    // const fromAddressRaw = await this.getSwapAddress(
-    //   network,
-    //   walletId,
-    //   quote.from,
-    //   quote.fromAccountId
-    // )
-    // const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw, network)
-    // return {
-    //   from: fromAddress, // Required for estimation only (not used in chain client)
-    //   to: routerAddress,
-    //   value,
-    //   data: encodedData,
-    //   fee: quote.fee
-    // }
+  async buildSendTx({ network, walletId, quote }) {
+    const fromInfo = cryptoassets[quote.from]
+    const toInfo = quote.toTokenInfo.exists ? cryptoassets[quote.to] : quote.toTokenInfo
+
+    // TODO: look into the possible fee to wormhole
+    let encodedData
+    let routerAddress
+
+    const tokenBridgeAddress = this.chainsConfig[fromInfo.chain][network].tokenBridge.toLowerCase()
+    const api = this._getApi(network, fromInfo.chain)
+
+    const tokenBridgeContract = new ethers.Contract(
+      tokenBridgeAddress,
+      wormhole.BridgeToken__factory.abi,
+      api
+    )
+
+    // // use routerAddressRBTC when native token is present in the swap
+    // routerAddress = this.config.routerAddressRBTC.toLowerCase()
+    // const wpContract = new ethers.Contract(routerAddress, RBTCWrapperProxyABI, api)
+    // encodedData = wpContract.interface.encodeFunctionData('convertByPath', [
+    //   coversionPath,
+    //   quote.fromAmount,
+    //   toAmountWithSlippage
+    // ])
+
+    // routerAddress = this.config.routerAddress.toLowerCase()
+    // const ssnContract = new ethers.Contract(routerAddress, SovrynSwapNetworkABI, api)
+    // // ignore affiliate and beneficiary
+    // encodedData = ssnContract.interface.encodeFunctionData('convertByPath', [
+    //   coversionPath,
+    //   quote.fromAmount,
+    //   toAmountWithSlippage,
+    //   '0x0000000000000000000000000000000000000000', // account that will receive the conversion result or 0x0 to send the result to the sender account
+    //   '0x0000000000000000000000000000000000000000', // wallet address to receive the affiliate fee or 0x0 to disable affiliate fee
+    //   0 // affiliate fee in PPM or 0 to disable affiliate fee
+    // ])
+
+    const value = isERC20(quote.from) ? 0 : BN(quote.fromAmount)
+    const fromAddressRaw = await this.getSwapAddress(
+      network,
+      walletId,
+      quote.from,
+      quote.fromAccountId
+    )
+    const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw, network)
+    return {
+      from: fromAddress, // Required for estimation only (not used in chain client)
+      to: routerAddress,
+      value,
+      data: encodedData,
+      fee: quote.fee
+    }
   }
 
   async sendSwap({ network, walletId, quote }) {
@@ -272,37 +275,40 @@ class WormholeSwapProvider extends SwapProvider {
 
   //  ======== FEES ========
 
+  // TODO:
   async estimateFees({ network, walletId, asset, txType, quote, feePrices }) {
-    // if (txType !== SovrynSwapProvider.fromTxType) throw new Error(`Invalid tx type ${txType}`)
-    // const nativeAsset = chains[cryptoassets[asset].chain].nativeAsset
-    // const account = this.getAccount(quote.fromAccountId)
-    // const client = this.getClient(network, walletId, quote.from, account?.type)
-    // let gasLimit = 0
-    // if (await this.requiresApproval({ network, walletId, quote })) {
-    //   const approvalTx = await this.buildApprovalTx({
-    //     network,
-    //     walletId,
-    //     quote
-    //   })
-    //   const rawApprovalTx = {
-    //     from: approvalTx.from,
-    //     to: approvalTx.to,
-    //     data: approvalTx.data,
-    //     value: '0x' + approvalTx.value.toString(16)
-    //   }
-    //   gasLimit += await client.getMethod('estimateGas')(rawApprovalTx)
-    // }
-    // // Due to a problem on RSK network with incorrect gas estimations, the gas used by swap transaction
-    // // is hardcoded to 750k. This value is recommended by Sovryn team! Real gas usage is between 380k and 500k
-    // // and it depends on the number of steps in the conversion path.
-    // gasLimit += 750000
-    // const fees = {}
-    // for (const feePrice of feePrices) {
-    //   const gasPrice = BN(feePrice).times(1e9) // ETH fee price is in gwei
-    //   const fee = BN(gasLimit).times(1.1).times(gasPrice)
-    //   fees[feePrice] = unitToCurrency(cryptoassets[nativeAsset], fee).toFixed()
-    // }
-    // return fees
+    if (txType !== WormholeSwapProvider.fromTxType) throw new Error(`Invalid tx type ${txType}`)
+
+    const nativeAsset = chains[cryptoassets[asset].chain].nativeAsset
+    const account = this.getAccount(quote.fromAccountId)
+    const client = this.getClient(network, walletId, quote.from, account?.type)
+    let gasLimit = 0
+    if (await this.requiresApproval({ network, walletId, quote })) {
+      const approvalTx = await this.buildApprovalTx({
+        network,
+        walletId,
+        quote
+      })
+      const rawApprovalTx = {
+        from: approvalTx.from,
+        to: approvalTx.to,
+        data: approvalTx.data,
+        value: '0x' + approvalTx.value.toString(16)
+      }
+      gasLimit += await client.getMethod('estimateGas')(rawApprovalTx)
+    }
+
+    // Due to a problem on RSK network with incorrect gas estimations, the gas used by swap transaction
+    // is hardcoded to 750k. This value is recommended by Sovryn team! Real gas usage is between 380k and 500k
+    // and it depends on the number of steps in the conversion path.
+    gasLimit += 750000
+    const fees = {}
+    for (const feePrice of feePrices) {
+      const gasPrice = BN(feePrice).times(1e9) // ETH fee price is in gwei
+      const fee = BN(gasLimit).times(1.1).times(gasPrice)
+      fees[feePrice] = unitToCurrency(cryptoassets[nativeAsset], fee).toFixed()
+    }
+    return fees
   }
 
   // ======== STATE TRANSITIONS ========
@@ -485,7 +491,7 @@ class WormholeSwapProvider extends SwapProvider {
 
   async _fetchTokenDetails(network, chain, contractAddress) {
     const api = await this._getApi(network, chain)
-    const contract = new ethers.Contract(contractAddress.toLowerCase(), tokenABI, api)
+    const contract = new ethers.Contract(contractAddress.toLowerCase(), ERC20.abi, api)
 
     const [decimals, name, symbol] = await Promise.all([
       contract.decimals(),
@@ -541,7 +547,8 @@ class WormholeSwapProvider extends SwapProvider {
   // ======== STATIC ========
 
   static txTypes = {
-    SWAP: 'SWAP'
+    TRANSFER: 'TRANSFER',
+    REDEEM: 'REDEEM'
   }
 
   static statuses = {
@@ -594,8 +601,8 @@ class WormholeSwapProvider extends SwapProvider {
     }
   }
 
-  static fromTxType = WormholeSwapProvider.txTypes.SWAP
-  static toTxType = null
+  static fromTxType = WormholeSwapProvider.txTypes.TRANSFER
+  static toTxType = WormholeSwapProvider.txTypes.REDEEM
   static timelineDiagramSteps = ['APPROVE', 'SWAP']
   static totalSteps = 3
 }
