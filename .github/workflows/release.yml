@@ -61,7 +61,6 @@ jobs:
             echo VUE_APP_AVALANCHE_TESTNET_MORALIS_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_MORALIS_NODE }} >> .env
             echo VUE_APP_AGENT_TESTNET_URL =${{ secrets.VUE_APP_AGENT_TESTNET_URL }} >> .env
             echo VUE_APP_AGENT_MAINNET_URL =${{ secrets.VUE_APP_AGENT_MAINNET_URL }} >> .env
-#            sed -i "s/\/swap-testnet-dev\/agent/\/swap-testnet\/agent/g; s/\/swap-dev\/agent/\/swap\/agent/g" src/build.config.js
             npm ci
             npm run lint
             npm run build
