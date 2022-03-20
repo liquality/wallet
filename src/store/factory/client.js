@@ -182,7 +182,9 @@ function createNearClient(network, mnemonic, derivationPath) {
   const nearConfig = ChainNetworks.near[network]
   const nearClient = new Client()
   const nodeUrl =
-    network === 'testnet' ? nearConfig.nodeUrl : 'https://archival-rpc.mainnet.near.org'
+    network === 'testnet'
+      ? nearConfig.nodeUrl
+      : process.env.VUE_APP_NEAR_MAINNET_URL || nearConfig.nodeUrl
   const nearNetwork = { ...nearConfig, nodeUrl }
   nearClient.addProvider(new NearRpcProvider(nearNetwork))
   nearClient.addProvider(
@@ -331,8 +333,9 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
 
   let _asset, feeAsset, tokenAddress, stableFee
 
-  const nodeUrl = isTestnet ? terraNetwork.nodeUrl : process.env.VUE_APP_TERRA_NODE_URL
-
+  const nodeUrl = isTestnet
+    ? terraNetwork.nodeUrl
+    : process.env.VUE_APP_TERRA_MAINNET_URL || terraNetwork.nodeUrl
 
   switch (asset) {
     case 'LUNA': {
@@ -356,7 +359,9 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
 
   const terraClient = new Client()
 
-  terraClient.addProvider(new TerraRpcProvider({ ...terraNetwork, nodeUrl }, _asset, feeAsset, tokenAddress))
+  terraClient.addProvider(
+    new TerraRpcProvider({ ...terraNetwork, nodeUrl }, _asset, feeAsset, tokenAddress)
+  )
   terraClient.addProvider(
     new TerraWalletProvider({
       network: { ...terraNetwork, nodeUrl },
