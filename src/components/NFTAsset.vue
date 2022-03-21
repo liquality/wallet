@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import { mapActions, mapMutations } from 'vuex'
 export default {
   props: {
     nftAsset: {
@@ -47,6 +48,8 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['setStarredNFTs']),
+    ...mapMutations(['SET_STARRED_NFTS']),
     viewNFTDetails() {
       if (this.nftAsset) {
         this.$router.push({
@@ -55,9 +58,14 @@ export default {
         })
       }
     },
-    toggleStarred() {
+    async toggleStarred() {
       this.nftAsset.starred = !this.nftAsset.starred
-      // this.$store.dispatch('toggleStarred', this.nftAsset)
+      console.log('🚀 ~ file: NFTAsset.vue ~ line 62 ~ toggleStarred ~ nftAsset', this.nftAsset)
+      try {
+        await this.SET_STARRED_NFTS(this.nftAsset)
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }

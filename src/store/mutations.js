@@ -50,6 +50,23 @@ export default {
   SET_NFT_ASSETS_NUMBER(state, payload) {
     state.nftAssetsNumber = payload
   },
+  SET_STARRED_NFTS(state, payload) {
+    let starredNFTs = state.starredNFTs ? state.starredNFTs : []
+    const isStarred = starredNFTs
+      ? starredNFTs.find(
+          (nft) =>
+            nft.asset_contract.address === payload.asset_contract.address && nft.id === payload.id
+        )
+      : false
+    if (starredNFTs && isStarred) {
+      console.log("🚀 ~ file: mutations.js ~ line 57 ~ SET_STARRED_NFTS ~ isStarred", isStarred)
+      starredNFTs.splice(starredNFTs.indexOf(payload), 1)
+      state.starredNFTs = starredNFTs
+      return
+    } else {
+      state.starredNFTs = starredNFTs.push(payload)
+    }
+  },
   ACCEPT_TNC(state) {
     state.termsAcceptedAt = Date.now()
   },

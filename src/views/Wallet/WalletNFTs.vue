@@ -35,10 +35,6 @@ export default {
           network: this.activeNetwork,
           walletId: this.activeWalletId
         })
-        console.log(
-          '🚀 ~ file: WalletNFTs.vue ~ line 36 ~ getNftCollections ~ nftAssets',
-          nftAssets
-        )
         this.assets = nftAssets
       } catch (error) {
         console.error(error)

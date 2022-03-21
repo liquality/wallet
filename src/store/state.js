@@ -55,5 +55,6 @@ export default {
   enabledChains: {},
 
   nftAssets: null,
-  nftAssetsNumber: 0
+  nftAssetsNumber: 0,
+  starredNFTs: []
 }
