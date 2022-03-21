@@ -49,10 +49,12 @@ jobs:
         if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
-          VUE_APP_TERRA_NODE_URL: ${{ secrets.VUE_APP_TERRA_NODE_URL }}
+          VUE_APP_TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
+          VUE_APP_NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
         run: |
             echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
-            echo VUE_APP_TERRA_NODE_URL =${{ secrets.VUE_APP_TERRA_NODE_URL }} >> .env
+            echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
+            echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
             sed -i "s/\/swap-testnet-dev\/agent/\/swap-testnet\/agent/g; s/\/swap-dev\/agent/\/swap\/agent/g" src/build.config.js
             npm ci
             npm run lint
