@@ -219,7 +219,6 @@ class HopSwapProvider extends SwapProvider {
     const { bridgeAsset, chainFrom, chainTo } = info
     const bridge = hop.bridge(bridgeAsset)
     const sendData = await bridge.getSendData(fromAmountInUnit.toString(), chainFrom, chainTo)
-    console.log('sendData ->', sendData)
     if (!sendData) return null
     return {
       from,
