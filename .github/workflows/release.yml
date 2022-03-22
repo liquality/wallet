@@ -89,7 +89,7 @@ jobs:
             npm run build
 
       # Run tests against dev mainnet
-      - name: Regression tests against Mainnet
+      - name: Regression tests against Mainnet (Dev Agent)
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         uses: beemi/puppeteer-headful@v1.0.11
         env:
