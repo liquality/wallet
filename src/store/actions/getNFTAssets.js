@@ -14,11 +14,11 @@ export const getNFTAssets = async ({ getters, commit }, args) => {
       const state = storage['liquality-wallet']
       console.log('🚀 ~ file: getNFTAssets.js ~ line 15 ~ chrome.storage.local.get ~ state', state)
       if (state.starredNFTs) {
-        state.starredNFTs.filter(
+        a['starred'] = state.starredNFTs.filter(
           (item) => item.asset_contract.address === a.asset_contract.address && item.id === a.id
         )
-          ? (a['starred'] = true)
-          : (a['starred'] = false)
+          ? true
+          : false
       }
     })
     r[a.collection.name].push(a)
