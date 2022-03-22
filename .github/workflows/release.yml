@@ -78,10 +78,10 @@ jobs:
           VUE_APP_AGENT_MAINNET_URL: ${{ secrets.VUE_APP_AGENT_MAINNET_URL }}
         run: |
             echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
-            echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
             echo VUE_APP_AVALANCHE_MAINNET_NODE =${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }} >> .env
             echo VUE_APP_AVALANCHE_TESTNET_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }} >> .env
             echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
+            echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
             echo VUE_APP_AGENT_TESTNET_URL =${{ secrets.VUE_APP_AGENT_TESTNET_URL }} >> .env
             echo VUE_APP_AGENT_MAINNET_URL =${{ secrets.VUE_APP_AGENT_MAINNET_URL }} >> .env
             npm ci
