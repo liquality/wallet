@@ -363,7 +363,7 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
 
   const nodeUrl = isTestnet
     ? terraNetwork.nodeUrl
-    : process.env.VUE_APP_TERRA_NODE_URL || terraNetwork.nodeUrl
+    : process.env.VUE_APP_TERRA_MAINNET_URL || terraNetwork.nodeUrl
 
   switch (asset) {
     case 'LUNA': {
