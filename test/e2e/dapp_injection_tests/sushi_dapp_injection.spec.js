@@ -10,7 +10,7 @@ const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
-let browser, page, dappPage
+let browser, page
 const password = '123123123'
 const dappUrl = 'https://app.sushi.com'
 
@@ -18,7 +18,8 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.setDefaultNavigationTimeout(0)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)

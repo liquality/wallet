@@ -15,14 +15,14 @@ const password = '123123123'
 
 let bridgeUrl = 'https://bridge.sovryn.app/'
 let sovrynUrl = 'https://live.sovryn.app/'
-let tropykusUrl = 'https://app.tropykus.com'
 let alphaMoneyOnChains = 'https://alpha.moneyonchain.com/'
 
 describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.setDefaultNavigationTimeout(0)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
