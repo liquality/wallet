@@ -18,6 +18,7 @@
     "test:mainnet:devagent": "NODE_ENV=mainnet NODE_AGENT=devagent node_modules/mocha/bin/mocha --grep 'MAINNET'",
     "test:mainnet:prodagent": "NODE_ENV=mainnet NODE_AGENT=prodagent node_modules/mocha/bin/mocha --grep 'MAINNET'",
     "test:mainnet:prodagent:release": "NODE_ENV=mainnet NODE_AGENT=prodagent node_modules/mocha/bin/mocha --grep 'MAINNET_RELEASE'",
+    "test:mainnet:devagent:release": "NODE_ENV=mainnet NODE_AGENT=devagent node_modules/mocha/bin/mocha --grep 'MAINNET_RELEASE'",
     "test:pullrequest": "node_modules/mocha/bin/mocha --grep 'PULL_REQUEST_TEST'",
     "test:testnet": "node_modules/mocha/bin/mocha --grep 'TESTNET'"
   },
