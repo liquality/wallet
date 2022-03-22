@@ -10,7 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Swaps will be unavailable for maintenance intermittently for the next 24-48 hours. Please bear with us as we upgrade swaps to be more stable and reliable.</pre>
+            <pre class="text-wrap">
+Swaps will be unavailable for maintenance intermittently for the next 24-48 hours. Please bear with us as we upgrade swaps to be more stable and reliable.</pre
+            >
           </div>
         </div>
       </div>
