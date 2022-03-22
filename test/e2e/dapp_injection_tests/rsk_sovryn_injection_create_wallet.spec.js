@@ -22,7 +22,8 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.setDefaultNavigationTimeout(0)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
     // Terms & conditions
