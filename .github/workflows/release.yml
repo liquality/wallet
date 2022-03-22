@@ -88,37 +88,37 @@ jobs:
             npm run lint
             npm run build
 
-      # Run tests against dev mainnet
-      - name: Regression tests against Mainnet (DEV Agent)
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        uses: beemi/puppeteer-headful@v1.0.11
-        env:
-          CI: 'true'
-          DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        with:
-          args: npm run test:mainnet:devagent:release
-
-      #Run tests against Prod mainnet
-      - name: Regression tests against Mainnet (PROD Agent)
-        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
-        uses: beemi/puppeteer-headful@v1.0.11
-        env:
-          CI: 'true'
-          DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        with:
-          args: npm run test:mainnet:prodagent:release
-
-      - name: Save Screenshots
-        uses: actions/upload-artifact@v2.3.1
-        if: always()
-        with:
-          name: screenshots
-          path: screenshots
-          if-no-files-found: ignore
+#      # Run tests against dev mainnet
+#      - name: Regression tests against Mainnet (DEV Agent)
+#        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+#        uses: beemi/puppeteer-headful@v1.0.11
+#        env:
+#          CI: 'true'
+#          DISPLAY: :99
+#          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+#          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+#        with:
+#          args: npm run test:mainnet:devagent:release
+#
+#      #Run tests against Prod mainnet
+#      - name: Regression tests against Mainnet (PROD Agent)
+#        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
+#        uses: beemi/puppeteer-headful@v1.0.11
+#        env:
+#          CI: 'true'
+#          DISPLAY: :99
+#          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+#          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+#        with:
+#          args: npm run test:mainnet:prodagent:release
+#
+#      - name: Save Screenshots
+#        uses: actions/upload-artifact@v2.3.1
+#        if: always()
+#        with:
+#          name: screenshots
+#          path: screenshots
+#          if-no-files-found: ignore
 
       - name: Changelog
         uses: scottbrenner/generate-changelog-action@master
