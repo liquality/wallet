@@ -5,9 +5,7 @@
     </template>
     <template>
       <div class="top">
-        <p class="first-message">
-          All you need to do is deposit ETH or any other ERC-20 token to your Liquality wallet.
-        </p>
+        <p class="first-message">All you need to do is deposit Crypto to your Liquality wallet.</p>
         <div @click="receive" class="receive-action">
           <ReceiveIconPrimary class="receive-icon" />
           Receive

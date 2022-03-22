@@ -7,7 +7,7 @@
       <p class="main-message">
         Transak lets you buy multiple assets with your credit card or via bank transer depending on
         location straight into your Liquality wallet. To cover fees (gas) or interact with DApps
-        you'll mostly need ETH.
+        you'll mostly need <b>Buy Crypto</b>.
       </p>
       <p class="secondary-message">
         Fees and limits may vary. It usually takes just a couple of minutes and requires
