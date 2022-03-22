@@ -220,7 +220,7 @@ describe('SEND feature["TESTNET"]', async () => {
       await page.$eval('#transaction_detail_network_speed', (el) => el.innerText.toLowerCase())
     ).contains('average')
   })
-  it('Send AVAX-AVAX["PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
+  it.skip('Send AVAX-AVAX["PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
     const assetName = 'AVAX'
     const coinsToSend = '0.00001'
     const addressToSend = '0x9d6345f731e160cd90b65a91ab60f4f9e37bdbd2'
