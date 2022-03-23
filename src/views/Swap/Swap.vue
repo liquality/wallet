@@ -46,7 +46,7 @@
             :account="toAccount"
             :to-asset="toAsset"
             :receive-amount="dpUI(receiveAmount)"
-            :receive-amount-fiat="receiveAmountFiat"
+            :receive-amount-fiat="dpUI(receiveAmountFiat, 2)"
             disabled
             @to-asset-click="toAssetClick"
           />

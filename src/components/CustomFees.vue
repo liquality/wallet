@@ -40,7 +40,9 @@
           <div class="custom-fee-details">
             <div class="custom-fee-details-item">
               <div class="gas-price-label">Gas Price</div>
-              <div class="gas-price-amount" v-if="customFiatAmount">${{ customFiatAmount }}</div>
+              <div class="gas-price-amount" v-if="customFiatAmount">
+                &nbsp;${{ customFiatAmount }}
+              </div>
             </div>
             <div class="custom-fee-details-item">
               <div class="gas-unit-label">{{ gasUnit }}</div>
@@ -51,7 +53,7 @@
                   id="custom_fee_input_field"
                   :step="stepSize"
                   :value="fee"
-                  @input="setCustomFee(parseFloat($event.target.value))"
+                  @input="setCustomFee(parseFloat($event.target.value).toFixed(6))"
                 />
                 <div class="input-group-text fee-input-controls">
                   <ChevronUpIcon @click="incrementFee" />
