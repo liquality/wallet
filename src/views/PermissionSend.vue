@@ -111,7 +111,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-import { unitToCurrency, chainToTokenAddressMap, ChainId } from '@liquality/cryptoassets'
+import { chainToTokenAddressMap, ChainId } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
@@ -355,7 +355,7 @@ export default {
     },
     amount() {
       if (!this.value) return 0
-      return unitToCurrency(cryptoassets[this.asset], this.value).toNumber()
+      return prettyBalance(this.value, this.asset)
     },
     data() {
       return this.request.args[0].data
