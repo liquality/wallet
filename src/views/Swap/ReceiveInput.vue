@@ -73,7 +73,6 @@ export default {
     }
   },
   props: ['account', 'toAsset', 'receiveAmount', 'receiveAmountFiat', 'disabled'],
-  created() {},
   computed: {
     receiveAmountFiatValue() {
       return isNaN(this.receiveAmountFiat)
