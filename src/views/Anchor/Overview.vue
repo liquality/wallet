@@ -12,29 +12,84 @@
     />
 
     <div class="wrapper">
-      <PoweredByAnchor @setGettingStarted="setGettingStarted" />
+      <!-- <PoweredByAnchor @setGettingStarted="setGettingStarted" /> -->
       <div class="amounts-wrapper">
         <div class="left-label">
-          <strong>YOUR TOTAL DEPOSIT</strong>
+          <p>ALREADY DEPOSITED</p>
         </div>
         <div class="right-label">
-          <span class="amount">
-            {{ isNaN(depositedAmount) ? '0' : dpUI(depositedAmount) || '0' }}
-          </span>
+          <span class="text-muted">$ {{ fiatBalance }}</span>
+          <div class="amount-wrapper">
+            <span>
+              {{ isNaN(depositedAmount) ? '0' : dpUI(depositedAmount) || '0' }}
+            </span>
 
-          <AccountTooltip :account="account" :asset="asset">
-            <div class="send-main-icon">
-              <img :src="getAssetIcon(asset)" class="asset-icon" />
-              <span class="asset-name">
-                {{ asset }}
-              </span>
-            </div>
-          </AccountTooltip>
+            <span class="asset">
+              {{ asset }}
+            </span>
+          </div>
         </div>
       </div>
       <Available :asset="asset" :amount="balance" />
 
       <ExpectedInterestRate :asset="asset" :account="account" :amount="depositedAmount" />
+
+      <div class="activities">
+        <span @click="setShowActivities"
+          ><i class="arrow" v-bind:class="{ right: !showActivities, bottom: showActivities }"></i> 3
+          ACTIVITIES
+        </span>
+        <div class="list">
+          <div class="item">
+            <div class="left-wrapper">
+              <div>NQKAV ICON</div>
+              <div>
+                <span>DEPOSIT UST</span>
+                <span>4/27/2022, 6:51pm</span>
+              </div>
+            </div>
+            <div class="right-wrapper">
+              <div>
+                <span>DEPOSIT UST</span>
+                <span>4/27/2022, 6:51pm</span>
+              </div>
+              <div>NQKAV ICON</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="left-wrapper">
+              <div>NQKAV ICON</div>
+              <div>
+                <span>DEPOSIT UST</span>
+                <span>4/27/2022, 6:51pm</span>
+              </div>
+            </div>
+            <div class="right-wrapper">
+              <div>
+                <span>DEPOSIT UST</span>
+                <span>4/27/2022, 6:51pm</span>
+              </div>
+              <div>NQKAV ICON</div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="left-wrapper">
+              <div>NQKAV ICON</div>
+              <div>
+                <span>DEPOSIT UST</span>
+                <span>4/27/2022, 6:51pm</span>
+              </div>
+            </div>
+            <div class="right-wrapper">
+              <div>
+                <span>DEPOSIT UST</span>
+                <span>4/27/2022, 6:51pm</span>
+              </div>
+              <div>NQKAV ICON</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div v-if="!depositedAmount" class="no-deposit">
         <p>
@@ -58,16 +113,20 @@
       />
     </div>
 
-    <GettingStarted v-if="gettingStarted" />
+    <GettingStarted
+      v-if="gettingStarted"
+      :accountId="accountId"
+      @setGettingStarted="setGettingStarted"
+    />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 import { getAssetIcon } from '@/utils/asset'
 import { createAnchor, getDepositedAmount } from '@/utils/anchor'
-import { dpUI } from '@/utils/coinFormatter'
+import { dpUI, prettyFiatBalance } from '@/utils/coinFormatter'
 import { unitToCurrency } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 
@@ -94,13 +153,15 @@ export default {
   props: ['accountId'],
   data() {
     return {
-      depositedAmount: null,
+      depositedAmount: 0,
       loading: true,
-      gettingStarted: false
+      gettingStarted: false,
+      showActivities: false
     }
   },
   computed: {
     ...mapGetters(['accountItem']),
+    ...mapState(['fiatRates']),
     asset() {
       return 'UST'
     },
@@ -111,13 +172,20 @@ export default {
       const balance = this.account.balances[this.asset] || 0
 
       return unitToCurrency(cryptoassets[this.asset], balance)
+    },
+    fiatBalance() {
+      return prettyFiatBalance(this.balance, this.fiatRates[this.asset])
     }
   },
   methods: {
     getAssetIcon,
     dpUI,
+    prettyFiatBalance,
     setGettingStarted() {
       this.gettingStarted = !this.gettingStarted
+    },
+    setShowActivities() {
+      this.showActivities = !this.showActivities
     }
   },
   async created() {
@@ -135,50 +203,39 @@ export default {
   padding: 20px;
   flex-direction: column;
 
+  .expected-interest-wrapper {
+    margin-top: 15px;
+  }
+
   .amounts-wrapper {
-    margin-top: 20px;
     display: flex;
     justify-content: space-between;
 
     .left-label {
-      width: 130px;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 700;
+
+      p {
+        width: 200px;
+      }
     }
 
     .right-label {
       display: flex;
-      align-items: center;
-    }
-
-    .amount {
-      font-size: 24px;
-      line-height: 24px;
-      color: #5291f1;
-    }
-
-    .send-main-icon {
-      display: flex;
       align-items: flex-end;
-      justify-content: space-between;
-      margin-left: 10px;
+      flex-direction: column;
+    }
 
-      .asset-name {
-        margin-left: 5px;
-        font-style: normal;
+    .amount-wrapper {
+      display: flex;
+      color: #646f85;
+      font-size: 28px;
+      line-height: 42px;
+
+      .asset {
         font-weight: 300;
-        font-size: 24px;
-        line-height: 24px;
-      }
-
-      div {
-        display: flex;
-        align-items: center;
-        height: 24px;
-
-        svg {
-          width: 8px;
-          margin-left: 10px;
-          vertical-align: middle;
-        }
+        margin-left: 7px;
       }
     }
   }
@@ -192,6 +249,40 @@ export default {
       text-transform: none;
       font-weight: $font-weight-light;
       font-size: $font-size-tiny;
+    }
+  }
+
+  .activities {
+    margin-top: 45px;
+    font-weight: 700;
+    cursor: pointer;
+
+    .arrow {
+      border: solid #3d4767;
+      border-width: 0 2px 2px 0;
+      display: inline-block;
+      padding: 3px;
+      margin-right: 9px;
+
+      &.right {
+        transform: rotate(-45deg);
+      }
+
+      &.bottom {
+        transform: rotate(45deg);
+      }
+    }
+
+    .list {
+      .item {
+        display: flex;
+        justify-content: space-between;
+
+        .left-wrapper,
+        .right-wrapper {
+          display: flex;
+        }
+      }
     }
   }
 
@@ -228,5 +319,10 @@ export default {
       }
     }
   }
+}
+
+::v-deep .amount {
+  font-size: 28px !important;
+  line-height: 42px !important;
 }
 </style>

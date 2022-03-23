@@ -1,22 +1,5 @@
 <template>
   <div class="expected-interest-wrapper">
-    <div class="amounts-wrapper">
-      <div class="left-label">
-        <strong>EXPECTED INTEREST RATE</strong>
-      </div>
-      <div class="right-label">
-        <span class="amount">{{ expectedInterestRate }}</span>
-
-        <AccountTooltip :account="account" :asset="asset">
-          <div class="send-main-icon">
-            <img :src="getAssetIcon(asset)" class="asset-icon" />
-            <span class="asset-name">
-              {{ asset }}
-            </span>
-          </div>
-        </AccountTooltip>
-      </div>
-    </div>
     <div class="apy-wrapper">
       <p
         v-bind:class="{ active: selectedInterestRate === 'year' }"
@@ -43,10 +26,25 @@
         Day
       </p>
     </div>
-    <div class="apy-today">
-      <p>
-        <strong>APY {{ apy }} % AS OF TODAY</strong>
-      </p>
+    <div class="amounts-wrapper">
+      <div class="left-label">
+        <strong>EXPECTED INTEREST RATE</strong>
+        <p>
+          <strong>APY {{ apy }} %</strong>
+        </p>
+      </div>
+      <div class="right-label">
+        <span class="amount">{{ expectedInterestRate }}</span>
+
+        <AccountTooltip :account="account" :asset="asset">
+          <div class="send-main-icon">
+            <img :src="getAssetIcon(asset)" class="asset-icon" />
+            <span class="asset-name">
+              {{ asset }}
+            </span>
+          </div>
+        </AccountTooltip>
+      </div>
     </div>
   </div>
 </template>
@@ -104,7 +102,6 @@ export default {
   flex-direction: column;
 }
 .amounts-wrapper {
-  margin-top: 20px;
   display: flex;
   justify-content: space-between;
 
@@ -189,10 +186,5 @@ export default {
     background: #f0f7f9;
     font-weight: bold;
   }
-}
-
-.apy-today {
-  align-self: flex-end;
-  margin-top: 19px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="available">
-    <div class="send-bottom-available" id="send_available_balance">
+    <div class="send-bottom-available text-muted" id="send_available_balance">
       <span class="text-muted">Available</span>
       {{ isNaN(amount) ? '0' : dpUI(amount) || '0' }} {{ asset }}
     </div>

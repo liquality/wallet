@@ -65,6 +65,9 @@ export default {
   flex-direction: column;
   background: #ffffff;
   overflow: hidden;
+  // & :not(.getting-started-overlay) {
+  //   filter: brightness(0.5);
+  // }
 }
 
 @keyframes redraw {

@@ -1,5 +1,5 @@
 <template>
-  <v-popover offset="1" trigger="click" :placement="'bottom'">
+  <v-popover offset="1" trigger="hover" :placement="'bottom'">
     <slot></slot>
     <template slot="popover">
       <div class="content">
