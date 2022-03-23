@@ -40,12 +40,13 @@
           />
           <div class="arrow-down">
             <ArrowDown
+              id="arrow"
               v-if="!updatingQuotes"
               @click="
                 onReverseAssets(asset, toAsset, selectedQuote.toAmount, fromAccountId, toAccountId)
               "
             />
-            <SpinnerIcon class="btn-loading" v-else />
+            <SpinnerIcon v-else />
           </div>
           <ReceiveInput
             class="mt-30"
@@ -1382,7 +1383,10 @@ export default {
   margin-top: 27px;
   display: flex;
   justify-content: center;
-  cursor: pointer;
+
+  #arrow {
+    cursor: pointer;
+  }
 
   svg {
     width: 20px;
@@ -1390,4 +1394,6 @@ export default {
     fill: #a8aeb7;
   }
 }
+
+
 </style>
