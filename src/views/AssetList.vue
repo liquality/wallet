@@ -58,7 +58,9 @@ export default {
     onAccountSelected({ account, asset }) {
       const _asset = asset || account.assets[0]
       const _action = this.action === 'swap.send' ? 'swap' : this.action
-      this.$router.push(`/accounts/${account.id}/${_asset}/${_action}?source=assets`)
+      this.$router
+        .push(`/accounts/${account.id}/${_asset}/${_action}?source=assets`)
+        .catch((e) => e)
     }
   },
   created() {

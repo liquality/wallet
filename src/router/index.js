@@ -239,6 +239,42 @@ const routes = [
     component: ExportPrivateKey,
     name: 'ExportPrivateKey',
     props: true
+  },
+  {
+    path: '*',
+    name: '404',
+    beforeEnter: (to, from, next) => {
+      const _path = to?.path?.split('/').filter((e) => e)
+      if (_path?.[0] === 'accounts' && _path?.length >= 4) {
+        //   path: '/accounts/:accountId/:asset',
+        //   path: '/accounts/:accountId/:asset/send',
+        //   path: '/accounts/:accountId/:asset/receive',
+        //   path: '/accounts/:accountId/:routeAsset/swap',
+        const account = _path[1]
+        const suffix = _path[_path.length - 1]
+        const encodeAsset = (path, pathIndexFinal) => {
+          let asset = ''
+          for (let i = 2; i < pathIndexFinal; i++) {
+            asset += path[i] + '/'
+          }
+          return encodeURIComponent(asset.slice(0, -1))
+            .replace(/[!'()]/g, escape)
+            .replace(/\*/g, '%2A')
+        }
+        switch (suffix) {
+          case 'send':
+          case 'receive':
+          case 'swap':
+            next({ path: `/accounts/${account}/${encodeAsset(_path, _path.length - 1)}/${suffix}` })
+            break
+          default:
+            next({ path: `/accounts/${account}/${encodeAsset(_path, _path.length)}` })
+            break
+        }
+      } else {
+        next()
+      }
+    }
   }
 ]
 
