@@ -56,7 +56,7 @@ const getTransactionParams = (payload) => {
   const method = getExecutedMethod(msgs)
   const _gas = gas || gasLimit
 
-  const _fee = new BN(amount[0].amount / _gas).toFixed(2).toString()
+  const _fee = new BN(amount[0].amount / _gas).toFixed(2)
 
   const asset = !value ? 'uusd' : denom || contractAddress || 'luna'
 
