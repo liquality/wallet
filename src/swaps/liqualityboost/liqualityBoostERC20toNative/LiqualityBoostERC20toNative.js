@@ -19,12 +19,16 @@ class LiqualityBoostERC20toNative extends SwapProvider {
 
     if (this.config.network === 'mainnet') {
       this.oneinchSwapProvider = createSwapProvider(this.config.network, 'oneinchV4')
+      this.astroportSwapProvider = createSwapProvider(this.config.network, 'astroport')
+
       this.bridgeAssetToAutomatedMarketMaker = {
         MATIC: this.oneinchSwapProvider,
         ETH: this.oneinchSwapProvider,
         BNB: this.oneinchSwapProvider,
         RBTC: this.sovrynSwapProvider,
-        AVAX: this.oneinchSwapProvider
+        AVAX: this.oneinchSwapProvider,
+        UST: this.astroportSwapProvider,
+        LUNA: this.astroportSwapProvider
       }
     } else if (this.config.network === 'testnet') {
       this.bridgeAssetToAutomatedMarketMaker = {
@@ -70,7 +74,8 @@ class LiqualityBoostERC20toNative extends SwapProvider {
       toAmount: finalQuote.toAmount,
       bridgeAsset,
       bridgeAssetAmount: quote.toAmount,
-      path: quote.path
+      path: quote.path,
+      fromTokenAddress: quote.fromTokenAddress // for Terra ERC20
     }
   }
 
@@ -98,14 +103,13 @@ class LiqualityBoostERC20toNative extends SwapProvider {
   }
 
   async estimateFees({ network, walletId, asset, txType, quote, feePrices, max }) {
-    // bridge asset -> 'to' asset
     const liqualityFees = await this.liqualitySwapProvider.estimateFees({
       network,
       walletId,
       asset,
       txType:
         txType === LiqualityBoostERC20toNative.txTypes.SWAP
-          ? LiqualityBoostERC20toNative.txTypes.SWAP_CLAIM
+          ? LiqualityBoostERC20toNative.txTypes.SWAP_INITIATION
           : txType,
       quote: {
         ...quote,
@@ -117,8 +121,7 @@ class LiqualityBoostERC20toNative extends SwapProvider {
       max
     })
 
-    // 'from' asset -> bridge asset
-    if (!isERC20(asset) && txType === LiqualityBoostERC20toNative.txTypes.SWAP) {
+    if (txType === LiqualityBoostERC20toNative.txTypes.SWAP) {
       const automatedMarketMakerFees = await this.bridgeAssetToAutomatedMarketMaker[
         quote.bridgeAsset
       ].estimateFees({
