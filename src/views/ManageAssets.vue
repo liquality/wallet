@@ -101,8 +101,10 @@ export default {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
     },
     sortedAssets() {
-      const allAssets = Object.keys(cryptoassets).filter((asset) =>
-        buildConfig.chains.includes(cryptoassets[asset].chain)
+      const allAssets = Object.keys(cryptoassets).filter(
+        (asset) =>
+          buildConfig.chains.includes(cryptoassets[asset].chain) &&
+          cryptoassets[asset].type !== 'native'
       )
       const assets = allAssets.sort((a, b) => this.isAssetEnabled(b) - this.isAssetEnabled(a))
       return assets
