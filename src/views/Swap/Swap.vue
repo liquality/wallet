@@ -498,13 +498,11 @@ export default {
     } else {
       // use another account
       if (this.accountsData.length > 0) {
-        const toAccount = this.accountsData.find(
-          (account) =>
-            account.assets &&
-            account.assets.length > 0 &&
-            !account.assets.includes(this.asset) &&
-            account.id !== this.accountId
-        )
+        const toAccount = this.accountsData.find((account) => {
+          const assetAvailable = account.assets?.length > 0 && account.assets?.includes(this.asset)
+          const idsMatching = account.id == this.accountId
+          return !assetAvailable && !idsMatching
+        })
         if (toAccount) {
           this.toAccountId = toAccount.id
           toAsset = toAccount.assets[0]
