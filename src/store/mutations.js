@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { isERC20 } from '@/utils/asset'
+import { isNative } from '@/utils/asset'
 
 const ensureNetworkWalletTree = (ref, network, walletId, initialValue) => {
   if (!ref[network]) Vue.set(ref, network, {})
@@ -182,7 +182,7 @@ export default {
           ..._account,
           // keep native assets on top of the list
           assets: [..._account.assets.filter((asset) => !assets.includes(asset)), ...assets].sort(
-            (a, b) => isERC20(a) - isERC20(b)
+            (a, b) => isNative(b) - isNative(a)
           )
         }
 
