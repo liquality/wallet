@@ -10,9 +10,13 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-Swaps will be unavailable for maintenance intermittently for the next 24-48 hours. Please bear with us as we upgrade swaps to be more stable and reliable.</pre
-            >
+            <pre class="text-wrap">* Avalanche is now fully integrated</pre>
+            <pre class="text-wrap">* Swap AVAX cross-chain w/ the new Avalanche integration</pre>
+            <pre class="text-wrap">* Swap Avalanche tokens using 1Inch v4</pre>
+            <pre class="text-wrap">* Connect and use Avalanche dapps</pre>
+            <pre class="text-wrap">* Send LUNA with memos </pre>
+            <pre class="text-wrap">* Improved reliability in Near, Terra, Avalanche</pre>
+            <pre class="text-wrap">* Fixed Near "Max button" bug</pre>
           </div>
         </div>
       </div>

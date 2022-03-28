@@ -8,14 +8,13 @@ name: Prod Mainnet tests
 
 jobs:
   regressiontest_Prod_mainnet:
-    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: 'release-candidate-0.56.0'
+          ref: 'release-candidate-0.58.0'
 
       - uses: actions/setup-node@v2.5.1
         env:
@@ -34,10 +33,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
 
       - name: Set production agents
-        env:
-          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
         run: |
-          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
           sed -i "s/\/swap-testnet-dev\/agent/\/swap-testnet\/agent/g; s/\/swap-dev\/agent/\/swap\/agent/g" src/build.config.js
           npm ci
           npm run lint

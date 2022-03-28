@@ -52,6 +52,10 @@ const derivationPaths = {
     const ethNetwork = ChainNetworks[ChainId.Arbitrum][network]
     return getEthereumBasedDerivationPath(ethNetwork.coinType, index)
   },
+  [ChainId.Avalanche]: (network, index) => {
+    const ethNetwork = ChainNetworks[ChainId.Avalanche][network]
+    return getEthereumBasedDerivationPath(ethNetwork.coinType, index)
+  },
   [ChainId.Solana]: (network, index) => {
     const solanaNetwork = ChainNetworks[ChainId.Solana][network]
     return `m/44'/501'/${solanaNetwork.walletIndex}'/${index}'`

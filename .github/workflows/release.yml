@@ -44,9 +44,30 @@ jobs:
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
-      # Minor PROD releases.
+      # Patch DEV release.
+      - name: Set development manifest (patch for DEV)
+        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+        env:
+          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
+          VUE_APP_TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
+          VUE_APP_AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
+          VUE_APP_AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
+          VUE_APP_NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
+        run: |
+          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
+          echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
+          echo VUE_APP_AVALANCHE_MAINNET_NODE =${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }} >> .env
+          echo VUE_APP_AVALANCHE_TESTNET_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }} >> .env
+          echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
+          jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
+          mv ./src/manifest.tmp ./src/manifest.json
+          npm ci
+          npm run lint
+          npm run build
+
+    # Minor PROD releases.
       - name: Set production agents (minor for PROD)
-#        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
+        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
           VUE_APP_TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
@@ -56,48 +77,48 @@ jobs:
           VUE_APP_AGENT_TESTNET_URL: ${{ secrets.VUE_APP_AGENT_TESTNET_URL }}
           VUE_APP_AGENT_MAINNET_URL: ${{ secrets.VUE_APP_AGENT_MAINNET_URL }}
         run: |
-          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
-          echo VUE_APP_AVALANCHE_MAINNET_NODE =${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }} >> .env
-          echo VUE_APP_AVALANCHE_TESTNET_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }} >> .env
-          echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
-          echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
-          echo VUE_APP_AGENT_TESTNET_URL =${{ secrets.VUE_APP_AGENT_TESTNET_URL }} >> .env
-          echo VUE_APP_AGENT_MAINNET_URL =${{ secrets.VUE_APP_AGENT_MAINNET_URL }} >> .env
-          npm ci
-          npm run lint
-          npm run build
+            echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
+            echo VUE_APP_AVALANCHE_MAINNET_NODE =${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }} >> .env
+            echo VUE_APP_AVALANCHE_TESTNET_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }} >> .env
+            echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
+            echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
+            echo VUE_APP_AGENT_TESTNET_URL =${{ secrets.VUE_APP_AGENT_TESTNET_URL }} >> .env
+            echo VUE_APP_AGENT_MAINNET_URL =${{ secrets.VUE_APP_AGENT_MAINNET_URL }} >> .env
+            npm ci
+            npm run lint
+            npm run build
 
-      #      # Run tests against dev mainnet
-      #      - name: Regression tests against Mainnet (DEV Agent)
-      #        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-      #        uses: beemi/puppeteer-headful@v1.0.11
-      #        env:
-      #          CI: 'true'
-      #          DISPLAY: :99
-      #          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-      #          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-      #        with:
-      #          args: npm run test:mainnet:devagent:release
-      #
-      #      #Run tests against Prod mainnet
-      #      - name: Regression tests against Mainnet (PROD Agent)
-      #        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
-      #        uses: beemi/puppeteer-headful@v1.0.11
-      #        env:
-      #          CI: 'true'
-      #          DISPLAY: :99
-      #          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-      #          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-      #        with:
-      #          args: npm run test:mainnet:prodagent:release
-      #
-      #      - name: Save Screenshots
-      #        uses: actions/upload-artifact@v2.3.1
-      #        if: always()
-      #        with:
-      #          name: screenshots
-      #          path: screenshots
-      #          if-no-files-found: ignore
+      # Run tests against dev mainnet
+      - name: Regression tests against Mainnet (DEV Agent)
+        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+        uses: beemi/puppeteer-headful@v1.0.11
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: npm run test:mainnet:devagent:release
+
+      #Run tests against Prod mainnet
+      - name: Regression tests against Mainnet (PROD Agent)
+        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
+        uses: beemi/puppeteer-headful@v1.0.11
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: npm run test:mainnet:prodagent:release
+
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v2.3.1
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots
+          if-no-files-found: ignore
 
       - name: Changelog
         uses: scottbrenner/generate-changelog-action@master
