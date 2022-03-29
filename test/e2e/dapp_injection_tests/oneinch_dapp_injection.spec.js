@@ -18,7 +18,8 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.setDefaultNavigationTimeout(0)
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -90,7 +91,7 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
       'Uniswap ethereum dapp connection issue'
     ).equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
   })
-  it('1Inch injection - BSC', async () => {
+  it.skip('1Inch injection - BSC', async () => {
     let chain = 'bsc'
 
     // Select correct network
