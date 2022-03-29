@@ -58,7 +58,7 @@
                     <a class="align-left" @click="newFeePrice = feeSelectorFees.average.fee"
                       >Average: {{ feeSelectorFees.average.fee }}</a
                     >
-                    <a class="align-left" @click="newFeePrice = feeSelectorFees.fast.fee"
+                    <a id="fastFee" class="align-left" @click="newFeePrice = feeSelectorFees.fast.fee"
                       >Fast: {{ feeSelectorFees.fast.fee }}</a
                     >
                   </div>
@@ -866,5 +866,9 @@ export default {
     font-size: $font-size-tiny;
     margin: 6px 0;
   }
+}
+
+#fastFee {
+  padding-left: 0.6em;
 }
 </style>
