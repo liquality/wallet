@@ -106,7 +106,10 @@
                 <li v-for="assetFee in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
-                    {{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }} /
+                    <span v-if="getTotalSwapFee(assetFee).dp(6).eq(0)"
+                      >{{ getChainAssetSwapFee(assetFee) }}
+                    </span>
+                    <span v-else>{{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }}</span> /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
                     <button class="btn btn-link" @click="resetCustomFee(assetFee)">Reset</button>
                   </div>
@@ -397,6 +400,7 @@ import {
 import { getAssetColorStyle, getAssetIcon, getNativeAsset, isERC20 } from '@/utils/asset'
 import { shortenAddress } from '@/utils/address'
 import { getFeeLabel } from '@/utils/fees'
+import { chains } from '@liquality/cryptoassets'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ArrowDown from '@/assets/icons/arrow-down.svg'
@@ -483,6 +487,7 @@ export default {
   created() {
     this.asset = this.routeAsset
     this.fromAccountId = this.accountId
+    this.fee = this.fees[this.selectedFee || 'average']?.fee
     this.updateMarketData({ network: this.activeNetwork })
     ;(async () => {
       await this.updateFees({ asset: this.assetChain })
@@ -1162,6 +1167,21 @@ export default {
         return this.fromSwapFee
       } else if ((asset === this.toAssetChain || asset === this.toAsset) && this.receiveFee) {
         return this.receiveFee
+      }
+    },
+    chainAssetSwapFee(asset, chainAsset) {
+      const selectedSpeed = this.selectedFee[chainAsset]
+      const fees = this.getAssetFees(chainAsset)
+      const chainId = cryptoassets[asset].chain
+      const { unit } = chains[chainId]?.fees || ''
+      return `${fees?.[selectedSpeed].fee || BN(0)} ${unit}`
+    },
+    getChainAssetSwapFee(asset) {
+      if (asset === this.assetChain) {
+        return this.chainAssetSwapFee(asset, this.assetChain)
+      } else if (asset === this.toAssetChain && this.receiveFee) {
+        if (!this.receiveFeeRequired) return BN(0)
+        return this.chainAssetSwapFee(asset, this.toAssetChain)
       }
     },
     getTotalSwapFeeInFiat(asset) {

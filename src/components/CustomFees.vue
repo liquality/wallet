@@ -193,8 +193,10 @@ export default {
     getFeeAmount(name) {
       if (!name) name = this.preset || 'custom'
       if (this.totalFees && this.totalFees[name]) {
-        const totalFee = this.totalFees[name]
-        return `${BN(totalFee).dp(6)} ${this.nativeAsset}`
+        const totalFee = BN(this.totalFees[name]).dp(6)
+        return totalFee.eq(0)
+          ? `${BN(this.fee).dp(6)} ${this.gasUnit} ${this.nativeAsset}`
+          : `${totalFee} ${this.nativeAsset}`
       } else {
         const chainId = cryptoassets[this.asset].chain
         const { unit } = chains[chainId].fees
