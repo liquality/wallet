@@ -4,7 +4,7 @@ import { getDerivationPath } from '@/utils/derivationPath'
 import { chains, ChainId } from '@liquality/cryptoassets'
 
 export const enableAvalancheChain = {
-  version: 17,
+  version: 18,
   migrate: async (state) => {
     const accounts = {}
     const enabledChains = {}
