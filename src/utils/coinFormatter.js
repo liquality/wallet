@@ -45,5 +45,5 @@ export const formatFiat = (amount) => {
 }
 
 export const formatFiatUI = (amount) => {
-  return isNaN(amount) ? amount : '$' + amount
+  return isNaN(amount) ? amount : '$' + dpUI(amount, 2)
 }
