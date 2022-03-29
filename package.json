@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.58.5",
+  "version": "0.58.6",
   "private": true,
   "author": "Liquality <info@liquality.io>",
   "scripts": {
