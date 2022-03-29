@@ -10,9 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">THIS IS FOR 0.58.0 RELEASE BUILD</pre>
-            <pre class="text-wrap">Avalanche + New PROD Agent</pre>
-            <pre class="text-wrap">Terra, NEAR, Avalanche private nodes updated</pre>
+            <pre class="text-wrap">* Next Release build 0.59.0</pre>
           </div>
         </div>
       </div>

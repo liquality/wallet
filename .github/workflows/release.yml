@@ -111,14 +111,14 @@ jobs:
 #          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
 #        with:
 #          args: npm run test:mainnet:prodagent:release
-#
-#      - name: Save Screenshots
-#        uses: actions/upload-artifact@v2.3.1
-#        if: always()
-#        with:
-#          name: screenshots
-#          path: screenshots
-#          if-no-files-found: ignore
+
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v2.3.1
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots
+          if-no-files-found: ignore
 
       - name: Changelog
         uses: scottbrenner/generate-changelog-action@master
