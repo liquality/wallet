@@ -726,8 +726,14 @@ export default {
         return !this.account?.balances?.ETH || this.account?.balances?.ETH === 0
       }
 
-      if (this.toAssetChain === 'ETH') {
-        return !this.toAccount?.balances?.ETH || this.toAccount?.balances?.ETH === 0
+      if (this.toAssetChain === 'ETH' && this.selectedQuote.provider == 'liquality') {
+        return (
+          !this.toAccount?.balances?.ETH ||
+          this.toAccount?.balances?.ETH === 0 ||
+          BN(this.toAccount?.balances?.ETH).lt(
+            currencyToUnit(cryptoassets[this.toAssetChain], this.receiveFee)
+          )
+        )
       }
 
       return false
