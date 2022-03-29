@@ -147,6 +147,17 @@ jobs:
           asset_name: liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           asset_content_type: application/zip
 
+      - name: Chrome Extension Publish
+        uses: SebastienGllmt/chrome-addon@v3
+        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+        with:
+          client-id: ${{ secrets.WEB_STORE_CLIENT_ID }}
+          client-secret: ${{ secrets.WEB_STORE_CLIENT_SECRET }}
+          refresh-token: ${{ secrets.WEB_STORE_REFRESH_TOKEN }}
+          zip: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
+          extension: bkhfdnhibdhkbfihmljakbgnldoikgbm
+          publishTarget: trustedTesters
+
       - name: Discord notification
         uses: sarisia/actions-status-discord@v1
         if: always()

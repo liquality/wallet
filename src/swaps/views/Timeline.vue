@@ -58,7 +58,10 @@
                     <a class="align-left" @click="newFeePrice = feeSelectorFees.average.fee"
                       >Average: {{ feeSelectorFees.average.fee }}</a
                     >
-                    <a id="fastFee" class="align-left" @click="newFeePrice = feeSelectorFees.fast.fee"
+                    <a
+                      id="fastFee"
+                      class="align-left"
+                      @click="newFeePrice = feeSelectorFees.fast.fee"
                       >Fast: {{ feeSelectorFees.fast.fee }}</a
                     >
                   </div>
