@@ -42,6 +42,10 @@ class AstroportSwapProvider extends SwapProvider {
       toInfo
     )
 
+    if (rate.amount === '0' || rate.return_amount === '0') {
+      return null
+    }
+
     return {
       from,
       to,
