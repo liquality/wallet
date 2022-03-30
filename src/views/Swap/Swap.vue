@@ -39,7 +39,14 @@
             @send-amount-change="setSendAmount"
           />
           <div class="arrow-down">
-            <ArrowDown />
+            <ArrowDown
+              id="arrow"
+              v-if="!updatingQuotes"
+              @click="
+                onReverseAssets(asset, toAsset, selectedQuote.toAmount, fromAccountId, toAccountId)
+              "
+            />
+            <SpinnerIcon v-else />
           </div>
           <ReceiveInput
             class="mt-30"
@@ -521,7 +528,6 @@ export default {
         [this.toAssetChain]: 'average'
       }
     }
-
     this.sendAmount = dpUI(this.defaultAmount)
 
     this.resetQuoteTimer()
@@ -899,10 +905,9 @@ export default {
         this.sendAmount = this.max
       } else if (this.amountOption === 'min') {
         this.sendAmount = this.min
-      } else {
+      } else if (!this.amountOption && !this.sendAmount) {
         this.sendAmount = dpUI(this.defaultAmount)
       }
-
       this.resetFees()
       this.updateQuotes()
       this.updateFiatRates({ assets: [toAsset] })
@@ -915,12 +920,21 @@ export default {
         }
       })
     },
-    setFromAsset(asset) {
+    setFromAsset(asset, amount) {
       this.asset = asset
-      this.sendAmount = dpUI(this.defaultAmount)
+      if (amount) {
+        amount = unitToCurrency(cryptoassets[asset], amount).toFixed()
+      }
+      this.sendAmount = dpUI(amount ?? this.defaultAmount)
       this.resetFees()
       this.updateQuotes()
       this.updateFiatRates({ assets: [asset] })
+    },
+    onReverseAssets(fromAsset, toAsset, toAmount, fromAccountId, toAccountId) {
+      if (this.updatingQuotes) return
+      this.amountOption = null
+      this.fromAssetChanged(toAccountId, toAsset, toAmount)
+      this.toAssetChanged(fromAccountId, fromAsset)
     },
     async _updateSwapFees(max) {
       if (!this.selectedQuote) return
@@ -1100,7 +1114,6 @@ export default {
           this.receiveFeeRequired && this.availableFees.has(this.toAssetChain)
             ? this.getAssetFees(this.toAssetChain)[this.selectedFee[this.toAssetChain]].fee
             : undefined
-
         await this.newSwap({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
@@ -1136,9 +1149,9 @@ export default {
       this.assetSelection = 'from'
       this.currentStep = 'accounts'
     },
-    fromAssetChanged(accountId, fromAsset) {
+    fromAssetChanged(accountId, fromAsset, amount = null) {
       this.fromAccountId = accountId
-      this.setFromAsset(fromAsset)
+      this.setFromAsset(fromAsset, amount)
     },
     toAssetChanged(accountId, toAsset) {
       this.toAccountId = accountId
@@ -1397,10 +1410,16 @@ export default {
   display: flex;
   justify-content: center;
 
+  #arrow {
+    cursor: pointer;
+  }
+
   svg {
     width: 20px;
     height: 18px;
     fill: #a8aeb7;
   }
 }
+
+
 </style>
