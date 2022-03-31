@@ -737,7 +737,7 @@ export default {
         return !this.account?.balances?.ETH || this.account?.balances?.ETH === 0
       }
 
-      if (this.toAssetChain === 'ETH' && this.selectedQuote.provider == 'liquality') {
+      if (this.toAssetChain === 'ETH' && this.selectedQuote?.provider == 'liquality') {
         return (
           !this.toAccount?.balances?.ETH ||
           this.toAccount?.balances?.ETH === 0 ||
@@ -1420,6 +1420,4 @@ export default {
     fill: #a8aeb7;
   }
 }
-
-
 </style>
