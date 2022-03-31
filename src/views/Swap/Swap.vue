@@ -501,20 +501,23 @@ export default {
       await this.updateMaxSwapFees()
     })()
 
-    // Try to use the same account for (from and to) if it has more than one asset
     let toAsset = null
-    if (this.account?.assets.length > 0 && !this.account?.assets.includes(this.asset)) {
+
+    // Try to use the same account for (from and to) if it has more than one asset
+    if (this.account?.assets.length > 1) {
       this.toAccountId = this.accountId
       toAsset = this.account?.assets.find((a) => a !== this.asset)
     } else {
-      if (this.networkAccounts.length > 0) {
-        const toAccount = this.networkAccounts.find(
-          (account) =>
-            account.assets && !account.assets.includes(this.asset) && account.id !== this.accountId
-        )
+      // use another account
+      if (this.accountsData.length > 0) {
+        const toAccount = this.accountsData.find((account) => {
+          const assetAvailable = account.assets?.length > 0 && account.assets?.includes(this.asset)
+          const idsMatching = account.id == this.accountId
+          return !assetAvailable && !idsMatching
+        })
         if (toAccount) {
           this.toAccountId = toAccount.id
-          toAsset = toAccount.assets.find((a) => a !== this.asset)
+          toAsset = toAccount.assets[0]
         }
       }
     }
@@ -601,7 +604,7 @@ export default {
       'activeNetwork'
     ]),
     ...mapGetters('app', ['ledgerBridgeReady']),
-    ...mapGetters(['client', 'swapProvider', 'accountItem', 'networkAccounts']),
+    ...mapGetters(['client', 'swapProvider', 'accountItem', 'accountsData']),
     networkMarketData() {
       return this.marketData[this.activeNetwork]
     },
