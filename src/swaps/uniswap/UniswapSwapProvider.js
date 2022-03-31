@@ -310,7 +310,13 @@ class UniswapSwapProvider extends SwapProvider {
       data: swapTx.data,
       value: '0x' + swapTx.value.toString(16)
     }
-    gasLimit += await client.getMethod('estimateGas')(rawSwapTx)
+
+    try {
+      gasLimit += await client.getMethod('estimateGas')(rawSwapTx)
+    } catch {
+      gasLimit += 350_000 // estimateGas is failing if token that we are swapping is not approved
+    }
+
 
     const fees = {}
     for (const feePrice of feePrices) {
@@ -420,9 +426,8 @@ class UniswapSwapProvider extends SwapProvider {
       filterStatus: 'COMPLETED',
       notification(swap) {
         return {
-          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${
-            swap.to
-          } ready to use`
+          message: `Swap completed, ${prettyBalance(swap.toAmount, swap.to)} ${swap.to
+            } ready to use`
         }
       }
     },
