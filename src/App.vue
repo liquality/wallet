@@ -50,6 +50,12 @@ export default {
   },
   async created() {
     await this.initializeAnalytics()
+  },
+  beforeCreate() {
+    // debugger
+    // if (this.$route.query?.redirectTo) {
+    //   this.$router.replace(this.$router.query.redirectTo)
+    // }
   }
 }
 </script>
