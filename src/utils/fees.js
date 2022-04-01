@@ -3,22 +3,6 @@ import cryptoassets from './cryptoassets'
 import { chains, unitToCurrency } from '@liquality/cryptoassets'
 import { isERC20, isEthereumChain } from './asset'
 
-const SEND_FEE_UNITS = {
-  BTC: 290,
-  ETH: 21000,
-  RBTC: 21000,
-  BNB: 21000,
-  NEAR: 10000000000000,
-  SOL: 1000000,
-  MATIC: 21000,
-  ERC20: 90000,
-  ARBETH: 620000,
-  AVAX: 21000,
-  LUNA: 100000,
-  UST: 100000,
-  FUSE: 21000
-}
-
 const FEE_OPTIONS = {
   SLOW: { name: 'Slow', label: 'Slow' },
   AVERAGE: { name: 'Average', label: 'Avg' },
@@ -26,17 +10,22 @@ const FEE_OPTIONS = {
   CUSTOM: { name: 'Custom', label: 'Custom' }
 }
 
+const feePriceInWei = (asset, feePrice) => {
+  return isEthereumChain(asset) ? BN(feePrice).times(1e9) : feePrice // ETH fee price is in gwei
+}
+
 function getSendFee(asset, feePrice) {
-  return getTxFee(SEND_FEE_UNITS, asset, feePrice)
+  const assetInfo = cryptoassets[asset]
+  const fee = BN(assetInfo.sendGasLimit).times(feePriceInWei(asset, feePrice))
+  return unitToCurrency(assetInfo, fee)
 }
 
 function getTxFee(units, _asset, _feePrice) {
   const chainId = cryptoassets[_asset].chain
   const nativeAsset = chains[chainId].nativeAsset
-  const feePrice = isEthereumChain(_asset) ? BN(_feePrice).times(1e9) : _feePrice // ETH fee price is in gwei
   const asset = isERC20(_asset) ? 'ERC20' : _asset
   const feeUnits = units[asset]
-  const fee = BN(feeUnits).times(feePrice)
+  const fee = BN(feeUnits).times(feePriceInWei(_asset, _feePrice))
   return unitToCurrency(cryptoassets[nativeAsset], fee)
 }
 

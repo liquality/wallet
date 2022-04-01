@@ -194,6 +194,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { debounce } from 'lodash-es'
+import { getSendGasLimitERC20 } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { tokenDetailProviders } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
@@ -264,7 +265,8 @@ export default {
           contractAddress: this.contractAddress,
           name: this.name,
           symbol: this.symbol,
-          decimals: Number(this.decimals)
+          decimals: Number(this.decimals),
+          sendGasLimit: getSendGasLimitERC20(this.chain)
         })
       }
       await this.enableAssets({
