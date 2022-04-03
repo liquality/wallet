@@ -106,9 +106,9 @@ import clickAway from '@/directives/clickAway'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { chains } from '@liquality/cryptoassets'
-import buildConfig from '@/build.config'
-import { getChainIcon, getNextAccountColor } from '@/utils/accounts'
-import cryptoassets from '@/utils/cryptoassets'
+import { buildConfig } from '@liquality/wallet-core'
+import { getChainIcon, getNextAccountColor } from '@liquality/wallet-core/dist/utils/accounts'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import _ from 'lodash'
 
 export default {

@@ -194,8 +194,8 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { debounce } from 'lodash-es'
-import cryptoassets from '@/utils/cryptoassets'
-import { tokenDetailProviders } from '@/utils/asset'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { tokenDetailProviders } from '@liquality/wallet-core/dist/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'

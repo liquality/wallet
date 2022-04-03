@@ -1,5 +1,5 @@
-import { ChainNetworks } from '@/utils/networks'
-import buildConfig from '../build.config'
+import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
+import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { assets } from '@liquality/cryptoassets'
 import { connectRemote } from './terra-injection'

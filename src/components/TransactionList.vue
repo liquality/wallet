@@ -40,14 +40,18 @@
 import ListItem from '@/components/ListItem'
 import TransactionStatus from '@/components/TransactionStatus'
 import {
-  getItemIcon,
   getStep,
   ACTIVITY_STATUSES,
   ACTIVITY_FILTER_TYPES,
   SEND_STATUS_FILTER_MAP
-} from '@/utils/history'
-import { prettyBalance, prettyFiatBalance, formatFiatUI } from '@/utils/coinFormatter'
-import moment from '@/utils/moment'
+} from '@liquality/wallet-core/dist/utils/history'
+import { getItemIcon } from '@/utils/history'
+import {
+  prettyBalance,
+  prettyFiatBalance,
+  formatFiatUI
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
+import moment from '@liquality/wallet-core/dist/utils/moment'
 import { mapState, mapGetters } from 'vuex'
 
 export default {

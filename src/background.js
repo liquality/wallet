@@ -2,9 +2,9 @@ import 'setimmediate'
 import { random } from 'lodash-es'
 import store from './store'
 import { wait } from './store/utils'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
-import { prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 
 function asyncLoop(fn, delay) {
   return wait(delay())
@@ -167,7 +167,7 @@ store.subscribe(async ({ type, payload }, state) => {
       break
     case 'UPDATE_HISTORY':
       // eslint-disable-next-line
-      const item = getters.historyItemById(payload.network, payload.walletId, payload.id);
+      const item = getters.historyItemById(payload.network, payload.walletId, payload.id)
       if (item.type === 'SWAP' && payload.updates) {
         if (payload.updates.status !== 'undefined') {
           dispatch('trackAnalytics', {

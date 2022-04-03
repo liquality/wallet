@@ -319,27 +319,27 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
-import moment from '@/utils/moment'
-import cryptoassets from '@/utils/cryptoassets'
+import moment from '@liquality/wallet-core/dist/utils/moment'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
-import { prettyBalance } from '@/utils/coinFormatter'
-import { getStep } from '@/utils/history'
+import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { getStep } from '@liquality/wallet-core/dist/utils/history'
 import {
   isERC20,
   isEthereumChain,
   getNativeAsset,
   getTransactionExplorerLink,
   getAddressExplorerLink
-} from '@/utils/asset'
+} from '@liquality/wallet-core/dist/utils/asset'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
-import { getSwapProviderConfig } from '@/utils/swaps'
-import { calculateQuoteRate } from '@/utils/quotes'
-import { shortenAddress } from '@/utils/address'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/utils/swaps'
+import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 const ACTIONS_TERMS = {
   lock: {

@@ -1,6 +1,6 @@
 import { stringify } from 'qs'
-import { emitter } from '../utils'
-import { createPopup } from '../../broker/utils'
+import { emitter } from '../../utils'
+import { createPopup } from '../../../broker/utils'
 
 export const requestUnlockWallet = async ({ state }) => {
   if (!state.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')

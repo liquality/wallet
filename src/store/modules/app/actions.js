@@ -1,4 +1,7 @@
 import { setLedgerBridgeListener } from '@/utils/ledger-bridge-provider'
+import { requestOriginAccess } from './requestOriginAccess'
+import { requestPermission } from './requestPermission'
+import { requestUnlockWallet } from './requestUnlockWallet'
 
 const closeExistingBridgeWindow = async (windowsId) => {
   if (windowsId && windowsId > 0) {
@@ -86,5 +89,8 @@ export const actions = {
   },
   settingsModalOpen: ({ commit }, isOpen) => {
     commit('SET_SETTINGS_MODAL_OPEN', isOpen)
-  }
+  },
+  requestOriginAccess,
+  requestPermission,
+  requestUnlockWallet
 }

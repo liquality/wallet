@@ -1,6 +1,6 @@
 import { stringify } from 'qs'
-import { emitter } from '../utils'
-import { createPopup } from '../../broker/utils'
+import { emitter } from '../../utils'
+import { createPopup } from '../../../broker/utils'
 
 export const requestOriginAccess = async (
   { state, dispatch, commit },

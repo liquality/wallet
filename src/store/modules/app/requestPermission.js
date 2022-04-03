@@ -1,7 +1,7 @@
 import { stringify } from 'qs'
 
-import { emitter } from '../utils'
-import { createPopup } from '../../broker/utils'
+import { emitter } from '../../utils'
+import { createPopup } from '../../../broker/utils'
 
 const CONFIRM_REQUIRED = [
   /^chain.buildTransaction$/,

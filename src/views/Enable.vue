@@ -84,7 +84,7 @@ import { isEthereumChain, dappChains } from '@liquality/cryptoassets'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import NetworkAccounts from '@/components/NetworkAccounts'
 import ChainDropdown from '@/components/ChainDropdown'
-import buildConfig from '@/build.config'
+import { buildConfig } from '@liquality/wallet-core'
 
 export default {
   components: {

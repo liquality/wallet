@@ -84,7 +84,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { version } from '../../package.json'
-import { downloadFile, getWalletStateLogs } from '@/utils/export'
+import { downloadFile, getWalletStateLogs } from '@liquality/wallet-core/dist/utils/export'
 import NavBar from '@/components/NavBar.vue'
 
 export default {

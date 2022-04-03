@@ -227,7 +227,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
@@ -237,10 +237,15 @@ import {
   dpUI,
   formatFiatUI,
   fiatToCrypto
-} from '@/utils/coinFormatter'
-import { getNativeAsset, getAssetColorStyle, getAssetIcon, getFeeAsset } from '@/utils/asset'
-import { shortenAddress } from '@/utils/address'
-import { getSendFee, getFeeLabel } from '@/utils/fees'
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
+import {
+  getNativeAsset,
+  getAssetColorStyle,
+  getFeeAsset
+} from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'

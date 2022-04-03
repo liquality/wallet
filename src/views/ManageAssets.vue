@@ -77,12 +77,12 @@
 <script>
 import { isEmpty } from 'lodash-es'
 import { mapState, mapActions } from 'vuex'
-import cryptoassets from '@/utils/cryptoassets'
-// import { prettyBalance } from '@/utils/coinFormatter'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+// import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import SearchIcon from '@/assets/icons/search.svg'
-import buildConfig from '@/build.config'
+import { buildConfig } from '@liquality/wallet-core'
 
 export default {
   components: {

@@ -16,7 +16,8 @@
 <script>
 import { add, format } from 'date-fns'
 import ClockIcon from '@/assets/icons/clock.svg'
-import { getSwapProviderConfig, SwapProviderType } from '@/utils/swaps'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/utils/swaps'
+import { SwapProviderType } from '@liquality/wallet-core/dist/utils/swapProviderType'
 import { mapState } from 'vuex'
 
 export default {

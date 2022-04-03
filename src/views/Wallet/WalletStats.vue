@@ -45,8 +45,8 @@ import { mapGetters } from 'vuex'
 import SendIcon from '@/assets/icons/send_o.svg'
 import ReceiveIcon from '@/assets/icons/receive_o.svg'
 import SwapIcon from '@/assets/icons/swap_o.svg'
-import { formatFiat } from '@/utils/coinFormatter'
-import { formatFontSize } from '@/utils/fontSize'
+import { formatFiat } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { formatFontSize } from '@liquality/wallet-core/dist/utils/fontSize'
 
 export default {
   components: {

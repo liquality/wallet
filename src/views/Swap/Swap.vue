@@ -386,7 +386,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
@@ -403,10 +403,15 @@ import {
   prettyBalance,
   prettyFiatBalance,
   VALUE_DECIMALS
-} from '@/utils/coinFormatter'
-import { getAssetColorStyle, getAssetIcon, getNativeAsset, isERC20 } from '@/utils/asset'
-import { shortenAddress } from '@/utils/address'
-import { getFeeLabel } from '@/utils/fees'
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
+import {
+  getAssetColorStyle,
+  getNativeAsset,
+  isERC20
+} from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
 import { chains } from '@liquality/cryptoassets'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -423,11 +428,12 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import { getSwapProviderConfig, SwapProviderType } from '@/utils/swaps'
-import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/utils/swaps'
+import { SwapProviderType } from '@liquality/wallet-core/dist/utils/swapProviderType'
+import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
-import buildConfig from '@/build.config'
+import { buildConfig } from '@liquality/wallet-core'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
