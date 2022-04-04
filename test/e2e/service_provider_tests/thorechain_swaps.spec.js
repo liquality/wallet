@@ -16,7 +16,6 @@ const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
 
 let browser, page
-const password = '123123123'
 
 describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
@@ -30,7 +29,7 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
