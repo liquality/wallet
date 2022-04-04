@@ -22,10 +22,10 @@ async function pbkdf2(password, salt, iterations, length, digest) {
 const walletOptions = {
   crypto: {
     pbkdf2,
-    encrypt(value, key) {
+    async encrypt(value, key) {
       return AES.encrypt(value, key)
     },
-    decrypt(value, key) {
+    async decrypt(value, key) {
       return AES.decrypt(value, key)
     }
   },
