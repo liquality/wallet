@@ -23,7 +23,7 @@
     "test:testnet": "node_modules/mocha/bin/mocha --grep 'TESTNET'"
   },
   "dependencies": {
-    "@liquality/wallet-core": "^1.4.9",
+    "@liquality/wallet-core": "^1.4.10",
     "@terra-money/terra.js": "^3.0.8",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.17.0",
