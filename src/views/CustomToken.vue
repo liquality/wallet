@@ -258,6 +258,11 @@ export default {
     async addToken() {
       if (!this.existingAsset) {
         // Add only if it does not already exist
+        const gasLimit = getSendGasLimitERC20(this.chain)
+        if (gasLimit === null) {
+          throw new Error(`${this.chain} doesn't support non native assets!`)
+        }
+
         await this.addCustomToken({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
@@ -266,7 +271,7 @@ export default {
           name: this.name,
           symbol: this.symbol,
           decimals: Number(this.decimals),
-          sendGasLimit: getSendGasLimitERC20(this.chain)
+          sendGasLimit: gasLimit
         })
       }
       await this.enableAssets({
