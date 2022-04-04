@@ -10,9 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Avalanche network Integration</pre>
-            <pre class="text-wrap">Avalanche swaps with 1Inch</pre>
-            <pre class="text-wrap">Avalanche swaps enabled with Boost</pre>
+            <pre class="text-wrap">* Bug fixes</pre>
+            <pre class="text-wrap">* Performance improvements</pre>
           </div>
         </div>
       </div>

@@ -63,6 +63,8 @@
 <script>
 import { mapActions } from 'vuex'
 import { getNativeAsset, getAssetColorStyle } from '@/utils/asset'
+import cryptoassets from '@/utils/cryptoassets'
+import { unitToCurrency } from '@liquality/cryptoassets'
 
 import { shortenAddress } from '@/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -126,11 +128,11 @@ export default {
       return message[messageType]
     },
     async reply(allowed) {
-      const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
       const optionsWithFee = {
         ...this.request.args[0],
         value: this.value,
-        fee
+        fee: this.request.args[0].fee,
+        feeLabel: 'average'
       }
 
       const requestWithFee = {
@@ -187,6 +189,13 @@ export default {
     },
     feeInUsdValue() {
       return this.request.args[0].fee.slice(0, 4)
+    },
+    value() {
+      return this.request.args[0].value
+    },
+    amount() {
+      if (!this.value) return 0
+      return unitToCurrency(cryptoassets[this.asset], this.value).toNumber()
     }
   },
   beforeDestroy() {
