@@ -47,7 +47,7 @@
 
 <script>
 import { getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
-import { getChainIcon } from '@liquality/wallet-core/dist/utils/accounts'
+import { getChainIcon } from '@/utils/accounts'
 import { chains } from '@liquality/cryptoassets'
 import SearchIcon from '@/assets/icons/search.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
