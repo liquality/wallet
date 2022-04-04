@@ -1,4 +1,5 @@
 import { SwapProviderType } from './utils/swaps'
+import { ChainId } from '@liquality/cryptoassets'
 
 import SovrynMainnetAddresses from '@blobfishkate/sovryncontracts/contracts-mainnet.json'
 import SovrynTestnetAddresses from '@blobfishkate/sovryncontracts/contracts-testnet.json'
@@ -167,16 +168,16 @@ export default {
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
   chains: [
-    'bitcoin',
-    'ethereum',
-    'rsk',
-    'bsc',
-    'near',
-    'polygon',
-    'arbitrum',
-    'terra',
-    'fuse',
-    'avalanche'
+    ChainId.Bitcoin,
+    ChainId.Ethereum,
+    ChainId.Rootstock,
+    ChainId.BinanceSmartChain,
+    ChainId.Near,
+    ChainId.Polygon,
+    ChainId.Arbitrum,
+    ChainId.Terra,
+    ChainId.Fuse,
+    ChainId.Avalanche
   ],
   supportedBridgeAssets: ['MATIC', 'RBTC', 'AVAX']
 }

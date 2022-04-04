@@ -2,7 +2,13 @@ import BN from 'bignumber.js'
 import { v4 as uuidv4 } from 'uuid'
 import * as ethers from 'ethers'
 
-import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import {
+  chains,
+  ChainId,
+  AssetTypes,
+  currencyToUnit,
+  unitToCurrency
+} from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
@@ -38,7 +44,9 @@ class SovrynSwapProvider extends SwapProvider {
     const toInfo = cryptoassets[to]
 
     // only RSK network swaps
-    if (fromInfo.chain !== 'rsk' || toInfo.chain !== 'rsk' || amount <= 0) return null
+    if (fromInfo.chain !== ChainId.Rootstock || toInfo.chain !== ChainId.Rootstock || amount <= 0) {
+      return null
+    }
 
     const fromTokenAddress = (fromInfo.contractAddress || wrappedRbtcAddress[network]).toLowerCase()
     const toTokenAddress = (toInfo.contractAddress || wrappedRbtcAddress[network]).toLowerCase()
@@ -99,7 +107,7 @@ class SovrynSwapProvider extends SwapProvider {
     )
     const fromAddress = chains[fromInfo.chain].formatAddress(fromAddressRaw, network)
     const spender = (
-      fromInfo.type === 'native' || toInfo.type === 'native'
+      fromInfo.type === AssetTypes.native || toInfo.type === AssetTypes.native
         ? this.config.routerAddressRBTC
         : this.config.routerAddress
     ).toLowerCase()
@@ -125,7 +133,7 @@ class SovrynSwapProvider extends SwapProvider {
     const inputAmountHex = inputAmount.toHexString()
     // in case native token is involved -> give allowance to wrapper contract
     const spender = (
-      fromInfo.type === 'native' || toInfo.type === 'native'
+      fromInfo.type === AssetTypes.native || toInfo.type === AssetTypes.native
         ? this.config.routerAddressRBTC
         : this.config.routerAddress
     ).toLowerCase()
@@ -184,7 +192,7 @@ class SovrynSwapProvider extends SwapProvider {
 
     let encodedData
     let routerAddress
-    if (fromInfo.type === 'native' || toInfo.type === 'native') {
+    if (fromInfo.type === AssetTypes.native || toInfo.type === AssetTypes.native) {
       // use routerAddressRBTC when native token is present in the swap
       routerAddress = this.config.routerAddressRBTC.toLowerCase()
       const wpContract = new ethers.Contract(routerAddress, RBTCWrapperProxyABI, api)

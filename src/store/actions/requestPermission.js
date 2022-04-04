@@ -2,6 +2,7 @@ import { stringify } from 'qs'
 
 import { emitter } from '../utils'
 import { createPopup } from '../../broker/utils'
+import { ChainId } from '@liquality/cryptoassets'
 
 const CONFIRM_REQUIRED = [
   /^chain.buildTransaction$/,
@@ -80,7 +81,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
 
         let permissionRoute = '/permission/default'
 
-        if (chain === 'terra') permissionRoute = '/permission/terra'
+        if (chain === ChainId.Terra) permissionRoute = '/permission/terra'
         else if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
         else if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
         else if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'

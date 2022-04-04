@@ -6,7 +6,7 @@
       class="overview-screen-chain-section"
       :id="account.chain.toUpperCase()"
     >
-      <ListItem v-if="account.chain === 'bitcoin'" @item-selected="selectItem(account)">
+      <ListItem v-if="account.chain === ChainId.Bitcoin" @item-selected="selectItem(account)">
         <template #prefix>
           <div class="account-color" :style="{ 'background-color': account.color }"></div>
         </template>
@@ -105,8 +105,12 @@ import cryptoassets from '@/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
 import { shortenAddress } from '@/utils/address'
+import { ChainId } from '@liquality/cryptoassets'
 
 export default {
+  beforeCreate() {
+    this.ChainId = ChainId
+  },
   components: {
     ListItem,
     PlusIcon,

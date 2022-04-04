@@ -5,7 +5,13 @@ import { v4 as uuidv4 } from 'uuid'
 import ERC20 from '@uniswap/v2-core/build/ERC20.json'
 
 import buildConfig from '../../build.config'
-import { chains, currencyToUnit, unitToCurrency, isEthereumChain } from '@liquality/cryptoassets'
+import {
+  chains,
+  ChainId,
+  currencyToUnit,
+  unitToCurrency,
+  isEthereumChain
+} from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
@@ -27,7 +33,7 @@ const THORCHAIN_DECIMAL = 8
 const SAFE_FEE_MULTIPLIER = 1.3
 const MAX_FEE_SLIPPAGE_MULTIPLIER = 3
 
-const SUPPORTED_CHAINS = ['bitcoin', 'ethereum']
+const SUPPORTED_CHAINS = [ChainId.Bitcoin, ChainId.Ethereum]
 
 const OUT_MEMO_TO_STATUS = {
   OUT: 'SUCCESS',

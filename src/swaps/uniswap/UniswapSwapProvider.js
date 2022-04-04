@@ -10,7 +10,7 @@ import UniswapV2Router from '@uniswap/v2-periphery/build/IUniswapV2Router02.json
 import * as ethers from 'ethers'
 
 import buildConfig from '../../build.config'
-import { chains, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import { chains, ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import cryptoassets from '@/utils/cryptoassets'
 import { isEthereumChain, isERC20 } from '../../utils/asset'
 import { prettyBalance } from '../../utils/coinFormatter'
@@ -69,10 +69,17 @@ class UniswapSwapProvider extends SwapProvider {
 
   async getQuote({ network, from, to, amount }) {
     // Uniswap only provides liquidity for ethereum tokens
-    if (!isEthereumChain(from) || !isEthereumChain(to)) return null
-    // Only uniswap on ethereum is supported atm
-    if (cryptoassets[from].chain !== 'ethereum' || cryptoassets[to].chain !== 'ethereum')
+    if (!isEthereumChain(from) || !isEthereumChain(to)) {
       return null
+    }
+
+    // Only uniswap on ethereum is supported atm
+    if (
+      cryptoassets[from].chain !== ChainId.Ethereum ||
+      cryptoassets[to].chain !== ChainId.Ethereum
+    ) {
+      return null
+    }
 
     const chainId = ChainNetworks[cryptoassets[from].chain][network].chainId
 

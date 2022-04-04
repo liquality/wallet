@@ -114,19 +114,20 @@ export const getNextAccountColor = (chain, index) => {
   return accountColors[finalIndex]
 }
 
-export const ACCOUNT_TYPE_OPTIONS = [
-  {
-    name: 'ETH',
-    label: 'ETH',
-    type: 'ethereum_imported',
-    chain: 'ethereum',
-    blockchain: 'Ethereum Blockchain'
-  },
-  {
-    name: 'BTC',
-    label: 'BTC',
-    type: 'bitcoin_imported',
-    chain: 'bitcoin',
-    blockchain: 'Bitcoin Blockchain'
-  }
-]
+// TODO: NOT USED??
+// export const ACCOUNT_TYPE_OPTIONS = [
+//   {
+//     name: 'ETH',
+//     label: 'ETH',
+//     type: 'ethereum_imported',
+//     chain: 'ethereum',
+//     blockchain: 'Ethereum Blockchain'
+//   },
+//   {
+//     name: 'BTC',
+//     label: 'BTC',
+//     type: 'bitcoin_imported',
+//     chain: 'bitcoin',
+//     blockchain: 'Bitcoin Blockchain'
+//   }
+// ]

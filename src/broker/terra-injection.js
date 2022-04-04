@@ -1,5 +1,6 @@
 import { TerraNetworks } from '@liquality/terra-networks'
 
+import { ChainId } from '@liquality/cryptoassets'
 import PortStream from 'extension-port-stream'
 import BN from 'bignumber.js'
 
@@ -92,9 +93,9 @@ export const connectRemote = (remotePort, store) => {
       if (key === 'post') {
         const { to, gasAdjustment, fee, asset, method, value } = getTransactionParams(payload)
 
-        const { externalConnections, activeWalletId } = store.state;
+        const { externalConnections, activeWalletId } = store.state
 
-        const accountId = externalConnections?.[activeWalletId]?.[origin]?.['terra']?.[0]
+        const accountId = externalConnections?.[activeWalletId]?.[origin]?.[ChainId.Terra]?.[0]
 
         const args = [
           {
@@ -116,7 +117,7 @@ export const connectRemote = (remotePort, store) => {
               args,
               method: 'chain.sendTransaction',
               asset: 'LUNA',
-              chain: 'terra',
+              chain: ChainId.Terra,
               accountId
             }
           })
@@ -137,7 +138,7 @@ export const connectRemote = (remotePort, store) => {
 
     const allowed =
       Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
-      Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes('terra')
+      Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(ChainId.Terra)
 
     switch (type) {
       case 'info':
@@ -159,16 +160,16 @@ export const connectRemote = (remotePort, store) => {
         })
 
         if (allowed) {
-          const accountData = store.getters.accountsData.filter((e) => e.chain === 'terra')[0]
+          const accountData = store.getters.accountsData.filter((e) => e.chain === ChainId.Terra)[0]
 
           if (!accountData?.addresses?.length) {
-            store.dispatch('requestOriginAccess', { origin, chain: 'terra' })
+            store.dispatch('requestOriginAccess', { origin, chain: ChainId.Terra })
           } else {
             const [address] = accountData.addresses
             sendResponse('onConnect', { address })
           }
         } else {
-          store.dispatch('requestOriginAccess', { origin, chain: 'terra' })
+          store.dispatch('requestOriginAccess', { origin, chain: ChainId.Terra })
         }
 
         break

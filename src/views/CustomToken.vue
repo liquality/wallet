@@ -24,8 +24,8 @@
                   class="dropdown-item"
                   id="ethereum_chain"
                   href="#"
-                  @click="selectChain('ethereum')"
-                  :class="{ active: chain === 'ethereum' }"
+                  @click="selectChain(ChainId.Ethereum)"
+                  :class="{ active: chain === ChainId.Ethereum }"
                 >
                   Ethereum (ETH)
                 </a>
@@ -35,8 +35,8 @@
                   class="dropdown-item"
                   id="rsk_chain"
                   href="#"
-                  @click="selectChain('rsk')"
-                  :class="{ active: chain === 'rsk' }"
+                  @click="selectChain(ChainId.Rootstock)"
+                  :class="{ active: chain === ChainId.Rootstock }"
                 >
                   Rootstock (RSK)
                 </a>
@@ -46,8 +46,8 @@
                   class="dropdown-item"
                   id="bsc_chain"
                   href="#"
-                  @click="selectChain('bsc')"
-                  :class="{ active: chain === 'bsc' }"
+                  @click="selectChain(ChainId.BinanceSmartChain)"
+                  :class="{ active: chain === ChainId.BinanceSmartChain }"
                 >
                   Binance Smart Chain (BSC)
                 </a>
@@ -57,8 +57,8 @@
                   class="dropdown-item"
                   id="polygon_chain"
                   href="#"
-                  @click="selectChain('polygon')"
-                  :class="{ active: chain === 'polygon' }"
+                  @click="selectChain(ChainId.Polygon)"
+                  :class="{ active: chain === ChainId.Polygon }"
                 >
                   Polygon (MATIC)
                 </a>
@@ -68,8 +68,8 @@
                   class="dropdown-item"
                   id="arbitrum_chain"
                   href="#"
-                  @click="selectChain('arbitrum')"
-                  :class="{ active: chain === 'arbitrum' }"
+                  @click="selectChain(ChainId.Arbitrum)"
+                  :class="{ active: chain === ChainId.Arbitrum }"
                 >
                   Arbitrum (ARB)
                 </a>
@@ -79,8 +79,8 @@
                   class="dropdown-item"
                   id="avalanche_chain"
                   href="#"
-                  @click="selectChain('avalanche')"
-                  :class="{ active: chain === 'avalanche' }"
+                  @click="selectChain(ChainId.Avalanche)"
+                  :class="{ active: chain === ChainId.Avalanche }"
                 >
                   Avalanche (AVAX)
                 </a>
@@ -90,8 +90,8 @@
                   class="dropdown-item"
                   id="terra_chain"
                   href="#"
-                  @click="selectChain('terra')"
-                  :class="{ active: chain === 'terra' }"
+                  @click="selectChain(ChainId.Terra)"
+                  :class="{ active: chain === ChainId.Terra }"
                 >
                   Terra (LUNA)
                 </a>
@@ -101,8 +101,8 @@
                   class="dropdown-item"
                   id="fuse"
                   href="#"
-                  @click="selectChain('fuse')"
-                  :class="{ active: chain === 'fuse' }"
+                  @click="selectChain(ChainId.Fuse)"
+                  :class="{ active: chain === ChainId.Fuse }"
                 >
                   Fuse (FUSE)
                 </a>
@@ -199,8 +199,12 @@ import { tokenDetailProviders } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
+import { ChainId, AssetTypes } from '@liquality/cryptoassets'
 
 export default {
+  beforeCreate() {
+    this.ChainId = ChainId
+  },
   components: {
     NavBar,
     ChevronDownIcon,
@@ -245,7 +249,7 @@ export default {
     existingAsset() {
       const existingAsset = Object.values(cryptoassets).find(
         (asset) =>
-          asset.type === 'erc20' &&
+          asset.type === AssetTypes.erc20 &&
           asset.contractAddress.toLowerCase() === this.contractAddress.toLowerCase() &&
           asset.chain === this.chain
       )
