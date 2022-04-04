@@ -19,12 +19,16 @@ class LiqualityBoostNativeToERC20 extends SwapProvider {
 
     if (this.config.network === 'mainnet') {
       this.oneinchSwapProvider = createSwapProvider(this.config.network, 'oneinchV4')
+      this.astroportSwapProvider = createSwapProvider(this.config.network, 'astroport')
+
       this.bridgeAssetToAutomatedMarketMaker = {
         MATIC: this.oneinchSwapProvider,
         ETH: this.oneinchSwapProvider,
         BNB: this.oneinchSwapProvider,
         RBTC: this.sovrynSwapProvider,
-        AVAX: this.oneinchSwapProvider
+        AVAX: this.oneinchSwapProvider,
+        UST: this.astroportSwapProvider,
+        LUNA: this.astroportSwapProvider
       }
     } else if (this.config.network === 'testnet') {
       this.bridgeAssetToAutomatedMarketMaker = {
@@ -106,7 +110,8 @@ class LiqualityBoostNativeToERC20 extends SwapProvider {
       feePrices,
       max
     })
-    if (isERC20(asset) && txType === LiqualityBoostNativeToERC20.txTypes.SWAP) {
+
+    if (txType === LiqualityBoostNativeToERC20.txTypes.SWAP) {
       const automatedMarketMakerFees = await this.bridgeAssetToAutomatedMarketMaker[
         quote.bridgeAsset
       ].estimateFees({
@@ -130,6 +135,7 @@ class LiqualityBoostNativeToERC20 extends SwapProvider {
       }
       return totalFees
     }
+
     return liqualityFees
   }
 

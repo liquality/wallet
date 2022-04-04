@@ -13,10 +13,10 @@ export const enableAvalancheChain = {
       enabledChains[walletId] = {}
 
       for (const network of Networks) {
-        const accountExists = state.accounts[walletId][network].find(
-          (account) => account.chain === ChainId.Avalanche
+        const accountExistsAndProperlyInitialized = state.accounts[walletId][network].find(
+          (account) => account.chain === ChainId.Avalanche && account.assets?.length > 0
         )
-        if (accountExists) {
+        if (accountExistsAndProperlyInitialized) {
           accounts[walletId][network] = [...state.accounts[walletId][network]]
         } else {
           const chain = chains[ChainId.Avalanche]

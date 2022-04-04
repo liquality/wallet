@@ -24,7 +24,7 @@ function getTxFee(units, _asset, _feePrice) {
   const chainId = cryptoassets[_asset].chain
   const nativeAsset = chains[chainId].nativeAsset
   const asset = isERC20(_asset) ? 'ERC20' : _asset
-  const feeUnits = units[asset]
+  const feeUnits = chainId === 'terra' ? units['LUNA'] : units[asset] // Terra ERC20 assets use gas equal to Terra Native assets
   const fee = BN(feeUnits).times(feePriceInWei(_asset, _feePrice))
   return unitToCurrency(cryptoassets[nativeAsset], fee)
 }
