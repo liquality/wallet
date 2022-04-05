@@ -58,9 +58,9 @@
           <div class="col">
             <h2>Network Speed/Fee</h2>
             <p v-for="fee in txFees" :key="fee.asset" :id="'network_fee_' + fee.asset">
-              {{ fee.asset }} Fee: {{ fee.fee }} {{ fee.unit }}
+              {{ fee.asset }} Fee: {{ dpUI(fee.fee) }} {{ fee.unit }}
             </p>
-            <p v-if="receiveFee">{{ this.item.to }} Receive Fee: {{ receiveFee }}</p>
+            <p v-if="receiveFee">{{ this.item.to }} Receive Fee: {{ dpUI(receiveFee) }}</p>
           </div>
         </div>
       </div>
@@ -229,6 +229,7 @@ export default {
     ...mapActions('app', ['startBridgeListener']),
     getNativeAsset,
     prettyBalance,
+    dpUI,
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
