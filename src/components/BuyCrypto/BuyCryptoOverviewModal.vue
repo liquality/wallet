@@ -5,21 +5,29 @@
     </template>
     <template>
       <div class="top">
-        <p class="first-message">All you need to do is deposit Crypto to your Liquality wallet.</p>
+        <p class="first-message">
+          We recommend to start with sending ETH to your Liquality wallet because that fuels many
+          transactions.
+        </p>
         <div @click="receive" class="receive-action">
           <ReceiveIconPrimary class="receive-icon" />
           Receive
         </div>
       </div>
-      <p class="second-message">
-        If you don't have any crypto to deposit, no worries. You can easily buy crypto with our
-        trusted partner. We recommend to start with ETH to also be able to cover fees (called gas).
+      <p class="second-message">You can also buy crypto at our trusted partner.</p>
+      <p class="third-message">
+        Fees and limits may vary. It usually takes just a couple of minutes and requires
+        registration.
       </p>
     </template>
     <template #footer>
       <div class="footer">
         <TransakBrand />
-        <button class="btn btn-primary btn-lg" id="open_transak_tab_btn" @click="openTransakTab">
+        <button
+          class="btn btn-outline-primary btn-lg"
+          id="open_transak_tab_btn"
+          @click="openTransakTab"
+        >
           Buy Crypto
         </button>
       </div>
@@ -63,17 +71,15 @@ export default {
 <style lang="scss" scoped>
 h6 {
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
 }
 
 .top {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-bottom: 1px solid #d9dfe5;
 }
 
 .receive-action {
@@ -103,16 +109,30 @@ h6 {
 }
 
 .first-message,
+.second-message,
+.third-message {
+  margin-top: 1.2rem;
+}
+.first-message,
 .second-message {
   font-style: normal;
   font-weight: 300;
-  font-size: 13px;
-  line-height: 16px;
-  color: #646f85;
+  font-size: 16px;
+  line-height: 20px;
+  color: #000d35;
 }
 
 .second-message {
   margin-top: 20px;
+}
+
+.third-message {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: -0.08px;
+  color: #000d35;
 }
 
 .footer {

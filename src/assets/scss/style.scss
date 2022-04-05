@@ -819,10 +819,22 @@ svg.qr-icon {
 }
 
 .modal-title {
-  text-transform: uppercase;
   font-weight: 600;
   font-size: 14px;
   line-height: 20px;
+}
+
+.modal,
+.modal-backgrop {
+  z-index: 9999;
+}
+
+.modal-dialog-bottom {
+  display: flex;
+  align-items: flex-end;
+  bottom: 0;
+  position: fixed;
+  margin: 0 !important;
 }
 
 .ledger-options-container {

@@ -1,24 +1,21 @@
 <template>
-  <Modal v-show="open" @close="close">
+  <Modal v-show="open" @close="close" :dialog="'modal-dialog-bottom'">
     <template #header>
       <h6>Buy Crypto</h6>
     </template>
     <template>
       <p class="main-message">
-        Transak lets you buy multiple assets with your credit card or via bank transer depending on
-        location straight into your Liquality wallet. To cover fees (gas) or interact with DApps
-        you'll mostly need <b>Buy Crypto</b>.
+        Transak lets you buy crypto with your credit card or via bank transfer depending on location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token (the first token of the account).
       </p>
       <p class="secondary-message">
-        Fees and limits may vary. It usually takes just a couple of minutes and requires
-        registration.
+        Fees and limits may vary. It usually takes just a couple of minutes and requires registration.
       </p>
     </template>
     <template #footer>
       <div class="footer">
         <TransakBrand />
-        <button class="btn btn-primary" id="open_transak_tab_btn" @click="openTransakTab">
-          Continue to Transak
+        <button class="btn btn-outline-primary" id="open_transak_tab_btn" @click="openTransakTab">
+          Continue with Transak
         </button>
       </div>
     </template>
@@ -58,25 +55,18 @@ export default {
 <style lang="scss" scoped>
 h6 {
   font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  text-transform: uppercase;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
 }
 
-.main-message {
-  font-style: normal;
-  font-weight: 300;
-  font-size: 13px;
-  line-height: 20px;
-  color: #000d35;
-}
-
+.main-message,
 .secondary-message {
   font-style: normal;
-  font-weight: 300;
-  font-size: 10px;
-  line-height: 16px;
-  color: #646f85;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+  color: #000d35;
 }
 
 .footer {
