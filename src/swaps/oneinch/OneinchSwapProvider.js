@@ -74,7 +74,7 @@ class OneinchSwapProvider extends SwapProvider {
       network,
       walletId,
       quote.from,
-      quote.fromAccountId
+      quote.toAccountId
     )
     const fromAddress = chains[fromChain].formatAddress(fromAddressRaw, network)
     const allowance = await erc20.allowance(fromAddress, this.config.routerAddress)
