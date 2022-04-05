@@ -29,7 +29,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['initializeAnalytics'])
+    ...mapActions('app', ['initializeAnalytics'])
   },
   watch: {
     unlockedAt: function (unlocked) {

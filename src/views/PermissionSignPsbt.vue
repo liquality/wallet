@@ -78,7 +78,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyPermission']),
+    ...mapActions('app', ['replyPermission']),
     prettyBalance,
     getAssetIcon,
     async reply(allowed) {

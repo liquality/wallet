@@ -39,7 +39,7 @@ store.subscribe(async ({ type, payload }, state) => {
           action: 'Wallet Unlocked'
         }
       })
-      dispatch('checkAnalyticsOptIn')
+      dispatch('app/checkAnalyticsOptIn')
       dispatch('initializeAddresses', {
         network: state.activeNetwork,
         walletId: state.activeWalletId

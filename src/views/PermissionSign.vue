@@ -68,7 +68,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyPermission']),
+    ...mapActions('app', ['replyPermission']),
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,

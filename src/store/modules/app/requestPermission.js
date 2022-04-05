@@ -26,19 +26,22 @@ const ALLOWED = [
   /^jsonrpc$/
 ]
 
-export const requestPermission = async ({ state, dispatch, commit }, { origin, data }) => {
-  const { requestPermissionActive } = state.app
+export const requestPermission = async (
+  { state, dispatch, commit, rootState },
+  { origin, data }
+) => {
+  const { requestPermissionActive } = state
   if (!requestPermissionActive) {
-    commit('app/SET_REQUEST_PERMISSION_ACTIVE', { active: true }, { root: true })
+    commit('SET_REQUEST_PERMISSION_ACTIVE', { active: true })
     await dispatch('requestUnlockWallet')
-    if (!state.unlockedAt) throw new Error('Wallet is locked. Unlock the wallet first.')
-    if (!state.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
+    if (!rootState.unlockedAt) throw new Error('Wallet is locked. Unlock the wallet first.')
+    if (!rootState.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
 
     let { asset, accountId, method, args, chain } = data
 
     if (!ALLOWED.some((re) => re.test(method))) throw new Error('Method not allowed')
 
-    const { activeNetwork: network, activeWalletId: walletId } = state
+    const { activeNetwork: network, activeWalletId: walletId } = rootState
 
     args = args.map((a) => {
       if (a === null) return undefined
@@ -65,7 +68,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
       const id = Date.now() + '.' + Math.random()
 
       return new Promise((resolve, reject) => {
-        commit('app/SET_REQUEST_PERMISSION_ACTIVE', { active: false }, { root: true })
+        commit('SET_REQUEST_PERMISSION_ACTIVE', { active: false })
         emitter.$once(`permission:${id}`, (response) => {
           if (!response.allowed) reject(new Error('User denied'))
           if (response.error) reject(new Error(response.error))
@@ -88,7 +91,7 @@ export const requestPermission = async ({ state, dispatch, commit }, { origin, d
         createPopup(`${permissionRoute}?${query}`, () => reject(new Error('User denied')))
       })
     } else {
-      commit('app/SET_REQUEST_PERMISSION_ACTIVE', { active: false }, { root: true })
+      commit('SET_REQUEST_PERMISSION_ACTIVE', { active: false })
       return dispatch('executeRequest', { request })
     }
   }

@@ -3,6 +3,7 @@ import { BG_PREFIX, connectToBackground, newConnectId } from './utils'
 
 class Foreground {
   constructor(store) {
+    console.log('foreground store,', store)
     this.store = store
     this.name = newConnectId()
     this.connection = null
@@ -59,6 +60,7 @@ class Foreground {
         break
 
       case 'REHYDRATE_STATE':
+        console.log('rehydrating the state')
         if (this.initialized) throw new Error('State has already been synchronised with Background')
 
         this.store.replaceState(data)

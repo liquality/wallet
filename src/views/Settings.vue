@@ -108,10 +108,10 @@ export default {
       'enableEthereumInjection',
       'disableEthereumInjection',
       'setAnalyticsResponse',
-      'initializeAnalytics',
       'trackAnalytics',
       'forgetDappConnections'
     ]),
+    ...mapActions('app', ['initializeAnalytics']),
     toggleInjectEthereum(enable) {
       if (enable) {
         this.enableEthereumInjection()

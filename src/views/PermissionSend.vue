@@ -169,7 +169,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyPermission', 'updateFees']),
+    ...mapActions(['updateFees']),
+    ...mapActions('app', ['replyPermission']),
     prettyBalance,
     prettyFiatBalance,
     formatFiatUI,

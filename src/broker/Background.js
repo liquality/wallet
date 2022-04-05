@@ -90,6 +90,7 @@ class Background {
   }
 
   onInternalConnection(connection) {
+    console.log('internally connected')
     this.internalConnections.push(connection)
 
     connection.onMessage.addListener((message) => this.onInternalMessage(connection, message))
@@ -101,12 +102,13 @@ class Background {
 
     this.bindMutation(connection)
 
-    this.store.restored.then(() =>
+    this.store.restored.then(() => {
+      console.log('restored')
       connection.postMessage({
         type: 'REHYDRATE_STATE',
         data: this.store.state
       })
-    )
+    })
   }
 
   onExternalConnection(connection) {
@@ -231,7 +233,7 @@ class Background {
           return
         }
 
-        this.storeProxy(id, connection, 'requestOriginAccess', {
+        this.storeProxy(id, connection, 'app/requestOriginAccess', {
           origin,
           chain,
           setDefaultEthereum
@@ -240,7 +242,7 @@ class Background {
 
       case 'CAL_REQUEST':
         if (allowed || data.method === 'jsonrpc') {
-          this.storeProxy(id, connection, 'requestPermission', {
+          this.storeProxy(id, connection, 'app/requestPermission', {
             origin,
             data
           })
@@ -256,7 +258,7 @@ class Background {
 
       case 'HANDLE_PAYMENT_URI':
         if (allowed) {
-          this.storeProxy(id, connection, 'handlePaymentUri', { data })
+          this.storeProxy(id, connection, 'app/handlePaymentUri', { data })
         } else {
           connection.postMessage({
             id,

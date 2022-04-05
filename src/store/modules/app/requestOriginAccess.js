@@ -6,22 +6,26 @@ export const requestOriginAccess = async (
   { state, dispatch, commit },
   { origin, chain, setDefaultEthereum }
 ) => {
-  const { requestOriginAccessActive } = state.app
+  const { requestOriginAccessActive } = state
 
   if (!requestOriginAccessActive) {
-    commit('app/SET_ORIGIN_ACCESS_ACTIVE', { active: true }, { root: true })
+    commit('SET_ORIGIN_ACCESS_ACTIVE', { active: true })
     try {
       await dispatch('requestUnlockWallet')
     } catch (e) {
-      commit('app/SET_ORIGIN_ACCESS_ACTIVE', { active: false }, { root: true })
+      commit('SET_ORIGIN_ACCESS_ACTIVE', { active: false })
       throw e
     }
 
     return new Promise((resolve, reject) => {
       emitter.$once(`origin:${origin}`, (allowed, accountId, chain) => {
-        commit('app/SET_ORIGIN_ACCESS_ACTIVE', { active: false }, { root: true })
+        commit('SET_ORIGIN_ACCESS_ACTIVE', { active: false })
         if (allowed) {
-          dispatch('addExternalConnection', { origin, accountId, chain, setDefaultEthereum })
+          dispatch(
+            'addExternalConnection',
+            { origin, accountId, chain, setDefaultEthereum },
+            { root: true }
+          )
           resolve({
             accepted: true,
             chain
@@ -33,7 +37,7 @@ export const requestOriginAccess = async (
 
       const query = stringify({ origin, chain })
       createPopup(`/enable?${query}`, () => {
-        commit('app/SET_ORIGIN_ACCESS_ACTIVE', { active: false }, { root: true })
+        commit('SET_ORIGIN_ACCESS_ACTIVE', { active: false })
         reject(new Error('User denied'))
       })
     })

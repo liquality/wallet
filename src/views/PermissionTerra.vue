@@ -119,7 +119,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyPermission']),
+    ...mapActions('app', ['replyPermission']),
     getAssetColorStyle,
     toggleshowData() {
       this.showData = !this.showData
