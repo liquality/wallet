@@ -10,13 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Avalanche is now fully integrated</pre>
-            <pre class="text-wrap">* Swap AVAX cross-chain w/ the new Avalanche integration</pre>
-            <pre class="text-wrap">* Swap Avalanche tokens using 1Inch v4</pre>
-            <pre class="text-wrap">* Connect and use Avalanche dapps</pre>
-            <pre class="text-wrap">* Send LUNA with memos </pre>
-            <pre class="text-wrap">* Improved reliability in Near, Terra, Avalanche</pre>
-            <pre class="text-wrap">* Fixed Near "Max button" bug</pre>
+            <pre class="text-wrap">* Bug fixes</pre>
+            <pre class="text-wrap">* Performance improvements</pre>
           </div>
         </div>
       </div>

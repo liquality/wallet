@@ -136,6 +136,10 @@ export const isEthereumNativeAsset = (asset) => {
   return false
 }
 
+export const isNative = (asset) => {
+  return cryptoassets[asset]?.type === 'native'
+}
+
 export const getNativeAsset = (asset) => {
   if (cryptoassets[asset]?.type === 'native') return asset
 
