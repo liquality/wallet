@@ -1,8 +1,8 @@
-const TestUtil = require('../utils/TestUtils')
-const testUtil = new TestUtil()
+const TestUtil = require("../utils/TestUtils");
+const testUtil = new TestUtil();
 
-const puppeteer = require('puppeteer')
-const expect = require('chai').expect
+const puppeteer = require("puppeteer");
+const expect = require("chai").expect;
 
 class PasswordPage {
   /**
@@ -12,22 +12,50 @@ class PasswordPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async SubmitPasswordDetails (page, password) {
+  async SubmitPasswordDetails(page, password) {
     if (!password) {
-      return Promise.reject(new Error('Password is required'))
+      return Promise.reject(new Error("Password is required"));
     }
     try {
-      await page.waitForSelector('#password', { visible: true, timeout: 60000 })
+      await page.waitForSelector("#password", { visible: true, timeout: 60000 });
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
-        await testUtil.takeScreenshot(page, 'password-screen-issue')
-        expect(e, 'password screen not loaded').equals(null)
+        await testUtil.takeScreenshot(page, "password-screen-issue");
+        expect(e, "password screen not loaded").equals(null);
       }
     }
-    await page.type('#password', password)
-    await page.type('#confirmPassword', password)
+    await page.type("#password", password);
+    await page.type("#confirmPassword", password);
     // Click next button
-    await page.click('#next_button')
+    await page.click("#next_button");
+  }
+
+  /**
+   * Enter password and submit details, pass password as env variable.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async SubmitPasswordDetails(page) {
+    let password;
+    if (!process.env.TEST_WALLET_PASSWORD) {
+      return Promise.reject(new Error("Password is required, provide TEST_WALLET_PASSWORD env variable"));
+    } else {
+      password = process.env.TEST_WALLET_PASSWORD;
+    }
+
+    try {
+      await page.waitForSelector("#password", { visible: true, timeout: 60000 });
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await testUtil.takeScreenshot(page, "password-screen-issue");
+        expect(e, "password screen not loaded").equals(null);
+      }
+    }
+    await page.type("#password", password);
+    await page.type("#confirmPassword", password);
+    // Click next button
+    await page.click("#next_button");
   }
 
   /**
@@ -38,10 +66,10 @@ class PasswordPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async EnterPasswordDetails (page, password, confirmPassword) {
-    await page.waitForSelector('#password', { visible: true })
-    await page.type('#password', password)
-    await page.type('#confirmPassword', confirmPassword)
+  async EnterPasswordDetails(page, password, confirmPassword) {
+    await page.waitForSelector("#password", { visible: true });
+    await page.type("#password", password);
+    await page.type("#confirmPassword", confirmPassword);
   }
 
   /**
@@ -50,11 +78,11 @@ class PasswordPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ValidateSubmitPasswordDisabled (page) {
-    const isNextButtonDisabled = await page.$('#next_button[disabled]')
-    expect(isNextButtonDisabled, 'Next Button should be disabled if password length ' +
-      'is less that 8 characters')
-      .not.to.equal(null)
+  async ValidateSubmitPasswordDisabled(page) {
+    const isNextButtonDisabled = await page.$("#next_button[disabled]");
+    expect(isNextButtonDisabled, "Next Button should be disabled if password length " +
+      "is less that 8 characters")
+      .not.to.equal(null);
   }
 
   /**
@@ -63,13 +91,13 @@ class PasswordPage {
    * @param password
    * @returns {Promise<void>}
    */
-  async ClickUnlock (page, password) {
+  async ClickUnlock(page, password) {
     // unlock
-    await page.type('#password', password)
-    await page.click('#unlock_button')
+    await page.type("#password", password);
+    await page.click("#unlock_button");
     // overview page after unlock
-    await page.waitForSelector('#overview', { visible: true, timeout: 60000 })
-    console.log('User successfully loggedIn after unlock')
+    await page.waitForSelector("#overview", { visible: true, timeout: 60000 });
+    console.log("User successfully loggedIn after unlock");
   }
 
   /**
@@ -78,11 +106,11 @@ class PasswordPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnForgotPassword (page) {
-    const forgotPassword = await page.waitForSelector('#forgot_password_import_seed', { visible: true })
-    await forgotPassword.click()
-    await page.waitForSelector('#terms_privacy_accept_button', { visible: true })
+  async ClickOnForgotPassword(page) {
+    const forgotPassword = await page.waitForSelector("#forgot_password_import_seed", { visible: true });
+    await forgotPassword.click();
+    await page.waitForSelector("#terms_privacy_accept_button", { visible: true });
   }
 }
 
-module.exports = PasswordPage
+module.exports = PasswordPage;

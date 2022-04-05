@@ -137,7 +137,7 @@ describe('Import wallet-["MAINNET"]', async () => {
   })
   it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path["PULL_REQUEST_TEST"]', async () => {
     await homePage.EnterSeedWords(page)
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
@@ -189,7 +189,7 @@ describe('Import wallet-["MAINNET"]', async () => {
     // Enter 24 seed words
     await homePage.EnterSeedWords(page, 24)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)

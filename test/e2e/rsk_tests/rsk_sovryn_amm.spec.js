@@ -13,7 +13,6 @@ const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
 
 let browser, page
-const password = '123123123'
 const SOVRYN_AMM = 'Sovryn'
 
 if (process.env.NODE_ENV === 'mainnet') {
@@ -30,7 +29,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Enter seed words and submit
       await homePage.EnterSeedWords(page)
       // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
+      await passwordPage.SubmitPasswordDetails(page)
       // overview page
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)

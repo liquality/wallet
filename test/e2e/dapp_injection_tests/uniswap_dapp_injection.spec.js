@@ -11,7 +11,6 @@ const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
-const password = '123123123'
 const dappUrl = 'https://app.uniswap.org/#/swap'
 let ethereumChainId = 1
 let arbitrumChainId = 42161
@@ -29,7 +28,7 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
