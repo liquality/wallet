@@ -5,10 +5,13 @@
     </template>
     <template>
       <p class="main-message">
-        Transak lets you buy crypto with your credit card or via bank transfer depending on location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token (the first token of the account).
+        Transak lets you buy crypto with your credit card or via bank transfer depending on
+        location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token (the
+        first token of the account).
       </p>
       <p class="secondary-message">
-        Fees and limits may vary. It usually takes just a couple of minutes and requires registration.
+        Fees and limits may vary. It usually takes just a couple of minutes and requires
+        registration.
       </p>
     </template>
     <template #footer>
