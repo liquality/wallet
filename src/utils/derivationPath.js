@@ -62,7 +62,7 @@ const derivationPaths = {
   },
   [ChainId.Terra]: (network, index) => {
     const terraNetwork = ChainNetworks[ChainId.Terra][network]
-    return `'m/44'/${terraNetwork.coinType}'/${index}'`
+    return `'m/44'/${terraNetwork.coinType}'/${index}'/0/0`
   },
   [ChainId.Fuse]: (network, index) => {
     const ethNetwork = ChainNetworks[ChainId.Fuse][network]

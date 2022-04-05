@@ -355,7 +355,7 @@ function createAvalancheClient(asset, network, mnemonic, derivationPath) {
   )
 }
 
-function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
+function createTerraClient(network, mnemonic, derivationPath, asset) {
   const isTestnet = network === 'testnet'
   const terraNetwork = ChainNetworks.terra[network]
 
@@ -394,7 +394,7 @@ function createTerraClient(network, mnemonic, baseDerivationPath, asset) {
     new TerraWalletProvider({
       network: { ...terraNetwork, nodeUrl },
       mnemonic,
-      baseDerivationPath,
+      derivationPath,
       asset: _asset,
       feeAsset,
       tokenAddress,
