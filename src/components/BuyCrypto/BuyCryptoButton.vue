@@ -1,7 +1,5 @@
 <template>
-  <button @click="open" class="btn" :class="btnClass">
-    {{ asset ? `Buy ${asset}` : 'Buy Crypto' }}
-  </button>
+  <button @click="open" class="btn" :class="btnClass">Buy Crypto</button>
 </template>
 
 <script>

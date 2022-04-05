@@ -49,6 +49,7 @@ export default {
     },
     openTransakTab() {
       this.openTransakWidgetTab({ ...this.data })
+      this.setBuyCryptoModalOpen({ open: false })
     }
   }
 }
