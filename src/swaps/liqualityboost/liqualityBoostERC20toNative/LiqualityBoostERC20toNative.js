@@ -79,11 +79,7 @@ class LiqualityBoostERC20toNative extends SwapProvider {
     const result = await this.bridgeAssetToAutomatedMarketMaker[_quote.bridgeAsset].newSwap({
       network,
       walletId,
-      quote: {
-        ..._quote,
-        to: _quote.bridgeAsset,
-        toAmount: _quote.bridgeAssetAmount
-      }
+      quote: this.swapAutomatedMarketMakerFormat(_quote)
     })
 
     return {
@@ -98,7 +94,6 @@ class LiqualityBoostERC20toNative extends SwapProvider {
   }
 
   async estimateFees({ network, walletId, asset, txType, quote, feePrices, max }) {
-    // bridge asset -> 'to' asset
     const liqualityFees = await this.liqualitySwapProvider.estimateFees({
       network,
       walletId,
@@ -107,17 +102,11 @@ class LiqualityBoostERC20toNative extends SwapProvider {
         txType === LiqualityBoostERC20toNative.txTypes.SWAP
           ? LiqualityBoostERC20toNative.txTypes.SWAP_CLAIM
           : txType,
-      quote: {
-        ...quote,
-        from: quote.bridgeAsset,
-        toAmount: quote.bridgeAssetAmount,
-        toAccountId: quote.fromAccountId
-      },
+      quote: this.swapLiqualityFormat(quote),
       feePrices,
       max
     })
 
-    // 'from' asset -> bridge asset
     if (!isERC20(asset) && txType === LiqualityBoostERC20toNative.txTypes.SWAP) {
       const automatedMarketMakerFees = await this.bridgeAssetToAutomatedMarketMaker[
         quote.bridgeAsset
@@ -126,12 +115,7 @@ class LiqualityBoostERC20toNative extends SwapProvider {
         walletId,
         asset,
         txType: LiqualityBoostERC20toNative.txTypes.SWAP,
-        quote: {
-          ...quote,
-          to: quote.bridgeAsset,
-          toAmount: quote.bridgeAssetAmount,
-          slippagePercentage
-        },
+        quote: this.swapAutomatedMarketMakerFormat(quote),
         feePrices,
         max
       })
@@ -178,26 +162,12 @@ class LiqualityBoostERC20toNative extends SwapProvider {
 
   async performNextSwapAction(store, { network, walletId, swap }) {
     let updates
-    const swapLiqualityFormat = {
-      ...swap,
-      from: swap.bridgeAsset,
-      fromAmount: swap.bridgeAssetAmount,
-      toAccountId: swap.fromAccountId,
-      slippagePercentage
-    }
-
-    const swapAutomatedMarketMakerFormat = {
-      ...swap,
-      to: swap.bridgeAsset,
-      toAmount: swap.bridgeAssetAmount,
-      slippagePercentage
-    }
 
     if (swap.status === 'WAITING_FOR_SWAP_CONFIRMATIONS') {
       updates = await withInterval(async () =>
         this.finalizeAutomatedMarketMakerAndStartLiqualitySwap({
-          swapLiqualityFormat,
-          swapAMMFormat: swapAutomatedMarketMakerFormat,
+          swapLiqualityFormat: this.swapLiqualityFormat(swap),
+          swapAMMFormat: this.swapAutomatedMarketMakerFormat(swap),
           network,
           walletId
         })
@@ -206,7 +176,7 @@ class LiqualityBoostERC20toNative extends SwapProvider {
       updates = await this.liqualitySwapProvider.performNextSwapAction(store, {
         network,
         walletId,
-        swap: swapLiqualityFormat
+        swap: this.swapLiqualityFormat(swap)
       })
     }
 
@@ -216,7 +186,7 @@ class LiqualityBoostERC20toNative extends SwapProvider {
       ].performNextSwapAction(store, {
         network,
         walletId,
-        swap: swapAutomatedMarketMakerFormat
+        swap: this.swapAutomatedMarketMakerFormat(swap)
       })
     }
 
@@ -230,6 +200,25 @@ class LiqualityBoostERC20toNative extends SwapProvider {
       to: swap.to,
       // keep `toAmount` (from updates object) only in case swap transitioned from AMM to LSP
       toAmount: updates.status === 'INITIATED' ? updates.toAmount : swap.toAmount
+    }
+  }
+
+  swapLiqualityFormat = (swap) => {
+    return {
+      ...swap,
+      from: swap.bridgeAsset,
+      fromAmount: swap.bridgeAssetAmount,
+      slippagePercentage
+    }
+  }
+
+  swapAutomatedMarketMakerFormat = (swap) => {
+    return {
+      ...swap,
+      to: swap.bridgeAsset,
+      toAmount: swap.bridgeAssetAmount,
+      toAccountId: swap.fromAccountId, // AMM swaps happen on same account
+      slippagePercentage
     }
   }
 
