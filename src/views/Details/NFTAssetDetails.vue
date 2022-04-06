@@ -114,9 +114,6 @@ export default {
     ArrowDown,
     NavBar
   },
-  created() {
-    console.log('NFTAsssetDetails', this.$route)
-  },
   computed: {
     nftAsset() {
       return this.$route.query.nftAsset

@@ -9,27 +9,23 @@
         <strong class="text-uppercase"> {{ collectionName }}{{ nftCollection.length }}</strong>
       </span>
     </NavBar>
-    <template v-if="nftCollection.length > 0">
-      <div class="nft-collection mt-3">
-        <NFTAsset
-          v-for="asset in nftCollection"
-          :key="asset.id"
-          :nftAsset="asset"
-          :mode="'thumbnail'"
-          v-tooltip.bottom="{
-            content: asset ? asset.name : '',
-            hideOnTargetClick: false
-          }"
-        />
-      </div>
-    </template>
-    <template v-else>
-      <div class="loader">Loading...</div>
-    </template>
+    <div class="nft-collection mt-3">
+      <NFTAsset
+        v-for="asset in nftCollection"
+        :key="asset.id"
+        :nftAsset="asset"
+        :mode="'thumbnail'"
+        v-tooltip.bottom="{
+          content: asset ? asset.name : '',
+          hideOnTargetClick: false
+        }"
+      />
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import NFTAsset from '../../components/NFTAsset.vue'
 import NavBar from '../../components/NavBar.vue'
 
@@ -38,15 +34,13 @@ export default {
     NFTAsset,
     NavBar
   },
-  created() {
-    console.log('NFTCollection created', this.$route.query.nftAsset)
-  },
   computed: {
-    nftCollection() {
-      return this.$route.query.nftAsset
-    },
+    ...mapState(['nftAssets']),
     collectionName() {
       return this.$route.query.collectionName
+    },
+    nftCollection() {
+      return this.nftAssets[this.collectionName]
     },
     routeSource() {
       return this.$route.query.source || null

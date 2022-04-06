@@ -33,9 +33,6 @@ export default {
       required: true
     }
   },
-  created() {
-    console.log('NFTAsset only', this.nftAsset)
-  },
   computed: {
     nftAssetImageSource() {
       if (this.mode === 'thumbnail') {
@@ -48,7 +45,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setStarredNFTs']),
+    ...mapActions(['setStarredNFTs', 'getNftAssets']),
     ...mapMutations(['SET_STARRED_NFTS']),
     viewNFTDetails() {
       if (this.nftAsset) {
@@ -60,12 +57,7 @@ export default {
     },
     async toggleStarred() {
       this.nftAsset.starred = !this.nftAsset.starred
-      console.log('🚀 ~ file: NFTAsset.vue ~ line 62 ~ toggleStarred ~ nftAsset', this.nftAsset)
-      try {
-        await this.SET_STARRED_NFTS(this.nftAsset)
-      } catch (error) {
-        console.error(error)
-      }
+      this.SET_STARRED_NFTS(this.nftAsset)
     }
   }
 }

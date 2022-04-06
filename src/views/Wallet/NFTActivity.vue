@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import TransactionList from '@/components/TransactionList'
@@ -84,15 +84,7 @@ export default {
   props: ['accountId', 'asset'],
   computed: {
     ...mapGetters(['activity', 'accountItem']),
-    ...mapState([
-      'activeWalletId',
-      'activeNetwork',
-      'addresses',
-      'history',
-      'fiatRates',
-      'marketData',
-      'nftAssetsNumber'
-    ]),
+    ...mapState(['activeNetwork', 'history', 'nftAssetsNumber']),
     account() {
       return this.accountItem(this.accountId)
     },
@@ -101,14 +93,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateAccountBalance', 'getUnusedAddresses', 'trackAnalytics']),
     getAssetIcon,
     applyFilters(filters) {
       this.activityData = applyActivityFilters([...this.assetHistory], filters)
     }
-  },
-  async created() {
-    console.log('Account created', this.asset)
   },
   watch: {
     activeNetwork() {

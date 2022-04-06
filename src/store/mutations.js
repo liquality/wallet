@@ -64,6 +64,12 @@ export default {
       starredNFTs.push(payload)
     }
 
+    const collectionName = payload.collection.name
+    const collection = state.nftAssets[collectionName]
+    const sortedCollection = collection.sort((a, b) => {
+      return a.starred === b.starred ? 0 : a.starred ? -1 : 1
+    })
+    state.nftAssets[collectionName] = sortedCollection
     state.starredNFTs = starredNFTs
   },
   ACCEPT_TNC(state) {

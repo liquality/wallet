@@ -8,11 +8,10 @@
           <router-link
             class="d-flex align-items-center"
             :to="{
-              path: `/details/nft-collection/${this.nftAssets[0].collection.name}`,
+              path: `/details/nft-collection/${collectionName}`,
               query: {
-                nftAsset: this.nftAssets,
-                collectionName: this.collectionName,
-                source: this.source
+                collectionName: collectionName,
+                source: source
               }
             }"
             >all</router-link
@@ -49,9 +48,6 @@ export default {
   components: {
     ChevronRight,
     NFTAsset
-  },
-  created() {
-    console.log('created', this.nftAssets)
   }
 }
 </script>
