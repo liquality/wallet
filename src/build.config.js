@@ -71,7 +71,7 @@ export default {
         type: SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE,
         network: 'testnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
+        supportedBridgeAssets: []
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -113,7 +113,7 @@ export default {
         type: SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
+        supportedBridgeAssets: []
       },
       uniswapV2: {
         name: 'Uniswap V2',
