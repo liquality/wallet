@@ -3,6 +3,7 @@ on:
     paths-ignore:
       - '**.md'
     branches:
+      - 'release-candidate-*'
       - '!renovate/**'
       - '!dependabot/**'
 
