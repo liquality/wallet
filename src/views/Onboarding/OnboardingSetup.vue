@@ -101,8 +101,10 @@ export default {
         mnemonic: this.mnemonic,
         imported: this.imported
       }) // mnemonic prop can be null to generate new seed
-      setTimeout(() => {
-        this.unlockWallet({ key: this.password })
+      // Show confetti for a while
+      setTimeout(async () => {
+        await this.unlockWallet({ key: this.password })
+        await this.$router.replace('/wallet')
       }, 1650)
     },
     pushToConfirm() {
