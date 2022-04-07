@@ -42,7 +42,7 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
 
   it('Sushi injection - ETH["PULL_REQUEST_TEST"]', async () => {
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { waitUntil: 'load' })
+    await dappPage.goto(dappUrl, { waitUntil: 'networkidle2' })
     await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 90000 })
     await dappPage.click('#connect-wallet')
     // Before click on injected wallet option.
@@ -97,7 +97,7 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
     await page.click(`#${chain}_web_network`, { delay: 2000 })
 
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { waitUntil: 'load' })
+    await dappPage.goto(dappUrl, { waitUntil: 'networkidle2' })
     await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 90000 })
     await dappPage.click('#connect-wallet')
     // Before click on injected wallet option.
