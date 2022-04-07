@@ -1,7 +1,7 @@
-export const executeRequest = async ({ getters, dispatch, rootState }, { request }) => {
+export const executeRequest = async ({ rootGetters, dispatch, rootState }, { request }) => {
   // Send transactions through wallet managed action
   const { network, walletId, asset, accountId } = request
-  const { accountItem } = getters
+  const { accountItem } = rootGetters
   const account = accountItem(accountId)
   let call
   const result = await new Promise((resolve) => {
@@ -24,7 +24,7 @@ export const executeRequest = async ({ getters, dispatch, rootState }, { request
       )
     } else {
       // Otherwise build client
-      const client = getters.client({
+      const client = rootGetters.client({
         network,
         walletId,
         asset,

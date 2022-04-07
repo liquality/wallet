@@ -1,13 +1,13 @@
 import EventEmitter from 'events'
-import { BG_PREFIX, connectToBackground, newConnectId } from './utils'
+import { BG_PREFIX, connectToBackground, newConnectId, Deferred } from './utils'
 
 class Foreground {
   constructor(store) {
-    console.log('foreground store,', store)
     this.store = store
     this.name = newConnectId()
     this.connection = null
     this.initialized = false
+    this.ready = new Deferred()
     this.pendingMutations = []
     this.emitter = new EventEmitter()
 
@@ -60,12 +60,14 @@ class Foreground {
         break
 
       case 'REHYDRATE_STATE':
-        console.log('rehydrating the state')
         if (this.initialized) throw new Error('State has already been synchronised with Background')
 
         this.store.replaceState(data)
 
         this.initialized = true
+        this.ready.resolve()
+
+        Promise.resolve(this.waitInitialized)
 
         this.processPendingMutations()
         break

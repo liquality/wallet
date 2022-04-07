@@ -4,10 +4,8 @@ import { appModule } from './modules/app'
 
 wallet.original.registerModule('app', appModule)
 
-console.log('store being created')
+const brokerCreator = Broker(wallet.original.state)
 
-const broker = Broker(wallet.original.state)
-
-broker.plugin(wallet.original)
+export const broker = brokerCreator.plugin(wallet.original)
 
 export default wallet.original

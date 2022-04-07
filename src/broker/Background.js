@@ -90,7 +90,6 @@ class Background {
   }
 
   onInternalConnection(connection) {
-    console.log('internally connected')
     this.internalConnections.push(connection)
 
     connection.onMessage.addListener((message) => this.onInternalMessage(connection, message))
@@ -103,7 +102,6 @@ class Background {
     this.bindMutation(connection)
 
     this.store.restored.then(() => {
-      console.log('restored')
       connection.postMessage({
         type: 'REHYDRATE_STATE',
         data: this.store.state

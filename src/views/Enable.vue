@@ -166,13 +166,11 @@ export default {
       )
     },
     setDefaultSelectedChain() {
-      console.log(this.accountsData, this.accountItem)
       const { hostname } = new URL(this.origin)
       const dapp = Object.keys(dappChains).find((origin) => {
         return hostname.includes(origin)
       })
 
-      console.log(dapp, dappChains, this.accountsData)
       if (dapp) {
         const chainHasAccount = dappChains[dapp].find((chain) =>
           this.accountsData.find((account) => account.chain === chain)

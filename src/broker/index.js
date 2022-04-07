@@ -9,8 +9,6 @@ import { migrations } from '@liquality/wallet-core'
 
 const { isMigrationNeeded, processMigrations } = migrations
 
-console.log('IS IT BACKGROUND', isBackgroundScript(window))
-
 const Broker = (state) => {
   if (isBackgroundScript(window)) {
     const vuexPersist = new VuexPersist({
