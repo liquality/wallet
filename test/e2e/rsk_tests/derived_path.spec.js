@@ -298,7 +298,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     console.log('Import wallet continue button has been clicked')
 
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
 
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
