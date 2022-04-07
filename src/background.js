@@ -37,7 +37,7 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Lock/Unlock',
           action: 'Wallet Unlocked',
-          label: 'Open wallet'
+          label: 'import with seed pharse'
         }
       })
       dispatch('app/checkAnalyticsOptIn')
@@ -203,7 +203,8 @@ store.subscribe(async ({ type, payload }, state) => {
         event: 'Onboarding',
         properties: {
           category: 'Onboarding',
-          action: 'User Onboarded'
+          action: 'User Onboarded',
+          label: 'Create a new wallet'
         }
       })
       break
