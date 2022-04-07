@@ -36,7 +36,8 @@ store.subscribe(async ({ type, payload }, state) => {
         event: 'Unlock wallet',
         properties: {
           category: 'Lock/Unlock',
-          action: 'Wallet Unlocked'
+          action: 'Wallet Unlocked',
+          label: 'Open wallet'
         }
       })
       dispatch('app/checkAnalyticsOptIn')
@@ -167,7 +168,7 @@ store.subscribe(async ({ type, payload }, state) => {
       break
     case 'UPDATE_HISTORY':
       // eslint-disable-next-line
-      const item = getters.historyItemById(payload.network, payload.walletId, payload.id)
+      const item = getters.historyItemById(payload.network, payload.walletId, payload.id);
       if (item.type === 'SWAP' && payload.updates) {
         if (payload.updates.status !== 'undefined') {
           dispatch('trackAnalytics', {
@@ -177,7 +178,8 @@ store.subscribe(async ({ type, payload }, state) => {
               action: 'Swap Status changed',
               swapProvider: `${item.provider}`,
               label: `${item.from} to ${item.to}`,
-              swapStatus: `${payload.updates.status}`
+              swapStatus: `${payload.updates.status}`,
+              orderId: `${item.orderId}`
             }
           })
         }
@@ -202,6 +204,20 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Onboarding',
           action: 'User Onboarded'
+        }
+      })
+      break
+    case 'UPDATE_BALANCE':
+      // eslint-disable-next-line no-case-declarations
+      const accountItemDetails = getters.accountItem(payload.accountId)
+      dispatch('trackAnalytics', {
+        event: 'Balance Update',
+        properties: {
+          category: 'Balance',
+          action: 'Balance Updated',
+          chain: accountItemDetails.chain,
+          fiatBalance: accountItemDetails.fiatBalances,
+          totalFiatBalance: accountItemDetails.totalFiatBalance
         }
       })
       break
