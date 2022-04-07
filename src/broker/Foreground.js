@@ -67,8 +67,6 @@ class Foreground {
         this.initialized = true
         this.ready.resolve()
 
-        Promise.resolve(this.waitInitialized)
-
         this.processPendingMutations()
         break
 
