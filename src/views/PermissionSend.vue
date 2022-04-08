@@ -130,6 +130,7 @@ import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
 import BN from 'bignumber.js'
 import _ from 'lodash'
+import { UnknownTokenAdd } from '../utils/unknownTokenAdd/UnknownTokenAdd'
 
 const TRANSACTION_TYPES = {
   approve: 'Allow',
@@ -165,7 +166,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyPermission', 'updateFees']),
+    ...mapActions(['replyPermission', 'updateFees', 'enableAssets', 'addCustomToken']),
     prettyBalance,
     prettyFiatBalance,
     formatFiatUI,
@@ -243,6 +244,12 @@ export default {
         if (response.error) {
           this.error = response.error
         } else {
+          const unknownTokenAdd = new UnknownTokenAdd(
+            requestWithFee,
+            this.addCustomToken,
+            this.enableAssets
+          )
+          await unknownTokenAdd.addToken()
           window.close()
         }
       } finally {
