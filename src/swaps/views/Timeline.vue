@@ -150,12 +150,10 @@
             <td class="text-muted text-left small-12">Counter-party</td>
             <td class="text-break">{{ item.agent }}</td>
           </tr>
-          <tr v-if="orderLink">
+          <tr v-if="item.id">
             <td class="text-muted text-left small-12">Order ID</td>
-            <td id="swap_details_order_id">
-              <a :href="orderLink" id="order_id_href_link" rel="noopener" target="_blank">{{
-                item.id
-              }}</a>
+            <td id="swap_details_order_id" class="text-break">
+              {{ item.id }}
               <CopyIcon class="copy-icon" @click="copy(item.id)" />
             </td>
           </tr>

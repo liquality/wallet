@@ -222,5 +222,25 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       })
       break
+    case 'TOGGLE_EXPERIMENT':
+      dispatch('trackAnalytics', {
+        event: 'Experiment Toggle',
+        properties: {
+          category: 'Experiments',
+          action: 'Experiment Toggle',
+          label: `${payload.name}`
+        }
+      })
+      break
+    case 'CHANGE_PASSWORD':
+      console.log(payload)
+      dispatch('trackAnalytics', {
+        event: 'Change Password',
+        properties: {
+          category: 'Settings',
+          action: 'Change Password'
+        }
+      })
+      break
   }
 })
