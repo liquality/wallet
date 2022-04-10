@@ -245,7 +245,7 @@ export default {
     ...mapActions(['enableAssets', 'addCustomToken']),
     async addToken() {
       if (!this.existingAsset) {
-        // Add only if it does not already exist
+        // Add only if it does not already exist, use carefully
         await this.addCustomToken({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
