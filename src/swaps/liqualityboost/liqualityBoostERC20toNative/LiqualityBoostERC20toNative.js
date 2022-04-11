@@ -117,12 +117,12 @@ class LiqualityBoostERC20toNative extends SwapProvider {
         quote: this.swapAutomatedMarketMakerFormat(quote)
       })
 
-      const totalFees = {}
+      const combinedFees = {}
       for (const key in automatedMarketMakerFees) {
-        totalFees[key] = BN(automatedMarketMakerFees[key]).plus(liqualityFees[key])
+        combinedFees[key] = BN(automatedMarketMakerFees[key]).plus(liqualityFees[key])
       }
 
-      return totalFees
+      return combinedFees
     }
 
     if (txType === this.toTxType) {
