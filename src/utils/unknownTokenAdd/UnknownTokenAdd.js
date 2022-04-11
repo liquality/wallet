@@ -19,20 +19,15 @@ export class UnknownTokenAdd extends UnknownTokenConfig {
   }
 
   async addToken() {
-    console.log('addToken() start')
     if (!this.origin || !this.isValidMethod() || !this.isValidFunctionSignature()) {
       return
     }
-    console.log('after !this.origin || !this.isValidMethod() || !this.isValidFunctionSignature()')
     const destinationTokenAddress = this.getDestinationTokenAddress()
-    console.log('after this.getDestinationTokenAddress()')
     if (!destinationTokenAddress) {
       return
     }
-    console.log('after destinationTokenAddress')
     const { decimals, name, symbol } = await this.fetchTokenDetails(destinationTokenAddress)
     const _symbol = this.chain === 'ethereum' ? symbol : this.chain.substring(0, 3) + symbol
-    console.log('decimals, name, symbol, _symbol', decimals, name, symbol, _symbol)
     await this.addCustomToken({
       network: this.request.network,
       walletId: this.request.walletId,
@@ -47,6 +42,5 @@ export class UnknownTokenAdd extends UnknownTokenConfig {
       walletId: this.request.walletId,
       assets: [_symbol]
     })
-    console.log('after enableAssets()')
   }
 }

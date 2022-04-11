@@ -250,7 +250,7 @@ export default {
             this.enableAssets
           )
           await unknownTokenAdd.addToken()
-          window.close()
+          // window.close()
         }
       } finally {
         this.loading = false
