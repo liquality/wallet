@@ -99,6 +99,7 @@ class LiqualityBoostERC20toNative extends SwapProvider {
     const input = { network, walletId, asset, txType, quote, feePrices, max }
 
     if (txType === this.fromTxType) {
+      // swap initiation fee
       const liqualityFees = await this.liqualitySwapProvider.estimateFees({
         ...input,
         asset: quote.bridgeAsset,
@@ -106,6 +107,7 @@ class LiqualityBoostERC20toNative extends SwapProvider {
         quote: this.swapLiqualityFormat(quote)
       })
 
+      // amm fee
       const automatedMarketMakerFees = await this.bridgeAssetToAutomatedMarketMaker[
         quote.bridgeAsset
       ].estimateFees({
@@ -124,6 +126,7 @@ class LiqualityBoostERC20toNative extends SwapProvider {
     }
 
     if (txType === this.toTxType) {
+      // swap claim fee
       const liqualityFees = await this.liqualitySwapProvider.estimateFees({
         ...input,
         txType: LiqualitySwapProvider.toTxType,
