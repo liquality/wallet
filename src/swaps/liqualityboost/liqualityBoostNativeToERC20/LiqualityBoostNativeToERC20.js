@@ -86,37 +86,46 @@ class LiqualityBoostNativeToERC20 extends SwapProvider {
   }
 
   async estimateFees({ network, walletId, asset, txType, quote, feePrices, max }) {
-    const liqualityFees = await this.liqualitySwapProvider.estimateFees({
-      network,
-      walletId,
-      asset,
-      txType:
-        txType === LiqualityBoostNativeToERC20.txTypes.SWAP
-          ? LiqualityBoostNativeToERC20.txTypes.SWAP_CLAIM
-          : txType,
-      quote: this.swapLiqualityFormat(quote),
-      feePrices,
-      max
-    })
-    if (isERC20(asset) && txType === LiqualityBoostNativeToERC20.txTypes.SWAP) {
+    const input = { network, walletId, asset, txType, quote, feePrices, max }
+
+    if (txType === this.fromTxType) {
+      // swap initiation fee
+      const liqualityFees = await this.liqualitySwapProvider.estimateFees({
+        ...input,
+        txType: LiqualitySwapProvider.fromTxType,
+        quote: this.swapLiqualityFormat(quote)
+      })
+
+      return liqualityFees
+    }
+
+    if (txType === this.toTxType) {
+      // swap claim fee
+      const liqualityFees = await this.liqualitySwapProvider.estimateFees({
+        ...input,
+        asset: quote.bridgeAsset,
+        txType: LiqualitySwapProvider.toTxType,
+        quote: this.swapLiqualityFormat(quote)
+      })
+
+      // amm fee
       const automatedMarketMakerFees = await this.bridgeAssetToAutomatedMarketMaker[
         quote.bridgeAsset
       ].estimateFees({
-        network,
-        walletId,
-        asset,
-        txType: LiqualityBoostNativeToERC20.txTypes.SWAP,
-        quote: this.swapAutomatedMarketMakerFormat(quote),
-        feePrices,
-        max
+        ...input,
+        asset: quote.bridgeAsset,
+        // all AMMs have the same fromTxType
+        txType: OneinchSwapProvider.fromTxType,
+        quote: this.swapAutomatedMarketMakerFormat(quote)
       })
-      const totalFees = {}
+
+      const combinedFees = {}
       for (const key in automatedMarketMakerFees) {
-        totalFees[key] = BN(automatedMarketMakerFees[key]).plus(liqualityFees[key])
+        combinedFees[key] = BN(automatedMarketMakerFees[key]).plus(liqualityFees[key])
       }
-      return totalFees
+
+      return combinedFees
     }
-    return liqualityFees
   }
 
   async finalizeLiqualitySwapAndStartAutomatedMarketMaker({ swap, network, walletId }) {
@@ -180,8 +189,8 @@ class LiqualityBoostNativeToERC20 extends SwapProvider {
   }
 
   static txTypes = {
-    ...LiqualitySwapProvider.txTypes,
-    ...OneinchSwapProvider.txTypes
+    FROM_CHAIN: 'FROM_CHAIN',
+    TO_CHAIN: 'TO_CHAIN'
   }
 
   static statuses = {
@@ -234,8 +243,8 @@ class LiqualityBoostNativeToERC20 extends SwapProvider {
     }
   }
 
-  static fromTxType = LiqualityBoostNativeToERC20.txTypes.SWAP_INITIATION
-  static toTxType = LiqualityBoostNativeToERC20.txTypes.SWAP
+  static fromTxType = LiqualityBoostNativeToERC20.txTypes.FROM_CHAIN
+  static toTxType = LiqualityBoostNativeToERC20.txTypes.TO_CHAIN
 
   static timelineDiagramSteps = ['INITIATION', 'AGENT_INITIATION', 'CLAIM_OR_REFUND', 'SWAP']
 
