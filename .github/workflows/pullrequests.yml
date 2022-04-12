@@ -14,6 +14,9 @@ env:
   AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
   AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
   NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
+  SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+  TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+  TEST_WALLET_PASSWORD: ${{ secrets.TEST_WALLET_PASSWORD }}
 
 jobs:
   pull_request_tests:
@@ -68,9 +71,6 @@ jobs:
         env:
           CI: 'true'
           DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-          TEST_WALLET_PASSWORD: ${{ secrets.TEST_WALLET_PASSWORD }}
         with:
           args: npm run test:pullrequest
 
