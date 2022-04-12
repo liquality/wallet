@@ -99,6 +99,7 @@ async function handleRequest (req) {
 
 window[injectionName] = {
   isLiquality: true,
+  isMetaMask: true,
   isEIP1193: true,
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
