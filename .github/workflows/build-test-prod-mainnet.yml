@@ -1,10 +1,18 @@
+# Prod Mainnet tests
+name: Prod Mainnet tests
+
 on:
   schedule:
     - cron: '0 8 * * *' # everyday at 8am
     - cron: '0 22 * * *' # everyday at 10pm
 
-# Prod Mainnet tests
-name: Prod Mainnet tests
+env:
+  TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
+  AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
+  AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
+  NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
+  AGENT_TESTNET_URL: ${{ secrets.VUE_APP_AGENT_TESTNET_URL }}
+  AGENT_MAINNET_URL: ${{ secrets.VUE_APP_AGENT_MAINNET_URL }}
 
 jobs:
   regressiontest_Prod_mainnet:
@@ -32,22 +40,17 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
 
+      - run: |
+          echo VUE_APP_TERRA_MAINNET_URL =$TERRA_MAINNET_URL >> .env
+          echo VUE_APP_AVALANCHE_MAINNET_NODE =$AVALANCHE_MAINNET_NODE >> .env
+          echo VUE_APP_AVALANCHE_TESTNET_NODE =$AVALANCHE_TESTNET_NODE >> .env
+          echo VUE_APP_NEAR_MAINNET_URL =$NEAR_MAINNET_URL >> .env
+
       # Create wallet with Dev Prod configuration
       - name: Set production agents
-        env:
-          VUE_APP_TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
-          VUE_APP_AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
-          VUE_APP_AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
-          VUE_APP_NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
-          VUE_APP_AGENT_TESTNET_URL: ${{ secrets.VUE_APP_AGENT_TESTNET_URL }}
-          VUE_APP_AGENT_MAINNET_URL: ${{ secrets.VUE_APP_AGENT_MAINNET_URL }}
         run: |
-          echo VUE_APP_AVALANCHE_MAINNET_NODE =${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }} >> .env
-          echo VUE_APP_AVALANCHE_TESTNET_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }} >> .env
-          echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
-          echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
-          echo VUE_APP_AGENT_TESTNET_URL =${{ secrets.VUE_APP_AGENT_TESTNET_URL }} >> .env
-          echo VUE_APP_AGENT_MAINNET_URL =${{ secrets.VUE_APP_AGENT_MAINNET_URL }} >> .env
+          echo VUE_APP_AGENT_TESTNET_URL =$AGENT_TESTNET_URL >> .env
+          echo VUE_APP_AGENT_MAINNET_URL =$AGENT_MAINNET_URL >> .env
           npm ci
           npm run lint
           npm run build
