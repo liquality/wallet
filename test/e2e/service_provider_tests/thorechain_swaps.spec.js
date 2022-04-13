@@ -38,7 +38,7 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
     await browser.close()
   })
 
-  it('BTC->ETH - Thorchain]', async () => {
+  it('BTC->ETH - Thorchain', async () => {
     // Click on BTC then click on SWAP button
     await overviewPage.SelectAssetFromOverview(page, 'BTC')
     await page.waitForSelector('#BTC_swap_button', { visible: true })
