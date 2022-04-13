@@ -19,12 +19,15 @@ class LiqualityBoostERC20toNative extends SwapProvider {
 
     if (this.config.network === 'mainnet') {
       this.oneinchSwapProvider = createSwapProvider(this.config.network, 'oneinchV4')
+      this.astroportSwapProvider = createSwapProvider(this.config.network, 'astroport')
       this.bridgeAssetToAutomatedMarketMaker = {
         MATIC: this.oneinchSwapProvider,
         ETH: this.oneinchSwapProvider,
         BNB: this.oneinchSwapProvider,
         RBTC: this.sovrynSwapProvider,
-        AVAX: this.oneinchSwapProvider
+        AVAX: this.oneinchSwapProvider,
+        UST: this.astroportSwapProvider,
+        LUNA: this.astroportSwapProvider
       }
     } else if (this.config.network === 'testnet') {
       this.bridgeAssetToAutomatedMarketMaker = {
@@ -70,7 +73,8 @@ class LiqualityBoostERC20toNative extends SwapProvider {
       toAmount: finalQuote.toAmount,
       bridgeAsset,
       bridgeAssetAmount: quote.toAmount,
-      path: quote.path
+      path: quote.path,
+      fromTokenAddress: quote.fromTokenAddress // for Terra ERC20
     }
   }
 
