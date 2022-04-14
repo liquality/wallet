@@ -59,6 +59,7 @@ class LiqualityBoostNativeToERC20 extends SwapProvider {
       amount: bridgeAssetQuantity.toNumber()
     })
     if (!finalQuote) return null
+
     return {
       from,
       to,
@@ -67,7 +68,7 @@ class LiqualityBoostNativeToERC20 extends SwapProvider {
       bridgeAsset,
       bridgeAssetAmount: quote.toAmount,
       path: finalQuote.path,
-      fromTokenAddress: finalQuote.fromTokenAddress // for Terra ERC20
+      toTokenAddress: finalQuote.toTokenAddress // for Terra ERC20
     }
   }
 
@@ -152,6 +153,15 @@ class LiqualityBoostNativeToERC20 extends SwapProvider {
           walletId
         })
       )
+
+      // initiate Astroport swap
+      if (updates.status === 'APPROVE_CONFIRMED' && swap.bridgeAsset === 'LUNA') {
+        updates = await this.bridgeAssetToAutomatedMarketMaker[swap.bridgeAsset].newSwap({
+          network,
+          walletId,
+          quote: this.swapAutomatedMarketMakerFormat(swap)
+        })
+      }
     } else {
       updates = await this.liqualitySwapProvider.performNextSwapAction(store, {
         network,
