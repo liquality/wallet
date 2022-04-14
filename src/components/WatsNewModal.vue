@@ -10,8 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Wallet core Library release 0.60.1</pre>
-            <pre class="text-wrap">* This is Test internal release</pre>
+            <pre class="text-wrap">Dependencies upgrade</pre>
+            <pre class="text-wrap">Infrastructure upgrade</pre>
+            <pre class="text-wrap">Minor Buf fixes</pre>
           </div>
         </div>
       </div>
