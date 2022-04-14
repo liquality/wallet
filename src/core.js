@@ -32,22 +32,22 @@ const walletOptions = {
   createNotification(notification) {
     _createNotification(notification)
   },
-  createBitcoinLedgerProvider(network, addressType, baseDerivationPath) {
+  createBitcoinLedgerProvider(network, bitcoinNetwork, addressType, baseDerivationPath) {
     const bitcoinLedgerApp = new BitcoinLedgerBridgeApp(network, ChainId.Bitcoin)
     return new BitcoinLedgerBridgeProvider(
       {
-        network,
+        network: bitcoinNetwork,
         addressType,
         baseDerivationPath
       },
       bitcoinLedgerApp
     )
   },
-  createEthereumLedgerProvider(network, chain, derivationPath, hardfork) {
+  createEthereumLedgerProvider(network, ethereumNetwork, chain, derivationPath, hardfork) {
     const ethereumLedgerApp = new EthereumLedgerBridgeApp(network, chain)
     return new EthereumLedgerBridgeProvider(
       {
-        network,
+        network: ethereumNetwork,
         derivationPath,
         hardfork
       },

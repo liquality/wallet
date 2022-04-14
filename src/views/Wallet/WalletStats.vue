@@ -46,7 +46,7 @@ import SendIcon from '@/assets/icons/send_o.svg'
 import ReceiveIcon from '@/assets/icons/receive_o.svg'
 import SwapIcon from '@/assets/icons/swap_o.svg'
 import { formatFiat } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { formatFontSize } from '@liquality/wallet-core/dist/utils/fontSize'
+import { formatFontSize } from '@/utils/fontSize'
 
 export default {
   components: {

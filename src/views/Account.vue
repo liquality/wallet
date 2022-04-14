@@ -116,7 +116,7 @@ import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
-import { formatFontSize } from '@liquality/wallet-core/dist/utils/fontSize'
+import { formatFontSize } from '@/utils/fontSize'
 
 import amplitude from 'amplitude-js'
 

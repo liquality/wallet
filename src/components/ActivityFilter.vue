@@ -110,7 +110,8 @@ import { ACTIVITY_FILTER_TYPES, ACTIVITY_STATUSES } from '@liquality/wallet-core
 import { getItemIcon } from '@/utils/history'
 import DatePick from 'vue-date-pick'
 import '@/assets/scss/vue-date-pick.scss'
-import { getCSVContent, downloadFile } from '@liquality/wallet-core/dist/utils/export'
+import { getCSVContent } from '@liquality/wallet-core/dist/utils/export'
+import { downloadFile } from '@/utils/export'
 
 const CSV_HEADERS = [
   {
