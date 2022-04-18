@@ -85,7 +85,7 @@ export const actions = {
     const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
     let url = `${widgetUrl}?apiKey=${apiKey}`
     if (asset) {
-      url = `${url}&cryptoCurrencyCode=${asset}&network=${chain}`
+      url = `${url}&cryptoCurrencyCode=${asset}`
     }
 
     if (address) {
