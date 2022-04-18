@@ -6,7 +6,7 @@
       class="overview-screen-chain-section"
       :id="account.chain.toUpperCase()"
     >
-      <ListItem v-if="account.chain === 'bitcoin'" @item-selected="selectItem(account)">
+      <ListItem v-if="isBitcoin(account.chain)" @item-selected="selectItem(account)">
         <template #prefix>
           <div class="account-color" :style="{ 'background-color': account.color }"></div>
         </template>
@@ -109,6 +109,7 @@ import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { ChainId } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -119,7 +120,8 @@ export default {
   props: ['search', 'accounts'],
   data() {
     return {
-      expandedAccounts: []
+      expandedAccounts: [],
+      chainId: ChainId
     }
   },
   computed: {
@@ -164,6 +166,9 @@ export default {
     },
     shouldExpandAccount(account) {
       return this.expandedAccounts.includes(account.id) || this.search
+    },
+    isBitcoin(chain) {
+      return chain === ChainId.Bitcoin
     }
   }
 }
