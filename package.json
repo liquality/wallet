@@ -48,7 +48,7 @@
     "@liquality/ethereum-rpc-provider": "1.13.10",
     "@liquality/ethereum-scraper-swap-find-provider": "1.13.10",
     "@liquality/ethereum-swap-provider": "1.13.10",
-    "@liquality/hw-web-bridge": "0.1.2",
+    "@liquality/hw-web-bridge": "^0.1.2",
     "@liquality/near-js-wallet-provider": "1.13.10",
     "@liquality/near-networks": "1.13.10",
     "@liquality/near-rpc-provider": "1.13.10",
