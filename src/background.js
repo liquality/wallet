@@ -159,10 +159,8 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Settings',
           action: 'Custom Token Removed',
-          customTokenName: `${payload.customToken.name}`,
-          customTokenChain: `${payload.customToken.chain}`,
-          customTokenSymbol: `${payload.customToken.symbol}`,
-          label: `${payload.customToken.symbol})`
+          customTokenSymbol: `${payload.symbol}`,
+          label: `${payload.symbol})`
         }
       })
       break
