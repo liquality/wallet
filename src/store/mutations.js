@@ -45,34 +45,6 @@ export default {
       })
     }
   },
-  SET_NFT_ASSETS(state, payload) {
-    state.nftAssets = payload
-  },
-  SET_NFT_ASSETS_NUMBER(state, payload) {
-    state.nftAssetsNumber = payload
-  },
-  SET_STARRED_NFTS(state, payload) {
-    const starredNFTs = state.starredNFTs || []
-
-    const index = starredNFTs.findIndex(
-      (nft) =>
-        nft.asset_contract.address === payload.asset_contract.address && nft.id === payload.id
-    )
-
-    if (index !== -1) {
-      starredNFTs.splice(index, 1)
-    } else {
-      starredNFTs.push(payload)
-    }
-
-    const collectionName = payload.collection.name
-    const collection = state.nftAssets[collectionName]
-    const sortedCollection = collection.sort((a, b) => {
-      return a.starred === b.starred ? 0 : a.starred ? -1 : 1
-    })
-    state.nftAssets[collectionName] = sortedCollection
-    state.starredNFTs = starredNFTs
-  },
   ACCEPT_TNC(state) {
     state.termsAcceptedAt = Date.now()
   },

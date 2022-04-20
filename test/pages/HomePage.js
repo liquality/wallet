@@ -37,6 +37,7 @@ class HomePage {
       visible: true
     })
     await page.click('#terms_privacy_accept_button')
+    await page.click('#analytics-ok-close-button')
   }
 
   /**

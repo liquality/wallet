@@ -82,6 +82,7 @@ class PasswordPage {
     const forgotPassword = await page.waitForSelector('#forgot_password_import_seed', { visible: true })
     await forgotPassword.click()
     await page.waitForSelector('#terms_privacy_accept_button', { visible: true })
+    await page.waitForSelector('##analytics-ok-close-button', { visible: true })
   }
 }
 
