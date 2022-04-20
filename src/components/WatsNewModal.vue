@@ -10,9 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Dependencies upgrade</pre>
-            <pre class="text-wrap">Infrastructure upgrade</pre>
-            <pre class="text-wrap">Minor Buf fixes</pre>
+            <pre class="text-wrap">* Hot fix release 0.61.0</pre>
           </div>
         </div>
       </div>

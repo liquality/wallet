@@ -30,7 +30,7 @@
     "@liquality/hw-web-bridge": "^0.1.2",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
-    "@liquality/wallet-core": "^1.4.23",
+    "@liquality/wallet-core": "^1.4.24",
     "@terra-money/terra.js": "^3.0.8",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.17.0",
