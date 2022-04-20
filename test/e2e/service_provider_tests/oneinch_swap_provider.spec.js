@@ -81,9 +81,10 @@ if (process.env.NODE_ENV === 'mainnet') {
         }
         // Validate available balance
         const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
-        expect(availableBalance, `${obj.from}->${obj.to}) swap, available balance should be greater than 0`).to.be.above(
-          0
-        )
+        expect(
+          availableBalance,
+          `${obj.from}->${obj.to}) swap, available balance should be greater than 0`
+        ).to.be.above(0)
 
         // validate Send & To fiat values
         const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)

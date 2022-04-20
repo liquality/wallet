@@ -53,9 +53,10 @@ const getTransactionParams = (payload) => {
     msg.execute_msg?.transfer?.recipient ||
     msg.contract
   const contractAddress = msg.contract
-
   const method = getExecutedMethod(msgs)
-  const _fee = new BN(amount[0].amount).div(new BN(gas || gasLimit)).toString()
+  const _gas = gas || gasLimit
+
+  const _fee = new BN(amount[0].amount / _gas).toFixed(2)
 
   const asset = !value ? 'uusd' : denom || contractAddress || 'luna'
 
@@ -64,7 +65,8 @@ const getTransactionParams = (payload) => {
     to,
     method,
     fee: _fee,
-    gasAdjustment: gasAdjustment
+    gasAdjustment,
+    value: asset === 'uluna' ? value : 0
   }
 }
 
@@ -88,7 +90,11 @@ export const connectRemote = (remotePort, store) => {
 
     const handleRequest = async (key) => {
       if (key === 'post') {
-        const { to, gasAdjustment, fee, asset, method } = getTransactionParams(payload)
+        const { to, gasAdjustment, fee, asset, method, value } = getTransactionParams(payload)
+
+        const { externalConnections, activeWalletId } = store.state
+
+        const accountId = externalConnections?.[activeWalletId]?.[origin]?.['terra']?.[0]
 
         const args = [
           {
@@ -97,7 +103,9 @@ export const connectRemote = (remotePort, store) => {
             asset,
             method,
             data: payload,
-            gas: gasAdjustment
+            gas: gasAdjustment,
+            value,
+            accountId
           }
         ]
 
@@ -108,7 +116,8 @@ export const connectRemote = (remotePort, store) => {
               args,
               method: 'chain.sendTransaction',
               asset: 'LUNA',
-              chain: 'terra'
+              chain: 'terra',
+              accountId
             }
           })
           sendResponse('onPost', {
@@ -142,7 +151,7 @@ export const connectRemote = (remotePort, store) => {
 
         break
       case 'connect':
-        emitter.$once(`origin:${origin}`, (_allowed, accountId) => {
+        emitter.$once(`origin:${origin}`, (_, accountId) => {
           const accountData = store.getters.accountItem(accountId)
           const [address] = accountData.addresses
 

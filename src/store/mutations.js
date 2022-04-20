@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { isNative } from '@/utils/asset'
 
 const ensureNetworkWalletTree = (ref, network, walletId, initialValue) => {
   if (!ref[network]) Vue.set(ref, network, {})
@@ -150,9 +151,6 @@ export default {
   UPDATE_MARKET_DATA(state, { network, marketData }) {
     Vue.set(state.marketData, network, marketData)
   },
-  TOGGLE_INJECTION(state) {
-    state.injectionEnabled = !state.injectionEnabled
-  },
   SET_ETHEREUM_INJECTION_CHAIN(state, { chain }) {
     state.injectEthereumChain = chain
   },
@@ -210,7 +208,10 @@ export default {
         const _account = accounts[index]
         const updatedAccount = {
           ..._account,
-          assets: [..._account.assets.filter((asset) => !assets.includes(asset)), ...assets]
+          // keep native assets on top of the list
+          assets: [..._account.assets.filter((asset) => !assets.includes(asset)), ...assets].sort(
+            (a, b) => isNative(b) - isNative(a)
+          )
         }
 
         Vue.set(state.accounts[walletId][network], index, updatedAccount)

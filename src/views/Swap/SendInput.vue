@@ -141,7 +141,6 @@ export default {
     'disabled',
     'amountOption'
   ],
-  created() {},
   methods: {
     dpUI,
     formatFiatUI,

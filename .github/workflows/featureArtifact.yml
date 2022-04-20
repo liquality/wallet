@@ -1,0 +1,76 @@
+name: Feature branch artifact workflow
+
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+    branches:
+      - 'feature/*'
+      - 'feat/*'
+
+jobs:
+  feature-artifact-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v5.1
+
+      - name: create artifact name
+        id: findandreplace
+        uses: mad9000/actions-find-and-replace-string@2
+        with:
+          source: ${{ steps.branch-name.outputs.current_branch }}
+          find: '/'
+          replace: '-'
+
+      - name: Checkout code
+        uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v2.5.1
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
+        with:
+          node-version: '14'
+
+      - run: mkdir screenshots
+
+      - uses: actions/cache@v2.1.7
+        env:
+          node-version: 14.1.0
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
+
+      # Create Dev Wallet with Dev agent for feature branch tests.
+      - name: Set development manifest (patch for DEV)
+        env:
+          VUE_APP_TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
+          VUE_APP_AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
+          VUE_APP_AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
+          VUE_APP_NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
+        run: |
+          echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
+          echo VUE_APP_AVALANCHE_MAINNET_NODE =${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }} >> .env
+          echo VUE_APP_AVALANCHE_TESTNET_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }} >> .env
+          echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
+          jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
+          mv ./src/manifest.tmp ./src/manifest.json
+          npm ci
+          npm run lint
+          npm run build
+
+      - name: Create wallet artifact
+        uses: actions/upload-artifact@v2.3.1
+        if: always()
+        with:
+          name: ${{ steps.findandreplace.outputs.value }}
+          path: dist
+          if-no-files-found: ignore
+          retention-days: 30
+
+
+

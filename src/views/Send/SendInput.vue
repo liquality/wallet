@@ -12,7 +12,7 @@
                 :disabled="!fiatRates[asset]"
               >
                 <span v-if="showAmountsInFiat" :style="getAssetColorStyle(asset)">
-                  {{ `${asset} ${amount}` }}
+                  {{ `${asset} ${dpUI(amount)}` }}
                 </span>
                 <span v-else> {{ formatFiatUI(amountFiat) }} </span>
               </button>

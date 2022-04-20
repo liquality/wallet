@@ -19,7 +19,7 @@ describe('Import wallet-["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -194,11 +194,11 @@ describe('Import wallet-["MAINNET"]', async () => {
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
-    await overviewPage.SelectNetwork(page,'mainnet')
+    await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the testnet asserts count
-    await overviewPage.ValidateTotalAssets(page, false) // 9 assets
+    await overviewPage.ValidateTotalAssets(page, false) // 10 Assets
     // Check the currency
     expect(await overviewPage.GetCurrency(page), 'Wallet stats has currency should be USD').contain(
       'USD'

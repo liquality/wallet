@@ -4,6 +4,14 @@ import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './util
 import { assets } from '@liquality/cryptoassets'
 import { connectRemote } from './terra-injection'
 
+function attemptOrWarn(func, message) {
+  try {
+    func()
+  } catch (e) {
+    console.warn(message, e)
+  }
+}
+
 class Background {
   constructor(store) {
     this.store = store
@@ -54,21 +62,29 @@ class Background {
   subscribeToWalletChanges() {
     this.store.subscribe((mutation, state) => {
       if (mutation.type === 'CHANGE_ACTIVE_NETWORK') {
-        this.externalConnections.forEach((connection) => {
-          connection.postMessage({
-            id: 'liqualityChainChanged',
-            data: { chainIds: this.getChainIds(state.activeNetwork) }
-          })
-        })
+        this.externalConnections.forEach((connection) =>
+          attemptOrWarn(
+            () =>
+              connection.postMessage({
+                id: 'liqualityChainChanged',
+                data: { chainIds: this.getChainIds(state.activeNetwork) }
+              }),
+            `liqualityChainChanged: Injection connection dropped: ${connection.name}`
+          )
+        )
       }
 
       if (mutation.type === 'ADD_EXTERNAL_CONNECTION') {
-        this.externalConnections.forEach((connection) => {
-          connection.postMessage({
-            id: 'liqualityAccountsChanged',
-            data: {}
-          })
-        })
+        this.externalConnections.forEach((connection) =>
+          attemptOrWarn(
+            () =>
+              connection.postMessage({
+                id: 'liqualityAccountsChanged',
+                data: {}
+              }),
+            `liqualityAccountsChanged: Injection connection dropped: ${connection.name}`
+          )
+        )
       }
     })
   }
@@ -142,18 +158,17 @@ class Background {
             console.error(error)
             return { error: error.message }
           })
-          .then((response) => {
-            try {
-              connection.postMessage({
-                id,
-                type: 'ACTION_RESPONSE',
-                data: response
-              })
-            } catch (e) {
-              // Guard against popup being disconnected
-              console.warn(e)
-            }
-          })
+          .then((response) =>
+            attemptOrWarn(
+              () =>
+                connection.postMessage({
+                  id,
+                  type: 'ACTION_RESPONSE',
+                  data: response
+                }),
+              'Popup was disconnected'
+            )
+          )
         break
 
       case 'MUTATION':

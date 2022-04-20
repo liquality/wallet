@@ -55,10 +55,13 @@
                     class="fee-update_fees d-flex justify-content-between"
                     v-if="feeSelectorFees"
                   >
-                    <a @click="newFeePrice = feeSelectorFees.average.fee"
+                    <a class="align-left" @click="newFeePrice = feeSelectorFees.average.fee"
                       >Average: {{ feeSelectorFees.average.fee }}</a
                     >
-                    <a @click="newFeePrice = feeSelectorFees.fast.fee"
+                    <a
+                      id="fastFee"
+                      class="align-left"
+                      @click="newFeePrice = feeSelectorFees.fast.fee"
                       >Fast: {{ feeSelectorFees.fast.fee }}</a
                     >
                   </div>
@@ -115,97 +118,109 @@
       </template>
     </div>
     <div class="text-center">
-      <button
-        class="btn btn-sm btn-outline-primary"
-        id="advanced_button"
-        @click="advanced = !advanced"
-      >
-        Advanced
-      </button>
+      <table class="retry-button-table table bg-white border-0 mb-0 mt-0">
+        <tbody class="font-weight-normal" v-if="item.type === 'SWAP' && item.error">
+          <tr>
+            <td class="text-muted text-left small-12">Actions</td>
+            <td class="text-danger">
+              <button
+                class="retry-button btn btn-sm btn-outline-primary"
+                v-if="item.error"
+                @click="$emit('retrySwap')"
+              >
+                Retry
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="advanced-button" @click="advanced = !advanced">
+        <div class="advanced-arrow">
+          <ChevronRightIcon v-if="!advanced" />
+          <ChevronDownIcon v-else />
+        </div>
+        <div>ADVANCED</div>
+      </div>
     </div>
     <div class="table" v-if="advanced">
       <table class="table bg-white border-0 mb-1 mt-1">
-        <tbody class="font-weight-normal" v-if="item.type === 'SEND'">
-          <tr>
-            <td class="text-muted text-right small-12">Amount</td>
-            <td class="text-break">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</td>
-          </tr>
-          <tr v-if="item.fromAddress">
-            <td class="text-muted text-right small-12">Your {{ item.from }}<br />from address</td>
-            <td class="text-break">{{ item.fromAddress }}</td>
-          </tr>
-          <tr>
-            <td class="text-muted text-right small-12">Your {{ item.to }}<br />to address</td>
-            <td class="text-break">{{ item.toAddress }}</td>
-          </tr>
-          <tr>
-            <td class="text-muted text-right small-12">Your {{ item.to }} send<br />transaction</td>
-            <td class="text-break">{{ item.txHash }}</td>
-          </tr>
-          <tr v-if="false">
-            <td class="text-muted text-right small-12">Actions</td>
-            <td class="cursor-pointer text-danger" @click="remove">Remove this item</td>
-          </tr>
-        </tbody>
         <tbody class="font-weight-normal" v-if="item.type === 'SWAP'">
-          <tr>
-            <td v-if="item.agent" class="text-muted text-right small-12">Counter-party</td>
+          <tr v-if="item.agent">
+            <td class="text-muted text-left small-12">Counter-party</td>
             <td class="text-break">{{ item.agent }}</td>
           </tr>
           <tr v-if="orderLink">
-            <td class="text-muted text-right small-12">Order ID</td>
+            <td class="text-muted text-left small-12">Order ID</td>
             <td id="swap_details_order_id">
               <a :href="orderLink" id="order_id_href_link" rel="noopener" target="_blank">{{
                 item.id
               }}</a>
+              <CopyIcon class="copy-icon" @click="copy(item.id)" />
             </td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">Started At</td>
+            <td class="text-muted text-left small-12">Started At</td>
             <td id="swap_details_started_at" class="text-break">
               {{ new Date(item.startTime) }}
             </td>
           </tr>
-          <tr v-if="item.endTime">
-            <td class="text-muted text-right small-12">Finished At</td>
+          <tr>
+            <td class="text-muted text-left small-12">Finished At</td>
             <td id="swap_details_finished_at" class="text-break">
-              {{ new Date(item.endTime) }}
+              {{ item.endTime ? new Date(item.endTime) : '-' }}
             </td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">Rate</td>
+            <td class="text-muted text-left small-12">Rate</td>
             <td id="swap_details_rate">1 {{ item.to }} = {{ reverseRate }} {{ item.from }}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">Status</td>
+            <td class="text-muted text-left small-12">Status</td>
             <td id="swap_details_status" class="text-break">{{ item.status }}</td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">Buy</td>
+            <td class="text-muted text-left small-12">Buy</td>
             <td id="swap_details_buy" class="text-break">
               {{ prettyBalance(item.toAmount, item.to) }} {{ item.to }}
             </td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">Sell</td>
+            <td class="text-muted text-left small-12">Sell</td>
             <td id="swap_details_sell" class="text-break">
               {{ prettyBalance(item.fromAmount, item.from) }} {{ item.from }}
             </td>
           </tr>
           <tr v-if="item.minConf">
-            <td class="text-muted text-right small-12">Minimum<br />confirmations</td>
+            <td class="text-muted text-left small-12">Minimum confirmations</td>
             <td id="confirmations">{{ item.minConf }}</td>
           </tr>
           <tr v-if="item.fromAddress">
-            <td class="text-muted text-right small-12">Your {{ item.from }}<br />address</td>
-            <td id="from_address" class="text-break">{{ item.fromAddress }}</td>
+            <td class="text-muted text-left small-12">Your {{ item.from }} address</td>
+            <td id="from_address" class="text-break">
+              <a
+                :href="addressLink(item.fromAddress, item.from, item.toAccountId)"
+                target="_blank"
+                id="transaction_details_send_to_link"
+                >{{ shortenAddress(addPrefix(item.fromAddress, item.from)) }}</a
+              >
+              <CopyIcon class="copy-icon" @click="copy(addPrefix(item.fromAddress, item.from))" />
+            </td>
           </tr>
           <tr v-if="item.toAddress">
-            <td class="text-muted text-right small-12">Your {{ item.to }}<br />address</td>
-            <td id="to_address" class="text-break">{{ item.toAddress }}</td>
+            <td class="text-muted text-left small-12">Your {{ item.to }} address</td>
+            <td id="to_address" class="text-break">
+              <a
+                :href="addressLink(item.toAddress, item.to, item.toAccountId)"
+                target="_blank"
+                id="transaction_details_send_to_link"
+                >{{ shortenAddress(addPrefix(item.toAddress, item.to)) }}</a
+              >
+              <CopyIcon class="copy-icon" @click="copy(addPrefix(item.toAddress, item.to))" />
+            </td>
           </tr>
           <tr v-if="item.secret">
-            <td class="text-muted text-right small-12">Secret</td>
+            <td class="text-muted text-left small-12">Secret</td>
             <td id="secret_key">
               <span
                 class="cursor-pointer text-muted font-weight-light text-break"
@@ -220,83 +235,79 @@
             </td>
           </tr>
           <tr v-if="item.secretHash">
-            <td class="text-muted text-right small-12">Secret Hash</td>
+            <td class="text-muted text-left small-12">Secret Hash</td>
             <td id="secretHash" class="text-break">{{ item.secretHash }}</td>
           </tr>
           <tr v-if="item.fromFundHash">
-            <td class="text-muted text-right small-12">
-              Your {{ item.from }} funding<br />transaction
-            </td>
+            <td class="text-muted text-left small-12">Your {{ item.from }} funding transaction</td>
             <td id="from_funding_transaction" class="text-break">
               {{ item.fromFundHash }}
             </td>
           </tr>
           <tr v-if="item.toFundHash">
-            <td class="text-muted text-right small-12">
-              Counter-party's {{ item.bridgeAsset || item.to }}<br />funding transaction
+            <td class="text-muted text-left small-12">
+              Counter-party's {{ item.bridgeAsset || item.to }} funding transaction
             </td>
             <td id="to_funding_transaction" class="text-break">
               {{ item.toFundHash }}
             </td>
           </tr>
           <tr v-if="item.toClaimHash">
-            <td class="text-muted text-right small-12">
-              Your {{ item.bridgeAsset || item.to }} claim<br />transaction
+            <td class="text-muted text-left small-12">
+              Your {{ item.bridgeAsset || item.to }} claim transaction
             </td>
             <td id="to_claim_hash" class="text-break">
               {{ item.toClaimHash }}
             </td>
           </tr>
           <tr v-if="item.bridgeAsset">
-            <td class="text-muted text-right small-12">Bridge asset</td>
+            <td class="text-muted text-left small-12">Bridge asset</td>
             <td id="bridge_asset">{{ item.bridgeAsset }}</td>
           </tr>
           <tr v-if="item.approveTxHash">
-            <td class="text-muted text-right small-12">
-              Your {{ item.from }} approve<br />transaction
-            </td>
+            <td class="text-muted text-left small-12">Your {{ item.from }} approve transaction</td>
             <td id="approve_transaction" class="text-break">{{ item.approveTxHash }}</td>
           </tr>
           <tr v-if="item.swapTxHash">
-            <td class="text-muted text-right small-12">Swap Transaction</td>
+            <td class="text-muted text-left small-12">Swap Transaction</td>
             <td id="swap_transaction" class="text-break">
               {{ item.swapTxHash }}
             </td>
           </tr>
           <tr v-if="item.receiveTxHash">
-            <td class="text-muted text-right small-12">
-              Your {{ item.to }} receive<br />transaction
-            </td>
+            <td class="text-muted text-left small-12">Your {{ item.to }} receive transaction</td>
             <td id="receive_transaction" class="text-break">{{ item.receiveTxHash }}</td>
           </tr>
           <tr v-if="item.sendTx">
-            <td class="text-muted text-right small-12">Your {{ item.to }} send<br />transaction</td>
+            <td class="text-muted text-left small-12">Your {{ item.to }} send transaction</td>
             <td id="send_transaction" class="text-break">{{ item.sendTx }}</td>
           </tr>
           <tr v-if="item.refundHash">
-            <td class="text-muted text-right small-12">
-              Your {{ item.from }} refund<br />transaction
-            </td>
+            <td class="text-muted text-left small-12">Your {{ item.from }} refund transaction</td>
             <td id="to_claim_hash" class="text-break">{{ item.refundHash }}</td>
           </tr>
           <tr v-if="false">
-            <td class="text-muted text-right small-12">Actions</td>
+            <td class="text-muted text-left small-12">Actions</td>
             <td class="cursor-pointer text-danger" id="remove_this_item" @click="remove">
               Remove this item
             </td>
           </tr>
           <tr v-if="item.error">
-            <td class="text-danger text-right small-12">Error</td>
+            <td class="text-danger text-left small-12">Error</td>
             <td class="text-danger" id="item_error">
-              <pre>{{ item.error }}</pre>
+              <pre>{{ item.error.replace('Error: ', '') }}</pre>
             </td>
           </tr>
           <tr>
-            <td class="text-muted text-right small-12">Actions</td>
+            <td class="text-muted text-left small-12">Actions</td>
             <td class="text-danger">
-              <span class="cursor-pointer mr-3" v-if="item.error" @click="$emit('retrySwap')"
-                >Retry</span
+              <button
+                class="retry-button btn btn-sm btn-outline-primary"
+                v-if="item.error"
+                @click="$emit('retrySwap')"
               >
+                Retry
+              </button>
             </td>
           </tr>
         </tbody>
@@ -311,16 +322,25 @@ import BN from 'bignumber.js'
 import moment from '@/utils/moment'
 import cryptoassets from '@/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
+import { isObject } from 'lodash-es'
 
 import { prettyBalance } from '@/utils/coinFormatter'
 import { getStep } from '@/utils/history'
-import { getNativeAsset, getTransactionExplorerLink } from '@/utils/asset'
+import {
+  isERC20,
+  isEthereumChain,
+  getNativeAsset,
+  getTransactionExplorerLink,
+  getAddressExplorerLink
+} from '@/utils/asset'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
+import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate } from '@/utils/quotes'
-import { isObject } from 'lodash-es'
+import { shortenAddress } from '@/utils/address'
 
 const ACTIONS_TERMS = {
   lock: {
@@ -364,7 +384,9 @@ const ACTIONS_TERMS = {
 export default {
   components: {
     SpinnerIcon,
-    CopyIcon
+    CopyIcon,
+    ChevronDownIcon,
+    ChevronRightIcon
   },
   data() {
     return {
@@ -414,6 +436,29 @@ export default {
     ...mapActions(['updateTransactionFee', 'updateFees', 'checkPendingActions']),
     getNativeAsset,
     prettyBalance,
+    shortenAddress,
+    isEthereumChain,
+    // get to asset when liquality boost provider is swapping from Native to ERC20
+    getToAssetWhenSwappingFromNative() {
+      if (this.item.provider.includes('liqualityBoost') && !isERC20(this.item.from)) {
+        return this.item.bridgeAsset
+      }
+      return this.item.to
+    },
+    // get to asset when liquality boost provider is swapping from ERC20 to Native
+    getToAssetWhenSwappingFromERC20() {
+      if (this.item.provider.includes('liqualityBoost') && isERC20(this.item.from)) {
+        return this.item.bridgeAsset
+      }
+      return this.item.to
+    },
+    // get from asset when liquality boost provider is swapping from ERC20 to Native
+    getFromAssetWhenSwappingFromERC20() {
+      if (this.item.provider.includes('liqualityBoost') && isERC20(this.item.from)) {
+        return this.item.bridgeAsset
+      }
+      return this.item.from
+    },
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
@@ -483,7 +528,7 @@ export default {
         side,
         this.item.fromFundHash,
         this.item.fromFundTx,
-        this.item.from,
+        this.getFromAssetWhenSwappingFromERC20(),
         'lock'
       )
     },
@@ -494,7 +539,7 @@ export default {
         side,
         this.item.toFundHash,
         null,
-        this.item.bridgeAsset || this.item.to,
+        this.getToAssetWhenSwappingFromNative(),
         'lock'
       )
     },
@@ -515,7 +560,7 @@ export default {
             side,
             this.item.toClaimHash,
             this.item.toClaimTx,
-            this.item.bridgeAsset || this.item.to,
+            this.getToAssetWhenSwappingFromNative(),
             'claim'
           )
     },
@@ -544,7 +589,7 @@ export default {
             side,
             this.item.swapTxHash,
             this.item.swapTxHash,
-            this.item.to,
+            this.getToAssetWhenSwappingFromERC20(),
             'swap'
           )
     },
@@ -615,6 +660,16 @@ export default {
         this.feeSelectorLoading = false
         this.showFeeSelector = false
       }
+    },
+    addressLink(address, asset, accountId) {
+      if (accountId) {
+        return getAddressExplorerLink(address, asset, this.activeNetwork)
+      }
+
+      return '#'
+    },
+    addPrefix(address, asset) {
+      return !address.startsWith('0x') && isEthereumChain(asset) ? '0x' + address : address
     }
   },
   created() {
@@ -655,6 +710,9 @@ export default {
     font-size: $font-size-base;
   }
 
+  .align-left {
+    text-align: left !important;
+  }
   /* Container around content */
   &_container {
     min-height: 50px;
@@ -740,15 +798,68 @@ export default {
 .border-0 {
   box-shadow: none !important;
 
-  tr:first-child {
-    td {
-      border-top: 0;
+  tr {
+    border-top: 1px solid #d9dfe5;
+    padding: 15px 20px !important;
+    display: flex;
+    flex-direction: column;
+  }
+
+  td {
+    border: none !important;
+    padding: 3px 0px 0px 0px !important;
+    text-align: left;
+    width: 305px;
+    word-wrap: break-word;
+
+    .copy-icon {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+      margin: 0px 0px 0px 6px;
+    }
+
+    pre {
+      margin: 0px;
     }
   }
 
-  tr:last-child {
-    td {
-      border-bottom: 0;
+  #secret_key {
+    .cursor-pointer {
+      color: #9d4dfa !important;
+    }
+  }
+}
+
+.retry-button {
+  background-color: #9d4dfa !important;
+  border: none !important;
+  color: white !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  font-size: 12px !important;
+  padding: 0px !important;
+
+  height: 19px;
+  width: 90px;
+}
+
+.advanced-button {
+  padding: 19px 20px;
+  font-weight: bold;
+  font-size: 12px;
+  display: flex;
+  gap: 6.5px;
+  border-top: 1px solid #d9dfe5;
+
+  .advanced-arrow {
+    display: flex;
+    align-items: center;
+
+    svg {
+      height: 10px !important;
+      width: 10px !important;
     }
   }
 }
@@ -765,5 +876,9 @@ export default {
     font-size: $font-size-tiny;
     margin: 6px 0;
   }
+}
+
+#fastFee {
+  padding-left: 0.6em;
 }
 </style>
