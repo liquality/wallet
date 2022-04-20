@@ -65,6 +65,11 @@ export default {
       const _accountType = account?.type || accountType
       const _accountIndex = account?.index || accountIndex
       const { chain } = getters.cryptoassets[asset] || cryptoassets[asset]
+
+      if (account && account.chain !== chain) {
+        throw new Error(`asset: ${asset} and accountId: ${accountId} belong to different chains`)
+      }
+
       let derivationPath
       // when we ask for ledger accounts from the ledger device we don't have the derivation path
       // the !account doesn't exist in this case or if we call the getter with accountId equals to null
