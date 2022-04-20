@@ -45,7 +45,20 @@
               >{{ addressError }}</small
             >
           </div>
-          <div class="form-group mt-150">
+          <div class="form-group mt-20" v-if="showMemoInput">
+            <label for="memo">Memo (Optional)</label>
+            <div class="input-group">
+              <textarea
+                type="text"
+                v-model="memo"
+                class="form-control form-control-sm"
+                id="memo"
+                autocomplete="off"
+                rows="5"
+              ></textarea>
+            </div>
+          </div>
+          <div class="form-group mt-150" v-bind:class="[showMemoInput ? 'adjustFeePosition' : '']">
             <DetailsContainer v-if="feesAvailable">
               <template v-slot:header>
                 <div class="network-header-container">
@@ -61,7 +74,11 @@
                     <div class="send_fees">
                       <span class="selectors-asset">{{ assetChain }}</span>
                       <div class="custom-fees" v-if="customFee">
-                        {{ prettyFee }} {{ assetChain }} / {{ totalFeeInFiat }} USD
+                        <span v-if="prettyFee.eq(0)"
+                          >{{ currentChainAssetFee }} {{ currentChainUnit }}</span
+                        >
+                        <span v-else>{{ prettyFee }} {{ assetChain }}</span> /
+                        {{ totalFeeInFiat }} USD
                         <button class="btn btn-link" @click="resetCustomFee">Reset</button>
                       </div>
                       <FeeSelector
@@ -264,7 +281,8 @@ export default {
       sendErrorMessage: '',
       customFeeAssetSelected: null,
       customFee: null,
-      bridgeModalOpen: false
+      bridgeModalOpen: false,
+      memo: ''
     }
   },
   props: {
@@ -338,6 +356,14 @@ export default {
       const fees = this.maxOptionActive ? this.maxSendFees : this.sendFees
       return this.selectedFee in fees ? fees[this.selectedFee] : BN(0)
     },
+    currentChainAssetFee() {
+      const fees = this.assetFees
+      return fees[this.selectedFee]?.fee || BN(0)
+    },
+    currentChainUnit() {
+      const { unit } = chains[cryptoassets[this.asset].chain].fees || ''
+      return unit
+    },
     isValidAddress() {
       return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
     },
@@ -395,6 +421,14 @@ export default {
         cryptoassets[this.asset].chain === ChainId.Ethereum ||
         (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
       )
+    },
+    showMemoInput() {
+      return cryptoassets[this.asset].chain === ChainId.Terra
+    },
+    memoData() {
+      return {
+        memo: this.memo
+      }
     }
   },
   methods: {
@@ -435,18 +469,6 @@ export default {
             }
           } catch (e) {
             console.error(e)
-          }
-        } else if (this.asset === 'UST') {
-          const client = this.client({
-            network: this.activeNetwork,
-            walletId: this.activeWalletId,
-            asset: this.asset,
-            accountId: this.account.id
-          })
-          const tax = await client.getMethod('getTaxFees')(amount, 'uusd', getMax || !amount)
-
-          for (const [speed] of Object.entries(this.assetFees)) {
-            sendFees[speed] = sendFees[speed].plus(tax)
           }
         }
 
@@ -508,7 +530,8 @@ export default {
           amount,
           fee,
           feeLabel: this.selectedFee,
-          fiatRate: this.fiatRates[this.asset]
+          fiatRate: this.fiatRates[this.asset],
+          ...(this.showMemoInput && { data: this.memoData })
         })
 
         this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
@@ -668,6 +691,15 @@ export default {
   .text-muted {
     margin-top: 5px;
   }
+}
+
+.adjustFeePosition {
+  margin-top: 2rem !important;
+}
+
+#memo {
+  border: 1px solid #a8aeb7;
+  resize: none;
 }
 
 /* Chrome, Safari, Edge, Opera */

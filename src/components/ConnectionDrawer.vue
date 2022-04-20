@@ -1,18 +1,6 @@
 <template>
   <div class="connection-drawer">
     <div class="connection-drawer_settings p-3">
-      <div class="connection-drawer_settings_item pb-3">
-        <div class="mb-2"><strong>Manage dApp Connection</strong></div>
-        <p class="text-muted">
-          Allow the wallet to connect to a dApp. Switch on, refresh site to connect to Liquality
-          wallet.
-        </p>
-        <toggle-button
-          :css-colors="true"
-          :value="injectionEnabled"
-          @change="(e) => toggleManageDappConnection()"
-        />
-      </div>
       <div class="connection-drawer_settings_item">
         <div class="mb-2"><strong>dApp Network</strong></div>
         <p class="text-muted">
@@ -81,7 +69,6 @@ export default {
       'activeWalletId',
       'activeNetwork',
       'externalConnections',
-      'injectionEnabled',
       'injectEthereumChain'
     ]),
     ...mapGetters(['accountItem', 'accountsData']),

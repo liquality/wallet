@@ -10,9 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Send/Receive with Ledger devices</pre>
-            <pre>Connect to dapps with Ledger devices</pre>
-            <pre class="text-wrap">Minor bug fixes</pre>
+            <pre class="text-wrap">* Wallet core Library release 0.60.0</pre>
+            <pre class="text-wrap">* This is Test internal release</pre>
           </div>
         </div>
       </div>
