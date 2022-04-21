@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Hot fix release 0.61.0</pre>
+            <pre class="text-wrap">* Enabling Boost for ERC20 to native assets</pre>
           </div>
         </div>
       </div>
