@@ -69,7 +69,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
       expect(
         availableBalance,
-        `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`
+        `${fromAsset}->${toAsset.coin}) swap, available balance should be greater than 0`
       ).to.be.above(0)
       await page.waitForTimeout(5000)
       expect(
@@ -128,7 +128,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
       expect(
         availableBalance,
-        `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`
+        `${fromAsset}->${toAsset.coin}) swap, available balance should be greater than 0`
       ).to.be.above(0)
       await page.waitForTimeout(5000)
       expect(
