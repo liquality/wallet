@@ -10,8 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Bug fixes</pre>
-            <pre class="text-wrap">* Performance improvements</pre>
+            <pre class="text-wrap">* Enabling Boost for ERC20 to native assets</pre>
           </div>
         </div>
       </div>
