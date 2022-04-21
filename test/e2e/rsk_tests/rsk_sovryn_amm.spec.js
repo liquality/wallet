@@ -69,7 +69,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
       expect(
         availableBalance,
-        `${fromAsset}->${toAsset.coin}) swap, available balance should be greater than 0`
+        `${fromAsset}->${toAsset.coin} swap, available balance should be greater than 0`
       ).to.be.above(0)
       await page.waitForTimeout(5000)
       expect(
@@ -80,20 +80,20 @@ if (process.env.NODE_ENV === 'mainnet') {
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
         sendFromFiat,
-        `${fromAsset}->${toFiat}) swap, Send fiat amount should be correct!`
+        `${fromAsset}->${toFiat} swap, Send fiat amount should be correct!`
       ).not.equals('$0.00')
       expect(
         sendFromFiat,
-        `${fromAsset}->${toFiat}) swap, To fiat amount should be correct!`
+        `${fromAsset}->${toFiat} swap, To fiat amount should be correct!`
       ).not.equals('NaN')
       // validate Receive fiat amount
       expect(
         toFiat,
-        `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
+        `${fromAsset}->${toFiat} swap, Receive fiat amount should be correct!`
       ).not.equals('$0.00')
       expect(
         toFiat,
-        `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
+        `${fromAsset}->${toFiat} swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
     it('Sovryn AMM(RBTC->RIF) quote check', async () => {
@@ -128,7 +128,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
       expect(
         availableBalance,
-        `${fromAsset}->${toAsset.coin}) swap, available balance should be greater than 0`
+        `${fromAsset}->${toAsset.coin} swap, available balance should be greater than 0`
       ).to.be.above(0)
       await page.waitForTimeout(5000)
       expect(
@@ -139,20 +139,20 @@ if (process.env.NODE_ENV === 'mainnet') {
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(
         sendFromFiat,
-        `${fromAsset}->${toFiat}) swap, Send fiat amount should be correct!`
+        `${fromAsset}->${toFiat} swap, Send fiat amount should be correct!`
       ).not.equals('$0.00')
       expect(
         sendFromFiat,
-        `${fromAsset}->${toFiat}) swap, To fiat amount should be correct!`
+        `${fromAsset}->${toFiat} swap, To fiat amount should be correct!`
       ).not.equals('NaN')
       // validate Receive fiat amount
       expect(
         toFiat,
-        `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
+        `${fromAsset}->${toFiat} swap, Receive fiat amount should be correct!`
       ).not.equals('$0.00')
       expect(
         toFiat,
-        `${fromAsset}->${toFiat}) swap, Receive fiat amount should be correct!`
+        `${fromAsset}->${toFiat} swap, Receive fiat amount should be correct!`
       ).not.equals('NaN')
     })
     it('Sovryn AMM(SOV->FISH) quote check', async () => {
