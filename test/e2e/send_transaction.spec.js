@@ -6,8 +6,7 @@ const SearchAssetPage = require('../pages/SearchAssetPage')
 const SendPage = require('../pages/SendPage')
 const TransactionDetailsPage = require('../pages/TransactionDetailsPage')
 const expect = require('chai').expect
-const assert = require('chai').assert
-
+require('chai').assert;
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
@@ -259,13 +258,17 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.click(`#SEND_${assetName}_${assetName}`)
 
     // Transaction details page validations
-    assert.isOk(
+    let elementTimeout = 60000
+    try {
       await page.waitForSelector('#transaction_details_status_number_of_confirmations', {
         visible: true,
-        timeout: 180000
-      }),
-      'Transaction details page is not loaded, confirmations are not available'
-    )
+        timeout: elementTimeout
+      })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        expect(e, `Send confirmations are not available after ${elementTimeout}`).to.be.null
+      }
+    }
     const sendStatus = await page.$eval(
       '#transaction_details_status_and_confirmations',
       (el) => el.innerText
