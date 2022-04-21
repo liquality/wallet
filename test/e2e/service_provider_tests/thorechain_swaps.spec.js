@@ -36,13 +36,27 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
   })
 
   it('BTC->ETH - Thorchain', async () => {
+    const fromAsset = 'BTC'
+    const toAsset = 'ETH'
+
     // Click on BTC then click on SWAP button
-    await overviewPage.SelectAssetFromOverview(page, 'BTC')
+    await overviewPage.SelectAssetFromOverview(page, fromAsset)
     await page.waitForSelector('#BTC_swap_button', { visible: true })
-    await page.click('#BTC_swap_button')
-    console.log('User clicked on BTC SWAP button')
+    await page.click(`#${fromAsset}_swap_button`)
+    console.log(`User clicked on ${fromAsset} SWAP button`)
+    // Select toAsset
+    await page.click('.swap-receive-main-icon')
+    let ethereumNetwork = await page.waitForSelector('#ETHEREUM', { timeout: 90000, visible: true })
+    await ethereumNetwork.click()
+    await page.waitForSelector(`#${toAsset}`, { visible: true })
+    await page.click(`#${toAsset}`)
+    console.log(`User selected ${toAsset} as 2nd pair for swap`)
+
     try {
-      await page.waitForSelector('#ETH_swap_receive_pair_asset', { visible: true, timeout: 10000 })
+      await page.waitForSelector(`#${toAsset}_swap_receive_pair_asset`, {
+        visible: true,
+        timeout: 10000
+      })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         expect(
