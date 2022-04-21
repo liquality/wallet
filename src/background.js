@@ -206,8 +206,7 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       })
       break
-    case 'UPDATE_BALANCE':
-      // eslint-disable-next-line no-case-declarations
+    case 'UPDATE_BALANCE': {
       const accountItemDetails = getters.accountItem(payload.accountId)
       dispatch('trackAnalytics', {
         event: 'Balance Update',
@@ -220,6 +219,7 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       })
       break
+    }
     case 'TOGGLE_EXPERIMENT':
       dispatch('trackAnalytics', {
         event: 'Experiment Toggle',
