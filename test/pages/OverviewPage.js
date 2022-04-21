@@ -376,6 +376,22 @@ class OverviewPage {
   }
 
   /**
+   * Get Total assets count from overview page.
+   * @param page
+   * @returns {Promise<number>}
+   */
+  async getTotalAssets(page) {
+    let chainNames = []
+
+    let chains = await page.$$('.wallet-tab-content > div > div')
+    for (let i = 0; i < chains.length; i++) {
+      const assertName = await (await chains[i].getProperty('id')).jsonValue()
+      chainNames.push(assertName)
+    }
+    return chainNames.length
+  }
+
+  /**
    * Get Total Liquidity from wallet.
    * @param page
    * @returns {Promise<*>}
