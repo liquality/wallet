@@ -6,7 +6,7 @@ const SearchAssetPage = require('../pages/SearchAssetPage')
 const SendPage = require('../pages/SendPage')
 const TransactionDetailsPage = require('../pages/TransactionDetailsPage')
 const expect = require('chai').expect
-require('chai').assert;
+require('chai').assert
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
@@ -141,16 +141,7 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.waitForSelector('#SEND_RBTC_RBTC', { visible: true, timeout: 60000 })
     await page.click('#SEND_RBTC_RBTC')
 
-    // Transaction details page validations
-    await page.waitForSelector('#transaction_details_status_number_of_confirmations', {
-      visible: true,
-      timeout: 180000
-    })
-    const sendStatus = await page.$eval(
-      '#transaction_details_status_and_confirmations',
-      (el) => el.innerText
-    )
-    expect(sendStatus).contains('Completed')
+    await sendPage.ValidateSendConfirmationStatus(page)
   })
   it('Send MATIC to MATIC-["PULL_REQUEST_TEST",""MAINNET_RELEASE""]', async () => {
     const assetName = 'MATIC'
@@ -192,16 +183,7 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.waitForSelector(`#SEND_${assetName}_${assetName}`, { visible: true, timeout: 60000 })
     await page.click(`#SEND_${assetName}_${assetName}`)
 
-    // Transaction details page validations
-    await page.waitForSelector('#transaction_details_status_number_of_confirmations', {
-      visible: true,
-      timeout: 180000
-    })
-    const sendStatus = await page.$eval(
-      '#transaction_details_status_and_confirmations',
-      (el) => el.innerText
-    )
-    expect(sendStatus).contains('Completed')
+    await sendPage.ValidateSendConfirmationStatus(page)
     // Validate Send transaction timeline
     await page.waitForSelector('#transaction_details_date_time')
     expect(await page.$eval('#transaction_detail_sent_amount', (el) => el.innerText)).contains(
@@ -257,23 +239,8 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.waitForSelector(`#SEND_${assetName}_${assetName}`, { visible: true, timeout: 60000 })
     await page.click(`#SEND_${assetName}_${assetName}`)
 
-    // Transaction details page validations
-    let elementTimeout = 60000
-    try {
-      await page.waitForSelector('#transaction_details_status_number_of_confirmations', {
-        visible: true,
-        timeout: elementTimeout
-      })
-    } catch (e) {
-      if (e instanceof puppeteer.errors.TimeoutError) {
-        expect(e, `Send confirmations are not available after ${elementTimeout}`).to.be.null
-      }
-    }
-    const sendStatus = await page.$eval(
-      '#transaction_details_status_and_confirmations',
-      (el) => el.innerText
-    )
-    expect(sendStatus).contains('Completed')
+    await sendPage.ValidateSendConfirmationStatus(page)
+
     // Validate Send transaction timeline
     await page.waitForSelector('#transaction_details_date_time')
     expect(await page.$eval('#transaction_detail_sent_amount', (el) => el.innerText)).contains(
