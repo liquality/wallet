@@ -121,9 +121,9 @@ class OverviewPage {
    * @example SelectChain(page,'BITCOIN')
    */
   async SelectAssetFromOverview(page, assetName) {
-    const elementVisibleTimeout = 120000
+    const elementVisibleTimeout = 60000
     try {
-      await page.waitForSelector('#asserts_tab', { visible: true, timeout: 60000 })
+      await page.waitForSelector('#asserts_tab', { visible: true, timeout: elementVisibleTimeout })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         await testUtil.takeScreenshot(page, `click-asset-from-${assetName}-overview-issue`)
@@ -198,9 +198,15 @@ class OverviewPage {
       }
 
       case 'AVAX': {
-        const eth = await page.waitForSelector('#AVALANCHE', { timeout: elementVisibleTimeout, visible: true })
+        const eth = await page.waitForSelector('#AVALANCHE', {
+          timeout: elementVisibleTimeout,
+          visible: true
+        })
         await eth.click()
-        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.waitForSelector(`#${assetName}`, {
+          timeout: elementVisibleTimeout,
+          visible: true
+        })
         await page.click(`#${assetName}`)
         break
       }
@@ -350,12 +356,23 @@ class OverviewPage {
    * @constructor
    */
   async ValidateTotalAssets(page, newWallet = true) {
+    let chainNames = []
+
+    let chains = await page.$$('.wallet-tab-content > div > div')
+    for (let i = 0; i < chains.length; i++) {
+      const assertName = await (await chains[i].getProperty('id')).jsonValue()
+      chainNames.push(assertName)
+    }
+    console.log(`Total assets: ${chainNames.length}`)
+    console.log(`Total assets: ${chainNames}`)
+
     const assets = newWallet ? 9 : 10
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(
-      `${assets} Assets`
-    )
+    expect(
+      assetsCount,
+      `Total assets should be ${assets} on overview page but we got ${chainNames}`
+    ).contain(`${assets} Assets`)
   }
 
   /**
