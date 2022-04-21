@@ -374,7 +374,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Check source name
       expect(
         await swapPage.getSelectedServiceProvider(page),
-        `${fromAsset}->${toAsset} swap, source should be chosen!`
+        `${fromAsset}->${toAsset.coin} swap, source should be chosen!`
       ).oneOf(['Liquality'])
       await swapPage.clickSwapReviewButton(page)
     })
