@@ -101,7 +101,7 @@ import { chains, unitToCurrency } from '@liquality/cryptoassets'
 import { prettyBalance, dpUI } from '@/utils/coinFormatter'
 import { calculateQuoteRate } from '@/utils/quotes'
 import { getStatusLabel } from '@/utils/history'
-import { isERC20, getNativeAsset } from '@/utils/asset'
+import { isERC20, getNativeAsset, getFeeAsset } from '@/utils/asset'
 
 import CompletedIcon from '@/assets/icons/completed.svg'
 import RefundedIcon from '@/assets/icons/refunded.svg'
@@ -164,7 +164,7 @@ export default {
         fees.push({
           asset: getNativeAsset(this.item.to),
           fee: toFee,
-          unit: chains[toChain].fees.unit
+          unit: getFeeAsset(this.item.to) ? getFeeAsset(this.item.to) : chains[toChain].fees.unit
         })
       }
       return fees
@@ -228,6 +228,7 @@ export default {
   methods: {
     ...mapActions(['retrySwap', 'updateTransactionFee', 'updateFees']),
     getNativeAsset,
+    getFeeAsset,
     prettyBalance,
     dpUI,
     prettyTime(timestamp) {

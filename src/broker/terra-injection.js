@@ -92,7 +92,7 @@ export const connectRemote = (remotePort, store) => {
       if (key === 'post') {
         const { to, gasAdjustment, fee, asset, method, value } = getTransactionParams(payload)
 
-        const { externalConnections, activeWalletId } = store.state;
+        const { externalConnections, activeWalletId } = store.state
 
         const accountId = externalConnections?.[activeWalletId]?.[origin]?.['terra']?.[0]
 
