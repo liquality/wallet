@@ -67,7 +67,6 @@ export default {
     return {
       loading: false,
       analyticsAccepted: null
-      // open: true
     }
   },
   computed: {
@@ -87,12 +86,14 @@ export default {
     },
     async accept() {
       this.loading = true
+      this.analyticsAccepted = true
       await this.setAnalyticsResponse({ accepted: true })
       await this.initializeAnalytics()
       this.loading = false
     },
     async reject() {
       this.loading = true
+      this.analyticsAccepted = false
       await this.setAnalyticsResponse({ accepted: false })
       this.loading = false
     }
