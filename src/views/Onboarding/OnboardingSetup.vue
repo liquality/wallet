@@ -92,10 +92,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setupWallet', 'createWallet', 'unlockWallet']),
+    ...mapActions(['createWallet', 'unlockWallet']),
     async confirmMnemonic() {
       this.currentStep = 'congrats'
-      await this.setupWallet({ key: this.password })
       await this.createWallet({
         key: this.password,
         mnemonic: this.mnemonic,
