@@ -58,7 +58,7 @@
 import { mapState } from 'vuex'
 import Modal from '@/components/Modal'
 import TickBlue from '@/assets/icons/tick_blue.svg'
-import { getSwapProviderConfig } from '@liquality/wallet-core/dist/utils/swaps'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { getSwapProviderIcon } from '@/utils/swaps'
 import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
 import { dpUI } from '@liquality/wallet-core/dist/utils/coinFormatter'

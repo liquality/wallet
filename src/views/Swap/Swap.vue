@@ -428,12 +428,13 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import { getSwapProviderConfig } from '@liquality/wallet-core/dist/utils/swaps'
-import { SwapProviderType } from '@liquality/wallet-core/dist/utils/swapProviderType'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
 import { buildConfig } from '@liquality/wallet-core'
+import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
@@ -610,7 +611,7 @@ export default {
       'activeNetwork'
     ]),
     ...mapGetters('app', ['ledgerBridgeReady']),
-    ...mapGetters(['client', 'swapProvider', 'accountItem', 'accountsData']),
+    ...mapGetters(['client', 'accountItem', 'accountsData']),
     networkMarketData() {
       return this.marketData[this.activeNetwork]
     },
@@ -628,7 +629,7 @@ export default {
     },
     selectedQuoteProvider() {
       if (!this.selectedQuote) return null
-      return this.swapProvider(this.activeNetwork, this.selectedQuote.provider)
+      return getSwapProvider(this.activeNetwork, this.selectedQuote.provider)
     },
     defaultAmount() {
       const min = BN(this.min)

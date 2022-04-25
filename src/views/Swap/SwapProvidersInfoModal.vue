@@ -58,7 +58,7 @@
 import { mapState } from 'vuex'
 import Modal from '@/components/Modal'
 import SwapProviderLabel from '@/components/SwapProviderLabel.vue'
-import { getSwapProviderConfig, getSwapProviderInfo } from '@liquality/wallet-core/dist/utils/swaps'
+import { getSwapProviderConfig, getSwapProviderInfo } from '@liquality/wallet-core/dist/swaps/utils'
 import { getSwapProviderIcon } from '@/utils/swaps'
 import { buildConfig } from '@liquality/wallet-core'
 
