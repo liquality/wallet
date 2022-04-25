@@ -1,8 +1,22 @@
 <template>
   <div class="nft-collectibles">
-    <template v-for="(asset, key) in nftAssets">
-      <NFTAssets :nftAssets="asset" :collectionName="key" :key="asset.id" :source="source" />
-    </template>
+    <div v-if="!nftAssets">
+      <template v-for="(asset, key) in nftAssets">
+        <NFTAssets :nftAssets="asset" :collectionName="key" :key="asset.id" :source="source" />
+      </template>
+    </div>
+    <div class="activity-empty" v-else>
+      <p>
+        Once you start owning NFTs with accounts in your Liquality wallet you will see them here.
+      </p>
+      <!-- <a
+        class="btn-outline-clear"
+        href="http://opensea.io"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Check Opensea</a
+      > -->
+    </div>
   </div>
 </template>
 

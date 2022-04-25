@@ -4,26 +4,7 @@
       <span class="account-title"><img :src="getAssetIcon(asset)" class="asset-icon" /> NFTs</span>
     </NavBar>
     <div class="account-content">
-      <div class="account-content-top">
-        <div class="account-container_balance">
-          <div>
-            <span class="account-container_balance_value">
-              {{ nftAssetsNumber }}
-            </span>
-            <span class="account-container_balance_code"
-              >NFT<span v-if="balance !== 1">s</span></span
-            >
-          </div>
-        </div>
-        <div class="account-container_actions">
-          <button class="account-container_actions_button" disabled>
-            <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`">
-              <SendIcon class="account-container_actions_button_icon" />
-            </div>
-            Send
-          </button>
-        </div>
-      </div>
+      <NFTStats />
       <div class="wallet-tabs">
         <ul class="nav nav-tabs">
           <li class="nav-item" @click="activeTab = 'nfts'">
@@ -57,10 +38,10 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
-import SendIcon from '@/assets/icons/arrow_send.svg'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
 import { applyActivityFilters } from '@/utils/history'
+import NFTStats from '@/views/Wallet/NFTStats'
 import amplitude from 'amplitude-js'
 import WalletNFTs from './WalletNFTs.vue'
 import { getAssetIcon } from '@/utils/asset'
@@ -73,7 +54,7 @@ export default {
     ActivityFilter,
     TransactionList,
     WalletNFTs,
-    SendIcon
+    NFTStats
   },
   data() {
     return {
