@@ -20,7 +20,7 @@
             name="optin_anaylitics_option"
             id="optin_anaylitics_accept"
             autocomplete="off"
-            :checked="analyticsAccepted === true"
+            :checked="accepted === true"
             @click="accept"
             :disabled="loading"
           />
@@ -35,7 +35,7 @@
             name="optin_anaylitics_option"
             id="optin_anaylitics_reject"
             autocomplete="off"
-            :checked="analyticsAccepted === false"
+            :checked="accepted === false"
             @click="reject"
             :disabled="loading"
           />
@@ -47,8 +47,8 @@
       <button
         id="analytics-ok-close-button"
         class="btn btn-primary btn-lg btn-block btn-icon mt-3"
-        @click="close"
-        :disabled="loading || analyticsAccepted === null"
+        @click="close('nextStep')"
+        :disabled="loading || accepted === null"
       >
         Ok
       </button>
@@ -66,12 +66,13 @@ export default {
   data: function () {
     return {
       loading: false,
-      analyticsAccepted: null
+      accepted: null
     }
   },
   computed: {
     ...mapState({
-      analyticsOptInModalOpen: (state) => state.app.analyticsOptInModalOpen
+      analyticsOptInModalOpen: (state) => state.app.analyticsOptInModalOpen,
+      analyticsAccepted: (state) => state.analytics?.acceptedDate
     }),
     open() {
       return this.analyticsOptInModalOpen
@@ -80,21 +81,24 @@ export default {
   methods: {
     ...mapActions('app', ['setAnalyticsOptInModalOpen']),
     ...mapActions(['setAnalyticsResponse', 'initializeAnalytics']),
-    close() {
+    close(payload) {
+      this.accepted = null
       this.setAnalyticsOptInModalOpen({ open: false })
-      this.$emit('goToSetup')
+      if (payload === 'nextStep') {
+        this.$emit('goToSetup')
+      }
     },
     async accept() {
       this.loading = true
-      this.analyticsAccepted = true
-      await this.setAnalyticsResponse({ accepted: true })
+      this.accepted = true
+      await this.setAnalyticsResponse({ accepted: this.accepted })
       await this.initializeAnalytics()
       this.loading = false
     },
     async reject() {
       this.loading = true
-      this.analyticsAccepted = false
-      await this.setAnalyticsResponse({ accepted: false })
+      this.accepted = false
+      await this.setAnalyticsResponse({ accepted: this.accepted })
       this.loading = false
     }
   }
