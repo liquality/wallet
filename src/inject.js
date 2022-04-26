@@ -81,7 +81,7 @@ async function handleRequest (req) {
   }
   if(req.method === 'personal_sign') { 
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
-    return '0x' + sig
+    return '0x' + sig 
   }
   if(req.method === 'eth_sendTransaction') {
     const to = req.params[0].to
@@ -121,7 +121,11 @@ window[injectionName] = {
     }
     const method = typeof req === 'string' ? req : req.method
     const params = req.params || _paramsOrCallback || []
-    return handleRequest({ method, params })
+    return handleRequest({ method, params }).then((result) => ({
+      id: req && req.id ? req.id : 99999,
+      jsonrpc: '2.0',
+      result
+    }))
   },
   sendAsync: (req, callback) => {
     handleRequest(req)
