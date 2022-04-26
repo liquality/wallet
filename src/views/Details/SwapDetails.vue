@@ -142,6 +142,9 @@ export default {
     status() {
       return getStatusLabel(this.item)
     },
+    feeAsset() {
+      return getFeeAsset(this.item.to)
+    },
     txFees() {
       const fromFee = this.item.fee.suggestedBaseFeePerGas
         ? this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
@@ -164,7 +167,7 @@ export default {
         fees.push({
           asset: getNativeAsset(this.item.to),
           fee: toFee,
-          unit: getFeeAsset(this.item.to) ? getFeeAsset(this.item.to) : chains[toChain].fees.unit
+          unit: this.feeAsset ? this.feeAsset : chains[toChain].fees.unit
         })
       }
       return fees
