@@ -5,9 +5,9 @@
 @import 'vue-js-switch';
 
 body {
-  height: 600px;
-  width: 360px;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
 }
 
 a {
@@ -118,11 +118,12 @@ textarea {
   }
 
   &_bottom {
-    padding: 20px;
+    padding: 20px 0;
+    width: 320px;
     position: fixed;
+    display: flex;
+    flex-direction: column;
     bottom: 0;
-    right: 0;
-    left: 0;
     background-color: #FFFFFF;
     z-index: 999;
   }
@@ -759,14 +760,13 @@ svg.qr-icon {
   }
 
   .options {
-    position: absolute;
+    width: 360px;
     padding: 26px 20px;
     left: 0;
     border-top: 1px solid $hr-border-color;
     border-bottom: 1px solid $hr-border-color;
     display: flex;
     align-items: center;
-    width: 100%;
     height: 80px;
     justify-content: space-between;
 

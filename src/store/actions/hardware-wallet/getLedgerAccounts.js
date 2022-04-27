@@ -1,4 +1,4 @@
-import { assets, chains } from '@liquality/cryptoassets'
+import { assets, chains, ChainId } from '@liquality/cryptoassets'
 import { getDerivationPath } from '@/utils/derivationPath'
 import BN from 'bignumber.js'
 
@@ -17,28 +17,28 @@ export const getLedgerAccounts = async (
 
   for (const index of pageIndexes) {
     const derivationPath = getDerivationPath(chain, network, index, accountType)
-    // const action = chain === ChainId.Bitcoin ? 'getWalletPublicKey' : 'getAddress'
-    // const ledgerAccount = await callToBridge({
-    //   namespace: RequestNamespace.App,
-    //   network,
-    //   chainId: chain,
-    //   action,
-    //   execMode: ExecutionMode.Async,
-    //   payload: [derivationPath]
-    // })
+    let _chainCode = null
+    let _publicKey = null
 
-    // const { chainCode, publicKey } = ledgerAccount
     const _client = client({
       network,
       walletId,
       asset,
       accountType,
       accountIndex: index,
-      chainCode: null,
-      publicKey: null,
       useCache: false
     })
 
+    if (chain === ChainId.Bitcoin) {
+      // we need to get the chain code and public key for btc
+      const provider = _client._providers.find((p) => p._App && p._App?.name === 'Btc')
+      if (provider) {
+        const app = await provider.getApp()
+        const btcAccount = await app.getWalletPublicKey(derivationPath)
+        _chainCode = btcAccount.chainCode
+        _publicKey = btcAccount.publicKey
+      }
+    }
     const addresses = await _client.wallet.getAddresses(0, 100)
 
     if (addresses && addresses.length > 0) {
@@ -78,8 +78,8 @@ export const getLedgerAccounts = async (
         fiatBalance,
         index,
         exists,
-        chainCode: null,
-        publicKey: null,
+        chainCode: _chainCode,
+        publicKey: _publicKey,
         derivationPath
       }
       results.push(result)

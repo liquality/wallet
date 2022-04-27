@@ -36,7 +36,11 @@ export default {
         this.$route.path.startsWith('/request-unlock')
       )
         return
-      if (unlocked) this.$router.replace('/wallet')
+      if (unlocked) {
+        if (this.$route.name !== 'HardwareWallet') {
+          this.$router.replace('/wallet')
+        }
+      }
     },
     activeNetwork: function () {
       if (

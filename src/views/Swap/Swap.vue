@@ -720,12 +720,11 @@ export default {
 
       const account = isERC20(this.asset) ? this.account : this.toAccount
       const balance = account?.balances[this.selectedQuote.bridgeAsset]
-      const toSwapFeeInUnits = currencyToUnit(
+      const SwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
-        this.receiveFee
+        isERC20(this.asset) ? this.fromSwapFee : this.receiveFee
       )
-
-      return BN(balance).gt(toSwapFeeInUnits)
+      return BN(balance).gt(SwapFeeInUnits)
     },
     availableAmount() {
       return dpUI(this.available, VALUE_DECIMALS)
@@ -783,7 +782,7 @@ export default {
         !this.selectedQuote ||
         this.updatingQuotes ||
         this.ethRequired ||
-        !this.canCoverAmmFee ||
+        //!this.canCoverAmmFee ||
         this.showNoLiquidityMessage ||
         this.amountError ||
         BN(this.safeAmount).lte(0)

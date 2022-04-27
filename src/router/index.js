@@ -137,7 +137,8 @@ const routes = [
   {
     path: '/accounts/hardware-wallet',
     component: HardwareWallet,
-    props: true
+    props: true,
+    name: 'HardwareWallet'
   },
   {
     name: 'Account',

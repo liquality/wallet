@@ -54,7 +54,7 @@
         <button
           class="btn btn-light btn-outline-primary btn-lg"
           id="cancel-ledger-button"
-          @click="goToOverview"
+          @click="cancel"
         >
           Cancel
         </button>
@@ -102,8 +102,12 @@ export default {
         this.$emit('on-connect', { asset: this.selectedAsset })
       }
     },
-    goToOverview() {
-      this.$router.replace('/wallet')
+    cancel() {
+      chrome.tabs.getCurrent((tab) => {
+        if (tab !== undefined) {
+          chrome.tabs.remove([tab.id])
+        }
+      })
     },
     selectAsset(asset) {
       this.$emit('on-select-asset', asset)

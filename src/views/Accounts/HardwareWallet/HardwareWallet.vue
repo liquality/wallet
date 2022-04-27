@@ -36,6 +36,7 @@ import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@/utils/hardware-wallet'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
 import { getNextAccountColor } from '@/utils/accounts'
+import { connectLedgerDevice } from '@/utils/hardware-wallet'
 
 const LEDGER_PER_PAGE = 5
 
@@ -55,7 +56,8 @@ export default {
       selectedAccounts: {},
       ledgerError: null,
       ledgerPage: 0,
-      selectedWalletType: null
+      selectedWalletType: null,
+      ledgerConnected: false
     }
   },
   computed: {
@@ -70,6 +72,7 @@ export default {
     }
   },
   methods: {
+    connectLedgerDevice,
     getAssetIcon,
     ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance', 'trackAnalytics']),
     async connect({ asset, walletType, page }) {
@@ -89,6 +92,15 @@ export default {
 
       try {
         if (asset) {
+          if (!this.ledgerConnected) {
+            const connected = await this.connectLedgerDevice()
+
+            if (!connected) {
+              throw new Error('Ledger device not connected or not unlocked.')
+            }
+            this.ledgerConnected = connected
+          }
+
           const accountType = walletType || asset.types[0]
           let currentPage = page || 0
 
@@ -120,6 +132,7 @@ export default {
               }
             })
           } else {
+            this.ledgerConnected = false
             this.ledgerError = { message: 'No accounts found' }
           }
         }
@@ -127,6 +140,7 @@ export default {
         this.ledgerError = {
           message: error.message || 'Error getting accounts'
         }
+        this.ledgerConnected = false
         console.error('error getting accounts', error)
         await this.trackAnalytics({
           event: 'HD Wallet Ledger error',
