@@ -11,7 +11,7 @@
       @on-select-asset="setLedgerAsset"
     />
     <Unlock
-      v-else
+      v-else-if="currentStep === 'unlock'"
       :loading="loading"
       :creating-account="creatingAccount"
       :accounts="accounts"
@@ -24,6 +24,7 @@
       @on-cancel="cancel"
       @on-select-account="selectAccount"
     />
+    <Completed v-else />
   </div>
 </template>
 
@@ -32,6 +33,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar'
 import Connect from './Connect'
 import Unlock from './Unlock'
+import Completed from './Completed'
 import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@/utils/hardware-wallet'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@/utils/cryptoassets'
@@ -44,7 +46,8 @@ export default {
   components: {
     NavBar,
     Connect,
-    Unlock
+    Unlock,
+    Completed
   },
   data() {
     return {
@@ -214,7 +217,7 @@ export default {
           }
 
           this.creatingAccount = false
-          this.goToOverview()
+          this.currentStep = 'completed'
         } catch (error) {
           this.ledgerError = { message: 'Error creating accounts' }
           console.error('error creating accounts', error)
@@ -230,9 +233,6 @@ export default {
           })
         }
       }
-    },
-    goToOverview() {
-      this.$router.replace('/wallet')
     },
     cancel() {
       this.loading = false

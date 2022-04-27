@@ -281,13 +281,12 @@ export default {
 
   .account-message {
     position: absolute;
-    left: 0;
     margin-top: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: 360px;
     color: #1d1e21;
     height: 120px;
     background-color: rgba($color: #fff3bc, $alpha: 0.5);
