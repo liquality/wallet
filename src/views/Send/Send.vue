@@ -109,7 +109,7 @@
             <button
               class="btn btn-primary btn-lg"
               id="send_review_button"
-              @click="currentStep = null"
+              @click="review"
               :disabled="!canSend"
             >
               Review
@@ -323,7 +323,7 @@ export default {
       }
     },
     balance() {
-      return this.account.balances[this.asset] || 0
+      return this.account?.balances[this.asset] || 0
     },
     routeSource() {
       return this.$route.query.source || null
@@ -480,6 +480,15 @@ export default {
     async updateMaxSendFees() {
       await this._updateSendFees()
     },
+    review() {
+      if (this.account?.type.includes('ledger')) {
+        // open in a new tab
+        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?mode=tab&amount=${this.amount}&address=${this.address}&selectedFee=${this.selectedFee}&currentStep=confirm&maxOptionActive=${this.maxOptionActive}`
+        chrome.tabs.create({ url: browser.runtime.getURL(url) })
+      } else {
+        this.currentStep = 'confirm'
+      }
+    },
     async send() {
       this.sendErrorMessage = ''
       this.loading = true
@@ -578,6 +587,30 @@ export default {
     }
   },
   async created() {
+    // set the route values for tab screen mode
+
+    // asset
+    // accountId
+
+    const { amount, address, selectedFee, currentStep, maxOptionActive } = this.$route.query
+    this.amount = amount
+    this.address = address
+    if (selectedFee) {
+      this.selectedFee = selectedFee
+    }
+    if (currentStep) {
+      this.currentStep = currentStep
+    }
+    if (maxOptionActive) {
+      this.maxOptionActive = maxOptionActive
+    }
+    // ==> sendFees: {},
+    // ==> maxSendFees: {},
+    // ==> eip1559fees: {},
+    // ==> customFeeAssetSelected: null,
+    // ==> customFee: null,
+    // ==> memo: ''
+    
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(0)
     await this.updateMaxSendFees()
