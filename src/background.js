@@ -166,7 +166,7 @@ store.subscribe(async ({ type, payload }, state) => {
       break
     case 'UPDATE_HISTORY':
       // eslint-disable-next-line
-      const item = getters.historyItemById(payload.network, payload.walletId, payload.id)
+      const item = getters.historyItemById(payload.network, payload.walletId, payload.id);
       if (item.type === 'SWAP' && payload.updates) {
         if (payload.updates.status !== 'undefined') {
           dispatch('trackAnalytics', {
@@ -208,16 +208,18 @@ store.subscribe(async ({ type, payload }, state) => {
       break
     case 'UPDATE_BALANCE': {
       const accountItemDetails = getters.accountItem(payload.accountId)
-      dispatch('trackAnalytics', {
-        event: 'Balance Update',
-        properties: {
-          category: 'Balance',
-          action: 'Balance Updated',
-          chain: accountItemDetails.chain,
-          fiatBalance: accountItemDetails.fiatBalances,
-          totalFiatBalance: accountItemDetails.totalFiatBalance
-        }
-      })
+      if (accountItemDetails.totalFiatBalance > 0) {
+        dispatch('trackAnalytics', {
+          event: 'Balance Update',
+          properties: {
+            category: 'Balance',
+            action: 'Balance Updated',
+            chain: accountItemDetails.chain,
+            fiatBalance: accountItemDetails.fiatBalances,
+            totalFiatBalance: accountItemDetails.totalFiatBalance
+          }
+        })
+      }
       break
     }
     case 'TOGGLE_EXPERIMENT':
