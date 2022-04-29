@@ -925,43 +925,6 @@
           <a class="" href="mailto:info@liquality.io"> info@liquality.io </a>
           <span class="c2">.</span>
         </p>
-        <div class="analytics-optin">
-          <div class="analytics-optin-title">Help us improve Liquality to better serve you</div>
-          <div class="analytics-optin-message">
-            Share where you click. There is no identifying or personal data shared with us. You can
-            change these permissions at any time in your settings.
-          </div>
-          <div class="analytics-optin-options">
-            <div class="custom-control custom-radio">
-              <input
-                class="custom-control-input"
-                type="radio"
-                name="optin_anaylitics_option"
-                id="optin_anaylitics_accept"
-                autocomplete="off"
-                :checked="analyticsAccepted === true"
-                @click="setAnalyticsOption(true)"
-              />
-              <label class="custom-control-label" for="optin_anaylitics_accept">
-                Sure, I'll help improve Liquality
-              </label>
-            </div>
-            <div class="custom-control custom-radio">
-              <input
-                class="custom-control-input"
-                type="radio"
-                name="optin_anaylitics_option"
-                id="optin_anaylitics_reject"
-                autocomplete="off"
-                :checked="analyticsAccepted === false"
-                @click="setAnalyticsOption(false)"
-              />
-              <label class="custom-control-label" for="optin_anaylitics_reject">
-                Not today, ask me again
-              </label>
-            </div>
-          </div>
-        </div>
       </div>
       <div class="button-group onboading-home_tnc__actions">
         <button
@@ -975,23 +938,26 @@
           id="terms_privacy_accept_button"
           class="btn btn-primary btn-lg ml-2"
           @click="acceptTnC"
-          :disabled="!scrolledToEnd"
         >
           I Accept
         </button>
       </div>
     </div>
+    <template v-if="termsAcceptedAt">
+      <AnalyticsOptInModal @goToSetup="goToSetup" />
+    </template>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-
+import { mapState, mapActions } from 'vuex'
 import LogoWallet from '@/assets/icons/logo_wallet.svg'
+import AnalyticsOptInModal from '@/components/AnalyticsOptInModal.vue'
 
 export default {
   components: {
-    LogoWallet
+    LogoWallet,
+    AnalyticsOptInModal
   },
   data: function () {
     return {
@@ -1000,11 +966,16 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['acceptTermsAndConditions']),
+    ...mapState(['termsAcceptedAt']),
+    ...mapActions(['acceptTermsAndConditions', 'initializeAnalytics']),
     async acceptTnC() {
       await this.acceptTermsAndConditions({
         analyticsAccepted: this.analyticsAccepted
       })
+      this.$store.dispatch('app/setAnalyticsOptInModalOpen', { open: true })
+      await this.initializeAnalytics()
+    },
+    goToSetup() {
       this.$router.push(`/onboarding/${this.$route.query?.isImport ? 'import' : 'setup'}`)
     },
     setAnalyticsOption(accepted) {
@@ -1070,18 +1041,15 @@ export default {
   }
 }
 
-.analytics-optin {
+.modal-content {
+  color: #4a4a4a;
   position: absolute;
   text-align: left;
-  left: 0;
-  padding: 20px;
-  background-color: #d2faf3;
 
   .analytics-optin-title {
     font-weight: 600;
-    font-size: 12px;
-    line-height: 30px;
-    margin-bottom: 10px;
+    font-size: 18px;
+    text-transform: uppercase;
   }
 
   .analytics-optin-message {
@@ -1090,6 +1058,10 @@ export default {
     font-size: 12px;
     line-height: 16px;
     margin-bottom: 10px;
+  }
+
+  .modal-footer {
+    display: block;
   }
 
   .analytics-optin-options {
