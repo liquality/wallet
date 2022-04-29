@@ -610,7 +610,7 @@ export default {
     // ==> customFeeAssetSelected: null,
     // ==> customFee: null,
     // ==> memo: ''
-    
+
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(0)
     await this.updateMaxSendFees()
