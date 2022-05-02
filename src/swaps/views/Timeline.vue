@@ -150,11 +150,11 @@
             <td class="text-muted text-left small-12">Counter-party</td>
             <td class="text-break">{{ item.agent }}</td>
           </tr>
-          <tr v-if="item.id">
+          <tr v-if="item.orderId">
             <td class="text-muted text-left small-12">Order ID</td>
             <td id="swap_details_order_id" class="text-break">
-              {{ item.id }}
-              <CopyIcon class="copy-icon" @click="copy(item.id)" />
+              {{ item.orderId }}
+              <CopyIcon class="copy-icon" @click="copy(item.orderId)" />
             </td>
           </tr>
           <tr>
