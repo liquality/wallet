@@ -1,6 +1,6 @@
 <template>
   <div class="nft-collectibles">
-    <div v-if="!nftAssets">
+    <div v-if="nftAssets">
       <template v-for="(asset, key) in nftAssets">
         <NFTAssets :nftAssets="asset" :collectionName="key" :key="asset.id" :source="source" />
       </template>
@@ -9,13 +9,15 @@
       <p>
         Once you start owning NFTs with accounts in your Liquality wallet you will see them here.
       </p>
-      <!-- <a
-        class="btn-outline-clear"
-        href="http://opensea.io"
-        target="_blank"
-        rel="noopener noreferrer"
-        >Check Opensea</a
-      > -->
+      <div class="d-flex justify-content-center">
+        <a
+          class="btn btn-outline-primary"
+          :href="`http://${activeNetwork === 'testnet' ? 'testnets.' : ''}opensea.io`"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Check out Opensea</a
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -94,6 +96,15 @@ export default {
         font-weight: 300;
       }
     }
+  }
+}
+
+.activity-empty {
+  display: block;
+
+  .btn {
+    border-radius: 22px;
+    color: #9d4dfa;
   }
 }
 </style>
