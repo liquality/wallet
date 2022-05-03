@@ -28,17 +28,20 @@
           </div>
         </div>
         <div v-if="address" class="account-container_address">
-          <button
-            class="btn btn-outline-light"
-            :id="`${asset}_address_container`"
-            @click="copyAddress"
-            v-tooltip.bottom="{
-              content: addressCopied ? 'Copied!' : 'Click to copy',
-              hideOnTargetClick: false
-            }"
-          >
-            {{ shortenAddress(address) }}
-          </button>
+          <v-popover offset="16" show placement="top" hideOnTargetClick="false">
+            <button class="btn btn-outline-light" :id="`${asset}_address_container`">
+              {{ shortenAddress(address) }}
+            </button>
+            <template slot="popover">
+              <CopyAddress
+                :address="address"
+                :accountId="accountId"
+                :asset="asset"
+                :addressCopied="addressCopied"
+                @copyAddress="copyAddress"
+              />
+            </template>
+          </v-popover>
           <a
             class="eye-btn"
             :id="`${asset}_view_in_explorer`"
@@ -59,15 +62,19 @@
               Send
             </button>
           </router-link>
-          <router-link :to="`/accounts/${accountId}/${asset}/swap`">
-            <button class="account-container_actions_button">
-              <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
-                <SwapIcon
-                  class="account-container_actions_button_icon account-container_actions_button_swap"
-                />
-              </div>
-              Swap
-            </button>
+          <router-link
+            class="account-container_actions_button"
+            active-class=""
+            tag="button"
+            :disabled="swapDisabled"
+            :to="`/accounts/${accountId}/${asset}/swap`"
+          >
+            <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
+              <SwapIcon
+                class="account-container_actions_button_icon account-container_actions_button_swap"
+              />
+            </div>
+            Swap
           </router-link>
           <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`">
             <button class="account-container_actions_button">
@@ -97,7 +104,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { chains, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
@@ -112,6 +119,7 @@ import { applyActivityFilters } from '@/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
+import CopyAddress from '@/components/CopyAddress'
 
 import amplitude from 'amplitude-js'
 
@@ -126,7 +134,8 @@ export default {
     SwapIcon,
     ActivityFilter,
     TransactionList,
-    EyeIcon
+    EyeIcon,
+    CopyAddress
   },
   data() {
     return {
@@ -147,6 +156,9 @@ export default {
       'fiatRates',
       'marketData'
     ]),
+    swapDisabled() {
+      return this.account?.type.includes('ledger')
+    },
     account() {
       return this.accountItem(this.accountId)
     },
@@ -200,7 +212,11 @@ export default {
     }
   },
   async created() {
-    if (this.account && this.account.type.includes('ledger')) {
+    if (
+      this.account &&
+      this.account?.type.includes('ledger') &&
+      this.account?.chain !== ChainId.Bitcoin
+    ) {
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
         this.account.addresses[0],
         this.activeNetwork
