@@ -12,7 +12,7 @@ class PasswordPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async SubmitPasswordDetails (page, password) {
+  async SubmitPasswordDetails(page, password) {
     if (!password) {
       return Promise.reject(new Error('Password is required'))
     }
@@ -38,7 +38,7 @@ class PasswordPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async EnterPasswordDetails (page, password, confirmPassword) {
+  async EnterPasswordDetails(page, password, confirmPassword) {
     await page.waitForSelector('#password', { visible: true })
     await page.type('#password', password)
     await page.type('#confirmPassword', confirmPassword)
@@ -50,11 +50,12 @@ class PasswordPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ValidateSubmitPasswordDisabled (page) {
+  async ValidateSubmitPasswordDisabled(page) {
     const isNextButtonDisabled = await page.$('#next_button[disabled]')
-    expect(isNextButtonDisabled, 'Next Button should be disabled if password length ' +
-      'is less that 8 characters')
-      .not.to.equal(null)
+    expect(
+      isNextButtonDisabled,
+      'Next Button should be disabled if password length ' + 'is less that 8 characters'
+    ).not.to.equal(null)
   }
 
   /**
@@ -63,7 +64,7 @@ class PasswordPage {
    * @param password
    * @returns {Promise<void>}
    */
-  async ClickUnlock (page, password) {
+  async ClickUnlock(page, password) {
     // unlock
     await page.type('#password', password)
     await page.click('#unlock_button')
@@ -78,10 +79,13 @@ class PasswordPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnForgotPassword (page) {
-    const forgotPassword = await page.waitForSelector('#forgot_password_import_seed', { visible: true })
+  async ClickOnForgotPassword(page) {
+    const forgotPassword = await page.waitForSelector('#forgot_password_import_seed', {
+      visible: true
+    })
     await forgotPassword.click()
     await page.waitForSelector('#terms_privacy_accept_button', { visible: true })
+    await page.waitForSelector('##analytics-ok-close-button', { visible: true })
   }
 }
 

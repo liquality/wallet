@@ -10,8 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Wallet core Library release 0.60.0</pre>
-            <pre class="text-wrap">* This is Test internal release</pre>
+            <pre class="text-wrap">* Internal Release candidate 0.62.0</pre>
           </div>
         </div>
       </div>
@@ -76,7 +75,7 @@ h6 {
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 100% auto;
+  height: 100%;
   padding: 0px 0px 40px 0px;
 
   .item {
