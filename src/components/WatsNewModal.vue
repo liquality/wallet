@@ -10,9 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Send/Receive with Ledger devices</pre>
-            <pre>Connect to dapps with Ledger devices</pre>
-            <pre class="text-wrap">Minor bug fixes</pre>
+            <pre class="text-wrap">* Internal Release candidate 0.62.0</pre>
           </div>
         </div>
       </div>
@@ -77,7 +75,7 @@ h6 {
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 100% auto;
+  height: 100%;
   padding: 0px 0px 40px 0px;
 
   .item {

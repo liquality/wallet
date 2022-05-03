@@ -5,9 +5,11 @@ export const SwapProviderType = {
   UNISWAPV2: 'UNISWAPV2',
   ONEINCHV4: 'ONEINCHV4',
   THORCHAIN: 'THORCHAIN',
-  LIQUALITYBOOST: 'LIQUALITYBOOST',
+  LIQUALITYBOOST_NATIVE_TO_ERC20: 'LIQUALITYBOOST_NATIVE_TO_ERC20',
+  LIQUALITYBOOST_ERC20_TO_NATIVE: 'LIQUALITYBOOST_ERC20_TO_NATIVE',
   FASTBTC: 'FASTBTC',
-  SOVRYN: 'SOVRYN'
+  SOVRYN: 'SOVRYN',
+  ASTROPORT: 'ASTROPORT'
 }
 
 const swapProviderRoot = {
@@ -16,8 +18,12 @@ const swapProviderRoot = {
   [SwapProviderType.ONEINCHV4]: 'swaps/oneinch',
   [SwapProviderType.THORCHAIN]: 'swaps/thorchain',
   [SwapProviderType.FASTBTC]: 'swaps/fastbtc',
-  [SwapProviderType.LIQUALITYBOOST]: 'swaps/liqualityboost',
-  [SwapProviderType.SOVRYN]: 'swaps/sovryn'
+  [SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20]:
+    'swaps/liqualityboost/liqualityBoostNativeToERC20',
+  [SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE]:
+    'swaps/liqualityboost/liqualityBoostERC20toNative',
+  [SwapProviderType.SOVRYN]: 'swaps/sovryn',
+  [SwapProviderType.ASTROPORT]: 'swaps/astroport'
 }
 
 export function getSwapProviderConfig(network, providerId) {

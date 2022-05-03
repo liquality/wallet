@@ -4,7 +4,7 @@ class HomePage {
    * @param  page
    * @returns {Promise<void>}
    */
-  async ScrollToEndOfTerms (page) {
+  async ScrollToEndOfTerms(page) {
     const scrollSelector = '#onboarding_home_text_container'
     await page.waitForSelector(scrollSelector, {
       visible: true
@@ -31,12 +31,14 @@ class HomePage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnAcceptPrivacy (page) {
+  async ClickOnAcceptPrivacy(page) {
     // Accept terms
     await page.waitForSelector('#terms_privacy_accept_button', {
       visible: true
     })
     await page.click('#terms_privacy_accept_button')
+    await page.click('#optin_anaylitics_accept')
+    await page.click('#analytics-ok-close-button')
   }
 
   /**
@@ -45,7 +47,7 @@ class HomePage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnCreateNewWallet (page) {
+  async ClickOnCreateNewWallet(page) {
     await page.waitForSelector('#create_new_wallet_option', { visible: true })
     await page.click('#create_new_wallet_option')
   }
@@ -56,8 +58,11 @@ class HomePage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnImportWallet (page) {
-    const importWithSeedOptionElement = await page.waitForSelector('#import_with_seed_phrase_option', { visible: true })
+  async ClickOnImportWallet(page) {
+    const importWithSeedOptionElement = await page.waitForSelector(
+      '#import_with_seed_phrase_option',
+      { visible: true }
+    )
     await importWithSeedOptionElement.click()
     console.log('Import with seed phrase option has been displayed')
     await page.waitForSelector('#terms_privacy_accept_button', {
@@ -72,7 +77,7 @@ class HomePage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async EnterSeedWords (page, numberOfWords = 12) {
+  async EnterSeedWords(page, numberOfWords = 12) {
     await page.waitForSelector('#import-wallet_top', { visible: true })
     console.log('Import wallet page hase been loaded')
 

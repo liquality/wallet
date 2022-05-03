@@ -8,13 +8,13 @@ name: DEV Mainnet tests
 
 jobs:
   regressiontest_dev_mainnet:
-    if: github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          ref: 'master'
 
       - uses: actions/setup-node@v2.5.1
         env:
@@ -32,9 +32,18 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
 
+      # Create Dev Wallet for nightly tests
       - name: Set development manifest
+        env:
+          VUE_APP_TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
+          VUE_APP_AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
+          VUE_APP_AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
+          VUE_APP_NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
         run: |
-          echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
+          echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
+          echo VUE_APP_AVALANCHE_MAINNET_NODE =${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }} >> .env
+          echo VUE_APP_AVALANCHE_TESTNET_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }} >> .env
+          echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
           npm ci

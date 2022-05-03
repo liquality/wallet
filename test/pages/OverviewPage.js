@@ -197,6 +197,14 @@ class OverviewPage {
         break
       }
 
+      case 'AVAX': {
+        const eth = await page.waitForSelector('#AVALANCHE', { timeout: elementVisibleTimeout, visible: true })
+        await eth.click()
+        await page.waitForSelector(`#${assetName}`, { timeout: elementVisibleTimeout, visible: true })
+        await page.click(`#${assetName}`)
+        break
+      }
+
       case 'SOV':
       case 'FISH':
       case 'RBTC': {
@@ -254,6 +262,7 @@ class OverviewPage {
       }
 
       case 'LUNA':
+      case 'ANC':
       case 'UST': {
         const terra = await page.waitForSelector('#TERRA', {
           timeout: elementVisibleTimeout,
@@ -341,7 +350,7 @@ class OverviewPage {
    * @constructor
    */
   async ValidateTotalAssets(page, newWallet = true) {
-    const assets = newWallet ? 8 : 9
+    const assets = newWallet ? 9 : 10
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(assetsCount, `Total assets should be ${assets} on overview page`).contain(
@@ -525,16 +534,19 @@ class OverviewPage {
   }
 
   /**
-   * Toggle on Web3 Wallet from setting screen.
+   * Toggle on Web3 Wallet from setting screen, by default on
    * @param page
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickWeb3WalletToggle(page) {
+  async CheckWeb3ToggleOn(page) {
     await this.ClickOnBurgerIcon(page)
     await this.SelectSettings(page)
     // toggle web3 wallet option
-    await page.click('#default_web3_wallet_toggle_button > label > div')
+    let defaultWeb3Toggle = await page.$eval('#default_web3_wallet_toggle_button > label', (el) =>
+      el.getAttribute('class')
+    )
+    expect(defaultWeb3Toggle, 'Default Web3 Wallet toggle should be on').to.contains('toggled')
   }
 
   /**

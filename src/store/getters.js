@@ -29,6 +29,7 @@ const TESTNET_ASSETS = [
   'MATIC',
   'PWETH',
   'ARBETH',
+  'AVAX',
   'SOL',
   'SUSHI',
   'LUNA',
@@ -45,7 +46,8 @@ const TESTNET_ASSETS = [
 }, {})
 
 const mapLegacyProvidersToSupported = {
-  oneinchV3: 'oneinchV4'
+  oneinchV3: 'oneinchV4',
+  liqualityBoost: 'liqualityBoostNativeToERC20'
 }
 
 export default {
@@ -64,10 +66,20 @@ export default {
       const account = accountId ? getters.accountItem(accountId) : null
       const _accountType = account?.type || accountType
       const _accountIndex = account?.index || accountIndex
-      const { chain } = cryptoassets[asset]
-      const derivationPath =
-        account?.derivationPath || getDerivationPath(chain, network, _accountIndex, _accountType)
+      const { chain } = getters.cryptoassets[asset] || cryptoassets[asset]
 
+      if (account && account.chain !== chain) {
+        throw new Error(`asset: ${asset} and accountId: ${accountId} belong to different chains`)
+      }
+
+      let derivationPath
+      // when we ask for ledger accounts from the ledger device we don't have the derivation path
+      // the !account doesn't exist in this case or if we call the getter with accountId equals to null
+      if (_accountType.includes('ledger') || !account) {
+        derivationPath = getDerivationPath(chain, network, _accountIndex, _accountType)
+      } else {
+        derivationPath = account.derivationPath
+      }
       const cacheKey = [asset, chain, network, walletId, derivationPath, _accountType].join('-')
 
       if (useCache) {

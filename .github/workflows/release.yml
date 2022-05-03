@@ -1,7 +1,7 @@
 on:
   push:
     tags:
-    - 'v*'
+      - 'v*'
 
 name: TAG Release
 
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v2.4.2
         with:
           fetch-depth: 0
 
@@ -44,52 +44,49 @@ jobs:
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
-    # Minor PROD releases.
-      - name: Set production agents (minor for PROD)
-        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
-        env:
-          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
-        run: |
-            echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
-            sed -i "s/\/swap-testnet-dev\/agent/\/swap-testnet\/agent/g; s/\/swap-dev\/agent/\/swap\/agent/g" src/build.config.js
-            npm ci
-            npm run lint
-            npm run build
-
-    # Patch DEV release.
+      # Patch DEV release.
       - name: Set development manifest (patch for DEV)
         if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
         env:
           VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
+          VUE_APP_TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
+          VUE_APP_AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
+          VUE_APP_AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
+          VUE_APP_NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
         run: |
           echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }} >> .env
+          echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
+          echo VUE_APP_AVALANCHE_MAINNET_NODE =${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }} >> .env
+          echo VUE_APP_AVALANCHE_TESTNET_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }} >> .env
+          echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
           npm ci
           npm run lint
           npm run build
 
-      - name: E2E tests against Dev Mainnet Agent
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        uses: beemi/puppeteer-headful@v1.0.11
-        env:
-          CI: 'true'
-          DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        with:
-          args: npm run test:mainnet:devagent #Run tests against dev mainnet
-
-      - name: E2E tests against Prod Mainnet Agent
+    # Minor PROD releases.
+      - name: Set production agents (minor for PROD)
         if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
-        uses: beemi/puppeteer-headful@v1.0.11
         env:
-          CI: 'true'
-          DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        with:
-          args: npm run test:mainnet:prodagent #Run tests against Prod mainnet
+          VUE_APP_AMPLITUDE_API_KEY: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY }}
+          VUE_APP_TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
+          VUE_APP_AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
+          VUE_APP_AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
+          VUE_APP_NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
+          VUE_APP_AGENT_TESTNET_URL: ${{ secrets.VUE_APP_AGENT_TESTNET_URL }}
+          VUE_APP_AGENT_MAINNET_URL: ${{ secrets.VUE_APP_AGENT_MAINNET_URL }}
+        run: |
+            echo VUE_APP_AMPLITUDE_API_KEY =${{ secrets.VUE_APP_AMPLITUDE_API_KEY_PROD }} >> .env
+            echo VUE_APP_AVALANCHE_MAINNET_NODE =${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }} >> .env
+            echo VUE_APP_AVALANCHE_TESTNET_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }} >> .env
+            echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
+            echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
+            echo VUE_APP_AGENT_TESTNET_URL =${{ secrets.VUE_APP_AGENT_TESTNET_URL }} >> .env
+            echo VUE_APP_AGENT_MAINNET_URL =${{ secrets.VUE_APP_AGENT_MAINNET_URL }} >> .env
+            npm ci
+            npm run lint
+            npm run build
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1
@@ -136,6 +133,30 @@ jobs:
           zip: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
           extension: bkhfdnhibdhkbfihmljakbgnldoikgbm
           publishTarget: trustedTesters
+
+    # Run tests against dev mainnet
+      - name: Regression tests against Mainnet (DEV Agent)
+        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
+        uses: beemi/puppeteer-headful@v1.0.11
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: npm run test:mainnet:devagent:release
+
+      #Run tests against Prod mainnet
+      - name: Regression tests against Mainnet (PROD Agent)
+        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
+        uses: beemi/puppeteer-headful@v1.0.11
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: npm run test:mainnet:prodagent:release
 
       - name: Discord notification
         uses: sarisia/actions-status-discord@v1

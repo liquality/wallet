@@ -5,5 +5,5 @@ export const state = () => ({
   analyticsOptInModalOpen: false,
   requestOriginAccessActive: false,
   requestPermissionActive: false,
-  ledgertSignRequestModalOpen: false
+  settingsModalOpen: false
 })

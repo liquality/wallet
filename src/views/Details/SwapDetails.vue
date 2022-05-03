@@ -10,8 +10,15 @@
             <h2>Status</h2>
             <p>{{ status }}</p>
           </div>
-          <div class="col">
-            <CompletedIcon v-if="item.status === 'SUCCESS'" class="swap-details_status-icon" />
+          <div class="status_col">
+            <button
+              class="retry-button btn btn-sm btn-outline-primary"
+              v-if="item.error"
+              @click="retry"
+            >
+              Retry
+            </button>
+            <CompletedIcon v-else-if="item.status === 'SUCCESS'" class="swap-details_status-icon" />
             <RefundedIcon
               v-else-if="['FAILED', 'REFUNDED', 'QUOTE_EXPIRED'].includes(item.status)"
               class="swap-details_status-icon"
@@ -51,9 +58,9 @@
           <div class="col">
             <h2>Network Speed/Fee</h2>
             <p v-for="fee in txFees" :key="fee.asset" :id="'network_fee_' + fee.asset">
-              {{ fee.asset }} Fee: {{ fee.fee }} {{ fee.unit }}
+              {{ fee.asset }} Fee: {{ dpUI(fee.fee) }} {{ fee.unit }}
             </p>
-            <p v-if="receiveFee">{{ this.item.to }} Receive Fee: {{ receiveFee }}</p>
+            <p v-if="receiveFee">{{ this.item.to }} Receive Fee: {{ dpUI(receiveFee) }}</p>
           </div>
         </div>
       </div>
@@ -94,7 +101,7 @@ import { chains, unitToCurrency } from '@liquality/cryptoassets'
 import { prettyBalance, dpUI } from '@/utils/coinFormatter'
 import { calculateQuoteRate } from '@/utils/quotes'
 import { getStatusLabel } from '@/utils/history'
-import { isERC20, getNativeAsset } from '@/utils/asset'
+import { isERC20, getNativeAsset, getFeeAsset } from '@/utils/asset'
 
 import CompletedIcon from '@/assets/icons/completed.svg'
 import RefundedIcon from '@/assets/icons/refunded.svg'
@@ -136,6 +143,9 @@ export default {
     status() {
       return getStatusLabel(this.item)
     },
+    feeAsset() {
+      return getFeeAsset(this.item.to)
+    },
     txFees() {
       const fromFee = this.item.fee.suggestedBaseFeePerGas
         ? this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
@@ -158,7 +168,7 @@ export default {
         fees.push({
           asset: getNativeAsset(this.item.to),
           fee: toFee,
-          unit: chains[toChain].fees.unit
+          unit: this.feeAsset ? this.feeAsset : chains[toChain].fees.unit
         })
       }
       return fees
@@ -223,7 +233,9 @@ export default {
     ...mapActions(['retrySwap', 'updateFees']),
     ...mapActions('app', ['startBridgeListener']),
     getNativeAsset,
+    getFeeAsset,
     prettyBalance,
+    dpUI,
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
@@ -279,6 +291,7 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
 .swap-details {
   padding: $wrapper-padding 0;
   overflow-y: auto;
@@ -425,21 +438,6 @@ export default {
     }
   }
 }
-.border-0 {
-  box-shadow: none !important;
-
-  tr:first-child {
-    td {
-      border-top: 0;
-    }
-  }
-
-  tr:last-child {
-    td {
-      border-bottom: 0;
-    }
-  }
-}
 
 .fee-update {
   padding-left: 10px;
@@ -453,5 +451,18 @@ export default {
     font-size: $font-size-tiny;
     margin: 6px 0;
   }
+}
+
+.retry-button {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.status_col {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding-right: 20px;
 }
 </style>

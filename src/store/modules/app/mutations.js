@@ -17,7 +17,7 @@ export const mutations = {
   SET_REQUEST_PERMISSION_ACTIVE(state, { active }) {
     state.requestPermissionActive = active
   },
-  SET_LEDGER_SIGN_REQUEST_MODAL_OPEN(state, { open }) {
-    state.ledgertSignRequestModalOpen = open
+  SET_SETTINGS_MODAL_OPEN(state, { open }) {
+    state.settingsModalOpen = open
   }
 }

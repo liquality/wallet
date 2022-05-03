@@ -20,6 +20,7 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
+      'AVAX',
       'FISH',
       'LUNA',
       'UST'
@@ -35,6 +36,7 @@ export default {
       'MATIC',
       'PWETH',
       'ARBETH',
+      'AVAX',
       'SOL',
       'LUNA',
       'UST'
@@ -55,15 +57,21 @@ export default {
         name: 'Liquality',
         icon: 'liquality.svg',
         type: SwapProviderType.LIQUALITY,
-        agent:
-          process.env.VUE_APP_AGENT_TESTNET_URL || 'https://liquality.io/swap-testnet-dev/agent'
+        agent: process.env.VUE_APP_AGENT_TESTNET_URL || 'https://testnet-dev-agent.liq-chainhub.net'
       },
-      liqualityBoost: {
+      liqualityBoostNativeToERC20: {
         name: 'Liquality Boost',
-        type: SwapProviderType.LIQUALITYBOOST,
+        type: SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20,
         network: 'testnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['RBTC']
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
+      },
+      liqualityBoostERC20toNative: {
+        name: 'Liquality Boost',
+        type: SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE,
+        network: 'testnet',
+        icon: 'liqualityboost.svg',
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -78,7 +86,7 @@ export default {
         thornode: 'https://testnet.thornode.thorchain.info'
       },
       sovryn: {
-        name: 'Sovyrn',
+        name: 'Sovryn',
         icon: 'sovryn.svg',
         type: SwapProviderType.SOVRYN,
         routerAddress: SovrynTestnetAddresses.swapNetwork,
@@ -91,14 +99,21 @@ export default {
         name: 'Liquality',
         icon: 'liquality.svg',
         type: SwapProviderType.LIQUALITY,
-        agent: 'https://liquality.io/swap-dev/agent'
+        agent: process.env.VUE_APP_AGENT_MAINNET_URL || 'https://mainnet-dev-agent.liq-chainhub.net'
       },
-      liqualityBoost: {
+      liqualityBoostNativeToERC20: {
         name: 'Liquality Boost',
-        type: SwapProviderType.LIQUALITYBOOST,
+        type: SwapProviderType.LIQUALITYBOOST_NATIVE_TO_ERC20,
         network: 'mainnet',
         icon: 'liqualityboost.svg',
-        supportedBridgeAssets: ['MATIC', 'RBTC']
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
+      },
+      liqualityBoostERC20toNative: {
+        name: 'Liquality Boost',
+        type: SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE,
+        network: 'mainnet',
+        icon: 'liqualityboost.svg',
+        supportedBridgeAssets: ['RBTC', 'MATIC', 'AVAX']
       },
       uniswapV2: {
         name: 'Uniswap V2',
@@ -115,7 +130,8 @@ export default {
         referrerAddress: {
           ethereum: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
           polygon: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
-          bsc: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5'
+          bsc: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5',
+          avalanche: '0x3a712CC47aeb0F20A7C9dE157c05d74B11F172f5'
         },
         referrerFee: 0.3
       },
@@ -126,7 +142,7 @@ export default {
         bridgeEndpoint: 'http://3.131.33.161:3000/'
       },
       sovryn: {
-        name: 'Sovyrn',
+        name: 'Sovryn',
         icon: 'sovryn.svg',
         type: SwapProviderType.SOVRYN,
         routerAddress: SovrynMainnetAddresses.swapNetwork,
@@ -138,11 +154,29 @@ export default {
         icon: 'thorchain.svg',
         type: SwapProviderType.THORCHAIN,
         thornode: 'https://thornode.thorchain.info'
+      },
+      astroport: {
+        name: 'Astroport',
+        icon: 'astroport.svg',
+        type: SwapProviderType.ASTROPORT,
+        URL: 'https://lcd.terra.dev',
+        chainID: 'columbus-5'
       }
     }
   },
   discordUrl: 'https://discord.gg/Xsqw7PW8wk',
   networks: ['mainnet', 'testnet'],
-  chains: ['bitcoin', 'ethereum', 'rsk', 'bsc', 'near', 'polygon', 'arbitrum', 'terra', 'fuse'],
-  supportedBridgeAssets: ['MATIC', 'RBTC']
+  chains: [
+    'bitcoin',
+    'ethereum',
+    'rsk',
+    'bsc',
+    'near',
+    'polygon',
+    'arbitrum',
+    'terra',
+    'fuse',
+    'avalanche'
+  ],
+  supportedBridgeAssets: ['MATIC', 'RBTC', 'AVAX']
 }
