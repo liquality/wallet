@@ -152,7 +152,7 @@
             <button
               class="btn btn-primary btn-lg"
               id="swap_review_button"
-              @click="currentStep = 'confirm'"
+              @click="review"
               :disabled="!canSwap"
             >
               Review
@@ -470,6 +470,8 @@ export default {
       swapFees: {},
       maxSwapFees: {},
       selectedFee: {},
+      selectedFromFee: 'average',
+      selectedToFee: 'average',
       currentStep: 'inputs',
       assetSelection: 'from',
       loading: false,
@@ -489,44 +491,89 @@ export default {
   created() {
     this.asset = this.routeAsset
     this.fromAccountId = this.accountId
-    this.fee = this.fees[this.selectedFee || 'average']?.fee
+    let _sendAmount = 0.0
+    let _toAsset = null
+
+    if (this.$route.query.mode === 'tab') {
+      const {
+        amount,
+        toAccountId,
+        sendAmount,
+        toAsset,
+        selectedFees,
+        customFees,
+        currentStep,
+        maxOptionActive
+      } = this.$route.query
+
+      this.amount = amount
+      this.currentStep = currentStep
+      this.maxOptionActive = maxOptionActive
+
+      this.toAccountId = toAccountId
+      _toAsset = toAsset
+      _sendAmount = sendAmount
+
+      this.selectedFee = selectedFees.split(',').reduce((prev, curr) => {
+        const [asset, fee] = curr.split('=')
+        return {
+          ...prev,
+          [asset]: fee
+        }
+      }, {})
+      if (customFees) {
+        this.customFees = customFees.split(',').reduce((prev, curr) => {
+          const [asset, fee] = curr.split('=')
+          return {
+            ...prev,
+            [asset]: fee
+          }
+        }, {})
+      }
+    } else {
+      this.selectedFee = {
+        [this.assetChain]: 'average',
+        [this.toAssetChain]: 'average'
+      }
+      _sendAmount = dpUI(this.defaultAmount)
+      // Try to use the same account for (from and to) if it has more than one asset
+      if (this.account?.assets.length > 1) {
+        this.toAccountId = this.accountId
+        _toAsset = this.account?.assets.find((a) => a !== this.asset)
+      } else {
+        // use another account
+        if (this.accountsData.length > 0) {
+          const toAccount = this.accountsData.find((account) => {
+            const assetAvailable =
+              account.assets?.length > 0 && account.assets?.includes(this.asset)
+            const idsMatching = account.id == this.accountId
+            return !assetAvailable && !idsMatching
+          })
+          if (toAccount) {
+            this.toAccountId = toAccount.id
+            _toAsset = toAccount.assets[0]
+          }
+        }
+      }
+    }
+
+    if (this.toAccountId && _toAsset) {
+      this.toAssetChanged(this.toAccountId, _toAsset)
+      this.toAsset = _toAsset
+      this.updateFees({ asset: _toAsset })
+      this.selectedFee = {
+        [this.assetChain]: this.selectedFromFree,
+        [this.toAssetChain]: this.selectedToFee
+      }
+    }
+
+    this.sendAmount = _sendAmount
+    this.fee = this.fees[this.selectedFromFee]?.fee
     this.updateMarketData({ network: this.activeNetwork })
     ;(async () => {
       await this.updateFees({ asset: this.assetChain })
       await this.updateMaxSwapFees()
     })()
-
-    let toAsset = null
-
-    // Try to use the same account for (from and to) if it has more than one asset
-    if (this.account?.assets.length > 1) {
-      this.toAccountId = this.accountId
-      toAsset = this.account?.assets.find((a) => a !== this.asset)
-    } else {
-      // use another account
-      if (this.accountsData.length > 0) {
-        const toAccount = this.accountsData.find((account) => {
-          const assetAvailable = account.assets?.length > 0 && account.assets?.includes(this.asset)
-          const idsMatching = account.id == this.accountId
-          return !assetAvailable && !idsMatching
-        })
-        if (toAccount) {
-          this.toAccountId = toAccount.id
-          toAsset = toAccount.assets[0]
-        }
-      }
-    }
-
-    if (this.toAccountId && toAsset) {
-      this.toAssetChanged(this.toAccountId, toAsset)
-      this.toAsset = toAsset
-      this.updateFees({ asset: toAsset })
-      this.selectedFee = {
-        [this.assetChain]: 'average',
-        [this.toAssetChain]: 'average'
-      }
-    }
-    this.sendAmount = dpUI(this.defaultAmount)
 
     this.resetQuoteTimer()
     this.trackNoLiquidity()
@@ -1066,6 +1113,15 @@ export default {
       this.selectedQuote = matchingQuote
       this.userSelectedQuote = true
       this.showQuotesModal = false
+    },
+    review() {
+      if (this.account?.type.includes('ledger')) {
+        // open in a new tab
+        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?mode=tab&amount=${this.amount}&address=${this.address}&selectedFee=${this.selectedFee}&currentStep=confirm&maxOptionActive=${this.maxOptionActive}`
+        chrome.tabs.create({ url: browser.runtime.getURL(url) })
+      } else {
+        this.currentStep = 'confirm'
+      }
     },
     async swap() {
       this.swapErrorMessage = ''

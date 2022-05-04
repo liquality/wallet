@@ -588,21 +588,19 @@ export default {
   },
   async created() {
     // set the route values for tab screen mode
-
-    // asset
-    // accountId
-
-    const { amount, address, selectedFee, currentStep, maxOptionActive } = this.$route.query
-    this.amount = amount
-    this.address = address
-    if (selectedFee) {
-      this.selectedFee = selectedFee
-    }
-    if (currentStep) {
-      this.currentStep = currentStep
-    }
-    if (maxOptionActive) {
-      this.maxOptionActive = maxOptionActive
+    if (this.$route.query.mode === 'tab') {
+      const { amount, address, selectedFee, currentStep, maxOptionActive } = this.$route.query
+      this.amount = amount
+      this.address = address
+      if (selectedFee) {
+        this.selectedFee = selectedFee
+      }
+      if (currentStep) {
+        this.currentStep = currentStep
+      }
+      if (maxOptionActive) {
+        this.maxOptionActive = maxOptionActive
+      }
     }
     // ==> sendFees: {},
     // ==> maxSendFees: {},
@@ -612,7 +610,11 @@ export default {
     // ==> memo: ''
 
     await this.updateFees({ asset: this.assetChain })
-    await this.updateSendFees(0)
+    if (this.maxOptionActive) {
+      this.updateMaxSendFees()
+    } else {
+      this.updateSendFees(this.amount)
+    }
     await this.updateMaxSendFees()
     await this.trackAnalytics({
       event: 'Send screen',
