@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Wallet core library upgrade</pre>
+            <pre class="text-wrap">* Infrastructure fixes to improve swap reliability</pre>
           </div>
         </div>
       </div>
