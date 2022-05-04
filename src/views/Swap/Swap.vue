@@ -657,16 +657,24 @@ export default {
       return !!liqualityMarket
     },
     min() {
+      if (!this.fiatRates[this.asset]) return BN(0)
+
       const toQuoteAsset =
-        this.selectedQuoteProvider?.config?.type === SwapProviderType.LIQUALITYBOOST
+        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostNativeToERC20
           ? this.toAssetChain
           : this.toAsset
+
+      const fromQuoteAsset =
+        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostERC20ToNative
+          ? this.assetChain
+          : this.asset
+
       const liqualityMarket = this.networkMarketData?.find((pair) => {
         return (
-          pair.from === this.asset &&
+          pair.from === fromQuoteAsset &&
           pair.to === toQuoteAsset &&
           getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
-            SwapProviderType.LIQUALITY
+            SwapProviderType.Liquality
         )
       })
 
@@ -1222,9 +1230,7 @@ export default {
       }
     }, 800),
     getAccountId() {
-      if (
-        this.selectedQuoteProvider.config.type === SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE
-      ) {
+      if (this.selectedQuoteProvider.config.type === SwapProviderType.LiqualityBoostERC20ToNative) {
         return this.fromAccountId
       }
 
