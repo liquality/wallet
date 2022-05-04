@@ -12,7 +12,10 @@
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
       <InfoNotification v-if="!canCoverAmmFee">
-        <BridgeAssetRequiredMessage :account-id="toAccount.id" :asset="selectedQuote.bridgeAsset" />
+        <BridgeAssetRequiredMessage
+          :account-id="getAccountId()"
+          :asset="selectedQuote.bridgeAsset"
+        />
       </InfoNotification>
 
       <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
@@ -1218,6 +1221,15 @@ export default {
         this.updateSwapFees()
       }
     }, 800),
+    getAccountId() {
+      if (
+        this.selectedQuoteProvider.config.type === SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE
+      ) {
+        return this.fromAccountId
+      }
+
+      return this.toAccountId
+    },
     applyCustomFee({ asset, fee }) {
       const assetFees = this.getAssetFees(asset)
       const presetFee = Object.entries(assetFees).find(
