@@ -72,8 +72,8 @@ jobs:
           CI: 'true'
           DISPLAY: :99
         with:
-#          args: npm run test:pullrequest
-          args: npm run test:mainnet:devagent
+          args: npm run test:pullrequest
+#          args: npm run test:mainnet:devagent
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1
