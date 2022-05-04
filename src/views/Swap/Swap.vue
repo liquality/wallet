@@ -657,6 +657,8 @@ export default {
       return !!liqualityMarket
     },
     min() {
+      if (!this.fiatRates[this.asset]) return BN(0)
+
       const toQuoteAsset =
         this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostNativeToERC20
           ? this.toAssetChain
@@ -672,7 +674,7 @@ export default {
           pair.from === fromQuoteAsset &&
           pair.to === toQuoteAsset &&
           getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
-            SwapProviderType.LIQUALITY
+            SwapProviderType.Liquality
         )
       })
 
