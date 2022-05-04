@@ -130,14 +130,14 @@
 </template>
 <script>
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { LEDGER_BITCOIN_OPTIONS } from '@/utils/ledger-bridge-provider'
+import { LEDGER_BITCOIN_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
 import clickAway from '@/directives/clickAway'
 import { getAccountIcon } from '@/utils/accounts'
 import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import CheckRightIcon from '@/assets/icons/check.svg'
-import { shortenAddress } from '@/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 export default {
   directives: {

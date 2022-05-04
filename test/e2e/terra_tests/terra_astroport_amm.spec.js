@@ -13,7 +13,6 @@ const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
 
 let browser, page
-const password = '123123123'
 if (process.env.NODE_ENV === 'mainnet') {
   // Astroport AMM works against Terra chain
   describe('SWAP Astroport AMM service Provider-["MAINNET"]', async () => {
@@ -28,7 +27,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Enter seed words and submit
       await homePage.EnterSeedWords(page)
       // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
+      await passwordPage.SubmitPasswordDetails(page)
       // overview page
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
@@ -182,7 +181,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
       expect(
         availableBalance,
-        `${fromAsset}->${toAsset}) swap, available balance should be greater than 0`
+        `${fromAsset}->${toAsset.coin}) swap, available balance should be greater than 0`
       ).to.be.above(0)
       await page.waitForTimeout(5000)
       expect(
@@ -305,7 +304,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Check source name
       expect(
         await swapPage.getSelectedServiceProvider(page),
-        `${fromAsset}->${toAsset} swap, source should be chosen!`
+        `${fromAsset}->${toAsset.coin} swap, source should be chosen!`
       ).oneOf(['Liquality'])
     })
     it('UST->ETH quote check', async () => {
@@ -340,7 +339,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Check source name
       expect(
         await swapPage.getSelectedServiceProvider(page),
-        `${fromAsset}->${toAsset} swap, source should be chosen!`
+        `${fromAsset}->${toAsset.coin} swap, source should be chosen!`
       ).oneOf(['Liquality'])
     })
     it('UST->MATIC quote check', async () => {
@@ -375,7 +374,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Check source name
       expect(
         await swapPage.getSelectedServiceProvider(page),
-        `${fromAsset}->${toAsset} swap, source should be chosen!`
+        `${fromAsset}->${toAsset.coin} swap, source should be chosen!`
       ).oneOf(['Liquality'])
       await swapPage.clickSwapReviewButton(page)
     })

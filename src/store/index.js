@@ -1,24 +1,11 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-import state from './state'
-import getters from './getters'
-import * as actions from './actions'
-import mutations from './mutations'
+import wallet from '../core'
 import Broker from '../broker'
 import { appModule } from './modules/app'
 
-Vue.use(Vuex)
+wallet.original.registerModule('app', appModule)
 
-const broker = Broker(state)
+const brokerCreator = Broker(wallet.original.state)
 
-export default new Vuex.Store({
-  state: broker.state,
-  getters,
-  actions,
-  mutations,
-  plugins: [broker.plugin],
-  modules: {
-    app: appModule
-  }
-})
+export const broker = brokerCreator.plugin(wallet.original)
+
+export default wallet.original

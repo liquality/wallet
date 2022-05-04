@@ -16,7 +16,6 @@ const seedWordsPage = new SeedWordsPage()
 const receivePage = new ReceivePage()
 
 let browser, page
-const password = '123123123'
 
 /**
  * Import Wallet & Test Receive QR & address.
@@ -82,7 +81,7 @@ describe('Receive tokens ["MAINNET"]', async () => {
       await seedWordsPage.EnterSeedWords(page, seed1, seed5, seed12)
       await seedWordsPage.ClickContinueButton(page)
       // Set password & click next
-      await passwordPage.SubmitPasswordDetails(page, password)
+      await passwordPage.SubmitPasswordDetails(page)
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWatsNewModal(page)
@@ -128,7 +127,7 @@ describe('Receive tokens ["MAINNET"]', async () => {
       // Enter seed words and submit
       await homePage.EnterSeedWords(page)
       // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
+      await passwordPage.SubmitPasswordDetails(page)
       // overview page
       await overviewPage.CloseWatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)

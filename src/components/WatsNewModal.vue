@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Enabling Boost for ERC20 to native assets</pre>
+            <pre class="text-wrap">* Infrastructure fixes to improve swap reliability</pre>
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@ h6 {
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 100% auto;
+  height: 100%;
   padding: 0px 0px 40px 0px;
 
   .item {
