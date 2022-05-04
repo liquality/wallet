@@ -6,8 +6,7 @@ const SearchAssetPage = require('../pages/SearchAssetPage')
 const SendPage = require('../pages/SendPage')
 const TransactionDetailsPage = require('../pages/TransactionDetailsPage')
 const expect = require('chai').expect
-const assert = require('chai').assert
-
+require('chai').assert
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
@@ -19,8 +18,6 @@ const transactionDetailsPage = new TransactionDetailsPage()
 const puppeteer = require('puppeteer')
 let browser
 let page
-
-const password = '123123123'
 
 describe('SEND feature["TESTNET"]', async () => {
   beforeEach(async () => {
@@ -36,7 +33,7 @@ describe('SEND feature["TESTNET"]', async () => {
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
@@ -144,16 +141,7 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.waitForSelector('#SEND_RBTC_RBTC', { visible: true, timeout: 60000 })
     await page.click('#SEND_RBTC_RBTC')
 
-    // Transaction details page validations
-    await page.waitForSelector('#transaction_details_status_number_of_confirmations', {
-      visible: true,
-      timeout: 180000
-    })
-    const sendStatus = await page.$eval(
-      '#transaction_details_status_and_confirmations',
-      (el) => el.innerText
-    )
-    expect(sendStatus).contains('Completed')
+    await sendPage.ValidateSendConfirmationStatus(page)
   })
   it('Send MATIC to MATIC-["PULL_REQUEST_TEST",""MAINNET_RELEASE""]', async () => {
     const assetName = 'MATIC'
@@ -195,16 +183,7 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.waitForSelector(`#SEND_${assetName}_${assetName}`, { visible: true, timeout: 60000 })
     await page.click(`#SEND_${assetName}_${assetName}`)
 
-    // Transaction details page validations
-    await page.waitForSelector('#transaction_details_status_number_of_confirmations', {
-      visible: true,
-      timeout: 180000
-    })
-    const sendStatus = await page.$eval(
-      '#transaction_details_status_and_confirmations',
-      (el) => el.innerText
-    )
-    expect(sendStatus).contains('Completed')
+    await sendPage.ValidateSendConfirmationStatus(page)
     // Validate Send transaction timeline
     await page.waitForSelector('#transaction_details_date_time')
     expect(await page.$eval('#transaction_detail_sent_amount', (el) => el.innerText)).contains(
@@ -220,7 +199,7 @@ describe('SEND feature["TESTNET"]', async () => {
       await page.$eval('#transaction_detail_network_speed', (el) => el.innerText.toLowerCase())
     ).contains('average')
   })
-  it.skip('Send AVAX-AVAX["PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
+  it('Send AVAX-AVAX["PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
     const assetName = 'AVAX'
     const coinsToSend = '0.00001'
     const addressToSend = '0x9d6345f731e160cd90b65a91ab60f4f9e37bdbd2'
@@ -260,19 +239,8 @@ describe('SEND feature["TESTNET"]', async () => {
     await page.waitForSelector(`#SEND_${assetName}_${assetName}`, { visible: true, timeout: 60000 })
     await page.click(`#SEND_${assetName}_${assetName}`)
 
-    // Transaction details page validations
-    assert.isOk(
-      await page.waitForSelector('#transaction_details_status_number_of_confirmations', {
-        visible: true,
-        timeout: 180000
-      }),
-      'Transaction details page is not loaded, confirmations are not available'
-    )
-    const sendStatus = await page.$eval(
-      '#transaction_details_status_and_confirmations',
-      (el) => el.innerText
-    )
-    expect(sendStatus).contains('Completed')
+    await sendPage.ValidateSendConfirmationStatus(page)
+
     // Validate Send transaction timeline
     await page.waitForSelector('#transaction_details_date_time')
     expect(await page.$eval('#transaction_detail_sent_amount', (el) => el.innerText)).contains(

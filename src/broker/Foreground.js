@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import { BG_PREFIX, connectToBackground, newConnectId } from './utils'
+import { BG_PREFIX, connectToBackground, newConnectId, Deferred } from './utils'
 
 class Foreground {
   constructor(store) {
@@ -7,6 +7,7 @@ class Foreground {
     this.name = newConnectId()
     this.connection = null
     this.initialized = false
+    this.ready = new Deferred()
     this.pendingMutations = []
     this.emitter = new EventEmitter()
 
@@ -64,6 +65,7 @@ class Foreground {
         this.store.replaceState(data)
 
         this.initialized = true
+        this.ready.resolve()
 
         this.processPendingMutations()
         break

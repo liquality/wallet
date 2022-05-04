@@ -53,7 +53,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyPermission']),
+    ...mapActions('app', ['replyPermission']),
     getAssetIcon,
     async reply(allowed) {
       if (this.loading) return

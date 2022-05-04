@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Internal Release candidate 0.62.0</pre>
+            <pre class="text-wrap">Wallet core internal release 0.62.0</pre>
           </div>
         </div>
       </div>

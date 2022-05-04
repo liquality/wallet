@@ -1,5 +1,5 @@
 import { Client } from '@liquality/client'
-import { ChainNetworks } from '@/utils/networks'
+import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
 import { SolanaNetworks } from '@liquality/solana-networks'
 import { SolanaRpcProvider } from '@liquality/solana-rpc-provider'
 import { SolanaWalletProvider } from '@liquality/solana-wallet-provider'
@@ -55,13 +55,13 @@ test('Create Client for testnet and attach Solana Wallet Provider successfully',
   const client = new Client()
   const derivationPath = `m/44'/501'/${solanaNetwork.walletIndex}'/0'`
 
-  client.addProvider(new SolanaWalletProvider(
-    {
+  client.addProvider(
+    new SolanaWalletProvider({
       network: solanaNetwork,
       mnemonic: 'under visa else sweet voice result asset notable invite interest young abuse',
       derivationPath
-    }
-  ))
+    })
+  )
 
   expect(client._providers.length).toEqual(1)
 })
@@ -71,13 +71,13 @@ test('Create Client for Mainnet and attach Solana Wallet Provider successfully',
   const client = new Client()
   const derivationPath = `m/44'/501'/${solanaNetwork.walletIndex}'/0'`
 
-  client.addProvider(new SolanaWalletProvider(
-    {
+  client.addProvider(
+    new SolanaWalletProvider({
       network: solanaNetwork,
       mnemonic: 'under visa else sweet voice result asset notable invite interest young abuse',
       derivationPath
-    }
-  ))
+    })
+  )
 
   expect(client._providers.length).toEqual(1)
 })
@@ -121,13 +121,13 @@ test('Create Client for testnet and attach All Providers successfully', () => {
   const derivationPath = `m/44'/501'/${solanaNetwork.walletIndex}'/0'`
 
   client.addProvider(new SolanaRpcProvider(SolanaNetworks.solana_testnet))
-  client.addProvider(new SolanaWalletProvider(
-    {
+  client.addProvider(
+    new SolanaWalletProvider({
       network: solanaNetwork,
       mnemonic: 'under visa else sweet voice result asset notable invite interest young abuse',
       derivationPath
-    }
-  ))
+    })
+  )
   client.addProvider(new SolanaSwapProvider(SolanaNetworks.solana_testnet))
   client.addProvider(new SolanaSwapFindProvider(SolanaNetworks.solana_testnet))
 
@@ -141,13 +141,13 @@ test('Create Client for mainnet and attach All Providers successfully', () => {
   const derivationPath = `m/44'/501'/${solanaNetwork.walletIndex}'/0'`
 
   client.addProvider(new SolanaRpcProvider(SolanaNetworks.solana_mainnet))
-  client.addProvider(new SolanaWalletProvider(
-    {
+  client.addProvider(
+    new SolanaWalletProvider({
       network: solanaNetwork,
       mnemonic: 'under visa else sweet voice result asset notable invite interest young abuse',
       derivationPath
-    }
-  ))
+    })
+  )
   client.addProvider(new SolanaSwapProvider(SolanaNetworks.solana_mainnet))
   client.addProvider(new SolanaSwapFindProvider(SolanaNetworks.solana_mainnet))
 
@@ -159,8 +159,9 @@ test('Should throw error "Duplicate provider" if we try to attach twice same pro
 
   client.addProvider(new SolanaRpcProvider(SolanaNetworks.solana_mainnet))
 
-  expect(() => client.addProvider(new SolanaRpcProvider(SolanaNetworks.solana_mainnet)))
-    .toThrow('Duplicate provider')
+  expect(() => client.addProvider(new SolanaRpcProvider(SolanaNetworks.solana_mainnet))).toThrow(
+    'Duplicate provider'
+  )
 })
 
 describe('Test RPC Provider Calls', () => {
@@ -175,7 +176,9 @@ describe('Test RPC Provider Calls', () => {
   })
 
   test('getBalance', async () => {
-    const balance = await client.getMethod('getBalance')(['9U5t5Nn3BAdasm8j3sQ273TsM7YZvUAjYcD16qhhNi5P'])
+    const balance = await client.getMethod('getBalance')([
+      '9U5t5Nn3BAdasm8j3sQ273TsM7YZvUAjYcD16qhhNi5P'
+    ])
 
     expect(balance.toNumber()).toBeGreaterThan(0)
   })

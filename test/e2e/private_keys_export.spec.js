@@ -11,7 +11,6 @@ const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
 let browser, page
-const password = '123123123'
 
 describe('Private key exports-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
@@ -26,7 +25,7 @@ describe('Private key exports-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
@@ -42,7 +41,7 @@ describe('Private key exports-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await page.waitForSelector('#i_have_privacy_button', { visible: true })
     await page.click('#i_have_privacy_button')
     await page.waitForSelector('#password', { visible: true })
-    await page.type('#password', password)
+    await page.type('#password', process.env.TEST_WALLET_PASSWORD)
     await page.click('#checkbox')
     await page.click('#continue_button_to_see_seed_phrase')
   }
