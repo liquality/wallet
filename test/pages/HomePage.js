@@ -33,11 +33,12 @@ class HomePage {
    */
   async ClickOnAcceptPrivacy(page) {
     // Accept terms
-    await page.waitForSelector('#terms_privacy_accept_button', {
+    const terms_privacy_accept_button = await page.waitForSelector('#terms_privacy_accept_button', {
       visible: true
     })
-    await page.click('#terms_privacy_accept_button')
-    await page.click('#optin_anaylitics_accept')
+    await terms_privacy_accept_button.click()
+    await page.waitForSelector('#optin_anaylitics_accept',{ visible: true })
+    await page.click('#optin_anaylitics_accept',{ delay: 100 })
     await page.click('#analytics-ok-close-button')
   }
 
