@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Infrastructure fixes to improve swap reliability</pre>
+            <pre class="text-wrap">* Release candidate 0.63.0</pre>
           </div>
         </div>
       </div>
