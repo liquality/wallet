@@ -282,6 +282,12 @@ class SovrynSwapProvider extends SwapProvider {
     return fees
   }
 
+  // ======== MIN AMOUNT =======
+
+  getSwapLimit() {
+    return 0 // Min swap amount in USD
+  }
+
   // ======== STATE TRANSITIONS ========
 
   async waitForApproveConfirmations({ swap, network, walletId }) {
