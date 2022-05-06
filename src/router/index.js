@@ -30,6 +30,7 @@ import PermissionTerra from '@/views/PermissionTerra.vue'
 import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletNFTs from '@/views/Wallet/WalletNFTs.vue'
+import SendNFT from '@/views/Send/SendNFT.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import NFTActivity from '@/views/Wallet/NFTActivity.vue'
 import AssetList from '@/views/AssetList.vue'
@@ -120,6 +121,11 @@ const routes = [
     path: '/nft-activity',
     component: NFTActivity,
     name: 'NFTActivity'
+  },
+  {
+    path: '/send-nft',
+    component: SendNFT,
+    name: 'SendNFT'
   },
   // Details
   {

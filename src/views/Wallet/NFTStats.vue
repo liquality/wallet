@@ -10,25 +10,31 @@
         >
       </div>
     </div>
-    <!-- <div class="account-container_actions">
-      <button class="account-container_actions_button" disabled>
+    <div class="account-container_actions">
+      <router-link
+        to="/send-nft"
+        class="account-container_actions_button send-action"
+        id="send_action"
+      >
+        <!-- <button class="account-container_actions_button"> -->
         <div class="account-container_actions_button_wrapper">
           <SendIcon class="account-container_actions_button_icon" />
         </div>
         Send
-      </button>
-    </div> -->
+        <!-- </button> -->
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-// import SendIcon from '@/assets/icons/send_o.svg'
+import SendIcon from '@/assets/icons/send.svg'
 import { getAssetIcon } from '@/utils/asset'
 
 export default {
   components: {
-    // SendIcon
+    SendIcon
   },
   computed: {
     ...mapState(['nftAssetsNumber'])
