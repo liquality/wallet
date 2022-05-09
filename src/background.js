@@ -136,7 +136,7 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Dapps',
           action: 'Dapp Injected',
-          label: `Connect to ${payload.origin} (${payload.chain})`,
+          label: `Connect to ${payload.origin} ${payload.chain}`,
           dappOrigin: `${payload.origin}`,
           chain: `${payload.chain}`
         }
@@ -153,8 +153,8 @@ store.subscribe(async ({ type, payload }, state) => {
           customTokenSymbol: `${payload.customToken.symbol}`,
           label: [
             `${payload.customToken.name}`,
-            `(${payload.customToken.chain})`,
-            `(${payload.customToken.symbol})`
+            `${payload.customToken.chain}`,
+            `${payload.customToken.symbol}`
           ]
         }
       })
@@ -166,7 +166,7 @@ store.subscribe(async ({ type, payload }, state) => {
           category: 'Settings',
           action: 'Custom Token Removed',
           customTokenSymbol: `${payload.symbol}`,
-          label: `${payload.symbol})`
+          label: `${payload.symbol}`
         }
       })
       break
@@ -214,34 +214,18 @@ store.subscribe(async ({ type, payload }, state) => {
       break
     case 'UPDATE_BALANCE': {
       if (
-        prevState.accounts?.[prevState.activeWalletId]?.[prevState.activeNetwork].find(
-          (item) => item.balances[payload.asset] === '0'
+        prevState.accounts?.[prevState.activeWalletId]?.[prevState.activeNetwork].find((item) =>
+          Object.values(item.balances).some((balance) => Number(balance) > 0)
         )
       ) {
-        console.log([payload.asset] + ' balance is 0')
-
-        // prevState.accounts?.[payload.accountId]?.[payload.network].find(
-        //   (item) => item.balances[payload.asset] === '0'
-        // )
-        // ) {
-        //   console.log('balance is 0')
-        // } else {
-        //   const accountId = payload.accountId
-        //   console.log(accountId)
-        // console.log(JSON.stringify(prevState.accounts?.`${accountId}`))
-        // console.log(JSON.stringify(prevState.accounts))
-        // const accountItemDetails = getters.accountItem(payload.accountId)
-        // if (accountItemDetails.totalFiatBalance > 0) {
-        //   dispatch('trackAnalytics', {
-        //     event: 'Balance Update',
-        //     properties: {
-        //       category: 'Balance',
-        //       action: 'Balance Updated',
-        //       chain: accountItemDetails.chain,
-        //       fiatBalance: accountItemDetails.fiatBalances,
-        //       totalFiatBalance: accountItemDetails.totalFiatBalance
-        //     }
-        //   })
+        dispatch('trackAnalytics', {
+          event: 'Balance Update',
+          properties: {
+            category: 'Balance',
+            action: 'Balance Updated',
+            label: 'User has a balance'
+          }
+        })
       }
       break
     }
