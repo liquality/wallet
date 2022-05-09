@@ -16,8 +16,15 @@ function asyncLoop(fn, delay) {
 }
 
 store.subscribe(async ({ type, payload }, state) => {
-  let nextState = _.cloneDeep(state)
+  let currentState = _.cloneDeep(state)
   const { dispatch, getters } = store
+
+  function hasBalance(state) {
+    return state.accounts?.[state.activeWalletId]?.[state.activeNetwork].find((item) =>
+      Object.values(item.balances).find((balance) => Number(balance) > 0)
+    )
+  }
+
   switch (type) {
     case 'CHANGE_ACTIVE_NETWORK':
       dispatch('initializeAddresses', {
@@ -40,7 +47,7 @@ store.subscribe(async ({ type, payload }, state) => {
       break
     case 'LOCK_WALLET':
       dispatch('trackAnalytics', {
-        event: 'Wallet Lock',
+        event: 'Wallet locked',
         properties: {
           category: 'Lock/Unlock',
           action: 'Wallet Locked'
@@ -214,16 +221,19 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'UPDATE_BALANCE': {
-      if (JSON.stringify(prevState) !== JSON.stringify(nextState)) {
+      if (hasBalance(prevState)) {
+        console.log('has no balance')
+      } else if (hasBalance(currentState)) {
         dispatch('trackAnalytics', {
-          event: 'User Balance Updated',
+          event: 'User funded wallet',
           properties: {
             category: 'Balance',
             action: 'Balance Updated',
-            label: 'User has a balance'
+            label: 'User has funded wallet'
           }
         })
       }
+      prevState = currentState
       break
     }
     case 'TOGGLE_EXPERIMENT':
@@ -247,5 +257,4 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
   }
-  prevState = _.cloneDeep(state)
 })
