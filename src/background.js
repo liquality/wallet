@@ -5,6 +5,9 @@ import { wait } from './store/utils'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
 import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import _ from 'lodash-es'
+
+let prevState = _.cloneDeep(store.state)
 
 function asyncLoop(fn, delay) {
   return wait(delay())
@@ -27,10 +30,22 @@ store.subscribe(async ({ type, payload }, state) => {
       dispatch('updateMarketData', { network: state.activeNetwork })
 
       dispatch('trackAnalytics', {
-        event: `Network Changed ${payload.currentNetwork} to ${payload.network}`
+        event: 'Change Active Network',
+        properties: {
+          action: 'User changed active network',
+          network: state.activeNetwork
+        }
       })
       break
-
+    case 'LOCK_WALLET':
+      dispatch('trackAnalytics', {
+        event: 'Wallet Lock',
+        properties: {
+          category: 'Lock/Unlock',
+          action: 'Wallet Locked'
+        }
+      })
+      break
     case 'UNLOCK_WALLET':
       dispatch('trackAnalytics', {
         event: 'Unlock wallet',
@@ -112,15 +127,6 @@ store.subscribe(async ({ type, payload }, state) => {
           fee: `${payload.feeLabel}`,
           typeOfAccount: itemDetails.type,
           nameOfAccount: itemDetails.name
-        }
-      })
-      break
-    case 'LOCK_WALLET':
-      dispatch('trackAnalytics', {
-        event: 'Wallet Lock',
-        properties: {
-          category: 'Lock/Unlock',
-          action: 'Wallet Locked'
         }
       })
       break
@@ -207,18 +213,35 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'UPDATE_BALANCE': {
-      const accountItemDetails = getters.accountItem(payload.accountId)
-      if (accountItemDetails.totalFiatBalance > 0) {
-        dispatch('trackAnalytics', {
-          event: 'Balance Update',
-          properties: {
-            category: 'Balance',
-            action: 'Balance Updated',
-            chain: accountItemDetails.chain,
-            fiatBalance: accountItemDetails.fiatBalances,
-            totalFiatBalance: accountItemDetails.totalFiatBalance
-          }
-        })
+      if (
+        prevState.accounts?.[prevState.activeWalletId]?.[prevState.activeNetwork].find(
+          (item) => item.balances[payload.asset] === '0'
+        )
+      ) {
+        console.log([payload.asset] + ' balance is 0')
+
+        // prevState.accounts?.[payload.accountId]?.[payload.network].find(
+        //   (item) => item.balances[payload.asset] === '0'
+        // )
+        // ) {
+        //   console.log('balance is 0')
+        // } else {
+        //   const accountId = payload.accountId
+        //   console.log(accountId)
+        // console.log(JSON.stringify(prevState.accounts?.`${accountId}`))
+        // console.log(JSON.stringify(prevState.accounts))
+        // const accountItemDetails = getters.accountItem(payload.accountId)
+        // if (accountItemDetails.totalFiatBalance > 0) {
+        //   dispatch('trackAnalytics', {
+        //     event: 'Balance Update',
+        //     properties: {
+        //       category: 'Balance',
+        //       action: 'Balance Updated',
+        //       chain: accountItemDetails.chain,
+        //       fiatBalance: accountItemDetails.fiatBalances,
+        //       totalFiatBalance: accountItemDetails.totalFiatBalance
+        //     }
+        //   })
       }
       break
     }
@@ -243,4 +266,5 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
   }
+  prevState = _.cloneDeep(state)
 })
