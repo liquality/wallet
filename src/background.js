@@ -246,7 +246,6 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'CHANGE_PASSWORD':
-      console.log(payload)
       dispatch('trackAnalytics', {
         event: 'Change Password',
         properties: {
