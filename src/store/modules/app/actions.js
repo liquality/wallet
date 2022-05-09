@@ -10,7 +10,6 @@ import { handlePaymentUri } from './handlePaymentUri'
 import { initializeAnalytics } from './initializeAnalytics'
 import { checkAnalyticsOptIn } from './checkAnalyticsOptIn'
 
-
 export const actions = {
   openLedgerBridgeWindow: async ({ rootState, commit }) => {
     const { usbBridgeWindowsId } = rootState
