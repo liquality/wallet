@@ -26,6 +26,15 @@ store.subscribe(async ({ type, payload }, state) => {
   }
 
   switch (type) {
+    case 'CREATE_WALLET':
+      dispatch('trackAnalytics', {
+        event: 'Create wallet',
+        properties: {
+          label: 'New wallet created'
+        }
+      })
+      break
+
     case 'CHANGE_ACTIVE_NETWORK':
       dispatch('initializeAddresses', {
         network: state.activeNetwork,
@@ -209,16 +218,6 @@ store.subscribe(async ({ type, payload }, state) => {
           })
         }
       }
-      break
-    case 'SETUP_WALLET':
-      dispatch('trackAnalytics', {
-        event: 'Onboarding',
-        properties: {
-          category: 'Onboarding',
-          action: 'User Onboarded',
-          label: 'Create a new wallet'
-        }
-      })
       break
     case 'UPDATE_BALANCE': {
       if (hasBalance(prevState)) {
