@@ -1,10 +1,19 @@
+# Dev Mainnet tests
+name: DEV Mainnet tests
+
 on:
   schedule:
     - cron: '0 9 * * *' # everyday at 9am
     - cron: '0 23 * * *' # everyday at 11pm
 
-# Dev Mainnet tests
-name: DEV Mainnet tests
+env:
+  TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
+  AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
+  AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
+  NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
+  SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+  TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+  TEST_WALLET_PASSWORD: ${{ secrets.TEST_WALLET_PASSWORD }}
 
 jobs:
   regressiontest_dev_mainnet:
@@ -14,7 +23,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: 'release-candidate-0.59.0'
+          ref: 'master'
 
       - uses: actions/setup-node@v2.5.1
         env:
@@ -32,18 +41,15 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
 
+      - run: |
+          echo VUE_APP_TERRA_MAINNET_URL =$TERRA_MAINNET_URL >> .env
+          echo VUE_APP_AVALANCHE_MAINNET_NODE =$AVALANCHE_MAINNET_NODE >> .env
+          echo VUE_APP_AVALANCHE_TESTNET_NODE =$AVALANCHE_TESTNET_NODE >> .env
+          echo VUE_APP_NEAR_MAINNET_URL =$NEAR_MAINNET_URL >> .env
+
       # Create Dev Wallet for nightly tests
       - name: Set development manifest
-        env:
-          VUE_APP_TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
-          VUE_APP_AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
-          VUE_APP_AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
-          VUE_APP_NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
         run: |
-          echo VUE_APP_TERRA_MAINNET_URL =${{ secrets.VUE_APP_TERRA_MAINNET_URL }} >> .env
-          echo VUE_APP_AVALANCHE_MAINNET_NODE =${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }} >> .env
-          echo VUE_APP_AVALANCHE_TESTNET_NODE =${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }} >> .env
-          echo VUE_APP_NEAR_MAINNET_URL =${{ secrets.VUE_APP_NEAR_MAINNET_URL }} >> .env
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
           npm ci
@@ -55,8 +61,6 @@ jobs:
         env:
           CI: 'true'
           DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
           args: npm run test:mainnet:devagent # Run tests against dev mainnet
 
@@ -67,6 +71,3 @@ jobs:
           name: screenshots
           path: screenshots
           if-no-files-found: ignore
-
-
-

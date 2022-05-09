@@ -14,7 +14,6 @@ const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
 
 let browser, page
-const password = '123123123'
 
 const swapPairMap = [
   {
@@ -42,7 +41,7 @@ describe.skip('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
       // Enter seed words and submit
       await homePage.EnterSeedWords(page)
       // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
+      await passwordPage.SubmitPasswordDetails(page)
       // overview page
       await overviewPage.CloseWhatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)

@@ -11,8 +11,6 @@ const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
-const password = '123123123'
-
 const anchorProtocol_Url = 'https://app.anchorprotocol.com/'
 const mirrorProtocol_Url = 'https://mirrorprotocol.app/#/trade/'
 const terra_swap_Url = 'https://app.terraswap.io'
@@ -30,7 +28,7 @@ describe('Terra Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)

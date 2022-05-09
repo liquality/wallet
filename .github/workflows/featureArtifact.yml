@@ -7,6 +7,12 @@ on:
     branches:
       - 'feature/*'
       - 'feat/*'
+env:
+  AMPLITUDE_API_KEY_DEV: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
+  TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
+  AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
+  AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
+  NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
 
 env:
   TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
@@ -37,7 +43,7 @@ jobs:
           replace: '-'
 
       - name: Checkout code
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v2.4.2
         with:
           fetch-depth: 0
 
@@ -57,16 +63,19 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
 
-      # Create Dev Wallet with Dev agent for feature branch tests.
-      - name: Set development manifest (patch for DEV)
-        run: |
+      - run: |
           echo VUE_APP_TERRA_MAINNET_URL =$TERRA_MAINNET_URL >> .env
           echo VUE_APP_AVALANCHE_MAINNET_NODE =$AVALANCHE_MAINNET_NODE >> .env
           echo VUE_APP_AVALANCHE_TESTNET_NODE =$AVALANCHE_TESTNET_NODE >> .env
           echo VUE_APP_NEAR_MAINNET_URL =$NEAR_MAINNET_URL >> .env
+          echo VUE_APP_AMPLITUDE_API_KEY =$AMPLITUDE_API_KEY_DEV >> .env
           echo VUE_APP_TRANSAK_WIDGET_URL_STAGE =$TRANSAK_WIDGET_URL_STAGE >> .env
           echo VUE_APP_TRANSAK_API_KEY_STAGE =$TRANSAK_API_KEY_STAGE >> .env
           echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =$TRANSAK_DEFAULT_FIAT_CURRENCY >> .env
+
+      # Create Dev Wallet with Dev agent for feature branch tests.
+      - name: Set development manifest (patch for DEV)
+        run: |
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
           npm ci

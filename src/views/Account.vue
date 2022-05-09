@@ -104,19 +104,24 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
-import { prettyBalance, formatFiat, formatFiatUI } from '@/utils/coinFormatter'
-import { shortenAddress } from '@/utils/address'
-import { getAssetIcon, getAddressExplorerLink } from '@/utils/asset'
+import {
+  prettyBalance,
+  formatFiat,
+  formatFiatUI
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
-import { applyActivityFilters } from '@/utils/history'
+import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'

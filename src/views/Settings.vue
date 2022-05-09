@@ -84,7 +84,7 @@
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
 import { version } from '../../package.json'
-import { downloadFile, getWalletStateLogs } from '@/utils/export'
+import { getWalletStateLogs, downloadFile } from '@/utils/export'
 import NavBar from '@/components/NavBar.vue'
 
 export default {
@@ -108,10 +108,10 @@ export default {
       'enableEthereumInjection',
       'disableEthereumInjection',
       'setAnalyticsResponse',
-      'initializeAnalytics',
       'trackAnalytics',
       'forgetDappConnections'
     ]),
+    ...mapActions('app', ['initializeAnalytics']),
     toggleInjectEthereum(enable) {
       if (enable) {
         this.enableEthereumInjection()

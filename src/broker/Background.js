@@ -1,5 +1,5 @@
-import { ChainNetworks } from '@/utils/networks'
-import buildConfig from '../build.config'
+import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
+import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { assets } from '@liquality/cryptoassets'
 import { connectRemote } from './terra-injection'
@@ -101,12 +101,12 @@ class Background {
 
     this.bindMutation(connection)
 
-    this.store.restored.then(() =>
+    this.store.restored.then(() => {
       connection.postMessage({
         type: 'REHYDRATE_STATE',
         data: this.store.state
       })
-    )
+    })
   }
 
   onExternalConnection(connection) {
@@ -231,7 +231,7 @@ class Background {
           return
         }
 
-        this.storeProxy(id, connection, 'requestOriginAccess', {
+        this.storeProxy(id, connection, 'app/requestOriginAccess', {
           origin,
           chain,
           setDefaultEthereum
@@ -240,7 +240,7 @@ class Background {
 
       case 'CAL_REQUEST':
         if (allowed || data.method === 'jsonrpc') {
-          this.storeProxy(id, connection, 'requestPermission', {
+          this.storeProxy(id, connection, 'app/requestPermission', {
             origin,
             data
           })
@@ -256,7 +256,7 @@ class Background {
 
       case 'HANDLE_PAYMENT_URI':
         if (allowed) {
-          this.storeProxy(id, connection, 'handlePaymentUri', { data })
+          this.storeProxy(id, connection, 'app/handlePaymentUri', { data })
         } else {
           connection.postMessage({
             id,

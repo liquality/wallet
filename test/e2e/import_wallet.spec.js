@@ -13,7 +13,6 @@ const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
 let browser, page
-const password = '123123123'
 
 describe('Import wallet-["MAINNET"]', async () => {
   beforeEach(async () => {
@@ -137,7 +136,7 @@ describe('Import wallet-["MAINNET"]', async () => {
   })
   it('Import wallet with (12 seed words) and see balance & validate ETH & RSK derived path["PULL_REQUEST_TEST"]', async () => {
     await homePage.EnterSeedWords(page)
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
@@ -145,7 +144,7 @@ describe('Import wallet-["MAINNET"]', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // validate the total assets on overview screen.
-    await overviewPage.ValidateTotalAssets(page, false) // 10 assets
+    await overviewPage.ValidateTotalAssets(page, false)
     // Check the currency
     expect(await overviewPage.GetCurrency(page), 'Wallet stats has currency should be USD').contain(
       'USD'
@@ -189,7 +188,7 @@ describe('Import wallet-["MAINNET"]', async () => {
     // Enter 24 seed words
     await homePage.EnterSeedWords(page, 24)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)

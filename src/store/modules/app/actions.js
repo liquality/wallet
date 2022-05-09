@@ -1,4 +1,16 @@
-import { createBridgeClient } from '@/utils/ledger-bridge-provider/utils'
+import { createBridgeClient } from '@/utils/ledger-bridge-provider'
+import { requestOriginAccess } from './requestOriginAccess'
+import { requestPermission } from './requestPermission'
+import { requestUnlockWallet } from './requestUnlockWallet'
+import { replyOriginAccess } from './replyOriginAccess'
+import { replyPermission } from './replyPermission'
+import { replyUnlockWallet } from './replyUnlockWallet'
+import { executeRequest } from './executeRequest'
+import { handlePaymentUri } from './handlePaymentUri'
+import { initializeAnalytics } from './initializeAnalytics'
+import { checkAnalyticsOptIn } from './checkAnalyticsOptIn'
+
+
 export const actions = {
   openLedgerBridgeWindow: async ({ rootState, commit }) => {
     const { usbBridgeWindowsId } = rootState
@@ -111,5 +123,15 @@ export const actions = {
   },
   settingsModalOpen: ({ commit }, isOpen) => {
     commit('SET_SETTINGS_MODAL_OPEN', isOpen)
-  }
+  },
+  requestOriginAccess,
+  requestPermission,
+  requestUnlockWallet,
+  replyOriginAccess,
+  replyUnlockWallet,
+  replyPermission,
+  executeRequest,
+  handlePaymentUri,
+  initializeAnalytics,
+  checkAnalyticsOptIn
 }

@@ -2,9 +2,9 @@ import 'setimmediate'
 import { random } from 'lodash-es'
 import store from './store'
 import { wait } from './store/utils'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
-import { prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 
 function asyncLoop(fn, delay) {
   return wait(delay())
@@ -36,11 +36,11 @@ store.subscribe(async ({ type, payload }, state) => {
         event: 'Unlock wallet',
         properties: {
           category: 'Lock/Unlock',
-          action: 'Wallet Unlocked'
+          action: 'Wallet Unlocked',
+          label: 'import with seed pharse'
         }
       })
-      dispatch('app/closeExistingBridgeWindow', { windowsId: store.state.usbBridgeWindowsId })
-      dispatch('checkAnalyticsOptIn')
+      dispatch('app/checkAnalyticsOptIn')
       dispatch('initializeAddresses', {
         network: state.activeNetwork,
         walletId: state.activeWalletId
@@ -159,10 +159,8 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Settings',
           action: 'Custom Token Removed',
-          customTokenName: `${payload.customToken.name}`,
-          customTokenChain: `${payload.customToken.chain}`,
-          customTokenSymbol: `${payload.customToken.symbol}`,
-          label: `${payload.customToken.symbol})`
+          customTokenSymbol: `${payload.symbol}`,
+          label: `${payload.symbol})`
         }
       })
       break
@@ -178,7 +176,8 @@ store.subscribe(async ({ type, payload }, state) => {
               action: 'Swap Status changed',
               swapProvider: `${item.provider}`,
               label: `${item.from} to ${item.to}`,
-              swapStatus: `${payload.updates.status}`
+              swapStatus: `${payload.updates.status}`,
+              orderId: `${item.orderId}`
             }
           })
         }
@@ -202,7 +201,44 @@ store.subscribe(async ({ type, payload }, state) => {
         event: 'Onboarding',
         properties: {
           category: 'Onboarding',
-          action: 'User Onboarded'
+          action: 'User Onboarded',
+          label: 'Create a new wallet'
+        }
+      })
+      break
+    case 'UPDATE_BALANCE': {
+      const accountItemDetails = getters.accountItem(payload.accountId)
+      if (accountItemDetails.totalFiatBalance > 0) {
+        dispatch('trackAnalytics', {
+          event: 'Balance Update',
+          properties: {
+            category: 'Balance',
+            action: 'Balance Updated',
+            chain: accountItemDetails.chain,
+            fiatBalance: accountItemDetails.fiatBalances,
+            totalFiatBalance: accountItemDetails.totalFiatBalance
+          }
+        })
+      }
+      break
+    }
+    case 'TOGGLE_EXPERIMENT':
+      dispatch('trackAnalytics', {
+        event: 'Experiment Toggle',
+        properties: {
+          category: 'Experiments',
+          action: 'Experiment Toggle',
+          label: `${payload.name}`
+        }
+      })
+      break
+    case 'CHANGE_PASSWORD':
+      console.log(payload)
+      dispatch('trackAnalytics', {
+        event: 'Change Password',
+        properties: {
+          category: 'Settings',
+          action: 'Change Password'
         }
       })
       break

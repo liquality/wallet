@@ -16,7 +16,6 @@ const sendPage = new SendPage()
 const transactionDetailsPage = new TransactionDetailsPage()
 
 let browser, page
-const password = '123123123'
 
 describe.skip('Custom fee feature["TESTNET"]', async () => {
   const coinName = 'SOV'
@@ -33,7 +32,7 @@ describe.skip('Custom fee feature["TESTNET"]', async () => {
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
