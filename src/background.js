@@ -16,6 +16,7 @@ function asyncLoop(fn, delay) {
 }
 
 store.subscribe(async ({ type, payload }, state) => {
+  let nextState = _.cloneDeep(state)
   const { dispatch, getters } = store
   switch (type) {
     case 'CHANGE_ACTIVE_NETWORK':
@@ -213,13 +214,9 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'UPDATE_BALANCE': {
-      if (
-        prevState.accounts?.[prevState.activeWalletId]?.[prevState.activeNetwork].find((item) =>
-          Object.values(item.balances).some((balance) => Number(balance) > 0)
-        )
-      ) {
+      if (JSON.stringify(prevState) !== JSON.stringify(nextState)) {
         dispatch('trackAnalytics', {
-          event: 'Balance Update',
+          event: 'User Balance Updated',
           properties: {
             category: 'Balance',
             action: 'Balance Updated',
