@@ -117,7 +117,7 @@
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     <span v-if="getTotalSwapFee(assetFee).dp(6).eq(0)"
-                      >{{ getChainAssetSwapFee(assetFee) }}
+                      >{{ dpUI(getChainAssetSwapFee(assetFee)) }}
                     </span>
                     <span v-else>{{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }}</span> /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
@@ -135,7 +135,7 @@
                   />
                 </li>
                 <li v-if="hasPredefinedReceiveFee">
-                  <span class="selectors-asset">{{ toAsset }} </span>{{ receiveFee }} /
+                  <span class="selectors-asset">{{ toAsset }} </span>{{ dpUI(receiveFee) }} /
                   {{ getTotalSwapFeeInFiat(toAsset) }} USD
                 </li>
               </ul>
