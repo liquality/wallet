@@ -657,8 +657,6 @@ export default {
       return !!liqualityMarket
     },
     min() {
-      if (!this.fiatRates[this.asset]) return BN(0)
-
       const toQuoteAsset =
         this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostNativeToERC20
           ? this.toAssetChain
@@ -688,6 +686,8 @@ export default {
       } else {
         min = liqualityMarket
           ? BN(liqualityMarket.min)
+          : !this.fiatRates[this.asset]
+          ? BN(0)
           : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]))
       }
 
