@@ -23,7 +23,7 @@ class ProviderManager {
   proxy (type, data) {
     return new Promise((resolve, reject) => {
       const id = Date.now() + '.' + Math.random()
-  
+
       window.addEventListener(id, ({ detail }) => {
         const response = JSON.parse(detail)
         if (response.error) reject(new Error(response.error))
@@ -32,7 +32,7 @@ class ProviderManager {
         once: true,
         passive: true
       })
-  
+
       window.postMessage({
         id,
         type,
@@ -79,10 +79,18 @@ async function handleRequest (req) {
   if(req.method === 'eth_requestAccounts') {
     return await window[injectionName].enable('${chain}')
   }
-  if(req.method === 'personal_sign') { 
+  if(req.method === 'personal_sign') {
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
     return '0x' + sig
   }
+
+  if(req.method === 'eth_signTypedData' ||
+    req.method === 'eth_signTypedData_v3' ||
+    req.method === 'eth_signTypedData_v4') {
+    const sig = await eth.getMethod('wallet.signTypedMessage')(req)
+    return sig;
+  }
+
   if(req.method === 'eth_sendTransaction') {
     const to = req.params[0].to
     const value = req.params[0].value
@@ -99,6 +107,7 @@ async function handleRequest (req) {
 
 window[injectionName] = {
   isLiquality: true,
+  isMetaMask: true, // OpenSea wants this
   isEIP1193: true,
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
@@ -120,7 +129,11 @@ window[injectionName] = {
     }
     const method = typeof req === 'string' ? req : req.method
     const params = req.params || _paramsOrCallback || []
-    return handleRequest({ method, params })
+    return handleRequest({ method, params }).then((result) => ({
+      id: req && req.id ? req.id : 99999,
+      jsonrpc: '2.0',
+      result
+    }))
   },
   sendAsync: (req, callback) => {
     handleRequest(req)
@@ -196,7 +209,7 @@ function proxyEthereum(chain) {
         }
       }
 
-      if (prop === 'request') { 
+      if (prop === 'request') {
         return async (req) => {
           if(req.method === 'eth_requestAccounts') {
               return enable()
