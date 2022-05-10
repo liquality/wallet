@@ -94,7 +94,7 @@ export const actions = {
   openTransakWidgetTab: ({ dispatch }, { chain, asset, address }) => {
     const widgetUrl = process.env.VUE_APP_TRANSAK_WIDGET_URL
     const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
-    let url = `${widgetUrl}?apiKey=${apiKey}`
+    let url = `${widgetUrl}?apiKey=${apiKey}&disablePaymentMethods=apple_pay`
     if (asset) {
       url = `${url}&cryptoCurrencyCode=${asset}`
     }
