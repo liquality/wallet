@@ -10,6 +10,7 @@ const CONFIRM_REQUIRED = [
   /^chain.sendBatchTransaction$/,
   /^chain.updateTransactionFee$/,
   /^wallet.signMessage*$/,
+  /^wallet.signTypedMessage*$/,
   /^swap.generateSecret$/,
   /^swap.initiateSwap$/,
   /^swap.claimSwap$/,
