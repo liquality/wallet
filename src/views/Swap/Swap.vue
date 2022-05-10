@@ -824,6 +824,7 @@ export default {
         this.updatingQuotes ||
         this.ethRequired ||
         //!this.canCoverAmmFee ||
+        this.showBridgeAssetDisabledMessage ||
         this.showNoLiquidityMessage ||
         this.amountError ||
         BN(this.safeAmount).lte(0)
