@@ -11,13 +11,19 @@
       <InfoNotification v-if="ethRequired">
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
-      <InfoNotification v-if="!canCoverAmmFee">
+      <InfoNotification v-if="showBridgeAssetDisabledMessage">
+        <BoostActivateBridgeAsset
+          :network="activeNetwork"
+          :walletId="activeWalletId"
+          :asset="selectedQuote.bridgeAsset"
+        />
+      </InfoNotification>
+      <InfoNotification v-else-if="!canCoverAmmFee">
         <BridgeAssetRequiredMessage
           :account-id="getAccountId()"
           :asset="selectedQuote.bridgeAsset"
         />
       </InfoNotification>
-
       <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
@@ -396,6 +402,7 @@ import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
 import BridgeAssetRequiredMessage from '@/components/BridgeAssetRequiredMessage'
+import BoostActivateBridgeAsset from '@/components/BoostActivateBridgeAsset'
 import NoLiquidityMessage from '@/components/NoLiquidityMessage'
 import {
   cryptoToFiat,
@@ -449,6 +456,7 @@ export default {
     InfoNotification,
     EthRequiredMessage,
     BridgeAssetRequiredMessage,
+    BoostActivateBridgeAsset,
     NoLiquidityMessage,
     FeeSelector,
     SwapIcon,
@@ -562,6 +570,17 @@ export default {
     showNoLiquidityMessage() {
       return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
+    showBridgeAssetDisabledMessage() {
+      const provider = this.selectedQuote?.provider
+      const bridgeAsset = this.selectedQuote?.bridgeAsset
+      const enabledAssets = this.enabledAssets[this.activeNetwork][this.activeWalletId]
+
+      return (
+        (provider === SwapProviderType.LiqualityBoostNativeToERC20 ||
+          provider === SwapProviderType.LiqualityBoostERC20ToNative) &&
+        !enabledAssets.includes(bridgeAsset)
+      )
+    },
     sendAmount: {
       get() {
         return this.stateSendAmount
@@ -605,13 +624,12 @@ export default {
       return cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
     },
     ...mapState([
-      'activeNetwork',
-      'activeWalletId',
       'marketData',
       'fees',
       'fiatRates',
       'activeWalletId',
-      'activeNetwork'
+      'activeNetwork',
+      'enabledAssets'
     ]),
     ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem', 'accountsData']),
