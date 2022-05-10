@@ -25,7 +25,6 @@ export default {
         walletId: this.walletId,
         assets: [this.asset]
       }
-      console.log(this.network, this.walletId, this.asset)
       this.enableAssets(params)
     }
   }

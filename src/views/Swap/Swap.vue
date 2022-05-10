@@ -761,10 +761,14 @@ export default {
 
       const account = isERC20(this.asset) ? this.account : this.toAccount
       const balance = account?.balances[this.selectedQuote.bridgeAsset]
+
+      if (!balance) return true
+
       const SwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
         isERC20(this.asset) ? this.fromSwapFee : this.receiveFee
       )
+
       return BN(balance).gt(SwapFeeInUnits)
     },
     availableAmount() {
