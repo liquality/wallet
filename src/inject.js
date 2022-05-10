@@ -107,7 +107,7 @@ async function handleRequest (req) {
 
 window[injectionName] = {
   isLiquality: true,
-  isMetaMask: window.location.host === "opensea.io",
+  isMetaMask: window.location.host.indexOf("opensea.io") !== -1,
   isEIP1193: true,
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
