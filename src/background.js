@@ -15,15 +15,19 @@ function asyncLoop(fn, delay) {
     .then(() => asyncLoop(fn, delay))
 }
 
+function getBalance(state) {
+  let total = 0
+  state.accounts?.[state.activeWalletId]?.[state.activeNetwork].map((item) => {
+    Object.keys(item.balances).map((key) => {
+      total += total + Number(item.balances[key])
+    })
+  })
+  return total
+}
+
 store.subscribe(async ({ type, payload }, state) => {
   let currentState = _.cloneDeep(state)
   const { dispatch, getters } = store
-
-  function hasBalance(state) {
-    return state.accounts?.[state.activeWalletId]?.[state.activeNetwork].find((item) =>
-      Object.values(item.balances).find((balance) => Number(balance) > 0)
-    )
-  }
 
   switch (type) {
     case 'CREATE_WALLET':
@@ -219,22 +223,24 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       }
       break
-    case 'UPDATE_BALANCE': {
-      if (hasBalance(prevState)) {
-        console.log('has no balance')
-      } else if (hasBalance(currentState)) {
-        dispatch('trackAnalytics', {
-          event: 'User funded wallet',
+    case 'UPDATE_BALANCE':
+      // eslint-disable-next-line no-case-declarations
+      let prevBalance = getBalance(prevState)
+      // eslint-disable-next-line no-case-declarations
+      const newBalance = getBalance(currentState)
+      // Only trigger event for the first time when user funds their wallet, any subsequent balance updates are ignored.
+      if (prevBalance === 0 && newBalance > prevBalance) {
+        await dispatch('trackAnalytics', {
+          event: 'User has funds in wallet',
           properties: {
             category: 'Balance',
             action: 'Balance Updated',
-            label: 'User has funded wallet'
+            label: 'User already has funds in wallet'
           }
         })
       }
       prevState = currentState
       break
-    }
     case 'TOGGLE_EXPERIMENT':
       dispatch('trackAnalytics', {
         event: 'Experiment Toggle',
