@@ -19,7 +19,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { isERC20 } from '@/utils/asset'
+import { isERC20 } from '@liquality/wallet-core/dist/utils/asset'
 import AssetsChart from './AssetsChart.vue'
 import NavBar from '@/components/NavBar.vue'
 import InfoNotification from '@/components/InfoNotification.vue'

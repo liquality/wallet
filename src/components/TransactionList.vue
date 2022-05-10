@@ -40,15 +40,20 @@
 import ListItem from '@/components/ListItem'
 import TransactionStatus from '@/components/TransactionStatus'
 import {
-  getItemIcon,
   getStep,
   ACTIVITY_STATUSES,
   ACTIVITY_FILTER_TYPES,
   SEND_STATUS_FILTER_MAP
-} from '@/utils/history'
-import { prettyBalance, prettyFiatBalance, formatFiatUI } from '@/utils/coinFormatter'
-import moment from '@/utils/moment'
-import { mapState, mapGetters } from 'vuex'
+} from '@liquality/wallet-core/dist/utils/history'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
+import { getItemIcon } from '@/utils/history'
+import {
+  prettyBalance,
+  prettyFiatBalance,
+  formatFiatUI
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
+import moment from '@liquality/wallet-core/dist/utils/moment'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -57,8 +62,7 @@ export default {
   },
   props: ['transactions'],
   computed: {
-    ...mapState(['fiatRates']),
-    ...mapGetters(['swapProvider'])
+    ...mapState(['fiatRates'])
   },
   methods: {
     getItemIcon,
@@ -103,7 +107,7 @@ export default {
       if (item.type === 'SEND') {
         return SEND_STATUS_FILTER_MAP[item.status]
       } else if (item.type === 'SWAP') {
-        const swapProvider = this.swapProvider(item.network, item.provider)
+        const swapProvider = getSwapProvider(item.network, item.provider)
         return swapProvider.statuses[item.status].filterStatus
       }
     },
@@ -125,7 +129,7 @@ export default {
         case 'SEND':
           return 2
         case 'SWAP': {
-          const swapProvider = this.swapProvider(item.network, item.provider)
+          const swapProvider = getSwapProvider(item.network, item.provider)
           return swapProvider.totalSteps
         }
         default:

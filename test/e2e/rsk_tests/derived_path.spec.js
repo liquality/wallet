@@ -15,7 +15,6 @@ const passwordPage = new PasswordPage()
 const seedWordsPage = new SeedWordsPage()
 
 let browser, page
-const password = '123123123'
 
 describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
   beforeEach(async () => {
@@ -45,7 +44,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     await seedWordsPage.EnterSeedWords(page, seed1, seed5, seed12)
     await seedWordsPage.ClickContinueButton(page)
     // Set password & click next
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
 
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
@@ -125,7 +124,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
@@ -212,7 +211,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // continue
     await seedWordsPage.ClickContinueButton(page)
     // Set password
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWatsNewModal(page)
@@ -299,7 +298,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     console.log('Import wallet continue button has been clicked')
 
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
 
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)

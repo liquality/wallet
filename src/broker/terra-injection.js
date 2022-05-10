@@ -110,7 +110,7 @@ export const connectRemote = (remotePort, store) => {
         ]
 
         try {
-          const response = await store.dispatch('requestPermission', {
+          const response = await store.dispatch('app/requestPermission', {
             origin,
             data: {
               args,
@@ -162,13 +162,13 @@ export const connectRemote = (remotePort, store) => {
           const accountData = store.getters.accountsData.filter((e) => e.chain === 'terra')[0]
 
           if (!accountData?.addresses?.length) {
-            store.dispatch('requestOriginAccess', { origin, chain: 'terra' })
+            store.dispatch('app/requestOriginAccess', { origin, chain: 'terra' })
           } else {
             const [address] = accountData.addresses
             sendResponse('onConnect', { address })
           }
         } else {
-          store.dispatch('requestOriginAccess', { origin, chain: 'terra' })
+          store.dispatch('app/requestOriginAccess', { origin, chain: 'terra' })
         }
 
         break
