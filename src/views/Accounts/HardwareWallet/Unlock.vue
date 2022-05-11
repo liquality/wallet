@@ -5,17 +5,12 @@
         <div class="step-number">2</div>
         <div class="step-name">Unlock Account</div>
       </div>
-      <div class="step-text" v-if="selectedAsset && selectedAsset.chain === 'bitcoin'">
-        <div class="step-path">
-          <button
-            class="btn btn-link"
-            v-tooltip.top="{
-              content:
-                'If you don’t see your existing Ledger accounts below, switch path to Legacy vs Native Segwit'
-            }"
-          >
-            <InfoIcon class="info-icon" />
-          </button>
+      <div class="step-text" v-if="selectedAsset && selectedAsset.chain === 'BTC'">
+        <div>
+          If you don’t see your existing Ledger accounts below, switch path to Legacy vs Native
+          Segwit
+        </div>
+        <div class="step-path" v-if="selectedAsset && selectedAsset.chain === 'BTC'">
           <div class="btn-group" v-click-away="hideLedgerBitcoinOptions">
             <button
               class="btn dropdown-toggle custom-dropdown-toggle"
@@ -72,10 +67,7 @@
             <tbody>
               <tr
                 @click="selectAccount(item)"
-                :class="{
-                  disabled: item.exists,
-                  selected: selectedAccounts[item.account.address]
-                }"
+                :class="{ disabled: item.exists }"
                 v-for="item in accounts"
                 :key="item.account.address"
               >
@@ -91,15 +83,6 @@
                     {{ shortenAddress(item.account.address) }}
                   </div>
                 </td>
-                <td class="balance">
-                  <div>
-                    <div>
-                      {{ prettyBalance(item.balance, selectedAsset.name) }}
-                      {{ selectedAsset.name }}
-                    </div>
-                    <div class="fiat">${{ formatFiat(item.fiatBalance) }}</div>
-                  </div>
-                </td>
                 <td class="account-selected-mark">
                   <CheckRightIcon v-if="selectedAccounts[item.account.address]" />
                   <span v-else>&nbsp;</span>
@@ -108,7 +91,7 @@
             </tbody>
           </table>
           <div class="account-nav">
-            <button class="btn btn-link" @click="prev" :disabled="currentPage <= 1">
+            <button class="btn btn-link" @click="prev" :disabled="currentPage <= 0">
               Previous
             </button>
 
@@ -116,8 +99,7 @@
           </div>
         </div>
         <div v-else class="account-message">
-          We weren’t able to get a list of accounts. Please try again, check on the ledger if the
-          right app/asset was selected or cancel and choose a different asset.
+          {{ ledgerError && ledgerError.message ? ledgerError.message : 'No Accounts Found' }}
         </div>
       </div>
     </div>
@@ -148,17 +130,14 @@
 </template>
 <script>
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { LEDGER_BITCOIN_OPTIONS } from '@/utils/ledger-bridge-provider'
+import { LEDGER_BITCOIN_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
 import clickAway from '@/directives/clickAway'
 import { getAccountIcon } from '@/utils/accounts'
 import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import CheckRightIcon from '@/assets/icons/check.svg'
-import { shortenAddress } from '@/utils/address'
-import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
-import InfoIcon from '@/assets/icons/info.svg'
-
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 export default {
   directives: {
     clickAway
@@ -168,8 +147,7 @@ export default {
     CircleProgressBar,
     ChevronDownIcon,
     ChevronUpIcon,
-    CheckRightIcon,
-    InfoIcon
+    CheckRightIcon
   },
   props: [
     'loading',
@@ -190,8 +168,6 @@ export default {
     this.ledgerBitcoinOption = this.ledgerBitcoinOptions[0]
   },
   methods: {
-    prettyBalance,
-    formatFiat,
     getAccountIcon,
     shortenAddress,
     unlock() {
@@ -260,13 +236,11 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
 .account-nav {
   display: flex;
   justify-content: space-between;
 }
-
 .account-list {
   p {
     font-weight: normal;
@@ -278,7 +252,6 @@ export default {
       margin-right: 11px;
     }
   }
-
   .account-message {
     position: absolute;
     left: 0;
@@ -289,33 +262,19 @@ export default {
     justify-content: center;
     width: 100%;
     color: #1d1e21;
-    height: 120px;
+    height: 55px;
     background-color: rgba($color: #fff3bc, $alpha: 0.5);
     padding: 5px 20px 5px 20px;
     font-style: normal;
     font-weight: 300;
-    font-size: 14px;
+    font-size: 11px;
     line-height: 16px;
   }
-
   .accounts-table {
-    margin-bottom: 0.3rem;
-
     tr {
+      height: 35px;
       cursor: pointer;
-      &:hover,
-      &.selected {
-        background-color: #f0f7f9;
-        color: $color-text-primary;
-      }
     }
-
-    th,
-    td {
-      padding: 0.25rem;
-      vertical-align: middle;
-    }
-
     .account-index,
     .account-address {
       font-style: normal;
@@ -330,23 +289,6 @@ export default {
         height: 100%;
       }
     }
-
-    .balance {
-      div {
-        text-align: right;
-        display: flex;
-        width: 100%;
-        height: 100%;
-        flex-direction: column;
-        align-items: stretch;
-        justify-content: flex-end;
-
-        .fiat {
-          color: $color-text-muted;
-        }
-      }
-    }
-
     tr.disabled {
       cursor: default;
       .account-index,
@@ -354,13 +296,11 @@ export default {
         color: $color-text-muted;
       }
     }
-
     .account-index,
     .account-selected-mark,
     .account-address {
       text-align: center;
     }
-
     .account-address {
       text-align: left;
     }
@@ -372,9 +312,5 @@ export default {
       height: 9px;
     }
   }
-}
-
-.info-icon {
-  width: 20px;
 }
 </style>

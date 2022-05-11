@@ -33,18 +33,13 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar'
 import Connect from './Connect'
 import Unlock from './Unlock'
-import {
-  LEDGER_BITCOIN_OPTIONS,
-  LEDGER_OPTIONS,
-  createConnectSubscription
-} from '@/utils/ledger-bridge-provider'
+import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
 import { getAssetIcon } from '@/utils/asset'
-import cryptoassets from '@/utils/cryptoassets'
-import { getNextAccountColor } from '@/utils/accounts'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { getNextAccountColor } from '@liquality/wallet-core/dist/utils/accounts'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-
+import { BG_PREFIX } from '@/broker/utils'
 const LEDGER_PER_PAGE = 5
-
 export default {
   components: {
     NavBar,
@@ -92,32 +87,29 @@ export default {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        createConnectSubscription(() => {
-          this.bridgeModalOpen = false
-          this.connect({ asset, walletType, page })
+        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
+          if (
+            type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
+            payload.connected === true
+          ) {
+            this.bridgeModalOpen = false
+            await this.connect({ asset, walletType, page })
+            if (unsubscribe) {
+              unsubscribe()
+            }
+          }
         })
       }
     },
     async connect({ asset, walletType, page }) {
-      // connect to ledger
-      await this.trackAnalytics({
-        event: 'Connect Ledger button clicked',
-        properties: {
-          category: 'Connect Ledger',
-          asset: `${this.selectedAsset.name}`,
-          chain: `${this.selectedAsset.chain}`
-        }
-      })
       this.selectedAsset = asset
       this.loading = true
       this.ledgerError = null
       this.accounts = []
-
       try {
         if (asset) {
           const accountType = walletType || asset.types[0]
           let currentPage = page || 0
-
           if (currentPage <= 0) {
             currentPage = 1
           }
@@ -131,20 +123,10 @@ export default {
             numAccounts: LEDGER_PER_PAGE
           }
           this.currentStep = 'unlock'
-
           const accounts = await this.getLedgerAccounts(payload)
           if (accounts && accounts.length > 0) {
             this.accounts = accounts
             this.ledgerPage = currentPage
-            await this.trackAnalytics({
-              event: 'Ledger connected successfully',
-              properties: {
-                category: 'Connect Ledger',
-                asset: `${this.selectedAsset.name}`,
-                chain: `${this.selectedAsset.chain}`,
-                numberOfAccounts: accounts.length
-              }
-            })
           } else {
             this.ledgerError = { message: 'No accounts found' }
           }
@@ -155,27 +137,18 @@ export default {
           message: error.message || 'Error getting accounts'
         }
         console.error('error getting accounts', error)
-        await this.trackAnalytics({
-          event: 'HD Wallet Ledger error',
-          properties: {
-            category: 'Error getting accounts',
-            asset: `${this.selectedAsset.name}`,
-            chain: `${this.selectedAsset.chain}`,
-            error: [error.name, error.message, error.stack]
-          }
-        })
         this.loading = false
       }
     },
     async unlock({ walletType }) {
       if (this.selectedAsset) {
-        await this.addAccounts({ walletType })
+        await this.addAccount({ walletType })
         await this.trackAnalytics({
-          event: 'Ledger account added successfully',
+          event: 'Ledger Connect',
           properties: {
-            category: 'Connect Ledger',
-            asset: `${this.selectedAsset.name}`,
-            chain: `${this.selectedAsset.chain}`
+            category: 'Hardware Wallet',
+            action: 'Add Ledger Account',
+            label: `Asset ${this.selectedAsset.name}`
           }
         })
       }
@@ -185,61 +158,43 @@ export default {
       this.currentStep = 'token-management'
       this.selectedWalletType = walletType
     },
-    async addAccounts({ walletType }) {
+    async addAccount({ walletType }) {
       if (Object.keys(this.selectedAccounts).length > 0) {
         try {
           this.creatingAccount = true
           const { chain } = this.selectedAsset
           const assetKeys = this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
-
           const assets = assetKeys.filter((asset) => {
             return cryptoassets[asset].chain === this.selectedAsset.chain
           })
-
           const selectedAccounts = { ...this.selectedAccounts }
           for (const key in selectedAccounts) {
             const item = selectedAccounts[key]
-            const { publicKey, chainCode, derivationPath } = item
             const index = item.index + 1
-            const { address } = item.account
-
             const account = {
               name: `Ledger ${this.selectedAsset.name} ${index}`,
               alias: '',
               chain,
-              addresses: [address],
+              addresses: [item.account.address],
               assets,
               index: item.index,
               type: walletType || this.selectedAsset.types[0],
               enabled: true,
-              derivationPath,
-              color: getNextAccountColor(chain, item.index),
-              publicKey,
-              chainCode
+              derivationPath: item.account.derivationPath,
+              color: getNextAccountColor(chain, item.index)
             }
-
             await this.createAccount({
               network: this.activeNetwork,
               walletId: this.activeWalletId,
               account
             })
           }
-
           this.creatingAccount = false
           this.goToOverview()
         } catch (error) {
           this.ledgerError = { message: 'Error creating accounts' }
           console.error('error creating accounts', error)
           this.creatingAccount = false
-          this.trackAnalytics({
-            event: 'Ledger error creating accounts',
-            properties: {
-              category: 'Connect Ledger',
-              asset: `${this.selectedAsset.name}`,
-              chain: `${this.selectedAsset.chain}`,
-              error: [error.name, error.message, error.stack]
-            }
-          })
         }
       }
     },
@@ -263,9 +218,17 @@ export default {
           ...this.selectedAccounts
         }
       } else {
-        this.selectedAccounts = {
-          ...this.selectedAccounts,
-          [item.account.address]: item
+        // with BTC we can select more than one account
+        // with ETH we can select only one account
+        if (this.selectedAsset?.name === 'ETH') {
+          this.selectedAccounts = {
+            [item.account.address]: item
+          }
+        } else {
+          this.selectedAccounts = {
+            ...this.selectedAccounts,
+            [item.account.address]: item
+          }
         }
       }
     }
@@ -275,5 +238,4 @@ export default {
   }
 }
 </script>
-
 <style lang="scss"></style>

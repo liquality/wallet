@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import { broker } from '../store'
 
 import Splash from '@/views/Splash.vue'
 import OnboardingSetup from '@/views/Onboarding/OnboardingSetup.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
 import ImportWallet from '@/views/ImportWallet.vue'
-import UnlockWallet from '@/views/UnlockWallet.vue'
+import Open from '@/views/Open.vue'
 import Wallet from '@/views/Wallet/Wallet.vue'
 import Account from '@/views/Account.vue'
 import SwapDetails from '@/views/Details/SwapDetails.vue'
@@ -57,7 +58,7 @@ const routes = [
   },
   {
     path: '/open',
-    component: UnlockWallet
+    component: Open
   },
   {
     path: '/onboarding/setup/:seedphrase?',
@@ -285,5 +286,12 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+const waitForBrokerReady = async (_to, _from, next) => {
+  await broker.ready.promise
+  next()
+}
+
+router.beforeEach(waitForBrokerReady)
 
 export default router

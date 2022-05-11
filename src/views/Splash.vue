@@ -44,9 +44,11 @@ export default {
     Logo,
     NewWalletText
   },
-  computed: mapState(['keyUpdatedAt', 'termsAcceptedAt']),
-  created() {
-    if (this.keyUpdatedAt) {
+  computed: mapState(['keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
+  async created() {
+    if (this.unlockedAt) {
+      this.$router.replace('/wallet')
+    } else if (this.keyUpdatedAt) {
       this.$router.replace('/open')
     }
   }

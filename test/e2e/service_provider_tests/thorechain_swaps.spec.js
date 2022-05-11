@@ -4,9 +4,6 @@ const HomePage = require('../../pages/HomePage')
 const PasswordPage = require('../../pages/PasswordPage')
 const SwapPage = require('../../pages/SwapPage')
 const expect = require('chai').expect
-
-const https = require('https')
-
 const puppeteer = require('puppeteer')
 
 const testUtil = new TestUtil()
@@ -16,7 +13,6 @@ const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
 
 let browser, page
-const password = '123123123'
 
 describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
@@ -30,7 +26,7 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
@@ -39,12 +35,36 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
     await browser.close()
   })
 
-  it('BTC->ETH - Thorchain]', async () => {
+  it('BTC->ETH - Thorchain', async () => {
+    const fromAsset = 'BTC'
+    const toAsset = 'ETH'
+
     // Click on BTC then click on SWAP button
-    await overviewPage.SelectAssetFromOverview(page, 'BTC')
+    await overviewPage.SelectAssetFromOverview(page, fromAsset)
     await page.waitForSelector('#BTC_swap_button', { visible: true })
-    await page.click('#BTC_swap_button')
-    console.log('User clicked on BTC SWAP button')
+    await page.click(`#${fromAsset}_swap_button`)
+    console.log(`User clicked on ${fromAsset} SWAP button`)
+    // Select toAsset
+    await page.click('.swap-receive-main-icon')
+    let ethereumNetwork = await page.waitForSelector('#ETHEREUM', { timeout: 90000, visible: true })
+    await ethereumNetwork.click()
+    await page.waitForSelector(`#${toAsset}`, { visible: true })
+    await page.click(`#${toAsset}`)
+    console.log(`User selected ${toAsset} as 2nd pair for swap`)
+
+    try {
+      await page.waitForSelector(`#${toAsset}_swap_receive_pair_asset`, {
+        visible: true,
+        timeout: 10000
+      })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        expect(
+          e,
+          'BTC>ETH swap ETH should be automatically selected as to assert, something is wrong'
+        ).to.be.null
+      }
+    }
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     await swapPage.ClickOnMin(page)

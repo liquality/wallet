@@ -29,27 +29,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['initializeAnalytics'])
-  },
-  watch: {
-    unlockedAt: function (unlocked) {
-      if (
-        this.$route.path.startsWith('/permission') ||
-        this.$route.path.startsWith('/enable') ||
-        this.$route.path.startsWith('/request-unlock')
-      )
-        return
-      if (unlocked) this.$router.replace('/wallet')
-    },
-    activeNetwork: function () {
-      if (
-        ['Send', 'Receive', 'Swap', 'Account', 'SwapDetails', 'WalletActivity'].includes(
-          this.$route.name
-        )
-      ) {
-        this.$router.replace('/wallet')
-      }
-    }
+    ...mapActions('app', ['initializeAnalytics'])
   },
   async created() {
     await this.initializeAnalytics()

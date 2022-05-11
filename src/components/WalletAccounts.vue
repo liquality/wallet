@@ -110,13 +110,17 @@
 
 <script>
 import ListItem from '@/components/ListItem'
-import { prettyBalance, formatFiat, formatFiatUI } from '@/utils/coinFormatter'
+import {
+  prettyBalance,
+  formatFiat,
+  formatFiatUI
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import { getAccountIcon } from '@/utils/accounts'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
-import { shortenAddress } from '@/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 export default {
   components: {

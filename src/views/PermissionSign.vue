@@ -35,8 +35,9 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { shortenAddress } from '@/utils/address'
+import { getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 
@@ -67,7 +68,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyPermission']),
+    ...mapActions('app', ['replyPermission']),
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,

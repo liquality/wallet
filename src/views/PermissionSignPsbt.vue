@@ -61,8 +61,8 @@ import { Psbt } from 'bitcoinjs-lib'
 import { getAssetIcon } from '@/utils/asset'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { ChainNetworks } from '@/utils/networks'
-import { prettyBalance } from '@/utils/coinFormatter'
+import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
+import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 
 export default {
   components: {
@@ -78,7 +78,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyPermission']),
+    ...mapActions('app', ['replyPermission']),
     prettyBalance,
     getAssetIcon,
     async reply(allowed) {

@@ -16,10 +16,9 @@ const sendPage = new SendPage()
 const transactionDetailsPage = new TransactionDetailsPage()
 
 let browser, page
-const password = '123123123'
 
 // https://linear.app/liquality/issue/LIQ-358/exploratory-report-on-terra
-describe('Terra SEND["TESTNET", "PULL_REQUEST_TEST"]', async () => {
+describe('Terra SEND["TESTNET", "PULL_REQUEST_TEST","MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -31,7 +30,7 @@ describe('Terra SEND["TESTNET", "PULL_REQUEST_TEST"]', async () => {
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)

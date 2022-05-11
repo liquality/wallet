@@ -2,9 +2,12 @@ import 'setimmediate'
 import { random } from 'lodash-es'
 import store from './store'
 import { wait } from './store/utils'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
-import { prettyFiatBalance } from '@/utils/coinFormatter'
+import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import _ from 'lodash-es'
+
+let prevState = _.cloneDeep(store.state)
 
 function asyncLoop(fn, delay) {
   return wait(delay())
@@ -12,9 +15,30 @@ function asyncLoop(fn, delay) {
     .then(() => asyncLoop(fn, delay))
 }
 
+function getBalance(state) {
+  let total = 0
+  state.accounts?.[state.activeWalletId]?.[state.activeNetwork].map((item) => {
+    Object.keys(item.balances).map((key) => {
+      total += total + Number(item.balances[key])
+    })
+  })
+  return total
+}
+
 store.subscribe(async ({ type, payload }, state) => {
+  let currentState = _.cloneDeep(state)
   const { dispatch, getters } = store
+
   switch (type) {
+    case 'CREATE_WALLET':
+      dispatch('trackAnalytics', {
+        event: 'Create wallet',
+        properties: {
+          label: 'New wallet created'
+        }
+      })
+      break
+
     case 'CHANGE_ACTIVE_NETWORK':
       dispatch('initializeAddresses', {
         network: state.activeNetwork,
@@ -27,20 +51,32 @@ store.subscribe(async ({ type, payload }, state) => {
       dispatch('updateMarketData', { network: state.activeNetwork })
 
       dispatch('trackAnalytics', {
-        event: `Network Changed ${payload.currentNetwork} to ${payload.network}`
+        event: 'Change Active Network',
+        properties: {
+          action: 'User changed active network',
+          network: state.activeNetwork
+        }
       })
       break
-
+    case 'LOCK_WALLET':
+      dispatch('trackAnalytics', {
+        event: 'Wallet locked',
+        properties: {
+          category: 'Lock/Unlock',
+          action: 'Wallet Locked'
+        }
+      })
+      break
     case 'UNLOCK_WALLET':
       dispatch('trackAnalytics', {
         event: 'Unlock wallet',
         properties: {
           category: 'Lock/Unlock',
-          action: 'Wallet Unlocked'
+          action: 'Wallet Unlocked',
+          label: 'import with seed pharse'
         }
       })
-      dispatch('app/closeExistingBridgeWindow', { windowsId: store.state.usbBridgeWindowsId })
-      dispatch('checkAnalyticsOptIn')
+      dispatch('app/checkAnalyticsOptIn')
       dispatch('initializeAddresses', {
         network: state.activeNetwork,
         walletId: state.activeWalletId
@@ -115,22 +151,13 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       })
       break
-    case 'LOCK_WALLET':
-      dispatch('trackAnalytics', {
-        event: 'Wallet Lock',
-        properties: {
-          category: 'Lock/Unlock',
-          action: 'Wallet Locked'
-        }
-      })
-      break
     case 'ADD_EXTERNAL_CONNECTION':
       dispatch('trackAnalytics', {
         event: 'Connect to Dapps',
         properties: {
           category: 'Dapps',
           action: 'Dapp Injected',
-          label: `Connect to ${payload.origin} (${payload.chain})`,
+          label: `Connect to ${payload.origin} ${payload.chain}`,
           dappOrigin: `${payload.origin}`,
           chain: `${payload.chain}`
         }
@@ -147,8 +174,8 @@ store.subscribe(async ({ type, payload }, state) => {
           customTokenSymbol: `${payload.customToken.symbol}`,
           label: [
             `${payload.customToken.name}`,
-            `(${payload.customToken.chain})`,
-            `(${payload.customToken.symbol})`
+            `${payload.customToken.chain}`,
+            `${payload.customToken.symbol}`
           ]
         }
       })
@@ -159,10 +186,8 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Settings',
           action: 'Custom Token Removed',
-          customTokenName: `${payload.customToken.name}`,
-          customTokenChain: `${payload.customToken.chain}`,
-          customTokenSymbol: `${payload.customToken.symbol}`,
-          label: `${payload.customToken.symbol})`
+          customTokenSymbol: `${payload.symbol}`,
+          label: `${payload.symbol}`
         }
       })
       break
@@ -178,7 +203,8 @@ store.subscribe(async ({ type, payload }, state) => {
               action: 'Swap Status changed',
               swapProvider: `${item.provider}`,
               label: `${item.from} to ${item.to}`,
-              swapStatus: `${payload.updates.status}`
+              swapStatus: `${payload.updates.status}`,
+              orderId: `${item.orderId}`
             }
           })
         }
@@ -197,12 +223,40 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       }
       break
-    case 'SETUP_WALLET':
+    case 'UPDATE_BALANCE':
+      // eslint-disable-next-line no-case-declarations
+      let prevBalance = getBalance(prevState)
+      // eslint-disable-next-line no-case-declarations
+      const newBalance = getBalance(currentState)
+      // Only trigger event for the first time when user funds their wallet, any subsequent balance updates are ignored.
+      if (prevBalance === 0 && newBalance > prevBalance) {
+        await dispatch('trackAnalytics', {
+          event: 'User has funds in wallet',
+          properties: {
+            category: 'Balance',
+            action: 'Balance Updated',
+            label: 'User already has funds in wallet'
+          }
+        })
+      }
+      prevState = currentState
+      break
+    case 'TOGGLE_EXPERIMENT':
       dispatch('trackAnalytics', {
-        event: 'Onboarding',
+        event: 'Experiment Toggle',
         properties: {
-          category: 'Onboarding',
-          action: 'User Onboarded'
+          category: 'Experiments',
+          action: 'Experiment Toggle',
+          label: `${payload.name}`
+        }
+      })
+      break
+    case 'CHANGE_PASSWORD':
+      dispatch('trackAnalytics', {
+        event: 'Change Password',
+        properties: {
+          category: 'Settings',
+          action: 'Change Password'
         }
       })
       break

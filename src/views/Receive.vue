@@ -71,9 +71,8 @@ import NavBar from '@/components/NavBar'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
-import cryptoassets from '@/utils/cryptoassets'
-import { chains, ChainId } from '@liquality/cryptoassets'
-
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 export default {
   components: {
     NavBar,
@@ -168,11 +167,7 @@ export default {
     }
   },
   async created() {
-    if (
-      this.account &&
-      this.account?.type.includes('ledger') &&
-      this.account?.chain !== ChainId.Bitcoin
-    ) {
+    if (this.account && this.account.type.includes('ledger')) {
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
         this.account.addresses[0],
         this.activeNetwork
@@ -187,9 +182,7 @@ export default {
       const chainId = cryptoassets[this.asset]?.chain
       this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
     }
-
     const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')
-
     QRCode.toString(
       uri,
       {
@@ -198,7 +191,6 @@ export default {
       },
       (err, svg) => {
         if (err) throw err
-
         this.qrcode = svg
       }
     )
@@ -232,27 +224,22 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
 .receive {
   &_asset {
     padding-bottom: 6px;
   }
-
   &_message {
     font-weight: bold;
     margin-top: 26px;
   }
-
   &_qr {
     margin: 25px auto 0 auto;
     width: 196px;
   }
-
   &_address {
     font-size: 0.7rem;
   }
-
   .testnet_message {
     margin-top: 18px;
     font-size: $font-size-tiny;

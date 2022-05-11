@@ -5,7 +5,9 @@ import Background from './Background'
 import Foreground from './Foreground'
 import { isBackgroundScript } from './utils'
 import Storage from './Storage'
-import { isMigrationNeeded, processMigrations } from '../store/migrations'
+import { migrations } from '@liquality/wallet-core'
+
+const { isMigrationNeeded, processMigrations } = migrations
 
 const Broker = (state) => {
   if (isBackgroundScript(window)) {

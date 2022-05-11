@@ -150,13 +150,11 @@
             <td class="text-muted text-left small-12">Counter-party</td>
             <td class="text-break">{{ item.agent }}</td>
           </tr>
-          <tr v-if="orderLink">
+          <tr v-if="item.orderId">
             <td class="text-muted text-left small-12">Order ID</td>
-            <td id="swap_details_order_id">
-              <a :href="orderLink" id="order_id_href_link" rel="noopener" target="_blank">{{
-                item.id
-              }}</a>
-              <CopyIcon class="copy-icon" @click="copy(item.id)" />
+            <td id="swap_details_order_id" class="text-break">
+              {{ item.orderId }}
+              <CopyIcon class="copy-icon" @click="copy(item.orderId)" />
             </td>
           </tr>
           <tr>
@@ -319,28 +317,29 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
-import moment from '@/utils/moment'
-import cryptoassets from '@/utils/cryptoassets'
+import moment from '@liquality/wallet-core/dist/utils/moment'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import { isObject } from 'lodash-es'
 
-import { prettyBalance } from '@/utils/coinFormatter'
-import { getStep } from '@/utils/history'
+import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { getStep } from '@liquality/wallet-core/dist/utils/history'
 import {
   isERC20,
   isEthereumChain,
   getNativeAsset,
   getTransactionExplorerLink,
   getAddressExplorerLink
-} from '@/utils/asset'
+} from '@liquality/wallet-core/dist/utils/asset'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
-import { getSwapProviderConfig } from '@/utils/swaps'
-import { calculateQuoteRate } from '@/utils/quotes'
-import { shortenAddress } from '@/utils/address'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
+import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 const ACTIONS_TERMS = {
   lock: {
@@ -401,7 +400,7 @@ export default {
   },
   props: ['id', 'retrySwap'],
   computed: {
-    ...mapGetters(['client', 'accountItem', 'swapProvider']),
+    ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
@@ -428,7 +427,7 @@ export default {
       return chains[chain].fees.unit
     },
     timelineDiagramSteps() {
-      const swapProvider = this.swapProvider(this.item.network, this.item.provider)
+      const swapProvider = getSwapProvider(this.item.network, this.item.provider)
       return swapProvider.timelineDiagramSteps
     }
   },

@@ -110,21 +110,25 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chainToTokenAddressMap, ChainId } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import { prettyBalance, prettyFiatBalance, formatFiatUI } from '@/utils/coinFormatter'
+import {
+  prettyBalance,
+  prettyFiatBalance,
+  formatFiatUI
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
 import {
   getNativeAsset,
   getAssetColorStyle,
   tokenDetailProviders,
   estimateGas
-} from '@/utils/asset'
-import { parseTokenTx } from '@/utils/parseTokenTx'
+} from '@liquality/wallet-core/dist/utils/asset'
+import { parseTokenTx } from '@liquality/wallet-core/dist/utils/parseTokenTx'
 
-import { shortenAddress } from '@/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
@@ -165,7 +169,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyPermission', 'updateFees']),
+    ...mapActions(['updateFees']),
+    ...mapActions('app', ['replyPermission']),
     prettyBalance,
     prettyFiatBalance,
     formatFiatUI,

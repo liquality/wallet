@@ -13,8 +13,6 @@ const seedWordsPage = new SeedWordsPage()
 const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
-const password = '123123123'
-
 let bridgeUrl = 'https://bridge.sovryn.app/'
 let sovrynUrl = 'https://live.sovryn.app/'
 
@@ -39,7 +37,7 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
     await seedWordsPage.EnterSeedWords(page, seed1, seed5, seed12)
     await seedWordsPage.ClickContinueButton(page)
     // Set password & click next
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)

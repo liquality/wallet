@@ -92,17 +92,18 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setupWallet', 'createWallet', 'unlockWallet']),
+    ...mapActions(['createWallet', 'unlockWallet']),
     async confirmMnemonic() {
       this.currentStep = 'congrats'
-      await this.setupWallet({ key: this.password })
       await this.createWallet({
         key: this.password,
         mnemonic: this.mnemonic,
         imported: this.imported
       }) // mnemonic prop can be null to generate new seed
-      setTimeout(() => {
-        this.unlockWallet({ key: this.password })
+      // Show confetti for a while
+      setTimeout(async () => {
+        await this.unlockWallet({ key: this.password })
+        await this.$router.replace('/wallet')
       }, 1650)
     },
     pushToConfirm() {

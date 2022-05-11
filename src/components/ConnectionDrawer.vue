@@ -43,8 +43,8 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import { isEthereumChain, chains } from '@liquality/cryptoassets'
-import { shortenAddress } from '@/utils/address'
-import buildConfig from '@/build.config'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { buildConfig } from '@liquality/wallet-core'
 
 import clickAway from '@/directives/clickAway'
 import TickBlue from '@/assets/icons/tick_blue.svg'
@@ -100,10 +100,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setEthereumInjectionChain', 'addExternalConnection', 'toggleInjection']),
-    toggleManageDappConnection() {
-      this.toggleInjection()
-    },
+    ...mapActions(['setEthereumInjectionChain', 'addExternalConnection']),
     updateInjectEthereumChain(chain) {
       this.setEthereumInjectionChain({ chain })
       this.trackAnalytics({
