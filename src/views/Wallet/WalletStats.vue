@@ -35,6 +35,14 @@
           <ReceiveIcon />
           Receive
         </router-link>
+        <router-link
+          to="/assets/earn"
+          class="wallet-actions-item receive-action"
+          id="receive_action"
+        >
+          <ReceiveIcon />
+          Earn
+        </router-link>
       </div>
     </div>
   </div>

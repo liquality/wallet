@@ -29,7 +29,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions('app', ['initializeAnalytics'])
+    ...mapActions('app', ['initializeAnalytics']),
+    ...mapActions(['getApy']),
+    async _getApy() {
+      const apy = this.getApy('mainnet', 'UST')
+      console.log('apy', apy)
+    }
   },
   async created() {
     await this.initializeAnalytics()

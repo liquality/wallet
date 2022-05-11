@@ -109,6 +109,8 @@ import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { mapActions } from 'vuex'
+import { getEarnProvider } from '@liquality/wallet-core/dist/factory/earnProvider'
 
 export default {
   components: {
@@ -143,12 +145,19 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['getApy', 'getDepositedAmount']),
     getAccountIcon,
     getAssetIcon,
     prettyBalance,
     formatFiat,
     formatFiatUI,
     shortenAddress,
+    async _getApy() {
+      const apy = this.getApy({ network: 'mainnet', asset: 'UST' })
+      const depositedAmount = this.getDepositedAmount({ network: 'mainnet', asset: 'UST' })
+      console.log('apy', apy)
+      console.log('depositedAmount', depositedAmount)
+    },
     getAssetName(asset) {
       return cryptoassets[asset] ? cryptoassets[asset].name : asset
     },
@@ -165,6 +174,11 @@ export default {
     shouldExpandAccount(account) {
       return this.expandedAccounts.includes(account.id) || this.search
     }
+  },
+  async created() {
+    const earnProvider = getEarnProvider('mainnet', 'UST')
+    console.log(earnProvider)
+    await this._getApy()
   }
 }
 </script>

@@ -14,6 +14,7 @@ import TransactionDetails from '@/views/Details/TransactionDetails.vue'
 import Send from '@/views/Send/Send.vue'
 import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap/Swap.vue'
+import Earn from '@/views/Earn/Earn.vue'
 
 import Settings from '@/views/Settings'
 import Experiments from '@/views/Experiments'
@@ -162,6 +163,12 @@ const routes = [
     name: 'Swap',
     path: '/accounts/:accountId/:routeAsset/swap',
     component: Swap,
+    props: true
+  },
+  {
+    name: 'Earn',
+    path: '/accounts/:accountId/:asset/earn',
+    component: Earn,
     props: true
   },
 
