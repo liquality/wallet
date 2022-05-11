@@ -33,6 +33,7 @@ import WalletNFTs from '@/views/Wallet/WalletNFTs.vue'
 import SendNFT from '@/views/Send/SendNFT.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import NFTActivity from '@/views/Wallet/NFTActivity.vue'
+import NFTTransactionDetails from '@/views/Details/NFTTransactionDetails.vue'
 import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
@@ -126,6 +127,12 @@ const routes = [
     path: '/send-nft',
     component: SendNFT,
     name: 'SendNFT'
+  },
+  {
+    path: '/nft-transaction-details/:txid',
+    component: NFTTransactionDetails,
+    name: 'NFTTransactionDetails',
+    props: true
   },
   // Details
   {

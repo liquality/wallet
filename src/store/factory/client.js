@@ -135,7 +135,7 @@ function createEthereumClient(
   } else {
     ethClient.addProvider(
       new EthereumJsWalletProvider({
-        network: ethereumNetwork,
+        network: { ...ethereumNetwork, chainId: 4 },
         mnemonic,
         derivationPath,
         hardfork

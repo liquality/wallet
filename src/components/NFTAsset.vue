@@ -63,7 +63,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .nft-image {
   width: var(--img-width);
   border-radius: 10px;

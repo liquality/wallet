@@ -141,7 +141,6 @@ export default {
           cryptoassets[asset].name.toUpperCase().includes(search)
         )
       }
-
       return this.accounts
         .filter((account) => account.assets.find(assetComparator))
         .map((account) => ({
@@ -168,6 +167,7 @@ export default {
       }
     },
     selectItem(account, asset) {
+      console.log('🚀 ~ file: WalletAccounts.vue ~ line 173 ~ selectItem ~ account', account)
       this.$emit('item-selected', { account, asset })
     },
     shouldExpandAccount(account) {

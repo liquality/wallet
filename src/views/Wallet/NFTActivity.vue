@@ -62,11 +62,18 @@ export default {
       activeTab: 'nfts'
     }
   },
-  props: ['accountId', 'asset'],
+  props: ['asset'],
   computed: {
     ...mapGetters(['activity', 'accountItem']),
     ...mapState(['activeNetwork', 'history', 'nftAssetsNumber']),
+    accountId() {
+      return this.$route.params.accountId
+    },
     account() {
+      console.log(
+        '🚀 ~ file: NFTActivity.vue ~ line 74 ~ account ~  this.accountItem(this.accountId',
+        this.accountItem(this.accountId)
+      )
       return this.accountItem(this.accountId)
     },
     assetHistory() {

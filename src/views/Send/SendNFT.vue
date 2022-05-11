@@ -1,53 +1,510 @@
 <template>
   <div class="account-container">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account-title">Select NFTs</span>
+    <NavBar
+      showMenu="true"
+      showBack="true"
+      backPath="/wallet/nfts"
+      :backLabel="activeView === 'selectAsset' ? 'Overview' : 'Back'"
+    >
+      <span class="account-title">{{ title }}</span>
     </NavBar>
-    <div class="account-content">
-      <div>
-        <Accordion v-for="assets in nftAssets" :key="assets.id">
-          <h3 slot="header">{{ key }}</h3>
-          <p>Paragraph</p>
-        </Accordion>
+    <template v-if="activeView === 'selectAsset'">
+      <div class="account-content mx-3">
+        <div>
+          <Accordion v-for="(assets, key) in nftAssets" :key="assets.id">
+            <h3 slot="header">{{ key }} ({{ assets.length }})</h3>
+            <div class="nft-assets__container__images">
+              <div
+                class="nft-image"
+                style="--img-width: 110px"
+                v-for="asset in assets"
+                :key="asset.id"
+                @click="selectNFT(asset)"
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    x="0.5"
+                    y="0.5"
+                    width="11"
+                    height="11"
+                    rx="5.5"
+                    :fill="selectedNFT && selectedNFT.id === asset.id ? '#646F85' : '#FFFFFF'"
+                    stroke="#646F85"
+                  />
+                </svg>
+                <img :src="asset.image_thumbnail_url" alt="" />
+              </div>
+            </div>
+          </Accordion>
+        </div>
       </div>
-    </div>
+      <div class="button-group mx-3">
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="cancel">Cancel</button>
+        <button
+          class="btn btn-primary btn-lg btn-icon"
+          @click="next('selectedAsset')"
+          :disabled="!selectedNFT"
+        >
+          <!-- <SpinnerIcon class="btn-loading" v-if="loading" /> -->
+          Next
+        </button>
+      </div>
+    </template>
+    <template v-else-if="activeView === 'selectedAsset'">
+      <div class="selected-nft-asset mx-3 mt-4 h-100">
+        <div class="d-flex flex-column justify-content-between h-100">
+          <div class="mb-3">
+            <h3 class="text-uppercase">Selected Asset</h3>
+            <div class="selected-nft-asset__image">
+              <div class="nft-image mr-2" style="--img-width: 110px">
+                <img :src="selectedNFT.image_thumbnail_url" alt="" />
+              </div>
+              <div>
+                <h3>{{ selectedNFT.name }}</h3>
+                <p>{{ selectedNFT.collection.name }}</p>
+                <p>#{{ nftNumber }}</p>
+              </div>
+            </div>
+            <div class="selected-nft-asset__send-details">
+              <h3 class="text-uppercase">Send From</h3>
+              <div class="d-flex">
+                <img :src="getAssetIcon('ETH')" class="asset-icon mr-3" />
+                <div>
+                  <div class="d-flex">
+                    <span class="mr-3">{{ 'ETH' }}</span>
+                    <div class="mr-3 d-flex align-items-center">
+                      <span class="mr-1">{{ shortenAddress(fromAddress) }}</span>
+                      <span><CopyIcon class="copy-icon" @click="copy(fromAddress)" /></span>
+                    </div>
+                  </div>
+                  <div class="text-muted">Available {{ balance }} ETH</div>
+                </div>
+              </div>
+              <div class="form-group mt-4">
+                <label for="address" class="text-uppercase font-bold">Send to</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    :class="{ 'is-invalid': address && addressError }"
+                    v-model="address"
+                    class="form-control form-control-sm"
+                    id="address"
+                    placeholder="Address"
+                    autocomplete="off"
+                    required
+                  />
+                </div>
+                <small
+                  v-if="address && addressError"
+                  class="text-danger form-text text-right"
+                  id="address_format_error"
+                  >{{ addressError }}</small
+                >
+              </div>
+            </div>
+          </div>
+          <DetailsContainer v-if="feesAvailable">
+            <template v-slot:header>
+              <div class="network-header-container">
+                <span class="details-title" id="send_network_speed"> Network Speed/Fee </span>
+                <span class="text-muted" id="send_network_speed_avg_fee">
+                  ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
+                </span>
+              </div>
+            </template>
+            <template v-slot:content>
+              <ul class="selectors">
+                <li>
+                  <div class="send_fees">
+                    <span class="selectors-asset">{{ assetChain }}</span>
+                    <div class="custom-fees" v-if="customFee">
+                      <span v-if="prettyFee.eq(0)"
+                        >{{ currentChainAssetFee }} {{ currentChainUnit }}</span
+                      >
+                      <span v-else>{{ prettyFee }} {{ assetChain }}</span> /
+                      {{ totalFeeInFiat }} USD
+                      <button class="btn btn-link" @click="resetCustomFee">Reset</button>
+                    </div>
+                    <FeeSelector
+                      v-else
+                      :asset="asset"
+                      v-model="selectedFee"
+                      :fees="assetFees"
+                      :totalFees="sendFees"
+                      :fiatRates="fiatRates"
+                      @custom-selected="onCustomFeeSelected"
+                    />
+                  </div>
+                </li>
+              </ul>
+            </template>
+          </DetailsContainer>
+          <div class="button-group">
+            <button class="btn btn-light btn-outline-primary btn-lg" @click="cancel">Cancel</button>
+            <button
+              class="btn btn-primary btn-lg btn-icon"
+              @click="next('review')"
+              :disabled="!address && !isValidAddress"
+            >
+              <!-- <SpinnerIcon class="btn-loading" v-if="loading" /> -->
+              Review
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template class="send" v-else-if="activeView === 'custom-fees' && !isEIP1559Fees">
+      <CustomFees
+        @apply="applyCustomFee"
+        @update="setCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="assetChain"
+        :selected-fee="selectedFee"
+        :fees="assetFees"
+        :totalFees="sendFees"
+        :fiatRates="fiatRates"
+      />
+    </template>
+
+    <template class="send" v-else-if="activeView === 'custom-fees' && isEIP1559Fees">
+      <CustomFeesEIP1559
+        @apply="applyCustomFee"
+        @update="setCustomFee"
+        @cancel="cancelCustomFee"
+        :asset="assetChain"
+        :selected-fee="selectedFee"
+        :fees="assetFees"
+        :totalFees="sendFees"
+        :fiatRates="fiatRates"
+        :padLabels="true"
+      />
+    </template>
+    <template v-else-if="activeView === 'review'">
+      <div class="selected-nft-asset mx-3 mt-4 h-100">
+        <div class="d-flex flex-column justify-content-between h-100">
+          <div>
+            <h3 class="text-uppercase">Selected Asset</h3>
+            <div class="selected-nft-asset__image">
+              <div class="nft-image mr-2" style="--img-width: 110px">
+                <img :src="selectedNFT.image_thumbnail_url" alt="" />
+              </div>
+              <div>
+                <h3>{{ selectedNFT.name }}</h3>
+                <p>{{ selectedNFT.collection.name }}</p>
+                <p>#{{ nftNumber }}</p>
+              </div>
+            </div>
+            <div class="selected-nft-asset__send-details">
+              <h3 class="text-uppercase">Network speed/fee</h3>
+              <div class="d-flex justify-content-between">
+                <p>~0.004325 ETH</p>
+                <p>$ 13.54</p>
+              </div>
+              <div class="form-group mt-4">
+                <h3 for="address" class="text-uppercase text-muted">Send to</h3>
+                <p class="address">
+                  <span class="font-weight-bold">{{ startAddress }}</span
+                  >{{ middleAddressPart }}<span class="font-weight-bold">{{ endAddress }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="button-group">
+            <button class="btn btn-light btn-outline-primary btn-lg" @click="next('selectedAsset')">
+              Edit
+            </button>
+            <button class="btn btn-primary btn-lg btn-icon" @click="sendNFT">Send NFT</button>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
 import { applyActivityFilters } from '@/utils/history'
 import amplitude from 'amplitude-js'
-import { getAssetIcon } from '@/utils/asset'
+import Accordion from '@/components/Accordion.vue'
+import { chains, ChainId } from '@liquality/cryptoassets'
+import { shortenAddress } from '@/utils/address'
+import cryptoassets from '@/utils/cryptoassets'
+import CopyIcon from '@/assets/icons/copy.svg'
+import { getSendFee, getFeeLabel } from '@/utils/fees'
+import { getAssetIcon, getFeeAsset, getNativeAsset, estimateGas } from '@/utils/asset'
+import FeeSelector from '@/components/FeeSelector'
+import CustomFees from '@/components/CustomFees'
+import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
+import DetailsContainer from '@/components/DetailsContainer'
+import { formatFiat, formatFiatUI, prettyBalance } from '@/utils/coinFormatter'
+import _ from 'lodash'
+import BN from 'bignumber.js'
 
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
 export default {
   components: {
-    NavBar
+    NavBar,
+    Accordion,
+    CopyIcon,
+    FeeSelector,
+    CustomFees,
+    CustomFeesEIP1559,
+    DetailsContainer
   },
   data() {
     return {
+      sendFees: {},
+      maxSendFees: {},
+      eip1559fees: {},
       activityData: [],
-      activeTab: 'nfts'
+      activeView: 'selectAsset',
+      selectedNFT: null,
+      loading: false,
+      customFeeAssetSelected: null,
+      customFee: null,
+      address: '',
+      selectedFee: null,
+      asset: 'ETH'
     }
   },
-  props: ['accountId', 'asset'],
+  // props: ['asset'],
   computed: {
-    ...mapGetters(['activity', 'accountItem']),
-    ...mapState(['activeNetwork', 'history', 'nftAssetsNumber', 'nftAssets']),
+    ...mapGetters(['activity', 'accountItem', 'accountsData']),
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId',
+      'history',
+      'nftAssetsNumber',
+      'nftAssets',
+      'externalConnections',
+      'fees',
+      'fiatRates'
+    ]),
+    title() {
+      switch (this.activeView) {
+        case 'selectAsset':
+          return 'Select NFT'
+        case 'selectedAsset':
+          return 'Send NFT'
+        case 'custom-fees':
+          return 'Custom Fees'
+        case 'review':
+          return 'Review Send NFT'
+
+        default:
+          return ''
+      }
+    },
     account() {
-      return this.accountItem(this.accountId)
+      return this.accountsData.filter((account) => account.chain === 'ethereum')[0]
     },
     assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
+    },
+    nftNumber() {
+      const number = this.selectedNFT.external_link.split('/')
+      return number[number.length - 1]
+    },
+    balance() {
+      const balance = this.account.balances?.['ETH'] || 0
+      return prettyBalance(balance, 'ETH')
+    },
+    fromAddress() {
+      return chains['ethereum']?.formatAddress(this.account.addresses[0], this.activeNetwork)
+    },
+    isValidAddress() {
+      return chains['ethereum'].isValidAddress(this.fromAddress, this.activeNetwork)
+    },
+    addressError() {
+      if (!this.isValidAddress) {
+        return 'Wrong format. Please check the address.'
+      }
+      return null
+    },
+    selectedFeeLabel() {
+      return getFeeLabel(this.selectedFee)
+    },
+    currentFee() {
+      const fees = this.sendFees
+      return this.selectedFee in fees ? fees[this.selectedFee] : BN(0)
+    },
+    prettyFee() {
+      console.log(
+        '🚀 ~ file: SendNFT.vue ~ line 341 ~ prettyFee ~ this.currentFee',
+        this.currentFee
+      )
+      return this.currentFee.dp(6)
+    },
+    assetChain() {
+      console.log(
+        '🚀 ~ file: SendNFT.vue ~ line 297 ~ assetChain ~ getFeeAsset(this.asset)',
+        getFeeAsset(this.asset)
+      )
+      console.log(
+        '🚀 ~ file: SendNFT.vue ~ line 301 ~ assetChain ~ getNativeAsset(this.asset)',
+        getNativeAsset(this.asset)
+      )
+      return getFeeAsset(this.asset) || getNativeAsset(this.asset)
+    },
+    assetFees() {
+      const assetFees = {}
+      if (this.customFee) {
+        assetFees.custom = { fee: this.customFee }
+      }
+
+      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      console.log('🚀 ~ file: SendNFT.vue ~ line 305 ~ assetFees ~ fees', fees)
+      console.log('🚀 ~ file: SendNFT.vue ~ line 305 ~ assetFees ~ this.fees', this.fees)
+      if (fees) {
+        Object.assign(assetFees, fees)
+      }
+      console.log('🚀 ~ file: SendNFT.vue ~ line 307 ~ assetFees ~ assetFees', assetFees)
+      return assetFees
+    },
+    feesAvailable() {
+      return this.assetFees && Object.keys(this.assetFees).length
+    },
+    isEIP1559Fees() {
+      return cryptoassets[this.asset].chain === ChainId.Ethereum
+    },
+    showMemoInput() {
+      return cryptoassets[this.asset].chain === ChainId.Terra
+    },
+    memoData() {
+      return {
+        memo: this.memo
+      }
+    },
+    startAddress() {
+      return this.address.slice(0, 6)
+    },
+    middleAddressPart() {
+      return this.address.substring(6, this.address.length - 4)
+    },
+    endAddress() {
+      return this.address.slice(this.address.length - 4)
     }
   },
   methods: {
+    ...mapActions(['sendNFTTransaction']),
     getAssetIcon,
+    shortenAddress,
+    formatFiat,
+    formatFiatUI,
+    prettyBalance,
+    getFeeAsset,
+    getSendFee,
+    getFeeLabel,
+    getNativeAsset,
+    estimateGas,
     applyFilters(filters) {
       this.activityData = applyActivityFilters([...this.assetHistory], filters)
+    },
+    selectNFT(asset) {
+      console.log('asset>>>', asset)
+      console.log('account>>>', this.account)
+      this.selectedNFT = asset
+    },
+    cancel() {
+      this.$router.push({
+        path: '/wallet/nfts'
+      })
+    },
+    next(view) {
+      this.activeView = view
+    },
+    setActiveView(view) {
+      if (this.activeView === 'selectAsset') {
+        return '/wallet/nfts'
+      }
+      this.activeView = view
+    },
+    cancelCustomFee() {
+      this.activeView = 'selectedAsset'
+      this.selectedFee = 'average'
+    },
+    setCustomFee: _.debounce(async function ({ fee }) {
+      this.customFee = fee
+      this.updateSendFees(this.amount)
+    }, 800),
+    applyCustomFee({ fee }) {
+      const presetFee = Object.entries(this.assetFees).find(
+        ([speed, speedFee]) =>
+          speed !== 'custom' &&
+          (speedFee.fee === fee ||
+            (fee.maxPriorityFeePerGas &&
+              speedFee.fee.maxPriorityFeePerGas === fee.maxPriorityFeePerGas &&
+              speedFee.fee.maxFeePerGas === fee.maxFeePerGas))
+      )
+
+      if (presetFee) {
+        const [speed] = presetFee
+        this.selectedFee = speed
+        this.customFee = null
+      } else {
+        this.updateMaxSendFees()
+        this.updateSendFees(this.amount)
+        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.selectedFee = 'custom'
+      }
+      this.activeView = 'selectedAsset'
+    },
+    onCustomFeeSelected() {
+      this.activeView = 'custom-fees'
+    },
+    resetCustomFee() {
+      this.customFee = null
+      this.selectedFee = 'average'
+    },
+    async _updateSendFees(amount) {
+      const getMax = amount === undefined
+      if (this.feesAvailable) {
+        const sendFees = {}
+
+        for (const [speed, fee] of Object.entries(this.assetFees)) {
+          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+          sendFees[speed] = getSendFee(this.assetChain, feePrice)
+        }
+
+        if (getMax) {
+          this.maxSendFees = sendFees
+        } else {
+          this.sendFees = sendFees
+        }
+      }
+    },
+    updateSendFees: _.debounce(async function (amount) {
+      await this._updateSendFees(amount)
+    }, 800),
+    async updateMaxSendFees() {
+      await this._updateSendFees()
+    },
+    async sendNFT() {
+      this.loading = true
+      try {
+        const response = await this.sendNFTTransaction({
+          contract: this.selectedNFT.asset_contract.address,
+          receiver: this.address,
+          tokenIDs: [this.selectedNFT.token_id],
+          values: [],
+          data: '',
+          fee: this.selectedFee
+        })
+        console.log('🚀 ~ file: SendNFT.vue ~ line 397 ~ sendNFT ~ response', response)
+        this.$router.replace({
+          path: `/nft-transaction-details/${this.selectedNFT.token_id}`
+        })
+      } catch (error) {
+        console.log('error>>>', error)
+      }
     }
   },
   watch: {
@@ -74,82 +531,38 @@ export default {
     text-align: center;
     position: relative;
   }
-
-  &_balance {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  &_actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-
-    &_button {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      width: 70px;
-      border: 0;
-      cursor: pointer;
-      color: $color-text-secondary;
-      background: none;
-      font-weight: 600;
-      font-size: 13px;
-
-      &_wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 44px;
-        height: 44px;
-        background: #ffffff;
-        border-radius: 50%;
-        margin-bottom: 4px;
-      }
-
-      &_icon {
-        width: 16px;
-        height: 16px;
-      }
-
-      &_swap {
-        height: 30px;
-      }
-    }
-  }
-
-  &_transactions {
-    flex: 1;
-    flex-basis: 0;
-    overflow-y: scroll;
-    -ms-overflow-style: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
   button:disabled {
     opacity: 0.5;
     cursor: auto;
   }
 }
-.nav-item {
-  width: 50%;
+.selected-nft-asset {
+  h3 {
+    font-size: 12px;
+  }
+  &__send-details {
+    margin-top: 23px;
+  }
+  &__image {
+    display: flex;
+    align-items: center;
 
-  .nav-link {
-    cursor: pointer;
-    &.active,
-    &:hover {
-      color: #000d35 !important;
-      font-weight: 600;
-      border: none !important;
-      border-bottom: 1px solid #1d1e21 !important;
+    h3 {
+      font-size: 20px;
     }
+
+    p {
+      font-size: 16px;
+    }
+
+    h3,
+    p {
+      margin: 0;
+    }
+  }
+
+  .input-group {
+    border-bottom: 1px solid #2cd2cf;
   }
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
   <div class="accordion">
     <div class="accordion-header" @click="toggle">
-      <slot name="header"></slot>
       <AngleRightIcon v-if="!show" />
       <AngleDownIcon alt="" v-if="show" />
+      <slot name="header"></slot>
     </div>
     <transition
       name="accordion"
@@ -63,23 +63,23 @@ export default {
 
 <style lang="scss">
 .accordion {
-  margin-bottom: 20px;
-  background: #fafbfc;
-  border-radius: 5px;
-  padding: 1rem;
+  margin: 16px 0;
 
   &-header {
-    font-weight: 600;
-    // line-height: 40px;
-    background: #fafbfc;
     cursor: pointer;
     display: flex;
-    justify-content: space-between;
     align-items: center;
 
-    img {
-      display: block;
-      width: 3% !important;
+    h3 {
+      font-size: initial;
+      margin-bottom: 0;
+    }
+
+    svg {
+      width: 10px;
+      height: 10px;
+      cursor: pointer;
+      margin-right: 10px;
     }
   }
 
@@ -99,19 +99,6 @@ export default {
   &-body-inner {
     padding: 0;
     overflow-wrap: break-word;
-    // white-space: pre-wrap;
-  }
-
-  @media (min-width: 1025px) {
-    max-width: 70%;
-  }
-
-  @media (max-width: 1024px) {
-    img {
-      display: block !important;
-    }
-
-    max-width: 100%;
   }
 }
 </style>
