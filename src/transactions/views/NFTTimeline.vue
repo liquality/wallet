@@ -85,18 +85,22 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
-import moment from '@/utils/moment'
+import moment from '@liquality/wallet-core/dist/utils/moment'
 import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 
-import { prettyBalance } from '@/utils/coinFormatter'
-import { isEthereumChain, getNativeAsset, getAddressExplorerLink } from '@/utils/asset'
+import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import {
+  isEthereumChain,
+  getNativeAsset,
+  getAddressExplorerLink
+} from '@liquality/wallet-core/dist/utils/asset'
 
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { getSwapProviderConfig } from '@/utils/swaps'
 import { calculateQuoteRate } from '@/utils/quotes'
-import { shortenAddress } from '@/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 export default {
   components: {

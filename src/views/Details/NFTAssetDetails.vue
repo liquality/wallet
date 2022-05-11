@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { shortenAddress } from '@/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import ArrowDown from '@/assets/icons/arrow-down.svg'
 import NavBar from '../../components/NavBar.vue'
 export default {

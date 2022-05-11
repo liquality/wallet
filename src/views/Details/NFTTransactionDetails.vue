@@ -73,19 +73,20 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import moment from '@/utils/moment'
-import cryptoassets from '@/utils/cryptoassets'
+import moment from '@liquality/wallet-core/dist/utils/moment'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
-import { getSendFee } from '@/utils/fees'
-import { prettyBalance, prettyFiatBalance } from '@/utils/coinFormatter'
-import { getStatusLabel, ACTIVITY_FILTER_TYPES, getItemIcon } from '@/utils/history'
+import { getSendFee } from '@liquality/wallet-core/dist/utils/fees'
+import { prettyBalance, prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { getStatusLabel, ACTIVITY_FILTER_TYPES } from '@liquality/wallet-core/dist/utils/history'
 import {
   getNativeAsset,
   getTransactionExplorerLink,
-  getAddressExplorerLink,
-  getAssetIcon
-} from '@/utils/asset'
+  getAddressExplorerLink
+} from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import { getItemIcon } from '@/utils/history'
 
 // import FeeSelector from '@/components/FeeSelector'
 // import CopyIcon from '@/assets/icons/copy.svg'
@@ -95,7 +96,7 @@ import {
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
 import { isObject } from 'lodash-es'
-import { shortenAddress } from '@/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 export default {
   components: {

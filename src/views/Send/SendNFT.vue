@@ -203,8 +203,8 @@
             <div class="selected-nft-asset__send-details">
               <h3 class="text-uppercase">Network speed/fee</h3>
               <div class="d-flex justify-content-between">
-                <p>~0.004325 ETH</p>
-                <p>$ 13.54</p>
+                <p>{{ prettyFee }} ETH</p>
+                <p>{{ totalFeeInFiat }} USD</p>
               </div>
               <div class="form-group mt-4">
                 <h3 for="address" class="text-uppercase text-muted">Send to</h3>
@@ -230,20 +230,26 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
-import { applyActivityFilters } from '@/utils/history'
+import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import amplitude from 'amplitude-js'
 import Accordion from '@/components/Accordion.vue'
 import { chains, ChainId } from '@liquality/cryptoassets'
-import { shortenAddress } from '@/utils/address'
-import cryptoassets from '@/utils/cryptoassets'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import CopyIcon from '@/assets/icons/copy.svg'
-import { getSendFee, getFeeLabel } from '@/utils/fees'
-import { getAssetIcon, getFeeAsset, getNativeAsset, estimateGas } from '@/utils/asset'
+import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
+import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import DetailsContainer from '@/components/DetailsContainer'
-import { formatFiat, formatFiatUI, prettyBalance } from '@/utils/coinFormatter'
+import {
+  formatFiat,
+  formatFiatUI,
+  prettyBalance,
+  prettyFiatBalance
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 
@@ -265,17 +271,22 @@ export default {
       maxSendFees: {},
       eip1559fees: {},
       activityData: [],
+      amount: 0.0,
       activeView: 'selectAsset',
       selectedNFT: null,
       loading: false,
       customFeeAssetSelected: null,
       customFee: null,
-      address: '',
-      selectedFee: null,
+      address: '0x408075d9146C1cEDB293115670E17291deCaB53d',
+      selectedFee: 'average',
       asset: 'ETH'
     }
   },
-  // props: ['asset'],
+  async created() {
+    await this.updateFees({ asset: this.assetChain })
+    console.log('🚀 ~ file: SendNFT.vue ~ line 285 ~ created ~  await this.fees', this.fees)
+    await this.updateSendFees(this.amount)
+  },
   computed: {
     ...mapGetters(['activity', 'accountItem', 'accountsData']),
     ...mapState([
@@ -302,6 +313,9 @@ export default {
         default:
           return ''
       }
+    },
+    totalFeeInFiat() {
+      return prettyFiatBalance(this.currentFee, this.fiatRates[this.assetChain])
     },
     account() {
       return this.accountsData.filter((account) => account.chain === 'ethereum')[0]
@@ -345,14 +359,10 @@ export default {
     },
     assetChain() {
       console.log(
-        '🚀 ~ file: SendNFT.vue ~ line 297 ~ assetChain ~ getFeeAsset(this.asset)',
-        getFeeAsset(this.asset)
-      )
-      console.log(
         '🚀 ~ file: SendNFT.vue ~ line 301 ~ assetChain ~ getNativeAsset(this.asset)',
         getNativeAsset(this.asset)
       )
-      return getFeeAsset(this.asset) || getNativeAsset(this.asset)
+      return getNativeAsset(this.asset)
     },
     assetFees() {
       const assetFees = {}
@@ -394,7 +404,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['sendNFTTransaction']),
+    ...mapActions(['sendNFTTransaction', 'updateFees']),
     getAssetIcon,
     shortenAddress,
     formatFiat,
@@ -404,7 +414,6 @@ export default {
     getSendFee,
     getFeeLabel,
     getNativeAsset,
-    estimateGas,
     applyFilters(filters) {
       this.activityData = applyActivityFilters([...this.assetHistory], filters)
     },
@@ -491,6 +500,8 @@ export default {
       this.loading = true
       try {
         const response = await this.sendNFTTransaction({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
           contract: this.selectedNFT.asset_contract.address,
           receiver: this.address,
           tokenIDs: [this.selectedNFT.token_id],
