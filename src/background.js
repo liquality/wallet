@@ -32,9 +32,10 @@ store.subscribe(async ({ type, payload }, state) => {
   switch (type) {
     case 'CREATE_WALLET':
       dispatch('trackAnalytics', {
-        event: 'Create wallet',
+        event: 'Create a new wallet',
         properties: {
-          label: 'New wallet created'
+          label: 'New wallet created',
+          action: 'User created a new wallet with new seed'
         }
       })
       break
@@ -68,14 +69,6 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'UNLOCK_WALLET':
-      dispatch('trackAnalytics', {
-        event: 'Unlock wallet',
-        properties: {
-          category: 'Lock/Unlock',
-          action: 'Wallet Unlocked',
-          label: 'import with seed pharse'
-        }
-      })
       dispatch('app/checkAnalyticsOptIn')
       dispatch('initializeAddresses', {
         network: state.activeNetwork,
@@ -107,6 +100,14 @@ store.subscribe(async ({ type, payload }, state) => {
         () => dispatch('updateMarketData', { network: state.activeNetwork }),
         () => random(40000, 60000)
       )
+      dispatch('trackAnalytics', {
+        event: 'Unlock wallet',
+        properties: {
+          category: 'Lock/Unlock',
+          action: 'Wallet Unlocked',
+          label: 'import with seed pharse'
+        }
+      })
       break
     case 'NEW_SWAP':
       // eslint-disable-next-line no-case-declarations
@@ -231,11 +232,11 @@ store.subscribe(async ({ type, payload }, state) => {
       // Only trigger event for the first time when user funds their wallet, any subsequent balance updates are ignored.
       if (prevBalance === 0 && newBalance > prevBalance) {
         await dispatch('trackAnalytics', {
-          event: 'User has funds in wallet',
+          event: 'User funded wallet',
           properties: {
             category: 'Balance',
             action: 'Balance Updated',
-            label: 'User already has funds in wallet'
+            label: 'User funded wallet'
           }
         })
       }
