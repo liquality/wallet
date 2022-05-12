@@ -1,6 +1,6 @@
 <template>
   <div class="nft-collectibles">
-    <div v-if="nftAssets">
+    <div v-if="Object.keys(nftAssets).length">
       <template v-for="(asset, key) in nftAssets">
         <NFTAssets :nftAssets="asset" :collectionName="key" :key="asset.id" :source="source" />
       </template>
@@ -55,7 +55,6 @@ export default {
           network: this.activeNetwork,
           walletId: this.activeWalletId
         })
-        console.log('🚀 ~ file: NFTActivity.vue ~ line 56 ~ this.nftAssets', this.nftAssets)
       } catch (error) {
         console.error(error)
       }
