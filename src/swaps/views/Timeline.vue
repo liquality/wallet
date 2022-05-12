@@ -322,12 +322,10 @@ import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { getSwapTimeline } from '@liquality/wallet-core/dist/utils/timeline'
+import { getSwapTimeline, ACTIONS_TERMS } from '@liquality/wallet-core/dist/utils/timeline'
 import {
-  isERC20,
   isEthereumChain,
   getNativeAsset,
-  getTransactionExplorerLink,
   getAddressExplorerLink
 } from '@liquality/wallet-core/dist/utils/asset'
 
@@ -339,45 +337,6 @@ import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-
-const ACTIONS_TERMS = {
-  lock: {
-    default: 'Lock',
-    pending: 'Locking',
-    completed: 'Locked',
-    failed: 'Failed Locking'
-  },
-  claim: {
-    default: 'Claim',
-    pending: 'Claiming',
-    completed: 'Claimed',
-    failed: 'Failed Claiming'
-  },
-  approve: {
-    default: 'Approve Not Required',
-    pending: 'Approving',
-    completed: 'Approved',
-    failed: 'Failed Approving'
-  },
-  receive: {
-    default: 'Receive',
-    pending: 'Receiving',
-    completed: 'Received',
-    failed: 'Failed Receiving'
-  },
-  swap: {
-    default: 'Collect',
-    pending: 'Collecting',
-    completed: 'Collected',
-    failed: 'Failed Collecting'
-  },
-  refund: {
-    default: 'Refund',
-    pending: 'Refunding',
-    completed: 'Refunded',
-    failed: 'Failed Refunding'
-  }
-}
 
 export default {
   components: {
@@ -437,26 +396,6 @@ export default {
     shortenAddress,
     isEthereumChain,
     // get to asset when liquality boost provider is swapping from Native to ERC20
-    getToAssetWhenSwappingFromNative() {
-      if (this.item.provider.includes('liqualityBoost') && !isERC20(this.item.from)) {
-        return this.item.bridgeAsset
-      }
-      return this.item.to
-    },
-    // get to asset when liquality boost provider is swapping from ERC20 to Native
-    getToAssetWhenSwappingFromERC20() {
-      if (this.item.provider.includes('liqualityBoost') && isERC20(this.item.from)) {
-        return this.item.bridgeAsset
-      }
-      return this.item.to
-    },
-    // get from asset when liquality boost provider is swapping from ERC20 to Native
-    getFromAssetWhenSwappingFromERC20() {
-      if (this.item.provider.includes('liqualityBoost') && isERC20(this.item.from)) {
-        return this.item.bridgeAsset
-      }
-      return this.item.from
-    },
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
@@ -483,134 +422,6 @@ export default {
     closeFeeSelector() {
       this.showFeeSelector = false
       this.newFeePrice = null
-    },
-    async getTransaction(hash, asset, defaultTx) {
-      const client = this.client({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        asset
-      })
-      const transaction = (await client.chain.getTransactionByHash(hash)) || defaultTx
-      transaction.explorerLink = getTransactionExplorerLink(hash, asset, this.activeNetwork)
-      transaction.asset = asset
-      return transaction
-    },
-    async getTransactionStep(completed, pending, side, hash, defaultTx, asset, action) {
-      const step = {
-        side,
-        pending,
-        completed,
-        title: pending
-          ? `${ACTIONS_TERMS[action].pending} ${asset}`
-          : `${ACTIONS_TERMS[action].default} ${asset}`
-      }
-      if (hash) {
-        const tx = await this.getTransaction(hash, asset, defaultTx)
-        if (tx && tx.confirmations > 0) {
-          if (tx.status === 'FAILED') {
-            step.title = `${ACTIONS_TERMS[action].failed} ${asset}`
-          } else {
-            step.title = `${ACTIONS_TERMS[action].completed} ${asset}`
-          }
-        } else {
-          step.title = `${ACTIONS_TERMS[action].pending} ${asset}`
-        }
-        step.tx = tx || { hash: hash }
-      }
-      return step
-    },
-    async getInitiationStep(completed, pending, side) {
-      return this.getTransactionStep(
-        completed,
-        pending,
-        side,
-        this.item.fromFundHash,
-        this.item.fromFundTx,
-        this.getFromAssetWhenSwappingFromERC20(),
-        'lock'
-      )
-    },
-    async getAgentInitiationStep(completed, pending, side) {
-      return this.getTransactionStep(
-        completed,
-        pending,
-        side,
-        this.item.toFundHash,
-        null,
-        this.getToAssetWhenSwappingFromNative(),
-        'lock'
-      )
-    },
-    async getClaimRefundStep(completed, pending, side) {
-      return this.item.refundHash
-        ? this.getTransactionStep(
-            completed,
-            pending,
-            side,
-            this.item.refundHash,
-            this.item.refundTx,
-            this.item.from,
-            'refund'
-          )
-        : this.getTransactionStep(
-            completed,
-            pending,
-            side,
-            this.item.toClaimHash,
-            this.item.toClaimTx,
-            this.getToAssetWhenSwappingFromNative(),
-            'claim'
-          )
-    },
-    async getApproveStep(completed, pending, side) {
-      return this.getTransactionStep(
-        completed,
-        pending,
-        side,
-        this.item.approveTxHash,
-        null,
-        this.item.from,
-        'approve'
-      )
-    },
-    async getSwapStep(completed, pending, side) {
-      return this.item.refundHash
-        ? {
-            side: 'right',
-            pending: false,
-            completed: true,
-            title: `${ACTIONS_TERMS.swap.pending} ${this.item.to} Interrupted`
-          }
-        : this.getTransactionStep(
-            completed,
-            pending,
-            side,
-            this.item.swapTxHash,
-            this.item.swapTxHash,
-            this.getToAssetWhenSwappingFromERC20(),
-            'swap'
-          )
-    },
-    async getReceiveStep(completed, pending, side) {
-      return this.item.status === 'REFUNDED'
-        ? this.getTransactionStep(
-            completed,
-            pending,
-            side,
-            this.item.receiveTxHash,
-            null,
-            this.item.from,
-            'refund'
-          )
-        : this.getTransactionStep(
-            completed,
-            pending,
-            side,
-            this.item.receiveTxHash,
-            null,
-            this.item.to,
-            'receive'
-          )
     },
     async updateTransactions() {
       const timeline = await getSwapTimeline(this.item, ({ network, walletId, asset }) =>
