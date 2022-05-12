@@ -12,7 +12,10 @@
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
       <InfoNotification v-if="!canCoverAmmFee">
-        <BridgeAssetRequiredMessage :account-id="toAccount.id" :asset="selectedQuote.bridgeAsset" />
+        <BridgeAssetRequiredMessage
+          :account-id="getAccountId()"
+          :asset="selectedQuote.bridgeAsset"
+        />
       </InfoNotification>
 
       <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
@@ -428,12 +431,13 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import { getSwapProviderConfig } from '@liquality/wallet-core/dist/utils/swaps'
-import { SwapProviderType } from '@liquality/wallet-core/dist/utils/swapProviderType'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
 import { buildConfig } from '@liquality/wallet-core'
+import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
@@ -610,7 +614,7 @@ export default {
       'activeNetwork'
     ]),
     ...mapGetters('app', ['ledgerBridgeReady']),
-    ...mapGetters(['client', 'swapProvider', 'accountItem', 'accountsData']),
+    ...mapGetters(['client', 'accountItem', 'accountsData']),
     networkMarketData() {
       return this.marketData[this.activeNetwork]
     },
@@ -628,7 +632,7 @@ export default {
     },
     selectedQuoteProvider() {
       if (!this.selectedQuote) return null
-      return this.swapProvider(this.activeNetwork, this.selectedQuote.provider)
+      return getSwapProvider(this.activeNetwork, this.selectedQuote.provider)
     },
     defaultAmount() {
       const min = BN(this.min)
@@ -653,16 +657,24 @@ export default {
       return !!liqualityMarket
     },
     min() {
+      if (!this.fiatRates[this.asset]) return BN(0)
+
       const toQuoteAsset =
-        this.selectedQuoteProvider?.config?.type === SwapProviderType.LIQUALITYBOOST
+        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostNativeToERC20
           ? this.toAssetChain
           : this.toAsset
+
+      const fromQuoteAsset =
+        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostERC20ToNative
+          ? this.assetChain
+          : this.asset
+
       const liqualityMarket = this.networkMarketData?.find((pair) => {
         return (
-          pair.from === this.asset &&
+          pair.from === fromQuoteAsset &&
           pair.to === toQuoteAsset &&
           getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
-            SwapProviderType.LIQUALITY
+            SwapProviderType.Liquality
         )
       })
 
@@ -731,12 +743,11 @@ export default {
 
       const account = isERC20(this.asset) ? this.account : this.toAccount
       const balance = account?.balances[this.selectedQuote.bridgeAsset]
-      const toSwapFeeInUnits = currencyToUnit(
+      const SwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
-        this.receiveFee
+        isERC20(this.asset) ? this.fromSwapFee : this.receiveFee
       )
-
-      return BN(balance).gt(toSwapFeeInUnits)
+      return BN(balance).gt(SwapFeeInUnits)
     },
     availableAmount() {
       return dpUI(this.available, VALUE_DECIMALS)
@@ -794,7 +805,7 @@ export default {
         !this.selectedQuote ||
         this.updatingQuotes ||
         this.ethRequired ||
-        !this.canCoverAmmFee ||
+        //!this.canCoverAmmFee ||
         this.showNoLiquidityMessage ||
         this.amountError ||
         BN(this.safeAmount).lte(0)
@@ -1218,6 +1229,13 @@ export default {
         this.updateSwapFees()
       }
     }, 800),
+    getAccountId() {
+      if (this.selectedQuoteProvider.config.type === SwapProviderType.LiqualityBoostERC20ToNative) {
+        return this.fromAccountId
+      }
+
+      return this.toAccountId
+    },
     applyCustomFee({ asset, fee }) {
       const assetFees = this.getAssetFees(asset)
       const presetFee = Object.entries(assetFees).find(

@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v2.4.2
         with:
           fetch-depth: 0
 
@@ -73,6 +73,7 @@ jobs:
           DISPLAY: :99
         with:
           args: npm run test:pullrequest
+#          args: npm run test:mainnet:devagent
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1

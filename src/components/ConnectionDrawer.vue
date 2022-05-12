@@ -100,10 +100,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setEthereumInjectionChain', 'addExternalConnection', 'toggleInjection']),
-    toggleManageDappConnection() {
-      this.toggleInjection()
-    },
+    ...mapActions(['setEthereumInjectionChain', 'addExternalConnection']),
     updateInjectEthereumChain(chain) {
       this.setEthereumInjectionChain({ chain })
       this.trackAnalytics({

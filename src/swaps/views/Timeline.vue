@@ -150,11 +150,11 @@
             <td class="text-muted text-left small-12">Counter-party</td>
             <td class="text-break">{{ item.agent }}</td>
           </tr>
-          <tr v-if="item.id">
+          <tr v-if="item.orderId">
             <td class="text-muted text-left small-12">Order ID</td>
             <td id="swap_details_order_id" class="text-break">
-              {{ item.id }}
-              <CopyIcon class="copy-icon" @click="copy(item.id)" />
+              {{ item.orderId }}
+              <CopyIcon class="copy-icon" @click="copy(item.orderId)" />
             </td>
           </tr>
           <tr>
@@ -335,7 +335,8 @@ import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
-import { getSwapProviderConfig } from '@liquality/wallet-core/dist/utils/swaps'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
@@ -398,7 +399,7 @@ export default {
   },
   props: ['id', 'retrySwap'],
   computed: {
-    ...mapGetters(['client', 'accountItem', 'swapProvider']),
+    ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
@@ -425,7 +426,7 @@ export default {
       return chains[chain].fees.unit
     },
     timelineDiagramSteps() {
-      const swapProvider = this.swapProvider(this.item.network, this.item.provider)
+      const swapProvider = getSwapProvider(this.item.network, this.item.provider)
       return swapProvider.timelineDiagramSteps
     }
   },

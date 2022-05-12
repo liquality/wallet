@@ -48,6 +48,8 @@ export default {
   async created() {
     if (this.unlockedAt) {
       this.$router.replace('/wallet')
+    } else if (this.keyUpdatedAt) {
+      this.$router.replace('/open')
     }
   }
 }

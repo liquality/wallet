@@ -65,15 +65,19 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     ).not.contain('toggled')
     await page.click('#previous_nav_bar')
     // overview-screen-chain-section , RSK should be hidden
-    let accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(8)
+    expect(
+      await overviewPage.getTotalAssets(page),
+      'After RSK account toggle off overview page should have 8 assets'
+    ).to.equals(8)
     // Go back to Manage account & toggle on
     await overviewPage.ClickOnManageAccounts(page)
     // Chain RSK toggle on but not accounts
     await page.click('#chain-item-toggle-rsk')
     await page.click('#previous_nav_bar')
-    accounts = await page.$$('.overview-screen-chain-section')
-    expect(accounts.length).to.equals(10)
+    expect(
+      await overviewPage.getTotalAssets(page),
+      'After RSK account toggle on overview page should have 10 assets'
+    ).to.equals(10)
   })
   it('RSK - create new account, validate RSK 3 accounts', async () => {
     // check Send & Swap & Receive options have been displayed

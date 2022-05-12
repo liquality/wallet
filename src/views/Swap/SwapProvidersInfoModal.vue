@@ -11,7 +11,7 @@
         </p>
         <div class="swap-providers-info_links mb-4 border-bottom">
           <ul>
-            <li v-for="provider in providers" :key="provider.id" class="py-1 px-2">
+            <li v-for="provider in uniqueProvides" :key="provider.id" class="py-1 px-2">
               <span class="d-flex align-items-center"
                 ><img :src="getProviderIcon(provider.id)" class="mr-2" /> {{ provider.name }}</span
               >
@@ -58,7 +58,7 @@
 import { mapState } from 'vuex'
 import Modal from '@/components/Modal'
 import SwapProviderLabel from '@/components/SwapProviderLabel.vue'
-import { getSwapProviderConfig, getSwapProviderInfo } from '@liquality/wallet-core/dist/utils/swaps'
+import { getSwapProviderConfig, getSwapProviderInfo } from '@liquality/wallet-core/dist/swaps/utils'
 import { getSwapProviderIcon } from '@/utils/swaps'
 import { buildConfig } from '@liquality/wallet-core'
 
@@ -79,6 +79,9 @@ export default {
           }
         }
       )
+    },
+    uniqueProvides() {
+      return [...new Map(this.providers.map((item) => [item['name'], item])).values()]
     }
   },
   methods: {
