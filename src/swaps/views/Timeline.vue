@@ -322,7 +322,7 @@ import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { getStep } from '@liquality/wallet-core/dist/utils/history'
+import { getSwapTimeline } from '@liquality/wallet-core/dist/utils/timeline'
 import {
   isERC20,
   isEthereumChain,
@@ -613,24 +613,9 @@ export default {
           )
     },
     async updateTransactions() {
-      const timeline = []
-      const supportedSteps = {
-        SWAP: this.getSwapStep,
-        APPROVE: this.getApproveStep,
-        RECEIVE: this.getReceiveStep,
-        INITIATION: this.getInitiationStep,
-        AGENT_INITIATION: this.getAgentInitiationStep,
-        CLAIM_OR_REFUND: this.getClaimRefundStep
-      }
-      const steps = this.timelineDiagramSteps.map((step) => supportedSteps[step])
-
-      for (let i = 0; i < steps.length; i++) {
-        const completed = getStep(this.item) > i
-        const pending = getStep(this.item) === i
-        const side = i % 2 === 0 ? 'left' : 'right'
-        const step = await steps[i](completed, pending, side)
-        timeline.push(step)
-      }
+      const timeline = await getSwapTimeline(this.item, ({ network, walletId, asset }) =>
+        this.client({ network, walletId, asset })
+      )
 
       this.timeline = timeline
     },
