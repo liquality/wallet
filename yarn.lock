@@ -4130,7 +4130,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/wallet-core@npm:^1.4.30":
+"@liquality/wallet-core@npm:^1.4.34":
   version: 1.4.34
   resolution: "@liquality/wallet-core@npm:1.4.34"
   dependencies:
@@ -8220,9 +8220,9 @@ __metadata:
   linkType: hard
 
 "builtin-modules@npm:^3.0.0, builtin-modules@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "builtin-modules@npm:3.2.0"
-  checksum: 0265aa1ba78e1a16f4e18668d815cb43fb364e6a6b8aa9189c6f44c7b894a551a43b323c40206959d2d4b2568c1f2805607ad6c88adc306a776ce6904cca6715
+  version: 3.3.0
+  resolution: "builtin-modules@npm:3.3.0"
+  checksum: db021755d7ed8be048f25668fe2117620861ef6703ea2c65ed2779c9e3636d5c3b82325bd912244293959ff3ae303afa3471f6a15bf5060c103e4cc3a839749d
   languageName: node
   linkType: hard
 
@@ -13113,11 +13113,11 @@ __metadata:
   linkType: hard
 
 "globals@npm:^13.6.0, globals@npm:^13.9.0":
-  version: 13.14.0
-  resolution: "globals@npm:13.14.0"
+  version: 13.15.0
+  resolution: "globals@npm:13.15.0"
   dependencies:
     type-fest: ^0.20.2
-  checksum: a8d560119c611b434fa7bd0f305d34fec03e2cc63dcf8ef8bc352f075c54f2653bc6f9c85a1ef9422d82916e6fe5a4fc87fdd6a3e691afcff04545a7d876e078
+  checksum: 383ade0873b2ab29ce6d143466c203ed960491575bc97406395e5c8434026fb02472ab2dfff5bc16689b8460269b18fda1047975295cd0183904385c51258bae
   languageName: node
   linkType: hard
 
@@ -16921,7 +16921,7 @@ __metadata:
     "@liquality/hw-web-bridge": ^0.1.2
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
-    "@liquality/wallet-core": ^1.4.30
+    "@liquality/wallet-core": ^1.4.34
     "@terra-money/terra.js": ^3.0.8
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/vue": ^5.8.2
