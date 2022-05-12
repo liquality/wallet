@@ -43,14 +43,6 @@ jobs:
 
       - run: mkdir screenshots
 
-      # - uses: actions/cache@v2.1.7
-      #   env:
-      #     node-version: 14.1.0
-      #     cache-name: cache-node-modules
-      #   with:
-      #     path: ~/.npm
-      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
-
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
