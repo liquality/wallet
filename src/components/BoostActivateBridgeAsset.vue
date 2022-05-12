@@ -1,10 +1,8 @@
 <template>
   <div class="notification-content">
-    <div class="notification-text">
-      Required Native Asset ({{ asset }}) for Boost swap is disabled.
-    </div>
+    <div class="notification-text">To trade this pair {{ asset }} has to be enabled</div>
     <button type="button" class="btn btn-option get-bridgeAsset-btn" @click="toggleAsset()">
-      Enable
+      OK, do it
     </button>
   </div>
 </template>
@@ -14,9 +12,6 @@ import { mapActions } from 'vuex'
 
 export default {
   props: ['network', 'walletId', 'asset'],
-  created() {
-    console.log(this.network, this.walletId, this.asset)
-  },
   methods: {
     ...mapActions(['enableAssets']),
     toggleAsset() {
@@ -38,7 +33,7 @@ export default {
   align-items: center;
 
   .get-bridgeAsset-btn {
-    width: 90px;
+    width: 70px;
     display: inline-block;
   }
   .notification-text {
