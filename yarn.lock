@@ -3297,7 +3297,7 @@
     "@liquality/types" "^1.13.12"
     setimmediate "^1.0.5"
 
-"@liquality/wallet-core@^1.4.34":
+"@liquality/wallet-core@^1.4.30":
   version "1.4.34"
   resolved "https://registry.yarnpkg.com/@liquality/wallet-core/-/wallet-core-1.4.34.tgz#1b8514aae15ef73425aafdfffb0583a03be9bd57"
   integrity sha512-ynQika9u5YPhNAr8EPSJsFhVkgTaZIRqJou3uehEsUrrY7Yb7VevD35A6rBmk2ztgxFn2ilTvpqhHxFCdEcXlQ==
