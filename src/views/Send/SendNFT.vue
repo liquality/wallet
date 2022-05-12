@@ -499,19 +499,25 @@ export default {
     async sendNFT() {
       this.loading = true
       try {
-        const response = await this.sendNFTTransaction({
+        const data = {
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           contract: this.selectedNFT.asset_contract.address,
           receiver: this.address,
-          tokenIDs: [this.selectedNFT.token_id],
-          values: [],
-          data: '',
+          tokenIDs: [this.selectedNFT.id],
+          values: [1],
+          data: '0x00',
           fee: this.selectedFee
-        })
+        }
+        console.log('🚀 ~ file: SendNFT.vue ~ line 512 ~ sendNFT ~ data', data)
+        const response = await this.sendNFTTransaction(data)
+        console.log(
+          '🚀 ~ file: SendNFT.vue ~ line 514 ~ sendNFT ~  await this.sendNFTTransaction(data)',
+          await this.sendNFTTransaction(data)
+        )
         console.log('🚀 ~ file: SendNFT.vue ~ line 397 ~ sendNFT ~ response', response)
         this.$router.replace({
-          path: `/nft-transaction-details/${this.selectedNFT.token_id}`
+          path: `/nft-transaction-details/${this.selectedNFT.id}`
         })
       } catch (error) {
         console.log('error>>>', error)
