@@ -324,6 +324,7 @@ export default {
       return this.activity.filter((item) => item.from === this.asset)
     },
     nftNumber() {
+      if (!this.selectedNFT) return ''
       const number = this.selectedNFT.external_link.split('/')
       return number[number.length - 1]
     },

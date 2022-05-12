@@ -119,6 +119,7 @@ export default {
       return this.$route.query.nftAsset
     },
     nftNumber() {
+      if (!this.selectedNFT) return ''
       const number = this.nftAsset.external_link.split('/')
       return number[number.length - 1]
     }
