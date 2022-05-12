@@ -36,11 +36,24 @@ jobs:
         # Create screenshots directory
       - run: mkdir screenshots
 
-      - uses: actions/cache@v2.1.7
-        id: cache
+      # - uses: actions/cache@v2.1.7
+      #   id: cache
+      #   with:
+      #     path: ~/.npm
+      #     key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - name: Restore yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache 
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+          restore-keys: |
+            yarn-cache-folder-
 
       - run: |
           echo VUE_APP_TERRA_MAINNET_URL =$TERRA_MAINNET_URL >> .env
@@ -53,9 +66,9 @@ jobs:
         run: |
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
-          npm ci
-          npm run lint
-          npm run build
+          yarn install
+          yarn lint
+          yarn build
 
       - name: Create wallet artifact
         uses: actions/upload-artifact@v2.3.1
@@ -72,7 +85,7 @@ jobs:
           CI: 'true'
           DISPLAY: :99
         with:
-          args: npm run test:pullrequest
+          args: yarn test:pullrequest
 #          args: npm run test:mainnet:devagent
 
       - name: Save Screenshots
