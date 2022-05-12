@@ -22,10 +22,10 @@
 </template>
 
 <script>
-import { shortenAddress } from '@/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import { getAccountIcon } from '@/utils/accounts'
-import { isEthereumChain, getNativeAsset } from '@/utils/asset'
-import { prettyBalance } from '@/utils/coinFormatter'
+import { isEthereumChain, getNativeAsset } from '@liquality/wallet-core/dist/utils/asset'
+import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 
 export default {
   props: {

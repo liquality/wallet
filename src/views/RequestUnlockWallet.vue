@@ -16,7 +16,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyUnlockWallet']),
+    ...mapActions('app', ['replyUnlockWallet']),
     unlocked() {
       this.reply(true)
     },

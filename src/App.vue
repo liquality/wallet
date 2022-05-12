@@ -39,6 +39,7 @@ export default {
       )
         return
       if (unlocked) {
+        debugger
         this.$router.replace('/wallet')
       }
     },
@@ -49,6 +50,7 @@ export default {
           this.$route.name
         )
       ) {
+        debugger
         this.$router.replace('/wallet')
       }
     }

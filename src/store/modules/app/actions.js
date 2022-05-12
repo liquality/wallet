@@ -1,3 +1,15 @@
+import { requestOriginAccess } from './requestOriginAccess'
+import { requestPermission } from './requestPermission'
+import { requestUnlockWallet } from './requestUnlockWallet'
+import { replyOriginAccess } from './replyOriginAccess'
+import { replyPermission } from './replyPermission'
+import { replyUnlockWallet } from './replyUnlockWallet'
+import { executeRequest } from './executeRequest'
+import { handlePaymentUri } from './handlePaymentUri'
+import { initializeAnalytics } from './initializeAnalytics'
+import { checkAnalyticsOptIn } from './checkAnalyticsOptIn'
+
+
 export const actions = {
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
     commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
@@ -40,5 +52,15 @@ export const actions = {
   },
   settingsModalOpen: ({ commit }, isOpen) => {
     commit('SET_SETTINGS_MODAL_OPEN', isOpen)
-  }
+  },
+  requestOriginAccess,
+  requestPermission,
+  requestUnlockWallet,
+  replyOriginAccess,
+  replyUnlockWallet,
+  replyPermission,
+  executeRequest,
+  handlePaymentUri,
+  initializeAnalytics,
+  checkAnalyticsOptIn
 }

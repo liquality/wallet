@@ -74,21 +74,21 @@
                 @click="selectAccount(item)"
                 :class="{
                   disabled: item.exists,
-                  selected: selectedAccounts[item.account.address]
+                  selected: selectedAccounts[item.account]
                 }"
                 v-for="item in accounts"
-                :key="item.account.address"
+                :key="item.account"
               >
                 <td class="account-index">{{ item.index + 1 }}</td>
                 <td class="account-address">
                   <div
                     v-tooltip.top="{
                       content: item.exists
-                        ? `This account is already connected: ${item.account.address}`
-                        : item.account.address
+                        ? `This account is already connected: ${item.account}`
+                        : item.account
                     }"
                   >
-                    {{ shortenAddress(item.account.address) }}
+                    {{ shortenAddress(item.account) }}
                   </div>
                 </td>
                 <td class="balance">
@@ -97,11 +97,11 @@
                       {{ prettyBalance(item.balance, selectedAsset.name) }}
                       {{ selectedAsset.name }}
                     </div>
-                    <div class="fiat">${{ formatFiat(item.fiatBalance) }}</div>
+                    <div class="fiat">${{ getFiatBalance(item.fiatBalance) }}</div>
                   </div>
                 </td>
                 <td class="account-selected-mark">
-                  <CheckRightIcon v-if="selectedAccounts[item.account.address]" />
+                  <CheckRightIcon v-if="selectedAccounts[item.account]" />
                   <span v-else>&nbsp;</span>
                 </td>
               </tr>
@@ -148,16 +148,17 @@
 </template>
 <script>
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { LEDGER_BITCOIN_OPTIONS } from '@/utils/hardware-wallet'
+import { LEDGER_BITCOIN_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
 import clickAway from '@/directives/clickAway'
 import { getAccountIcon } from '@/utils/accounts'
 import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import CheckRightIcon from '@/assets/icons/check.svg'
-import { shortenAddress } from '@/utils/address'
-import { prettyBalance, formatFiat } from '@/utils/coinFormatter'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { prettyBalance, formatFiat } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import InfoIcon from '@/assets/icons/info.svg'
+import BN from 'bignumber.js'
 
 export default {
   directives: {
@@ -191,12 +192,14 @@ export default {
   },
   methods: {
     prettyBalance,
-    formatFiat,
     getAccountIcon,
     shortenAddress,
     unlock() {
       const walletType = this.getWalletType()
       this.$emit('on-unlock', { walletType })
+    },
+    getFiatBalance(balance) {
+      return formatFiat(BN(balance || 0))
     },
     selectAccount(item) {
       if (!item.exists) {

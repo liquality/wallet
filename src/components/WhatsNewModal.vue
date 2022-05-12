@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Internal Release candidate 0.62.0</pre>
+            <pre class="text-wrap">* Infrastructure fixes to improve swap reliability</pre>
           </div>
         </div>
       </div>
@@ -41,21 +41,21 @@ export default {
     }
   },
   computed: {
-    ...mapState(['WhatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
+    ...mapState(['whatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
     appVersion() {
       return version
     }
   },
   methods: {
-    ...mapActions(['setWhatsNewModalShowed']),
+    ...mapActions(['setWhatsNewModalVersion']),
     close() {
       this.open = false
     }
   },
   created() {
-    if (this.WhatsNewModalVersion !== this.appVersion) {
+    if (this.whatsNewModalVersion !== this.appVersion) {
       this.open = true
-      this.setWhatsNewModalShowed({ version: this.appVersion })
+      this.setWhatsNewModalVersion({ version: this.appVersion })
     }
   }
 }

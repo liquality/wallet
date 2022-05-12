@@ -34,11 +34,12 @@ import NavBar from '@/components/NavBar'
 import Connect from './Connect'
 import Unlock from './Unlock'
 import Completed from './Completed'
-import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@/utils/hardware-wallet'
-import { getAssetIcon } from '@/utils/asset'
-import cryptoassets from '@/utils/cryptoassets'
-import { getNextAccountColor } from '@/utils/accounts'
 import { connectLedgerDevice } from '@/utils/hardware-wallet'
+import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
+import { getAssetIcon } from '@/utils/asset'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { getNextAccountColor } from '@liquality/wallet-core/dist/utils/accounts'
+
 
 const LEDGER_PER_PAGE = 5
 
@@ -122,6 +123,7 @@ export default {
           this.currentStep = 'unlock'
 
           const accounts = await this.getLedgerAccounts(payload)
+
           if (accounts && accounts.length > 0) {
             this.accounts = accounts
             this.ledgerPage = currentPage
@@ -192,13 +194,12 @@ export default {
             const item = selectedAccounts[key]
             const { publicKey, chainCode, derivationPath } = item
             const index = item.index + 1
-            const { address } = item.account
 
             const account = {
               name: `Ledger ${this.selectedAsset.name} ${index}`,
               alias: '',
               chain,
-              addresses: [address],
+              addresses: [item.account],
               assets,
               index: item.index,
               type: walletType || this.selectedAsset.types[0],
@@ -245,15 +246,15 @@ export default {
       this.selectedAsset = asset
     },
     selectAccount(item) {
-      if (this.selectedAccounts[[item.account.address]]) {
-        delete this.selectedAccounts[item.account.address]
+      if (this.selectedAccounts[[item.account]]) {
+        delete this.selectedAccounts[item.account]
         this.selectedAccounts = {
           ...this.selectedAccounts
         }
       } else {
         this.selectedAccounts = {
           ...this.selectedAccounts,
-          [item.account.address]: item
+          [item.account]: item
         }
       }
     }

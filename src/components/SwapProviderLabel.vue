@@ -15,7 +15,8 @@
 </template>
 
 <script>
-import { getSwapProviderConfig, getSwapProviderIcon, getSwapProviderInfo } from '@/utils/swaps'
+import { getSwapProviderConfig, getSwapProviderInfo } from '@liquality/wallet-core/dist/swaps/utils'
+import { getSwapProviderIcon } from '@/utils/swaps'
 
 export default {
   props: ['provider', 'network'],

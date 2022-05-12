@@ -11,7 +11,6 @@ const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
 let browser, page
-const password = '123123123'
 const dappUrl = 'https://app.sushi.com'
 
 describe('Sushi Dapp Injection-["MAINNET"]', async () => {
@@ -19,7 +18,7 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.setDefaultNavigationTimeout(0)
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load' })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -27,7 +26,7 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
@@ -43,7 +42,8 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
 
   it('Sushi injection - ETH["PULL_REQUEST_TEST"]', async () => {
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { waitUntil: 'load' })
+    await dappPage.setDefaultNavigationTimeout(0);
+    await dappPage.goto(dappUrl, { waitUntil: 'networkidle2' })
     await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 90000 })
     await dappPage.click('#connect-wallet')
     // Before click on injected wallet option.
@@ -98,7 +98,7 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
     await page.click(`#${chain}_web_network`, { delay: 2000 })
 
     const dappPage = await browser.newPage()
-    await dappPage.goto(dappUrl, { waitUntil: 'load' })
+    await dappPage.goto(dappUrl, { waitUntil: 'networkidle2' })
     await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 90000 })
     await dappPage.click('#connect-wallet')
     // Before click on injected wallet option.

@@ -14,9 +14,8 @@ const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
 
 let browser, page
-const password = '123123123'
 
-describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
+describe.skip('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -28,7 +27,7 @@ describe('RBTC->BTC swap-["PULL_REQUEST_TEST"]', async () => {
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)

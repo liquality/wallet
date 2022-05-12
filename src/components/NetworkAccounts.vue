@@ -38,10 +38,14 @@
 
 <script>
 import ListItem from '@/components/ListItem'
-import { prettyBalance, formatFiat, formatFiatUI } from '@/utils/coinFormatter'
+import {
+  prettyBalance,
+  formatFiat,
+  formatFiatUI
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import { getAccountIcon } from '@/utils/accounts'
-import { shortenAddress } from '@/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 export default {
   components: {

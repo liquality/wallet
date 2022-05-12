@@ -12,7 +12,10 @@
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
       <InfoNotification v-if="!canCoverAmmFee">
-        <BridgeAssetRequiredMessage :account-id="toAccount.id" :asset="selectedQuote.bridgeAsset" />
+        <BridgeAssetRequiredMessage
+          :account-id="getAccountId()"
+          :asset="selectedQuote.bridgeAsset"
+        />
       </InfoNotification>
 
       <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
@@ -385,7 +388,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
@@ -402,10 +405,15 @@ import {
   prettyBalance,
   prettyFiatBalance,
   VALUE_DECIMALS
-} from '@/utils/coinFormatter'
-import { getAssetColorStyle, getAssetIcon, getNativeAsset, isERC20 } from '@/utils/asset'
-import { shortenAddress } from '@/utils/address'
-import { getFeeLabel } from '@/utils/fees'
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
+import {
+  getAssetColorStyle,
+  getNativeAsset,
+  isERC20
+} from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
 import { chains } from '@liquality/cryptoassets'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -422,9 +430,11 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import { getSwapProviderConfig, SwapProviderType } from '@/utils/swaps'
-import { calculateQuoteRate, sortQuotes } from '@/utils/quotes'
-import buildConfig from '@/build.config'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
+import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
+import { buildConfig } from '@liquality/wallet-core'
+import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
@@ -646,7 +656,7 @@ export default {
       'activeNetwork'
     ]),
     ...mapGetters('app', ['ledgerBridgeReady']),
-    ...mapGetters(['client', 'swapProvider', 'accountItem', 'accountsData']),
+    ...mapGetters(['client', 'accountItem', 'accountsData']),
     networkMarketData() {
       return this.marketData[this.activeNetwork]
     },
@@ -664,7 +674,7 @@ export default {
     },
     selectedQuoteProvider() {
       if (!this.selectedQuote) return null
-      return this.swapProvider(this.activeNetwork, this.selectedQuote.provider)
+      return getSwapProvider(this.activeNetwork, this.selectedQuote.provider)
     },
     defaultAmount() {
       const min = BN(this.min)
@@ -1234,6 +1244,15 @@ export default {
         this.updateSwapFees()
       }
     }, 800),
+    getAccountId() {
+      if (
+        this.selectedQuoteProvider.config.type === SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE
+      ) {
+        return this.fromAccountId
+      }
+
+      return this.toAccountId
+    },
     applyCustomFee({ asset, fee }) {
       const assetFees = this.getAssetFees(asset)
       const presetFee = Object.entries(assetFees).find(

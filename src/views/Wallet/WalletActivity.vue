@@ -14,7 +14,7 @@
 import ActivityFilter from '@/components/ActivityFilter'
 import TransactionList from '@/components/TransactionList'
 import { mapGetters, mapState } from 'vuex'
-import { applyActivityFilters } from '@/utils/history'
+import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import EmptyActivity from '@/components/EmptyActivity'
 
 export default {

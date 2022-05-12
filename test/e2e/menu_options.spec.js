@@ -12,7 +12,6 @@ const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
 let browser, page
-const password = '123123123'
 
 describe('Hamburger menu options["MAINNET"]', async () => {
   beforeEach(async () => {
@@ -27,7 +26,7 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
@@ -93,7 +92,7 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     )
     await page.click('#i_have_privacy_button')
     await page.waitForSelector('#password', { visible: true })
-    await page.type('#password', password)
+    await page.type('#password', process.env.TEST_WALLET_PASSWORD)
     await page.click('#checkbox')
     await page.waitForSelector('#continue_button_to_see_seed_phrase:not([disabled])')
     await page.click('#continue_button_to_see_seed_phrase')
@@ -152,7 +151,7 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     // Clock on Lock
     await overviewPage.ClickLock(page)
     // Unlock
-    await passwordPage.ClickUnlock(page, password)
+    await passwordPage.ClickUnlock(page, process.env.TEST_WALLET_PASSWORD)
   })
   it('Import wallet,lock wallet and while unlock wallet check password error', async () => {
     // check Send & Swap & Receive options have been displayed
@@ -178,7 +177,7 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     await homePage.ClickOnAcceptPrivacy(page)
     // Enter the seed phrase & submit password details
     await homePage.EnterSeedWords(page)
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page, process.env.TEST_WALLET_PASSWORD)
     // check user landed on overview page
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
