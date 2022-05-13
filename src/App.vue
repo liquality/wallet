@@ -28,41 +28,8 @@ export default {
   methods: {
     ...mapActions(['initializeAnalytics'])
   },
-  watch: {
-    // eslint-disable-next-line no-unused-vars
-    unlockedAt: function (unlocked) {
-      if (
-        this.$route.path.startsWith('/permission') ||
-        this.$route.path.startsWith('/enable') ||
-        this.$route.path.startsWith('/request-unlock') ||
-        this.$route.query.mode === 'tab'
-      )
-        return
-      if (unlocked) {
-        debugger
-        this.$router.replace('/wallet')
-      }
-    },
-    activeNetwork: function () {
-      if (this.$route.query.mode === 'tab') return
-      if (
-        ['Send', 'Receive', 'Swap', 'Account', 'SwapDetails', 'WalletActivity'].includes(
-          this.$route.name
-        )
-      ) {
-        debugger
-        this.$router.replace('/wallet')
-      }
-    }
-  },
   async created() {
     await this.initializeAnalytics()
-  },
-  beforeCreate() {
-    // debugger
-    // if (this.$route.query?.redirectTo) {
-    //   this.$router.replace(this.$router.query.redirectTo)
-    // }
   }
 }
 </script>

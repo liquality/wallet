@@ -40,7 +40,6 @@ import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { getNextAccountColor } from '@liquality/wallet-core/dist/utils/accounts'
 
-
 const LEDGER_PER_PAGE = 5
 
 export default {

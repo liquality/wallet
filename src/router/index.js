@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { broker } from '../store'
+import store, { broker } from '../store'
 
 import Splash from '@/views/Splash.vue'
 import OnboardingSetup from '@/views/Onboarding/OnboardingSetup.vue'
@@ -44,45 +44,56 @@ const routes = [
   // Onboarding
   {
     path: '/',
-    component: Splash
+    component: Splash,
+    name: 'Splash',
+    meta: { protect: false }
   },
   {
     path: '/onboarding/import',
-    component: ImportWallet
+    component: ImportWallet,
+    meta: { protect: false }
   },
   {
     path: '/open',
-    component: Open
+    name: 'OpenWallet',
+    component: Open,
+    meta: { protect: false }
   },
   {
     path: '/onboarding/setup/:seedphrase?',
     component: OnboardingSetup,
     name: 'OnboardingSetup',
-    props: true
+    props: true,
+    meta: { protect: false }
   },
   {
     path: '/onboarding/home',
     component: OnboardingHome,
-    name: 'OnboardingHome'
+    name: 'OnboardingHome',
+    meta: { protect: false }
   },
   // Onboarding
 
   // Settings
   {
     path: '/settings',
-    component: Settings
+    component: Settings,
+    meta: { protect: true }
   },
   {
     path: '/settings/experiments',
-    component: Experiments
+    component: Experiments,
+    meta: { protect: true }
   },
   {
     path: '/settings/manage-assets',
-    component: ManageAssets
+    component: ManageAssets,
+    meta: { protect: true }
   },
   {
     path: '/settings/manage-assets/custom-token',
-    component: CustomToken
+    component: CustomToken,
+    meta: { protect: true }
   },
   // Settings
 
@@ -91,6 +102,7 @@ const routes = [
     path: '/wallet',
     name: 'Wallet',
     component: Wallet,
+    meta: { protect: true },
     children: [
       {
         path: 'assets',
@@ -113,13 +125,15 @@ const routes = [
     path: '/details/swap/:id',
     component: SwapDetails,
     name: 'SwapDetails',
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     path: '/details/transaction/:id',
     component: TransactionDetails,
     name: 'TransactionDetails',
-    props: true
+    props: true,
+    meta: { protect: true }
   },
 
   // Accounts
@@ -127,101 +141,120 @@ const routes = [
     path: '/accounts/management',
     component: ManageAccounts,
     name: 'ManageAccounts',
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     path: '/accounts/create/:chainId?',
     component: CreateAccount,
     name: 'CreateAccount',
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     path: '/accounts/hardware-wallet',
     component: HardwareWallet,
     props: true,
-    name: 'HardwareWallet'
+    name: 'HardwareWallet',
+    meta: { protect: true }
   },
   {
     name: 'Account',
     path: '/accounts/:accountId/:asset',
     component: Account,
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     name: 'Send',
     path: '/accounts/:accountId/:asset/send',
     component: Send,
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     name: 'Receive',
     path: '/accounts/:accountId/:asset/receive',
     component: Receive,
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     name: 'Swap',
     path: '/accounts/:accountId/:routeAsset/swap',
     component: Swap,
-    props: true
+    props: true,
+    meta: { protect: true }
   },
 
   // Assets list
   {
     path: '/assets/:action',
     component: AssetList,
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   // Wallet
 
   // Injection
   {
     path: '/request-unlock',
-    component: RequestUnlockWallet
+    component: RequestUnlockWallet,
+    meta: { protect: false }
   },
   {
     path: '/enable',
-    component: Enable
+    component: Enable,
+    meta: { protect: false }
   },
   {
     path: '/permission/send',
-    component: PermissionSend
+    component: PermissionSend,
+    meta: { protect: false }
   },
   {
     path: '/permission/terra',
-    component: PermissionTerra
+    component: PermissionTerra,
+    meta: { protect: false }
   },
   {
     path: '/permission/sign',
-    component: PermissionSign
+    component: PermissionSign,
+    meta: { protect: false }
   },
   {
     path: '/permission/signPsbt',
-    component: PermissionSignPsbt
+    component: PermissionSignPsbt,
+    meta: { protect: false }
   },
   {
     path: '/permission/default',
-    component: Permission
+    component: Permission,
+    meta: { protect: false }
   },
   // Injection
 
   // SeedPhrase
   {
     path: '/privacywarning',
-    component: Warning
+    component: Warning,
+    meta: { protect: false }
   },
   {
     path: '/seedlogin',
-    component: LoginPhrase
+    component: LoginPhrase,
+    meta: { protect: false }
   },
   {
     path: '/seedreveal',
-    component: PhraseReveal
+    component: PhraseReveal,
+    meta: { protect: true }
   },
 
   // Export Private Key
   {
     path: '/export/:accountId',
+    meta: { protect: true },
     component: Warning,
     props: ({ params: { accountId } }) => ({
       title: 'Show Private Key?',
@@ -231,6 +264,7 @@ const routes = [
   {
     path: '/export/:accountId/login',
     component: LoginPhrase,
+    meta: { protect: true },
     props: ({ params: { accountId } }) => ({
       title: 'Sign-in to Export Private Key',
       nextPath: `/export/${accountId}/reveal`
@@ -240,7 +274,8 @@ const routes = [
     path: '/export/:accountId/reveal',
     component: ExportPrivateKey,
     name: 'ExportPrivateKey',
-    props: true
+    props: true,
+    meta: { protect: true }
   }
 ]
 
@@ -249,11 +284,12 @@ const router = new VueRouter({
   routes
 })
 
-const waitForBrokerReady = async (_to, _from, next) => {
+router.beforeEach(async (to, from, next) => {
+  // wait for the broker
   await broker.ready.promise
-  next()
-}
-
-router.beforeEach(waitForBrokerReady)
+  if (!store.state.unlockedAt && to.meta?.protect == true && to.name !== 'Splash') {
+    next({ name: 'Splash' })
+  } else next()
+})
 
 export default router
