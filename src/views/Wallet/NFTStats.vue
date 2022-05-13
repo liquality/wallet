@@ -16,12 +16,10 @@
         class="account-container_actions_button send-action"
         id="send_action"
       >
-        <!-- <button class="account-container_actions_button"> -->
         <div class="account-container_actions_button_wrapper">
           <SendIcon class="account-container_actions_button_icon" />
         </div>
         Send
-        <!-- </button> -->
       </router-link>
     </div>
   </div>

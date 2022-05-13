@@ -30,7 +30,7 @@
             <h2>Time</h2>
             <div class="d-flex justify-content-between">
               <p>Initiated 4/27/2022, 6:51 pm</p>
-              <p>Completed 4/27/2022, 7:51 pm</p>
+              <!-- <p>Completed 4/27/2022, 7:51 pm</p> -->
             </div>
             <!-- <p>Initiated {{ prettyTime(item.endTime || item.startTime) }}</p> -->
           </div>
@@ -65,7 +65,7 @@
           </div>
         </div>
         <hr />
-        <!-- <Timeline :id="id" :tx="tx" /> -->
+        <Timeline :id="id" :tx="tx" />
       </div>
     </div>
   </div>
@@ -90,7 +90,7 @@ import { getItemIcon } from '@/utils/history'
 
 // import FeeSelector from '@/components/FeeSelector'
 // import CopyIcon from '@/assets/icons/copy.svg'
-// import Timeline from '@/transactions/views/NFTTimeline.vue'
+import Timeline from '@/transactions/views/NFTTimeline.vue'
 // import CompletedIcon from '@/assets/icons/completed.svg'
 // import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -102,7 +102,7 @@ export default {
   components: {
     // FeeSelector,
     // CopyIcon,
-    // Timeline
+    Timeline,
     // CompletedIcon,
     // FailedIcon,
     SpinnerIcon,

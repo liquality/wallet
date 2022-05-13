@@ -98,8 +98,8 @@ import {
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
-import { getSwapProviderConfig } from '@/utils/swaps'
-import { calculateQuoteRate } from '@/utils/quotes'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
+import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 export default {
@@ -120,7 +120,7 @@ export default {
   },
   props: ['id', 'tx'],
   computed: {
-    ...mapGetters(['client', 'accountItem', 'swapProvider']),
+    ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(

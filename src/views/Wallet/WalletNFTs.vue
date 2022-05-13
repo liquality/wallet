@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import NFTAssets from '../../components/NFTAssets.vue'
 
 export default {
@@ -41,24 +41,8 @@ export default {
       assets: []
     }
   },
-  mounted() {
-    this.getNftCollections()
-  },
   computed: {
-    ...mapState(['activeWalletId', 'activeNetwork', 'nftAssetsNumber', 'nftAssets'])
-  },
-  methods: {
-    ...mapActions(['getNFTAssets']),
-    async getNftCollections() {
-      try {
-        await this.getNFTAssets({
-          network: this.activeNetwork,
-          walletId: this.activeWalletId
-        })
-      } catch (error) {
-        console.error(error)
-      }
-    }
+    ...mapState(['activeWalletId', 'activeNetwork', 'nftAssets'])
   }
 }
 </script>

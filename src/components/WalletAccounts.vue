@@ -100,7 +100,7 @@
             <template #icon class="account-asset-item">
               <img :src="getAccountIcon(account.chain)" class="asset-icon" />
             </template>
-            NFT
+            NFTs ({{ nftAssetsNumber }})
           </ListItem>
         </div>
       </div>
@@ -109,6 +109,7 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex'
 import ListItem from '@/components/ListItem'
 import {
   prettyBalance,
@@ -134,7 +135,11 @@ export default {
       expandedAccounts: []
     }
   },
+  created() {
+    this.getNftCollections()
+  },
   computed: {
+    ...mapState(['activeWalletId', 'activeNetwork', 'nftAssetsNumber']),
     filteredItems() {
       if (!this.search) return this.accounts
 
@@ -154,6 +159,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['getNFTAssets']),
     getAccountIcon,
     getAssetIcon,
     prettyBalance,
@@ -176,6 +182,16 @@ export default {
     },
     shouldExpandAccount(account) {
       return this.expandedAccounts.includes(account.id) || this.search
+    },
+    async getNftCollections() {
+      try {
+        await this.getNFTAssets({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId
+        })
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
