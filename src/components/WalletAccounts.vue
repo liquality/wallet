@@ -91,7 +91,7 @@
             </template>
           </ListItem>
           <ListItem
-            v-if="account.chain === 'ethereum'"
+            v-if="account.chain === 'ethereum' && nftAssetsNumber > 0"
             @item-selected="$router.push({ path: '/nft-activity' })"
           >
             <template #prefix>
