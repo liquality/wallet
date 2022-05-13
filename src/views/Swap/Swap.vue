@@ -1424,7 +1424,7 @@ export default {
 }
 
 .selectors-asset {
-  width: 55px !important;
+  width: 70px !important;
 }
 
 .selector-asset-switch {

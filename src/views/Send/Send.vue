@@ -686,7 +686,7 @@ export default {
       margin-left: 6px;
     }
     .selectors-asset {
-      width: 55px;
+      width: 70px;
     }
     .custom-fees {
       display: flex;
