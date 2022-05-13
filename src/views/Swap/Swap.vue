@@ -498,7 +498,7 @@ export default {
     routeAsset: String,
     accountId: String
   },
-  created() {
+  async created() {
     this.asset = this.routeAsset
     this.fromAccountId = this.accountId
     let _sendAmount = 0.0
@@ -506,20 +506,18 @@ export default {
 
     if (this.$route.query.mode === 'tab') {
       const {
-        amount,
         toAccountId,
         sendAmount,
         toAsset,
         selectedFees,
         customFees,
         currentStep,
-        maxOptionActive
+        maxOptionActive,
+        provider,
+        userSelectedQuote
       } = this.$route.query
-
-      this.amount = amount
       this.currentStep = currentStep
       this.maxOptionActive = maxOptionActive
-
       this.toAccountId = toAccountId
       _toAsset = toAsset
       _sendAmount = sendAmount
@@ -540,6 +538,10 @@ export default {
           }
         }, {})
       }
+
+      await this._updateQuotes()
+      this.setQuoteProvider(provider)
+      this.userSelectedQuote = userSelectedQuote
     } else {
       this.selectedFee = {
         [this.assetChain]: 'average',
@@ -579,6 +581,7 @@ export default {
 
     this.sendAmount = _sendAmount
     this.fee = this.fees[this.selectedFromFee]?.fee
+    this.updateFiatRates({ assets: [this.toAsset, this.asset] })
     this.updateMarketData({ network: this.activeNetwork })
     ;(async () => {
       await this.updateFees({ asset: this.assetChain })
@@ -1082,7 +1085,7 @@ export default {
         this.updateQuotes()
       }, QUOTE_TIMER_MS)
     },
-    _updateQuotes: _.debounce(async function () {
+    async _updateQuotes() {
       const quotes = await this.getQuotes({
         network: this.activeNetwork,
         from: this.asset,
@@ -1110,24 +1113,52 @@ export default {
       }
       this.updatingQuotes = false
       this.resetQuoteTimer()
+    },
+    debounceUpdateQuotes: _.debounce(async function () {
+      await this._updateQuotes()
     }, 1000),
     updateQuotes() {
       if (BN(this.sendAmount).eq(0)) return // Don't update quote when amount 0
       if (this.currentStep !== 'inputs') return // Don't update quote when in review
       this.quotes = []
       this.updatingQuotes = true
-      this._updateQuotes()
+      this.debounceUpdateQuotes()
     },
-    selectQuote(provider) {
+    setQuoteProvider(provider) {
       const matchingQuote = this.quotes.find((q) => q.provider === provider)
       this.selectedQuote = matchingQuote
+      console.log('this.selectedQuote', this.matchingQuote)
+    },
+    selectQuote(provider) {
+      this.setQuoteProvider(provider)
       this.userSelectedQuote = true
       this.showQuotesModal = false
     },
     review() {
       if (this.account?.type.includes('ledger')) {
         // open in a new tab
-        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?mode=tab&amount=${this.amount}&address=${this.address}&selectedFee=${this.selectedFee}&currentStep=confirm&maxOptionActive=${this.maxOptionActive}`
+        const frees = []
+        const customFees = []
+        const fee = { ...this.selectedFee }
+        const customFee = { ...this.customFees }
+
+        for (var p in fee) {
+          frees.push(encodeURIComponent(p) + '=' + encodeURIComponent(fee[p]))
+        }
+        if (customFee) {
+          for (var c in customFee) {
+            customFees.push(encodeURIComponent(c) + '=' + encodeURIComponent(customFee[c]))
+          }
+        }
+        const url = `/index.html#/accounts/${this.accountId}/${
+          this.asset
+        }/swap?mode=tab&sendAmount=${this.sendAmount}&toAccountId=${this.toAccountId}&toAsset=${
+          this.toAsset
+        }&selectedFees=${frees.join(',')}&userSelectedQuote=${this.userSelectedQuote}&provider=${
+          this.selectedQuote?.provider
+        }&currentStep=confirm&maxOptionActive=${this.maxOptionActive}&customeFees=${customFees.join(
+          ','
+        )}`
         chrome.tabs.create({ url: browser.runtime.getURL(url) })
       } else {
         this.currentStep = 'confirm'

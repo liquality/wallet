@@ -63,7 +63,6 @@
             class="account-container_actions_button"
             active-class=""
             tag="button"
-            :disabled="swapDisabled"
             :to="`/accounts/${accountId}/${asset}/swap`"
           >
             <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
@@ -161,9 +160,6 @@ export default {
       'fiatRates',
       'marketData'
     ]),
-    swapDisabled() {
-      return this.account?.type.includes('ledger')
-    },
     account() {
       return this.accountItem(this.accountId)
     },
