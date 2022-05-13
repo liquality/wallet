@@ -396,6 +396,7 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { version as walletVersion } from '../../../package.json'
 import { ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
@@ -957,6 +958,7 @@ export default {
       this.trackAnalytics({
         event: 'Swap screen',
         properties: {
+          walletVersion,
           category: 'Swap screen',
           action: 'User on SWAP screen',
           label: `${this.toAsset}`
@@ -1295,6 +1297,7 @@ export default {
         this.trackAnalytics({
           event: 'No Liquidity',
           properties: {
+            walletVersion,
             category: 'Swap screen',
             action: 'No Liquidity for pairs',
             from: this.asset,

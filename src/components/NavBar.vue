@@ -72,6 +72,8 @@ import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
 import KeyIcon from '@/assets/icons/key.svg'
 
+import { version as walletVersion } from '../../package.json'
+
 export default {
   directives: {
     clickAway
@@ -104,6 +106,7 @@ export default {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
           action: 'Click on Lock'
         }
@@ -116,6 +119,7 @@ export default {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
           action: 'Click on Backup Seed'
         }
@@ -127,6 +131,7 @@ export default {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
           action: 'Click on Manage Assets'
         }
@@ -138,6 +143,7 @@ export default {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
           action: 'Click on Settings'
         }
@@ -149,6 +155,7 @@ export default {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
           action: 'Click on Export Private Key'
         }
@@ -161,6 +168,7 @@ export default {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
           action: 'Click on Manage Accounts'
         }
@@ -172,6 +180,7 @@ export default {
       this.trackAnalytics({
         event: 'HamburgerIcon',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
           action: 'Click on Ledger'
         }

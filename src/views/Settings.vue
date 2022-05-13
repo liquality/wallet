@@ -121,6 +121,7 @@ export default {
       this.trackAnalytics({
         event: 'Settings',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Default Web3 Wallet Updated',
           label: `${enable}`
@@ -135,6 +136,7 @@ export default {
       this.trackAnalytics({
         event: 'Analytics Updated',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Analytics toggle button on/off',
           label: `${enable}`
@@ -151,6 +153,7 @@ export default {
       this.trackAnalytics({
         event: 'Download logs',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Wallet Logs Accessed'
         }
@@ -160,6 +163,7 @@ export default {
       this.trackAnalytics({
         event: 'Forgot all Dapp Connections',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Forgot all Dapp Connections'
         }

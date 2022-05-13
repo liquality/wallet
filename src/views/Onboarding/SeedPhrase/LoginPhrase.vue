@@ -60,6 +60,7 @@
 <script>
 import { mapActions } from 'vuex'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
+import { version as walletVersion } from '../../../../package.json'
 export default {
   props: {
     title: {
@@ -105,6 +106,7 @@ export default {
       this.trackAnalytics({
         event: 'BackupSeed',
         properties: {
+          walletVersion,
           category: this.nextPath === '/seedLogin' ? 'Show Seed Phrase' : this.title,
           action: 'Click I have Privacy',
           label: [`${this.error}`]
