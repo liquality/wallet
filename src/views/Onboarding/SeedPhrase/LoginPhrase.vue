@@ -42,7 +42,7 @@
       </div>
       <div class="button-group">
         <router-link to="/wallet"
-        ><button class="btn btn-outline-primary btn-lg">Cancel</button></router-link
+          ><button class="btn btn-outline-primary btn-lg">Cancel</button></router-link
         >
         <button
           class="btn btn-primary btn-lg"

@@ -16,7 +16,8 @@
         </div>
       </div>
     </template>
-    <template #footer>'
+    <template #footer
+      >'
       <div class="footer">
         <div class="text-muted">Version {{ appVersion }}</div>
         <button class="btn btn-outline-clear" id="wats_new_close_btn" @click="close">Close</button>

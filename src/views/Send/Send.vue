@@ -42,7 +42,7 @@
               v-if="address && addressError"
               class="text-danger form-text text-right"
               id="address_format_error"
-            >{{ addressError }}</small
+              >{{ addressError }}</small
             >
           </div>
           <div class="form-group mt-20" v-if="showMemoInput">
@@ -75,7 +75,7 @@
                       <span class="selectors-asset">{{ assetChain }}</span>
                       <div class="custom-fees" v-if="customFee">
                         <span v-if="prettyFee.eq(0)"
-                        >{{ currentChainAssetFee }} {{ currentChainUnit }}</span
+                          >{{ currentChainAssetFee }} {{ currentChainUnit }}</span
                         >
                         <span v-else>{{ prettyFee }} {{ assetChain }}</span> /
                         {{ totalFeeInFiat }} USD

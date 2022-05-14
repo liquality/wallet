@@ -8,7 +8,7 @@
         <div class="setting-item_title flex-fill mb-2">
           Default Web3 Wallet
           <span class="setting-item_sub"
-          >Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps
+            >Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps
             while this is enabled.</span
           >
         </div>
@@ -45,7 +45,7 @@
         <div class="setting-item_title flex-fill mb-2">
           Analytics
           <span class="setting-item_sub"
-          >Share where you click. No identifying data is collected.</span
+            >Share where you click. No identifying data is collected.</span
           >
         </div>
         <div class="setting-item_control" id="analytics_toggle_button">
@@ -60,7 +60,7 @@
         <div class="setting-item_title flex-fill mb-2">
           Wallet Logs
           <span class="setting-item_sub"
-          >The wallet logs contain your public information such as addresses and
+            >The wallet logs contain your public information such as addresses and
             transactions.</span
           >
         </div>
