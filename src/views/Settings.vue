@@ -8,7 +8,7 @@
         <div class="setting-item_title flex-fill mb-2">
           Default Web3 Wallet
           <span class="setting-item_sub"
-            >Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps
+          >Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps
             while this is enabled.</span
           >
         </div>
@@ -45,7 +45,7 @@
         <div class="setting-item_title flex-fill mb-2">
           Analytics
           <span class="setting-item_sub"
-            >Share where you click. No identifying data is collected.</span
+          >Share where you click. No identifying data is collected.</span
           >
         </div>
         <div class="setting-item_control" id="analytics_toggle_button">
@@ -60,7 +60,7 @@
         <div class="setting-item_title flex-fill mb-2">
           Wallet Logs
           <span class="setting-item_sub"
-            >The wallet logs contain your public information such as addresses and
+          >The wallet logs contain your public information such as addresses and
             transactions.</span
           >
         </div>
@@ -121,6 +121,7 @@ export default {
       this.trackAnalytics({
         event: 'Settings',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Default Web3 Wallet Updated',
           label: `${enable}`
@@ -135,6 +136,7 @@ export default {
       this.trackAnalytics({
         event: 'Analytics Updated',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Analytics toggle button on/off',
           label: `${enable}`
@@ -151,6 +153,7 @@ export default {
       this.trackAnalytics({
         event: 'Download logs',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Wallet Logs Accessed'
         }
@@ -160,6 +163,7 @@ export default {
       this.trackAnalytics({
         event: 'Forgot all Dapp Connections',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Forgot all Dapp Connections'
         }

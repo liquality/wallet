@@ -42,7 +42,7 @@
               v-if="address && addressError"
               class="text-danger form-text text-right"
               id="address_format_error"
-              >{{ addressError }}</small
+            >{{ addressError }}</small
             >
           </div>
           <div class="form-group mt-20" v-if="showMemoInput">
@@ -75,7 +75,7 @@
                       <span class="selectors-asset">{{ assetChain }}</span>
                       <div class="custom-fees" v-if="customFee">
                         <span v-if="prettyFee.eq(0)"
-                          >{{ currentChainAssetFee }} {{ currentChainUnit }}</span
+                        >{{ currentChainAssetFee }} {{ currentChainUnit }}</span
                         >
                         <span v-else>{{ prettyFee }} {{ assetChain }}</span> /
                         {{ totalFeeInFiat }} USD
@@ -228,6 +228,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { version as walletVersion } from '../../../package.json'
 import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
@@ -627,6 +628,7 @@ export default {
     await this.trackAnalytics({
       event: 'Send screen',
       properties: {
+        walletVersion,
         category: 'Send/Receive',
         action: 'User on Send screen',
         label: `${this.asset}`
