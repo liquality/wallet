@@ -11,19 +11,13 @@
       <InfoNotification v-if="ethRequired">
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
-      <InfoNotification v-if="showBridgeAssetDisabledMessage">
-        <BoostActivateBridgeAsset
-          :network="activeNetwork"
-          :walletId="activeWalletId"
-          :asset="selectedQuote.bridgeAsset"
-        />
-      </InfoNotification>
-      <InfoNotification v-else-if="!canCoverAmmFee">
+      <InfoNotification v-if="!canCoverAmmFee">
         <BridgeAssetRequiredMessage
           :account-id="getAccountId()"
           :asset="selectedQuote.bridgeAsset"
         />
       </InfoNotification>
+
       <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
@@ -82,7 +76,7 @@
               @click="showSwapProvidersInfoModal = true"
               class="ml-auto"
               id="swap_types_option"
-              >Swap Types</a
+            >Swap Types</a
             >
           </label>
           <p class="py-1">
@@ -90,12 +84,12 @@
             <span class="swap-rate_value"> &nbsp;{{ quoteRate || '?' }} </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"
-              ><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span
+            ><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span
             >
           </p>
           <p v-if="quotes.length > 1">
             <a id="see_all_quotes" href="#" @click="showQuotesModal = true"
-              >See all {{ quotes.length }} quotes</a
+            >See all {{ quotes.length }} quotes</a
             >
           </p>
         </div>
@@ -123,7 +117,7 @@
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     <span v-if="getTotalSwapFee(assetFee).dp(6).eq(0)"
-                      >{{ getChainAssetSwapFee(assetFee) }}
+                    >{{ getChainAssetSwapFee(assetFee) }}
                     </span>
                     <span v-else>{{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }}</span> /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
@@ -271,8 +265,8 @@
           </div>
           <div class="detail-group" v-if="receiveFeeRequired || hasPredefinedReceiveFee">
             <label class="text-muted">{{
-              hasPredefinedReceiveFee ? 'Receive Fee' : 'Network Fee'
-            }}</label>
+                hasPredefinedReceiveFee ? 'Receive Fee' : 'Network Fee'
+              }}</label>
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
               id="swap_receive_network_fee_value"
@@ -396,14 +390,12 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { version as walletVersion } from '../../../package.json'
 import { ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
 import BridgeAssetRequiredMessage from '@/components/BridgeAssetRequiredMessage'
-import BoostActivateBridgeAsset from '@/components/BoostActivateBridgeAsset'
 import NoLiquidityMessage from '@/components/NoLiquidityMessage'
 import {
   cryptoToFiat,
@@ -441,6 +433,7 @@ import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
+import { version as walletVersion } from '../../../package.json'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
 import { buildConfig } from '@liquality/wallet-core'
@@ -457,7 +450,6 @@ export default {
     InfoNotification,
     EthRequiredMessage,
     BridgeAssetRequiredMessage,
-    BoostActivateBridgeAsset,
     NoLiquidityMessage,
     FeeSelector,
     SwapIcon,
@@ -571,17 +563,6 @@ export default {
     showNoLiquidityMessage() {
       return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
-    showBridgeAssetDisabledMessage() {
-      const provider = this.selectedQuote?.provider
-      const bridgeAsset = this.selectedQuote?.bridgeAsset
-      const enabledAssets = this.enabledAssets[this.activeNetwork][this.activeWalletId]
-
-      return (
-        (provider === SwapProviderType.LiqualityBoostNativeToERC20 ||
-          provider === SwapProviderType.LiqualityBoostERC20ToNative) &&
-        !enabledAssets.includes(bridgeAsset)
-      )
-    },
     sendAmount: {
       get() {
         return this.stateSendAmount
@@ -625,12 +606,13 @@ export default {
       return cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
     },
     ...mapState([
+      'activeNetwork',
+      'activeWalletId',
       'marketData',
       'fees',
       'fiatRates',
       'activeWalletId',
-      'activeNetwork',
-      'enabledAssets'
+      'activeNetwork'
     ]),
     ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem', 'accountsData']),
@@ -693,7 +675,7 @@ export default {
           pair.from === fromQuoteAsset &&
           pair.to === toQuoteAsset &&
           getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
-            SwapProviderType.Liquality
+          SwapProviderType.Liquality
         )
       })
 
@@ -762,14 +744,10 @@ export default {
 
       const account = isERC20(this.asset) ? this.account : this.toAccount
       const balance = account?.balances[this.selectedQuote.bridgeAsset]
-
-      if (!balance) return true
-
       const SwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
         isERC20(this.asset) ? this.fromSwapFee : this.receiveFee
       )
-
       return BN(balance).gt(SwapFeeInUnits)
     },
     availableAmount() {
@@ -829,7 +807,6 @@ export default {
         this.updatingQuotes ||
         this.ethRequired ||
         //!this.canCoverAmmFee ||
-        this.showBridgeAssetDisabledMessage ||
         this.showNoLiquidityMessage ||
         this.amountError ||
         BN(this.safeAmount).lte(0)
