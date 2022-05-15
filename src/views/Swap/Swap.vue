@@ -76,7 +76,7 @@
               @click="showSwapProvidersInfoModal = true"
               class="ml-auto"
               id="swap_types_option"
-            >Swap Types</a
+              >Swap Types</a
             >
           </label>
           <p class="py-1">
@@ -84,12 +84,12 @@
             <span class="swap-rate_value"> &nbsp;{{ quoteRate || '?' }} </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"
-            ><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span
+              ><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span
             >
           </p>
           <p v-if="quotes.length > 1">
             <a id="see_all_quotes" href="#" @click="showQuotesModal = true"
-            >See all {{ quotes.length }} quotes</a
+              >See all {{ quotes.length }} quotes</a
             >
           </p>
         </div>
@@ -117,7 +117,7 @@
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     <span v-if="getTotalSwapFee(assetFee).dp(6).eq(0)"
-                    >{{ getChainAssetSwapFee(assetFee) }}
+                      >{{ getChainAssetSwapFee(assetFee) }}
                     </span>
                     <span v-else>{{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }}</span> /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
@@ -265,8 +265,8 @@
           </div>
           <div class="detail-group" v-if="receiveFeeRequired || hasPredefinedReceiveFee">
             <label class="text-muted">{{
-                hasPredefinedReceiveFee ? 'Receive Fee' : 'Network Fee'
-              }}</label>
+              hasPredefinedReceiveFee ? 'Receive Fee' : 'Network Fee'
+            }}</label>
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
               id="swap_receive_network_fee_value"
@@ -675,7 +675,7 @@ export default {
           pair.from === fromQuoteAsset &&
           pair.to === toQuoteAsset &&
           getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
-          SwapProviderType.Liquality
+            SwapProviderType.Liquality
         )
       })
 
