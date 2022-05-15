@@ -1,7 +1,7 @@
 <template>
   <div class="account-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account-title"><img :src="getAssetIcon(asset)" class="asset-icon" /> NFTs</span>
+      <span class="account-title"><NFTIcon class="asset-icon" /> NFTs</span>
     </NavBar>
     <div class="account-content">
       <NFTStats />
@@ -45,6 +45,7 @@ import NFTStats from '@/views/Wallet/NFTStats'
 import amplitude from 'amplitude-js'
 import WalletNFTs from './WalletNFTs.vue'
 import { getAssetIcon } from '@/utils/asset'
+import NFTIcon from '@/assets/icons/nft_icon.svg'
 
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
@@ -54,7 +55,8 @@ export default {
     ActivityFilter,
     TransactionList,
     WalletNFTs,
-    NFTStats
+    NFTStats,
+    NFTIcon
   },
   data() {
     return {

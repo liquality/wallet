@@ -71,6 +71,18 @@
         </ListItem>
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
           <ListItem
+            v-if="account.chain === 'ethereum' && nftAssetsNumber > 0"
+            @item-selected="$router.push({ path: '/nft-activity' })"
+          >
+            <template #prefix>
+              <div class="account-color" :style="{ 'background-color': account.color }"></div>
+            </template>
+            <template #icon class="account-asset-item">
+              <NFTIcon class="asset-icon" />
+            </template>
+            NFTs ({{ nftAssetsNumber }})
+          </ListItem>
+          <ListItem
             v-for="asset in account.assets"
             :id="asset"
             :key="asset"
@@ -89,18 +101,6 @@
             <template #detail-sub v-if="account.fiatBalances[asset]">
               {{ formatFiatUI(formatFiat(account.fiatBalances[asset])) }}
             </template>
-          </ListItem>
-          <ListItem
-            v-if="account.chain === 'ethereum' && nftAssetsNumber > 0"
-            @item-selected="$router.push({ path: '/nft-activity' })"
-          >
-            <template #prefix>
-              <div class="account-color" :style="{ 'background-color': account.color }"></div>
-            </template>
-            <template #icon class="account-asset-item">
-              <img :src="getAccountIcon(account.chain)" class="asset-icon" />
-            </template>
-            NFTs ({{ nftAssetsNumber }})
           </ListItem>
         </div>
       </div>
@@ -122,12 +122,14 @@ import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import NFTIcon from '@/assets/icons/nft_icon.svg'
 
 export default {
   components: {
     ListItem,
     PlusIcon,
-    MinusIcon
+    MinusIcon,
+    NFTIcon
   },
   props: ['search', 'accounts'],
   data() {
