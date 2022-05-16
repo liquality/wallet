@@ -8,7 +8,7 @@
       <div class="drawer nft-details">
         <div class="d-flex justify-content-between pointer-cursor">
           <h1 class="nft-details_name" v-if="nftAsset.name">{{ nftAsset.name }}</h1>
-          <ArrowDown
+          <ChevronDownIcon
             class="nft-details_arrow"
             style="transform: scaleY(-1)"
             @click="showFullscreen = true"
@@ -26,7 +26,10 @@
       <div class="drawer drawer-open nft-details">
         <div class="d-flex justify-content-between pointer-cursor">
           <h1 class="nft-details_name" v-if="nftAsset.name">{{ nftAsset.name }}</h1>
-          <ArrowDown class="nft-details_arrow cursor-pointer" @click="showFullscreen = false" />
+          <ChevronDownIcon
+            class="nft-details_arrow cursor-pointer"
+            @click="showFullscreen = false"
+          />
         </div>
         <h5 class="nft-details_collection-details" v-if="nftAsset.collection">
           {{ nftAsset.collection.name }}
@@ -76,15 +79,21 @@
                 </div>
                 <div class="d-flex justify-content-between">
                   <h5 class="nft-details_name">Token ID</h5>
+                  <p class="nft-details_name text-underlin text-break" v-if="nftAsset.token_id">
+                    {{ nftAsset.token_id }}
+                  </p>
                 </div>
                 <div class="d-flex justify-content-between">
                   <h5 class="nft-details_name">Token Standard</h5>
-                  <p class="nft-details_name text-underline" v-if="nftAsset.asset_contract">
+                  <p
+                    class="nft-details_name text-underline text-break"
+                    v-if="nftAsset.asset_contract"
+                  >
                     {{ nftAsset.asset_contract.schema_name }}
                   </p>
                 </div>
                 <div class="d-flex justify-content-between">
-                  <h5 class="nft-details_name">Blockchain</h5>
+                  <h5 class="nft-details_nam">Blockchain</h5>
                   <p class="nft-details_name text-underline">Ethereum</p>
                 </div>
               </template>
@@ -98,7 +107,7 @@
 
 <script>
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import ArrowDown from '@/assets/icons/arrow-down.svg'
+import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import NavBar from '../../components/NavBar.vue'
 export default {
   data() {
@@ -108,7 +117,7 @@ export default {
     }
   },
   components: {
-    ArrowDown,
+    ChevronDownIcon,
     NavBar
   },
   computed: {
@@ -158,6 +167,7 @@ export default {
 
   .drawer.nft-details {
     background: #ffffff;
+    border: 1px solid #d9dfe5;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -165,9 +175,9 @@ export default {
     padding: 1rem 2rem;
     border-radius: 15px 15px 0 0;
     &_name {
-      font-size: 18px;
+      font-size: 14px;
       line-height: 26px;
-      font-weight: 500;
+      font-weight: 600;
     }
     &_collection-details {
       font-size: 14px;

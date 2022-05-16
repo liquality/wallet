@@ -9,46 +9,47 @@
           <div class="col-10">
             <h2>Status</h2>
             <p class="text-grey" id="transaction_details_status_and_confirmations">
-              Pending
-              <!-- {{ status }} -->
-              <span id="transaction_details_status_number_of_confirmations">
-                <!-- v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0" -->
-                / 00 Confirmations
-                <!-- / {{ tx.confirmations }} Confirmations -->
+              {{ status }}
+              <span
+                id="transaction_details_status_number_of_confirmations"
+                v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"
+              >
+                / 00 Confirmations / {{ tx.confirmations }} Confirmations
               </span>
             </p>
           </div>
           <div class="col-2">
-            <!-- <CompletedIcon v-if="item.status === 'SUCCESS'" class="tx-details_status-icon" /> -->
-            <!-- <FailedIcon v-else-if="item.status === 'FAILED'" class="tx-details_status-icon" /> -->
-            <!-- <SpinnerIcon v-else class="tx-details_status-icon" /> -->
-            <SpinnerIcon class="tx-details_status-icon" />
+            <CompletedIcon v-if="item.status === 'SUCCESS'" class="tx-details_status-icon" />
+            <FailedIcon v-else-if="item.status === 'FAILED'" class="tx-details_status-icon" />
+            <SpinnerIcon v-else class="tx-details_status-icon" />
           </div>
         </div>
         <div class="row" id="transaction_details_date_time">
           <div class="col">
             <h2>Time</h2>
             <div class="d-flex justify-content-between">
-              <p>Initiated 4/27/2022, 6:51 pm</p>
-              <!-- <p>Completed 4/27/2022, 7:51 pm</p> -->
+              <p v-if="item.startTime">Initiated {{ prettyTime(item.startTime) }}</p>
+              <p v-if="item.endTime">Completed {{ prettyTime(item.endTime) }}</p>
             </div>
-            <!-- <p>Initiated {{ prettyTime(item.endTime || item.startTime) }}</p> -->
           </div>
         </div>
         <div class="row">
           <div class="col">
             <h2>Sent Asset</h2>
             <div class="d-flex">
-              <div class="nft-image mr-2" style="--img-width: 27px">
-                <img src="" alt="" />
+              <div class="nft-image mr-2" style="--img-width: 128px">
+                <img :src="item.nft.image_thumbnail_url" alt="nft-image" />
               </div>
               <div>
-                <p>Habibi Mehrain</p>
-                <p>Cryptokitties</p>
-                <p class="text-grey"><span class="mr-5">Token ID</span> #5190</p>
+                <p>{{ item.nft.name }}</p>
+                <p>{{ item.nft.collection.name }}</p>
+                <p class="text-grey">
+                  <span class="mr-2">Token ID</span>
+                  <span class="text-break"> {{ item.nft.token_id }}</span>
+                </p>
                 <p class="text-grey">
                   <span class="mr-2"> Contract Address</span>
-                  <span class="underline">0x0601...266d </span>
+                  <span class="text-break underline"> {{ item.nft.asset_contract.address }} </span>
                 </p>
               </div>
             </div>
@@ -59,12 +60,62 @@
           <div class="col">
             <h2>Network Speed/Fee</h2>
             <p class="d-flex justify-content-between">
-              <span id="transaction_detail_network_speed">ETH Avg:</span>
-              <span id="transaction_detail_fee_units">~0.004325 ETH / 13.54 USD}</span>
+              <span id="transaction_detail_network_speed"
+                >{{ assetChain }} Speed:
+                <span class="text-capitalize">{{ item.feeLabel }}</span></span
+              >
+              <span id="transaction_detail_fee_units">Fee: {{ itemFee }} {{ feeUnit }}</span>
+              <span>
+                <a
+                  class="speed-up"
+                  v-if="canUpdateFee && !showFeeSelector"
+                  @click="openFeeSelector()"
+                >
+                  Speed up
+                </a>
+              </span>
             </p>
+            <div v-if="showFeeSelector" class="mt-2">
+              <FeeSelector
+                :asset="item.from"
+                :totalFees="sendFees"
+                v-model="selectedFee"
+                v-bind:fees="assetFees"
+                v-bind:fiatRates="fiatRates"
+              />
+              <button
+                class="btn btn-sm btn-primary btn-icon ml-2"
+                :disabled="feeSelectorLoading"
+                @click="updateFee()"
+              >
+                <SpinnerIcon class="btn-loading" v-if="feeSelectorLoading" />
+                <template v-else>Update</template>
+              </button>
+              <button
+                class="btn btn-sm btn-outline-primary ml-2"
+                v-if="!feeSelectorLoading"
+                @click="closeFeeSelector()"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
         <hr />
+        <div class="row">
+          <div
+            class="col tx-details_link d-flex align-items-start"
+            id="transaction_details_transaction_id"
+          >
+            <h2 class="mr-4">Transaction ID</h2>
+            <p>
+              <a :href="transactionLink" target="_blank" id="transactionLink">{{
+                shortenAddress(item.txHash)
+              }}</a>
+              <CopyIcon @click="copy(item.txHash)" />
+            </p>
+          </div>
+        </div>
         <Timeline :id="id" :tx="tx" />
       </div>
     </div>
@@ -88,11 +139,11 @@ import {
 import { getAssetIcon } from '@/utils/asset'
 import { getItemIcon } from '@/utils/history'
 
-// import FeeSelector from '@/components/FeeSelector'
-// import CopyIcon from '@/assets/icons/copy.svg'
+import FeeSelector from '@/components/FeeSelector'
+import CopyIcon from '@/assets/icons/copy.svg'
 import Timeline from '@/transactions/views/NFTTimeline.vue'
-// import CompletedIcon from '@/assets/icons/completed.svg'
-// import FailedIcon from '@/assets/icons/failed.svg'
+import CompletedIcon from '@/assets/icons/completed.svg'
+import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
 import { isObject } from 'lodash-es'
@@ -100,11 +151,11 @@ import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 export default {
   components: {
-    // FeeSelector,
-    // CopyIcon,
+    FeeSelector,
+    CopyIcon,
     Timeline,
-    // CompletedIcon,
-    // FailedIcon,
+    CompletedIcon,
+    FailedIcon,
     SpinnerIcon,
     NavBar
   },
@@ -131,9 +182,8 @@ export default {
     item() {
       console.log(
         '🚀 ~ file: NFTTransactionDetails.vue ~ line 135 ~ item ~  this.history',
-        this.history
+        this.history[this.activeNetwork][this.activeWalletId].find((item) => item.id === this.id)
       )
-      console.log('🚀 ~ file: NFTTransactionDetails.vue ~ line 135 ~ item ~  this.id', this.id)
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )

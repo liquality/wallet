@@ -297,6 +297,14 @@ export default {
     await this.updateFees({ asset: this.assetChain })
     console.log('🚀 ~ file: SendNFT.vue ~ line 285 ~ created ~  await this.fees', this.fees)
     await this.updateSendFees(this.amount)
+    await this.trackAnalytics({
+      event: 'Send NFT screen',
+      properties: {
+        category: 'Send/Receive',
+        action: 'User on Send NFT screen',
+        label: `${this.asset}`
+      }
+    })
     // if (this.nftAssets) {
     //   const firstCollection = this.nftAssets[Object.keys(this.nftAssets)[0]]
     //   console.log(
@@ -408,7 +416,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['sendNFTTransaction', 'updateFees']),
+    ...mapActions(['sendNFTTransaction', 'updateFees', 'trackAnalytics']),
     getAssetIcon,
     shortenAddress,
     formatFiat,
@@ -516,7 +524,7 @@ export default {
           receiver: this.address,
           tokenIDs: [this.selectedNFT.token_id],
           values: [1],
-          // data: '0x00',
+          nft: this.selectedNFT,
           fee: this.selectedFee,
           feeLabel: this.selectedFeeLabel,
           fiatRate: this.fiatRates[this.asset]
@@ -524,10 +532,7 @@ export default {
         console.log('🚀 ~ file: SendNFT.vue ~ line 512 ~ sendNFT ~ data', data)
         const response = await this.sendNFTTransaction(data)
         console.log('🚀 ~ file: SendNFT.vue ~ line 397 ~ sendNFT ~ response', response)
-        // this.$router.replace(`/accounts/${this.account.id}/${this.asset}`)
-        this.$router.replace({
-          path: `/nft-transaction-details/${this.selectedNFT.token_id}`
-        })
+        this.$router.replace(`/accounts/${this.account.id}/${this.asset}`)
       } catch (error) {
         console.error(error)
         const { message } = error

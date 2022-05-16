@@ -67,6 +67,7 @@ export default {
 .nft-image {
   width: var(--img-width);
   border-radius: 10px;
+  border: 1px solid $hr-border-color;
   overflow: hidden;
   display: flex;
   justify-content: center;

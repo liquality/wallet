@@ -122,7 +122,7 @@ import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import NFTIcon from '@/assets/icons/nft_icon.svg'
+import NFTIcon from '@/assets/icons/nft.svg'
 
 export default {
   components: {

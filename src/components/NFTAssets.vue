@@ -4,9 +4,8 @@
       <div class="nft-assets__container__heading">
         <h5>{{ collectionName }} ({{ nftAssets.length }})</h5>
         <span class="d-flex align-items-center">
-          <ChevronRight />
           <router-link
-            class="d-flex align-items-center"
+            class="d-flex align-items-center link"
             :to="{
               path: `/details/nft-collection/${collectionName}`,
               query: {
@@ -14,7 +13,7 @@
                 source: source
               }
             }"
-            >all</router-link
+            >see all</router-link
           >
         </span>
       </div>
@@ -28,7 +27,6 @@
 </template>
 
 <script>
-import ChevronRight from '@/assets/icons/chevron_right_gray.svg'
 import NFTAsset from './NFTAsset.vue'
 export default {
   props: {
@@ -46,7 +44,6 @@ export default {
     }
   },
   components: {
-    ChevronRight,
     NFTAsset
   }
 }
@@ -87,6 +84,11 @@ export default {
         }
       }
     }
+  }
+
+  .link {
+    color: $color-primary;
+    font-weight: 600;
   }
 }
 </style>

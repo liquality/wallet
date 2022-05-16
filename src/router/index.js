@@ -130,7 +130,7 @@ const routes = [
     name: 'SendNFT'
   },
   {
-    path: '/nft-transaction-details/:txid',
+    path: '/details/nft-transaction/:id',
     component: NFTTransactionDetails,
     name: 'NFTTransactionDetails',
     props: true

@@ -75,6 +75,8 @@ export default {
           return `${item.from} to ${item.to}`
         case 'SEND':
           return `Send ${item.from}`
+        case 'NFT':
+          return `Send ${item.from}`
         case 'RECEIVE':
           return `Receive ${item.from}`
         default:
@@ -104,7 +106,9 @@ export default {
       return ''
     },
     getUIStatus(item) {
-      if (item.type === 'SEND') {
+      if (item.type === 'NFT') {
+        return SEND_STATUS_FILTER_MAP[item.status]
+      } else if (item.type === 'SEND') {
         return SEND_STATUS_FILTER_MAP[item.status]
       } else if (item.type === 'SWAP') {
         const swapProvider = getSwapProvider(item.network, item.provider)
@@ -112,7 +116,9 @@ export default {
       }
     },
     getDetailsUrl(item) {
+      console.log('🚀 ~ file: TransactionList.vue ~ line 119 ~ getDetailsUrl ~ item', item)
       return {
+        NFT: `/details/nft-transaction/${item.id}`,
         SEND: `/details/transaction/${item.id}`,
         SWAP: `/details/swap/${item.id}`
       }[item.type]

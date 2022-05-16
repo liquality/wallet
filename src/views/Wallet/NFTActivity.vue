@@ -45,7 +45,7 @@ import NFTStats from '@/views/Wallet/NFTStats'
 import amplitude from 'amplitude-js'
 import WalletNFTs from './WalletNFTs.vue'
 import { getAssetIcon } from '@/utils/asset'
-import NFTIcon from '@/assets/icons/nft_icon.svg'
+import NFTIcon from '@/assets/icons/nft.svg'
 
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
