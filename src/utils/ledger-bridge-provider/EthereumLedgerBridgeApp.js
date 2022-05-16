@@ -3,7 +3,7 @@ import { ExecutionMode } from '@liquality/hw-web-bridge'
 
 export class EthereumLedgerBridgeApp extends LedgerBridgeApp {
   async getAddress(...payload) {
-    return this.callToBridge({
+    return await this.callToBridge({
       action: 'getAddress',
       execMode: ExecutionMode.Async,
       payload
@@ -11,7 +11,7 @@ export class EthereumLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async signPersonalMessage(...payload) {
-    return this.callToBridge({
+    return await this.callToBridge({
       action: 'signPersonalMessage',
       execMode: ExecutionMode.Async,
       payload
@@ -19,7 +19,7 @@ export class EthereumLedgerBridgeApp extends LedgerBridgeApp {
   }
 
   async signTransaction(...payload) {
-    return this.callToBridge({
+    return await this.callToBridge({
       action: 'signTransaction',
       execMode: ExecutionMode.Async,
       payload

@@ -320,7 +320,6 @@ import BN from 'bignumber.js'
 import moment from '@liquality/wallet-core/dist/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
-import { isObject } from 'lodash-es'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { getStep } from '@liquality/wallet-core/dist/utils/history'
@@ -638,19 +637,13 @@ export default {
     async updateFee(asset, hash) {
       this.feeSelectorLoading = true
       try {
-        const txKey = Object.keys(this.item).find(
-          (key) => isObject(this.item[key]) && this.item[key].hash === hash
-        )
-        const accountId = txKey === 'toClaimTx' ? this.item.toAccountId : this.item.fromAccountId
-
         await this.updateTransactionFee({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset,
           id: this.item.id,
           hash,
-          newFee: this.newFeePrice,
-          accountId
+          newFee: this.newFeePrice
         })
         // TODO decide if this is a safe option or change approach
         // await this.checkPendingActions({ walletId: this.activeWalletId })

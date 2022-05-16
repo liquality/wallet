@@ -35,7 +35,7 @@
         "js/content-script.js"
       ],
       "run_at": "document_start",
-      "all_frames": true
+      "all_frames": false
     }
   ],
   "browser_action": {

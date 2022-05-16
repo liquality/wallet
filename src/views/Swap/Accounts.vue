@@ -54,7 +54,7 @@ export default {
         })
       }
 
-      return _accounts.filter((a) => a.assets.length > 0 && !a.type.includes('ledger'))
+      return _accounts.filter((account) => account.assets.length > 0)
     }
   },
   components: {

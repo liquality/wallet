@@ -170,7 +170,7 @@ export default {
     },
     ledger() {
       this.trackAnalytics({
-        event: 'Ledger option clicked from hamburger menu',
+        event: 'HamburgerIcon',
         properties: {
           category: 'HamburgerIcon',
           action: 'Click on Ledger'

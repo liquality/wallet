@@ -335,7 +335,11 @@ export default {
       return this.activity.filter((item) => item.from === this.asset)
     },
     nftNumber() {
-      if (!this.selectedNFT) return ''
+      console.log(
+        '🚀 ~ file: SendNFT.vue ~ line 339 ~ nftNumber ~ this.selectedNFT',
+        this.selectedNFT
+      )
+      if (!this.selectedNFT || !this.selectedNFT.external_link) return ''
       const number = this.selectedNFT.external_link.split('/')
       return number[number.length - 1]
     },
@@ -506,7 +510,7 @@ export default {
           walletId: this.activeWalletId,
           contract: this.selectedNFT.asset_contract.address,
           receiver: this.address,
-          tokenIDs: [this.selectedNFT.id],
+          tokenIDs: [this.selectedNFT.token_id],
           values: [1],
           // data: '0x00',
           fee: this.selectedFee,
@@ -516,10 +520,10 @@ export default {
         console.log('🚀 ~ file: SendNFT.vue ~ line 512 ~ sendNFT ~ data', data)
         const response = await this.sendNFTTransaction(data)
         console.log('🚀 ~ file: SendNFT.vue ~ line 397 ~ sendNFT ~ response', response)
-        this.$router.replace(`/accounts/${this.account.id}/${this.asset}`)
-        // this.$router.replace({
-        //   path: `/nft-transaction-details/${this.selectedNFT.id}`
-        // })
+        // this.$router.replace(`/accounts/${this.account.id}/${this.asset}`)
+        this.$router.replace({
+          path: `/nft-transaction-details/${this.selectedNFT.token_id}`
+        })
       } catch (error) {
         console.error(error)
         this.loading = false

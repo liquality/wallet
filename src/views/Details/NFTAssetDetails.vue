@@ -119,7 +119,8 @@ export default {
       return this.$route.query.nftAsset
     },
     nftNumber() {
-      if (!this.selectedNFT) return ''
+      console.log('🚀 ~ file: NFTAssetDetails.vue ~ line 123 ~ nftNumber ~ nftAsset', this.nftAsset)
+      if (!this.nftAsset || !this.nftAsset.external_link) return ''
       const number = this.nftAsset.external_link.split('/')
       return number[number.length - 1]
     }
