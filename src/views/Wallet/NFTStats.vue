@@ -3,7 +3,7 @@
     <div class="account-container_balance">
       <div>
         <span class="account-container_balance_value">
-          {{ nftAssetsNumber }}
+          {{ nftAssetsNumber || 0 }}
         </span>
         <span class="account-container_balance_code"
           >NFT<span v-if="nftAssetsNumber !== 1">s</span></span
