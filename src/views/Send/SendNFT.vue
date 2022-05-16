@@ -290,7 +290,7 @@ export default {
       customFeeAssetSelected: null,
       customFee: null,
       sendErrorMessage: '',
-      address: '0x408075d9146C1cEDB293115670E17291deCaB53d',
+      address: '',
       selectedFee: 'average',
       asset: 'ETH'
     }
