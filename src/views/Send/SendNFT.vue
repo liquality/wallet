@@ -225,6 +225,12 @@
         </div>
       </div>
     </template>
+    <OperationErrorModal
+      :open="sendErrorModalOpen"
+      :account="account"
+      @close="closeSendErrorModal"
+      :error="sendErrorMessage"
+    />
   </div>
 </template>
 
@@ -242,6 +248,7 @@ import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
 import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import OperationErrorModal from '@/components/OperationErrorModal'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
@@ -266,7 +273,8 @@ export default {
     FeeSelector,
     CustomFees,
     CustomFeesEIP1559,
-    DetailsContainer
+    DetailsContainer,
+    OperationErrorModal
   },
   data() {
     return {
@@ -278,8 +286,10 @@ export default {
       activeView: 'selectAsset',
       selectedNFT: null,
       loading: false,
+      sendErrorModalOpen: false,
       customFeeAssetSelected: null,
       customFee: null,
+      sendErrorMessage: '',
       address: '0x408075d9146C1cEDB293115670E17291deCaB53d',
       selectedFee: 'average',
       asset: 'ETH'
@@ -432,6 +442,10 @@ export default {
         path: '/wallet/nfts'
       })
     },
+    closeSendErrorModal() {
+      this.sendErrorModalOpen = false
+      this.loading = false
+    },
     next(view) {
       this.activeView = view
     },
@@ -502,6 +516,7 @@ export default {
       await this._updateSendFees()
     },
     async sendNFT() {
+      this.sendErrorMessage = ''
       this.loading = true
       try {
         const data = {
@@ -526,7 +541,10 @@ export default {
         })
       } catch (error) {
         console.error(error)
+        const { message } = error
         this.loading = false
+        this.sendErrorMessage = message || error
+        this.sendErrorModalOpen = true
       }
     }
   },
