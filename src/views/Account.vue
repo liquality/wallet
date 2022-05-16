@@ -123,6 +123,7 @@ import { formatFontSize } from '@/utils/fontSize'
 import CopyAddress from '@/components/CopyAddress'
 import amplitude from 'amplitude-js'
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
+
 export default {
   components: {
     NavBar,
@@ -228,7 +229,8 @@ export default {
       properties: {
         category: 'Click on Asset',
         chain: chain,
-        asset: `${this.asset}`
+        asset: `${this.asset}`,
+        label: 'User clicked on assert from overview screen'
       }
     })
   },

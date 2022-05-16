@@ -10,7 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Infrastructure fixes to improve swap reliability</pre>
+            <pre class="text-wrap">* Minor Bugfixes</pre>
+            <pre class="text-wrap">* Performance improvements</pre>
           </div>
         </div>
       </div>
