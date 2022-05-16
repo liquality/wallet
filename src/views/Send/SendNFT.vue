@@ -51,7 +51,6 @@
           @click="next('selectedAsset')"
           :disabled="!selectedNFT"
         >
-          <!-- <SpinnerIcon class="btn-loading" v-if="loading" /> -->
           Next
         </button>
       </div>
@@ -74,10 +73,10 @@
             <div class="selected-nft-asset__send-details">
               <h3 class="text-uppercase">Send From</h3>
               <div class="d-flex">
-                <img :src="getAssetIcon('ETH')" class="asset-icon mr-3" />
+                <img :src="getAssetIcon(asset)" class="asset-icon mr-3" />
                 <div>
                   <div class="d-flex">
-                    <span class="mr-3">{{ 'ETH' }}</span>
+                    <span class="mr-3">{{ asset }}</span>
                     <div class="mr-3 d-flex align-items-center">
                       <span class="mr-1">{{ shortenAddress(fromAddress) }}</span>
                       <span><CopyIcon class="copy-icon" @click="copy(fromAddress)" /></span>
@@ -171,7 +170,6 @@
         :fiatRates="fiatRates"
       />
     </template>
-
     <template class="send" v-else-if="activeView === 'custom-fees' && isEIP1559Fees">
       <CustomFeesEIP1559
         @apply="applyCustomFee"
@@ -219,7 +217,10 @@
             <button class="btn btn-light btn-outline-primary btn-lg" @click="next('selectedAsset')">
               Edit
             </button>
-            <button class="btn btn-primary btn-lg btn-icon" @click="sendNFT">Send NFT</button>
+            <button class="btn btn-primary btn-lg btn-icon" @click="sendNFT" :disabled="loading">
+              <SpinnerIcon class="btn-loading" v-if="loading" />
+              <template v-else>Send NFT</template>
+            </button>
           </div>
         </div>
       </div>
@@ -240,6 +241,7 @@ import CopyIcon from '@/assets/icons/copy.svg'
 import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
 import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
@@ -260,6 +262,7 @@ export default {
     NavBar,
     Accordion,
     CopyIcon,
+    SpinnerIcon,
     FeeSelector,
     CustomFees,
     CustomFeesEIP1559,
@@ -286,6 +289,14 @@ export default {
     await this.updateFees({ asset: this.assetChain })
     console.log('🚀 ~ file: SendNFT.vue ~ line 285 ~ created ~  await this.fees', this.fees)
     await this.updateSendFees(this.amount)
+    // if (this.nftAssets) {
+    //   const firstCollection = this.nftAssets[Object.keys(this.nftAssets)[0]]
+    //   console.log(
+    //     '🚀 ~ file: SendNFT.vue ~ line 289 ~ created ~ firstCollection',
+    //     firstCollection[0]
+    //   )
+    //   this.selectNFT(firstCollection[0])
+    // }
   },
   computed: {
     ...mapGetters(['activity', 'accountItem', 'accountsData']),
@@ -329,8 +340,8 @@ export default {
       return number[number.length - 1]
     },
     balance() {
-      const balance = this.account.balances?.['ETH'] || 0
-      return prettyBalance(balance, 'ETH')
+      const balance = this.account.balances?.[this.asset] || 0
+      return prettyBalance(balance, this.asset)
     },
     fromAddress() {
       return chains['ethereum']?.formatAddress(this.account.addresses[0], this.activeNetwork)
@@ -352,17 +363,9 @@ export default {
       return this.selectedFee in fees ? fees[this.selectedFee] : BN(0)
     },
     prettyFee() {
-      console.log(
-        '🚀 ~ file: SendNFT.vue ~ line 341 ~ prettyFee ~ this.currentFee',
-        this.currentFee
-      )
       return this.currentFee.dp(6)
     },
     assetChain() {
-      console.log(
-        '🚀 ~ file: SendNFT.vue ~ line 301 ~ assetChain ~ getNativeAsset(this.asset)',
-        getNativeAsset(this.asset)
-      )
       return getNativeAsset(this.asset)
     },
     assetFees() {
@@ -372,12 +375,9 @@ export default {
       }
 
       const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
-      console.log('🚀 ~ file: SendNFT.vue ~ line 305 ~ assetFees ~ fees', fees)
-      console.log('🚀 ~ file: SendNFT.vue ~ line 305 ~ assetFees ~ this.fees', this.fees)
       if (fees) {
         Object.assign(assetFees, fees)
       }
-      console.log('🚀 ~ file: SendNFT.vue ~ line 307 ~ assetFees ~ assetFees', assetFees)
       return assetFees
     },
     feesAvailable() {
@@ -502,22 +502,27 @@ export default {
       try {
         const data = {
           network: this.activeNetwork,
+          accountId: this.account.id,
           walletId: this.activeWalletId,
           contract: this.selectedNFT.asset_contract.address,
           receiver: this.address,
           tokenIDs: [this.selectedNFT.id],
-          values: [1]
+          values: [1],
           // data: '0x00',
-          // fee: this.selectedFee
+          fee: this.selectedFee,
+          feeLabel: this.selectedFeeLabel,
+          fiatRate: this.fiatRates[this.asset]
         }
         console.log('🚀 ~ file: SendNFT.vue ~ line 512 ~ sendNFT ~ data', data)
         const response = await this.sendNFTTransaction(data)
         console.log('🚀 ~ file: SendNFT.vue ~ line 397 ~ sendNFT ~ response', response)
-        this.$router.replace({
-          path: `/nft-transaction-details/${this.selectedNFT.id}`
-        })
+        this.$router.replace(`/accounts/${this.account.id}/${this.asset}`)
+        // this.$router.replace({
+        //   path: `/nft-transaction-details/${this.selectedNFT.id}`
+        // })
       } catch (error) {
-        console.log('error>>>', error)
+        console.error(error)
+        this.loading = false
       }
     }
   },
