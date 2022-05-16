@@ -67,7 +67,7 @@
               <div>
                 <h3>{{ selectedNFT.name }}</h3>
                 <p>{{ selectedNFT.collection.name }}</p>
-                <p>#{{ nftNumber }}</p>
+                <p v-if="nftNumber">#{{ nftNumber }}</p>
               </div>
             </div>
             <div class="selected-nft-asset__send-details">
@@ -86,7 +86,7 @@
                 </div>
               </div>
               <div class="form-group mt-4">
-                <label for="address" class="text-uppercase font-bold">Send to</label>
+                <label for="address"><h3 class="text-uppercase">Send to</h3></label>
                 <div class="input-group">
                   <input
                     type="text"
@@ -195,7 +195,7 @@
               <div>
                 <h3>{{ selectedNFT.name }}</h3>
                 <p>{{ selectedNFT.collection.name }}</p>
-                <p>#{{ nftNumber }}</p>
+                <p v-if="nftNumber">#{{ nftNumber }}</p>
               </div>
             </div>
             <div class="selected-nft-asset__send-details">
