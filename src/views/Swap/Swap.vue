@@ -433,6 +433,7 @@ import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
+import { version as walletVersion } from '../../../package.json'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
 import { buildConfig } from '@liquality/wallet-core'
@@ -934,6 +935,7 @@ export default {
       this.trackAnalytics({
         event: 'Swap screen',
         properties: {
+          walletVersion,
           category: 'Swap screen',
           action: 'User on SWAP screen',
           label: `${this.toAsset}`
@@ -1272,6 +1274,7 @@ export default {
         this.trackAnalytics({
           event: 'No Liquidity',
           properties: {
+            walletVersion,
             category: 'Swap screen',
             action: 'No Liquidity for pairs',
             from: this.asset,

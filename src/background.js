@@ -6,6 +6,7 @@ import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
 import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import _ from 'lodash-es'
+import { version as walletVersion } from '../package.json'
 
 let prevState = _.cloneDeep(store.state)
 
@@ -31,11 +32,12 @@ store.subscribe(async ({ type, payload }, state) => {
 
   switch (type) {
     case 'CREATE_WALLET':
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'Create a new wallet',
         properties: {
+          walletVersion,
           label: 'New wallet created',
-          action: 'User created a new wallet with new seed'
+          action: 'User created a new wallet with new seed phrase'
         }
       })
       break
@@ -45,24 +47,25 @@ store.subscribe(async ({ type, payload }, state) => {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
+      await dispatch('trackAnalytics', {
+        event: `Change Active Network to ${state.activeNetwork}`,
+        properties: {
+          walletVersion,
+          action: 'User changed active network',
+          network: state.activeNetwork
+        }
+      })
       dispatch('updateBalances', {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
       dispatch('updateMarketData', { network: state.activeNetwork })
-
-      dispatch('trackAnalytics', {
-        event: 'Change Active Network',
-        properties: {
-          action: 'User changed active network',
-          network: state.activeNetwork
-        }
-      })
       break
     case 'LOCK_WALLET':
-      dispatch('trackAnalytics', {
-        event: 'Wallet locked',
+      await dispatch('trackAnalytics', {
+        event: 'Wallet locked successfully',
         properties: {
+          walletVersion,
           category: 'Lock/Unlock',
           action: 'Wallet Locked'
         }
@@ -100,14 +103,6 @@ store.subscribe(async ({ type, payload }, state) => {
         () => dispatch('updateMarketData', { network: state.activeNetwork }),
         () => random(40000, 60000)
       )
-      dispatch('trackAnalytics', {
-        event: 'Unlock wallet',
-        properties: {
-          category: 'Lock/Unlock',
-          action: 'Wallet Unlocked',
-          label: 'import with seed pharse'
-        }
-      })
       break
     case 'NEW_SWAP':
       // eslint-disable-next-line no-case-declarations
@@ -115,7 +110,7 @@ store.subscribe(async ({ type, payload }, state) => {
       // eslint-disable-next-line no-case-declarations
       let toAmountValue = unitToCurrency(cryptoassets[payload.swap.to], payload.swap.toAmount)
 
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'New SWAP',
         properties: {
           category: 'Swaps',
@@ -138,9 +133,10 @@ store.subscribe(async ({ type, payload }, state) => {
         cryptoassets[payload.transaction.from],
         payload.transaction.amount
       )
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'Send',
         properties: {
+          walletVersion,
           category: 'Send/Receive',
           action: 'Funds sent',
           fiatRate: prettyFiatBalance(sendValue, state.fiatRates[payload.transaction.from]),
@@ -153,9 +149,10 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'ADD_EXTERNAL_CONNECTION':
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'Connect to Dapps',
         properties: {
+          walletVersion,
           category: 'Dapps',
           action: 'Dapp Injected',
           label: `Connect to ${payload.origin} ${payload.chain}`,
@@ -165,9 +162,10 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'ADD_CUSTOM_TOKEN':
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'Custom Token Added',
         properties: {
+          walletVersion,
           category: 'Settings',
           action: 'Custom Token Added',
           customTokenName: `${payload.customToken.name}`,
@@ -182,9 +180,10 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'REMOVE_CUSTOM_TOKEN':
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'Custom Token Removed',
         properties: {
+          walletVersion,
           category: 'Settings',
           action: 'Custom Token Removed',
           customTokenSymbol: `${payload.symbol}`,
@@ -197,9 +196,10 @@ store.subscribe(async ({ type, payload }, state) => {
       const item = getters.historyItemById(payload.network, payload.walletId, payload.id);
       if (item.type === 'SWAP' && payload.updates) {
         if (payload.updates.status !== 'undefined') {
-          dispatch('trackAnalytics', {
+          await dispatch('trackAnalytics', {
             event: 'Swap status change',
             properties: {
+              walletVersion,
               category: 'Swaps',
               action: 'Swap Status changed',
               swapProvider: `${item.provider}`,
@@ -212,9 +212,10 @@ store.subscribe(async ({ type, payload }, state) => {
       }
       if (item.type === 'SEND' && payload.updates) {
         if (payload.updates.status !== 'undefined') {
-          dispatch('trackAnalytics', {
+          await dispatch('trackAnalytics', {
             event: 'Send status change',
             properties: {
+              walletVersion,
               category: 'Send/Receive',
               action: 'Send Status changed',
               asset: `${item.from}`,
@@ -234,6 +235,7 @@ store.subscribe(async ({ type, payload }, state) => {
         await dispatch('trackAnalytics', {
           event: 'User funded wallet',
           properties: {
+            walletVersion,
             category: 'Balance',
             action: 'Balance Updated',
             label: 'User funded wallet'
@@ -243,21 +245,65 @@ store.subscribe(async ({ type, payload }, state) => {
       prevState = currentState
       break
     case 'TOGGLE_EXPERIMENT':
-      dispatch('trackAnalytics', {
-        event: 'Experiment Toggle',
+      await dispatch('trackAnalytics', {
+        event: `User on Experiment feature ${payload.name}`,
         properties: {
+          walletVersion,
           category: 'Experiments',
-          action: 'Experiment Toggle',
+          action: 'Experiment Toggle on/off',
           label: `${payload.name}`
         }
       })
       break
     case 'CHANGE_PASSWORD':
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
+        walletVersion,
         event: 'Change Password',
         properties: {
           category: 'Settings',
           action: 'Change Password'
+        }
+      })
+      break
+    case 'ENABLE_ASSETS':
+      await dispatch('trackAnalytics', {
+        walletVersion,
+        event: 'User Enable Asset',
+        properties: {
+          category: 'Settings',
+          action: 'Enable Asset',
+          assets: payload.assets
+        }
+      })
+      break
+    case 'DISABLE_ASSETS':
+      await dispatch('trackAnalytics', {
+        walletVersion,
+        event: 'User Disable Asset',
+        properties: {
+          category: 'Settings',
+          action: 'Disable Asset',
+          assets: payload.assets
+        }
+      })
+      break
+    case 'DISABLE_ETHEREUM_INJECTION':
+      await dispatch('trackAnalytics', {
+        walletVersion,
+        event: 'User Disable Default Web3 Wallet Injection',
+        properties: {
+          category: 'Settings',
+          action: 'Disable Default Web3 Wallet Ethereum Injection'
+        }
+      })
+      break
+    case 'ENABLE_ETHEREUM_INJECTION':
+      await dispatch('trackAnalytics', {
+        walletVersion,
+        event: 'User Enable Default Web3 Wallet Injection',
+        properties: {
+          category: 'Settings',
+          action: 'Enable Default Web3 Wallet Ethereum Injection'
         }
       })
       break

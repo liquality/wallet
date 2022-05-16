@@ -43,6 +43,7 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import { isEthereumChain, chains } from '@liquality/cryptoassets'
+import { version as walletVersion } from '../../package.json'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import { buildConfig } from '@liquality/wallet-core'
 
@@ -106,6 +107,7 @@ export default {
       this.trackAnalytics({
         event: 'Web3 Network Update',
         properties: {
+          walletVersion,
           category: 'Settings',
           action: 'Web3 Network Updated',
           label: `${chain}`
