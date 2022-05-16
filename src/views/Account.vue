@@ -90,13 +90,9 @@
           v-if="activityData.length > 0"
         />
         <TransactionList :transactions="activityData" />
-        <EmptyActivity
-          v-show="activityData.length <= 0"
-          :active-network="activeNetwork"
-          :asset="asset"
-          :chain="chain"
-          :address="address"
-        />
+        <div class="activity-empty" v-if="activityData.length <= 0">
+          Once you start using your wallet you will see the activity here
+        </div>
       </div>
     </div>
   </div>
@@ -118,6 +114,7 @@ import {
 } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
+import { version as walletVersion } from '../../package.json'
 import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
@@ -125,10 +122,6 @@ import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
-import EmptyActivity from '@/components/EmptyActivity'
-import amplitude from 'amplitude-js'
-
-amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
 export default {
   components: {
@@ -139,8 +132,7 @@ export default {
     SwapIcon,
     ActivityFilter,
     TransactionList,
-    EyeIcon,
-    EmptyActivity
+    EyeIcon
   },
   data() {
     return {
@@ -241,6 +233,19 @@ export default {
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
+
+    const { chain } = cryptoassets[this.asset]
+
+    this.trackAnalytics({
+      event: 'Active Asset',
+      properties: {
+        walletVersion,
+        category: 'Click on Asset',
+        chain: chain,
+        asset: `${this.asset}`,
+        label: 'User clicked on assert from overview screen'
+      }
+    })
   },
   watch: {
     activeNetwork() {

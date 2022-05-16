@@ -11,13 +11,19 @@
       <InfoNotification v-if="ethRequired">
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
-      <InfoNotification v-if="!canCoverAmmFee">
+      <InfoNotification v-if="showBridgeAssetDisabledMessage">
+        <BoostActivateBridgeAsset
+          :network="activeNetwork"
+          :walletId="activeWalletId"
+          :asset="selectedQuote.bridgeAsset"
+        />
+      </InfoNotification>
+      <InfoNotification v-else-if="!canCoverAmmFee">
         <BridgeAssetRequiredMessage
           :account-id="getAccountId()"
           :asset="selectedQuote.bridgeAsset"
         />
       </InfoNotification>
-
       <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
@@ -390,12 +396,14 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { version as walletVersion } from '../../../package.json'
 import { ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
 import BridgeAssetRequiredMessage from '@/components/BridgeAssetRequiredMessage'
+import BoostActivateBridgeAsset from '@/components/BoostActivateBridgeAsset'
 import NoLiquidityMessage from '@/components/NoLiquidityMessage'
 import {
   cryptoToFiat,
@@ -449,6 +457,7 @@ export default {
     InfoNotification,
     EthRequiredMessage,
     BridgeAssetRequiredMessage,
+    BoostActivateBridgeAsset,
     NoLiquidityMessage,
     FeeSelector,
     SwapIcon,
@@ -562,6 +571,17 @@ export default {
     showNoLiquidityMessage() {
       return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
+    showBridgeAssetDisabledMessage() {
+      const provider = this.selectedQuote?.provider
+      const bridgeAsset = this.selectedQuote?.bridgeAsset
+      const enabledAssets = this.enabledAssets[this.activeNetwork][this.activeWalletId]
+
+      return (
+        (provider === SwapProviderType.LiqualityBoostNativeToERC20 ||
+          provider === SwapProviderType.LiqualityBoostERC20ToNative) &&
+        !enabledAssets.includes(bridgeAsset)
+      )
+    },
     sendAmount: {
       get() {
         return this.stateSendAmount
@@ -605,13 +625,12 @@ export default {
       return cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
     },
     ...mapState([
-      'activeNetwork',
-      'activeWalletId',
       'marketData',
       'fees',
       'fiatRates',
       'activeWalletId',
-      'activeNetwork'
+      'activeNetwork',
+      'enabledAssets'
     ]),
     ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem', 'accountsData']),
@@ -743,10 +762,14 @@ export default {
 
       const account = isERC20(this.asset) ? this.account : this.toAccount
       const balance = account?.balances[this.selectedQuote.bridgeAsset]
+
+      if (!balance) return true
+
       const SwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
         isERC20(this.asset) ? this.fromSwapFee : this.receiveFee
       )
+
       return BN(balance).gt(SwapFeeInUnits)
     },
     availableAmount() {
@@ -806,6 +829,7 @@ export default {
         this.updatingQuotes ||
         this.ethRequired ||
         //!this.canCoverAmmFee ||
+        this.showBridgeAssetDisabledMessage ||
         this.showNoLiquidityMessage ||
         this.amountError ||
         BN(this.safeAmount).lte(0)
@@ -934,6 +958,7 @@ export default {
       this.trackAnalytics({
         event: 'Swap screen',
         properties: {
+          walletVersion,
           category: 'Swap screen',
           action: 'User on SWAP screen',
           label: `${this.toAsset}`
@@ -1264,6 +1289,7 @@ export default {
         this.trackAnalytics({
           event: 'No Liquidity',
           properties: {
+            walletVersion,
             category: 'Swap screen',
             action: 'No Liquidity for pairs',
             from: this.asset,

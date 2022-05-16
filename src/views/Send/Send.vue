@@ -228,6 +228,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { version as walletVersion } from '../../../package.json'
 import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
@@ -619,6 +620,7 @@ export default {
     await this.trackAnalytics({
       event: 'Send screen',
       properties: {
+        walletVersion,
         category: 'Send/Receive',
         action: 'User on Send screen',
         label: `${this.asset}`

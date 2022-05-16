@@ -5,6 +5,10 @@ import { wait } from './store/utils'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
 import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import _ from 'lodash-es'
+import { version as walletVersion } from '../package.json'
+
+let prevState = _.cloneDeep(store.state)
 
 function asyncLoop(fn, delay) {
   return wait(delay())
@@ -12,9 +16,32 @@ function asyncLoop(fn, delay) {
     .then(() => asyncLoop(fn, delay))
 }
 
+function getBalance(state) {
+  let total = 0
+  state.accounts?.[state.activeWalletId]?.[state.activeNetwork].map((item) => {
+    Object.keys(item.balances).map((key) => {
+      total += total + Number(item.balances[key])
+    })
+  })
+  return total
+}
+
 store.subscribe(async ({ type, payload }, state) => {
+  let currentState = _.cloneDeep(state)
   const { dispatch, getters } = store
+
   switch (type) {
+    case 'CREATE_WALLET':
+      await dispatch('trackAnalytics', {
+        event: 'Create a new wallet',
+        properties: {
+          walletVersion,
+          label: 'New wallet created',
+          action: 'User created a new wallet with new seed'
+        }
+      })
+      break
+
     case 'CHANGE_ACTIVE_NETWORK':
       dispatch('initializeAddresses', {
         network: state.activeNetwork,
@@ -26,20 +53,26 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       dispatch('updateMarketData', { network: state.activeNetwork })
 
-      dispatch('trackAnalytics', {
-        event: `Network Changed ${payload.currentNetwork} to ${payload.network}`
-      })
-      break
-
-    case 'UNLOCK_WALLET':
-      dispatch('trackAnalytics', {
-        event: 'Unlock wallet',
+      await dispatch('trackAnalytics', {
+        event: 'Change Active Network',
         properties: {
-          category: 'Lock/Unlock',
-          action: 'Wallet Unlocked',
-          label: 'import with seed pharse'
+          walletVersion,
+          action: 'User changed active network',
+          network: state.activeNetwork
         }
       })
+      break
+    case 'LOCK_WALLET':
+      await dispatch('trackAnalytics', {
+        event: 'Wallet locked',
+        properties: {
+          walletVersion,
+          category: 'Lock/Unlock',
+          action: 'Wallet Locked'
+        }
+      })
+      break
+    case 'UNLOCK_WALLET':
       dispatch('app/checkAnalyticsOptIn')
       dispatch('initializeAddresses', {
         network: state.activeNetwork,
@@ -71,6 +104,15 @@ store.subscribe(async ({ type, payload }, state) => {
         () => dispatch('updateMarketData', { network: state.activeNetwork }),
         () => random(40000, 60000)
       )
+      await dispatch('trackAnalytics', {
+        event: 'Unlock wallet',
+        properties: {
+          walletVersion,
+          category: 'Lock/Unlock',
+          action: 'Wallet Unlocked',
+          label: 'import with seed pharse'
+        }
+      })
       break
     case 'NEW_SWAP':
       // eslint-disable-next-line no-case-declarations
@@ -78,7 +120,7 @@ store.subscribe(async ({ type, payload }, state) => {
       // eslint-disable-next-line no-case-declarations
       let toAmountValue = unitToCurrency(cryptoassets[payload.swap.to], payload.swap.toAmount)
 
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'New SWAP',
         properties: {
           category: 'Swaps',
@@ -101,9 +143,10 @@ store.subscribe(async ({ type, payload }, state) => {
         cryptoassets[payload.transaction.from],
         payload.transaction.amount
       )
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'Send',
         properties: {
+          walletVersion,
           category: 'Send/Receive',
           action: 'Funds sent',
           fiatRate: prettyFiatBalance(sendValue, state.fiatRates[payload.transaction.from]),
@@ -115,31 +158,24 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       })
       break
-    case 'LOCK_WALLET':
-      dispatch('trackAnalytics', {
-        event: 'Wallet Lock',
-        properties: {
-          category: 'Lock/Unlock',
-          action: 'Wallet Locked'
-        }
-      })
-      break
     case 'ADD_EXTERNAL_CONNECTION':
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'Connect to Dapps',
         properties: {
+          walletVersion,
           category: 'Dapps',
           action: 'Dapp Injected',
-          label: `Connect to ${payload.origin} (${payload.chain})`,
+          label: `Connect to ${payload.origin} ${payload.chain}`,
           dappOrigin: `${payload.origin}`,
           chain: `${payload.chain}`
         }
       })
       break
     case 'ADD_CUSTOM_TOKEN':
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'Custom Token Added',
         properties: {
+          walletVersion,
           category: 'Settings',
           action: 'Custom Token Added',
           customTokenName: `${payload.customToken.name}`,
@@ -147,20 +183,21 @@ store.subscribe(async ({ type, payload }, state) => {
           customTokenSymbol: `${payload.customToken.symbol}`,
           label: [
             `${payload.customToken.name}`,
-            `(${payload.customToken.chain})`,
-            `(${payload.customToken.symbol})`
+            `${payload.customToken.chain}`,
+            `${payload.customToken.symbol}`
           ]
         }
       })
       break
     case 'REMOVE_CUSTOM_TOKEN':
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'Custom Token Removed',
         properties: {
+          walletVersion,
           category: 'Settings',
           action: 'Custom Token Removed',
           customTokenSymbol: `${payload.symbol}`,
-          label: `${payload.symbol})`
+          label: `${payload.symbol}`
         }
       })
       break
@@ -169,9 +206,10 @@ store.subscribe(async ({ type, payload }, state) => {
       const item = getters.historyItemById(payload.network, payload.walletId, payload.id);
       if (item.type === 'SWAP' && payload.updates) {
         if (payload.updates.status !== 'undefined') {
-          dispatch('trackAnalytics', {
+          await dispatch('trackAnalytics', {
             event: 'Swap status change',
             properties: {
+              walletVersion,
               category: 'Swaps',
               action: 'Swap Status changed',
               swapProvider: `${item.provider}`,
@@ -184,9 +222,10 @@ store.subscribe(async ({ type, payload }, state) => {
       }
       if (item.type === 'SEND' && payload.updates) {
         if (payload.updates.status !== 'undefined') {
-          dispatch('trackAnalytics', {
+          await dispatch('trackAnalytics', {
             event: 'Send status change',
             properties: {
+              walletVersion,
               category: 'Send/Receive',
               action: 'Send Status changed',
               asset: `${item.from}`,
@@ -196,36 +235,30 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       }
       break
-    case 'SETUP_WALLET':
-      dispatch('trackAnalytics', {
-        event: 'Onboarding',
-        properties: {
-          category: 'Onboarding',
-          action: 'User Onboarded',
-          label: 'Create a new wallet'
-        }
-      })
-      break
-    case 'UPDATE_BALANCE': {
-      const accountItemDetails = getters.accountItem(payload.accountId)
-      if (accountItemDetails.totalFiatBalance > 0) {
-        dispatch('trackAnalytics', {
-          event: 'Balance Update',
+    case 'UPDATE_BALANCE':
+      // eslint-disable-next-line no-case-declarations
+      let prevBalance = getBalance(prevState)
+      // eslint-disable-next-line no-case-declarations
+      const newBalance = getBalance(currentState)
+      // Only trigger event for the first time when user funds their wallet, any subsequent balance updates are ignored.
+      if (prevBalance === 0 && newBalance > prevBalance) {
+        await dispatch('trackAnalytics', {
+          event: 'User funded wallet',
           properties: {
+            walletVersion,
             category: 'Balance',
             action: 'Balance Updated',
-            chain: accountItemDetails.chain,
-            fiatBalance: accountItemDetails.fiatBalances,
-            totalFiatBalance: accountItemDetails.totalFiatBalance
+            label: 'User funded wallet'
           }
         })
       }
+      prevState = currentState
       break
-    }
     case 'TOGGLE_EXPERIMENT':
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
         event: 'Experiment Toggle',
         properties: {
+          walletVersion,
           category: 'Experiments',
           action: 'Experiment Toggle',
           label: `${payload.name}`
@@ -233,8 +266,8 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'CHANGE_PASSWORD':
-      console.log(payload)
-      dispatch('trackAnalytics', {
+      await dispatch('trackAnalytics', {
+        walletVersion,
         event: 'Change Password',
         properties: {
           category: 'Settings',
