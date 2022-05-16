@@ -67,7 +67,6 @@
               <div>
                 <h3>{{ selectedNFT.name }}</h3>
                 <p>{{ selectedNFT.collection.name }}</p>
-                <p v-if="nftNumber">#{{ nftNumber }}</p>
               </div>
             </div>
             <div class="selected-nft-asset__send-details">
@@ -195,7 +194,6 @@
               <div>
                 <h3>{{ selectedNFT.name }}</h3>
                 <p>{{ selectedNFT.collection.name }}</p>
-                <p v-if="nftNumber">#{{ nftNumber }}</p>
               </div>
             </div>
             <div class="selected-nft-asset__send-details">
@@ -343,15 +341,6 @@ export default {
     },
     assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
-    },
-    nftNumber() {
-      console.log(
-        '🚀 ~ file: SendNFT.vue ~ line 339 ~ nftNumber ~ this.selectedNFT',
-        this.selectedNFT
-      )
-      if (!this.selectedNFT || !this.selectedNFT.external_link) return ''
-      const number = this.selectedNFT.external_link.split('/')
-      return number[number.length - 1]
     },
     balance() {
       const balance = this.account.balances?.[this.asset] || 0

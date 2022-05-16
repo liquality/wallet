@@ -17,7 +17,6 @@
         <h5 class="nft-details_collection-details" v-if="nftAsset.collection">
           {{ nftAsset.collection.name }}
         </h5>
-        <h5 class="nft-details_collection-details" v-if="nftNumber">#{{ nftNumber }}</h5>
       </div>
     </template>
     <template v-else-if="showFullscreen === true">
@@ -32,7 +31,6 @@
         <h5 class="nft-details_collection-details" v-if="nftAsset.collection">
           {{ nftAsset.collection.name }}
         </h5>
-        <h5 class="nft-details_collection-details" v-if="nftNumber">#{{ nftNumber }}</h5>
         <div class="wallet-tabs">
           <ul class="nav nav-tabs">
             <li class="nav-item">
@@ -78,7 +76,6 @@
                 </div>
                 <div class="d-flex justify-content-between">
                   <h5 class="nft-details_name">Token ID</h5>
-                  <p class="nft-details_name text-underline" v-if="nftNumber">{{ nftNumber }}</p>
                 </div>
                 <div class="d-flex justify-content-between">
                   <h5 class="nft-details_name">Token Standard</h5>
@@ -117,12 +114,6 @@ export default {
   computed: {
     nftAsset() {
       return this.$route.query.nftAsset
-    },
-    nftNumber() {
-      console.log('🚀 ~ file: NFTAssetDetails.vue ~ line 123 ~ nftNumber ~ nftAsset', this.nftAsset)
-      if (!this.nftAsset || !this.nftAsset.external_link) return ''
-      const number = this.nftAsset.external_link.split('/')
-      return number[number.length - 1]
     }
   },
   methods: {
