@@ -39,7 +39,7 @@ export default {
   computed: {
     ...mapState({
       open: (state) => state.app.buyCryptoModalOpen,
-      data: (state) => state.app.buyCryptoModalData
+      modalData: (state) => state.app.buyCryptoModalData
     })
   },
   methods: {
@@ -48,7 +48,11 @@ export default {
       this.setBuyCryptoModalOpen({ open: false })
     },
     openTransakTab() {
-      this.openTransakWidgetTab({ ...this.data })
+      if (!this.modalData.chain || !this.modalData.asset || !this.modalData.address) {
+        this.$router.push('/assets/buy')
+      } else {
+        this.openTransakWidgetTab({ ...this.modalData })
+      }
       this.setBuyCryptoModalOpen({ open: false })
     }
   }
