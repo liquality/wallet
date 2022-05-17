@@ -34,13 +34,16 @@
 import SearchIcon from '@/assets/icons/search.svg'
 import WalletAccounts from '@/components/WalletAccounts'
 import NavBar from '@/components/NavBar'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions, mapState } from 'vuex'
 
 export default {
   computed: {
+    ...mapState({
+      buyCryptoData: (state) => state.app.buyCryptoModalData
+    }),
     ...mapGetters(['accountsData', 'accountsWithBalance']),
     accounts() {
-      if (['swap.send', 'swap'].includes(this.action)) {
+      if (['swap.send', 'swap', 'buy'].includes(this.action)) {
         return this.accountsData.filter((a) => !a.type.includes('ledger'))
       }
       return this.accountsData
@@ -58,10 +61,19 @@ export default {
     }
   },
   methods: {
+    ...mapActions('app', ['openTransakWidgetTab']),
     onAccountSelected({ account, asset }) {
       const _asset = asset || account.assets[0]
-      const _action = this.action === 'swap.send' ? 'swap' : this.action
-      this.$router.push(`/accounts/${account.id}/${_asset}/${_action}?source=assets`)
+      if (this.action === 'buy') {
+        this.openTransakWidgetTab({
+          chain: account?.chain,
+          asset: _asset,
+          address: account.addresses[0]
+        })
+      } else {
+        const _action = this.action === 'swap.send' ? 'swap' : this.action
+        this.$router.push(`/accounts/${account.id}/${_asset}/${_action}?source=assets`)
+      }
     }
   },
   created() {

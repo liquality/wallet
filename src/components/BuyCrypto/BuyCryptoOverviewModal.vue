@@ -26,7 +26,7 @@
         <button
           class="btn btn-outline-primary btn-lg"
           id="open_transak_tab_btn"
-          @click="openTransakTab"
+          @click="openSelectAccount"
         >
           Buy Crypto
         </button>
@@ -57,8 +57,9 @@ export default {
     close() {
       this.setBuyCryptoOverviewModalOpen({ open: false })
     },
-    openTransakTab() {
-      this.openTransakWidgetTab({ ...this.data })
+    openSelectAccount() {
+      this.setBuyCryptoOverviewModalOpen({ open: false })
+      this.$router.push('/assets/buy')
     },
     receive() {
       this.setBuyCryptoOverviewModalOpen({ open: false })
