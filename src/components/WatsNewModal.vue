@@ -10,7 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Release candidate 0.63.0</pre>
+            <pre class="text-wrap">* Bridge Your Assets Using Hop Protocol</pre>
+            <pre class="text-wrap">* Minor improvements</pre>
           </div>
         </div>
       </div>

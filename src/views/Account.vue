@@ -226,7 +226,7 @@ export default {
       event: 'Active Asset',
       properties: {
         walletVersion,
-        category: 'Click on Asset',
+        category: `User clicked on ${this.asset} from the overview page`,
         chain: chain,
         asset: `${this.asset}`,
         label: 'User clicked on assert from overview screen'

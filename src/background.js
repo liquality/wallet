@@ -47,20 +47,19 @@ store.subscribe(async ({ type, payload }, state) => {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      dispatch('updateBalances', {
-        network: state.activeNetwork,
-        walletId: state.activeWalletId
-      })
-      dispatch('updateMarketData', { network: state.activeNetwork })
-
       await dispatch('trackAnalytics', {
-        event: 'Change Active Network',
+        event: `Change Active Network to ${state.activeNetwork}`,
         properties: {
           walletVersion,
           action: 'User changed active network',
           network: state.activeNetwork
         }
       })
+      dispatch('updateBalances', {
+        network: state.activeNetwork,
+        walletId: state.activeWalletId
+      })
+      dispatch('updateMarketData', { network: state.activeNetwork })
       break
     case 'LOCK_WALLET':
       await dispatch('trackAnalytics', {
@@ -247,11 +246,11 @@ store.subscribe(async ({ type, payload }, state) => {
       break
     case 'TOGGLE_EXPERIMENT':
       await dispatch('trackAnalytics', {
-        event: 'Experiment Toggle',
+        event: `User on Experiment feature ${payload.name}`,
         properties: {
           walletVersion,
           category: 'Experiments',
-          action: 'Experiment Toggle',
+          action: 'Experiment Toggle on/off',
           label: `${payload.name}`
         }
       })
@@ -263,6 +262,37 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Settings',
           action: 'Change Password'
+        }
+      })
+      break
+    case 'DISABLE_ASSETS':
+      await dispatch('trackAnalytics', {
+        walletVersion,
+        event: 'User Disable Asset',
+        properties: {
+          category: 'Settings',
+          action: 'Disable Asset',
+          assets: payload.assets
+        }
+      })
+      break
+    case 'DISABLE_ETHEREUM_INJECTION':
+      await dispatch('trackAnalytics', {
+        walletVersion,
+        event: 'User Disable Default Web3 Wallet Injection',
+        properties: {
+          category: 'Settings',
+          action: 'Disable Default Web3 Wallet Ethereum Injection'
+        }
+      })
+      break
+    case 'ENABLE_ETHEREUM_INJECTION':
+      await dispatch('trackAnalytics', {
+        walletVersion,
+        event: 'User Enable Default Web3 Wallet Injection',
+        properties: {
+          category: 'Settings',
+          action: 'Enable Default Web3 Wallet Ethereum Injection'
         }
       })
       break
