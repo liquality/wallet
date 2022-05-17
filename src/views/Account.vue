@@ -90,7 +90,13 @@
           v-if="activityData.length > 0"
         />
         <TransactionList :transactions="activityData" />
-        <EmptyActivity v-show="activityData.length <= 0" :active-network="activeNetwork" />
+        <EmptyActivity
+          v-show="activityData.length <= 0"
+          :active-network="activeNetwork"
+          :chain="chain"
+          :asset="asset"
+          :address="address"
+        />
       </div>
     </div>
   </div>
