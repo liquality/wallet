@@ -90,9 +90,7 @@
           v-if="activityData.length > 0"
         />
         <TransactionList :transactions="activityData" />
-        <div class="activity-empty" v-if="activityData.length <= 0">
-          Once you start using your wallet you will see the activity here
-        </div>
+        <EmptyActivity v-show="activityData.length <= 0" :active-network="activeNetwork" />
       </div>
     </div>
   </div>
@@ -122,6 +120,7 @@ import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
+import EmptyActivity from '@/components/EmptyActivity'
 
 export default {
   components: {
@@ -132,7 +131,8 @@ export default {
     SwapIcon,
     ActivityFilter,
     TransactionList,
-    EyeIcon
+    EyeIcon,
+    EmptyActivity
   },
   data() {
     return {
