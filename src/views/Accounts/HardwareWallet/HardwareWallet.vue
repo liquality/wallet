@@ -36,6 +36,7 @@ import Unlock from './Unlock'
 import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { version as walletVersion } from '../../../../package.json'
 import { getNextAccountColor } from '@liquality/wallet-core/dist/utils/accounts'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { BG_PREFIX } from '@/broker/utils'
@@ -151,6 +152,7 @@ export default {
         await this.trackAnalytics({
           event: 'Ledger Connect',
           properties: {
+            walletVersion,
             category: 'Hardware Wallet',
             action: 'Add Ledger Account',
             label: `Asset ${this.selectedAsset.name}`
