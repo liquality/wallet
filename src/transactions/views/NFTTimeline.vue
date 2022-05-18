@@ -2,7 +2,7 @@
   <div>
     <div class="liquality-timeline">
       <small id="start_time">{{ prettyTime(item.startTime) }}</small>
-      <h3>Sent</h3>
+      <h3>Started</h3>
       <div class="liquality-timeline_inner">
         <div class="liquality-timeline_container left completed">
           <div class="content">
@@ -37,8 +37,7 @@
         </div>
       </div>
       <div v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
-        <small>Received</small>
-        <br />
+        <h3>Completed</h3>
         <small>{{ prettyTime(item.endTime) }}</small>
       </div>
     </div>

@@ -14,7 +14,7 @@
                 id="transaction_details_status_number_of_confirmations"
                 v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"
               >
-                / 00 Confirmations / {{ tx.confirmations }} Confirmations
+                / {{ tx.confirmations }} Confirmations
               </span>
             </p>
           </div>
@@ -28,13 +28,13 @@
           <div class="col">
             <h2>Time</h2>
             <div class="d-flex justify-content-between">
-              <p v-if="item.startTime">Initiated {{ prettyTime(item.startTime) }}</p>
+              <p v-if="item.startTime" class="mr-2">Initiated {{ prettyTime(item.startTime) }}</p>
               <p v-if="item.endTime">Completed {{ prettyTime(item.endTime) }}</p>
             </div>
           </div>
         </div>
         <div class="row">
-          <div class="col">
+          <div class="col-12">
             <h2>Sent Asset</h2>
             <div class="d-flex">
               <div class="nft-image mr-2" style="--img-width: 128px">
@@ -45,11 +45,20 @@
                 <p>{{ item.nft.collection.name }}</p>
                 <p class="text-grey">
                   <span class="mr-2">Token ID</span>
-                  <span class="text-break"> {{ item.nft.token_id }}</span>
+                  <span class="text-primary text-break">
+                    {{ item.nft.token_id }}
+                    <CopyIcon @click="copy(item.nft.token_id)" class="copy-icon"
+                  /></span>
                 </p>
                 <p class="text-grey">
                   <span class="mr-2"> Contract Address</span>
-                  <span class="text-break underline"> {{ item.nft.asset_contract.address }} </span>
+                  <span class="text-break underline">
+                    <span class="text-primary d-flex align-items-center">
+                      {{ shortenAddress(item.nft.asset_contract.address) }}
+                      <CopyIcon
+                        @click="copy(item.nft.asset_contract.address)"
+                        class="copy-icon" /></span
+                  ></span>
                 </p>
               </div>
             </div>
@@ -354,6 +363,12 @@ export default {
   &_status-icon {
     width: 28px;
     float: right;
+  }
+
+  .nft-image {
+    width: 120px;
+    max-width: 120px;
+    max-height: 120px;
   }
 }
 </style>

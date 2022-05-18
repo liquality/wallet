@@ -116,7 +116,6 @@ export default {
       }
     },
     getDetailsUrl(item) {
-      console.log('🚀 ~ file: TransactionList.vue ~ line 119 ~ getDetailsUrl ~ item', item)
       return {
         NFT: `/details/nft-transaction/${item.id}`,
         SEND: `/details/transaction/${item.id}`,
