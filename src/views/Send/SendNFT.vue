@@ -551,12 +551,9 @@ export default {
           feeLabel: this.selectedFeeLabel,
           fiatRate: this.fiatRates[this.asset]
         }
-        console.log('🚀 ~ file: SendNFT.vue ~ line 512 ~ sendNFT ~ data', data)
-        const response = await this.sendNFTTransaction(data)
-        console.log('🚀 ~ file: SendNFT.vue ~ line 397 ~ sendNFT ~ response', response)
-        this.$router.replace(`/wallet/nfts/nft-activity`)
+        await this.sendNFTTransaction(data)
+        this.$router.replace(`/wallet/nfts/activity`)
       } catch (error) {
-        console.error(error)
         const { message } = error
         this.loading = false
         this.sendErrorMessage = message || error
