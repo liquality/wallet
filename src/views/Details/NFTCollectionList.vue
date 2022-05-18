@@ -2,7 +2,7 @@
   <div class="nft-collectibles">
     <NavBar
       showBack="true"
-      :backPath="routeSource === 'NFTActivity' ? '/nft-activity' : '/wallet/nfts'"
+      :backPath="routeSource === 'NFTActivity' ? '/wallet/nfts/activity' : '/wallet/nfts'"
       :backLabel="''"
     >
       <span class="wallet-header">

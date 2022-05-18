@@ -120,7 +120,7 @@ const routes = [
     ]
   },
   {
-    path: '/nft-activity',
+    path: '/wallet/nfts/activity',
     component: NFTActivity,
     name: 'NFTActivity'
   },

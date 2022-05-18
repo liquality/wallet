@@ -72,7 +72,7 @@
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
           <ListItem
             v-if="account.chain === 'ethereum' && nftAssetsNumber > 0"
-            @item-selected="$router.push({ path: '/nft-activity' })"
+            @item-selected="$router.push({ path: '/wallet/nfts/activity' })"
           >
             <template #prefix>
               <div class="account-color" :style="{ 'background-color': account.color }"></div>

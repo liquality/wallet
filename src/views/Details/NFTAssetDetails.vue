@@ -187,6 +187,10 @@ export default {
       return (this.nftAsset = this.$route.query.nftAsset)
     }
     this.nftAsset = JSON.parse(localStorage.getItem('nftAsset'))
+    console.log(
+      '🚀 ~ file: NFTAssetDetails.vue ~ line 190 ~ created ~ this.nftAsset',
+      this.nftAsset
+    )
   },
   methods: {
     shortenAddress,

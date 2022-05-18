@@ -554,7 +554,7 @@ export default {
         console.log('🚀 ~ file: SendNFT.vue ~ line 512 ~ sendNFT ~ data', data)
         const response = await this.sendNFTTransaction(data)
         console.log('🚀 ~ file: SendNFT.vue ~ line 397 ~ sendNFT ~ response', response)
-        this.$router.replace(`/accounts/${this.account.id}/${this.asset}`)
+        this.$router.replace(`/wallet/nfts/nft-activity`)
       } catch (error) {
         console.error(error)
         const { message } = error
