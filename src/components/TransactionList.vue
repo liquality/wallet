@@ -76,7 +76,7 @@ export default {
         case 'SEND':
           return `Send ${item.from}`
         case 'NFT':
-          return `Send ${item.from}`
+          return `Send NFT`
         case 'RECEIVE':
           return `Receive ${item.from}`
         default:

@@ -61,25 +61,18 @@ export default {
   data() {
     return {
       activityData: [],
-      activeTab: 'nfts'
+      activeTab: 'nfts',
+      asset: 'ETH'
     }
   },
-  props: ['asset'],
+  created() {
+    this.activityData = [...this.activity]
+  },
   computed: {
     ...mapGetters(['activity', 'accountItem']),
     ...mapState(['activeNetwork', 'history', 'nftAssetsNumber']),
-    accountId() {
-      return this.$route.params.accountId
-    },
-    account() {
-      console.log(
-        '🚀 ~ file: NFTActivity.vue ~ line 74 ~ account ~  this.accountItem(this.accountId',
-        this.accountItem(this.accountId)
-      )
-      return this.accountItem(this.accountId)
-    },
     assetHistory() {
-      return this.activity.filter((item) => item.from === this.asset)
+      return this.activity.filter((item) => item.type === 'NFT' && item.from === this.asset)
     }
   },
   methods: {

@@ -12,7 +12,8 @@
     </div>
     <div class="account-container_actions">
       <router-link
-        to="/send-nft"
+        to="/wallet/nfts/send"
+        :query="{ source: source }"
         class="account-container_actions_button send-action"
         id="send_action"
       >
@@ -35,7 +36,10 @@ export default {
     SendIcon
   },
   computed: {
-    ...mapState(['nftAssetsNumber'])
+    ...mapState(['nftAssetsNumber']),
+    source() {
+      return this.$route.fullPath
+    }
   },
   methods: {
     getAssetIcon

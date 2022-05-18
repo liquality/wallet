@@ -3,7 +3,7 @@
     <NavBar
       showMenu="true"
       showBack="true"
-      backPath="/wallet/nfts"
+      :backPath="routeSource"
       :backLabel="activeView === 'selectAsset' ? 'Overview' : 'Back'"
     >
       <span class="account-title">{{ title }}</span>
@@ -76,7 +76,7 @@
                 <div>
                   <div class="d-flex">
                     <span class="mr-3">{{ asset }}</span>
-                    <div class="mr-3 d-flex align-items-center">
+                    <div class="mr-3">
                       <span class="mr-1">{{ shortenAddress(fromAddress) }}</span>
                       <span><CopyIcon class="copy-icon" @click="copy(fromAddress)" /></span>
                     </div>
@@ -148,9 +148,8 @@
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"
-              :disabled="!address && !isValidAddress"
+              :disabled="address === '' && !isValidAddress"
             >
-              <!-- <SpinnerIcon class="btn-loading" v-if="loading" /> -->
               Review
             </button>
           </div>
@@ -295,7 +294,6 @@ export default {
   },
   async created() {
     await this.updateFees({ asset: this.assetChain })
-    console.log('🚀 ~ file: SendNFT.vue ~ line 285 ~ created ~  await this.fees', this.fees)
     await this.updateSendFees(this.amount)
     await this.trackAnalytics({
       event: 'Send NFT screen',
@@ -305,6 +303,11 @@ export default {
         label: `${this.asset}`
       }
     })
+    if (this.$route.query.nftAsset) {
+      this.selectedNFT = this.$route.query.nftAsset
+      localStorage.setItem('nftAsset', JSON.stringify(this.selectedNFT))
+      this.activeView = 'selectedAsset'
+    }
     // if (this.nftAssets) {
     //   const firstCollection = this.nftAssets[Object.keys(this.nftAssets)[0]]
     //   console.log(
@@ -340,6 +343,22 @@ export default {
         default:
           return ''
       }
+    },
+    // routeQuery() {
+    //   if (this.$route.query?.source?.includes('/details/nft-asset')) {
+    //     return {
+    //       source: this.$route.query.source,
+    //       nftAsset: this.$route.query.nftAsset
+    //     }
+    //   }
+    //   return {}
+    // },
+    routeSource() {
+      if (this.$route.query?.source?.includes('/details/nft-asset')) {
+        // JSON.stringify(this.selectedNFT)
+        return `${this.$route.query.source}`
+      }
+      return this.$route.query.source
     },
     totalFeeInFiat() {
       return prettyFiatBalance(this.currentFee, this.fiatRates[this.assetChain])
@@ -428,6 +447,9 @@ export default {
     getNativeAsset,
     applyFilters(filters) {
       this.activityData = applyActivityFilters([...this.assetHistory], filters)
+    },
+    async copy(text) {
+      await navigator.clipboard.writeText(text)
     },
     selectNFT(asset) {
       console.log('asset>>>', asset)

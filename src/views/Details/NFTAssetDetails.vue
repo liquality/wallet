@@ -1,6 +1,18 @@
 <template>
   <div class="nft-asset">
     <NavBar showBack="true" :backPath="'/wallet/nfts'" :backLabel="''"> </NavBar>
+    <div class="nft-action-buttons">
+      <SendIcon
+        class="nft-action-buttons__icon"
+        @click="
+          $router.push({
+            path: '/wallet/nfts/send',
+            query: { nftAsset: nftAsset, source: source }
+          })
+        "
+      />
+      <ShareIcon class="nft-action-buttons__icon" @click="openOnOpenSea" />
+    </div>
     <template v-if="showFullscreen === false">
       <div class="nft-img">
         <img :src="nftAsset.image_url" alt="image" />
@@ -55,48 +67,72 @@
               </span>
             </li>
           </ul>
-          <div class="wallet-tab-content">
-            <div class="mt-2">
-              <template v-if="activeTab === 'overview'">
+          <div class="wallet-tab-content py-1">
+            <div>
+              <div class="px-4 mt-2" v-if="activeTab === 'overview'">
                 <h5 class="nft-details_name">Bio</h5>
                 <p class="nft-details_name" v-if="nftAsset.description">
                   {{ nftAsset.description }}
                 </p>
-              </template>
-              <template v-if="activeTab === 'details'">
-                <!-- <ul></ul> -->
-                <div class="d-flex justify-content-between">
-                  <h5 class="nft-details_name">Creator</h5>
-                  <p class="nft-details_name text-underline" v-if="nftAsset.creator">
-                    {{ shortenAddress(nftAsset.creator.address) }}
-                  </p>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <h5 class="nft-details_name">Contract Address</h5>
-                  <p class="nft-details_name text-underline" v-if="nftAsset.asset_contract">
-                    {{ shortenAddress(nftAsset.asset_contract.address) }}
-                  </p>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <h5 class="nft-details_name">Token ID</h5>
-                  <p class="nft-details_name text-underlin text-break" v-if="nftAsset.token_id">
-                    {{ nftAsset.token_id }}
-                  </p>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <h5 class="nft-details_name">Token Standard</h5>
-                  <p
-                    class="nft-details_name text-underline text-break"
-                    v-if="nftAsset.asset_contract"
-                  >
-                    {{ nftAsset.asset_contract.schema_name }}
-                  </p>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <h5 class="nft-details_nam">Blockchain</h5>
-                  <p class="nft-details_name text-underline">Ethereum</p>
-                </div>
-              </template>
+              </div>
+              <div class="table" v-if="activeTab === 'details'">
+                <table class="table bg-white border-0 mb-1 mt-1">
+                  <tbody class="font-weight-normal">
+                    <tr class="border-top-0">
+                      <td class="text-muted text-left small-12">Creator</td>
+                      <td class="text-break" v-if="nftAsset.creator">
+                        <span class="text-primary d-flex align-items-center">
+                          {{ shortenAddress(nftAsset.creator.address) }}
+                          <CopyIcon @click="copy(address)" class="copy-icon"
+                        /></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted text-left small-12">Account</td>
+                      <td class="text-break" v-if="nftAsset.asset_contract">
+                        <span class="text-primary d-flex align-items-center">
+                          <img :src="getAccountIcon(account.chain)" class="asset-icon" />
+                          {{ shortenAddress(address) }}
+                          <CopyIcon @click="copy(address)" class="copy-icon"
+                        /></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted text-left small-12">Contract Address</td>
+                      <td class="text-break" v-if="nftAsset.asset_contract">
+                        <span class="text-primary d-flex align-items-center">
+                          {{ shortenAddress(nftAsset.asset_contract.address) }}
+                          <CopyIcon
+                            @click="copy(nftAsset.asset_contract.address)"
+                            class="copy-icon"
+                        /></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted text-left small-12" id="your_to_address">Token ID</td>
+                      <td class="text-break" v-if="nftAsset.token_id">
+                        <span class="text-primary">
+                          {{ nftAsset.token_id }}
+                          <CopyIcon @click="copy(nftAsset.token_id)" class="copy-icon"
+                        /></span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted text-left small-12">Token Standard</td>
+                      <td class="text-break" v-if="nftAsset.asset_contract">
+                        {{ nftAsset.asset_contract.schema_name }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="text-muted text-left small-12">Blockchain</td>
+                      <td class="text-break">
+                        <img :src="getAssetIcon(asset)" class="asset-icon" />
+                        Ethereum
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -106,27 +142,59 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import CopyIcon from '@/assets/icons/copy.svg'
+import SendIcon from '@/assets/icons/send_nft.svg'
+import ShareIcon from '@/assets/icons/share_nft.svg'
 import NavBar from '../../components/NavBar.vue'
+import { chains } from '@liquality/cryptoassets'
+import { getAssetIcon } from '@/utils/asset'
+import { getAccountIcon } from '@/utils/accounts'
+
 export default {
   data() {
     return {
       showFullscreen: false,
-      activeTab: 'overview'
+      activeTab: 'overview',
+      asset: 'ETH',
+      nftAsset: null
     }
   },
   components: {
     ChevronDownIcon,
+    CopyIcon,
+    SendIcon,
+    ShareIcon,
     NavBar
   },
   computed: {
-    nftAsset() {
-      return this.$route.query.nftAsset
+    ...mapGetters(['accountsData']),
+    ...mapState(['activeNetwork']),
+    source() {
+      return this.$route.fullPath
+    },
+    account() {
+      return this.accountsData.filter((account) => account.chain === 'ethereum')[0]
+    },
+    address() {
+      return chains['ethereum']?.formatAddress(this.account.addresses[0], this.activeNetwork)
     }
+  },
+  created() {
+    if (this.$route.query.nftAsset) {
+      return (this.nftAsset = this.$route.query.nftAsset)
+    }
+    this.nftAsset = JSON.parse(localStorage.getItem('nftAsset'))
   },
   methods: {
     shortenAddress,
+    getAssetIcon,
+    getAccountIcon,
+    async copy(text) {
+      await navigator.clipboard.writeText(text)
+    },
     nftAssetImageSource(mode) {
       if (mode === 'thumbnail') {
         return this.nftAsset.image_thumbnail_url
@@ -135,6 +203,14 @@ export default {
       } else {
         return this.nftAsset.image_url
       }
+    },
+    openOnOpenSea() {
+      window.open(
+        `http://${this.activeNetwork === 'testnet' ? 'testnets.' : ''}opensea.io/assets/${
+          this.nftAsset.asset_contract.address
+        }/${this.nftAsset.token_id}`,
+        '_blank'
+      )
     }
   }
 }
@@ -165,6 +241,24 @@ export default {
     }
   }
 
+  .nft-action-buttons {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    &__icon {
+      cursor: pointer;
+      width: 24px;
+      margin-right: 0.5rem;
+    }
+  }
+
   .drawer.nft-details {
     background: #ffffff;
     border: 1px solid #d9dfe5;
@@ -172,7 +266,7 @@ export default {
     bottom: 0;
     width: 100%;
     height: 20%;
-    padding: 1rem 2rem;
+    padding: 1rem;
     border-radius: 15px 15px 0 0;
     &_name {
       font-size: 14px;
@@ -188,6 +282,7 @@ export default {
 
   .drawer-open {
     height: 75% !important;
+    overflow-y: scroll;
   }
 
   &::after {
@@ -197,15 +292,16 @@ export default {
 
   .nft-details_arrow {
     width: 24px;
+    cursor: pointer;
   }
 }
 
 .wallet-tabs {
-  // margin: 0;
-  margin: 0 -2rem;
+  margin: 0 -1rem;
 }
 .nav-tabs {
   height: 48px;
+  cursor: pointer;
   border-bottom: none !important;
 
   .nav-item {
@@ -237,12 +333,19 @@ export default {
 }
 
 .wallet-tab-content {
-  padding: 1rem 2rem;
   a {
     color: $color-text-primary;
   }
   a:hover {
     text-decoration: none;
+  }
+
+  .table {
+    table {
+      tr {
+        padding: 12px 20px !important;
+      }
+    }
   }
 }
 </style>

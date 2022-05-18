@@ -125,7 +125,7 @@ const routes = [
     name: 'NFTActivity'
   },
   {
-    path: '/send-nft',
+    path: '/wallet/nfts/send',
     component: SendNFT,
     name: 'SendNFT'
   },

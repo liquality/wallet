@@ -45,7 +45,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setStarredNFTs', 'getNftAssets']),
+    ...mapActions(['setStarredNFTs']),
     ...mapMutations(['SET_STARRED_NFTS']),
     viewNFTDetails() {
       if (this.nftAsset) {
