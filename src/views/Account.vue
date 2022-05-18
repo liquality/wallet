@@ -160,7 +160,7 @@ export default {
       return this.marketData[this.activeNetwork][this.asset]
     },
     assetHistory() {
-      return this.activity.filter((item) => item.from === this.asset)
+      return this.activity.filter((item) => item.from === this.asset && item.type !== 'NFT')
     },
     addressLink() {
       if (this.account) {
