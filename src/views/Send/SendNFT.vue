@@ -538,6 +538,7 @@ export default {
       this.sendErrorMessage = ''
       this.loading = true
       try {
+        const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
         const data = {
           network: this.activeNetwork,
           accountId: this.account.id,
@@ -547,7 +548,7 @@ export default {
           tokenIDs: [this.selectedNFT.token_id],
           values: [1],
           nft: this.selectedNFT,
-          fee: this.selectedFee,
+          fee,
           feeLabel: this.selectedFeeLabel,
           fiatRate: this.fiatRates[this.asset]
         }

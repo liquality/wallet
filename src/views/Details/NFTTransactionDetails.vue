@@ -40,20 +40,20 @@
               <div class="nft-image mr-2" style="--img-width: 128px">
                 <img :src="item.nft.image_thumbnail_url" alt="nft-image" />
               </div>
-              <div>
+              <div class="w-100">
                 <p>{{ item.nft.name }}</p>
                 <p>{{ item.nft.collection.name }}</p>
                 <p class="text-grey">
-                  <span class="mr-2">Token ID</span>
-                  <span class="text-primary text-break">
+                  <span class="texr-muted mr-2">Token ID</span>
+                  <span class="text-break">
                     {{ item.nft.token_id }}
                     <CopyIcon @click="copy(item.nft.token_id)" class="copy-icon"
                   /></span>
                 </p>
                 <p class="text-grey">
-                  <span class="mr-2"> Contract Address</span>
+                  <span class="text-muted mr-2"> Contract Address</span>
                   <span class="text-break underline">
-                    <span class="text-primary d-flex align-items-center">
+                    <span class="d-flex align-items-center">
                       {{ shortenAddress(item.nft.asset_contract.address) }}
                       <CopyIcon
                         @click="copy(item.nft.asset_contract.address)"

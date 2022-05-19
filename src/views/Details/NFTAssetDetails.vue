@@ -71,8 +71,8 @@
             <div>
               <div class="px-4 mt-2" v-if="activeTab === 'overview'">
                 <h5 class="nft-details_name">Bio</h5>
-                <p class="nft-details_name" v-if="nftAsset.description">
-                  {{ nftAsset.description }}
+                <p class="nft-details_name">
+                  {{ nftAsset.description || 'This NFT does not have a description.' }}
                 </p>
               </div>
               <div class="table" v-if="activeTab === 'details'">
@@ -182,15 +182,15 @@ export default {
       return chains['ethereum']?.formatAddress(this.account.addresses[0], this.activeNetwork)
     }
   },
-  created() {
-    if (this.$route.query.nftAsset) {
-      return (this.nftAsset = this.$route.query.nftAsset)
+  async created() {
+    const nftAsset = await JSON.parse(localStorage.getItem('nftAsset'))
+    if (nftAsset) {
+      return (this.nftAsset = nftAsset)
     }
-    this.nftAsset = JSON.parse(localStorage.getItem('nftAsset'))
-    console.log(
-      '🚀 ~ file: NFTAssetDetails.vue ~ line 190 ~ created ~ this.nftAsset',
-      this.nftAsset
-    )
+    return (this.nftAsset = this.$route.query.nftAsset)
+  },
+  destroyed() {
+    localStorage.removeItem('nftAsset')
   },
   methods: {
     shortenAddress,
