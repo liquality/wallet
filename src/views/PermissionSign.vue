@@ -10,7 +10,16 @@
         <p class="permission-sign_address">{{ shortenAddress(address) }}</p>
         <div class="permission-sign_message mt-4">
           <p class="text-left mb-1">Message:</p>
-          <textarea v-model="message" readonly></textarea>
+          <div v-if="typeof messageToDisplay === 'string'">
+            <span>{{ messageToDisplay }}</span>
+          </div>
+
+          <div class="message-wrapper" v-else>
+            <div v-for="[key, value] in messageToDisplay" :key="key">
+              <span>{{ key }}:</span>
+              <span>{{ value }}</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -64,7 +73,10 @@ export default {
   data() {
     return {
       loading: false,
-      replied: false
+      replied: false,
+      isSignTypedMessage: false,
+      messageToDisplay: '',
+      messageToSign: ''
     }
   },
   methods: {
@@ -80,7 +92,7 @@ export default {
         await this.replyPermission({
           request: {
             ...this.request,
-            args: [this.message, this.request.args[1]]
+            args: [this.messageToSign, this.request.args[1]]
           },
           allowed
         })
@@ -100,16 +112,27 @@ export default {
       return this.request.asset
     },
     address() {
-      return this.request.args[1]
-    },
-    message() {
-      return hexToAscii(this.request.args[0])
+      return this.request.args[1] || this.request.args[0].params[0]
     },
     request() {
       return {
         ...this.$route.query,
         args: JSON.parse(this.$route.query.args)
       }
+    }
+  },
+  created() {
+    if (this.request.method === 'wallet.signTypedMessage') {
+      const { params } = this.request.args[0]
+      const { message } = JSON.parse(params[1])
+
+      this.messageToDisplay = Object.entries(message)
+
+      this.messageToSign = this.request.args[0]
+    } else {
+      this.messageToDisplay = hexToAscii(this.request.args[0])
+
+      this.messageToSign = hexToAscii(this.request.args[0]) // Handle wallet.signMessage
     }
   }
 }
@@ -131,6 +154,23 @@ export default {
       width: 100%;
       height: 120px;
       resize: none;
+    }
+  }
+
+  .message-wrapper {
+    height: 200px;
+    overflow-y: auto;
+
+    div {
+      display: flex;
+      align-items: flex-start;
+
+      span {
+        &:first-child {
+          font-weight: bold;
+          margin-right: 5px;
+        }
+      }
     }
   }
 }

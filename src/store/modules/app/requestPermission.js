@@ -86,7 +86,7 @@ export const requestPermission = async (
 
         if (chain === 'terra') permissionRoute = '/permission/terra'
         else if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
-        else if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
+        else if (method === 'wallet.signMessage' || method === 'wallet.signTypedMessage') permissionRoute = '/permission/sign'
         else if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'
 
         createPopup(`${permissionRoute}?${query}`, () => reject(new Error('User denied')))
