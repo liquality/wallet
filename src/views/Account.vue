@@ -223,10 +223,10 @@ export default {
     const { chain } = cryptoassets[this.asset]
 
     this.trackAnalytics({
-      event: 'Active Asset',
+      event: `User clicked on ${this.asset} from the overview page`,
       properties: {
         walletVersion,
-        category: `User clicked on ${this.asset} from the overview page`,
+        category: 'Active Asset',
         chain: chain,
         asset: `${this.asset}`,
         label: 'User clicked on assert from overview screen'

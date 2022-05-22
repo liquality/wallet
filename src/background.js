@@ -134,7 +134,7 @@ store.subscribe(async ({ type, payload }, state) => {
         payload.transaction.amount
       )
       await dispatch('trackAnalytics', {
-        event: 'Send',
+        event: `User send funds`,
         properties: {
           walletVersion,
           category: 'Send/Receive',

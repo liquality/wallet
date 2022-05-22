@@ -956,7 +956,7 @@ export default {
       this.updateQuotes()
       this.updateFiatRates({ assets: [toAsset] })
       this.trackAnalytics({
-        event: 'Swap screen',
+        event: `User clicked on ${this.toAsset} Swap option`,
         properties: {
           walletVersion,
           category: 'Swap screen',
