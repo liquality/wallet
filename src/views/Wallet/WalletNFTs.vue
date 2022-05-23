@@ -9,6 +9,9 @@
       <p>
         Once you start owning NFTs with accounts in your Liquality wallet you will see them here.
       </p>
+      <div class="d-flex justify-content-center brand">
+        <OpenSea />
+      </div>
       <div class="d-flex justify-content-center">
         <a
           class="btn btn-outline-primary"
@@ -25,10 +28,12 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import NFTAssets from '../../components/NFTAssets.vue'
+import OpenSea from '../../assets/icons/opensea_brand.svg'
 
 export default {
   components: {
-    NFTAssets
+    NFTAssets,
+    OpenSea
   },
   props: {
     source: {
@@ -90,6 +95,18 @@ export default {
   .btn {
     border-radius: 22px;
     color: #9d4dfa;
+  }
+
+  .brand {
+    background: rgba(217, 223, 229, 0.5);
+    border-radius: 10px;
+    padding: 28px 58px;
+    margin-bottom: 20px;
+
+    svg {
+      width: 215px;
+      height: 49px;
+    }
   }
 }
 </style>

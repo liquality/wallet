@@ -1,5 +1,11 @@
 <template>
   <div class="account-content-top">
+    <RefreshIcon
+      @click.stop="refresh"
+      class="account-container_refresh-icon"
+      id="refresh-icon"
+      :class="{ 'infinity-rotate': updatingAssets }"
+    />
     <div class="account-container_balance">
       <div>
         <span class="account-container_balance_value">
@@ -28,22 +34,43 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import SendIcon from '@/assets/icons/send.svg'
 import { getAssetIcon } from '@/utils/asset'
+import RefreshIcon from '@/assets/icons/refresh.svg'
 
 export default {
   components: {
-    SendIcon
+    SendIcon,
+    RefreshIcon
+  },
+  data() {
+    return {
+      updatingAssets: false
+    }
   },
   computed: {
-    ...mapState(['nftAssets']),
+    ...mapState(['nftAssets', 'activeWalletId', 'activeNetwork']),
     source() {
       return this.$route.fullPath
     }
   },
   methods: {
-    getAssetIcon
+    ...mapActions(['getNFTAssets']),
+    getAssetIcon,
+    async refresh() {
+      try {
+        this.updatingAssets = true
+        await this.getNFTAssets({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId
+        })
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.updatingAssets = false
+      }
+    }
   }
 }
 </script>

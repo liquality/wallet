@@ -81,6 +81,15 @@
               <NFTIcon class="asset-icon" />
             </template>
             NFTs ({{ nftAssets.length }})
+            <template #detail>
+              <router-link
+                class="d-flex align-items-center link"
+                :to="{
+                  path: `/wallet/nfts/activity`
+                }"
+                >see all</router-link
+              >
+            </template>
           </ListItem>
           <ListItem
             v-for="asset in account.assets"
@@ -241,5 +250,10 @@ export default {
   position: absolute;
   left: 0;
   margin-right: 5px;
+}
+
+.link {
+  color: $color-primary !important;
+  font-weight: 600;
 }
 </style>
