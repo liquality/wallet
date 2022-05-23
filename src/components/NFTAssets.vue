@@ -2,7 +2,7 @@
   <div class="nft-assets">
     <div class="nft-assets__container">
       <div class="nft-assets__container__heading">
-        <h5>{{ collectionName }} ({{ nftAssets.length }})</h5>
+        <h5>{{ collectionName }} ({{ nftCollection.length }})</h5>
         <span class="d-flex align-items-center">
           <router-link
             class="d-flex align-items-center link"
@@ -18,7 +18,7 @@
         </span>
       </div>
       <div class="nft-assets__container__images">
-        <div class="img-items" v-for="nft in nftAssets" :key="nft.id">
+        <div class="img-items" v-for="nft in assets" :key="nft.id">
           <NFTAsset :nftAsset="nft" :mode="'thumbnail'" />
         </div>
       </div>
@@ -27,10 +27,11 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import NFTAsset from './NFTAsset.vue'
 export default {
   props: {
-    nftAssets: {
+    assets: {
       type: Array,
       required: true
     },
@@ -45,6 +46,13 @@ export default {
   },
   components: {
     NFTAsset
+  },
+  computed: {
+    ...mapState(['nftAssets']),
+    ...mapGetters(['nftAssetsByCollection']),
+    nftCollection() {
+      return this.nftAssetsByCollection[this.collectionName]
+    }
   }
 }
 </script>

@@ -3,10 +3,10 @@
     <div class="account-container_balance">
       <div>
         <span class="account-container_balance_value">
-          {{ nftAssetsNumber || 0 }}
+          {{ nftAssets.length || 0 }}
         </span>
         <span class="account-container_balance_code"
-          >NFT<span v-if="nftAssetsNumber !== 1">s</span></span
+          >NFT<span v-if="nftAssets.length !== 1">s</span></span
         >
       </div>
     </div>
@@ -16,6 +16,7 @@
         :query="{ source: source }"
         class="account-container_actions_button send-action"
         id="send_action"
+        v-if="nftAssets.length > 0"
       >
         <div class="account-container_actions_button_wrapper">
           <SendIcon class="account-container_actions_button_icon" />
@@ -36,7 +37,7 @@ export default {
     SendIcon
   },
   computed: {
-    ...mapState(['nftAssetsNumber']),
+    ...mapState(['nftAssets']),
     source() {
       return this.$route.fullPath
     }

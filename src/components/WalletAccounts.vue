@@ -71,7 +71,7 @@
         </ListItem>
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
           <ListItem
-            v-if="account.chain === 'ethereum' && nftAssetsNumber > 0"
+            v-if="account.chain === 'ethereum' && nftAssets.length > 0"
             @item-selected="$router.push({ path: '/wallet/nfts/activity' })"
           >
             <template #prefix>
@@ -80,7 +80,7 @@
             <template #icon class="account-asset-item">
               <NFTIcon class="asset-icon" />
             </template>
-            NFTs ({{ nftAssetsNumber }})
+            NFTs ({{ nftAssets.length }})
           </ListItem>
           <ListItem
             v-for="asset in account.assets"
@@ -141,7 +141,7 @@ export default {
     this.getNftCollections()
   },
   computed: {
-    ...mapState(['activeWalletId', 'activeNetwork', 'nftAssetsNumber']),
+    ...mapState(['activeWalletId', 'activeNetwork', 'nftAssets']),
     filteredItems() {
       if (!this.search) return this.accounts
 
@@ -179,7 +179,6 @@ export default {
       }
     },
     selectItem(account, asset) {
-      console.log('🚀 ~ file: WalletAccounts.vue ~ line 173 ~ selectItem ~ account', account)
       this.$emit('item-selected', { account, asset })
     },
     shouldExpandAccount(account) {

@@ -6,7 +6,7 @@
       :backLabel="''"
     >
       <span class="wallet-header">
-        <strong class="text-uppercase"> {{ collectionName }}{{ nftCollection.length }}</strong>
+        <strong class="text-uppercase"> {{ collectionName }} ({{ nftCollection.length }})</strong>
       </span>
     </NavBar>
     <div class="nft-collection mt-3">
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import NFTAsset from '../../components/NFTAsset.vue'
 import NavBar from '../../components/NavBar.vue'
 
@@ -35,12 +35,12 @@ export default {
     NavBar
   },
   computed: {
-    ...mapState(['nftAssets']),
+    ...mapGetters(['nftAssetsByCollection']),
     collectionName() {
       return this.$route.query.collectionName
     },
     nftCollection() {
-      return this.nftAssets[this.collectionName]
+      return this.nftAssetsByCollection[this.collectionName]
     },
     routeSource() {
       return this.$route.query.source || null

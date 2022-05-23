@@ -11,7 +11,7 @@
     <template v-if="activeView === 'selectAsset'">
       <div class="account-content mx-3">
         <div>
-          <Accordion v-for="(assets, key) in nftAssets" :key="assets.id">
+          <Accordion v-for="(assets, key) in nftAssetsByCollection" :key="assets.id">
             <h3 slot="header">{{ key }} ({{ assets.length }})</h3>
             <div class="nft-assets__container__images">
               <div
@@ -318,13 +318,12 @@ export default {
     // }
   },
   computed: {
-    ...mapGetters(['activity', 'accountItem', 'accountsData']),
+    ...mapGetters(['activity', 'accountItem', 'accountsData', 'nftAssetsByCollection']),
     ...mapState([
       'activeNetwork',
       'activeWalletId',
-      'history',
-      'nftAssetsNumber',
       'nftAssets',
+      'history',
       'externalConnections',
       'fees',
       'fiatRates'

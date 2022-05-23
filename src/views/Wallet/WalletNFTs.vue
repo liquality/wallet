@@ -1,8 +1,8 @@
 <template>
   <div class="nft-collectibles">
-    <div v-if="Object.keys(nftAssets).length">
-      <template v-for="(asset, key) in nftAssets">
-        <NFTAssets :nftAssets="asset" :collectionName="key" :key="asset.id" :source="source" />
+    <div v-if="Object.keys(nftAssetsByCollection).length">
+      <template v-for="(asset, key) in nftAssetsByCollection">
+        <NFTAssets :assets="asset" :collectionName="key" :key="asset.id" :source="source" />
       </template>
     </div>
     <div class="activity-empty" v-else>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import NFTAssets from '../../components/NFTAssets.vue'
 
 export default {
@@ -42,7 +42,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeWalletId', 'activeNetwork', 'nftAssets'])
+    ...mapState(['activeWalletId', 'activeNetwork']),
+    ...mapGetters(['nftAssetsByCollection'])
   }
 }
 </script>

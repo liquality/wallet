@@ -70,7 +70,7 @@ export default {
   },
   computed: {
     ...mapGetters(['activity', 'accountItem']),
-    ...mapState(['activeNetwork', 'history', 'nftAssetsNumber']),
+    ...mapState(['activeNetwork', 'history']),
     assetHistory() {
       return this.activity.filter((item) => item.type === 'NFT')
     }

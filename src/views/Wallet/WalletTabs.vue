@@ -8,7 +8,7 @@
       </li>
       <li class="nav-item">
         <router-link class="nav-link" id="nfts_tab" :to="{ name: 'WalletNFTs' }">
-          NFTs ({{ nftAssetsNumber || 0 }})
+          NFTs ({{ nftAssets.length || 0 }})
         </router-link>
       </li>
       <li class="nav-item">
@@ -27,7 +27,7 @@
 import { mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState(['nftAssetsNumber'])
+    ...mapState(['nftAssets'])
   }
 }
 </script>
