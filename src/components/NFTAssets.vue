@@ -3,7 +3,7 @@
     <div class="nft-assets__container">
       <div class="nft-assets__container__heading">
         <h5>{{ collectionName }} ({{ nftCollection.length }})</h5>
-        <span class="d-flex align-items-center">
+        <span class="d-flex align-items-center" v-if="!isAccount">
           <router-link
             class="d-flex align-items-center link"
             :to="{
@@ -17,17 +17,20 @@
           >
         </span>
       </div>
-      <div class="nft-assets__container__images">
-        <div class="img-items" v-for="nft in assets" :key="nft.id">
-          <NFTAsset :nftAsset="nft" :mode="'thumbnail'" />
-        </div>
+      <div
+        class="nft-assets__container__images"
+        :class="{ 'nft-assets__container__images--is-account': isAccount }"
+      >
+        <template v-for="nft in isAccount ? assets : firstThreeAssets">
+          <NFTAsset :nftAsset="nft" :mode="'thumbnail'" :key="nft.id" />
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import NFTAsset from './NFTAsset.vue'
 export default {
   props: {
@@ -42,16 +45,22 @@ export default {
     source: {
       type: String,
       required: false
+    },
+    isAccount: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
     NFTAsset
   },
   computed: {
-    ...mapState(['nftAssets']),
     ...mapGetters(['nftAssetsByCollection']),
     nftCollection() {
       return this.nftAssetsByCollection[this.collectionName]
+    },
+    firstThreeAssets() {
+      return this.assets.slice(0, 3)
     }
   }
 }
@@ -75,20 +84,23 @@ export default {
     }
     &__images {
       display: flex;
-      column-gap: 12px;
+      gap: 12px;
       width: 100%;
       overflow: auto;
       justify-content: start;
       align-items: center;
-      .img-items {
-        margin-right: 20px;
-        img {
-          width: var(--img-width);
-          border-radius: 10px;
+      margin-right: 20px;
 
-          &.img-active {
-            transform: translateX(-100%);
-          }
+      &--is-account {
+        flex-wrap: wrap;
+      }
+
+      img {
+        width: var(--img-width);
+        border-radius: 10px;
+
+        &.img-active {
+          transform: translateX(-100%);
         }
       }
     }

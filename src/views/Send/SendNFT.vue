@@ -1,7 +1,6 @@
 <template>
   <div class="account-container">
     <NavBar
-      showMenu="true"
       showBack="true"
       :backPath="routeSource"
       :backLabel="activeView === 'selectAsset' ? 'Overview' : 'Back'"
@@ -12,7 +11,7 @@
       <div class="account-content mx-3">
         <div>
           <Accordion v-for="(assets, key) in nftAssetsByCollection" :key="assets.id">
-            <h3 slot="header">{{ key }} ({{ assets.length }})</h3>
+            <h3 slot="header" id="nft-asset-header">{{ key }} ({{ assets.length }})</h3>
             <div class="nft-assets__container__images">
               <div
                 class="nft-image"
@@ -148,7 +147,7 @@
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"
-              :disabled="address === '' && !isValidAddress"
+              :disabled="address === '' || !isValidAddress"
             >
               Review
             </button>
@@ -354,10 +353,10 @@ export default {
     // },
     routeSource() {
       if (this.$route.query?.source?.includes('/details/nft-asset')) {
-        // JSON.stringify(this.selectedNFT)
+        console.log(this.$route.query.source)
         return `${this.$route.query.source}`
       }
-      return this.$route.query.source
+      return '/wallet/nfts'
     },
     totalFeeInFiat() {
       return prettyFiatBalance(this.currentFee, this.fiatRates[this.assetChain])

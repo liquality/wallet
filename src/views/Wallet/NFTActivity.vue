@@ -1,10 +1,10 @@
 <template>
   <div class="account-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account-title"><NFTIcon class="asset-icon" /> NFTs</span>
+      <span class="account-title"><NFTIcon class="asset-icon" /> {{ nftAssets.length }} NFTs</span>
     </NavBar>
     <div class="account-content">
-      <NFTStats />
+      <NFTStats :isAccount="true" />
       <div class="wallet-tabs">
         <ul class="nav nav-tabs">
           <li class="nav-item" @click="activeTab = 'nfts'">
@@ -17,7 +17,7 @@
           </li>
         </ul>
         <div v-if="activeTab === 'nfts'">
-          <WalletNFTs :source="'NFTActivity'" />
+          <WalletNFTs :source="'NFTActivity'" :isAccount="true" />
         </div>
         <div class="account-container_transactions" v-if="activeTab === 'activity'">
           <ActivityFilter
@@ -69,8 +69,8 @@ export default {
     this.activityData = [...this.activity]
   },
   computed: {
+    ...mapState(['activeNetwork', 'history', 'nftAssets']),
     ...mapGetters(['activity', 'accountItem']),
-    ...mapState(['activeNetwork', 'history']),
     assetHistory() {
       return this.activity.filter((item) => item.type === 'NFT')
     }

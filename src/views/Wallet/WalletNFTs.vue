@@ -2,7 +2,13 @@
   <div class="nft-collectibles">
     <div v-if="Object.keys(nftAssetsByCollection).length">
       <template v-for="(asset, key) in nftAssetsByCollection">
-        <NFTAssets :assets="asset" :collectionName="key" :key="asset.id" :source="source" />
+        <NFTAssets
+          :assets="asset"
+          :collectionName="key"
+          :key="asset.id"
+          :source="source"
+          :isAccount="isAccount"
+        />
       </template>
     </div>
     <div class="activity-empty" v-else>
@@ -39,6 +45,10 @@ export default {
     source: {
       type: String,
       required: false
+    },
+    isAccount: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
