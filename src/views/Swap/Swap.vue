@@ -754,7 +754,7 @@ export default {
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
-        : BN.max(BN(balance).minus(this.maxFee), 0)
+        : BN.max(BN(balance).minus(BN(this.maxFee).times(1.5)), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     canCoverAmmFee() {
