@@ -9,6 +9,7 @@ import { executeRequest } from './executeRequest'
 import { handlePaymentUri } from './handlePaymentUri'
 import { initializeAnalytics } from './initializeAnalytics'
 import { checkAnalyticsOptIn } from './checkAnalyticsOptIn'
+import { chains } from '@liquality/cryptoassets'
 
 export const actions = {
   openLedgerBridgeWindow: async ({ rootState, commit }) => {
@@ -91,17 +92,16 @@ export const actions = {
   setBuyCryptoOverviewModalOpen: ({ commit }, { open }) => {
     commit('SET_BUY_CRYPTO_OVERVIEW_MODAL_OPEN', { open })
   },
-  openTransakWidgetTab: ({ dispatch }, { chain, asset, address }) => {
+  openTransakWidgetTab: ({ dispatch, rootState }, { chain, asset, address }) => {
     const widgetUrl = process.env.VUE_APP_TRANSAK_WIDGET_URL
     const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
-    let url = `${widgetUrl}?apiKey=${apiKey}&disablePaymentMethods=apple_pay`
-    if (asset) {
-      url = `${url}&cryptoCurrencyCode=${asset}`
-    }
+    let url = `${widgetUrl}?apiKey=${apiKey}&disablePaymentMethods=apple_pay&cryptoCurrencyCode=${asset}`
 
-    if (address) {
-      url = `${url}&walletAddress=${address}`
-    }
+    const _address = chains[chain]?.formatAddress(
+      address,
+      rootState.activeNetwork
+    )
+    url = `${url}&walletAddress=${_address}`
 
     chrome.tabs.create({ url })
     dispatch('setBuyCryptoModalOpen', { open: false })
