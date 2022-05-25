@@ -73,7 +73,7 @@ export const actions = {
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
     commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
   },
-  setBuyCryptoModalOpen: ({ commit, dispatch }, { open, chain, asset, address }) => {
+  setBuyCryptoModalOpen: ({ commit, dispatch }, { open, chain, asset, address, screen }) => {
     commit('SET_BUY_CRYPTO_MODAL_OPEN', { open, chain, asset, address })
     if (open) {
       dispatch(
@@ -83,17 +83,32 @@ export const actions = {
           properties: {
             action: open ? 'open' : 'close',
             category: 'Buy Crypto',
-            label: `${asset} Buy Crypto from Receive screen`,
-            chain: chain,
-            asset: asset
+            label: `${asset} Buy Crypto from ${screen} screen`,
+            chain,
+            asset,
+            screen
           }
         },
         { root: true }
       )
     }
   },
-  setBuyCryptoOverviewModalOpen: ({ commit }, { open }) => {
+  setBuyCryptoOverviewModalOpen: ({ dispatch, commit }, { open }) => {
     commit('SET_BUY_CRYPTO_OVERVIEW_MODAL_OPEN', { open })
+    if (open) {
+      dispatch(
+        'trackAnalytics',
+        {
+          event: `Click Buy Crypto from Overview`,
+          properties: {
+            action: open ? 'open' : 'close',
+            category: 'Buy Crypto',
+            label: `Buy Crypto from Overview screen`
+          }
+        },
+        { root: true }
+      )
+    }
   },
   openTransakWidgetTab: ({ dispatch, rootState }, { chain, asset, address }) => {
     const widgetUrl = process.env.VUE_APP_TRANSAK_WIDGET_URL

@@ -36,6 +36,7 @@
               :asset="asset"
               :chain="chain"
               :address="address"
+              :screen="'Receive'"
             />
             <TransakBrand />
           </div>
