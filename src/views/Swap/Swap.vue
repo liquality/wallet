@@ -123,7 +123,7 @@
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     <span v-if="getTotalSwapFee(assetFee).dp(6).eq(0)"
-                      >{{ getChainAssetSwapFee(assetFee) }}
+                      >{{ dpUI(getChainAssetSwapFee(assetFee)) }}
                     </span>
                     <span v-else>{{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }}</span> /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
@@ -141,7 +141,7 @@
                   />
                 </li>
                 <li v-if="hasPredefinedReceiveFee">
-                  <span class="selectors-asset">{{ toAsset }} </span>{{ receiveFee }} /
+                  <span class="selectors-asset">{{ toAsset }} </span>{{ dpUI(receiveFee) }} /
                   {{ getTotalSwapFeeInFiat(toAsset) }} USD
                 </li>
               </ul>
@@ -754,7 +754,7 @@ export default {
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
-        : BN.max(BN(balance).minus(this.maxFee), 0)
+        : BN.max(BN(balance).minus(BN(this.maxFee).times(1.5)), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     canCoverAmmFee() {
@@ -956,7 +956,7 @@ export default {
       this.updateQuotes()
       this.updateFiatRates({ assets: [toAsset] })
       this.trackAnalytics({
-        event: 'Swap screen',
+        event: `User clicked on ${this.toAsset} Swap option`,
         properties: {
           walletVersion,
           category: 'Swap screen',
@@ -1442,7 +1442,7 @@ export default {
 }
 
 .selectors-asset {
-  width: 55px !important;
+  width: 70px !important;
 }
 
 .selector-asset-switch {

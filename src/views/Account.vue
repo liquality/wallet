@@ -28,17 +28,20 @@
           </div>
         </div>
         <div v-if="address" class="account-container_address">
-          <button
-            class="btn btn-outline-light"
-            :id="`${asset}_address_container`"
-            @click="copyAddress"
-            v-tooltip.bottom="{
-              content: addressCopied ? 'Copied!' : 'Click to copy',
-              hideOnTargetClick: false
-            }"
-          >
-            {{ shortenAddress(address) }}
-          </button>
+          <v-popover offset="16" show placement="top" hideOnTargetClick="false">
+            <button class="btn btn-outline-light" :id="`${asset}_address_container`">
+              {{ shortenAddress(address) }}
+            </button>
+            <template slot="popover">
+              <CopyAddress
+                :address="address"
+                :accountId="accountId"
+                :asset="asset"
+                :addressCopied="addressCopied"
+                @copyAddress="copyAddress"
+              />
+            </template>
+          </v-popover>
           <a
             class="eye-btn"
             :id="`${asset}_view_in_explorer`"
@@ -127,6 +130,10 @@ import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
 import EmptyActivity from '@/components/EmptyActivity'
+import CopyAddress from '@/components/CopyAddress'
+import amplitude from 'amplitude-js'
+amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
+
 
 export default {
   components: {
@@ -138,7 +145,8 @@ export default {
     ActivityFilter,
     TransactionList,
     EyeIcon,
-    EmptyActivity
+    EmptyActivity,
+    CopyAddress
   },
   data() {
     return {
@@ -181,7 +189,6 @@ export default {
       if (this.account) {
         return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
       }
-
       return '#'
     },
     chain() {
@@ -204,7 +211,6 @@ export default {
     },
     async refresh() {
       if (this.updatingBalances) return
-
       this.updatingBalances = true
       await this.updateAccountBalance({
         network: this.activeNetwork,
@@ -239,14 +245,12 @@ export default {
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
-
     const { chain } = cryptoassets[this.asset]
-
     this.trackAnalytics({
-      event: 'Active Asset',
+      event: `User clicked on ${this.asset} from the overview page`,
       properties: {
         walletVersion,
-        category: 'Click on Asset',
+        category: 'Active Asset',
         chain: chain,
         asset: `${this.asset}`,
         label: 'User clicked on assert from overview screen'
@@ -260,7 +264,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
 .account-container {
   .account-content-top {
@@ -274,25 +277,21 @@ export default {
     text-align: center;
     position: relative;
   }
-
   &_balance {
     &_fiat {
       min-height: 15px;
       margin-bottom: 6px;
     }
-
     &_value {
       line-height: 36px;
       margin-right: 8px;
       font-size: 30px;
     }
-
     &_code {
       font-size: $h3-font-size;
       line-height: 22px;
     }
   }
-
   &_refresh-icon {
     position: absolute;
     top: 16px;
@@ -300,18 +299,15 @@ export default {
     width: 24px;
     height: 24px;
     cursor: pointer;
-
     path {
       fill: $color-text-secondary;
     }
   }
-
   &_actions {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-
     &_button {
       display: flex;
       justify-content: center;
@@ -324,12 +320,10 @@ export default {
       background: none;
       font-weight: 600;
       font-size: 13px;
-
       &.disabled {
         opacity: 0.5;
         cursor: auto;
       }
-
       &_wrapper {
         display: flex;
         justify-content: center;
@@ -340,25 +334,21 @@ export default {
         border-radius: 50%;
         margin-bottom: 4px;
       }
-
       &_icon {
         width: 16px;
         height: 16px;
       }
-
       &_swap {
         height: 30px;
       }
     }
   }
-
   &_address {
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-
     button {
       font-size: $h4-font-size;
       font-weight: normal;
@@ -367,7 +357,6 @@ export default {
       background: none;
       outline: none;
     }
-
     .eye-btn {
       position: absolute;
       right: 60px;
@@ -376,23 +365,19 @@ export default {
       background-color: transparent;
       display: flex;
       align-items: center;
-
       svg {
         width: 20px;
       }
-
       &:hover {
         opacity: 0.8;
       }
     }
   }
-
   &_transactions {
     flex: 1;
     flex-basis: 0;
     overflow-y: scroll;
     -ms-overflow-style: none;
-
     &::-webkit-scrollbar {
       display: none;
     }

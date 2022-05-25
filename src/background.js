@@ -37,7 +37,7 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           walletVersion,
           label: 'New wallet created',
-          action: 'User created a new wallet with new seed'
+          action: 'User created a new wallet with new seed phrase'
         }
       })
       break
@@ -47,24 +47,23 @@ store.subscribe(async ({ type, payload }, state) => {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      dispatch('updateBalances', {
-        network: state.activeNetwork,
-        walletId: state.activeWalletId
-      })
-      dispatch('updateMarketData', { network: state.activeNetwork })
-
       await dispatch('trackAnalytics', {
-        event: 'Change Active Network',
+        event: `Change Active Network to ${state.activeNetwork}`,
         properties: {
           walletVersion,
           action: 'User changed active network',
           network: state.activeNetwork
         }
       })
+      dispatch('updateBalances', {
+        network: state.activeNetwork,
+        walletId: state.activeWalletId
+      })
+      dispatch('updateMarketData', { network: state.activeNetwork })
       break
     case 'LOCK_WALLET':
       await dispatch('trackAnalytics', {
-        event: 'Wallet locked',
+        event: 'Wallet locked successfully',
         properties: {
           walletVersion,
           category: 'Lock/Unlock',
@@ -104,15 +103,6 @@ store.subscribe(async ({ type, payload }, state) => {
         () => dispatch('updateMarketData', { network: state.activeNetwork }),
         () => random(40000, 60000)
       )
-      await dispatch('trackAnalytics', {
-        event: 'Unlock wallet',
-        properties: {
-          walletVersion,
-          category: 'Lock/Unlock',
-          action: 'Wallet Unlocked',
-          label: 'import with seed pharse'
-        }
-      })
       break
     case 'NEW_SWAP':
       // eslint-disable-next-line no-case-declarations
@@ -144,7 +134,7 @@ store.subscribe(async ({ type, payload }, state) => {
         payload.transaction.amount
       )
       await dispatch('trackAnalytics', {
-        event: 'Send',
+        event: `User send funds`,
         properties: {
           walletVersion,
           category: 'Send/Receive',
@@ -256,11 +246,11 @@ store.subscribe(async ({ type, payload }, state) => {
       break
     case 'TOGGLE_EXPERIMENT':
       await dispatch('trackAnalytics', {
-        event: 'Experiment Toggle',
+        event: `User on Experiment feature ${payload.name}`,
         properties: {
           walletVersion,
           category: 'Experiments',
-          action: 'Experiment Toggle',
+          action: 'Experiment Toggle on/off',
           label: `${payload.name}`
         }
       })
@@ -281,6 +271,37 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Buy Crypto',
           action: 'Buy Crypto Modal Opened'
+        }
+      })
+      break
+    case 'DISABLE_ASSETS':
+      await dispatch('trackAnalytics', {
+        walletVersion,
+        event: 'User Disable Asset',
+        properties: {
+          category: 'Settings',
+          action: 'Disable Asset',
+          assets: payload.assets
+        }
+      })
+      break
+    case 'DISABLE_ETHEREUM_INJECTION':
+      await dispatch('trackAnalytics', {
+        walletVersion,
+        event: 'User Disable Default Web3 Wallet Injection',
+        properties: {
+          category: 'Settings',
+          action: 'Disable Default Web3 Wallet Ethereum Injection'
+        }
+      })
+      break
+    case 'ENABLE_ETHEREUM_INJECTION':
+      await dispatch('trackAnalytics', {
+        walletVersion,
+        event: 'User Enable Default Web3 Wallet Injection',
+        properties: {
+          category: 'Settings',
+          action: 'Enable Default Web3 Wallet Ethereum Injection'
         }
       })
       break
