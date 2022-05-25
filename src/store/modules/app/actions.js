@@ -97,10 +97,7 @@ export const actions = {
     const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
     let url = `${widgetUrl}?apiKey=${apiKey}&disablePaymentMethods=apple_pay&cryptoCurrencyCode=${asset}`
 
-    const _address = chains[chain]?.formatAddress(
-      address,
-      rootState.activeNetwork
-    )
+    const _address = chains[chain]?.formatAddress(address, rootState.activeNetwork)
     url = `${url}&walletAddress=${_address}`
 
     chrome.tabs.create({ url })
