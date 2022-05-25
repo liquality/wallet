@@ -134,7 +134,6 @@ import CopyAddress from '@/components/CopyAddress'
 import amplitude from 'amplitude-js'
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
-
 export default {
   components: {
     NavBar,
