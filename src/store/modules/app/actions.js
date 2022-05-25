@@ -75,19 +75,22 @@ export const actions = {
   },
   setBuyCryptoModalOpen: ({ commit, dispatch }, { open, chain, asset, address }) => {
     commit('SET_BUY_CRYPTO_MODAL_OPEN', { open, chain, asset, address })
-    dispatch(
-      'trackAnalytics',
-      {
-        event: 'Buy Crypto',
-        properties: {
-          action: open ? 'open' : 'close',
-          category: 'Buy Crypto options clicked from receive screen',
-          chain: chain,
-          asset: asset
-        }
-      },
-      { root: true }
-    )
+    if (open) {
+      dispatch(
+        'trackAnalytics',
+        {
+          event: `Click Buy Crypto`,
+          properties: {
+            action: open ? 'open' : 'close',
+            category: 'Buy Crypto',
+            label: `${asset} Buy Crypto from Receive screen`,
+            chain: chain,
+            asset: asset
+          }
+        },
+        { root: true }
+      )
+    }
   },
   setBuyCryptoOverviewModalOpen: ({ commit }, { open }) => {
     commit('SET_BUY_CRYPTO_OVERVIEW_MODAL_OPEN', { open })
@@ -106,10 +109,9 @@ export const actions = {
     dispatch(
       'trackAnalytics',
       {
-        event: 'buy_crypto_modal_close',
-        chain: chain,
-        asset: asset,
-        address: address
+        event: 'Continue with Transak clicked',
+        category: 'Buy Crypto',
+        label: 'Buy Crypto Continue with Transak clicked'
       },
       { root: true }
     )

@@ -265,15 +265,6 @@ store.subscribe(async ({ type, payload }, state) => {
         }
       })
       break
-    case 'SET_BUY_CRYPTO_MODAL_OPEN':
-      dispatch('trackAnalytics', {
-        event: 'Buy Crypto',
-        properties: {
-          category: 'Buy Crypto',
-          action: 'Buy Crypto Modal Opened'
-        }
-      })
-      break
     case 'DISABLE_ASSETS':
       await dispatch('trackAnalytics', {
         walletVersion,
