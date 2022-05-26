@@ -12,7 +12,6 @@
     "dev": "vue-cli-service build --mode development --watch",
     "jest": "jest",
     "postinstall": "husky install",
-    "reinstall": "npm run clean && npm install",
     "sync-versions": "node script/sync-versions.js",
     "test:integration": "jest tests/integration",
     "test:mainnet:devagent": "NODE_ENV=mainnet NODE_AGENT=devagent node_modules/mocha/bin/mocha --grep 'MAINNET'",
