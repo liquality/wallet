@@ -454,7 +454,12 @@ export default {
 
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
-          sendFees[speed] = getSendFee(this.assetChain, feePrice)
+          sendFees[speed] = getSendFee(
+            this.asset,
+            feePrice,
+            fee.multilayerFee?.l1,
+            this.activeNetwork
+          )
         }
 
         if (this.asset === 'BTC') {
@@ -543,6 +548,7 @@ export default {
           accountId: this.account.id,
           amount,
           fee,
+          gas: cryptoassets[this.asset].sendGasLimit,
           feeLabel: this.selectedFee,
           fiatRate: this.fiatRates[this.asset],
           ...(this.showMemoInput && { data: this.memoData })

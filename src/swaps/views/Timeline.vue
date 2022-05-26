@@ -334,7 +334,7 @@ import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
-import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 

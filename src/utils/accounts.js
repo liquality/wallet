@@ -12,7 +12,8 @@ export const getAccountIcon = (chain) => {
     arbitrum: getAssetIcon('ARBITRUM'),
     avalanche: getAssetIcon('AVAX'),
     terra: getAssetIcon('TERRA'),
-    fuse: getAssetIcon('FUSE')
+    fuse: getAssetIcon('FUSE'),
+    optimism: getAssetIcon('FUSE') // TODO
   }[chain]
 }
 
@@ -28,6 +29,7 @@ export const getChainIcon = (chainId) => {
     arbitrum: getAssetIcon('ARBITRUM'),
     avalanche: getAssetIcon('AVAX'),
     terra: getAssetIcon(`${chainId}_chain`),
-    fuse: getAssetIcon('FUSE')
+    fuse: getAssetIcon('FUSE'),
+    optimism: getAssetIcon('FUSE') // TODO
   }[chainId]
 }

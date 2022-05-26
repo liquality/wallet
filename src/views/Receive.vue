@@ -162,6 +162,10 @@ export default {
           FUSE: {
             name: 'FUSE',
             url: 'https://get.fusespark.io/'
+          },
+          OPTIMISM: {
+            name: 'OPTIMISM',
+            url: 'https://kovan.optifaucet.com/'
           }
         }[this.asset]
       }
