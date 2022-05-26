@@ -7,14 +7,9 @@ on:
     branches:
       - 'feature/*'
       - 'feat/*'
-env:
-  AMPLITUDE_API_KEY_DEV: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
-  TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
-  AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
-  AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
-  NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
 
 env:
+  AMPLITUDE_API_KEY_DEV: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
   TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
   AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
   AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
@@ -61,7 +56,7 @@ jobs:
 
       - name: Restore yarn cache
         uses: actions/cache@v2
-        id: yarn-cache 
+        id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
