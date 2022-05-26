@@ -66,6 +66,7 @@ jobs:
     # Minor PROD releases.
       - name: Set production agents (minor for PROD)
         run: |
+            export NODE_OPTIONS="--max-old-space-size=5120"
             echo VUE_APP_TERRA_MAINNET_URL =$TERRA_MAINNET_URL >> .env
             echo VUE_APP_AVALANCHE_MAINNET_NODE =$AVALANCHE_MAINNET_NODE >> .env
             echo VUE_APP_AVALANCHE_TESTNET_NODE =$AVALANCHE_TESTNET_NODE >> .env
