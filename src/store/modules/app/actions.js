@@ -75,18 +75,27 @@ export const actions = {
   },
   setBuyCryptoModalOpen: ({ commit, dispatch }, { open, chain, asset, address, screen }) => {
     commit('SET_BUY_CRYPTO_MODAL_OPEN', { open, chain, asset, address })
-    if (open) {
+    if (screen === 'EmptyActivity') {
       dispatch(
         'trackAnalytics',
         {
-          event: `Click Buy Crypto`,
+          event: `Click Buy Crypto from EmptyActivity screen`,
           properties: {
-            action: open ? 'open' : 'close',
+            category: 'Buy Crypto'
+          }
+        },
+        { root: true }
+      )
+    } else if (screen === 'Receive') {
+      dispatch(
+        'trackAnalytics',
+        {
+          event: `Click Buy Crypto from Receive screen`,
+          properties: {
             category: 'Buy Crypto',
-            label: `${asset} Buy Crypto from ${screen} screen`,
             chain,
             asset,
-            screen
+            address
           }
         },
         { root: true }
