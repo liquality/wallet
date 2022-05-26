@@ -1,5 +1,8 @@
 <template>
-  <div class="account-content-top">
+  <div
+    class="account-content-top"
+    :style="nftAssets.length == 0 ? { 'justify-content': 'center' } : {}"
+  >
     <RefreshIcon
       @click.stop="refresh"
       class="account-container_refresh-icon"
@@ -92,7 +95,8 @@ export default {
         this.updatingAssets = true
         await this.getNFTAssets({
           network: this.activeNetwork,
-          walletId: this.activeWalletId
+          walletId: this.activeWalletId,
+          asset: 'ETH'
         })
       } catch (error) {
         console.log(error)

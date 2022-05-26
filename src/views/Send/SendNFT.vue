@@ -547,8 +547,7 @@ export default {
           values: [1],
           nft: this.selectedNFT,
           fee,
-          feeLabel: this.selectedFeeLabel,
-          fiatRate: this.fiatRates[this.asset]
+          feeLabel: this.selectedFeeLabel
         }
         await this.sendNFTTransaction(data)
         this.$router.replace(`/wallet/nfts/activity`)

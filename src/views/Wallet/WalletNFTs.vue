@@ -16,7 +16,7 @@
         Once you start owning NFTs with accounts in your Liquality wallet you will see them here.
       </p>
       <div class="d-flex justify-content-center brand">
-        <OpenSea />
+        <OpenSea @click="openOnOpenSea" class="cursor-pointer" />
       </div>
       <div class="d-flex justify-content-center">
         <a
@@ -59,6 +59,14 @@ export default {
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
     ...mapGetters(['nftAssetsByCollection'])
+  },
+  methods: {
+    openOnOpenSea() {
+      window.open(
+        `http://${this.activeNetwork === 'testnet' ? 'testnets.' : ''}opensea.io`,
+        '_blank'
+      )
+    }
   }
 }
 </script>

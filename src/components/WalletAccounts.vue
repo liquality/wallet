@@ -197,7 +197,8 @@ export default {
       try {
         await this.getNFTAssets({
           network: this.activeNetwork,
-          walletId: this.activeWalletId
+          walletId: this.activeWalletId,
+          asset: 'ETH'
         })
       } catch (error) {
         console.error(error)

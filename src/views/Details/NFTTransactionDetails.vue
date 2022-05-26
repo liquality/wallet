@@ -37,29 +37,12 @@
           <div class="col-12">
             <h2>Sent Asset</h2>
             <div class="d-flex">
-              <div class="nft-image mr-2" style="--img-width: 128px">
+              <div class="nft-image mr-2" style="--img-width: 140px">
                 <img :src="item.nft.image_thumbnail_url" alt="nft-image" />
               </div>
               <div class="w-100">
-                <p>{{ item.nft.name }}</p>
+                <p class="font-weight-bold">{{ item.nft.name }}</p>
                 <p>{{ item.nft.collection.name }}</p>
-                <p class="text-grey">
-                  <span class="texr-muted mr-2">Token ID</span>
-                  <span class="text-break">
-                    {{ item.nft.token_id }}
-                    <CopyIcon @click="copy(item.nft.token_id)" class="copy-icon"
-                  /></span>
-                </p>
-                <p class="text-grey">
-                  <span class="text-muted mr-2"> Contract Address</span>
-                  <span class="text-break underline">
-                    <span class="d-flex align-items-center">
-                      {{ shortenAddress(item.nft.asset_contract.address) }}
-                      <CopyIcon
-                        @click="copy(item.nft.asset_contract.address)"
-                        class="copy-icon" /></span
-                  ></span>
-                </p>
               </div>
             </div>
           </div>
@@ -114,15 +97,9 @@
         <div class="row">
           <div
             class="col tx-details_link d-flex align-items-start"
-            id="transaction_details_transaction_id"
+            id="transaction_details_transaction"
           >
-            <h2 class="mr-4">Transaction ID</h2>
-            <p>
-              <a :href="transactionLink" target="_blank" id="transactionLink">{{
-                shortenAddress(item.txHash)
-              }}</a>
-              <CopyIcon @click="copy(item.txHash)" />
-            </p>
+            <h2 class="mr-4">Transaction</h2>
           </div>
         </div>
         <Timeline :id="id" :tx="tx" />
@@ -149,7 +126,6 @@ import { getAssetIcon } from '@/utils/asset'
 import { getItemIcon } from '@/utils/history'
 
 import FeeSelector from '@/components/FeeSelector'
-import CopyIcon from '@/assets/icons/copy.svg'
 import Timeline from '@/transactions/views/NFTTimeline.vue'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import FailedIcon from '@/assets/icons/failed.svg'
@@ -161,7 +137,6 @@ import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 export default {
   components: {
     FeeSelector,
-    CopyIcon,
     Timeline,
     CompletedIcon,
     FailedIcon,
@@ -369,6 +344,12 @@ export default {
     width: 120px;
     max-width: 120px;
     max-height: 120px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 }
 </style>

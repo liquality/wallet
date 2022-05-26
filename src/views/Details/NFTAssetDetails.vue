@@ -102,7 +102,7 @@
                 <div class="table" v-if="activeTab === 'details'">
                   <table class="table bg-white border-0 mb-1 mt-1">
                     <tbody class="font-weight-normal">
-                      <tr>
+                      <tr class="border-top-0">
                         <td class="text-muted text-left small-12">Account</td>
                         <td class="text-break" v-if="nftAsset.asset_contract">
                           <span class="text-primary d-flex align-items-center">

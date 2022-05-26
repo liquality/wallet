@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="text-center">
-      <div class="advanced_button" @click="advanced = !advanced">
+      <div class="advanced_button cursor-pointer" @click="advanced = !advanced">
         <div class="advanced_arrow">
           <ChevronRightIcon v-if="!advanced" />
           <ChevronDownIcon v-else />
@@ -54,26 +54,63 @@
       <table class="table bg-white border-0 mb-1 mt-1">
         <tbody class="font-weight-normal">
           <tr>
-            <td class="text-muted text-left small-12">Amount</td>
-            <td class="text-break">{{ prettyBalance(item.amount, item.from) }} {{ item.from }}</td>
+            <td class="text-muted text-left small-12">Marketplace</td>
+            <td class="text-break">
+              <a
+                class="text-primary"
+                :href="`https://${activeNetwork === 'testnet' ? 'testnets.' : ''}opensea.io`"
+                target="_blank"
+                rel="noopener noreferrer"
+                >{{ `https://${activeNetwork === 'testnet' ? 'testnets.' : ''}opensea.io` }}</a
+              >
+            </td>
+          </tr>
+          <tr id="transaction_id">
+            <td class="text-muted text-left small-12">Transaction ID</td>
+            <td class="text-break text-primary">
+              <span>
+                <a :href="transactionLink" target="_blank" id="transactionLink">{{
+                  shortenAddress(item.txHash)
+                }}</a>
+                <CopyIcon @click="copy(item.txHash)" class="copy-icon" />
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="text-muted text-left small-12" id="your_token_id">Token ID</td>
+            <td class="text-break" v-if="item.nft.token_id">
+              <span class="text-primary">
+                {{ item.nft.token_id }}
+                <CopyIcon @click="copy(item.nft.token_id)" class="copy-icon"
+              /></span>
+            </td>
           </tr>
           <tr v-if="fromAddress" id="your_from_address">
-            <td class="text-muted text-left small-12">Your {{ item.from }} from address</td>
-            <td class="text-break">{{ addPrefix(fromAddress, item.from) }}</td>
-          </tr>
-          <tr>
-            <td class="text-muted text-left small-12" id="your_to_address">
-              Your {{ item.to }} to address
+            <td class="text-muted text-left small-12">Your NFT from address</td>
+            <td class="text-break text-primary">
+              <span>
+                {{ shortenAddress(addPrefix(fromAddress, item.from)) }}
+                <CopyIcon @click="copy(item.txHash)" class="copy-icon" />
+              </span>
             </td>
-            <td class="text-break">{{ item.toAddress }}</td>
           </tr>
           <tr>
-            <td class="text-muted text-left small-12">Your {{ item.to }} send transaction</td>
-            <td class="text-break" id="send_transaction_hash">{{ item.txHash }}</td>
+            <td class="text-muted text-left small-12" id="your_to_address">Your NFT to address</td>
+            <td class="text-break text-primary">
+              <span>
+                {{ shortenAddress(item.toAddress)
+                }}<CopyIcon @click="copy(item.txHash)" class="copy-icon" />
+              </span>
+            </td>
           </tr>
-          <tr v-if="false">
-            <td class="text-muted text-left small-12">Actions</td>
-            <td class="cursor-pointer text-danger" @click="remove">Remove this item</td>
+          <tr v-if="fromAddress" id="transaction_id">
+            <td class="text-muted text-left small-12">Contract Address</td>
+            <td class="text-break text-primary">
+              <span>
+                {{ shortenAddress(item.nft.asset_contract.address) }}
+                <CopyIcon @click="copy(item.nft.asset_contract.address)" class="copy-icon" />
+              </span>
+            </td>
           </tr>
         </tbody>
       </table>
