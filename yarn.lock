@@ -4301,9 +4301,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/wallet-core@npm:1.5.10":
-  version: 1.5.10
-  resolution: "@liquality/wallet-core@npm:1.5.10"
+"@liquality/wallet-core@npm:1.5.11":
+  version: 1.5.11
+  resolution: "@liquality/wallet-core@npm:1.5.11"
   dependencies:
     "@blobfishkate/sovryncontracts": 1.3.27
     "@ethersproject/address": ^5.6.0
@@ -4369,7 +4369,7 @@ __metadata:
     urql: ^2.2.0
     vue: ^2.6.11
     vuex: ^3.1.3
-  checksum: d03a732aee5f42e0d8f99235bc53f2e87e089e6da175491bab56a8146a51a009776c22002194b960dd538a07c18facb20d3579a497ab1dc8bad2ed5ddc419adb
+  checksum: 88dd4c5239ae7af6d40865cb42de520e95ca7a6044ab440d151efed39086a81aeb7a13dfe1b414386ed0bda62d06abbcdecfc1e1d46e9326d1df0bec94049cf9
   languageName: node
   linkType: hard
 
@@ -17450,7 +17450,7 @@ __metadata:
     "@liquality/hw-web-bridge": ^0.1.2
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
-    "@liquality/wallet-core": 1.5.10
+    "@liquality/wallet-core": 1.5.11
     "@terra-money/terra.js": ^3.0.8
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/vue": ^5.8.2
