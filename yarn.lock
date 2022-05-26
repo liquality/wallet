@@ -3772,20 +3772,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/cryptoassets@npm:1.13.0, @liquality/cryptoassets@npm:^1.11.0":
-  version: 1.13.0
-  resolution: "@liquality/cryptoassets@npm:1.13.0"
-  dependencies:
-    bignumber.js: ^9.0.2
-    bitcoin-address-validation: ^2.2.1
-    bs58: ^4.0.1
-    cashaddrjs: ^0.4.4
-    ethereumjs-util: ^7.1.4
-    lodash: ^4.17.11
-  checksum: 5ff1dc3e2fdd8a776cfe69a48a66283a9b9d396f695eac9b4275e6d2f1ba039c6d43ea31c80f9590eef6e1e85142d37dc81bc48ce1ff941f387ae2f8356b08f6
-  languageName: node
-  linkType: hard
-
 "@liquality/cryptoassets@npm:1.7.1":
   version: 1.7.1
   resolution: "@liquality/cryptoassets@npm:1.7.1"
@@ -3797,6 +3783,20 @@ __metadata:
     ethereumjs-util: ^7.1.3
     lodash: ^4.17.11
   checksum: d2ec0c6add0a2994066d834084a8d0ff1c7c2b1ef2ec2e89ee1b4d860b1723bdef35df8264a9382d89792d6118506675f652342dc5e39453c0343fd133d8c0f7
+  languageName: node
+  linkType: hard
+
+"@liquality/cryptoassets@npm:^1.13.2":
+  version: 1.13.2
+  resolution: "@liquality/cryptoassets@npm:1.13.2"
+  dependencies:
+    bignumber.js: ^9.0.2
+    bitcoin-address-validation: ^2.2.1
+    bs58: ^4.0.1
+    cashaddrjs: ^0.4.4
+    ethereumjs-util: ^7.1.4
+    lodash: ^4.17.11
+  checksum: 36a350191429793447707fb712c19f8a122a7eca7e1bba6afc261414e54b3667ef1292b6c9b5bb872ae4ee6b20b8c01c8332dce91eeed0bcc67cacd7f3f1d5f9
   languageName: node
   linkType: hard
 
@@ -3949,7 +3949,7 @@ __metadata:
 
 "@liquality/wallet-core@file:/Users/kraykov/Documents/workspaces/liquality/wallet-core::locator=liquality-wallet%40workspace%3A.":
   version: 1.5.7
-  resolution: "@liquality/wallet-core@file:/Users/kraykov/Documents/workspaces/liquality/wallet-core#/Users/kraykov/Documents/workspaces/liquality/wallet-core::hash=409b69&locator=liquality-wallet%40workspace%3A."
+  resolution: "@liquality/wallet-core@file:/Users/kraykov/Documents/workspaces/liquality/wallet-core#/Users/kraykov/Documents/workspaces/liquality/wallet-core::hash=7508f0&locator=liquality-wallet%40workspace%3A."
   dependencies:
     "@blobfishkate/sovryncontracts": 1.3.27
     "@chainify/bitcoin": 1.0.3
@@ -3965,7 +3965,7 @@ __metadata:
     "@chainify/utils": 1.0.3
     "@ethersproject/address": ^5.6.0
     "@hop-protocol/sdk": 0.0.1-beta.314
-    "@liquality/cryptoassets": 1.13.0
+    "@liquality/cryptoassets": ^1.13.2
     "@metamask/eth-sig-util": ^4.0.1
     "@thorchain/asgardex-util": ^0.10.0
     "@uniswap/sdk-core": ^3.0.1
@@ -3986,7 +3986,7 @@ __metadata:
     urql: ^2.2.0
     vue: ^2.6.11
     vuex: ^3.1.3
-  checksum: 7b791ea09f6c673f44f9b8db9b81db9e4b074f5eb4fd403f9d3f61551b8b6da3f8deb26d264d4adebd52a4090ea9a8d6107a3e69ffd3b8775c72753eccdf5a2d
+  checksum: fbc09adcccbe3dfe15cb1e32a049c625bcef70f84552ec42832d9ced1acaa205e8a85c9433076bc4a1c634f8bf3c42d02c225aa71953c9ca4253f2f8c2fce71a
   languageName: node
   linkType: hard
 
@@ -17174,7 +17174,7 @@ __metadata:
   resolution: "liquality-wallet@workspace:."
   dependencies:
     "@liquality/bitcoin-ledger-provider": ^1.13.12
-    "@liquality/cryptoassets": ^1.11.0
+    "@liquality/cryptoassets": ^1.13.2
     "@liquality/ethereum-ledger-provider": ^1.13.12
     "@liquality/ethereum-utils": ^1.13.12
     "@liquality/hw-web-bridge": ^0.1.2

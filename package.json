@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@liquality/bitcoin-ledger-provider": "^1.13.12",
-    "@liquality/cryptoassets": "^1.11.0",
+    "@liquality/cryptoassets": "^1.13.2",
     "@liquality/ethereum-ledger-provider": "^1.13.12",
     "@liquality/ethereum-utils": "^1.13.12",
     "@liquality/hw-web-bridge": "^0.1.2",
