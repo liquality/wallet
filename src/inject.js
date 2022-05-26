@@ -67,7 +67,7 @@ const injectionName = window.providerManager.getInjectionName('${chain}')
 async function getAddresses () {
   const eth = window.providerManager.getProviderFor('${asset}')
   let addresses = await eth.getMethod('wallet.getAddresses')()
-  addresses = addresses.map(a => '0x' + a.address)
+  addresses = addresses.map(a => a.address)
   window[injectionName].selectedAddress = addresses[0]
   return addresses
 }
@@ -89,7 +89,7 @@ async function handleRequest (req) {
     const data = req.params[0].data
     const gas = req.params[0].gas
     const result = await eth.getMethod('wallet.sendTransaction')({ to, value, data, gas })
-    return '0x' + result.hash
+    return result.hash
   }
   if(req.method === 'eth_accounts') {
     return getAddresses()
