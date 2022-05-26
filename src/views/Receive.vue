@@ -85,6 +85,7 @@ import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains, ChainId } from '@liquality/cryptoassets'
+import { version as walletVersion } from '../../package.json'
 
 export default {
   components: {
@@ -224,8 +225,9 @@ export default {
     getAssetIcon,
     async copy() {
       this.trackAnalytics({
-        event: 'Receive screen',
+        event: `User on ${this.asset} Receive Page`,
         properties: {
+          walletVersion,
           category: 'Send/Receive',
           action: 'User on Receive screen',
           label: `${this.asset}`
@@ -236,9 +238,11 @@ export default {
       this.trackAnalytics({
         event: 'Receive copy address',
         properties: {
+          walletVersion,
           category: 'Send/Receive',
           action: 'User copied address',
-          label: `${this.asset} (${this.chainName}) address ${this.address}`
+          asset: `${this.asset}`,
+          chainName: `${this.chainName}`
         }
       })
       setTimeout(() => {

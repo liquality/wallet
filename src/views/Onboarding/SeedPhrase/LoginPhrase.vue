@@ -60,6 +60,7 @@
 <script>
 import { mapActions } from 'vuex'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
+import { version as walletVersion } from '../../../../package.json'
 export default {
   props: {
     title: {
@@ -99,17 +100,16 @@ export default {
       } catch (e) {
         console.log(e)
         this.error = e.message
+        this.trackAnalytics({
+          event: 'User Backup Seed failed',
+          properties: {
+            walletVersion,
+            action: 'Backup Seed Phrase failed'
+          }
+        })
       } finally {
         this.loading = false
       }
-      this.trackAnalytics({
-        event: 'BackupSeed',
-        properties: {
-          category: this.nextPath === '/seedLogin' ? 'Show Seed Phrase' : this.title,
-          action: 'Click I have Privacy',
-          label: [`${this.error}`]
-        }
-      })
     }
   }
 }

@@ -72,6 +72,8 @@ import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
 import KeyIcon from '@/assets/icons/key.svg'
 
+import { version as walletVersion } from '../../package.json'
+
 export default {
   directives: {
     clickAway
@@ -102,10 +104,12 @@ export default {
     ...mapActions(['lockWallet', 'trackAnalytics']),
     async lock() {
       this.trackAnalytics({
-        event: 'HamburgerIcon',
+        event: 'User clicked Lock wallet option in navbar',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
-          action: 'Click on Lock'
+          action: 'Click on Lock',
+          label: 'User clicked on wallet lock from menu option'
         }
       })
       this.showMenuList = false
@@ -114,10 +118,12 @@ export default {
     },
     backup() {
       this.trackAnalytics({
-        event: 'HamburgerIcon',
+        event: 'User clicked on Backup Seed option in navbar',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
-          action: 'Click on Backup Seed'
+          action: 'Click on Backup Seed',
+          label: 'User clicked on wallet backup seed from menu option'
         }
       })
       this.showMenuList = false
@@ -125,10 +131,12 @@ export default {
     },
     assets() {
       this.trackAnalytics({
-        event: 'HamburgerIcon',
+        event: 'User clicked on Manage Assets option in navbar',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
-          action: 'Click on Manage Assets'
+          action: 'Click on Manage Assets',
+          label: 'User clicked on wallet manage assets from menu option'
         }
       })
       this.showMenuList = false
@@ -136,10 +144,12 @@ export default {
     },
     settings() {
       this.trackAnalytics({
-        event: 'HamburgerIcon',
+        event: 'User clicked on Settings option in navbar',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
-          action: 'Click on Settings'
+          action: 'Click on Settings',
+          label: 'User clicked on wallet settings from menu option'
         }
       })
       this.showMenuList = false
@@ -147,10 +157,12 @@ export default {
     },
     exportPrivateKey() {
       this.trackAnalytics({
-        event: 'HamburgerIcon',
+        event: 'User clicked on Export Private Key option in navbar',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
-          action: 'Click on Export Private Key'
+          action: 'Click on Export Private Key',
+          label: 'User clicked on wallet export private key from menu option'
         }
       })
       this.showMenuList = false
@@ -159,10 +171,12 @@ export default {
     },
     manageAccounts() {
       this.trackAnalytics({
-        event: 'HamburgerIcon',
+        event: 'User clicked on Manage Accounts option in navbar',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
-          action: 'Click on Manage Accounts'
+          action: 'Click on Manage Accounts',
+          label: 'User clicked on wallet manage accounts from menu option'
         }
       })
       this.showMenuList = false
@@ -170,10 +184,12 @@ export default {
     },
     ledger() {
       this.trackAnalytics({
-        event: 'Ledger option clicked from hamburger menu',
+        event: 'User clicked on Ledger option in navbar',
         properties: {
+          walletVersion,
           category: 'HamburgerIcon',
-          action: 'Click on Ledger'
+          action: 'Click on Ledger',
+          label: 'User clicked on wallet ledger from menu option'
         }
       })
       this.showMenuList = false

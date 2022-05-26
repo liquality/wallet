@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.62.0",
+  "version": "0.63.0",
   "private": true,
   "author": "Liquality <info@liquality.io>",
   "scripts": {
@@ -12,7 +12,6 @@
     "dev": "vue-cli-service build --mode development --watch",
     "jest": "jest",
     "postinstall": "husky install",
-    "reinstall": "npm run clean && npm install",
     "sync-versions": "node script/sync-versions.js",
     "test:integration": "jest tests/integration",
     "test:mainnet:devagent": "NODE_ENV=mainnet NODE_AGENT=devagent node_modules/mocha/bin/mocha --grep 'MAINNET'",
@@ -23,14 +22,14 @@
     "test:testnet": "node_modules/mocha/bin/mocha --grep 'TESTNET'"
   },
   "dependencies": {
+    "@ledgerhq/hw-transport-webhid": "6.24.1",
     "@liquality/bitcoin-ledger-provider": "^1.13.12",
-    "@liquality/cryptoassets": "^1.11.0",
+    "@liquality/cryptoassets": "^1.13.0",
     "@liquality/ethereum-ledger-provider": "^1.13.12",
     "@liquality/ethereum-utils": "^1.13.12",
-    "@ledgerhq/hw-transport-webhid": "6.24.1",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
-    "@liquality/wallet-core": "^1.4.30",
+    "@liquality/wallet-core": "1.5.10",
     "@terra-money/terra.js": "^3.0.8",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.17.0",
@@ -52,6 +51,7 @@
     "memoizee": "^0.4.15",
     "mocha": "9.2.2",
     "moment": "^2.25.3",
+    "node-gyp": "^9.0.0",
     "pbkdf2": "^3.1.1",
     "post-message-stream": "^3.0.0",
     "qrcode": "1.5.0",

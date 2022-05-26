@@ -32,16 +32,22 @@ jobs:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           node-version: '14'
+
         # Create screenshots directory
       - run: mkdir screenshots
 
-      - uses: actions/cache@v2.1.7
-        env:
-          node-version: 14.1.0
-          cache-name: cache-node-modules
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - name: Restore yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+          restore-keys: |
+            yarn-cache-folder-
 
       - name: Get Current Tag
         id: get_current_tag
@@ -57,33 +63,20 @@ jobs:
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
-      - run: |
-          echo VUE_APP_TERRA_MAINNET_URL =$TERRA_MAINNET_URL >> .env
-          echo VUE_APP_AVALANCHE_MAINNET_NODE =$AVALANCHE_MAINNET_NODE >> .env
-          echo VUE_APP_AVALANCHE_TESTNET_NODE =$AVALANCHE_TESTNET_NODE >> .env
-          echo VUE_APP_NEAR_MAINNET_URL =$NEAR_MAINNET_URL >> .env
-
-      # Patch DEV release.
-      - name: Set development manifest (patch for DEV)
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        run: |
-          echo VUE_APP_AMPLITUDE_API_KEY =$AMPLITUDE_API_KEY_DEV >> .env
-          jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
-          mv ./src/manifest.tmp ./src/manifest.json
-          npm ci
-          npm run lint
-          npm run build
-
     # Minor PROD releases.
       - name: Set production agents (minor for PROD)
-        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         run: |
+            export NODE_OPTIONS="--max-old-space-size=5120"
+            echo VUE_APP_TERRA_MAINNET_URL =$TERRA_MAINNET_URL >> .env
+            echo VUE_APP_AVALANCHE_MAINNET_NODE =$AVALANCHE_MAINNET_NODE >> .env
+            echo VUE_APP_AVALANCHE_TESTNET_NODE =$AVALANCHE_TESTNET_NODE >> .env
+            echo VUE_APP_NEAR_MAINNET_URL =$NEAR_MAINNET_URL >> .env
             echo VUE_APP_AMPLITUDE_API_KEY =$AMPLITUDE_API_KEY_PROD >> .env
             echo VUE_APP_AGENT_TESTNET_URL =$AGENT_TESTNET_URL >> .env
             echo VUE_APP_AGENT_MAINNET_URL =$AGENT_MAINNET_URL >> .env
-            npm ci
-            npm run lint
-            npm run build
+            yarn install
+            yarn lint
+            yarn build
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1
@@ -120,32 +113,8 @@ jobs:
           asset_name: liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           asset_content_type: application/zip
 
-      - name: Chrome Extension Publish
-        uses: SebastienGllmt/chrome-addon@v3
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        with:
-          client-id: ${{ secrets.WEB_STORE_CLIENT_ID }}
-          client-secret: ${{ secrets.WEB_STORE_CLIENT_SECRET }}
-          refresh-token: ${{ secrets.WEB_STORE_REFRESH_TOKEN }}
-          zip: ./artifacts/liquality-wallet-${{ steps.get_current_tag.outputs.tag }}-production.zip
-          extension: bkhfdnhibdhkbfihmljakbgnldoikgbm
-          publishTarget: trustedTesters
-
-    # Run tests against dev mainnet
-      - name: Regression tests against Mainnet (DEV Agent)
-        if: steps.semvers.outputs.v_patch == steps.get_current_tag.outputs.tag
-        uses: beemi/puppeteer-headful@v1.0.11
-        env:
-          CI: 'true'
-          DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        with:
-          args: npm run test:mainnet:devagent:release
-
       #Run tests against Prod mainnet
       - name: Regression tests against Mainnet (PROD Agent)
-        if: steps.semvers.outputs.v_minor == steps.get_current_tag.outputs.tag
         uses: beemi/puppeteer-headful@v1.0.11
         env:
           CI: 'true'
@@ -153,13 +122,4 @@ jobs:
           SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
-          args: npm run test:mainnet:prodagent:release
-
-      - name: Discord notification
-        uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
-          title: "${{ github.workflow}}"
-          description: |
-            Release `liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip`
+          args: yarn test:mainnet:prodagent:release

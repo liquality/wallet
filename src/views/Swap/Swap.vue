@@ -11,13 +11,19 @@
       <InfoNotification v-if="ethRequired">
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
-      <InfoNotification v-if="!canCoverAmmFee">
+      <InfoNotification v-if="showBridgeAssetDisabledMessage">
+        <BoostActivateBridgeAsset
+          :network="activeNetwork"
+          :walletId="activeWalletId"
+          :asset="selectedQuote.bridgeAsset"
+        />
+      </InfoNotification>
+      <InfoNotification v-else-if="!canCoverAmmFee">
         <BridgeAssetRequiredMessage
           :account-id="getAccountId()"
           :asset="selectedQuote.bridgeAsset"
         />
       </InfoNotification>
-
       <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
@@ -117,7 +123,7 @@
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     <span v-if="getTotalSwapFee(assetFee).dp(6).eq(0)"
-                      >{{ getChainAssetSwapFee(assetFee) }}
+                      >{{ dpUI(getChainAssetSwapFee(assetFee)) }}
                     </span>
                     <span v-else>{{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }}</span> /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
@@ -135,7 +141,7 @@
                   />
                 </li>
                 <li v-if="hasPredefinedReceiveFee">
-                  <span class="selectors-asset">{{ toAsset }} </span>{{ receiveFee }} /
+                  <span class="selectors-asset">{{ toAsset }} </span>{{ dpUI(receiveFee) }} /
                   {{ getTotalSwapFeeInFiat(toAsset) }} USD
                 </li>
               </ul>
@@ -389,12 +395,14 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { version as walletVersion } from '../../../package.json'
 import { ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
 import BridgeAssetRequiredMessage from '@/components/BridgeAssetRequiredMessage'
+import BoostActivateBridgeAsset from '@/components/BoostActivateBridgeAsset'
 import NoLiquidityMessage from '@/components/NoLiquidityMessage'
 import {
   cryptoToFiat,
@@ -446,6 +454,7 @@ export default {
     InfoNotification,
     EthRequiredMessage,
     BridgeAssetRequiredMessage,
+    BoostActivateBridgeAsset,
     NoLiquidityMessage,
     FeeSelector,
     SwapIcon,
@@ -607,6 +616,17 @@ export default {
     showNoLiquidityMessage() {
       return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
+    showBridgeAssetDisabledMessage() {
+      const provider = this.selectedQuote?.provider
+      const bridgeAsset = this.selectedQuote?.bridgeAsset
+      const enabledAssets = this.enabledAssets[this.activeNetwork][this.activeWalletId]
+
+      return (
+        (provider === SwapProviderType.LiqualityBoostNativeToERC20 ||
+          provider === SwapProviderType.LiqualityBoostERC20ToNative) &&
+        !enabledAssets.includes(bridgeAsset)
+      )
+    },
     sendAmount: {
       get() {
         return this.stateSendAmount
@@ -650,13 +670,12 @@ export default {
       return cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
     },
     ...mapState([
-      'activeNetwork',
-      'activeWalletId',
       'marketData',
       'fees',
       'fiatRates',
       'activeWalletId',
-      'activeNetwork'
+      'activeNetwork',
+      'enabledAssets'
     ]),
     ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem', 'accountsData']),
@@ -702,16 +721,24 @@ export default {
       return !!liqualityMarket
     },
     min() {
+      if (!this.fiatRates[this.asset]) return BN(0)
+
       const toQuoteAsset =
-        this.selectedQuoteProvider?.config?.type === SwapProviderType.LIQUALITYBOOST
+        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostNativeToERC20
           ? this.toAssetChain
           : this.toAsset
+
+      const fromQuoteAsset =
+        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostERC20ToNative
+          ? this.assetChain
+          : this.asset
+
       const liqualityMarket = this.networkMarketData?.find((pair) => {
         return (
-          pair.from === this.asset &&
+          pair.from === fromQuoteAsset &&
           pair.to === toQuoteAsset &&
           getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
-            SwapProviderType.LIQUALITY
+            SwapProviderType.Liquality
         )
       })
 
@@ -772,7 +799,7 @@ export default {
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
-        : BN.max(BN(balance).minus(this.maxFee), 0)
+        : BN.max(BN(balance).minus(BN(this.maxFee).times(1.5)), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     canCoverAmmFee() {
@@ -780,10 +807,14 @@ export default {
 
       const account = isERC20(this.asset) ? this.account : this.toAccount
       const balance = account?.balances[this.selectedQuote.bridgeAsset]
+
+      if (!balance) return true
+
       const SwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
         isERC20(this.asset) ? this.fromSwapFee : this.receiveFee
       )
+
       return BN(balance).gt(SwapFeeInUnits)
     },
     availableAmount() {
@@ -843,6 +874,7 @@ export default {
         this.updatingQuotes ||
         this.ethRequired ||
         //!this.canCoverAmmFee ||
+        this.showBridgeAssetDisabledMessage ||
         this.showNoLiquidityMessage ||
         this.amountError ||
         BN(this.safeAmount).lte(0)
@@ -969,8 +1001,9 @@ export default {
       this.updateQuotes()
       this.updateFiatRates({ assets: [toAsset] })
       this.trackAnalytics({
-        event: 'Swap screen',
+        event: `User clicked on ${this.toAsset} Swap option`,
         properties: {
+          walletVersion,
           category: 'Swap screen',
           action: 'User on SWAP screen',
           label: `${this.toAsset}`
@@ -1276,9 +1309,7 @@ export default {
       }
     }, 800),
     getAccountId() {
-      if (
-        this.selectedQuoteProvider.config.type === SwapProviderType.LIQUALITYBOOST_ERC20_TO_NATIVE
-      ) {
+      if (this.selectedQuoteProvider.config.type === SwapProviderType.LiqualityBoostERC20ToNative) {
         return this.fromAccountId
       }
 
@@ -1316,6 +1347,7 @@ export default {
         this.trackAnalytics({
           event: 'No Liquidity',
           properties: {
+            walletVersion,
             category: 'Swap screen',
             action: 'No Liquidity for pairs',
             from: this.asset,
@@ -1468,7 +1500,7 @@ export default {
 }
 
 .selectors-asset {
-  width: 55px !important;
+  width: 70px !important;
 }
 
 .selector-asset-switch {
