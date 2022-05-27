@@ -134,7 +134,7 @@ store.subscribe(async ({ type, payload }, state) => {
         payload.transaction.amount
       )
       await dispatch('trackAnalytics', {
-        event: 'Send',
+        event: `User send funds`,
         properties: {
           walletVersion,
           category: 'Send/Receive',
@@ -262,17 +262,6 @@ store.subscribe(async ({ type, payload }, state) => {
         properties: {
           category: 'Settings',
           action: 'Change Password'
-        }
-      })
-      break
-    case 'ENABLE_ASSETS':
-      await dispatch('trackAnalytics', {
-        walletVersion,
-        event: 'User Enable Asset',
-        properties: {
-          category: 'Settings',
-          action: 'Enable Asset',
-          assets: payload.assets
         }
       })
       break
