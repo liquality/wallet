@@ -455,7 +455,7 @@ export default {
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
           sendFees[speed] = getSendFee(
-            this.asset,
+            this.assetChain,
             feePrice,
             fee.multilayerFee?.l1,
             this.activeNetwork
