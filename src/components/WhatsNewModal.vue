@@ -10,9 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Bridge Your Assets Using Hop Protocol</pre>
-            <pre class="text-wrap">* Enabled arbitrum swaps on 1inch</pre>
-            <pre class="text-wrap">* Minor improvements</pre>
+            <pre class="text-wrap">* 0.64.0 Release candidate</pre>
           </div>
         </div>
       </div>
