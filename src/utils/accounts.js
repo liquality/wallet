@@ -13,7 +13,7 @@ export const getAccountIcon = (chain) => {
     avalanche: getAssetIcon('AVAX'),
     terra: getAssetIcon('TERRA'),
     fuse: getAssetIcon('FUSE'),
-    optimism: getAssetIcon('FUSE') // TODO
+    optimism: getAssetIcon('optimism')
   }[chain]
 }
 
@@ -30,6 +30,6 @@ export const getChainIcon = (chainId) => {
     avalanche: getAssetIcon('AVAX'),
     terra: getAssetIcon(`${chainId}_chain`),
     fuse: getAssetIcon('FUSE'),
-    optimism: getAssetIcon('FUSE') // TODO
+    optimism: getAssetIcon('optimism')
   }[chainId]
 }
