@@ -677,7 +677,6 @@ export default {
       'activeNetwork',
       'enabledAssets'
     ]),
-    ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem', 'accountsData']),
     networkMarketData() {
       return this.marketData[this.activeNetwork]

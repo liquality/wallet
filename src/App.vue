@@ -10,7 +10,6 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-
 import Head from '@/components/Head.vue'
 import GlobalModals from '@/components/GlobalModals.vue'
 
@@ -23,6 +22,9 @@ export default {
     ...mapState(['activeNetwork', 'brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
     showDappConnections() {
       return !this.$route.path.startsWith('/permission') && !this.$route.path.startsWith('/enable')
+    },
+    showLedgerBanner() {
+      return this.$route.query.mode === 'tab'
     }
   },
   methods: {

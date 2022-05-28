@@ -40,6 +40,7 @@ import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { version as walletVersion } from '../../../../package.json'
 import { getNextAccountColor } from '@liquality/wallet-core/dist/utils/accounts'
+import { ChainId } from '@liquality/cryptoassets'
 
 const LEDGER_PER_PAGE = 5
 
@@ -67,9 +68,18 @@ export default {
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets']),
     ...mapGetters(['networkAccounts']),
-    ...mapGetters('app', ['ledgerBridgeReady']),
     ledgerOptions() {
-      return LEDGER_OPTIONS
+      return LEDGER_OPTIONS.sort((a, b) => {
+        if (a.chain === ChainId.Bitcoin) {
+          return -1
+        }
+
+        if (b.chain === ChainId.Bitcoin) {
+          return 1
+        }
+
+        return 0
+      })
     },
     bitcoinOptions() {
       return LEDGER_BITCOIN_OPTIONS
