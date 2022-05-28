@@ -41,21 +41,21 @@ export default {
     }
   },
   computed: {
-    ...mapState(['WhatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
+    ...mapState(['whatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
     appVersion() {
       return version
     }
   },
   methods: {
-    ...mapActions(['setWhatsNewModalShowed']),
+    ...mapActions(['setWhatsNewModalVersion']),
     close() {
       this.open = false
     }
   },
   created() {
-    if (this.WhatsNewModalVersion !== this.appVersion) {
+    if (this.whatsNewModalVersion !== this.appVersion) {
       this.open = true
-      this.setWhatsNewModalShowed({ version: this.appVersion })
+      this.setWhatsNewModalVersion({ version: this.appVersion })
     }
   }
 }

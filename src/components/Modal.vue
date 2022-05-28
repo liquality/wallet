@@ -48,8 +48,8 @@ export default {
       type: String,
       default: 'modal-sm'
     },
-    customClass: {
-      dialog: String,
+    dialog: {
+      type: String,
       default: 'modal-dialog-centered'
     },
     bodyClass: {
