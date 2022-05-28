@@ -8,6 +8,7 @@
         :asset="asset"
         :chain="chain"
         :address="address"
+        :screen="'EmptyActivity'"
       />
     </div>
   </div>

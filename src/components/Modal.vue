@@ -9,7 +9,8 @@
     >
       <div
         :class="{
-          'modal-dialog modal-dialog-centered': true,
+          'modal-dialog': true,
+          [dialog]: true,
           [type]: true
         }"
         role="document"
@@ -46,6 +47,10 @@ export default {
     type: {
       type: String,
       default: 'modal-sm'
+    },
+    dialog: {
+      type: String,
+      default: 'modal-dialog-centered'
     },
     bodyClass: {
       type: String,

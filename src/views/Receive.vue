@@ -36,6 +36,7 @@
               :asset="asset"
               :chain="chain"
               :address="address"
+              :screen="'Receive'"
             />
             <TransakBrand />
           </div>
@@ -83,8 +84,8 @@ import TransakBrand from '@/components/BuyCrypto/TransakBrand'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains, ChainId } from '@liquality/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { version as walletVersion } from '../../package.json'
 
 export default {

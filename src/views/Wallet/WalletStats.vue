@@ -8,7 +8,7 @@
               Buy Crypto
               <ChevronWhiteRightIcon class="chevron-right" />
             </div>
-            <CartWhiteIcon class="cart-icon" />
+            <CartIcon class="cart-icon" />
           </div>
         </div>
       </div>
@@ -58,7 +58,7 @@ import ReceiveIcon from '@/assets/icons/receive_o.svg'
 import SwapIcon from '@/assets/icons/swap_o.svg'
 import { formatFiat } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { formatFontSize } from '@/utils/fontSize'
-import CartWhiteIcon from '@/assets/icons/cart_white.svg'
+import CartIcon from '@/assets/icons/cart.svg'
 import ChevronWhiteRightIcon from '@/assets/icons/chevron_white_right.svg'
 
 export default {
@@ -66,7 +66,7 @@ export default {
     SendIcon,
     ReceiveIcon,
     SwapIcon,
-    CartWhiteIcon,
+    CartIcon,
     ChevronWhiteRightIcon
   },
   computed: {

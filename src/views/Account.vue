@@ -95,8 +95,8 @@
         <EmptyActivity
           v-show="activityData.length <= 0"
           :active-network="activeNetwork"
-          :asset="asset"
           :chain="chain"
+          :asset="asset"
           :address="address"
         />
       </div>
