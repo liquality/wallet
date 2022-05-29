@@ -205,7 +205,7 @@ export default {
     getAssetIcon,
     async copy() {
       this.trackAnalytics({
-        event: 'Receive screen',
+        event: `User on ${this.asset} Receive Page`,
         properties: {
           walletVersion,
           category: 'Send/Receive',

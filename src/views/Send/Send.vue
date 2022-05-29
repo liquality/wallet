@@ -626,7 +626,7 @@ export default {
     await this.updateSendFees(0)
     await this.updateMaxSendFees()
     await this.trackAnalytics({
-      event: 'Send screen',
+      event: `User entered send screen for ${this.asset}`,
       properties: {
         walletVersion,
         category: 'Send/Receive',
@@ -688,7 +688,7 @@ export default {
       margin-left: 6px;
     }
     .selectors-asset {
-      width: 55px;
+      width: 70px;
     }
     .custom-fees {
       display: flex;
