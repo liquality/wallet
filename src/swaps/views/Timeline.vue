@@ -337,6 +337,7 @@ import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { isObject } from 'lodash-es'
 
 export default {
   components: {
@@ -433,13 +434,19 @@ export default {
     async updateFee(asset, hash) {
       this.feeSelectorLoading = true
       try {
+        const txKey = Object.keys(this.item).find(
+          (key) => isObject(this.item[key]) && this.item[key].hash === hash
+        )
+        const accountId = txKey === 'toClaimTx' ? this.item.toAccountId : this.item.fromAccountId
+
         await this.updateTransactionFee({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset,
           id: this.item.id,
           hash,
-          newFee: this.newFeePrice
+          newFee: this.newFeePrice,
+          accountId
         })
         // TODO decide if this is a safe option or change approach
         // await this.checkPendingActions({ walletId: this.activeWalletId })
