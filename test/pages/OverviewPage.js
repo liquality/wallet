@@ -70,7 +70,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async CloseWatsNewModal(page) {
+  async CloseWhatsNewModal(page) {
     await page.waitForSelector('#wats_new_close_btn', {
       visible: true,
       timeout: 60000

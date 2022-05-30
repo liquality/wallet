@@ -9,7 +9,8 @@
     >
       <div
         :class="{
-          'modal-dialog modal-dialog-centered': true,
+          'modal-dialog': true,
+          [dialog]: true,
           [type]: true
         }"
         role="document"
@@ -46,6 +47,10 @@ export default {
     type: {
       type: String,
       default: 'modal-sm'
+    },
+    dialog: {
+      type: String,
+      default: 'modal-dialog-centered'
     },
     bodyClass: {
       type: String,
@@ -91,7 +96,7 @@ export default {
   box-shadow: 2px 4px 4px rgba(46, 44, 44, 0.25);
 
   .modal-body {
-    padding: 20px 20px 0 20px;
+    padding: 5px 20px 0 20px;
   }
 }
 

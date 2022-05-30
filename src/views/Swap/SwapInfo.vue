@@ -33,12 +33,12 @@ export default {
     showSlippageMessage() {
       const providerType = getSwapProviderConfig(this.activeNetwork, this.quote.provider).type
       return (
-        providerType !== SwapProviderType.LIQUALITY && providerType !== SwapProviderType.FASTBTC
+        providerType !== SwapProviderType.Liquality && providerType !== SwapProviderType.FastBTC
       )
     },
     showRefundMessage() {
       const providerType = getSwapProviderConfig(this.activeNetwork, this.quote.provider).type
-      return providerType !== SwapProviderType.FASTBTC
+      return providerType !== SwapProviderType.FastBTC
     }
   }
 }

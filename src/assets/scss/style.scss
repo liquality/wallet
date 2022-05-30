@@ -567,15 +567,6 @@ svg.qr-icon {
 @keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { transform:rotate(360deg); } }
 
 
-
-
-.activity-empty {
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .wallet-title-container {
   width: 100%;
   display: flex;
@@ -756,7 +747,6 @@ svg.qr-icon {
       line-height: 24px;
       text-align: center;
       text-transform: uppercase;
-      margin-top: 10px;
     }
 
     .step-text {
@@ -829,16 +819,32 @@ svg.qr-icon {
 }
 
 .modal-title {
-  text-transform: uppercase;
   font-weight: 600;
   font-size: 14px;
   line-height: 20px;
+}
+
+.modal,
+.modal-backgrop {
+  z-index: 9999;
+}
+
+.modal-dialog-bottom {
+  display: flex;
+  align-items: flex-end;
+  bottom: 0;
+  position: fixed;
+  margin: 0 !important;
 }
 
 .ledger-options-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.ledger-icon {
+  margin-top: 1.5em;
 }
 
 .custom-dropdown-toggle {

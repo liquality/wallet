@@ -228,6 +228,7 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { version as walletVersion } from '../../../package.json'
 import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
@@ -254,7 +255,7 @@ import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { BG_PREFIX } from '@/broker/utils'
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 
 export default {
   components: {
@@ -491,21 +492,13 @@ export default {
       await this._updateSendFees()
     },
     async tryToSend() {
-      if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
+      if (!this.ledgerBridgeReady && this.account?.type.includes('ledger')) {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (
-            type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
-            payload.connected === true
-          ) {
-            this.bridgeModalOpen = false
-            await this.send()
-            if (unsubscribe) {
-              unsubscribe()
-            }
-          }
+        const unsubscribe = createConnectSubscription(() => {
+          this.bridgeModalOpen = false
+          this.send()
         })
 
         setTimeout(() => {
@@ -625,8 +618,9 @@ export default {
     await this.updateSendFees(0)
     await this.updateMaxSendFees()
     await this.trackAnalytics({
-      event: 'Send screen',
+      event: `User entered send screen for ${this.asset}`,
       properties: {
+        walletVersion,
         category: 'Send/Receive',
         action: 'User on Send screen',
         label: `${this.asset}`
@@ -686,7 +680,7 @@ export default {
       margin-left: 6px;
     }
     .selectors-asset {
-      width: 55px;
+      width: 70px;
     }
     .custom-fees {
       display: flex;

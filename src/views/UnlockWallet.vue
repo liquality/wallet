@@ -52,6 +52,7 @@ import { mapActions } from 'vuex'
 import LogoWalletMain from '@/assets/icons/logo_wallet_main.svg'
 import NewWalletText from '@/assets/icons/wallet_tagline.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import { version as walletVersion } from '../../package.json'
 
 export default {
   components: {
@@ -67,16 +68,31 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['unlockWallet']),
+    ...mapActions(['unlockWallet', 'trackAnalytics']),
     async unlock() {
       this.error = null
       this.loading = true
       try {
         await this.unlockWallet({ key: this.password })
         this.$emit('unlocked')
+        this.trackAnalytics({
+          event: 'UnlockWallet',
+          properties: {
+            walletVersion,
+            action: 'User unlocked wallet successfully'
+          }
+        })
       } catch (e) {
         console.log(e)
         this.error = e.message
+        this.trackAnalytics({
+          event: 'UnlockWallet failed',
+          properties: {
+            walletVersion,
+            action: 'User failed to unlock wallet',
+            label: e.message
+          }
+        })
       } finally {
         this.loading = false
       }
