@@ -159,7 +159,7 @@ export default {
 
   .legacy-message {
     text-align: start;
-    height: 175px;
+    height: 176px;
     overflow-y: auto;
     font-size: 14px;
     pre {
@@ -169,7 +169,7 @@ export default {
   }
 
   .signed-typed-data-message {
-    height: 175px;
+    height: 176px;
     overflow-y: auto;
 
     div {
