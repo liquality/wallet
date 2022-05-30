@@ -82,6 +82,7 @@ export default {
       return chains.length > 0
     },
     ethereumChains() {
+      console.log(buildConfig.chains.filter(isEthereumChain))
       return buildConfig.chains.filter(isEthereumChain)
     },
     selectedAccount() {
@@ -115,11 +116,13 @@ export default {
       })
     },
     formatAddress(account) {
+      console.log(1)
       return shortenAddress(
         chains[account.chain].formatAddress(account.addresses[0], this.activeNetwork)
       )
     },
     switchAccount(account) {
+      console.log(2)
       this.addExternalConnection({
         origin: this.currentOrigin,
         chain: account.chain,

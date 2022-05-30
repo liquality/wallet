@@ -36,6 +36,7 @@ async function setupTerraStreams() {
 
 function injectEthereum(state, chain) {
   const network = ChainNetworks[chain][state.activeNetwork]
+  console.log(state, chain)
   inject(
     ethereumProvider({
       chain,

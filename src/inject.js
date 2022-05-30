@@ -3,9 +3,7 @@ class InjectedProvider {
   constructor (asset) {
     this.asset = asset
   }
-
   setClient () {}
-
   getMethod (method) {
     return (...args) => window.providerManager.proxy('CAL_REQUEST', {
       asset: this.asset,
@@ -14,16 +12,13 @@ class InjectedProvider {
     })
   }
 }
-
 class ProviderManager {
   constructor () {
     this.cache = {}
   }
-
   proxy (type, data) {
     return new Promise((resolve, reject) => {
       const id = Date.now() + '.' + Math.random()
-  
       window.addEventListener(id, ({ detail }) => {
         const response = JSON.parse(detail)
         if (response.error) reject(new Error(response.error))
@@ -32,7 +27,6 @@ class ProviderManager {
         once: true,
         passive: true
       })
-  
       window.postMessage({
         id,
         type,
@@ -40,30 +34,23 @@ class ProviderManager {
       }, '*')
     })
   }
-
   getProviderFor (asset) {
     if (this.cache[asset]) return this.cache[asset]
-
     this.cache[asset] = new InjectedProvider(asset)
-
     return this.cache[asset]
   }
-
   getInjectionName (chain) {
     return chain === 'ethereum' ? 'eth' : chain
   }
-
-  enable (chain) {
-    return this.proxy('ENABLE_REQUEST', { chain })
+  enable (chain, reselect) {
+    return this.proxy('ENABLE_REQUEST', { chain, reselect })
   }
 }
-
 window.providerManager = new ProviderManager()
 `
 
 const ethereumProvider = ({ asset, chain, network }) => `
 const injectionName = window.providerManager.getInjectionName('${chain}')
-
 async function getAddresses () {
   const eth = window.providerManager.getProviderFor('${asset}')
   let addresses = await eth.getMethod('wallet.getAddresses')()
@@ -71,17 +58,21 @@ async function getAddresses () {
   window[injectionName].selectedAddress = addresses[0]
   return addresses
 }
-
 async function handleRequest (req) {
   const eth = window.providerManager.getProviderFor('${asset}')
   if(req.method.startsWith('metamask_')) return null
-
   if(req.method === 'eth_requestAccounts') {
     return await window[injectionName].enable('${chain}')
   }
-  if(req.method === 'personal_sign') { 
+  if(req.method === 'personal_sign') {
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
     return '0x' + sig
+  }
+  if(req.method === 'eth_signTypedData' ||
+    req.method === 'eth_signTypedData_v3' ||
+    req.method === 'eth_signTypedData_v4') {
+    const sig = await eth.getMethod('wallet.signTypedMessage')(req)
+    return sig;
   }
   if(req.method === 'eth_sendTransaction') {
     const to = req.params[0].to
@@ -96,9 +87,9 @@ async function handleRequest (req) {
   }
   return eth.getMethod('jsonrpc')(req.method, ...req.params)
 }
-
 window[injectionName] = {
   isLiquality: true,
+  isMetaMask: window.location.host.indexOf("opensea.io") !== -1,
   isEIP1193: true,
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
@@ -120,10 +111,14 @@ window[injectionName] = {
     }
     const method = typeof req === 'string' ? req : req.method
     const params = req.params || _paramsOrCallback || []
-    return handleRequest({ method, params })
+    return handleRequest({ method, params }).then((result) => ({
+      id: req && req.id ? req.id : 99999,
+      jsonrpc: '2.0',
+      result
+    }))
   },
   sendAsync: (req, callback) => {
-    handleRequest(req)
+    return handleRequest(req)
       .then((result) => callback(null, {
         id: req.id,
         jsonrpc: '2.0',
@@ -138,7 +133,6 @@ window[injectionName] = {
         callback('0x' + result.chainIds['${chain}'].toString(16))
       })
     }
-
     if (method === 'accountsChanged') {
       window.addEventListener('liqualityAccountsChanged', () => {
         const addresses = getAddresses()
@@ -153,9 +147,8 @@ window[injectionName] = {
 const overrideEthereum = (chain) => `
 function proxyEthereum(chain) {
   window.ethereumProxyChain = chain
-
   const enable = async () => {
-    const { accepted, chain } = await window.providerManager.enable()
+    const { accepted, chain, reselect } = await window.providerManager.enable()
     if (!accepted) throw new Error('User rejected')
     const chainChanged = window.ethereumProxyChain !== chain
     window.ethereumProxyChain = chain
@@ -163,14 +156,12 @@ function proxyEthereum(chain) {
     if (chainChanged) {
       window.dispatchEvent(new CustomEvent('liqualityChainChanged', { detail: JSON.stringify({ chainIds: { [chain]: window[injectionName].chainId } }) }))
     }
-    return window[injectionName].enable(chain)
+    return window[injectionName].enable(chain, reselect)
   }
-
   const overrideHandler = {
     get: function (_target, prop, receiver) {
       const injectionName = window.providerManager.getInjectionName(window.ethereumProxyChain)
       const target = window[injectionName]
-
       if (prop === 'on') {
         return (method, callback) => {
           if (method === 'chainChanged') {
@@ -179,7 +170,6 @@ function proxyEthereum(chain) {
               callback('0x' + result.chainIds[window.ethereumProxyChain].toString(16))
             })
           }
-
           if (method === 'accountsChanged') {
             window.addEventListener('liqualityAccountsChanged', () => {
               target.request({ method: 'eth_accounts', params: [] }).then((newAccounts) => {
@@ -189,14 +179,12 @@ function proxyEthereum(chain) {
           }
         }
       }
-
       if (prop === 'enable') {
         return async () => {
           return enable()
         }
       }
-
-      if (prop === 'request') { 
+      if (prop === 'request') {
         return async (req) => {
           if(req.method === 'eth_requestAccounts') {
               return enable()
@@ -204,7 +192,6 @@ function proxyEthereum(chain) {
           return target[prop](req)
         }
       }
-
       if (prop === 'send') {
         return async (req, _paramsOrCallback) => {
           const method = typeof req === 'string' ? req : req.method
@@ -223,17 +210,36 @@ function proxyEthereum(chain) {
           return target[prop](req, _paramsOrCallback)
         }
       }
-
+      if(prop === 'sendAsync') {
+        return async (req, _paramsOrCallback) => {
+          window.req = req
+          if(req.method === 'wallet_switchEthereumChain') {
+            const { params } = req
+            const { chainId } = params[0]
+        
+            if(chainId === "0x89") {
+              const callback = _paramsOrCallback
+              await window.providerManager.enable('polygon', true)
+              return callback(null, {
+                id: req.id,
+                jsonrpc: '2.0',
+                result: null
+              })
+   
+            }
+          }
+          return target[prop](req, _paramsOrCallback)
+        }
+        
+      }
       return target[prop]
     }
   }
   window.ethereum = new Proxy({}, overrideHandler)
 }
-
 function overrideEthereum(chain) {
   proxyEthereum(chain)
 }
-
 if (!window.ethereum) {
   overrideEthereum('${chain}')
   const retryLimit = 5
@@ -259,7 +265,6 @@ const REQUEST_MAP = {
   wallet_sendTransaction: 'chain.sendTransaction',
   wallet_signPSBT: 'signPSBT',
 }
-
 async function handleRequest (req) {
   const btc = window.providerManager.getProviderFor('BTC')
   if (req.method === 'wallet_sendTransaction') {
@@ -270,7 +275,6 @@ async function handleRequest (req) {
   const method = REQUEST_MAP[req.method] || req.method
   return btc.getMethod(method)(...req.params)
 }
-
 window.bitcoin = {
   enable: async () => {
     const { accepted } = await window.providerManager.enable('bitcoin')

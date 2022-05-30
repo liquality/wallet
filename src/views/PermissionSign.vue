@@ -9,8 +9,17 @@
         <img :src="getAssetIcon(asset)" class="permission-sign_icon mt-4 mb-2" />
         <p class="permission-sign_address">{{ shortenAddress(address) }}</p>
         <div class="permission-sign_message mt-4">
-          <p class="text-left mb-1">Message:</p>
-          <textarea v-model="message" readonly></textarea>
+          <p class="text-left mb-1 font-weight-bold">Message:</p>
+          <div class="legacy-message" v-if="typeof messageToDisplay === 'string'">
+            <pre>{{ messageToDisplay }}</pre>
+          </div>
+
+          <div class="signed-typed-data-message" v-else>
+            <div v-for="[key, value] in messageToDisplay" :key="key">
+              <span>[{{ key }}]</span>
+              <div>{{ value }}</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -64,7 +73,11 @@ export default {
   data() {
     return {
       loading: false,
-      replied: false
+      replied: false,
+      replied: false,
+      isSignTypedMessage: false,
+      messageToDisplay: '',
+      messageToSign: ''
     }
   },
   methods: {
@@ -80,7 +93,7 @@ export default {
         await this.replyPermission({
           request: {
             ...this.request,
-            args: [this.message, this.request.args[1]]
+            args: [this.messageToSign, this.request.args[1]]
           },
           allowed
         })
@@ -100,16 +113,24 @@ export default {
       return this.request.asset
     },
     address() {
-      return this.request.args[1]
-    },
-    message() {
-      return hexToAscii(this.request.args[0])
+      return this.request.args[1] || this.request.args[0].params[0]
     },
     request() {
       return {
         ...this.$route.query,
         args: JSON.parse(this.$route.query.args)
       }
+    }
+  },
+  created() {
+    if (this.request.method === 'wallet.signTypedMessage') {
+      const { params } = this.request.args[0]
+      const { message } = JSON.parse(params[1])
+      this.messageToDisplay = Object.entries(message)
+      this.messageToSign = this.request.args[0]
+    } else {
+      this.messageToDisplay = hexToAscii(this.request.args[0])
+      this.messageToSign = hexToAscii(this.request.args[0]) // Handle wallet.signMessage
     }
   }
 }
@@ -131,6 +152,33 @@ export default {
       width: 100%;
       height: 120px;
       resize: none;
+    }
+  }
+
+  .legacy-message {
+    text-align: start;
+    height: 200px;
+    overflow-y: auto;
+    font-size: 14px;
+    pre {
+      white-space: pre-wrap;
+      font-family: 'Montserrat', sans-serif;
+    }
+  }
+  .signed-typed-data-message {
+    height: 200px;
+    overflow-y: auto;
+    div {
+      text-align: start;
+      span {
+        &:first-child {
+          font-weight: bold;
+          margin-right: 5px;
+        }
+      }
+      div {
+        overflow-wrap: break-word;
+      }
     }
   }
 }

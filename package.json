@@ -22,13 +22,13 @@
     "test:testnet": "node_modules/mocha/bin/mocha --grep 'TESTNET'"
   },
   "dependencies": {
-    "@liquality/bitcoin-ledger-provider": "^1.13.12",
+    "@liquality/bitcoin-ledger-provider": "1.13.10",
     "@liquality/cryptoassets": "^1.13.2",
-    "@liquality/ethereum-ledger-provider": "^1.13.12",
-    "@liquality/ethereum-utils": "^1.13.12",
+    "@liquality/ethereum-ledger-provider": "1.13.10",
+    "@liquality/ethereum-utils": "1.13.10",
     "@liquality/hw-web-bridge": "^0.1.2",
-    "@liquality/terra-networks": "^1.13.12",
-    "@liquality/types": "^1.13.12",
+    "@liquality/terra-networks": "1.13.10",
+    "@liquality/types": "1.13.10",
     "@liquality/wallet-core": "1.6.0",
     "@terra-money/terra.js": "^3.0.8",
     "@testing-library/vue": "^5.8.2",
@@ -116,5 +116,11 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
+  },
+  "resolutions": {
+    "@liquality/wallet-core": "portal:/Users/andonmitev/Desktop/Repositories/wallet-core",
+    "socket.io-client": "4.5.0",
+    "amplitude-js": "8.17.0",
+    "@terra-money/terra.js": "3.0.12"
   }
 }

@@ -3,6 +3,7 @@ import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { assets } from '@liquality/cryptoassets'
 import { connectRemote } from './terra-injection'
+import { chains } from '@liquality/cryptoassets'
 
 function attemptOrWarn(func, message) {
   try {
@@ -17,6 +18,7 @@ class Background {
     this.store = store
     this.internalConnections = []
     this.externalConnections = []
+    this.chain = ''
 
     this.subscribeToMutations()
     this.subscribeToWalletChanges()
@@ -184,9 +186,12 @@ class Background {
     const { url } = connection.sender
     const { origin } = new URL(url)
     const { externalConnections, activeWalletId, injectEthereumChain } = this.store.state
-
     let setDefaultEthereum = false
-    let { chain, asset } = data
+
+    let { chain, asset, reselect } = data
+    if (reselect) {
+      this.chain = chain
+    }
     if (asset) {
       chain = assets[asset].chain
     }
@@ -216,15 +221,25 @@ class Background {
       data = { ...data, accountId }
     }
 
+    console.log('this.chain', this.chain)
+    console.log(chain)
     switch (type) {
       case 'ENABLE_REQUEST':
-        if (allowed) {
+        if (reselect) {
+          this.storeProxy(id, connection, 'app/requestOriginAccess', {
+            origin,
+            chain: this.chain || chain,
+            setDefaultEthereum
+          })
+          this.store._actions.setEthereumInjectionChain[0]({ chain: this.chain || chain })
+          break
+        } else if (allowed) {
           connection.postMessage({
             id,
             data: {
               result: {
                 accepted: true,
-                chain
+                chain: this.chain || chain
               }
             }
           })
