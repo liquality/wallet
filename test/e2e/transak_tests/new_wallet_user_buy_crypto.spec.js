@@ -15,18 +15,13 @@ const seedWordsPage = new SeedWordsPage()
 
 let browser
 let page = []
-describe.only('Buy Crypto ["MAINNET"]', async () => {
+describe('Buy Crypto ["MAINNET"]', async () => {
   describe('Create new wallet & Buy Crypto from overview screen ["PULL_REQUEST_TEST"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
       await page.setDefaultNavigationTimeout(0)
       await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
-    })
-    afterEach(async () => {
-      await browser.close()
-    })
-    it('Create new wallet & Buy Crypto from overview screen["PULL_REQUEST_TEST"]', async () => {
       // Create new wallet
       await homePage.ClickOnCreateNewWallet(page)
       // Terms & conditions
@@ -46,8 +41,24 @@ describe.only('Buy Crypto ["MAINNET"]', async () => {
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWhatsNewModal(page)
+    })
+    afterEach(async () => {
+      await browser.close()
+    })
+    it('Create new wallet & Buy Crypto from overview screen["PULL_REQUEST_TEST"]', async () => {
       // Check Buy crypto options from overview screen
       const buyCryptoModalData = await page.waitForSelector('#buy-crypto-from-overview-screen', {
+        visible: true
+      })
+      expect(buyCryptoModalData).to.exist
+      await buyCryptoModalData.click()
+      const buyCryptoModal = await page.waitForSelector('#open_transak_tab_btn')
+      expect(buyCryptoModal).to.exist
+    })
+    it('Create new wallet & Buy Crypto from EmptyActivity screen["PULL_REQUEST_TEST"]', async () => {
+      // Check Buy crypto options from EmptyActivity screen
+      await page.click('#activity_tab')
+      const buyCryptoModalData = await page.waitForSelector('#buy_crypto_button', {
         visible: true
       })
       expect(buyCryptoModalData).to.exist
