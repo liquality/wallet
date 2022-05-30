@@ -18,9 +18,9 @@ env:
   TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
   TEST_WALLET_PASSWORD: ${{ secrets.TEST_WALLET_PASSWORD }}
   # Transak details
-  TRANSAK_WIDGET_URL_PROD: ${{ secrets.VUE_APP_TRANSAK_WIDGET_URL_PROD }}
-  TRANSAK_API_KEY_PROD: ${{ secrets.VUE_APP_TRANSAK_API_KEY_PROD }}
-  DEFAULT_FIAT_CURRENCY: ${{ secrets.VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY }}
+  TRANSAK_WIDGET_URL_PROD: ${{ secrets.TRANSAK_WIDGET_URL_PROD }}
+  TRANSAK_API_KEY_PROD: ${{ secrets.TRANSAK_API_KEY_PROD }}
+  TRANSAK_DEFAULT_FIAT_CURRENCY: ${{ secrets.TRANSAK_DEFAULT_FIAT_CURRENCY }}
 
 jobs:
   build:
@@ -78,9 +78,10 @@ jobs:
             echo VUE_APP_AMPLITUDE_API_KEY =$AMPLITUDE_API_KEY_PROD >> .env
             echo VUE_APP_AGENT_TESTNET_URL =$AGENT_TESTNET_URL >> .env
             echo VUE_APP_AGENT_MAINNET_URL =$AGENT_MAINNET_URL >> .env
-            echo VUE_APP_TRANSAK_WIDGET_URL_PROD =$TRANSAK_WIDGET_URL_PROD >> .env
-            echo VUE_APP_TRANSAK_API_KEY_PROD =$TRANSAK_API_KEY_PROD >> .env
-            echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =$DEFAULT_FIAT_CURRENCY >> .env
+    
+            echo VUE_APP_TRANSAK_WIDGET_URL =$TRANSAK_WIDGET_URL_PROD >> .env
+            echo VUE_APP_TRANSAK_API_KEY =$TRANSAK_API_KEY_PROD >> .env
+            echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =$TRANSAK_DEFAULT_FIAT_CURRENCY >> .env
             yarn install
             yarn lint
             yarn build
@@ -121,12 +122,12 @@ jobs:
           asset_content_type: application/zip
 
       #Run tests against Prod mainnet
-      - name: Regression tests against Mainnet (PROD Agent)
-        uses: beemi/puppeteer-headful@v1.0.11
-        env:
-          CI: 'true'
-          DISPLAY: :99
-          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-        with:
-          args: yarn test:mainnet:prodagent:release
+#      - name: Regression tests against Mainnet (PROD Agent)
+#        uses: beemi/puppeteer-headful@v1.0.11
+#        env:
+#          CI: 'true'
+#          DISPLAY: :99
+#          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+#          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+#        with:
+#          args: yarn test:mainnet:prodagent:release
