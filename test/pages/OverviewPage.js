@@ -349,6 +349,26 @@ class OverviewPage {
   }
 
   /**
+   * Check asset balance for each assert after user select it.
+   * @param page
+   * @param assetCode
+   * @returns {Promise<void>}
+   */
+  async checkAssetBalance(page, assetCode) {
+    await page.waitForSelector('.account-container_balance_code', { visible: true })
+    // account balance is not NaN
+    expect(
+      await page.$eval(`#${assetCode}_balance_value`, (el) => el.textContent),
+      `${assetCode} Balance value is NaN`
+    ).not.equals('NaN')
+    // account balance is not 0
+    expect(
+      await page.$eval(`#${assetCode}_balance_value`, (el) => el.textContent),
+      `${assetCode} Balance value is 0`
+    ).not.equals(0)
+  }
+
+  /**
    * Validate total asserts from overview page.
    * @param page
    * @param newWallet

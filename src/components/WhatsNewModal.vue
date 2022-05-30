@@ -10,9 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-* Buy crypto to your wallet · Using payment method. A. Card Payment. A. Apple Pay. A. Google Pay</pre
-            >
+            <pre class="text-wrap">* Buy crypto to your wallet · Using Card Payment</pre>
           </div>
         </div>
       </div>
