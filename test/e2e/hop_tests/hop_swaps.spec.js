@@ -183,7 +183,7 @@ describe.only('SWAP feature["MAINNET"]', async () => {
           })
         } catch (e) {
           await testUtil.takeScreenshot(page, 'usdc-pusdc-quote-issue')
-          expect(e, 'ARBETH->ARBDAI failed, quote not displayed.....').equals(null)
+          expect(e, 'USDC->PUSDC failed, quote not displayed.....').equals(null)
         }
     
         await page.waitForTimeout(10000)
