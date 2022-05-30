@@ -136,7 +136,7 @@ window[injectionName] = {
     }))
   },
   sendAsync: (req, callback) => {
-    handleRequest(req)
+    return handleRequest(req)
       .then((result) => callback(null, {
         id: req.id,
         jsonrpc: '2.0',
@@ -235,6 +235,29 @@ function proxyEthereum(chain) {
           }
           return target[prop](req, _paramsOrCallback)
         }
+      }
+
+      if(prop === 'sendAsync') {
+        // return async (req, _paramsOrCallback) => {
+        //   window.req = req
+        //   // if(req.method === 'wallet_switchEthereumChain') {
+        //   //   const { params } = req
+        //   //   const { chainId } = params[0]
+        
+        //   //   if(chainId === "0x89") {
+        //   //     const callback = _paramsOrCallback
+        //   //     await window.providerManager.enable('polygon', true)
+        //   //     return callback(null, {
+        //   //       id: req.id,
+        //   //       jsonrpc: '2.0',
+        //   //       result: null
+        //   //     })
+        //   //   }
+        //   //}
+
+        //   return target[prop](req, _paramsOrCallback)
+        // }
+        
       }
 
       return target[prop]

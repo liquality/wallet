@@ -9,15 +9,15 @@
         <img :src="getAssetIcon(asset)" class="permission-sign_icon mt-4 mb-2" />
         <p class="permission-sign_address">{{ shortenAddress(address) }}</p>
         <div class="permission-sign_message mt-4">
-          <p class="text-left mb-1">Message:</p>
-          <div v-if="typeof messageToDisplay === 'string'">
-            <span>{{ messageToDisplay }}</span>
+          <p class="text-left mb-1 font-weight-bold">Message:</p>
+          <div class="legacy-message" v-if="typeof messageToDisplay === 'string'">
+            <pre>{{ messageToDisplay }}</pre>
           </div>
 
-          <div class="message-wrapper" v-else>
+          <div class="signed-typed-data-message" v-else>
             <div v-for="[key, value] in messageToDisplay" :key="key">
-              <span>{{ key }}:</span>
-              <span>{{ value }}</span>
+              <span>[{{ key }}]</span>
+              <div>{{ value }}</div>
             </div>
           </div>
         </div>
@@ -157,19 +157,33 @@ export default {
     }
   }
 
-  .message-wrapper {
+  .legacy-message {
+    text-align: start;
+    height: 200px;
+    overflow-y: auto;
+    font-size: 14px;
+    pre {
+      white-space: pre-wrap;
+      font-family: 'Montserrat', sans-serif;
+    }
+  }
+
+  .signed-typed-data-message {
     height: 200px;
     overflow-y: auto;
 
     div {
-      display: flex;
-      align-items: flex-start;
+      text-align: start;
 
       span {
         &:first-child {
           font-weight: bold;
           margin-right: 5px;
         }
+      }
+
+      div {
+        overflow-wrap: break-word;
       }
     }
   }
