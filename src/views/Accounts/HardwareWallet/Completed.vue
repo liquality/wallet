@@ -4,12 +4,15 @@
       <div class="step-detail">
         <div class="step-number">3</div>
         <div class="step-name">Accounts Added</div>
-        <div class="step-icon">
-          <LedgerIcon />
-        </div>
       </div>
-      <div class="final-message">
-        The account(s) was added successfully, please close this tab and open the popup extension.
+      <div class="progress-container">
+        <CircleProgressBar class="circle-progress" />
+        <div class="loading-message">
+          <div>
+            <span class="loading-message-title">Success</span>
+            <span class="loading-message-text">Accounts added</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="wrapper_bottom">
@@ -18,11 +21,11 @@
   </div>
 </template>
 <script>
-import LedgerIcon from '@/assets/icons/ledger_icon.svg'
+import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
 
 export default {
   components: {
-    LedgerIcon
+    CircleProgressBar
   },
   methods: {
     close() {
