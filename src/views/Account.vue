@@ -121,7 +121,6 @@ import {
 } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
-import { version as walletVersion } from '../../package.json'
 import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'

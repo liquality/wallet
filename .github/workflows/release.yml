@@ -121,13 +121,13 @@ jobs:
           asset_name: liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           asset_content_type: application/zip
 
-      #Run tests against Prod mainnet
-#      - name: Regression tests against Mainnet (PROD Agent)
-#        uses: beemi/puppeteer-headful@v1.0.11
-#        env:
-#          CI: 'true'
-#          DISPLAY: :99
-#          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-#          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-#        with:
-#          args: yarn test:mainnet:prodagent:release
+      Run tests against Prod mainnet
+      - name: Regression tests against Mainnet (PROD Agent)
+        uses: beemi/puppeteer-headful@v1.0.11
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: yarn test:mainnet:prodagent:release
