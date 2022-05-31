@@ -10,9 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Buy crypto to your wallet · Using Card Payment</pre>
+            <pre class="text-wrap">* Buy crypto here with your debit/credit Card or Bank Transfer via Transak!</pre>
             <pre class="text-wrap">
-* Access OpenSea Marketplace by selecting it as Default Web3 Wallet in Settings</pre
+* Access OpenSea's marketplace by setting Liquality as your Default Web3 Wallet in Settings</pre
             >
           </div>
         </div>
