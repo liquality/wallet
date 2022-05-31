@@ -164,10 +164,6 @@ export default {
         : BN(this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas).dp(3)
     },
     item() {
-      console.log(
-        '🚀 ~ file: NFTTransactionDetails.vue ~ line 135 ~ item ~  this.history',
-        this.history[this.activeNetwork][this.activeWalletId].find((item) => item.id === this.id)
-      )
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )

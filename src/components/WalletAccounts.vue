@@ -71,7 +71,7 @@
         </ListItem>
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
           <ListItem
-            v-if="account.chain === 'ethereum' && nftAssets.length > 0"
+            v-if="account.nftAssets && account.nftAssets.length > 0"
             @item-selected="$router.push({ path: '/wallet/nfts/activity' })"
           >
             <template #prefix>
@@ -80,7 +80,7 @@
             <template #icon class="account-asset-item">
               <NFTIcon class="asset-icon" />
             </template>
-            NFTs ({{ nftAssets.length }})
+            NFTs ({{ account.nftAssets.length || 0 }})
             <template #detail>
               <router-link
                 class="d-flex align-items-center link"
@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import ListItem from '@/components/ListItem'
 import {
   prettyBalance,
@@ -150,7 +150,11 @@ export default {
     this.getNftCollections()
   },
   computed: {
-    ...mapState(['activeWalletId', 'activeNetwork', 'nftAssets']),
+    ...mapState(['activeWalletId', 'activeNetwork']),
+    ...mapGetters(['accountsData']),
+    account() {
+      return this.accountsData.filter((account) => account.chain === 'ethereum')[0]
+    },
     filteredItems() {
       if (!this.search) return this.accounts
 
@@ -194,11 +198,13 @@ export default {
       return this.expandedAccounts.includes(account.id) || this.search
     },
     async getNftCollections() {
+      const accountId = this.account.id
       try {
         await this.getNFTAssets({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
-          asset: 'ETH'
+          asset: 'ETH',
+          accountId
         })
       } catch (error) {
         console.error(error)

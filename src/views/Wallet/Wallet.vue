@@ -40,7 +40,6 @@ export default {
     LedgerRequestMessage
   },
   async created() {
-    console.log(this.$route)
     try {
       await this.updateBalances({
         network: this.activeNetwork,

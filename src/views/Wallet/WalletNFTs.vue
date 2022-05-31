@@ -1,7 +1,7 @@
 <template>
   <div class="nft-collectibles">
-    <div v-if="Object.keys(nftAssetsByCollection).length">
-      <template v-for="(asset, key) in nftAssetsByCollection">
+    <div v-if="Object.keys(nftAssetsByCollection['ethereum']).length">
+      <template v-for="(asset, key) in nftAssetsByCollection['ethereum']">
         <NFTAssets
           :assets="asset"
           :collectionName="key"

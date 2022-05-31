@@ -57,7 +57,7 @@ export default {
   computed: {
     ...mapGetters(['nftAssetsByCollection']),
     nftCollection() {
-      return this.nftAssetsByCollection[this.collectionName]
+      return this.nftAssetsByCollection['ethereum'][this.collectionName]
     },
     firstThreeAssets() {
       return this.assets.slice(0, 3)

@@ -1,7 +1,9 @@
 <template>
   <div class="account-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account-title"><NFTIcon class="asset-icon" /> {{ nftAssets.length }} NFTs</span>
+      <span class="account-title"
+        ><NFTIcon class="asset-icon" /> {{ nftAssets.length || 0 }} NFTs</span
+      >
     </NavBar>
     <div class="account-content">
       <NFTStats :isAccount="true" />

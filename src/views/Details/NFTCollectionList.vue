@@ -40,7 +40,7 @@ export default {
       return this.$route.query.collectionName
     },
     nftCollection() {
-      return this.nftAssetsByCollection[this.collectionName]
+      return this.nftAssetsByCollection['ethereum'][this.collectionName]
     },
     routeSource() {
       return this.$route.query.source || null

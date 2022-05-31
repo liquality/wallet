@@ -10,7 +10,7 @@
     <template v-if="activeView === 'selectAsset'">
       <div class="account-content mx-3">
         <div>
-          <Accordion v-for="(assets, key) in nftAssetsByCollection" :key="assets.id">
+          <Accordion v-for="(assets, key) in nftAssetsByCollection['ethereum']" :key="assets.id">
             <h3 slot="header" id="nft-asset-header">{{ key }} ({{ assets.length }})</h3>
             <div class="nft-assets__container__images">
               <div
@@ -450,8 +450,6 @@ export default {
       await navigator.clipboard.writeText(text)
     },
     selectNFT(asset) {
-      console.log('asset>>>', asset)
-      console.log('account>>>', this.account)
       this.selectedNFT = asset
     },
     cancel() {

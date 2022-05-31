@@ -24,10 +24,22 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
+  created() {
+    console.log('nftAssets', this.nftAssets)
+  },
   computed: {
-    ...mapState(['nftAssets'])
+    ...mapState(['accounts', 'activeNetwork', 'activeWalletId']),
+    ...mapGetters(['accountsData']),
+    nftAssets() {
+      return this.accountsData.reduce((acc, account) => {
+        if (account.nftAssets) {
+          acc = [...acc, ...account.nftAssets]
+        }
+        return acc
+      }, [])
+    }
   }
 }
 </script>
