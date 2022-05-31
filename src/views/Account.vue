@@ -244,17 +244,6 @@ export default {
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
-    const { chain } = cryptoassets[this.asset]
-    this.trackAnalytics({
-      event: `User clicked on ${this.asset} from the overview page`,
-      properties: {
-        walletVersion,
-        category: 'Active Asset',
-        chain: chain,
-        asset: `${this.asset}`,
-        label: 'User clicked on assert from overview screen'
-      }
-    })
   },
   watch: {
     activeNetwork() {
