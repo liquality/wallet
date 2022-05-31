@@ -15,7 +15,7 @@ const swapPage = new SwapPage()
 
 let browser, page
 
-describe.only('SWAP feature["MAINNET"]', async () => {
+describe('SWAP feature["MAINNET"]', async () => {
     beforeEach(async () => {
         browser = await puppeteer.launch(testUtil.getChromeOptions())
         page = await browser.newPage()
@@ -263,3 +263,4 @@ describe.only('SWAP feature["MAINNET"]', async () => {
         
       })
 })
+
