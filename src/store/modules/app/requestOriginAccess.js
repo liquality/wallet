@@ -20,6 +20,7 @@ export const requestOriginAccess = async (
     return new Promise((resolve, reject) => {
       emitter.$once(`origin:${origin}`, (allowed, accountId, chain) => {
         commit('SET_ORIGIN_ACCESS_ACTIVE', { active: false })
+        console.log(allowed, { origin, accountId, chain, setDefaultEthereum })
         if (allowed) {
           dispatch(
             'addExternalConnection',

@@ -77,15 +77,21 @@ class Background {
       }
 
       if (mutation.type === 'ADD_EXTERNAL_CONNECTION') {
-        this.externalConnections.forEach((connection) =>
+        this.externalConnections.forEach((connection) => {
+          console.log('connection', connection)
+
           attemptOrWarn(
-            () =>
-              connection.postMessage({
+            () => {
+              console.log('here??')
+              return connection.postMessage({
                 id: 'liqualityAccountsChanged',
                 data: {}
-              }),
+              })
+            },
+
             `liqualityAccountsChanged: Injection connection dropped: ${connection.name}`
           )
+        }
         )
       }
     })
@@ -221,17 +227,17 @@ class Background {
       data = { ...data, accountId }
     }
 
-    console.log('this.chain', this.chain)
-    console.log(chain)
+
+    console.log(data)
     switch (type) {
       case 'ENABLE_REQUEST':
         if (reselect) {
           this.storeProxy(id, connection, 'app/requestOriginAccess', {
             origin,
-            chain: this.chain || chain,
+            chain: chain,
             setDefaultEthereum
           })
-          this.store._actions.setEthereumInjectionChain[0]({ chain: this.chain || chain })
+          // this.store._actions.setEthereumInjectionChain[0]({ chain: chain })
           break
         } else if (allowed) {
           connection.postMessage({
@@ -239,7 +245,7 @@ class Background {
             data: {
               result: {
                 accepted: true,
-                chain: this.chain || chain
+                chain: chain
               }
             }
           })
@@ -251,6 +257,7 @@ class Background {
           chain,
           setDefaultEthereum
         })
+        this.store._actions.setEthereumInjectionChain[0]({ chain: chain })
         break
 
       case 'CAL_REQUEST':

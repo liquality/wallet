@@ -65,6 +65,8 @@ export const requestPermission = async (
       args: printArgs
     }
 
+
+
     if (CONFIRM_REQUIRED.some((re) => re.test(method))) {
       const id = Date.now() + '.' + Math.random()
 

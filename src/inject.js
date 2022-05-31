@@ -50,6 +50,7 @@ window.providerManager = new ProviderManager()
 `
 
 const ethereumProvider = ({ asset, chain, network }) => `
+window.methods = []
 const injectionName = window.providerManager.getInjectionName('${chain}')
 async function getAddresses () {
   const eth = window.providerManager.getProviderFor('${asset}')
@@ -127,6 +128,7 @@ window[injectionName] = {
       .catch((err) => callback(err))
   },
   on: (method, callback) => {
+    window.push(method)
     if (method === 'chainChanged') {
       window.addEventListener('liqualityChainChanged', ({ detail }) => {
         const result = JSON.parse(detail)
@@ -134,9 +136,13 @@ window[injectionName] = {
       })
     }
     if (method === 'accountsChanged') {
+      window.insideWe = true
       window.addEventListener('liqualityAccountsChanged', () => {
-        const addresses = getAddresses()
-        callback(addresses)
+        window.accountsChanged = true
+        target.request({ method: 'eth_accounts', params: [] }).then((newAccounts) => {
+          window.gotToAccountsChangedCallback = true
+          callback(newAccounts)
+        })
       })
     }
   },
@@ -162,6 +168,13 @@ function proxyEthereum(chain) {
     get: function (_target, prop, receiver) {
       const injectionName = window.providerManager.getInjectionName(window.ethereumProxyChain)
       const target = window[injectionName]
+      window.target = target
+      if(prop === 'chainId') {
+        return target.chainId
+      }
+      if(prop === 'networkId') {
+        return target.networkId
+      }
       if (prop === 'on') {
         return (method, callback) => {
           if (method === 'chainChanged') {
@@ -219,13 +232,14 @@ function proxyEthereum(chain) {
         
             if(chainId === "0x89") {
               const callback = _paramsOrCallback
+
               await window.providerManager.enable('polygon', true)
+            
               return callback(null, {
                 id: req.id,
                 jsonrpc: '2.0',
                 result: null
               })
-   
             }
           }
           return target[prop](req, _paramsOrCallback)
