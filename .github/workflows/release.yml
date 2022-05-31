@@ -121,7 +121,7 @@ jobs:
           asset_name: liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           asset_content_type: application/zip
 
-      Run tests against Prod mainnet
+#      Run tests against Prod mainnet
       - name: Regression tests against Mainnet (PROD Agent)
         uses: beemi/puppeteer-headful@v1.0.11
         env:
