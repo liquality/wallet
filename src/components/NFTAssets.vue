@@ -10,7 +10,8 @@
               path: `/details/nft-collection/${collectionName}`,
               query: {
                 collectionName: collectionName,
-                source: source
+                source: source,
+                isAccount: isAccount
               }
             }"
             >see all</router-link
@@ -31,6 +32,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { ChainId } from '@liquality/cryptoassets'
 import NFTAsset from './NFTAsset.vue'
 export default {
   props: {
@@ -55,9 +57,13 @@ export default {
     NFTAsset
   },
   computed: {
-    ...mapGetters(['nftAssetsByCollection']),
+    ...mapGetters(['nftAssetsByCollection', 'nftAssetsByAccount']),
     nftCollection() {
-      return this.nftAssetsByCollection['ethereum'][this.collectionName]
+      if (this.isAccount) {
+        return this.nftAssetsByAccount[ChainId.Ethereum][this.collectionName]
+      } else {
+        return this.nftAssetsByCollection[this.collectionName]
+      }
     },
     firstThreeAssets() {
       return this.assets.slice(0, 3)

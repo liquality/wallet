@@ -1,7 +1,7 @@
 <template>
   <div class="nft-collectibles">
-    <div v-if="Object.keys(nftAssetsByCollection['ethereum']).length">
-      <template v-for="(asset, key) in nftAssetsByCollection['ethereum']">
+    <div v-if="Object.keys(assets).length">
+      <template v-for="(asset, key) in assets">
         <NFTAssets
           :assets="asset"
           :collectionName="key"
@@ -35,6 +35,7 @@
 import { mapGetters, mapState } from 'vuex'
 import NFTAssets from '../../components/NFTAssets.vue'
 import OpenSea from '../../assets/icons/opensea_brand.svg'
+import { ChainId } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -56,9 +57,16 @@ export default {
       assets: []
     }
   },
+  created() {
+    if (this.isAccount) {
+      this.assets = this.nftAssetsByAccount[ChainId.Ethereum]
+    } else {
+      this.assets = this.nftAssetsByCollection
+    }
+  },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
-    ...mapGetters(['nftAssetsByCollection'])
+    ...mapGetters(['nftAssetsByCollection', 'nftAssetsByAccount'])
   },
   methods: {
     openOnOpenSea() {
