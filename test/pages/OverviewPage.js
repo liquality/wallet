@@ -412,6 +412,17 @@ class OverviewPage {
   }
 
   /**
+   * Get total assets count from overview page.
+   * @param page
+   * @returns {Promise<number>}
+   */
+  async getTotalAssetsFromOverview(page) {
+    await page.waitForSelector('#total_assets', { timeout: 60000 })
+    const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
+    return parseInt(assetsCount.replace(/[^\d.-]/g, ''))
+  }
+
+  /**
    * Get Total Liquidity from wallet.
    * @param page
    * @returns {Promise<*>}
@@ -626,6 +637,21 @@ class OverviewPage {
     await page.waitForSelector(`#${option}`)
     await page.click(`#${option}`)
   }
+
+  /**
+   * Click on Manage assets from menu.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnManageAssets(page) {
+    await this.ClickOnBurgerIcon(page)
+    // Click Manage Assets
+    await page.waitForSelector('#manage_assets', { visible: true })
+    await page.click('#manage_assets')
+    console.log('User clicked on Manage Assets')
+  }
 }
+
 
 module.exports = OverviewPage
