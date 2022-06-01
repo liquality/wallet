@@ -151,6 +151,7 @@ import { chains } from '@liquality/cryptoassets'
 import { getAssetIcon } from '@/utils/asset'
 import { getAccountIcon } from '@/utils/accounts'
 import Star from '@/components/Star.vue'
+import { ChainId } from '@liquality/cryptoassets'
 
 export default {
   data() {
@@ -176,10 +177,10 @@ export default {
       return this.$route.fullPath
     },
     account() {
-      return this.accountsData.filter((account) => account.chain === 'ethereum')[0]
+      return this.accountsData.filter((account) => account.chain === ChainId.Ethereum)[0]
     },
     address() {
-      return chains['ethereum']?.formatAddress(this.account.addresses[0], this.activeNetwork)
+      return chains[ChainId.Ethereum]?.formatAddress(this.account.addresses[0], this.activeNetwork)
     }
   },
   async created() {

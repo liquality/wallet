@@ -54,7 +54,7 @@ import SendIcon from '@/assets/icons/send.svg'
 import { getAssetIcon } from '@/utils/asset'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { chains } from '@liquality/cryptoassets'
+import { chains, ChainId } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -80,10 +80,10 @@ export default {
       return this.$route.fullPath
     },
     account() {
-      return this.accountsData.filter((account) => account.chain === 'ethereum')[0]
+      return this.accountsData.filter((account) => account.chain === ChainId.Ethereum)[0]
     },
     address() {
-      return chains['ethereum']?.formatAddress(this.account.addresses[0], this.activeNetwork)
+      return chains[ChainId.Ethereum]?.formatAddress(this.account.addresses[0], this.activeNetwork)
     }
   },
   methods: {

@@ -10,7 +10,7 @@
     <template v-if="activeView === 'selectAsset'">
       <div class="account-content mx-3">
         <div>
-          <Accordion v-for="(assets, key) in nftAssetsByCollection['ethereum']" :key="assets.id">
+          <Accordion v-for="(assets, key) in nftCollection" :key="assets.id">
             <h3 slot="header" id="nft-asset-header">{{ key }} ({{ assets.length }})</h3>
             <div class="nft-assets__container__images">
               <div
@@ -317,7 +317,7 @@ export default {
     // }
   },
   computed: {
-    ...mapGetters(['activity', 'accountItem', 'accountsData', 'nftAssetsByCollection']),
+    ...mapGetters(['activity', 'accountItem', 'accountsData', 'nftAssetsByAccount']),
     ...mapState([
       'activeNetwork',
       'activeWalletId',
@@ -342,15 +342,9 @@ export default {
           return ''
       }
     },
-    // routeQuery() {
-    //   if (this.$route.query?.source?.includes('/details/nft-asset')) {
-    //     return {
-    //       source: this.$route.query.source,
-    //       nftAsset: this.$route.query.nftAsset
-    //     }
-    //   }
-    //   return {}
-    // },
+    nftCollection() {
+      return this.nftAssetsByAccount[ChainId.Ethereum]
+    },
     routeSource() {
       if (this.$route.query?.source?.includes('/details/nft-asset')) {
         console.log(this.$route.query.source)
@@ -362,7 +356,7 @@ export default {
       return prettyFiatBalance(this.currentFee, this.fiatRates[this.assetChain])
     },
     account() {
-      return this.accountsData.filter((account) => account.chain === 'ethereum')[0]
+      return this.accountsData.filter((account) => account.chain === ChainId.Ethereum)[0]
     },
     assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
@@ -372,10 +366,10 @@ export default {
       return prettyBalance(balance, this.asset)
     },
     fromAddress() {
-      return chains['ethereum']?.formatAddress(this.account.addresses[0], this.activeNetwork)
+      return chains[ChainId.Ethereum]?.formatAddress(this.account.addresses[0], this.activeNetwork)
     },
     isValidAddress() {
-      return chains['ethereum'].isValidAddress(this.fromAddress, this.activeNetwork)
+      return chains[ChainId.Ethereum].isValidAddress(this.fromAddress, this.activeNetwork)
     },
     addressError() {
       if (!this.isValidAddress) {
