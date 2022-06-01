@@ -1,9 +1,8 @@
 import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
 import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
-import { assets } from '@liquality/cryptoassets'
+import { assets, chains } from '@liquality/cryptoassets'
 import { connectRemote } from './terra-injection'
-import { chains } from '@liquality/cryptoassets'
 
 function attemptOrWarn(func, message) {
   try {
@@ -78,16 +77,11 @@ class Background {
 
       if (mutation.type === 'ADD_EXTERNAL_CONNECTION') {
         this.externalConnections.forEach((connection) => {
-          console.log('connection', connection)
-
           attemptOrWarn(
-            () => {
-              console.log('here??')
-              return connection.postMessage({
-                id: 'liqualityAccountsChanged',
-                data: {}
-              })
-            },
+            () => connection.postMessage({
+              id: 'liqualityAccountsChanged',
+              data: {}
+            }),
 
             `liqualityAccountsChanged: Injection connection dropped: ${connection.name}`
           )
@@ -218,26 +212,31 @@ class Background {
 
     const allowed =
       Object.keys(externalConnections[activeWalletId] || {}).includes(origin) &&
-      Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(chain)
+      Object.keys(externalConnections[activeWalletId]?.[origin] || {}).includes(this.isOpenSea(url, chain))
 
     // Add `accountId` into the request if allowed
     if (allowed) {
-      const accountList = { ...externalConnections }[activeWalletId]?.[origin]?.[chain] || []
+      const accountList = { ...externalConnections }[activeWalletId]?.[origin]?.[this.isOpenSea(url, chain)] || []
       const [accountId] = accountList
       data = { ...data, accountId }
     }
 
-
-    console.log(data)
     switch (type) {
       case 'ENABLE_REQUEST':
         if (reselect) {
-          this.storeProxy(id, connection, 'app/requestOriginAccess', {
+          // this.storeProxy(id, connection, 'app/requestOriginAccess', {
+          //   origin,
+          //   chain: this.isOpenSea(url, chain),
+          //   setDefaultEthereum,
+          //   reselect
+          // })
+
+          this.storeProxy(id, connection, 'app/requestPermission', {
             origin,
-            chain: chain,
-            setDefaultEthereum
+            data: this.isOpenSea(url, this.chain) ? { ...data, asset: chains[this.chain].nativeAsset, method: 'wallet.switchEthereumChain', args: [this.chain] } : data
           })
-          // this.store._actions.setEthereumInjectionChain[0]({ chain: chain })
+          return
+          this.store._actions.setEthereumInjectionChain[0]({ chain: this.isOpenSea(url, chain) })
           break
         } else if (allowed) {
           connection.postMessage({
@@ -245,7 +244,7 @@ class Background {
             data: {
               result: {
                 accepted: true,
-                chain: chain
+                chain
               }
             }
           })
@@ -257,14 +256,15 @@ class Background {
           chain,
           setDefaultEthereum
         })
-        this.store._actions.setEthereumInjectionChain[0]({ chain: chain })
         break
+
 
       case 'CAL_REQUEST':
         if (allowed || data.method === 'jsonrpc') {
+
           this.storeProxy(id, connection, 'app/requestPermission', {
             origin,
-            data
+            data: this.isOpenSea(url, this.chain) ? { ...data, asset: chains[this.chain].nativeAsset } : data
           })
         } else {
           connection.postMessage({
@@ -317,6 +317,10 @@ class Background {
       type: 'MUTATION',
       data: mutation
     })
+  }
+
+  isOpenSea(url, chain) {
+    return url.includes('https://opensea.io/') && this.chain ? this.chain : chain
   }
 }
 

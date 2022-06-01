@@ -4,7 +4,7 @@ import { createPopup } from '../../../broker/utils'
 
 export const requestOriginAccess = async (
   { state, dispatch, commit },
-  { origin, chain, setDefaultEthereum }
+  { origin, chain, setDefaultEthereum, reselect }
 ) => {
   const { requestOriginAccessActive } = state
 
@@ -20,7 +20,7 @@ export const requestOriginAccess = async (
     return new Promise((resolve, reject) => {
       emitter.$once(`origin:${origin}`, (allowed, accountId, chain) => {
         commit('SET_ORIGIN_ACCESS_ACTIVE', { active: false })
-        console.log(allowed, { origin, accountId, chain, setDefaultEthereum })
+
         if (allowed) {
           dispatch(
             'addExternalConnection',
@@ -36,8 +36,11 @@ export const requestOriginAccess = async (
         }
       })
 
+
+
       const query = stringify({ origin, chain })
       createPopup(`/enable?${query}`, () => {
+
         commit('SET_ORIGIN_ACCESS_ACTIVE', { active: false })
         reject(new Error('User denied'))
       })

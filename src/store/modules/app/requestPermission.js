@@ -15,7 +15,7 @@ const CONFIRM_REQUIRED = [
   /^swap.initiateSwap$/,
   /^swap.claimSwap$/,
   /^swap.refundSwap$/,
-
+  /^wallet.switchEthereumChain$/,
   // Bitcoin
   /^signPSBT$/
 ]
@@ -24,7 +24,8 @@ const ALLOWED = [
   ...CONFIRM_REQUIRED,
   /^wallet.getConnectedNetwork$/,
   /^wallet.getAddresses*$/,
-  /^jsonrpc$/
+  /^jsonrpc$/,
+
 ]
 
 export const requestPermission = async (
@@ -66,10 +67,8 @@ export const requestPermission = async (
     }
 
 
-
     if (CONFIRM_REQUIRED.some((re) => re.test(method))) {
       const id = Date.now() + '.' + Math.random()
-
       return new Promise((resolve, reject) => {
         commit('SET_REQUEST_PERMISSION_ACTIVE', { active: false })
         emitter.$once(`permission:${id}`, (response) => {
@@ -90,7 +89,7 @@ export const requestPermission = async (
         else if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
         else if (method === 'wallet.signMessage' || method === 'wallet.signTypedMessage') permissionRoute = '/permission/sign'
         else if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'
-
+        else if (method === 'wallet.switchEthereumChain') permissionRoute = '/permission/switchEthereumChain'
         createPopup(`${permissionRoute}?${query}`, () => reject(new Error('User denied')))
       })
     } else {

@@ -22,6 +22,7 @@ import CustomToken from '@/views/CustomToken'
 
 import RequestUnlockWallet from '@/views/RequestUnlockWallet.vue'
 import Enable from '@/views/Enable.vue'
+import SwitchEthereumChain from '@/views/SwitchEthereumChain.vue'
 import PermissionSend from '@/views/PermissionSend.vue'
 import PermissionSign from '@/views/PermissionSign.vue'
 import PermissionSignPsbt from '@/views/PermissionSignPsbt.vue'
@@ -181,6 +182,10 @@ const routes = [
   {
     path: '/enable',
     component: Enable
+  },
+  {
+    path: '/permission/switchEthereumChain',
+    component: SwitchEthereumChain
   },
   {
     path: '/permission/send',
