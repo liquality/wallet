@@ -95,7 +95,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Changelog
-        uses: scottbrenner/generate-changelog-action@master
+        uses: Bullrich/generate-release-changelog@v2.0.0
         id: Changelog
         env:
           REPO: ${{ github.repository }}
