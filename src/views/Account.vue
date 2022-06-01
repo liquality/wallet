@@ -62,15 +62,19 @@
               Send
             </button>
           </router-link>
-          <router-link :to="`/accounts/${accountId}/${asset}/swap`">
-            <button class="account-container_actions_button">
-              <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
-                <SwapIcon
-                  class="account-container_actions_button_icon account-container_actions_button_swap"
-                />
-              </div>
-              Swap
-            </button>
+          <router-link
+            class="account-container_actions_button"
+            active-class=""
+            tag="button"
+            :disabled="swapDisabled"
+            :to="`/accounts/${accountId}/${asset}/swap`"
+          >
+            <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
+              <SwapIcon
+                class="account-container_actions_button_icon account-container_actions_button_swap"
+              />
+            </div>
+            Swap
           </router-link>
           <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`">
             <button class="account-container_actions_button">
@@ -89,9 +93,13 @@
           v-if="activityData.length > 0"
         />
         <TransactionList :transactions="activityData" />
-        <div class="activity-empty" v-if="activityData.length <= 0">
-          Once you start using your wallet you will see the activity here
-        </div>
+        <EmptyActivity
+          v-show="activityData.length <= 0"
+          :active-network="activeNetwork"
+          :chain="chain"
+          :asset="asset"
+          :address="address"
+        />
       </div>
     </div>
   </div>
@@ -100,7 +108,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { chains, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
@@ -113,7 +121,6 @@ import {
 } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
-import { version as walletVersion } from '../../package.json'
 import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
@@ -121,6 +128,7 @@ import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
+import EmptyActivity from '@/components/EmptyActivity'
 import CopyAddress from '@/components/CopyAddress'
 import amplitude from 'amplitude-js'
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
@@ -135,6 +143,7 @@ export default {
     ActivityFilter,
     TransactionList,
     EyeIcon,
+    EmptyActivity,
     CopyAddress
   },
   data() {
@@ -156,6 +165,9 @@ export default {
       'fiatRates',
       'marketData'
     ]),
+    swapDisabled() {
+      return this.account?.type.includes('ledger')
+    },
     account() {
       return this.accountItem(this.accountId)
     },
@@ -176,6 +188,9 @@ export default {
         return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
       }
       return '#'
+    },
+    chain() {
+      return cryptoassets[this.asset]?.chain
     }
   },
   methods: {
@@ -207,7 +222,11 @@ export default {
     }
   },
   async created() {
-    if (this.account && this.account.type.includes('ledger')) {
+    if (
+      this.account &&
+      this.account?.type.includes('ledger') &&
+      this.account?.chain !== ChainId.Bitcoin
+    ) {
       this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
         this.account.addresses[0],
         this.activeNetwork
@@ -224,17 +243,6 @@ export default {
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
-    const { chain } = cryptoassets[this.asset]
-    this.trackAnalytics({
-      event: `User clicked on ${this.asset} from the overview page`,
-      properties: {
-        walletVersion,
-        category: 'Active Asset',
-        chain: chain,
-        asset: `${this.asset}`,
-        label: 'User clicked on assert from overview screen'
-      }
-    })
   },
   watch: {
     activeNetwork() {

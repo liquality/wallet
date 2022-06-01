@@ -10,9 +10,12 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Bridge Your Assets Using Hop Protocol</pre>
-            <pre class="text-wrap">* Enabled arbitrum swaps on 1inch</pre>
-            <pre class="text-wrap">* Minor improvements</pre>
+            <pre class="text-wrap">
+* Buy crypto here with your debit/credit Card or Bank Transfer via Transak!</pre
+            >
+            <pre class="text-wrap">
+* Access OpenSea's marketplace by setting Liquality as your Default Web3 Wallet in Settings</pre
+            >
           </div>
         </div>
       </div>
@@ -43,21 +46,21 @@ export default {
     }
   },
   computed: {
-    ...mapState(['watsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
+    ...mapState(['whatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
     appVersion() {
       return version
     }
   },
   methods: {
-    ...mapActions(['setWatsNewModalShowed']),
+    ...mapActions(['setWhatsNewModalVersion']),
     close() {
       this.open = false
     }
   },
   created() {
-    if (this.watsNewModalVersion !== this.appVersion) {
+    if (this.whatsNewModalVersion !== this.appVersion) {
       this.open = true
-      this.setWatsNewModalShowed({ version: this.appVersion })
+      this.setWhatsNewModalVersion({ version: this.appVersion })
     }
   }
 }
