@@ -10,9 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-* 0.65.0 release candidate</pre
-            >
+            <pre class="text-wrap">* 0.65.0 release candidate</pre>
           </div>
         </div>
       </div>
