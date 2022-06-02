@@ -120,8 +120,7 @@ export default {
   props: ['search', 'accounts'],
   data() {
     return {
-      expandedAccounts: [],
-      chainId: ChainId
+      expandedAccounts: []
     }
   },
   computed: {
