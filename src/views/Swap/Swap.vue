@@ -24,6 +24,9 @@
           :asset="selectedQuote.bridgeAsset"
         />
       </InfoNotification>
+      <InfoNotification v-else-if="nativeAssetRequired">
+        <BridgeAssetRequiredMessage :account-id="getAccountId()" :asset="assetChain" />
+      </InfoNotification>
       <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
@@ -792,6 +795,19 @@ export default {
 
       return false
     },
+
+    nativeAssetRequired() {
+      console.log(this.asset)
+      if (!this.networkWalletBalances || !isERC20(this.asset) || this.asset === 'ARBETH') return 0
+      const nativeAssetBalance = this.networkWalletBalances[getNativeAsset(this.asset)]
+      if (
+        !nativeAssetBalance ||
+        BN(nativeAssetBalance).lte(0) ||
+        BN(nativeAssetBalance).minus(BN(this.maxFee).times(1.5)).lt(0)
+      )
+        return true
+      return false
+    },
     showErrors() {
       return !this.ethRequired
     },
@@ -832,6 +848,7 @@ export default {
         this.showBridgeAssetDisabledMessage ||
         this.showNoLiquidityMessage ||
         this.amountError ||
+        this.nativeAssetRequired ||
         BN(this.safeAmount).lte(0)
       ) {
         return false
@@ -1247,7 +1264,9 @@ export default {
       }
     }, 800),
     getAccountId() {
-      if (this.selectedQuoteProvider.config.type === SwapProviderType.LiqualityBoostERC20ToNative) {
+      if (
+        this.selectedQuoteProvider?.config.type === SwapProviderType.LiqualityBoostERC20ToNative
+      ) {
         return this.fromAccountId
       }
 
