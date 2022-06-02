@@ -107,6 +107,17 @@
                   Fuse (FUSE)
                 </a>
               </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  id="sol"
+                  href="#"
+                  @click="selectChain('solana')"
+                  :class="{ active: chain === 'solana' }"
+                >
+                  Solana (SOL)
+                </a>
+              </li>
             </ul>
           </div>
         </div>
