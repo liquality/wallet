@@ -1,7 +1,7 @@
 <template>
   <div class="notification-content">
     <div class="notification-text">
-      A balance is required to swap and you need {{ asset }} to pay for gas.
+      You need more {{ asset }} to pay for gas.
     </div>
     <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
       Get {{ asset }}
