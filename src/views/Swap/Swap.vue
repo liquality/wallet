@@ -692,9 +692,12 @@ export default {
             min = this.selectedQuote.min
             break
           case SwapProviderType.LiqualityBoostERC20ToNative:
+            // increase minimum amount with 5% to minimize calculation
+            // error and price fluctuation
             min = BN(this.selectedQuote.minInBridgeAsset)
               .times(this.fiatRates[this.selectedQuote.bridgeAsset])
               .dividedBy(this.fiatRates[this.asset])
+              .times(1.05)
             break
           default:
             min = BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]))
