@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Release candidate 0.63.0</pre>
+            <pre class="text-wrap">* 0.65.0 release candidate</pre>
           </div>
         </div>
       </div>
@@ -41,21 +41,21 @@ export default {
     }
   },
   computed: {
-    ...mapState(['watsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
+    ...mapState(['whatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
     appVersion() {
       return version
     }
   },
   methods: {
-    ...mapActions(['setWatsNewModalShowed']),
+    ...mapActions(['setWhatsNewModalVersion']),
     close() {
       this.open = false
     }
   },
   created() {
-    if (this.watsNewModalVersion !== this.appVersion) {
+    if (this.whatsNewModalVersion !== this.appVersion) {
       this.open = true
-      this.setWatsNewModalShowed({ version: this.appVersion })
+      this.setWhatsNewModalVersion({ version: this.appVersion })
     }
   }
 }

@@ -118,14 +118,6 @@ export default {
       } else {
         this.disableEthereumInjection()
       }
-      this.trackAnalytics({
-        event: 'Settings',
-        properties: {
-          category: 'Settings',
-          action: 'Default Web3 Wallet Updated',
-          label: `${enable}`
-        }
-      })
     },
     async setAnalyticsEnable(enable) {
       await this.setAnalyticsResponse({ accepted: enable })
@@ -135,6 +127,7 @@ export default {
       this.trackAnalytics({
         event: 'Analytics Updated',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Analytics toggle button on/off',
           label: `${enable}`
@@ -149,8 +142,9 @@ export default {
         content: logs
       })
       this.trackAnalytics({
-        event: 'Download logs',
+        event: 'User Downloaded wallet logs',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Wallet Logs Accessed'
         }
@@ -158,8 +152,9 @@ export default {
     },
     async forgetAllDappConnections() {
       this.trackAnalytics({
-        event: 'Forgot all Dapp Connections',
+        event: 'User clicked on Forgot all Dapp Connections under settings',
         properties: {
+          walletVersion: version,
           category: 'Settings',
           action: 'Forgot all Dapp Connections'
         }

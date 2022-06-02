@@ -39,7 +39,7 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
     // Set password & click next
     await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Default web3 option toggled on
     await overviewPage.CheckWeb3ToggleOn(page)

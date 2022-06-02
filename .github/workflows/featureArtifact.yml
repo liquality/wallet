@@ -7,12 +7,21 @@ on:
     branches:
       - 'feature/*'
       - 'feat/*'
+
 env:
   AMPLITUDE_API_KEY_DEV: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
   TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
   AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
   AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
   NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
+  SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+  TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+  TEST_WALLET_PASSWORD: ${{ secrets.TEST_WALLET_PASSWORD }}
+  # Transak stage details for testing
+  TRANSAK_WIDGET_URL_STAGE: ${{ secrets.VUE_APP_TRANSAK_WIDGET_URL_STAGE }}
+  TRANSAK_API_KEY_STAGE: ${{ secrets.VUE_APP_TRANSAK_API_KEY_STAGE }}
+  TRANSAK_DEFAULT_FIAT_CURRENCY: ${{ secrets.VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY }}
+
 
 jobs:
   feature-artifact-build:
@@ -43,13 +52,18 @@ jobs:
 
       - run: mkdir screenshots
 
-      - uses: actions/cache@v2.1.7
-        env:
-          node-version: 14.1.0
-          cache-name: cache-node-modules
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - name: Restore yarn cache
+        uses: actions/cache@v2
+        id: yarn-cache
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-node${{ env.node-version }}
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+          restore-keys: |
+            yarn-cache-folder-
 
       - run: |
           echo VUE_APP_TERRA_MAINNET_URL =$TERRA_MAINNET_URL >> .env
@@ -57,15 +71,19 @@ jobs:
           echo VUE_APP_AVALANCHE_TESTNET_NODE =$AVALANCHE_TESTNET_NODE >> .env
           echo VUE_APP_NEAR_MAINNET_URL =$NEAR_MAINNET_URL >> .env
           echo VUE_APP_AMPLITUDE_API_KEY =$AMPLITUDE_API_KEY_DEV >> .env
+          echo VUE_APP_TRANSAK_WIDGET_URL_STAGE =$TRANSAK_WIDGET_URL_STAGE >> .env
+          echo VUE_APP_TRANSAK_API_KEY_STAGE =$TRANSAK_API_KEY_STAGE >> .env
+          echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =$TRANSAK_DEFAULT_FIAT_CURRENCY >> .env
 
       # Create Dev Wallet with Dev agent for feature branch tests.
       - name: Set development manifest (patch for DEV)
         run: |
+          export NODE_OPTIONS="--max-old-space-size=5120"
           jq --argjson icons "{\"16\": \"icons/dev/16x16.png\",\"48\": \"icons/dev/48x48.png\",\"128\": \"icons/dev/128x128.png\"}" '.icons = $icons | .browser_action.default_icon = $icons | .name = "Liquality Wallet - Dev"' ./src/manifest.json > ./src/manifest.tmp
           mv ./src/manifest.tmp ./src/manifest.json
-          npm ci
-          npm run lint
-          npm run build
+          yarn install
+          yarn lint
+          yarn build
 
       - name: Create wallet artifact
         uses: actions/upload-artifact@v2.3.1
@@ -75,6 +93,14 @@ jobs:
           path: dist
           if-no-files-found: ignore
           retention-days: 30
+
+      - name: Run Smoke tests againt PullRequest
+        uses: beemi/puppeteer-headful@v1.0.11
+        env:
+          CI: 'true'
+          DISPLAY: :99
+        with:
+          args: yarn test:pullrequest
 
 
 

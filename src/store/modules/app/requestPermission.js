@@ -11,6 +11,7 @@ const CONFIRM_REQUIRED = [
   /^chain.sendBatchTransaction$/,
   /^chain.updateTransactionFee$/,
   /^wallet.signMessage*$/,
+  /^wallet.signTypedMessage*$/,
   /^swap.generateSecret$/,
   /^swap.initiateSwap$/,
   /^swap.claimSwap$/,
@@ -86,7 +87,8 @@ export const requestPermission = async (
 
         if (chain === ChainId.Terra) permissionRoute = '/permission/terra'
         else if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
-        else if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
+        else if (method === 'wallet.signMessage' || method === 'wallet.signTypedMessage')
+          permissionRoute = '/permission/sign'
         else if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'
 
         createPopup(`${permissionRoute}?${query}`, () => reject(new Error('User denied')))

@@ -75,7 +75,7 @@ describe('Custom Token add-["MAINNET"]', async () => {
       // Create a password & submit
       await passwordPage.SubmitPasswordDetails(page)
       // overview page
-      await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.CloseWhatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
       // Click on add custom token option
       await overviewPage.ClickAddCustomToken(page)
