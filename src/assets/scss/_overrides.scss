@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 $brand-gradient-primary: linear-gradient(180deg, #302e78 0%, #4866d3 52.08%, #2fafca 100%);
 $brand-gradient-secondary: linear-gradient(360deg, #1ce4c3 -10.66%, #4866d3 31.99%, #302e78 81.56%);
 
