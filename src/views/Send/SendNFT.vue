@@ -307,14 +307,6 @@ export default {
       localStorage.setItem('nftAsset', JSON.stringify(this.selectedNFT))
       this.activeView = 'selectedAsset'
     }
-    // if (this.nftAssets) {
-    //   const firstCollection = this.nftAssets[Object.keys(this.nftAssets)[0]]
-    //   console.log(
-    //     '🚀 ~ file: SendNFT.vue ~ line 289 ~ created ~ firstCollection',
-    //     firstCollection[0]
-    //   )
-    //   this.selectNFT(firstCollection[0])
-    // }
   },
   computed: {
     ...mapGetters(['activity', 'accountItem', 'accountsData', 'nftAssetsByAccount']),
@@ -538,6 +530,7 @@ export default {
           tokenIDs: [this.selectedNFT.token_id],
           values: [1],
           nft: this.selectedNFT,
+          asset: this.asset,
           fee,
           feeLabel: this.selectedFeeLabel
         }
