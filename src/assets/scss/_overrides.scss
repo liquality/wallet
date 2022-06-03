@@ -1,28 +1,26 @@
-@use "sass:math";
+$brand-gradient-primary: linear-gradient(180deg, #302e78 0%, #4866d3 52.08%, #2fafca 100%);
+$brand-gradient-secondary: linear-gradient(360deg, #1ce4c3 -10.66%, #4866d3 31.99%, #302e78 81.56%);
 
-$brand-gradient-primary: linear-gradient(180deg, #302E78 0%, #4866D3 52.08%, #2FAFCA 100%);
-$brand-gradient-secondary: linear-gradient(360deg, #1CE4C3 -10.66%, #4866D3 31.99%, #302E78 81.56%);
+$color-primary: #9d4dfa;
+$color-secondary: #2cd2cf;
 
-$color-primary: #9D4DFA;
-$color-secondary: #2CD2CF;
+$danger: #f12274;
+$light: #f8faff;
+$dark: #f0f7f9;
 
-$danger:        #F12274;
-$light:         #F8FAFF;
-$dark:          #F0F7F9;
+$color-text-primary: #1d1e21;
+$color-text-secondary: #ffffff;
+$color-text-muted: #747e8d;
 
-$color-text-primary: #1D1E21;
-$color-text-secondary: #FFFFFF;
-$color-text-muted: #747E8D;
-
-$font-size-base:              0.75rem; // Assumes the browse, typically `16px`
-$font-size-lg:                1rem;
-$font-size-sm:                0.8125rem;
-$font-size-tiny:              0.75rem;
-$lead-font-size:              1rem;
-$small-font-size:             $font-size-sm;
+$font-size-base: 0.75rem; // Assumes the browse, typically `16px`
+$font-size-lg: 1rem;
+$font-size-sm: 0.8125rem;
+$font-size-tiny: 0.75rem;
+$lead-font-size: 1rem;
+$small-font-size: $font-size-sm;
 $text-muted: $color-text-muted;
-$font-size-xs:                0.625rem;
-$font-size-head-title:                0.875rem;
+$font-size-xs: 0.625rem;
+$font-size-head-title: 0.875rem;
 
 $font-family-base: 'Montserrat', sans-serif;
 $headings-font-weight: 600;
@@ -33,7 +31,7 @@ $headings-color: $color-text-primary;
 $body-color: $color-text-primary;
 $lead-font-weight: 600;
 
-$hr-border-color: #D9DFE5;
+$hr-border-color: #d9dfe5;
 
 $badge-font-size: 85%;
 
@@ -44,11 +42,11 @@ $link-color: $color-primary;
 $link-hover-decoration: none;
 
 $input-btn-font-size-lg: $font-size-base;
-$input-btn-padding-y:    .415rem;
-$input-btn-padding-y-sm: .275rem;
-$input-btn-padding-y-lg: .5rem;
-$btn-padding-x-lg:       .5rem;
-$btn-padding-y-sm:       0.15rem;
+$input-btn-padding-y: 0.415rem;
+$input-btn-padding-y-sm: 0.275rem;
+$input-btn-padding-y-lg: 0.5rem;
+$btn-padding-x-lg: 0.5rem;
+$btn-padding-y-sm: 0.15rem;
 
 $input-focus-box-shadow: 0;
 $input-bg: transparent;

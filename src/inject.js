@@ -81,7 +81,7 @@ async function handleRequest (req) {
   }
   if(req.method === 'personal_sign') { 
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
-    return '0x' + sig 
+    return '0x' + sig
   }
   if(req.method === 'eth_sendTransaction') {
     const to = req.params[0].to
