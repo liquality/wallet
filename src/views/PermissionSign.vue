@@ -49,6 +49,13 @@ import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import { isAddress } from 'ethers/lib/utils'
+
+const signTypedDataMethodToVersion = {
+  eth_signTypedData: 'V1',
+  eth_signTypedData_v3: 'V3',
+  eth_signTypedData_v4: 'V4'
+}
 
 function isHex(str) {
   return Boolean(str.match(/^[0-9a-f]+$/i))
@@ -84,7 +91,9 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async reply(allowed) {
-      if (this.loading) return
+      if (this.loading) {
+        return
+      }
       this.loading = true
 
       try {
@@ -122,16 +131,31 @@ export default {
   },
   created() {
     if (this.request.method === 'wallet.signTypedData') {
-      const { params } = this.request.args[0]
-      const { message } = JSON.parse(params[1])
+      const { method, params } = this.request.args[0]
 
-      this.messageToDisplay = Object.entries(message)
+      const first = params[0]
+      const second = params[1]
+      const msgParams = { version: signTypedDataMethodToVersion[method] }
+      const extra = params[2] || {}
+      try {
+        if (isAddress(first)) {
+          msgParams.from = first
+          msgParams.data = JSON.parse(second)
+        } else {
+          msgParams.from = second
+          msgParams.data = JSON.parse(first)
+        }
+      } catch (err) {
+        throw new Error(`Invalid JSON: ${err}`)
+      }
 
-      this.messageToSign = this.request.args[0]
-    } else {
+      this.messageToDisplay = Object.entries(msgParams.data)
+      this.messageToSign = { ...msgParams, ...extra }
+    }
+    // Handle wallet.signMessage
+    else {
       this.messageToDisplay = hexToAscii(this.request.args[0])
-
-      this.messageToSign = hexToAscii(this.request.args[0]) // Handle wallet.signMessage
+      this.messageToSign = hexToAscii(this.request.args[0])
     }
   }
 }
