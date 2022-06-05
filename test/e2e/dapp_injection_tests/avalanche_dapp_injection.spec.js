@@ -29,7 +29,7 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Default web3 option toggled on
     await overviewPage.CheckWeb3ToggleOn(page)

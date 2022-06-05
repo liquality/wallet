@@ -83,6 +83,14 @@ async function handleRequest (req) {
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
     return '0x' + sig
   }
+
+  if(req.method === 'eth_signTypedData' ||
+    req.method === 'eth_signTypedData_v3' ||
+    req.method === 'eth_signTypedData_v4') {
+    const sig = await eth.getMethod('wallet.signTypedData')(req)
+    return sig;
+  }
+
   if(req.method === 'eth_sendTransaction') {
     const to = req.params[0].to
     const value = req.params[0].value
@@ -99,6 +107,7 @@ async function handleRequest (req) {
 
 window[injectionName] = {
   isLiquality: true,
+  isMetaMask: window.location.host.indexOf("opensea.io") !== -1,
   isEIP1193: true,
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
@@ -120,10 +129,14 @@ window[injectionName] = {
     }
     const method = typeof req === 'string' ? req : req.method
     const params = req.params || _paramsOrCallback || []
-    return handleRequest({ method, params })
+    return handleRequest({ method, params }).then((result) => ({
+      id: req && req.id ? req.id : 99999,
+      jsonrpc: '2.0',
+      result
+    }))
   },
   sendAsync: (req, callback) => {
-    handleRequest(req)
+    return handleRequest(req)
       .then((result) => callback(null, {
         id: req.id,
         jsonrpc: '2.0',
@@ -222,6 +235,29 @@ function proxyEthereum(chain) {
           }
           return target[prop](req, _paramsOrCallback)
         }
+      }
+
+      if(prop === 'sendAsync') {
+        // return async (req, _paramsOrCallback) => {
+        //   window.req = req
+        //   // if(req.method === 'wallet_switchEthereumChain') {
+        //   //   const { params } = req
+        //   //   const { chainId } = params[0]
+        
+        //   //   if(chainId === "0x89") {
+        //   //     const callback = _paramsOrCallback
+        //   //     await window.providerManager.enable('polygon', true)
+        //   //     return callback(null, {
+        //   //       id: req.id,
+        //   //       jsonrpc: '2.0',
+        //   //       result: null
+        //   //     })
+        //   //   }
+        //   //}
+
+        //   return target[prop](req, _paramsOrCallback)
+        // }
+        
       }
 
       return target[prop]

@@ -28,7 +28,7 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
   })
   afterEach(async () => {
