@@ -2,7 +2,6 @@ import { setupWallet } from '@liquality/wallet-core'
 import { AES } from 'crypto-js'
 import _pbkdf2 from 'pbkdf2'
 import { createNotification as _createNotification } from './utils/notification'
-import { CustomEthereumLedgerProvider, CustomBitcoinLedgerProvider } from '@/utils/hardware-wallet'
 
 async function pbkdf2(password, salt, iterations, length, digest) {
   return new Promise((resolve, reject) => {
@@ -25,29 +24,6 @@ const walletOptions = {
   },
   createNotification(notification) {
     _createNotification(notification)
-  },
-  createBitcoinLedgerProvider(
-    network,
-    bitcoinNetwork,
-    addressType,
-    baseDerivationPath,
-    publicKey,
-    chainCode
-  ) {
-    return new CustomBitcoinLedgerProvider({
-      network: bitcoinNetwork,
-      addressType,
-      baseDerivationPath,
-      basePublicKey: publicKey,
-      baseChainCode: chainCode
-    })
-  },
-  createEthereumLedgerProvider(network, ethereumNetwork, chain, derivationPath, hardfork) {
-    return new CustomEthereumLedgerProvider({
-      network: ethereumNetwork,
-      derivationPath,
-      hardfork
-    })
   }
 }
 

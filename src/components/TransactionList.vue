@@ -45,7 +45,7 @@ import {
   ACTIVITY_FILTER_TYPES,
   SEND_STATUS_FILTER_MAP
 } from '@liquality/wallet-core/dist/utils/history'
-import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
 import { getItemIcon } from '@/utils/history'
 import {
   prettyBalance,

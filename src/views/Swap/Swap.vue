@@ -442,7 +442,7 @@ import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/util
 import { version as walletVersion } from '../../../package.json'
 import { buildConfig } from '@liquality/wallet-core'
 import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
-import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
@@ -1169,13 +1169,13 @@ export default {
     review() {
       if (this.account?.type.includes('ledger')) {
         // open in a new tab
-        const frees = []
+        const fees = []
         const customFees = []
         const fee = { ...this.selectedFee }
         const customFee = { ...this.customFees }
 
         for (var p in fee) {
-          frees.push(encodeURIComponent(p) + '=' + encodeURIComponent(fee[p]))
+          fees.push(encodeURIComponent(p) + '=' + encodeURIComponent(fee[p]))
         }
         if (customFee) {
           for (var c in customFee) {
@@ -1186,7 +1186,7 @@ export default {
           this.asset
         }/swap?mode=tab&sendAmount=${this.sendAmount}&toAccountId=${this.toAccountId}&toAsset=${
           this.toAsset
-        }&selectedFees=${frees.join(',')}&userSelectedQuote=${this.userSelectedQuote}&provider=${
+        }&selectedFees=${fees.join(',')}&userSelectedQuote=${this.userSelectedQuote}&provider=${
           this.selectedQuote?.provider
         }&currentStep=confirm&maxOptionActive=${this.maxOptionActive}&customeFees=${customFees.join(
           ','
