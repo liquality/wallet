@@ -253,6 +253,11 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // Click send button
     await page.waitForSelector('#send_button_confirm')
     await page.click('#send_button_confirm')
+    
+    // Confirm status from transaction activity
+    await page.waitForSelector('#SEND_BTC_BTC', { visible: true, timeout: 60000 })
+    await page.click('#SEND_BTC_BTC')
+    await sendPage.ValidateSendConfirmationStatus(page)
   })
 
   it('BTC- Verify disabling an account reduces total number of assets', async () => {
