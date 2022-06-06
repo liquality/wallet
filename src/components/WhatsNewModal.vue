@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* 0.65.0 release candidate</pre>
+            <pre class="text-wrap">* 0.64.2 release candidate</pre>
           </div>
         </div>
       </div>
@@ -90,6 +90,7 @@ h6 {
       justify-content: center;
       height: 35px;
       padding: 0px 0px 0px 20px;
+
       svg {
         height: 100%;
       }
