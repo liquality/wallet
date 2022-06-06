@@ -5,11 +5,11 @@ full-trace: true
 color: true
 inline-diffs: true
 async-only: true
-parallel: true
+parallel: false
 jobs: 10
-recursive: true
+recursive: false
 diff: true
-retries: 1
+retries: 0
 spec:
   - 'test/**/*.spec.js'
 extension:
