@@ -3,13 +3,14 @@ const OverviewPage = require('../pages/OverviewPage')
 const HomePage = require('../pages/HomePage')
 const PasswordPage = require('../pages/PasswordPage')
 const expect = require('chai').expect
-
+const SendPage = require('../pages/SendPage')
 const puppeteer = require('puppeteer')
 
 const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
+const sendPage = new SendPage()
 
 let browser, page, dappPage
 const dappUrl = 'https://app.uniswap.org'
@@ -199,4 +200,61 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
+
+  it.only('BTC1-BTC2 - Verify send between newly created accounts on the same network', async () => {
+    // check Send & Swap & Receive options have been displayed
+    await overviewPage.ValidateSendSwipeReceiveOptions(page)
+   
+    // Select Manage accounts options
+    await overviewPage.ToggleExperimentButton(page, 'exp-manageAccounts-toggle-switch')
+    await overviewPage.ClickOnManageAccounts(page)
+    await page.waitForSelector('#create-account-plus-icon-bitcoin', { visible: true, timeout: 60000 })
+
+    // Click on Plus add first account
+    await page.click('#create-account-plus-icon-bitcoin')
+    await page.waitForSelector('#choose-account-name')
+    const accountName = 'BitCoin 2'
+    await page.type('#choose-account-name', accountName)
+
+    // Create button
+    await page.waitForTimeout(5000)
+    await page.click('#create-account-button')
+
+    //Click back arrow
+    await page.waitForSelector('.navbar_prev_icon')
+    await page.click('.navbar_prev_icon')
+
+   //Send from BTC1 to BTC2
+    const assetName = 'BTC'
+    const coinsToSend = '0.00002'
+    const addressToSend = 'tb1qsu83hgrq3rcr682lw0knd2dznm5nevjk0atgr0'
+
+    await overviewPage.SelectAssetFromOverview(page, assetName)
+    await page.waitForSelector(`#${assetName}_send_button`, { visible: true })
+    await page.click(`#${assetName}_send_button`)
+
+    // Enter send amount (or) coins
+    await sendPage.EnterSendAmount(page, coinsToSend)
+
+    // Send address
+    await sendPage.EnterSendToAddress(page, addressToSend)
+
+    //Click Review button
+    await page.waitForSelector('#send_review_button', { visible: true, timeout: 120000 })
+    try {
+      await page.click('#send_review_button', { clickCount: 5 })
+      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await page.$eval('#send_review_button', (el) => el.click())
+      }
+    }
+
+    // Click send button
+    await page.waitForSelector('#send_button_confirm')
+    await page.click('#send_button_confirm')
+  })
+
+
+
 })
