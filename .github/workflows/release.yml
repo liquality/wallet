@@ -131,3 +131,4 @@ jobs:
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
           args: yarn test:mainnet:prodagent:release
+          
