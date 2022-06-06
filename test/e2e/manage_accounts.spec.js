@@ -257,7 +257,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
 
   it('BTC- Verify disabling an account reduces total number of assets', async () => {
     // get total number of assets
-    const assetsCount1 = await overviewPage.getTotalAssets(page)
+    const assetsBeforeDisableManageAssets = await overviewPage.getTotalAssets(page)
 
     // Select Manage accounts options
     await overviewPage.ToggleExperimentButton(page, 'exp-manageAccounts-toggle-switch')
@@ -271,8 +271,8 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await page.click('.navbar_prev_icon')
     
     // check total assets displayed
-    const assetsCount2 = await overviewPage.getTotalAssets(page)
-    expect(assetsCount2).to.equal(assetsCount1 - 1)
+    const assetsAfterDisableManageAssets = await overviewPage.getTotalAssets(page)
+    expect(assetsAfterDisableManageAssets).to.equal(assetsBeforeDisableManageAssets - 1)
 
   })
 
