@@ -255,7 +255,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await page.click('#send_button_confirm')
   })
 
-  it.only('BTC- Verify disabling an account reduces total number of assets', async () => {
+  it('BTC- Verify disabling an account reduces total number of assets', async () => {
     // get total number of assets
     const assetsCount1 = await overviewPage.getTotalAssets(page)
 
