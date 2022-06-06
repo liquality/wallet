@@ -201,7 +201,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
 
-  it.only('BTC1-BTC2 - Verify send between newly created accounts on the same network', async () => {
+  it('BTC1-BTC2 - Verify send between newly created accounts on the same network', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
    
