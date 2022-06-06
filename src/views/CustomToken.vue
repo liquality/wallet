@@ -24,8 +24,8 @@
                   class="dropdown-item"
                   id="ethereum_chain"
                   href="#"
-                  @click="selectChain('ethereum')"
-                  :class="{ active: chain === 'ethereum' }"
+                  @click="selectChain(chainId.Ethereum)"
+                  :class="{ active: chain === chainId.Ethereum }"
                 >
                   Ethereum (ETH)
                 </a>
@@ -35,8 +35,8 @@
                   class="dropdown-item"
                   id="rsk_chain"
                   href="#"
-                  @click="selectChain('rsk')"
-                  :class="{ active: chain === 'rsk' }"
+                  @click="selectChain(chainId.Rootstock)"
+                  :class="{ active: chain === chainId.Rootstock }"
                 >
                   Rootstock (RSK)
                 </a>
@@ -46,8 +46,8 @@
                   class="dropdown-item"
                   id="bsc_chain"
                   href="#"
-                  @click="selectChain('bsc')"
-                  :class="{ active: chain === 'bsc' }"
+                  @click="selectChain(chainId.BinanceSmartChain)"
+                  :class="{ active: chain === chainId.BinanceSmartChain }"
                 >
                   Binance Smart Chain (BSC)
                 </a>
@@ -57,8 +57,8 @@
                   class="dropdown-item"
                   id="polygon_chain"
                   href="#"
-                  @click="selectChain('polygon')"
-                  :class="{ active: chain === 'polygon' }"
+                  @click="selectChain(chainId.Polygon)"
+                  :class="{ active: chain === chainId.Polygon }"
                 >
                   Polygon (MATIC)
                 </a>
@@ -68,8 +68,8 @@
                   class="dropdown-item"
                   id="arbitrum_chain"
                   href="#"
-                  @click="selectChain('arbitrum')"
-                  :class="{ active: chain === 'arbitrum' }"
+                  @click="selectChain(chainId.Arbitrum)"
+                  :class="{ active: chain === chainId.Arbitrum }"
                 >
                   Arbitrum (ARB)
                 </a>
@@ -79,8 +79,8 @@
                   class="dropdown-item"
                   id="avalanche_chain"
                   href="#"
-                  @click="selectChain('avalanche')"
-                  :class="{ active: chain === 'avalanche' }"
+                  @click="selectChain(chainId.Avalanche)"
+                  :class="{ active: chain === chainId.Avalanche }"
                 >
                   Avalanche (AVAX)
                 </a>
@@ -90,8 +90,8 @@
                   class="dropdown-item"
                   id="terra_chain"
                   href="#"
-                  @click="selectChain('terra')"
-                  :class="{ active: chain === 'terra' }"
+                  @click="selectChain(chainId.Terra)"
+                  :class="{ active: chain === chainId.Terra }"
                 >
                   Terra (LUNA)
                 </a>
@@ -101,8 +101,8 @@
                   class="dropdown-item"
                   id="fuse"
                   href="#"
-                  @click="selectChain('fuse')"
-                  :class="{ active: chain === 'fuse' }"
+                  @click="selectChain(chainId.Fuse)"
+                  :class="{ active: chain === chainId.Fuse }"
                 >
                   Fuse (FUSE)
                 </a>
@@ -194,7 +194,9 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { debounce } from 'lodash-es'
+import { getSendGasLimitERC20 } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { ChainId, AssetTypes } from '@liquality/cryptoassets'
 import { tokenDetailProviders } from '@liquality/wallet-core/dist/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
@@ -215,7 +217,8 @@ export default {
       chain: null,
       autofilled: false,
       chainDropdownOpen: false,
-      isSymbolEditable: false
+      isSymbolEditable: false,
+      chainId: ChainId
     }
   },
   computed: {
@@ -245,7 +248,7 @@ export default {
     existingAsset() {
       const existingAsset = Object.values(cryptoassets).find(
         (asset) =>
-          asset.type === 'erc20' &&
+          asset.type === AssetTypes.erc20 &&
           asset.contractAddress.toLowerCase() === this.contractAddress.toLowerCase() &&
           asset.chain === this.chain
       )
@@ -257,6 +260,11 @@ export default {
     async addToken() {
       if (!this.existingAsset) {
         // Add only if it does not already exist
+        const gasLimit = getSendGasLimitERC20(this.chain)
+        if (!gasLimit) {
+          throw new Error(`${this.chain} doesn't support non native assets!`)
+        }
+
         await this.addCustomToken({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
@@ -264,7 +272,8 @@ export default {
           contractAddress: this.contractAddress,
           name: this.name,
           symbol: this.symbol,
-          decimals: Number(this.decimals)
+          decimals: Number(this.decimals),
+          sendGasLimit: gasLimit
         })
       }
       await this.enableAssets({
