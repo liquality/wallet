@@ -112,8 +112,5 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
-  },
-  "resolutions": {
-    "@liquality/wallet-core": "portal:/Users/bradley/Code/liquality/wallet-core"
   }
 }
