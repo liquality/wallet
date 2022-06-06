@@ -1,10 +1,7 @@
-import { connectLedgerDevice } from '@/utils/hardware-wallet'
-
 export const executeRequest = async ({ rootGetters, dispatch }, { request }) => {
   // Send transactions through wallet managed action
   const { network, walletId, asset, accountId } = request
   let call
-  let ledgerConnected = false
   const result = await new Promise((resolve) => {
     if (request.method === 'chain.sendTransaction') {
       call = dispatch(
@@ -41,26 +38,7 @@ export const executeRequest = async ({ rootGetters, dispatch }, { request }) => 
 
       call = methodFunc(...request.args)
     }
-
-    const account = rootGetters.accountItem(accountId)
-    if (account?.type.includes('ledger')) {
-      console.log('request', request)
-      if (!ledgerConnected) {
-        connectLedgerDevice().then((connected) => {
-          if (!connected) {
-            throw new Error('Ledger device not connected or not unlocked.')
-          }
-
-          ledgerConnected = connected
-          resolve(call)
-        })
-      } else {
-        resolve(call)
-      }
-    } else {
-      resolve(call)
-    }
+    resolve(call)
   })
-  console.log('result', result)
   return result
 }
