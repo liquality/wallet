@@ -18,7 +18,7 @@ const transactionDetailsPage = new TransactionDetailsPage()
 let browser, page
 
 // https://linear.app/liquality/issue/LIQ-358/exploratory-report-on-terra
-describe('Terra SEND["TESTNET", "PULL_REQUEST_TEST","MAINNET"]', async () => {
+describe.skip('Terra SEND["TESTNET", "PULL_REQUEST_TEST","MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()

@@ -228,7 +228,13 @@ import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { version as walletVersion } from '../../../package.json'
-import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
+import {
+  chains,
+  AssetTypes,
+  currencyToUnit,
+  unitToCurrency,
+  ChainId
+} from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
 import {
@@ -391,7 +397,7 @@ export default {
       return this.currentFee.dp(6)
     },
     available() {
-      if (cryptoassets[this.asset].type === 'erc20') {
+      if (cryptoassets[this.asset].type === AssetTypes.erc20) {
         return unitToCurrency(cryptoassets[this.asset], this.balance)
       } else {
         const maxSendFee =
@@ -449,7 +455,7 @@ export default {
 
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
-          sendFees[speed] = getSendFee(this.assetChain, feePrice)
+          sendFees[speed] = getSendFee(this.asset, feePrice)
         }
 
         if (this.asset === 'BTC') {

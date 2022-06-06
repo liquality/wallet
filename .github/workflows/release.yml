@@ -18,9 +18,9 @@ env:
   TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
   TEST_WALLET_PASSWORD: ${{ secrets.TEST_WALLET_PASSWORD }}
   # Transak details
-  VUE_APP_TRANSAK_WIDGET_URL_PROD: ${{ secrets.VUE_APP_TRANSAK_WIDGET_URL_PROD }}
-  VUE_APP_TRANSAK_API_KEY_PROD: ${{ secrets.VUE_APP_TRANSAK_API_KEY_PROD }}
-  TRANSAK_DEFAULT_FIAT_CURRENCY: ${{ secrets.VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY }}
+  TRANSAK_WIDGET_URL_PROD: ${{ secrets.TRANSAK_WIDGET_URL_PROD }}
+  TRANSAK_API_KEY_PROD: ${{ secrets.TRANSAK_API_KEY_PROD }}
+  TRANSAK_DEFAULT_FIAT_CURRENCY: ${{ secrets.TRANSAK_DEFAULT_FIAT_CURRENCY }}
 
 jobs:
   build:
@@ -78,8 +78,9 @@ jobs:
             echo VUE_APP_AMPLITUDE_API_KEY =$AMPLITUDE_API_KEY_PROD >> .env
             echo VUE_APP_AGENT_TESTNET_URL =$AGENT_TESTNET_URL >> .env
             echo VUE_APP_AGENT_MAINNET_URL =$AGENT_MAINNET_URL >> .env
-            echo VUE_APP_TRANSAK_WIDGET_URL_PROD =$VUE_APP_TRANSAK_WIDGET_URL_PROD >> .env
-            echo VUE_APP_TRANSAK_API_KEY_PROD =$VUE_APP_TRANSAK_API_KEY_PROD >> .env
+    
+            echo VUE_APP_TRANSAK_WIDGET_URL =$TRANSAK_WIDGET_URL_PROD >> .env
+            echo VUE_APP_TRANSAK_API_KEY =$TRANSAK_API_KEY_PROD >> .env
             echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =$TRANSAK_DEFAULT_FIAT_CURRENCY >> .env
             yarn install
             yarn lint
@@ -94,7 +95,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Changelog
-        uses: scottbrenner/generate-changelog-action@master
+        uses: Bullrich/generate-release-changelog@2.0.0
         id: Changelog
         env:
           REPO: ${{ github.repository }}
@@ -120,7 +121,7 @@ jobs:
           asset_name: liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           asset_content_type: application/zip
 
-      #Run tests against Prod mainnet
+#      Run tests against Prod mainnet
       - name: Regression tests against Mainnet (PROD Agent)
         uses: beemi/puppeteer-headful@v1.0.11
         env:

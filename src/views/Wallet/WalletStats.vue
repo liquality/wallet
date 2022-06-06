@@ -4,7 +4,7 @@
       <div class="buy-crypto-banner" v-show="showByCryptoBanner">
         <div class="triangle" @click="openByCryptoModal">
           <div class="buy-crypto-content">
-            <div class="buy-crypto-text">
+            <div class="buy-crypto-text" id="buy-crypto-from-overview-screen">
               Buy Crypto
               <ChevronWhiteRightIcon class="chevron-right" />
             </div>

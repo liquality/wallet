@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.64.0",
+  "version": "0.65.0",
   "private": true,
   "author": "Liquality <info@liquality.io>",
   "scripts": {
@@ -112,8 +112,5 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
-  },
-  "resolutions": {
-    "@liquality/wallet-core": "portal:/Users/bradley/Code/liquality/wallet-core"
   }
 }

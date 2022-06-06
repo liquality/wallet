@@ -121,7 +121,6 @@ import {
 } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
-import { version as walletVersion } from '../../package.json'
 import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
@@ -234,17 +233,6 @@ export default {
 
     await this.refresh()
     this.activityData = [...this.assetHistory]
-    const { chain } = cryptoassets[this.asset]
-    this.trackAnalytics({
-      event: `User clicked on ${this.asset} from the overview page`,
-      properties: {
-        walletVersion,
-        category: 'Active Asset',
-        chain: chain,
-        asset: `${this.asset}`,
-        label: 'User clicked on assert from overview screen'
-      }
-    })
   },
   watch: {
     activeNetwork() {
