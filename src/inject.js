@@ -67,7 +67,7 @@ const injectionName = window.providerManager.getInjectionName('${chain}')
 async function getAddresses () {
   const eth = window.providerManager.getProviderFor('${asset}')
   let addresses = await eth.getMethod('wallet.getAddresses')()
-  addresses = addresses.map(a => '0x' + a.address)
+  addresses = addresses.map(a => a.address)
   window[injectionName].selectedAddress = addresses[0]
   return addresses
 }
@@ -87,7 +87,7 @@ async function handleRequest (req) {
   if(req.method === 'eth_signTypedData' ||
     req.method === 'eth_signTypedData_v3' ||
     req.method === 'eth_signTypedData_v4') {
-    const sig = await eth.getMethod('wallet.signTypedMessage')(req)
+    const sig = await eth.getMethod('wallet.signTypedData')(req)
     return sig;
   }
 
@@ -96,13 +96,13 @@ async function handleRequest (req) {
     const value = req.params[0].value
     const data = req.params[0].data
     const gas = req.params[0].gas
-    const result = await eth.getMethod('chain.sendTransaction')({ to, value, data, gas })
-    return '0x' + result.hash
+    const result = await eth.getMethod('wallet.sendTransaction')({ to, value, data, gas })
+    return result.hash
   }
   if(req.method === 'eth_accounts') {
     return getAddresses()
   }
-  return eth.getMethod('jsonrpc')(req.method, ...req.params)
+  return eth.getMethod('chain.sendRpcRequest')(req.method, req.params)
 }
 
 window[injectionName] = {
@@ -292,8 +292,8 @@ const REQUEST_MAP = {
   wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
-  wallet_sendTransaction: 'chain.sendTransaction',
-  wallet_signPSBT: 'signPSBT',
+  wallet_sendTransaction: 'wallet.sendTransaction',
+  wallet_signPSBT: 'wallet.signPSBT',
 }
 
 async function handleRequest (req) {
@@ -301,7 +301,7 @@ async function handleRequest (req) {
   if (req.method === 'wallet_sendTransaction') {
     const to = req.params[0].to
     const value = req.params[0].value.toString(16)
-    return btc.getMethod('chain.sendTransaction')({ to, value })
+    return btc.getMethod('wallet.sendTransaction')({ to, value })
   }
   const method = REQUEST_MAP[req.method] || req.method
   return btc.getMethod(method)(...req.params)
@@ -328,7 +328,7 @@ const REQUEST_MAP = {
   wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
-  wallet_sendTransaction: 'chain.sendTransaction',
+  wallet_sendTransaction: 'wallet.sendTransaction',
 }
 async function handleRequest (req) {
   const near = window.providerManager.getProviderFor('NEAR')
@@ -356,7 +356,7 @@ const REQUEST_MAP = {
   wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
-  wallet_sendTransaction: 'chain.sendTransaction',
+  wallet_sendTransaction: 'wallet.sendTransaction',
 }
 async function handleRequest (req) {
   const solana = window.providerManager.getProviderFor('SOL')
@@ -384,7 +384,7 @@ const REQUEST_MAP = {
   wallet_getConnectedNetwork: 'wallet.getConnectedNetwork',
   wallet_getAddresses: 'wallet.getAddresses',
   wallet_signMessage: 'wallet.signMessage',
-  wallet_sendTransaction: 'chain.sendTransaction',
+  wallet_sendTransaction: 'wallet.sendTransaction',
 }
 async function handleRequest (req) {
   const terraProvider = window.providerManager.getProviderFor('LUNA')

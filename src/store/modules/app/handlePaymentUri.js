@@ -22,7 +22,7 @@ export const handlePaymentUri = async ({ dispatch, rootGetters }, { data }) => {
   return dispatch('requestPermission', {
     data: {
       asset,
-      method: 'chain.sendTransaction',
+      method: 'wallet.sendTransaction',
       args: [address, unitValue]
     }
   })
