@@ -16,6 +16,7 @@
             <pre class="text-wrap">
 * Access OpenSea's marketplace by setting Liquality as your Default Web3 Wallet in Settings</pre
             >
+            <pre class="text-wrap">* Minor bug fixes</pre>
           </div>
         </div>
       </div>
