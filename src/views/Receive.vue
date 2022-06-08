@@ -29,6 +29,17 @@
             Scan this QR code with a mobile wallet to send funds to this address.
           </p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
+          <div class="buy-crypto-container" v-show="activeNetwork === 'mainnet'">
+            <div class="mt-2 text-uppercase font-weight-bold">Or</div>
+            <BuyCryptoButton
+              :btn-class="['btn-light', 'btn-outline-primary']"
+              :asset="asset"
+              :chain="chain"
+              :address="address"
+              :screen="'Receive'"
+            />
+            <TransakBrand />
+          </div>
           <div v-if="faucet" class="testnet_message">
             <div>{{ faucet.name }} testnet faucet</div>
             <div id="receive_url">
@@ -68,17 +79,23 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import QRCode from 'qrcode'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
+import BuyCryptoButton from '@/components/BuyCrypto/BuyCryptoButton'
+import TransakBrand from '@/components/BuyCrypto/TransakBrand'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
+import { chains, ChainId } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { version as walletVersion } from '../../package.json'
+
 export default {
   components: {
     NavBar,
     CopyIcon,
     CopyWhiteIcon,
-    TickIcon
+    TickIcon,
+    BuyCryptoButton,
+    TransakBrand
   },
   data() {
     return {
@@ -100,6 +117,9 @@ export default {
     routeSource() {
       return this.$route.query.source || null
     },
+    chain() {
+      return cryptoassets[this.asset]?.chain
+    },
     chainName() {
       return {
         bitcoin: 'bitcoin',
@@ -112,7 +132,7 @@ export default {
         polyon: 'ethereum',
         terra: 'terra',
         fuse: 'ethereum'
-      }[cryptoassets[this.asset].chain]
+      }[this.chain]
     },
     faucet() {
       if (this.activeNetwork === 'testnet') {
@@ -179,8 +199,7 @@ export default {
         assets: [this.asset],
         accountId: this.accountId
       })
-      const chainId = cryptoassets[this.asset]?.chain
-      this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
+      this.address = chains[this.chain]?.formatAddress(addresses[0], this.activeNetwork)
     }
     const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')
     QRCode.toString(
@@ -200,8 +219,9 @@ export default {
     getAssetIcon,
     async copy() {
       this.trackAnalytics({
-        event: 'Receive screen',
+        event: `User on ${this.asset} Receive Page`,
         properties: {
+          walletVersion,
           category: 'Send/Receive',
           action: 'User on Receive screen',
           label: `${this.asset}`
@@ -212,9 +232,11 @@ export default {
       this.trackAnalytics({
         event: 'Receive copy address',
         properties: {
+          walletVersion,
           category: 'Send/Receive',
           action: 'User copied address',
-          label: `${this.asset} (${this.chainName}) address ${this.address}`
+          asset: `${this.asset}`,
+          chainName: `${this.chainName}`
         }
       })
       setTimeout(() => {
@@ -234,8 +256,8 @@ export default {
     margin-top: 26px;
   }
   &_qr {
-    margin: 25px auto 0 auto;
-    width: 196px;
+    margin: 17px auto 0 auto;
+    width: 120px;
   }
   &_address {
     font-size: 0.7rem;
@@ -248,6 +270,17 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+  }
+
+  .buy-crypto-container {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.1em;
+
+    .btn {
+      max-width: 120px;
+    }
   }
 }
 </style>

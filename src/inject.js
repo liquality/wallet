@@ -23,7 +23,7 @@ class ProviderManager {
   proxy (type, data) {
     return new Promise((resolve, reject) => {
       const id = Date.now() + '.' + Math.random()
-  
+
       window.addEventListener(id, ({ detail }) => {
         const response = JSON.parse(detail)
         if (response.error) reject(new Error(response.error))
@@ -32,7 +32,7 @@ class ProviderManager {
         once: true,
         passive: true
       })
-  
+
       window.postMessage({
         id,
         type,
@@ -79,10 +79,18 @@ async function handleRequest (req) {
   if(req.method === 'eth_requestAccounts') {
     return await window[injectionName].enable('${chain}')
   }
-  if(req.method === 'personal_sign') { 
+  if(req.method === 'personal_sign') {
     const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
     return '0x' + sig
   }
+
+  if(req.method === 'eth_signTypedData' ||
+    req.method === 'eth_signTypedData_v3' ||
+    req.method === 'eth_signTypedData_v4') {
+    const sig = await eth.getMethod('wallet.signTypedMessage')(req)
+    return sig;
+  }
+
   if(req.method === 'eth_sendTransaction') {
     const to = req.params[0].to
     const value = req.params[0].value
@@ -99,7 +107,7 @@ async function handleRequest (req) {
 
 window[injectionName] = {
   isLiquality: true,
-  isMetaMask: true,
+  isMetaMask: window.location.host.indexOf("opensea.io") !== -1,
   isEIP1193: true,
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
@@ -127,8 +135,12 @@ window[injectionName] = {
       result
     }))
   },
+  removeAllListeners: (event) => {
+    // mock this call for a hotfix
+    return false;
+  },
   sendAsync: (req, callback) => {
-    handleRequest(req)
+    return handleRequest(req)
       .then((result) => callback(null, {
         id: req.id,
         jsonrpc: '2.0',
@@ -201,7 +213,7 @@ function proxyEthereum(chain) {
         }
       }
 
-      if (prop === 'request') { 
+      if (prop === 'request') {
         return async (req) => {
           if(req.method === 'eth_requestAccounts') {
               return enable()
@@ -227,6 +239,29 @@ function proxyEthereum(chain) {
           }
           return target[prop](req, _paramsOrCallback)
         }
+      }
+
+      if(prop === 'sendAsync') {
+        // return async (req, _paramsOrCallback) => {
+        //   window.req = req
+        //   // if(req.method === 'wallet_switchEthereumChain') {
+        //   //   const { params } = req
+        //   //   const { chainId } = params[0]
+        
+        //   //   if(chainId === "0x89") {
+        //   //     const callback = _paramsOrCallback
+        //   //     await window.providerManager.enable('polygon', true)
+        //   //     return callback(null, {
+        //   //       id: req.id,
+        //   //       jsonrpc: '2.0',
+        //   //       result: null
+        //   //     })
+        //   //   }
+        //   //}
+
+        //   return target[prop](req, _paramsOrCallback)
+        // }
+        
       }
 
       return target[prop]

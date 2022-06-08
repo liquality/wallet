@@ -28,17 +28,20 @@
           </div>
         </div>
         <div v-if="address" class="account-container_address">
-          <button
-            class="btn btn-outline-light"
-            :id="`${asset}_address_container`"
-            @click="copyAddress"
-            v-tooltip.bottom="{
-              content: addressCopied ? 'Copied!' : 'Click to copy',
-              hideOnTargetClick: false
-            }"
-          >
-            {{ shortenAddress(address) }}
-          </button>
+          <v-popover offset="16" show placement="top" hideOnTargetClick="false">
+            <button class="btn btn-outline-light" :id="`${asset}_address_container`">
+              {{ shortenAddress(address) }}
+            </button>
+            <template slot="popover">
+              <CopyAddress
+                :address="address"
+                :accountId="accountId"
+                :asset="asset"
+                :addressCopied="addressCopied"
+                @copyAddress="copyAddress"
+              />
+            </template>
+          </v-popover>
           <a
             class="eye-btn"
             :id="`${asset}_view_in_explorer`"
@@ -86,9 +89,13 @@
           v-if="activityData.length > 0"
         />
         <TransactionList :transactions="activityData" />
-        <div class="activity-empty" v-if="activityData.length <= 0">
-          Once you start using your wallet you will see the activity here
-        </div>
+        <EmptyActivity
+          v-show="activityData.length <= 0"
+          :active-network="activeNetwork"
+          :chain="chain"
+          :asset="asset"
+          :address="address"
+        />
       </div>
     </div>
   </div>
@@ -97,7 +104,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { chains, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
@@ -117,6 +124,11 @@ import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
+import EmptyActivity from '@/components/EmptyActivity'
+import CopyAddress from '@/components/CopyAddress'
+import amplitude from 'amplitude-js'
+amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
+
 export default {
   components: {
     NavBar,
@@ -126,7 +138,9 @@ export default {
     SwapIcon,
     ActivityFilter,
     TransactionList,
-    EyeIcon
+    EyeIcon,
+    EmptyActivity,
+    CopyAddress
   },
   data() {
     return {
@@ -167,6 +181,9 @@ export default {
         return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
       }
       return '#'
+    },
+    chain() {
+      return cryptoassets[this.asset]?.chain
     }
   },
   methods: {
@@ -215,16 +232,6 @@ export default {
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
-    const { chain } = cryptoassets[this.asset]
-    this.trackAnalytics({
-      event: 'Active Asset',
-      properties: {
-        category: 'Click on Asset',
-        chain: chain,
-        asset: `${this.asset}`,
-        label: 'User clicked on assert from overview screen'
-      }
-    })
   },
   watch: {
     activeNetwork() {

@@ -136,6 +136,7 @@ import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import NavBar from '@/components/NavBar.vue'
+import { isObject } from 'lodash-es'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import Timeline from '@/transactions/views/Timeline.vue'
 export default {
@@ -207,7 +208,7 @@ export default {
       const sendFees = {}
       for (const [speed, fee] of Object.entries(this.assetFees)) {
         const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
-        sendFees[speed] = getSendFee(this.assetChain, feePrice)
+        sendFees[speed] = getSendFee(this.asset, feePrice)
       }
       return sendFees
     }

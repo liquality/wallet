@@ -6,7 +6,7 @@
       class="overview-screen-chain-section"
       :id="account.chain.toUpperCase()"
     >
-      <ListItem v-if="account.chain === 'bitcoin'" @item-selected="selectItem(account)">
+      <ListItem v-if="isBitcoin(account.chain)" @item-selected="selectItem(account)">
         <template #prefix>
           <div class="account-color" :style="{ 'background-color': account.color }"></div>
         </template>
@@ -136,6 +136,7 @@ import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import NFTIcon from '@/assets/icons/nft.svg'
+import { ChainId } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -206,6 +207,9 @@ export default {
       } catch (error) {
         console.error(error)
       }
+    },
+    isBitcoin(chain) {
+      return chain === ChainId.Bitcoin
     }
   }
 }

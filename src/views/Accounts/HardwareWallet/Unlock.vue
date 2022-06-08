@@ -137,7 +137,10 @@ import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import CheckRightIcon from '@/assets/icons/check.svg'
+import { prettyBalance, formatFiat } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import InfoIcon from '@/assets/icons/info.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+
 export default {
   directives: {
     clickAway

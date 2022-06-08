@@ -228,7 +228,14 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
+import { version as walletVersion } from '../../../package.json'
+import {
+  chains,
+  AssetTypes,
+  currencyToUnit,
+  unitToCurrency,
+  ChainId
+} from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
 import {
@@ -395,7 +402,7 @@ export default {
       return this.currentFee.dp(6)
     },
     available() {
-      if (cryptoassets[this.asset].type === 'erc20') {
+      if (cryptoassets[this.asset].type === AssetTypes.erc20) {
         return unitToCurrency(cryptoassets[this.asset], this.balance)
       } else {
         const maxSendFee =
@@ -453,7 +460,7 @@ export default {
 
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
-          sendFees[speed] = getSendFee(this.assetChain, feePrice)
+          sendFees[speed] = getSendFee(this.asset, feePrice)
         }
 
         if (this.asset === 'BTC') {
@@ -625,8 +632,9 @@ export default {
     await this.updateSendFees(0)
     await this.updateMaxSendFees()
     await this.trackAnalytics({
-      event: 'Send screen',
+      event: `User entered send screen for ${this.asset}`,
       properties: {
+        walletVersion,
         category: 'Send/Receive',
         action: 'User on Send screen',
         label: `${this.asset}`
@@ -686,7 +694,7 @@ export default {
       margin-left: 6px;
     }
     .selectors-asset {
-      width: 55px;
+      width: 70px;
     }
     .custom-fees {
       display: flex;

@@ -11,13 +11,19 @@
       <InfoNotification v-if="ethRequired">
         <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
-      <InfoNotification v-if="!canCoverAmmFee">
+      <InfoNotification v-if="showBridgeAssetDisabledMessage">
+        <BoostActivateBridgeAsset
+          :network="activeNetwork"
+          :walletId="activeWalletId"
+          :asset="selectedQuote.bridgeAsset"
+        />
+      </InfoNotification>
+      <InfoNotification v-else-if="!canCoverAmmFee">
         <BridgeAssetRequiredMessage
           :account-id="getAccountId()"
           :asset="selectedQuote.bridgeAsset"
         />
       </InfoNotification>
-
       <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
         <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
       </InfoNotification>
@@ -117,7 +123,7 @@
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     <span v-if="getTotalSwapFee(assetFee).dp(6).eq(0)"
-                      >{{ getChainAssetSwapFee(assetFee) }}
+                      >{{ dpUI(getChainAssetSwapFee(assetFee)) }}
                     </span>
                     <span v-else>{{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }}</span> /
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
@@ -135,7 +141,7 @@
                   />
                 </li>
                 <li v-if="hasPredefinedReceiveFee">
-                  <span class="selectors-asset">{{ toAsset }} </span>{{ receiveFee }} /
+                  <span class="selectors-asset">{{ toAsset }} </span>{{ dpUI(receiveFee) }} /
                   {{ getTotalSwapFeeInFiat(toAsset) }} USD
                 </li>
               </ul>
@@ -396,6 +402,7 @@ import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
 import BridgeAssetRequiredMessage from '@/components/BridgeAssetRequiredMessage'
+import BoostActivateBridgeAsset from '@/components/BoostActivateBridgeAsset'
 import NoLiquidityMessage from '@/components/NoLiquidityMessage'
 import {
   cryptoToFiat,
@@ -431,13 +438,14 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
+import { version as walletVersion } from '../../../package.json'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { BG_PREFIX } from '@/broker/utils'
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import { buildConfig } from '@liquality/wallet-core'
 import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
-import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swap'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
+
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
 const MIN_SWAP_VALUE_USD = 2
@@ -447,6 +455,7 @@ export default {
     InfoNotification,
     EthRequiredMessage,
     BridgeAssetRequiredMessage,
+    BoostActivateBridgeAsset,
     NoLiquidityMessage,
     FeeSelector,
     SwapIcon,
@@ -477,6 +486,7 @@ export default {
       showSwapProvidersInfoModal: false,
       quotes: [],
       updatingQuotes: false,
+      firstUpdate: false,
       selectedQuote: null,
       userSelectedQuote: false,
       swapFees: {},
@@ -492,7 +502,8 @@ export default {
       swapErrorMessage: '',
       customFeeAssetSelected: null,
       customFees: {},
-      bridgeModalOpen: false
+      bridgeModalOpen: false,
+      updateInitialDefaultValue: false
     }
   },
   props: {
@@ -556,6 +567,17 @@ export default {
     showNoLiquidityMessage() {
       return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
+    showBridgeAssetDisabledMessage() {
+      const provider = this.selectedQuote?.provider
+      const bridgeAsset = this.selectedQuote?.bridgeAsset
+      const enabledAssets = this.enabledAssets[this.activeNetwork][this.activeWalletId]
+
+      return (
+        (provider === SwapProviderType.LiqualityBoostNativeToERC20 ||
+          provider === SwapProviderType.LiqualityBoostERC20ToNative) &&
+        !enabledAssets.includes(bridgeAsset)
+      )
+    },
     sendAmount: {
       get() {
         return this.stateSendAmount
@@ -598,13 +620,12 @@ export default {
       return cryptoToFiat(this.receiveAmount, this.fiatRates[this.toAsset])
     },
     ...mapState([
-      'activeNetwork',
-      'activeWalletId',
       'marketData',
       'fees',
       'fiatRates',
       'activeWalletId',
-      'activeNetwork'
+      'activeNetwork',
+      'enabledAssets'
     ]),
     ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem', 'accountsData']),
@@ -651,31 +672,27 @@ export default {
     },
     min() {
       if (!this.fiatRates[this.asset]) return BN(0)
-      const toQuoteAsset =
-        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostNativeToERC20
-          ? this.toAssetChain
-          : this.toAsset
-      const fromQuoteAsset =
-        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostERC20ToNative
-          ? this.assetChain
-          : this.asset
-      const liqualityMarket = this.networkMarketData?.find((pair) => {
-        return (
-          pair.from === fromQuoteAsset &&
-          pair.to === toQuoteAsset &&
-          getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
-            SwapProviderType.Liquality
-        )
-      })
       const getSwapLimit = this.selectedQuoteProvider?.getSwapLimit
       let min
       if (getSwapLimit) {
         const minUsdValue = getSwapLimit()
         min = BN.min(fiatToCrypto(minUsdValue, this.fiatRates[this.asset]))
       } else {
-        min = liqualityMarket
-          ? BN(liqualityMarket.min)
-          : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]))
+        const swapProvider = this.selectedQuoteProvider?.config?.type
+
+        switch (swapProvider) {
+          case SwapProviderType.Liquality:
+          case SwapProviderType.LiqualityBoostNativeToERC20:
+            min = this.selectedQuote.min
+            break
+          case SwapProviderType.LiqualityBoostERC20ToNative:
+            min = BN(this.selectedQuote.minInBridgeAsset)
+              .times(this.fiatRates[this.selectedQuote.bridgeAsset])
+              .dividedBy(this.fiatRates[this.asset])
+            break
+          default:
+            min = BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]))
+        }
       }
       return isNaN(min) ? BN(0) : dpUI(min)
     },
@@ -721,17 +738,21 @@ export default {
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
-        : BN.max(BN(balance).minus(this.maxFee), 0)
+        : BN.max(BN(balance).minus(BN(this.maxFee).times(1.5)), 0)
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     canCoverAmmFee() {
       if (!this.selectedQuote?.bridgeAsset) return true
       const account = isERC20(this.asset) ? this.account : this.toAccount
       const balance = account?.balances[this.selectedQuote.bridgeAsset]
+
+      if (!balance) return true
+
       const SwapFeeInUnits = currencyToUnit(
         cryptoassets[this.selectedQuote.bridgeAsset],
         isERC20(this.asset) ? this.fromSwapFee : this.receiveFee
       )
+
       return BN(balance).gt(SwapFeeInUnits)
     },
     availableAmount() {
@@ -763,7 +784,12 @@ export default {
       if (amount.gt(this.max)) {
         return 'Please reduce amount. It exceeds maximum.'
       }
-      if (amount.lt(this.min) || amount.lte(0)) {
+
+      // when amount is equal to 0 and asset has no dollar value, prevent error from appearing until first update
+      const zeroCheck =
+        !this.fiatRates[this.asset] && !this.firstUpdate ? amount.lt(0) : amount.lte(0)
+
+      if (amount.lt(this.min) || zeroCheck) {
         return 'Please increase amount. It is below minimum.'
       }
       if (
@@ -784,6 +810,7 @@ export default {
         this.updatingQuotes ||
         this.ethRequired ||
         //!this.canCoverAmmFee ||
+        this.showBridgeAssetDisabledMessage ||
         this.showNoLiquidityMessage ||
         this.amountError ||
         BN(this.safeAmount).lte(0)
@@ -905,8 +932,9 @@ export default {
       this.updateQuotes()
       this.updateFiatRates({ assets: [toAsset] })
       this.trackAnalytics({
-        event: 'Swap screen',
+        event: `User clicked on ${this.toAsset} Swap option`,
         properties: {
+          walletVersion,
           category: 'Swap screen',
           action: 'User on SWAP screen',
           label: `${this.toAsset}`
@@ -1062,12 +1090,15 @@ export default {
           } else {
             this.userSelectedQuote = false
             this.selectedQuote = this.bestQuote
+            this.updateInitialDefaultValue = false
           }
         } else {
           this.selectedQuote = this.bestQuote
+          this.updateInitialDefaultValue = false
         }
       }
       this.updatingQuotes = false
+      this.firstUpdate = true
       this.resetQuoteTimer()
     }, 1000),
     updateQuotes() {
@@ -1233,6 +1264,7 @@ export default {
         this.trackAnalytics({
           event: 'No Liquidity',
           properties: {
+            walletVersion,
             category: 'Swap screen',
             action: 'No Liquidity for pairs',
             from: this.asset,
@@ -1275,6 +1307,16 @@ export default {
       if (BN(val).eq(oldVal)) return
       if (this.amountOption === 'max') {
         this.sendAmount = dpUI(this.max)
+      }
+    },
+    min: function (val, oldVal) {
+      // minimum set correctly
+      if (this.updateInitialDefaultValue) return
+
+      // update to new minimum when provider is changed
+      if (!BN(val).eq(oldVal)) {
+        this.sendAmount = dpUI(val)
+        this.updateInitialDefaultValue = true
       }
     },
     selectedQuote: function () {
@@ -1366,7 +1408,7 @@ export default {
   }
 }
 .selectors-asset {
-  width: 55px !important;
+  width: 70px !important;
 }
 .selector-asset-switch {
   display: flex;

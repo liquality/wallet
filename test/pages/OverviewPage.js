@@ -70,7 +70,7 @@ class OverviewPage {
    * @returns {Promise<void>}
    * @constructor
    */
-  async CloseWatsNewModal(page) {
+  async CloseWhatsNewModal(page) {
     await page.waitForSelector('#wats_new_close_btn', {
       visible: true,
       timeout: 60000
@@ -349,6 +349,26 @@ class OverviewPage {
   }
 
   /**
+   * Check asset balance for each assert after user select it.
+   * @param page
+   * @param assetCode
+   * @returns {Promise<void>}
+   */
+  async checkAssetBalance(page, assetCode) {
+    await page.waitForSelector('.account-container_balance_code', { visible: true })
+    // account balance is not NaN
+    expect(
+      await page.$eval(`#${assetCode}_balance_value`, (el) => el.textContent),
+      `${assetCode} Balance value is NaN`
+    ).not.equals('NaN')
+    // account balance is not 0
+    expect(
+      await page.$eval(`#${assetCode}_balance_value`, (el) => el.textContent),
+      `${assetCode} Balance value is 0`
+    ).not.equals(0)
+  }
+
+  /**
    * Validate total asserts from overview page.
    * @param page
    * @param newWallet
@@ -389,6 +409,17 @@ class OverviewPage {
       chainNames.push(assertName)
     }
     return chainNames.length
+  }
+
+  /**
+   * Get total assets count from overview page.
+   * @param page
+   * @returns {Promise<number>}
+   */
+  async getTotalAssetsFromOverview(page) {
+    await page.waitForSelector('#total_assets', { timeout: 60000 })
+    const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
+    return parseInt(assetsCount.replace(/[^\d.-]/g, ''))
   }
 
   /**
@@ -606,6 +637,21 @@ class OverviewPage {
     await page.waitForSelector(`#${option}`)
     await page.click(`#${option}`)
   }
+
+  /**
+   * Click on Manage assets from menu.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickOnManageAssets(page) {
+    await this.ClickOnBurgerIcon(page)
+    // Click Manage Assets
+    await page.waitForSelector('#manage_assets', { visible: true })
+    await page.click('#manage_assets')
+    console.log('User clicked on Manage Assets')
+  }
 }
+
 
 module.exports = OverviewPage
