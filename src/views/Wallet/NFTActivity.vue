@@ -2,11 +2,11 @@
   <div class="account-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
       <span class="account-title"
-        ><NFTIcon class="asset-icon" /> {{ nftAssets.length || 0 }} NFTs</span
+        ><NFTIcon class="asset-icon" /> {{ nftAssetsCount || 0 }} NFTs</span
       >
     </NavBar>
     <div class="account-content">
-      <NFTStats :isAccount="true" />
+      <NFTStats :isAccount="true" :chain="id" />
       <div class="wallet-tabs">
         <ul class="nav nav-tabs">
           <li class="nav-item" @click="activeTab = 'nfts'">
@@ -19,7 +19,7 @@
           </li>
         </ul>
         <div v-if="activeTab === 'nfts'">
-          <WalletNFTs :source="'NFTActivity'" :isAccount="true" />
+          <WalletNFTs :source="'NFTActivity'" :isAccount="true" :chain="id" />
         </div>
         <div class="account-container_transactions" v-if="activeTab === 'activity'">
           <ActivityFilter
@@ -60,21 +60,27 @@ export default {
     NFTStats,
     NFTIcon
   },
+  props: ['id'],
   data() {
     return {
       activityData: [],
-      activeTab: 'nfts',
-      asset: 'ETH'
+      activeTab: 'nfts'
     }
   },
   created() {
     this.activityData = [...this.activity]
   },
   computed: {
-    ...mapState(['activeNetwork', 'history', 'nftAssets']),
-    ...mapGetters(['activity', 'accountItem']),
+    ...mapState(['activeNetwork', 'history']),
+    ...mapGetters(['activity', 'accountItem', 'nftAssetsByAccount']),
     assetHistory() {
       return this.activity.filter((item) => item.type === 'NFT')
+    },
+    nftAssets() {
+      return this.nftAssetsByAccount[this.id] || []
+    },
+    nftAssetsCount() {
+      return Object.values(this.nftAssets).reduce((acc, collection) => acc + collection.length, 0)
     }
   },
   methods: {

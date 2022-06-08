@@ -1,7 +1,7 @@
 <template>
   <div
     class="account-content-top"
-    :style="nftAssets.length == 0 ? { 'justify-content': 'center' } : {}"
+    :style="nftAssetsCount > 0 ? { 'justify-content': 'center' } : {}"
   >
     <RefreshIcon
       @click.stop="refresh"
@@ -12,10 +12,10 @@
     <div class="account-container_balance" :style="isAccount ? { visibility: 'hidden' } : {}">
       <div>
         <span class="account-container_balance_value">
-          {{ nftAssets.length || 0 }}
+          {{ nftAssetsCount || 0 }}
         </span>
         <span class="account-container_balance_code"
-          >NFT<span v-if="nftAssets.length !== 1">s</span></span
+          >NFT<span v-if="nftAssetsCount !== 1">s</span></span
         >
       </div>
     </div>
@@ -31,13 +31,12 @@
         {{ shortenAddress(address) }}
       </button>
     </div>
-    <div class="account-container_actions">
+    <div class="account-container_actions" v-show="isAccount">
       <router-link
-        to="/wallet/nfts/send"
-        :query="{ source: source }"
+        :to="{ name: 'SendNFT', query: { source: source, chain: chain } }"
         class="account-container_actions_button send-action"
         id="send_action"
-        v-if="nftAssets.length > 0"
+        v-if="nftAssetsCount > 0"
       >
         <div class="account-container_actions_button_wrapper">
           <SendIcon class="account-container_actions_button_icon" />
@@ -54,7 +53,7 @@ import SendIcon from '@/assets/icons/send.svg'
 import { getAssetIcon } from '@/utils/asset'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { chains, ChainId } from '@liquality/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -65,6 +64,10 @@ export default {
     isAccount: {
       type: Boolean,
       default: false
+    },
+    chain: {
+      type: String,
+      required: false
     }
   },
   data() {
@@ -74,16 +77,29 @@ export default {
     }
   },
   computed: {
-    ...mapState(['nftAssets', 'activeWalletId', 'activeNetwork', 'addresses']),
-    ...mapGetters(['accountsData']),
+    ...mapState(['activeWalletId', 'activeNetwork', 'addresses']),
+    ...mapGetters(['accountsData', 'nftAssetsByAccount', 'nftAssetsByCollection']),
     source() {
       return this.$route.fullPath
     },
-    account() {
-      return this.accountsData.filter((account) => account.chain === ChainId.Ethereum)[0]
+    nftAssets() {
+      if (this.isAccount) {
+        return this.nftAssetsByAccount[this.chain]
+      } else {
+        return this.nftAssetsByCollection
+      }
+    },
+    nftAssetsCount() {
+      return Object.values(this.nftAssets).reduce((acc, collection) => acc + collection.length, 0)
     },
     address() {
-      return chains[ChainId.Ethereum]?.formatAddress(this.account.addresses[0], this.activeNetwork)
+      if (this.isAccount) {
+        return chains[this.chain]?.formatAddress(
+          this.accountsData.filter((account) => account.chain === this.chain)[0].addresses[0],
+          this.activeNetwork
+        )
+      }
+      return ''
     }
   },
   methods: {
@@ -94,9 +110,7 @@ export default {
       try {
         this.updatingAssets = true
         await this.getNFTAssets({
-          network: this.activeNetwork,
-          walletId: this.activeWalletId,
-          asset: 'ETH'
+          walletId: this.activeWalletId
         })
       } catch (error) {
         console.log(error)

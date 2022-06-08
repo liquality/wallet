@@ -22,7 +22,6 @@
 
 <script>
 import { mapGetters, mapMutations, mapState } from 'vuex'
-import { ChainId } from '@liquality/cryptoassets'
 export default {
   props: {
     nftAsset: {
@@ -42,7 +41,8 @@ export default {
         nftAsset: this.nftAsset,
         walletId: this.activeWalletId,
         network: this.activeNetwork,
-        accountId: this.accountsData.filter((account) => account.chain === ChainId.Ethereum)[0].id
+        accountId: this.accountsData.filter((account) => account.chain === this.nftAsset.chain)[0]
+          .id
       })
     }
   }

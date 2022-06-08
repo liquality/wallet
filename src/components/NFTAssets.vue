@@ -11,7 +11,8 @@
               query: {
                 collectionName: collectionName,
                 source: source,
-                isAccount: isAccount
+                isAccount: isAccount,
+                chain: chain
               }
             }"
             >see all</router-link
@@ -32,7 +33,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { ChainId } from '@liquality/cryptoassets'
 import NFTAsset from './NFTAsset.vue'
 export default {
   props: {
@@ -51,6 +51,10 @@ export default {
     isAccount: {
       type: Boolean,
       default: false
+    },
+    chain: {
+      type: String,
+      required: false
     }
   },
   components: {
@@ -60,7 +64,7 @@ export default {
     ...mapGetters(['nftAssetsByCollection', 'nftAssetsByAccount']),
     nftCollection() {
       if (this.isAccount) {
-        return this.nftAssetsByAccount[ChainId.Ethereum][this.collectionName]
+        return this.nftAssetsByAccount[this.chain][this.collectionName]
       } else {
         return this.nftAssetsByCollection[this.collectionName]
       }

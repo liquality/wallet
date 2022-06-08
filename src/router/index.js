@@ -120,9 +120,10 @@ const routes = [
     ]
   },
   {
-    path: '/wallet/nfts/activity',
+    path: '/wallet/nfts/activity/:id',
     component: NFTActivity,
-    name: 'NFTActivity'
+    name: 'NFTActivity',
+    props: true
   },
   {
     path: '/wallet/nfts/send',

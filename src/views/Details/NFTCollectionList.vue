@@ -28,7 +28,6 @@
 import { mapGetters } from 'vuex'
 import NFTAsset from '../../components/NFTAsset.vue'
 import NavBar from '../../components/NavBar.vue'
-import { ChainId } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -39,15 +38,7 @@ export default {
     ...mapGetters(['nftAssetsByCollection', 'nftAssetsByAccount']),
     nftCollection() {
       if (this.isAccount === true) {
-        console.log(
-          '🚀 ~ file: NFTCollectionList.vue ~ line 43 ~ nftCollection ~ this.collectionName',
-          this.collectionName
-        )
-        console.log(
-          '🚀 ~ file: NFTCollectionList.vue ~ line 53 ~ collectionName ~ this.$route.query',
-          this.$route.query
-        )
-        return this.nftAssetsByAccount[ChainId.Ethereum][this.collectionName]
+        return this.nftAssetsByAccount[this.chain][this.collectionName]
       } else {
         return this.nftAssetsByCollection[this.collectionName]
       }
@@ -60,6 +51,9 @@ export default {
     },
     isAccount() {
       return this.$route.query.isAccount
+    },
+    chain() {
+      return this.$route.query.chain
     }
   }
 }

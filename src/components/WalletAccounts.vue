@@ -72,7 +72,11 @@
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
           <ListItem
             v-if="account.nftAssets && account.nftAssets.length > 0"
-            @item-selected="$router.push({ path: '/wallet/nfts/activity' })"
+            @item-selected="
+              $router.push({
+                path: `/wallet/nfts/activity/${account.chain}`
+              })
+            "
           >
             <template #prefix>
               <div class="account-color" :style="{ 'background-color': account.color }"></div>
@@ -85,7 +89,7 @@
               <router-link
                 class="d-flex align-items-center link"
                 :to="{
-                  path: `/wallet/nfts/activity`
+                  path: `/wallet/nfts/activity/${account.chain}`
                 }"
                 >see all</router-link
               >
@@ -152,9 +156,6 @@ export default {
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
     ...mapGetters(['accountsData']),
-    account() {
-      return this.accountsData.filter((account) => account.chain === 'ethereum')[0]
-    },
     filteredItems() {
       if (!this.search) return this.accounts
 
@@ -198,13 +199,9 @@ export default {
       return this.expandedAccounts.includes(account.id) || this.search
     },
     async getNftCollections() {
-      const accountId = this.account.id
       try {
         await this.getNFTAssets({
-          network: this.activeNetwork,
-          walletId: this.activeWalletId,
-          asset: 'ETH',
-          accountId
+          walletId: this.activeWalletId
         })
       } catch (error) {
         console.error(error)

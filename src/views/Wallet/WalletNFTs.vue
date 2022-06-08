@@ -8,6 +8,7 @@
           :key="asset.id"
           :source="source"
           :isAccount="isAccount"
+          :chain="chain"
         />
       </template>
     </div>
@@ -16,14 +17,10 @@
         Once you start owning NFTs with accounts in your Liquality wallet you will see them here.
       </p>
       <div class="d-flex justify-content-center brand">
-        <OpenSea @click="openOnOpenSea" class="cursor-pointer" />
+        <OpenSea @click="exploreNfts" class="cursor-pointer" />
       </div>
       <div class="d-flex justify-content-center">
-        <a
-          class="btn btn-outline-primary"
-          :href="`http://${activeNetwork === 'testnet' ? 'testnets.' : ''}opensea.io`"
-          target="_blank"
-          rel="noopener noreferrer"
+        <a class="btn btn-outline-primary" :href="opensea" target="_blank" rel="noopener noreferrer"
           >Check out Opensea</a
         >
       </div>
@@ -34,8 +31,9 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import NFTAssets from '../../components/NFTAssets.vue'
-import OpenSea from '../../assets/icons/opensea_brand.svg'
-import { ChainId } from '@liquality/cryptoassets'
+import { getNftLink, openseaLink } from '@liquality/wallet-core/dist/utils/asset'
+import OpenSea from '../../assets/icons/opensea.svg'
+import { chains } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -50,6 +48,10 @@ export default {
     isAccount: {
       type: Boolean,
       default: false
+    },
+    chain: {
+      type: String,
+      required: false
     }
   },
   data() {
@@ -59,21 +61,31 @@ export default {
   },
   created() {
     if (this.isAccount) {
-      this.assets = this.nftAssetsByAccount[ChainId.Ethereum]
+      this.assets = this.nftAssetsByAccount[this.chain]
     } else {
       this.assets = this.nftAssetsByCollection
     }
+    console.log('NFT assets', this.opensea)
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
-    ...mapGetters(['nftAssetsByCollection', 'nftAssetsByAccount'])
+    ...mapGetters(['nftAssetsByCollection', 'nftAssetsByAccount']),
+    nftExplorerLink() {
+      const asset = chains[this.chain].nativeAsset
+      return getNftLink(asset, this.activeNetwork)
+    },
+    opensea() {
+      return openseaLink(this.activeNetwork)
+    }
   },
   methods: {
-    openOnOpenSea() {
-      window.open(
-        `http://${this.activeNetwork === 'testnet' ? 'testnets.' : ''}opensea.io`,
-        '_blank'
-      )
+    getNftLink,
+    openseaLink,
+    exploreNfts() {
+      if (this.isAccount) {
+        window.open(this.nftExplorerLink, '_blank')
+      }
+      window.open(this.opensea, '_blank')
     }
   }
 }

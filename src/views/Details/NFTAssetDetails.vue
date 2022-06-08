@@ -16,7 +16,7 @@
               })
             "
           />
-          <ShareIcon class="nft-action-buttons__icon" @click="openOnOpenSea" />
+          <ShareIcon class="nft-action-buttons__icon" @click="transferNFT" />
         </div>
       </div>
       <template v-if="showFullscreen === false">
@@ -88,7 +88,7 @@
                         <td class="text-muted text-left small-12">Account</td>
                         <td class="text-break" v-if="nftAsset.asset_contract">
                           <span class="text-primary d-flex align-items-center">
-                            <img :src="getAccountIcon(account.chain)" class="asset-icon" />
+                            <img :src="getAssetIcon(asset)" class="asset-icon" />
                             {{ shortenAddress(address) }}
                             <CopyIcon @click="copy(address)" class="copy-icon"
                           /></span>
@@ -122,9 +122,9 @@
                       </tr>
                       <tr>
                         <td class="text-muted text-left small-12">Blockchain</td>
-                        <td class="text-break">
-                          <img :src="getAssetIcon(asset)" class="asset-icon" />
-                          Ethereum
+                        <td class="text-break text-capitalize">
+                          <img :src="getAccountIcon(nftAsset.chain)" class="asset-icon" />
+                          {{ nftAsset.chain }}
                         </td>
                       </tr>
                     </tbody>
@@ -148,17 +148,15 @@ import SendIcon from '@/assets/icons/send_nft.svg'
 import ShareIcon from '@/assets/icons/share_nft.svg'
 import NavBar from '../../components/NavBar.vue'
 import { chains } from '@liquality/cryptoassets'
-import { getAssetIcon } from '@/utils/asset'
 import { getAccountIcon } from '@/utils/accounts'
+import { getAssetIcon, getNftTransferLink } from '@liquality/wallet-core/dist/utils/asset'
 import Star from '@/components/Star.vue'
-import { ChainId } from '@liquality/cryptoassets'
 
 export default {
   data() {
     return {
       showFullscreen: false,
       activeTab: 'overview',
-      asset: 'ETH',
       nftAsset: null
     }
   },
@@ -177,10 +175,16 @@ export default {
       return this.$route.fullPath
     },
     account() {
-      return this.accountsData.filter((account) => account.chain === ChainId.Ethereum)[0]
+      return this.accountsData.filter((account) => account.chain === this.nftAsset.chain)[0]
     },
     address() {
-      return chains[ChainId.Ethereum]?.formatAddress(this.account.addresses[0], this.activeNetwork)
+      return chains[this.nftAsset.chain]?.formatAddress(
+        this.account.addresses[0],
+        this.activeNetwork
+      )
+    },
+    asset() {
+      return chains[this.nftAsset.chain]?.nativeAsset
     }
   },
   async created() {
@@ -195,8 +199,9 @@ export default {
   },
   methods: {
     shortenAddress,
-    getAssetIcon,
     getAccountIcon,
+    getAssetIcon,
+    getNftTransferLink,
     async copy(text) {
       await navigator.clipboard.writeText(text)
     },
@@ -209,12 +214,12 @@ export default {
         return this.nftAsset.image_url
       }
     },
-    openOnOpenSea() {
-      window.open(
-        `http://${this.activeNetwork === 'testnet' ? 'testnets.' : ''}opensea.io/assets/${
-          this.nftAsset.asset_contract.address
-        }/${this.nftAsset.token_id}`,
-        '_blank'
+    transferNFT() {
+      window.location.href = getNftTransferLink(
+        this.asset,
+        this.activeNetwork,
+        this.nftAsset.token_id,
+        this.nftAsset.asset_contract.address
       )
     }
   }
