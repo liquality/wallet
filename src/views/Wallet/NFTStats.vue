@@ -110,7 +110,8 @@ export default {
       try {
         this.updatingAssets = true
         await this.getNFTAssets({
-          walletId: this.activeWalletId
+          walletId: this.activeWalletId,
+          network: this.activeNetwork
         })
       } catch (error) {
         console.log(error)

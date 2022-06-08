@@ -88,7 +88,7 @@
                         <td class="text-muted text-left small-12">Account</td>
                         <td class="text-break" v-if="nftAsset.asset_contract">
                           <span class="text-primary d-flex align-items-center">
-                            <img :src="getAssetIcon(nftAsset.asset)" class="asset-icon mr-1" />
+                            <img :src="getAssetIcon(asset)" class="asset-icon mr-1" />
                             {{ shortenAddress(address) }}
                             <CopyIcon @click="copy(address)" class="copy-icon"
                           /></span>
@@ -183,6 +183,9 @@ export default {
         this.account.addresses[0],
         this.activeNetwork
       )
+    },
+    asset() {
+      return chains[this.nftAsset.chain].nativeAsset
     }
   },
   async created() {
@@ -215,7 +218,7 @@ export default {
     transferNFT() {
       window.open(
         getNftTransferLink(
-          this.nftAsset.asset,
+          this.asset,
           this.activeNetwork,
           this.nftAsset.token_id,
           this.nftAsset.asset_contract.address
@@ -234,6 +237,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 9999;
 
   &--container {
     height: 100%;

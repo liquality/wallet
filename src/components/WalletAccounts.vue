@@ -202,7 +202,8 @@ export default {
     async getNftCollections() {
       try {
         await this.getNFTAssets({
-          walletId: this.activeWalletId
+          walletId: this.activeWalletId,
+          network: this.activeNetwork
         })
       } catch (error) {
         console.error(error)

@@ -73,16 +73,16 @@
             <div class="selected-nft-asset__send-details">
               <h3 class="text-uppercase">Send From</h3>
               <div class="d-flex">
-                <img :src="getAssetIcon(selectedNFT.asset)" class="asset-icon mr-3" />
+                <img :src="getAssetIcon(asset)" class="asset-icon mr-3" />
                 <div>
                   <div class="d-flex">
-                    <span class="mr-3">{{ selectedNFT.asset }}</span>
+                    <span class="mr-3">{{ asset }}</span>
                     <div class="mr-3">
                       <span class="mr-1">{{ shortenAddress(fromAddress) }}</span>
                       <span><CopyIcon class="copy-icon" @click="copy(fromAddress)" /></span>
                     </div>
                   </div>
-                  <div class="text-muted">Available {{ balance }} {{ this.selectedNFT.asset }}</div>
+                  <div class="text-muted">Available {{ balance }} {{ asset }}</div>
                 </div>
               </div>
               <div class="form-group mt-4">
@@ -132,7 +132,7 @@
                     </div>
                     <FeeSelector
                       v-else
-                      :asset="selectedNFT.asset"
+                      :asset="asset"
                       v-model="selectedFee"
                       :fees="assetFees"
                       :totalFees="sendFees"
@@ -201,7 +201,7 @@
             <div class="selected-nft-asset__send-details">
               <h3 class="text-uppercase">Network speed/fee</h3>
               <div class="d-flex justify-content-between">
-                <p>{{ prettyFee }} {{ selectedNFT.asset }}</p>
+                <p>{{ prettyFee }} {{ asset }}</p>
                 <p>{{ totalFeeInFiat }} USD</p>
               </div>
               <div class="form-group mt-4">
@@ -240,7 +240,7 @@ import NavBar from '@/components/NavBar.vue'
 import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import amplitude from 'amplitude-js'
 import Accordion from '@/components/Accordion.vue'
-import { chains, ChainId } from '@liquality/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import CopyIcon from '@/assets/icons/copy.svg'
@@ -295,7 +295,6 @@ export default {
     }
   },
   async created() {
-    console.log('created', this.$route.query)
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(this.amount)
     await this.trackAnalytics({
@@ -355,11 +354,11 @@ export default {
       )[0]
     },
     assetHistory() {
-      return this.activity.filter((item) => item.from === this.selectedNFT.asset)
+      return this.activity.filter((item) => item.from === this.asset)
     },
     balance() {
-      const balance = this.account.balances?.[this.selectedNFT.asset] || 0
-      return prettyBalance(balance, this.selectedNFT.asset)
+      const balance = this.account.balances?.[this.asset] || 0
+      return prettyBalance(balance, this.asset)
     },
     fromAddress() {
       return chains[this.selectedNFT.chain]?.formatAddress(
@@ -405,15 +404,15 @@ export default {
       return this.assetFees && Object.keys(this.assetFees).length
     },
     isEIP1559Fees() {
-      return cryptoassets[this.selectedNFT.asset].chain === this.selectedNFT.chain
-    },
-    showMemoInput() {
-      return cryptoassets[this.selectedNFT.asset].chain === ChainId.Terra
+      return cryptoassets[this.asset].chain === this.selectedNFT.chain
     },
     memoData() {
       return {
         memo: this.memo
       }
+    },
+    asset() {
+      return chains[this.$route.query?.chain || this.selectedNFT?.chain].nativeAsset
     },
     startAddress() {
       return this.address.slice(0, 6)
@@ -532,7 +531,7 @@ export default {
           tokenIDs: [this.selectedNFT.token_id],
           values: [1],
           nft: this.selectedNFT,
-          asset: this.selectedNFT.asset,
+          asset: this.asset,
           fee,
           feeLabel: this.selectedFeeLabel
         }
