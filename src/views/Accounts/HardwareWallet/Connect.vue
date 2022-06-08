@@ -59,6 +59,7 @@
           Cancel
         </button>
         <button
+          id="connect-ledger-button"
           class="btn btn-primary btn-lg btn-icon"
           @click="connect"
           :disabled="loading || !selectedAsset"
