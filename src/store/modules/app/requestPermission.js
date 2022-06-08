@@ -1,5 +1,4 @@
 import { stringify } from 'qs'
-
 import { emitter } from '../../utils'
 import { createPopup } from '../../../broker/utils'
 

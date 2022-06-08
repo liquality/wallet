@@ -135,6 +135,10 @@ window[injectionName] = {
       result
     }))
   },
+  removeAllListeners: (event) => {
+    // mock this call for a hotfix
+    return false;
+  },
   sendAsync: (req, callback) => {
     return handleRequest(req)
       .then((result) => callback(null, {
