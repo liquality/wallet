@@ -28,7 +28,7 @@
             v-if="activityData.length > 0"
           />
           <TransactionList :transactions="activityData" />
-          <div class="activity-empty" v-if="activityData.length <= 0">
+          <div class="activity-empty mx-2" v-if="activityData.length <= 0">
             Once you start using your NFTs you will see the activity here
           </div>
         </div>

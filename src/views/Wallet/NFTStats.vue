@@ -31,7 +31,7 @@
         {{ shortenAddress(address) }}
       </button>
     </div>
-    <div class="account-container_actions" v-show="isAccount">
+    <div class="account-container_actions mt-3" v-show="isAccount">
       <router-link
         :to="{ name: 'SendNFT', query: { source: source, chain: chain } }"
         class="account-container_actions_button send-action"
