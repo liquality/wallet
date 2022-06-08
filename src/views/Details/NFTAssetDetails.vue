@@ -88,7 +88,7 @@
                         <td class="text-muted text-left small-12">Account</td>
                         <td class="text-break" v-if="nftAsset.asset_contract">
                           <span class="text-primary d-flex align-items-center">
-                            <img :src="getAssetIcon(asset)" class="asset-icon" />
+                            <img :src="getAssetIcon(nftAsset.asset)" class="asset-icon mr-1" />
                             {{ shortenAddress(address) }}
                             <CopyIcon @click="copy(address)" class="copy-icon"
                           /></span>
@@ -149,7 +149,8 @@ import ShareIcon from '@/assets/icons/share_nft.svg'
 import NavBar from '../../components/NavBar.vue'
 import { chains } from '@liquality/cryptoassets'
 import { getAccountIcon } from '@/utils/accounts'
-import { getAssetIcon, getNftTransferLink } from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import { getNftTransferLink } from '@liquality/wallet-core/dist/utils/asset'
 import Star from '@/components/Star.vue'
 
 export default {
@@ -182,9 +183,6 @@ export default {
         this.account.addresses[0],
         this.activeNetwork
       )
-    },
-    asset() {
-      return chains[this.nftAsset.chain]?.nativeAsset
     }
   },
   async created() {
@@ -207,19 +205,21 @@ export default {
     },
     nftAssetImageSource(mode) {
       if (mode === 'thumbnail') {
-        return this.nftAsset.image_thumbnail_url
+        return this.nftAsset?.image_thumbnail_url
       } else if (mode === 'preview') {
-        return this.nftAsset.image_preview_url
+        return this.nftAsset?.image_preview_url
       } else {
-        return this.nftAsset.image_url
+        return this.nftAsset?.image_url
       }
     },
     transferNFT() {
-      window.location.href = getNftTransferLink(
-        this.asset,
-        this.activeNetwork,
-        this.nftAsset.token_id,
-        this.nftAsset.asset_contract.address
+      window.open(
+        getNftTransferLink(
+          this.nftAsset.asset,
+          this.activeNetwork,
+          this.nftAsset.token_id,
+          this.nftAsset.asset_contract.address
+        )
       )
     }
   }

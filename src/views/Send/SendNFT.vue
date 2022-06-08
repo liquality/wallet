@@ -44,7 +44,9 @@
         </div>
       </div>
       <div class="button-group mx-3">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="cancel">Cancel</button>
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="routeSource">
+          Cancel
+        </button>
         <button
           class="btn btn-primary btn-lg btn-icon"
           @click="next('selectedAsset')"
@@ -71,16 +73,16 @@
             <div class="selected-nft-asset__send-details">
               <h3 class="text-uppercase">Send From</h3>
               <div class="d-flex">
-                <img :src="getAssetIcon(asset)" class="asset-icon mr-3" />
+                <img :src="getAssetIcon(selectedNFT.asset)" class="asset-icon mr-3" />
                 <div>
                   <div class="d-flex">
-                    <span class="mr-3">{{ asset }}</span>
+                    <span class="mr-3">{{ selectedNFT.asset }}</span>
                     <div class="mr-3">
                       <span class="mr-1">{{ shortenAddress(fromAddress) }}</span>
                       <span><CopyIcon class="copy-icon" @click="copy(fromAddress)" /></span>
                     </div>
                   </div>
-                  <div class="text-muted">Available {{ balance }} ETH</div>
+                  <div class="text-muted">Available {{ balance }} {{ this.selectedNFT.asset }}</div>
                 </div>
               </div>
               <div class="form-group mt-4">
@@ -130,7 +132,7 @@
                     </div>
                     <FeeSelector
                       v-else
-                      :asset="asset"
+                      :asset="selectedNFT.asset"
                       v-model="selectedFee"
                       :fees="assetFees"
                       :totalFees="sendFees"
@@ -143,7 +145,9 @@
             </template>
           </DetailsContainer>
           <div class="button-group">
-            <button class="btn btn-light btn-outline-primary btn-lg" @click="cancel">Cancel</button>
+            <button class="btn btn-light btn-outline-primary btn-lg" @click="routeSource">
+              Cancel
+            </button>
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"
@@ -197,7 +201,7 @@
             <div class="selected-nft-asset__send-details">
               <h3 class="text-uppercase">Network speed/fee</h3>
               <div class="d-flex justify-content-between">
-                <p>{{ prettyFee }} ETH</p>
+                <p>{{ prettyFee }} {{ selectedNFT.asset }}</p>
                 <p>{{ totalFeeInFiat }} USD</p>
               </div>
               <div class="form-group mt-4">
@@ -287,19 +291,19 @@ export default {
       customFee: null,
       sendErrorMessage: '',
       address: '',
-      selectedFee: 'average',
-      asset: 'ETH'
+      selectedFee: 'average'
     }
   },
   async created() {
+    console.log('created', this.$route.query)
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(this.amount)
     await this.trackAnalytics({
       event: 'Send NFT screen',
       properties: {
-        category: 'Send/Receive',
+        category: 'Send',
         action: 'User on Send NFT screen',
-        label: `${this.asset}`
+        label: `NFT`
       }
     })
     if (this.$route.query.nftAsset) {
@@ -313,7 +317,6 @@ export default {
     ...mapState([
       'activeNetwork',
       'activeWalletId',
-      'nftAssets',
       'history',
       'externalConnections',
       'fees',
@@ -335,11 +338,10 @@ export default {
       }
     },
     nftCollection() {
-      return this.nftAssetsByAccount[ChainId.Ethereum]
+      return this.nftAssetsByAccount[this.$route.query?.chain || this.selectedNFT?.chain]
     },
     routeSource() {
-      if (this.$route.query?.source?.includes('/details/nft-asset')) {
-        console.log(this.$route.query.source)
+      if (this.$route.query?.source) {
         return `${this.$route.query.source}`
       }
       return '/wallet/nfts'
@@ -348,20 +350,25 @@ export default {
       return prettyFiatBalance(this.currentFee, this.fiatRates[this.assetChain])
     },
     account() {
-      return this.accountsData.filter((account) => account.chain === ChainId.Ethereum)[0]
+      return this.accountsData.filter(
+        (account) => account.chain === this.$route.query?.chain || this.selectedNFT?.chain
+      )[0]
     },
     assetHistory() {
-      return this.activity.filter((item) => item.from === this.asset)
+      return this.activity.filter((item) => item.from === this.selectedNFT.asset)
     },
     balance() {
-      const balance = this.account.balances?.[this.asset] || 0
-      return prettyBalance(balance, this.asset)
+      const balance = this.account.balances?.[this.selectedNFT.asset] || 0
+      return prettyBalance(balance, this.selectedNFT.asset)
     },
     fromAddress() {
-      return chains[ChainId.Ethereum]?.formatAddress(this.account.addresses[0], this.activeNetwork)
+      return chains[this.selectedNFT.chain]?.formatAddress(
+        this.account.addresses[0],
+        this.activeNetwork
+      )
     },
     isValidAddress() {
-      return chains[ChainId.Ethereum].isValidAddress(this.fromAddress, this.activeNetwork)
+      return chains[this.selectedNFT.chain].isValidAddress(this.fromAddress, this.activeNetwork)
     },
     addressError() {
       if (!this.isValidAddress) {
@@ -380,7 +387,7 @@ export default {
       return this.currentFee.dp(6)
     },
     assetChain() {
-      return getNativeAsset(this.asset)
+      return getNativeAsset(this.selectedNFT?.asset || 'ETH')
     },
     assetFees() {
       const assetFees = {}
@@ -398,10 +405,10 @@ export default {
       return this.assetFees && Object.keys(this.assetFees).length
     },
     isEIP1559Fees() {
-      return cryptoassets[this.asset].chain === ChainId.Ethereum
+      return cryptoassets[this.selectedNFT.asset].chain === this.selectedNFT.chain
     },
     showMemoInput() {
-      return cryptoassets[this.asset].chain === ChainId.Terra
+      return cryptoassets[this.selectedNFT.asset].chain === ChainId.Terra
     },
     memoData() {
       return {
@@ -437,11 +444,6 @@ export default {
     },
     selectNFT(asset) {
       this.selectedNFT = asset
-    },
-    cancel() {
-      this.$router.push({
-        path: '/wallet/nfts'
-      })
     },
     closeSendErrorModal() {
       this.sendErrorModalOpen = false
@@ -530,12 +532,12 @@ export default {
           tokenIDs: [this.selectedNFT.token_id],
           values: [1],
           nft: this.selectedNFT,
-          asset: this.asset,
+          asset: this.selectedNFT.asset,
           fee,
           feeLabel: this.selectedFeeLabel
         }
         await this.sendNFTTransaction(data)
-        this.$router.replace(`/wallet/nfts/activity`)
+        this.$router.replace(`/wallet/nfts/activity/${this.selectedNFT.chain}`)
       } catch (error) {
         const { message } = error
         this.loading = false
@@ -573,6 +575,15 @@ export default {
     cursor: auto;
   }
 }
+
+.nft-image {
+  svg {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+}
+
 .selected-nft-asset {
   h3 {
     font-size: 12px;

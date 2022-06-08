@@ -65,7 +65,6 @@ export default {
     } else {
       this.assets = this.nftAssetsByCollection
     }
-    console.log('NFT assets', this.opensea)
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
