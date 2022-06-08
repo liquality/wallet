@@ -441,7 +441,7 @@ import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
 import { version as walletVersion } from '../../../package.json'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { BG_PREFIX } from './utils'
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import { buildConfig } from '@liquality/wallet-core'
 import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
 import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
@@ -449,6 +449,7 @@ import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvide
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
 const MIN_SWAP_VALUE_USD = 2
+
 export default {
   components: {
     NavBar,
@@ -519,7 +520,9 @@ export default {
       await this.updateFees({ asset: this.assetChain })
       await this.updateMaxSwapFees()
     })()
+
     let toAsset = null
+
     // Try to use the same account for (from and to) if it has more than one asset
     if (this.account?.assets.length > 1) {
       this.toAccountId = this.accountId
@@ -538,6 +541,7 @@ export default {
         }
       }
     }
+
     if (this.toAccountId && toAsset) {
       this.toAssetChanged(this.toAccountId, toAsset)
       this.toAsset = toAsset
@@ -548,6 +552,7 @@ export default {
       }
     }
     this.sendAmount = dpUI(this.defaultAmount)
+
     this.resetQuoteTimer()
     this.trackNoLiquidity()
   },
@@ -588,6 +593,7 @@ export default {
         } else {
           this.stateSendAmount = 0.0
         }
+
         this.stateSendAmountFiat = prettyFiatBalance(
           this.stateSendAmount,
           this.fiatRates[this.asset]
@@ -672,6 +678,7 @@ export default {
     },
     min() {
       if (!this.fiatRates[this.asset]) return BN(0)
+
       const getSwapLimit = this.selectedQuoteProvider?.getSwapLimit
       let min
       if (getSwapLimit) {
@@ -694,6 +701,7 @@ export default {
             min = BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]))
         }
       }
+
       return isNaN(min) ? BN(0) : dpUI(min)
     },
     max() {
@@ -743,6 +751,7 @@ export default {
     },
     canCoverAmmFee() {
       if (!this.selectedQuote?.bridgeAsset) return true
+
       const account = isERC20(this.asset) ? this.account : this.toAccount
       const balance = account?.balances[this.selectedQuote.bridgeAsset]
 
@@ -762,6 +771,7 @@ export default {
       if (this.assetChain === 'ETH') {
         return !this.account?.balances?.ETH || this.account?.balances?.ETH === 0
       }
+
       if (this.toAssetChain === 'ETH' && this.selectedQuote?.provider == 'liquality') {
         return (
           !this.toAccount?.balances?.ETH ||
@@ -771,6 +781,7 @@ export default {
           )
         )
       }
+
       return false
     },
     showErrors() {
@@ -778,9 +789,11 @@ export default {
     },
     amountError() {
       const amount = BN(this.safeAmount)
+
       if (amount.gt(this.available)) {
         return 'Lower amount. This exceeds available balance.'
       }
+
       if (amount.gt(this.max)) {
         return 'Please reduce amount. It exceeds maximum.'
       }
@@ -792,6 +805,7 @@ export default {
       if (amount.lt(this.min) || zeroCheck) {
         return 'Please increase amount. It is below minimum.'
       }
+
       if (
         this.selectedQuote?.receiveFee &&
         BN(this.selectedQuote.toAmount).lt(
@@ -802,6 +816,7 @@ export default {
           this.selectedQuote?.maxFeeSlippageMultiplier || 1
         }x ${this.toAssetChain} fee.`
       }
+
       return null
     },
     canSwap() {
@@ -817,6 +832,7 @@ export default {
       ) {
         return false
       }
+
       return true
     },
     assetChain() {
@@ -841,9 +857,11 @@ export default {
     totalToSendInFiat() {
       const send = cryptoToFiat(BN(this.stateSendAmount), this.fiatRates[this.asset])
       if (isNaN(send)) return send
+
       const fee = cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain])
       return send.plus(fee).toFormat(2)
     },
+
     receiveAmountSameAsset() {
       return BN(this.receiveAmount).minus(this.receiveFee).toFixed()
     },
@@ -867,6 +885,7 @@ export default {
         this.toSwapFee,
         this.fiatRates[this.selectedQuote?.bridgeAsset || this.toAssetChain]
       ).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
+
       const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat)
         ? 0
         : this.totalToReceiveInFiat * 0.25
@@ -909,6 +928,7 @@ export default {
       if (fees) {
         Object.assign(assetFees, fees)
       }
+
       return assetFees
     },
     setSendAmount(amount) {
@@ -973,8 +993,10 @@ export default {
           custom: BN(0)
         }
       }
+
       const selectedQuoteProvider = this.selectedQuoteProvider
       const { fromTxType, toTxType } = selectedQuoteProvider
+
       const addFees = async (asset, chain, txType) => {
         const assetFees = this.getAssetFees(chain)
         const totalFees = await selectedQuoteProvider.estimateFees({
@@ -988,18 +1010,23 @@ export default {
           ),
           max
         })
+
         if (!totalFees) return
+
         for (const [speed, fee] of Object.entries(assetFees)) {
           const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
           fees[chain][speed] = fees[chain][speed].plus(totalFees[feePrice])
         }
       }
+
       if (fromTxType && this.availableFees.has(this.assetChain)) {
         await addFees(this.asset, this.assetChain, fromTxType)
       }
+
       if (toTxType && this.availableFees.has(this.toAssetChain)) {
         await addFees(this.toAsset, this.toAssetChain, toTxType)
       }
+
       if (max) {
         this.maxSwapFees = fees
       } else {
@@ -1019,6 +1046,7 @@ export default {
           await this.updateFees({ asset: this.assetChain })
           await this.updateMaxSwapFees()
         })()
+
         selectedFee[this.assetChain] = 'average'
       }
       if (this.toAssetChain) {
@@ -1040,17 +1068,9 @@ export default {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (
-            type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
-            payload.connected === true
-          ) {
-            this.bridgeModalOpen = false
-            await this.swap()
-            if (unsubscribe) {
-              unsubscribe()
-            }
-          }
+        const unsubscribe = createConnectSubscription(() => {
+          this.bridgeModalOpen = false
+          this.swap()
         })
         setTimeout(() => {
           if (unsubscribe) {
@@ -1125,6 +1145,7 @@ export default {
         const fee = this.availableFees.has(this.assetChain)
           ? this.getAssetFees(this.assetChain)[this.selectedFee[this.assetChain]].fee
           : undefined
+
         const toFee =
           this.receiveFeeRequired && this.availableFees.has(this.toAssetChain)
             ? this.getAssetFees(this.toAssetChain)[this.selectedFee[this.toAssetChain]].fee
@@ -1138,6 +1159,7 @@ export default {
           feeLabel: this.selectedFee[this.assetChain],
           claimFeeLabel: this.selectedFee[this.toAssetChain]
         })
+
         this.signRequestModalOpen = false
         this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {
@@ -1178,6 +1200,7 @@ export default {
         this.fromAssetChanged(accountId, asset)
       }
       this.currentStep = 'inputs'
+
       this.trackNoLiquidity()
     },
     closeSwapErrorModal() {
@@ -1226,6 +1249,7 @@ export default {
       if (this.selectedQuoteProvider.config.type === SwapProviderType.LiqualityBoostERC20ToNative) {
         return this.fromAccountId
       }
+
       return this.toAccountId
     },
     applyCustomFee({ asset, fee }) {
@@ -1289,6 +1313,7 @@ export default {
         this.quotes = []
         return
       }
+
       const amount = BN(val)
       const max = dpUI(this.max)
       const min = dpUI(this.min)
@@ -1305,6 +1330,7 @@ export default {
     },
     max: function (val, oldVal) {
       if (BN(val).eq(oldVal)) return
+
       if (this.amountOption === 'max') {
         this.sendAmount = dpUI(this.max)
       }
@@ -1329,35 +1355,42 @@ export default {
   }
 }
 </script>
+
 <style lang="scss">
 .swap {
   overflow-y: auto;
   padding-bottom: 70px;
   height: 100%;
+
   &_asset {
     &.input-group {
       align-items: center;
     }
+
     &_icon {
       margin-right: 4px;
     }
+
     .input-amount {
       text-align: right;
       margin-left: 0px;
     }
   }
+
   &_fees {
     &_asset {
       display: flex;
       align-items: center;
       font-weight: bold;
       margin: 6px 0;
+
       .fee-selector {
         margin-left: 6px;
       }
     }
   }
 }
+
 .fee-wrapper {
   background-color: #f0f7f9;
   align-self: center;
@@ -1367,23 +1400,28 @@ export default {
   position: absolute;
   width: 100%;
 }
+
 .swap-rate {
   p {
     margin-bottom: 0;
   }
+
   &_loading {
     svg {
       height: 16px;
     }
   }
+
   &_value {
     font-weight: bold;
   }
+
   a {
     text-transform: none;
     font-weight: normal;
   }
 }
+
 .switch-icon {
   display: flex;
   align-items: center;
@@ -1391,36 +1429,45 @@ export default {
   padding-top: 20px;
   padding-bottom: 20px;
   margin-bottom: 0px;
+
   svg {
     cursor: pointer;
     height: 18px;
+
     &.up {
       transform: rotate(180deg);
     }
   }
 }
+
 .network-header-container {
   display: flex;
   flex-flow: column;
   gap: 5px;
+
   .network-header-state {
     margin-top: 5px;
   }
 }
+
 .selectors-asset {
   width: 70px !important;
 }
+
 .selector-asset-switch {
   display: flex;
   align-items: center;
 }
+
 .arrow-down {
   margin-top: 27px;
   display: flex;
   justify-content: center;
+
   #arrow {
     cursor: pointer;
   }
+
   svg {
     width: 20px;
     height: 18px;

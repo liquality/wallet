@@ -560,10 +560,30 @@ svg.qr-icon {
   animation: spin 1s ease infinite;
   animation-fill-mode: forwards;
 }
-@-moz-keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { -moz-transform: rotate(360deg); } }
-@-webkit-keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { -webkit-transform: rotate(360deg); } }
-@keyframes spin { 0% { -moz-transform: rotate(0deg); } 100% { transform:rotate(360deg); } }
-
+@-moz-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -moz-transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
 .wallet-title-container {
   width: 100%;
@@ -753,7 +773,6 @@ svg.qr-icon {
       font-weight: 300;
       font-size: 12px;
       line-height: 27px;
-      margin-top: 10px;
     }
   }
 
@@ -839,6 +858,10 @@ svg.qr-icon {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.ledger-icon {
+  margin-top: 1.5em;
 }
 
 .custom-dropdown-toggle {

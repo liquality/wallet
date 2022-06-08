@@ -261,7 +261,7 @@ import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { BG_PREFIX } from '@/broker/utils'
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 
 export default {
   components: {
@@ -498,21 +498,13 @@ export default {
       await this._updateSendFees()
     },
     async tryToSend() {
-      if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
+      if (!this.ledgerBridgeReady && this.account?.type.includes('ledger')) {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (
-            type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
-            payload.connected === true
-          ) {
-            this.bridgeModalOpen = false
-            await this.send()
-            if (unsubscribe) {
-              unsubscribe()
-            }
-          }
+        const unsubscribe = createConnectSubscription(() => {
+          this.bridgeModalOpen = false
+          this.send()
         })
 
         setTimeout(() => {

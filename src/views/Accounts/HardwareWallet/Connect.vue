@@ -51,7 +51,11 @@
     </div>
     <div class="wrapper_bottom">
       <div class="button-group">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="goToOverview">
+        <button
+          class="btn btn-light btn-outline-primary btn-lg"
+          id="cancel-ledger-button"
+          @click="goToOverview"
+        >
           Cancel
         </button>
         <button
