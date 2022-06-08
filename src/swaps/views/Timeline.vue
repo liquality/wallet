@@ -337,7 +337,6 @@ import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swap'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { isObject } from 'lodash-es'
 
 export default {
   components: {

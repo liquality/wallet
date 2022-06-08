@@ -104,7 +104,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chains, ChainId } from '@liquality/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'

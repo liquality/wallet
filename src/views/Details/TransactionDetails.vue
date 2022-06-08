@@ -136,7 +136,6 @@ import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import NavBar from '@/components/NavBar.vue'
-import { isObject } from 'lodash-es'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import Timeline from '@/transactions/views/Timeline.vue'
 export default {
