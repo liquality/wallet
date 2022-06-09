@@ -438,6 +438,7 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
 import { version as walletVersion } from '../../../package.json'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
@@ -503,8 +504,7 @@ export default {
       swapErrorMessage: '',
       customFeeAssetSelected: null,
       customFees: {},
-      bridgeModalOpen: false,
-      updateInitialDefaultValue: false
+      bridgeModalOpen: false
     }
   },
   props: {
@@ -679,27 +679,36 @@ export default {
     min() {
       if (!this.fiatRates[this.asset]) return BN(0)
 
+      const toQuoteAsset =
+        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostNativeToERC20
+          ? this.toAssetChain
+          : this.toAsset
+
+      const fromQuoteAsset =
+        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostERC20ToNative
+          ? this.assetChain
+          : this.asset
+
+      const liqualityMarket = this.networkMarketData?.find((pair) => {
+        return (
+          pair.from === fromQuoteAsset &&
+          pair.to === toQuoteAsset &&
+          getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
+            SwapProviderType.Liquality
+        )
+      })
+
       const getSwapLimit = this.selectedQuoteProvider?.getSwapLimit
+
       let min
+
       if (getSwapLimit) {
         const minUsdValue = getSwapLimit()
         min = BN.min(fiatToCrypto(minUsdValue, this.fiatRates[this.asset]))
       } else {
-        const swapProvider = this.selectedQuoteProvider?.config?.type
-
-        switch (swapProvider) {
-          case SwapProviderType.Liquality:
-          case SwapProviderType.LiqualityBoostNativeToERC20:
-            min = this.selectedQuote.min
-            break
-          case SwapProviderType.LiqualityBoostERC20ToNative:
-            min = BN(this.selectedQuote.minInBridgeAsset)
-              .times(this.fiatRates[this.selectedQuote.bridgeAsset])
-              .dividedBy(this.fiatRates[this.asset])
-            break
-          default:
-            min = BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]))
-        }
+        min = liqualityMarket
+          ? BN(liqualityMarket.min)
+          : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]))
       }
 
       return isNaN(min) ? BN(0) : dpUI(min)
@@ -1110,11 +1119,9 @@ export default {
           } else {
             this.userSelectedQuote = false
             this.selectedQuote = this.bestQuote
-            this.updateInitialDefaultValue = false
           }
         } else {
           this.selectedQuote = this.bestQuote
-          this.updateInitialDefaultValue = false
         }
       }
       this.updatingQuotes = false
@@ -1333,16 +1340,6 @@ export default {
 
       if (this.amountOption === 'max') {
         this.sendAmount = dpUI(this.max)
-      }
-    },
-    min: function (val, oldVal) {
-      // minimum set correctly
-      if (this.updateInitialDefaultValue) return
-
-      // update to new minimum when provider is changed
-      if (!BN(val).eq(oldVal)) {
-        this.sendAmount = dpUI(val)
-        this.updateInitialDefaultValue = true
       }
     },
     selectedQuote: function () {
