@@ -488,7 +488,6 @@ export default {
       showSwapProvidersInfoModal: false,
       quotes: [],
       updatingQuotes: false,
-      firstUpdate: false,
       selectedQuote: null,
       userSelectedQuote: false,
       swapFees: {},
@@ -807,11 +806,7 @@ export default {
         return 'Please reduce amount. It exceeds maximum.'
       }
 
-      // when amount is equal to 0 and asset has no dollar value, prevent error from appearing until first update
-      const zeroCheck =
-        !this.fiatRates[this.asset] && !this.firstUpdate ? amount.lt(0) : amount.lte(0)
-
-      if (amount.lt(this.min) || zeroCheck) {
+      if (amount.lt(this.min) || amount.lte(0)) {
         return 'Please increase amount. It is below minimum.'
       }
 
@@ -1125,7 +1120,6 @@ export default {
         }
       }
       this.updatingQuotes = false
-      this.firstUpdate = true
       this.resetQuoteTimer()
     }, 1000),
     updateQuotes() {
