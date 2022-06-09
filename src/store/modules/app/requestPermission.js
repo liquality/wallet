@@ -1,5 +1,4 @@
 import { stringify } from 'qs'
-import { ChainId } from '@liquality/cryptoassets'
 
 import { emitter } from '../../utils'
 import { createPopup } from '../../../broker/utils'
@@ -85,7 +84,7 @@ export const requestPermission = async (
 
         let permissionRoute = '/permission/default'
 
-        if (chain === ChainId.Terra) permissionRoute = '/permission/terra'
+        if (chain === 'terra') permissionRoute = '/permission/terra'
         else if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
         else if (method === 'wallet.signMessage' || method === 'wallet.signTypedMessage')
           permissionRoute = '/permission/sign'
