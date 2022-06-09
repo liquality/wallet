@@ -194,7 +194,6 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { debounce } from 'lodash-es'
-import { getSendGasLimitERC20 } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { ChainId, AssetTypes } from '@liquality/cryptoassets'
 import { tokenDetailProviders } from '@liquality/wallet-core/dist/utils/asset'
@@ -260,11 +259,6 @@ export default {
     async addToken() {
       if (!this.existingAsset) {
         // Add only if it does not already exist
-        const gasLimit = getSendGasLimitERC20(this.chain)
-        if (!gasLimit) {
-          throw new Error(`${this.chain} doesn't support non native assets!`)
-        }
-
         await this.addCustomToken({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
@@ -272,8 +266,7 @@ export default {
           contractAddress: this.contractAddress,
           name: this.name,
           symbol: this.symbol,
-          decimals: Number(this.decimals),
-          sendGasLimit: gasLimit
+          decimals: Number(this.decimals)
         })
       }
       await this.enableAssets({
