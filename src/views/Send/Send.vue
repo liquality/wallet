@@ -438,9 +438,7 @@ export default {
       return cryptoassets[this.asset].chain === ChainId.Terra
     },
     memoData() {
-      return {
-        memo: this.memo
-      }
+      return this.memo
     }
   },
   methods: {
