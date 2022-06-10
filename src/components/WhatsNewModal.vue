@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* 0.65.0 release candidate</pre>
+            <pre class="text-wrap">* 0.65.0 final release candidate - Regression testing</pre>
           </div>
         </div>
       </div>

@@ -87,7 +87,7 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     })
     expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(1)
     expect(
-      connectedChainDetails.connectedAddress[0].toLowercase(),
+      connectedChainDetails.connectedAddress[0].toLowerCase(),
       'Uniswap ethereum dapp connection issue'
     ).equals(expectedAddress.toLowerCase())
   })
