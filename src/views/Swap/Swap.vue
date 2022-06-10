@@ -445,7 +445,7 @@ import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import { buildConfig } from '@liquality/wallet-core'
 import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
-import { getSwapProvider } from '@liquality/wallet-core/dist/factory/swapProvider'
+import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
 
 const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
