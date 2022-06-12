@@ -69,7 +69,8 @@
           <v-popover offset="1" trigger="hover focus" class="mr-2">
             <button
               :class="{
-                active: amountOption === 'min' && !disabled
+                active: amountOption === 'min' && !disabled,
+                isNotVisible: min <= 0
               }"
               :disabled="disabled"
               class="btn btn-option"
@@ -165,6 +166,9 @@ export default {
 </script>
 
 <style lang="scss">
+.isNotVisible {
+  display: none !important;
+}
 .swap-send-container {
   display: flex;
   flex-direction: column;

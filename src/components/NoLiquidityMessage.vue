@@ -1,15 +1,15 @@
 <template>
   <div v-if="isPairAvailable" class="notification-content">
-    <div>Liquidity low, please try again later.</div>
+    <div>
+      Not enough liquidity for this trade. You can request {{ asset }} in
+      <a href="https://discord.com/invite/5mgYtuArkh" target="_blank">discord </a>
+      or try again later.
+    </div>
   </div>
   <div v-else class="notification-content">
     <div>
-      Pair not yet supported - coming soon. See our list of compatible pairs
-      <a
-        href="https://liquality.io/blog/how-to-use-the-liquality-wallet-101/#q-which-token-pairs-can-i-swap-within-the-liquality-wallet"
-        target="_blank"
-        >here.</a
-      >
+      This pair isn't traded yet. Maybe there is a way to do multiple swaps to get that desired
+      token.
     </div>
   </div>
 </template>

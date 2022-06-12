@@ -1,9 +1,9 @@
 <template>
   <div class="notification-content">
-    <div class="notification-text">You need more {{ asset }} to pay for gas.</div>
-    <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
-      Get {{ asset }}
-    </router-link>
+    <div class="notification-text">
+      No or not enough {{ asset }} in this account to cover minimum trade plus fees.
+    </div>
+    <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn"> Receive </router-link>
   </div>
 </template>
 
