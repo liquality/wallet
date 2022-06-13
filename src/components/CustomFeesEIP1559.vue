@@ -271,13 +271,13 @@ export default {
       const defaultFee =
         slowPreset.fee?.suggestedBaseFeePerGas + slowPreset.fee?.maxPriorityFeePerGas || 0
       const maximumFee = slowPreset.fee?.suggestedBaseFeePerGas + slowPreset.fee?.maxFeePerGas || 0
-      const sendFee = getSendFee(this.asset, defaultFee)
+      const sendFee = getSendFee(this.nativeAsset, defaultFee)
 
       return {
         amount: BN(sendFee).dp(6),
         fiat: prettyFiatBalance(this.totalFees.slow, this.fiatRates[this.nativeAsset]),
         maximum: prettyFiatBalance(
-          getSendFee(this.asset, maximumFee),
+          getSendFee(this.nativeAsset, maximumFee),
           this.fiatRates[this.nativeAsset]
         )
       }
@@ -289,13 +289,13 @@ export default {
         averagePreset.fee?.suggestedBaseFeePerGas + averagePreset.fee?.maxPriorityFeePerGas || 0
       const maximumFee =
         averagePreset.fee?.suggestedBaseFeePerGas + averagePreset.fee?.maxFeePerGas || 0
-      const sendFee = getSendFee(this.asset, defaultFee)
+      const sendFee = getSendFee(this.nativeAsset, defaultFee)
 
       return {
         amount: BN(sendFee).dp(6),
         fiat: prettyFiatBalance(this.totalFees.average, this.fiatRates[this.nativeAsset]),
         maximum: prettyFiatBalance(
-          getSendFee(this.asset, maximumFee),
+          getSendFee(this.nativeAsset, maximumFee),
           this.fiatRates[this.nativeAsset]
         )
       }
@@ -306,13 +306,13 @@ export default {
       const defaultFee =
         fastPreset.fee?.suggestedBaseFeePerGas + fastPreset.fee?.maxPriorityFeePerGas || 0
       const maximumFee = fastPreset.fee?.suggestedBaseFeePerGas + fastPreset.fee?.maxFeePerGas || 0
-      const sendFee = getSendFee(this.asset, defaultFee)
+      const sendFee = getSendFee(this.nativeAsset, defaultFee)
 
       return {
         amount: BN(sendFee).dp(6),
         fiat: prettyFiatBalance(this.totalFees.fast, this.fiatRates[this.nativeAsset]),
         maximum: prettyFiatBalance(
-          getSendFee(this.asset, maximumFee),
+          getSendFee(this.nativeAsset, maximumFee),
           this.fiatRates[this.nativeAsset]
         )
       }
@@ -339,21 +339,21 @@ export default {
     },
     minerTipFiat() {
       const fiat = prettyFiatBalance(
-        getSendFee(this.asset, this.minerTip),
+        getSendFee(this.nativeAsset, this.minerTip),
         this.fiatRates[this.nativeAsset]
       )
       return isNaN(fiat) ? 0 : fiat
     },
     maxFiat() {
       const fiat = prettyFiatBalance(
-        getSendFee(this.asset, this.maximumFee),
+        getSendFee(this.nativeAsset, this.maximumFee),
         this.fiatRates[this.nativeAsset]
       )
       return isNaN(fiat) ? 0 : fiat
     },
     minimum() {
       const minimumFee = this.minerTip + this.suggestedBaseFeePerGas
-      const totalMinFee = getSendFee(this.asset, minimumFee).plus(this.totalFees.slow)
+      const totalMinFee = getSendFee(this.nativeAsset, minimumFee).plus(this.totalFees.slow)
       return {
         amount: BN(totalMinFee).dp(6),
         fiat: prettyFiatBalance(this.totalFees.slow, this.fiatRates[this.nativeAsset])
@@ -361,7 +361,7 @@ export default {
     },
     maximum() {
       const maximumFee = this.maximumFee
-      const totalMaxFee = getSendFee(this.asset, maximumFee).plus(this.totalFees.fast)
+      const totalMaxFee = getSendFee(this.nativeAsset, maximumFee).plus(this.totalFees.fast)
       return {
         amount: BN(totalMaxFee).dp(6),
         fiat: prettyFiatBalance(this.totalFees.fast, this.fiatRates[this.nativeAsset])

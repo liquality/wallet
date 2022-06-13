@@ -13,6 +13,7 @@ const passwordPage = new PasswordPage()
 let browser, page, dappPage
 const pangolin_Url = 'https://app.pangolin.exchange/'
 const chainId = 43114
+const expectedAddress = '0x3f429e2212718a717bd7f9e83ca47dab7956447b'
 
 describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
@@ -97,9 +98,9 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
       'Avalanche chain ID is not expected after dapp connection'
     ).equals(chainId)
     expect(
-      connectedChainDetails.connectedAddress[0],
+      connectedChainDetails.connectedAddress[0].toLowerCase(),
       'Avalanche connected address is not expected after dapp connection'
-    ).equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
+    ).equals(expectedAddress.toLowerCase())
 
     await page.bringToFront()
   })
