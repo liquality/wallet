@@ -651,6 +651,32 @@ class OverviewPage {
     await page.click('#manage_assets')
     console.log('User clicked on Manage Assets')
   }
+
+  /**
+   * Click on ACTIVITY tab from overview.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickActivityTab(page) {
+    await page.waitForSelector('#activity_tab', { visible: true })
+    await page.click('#activity_tab')
+    console.log('User clicked on ACTIVITY tab from overview page')
+    }
+
+  /**
+   * Extra file from file system into memory.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ExtractFile() {
+    const fs = require('fs');
+    const fileNames = fs.readdirSync('./Downloads');
+    const fileData = fs.readFileSync(`./Downloads/${fileNames[0]}`);
+    await Apify.setValue('activity', fileData, { contentType: 'application/csv'});
+    }
+  
 }
 
 
