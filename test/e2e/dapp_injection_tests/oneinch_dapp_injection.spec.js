@@ -9,6 +9,7 @@ const testUtil = new TestUtil()
 const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
+const expectedAddress = '0x3f429e2212718a717bd7f9e83ca47dab7956447b'
 
 let browser, page
 const dappUrl = 'https://app.1inch.io'
@@ -28,7 +29,7 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Web3 toggle on by default
     await overviewPage.CheckWeb3ToggleOn(page)
@@ -86,9 +87,9 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     })
     expect(connectedChainDetails.chainId, 'Uniswap ethereum dapp connection issue').equals(1)
     expect(
-      connectedChainDetails.connectedAddress[0],
+      connectedChainDetails.connectedAddress[0].toLowerCase(),
       'Uniswap ethereum dapp connection issue'
-    ).equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
+    ).equals(expectedAddress.toLowerCase())
   })
   it.skip('1Inch injection - BSC', async () => {
     let chain = 'bsc'
@@ -138,8 +139,9 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
       }
     })
     expect(connectedChainDetails.chainId, 'Uniswap bsc dapp connection issue').equals(56)
-    expect(connectedChainDetails.connectedAddress[0], 'Uniswap bsc dapp connection issue').equals(
-      '0x3f429e2212718a717bd7f9e83ca47dab7956447b'
-    )
+    expect(
+      connectedChainDetails.connectedAddress[0].toLowerCase(),
+      'Uniswap bsc dapp connection issue'
+    ).equals(expectedAddress.toLowerCase())
   })
 })

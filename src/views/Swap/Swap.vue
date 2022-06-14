@@ -396,7 +396,6 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { version as walletVersion } from '../../../package.json'
 import { ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
@@ -441,8 +440,9 @@ import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
+import { version as walletVersion } from '../../../package.json'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { BG_PREFIX } from '@/broker/utils'
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import { buildConfig } from '@liquality/wallet-core'
 import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
 import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
@@ -1072,17 +1072,9 @@ export default {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (
-            type === `${BG_PREFIX}app/SET_USB_BRIDGE_TRANSPORT_CREATED` &&
-            payload.connected === true
-          ) {
-            this.bridgeModalOpen = false
-            await this.swap()
-            if (unsubscribe) {
-              unsubscribe()
-            }
-          }
+        const unsubscribe = createConnectSubscription(() => {
+          this.bridgeModalOpen = false
+          this.swap()
         })
         setTimeout(() => {
           if (unsubscribe) {

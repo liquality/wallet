@@ -1,29 +1,30 @@
 import { stringify } from 'qs'
-
 import { emitter } from '../../utils'
 import { createPopup } from '../../../broker/utils'
 
 const CONFIRM_REQUIRED = [
-  /^chain.buildTransaction$/,
-  /^chain.buildBatchTransaction$/,
-  /^chain.sendTransaction$/,
-  /^chain.sendBatchTransaction$/,
-  /^chain.updateTransactionFee$/,
+  /^wallet.buildTransaction$/,
+  /^wallet.buildBatchTransaction$/,
+  /^wallet.sendTransaction$/,
+  /^wallet.sendBatchTransaction$/,
+  /^wallet.updateTransactionFee$/,
   /^wallet.signMessage*$/,
+  /^wallet.signTypedData*$/,
   /^swap.generateSecret$/,
   /^swap.initiateSwap$/,
   /^swap.claimSwap$/,
   /^swap.refundSwap$/,
+  /^swap.updateTransactionFee$/,
 
   // Bitcoin
-  /^signPSBT$/
+  /^wallet.signPSBT$/
 ]
 
 const ALLOWED = [
   ...CONFIRM_REQUIRED,
   /^wallet.getConnectedNetwork$/,
   /^wallet.getAddresses*$/,
-  /^jsonrpc$/
+  /^chain.sendRpcRequest$/
 ]
 
 export const requestPermission = async (
@@ -83,10 +84,15 @@ export const requestPermission = async (
 
         let permissionRoute = '/permission/default'
 
-        if (chain === 'terra') permissionRoute = '/permission/terra'
-        else if (method === 'chain.sendTransaction') permissionRoute = '/permission/send'
-        else if (method === 'wallet.signMessage') permissionRoute = '/permission/sign'
-        else if (method === 'signPSBT') permissionRoute = '/permission/signPsbt'
+        if (chain === 'terra') {
+          permissionRoute = '/permission/terra'
+        } else if (method === 'wallet.sendTransaction') {
+          permissionRoute = '/permission/send'
+        } else if (method === 'wallet.signMessage' || method === 'wallet.signTypedData') {
+          permissionRoute = '/permission/sign'
+        } else if (method === 'wallet.signPSBT') {
+          permissionRoute = '/permission/signPsbt'
+        }
 
         createPopup(`${permissionRoute}?${query}`, () => reject(new Error('User denied')))
       })

@@ -5,12 +5,17 @@
         <div class="step-number">2</div>
         <div class="step-name">Unlock Account</div>
       </div>
-      <div class="step-text" v-if="selectedAsset && selectedAsset.chain === 'BTC'">
-        <div>
-          If you don’t see your existing Ledger accounts below, switch path to Legacy vs Native
-          Segwit
-        </div>
-        <div class="step-path" v-if="selectedAsset && selectedAsset.chain === 'BTC'">
+      <div class="step-text" v-if="selectedAsset && selectedAsset.chain === 'bitcoin'">
+        <div class="step-path">
+          <button
+            class="btn btn-link"
+            v-tooltip.top="{
+              content:
+                'If you don’t see your existing Ledger accounts below, switch path to Legacy vs Native Segwit'
+            }"
+          >
+            <InfoIcon class="info-icon" />
+          </button>
           <div class="btn-group" v-click-away="hideLedgerBitcoinOptions">
             <button
               class="btn dropdown-toggle custom-dropdown-toggle"
@@ -67,7 +72,10 @@
             <tbody>
               <tr
                 @click="selectAccount(item)"
-                :class="{ disabled: item.exists }"
+                :class="{
+                  disabled: item.exists,
+                  selected: selectedAccounts[item.account.address]
+                }"
                 v-for="item in accounts"
                 :key="item.account.address"
               >
@@ -83,6 +91,15 @@
                     {{ shortenAddress(item.account.address) }}
                   </div>
                 </td>
+                <td class="balance">
+                  <div>
+                    <div>
+                      {{ prettyBalance(item.balance, selectedAsset.name) }}
+                      {{ selectedAsset.name }}
+                    </div>
+                    <div class="fiat">${{ formatFiat(item.fiatBalance) }}</div>
+                  </div>
+                </td>
                 <td class="account-selected-mark">
                   <CheckRightIcon v-if="selectedAccounts[item.account.address]" />
                   <span v-else>&nbsp;</span>
@@ -91,7 +108,7 @@
             </tbody>
           </table>
           <div class="account-nav">
-            <button class="btn btn-link" @click="prev" :disabled="currentPage <= 0">
+            <button class="btn btn-link" @click="prev" :disabled="currentPage <= 1">
               Previous
             </button>
 
@@ -99,7 +116,8 @@
           </div>
         </div>
         <div v-else class="account-message">
-          {{ ledgerError && ledgerError.message ? ledgerError.message : 'No Accounts Found' }}
+          We weren’t able to get a list of accounts. Please try again, check on the ledger if the
+          right app/asset was selected or cancel and choose a different asset.
         </div>
       </div>
     </div>
@@ -137,6 +155,8 @@ import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import CheckRightIcon from '@/assets/icons/check.svg'
+import { prettyBalance, formatFiat } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import InfoIcon from '@/assets/icons/info.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 export default {
@@ -148,7 +168,8 @@ export default {
     CircleProgressBar,
     ChevronDownIcon,
     ChevronUpIcon,
-    CheckRightIcon
+    CheckRightIcon,
+    InfoIcon
   },
   props: [
     'loading',
@@ -169,6 +190,8 @@ export default {
     this.ledgerBitcoinOption = this.ledgerBitcoinOptions[0]
   },
   methods: {
+    prettyBalance,
+    formatFiat,
     getAccountIcon,
     shortenAddress,
     unlock() {
@@ -266,19 +289,31 @@ export default {
     justify-content: center;
     width: 100%;
     color: #1d1e21;
-    height: 55px;
+    height: 120px;
     background-color: rgba($color: #fff3bc, $alpha: 0.5);
     padding: 5px 20px 5px 20px;
     font-style: normal;
     font-weight: 300;
-    font-size: 11px;
+    font-size: 14px;
     line-height: 16px;
   }
 
   .accounts-table {
+    margin-bottom: 0.3rem;
+
     tr {
-      height: 35px;
       cursor: pointer;
+      &:hover,
+      &.selected {
+        background-color: #f0f7f9;
+        color: $color-text-primary;
+      }
+    }
+
+    th,
+    td {
+      padding: 0.25rem;
+      vertical-align: middle;
     }
 
     .account-index,
@@ -293,6 +328,22 @@ export default {
         display: flex;
         width: 100%;
         height: 100%;
+      }
+    }
+
+    .balance {
+      div {
+        text-align: right;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-end;
+
+        .fiat {
+          color: $color-text-muted;
+        }
       }
     }
 
@@ -321,5 +372,9 @@ export default {
       height: 9px;
     }
   }
+}
+
+.info-icon {
+  width: 20px;
 }
 </style>

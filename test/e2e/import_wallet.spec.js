@@ -138,7 +138,7 @@ describe('Import wallet-["MAINNET"]', async () => {
     await homePage.EnterSeedWords(page)
     await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
@@ -190,7 +190,7 @@ describe('Import wallet-["MAINNET"]', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page, 'mainnet')

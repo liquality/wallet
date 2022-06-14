@@ -255,7 +255,7 @@ import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { BG_PREFIX } from '@/broker/utils'
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 
 export default {
   components: {
@@ -432,9 +432,7 @@ export default {
       return cryptoassets[this.asset].chain === ChainId.Terra
     },
     memoData() {
-      return {
-        memo: this.memo
-      }
+      return this.memo
     }
   },
   methods: {
@@ -473,7 +471,7 @@ export default {
           const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
           try {
             const txs = feePerBytes.map((fee) => ({ value, fee }))
-            const totalFees = await client.getMethod('getTotalFees')(txs, getMax)
+            const totalFees = await client.wallet.getTotalFees(txs, getMax)
             for (const [speed, fee] of Object.entries(this.assetFees)) {
               const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
               sendFees[speed] = totalFee
@@ -497,21 +495,13 @@ export default {
       await this._updateSendFees()
     },
     async tryToSend() {
-      if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
+      if (!this.ledgerBridgeReady && this.account?.type.includes('ledger')) {
         this.loading = true
         this.bridgeModalOpen = true
         await this.startBridgeListener()
-        const unsubscribe = this.$store.subscribe(async ({ type, payload }) => {
-          if (
-            type === `${BG_PREFIX}app/SET_LEDGER_BRIDGE_CONNECTED` &&
-            payload.connected === true
-          ) {
-            this.bridgeModalOpen = false
-            await this.send()
-            if (unsubscribe) {
-              unsubscribe()
-            }
-          }
+        const unsubscribe = createConnectSubscription(() => {
+          this.bridgeModalOpen = false
+          this.send()
         })
 
         setTimeout(() => {

@@ -9,8 +9,17 @@
         <img :src="getAssetIcon(asset)" class="permission-sign_icon mt-4 mb-2" />
         <p class="permission-sign_address">{{ shortenAddress(address) }}</p>
         <div class="permission-sign_message mt-4">
-          <p class="text-left mb-1">Message:</p>
-          <textarea v-model="message" readonly></textarea>
+          <p class="text-left mb-1 font-weight-bold">Message:</p>
+          <div class="legacy-message" v-if="typeof messageToDisplay === 'string'">
+            <pre>{{ messageToDisplay }}</pre>
+          </div>
+
+          <div class="signed-typed-data-message" v-else>
+            <div v-for="[key, value] in messageToDisplay" :key="key">
+              <span>[{{ key }}]</span>
+              <div>{{ value }}</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -40,6 +49,13 @@ import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import { isAddress } from 'ethers/lib/utils'
+
+const signTypedDataMethodToVersion = {
+  eth_signTypedData: 'V1',
+  eth_signTypedData_v3: 'V3',
+  eth_signTypedData_v4: 'V4'
+}
 
 function isHex(str) {
   return Boolean(str.match(/^[0-9a-f]+$/i))
@@ -64,7 +80,9 @@ export default {
   data() {
     return {
       loading: false,
-      replied: false
+      replied: false,
+      messageToDisplay: '',
+      messageToSign: ''
     }
   },
   methods: {
@@ -73,14 +91,16 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async reply(allowed) {
-      if (this.loading) return
+      if (this.loading) {
+        return
+      }
       this.loading = true
 
       try {
         await this.replyPermission({
           request: {
             ...this.request,
-            args: [this.message, this.request.args[1]]
+            args: [this.messageToSign, this.request.args[1]]
           },
           allowed
         })
@@ -100,16 +120,42 @@ export default {
       return this.request.asset
     },
     address() {
-      return this.request.args[1]
-    },
-    message() {
-      return hexToAscii(this.request.args[0])
+      return this.request.args[1] || this.request.args[0].params[0]
     },
     request() {
       return {
         ...this.$route.query,
         args: JSON.parse(this.$route.query.args)
       }
+    }
+  },
+  created() {
+    if (this.request.method === 'wallet.signTypedData') {
+      const { method, params } = this.request.args[0]
+
+      const first = params[0]
+      const second = params[1]
+      const msgParams = { version: signTypedDataMethodToVersion[method] }
+      const extra = params[2] || {}
+      try {
+        if (isAddress(first)) {
+          msgParams.from = first
+          msgParams.data = JSON.parse(second)
+        } else {
+          msgParams.from = second
+          msgParams.data = JSON.parse(first)
+        }
+      } catch (err) {
+        throw new Error(`Invalid JSON: ${err}`)
+      }
+
+      this.messageToDisplay = Object.entries(msgParams.data)
+      this.messageToSign = { ...msgParams, ...extra }
+    }
+    // Handle wallet.signMessage
+    else {
+      this.messageToDisplay = hexToAscii(this.request.args[0])
+      this.messageToSign = hexToAscii(this.request.args[0])
     }
   }
 }
@@ -131,6 +177,37 @@ export default {
       width: 100%;
       height: 120px;
       resize: none;
+    }
+  }
+
+  .legacy-message {
+    text-align: start;
+    height: 176px;
+    overflow-y: auto;
+    font-size: 14px;
+    pre {
+      white-space: pre-wrap;
+      font-family: 'Montserrat', sans-serif;
+    }
+  }
+
+  .signed-typed-data-message {
+    height: 176px;
+    overflow-y: auto;
+
+    div {
+      text-align: start;
+
+      span {
+        &:first-child {
+          font-weight: bold;
+          margin-right: 5px;
+        }
+      }
+
+      div {
+        overflow-wrap: break-word;
+      }
     }
   }
 }

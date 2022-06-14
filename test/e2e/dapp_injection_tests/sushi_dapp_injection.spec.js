@@ -28,7 +28,7 @@ describe('Sushi Dapp Injection-["MAINNET"]', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Web3 toggle on
     await overviewPage.CheckWeb3ToggleOn(page)

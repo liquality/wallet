@@ -18,7 +18,7 @@ const transactionDetailsPage = new TransactionDetailsPage()
 let browser, page
 
 // https://linear.app/liquality/issue/LIQ-358/exploratory-report-on-terra
-describe('Terra SEND["TESTNET", "PULL_REQUEST_TEST","MAINNET"]', async () => {
+describe.skip('Terra SEND["TESTNET", "PULL_REQUEST_TEST","MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -32,7 +32,7 @@ describe('Terra SEND["TESTNET", "PULL_REQUEST_TEST","MAINNET"]', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)

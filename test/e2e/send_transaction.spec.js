@@ -35,7 +35,7 @@ describe('SEND feature["TESTNET"]', async () => {
     // Create a password & submit
     await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Select testnet
     await overviewPage.SelectNetwork(page)
@@ -143,12 +143,14 @@ describe('SEND feature["TESTNET"]', async () => {
 
     await sendPage.ValidateSendConfirmationStatus(page)
   })
-  it('Send MATIC to MATIC-["PULL_REQUEST_TEST",""MAINNET_RELEASE""]', async () => {
+  it('Send MATIC to MATIC-["PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
     const assetName = 'MATIC'
     const coinsToSend = '0.000001'
     const addressToSend = '0x8bacCa9f607025974AbE1c486E45F7CeD02f54Ce'
 
     await overviewPage.SelectAssetFromOverview(page, assetName)
+    // Validate balance is greater than 0
+    await overviewPage.checkAssetBalance(page, assetName)
     await page.waitForSelector(`#${assetName}_send_button`, { visible: true })
     await page.click(`#${assetName}_send_button`)
     // Enter send amount (or) coins

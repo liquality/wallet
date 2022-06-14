@@ -84,7 +84,7 @@ describe('Receive tokens ["MAINNET"]', async () => {
       await passwordPage.SubmitPasswordDetails(page)
       // overview page
       await overviewPage.HasOverviewPageLoaded(page)
-      await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.CloseWhatsNewModal(page)
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
       // Select BTC
@@ -129,7 +129,7 @@ describe('Receive tokens ["MAINNET"]', async () => {
       // Create a password & submit
       await passwordPage.SubmitPasswordDetails(page)
       // overview page
-      await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.CloseWhatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
       // Select Network
       await overviewPage.SelectNetwork(page, 'mainnet')

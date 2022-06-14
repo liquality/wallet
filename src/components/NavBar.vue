@@ -217,6 +217,7 @@ export default {
   height: 44px;
   padding: 0 !important;
   border-bottom: 1px solid $hr-border-color;
+  z-index: 9998;
 
   &_title {
     width: 100%;
