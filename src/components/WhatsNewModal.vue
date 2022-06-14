@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Updated core libraries and bug improvement</pre>
+            <pre class="text-wrap">* Updated core libraries and bug improvements</pre>
           </div>
         </div>
       </div>
