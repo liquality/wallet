@@ -36,7 +36,7 @@ const getExecutedMethod = (msgs) => {
 }
 
 const getTransactionParams = (payload) => {
-  const { fee, gasAdjustment, msgs } = payload
+  const { fee, msgs } = payload
   const msg = JSON.parse(msgs[0]).value || JSON.parse(msgs[0])
   const { amount, gas, gas_limit: gasLimit } = JSON.parse(fee)
 
@@ -65,7 +65,7 @@ const getTransactionParams = (payload) => {
     to,
     method,
     fee: _fee,
-    gasAdjustment,
+    gasLimit: _gas,
     value: asset === 'uluna' ? value : 0
   }
 }
@@ -90,7 +90,7 @@ export const connectRemote = (remotePort, store) => {
 
     const handleRequest = async (key) => {
       if (key === 'post') {
-        const { to, gasAdjustment, fee, asset, method, value } = getTransactionParams(payload)
+        const { to, fee, asset, method, value, gasLimit } = getTransactionParams(payload)
 
         const { externalConnections, activeWalletId } = store.state
 
@@ -103,7 +103,7 @@ export const connectRemote = (remotePort, store) => {
             asset,
             method,
             data: payload,
-            gas: gasAdjustment,
+            gas: gasLimit,
             value,
             accountId
           }
