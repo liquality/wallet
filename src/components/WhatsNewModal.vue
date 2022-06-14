@@ -10,13 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-* Buy crypto here with your debit/credit Card or Bank Transfer via Transak!</pre
-            >
-            <pre class="text-wrap">
-* Access OpenSea's marketplace by setting Liquality as your Default Web3 Wallet in Settings</pre
-            >
-            <pre class="text-wrap">* Minor bug fixes</pre>
+            <pre class="text-wrap">* Updated core libraries and bug improvements</pre>
           </div>
         </div>
       </div>

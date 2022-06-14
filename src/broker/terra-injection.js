@@ -114,7 +114,7 @@ export const connectRemote = (remotePort, store) => {
             origin,
             data: {
               args,
-              method: 'chain.sendTransaction',
+              method: 'wallet.sendTransaction',
               asset: 'LUNA',
               chain: 'terra',
               accountId

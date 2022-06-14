@@ -5,7 +5,7 @@ export const executeRequest = async ({ rootGetters, dispatch, rootState }, { req
   const account = accountItem(accountId)
   let call
   const result = await new Promise((resolve) => {
-    if (request.method === 'chain.sendTransaction') {
+    if (request.method === 'wallet.sendTransaction') {
       call = dispatch(
         'sendTransaction',
         {
