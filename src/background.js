@@ -77,10 +77,6 @@ store.subscribe(async ({ type, payload }, state) => {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      dispatch('updateBalances', {
-        network: state.activeNetwork,
-        walletId: state.activeWalletId
-      })
       dispatch('updateFiatRates', { assets: store.getters.allNetworkAssets })
       dispatch('updateMarketData', { network: state.activeNetwork })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
