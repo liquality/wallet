@@ -20,7 +20,7 @@
         </div>
       </div>
       <template v-if="showFullscreen === false">
-        <div class="nft-img">
+        <div class="nft-img" v-if="nftAsset.image_url">
           <img :src="nftAsset.image_url" alt="image" />
         </div>
         <div class="drawer nft-details">

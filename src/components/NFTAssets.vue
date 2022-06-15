@@ -61,12 +61,12 @@ export default {
     NFTAsset
   },
   computed: {
-    ...mapGetters(['nftAssetsByCollection', 'nftAssetsByAccount']),
+    ...mapGetters(['allNftCollections', 'accountNftCollections']),
     nftCollection() {
       if (this.isAccount) {
-        return this.nftAssetsByAccount[this.chain][this.collectionName]
+        return this.accountNftCollections[this.chain][this.collectionName]
       } else {
-        return this.nftAssetsByCollection[this.collectionName]
+        return this.allNftCollections[this.collectionName]
       }
     },
     firstThreeAssets() {

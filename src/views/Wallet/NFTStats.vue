@@ -78,15 +78,15 @@ export default {
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork', 'addresses']),
-    ...mapGetters(['accountsData', 'nftAssetsByAccount', 'nftAssetsByCollection']),
+    ...mapGetters(['accountsData', 'accountNftCollections', 'allNftCollections']),
     source() {
       return this.$route.fullPath
     },
     nftAssets() {
       if (this.isAccount) {
-        return this.nftAssetsByAccount[this.chain]
+        return this.accountNftCollections[this.chain]
       } else {
-        return this.nftAssetsByCollection
+        return this.allNftCollections
       }
     },
     nftAssetsCount() {
@@ -103,13 +103,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getNFTAssets']),
+    ...mapActions(['updateNFTs']),
     getAssetIcon,
     shortenAddress,
     async refresh() {
       try {
         this.updatingAssets = true
-        await this.getNFTAssets({
+        await this.updateNFTs({
           walletId: this.activeWalletId,
           network: this.activeNetwork
         })

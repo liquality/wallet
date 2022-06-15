@@ -176,7 +176,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['getNFTAssets']),
+    ...mapActions(['updateNFTs']),
     getAccountIcon,
     getAssetIcon,
     prettyBalance,
@@ -200,10 +200,14 @@ export default {
       return this.expandedAccounts.includes(account.id) || this.search
     },
     async getNftCollections() {
+      const accountIds = this.accounts.map((account) => {
+        return account.id
+      })
       try {
-        await this.getNFTAssets({
+        await this.updateNFTs({
           walletId: this.activeWalletId,
-          network: this.activeNetwork
+          network: this.activeNetwork,
+          accountIds: accountIds
         })
       } catch (error) {
         console.error(error)

@@ -312,7 +312,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['activity', 'accountItem', 'accountsData', 'nftAssetsByAccount']),
+    ...mapGetters(['activity', 'accountItem', 'accountsData', 'accountNftCollections']),
     ...mapState([
       'activeNetwork',
       'activeWalletId',
@@ -337,7 +337,7 @@ export default {
       }
     },
     nftCollection() {
-      return this.nftAssetsByAccount[this.$route.query?.chain || this.selectedNFT?.chain]
+      return this.accountNftCollections[this.$route.query?.chain || this.selectedNFT?.chain]
     },
     routeSource() {
       if (this.$route.query?.source) {

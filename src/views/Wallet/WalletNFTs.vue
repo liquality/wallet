@@ -12,7 +12,7 @@
         />
       </template>
     </div>
-    <div class="activity-empty" v-else>
+    <div class="activity-empty m-4" v-else>
       <p>
         Once you start owning NFTs with accounts in your Liquality wallet you will see them here.
       </p>
@@ -61,14 +61,14 @@ export default {
   },
   created() {
     if (this.isAccount) {
-      this.assets = this.nftAssetsByAccount[this.chain]
+      this.assets = this.accountNftCollections[this.chain]
     } else {
-      this.assets = this.nftAssetsByCollection
+      this.assets = this.allNftCollections
     }
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
-    ...mapGetters(['nftAssetsByCollection', 'nftAssetsByAccount']),
+    ...mapGetters(['allNftCollections', 'accountNftCollections']),
     nftExplorerLink() {
       const asset = chains[this.chain].nativeAsset
       return getNftLink(asset, this.activeNetwork)

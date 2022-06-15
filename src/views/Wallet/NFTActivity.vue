@@ -72,12 +72,12 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'history']),
-    ...mapGetters(['activity', 'accountItem', 'nftAssetsByAccount']),
+    ...mapGetters(['activity', 'accountItem', 'accountNftCollections']),
     assetHistory() {
       return this.activity.filter((item) => item.type === 'NFT')
     },
     nftAssets() {
-      return this.nftAssetsByAccount[this.id] || []
+      return this.accountNftCollections[this.id] || []
     },
     nftAssetsCount() {
       return Object.values(this.nftAssets).reduce((acc, collection) => acc + collection.length, 0)

@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 export default {
   props: {
     nftAsset: {
@@ -34,15 +34,15 @@ export default {
     ...mapGetters(['accountsData'])
   },
   methods: {
-    ...mapMutations(['SET_STARRED_NFTS']),
+    ...mapActions(['toggleNFTStarred']),
     async toggleStarred() {
       this.nftAsset.starred = !this.nftAsset.starred
-      this.SET_STARRED_NFTS({
-        nftAsset: this.nftAsset,
-        walletId: this.activeWalletId,
+      await this.toggleNFTStarred({
         network: this.activeNetwork,
+        walletId: this.activeWalletId,
         accountId: this.accountsData.filter((account) => account.chain === this.nftAsset.chain)[0]
-          .id
+          .id,
+        nft: this.nftAsset
       })
     }
   }
