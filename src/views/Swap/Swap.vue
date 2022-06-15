@@ -106,11 +106,14 @@
               <div class="network-header-container">
                 <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
                 <div class="network-header-state">
-                  <span class="text-muted">
+                  <span class="text-muted" v-if="isFromCustomFeeSupported">
                     {{ assetChain }}
                     {{ assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : '' }}
                   </span>
-                  <span class="text-muted" v-if="toAssetChain && assetChain != toAssetChain">
+                  <span
+                    class="text-muted"
+                    v-if="toAssetChain && assetChain != toAssetChain && isToCustomFeeSupported"
+                  >
                     / {{ toAssetChain }}
                     {{ toAssetChain ? getSelectedFeeLabel(selectedFee[toAssetChain]) : '' }}
                   </span>
@@ -119,26 +122,44 @@
             </template>
             <template v-slot:content>
               <ul class="selectors">
-                <li v-for="assetFee in availableFees" :key="assetFee">
+                <li v-for="(assetFee, idx) in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     <span v-if="getTotalSwapFee(assetFee).dp(6).eq(0)"
                       >{{ dpUI(getChainAssetSwapFee(assetFee)) }}
                     </span>
                     <span v-else>{{ getTotalSwapFee(assetFee).dp(6) }} {{ assetFee }}</span> /
-                    {{ getTotalSwapFeeInFiat(assetFee) }} USD
+                    {{ getTotalSwapFeeInFiat(assetFee) }}
                     <button class="btn btn-link" @click="resetCustomFee(assetFee)">Reset</button>
                   </div>
-                  <FeeSelector
-                    v-else
-                    :asset="assetsFeeSelector[assetFee]"
-                    v-model="selectedFee[assetFee]"
-                    :fees="getAssetFees(assetFee)"
-                    :totalFees="amountOption === 'max' ? maxSwapFees[assetFee] : swapFees[assetFee]"
-                    :fiatRates="fiatRates"
-                    @custom-selected="onCustomFeeSelected"
-                    :swap="true"
-                  />
+                  <div v-else>
+                    <FeeSelector
+                      v-if="
+                        (idx === 0 && isFromCustomFeeSupported) ||
+                        (idx === 1 && isToCustomFeeSupported)
+                      "
+                      :asset="assetsFeeSelector[assetFee]"
+                      v-model="selectedFee[assetFee]"
+                      :fees="getAssetFees(assetFee)"
+                      :totalFees="
+                        amountOption === 'max' ? maxSwapFees[assetFee] : swapFees[assetFee]
+                      "
+                      :fiatRates="fiatRates"
+                      @custom-selected="onCustomFeeSelected"
+                      :swap="true"
+                    />
+                    <div
+                      v-else-if="
+                        (idx === 0 && !isFromCustomFeeSupported) ||
+                        (idx === 1 && !isToCustomFeeSupported)
+                      "
+                      class="network-header-container"
+                    >
+                      <span class="text-muted" id="send_network_speed_avg_fee">
+                        ({{ swapFees[assetFee].slow }} {{ assetFee }})
+                      </span>
+                    </div>
+                  </div>
                 </li>
                 <li v-if="hasPredefinedReceiveFee">
                   <span class="selectors-asset">{{ toAsset }} </span>{{ dpUI(receiveFee) }} /
@@ -559,6 +580,16 @@ export default {
     clearInterval(this.interval)
   },
   computed: {
+    isFromCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
+      console.log('from', supportCustomFees)
+      return supportCustomFees
+    },
+    isToCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.toAsset].chain]
+      console.log('to', supportCustomFees)
+      return supportCustomFees
+    },
     account() {
       return this.accountItem(this.fromAccountId)
     },
@@ -1464,5 +1495,9 @@ export default {
     height: 18px;
     fill: #a8aeb7;
   }
+}
+
+#send_network_speed_avg_fee {
+  margin-top: 0;
 }
 </style>

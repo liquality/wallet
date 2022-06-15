@@ -59,7 +59,7 @@
             </div>
           </div>
           <div class="form-group mt-150" v-bind:class="[showMemoInput ? 'adjustFeePosition' : '']">
-            <DetailsContainer v-if="feesAvailable">
+            <DetailsContainer v-if="feesAvailable && isCustomFeeSupported">
               <template v-slot:header>
                 <div class="network-header-container">
                   <span class="details-title" id="send_network_speed"> Network Speed/Fee </span>
@@ -95,6 +95,17 @@
                 </ul>
               </template>
             </DetailsContainer>
+
+            <template v-if="!isCustomFeeSupported">
+              <div class="network-header-container">
+                <span class="details-title" id="send_network_speed"
+                  ><strong> Network Speed/Fee </strong></span
+                >
+                <span class="text-muted" id="send_network_speed_avg_fee">
+                  ({{ prettyFee }} {{ assetChain }})
+                </span>
+              </div>
+            </template>
           </div>
         </div>
         <div class="wrapper_bottom">
@@ -188,6 +199,7 @@
             </p>
           </div>
         </div>
+        {{ isCustomFeeSupported }}
         <div class="wrapper_bottom">
           <div class="button-group">
             <button
@@ -367,8 +379,12 @@ export default {
       return fees[this.selectedFee]?.fee || BN(0)
     },
     currentChainUnit() {
-      const { unit } = chains[cryptoassets[this.asset].chain].fees || ''
+      const { unit } = chains[cryptoassets[this.asset].chain] || ''
       return unit
+    },
+    isCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
+      return supportCustomFees
     },
     isValidAddress() {
       return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
@@ -454,7 +470,6 @@ export default {
 
         for (const [speed, fee] of Object.entries(this.assetFees)) {
           const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
-          console.log(this.asset, feePrice)
           sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
 
@@ -708,6 +723,12 @@ export default {
 #memo {
   border: 1px solid #a8aeb7;
   resize: none;
+}
+
+.details-title {
+  font-weight: bold;
+  text-transform: uppercase;
+  padding-right: 0.5em;
 }
 
 /* Chrome, Safari, Edge, Opera */

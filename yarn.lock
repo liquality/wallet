@@ -3737,7 +3737,7 @@ __metadata:
 
 "@liquality/cryptoassets@file:/Users/andonmitev/Desktop/Repositories/cryptoassets::locator=liquality-wallet%40workspace%3A.":
   version: 1.7.5
-  resolution: "@liquality/cryptoassets@file:/Users/andonmitev/Desktop/Repositories/cryptoassets#/Users/andonmitev/Desktop/Repositories/cryptoassets::hash=d43b63&locator=liquality-wallet%40workspace%3A."
+  resolution: "@liquality/cryptoassets@file:/Users/andonmitev/Desktop/Repositories/cryptoassets#/Users/andonmitev/Desktop/Repositories/cryptoassets::hash=2f98aa&locator=liquality-wallet%40workspace%3A."
   dependencies:
     bignumber.js: ^9.0.2
     bitcoin-address-validation: ^2.2.1
@@ -3745,7 +3745,7 @@ __metadata:
     cashaddrjs: ^0.4.4
     ethereumjs-util: ^7.1.4
     lodash: ^4.17.11
-  checksum: 109384ac90e477af532d8303df3b30d43b4da83df87fced229e1c90edb9f40bb3408c32ced6880c8f562c3b3b60030afc4467bb18acd99f1f6ee7eea6c6abd64
+  checksum: 74985bd136b844e7f3789db08e1c5df08c179eaee5f69973fe05207e20fa293f10d53c1ddbd54e50b0603c693151f4b6f6b2895a8af0526f9b08110d09684aea
   languageName: node
   linkType: hard
 
@@ -3916,6 +3916,8 @@ __metadata:
     "@hop-protocol/sdk": 0.0.1-beta.314
     "@liquality/cryptoassets": ^1.13.2
     "@metamask/eth-sig-util": ^4.0.1
+    "@solana/spl-token": ^0.2.0
+    "@solana/web3.js": ^1.43.4
     "@terra-money/terra.js": 2.1.18
     "@thorchain/asgardex-util": ^0.10.0
     "@uniswap/sdk-core": ^3.0.1
@@ -4421,6 +4423,30 @@ __metadata:
     superstruct: ^0.14.2
     tweetnacl: ^1.0.0
   checksum: 0d036c8d1e234092f598ed559d6fd880d5b1916f94279ddd4209a0c2f76f2c2ef9a899ea0fad19c1e6511d259e460a80b71ac4d4401c707e719ace59803d11bb
+  languageName: node
+  linkType: hard
+
+"@solana/web3.js@npm:^1.43.4":
+  version: 1.44.0
+  resolution: "@solana/web3.js@npm:1.44.0"
+  dependencies:
+    "@babel/runtime": ^7.12.5
+    "@ethersproject/sha2": ^5.5.0
+    "@solana/buffer-layout": ^4.0.0
+    bigint-buffer: ^1.1.5
+    bn.js: ^5.0.0
+    borsh: ^0.7.0
+    bs58: ^4.0.1
+    buffer: 6.0.1
+    fast-stable-stringify: ^1.0.0
+    jayson: ^3.4.4
+    js-sha3: ^0.8.0
+    node-fetch: 2
+    rpc-websockets: ^7.4.2
+    secp256k1: ^4.0.2
+    superstruct: ^0.14.2
+    tweetnacl: ^1.0.0
+  checksum: f50bef41ebe3abdab294995313c503150884d9ccbab338407f4a777a9f3e11dd8f49f8bd38d659e3d799b7bcd471d97bc15ee94a79150da5c23e0bd287ebe9b7
   languageName: node
   linkType: hard
 
