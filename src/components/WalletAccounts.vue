@@ -6,7 +6,7 @@
       class="overview-screen-chain-section"
       :id="account.chain.toUpperCase()"
     >
-      <ListItem v-if="isBitcoin(account.chain)" @item-selected="selectItem(account)">
+      <ListItem v-if="account.chain === 'bitcoin'" @item-selected="selectItem(account)">
         <template #prefix>
           <div class="account-color" :style="{ 'background-color': account.color }"></div>
         </template>

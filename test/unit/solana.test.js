@@ -37,7 +37,7 @@ test('Create Client for testnet and attach Solana RpcProvider successfully', asy
 
   expect(client._providers.length).toEqual(1)
 
-  const blockHeight = await client.getMethod('getBlockHeight')()
+  const blockHeight = await client.chain.getBlockHeight()
 
   expect(blockHeight).toBeGreaterThan(100)
 })
@@ -170,15 +170,13 @@ describe('Test RPC Provider Calls', () => {
   client.addProvider(new SolanaRpcProvider(SolanaNetworks.solana_testnet))
 
   test('getBlockHeight', async () => {
-    const blockHeight = await client.getMethod('getBlockHeight')()
+    const blockHeight = await client.chain.getBlockHeight()
 
     expect(blockHeight).toBeGreaterThan(100)
   })
 
   test('getBalance', async () => {
-    const balance = await client.getMethod('getBalance')([
-      '9U5t5Nn3BAdasm8j3sQ273TsM7YZvUAjYcD16qhhNi5P'
-    ])
+    const balance = await client.chain.getBalance(['9U5t5Nn3BAdasm8j3sQ273TsM7YZvUAjYcD16qhhNi5P'])
 
     expect(balance.toNumber()).toBeGreaterThan(0)
   })

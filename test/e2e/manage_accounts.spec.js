@@ -201,10 +201,10 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
 
-  it('BTC1-BTC2 - Verify send between newly created accounts on the same network', async () => {
+  it.skip('BTC1-BTC2 - Verify send between newly created accounts on the same network', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
-   
+
     // Select Manage accounts options
     await overviewPage.ToggleExperimentButton(page, 'exp-manageAccounts-toggle-switch')
     await overviewPage.ClickOnManageAccounts(page)
@@ -253,7 +253,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // Click send button
     await page.waitForSelector('#send_button_confirm')
     await page.click('#send_button_confirm')
-    
+
     // Confirm status from transaction activity
     await page.waitForSelector('#SEND_BTC_BTC', { visible: true, timeout: 60000 })
     await page.click('#SEND_BTC_BTC')
@@ -267,14 +267,14 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // Select Manage accounts options
     await overviewPage.ToggleExperimentButton(page, 'exp-manageAccounts-toggle-switch')
     await overviewPage.ClickOnManageAccounts(page)
-    
+
     // Disable account
-    await page.click('.v-switch-core')   
-    
+    await page.click('.v-switch-core')
+
     //C lick back arrow
     await page.waitForSelector('.navbar_prev_icon')
     await page.click('.navbar_prev_icon')
-    
+
     // check total assets displayed
     const assetsAfterDisableManageAssets = await overviewPage.getTotalAssets(page)
     expect(assetsAfterDisableManageAssets).to.equal(assetsBeforeDisableManageAssets - 1)
