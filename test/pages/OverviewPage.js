@@ -7,6 +7,7 @@ const assert = require('chai').assert
 const csv = require('csv-parser');
 const fs = require('fs');
 const filePath = './temp'
+
 class OverviewPage {
   /**
    * Overview page loaded after user loggedIn.
@@ -641,18 +642,17 @@ class OverviewPage {
   }
 
   /**
-   * Delete directory recursively.
+   * Click on Manage assets from menu.
    * @param page
    * @returns {Promise<void>}
    * @constructor
    */
-  async deleteDirectory() {
-    try {
-      fs.rmdirSync(filePath, { recursive: true });
-      console.log(`${filePath} is deleted!`);
-    } catch (err) {
-      console.error(`Error while deleting ${filePath}.`);
-    }
+  async ClickOnManageAssets(page) {
+    await this.ClickOnBurgerIcon(page)
+    // Click Manage Assets
+    await page.waitForSelector('#manage_assets', { visible: true })
+    await page.click('#manage_assets')
+    console.log('User clicked on Manage Assets')
   }
 
   /**
@@ -666,6 +666,21 @@ class OverviewPage {
     await page.click('#activity_tab')
     console.log('User clicked on ACTIVITY tab from overview page')
     }
+
+  /**
+   * Delete directory recursively.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+  */
+  async deleteDirectory() {
+    try {
+      fs.rmdirSync(filePath, { recursive: true });
+      console.log(`${filePath} is deleted!`);
+    } catch (err) {
+      console.error(`Error while deleting ${filePath}.`);
+    }
+  }
 
   /**
    * Read data in csv file.

@@ -64,9 +64,10 @@ describe.only('Activity section["MAINNET"]', async () => {
     await page.waitForSelector('#send_button_confirm')
     await page.click('#send_button_confirm')
 
-    //Delete existing
+    //Delete existing temp directory
     await overviewPage.deleteDirectory(page)
-    
+
+    // Set default directory to temp
     await page._client.send('Page.setDownloadBehavior', {behavior: 'allow', downloadPath: './temp'});
     
     // Click export button
@@ -94,7 +95,7 @@ describe.only('Activity section["MAINNET"]', async () => {
     //Select type
     await page.click('.list-item-title') 
 
-    Click start date-picker
+    //Click start date-picker
     await page.click('.input-group')
     await page.click('.vdpCellContent')
 
