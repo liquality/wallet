@@ -15,7 +15,7 @@ const sendPage = new SendPage()
 
 let browser, page
 
-describe('Activity section["MAINNET"]', async () => {
+describe.only('Activity section["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -37,9 +37,6 @@ describe('Activity section["MAINNET"]', async () => {
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
 
-    // Select testnet
-    await overviewPage.SelectNetwork(page)
-
   })
   afterEach(async () => {
     await browser.close()
@@ -52,10 +49,13 @@ describe('Activity section["MAINNET"]', async () => {
     await overviewPage.SelectAssetFromOverview(page, assetName)
     await page.waitForSelector(`#${assetName}_send_button`, { visible: true })
     await page.click(`#${assetName}_send_button`)
+
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
+
     // Send address
     await sendPage.EnterSendToAddress(page, 'tb1qjnrrgyzu2htfc3r8rklztvj0ak2a3v3jfuc6kl')
+
     // Click Send Review Button
     await page.waitForSelector('#send_review_button', { visible: true, timeout: 60000 })
     await page.click('#send_review_button')
@@ -63,8 +63,10 @@ describe('Activity section["MAINNET"]', async () => {
     //Click send button
     await page.waitForSelector('#send_button_confirm')
     await page.click('#send_button_confirm')
+
+    //Delete existing
+    await overviewPage.deleteDirectory(page)
     
-    //Set download path
     await page._client.send('Page.setDownloadBehavior', {behavior: 'allow', downloadPath: './temp'});
     
     // Click export button
@@ -73,21 +75,18 @@ describe('Activity section["MAINNET"]', async () => {
 
     //Validate csv file data
     let header = await overviewPage.validateData()
+    let headerType =  Object.keys(header)
+    expect(headerType[0]).to.equals("ID")
+    expect(headerType[1]).to.equals("Network")
+    expect(headerType[2]).to.equals("Created")
+    expect(headerType[3]).to.equals("From Asset")
+    expect(headerType[4]).to.equals("To Asset")
+    expect(headerType[5]).to.equals("Send Amount")
+    expect(headerType[6]).to.equals("Receive Amount")
+    expect(headerType[7]).to.equals("Swap Tx HASH")
+    expect(headerType[8]).to.equals("Status")
+    expect(headerType[9]).to.equals("Wallet ID")
  
-    let values = Object.values(header)
-    expect(header).to.equals({
-        ID: values[0],
-        Network: values[1],
-        Created: values[2],
-        'From Asset': values[3],
-        'To Asset': values[4],
-        'Send Amount': values[5],
-        'Receive Amount': values[6],
-        'Swap Tx HASH': values[7],
-        Status: values[8],
-        'Wallet ID': values[9]  
-    })
-
     //Click filters dropdown
     await page.waitForSelector('.filter-action')
     await page.click('.filter-action')
@@ -95,7 +94,7 @@ describe('Activity section["MAINNET"]', async () => {
     //Select type
     await page.click('.list-item-title') 
 
-    //Click start date-picker
+    Click start date-picker
     await page.click('.input-group')
     await page.click('.vdpCellContent')
 

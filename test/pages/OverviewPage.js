@@ -641,17 +641,18 @@ class OverviewPage {
   }
 
   /**
-   * Click on Manage assets from menu.
+   * Delete directory recursively.
    * @param page
    * @returns {Promise<void>}
    * @constructor
    */
-  async ClickOnManageAssets(page) {
-    await this.ClickOnBurgerIcon(page)
-    // Click Manage Assets
-    await page.waitForSelector('#manage_assets', { visible: true })
-    await page.click('#manage_assets')
-    console.log('User clicked on Manage Assets')
+  async deleteDirectory() {
+    try {
+      fs.rmdirSync(filePath, { recursive: true });
+      console.log(`${filePath} is deleted!`);
+    } catch (err) {
+      console.error(`Error while deleting ${filePath}.`);
+    }
   }
 
   /**
@@ -675,7 +676,7 @@ class OverviewPage {
   async validateData() {
     let filedata 
     let file = () => new Promise((resolve) => {
-      fs.createReadStream(filePath + '/activity.csv')
+      fs.createReadStream(filePath + '/activity.csv.crdownload')
       .pipe(csv({}))
       .on('data', (data) => {
         filedata = data
