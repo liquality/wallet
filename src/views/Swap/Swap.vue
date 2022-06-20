@@ -782,10 +782,26 @@ export default {
     },
     available() {
       if (!this.networkWalletBalances) return BN(0)
+
+      // Some swap providers like "Jupiter" require extra amount to be extract from balance
+      // when perforing swaps using "MAX"
+      const getExtraAmountToExtractFromBalance =
+        this.selectedQuoteProvider?.getExtraAmountToExtractFromBalance
+
+      let extraAmountToExtractFromBalance = 0
+
+      if (getExtraAmountToExtractFromBalance) {
+        extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
+      }
+
+      console.log('isERC20', isERC20(this.asset))
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
-        : BN.max(BN(balance).minus(BN(this.maxFee).times(1.5)), 0)
+        : BN.max(
+            BN(balance).minus(BN(this.maxFee.plus(extraAmountToExtractFromBalance)).times(1.5)),
+            0
+          )
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     canCoverAmmFee() {

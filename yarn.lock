@@ -3737,7 +3737,7 @@ __metadata:
 
 "@liquality/cryptoassets@file:/Users/andonmitev/Desktop/Repositories/cryptoassets::locator=liquality-wallet%40workspace%3A.":
   version: 1.7.5
-  resolution: "@liquality/cryptoassets@file:/Users/andonmitev/Desktop/Repositories/cryptoassets#/Users/andonmitev/Desktop/Repositories/cryptoassets::hash=2f98aa&locator=liquality-wallet%40workspace%3A."
+  resolution: "@liquality/cryptoassets@file:/Users/andonmitev/Desktop/Repositories/cryptoassets#/Users/andonmitev/Desktop/Repositories/cryptoassets::hash=8cb4bc&locator=liquality-wallet%40workspace%3A."
   dependencies:
     bignumber.js: ^9.0.2
     bitcoin-address-validation: ^2.2.1
@@ -3745,7 +3745,7 @@ __metadata:
     cashaddrjs: ^0.4.4
     ethereumjs-util: ^7.1.4
     lodash: ^4.17.11
-  checksum: 74985bd136b844e7f3789db08e1c5df08c179eaee5f69973fe05207e20fa293f10d53c1ddbd54e50b0603c693151f4b6f6b2895a8af0526f9b08110d09684aea
+  checksum: 1f17fba20bc15ee3cddecfeef80b8a8a68ad3390b055fb5171970ad582862b7f2ed6c13b539e7cb6664f9320e56594e1d29724c8e477c13d29c02b0fdc7540aa
   languageName: node
   linkType: hard
 
@@ -3917,7 +3917,7 @@ __metadata:
     "@liquality/cryptoassets": ^1.13.2
     "@metamask/eth-sig-util": ^4.0.1
     "@solana/spl-token": ^0.2.0
-    "@solana/web3.js": ^1.43.4
+    "@solana/web3.js": ^1.44.0
     "@terra-money/terra.js": 2.1.18
     "@thorchain/asgardex-util": ^0.10.0
     "@uniswap/sdk-core": ^3.0.1
@@ -4426,7 +4426,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana/web3.js@npm:^1.43.4":
+"@solana/web3.js@npm:^1.44.0":
   version: 1.44.0
   resolution: "@solana/web3.js@npm:1.44.0"
   dependencies:
