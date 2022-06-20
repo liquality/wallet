@@ -71,10 +71,10 @@
         </ListItem>
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
           <ListItem
-            v-if="account.nftAssets && account.nftAssets.length > 0"
+            v-if="account.nfts && account.nfts.length > 0"
             @item-selected="
               $router.push({
-                path: `/wallet/nfts/activity/${account.chain}`
+                path: `/wallet/nfts/activity/${account.id}`
               })
             "
           >
@@ -84,12 +84,12 @@
             <template #icon class="account-asset-item">
               <NFTIcon class="asset-icon" />
             </template>
-            NFTs ({{ account.nftAssets.length || 0 }})
+            NFTs ({{ account.nfts.length || 0 }})
             <template #detail>
               <router-link
                 class="d-flex align-items-center link"
                 :to="{
-                  path: `/wallet/nfts/activity/${account.chain}`
+                  path: `/wallet/nfts/activity/${account.id}`
                 }"
                 >see all</router-link
               >

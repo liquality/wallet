@@ -1,6 +1,6 @@
 <template>
   <div class="nft-image" style="--img-width: 100px">
-    <Star :nftAsset="nftAsset" />
+    <Star :nftAsset="nftAsset" :accountId="accountId" />
     <img :src="nftAssetImageSource" alt="" @click="viewNFTDetails" />
   </div>
 </template>
@@ -19,6 +19,10 @@ export default {
     mode: {
       type: String,
       required: true
+    },
+    accountId: {
+      type: String,
+      required: false
     }
   },
   computed: {
@@ -37,7 +41,7 @@ export default {
       if (this.nftAsset) {
         this.$router.push({
           path: `/details/nft-asset/${this.nftAsset.name}`,
-          query: { nftAsset: this.nftAsset }
+          query: { nftAsset: this.nftAsset, accountId: this.accountId }
         })
       }
     }
@@ -48,6 +52,7 @@ export default {
 <style lang="scss">
 .nft-image {
   width: var(--img-width);
+  height: var(--img-width);
   border-radius: 10px;
   border: 1px solid $hr-border-color;
   overflow: hidden;
@@ -57,6 +62,8 @@ export default {
   cursor: pointer;
   position: relative;
   img {
+    width: 100%;
+    height: 100%;
     &.img-active {
       transform: translateX(-100%);
     }

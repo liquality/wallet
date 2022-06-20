@@ -6,7 +6,7 @@
       >
     </NavBar>
     <div class="account-content">
-      <NFTStats :isAccount="true" :chain="id" />
+      <NFTStats :isAccount="true" :id="id" />
       <div class="wallet-tabs">
         <ul class="nav nav-tabs">
           <li class="nav-item" @click="activeTab = 'nfts'">
@@ -19,7 +19,7 @@
           </li>
         </ul>
         <div v-if="activeTab === 'nfts'">
-          <WalletNFTs :source="'NFTActivity'" :isAccount="true" :chain="id" />
+          <WalletNFTs :source="'NFTActivity'" :isAccount="true" :id="id" />
         </div>
         <div class="account-container_transactions" v-if="activeTab === 'activity'">
           <ActivityFilter
@@ -77,7 +77,7 @@ export default {
       return this.activity.filter((item) => item.type === 'NFT')
     },
     nftAssets() {
-      return this.accountNftCollections[this.id] || []
+      return this.accountNftCollections(this.id) || []
     },
     nftAssetsCount() {
       return Object.values(this.nftAssets).reduce((acc, collection) => acc + collection.length, 0)

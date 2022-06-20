@@ -24,7 +24,7 @@
         :class="{ 'nft-assets__container__images--is-account': isAccount }"
       >
         <template v-for="nft in isAccount ? assets : firstThreeAssets">
-          <NFTAsset :nftAsset="nft" :mode="'thumbnail'" :key="nft.id" />
+          <NFTAsset :nftAsset="nft" :accountId="accountId" :mode="'thumbnail'" :key="nft.id" />
         </template>
       </div>
     </div>
@@ -52,7 +52,7 @@ export default {
       type: Boolean,
       default: false
     },
-    chain: {
+    accountId: {
       type: String,
       required: false
     }
@@ -61,16 +61,22 @@ export default {
     NFTAsset
   },
   computed: {
-    ...mapGetters(['allNftCollections', 'accountNftCollections']),
+    ...mapGetters(['allNftCollections', 'accountNftCollections', 'accountsData']),
     nftCollection() {
       if (this.isAccount) {
-        return this.accountNftCollections[this.chain][this.collectionName]
+        return this.accountNftCollections(this.accountId)[this.collectionName]
       } else {
         return this.allNftCollections[this.collectionName]
       }
     },
     firstThreeAssets() {
       return this.assets.slice(0, 3)
+    },
+    account() {
+      return this.accountsData.filter((account) => account.id === this.accountId)[0]
+    },
+    chain() {
+      return this.account?.chain
     }
   }
 }
@@ -106,7 +112,6 @@ export default {
       }
 
       img {
-        width: var(--img-width);
         border-radius: 10px;
 
         &.img-active {

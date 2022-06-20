@@ -4,7 +4,7 @@
       <NavBar showBack="true" :backPath="'/wallet/nfts'" backLabel=""></NavBar>
       <div class="nft-action-buttons">
         <div class="star" :style="showFullscreen ? { top: '120px' } : { top: '40px' }">
-          <Star :nftAsset="nftAsset" />
+          <Star :nftAsset="nftAsset" :accountId="accountId" />
         </div>
         <div class="send--share--actions">
           <SendIcon
@@ -12,7 +12,7 @@
             @click="
               $router.push({
                 path: '/wallet/nfts/send',
-                query: { nftAsset: nftAsset, source: source }
+                query: { nftAsset: nftAsset, source: source, chain: chain }
               })
             "
           />
@@ -20,37 +20,37 @@
         </div>
       </div>
       <template v-if="showFullscreen === false">
-        <div class="nft-img" v-if="nftAsset.image_url">
-          <img :src="nftAsset.image_url" alt="image" />
+        <div class="nft-img" v-if="nftAssetImageSource('thumbnail')">
+          <img :src="nftAssetImageSource('thumbnail')" alt="image" />
         </div>
         <div class="drawer nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
-            <h1 class="nft-details_name" v-if="nftAsset.name">{{ nftAsset.name }}</h1>
+            <h1 class="nft-details_name">{{ nftAsset ? nftAsset.name : '' }}</h1>
             <ChevronDownIcon
               class="nft-details_arrow"
               style="transform: scaleY(-1)"
               @click="showFullscreen = true"
             />
           </div>
-          <h5 class="nft-details_collection-details" v-if="nftAsset.collection">
-            {{ nftAsset.collection.name }}
+          <h5 class="nft-details_collection-details">
+            {{ nftAsset ? nftAsset.collection.name : '' }}
           </h5>
         </div>
       </template>
       <template v-else-if="showFullscreen === true">
         <div class="nft-img__open">
-          <img :src="nftAsset.image_preview_url" alt="image" />
+          <img :src="nftAssetImageSource('preview')" alt="image" />
         </div>
         <div class="drawer drawer-open nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
-            <h1 class="nft-details_name" v-if="nftAsset.name">{{ nftAsset.name }}</h1>
+            <h1 class="nft-details_name">{{ nftAsset ? nftAsset.name : '' }}</h1>
             <ChevronDownIcon
               class="nft-details_arrow cursor-pointer"
               @click="showFullscreen = false"
             />
           </div>
-          <h5 class="nft-details_collection-details" v-if="nftAsset.collection">
-            {{ nftAsset.collection.name }}
+          <h5 class="nft-details_collection-details">
+            {{ nftAsset ? nftAsset.collection.name : '' }}
           </h5>
           <div class="wallet-tabs">
             <ul class="nav nav-tabs">
@@ -117,14 +117,14 @@
                       <tr>
                         <td class="text-muted text-left small-12">Token Standard</td>
                         <td class="text-break" v-if="nftAsset.asset_contract">
-                          {{ nftAsset.asset_contract.schema_name }}
+                          {{ nftAsset.asset_contract.name }}
                         </td>
                       </tr>
                       <tr>
                         <td class="text-muted text-left small-12">Blockchain</td>
                         <td class="text-break text-capitalize">
-                          <img :src="getAccountIcon(nftAsset.chain)" class="asset-icon" />
-                          {{ nftAsset.chain }}
+                          <img :src="getAccountIcon(chain)" class="asset-icon" />
+                          {{ chain }}
                         </td>
                       </tr>
                     </tbody>
@@ -176,16 +176,22 @@ export default {
       return this.$route.fullPath
     },
     account() {
-      return this.accountsData.filter((account) => account.chain === this.nftAsset.chain)[0]
+      return this.accountsData.filter((account) => account.id === this.accountId)[0]
     },
     address() {
-      return chains[this.nftAsset.chain]?.formatAddress(
+      return chains[this.account.chain]?.formatAddress(
         this.account.addresses[0],
         this.activeNetwork
       )
     },
+    chain() {
+      return this.account.chain
+    },
     asset() {
-      return chains[this.nftAsset.chain].nativeAsset
+      return chains[this.account.chain].nativeAsset
+    },
+    accountId() {
+      return this.$route.query.accountId || this.nftAsset?.accountId
     }
   },
   async created() {

@@ -8,7 +8,7 @@
           :key="asset.id"
           :source="source"
           :isAccount="isAccount"
-          :chain="chain"
+          :accountId="accountId"
         />
       </template>
     </div>
@@ -48,10 +48,6 @@ export default {
     isAccount: {
       type: Boolean,
       default: false
-    },
-    chain: {
-      type: String,
-      required: false
     }
   },
   data() {
@@ -61,16 +57,25 @@ export default {
   },
   created() {
     if (this.isAccount) {
-      this.assets = this.accountNftCollections[this.chain]
+      this.assets = this.accountNftCollections(this.accountId)
     } else {
       this.assets = this.allNftCollections
     }
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
-    ...mapGetters(['allNftCollections', 'accountNftCollections']),
+    ...mapGetters(['allNftCollections', 'accountNftCollections', 'accountsData']),
+    accountId() {
+      return this.$route.params.id
+    },
+    account() {
+      return this.accountsData.filter((account) => account.id === this.accountId)[0]
+    },
+    chain() {
+      return this.account?.chain
+    },
     nftExplorerLink() {
-      const asset = chains[this.chain].nativeAsset
+      const asset = chains[this.account?.chain].nativeAsset
       return getNftLink(asset, this.activeNetwork)
     },
     opensea() {

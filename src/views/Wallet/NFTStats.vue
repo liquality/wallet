@@ -19,7 +19,7 @@
         >
       </div>
     </div>
-    <div class="account-container_address w-100" v-show="isAccount">
+    <div class="account-container_address w-100" v-if="isAccount">
       <button
         class="btn btn-outline-primary"
         @click="copyAddress"
@@ -31,7 +31,7 @@
         {{ shortenAddress(address) }}
       </button>
     </div>
-    <div class="account-container_actions mt-3" v-show="isAccount">
+    <div class="account-container_actions mt-3" v-if="isAccount">
       <router-link
         :to="{ name: 'SendNFT', query: { source: source, chain: chain } }"
         class="account-container_actions_button send-action"
@@ -65,7 +65,7 @@ export default {
       type: Boolean,
       default: false
     },
-    chain: {
+    id: {
       type: String,
       required: false
     }
@@ -84,13 +84,16 @@ export default {
     },
     nftAssets() {
       if (this.isAccount) {
-        return this.accountNftCollections[this.chain]
+        return this.accountNftCollections(this.id)
       } else {
         return this.allNftCollections
       }
     },
     nftAssetsCount() {
       return Object.values(this.nftAssets).reduce((acc, collection) => acc + collection.length, 0)
+    },
+    chain() {
+      return this.accountsData.filter((account) => account.id === this.id)[0].chain
     },
     address() {
       if (this.isAccount) {

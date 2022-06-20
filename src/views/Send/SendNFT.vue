@@ -33,7 +33,9 @@
                     width="11"
                     height="11"
                     rx="5.5"
-                    :fill="selectedNFT && selectedNFT.id === asset.id ? '#646F85' : '#FFFFFF'"
+                    :fill="
+                      selectedNFT && selectedNFT.token_id === asset.token_id ? '#646F85' : '#FFFFFF'
+                    "
                     stroke="#646F85"
                   />
                 </svg>
@@ -62,8 +64,8 @@
           <div class="mb-3">
             <h3 class="text-uppercase">Selected Asset</h3>
             <div class="selected-nft-asset__image">
-              <div class="nft-image mr-2" style="--img-width: 110px">
-                <img :src="selectedNFT.image_thumbnail_url" alt="" />
+              <div class="nft-image mr-2">
+                <img :src="selectedNFT.image_thumbnail_url" alt="selected nft" />
               </div>
               <div>
                 <h3>{{ selectedNFT.name }}</h3>
@@ -337,7 +339,7 @@ export default {
       }
     },
     nftCollection() {
-      return this.accountNftCollections[this.$route.query?.chain || this.selectedNFT?.chain]
+      return this.accountNftCollections(this.account.id)
     },
     routeSource() {
       if (this.$route.query?.source) {
@@ -361,13 +363,13 @@ export default {
       return prettyBalance(balance, this.asset)
     },
     fromAddress() {
-      return chains[this.selectedNFT.chain]?.formatAddress(
+      return chains[this.account.chain]?.formatAddress(
         this.account.addresses[0],
         this.activeNetwork
       )
     },
     isValidAddress() {
-      return chains[this.selectedNFT.chain].isValidAddress(this.fromAddress, this.activeNetwork)
+      return chains[this.account.chain].isValidAddress(this.fromAddress, this.activeNetwork)
     },
     addressError() {
       if (!this.isValidAddress) {
@@ -386,7 +388,7 @@ export default {
       return this.currentFee.dp(6)
     },
     assetChain() {
-      return getNativeAsset(this.selectedNFT?.asset || 'ETH')
+      return getNativeAsset(this.asset)
     },
     assetFees() {
       const assetFees = {}
@@ -404,7 +406,7 @@ export default {
       return this.assetFees && Object.keys(this.assetFees).length
     },
     isEIP1559Fees() {
-      return cryptoassets[this.asset].chain === this.selectedNFT.chain
+      return cryptoassets[this.asset].chain === this.account.chain
     },
     memoData() {
       return {
@@ -412,7 +414,7 @@ export default {
       }
     },
     asset() {
-      return chains[this.$route.query?.chain || this.selectedNFT?.chain].nativeAsset
+      return chains[this.account.chain].nativeAsset
     },
     startAddress() {
       return this.address.slice(0, 6)
@@ -531,12 +533,11 @@ export default {
           tokenIDs: [this.selectedNFT.token_id],
           values: [1],
           nft: this.selectedNFT,
-          asset: this.asset,
           fee,
           feeLabel: this.selectedFeeLabel
         }
         await this.sendNFTTransaction(data)
-        this.$router.replace(`/wallet/nfts/activity/${this.selectedNFT.chain}`)
+        this.$router.replace(`/wallet/nfts/activity/${this.account.id}`)
       } catch (error) {
         const { message } = error
         this.loading = false
@@ -593,6 +594,16 @@ export default {
   &__image {
     display: flex;
     align-items: center;
+
+    .nft-image {
+      width: 110px;
+      height: 110px;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
 
     h3 {
       font-size: 20px;
