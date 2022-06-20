@@ -15,7 +15,7 @@ const sendPage = new SendPage()
 
 let browser, page
 
-describe.only('Activity section["MAINNET"]', async () => {
+describe('Activity section["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -36,6 +36,9 @@ describe.only('Activity section["MAINNET"]', async () => {
     // overview page
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
+
+    // Select testnet
+    await overviewPage.SelectNetwork(page)
 
   })
   afterEach(async () => {
