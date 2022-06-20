@@ -448,9 +448,7 @@ export default {
       return cryptoassets[this.asset].chain === ChainId.Terra
     },
     memoData() {
-      return {
-        memo: this.memo
-      }
+      return this.memo
     }
   },
   methods: {
@@ -484,7 +482,7 @@ export default {
           const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
           try {
             const txs = feePerBytes.map((fee) => ({ value, fee }))
-            const totalFees = await client.getMethod('getTotalFees')(txs, getMax)
+            const totalFees = await client.wallet.getTotalFees(txs, getMax)
             for (const [speed, fee] of Object.entries(this.assetFees)) {
               const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
               sendFees[speed] = totalFee
