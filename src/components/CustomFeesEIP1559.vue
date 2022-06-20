@@ -201,13 +201,14 @@
 </template>
 
 <script>
-import { getAssetIcon, getFeeAsset, getNativeAsset } from '@/utils/asset'
-import cryptoassets from '@/utils/cryptoassets'
+import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import BN from 'bignumber.js'
-import { getFeeLabel, getSendFee } from '@/utils/fees'
-import { prettyFiatBalance } from '@/utils/coinFormatter'
+import { getFeeLabel, getSendFee } from '@liquality/wallet-core/dist/utils/fees'
+import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 

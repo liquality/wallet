@@ -3,8 +3,7 @@
     <Head v-if="unlockedAt" :show-dapp-connections="showDappConnections" />
     <router-view />
     <template v-if="unlockedAt && termsAcceptedAt">
-      <AnalyticsOptInModal />
-      <WatsNewModal />
+      <GlobalModals />
     </template>
   </div>
 </template>
@@ -13,14 +12,12 @@
 import { mapState, mapActions } from 'vuex'
 
 import Head from '@/components/Head.vue'
-import AnalyticsOptInModal from '@/components/AnalyticsOptInModal.vue'
-import WatsNewModal from '@/components/WatsNewModal.vue'
+import GlobalModals from '@/components/GlobalModals.vue'
 
 export default {
   components: {
     Head,
-    AnalyticsOptInModal,
-    WatsNewModal
+    GlobalModals
   },
   computed: {
     ...mapState(['activeNetwork', 'brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
@@ -29,27 +26,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['initializeAnalytics'])
-  },
-  watch: {
-    unlockedAt: function (unlocked) {
-      if (
-        this.$route.path.startsWith('/permission') ||
-        this.$route.path.startsWith('/enable') ||
-        this.$route.path.startsWith('/request-unlock')
-      )
-        return
-      if (unlocked) this.$router.replace('/wallet')
-    },
-    activeNetwork: function () {
-      if (
-        ['Send', 'Receive', 'Swap', 'Account', 'SwapDetails', 'WalletActivity'].includes(
-          this.$route.name
-        )
-      ) {
-        this.$router.replace('/wallet')
-      }
-    }
+    ...mapActions('app', ['initializeAnalytics'])
   },
   async created() {
     await this.initializeAnalytics()

@@ -104,6 +104,7 @@ export default {
     },
     async switchNetwork(network) {
       await this.changeActiveNetwork({ network })
+      await this.$router.replace('/wallet')
       this.showNetworks = false
     }
   },
@@ -129,6 +130,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 0 20px;
+  z-index: 9999;
 
   &_logo {
     position: absolute;

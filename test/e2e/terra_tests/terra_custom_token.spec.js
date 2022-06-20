@@ -15,7 +15,6 @@ const passwordPage = new PasswordPage()
 const addCustomTokenPage = new AddCustomTokenPage()
 
 let browser, page
-const password = '123123123'
 
 describe('Terra Custom token-["MAINNET"]', async () => {
   if (process.env.NODE_ENV === 'mainnet') {
@@ -30,9 +29,9 @@ describe('Terra Custom token-["MAINNET"]', async () => {
       // Enter seed words and submit
       await homePage.EnterSeedWords(page)
       // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
+      await passwordPage.SubmitPasswordDetails(page)
       // overview page
-      await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.CloseWhatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
       // Click on add custom token option
       await overviewPage.ClickAddCustomToken(page)

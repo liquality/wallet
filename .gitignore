@@ -7,6 +7,8 @@ build
 .env.local
 .env.*.local
 
+test/.env
+
 # Log files
 npm-debug.log*
 yarn-debug.log*
@@ -33,3 +35,9 @@ artifacts
 /allure-report/
 /mochawesome-report/
 /screenshots/
+
+# yarn
+.yarn/cache
+.yarn/versions
+.yarn/install-state.gz
+.yarn/unplugged

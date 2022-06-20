@@ -10,8 +10,8 @@ import {
   solanaProvider,
   terraProvider
 } from './inject'
-import buildConfig from './build.config'
-import { ChainNetworks } from '@/utils/networks'
+import { buildConfig } from '@liquality/wallet-core'
+import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
 import { chains, isEthereumChain } from '@liquality/cryptoassets'
 import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'

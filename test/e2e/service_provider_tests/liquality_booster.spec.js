@@ -14,7 +14,6 @@ const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
 
 let browser, page
-const password = '123123123'
 const BOOSTER = 'Liquality Boost'
 
 // https://docs.google.com/spreadsheets/d/18c-B2jYeyxoRTNI0yuFWsltSXYQ3quObxacXEx42N5g/edit#gid=0
@@ -45,9 +44,9 @@ if (process.env.NODE_ENV === 'mainnet') {
       // Enter seed words and submit
       await homePage.EnterSeedWords(page)
       // Create a password & submit
-      await passwordPage.SubmitPasswordDetails(page, password)
+      await passwordPage.SubmitPasswordDetails(page)
       // overview page
-      await overviewPage.CloseWatsNewModal(page)
+      await overviewPage.CloseWhatsNewModal(page)
       await overviewPage.HasOverviewPageLoaded(page)
     })
     afterEach(async () => {

@@ -16,7 +16,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 // import BN from 'bignumber.js'
-// import cryptoassets from '@/utils/cryptoassets'
+// import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 // import { unitToCurrency } from '@liquality/cryptoassets'
 
 export default {

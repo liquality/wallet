@@ -13,11 +13,11 @@
 
 <script>
 import { mapState } from 'vuex'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
-import buildConfig from '@/build.config'
+import { buildConfig } from '@liquality/wallet-core'
 import { chains } from '@liquality/cryptoassets'
-import { formatFiat } from '@/utils/coinFormatter'
+import { formatFiat } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { getAccountIcon } from '@/utils/accounts'
 import ChainAccounts from './ChainAccounts.vue'
 

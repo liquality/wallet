@@ -84,7 +84,7 @@ import { isEthereumChain, dappChains } from '@liquality/cryptoassets'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import NetworkAccounts from '@/components/NetworkAccounts'
 import ChainDropdown from '@/components/ChainDropdown'
-import buildConfig from '@/build.config'
+import { buildConfig } from '@liquality/wallet-core'
 
 export default {
   components: {
@@ -144,7 +144,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['replyOriginAccess']),
+    ...mapActions('app', ['replyOriginAccess']),
     async reply(allowed) {
       await this.replyOriginAccess({
         origin: this.origin,
@@ -170,6 +170,7 @@ export default {
       const dapp = Object.keys(dappChains).find((origin) => {
         return hostname.includes(origin)
       })
+
       if (dapp) {
         const chainHasAccount = dappChains[dapp].find((chain) =>
           this.accountsData.find((account) => account.chain === chain)

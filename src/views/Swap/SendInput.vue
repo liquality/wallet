@@ -111,8 +111,9 @@
 </template>
 
 <script>
-import { getAssetColorStyle, getAssetIcon } from '@/utils/asset'
-import { dpUI, formatFiatUI } from '@/utils/coinFormatter'
+import { getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import { dpUI, formatFiatUI } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import AccountTooltip from '@/components/AccountTooltip'
 

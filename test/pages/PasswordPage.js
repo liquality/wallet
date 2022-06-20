@@ -6,16 +6,21 @@ const expect = require('chai').expect
 
 class PasswordPage {
   /**
-   * Enter password and submit details.
+   * Enter password and submit details, pass password as env variable.
    * @param page
-   * @param password
    * @returns {Promise<void>}
    * @constructor
    */
-  async SubmitPasswordDetails(page, password) {
-    if (!password) {
-      return Promise.reject(new Error('Password is required'))
+  async SubmitPasswordDetails(page) {
+    let password
+    if (!process.env.TEST_WALLET_PASSWORD) {
+      return Promise.reject(
+        new Error('Password is required, provide TEST_WALLET_PASSWORD env variable')
+      )
+    } else {
+      password = process.env.TEST_WALLET_PASSWORD
     }
+
     try {
       await page.waitForSelector('#password', { visible: true, timeout: 60000 })
     } catch (e) {
@@ -69,7 +74,7 @@ class PasswordPage {
     await page.type('#password', password)
     await page.click('#unlock_button')
     // overview page after unlock
-    await page.waitForSelector('#overview', { visible: true, timeout: 60000 })
+    await page.waitForSelector('#overview', { visible: true, timeout: 120000 })
     console.log('User successfully loggedIn after unlock')
   }
 

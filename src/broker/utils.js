@@ -57,3 +57,12 @@ export const inject = (content) => {
   scriptTag.textContent = `(() => {${content}})()`
   container.insertBefore(scriptTag, container.children[0])
 }
+
+export class Deferred {
+  constructor() {
+    this.promise = new Promise((resolve, reject) => {
+      this.reject = reject
+      this.resolve = resolve
+    })
+  }
+}

@@ -227,7 +227,8 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { version as walletVersion } from '../../../package.json'
 import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
@@ -237,10 +238,15 @@ import {
   dpUI,
   formatFiatUI,
   fiatToCrypto
-} from '@/utils/coinFormatter'
-import { getNativeAsset, getAssetColorStyle, getAssetIcon, getFeeAsset } from '@/utils/asset'
-import { shortenAddress } from '@/utils/address'
-import { getSendFee, getFeeLabel } from '@/utils/fees'
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
+import {
+  getNativeAsset,
+  getAssetColorStyle,
+  getFeeAsset
+} from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
@@ -426,9 +432,7 @@ export default {
       return cryptoassets[this.asset].chain === ChainId.Terra
     },
     memoData() {
-      return {
-        memo: this.memo
-      }
+      return this.memo
     }
   },
   methods: {
@@ -462,7 +466,7 @@ export default {
           const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
           try {
             const txs = feePerBytes.map((fee) => ({ value, fee }))
-            const totalFees = await client.getMethod('getTotalFees')(txs, getMax)
+            const totalFees = await client.wallet.getTotalFees(txs, getMax)
             for (const [speed, fee] of Object.entries(this.assetFees)) {
               const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
               sendFees[speed] = totalFee
@@ -612,8 +616,9 @@ export default {
     await this.updateSendFees(0)
     await this.updateMaxSendFees()
     await this.trackAnalytics({
-      event: 'Send screen',
+      event: `User entered send screen for ${this.asset}`,
       properties: {
+        walletVersion,
         category: 'Send/Receive',
         action: 'User on Send screen',
         label: `${this.asset}`
@@ -673,7 +678,7 @@ export default {
       margin-left: 6px;
     }
     .selectors-asset {
-      width: 55px;
+      width: 70px;
     }
     .custom-fees {
       display: flex;

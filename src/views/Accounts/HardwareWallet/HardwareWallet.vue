@@ -33,14 +33,12 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar'
 import Connect from './Connect'
 import Unlock from './Unlock'
-import {
-  LEDGER_BITCOIN_OPTIONS,
-  LEDGER_OPTIONS,
-  createConnectSubscription
-} from '@/utils/ledger-bridge-provider'
+import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
+import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
 import { getAssetIcon } from '@/utils/asset'
-import cryptoassets from '@/utils/cryptoassets'
-import { getNextAccountColor } from '@/utils/accounts'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { version as walletVersion } from '../../../../package.json'
+import { getNextAccountColor } from '@liquality/wallet-core/dist/utils/accounts'
 import LedgerBridgeModal from '@/components/LedgerBridgeModal'
 
 const LEDGER_PER_PAGE = 5
@@ -173,9 +171,10 @@ export default {
         await this.trackAnalytics({
           event: 'Ledger account added successfully',
           properties: {
-            category: 'Connect Ledger',
-            asset: `${this.selectedAsset.name}`,
-            chain: `${this.selectedAsset.chain}`
+            walletVersion,
+            category: 'Hardware Wallet',
+            action: 'Add Ledger Account',
+            label: `Asset ${this.selectedAsset.name}`
           }
         })
       }

@@ -11,10 +11,9 @@ const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
-const password = '123123123'
-
 const pangolin_Url = 'https://app.pangolin.exchange/'
 const chainId = 43114
+const expectedAddress = '0x3f429e2212718a717bd7f9e83ca47dab7956447b'
 
 describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   beforeEach(async () => {
@@ -29,9 +28,9 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Default web3 option toggled on
     await overviewPage.CheckWeb3ToggleOn(page)
@@ -99,9 +98,9 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
       'Avalanche chain ID is not expected after dapp connection'
     ).equals(chainId)
     expect(
-      connectedChainDetails.connectedAddress[0],
+      connectedChainDetails.connectedAddress[0].toLowerCase(),
       'Avalanche connected address is not expected after dapp connection'
-    ).equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
+    ).equals(expectedAddress.toLowerCase())
 
     await page.bringToFront()
   })

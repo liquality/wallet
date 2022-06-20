@@ -41,9 +41,12 @@ $ npm run test:testNetNetwork
 
 ### Releases
 
-Release to Chrome Store dev*
+Release to Chrome Store
 
-Update the tag in [manifest.json](src/manifest.json) & [package.json](package.json)
+```angular2html
+yarn sync-versions
+```
+it will update the tag in [manifest.json](src/manifest.json)
 
 ```shell
 git tag <TAG NAME>

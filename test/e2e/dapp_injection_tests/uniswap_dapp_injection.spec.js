@@ -11,10 +11,10 @@ const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
-const password = '123123123'
 const dappUrl = 'https://app.uniswap.org/#/swap'
 let ethereumChainId = 1
 let arbitrumChainId = 42161
+const expectedAddress = '0x3f429e2212718a717bd7f9e83ca47dab7956447b'
 
 describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
   beforeEach(async () => {
@@ -29,9 +29,9 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
     // Enter seed words and submit
     await homePage.EnterSeedWords(page)
     // Create a password & submit
-    await passwordPage.SubmitPasswordDetails(page, password)
+    await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     // Default web3 option toggled on
     await overviewPage.CheckWeb3ToggleOn(page)
@@ -119,9 +119,9 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       ethereumChainId
     )
     expect(
-      connectedChainDetails.connectedAddress[0],
+      connectedChainDetails.connectedAddress[0].toLowerCase(),
       'Uniswap ethereum dapp connection issue'
-    ).equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
+    ).equals(expectedAddress.toLowerCase())
   })
   it('UNISWAP Injection-ARBITRUM', async () => {
     // Select ARBITRUM
@@ -207,9 +207,9 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       arbitrumChainId
     )
     expect(
-      connectedChainDetails.connectedAddress[0],
+      connectedChainDetails.connectedAddress[0].toLowerCase(),
       'Uniswap ethereum dapp connection issue'
-    ).equals('0x3f429e2212718a717bd7f9e83ca47dab7956447b')
+    ).equals(expectedAddress.toLowerCase())
 
     await page.bringToFront()
   })

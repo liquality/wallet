@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { getAssetColorStyle } from '@/utils/asset'
+import { getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
 import { getChainIcon } from '@/utils/accounts'
 import { chains } from '@liquality/cryptoassets'
 import SearchIcon from '@/assets/icons/search.svg'

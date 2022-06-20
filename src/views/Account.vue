@@ -93,9 +93,13 @@
           v-if="activityData.length > 0"
         />
         <TransactionList :transactions="activityData" />
-        <div class="activity-empty" v-if="activityData.length <= 0">
-          Once you start using your wallet you will see the activity here
-        </div>
+        <EmptyActivity
+          v-show="activityData.length <= 0"
+          :active-network="activeNetwork"
+          :chain="chain"
+          :asset="asset"
+          :address="address"
+        />
       </div>
     </div>
   </div>
@@ -103,26 +107,30 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import cryptoassets from '@/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import ReceiveIcon from '@/assets/icons/arrow_receive.svg'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
-import { prettyBalance, formatFiat, formatFiatUI } from '@/utils/coinFormatter'
-import { shortenAddress } from '@/utils/address'
-import { getAssetIcon, getAddressExplorerLink } from '@/utils/asset'
+import {
+  prettyBalance,
+  formatFiat,
+  formatFiatUI
+} from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
-import { applyActivityFilters } from '@/utils/history'
+import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
+import EmptyActivity from '@/components/EmptyActivity'
 import CopyAddress from '@/components/CopyAddress'
-
 import amplitude from 'amplitude-js'
-
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
 export default {
@@ -135,6 +143,7 @@ export default {
     ActivityFilter,
     TransactionList,
     EyeIcon,
+    EmptyActivity,
     CopyAddress
   },
   data() {
@@ -178,8 +187,10 @@ export default {
       if (this.account) {
         return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
       }
-
       return '#'
+    },
+    chain() {
+      return cryptoassets[this.asset]?.chain
     }
   },
   methods: {
@@ -198,7 +209,6 @@ export default {
     },
     async refresh() {
       if (this.updatingBalances) return
-
       this.updatingBalances = true
       await this.updateAccountBalance({
         network: this.activeNetwork,
@@ -233,17 +243,6 @@ export default {
     }
     await this.refresh()
     this.activityData = [...this.assetHistory]
-
-    const { chain } = cryptoassets[this.asset]
-
-    this.trackAnalytics({
-      event: 'Active Asset',
-      properties: {
-        category: 'Click on Asset',
-        chain: chain,
-        asset: `${this.asset}`
-      }
-    })
   },
   watch: {
     activeNetwork() {
@@ -252,7 +251,6 @@ export default {
   }
 }
 </script>
-
 <style lang="scss">
 .account-container {
   .account-content-top {
@@ -266,25 +264,21 @@ export default {
     text-align: center;
     position: relative;
   }
-
   &_balance {
     &_fiat {
       min-height: 15px;
       margin-bottom: 6px;
     }
-
     &_value {
       line-height: 36px;
       margin-right: 8px;
       font-size: 30px;
     }
-
     &_code {
       font-size: $h3-font-size;
       line-height: 22px;
     }
   }
-
   &_refresh-icon {
     position: absolute;
     top: 16px;
@@ -292,18 +286,15 @@ export default {
     width: 24px;
     height: 24px;
     cursor: pointer;
-
     path {
       fill: $color-text-secondary;
     }
   }
-
   &_actions {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 auto;
-
     &_button {
       display: flex;
       justify-content: center;
@@ -316,12 +307,10 @@ export default {
       background: none;
       font-weight: 600;
       font-size: 13px;
-
       &.disabled {
         opacity: 0.5;
         cursor: auto;
       }
-
       &_wrapper {
         display: flex;
         justify-content: center;
@@ -332,25 +321,21 @@ export default {
         border-radius: 50%;
         margin-bottom: 4px;
       }
-
       &_icon {
         width: 16px;
         height: 16px;
       }
-
       &_swap {
         height: 30px;
       }
     }
   }
-
   &_address {
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-
     button {
       font-size: $h4-font-size;
       font-weight: normal;
@@ -359,7 +344,6 @@ export default {
       background: none;
       outline: none;
     }
-
     .eye-btn {
       position: absolute;
       right: 60px;
@@ -368,23 +352,19 @@ export default {
       background-color: transparent;
       display: flex;
       align-items: center;
-
       svg {
         width: 20px;
       }
-
       &:hover {
         opacity: 0.8;
       }
     }
   }
-
   &_transactions {
     flex: 1;
     flex-basis: 0;
     overflow-y: scroll;
     -ms-overflow-style: none;
-
     &::-webkit-scrollbar {
       display: none;
     }

@@ -5,5 +5,9 @@ export const state = () => ({
   analyticsOptInModalOpen: false,
   requestOriginAccessActive: false,
   requestPermissionActive: false,
+  buyCryptoModalData: {},
+  buyCryptoModalOpen: false,
+  buyCryptoOverviewModalOpen: false,
+  ledgertSignRequestModalOpen: false,
   settingsModalOpen: false
 })

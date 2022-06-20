@@ -79,8 +79,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('app', ['setAnalyticsOptInModalOpen']),
-    ...mapActions(['setAnalyticsResponse', 'initializeAnalytics']),
+    ...mapActions('app', ['setAnalyticsOptInModalOpen', 'initializeAnalytics']),
+    ...mapActions(['setAnalyticsResponse']),
     close(payload) {
       this.accepted = null
       this.setAnalyticsOptInModalOpen({ open: false })

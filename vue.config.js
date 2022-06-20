@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
@@ -11,6 +13,9 @@ module.exports = {
   },
 
   chainWebpack: (config) => {
+    config.resolve.alias.set('vue', path.resolve('./node_modules/vue'))
+    config.resolve.alias.set('vuex', path.resolve('./node_modules/vuex'))
+
     const svgRule = config.module.rule('svg')
 
     svgRule.uses.clear()
