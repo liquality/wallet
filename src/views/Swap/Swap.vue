@@ -582,12 +582,10 @@ export default {
   computed: {
     isFromCustomFeeSupported() {
       const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
-      console.log('from', supportCustomFees)
       return supportCustomFees
     },
     isToCustomFeeSupported() {
       const { supportCustomFees } = chains[cryptoassets[this.toAsset].chain]
-      console.log('to', supportCustomFees)
       return supportCustomFees
     },
     account() {
