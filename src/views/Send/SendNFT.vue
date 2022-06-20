@@ -528,13 +528,13 @@ export default {
           network: this.activeNetwork,
           accountId: this.account.id,
           walletId: this.activeWalletId,
-          contract: this.selectedNFT.asset_contract.address,
           receiver: this.address,
+          contract: this.selectedNFT.asset_contract.address,
           tokenIDs: [this.selectedNFT.token_id],
           values: [1],
-          nft: this.selectedNFT,
           fee,
-          feeLabel: this.selectedFeeLabel
+          feeLabel: this.selectedFeeLabel,
+          nft: this.selectedNFT
         }
         await this.sendNFTTransaction(data)
         this.$router.replace(`/wallet/nfts/activity/${this.account.id}`)
