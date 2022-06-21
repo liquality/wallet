@@ -12,7 +12,7 @@
             @click="
               $router.push({
                 path: '/wallet/nfts/send',
-                query: { nftAsset: nftAsset, source: source, chain: chain }
+                query: { nftAsset: nftAsset, source: source, accountId: accountId }
               })
             "
           />
@@ -188,10 +188,11 @@ export default {
       return this.account.chain
     },
     asset() {
+      console.log(this.accountId)
       return chains[this.account.chain].nativeAsset
     },
     accountId() {
-      return this.$route.query.accountId || this.nftAsset?.accountId
+      return this.$route.query.accountId ? this.$route.query.accountId : this.nftAsset.accountId
     }
   },
   async created() {

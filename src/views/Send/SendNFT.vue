@@ -339,7 +339,7 @@ export default {
       }
     },
     nftCollection() {
-      return this.accountNftCollections(this.account.id)
+      return this.accountNftCollections(this.account?.id)
     },
     routeSource() {
       if (this.$route.query?.source) {
@@ -351,25 +351,26 @@ export default {
       return prettyFiatBalance(this.currentFee, this.fiatRates[this.assetChain])
     },
     account() {
+      console.log('id', this.$route.query?.accountId)
       return this.accountsData.filter(
-        (account) => account.chain === this.$route.query?.chain || this.selectedNFT?.chain
+        (account) => account.id === (this.$route.query?.accountId || this.selectedNFT?.accountId)
       )[0]
     },
     assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
     },
     balance() {
-      const balance = this.account.balances?.[this.asset] || 0
+      const balance = this.account?.balances?.[this.asset] || 0
       return prettyBalance(balance, this.asset)
     },
     fromAddress() {
-      return chains[this.account.chain]?.formatAddress(
-        this.account.addresses[0],
+      return chains[this.account?.chain]?.formatAddress(
+        this.account?.addresses[0],
         this.activeNetwork
       )
     },
     isValidAddress() {
-      return chains[this.account.chain].isValidAddress(this.fromAddress, this.activeNetwork)
+      return chains[this.account?.chain].isValidAddress(this.fromAddress, this.activeNetwork)
     },
     addressError() {
       if (!this.isValidAddress) {
@@ -406,7 +407,7 @@ export default {
       return this.assetFees && Object.keys(this.assetFees).length
     },
     isEIP1559Fees() {
-      return cryptoassets[this.asset].chain === this.account.chain
+      return cryptoassets[this.asset].chain === this.account?.chain
     },
     memoData() {
       return {
@@ -414,7 +415,8 @@ export default {
       }
     },
     asset() {
-      return chains[this.account.chain].nativeAsset
+      console.log(this.account)
+      return chains[this.account?.chain].nativeAsset
     },
     startAddress() {
       return this.address.slice(0, 6)
@@ -526,7 +528,7 @@ export default {
         const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
         const data = {
           network: this.activeNetwork,
-          accountId: this.account.id,
+          accountId: this.account?.id,
           walletId: this.activeWalletId,
           receiver: this.address,
           contract: this.selectedNFT.asset_contract.address,
@@ -537,7 +539,7 @@ export default {
           nft: this.selectedNFT
         }
         await this.sendNFTTransaction(data)
-        this.$router.replace(`/wallet/nfts/activity/${this.account.id}`)
+        this.$router.replace(`/wallet/nfts/activity/${this.account?.id}`)
       } catch (error) {
         const { message } = error
         this.loading = false

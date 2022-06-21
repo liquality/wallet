@@ -33,7 +33,7 @@
     </div>
     <div class="account-container_actions mt-3" v-if="isAccount">
       <router-link
-        :to="{ name: 'SendNFT', query: { source: source, chain: chain } }"
+        :to="{ name: 'SendNFT', query: { source: source, accountId: id } }"
         class="account-container_actions_button send-action"
         id="send_action"
         v-if="nftAssetsCount > 0"
@@ -92,13 +92,13 @@ export default {
     nftAssetsCount() {
       return Object.values(this.nftAssets).reduce((acc, collection) => acc + collection.length, 0)
     },
-    chain() {
-      return this.accountsData.filter((account) => account.id === this.id)[0].chain
+    account() {
+      return this.accountsData.filter((account) => account.id === this.id)[0]
     },
     address() {
       if (this.isAccount) {
-        return chains[this.chain]?.formatAddress(
-          this.accountsData.filter((account) => account.chain === this.chain)[0].addresses[0],
+        return chains[this.account.chain]?.formatAddress(
+          this.account.addresses[0],
           this.activeNetwork
         )
       }
