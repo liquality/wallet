@@ -11,7 +11,7 @@
 import { mapActions } from 'vuex'
 
 export default {
-  props: ['network', 'walletId', 'asset'],
+  props: ['network', 'walletId', 'asset', 'updateQuotes'],
   methods: {
     ...mapActions(['enableAssets']),
     toggleAsset() {
@@ -21,6 +21,7 @@ export default {
         assets: [this.asset]
       }
       this.enableAssets(params)
+      this.updateQuotes()
     }
   }
 }
@@ -33,7 +34,7 @@ export default {
   align-items: center;
 
   .get-bridgeAsset-btn {
-    width: 70px;
+    width: 110px;
     display: inline-block;
   }
   .notification-text {
