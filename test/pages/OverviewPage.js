@@ -4,6 +4,9 @@ const testUtil = new TestUtil()
 const puppeteer = require('puppeteer')
 const expect = require('chai').expect
 const assert = require('chai').assert
+const csv = require('csv-parser');
+const fs = require('fs');
+const filePath = './temp'
 
 class OverviewPage {
   /**
@@ -651,7 +654,58 @@ class OverviewPage {
     await page.click('#manage_assets')
     console.log('User clicked on Manage Assets')
   }
-}
 
+  /**
+   * Click on ACTIVITY tab from overview.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async ClickActivityTab(page) {
+    await page.waitForSelector('#activity_tab', { visible: true })
+    await page.click('#activity_tab')
+    console.log('User clicked on ACTIVITY tab from overview page')
+    }
+
+  /**
+   * Delete directory recursively.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+  */
+  async deleteDirectory() {
+    try {
+      fs.rmdirSync(filePath, { recursive: true });
+      console.log(`${filePath} is deleted!`);
+    } catch (err) {
+      console.error(`Error while deleting ${filePath}.`);
+    }
+  }
+
+  /**
+   * Read data in csv file.
+   * @param page
+   * @returns {Promise<void>}
+   * @constructor
+   */
+  async validateData() {
+    let filedata 
+    let file = () => new Promise((resolve) => {
+      fs.createReadStream(filePath + '/activity.csv.crdownload')
+      .pipe(csv({}))
+      .on('data', (data) => {
+        filedata = data
+      }) 
+      .on('end', () => {
+        resolve();
+      })
+
+    })
+    return await file().then(() => {
+      return filedata  
+    })
+  }
+
+}
 
 module.exports = OverviewPage
