@@ -763,8 +763,10 @@ export default {
     isPairAvailable() {
       const liqualityMarket = this.networkMarketData?.find(
         (pair) =>
-          (pair.from === this.asset || (buildConfig.supportedBridgeAssets.indexOf(this.assetChain) !== -1)) &&
-          (pair.to === this.toAsset || (buildConfig.supportedBridgeAssets.indexOf(this.toAssetChain) !== -1))
+          (pair.from === this.asset ||
+            buildConfig.supportedBridgeAssets.indexOf(this.assetChain) !== -1) &&
+          (pair.to === this.toAsset ||
+            buildConfig.supportedBridgeAssets.indexOf(this.toAssetChain) !== -1)
       )
       return !!liqualityMarket
     },
