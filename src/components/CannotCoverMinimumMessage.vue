@@ -1,7 +1,7 @@
 <template>
   <div class="notification-content">
-    <div class="notification-text">More {{ asset }} required to cover minimum trade plus fees.</div>
-    <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn"> Get </router-link>
+    <div class="notification-text">More {{ asset }} required to cover min trade plus fees.</div>
+    <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn"> Get {{ asset }}</router-link>
   </div>
 </template>
 
