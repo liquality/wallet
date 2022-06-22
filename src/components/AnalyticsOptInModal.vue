@@ -66,7 +66,7 @@ export default {
   data: function () {
     return {
       loading: false,
-      accepted: null
+      accepted: true
     }
   },
   computed: {
