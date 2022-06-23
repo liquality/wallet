@@ -27,7 +27,8 @@ export default {
   align-items: center;
 
   .get-eth-btn {
-    width: 110px;
+    max-width: 120px;
+    padding: 0 0.5rem;
     display: inline-block;
   }
   .notification-text {

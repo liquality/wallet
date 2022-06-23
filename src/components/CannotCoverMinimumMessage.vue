@@ -27,7 +27,8 @@ export default {
   justify-content: space-between;
   align-items: center;
   .get-bridgeAsset-btn {
-    width: 110px;
+    max-width: 120px;
+    padding: 0 0.5rem;
     display: inline-block;
   }
   .notification-text {

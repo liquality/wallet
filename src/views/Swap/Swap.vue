@@ -206,9 +206,9 @@
               class="btn btn-primary btn-lg"
               id="swap_review_button"
               @click="currentStep = 'confirm'"
-              :disabled="!canSwap"
+              :disabled="!canSwap || cannotCoverNetworkFee"
             >
-              {{ !canSwap ? `Insufficient Funds` : `Review` }}
+              {{ !canSwap || cannotCoverNetworkFee ? `Insufficient Funds` : `Review` }}
             </button>
           </div>
         </div>
@@ -895,7 +895,6 @@ export default {
       if (amount.lt(this.min) || amount.lte(0)) {
         return 'Please increase amount. It is below minimum.'
       }
-
       if (
         this.selectedQuote?.receiveFee &&
         BN(this.selectedQuote.toAmount).lt(
