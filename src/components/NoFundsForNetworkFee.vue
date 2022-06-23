@@ -40,8 +40,6 @@ export default {
       return `/accounts/${this.accountId}/${this.toAssetChain}/receive`
     },
     isSameChain() {
-      console.log(this.assetChain)
-      console.log(this.toAssetChain)
       return this.assetChain === this.toAssetChain
     }
   }

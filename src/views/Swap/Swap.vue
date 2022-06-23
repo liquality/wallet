@@ -636,8 +636,6 @@ export default {
     if (this.toAccountId && toAsset) {
       this.toAssetChanged(this.toAccountId, toAsset)
       this.toAsset = toAsset
-      console.log('on created')
-      console.log(toAsset)
       this.updateFees({ asset: toAsset })
       this.selectedFee = {
         [this.assetChain]: 'average',
@@ -679,11 +677,6 @@ export default {
     showNativeAssetDisabledMessage() {
       const isSameChain = this.assetChain === this.toAssetChain
       const enabledAssets = this.enabledAssets[this.activeNetwork][this.activeWalletId]
-      console.log(isSameChain)
-      console.log('native disabled')
-      console.log(getNativeAsset(this.asset))
-      console.log(enabledAssets)
-      console.log(enabledAssets.includes(getNativeAsset(this.asset)))
       return isSameChain && !enabledAssets.includes(getNativeAsset(this.asset))
     },
     sendAmount: {
@@ -774,8 +767,6 @@ export default {
       return this.minSwapAmount
     },
     max() {
-      console.log('in max')
-      console.log(this.available.toString())
       return this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
     },
     nativeAssetRequired() {
@@ -1046,8 +1037,6 @@ export default {
       }
     },
     setToAsset(toAsset) {
-      console.log('set to asset')
-      console.log(toAsset)
       this.toAsset = toAsset
       if (this.amountOption === 'max') {
         this.sendAmount = this.max
@@ -1207,8 +1196,6 @@ export default {
       }, resetInterval)
     },
     _updateQuotes: _.debounce(async function () {
-      console.log('get quotes')
-      console.log(this.toAsset)
       const quotes = await this.getQuotes({
         network: this.activeNetwork,
         from: this.asset,
