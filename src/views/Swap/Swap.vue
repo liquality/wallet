@@ -421,7 +421,7 @@ import {
 } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
+import { getFeeLabel, isEIP1559Fees } from '@liquality/wallet-core/dist/utils/fees'
 import { chains } from '@liquality/cryptoassets'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -899,10 +899,7 @@ export default {
       return this.totalToReceiveInFiat <= 0
     },
     isEIP1559Fees() {
-      return (
-        cryptoassets[this.customFeeAssetSelected].chain === ChainId.Ethereum ||
-        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
-      )
+      return isEIP1559Fees(cryptoassets[this.customFeeAssetSelected].chain, this.activeNetwork)
     }
   },
   methods: {
