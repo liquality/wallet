@@ -19,8 +19,8 @@
       <div class="d-flex justify-content-center brand">
         <OpenSea @click="exploreNfts" class="cursor-pointer" />
       </div>
-      <div class="d-flex justify-content-center">
-        <a class="btn btn-outline-primary" :href="opensea" target="_blank" rel="noopener noreferrer"
+      <div class="d-flex justify-content-center w-100">
+        <a class="btn btn-primary" :href="opensea" target="_blank" rel="noopener noreferrer"
           >Check out Opensea</a
         >
       </div>
@@ -60,6 +60,10 @@ export default {
       this.assets = this.accountNftCollections(this.accountId)
     } else {
       this.assets = this.allNftCollections
+      console.log(
+        '🚀 ~ file: WalletNFTs.vue ~ line 63 ~ created ~ this.allNftCollections',
+        this.allNftCollections
+      )
     }
   },
   computed: {
@@ -140,7 +144,6 @@ export default {
   }
 
   .brand {
-    background: rgba(217, 223, 229, 0.5);
     border-radius: 10px;
     padding: 28px 58px;
     margin-bottom: 20px;

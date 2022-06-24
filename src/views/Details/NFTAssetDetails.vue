@@ -1,7 +1,7 @@
 <template>
   <div class="nft-asset">
     <div class="nft-asset--container">
-      <NavBar showBack="true" :backPath="'/wallet/nfts'" backLabel=""></NavBar>
+      <NavBar showBack="true" :backPath="'/wallet/nfts'" backLabel="Back"></NavBar>
       <div class="nft-action-buttons">
         <div class="star" :style="showFullscreen ? { top: '120px' } : { top: '40px' }">
           <Star :nftAsset="nftAsset" :accountId="accountId" />
@@ -21,7 +21,10 @@
       </div>
       <template v-if="showFullscreen === false">
         <div class="nft-img" v-if="nftAssetImageSource('thumbnail')">
-          <img :src="nftAssetImageSource('thumbnail')" alt="image" />
+          <img
+            :src="nftAssetImageSource('thumbnail') || '/src/assets/nft_thumbnail.png'"
+            alt="image"
+          />
         </div>
         <div class="drawer nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
@@ -39,7 +42,7 @@
       </template>
       <template v-else-if="showFullscreen === true">
         <div class="nft-img__open">
-          <img :src="nftAssetImageSource('preview')" alt="image" />
+          <img :src="nftAssetImageSource('preview') || '/src/assets/nft_preview.png'" alt="image" />
         </div>
         <div class="drawer drawer-open nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
@@ -276,7 +279,7 @@ export default {
     display: flex;
     justify-content: space-between;
     position: fixed;
-    top: 20px;
+    top: 15px;
 
     &__icon {
       cursor: pointer;

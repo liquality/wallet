@@ -76,7 +76,7 @@ export default {
         case 'SEND':
           return `Send ${item.from}`
         case 'NFT':
-          return `Send NFT`
+          return item.status === 'SUCCESS' ? `Sent NFT` : `Send NFT`
         case 'RECEIVE':
           return `Receive ${item.from}`
         default:

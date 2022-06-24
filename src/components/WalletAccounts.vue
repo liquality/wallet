@@ -91,8 +91,9 @@
                 :to="{
                   path: `/wallet/nfts/activity/${account.id}`
                 }"
-                >see all</router-link
-              >
+                >See all
+                <span> <ChevronRightIcon class="ml-2 icon-sm" /> </span>
+              </router-link>
             </template>
           </ListItem>
           <ListItem
@@ -110,6 +111,7 @@
             {{ getAssetName(asset) }}
             <template #detail>
               {{ prettyBalance(account.balances[asset], asset) }} {{ asset }}
+              <span> <ChevronRightIcon class="ml-2 icon-sm" /> </span>
             </template>
             <template #detail-sub v-if="account.fiatBalances[asset]">
               {{ formatFiatUI(formatFiat(account.fiatBalances[asset])) }}
@@ -137,13 +139,15 @@ import MinusIcon from '@/assets/icons/minus_icon.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import NFTIcon from '@/assets/icons/nft.svg'
 import { ChainId } from '@liquality/cryptoassets'
+import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 
 export default {
   components: {
     ListItem,
     PlusIcon,
     MinusIcon,
-    NFTIcon
+    NFTIcon,
+    ChevronRightIcon
   },
   props: ['search', 'accounts'],
   data() {

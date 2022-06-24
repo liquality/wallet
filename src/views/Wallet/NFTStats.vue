@@ -1,21 +1,18 @@
 <template>
-  <div
-    class="account-content-top"
-    :style="nftAssetsCount > 0 ? { 'justify-content': 'center' } : {}"
-  >
+  <div class="account-content-top" :style="{ 'justify-content': 'center' }">
     <RefreshIcon
       @click.stop="refresh"
       class="account-container_refresh-icon"
       id="refresh-icon"
       :class="{ 'infinity-rotate': updatingAssets }"
     />
-    <div class="account-container_balance" :style="isAccount ? { visibility: 'hidden' } : {}">
+    <div class="account-container_balance">
       <div>
         <span class="account-container_balance_value">
           {{ nftAssetsCount || 0 }}
         </span>
         <span class="account-container_balance_code"
-          >NFT<span v-if="nftAssetsCount !== 1">s</span></span
+          >NFT<span v-if="nftAssetsCount !== 1">S</span></span
         >
       </div>
     </div>
@@ -49,7 +46,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import SendIcon from '@/assets/icons/send.svg'
+import SendIcon from '@/assets/icons/arrow_send.svg'
 import { getAssetIcon } from '@/utils/asset'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
@@ -150,6 +147,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &_value {
+    font-size: 66px;
+  }
 }
 
 .account-container_address {

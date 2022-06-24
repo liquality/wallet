@@ -36,7 +36,7 @@
     "amplitude-js": "8.17.0",
     "bignumber.js": "9.0.2",
     "bip39": "^3.0.2",
-    "bitcoinjs-lib": "6.0.1",
+    "bitcoinjs-lib": "^6.0.1",
     "bluebird": "^3.7.2",
     "bootstrap": "4.6.1",
     "chai": "4.3.6",
@@ -117,5 +117,11 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
+  },
+  "resolutions": {
+    "@liquality/wallet-core": "portal:/Users/jenniferechenim/Downloads/Liquality/wallet-core",
+    "socket.io-client": "4.5.0",
+    "amplitude-js": "8.17.0",
+    "@terra-money/terra.js": "3.1.0"
   }
 }

@@ -85,7 +85,6 @@ export default {
 
   &-body {
     overflow: hidden;
-    background: #fafbfc;
     border-top: 0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
