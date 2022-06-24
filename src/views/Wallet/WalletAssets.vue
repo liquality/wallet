@@ -7,6 +7,9 @@ import { mapGetters } from 'vuex'
 import WalletAccounts from '@/components/WalletAccounts'
 
 export default {
+  // created() {
+  //   console.log('WalletAccounts accountsData', this.accountsData)
+  // },
   computed: {
     ...mapGetters(['accountsData'])
   },

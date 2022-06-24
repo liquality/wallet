@@ -6,7 +6,7 @@
       class="overview-screen-chain-section"
       :id="account.chain.toUpperCase()"
     >
-      <ListItem v-if="account.chain === 'bitcoin'" @item-selected="selectItem(account)">
+      <!-- <ListItem v-if="account.chain === 'bitcoin'" @item-selected="selectItem(account)">
         <template #prefix>
           <div class="account-color" :style="{ 'background-color': account.color }"></div>
         </template>
@@ -37,61 +37,74 @@
           {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
         </template>
         <template v-else> Loading... </template>
-      </ListItem>
-      <div v-else>
-        <ListItem @item-selected="toggleExpandedAccounts(account.id)">
-          <template #prefix>
-            <div class="account-color" :style="{ 'background-color': account.color }"></div>
-            <div class="prefix-icon-container">
-              <MinusIcon v-if="shouldExpandAccount(account)" class="prefix-icon" />
-              <PlusIcon v-else class="prefix-icon" />
-            </div>
-          </template>
-          <template #icon>
-            <img :src="getAccountIcon(account.chain)" class="asset-icon" />
-          </template>
-          {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
-          <template #sub-title>
-            {{
-              account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : ''
-            }}
-          </template>
-          <template #detail>
+      </ListItem> -->
+      <!-- <div v-else> -->
+      <ListItem
+        @item-selected="
+          account.chain !== 'bitcoin' ? toggleExpandedAccounts(account.id) : selectItem(account)
+        "
+      >
+        <template #prefix>
+          <div class="account-color" :style="{ 'background-color': account.color }"></div>
+          <div class="prefix-icon-container" v-if="account.chain !== 'bitcoin'">
+            <MinusIcon v-if="shouldExpandAccount(account)" class="prefix-icon" />
+            <PlusIcon v-else class="prefix-icon" />
+          </div>
+        </template>
+        <template #icon>
+          <img :src="getAccountIcon(account.chain)" class="asset-icon" />
+        </template>
+        {{ account.alias ? `${account.name} - ${account.alias}` : account.name }}
+        <template #sub-title>
+          {{
+            account.addresses && account.addresses[0] ? shortenAddress(account.addresses[0]) : ''
+          }}
+        </template>
+        <template #detail>
+          <div class="detail-content">
             <div class="ledger-tag" v-if="account.type && account.type.includes('ledger')">
               Ledger
             </div>
+            <div
+              :id="account.assets[0]"
+              v-if="account.balances[account.assets[0]] && account.chain !== 'bitcoin'"
+            >
+              {{ prettyBalance(account.balances[account.assets[0]], account.assets[0]) }}
+              {{ account.assets[0] }}
+            </div>
+          </div>
+        </template>
+        <template
+          #detail-sub
+          v-if="account.totalFiatBalance && account.loadingInitialBalance === false"
+        >
+          {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
+        </template>
+        <template v-else> Loading... </template>
+      </ListItem>
+      <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
+        <ListItem
+          v-for="asset in account.assets"
+          :id="asset"
+          :key="asset"
+          @item-selected="selectItem(account, asset)"
+        >
+          <template #prefix>
+            <div class="account-color" :style="{ 'background-color': account.color }"></div>
           </template>
-          <template
-            #detail-sub
-            v-if="account.totalFiatBalance && account.loadingInitialBalance === false"
-          >
-            {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
+          <template #icon class="account-asset-item">
+            <img :src="getAssetIcon(asset)" class="asset-icon" />
           </template>
-          <template v-else> Loading... </template>
+          {{ getAssetName(asset) }}
+          <template #detail>
+            {{ prettyBalance(account.balances[asset], asset) }} {{ asset }}
+          </template>
+          <template #detail-sub v-if="account.fiatBalances[asset]">
+            {{ formatFiatUI(formatFiat(account.fiatBalances[asset])) }}
+          </template>
         </ListItem>
-        <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
-          <ListItem
-            v-for="asset in account.assets"
-            :id="asset"
-            :key="asset"
-            @item-selected="selectItem(account, asset)"
-          >
-            <template #prefix>
-              <div class="account-color" :style="{ 'background-color': account.color }"></div>
-            </template>
-            <template #icon class="account-asset-item">
-              <img :src="getAssetIcon(asset)" class="asset-icon" />
-            </template>
-            {{ getAssetName(asset) }}
-            <template #detail>
-              {{ prettyBalance(account.balances[asset], asset) }} {{ asset }}
-            </template>
-            <template #detail-sub v-if="account.fiatBalances[asset]">
-              {{ formatFiatUI(formatFiat(account.fiatBalances[asset])) }}
-            </template>
-          </ListItem>
-        </div>
       </div>
+      <!-- </div> -->
     </div>
   </div>
 </template>
@@ -109,6 +122,7 @@ import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -123,8 +137,13 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['accountsDataByValue']),
     filteredItems() {
-      if (!this.search) return this.accounts
+      console.log(
+        '🚀 ~ file: WalletAccounts.vue ~ line 143 ~ filteredItems ~ this.accountsDataByValue',
+        this.accountsDataByValue
+      )
+      if (!this.search) return this.accountsDataByValue
 
       const search = this.search.toUpperCase()
       const assetComparator = (asset) => {
@@ -134,12 +153,13 @@ export default {
         )
       }
 
-      return this.accounts
+      const acc = this.accounts
         .filter((account) => account.assets.find(assetComparator))
         .map((account) => ({
           ...account,
           assets: account.assets.filter(assetComparator)
         }))
+      return acc
     }
   },
   methods: {
