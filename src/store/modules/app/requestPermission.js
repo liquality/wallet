@@ -1,8 +1,7 @@
 import { stringify } from 'qs'
-import { ChainId } from '@liquality/cryptoassets'
-
 import { emitter } from '../../utils'
 import { createPopup } from '../../../broker/utils'
+import { ChainId } from '@liquality/cryptoassets'
 
 const CONFIRM_REQUIRED = [
   /^wallet.buildTransaction$/,
