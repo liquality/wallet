@@ -5,6 +5,11 @@ import BN from 'bignumber.js'
 
 import { emitter } from '../store/utils'
 
+const feeAssets = {
+  uusd: 'UST',
+  uluna: 'LUNA'
+}
+
 const getConfig = (activeNetwork) => {
   const networkConfig = TerraNetworks['terra_' + activeNetwork]
 
@@ -36,7 +41,7 @@ const getExecutedMethod = (msgs) => {
 }
 
 const getTransactionParams = (payload) => {
-  const { fee, gasAdjustment, msgs } = payload
+  const { fee, msgs } = payload
   const msg = JSON.parse(msgs[0]).value || JSON.parse(msgs[0])
   const { amount, gas, gas_limit: gasLimit } = JSON.parse(fee)
 
@@ -65,7 +70,8 @@ const getTransactionParams = (payload) => {
     to,
     method,
     fee: _fee,
-    gasAdjustment,
+    feeAsset: feeAssets[amount?.[0]?.denom] || feeAssets.uluna,
+    gasLimit: _gas,
     value: asset === 'uluna' ? value : 0
   }
 }
@@ -90,7 +96,7 @@ export const connectRemote = (remotePort, store) => {
 
     const handleRequest = async (key) => {
       if (key === 'post') {
-        const { to, gasAdjustment, fee, asset, method, value } = getTransactionParams(payload)
+        const { to, feeAsset, fee, asset, method, value, gasLimit } = getTransactionParams(payload)
 
         const { externalConnections, activeWalletId } = store.state
 
@@ -102,8 +108,9 @@ export const connectRemote = (remotePort, store) => {
             fee,
             asset,
             method,
+            feeAsset,
             data: payload,
-            gas: gasAdjustment,
+            gas: gasLimit,
             value,
             accountId
           }
