@@ -48,7 +48,6 @@ export default {
 
 <style lang="scss" scoped>
 .notification-content {
-  // display: flex;
   justify-content: space-between;
   align-items: center;
   .get-bridgeAsset-btn {
@@ -57,7 +56,7 @@ export default {
     display: inline-block;
   }
   .notification-text {
-    // width: 230px;
+    width: 230px;
   }
 }
 </style>
