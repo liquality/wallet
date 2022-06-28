@@ -108,7 +108,6 @@ store.subscribe(async ({ type, payload }, state) => {
       dispatch('updateCurrenciesInfo', { assets: store.getters.allNetworkAssets })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
 
-
       asyncLoop(
         () =>
           dispatch('updateBalances', {
