@@ -1,5 +1,6 @@
 <template>
   <div class="permission-send wrapper form text-center">
+    <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
     <div v-if="currentStep === 'inputs'" class="wrapper_top form">
       <div v-if="error" class="mt-4 text-danger"><strong>Error:</strong> {{ error }}</div>
       <div v-if="isApprove">
@@ -114,6 +115,7 @@ import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chainToTokenAddressMap, ChainId } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
+import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import {
   prettyBalance,
@@ -127,13 +129,13 @@ import {
   estimateGas
 } from '@liquality/wallet-core/dist/utils/asset'
 import { parseTokenTx } from '@liquality/wallet-core/dist/utils/parseTokenTx'
-
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
 import BN from 'bignumber.js'
 import _ from 'lodash'
+import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 
 const TRANSACTION_TYPES = {
   approve: 'Allow',
@@ -147,8 +149,10 @@ export default {
     ChevronRight,
     FeeSelector,
     CustomFees,
-    CustomFeesEIP1559
+    CustomFeesEIP1559,
+    LedgerSignRequestModal
   },
+  mixins: [ledgerConnectMixin],
   data() {
     return {
       showData: false,
@@ -165,7 +169,8 @@ export default {
       maxSendFees: {},
       maxOptionActive: false,
       customFee: null,
-      gas: 0
+      gas: 0,
+      signRequestModalOpen: false
     }
   },
   methods: {
@@ -175,6 +180,10 @@ export default {
     prettyFiatBalance,
     formatFiatUI,
     getAssetColorStyle,
+    closeSignRequestModal() {
+      this.signRequestModalOpen = false
+      this.loading = false
+    },
     onCustomFeeSelected() {
       this.currentStep = 'custom-fees'
     },
@@ -240,6 +249,10 @@ export default {
       this.error = null
 
       try {
+        if (this.account?.type.includes('ledger')) {
+          this.signRequestModalOpen = true
+          await this.connectLedger()
+        }
         const response = await this.replyPermission({
           request: requestWithFee,
           allowed
@@ -251,6 +264,7 @@ export default {
           window.close()
         }
       } finally {
+        this.signRequestModalOpen = false
         this.loading = false
       }
     },
@@ -334,7 +348,7 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
-    ...mapGetters(['client']),
+    ...mapGetters(['client', 'accountItem']),
     asset() {
       return this.request.asset
     },
@@ -439,6 +453,9 @@ export default {
       return fee.suggestedBaseFeePerGas
         ? fee.suggestedBaseFeePerGas + fee.maxPriorityFeePerGas
         : fee
+    },
+    account() {
+      return this.accountItem(this.request?.accountId)
     }
   },
   async created() {

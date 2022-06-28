@@ -2,6 +2,7 @@ import { setupWallet } from '@liquality/wallet-core'
 import { AES } from 'crypto-js'
 import _pbkdf2 from 'pbkdf2'
 import { createNotification as _createNotification } from './utils/notification'
+import { WebHidTransportCreator } from '@chainify/hw-ledger';
 
 async function pbkdf2(password, salt, iterations, length, digest) {
   return new Promise((resolve, reject) => {
@@ -24,7 +25,8 @@ const walletOptions = {
   },
   createNotification(notification) {
     _createNotification(notification)
-  }
+  },
+  ledgerTransportCreator: new WebHidTransportCreator()
 }
 
 const wallet = setupWallet(walletOptions)
