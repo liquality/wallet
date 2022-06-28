@@ -10,8 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Improve Error messaging</pre>
-            <pre class="text-wrap">* Minor Bug fixes</pre>
+            <pre class="text-wrap">* Connect your wallet to view your NFTs on OpenSEA</pre>
+            <pre class="text-wrap">* Bridge with the Hop protocol</pre>
+            <pre class="text-wrap">* Improved Error Messaging - Minor Bug Fixes</pre>
           </div>
         </div>
       </div>
