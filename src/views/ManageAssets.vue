@@ -108,9 +108,9 @@ export default {
       return assets
     },
     sortedFilteredAssets() {
-      if (isEmpty(this.search)) return this.sortedAssets
+      if (isEmpty(this.search)) return this.assets
 
-      return this.sortedAssets.filter(
+      return this.assets.filter(
         (asset) =>
           asset.toUpperCase().includes(this.search.toUpperCase()) ||
           cryptoassets[asset]?.name.toLowerCase().includes(this.search.toLowerCase())
@@ -156,6 +156,9 @@ export default {
         ? customTokens.findIndex((token) => token.symbol === asset) !== -1
         : false
     }
+  },
+  created() {
+    this.assets = this.sortedAssets
   },
   watch: {
     activeNetwork() {
