@@ -66,7 +66,7 @@
         />
       </InfoNotification>
       <InfoNotification v-else-if="cannotCoverMinimum && !insufficientFundsError">
-        <CannotCoverMinimumMessage :asset="asset" :account-id="getAccountId()" />
+        <CannotCoverMinimumMessage :asset="asset" :account-id="account.id" />
       </InfoNotification>
       <InfoNotification v-else-if="ethRequired && !insufficientFundsError">
         <EthRequiredMessage :account-id="account.id" />
