@@ -2,7 +2,7 @@
   <div>
     <div class="modal-backdrop"></div>
     <div
-      class="modal d-block"
+      class="modal d-flex"
       tabindex="-1"
       role="dialog"
       @click.passive="closeOutside ? close() : () => {}"
@@ -87,6 +87,8 @@ export default {
 
 .modal {
   overflow: auto !important;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-content {

@@ -34,7 +34,7 @@ import NavBar from '@/components/NavBar'
 import Connect from './Connect'
 import Unlock from './Unlock'
 import Completed from './Completed'
-import { connectLedgerDevice } from '@/utils/hardware-wallet'
+import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
@@ -51,6 +51,7 @@ export default {
     Unlock,
     Completed
   },
+  mixins: [ledgerConnectMixin],
   data() {
     return {
       currentStep: 'connect',
@@ -61,8 +62,7 @@ export default {
       selectedAccounts: {},
       ledgerError: null,
       ledgerPage: 0,
-      selectedWalletType: null,
-      ledgerConnected: false
+      selectedWalletType: null
     }
   },
   computed: {
@@ -86,7 +86,6 @@ export default {
     }
   },
   methods: {
-    connectLedgerDevice,
     getAssetIcon,
     ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance', 'trackAnalytics']),
     async connect({ asset, walletType, page }) {
@@ -106,14 +105,7 @@ export default {
 
       try {
         if (asset) {
-          if (!this.ledgerConnected) {
-            const connected = await this.connectLedgerDevice()
-
-            if (!connected) {
-              throw new Error('Ledger device not connected or not unlocked.')
-            }
-            this.ledgerConnected = connected
-          }
+          await this.connectLedger()
 
           const accountType = walletType || asset.types[0]
           let currentPage = page || 0

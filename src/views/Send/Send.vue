@@ -253,6 +253,7 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
+import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 
 export default {
   components: {
@@ -266,6 +267,7 @@ export default {
     CustomFees,
     CustomFeesEIP1559
   },
+  mixins: [ledgerConnectMixin],
   data() {
     return {
       sendFees: {},
@@ -498,6 +500,7 @@ export default {
       this.loading = true
       if (this.account?.type.includes('ledger')) {
         this.signRequestModalOpen = true
+        await this.connectLedger()
       }
 
       try {
