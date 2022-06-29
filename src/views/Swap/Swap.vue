@@ -65,7 +65,7 @@
           :asset="selectedQuote.bridgeAsset"
         />
       </InfoNotification>
-      <InfoNotification v-else-if="cannotCoverMinimum && !insufficientFundsError">
+      <InfoNotification v-else-if="cannotCoverMinimum && insufficientFundsError">
         <CannotCoverMinimumMessage :asset="asset" :account-id="account.id" />
       </InfoNotification>
       <InfoNotification v-else-if="ethRequired && !insufficientFundsError">
@@ -867,10 +867,7 @@ export default {
     },
     insufficientFundsError() {
       const amount = BN(this.safeAmount)
-      if (amount.gt(this.max)) {
-        return true
-      }
-      return false
+      return amount.gt(this.max) || amount.lt(this.min)
     },
     amountError() {
       const amount = BN(this.safeAmount)
@@ -1245,10 +1242,12 @@ export default {
       }
       this.updatingQuotes = false
       this.cannotCoverMinimum =
-        !this.canSwap &&
-        !shouldChooseNewQuote &&
-        !BN(this.sendAmount).eq(this.defaultAmount) &&
-        BN(this.sendAmount).lt(this.max)
+        (!this.canSwap &&
+          !shouldChooseNewQuote &&
+          !BN(this.sendAmount).eq(this.defaultAmount) &&
+          this.max.lt(this.min)) ||
+        BN(this.sendAmount).lt(this.min) ||
+        BN(this.sendAmount).gt(this.max)
       // if(this.cannotCoverMinimum) this.sendAmount = 1
       this.resetQuoteTimer(!this.canSwap && shouldChooseNewQuote ? 1000 : QUOTE_TIMER_MS)
     }, 1000),
