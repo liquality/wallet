@@ -4,22 +4,34 @@
       <h6>Buy Crypto</h6>
     </template>
     <template>
-      <p class="main-message">
-        Transak lets you buy crypto with your credit card or via bank transfer depending on
-        location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token (the
-        first token of the account).
-      </p>
-      <p class="secondary-message">
-        Fees and limits may vary. It usually takes just a couple of minutes and requires
-        registration.
-      </p>
+      <div class="provider">
+        <BuyCryptoProviderBrand :provider="'transak'" />
+        <p class="main-message">
+          Transak lets you buy crypto with your credit card or via bank transfer depending on
+          location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token (the
+          first token of the account).
+        </p>
+        <button class="btn btn-outline-primary" id="open_transak_tab_btn" @click="openProviderTab('transak')">
+          Continue with Transak
+        </button>
+      </div>
+      <div class="provider">
+        <BuyCryptoProviderBrand :provider="'onramper'" />
+        <p class="main-message">
+          Onramper is an aggregated service providing the best quote from several sources and
+          accepts popular payment methods depending on location.
+        </p>
+        <button class="btn btn-outline-primary" id="open_transak_tab_btn" @click="openProviderTab('onramper')">
+          Continue with Onramper
+        </button>
+      </div>
     </template>
     <template #footer>
       <div class="footer">
-        <TransakBrand />
-        <button class="btn btn-outline-primary" id="open_transak_tab_btn" @click="openTransakTab">
-          Continue with Transak
-        </button>
+        <p class="secondary-message">
+          Fees and limits may vary. It usually takes just a couple of minutes and requires
+          registration.
+        </p>
       </div>
     </template>
   </Modal>
@@ -27,14 +39,14 @@
 
 <script>
 import Modal from '@/components/Modal'
-import TransakBrand from '@/components/BuyCrypto/TransakBrand'
+import BuyCryptoProviderBrand from '@/components/BuyCrypto/BuyCryptoProviderBrand'
 
 import { mapActions, mapState } from 'vuex'
 
 export default {
   components: {
     Modal,
-    TransakBrand
+    BuyCryptoProviderBrand
   },
   computed: {
     ...mapState({
@@ -43,15 +55,23 @@ export default {
     })
   },
   methods: {
-    ...mapActions('app', ['setBuyCryptoModalOpen', 'openTransakWidgetTab', 'trackAnalytics']),
+    ...mapActions('app', [
+      'setBuyCryptoModalOpen',
+      'openTransakWidgetTab',
+      'openOnramperWidgetTab'
+    ]),
     close() {
       this.setBuyCryptoModalOpen({ open: false })
     },
-    openTransakTab() {
+    openProviderTab(provider) {
       if (!this.modalData.chain || !this.modalData.asset || !this.modalData.address) {
-        this.$router.push('/assets/buy')
+        this.$router.push(`/assets/buy?provider=${provider}`)
       } else {
-        this.openTransakWidgetTab({ ...this.modalData })
+        if (provider === 'transak') {
+          this.openTransakWidgetTab({ ...this.modalData })
+        } else if (provider === 'onramper') {
+          this.openOnramperWidgetTab({ ...this.modalData })
+        }
       }
       this.setBuyCryptoModalOpen({ open: false })
     }
@@ -76,7 +96,7 @@ h6 {
   color: #000d35;
 }
 
-.footer {
+.provider {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -89,5 +109,13 @@ h6 {
     padding: 0.5rem 1.5rem;
     border-radius: 22px;
   }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
 }
 </style>
