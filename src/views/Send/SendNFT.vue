@@ -2,7 +2,7 @@
   <div class="account-container">
     <NavBar
       showBack="true"
-      :backPath="routeSource"
+      :backClick="routeSource"
       :backLabel="activeView === 'selectAsset' ? 'Overview' : 'Back'"
     >
       <span class="account-title">{{ title }}</span>
@@ -34,12 +34,12 @@
                     height="11"
                     rx="5.5"
                     :fill="
-                      selectedNFT && selectedNFT.token_id === asset.token_id ? '#646F85' : '#FFFFFF'
+                      selectedNFT && selectedNFT.token_id === asset.token_id ? '#2CD2CF' : '#FFFFFF'
                     "
                     stroke="#646F85"
                   />
                 </svg>
-                <img :src="asset.image_thumbnail_url" alt="" />
+                <img :src="asset.image_thumbnail_url || thumbnailImage" alt="" />
               </div>
             </div>
           </Accordion>
@@ -65,7 +65,7 @@
             <h3 class="text-uppercase">Selected Asset</h3>
             <div class="selected-nft-asset__image">
               <div class="nft-image mr-2">
-                <img :src="selectedNFT.image_thumbnail_url" alt="selected nft" />
+                <img :src="selectedNFT.image_thumbnail_url || thumbnailImage" alt="selected nft" />
               </div>
               <div>
                 <h3>{{ selectedNFT.name }}</h3>
@@ -193,7 +193,7 @@
             <h3 class="text-uppercase">Selected Asset</h3>
             <div class="selected-nft-asset__image">
               <div class="nft-image mr-2" style="--img-width: 110px">
-                <img :src="selectedNFT.image_thumbnail_url" alt="" />
+                <img :src="selectedNFT.image_thumbnail_url || thumbnailImage" alt="" />
               </div>
               <div>
                 <h3>{{ selectedNFT.name }}</h3>
@@ -263,6 +263,7 @@ import {
 } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import _ from 'lodash'
 import BN from 'bignumber.js'
+import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
@@ -337,6 +338,9 @@ export default {
         default:
           return ''
       }
+    },
+    thumbnailImage() {
+      return NFTThumbnailImage
     },
     nftCollection() {
       return this.accountNftCollections(this.account?.id)
@@ -415,7 +419,6 @@ export default {
       }
     },
     asset() {
-      console.log(this.account)
       return chains[this.account?.chain].nativeAsset
     },
     startAddress() {

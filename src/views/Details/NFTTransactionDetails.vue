@@ -38,7 +38,7 @@
             <h2>Sent Asset</h2>
             <div class="d-flex">
               <div class="nft-image mr-2" style="--img-width: 140px">
-                <img :src="item.nft.image_thumbnail_url" alt="nft-image" />
+                <img :src="item.nft.image_thumbnail_url || thumbnailImage" alt="nft-image" />
               </div>
               <div class="w-100">
                 <p class="font-weight-bold">{{ item.nft.name }}</p>
@@ -133,6 +133,7 @@ import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
 import { isObject } from 'lodash-es'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 export default {
   components: {
@@ -155,6 +156,9 @@ export default {
   computed: {
     ...mapGetters(['client']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
+    thumbnailImage() {
+      return NFTThumbnailImage
+    },
     assetChain() {
       return getNativeAsset(this.item.from)
     },

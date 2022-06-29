@@ -1,9 +1,12 @@
 <template>
   <div class="nft-asset">
     <div class="nft-asset--container">
-      <NavBar showBack="true" :backPath="'/wallet/nfts'" backLabel="Back"></NavBar>
+      <NavBar :showBack="true" :backPath="'/wallet/nfts'" backLabel="Back"></NavBar>
       <div class="nft-action-buttons">
-        <div class="star" :style="showFullscreen ? { top: '120px' } : { top: '40px' }">
+        <div
+          class="star"
+          :style="showFullscreen ? { top: 'calc(25% - 41px)' } : { bottom: 'calc(20% + 41px)' }"
+        >
           <Star :nftAsset="nftAsset" :accountId="accountId" />
         </div>
         <div class="send--share--actions">
@@ -20,15 +23,12 @@
         </div>
       </div>
       <template v-if="showFullscreen === false">
-        <div class="nft-img" v-if="nftAssetImageSource('thumbnail')">
-          <img
-            :src="nftAssetImageSource('thumbnail') || '/src/assets/nft_thumbnail.png'"
-            alt="image"
-          />
+        <div class="nft-img">
+          <img :src="nftAssetImageSource('thumbnail') || thumbnailImage" alt="thumbnail image" />
         </div>
         <div class="drawer nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
-            <h1 class="nft-details_name">{{ nftAsset ? nftAsset.name : '' }}</h1>
+            <h1 class="nft-details_name">{{ nftAsset ? nftAsset.name : '[Name]' }}</h1>
             <ChevronDownIcon
               class="nft-details_arrow"
               style="transform: scaleY(-1)"
@@ -36,13 +36,16 @@
             />
           </div>
           <h5 class="nft-details_collection-details">
-            {{ nftAsset ? nftAsset.collection.name : '' }}
+            {{ nftAsset ? nftAsset.collection.name : '[Collection]' }}
           </h5>
         </div>
       </template>
       <template v-else-if="showFullscreen === true">
-        <div class="nft-img__open">
-          <img :src="nftAssetImageSource('preview') || '/src/assets/nft_preview.png'" alt="image" />
+        <div
+          class="nft-img__open"
+          :style="!nftAssetImageSource('preview') && { background: '#D9DFE5' }"
+        >
+          <img :src="nftAssetImageSource('preview') || thumbnailImage" alt="image" />
         </div>
         <div class="drawer drawer-open nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
@@ -79,8 +82,8 @@
             <div class="wallet-tab-content py-1">
               <div>
                 <div class="px-4 mt-2" v-if="activeTab === 'overview'">
-                  <h5 class="nft-details_name">Bio</h5>
-                  <p class="nft-details_name">
+                  <h5 class="text-bold">Bio</h5>
+                  <p>
                     {{ nftAsset.description || 'This NFT does not have a description.' }}
                   </p>
                 </div>
@@ -155,6 +158,7 @@ import { getAccountIcon } from '@/utils/accounts'
 import { getAssetIcon } from '@/utils/asset'
 import { getNftTransferLink } from '@liquality/wallet-core/dist/utils/asset'
 import Star from '@/components/Star.vue'
+import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 export default {
   data() {
@@ -178,6 +182,9 @@ export default {
     source() {
       return this.$route.fullPath
     },
+    thumbnailImage() {
+      return NFTThumbnailImage
+    },
     account() {
       return this.accountsData.filter((account) => account.id === this.accountId)[0]
     },
@@ -191,7 +198,6 @@ export default {
       return this.account.chain
     },
     asset() {
-      console.log(this.accountId)
       return chains[this.account.chain].nativeAsset
     },
     accountId() {
@@ -222,9 +228,10 @@ export default {
       } else if (mode === 'preview') {
         return this.nftAsset?.image_preview_url
       } else {
-        return this.nftAsset?.image_url
+        return this.thumbnailImage
       }
     },
+
     transferNFT() {
       window.open(
         getNftTransferLink(
@@ -249,11 +256,17 @@ export default {
   bottom: 0;
   z-index: 9999;
 
+  .navbar {
+    border-bottom: none !important;
+  }
+
   &--container {
     height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
-    position: relative;
+    position: absolute;
+    top: 0;
   }
 
   .nft-img {
@@ -301,17 +314,20 @@ export default {
     }
   }
 
-  .drawer.nft-details {
-    background: #ffffff;
-    border: 1px solid #d9dfe5;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 20%;
-    padding: 1rem;
-    border-radius: 15px 15px 0 0;
+  .nft-details {
+    &.drawer {
+      background: #ffffff;
+      border: 1px solid #d9dfe5;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 20%;
+      padding: 1rem;
+      border-radius: 15px 15px 0 0;
+    }
     &_name {
-      font-size: 14px;
+      font-size: 20px;
       line-height: 26px;
       font-weight: 600;
     }

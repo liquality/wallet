@@ -8,11 +8,14 @@
     />
     <div class="account-container_balance">
       <div>
-        <span class="account-container_balance_value">
+        <div class="account-container_balance_value">
           {{ nftAssetsCount || 0 }}
-        </span>
-        <span class="account-container_balance_code"
-          >NFT<span v-if="nftAssetsCount !== 1">S</span></span
+          <span class="account-container_balance_code"
+            >NFT<span v-if="nftAssetsCount !== 1">S</span></span
+          >
+        </div>
+        <span class="account-container_balance_code" v-if="!isAccount"
+          >In {{ accountsWithNFTs }} Account<span v-if="accountsWithNFTs !== 1">s</span></span
         >
       </div>
     </div>
@@ -92,6 +95,9 @@ export default {
     account() {
       return this.accountsData.filter((account) => account.id === this.id)[0]
     },
+    accountsWithNFTs() {
+      return this.accountsData.filter((account) => account.nfts && account.nfts.length > 0).length
+    },
     address() {
       if (this.isAccount) {
         return chains[this.account.chain]?.formatAddress(
@@ -151,6 +157,11 @@ export default {
   &_value {
     font-size: 66px;
   }
+
+  &_code {
+    font-size: 20px;
+    line-height: 36px;
+  }
 }
 
 .account-container_address {
@@ -158,10 +169,6 @@ export default {
   line-height: 24px;
 
   button {
-    font-size: 12px;
-    color: #9d4dfa;
-    border-radius: 22px;
-    background: #f8faff;
     border: initial;
   }
 }

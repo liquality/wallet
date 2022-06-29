@@ -91,8 +91,10 @@
                 :to="{
                   path: `/wallet/nfts/activity/${account.id}`
                 }"
-                >See all
-                <span> <ChevronRightIcon class="ml-2 icon-sm" /> </span>
+              >
+                <span class="d-flex align-items-center"
+                  >See all <ChevronRightIcon class="ml-2 icon-sm" />
+                </span>
               </router-link>
             </template>
           </ListItem>
@@ -110,8 +112,10 @@
             </template>
             {{ getAssetName(asset) }}
             <template #detail>
-              {{ prettyBalance(account.balances[asset], asset) }} {{ asset }}
-              <span> <ChevronRightIcon class="ml-2 icon-sm" /> </span>
+              <span class="d-flex align-items-center"
+                >{{ prettyBalance(account.balances[asset], asset) }} {{ asset }}
+                <ChevronRightIcon class="ml-2 icon-sm" />
+              </span>
             </template>
             <template #detail-sub v-if="account.fiatBalances[asset]">
               {{ formatFiatUI(formatFiat(account.fiatBalances[asset])) }}

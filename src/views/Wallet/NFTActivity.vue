@@ -1,9 +1,15 @@
 <template>
   <div class="account-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="account-title"
-        ><NFTIcon class="asset-icon" /> {{ nftAssetsCount || 0 }} NFTs</span
-      >
+      <div class="account-title">
+        <div class="icons d-flex justify-content-center">
+          <span class="mr-2">
+            <NFTIcon class="asset-icon" />
+            <img :src="getAssetIcon(asset)" :alt="`${asset}-icon`" class="asset-icon" />
+          </span>
+          {{ account.chain }}
+        </div>
+      </div>
     </NavBar>
     <div class="account-content">
       <NFTStats :isAccount="true" :id="id" />
@@ -48,6 +54,7 @@ import amplitude from 'amplitude-js'
 import WalletNFTs from './WalletNFTs.vue'
 import { getAssetIcon } from '@/utils/asset'
 import NFTIcon from '@/assets/icons/nft.svg'
+import { chains } from '@liquality/cryptoassets'
 
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
@@ -72,7 +79,7 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'history']),
-    ...mapGetters(['activity', 'accountItem', 'accountNftCollections']),
+    ...mapGetters(['activity', 'accountsData', 'accountNftCollections']),
     assetHistory() {
       return this.activity.filter((item) => item.type === 'NFT')
     },
@@ -81,6 +88,12 @@ export default {
     },
     nftAssetsCount() {
       return Object.values(this.nftAssets).reduce((acc, collection) => acc + collection.length, 0)
+    },
+    account() {
+      return this.accountsData.filter((account) => account.id === this.id)[0]
+    },
+    asset() {
+      return chains[this.account.chain].nativeAsset
     }
   },
   methods: {
@@ -98,6 +111,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.icons {
+  span {
+    width: 52px;
+  }
+  svg {
+    position: absolute;
+    &:first-child {
+      left: calc(50% + -48px);
+      z-index: 2;
+    }
+  }
+}
+
 .account-container {
   overflow-y: scroll;
   padding-bottom: 2rem;

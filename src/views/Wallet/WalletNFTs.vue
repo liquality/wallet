@@ -20,7 +20,7 @@
         <OpenSea @click="exploreNfts" class="cursor-pointer" />
       </div>
       <div class="d-flex justify-content-center w-100">
-        <a class="btn btn-primary" :href="opensea" target="_blank" rel="noopener noreferrer"
+        <a class="btn btn-primary w-100" :href="opensea" target="_blank" rel="noopener noreferrer"
           >Check out Opensea</a
         >
       </div>
@@ -140,7 +140,7 @@ export default {
 
   .btn {
     border-radius: 22px;
-    color: #9d4dfa;
+    color: #ffffff;
   }
 
   .brand {

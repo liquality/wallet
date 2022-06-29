@@ -1,12 +1,14 @@
 <template>
   <div class="nft-image" style="--img-width: 100px">
     <Star :nftAsset="nftAsset" :accountId="accountId" />
-    <img :src="nftAssetImageSource" alt="" @click="viewNFTDetails" />
+    <img :src="nftAssetImageSource || thumbnailImage" alt="" @click="viewNFTDetails" />
   </div>
 </template>
 
 <script>
 import Star from '@/components/Star'
+import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
+
 export default {
   components: {
     Star
@@ -26,13 +28,16 @@ export default {
     }
   },
   computed: {
+    thumbnailImage() {
+      return NFTThumbnailImage
+    },
     nftAssetImageSource() {
       if (this.mode === 'thumbnail') {
         return this.nftAsset.image_thumbnail_url
       } else if (this.mode === 'preview') {
         return this.nftAsset.image_preview_url
       } else {
-        return this.nftAsset.image_url
+        return this.thumbnailImage
       }
     }
   },
