@@ -10,13 +10,27 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Connect your wallet to view your NFTs on OpenSEA</pre>
-            <pre class="text-wrap">* Bridge with the Hop protocol</pre>
             <pre class="text-wrap">* Improved Error Messaging - Minor Bug Fixes</pre>
           </div>
         </div>
       </div>
     </template>
+      <template>
+        <h6>Did you know you can…</h6>
+      </template>
+      <template>
+        <div class="items">
+          <div class="item">
+            <div class="item-icon">
+              <ChartIcon />
+            </div>
+            <div class="item-content">
+              <pre class="text-wrap">* Connect your wallet to view your NFTs on OpenSEA</pre>
+              <pre class="text-wrap">* Bridge with the Hop protocol</pre>
+            </div>
+          </div>
+        </div>
+      </template>
     <template #footer>
       <div class="footer">
         <div class="text-muted">Version {{ appVersion }}</div>
@@ -25,7 +39,6 @@
     </template>
   </Modal>
 </template>
-
 <script>
 import Modal from '@/components/Modal'
 import ChartIcon from '@/assets/icons/chart_icon.svg'
@@ -113,5 +126,11 @@ h6 {
   .btn {
     margin-top: 20px;
   }
+}
+
+.header {
+  display: flex;
+  width: 100%;
+  align-items: center;
 }
 </style>
