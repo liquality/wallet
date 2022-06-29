@@ -16,7 +16,7 @@
       </div>
     </template>
     <template>
-      <h6>Did you know you can…</h6>
+      <h6 class="subHeader">Did you know you can…</h6>
     </template>
     <template>
       <div class="items">
@@ -83,6 +83,10 @@ h6 {
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
+}
+
+.subHeader {
+  padding-left: 20px;
 }
 
 .items {
