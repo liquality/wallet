@@ -7,6 +7,7 @@ import { unitToCurrency } from '@liquality/cryptoassets'
 import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import _ from 'lodash-es'
 import { version as walletVersion } from '../package.json'
+import { event as googleEvent } from 'vue-analytics'
 
 let prevState = _.cloneDeep(store.state)
 
@@ -34,6 +35,12 @@ store.subscribe(async ({ type, payload }, state) => {
     case 'CREATE_WALLET':
       // Analytics Opt in event (if state has acceptedData is not 0)
       if (state.analytics?.acceptedDate > 0) {
+        googleEvent({
+          eventCategory: 'Opt In',
+          eventAction: 'Opt In',
+          eventLabel: 'Opt In',
+          eventValue: 1
+        })
         dispatch('trackAnalytics', {
           event: 'User Opt-In to Analytics',
           properties: {
@@ -43,6 +50,12 @@ store.subscribe(async ({ type, payload }, state) => {
       }
       // Import with seed phrase event
       if (state.wallets[0].imported) {
+        googleEvent(
+          'Import with seed phrase',
+          'Import with seed phrase',
+          'Import with seed phrase',
+          1
+        )
         dispatch('trackAnalytics', {
           event: 'Import with seed phrase',
           properties: {
@@ -52,6 +65,11 @@ store.subscribe(async ({ type, payload }, state) => {
           }
         })
       } else {
+        googleEvent({
+          eventCategory: 'Create a new wallet',
+          eventAction: 'Create a new wallet',
+          eventLabel: 'Create a new wallet'
+        })
         // Create wallet event
         dispatch('trackAnalytics', {
           event: 'Create a new wallet',
