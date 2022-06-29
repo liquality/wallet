@@ -8835,6 +8835,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chalk@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "chalk@npm:5.0.1"
+  checksum: 7b45300372b908f0471fbf7389ce2f5de8d85bb949026fd51a1b95b10d0ed32c7ed5aab36dd5e9d2bf3191867909b4404cef75c5f4d2d1daeeacd301dd280b76
+  languageName: node
+  linkType: hard
+
 "char-regex@npm:^1.0.2":
   version: 1.0.2
   resolution: "char-regex@npm:1.0.2"
@@ -17519,6 +17526,7 @@ __metadata:
     pbkdf2: ^3.1.1
     post-message-stream: ^3.0.0
     prettier: 2.5.1
+    priv-key-precommit: 0.5.0
     puppeteer: 13.5.2
     puppeteer-core: 13.5.2
     qrcode: 1.5.0
@@ -21066,6 +21074,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"priv-key-precommit@npm:0.5.0":
+  version: 0.5.0
+  resolution: "priv-key-precommit@npm:0.5.0"
+  dependencies:
+    chalk: ^5.0.1
+    secp256k1: ^4.0.3
+  bin:
+    priv-key-precommit: dist/index.js
+  checksum: bfac114564750e760f671428b5e04fd9b2276cdd80c2c1f74b34d6b0569bd88a4ffb7be05c296cb278e74978eeb9cc94f3f0b33d58f3d59cdf675ee426b8f3a8
+  languageName: node
+  linkType: hard
+
 "process-es6@npm:^0.11.2, process-es6@npm:^0.11.6":
   version: 0.11.6
   resolution: "process-es6@npm:0.11.6"
@@ -22458,7 +22478,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"secp256k1@npm:^4.0.1, secp256k1@npm:^4.0.2":
+"secp256k1@npm:^4.0.1, secp256k1@npm:^4.0.2, secp256k1@npm:^4.0.3":
   version: 4.0.3
   resolution: "secp256k1@npm:4.0.3"
   dependencies:
