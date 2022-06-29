@@ -115,10 +115,13 @@ export default {
   span {
     width: 52px;
   }
+  img {
+    position: absolute;
+  }
   svg {
     position: absolute;
     &:first-child {
-      left: calc(50% + -48px);
+      left: calc(50% - 58px);
       z-index: 2;
     }
   }
