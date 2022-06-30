@@ -31,7 +31,7 @@
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
     "@liquality/wallet-core": "1.17.1",
-    "@terra-money/terra.js": "^3.0.8",
+    "@terra-money/terra.js": "3.1.3",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.17.0",
     "bignumber.js": "9.0.2",

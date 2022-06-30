@@ -4783,40 +4783,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/terra.js@npm:^3.0.8":
-  version: 3.1.2
-  resolution: "@terra-money/terra.js@npm:3.1.2"
-  dependencies:
-    "@terra-money/legacy.proto": "npm:@terra-money/terra.proto@^0.1.7"
-    "@terra-money/terra.proto": ^0.2.0-beta.4
-    axios: ^0.26.1
-    bech32: ^2.0.0
-    bip32: ^2.0.6
-    bip39: ^3.0.3
-    bufferutil: ^4.0.3
-    decimal.js: ^10.2.1
-    jscrypto: ^1.0.1
-    readable-stream: ^3.6.0
-    secp256k1: ^4.0.2
-    tmp: ^0.2.1
-    utf-8-validate: ^5.0.5
-    ws: ^7.5.5
-  checksum: b42b483c8b7bb7c9209c5109b21377e2ee1e8dff63e9f7d0349faf343b70f978d534b80293f5278c43aa4db6d062ca7190f21bfcb05b3b5123df430e13148d58
-  languageName: node
-  linkType: hard
-
-"@terra-money/terra.proto@npm:^0.2.0-beta.4":
-  version: 0.2.0-beta.4
-  resolution: "@terra-money/terra.proto@npm:0.2.0-beta.4"
-  dependencies:
-    "@improbable-eng/grpc-web": ^0.14.1
-    google-protobuf: ^3.17.3
-    long: ^4.0.0
-    protobufjs: ~6.11.2
-  checksum: 37c42e29c846531f64f595a076378d415964f72181110f63b3cab72746c963706d64d71997af5a1eae28ce41a8e6c9f431c0d3597387cb48b91976836683ab1f
-  languageName: node
-  linkType: hard
-
 "@terra-money/terra.proto@npm:~2.0.0":
   version: 2.0.0
   resolution: "@terra-money/terra.proto@npm:2.0.0"
@@ -17478,7 +17444,7 @@ __metadata:
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
     "@liquality/wallet-core": 1.17.1
-    "@terra-money/terra.js": ^3.0.8
+    "@terra-money/terra.js": 3.1.3
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/vue": ^5.8.2
     "@vue/cli-plugin-babel": 4.5.15
