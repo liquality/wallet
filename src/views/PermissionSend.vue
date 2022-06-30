@@ -278,7 +278,7 @@ export default {
         const sendFees = {}
 
         for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+          const feePrice = fee.fee.maxFeePerGas || fee.fee
           const feePerGas = BN(feePrice).div(1e9)
           const txCost = this.gas.times(feePerGas)
           sendFees[speed] = txCost

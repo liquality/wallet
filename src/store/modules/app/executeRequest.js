@@ -15,6 +15,7 @@ export const executeRequest = async ({ rootGetters, dispatch }, { request }) => 
           amount: request.args[0].value,
           data: request.args[0].data,
           fee: request.args[0].fee,
+          feeAsset: request.args[0].feeAsset,
           feeLabel: request.args[0].feeLabel,
           gas: request.args[0].gas
         },

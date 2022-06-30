@@ -93,11 +93,11 @@
                 </td>
                 <td class="balance">
                   <div>
-                    <div>
+                    <div v-if="showBalance">
                       {{ prettyBalance(item.balance, selectedAsset.name) }}
                       {{ selectedAsset.name }}
                     </div>
-                    <div class="fiat">${{ getFiatBalance(item.fiatBalance) }}</div>
+                    <div  v-if="showBalance" class="fiat">${{ getFiatBalance(item.fiatBalance) }}</div>
                   </div>
                 </td>
                 <td class="account-selected-mark">
@@ -156,6 +156,7 @@ import CheckRightIcon from '@/assets/icons/check.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import { prettyBalance, formatFiat } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import BN from 'bignumber.js'
+import { ChainId } from '@liquality/cryptoassets'
 
 export default {
   directives: {
@@ -246,6 +247,9 @@ export default {
         BTC: 'Bitcoin',
         ETH: 'Ethereum'
       }[this.selectedAsset?.chain]
+    },
+    showBalance() {
+      return !(this.selectedAsset?.chain === ChainId.Bitcoin)
     }
   },
   watch: {
@@ -333,6 +337,7 @@ export default {
         display: flex;
         width: 100%;
         height: 100%;
+        min-height: 45px;
         flex-direction: column;
         align-items: stretch;
         justify-content: flex-end;
