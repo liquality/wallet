@@ -6225,6 +6225,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@vue/shared@npm:^3.2.37":
+  version: 3.2.37
+  resolution: "@vue/shared@npm:3.2.37"
+  checksum: 999ab8baeb13de190d07536e7dd0e74ab9354a864d8d903850a2127ae1a2aa2713a9edc0d957620ebf91165d6603d0cd2b0e8ee0db6cbaf8d57a6a0f912af810
+  languageName: node
+  linkType: hard
+
 "@vue/test-utils@npm:1.3.0, @vue/test-utils@npm:^1.1.0":
   version: 1.3.0
   resolution: "@vue/test-utils@npm:1.3.0"
@@ -17488,6 +17495,7 @@ __metadata:
     "@vue/cli-plugin-vuex": 4.5.15
     "@vue/cli-service": 4.5.15
     "@vue/eslint-config-prettier": ^6.0.0
+    "@vue/shared": ^3.2.37
     "@vue/test-utils": 1.3.0
     amplitude-js: 8.17.0
     babel-eslint: ^10.1.0
@@ -17540,9 +17548,9 @@ __metadata:
     uuid: ^8.1.0
     v-tooltip: ^2.0.3
     vue: ^2.6.11
-    vue-analytics: ^5.22.1
     vue-cli-plugin-browser-extension: ^0.25.1
     vue-date-pick: ^1.4.1
+    vue-gtag: 1.16.1
     vue-js-toggle-button: ^1.3.3
     vue-loader: ^17.0.0
     vue-router: ^3.1.6
@@ -25290,13 +25298,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-analytics@npm:^5.22.1":
-  version: 5.22.1
-  resolution: "vue-analytics@npm:5.22.1"
-  checksum: 2948a92428425f0c0f6e4b80a8b5679d152d3f76d35c26df482c903ae6798d6bb1ed110811c58a3123f53c26ff6696c61526f6d37b3cf4299bc83dd9af93a215
-  languageName: node
-  linkType: hard
-
 "vue-cli-plugin-browser-extension@npm:^0.25.1":
   version: 0.25.2
   resolution: "vue-cli-plugin-browser-extension@npm:0.25.2"
@@ -25335,6 +25336,15 @@ __metadata:
   peerDependencies:
     eslint: ">=5.0.0"
   checksum: 16d8bd31dacd9e5d3cd0fc82354c0cfdb42ee3d2e0c3aeda385b82aa48a59a440de3dc18521ea6535f4b00a54eb248d49a6ea2323fbae0d3c1afa0a00c63fe6c
+  languageName: node
+  linkType: hard
+
+"vue-gtag@npm:1.16.1":
+  version: 1.16.1
+  resolution: "vue-gtag@npm:1.16.1"
+  peerDependencies:
+    vue: ^2.0.0
+  checksum: f32b8b45af5e20c1add4e89cc21e55eede54171169345958b33cb6e10f6cbbb690bdd6e01b55672c179e24f2914bd2434183edbae8bf6a8c11b1aacdfaa0ac88
   languageName: node
   linkType: hard
 
