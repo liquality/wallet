@@ -35,7 +35,7 @@ store.subscribe(async ({ type, payload }, state) => {
     case 'CREATE_WALLET':
       // Analytics Opt in event (if state has acceptedData is not 0)
       if (state.analytics?.acceptedDate > 0) {
-        googleEvent("foobar1", { foo: "bar" });
+        googleEvent('foobar1', { foo: 'bar' })
         dispatch('trackAnalytics', {
           event: 'User Opt-In to Analytics',
           properties: {
@@ -45,7 +45,7 @@ store.subscribe(async ({ type, payload }, state) => {
       }
       // Import with seed phrase event
       if (state.wallets[0].imported) {
-        googleEvent("foobar2", { foo: "bar" });
+        googleEvent('foobar2', { foo: 'bar' })
         dispatch('trackAnalytics', {
           event: 'Import with seed phrase',
           properties: {
@@ -55,7 +55,7 @@ store.subscribe(async ({ type, payload }, state) => {
           }
         })
       } else {
-        googleEvent("foobar3", { foo: "bar" });
+        googleEvent('foobar3', { foo: 'bar' })
         // Create wallet event
         dispatch('trackAnalytics', {
           event: 'Create a new wallet',
