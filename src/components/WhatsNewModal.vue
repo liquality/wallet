@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Improved Error Messaging - Minor Bug Fixes</pre>
+            <pre class="text-wrap">* Release candidate 0.67.0</pre>
           </div>
         </div>
       </div>
