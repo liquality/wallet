@@ -39,13 +39,27 @@
         <img :src="getAssetIcon(asset)" class="asset-icon asset-item_icon" />
         <div class="asset-item_name flex-fill" :id="asset">
           {{ getAssetName(asset) }} ({{ asset }})
-          <!-- <span v-if="asset in networkWalletBalances" class="asset-item_balance">{{getAssetBalance(asset)}} {{asset}}</span> -->
         </div>
-        <div class="asset-item_toggle" :id="asset + '_toggle_button'">
+        <div
+          v-if="getCryptoassets[asset].type === 'native' && !availableNativeAssets[asset]"
+          class="asset-item_toggle"
+          :id="asset + '_toggle_button'"
+        >
           <toggle-button
             :css-colors="true"
             :value="isAssetEnabled(asset)"
             @change="(e) => toggleAsset(asset, e.value)"
+          />
+        </div>
+        <div
+          v-else-if="getCryptoassets[asset].type === 'erc20'"
+          class="asset-item_toggle"
+          :id="asset + '_toggle_button'"
+        >
+          <toggle-button
+            :css-colors="true"
+            :value="isAssetEnabled(asset)"
+            @change="(e) => toggleAsset(asset, e)"
           />
         </div>
         <button
@@ -75,10 +89,10 @@
 </template>
 
 <script>
-import { isEmpty } from 'lodash-es'
-import { mapState, mapActions } from 'vuex'
+import isEmpty from 'lodash-es/isEmpty'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-// import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { getNativeAsset } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import SearchIcon from '@/assets/icons/search.svg'
@@ -92,46 +106,122 @@ export default {
   data() {
     return {
       search: '',
-      assets: []
+      originalAssets: [],
+      nativeAssets: {}
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets', 'balances', 'customTokens']),
+    ...mapState([
+      'activeNetwork',
+      'activeWalletId',
+      'enabledAssets',
+      'balances',
+      'customTokens',
+      'accounts'
+    ]),
+    ...mapGetters(['accountsData']),
+    getCryptoassets() {
+      return cryptoassets
+    },
     networkAssets() {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
     },
-    sortedAssets() {
-      const allAssets = Object.keys(cryptoassets).filter((asset) =>
-        buildConfig.chains.includes(cryptoassets[asset].chain)
-      )
-      const assets = allAssets.sort((a, b) => this.isAssetEnabled(b) - this.isAssetEnabled(a))
-      return assets
+    availableNativeAssets() {
+      // Here we are filtering native assets depending on which chains/accounts are enabled ( accountsData )
+      // By this we are receving object like { BTC: true, ETH: true, AVAX: true}
+      // Which allows us to achieve O(1) (constant time) when we are checking if should show toggle
+      return Object.entries(this.nativeAssets)
+        .filter(([chain]) => this.accountsData.find((account) => account.chain === chain))
+        .reduce(
+          (acc, [_, assets]) => ({
+            ...acc,
+            ...assets.reduce(
+              (curr, asset) => ({
+                ...curr,
+                [asset]: true
+              }),
+              {}
+            )
+          }),
+          {}
+        )
     },
     sortedFilteredAssets() {
-      if (isEmpty(this.search)) return this.sortedAssets
+      if (isEmpty(this.search)) return this.originalAssets
 
-      return this.sortedAssets.filter(
+      return this.originalAssets.filter(
         (asset) =>
           asset.toUpperCase().includes(this.search.toUpperCase()) ||
           cryptoassets[asset]?.name.toLowerCase().includes(this.search.toLowerCase())
       )
+    },
+    sortedAssets() {
+      const allAssets = Object.keys(cryptoassets).filter((asset) => {
+        const { chain, type } = cryptoassets[asset]
+        this.nativeAssets[chain] = this.nativeAssets[chain] ?? []
+        if (type === 'native' && !this.nativeAssets[chain].includes(asset)) {
+          this.nativeAssets[chain].push(asset)
+        }
+
+        return buildConfig.chains.includes(cryptoassets[asset].chain)
+      })
+
+      return allAssets.sort((a, b) => this.isAssetEnabled(b) - this.isAssetEnabled(a))
     }
   },
   methods: {
-    ...mapActions(['enableAssets', 'disableAssets', 'removeCustomToken']),
+    ...mapActions([
+      'enableAssets',
+      'disableAssets',
+      'removeCustomToken',
+      'toggleBlockchain',
+      'toggleAccount'
+    ]),
     getAssetIcon,
     getAssetName(asset) {
       return cryptoassets[asset]?.name || asset
     },
     isAssetEnabled(asset) {
-      return this.networkAssets.includes(asset)
+      return this.availableNativeAssets[asset] && this.networkAssets.includes(asset)
     },
-    toggleAsset(asset, newValue) {
+    async toggleAsset(asset, newValue) {
+      const nativeAsset = getNativeAsset(asset)
+      const assets = newValue ? [asset, getNativeAsset(asset)] : [asset]
+
       const params = {
         network: this.activeNetwork,
         walletId: this.activeWalletId,
-        assets: [asset]
+        assets
       }
+
+      if (newValue) {
+        const { chain } = cryptoassets[nativeAsset]
+
+        const isChainEnabledForNative = Boolean(
+          this.accountsData.find((account) => account.chain === chain)
+        )
+        if (!isChainEnabledForNative) {
+          await this.toggleBlockchain({
+            network: this.activeNetwork,
+            walletId: this.activeWalletId,
+            chainId: chain,
+            enable: true
+          })
+
+          const accountIds = this.accounts[this.activeWalletId][this.activeNetwork]
+            .filter((acc) => acc.chain === chain)
+            .map((a) => a.id)
+          await this.toggleAccount({
+            network: this.activeNetwork,
+            walletId: this.activeWalletId,
+            accounts: accountIds,
+            enable: true
+          })
+        }
+
+        this.nativeAssets[getNativeAsset(asset)] = true
+      }
+
       newValue ? this.enableAssets(params) : this.disableAssets(params)
     },
     clearSearch() {
@@ -156,6 +246,9 @@ export default {
         ? customTokens.findIndex((token) => token.symbol === asset) !== -1
         : false
     }
+  },
+  created() {
+    this.originalAssets = this.sortedAssets
   },
   watch: {
     activeNetwork() {
