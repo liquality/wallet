@@ -456,13 +456,14 @@ textarea {
   font-weight: 300 !important;
   font-size: $font-size-tiny !important;
   border: 1px solid $hr-border-color;
-  padding: 0.05rem 0.5rem;
+  padding: 0.05rem 0.3rem;
   border-radius: 26px;
   display: flex;
   align-items: center;
   text-align: center;
   color: $color-text-primary;
   background-color: #ffffff;
+  white-space: nowrap;
 
   &.active {
       font-weight: $btn-font-weight !important;

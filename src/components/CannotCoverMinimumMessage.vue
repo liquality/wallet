@@ -1,9 +1,9 @@
 <template>
   <div class="notification-content">
-    <div class="notification-text">You need more {{ asset }} to pay for gas.</div>
+    <div class="notification-text">More {{ asset }} required to cover min trade plus fees.</div>
     <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
-      Get {{ asset }}
-    </router-link>
+      Get {{ asset }}</router-link
+    >
   </div>
 </template>
 
@@ -26,7 +26,6 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   .get-bridgeAsset-btn {
     max-width: 120px;
     padding: 0 0.5rem;
