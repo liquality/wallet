@@ -194,7 +194,7 @@
               class="btn btn-light btn-outline-primary btn-lg"
               id="edit_send_to_button"
               v-if="!loading"
-              @click="currentStep = 'inputs'"
+              @click="showInputsStep"
             >
               Edit
             </button>
@@ -486,8 +486,11 @@ export default {
     async updateMaxSendFees() {
       await this._updateSendFees()
     },
+    showInputsStep() {
+      this.currentStep = 'inputs'
+    },
     review() {
-      if (this.account?.type.includes('ledger')) {
+      if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
         // open in a new tab
         const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?mode=tab&amount=${this.amount}&address=${this.address}&selectedFee=${this.selectedFee}&currentStep=confirm&maxOptionActive=${this.maxOptionActive}`
         chrome.tabs.create({ url: browser.runtime.getURL(url) })

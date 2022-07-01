@@ -97,7 +97,10 @@
                       {{ prettyBalance(item.balance, selectedAsset.name) }}
                       {{ selectedAsset.name }}
                     </div>
-                    <div  v-if="showBalance" class="fiat">${{ getFiatBalance(item.fiatBalance) }}</div>
+                    <div class="has-txns" v-else-if="item.balance !== '0'">Has Txns</div>
+                    <div v-if="showBalance" class="fiat">
+                      ${{ getFiatBalance(item.fiatBalance) }}
+                    </div>
                   </div>
                 </td>
                 <td class="account-selected-mark">
@@ -332,7 +335,11 @@ export default {
     }
 
     .balance {
-      div {
+      .has-txns {
+        color: $color-text-muted;
+      }
+      div,
+      .has-txns {
         text-align: right;
         display: flex;
         width: 100%;
