@@ -41,7 +41,9 @@
           {{ getAssetName(asset) }} ({{ asset }})
         </div>
         <div
-          v-if="getCryptoassets[asset].type === 'native' && !availableNativeAssets[asset]"
+          v-if="
+            getCryptoassets[asset].type === 'native' && !enabledChains[getCryptoassets[asset].chain]
+          "
           class="asset-item_toggle"
           :id="asset + '_toggle_button'"
         >
@@ -106,7 +108,7 @@ export default {
   data() {
     return {
       search: '',
-      originalAssets: [],
+      assets: [],
       nativeAssets: {}
     }
   },
@@ -126,19 +128,21 @@ export default {
     networkAssets() {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
     },
-    availableNativeAssets() {
+    enabledChains() {
       // Here we are filtering native assets depending on which chains/accounts are enabled ( accountsData )
       // By this we are receving object like { BTC: true, ETH: true, AVAX: true}
       // Which allows us to achieve O(1) (constant time) when we are checking if should show toggle
       return Object.entries(this.nativeAssets)
         .filter(([chain]) => this.accountsData.find((account) => account.chain === chain))
         .reduce(
-          (acc, [_, assets]) => ({
+          (acc, [chain, assets]) => ({
             ...acc,
             ...assets.reduce(
               (curr, asset) => ({
                 ...curr,
-                [asset]: true
+                [chain]: {
+                  asset
+                }
               }),
               {}
             )
@@ -147,9 +151,9 @@ export default {
         )
     },
     sortedFilteredAssets() {
-      if (isEmpty(this.search)) return this.originalAssets
+      if (isEmpty(this.search)) return this.assets
 
-      return this.originalAssets.filter(
+      return this.assets.filter(
         (asset) =>
           asset.toUpperCase().includes(this.search.toUpperCase()) ||
           cryptoassets[asset]?.name.toLowerCase().includes(this.search.toLowerCase())
@@ -182,11 +186,13 @@ export default {
       return cryptoassets[asset]?.name || asset
     },
     isAssetEnabled(asset) {
-      return this.availableNativeAssets[asset] && this.networkAssets.includes(asset)
+      const { chain } = cryptoassets[asset]
+
+      return this.enabledChains[chain] && this.networkAssets.includes(asset)
     },
     async toggleAsset(asset, newValue) {
       const nativeAsset = getNativeAsset(asset)
-      const assets = newValue ? [asset, getNativeAsset(asset)] : [asset]
+      const assets = newValue ? [asset, nativeAsset] : [asset]
 
       const params = {
         network: this.activeNetwork,
@@ -197,9 +203,8 @@ export default {
       if (newValue) {
         const { chain } = cryptoassets[nativeAsset]
 
-        const isChainEnabledForNative = Boolean(
-          this.accountsData.find((account) => account.chain === chain)
-        )
+        const isChainEnabledForNative = this.accountsData.find((account) => account.chain === chain)
+
         if (!isChainEnabledForNative) {
           await this.toggleBlockchain({
             network: this.activeNetwork,
@@ -211,6 +216,7 @@ export default {
           const accountIds = this.accounts[this.activeWalletId][this.activeNetwork]
             .filter((acc) => acc.chain === chain)
             .map((a) => a.id)
+
           await this.toggleAccount({
             network: this.activeNetwork,
             walletId: this.activeWalletId,
@@ -218,8 +224,6 @@ export default {
             enable: true
           })
         }
-
-        this.nativeAssets[getNativeAsset(asset)] = true
       }
 
       newValue ? this.enableAssets(params) : this.disableAssets(params)
@@ -248,7 +252,7 @@ export default {
     }
   },
   created() {
-    this.originalAssets = this.sortedAssets
+    this.assets = this.sortedAssets
   },
   watch: {
     activeNetwork() {
