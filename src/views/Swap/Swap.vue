@@ -595,7 +595,8 @@ export default {
       swapErrorMessage: '',
       customFeeAssetSelected: null,
       customFees: {},
-      bridgeModalOpen: false
+      bridgeModalOpen: false,
+      hasEnoughLiquidity: false
     }
   },
   props: {
@@ -661,6 +662,10 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage() {
+      if (this.selectedQuoteProvider?.config.type === 'liquality') {
+        return !this.hasEnoughLiquidity && !this.updatingQuotes
+      }
+
       return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
     showBridgeAssetDisabledMessage() {
@@ -1002,7 +1007,8 @@ export default {
       'updateFees',
       'newSwap',
       'updateFiatRates',
-      'trackAnalytics'
+      'trackAnalytics',
+      'getLiqualityLiquidityForAsset'
     ]),
     ...mapActions('app', ['startBridgeListener']),
     shortenAddress,
@@ -1070,6 +1076,17 @@ export default {
       this.amountOption = null
       this.fromAssetChanged(toAccountId, toAsset, toAmount)
       this.toAssetChanged(fromAccountId, fromAsset)
+    },
+    async _getLiqualityLiquidityForAsset() {
+      this.hasEnoughLiquidity = true // reset loading indicator
+      if (this.selectedQuoteProvider?.config.type === 'liquality') {
+        const assetLiquidity = await this.getLiqualityLiquidityForAsset({
+          network: this.activeNetwork,
+          asset: this.toAsset
+        })
+
+        this.hasEnoughLiquidity = new BN(assetLiquidity).gte(this.selectedQuote.toAmount)
+      }
     },
     async _updateSwapFees(max) {
       if (!this.selectedQuote) return
@@ -1470,6 +1487,7 @@ export default {
     selectedQuote: function () {
       this._updateSwapFees() // Skip debounce
       this.updateMaxSwapFees()
+      this._getLiqualityLiquidityForAsset()
     },
     currentStep: function (val) {
       if (val === 'inputs') this.updateQuotes()
