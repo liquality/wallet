@@ -163,6 +163,7 @@ export default {
       const allAssets = Object.keys(cryptoassets).filter((asset) => {
         const { chain, type } = cryptoassets[asset]
         this.nativeAssets[chain] = this.nativeAssets[chain] ?? []
+
         if (type === 'native' && !this.nativeAssets[chain].includes(asset)) {
           this.nativeAssets[chain].push(asset)
         }
