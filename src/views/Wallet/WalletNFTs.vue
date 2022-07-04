@@ -60,10 +60,6 @@ export default {
       this.assets = this.accountNftCollections(this.accountId)
     } else {
       this.assets = this.allNftCollections
-      console.log(
-        '🚀 ~ file: WalletNFTs.vue ~ line 63 ~ created ~ this.allNftCollections',
-        this.allNftCollections
-      )
     }
   },
   computed: {

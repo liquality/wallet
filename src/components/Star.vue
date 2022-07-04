@@ -38,7 +38,6 @@ export default {
         accountId: this.accountId || this.nftAsset.accountId,
         nft: this.nftAsset
       }
-      console.log('🚀 ~ file: Star.vue ~ line 41 ~ toggleStarred ~ payload', payload)
       await this.toggleNFTStarred(payload)
     }
   }

@@ -14,7 +14,7 @@
             >NFT<span v-if="nftAssetsCount !== 1">S</span></span
           >
         </div>
-        <span class="account-container_balance_code" v-if="!isAccount"
+        <span class="account-container_balance_code" v-if="!isAccount && nftAssetsCount > 0"
           >In {{ accountsWithNFTs }} Account<span v-if="accountsWithNFTs !== 1">s</span></span
         >
       </div>

@@ -1,13 +1,9 @@
 <template>
   <div class="account-container">
-    <NavBar
-      showBack="true"
-      :backClick="routeSource"
-      :backLabel="activeView === 'selectAsset' ? 'Overview' : 'Back'"
-    >
-      <span class="account-title">{{ title }}</span>
-    </NavBar>
     <template v-if="activeView === 'selectAsset'">
+      <NavBar showBack="true" :backPath="routeSource" :backLabel="'Overview'">
+        <span class="account-title">{{ title }}</span>
+      </NavBar>
       <div class="account-content mx-3">
         <div>
           <Accordion v-for="(assets, key) in nftCollection" :key="assets.id">
@@ -59,6 +55,9 @@
       </div>
     </template>
     <template v-else-if="activeView === 'selectedAsset'">
+      <NavBar :showBackButton="true" :backClick="back()" :backLabel="'Back'">
+        <span class="account-title">{{ title }}</span>
+      </NavBar>
       <div class="selected-nft-asset mx-3 mt-4 h-100">
         <div class="d-flex flex-column justify-content-between h-100">
           <div class="mb-3">
@@ -147,9 +146,7 @@
             </template>
           </DetailsContainer>
           <div class="button-group">
-            <button class="btn btn-light btn-outline-primary btn-lg" @click="routeSource">
-              Cancel
-            </button>
+            <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">Cancel</button>
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"
@@ -162,6 +159,9 @@
       </div>
     </template>
     <template class="send" v-else-if="activeView === 'custom-fees' && !isEIP1559Fees">
+      <NavBar :showBackButton="true" :backClick="back()" :backLabel="'Back'">
+        <span class="account-title">{{ title }}</span>
+      </NavBar>
       <CustomFees
         @apply="applyCustomFee"
         @update="setCustomFee"
@@ -174,6 +174,9 @@
       />
     </template>
     <template class="send" v-else-if="activeView === 'custom-fees' && isEIP1559Fees">
+      <NavBar :showBackButton="true" :backClick="back()" :backLabel="'Back'">
+        <span class="account-title">{{ title }}</span>
+      </NavBar>
       <CustomFeesEIP1559
         @apply="applyCustomFee"
         @update="setCustomFee"
@@ -187,6 +190,9 @@
       />
     </template>
     <template v-else-if="activeView === 'review'">
+      <NavBar :showBackButton="true" :backClick="back()" :backLabel="'Back'">
+        <span class="account-title">{{ title }}</span>
+      </NavBar>
       <div class="selected-nft-asset mx-3 mt-4 h-100">
         <div class="d-flex flex-column justify-content-between h-100">
           <div>
@@ -240,7 +246,6 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
 import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
-import amplitude from 'amplitude-js'
 import Accordion from '@/components/Accordion.vue'
 import { chains } from '@liquality/cryptoassets'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
@@ -264,8 +269,6 @@ import {
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
-
-amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
 export default {
   components: {
@@ -355,7 +358,6 @@ export default {
       return prettyFiatBalance(this.currentFee, this.fiatRates[this.assetChain])
     },
     account() {
-      console.log('id', this.$route.query?.accountId)
       return this.accountsData.filter(
         (account) => account.id === (this.$route.query?.accountId || this.selectedNFT?.accountId)
       )[0]
@@ -454,6 +456,21 @@ export default {
     closeSendErrorModal() {
       this.sendErrorModalOpen = false
       this.loading = false
+    },
+    back() {
+      switch (this.activeView) {
+        case 'selectedNFT':
+          if (this.$route.query?.source) {
+            return this.$router.push(this.$route.query.source)
+          }
+          return (this.activeView = 'selectNFT')
+
+        case 'review':
+          return (this.activeView = 'selectedNFT')
+
+        default:
+          return
+      }
     },
     next(view) {
       this.activeView = view

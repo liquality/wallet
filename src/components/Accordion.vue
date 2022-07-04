@@ -39,12 +39,6 @@ export default {
     toggle() {
       this.show = !this.show
     },
-    // enter: function(el, done) {
-    //   $(el).slideDown(150, done);
-    // },
-    // leave: function(el, done) {
-    //   $(el).slideUp(150, done);
-    // },
     beforeEnter(el) {
       el.style.height = '0'
     },
