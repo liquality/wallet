@@ -63,8 +63,8 @@
               v-for="(word, i) in seedListShuffle"
               id="seed_word"
               :disabled="indexDisabled(i)"
-              :key="word"
-              @click="onSelect(word)"
+              :key="i"
+              @click="onSelect(word, i)"
             >
               {{ word }}
             </button>
@@ -96,6 +96,7 @@ export default {
     return {
       phraseIndex: [],
       seedListShuffle: [],
+      disabledIndexes: [],
       showCongrats: false
     }
   },
@@ -119,8 +120,9 @@ export default {
     }
   },
   methods: {
-    onSelect(word) {
+    onSelect(word, i) {
       this.phraseIndex.push(word)
+      this.disabledIndexes.push(i)
     },
     onConfirm() {
       this.$emit('on-confirm')
@@ -129,15 +131,11 @@ export default {
       this.$emit('on-cancel')
     },
     indexDisabled(i) {
-      return (
-        this.seedListShuffle[i] === this.phraseIndex[0] ||
-        this.seedListShuffle[i] === this.phraseIndex[1] ||
-        this.seedListShuffle[i] === this.phraseIndex[2] ||
-        this.phraseIndex.length === 3
-      )
+      return this.disabledIndexes.includes(i) || this.disabledIndexes.length === 3
     },
     remove: function (i) {
       this.phraseIndex.splice(i, 1)
+      this.disabledIndexes.splice(i, 1)
     }
   }
 }

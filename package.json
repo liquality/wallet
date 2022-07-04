@@ -30,7 +30,7 @@
     "@liquality/hw-web-bridge": "^0.1.2",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
-    "@liquality/wallet-core": "1.17.1",
+    "@liquality/wallet-core": "^1.20.1",
     "@terra-money/terra.js": "^3.0.8",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.17.0",
@@ -118,12 +118,5 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
-  },
-  "resolutions": {
-    "@liquality/cryptoassets": "link:/Users/andonmitev/Desktop/Repositories/cryptoassets",
-    "@liquality/wallet-core": "portal:/Users/andonmitev/Desktop/Repositories/wallet-core",
-    "socket.io-client": "4.5.0",
-    "amplitude-js": "8.17.0",
-    "@terra-money/terra.js": "3.1.0"
   }
 }
