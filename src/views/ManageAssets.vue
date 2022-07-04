@@ -61,7 +61,7 @@
           <toggle-button
             :css-colors="true"
             :value="isAssetEnabled(asset)"
-            @change="(e) => toggleAsset(asset, e)"
+            @change="(e) => toggleAsset(asset, e.value)"
           />
         </div>
         <button
@@ -190,9 +190,9 @@ export default {
 
       return this.enabledChains[chain] && this.networkAssets.includes(asset)
     },
-    async toggleAsset(asset, newValue) {
+    async toggleAsset(asset, enable) {
       const nativeAsset = getNativeAsset(asset)
-      const assets = newValue ? [asset, nativeAsset] : [asset]
+      const assets = enable ? [asset, nativeAsset] : [asset]
 
       const params = {
         network: this.activeNetwork,
@@ -200,33 +200,17 @@ export default {
         assets
       }
 
-      if (newValue) {
+      if (enable) {
         const { chain } = cryptoassets[nativeAsset]
 
         const isChainEnabledForNative = this.accountsData.find((account) => account.chain === chain)
 
         if (!isChainEnabledForNative) {
-          await this.toggleBlockchain({
-            network: this.activeNetwork,
-            walletId: this.activeWalletId,
-            chainId: chain,
-            enable: true
-          })
-
-          const accountIds = this.accounts[this.activeWalletId][this.activeNetwork]
-            .filter((acc) => acc.chain === chain)
-            .map((a) => a.id)
-
-          await this.toggleAccount({
-            network: this.activeNetwork,
-            walletId: this.activeWalletId,
-            accounts: accountIds,
-            enable: true
-          })
+          await this.enableChainAndNativeAsset(chain)
         }
       }
 
-      newValue ? this.enableAssets(params) : this.disableAssets(params)
+      enable ? this.enableAssets(params) : this.disableAssets(params)
     },
     clearSearch() {
       this.search = ''
@@ -249,6 +233,25 @@ export default {
       return customTokens instanceof Array
         ? customTokens.findIndex((token) => token.symbol === asset) !== -1
         : false
+    },
+    async enableChainAndNativeAsset(chain) {
+      await this.toggleBlockchain({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        chainId: chain,
+        enable: true
+      })
+
+      const accountIds = this.accounts[this.activeWalletId][this.activeNetwork]
+        .filter((acc) => acc.chain === chain)
+        .map((a) => a.id)
+
+      await this.toggleAccount({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        accounts: accountIds,
+        enable: true
+      })
     }
   },
   created() {
