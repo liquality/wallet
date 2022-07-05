@@ -505,7 +505,7 @@ export default {
         const sendParams = qs.stringify({
           mode: 'tab',
           selectedFee: this.selectedFee,
-          amount: this.amount,
+          amount: BN(this.amount).toString(),
           address: this.address,
           currentStep: 'confirm',
           maxOptionActive: this.maxOptionActive,
