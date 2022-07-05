@@ -4020,7 +4020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/cryptoassets@npm:^1.13.2, @liquality/cryptoassets@npm:^1.13.3":
+"@liquality/cryptoassets@npm:^1.13.3":
   version: 1.13.3
   resolution: "@liquality/cryptoassets@npm:1.13.3"
   dependencies:
@@ -17478,7 +17478,7 @@ __metadata:
   resolution: "liquality-wallet@workspace:."
   dependencies:
     "@liquality/bitcoin-ledger-provider": ^1.13.12
-    "@liquality/cryptoassets": ^1.13.2
+    "@liquality/cryptoassets": 1.13.4
     "@liquality/ethereum-ledger-provider": ^1.13.12
     "@liquality/ethereum-utils": ^1.13.12
     "@liquality/hw-web-bridge": ^0.1.2
