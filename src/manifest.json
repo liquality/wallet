@@ -4,6 +4,7 @@
   "name": "Liquality Wallet",
   "description": "Secure multi-crypto wallet with built-in Atomic Swaps!",
   "homepage_url": "https://liquality.io",
+  "content_security_policy": "script-src 'self' 'https://www.googletagmanager.com' 'https://www.google-analytics.com' 'unsafe-eval'; object-src 'self'",
   "permissions": [
     "notifications",
     "storage",

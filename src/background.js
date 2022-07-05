@@ -81,6 +81,7 @@ store.subscribe(async ({ type, payload }, state) => {
           network: state.activeNetwork
         }
       })
+      googleEvent('Change Active Network', { foo: 'bar' })
       dispatch('updateBalances', {
         network: state.activeNetwork,
         walletId: state.activeWalletId

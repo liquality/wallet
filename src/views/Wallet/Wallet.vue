@@ -37,6 +37,9 @@ export default {
     LedgerRequestMessage
   },
   async created() {
+    console.log('Wallet created')
+    console.log(this.$gtag)
+    this.$gtag.event('login', { method: 'Google' })
     try {
       await this.updateBalances({
         network: this.activeNetwork,

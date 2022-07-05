@@ -13,19 +13,13 @@ Vue.use(VTooltip)
 Vue.use(
   VueGtag,
   {
-    enabled: true,
-    appName: 'liquality-wallet',
-    pageTrackerScreenviewEnabled: true,
-    bootstrap: true,
     config: {
-      id: process.env.VUE_APP_GA_TRACKING_ID,
-      params: {
-        send_page_view: true
-      }
+      id: process.env.VUE_APP_GA_TRACKING_ID
     }
   },
   router
 )
+console.log(process.env.VUE_APP_GA_TRACKING_ID)
 Vue.config.productionTip = false
 
 new Vue({
