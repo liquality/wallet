@@ -42,7 +42,8 @@
         </div>
         <div
           v-if="
-            getCryptoassets[asset].type === 'native' && !enabledChains[getCryptoassets[asset].chain]
+            getCryptoassets[asset].type === AssetTypes.native &&
+            !enabledChains[getCryptoassets[asset].chain]
           "
           class="asset-item_toggle"
           :id="asset + '_toggle_button'"
@@ -54,7 +55,7 @@
           />
         </div>
         <div
-          v-else-if="getCryptoassets[asset].type === 'erc20'"
+          v-else-if="getCryptoassets[asset].type === AssetTypes.erc20"
           class="asset-item_toggle"
           :id="asset + '_toggle_button'"
         >
@@ -99,6 +100,7 @@ import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import SearchIcon from '@/assets/icons/search.svg'
 import { buildConfig } from '@liquality/wallet-core'
+import { AssetTypes } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -164,7 +166,7 @@ export default {
         const { chain, type } = cryptoassets[asset]
         this.nativeAssets[chain] = this.nativeAssets[chain] ?? []
 
-        if (type === 'native' && !this.nativeAssets[chain].includes(asset)) {
+        if (type === AssetTypes.native && !this.nativeAssets[chain].includes(asset)) {
           this.nativeAssets[chain].push(asset)
         }
 
