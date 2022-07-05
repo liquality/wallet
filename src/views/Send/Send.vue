@@ -159,16 +159,23 @@
           </div>
           <div class="detail-group" id="detail_group_network_fee">
             <label class="text-muted"> Network Fee </label>
-            <div class="d-flex align-items-center justify-content-between mt-0">
+            <div
+              class="d-flex align-items-center justify-content-between mt-0"
+              v-show="!updatingFees"
+            >
               <div>~{{ prettyFee }} {{ assetChain }}</div>
               <div class="details-text" id="send_network_fee_in_fiat">
                 {{ formatFiatUI(totalFeeInFiat) }}
               </div>
             </div>
+            <SpinnerIcon class="updating-fees" v-show="updatingFees" />
           </div>
           <div class="detail-group" id="detail_group_account_fee">
             <label class="text-muted"> Amount + Fees </label>
-            <div class="d-flex align-items-center justify-content-between mt-0">
+            <div
+              class="d-flex align-items-center justify-content-between mt-0"
+              v-show="!updatingFees"
+            >
               <div class="font-weight-bold" v-if="asset === assetChain">
                 {{ dpUI(amountWithFee) }} {{ asset }}
               </div>
@@ -180,6 +187,7 @@
                 {{ formatFiatUI(totalToSendInFiat) }}
               </div>
             </div>
+            <SpinnerIcon class="updating-fees" v-show="updatingFees" />
           </div>
           <div class="mt-40">
             <label>Send To</label>
@@ -254,6 +262,7 @@ import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
+import qs from 'qs'
 
 export default {
   components: {
@@ -285,7 +294,8 @@ export default {
       sendErrorMessage: '',
       customFeeAssetSelected: null,
       customFee: null,
-      memo: ''
+      memo: '',
+      updatingFees: false
     }
   },
   props: {
@@ -492,7 +502,16 @@ export default {
     review() {
       if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
         // open in a new tab
-        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?mode=tab&amount=${this.amount}&address=${this.address}&selectedFee=${this.selectedFee}&currentStep=confirm&maxOptionActive=${this.maxOptionActive}`
+        const sendParams = qs.stringify({
+          mode: 'tab',
+          selectedFee: this.selectedFee,
+          amount: this.amount,
+          address: this.address,
+          currentStep: 'confirm',
+          maxOptionActive: this.maxOptionActive,
+          customFee: this.customFee
+        })
+        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?${sendParams}`
         chrome.tabs.create({ url: browser.runtime.getURL(url) })
       } else {
         this.currentStep = 'confirm'
@@ -599,33 +618,34 @@ export default {
   async created() {
     // set the route values for tab screen mode
     if (this.$route.query.mode === 'tab') {
-      const { amount, address, selectedFee, currentStep, maxOptionActive } = this.$route.query
+      const { amount, address, selectedFee, currentStep, maxOptionActive, customFee } =
+        this.$route.query
       this.amount = amount
       this.address = address
       if (selectedFee) {
         this.selectedFee = selectedFee
+        if (customFee) {
+          this.customFee = customFee
+          this.applyCustomFee({ fee: customFee })
+        }
       }
       if (currentStep) {
         this.currentStep = currentStep
       }
       if (maxOptionActive) {
-        this.maxOptionActive = maxOptionActive
+        this.maxOptionActive = maxOptionActive === 'true' ? true : false
       }
     }
-    // ==> sendFees: {},
-    // ==> maxSendFees: {},
-    // ==> eip1559fees: {},
-    // ==> customFeeAssetSelected: null,
-    // ==> customFee: null,
-    // ==> memo: ''
-
+    this.updatingFees = true
+    debugger
     await this.updateFees({ asset: this.assetChain })
     if (this.maxOptionActive) {
       this.updateMaxSendFees()
     } else {
       this.updateSendFees(this.amount)
     }
-    await this.updateMaxSendFees()
+    this.updatingFees = false
+
     await this.trackAnalytics({
       event: `User entered send screen for ${this.asset}`,
       properties: {
@@ -728,5 +748,12 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type='number'] {
   -moz-appearance: textfield;
+}
+
+.updating-fees {
+  height: 24px;
+  circle {
+    stroke: #dedede;
+  }
 }
 </style>

@@ -527,6 +527,7 @@ import { version as walletVersion } from '../../../package.json'
 import { buildConfig } from '@liquality/wallet-core'
 import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
 import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
+import qs from 'qs'
 
 const QUOTE_TIMER_MS = 30000
 
@@ -617,13 +618,7 @@ export default {
       _toAsset = toAsset
       _sendAmount = sendAmount
 
-      this.selectedFee = selectedFees.split(',').reduce((prev, curr) => {
-        const [asset, fee] = curr.split('=')
-        return {
-          ...prev,
-          [asset]: fee
-        }
-      }, {})
+      this.selectedFee = qs.parse(selectedFees)
       if (customFees) {
         this.customFees = customFees.split(',').reduce((prev, curr) => {
           const [asset, fee] = curr.split('=')
@@ -1205,7 +1200,7 @@ export default {
       this.currentStep = 'inputs'
       this.selectedFee[asset] = 'average'
     },
-    resetQuoteTimer() {
+    resetQuoteTimer(resetInterval) {
       clearTimeout(this.quoteTimer)
       this.quoteTimer = setTimeout(() => {
         this.updateQuotes()
@@ -1293,28 +1288,12 @@ export default {
     review() {
       if (this.account?.type.includes('ledger')) {
         // open in a new tab
-        const fees = []
-        const customFees = []
-        const fee = { ...this.selectedFee }
-        const customFee = { ...this.customFees }
-
-        for (var p in fee) {
-          fees.push(encodeURIComponent(p) + '=' + encodeURIComponent(fee[p]))
+        let customFees = null
+        const fees = qs.stringify(this.selectedFee)
+        if (this.customFees) {
+          customFees = qs.stringify(this.customFees)
         }
-        if (customFee) {
-          for (var c in customFee) {
-            customFees.push(encodeURIComponent(c) + '=' + encodeURIComponent(customFee[c]))
-          }
-        }
-        const url = `/index.html#/accounts/${this.accountId}/${
-          this.asset
-        }/swap?mode=tab&sendAmount=${this.sendAmount}&toAccountId=${this.toAccountId}&toAsset=${
-          this.toAsset
-        }&selectedFees=${fees.join(',')}&userSelectedQuote=${this.userSelectedQuote}&provider=${
-          this.selectedQuote?.provider
-        }&currentStep=confirm&maxOptionActive=${this.maxOptionActive}&customeFees=${customFees.join(
-          ','
-        )}`
+        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?mode=tab&sendAmount=${this.sendAmount}&toAccountId=${this.toAccountId}&toAsset=${this.toAsset}&selectedFees=${fees}&userSelectedQuote=${this.userSelectedQuote}&provider=${this.selectedQuote?.provider}&currentStep=confirm&maxOptionActive=${this.maxOptionActive}&customeFees=${customFees}`
         chrome.tabs.create({ url: browser.runtime.getURL(url) })
       } else {
         this.currentStep = 'confirm'

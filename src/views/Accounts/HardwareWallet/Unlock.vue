@@ -338,13 +338,15 @@ export default {
       .has-txns {
         color: $color-text-muted;
       }
+      &>div {
+        min-height: 45px;
+      }
       div,
       .has-txns {
         text-align: right;
         display: flex;
         width: 100%;
         height: 100%;
-        min-height: 45px;
         flex-direction: column;
         align-items: stretch;
         justify-content: flex-end;
