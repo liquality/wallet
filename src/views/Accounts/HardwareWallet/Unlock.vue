@@ -295,7 +295,7 @@ export default {
     justify-content: center;
     width: 360px;
     color: #1d1e21;
-    height: 120px;
+    height: 160px;
     background-color: rgba($color: #fff3bc, $alpha: 0.5);
     padding: 5px 20px 5px 20px;
     font-style: normal;
