@@ -3992,6 +3992,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@liquality/cryptoassets@npm:1.13.4":
+  version: 1.13.4
+  resolution: "@liquality/cryptoassets@npm:1.13.4"
+  dependencies:
+    bignumber.js: ^9.0.2
+    bitcoin-address-validation: ^2.2.1
+    bs58: ^4.0.1
+    cashaddrjs: ^0.4.4
+    ethereumjs-util: ^7.1.4
+    lodash: ^4.17.11
+  checksum: 13be26e4995b20dcf75f5a55fdcb4116d0afd0fa9a4379fb42478a58527e86d7fca3a0ef20c00ceb800aaa80cfbefc03517a1e313815c2c97db09645c8b583f4
+  languageName: node
+  linkType: hard
+
 "@liquality/cryptoassets@npm:1.7.1":
   version: 1.7.1
   resolution: "@liquality/cryptoassets@npm:1.7.1"
@@ -4006,7 +4020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/cryptoassets@npm:^1.13.2, @liquality/cryptoassets@npm:^1.13.3":
+"@liquality/cryptoassets@npm:^1.13.3":
   version: 1.13.3
   resolution: "@liquality/cryptoassets@npm:1.13.3"
   dependencies:
@@ -17464,7 +17478,7 @@ __metadata:
   resolution: "liquality-wallet@workspace:."
   dependencies:
     "@liquality/bitcoin-ledger-provider": ^1.13.12
-    "@liquality/cryptoassets": ^1.13.2
+    "@liquality/cryptoassets": 1.13.4
     "@liquality/ethereum-ledger-provider": ^1.13.12
     "@liquality/ethereum-utils": ^1.13.12
     "@liquality/hw-web-bridge": ^0.1.2
