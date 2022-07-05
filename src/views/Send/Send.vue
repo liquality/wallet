@@ -617,9 +617,10 @@ export default {
   },
   async created() {
     // set the route values for tab screen mode
-    if (this.$route.query.mode === 'tab') {
-      const { amount, address, selectedFee, currentStep, maxOptionActive, customFee } =
-        this.$route.query
+    const sendParams = qs.parse(qs.stringify(this.$route.query))
+    if (sendParams.mode === 'tab') {
+      const sendParams = qs.parse(qs.stringify(this.$route.query))
+      const { amount, address, selectedFee, currentStep, maxOptionActive, customFee } = sendParams
       this.amount = amount
       this.address = address
       if (selectedFee) {
