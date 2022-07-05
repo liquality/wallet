@@ -119,8 +119,11 @@
           </div>
         </div>
         <div v-else class="account-message">
-          We weren’t able to get a list of accounts. Please try again, check on the ledger if the
-          right app/asset was selected or cancel and choose a different asset.
+          <p>
+            We weren’t able to get a list of accounts. Please try again, check on the ledger if the
+            right app/asset was selected or cancel and choose a different asset.
+          </p>
+          <p>Eventually close any other apps your ledger is connected to, including Ledger Live.</p>
         </div>
       </div>
     </div>
@@ -338,7 +341,7 @@ export default {
       .has-txns {
         color: $color-text-muted;
       }
-      &>div {
+      & > div {
         min-height: 45px;
       }
       div,
