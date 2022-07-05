@@ -42,7 +42,7 @@
         </div>
         <div
           v-if="
-            getCryptoassets[asset].type === AssetTypes.native &&
+            getCryptoassets[asset]?.type === 'native' &&
             !enabledChains[getCryptoassets[asset].chain]
           "
           class="asset-item_toggle"
@@ -55,7 +55,7 @@
           />
         </div>
         <div
-          v-else-if="getCryptoassets[asset].type === AssetTypes.erc20"
+          v-else-if="getCryptoassets[asset]?.type === 'erc20'"
           class="asset-item_toggle"
           :id="asset + '_toggle_button'"
         >
@@ -165,8 +165,7 @@ export default {
       const allAssets = Object.keys(cryptoassets).filter((asset) => {
         const { chain, type } = cryptoassets[asset]
         this.nativeAssets[chain] = this.nativeAssets[chain] ?? []
-
-        if (type === AssetTypes.native && !this.nativeAssets[chain].includes(asset)) {
+        if (type === 'native' && !this.nativeAssets[chain].includes(asset)) {
           this.nativeAssets[chain].push(asset)
         }
 
@@ -230,6 +229,8 @@ export default {
         assets: [asset]
       })
       this.removeCustomToken(params)
+
+      this.assets = this.assets.filter((_asset) => _asset !== asset)
     },
     isCustomToken(asset) {
       const customTokens = this.customTokens?.[this.activeNetwork]?.[this.activeWalletId]
