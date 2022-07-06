@@ -32,14 +32,36 @@ store.subscribe(async ({ type, payload }, state) => {
 
   switch (type) {
     case 'CREATE_WALLET':
-      await dispatch('trackAnalytics', {
-        event: 'Create a new wallet',
-        properties: {
-          walletVersion,
-          label: 'New wallet created',
-          action: 'User created a new wallet with new seed phrase'
-        }
-      })
+      // Analytics Opt in event (if state has acceptedData is not 0)
+      if (state.analytics?.acceptedDate > 0) {
+        dispatch('trackAnalytics', {
+          event: 'User Opt-In to Analytics',
+          properties: {
+            category: 'Analytics'
+          }
+        })
+      }
+      // Import with seed phrase event
+      if (state.wallets[0].imported) {
+        dispatch('trackAnalytics', {
+          event: 'Import with seed phrase',
+          properties: {
+            walletVersion,
+            label: 'Import with seed phrase',
+            action: 'User created wallet with import seed phrase'
+          }
+        })
+      } else {
+        // Create wallet event
+        dispatch('trackAnalytics', {
+          event: 'Create a new wallet',
+          properties: {
+            walletVersion,
+            label: 'New wallet created',
+            action: 'User created a new wallet with new seed phrase'
+          }
+        })
+      }
       break
 
     case 'CHANGE_ACTIVE_NETWORK':
@@ -83,6 +105,7 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       dispatch('updateFiatRates', { assets: store.getters.allNetworkAssets })
       dispatch('updateMarketData', { network: state.activeNetwork })
+      dispatch('updateCurrenciesInfo', { assets: store.getters.allNetworkAssets })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
 
       asyncLoop(
