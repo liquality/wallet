@@ -92,7 +92,6 @@ export default {
       justify-content: space-between;
       align-items: center;
       margin-top: 18px;
-      margin-bottom: 8px;
       h5 {
         font-size: 16px;
         line-height: 20.63px;

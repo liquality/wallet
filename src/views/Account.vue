@@ -181,7 +181,7 @@ export default {
       return this.marketData[this.activeNetwork][this.asset]
     },
     assetHistory() {
-      return this.activity.filter((item) => item.from === this.asset && item.type !== 'NFT')
+      return this.activity.filter((item) => this.isNotNftTransaction(item))
     },
     addressLink() {
       if (this.account) {
@@ -200,6 +200,9 @@ export default {
     formatFontSize,
     formatFiat,
     formatFiatUI,
+    isNotNftTransaction(item) {
+      return item.from === this.asset && item.type !== 'NFT'
+    },
     async copyAddress() {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true

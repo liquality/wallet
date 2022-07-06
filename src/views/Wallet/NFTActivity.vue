@@ -1,6 +1,6 @@
 <template>
   <div class="account-container">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
+    <NavBar showBack="true" backPath="/wallet" backLabel="Overview">
       <div class="account-title">
         <div class="icons d-flex justify-content-center">
           <span class="mr-2">

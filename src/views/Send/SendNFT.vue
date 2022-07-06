@@ -77,7 +77,7 @@
                 <img :src="getAssetIcon(asset)" class="asset-icon mr-3" />
                 <div>
                   <div class="d-flex">
-                    <span class="mr-3">{{ asset }}</span>
+                    <span class="font-weight-bold">{{ asset }}</span>
                     <div class="mr-3">
                       <span class="mr-1">{{ shortenAddress(fromAddress) }}</span>
                       <span><CopyIcon class="copy-icon" @click="copy(fromAddress)" /></span>
@@ -415,11 +415,6 @@ export default {
     isEIP1559Fees() {
       return cryptoassets[this.asset].chain === this.account?.chain
     },
-    memoData() {
-      return {
-        memo: this.memo
-      }
-    },
     asset() {
       return chains[this.account?.chain].nativeAsset
     },
@@ -459,14 +454,14 @@ export default {
     },
     back() {
       switch (this.activeView) {
-        case 'selectedNFT':
+        case 'selectedAsset':
           if (this.$route.query?.source) {
             return this.$router.push(this.$route.query.source)
           }
           return (this.activeView = 'selectNFT')
 
         case 'review':
-          return (this.activeView = 'selectedNFT')
+          return (this.activeView = 'selectedAsset')
 
         default:
           return

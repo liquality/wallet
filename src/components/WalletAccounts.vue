@@ -142,7 +142,6 @@ import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import NFTIcon from '@/assets/icons/nft.svg'
-import { ChainId } from '@liquality/cryptoassets'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 
 export default {
@@ -220,9 +219,6 @@ export default {
       } catch (error) {
         console.error(error)
       }
-    },
-    isBitcoin(chain) {
-      return chain === ChainId.Bitcoin
     }
   }
 }

@@ -56,6 +56,8 @@
                 >{{ assetChain }} Speed:
                 <span class="text-capitalize">{{ item.feeLabel }}</span></span
               >
+            </p>
+            <p class="d-flex justify-content-between">
               <span id="transaction_detail_fee_units">Fee: {{ itemFee }} {{ feeUnit }}</span>
               <span>
                 <a
@@ -165,7 +167,7 @@ export default {
     itemFee() {
       return typeof this.item.fee !== 'object'
         ? this.item.fee
-        : BN(this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas).dp(3)
+        : BN(this.item.fee.maxFeePerGas).dp(3)
     },
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
@@ -206,7 +208,7 @@ export default {
       const sendFees = {}
 
       for (const [speed, fee] of Object.entries(this.assetFees)) {
-        const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+        const feePrice = fee.maxFeePerGas || fee.fee
         sendFees[speed] = getSendFee(this.assetChain, feePrice)
       }
 
@@ -350,6 +352,13 @@ export default {
       height: 100%;
       object-fit: cover;
     }
+  }
+}
+
+.transaction_details {
+  &_date_time {
+    font-size: 10px;
+    color: #646f85;
   }
 }
 </style>

@@ -30,6 +30,16 @@
       >
         {{ shortenAddress(address) }}
       </button>
+      <a
+        class="eye-btn"
+        :id="`${asset}_view_in_explorer`"
+        @click="copyAddress"
+        :href="addressLink"
+        target="_blank"
+        v-tooltip.bottom="{ content: 'View in Explorer' }"
+      >
+        <EyeIcon />
+      </a>
     </div>
     <div class="account-container_actions mt-3" v-if="isAccount">
       <router-link
@@ -52,13 +62,16 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import SendIcon from '@/assets/icons/arrow_send.svg'
 import { getAssetIcon } from '@/utils/asset'
 import RefreshIcon from '@/assets/icons/refresh.svg'
+import EyeIcon from '@/assets/icons/eye.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import { chains } from '@liquality/cryptoassets'
+import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
 
 export default {
   components: {
     SendIcon,
-    RefreshIcon
+    RefreshIcon,
+    EyeIcon
   },
   props: {
     isAccount: {
@@ -106,6 +119,15 @@ export default {
         )
       }
       return ''
+    },
+    asset() {
+      return chains[this.account.chain].nativeAsset
+    },
+    addressLink() {
+      if (this.account) {
+        return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
+      }
+      return '#'
     }
   },
   methods: {
@@ -170,6 +192,21 @@ export default {
 
   button {
     border: initial;
+  }
+  .eye-btn {
+    position: absolute;
+    right: 70px;
+    height: 40px;
+    width: 35px;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    svg {
+      width: 20px;
+    }
+    &:hover {
+      opacity: 0.8;
+    }
   }
 }
 

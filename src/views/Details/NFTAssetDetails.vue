@@ -24,7 +24,7 @@
       </div>
       <template v-if="showFullscreen === false">
         <div class="nft-img">
-          <img :src="nftAssetImageSource('thumbnail') || thumbnailImage" alt="thumbnail image" />
+          <img :src="nftAssetImageSource('thumbnail') || thumbnailImage" alt="nft image" />
         </div>
         <div class="drawer nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
@@ -45,7 +45,7 @@
           class="nft-img__open"
           :style="!nftAssetImageSource('preview') && { background: '#D9DFE5' }"
         >
-          <img :src="nftAssetImageSource('preview') || thumbnailImage" alt="image" />
+          <img :src="nftAssetImageSource('preview') || thumbnailImage" alt="nft image" />
         </div>
         <div class="drawer drawer-open nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
@@ -82,10 +82,8 @@
             <div class="wallet-tab-content py-1">
               <div>
                 <div class="px-4 mt-2" v-if="activeTab === 'overview'">
-                  <h5 class="text-bold">Bio</h5>
-                  <p>
-                    {{ nftAsset.description || 'This NFT does not have a description.' }}
-                  </p>
+                  <h5 class="text-bold">Description</h5>
+                  <p v-html="nftAsset.description || 'This NFT does not have a description.'"></p>
                 </div>
                 <div class="table" v-if="activeTab === 'details'">
                   <table class="table bg-white border-0 mb-1 mt-1">
