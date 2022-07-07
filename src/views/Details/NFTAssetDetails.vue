@@ -163,7 +163,8 @@ export default {
     return {
       showFullscreen: false,
       activeTab: 'overview',
-      nftAsset: null
+      nftAsset: null,
+      accountId: ''
     }
   },
   components: {
@@ -197,17 +198,18 @@ export default {
     },
     asset() {
       return chains[this.account.chain].nativeAsset
-    },
-    accountId() {
-      return this.$route.query.accountId ? this.$route.query.accountId : this.nftAsset.accountId
     }
   },
   async created() {
     const nftAsset = await JSON.parse(localStorage.getItem('nftAsset'))
     if (nftAsset) {
-      return (this.nftAsset = nftAsset)
+      this.nftAsset = nftAsset
+      this.accountId = nftAsset.accountId
+      return
     }
-    return (this.nftAsset = this.$route.query.nftAsset)
+    this.nftAsset = this.$route.query.nftAsset
+    this.accountId = this.nftAsset.accountId
+    return
   },
   destroyed() {
     localStorage.removeItem('nftAsset')

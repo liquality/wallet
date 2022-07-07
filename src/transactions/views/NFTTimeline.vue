@@ -6,15 +6,15 @@
       <div class="liquality-timeline_inner">
         <div class="liquality-timeline_container left completed">
           <div class="content">
-            <h3 :id="item.from">
+            <h3 :id="asset">
               From:
               <a
-                :href="addressLink(fromAddress, item.from)"
+                :href="addressLink(fromAddress, asset)"
                 target="_blank"
                 id="transaction_details_send_from_link"
-                >{{ shortenAddress(addPrefix(fromAddress, item.from)) }}</a
+                >{{ shortenAddress(addPrefix(fromAddress, asset)) }}</a
               >
-              <CopyIcon @click="copy(addPrefix(fromAddress, item.from))" />
+              <CopyIcon @click="copy(addPrefix(fromAddress, asset))" />
             </h3>
           </div>
         </div>
@@ -89,7 +89,7 @@
             <td class="text-muted text-left small-12">Your NFT from address</td>
             <td class="text-break text-primary">
               <span>
-                {{ shortenAddress(addPrefix(fromAddress, item.from)) }}
+                {{ shortenAddress(addPrefix(fromAddress, asset)) }}
                 <CopyIcon @click="copy(item.txHash)" class="copy-icon" />
               </span>
             </td>
@@ -120,9 +120,7 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import BN from 'bignumber.js'
 import moment from '@liquality/wallet-core/dist/utils/moment'
-import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import {
@@ -134,8 +132,6 @@ import {
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
-import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
-import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 
 export default {
@@ -150,11 +146,10 @@ export default {
       secretHidden: true,
       showFeeSelector: false,
       feeSelectorLoading: false,
-      feeSelectorAsset: null,
       newFeePrice: null
     }
   },
-  props: ['id', 'tx'],
+  props: ['id', 'tx', 'asset'],
   computed: {
     ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
@@ -164,26 +159,10 @@ export default {
       )
     },
     fromAddress() {
-      return this.accountItem(this.item.accountId)?.addresses[0]
+      return this.item.tx.from
     },
-    reverseRate() {
-      return BN(1).div(calculateQuoteRate(this.item)).dp(8)
-    },
-    orderLink() {
-      if (this.item.provider !== 'liquality') {
-        return ''
-      }
-      const agent = getSwapProviderConfig(this.item.network, this.item.provider).agent
-      return agent + '/api/swap/order/' + this.item.id + '?verbose=true'
-    },
-    feeSelectorFees() {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
-        getNativeAsset(this.feeSelectorAsset)
-      ]
-    },
-    feeSelectorUnit() {
-      const chain = cryptoassets[this.feeSelectorAsset].chain
-      return chains[chain].fees.unit
+    accountId() {
+      return this.item.nft.accountId || this.item.accountId
     }
   },
   methods: {
@@ -199,7 +178,7 @@ export default {
       await navigator.clipboard.writeText(text)
     },
     addressLink(address, asset) {
-      if (this.item.accountId) {
+      if (this.accountId) {
         return getAddressExplorerLink(address, asset, this.activeNetwork)
       }
 
@@ -208,15 +187,6 @@ export default {
     addPrefix(address, asset) {
       return !address.startsWith('0x') && isEthereumChain(asset) ? '0x' + address : address
     }
-  },
-  created() {
-    // this.updateTransactions()
-    // this.interval = setInterval(() => {
-    //   this.updateTransactions()
-    // }, 5000)
-  },
-  beforeDestroy() {
-    // clearInterval(this.interval)
   }
 }
 </script>

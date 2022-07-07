@@ -37,7 +37,7 @@
           <div class="col-12">
             <h2>Sent Asset</h2>
             <div class="d-flex">
-              <div class="nft-image mr-2" style="--img-width: 140px">
+              <div class="nft-image mr-2">
                 <img :src="item.nft.image_thumbnail_url || thumbnailImage" alt="nft-image" />
               </div>
               <div class="w-100">
@@ -104,7 +104,7 @@
             <h2 class="mr-4">Transaction</h2>
           </div>
         </div>
-        <Timeline :id="id" :tx="tx" />
+        <Timeline :id="id" :tx="tx" :asset="asset" />
       </div>
     </div>
   </div>
@@ -133,7 +133,6 @@ import CompletedIcon from '@/assets/icons/completed.svg'
 import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
-import { isObject } from 'lodash-es'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
@@ -156,13 +155,13 @@ export default {
   },
   props: ['id'],
   computed: {
-    ...mapGetters(['client']),
+    ...mapGetters(['client', 'accountsData']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     thumbnailImage() {
       return NFTThumbnailImage
     },
     assetChain() {
-      return getNativeAsset(this.item.from)
+      return getNativeAsset(this.asset)
     },
     itemFee() {
       return typeof this.item.fee !== 'object'
@@ -174,20 +173,29 @@ export default {
         (item) => item.id === this.id
       )
     },
+    accountId() {
+      return this.item.nft.accountId || this.item.accountId
+    },
+    chain() {
+      return this.accountsData.filter((account) => account.id === this.accountId)[0]?.chain
+    },
     status() {
       return getStatusLabel(this.item)
     },
     feeUnit() {
-      return chains[cryptoassets[this.item.from].chain].fees.unit
+      return chains[cryptoassets[this.asset].chain].fees.unit
+    },
+    asset() {
+      return chains[this.chain].nativeAsset
     },
     chainId() {
-      return cryptoassets[this.item.from].chain
+      return cryptoassets[this.asset].chain
     },
     addressLink() {
-      return getAddressExplorerLink(this.item.toAddress, this.item.from, this.activeNetwork)
+      return getAddressExplorerLink(this.item.toAddress, this.asset, this.activeNetwork)
     },
     transactionLink() {
-      return getTransactionExplorerLink(this.item.txHash, this.item.from, this.activeNetwork)
+      return getTransactionExplorerLink(this.item.txHash, this.asset, this.activeNetwork)
     },
     canUpdateFee() {
       return (
@@ -240,16 +248,14 @@ export default {
     async updateFee() {
       this.feeSelectorLoading = true
       const newFee = this.assetFees[this.selectedFee].fee
-      const txKey = Object.keys(this.item).find(
-        (key) => isObject(this.item[key]) && this.item[key].hash === this.item.txHash
-      )
-      const accountId = txKey === 'toClaimTx' ? this.item.toAccountId : this.item.fromAccountId
+
+      const accountId = this.accountId
 
       try {
         this.tx = await this.updateTransactionFee({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
-          asset: this.item.from,
+          asset: this.asset,
           id: this.item.id,
           hash: this.item.txHash,
           newFee,
@@ -264,7 +270,7 @@ export default {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
-        asset: this.item.from,
+        asset: this.asset,
         accountId: this.item.accountId
       })
       const transaction =
@@ -344,8 +350,6 @@ export default {
 
   .nft-image {
     width: 120px;
-    max-width: 120px;
-    max-height: 120px;
 
     img {
       width: 100%;

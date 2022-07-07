@@ -1,7 +1,7 @@
 <template>
   <div class="account-container">
     <template v-if="activeView === 'selectAsset'">
-      <NavBar showBack="true" :backPath="routeSource" :backLabel="'Overview'">
+      <NavBar :showBack="true" :backPath="routeSource" :backLabel="'Overview'">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <div class="account-content mx-3">
@@ -55,7 +55,7 @@
       </div>
     </template>
     <template v-else-if="activeView === 'selectedAsset'">
-      <NavBar :showBackButton="true" :backClick="back()" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="'Back'">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <div class="selected-nft-asset mx-3 mt-4 h-100">
@@ -77,7 +77,7 @@
                 <img :src="getAssetIcon(asset)" class="asset-icon mr-3" />
                 <div>
                   <div class="d-flex">
-                    <span class="font-weight-bold">{{ asset }}</span>
+                    <span class="font-weight-bold mr-1">{{ asset }}</span>
                     <div class="mr-3">
                       <span class="mr-1">{{ shortenAddress(fromAddress) }}</span>
                       <span><CopyIcon class="copy-icon" @click="copy(fromAddress)" /></span>
@@ -146,7 +146,7 @@
             </template>
           </DetailsContainer>
           <div class="button-group">
-            <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">Cancel</button>
+            <button class="btn btn-light btn-outline-primary btn-lg" @click="back">Cancel</button>
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"
@@ -159,7 +159,7 @@
       </div>
     </template>
     <template class="send" v-else-if="activeView === 'custom-fees' && !isEIP1559Fees">
-      <NavBar :showBackButton="true" :backClick="back()" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="'Back'">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <CustomFees
@@ -174,7 +174,7 @@
       />
     </template>
     <template class="send" v-else-if="activeView === 'custom-fees' && isEIP1559Fees">
-      <NavBar :showBackButton="true" :backClick="back()" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="'Back'">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <CustomFeesEIP1559
@@ -190,7 +190,7 @@
       />
     </template>
     <template v-else-if="activeView === 'review'">
-      <NavBar :showBackButton="true" :backClick="back()" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="'Back'">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <div class="selected-nft-asset mx-3 mt-4 h-100">
@@ -296,7 +296,7 @@ export default {
       customFeeAssetSelected: null,
       customFee: null,
       sendErrorMessage: '',
-      address: '',
+      address: '0x408075d9146C1cEDB293115670E17291deCaB53d',
       selectedFee: 'average'
     }
   },
@@ -312,9 +312,9 @@ export default {
       }
     })
     if (this.$route.query.nftAsset) {
+      this.activeView = 'selectedAsset'
       this.selectedNFT = this.$route.query.nftAsset
       localStorage.setItem('nftAsset', JSON.stringify(this.selectedNFT))
-      this.activeView = 'selectedAsset'
     }
   },
   computed: {
@@ -359,7 +359,9 @@ export default {
     },
     account() {
       return this.accountsData.filter(
-        (account) => account.id === (this.$route.query?.accountId || this.selectedNFT?.accountId)
+        (account) =>
+          account.id ===
+          (this.$route.query?.accountId ? this.$route.query.accountId : this.selectedNFT.accountId)
       )[0]
     },
     assetHistory() {
