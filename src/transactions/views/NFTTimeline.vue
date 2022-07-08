@@ -20,7 +20,7 @@
         </div>
         <div
           class="liquality-timeline_container right"
-          :class="{ completed: item.status === 'SUCCESS' && tx && tx.confirmations > 0 }"
+          :class="{ completed: tx?.status === 'SUCCESS' && tx && tx?.confirmations > 0 }"
         >
           <div class="content">
             <h3 :id="item.to">
@@ -36,7 +36,7 @@
           </div>
         </div>
       </div>
-      <div v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
+      <div v-if="tx?.status === 'SUCCESS' && tx && tx?.confirmations > 0">
         <h3>Completed</h3>
         <small>{{ prettyTime(item.endTime) }}</small>
       </div>
@@ -53,18 +53,6 @@
     <div class="table" v-if="advanced">
       <table class="table bg-white border-0 mb-1 mt-1">
         <tbody class="font-weight-normal">
-          <tr>
-            <td class="text-muted text-left small-12">Marketplace</td>
-            <td class="text-break">
-              <a
-                class="text-primary"
-                :href="`https://${activeNetwork === 'testnet' ? 'testnets.' : ''}opensea.io`"
-                target="_blank"
-                rel="noopener noreferrer"
-                >{{ `https://${activeNetwork === 'testnet' ? 'testnets.' : ''}opensea.io` }}</a
-              >
-            </td>
-          </tr>
           <tr id="transaction_id">
             <td class="text-muted text-left small-12">Transaction ID</td>
             <td class="text-break text-primary">
@@ -171,6 +159,7 @@ export default {
     prettyBalance,
     shortenAddress,
     isEthereumChain,
+    getAddressExplorerLink,
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
@@ -178,7 +167,7 @@ export default {
       await navigator.clipboard.writeText(text)
     },
     addressLink(address, asset) {
-      if (this.accountId) {
+      if (asset && address) {
         return getAddressExplorerLink(address, asset, this.activeNetwork)
       }
 

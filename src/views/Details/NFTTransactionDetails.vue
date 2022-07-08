@@ -12,15 +12,15 @@
               {{ status }}
               <span
                 id="transaction_details_status_number_of_confirmations"
-                v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"
+                v-if="tx?.status === 'SUCCESS' && tx && tx?.confirmations > 0"
               >
-                / {{ tx.confirmations }} Confirmations
+                / {{ tx?.confirmations }} Confirmations
               </span>
             </p>
           </div>
           <div class="col-2">
-            <CompletedIcon v-if="item.status === 'SUCCESS'" class="tx-details_status-icon" />
-            <FailedIcon v-else-if="item.status === 'FAILED'" class="tx-details_status-icon" />
+            <CompletedIcon v-if="tx?.status === 'SUCCESS'" class="tx-details_status-icon" />
+            <FailedIcon v-else-if="tx?.status === 'FAILED'" class="tx-details_status-icon" />
             <SpinnerIcon v-else class="tx-details_status-icon" />
           </div>
         </div>
@@ -48,6 +48,7 @@
               <div class="w-100">
                 <p class="font-weight-bold">{{ item.nft.name }}</p>
                 <p>{{ item.nft.collection.name }}</p>
+                <p v-if="item.nft.token_id">#{{ item.nft.token_id }}</p>
               </div>
             </div>
           </div>
@@ -123,7 +124,11 @@ import { chains } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
 import { getSendFee } from '@liquality/wallet-core/dist/utils/fees'
 import { prettyBalance, prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { getStatusLabel, ACTIVITY_FILTER_TYPES } from '@liquality/wallet-core/dist/utils/history'
+import {
+  // getStatusLabel,
+  ACTIVITY_FILTER_TYPES,
+  SEND_STATUS_LABEL_MAP
+} from '@liquality/wallet-core/dist/utils/history'
 import {
   getNativeAsset,
   getTransactionExplorerLink,
@@ -185,7 +190,7 @@ export default {
       return this.accountsData.filter((account) => account.id === this.accountId)[0]?.chain
     },
     status() {
-      return getStatusLabel(this.item)
+      return SEND_STATUS_LABEL_MAP[this.tx?.status]
     },
     feeUnit() {
       return chains[cryptoassets[this.asset].chain].fees.unit
@@ -369,9 +374,10 @@ export default {
   }
 }
 
-.transaction_details {
-  &_date_time {
+#transaction_details_date_time {
+  p {
     font-size: 10px;
+    line-height: 12px;
     color: #646f85;
   }
 }
