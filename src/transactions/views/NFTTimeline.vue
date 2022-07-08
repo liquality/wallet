@@ -159,7 +159,7 @@ export default {
       )
     },
     fromAddress() {
-      return this.item.tx.from
+      return this.accountItem(this.accountId)?.addresses[0]
     },
     accountId() {
       return this.item.nft.accountId || this.item.accountId
