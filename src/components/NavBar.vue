@@ -19,7 +19,7 @@
           {{ backLabel }}
         </div>
       </a>
-      <div class="navbar_title" id="overview">
+      <div class="navbar_title" :class="{ 'w-100': fullWidth }" id="overview">
         <slot></slot>
       </div>
       <div
@@ -102,7 +102,8 @@ export default {
     'backLabel',
     'showBackButton',
     'backClick',
-    'hasSolidButton'
+    'hasSolidButton',
+    'fullWidth'
   ],
   data() {
     return {

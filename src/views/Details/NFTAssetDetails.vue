@@ -6,6 +6,7 @@
         :backPath="routeSource"
         backLabel="Back"
         :hasSolidButton="true"
+        :fullWidth="true"
       ></NavBar>
       <div class="nft-action-buttons">
         <div
