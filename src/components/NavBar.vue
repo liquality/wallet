@@ -1,7 +1,13 @@
 <template>
   <div>
     <div class="navbar">
-      <router-link v-if="showBack" class="navbar_prev" id="previous_nav_bar" v-bind:to="backPath">
+      <router-link
+        v-if="showBack"
+        class="navbar_prev"
+        :class="{ 'btn btn-light btn-lg text-dark mt-3': hasSolidButton }"
+        id="previous_nav_bar"
+        v-bind:to="backPath"
+      >
         <div class="d-flex">
           <ChevronLeftIcon class="navbar_prev_icon" />
           {{ backLabel }}
@@ -89,7 +95,15 @@ export default {
     LedgerIcon,
     KeyIcon
   },
-  props: ['showMenu', 'showBack', 'backPath', 'backLabel', 'showBackButton', 'backClick'],
+  props: [
+    'showMenu',
+    'showBack',
+    'backPath',
+    'backLabel',
+    'showBackButton',
+    'backClick',
+    'hasSolidButton'
+  ],
   data() {
     return {
       showMenuList: false,

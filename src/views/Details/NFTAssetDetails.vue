@@ -1,7 +1,12 @@
 <template>
   <div class="nft-asset">
     <div class="nft-asset--container">
-      <NavBar :showBack="true" :backPath="'/wallet/nfts'" backLabel="Back"></NavBar>
+      <NavBar
+        :showBack="true"
+        :backPath="routeSource"
+        backLabel="Back"
+        :hasSolidButton="true"
+      ></NavBar>
       <div class="nft-action-buttons">
         <div
           class="star"
@@ -192,6 +197,12 @@ export default {
         this.account.addresses[0],
         this.activeNetwork
       )
+    },
+    routeSource() {
+      if (this.$route.query?.source) {
+        return `${this.$route.query.source}`
+      }
+      return '/wallet/nfts'
     },
     chain() {
       return this.account.chain

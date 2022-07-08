@@ -46,7 +46,11 @@ export default {
       if (this.nftAsset) {
         this.$router.push({
           path: `/details/nft-asset/${this.nftAsset.name}`,
-          query: { nftAsset: this.nftAsset, accountId: this.accountId }
+          query: {
+            nftAsset: this.nftAsset,
+            accountId: this.accountId,
+            source: this.$route.fullPath
+          }
         })
       }
     }
