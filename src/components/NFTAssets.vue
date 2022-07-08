@@ -95,6 +95,10 @@ export default {
       h5 {
         font-size: 16px;
         line-height: 20.63px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 260px;
       }
     }
     &__images {

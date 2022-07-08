@@ -234,7 +234,11 @@ export default {
   z-index: 9998;
 
   &_title {
-    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 220px;
+    margin: 0 auto;
     text-align: center;
     font-weight: $headings-font-weight;
     text-transform: uppercase;
