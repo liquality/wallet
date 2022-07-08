@@ -1,7 +1,13 @@
 <template>
   <div class="nft-image" style="--img-width: 100px">
     <Star :nftAsset="nftAsset" :accountId="accountId" />
-    <img :src="nftAssetImageSource || thumbnailImage" alt="" @click="viewNFTDetails" />
+    <img
+      ref="nftThumbnailImage"
+      :src="nftAssetImageSource || thumbnailImage"
+      alt="nft image"
+      @click="viewNFTDetails"
+      @error="imageError('nftThumbnailImage')"
+    />
   </div>
 </template>
 
@@ -52,6 +58,11 @@ export default {
             source: this.$route.fullPath
           }
         })
+      }
+    },
+    imageError(ref) {
+      if (ref) {
+        this.$refs[ref].src = this.thumbnailImage
       }
     }
   }

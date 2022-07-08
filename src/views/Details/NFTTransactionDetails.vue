@@ -38,7 +38,12 @@
             <h2>Sent Asset</h2>
             <div class="d-flex">
               <div class="nft-image mr-2">
-                <img :src="item.nft.image_thumbnail_url || thumbnailImage" alt="nft-image" />
+                <img
+                  ref="nftThumbnailImage"
+                  :src="item.nft.image_thumbnail_url || thumbnailImage"
+                  alt="nft-image"
+                  @error="imageError('nftThumbnailImage')"
+                />
               </div>
               <div class="w-100">
                 <p class="font-weight-bold">{{ item.nft.name }}</p>
@@ -279,6 +284,11 @@ export default {
     },
     goBack() {
       this.$router.go(-1)
+    },
+    imageError(ref) {
+      if (ref) {
+        this.$refs[ref].src = this.thumbnailImage
+      }
     }
   },
   created() {

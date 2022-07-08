@@ -35,7 +35,12 @@
                     stroke="#646F85"
                   />
                 </svg>
-                <img :src="asset.image_thumbnail_url || thumbnailImage" alt="" />
+                <img
+                  ref="asset"
+                  :src="asset.image_thumbnail_url || thumbnailImage"
+                  alt="nft image"
+                  @error="imageError('asset')"
+                />
               </div>
             </div>
           </Accordion>
@@ -64,7 +69,12 @@
             <h3 class="text-uppercase">Selected Asset</h3>
             <div class="selected-nft-asset__image">
               <div class="nft-image mr-2">
-                <img :src="selectedNFT.image_thumbnail_url || thumbnailImage" alt="selected nft" />
+                <img
+                  ref="nftThumbnailImage"
+                  :src="selectedNFT.image_thumbnail_url || thumbnailImage"
+                  alt="selected nft"
+                  @error="imageError('nftThumbnailImage')"
+                />
               </div>
               <div>
                 <h3>{{ selectedNFT.name }}</h3>
@@ -199,7 +209,12 @@
             <h3 class="text-uppercase">Selected Asset</h3>
             <div class="selected-nft-asset__image">
               <div class="nft-image mr-2" style="--img-width: 110px">
-                <img :src="selectedNFT.image_thumbnail_url || thumbnailImage" alt="" />
+                <img
+                  ref="selectedNFT"
+                  :src="selectedNFT.image_thumbnail_url || thumbnailImage"
+                  alt=""
+                  @error="imageError('selectedNFT')"
+                />
               </div>
               <div>
                 <h3>{{ selectedNFT.name }}</h3>
@@ -562,6 +577,11 @@ export default {
         this.loading = false
         this.sendErrorMessage = message || error
         this.sendErrorModalOpen = true
+      }
+    },
+    imageError(ref) {
+      if (ref) {
+        this.$refs[ref].src = this.thumbnailImage
       }
     }
   },

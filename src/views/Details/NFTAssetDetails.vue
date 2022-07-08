@@ -29,7 +29,12 @@
       </div>
       <template v-if="showFullscreen === false">
         <div class="nft-img">
-          <img :src="nftAssetImageSource('thumbnail') || thumbnailImage" alt="nft image" />
+          <img
+            ref="nftImage"
+            :src="nftAssetImageSource('thumbnail') || thumbnailImage"
+            alt="nft image"
+            @error="imageError('nftImage')"
+          />
         </div>
         <div class="drawer nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
@@ -50,7 +55,12 @@
           class="nft-img__open"
           :style="!nftAssetImageSource('preview') && { background: '#D9DFE5' }"
         >
-          <img :src="nftAssetImageSource('preview') || thumbnailImage" alt="nft image" />
+          <img
+            ref="nftPrevieewImage"
+            :src="nftAssetImageSource('preview') || thumbnailImage"
+            alt="nft image"
+            @error="imageError('nftPrevieewImage')"
+          />
         </div>
         <div class="drawer drawer-open nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
@@ -213,6 +223,7 @@ export default {
   },
   async created() {
     const nftAsset = await JSON.parse(localStorage.getItem('nftAsset'))
+
     if (nftAsset) {
       this.nftAsset = nftAsset
       this.accountId = nftAsset.accountId
@@ -252,6 +263,11 @@ export default {
           this.nftAsset.asset_contract.address
         )
       )
+    },
+    imageError(ref) {
+      if (ref) {
+        this.$refs[ref].src = this.thumbnailImage
+      }
     }
   }
 }
