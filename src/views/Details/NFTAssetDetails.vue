@@ -23,8 +23,19 @@
                 query: { nftAsset: nftAsset, source: source, accountId: accountId }
               })
             "
+            v-tooltip.bottom="{
+              content: 'Send NFT',
+              hideOnTargetClick: false
+            }"
           />
-          <ShareIcon class="nft-action-buttons__icon" @click="transferNFT" />
+          <ShareIcon
+            class="nft-action-buttons__icon"
+            @click="transferNFT"
+            v-tooltip.left="{
+              content: 'Transfer on OpenSea',
+              hideOnTargetClick: false
+            }"
+          />
         </div>
       </div>
       <template v-if="showFullscreen === false">
