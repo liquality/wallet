@@ -112,7 +112,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chainToTokenAddressMap, ChainId } from '@liquality/cryptoassets'
+import { chainToTokenAddressMap } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
@@ -129,6 +129,7 @@ import {
   estimateGas
 } from '@liquality/wallet-core/dist/utils/asset'
 import { parseTokenTx } from '@liquality/wallet-core/dist/utils/parseTokenTx'
+import { isEIP1559Fees } from '@liquality/wallet-core/dist/utils/fees'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
@@ -362,10 +363,7 @@ export default {
       return this.address ? shortenAddress(this.address) : 'New Contract'
     },
     isEIP1559Fees() {
-      return (
-        cryptoassets[this.asset].chain === ChainId.Ethereum ||
-        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
-      )
+      return isEIP1559Fees(cryptoassets[this.asset].chain, this.activeNetwork)
     },
     value() {
       // Parse SendOptions.value into BN

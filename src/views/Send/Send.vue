@@ -253,7 +253,7 @@ import {
 } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
+import { getSendFee, getFeeLabel, isEIP1559Fees } from '@liquality/wallet-core/dist/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
@@ -430,10 +430,7 @@ export default {
       return BN(this.amount).plus(BN(this.currentFee))
     },
     isEIP1559Fees() {
-      return (
-        cryptoassets[this.asset].chain === ChainId.Ethereum ||
-        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
-      )
+      return isEIP1559Fees(cryptoassets[this.asset].chain, this.activeNetwork)
     },
     showMemoInput() {
       return cryptoassets[this.asset].chain === ChainId.Terra
@@ -638,7 +635,6 @@ export default {
       }
     }
     this.updatingFees = true
-    debugger
     await this.updateFees({ asset: this.assetChain })
     if (this.maxOptionActive) {
       this.updateMaxSendFees()

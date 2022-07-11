@@ -73,7 +73,7 @@ class OverviewPage {
   async CloseWhatsNewModal(page) {
     await page.waitForSelector('#wats_new_close_btn', {
       visible: true,
-      timeout: 60000
+      timeout: 180000
     })
     await page.click('#wats_new_close_btn')
     console.log("Wat's new Modal closed")
