@@ -2,7 +2,6 @@ export const executeRequest = async ({ rootGetters, dispatch }, { request }) => 
   // Send transactions through wallet managed action
   const { network, walletId, asset, accountId } = request
   let call
-  debugger
   const result = await new Promise((resolve) => {
     if (request.method === 'wallet.sendTransaction') {
       call = dispatch(
