@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import { getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
@@ -87,7 +87,8 @@ export default {
       loading: false,
       replied: false,
       messageToDisplay: '',
-      messageToSign: ''
+      messageToSign: '',
+      signRequestModalOpen: false
     }
   },
   methods: {
@@ -126,7 +127,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'accountItem']),
+    ...mapState(['activeNetwork', 'activeWalletId']),
+    ...mapGetters(['accountItem']),
     logo() {
       return LogoWallet
     },

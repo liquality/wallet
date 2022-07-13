@@ -113,8 +113,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['client']),
-    ...mapState(['activeNetwork', 'activeWalletId', 'accountItem']),
+    ...mapGetters(['client', 'accountItem']),
+    ...mapState(['activeNetwork', 'activeWalletId']),
     logo() {
       return LogoWallet
     },
