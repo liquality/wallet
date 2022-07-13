@@ -30,6 +30,9 @@
             <pre class="text-wrap">
 * Connect your Liquality Wallet to the dApps zkSync and Polygon's Hermez to make faster and cheaper transactions on those L2's</pre
             >
+            <pre class="text-wrap">
+* Buy crypto with fiat through Transak</pre
+            >
           </div>
         </div>
       </div>
