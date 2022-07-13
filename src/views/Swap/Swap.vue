@@ -143,16 +143,6 @@
             <template v-slot:header>
               <div class="network-header-container">
                 <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
-                <div class="network-header-state">
-                  <span class="text-muted">
-                    {{ assetChain }}
-                    {{ assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : '' }}
-                  </span>
-                  <span class="text-muted" v-if="toAssetChain && assetChain != toAssetChain">
-                    / {{ toAssetChain }}
-                    {{ toAssetChain ? getSelectedFeeLabel(selectedFee[toAssetChain]) : '' }}
-                  </span>
-                </div>
               </div>
             </template>
             <template v-slot:content>
