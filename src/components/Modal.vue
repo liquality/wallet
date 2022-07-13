@@ -96,6 +96,8 @@ export default {
   border: 1px solid #d9dfe5;
   box-sizing: border-box;
   box-shadow: 2px 4px 4px rgba(46, 44, 44, 0.25);
+  overflow: auto;
+  max-height: 530px;
 
   .modal-body {
     padding: 5px 20px 0 20px;
