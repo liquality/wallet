@@ -8,7 +8,7 @@
       </li>
       <li class="nav-item">
         <router-link class="nav-link" id="notebook_tab" :to="{ name: 'WalletNotebook' }">
-          Messages
+          <ImageSvg />
         </router-link>
       </li>
       <li class="nav-item">
@@ -24,7 +24,11 @@
 </template>
 
 <script>
-export default {}
+import ImageSvg from './icon.svg'
+
+export default {
+  components: { ImageSvg }
+}
 </script>
 
 <style lang="scss">
