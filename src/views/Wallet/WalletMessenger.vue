@@ -7,8 +7,8 @@
       placeholder="Message"
     />
     <div
-      v-for="{ message, timestamp, recipient: _recipient, sender } in messageHistory"
-      :key="timestamp"
+      v-for="({ message, timestamp, recipient: _recipient, sender }, idx) in messageHistory"
+      :key="idx"
     >
       <div class="message-wrapper">
         <p :class="{ active: _recipient === sender }">
