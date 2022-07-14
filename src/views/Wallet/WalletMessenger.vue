@@ -36,7 +36,7 @@ export default {
 
     messageHistory() {
       if (this.messages?.[this.recipient]) {
-        return this.messages[this.recipient].sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+        return this.messages[this.recipient].sort((a, b) => (a.timestamp > b.timestamp ? -1 : 1))
       }
       return []
     }
