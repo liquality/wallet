@@ -648,13 +648,13 @@ export default {
         }
       }
     }
-
+    
     if (this.toAccountId && _toAsset) {
       this.toAssetChanged(this.toAccountId, _toAsset)
       this.toAsset = _toAsset
       this.updateFees({ asset: _toAsset })
       this.selectedFee = {
-        [this.assetChain]: this.selectedFromFree,
+        [this.assetChain]: this.selectedFromFee,
         [this.toAssetChain]: this.selectedToFee
       }
     }
