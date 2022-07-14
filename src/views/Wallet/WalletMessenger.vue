@@ -6,10 +6,13 @@
       v-on:keyup.enter="submit"
       placeholder="Message"
     />
-    <div v-for="{ message, timestamp, recipient } in messageHistory" :key="timestamp">
-      <div>
-        <p>
-          From: {{ recipient.slice(0, 6) + '...' + recipient.slice(-6) }} at:
+    <div
+      v-for="{ message, timestamp, recipient: _recipient, sender } in messageHistory"
+      :key="timestamp"
+    >
+      <div class="message-wrapper">
+        <p :class="{ active: _recipient === sender }">
+          From: {{ sender.slice(0, 6) + '...' + sender.slice(-6) }} at:
           {{ convertToNow(timestamp) }}
         </p>
         <p>{{ message }}</p>
@@ -32,7 +35,10 @@ export default {
     ...mapState(['messages', 'addresses']),
 
     messageHistory() {
-      return this.messages[this.recipient].reverse()
+      if (this.messages?.[this.recipient]) {
+        return this.messages[this.recipient].reverse()
+      }
+      return []
     }
   },
   methods: {
@@ -53,4 +59,14 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.message-wrapper {
+  display: flex;
+  align-content: flex-start;
+  flex-direction: column;
+
+  .active {
+    align-items: flex-end;
+  }
+}
+</style>
