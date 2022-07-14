@@ -41,6 +41,7 @@ export default {
     ...mapActions(['updateNotebook']),
     onSubmit() {
       this.updateNotebook({ address: this.text })
+      this.text = ''
     },
     startMessaging(recipient) {
       this.$router.push({
