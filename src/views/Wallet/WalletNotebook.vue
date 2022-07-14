@@ -5,7 +5,7 @@
         :value="text"
         @input="(event) => (text = event.target.value)"
         placeholder="Paste address of recipient"
-        v-on:keyup.enter="submit"
+        v-on:keyup.enter="onSubmit"
       />
     </div>
     <div v-for="(recipient, idx) in getNotebook" :key="idx">
