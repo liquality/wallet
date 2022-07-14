@@ -1,5 +1,10 @@
 <template>
-  <input :value="text" @input="(event) => (text = event.target.value)" v-on:keyup.enter="submit" />
+  <input
+    :value="text"
+    @input="(event) => (text = event.target.value)"
+    v-on:keyup.enter="submit"
+    placeholder="Message"
+  />
 </template>
 
 <script>
