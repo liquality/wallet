@@ -28,6 +28,8 @@ import PermissionSignPsbt from '@/views/PermissionSignPsbt.vue'
 import PermissionTerra from '@/views/PermissionTerra.vue'
 import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
+import WalletNotebook from '@/views/Wallet/WalletNotebook.vue'
+import WalletMessenger from '@/views/Wallet/WalletMessenger.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
 import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
@@ -103,6 +105,7 @@ const routes = [
     name: 'Wallet',
     component: Wallet,
     meta: { protect: true },
+    props: true,
     children: [
       {
         path: 'assets',
@@ -110,9 +113,21 @@ const routes = [
         name: 'WalletAssets'
       },
       {
+        path: 'notebook/:accountId',
+        component: WalletNotebook,
+        name: 'WalletNotebook',
+        props: true,
+      },
+      {
+        path: 'messenger/:accountId',
+        component: WalletMessenger,
+        name: 'WalletMessenger',
+        props: true
+      },
+      {
         path: 'activity',
         component: WalletActivity,
-        name: 'WalletActivity'
+        name: 'WalletActivity',
       },
       {
         path: '',

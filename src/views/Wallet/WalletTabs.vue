@@ -7,6 +7,11 @@
         </router-link>
       </li>
       <li class="nav-item">
+        <router-link class="nav-link" id="notebook_tab" :to="{ name: 'WalletNotebook' }">
+          Messages
+        </router-link>
+      </li>
+      <li class="nav-item">
         <router-link class="nav-link" id="activity_tab" :to="{ name: 'WalletActivity' }">
           Activity
         </router-link>
@@ -27,6 +32,10 @@ export default {}
   margin: 0;
   padding: 0;
 }
+.nav {
+  flex-wrap: nowrap !important;
+}
+
 .nav-tabs {
   height: 48px;
   border-bottom: none !important;
