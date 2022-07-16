@@ -1,3 +1,4 @@
+import Buffer from 'buffer/'
 import 'setimmediate'
 import { random } from 'lodash-es'
 import store from './store'
@@ -7,6 +8,8 @@ import { unitToCurrency } from '@liquality/cryptoassets'
 import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import _ from 'lodash-es'
 import { version as walletVersion } from '../package.json'
+
+console.log('buffeerererer', Buffer)
 
 let prevState = _.cloneDeep(store.state)
 

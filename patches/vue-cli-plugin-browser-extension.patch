@@ -1,0 +1,11 @@
+diff --git a/node_modules/vue-cli-plugin-browser-extension/lib/manifest.js b/node_modules/vue-cli-plugin-browser-extension/lib/manifest.js
+index c62792c..bb4df13 100644
+--- a/node_modules/vue-cli-plugin-browser-extension/lib/manifest.js
++++ b/node_modules/vue-cli-plugin-browser-extension/lib/manifest.js
+@@ -34,7 +34,6 @@ module.exports = (api, pluginOptions, packageJson) => async (content) => {
+   // If building for production (going to web store) abort early.
+   // The browser extension store will hash your signing key and apply CSP policies.
+   if (isProduction) {
+-    manifest.content_security_policy = manifest.content_security_policy.replace(/'unsafe-eval'/, '')
+ 
+     // validate minimum options
