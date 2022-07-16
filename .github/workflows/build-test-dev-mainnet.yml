@@ -1,10 +1,10 @@
 # Dev Mainnet tests
 name: DEV Mainnet tests
 
-#on:
-#  schedule:
-#    - cron: '0 9 * * *' # everyday at 9am
-#    - cron: '0 23 * * *' # everyday at 11pm
+on:
+  schedule:
+    - cron: '0 9 * * *' # everyday at 9am
+    - cron: '0 23 * * *' # everyday at 11pm
 
 env:
   TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
@@ -23,7 +23,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: 'test' # or 'master'
 
       - uses: actions/setup-node@v2.5.1
         env:
