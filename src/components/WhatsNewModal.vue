@@ -10,9 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-* New RC 0.68.0</pre
-            >
+            <pre class="text-wrap">* New RC 0.68.0</pre>
           </div>
         </div>
       </div>
@@ -27,9 +25,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-* New RC 0.68.0</pre
-            >
+            <pre class="text-wrap">* New RC 0.68.0</pre>
             <pre class="text-wrap">* Buy crypto with fiat through Transak</pre>
           </div>
         </div>
