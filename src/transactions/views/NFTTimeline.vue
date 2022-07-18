@@ -114,7 +114,8 @@ import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import {
   isEthereumChain,
   getNativeAsset,
-  getAddressExplorerLink
+  getAddressExplorerLink,
+  getTransactionExplorerLink
 } from '@liquality/wallet-core/dist/utils/asset'
 
 import CopyIcon from '@/assets/icons/copy.svg'
@@ -151,6 +152,9 @@ export default {
     },
     accountId() {
       return this.item.nft.accountId || this.item.accountId
+    },
+    transactionLink() {
+      return getTransactionExplorerLink(this.item.txHash, this.asset, this.activeNetwork)
     }
   },
   methods: {
