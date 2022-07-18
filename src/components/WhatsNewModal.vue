@@ -11,7 +11,7 @@
           </div>
           <div class="item-content">
             <pre class="text-wrap">
-* Connect Ledger accounts for Bitcoin, Ethereum, and Rootstock to send & receive your assets and access dApps.</pre
+* New RC 0.68.0</pre
             >
           </div>
         </div>
@@ -28,7 +28,7 @@
           </div>
           <div class="item-content">
             <pre class="text-wrap">
-* Connect your Liquality Wallet to the dApps zkSync and Polygon's Hermez to make faster and cheaper transactions on those L2's</pre
+* New RC 0.68.0</pre
             >
             <pre class="text-wrap">* Buy crypto with fiat through Transak</pre>
           </div>
