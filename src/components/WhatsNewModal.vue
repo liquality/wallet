@@ -10,7 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Release candidate 0.67.0</pre>
+            <pre class="text-wrap">
+* Connect Ledger accounts for Bitcoin, Ethereum, and Rootstock to send & receive your assets and access dApps.</pre
+            >
           </div>
         </div>
       </div>
@@ -25,8 +27,10 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Connect your wallet to view your NFTs on OpenSEA</pre>
-            <pre class="text-wrap">* Bridge with the Hop protocol</pre>
+            <pre class="text-wrap">
+* Connect your Liquality Wallet to the dApps zkSync and Polygon's Hermez to make faster and cheaper transactions on those L2's</pre
+            >
+            <pre class="text-wrap">* Buy crypto with fiat through Transak</pre>
           </div>
         </div>
       </div>

@@ -52,7 +52,6 @@ if (process.env.NODE_ENV === 'mainnet') {
         swapSendAmountField,
         `${fromAsset} to ${toAsset} SWAP min value not set in input`
       ).not.equals('0.0000')
-      await swapPage.ClickOnMin(page)
       // Select 2nd Pair
       await page.click('.swap-receive-main-icon')
       await page.waitForSelector(`#${toAsset.chain}`, { visible: true })
@@ -111,7 +110,7 @@ if (process.env.NODE_ENV === 'mainnet') {
         swapSendAmountField,
         `${fromAsset} to ${toAsset} SWAP min value not set in input`
       ).not.equals('0.0000')
-      await swapPage.ClickOnMin(page)
+
       // Select 2nd Pair
       await page.click('.swap-receive-main-icon')
       await page.waitForSelector(`#${toAsset.chain}`, { visible: true })
