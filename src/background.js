@@ -105,6 +105,7 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       dispatch('updateFiatRates', { assets: store.getters.allNetworkAssets })
       dispatch('updateMarketData', { network: state.activeNetwork })
+      dispatch('updateCurrenciesInfo', { assets: store.getters.allNetworkAssets })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
 
       asyncLoop(

@@ -4,6 +4,7 @@
       <img :src="logo" />
     </div>
     <div class="permission-sign wrapper text-center">
+      <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
       <div class="wrapper_top form">
         <h2>Request to Sign</h2>
         <img :src="getAssetIcon(asset)" class="permission-sign_icon mt-4 mb-2" />
@@ -43,13 +44,15 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapGetters } from 'vuex'
 import { getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { isAddress } from 'ethers/lib/utils'
+import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
+import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 
 const signTypedDataMethodToVersion = {
   eth_signTypedData: 'V1',
@@ -75,14 +78,17 @@ function hexToAscii(hex) {
 
 export default {
   components: {
-    SpinnerIcon
+    SpinnerIcon,
+    LedgerSignRequestModal
   },
+  mixins: [ledgerConnectMixin],
   data() {
     return {
       loading: false,
       replied: false,
       messageToDisplay: '',
-      messageToSign: ''
+      messageToSign: '',
+      signRequestModalOpen: false
     }
   },
   methods: {
@@ -90,6 +96,10 @@ export default {
     getAssetIcon,
     getAssetColorStyle,
     shortenAddress,
+    closeSignRequestModal() {
+      this.signRequestModalOpen = false
+      this.loading = false
+    },
     async reply(allowed) {
       if (this.loading) {
         return
@@ -97,6 +107,10 @@ export default {
       this.loading = true
 
       try {
+        if (this.account?.type.includes('ledger')) {
+          this.signRequestModalOpen = true
+          await this.connectLedger()
+        }
         await this.replyPermission({
           request: {
             ...this.request,
@@ -107,12 +121,14 @@ export default {
         this.replied = true
         window.close()
       } finally {
+        this.signRequestModalOpen = false
         this.loading = false
       }
     }
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId']),
+    ...mapGetters(['accountItem']),
     logo() {
       return LogoWallet
     },
@@ -127,6 +143,9 @@ export default {
         ...this.$route.query,
         args: JSON.parse(this.$route.query.args)
       }
+    },
+    account() {
+      return this.accountItem(this.request?.accountId)
     }
   },
   created() {

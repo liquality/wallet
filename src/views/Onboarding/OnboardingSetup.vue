@@ -13,7 +13,7 @@
       </div>
       <div class="backup-wallet_bottom">
         <div class="backup-wallet_seed pt-1" id="backup-wallet_seed_wordlist">
-          <span v-for="word in seedList" :key="word" id="backup_seed_word">{{ word }}</span>
+          <span v-for="(word, i) in seedList" :key="i" id="backup_seed_word">{{ word }}</span>
         </div>
         <div class="footer-container">
           <div class="footer-content">

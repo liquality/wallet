@@ -95,7 +95,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Changelog
-        uses: mikepenz/release-changelog-builder-action@v3.0.0
+        uses: mikepenz/release-changelog-builder-action@v3.0.1
         id: build_changelog
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
