@@ -135,11 +135,15 @@ export default {
     getAssetIcon,
     shortenAddress,
     async refresh() {
+      const accountIds = this.accountsData.map((account) => {
+        return account.id
+      })
       try {
         this.updatingAssets = true
         await this.updateNFTs({
           walletId: this.activeWalletId,
-          network: this.activeNetwork
+          network: this.activeNetwork,
+          accountIds: accountIds
         })
       } catch (error) {
         console.log(error)
