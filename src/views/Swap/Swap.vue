@@ -59,12 +59,6 @@
           :asset="selectedQuote.bridgeAsset"
         />
       </InfoNotification>
-      <InfoNotification v-else-if="!canCoverAmmFee && !insufficientFundsError">
-        <BridgeAssetRequiredMessage
-          :account-id="getAccountId()"
-          :asset="selectedQuote.bridgeAsset"
-        />
-      </InfoNotification>
       <InfoNotification v-else-if="cannotCoverMinimum && !insufficientFundsError">
         <CannotCoverMinimumMessage :asset="asset" :account-id="account.id" />
       </InfoNotification>
@@ -149,16 +143,6 @@
             <template v-slot:header>
               <div class="network-header-container">
                 <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
-                <div class="network-header-state">
-                  <span class="text-muted">
-                    {{ assetChain }}
-                    {{ assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : '' }}
-                  </span>
-                  <span class="text-muted" v-if="toAssetChain && assetChain != toAssetChain">
-                    / {{ toAssetChain }}
-                    {{ toAssetChain ? getSelectedFeeLabel(selectedFee[toAssetChain]) : '' }}
-                  </span>
-                </div>
               </div>
             </template>
             <template v-slot:content>
@@ -430,7 +414,7 @@
             <button
               class="btn btn-primary btn-lg btn-block btn-icon"
               id="initiate_swap_button"
-              @click.stop="tryToSwap"
+              @click.stop="swap"
               :disabled="loading"
             >
               <SpinnerIcon class="btn-loading" v-if="loading" />
@@ -476,7 +460,6 @@
       :error="swapErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
-    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
@@ -485,7 +468,7 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import { currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
@@ -512,7 +495,7 @@ import {
 } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
+import { getFeeLabel, isEIP1559Fees } from '@liquality/wallet-core/dist/utils/fees'
 import { chains } from '@liquality/cryptoassets'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -531,11 +514,10 @@ import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
 import { version as walletVersion } from '../../../package.json'
-import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import { buildConfig } from '@liquality/wallet-core'
 import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
 import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
+import qs from 'qs'
 
 const QUOTE_TIMER_MS = 30000
 
@@ -562,7 +544,6 @@ export default {
     OperationErrorModal,
     CustomFees,
     CustomFeesEIP1559,
-    LedgerBridgeModal,
     QuotesModal,
     SwapProvidersInfoModal,
     SwapInfo
@@ -585,6 +566,8 @@ export default {
       swapFees: {},
       maxSwapFees: {},
       selectedFee: {},
+      selectedFromFee: 'average',
+      selectedToFee: 'average',
       currentStep: 'inputs',
       assetSelection: 'from',
       loading: false,
@@ -594,55 +577,96 @@ export default {
       signRequestModalOpen: false,
       swapErrorMessage: '',
       customFeeAssetSelected: null,
-      customFees: {},
-      bridgeModalOpen: false
+      customFees: {}
     }
   },
   props: {
     routeAsset: String,
     accountId: String
   },
-  created() {
+  async created() {
     this.asset = this.routeAsset
     this.fromAccountId = this.accountId
-    this.fee = this.fees[this.selectedFee || 'average']?.fee
+    let _sendAmount = 0.0
+    let _toAsset = null
+
+    if (this.$route.query.mode === 'tab') {
+      const {
+        toAccountId,
+        sendAmount,
+        toAsset,
+        selectedFees,
+        customFees,
+        currentStep,
+        maxOptionActive,
+        provider,
+        userSelectedQuote
+      } = this.$route.query
+      this.currentStep = currentStep
+      this.maxOptionActive = maxOptionActive
+      this.toAccountId = toAccountId
+      _toAsset = toAsset
+      _sendAmount = sendAmount
+
+      this.selectedFee = qs.parse(selectedFees)
+      if (customFees) {
+        this.customFees = customFees.split(',').reduce((prev, curr) => {
+          const [asset, fee] = curr.split('=')
+          return {
+            ...prev,
+            [asset]: fee
+          }
+        }, {})
+      }
+
+      await this._updateQuotes()
+      this.setQuoteProvider(provider)
+      this.userSelectedQuote = userSelectedQuote
+    } else {
+      this.selectedFee = {
+        [this.assetChain]: 'average',
+        [this.toAssetChain]: 'average'
+      }
+      _sendAmount = dpUI(this.defaultAmount)
+      // Try to use the same account for (from and to) if it has more than one asset
+      if (this.account?.assets.length > 1) {
+        this.toAccountId = this.accountId
+        _toAsset = this.account?.assets.find((a) => a !== this.asset)
+      } else {
+        // use another account
+        if (this.accountsData.length > 0) {
+          const toAccount = this.accountsData.find((account) => {
+            const assetAvailable =
+              account.assets?.length > 0 && account.assets?.includes(this.asset)
+            const idsMatching = account.id == this.accountId
+            return !assetAvailable && !idsMatching
+          })
+          if (toAccount) {
+            this.toAccountId = toAccount.id
+            _toAsset = toAccount.assets[0]
+          }
+        }
+      }
+    }
+    
+    if (this.toAccountId && _toAsset) {
+      this.toAssetChanged(this.toAccountId, _toAsset)
+      this.toAsset = _toAsset
+      this.updateFees({ asset: _toAsset })
+      this.selectedFee = {
+        [this.assetChain]: this.selectedFromFee,
+        [this.toAssetChain]: this.selectedToFee
+      }
+    }
+
+    this.sendAmount = _sendAmount
+    this.fee = this.fees[this.selectedFromFee]?.fee
+    this.updateFiatRates({ assets: [this.toAsset, this.asset] })
     this.updateMarketData({ network: this.activeNetwork })
     ;(async () => {
       await this.updateFees({ asset: this.assetChain })
       await this.updateMaxSwapFees()
     })()
-
-    let toAsset = null
-
-    // Try to use the same account for (from and to) if it has more than one asset
-    if (this.account?.assets.length > 1) {
-      this.toAccountId = this.accountId
-      toAsset = this.account?.assets.find((a) => a !== this.asset)
-    } else {
-      // use another account
-      if (this.accountsData.length > 0) {
-        const toAccount = this.accountsData.find((account) => {
-          const assetAvailable = account.assets?.length > 0 && account.assets?.includes(this.asset)
-          const idsMatching = account.id == this.accountId
-          return !assetAvailable && !idsMatching
-        })
-        if (toAccount) {
-          this.toAccountId = toAccount.id
-          toAsset = toAccount.assets[0]
-        }
-      }
-    }
-
-    if (this.toAccountId && toAsset) {
-      this.toAssetChanged(this.toAccountId, toAsset)
-      this.toAsset = toAsset
-      this.updateFees({ asset: toAsset })
-      this.selectedFee = {
-        [this.assetChain]: 'average',
-        [this.toAssetChain]: 'average'
-      }
-    }
-    this.sendAmount = dpUI(this.defaultAmount)
 
     this.resetQuoteTimer(QUOTE_TIMER_MS)
     this.trackNoLiquidity()
@@ -729,7 +753,6 @@ export default {
       'activeNetwork',
       'enabledAssets'
     ]),
-    ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem', 'accountsData']),
     networkMarketData() {
       return this.marketData[this.activeNetwork]
@@ -992,10 +1015,7 @@ export default {
       return this.totalToReceiveInFiat <= 0
     },
     isEIP1559Fees() {
-      return (
-        cryptoassets[this.customFeeAssetSelected].chain === ChainId.Ethereum ||
-        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
-      )
+      return isEIP1559Fees(cryptoassets[this.customFeeAssetSelected].chain, this.activeNetwork)
     }
   },
   methods: {
@@ -1167,33 +1187,16 @@ export default {
       this.currentStep = 'inputs'
       this.selectedFee[asset] = 'average'
     },
-    async tryToSwap() {
-      if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
-        this.loading = true
-        this.bridgeModalOpen = true
-        await this.startBridgeListener()
-        const unsubscribe = createConnectSubscription(() => {
-          this.bridgeModalOpen = false
-          this.swap()
-        })
-        setTimeout(() => {
-          if (unsubscribe) {
-            this.bridgeModalOpen = false
-            this.loading = false
-            unsubscribe()
-          }
-        }, 25000)
-      } else {
-        await this.swap()
-      }
-    },
     resetQuoteTimer(resetInterval) {
       clearTimeout(this.quoteTimer)
       this.quoteTimer = setTimeout(() => {
         this.updateQuotes()
       }, resetInterval)
     },
-    _updateQuotes: _.debounce(async function () {
+    debounceUpdateQuotes: _.debounce(async function () {
+      await this._updateQuotes()
+    }, 1000),
+    async _updateQuotes() {
       const quotes = await this.getQuotes({
         network: this.activeNetwork,
         from: this.asset,
@@ -1251,19 +1254,36 @@ export default {
         BN(this.sendAmount).lt(this.max)
       // if(this.cannotCoverMinimum) this.sendAmount = 1
       this.resetQuoteTimer(!this.canSwap && shouldChooseNewQuote ? 1000 : QUOTE_TIMER_MS)
-    }, 1000),
+    },
     updateQuotes() {
       if (BN(this.sendAmount).eq(0)) return // Don't update quote when amount 0
       if (this.currentStep !== 'inputs') return // Don't update quote when in review
       this.quotes = []
       this.updatingQuotes = true
-      this._updateQuotes()
+      this.debounceUpdateQuotes()
     },
-    selectQuote(provider) {
+    setQuoteProvider(provider) {
       const matchingQuote = this.quotes.find((q) => q.provider === provider)
       this.selectedQuote = matchingQuote
+    },
+    selectQuote(provider) {
+      this.setQuoteProvider(provider)
       this.userSelectedQuote = true
       this.showQuotesModal = false
+    },
+    review() {
+      if (this.account?.type.includes('ledger')) {
+        // open in a new tab
+        let customFees = null
+        const fees = qs.stringify(this.selectedFee)
+        if (this.customFees) {
+          customFees = qs.stringify(this.customFees)
+        }
+        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?mode=tab&sendAmount=${this.sendAmount}&toAccountId=${this.toAccountId}&toAsset=${this.toAsset}&selectedFees=${fees}&userSelectedQuote=${this.userSelectedQuote}&provider=${this.selectedQuote?.provider}&currentStep=confirm&maxOptionActive=${this.maxOptionActive}&customeFees=${customFees}`
+        chrome.tabs.create({ url: browser.runtime.getURL(url) })
+      } else {
+        this.currentStep = 'confirm'
+      }
     },
     async swap() {
       this.swapErrorMessage = ''
@@ -1411,10 +1431,6 @@ export default {
     onCustomFeeSelected(asset) {
       this.customFeeAssetSelected = getNativeAsset(asset)
       this.currentStep = 'custom-fees'
-    },
-    closeBridgeModal() {
-      this.loading = false
-      this.bridgeModalOpen = false
     },
     trackNoLiquidity() {
       if (this.showNoLiquidityMessage) {

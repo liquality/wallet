@@ -13,7 +13,7 @@
         <li>Enter pin to unlock it</li>
         <li>On the device, navigate to the asset that you want to access</li>
         <li v-if="isEthereumChain(selectedAsset.name)">
-          To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Allow Contract Data'
+          To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Blind signing'
         </li>
       </ul>
       <div class="options">
@@ -54,7 +54,7 @@
         <button
           class="btn btn-light btn-outline-primary btn-lg"
           id="cancel-ledger-button"
-          @click="goToOverview"
+          @click="cancel"
         >
           Cancel
         </button>
@@ -103,8 +103,12 @@ export default {
         this.$emit('on-connect', { asset: this.selectedAsset })
       }
     },
-    goToOverview() {
-      this.$router.replace('/wallet')
+    cancel() {
+      chrome.tabs.getCurrent((tab) => {
+        if (tab !== undefined) {
+          chrome.tabs.remove([tab.id])
+        }
+      })
     },
     selectAsset(asset) {
       this.$emit('on-select-asset', asset)

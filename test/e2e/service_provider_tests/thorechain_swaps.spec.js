@@ -67,7 +67,6 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
     }
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
-    await swapPage.ClickOnMin(page)
     // Check source name
     await page.waitForSelector('#selectedQuote_provider', { visible: true })
     try {
@@ -75,7 +74,7 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
         '#selectedQuote_provider',
         (el) => el.textContent
       )
-      if (selectedQuoteProviderText === 'Liquality') {
+      if (selectedQuoteProviderText !== 'Thorchain') {
         await page.click('#see_all_quotes', { delay: 1000 })
         await page.waitForSelector('#thorchain_rate_provider', { visible: true })
         await page.click('#thorchain_rate_provider', { delay: 1000 })
@@ -99,7 +98,6 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
     console.log('User clicked on ETH SWAP button')
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
-    await swapPage.ClickOnMin(page)
     // Check source name
     await page.waitForSelector('#selectedQuote_provider', { visible: true })
     try {
@@ -107,7 +105,7 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
         '#selectedQuote_provider',
         (el) => el.textContent
       )
-      if (selectedQuoteProviderText === 'Liquality') {
+      if (selectedQuoteProviderText !== 'Thorchain') {
         await page.click('#see_all_quotes', { delay: 1000 })
         await page.waitForSelector('#thorchain_rate_provider', { visible: true })
         await page.click('#thorchain_rate_provider', { delay: 1000 })

@@ -167,7 +167,7 @@ window[injectionName] = {
 }
 `
 
-const overrideEthereum = (chain) => `
+const globalEthereumProvider = (chain, override) => `
 function proxyEthereum(chain) {
   window.ethereumProxyChain = chain
 
@@ -274,7 +274,7 @@ function overrideEthereum(chain) {
   proxyEthereum(chain)
 }
 
-if (!window.ethereum) {
+if (${override}) {
   overrideEthereum('${chain}')
   const retryLimit = 5
   let retries = 0
@@ -286,7 +286,7 @@ if (!window.ethereum) {
     }
     if (retries >= retryLimit) clearInterval(interval)
   }, 1000)
-} else {
+} else if (!window.ethereum) {
   overrideEthereum('${chain}')
 }
 `
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
 export {
   providerManager,
   ethereumProvider,
-  overrideEthereum,
+  globalEthereumProvider,
   bitcoinProvider,
   nearProvider,
   paymentUriHandler,
