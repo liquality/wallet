@@ -84,7 +84,7 @@ export const actions = {
   openOnramperWidgetTab: ({ dispatch, rootState }, { chain, asset, address }) => {
     const widgetUrl = process.env.VUE_APP_ONRAMPER_WIDGET_URL
     const apiKey = process.env.VUE_APP_ONRAMPER_API_KEY
-    let url = `${widgetUrl}?apiKey=${apiKey}&defaultCrypto=${asset}`
+    let url = `${widgetUrl}?apiKey=${apiKey}&defaultCrypto=${asset}&excludePaymentMethods=applePay`
 
     const _address = chains[chain]?.formatAddress(address, rootState.activeNetwork)
     url = `${url}&wallets=${asset}:${_address}&onlyCryptos=${asset}`
