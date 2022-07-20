@@ -208,11 +208,11 @@
           <div>
             <h3 class="text-uppercase">Selected Asset</h3>
             <div class="selected-nft-asset__image">
-              <div class="nft-image mr-2" style="--img-width: 110px">
+              <div class="nft-image mr-2">
                 <img
                   ref="selectedNFT"
                   :src="selectedNFT.image_thumbnail_url || thumbnailImage"
-                  alt=""
+                  alt="selected-nft"
                   @error="imageError('selectedNFT')"
                 />
               </div>
@@ -329,7 +329,17 @@ export default {
     if (this.$route.query.nftAsset) {
       this.activeView = 'selectedAsset'
       this.selectedNFT = this.$route.query.nftAsset
-      localStorage.setItem('nftAsset', JSON.stringify(this.selectedNFT))
+      localStorage.setItem(
+        'nftAsset',
+        JSON.stringify(
+          this.selectedNFT.accountId
+            ? this.selectedNFT
+            : {
+                ...this.selectedNFT,
+                accountId: this.accountId
+              }
+        )
+      )
     }
   },
   computed: {
@@ -372,12 +382,17 @@ export default {
     totalFeeInFiat() {
       return prettyFiatBalance(this.currentFee, this.fiatRates[this.assetChain])
     },
+    accountId() {
+      if (this.$route.query.accountId) {
+        return this.$route.query.accountId
+      }
+      if (this.$route.query.nftAsset.accountId) {
+        return this.$route.query.nftAsset.accountId
+      }
+      return this.selectedNFT.accountId
+    },
     account() {
-      return this.accountsData.filter(
-        (account) =>
-          account.id ===
-          (this.$route.query?.accountId ? this.$route.query.accountId : this.selectedNFT.accountId)
-      )[0]
+      return this.accountsData.filter((account) => account.id === this.accountId)[0]
     },
     assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
@@ -636,7 +651,6 @@ export default {
 
     .nft-image {
       width: 110px;
-      height: 110px;
 
       img {
         width: 100%;

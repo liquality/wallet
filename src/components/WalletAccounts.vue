@@ -128,7 +128,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import ListItem from '@/components/ListItem'
 import {
   prettyBalance,
@@ -158,9 +158,6 @@ export default {
       expandedAccounts: []
     }
   },
-  created() {
-    this.getNftCollections()
-  },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
     ...mapGetters(['accountsData']),
@@ -183,7 +180,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateNFTs']),
     getAccountIcon,
     getAssetIcon,
     prettyBalance,
@@ -205,20 +201,6 @@ export default {
     },
     shouldExpandAccount(account) {
       return this.expandedAccounts.includes(account.id) || this.search
-    },
-    async getNftCollections() {
-      const accountIds = this.accounts.map((account) => {
-        return account.id
-      })
-      try {
-        await this.updateNFTs({
-          walletId: this.activeWalletId,
-          network: this.activeNetwork,
-          accountIds: accountIds
-        })
-      } catch (error) {
-        console.error(error)
-      }
     }
   }
 }

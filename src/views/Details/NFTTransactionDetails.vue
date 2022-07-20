@@ -77,7 +77,7 @@
             </p>
             <div v-if="showFeeSelector" class="mt-2">
               <FeeSelector
-                :asset="item.from"
+                :asset="asset"
                 :totalFees="sendFees"
                 v-model="selectedFee"
                 v-bind:fees="assetFees"

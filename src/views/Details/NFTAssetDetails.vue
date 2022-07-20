@@ -30,10 +30,11 @@
             }"
           />
           <ShareIcon
+            v-if="transferLink"
             class="nft-action-buttons__icon"
             @click="transferNFT"
             v-tooltip.left="{
-              content: 'Transfer on OpenSea',
+              content: `Transfer on ${marketplaceName}`,
               hideOnTargetClick: false
             }"
           />
@@ -181,7 +182,7 @@ import NavBar from '../../components/NavBar.vue'
 import { chains } from '@liquality/cryptoassets'
 import { getAccountIcon } from '@/utils/accounts'
 import { getAssetIcon } from '@/utils/asset'
-import { getNftTransferLink } from '@liquality/wallet-core/dist/utils/asset'
+import { getNftTransferLink, getMarketplaceName } from '@liquality/wallet-core/dist/utils/asset'
 import Star from '@/components/Star.vue'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
@@ -227,10 +228,10 @@ export default {
       return '/wallet/nfts'
     },
     chain() {
-      return this.account.chain
+      return this.account?.chain
     },
     asset() {
-      return chains[this.account.chain].nativeAsset
+      return chains[this.account?.chain]?.nativeAsset
     }
   },
   async created() {
@@ -242,7 +243,9 @@ export default {
       return
     }
     this.nftAsset = this.$route.query.nftAsset
-    this.accountId = this.nftAsset.accountId
+    this.accountId = this.$route.query.nftAsset.accountId
+      ? this.$route.query.nftAsset.accountId
+      : this.$route.query.accountId
     return
   },
   destroyed() {
@@ -253,6 +256,7 @@ export default {
     getAccountIcon,
     getAssetIcon,
     getNftTransferLink,
+    getMarketplaceName,
     async copy(text) {
       await navigator.clipboard.writeText(text)
     },
@@ -265,16 +269,19 @@ export default {
         return this.thumbnailImage
       }
     },
-
-    transferNFT() {
-      window.open(
-        getNftTransferLink(
-          this.asset,
-          this.activeNetwork,
-          this.nftAsset.token_id,
-          this.nftAsset.asset_contract.address
-        )
+    marketplaceName() {
+      return getMarketplaceName(this.asset, this.activeNetwork)
+    },
+    transferLink() {
+      return getNftTransferLink(
+        this.asset,
+        this.activeNetwork,
+        this.nftAsset?.token_id,
+        this.nftAsset?.asset_contract.address
       )
+    },
+    transferNFT() {
+      window.open(this.transferLink, '_blank')
     },
     imageError(ref) {
       if (ref) {

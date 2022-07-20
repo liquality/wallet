@@ -247,6 +247,19 @@ store.subscribe(async ({ type, payload }, state) => {
           })
         }
       }
+      if (item.type === 'NFT' && payload.updates) {
+        if (payload.updates.status !== 'undefined') {
+          await dispatch('trackAnalytics', {
+            event: 'Send NFT status change',
+            properties: {
+              walletVersion,
+              category: 'Send NFT',
+              action: 'Send NFT Status changed',
+              sendStatus: `${payload.updates.status}`
+            }
+          })
+        }
+      }
       break
     case 'UPDATE_BALANCE':
       // eslint-disable-next-line no-case-declarations
