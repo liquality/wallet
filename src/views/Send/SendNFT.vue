@@ -11,7 +11,7 @@
             <div class="nft-assets__container__images">
               <div
                 class="nft-image"
-                style="--img-width: 110px"
+                style="--img-width: 100px"
                 v-for="asset in assets"
                 :key="asset.id"
                 @click="selectNFT(asset)"
@@ -371,7 +371,15 @@ export default {
       return NFTThumbnailImage
     },
     nftCollection() {
-      return this.accountNftCollections(this.account?.id)
+      const collection = this.accountNftCollections(this.account?.id)
+      const sortedCollection = Object.keys(collection)
+        .sort()
+        .reduce((collectionList, collectionName) => {
+          collectionList[collectionName] = collection[collectionName]
+
+          return collectionList
+        }, {})
+      return sortedCollection
     },
     routeSource() {
       if (this.$route.query?.source) {
@@ -628,6 +636,10 @@ export default {
     opacity: 0.5;
     cursor: auto;
   }
+}
+
+.nft-assets__container__images {
+  flex-wrap: wrap;
 }
 
 .nft-image {
