@@ -34,7 +34,7 @@
             class="nft-action-buttons__icon"
             @click="transferNFT"
             v-tooltip.left="{
-              content: `Transfer on ${marketplaceName}`,
+              content: `Transfer on ${marketplaceName()}`,
               hideOnTargetClick: false
             }"
           />

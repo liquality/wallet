@@ -20,7 +20,7 @@
         </div>
         <div
           class="liquality-timeline_container right"
-          :class="{ completed: tx?.status === 'SUCCESS' && tx && tx?.confirmations > 0 }"
+          :class="{ completed: item.status === 'SUCCESS' && tx && tx.confirmations > 0 }"
         >
           <div class="content">
             <h3 :id="item.to">
@@ -36,7 +36,7 @@
           </div>
         </div>
       </div>
-      <div v-if="tx?.status === 'SUCCESS' && tx && tx?.confirmations > 0">
+      <div v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
         <h3>Completed</h3>
         <small>{{ prettyTime(item.endTime) }}</small>
       </div>
