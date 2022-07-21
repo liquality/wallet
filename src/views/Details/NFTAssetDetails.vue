@@ -192,7 +192,8 @@ export default {
       showFullscreen: false,
       activeTab: 'overview',
       nftAsset: null,
-      accountId: ''
+      accountId: '',
+      prevRoute: null
     }
   },
   components: {
@@ -202,6 +203,11 @@ export default {
     ShareIcon,
     NavBar,
     Star
+  },
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      vm.prevRoute = from
+    })
   },
   computed: {
     ...mapGetters(['accountsData']),
@@ -237,7 +243,7 @@ export default {
   async created() {
     const nftAsset = await JSON.parse(localStorage.getItem('nftAsset'))
 
-    if (nftAsset) {
+    if (nftAsset && this.prevRoute.path === '/wallet/nfts/send') {
       this.nftAsset = nftAsset
       this.accountId = nftAsset.accountId
       return
