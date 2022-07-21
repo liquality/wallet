@@ -281,7 +281,7 @@ export default {
       )
     },
     transferNFT() {
-      window.open(this.transferLink, '_blank')
+      window.open(this.transferLink(), '_blank')
     },
     imageError(ref) {
       if (ref) {
