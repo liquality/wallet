@@ -1,5 +1,5 @@
 <template>
-  <div class="wallet-stats">
+  <div class="wallet-stats" v-cloak>
     <div>
       <div class="buy-crypto-banner" v-show="showByCryptoBanner">
         <div class="triangle" @click="openByCryptoModal">

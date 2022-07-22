@@ -1,6 +1,6 @@
 <template>
   <div class="wallet warning-phrase">
-    <NavBar showMenu="true">
+    <NavBar :showMenu="true">
       <strong>Warning</strong>
     </NavBar>
     <div class="warning-phrase_warning-line w-100"></div>

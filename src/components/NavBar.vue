@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="navbar">
-      <router-link v-if="showBack" class="navbar_prev" id="previous_nav_bar" v-bind:to="backPath">
+      <router-link v-show="showBack" class="navbar_prev" id="previous_nav_bar" v-bind:to="backPath">
         <div>
           <ChevronLeftIcon class="navbar_prev_icon" />
           {{ backLabel }}
         </div>
       </router-link>
-      <a v-else-if="showBackButton" class="navbar_prev" href="#" @click="backClick">
+      <a v-show="showBackButton" class="navbar_prev" href="#" @click="backClick">
         <div>
           <ChevronLeftIcon class="navbar_prev_icon" />
           {{ backLabel }}
@@ -89,11 +89,17 @@ export default {
     LedgerIcon,
     KeyIcon
   },
-  props: ['showMenu', 'showBack', 'backPath', 'backLabel', 'showBackButton', 'backClick'],
+  props: {
+    showMenu: { type: Boolean, default: true },
+    showBack: { type: Boolean, default: false },
+    backPath: { type: String, default: '/' },
+    backLabel: { type: String, default: 'Back' },
+    showBackButton: { type: Boolean, default: false },
+    backClick: { type: Function, default: () => {} }
+  },
   data() {
     return {
-      showMenuList: false,
-      unsubscribe: null
+      showMenuList: false
     }
   },
   computed: {
@@ -201,8 +207,8 @@ export default {
       this.showMenuList = false
     }
   },
-  created() {
-    this.unsubscribe = this.$store.subscribe((mutation) => {
+  mounted() {
+    this.$store.subscribe((mutation) => {
       const { type, payload } = mutation
 
       if (type === '##BACKGROUND##app/SET_SETTINGS_MODAL_OPEN') {

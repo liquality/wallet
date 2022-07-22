@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-cloak>
     <div
       v-for="account in filteredItems"
       :key="account.id"
@@ -36,7 +36,7 @@
         >
           {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
         </template>
-        <template v-else> Loading... </template>
+        <template #detail-sub v-else> Loading... </template>
       </ListItem>
       <div v-else>
         <ListItem @item-selected="toggleExpandedAccounts(account.id)">
@@ -67,7 +67,7 @@
           >
             {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
           </template>
-          <template v-else> Loading... </template>
+          <template #detail-sub v-else> Loading... </template>
         </ListItem>
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
           <ListItem

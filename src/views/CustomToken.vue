@@ -1,6 +1,6 @@
 <template>
   <div class="custom-token">
-    <NavBar showMenu="true" showBack="true" backPath="/settings/manage-assets" backLabel="Back">
+    <NavBar :showMenu="true" :showBack="true" backPath="/settings/manage-assets" backLabel="Back">
       <span class="wallet_header"><strong>Add Custom Token</strong></span>
     </NavBar>
     <div class="wrapper form">

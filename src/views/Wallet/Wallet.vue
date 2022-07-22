@@ -1,17 +1,16 @@
 <template>
   <div class="wallet">
-    <NavBar showMenu="true">
+    <NavBar :showMenu="true">
       <span class="wallet-header">
         <strong>Overview</strong>
         <span class="text-muted" id="active_network"> ({{ activeNetwork }}) </span>
       </span>
     </NavBar>
-    <InfoNotification v-if="showLedgerRequest">
+    <InfoNotification v-if="ledgerItem">
       <LedgerRequestMessage :item="ledgerItem" />
     </InfoNotification>
     <div class="wallet-content">
       <WalletStats />
-      <AssetsChart />
       <WalletTabs />
     </div>
   </div>
@@ -20,7 +19,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { isERC20 } from '@liquality/wallet-core/dist/utils/asset'
-import AssetsChart from './AssetsChart.vue'
 import NavBar from '@/components/NavBar.vue'
 import InfoNotification from '@/components/InfoNotification.vue'
 import LedgerRequestMessage from '@/components/LedgerRequestMessage.vue'
@@ -29,36 +27,34 @@ import WalletTabs from './WalletTabs.vue'
 
 export default {
   components: {
-    AssetsChart,
     NavBar,
     WalletStats,
     WalletTabs,
     InfoNotification,
     LedgerRequestMessage
   },
-  async created() {
-    try {
-      await this.updateBalances({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        loadingInitialBalance: true
-      })
-    } catch (error) {
+  data() {
+    return {
+      ledgerItem: null
+    }
+  },
+  mounted() {
+    this.updateBalances({
+      network: this.activeNetwork,
+      walletId: this.activeWalletId,
+      loadingInitialBalance: true
+    }).catch((error) => {
       // TODO: manage error
       console.error(error)
-    }
+    })
+
+    this.ledgerItem = this.history[this.activeNetwork]?.[this.activeWalletId]?.find((item) =>
+      this.ledgerSignRequired(item)
+    )
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),
-    ...mapGetters(['accountItem']),
-    ledgerItem() {
-      return this.history[this.activeNetwork]?.[this.activeWalletId]?.find((item) =>
-        this.ledgerSignRequired(item)
-      )
-    },
-    showLedgerRequest() {
-      return this.ledgerItem
-    }
+    ...mapGetters(['accountItem'])
   },
   methods: {
     ...mapActions(['updateBalances']),

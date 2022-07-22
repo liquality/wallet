@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <NavBar showMenu="true" showBack="true" backPath="/settings" backLabel="Settings">
+    <NavBar :showMenu="true" :showBack="true" backPath="/settings" backLabel="Settings">
       <span class="wallet_header"><strong>Experiments</strong></span>
     </NavBar>
     <div class="experiments" id="experiments">

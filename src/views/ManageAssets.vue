@@ -1,6 +1,6 @@
 <template>
   <div class="manage-assets">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
+    <NavBar :showMenu="true" :showBack="true" backPath="/wallet" backLabel="Overview">
       <span class="wallet_header"><strong>Asset View</strong></span>
     </NavBar>
     <div class="manage-assets_search form wrapper">

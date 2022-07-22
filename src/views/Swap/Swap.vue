@@ -2,7 +2,7 @@
   <div class="view-container">
     <div class="swap" v-if="currentStep === 'inputs'">
       <NavBar
-        showBack="true"
+        :showBack="true"
         :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
         backLabel="Back"
       >

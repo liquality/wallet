@@ -1,7 +1,7 @@
 <template>
   <div class="receive">
     <NavBar
-      showBack="true"
+      :showBack="true"
       :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
       :backLabel="routeSource === 'assets' ? 'Overview' : asset"
     >

@@ -1,6 +1,6 @@
 <template>
   <div class="manage-accounts">
-    <NavBar showMenu="false" showBack="true" backPath="/wallet" backLabel="Back">
+    <NavBar :showMenu="false" :showBack="true" backPath="/wallet" backLabel="Back">
       <span class="wallet_header">
         <strong>Manage Accounts</strong>
       </span>

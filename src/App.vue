@@ -1,6 +1,6 @@
 <template>
-  <div id="app" v-if="brokerReady">
-    <Head v-if="unlockedAt" :show-dapp-connections="showDappConnections" />
+  <div id="app">
+    <Head v-show="unlockedAt" :show-dapp-connections="showDappConnections" />
     <router-view />
     <template v-if="unlockedAt && termsAcceptedAt">
       <GlobalModals />
