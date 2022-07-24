@@ -111,7 +111,10 @@
               <div>
                 <div class="px-4 mt-2" v-if="activeTab === 'overview'">
                   <h5 class="text-bold">Description</h5>
-                  <p v-html="nftAsset.description || 'This NFT does not have a description.'"></p>
+                  <p
+                    v-html="nftAsset.description || 'This NFT does not have a description.'"
+                    style="white-space: pre-line"
+                  ></p>
                 </div>
                 <div class="table" v-if="activeTab === 'details'">
                   <table class="table bg-white border-0 mb-1 mt-1">
@@ -276,7 +279,10 @@ export default {
       }
     },
     marketplaceName() {
-      return getMarketplaceName(this.asset, this.activeNetwork)
+      if (this.asset) {
+        return getMarketplaceName(this.asset, this.activeNetwork)
+      }
+      return ''
     },
     transferLink() {
       return getNftTransferLink(

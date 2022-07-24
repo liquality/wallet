@@ -98,6 +98,7 @@ export default {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 5px;
+    overflow-y: auto;
   }
 }
 </style>

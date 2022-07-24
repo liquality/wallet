@@ -316,6 +316,10 @@ export default {
     }
   },
   async created() {
+    if (this.$route.query.nftAsset) {
+      this.activeView = 'selectedAsset'
+      this.selectedNFT = this.$route.query.nftAsset
+    }
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(this.amount)
     await this.trackAnalytics({
@@ -326,9 +330,7 @@ export default {
         label: `NFT`
       }
     })
-    if (this.$route.query.nftAsset) {
-      this.activeView = 'selectedAsset'
-      this.selectedNFT = this.$route.query.nftAsset
+    if (this.selectedNFT) {
       localStorage.setItem(
         'nftAsset',
         JSON.stringify(
