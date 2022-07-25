@@ -12,7 +12,6 @@ export default {
   methods: {
     unlocked() {
       console.log('unlocked', new Date())
-      this.$router.replace('/wallet')
     }
   }
 }
