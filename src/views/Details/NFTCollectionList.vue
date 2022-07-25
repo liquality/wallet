@@ -61,6 +61,7 @@ export default {
 
 <style lang="scss" scoped>
 .nft-collectibles {
+  overflow-y: auto;
   .section-header {
     font-size: 20px;
     line-height: 25.78px;

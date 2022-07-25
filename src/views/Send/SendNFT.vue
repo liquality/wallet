@@ -47,7 +47,7 @@
         </div>
       </div>
       <div class="button-group mx-3">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="routeSource">
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.push(routeSource)">
           Cancel
         </button>
         <button
@@ -68,7 +68,7 @@
           <div class="mb-3">
             <h3 class="text-uppercase">Selected Asset</h3>
             <div class="selected-nft-asset__image">
-              <div class="nft-image mr-2">
+              <div class="nft-image mr-2" style="--img-width: 110px">
                 <img
                   ref="nftThumbnailImage"
                   :src="selectedNFT.image_thumbnail_url || thumbnailImage"
@@ -156,7 +156,7 @@
             </template>
           </DetailsContainer>
           <div class="button-group">
-            <button class="btn btn-light btn-outline-primary btn-lg" @click="back">Cancel</button>
+            <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">Cancel</button>
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"
@@ -208,7 +208,7 @@
           <div>
             <h3 class="text-uppercase">Selected Asset</h3>
             <div class="selected-nft-asset__image">
-              <div class="nft-image mr-2">
+              <div class="nft-image mr-2" style="--img-width: 110px">
                 <img
                   ref="selectedNFT"
                   :src="selectedNFT.image_thumbnail_url || thumbnailImage"
@@ -418,7 +418,7 @@ export default {
       )
     },
     isValidAddress() {
-      return chains[this.account?.chain].isValidAddress(this.fromAddress, this.activeNetwork)
+      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
     },
     addressError() {
       if (!this.isValidAddress) {
@@ -497,10 +497,10 @@ export default {
     back() {
       switch (this.activeView) {
         case 'selectedAsset':
-          if (this.$route.query?.source) {
-            return this.$router.push(this.$route.query.source)
+          if (this.$route.query.nftAsset) {
+            return this.$router.push(this.routeSource)
           }
-          return (this.activeView = 'selectNFT')
+          return (this.activeView = 'selectAsset')
 
         case 'review':
           return (this.activeView = 'selectedAsset')
@@ -645,10 +645,17 @@ export default {
 }
 
 .nft-image {
+  width: var(--img-width);
+
   svg {
     position: absolute;
     top: 4px;
     left: 4px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -662,15 +669,6 @@ export default {
   &__image {
     display: flex;
     align-items: center;
-
-    .nft-image {
-      width: 110px;
-
-      img {
-        width: 100%;
-        height: 100%;
-      }
-    }
 
     h3 {
       font-size: 20px;

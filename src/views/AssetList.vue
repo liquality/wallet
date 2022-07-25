@@ -24,7 +24,12 @@
         </div>
       </div>
       <div class="list-items">
-        <WalletAccounts @item-selected="onAccountSelected" :search="search" :accounts="accounts" />
+        <WalletAccounts
+          @item-selected="onAccountSelected"
+          :search="search"
+          :accounts="accounts"
+          :isAssetList="true"
+        />
       </div>
     </div>
   </div>

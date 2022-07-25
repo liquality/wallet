@@ -71,7 +71,7 @@
         </ListItem>
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
           <ListItem
-            v-if="account.nfts && account.nfts.length > 0"
+            v-if="account.nfts && account.nfts.length > 0 && !isAssetList"
             @item-selected="
               $router.push({
                 path: `/wallet/nfts/activity/${account.id}`
@@ -152,7 +152,7 @@ export default {
     NFTIcon,
     ChevronRightIcon
   },
-  props: ['search', 'accounts'],
+  props: ['search', 'accounts', 'isAssetList'],
   data() {
     return {
       expandedAccounts: []
