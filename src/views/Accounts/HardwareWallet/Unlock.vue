@@ -5,7 +5,7 @@
         <div class="step-number">2</div>
         <div class="step-name">Unlock Account</div>
       </div>
-      <div class="step-text" v-if="selectedAsset && selectedAsset.chain === 'bitcoin'">
+      <!-- <div class="step-text" v-if="selectedAsset && selectedAsset.chain === 'bitcoin'">
         <div class="step-path">
           <button
             class="btn btn-link"
@@ -42,7 +42,7 @@
             </ul>
           </div>
         </div>
-      </div>
+      </div> -->
       <div v-if="loading" class="progress-container">
         <CircleProgressBar class="circle-progress infinity-rotate" />
         <div class="loading-message">
@@ -74,34 +74,37 @@
                 @click="selectAccount(item)"
                 :class="{
                   disabled: item.exists,
-                  selected: selectedAccounts[item.account.address]
+                  selected: selectedAccounts[item.account]
                 }"
                 v-for="item in accounts"
-                :key="item.account.address"
+                :key="item.account"
               >
                 <td class="account-index">{{ item.index + 1 }}</td>
                 <td class="account-address">
                   <div
                     v-tooltip.top="{
                       content: item.exists
-                        ? `This account is already connected: ${item.account.address}`
-                        : item.account.address
+                        ? `This account is already connected: ${item.account}`
+                        : item.account
                     }"
                   >
-                    {{ shortenAddress(item.account.address) }}
+                    {{ shortenAddress(item.account) }}
                   </div>
                 </td>
                 <td class="balance">
                   <div>
-                    <div>
+                    <div v-if="showBalance">
                       {{ prettyBalance(item.balance, selectedAsset.name) }}
                       {{ selectedAsset.name }}
                     </div>
-                    <div class="fiat">${{ formatFiat(item.fiatBalance) }}</div>
+                    <!-- <div class="has-txns" v-else-if="item.balance !== '0'">Has Txns</div> -->
+                    <div v-if="showBalance" class="fiat">
+                      ${{ getFiatBalance(item.fiatBalance) }}
+                    </div>
                   </div>
                 </td>
                 <td class="account-selected-mark">
-                  <CheckRightIcon v-if="selectedAccounts[item.account.address]" />
+                  <CheckRightIcon v-if="selectedAccounts[item.account]" />
                   <span v-else>&nbsp;</span>
                 </td>
               </tr>
@@ -116,8 +119,11 @@
           </div>
         </div>
         <div v-else class="account-message">
-          We weren’t able to get a list of accounts. Please try again, check on the ledger if the
-          right app/asset was selected or cancel and choose a different asset.
+          <p>
+            We weren’t able to get a list of accounts. Please try again, check on the ledger if the
+            right app/asset was selected or cancel and choose a different asset.
+          </p>
+          <p>Eventually close any other apps your ledger is connected to, including Ledger Live.</p>
         </div>
       </div>
     </div>
@@ -152,12 +158,11 @@ import { LEDGER_BITCOIN_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger
 import clickAway from '@/directives/clickAway'
 import { getAccountIcon } from '@/utils/accounts'
 import CircleProgressBar from '@/assets/icons/circle_progress_bar.svg'
-import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
-import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import CheckRightIcon from '@/assets/icons/check.svg'
-import { prettyBalance, formatFiat } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import InfoIcon from '@/assets/icons/info.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { prettyBalance, formatFiat } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import BN from 'bignumber.js'
+import { ChainId } from '@liquality/cryptoassets'
 
 export default {
   directives: {
@@ -166,10 +171,7 @@ export default {
   components: {
     SpinnerIcon,
     CircleProgressBar,
-    ChevronDownIcon,
-    ChevronUpIcon,
-    CheckRightIcon,
-    InfoIcon
+    CheckRightIcon
   },
   props: [
     'loading',
@@ -191,12 +193,14 @@ export default {
   },
   methods: {
     prettyBalance,
-    formatFiat,
     getAccountIcon,
     shortenAddress,
     unlock() {
       const walletType = this.getWalletType()
       this.$emit('on-unlock', { walletType })
+    },
+    getFiatBalance(balance) {
+      return formatFiat(BN(balance || 0))
     },
     selectAccount(item) {
       if (!item.exists) {
@@ -249,6 +253,9 @@ export default {
         BTC: 'Bitcoin',
         ETH: 'Ethereum'
       }[this.selectedAsset?.chain]
+    },
+    showBalance() {
+      return !(this.selectedAsset?.chain === ChainId.Bitcoin)
     }
   },
   watch: {
@@ -281,15 +288,14 @@ export default {
 
   .account-message {
     position: absolute;
-    left: 0;
     margin-top: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    width: 360px;
     color: #1d1e21;
-    height: 120px;
+    height: 160px;
     background-color: rgba($color: #fff3bc, $alpha: 0.5);
     padding: 5px 20px 5px 20px;
     font-style: normal;
@@ -332,7 +338,14 @@ export default {
     }
 
     .balance {
-      div {
+      .has-txns {
+        color: $color-text-muted;
+      }
+      & > div {
+        min-height: 45px;
+      }
+      div,
+      .has-txns {
         text-align: right;
         display: flex;
         width: 100%;

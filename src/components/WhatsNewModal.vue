@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Release candidate 0.67.0</pre>
+            <pre class="text-wrap">* New RC 0.68.0</pre>
           </div>
         </div>
       </div>
@@ -25,8 +25,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Connect your wallet to view your NFTs on OpenSEA</pre>
-            <pre class="text-wrap">* Bridge with the Hop protocol</pre>
+            <pre class="text-wrap">* New RC 0.68.0</pre>
+            <pre class="text-wrap">* Buy crypto with fiat through Transak</pre>
           </div>
         </div>
       </div>
