@@ -66,7 +66,7 @@
             class="account-container_actions_button"
             active-class=""
             tag="button"
-            :disabled="swapDisabled"
+            v-show="showSwapOption"
             :to="`/accounts/${accountId}/${asset}/swap`"
           >
             <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
@@ -108,7 +108,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chains, ChainId } from '@liquality/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
@@ -165,9 +165,6 @@ export default {
       'fiatRates',
       'marketData'
     ]),
-    swapDisabled() {
-      return this.account?.type.includes('ledger')
-    },
     account() {
       return this.accountItem(this.accountId)
     },
@@ -191,6 +188,9 @@ export default {
     },
     chain() {
       return cryptoassets[this.asset]?.chain
+    },
+    showSwapOption() {
+      return !this.account?.type.includes('ledger')
     }
   },
   methods: {
@@ -222,25 +222,15 @@ export default {
     }
   },
   async created() {
-    if (
-      this.account &&
-      this.account?.type.includes('ledger') &&
-      this.account?.chain !== ChainId.Bitcoin
-    ) {
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
-        this.account.addresses[0],
-        this.activeNetwork
-      )
-    } else {
-      const addresses = await this.getUnusedAddresses({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        assets: [this.asset],
-        accountId: this.accountId
-      })
-      const chainId = cryptoassets[this.asset]?.chain
-      this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
-    }
+    const addresses = await this.getUnusedAddresses({
+      network: this.activeNetwork,
+      walletId: this.activeWalletId,
+      assets: [this.asset],
+      accountId: this.accountId
+    })
+    const chainId = cryptoassets[this.asset]?.chain
+    this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
+
     await this.refresh()
     this.activityData = [...this.assetHistory]
   },

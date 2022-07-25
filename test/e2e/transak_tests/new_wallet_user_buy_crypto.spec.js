@@ -16,7 +16,7 @@ const seedWordsPage = new SeedWordsPage()
 let browser
 let page = []
 describe('Buy Crypto ["MAINNET"]', async () => {
-  describe('Create new wallet & Buy Crypto from overview screen ["PULL_REQUEST_TEST"]', async () => {
+  describe('Create new wallet & Buy Crypto options validation ["PULL_REQUEST_TEST"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -45,7 +45,7 @@ describe('Buy Crypto ["MAINNET"]', async () => {
     afterEach(async () => {
       await browser.close()
     })
-    it('Create new wallet & Buy Crypto from overview screen["PULL_REQUEST_TEST"]', async () => {
+    it('Buy Crypto from overview screen["PULL_REQUEST_TEST"]', async () => {
       // Check Buy crypto options from overview screen
       const buyCryptoModalData = await page.waitForSelector('#buy-crypto-from-overview-screen', {
         visible: true
@@ -55,9 +55,31 @@ describe('Buy Crypto ["MAINNET"]', async () => {
       const buyCryptoModal = await page.waitForSelector('#open_transak_tab_btn')
       expect(buyCryptoModal).to.exist
     })
-    it('Create new wallet & Buy Crypto from EmptyActivity screen["PULL_REQUEST_TEST"]', async () => {
+    it('Buy Crypto from EmptyActivity screen["PULL_REQUEST_TEST"]', async () => {
       // Check Buy crypto options from EmptyActivity screen
       await page.click('#activity_tab')
+      const buyCryptoModalData = await page.waitForSelector('#buy_crypto_button', {
+        visible: true
+      })
+      expect(buyCryptoModalData).to.exist
+      await buyCryptoModalData.click()
+      const buyCryptoModal = await page.waitForSelector('#open_transak_tab_btn')
+      expect(buyCryptoModal).to.exist
+    })
+    it('Buy Crypto from BTC asset screen["PULL_REQUEST_TEST"]', async () => {
+      await page.click("#BITCOIN")
+      const buyCryptoModalData = await page.waitForSelector('#buy_crypto_button', {
+        visible: true
+      })
+      expect(buyCryptoModalData).to.exist
+      await buyCryptoModalData.click()
+      const buyCryptoModal = await page.waitForSelector('#open_transak_tab_btn')
+      expect(buyCryptoModal).to.exist
+    })
+    it('Buy Crypto from BTC Receive screen["PULL_REQUEST_TEST"]', async () => {
+      await page.click("#BITCOIN")
+      await page.waitForSelector('#BTC_receive_button',{ visible: true })
+      await page.click('#BTC_receive_button')
       const buyCryptoModalData = await page.waitForSelector('#buy_crypto_button', {
         visible: true
       })

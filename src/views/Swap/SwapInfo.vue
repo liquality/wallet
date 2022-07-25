@@ -1,13 +1,12 @@
 <template>
-  <div v-if="showRefundMessage" class="swap-info mb-3">
+  <div class="swap-info mb-3">
     <div class="d-flex align-items-center">
       <ClockIcon class="swap-info_clock mr-2" />
       <p id="media-body-info" class="my-0">
-        <span v-if="showSlippageMessage">Max slippage is 0.5%.</span>
-        <span v-else class="text-muted"
-          >If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at
-          {{ expiration }}</span
+        <span v-if="showRefundMessage"
+          >Max slippage is 3%. If the swap does not complete, you will be refunded in a few hours.</span
         >
+        <span v-else class="text-muted">Max slippage is 3%.</span>
       </p>
     </div>
   </div>
@@ -38,7 +37,11 @@ export default {
     },
     showRefundMessage() {
       const providerType = getSwapProviderConfig(this.activeNetwork, this.quote.provider).type
-      return providerType !== SwapProviderType.FastBTC
+      return (
+        providerType === SwapProviderType.Liquality ||
+        providerType === SwapProviderType.LiqualityBoostERC20ToNative ||
+        providerType === SwapProviderType.LiqualityBoostNativeToERC20
+      )
     }
   }
 }

@@ -120,7 +120,7 @@
             <button
               class="btn btn-primary btn-lg"
               id="send_review_button"
-              @click="currentStep = null"
+              @click="review"
               :disabled="!canSend"
             >
               Review
@@ -170,16 +170,23 @@
           </div>
           <div class="detail-group" id="detail_group_network_fee">
             <label class="text-muted"> Network Fee </label>
-            <div class="d-flex align-items-center justify-content-between mt-0">
+            <div
+              class="d-flex align-items-center justify-content-between mt-0"
+              v-show="!updatingFees"
+            >
               <div>~{{ prettyFee }} {{ assetChain }}</div>
               <div class="details-text" id="send_network_fee_in_fiat">
                 {{ formatFiatUI(totalFeeInFiat) }}
               </div>
             </div>
+            <SpinnerIcon class="updating-fees" v-show="updatingFees" />
           </div>
           <div class="detail-group" id="detail_group_account_fee">
             <label class="text-muted"> Amount + Fees </label>
-            <div class="d-flex align-items-center justify-content-between mt-0">
+            <div
+              class="d-flex align-items-center justify-content-between mt-0"
+              v-show="!updatingFees"
+            >
               <div class="font-weight-bold" v-if="asset === assetChain">
                 {{ dpUI(amountWithFee) }} {{ asset }}
               </div>
@@ -191,6 +198,7 @@
                 {{ formatFiatUI(totalToSendInFiat) }}
               </div>
             </div>
+            <SpinnerIcon class="updating-fees" v-show="updatingFees" />
           </div>
           <div class="mt-40">
             <label>Send To</label>
@@ -206,14 +214,14 @@
               class="btn btn-light btn-outline-primary btn-lg"
               id="edit_send_to_button"
               v-if="!loading"
-              @click="currentStep = 'inputs'"
+              @click="showInputsStep"
             >
               Edit
             </button>
             <button
               class="btn btn-primary btn-lg btn-icon"
               id="send_button_confirm"
-              @click="tryToSend"
+              @click="send"
               :disabled="loading"
             >
               <SpinnerIcon class="btn-loading" v-if="loading" />
@@ -231,7 +239,6 @@
       :error="sendErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
-    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
@@ -258,7 +265,7 @@ import {
 } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
+import { getSendFee, getFeeLabel, isEIP1559Fees } from '@liquality/wallet-core/dist/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
@@ -266,8 +273,8 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
+import { ledgerConnectMixin } from '@/utils/hardware-wallet'
+import qs from 'qs'
 
 export default {
   components: {
@@ -279,9 +286,9 @@ export default {
     OperationErrorModal,
     LedgerSignRequestModal,
     CustomFees,
-    CustomFeesEIP1559,
-    LedgerBridgeModal
+    CustomFeesEIP1559
   },
+  mixins: [ledgerConnectMixin],
   data() {
     return {
       sendFees: {},
@@ -299,8 +306,8 @@ export default {
       sendErrorMessage: '',
       customFeeAssetSelected: null,
       customFee: null,
-      bridgeModalOpen: false,
-      memo: ''
+      memo: '',
+      updatingFees: false
     }
   },
   props: {
@@ -346,7 +353,7 @@ export default {
       }
     },
     balance() {
-      return this.account.balances[this.asset] || 0
+      return this.account?.balances[this.asset] || 0
     },
     routeSource() {
       return this.$route.query.source || null
@@ -439,10 +446,7 @@ export default {
       return BN(this.amount).plus(BN(this.currentFee))
     },
     isEIP1559Fees() {
-      return (
-        cryptoassets[this.asset].chain === ChainId.Ethereum ||
-        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
-      )
+      return isEIP1559Fees(cryptoassets[this.asset].chain, this.activeNetwork)
     },
     showMemoInput() {
       return cryptoassets[this.asset].chain === ChainId.Terra
@@ -467,7 +471,7 @@ export default {
         const sendFees = {}
 
         for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+          const feePrice = fee.fee.maxFeePerGas || fee.fee
           sendFees[speed] = getSendFee(this.assetChain, feePrice)
         }
 
@@ -505,25 +509,25 @@ export default {
     async updateMaxSendFees() {
       await this._updateSendFees()
     },
-    async tryToSend() {
-      if (!this.ledgerBridgeReady && this.account?.type.includes('ledger')) {
-        this.loading = true
-        this.bridgeModalOpen = true
-        await this.startBridgeListener()
-        const unsubscribe = createConnectSubscription(() => {
-          this.bridgeModalOpen = false
-          this.send()
+    showInputsStep() {
+      this.currentStep = 'inputs'
+    },
+    review() {
+      if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
+        // open in a new tab
+        const sendParams = qs.stringify({
+          mode: 'tab',
+          selectedFee: this.selectedFee,
+          amount: BN(this.amount).toString(),
+          address: this.address,
+          currentStep: 'confirm',
+          maxOptionActive: this.maxOptionActive,
+          customFee: this.customFee
         })
-
-        setTimeout(() => {
-          if (unsubscribe) {
-            this.bridgeModalOpen = false
-            this.loading = false
-            unsubscribe()
-          }
-        }, 25000)
+        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?${sendParams}`
+        chrome.tabs.create({ url: browser.runtime.getURL(url) })
       } else {
-        await this.send()
+        this.currentStep = 'confirm'
       }
     },
     async send() {
@@ -531,6 +535,7 @@ export default {
       this.loading = true
       if (this.account?.type.includes('ledger')) {
         this.signRequestModalOpen = true
+        await this.connectLedger()
       }
 
       try {
@@ -621,16 +626,49 @@ export default {
     resetCustomFee() {
       this.customFee = null
       this.selectedFee = 'average'
-    },
-    closeBridgeModal() {
-      this.loading = false
-      this.bridgeModalOpen = false
     }
   },
   async created() {
+    const clie = this.client({
+      network: this.activeNetwork,
+      walletId: this.activeWalletId,
+      asset: this.asset,
+      accountId: this.account.id
+    })
+
+    const fetched = await clie._nft.fetch()
+
+    console.log(fetched)
+    // set the route values for tab screen mode
+    const sendParams = qs.parse(qs.stringify(this.$route.query))
+    if (sendParams.mode === 'tab') {
+      const sendParams = qs.parse(qs.stringify(this.$route.query))
+      const { amount, address, selectedFee, currentStep, maxOptionActive, customFee } = sendParams
+      this.amount = amount
+      this.address = address
+      if (selectedFee) {
+        this.selectedFee = selectedFee
+        if (customFee) {
+          this.customFee = customFee
+          this.applyCustomFee({ fee: customFee })
+        }
+      }
+      if (currentStep) {
+        this.currentStep = currentStep
+      }
+      if (maxOptionActive) {
+        this.maxOptionActive = maxOptionActive === 'true' ? true : false
+      }
+    }
+    this.updatingFees = true
     await this.updateFees({ asset: this.assetChain })
-    await this.updateSendFees(0)
-    await this.updateMaxSendFees()
+    if (this.maxOptionActive) {
+      this.updateMaxSendFees()
+    } else {
+      this.updateSendFees(this.amount)
+    }
+    this.updatingFees = false
+
     await this.trackAnalytics({
       event: `User entered send screen for ${this.asset}`,
       properties: {
@@ -739,5 +777,12 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type='number'] {
   -moz-appearance: textfield;
+}
+
+.updating-fees {
+  height: 24px;
+  circle {
+    stroke: #dedede;
+  }
 }
 </style>

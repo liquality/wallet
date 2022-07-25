@@ -243,7 +243,7 @@ export default {
           category: 'Send/Receive',
           action: 'User copied address',
           asset: `${this.asset}`,
-          chainName: `${this.chainName}`
+          chainName: `${cryptoassets[this.asset]?.chain}`
         }
       })
       setTimeout(() => {

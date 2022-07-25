@@ -105,7 +105,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     rskAccounts = await page.$$('#account-item-rsk')
     expect(rskAccounts.length).to.equals(3)
   })
-  it('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
+  it.skip('ETH - create new account, validate accounts, uniswap dapp injection', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate ETH accounts on overview page first time
@@ -144,7 +144,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await dappPage.goto(dappUrl, { waitUntil: 'networkidle0', timeout: 90000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
-      await dappPage.waitForSelector('#connect-wallet', { visible: true })
+      await dappPage.waitForSelector('#swap-currency-input', { visible: true })
     } catch (e) {
       await testUtil.takeScreenshot(dappPage, 'uniswap-dapp-loading-issue')
       const pageTitle = await dappPage.title()
@@ -198,6 +198,7 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
       .then((text) => expect(text).to.equals(dappUrl))
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
     // Check web3 status as connected
+    await dappPage.reload()
     await dappPage.waitForSelector('#web3-status-connected', { visible: true })
   })
 

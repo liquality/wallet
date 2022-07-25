@@ -4,6 +4,7 @@
       <img :src="logo" />
     </div>
     <div class="wrapper text-center">
+      <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
       <div class="wrapper_top">
         <h2>Sign Transaction</h2>
         <p class="text-muted">{{ $route.query.origin }}</p>
@@ -63,29 +64,42 @@ import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
 import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
+import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 
 export default {
   components: {
-    SpinnerIcon
+    SpinnerIcon,
+    LedgerSignRequestModal
   },
+  mixins: [ledgerConnectMixin],
   data() {
     return {
       externalAddresses: [],
       scanningChangeOutput: true,
       changeOutputIndex: -1,
       loading: false,
-      replied: false
+      replied: false,
+      signRequestModalOpen: false
     }
   },
   methods: {
     ...mapActions('app', ['replyPermission']),
     prettyBalance,
     getAssetIcon,
+    closeSignRequestModal() {
+      this.signRequestModalOpen = false
+      this.loading = false
+    },
     async reply(allowed) {
       if (this.loading) return
       this.loading = true
 
       try {
+        if (this.account?.type.includes('ledger')) {
+          this.signRequestModalOpen = true
+          await this.connectLedger()
+        }
         await this.replyPermission({
           request: this.request,
           allowed
@@ -93,18 +107,22 @@ export default {
         this.replied = true
         window.close()
       } finally {
+        this.signRequestModalOpen = false
         this.loading = false
       }
     }
   },
   computed: {
-    ...mapGetters(['client']),
+    ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeNetwork', 'activeWalletId']),
     logo() {
       return LogoWallet
     },
     accountId() {
       return this.request.accountId
+    },
+    account() {
+      return this.accountItem(this.request?.accountId)
     },
     asset() {
       return this.request.asset
