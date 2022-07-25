@@ -648,7 +648,7 @@ export default {
         }
       }
     }
-    
+
     if (this.toAccountId && _toAsset) {
       this.toAssetChanged(this.toAccountId, _toAsset)
       this.toAsset = _toAsset
@@ -1203,7 +1203,8 @@ export default {
         to: this.toAsset,
         fromAccountId: this.fromAccountId,
         toAccountId: this.toAccountId,
-        amount: BN(this.sendAmount)
+        amount: BN(this.sendAmount),
+        walletId: this.activeWalletId
       })
       let shouldChooseNewQuote = false
       if (
