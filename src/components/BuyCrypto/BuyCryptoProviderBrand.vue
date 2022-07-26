@@ -1,16 +1,19 @@
 <template>
-  <div>
-    <div class="message">powered by</div>
-    <img :src="logo" class="logo" />
-  </div>
+  <img :src="logo" class="logo" />
 </template>
 
 <script>
+import OnRamperLogo from '@/assets/icons/onramper-logo.png'
 import TransakLogo from '@/assets/icons/transak-logo.png'
 export default {
+  props: ['provider'],
   computed: {
     logo() {
-      return TransakLogo
+      const logos = {
+        onramper: OnRamperLogo,
+        transak: TransakLogo
+      }
+      return logos[this.provider]
     }
   }
 }
