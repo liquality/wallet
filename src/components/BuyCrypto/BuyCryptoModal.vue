@@ -11,7 +11,11 @@
           location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token (the
           first token of the account).
         </p>
-        <button class="btn btn-outline-primary" id="open_transak_tab_btn" @click="openProviderTab('transak')">
+        <button
+          class="btn btn-outline-primary"
+          id="open_transak_tab_btn"
+          @click="openProviderTab('transak')"
+        >
           Continue with Transak
         </button>
       </div>
@@ -21,7 +25,11 @@
           Onramper is an aggregated service providing the best quote from several sources and
           accepts popular payment methods depending on location.
         </p>
-        <button class="btn btn-outline-primary" id="open_transak_tab_btn" @click="openProviderTab('onramper')">
+        <button
+          class="btn btn-outline-primary"
+          id="open_transak_tab_btn"
+          @click="openProviderTab('onramper')"
+        >
           Continue with Onramper
         </button>
       </div>

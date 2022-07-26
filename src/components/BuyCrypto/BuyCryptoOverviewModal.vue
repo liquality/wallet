@@ -20,7 +20,7 @@
       <div class="footer">
         <h6 class="footer-title">Buy Crypto</h6>
         <div class="provider">
-          <BuyCryptoProviderBrand :provider="'transak'"/>
+          <BuyCryptoProviderBrand :provider="'transak'" />
           <p class="first-message">
             Transak lets you buy crypto with your credit card or via bank transfer depending on
             location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token
@@ -35,7 +35,7 @@
           </button>
         </div>
         <div class="provider">
-          <BuyCryptoProviderBrand :provider="'onramper'"/>
+          <BuyCryptoProviderBrand :provider="'onramper'" />
           <p class="first-message">
             Onramper is an aggregated service providing the best quote from several sources and
             accepts popular payment methods depending on location.

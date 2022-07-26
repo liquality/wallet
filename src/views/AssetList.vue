@@ -66,7 +66,7 @@ export default {
       const _asset = asset || account.assets[0]
       if (this.action === 'buy') {
         const { provider } = this.$route.query
-        
+
         if (provider === 'transak') {
           this.openTransakWidgetTab({
             chain: account?.chain,
