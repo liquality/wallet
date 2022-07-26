@@ -900,8 +900,8 @@ export default {
       }
       if (
         this.selectedQuote?.receiveFee &&
-        BN(this.selectedQuote?.toAmount).lt(
-          BN(this.selectedQuote?.receiveFee).times(this.selectedQuote?.maxFeeSlippageMultiplier || 1)
+        BN(this.selectedQuote.toAmount).lt(
+          BN(this.selectedQuote.receiveFee).times(this.selectedQuote.maxFeeSlippageMultiplier || 1)
         )
       ) {
         return `Increase amount. Should cover ${
