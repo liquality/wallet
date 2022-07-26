@@ -103,7 +103,13 @@ export default {
       }
     },
     nftAssetsCount() {
-      return Object.values(this.nftAssets).reduce((acc, collection) => acc + collection.length, 0)
+      const allNftAssetsAmount = Object.values(this.nftAssets).reduce((acc, nft) => {
+        return acc.concat(nft.map((item) => Number(item.amount) || 1))
+      }, [])
+
+      return allNftAssetsAmount.reduce((acc, amount) => {
+        return acc + amount
+      }, 0)
     },
     account() {
       return this.accountsData.filter((account) => account.id === this.id)[0]
@@ -140,12 +146,11 @@ export default {
       })
       try {
         this.updatingAssets = true
-        const nfts = await this.updateNFTs({
+        await this.updateNFTs({
           walletId: this.activeWalletId,
           network: this.activeNetwork,
           accountIds: accountIds
         })
-        console.log('🚀 ~ file: NFTStats.vue ~ line 148 ~ refresh ~ nfts', nfts)
       } catch (error) {
         console.log(error)
       } finally {

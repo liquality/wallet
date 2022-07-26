@@ -169,7 +169,11 @@
       </div>
     </template>
     <template class="send" v-else-if="activeView === 'custom-fees' && !isEIP1559Fees">
-      <NavBar :showBackButton="true" :backClick="back" :backLabel="'Back'">
+      <NavBar
+        :showBackButton="true"
+        :backClick="(activeView = 'selectedAsset')"
+        :backLabel="'Back'"
+      >
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <CustomFees
@@ -184,7 +188,7 @@
       />
     </template>
     <template class="send" v-else-if="activeView === 'custom-fees' && isEIP1559Fees">
-      <NavBar :showBackButton="true" :backClick="back" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="cancelCustomFee" :backLabel="'Back'">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <CustomFeesEIP1559
@@ -647,7 +651,11 @@ export default {
 }
 
 .nft-assets__container__images {
-  flex-wrap: wrap;
+  padding: 0 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 5px;
+  overflow-y: auto;
 }
 
 .nft-image {

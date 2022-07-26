@@ -44,7 +44,7 @@
         <div class="nft-img">
           <img
             ref="nftImage"
-            :src="nftAssetImageSource('thumbnail') || thumbnailImage"
+            :src="nftAsset?.image_original_url || thumbnailImage"
             alt="nft image"
             @error="imageError('nftImage')"
           />
@@ -66,13 +66,13 @@
       <template v-else-if="showFullscreen === true">
         <div
           class="nft-img__open"
-          :style="!nftAssetImageSource('preview') && { background: '#D9DFE5' }"
+          :style="!nftAsset?.image_original_url && { background: '#D9DFE5' }"
         >
           <img
-            ref="nftPrevieewImage"
-            :src="nftAssetImageSource('preview') || thumbnailImage"
+            ref="nftPreviewImage"
+            :src="nftAsset?.image_original_url || thumbnailImage"
             alt="nft image"
-            @error="imageError('nftPrevieewImage')"
+            @error="imageError('nftPreviewImage')"
           />
         </div>
         <div class="drawer drawer-open nft-details">
@@ -111,10 +111,14 @@
               <div>
                 <div class="px-4 mt-2" v-if="activeTab === 'overview'">
                   <h5 class="text-bold">Description</h5>
-                  <p
+                  <!-- <p
                     v-html="nftAsset.description || 'This NFT does not have a description.'"
                     style="white-space: pre-line"
-                  ></p>
+                  ></p> -->
+                  <markdown-it-vue-light
+                    class="md-body"
+                    :content="nftAsset.description || defaultDescription"
+                  />
                 </div>
                 <div class="table" v-if="activeTab === 'details'">
                   <table class="table bg-white border-0 mb-1 mt-1">
@@ -151,9 +155,13 @@
                       </tr>
                       <tr>
                         <td class="text-muted text-left small-12">Token Standard</td>
-                        <td class="text-break" v-if="nftAsset.asset_contract">
-                          {{ nftAsset.asset_contract.name }}
+                        <td class="text-break" v-if="nftAsset.standard">
+                          {{ nftAsset.standard }}
                         </td>
+                      </tr>
+                      <tr v-if="nftAsset.amount">
+                        <td class="text-muted text-left small-12">Amount</td>
+                        <td class="text-break">x {{ ' ' }} {{ nftAsset.amount }}</td>
                       </tr>
                       <tr>
                         <td class="text-muted text-left small-12">Blockchain</td>
@@ -177,6 +185,8 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
+import 'markdown-it-vue/dist/markdown-it-vue-light.css'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import SendIcon from '@/assets/icons/send_nft.svg'
@@ -196,7 +206,8 @@ export default {
       activeTab: 'overview',
       nftAsset: null,
       accountId: '',
-      prevRoute: null
+      prevRoute: null,
+      defaultDescription: '# This NFT has no description.'
     }
   },
   components: {
@@ -205,7 +216,8 @@ export default {
     SendIcon,
     ShareIcon,
     NavBar,
-    Star
+    Star,
+    MarkdownItVueLight
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
@@ -268,15 +280,6 @@ export default {
     getMarketplaceName,
     async copy(text) {
       await navigator.clipboard.writeText(text)
-    },
-    nftAssetImageSource(mode) {
-      if (mode === 'thumbnail') {
-        return this.nftAsset?.image_thumbnail_url
-      } else if (mode === 'preview') {
-        return this.nftAsset?.image_preview_url
-      } else {
-        return this.thumbnailImage
-      }
     },
     marketplaceName() {
       if (this.asset) {
@@ -373,6 +376,16 @@ export default {
   }
 
   .nft-details {
+    .markdown-body {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+
+      & a {
+        color: #9d4dfa !important;
+        text-decoration: none;
+      }
+    }
     &.drawer {
       background: #ffffff;
       border: 1px solid #d9dfe5;

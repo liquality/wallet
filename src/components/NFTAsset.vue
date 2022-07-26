@@ -51,7 +51,7 @@ export default {
     viewNFTDetails() {
       if (this.nftAsset) {
         this.$router.push({
-          path: `/details/nft-asset/${this.nftAsset.name}`,
+          path: `/details/nft-asset/${this.nftAsset.token_id}`,
           query: {
             nftAsset: this.nftAsset,
             accountId: this.accountId,
