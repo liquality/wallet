@@ -86,7 +86,7 @@
               <div class="d-flex">
                 <img :src="getAssetIcon(asset)" class="asset-icon mr-3" />
                 <div>
-                  <div class="d-flex">
+                  <div class="d-flex align-items-center">
                     <span class="font-weight-bold mr-1">{{ asset }}</span>
                     <div class="mr-3">
                       <span class="mr-1">{{ shortenAddress(fromAddress) }}</span>
@@ -160,7 +160,7 @@
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"
-              :disabled="address === '' || !isValidAddress"
+              :disabled="!canSend"
             >
               Review
             </button>
@@ -410,6 +410,12 @@ export default {
     balance() {
       const balance = this.account?.balances?.[this.asset] || 0
       return prettyBalance(balance, this.asset)
+    },
+    canSend() {
+      if (!this.address || !this.isValidAddress) return false
+      if (BN(this.balance).lte(0)) return false
+
+      return true
     },
     fromAddress() {
       return chains[this.account?.chain]?.formatAddress(
