@@ -100,7 +100,6 @@ import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar.vue'
 import SearchIcon from '@/assets/icons/search.svg'
 import { buildConfig } from '@liquality/wallet-core'
-import { AssetTypes } from '@liquality/cryptoassets'
 
 export default {
   components: {
