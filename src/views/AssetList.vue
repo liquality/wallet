@@ -43,9 +43,6 @@ export default {
     }),
     ...mapGetters(['accountsData', 'accountsWithBalance']),
     accounts() {
-      if (['swap.send', 'swap', 'buy'].includes(this.action)) {
-        return this.accountsData.filter((a) => !a.type.includes('ledger'))
-      }
       return this.accountsData
     }
   },
