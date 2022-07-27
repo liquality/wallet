@@ -160,8 +160,8 @@
                         </td>
                       </tr>
                       <tr v-if="nftAsset.amount">
-                        <td class="text-muted text-left small-12">Amount</td>
-                        <td class="text-break">x {{ ' ' }} {{ nftAsset.amount }}</td>
+                        <td class="text-muted text-left small-12">Quantity</td>
+                        <td class="text-break">{{ nftAsset.amount }}</td>
                       </tr>
                       <tr>
                         <td class="text-muted text-left small-12">Blockchain</td>

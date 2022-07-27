@@ -630,23 +630,22 @@ export default {
 
 <style lang="scss" scoped>
 .account-container {
-  overflow-y: scroll;
-  padding-bottom: 2rem;
-
-  .account-content-top {
-    height: 220px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px 0;
-    background: $brand-gradient-primary;
-    color: $color-text-secondary;
-    text-align: center;
-    position: relative;
-  }
-  button:disabled {
-    opacity: 0.5;
-    cursor: auto;
+  .account-content {
+    &-top {
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 0;
+      background: $brand-gradient-primary;
+      color: $color-text-secondary;
+      text-align: center;
+      position: relative;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: auto;
+    }
   }
 }
 
@@ -701,5 +700,9 @@ export default {
   .input-group {
     border-bottom: 1px solid #2cd2cf;
   }
+}
+
+.button-group {
+  padding: 16px 0;
 }
 </style>

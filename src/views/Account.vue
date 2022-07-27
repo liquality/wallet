@@ -246,16 +246,22 @@ export default {
 </script>
 <style lang="scss">
 .account-container {
-  .account-content-top {
-    height: 220px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px 0;
-    background: $brand-gradient-primary;
-    color: $color-text-secondary;
-    text-align: center;
-    position: relative;
+  overflow-y: scroll;
+
+  .account-content {
+    overflow-y: auto;
+
+    &-top {
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 0;
+      background: $brand-gradient-primary;
+      color: $color-text-secondary;
+      text-align: center;
+      position: relative;
+    }
   }
   &_balance {
     &_fiat {
