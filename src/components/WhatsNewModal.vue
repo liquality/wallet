@@ -10,7 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* Added On-Ramper , aggregating all major fiat-to-crypto on-ramps covering >180 countries, >200 cryptos, >16 payment methods</pre>
+            <pre class="text-wrap">
+* Added On-Ramper , aggregating all major fiat-to-crypto on-ramps covering >180 countries, >200 cryptos, >16 payment methods</pre
+            >
           </div>
         </div>
       </div>
