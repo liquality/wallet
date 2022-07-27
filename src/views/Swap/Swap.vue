@@ -648,7 +648,7 @@ export default {
         }
       }
     }
-    
+
     if (this.toAccountId && _toAsset) {
       this.toAssetChanged(this.toAccountId, _toAsset)
       this.toAsset = _toAsset
