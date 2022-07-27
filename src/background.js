@@ -30,6 +30,10 @@ store.subscribe(async ({ type, payload }, state) => {
   let currentState = _.cloneDeep(state)
   const { dispatch, getters } = store
 
+  const accountIds = store.getters.accountsData.map((account) => {
+    return account.id
+  })
+
   switch (type) {
     case 'CREATE_WALLET':
       // Analytics Opt in event (if state has acceptedData is not 0)
@@ -107,6 +111,11 @@ store.subscribe(async ({ type, payload }, state) => {
       dispatch('updateMarketData', { network: state.activeNetwork })
       dispatch('updateCurrenciesInfo', { assets: store.getters.allNetworkAssets })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
+      dispatch('updateNFTs', {
+        walletId: state.activeWalletId,
+        network: state.activeNetwork,
+        accountIds: accountIds
+      })
 
       asyncLoop(
         () =>

@@ -50,8 +50,6 @@ export default {
       // TODO: manage error
       console.error(error)
     }
-
-    await this.getNftCollections()
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),
@@ -69,7 +67,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateBalances', 'updateNFTs']),
+    ...mapActions(['updateBalances']),
     ledgerSignRequired(item) {
       if (item && item.fromAccountId && item.toAccountId) {
         // Check the status and get the account related
@@ -95,20 +93,6 @@ export default {
       }
 
       return false
-    },
-    async getNftCollections() {
-      const accountIds = this.accountsData.map((account) => {
-        return account.id
-      })
-      try {
-        await this.updateNFTs({
-          walletId: this.activeWalletId,
-          network: this.activeNetwork,
-          accountIds: accountIds
-        })
-      } catch (error) {
-        console.error(error)
-      }
     }
   }
 }
