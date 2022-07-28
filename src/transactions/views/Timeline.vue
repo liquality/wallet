@@ -189,7 +189,7 @@ export default {
       return '#'
     },
     addPrefix(address, asset) {
-      return !address.startsWith('0x') && !this.isUNSDomain(address) && isEthereumChain(asset)
+      return !address.startsWith('0x') && isEthereumChain(asset)
         ? '0x' + address
         : address
     },
@@ -198,14 +198,6 @@ export default {
       const domain = await reverseUNS(address)
       if (domain) {
         this.$set(this.unsData, address, domain)
-      }
-    },
-    isUNSDomain(address) {
-      if (this.fromAddress == address) {
-        const from = this.accountItem(this.item.accountId)?.addresses[0]
-        return this.unsData[from] ? true : false
-      } else {
-        return this.unsData[this.item.toAddress] ? true : false
       }
     }
   },
