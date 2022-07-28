@@ -1532,16 +1532,16 @@ export default {
       }
     }
   }
-}
 
-.fee-wrapper {
-  background-color: #f0f7f9;
-  align-self: center;
-  padding-left: 20px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  position: absolute;
-  width: 100%;
+  .fee-wrapper {
+    background-color: #f0f7f9;
+    align-self: center;
+    padding-left: 20px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    position: absolute;
+    width: 100%;
+  }
 }
 
 #fees_are_high {

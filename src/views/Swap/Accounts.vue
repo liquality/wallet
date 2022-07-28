@@ -31,9 +31,8 @@ export default {
   computed: {
     ...mapGetters(['accountsData', 'accountsWithBalance', 'chainAssets']),
     accounts() {
-      let _accounts = []
       if (this.assetSelection === 'from') {
-        _accounts = this.accountsWithBalance.map((account) => {
+        return this.accountsWithBalance.map((account) => {
           const assets = this.chainAssets[account.chain].filter(
             (asset) => asset !== this.excludeAsset
           )
@@ -43,7 +42,7 @@ export default {
           }
         })
       } else {
-        _accounts = this.accountsData.map((account) => {
+        return this.accountsData.map((account) => {
           const assets = this.chainAssets[account.chain].filter(
             (asset) => asset !== this.excludeAsset
           )
@@ -53,8 +52,6 @@ export default {
           }
         })
       }
-
-      return _accounts.filter((a) => a.assets.length > 0 && !a.type.includes('ledger'))
     }
   },
   components: {
