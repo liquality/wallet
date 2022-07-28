@@ -1262,7 +1262,7 @@ export default {
       this.showQuotesModal = false
     },
     review() {
-      if (this.account?.type.includes('ledger')) {
+      if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
         // open in a new tab
         const swapParams = qs.stringify({
           mode: 'tab',
