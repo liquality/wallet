@@ -685,7 +685,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage() {
-      return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
+      return !this.selectedQuote && !this.updatingQuotes
     },
     showBridgeAssetDisabledMessage() {
       const provider = this.selectedQuote?.provider
