@@ -30,6 +30,7 @@
     "@liquality/wallet-core": "^1.23.1",
     "@terra-money/terra.js": "^3.0.8",
     "@testing-library/vue": "^5.8.2",
+    "@unstoppabledomains/resolution": "^8.2.0",
     "amplitude-js": "8.18.2",
     "bignumber.js": "9.0.2",
     "bip39": "^3.0.2",

@@ -192,7 +192,13 @@
           <div class="mt-40">
             <label>Send To</label>
             <p class="confirm-address" id="confirm-address">
-              {{ this.address ? shortenAddress(this.address) : '' }}
+              {{
+                this.address
+                  ? isValidUNSDomain
+                    ? `${this.address} (${shortenAddress(getAddressFromDomain)})`
+                    : shortenAddress(this.address)
+                  : ''
+              }}
             </p>
           </div>
         </div>
@@ -263,6 +269,7 @@ import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 import qs from 'qs'
+import { isValidUNSAddress, getUNSKey } from '../../utils/uns'
 
 export default {
   components: {
@@ -295,7 +302,8 @@ export default {
       customFeeAssetSelected: null,
       customFee: null,
       memo: '',
-      updatingFees: false
+      updatingFees: false,
+      unsData: {}
     }
   },
   props: {
@@ -369,6 +377,20 @@ export default {
       const fees = this.maxOptionActive ? this.maxSendFees : this.sendFees
       return this.selectedFee in fees ? fees[this.selectedFee] : BN(0)
     },
+    isValidUNSDomain() {
+      if (this.unsData[this.address]) {
+        const unsDomain = this.unsData[this.address][getUNSKey(cryptoassets[this.asset].chain)]
+        return !!unsDomain
+      }
+      return false
+    },
+    getAddressFromDomain() {
+      if (this.unsData[this.address]) {
+        const unsDomain = this.unsData[this.address][getUNSKey(cryptoassets[this.asset].chain)]
+        return unsDomain
+      }
+      return ''
+    },
     currentChainAssetFee() {
       const fees = this.assetFees
       return fees[this.selectedFee]?.fee || BN(0)
@@ -378,7 +400,14 @@ export default {
       return unit
     },
     isValidAddress() {
-      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
+      const isValidUNS = this.isValidUNSDomain
+      if (!isValidUNS) {
+        this.getUNSAddress()
+      }
+      return (
+        isValidUNS ||
+        chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
+      )
     },
     addressError() {
       if (!this.isValidAddress) {
@@ -493,6 +522,14 @@ export default {
     async updateMaxSendFees() {
       await this._updateSendFees()
     },
+
+    async getUNSAddress() {
+      const currentAddress = this.address
+      const unsAddressData = await isValidUNSAddress(currentAddress)
+      if (unsAddressData) {
+        this.$set(this.unsData, currentAddress, unsAddressData)
+      }
+    },
     showInputsStep() {
       this.currentStep = 'inputs'
     },
@@ -530,11 +567,12 @@ export default {
         // validate for custom fees
         const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
 
+        const unsAddress = this.getAddressFromDomain
         await this.sendTransaction({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset: this.asset,
-          to: this.address,
+          to: unsAddress != '' ? unsAddress : this.address,
           accountId: this.account.id,
           amount,
           fee,

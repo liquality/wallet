@@ -29,14 +29,16 @@
                 :href="addressLink(item.toAddress, item.to)"
                 target="_blank"
                 id="transaction_details_send_to_link"
-                >{{ shortenAddress(addPrefix(item.toAddress, item.to)) }}</a
-              >
+                >{{ toAddress }}
+              </a>
+
               <CopyIcon @click="copy(addPrefix(item.toAddress, item.to))" />
             </h3>
           </div>
         </div>
       </div>
       <div v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
+        <br />
         <small>Received</small>
         <br />
         <small>{{ prettyTime(item.endTime) }}</small>
@@ -101,6 +103,7 @@ import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { reverseUNS } from '../../utils/uns'
 
 export default {
   components: {
@@ -115,7 +118,8 @@ export default {
       showFeeSelector: false,
       feeSelectorLoading: false,
       feeSelectorAsset: null,
-      newFeePrice: null
+      newFeePrice: null,
+      unsData: {}
     }
   },
   props: ['id', 'tx'],
@@ -128,7 +132,12 @@ export default {
       )
     },
     fromAddress() {
-      return this.accountItem(this.item.accountId)?.addresses[0]
+      const from = this.accountItem(this.item.accountId)?.addresses[0]
+      const unsDomain = this.unsData[from]
+      if (!unsDomain) {
+        this.getUNSDomain()
+      }
+      return unsDomain ? unsDomain : from
     },
     reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
@@ -144,6 +153,17 @@ export default {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         getNativeAsset(this.feeSelectorAsset)
       ]
+    },
+    toAddress() {
+      const to = this.item.toAddress
+      const unsDomain = this.unsData[to]
+      if (!unsDomain) {
+        this.getUNSDomain()
+      }
+      return unsDomain
+        ? `${unsDomain} (${this.shortenAddress(this.addPrefix(this.item.toAddress, this.item.to))})`
+        : this.shortenAddress(this.addPrefix(this.item.toAddress, this.item.to))
+      // return unsDomain ? unsDomain : to
     },
     feeSelectorUnit() {
       const chain = cryptoassets[this.feeSelectorAsset].chain
@@ -166,11 +186,27 @@ export default {
       if (this.item.accountId) {
         return getAddressExplorerLink(address, asset, this.activeNetwork)
       }
-
       return '#'
     },
     addPrefix(address, asset) {
-      return !address.startsWith('0x') && isEthereumChain(asset) ? '0x' + address : address
+      return !address.startsWith('0x') && !this.isUNSDomain(address) && isEthereumChain(asset)
+        ? '0x' + address
+        : address
+    },
+    async getUNSDomain() {
+      const address = this.item.toAddress
+      const domain = await reverseUNS(address)
+      if (domain) {
+        this.$set(this.unsData, address, domain)
+      }
+    },
+    isUNSDomain(address) {
+      if (this.fromAddress == address) {
+        const from = this.accountItem(this.item.accountId)?.addresses[0]
+        return this.unsData[from] ? true : false
+      } else {
+        return this.unsData[this.item.toAddress] ? true : false
+      }
     }
   },
   created() {
