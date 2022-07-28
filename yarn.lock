@@ -5422,6 +5422,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@unstoppabledomains/resolution@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "@unstoppabledomains/resolution@npm:8.2.0"
+  dependencies:
+    "@ethersproject/abi": ^5.0.1
+    bn.js: ^4.4.0
+    cross-fetch: ^3.1.4
+    elliptic: ^6.5.4
+    js-sha256: ^0.9.0
+    js-sha3: ^0.8.0
+  checksum: d87d775a04d4f58bc33890b292a29c20b948a1935da9632e5dfab7e18fcd05ed9a43c79c749e18c41dcefbc46da6688339c0d9bb2c0d70c6deb5a3b0f0b13013
+  languageName: node
+  linkType: hard
+
 "@urql/core@npm:^2.6.1":
   version: 2.6.1
   resolution: "@urql/core@npm:2.6.1"
