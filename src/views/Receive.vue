@@ -38,7 +38,6 @@
               :address="address"
               :screen="'Receive'"
             />
-            <TransakBrand />
           </div>
           <div v-if="faucet" class="testnet_message">
             <div>{{ faucet.name }} testnet faucet</div>
@@ -80,7 +79,6 @@ import QRCode from 'qrcode'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
 import BuyCryptoButton from '@/components/BuyCrypto/BuyCryptoButton'
-import TransakBrand from '@/components/BuyCrypto/TransakBrand'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
@@ -94,8 +92,7 @@ export default {
     CopyIcon,
     CopyWhiteIcon,
     TickIcon,
-    BuyCryptoButton,
-    TransakBrand
+    BuyCryptoButton
   },
   data() {
     return {
