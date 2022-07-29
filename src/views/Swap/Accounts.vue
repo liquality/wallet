@@ -31,31 +31,30 @@ export default {
   computed: {
     ...mapGetters(['accountsData', 'accountsWithBalance', 'chainAssets']),
     accounts() {
+      let _accounts = []
       if (this.assetSelection === 'from') {
-        return this.accountsWithBalance
-          .map((account) => {
-            const assets = this.chainAssets[account.chain].filter(
-              (asset) => asset !== this.excludeAsset
-            )
-            return {
-              ...account,
-              assets
-            }
-          })
-          .filter((a) => a.assets?.length > 0)
+        _accounts = this.accountsWithBalance.map((account) => {
+          const assets = this.chainAssets[account.chain].filter(
+            (asset) => asset !== this.excludeAsset
+          )
+          return {
+            ...account,
+            assets
+          }
+        })
       } else {
-        return this.accountsData
-          .map((account) => {
-            const assets = this.chainAssets[account.chain].filter(
-              (asset) => asset !== this.excludeAsset
-            )
-            return {
-              ...account,
-              assets
-            }
-          })
-          .filter((a) => a.assets?.length > 0)
+        _accounts = this.accountsData.map((account) => {
+          const assets = this.chainAssets[account.chain].filter(
+            (asset) => asset !== this.excludeAsset
+          )
+          return {
+            ...account,
+            assets
+          }
+        })
       }
+
+      return _accounts.filter((a) => a.assets.length > 0 && !a.type.includes('ledger'))
     }
   },
   components: {

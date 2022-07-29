@@ -189,7 +189,7 @@
             <button
               class="btn btn-primary btn-lg"
               id="swap_review_button"
-              @click="review"
+              @click="currentStep = 'confirm'"
               :disabled="!canSwap || cannotCoverNetworkFee"
             >
               {{ !canSwap || cannotCoverNetworkFee ? `Insufficient Funds` : `Review` }}
@@ -401,7 +401,7 @@
           </div>
         </div>
         <div class="wrapper_bottom">
-          <SwapInfo v-if="selectedQuote" :quote="selectedQuote" />
+          <SwapInfo :quote="selectedQuote" />
           <div class="button-group">
             <button
               class="btn btn-light btn-outline-primary btn-lg"
@@ -587,42 +587,51 @@ export default {
   async created() {
     this.asset = this.routeAsset
     this.fromAccountId = this.accountId
+    let _sendAmount = 0.0
+    let _toAsset = null
 
     if (this.$route.query.mode === 'tab') {
-      const swapParams = qs.parse(qs.stringify(this.$route.query))
       const {
-        selectedFee,
-        sendAmount,
         toAccountId,
-        customFees,
-        userSelectedQuote,
+        sendAmount,
         toAsset,
+        selectedFees,
+        customFees,
         currentStep,
         maxOptionActive,
-        selectedQuote
-      } = swapParams
-
-      this.toAsset = toAsset
-      this.sendAmount = sendAmount
+        provider,
+        userSelectedQuote
+      } = this.$route.query
       this.currentStep = currentStep
       this.maxOptionActive = maxOptionActive
       this.toAccountId = toAccountId
-      this.selectedFee = selectedFee
-      this.customFees = customFees || {}
-      this.selectedQuote = selectedQuote
-      this.userSelectedQuote = userSelectedQuote
+      _toAsset = toAsset
+      _sendAmount = sendAmount
+
+      this.selectedFee = qs.parse(selectedFees)
+      if (customFees) {
+        this.customFees = customFees.split(',').reduce((prev, curr) => {
+          const [asset, fee] = curr.split('=')
+          return {
+            ...prev,
+            [asset]: fee
+          }
+        }, {})
+      }
 
       await this._updateQuotes()
+      this.setQuoteProvider(provider)
+      this.userSelectedQuote = userSelectedQuote
     } else {
       this.selectedFee = {
         [this.assetChain]: 'average',
         [this.toAssetChain]: 'average'
       }
-      this.sendAmount = dpUI(this.defaultAmount)
+      _sendAmount = dpUI(this.defaultAmount)
       // Try to use the same account for (from and to) if it has more than one asset
       if (this.account?.assets.length > 1) {
         this.toAccountId = this.accountId
-        this.toAsset = this.account?.assets.find((a) => a !== this.asset)
+        _toAsset = this.account?.assets.find((a) => a !== this.asset)
       } else {
         // use another account
         if (this.accountsData.length > 0) {
@@ -634,21 +643,23 @@ export default {
           })
           if (toAccount) {
             this.toAccountId = toAccount.id
-            this.toAsset = toAccount.assets[0]
+            _toAsset = toAccount.assets[0]
           }
         }
       }
     }
 
-    if (this.toAccountId && this.toAsset) {
-      this.toAssetChanged(this.toAccountId, this.toAsset)
-      this.updateFees({ asset: this.toAsset })
+    if (this.toAccountId && _toAsset) {
+      this.toAssetChanged(this.toAccountId, _toAsset)
+      this.toAsset = _toAsset
+      this.updateFees({ asset: _toAsset })
       this.selectedFee = {
         [this.assetChain]: this.selectedFromFee,
         [this.toAssetChain]: this.selectedToFee
       }
     }
 
+    this.sendAmount = _sendAmount
     this.fee = this.fees[this.selectedFromFee]?.fee
     this.updateFiatRates({ assets: [this.toAsset, this.asset] })
     this.updateMarketData({ network: this.activeNetwork })
@@ -674,7 +685,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage() {
-      return !this.selectedQuote && !this.updatingQuotes
+      return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
     },
     showBridgeAssetDisabledMessage() {
       const provider = this.selectedQuote?.provider
@@ -816,7 +827,7 @@ export default {
       return fee || BN(0)
     },
     hasPredefinedReceiveFee() {
-      return this.selectedQuote?.receiveFee
+      return this.selectedQuote.receiveFee
     },
     maxFee() {
       const selectedSpeed = this.selectedFee[this.assetChain]
@@ -824,7 +835,7 @@ export default {
       return fee ? currencyToUnit(cryptoassets[this.assetChain], fee) : BN(0)
     },
     receiveFeeRequired() {
-      return this.selectedQuoteProvider?.toTxType
+      return this.selectedQuoteProvider.toTxType
     },
     available() {
       if (!this.networkWalletBalances) return BN(0)
@@ -901,7 +912,7 @@ export default {
       if (
         this.selectedQuote?.receiveFee &&
         BN(this.selectedQuote.toAmount).lt(
-          BN(this.selectedQuote.receiveFee).times(this.selectedQuote.maxFeeSlippageMultiplier || 1)
+          BN(this.selectedQuote.receiveFee).times(this.selectedQuote?.maxFeeSlippageMultiplier || 1)
         )
       ) {
         return `Increase amount. Should cover ${
@@ -1194,7 +1205,6 @@ export default {
         toAccountId: this.toAccountId,
         amount: BN(this.sendAmount)
       })
-
       let shouldChooseNewQuote = false
       if (
         quotes.length &&
@@ -1262,21 +1272,14 @@ export default {
       this.showQuotesModal = false
     },
     review() {
-      if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
+      if (this.account?.type.includes('ledger')) {
         // open in a new tab
-        const swapParams = qs.stringify({
-          mode: 'tab',
-          selectedFee: this.selectedFee,
-          sendAmount: BN(this.sendAmount).toString(),
-          toAccountId: this.toAccountId,
-          toAsset: this.toAsset,
-          customFees: this.customFees,
-          userSelectedQuote: this.userSelectedQuote,
-          currentStep: 'confirm',
-          maxOptionActive: this.maxOptionActive,
-          selectedQuote: this.selectedQuote
-        })
-        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?${swapParams}`
+        let customFees = null
+        const fees = qs.stringify(this.selectedFee)
+        if (this.customFees) {
+          customFees = qs.stringify(this.customFees)
+        }
+        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?mode=tab&sendAmount=${this.sendAmount}&toAccountId=${this.toAccountId}&toAsset=${this.toAsset}&selectedFees=${fees}&userSelectedQuote=${this.userSelectedQuote}&provider=${this.selectedQuote?.provider}&currentStep=confirm&maxOptionActive=${this.maxOptionActive}&customeFees=${customFees}`
         chrome.tabs.create({ url: browser.runtime.getURL(url) })
       } else {
         this.currentStep = 'confirm'
@@ -1532,16 +1535,16 @@ export default {
       }
     }
   }
+}
 
-  .fee-wrapper {
-    background-color: #f0f7f9;
-    align-self: center;
-    padding-left: 20px;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    position: absolute;
-    width: 100%;
-  }
+.fee-wrapper {
+  background-color: #f0f7f9;
+  align-self: center;
+  padding-left: 20px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  position: absolute;
+  width: 100%;
 }
 
 #fees_are_high {

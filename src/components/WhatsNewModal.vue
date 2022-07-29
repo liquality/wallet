@@ -10,7 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Release candidate 0.69.0</pre>
+            <pre class="text-wrap">
+* Added On-Ramper , aggregating all major fiat-to-crypto on-ramps covering >180 countries, >200 cryptos, >16 payment methods</pre
+            >
           </div>
         </div>
       </div>
@@ -25,7 +27,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Release candidate 0.69.0</pre>
+            <pre class="text-wrap">* You can see your Ethereum and Polygon NFTs on Open Sea</pre>
           </div>
         </div>
       </div>
