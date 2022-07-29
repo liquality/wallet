@@ -103,13 +103,7 @@ export default {
       }
     },
     nftAssetsCount() {
-      const allNftAssetsAmount = Object.values(this.nftAssets).reduce((acc, nft) => {
-        return acc.concat(nft.map((item) => Number(item.amount) || 1))
-      }, [])
-
-      return allNftAssetsAmount.reduce((acc, amount) => {
-        return acc + amount
-      }, 0)
+      return Object.values(this.nftAssets).reduce((acc, nft) => acc + nft.length, 0)
     },
     account() {
       return this.accountsData.filter((account) => account.id === this.id)[0]

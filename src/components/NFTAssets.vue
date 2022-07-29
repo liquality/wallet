@@ -2,7 +2,12 @@
   <div class="nft-assets">
     <div class="nft-assets__container">
       <div class="nft-assets__container__heading">
-        <h5>{{ collectionName }} ({{ nftCollection.length }})</h5>
+        <div class="collection-name">
+          <h5>
+            {{ collectionName }}
+          </h5>
+          <span>({{ nftCollection.length }})</span>
+        </div>
         <span class="d-flex align-items-center" v-if="!isAccount">
           <router-link
             class="d-flex align-items-center link"
@@ -78,6 +83,15 @@ export default {
     chain() {
       return this.account?.chain
     }
+  },
+  methods: {
+    collectionNameWidth(ref) {
+      console.log(
+        '🚀 ~ file: NFTAssets.vue ~ line 98 ~ collectionNameWidth ~ this.$refs[ref]',
+        this.$refs[ref]?.offsetWidth
+      )
+      return this.$refs[ref]?.offsetWidth
+    }
   }
 }
 </script>
@@ -92,13 +106,20 @@ export default {
       justify-content: space-between;
       align-items: center;
       margin-top: 18px;
-      h5 {
-        font-size: 16px;
-        line-height: 20.63px;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        width: 260px;
+      .collection-name {
+        display: flex;
+        h5,
+        span {
+          font-weight: bold;
+          font-size: 16px;
+          line-height: 20.63px;
+        }
+        h5 {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          max-width: 260px;
+        }
       }
     }
     &__images {

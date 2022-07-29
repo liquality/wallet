@@ -153,9 +153,9 @@
                           /></span>
                         </td>
                       </tr>
-                      <tr>
+                      <tr v-if="nftAsset.standard">
                         <td class="text-muted text-left small-12">Token Standard</td>
-                        <td class="text-break" v-if="nftAsset.standard">
+                        <td class="text-break">
                           {{ nftAsset.standard }}
                         </td>
                       </tr>
@@ -207,7 +207,7 @@ export default {
       nftAsset: null,
       accountId: '',
       prevRoute: null,
-      defaultDescription: '# This NFT has no description.'
+      defaultDescription: 'This NFT has no description.'
     }
   },
   components: {
