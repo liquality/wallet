@@ -63,7 +63,7 @@ export const actions = {
   openTransakWidgetTab: ({ dispatch, rootState }, { chain, asset, address }) => {
     const widgetUrl = process.env.VUE_APP_TRANSAK_WIDGET_URL
     const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
-    let url = `${widgetUrl}?apiKey=${apiKey}&disablePaymentMethods=apple_pay&cryptoCurrencyCode=${asset}`
+    let url = `${widgetUrl}?apiKey=${apiKey}&disablePaymentMethods=apple_pay&cryptoCurrencyCode=${asset}&network=${chain}`
 
     const _address = chains[chain]?.formatAddress(address, rootState.activeNetwork)
     url = `${url}&walletAddress=${_address}`
@@ -77,6 +77,27 @@ export const actions = {
         event: 'Continue with Transak clicked',
         category: 'Buy Crypto',
         label: 'Buy Crypto Continue with Transak clicked'
+      },
+      { root: true }
+    )
+  },
+  openOnramperWidgetTab: ({ dispatch, rootState }, { chain, asset, address }) => {
+    const widgetUrl = process.env.VUE_APP_ONRAMPER_WIDGET_URL
+    const apiKey = process.env.VUE_APP_ONRAMPER_API_KEY
+    let url = `${widgetUrl}?apiKey=${apiKey}&defaultCrypto=${asset}&excludePaymentMethods=applePay`
+
+    const _address = chains[chain]?.formatAddress(address, rootState.activeNetwork)
+    url = `${url}&wallets=${asset}:${_address}&onlyCryptos=${asset}`
+
+    chrome.tabs.create({ url })
+    dispatch('setBuyCryptoModalOpen', { open: false })
+    dispatch('setBuyCryptoOverviewModalOpen', { open: false })
+    dispatch(
+      'trackAnalytics',
+      {
+        event: 'Continue with OnRamper clicked',
+        category: 'Buy Crypto',
+        label: 'Buy Crypto Continue with OnRamper clicked'
       },
       { root: true }
     )

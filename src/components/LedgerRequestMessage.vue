@@ -49,7 +49,7 @@ export default {
   .notification-text {
     font-size: $font-size-head-title;
     font-weight: bold;
-    width: 200px;
+    width: 100%;
   }
 
   .btn {

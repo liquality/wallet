@@ -203,7 +203,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import { debounce } from 'lodash-es'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { tokenDetailProviders } from '@liquality/wallet-core/dist/utils/asset'
@@ -230,7 +230,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets']),
+    ...mapState(['activeNetwork', 'accounts', 'activeWalletId', 'enabledAssets']),
+    ...mapGetters(['accountsData']),
     networkAssets() {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
     },
@@ -264,7 +265,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['enableAssets', 'addCustomToken']),
+    ...mapActions(['enableAssets', 'addCustomToken', 'toggleBlockchain', 'toggleAccount']),
     async addToken() {
       if (!this.existingAsset) {
         // Add only if it does not already exist
@@ -277,6 +278,14 @@ export default {
           symbol: this.symbol,
           decimals: Number(this.decimals)
         })
+
+        const isChainEnabledForNative = this.accountsData.find(
+          (account) => account.chain === this.chain
+        )
+
+        if (!isChainEnabledForNative) {
+          await this.enableChain()
+        }
       }
       await this.enableAssets({
         network: this.activeNetwork,
@@ -284,6 +293,25 @@ export default {
         assets: [this.symbol]
       })
       this.$router.replace('/settings/manage-assets')
+    },
+    async enableChain() {
+      await this.toggleBlockchain({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        chainId: this.chain,
+        enable: true
+      })
+
+      const accountIds = this.accounts[this.activeWalletId][this.activeNetwork]
+        .filter((acc) => acc.chain === this.chain)
+        .map((a) => a.id)
+
+      await this.toggleAccount({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        accounts: accountIds,
+        enable: true
+      })
     },
     contractAddressPaste(e) {
       this.contractAddress = e.clipboardData.getData('text')
