@@ -877,7 +877,6 @@ export default {
         extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
       }
 
-      console.log('isERC20', isERC20(this.asset))
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
