@@ -28,22 +28,20 @@
           </div>
         </div>
         <div v-if="address" class="account-container_address">
-          <button
-            @click="copyAddress"
-            class="btn btn-outline-light"
-            :id="`${asset}_address_container`"
-          >
-            {{ shortenAddress(address) }}
-          </button>
-
-          <CopyAddress
-            v-if="addressCopied"
-            :address="address"
-            :accountId="accountId"
-            :asset="asset"
-            :addressCopied="addressCopied"
-            @copyAddress="copyAddress"
-          />
+          <v-popover offset="16" show placement="top" hideOnTargetClick="false">
+            <button class="btn btn-outline-light" :id="`${asset}_address_container`">
+              {{ shortenAddress(address) }}
+            </button>
+            <template slot="popover">
+              <CopyAddress
+                :address="address"
+                :accountId="accountId"
+                :asset="asset"
+                :addressCopied="addressCopied"
+                @copyAddress="copyAddress"
+              />
+            </template>
+          </v-popover>
           <a
             class="eye-btn"
             :id="`${asset}_view_in_explorer`"
@@ -207,7 +205,7 @@ export default {
       this.addressCopied = true
       setTimeout(() => {
         this.addressCopied = false
-      }, 20000000)
+      }, 2000)
     },
     async refresh() {
       if (this.updatingBalances) return
