@@ -41,7 +41,11 @@ export default {
 
 <style lang="scss" scoped>
 .copy-container {
+  color: black;
+  background-color: white;
+  position: absolute;
   text-align: left;
+  bottom: 37px;
 }
 
 .address {

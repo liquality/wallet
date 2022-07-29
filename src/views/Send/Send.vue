@@ -629,16 +629,6 @@ export default {
     }
   },
   async created() {
-    const clie = this.client({
-      network: this.activeNetwork,
-      walletId: this.activeWalletId,
-      asset: this.asset,
-      accountId: this.account.id
-    })
-
-    const fetched = await clie._nft.fetch()
-
-    console.log(fetched)
     // set the route values for tab screen mode
     const sendParams = qs.parse(qs.stringify(this.$route.query))
     if (sendParams.mode === 'tab') {
