@@ -140,13 +140,11 @@ export default {
       })
       try {
         this.updatingAssets = true
-        const nfts = await this.updateNFTs({
+        await this.updateNFTs({
           walletId: this.activeWalletId,
           network: this.activeNetwork,
           accountIds: accountIds
         })
-        // temporary logs for debugging
-        console.log('🚀 ~ file: NFTStats.vue ~ line 154 ~ refresh ~ nfts', nfts)
       } catch (error) {
         console.log(error)
       } finally {

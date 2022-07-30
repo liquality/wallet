@@ -83,15 +83,6 @@ export default {
     chain() {
       return this.account?.chain
     }
-  },
-  methods: {
-    collectionNameWidth(ref) {
-      console.log(
-        '🚀 ~ file: NFTAssets.vue ~ line 98 ~ collectionNameWidth ~ this.$refs[ref]',
-        this.$refs[ref]?.offsetWidth
-      )
-      return this.$refs[ref]?.offsetWidth
-    }
   }
 }
 </script>
