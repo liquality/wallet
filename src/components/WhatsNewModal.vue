@@ -10,7 +10,11 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Release candidate 0.69.0</pre>
+            <pre class="text-wrap">Ledger integration -  swaps enabled</pre>
+            <h3>Issues fixed:</h3>
+            <pre class="text-wrap">- Hop transaction status</pre>
+            <pre class="text-wrap">- UX validation prevents the user from making a swap</pre>
+            <pre class="text-wrap">- Thorchain swaps minimum transaction value and slippage</pre>
           </div>
         </div>
       </div>
@@ -25,7 +29,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Release candidate 0.69.0</pre>
+            <pre class="text-wrap">Ledger users now can use the cross-chain swap function using their Ledger devices</pre>
           </div>
         </div>
       </div>
@@ -80,6 +84,14 @@ h6 {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-style: normal;
+  font-weight: 300;
+  font-size: 10px;
   line-height: 20px;
   text-transform: uppercase;
 }
