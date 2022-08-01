@@ -776,7 +776,7 @@ export default {
       return !!liqualityMarket
     },
     min() {
-      return this.minSwapAmount
+      return Math.ceil(this.minSwapAmount * Math.pow(10, 6)) / Math.pow(10, 6)
     },
     max() {
       return this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
