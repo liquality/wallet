@@ -29,7 +29,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Ledger users now can use the cross-chain swap function using their Ledger devices</pre>
+            <pre class="text-wrap">
+Ledger users now can use the cross-chain swap function using their Ledger devices</pre
+            >
           </div>
         </div>
       </div>
