@@ -66,7 +66,6 @@
             class="account-container_actions_button"
             active-class=""
             tag="button"
-            v-show="showSwapOption"
             :to="`/accounts/${accountId}/${asset}/swap`"
           >
             <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
@@ -188,9 +187,6 @@ export default {
     },
     chain() {
       return cryptoassets[this.asset]?.chain
-    },
-    showSwapOption() {
-      return !this.account?.type.includes('ledger')
     }
   },
   methods: {
