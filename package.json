@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.68.0",
+  "version": "0.69.0",
   "private": true,
   "author": "Liquality <info@liquality.io>",
   "scripts": {
@@ -28,7 +28,7 @@
     "@liquality/ethereum-utils": "^1.13.12",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
-    "@liquality/wallet-core": "^1.23.1",
+    "@liquality/wallet-core": "1.24.0",
     "@terra-money/terra.js": "^3.0.8",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.18.2",
@@ -47,6 +47,7 @@
     "human-standard-token-abi": "^2.0.0",
     "lodash-es": "^4.17.15",
     "log": "^6.0.0",
+    "markdown-it-vue": "^1.1.7",
     "memoizee": "^0.4.15",
     "mocha": "9.2.2",
     "moment": "^2.25.3",
@@ -116,5 +117,12 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
+  },
+  "resolutions": {
+    "@liquality/cryptoassets": "link:/Users/andonmitev/Desktop/Repositories/cryptoassets",
+    "@liquality/wallet-core": "link:/Users/andonmitev/Desktop/Repositories/wallet-core",
+    "socket.io-client": "4.5.0",
+    "amplitude-js": "8.17.0",
+    "@terra-money/terra.js": "3.1.0"
   }
 }

@@ -7,6 +7,11 @@
         </router-link>
       </li>
       <li class="nav-item">
+        <router-link class="nav-link" id="nfts_tab" :to="{ name: 'WalletNFTs' }">
+          NFTs ({{ nftAssetsCount || 0 }})
+        </router-link>
+      </li>
+      <li class="nav-item">
         <router-link class="nav-link" id="activity_tab" :to="{ name: 'WalletActivity' }">
           Activity
         </router-link>
@@ -19,7 +24,19 @@
 </template>
 
 <script>
-export default {}
+import { mapGetters, mapState } from 'vuex'
+export default {
+  computed: {
+    ...mapState(['accounts', 'activeNetwork', 'activeWalletId']),
+    ...mapGetters(['accountsData', 'allNftCollections']),
+    nftAssetsCount() {
+      return Object.values(this.allNftCollections).reduce(
+        (acc, collection) => acc + collection.length,
+        0
+      )
+    }
+  }
+}
 </script>
 
 <style lang="scss">
@@ -32,7 +49,7 @@ export default {}
   border-bottom: none !important;
 
   .nav-item {
-    width: 50%;
+    width: 33%;
     height: 100%;
     margin-bottom: none !important;
 

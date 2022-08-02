@@ -207,7 +207,6 @@
             </p>
           </div>
         </div>
-        {{ isCustomFeeSupported }}
         <div class="wrapper_bottom">
           <div class="button-group">
             <button

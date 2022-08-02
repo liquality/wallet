@@ -10,7 +10,8 @@
       <LedgerRequestMessage :item="ledgerItem" />
     </InfoNotification>
     <div class="wallet-content">
-      <WalletStats />
+      <NFTStats v-if="isNFTPage" />
+      <WalletStats v-else />
       <AssetsChart />
       <WalletTabs />
     </div>
@@ -26,12 +27,14 @@ import InfoNotification from '@/components/InfoNotification.vue'
 import LedgerRequestMessage from '@/components/LedgerRequestMessage.vue'
 import WalletStats from './WalletStats.vue'
 import WalletTabs from './WalletTabs.vue'
+import NFTStats from './NFTStats'
 
 export default {
   components: {
     AssetsChart,
     NavBar,
     WalletStats,
+    NFTStats,
     WalletTabs,
     InfoNotification,
     LedgerRequestMessage
@@ -50,7 +53,10 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),
-    ...mapGetters(['accountItem']),
+    ...mapGetters(['accountItem', 'accountsData']),
+    isNFTPage() {
+      return this.$route.path === '/wallet/nfts'
+    },
     ledgerItem() {
       return this.history[this.activeNetwork]?.[this.activeWalletId]?.find((item) =>
         this.ledgerSignRequired(item)
