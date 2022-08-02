@@ -10,11 +10,11 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Ledger integration -  swaps enabled</pre>
+            <pre class="text-wrap">RC 0.70.0</pre>
             <h3>Issues fixed:</h3>
-            <pre class="text-wrap">- Hop transaction status</pre>
-            <pre class="text-wrap">- UX validation prevents the user from making a swap</pre>
-            <pre class="text-wrap">- Thorchain swaps minimum transaction value and slippage</pre>
+            <pre class="text-wrap">- fixed</pre>
+            <pre class="text-wrap">- fixed</pre>
+            <pre class="text-wrap">- fixed</pre>
           </div>
         </div>
       </div>
@@ -29,9 +29,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-Ledger users now can use the cross-chain swap function using their Ledger devices</pre
-            >
+            <pre class="text-wrap">RC 0.70.0</pre>
           </div>
         </div>
       </div>
