@@ -10,9 +10,11 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-* Added On-Ramper , aggregating all major fiat-to-crypto on-ramps covering >180 countries, >200 cryptos, >16 payment methods</pre
-            >
+            <pre class="text-wrap">RC 0.70.0</pre>
+            <h3>Issues fixed:</h3>
+            <pre class="text-wrap">- fixed</pre>
+            <pre class="text-wrap">- fixed</pre>
+            <pre class="text-wrap">- fixed</pre>
           </div>
         </div>
       </div>
@@ -27,7 +29,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* You can see your Ethereum and Polygon NFTs on Open Sea</pre>
+            <pre class="text-wrap">RC 0.70.0</pre>
           </div>
         </div>
       </div>
@@ -82,6 +84,14 @@ h6 {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-style: normal;
+  font-weight: 300;
+  font-size: 10px;
   line-height: 20px;
   text-transform: uppercase;
 }
