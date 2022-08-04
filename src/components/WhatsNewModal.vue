@@ -12,7 +12,8 @@
           <div class="item-content">
             <h3>NFTs are here!</h3>
             <pre class="text-wrap">- View and manage your NFTs from your wallet</pre>
-            <pre class="text-wrap">- Supported chains: ETH, Polygon, and Arbitrum</pre>
+            <pre class="text-wrap">Supported chains:</pre>
+            <pre class="text-wrap">-ETH, Polygon, and Arbitrum</pre>
           </div>
         </div>
       </div>
