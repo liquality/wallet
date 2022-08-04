@@ -27,7 +27,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Access your NFTs on OpenSea through a direct link in your wallet</pre>
+            <pre class="text-wrap">
+Access your NFTs on OpenSea through a direct link in your wallet</pre
+            >
           </div>
         </div>
       </div>
