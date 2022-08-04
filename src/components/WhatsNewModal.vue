@@ -10,11 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">RC 0.70.0</pre>
-            <h3>Issues fixed:</h3>
-            <pre class="text-wrap">- fixed</pre>
-            <pre class="text-wrap">- fixed</pre>
-            <pre class="text-wrap">- fixed</pre>
+            <h3>NFTs are here!</h3>
+            <pre class="text-wrap">- View and manage your NFTs from your wallet</pre>
+            <pre class="text-wrap">- Supported chains: ETH, Polygon, and Arbitrum</pre>
           </div>
         </div>
       </div>
@@ -29,7 +27,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">RC 0.70.0</pre>
+            <pre class="text-wrap">Access your NFTs on OpenSea through a direct link in your wallet</pre>
           </div>
         </div>
       </div>
