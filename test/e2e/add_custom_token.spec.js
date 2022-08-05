@@ -41,7 +41,7 @@ const customTokensDetails = [
     chain: 'polygon',
     address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
     name: 'Polygon USD Coin',
-    symbol: 'USDC',
+    symbol: 'PUSDC',
     decimal: '6'
   },
   {

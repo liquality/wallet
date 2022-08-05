@@ -10,11 +10,10 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Ledger integration -  swaps enabled</pre>
-            <h3>Issues fixed:</h3>
-            <pre class="text-wrap">- Hop transaction status</pre>
-            <pre class="text-wrap">- UX validation prevents the user from making a swap</pre>
-            <pre class="text-wrap">- Thorchain swaps minimum transaction value and slippage</pre>
+            <h3>NFTs are here!</h3>
+            <pre class="text-wrap">- View and manage your NFTs from your wallet</pre>
+            <pre class="text-wrap">Supported chains:</pre>
+            <pre class="text-wrap">-ETH, Polygon, and Arbitrum</pre>
           </div>
         </div>
       </div>
@@ -30,7 +29,7 @@
           </div>
           <div class="item-content">
             <pre class="text-wrap">
-Ledger users now can use the cross-chain swap function using their Ledger devices</pre
+Access your NFTs on OpenSea through a direct link in your wallet</pre
             >
           </div>
         </div>

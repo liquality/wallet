@@ -3,7 +3,6 @@ const OverviewPage = require('../pages/OverviewPage')
 const HomePage = require('../pages/HomePage')
 const PasswordPage = require('../pages/PasswordPage')
 const SeedWordsPage = require('../pages/SeedWordsPage')
-const ReceivePage = require('../pages/ReceivePage')
 const expect = require('chai').expect
 
 const puppeteer = require('puppeteer')
@@ -13,7 +12,6 @@ const overviewPage = new OverviewPage()
 const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 const seedWordsPage = new SeedWordsPage()
-const receivePage = new ReceivePage()
 
 let browser, page
 
@@ -54,9 +52,9 @@ describe('Enable and disable asset ["MAINNET","PULL_REQUEST_TEST"]', async () =>
       console.log('Total assets before disable: ', totalAssetsBeforeDisable)
       // click on manage assets
       await overviewPage.ClickOnManageAssets(page)
-      // Disable BTC chain assets
-      await page.waitForSelector('#BTC_toggle_button')
-      await page.click('#BTC_toggle_button')
+      // Disable DAI chain assets
+      await page.waitForSelector('#DAI_toggle_button')
+      await page.click('#DAI_toggle_button')
       await page.click('#previous_nav_bar')
       const totalAssetsAfterDisable = await overviewPage.getTotalAssetsFromOverview(page)
       console.log('Total assets after disable: ', totalAssetsAfterDisable)
