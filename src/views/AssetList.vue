@@ -24,7 +24,12 @@
         </div>
       </div>
       <div class="list-items">
-        <WalletAccounts @item-selected="onAccountSelected" :search="search" :accounts="accounts" />
+        <WalletAccounts
+          @item-selected="onAccountSelected"
+          :search="search"
+          :accounts="accounts"
+          :isAssetList="true"
+        />
       </div>
     </div>
   </div>
@@ -43,9 +48,6 @@ export default {
     }),
     ...mapGetters(['accountsData', 'accountsWithBalance']),
     accounts() {
-      if (['swap.send', 'swap', 'buy'].includes(this.action)) {
-        return this.accountsData.filter((a) => !a.type.includes('ledger'))
-      }
       return this.accountsData
     }
   },

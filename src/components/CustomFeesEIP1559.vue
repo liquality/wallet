@@ -75,7 +75,7 @@
             <p><strong>MINER TIP</strong> TO SPEED UP</p>
             <span>${{ minerTipFiat }}</span>
             <div class="custom-fee-details-item">
-              <span class="gas-unit-label" :class="{ gasUnitLabel: padLabels }">{{
+              <span class="gas-unit-label" :class="{ gasUnitLabel: padLabels }" style="left: 0">{{
                 gasUnit.toUpperCase()
               }}</span>
               <div class="input-group">
@@ -102,7 +102,7 @@
             <p><strong>MAX FEE</strong> PER GAS</p>
             <span>${{ maxFiat }}</span>
             <div class="custom-fee-details-item">
-              <span class="gas-unit-label" :class="{ gasUnitLabel: padLabels }">{{
+              <span class="gas-unit-label" :class="{ gasUnitLabel: padLabels }" style="right: 0">{{
                 gasUnit.toUpperCase()
               }}</span>
               <div class="input-group">

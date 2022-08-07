@@ -10,9 +10,10 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-* Added On-Ramper , aggregating all major fiat-to-crypto on-ramps covering >180 countries, >200 cryptos, >16 payment methods</pre
-            >
+            <h3>NFTs are here!</h3>
+            <pre class="text-wrap">- View and manage your NFTs from your wallet</pre>
+            <pre class="text-wrap">Supported chains:</pre>
+            <pre class="text-wrap">-ETH, Polygon, and Arbitrum</pre>
           </div>
         </div>
       </div>
@@ -27,7 +28,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">* You can see your Ethereum and Polygon NFTs on Open Sea</pre>
+            <pre class="text-wrap">
+Access your NFTs on OpenSea through a direct link in your wallet</pre
+            >
           </div>
         </div>
       </div>
@@ -82,6 +85,14 @@ h6 {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+
+h3 {
+  font-style: normal;
+  font-weight: 300;
+  font-size: 10px;
   line-height: 20px;
   text-transform: uppercase;
 }
