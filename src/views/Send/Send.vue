@@ -36,6 +36,7 @@
                 placeholder="Address"
                 autocomplete="off"
                 required
+                @input="getDomainAddress"
               />
             </div>
             <small
@@ -192,7 +193,7 @@
           <div class="mt-40">
             <label>Send To</label>
             <p class="confirm-address" id="confirm-address">
-              {{ this.address ? shortenAddress(this.address) : '' }}
+              {{ confirmAddress }}
             </p>
           </div>
         </div>
@@ -263,6 +264,7 @@ import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 import qs from 'qs'
+import { UNSResolver } from '@liquality/wallet-core/dist/utils/uns'
 
 export default {
   components: {
@@ -295,8 +297,13 @@ export default {
       customFeeAssetSelected: null,
       customFee: null,
       memo: '',
-      updatingFees: false
+      updatingFees: false,
+      domainData: {},
+      domainResolver: null
     }
+  },
+  mounted() {
+    this.domainResolver = new UNSResolver()
   },
   props: {
     asset: String,
@@ -369,6 +376,12 @@ export default {
       const fees = this.maxOptionActive ? this.maxSendFees : this.sendFees
       return this.selectedFee in fees ? fees[this.selectedFee] : BN(0)
     },
+    isValidDomain() {
+      return this.domainData[this.address] ? true : false
+    },
+    getAddressFromDomain() {
+      return this.domainData[this.address] ? this.domainData[this.address] : ''
+    },
     currentChainAssetFee() {
       const fees = this.assetFees
       return fees[this.selectedFee]?.fee || BN(0)
@@ -378,7 +391,10 @@ export default {
       return unit
     },
     isValidAddress() {
-      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
+      return (
+        this.isValidDomain ||
+        chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
+      )
     },
     addressError() {
       if (!this.isValidAddress) {
@@ -437,6 +453,13 @@ export default {
     },
     memoData() {
       return this.memo
+    },
+    confirmAddress() {
+      return this.address
+        ? this.isValidDomain
+          ? `${this.address} (${shortenAddress(this.getAddressFromDomain)})`
+          : shortenAddress(this.address)
+        : ''
     }
   },
   methods: {
@@ -493,6 +516,20 @@ export default {
     async updateMaxSendFees() {
       await this._updateSendFees()
     },
+
+    async getDomainAddress() {
+      if (!this.isValidDomain) {
+        const currentAddress = this.address
+        console.log(currentAddress)
+        const domainAddress = await this.domainResolver.lookupDomain(
+          currentAddress,
+          cryptoassets[this.asset].chain
+        )
+        if (domainAddress) {
+          this.$set(this.domainData, currentAddress, domainAddress)
+        }
+      }
+    },
     showInputsStep() {
       this.currentStep = 'inputs'
     },
@@ -530,11 +567,12 @@ export default {
         // validate for custom fees
         const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
 
+        const domainAddress = this.getAddressFromDomain
         await this.sendTransaction({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset: this.asset,
-          to: this.address,
+          to: domainAddress != '' ? domainAddress : this.address,
           accountId: this.account.id,
           amount,
           fee,
@@ -697,17 +735,21 @@ export default {
       margin-left: 12px;
     }
   }
+
   &_fees {
     display: flex;
     align-items: center;
     font-weight: bold;
     margin: 6px 0;
+
     .fee-selector {
       margin-left: 6px;
     }
+
     .selectors-asset {
       width: 70px;
     }
+
     .custom-fees {
       display: flex;
       align-items: center;
@@ -749,6 +791,7 @@ input[type='number'] {
 
 .updating-fees {
   height: 24px;
+
   circle {
     stroke: #dedede;
   }

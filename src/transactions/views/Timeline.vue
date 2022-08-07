@@ -8,35 +8,30 @@
           <div class="content">
             <h3 :id="item.from">
               From:
-              <a
-                :href="addressLink(fromAddress, item.from)"
-                target="_blank"
-                id="transaction_details_send_from_link"
-                >{{ shortenAddress(addPrefix(fromAddress, item.from)) }}</a
-              >
+              <a :href="addressLink(fromAddress, item.from)" target="_blank" id="transaction_details_send_from_link">{{
+                  shortenAddress(addPrefix(fromAddress, item.from))
+              }}</a>
               <CopyIcon @click="copy(addPrefix(fromAddress, item.from))" />
             </h3>
           </div>
         </div>
-        <div
-          class="liquality-timeline_container right"
-          :class="{ completed: item.status === 'SUCCESS' && tx && tx.confirmations > 0 }"
-        >
+        <div class="liquality-timeline_container right"
+          :class="{ completed: item.status === 'SUCCESS' && tx && tx.confirmations > 0 }">
           <div class="content">
             <h3 :id="item.to">
               To:
-              <a
-                :href="addressLink(item.toAddress, item.to)"
-                target="_blank"
-                id="transaction_details_send_to_link"
-                >{{ shortenAddress(addPrefix(item.toAddress, item.to)) }}</a
-              >
+              <a :href="addressLink(item.toAddress, item.to)" target="_blank" id="transaction_details_send_to_link">{{
+                  toAddress
+              }}
+              </a>
+
               <CopyIcon @click="copy(addPrefix(item.toAddress, item.to))" />
             </h3>
           </div>
         </div>
       </div>
       <div v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
+        <br />
         <small>Received</small>
         <br />
         <small>{{ prettyTime(item.endTime) }}</small>
@@ -101,6 +96,7 @@ import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { UNSResolver } from '@liquality/wallet-core/dist/utils/uns'
 
 export default {
   components: {
@@ -115,8 +111,14 @@ export default {
       showFeeSelector: false,
       feeSelectorLoading: false,
       feeSelectorAsset: null,
-      newFeePrice: null
+      newFeePrice: null,
+      domainData: {},
+      domainResolver: null
     }
+  },
+  async mounted() {
+    this.domainResolver = new UNSResolver()
+    await this.getDomain()
   },
   props: ['id', 'tx'],
   computed: {
@@ -128,7 +130,9 @@ export default {
       )
     },
     fromAddress() {
-      return this.accountItem(this.item.accountId)?.addresses[0]
+      const from = this.accountItem(this.item.accountId)?.addresses[0]
+      const fromDomain = this.domainData[from]
+      return fromDomain ? fromDomain : from
     },
     reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
@@ -144,6 +148,13 @@ export default {
       return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[
         getNativeAsset(this.feeSelectorAsset)
       ]
+    },
+    toAddress() {
+      const to = this.item.toAddress
+      const toDomain = this.domainData[to]
+      return toDomain
+        ? `${toDomain} (${this.shortenAddress(this.addPrefix(this.item.toAddress, this.item.to))})`
+        : this.shortenAddress(this.addPrefix(this.item.toAddress, this.item.to))
     },
     feeSelectorUnit() {
       const chain = cryptoassets[this.feeSelectorAsset].chain
@@ -166,11 +177,22 @@ export default {
       if (this.item.accountId) {
         return getAddressExplorerLink(address, asset, this.activeNetwork)
       }
-
       return '#'
     },
     addPrefix(address, asset) {
       return !address.startsWith('0x') && isEthereumChain(asset) ? '0x' + address : address
+    },
+    async getDomain() {
+      const from = this.accountItem(this.item.accountId)?.addresses[0]
+      const to = this.item.toAddress
+      this.getDomainData(from)
+      this.getDomainData(to)
+    },
+    async getDomainData(address) {
+      const domain = await this.domainResolver.reverseLookup(address)
+      if (domain) {
+        this.$set(this.domainData, address, domain)
+      }
     }
   },
   created() {
