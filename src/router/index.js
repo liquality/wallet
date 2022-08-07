@@ -11,6 +11,8 @@ import Wallet from '@/views/Wallet/Wallet.vue'
 import Account from '@/views/Account.vue'
 import SwapDetails from '@/views/Details/SwapDetails.vue'
 import TransactionDetails from '@/views/Details/TransactionDetails.vue'
+import NFTAssetDetails from '@/views/Details/NFTAssetDetails.vue'
+import NFTCollectionList from '@/views/Details/NFTCollectionList.vue'
 import Send from '@/views/Send/Send.vue'
 import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap/Swap.vue'
@@ -28,7 +30,11 @@ import PermissionSignPsbt from '@/views/PermissionSignPsbt.vue'
 import PermissionTerra from '@/views/PermissionTerra.vue'
 import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
+import WalletNFTs from '@/views/Wallet/WalletNFTs.vue'
+import SendNFT from '@/views/Send/SendNFT.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
+import NFTActivity from '@/views/Wallet/NFTActivity.vue'
+import NFTTransactionDetails from '@/views/Details/NFTTransactionDetails.vue'
 import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
@@ -115,10 +121,32 @@ const routes = [
         name: 'WalletActivity'
       },
       {
+        path: 'nfts',
+        component: WalletNFTs,
+        name: 'WalletNFTs'
+      },
+      {
         path: '',
         redirect: 'assets'
       }
     ]
+  },
+  {
+    path: '/wallet/nfts/activity/:id',
+    component: NFTActivity,
+    name: 'NFTActivity',
+    props: true
+  },
+  {
+    path: '/wallet/nfts/send',
+    component: SendNFT,
+    name: 'SendNFT'
+  },
+  {
+    path: '/details/nft-transaction/:id',
+    component: NFTTransactionDetails,
+    name: 'NFTTransactionDetails',
+    props: true
   },
   // Details
   {
@@ -134,6 +162,18 @@ const routes = [
     name: 'TransactionDetails',
     props: true,
     meta: { protect: true }
+  },
+  {
+    path: '/details/nft-collection/:id',
+    component: NFTCollectionList,
+    name: 'NFTCollectionList',
+    props: true
+  },
+  {
+    path: '/details/nft-asset/:id',
+    component: NFTAssetDetails,
+    name: 'NFTAssetDetails',
+    props: true
   },
 
   // Accounts

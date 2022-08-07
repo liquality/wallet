@@ -30,6 +30,10 @@ store.subscribe(async ({ type, payload }, state) => {
   let currentState = _.cloneDeep(state)
   const { dispatch, getters } = store
 
+  const accountIds = store.getters.accountsData.map((account) => {
+    return account.id
+  })
+
   switch (type) {
     case 'CREATE_WALLET':
       // Analytics Opt in event (if state has acceptedData is not 0)
@@ -99,14 +103,15 @@ store.subscribe(async ({ type, payload }, state) => {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      dispatch('updateBalances', {
-        network: state.activeNetwork,
-        walletId: state.activeWalletId
-      })
       dispatch('updateFiatRates', { assets: store.getters.allNetworkAssets })
       dispatch('updateMarketData', { network: state.activeNetwork })
       dispatch('updateCurrenciesInfo', { assets: store.getters.allNetworkAssets })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
+      dispatch('updateNFTs', {
+        walletId: state.activeWalletId,
+        network: state.activeNetwork,
+        accountIds: accountIds
+      })
 
       asyncLoop(
         () =>
@@ -242,6 +247,19 @@ store.subscribe(async ({ type, payload }, state) => {
               category: 'Send/Receive',
               action: 'Send Status changed',
               asset: `${item.from}`,
+              sendStatus: `${payload.updates.status}`
+            }
+          })
+        }
+      }
+      if (item.type === 'NFT' && payload.updates) {
+        if (payload.updates.status !== 'undefined') {
+          await dispatch('trackAnalytics', {
+            event: 'Send NFT status change',
+            properties: {
+              walletVersion,
+              category: 'Send NFT',
+              action: 'Send NFT Status changed',
               sendStatus: `${payload.updates.status}`
             }
           })

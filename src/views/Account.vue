@@ -66,7 +66,6 @@
             class="account-container_actions_button"
             active-class=""
             tag="button"
-            v-show="showSwapOption"
             :to="`/accounts/${accountId}/${asset}/swap`"
           >
             <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
@@ -178,7 +177,7 @@ export default {
       return this.marketData[this.activeNetwork][this.asset]
     },
     assetHistory() {
-      return this.activity.filter((item) => item.from === this.asset)
+      return this.activity.filter((item) => this.isNotNftTransaction(item))
     },
     addressLink() {
       if (this.account) {
@@ -188,9 +187,6 @@ export default {
     },
     chain() {
       return cryptoassets[this.asset]?.chain
-    },
-    showSwapOption() {
-      return !this.account?.type.includes('ledger')
     }
   },
   methods: {
@@ -200,6 +196,9 @@ export default {
     formatFontSize,
     formatFiat,
     formatFiatUI,
+    isNotNftTransaction(item) {
+      return item.from === this.asset && item.type !== 'NFT'
+    },
     async copyAddress() {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true
@@ -243,16 +242,22 @@ export default {
 </script>
 <style lang="scss">
 .account-container {
-  .account-content-top {
-    height: 220px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px 0;
-    background: $brand-gradient-primary;
-    color: $color-text-secondary;
-    text-align: center;
-    position: relative;
+  overflow-y: scroll;
+
+  .account-content {
+    overflow-y: auto;
+
+    &-top {
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 0;
+      background: $brand-gradient-primary;
+      color: $color-text-secondary;
+      text-align: center;
+      position: relative;
+    }
   }
   &_balance {
     &_fiat {

@@ -33,7 +33,7 @@ describe('SWAP feature["MAINNET"]', async () => {
     await passwordPage.SubmitPasswordDetails(page)
 
     // overview page
-    await overviewPage.CloseWatsNewModal(page)
+    await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.SelectNetwork(page, 'mainnet')
   })
