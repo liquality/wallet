@@ -65,7 +65,6 @@ if (process.env.NODE_ENV === 'mainnet') {
         await page.waitForSelector('#search_for_a_currency', { visible: true })
         await page.type('#search_for_a_currency', toAsset)
         await page.click(`#${toAsset}`)
-        await swapPage.ClickOnMin(page)
         // 1inch
         await page.waitForTimeout(10000)
         await page.waitForSelector('#selectedQuote_provider', { visible: true })

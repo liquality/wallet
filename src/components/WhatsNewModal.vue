@@ -10,11 +10,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">RC 0.70.0</pre>
-            <h3>Issues fixed:</h3>
-            <pre class="text-wrap">- fixed</pre>
-            <pre class="text-wrap">- fixed</pre>
-            <pre class="text-wrap">- fixed</pre>
+            <h3>NFTs are here!</h3>
+            <pre class="text-wrap">- RC 0.71.0</pre>
           </div>
         </div>
       </div>
@@ -29,7 +26,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">RC 0.70.0</pre>
+            <pre class="text-wrap">- RC 0.71.0</pre>
           </div>
         </div>
       </div>
