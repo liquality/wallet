@@ -43,6 +43,9 @@ export default {
   watch: {
     activeNetwork() {
       this.activityData = [...this.assetHistory]
+    },
+    activity() {
+      this.activityData = [...this.assetHistory]
     }
   }
 }
