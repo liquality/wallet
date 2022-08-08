@@ -11,9 +11,7 @@
           </div>
           <div class="item-content">
             <h3>NFTs are here!</h3>
-            <pre class="text-wrap">- View and manage your NFTs from your wallet</pre>
-            <pre class="text-wrap">Supported chains:</pre>
-            <pre class="text-wrap">-ETH, Polygon, and Arbitrum</pre>
+            <pre class="text-wrap">- RC 0.71.0</pre>
           </div>
         </div>
       </div>
@@ -28,9 +26,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-Access your NFTs on OpenSea through a direct link in your wallet</pre
-            >
+            <pre class="text-wrap">- RC 0.71.0</pre>
           </div>
         </div>
       </div>
