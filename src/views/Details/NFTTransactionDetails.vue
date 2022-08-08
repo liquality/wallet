@@ -68,7 +68,7 @@
               <span>
                 <a
                   class="speed-up"
-                  v-if="canUpdateFee && !showFeeSelector"
+                  v-if="canUpdateFee && !showFeeSelector && isCustomFeeSupported"
                   @click="openFeeSelector()"
                 >
                   Speed up
@@ -163,6 +163,10 @@ export default {
   computed: {
     ...mapGetters(['client', 'accountsData']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
+    isCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.item.from].chain]
+      return supportCustomFees
+    },
     thumbnailImage() {
       return NFTThumbnailImage
     },

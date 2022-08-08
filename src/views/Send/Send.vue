@@ -423,8 +423,13 @@ export default {
       } else {
         const maxSendFee =
           this.selectedFee in this.maxSendFees ? this.maxSendFees[this.selectedFee] : BN(0)
+        console.log(this.maxSendFees[this.selectedFee], this.selectedFee)
+        console.log(cryptoassets[this.assetChain], maxSendFee.toString())
         const fee = currencyToUnit(cryptoassets[this.assetChain], maxSendFee)
+        console.log('fee', fee.toString())
         const available = BN.max(BN(this.balance).minus(fee), 0)
+        console.log('balance', this.balance.toString())
+        console.log('avail', unitToCurrency(cryptoassets[this.asset], available).toString())
         return unitToCurrency(cryptoassets[this.asset], available)
       }
     },
@@ -495,6 +500,8 @@ export default {
           }
         }
 
+        console.log(JSON.stringify(sendFees))
+        console.log('getMax', getMax)
         if (getMax) {
           this.maxSendFees = sendFees
         } else {
@@ -506,6 +513,7 @@ export default {
       await this._updateSendFees(amount)
     }, 800),
     async updateMaxSendFees() {
+      console.log('are you called')
       await this._updateSendFees()
     },
     showInputsStep() {
@@ -651,11 +659,8 @@ export default {
     }
     this.updatingFees = true
     await this.updateFees({ asset: this.assetChain })
-    if (this.maxOptionActive) {
-      this.updateMaxSendFees()
-    } else {
-      this.updateSendFees(this.amount)
-    }
+    this.updateMaxSendFees()
+    this.updateSendFees(this.amount)
     this.updatingFees = false
 
     await this.trackAnalytics({
