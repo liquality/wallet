@@ -264,7 +264,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
-import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import Accordion from '@/components/Accordion.vue'
 import { chains } from '@liquality/cryptoassets'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
@@ -306,7 +305,6 @@ export default {
       sendFees: {},
       maxSendFees: {},
       eip1559fees: {},
-      activityData: [],
       amount: 0.0,
       activeView: 'selectAsset',
       selectedNFT: null,
@@ -491,9 +489,6 @@ export default {
     getSendFee,
     getFeeLabel,
     getNativeAsset,
-    applyFilters(filters) {
-      this.activityData = applyActivityFilters([...this.assetHistory], filters)
-    },
     async copy(text) {
       await navigator.clipboard.writeText(text)
     },
@@ -618,11 +613,6 @@ export default {
       if (ref) {
         this.$refs[ref].src = this.thumbnailImage
       }
-    }
-  },
-  watch: {
-    activeNetwork() {
-      this.activityData = [...this.assetHistory]
     }
   }
 }

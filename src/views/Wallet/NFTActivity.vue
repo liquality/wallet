@@ -32,6 +32,7 @@
             @filters-changed="applyFilters"
             :activity-data="activityData"
             v-if="activityData.length > 0"
+            :showTypeFilters="false"
           />
           <TransactionList :transactions="activityData" />
           <div class="activity-empty m-3" v-if="activityData.length <= 0">
@@ -75,7 +76,7 @@ export default {
     }
   },
   created() {
-    this.activityData = [...this.activity]
+    this.activityData = [...this.assetHistory]
   },
   computed: {
     ...mapState(['activeNetwork', 'history']),

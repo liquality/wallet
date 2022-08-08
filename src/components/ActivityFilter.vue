@@ -50,7 +50,7 @@
           </date-pick>
         </div>
       </div>
-      <div class="activity-filter-type">
+      <div class="activity-filter-type" v-if="showTypeFilters">
         <div class="activity-filter-section-title h-padding">Type</div>
         <ListItem
           v-for="(filter, key) in typeFilters"
@@ -157,7 +157,7 @@ const CSV_HEADERS = [
 ]
 
 export default {
-  props: ['activityData'],
+  props: ['activityData', 'showTypeFilters'],
   components: {
     CalendarIcon,
     ChevronDownIcon,
