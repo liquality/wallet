@@ -119,7 +119,7 @@
               </div>
             </div>
           </div>
-          <DetailsContainer v-if="feesAvailable">
+          <DetailsContainer v-if="feesAvailable && isCustomFeeSupported">
             <template v-slot:header>
               <div class="network-header-container">
                 <span class="details-title" id="send_network_speed"> Network Speed/Fee </span>
@@ -146,7 +146,7 @@
                       :asset="asset"
                       v-model="selectedFee"
                       :fees="assetFees"
-                      :totalFees="sendFees"
+                      :totalFees="maxOptionActive ? maxSendFees : sendFees"
                       :fiatRates="fiatRates"
                       @custom-selected="onCustomFeeSelected"
                     />
@@ -155,6 +155,17 @@
               </ul>
             </template>
           </DetailsContainer>
+
+          <template v-if="!isCustomFeeSupported">
+            <div class="network-header-container">
+              <span class="details-title" id="send_network_speed"
+                ><strong> Network Speed/Fee </strong></span
+              >
+              <span class="text-muted" id="send_network_speed_avg_fee">
+                ({{ prettyFee }} {{ assetChain }})
+              </span>
+            </div>
+          </template>
           <div class="button-group">
             <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">Cancel</button>
             <button
@@ -420,6 +431,10 @@ export default {
       if (BN(this.balance).lte(0)) return false
 
       return true
+    },
+    isCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
+      return supportCustomFees
     },
     fromAddress() {
       return chains[this.account?.chain]?.formatAddress(

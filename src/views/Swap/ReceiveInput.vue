@@ -14,7 +14,7 @@
                 <span v-if="showAmountsInFiat" :style="getAssetColorStyle(toAsset)">
                   {{ `${toAsset} ${receiveAmount}` }}
                 </span>
-                <span v-else> {{ formatFiatUI(formatFiat(receiveAmountFiat)) }} </span>
+                <span v-else> {{ receiveAmountFiatValue }} </span>
               </button>
             </div>
           </div>
@@ -76,9 +76,7 @@ export default {
   props: ['account', 'toAsset', 'receiveAmount', 'receiveAmountFiat', 'disabled'],
   computed: {
     receiveAmountFiatValue() {
-      return isNaN(this.receiveAmountFiat)
-        ? this.receiveAmountFiat
-        : '$' + dpUI(this.receiveAmountFiat, 2)
+      return isNaN(this.receiveAmountFiat) ? '--' : '$' + dpUI(this.receiveAmountFiat, 2)
     },
     receiveAmountValue() {
       return this.receiveAmount.gt(0) ? dpUI(this.receiveAmount) : ''

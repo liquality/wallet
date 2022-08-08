@@ -1039,10 +1039,11 @@ export default {
       const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat)
         ? 0
         : this.totalToReceiveInFiat * 0.15
-      return feeTotal.gte(BN(receiveTotalPercentage))
+
+      return receiveTotalPercentage !== 0 && feeTotal.gte(BN(receiveTotalPercentage))
     },
     isSwapNegative() {
-      return this.totalToReceiveInFiat <= 0
+      return this.totalToReceiveInFiat < 0
     },
     isEIP1559Fees() {
       return isEIP1559Fees(cryptoassets[this.customFeeAssetSelected].chain, this.activeNetwork)
