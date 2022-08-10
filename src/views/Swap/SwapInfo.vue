@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import { add, format } from 'date-fns'
 import ClockIcon from '@/assets/icons/clock.svg'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { mapState } from 'vuex'
@@ -27,15 +26,6 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork']),
-    expiration: function () {
-      return format(add(new Date(), { hours: 6 }), 'h:mm a')
-    },
-    showSlippageMessage() {
-      const providerType = getSwapProviderConfig(this.activeNetwork, this.quote.provider).type
-      return (
-        providerType !== SwapProviderType.Liquality && providerType !== SwapProviderType.FastBTC
-      )
-    },
     showRefundMessage() {
       const providerType = getSwapProviderConfig(this.activeNetwork, this.quote.provider).type
       return (
