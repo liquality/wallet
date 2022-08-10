@@ -8,21 +8,28 @@
           <div class="content">
             <h3 :id="item.from">
               From:
-              <a :href="addressLink(fromAddress, item.from)" target="_blank" id="transaction_details_send_from_link">{{
-                  shortenAddress(addPrefix(fromAddress, item.from))
-              }}</a>
+              <a
+                :href="addressLink(fromAddress, item.from)"
+                target="_blank"
+                id="transaction_details_send_from_link"
+                >{{ shortenAddress(addPrefix(fromAddress, item.from)) }}</a
+              >
               <CopyIcon @click="copy(addPrefix(fromAddress, item.from))" />
             </h3>
           </div>
         </div>
-        <div class="liquality-timeline_container right"
-          :class="{ completed: item.status === 'SUCCESS' && tx && tx.confirmations > 0 }">
+        <div
+          class="liquality-timeline_container right"
+          :class="{ completed: item.status === 'SUCCESS' && tx && tx.confirmations > 0 }"
+        >
           <div class="content">
             <h3 :id="item.to">
               To:
-              <a :href="addressLink(item.toAddress, item.to)" target="_blank" id="transaction_details_send_to_link">{{
-                  toAddress
-              }}
+              <a
+                :href="addressLink(item.toAddress, item.to)"
+                target="_blank"
+                id="transaction_details_send_to_link"
+                >{{ toAddress }}
               </a>
 
               <CopyIcon @click="copy(addPrefix(item.toAddress, item.to))" />
@@ -96,7 +103,7 @@ import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { UNSResolver } from '@liquality/wallet-core/dist/utils/uns'
+import { UNSResolver } from '@liquality/wallet-core/dist/nameResolvers/uns'
 
 export default {
   components: {
