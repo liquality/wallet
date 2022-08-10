@@ -479,7 +479,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['sendNFTTransaction', 'updateFees', 'trackAnalytics']),
+    ...mapActions(['sendNFTTransaction', 'updateFees', 'trackAnalytics', 'updateNFTs']),
     getAssetIcon,
     shortenAddress,
     formatFiat,
