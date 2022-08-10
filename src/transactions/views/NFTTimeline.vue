@@ -73,6 +73,12 @@
               /></span>
             </td>
           </tr>
+          <tr>
+            <td class="text-muted text-left small-12">Token Standard</td>
+            <td class="text-break" v-if="item.nft.standard">
+              {{ item.nft.standard }}
+            </td>
+          </tr>
           <tr v-if="fromAddress" id="your_from_address">
             <td class="text-muted text-left small-12">Your NFT from address</td>
             <td class="text-break text-primary">

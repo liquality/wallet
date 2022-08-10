@@ -583,6 +583,20 @@ export default {
     async updateMaxSendFees() {
       await this._updateSendFees()
     },
+    async refreshNFTs() {
+      const accountIds = this.accountsData.map((account) => {
+        return account.id
+      })
+      try {
+        await this.updateNFTs({
+          walletId: this.activeWalletId,
+          network: this.activeNetwork,
+          accountIds: accountIds
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async sendNFT() {
       this.sendErrorMessage = ''
       this.loading = true
@@ -601,6 +615,7 @@ export default {
           nft: this.selectedNFT
         }
         await this.sendNFTTransaction(data)
+        await this.refreshNFTs()
         this.$router.replace(`/wallet/nfts/activity/${this.account?.id}`)
       } catch (error) {
         const { message } = error

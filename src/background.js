@@ -107,11 +107,16 @@ store.subscribe(async ({ type, payload }, state) => {
       dispatch('updateMarketData', { network: state.activeNetwork })
       dispatch('updateCurrenciesInfo', { assets: store.getters.allNetworkAssets })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
-      dispatch('updateNFTs', {
-        walletId: state.activeWalletId,
-        network: state.activeNetwork,
-        accountIds: accountIds
-      })
+
+      asyncLoop(
+        () =>
+          dispatch('updateNFTs', {
+            walletId: state.activeWalletId,
+            network: state.activeNetwork,
+            accountIds: accountIds
+          }),
+        () => random(400000, 600000)
+      )
 
       asyncLoop(
         () =>
