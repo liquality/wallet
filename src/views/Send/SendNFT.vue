@@ -594,7 +594,7 @@ export default {
           accountIds: accountIds
         })
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     },
     async sendNFT() {
