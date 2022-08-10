@@ -517,6 +517,7 @@ import { version as walletVersion } from '../../../package.json'
 import { buildConfig } from '@liquality/wallet-core'
 import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
 import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
+import { SwapProviderErrorTypes } from '@liquality/wallet-core/dist/swaps/types'
 import qs from 'qs'
 
 const QUOTE_TIMER_MS = 30000
@@ -1102,6 +1103,14 @@ export default {
 
       const selectedQuoteProvider = this.selectedQuoteProvider
       const { fromTxType, toTxType } = selectedQuoteProvider
+
+      // Handles LiFi error cases.
+      // TODO: refactor in case some kind of error handling is introduced
+      if (this.minSwapAmount <= 0 && this.selectedQuote.swapProviderError) {
+        if (this.selectedQuote.swapProviderError.code === SwapProviderErrorTypes.AMOUNT_TOO_LOW) {
+          this.minSwapAmount = this.selectedQuote.swapProviderError.min
+        }
+      }
 
       const addFees = async (asset, chain, txType) => {
         const assetFees = this.getAssetFees(chain)
