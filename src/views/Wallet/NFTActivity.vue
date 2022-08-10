@@ -77,6 +77,9 @@ export default {
   },
   created() {
     this.activityData = [...this.assetHistory]
+    if (this.$route.query.tab) {
+      this.activeTab = this.$route.query.tab
+    }
   },
   computed: {
     ...mapState(['activeNetwork', 'history']),

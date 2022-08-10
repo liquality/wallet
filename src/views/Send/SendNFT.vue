@@ -616,7 +616,7 @@ export default {
         }
         await this.sendNFTTransaction(data)
         await this.refreshNFTs()
-        this.$router.replace(`/wallet/nfts/activity/${this.account?.id}`)
+        this.$router.replace(`/wallet/nfts/activity/${this.account?.id}?tab=activity`)
       } catch (error) {
         const { message } = error
         this.loading = false

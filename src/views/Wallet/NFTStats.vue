@@ -146,7 +146,7 @@ export default {
           accountIds: accountIds
         })
       } catch (error) {
-        console.log(error)
+        console.error(error)
       } finally {
         this.updatingAssets = false
       }
