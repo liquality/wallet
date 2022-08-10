@@ -1,0 +1,153 @@
+<template>
+  <div class="nft-collectibles">
+    <div v-if="Object.keys(assets).length">
+      <template v-for="(asset, key) in assets">
+        <NFTAssets
+          :assets="asset"
+          :collectionName="key"
+          :key="asset.id"
+          :source="source"
+          :isAccount="isAccount"
+          :accountId="accountId"
+        />
+      </template>
+    </div>
+    <div class="activity-empty m-4" v-else>
+      <p>
+        Once you start owning NFTs with accounts in your Liquality wallet you will see them here.
+      </p>
+      <div class="d-flex justify-content-center brand">
+        <OpenSea @click="exploreNfts" class="cursor-pointer" />
+      </div>
+      <div class="d-flex justify-content-center w-100">
+        <a class="btn btn-primary w-100" :href="opensea" target="_blank" rel="noopener noreferrer"
+          >Check out Opensea</a
+        >
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapState } from 'vuex'
+import NFTAssets from '../../components/NFTAssets.vue'
+import { getNftLink, openseaLink } from '@liquality/wallet-core/dist/utils/asset'
+import OpenSea from '../../assets/icons/opensea.svg'
+import { chains } from '@liquality/cryptoassets'
+
+export default {
+  components: {
+    NFTAssets,
+    OpenSea
+  },
+  props: {
+    source: {
+      type: String,
+      required: false
+    },
+    isAccount: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      assets: []
+    }
+  },
+  created() {
+    if (this.isAccount) {
+      this.assets = this.accountNftCollections(this.accountId)
+    } else {
+      this.assets = this.allNftCollections
+    }
+  },
+  computed: {
+    ...mapState(['activeWalletId', 'activeNetwork']),
+    ...mapGetters(['allNftCollections', 'accountNftCollections', 'accountsData']),
+    accountId() {
+      return this.$route.params.id
+    },
+    account() {
+      return this.accountsData.filter((account) => account.id === this.accountId)[0]
+    },
+    chain() {
+      return this.account?.chain
+    },
+    nftExplorerLink() {
+      const asset = chains[this.account?.chain].nativeAsset
+      return getNftLink(asset, this.activeNetwork)
+    },
+    opensea() {
+      return openseaLink(this.activeNetwork)
+    }
+  },
+  methods: {
+    getNftLink,
+    openseaLink,
+    exploreNfts() {
+      if (this.isAccount) {
+        window.open(this.nftExplorerLink, '_blank')
+      }
+      window.open(this.opensea, '_blank')
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.nft-collectibles {
+  .section-header {
+    font-size: 20px;
+    line-height: 25.78px;
+    padding: 16px;
+    border-bottom: 1px solid $hr-border-color;
+  }
+  .wallet-info-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    margin-bottom: 24px;
+    h5 {
+      font-size: 12px;
+      line-height: 14px;
+      font-weight: 400;
+    }
+    .total-balance {
+      display: flex;
+      align-items: flex-start;
+      .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 9px;
+      }
+      span {
+        font-size: 16px;
+        line-height: 21.94px;
+        font-weight: 300;
+      }
+    }
+  }
+}
+
+.activity-empty {
+  display: block;
+
+  .btn {
+    border-radius: 22px;
+    color: #ffffff;
+  }
+
+  .brand {
+    border-radius: 10px;
+    padding: 28px 58px;
+    margin-bottom: 20px;
+
+    svg {
+      width: 215px;
+      height: 49px;
+    }
+  }
+}
+</style>

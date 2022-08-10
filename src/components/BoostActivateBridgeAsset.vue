@@ -39,7 +39,7 @@ export default {
     display: inline-block;
   }
   .notification-text {
-    width: 230px;
+    width: 100%;
   }
 }
 </style>

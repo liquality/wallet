@@ -287,7 +287,7 @@ class OverviewPage {
       default:
         throw Error(`Unsupported chain: ${assetName}`)
     }
-    await page.waitForSelector('.account-container_balance_code', { visible: true })
+    await page.waitForSelector('.account-container_balance_code', { visible: true, timeout: 60000 })
     await page.waitForSelector('#refresh-icon', { visible: true })
   }
   /**
