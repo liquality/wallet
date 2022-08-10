@@ -5,7 +5,7 @@
       :backPath="routeSource === 'NFTActivity' ? '/wallet/nfts/activity' : '/wallet/nfts'"
       :backLabel="'Back'"
     >
-      <span class="wallet-header">
+      <span class="wallet-header cursor-pointer" :title="collectionName">
         <strong class="text-uppercase"> {{ collectionName }} ({{ nftCollection.length }})</strong>
       </span>
     </NavBar>
@@ -26,7 +26,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import NFTAsset from '../../components/NFTAsset.vue'
+import NFTAsset from '../../components/NFT/NFTAsset.vue'
 import NavBar from '../../components/NavBar.vue'
 
 export default {

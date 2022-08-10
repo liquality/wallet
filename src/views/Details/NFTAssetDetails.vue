@@ -15,6 +15,10 @@
         >
           <Star :nftAsset="nftAsset" :accountId="accountId" />
         </div>
+        <NFTQuantity
+          :quantity="nftAsset.amount"
+          :style="showFullscreen ? { top: 'calc(25% - 34px)' } : { bottom: 'calc(20% + 10px)' }"
+        />
         <div class="send--share--actions">
           <SendIcon
             class="nft-action-buttons__icon"
@@ -196,7 +200,8 @@ import { chains } from '@liquality/cryptoassets'
 import { getAccountIcon } from '@/utils/accounts'
 import { getAssetIcon } from '@/utils/asset'
 import { getNftTransferLink, getMarketplaceName } from '@liquality/wallet-core/dist/utils/asset'
-import Star from '@/components/Star.vue'
+import Star from '@/components/NFT/Star.vue'
+import NFTQuantity from '@/components/NFT/NFTQuantity.vue'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 export default {
@@ -217,6 +222,7 @@ export default {
     ShareIcon,
     NavBar,
     Star,
+    NFTQuantity,
     MarkdownItVueLight
   },
   beforeRouteEnter(to, from, next) {
@@ -361,10 +367,17 @@ export default {
       margin-right: 0.5rem;
     }
 
-    .star {
+    .star,
+    .nft-quantity {
       position: fixed;
+    }
+    .star {
       left: 16px;
       cursor: pointer;
+    }
+
+    .nft-quantity {
+      left: 50px;
     }
 
     .send--share--actions {

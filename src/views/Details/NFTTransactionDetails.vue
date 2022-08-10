@@ -134,7 +134,7 @@ import { getAssetIcon } from '@/utils/asset'
 import { getItemIcon } from '@/utils/history'
 
 import FeeSelector from '@/components/FeeSelector'
-import Timeline from '@/transactions/views/NFTTimeline.vue'
+import Timeline from '@/components/NFT/NFTTimeline.vue'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'

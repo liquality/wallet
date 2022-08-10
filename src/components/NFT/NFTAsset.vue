@@ -1,6 +1,7 @@
 <template>
   <div class="nft-image" style="--img-width: 100px">
     <Star :nftAsset="nftAsset" :accountId="accountId" />
+    <NFTQuantity :quantity="nftAsset.amount" />
     <img
       ref="nftThumbnailImage"
       :src="nftAssetImageSource || thumbnailImage"
@@ -12,12 +13,14 @@
 </template>
 
 <script>
-import Star from '@/components/Star'
+import Star from '@/components/NFT/Star'
+import NFTQuantity from '@/components/NFT/NFTQuantity.vue'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 export default {
   components: {
-    Star
+    Star,
+    NFTQuantity
   },
   props: {
     nftAsset: {

@@ -3,8 +3,8 @@
     <div class="nft-assets__container">
       <div class="nft-assets__container__heading">
         <div class="collection-name">
-          <h5>
-            {{ collectionName }}
+          <h5 :title="collectionName" class="cursor-pointer">
+            {{ collectionName || assets[0].name }}
           </h5>
           <span>({{ nftCollection.length }})</span>
         </div>
