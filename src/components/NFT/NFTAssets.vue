@@ -6,7 +6,7 @@
           <h5 :title="collectionName" class="cursor-pointer">
             {{ collectionName || assets[0].name }}
           </h5>
-          <span>({{ nftCollection.length }})</span>
+          <span class="ml-1">({{ nftCollection.length }})</span>
         </div>
         <span class="d-flex align-items-center" v-if="!isAccount">
           <router-link

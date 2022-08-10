@@ -1,5 +1,5 @@
 <template>
-  <div class="nft-quantity">x{{ quantity }}</div>
+  <div class="nft-quantity" v-if="quantity">x{{ quantity }}</div>
 </template>
 
 <script>
@@ -21,6 +21,6 @@ export default {
   padding: 0;
   position: absolute;
   bottom: 4px;
-  left: 10px;
+  left: 6px;
 }
 </style>
