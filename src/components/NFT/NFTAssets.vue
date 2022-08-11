@@ -4,7 +4,7 @@
       <div class="nft-assets__container__heading">
         <div class="collection-name">
           <h5 :title="collectionName" class="cursor-pointer">
-            {{ collectionName || assets[0].name }}
+            {{ collectionName }}
           </h5>
           <span class="ml-1">({{ nftCollection.length }})</span>
         </div>
@@ -82,6 +82,13 @@ export default {
     },
     chain() {
       return this.account?.chain
+    },
+    nameOfCollection() {
+      if (this.collectionName) {
+        return this.collectionName
+      } else {
+        return this.assets.filter((asset) => asset.name)[0].name
+      }
     }
   }
 }
