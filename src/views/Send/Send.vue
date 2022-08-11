@@ -233,7 +233,7 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-import _ from 'lodash'
+import _, { debounce } from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { version as walletVersion } from '../../../package.json'
@@ -516,11 +516,9 @@ export default {
     async updateMaxSendFees() {
       await this._updateSendFees()
     },
-
-    async getDomainAddress() {
+    getDomainAddress: debounce(async function () {
       if (!this.isValidDomain) {
         const currentAddress = this.address
-        console.log(currentAddress)
         const domainAddress = await this.domainResolver.lookupDomain(
           currentAddress,
           cryptoassets[this.asset].chain
@@ -529,7 +527,7 @@ export default {
           this.$set(this.domainData, currentAddress, domainAddress)
         }
       }
-    },
+    }, 500),
     showInputsStep() {
       this.currentStep = 'inputs'
     },
