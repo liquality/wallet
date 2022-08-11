@@ -97,13 +97,13 @@
 </template>
 
 <script>
-import { getNativeAsset, getFeeAsset } from '@liquality/wallet-core/dist/utils/asset'
+import { getNativeAsset, getFeeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import NavBar from '@/components/NavBar'
-import { getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
+import { getFeeLabel } from '@liquality/wallet-core/dist/src/utils/fees'
 import BN from 'bignumber.js'
-import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { prettyFiatBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
