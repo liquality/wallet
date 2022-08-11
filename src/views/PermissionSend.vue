@@ -125,7 +125,6 @@ import {
 import {
   getNativeAsset,
   getAssetColorStyle,
-  tokenDetailProviders,
   estimateGas
 } from '@liquality/wallet-core/dist/utils/asset'
 import { parseTokenTx } from '@liquality/wallet-core/dist/utils/parseTokenTx'
@@ -175,7 +174,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateFees']),
+    ...mapActions(['updateFees', 'fetchTokenDetails']),
     ...mapActions('app', ['replyPermission']),
     prettyBalance,
     prettyFiatBalance,
@@ -205,7 +204,13 @@ export default {
       } catch {
         // in case token doesn't exist in cryptoassets
         try {
-          const tokeData = await tokenDetailProviders[chain].getDetails(tokenAddress)
+          const tokeData = await this.fetchTokenDetails({
+            network: this.activeNetwork,
+            walletId: this.activeWalletId,
+            chain,
+            contractAddress: tokenAddress
+          })
+
           this.symbol = tokeData.symbol + ' (Unverified)'
         } catch {
           this.symbol = this.assetChain

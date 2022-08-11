@@ -3921,7 +3921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/wallet-core@npm:^1.28.0":
+"@liquality/wallet-core@npm:1.28.0":
   version: 1.28.0
   resolution: "@liquality/wallet-core@npm:1.28.0"
   dependencies:
@@ -17951,7 +17951,7 @@ __metadata:
     "@liquality/ethereum-utils": ^1.13.12
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
-    "@liquality/wallet-core": ^1.28.0
+    "@liquality/wallet-core": 1.28.0
     "@terra-money/terra.js": ^3.0.8
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/vue": ^5.8.2
