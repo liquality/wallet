@@ -1,7 +1,7 @@
 <template>
   <div class="nft-image" style="--img-width: 100px">
     <Star :nftAsset="nftAsset" :accountId="accountId" />
-    <NFTQuantity :quantity="nftAsset.amount" v-if="nftAsset.amount" />
+    <NFTQuantity :quantity="nftAsset.amount" v-if="nftAsset.amount && nftAsset.amount > 1" />
     <img
       ref="nftThumbnailImage"
       :src="nftAssetImageSource || thumbnailImage"

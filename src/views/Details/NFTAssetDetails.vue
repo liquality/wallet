@@ -18,7 +18,7 @@
         <NFTQuantity
           :quantity="nftAsset?.amount"
           :style="showFullscreen ? { top: 'calc(25% - 34px)' } : { bottom: 'calc(20% + 10px)' }"
-          v-if="nftAsset && nftAsset.amount"
+          v-if="nftAsset && nftAsset.amount && nftAsset.amount > 1"
         />
         <div class="send--share--actions">
           <SendIcon
@@ -166,8 +166,8 @@
                           {{ nftAsset.standard }}
                         </td>
                       </tr>
-                      <tr v-if="nftAsset.amount">
-                        <td class="text-muted text-left small-12">Quantity</td>
+                      <tr v-if="nftAsset.amount && nftAsset.amount > 1">
+                        <td class="text-muted text-left small-12">You own</td>
                         <td class="text-break">{{ nftAsset.amount }}</td>
                       </tr>
                       <tr>
