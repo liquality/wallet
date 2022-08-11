@@ -66,7 +66,7 @@ export default {
       ) {
         return this.collectionName
       } else {
-        return this.assets.filter((asset) => asset.name)[0]?.name || 'Unknown Collection'
+        return this.nftCollection.filter((asset) => asset.name)[0]?.name || 'Unknown Collection'
       }
     }
   }
