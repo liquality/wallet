@@ -5,7 +5,7 @@
     <img
       ref="nftThumbnailImage"
       :src="nftAssetImageSource || thumbnailImage"
-      alt="nft image"
+      :alt="nftAsset.name || 'NFT Asset'"
       @click="viewNFTDetails"
       @error="imageError('nftThumbnailImage')"
     />

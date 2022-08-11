@@ -41,7 +41,7 @@
                 <img
                   ref="nftThumbnailImage"
                   :src="item.nft.image_thumbnail_url || thumbnailImage"
-                  alt="nft-image"
+                  :alt="item.nft.name || 'NFT Image'"
                   @error="imageError('nftThumbnailImage')"
                 />
               </div>

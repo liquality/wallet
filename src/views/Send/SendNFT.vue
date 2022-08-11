@@ -40,7 +40,7 @@
                 <img
                   ref="asset"
                   :src="asset.image_thumbnail_url || thumbnailImage"
-                  alt="nft image"
+                  :alt="asset.name || 'NFT asset'"
                   @error="imageError('asset')"
                 />
               </div>

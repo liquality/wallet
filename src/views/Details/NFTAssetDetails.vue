@@ -50,7 +50,7 @@
           <img
             ref="nftImage"
             :src="nftAsset?.image_original_url || nftAsset?.image_preview_url || thumbnailImage"
-            alt="nft image"
+            :alt="nftAsset?.name || 'NFT Asset'"
             @error="imageError('nftImage')"
           />
         </div>
@@ -82,7 +82,7 @@
           <img
             ref="nftPreviewImage"
             :src="nftAsset?.image_original_url || nftAsset?.image_preview_url || thumbnailImage"
-            alt="nft image"
+            :alt="nftAsset?.name || 'NFT Asset'"
             @error="imageError('nftPreviewImage')"
           />
         </div>
