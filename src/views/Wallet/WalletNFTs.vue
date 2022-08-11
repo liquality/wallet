@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import NFTAssets from '../../components/NFT/NFTAssets.vue'
 import OpenSea from '../../assets/icons/opensea.svg'
 import StratosNFT from '../../assets/icons/stratosnft.svg'
@@ -77,11 +77,23 @@ export default {
       assets: []
     }
   },
-  created() {
+  async created() {
     if (this.isAccount) {
       this.assets = this.accountNftCollections(this.accountId)
     } else {
       this.assets = this.allNftCollections
+    }
+    const accountIds = this.accountsData.map((account) => {
+      return account.id
+    })
+    try {
+      await this.updateNFTs({
+        walletId: this.activeWalletId,
+        network: this.activeNetwork,
+        accountIds: accountIds
+      })
+    } catch (error) {
+      console.error(error)
     }
   },
   computed: {
@@ -101,6 +113,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['updateNFTs']),
     getNftLink,
     openseaLink,
     getItemIcon,
