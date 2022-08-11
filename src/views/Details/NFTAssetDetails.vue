@@ -18,6 +18,7 @@
         <NFTQuantity
           :quantity="nftAsset.amount"
           :style="showFullscreen ? { top: 'calc(25% - 34px)' } : { bottom: 'calc(20% + 10px)' }"
+          v-if="nftAsset.amount"
         />
         <div class="send--share--actions">
           <SendIcon
@@ -48,7 +49,7 @@
         <div class="nft-img">
           <img
             ref="nftImage"
-            :src="nftAsset?.image_original_url || thumbnailImage"
+            :src="nftAsset?.image_original_url || nftAsset?.image_preview_url || thumbnailImage"
             alt="nft image"
             @error="imageError('nftImage')"
           />
@@ -70,11 +71,15 @@
       <template v-else-if="showFullscreen === true">
         <div
           class="nft-img__open"
-          :style="!nftAsset?.image_original_url && { background: '#D9DFE5' }"
+          :style="
+            !(nftAsset?.image_original_url || nftAsset?.image_preview_url) && {
+              background: '#D9DFE5'
+            }
+          "
         >
           <img
             ref="nftPreviewImage"
-            :src="nftAsset?.image_original_url || thumbnailImage"
+            :src="nftAsset?.image_original_url || nftAsset?.image_preview_url || thumbnailImage"
             alt="nft image"
             @error="imageError('nftPreviewImage')"
           />
@@ -115,10 +120,6 @@
               <div>
                 <div class="px-4 mt-2" v-if="activeTab === 'overview'">
                   <h5 class="text-bold">Description</h5>
-                  <!-- <p
-                    v-html="nftAsset.description || 'This NFT does not have a description.'"
-                    style="white-space: pre-line"
-                  ></p> -->
                   <markdown-it-vue-light
                     class="md-body"
                     :content="nftAsset.description || defaultDescription"
