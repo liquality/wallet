@@ -270,7 +270,7 @@ import { chains } from '@liquality/cryptoassets'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import CopyIcon from '@/assets/icons/copy.svg'
-import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
+import { getFeeEstimations, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
 import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -488,7 +488,6 @@ export default {
     formatFiatUI,
     prettyBalance,
     getFeeAsset,
-    getSendFee,
     getFeeLabel,
     getNativeAsset,
     applyFilters(filters) {
@@ -566,21 +565,28 @@ export default {
       this.selectedFee = 'average'
     },
     async _updateSendFees(amount) {
-      const getMax = amount === undefined
-      if (this.feesAvailable) {
-        const sendFees = {}
-
-        for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee.maxFeePerGas || fee.fee
-          sendFees[speed] = getSendFee(this.assetChain, feePrice)
-        }
-
-        if (getMax) {
-          this.maxSendFees = sendFees
-        } else {
-          this.sendFees = sendFees
-        }
+      const sendFees = await getFeeEstimations(this.account.id, this.asset, amount)
+      if (amount === undefined) {
+        this.maxSendFees = sendFees
+      } else {
+        this.sendFees = sendFees
       }
+
+      // const getMax = amount === undefined
+      // if (this.feesAvailable) {
+      //   const sendFees = {}
+
+      //   for (const [speed, fee] of Object.entries(this.assetFees)) {
+      //     const feePrice = fee.fee.maxFeePerGas || fee.fee
+      //     sendFees[speed] = getSendFee(this.assetChain, feePrice)
+      //   }
+
+      //   if (getMax) {
+      //     this.maxSendFees = sendFees
+      //   } else {
+      //     this.sendFees = sendFees
+      //   }
+      // }
     },
     updateSendFees: _.debounce(async function (amount) {
       await this._updateSendFees(amount)

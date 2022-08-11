@@ -120,7 +120,7 @@ import moment from '@liquality/wallet-core/dist/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
-import { getSendFee } from '@liquality/wallet-core/dist/utils/fees'
+import { getFeeEstimations } from '@liquality/wallet-core/dist/utils/fees'
 import { prettyBalance, prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { getStatusLabel, ACTIVITY_FILTER_TYPES } from '@liquality/wallet-core/dist/utils/history'
 import { getItemIcon } from '@/utils/history'
@@ -205,16 +205,6 @@ export default {
     typeIcon() {
       const filter = ACTIVITY_FILTER_TYPES[this.item.type]
       return this.getItemIcon(filter?.icon)
-    },
-    sendFees() {
-      const sendFees = {}
-
-      for (const [speed, fee] of Object.entries(this.assetFees)) {
-        const feePrice = fee.fee.maxFeePerGas || fee.fee
-        sendFees[speed] = getSendFee(this.assetChain, feePrice)
-      }
-
-      return sendFees
     }
   },
   methods: {
@@ -238,6 +228,19 @@ export default {
     closeFeeSelector() {
       this.showFeeSelector = false
       this.selectedFee = 'average'
+    },
+    async sendFees() {
+      const sendFees = await getFeeEstimations(this.account.id, this.asset)
+      return sendFees
+
+      // const sendFees = {}
+
+      // for (const [speed, fee] of Object.entries(this.assetFees)) {
+      //   const feePrice = fee.fee.maxFeePerGas || fee.fee
+      //   sendFees[speed] = getSendFee(this.assetChain, feePrice)
+      // }
+
+      // return sendFees
     },
     async updateFee() {
       this.feeSelectorLoading = true

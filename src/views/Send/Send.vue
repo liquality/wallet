@@ -253,7 +253,11 @@ import {
 } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getSendFee, getFeeLabel, isEIP1559Fees } from '@liquality/wallet-core/dist/utils/fees'
+import {
+  getFeeEstimations,
+  getFeeLabel,
+  isEIP1559Fees
+} from '@liquality/wallet-core/dist/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
@@ -450,41 +454,11 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async _updateSendFees(amount) {
-      const getMax = amount === undefined
-      if (this.feesAvailable) {
-        const sendFees = {}
-
-        for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee.maxFeePerGas || fee.fee
-          sendFees[speed] = getSendFee(this.assetChain, feePrice)
-        }
-
-        if (this.asset === 'BTC') {
-          const client = this.client({
-            network: this.activeNetwork,
-            walletId: this.activeWalletId,
-            asset: this.asset,
-            accountId: this.account.id
-          })
-          const feePerBytes = Object.values(this.assetFees).map((fee) => fee.fee)
-          const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
-          try {
-            const txs = feePerBytes.map((fee) => ({ value, fee }))
-            const totalFees = await client.wallet.getTotalFees(txs, getMax)
-            for (const [speed, fee] of Object.entries(this.assetFees)) {
-              const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
-              sendFees[speed] = totalFee
-            }
-          } catch (e) {
-            console.error(e)
-          }
-        }
-
-        if (getMax) {
-          this.maxSendFees = sendFees
-        } else {
-          this.sendFees = sendFees
-        }
+      const sendFees = await getFeeEstimations(this.account.id, this.asset, amount)
+      if (amount === undefined) {
+        this.maxSendFees = sendFees
+      } else {
+        this.sendFees = sendFees
       }
     },
     updateSendFees: _.debounce(async function (amount) {
@@ -636,11 +610,8 @@ export default {
     }
     this.updatingFees = true
     await this.updateFees({ asset: this.assetChain })
-    if (this.maxOptionActive) {
-      this.updateMaxSendFees()
-    } else {
-      this.updateSendFees(this.amount)
-    }
+    this.updateMaxSendFees()
+    this.updateSendFees(this.amount)
     this.updatingFees = false
 
     await this.trackAnalytics({

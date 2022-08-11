@@ -129,7 +129,7 @@ import {
   estimateGas
 } from '@liquality/wallet-core/dist/utils/asset'
 import { parseTokenTx } from '@liquality/wallet-core/dist/utils/parseTokenTx'
-import { isEIP1559Fees } from '@liquality/wallet-core/dist/utils/fees'
+import { isEIP1559Fees, getFeeEstimations } from '@liquality/wallet-core/dist/utils/fees'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
@@ -274,23 +274,30 @@ export default {
         return
       }
 
-      const getMax = amount === undefined
-      if (this.feesAvailable) {
-        const sendFees = {}
-
-        for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee.maxFeePerGas || fee.fee
-          const feePerGas = BN(feePrice).div(1e9)
-          const txCost = this.gas.times(feePerGas)
-          sendFees[speed] = txCost
-        }
-
-        if (getMax) {
-          this.maxSendFees = sendFees
-        } else {
-          this.sendFees = sendFees
-        }
+      const sendFees = await getFeeEstimations(this.account.id, this.asset, amount)
+      if (amount === undefined) {
+        this.maxSendFees = sendFees
+      } else {
+        this.sendFees = sendFees
       }
+
+      // const getMax = amount === undefined
+      // if (this.feesAvailable) {
+      //   const sendFees = {}
+
+      //   for (const [speed, fee] of Object.entries(this.assetFees)) {
+      //     const feePrice = fee.fee.maxFeePerGas || fee.fee
+      //     const feePerGas = BN(feePrice).div(1e9)
+      //     const txCost = this.gas.times(feePerGas)
+      //     sendFees[speed] = txCost
+      //   }
+
+      //   if (getMax) {
+      //     this.maxSendFees = sendFees
+      //   } else {
+      //     this.sendFees = sendFees
+      //   }
+      // }
     },
     async estimateGas() {
       let gas = this.request.args[0].gas
