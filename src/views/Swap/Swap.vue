@@ -1033,14 +1033,13 @@ export default {
         this.receiveFee,
         this.fiatRates[this.selectedQuote?.bridgeAsset || this.toAssetChain]
       ).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
-
       const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat)
         ? 0
         : this.totalToReceiveInFiat * 0.15
-      return feeTotal.gte(BN(receiveTotalPercentage))
+      return receiveTotalPercentage !== 0 && feeTotal.gte(BN(receiveTotalPercentage))
     },
     isSwapNegative() {
-      return receiveTotalPercentage !== 0 && feeTotal.gte(BN(receiveTotalPercentage))
+      return this.totalToReceiveInFiat < 0
     },
     isEIP1559Fees() {
       return isEIP1559Fees(cryptoassets[this.customFeeAssetSelected].chain, this.activeNetwork)
