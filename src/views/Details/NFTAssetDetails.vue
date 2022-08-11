@@ -16,9 +16,9 @@
           <Star :nftAsset="nftAsset" :accountId="accountId" />
         </div>
         <NFTQuantity
-          :quantity="nftAsset.amount"
+          :quantity="nftAsset?.amount"
           :style="showFullscreen ? { top: 'calc(25% - 34px)' } : { bottom: 'calc(20% + 10px)' }"
-          v-if="nftAsset.amount"
+          v-if="nftAsset && nftAsset.amount"
         />
         <div class="send--share--actions">
           <SendIcon
@@ -56,7 +56,9 @@
         </div>
         <div class="drawer nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
-            <h1 class="nft-details_name">{{ nftAsset ? nftAsset.name : '[Name]' }}</h1>
+            <h1 class="nft-details_name">
+              {{ nftAsset && nftAsset?.name ? nftAsset.name : '[Name]' }}
+            </h1>
             <ChevronDownIcon
               class="nft-details_arrow"
               style="transform: scaleY(-1)"
@@ -64,7 +66,7 @@
             />
           </div>
           <h5 class="nft-details_collection-details">
-            {{ nftAsset ? nftAsset.collection.name : '[Collection]' }}
+            {{ nftAsset && nftAsset.collection?.name ? nftAsset?.collection.name : '[Collection]' }}
           </h5>
         </div>
       </template>

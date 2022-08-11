@@ -37,7 +37,7 @@
           <div class="col-12">
             <h2>Sent Asset</h2>
             <div class="d-flex">
-              <div class="nft-image mr-2">
+              <div class="nft-image mr-2" style="--img-width: 100px">
                 <img
                   ref="nftThumbnailImage"
                   :src="item.nft.image_thumbnail_url || thumbnailImage"
@@ -46,9 +46,9 @@
                 />
               </div>
               <div class="w-100">
-                <p class="font-weight-bold">{{ item.nft.name }}</p>
-                <p>{{ item.nft.collection.name }}</p>
-                <p v-if="item.nft.token_id">#{{ item.nft.token_id }}</p>
+                <p class="font-weight-bold text-break">{{ item.nft.name }}</p>
+                <p class="text-break">{{ item.nft.collection.name }}</p>
+                <p class="text-break" v-if="item.nft.token_id">#{{ item.nft.token_id }}</p>
               </div>
             </div>
           </div>
@@ -360,7 +360,7 @@ export default {
   }
 
   .nft-image {
-    width: 120px;
+    min-width: var(--img-width);
 
     img {
       width: 100%;

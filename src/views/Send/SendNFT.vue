@@ -663,7 +663,7 @@ export default {
 }
 
 .nft-image {
-  width: var(--img-width);
+  min-width: var(--img-width);
 
   svg {
     position: absolute;

@@ -3,8 +3,8 @@
     <div class="nft-assets__container">
       <div class="nft-assets__container__heading">
         <div class="collection-name">
-          <h5 :title="collectionName" class="cursor-pointer">
-            {{ collectionName }}
+          <h5 :title="nftCollectionName" class="cursor-pointer">
+            {{ nftCollectionName }}
           </h5>
           <span class="ml-1">({{ nftCollection.length }})</span>
         </div>
@@ -83,11 +83,15 @@ export default {
     chain() {
       return this.account?.chain
     },
-    nameOfCollection() {
-      if (this.collectionName) {
+    nftCollectionName() {
+      if (
+        this.collectionName &&
+        this.collectionName !== 'undefined' &&
+        this.collectionName !== 'null'
+      ) {
         return this.collectionName
       } else {
-        return this.assets.filter((asset) => asset.name)[0].name
+        return this.assets.filter((asset) => asset.name)[0]?.name || 'Unknown Collection'
       }
     }
   }
