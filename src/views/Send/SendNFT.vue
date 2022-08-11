@@ -7,7 +7,9 @@
       <div class="account-content mx-3">
         <div>
           <Accordion v-for="(assets, key) in nftCollection" :key="assets.id">
-            <h3 slot="header" id="nft-asset-header">{{ key }} ({{ assets.length }})</h3>
+            <h3 slot="header" id="nft-asset-header">
+              {{ nftCollectionName(assets, key) }} ({{ assets.length }})
+            </h3>
             <div class="nft-assets__container__images">
               <div
                 class="nft-image"
@@ -522,6 +524,13 @@ export default {
         return '/wallet/nfts'
       }
       this.activeView = view
+    },
+    nftCollectionName(assets, key) {
+      if (key && key !== 'undefined' && key !== 'null') {
+        return key
+      } else {
+        return assets.filter((asset) => asset.name)[0]?.name || 'Unknown Collection'
+      }
     },
     cancelCustomFee() {
       this.activeView = 'selectedAsset'
