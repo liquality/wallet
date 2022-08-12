@@ -68,8 +68,8 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // overview-screen-chain-section , RSK should be hidden
     expect(
       await overviewPage.getTotalAssets(page),
-      'After RSK account toggle off overview page should have 8 assets'
-    ).to.equals(8)
+      'After RSK account toggle off overview page should have 9 assets'
+    ).to.equals(9)
     // Go back to Manage account & toggle on
     await overviewPage.ClickOnManageAccounts(page)
     // Chain RSK toggle on but not accounts
