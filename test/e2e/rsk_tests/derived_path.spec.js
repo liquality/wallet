@@ -305,6 +305,6 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // After enter new seed phrase wallet will have RSK & RSK legacy accounts
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCountNew = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCountNew, 'total assets should be 8 on overview page').contain('10 Assets')
+    expect(assetsCountNew, 'total assets should be 11 on overview page').contain('11 Assets')
   })
 })

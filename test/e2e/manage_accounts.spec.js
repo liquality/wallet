@@ -77,8 +77,8 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await page.click('#previous_nav_bar')
     expect(
       await overviewPage.getTotalAssets(page),
-      'After RSK account toggle on overview page should have 10 assets'
-    ).to.equals(10)
+      'After RSK account toggle on overview page should have 11 assets'
+    ).to.equals(11)
   })
   it('RSK - create new account, validate RSK 3 accounts', async () => {
     // check Send & Swap & Receive options have been displayed
