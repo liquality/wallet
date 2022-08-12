@@ -5,7 +5,11 @@
         <div class="icons d-flex justify-content-center">
           <span class="mr-2">
             <NFTIcon class="asset-icon" />
-            <img :src="getAssetIcon(asset)" :alt="`${asset}-icon`" class="asset-icon" />
+            <img
+              :src="getAccountIcon(account.chain)"
+              :alt="`${account.chain}-icon`"
+              class="asset-icon"
+            />
           </span>
           {{ account.chain }}
         </div>
@@ -55,7 +59,7 @@ import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
 import NFTStats from '@/views/Wallet/NFTStats'
 import amplitude from 'amplitude-js'
 import WalletNFTs from './WalletNFTs.vue'
-import { getAssetIcon } from '@/utils/asset'
+import { getAccountIcon } from '@/utils/accounts'
 import NFTIcon from '@/assets/icons/nft.svg'
 import { chains } from '@liquality/cryptoassets'
 
@@ -103,7 +107,7 @@ export default {
     }
   },
   methods: {
-    getAssetIcon,
+    getAccountIcon,
     applyFilters(filters) {
       this.activityData = applyActivityFilters([...this.assetHistory], filters)
     }
