@@ -120,7 +120,7 @@ store.subscribe(async ({ type, payload }, state) => {
             network: state.activeNetwork,
             accountIds: accountIds
           }),
-        () => random(400000, 600000)
+        () => random(200000, 300000)
       )
 
       asyncLoop(
