@@ -16,7 +16,9 @@
       <div class="wallet-tabs">
         <ul class="nav nav-tabs">
           <li class="nav-item" @click="activeTab = 'nfts'">
-            <span :class="activeTab === 'nfts' ? 'nav-link active' : 'nav-link'"> NFTs </span>
+            <span :class="activeTab === 'nfts' ? 'nav-link active' : 'nav-link'">
+              NFTs ({{ nftAssetsCount || 0 }})
+            </span>
           </li>
           <li class="nav-item" @click="activeTab = 'activity'">
             <span :class="activeTab === 'activity' ? 'nav-link active' : 'nav-link'">
@@ -85,7 +87,7 @@ export default {
     ...mapState(['activeNetwork', 'history']),
     ...mapGetters(['activity', 'accountsData', 'accountNftCollections']),
     assetHistory() {
-      return this.activity.filter((item) => item.type === 'NFT')
+      return this.activity.filter((item) => item.type === 'NFT' && item.accountId === this.id)
     },
     nftAssets() {
       return this.accountNftCollections(this.id) || []

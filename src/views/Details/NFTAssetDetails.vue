@@ -133,11 +133,15 @@
                       <tr class="border-top-0">
                         <td class="text-muted text-left small-12">Account</td>
                         <td class="text-break" v-if="nftAsset.asset_contract">
-                          <span class="text-primary d-flex align-items-center">
+                          <a
+                            class="text-primary d-flex align-items-center"
+                            :href="addressLink"
+                            target="_blank"
+                          >
                             <img :src="getAssetIcon(asset)" class="asset-icon mr-1" />
                             {{ shortenAddress(address) }}
                             <CopyIcon @click="copy(address)" class="copy-icon"
-                          /></span>
+                          /></a>
                         </td>
                       </tr>
                       <tr>
@@ -160,10 +164,10 @@
                           /></span>
                         </td>
                       </tr>
-                      <tr v-if="nftAsset.standard">
+                      <tr>
                         <td class="text-muted text-left small-12">Token Standard</td>
                         <td class="text-break">
-                          {{ nftAsset.standard }}
+                          {{ nftAsset.standard || '-' }}
                         </td>
                       </tr>
                       <tr v-if="nftAsset.amount && nftAsset.amount > 1">
@@ -202,7 +206,11 @@ import NavBar from '../../components/NavBar.vue'
 import { chains } from '@liquality/cryptoassets'
 import { getAccountIcon } from '@/utils/accounts'
 import { getAssetIcon } from '@/utils/asset'
-import { getNftTransferLink, getMarketplaceName } from '@liquality/wallet-core/dist/utils/asset'
+import {
+  getNftTransferLink,
+  getMarketplaceName,
+  getAddressExplorerLink
+} from '@liquality/wallet-core/dist/utils/asset'
 import Star from '@/components/NFT/Star.vue'
 import NFTQuantity from '@/components/NFT/NFTQuantity.vue'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
@@ -262,6 +270,9 @@ export default {
     },
     asset() {
       return chains[this.account?.chain]?.nativeAsset
+    },
+    addressLink() {
+      return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
     }
   },
   async created() {
