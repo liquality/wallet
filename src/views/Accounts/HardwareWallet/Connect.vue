@@ -75,9 +75,9 @@
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import LedgerIcon from '@/assets/icons/ledger_icon.svg'
-import { LEDGER_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
+import { LEDGER_OPTIONS } from '@liquality/wallet-core/dist/src/utils/ledger'
 import clickAway from '@/directives/clickAway'
-import { isEthereumChain } from '@liquality/wallet-core/dist/utils/asset'
+import { isEthereumChain } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 
 export default {

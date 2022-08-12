@@ -35,11 +35,14 @@ import Connect from './Connect'
 import Unlock from './Unlock'
 import Completed from './Completed'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
-import { LEDGER_BITCOIN_OPTIONS, LEDGER_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
+import {
+  LEDGER_BITCOIN_OPTIONS,
+  LEDGER_OPTIONS
+} from '@liquality/wallet-core/dist/src/utils/ledger'
 import { getAssetIcon } from '@/utils/asset'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../../../package.json'
-import { getNextAccountColor } from '@liquality/wallet-core/dist/utils/accounts'
+import { getNextAccountColor } from '@liquality/wallet-core/dist/src/utils/accounts'
 import { ChainId } from '@liquality/cryptoassets'
 
 const LEDGER_PER_PAGE = 5
