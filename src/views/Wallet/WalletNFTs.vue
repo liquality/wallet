@@ -43,6 +43,15 @@
           >Check out Stratos</a
         >
       </div>
+      <div class="d-flex justify-content-center">
+        <a
+          class="text-primary font-weight-bold"
+          href="https://blog.liquality.io/nfts-are-here-manage-your-collections-from-multiple-chains-on-your-liquality-wallet/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Learn how it works</a
+        >
+      </div>
     </div>
   </div>
 </template>
