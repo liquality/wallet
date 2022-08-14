@@ -3982,7 +3982,6 @@ __metadata:
     urql: ^2.2.0
     vue: ^2.6.11
     vuex: ^3.1.3
-
   checksum: e4e09f77724ecfd71beab67b62c79652c6dc23b377f3ee838169ab0f3115a5b985cc435c2e685fe5f14a324cda877bf8939a4df8f60df9a86ec499b1be3c58d4
   languageName: node
   linkType: hard
