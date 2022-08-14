@@ -108,20 +108,20 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import moment from '@liquality/wallet-core/dist/utils/moment'
+import moment from '@liquality/wallet-core/dist/src/utils/moment'
 
-import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import {
   isEthereumChain,
   getNativeAsset,
   getAddressExplorerLink,
   getTransactionExplorerLink
-} from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/asset'
 
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 
 export default {
   components: {

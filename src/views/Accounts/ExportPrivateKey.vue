@@ -37,7 +37,7 @@
 <script>
 import NavBar from '@/components/NavBar.vue'
 import { getAccountIcon } from '@/utils/accounts'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import { mapActions, mapState } from 'vuex'
 import Eye from '../../assets/icons/eye.svg'
 
