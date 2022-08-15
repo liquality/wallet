@@ -10,9 +10,14 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-Solana is our newest chain - Now, you have your own SOL address in your wallet and can send and receive transactions!</pre
-            >
+            <h3>Solana has arrived!</h3>
+            <pre class="text-wrap">- Send and receive Solana tokens!</pre>
+            <pre class="text-wrap">- Swapping between native Solana assets through Jupiter!</pre>
+            <pre class="text-wrap">- Send and receive your NFTs</pre>
+            <h3>Coming soon for Solana:</h3>
+            <pre class="text-wrap">- Injections</pre>
+            <pre class="text-wrap">- Ledger support</pre>
+            <pre class="text-wrap">- cross-chain swaps</pre>
           </div>
         </div>
       </div>
@@ -27,9 +32,7 @@ Solana is our newest chain - Now, you have your own SOL address in your wallet a
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-Participate in our NFT Giveaway Contest! Go to our Twitter (@Liquality_io) to check the details!</pre
-            >
+            <pre class="text-wrap">Participate in our NFT Giveaway Contest! Go to our Twitter (@Liquality_io) to check the details!</pre>
           </div>
         </div>
       </div>
