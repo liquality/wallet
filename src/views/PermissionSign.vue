@@ -45,9 +45,9 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-import { getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetColorStyle } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { isAddress } from 'ethers/lib/utils'

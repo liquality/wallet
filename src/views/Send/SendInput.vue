@@ -93,9 +93,9 @@
 </template>
 
 <script>
-import { getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetColorStyle } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
-import { dpUI, formatFiatUI } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { dpUI, formatFiatUI } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import AccountTooltip from '@/components/AccountTooltip'
 import { mapState } from 'vuex'
 

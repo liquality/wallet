@@ -42,10 +42,10 @@ import {
   prettyBalance,
   formatFiat,
   formatFiatUI
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import { getAccountIcon } from '@/utils/accounts'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 
 export default {
   components: {

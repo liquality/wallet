@@ -3829,7 +3829,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/cryptoassets@npm:1.13.5":
+"@liquality/cryptoassets@npm:1.13.5, @liquality/cryptoassets@npm:^1.13.5":
   version: 1.13.5
   resolution: "@liquality/cryptoassets@npm:1.13.5"
   dependencies:
@@ -3844,7 +3844,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/cryptoassets@npm:^1.13.3, @liquality/cryptoassets@npm:^1.13.4":
+"@liquality/cryptoassets@npm:^1.13.3":
   version: 1.13.4
   resolution: "@liquality/cryptoassets@npm:1.13.4"
   dependencies:
@@ -17990,7 +17990,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "liquality-wallet@workspace:."
   dependencies:
-    "@liquality/cryptoassets": ^1.13.4
+    "@liquality/cryptoassets": ^1.13.5
     "@liquality/ethereum-utils": ^1.13.12
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12

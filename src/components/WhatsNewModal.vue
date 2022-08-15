@@ -10,8 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <h3>NFTs are here!</h3>
-            <pre class="text-wrap">- RC 0.71.0</pre>
+            <pre class="text-wrap">
+Solana is our newest chain - Now, you have your own SOL address in your wallet and can send and receive transactions!</pre
+            >
           </div>
         </div>
       </div>
@@ -26,7 +27,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">- RC 0.71.0</pre>
+            <pre class="text-wrap">
+Participate in our NFT Giveaway Contest! Go to our Twitter (@Liquality_io) to check the details!</pre
+            >
           </div>
         </div>
       </div>
