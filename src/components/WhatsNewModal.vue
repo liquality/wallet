@@ -32,7 +32,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Participate in our NFT Giveaway Contest! Go to our Twitter (@Liquality_io) to check the details!</pre>
+            <pre class="text-wrap">
+Participate in our NFT Giveaway Contest! Go to our Twitter (@Liquality_io) to check the details!</pre
+            >
           </div>
         </div>
       </div>
