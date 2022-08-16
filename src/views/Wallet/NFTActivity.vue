@@ -55,7 +55,7 @@ import { mapState, mapGetters } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
-import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
+import { applyActivityFilters } from '@liquality/wallet-core/dist/src/utils/history'
 import NFTStats from '@/views/Wallet/NFTStats'
 import amplitude from 'amplitude-js'
 import WalletNFTs from './WalletNFTs.vue'
@@ -115,6 +115,9 @@ export default {
   watch: {
     activeNetwork() {
       this.activityData = [...this.assetHistory]
+    },
+    activity() {
+      this.activityData = [...this.activity]
     }
   }
 }

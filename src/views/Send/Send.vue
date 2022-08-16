@@ -59,7 +59,7 @@
             </div>
           </div>
           <div class="form-group mt-150" v-bind:class="[showMemoInput ? 'adjustFeePosition' : '']">
-            <DetailsContainer v-if="feesAvailable">
+            <DetailsContainer v-if="feesAvailable && isCustomFeeSupported">
               <template v-slot:header>
                 <div class="network-header-container">
                   <span class="details-title" id="send_network_speed"> Network Speed/Fee </span>
@@ -95,6 +95,16 @@
                 </ul>
               </template>
             </DetailsContainer>
+            <template v-if="!isCustomFeeSupported">
+              <div class="network-header-container">
+                <span class="details-title" id="send_network_speed"
+                  ><strong> Network Speed/Fee </strong></span
+                >
+                <span class="text-muted" id="send_network_speed_avg_fee">
+                  ({{ prettyFee }} {{ assetChain }})
+                </span>
+              </div>
+            </template>
           </div>
         </div>
         <div class="wrapper_bottom">
@@ -234,7 +244,7 @@
 import { mapState, mapActions, mapGetters } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../../package.json'
 import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
@@ -245,15 +255,15 @@ import {
   dpUI,
   formatFiatUI,
   fiatToCrypto
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import {
   getNativeAsset,
   getAssetColorStyle,
   getFeeAsset
-} from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getSendFee, getFeeLabel, isEIP1559Fees } from '@liquality/wallet-core/dist/utils/fees'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import { getSendFee, getFeeLabel, isEIP1559Fees } from '@liquality/wallet-core/dist/src/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
@@ -392,6 +402,10 @@ export default {
         return 'Lower amount. This exceeds available balance.'
       }
       return null
+    },
+    isCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
+      return supportCustomFees
     },
     canSend() {
       if (!this.address || this.addressError) return false
@@ -636,11 +650,10 @@ export default {
     }
     this.updatingFees = true
     await this.updateFees({ asset: this.assetChain })
-    if (this.maxOptionActive) {
-      this.updateMaxSendFees()
-    } else {
-      this.updateSendFees(this.amount)
-    }
+
+    this.updateMaxSendFees()
+    this.updateSendFees(this.amount)
+
     this.updatingFees = false
 
     await this.trackAnalytics({
@@ -752,5 +765,11 @@ input[type='number'] {
   circle {
     stroke: #dedede;
   }
+}
+
+.details-title {
+  font-weight: bold;
+  text-transform: uppercase;
+  padding-right: 0.5em;
 }
 </style>

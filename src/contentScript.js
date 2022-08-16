@@ -11,7 +11,7 @@ import {
   terraProvider
 } from './inject'
 import { buildConfig } from '@liquality/wallet-core'
-import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
+import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
 import { chains, isEthereumChain } from '@liquality/cryptoassets'
 import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'

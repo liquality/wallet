@@ -121,7 +121,7 @@
               </div>
             </div>
           </div>
-          <DetailsContainer v-if="feesAvailable">
+          <DetailsContainer v-if="feesAvailable && isCustomFeeSupported">
             <template v-slot:header>
               <div class="network-header-container">
                 <span class="details-title" id="send_network_speed"> Network Speed/Fee </span>
@@ -148,7 +148,7 @@
                       :asset="asset"
                       v-model="selectedFee"
                       :fees="assetFees"
-                      :totalFees="sendFees"
+                      :totalFees="maxOptionActive ? maxSendFees : sendFees"
                       :fiatRates="fiatRates"
                       @custom-selected="onCustomFeeSelected"
                     />
@@ -157,6 +157,16 @@
               </ul>
             </template>
           </DetailsContainer>
+          <template v-if="!isCustomFeeSupported">
+            <div class="network-header-container">
+              <span class="details-title" id="send_network_speed"
+                ><strong> Network Speed/Fee </strong></span
+              >
+              <span class="text-muted" id="send_network_speed_avg_fee">
+                ({{ prettyFee }} {{ assetChain }})
+              </span>
+            </div>
+          </template>
           <div class="button-group">
             <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">Cancel</button>
             <button
@@ -268,11 +278,11 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
 import Accordion from '@/components/Accordion.vue'
 import { chains } from '@liquality/cryptoassets'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import CopyIcon from '@/assets/icons/copy.svg'
-import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
-import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/utils/asset'
+import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/src/utils/fees'
+import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import OperationErrorModal from '@/components/OperationErrorModal'
@@ -285,7 +295,7 @@ import {
   formatFiatUI,
   prettyBalance,
   prettyFiatBalance
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
@@ -478,6 +488,10 @@ export default {
     },
     endAddress() {
       return this.address.slice(this.address.length - 4)
+    },
+    isCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
+      return supportCustomFees
     }
   },
   methods: {

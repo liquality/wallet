@@ -63,9 +63,9 @@ import SendIcon from '@/assets/icons/arrow_send.svg'
 import { getAssetIcon } from '@/utils/asset'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import EyeIcon from '@/assets/icons/eye.svg'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import { chains } from '@liquality/cryptoassets'
-import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
+import { getAddressExplorerLink } from '@liquality/wallet-core/dist/src/utils/asset'
 
 export default {
   components: {

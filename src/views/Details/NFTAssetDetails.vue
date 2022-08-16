@@ -195,7 +195,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
 import 'markdown-it-vue/dist/markdown-it-vue-light.css'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'

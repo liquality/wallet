@@ -107,7 +107,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
@@ -118,13 +118,13 @@ import {
   prettyBalance,
   formatFiat,
   formatFiatUI
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import { getAddressExplorerLink } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
-import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
+import { applyActivityFilters } from '@liquality/wallet-core/dist/src/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
@@ -236,6 +236,9 @@ export default {
   },
   watch: {
     activeNetwork() {
+      this.activityData = [...this.assetHistory]
+    },
+    activity() {
       this.activityData = [...this.assetHistory]
     }
   }

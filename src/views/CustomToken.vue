@@ -117,8 +117,8 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { debounce } from 'lodash-es'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { CHAINS_WITH_FETCH_TOKEN_DETAILS } from '@liquality/wallet-core/dist/utils/fetchTokenDetails'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
+import { CHAINS_WITH_FETCH_TOKEN_DETAILS } from '@liquality/wallet-core/dist/src/utils/fetchTokenDetails'
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'

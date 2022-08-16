@@ -44,7 +44,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import { isEthereumChain, chains } from '@liquality/cryptoassets'
 import { version as walletVersion } from '../../package.json'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import { buildConfig } from '@liquality/wallet-core'
 
 import clickAway from '@/directives/clickAway'
