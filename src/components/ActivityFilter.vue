@@ -106,11 +106,14 @@ import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import CloseIcon from '@/assets/icons/close.svg'
 import ExportIcon from '@/assets/icons/export.svg'
 import ListItem from '@/components/ListItem'
-import { ACTIVITY_FILTER_TYPES, ACTIVITY_STATUSES } from '@liquality/wallet-core/dist/utils/history'
+import {
+  ACTIVITY_FILTER_TYPES,
+  ACTIVITY_STATUSES
+} from '@liquality/wallet-core/dist/src/utils/history'
 import { getItemIcon } from '@/utils/history'
 import DatePick from 'vue-date-pick'
 import '@/assets/scss/vue-date-pick.scss'
-import { getCSVContent } from '@liquality/wallet-core/dist/utils/export'
+import { getCSVContent } from '@liquality/wallet-core/dist/src/utils/export'
 import { downloadFile } from '@/utils/export'
 
 const CSV_HEADERS = [

@@ -68,8 +68,8 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // overview-screen-chain-section , RSK should be hidden
     expect(
       await overviewPage.getTotalAssets(page),
-      'After RSK account toggle off overview page should have 8 assets'
-    ).to.equals(8)
+      'After RSK account toggle off overview page should have 9 assets'
+    ).to.equals(9)
     // Go back to Manage account & toggle on
     await overviewPage.ClickOnManageAccounts(page)
     // Chain RSK toggle on but not accounts
@@ -77,8 +77,8 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await page.click('#previous_nav_bar')
     expect(
       await overviewPage.getTotalAssets(page),
-      'After RSK account toggle on overview page should have 10 assets'
-    ).to.equals(10)
+      'After RSK account toggle on overview page should have 11 assets'
+    ).to.equals(11)
   })
   it('RSK - create new account, validate RSK 3 accounts', async () => {
     // check Send & Swap & Receive options have been displayed

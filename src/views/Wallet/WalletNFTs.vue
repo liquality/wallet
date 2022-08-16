@@ -31,7 +31,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import NFTAssets from '../../components/NFTAssets.vue'
-import { getNftLink, openseaLink } from '@liquality/wallet-core/dist/utils/asset'
+import { getNftLink, openseaLink } from '@liquality/wallet-core/dist/src/utils/asset'
 import OpenSea from '../../assets/icons/opensea.svg'
 import { chains } from '@liquality/cryptoassets'
 

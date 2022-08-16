@@ -23,11 +23,11 @@
     "test:testnet": "node_modules/mocha/bin/mocha --grep 'TESTNET'"
   },
   "dependencies": {
-    "@liquality/cryptoassets": "^1.13.4",
+    "@liquality/cryptoassets": "^1.13.5",
     "@liquality/ethereum-utils": "^1.13.12",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
-    "@liquality/wallet-core": "^1.24.2",
+    "@liquality/wallet-core": "1.28.4",
     "@terra-money/terra.js": "^3.0.8",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.18.2",

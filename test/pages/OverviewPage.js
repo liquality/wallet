@@ -386,7 +386,7 @@ class OverviewPage {
     console.log(`Total assets: ${chainNames.length}`)
     console.log(`Total assets: ${chainNames}`)
 
-    const assets = newWallet ? 9 : 10
+    const assets = newWallet ? 10 : 11
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(
