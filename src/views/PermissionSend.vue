@@ -341,8 +341,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates', 'getSuggestedFeePrices']),
-    ...mapGetters(['client', 'accountItem']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
+    ...mapGetters(['client', 'accountItem', 'getSuggestedFeePrices']),
     asset() {
       return this.request.asset
     },

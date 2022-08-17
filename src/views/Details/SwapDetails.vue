@@ -150,8 +150,6 @@ export default {
       const toChain = cryptoassets[this.item.to].chain
 
       const fromFee = feePerUnit(this.item.fee, fromChain)
-      const claimFee = this.item.claimFee || 0
-      const toFee = feePerUnit(claimFee.fee, toChain)
 
       const fees = []
       fees.push({
@@ -160,6 +158,9 @@ export default {
         unit: chains[fromChain].fees.unit
       })
       if (toChain !== fromChain) {
+        const claimFee = this.item.claimFee || 0
+        const toFee = feePerUnit(claimFee, toChain)
+
         fees.push({
           asset: getNativeAsset(this.item.to),
           fee: toFee,

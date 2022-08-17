@@ -495,7 +495,12 @@ import {
 } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getFeeLabel, isEIP1559Fees } from '@liquality/wallet-core/dist/utils/fees'
+import {
+  getFeeLabel,
+  isEIP1559Fees,
+  feePerUnit,
+  newSendFees
+} from '@liquality/wallet-core/dist/utils/fees'
 import { chains } from '@liquality/cryptoassets'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -1017,6 +1022,7 @@ export default {
       'trackAnalytics'
     ]),
     ...mapActions('app', ['startBridgeListener']),
+    ...mapGetters(['getSuggestedFeePrices']),
     shortenAddress,
     dpUI,
     prettyBalance,
@@ -1030,7 +1036,7 @@ export default {
       if (this.customFees[asset]) {
         assetFees.custom = { fee: this.customFees[asset] }
       }
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
+      const fees = this.getSuggestedFeePrices()(asset)
       if (fees) {
         Object.assign(assetFees, fees)
       }
@@ -1086,18 +1092,8 @@ export default {
     async _updateSwapFees(max) {
       if (!this.selectedQuote) return
       const fees = {
-        [this.assetChain]: {
-          slow: BN(0),
-          average: BN(0),
-          fast: BN(0),
-          custom: BN(0)
-        },
-        [this.toAssetChain]: {
-          slow: BN(0),
-          average: BN(0),
-          fast: BN(0),
-          custom: BN(0)
-        }
+        [this.assetChain]: newSendFees(),
+        [this.toAssetChain]: newSendFees()
       }
 
       const selectedQuoteProvider = this.selectedQuoteProvider
@@ -1111,14 +1107,16 @@ export default {
           asset,
           txType,
           quote: this.selectedQuote,
-          feePrices: Object.values(assetFees).map((fee) => fee.fee.maxFeePerGas || fee.fee),
+          feePrices: Object.values(assetFees).map((fee) =>
+            feePerUnit(fee.fee, cryptoassets[asset].chain)
+          ),
           max
         })
 
         if (!totalFees) return
 
         for (const [speed, fee] of Object.entries(assetFees)) {
-          const feePrice = fee.fee.maxFeePerGas || fee.fee
+          const feePrice = feePerUnit(fee.fee, cryptoassets[asset].chain)
           fees[chain][speed] = fees[chain][speed].plus(totalFees[feePrice])
         }
       }
@@ -1419,8 +1417,7 @@ export default {
       } else {
         this.updateMaxSwapFees()
         this.updateSwapFees()
-        this.customFees[asset] =
-          typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.customFees[asset] = feePerUnit(fee, cryptoassets[asset].chain)
         this.selectedFee[asset] = 'custom'
       }
       this.currentStep = 'inputs'
