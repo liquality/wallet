@@ -19,7 +19,7 @@
       <div class="d-flex justify-content-center brand">
         <OpenSea @click="openMarketplace('polygon')" class="cursor-pointer" />
       </div>
-      <p class="text-center">Explore NFTs on Polygon and Ethereum</p>
+      <p class="text-center">Explore NFTs on Polygon, Ethereum and Solana.</p>
       <div class="d-flex justify-content-center mb-2">
         <a
           class="btn btn-primary"
