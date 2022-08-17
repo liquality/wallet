@@ -129,7 +129,11 @@ import {
   estimateGas
 } from '@liquality/wallet-core/dist/utils/asset'
 import { parseTokenTx } from '@liquality/wallet-core/dist/utils/parseTokenTx'
-import { isEIP1559Fees, getFeeEstimations } from '@liquality/wallet-core/dist/utils/fees'
+import {
+  isEIP1559Fees,
+  getTransactionFee,
+  feePerUnit
+} from '@liquality/wallet-core/dist/utils/fees'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
@@ -274,30 +278,12 @@ export default {
         return
       }
 
-      const sendFees = await getFeeEstimations(this.account.id, this.asset, amount)
+      const sendFees = await getTransactionFee(this.account.id, this.asset, amount)
       if (amount === undefined) {
         this.maxSendFees = sendFees
       } else {
         this.sendFees = sendFees
       }
-
-      // const getMax = amount === undefined
-      // if (this.feesAvailable) {
-      //   const sendFees = {}
-
-      //   for (const [speed, fee] of Object.entries(this.assetFees)) {
-      //     const feePrice = fee.fee.maxFeePerGas || fee.fee
-      //     const feePerGas = BN(feePrice).div(1e9)
-      //     const txCost = this.gas.times(feePerGas)
-      //     sendFees[speed] = txCost
-      //   }
-
-      //   if (getMax) {
-      //     this.maxSendFees = sendFees
-      //   } else {
-      //     this.sendFees = sendFees
-      //   }
-      // }
     },
     async estimateGas() {
       let gas = this.request.args[0].gas
@@ -331,7 +317,7 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.customFee = this.calculateFee(fee)
         this.selectedFee = 'custom'
       }
       this.currentStep = 'inputs'
@@ -355,7 +341,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
+    ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates', 'getSuggestedFeePrices']),
     ...mapGetters(['client', 'accountItem']),
     asset() {
       return this.request.asset
@@ -390,7 +376,7 @@ export default {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      const fees = this.getSuggestedFeePrices(this.assetChain)
 
       if (fees) {
         Object.assign(assetFees, fees)
@@ -417,15 +403,10 @@ export default {
       if (this.selectedFee === 'custom') {
         feePerGas = this.customFee
       } else {
-        feePerGas =
-          this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[
-            this.selectedFee
-          ]?.fee
+        feePerGas = this.getSuggestedFeePrices(this.assetChain)[this.selectedFee]?.fee
       }
 
-      feePerGas = feePerGas.suggestedBaseFeePerGas
-        ? feePerGas.suggestedBaseFeePerGas + feePerGas.maxPriorityFeePerGas
-        : feePerGas
+      feePerGas = this.calculateFee(feePerGas)
 
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
 
@@ -441,23 +422,16 @@ export default {
       if (this.selectedFee === 'custom') {
         feePerGas = this.customFee
       } else {
-        feePerGas =
-          this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[
-            this.selectedFee
-          ]?.fee
+        feePerGas = feePerGas = this.getSuggestedFeePrices(this.assetChain)[this.selectedFee]?.fee
       }
 
-      feePerGas = feePerGas.suggestedBaseFeePerGas
-        ? feePerGas.suggestedBaseFeePerGas + feePerGas.maxPriorityFeePerGas
-        : feePerGas
+      feePerGas = this.calculateFee(feePerGas)
 
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
       return txCost.dp(6)
     },
     calculateFee(fee) {
-      return fee.suggestedBaseFeePerGas
-        ? fee.suggestedBaseFeePerGas + fee.maxPriorityFeePerGas
-        : fee
+      return feePerUnit(fee)
     },
     account() {
       return this.accountItem(this.request?.accountId)

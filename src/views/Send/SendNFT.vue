@@ -270,7 +270,7 @@ import { chains } from '@liquality/cryptoassets'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import CopyIcon from '@/assets/icons/copy.svg'
-import { getFeeEstimations, getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
+import { getTransactionFee, getFeeLabel, feePerUnit } from '@liquality/wallet-core/dist/utils/fees'
 import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -349,7 +349,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['activity', 'accountItem', 'accountsData', 'accountNftCollections']),
+    ...mapGetters([
+      'activity',
+      'accountItem',
+      'accountsData',
+      'accountNftCollections',
+      'getSuggestedFeePrices'
+    ]),
     ...mapState([
       'activeNetwork',
       'activeWalletId',
@@ -455,7 +461,7 @@ export default {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      const fees = this.getSuggestedFeePrices(this.assetChain)
       if (fees) {
         Object.assign(assetFees, fees)
       }
@@ -552,7 +558,7 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.customFee = feePerUnit(fee, cryptoassets[this.asset].chain)
         this.selectedFee = 'custom'
       }
       this.activeView = 'selectedAsset'
@@ -565,28 +571,12 @@ export default {
       this.selectedFee = 'average'
     },
     async _updateSendFees(amount) {
-      const sendFees = await getFeeEstimations(this.account.id, this.asset, amount)
+      const sendFees = await getTransactionFee(this.account.id, this.asset, amount)
       if (amount === undefined) {
         this.maxSendFees = sendFees
       } else {
         this.sendFees = sendFees
       }
-
-      // const getMax = amount === undefined
-      // if (this.feesAvailable) {
-      //   const sendFees = {}
-
-      //   for (const [speed, fee] of Object.entries(this.assetFees)) {
-      //     const feePrice = fee.fee.maxFeePerGas || fee.fee
-      //     sendFees[speed] = getSendFee(this.assetChain, feePrice)
-      //   }
-
-      //   if (getMax) {
-      //     this.maxSendFees = sendFees
-      //   } else {
-      //     this.sendFees = sendFees
-      //   }
-      // }
     },
     updateSendFees: _.debounce(async function (amount) {
       await this._updateSendFees(amount)

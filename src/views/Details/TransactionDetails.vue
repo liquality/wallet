@@ -120,7 +120,7 @@ import moment from '@liquality/wallet-core/dist/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
-import { getFeeEstimations } from '@liquality/wallet-core/dist/utils/fees'
+import { getTransactionFee, feePerUnit } from '@liquality/wallet-core/dist/utils/fees'
 import { prettyBalance, prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { getStatusLabel, ACTIVITY_FILTER_TYPES } from '@liquality/wallet-core/dist/utils/history'
 import { getItemIcon } from '@/utils/history'
@@ -161,15 +161,14 @@ export default {
   },
   props: ['id'],
   computed: {
-    ...mapGetters(['client']),
+    ...mapGetters(['client', 'getSuggestedFeePrices']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     assetChain() {
       return getNativeAsset(this.item.from)
     },
     itemFee() {
-      return typeof this.item.fee !== 'object'
-        ? this.item.fee
-        : BN(this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas).dp(3)
+      const fee = feePerUnit(this.item.fee, this.chainId)
+      return typeof this.item.fee !== 'object' ? fee : BN(fee).dp(3)
     },
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
@@ -197,7 +196,9 @@ export default {
       )
     },
     assetFees() {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      console.log('assetFees')
+
+      return this.getSuggestedFeePrices(this.assetChain)
     },
     feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
@@ -230,17 +231,8 @@ export default {
       this.selectedFee = 'average'
     },
     async sendFees() {
-      const sendFees = await getFeeEstimations(this.account.id, this.asset)
+      const sendFees = await getTransactionFee(this.account.id, this.asset)
       return sendFees
-
-      // const sendFees = {}
-
-      // for (const [speed, fee] of Object.entries(this.assetFees)) {
-      //   const feePrice = fee.fee.maxFeePerGas || fee.fee
-      //   sendFees[speed] = getSendFee(this.assetChain, feePrice)
-      // }
-
-      // return sendFees
     },
     async updateFee() {
       this.feeSelectorLoading = true

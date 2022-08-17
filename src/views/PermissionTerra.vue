@@ -65,7 +65,6 @@ import { mapActions } from 'vuex'
 import { getNativeAsset, getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
-
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
@@ -177,9 +176,6 @@ export default {
     },
     data() {
       return this.request.args[0].data.msgs.map((msg) => JSON.parse(msg))
-    },
-    feesAvailable() {
-      return this.assetFees && Object.keys(this.assetFees).length
     },
     request() {
       return {

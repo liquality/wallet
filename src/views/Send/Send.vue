@@ -254,9 +254,10 @@ import {
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import {
-  getFeeEstimations,
+  getTransactionFee,
   getFeeLabel,
-  isEIP1559Fees
+  isEIP1559Fees,
+  feePerUnit
 } from '@liquality/wallet-core/dist/utils/fees'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
@@ -309,7 +310,7 @@ export default {
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
     ...mapGetters('app', ['ledgerBridgeReady']),
-    ...mapGetters(['accountItem', 'client']),
+    ...mapGetters(['accountItem', 'client', 'getSuggestedFeePrices']),
     account() {
       return this.accountItem(this.accountId)
     },
@@ -359,7 +360,7 @@ export default {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      const fees = this.getSuggestedFeePrices(this.assetChain)
       if (fees) {
         Object.assign(assetFees, fees)
       }
@@ -454,7 +455,7 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async _updateSendFees(amount) {
-      const sendFees = await getFeeEstimations(this.account.id, this.asset, amount)
+      const sendFees = await getTransactionFee(this.account.id, this.asset, amount)
       if (amount === undefined) {
         this.maxSendFees = sendFees
       } else {
@@ -573,7 +574,7 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.customFee = feePerUnit(fee, cryptoassets[this.asset].chain)
         this.selectedFee = 'custom'
       }
       this.currentStep = 'inputs'

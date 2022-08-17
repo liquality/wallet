@@ -122,7 +122,7 @@ import moment from '@liquality/wallet-core/dist/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
-import { getSendFee } from '@liquality/wallet-core/dist/utils/fees'
+import { getTransactionFee, feePerUnit } from '@liquality/wallet-core/dist/utils/fees'
 import { prettyBalance, prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { getStatusLabel, ACTIVITY_FILTER_TYPES } from '@liquality/wallet-core/dist/utils/history'
 import {
@@ -161,7 +161,7 @@ export default {
   },
   props: ['id'],
   computed: {
-    ...mapGetters(['client', 'accountsData']),
+    ...mapGetters(['client', 'accountsData', 'getSuggestedFeePrices']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     thumbnailImage() {
       return NFTThumbnailImage
@@ -170,9 +170,8 @@ export default {
       return getNativeAsset(this.asset)
     },
     itemFee() {
-      return typeof this.item.fee !== 'object'
-        ? this.item.fee
-        : BN(this.item.fee.maxFeePerGas).dp(3)
+      const fee = feePerUnit(this.item.fee, cryptoassets[this.asset].chain)
+      return typeof this.item.fee !== 'object' ? fee : BN(fee).dp(3)
     },
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
@@ -209,7 +208,7 @@ export default {
       )
     },
     assetFees() {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      return this.getSuggestedFeePrices(this.assetChain)
     },
     feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
@@ -217,16 +216,6 @@ export default {
     typeIcon() {
       const filter = ACTIVITY_FILTER_TYPES[this.item.type]
       return this.getItemIcon(filter?.icon)
-    },
-    sendFees() {
-      const sendFees = {}
-
-      for (const [speed, fee] of Object.entries(this.assetFees)) {
-        const feePrice = fee.maxFeePerGas || fee.fee
-        sendFees[speed] = getSendFee(this.assetChain, feePrice)
-      }
-
-      return sendFees
     }
   },
   methods: {
@@ -237,6 +226,11 @@ export default {
     getAssetIcon,
     prettyFiatBalance,
     getItemIcon,
+    async sendFees() {
+      // TODO: this calculation is incorrect!!!
+      const sendFees = await getTransactionFee(this.account.id, this.asset)
+      return sendFees
+    },
     prettyTime(timestamp) {
       return moment(timestamp).format('MMM D YYYY, h:mm a')
     },
