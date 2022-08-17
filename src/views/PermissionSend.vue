@@ -129,11 +129,7 @@ import {
   estimateGas
 } from '@liquality/wallet-core/dist/utils/asset'
 import { parseTokenTx } from '@liquality/wallet-core/dist/utils/parseTokenTx'
-import {
-  isEIP1559Fees,
-  getTransactionFee,
-  feePerUnit
-} from '@liquality/wallet-core/dist/utils/fees'
+import { isEIP1559Fees, getSendTxFees, feePerUnit } from '@liquality/wallet-core/dist/utils/fees'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
@@ -278,7 +274,7 @@ export default {
         return
       }
 
-      const sendFees = await getTransactionFee(this.account.id, this.asset, amount)
+      const sendFees = await getSendTxFees(this.account.id, this.asset, amount)
       if (amount === undefined) {
         this.maxSendFees = sendFees
       } else {

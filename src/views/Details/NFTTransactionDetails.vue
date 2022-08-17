@@ -122,7 +122,7 @@ import moment from '@liquality/wallet-core/dist/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
-import { getTransactionFee, feePerUnit } from '@liquality/wallet-core/dist/utils/fees'
+import { getSendTxFees, feePerUnit } from '@liquality/wallet-core/dist/utils/fees'
 import { prettyBalance, prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
 import { getStatusLabel, ACTIVITY_FILTER_TYPES } from '@liquality/wallet-core/dist/utils/history'
 import {
@@ -228,7 +228,7 @@ export default {
     getItemIcon,
     async sendFees() {
       // TODO: this calculation is incorrect!!!
-      const sendFees = await getTransactionFee(this.account.id, this.asset)
+      const sendFees = await getSendTxFees(this.account.id, this.asset)
       return sendFees
     },
     prettyTime(timestamp) {

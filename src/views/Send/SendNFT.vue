@@ -270,7 +270,7 @@ import { chains } from '@liquality/cryptoassets'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
 import CopyIcon from '@/assets/icons/copy.svg'
-import { getTransactionFee, getFeeLabel, feePerUnit } from '@liquality/wallet-core/dist/utils/fees'
+import { getSendTxFees, getFeeLabel, feePerUnit } from '@liquality/wallet-core/dist/utils/fees'
 import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -571,7 +571,7 @@ export default {
       this.selectedFee = 'average'
     },
     async _updateSendFees(amount) {
-      const sendFees = await getTransactionFee(this.account.id, this.asset, amount)
+      const sendFees = await getSendTxFees(this.account.id, this.asset, amount)
       if (amount === undefined) {
         this.maxSendFees = sendFees
       } else {

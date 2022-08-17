@@ -254,7 +254,7 @@ import {
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
 import {
-  getTransactionFee,
+  getSendTxFees,
   getFeeLabel,
   isEIP1559Fees,
   feePerUnit
@@ -455,7 +455,7 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async _updateSendFees(amount) {
-      const sendFees = await getTransactionFee(this.account.id, this.asset, amount)
+      const sendFees = await getSendTxFees(this.account.id, this.asset, amount)
       if (amount === undefined) {
         this.maxSendFees = sendFees
       } else {
