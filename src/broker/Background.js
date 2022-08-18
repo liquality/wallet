@@ -1,4 +1,4 @@
-import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
+import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
 import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { assets } from '@liquality/cryptoassets'

@@ -111,7 +111,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { chainToTokenAddressMap } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
@@ -121,16 +121,19 @@ import {
   prettyBalance,
   prettyFiatBalance,
   formatFiatUI
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import {
   getNativeAsset,
   getAssetColorStyle,
-  tokenDetailProviders,
   estimateGas
-} from '@liquality/wallet-core/dist/utils/asset'
-import { parseTokenTx } from '@liquality/wallet-core/dist/utils/parseTokenTx'
-import { isEIP1559Fees, getSendTxFees, feePerUnit } from '@liquality/wallet-core/dist/utils/fees'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+} from '@liquality/wallet-core/dist/src/utils/asset'
+import { parseTokenTx } from '@liquality/wallet-core/dist/src/utils/parseTokenTx'
+import {
+  isEIP1559Fees,
+  getSendTxFees,
+  feePerUnit
+} from '@liquality/wallet-core/dist/src/utils/fees'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
@@ -175,7 +178,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateFees']),
+    ...mapActions(['updateFees', 'fetchTokenDetails']),
     ...mapActions('app', ['replyPermission']),
     prettyBalance,
     prettyFiatBalance,
@@ -205,7 +208,13 @@ export default {
       } catch {
         // in case token doesn't exist in cryptoassets
         try {
-          const tokeData = await tokenDetailProviders[chain].getDetails(tokenAddress)
+          const tokeData = await this.fetchTokenDetails({
+            network: this.activeNetwork,
+            walletId: this.activeWalletId,
+            chain,
+            contractAddress: tokenAddress
+          })
+
           this.symbol = tokeData.symbol + ' (Unverified)'
         } catch {
           this.symbol = this.assetChain

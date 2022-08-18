@@ -317,26 +317,26 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
-import moment from '@liquality/wallet-core/dist/utils/moment'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import moment from '@liquality/wallet-core/dist/src/utils/moment'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 
-import { prettyBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { getSwapTimeline, ACTIONS_TERMS } from '@liquality/wallet-core/dist/utils/timeline'
+import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import { getSwapTimeline, ACTIONS_TERMS } from '@liquality/wallet-core/dist/src/utils/timeline'
 import {
   isEthereumChain,
   getNativeAsset,
   getAddressExplorerLink
-} from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/asset'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
-import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
-import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
-import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { getSwapProviderConfig } from '@liquality/wallet-core/dist/src/swaps/utils'
+import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
+import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import { isObject } from 'lodash-es'
 
 export default {

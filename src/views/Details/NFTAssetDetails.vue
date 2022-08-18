@@ -184,7 +184,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
 import 'markdown-it-vue/dist/markdown-it-vue-light.css'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
@@ -195,7 +195,7 @@ import NavBar from '../../components/NavBar.vue'
 import { chains } from '@liquality/cryptoassets'
 import { getAccountIcon } from '@/utils/accounts'
 import { getAssetIcon } from '@/utils/asset'
-import { getNftTransferLink, getMarketplaceName } from '@liquality/wallet-core/dist/utils/asset'
+import { getNftTransferLink, getMarketplaceName } from '@liquality/wallet-core/dist/src/utils/asset'
 import Star from '@/components/Star.vue'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 

@@ -68,7 +68,7 @@
               <span>
                 <a
                   class="speed-up"
-                  v-if="canUpdateFee && !showFeeSelector"
+                  v-if="canUpdateFee && !showFeeSelector && isCustomFeeSupported"
                   @click="openFeeSelector()"
                 >
                   Speed up
@@ -118,18 +118,24 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import moment from '@liquality/wallet-core/dist/utils/moment'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import moment from '@liquality/wallet-core/dist/src/utils/moment'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
-import { getSendTxFees, feePerUnit } from '@liquality/wallet-core/dist/utils/fees'
-import { prettyBalance, prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { getStatusLabel, ACTIVITY_FILTER_TYPES } from '@liquality/wallet-core/dist/utils/history'
+import { getSendTxFees, feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
+import {
+  prettyBalance,
+  prettyFiatBalance
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import {
+  getStatusLabel,
+  ACTIVITY_FILTER_TYPES
+} from '@liquality/wallet-core/dist/src/utils/history'
 import {
   getNativeAsset,
   getTransactionExplorerLink,
   getAddressExplorerLink
-} from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { getItemIcon } from '@/utils/history'
 
@@ -139,7 +145,7 @@ import CompletedIcon from '@/assets/icons/completed.svg'
 import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 export default {
@@ -163,6 +169,10 @@ export default {
   computed: {
     ...mapGetters(['client', 'accountsData', 'getSuggestedFeePrices']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
+    isCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.item.from].chain]
+      return supportCustomFees
+    },
     thumbnailImage() {
       return NFTThumbnailImage
     },

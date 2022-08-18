@@ -62,10 +62,10 @@
 
 <script>
 import { mapActions } from 'vuex'
-import { getNativeAsset, getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import { getNativeAsset, getAssetColorStyle } from '@liquality/wallet-core/dist/src/utils/asset'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
