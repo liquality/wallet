@@ -167,7 +167,7 @@ export default {
   },
   props: ['id'],
   computed: {
-    ...mapGetters(['client', 'accountsData', 'getSuggestedFeePrices']),
+    ...mapGetters(['client', 'accountsData', 'suggestedFeePrices']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     isCustomFeeSupported() {
       const { supportCustomFees } = chains[cryptoassets[this.item.from].chain]
@@ -218,7 +218,7 @@ export default {
       )
     },
     assetFees() {
-      return this.getSuggestedFeePrices(this.assetChain)
+      return this.suggestedFeePrices(this.assetChain)
     },
     feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
@@ -237,8 +237,8 @@ export default {
     prettyFiatBalance,
     getItemIcon,
     async sendFees() {
-      // TODO: this calculation is incorrect!!!
-      const sendFees = await getSendTxFees(this.account.id, this.asset)
+      // TODO: This fee calculation for sending NFTs is inccorect. It uses 21k gas limit of sending native asset.
+      const sendFees = await getSendTxFees(this.account.id, this.asset, undefined, this.customFee)
       return sendFees
     },
     prettyTime(timestamp) {

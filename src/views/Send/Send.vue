@@ -321,7 +321,7 @@ export default {
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
     ...mapGetters('app', ['ledgerBridgeReady']),
-    ...mapGetters(['accountItem', 'client', 'getSuggestedFeePrices']),
+    ...mapGetters(['accountItem', 'client', 'suggestedFeePrices']),
     account() {
       return this.accountItem(this.accountId)
     },
@@ -371,7 +371,7 @@ export default {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.getSuggestedFeePrices(this.assetChain)
+      const fees = this.suggestedFeePrices(this.assetChain)
       if (fees) {
         Object.assign(assetFees, fees)
       }
@@ -470,7 +470,7 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async _updateSendFees(amount) {
-      const sendFees = await getSendTxFees(this.account.id, this.asset, amount)
+      const sendFees = await getSendTxFees(this.account.id, this.asset, amount, this.customFee)
       if (amount === undefined) {
         this.maxSendFees = sendFees
       } else {

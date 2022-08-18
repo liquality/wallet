@@ -167,7 +167,7 @@ export default {
   },
   props: ['id'],
   computed: {
-    ...mapGetters(['client', 'getSuggestedFeePrices']),
+    ...mapGetters(['client', 'suggestedFeePrices']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     assetChain() {
       return getNativeAsset(this.item.from)
@@ -206,9 +206,7 @@ export default {
       )
     },
     assetFees() {
-      console.log('assetFees')
-
-      return this.getSuggestedFeePrices(this.assetChain)
+      return this.suggestedFeePrices(this.assetChain)
     },
     feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
@@ -241,7 +239,7 @@ export default {
       this.selectedFee = 'average'
     },
     async sendFees() {
-      const sendFees = await getSendTxFees(this.account.id, this.asset)
+      const sendFees = await getSendTxFees(this.account.id, this.asset, undefined, this.customFee)
       return sendFees
     },
     async updateFee() {

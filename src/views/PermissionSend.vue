@@ -283,7 +283,7 @@ export default {
         return
       }
 
-      const sendFees = await getSendTxFees(this.account.id, this.asset, amount)
+      const sendFees = await getSendTxFees(this.account.id, this.asset, amount, this.customFee)
       if (amount === undefined) {
         this.maxSendFees = sendFees
       } else {
@@ -347,7 +347,7 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
-    ...mapGetters(['client', 'accountItem', 'getSuggestedFeePrices']),
+    ...mapGetters(['client', 'accountItem', 'suggestedFeePrices']),
     asset() {
       return this.request.asset
     },
@@ -381,7 +381,7 @@ export default {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.getSuggestedFeePrices(this.assetChain)
+      const fees = this.suggestedFeePrices(this.assetChain)
 
       if (fees) {
         Object.assign(assetFees, fees)
@@ -408,7 +408,7 @@ export default {
       if (this.selectedFee === 'custom') {
         feePerGas = this.customFee
       } else {
-        feePerGas = this.getSuggestedFeePrices(this.assetChain)[this.selectedFee]?.fee
+        feePerGas = this.suggestedFeePrices(this.assetChain)[this.selectedFee]?.fee
       }
 
       feePerGas = this.calculateFee(feePerGas)
@@ -427,7 +427,7 @@ export default {
       if (this.selectedFee === 'custom') {
         feePerGas = this.customFee
       } else {
-        feePerGas = feePerGas = this.getSuggestedFeePrices(this.assetChain)[this.selectedFee]?.fee
+        feePerGas = feePerGas = this.suggestedFeePrices(this.assetChain)[this.selectedFee]?.fee
       }
 
       feePerGas = this.calculateFee(feePerGas)

@@ -1060,7 +1060,7 @@ export default {
       'trackAnalytics'
     ]),
     ...mapActions('app', ['startBridgeListener']),
-    ...mapGetters(['getSuggestedFeePrices']),
+    ...mapGetters(['suggestedFeePrices']),
     shortenAddress,
     dpUI,
     prettyBalance,
@@ -1074,7 +1074,7 @@ export default {
       if (this.customFees[asset]) {
         assetFees.custom = { fee: this.customFees[asset] }
       }
-      const fees = this.getSuggestedFeePrices()(asset)
+      const fees = this.suggestedFeePrices()(asset)
       if (fees) {
         Object.assign(assetFees, fees)
       }

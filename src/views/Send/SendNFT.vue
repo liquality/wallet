@@ -364,7 +364,7 @@ export default {
       'accountItem',
       'accountsData',
       'accountNftCollections',
-      'getSuggestedFeePrices'
+      'suggestedFeePrices'
     ]),
     ...mapState([
       'activeNetwork',
@@ -471,7 +471,7 @@ export default {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.getSuggestedFeePrices(this.assetChain)
+      const fees = this.suggestedFeePrices(this.assetChain)
       if (fees) {
         Object.assign(assetFees, fees)
       }
@@ -585,7 +585,7 @@ export default {
       this.selectedFee = 'average'
     },
     async _updateSendFees(amount) {
-      const sendFees = await getSendTxFees(this.account.id, this.asset, amount)
+      const sendFees = await getSendTxFees(this.account.id, this.asset, amount, this.customFee)
       if (amount === undefined) {
         this.maxSendFees = sendFees
       } else {
