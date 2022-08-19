@@ -146,7 +146,7 @@
                       :asset="asset"
                       v-model="selectedFee"
                       :fees="assetFees"
-                      :totalFees="maxOptionActive ? maxSendFees : sendFees"
+                      :totalFees="sendFees"
                       :fiatRates="fiatRates"
                       @custom-selected="onCustomFeeSelected"
                     />
@@ -280,7 +280,11 @@ import { chains } from '@liquality/cryptoassets'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import CopyIcon from '@/assets/icons/copy.svg'
-import { getSendTxFees, getFeeLabel, feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
+import {
+  estimateTransferNFT,
+  getFeeLabel,
+  feePerUnit
+} from '@liquality/wallet-core/dist/src/utils/fees'
 import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -314,7 +318,6 @@ export default {
   data() {
     return {
       sendFees: {},
-      maxSendFees: {},
       eip1559fees: {},
       activityData: [],
       amount: 0.0,
@@ -570,7 +573,6 @@ export default {
         this.selectedFee = speed
         this.customFee = null
       } else {
-        this.updateMaxSendFees()
         this.updateSendFees(this.amount)
         this.customFee = feePerUnit(fee, cryptoassets[this.asset].chain)
         this.selectedFee = 'custom'
@@ -584,20 +586,20 @@ export default {
       this.customFee = null
       this.selectedFee = 'average'
     },
-    async _updateSendFees(amount) {
-      const sendFees = await getSendTxFees(this.account.id, this.asset, amount, this.customFee)
-      if (amount === undefined) {
-        this.maxSendFees = sendFees
-      } else {
-        this.sendFees = sendFees
-      }
+    async _updateSendFees() {
+      const sendFees = await estimateTransferNFT(
+        this.account.id,
+        this.address,
+        [1],
+        this.selectedNFT,
+        this.customFee
+      )
+
+      this.sendFees = sendFees
     },
     updateSendFees: _.debounce(async function (amount) {
       await this._updateSendFees(amount)
     }, 800),
-    async updateMaxSendFees() {
-      await this._updateSendFees()
-    },
     async sendNFT() {
       this.sendErrorMessage = ''
       this.loading = true

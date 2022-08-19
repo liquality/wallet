@@ -239,6 +239,7 @@ export default {
       this.selectedFee = 'average'
     },
     async sendFees() {
+      // TODO: This fee calculation is not correct in case of a swap
       const sendFees = await getSendTxFees(this.account.id, this.asset, undefined, this.customFee)
       return sendFees
     },
