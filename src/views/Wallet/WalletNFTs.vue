@@ -61,7 +61,7 @@ import { mapGetters, mapState } from 'vuex'
 import NFTAssets from '../../components/NFT/NFTAssets.vue'
 import OpenSea from '../../assets/icons/opensea.svg'
 import StratosNFT from '../../assets/icons/stratosnft.svg'
-import { getNftLink, openseaLink } from '@liquality/wallet-core/dist/utils/asset'
+import { getNftLink, openseaLink } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getItemIcon } from '@/utils/history'
 import { chains } from '@liquality/cryptoassets'
 
