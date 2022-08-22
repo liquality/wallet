@@ -86,8 +86,12 @@ export default {
   data() {
     return {
       updatingAssets: false,
-      addressCopied: false
+      addressCopied: false,
+      nftAssetsCount: 0
     }
+  },
+  created() {
+    this.setNftAssetsCount()
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork', 'addresses']),
@@ -101,9 +105,6 @@ export default {
       } else {
         return this.allNftCollections
       }
-    },
-    nftAssetsCount() {
-      return Object.values(this.nftAssets).reduce((acc, nft) => acc + nft.length, 0)
     },
     account() {
       return this.accountsData.filter((account) => account.id === this.id)[0]
@@ -146,7 +147,7 @@ export default {
           accountIds: accountIds
         })
       } catch (error) {
-        console.log(error)
+        console.error(error)
       } finally {
         this.updatingAssets = false
       }
@@ -157,6 +158,21 @@ export default {
       setTimeout(() => {
         this.addressCopied = false
       }, 2000)
+    },
+    setNftAssetsCount() {
+      this.nftAssetsCount = Object.values(this.nftAssets).reduce((acc, nft) => acc + nft.length, 0)
+    }
+  },
+  watch: {
+    accountNftCollections(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.setNftAssetsCount()
+      }
+    },
+    allNftCollections(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.setNftAssetsCount()
+      }
     }
   }
 }
