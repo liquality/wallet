@@ -162,7 +162,8 @@ export default {
       tx: null,
       showFeeSelector: false,
       feeSelectorLoading: false,
-      selectedFee: 'average'
+      selectedFee: 'average',
+      sendFees: {}
     }
   },
   props: ['id'],
@@ -238,10 +239,14 @@ export default {
       this.showFeeSelector = false
       this.selectedFee = 'average'
     },
-    async sendFees() {
-      // TODO: This fee calculation is not correct in case of a swap
-      const sendFees = await getSendTxFees(this.account.id, this.asset, undefined, this.customFee)
-      return sendFees
+    async _updateSendFees() {
+      // TODO: This fee calculation is not correct in case of a swap and it could be based on already updated fee
+      this.sendFees = await getSendTxFees(
+        this.item.accountId,
+        this.item.from,
+        undefined,
+        this.customFee
+      )
     },
     async updateFee() {
       this.feeSelectorLoading = true
@@ -284,6 +289,7 @@ export default {
   created() {
     this.updateTransaction()
     this.interval = setInterval(() => this.updateTransaction(), 10000)
+    this._updateSendFees()
   },
   beforeDestroy() {
     clearInterval(this.interval)

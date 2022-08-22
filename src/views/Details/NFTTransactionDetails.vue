@@ -162,7 +162,8 @@ export default {
       tx: null,
       showFeeSelector: false,
       feeSelectorLoading: false,
-      selectedFee: 'average'
+      selectedFee: 'average',
+      sendFees: {}
     }
   },
   props: ['id'],
@@ -236,10 +237,10 @@ export default {
     getAssetIcon,
     prettyFiatBalance,
     getItemIcon,
-    async sendFees() {
+    async _updateSendFees() {
       // TODO: This fee calculation for sending NFTs is inccorect. It uses 21k gas limit of sending native asset.
-      const sendFees = await getSendTxFees(this.account.id, this.asset, undefined, this.customFee)
-      return sendFees
+      // It might be based on updated fee.
+      this.sendFees = await getSendTxFees(this.accountId, this.asset, undefined, this.customFee)
     },
     prettyTime(timestamp) {
       return moment(timestamp).format('MMM D YYYY, h:mm a')
@@ -299,6 +300,7 @@ export default {
   created() {
     this.updateTransaction()
     this.interval = setInterval(() => this.updateTransaction(), 10000)
+    this._updateSendFees()
   },
   beforeDestroy() {
     clearInterval(this.interval)
