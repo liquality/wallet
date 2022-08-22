@@ -10,10 +10,14 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <h3>NFTs are here!</h3>
-            <pre class="text-wrap">- View and manage your NFTs from your wallet</pre>
-            <pre class="text-wrap">Supported chains:</pre>
-            <pre class="text-wrap">-ETH, Polygon, and Arbitrum</pre>
+            <h3>Solana has arrived!</h3>
+            <pre class="text-wrap">- Send and receive Solana tokens!</pre>
+            <pre class="text-wrap">- Swapping between native Solana assets through Jupiter!</pre>
+            <pre class="text-wrap">- Send and receive your NFTs</pre>
+            <h3>Coming soon for Solana:</h3>
+            <pre class="text-wrap">- Injections</pre>
+            <pre class="text-wrap">- Ledger support</pre>
+            <pre class="text-wrap">- cross-chain swaps</pre>
           </div>
         </div>
       </div>
@@ -29,7 +33,7 @@
           </div>
           <div class="item-content">
             <pre class="text-wrap">
-Access your NFTs on OpenSea through a direct link in your wallet</pre
+Participate in our NFT Giveaway Contest! Go to our Twitter (@Liquality_io) to check the details!</pre
             >
           </div>
         </div>

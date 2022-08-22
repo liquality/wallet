@@ -15,7 +15,10 @@
 </template>
 
 <script>
-import { getSwapProviderConfig, getSwapProviderInfo } from '@liquality/wallet-core/dist/swaps/utils'
+import {
+  getSwapProviderConfig,
+  getSwapProviderInfo
+} from '@liquality/wallet-core/dist/src/swaps/utils'
 import { getSwapProviderIcon } from '@/utils/swaps'
 
 export default {
