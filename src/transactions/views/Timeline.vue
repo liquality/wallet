@@ -104,7 +104,7 @@ import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/src/swaps/utils'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
-import { UNSResolver } from '@liquality/wallet-core/dist/nameResolvers/uns'
+import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
 import { debounce } from 'lodash'
 
 export default {

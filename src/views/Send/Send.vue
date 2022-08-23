@@ -274,7 +274,7 @@ import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 import qs from 'qs'
-import { UNSResolver } from '@liquality/wallet-core/dist/nameResolvers/uns'
+import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
 
 export default {
   components: {
