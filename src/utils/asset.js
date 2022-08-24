@@ -1,4 +1,4 @@
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 
 export const getAssetIcon = (asset, extension = 'svg') => {
   const _asset = cryptoassets[asset]?.matchingAsset ?? asset
