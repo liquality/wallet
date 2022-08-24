@@ -37,18 +37,18 @@
           <div class="col-12">
             <h2>Sent Asset</h2>
             <div class="d-flex">
-              <div class="nft-image mr-2">
+              <div class="nft-image mr-2" style="--img-width: 100px">
                 <img
                   ref="nftThumbnailImage"
                   :src="item.nft.image_thumbnail_url || thumbnailImage"
-                  alt="nft-image"
+                  :alt="item.nft.name || 'NFT Image'"
                   @error="imageError('nftThumbnailImage')"
                 />
               </div>
               <div class="w-100">
-                <p class="font-weight-bold">{{ item.nft.name }}</p>
-                <p>{{ item.nft.collection.name }}</p>
-                <p v-if="item.nft.token_id">#{{ item.nft.token_id }}</p>
+                <p class="font-weight-bold text-break">{{ item.nft.name }}</p>
+                <p class="text-break">{{ item.nft.collection.name }}</p>
+                <p class="text-break" v-if="item.nft.token_id">#{{ item.nft.token_id }}</p>
               </div>
             </div>
           </div>
@@ -140,7 +140,7 @@ import { getAssetIcon } from '@/utils/asset'
 import { getItemIcon } from '@/utils/history'
 
 import FeeSelector from '@/components/FeeSelector'
-import Timeline from '@/transactions/views/NFTTimeline.vue'
+import Timeline from '@/components/NFT/NFTTimeline.vue'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -366,7 +366,7 @@ export default {
   }
 
   .nft-image {
-    width: 120px;
+    min-width: var(--img-width);
 
     img {
       width: 100%;

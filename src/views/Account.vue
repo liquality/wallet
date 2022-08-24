@@ -90,6 +90,7 @@
           @filters-changed="applyFilters"
           :activity-data="activityData"
           v-if="activityData.length > 0"
+          :showTypeFilters="true"
         />
         <TransactionList :transactions="activityData" />
         <EmptyActivity
