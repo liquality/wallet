@@ -148,7 +148,7 @@
                       :asset="asset"
                       v-model="selectedFee"
                       :fees="assetFees"
-                      :totalFees="maxOptionActive ? maxSendFees : sendFees"
+                      :totalFees="sendFees"
                       :fiatRates="fiatRates"
                       @custom-selected="onCustomFeeSelected"
                     />
@@ -281,7 +281,11 @@ import { chains } from '@liquality/cryptoassets'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import CopyIcon from '@/assets/icons/copy.svg'
-import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/src/utils/fees'
+import {
+  estimateTransferNFT,
+  getFeeLabel,
+  feePerUnit
+} from '@liquality/wallet-core/dist/src/utils/fees'
 import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -315,7 +319,6 @@ export default {
   data() {
     return {
       sendFees: {},
-      maxSendFees: {},
       eip1559fees: {},
       amount: 0.0,
       activeView: 'selectAsset',
@@ -359,7 +362,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['activity', 'accountItem', 'accountsData', 'accountNftCollections']),
+    ...mapGetters([
+      'activity',
+      'accountItem',
+      'accountsData',
+      'accountNftCollections',
+      'suggestedFeePrices'
+    ]),
     ...mapState([
       'activeNetwork',
       'activeWalletId',
@@ -465,7 +474,7 @@ export default {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      const fees = this.suggestedFeePrices(this.assetChain)
       if (fees) {
         Object.assign(assetFees, fees)
       }
@@ -502,7 +511,6 @@ export default {
     formatFiatUI,
     prettyBalance,
     getFeeAsset,
-    getSendFee,
     getFeeLabel,
     getNativeAsset,
     async copy(text) {
@@ -569,9 +577,8 @@ export default {
         this.selectedFee = speed
         this.customFee = null
       } else {
-        this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.customFee = feePerUnit(fee, cryptoassets[this.asset].chain)
         this.selectedFee = 'custom'
       }
       this.activeView = 'selectedAsset'
@@ -583,29 +590,20 @@ export default {
       this.customFee = null
       this.selectedFee = 'average'
     },
-    async _updateSendFees(amount) {
-      const getMax = amount === undefined
-      if (this.feesAvailable) {
-        const sendFees = {}
+    async _updateSendFees() {
+      const sendFees = await estimateTransferNFT(
+        this.account.id,
+        this.address,
+        [1],
+        this.selectedNFT,
+        this.customFee
+      )
 
-        for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee.maxFeePerGas || fee.fee
-          sendFees[speed] = getSendFee(this.assetChain, feePrice)
-        }
-
-        if (getMax) {
-          this.maxSendFees = sendFees
-        } else {
-          this.sendFees = sendFees
-        }
-      }
+      this.sendFees = sendFees
     },
     updateSendFees: _.debounce(async function (amount) {
       await this._updateSendFees(amount)
     }, 800),
-    async updateMaxSendFees() {
-      await this._updateSendFees()
-    },
     async refreshNFTs() {
       const accountIds = this.accountsData.map((account) => {
         return account.id

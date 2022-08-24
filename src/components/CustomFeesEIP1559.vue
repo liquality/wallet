@@ -207,7 +207,12 @@ import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import BN from 'bignumber.js'
-import { getFeeLabel, getSendFee } from '@liquality/wallet-core/dist/src/utils/fees'
+import {
+  getFeeLabel,
+  getSendFee,
+  probableFeePerUnitEIP1559,
+  maxFeePerUnitEIP1559
+} from '@liquality/wallet-core/dist/src/utils/fees'
 import { prettyFiatBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
@@ -239,6 +244,7 @@ export default {
     this.maxFee = this.fees[this.basicPreset].fee.maxFeePerGas
   },
   computed: {
+    // TODO: move erro handling to wallet-core
     noTipError() {
       return !this.tipFee ? 'Miner tip must be greater than 0 GWEI' : null
     },
@@ -266,56 +272,13 @@ export default {
         : null
     },
     slowPreset() {
-      const slowPreset = this.fees?.slow || {}
-
-      const defaultFee =
-        slowPreset.fee?.suggestedBaseFeePerGas + slowPreset.fee?.maxPriorityFeePerGas || 0
-      const maximumFee = slowPreset.fee?.suggestedBaseFeePerGas + slowPreset.fee?.maxFeePerGas || 0
-      const sendFee = getSendFee(this.nativeAsset, defaultFee)
-
-      return {
-        amount: BN(sendFee).dp(6),
-        fiat: prettyFiatBalance(this.totalFees.slow, this.fiatRates[this.nativeAsset]),
-        maximum: prettyFiatBalance(
-          getSendFee(this.nativeAsset, maximumFee),
-          this.fiatRates[this.nativeAsset]
-        )
-      }
+      return this.presetBase(this.fees?.slow, this.totalFees.slow)
     },
     averagePreset() {
-      const averagePreset = this.fees?.average || {}
-
-      const defaultFee =
-        averagePreset.fee?.suggestedBaseFeePerGas + averagePreset.fee?.maxPriorityFeePerGas || 0
-      const maximumFee =
-        averagePreset.fee?.suggestedBaseFeePerGas + averagePreset.fee?.maxFeePerGas || 0
-      const sendFee = getSendFee(this.nativeAsset, defaultFee)
-
-      return {
-        amount: BN(sendFee).dp(6),
-        fiat: prettyFiatBalance(this.totalFees.average, this.fiatRates[this.nativeAsset]),
-        maximum: prettyFiatBalance(
-          getSendFee(this.nativeAsset, maximumFee),
-          this.fiatRates[this.nativeAsset]
-        )
-      }
+      return this.presetBase(this.fees?.average, this.totalFees.average)
     },
     fastPreset() {
-      const fastPreset = this.fees?.fast || {}
-
-      const defaultFee =
-        fastPreset.fee?.suggestedBaseFeePerGas + fastPreset.fee?.maxPriorityFeePerGas || 0
-      const maximumFee = fastPreset.fee?.suggestedBaseFeePerGas + fastPreset.fee?.maxFeePerGas || 0
-      const sendFee = getSendFee(this.nativeAsset, defaultFee)
-
-      return {
-        amount: BN(sendFee).dp(6),
-        fiat: prettyFiatBalance(this.totalFees.fast, this.fiatRates[this.nativeAsset]),
-        maximum: prettyFiatBalance(
-          getSendFee(this.nativeAsset, maximumFee),
-          this.fiatRates[this.nativeAsset]
-        )
-      }
+      return this.presetBase(this.fees?.fast, this.totalFees.fast)
     },
     nativeAsset() {
       return getFeeAsset(this.asset) || getNativeAsset(this.asset)
@@ -352,7 +315,11 @@ export default {
       return isNaN(fiat) ? 0 : fiat
     },
     minimum() {
-      const minimumFee = this.minerTip + this.suggestedBaseFeePerGas
+      const minimumFee = probableFeePerUnitEIP1559({
+        maxFeePerGas: this.maximumFee,
+        maxPriorityFeePerGas: this.minerTip,
+        suggestedBaseFeePerGas: this.suggestedBaseFeePerGas
+      })
       const totalMinFee = getSendFee(this.nativeAsset, minimumFee).plus(this.totalFees.slow)
       return {
         amount: BN(totalMinFee).dp(6),
@@ -360,7 +327,11 @@ export default {
       }
     },
     maximum() {
-      const maximumFee = this.maximumFee
+      const maximumFee = maxFeePerUnitEIP1559({
+        maxFeePerGas: this.maximumFee,
+        maxPriorityFeePerGas: this.minerTip,
+        suggestedBaseFeePerGas: this.suggestedBaseFeePerGas
+      })
       const totalMaxFee = getSendFee(this.nativeAsset, maximumFee).plus(this.totalFees.fast)
       return {
         amount: BN(totalMaxFee).dp(6),
@@ -436,6 +407,18 @@ export default {
     setCustomizePreset(preset) {
       this.customizePreset = preset
       this.tipFee = this.fees[preset]?.fee.maxPriorityFeePerGas
+    },
+    presetBase(presetfee, totalFees) {
+      const preset = presetfee || {}
+
+      const probableSendFee = getSendFee(this.nativeAsset, probableFeePerUnitEIP1559(preset.fee))
+      const maxSendFee = getSendFee(this.nativeAsset, maxFeePerUnitEIP1559(preset.fee))
+
+      return {
+        amount: BN(probableSendFee).dp(6),
+        fiat: prettyFiatBalance(totalFees, this.fiatRates[this.nativeAsset]),
+        maximum: prettyFiatBalance(maxSendFee, this.fiatRates[this.nativeAsset])
+      }
     }
   },
   watch: {
