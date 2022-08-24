@@ -110,18 +110,17 @@ class SwapPage {
    * @constructor
    */
   async clickSwapReviewButton(page) {
-    try {
       await page.waitForSelector('#swap_review_button', {
         visible: true,
         timeout: 60000
       })
-      await page.click('#swap_review_button')
-    } catch (e) {
-      await testUtil.takeScreenshot(page, 'swap-review-button-disabled-issue')
-      expect(e, 'Click SWAP review button not working properly').equals(null)
+      let buttonText = await page.$eval('#swap_review_button', (el) => el.textContent)
+      if (buttonText.trim() === 'Review') {
+        await page.click('#swap_review_button')
+      }
+      expect(buttonText, 'Click SWAP review button not enabled, may be Insufficient funds')
+        .equals("Review")
     }
-  }
-
   /**
    * Click on Initiate Swap button.
    * @param page
@@ -339,7 +338,7 @@ class SwapPage {
     const message = await page.$eval('#media-body-info', (el) => el.textContent)
     expect(message).contain.oneOf([
       'If the swap doesn’t complete in 3 hours, you will be refunded in 6 hours at',
-      'Max slippage is 0.5%.'
+      'Max slippage is 3%.'
     ])
   }
 }

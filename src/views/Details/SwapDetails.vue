@@ -94,14 +94,14 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import moment from '@liquality/wallet-core/dist/utils/moment'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import moment from '@liquality/wallet-core/dist/src/utils/moment'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { chains, unitToCurrency } from '@liquality/cryptoassets'
-
-import { prettyBalance, dpUI } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
-import { getStatusLabel } from '@liquality/wallet-core/dist/utils/history'
-import { isERC20, getNativeAsset, getFeeAsset } from '@liquality/wallet-core/dist/utils/asset'
+import { prettyBalance, dpUI } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
+import { feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
+import { getStatusLabel } from '@liquality/wallet-core/dist/src/utils/history'
+import { isERC20, getNativeAsset, getFeeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 
 import CompletedIcon from '@/assets/icons/completed.svg'
 import RefundedIcon from '@/assets/icons/refunded.svg'
@@ -110,7 +110,6 @@ import NavBar from '@/components/NavBar.vue'
 import Modal from '@/components/Modal'
 import SwapProviderLabel from '@/components/SwapProviderLabel'
 import LedgerSignRquest from '@/assets/icons/ledger_sign_request.svg'
-import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import Timeline from '@/swaps/views/Timeline.vue'
 
 export default {
@@ -132,7 +131,6 @@ export default {
   },
   props: ['id'],
   computed: {
-    ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem']),
     ...mapState(['activeWalletId', 'activeNetwork', 'balances', 'history', 'fees']),
     item() {
@@ -147,24 +145,21 @@ export default {
       return getFeeAsset(this.item.to)
     },
     txFees() {
-      const fromFee = this.item.fee.suggestedBaseFeePerGas
-        ? this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
-        : this.item.fee
-
-      const claimFee = this.item.claimFee || 0
-      const toFee = claimFee.suggestedBaseFeePerGas
-        ? claimFee.suggestedBaseFeePerGas + claimFee.maxPriorityFeePerGas
-        : claimFee
-
-      const fees = []
       const fromChain = cryptoassets[this.item.from].chain
       const toChain = cryptoassets[this.item.to].chain
+
+      const fromFee = feePerUnit(this.item.fee, fromChain)
+
+      const fees = []
       fees.push({
         asset: getNativeAsset(this.item.from),
         fee: fromFee,
         unit: chains[fromChain].fees.unit
       })
       if (toChain !== fromChain) {
+        const claimFee = this.item.claimFee || 0
+        const toFee = feePerUnit(claimFee, toChain)
+
         fees.push({
           asset: getNativeAsset(this.item.to),
           fee: toFee,
@@ -250,26 +245,10 @@ export default {
       this.retryingSwap = true
 
       try {
-        if (!this.ledgerBridgeReady && this.ledgerSignRequired) {
-          await this.startBridgeListener()
-          const unsubscribe = createConnectSubscription(async () => {
-            await this.retrySwap({ swap: this.item })
-            if (!this.item.error) {
-              this.showLedgerModal = false
-            }
-          })
-
-          setTimeout(() => {
-            if (unsubscribe) {
-              unsubscribe()
-            }
-          }, 25000)
-        } else {
-          await this.retrySwap({ swap: this.item })
-          if (!this.item.error) {
-            this.showLedgerModal = false
-          }
+        if (this.ledgerSignRequired) {
+          this.showLedgerModal = true
         }
+        await this.retrySwap({ swap: this.item })
       } finally {
         this.retryingSwap = false
       }

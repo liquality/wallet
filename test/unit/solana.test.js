@@ -1,5 +1,5 @@
 import { Client } from '@liquality/client'
-import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
+import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
 import { SolanaNetworks } from '@liquality/solana-networks'
 import { SolanaRpcProvider } from '@liquality/solana-rpc-provider'
 import { SolanaWalletProvider } from '@liquality/solana-wallet-provider'

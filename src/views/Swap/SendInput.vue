@@ -69,7 +69,8 @@
           <v-popover offset="1" trigger="hover focus" class="mr-2">
             <button
               :class="{
-                active: amountOption === 'min' && !disabled
+                active: amountOption === 'min' && !disabled,
+                isNotVisible: min <= 0
               }"
               :disabled="disabled"
               class="btn btn-option"
@@ -111,9 +112,9 @@
 </template>
 
 <script>
-import { getAssetColorStyle } from '@liquality/wallet-core/dist/utils/asset'
+import { getAssetColorStyle } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
-import { dpUI, formatFiatUI } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { dpUI, formatFiatUI } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import AccountTooltip from '@/components/AccountTooltip'
 
@@ -165,6 +166,10 @@ export default {
 </script>
 
 <style lang="scss">
+.isNotVisible {
+  display: none !important;
+}
+
 .swap-send-container {
   display: flex;
   flex-direction: column;

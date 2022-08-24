@@ -13,7 +13,7 @@
         <li>Enter pin to unlock it</li>
         <li>On the device, navigate to the asset that you want to access</li>
         <li v-if="isEthereumChain(selectedAsset.name)">
-          To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Allow Contract Data'
+          To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Blind signing'
         </li>
       </ul>
       <div class="options">
@@ -54,7 +54,7 @@
         <button
           class="btn btn-light btn-outline-primary btn-lg"
           id="cancel-ledger-button"
-          @click="goToOverview"
+          @click="cancel"
         >
           Cancel
         </button>
@@ -75,9 +75,9 @@
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import LedgerIcon from '@/assets/icons/ledger_icon.svg'
-import { LEDGER_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
+import { LEDGER_OPTIONS } from '@liquality/wallet-core/dist/src/utils/ledger'
 import clickAway from '@/directives/clickAway'
-import { isEthereumChain } from '@liquality/wallet-core/dist/utils/asset'
+import { isEthereumChain } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 
 export default {
@@ -103,8 +103,12 @@ export default {
         this.$emit('on-connect', { asset: this.selectedAsset })
       }
     },
-    goToOverview() {
-      this.$router.replace('/wallet')
+    cancel() {
+      chrome.tabs.getCurrent((tab) => {
+        if (tab !== undefined) {
+          chrome.tabs.remove([tab.id])
+        }
+      })
     },
     selectAsset(asset) {
       this.$emit('on-select-asset', asset)

@@ -30,10 +30,7 @@
             </div>
           </div>
         </template>
-        <template
-          #detail-sub
-          v-if="account.totalFiatBalance && account.loadingInitialBalance === false"
-        >
+        <template #detail-sub v-if="account.totalFiatBalance">
           {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
         </template>
         <template v-else> Loading... </template>
@@ -61,15 +58,40 @@
               Ledger
             </div>
           </template>
-          <template
-            #detail-sub
-            v-if="account.totalFiatBalance && account.loadingInitialBalance === false"
-          >
+          <template #detail-sub v-if="account.totalFiatBalance">
             {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
           </template>
           <template v-else> Loading... </template>
         </ListItem>
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
+          <ListItem
+            v-if="account.nfts && account.nfts.length > 0 && !isAssetList"
+            @item-selected="
+              $router.push({
+                path: `/wallet/nfts/activity/${account.id}`
+              })
+            "
+          >
+            <template #prefix>
+              <div class="account-color" :style="{ 'background-color': account.color }"></div>
+            </template>
+            <template #icon class="account-asset-item">
+              <NFTIcon class="asset-icon" />
+            </template>
+            NFTs ({{ account.nfts.length || 0 }})
+            <template #detail>
+              <router-link
+                class="d-flex align-items-center link"
+                :to="{
+                  path: `/wallet/nfts/activity/${account.id}`
+                }"
+              >
+                <span class="d-flex align-items-center"
+                  >See all <ChevronRightIcon class="ml-2 icon-sm" />
+                </span>
+              </router-link>
+            </template>
+          </ListItem>
           <ListItem
             v-for="asset in account.assets"
             :id="asset"
@@ -84,7 +106,10 @@
             </template>
             {{ getAssetName(asset) }}
             <template #detail>
-              {{ prettyBalance(account.balances[asset], asset) }} {{ asset }}
+              <span class="d-flex align-items-center"
+                >{{ prettyBalance(account.balances[asset], asset) }} {{ asset }}
+                <ChevronRightIcon class="ml-2 icon-sm" />
+              </span>
             </template>
             <template #detail-sub v-if="account.fiatBalances[asset]">
               {{ formatFiatUI(formatFiat(account.fiatBalances[asset])) }}
@@ -97,32 +122,39 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex'
 import ListItem from '@/components/ListItem'
 import {
   prettyBalance,
   formatFiat,
   formatFiatUI
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import { getAssetIcon } from '@/utils/asset'
 import { getAccountIcon } from '@/utils/accounts'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import PlusIcon from '@/assets/icons/plus_icon.svg'
 import MinusIcon from '@/assets/icons/minus_icon.svg'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import NFTIcon from '@/assets/icons/nft.svg'
+import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 
 export default {
   components: {
     ListItem,
     PlusIcon,
-    MinusIcon
+    MinusIcon,
+    NFTIcon,
+    ChevronRightIcon
   },
-  props: ['search', 'accounts'],
+  props: ['search', 'accounts', 'isAssetList'],
   data() {
     return {
       expandedAccounts: []
     }
   },
   computed: {
+    ...mapState(['activeWalletId', 'activeNetwork']),
+    ...mapGetters(['accountsData']),
     filteredItems() {
       if (!this.search) return this.accounts
 
@@ -133,7 +165,6 @@ export default {
           cryptoassets[asset].name.toUpperCase().includes(search)
         )
       }
-
       return this.accounts
         .filter((account) => account.assets.find(assetComparator))
         .map((account) => ({
@@ -212,5 +243,10 @@ export default {
   position: absolute;
   left: 0;
   margin-right: 5px;
+}
+
+.link {
+  color: $color-primary !important;
+  font-weight: 600;
 }
 </style>

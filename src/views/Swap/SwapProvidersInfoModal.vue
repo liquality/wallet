@@ -1,5 +1,5 @@
 <template>
-  <Modal @close="$emit('close')">
+  <Modal @close="$emit('close')" :close-outside="true">
     <template #header>
       <h5 id="learn_about_swaps_types_header">Learn about swap providers</h5>
     </template>
@@ -20,7 +20,7 @@
         </div>
         <div
           v-for="provider in providers"
-          :key="provider"
+          :key="provider.id"
           class="swap-providers-info_list border-bottom mb-4"
         >
           <SwapProviderLabel :network="activeNetwork" :provider="provider.id" class="mb-2" />
@@ -58,7 +58,10 @@
 import { mapState } from 'vuex'
 import Modal from '@/components/Modal'
 import SwapProviderLabel from '@/components/SwapProviderLabel.vue'
-import { getSwapProviderConfig, getSwapProviderInfo } from '@liquality/wallet-core/dist/swaps/utils'
+import {
+  getSwapProviderConfig,
+  getSwapProviderInfo
+} from '@liquality/wallet-core/dist/src/swaps/utils'
 import { getSwapProviderIcon } from '@/utils/swaps'
 import { buildConfig } from '@liquality/wallet-core'
 

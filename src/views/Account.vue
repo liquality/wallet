@@ -66,7 +66,6 @@
             class="account-container_actions_button"
             active-class=""
             tag="button"
-            :disabled="swapDisabled"
             :to="`/accounts/${accountId}/${asset}/swap`"
           >
             <div class="account-container_actions_button_wrapper" :id="`${asset}_swap_button`">
@@ -91,6 +90,7 @@
           @filters-changed="applyFilters"
           :activity-data="activityData"
           v-if="activityData.length > 0"
+          :showTypeFilters="true"
         />
         <TransactionList :transactions="activityData" />
         <EmptyActivity
@@ -107,8 +107,8 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chains, ChainId } from '@liquality/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
+import { chains } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
@@ -118,13 +118,13 @@ import {
   prettyBalance,
   formatFiat,
   formatFiatUI
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import { getAddressExplorerLink } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
-import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
+import { applyActivityFilters } from '@liquality/wallet-core/dist/src/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
@@ -165,9 +165,6 @@ export default {
       'fiatRates',
       'marketData'
     ]),
-    swapDisabled() {
-      return this.account?.type.includes('ledger')
-    },
     account() {
       return this.accountItem(this.accountId)
     },
@@ -181,7 +178,7 @@ export default {
       return this.marketData[this.activeNetwork][this.asset]
     },
     assetHistory() {
-      return this.activity.filter((item) => item.from === this.asset)
+      return this.activity.filter((item) => this.isNotNftTransaction(item))
     },
     addressLink() {
       if (this.account) {
@@ -200,6 +197,9 @@ export default {
     formatFontSize,
     formatFiat,
     formatFiatUI,
+    isNotNftTransaction(item) {
+      return item.from === this.asset && item.type !== 'NFT'
+    },
     async copyAddress() {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true
@@ -222,30 +222,23 @@ export default {
     }
   },
   async created() {
-    if (
-      this.account &&
-      this.account?.type.includes('ledger') &&
-      this.account?.chain !== ChainId.Bitcoin
-    ) {
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
-        this.account.addresses[0],
-        this.activeNetwork
-      )
-    } else {
-      const addresses = await this.getUnusedAddresses({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        assets: [this.asset],
-        accountId: this.accountId
-      })
-      const chainId = cryptoassets[this.asset]?.chain
-      this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
-    }
+    const addresses = await this.getUnusedAddresses({
+      network: this.activeNetwork,
+      walletId: this.activeWalletId,
+      assets: [this.asset],
+      accountId: this.accountId
+    })
+    const chainId = cryptoassets[this.asset]?.chain
+    this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
+
     await this.refresh()
     this.activityData = [...this.assetHistory]
   },
   watch: {
     activeNetwork() {
+      this.activityData = [...this.assetHistory]
+    },
+    activity() {
       this.activityData = [...this.assetHistory]
     }
   }
@@ -253,16 +246,22 @@ export default {
 </script>
 <style lang="scss">
 .account-container {
-  .account-content-top {
-    height: 220px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px 0;
-    background: $brand-gradient-primary;
-    color: $color-text-secondary;
-    text-align: center;
-    position: relative;
+  overflow-y: scroll;
+
+  .account-content {
+    overflow-y: auto;
+
+    &-top {
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 0;
+      background: $brand-gradient-primary;
+      color: $color-text-secondary;
+      text-align: center;
+      position: relative;
+    }
   }
   &_balance {
     &_fiat {

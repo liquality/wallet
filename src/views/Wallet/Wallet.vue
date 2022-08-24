@@ -10,7 +10,8 @@
       <LedgerRequestMessage :item="ledgerItem" />
     </InfoNotification>
     <div class="wallet-content">
-      <WalletStats />
+      <NFTStats v-if="isNFTPage" />
+      <WalletStats v-else />
       <AssetsChart />
       <WalletTabs />
     </div>
@@ -19,19 +20,21 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { isERC20 } from '@liquality/wallet-core/dist/utils/asset'
+import { isERC20 } from '@liquality/wallet-core/dist/src/utils/asset'
 import AssetsChart from './AssetsChart.vue'
 import NavBar from '@/components/NavBar.vue'
 import InfoNotification from '@/components/InfoNotification.vue'
 import LedgerRequestMessage from '@/components/LedgerRequestMessage.vue'
 import WalletStats from './WalletStats.vue'
 import WalletTabs from './WalletTabs.vue'
+import NFTStats from './NFTStats'
 
 export default {
   components: {
     AssetsChart,
     NavBar,
     WalletStats,
+    NFTStats,
     WalletTabs,
     InfoNotification,
     LedgerRequestMessage
@@ -47,10 +50,14 @@ export default {
       // TODO: manage error
       console.error(error)
     }
+    await this.getNFTs()
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),
-    ...mapGetters(['accountItem']),
+    ...mapGetters(['accountItem', 'accountsData']),
+    isNFTPage() {
+      return this.$route.path === '/wallet/nfts'
+    },
     ledgerItem() {
       return this.history[this.activeNetwork]?.[this.activeWalletId]?.find((item) =>
         this.ledgerSignRequired(item)
@@ -61,7 +68,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateBalances']),
+    ...mapActions(['updateBalances', 'updateNFTs']),
     ledgerSignRequired(item) {
       if (item && item.fromAccountId && item.toAccountId) {
         // Check the status and get the account related
@@ -87,6 +94,20 @@ export default {
       }
 
       return false
+    },
+    async getNFTs() {
+      const accountIds = this.accountsData.map((account) => {
+        return account.id
+      })
+      try {
+        await this.updateNFTs({
+          walletId: this.activeWalletId,
+          network: this.activeNetwork,
+          accountIds: accountIds
+        })
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }

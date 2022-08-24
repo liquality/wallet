@@ -1,8 +1,6 @@
-export const executeRequest = async ({ rootGetters, dispatch, rootState }, { request }) => {
+export const executeRequest = async ({ rootGetters, dispatch }, { request }) => {
   // Send transactions through wallet managed action
   const { network, walletId, asset, accountId } = request
-  const { accountItem } = rootGetters
-  const account = accountItem(accountId)
   let call
   const result = await new Promise((resolve) => {
     if (request.method === 'wallet.sendTransaction') {
@@ -17,6 +15,7 @@ export const executeRequest = async ({ rootGetters, dispatch, rootState }, { req
           amount: request.args[0].value,
           data: request.args[0].data,
           fee: request.args[0].fee,
+          feeAsset: request.args[0].feeAsset,
           feeLabel: request.args[0].feeLabel,
           gas: request.args[0].gas
         },
@@ -40,31 +39,7 @@ export const executeRequest = async ({ rootGetters, dispatch, rootState }, { req
 
       call = methodFunc(...request.args)
     }
-
-    const { ledgerBridgeConnected, ledgerBridgeTransportConnected } = rootState.app
-    if (account?.type.includes('ledger')) {
-      if (!ledgerBridgeConnected) {
-        dispatch('startBridgeListener', {
-          onConnect: () => {
-            resolve(call)
-          }
-        }).then(() => {
-          dispatch('openUSBBridgeWindow')
-        })
-      } else if (!ledgerBridgeTransportConnected) {
-        dispatch('startBridgeListener', {
-          onTransportConnect: () => {
-            resolve(call)
-          }
-        }).then(() => {
-          dispatch('openUSBBridgeWindow')
-        })
-      } else {
-        resolve(call)
-      }
-    } else {
-      resolve(call)
-    }
+    resolve(call)
   })
   return result
 }

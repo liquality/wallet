@@ -60,7 +60,7 @@
               <span>
                 <a
                   class="speed-up"
-                  v-if="canUpdateFee && !showFeeSelector"
+                  v-if="canUpdateFee && !showFeeSelector && isCustomFeeSupported"
                   @click="openFeeSelector()"
                 >
                   Speed up
@@ -116,19 +116,25 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import moment from '@liquality/wallet-core/dist/utils/moment'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import moment from '@liquality/wallet-core/dist/src/utils/moment'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
-import { getSendFee } from '@liquality/wallet-core/dist/utils/fees'
-import { prettyBalance, prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { getStatusLabel, ACTIVITY_FILTER_TYPES } from '@liquality/wallet-core/dist/utils/history'
+import { getSendTxFees, feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
+import {
+  prettyBalance,
+  prettyFiatBalance
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import {
+  getStatusLabel,
+  ACTIVITY_FILTER_TYPES
+} from '@liquality/wallet-core/dist/src/utils/history'
 import { getItemIcon } from '@/utils/history'
 import {
   getNativeAsset,
   getTransactionExplorerLink,
   getAddressExplorerLink
-} from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 
 import FeeSelector from '@/components/FeeSelector'
@@ -138,7 +144,7 @@ import SpinnerIcon from '@/assets/icons/spinner.svg'
 import CopyIcon from '@/assets/icons/copy.svg'
 import NavBar from '@/components/NavBar.vue'
 import { isObject } from 'lodash-es'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import Timeline from '@/transactions/views/Timeline.vue'
 
 export default {
@@ -156,20 +162,24 @@ export default {
       tx: null,
       showFeeSelector: false,
       feeSelectorLoading: false,
-      selectedFee: 'average'
+      selectedFee: 'average',
+      sendFees: {}
     }
   },
   props: ['id'],
   computed: {
-    ...mapGetters(['client']),
+    ...mapGetters(['client', 'suggestedFeePrices']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     assetChain() {
       return getNativeAsset(this.item.from)
     },
+    isCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.item.from].chain]
+      return supportCustomFees
+    },
     itemFee() {
-      return typeof this.item.fee !== 'object'
-        ? this.item.fee
-        : BN(this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas).dp(3)
+      const fee = feePerUnit(this.item.fee, this.chainId)
+      return typeof this.item.fee !== 'object' ? fee : BN(fee).dp(3)
     },
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
@@ -197,7 +207,7 @@ export default {
       )
     },
     assetFees() {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      return this.suggestedFeePrices(this.assetChain)
     },
     feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
@@ -205,16 +215,6 @@ export default {
     typeIcon() {
       const filter = ACTIVITY_FILTER_TYPES[this.item.type]
       return this.getItemIcon(filter?.icon)
-    },
-    sendFees() {
-      const sendFees = {}
-
-      for (const [speed, fee] of Object.entries(this.assetFees)) {
-        const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
-        sendFees[speed] = getSendFee(this.asset, feePrice)
-      }
-
-      return sendFees
     }
   },
   methods: {
@@ -238,6 +238,15 @@ export default {
     closeFeeSelector() {
       this.showFeeSelector = false
       this.selectedFee = 'average'
+    },
+    async _updateSendFees() {
+      // TODO: This fee calculation is not correct in case of a swap and it could be based on already updated fee
+      this.sendFees = await getSendTxFees(
+        this.item.accountId,
+        this.item.from,
+        undefined,
+        this.customFee
+      )
     },
     async updateFee() {
       this.feeSelectorLoading = true
@@ -280,6 +289,7 @@ export default {
   created() {
     this.updateTransaction()
     this.interval = setInterval(() => this.updateTransaction(), 10000)
+    this._updateSendFees()
   },
   beforeDestroy() {
     clearInterval(this.interval)

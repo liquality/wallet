@@ -1,5 +1,6 @@
 <template>
   <div class="permission-send wrapper form text-center">
+    <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
     <div v-if="currentStep === 'inputs'" class="wrapper_top form">
       <div v-if="error" class="mt-4 text-danger"><strong>Error:</strong> {{ error }}</div>
       <div v-if="isApprove">
@@ -110,30 +111,35 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chainToTokenAddressMap, ChainId } from '@liquality/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
+import { chainToTokenAddressMap } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
+import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import {
   prettyBalance,
   prettyFiatBalance,
   formatFiatUI
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import {
   getNativeAsset,
   getAssetColorStyle,
-  tokenDetailProviders,
   estimateGas
-} from '@liquality/wallet-core/dist/utils/asset'
-import { parseTokenTx } from '@liquality/wallet-core/dist/utils/parseTokenTx'
-
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+} from '@liquality/wallet-core/dist/src/utils/asset'
+import { parseTokenTx } from '@liquality/wallet-core/dist/src/utils/parseTokenTx'
+import {
+  isEIP1559Fees,
+  getSendTxFees,
+  feePerUnit
+} from '@liquality/wallet-core/dist/src/utils/fees'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronDown from '@/assets/icons/chevron_down.svg'
 import ChevronRight from '@/assets/icons/chevron_right.svg'
 import BN from 'bignumber.js'
 import _ from 'lodash'
+import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 
 const TRANSACTION_TYPES = {
   approve: 'Allow',
@@ -147,8 +153,10 @@ export default {
     ChevronRight,
     FeeSelector,
     CustomFees,
-    CustomFeesEIP1559
+    CustomFeesEIP1559,
+    LedgerSignRequestModal
   },
+  mixins: [ledgerConnectMixin],
   data() {
     return {
       showData: false,
@@ -165,16 +173,21 @@ export default {
       maxSendFees: {},
       maxOptionActive: false,
       customFee: null,
-      gas: 0
+      gas: 0,
+      signRequestModalOpen: false
     }
   },
   methods: {
-    ...mapActions(['updateFees']),
+    ...mapActions(['updateFees', 'fetchTokenDetails']),
     ...mapActions('app', ['replyPermission']),
     prettyBalance,
     prettyFiatBalance,
     formatFiatUI,
     getAssetColorStyle,
+    closeSignRequestModal() {
+      this.signRequestModalOpen = false
+      this.loading = false
+    },
     onCustomFeeSelected() {
       this.currentStep = 'custom-fees'
     },
@@ -195,7 +208,13 @@ export default {
       } catch {
         // in case token doesn't exist in cryptoassets
         try {
-          const tokeData = await tokenDetailProviders[chain].getDetails(tokenAddress)
+          const tokeData = await this.fetchTokenDetails({
+            network: this.activeNetwork,
+            walletId: this.activeWalletId,
+            chain,
+            contractAddress: tokenAddress
+          })
+
           this.symbol = tokeData.symbol + ' (Unverified)'
         } catch {
           this.symbol = this.assetChain
@@ -240,6 +259,10 @@ export default {
       this.error = null
 
       try {
+        if (this.account?.type.includes('ledger')) {
+          this.signRequestModalOpen = true
+          await this.connectLedger()
+        }
         const response = await this.replyPermission({
           request: requestWithFee,
           allowed
@@ -251,6 +274,7 @@ export default {
           window.close()
         }
       } finally {
+        this.signRequestModalOpen = false
         this.loading = false
       }
     },
@@ -259,22 +283,11 @@ export default {
         return
       }
 
-      const getMax = amount === undefined
-      if (this.feesAvailable) {
-        const sendFees = {}
-
-        for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
-          const feePerGas = BN(feePrice).div(1e9)
-          const txCost = this.gas.times(feePerGas)
-          sendFees[speed] = txCost
-        }
-
-        if (getMax) {
-          this.maxSendFees = sendFees
-        } else {
-          this.sendFees = sendFees
-        }
+      const sendFees = await getSendTxFees(this.account.id, this.asset, amount, this.customFee)
+      if (amount === undefined) {
+        this.maxSendFees = sendFees
+      } else {
+        this.sendFees = sendFees
       }
     },
     async estimateGas() {
@@ -309,7 +322,7 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.customFee = this.calculateFee(fee)
         this.selectedFee = 'custom'
       }
       this.currentStep = 'inputs'
@@ -334,7 +347,7 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
-    ...mapGetters(['client']),
+    ...mapGetters(['client', 'accountItem', 'suggestedFeePrices']),
     asset() {
       return this.request.asset
     },
@@ -348,10 +361,7 @@ export default {
       return this.address ? shortenAddress(this.address) : 'New Contract'
     },
     isEIP1559Fees() {
-      return (
-        cryptoassets[this.asset].chain === ChainId.Ethereum ||
-        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
-      )
+      return isEIP1559Fees(cryptoassets[this.asset].chain, this.activeNetwork)
     },
     value() {
       // Parse SendOptions.value into BN
@@ -371,7 +381,7 @@ export default {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      const fees = this.suggestedFeePrices(this.assetChain)
 
       if (fees) {
         Object.assign(assetFees, fees)
@@ -398,15 +408,10 @@ export default {
       if (this.selectedFee === 'custom') {
         feePerGas = this.customFee
       } else {
-        feePerGas =
-          this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[
-            this.selectedFee
-          ]?.fee
+        feePerGas = this.suggestedFeePrices(this.assetChain)[this.selectedFee]?.fee
       }
 
-      feePerGas = feePerGas.suggestedBaseFeePerGas
-        ? feePerGas.suggestedBaseFeePerGas + feePerGas.maxPriorityFeePerGas
-        : feePerGas
+      feePerGas = this.calculateFee(feePerGas)
 
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
 
@@ -422,23 +427,19 @@ export default {
       if (this.selectedFee === 'custom') {
         feePerGas = this.customFee
       } else {
-        feePerGas =
-          this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]?.[
-            this.selectedFee
-          ]?.fee
+        feePerGas = feePerGas = this.suggestedFeePrices(this.assetChain)[this.selectedFee]?.fee
       }
 
-      feePerGas = feePerGas.suggestedBaseFeePerGas
-        ? feePerGas.suggestedBaseFeePerGas + feePerGas.maxPriorityFeePerGas
-        : feePerGas
+      feePerGas = this.calculateFee(feePerGas)
 
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
       return txCost.dp(6)
     },
     calculateFee(fee) {
-      return fee.suggestedBaseFeePerGas
-        ? fee.suggestedBaseFeePerGas + fee.maxPriorityFeePerGas
-        : fee
+      return feePerUnit(fee)
+    },
+    account() {
+      return this.accountItem(this.request?.accountId)
     }
   },
   async created() {

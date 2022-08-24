@@ -1,8 +1,6 @@
 <template>
   <div class="notification-content">
-    <div class="notification-text">
-      A balance is required to swap and you need {{ asset }} to pay for gas.
-    </div>
+    <div class="notification-text">You need more {{ asset }} to pay for gas.</div>
     <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
       Get {{ asset }}
     </router-link>
@@ -30,11 +28,12 @@ export default {
   align-items: center;
 
   .get-bridgeAsset-btn {
-    width: 90px;
+    max-width: 120px;
+    padding: 0 0.5rem;
     display: inline-block;
   }
   .notification-text {
-    width: 230px;
+    width: 100%;
   }
 }
 </style>

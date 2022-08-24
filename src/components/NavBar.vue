@@ -1,19 +1,25 @@
 <template>
   <div>
     <div class="navbar">
-      <router-link v-if="showBack" class="navbar_prev" id="previous_nav_bar" v-bind:to="backPath">
-        <div>
+      <router-link
+        v-if="showBack"
+        class="navbar_prev"
+        :class="{ 'btn btn-light btn-lg text-dark mt-3': hasSolidButton }"
+        id="previous_nav_bar"
+        v-bind:to="backPath"
+      >
+        <div class="d-flex">
           <ChevronLeftIcon class="navbar_prev_icon" />
           {{ backLabel }}
         </div>
       </router-link>
       <a v-else-if="showBackButton" class="navbar_prev" href="#" @click="backClick">
-        <div>
+        <div class="d-flex">
           <ChevronLeftIcon class="navbar_prev_icon" />
           {{ backLabel }}
         </div>
       </a>
-      <div class="navbar_title" id="overview">
+      <div class="navbar_title" :class="{ 'w-100': fullWidth }" id="overview">
         <slot></slot>
       </div>
       <div
@@ -89,7 +95,16 @@ export default {
     LedgerIcon,
     KeyIcon
   },
-  props: ['showMenu', 'showBack', 'backPath', 'backLabel', 'showBackButton', 'backClick'],
+  props: [
+    'showMenu',
+    'showBack',
+    'backPath',
+    'backLabel',
+    'showBackButton',
+    'backClick',
+    'hasSolidButton',
+    'fullWidth'
+  ],
   data() {
     return {
       showMenuList: false,
@@ -193,7 +208,9 @@ export default {
         }
       })
       this.showMenuList = false
-      this.$router.replace('/accounts/hardware-wallet')
+      chrome.tabs.create({
+        url: browser.runtime.getURL('/index.html#/accounts/hardware-wallet?mode=tab')
+      })
     },
     hideMenu() {
       this.showMenuList = false
@@ -220,7 +237,11 @@ export default {
   z-index: 9998;
 
   &_title {
-    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 220px;
+    margin: 0 auto;
     text-align: center;
     font-weight: $headings-font-weight;
     text-transform: uppercase;

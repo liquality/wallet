@@ -4,6 +4,7 @@
       @filters-changed="applyFilters"
       :activity-data="activityData"
       v-if="activityData.length > 0"
+      :showTypeFilters="true"
     />
     <TransactionList :transactions="activityData" />
     <EmptyActivity v-show="activityData.length <= 0" :active-network="activeNetwork" />
@@ -15,7 +16,7 @@ import ActivityFilter from '@/components/ActivityFilter'
 import TransactionList from '@/components/TransactionList'
 import { mapGetters, mapState } from 'vuex'
 import EmptyActivity from '@/components/EmptyActivity'
-import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
+import { applyActivityFilters } from '@liquality/wallet-core/dist/src/utils/history'
 
 export default {
   components: {
@@ -43,6 +44,9 @@ export default {
   watch: {
     activeNetwork() {
       this.activityData = [...this.assetHistory]
+    },
+    activity() {
+      this.activityData = [...this.activity]
     }
   }
 }

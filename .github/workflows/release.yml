@@ -21,6 +21,9 @@ env:
   TRANSAK_WIDGET_URL_PROD: ${{ secrets.TRANSAK_WIDGET_URL_PROD }}
   TRANSAK_API_KEY_PROD: ${{ secrets.TRANSAK_API_KEY_PROD }}
   TRANSAK_DEFAULT_FIAT_CURRENCY: ${{ secrets.TRANSAK_DEFAULT_FIAT_CURRENCY }}
+  # Onramper details
+  ONRAMPER_WIDGET_URL: ${{ secrets.ONRAMPER_WIDGET_URL }}
+  ONRAMPER_API_KEY: ${{ secrets.ONRAMPER_API_KEY }}
 
 jobs:
   build:
@@ -82,6 +85,8 @@ jobs:
             echo VUE_APP_TRANSAK_WIDGET_URL =$TRANSAK_WIDGET_URL_PROD >> .env
             echo VUE_APP_TRANSAK_API_KEY =$TRANSAK_API_KEY_PROD >> .env
             echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =$TRANSAK_DEFAULT_FIAT_CURRENCY >> .env
+            echo VUE_APP_ONRAMPER_WIDGET_URL =$ONRAMPER_WIDGET_URL >> .env
+            echo VUE_APP_ONRAMPER_API_KEY =$ONRAMPER_API_KEY >> .env
             yarn install
             yarn lint
             yarn build
@@ -95,10 +100,10 @@ jobs:
           if-no-files-found: ignore
 
       - name: Changelog
-        uses: Bullrich/generate-release-changelog@2.0.0
-        id: Changelog
+        uses: mikepenz/release-changelog-builder-action@v3.0.1
+        id: build_changelog
         env:
-          REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         id: create_release
@@ -109,7 +114,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           body: |
-            ${{ steps.Changelog.outputs.changelog }}
+            ${{steps.build_changelog.outputs.changelog}}
 
       - name: Upload release
         uses: actions/upload-release-asset@v1
@@ -131,4 +136,3 @@ jobs:
           TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
         with:
           args: yarn test:mainnet:prodagent:release
-       

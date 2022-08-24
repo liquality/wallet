@@ -73,7 +73,7 @@ class OverviewPage {
   async CloseWhatsNewModal(page) {
     await page.waitForSelector('#wats_new_close_btn', {
       visible: true,
-      timeout: 60000
+      timeout: 180000
     })
     await page.click('#wats_new_close_btn')
     console.log("Wat's new Modal closed")
@@ -287,7 +287,7 @@ class OverviewPage {
       default:
         throw Error(`Unsupported chain: ${assetName}`)
     }
-    await page.waitForSelector('.account-container_balance_code', { visible: true })
+    await page.waitForSelector('.account-container_balance_code', { visible: true, timeout: 60000 })
     await page.waitForSelector('#refresh-icon', { visible: true })
   }
   /**
@@ -386,7 +386,7 @@ class OverviewPage {
     console.log(`Total assets: ${chainNames.length}`)
     console.log(`Total assets: ${chainNames}`)
 
-    const assets = newWallet ? 9 : 10
+    const assets = newWallet ? 10 : 11
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(

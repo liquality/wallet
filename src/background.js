@@ -2,9 +2,9 @@ import 'setimmediate'
 import { random } from 'lodash-es'
 import store from './store'
 import { wait } from './store/utils'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { unitToCurrency } from '@liquality/cryptoassets'
-import { prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
+import { prettyFiatBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import _ from 'lodash-es'
 import { version as walletVersion } from '../package.json'
 
@@ -30,16 +30,42 @@ store.subscribe(async ({ type, payload }, state) => {
   let currentState = _.cloneDeep(state)
   const { dispatch, getters } = store
 
+  const accountIds = store.getters.accountsData.map((account) => {
+    return account.id
+  })
+
   switch (type) {
     case 'CREATE_WALLET':
-      await dispatch('trackAnalytics', {
-        event: 'Create a new wallet',
-        properties: {
-          walletVersion,
-          label: 'New wallet created',
-          action: 'User created a new wallet with new seed phrase'
-        }
-      })
+      // Analytics Opt in event (if state has acceptedData is not 0)
+      if (state.analytics?.acceptedDate > 0) {
+        dispatch('trackAnalytics', {
+          event: 'User Opt-In to Analytics',
+          properties: {
+            category: 'Analytics'
+          }
+        })
+      }
+      // Import with seed phrase event
+      if (state.wallets[0].imported) {
+        dispatch('trackAnalytics', {
+          event: 'Import with seed phrase',
+          properties: {
+            walletVersion,
+            label: 'Import with seed phrase',
+            action: 'User created wallet with import seed phrase'
+          }
+        })
+      } else {
+        // Create wallet event
+        dispatch('trackAnalytics', {
+          event: 'Create a new wallet',
+          properties: {
+            walletVersion,
+            label: 'New wallet created',
+            action: 'User created a new wallet with new seed phrase'
+          }
+        })
+      }
       break
 
     case 'CHANGE_ACTIVE_NETWORK':
@@ -59,7 +85,12 @@ store.subscribe(async ({ type, payload }, state) => {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      dispatch('updateMarketData', { network: state.activeNetwork })
+      dispatch('updateNFTs', {
+        walletId: state.activeWalletId,
+        network: state.activeNetwork,
+        accountIds: accountIds
+      }),
+        dispatch('updateMarketData', { network: state.activeNetwork })
       break
     case 'LOCK_WALLET':
       await dispatch('trackAnalytics', {
@@ -77,13 +108,20 @@ store.subscribe(async ({ type, payload }, state) => {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      dispatch('updateBalances', {
-        network: state.activeNetwork,
-        walletId: state.activeWalletId
-      })
       dispatch('updateFiatRates', { assets: store.getters.allNetworkAssets })
       dispatch('updateMarketData', { network: state.activeNetwork })
+      dispatch('updateCurrenciesInfo', { assets: store.getters.allNetworkAssets })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
+
+      asyncLoop(
+        () =>
+          dispatch('updateNFTs', {
+            walletId: state.activeWalletId,
+            network: state.activeNetwork,
+            accountIds: accountIds
+          }),
+        () => random(200000, 300000)
+      )
 
       asyncLoop(
         () =>
@@ -219,6 +257,19 @@ store.subscribe(async ({ type, payload }, state) => {
               category: 'Send/Receive',
               action: 'Send Status changed',
               asset: `${item.from}`,
+              sendStatus: `${payload.updates.status}`
+            }
+          })
+        }
+      }
+      if (item.type === 'NFT' && payload.updates) {
+        if (payload.updates.status !== 'undefined') {
+          await dispatch('trackAnalytics', {
+            event: 'Send NFT status change',
+            properties: {
+              walletVersion,
+              category: 'Send NFT',
+              action: 'Send NFT Status changed',
               sendStatus: `${payload.updates.status}`
             }
           })

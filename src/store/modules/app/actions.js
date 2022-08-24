@@ -1,4 +1,3 @@
-import { createBridgeClient } from '@/utils/ledger-bridge-provider'
 import { requestOriginAccess } from './requestOriginAccess'
 import { requestPermission } from './requestPermission'
 import { requestUnlockWallet } from './requestUnlockWallet'
@@ -12,64 +11,6 @@ import { checkAnalyticsOptIn } from './checkAnalyticsOptIn'
 import { chains } from '@liquality/cryptoassets'
 
 export const actions = {
-  openLedgerBridgeWindow: async ({ rootState, commit }) => {
-    const { usbBridgeWindowsId } = rootState
-    let existingWindow = null
-    const win = await browser.windows.getCurrent()
-    const top = win.top + 50
-    const left = win.left + 40
-
-    if (usbBridgeWindowsId && usbBridgeWindowsId > 0) {
-      try {
-        existingWindow = await browser.windows.get(usbBridgeWindowsId)
-        browser.windows.update(usbBridgeWindowsId, {
-          focused: true,
-          height: 600,
-          width: 360,
-          top,
-          left
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    if (!existingWindow) {
-      const url = process.env.VUE_APP_LEDGER_BRIDGE_URL
-      const win = await browser.windows.create({
-        url: `${url}?extensionId=${browser.runtime.id}`,
-        focused: true,
-        type: 'popup',
-        height: 600,
-        width: 360,
-        top,
-        left
-      })
-      commit('SET_USB_BRIDGE_WINDOWS_ID', { id: win.id }, { root: true })
-    }
-  },
-  closeExistingBridgeWindow: async ({ windowsId }) => {
-    if (windowsId && windowsId > 0) {
-      try {
-        const existingWindow = await browser.windows.get(windowsId)
-        if (existingWindow) {
-          await browser.windows.remove(windowsId)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  },
-  setLedgerBridgeConnected: ({ commit }, { connected }) => {
-    commit('SET_LEDGER_BRIDGE_CONNECTED', { connected })
-  },
-  setLedgerBridgeTransportConnected: ({ commit }, { connected }) => {
-    commit('SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED', { connected })
-  },
-  startBridgeListener: ({ dispatch }, payload) => {
-    createBridgeClient(payload)
-    dispatch('openLedgerBridgeWindow')
-  },
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
     commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
   },
@@ -122,7 +63,7 @@ export const actions = {
   openTransakWidgetTab: ({ dispatch, rootState }, { chain, asset, address }) => {
     const widgetUrl = process.env.VUE_APP_TRANSAK_WIDGET_URL
     const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
-    let url = `${widgetUrl}?apiKey=${apiKey}&disablePaymentMethods=apple_pay&cryptoCurrencyCode=${asset}`
+    let url = `${widgetUrl}?apiKey=${apiKey}&disablePaymentMethods=apple_pay&cryptoCurrencyCode=${asset}&network=${chain}`
 
     const _address = chains[chain]?.formatAddress(address, rootState.activeNetwork)
     url = `${url}&walletAddress=${_address}`
@@ -136,6 +77,27 @@ export const actions = {
         event: 'Continue with Transak clicked',
         category: 'Buy Crypto',
         label: 'Buy Crypto Continue with Transak clicked'
+      },
+      { root: true }
+    )
+  },
+  openOnramperWidgetTab: ({ dispatch, rootState }, { chain, asset, address }) => {
+    const widgetUrl = process.env.VUE_APP_ONRAMPER_WIDGET_URL
+    const apiKey = process.env.VUE_APP_ONRAMPER_API_KEY
+    let url = `${widgetUrl}?apiKey=${apiKey}&defaultCrypto=${asset}&excludePaymentMethods=applePay`
+
+    const _address = chains[chain]?.formatAddress(address, rootState.activeNetwork)
+    url = `${url}&wallets=${asset}:${_address}&onlyCryptos=${asset}`
+
+    chrome.tabs.create({ url })
+    dispatch('setBuyCryptoModalOpen', { open: false })
+    dispatch('setBuyCryptoOverviewModalOpen', { open: false })
+    dispatch(
+      'trackAnalytics',
+      {
+        event: 'Continue with OnRamper clicked',
+        category: 'Buy Crypto',
+        label: 'Buy Crypto Continue with OnRamper clicked'
       },
       { root: true }
     )

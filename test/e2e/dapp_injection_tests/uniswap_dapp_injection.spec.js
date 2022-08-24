@@ -52,7 +52,7 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
     await dappPage.goto(dappUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
-      await dappPage.waitForSelector('#connect-wallet', { visible: true })
+      await dappPage.waitForSelector('#swap-currency-input', { visible: true })
     } catch (e) {
       await testUtil.takeScreenshot(dappPage, 'uniswap-arbitrum-loading-issue')
       const pageTitle = await dappPage.title()
@@ -104,6 +104,8 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       timeout: 60000
     })
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
+    await dappPage.waitFor(10000)
+    await dappPage.reload()
     // Check web3 status as connected
     const connectedChainDetails = await dappPage.evaluate(async () => {
       const chainIDHexadecimal = await window.ethereum.request({

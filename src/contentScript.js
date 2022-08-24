@@ -3,7 +3,7 @@ import Script from './broker/Script'
 import {
   providerManager,
   ethereumProvider,
-  overrideEthereum,
+  globalEthereumProvider,
   bitcoinProvider,
   nearProvider,
   paymentUriHandler,
@@ -11,7 +11,7 @@ import {
   terraProvider
 } from './inject'
 import { buildConfig } from '@liquality/wallet-core'
-import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
+import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
 import { chains, isEthereumChain } from '@liquality/cryptoassets'
 import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
@@ -61,7 +61,7 @@ function injectProviders(state) {
   inject(paymentUriHandler())
 }
 
-function overrideEthereumInjection(state) {
+function injectGlobalEthereum(state, override) {
   const { externalConnections, activeWalletId, activeNetwork } = state
 
   let ethereumChain = state.injectEthereumChain
@@ -77,14 +77,15 @@ function overrideEthereumInjection(state) {
     }
   }
 
-  inject(overrideEthereum(ethereumChain))
+  inject(globalEthereumProvider(ethereumChain, override))
 }
 
 chrome.storage.local.get(['liquality-wallet'], (storage) => {
   const state = storage['liquality-wallet']
   injectProviders(state)
 
-  if (state.injectEthereum && state.injectEthereumChain) {
-    overrideEthereumInjection(state)
+  if (state.injectEthereumChain) {
+    const override = Boolean(state.injectEthereum)
+    injectGlobalEthereum(state, override)
   }
 })

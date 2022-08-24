@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { broker } from '../store'
+import store, { broker } from '../store'
 
 import Splash from '@/views/Splash.vue'
 import OnboardingSetup from '@/views/Onboarding/OnboardingSetup.vue'
@@ -11,6 +11,8 @@ import Wallet from '@/views/Wallet/Wallet.vue'
 import Account from '@/views/Account.vue'
 import SwapDetails from '@/views/Details/SwapDetails.vue'
 import TransactionDetails from '@/views/Details/TransactionDetails.vue'
+import NFTAssetDetails from '@/views/Details/NFTAssetDetails.vue'
+import NFTCollectionList from '@/views/Details/NFTCollectionList.vue'
 import Send from '@/views/Send/Send.vue'
 import Receive from '@/views/Receive.vue'
 import Swap from '@/views/Swap/Swap.vue'
@@ -28,7 +30,11 @@ import PermissionSignPsbt from '@/views/PermissionSignPsbt.vue'
 import PermissionTerra from '@/views/PermissionTerra.vue'
 import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
+import WalletNFTs from '@/views/Wallet/WalletNFTs.vue'
+import SendNFT from '@/views/Send/SendNFT.vue'
 import WalletActivity from '@/views/Wallet/WalletActivity.vue'
+import NFTActivity from '@/views/Wallet/NFTActivity.vue'
+import NFTTransactionDetails from '@/views/Details/NFTTransactionDetails.vue'
 import AssetList from '@/views/AssetList.vue'
 import HardwareWallet from '@/views/Accounts/HardwareWallet/HardwareWallet.vue'
 import CreateAccount from '@/views/Accounts/Create.vue'
@@ -44,45 +50,56 @@ const routes = [
   // Onboarding
   {
     path: '/',
-    component: Splash
+    component: Splash,
+    name: 'Splash',
+    meta: { protect: false }
   },
   {
     path: '/onboarding/import',
-    component: ImportWallet
+    component: ImportWallet,
+    meta: { protect: false }
   },
   {
     path: '/open',
-    component: Open
+    name: 'OpenWallet',
+    component: Open,
+    meta: { protect: false }
   },
   {
     path: '/onboarding/setup/:seedphrase?',
     component: OnboardingSetup,
     name: 'OnboardingSetup',
-    props: true
+    props: true,
+    meta: { protect: false }
   },
   {
     path: '/onboarding/home',
     component: OnboardingHome,
-    name: 'OnboardingHome'
+    name: 'OnboardingHome',
+    meta: { protect: false }
   },
   // Onboarding
 
   // Settings
   {
     path: '/settings',
-    component: Settings
+    component: Settings,
+    meta: { protect: true }
   },
   {
     path: '/settings/experiments',
-    component: Experiments
+    component: Experiments,
+    meta: { protect: true }
   },
   {
     path: '/settings/manage-assets',
-    component: ManageAssets
+    component: ManageAssets,
+    meta: { protect: true }
   },
   {
     path: '/settings/manage-assets/custom-token',
-    component: CustomToken
+    component: CustomToken,
+    meta: { protect: true }
   },
   // Settings
 
@@ -91,6 +108,7 @@ const routes = [
     path: '/wallet',
     name: 'Wallet',
     component: Wallet,
+    meta: { protect: true },
     children: [
       {
         path: 'assets',
@@ -103,22 +121,58 @@ const routes = [
         name: 'WalletActivity'
       },
       {
+        path: 'nfts',
+        component: WalletNFTs,
+        name: 'WalletNFTs'
+      },
+      {
         path: '',
         redirect: 'assets'
       }
     ]
+  },
+  {
+    path: '/wallet/nfts/activity/:id',
+    component: NFTActivity,
+    name: 'NFTActivity',
+    props: true
+  },
+  {
+    path: '/wallet/nfts/send',
+    component: SendNFT,
+    name: 'SendNFT'
+  },
+  {
+    path: '/details/nft-transaction/:id',
+    component: NFTTransactionDetails,
+    name: 'NFTTransactionDetails',
+    props: true
   },
   // Details
   {
     path: '/details/swap/:id',
     component: SwapDetails,
     name: 'SwapDetails',
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     path: '/details/transaction/:id',
     component: TransactionDetails,
     name: 'TransactionDetails',
+    props: true,
+    meta: { protect: true }
+  },
+  {
+    path: '/details/nft-collection/:id',
+    component: NFTCollectionList,
+    name: 'NFTCollectionList',
+    props: true
+  },
+  {
+    path: '/details/nft-asset/:id',
+    component: NFTAssetDetails,
+    name: 'NFTAssetDetails',
     props: true
   },
 
@@ -127,100 +181,120 @@ const routes = [
     path: '/accounts/management',
     component: ManageAccounts,
     name: 'ManageAccounts',
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     path: '/accounts/create/:chainId?',
     component: CreateAccount,
     name: 'CreateAccount',
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     path: '/accounts/hardware-wallet',
     component: HardwareWallet,
-    props: true
+    props: true,
+    name: 'HardwareWallet',
+    meta: { protect: true }
   },
   {
     name: 'Account',
     path: '/accounts/:accountId/:asset',
     component: Account,
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     name: 'Send',
     path: '/accounts/:accountId/:asset/send',
     component: Send,
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     name: 'Receive',
     path: '/accounts/:accountId/:asset/receive',
     component: Receive,
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   {
     name: 'Swap',
     path: '/accounts/:accountId/:routeAsset/swap',
     component: Swap,
-    props: true
+    props: true,
+    meta: { protect: true }
   },
 
   // Assets list
   {
     path: '/assets/:action',
     component: AssetList,
-    props: true
+    props: true,
+    meta: { protect: true }
   },
   // Wallet
 
   // Injection
   {
     path: '/request-unlock',
-    component: RequestUnlockWallet
+    component: RequestUnlockWallet,
+    meta: { protect: false }
   },
   {
     path: '/enable',
-    component: Enable
+    component: Enable,
+    meta: { protect: false }
   },
   {
     path: '/permission/send',
-    component: PermissionSend
+    component: PermissionSend,
+    meta: { protect: false }
   },
   {
     path: '/permission/terra',
-    component: PermissionTerra
+    component: PermissionTerra,
+    meta: { protect: false }
   },
   {
     path: '/permission/sign',
-    component: PermissionSign
+    component: PermissionSign,
+    meta: { protect: false }
   },
   {
     path: '/permission/signPsbt',
-    component: PermissionSignPsbt
+    component: PermissionSignPsbt,
+    meta: { protect: false }
   },
   {
     path: '/permission/default',
-    component: Permission
+    component: Permission,
+    meta: { protect: false }
   },
   // Injection
 
   // SeedPhrase
   {
     path: '/privacywarning',
-    component: Warning
+    component: Warning,
+    meta: { protect: false }
   },
   {
     path: '/seedlogin',
-    component: LoginPhrase
+    component: LoginPhrase,
+    meta: { protect: false }
   },
   {
     path: '/seedreveal',
-    component: PhraseReveal
+    component: PhraseReveal,
+    meta: { protect: true }
   },
 
   // Export Private Key
   {
     path: '/export/:accountId',
+    meta: { protect: true },
     component: Warning,
     props: ({ params: { accountId } }) => ({
       title: 'Show Private Key?',
@@ -230,6 +304,7 @@ const routes = [
   {
     path: '/export/:accountId/login',
     component: LoginPhrase,
+    meta: { protect: true },
     props: ({ params: { accountId } }) => ({
       title: 'Sign-in to Export Private Key',
       nextPath: `/export/${accountId}/reveal`
@@ -239,7 +314,8 @@ const routes = [
     path: '/export/:accountId/reveal',
     component: ExportPrivateKey,
     name: 'ExportPrivateKey',
-    props: true
+    props: true,
+    meta: { protect: true }
   }
 ]
 
@@ -248,11 +324,12 @@ const router = new VueRouter({
   routes
 })
 
-const waitForBrokerReady = async (_to, _from, next) => {
+router.beforeEach(async (to, from, next) => {
+  // wait for the broker
   await broker.ready.promise
-  next()
-}
-
-router.beforeEach(waitForBrokerReady)
+  if (!store.state.unlockedAt && to.meta?.protect == true && to.name !== 'Splash') {
+    next({ name: 'Splash' })
+  } else next()
+})
 
 export default router

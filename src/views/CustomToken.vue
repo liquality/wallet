@@ -19,92 +19,15 @@
               <ChevronDownIcon v-else />
             </button>
             <ul class="dropdown-menu" :class="{ show: chainDropdownOpen }">
-              <li>
+              <li v-for="chain in chainsWithFetchingTokenDetails" :key="chain.chainId">
                 <a
                   class="dropdown-item"
-                  id="ethereum_chain"
+                  :id="`${chain.chainId}_chain`"
                   href="#"
-                  @click="selectChain('ethereum')"
-                  :class="{ active: chain === 'ethereum' }"
+                  @click="selectChain(chain.chainId)"
+                  :class="{ active: chain === chain.chainId }"
                 >
-                  Ethereum (ETH)
-                </a>
-              </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  id="rsk_chain"
-                  href="#"
-                  @click="selectChain('rsk')"
-                  :class="{ active: chain === 'rsk' }"
-                >
-                  Rootstock (RSK)
-                </a>
-              </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  id="bsc_chain"
-                  href="#"
-                  @click="selectChain('bsc')"
-                  :class="{ active: chain === 'bsc' }"
-                >
-                  Binance Smart Chain (BSC)
-                </a>
-              </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  id="polygon_chain"
-                  href="#"
-                  @click="selectChain('polygon')"
-                  :class="{ active: chain === 'polygon' }"
-                >
-                  Polygon (MATIC)
-                </a>
-              </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  id="arbitrum_chain"
-                  href="#"
-                  @click="selectChain('arbitrum')"
-                  :class="{ active: chain === 'arbitrum' }"
-                >
-                  Arbitrum (ARB)
-                </a>
-              </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  id="avalanche_chain"
-                  href="#"
-                  @click="selectChain('avalanche')"
-                  :class="{ active: chain === 'avalanche' }"
-                >
-                  Avalanche (AVAX)
-                </a>
-              </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  id="terra_chain"
-                  href="#"
-                  @click="selectChain('terra')"
-                  :class="{ active: chain === 'terra' }"
-                >
-                  Terra (LUNA)
-                </a>
-              </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  id="fuse"
-                  href="#"
-                  @click="selectChain('fuse')"
-                  :class="{ active: chain === 'fuse' }"
-                >
-                  Fuse (FUSE)
+                  {{ chain.label }}
                 </a>
               </li>
               <li>
@@ -203,10 +126,10 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 import { debounce } from 'lodash-es'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { tokenDetailProviders } from '@liquality/wallet-core/dist/utils/asset'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
+import { CHAINS_WITH_FETCH_TOKEN_DETAILS } from '@liquality/wallet-core/dist/src/utils/fetchTokenDetails'
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
@@ -226,11 +149,13 @@ export default {
       chain: null,
       autofilled: false,
       chainDropdownOpen: false,
-      isSymbolEditable: false
+      isSymbolEditable: false,
+      chainsWithFetchingTokenDetails: CHAINS_WITH_FETCH_TOKEN_DETAILS
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'activeWalletId', 'enabledAssets']),
+    ...mapState(['activeNetwork', 'accounts', 'activeWalletId', 'enabledAssets']),
+    ...mapGetters(['accountsData']),
     networkAssets() {
       return this.enabledAssets[this.activeNetwork][this.activeWalletId]
     },
@@ -264,7 +189,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['enableAssets', 'addCustomToken']),
+    ...mapActions([
+      'enableAssets',
+      'addCustomToken',
+      'toggleBlockchain',
+      'toggleAccount',
+      'fetchTokenDetails'
+    ]),
     async addToken() {
       if (!this.existingAsset) {
         // Add only if it does not already exist
@@ -277,6 +208,14 @@ export default {
           symbol: this.symbol,
           decimals: Number(this.decimals)
         })
+
+        const isChainEnabledForNative = this.accountsData.find(
+          (account) => account.chain === this.chain
+        )
+
+        if (!isChainEnabledForNative) {
+          await this.enableChain()
+        }
       }
       await this.enableAssets({
         network: this.activeNetwork,
@@ -284,6 +223,25 @@ export default {
         assets: [this.symbol]
       })
       this.$router.replace('/settings/manage-assets')
+    },
+    async enableChain() {
+      await this.toggleBlockchain({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        chainId: this.chain,
+        enable: true
+      })
+
+      const accountIds = this.accounts[this.activeWalletId][this.activeNetwork]
+        .filter((acc) => acc.chain === this.chain)
+        .map((a) => a.id)
+
+      await this.toggleAccount({
+        network: this.activeNetwork,
+        walletId: this.activeWalletId,
+        accounts: accountIds,
+        enable: true
+      })
     },
     contractAddressPaste(e) {
       this.contractAddress = e.clipboardData.getData('text')
@@ -309,9 +267,13 @@ export default {
       if (this.existingAsset) {
         customToken = this.existingAsset
       } else if (this.activeNetwork === 'mainnet' && this.contractAddress) {
-        const { symbol, name, decimals } = await tokenDetailProviders[this.chain].getDetails(
-          this.contractAddress
-        )
+        const { symbol, name, decimals } = await this.fetchTokenDetails({
+          network: this.activeNetwork,
+          walletId: this.activeWalletId,
+          chain: this.chain,
+          contractAddress: this.contractAddress
+        })
+
         customToken = {
           symbol,
           name,

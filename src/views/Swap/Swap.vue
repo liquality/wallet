@@ -8,24 +8,62 @@
       >
         Swap
       </NavBar>
-      <InfoNotification v-if="ethRequired">
-        <EthRequiredMessage :account-id="account.id" />
+      <InfoNotification
+        v-if="showNoLiquidityMessage && !updatingQuotes && sendAmount >= min && sendAmount > 0"
+      >
+        <NoLiquidityMessage :isPairAvailable="isPairAvailable" :asset="toAsset" />
       </InfoNotification>
-      <InfoNotification v-if="showBridgeAssetDisabledMessage">
+      <InfoNotification v-else-if="showBridgeAssetDisabledMessage">
         <BoostActivateBridgeAsset
           :network="activeNetwork"
           :walletId="activeWalletId"
           :asset="selectedQuote.bridgeAsset"
+          :updateQuotes="updateQuotes"
         />
       </InfoNotification>
-      <InfoNotification v-else-if="!canCoverAmmFee">
+      <InfoNotification v-else-if="showNativeAssetDisabledMessage">
+        <BoostActivateBridgeAsset
+          :network="activeNetwork"
+          :walletId="activeWalletId"
+          :asset="assetChain"
+          :updateQuotes="updateQuotes"
+        />
+      </InfoNotification>
+      <InfoNotification
+        v-else-if="
+          cannotCoverNetworkFee && sendAmount >= min && sendAmount > 0 && !insufficientFundsError
+        "
+      >
+        <NoFundsForNetworkFee
+          :account-id="account.id"
+          :assetChain="assetChain"
+          :receiveFeeProblem="false"
+          :toAssetChain="toAssetChain"
+        />
+      </InfoNotification>
+      <InfoNotification
+        v-else-if="
+          cannotCoverReceiveFee && sendAmount >= min && sendAmount > 0 && !insufficientFundsError
+        "
+      >
+        <NoFundsForNetworkFee
+          :account-id="account.id"
+          :assetChain="assetChain"
+          :receiveFeeProblem="true"
+          :toAssetChain="toAssetChain"
+        />
+      </InfoNotification>
+      <InfoNotification v-else-if="!canCoverAmmFee && !insufficientFundsError">
         <BridgeAssetRequiredMessage
           :account-id="getAccountId()"
           :asset="selectedQuote.bridgeAsset"
         />
       </InfoNotification>
-      <InfoNotification v-else-if="showNoLiquidityMessage && sendAmount >= min && sendAmount > 0">
-        <NoLiquidityMessage :isPairAvailable="isPairAvailable" />
+      <InfoNotification v-else-if="cannotCoverMinimum && !insufficientFundsError">
+        <CannotCoverMinimumMessage :asset="asset" :account-id="account.id" />
+      </InfoNotification>
+      <InfoNotification v-else-if="ethRequired && !insufficientFundsError">
+        <EthRequiredMessage :account-id="account.id" />
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
@@ -105,21 +143,11 @@
             <template v-slot:header>
               <div class="network-header-container">
                 <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
-                <div class="network-header-state">
-                  <span class="text-muted">
-                    {{ assetChain }}
-                    {{ assetChain ? getSelectedFeeLabel(selectedFee[assetChain]) : '' }}
-                  </span>
-                  <span class="text-muted" v-if="toAssetChain && assetChain != toAssetChain">
-                    / {{ toAssetChain }}
-                    {{ toAssetChain ? getSelectedFeeLabel(selectedFee[toAssetChain]) : '' }}
-                  </span>
-                </div>
               </div>
             </template>
             <template v-slot:content>
               <ul class="selectors">
-                <li v-for="assetFee in availableFees" :key="assetFee">
+                <li v-for="(assetFee, idx) in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     <span v-if="getTotalSwapFee(assetFee).dp(6).eq(0)"
@@ -129,16 +157,34 @@
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
                     <button class="btn btn-link" @click="resetCustomFee(assetFee)">Reset</button>
                   </div>
-                  <FeeSelector
-                    v-else
-                    :asset="assetsFeeSelector[assetFee]"
-                    v-model="selectedFee[assetFee]"
-                    :fees="getAssetFees(assetFee)"
-                    :totalFees="amountOption === 'max' ? maxSwapFees[assetFee] : swapFees[assetFee]"
-                    :fiatRates="fiatRates"
-                    @custom-selected="onCustomFeeSelected"
-                    :swap="true"
-                  />
+                  <div v-else>
+                    <FeeSelector
+                      v-if="
+                        (idx === 0 && isFromCustomFeeSupported) ||
+                        (idx === 1 && isToCustomFeeSupported)
+                      "
+                      :asset="assetsFeeSelector[assetFee]"
+                      v-model="selectedFee[assetFee]"
+                      :fees="getAssetFees(assetFee)"
+                      :totalFees="
+                        amountOption === 'max' ? maxSwapFees[assetFee] : swapFees[assetFee]
+                      "
+                      :fiatRates="fiatRates"
+                      @custom-selected="onCustomFeeSelected"
+                      :swap="true"
+                    />
+                    <div
+                      v-else-if="
+                        (idx === 0 && !isFromCustomFeeSupported) ||
+                        (idx === 1 && !isToCustomFeeSupported)
+                      "
+                      class="network-header-container"
+                    >
+                      <span class="text-muted" id="send_network_speed_avg_fee">
+                        ({{ swapFees[assetFee].slow }} {{ assetFee }})
+                      </span>
+                    </div>
+                  </div>
                 </li>
                 <li v-if="hasPredefinedReceiveFee">
                   <span class="selectors-asset">{{ toAsset }} </span>{{ dpUI(receiveFee) }} /
@@ -161,10 +207,10 @@
             <button
               class="btn btn-primary btn-lg"
               id="swap_review_button"
-              @click="currentStep = 'confirm'"
-              :disabled="!canSwap"
+              @click="review"
+              :disabled="!canSwap || cannotCoverNetworkFee"
             >
-              Review
+              {{ !canSwap || cannotCoverNetworkFee ? `Insufficient Funds` : `Review` }}
             </button>
           </div>
         </div>
@@ -204,11 +250,11 @@
     </div>
     <div class="swap" v-else-if="currentStep === 'confirm'">
       <NavBar :showBackButton="true" :backClick="back" backLabel="Back"> Swap</NavBar>
-      <div class="fee-wrapper" id="fees_are_high" v-if="isHighFee">
-        Fees are high. Review transaction carefully.
-      </div>
       <div class="fee-wrapper" id="swap_is_negative" v-if="isSwapNegative">
-        Swap is negative. Review transaction carefully.
+        Fees are extreme. Review transaction carefully.
+      </div>
+      <div class="fee-wrapper" id="fees_are_high" v-else-if="isHighFee">
+        Fees are high. Review transaction carefully.
       </div>
       <div class="swap-confirm wrapper form">
         <div class="wrapper_top form">
@@ -231,7 +277,21 @@
             <label class="text-muted">Network Fee</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div id="swap_send_network_fee_value">~{{ dpUI(fromSwapFee) }} {{ assetChain }}</div>
-              <div class="details-text" id="swap_send_network_fee_fiat_rate">
+              <div
+                v-if="isSwapNegative"
+                class="extreme-fee-text details-text"
+                id="swap_send_network_fee_fiat_rate"
+              >
+                {{ formatFiatUI(prettyFiatBalance(fromSwapFee, fiatRates[assetChain])) }}
+              </div>
+              <div
+                v-else-if="isHighFee"
+                class="high-fee-text details-text"
+                id="swap_send_network_fee_fiat_rate"
+              >
+                {{ formatFiatUI(prettyFiatBalance(fromSwapFee, fiatRates[assetChain])) }}
+              </div>
+              <div v-else class="details-text" id="swap_send_network_fee_fiat_rate">
                 {{ formatFiatUI(prettyFiatBalance(fromSwapFee, fiatRates[assetChain])) }}
               </div>
             </div>
@@ -280,7 +340,35 @@
               <div>
                 ~{{ dpUI(receiveFee) }} {{ hasPredefinedReceiveFee ? toAsset : toAssetChain }}
               </div>
-              <div class="details-text" id="swap_receive_network_fee_fiat_rate">
+              <div
+                v-if="isSwapNegative"
+                class="extreme-fee-text details-text"
+                id="swap_receive_network_fee_fiat_rate"
+              >
+                {{
+                  formatFiatUI(
+                    prettyFiatBalance(
+                      receiveFee,
+                      fiatRates[hasPredefinedReceiveFee ? toAsset : toAssetChain]
+                    )
+                  )
+                }}
+              </div>
+              <div
+                v-else-if="isHighFee"
+                class="high-fee-text details-text"
+                id="swap_receive_network_fee_fiat_rate"
+              >
+                {{
+                  formatFiatUI(
+                    prettyFiatBalance(
+                      receiveFee,
+                      fiatRates[hasPredefinedReceiveFee ? toAsset : toAssetChain]
+                    )
+                  )
+                }}
+              </div>
+              <div v-else class="details-text" id="swap_receive_network_fee_fiat_rate">
                 {{
                   formatFiatUI(
                     prettyFiatBalance(
@@ -304,7 +392,10 @@
                   {{ hasPredefinedReceiveFee ? toAsset : toAssetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" id="swap_receive_total_amount_in_fiat">
+              <div
+                :class="!isSwapNegative ? 'font-weight-bold' : 'extreme-fee-text font-weight-bold'"
+                id="swap_receive_total_amount_in_fiat"
+              >
                 {{ formatFiatUI(totalToReceiveInFiat) }}
               </div>
             </div>
@@ -328,7 +419,7 @@
           </div>
         </div>
         <div class="wrapper_bottom">
-          <SwapInfo :quote="selectedQuote" />
+          <SwapInfo v-if="selectedQuote" :quote="selectedQuote" />
           <div class="button-group">
             <button
               class="btn btn-light btn-outline-primary btn-lg"
@@ -341,7 +432,7 @@
             <button
               class="btn btn-primary btn-lg btn-block btn-icon"
               id="initiate_swap_button"
-              @click.stop="tryToSwap"
+              @click.stop="swap"
               :disabled="loading"
             >
               <SpinnerIcon class="btn-loading" v-if="loading" />
@@ -387,7 +478,6 @@
       :error="swapErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
-    <LedgerBridgeModal :open="bridgeModalOpen" @close="closeBridgeModal" />
   </div>
 </template>
 
@@ -395,13 +485,15 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { ChainId, currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
+import { currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
 import EthRequiredMessage from '@/components/EthRequiredMessage'
 import BridgeAssetRequiredMessage from '@/components/BridgeAssetRequiredMessage'
+import CannotCoverMinimumMessage from '@/components/CannotCoverMinimumMessage'
+import NoFundsForNetworkFee from '@/components/NoFundsForNetworkFee'
 import BoostActivateBridgeAsset from '@/components/BoostActivateBridgeAsset'
 import NoLiquidityMessage from '@/components/NoLiquidityMessage'
 import {
@@ -413,15 +505,20 @@ import {
   prettyBalance,
   prettyFiatBalance,
   VALUE_DECIMALS
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import {
   getAssetColorStyle,
   getNativeAsset,
   isERC20
-} from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getFeeLabel } from '@liquality/wallet-core/dist/utils/fees'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import {
+  getFeeLabel,
+  isEIP1559Fees,
+  feePerUnit,
+  newSendFees
+} from '@liquality/wallet-core/dist/src/utils/fees'
 import { chains } from '@liquality/cryptoassets'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -438,18 +535,14 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import { getSwapProviderConfig } from '@liquality/wallet-core/dist/swaps/utils'
-import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
+import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { version as walletVersion } from '../../../package.json'
-import LedgerBridgeModal from '@/components/LedgerBridgeModal'
-import { createConnectSubscription } from '@/utils/ledger-bridge-provider'
 import { buildConfig } from '@liquality/wallet-core'
-import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
-import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
+import { SwapProviderType } from '@liquality/wallet-core/dist/src/store/types'
+import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
+import qs from 'qs'
 
-const DEFAULT_SWAP_VALUE_USD = 100
 const QUOTE_TIMER_MS = 30000
-const MIN_SWAP_VALUE_USD = 2
 
 export default {
   components: {
@@ -458,6 +551,8 @@ export default {
     EthRequiredMessage,
     BridgeAssetRequiredMessage,
     BoostActivateBridgeAsset,
+    CannotCoverMinimumMessage,
+    NoFundsForNetworkFee,
     NoLiquidityMessage,
     FeeSelector,
     SwapIcon,
@@ -472,7 +567,6 @@ export default {
     OperationErrorModal,
     CustomFees,
     CustomFeesEIP1559,
-    LedgerBridgeModal,
     QuotesModal,
     SwapProvidersInfoModal,
     SwapInfo
@@ -486,6 +580,8 @@ export default {
       toAsset: null,
       showQuotesModal: false,
       showSwapProvidersInfoModal: false,
+      cannotCoverMinimum: false,
+      minSwapAmount: 0,
       quotes: [],
       updatingQuotes: false,
       selectedQuote: null,
@@ -493,6 +589,8 @@ export default {
       swapFees: {},
       maxSwapFees: {},
       selectedFee: {},
+      selectedFromFee: 'average',
+      selectedToFee: 'average',
       currentStep: 'inputs',
       assetSelection: 'from',
       loading: false,
@@ -502,63 +600,101 @@ export default {
       signRequestModalOpen: false,
       swapErrorMessage: '',
       customFeeAssetSelected: null,
-      customFees: {},
-      bridgeModalOpen: false
+      customFees: {}
     }
   },
   props: {
     routeAsset: String,
     accountId: String
   },
-  created() {
+  async created() {
     this.asset = this.routeAsset
     this.fromAccountId = this.accountId
-    this.fee = this.fees[this.selectedFee || 'average']?.fee
+
+    if (this.$route.query.mode === 'tab') {
+      const swapParams = qs.parse(qs.stringify(this.$route.query))
+      const {
+        selectedFee,
+        sendAmount,
+        toAccountId,
+        customFees,
+        userSelectedQuote,
+        toAsset,
+        currentStep,
+        maxOptionActive,
+        selectedQuote
+      } = swapParams
+
+      this.toAsset = toAsset
+      this.sendAmount = sendAmount
+      this.currentStep = currentStep
+      this.maxOptionActive = maxOptionActive
+      this.toAccountId = toAccountId
+      this.selectedFee = selectedFee
+      this.customFees = customFees || {}
+      this.selectedQuote = selectedQuote
+      this.userSelectedQuote = userSelectedQuote
+
+      await this._updateQuotes()
+    } else {
+      this.selectedFee = {
+        [this.assetChain]: 'average',
+        [this.toAssetChain]: 'average'
+      }
+      this.sendAmount = dpUI(this.defaultAmount)
+      // Try to use the same account for (from and to) if it has more than one asset
+      if (this.account?.assets.length > 1) {
+        this.toAccountId = this.accountId
+        this.toAsset = this.account?.assets.find((a) => a !== this.asset)
+      } else {
+        // use another account
+        if (this.accountsData.length > 0) {
+          const toAccount = this.accountsData.find((account) => {
+            const assetAvailable =
+              account.assets?.length > 0 && account.assets?.includes(this.asset)
+            const idsMatching = account.id == this.accountId
+            return !assetAvailable && !idsMatching
+          })
+          if (toAccount) {
+            this.toAccountId = toAccount.id
+            this.toAsset = toAccount.assets[0]
+          }
+        }
+      }
+    }
+
+    if (this.toAccountId && this.toAsset) {
+      this.toAssetChanged(this.toAccountId, this.toAsset)
+      this.updateFees({ asset: this.toAsset })
+      this.selectedFee = {
+        [this.assetChain]: this.selectedFromFee,
+        [this.toAssetChain]: this.selectedToFee
+      }
+    }
+
+    this.fee = this.fees[this.selectedFromFee]?.fee
+    this.updateFiatRates({ assets: [this.toAsset, this.asset] })
     this.updateMarketData({ network: this.activeNetwork })
     ;(async () => {
       await this.updateFees({ asset: this.assetChain })
       await this.updateMaxSwapFees()
     })()
 
-    let toAsset = null
-
-    // Try to use the same account for (from and to) if it has more than one asset
-    if (this.account?.assets.length > 1) {
-      this.toAccountId = this.accountId
-      toAsset = this.account?.assets.find((a) => a !== this.asset)
-    } else {
-      // use another account
-      if (this.accountsData.length > 0) {
-        const toAccount = this.accountsData.find((account) => {
-          const assetAvailable = account.assets?.length > 0 && account.assets?.includes(this.asset)
-          const idsMatching = account.id == this.accountId
-          return !assetAvailable && !idsMatching
-        })
-        if (toAccount) {
-          this.toAccountId = toAccount.id
-          toAsset = toAccount.assets[0]
-        }
-      }
-    }
-
-    if (this.toAccountId && toAsset) {
-      this.toAssetChanged(this.toAccountId, toAsset)
-      this.toAsset = toAsset
-      this.updateFees({ asset: toAsset })
-      this.selectedFee = {
-        [this.assetChain]: 'average',
-        [this.toAssetChain]: 'average'
-      }
-    }
-    this.sendAmount = dpUI(this.defaultAmount)
-
-    this.resetQuoteTimer()
+    this.resetQuoteTimer(QUOTE_TIMER_MS)
     this.trackNoLiquidity()
   },
   beforeDestroy() {
     clearInterval(this.interval)
   },
   computed: {
+    isFromCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
+      return supportCustomFees
+    },
+    isToCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.toAsset].chain]
+      return supportCustomFees
+    },
     account() {
       return this.accountItem(this.fromAccountId)
     },
@@ -569,7 +705,7 @@ export default {
       return this.$route.query.source || null
     },
     showNoLiquidityMessage() {
-      return (!this.selectedQuote || BN(this.min).gt(this.max)) && !this.updatingQuotes
+      return !this.selectedQuote && !this.updatingQuotes
     },
     showBridgeAssetDisabledMessage() {
       const provider = this.selectedQuote?.provider
@@ -581,6 +717,11 @@ export default {
           provider === SwapProviderType.LiqualityBoostERC20ToNative) &&
         !enabledAssets.includes(bridgeAsset)
       )
+    },
+    showNativeAssetDisabledMessage() {
+      const isSameChain = this.assetChain === this.toAssetChain
+      const enabledAssets = this.enabledAssets[this.activeNetwork][this.activeWalletId]
+      return isSameChain && !enabledAssets.includes(getNativeAsset(this.asset))
     },
     sendAmount: {
       get() {
@@ -632,7 +773,6 @@ export default {
       'activeNetwork',
       'enabledAssets'
     ]),
-    ...mapGetters('app', ['ledgerBridgeReady']),
     ...mapGetters(['client', 'accountItem', 'accountsData']),
     networkMarketData() {
       return this.marketData[this.activeNetwork]
@@ -647,73 +787,41 @@ export default {
     },
     bestQuote() {
       const sortedQuotes = sortQuotes(this.quotes, this.activeNetwork)
-      return sortedQuotes[0]
+      return sortedQuotes
     },
     selectedQuoteProvider() {
       if (!this.selectedQuote) return null
       return getSwapProvider(this.activeNetwork, this.selectedQuote.provider)
     },
     defaultAmount() {
-      const min = BN(this.min)
-      if (!min.eq(0)) {
-        return BN(min)
-      } else if (this.fiatRates[this.asset]) {
-        return BN.min(
-          fiatToCrypto(DEFAULT_SWAP_VALUE_USD, this.fiatRates[this.asset]),
-          this.available
-        )
-      } else {
-        return BN(0)
-      }
+      return 1
     },
     isPairAvailable() {
       const liqualityMarket = this.networkMarketData?.find(
         (pair) =>
-          pair.from === this.asset &&
+          (pair.from === this.asset ||
+            buildConfig.supportedBridgeAssets.indexOf(this.assetChain) !== -1) &&
           (pair.to === this.toAsset ||
             buildConfig.supportedBridgeAssets.indexOf(this.toAssetChain) !== -1)
       )
       return !!liqualityMarket
     },
     min() {
-      if (!this.fiatRates[this.asset]) return BN(0)
-
-      const toQuoteAsset =
-        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostNativeToERC20
-          ? this.toAssetChain
-          : this.toAsset
-
-      const fromQuoteAsset =
-        this.selectedQuoteProvider?.config?.type === SwapProviderType.LiqualityBoostERC20ToNative
-          ? this.assetChain
-          : this.asset
-
-      const liqualityMarket = this.networkMarketData?.find((pair) => {
-        return (
-          pair.from === fromQuoteAsset &&
-          pair.to === toQuoteAsset &&
-          getSwapProviderConfig(this.activeNetwork, pair.provider).type ===
-            SwapProviderType.Liquality
-        )
-      })
-
-      const getSwapLimit = this.selectedQuoteProvider?.getSwapLimit
-
-      let min
-
-      if (getSwapLimit) {
-        const minUsdValue = getSwapLimit()
-        min = BN.min(fiatToCrypto(minUsdValue, this.fiatRates[this.asset]))
-      } else {
-        min = liqualityMarket
-          ? BN(liqualityMarket.min)
-          : BN.min(fiatToCrypto(MIN_SWAP_VALUE_USD, this.fiatRates[this.asset]))
-      }
-
-      return isNaN(min) ? BN(0) : dpUI(min)
+      return Math.ceil(this.minSwapAmount * Math.pow(10, 6)) / Math.pow(10, 6)
     },
     max() {
       return this.available && !isNaN(this.available) ? BN.min(BN(this.available)) : BN(0)
+    },
+    nativeAssetRequired() {
+      if (!this.networkWalletBalances || !isERC20(this.asset) || this.asset === 'ARBETH') return 0
+      const nativeAssetBalance = this.networkWalletBalances[getNativeAsset(this.asset)]
+      if (
+        !nativeAssetBalance ||
+        BN(nativeAssetBalance).lte(0) ||
+        BN(nativeAssetBalance).minus(BN(this.maxFee).times(1.5)).lt(0)
+      )
+        return true
+      return false
     },
     safeAmount() {
       return this.sendAmount || 0
@@ -739,7 +847,7 @@ export default {
       return fee || BN(0)
     },
     hasPredefinedReceiveFee() {
-      return this.selectedQuote.receiveFee
+      return this.selectedQuote?.receiveFee
     },
     maxFee() {
       const selectedSpeed = this.selectedFee[this.assetChain]
@@ -747,15 +855,33 @@ export default {
       return fee ? currencyToUnit(cryptoassets[this.assetChain], fee) : BN(0)
     },
     receiveFeeRequired() {
-      return this.selectedQuoteProvider.toTxType
+      return this.selectedQuoteProvider?.toTxType
     },
     available() {
       if (!this.networkWalletBalances) return BN(0)
+
+      // Some swap providers like "Jupiter" require extra amount to be extract from balance
+      // when perforing swaps using "MAX"
+      const getExtraAmountToExtractFromBalance =
+        this.selectedQuoteProvider?.getExtraAmountToExtractFromBalance
+      let extraAmountToExtractFromBalance = 0
+      if (getExtraAmountToExtractFromBalance) {
+        extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
+      }
+
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
-        : BN.max(BN(balance).minus(BN(this.maxFee).times(1.5)), 0)
+        : BN.max(
+            BN(balance).minus(BN(this.maxFee.plus(extraAmountToExtractFromBalance)).times(1.5)),
+            0
+          )
       return unitToCurrency(cryptoassets[this.asset], available)
+    },
+    availableBeforeFees() {
+      if (!this.networkWalletBalances) return BN(0)
+      const balance = this.networkWalletBalances[this.asset]
+      return unitToCurrency(cryptoassets[this.asset], BN(balance))
     },
     canCoverAmmFee() {
       if (!this.selectedQuote?.bridgeAsset) return true
@@ -793,7 +919,14 @@ export default {
       return false
     },
     showErrors() {
-      return !this.ethRequired
+      return false
+    },
+    insufficientFundsError() {
+      const amount = BN(this.safeAmount)
+      if (amount.gt(this.max)) {
+        return true
+      }
+      return false
     },
     amountError() {
       const amount = BN(this.safeAmount)
@@ -809,11 +942,10 @@ export default {
       if (amount.lt(this.min) || amount.lte(0)) {
         return 'Please increase amount. It is below minimum.'
       }
-
       if (
         this.selectedQuote?.receiveFee &&
         BN(this.selectedQuote.toAmount).lt(
-          BN(this.selectedQuote.receiveFee).times(this.selectedQuote?.maxFeeSlippageMultiplier || 1)
+          BN(this.selectedQuote.receiveFee).times(this.selectedQuote.maxFeeSlippageMultiplier || 1)
         )
       ) {
         return `Increase amount. Should cover ${
@@ -832,12 +964,29 @@ export default {
         this.showBridgeAssetDisabledMessage ||
         this.showNoLiquidityMessage ||
         this.amountError ||
+        this.nativeAssetRequired ||
         BN(this.safeAmount).lte(0)
       ) {
         return false
       }
 
       return true
+    },
+    cannotCoverNetworkFee() {
+      return (
+        this.ethRequired ||
+        !this.canCoverAmmFee ||
+        this.nativeAssetRequired ||
+        (BN(this.available).lt(this.sendAmount) && !BN(this.sendAmount).eq(this.defaultAmount))
+      )
+    },
+    cannotCoverReceiveFee() {
+      return (
+        this.selectedQuote?.receiveFee &&
+        BN(this.selectedQuote.toAmount).lt(
+          BN(this.selectedQuote.receiveFee).times(this.selectedQuote?.maxFeeSlippageMultiplier || 1)
+        )
+      )
     },
     assetChain() {
       return getNativeAsset(this.asset)
@@ -886,23 +1035,19 @@ export default {
     },
     isHighFee() {
       const feeTotal = cryptoToFiat(
-        this.toSwapFee,
+        this.receiveFee,
         this.fiatRates[this.selectedQuote?.bridgeAsset || this.toAssetChain]
       ).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
-
       const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat)
         ? 0
-        : this.totalToReceiveInFiat * 0.25
-      return feeTotal.gte(BN(receiveTotalPercentage))
+        : this.totalToReceiveInFiat * 0.15
+      return receiveTotalPercentage !== 0 && feeTotal.gte(BN(receiveTotalPercentage))
     },
     isSwapNegative() {
-      return this.totalToReceiveInFiat <= 0
+      return this.totalToReceiveInFiat < 0
     },
     isEIP1559Fees() {
-      return (
-        cryptoassets[this.customFeeAssetSelected].chain === ChainId.Ethereum ||
-        (cryptoassets[this.asset].chain === ChainId.Polygon && this.activeNetwork !== 'mainnet')
-      )
+      return isEIP1559Fees(cryptoassets[this.customFeeAssetSelected].chain, this.activeNetwork)
     }
   },
   methods: {
@@ -915,6 +1060,7 @@ export default {
       'trackAnalytics'
     ]),
     ...mapActions('app', ['startBridgeListener']),
+    ...mapGetters(['suggestedFeePrices']),
     shortenAddress,
     dpUI,
     prettyBalance,
@@ -928,7 +1074,7 @@ export default {
       if (this.customFees[asset]) {
         assetFees.custom = { fee: this.customFees[asset] }
       }
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
+      const fees = this.suggestedFeePrices()(asset)
       if (fees) {
         Object.assign(assetFees, fees)
       }
@@ -984,18 +1130,8 @@ export default {
     async _updateSwapFees(max) {
       if (!this.selectedQuote) return
       const fees = {
-        [this.assetChain]: {
-          slow: BN(0),
-          average: BN(0),
-          fast: BN(0),
-          custom: BN(0)
-        },
-        [this.toAssetChain]: {
-          slow: BN(0),
-          average: BN(0),
-          fast: BN(0),
-          custom: BN(0)
-        }
+        [this.assetChain]: newSendFees(),
+        [this.toAssetChain]: newSendFees()
       }
 
       const selectedQuoteProvider = this.selectedQuoteProvider
@@ -1009,8 +1145,8 @@ export default {
           asset,
           txType,
           quote: this.selectedQuote,
-          feePrices: Object.values(assetFees).map(
-            (fee) => fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+          feePrices: Object.values(assetFees).map((fee) =>
+            feePerUnit(fee.fee, cryptoassets[asset].chain)
           ),
           max
         })
@@ -1018,7 +1154,7 @@ export default {
         if (!totalFees) return
 
         for (const [speed, fee] of Object.entries(assetFees)) {
-          const feePrice = fee.fee.maxPriorityFeePerGas + fee.fee.suggestedBaseFeePerGas || fee.fee
+          const feePrice = feePerUnit(fee.fee, cryptoassets[asset].chain)
           fees[chain][speed] = fees[chain][speed].plus(totalFees[feePrice])
         }
       }
@@ -1035,6 +1171,15 @@ export default {
         this.maxSwapFees = fees
       } else {
         this.swapFees = fees
+      }
+
+      if (this.activeNetwork && this.asset && this.toAsset && this.sendAmount) {
+        this.minSwapAmount = await selectedQuoteProvider.getMin({
+          network: this.activeNetwork,
+          from: this.asset,
+          to: this.toAsset,
+          amount: BN(this.sendAmount)
+        })
       }
     },
     updateSwapFees: _.debounce(async function () {
@@ -1067,33 +1212,16 @@ export default {
       this.currentStep = 'inputs'
       this.selectedFee[asset] = 'average'
     },
-    async tryToSwap() {
-      if (this.account?.type.includes('ledger') && !this.ledgerBridgeReady) {
-        this.loading = true
-        this.bridgeModalOpen = true
-        await this.startBridgeListener()
-        const unsubscribe = createConnectSubscription(() => {
-          this.bridgeModalOpen = false
-          this.swap()
-        })
-        setTimeout(() => {
-          if (unsubscribe) {
-            this.bridgeModalOpen = false
-            this.loading = false
-            unsubscribe()
-          }
-        }, 25000)
-      } else {
-        await this.swap()
-      }
-    },
-    resetQuoteTimer() {
+    resetQuoteTimer(resetInterval) {
       clearTimeout(this.quoteTimer)
       this.quoteTimer = setTimeout(() => {
         this.updateQuotes()
-      }, QUOTE_TIMER_MS)
+      }, resetInterval)
     },
-    _updateQuotes: _.debounce(async function () {
+    debounceUpdateQuotes: _.debounce(async function () {
+      await this._updateQuotes()
+    }, 1000),
+    async _updateQuotes() {
       const quotes = await this.getQuotes({
         network: this.activeNetwork,
         from: this.asset,
@@ -1102,7 +1230,12 @@ export default {
         toAccountId: this.toAccountId,
         amount: BN(this.sendAmount)
       })
-      if (quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)) {
+
+      let shouldChooseNewQuote = false
+      if (
+        quotes.length &&
+        quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)
+      ) {
         this.quotes = quotes
         if (this.selectedQuote) {
           // Preserve selected provider
@@ -1110,30 +1243,80 @@ export default {
             const matchingQuote = this.quotes.find(
               (q) => q.provider === this.selectedQuote.provider
             )
-            this.selectedQuote = matchingQuote || this.bestQuote
+            this.selectedQuote = matchingQuote || this.bestQuote[0]
           } else {
             this.userSelectedQuote = false
-            this.selectedQuote = this.bestQuote
+            if (!this.canSwap) {
+              for (const quoteIndex in this.bestQuote) {
+                if (parseInt(quoteIndex) + 1 === this.bestQuote.length) {
+                  this.selectedQuote = this.bestQuote[quoteIndex]
+                  shouldChooseNewQuote = false
+                  break
+                }
+                if (this.bestQuote[quoteIndex].provider === this.selectedQuote.provider) {
+                  shouldChooseNewQuote = true
+                  continue
+                }
+                if (shouldChooseNewQuote) {
+                  this.selectedQuote = this.bestQuote[quoteIndex]
+                  break
+                }
+              }
+            } else {
+              this.selectedQuote = this.bestQuote[0]
+            }
           }
         } else {
-          this.selectedQuote = this.bestQuote
+          this.selectedQuote = this.bestQuote[0]
         }
+      } else {
+        this.selectedQuote = null
       }
       this.updatingQuotes = false
-      this.resetQuoteTimer()
-    }, 1000),
+      this.cannotCoverMinimum =
+        !this.canSwap &&
+        !shouldChooseNewQuote &&
+        !BN(this.sendAmount).eq(this.defaultAmount) &&
+        BN(this.sendAmount).lt(this.max)
+      // if(this.cannotCoverMinimum) this.sendAmount = 1
+      this.resetQuoteTimer(!this.canSwap && shouldChooseNewQuote ? 1000 : QUOTE_TIMER_MS)
+    },
     updateQuotes() {
       if (BN(this.sendAmount).eq(0)) return // Don't update quote when amount 0
       if (this.currentStep !== 'inputs') return // Don't update quote when in review
       this.quotes = []
       this.updatingQuotes = true
-      this._updateQuotes()
+      this.debounceUpdateQuotes()
     },
-    selectQuote(provider) {
+    setQuoteProvider(provider) {
       const matchingQuote = this.quotes.find((q) => q.provider === provider)
       this.selectedQuote = matchingQuote
+    },
+    selectQuote(provider) {
+      this.setQuoteProvider(provider)
       this.userSelectedQuote = true
       this.showQuotesModal = false
+    },
+    review() {
+      if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
+        // open in a new tab
+        const swapParams = qs.stringify({
+          mode: 'tab',
+          selectedFee: this.selectedFee,
+          sendAmount: BN(this.sendAmount).toString(),
+          toAccountId: this.toAccountId,
+          toAsset: this.toAsset,
+          customFees: this.customFees,
+          userSelectedQuote: this.userSelectedQuote,
+          currentStep: 'confirm',
+          maxOptionActive: this.maxOptionActive,
+          selectedQuote: this.selectedQuote
+        })
+        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?${swapParams}`
+        chrome.tabs.create({ url: browser.runtime.getURL(url) })
+      } else {
+        this.currentStep = 'confirm'
+      }
     },
     async swap() {
       this.swapErrorMessage = ''
@@ -1247,7 +1430,9 @@ export default {
       }
     }, 800),
     getAccountId() {
-      if (this.selectedQuoteProvider.config.type === SwapProviderType.LiqualityBoostERC20ToNative) {
+      if (
+        this.selectedQuoteProvider?.config.type === SwapProviderType.LiqualityBoostERC20ToNative
+      ) {
         return this.fromAccountId
       }
 
@@ -1270,8 +1455,7 @@ export default {
       } else {
         this.updateMaxSwapFees()
         this.updateSwapFees()
-        this.customFees[asset] =
-          typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.customFees[asset] = feePerUnit(fee, cryptoassets[asset].chain)
         this.selectedFee[asset] = 'custom'
       }
       this.currentStep = 'inputs'
@@ -1279,10 +1463,6 @@ export default {
     onCustomFeeSelected(asset) {
       this.customFeeAssetSelected = getNativeAsset(asset)
       this.currentStep = 'custom-fees'
-    },
-    closeBridgeModal() {
-      this.loading = false
-      this.bridgeModalOpen = false
     },
     trackNoLiquidity() {
       if (this.showNoLiquidityMessage) {
@@ -1348,6 +1528,13 @@ export default {
 </script>
 
 <style lang="scss">
+.extreme-fee-text {
+  color: #ff007a !important;
+}
+.high-fee-text {
+  color: rgb(247, 147, 26) !important;
+}
+
 .swap {
   overflow-y: auto;
   padding-bottom: 70px;
@@ -1380,16 +1567,23 @@ export default {
       }
     }
   }
+
+  .fee-wrapper {
+    background-color: #f0f7f9;
+    align-self: center;
+    padding-left: 20px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    position: absolute;
+    width: 100%;
+  }
 }
 
-.fee-wrapper {
+#fees_are_high {
   background-color: #f0f7f9;
-  align-self: center;
-  padding-left: 20px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  position: absolute;
-  width: 100%;
+}
+#swap_is_negative {
+  background-color: rgba(255, 243, 188, 0.5);
 }
 
 .swap-rate {
@@ -1442,7 +1636,7 @@ export default {
 }
 
 .selectors-asset {
-  width: 70px !important;
+  width: 60px !important;
 }
 
 .selector-asset-switch {
@@ -1464,5 +1658,9 @@ export default {
     height: 18px;
     fill: #a8aeb7;
   }
+}
+
+#send_network_speed_avg_fee {
+  margin-top: 0;
 }
 </style>

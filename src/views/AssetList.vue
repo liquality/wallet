@@ -24,7 +24,12 @@
         </div>
       </div>
       <div class="list-items">
-        <WalletAccounts @item-selected="onAccountSelected" :search="search" :accounts="accounts" />
+        <WalletAccounts
+          @item-selected="onAccountSelected"
+          :search="search"
+          :accounts="accounts"
+          :isAssetList="true"
+        />
       </div>
     </div>
   </div>
@@ -43,9 +48,6 @@ export default {
     }),
     ...mapGetters(['accountsData', 'accountsWithBalance']),
     accounts() {
-      if (['swap.send', 'swap', 'buy'].includes(this.action)) {
-        return this.accountsData.filter((a) => !a.type.includes('ledger'))
-      }
       return this.accountsData
     }
   },
@@ -61,15 +63,25 @@ export default {
     }
   },
   methods: {
-    ...mapActions('app', ['openTransakWidgetTab']),
+    ...mapActions('app', ['openTransakWidgetTab', 'openOnramperWidgetTab']),
     onAccountSelected({ account, asset }) {
       const _asset = asset || account.assets[0]
       if (this.action === 'buy') {
-        this.openTransakWidgetTab({
-          chain: account?.chain,
-          asset: _asset,
-          address: account.addresses[0]
-        })
+        const { provider } = this.$route.query
+
+        if (provider === 'transak') {
+          this.openTransakWidgetTab({
+            chain: account?.chain,
+            asset: _asset,
+            address: account.addresses[0]
+          })
+        } else if (provider === 'onramper') {
+          this.openOnramperWidgetTab({
+            chain: account?.chain,
+            asset: _asset,
+            address: account.addresses[0]
+          })
+        }
       } else {
         const _action = this.action === 'swap.send' ? 'swap' : this.action
         this.$router.push(`/accounts/${account.id}/${_asset}/${_action}?source=assets`)

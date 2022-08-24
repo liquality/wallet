@@ -44,15 +44,15 @@ import {
   ACTIVITY_STATUSES,
   ACTIVITY_FILTER_TYPES,
   SEND_STATUS_FILTER_MAP
-} from '@liquality/wallet-core/dist/utils/history'
-import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
+} from '@liquality/wallet-core/dist/src/utils/history'
+import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
 import { getItemIcon } from '@/utils/history'
 import {
   prettyBalance,
   prettyFiatBalance,
   formatFiatUI
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
-import moment from '@liquality/wallet-core/dist/utils/moment'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import moment from '@liquality/wallet-core/dist/src/utils/moment'
 import { mapState } from 'vuex'
 
 export default {
@@ -75,6 +75,8 @@ export default {
           return `${item.from} to ${item.to}`
         case 'SEND':
           return `Send ${item.from}`
+        case 'NFT':
+          return item.status === 'SUCCESS' ? `Sent NFT` : `Send NFT`
         case 'RECEIVE':
           return `Receive ${item.from}`
         default:
@@ -104,7 +106,9 @@ export default {
       return ''
     },
     getUIStatus(item) {
-      if (item.type === 'SEND') {
+      if (item.type === 'NFT') {
+        return SEND_STATUS_FILTER_MAP[item.status]
+      } else if (item.type === 'SEND') {
         return SEND_STATUS_FILTER_MAP[item.status]
       } else if (item.type === 'SWAP') {
         const swapProvider = getSwapProvider(item.network, item.provider)
@@ -113,6 +117,7 @@ export default {
     },
     getDetailsUrl(item) {
       return {
+        NFT: `/details/nft-transaction/${item.id}`,
         SEND: `/details/transaction/${item.id}`,
         SWAP: `/details/swap/${item.id}`
       }[item.type]
