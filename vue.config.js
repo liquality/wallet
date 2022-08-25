@@ -1,4 +1,5 @@
 const path = require('path')
+const AssetReplacePlugin = require('./plugins/AssetReplacePlugin')
 
 module.exports = {
   lintOnSave: false,
@@ -10,6 +11,16 @@ module.exports = {
         prependData: '@import "@/assets/scss/_vars.scss";'
       }
     }
+  },
+
+  configureWebpack: (config) => {
+    config.entry.pageProvider = path.resolve('./src/pageProvider.js')
+    config.plugins.push(
+      new AssetReplacePlugin({
+        '#PAGEPROVIDER#': 'pageProvider'
+      })
+    )
+    console.log(config)
   },
 
   chainWebpack: (config) => {

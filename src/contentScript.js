@@ -17,6 +17,8 @@ import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
 new Script().start()
 
+inject('#PAGEPROVIDER#')
+
 async function setupTerraStreams() {
   const pageStream = new LocalMessageDuplexStream({
     name: 'station:content',
