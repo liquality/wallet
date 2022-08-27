@@ -521,7 +521,7 @@ export default {
         const currentAddress = this.address
         const domainAddress = await this.domainResolver.lookupDomain(
           currentAddress,
-          cryptoassets[this.asset].chain
+          cryptoassets[this.asset]
         )
         if (domainAddress) {
           this.$set(this.domainData, currentAddress, domainAddress)
