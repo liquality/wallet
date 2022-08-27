@@ -10,8 +10,14 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <h3>NFTs are here!</h3>
-            <pre class="text-wrap">- RC 0.71.0</pre>
+            <h3>RC 0.72.0</h3>
+            <pre class="text-wrap">- Send and receive Solana tokens!</pre>
+            <pre class="text-wrap">- Swapping between native Solana assets through Jupiter!</pre>
+            <pre class="text-wrap">- Send and receive your NFTs</pre>
+            <h3>Coming soon for Solana:</h3>
+            <pre class="text-wrap">- Injections</pre>
+            <pre class="text-wrap">- Ledger support</pre>
+            <pre class="text-wrap">- cross-chain swaps</pre>
           </div>
         </div>
       </div>
@@ -26,7 +32,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">- RC 0.71.0</pre>
+            <pre class="text-wrap">RC 0.72.0</pre>
           </div>
         </div>
       </div>

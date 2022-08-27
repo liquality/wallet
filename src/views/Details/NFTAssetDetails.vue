@@ -15,6 +15,11 @@
         >
           <Star :nftAsset="nftAsset" :accountId="accountId" />
         </div>
+        <NFTQuantity
+          :quantity="nftAsset?.amount"
+          :style="showFullscreen ? { top: 'calc(25% - 34px)' } : { bottom: 'calc(20% + 10px)' }"
+          v-if="nftAsset && nftAsset.amount && nftAsset.amount > 1"
+        />
         <div class="send--share--actions">
           <SendIcon
             class="nft-action-buttons__icon"
@@ -44,14 +49,16 @@
         <div class="nft-img">
           <img
             ref="nftImage"
-            :src="nftAsset?.image_original_url || thumbnailImage"
-            alt="nft image"
+            :src="nftAsset?.image_original_url || nftAsset?.image_preview_url || thumbnailImage"
+            :alt="nftAsset?.name || 'NFT Asset'"
             @error="imageError('nftImage')"
           />
         </div>
         <div class="drawer nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
-            <h1 class="nft-details_name">{{ nftAsset ? nftAsset.name : '[Name]' }}</h1>
+            <h1 class="nft-details_name">
+              {{ nftAsset && nftAsset?.name ? nftAsset.name : '[Name]' }}
+            </h1>
             <ChevronDownIcon
               class="nft-details_arrow"
               style="transform: scaleY(-1)"
@@ -59,19 +66,23 @@
             />
           </div>
           <h5 class="nft-details_collection-details">
-            {{ nftAsset ? nftAsset.collection.name : '[Collection]' }}
+            {{ nftAsset && nftAsset.collection?.name ? nftAsset?.collection.name : '[Collection]' }}
           </h5>
         </div>
       </template>
       <template v-else-if="showFullscreen === true">
         <div
           class="nft-img__open"
-          :style="!nftAsset?.image_original_url && { background: '#D9DFE5' }"
+          :style="
+            !(nftAsset?.image_original_url || nftAsset?.image_preview_url) && {
+              background: '#D9DFE5'
+            }
+          "
         >
           <img
             ref="nftPreviewImage"
-            :src="nftAsset?.image_original_url || thumbnailImage"
-            alt="nft image"
+            :src="nftAsset?.image_original_url || nftAsset?.image_preview_url || thumbnailImage"
+            :alt="nftAsset?.name || 'NFT Asset'"
             @error="imageError('nftPreviewImage')"
           />
         </div>
@@ -111,10 +122,6 @@
               <div>
                 <div class="px-4 mt-2" v-if="activeTab === 'overview'">
                   <h5 class="text-bold">Description</h5>
-                  <!-- <p
-                    v-html="nftAsset.description || 'This NFT does not have a description.'"
-                    style="white-space: pre-line"
-                  ></p> -->
                   <markdown-it-vue-light
                     class="md-body"
                     :content="nftAsset.description || defaultDescription"
@@ -126,11 +133,15 @@
                       <tr class="border-top-0">
                         <td class="text-muted text-left small-12">Account</td>
                         <td class="text-break" v-if="nftAsset.asset_contract">
-                          <span class="text-primary d-flex align-items-center">
+                          <a
+                            class="text-primary d-flex align-items-center"
+                            :href="addressLink"
+                            target="_blank"
+                          >
                             <img :src="getAssetIcon(asset)" class="asset-icon mr-1" />
                             {{ shortenAddress(address) }}
                             <CopyIcon @click="copy(address)" class="copy-icon"
-                          /></span>
+                          /></a>
                         </td>
                       </tr>
                       <tr>
@@ -153,14 +164,14 @@
                           /></span>
                         </td>
                       </tr>
-                      <tr v-if="nftAsset.standard">
+                      <tr>
                         <td class="text-muted text-left small-12">Token Standard</td>
                         <td class="text-break">
-                          {{ nftAsset.standard }}
+                          {{ nftAsset.standard || '-' }}
                         </td>
                       </tr>
-                      <tr v-if="nftAsset.amount">
-                        <td class="text-muted text-left small-12">Quantity</td>
+                      <tr v-if="nftAsset.amount && nftAsset.amount > 1">
+                        <td class="text-muted text-left small-12">You own</td>
                         <td class="text-break">{{ nftAsset.amount }}</td>
                       </tr>
                       <tr>
@@ -184,7 +195,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import MarkdownItVueLight from 'markdown-it-vue/dist/markdown-it-vue-light.umd.min.js'
 import 'markdown-it-vue/dist/markdown-it-vue-light.css'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
@@ -195,8 +206,13 @@ import NavBar from '../../components/NavBar.vue'
 import { chains } from '@liquality/cryptoassets'
 import { getAccountIcon } from '@/utils/accounts'
 import { getAssetIcon } from '@/utils/asset'
-import { getNftTransferLink, getMarketplaceName } from '@liquality/wallet-core/dist/utils/asset'
-import Star from '@/components/Star.vue'
+import {
+  getNftTransferLink,
+  getMarketplaceName,
+  getAddressExplorerLink
+} from '@liquality/wallet-core/dist/src/utils/asset'
+import Star from '@/components/NFT/Star.vue'
+import NFTQuantity from '@/components/NFT/NFTQuantity.vue'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 export default {
@@ -217,6 +233,7 @@ export default {
     ShareIcon,
     NavBar,
     Star,
+    NFTQuantity,
     MarkdownItVueLight
   },
   beforeRouteEnter(to, from, next) {
@@ -253,6 +270,9 @@ export default {
     },
     asset() {
       return chains[this.account?.chain]?.nativeAsset
+    },
+    addressLink() {
+      return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
     }
   },
   async created() {
@@ -361,10 +381,17 @@ export default {
       margin-right: 0.5rem;
     }
 
-    .star {
+    .star,
+    .nft-quantity {
       position: fixed;
+    }
+    .star {
       left: 16px;
       cursor: pointer;
+    }
+
+    .nft-quantity {
+      left: 50px;
     }
 
     .send--share--actions {

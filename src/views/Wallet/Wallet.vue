@@ -20,7 +20,7 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
-import { isERC20 } from '@liquality/wallet-core/dist/utils/asset'
+import { isERC20 } from '@liquality/wallet-core/dist/src/utils/asset'
 import AssetsChart from './AssetsChart.vue'
 import NavBar from '@/components/NavBar.vue'
 import InfoNotification from '@/components/InfoNotification.vue'
@@ -50,6 +50,7 @@ export default {
       // TODO: manage error
       console.error(error)
     }
+    await this.getNFTs()
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),
@@ -67,7 +68,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateBalances']),
+    ...mapActions(['updateBalances', 'updateNFTs']),
     ledgerSignRequired(item) {
       if (item && item.fromAccountId && item.toAccountId) {
         // Check the status and get the account related
@@ -93,6 +94,20 @@ export default {
       }
 
       return false
+    },
+    async getNFTs() {
+      const accountIds = this.accountsData.map((account) => {
+        return account.id
+      })
+      try {
+        await this.updateNFTs({
+          walletId: this.activeWalletId,
+          network: this.activeNetwork,
+          accountIds: accountIds
+        })
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }

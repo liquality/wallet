@@ -37,18 +37,18 @@
           <div class="col-12">
             <h2>Sent Asset</h2>
             <div class="d-flex">
-              <div class="nft-image mr-2">
+              <div class="nft-image mr-2" style="--img-width: 100px">
                 <img
                   ref="nftThumbnailImage"
                   :src="item.nft.image_thumbnail_url || thumbnailImage"
-                  alt="nft-image"
+                  :alt="item.nft.name || 'NFT Image'"
                   @error="imageError('nftThumbnailImage')"
                 />
               </div>
               <div class="w-100">
-                <p class="font-weight-bold">{{ item.nft.name }}</p>
-                <p>{{ item.nft.collection.name }}</p>
-                <p v-if="item.nft.token_id">#{{ item.nft.token_id }}</p>
+                <p class="font-weight-bold text-break">{{ item.nft.name }}</p>
+                <p class="text-break">{{ item.nft.collection.name }}</p>
+                <p class="text-break" v-if="item.nft.token_id">#{{ item.nft.token_id }}</p>
               </div>
             </div>
           </div>
@@ -68,7 +68,7 @@
               <span>
                 <a
                   class="speed-up"
-                  v-if="canUpdateFee && !showFeeSelector"
+                  v-if="canUpdateFee && !showFeeSelector && isCustomFeeSupported"
                   @click="openFeeSelector()"
                 >
                   Speed up
@@ -118,28 +118,34 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import moment from '@liquality/wallet-core/dist/utils/moment'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
+import moment from '@liquality/wallet-core/dist/src/utils/moment'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { chains } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
-import { getSendFee } from '@liquality/wallet-core/dist/utils/fees'
-import { prettyBalance, prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { getStatusLabel, ACTIVITY_FILTER_TYPES } from '@liquality/wallet-core/dist/utils/history'
+import { getSendFee } from '@liquality/wallet-core/dist/src/utils/fees'
+import {
+  prettyBalance,
+  prettyFiatBalance
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import {
+  getStatusLabel,
+  ACTIVITY_FILTER_TYPES
+} from '@liquality/wallet-core/dist/src/utils/history'
 import {
   getNativeAsset,
   getTransactionExplorerLink,
   getAddressExplorerLink
-} from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { getItemIcon } from '@/utils/history'
 
 import FeeSelector from '@/components/FeeSelector'
-import Timeline from '@/transactions/views/NFTTimeline.vue'
+import Timeline from '@/components/NFT/NFTTimeline.vue'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 export default {
@@ -161,6 +167,10 @@ export default {
   },
   props: ['id'],
   computed: {
+    isCustomFeeSupported() {
+      const { supportCustomFees } = chains[cryptoassets[this.item.from].chain]
+      return supportCustomFees
+    },
     ...mapGetters(['client', 'accountsData']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     thumbnailImage() {
@@ -360,7 +370,7 @@ export default {
   }
 
   .nft-image {
-    width: 120px;
+    min-width: var(--img-width);
 
     img {
       width: 100%;
