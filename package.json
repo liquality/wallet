@@ -33,7 +33,7 @@
     "amplitude-js": "8.18.2",
     "bignumber.js": "9.0.2",
     "bip39": "^3.0.2",
-    "bitcoinjs-lib": "6.0.1",
+    "bitcoinjs-lib": "6.0.2",
     "bluebird": "^3.7.2",
     "bootstrap": "4.6.1",
     "chai": "4.3.6",

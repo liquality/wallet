@@ -7680,7 +7680,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bitcoinjs-lib@npm:*":
+"bitcoinjs-lib@npm:*, bitcoinjs-lib@npm:6.0.2":
   version: 6.0.2
   resolution: "bitcoinjs-lib@npm:6.0.2"
   dependencies:
@@ -7716,21 +7716,6 @@ __metadata:
     varuint-bitcoin: ^1.0.4
     wif: ^2.0.1
   checksum: 947a9a65694b8d469cb643c0ef2793d807a2b948c6e54c96bbd586b48b2de81afeda40e6ae389e031be03c390804d54ed4805b2d90af713842ebe7f85a08a502
-  languageName: node
-  linkType: hard
-
-"bitcoinjs-lib@npm:6.0.1":
-  version: 6.0.1
-  resolution: "bitcoinjs-lib@npm:6.0.1"
-  dependencies:
-    bech32: ^2.0.0
-    bip174: ^2.0.1
-    bs58check: ^2.1.2
-    create-hash: ^1.1.0
-    typeforce: ^1.11.3
-    varuint-bitcoin: ^1.1.2
-    wif: ^2.0.1
-  checksum: bffb9fb0f26425da6a449f981aa244f2fc0c056bcb0b9a7a0d07ebf8e2ce766852ef72ab88d5043097819524a4209a035f1595e9ed6cdea7e02674bbe5afe781
   languageName: node
   linkType: hard
 
@@ -18061,7 +18046,7 @@ __metadata:
     babel-eslint: ^10.1.0
     bignumber.js: 9.0.2
     bip39: ^3.0.2
-    bitcoinjs-lib: 6.0.1
+    bitcoinjs-lib: 6.0.2
     bluebird: ^3.7.2
     bootstrap: 4.6.1
     chai: 4.3.6
