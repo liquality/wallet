@@ -11,9 +11,8 @@
           </div>
           <div class="item-content">
             <h3>RC 0.72.0</h3>
-            <pre class="text-wrap">- Send and receive Solana tokens!</pre>
-            <pre class="text-wrap">- Swapping between native Solana assets through Jupiter!</pre>
-            <pre class="text-wrap">- Send and receive your NFTs</pre>
+            <pre class="text-wrap">- Optimism integration</pre>
+            <pre class="text-wrap">- Unstoppable domain integration</pre>
             <h3>Coming soon for Solana:</h3>
             <pre class="text-wrap">- Injections</pre>
             <pre class="text-wrap">- Ledger support</pre>
@@ -32,7 +31,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">RC 0.72.0</pre>
+            <pre class="text-wrap">NFT integration</pre>
           </div>
         </div>
       </div>

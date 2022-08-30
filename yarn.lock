@@ -5096,13 +5096,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/terra.js@npm:^3.0.8":
-  version: 3.1.5
-  resolution: "@terra-money/terra.js@npm:3.1.5"
+"@terra-money/terra.js@npm:^3.1.6":
+  version: 3.1.6
+  resolution: "@terra-money/terra.js@npm:3.1.6"
   dependencies:
     "@terra-money/legacy.proto": "npm:@terra-money/terra.proto@^0.1.7"
     "@terra-money/terra.proto": ^2.1.0
-    axios: ^0.26.1
+    axios: ^0.27.2
     bech32: ^2.0.0
     bip32: ^2.0.6
     bip39: ^3.0.3
@@ -5113,8 +5113,8 @@ __metadata:
     secp256k1: ^4.0.2
     tmp: ^0.2.1
     utf-8-validate: ^5.0.5
-    ws: ^7.5.5
-  checksum: e9da43d4d329b975abeaafeeb13facd29b603c0ff64eaf8dd5a885410a74dc928c019e98f6e05a46087e3ea4ab6ff7cbadf79d3c1e909ce864591cae828133d6
+    ws: ^7.5.9
+  checksum: 675ef98007c754651c2059a2d1ad5c0a776e0d50c6ae5204f59a4581f4954abc30e1fce96272b109838c65e2ad019077303ef89ff2a3b91fc1d1be2b05428648
   languageName: node
   linkType: hard
 
@@ -7592,6 +7592,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^0.27.2":
+  version: 0.27.2
+  resolution: "axios@npm:0.27.2"
+  dependencies:
+    follow-redirects: ^1.14.9
+    form-data: ^4.0.0
+  checksum: 38cb7540465fe8c4102850c4368053c21683af85c5fdf0ea619f9628abbcb59415d1e22ebc8a6390d2bbc9b58a9806c874f139767389c862ec9b772235f06854
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:^2.2.0":
   version: 2.2.0
   resolution: "axobject-query@npm:2.2.0"
@@ -8251,7 +8261,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bitcoinjs-lib@npm:*":
+"bitcoinjs-lib@npm:*, bitcoinjs-lib@npm:6.0.2":
   version: 6.0.2
   resolution: "bitcoinjs-lib@npm:6.0.2"
   dependencies:
@@ -8287,21 +8297,6 @@ __metadata:
     varuint-bitcoin: ^1.0.4
     wif: ^2.0.1
   checksum: 947a9a65694b8d469cb643c0ef2793d807a2b948c6e54c96bbd586b48b2de81afeda40e6ae389e031be03c390804d54ed4805b2d90af713842ebe7f85a08a502
-  languageName: node
-  linkType: hard
-
-"bitcoinjs-lib@npm:6.0.1":
-  version: 6.0.1
-  resolution: "bitcoinjs-lib@npm:6.0.1"
-  dependencies:
-    bech32: ^2.0.0
-    bip174: ^2.0.1
-    bs58check: ^2.1.2
-    create-hash: ^1.1.0
-    typeforce: ^1.11.3
-    varuint-bitcoin: ^1.1.2
-    wif: ^2.0.1
-  checksum: bffb9fb0f26425da6a449f981aa244f2fc0c056bcb0b9a7a0d07ebf8e2ce766852ef72ab88d5043097819524a4209a035f1595e9ed6cdea7e02674bbe5afe781
   languageName: node
   linkType: hard
 
@@ -14202,7 +14197,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.7, follow-redirects@npm:^1.14.8":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.7, follow-redirects@npm:^1.14.8, follow-redirects@npm:^1.14.9":
   version: 1.15.1
   resolution: "follow-redirects@npm:1.15.1"
   peerDependenciesMeta:
@@ -14257,6 +14252,17 @@ __metadata:
     combined-stream: ^1.0.8
     mime-types: ^2.1.12
   checksum: b019e8d35c8afc14a2bd8a7a92fa4f525a4726b6d5a9740e8d2623c30e308fbb58dc8469f90415a856698933c8479b01646a9dff33c87cc4e76d72aedbbf860d
+  languageName: node
+  linkType: hard
+
+"form-data@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "form-data@npm:4.0.0"
+  dependencies:
+    asynckit: ^0.4.0
+    combined-stream: ^1.0.8
+    mime-types: ^2.1.12
+  checksum: 01135bf8675f9d5c61ff18e2e2932f719ca4de964e3be90ef4c36aacfc7b9cb2fceb5eca0b7e0190e3383fe51c5b37f4cb80b62ca06a99aaabfcfd6ac7c9328c
   languageName: node
   linkType: hard
 
@@ -18710,7 +18716,7 @@ __metadata:
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
     "@liquality/wallet-core": 1.29.3
-    "@terra-money/terra.js": ^3.0.8
+    "@terra-money/terra.js": ^3.1.6
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/vue": ^5.8.2
     "@vue/cli-plugin-babel": 4.5.15
@@ -18725,7 +18731,7 @@ __metadata:
     babel-eslint: ^10.1.0
     bignumber.js: 9.0.2
     bip39: ^3.0.2
-    bitcoinjs-lib: 6.0.1
+    bitcoinjs-lib: 6.0.2
     bluebird: ^3.7.2
     bootstrap: 4.6.1
     chai: 4.3.6
@@ -28165,7 +28171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^7.0.0, ws@npm:^7.2.0, ws@npm:^7.4.5, ws@npm:^7.4.6, ws@npm:^7.5.5":
+"ws@npm:^7.0.0, ws@npm:^7.2.0, ws@npm:^7.4.5, ws@npm:^7.4.6, ws@npm:^7.5.5, ws@npm:^7.5.9":
   version: 7.5.9
   resolution: "ws@npm:7.5.9"
   peerDependencies:
