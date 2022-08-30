@@ -64,7 +64,7 @@ export default {
     ChevronDownIcon,
     ChevronUpIcon
   },
-  props: ['chains', 'selected', 'showSearch', 'selectLabel', 'right', ''],
+  props: ['chains', 'selected', 'showSearch', 'selectLabel', 'right'],
   data() {
     return {
       dropdownOpen: false,
