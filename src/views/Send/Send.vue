@@ -246,7 +246,7 @@ import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../../package.json'
-import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
+import { currencyToUnit, unitToCurrency, ChainId, getChain } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
 import {
@@ -263,12 +263,7 @@ import {
 } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
-import {
-  getSendTxFees,
-  getFeeLabel,
-  isEIP1559Fees,
-  feePerUnit
-} from '@liquality/wallet-core/dist/src/utils/fees'
+import { getSendTxFees, getFeeLabel, feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
 
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
@@ -390,11 +385,13 @@ export default {
       return fees[this.selectedFee]?.fee || BN(0)
     },
     currentChainUnit() {
-      const { unit } = chains[cryptoassets[this.asset].chain].fees || ''
+      const { unit } = getChain(this.activeNetwork, cryptoassets[this.asset].chain).fees || ''
       return unit
     },
     isValidAddress() {
-      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
+      return getChain(this.activeNetwork, cryptoassets[this.asset].chain).isValidAddress(
+        this.address
+      )
     },
     addressError() {
       if (!this.isValidAddress) {
@@ -410,7 +407,7 @@ export default {
       return null
     },
     isCustomFeeSupported() {
-      const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
+      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.asset].chain)
       return supportCustomFees
     },
     canSend() {
@@ -450,7 +447,7 @@ export default {
       return BN(this.amount).plus(BN(this.currentFee))
     },
     isEIP1559Fees() {
-      return isEIP1559Fees(cryptoassets[this.asset].chain, this.activeNetwork)
+      return getChain(this.activeNetwork, cryptoassets[this.asset].chain).EIP1559
     },
     showMemoInput() {
       return cryptoassets[this.asset].chain === ChainId.Terra

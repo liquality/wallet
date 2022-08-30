@@ -108,7 +108,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
@@ -229,7 +229,7 @@ export default {
       accountId: this.accountId
     })
     const chainId = cryptoassets[this.asset]?.chain
-    this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
+    this.address = getChain(this.activeNetwork, chainId).formatAddressUI(addresses[0])
 
     await this.refresh()
     this.activityData = [...this.assetHistory]

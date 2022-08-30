@@ -96,7 +96,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import moment from '@liquality/wallet-core/dist/src/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { chains, unitToCurrency } from '@liquality/cryptoassets'
+import { getChain, unitToCurrency } from '@liquality/cryptoassets'
 import { prettyBalance, dpUI } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
@@ -154,7 +154,7 @@ export default {
       fees.push({
         asset: getNativeAsset(this.item.from),
         fee: fromFee,
-        unit: chains[fromChain].fees.unit
+        unit: getChain(this.activeNetwork, fromChain).fees.unit
       })
       if (toChain !== fromChain) {
         const claimFee = this.item.claimFee || 0
@@ -163,7 +163,7 @@ export default {
         fees.push({
           asset: getNativeAsset(this.item.to),
           fee: toFee,
-          unit: this.feeAsset ? this.feeAsset : chains[toChain].fees.unit
+          unit: this.feeAsset ? this.feeAsset : getChain(this.activeNetwork, toChain).fees.unit
         })
       }
       return fees

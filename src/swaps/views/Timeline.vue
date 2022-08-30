@@ -319,12 +319,12 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import moment from '@liquality/wallet-core/dist/src/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import { getSwapTimeline, ACTIONS_TERMS } from '@liquality/wallet-core/dist/src/utils/timeline'
 import {
-  isEthereumChain,
+  isChainEvmCompatible,
   getNativeAsset,
   getAddressExplorerLink
 } from '@liquality/wallet-core/dist/src/utils/asset'
@@ -383,7 +383,7 @@ export default {
     },
     feeSelectorUnit() {
       const chain = cryptoassets[this.feeSelectorAsset].chain
-      return chains[chain].fees.unit
+      return getChain(this.activeNetwork, chain).fees.unit
     },
     timelineDiagramSteps() {
       const swapProvider = getSwapProvider(this.item.network, this.item.provider)
@@ -395,7 +395,7 @@ export default {
     getNativeAsset,
     prettyBalance,
     shortenAddress,
-    isEthereumChain,
+    isChainEvmCompatible,
     // get to asset when liquality boost provider is swapping from Native to ERC20
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
@@ -464,7 +464,9 @@ export default {
       return '#'
     },
     addPrefix(address, asset) {
-      return !address.startsWith('0x') && isEthereumChain(asset) ? '0x' + address : address
+      return !address.startsWith('0x') && isChainEvmCompatible(asset, this.activeNetwork)
+        ? '0x' + address
+        : address
     }
   },
   created() {
