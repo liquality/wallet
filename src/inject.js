@@ -62,6 +62,11 @@ window.providerManager = new ProviderManager()
 `
 
 const ethereumProvider = ({ asset, chain, network }) => `
+const metamaskEmulated = [
+  "opensea.io",
+  "unstoppabledomains.com"
+].some(site => window.location.host.indexOf(site) !== -1) // Is some kind of smart emulation possible?
+
 const injectionName = window.providerManager.getInjectionName('${chain}')
 
 async function getAddresses () {
@@ -107,7 +112,7 @@ async function handleRequest (req) {
 
 window[injectionName] = {
   isLiquality: true,
-  isMetaMask: window.location.host.indexOf("opensea.io") !== -1,
+  isMetaMask: metamaskEmulated,
   isEIP1193: true,
   networkVersion: '${network.networkId}',
   chainId: '0x${network.chainId.toString(16)}',
