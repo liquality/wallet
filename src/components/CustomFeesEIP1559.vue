@@ -302,14 +302,14 @@ export default {
     },
     minerTipFiat() {
       const fiat = prettyFiatBalance(
-        getSendFee(this.nativeAsset, this.minerTip),
+        getSendFee(this.asset, this.minerTip),
         this.fiatRates[this.nativeAsset]
       )
       return isNaN(fiat) ? 0 : fiat
     },
     maxFiat() {
       const fiat = prettyFiatBalance(
-        getSendFee(this.nativeAsset, this.maximumFee),
+        getSendFee(this.asset, this.maximumFee),
         this.fiatRates[this.nativeAsset]
       )
       return isNaN(fiat) ? 0 : fiat
@@ -320,7 +320,7 @@ export default {
         maxPriorityFeePerGas: this.minerTip,
         suggestedBaseFeePerGas: this.suggestedBaseFeePerGas
       })
-      const totalMinFee = getSendFee(this.nativeAsset, minimumFee).plus(this.totalFees.slow)
+      const totalMinFee = getSendFee(this.asset, minimumFee).plus(this.totalFees.slow)
       return {
         amount: BN(totalMinFee).dp(6),
         fiat: prettyFiatBalance(this.totalFees.slow, this.fiatRates[this.nativeAsset])
@@ -332,7 +332,7 @@ export default {
         maxPriorityFeePerGas: this.minerTip,
         suggestedBaseFeePerGas: this.suggestedBaseFeePerGas
       })
-      const totalMaxFee = getSendFee(this.nativeAsset, maximumFee).plus(this.totalFees.fast)
+      const totalMaxFee = getSendFee(this.asset, maximumFee).plus(this.totalFees.fast)
       return {
         amount: BN(totalMaxFee).dp(6),
         fiat: prettyFiatBalance(this.totalFees.fast, this.fiatRates[this.nativeAsset])
@@ -411,8 +411,8 @@ export default {
     presetBase(presetfee, totalFees) {
       const preset = presetfee || {}
 
-      const probableSendFee = getSendFee(this.nativeAsset, probableFeePerUnitEIP1559(preset.fee))
-      const maxSendFee = getSendFee(this.nativeAsset, maxFeePerUnitEIP1559(preset.fee))
+      const probableSendFee = getSendFee(this.asset, probableFeePerUnitEIP1559(preset.fee))
+      const maxSendFee = getSendFee(this.asset, maxFeePerUnitEIP1559(preset.fee))
 
       return {
         amount: BN(probableSendFee).dp(6),
