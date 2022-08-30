@@ -1,57 +1,36 @@
-/**
- * replace string with other assets content at "afterProcessAssets"
- */
+const { RawSource } = require('webpack-sources')
 
 class AssetReplacePlugin {
+  // { name: 'replace-me', entry: 'entry to replace' }
   constructor(options) {
     this.options = options
   }
+
   apply(compiler) {
-    console.log('compiler', compiler)
-    const {
-      webpack: {
-        sources: { RawSource }
-      }
-    } = compiler
-    compiler.hooks.make.tapAsync('AssetReplacePlugin', (compilation, callback) => {
-      compilation.hooks.afterProcessAssets.tap('AssetReplacePlugin', () => {
-        const replaceArr = Object.entries(this.options)
-          .map(([k, v]) => {
-            let assetName
-            for (const chunk of compilation.chunks.values()) {
-              if (chunk.name === v) {
-                assetName = chunk.files.values().next().value
-
-                break
-              }
+    compiler.hooks.compilation.tap('AssetReplacePlugin', (compilation) => {
+      compilation.hooks.afterOptimizeAssets.tap('AssetReplacePlugin', (assets) => {
+        const replaceAsset = Object.entries(assets).find(([name]) => {
+          return name.includes(this.options.entry)
+        })
+        if (replaceAsset) {
+          const replaceAssetSource = replaceAsset[1].source()
+          for (const file of Object.keys(assets)) {
+            if (file.includes('.js')) {
+              compilation.updateAsset(file, (old) => {
+                const oldSource = old.source()
+                if (oldSource.includes(this.options.name)) {
+                  const newSource = oldSource
+                    .split(new RegExp(`['"]?${this.options.name}['"]?`))
+                    .join(JSON.stringify(replaceAssetSource))
+                  return new RawSource(newSource)
+                } else {
+                  return old
+                }
+              })
             }
-            return [k, assetName]
-          })
-          .filter(([, assetName]) => assetName)
-
-        const replaceFn = replaceArr
-          .map(([k, assetName]) => {
-            // github.com/webpack/webpack-sources/blob/master/lib/ConcatSource.js
-            const content = compilation.assets[assetName]?.source()
-
-            return (source) => {
-              return source.split(new RegExp(`['"]?${k}['"]?`)).join(JSON.stringify(content))
-            }
-          })
-          .reduce((m, n) => (content) => n(m(content)))
-
-        for (const chunk of compilation.chunks.values()) {
-          const fileName = chunk.files.values().next().value
-          if (!replaceArr.includes(([, assetName]) => assetName === fileName)) {
-            compilation.updateAsset(fileName, (content) => {
-              const result = replaceFn(content.source())
-
-              return new RawSource(result)
-            })
           }
         }
       })
-      callback()
     })
   }
 }

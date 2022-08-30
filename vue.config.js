@@ -14,13 +14,13 @@ module.exports = {
   },
 
   configureWebpack: (config) => {
-    config.entry.pageProvider = path.resolve('./src/pageProvider.js')
+    config.entry.pageProvider = path.resolve('./src/pageProvider/index.js')
     config.plugins.push(
       new AssetReplacePlugin({
-        '#PAGEPROVIDER#': 'pageProvider'
+        name: '#PAGEPROVIDER#',
+        entry: 'pageProvider'
       })
     )
-    console.log(config)
   },
 
   chainWebpack: (config) => {
