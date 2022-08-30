@@ -528,6 +528,7 @@ export default {
           accountId: this.account.id,
           amount,
           fee,
+          gas: cryptoassets[this.asset].sendGasLimit,
           feeLabel: this.selectedFee,
           fiatRate: this.fiatRates[this.asset],
           ...(this.showMemoInput && { data: this.memoData })
