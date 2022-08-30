@@ -127,7 +127,7 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
       })
       await connectRequestWindow.waitForSelector('#RSK', { visible: true, timeout: 60000 })
     } catch (e) {
-      await testUtil.takeScreenshot(dappPage, 'rsk-sovryn-dapp-connect-request-issue')
+      await testUtil.takeScreenshot(connectRequestWindow, 'rsk-sovryn-dapp-connect-request-issue')
       expect(
         e,
         'RSK sovryn injection ethereum not listed, connected window not loaded.....'
