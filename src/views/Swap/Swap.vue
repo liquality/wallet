@@ -486,7 +486,7 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import { currencyToUnit, unitToCurrency, isMultiLayeredChain } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
@@ -1139,15 +1139,18 @@ export default {
 
       const addFees = async (asset, chain, txType) => {
         const assetFees = this.getAssetFees(chain)
+        const chainId = cryptoassets[chain].chain
+
         const totalFees = await selectedQuoteProvider.estimateFees({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset,
           txType,
           quote: this.selectedQuote,
-          feePrices: Object.values(assetFees).map((fee) =>
-            feePerUnit(fee.fee, cryptoassets[asset].chain)
-          ),
+          feePrices: Object.values(assetFees).map((fee) => feePerUnit(fee.fee, chainId)),
+          feePricesL1: isMultiLayeredChain(chainId)
+            ? Object.values(assetFees).map((fee) => feePerUnit(fee.multilayerFee?.l1, chainId))
+            : undefined,
           max
         })
 

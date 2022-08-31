@@ -141,6 +141,7 @@ class OverviewPage {
       }
 
       case 'DAI':
+      case 'USDC':
       case 'ETH': {
         const eth = await page.waitForSelector('#ETHEREUM', {
           timeout: elementVisibleTimeout,
@@ -229,6 +230,7 @@ class OverviewPage {
 
       case 'MATIC':
       case 'PUSDT':
+      case 'PUSDC':
       case 'PWETH': {
         const polygon = await page.waitForSelector('#POLYGON', {
           timeout: elementVisibleTimeout,
