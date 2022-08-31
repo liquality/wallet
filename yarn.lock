@@ -7546,6 +7546,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bignumber.js@npm:*":
+  version: 9.1.0
+  resolution: "bignumber.js@npm:9.1.0"
+  checksum: 52ec2bb5a3874d7dc1a1018f28f8f7aff4683515ffd09d6c2d93191343c76567ae0ee32cc45149d53afb2b904bc62ed471a307b35764beea7e9db78e56bef6c6
+  languageName: node
+  linkType: hard
+
 "bignumber.js@npm:9.0.2, bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1, bignumber.js@npm:^9.0.2":
   version: 9.0.2
   resolution: "bignumber.js@npm:9.0.2"
@@ -14846,6 +14853,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"i18n-js@npm:latest":
+  version: 4.1.1
+  resolution: "i18n-js@npm:4.1.1"
+  dependencies:
+    bignumber.js: "*"
+    lodash: "*"
+  checksum: fea70d32d30811b802b29812fe83cd57da0b65a51c52dd3a48fc5811378efdc6aad7760832e6a6071e6641e6dfa5bd474aa8f9faae2870014bd73724f942f2e2
+  languageName: node
+  linkType: hard
+
 "iconv-lite@npm:0.4, iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.24":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
@@ -18081,6 +18098,7 @@ __metadata:
     extension-port-stream: ^2.0.1
     human-standard-token-abi: ^2.0.0
     husky: 7.0.4
+    i18n-js: latest
     jest: 27.5.1
     jest-environment-jsdom-fifteen: ^1.0.2
     kcd-scripts: 12.0.0
@@ -18402,7 +18420,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.16.3, lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.3, lodash@npm:^4.17.4, lodash@npm:^4.7.0":
+"lodash@npm:*, lodash@npm:^4.16.3, lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.3, lodash@npm:^4.17.4, lodash@npm:^4.7.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7

@@ -400,6 +400,22 @@ textarea {
   height: 28px;
 }
 
+.dropdown-list {
+    position: relative;
+    height: 36px;
+    display: flex;
+    font-size: $font-size-tiny;
+    font-weight: $font-weight-base;
+    justify-content: center;
+    align-items: center;
+    text-transform: capitalize;
+    cursor: pointer;
+
+    svg {
+      height: 6px;
+      margin-left: 4px;
+    }
+}
 .menu_list {
   position: absolute;
   z-index: 3;

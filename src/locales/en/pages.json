@@ -1,0 +1,120 @@
+{
+    "splash": {
+        "importWithSeedPhrase": "Import with seed phrase",
+        "openWallet": "Open wallet",
+        "createNewWallet": "Create a new wallet"
+    },
+    "unlockWallet": {
+        "forgotPassword": "Forgot password? Import with seed phrase",
+        "unlock": "Unlock"
+    },
+    "openWallet": {},
+    "onboarding": {
+        "import": {
+            "unlockWallet": "Unlock wallet",
+            "enterSeedPhrase": "Enter the seed phrase, in the same order saved when creating your wallet.",
+            "words": "%{words} words"
+        },
+        "setup": {
+            "backupYourWallet": "Backup your Wallet",
+            "backupDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
+            "choosePassword": "Choose Password ( at least 8 characters )",
+            "passwordTooShort": "Password is too short",
+            "confirmPassword": "Confirm Password",
+            "passwordDontMatch": "Passwords don't match.",
+            "confirmSeedTitle": "Confirm Seed Phrase",
+            "confirmSeedInstructions": "Tap the 3 words matching their position in the seed phrase. Once confirmed, store the phrase securely.",
+            "word": "Word",
+            "ordinals": {
+                "first": "st",
+                "fifth": "th",
+                "twelfth": "th"
+            },
+            "congrats": "Congrats!"
+        },
+        "home": {
+            "iAccept": "I Accept",
+            "termsAndPrivacy": "Terms & Privacy"
+        },
+        "warning": {
+            "warning": "Warning",
+            "iHavePrivacy": "I have privacy",
+            "seedPhraseWarning": "Anyone who has this can steal your funds!",
+            "viewItInPrivate": "View it in private without cameras around.",
+            "title": {
+                "seed": "Show Seed Phrase?",
+                "privateKey": "Show Private Key?"
+            }
+        },
+        "seedlogin": {
+            "understandTheRisk": "I understand the risk and have privacy",
+            "pleaseAcceptTerms": "Please Accept Terms",
+            "unlockError": "Try Again. Enter the right password (it has 8 or more characters).",
+            "title": {
+                "seed": "Sign-in to See Seed Phrase",
+                "export": "Sign-in to Export Private Key"
+            }
+        },
+        "seedReveal": {
+            "yourSeedPhrase": "Your Seed Phrase",
+            "revealDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
+            "iSavedTheSeed": "I saved the seed"
+        }
+    },
+    "settings": {
+        "settings": "Settings",
+        "title": "Default Web3 Wallet",
+        "description": "Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.",
+        "analytics": "Analytics",
+        "analyticsSub": "Share where you click. No identifying data is collected.",
+        "walletLogs": "Wallet Logs",
+        "walletLogsSub": "The wallet logs contain your public information such as addresses and transactions.",
+        "downloadLogs": "Download Logs",
+        "locale": "Language",
+        "localeSub": "Change Language",
+        "dappConnections": "Dapp Connections",
+        "dappConnectionsSub": "Forget all of the dapps connected.",
+        "done": "Done!",
+        "forgetAllConnections": "Forget all connections",
+        "version": "Version",
+        "experiments": {},
+        "manageAssets": {},
+        "customTokens": {}
+    },
+    "wallet": {
+        "assets": {},
+        "activity": {},
+        "nfts": {},
+        "nftsActivity": {},
+        "nftsSend": {}
+    },
+    "details": {
+        "nftTransaction": {},
+        "nftCollection": {},
+        "nftAsset": {},
+        "swap": {},
+        "transaction": {}
+    },
+    "accounts": {
+        "account": {},
+        "management": {},
+        "create": {},
+        "send": {},
+        "receive": {},
+        "swap": {},
+        "hardwareWallet": {}
+    },
+    "assets": {},
+    "requestUnlock": {},
+    "enable": {},
+    "permission": {
+        "send": {},
+        "terra": {},
+        "sign": {},
+        "signPsbt": {},
+        "default": {}
+    },
+    "export": {
+        "reveal": {}
+    }
+}

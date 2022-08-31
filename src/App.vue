@@ -1,5 +1,5 @@
 <template>
-  <div id="app" v-if="brokerReady">
+  <div id="app" v-if="brokerReady" :key="i18nVersion">
     <Head v-if="unlockedAt" :show-dapp-connections="showDappConnections" />
     <router-view />
     <template v-if="unlockedAt && termsAcceptedAt">
@@ -32,6 +32,8 @@ export default {
   },
   async created() {
     await this.initializeAnalytics()
+    // process.env.VUE_APP_DEFAULT_LOCALE
+    this.changeLocale('en')
   }
 }
 </script>

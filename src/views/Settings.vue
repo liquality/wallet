@@ -1,16 +1,17 @@
 <template>
   <div class="view-container">
     <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="wallet_header"><strong>Settings</strong></span>
+      <span class="wallet_header">
+        <strong>{{ $t('pages.settings.settings') }}</strong>
+      </span>
     </NavBar>
     <div class="settings">
       <div class="setting-item" id="settings_item_default_wallet">
         <div class="setting-item_title flex-fill mb-2">
-          Default Web3 Wallet
-          <span class="setting-item_sub"
-            >Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps
-            while this is enabled.</span
-          >
+          {{ $t('pages.settings.title') }}
+          <span class="setting-item_sub">
+            {{ $t('pages.settings.description') }}
+          </span>
         </div>
         <div class="setting-item_control" id="default_web3_wallet_toggle_button">
           <toggle-button
@@ -22,8 +23,8 @@
       </div>
       <div class="setting-item" id="forgetAllDappsDone">
         <div class="setting-item_title flex-fill mb-2">
-          Dapp Connections
-          <span class="setting-item_sub">Forget all of the dapps connected.</span>
+          {{ $t('pages.settings.dappConnections') }}
+          <span class="setting-item_sub">{{ $t('pages.settings.dappConnectionsSub') }}</span>
         </div>
         <div class="setting-item_control">
           <button
@@ -32,21 +33,21 @@
             @click="forgetAllDappConnections"
             v-tooltip="{
               trigger: 'manual',
-              content: 'Done!',
+              content: $t('pages.settings.done'),
               hideOnTargetClick: false,
               show: forgetAllDappsDone
             }"
           >
-            Forget all connections
+            {{ $t('pages.settings.forgetAllConnections') }}
           </button>
         </div>
       </div>
       <div class="setting-item" id="settings_item_default_wallet_analytics">
         <div class="setting-item_title flex-fill mb-2">
-          Analytics
-          <span class="setting-item_sub"
-            >Share where you click. No identifying data is collected.</span
-          >
+          {{ $t('pages.settings.analytics') }}
+          <span class="setting-item_sub">
+            {{ $t('pages.settings.analyticsSub') }}
+          </span>
         </div>
         <div class="setting-item_control" id="analytics_toggle_button">
           <toggle-button
@@ -58,22 +59,39 @@
       </div>
       <div class="setting-item" id="settings_item_wallet_logs">
         <div class="setting-item_title flex-fill mb-2">
-          Wallet Logs
-          <span class="setting-item_sub"
-            >The wallet logs contain your public information such as addresses and
-            transactions.</span
-          >
+          {{ $t('pages.settings.walletLogs') }}
+          <span class="setting-item_sub">
+            {{ $t('pages.settings.walletLogsSub') }}
+          </span>
         </div>
         <div class="setting-item_control">
           <button class="btn btn-outline-primary" id="download_logs_button" @click="downloadLogs">
-            Download Logs
+            {{ $t('pages.settings.downloadLogs') }}
           </button>
+        </div>
+      </div>
+      <div class="setting-item">
+        <div class="setting-item_title flex-fill mb-2">
+          {{ $t('pages.settings.locale') }}
+          <span class="setting-item_sub">{{ $t('pages.settings.localeSub') }}</span>
+        </div>
+        <div class="setting-item_control">
+          <div class="dropdown-list" @click.stop="toogleChangeLocale">
+            {{ currentLocale }}
+            <ChevronUpIcon v-if="showChangeLocaleList" />
+            <ChevronDownIcon v-else />
+            <ul class="menu_list" v-if="showChangeLocaleList" v-click-away="hideChangeLocale">
+              <li v-for="locale in locales" :key="locale" @click="changeLocale(locale)">
+                {{ locale }}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="settings-footer">
         <div id="settings_app_version">
           <router-link to="/settings/experiments">
-            <span class="text-muted"> Version {{ appVersion }} </span>
+            <span class="text-muted"> {{ $('pages.settings.version') }} {{ appVersion }} </span>
           </router-link>
         </div>
       </div>
@@ -86,14 +104,19 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import { version } from '../../package.json'
 import { getWalletStateLogs, downloadFile } from '@/utils/export'
 import NavBar from '@/components/NavBar.vue'
+import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
+import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 
 export default {
   components: {
-    NavBar
+    NavBar,
+    ChevronUpIcon,
+    ChevronDownIcon
   },
   data: function () {
     return {
-      forgetAllDappsDone: false
+      forgetAllDappsDone: false,
+      showChangeLocaleList: false
     }
   },
   computed: {
@@ -165,6 +188,19 @@ export default {
       setTimeout(() => {
         this.forgetAllDappsDone = false
       }, 4000)
+    },
+    onChangeLocale(locale) {
+      this.changeLocale(locale)
+      this.hideChangeLocale()
+    },
+    toogleChangeLocale() {
+      this.showChangeLocaleList = !this.showChangeLocaleList
+    },
+    showChangeLocale() {
+      this.showChangeLocaleList = true
+    },
+    hideChangeLocale() {
+      this.showChangeLocaleList = false
     }
   },
   created() {

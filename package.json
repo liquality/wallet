@@ -44,6 +44,7 @@
     "ethers": "5.5.4",
     "extension-port-stream": "^2.0.1",
     "human-standard-token-abi": "^2.0.0",
+    "i18n-js": "latest",
     "lodash-es": "^4.17.15",
     "log": "^6.0.0",
     "memoizee": "^0.4.15",

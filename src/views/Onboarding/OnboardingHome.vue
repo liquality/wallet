@@ -4,7 +4,7 @@
       <LogoWallet />
     </div>
     <div class="onboading-home_tnc">
-      <h4 class="font-weight-bold">Terms &amp; Privacy</h4>
+      <h4 class="font-weight-bold">{{ $t('pages.onboarding.home.termsAndPrivacy') }}</h4>
       <div
         class="onboading-home_tnc__text mb-3"
         id="onboarding_home_text_container"
@@ -932,14 +932,14 @@
           class="btn btn-light btn-outline-primary btn-lg"
           @click="$router.push('/')"
         >
-          Cancel
+          {{ $t('common.cancel') }}
         </button>
         <button
           id="terms_privacy_accept_button"
           class="btn btn-primary btn-lg ml-2"
           @click="acceptTnC"
         >
-          I Accept
+          {{ $t('pages.onboarding.home.iAccept') }}
         </button>
       </div>
     </div>

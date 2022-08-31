@@ -2,28 +2,29 @@
   <div class="phrase-reveal login-wrapper no-outer-pad">
     <div class="phrase-reveal_top">
       <Eye class="phrase-reveal_icon mt-4" />
-      <h2 class="mt-2">Your Seed Phrase</h2>
+      <h2 class="mt-2">{{ $t('pages.onboarding.seedReveal.yourSeedPhrase') }}</h2>
       <h5 class="phrase-reveal_description pb-2 px-3">
-        The seed phrase is the only way to restore your wallet. Write it down, verify it and then
-        store it securely.
+        {{ $t('pages.onboarding.seedReveal.revealDescription') }}
       </h5>
     </div>
     <div class="phrase-reveal_bottom">
-      <p class="phrase-reveal_mouseText">Hidden for security. Mouse-Over to reveal phrase.</p>
+      <p class="phrase-reveal_mouseText">
+        {{ $t('pages.onboarding.seedReveal.revealDescription') }}
+      </p>
       <div class="phrase-reveal_seed pl-0 mb-1">
         <span v-for="word in seedList" id="seed_word_mouse_hover" :key="word">{{ word }}</span>
       </div>
       <div class="button-group">
-        <router-link to="/wallet"
-          ><button class="btn btn-outline-primary btn-lg btn-block" id="cancel_button">
-            Cancel
-          </button></router-link
-        >
-        <router-link to="/wallet"
-          ><button class="btn btn-primary btn-lg btn-block" id="i_saved_the_seed">
-            I saved the seed
-          </button></router-link
-        >
+        <router-link to="/wallet">
+          <button class="btn btn-outline-primary btn-lg btn-block" id="cancel_button">
+            {{ $t('common.cancel') }}
+          </button>
+        </router-link>
+        <router-link to="/wallet">
+          <button class="btn btn-primary btn-lg btn-block" id="i_saved_the_seed">
+            {{ $t('pages.onboarding.seedReveal.iSavedTheSeed') }}
+          </button>
+        </router-link>
       </div>
     </div>
   </div>
@@ -40,7 +41,7 @@ export default {
   computed: {
     ...mapState(['wallets', 'activeWalletId']),
     wallet: function () {
-      return this.wallets.find((wallet) => wallet.id === this.activeWalletId)
+      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
     },
     seedList: function () {
       return this.wallet.mnemonic.split(' ')

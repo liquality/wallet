@@ -4,7 +4,7 @@
       <div v-for="n in 150" :key="n" :class="`confetti-${n}`"></div>
     </div>
     <div class="congrats-seed_top">
-      <h1 class="mb-3">Congrats!</h1>
+      <h1 class="mb-3">{{ $t('pages.onboarding.setup.congrats') }}</h1>
       <CompletedIcon class="congrats-seed_icon" />
     </div>
   </div>
