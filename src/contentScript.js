@@ -47,6 +47,7 @@ function injectProviders(state) {
   }
 
   setupTerraStreams()
+
   inject(`window.liquality = ${JSON.stringify(injectConfig)};`)
   inject('#PAGEPROVIDER#')
 }
