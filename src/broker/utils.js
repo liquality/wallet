@@ -54,7 +54,11 @@ export const inject = (content) => {
   const container = document.head || document.documentElement
   const scriptTag = document.createElement('script')
   scriptTag.setAttribute('async', 'false')
-  scriptTag.textContent = `(() => {${content}})()`
+  scriptTag.textContent = `;(() => {
+
+  ${content}
+
+})()` // Space is important in order to prevent comments at the end of content breaking the code such as for sourcemaps
   container.insertBefore(scriptTag, container.children[0])
 }
 

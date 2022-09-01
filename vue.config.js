@@ -21,6 +21,9 @@ module.exports = {
         entry: 'pageProvider'
       })
     )
+    if (process.env.NODE_ENV === 'development') {
+      config.devtool = 'cheap-source-map'
+    }
   },
 
   chainWebpack: (config) => {
@@ -61,6 +64,12 @@ module.exports = {
           entries: {
             'content-script': ['src/contentScript.js']
           }
+        }
+      },
+      extensionReloaderOptions: {
+        entries: {
+          contentScript: ['pageProvider', 'content-script'],
+          background: 'background'
         }
       },
       manifestTransformer: (manifest) => {
