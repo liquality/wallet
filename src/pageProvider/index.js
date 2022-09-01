@@ -124,7 +124,7 @@ function addEthereumChain({ chain, asset, network }) {
     networkVersion: network.networkId,
     chainId: network.chainId.toString(16),
     enable: async () => {
-      const { accepted, chain } = await window.providerManager.enable(chain)
+      const { accepted, _chain } = await window.providerManager.enable(chain)
       if (!accepted) throw new Error('User rejected')
       return getAddresses()
     },
