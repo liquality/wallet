@@ -7,7 +7,9 @@
       <div class="account-content mx-3">
         <div>
           <Accordion v-for="(assets, key) in nftCollection" :key="assets.id">
-            <h3 slot="header" id="nft-asset-header">{{ key }} ({{ assets.length }})</h3>
+            <h3 slot="header" id="nft-asset-header">
+              {{ nftCollectionName(assets, key) }} ({{ assets.length }})
+            </h3>
             <div class="nft-assets__container__images">
               <div
                 class="nft-image"
@@ -38,7 +40,7 @@
                 <img
                   ref="asset"
                   :src="asset.image_thumbnail_url || thumbnailImage"
-                  alt="nft image"
+                  :alt="asset.name || 'NFT asset'"
                   @error="imageError('asset')"
                 />
               </div>
@@ -146,7 +148,7 @@
                       :asset="asset"
                       v-model="selectedFee"
                       :fees="assetFees"
-                      :totalFees="maxOptionActive ? maxSendFees : sendFees"
+                      :totalFees="sendFees"
                       :fiatRates="fiatRates"
                       @custom-selected="onCustomFeeSelected"
                     />
@@ -274,13 +276,16 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
-import { applyActivityFilters } from '@liquality/wallet-core/dist/src/utils/history'
 import Accordion from '@/components/Accordion.vue'
 import { chains } from '@liquality/cryptoassets'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import CopyIcon from '@/assets/icons/copy.svg'
-import { getSendFee, getFeeLabel } from '@liquality/wallet-core/dist/src/utils/fees'
+import {
+  estimateTransferNFT,
+  getFeeLabel,
+  feePerUnit
+} from '@liquality/wallet-core/dist/src/utils/fees'
 import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
@@ -314,9 +319,7 @@ export default {
   data() {
     return {
       sendFees: {},
-      maxSendFees: {},
       eip1559fees: {},
-      activityData: [],
       amount: 0.0,
       activeView: 'selectAsset',
       selectedNFT: null,
@@ -359,7 +362,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['activity', 'accountItem', 'accountsData', 'accountNftCollections']),
+    ...mapGetters([
+      'activity',
+      'accountItem',
+      'accountsData',
+      'accountNftCollections',
+      'suggestedFeePrices'
+    ]),
     ...mapState([
       'activeNetwork',
       'activeWalletId',
@@ -465,7 +474,7 @@ export default {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      const fees = this.suggestedFeePrices(this.assetChain)
       if (fees) {
         Object.assign(assetFees, fees)
       }
@@ -495,19 +504,15 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['sendNFTTransaction', 'updateFees', 'trackAnalytics']),
+    ...mapActions(['sendNFTTransaction', 'updateFees', 'trackAnalytics', 'updateNFTs']),
     getAssetIcon,
     shortenAddress,
     formatFiat,
     formatFiatUI,
     prettyBalance,
     getFeeAsset,
-    getSendFee,
     getFeeLabel,
     getNativeAsset,
-    applyFilters(filters) {
-      this.activityData = applyActivityFilters([...this.assetHistory], filters)
-    },
     async copy(text) {
       await navigator.clipboard.writeText(text)
     },
@@ -542,6 +547,13 @@ export default {
       }
       this.activeView = view
     },
+    nftCollectionName(assets, key) {
+      if (key && key !== 'undefined' && key !== 'null') {
+        return key
+      } else {
+        return assets.filter((asset) => asset.name)[0]?.name || 'Unknown Collection'
+      }
+    },
     cancelCustomFee() {
       this.activeView = 'selectedAsset'
       this.selectedFee = 'average'
@@ -565,9 +577,8 @@ export default {
         this.selectedFee = speed
         this.customFee = null
       } else {
-        this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.customFee = feePerUnit(fee, cryptoassets[this.asset].chain)
         this.selectedFee = 'custom'
       }
       this.activeView = 'selectedAsset'
@@ -579,28 +590,33 @@ export default {
       this.customFee = null
       this.selectedFee = 'average'
     },
-    async _updateSendFees(amount) {
-      const getMax = amount === undefined
-      if (this.feesAvailable) {
-        const sendFees = {}
+    async _updateSendFees() {
+      const sendFees = await estimateTransferNFT(
+        this.account.id,
+        this.address,
+        [1],
+        this.selectedNFT,
+        this.customFee
+      )
 
-        for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee.maxFeePerGas || fee.fee
-          sendFees[speed] = getSendFee(this.assetChain, feePrice)
-        }
-
-        if (getMax) {
-          this.maxSendFees = sendFees
-        } else {
-          this.sendFees = sendFees
-        }
-      }
+      this.sendFees = sendFees
     },
     updateSendFees: _.debounce(async function (amount) {
       await this._updateSendFees(amount)
     }, 800),
-    async updateMaxSendFees() {
-      await this._updateSendFees()
+    async refreshNFTs() {
+      const accountIds = this.accountsData.map((account) => {
+        return account.id
+      })
+      try {
+        await this.updateNFTs({
+          walletId: this.activeWalletId,
+          network: this.activeNetwork,
+          accountIds: accountIds
+        })
+      } catch (error) {
+        console.error(error)
+      }
     },
     async sendNFT() {
       this.sendErrorMessage = ''
@@ -620,7 +636,8 @@ export default {
           nft: this.selectedNFT
         }
         await this.sendNFTTransaction(data)
-        this.$router.replace(`/wallet/nfts/activity/${this.account?.id}`)
+        await this.refreshNFTs()
+        this.$router.replace(`/wallet/nfts/activity/${this.account?.id}?tab=activity`)
       } catch (error) {
         const { message } = error
         this.loading = false
@@ -632,11 +649,6 @@ export default {
       if (ref) {
         this.$refs[ref].src = this.thumbnailImage
       }
-    }
-  },
-  watch: {
-    activeNetwork() {
-      this.activityData = [...this.assetHistory]
     }
   }
 }
@@ -672,7 +684,7 @@ export default {
 }
 
 .nft-image {
-  width: var(--img-width);
+  min-width: var(--img-width);
 
   svg {
     position: absolute;

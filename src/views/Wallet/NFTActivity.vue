@@ -5,7 +5,11 @@
         <div class="icons d-flex justify-content-center">
           <span class="mr-2">
             <NFTIcon class="asset-icon" />
-            <img :src="getAssetIcon(asset)" :alt="`${asset}-icon`" class="asset-icon" />
+            <img
+              :src="getAccountIcon(account.chain)"
+              :alt="`${account.chain}-icon`"
+              class="asset-icon"
+            />
           </span>
           {{ account.chain }}
         </div>
@@ -16,7 +20,9 @@
       <div class="wallet-tabs">
         <ul class="nav nav-tabs">
           <li class="nav-item" @click="activeTab = 'nfts'">
-            <span :class="activeTab === 'nfts' ? 'nav-link active' : 'nav-link'"> NFTs </span>
+            <span :class="activeTab === 'nfts' ? 'nav-link active' : 'nav-link'">
+              NFTs ({{ nftAssetsCount || 0 }})
+            </span>
           </li>
           <li class="nav-item" @click="activeTab = 'activity'">
             <span :class="activeTab === 'activity' ? 'nav-link active' : 'nav-link'">
@@ -32,6 +38,7 @@
             @filters-changed="applyFilters"
             :activity-data="activityData"
             v-if="activityData.length > 0"
+            :showTypeFilters="false"
           />
           <TransactionList :transactions="activityData" />
           <div class="activity-empty m-3" v-if="activityData.length <= 0">
@@ -52,7 +59,7 @@ import { applyActivityFilters } from '@liquality/wallet-core/dist/src/utils/hist
 import NFTStats from '@/views/Wallet/NFTStats'
 import amplitude from 'amplitude-js'
 import WalletNFTs from './WalletNFTs.vue'
-import { getAssetIcon } from '@/utils/asset'
+import { getAccountIcon } from '@/utils/accounts'
 import NFTIcon from '@/assets/icons/nft.svg'
 import { chains } from '@liquality/cryptoassets'
 
@@ -75,13 +82,16 @@ export default {
     }
   },
   created() {
-    this.activityData = [...this.activity]
+    this.activityData = [...this.assetHistory]
+    if (this.$route.query.tab) {
+      this.activeTab = this.$route.query.tab
+    }
   },
   computed: {
     ...mapState(['activeNetwork', 'history']),
     ...mapGetters(['activity', 'accountsData', 'accountNftCollections']),
     assetHistory() {
-      return this.activity.filter((item) => item.type === 'NFT')
+      return this.activity.filter((item) => item.type === 'NFT' && item.accountId === this.id)
     },
     nftAssets() {
       return this.accountNftCollections(this.id) || []
@@ -97,7 +107,7 @@ export default {
     }
   },
   methods: {
-    getAssetIcon,
+    getAccountIcon,
     applyFilters(filters) {
       this.activityData = applyActivityFilters([...this.assetHistory], filters)
     }

@@ -85,7 +85,12 @@ store.subscribe(async ({ type, payload }, state) => {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      dispatch('updateMarketData', { network: state.activeNetwork })
+      dispatch('updateNFTs', {
+        walletId: state.activeWalletId,
+        network: state.activeNetwork,
+        accountIds: accountIds
+      }),
+        dispatch('updateMarketData', { network: state.activeNetwork })
       break
     case 'LOCK_WALLET':
       await dispatch('trackAnalytics', {
@@ -107,11 +112,16 @@ store.subscribe(async ({ type, payload }, state) => {
       dispatch('updateMarketData', { network: state.activeNetwork })
       dispatch('updateCurrenciesInfo', { assets: store.getters.allNetworkAssets })
       dispatch('checkPendingActions', { walletId: state.activeWalletId })
-      dispatch('updateNFTs', {
-        walletId: state.activeWalletId,
-        network: state.activeNetwork,
-        accountIds: accountIds
-      })
+
+      asyncLoop(
+        () =>
+          dispatch('updateNFTs', {
+            walletId: state.activeWalletId,
+            network: state.activeNetwork,
+            accountIds: accountIds
+          }),
+        () => random(200000, 300000)
+      )
 
       asyncLoop(
         () =>

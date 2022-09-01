@@ -5,8 +5,10 @@
       :backPath="routeSource === 'NFTActivity' ? '/wallet/nfts/activity' : '/wallet/nfts'"
       :backLabel="'Back'"
     >
-      <span class="wallet-header">
-        <strong class="text-uppercase"> {{ collectionName }} ({{ nftCollection.length }})</strong>
+      <span class="wallet-header cursor-pointer" :title="nftCollectionName">
+        <strong class="text-uppercase">
+          {{ nftCollectionName }} ({{ nftCollection.length }})</strong
+        >
       </span>
     </NavBar>
     <div class="nft-collection mt-3">
@@ -26,7 +28,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import NFTAsset from '../../components/NFTAsset.vue'
+import NFTAsset from '../../components/NFT/NFTAsset.vue'
 import NavBar from '../../components/NavBar.vue'
 
 export default {
@@ -46,6 +48,7 @@ export default {
     collectionName() {
       return this.$route.query.collectionName
     },
+
     routeSource() {
       return this.$route.query.source || null
     },
@@ -54,6 +57,17 @@ export default {
     },
     chain() {
       return this.$route.query.chain
+    },
+    nftCollectionName() {
+      if (
+        this.collectionName &&
+        this.collectionName !== 'undefined' &&
+        this.collectionName !== 'null'
+      ) {
+        return this.collectionName
+      } else {
+        return this.nftCollection.filter((asset) => asset.name)[0]?.name || 'Unknown Collection'
+      }
     }
   }
 }
