@@ -81,7 +81,7 @@
             <ChevronUpIcon v-if="showChangeLocaleList" />
             <ChevronDownIcon v-else />
             <ul class="menu_list" v-if="showChangeLocaleList" v-click-away="hideChangeLocale">
-              <li v-for="locale in locales" :key="locale" @click="changeLocale(locale)">
+              <li v-for="locale in localeOptions" :key="locale" @click="onChangeLocale(locale)">
                 {{ locale }}
               </li>
             </ul>
@@ -91,7 +91,7 @@
       <div class="settings-footer">
         <div id="settings_app_version">
           <router-link to="/settings/experiments">
-            <span class="text-muted"> {{ $('pages.settings.version') }} {{ appVersion }} </span>
+            <span class="text-muted"> {{ $t('pages.settings.version') }} {{ appVersion }} </span>
           </router-link>
         </div>
       </div>
@@ -124,6 +124,9 @@ export default {
     ...mapGetters(['analyticsEnabled']),
     appVersion() {
       return version
+    },
+    localeOptions() {
+      return this.locales?.filter((i) => i !== this.currentLocale) || []
     }
   },
   methods: {
@@ -135,6 +138,7 @@ export default {
       'forgetDappConnections'
     ]),
     ...mapActions('app', ['initializeAnalytics']),
+    ...mapActions('ui', ['setLocalePrefference']),
     toggleInjectEthereum(enable) {
       if (enable) {
         this.enableEthereumInjection()
@@ -189,8 +193,9 @@ export default {
         this.forgetAllDappsDone = false
       }, 4000)
     },
-    onChangeLocale(locale) {
-      this.changeLocale(locale)
+    async onChangeLocale(locale) {
+      await this.changeLocale(locale)
+      await this.setLocalePrefference({ locale })
       this.hideChangeLocale()
     },
     toogleChangeLocale() {

@@ -1,14 +1,18 @@
 <template>
   <div class="view-container">
     <NavBar showMenu="true" showBack="true" backPath="/settings" backLabel="Settings">
-      <span class="wallet_header"><strong>Experiments</strong></span>
+      <span class="wallet_header">
+        <strong>
+          {{ $t('pages.experiments.experiments') }}
+        </strong>
+      </span>
     </NavBar>
     <div class="experiments" id="experiments">
       <div class="setting-item">
         <div class="setting-item_title flex-fill mb-2">
-          Multi-Accounts
+          {{ $t('pages.experiments.multiaccounts') }}
           <span class="setting-item_sub">
-            Allow account management and multiple accounts per network
+            {{ $t('pages.experiments.multiaccountsDescription') }}
           </span>
         </div>
         <div class="setting-item_control">

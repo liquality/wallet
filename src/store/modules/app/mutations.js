@@ -1,10 +1,4 @@
 export const mutations = {
-  SET_LEDGER_BRIDGE_CONNECTED(state, { connected }) {
-    state.ledgerBridgeConnected = connected
-  },
-  SET_LEDGER_BRIDGE_TRANSPORT_CONNECTED(state, { connected }) {
-    state.ledgerBridgeTransportConnected = connected
-  },
   ANALITYCS_STARTED(state) {
     state.analyticsStarted = true
   },

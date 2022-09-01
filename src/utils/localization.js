@@ -2,11 +2,6 @@ import { I18n } from 'i18n-js'
 
 const i18n = new I18n()
 
-export const changeLocale = async (locale) => {
-  await loadLocale(locale)
-  i18n.locale = locale
-}
-
 export const loadLocale = async (locale, namespaces = ['common', 'components', 'pages']) => {
   if (!i18n.translations[locale]) {
     let resources = {}
@@ -31,9 +26,7 @@ export const Localization = {
       },
       computed: {
         locales() {
-          return (process.env.VUE_APP_SUPPORTED_LANGS || [])
-            .split(',')
-            .filter((i) => i !== this.currentLocale)
+          return (process.env.VUE_APP_SUPPORTED_LOCALES || []).split(',')
         }
       },
       methods: {

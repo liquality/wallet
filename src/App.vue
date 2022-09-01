@@ -20,6 +20,9 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork', 'brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
+    ...mapState({
+      locale: (state) => state.ui?.locale
+    }),
     showDappConnections() {
       return !this.$route.path.startsWith('/permission') && !this.$route.path.startsWith('/enable')
     },
@@ -28,12 +31,24 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['initializeAnalytics'])
+    ...mapActions(['initializeAnalytics']),
+    ...mapActions('ui', ['setLocalePrefference', 'getBrowserLocale'])
   },
   async created() {
     await this.initializeAnalytics()
-    // process.env.VUE_APP_DEFAULT_LOCALE
-    this.changeLocale('en')
+    console.log('this.locale', this.locale)
+    if (this.locale) {
+      await this.changeLocale(this.locale)
+    } else {
+      const browserLocale = await this.getBrowserLocale()
+      console.log('browser locale', browserLocale)
+      const _locale = this.locales.includes(browserLocale)
+        ? browserLocale
+        : process.env.VUE_APP_DEFAULT_LOCALE
+      await this.changeLocale(_locale)
+      // store the local in state
+      await this.setLocalePrefference({ locale: this.currentLocale })
+    }
   }
 }
 </script>

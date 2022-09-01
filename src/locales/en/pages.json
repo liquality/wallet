@@ -76,11 +76,17 @@
         "dappConnectionsSub": "Forget all of the dapps connected.",
         "done": "Done!",
         "forgetAllConnections": "Forget all connections",
-        "version": "Version",
-        "experiments": {},
-        "manageAssets": {},
-        "customTokens": {}
+        "version": "Version"
     },
+    "experiments": {
+        "experiments": "Experiments",
+        "multiaccounts": "Multi-Accounts",
+        "multiaccountsDescription": "Allow account management and multiple accounts per network"
+    },
+    "manageAssets": {
+        "assetView": "Asset View"
+    },
+    "customTokens": {},
     "wallet": {
         "assets": {},
         "activity": {},
