@@ -416,9 +416,8 @@ window.terra = {
       params
     })
   }
-}`
+}
 
-const paymentUriHandler = () => `
 document.addEventListener(
   'DOMContentLoaded',
   () => {

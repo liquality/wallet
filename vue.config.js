@@ -1,6 +1,8 @@
 const path = require('path')
 const AssetReplacePlugin = require('./plugins/AssetReplacePlugin')
 
+const isDevelopment = process.env.NODE_ENV === 'development'
+
 module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
@@ -21,8 +23,13 @@ module.exports = {
         entry: 'pageProvider'
       })
     )
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       config.devtool = 'cheap-source-map'
+      config.optimization.splitChunks = {
+        cacheGroups: {
+          default: false
+        }
+      }
     }
   },
 
