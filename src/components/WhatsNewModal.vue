@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <h3>Optimism is our new chain!</h3>
+            <h3>RC 0.73.0</h3>
             <pre class="text-wrap">
 - Send, receive and swap tokens in your brand new OP address</pre
             >
