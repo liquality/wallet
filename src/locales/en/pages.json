@@ -99,11 +99,10 @@
         "addToken": "Add Token"
     },
     "wallet": {
-        "assets": {},
-        "activity": {},
-        "nfts": {},
-        "nftsActivity": {},
-        "nftsSend": {}
+        "overview": "Overview",
+        "assets": "Assets",
+        "activity": "Activity",
+        "nfts": "NFTs"
     },
     "details": {
         "nftTransaction": {},

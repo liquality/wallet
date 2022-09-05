@@ -8,6 +8,14 @@
     "remove": "Remove",
     "done": "Done",
     "chain": "Chain",
+    "send": "Send",
+    "swap": "Swap",
+    "receive": "Receive",
+    "asset": {
+        "zero": "Assets",
+        "one": "Asset",
+        "other": "Assets"
+    },
     "localesLabels": {
         "en": "English",
         "es": "Spanish",
