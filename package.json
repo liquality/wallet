@@ -1,6 +1,6 @@
 {
   "name": "liquality-wallet",
-  "version": "0.72.0",
+  "version": "0.73.0",
   "private": true,
   "author": "Liquality <info@liquality.io>",
   "scripts": {
@@ -27,7 +27,7 @@
     "@liquality/ethereum-utils": "^1.13.12",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
-    "@liquality/wallet-core": "1.29.3",
+    "@liquality/wallet-core": "1.29.4",
     "@terra-money/terra.js": "^3.1.6",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.18.2",
