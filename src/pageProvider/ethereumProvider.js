@@ -1,24 +1,24 @@
-function addEthereumChain({ chain, asset, network }) {
-  const metamaskEmulated = ['opensea.io', 'unstoppabledomains.com'].some(
-    (site) => window.location.host.indexOf(site) !== -1
-  ) // Is some kind of smart emulation possible?
+import { PageProvider } from './pageProvider'
 
-  const injectionName = window.providerManager.getInjectionName(chain)
+class EthereumPageProvider extends PageProvider {
+  chain
+  asset
+  network
 
-  async function getAddresses() {
-    const eth = window.providerManager.getProviderFor(asset)
-    let addresses = await eth.getMethod('wallet.getAddresses')()
-    addresses = addresses.map((a) => a.address)
-    window[injectionName].selectedAddress = addresses[0]
-    return addresses
+  constructor(window, chain, asset, network) {
+    super(window)
+    this.chain = chain
+    this.asset = asset
+    this.network = network
   }
 
-  async function ethereumHandleRequest(req) {
-    const eth = window.providerManager.getProviderFor(asset)
+  async handleRequest(req) {
+    const injectionName = this.window.providerManager.getInjectionName(this.chain)
+    const eth = this.window.providerManager.getProviderFor(this.asset)
     if (req.method.startsWith('metamask_')) return null
 
     if (req.method === 'eth_requestAccounts') {
-      return await window[injectionName].enable(chain)
+      return await this.window[injectionName].enable(this.chain)
     }
     if (req.method === 'personal_sign') {
       const sig = await eth.getMethod('wallet.signMessage')(req.params[0], req.params[1])
@@ -43,74 +43,91 @@ function addEthereumChain({ chain, asset, network }) {
       return result.hash
     }
     if (req.method === 'eth_accounts') {
-      return getAddresses()
+      return this.getAddresses()
     }
     return eth.getMethod('chain.sendRpcRequest')(req.method, req.params)
   }
 
-  window[injectionName] = {
-    isLiquality: true,
-    isMetaMask: metamaskEmulated,
-    isEIP1193: true,
-    networkVersion: network.networkId,
-    chainId: network.chainId.toString(16),
-    enable: async () => {
-      const { accepted, _chain } = await window.providerManager.enable(chain)
-      if (!accepted) throw new Error('User rejected')
-      return getAddresses()
-    },
-    request: async (req) => {
-      const params = req.params || []
-      return ethereumHandleRequest({
-        method: req.method,
-        params
-      })
-    },
-    send: async (req, _paramsOrCallback) => {
-      if (typeof _paramsOrCallback === 'function') {
-        window[injectionName].sendAsync(req, _paramsOrCallback)
-        return
-      }
-      const method = typeof req === 'string' ? req : req.method
-      const params = req.params || _paramsOrCallback || []
-      return ethereumHandleRequest({ method, params }).then((result) => ({
-        id: req && req.id ? req.id : 99999,
-        jsonrpc: '2.0',
-        result
-      }))
-    },
-    removeAllListeners: (event) => {
-      // mock this call for a hotfix
-      return false
-    },
-    sendAsync: (req, callback) => {
-      return ethereumHandleRequest(req)
-        .then((result) =>
-          callback(null, {
-            id: req.id,
-            jsonrpc: '2.0',
-            result
-          })
-        )
-        .catch((err) => callback(err))
-    },
-    on: (method, callback) => {
-      if (method === 'chainChanged') {
-        window.addEventListener('liqualityChainChanged', ({ detail }) => {
-          const result = JSON.parse(detail)
-          callback('0x' + result.chainIds[chain].toString(16))
-        })
-      }
+  async getAddresses() {
+    const injectionName = this.window.providerManager.getInjectionName(this.chain)
+    const eth = this.window.providerManager.getProviderFor(this.asset)
+    let addresses = await eth.getMethod('wallet.getAddresses')()
+    addresses = addresses.map((a) => a.address)
+    this.window[injectionName].selectedAddress = addresses[0]
+    return addresses
+  }
 
-      if (method === 'accountsChanged') {
-        window.addEventListener('liqualityAccountsChanged', () => {
-          const addresses = getAddresses()
-          callback(addresses)
+  setup() {
+    const metamaskEmulated = ['opensea.io', 'unstoppabledomains.com'].some(
+      (site) => this.window.location.host.indexOf(site) !== -1
+    ) // Is some kind of smart emulation possible?
+
+    const injectionName = this.window.providerManager.getInjectionName(this.chain)
+
+    this.window[injectionName] = {
+      isLiquality: true,
+      isMetaMask: metamaskEmulated,
+      isEIP1193: true,
+      networkVersion: this.network.networkId,
+      chainId: this.network.chainId.toString(16),
+      enable: async () => {
+        const { accepted } = await this.window.providerManager.enable(this.chain)
+        if (!accepted) throw new Error('User rejected')
+        return this.getAddresses()
+      },
+      request: async (req) => {
+        const params = req.params || []
+        return this.handleRequest({
+          method: req.method,
+          params
         })
-      }
-    },
-    autoRefreshOnNetworkChange: false
+      },
+      send: async (req, _paramsOrCallback) => {
+        if (typeof _paramsOrCallback === 'function') {
+          this.window[injectionName].sendAsync(req, _paramsOrCallback)
+          return
+        }
+        const method = typeof req === 'string' ? req : req.method
+        const params = req.params || _paramsOrCallback || []
+        return this.handleRequest({ method, params }).then((result) => ({
+          id: req && req.id ? req.id : 99999,
+          jsonrpc: '2.0',
+          result
+        }))
+      },
+      removeAllListeners: () => {
+        // mock this call for a hotfix
+        return false
+      },
+      sendAsync: (req, callback) => {
+        return this.handleRequest(req)
+          .then((result) =>
+            callback(null, {
+              id: req.id,
+              jsonrpc: '2.0',
+              result
+            })
+          )
+          .catch((err) => callback(err))
+      },
+      on: (method, callback) => {
+        if (method === 'chainChanged') {
+          this.window.addEventListener('liqualityChainChanged', ({ detail }) => {
+            const result = JSON.parse(detail)
+            callback('0x' + result.chainIds[this.chain].toString(16))
+          })
+        }
+
+        if (method === 'accountsChanged') {
+          this.window.addEventListener('liqualityAccountsChanged', () => {
+            const addresses = this.getAddresses()
+            callback(addresses)
+          })
+        }
+      },
+      autoRefreshOnNetworkChange: false
+    }
   }
 }
 
-export { addEthereumChain }
+export { EthereumPageProvider }

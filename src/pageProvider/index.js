@@ -1,31 +1,27 @@
 import { ProviderManager } from './providerManager'
-import { addEthereumChain } from './ethereumProvider'
-import { addGlobalEthereumProvider } from './globalEthereumProvider'
-import { addBitcoinProvider } from './bitcoinProvider'
-import { addPaymentUriProvider } from './paymentUri'
-import { addTerraProvider } from './terraProvider'
-import { addNearProvider } from './nearProvider'
-import { addSolanaProvider } from './solanaProvider'
+import { EthereumPageProvider } from './ethereumProvider'
+import { GlobalEthereumPageProvider } from './globalEthereumProvider'
+import { BitcoinPageProvider } from './bitcoinProvider'
+import { PagementURIPageProvivder } from './paymentUri'
+import { TerraPageProvider } from './terraProvider'
+import { NearPageProvider } from './nearProvider'
+import { SolanaPageProvider } from './solanaProvider'
 
-// TODO: refactor providers here to follow a more opiniated format
-// class PageProvider {
-//   setup() {}
-// }
-// class BitcoinProvider extends PageProvider {
-//   setup(window) {
-//     window.bitcoin = {
-//       isLiquality: true
-//     }
-//   }
-// }
-// const providers = [new BitcoinProvider()]
-// providers.forEach((p) => p.setup())
+const { override, ethereumChain } = window.liquality.globalEthereum
 
-window.providerManager = new ProviderManager()
-window.liquality.evmChains.forEach((evmChain) => addEthereumChain(evmChain))
-addGlobalEthereumProvider()
-addBitcoinProvider()
-addNearProvider()
-addSolanaProvider()
-addTerraProvider()
-addPaymentUriProvider()
+const ethereumProviders = window.liquality.evmChains.map(
+  (evmChain) => new EthereumPageProvider(window, evmChain.chain, evmChain.asset, evmChain.network)
+)
+
+const providers = [
+  new ProviderManager(window),
+  ...ethereumProviders,
+  new GlobalEthereumPageProvider(window, override, ethereumChain),
+  new BitcoinPageProvider(window),
+  new NearPageProvider(window),
+  new SolanaPageProvider(window),
+  new TerraPageProvider(window),
+  new PagementURIPageProvivder(window)
+]
+
+providers.forEach((p) => p.setup())

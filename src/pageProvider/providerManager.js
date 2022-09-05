@@ -1,5 +1,8 @@
-class InjectedProvider {
-  constructor(asset) {
+import { PageProvider } from './pageProvider'
+
+class InjectedProvider extends PageProvider {
+  constructor(window, asset) {
+    super(window)
     this.asset = asset
   }
 
@@ -7,7 +10,7 @@ class InjectedProvider {
 
   getMethod(method) {
     return (...args) =>
-      window.providerManager.proxy('CAL_REQUEST', {
+      this.window.providerManager.proxy('CAL_REQUEST', {
         asset: this.asset,
         method,
         args
@@ -15,8 +18,9 @@ class InjectedProvider {
   }
 }
 
-class ProviderManager {
-  constructor() {
+class ProviderManager extends PageProvider {
+  constructor(window) {
+    super(window)
     this.cache = {}
   }
 
@@ -24,7 +28,7 @@ class ProviderManager {
     return new Promise((resolve, reject) => {
       const id = Date.now() + '.' + Math.random()
 
-      window.addEventListener(
+      this.window.addEventListener(
         id,
         ({ detail }) => {
           const response = JSON.parse(detail)
@@ -37,7 +41,7 @@ class ProviderManager {
         }
       )
 
-      window.postMessage(
+      this.window.postMessage(
         {
           id,
           type,
@@ -51,7 +55,7 @@ class ProviderManager {
   getProviderFor(asset) {
     if (this.cache[asset]) return this.cache[asset]
 
-    this.cache[asset] = new InjectedProvider(asset)
+    this.cache[asset] = new InjectedProvider(this.window, asset)
 
     return this.cache[asset]
   }
@@ -62,6 +66,10 @@ class ProviderManager {
 
   enable(chain) {
     return this.proxy('ENABLE_REQUEST', { chain })
+  }
+
+  setup() {
+    this.window.providerManager = this
   }
 }
 

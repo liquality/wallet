@@ -1,27 +1,30 @@
 import { COMMON_REQUEST_MAP } from './utils'
+import { PageProvider } from './pageProvider'
 
-async function nearHandleRequest(req) {
-  const near = window.providerManager.getProviderFor('NEAR')
-  const method = COMMON_REQUEST_MAP[req.method] || req.method
-  return near.getMethod(method)(...req.params)
-}
+class NearPageProvider extends PageProvider {
+  async handleRequest(req) {
+    const near = this.window.providerManager.getProviderFor('NEAR')
+    const method = COMMON_REQUEST_MAP[req.method] || req.method
+    return near.getMethod(method)(...req.params)
+  }
 
-function addNearProvider() {
-  window.near = {
-    enable: async () => {
-      const { accepted } = await window.providerManager.enable('near')
-      if (!accepted) throw new Error('User rejected')
-      const near = window.providerManager.getProviderFor('NEAR')
-      return near.getMethod('wallet.getAddresses')()
-    },
-    request: async (req) => {
-      const params = req.params || []
-      return nearHandleRequest({
-        method: req.method,
-        params
-      })
+  setup() {
+    this.window.near = {
+      enable: async () => {
+        const { accepted } = await this.window.providerManager.enable('near')
+        if (!accepted) throw new Error('User rejected')
+        const near = this.window.providerManager.getProviderFor('NEAR')
+        return near.getMethod('wallet.getAddresses')()
+      },
+      request: async (req) => {
+        const params = req.params || []
+        return this.handleRequest({
+          method: req.method,
+          params
+        })
+      }
     }
   }
 }
 
-export { addNearProvider }
+export { NearPageProvider }
