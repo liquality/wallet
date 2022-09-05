@@ -7,5 +7,6 @@ export const state = () => ({
   buyCryptoModalOpen: false,
   buyCryptoOverviewModalOpen: false,
   ledgertSignRequestModalOpen: false,
-  settingsModalOpen: false
+  settingsModalOpen: false,
+  locale: null
 })

@@ -21,7 +21,7 @@ export default {
   computed: {
     ...mapState(['activeNetwork', 'brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
     ...mapState({
-      locale: (state) => state.ui?.locale
+      locale: (state) => state.app?.locale
     }),
     showDappConnections() {
       return !this.$route.path.startsWith('/permission') && !this.$route.path.startsWith('/enable')
@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     ...mapActions(['initializeAnalytics']),
-    ...mapActions('ui', ['setLocalePrefference', 'getBrowserLocale'])
+    ...mapActions('app', ['setLocalePrefference', 'getBrowserLocale'])
   },
   async created() {
     await this.initializeAnalytics()

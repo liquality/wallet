@@ -108,6 +108,17 @@ export const actions = {
   settingsModalOpen: ({ commit }, isOpen) => {
     commit('SET_SETTINGS_MODAL_OPEN', isOpen)
   },
+  setLocalePrefference: ({ commit }, { locale }) => {
+    commit('SET_LOCALE', { locale })
+  },
+  getBrowserLocale: () => {
+    const browserLang = chrome.i18n.getUILanguage()
+    // we only support the locale and not the region, so we should remove it
+    if (browserLang.includes('-')) {
+      return browserLang.split('-')[0]
+    }
+    return browserLang
+  },
   requestOriginAccess,
   requestPermission,
   requestUnlockWallet,

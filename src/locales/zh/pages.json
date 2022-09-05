@@ -1,22 +1,22 @@
 {
     "splash": {
-        "importWithSeedPhrase": "Import with seed phrase",
-        "openWallet": "Open wallet",
-        "createNewWallet": "Create a new wallet"
+        "importWithSeedPhrase": "Importar con frase semilla",
+        "openWallet": "Abrir billetera",
+        "createNewWallet": "Crea una nueva billetera"
     },
     "unlockWallet": {
-        "forgotPassword": "Forgot password? Import with seed phrase",
-        "unlock": "Unlock"
+        "forgotPassword": "Olvidaste tu contraseña? Importar con frase semilla",
+        "unlock": "Desbloquear"
     },
     "openWallet": {},
     "onboarding": {
         "import": {
-            "unlockWallet": "Unlock wallet",
-            "enterSeedPhrase": "Enter the seed phrase, in the same order saved when creating your wallet.",
-            "words": "%{words} words"
+            "unlockWallet": "Desbloquear billetera",
+            "enterSeedPhrase": "Ingrese la frase semilla, en el mismo orden guardado cuando creó su billetera.",
+            "words": "%{words} palabras"
         },
         "setup": {
-            "backupYourWallet": "Backup your Wallet",
+            "backupYourWallet": "Respaldar su Billetera",
             "backupDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
             "choosePassword": "Choose Password ( at least 8 characters )",
             "passwordTooShort": "Password is too short",
@@ -62,21 +62,21 @@
         }
     },
     "settings": {
-        "settings": "Settings",
-        "title": "Default Web3 Wallet",
-        "description": "Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.",
-        "analytics": "Analytics",
-        "analyticsSub": "Share where you click. No identifying data is collected.",
-        "walletLogs": "Wallet Logs",
-        "walletLogsSub": "The wallet logs contain your public information such as addresses and transactions.",
-        "downloadLogs": "Download Logs",
-        "locale": "Language",
-        "localeSub": "Change Language",
-        "dappConnections": "Dapp Connections",
-        "dappConnectionsSub": "Forget all of the dapps connected.",
-        "done": "Done!",
-        "forgetAllConnections": "Forget all connections",
-        "version": "Version"
+        "settings": "Configuraciones",
+        "title": "Billetera Web3 por defecto",
+        "description": "Establecer Liquality como billeterar para dapps. Otras billeteras no podrán interactuar con dapps mientras esto se encuentre habilitado.",
+        "analytics": "Analíticas",
+        "analyticsSub": "Comparte donde haces click. No se recogen datos identificativos.",
+        "walletLogs": "Registros de la Billetera",
+        "walletLogsSub": "Los registros de la billetera contienen información pública como direcciones y transacciones.",
+        "downloadLogs": "Descargar Registros",
+        "locale": "Lenguaje",
+        "localeSub": "Cambiar Lenguaje",
+        "dappConnections": "Conexiones con Dapps",
+        "dappConnectionsSub": "Olvidar todas las dapps conectadas.",
+        "done": "Hecho!",
+        "forgetAllConnections": "Olvidar todas las conexiones",
+        "version": "Versión"
     },
     "experiments": {
         "experiments": "Experiments",
@@ -84,11 +84,7 @@
         "multiaccountsDescription": "Allow account management and multiple accounts per network"
     },
     "manageAssets": {
-        "assetView": "Asset View",
-        "addCustomToken": "Add Custom Token",
-        "cantFindThisToken": "Can't find this token",
-        "addCustomERC20Tokens": "Add Custom ERC20 tokens",
-        "learnHow": "Learn how"
+        "assetView": "Asset View"
     },
     "customTokens": {},
     "wallet": {

@@ -137,8 +137,7 @@ export default {
       'trackAnalytics',
       'forgetDappConnections'
     ]),
-    ...mapActions('app', ['initializeAnalytics']),
-    ...mapActions('ui', ['setLocalePrefference']),
+    ...mapActions('app', ['initializeAnalytics', 'setLocalePrefference']),
     toggleInjectEthereum(enable) {
       if (enable) {
         this.enableEthereumInjection()

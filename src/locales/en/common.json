@@ -4,5 +4,12 @@
     "next": "Next",
     "back": "Back",
     "new": "New",
-    "password": "Password"
+    "password": "Password",
+    "remove": "Remove",
+    "done": "Done",
+    "localesLabels": {
+        "en": "English",
+        "es": "Spanish",
+        "zh": "Mandarin"
+    }
 }

@@ -27,5 +27,8 @@ export const mutations = {
   },
   SET_SETTINGS_MODAL_OPEN(state, { open }) {
     state.settingsModalOpen = open
+  },
+  SET_LOCALE(state, { locale }) {
+    state.locale = locale
   }
 }
