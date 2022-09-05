@@ -90,7 +90,14 @@
         "addCustomERC20Tokens": "Add Custom ERC20 tokens",
         "learnHow": "Learn how"
     },
-    "customTokens": {},
+    "customToken": {
+        "selectChain": "Select chain...",
+        "tokenContractAddress": "Token Contract Address",
+        "name": "Name",
+        "tokenSymbol": "Token Symbol",
+        "decimals": "Decimals",
+        "addToken": "Add Token"
+    },
     "wallet": {
         "assets": {},
         "activity": {},

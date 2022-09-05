@@ -6,7 +6,7 @@
     <div class="wrapper form">
       <div class="wrapper_top">
         <div class="form-group">
-          <label for="chain">Chain</label>
+          <label for="chain">{{ $t('common.chain') }}</label>
           <div class="dropdown">
             <button
               class="btn dropdown-toggle"
@@ -14,7 +14,7 @@
               type="button"
               @click.stop="chainDropdownOpen = !chainDropdownOpen"
             >
-              {{ chain || 'Select chain...' }}
+              {{ chain || $t('pages.customToken.selectChain') }}
               <ChevronUpIcon v-if="chainDropdownOpen" />
               <ChevronDownIcon v-else />
             </button>
@@ -46,7 +46,9 @@
         </div>
         <fieldset :disabled="!chain">
           <div class="form-group">
-            <label for="contractAddress">Token Contract Address</label>
+            <label for="contractAddress">
+              {{ $t('pages.customToken.tokenContractAddress') }}
+            </label>
             <input
               type="text"
               @change="contractAddressChange"
@@ -59,7 +61,7 @@
             />
           </div>
           <div class="form-group">
-            <label for="name">Name</label>
+            <label for="name">{{ $t('pages.customToken.name') }}</label>
             <input
               type="text"
               v-model="name"
@@ -72,7 +74,7 @@
             />
           </div>
           <div class="form-group">
-            <label for="tokenSymbol">Token Symbol</label>
+            <label for="tokenSymbol">{{ $t('pages.customToken.tokenSymbol') }}</label>
             <input
               type="text"
               v-model="symbol"
@@ -91,7 +93,7 @@
             >
           </div>
           <div class="form-group">
-            <label for="decimals">Decimals</label>
+            <label for="decimals">{{ $t('pages.customToken.decimals') }}</label>
             <input
               type="text"
               v-model="decimals"
@@ -108,7 +110,7 @@
         <div class="button-group">
           <router-link :to="`/settings/manage-assets`"
             ><button id="cancel_add_token_button" class="btn btn-light btn-outline-primary btn-lg">
-              Cancel
+              {{ $t('common.cancel') }}
             </button></router-link
           >
           <button
@@ -117,7 +119,7 @@
             @click="addToken"
             :disabled="!canAdd || existingAsset || isExistingNetworkAsset"
           >
-            Add Token
+            {{ $t('pages.customToken.addToken') }}
           </button>
         </div>
       </div>
