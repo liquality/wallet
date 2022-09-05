@@ -11,6 +11,12 @@
     "send": "Send",
     "swap": "Swap",
     "receive": "Receive",
+    "in": "In",
+    "account": {
+        "zero": "Accounts",
+        "one": "Account",
+        "other": "Accounts"
+    },
     "asset": {
         "zero": "Assets",
         "one": "Asset",

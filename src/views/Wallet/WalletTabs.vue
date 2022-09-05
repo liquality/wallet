@@ -8,7 +8,7 @@
       </li>
       <li class="nav-item">
         <router-link class="nav-link" id="nfts_tab" :to="{ name: 'WalletNFTs' }">
-          {{ $t('pages.wallet.nfts') }} ({{ nftAssetsCount || 0 }})
+          {{ $t('pages.wallet.nfts', { count: nftAssetsCount }) }}
         </router-link>
       </li>
       <li class="nav-item">

@@ -102,7 +102,19 @@
         "overview": "Overview",
         "assets": "Assets",
         "activity": "Activity",
-        "nfts": "NFTs"
+        "nfts": {
+            "zero": "NFTs (0)",
+            "one": "NFTs",
+            "other": "NFTs (%{count})"
+        },
+        "nftActivityDescription": "Once you start using your NFTs you will see the activity here",
+        "viewInExplorer": "View in Explorer",
+        "nftDescription": "Once you start owning NFTs with accounts in your Liquality wallet you will see them here",
+        "exploreNFT": "Explore NFTs on Polygon, Ethereum and Solana",
+        "checkOutOpenSea": "Check out OpenSea",
+        "discoverCollect": "Discover and collect NFTs on Arbitrum",
+        "checkOutStratos": "Check out Stratos",
+        "learnHowItWorks": "Learn how it works"
     },
     "details": {
         "nftTransaction": {},
