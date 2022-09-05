@@ -184,7 +184,7 @@
       <NavBar
         :showBackButton="true"
         :backClick="(activeView = 'selectedAsset')"
-        :backLabel="'Back'"
+        :backLabel="$t('common.back')"
       >
         <span class="account-title">{{ title }}</span>
       </NavBar>
@@ -200,7 +200,7 @@
       />
     </template>
     <template class="send" v-else-if="activeView === 'custom-fees' && isEIP1559Fees">
-      <NavBar :showBackButton="true" :backClick="cancelCustomFee" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="cancelCustomFee" :backLabel="$t('common.back')">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <CustomFeesEIP1559
@@ -216,7 +216,7 @@
       />
     </template>
     <template v-else-if="activeView === 'review'">
-      <NavBar :showBackButton="true" :backClick="back" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="$t('common.back')">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <div class="selected-nft-asset mx-3 mt-4 h-100">

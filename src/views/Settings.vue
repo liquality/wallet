@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
+    <NavBar showMenu="true" showBack="true" backPath="/wallet" :backLabel="$t('common.overview')">
       <span class="wallet_header">
         <strong>{{ $t('pages.settings.settings') }}</strong>
       </span>

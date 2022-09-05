@@ -11,7 +11,9 @@
     "send": "Send",
     "swap": "Swap",
     "receive": "Receive",
+    "sign": "Sign",
     "in": "In",
+    "overview": "Overview",
     "account": {
         "zero": "Accounts",
         "one": "Account",

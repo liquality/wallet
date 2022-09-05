@@ -96,10 +96,10 @@
         "name": "Name",
         "tokenSymbol": "Token Symbol",
         "decimals": "Decimals",
-        "addToken": "Add Token"
+        "addToken": "Add Token",
+        "addCustomToken": "Add Custom Token"
     },
     "wallet": {
-        "overview": "Overview",
         "assets": "Assets",
         "activity": "Activity",
         "nfts": {
@@ -117,11 +117,37 @@
         "learnHowItWorks": "Learn how it works"
     },
     "details": {
-        "nftTransaction": {},
-        "nftCollection": {},
-        "nftAsset": {},
-        "swap": {},
-        "transaction": {}
+        "sendNFT": "Send NFT",
+        "sentNFT": "Sent NFT",
+        "status": "Status",
+        "confirmations": "Confirmations",
+        "completed": "Completed",
+        "initiated": "Initiated",
+        "sentAsset": "Sent Asset",
+        "networkSpeedFee": "Network Speed/Fee",
+        "speed": "Speed",
+        "fee": "Fee",
+        "speedUp": "Speed up",
+        "update": "Update",
+        "transaction": "Transaction",
+        "transferOn": "Transfer on %{marketplace}",
+        "details": "Details",
+        "description": "Description",
+        "contractAddress": "Contract Address",
+        "tokenID": "Token ID",
+        "tokenStandard": "Token Standard",
+        "youOwn": "You own",
+        "retry": "Retry",
+        "pendingReceipt": "Pending Receipt",
+        "rate": "Rate",
+        "receiveFee": "Receive Fee",
+        "signTo": "Sign To",
+        "ledgerInstructions": "Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag",
+        "onYourLedger": "On Your Ledger",
+        "transactionId": "Transaction ID",
+        "today": "today",
+        "time": "Time",
+        "sent": "Sent"
     },
     "accounts": {
         "account": {},

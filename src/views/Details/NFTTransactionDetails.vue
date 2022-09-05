@@ -1,20 +1,20 @@
 <template>
   <div class="details-wrapper">
-    <NavBar :showBackButton="true" :backClick="goBack" :backLabel="'Back'">
-      <span class="mr-2">Sent NFT</span>
+    <NavBar :showBackButton="true" :backClick="goBack" :backLabel="$t('common.back')">
+      <span class="mr-2">{{ $t('pages.details.sentNFT') }}</span>
     </NavBar>
     <div class="tx-details">
       <div class="tx-details_info">
         <div class="row" id="transaction_details_status">
           <div class="col-10">
-            <h2>Status</h2>
+            <h2>{{ $t('pages.details.status') }}</h2>
             <p class="text-grey" id="transaction_details_status_and_confirmations">
               {{ status }}
               <span
                 id="transaction_details_status_number_of_confirmations"
                 v-if="item.status === 'SUCCESS' && tx && tx?.confirmations > 0"
               >
-                / {{ tx.confirmations }} Confirmations
+                / {{ tx.confirmations }} {{ $t('pages.details.confirmations') }}
               </span>
             </p>
           </div>
@@ -28,14 +28,18 @@
           <div class="col">
             <h2>Time</h2>
             <div class="d-flex justify-content-between">
-              <p v-if="item.startTime" class="mr-2">Initiated {{ prettyTime(item.startTime) }}</p>
-              <p v-if="item.endTime">Completed {{ prettyTime(item.endTime) }}</p>
+              <p v-if="item.startTime" class="mr-2">
+                {{ $t('pages.details.initiated') }} {{ prettyTime(item.startTime) }}
+              </p>
+              <p v-if="item.endTime">
+                {{ $t('pages.details.completed') }} {{ prettyTime(item.endTime) }}
+              </p>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-12">
-            <h2>Sent Asset</h2>
+            <h2>{{ $t('pages.details.sentAsset') }}</h2>
             <div class="d-flex">
               <div class="nft-image mr-2" style="--img-width: 100px">
                 <img
@@ -56,22 +60,24 @@
         <hr />
         <div class="row" id="transaction_details_network_speed_fee">
           <div class="col">
-            <h2>Network Speed/Fee</h2>
+            <h2>{{ $t('pages.details.networkSpeedFee') }}</h2>
             <p class="d-flex justify-content-between">
               <span id="transaction_detail_network_speed"
-                >{{ assetChain }} Speed:
+                >{{ assetChain }} {{ $t('pages.details.speed') }}:
                 <span class="text-capitalize">{{ item.feeLabel }}</span></span
               >
             </p>
             <p class="d-flex justify-content-between">
-              <span id="transaction_detail_fee_units">Fee: {{ itemFee }} {{ feeUnit }}</span>
+              <span id="transaction_detail_fee_units">
+                {{ $t('pages.details.fee') }}: {{ itemFee }} {{ feeUnit }}
+              </span>
               <span>
                 <a
                   class="speed-up"
                   v-if="canUpdateFee && !showFeeSelector && isCustomFeeSupported"
                   @click="openFeeSelector()"
                 >
-                  Speed up
+                  {{ $t('pages.details.speedUp') }}
                 </a>
               </span>
             </p>
@@ -89,14 +95,14 @@
                 @click="updateFee()"
               >
                 <SpinnerIcon class="btn-loading" v-if="feeSelectorLoading" />
-                <template v-else>Update</template>
+                <template v-else>{{ $t('pages.details.update') }}</template>
               </button>
               <button
                 class="btn btn-sm btn-outline-primary ml-2"
                 v-if="!feeSelectorLoading"
                 @click="closeFeeSelector()"
               >
-                Cancel
+                {{ $t('common.cancel') }}
               </button>
             </div>
           </div>
@@ -107,7 +113,7 @@
             class="col tx-details_link d-flex align-items-start"
             id="transaction_details_transaction"
           >
-            <h2 class="mr-4">Transaction</h2>
+            <h2 class="mr-4">{{ $t('pages.details.transaction') }}</h2>
           </div>
         </div>
         <Timeline :id="id" :tx="tx" :asset="asset" />

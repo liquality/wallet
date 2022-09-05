@@ -1,7 +1,16 @@
 <template>
   <div class="custom-token">
-    <NavBar showMenu="true" showBack="true" backPath="/settings/manage-assets" backLabel="Back">
-      <span class="wallet_header"><strong>Add Custom Token</strong></span>
+    <NavBar
+      :showMenu="true"
+      :showBack="true"
+      backPath="/settings/manage-assets"
+      :backLabel="$t('common.back')"
+    >
+      <span class="wallet_header">
+        <strong>
+          {{ $t('pages.customToken.addCustomToken') }}
+        </strong>
+      </span>
     </NavBar>
     <div class="wrapper form">
       <div class="wrapper_top">

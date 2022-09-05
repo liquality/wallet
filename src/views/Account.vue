@@ -1,6 +1,6 @@
 <template>
   <div class="account-container">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
+    <NavBar :showMenu="true" :showBack="true" backPath="/wallet" :backLabel="$t('common.overview')">
       <span class="account-title"
         ><img :src="getAssetIcon(asset)" class="asset-icon" /> {{ asset }}</span
       >

@@ -4,7 +4,7 @@
       <NavBar
         showBack="true"
         :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
-        backLabel="Back"
+        :backLabel="$t('common.back')"
       >
         Swap
       </NavBar>
@@ -249,7 +249,7 @@
       />
     </div>
     <div class="swap" v-else-if="currentStep === 'confirm'">
-      <NavBar :showBackButton="true" :backClick="back" backLabel="Back"> Swap</NavBar>
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="$t('common.back')"> Swap</NavBar>
       <div class="fee-wrapper" id="swap_is_negative" v-if="isSwapNegative">
         Fees are extreme. Review transaction carefully.
       </div>
@@ -446,7 +446,7 @@
       </div>
     </div>
     <div class="swap" v-else>
-      <NavBar :showBackButton="true" :backClick="back" backLabel="Back"> Select Asset</NavBar>
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="$t('common.back')"> Select Asset</NavBar>
       <Accounts
         :exclude-asset="assetSelection === 'to' ? asset : toAsset"
         :asset-selection="assetSelection"

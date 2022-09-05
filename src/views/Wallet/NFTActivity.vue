@@ -1,6 +1,6 @@
 <template>
   <div class="account-container">
-    <NavBar showBack="true" backPath="/wallet" backLabel="Overview">
+    <NavBar showBack="true" backPath="/wallet" :backLabel="$t('common.overview')">
       <div class="account-title">
         <div class="icons d-flex justify-content-center">
           <span class="mr-2">

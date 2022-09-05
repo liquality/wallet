@@ -4,7 +4,7 @@
       <NavBar
         showBack="true"
         :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
-        backLabel="Back"
+        :backLabel="$t('common.back')"
       >
         Send
       </NavBar>

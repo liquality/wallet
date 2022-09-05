@@ -1,6 +1,6 @@
 <template>
   <div class="asset-list">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
+    <NavBar :showMenu="true" :showBack="true" backPath="/wallet" :backLabel="$t('common.overview')">
       <span class="asset-list-nav">
         <strong>Select Asset</strong>
       </span>

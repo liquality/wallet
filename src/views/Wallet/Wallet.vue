@@ -2,7 +2,7 @@
   <div class="wallet">
     <NavBar showMenu="true">
       <span class="wallet-header">
-        <strong>{{ $t('pages.wallet.overview') }}</strong>
+        <strong>{{ $t('common.overview') }}</strong>
         <span class="text-muted" id="active_network"> ({{ activeNetwork }}) </span>
       </span>
     </NavBar>
