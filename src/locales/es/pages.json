@@ -1,22 +1,21 @@
 {
     "splash": {
-        "importWithSeedPhrase": "Importar con frase semilla",
-        "openWallet": "Abrir billetera",
-        "createNewWallet": "Crea una nueva billetera"
+        "importWithSeedPhrase": "Import with seed phrase",
+        "openWallet": "Open wallet",
+        "createNewWallet": "Create a new wallet"
     },
     "unlockWallet": {
-        "forgotPassword": "Olvidaste tu contraseña? Importar con frase semilla",
-        "unlock": "Desbloquear"
+        "forgotPassword": "Forgot password? Import with seed phrase",
+        "unlock": "Unlock"
     },
-    "openWallet": {},
     "onboarding": {
         "import": {
-            "unlockWallet": "Desbloquear billetera",
-            "enterSeedPhrase": "Ingrese la frase semilla, en el mismo orden guardado cuando creó su billetera.",
-            "words": "%{words} palabras"
+            "unlockWallet": "Unlock wallet",
+            "enterSeedPhrase": "Enter the seed phrase, in the same order saved when creating your wallet.",
+            "words": "%{words} words"
         },
         "setup": {
-            "backupYourWallet": "Respaldar su Billetera",
+            "backupYourWallet": "Backup your Wallet",
             "backupDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
             "choosePassword": "Choose Password ( at least 8 characters )",
             "passwordTooShort": "Password is too short",
@@ -62,21 +61,21 @@
         }
     },
     "settings": {
-        "settings": "Configuraciones",
-        "title": "Billetera Web3 por defecto",
-        "description": "Establecer Liquality como billeterar para dapps. Otras billeteras no podrán interactuar con dapps mientras esto se encuentre habilitado.",
-        "analytics": "Analíticas",
-        "analyticsSub": "Comparte donde haces click. No se recogen datos identificativos.",
-        "walletLogs": "Registros de la Billetera",
-        "walletLogsSub": "Los registros de la billetera contienen información pública como direcciones y transacciones.",
-        "downloadLogs": "Descargar Registros",
-        "locale": "Lenguaje",
-        "localeSub": "Cambiar Lenguaje",
-        "dappConnections": "Conexiones con Dapps",
-        "dappConnectionsSub": "Olvidar todas las dapps conectadas.",
-        "done": "Hecho!",
-        "forgetAllConnections": "Olvidar todas las conexiones",
-        "version": "Versión"
+        "settings": "Settings",
+        "title": "Default Web3 Wallet",
+        "description": "Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.",
+        "analytics": "Analytics",
+        "analyticsSub": "Share where you click. No identifying data is collected.",
+        "walletLogs": "Wallet Logs",
+        "walletLogsSub": "The wallet logs contain your public information such as addresses and transactions.",
+        "downloadLogs": "Download Logs",
+        "locale": "Language",
+        "localeSub": "Change Language",
+        "dappConnections": "Dapp Connections",
+        "dappConnectionsSub": "Forget all of the dapps connected.",
+        "done": "Done!",
+        "forgetAllConnections": "Forget all connections",
+        "version": "Version"
     },
     "experiments": {
         "experiments": "Experiments",
@@ -84,43 +83,155 @@
         "multiaccountsDescription": "Allow account management and multiple accounts per network"
     },
     "manageAssets": {
-        "assetView": "Asset View"
+        "assetView": "Asset View",
+        "addCustomToken": "Add Custom Token",
+        "cantFindThisToken": "Can't find this token",
+        "addCustomERC20Tokens": "Add Custom ERC20 tokens",
+        "learnHow": "Learn how"
     },
-    "customTokens": {},
+    "customToken": {
+        "selectChain": "Select chain...",
+        "tokenContractAddress": "Token Contract Address",
+        "name": "Name",
+        "tokenSymbol": "Token Symbol",
+        "decimals": "Decimals",
+        "addToken": "Add Token",
+        "addCustomToken": "Add Custom Token"
+    },
     "wallet": {
-        "assets": {},
-        "activity": {},
-        "nfts": {},
-        "nftsActivity": {},
-        "nftsSend": {}
+        "assets": "Assets",
+        "activity": "Activity",
+        "nfts": {
+            "zero": "NFTs (0)",
+            "one": "NFTs",
+            "other": "NFTs (%{count})"
+        },
+        "nftActivityDescription": "Once you start using your NFTs you will see the activity here",
+        "nftDescription": "Once you start owning NFTs with accounts in your Liquality wallet you will see them here",
+        "exploreNFT": "Explore NFTs on Polygon, Ethereum and Solana",
+        "checkOutOpenSea": "Check out OpenSea",
+        "discoverCollect": "Discover and collect NFTs on Arbitrum",
+        "checkOutStratos": "Check out Stratos",
+        "learnHowItWorks": "Learn how it works"
     },
     "details": {
-        "nftTransaction": {},
-        "nftCollection": {},
-        "nftAsset": {},
-        "swap": {},
-        "transaction": {}
+        "sentNFT": "Sent NFT",
+        "status": "Status",
+        "confirmations": "Confirmations",
+        "completed": "Completed",
+        "initiated": "Initiated",
+        "sentAsset": "Sent Asset",
+        "speed": "Speed",
+        "fee": "Fee",
+        "speedUp": "Speed up",
+        "update": "Update",
+        "transaction": "Transaction",
+        "transferOn": "Transfer on %{marketplace}",
+        "details": "Details",
+        "description": "Description",
+        "contractAddress": "Contract Address",
+        "tokenID": "Token ID",
+        "tokenStandard": "Token Standard",
+        "youOwn": "You own",
+        "retry": "Retry",
+        "pendingReceipt": "Pending Receipt",
+        "signTo": "Sign To",
+        "ledgerInstructions": "Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag",
+        "onYourLedger": "On Your Ledger",
+        "transactionId": "Transaction ID",
+        "today": "today",
+        "time": "Time",
+        "sent": "Sent"
     },
     "accounts": {
-        "account": {},
-        "management": {},
-        "create": {},
-        "send": {},
-        "receive": {},
-        "swap": {},
-        "hardwareWallet": {}
+        "manageAccounts": "Manage Accounts",
+        "privateKey": "Private Key",
+        "eyeInstructions": "Keep this away from prying eyes!",
+        "exportLedger": "Cannot export from a Ledger account",
+        "createAccount": "Create Account",
+        "selectNetwork": "Select Network",
+        "chooseAccountName": "Choose Account Name",
+        "accountAliasErrorFiveChars": "Name should have 5 or more characters",
+        "accountAliasErrorTwentyChars": "Name shouldn't have more than 20 characters",
+        "accountAliasErrorExistingAccount": "Existing account with the same name or path",
+        "chooseTheColor": "Choose the Color",
+        "create": "Create",
+        "accounts": {
+            "zero": "%{count} Accounts",
+            "one": "%{count} Account",
+            "other": "%{count} Accounts"
+        },
+        "accountsAdded": "Accounts Added",
+        "closeThisTab": "Close this Tab",
+        "connectLedger": "Connect Ledger",
+        "selectAsset": "Select the same asset here",
+        "ledgerInstructions1": "Plug the Ledger into the computer",
+        "ledgerInstructions2": "Enter pin to unlock it",
+        "ledgerInstructions3": "On the device, navigate to the asset that you want to access",
+        "ledgerInstructions4": "To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Blind signing'",
+        "addLedgerAccounts": "Add Ledger Accounts",
+        "noAccountsFound": "No accounts found",
+        "errorGettingAccounts": "Error getting accounts",
+        "unlockAccount": "Unlock Account",
+        "findingAccounts": "Finding Accounts",
+        "creating": "Creating",
+        "creatingAccount": "Creating your new account",
+        "selectAccount": "Select Account",
+        "accountsLabel": "Accounts",
+        "accountAlreadyConnected": "This account is already connected: %{account}",
+        "previous": "Previous",
+        "accountMessage1": "We weren’t able to get a list of accounts. Please try again, check on the ledger if the right app/asset was selected or cancel and choose a different asset.",
+        "accountMessage2": "Eventually close any other apps your ledger is connected to, including Ledger Live.",
+        "tryAgain": "Try Again",
+        "unlock": "Unlock"
     },
-    "assets": {},
-    "requestUnlock": {},
-    "enable": {},
+    "receive": {
+        "yourCurrentAddress": "Your Current %{asset} Address",
+        "receiveMessage": "Scan this QR code with a mobile wallet to send funds to this address."
+    },
+    "assets": {
+        "noFunds": "No funds in the wallet"
+    },
+    "enable": {
+        "connectRequest": "Connect Request",
+        "selectAccounts": "Select accounts",
+        "filterByChain": "Filter by chain",
+        "deny": "Deny",
+        "byGrantingPermission": "By granting permission to",
+        "theyCanRead": "they can read your public account addresses.",
+        "makeSure": "Make sure you trust this site."
+    },
     "permission": {
-        "send": {},
-        "terra": {},
-        "sign": {},
-        "signPsbt": {},
-        "default": {}
+        "myWallet": "My Wallet",
+        "signTransaction": "Sign Transaction",
+        "requestToSign": "Request to Sign",
+        "request": "Request"
     },
-    "export": {
-        "reveal": {}
+    "send": {
+        "sendTo": "Send to",
+        "memo": "Memo (Optional)",
+        "sendFrom": "Send From",
+        "titleSelectNFT": "Select NFT",
+        "titleSendNFT": "Send NFT",
+        "titleReviewSendNFT": "Review Send NFT"
+    },
+    "swap": {
+        "availableQuotes": "AVAILABLE QUOTES",
+        "providersDescription": "These quotes are from different swap providers.",
+        "selectQuote": "Select Quote",
+        "learnMoreAboutSwapTypes": "Learn about swap types",
+        "learnMoreAboutSwapProviders": "Learn about swap providers",
+        "swapTypes": "Swap Types",
+        "seekingLiquidity": "Seeking Liquidity...",
+        "seeAllQuotes": "See all %{count} quotes",
+        "insufficientFunds": "Insufficient Funds",
+        "amountMinusFees": "Amount - Fees",
+        "initiateSwap": "Initiate Swap",
+        "maxSlipPage": "Max slippage is 3%.",
+        "refundMessage": "Max slippage is 3%. If the swap does not complete, you will be refunded in a few hours.",
+        "swapProvidersInfo": "There are tradeoffs different swap providers make across factors like convenience, security, liquidity, and fees. At a glance:",
+        "pros": "Pros",
+        "cons": "Cons",
+        "feeStructure": "Fee Structure"
     }
 }
