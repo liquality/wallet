@@ -65,7 +65,7 @@
           :disabled="loading || !selectedAsset"
         >
           <SpinnerIcon class="btn-loading" v-if="loading" />
-          <template v-else>{{ $t('pages.accounts.connect') }}</template>
+          <template v-else>{{ $t('common.connect') }}</template>
         </button>
       </div>
     </div>

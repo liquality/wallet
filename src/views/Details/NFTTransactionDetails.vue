@@ -60,7 +60,7 @@
         <hr />
         <div class="row" id="transaction_details_network_speed_fee">
           <div class="col">
-            <h2>{{ $t('pages.details.networkSpeedFee') }}</h2>
+            <h2>{{ $t('common.networkSpeedFee') }}</h2>
             <p class="d-flex justify-content-between">
               <span id="transaction_detail_network_speed"
                 >{{ assetChain }} {{ $t('pages.details.speed') }}:

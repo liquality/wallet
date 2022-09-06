@@ -122,7 +122,6 @@
         "completed": "Completed",
         "initiated": "Initiated",
         "sentAsset": "Sent Asset",
-        "networkSpeedFee": "Network Speed/Fee",
         "speed": "Speed",
         "fee": "Fee",
         "speedUp": "Speed up",
@@ -168,7 +167,6 @@
         "accountsAdded": "Accounts Added",
         "closeThisTab": "Close this Tab",
         "connectLedger": "Connect Ledger",
-        "connect": "Connect",
         "selectAsset": "Select the same asset here",
         "ledgerInstructions1": "Plug the Ledger into the computer",
         "ledgerInstructions2": "Enter pin to unlock it",
@@ -199,16 +197,19 @@
         "noFunds": "No funds in the wallet",
         "searchForCurrency": "Search for a Currency"
     },
-    "requestUnlock": {},
-    "enable": {},
-    "permission": {
-        "send": {},
-        "terra": {},
-        "sign": {},
-        "signPsbt": {},
-        "default": {}
+    "enable": {
+        "connectRequest": "Connect Request",
+        "selectAccounts": "Select accounts",
+        "filterByChain": "Filter by chain",
+        "deny": "Deny",
+        "byGrantingPermission": "By granting permission to",
+        "theyCanRead": "they can read your public account addresses.",
+        "makeSure": "Make sure you trust this site."
     },
-    "export": {
-        "reveal": {}
+    "permission": {
+        "myWallet": "My Wallet",
+        "signTransaction": "Sign Transaction",
+        "requestToSign": "Request to Sign",
+        "request": "Request"
     }
 }

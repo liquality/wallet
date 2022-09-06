@@ -56,7 +56,7 @@
       <div class="swap-details_fee" id="swap-details-network-fee-section">
         <div class="row">
           <div class="col">
-            <h2>{{ $t('pages.details.networkSpeedFee') }}</h2>
+            <h2>{{ $t('common.networkSpeedFee') }}</h2>
             <p v-for="fee in txFees" :key="fee.asset" :id="'network_fee_' + fee.asset">
               {{ fee.asset }} Fee: {{ dpUI(fee.fee) }} {{ fee.unit }}
             </p>
