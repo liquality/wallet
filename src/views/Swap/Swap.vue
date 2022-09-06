@@ -6,7 +6,7 @@
         :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
         :backLabel="$t('common.back')"
       >
-        Swap
+        {{ $t('common.swap') }}
       </NavBar>
       <InfoNotification
         v-if="showNoLiquidityMessage && !updatingQuotes && sendAmount >= min && sendAmount > 0"
@@ -107,7 +107,7 @@
         </div>
         <div class="mt-30 form-group swap-rate" id="rate_block">
           <label class="d-flex align-items-center">
-            Rate
+            {{ $t('common.rate') }}
             <SwapProviderLabel
               @click="showQuotesModal = true"
               v-if="selectedQuote"
@@ -120,7 +120,7 @@
               @click="showSwapProvidersInfoModal = true"
               class="ml-auto"
               id="swap_types_option"
-              >Swap Types</a
+              >{{ $t('pages.swap.swapTypes') }}</a
             >
           </label>
           <p class="py-1">
@@ -128,13 +128,14 @@
             <span class="swap-rate_value"> &nbsp;{{ quoteRate || '?' }} </span>
             <span class="swap-rate_term text-muted">&nbsp;{{ toAsset }}</span>
             <span v-if="updatingQuotes" class="swap-rate_loading ml-1"
-              ><SpinnerIcon class="btn-loading" /> <strong>Seeking Liquidity...</strong></span
+              ><SpinnerIcon class="btn-loading" />
+              <strong>{{ $t('pages.swap.seekingLiquidity') }}</strong></span
             >
           </p>
           <p v-if="quotes.length > 1">
-            <a id="see_all_quotes" href="#" @click="showQuotesModal = true"
-              >See all {{ quotes.length }} quotes</a
-            >
+            <a id="see_all_quotes" href="#" @click="showQuotesModal = true">
+              {{ $t('pages.swap.seeAllQuotes', { count: quotes.length }) }}
+            </a>
           </p>
         </div>
 
@@ -142,7 +143,9 @@
           <DetailsContainer>
             <template v-slot:header>
               <div class="network-header-container">
-                <span class="details-title" id="network_speed_fee">Network Speed/Fee</span>
+                <span class="details-title" id="network_speed_fee">
+                  {{ $t('common.networkSpeedFee') }}
+                </span>
               </div>
             </template>
             <template v-slot:content>
@@ -202,15 +205,20 @@
                 routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${this.asset}`
               "
             >
-              <button class="btn btn-light btn-outline-primary btn-lg">Cancel</button>
+              <button class="btn btn-light btn-outline-primary btn-lg">
+                {{ $t('common.cancel') }}
+              </button>
             </router-link>
             <button
               class="btn btn-primary btn-lg"
               id="swap_review_button"
               @click="review"
-              :disabled="!canSwap || cannotCoverNetworkFee"
-            >
-              {{ !canSwap || cannotCoverNetworkFee ? `Insufficient Funds` : `Review` }}
+              :disabled="!canSwap || cannotCoverNetworkFee">
+              {{
+                (!canSwap || cannotCoverNetworkFee) ?
+                $t('pages.swap.insufficientFunds') 
+                : $t('common.review') 
+              }}
             </button>
           </div>
         </div>
@@ -315,7 +323,7 @@
           </div>
 
           <div class="mt-20">
-            <label>Receive</label>
+            <label>{{ $t('common.receive') }}</label>
             <div class="d-flex align-items-center justify-content-between my-0 py-0">
               <div
                 class="confirm-value"
@@ -331,7 +339,7 @@
           </div>
           <div class="detail-group" v-if="receiveFeeRequired || hasPredefinedReceiveFee">
             <label class="text-muted">{{
-              hasPredefinedReceiveFee ? 'Receive Fee' : 'Network Fee'
+              hasPredefinedReceiveFee ? $t('common.receiveFee') : $t('common.networkFee')
             }}</label>
             <div
               class="d-flex align-items-center justify-content-between my-0 py-0"
@@ -381,7 +389,7 @@
             </div>
           </div>
           <div class="detail-group">
-            <label class="text-muted">Amount - Fees</label>
+            <label class="text-muted">{{ $t('pages.swap.amountMinusFees') }}</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold" id="swap_receive_amount_fee_value">
                 <span v-if="toAsset === toAssetChain || !receiveFeeRequired">
@@ -402,14 +410,16 @@
           </div>
           <div class="mt-20 swap-rate" id="swap_review_rate_block">
             <label class="d-flex align-items-center" id="selected_quote_provider_on_review">
-              Rate
+              {{ $t('common.rate') }}
               <SwapProviderLabel
                 v-if="selectedQuote"
                 class="ml-2"
                 :provider="selectedQuote.provider"
                 :network="activeNetwork"
               />
-              <a href="#" @click="showSwapProvidersInfoModal = true" class="ml-auto">Swap Types</a>
+              <a href="#" @click="showSwapProvidersInfoModal = true" class="ml-auto">
+                {{ $t('pages.swap.swapTypes') }}
+              </a>
             </label>
             <p class="py-1" id="swap_rates_from_to">
               <span class="swap-rate_base">1 {{ asset }} =</span>
@@ -427,7 +437,7 @@
               v-if="!loading"
               @click="currentStep = 'inputs'"
             >
-              Edit
+              {{ $t('common.edit') }}
             </button>
             <button
               class="btn btn-primary btn-lg btn-block btn-icon"
@@ -438,7 +448,7 @@
               <SpinnerIcon class="btn-loading" v-if="loading" />
               <template v-else>
                 <SwapIcon />
-                Initiate Swap
+                {{ $t('pages.swap.initiateSwap') }}
               </template>
             </button>
           </div>
@@ -446,7 +456,9 @@
       </div>
     </div>
     <div class="swap" v-else>
-      <NavBar :showBackButton="true" :backClick="back" :backLabel="$t('common.back')"> Select Asset</NavBar>
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="$t('common.back')"> 
+        {{ $t('common.selectAsset') }}
+      </NavBar>
       <Accounts
         :exclude-asset="assetSelection === 'to' ? asset : toAsset"
         :asset-selection="assetSelection"

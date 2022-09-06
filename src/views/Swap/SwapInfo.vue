@@ -3,11 +3,10 @@
     <div class="d-flex align-items-center">
       <ClockIcon class="swap-info_clock mr-2" />
       <p id="media-body-info" class="my-0">
-        <span v-if="showRefundMessage"
-          >Max slippage is 3%. If the swap does not complete, you will be refunded in a few
-          hours.</span
-        >
-        <span v-else class="text-muted">Max slippage is 3%.</span>
+        <span v-if="showRefundMessage">
+          {{ $t('pages.swap.refundMessage') }}
+        </span>
+        <span v-else class="text-muted">{{ $t('pages.swap.maxSlipPage') }}</span>
       </p>
     </div>
   </div>

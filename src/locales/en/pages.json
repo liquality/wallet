@@ -135,8 +135,6 @@
         "youOwn": "You own",
         "retry": "Retry",
         "pendingReceipt": "Pending Receipt",
-        "rate": "Rate",
-        "receiveFee": "Receive Fee",
         "signTo": "Sign To",
         "ledgerInstructions": "Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag",
         "onYourLedger": "On Your Ledger",
@@ -192,9 +190,7 @@
         "receiveMessage": "Scan this QR code with a mobile wallet to send funds to this address."
     },
     "assets": {
-        "selectAsset": "Select Asset",
-        "noFunds": "No funds in the wallet",
-        "searchForCurrency": "Search for a Currency"
+        "noFunds": "No funds in the wallet"
     },
     "enable": {
         "connectRequest": "Connect Request",
@@ -218,5 +214,24 @@
         "titleSelectNFT": "Select NFT",
         "titleSendNFT": "Send NFT",
         "titleReviewSendNFT": "Review Send NFT"
+    },
+    "swap": {
+        "availableQuotes": "AVAILABLE QUOTES",
+        "providersDescription": "These quotes are from different swap providers.",
+        "selectQuote": "Select Quote",
+        "learnMoreAboutSwapTypes": "Learn about swap types",
+        "learnMoreAboutSwapProviders": "Learn about swap providers",
+        "swapTypes": "Swap Types",
+        "seekingLiquidity": "Seeking Liquidity...",
+        "seeAllQuotes": "See all %{count} quotes",
+        "insufficientFunds": "Insufficient Funds",
+        "amountMinusFees": "Amount - Fees",
+        "initiateSwap": "Initiate Swap",
+        "maxSlipPage": "Max slippage is 3%.",
+        "refundMessage": "Max slippage is 3%. If the swap does not complete, you will be refunded in a few hours.",
+        "swapProvidersInfo": "There are tradeoffs different swap providers make across factors like convenience, security, liquidity, and fees. At a glance:",
+        "pros": "Pros",
+        "cons": "Cons",
+        "feeStructure": "Fee Structure"
     }
 }

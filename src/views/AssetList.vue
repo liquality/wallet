@@ -2,7 +2,7 @@
   <div class="asset-list">
     <NavBar :showMenu="true" :showBack="true" backPath="/wallet" :backLabel="$t('common.overview')">
       <span class="asset-list-nav">
-        <strong>{{ $t('pages.assets.selectAsset') }}</strong>
+        <strong>{{ $t('common.selectAsset') }}</strong>
       </span>
     </NavBar>
     <div v-if="!accounts.length">
@@ -18,7 +18,7 @@
             class="form-control form-control-sm"
             id="search_for_a_currency_search"
             v-model="search"
-            :placeholder="$t('pages.assets.searchForCurrency')"
+            :placeholder="$t('common.searchForCurrency')"
             autocomplete="off"
           />
         </div>

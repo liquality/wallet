@@ -10,7 +10,7 @@
             class="form-control form-control-sm"
             id="search_for_a_currency"
             v-model="search"
-            placeholder="Search for a Currency"
+            :placeholder="$t('common.searchForCurrency')"
             autocomplete="off"
           />
         </div>

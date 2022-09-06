@@ -44,7 +44,7 @@
         <div class="row">
           <div class="col">
             <h2 class="d-flex align-items-center">
-              {{ $t('pages.details.rate') }}
+              {{ $t('common.rate') }}
               <SwapProviderLabel class="ml-2" :provider="item.provider" :network="activeNetwork" />
             </h2>
             <p>
@@ -61,7 +61,7 @@
               {{ fee.asset }} Fee: {{ dpUI(fee.fee) }} {{ fee.unit }}
             </p>
             <p v-if="receiveFee">
-              {{ this.item.to }} {{ $t('pages.details.receiveFee') }}: {{ dpUI(receiveFee) }}
+              {{ this.item.to }} {{ $t('common.receiveFee') }}: {{ dpUI(receiveFee) }}
             </p>
           </div>
         </div>
