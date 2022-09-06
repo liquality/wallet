@@ -24,7 +24,7 @@
         class="btn btn-outline-primary"
         @click="copyAddress"
         v-tooltip.bottom="{
-          content: addressCopied ? 'Copied!' : 'Click to copy',
+          content: addressCopied ? $t('common.copied') : $t('common.clickToCopy'),
           hideOnTargetClick: false
         }"
       >

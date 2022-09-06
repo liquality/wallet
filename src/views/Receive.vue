@@ -22,7 +22,7 @@
               class="copy-icon"
               @click="copy"
               v-tooltip.bottom="{
-                content: copied ? $t('pages.receive.copied') : $t('pages.receive.clickToCopy'),
+                content: copied ? $t('common.copied') : $t('common.clickToCopy'),
                 hideOnTargetClick: false
               }"
             />
@@ -62,11 +62,11 @@
           <button class="btn btn-primary btn-lg btn-icon" id="copy_address_button" @click="copy">
             <template v-if="copied">
               <TickIcon />
-              {{ $t('pages.receive.copied') }}
+              {{ $t('common.copied') }}
             </template>
             <template v-else>
               <CopyWhiteIcon class="no-stroke" />
-              {{ $t('pages.receive.copyAddress') }}
+              {{ $t('common.copyAddress') }}
             </template>
           </button>
         </div>

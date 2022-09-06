@@ -2,11 +2,11 @@
   <div class="asset-list">
     <NavBar :showMenu="true" :showBack="true" backPath="/wallet" :backLabel="$t('common.overview')">
       <span class="asset-list-nav">
-        <strong>Select Asset</strong>
+        <strong>{{ $t('pages.assets.selectAsset') }}</strong>
       </span>
     </NavBar>
     <div v-if="!accounts.length">
-      <p class="no-funds-msg">No funds in the wallet</p>
+      <p class="no-funds-msg">{{ $t('pages.assets.noFunds') }}</p>
     </div>
     <div v-else class="main-content">
       <div class="form asset-list-header">
@@ -18,7 +18,7 @@
             class="form-control form-control-sm"
             id="search_for_a_currency_search"
             v-model="search"
-            placeholder="Search for a Currency"
+            :placeholder="$t('pages.assets.searchForCurrency')"
             autocomplete="off"
           />
         </div>

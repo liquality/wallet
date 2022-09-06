@@ -14,6 +14,9 @@
     "sign": "Sign",
     "in": "In",
     "or": "Or",
+    "copied": "Copied!",
+    "copyAddress": "Copy Address",
+    "clickToCopy": "Click to copy",
     "viewInExplorer": "View in Explorer",
     "overview": "Overview",
     "account": {

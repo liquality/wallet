@@ -191,13 +191,14 @@
         "unlock": "Unlock"
     },
     "receive": {
-        "copied": "Copied!",
-        "copyAddress": "Copy Address",
-        "clickToCopy": "Click to copy",
         "yourCurrentAddress": "Your Current %{asset} Address",
         "receiveMessage": "Scan this QR code with a mobile wallet to send funds to this address."
     },
-    "assets": {},
+    "assets": {
+        "selectAsset": "Select Asset",
+        "noFunds": "No funds in the wallet",
+        "searchForCurrency": "Search for a Currency"
+    },
     "requestUnlock": {},
     "enable": {},
     "permission": {
