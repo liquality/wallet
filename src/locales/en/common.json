@@ -1,9 +1,13 @@
 {
     "cancel": "Cancel",
+    "type": "Type",
     "continue": "Continue",
     "next": "Next",
     "back": "Back",
     "new": "New",
+    "status": "Status",
+    "start": "Start",
+    "end": "End",
     "password": "Password",
     "remove": "Remove",
     "done": "Done",

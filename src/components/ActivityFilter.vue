@@ -4,21 +4,23 @@
       <div class="activity-filter-header-actions">
         <div @click.stop="open = !open" class="filter-action">
           <ChevronDownIcon :class="open ? '' : 'right'" />
-          Filters {{ filterCount > 0 ? `(${filterCount})` : '' }}
+          {{ $t('components.activityFilter.filters') }} {{ filterCount > 0 ? `(${filterCount})` : '' }}
         </div>
         <div @click.stop="resetFilters" class="reset-action" v-if="filterCount > 0">
           <CloseIcon :class="open ? '' : 'right'" />
-          <span class="text-muted">Reset</span>
+          <span class="text-muted">{{ $t('common.reset') }}</span>
         </div>
       </div>
       <div class="filter-export" @click.stop="exportActivity">
         <ExportIcon />
-        <span class="text-muted">Export</span>
+        <span class="text-muted">{{ $t('components.activityFilter.export') }}</span>
       </div>
     </div>
     <div class="activity-filter-content" v-show="open">
       <div class="activity-filter-type">
-        <div class="activity-filter-section-title-dates h-padding">Date Range</div>
+        <div class="activity-filter-section-title-dates h-padding">
+          {{ $t('components.activityFilter.dateRange') }}
+        </div>
         <div class="date-filter-inputs h-padding form">
           <date-pick v-model="dateFilters.start">
             <template v-slot:default="{ toggle, inputValue, inputEvents }">
@@ -26,7 +28,7 @@
                 <input
                   type="text"
                   class="form-control form-control-sm"
-                  placeholder="Start"
+                  :placeholder="$t('common.start')"
                   :value="inputValue"
                   v-on="inputEvents"
                 />
@@ -40,7 +42,7 @@
                 <input
                   type="text"
                   class="form-control form-control-sm"
-                  placeholder="End"
+                  :placeholder="$t('common.end')"
                   :value="inputValue"
                   v-on="inputEvents"
                 />
@@ -51,7 +53,7 @@
         </div>
       </div>
       <div class="activity-filter-type" v-if="showTypeFilters">
-        <div class="activity-filter-section-title h-padding">Type</div>
+        <div class="activity-filter-section-title h-padding">{{ $t('common.type') }}</div>
         <ListItem
           v-for="(filter, key) in typeFilters"
           :key="key"
@@ -75,7 +77,7 @@
         </ListItem>
       </div>
       <div class="activity-filter-type">
-        <div class="activity-filter-section-title h-padding">Status</div>
+        <div class="activity-filter-section-title h-padding">{{ $t('common.status') }}</div>
         <ListItem
           v-for="(filter, key) in statusFilters"
           :key="key"

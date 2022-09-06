@@ -1,3 +1,10 @@
 {
-    
+    "accountTooltip": {
+        "availableGas": "Available Gas"
+    },
+    "activityFilter": {
+        "export": "Export",
+        "filters": "Filters",
+        "dateRange": "Date Range"
+    }
 }
