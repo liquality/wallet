@@ -297,7 +297,7 @@
             </div>
           </div>
           <div class="detail-group">
-            <label class="text-muted">Amount + Fees</label>
+            <label class="text-muted">{{ $t('common.amountPlusFees') }}</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div class="font-weight-bold" id="swap_send_amount_fees_value">
                 <span v-if="asset === assetChain">

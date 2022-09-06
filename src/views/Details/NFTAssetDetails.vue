@@ -30,7 +30,7 @@
               })
             "
             v-tooltip.bottom="{
-              content: $t('pages.details.sendNFT'),
+              content: $t('common.sendNFT'),
               hideOnTargetClick: false
             }"
           />

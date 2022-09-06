@@ -115,7 +115,6 @@
         "learnHowItWorks": "Learn how it works"
     },
     "details": {
-        "sendNFT": "Send NFT",
         "sentNFT": "Sent NFT",
         "status": "Status",
         "confirmations": "Confirmations",
@@ -211,5 +210,13 @@
         "signTransaction": "Sign Transaction",
         "requestToSign": "Request to Sign",
         "request": "Request"
+    },
+    "send": {
+        "sendTo": "Send to",
+        "memo": "Memo (Optional)",
+        "sendFrom": "Send From",
+        "titleSelectNFT": "Select NFT",
+        "titleSendNFT": "Send NFT",
+        "titleReviewSendNFT": "Review Send NFT"
     }
 }
