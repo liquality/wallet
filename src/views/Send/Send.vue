@@ -402,9 +402,10 @@ export default {
       return unit
     },
     isValidAddress() {
-      return
-      this.isValidDomain ||
+      return (
+        this.isValidDomain ||
         getChain(this.activeNetwork, cryptoassets[this.asset].chain).isValidAddress(this.address)
+      )
     },
     addressError() {
       if (!this.isValidAddress) {
