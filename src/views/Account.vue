@@ -48,7 +48,7 @@
             @click="copyAddress"
             :href="addressLink"
             target="_blank"
-            v-tooltip.bottom="{ content: 'View in Explorer' }"
+            v-tooltip.bottom="{ content: $t('common.viewInExplorer') }"
           >
             <EyeIcon />
           </a>
@@ -59,7 +59,7 @@
               <div class="account-container_actions_button_wrapper" :id="`${asset}_send_button`">
                 <SendIcon class="account-container_actions_button_icon" />
               </div>
-              Send
+              {{ $t('common.send') }}
             </button>
           </router-link>
           <router-link
@@ -73,14 +73,14 @@
                 class="account-container_actions_button_icon account-container_actions_button_swap"
               />
             </div>
-            Swap
+            {{ $t('common.swap') }}
           </router-link>
           <router-link v-bind:to="`/accounts/${accountId}/${asset}/receive`">
             <button class="account-container_actions_button">
               <div class="account-container_actions_button_wrapper" :id="`${asset}_receive_button`">
                 <ReceiveIcon class="account-container_actions_button_icon" />
               </div>
-              Receive
+              {{ $t('common.receive') }}
             </button>
           </router-link>
         </div>

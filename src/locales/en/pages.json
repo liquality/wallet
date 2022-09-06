@@ -8,7 +8,6 @@
         "forgotPassword": "Forgot password? Import with seed phrase",
         "unlock": "Unlock"
     },
-    "openWallet": {},
     "onboarding": {
         "import": {
             "unlockWallet": "Unlock wallet",
@@ -108,7 +107,6 @@
             "other": "NFTs (%{count})"
         },
         "nftActivityDescription": "Once you start using your NFTs you will see the activity here",
-        "viewInExplorer": "View in Explorer",
         "nftDescription": "Once you start owning NFTs with accounts in your Liquality wallet you will see them here",
         "exploreNFT": "Explore NFTs on Polygon, Ethereum and Solana",
         "checkOutOpenSea": "Check out OpenSea",
@@ -191,6 +189,13 @@
         "accountMessage2": "Eventually close any other apps your ledger is connected to, including Ledger Live.",
         "tryAgain": "Try Again",
         "unlock": "Unlock"
+    },
+    "receive": {
+        "copied": "Copied!",
+        "copyAddress": "Copy Address",
+        "clickToCopy": "Click to copy",
+        "yourCurrentAddress": "Your Current %{asset} Address",
+        "receiveMessage": "Scan this QR code with a mobile wallet to send funds to this address."
     },
     "assets": {},
     "requestUnlock": {},

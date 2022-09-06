@@ -13,6 +13,8 @@
     "receive": "Receive",
     "sign": "Sign",
     "in": "In",
+    "or": "Or",
+    "viewInExplorer": "View in Explorer",
     "overview": "Overview",
     "account": {
         "zero": "Accounts",

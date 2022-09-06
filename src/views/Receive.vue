@@ -5,7 +5,7 @@
       :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
       :backLabel="routeSource === 'assets' ? $t('common.overview') : asset"
     >
-      Receive {{ asset }}
+      {{ $t('common.receive') }} {{ asset }}
     </NavBar>
     <div class="wrapper form text-center">
       <div class="wrapper_top form">
@@ -13,24 +13,26 @@
           <div class="receive_asset">
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </div>
-          <label id="your_current_asset_address">Your Current {{ asset }} Address</label>
+          <label id="your_current_asset_address">
+            {{ $t('pages.receive.yourCurrentAddress', { asset }) }}
+          </label>
           <p class="receive_address text-break" id="receive_address">
             {{ address }}
             <CopyIcon
               class="copy-icon"
               @click="copy"
               v-tooltip.bottom="{
-                content: copied ? 'Copied!' : 'Click to copy',
+                content: copied ? $t('pages.receive.copied') : $t('pages.receive.clickToCopy'),
                 hideOnTargetClick: false
               }"
             />
           </p>
           <p class="receive_message">
-            Scan this QR code with a mobile wallet to send funds to this address.
+            {{ $t('pages.receive.receiveMessage') }}
           </p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
           <div class="buy-crypto-container" v-show="activeNetwork === 'mainnet'">
-            <div class="mt-2 text-uppercase font-weight-bold">Or</div>
+            <div class="mt-2 text-uppercase font-weight-bold">{{ $t('common.or') }}</div>
             <BuyCryptoButton
               :btn-class="['btn-light', 'btn-outline-primary']"
               :asset="asset"
@@ -60,11 +62,11 @@
           <button class="btn btn-primary btn-lg btn-icon" id="copy_address_button" @click="copy">
             <template v-if="copied">
               <TickIcon />
-              Copied!
+              {{ $t('pages.receive.copied') }}
             </template>
             <template v-else>
               <CopyWhiteIcon class="no-stroke" />
-              Copy Address
+              {{ $t('pages.receive.copyAddress') }}
             </template>
           </button>
         </div>

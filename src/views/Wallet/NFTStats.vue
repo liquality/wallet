@@ -36,7 +36,7 @@
         @click="copyAddress"
         :href="addressLink"
         target="_blank"
-        v-tooltip.bottom="{ content: $t('pages.wallet.viewInExplorer') }"
+        v-tooltip.bottom="{ content: $t('common.viewInExplorer') }"
       >
         <EyeIcon />
       </a>
