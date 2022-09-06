@@ -4,7 +4,7 @@ name: Prod Mainnet tests
 on:
   push:
     branches:
-      - 'release/**'
+      - 'release-**'
   schedule:
     - cron: '0 8 * * *' # everyday at 8am
     - cron: '0 22 * * *' # everyday at 10pm
