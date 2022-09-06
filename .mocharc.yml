@@ -6,7 +6,7 @@ color: true
 inline-diffs: true
 async-only: true
 parallel: true
-jobs: 15
+jobs: 10
 recursive: true
 diff: true
 retries: 0
