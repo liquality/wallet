@@ -1,7 +1,9 @@
 <template>
   <div class="account-container">
     <NavBar :showMenu="false">
-      <span class="account-title"> Add Ledger Accounts </span>
+      <span class="account-title">
+        {{ $t('pages.accounts.addLedgerAccounts') }}
+      </span>
     </NavBar>
     <Connect
       v-if="currentStep === 'connect'"
@@ -143,12 +145,12 @@ export default {
             })
           } else {
             this.ledgerConnected = false
-            this.ledgerError = { message: 'No accounts found' }
+            this.ledgerError = { message: this.$t('pages.accounts.onAccountsFound') }
           }
         }
       } catch (error) {
         this.ledgerError = {
-          message: error.message || 'Error getting accounts'
+          message: error.message || this.$t('pages.accounts.errorGettingAccounts')
         }
         this.ledgerConnected = false
         console.error('error getting accounts', error)

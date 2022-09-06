@@ -24,6 +24,8 @@
         "one": "Asset",
         "other": "Assets"
     },
+    "success": "Success",
+    "loading": "Loading",
     "localesLabels": {
         "en": "English",
         "es": "Spanish",

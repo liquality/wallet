@@ -3,7 +3,7 @@
     <div class="wrapper_top">
       <div class="step-detail">
         <div class="step-number">2</div>
-        <div class="step-name">Unlock Account</div>
+        <div class="step-name">{{ $t('pages.accounts.unlockAccount') }}</div>
       </div>
       <!-- <div class="step-text" v-if="selectedAsset && selectedAsset.chain === 'bitcoin'">
         <div class="step-path">
@@ -47,8 +47,8 @@
         <CircleProgressBar class="circle-progress infinity-rotate" />
         <div class="loading-message">
           <div>
-            <span class="loading-message-title">Loading</span>
-            <span class="loading-message-text">Finding Accounts</span>
+            <span class="loading-message-title">{{ $t('common.loading') }}</span>
+            <span class="loading-message-text">{{ $t('pages.accounts.findingAccount') }}</span>
           </div>
         </div>
       </div>
@@ -56,16 +56,16 @@
         <CircleProgressBar class="circle-progress infinity-rotate" />
         <div class="loading-message">
           <div>
-            <span class="loading-message-title">Creating</span>
-            <span class="loading-message-text">Creating your new account</span>
+            <span class="loading-message-title">{{ $t('pages.accounts.creating') }}</span>
+            <span class="loading-message-text">{{ $t('pages.accounts.creatingAccount') }}</span>
           </div>
         </div>
       </div>
       <div v-else class="account-list">
-        <span class="indications"> Select Account </span>
+        <span class="indications">{{ $t('pages.accounts.selectAccount') }}</span>
         <p v-if="selectedAsset">
           <img :src="getAccountIcon(selectedAsset.chain)" class="asset-icon" />
-          {{ accountsLabel }} Accounts
+          {{ accountsLabel }} {{ $t('pages.accounts.accoutsLabel') }}
         </p>
         <div v-if="accounts && accounts.length > 0">
           <table class="table accounts-table">
@@ -84,7 +84,7 @@
                   <div
                     v-tooltip.top="{
                       content: item.exists
-                        ? `This account is already connected: ${item.account}`
+                        ? $t('pages.accounts.accountAlreadyConnected', { account: item.account })
                         : item.account
                     }"
                   >
@@ -112,18 +112,15 @@
           </table>
           <div class="account-nav">
             <button class="btn btn-link" @click="prev" :disabled="currentPage <= 1">
-              Previous
+              {{ $t('pages.accounts.previous') }}
             </button>
 
-            <button class="btn btn-link" @click="next">Next</button>
+            <button class="btn btn-link" @click="next">{{ $t('common.next') }}</button>
           </div>
         </div>
         <div v-else class="account-message">
-          <p>
-            We weren’t able to get a list of accounts. Please try again, check on the ledger if the
-            right app/asset was selected or cancel and choose a different asset.
-          </p>
-          <p>Eventually close any other apps your ledger is connected to, including Ledger Live.</p>
+          <p>{{ $t('pages.accounts.accountMessage1') }}</p>
+          <p>{{ $t('pages.accounts.accountMessage2') }}</p>
         </div>
       </div>
     </div>
@@ -137,7 +134,7 @@
           :disabled="loading || creatingAccount || !selectedAsset"
         >
           <SpinnerIcon class="btn-loading" v-if="loading" />
-          <template v-else>Try Again</template>
+          <template v-else>{{ $t('pages.accounts.tryAgain') }}</template>
         </button>
         <button
           v-else
@@ -146,7 +143,7 @@
           :disabled="loading || creatingAccount || Object.keys(selectedAccounts).length <= 0"
         >
           <SpinnerIcon class="btn-loading" v-if="loading" />
-          <template v-else>Unlock</template>
+          <template v-else>{{ $t('pages.accounts.unlock') }}</template>
         </button>
       </div>
     </div>

@@ -12,7 +12,6 @@
     <div class="wallet-content">
       <NFTStats v-if="isNFTPage" />
       <WalletStats v-else />
-      <AssetsChart />
       <WalletTabs />
     </div>
   </div>
@@ -21,7 +20,6 @@
 <script>
 import { mapActions, mapGetters, mapState } from 'vuex'
 import { isERC20 } from '@liquality/wallet-core/dist/src/utils/asset'
-import AssetsChart from './AssetsChart.vue'
 import NavBar from '@/components/NavBar.vue'
 import InfoNotification from '@/components/InfoNotification.vue'
 import LedgerRequestMessage from '@/components/LedgerRequestMessage.vue'
@@ -31,7 +29,6 @@ import NFTStats from './NFTStats'
 
 export default {
   components: {
-    AssetsChart,
     NavBar,
     WalletStats,
     NFTStats,

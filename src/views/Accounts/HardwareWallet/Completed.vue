@@ -3,20 +3,22 @@
     <div class="wrapper_top">
       <div class="step-detail">
         <div class="step-number">3</div>
-        <div class="step-name">Accounts Added</div>
+        <div class="step-name">{{ $t('pages.accounts.accountsAdded') }}</div>
       </div>
       <div class="progress-container">
         <CircleProgressBar class="circle-progress" />
         <div class="loading-message">
           <div>
-            <span class="loading-message-title">Success</span>
-            <span class="loading-message-text">Accounts added</span>
+            <span class="loading-message-title">{{ $t('common.success') }}</span>
+            <span class="loading-message-text">{{ $t('pages.accounts.accountsAdded') }}</span>
           </div>
         </div>
       </div>
     </div>
     <div class="wrapper_bottom">
-      <button class="btn btn-primary btn-lg btn-icon" @click="close">Close this Tab</button>
+      <button class="btn btn-primary btn-lg btn-icon" @click="close">
+        {{ $t('pages.accounts.closeThisTab') }}
+      </button>
     </div>
   </div>
 </template>

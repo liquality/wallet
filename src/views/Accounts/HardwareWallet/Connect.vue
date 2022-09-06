@@ -3,22 +3,22 @@
     <div class="wrapper_top">
       <div class="step-detail">
         <div class="step-number">1</div>
-        <div class="step-name">Connect Ledger</div>
+        <div class="step-name">{{ $t('pages.accounts.connectLedger') }}</div>
         <div class="step-icon">
           <LedgerIcon />
         </div>
       </div>
       <ul class="step-instructions">
-        <li>Plug the Ledger into the computer</li>
-        <li>Enter pin to unlock it</li>
-        <li>On the device, navigate to the asset that you want to access</li>
+        <li>{{ $t('pages.accounts.ledgerInstructions1') }}</li>
+        <li>{{ $t('pages.accounts.ledgerInstructions2') }}</li>
+        <li>{{ $t('pages.accounts.ledgerInstructions3') }}</li>
         <li v-if="isEthereumChain(selectedAsset.name)">
-          To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Blind signing'
+          {{ $t('pages.accounts.ledgerInstructions4') }}
         </li>
       </ul>
       <div class="options">
         <div class="options-text">
-          <span>Select the same asset here</span>
+          <span>{{ $t('pages.accounts.selectAsset') }}</span>
         </div>
         <div class="dropdown" v-click-away="hideAssetList">
           <button class="btn dropdown-toggle lg" @click="toggleAssetList">
@@ -56,7 +56,7 @@
           id="cancel-ledger-button"
           @click="cancel"
         >
-          Cancel
+          {{ $t('common.cancel') }}
         </button>
         <button
           id="connect-ledger-button"
@@ -65,7 +65,7 @@
           :disabled="loading || !selectedAsset"
         >
           <SpinnerIcon class="btn-loading" v-if="loading" />
-          <template v-else>Connect</template>
+          <template v-else>{{ $t('pages.accounts.connect') }}</template>
         </button>
       </div>
     </div>
