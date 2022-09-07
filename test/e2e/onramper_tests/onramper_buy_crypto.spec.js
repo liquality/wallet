@@ -17,7 +17,7 @@ let browser
 let page = []
 
 describe('Buy Crypto ["MAINNET"]', async () => {
-    describe('Create new wallet & Buy Crypto options validation ["PULL_REQUEST_TEST"]', async () => {
+    describe.only('Create new wallet & Buy Crypto options validation ["PULL_REQUEST_TEST"]', async () => {
       beforeEach(async () => {
         browser = await puppeteer.launch(testUtil.getChromeOptions())
         page = await browser.newPage()
@@ -53,8 +53,9 @@ describe('Buy Crypto ["MAINNET"]', async () => {
         })
         expect(buyCryptoModalData).to.exist
         await buyCryptoModalData.click()
-        const buyCryptoModal = await page.waitForSelector('#open_transak_tab_btn')
-        expect(buyCryptoModal).to.exist
+        const buttons = await page.evaluate(() => Array.from(document.querySelectorAll('button#open_transak_tab_btn'), element => element.textContent));
+        await page.$x("//button[contains(., 'Continue with Onramper')]")
+        expect(buttons).to.exist
       })
       it('Buy Crypto from EmptyActivity screen["PULL_REQUEST_TEST"]', async () => {
         await page.click('#activity_tab')
@@ -63,8 +64,9 @@ describe('Buy Crypto ["MAINNET"]', async () => {
         })
         expect(buyCryptoModalData).to.exist
         await buyCryptoModalData.click()
-        const buyCryptoModal = await page.waitForSelector('#open_transak_tab_btn')
-        expect(buyCryptoModal).to.exist
+        const buttons = await page.evaluate(() => Array.from(document.querySelectorAll('button#open_transak_tab_btn'), element => element.textContent));
+        await page.$x("//button[contains(., 'Continue with Onramper')]")
+        expect(buttons).to.exist
       })
       it('Buy Crypto from ETH asset screen["PULL_REQUEST_TEST"]', async () => {
         await page.click("#ETHEREUM")
@@ -75,8 +77,9 @@ describe('Buy Crypto ["MAINNET"]', async () => {
         })
         expect(buyCryptoModalData).to.exist
         await buyCryptoModalData.click()
-        const buyCryptoModal = await page.waitForSelector('#open_transak_tab_btn')
-        expect(buyCryptoModal).to.exist
+        const buttons = await page.evaluate(() => Array.from(document.querySelectorAll('button#open_transak_tab_btn'), element => element.textContent));
+        await page.$x("//button[contains(., 'Continue with Onramper')]")
+        expect(buttons).to.exist
       })
       it('Buy Crypto from ETH Receive screen["PULL_REQUEST_TEST"]', async () => {
         await page.click("#ETHEREUM")
@@ -89,8 +92,9 @@ describe('Buy Crypto ["MAINNET"]', async () => {
         })
         expect(buyCryptoModalData).to.exist
         await buyCryptoModalData.click()
-        const buyCryptoModal = await page.waitForSelector('#open_transak_tab_btn')
-        expect(buyCryptoModal).to.exist
+        const buttons = await page.evaluate(() => Array.from(document.querySelectorAll('button#open_transak_tab_btn'), element => element.textContent));
+        await page.$x("//button[contains(., 'Continue with Onramper')]")
+        expect(buttons).to.exist
       })
     })
   })
