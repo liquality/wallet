@@ -50,7 +50,7 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     })
   })
   it('Avalanche pangolin Exchange dapp injection', async () => {
-    await dappPage.goto(pangolin_Url, { timeout: 60000, waitUntil: 'load' })
+    await dappPage.goto(pangolin_Url, { timeout: 60000, waitUntil: 'networkidle2' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
@@ -93,6 +93,7 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
         connectedAddress: await window.ethereum.request({ method: 'eth_accounts' })
       }
     })
+    console.log('connectedChainDetails', connectedChainDetails)
     expect(
       connectedChainDetails.chainId,
       'Avalanche chain ID is not expected after dapp connection'

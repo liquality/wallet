@@ -127,10 +127,7 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
       })
       await connectRequestWindow.waitForSelector('#RSK', { visible: true, timeout: 60000 })
     } catch (e) {
-      expect(
-        e,
-        'RSK sovryn injection RSK not listed, connected window not loaded'
-      ).equals(null)
+      expect(e, 'RSK sovryn injection RSK not listed, connected window not loaded').equals(null)
     }
 
     const rskAccounts = await connectRequestWindow.$$('#RSK')
