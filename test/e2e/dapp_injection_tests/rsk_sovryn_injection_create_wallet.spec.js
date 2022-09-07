@@ -110,7 +110,7 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
     })
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
   })
-  it('SOVRYN dApp injection', async () => {
+  it('SOVRYN dApp injection with create wallet', async () => {
     await dappPage.goto(sovrynUrl, { timeout: 60000, waitUntil: 'load' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
@@ -129,7 +129,7 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
     } catch (e) {
       expect(
         e,
-        'RSK sovryn injection RSK not listed, connected window not loaded.....'
+        'RSK sovryn injection RSK not listed, connected window not loaded'
       ).equals(null)
     }
 

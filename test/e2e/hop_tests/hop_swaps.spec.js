@@ -41,7 +41,7 @@ describe('SWAP feature["MAINNET"]', async () => {
     await browser.close()
   })
 
-  it('SWAP ARBETH to PWETH - Hop', async () => {
+  it('SWAP ARBETH to PWETH - Hop ["PULL_REQUEST_TEST"]', async () => {
     const fromAsset = 'ARBETH'
     const toAsset = 'PWETH'
 

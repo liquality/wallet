@@ -15,7 +15,7 @@ let bridgeUrl = 'https://bridge.sovryn.app/'
 let sovrynUrl = 'https://live.sovryn.app/'
 let alphaMoneyOnChains = 'https://alpha.moneyonchain.com/'
 
-describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
+describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","MAINNET_RELEASE"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -101,7 +101,7 @@ describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","PULL_REQUEST_TEST","MAI
     })
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
   })
-  it('SOVRYN dApp injection', async () => {
+  it('SOVRYN dApp injection ["PULL_REQUEST_TEST"]', async () => {
     await dappPage.goto(sovrynUrl, { timeout: 60000, waitUntil: 'load' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
