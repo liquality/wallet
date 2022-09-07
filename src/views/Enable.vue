@@ -105,7 +105,7 @@ export default {
     ...mapState(['activeNetwork']),
     ...mapGetters(['accountsData', 'accountItem']),
     isEthereumConnection() {
-      return isEvmChain(this.chain)
+      return isEvmChain(this.activeNetwork, this.chain)
     },
     accounts() {
       if (this.isEthereumConnection) {
