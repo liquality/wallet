@@ -1,5 +1,7 @@
 <template>
-  <button @click="open" class="btn" id="buy_crypto_button" :class="btnClass">Buy Crypto</button>
+  <button @click="open" class="btn" id="buy_crypto_button" :class="btnClass">
+    {{ $t('components.buyCrypto.buyCrypto') }}
+  </button>
 </template>
 
 <script>

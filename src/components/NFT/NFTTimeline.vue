@@ -2,12 +2,12 @@
   <div>
     <div class="liquality-timeline">
       <small id="start_time">{{ prettyTime(item.startTime) }}</small>
-      <h3>Started</h3>
+      <h3>{{ $t('common.started') }}</h3>
       <div class="liquality-timeline_inner">
         <div class="liquality-timeline_container left completed">
           <div class="content">
             <h3 :id="asset">
-              From:
+              {{ $t('common.from') }}:
               <a
                 :href="addressLink(fromAddress, asset)"
                 target="_blank"
@@ -24,7 +24,7 @@
         >
           <div class="content">
             <h3 :id="item.to">
-              To:
+              {{ $t('common.to') }}:
               <a
                 :href="addressLink(item.toAddress, item.to)"
                 target="_blank"
@@ -37,7 +37,7 @@
         </div>
       </div>
       <div v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
-        <h3>Completed</h3>
+        <h3>{{ $t('common.completed') }}</h3>
         <small>{{ prettyTime(item.endTime) }}</small>
       </div>
     </div>
@@ -47,14 +47,14 @@
           <ChevronRightIcon v-if="!advanced" />
           <ChevronDownIcon v-else />
         </div>
-        <div>ADVANCED</div>
+        <div>{{ $t('common.advanced') }}</div>
       </div>
     </div>
     <div class="table" v-if="advanced">
       <table class="table bg-white border-0 mb-1 mt-1">
         <tbody class="font-weight-normal">
           <tr id="transaction_id">
-            <td class="text-muted text-left small-12">Transaction ID</td>
+            <td class="text-muted text-left small-12">{{ $t('common.transactionId') }}</td>
             <td class="text-break text-primary">
               <span>
                 <a :href="transactionLink" target="_blank" id="transactionLink">{{
@@ -65,7 +65,9 @@
             </td>
           </tr>
           <tr>
-            <td class="text-muted text-left small-12" id="your_token_id">Token ID</td>
+            <td class="text-muted text-left small-12" id="your_token_id">
+              {{ $t('common.tokenId') }}
+            </td>
             <td class="text-break" v-if="item.nft.token_id">
               <span class="text-primary">
                 {{ item.nft.token_id }}
@@ -74,13 +76,15 @@
             </td>
           </tr>
           <tr>
-            <td class="text-muted text-left small-12">Token Standard</td>
+            <td class="text-muted text-left small-12">{{ $t('common.tokenStandard') }}</td>
             <td class="text-break" v-if="item.nft.standard">
               {{ item.nft.standard }}
             </td>
           </tr>
           <tr v-if="fromAddress" id="your_from_address">
-            <td class="text-muted text-left small-12">Your NFT from address</td>
+            <td class="text-muted text-left small-12">
+              {{ $t('components.nft.yourNFTFromAddress') }}
+            </td>
             <td class="text-break text-primary">
               <span>
                 {{ shortenAddress(addPrefix(fromAddress, asset)) }}
@@ -89,7 +93,9 @@
             </td>
           </tr>
           <tr>
-            <td class="text-muted text-left small-12" id="your_to_address">Your NFT to address</td>
+            <td class="text-muted text-left small-12" id="your_to_address">
+              {{ $t('components.nft.yourNFTToAddress') }}
+            </td>
             <td class="text-break text-primary">
               <span>
                 {{ shortenAddress(item.toAddress)
@@ -98,7 +104,7 @@
             </td>
           </tr>
           <tr v-if="fromAddress" id="transaction_id">
-            <td class="text-muted text-left small-12">Contract Address</td>
+            <td class="text-muted text-left small-12">{{ $t('common.contractAddress') }}</td>
             <td class="text-break text-primary">
               <span>
                 {{ shortenAddress(item.nft.asset_contract.address) }}

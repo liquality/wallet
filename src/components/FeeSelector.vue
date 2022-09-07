@@ -19,7 +19,7 @@
       class="btn btn-link"
       @click="$emit('custom-selected', asset)"
     >
-      Custom
+      {{ $t('common.custom') }}
     </button>
   </div>
 </template>

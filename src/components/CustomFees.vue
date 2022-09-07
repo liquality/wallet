@@ -96,7 +96,7 @@
             @click="apply"
             :disabled="!fee"
           >
-            {{ $t('components.customFees.apply') }}
+            {{ $t('common.apply') }}
           </button>
         </div>
       </div>

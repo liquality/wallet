@@ -30,10 +30,13 @@
             </div>
           </div>
         </template>
-        <template #detail-sub v-if="account.totalFiatBalance">
-          {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
+        <template #detail-sub>
+          {{
+            account.totalFiatBalance
+              ? formatFiatUI(formatFiat(account.totalFiatBalance))
+              : `${$t('common.loading')}...`
+          }}
         </template>
-        <template v-else> Loading... </template>
       </ListItem>
       <div v-else>
         <ListItem @item-selected="toggleExpandedAccounts(account.id)">
@@ -58,10 +61,13 @@
               Ledger
             </div>
           </template>
-          <template #detail-sub v-if="account.totalFiatBalance">
-            {{ formatFiatUI(formatFiat(account.totalFiatBalance)) }}
+          <template #detail-sub>
+            {{
+              account.totalFiatBalance
+                ? formatFiatUI(formatFiat(account.totalFiatBalance))
+                : `${$t('common.loading')}...`
+            }}
           </template>
-          <template v-else> Loading... </template>
         </ListItem>
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
           <ListItem

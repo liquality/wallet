@@ -1,13 +1,19 @@
 <template>
   <div class="swap">
-    <NavBar :showBackButton="false" :showBack="false" :showMenuList="false"> EDIT GAS FEE </NavBar>
+    <NavBar :showBackButton="false" :showBack="false" :showMenuList="false">
+      {{ $t('components.customFees.editGasFee') }}
+    </NavBar>
 
     <div class="view-wrapper">
       <div :class="{ selectedView: view === 'basic' }">
-        <p v-on:click="changeView('basic')">BASIC</p>
+        <p v-on:click="changeView('basic')">
+          {{ $t('components.customFees.basic') }}
+        </p>
       </div>
       <div :class="{ selectedView: view === 'custom' }">
-        <p v-on:click="changeView('custom')">CUSTOMIZE</p>
+        <p v-on:click="changeView('custom')">
+          {{ $t('components.customFees.customize') }}
+        </p>
       </div>
     </div>
 
@@ -22,14 +28,14 @@
       </div>
 
       <div class="basic-wrapper" v-if="view === 'basic'">
-        <p class="presets-title">PRESETS</p>
+        <p class="presets-title">{{ $t('components.customFees.presets') }}</p>
         <div class="presets-wrapper">
           <div
             :class="{ selectedPreset: basicPreset === 'slow' }"
             v-on:click="selectPreset('slow')"
           >
-            <p class="basicPreset-type">Slow</p>
-            <p class="basicPreset-time slow">~maybe in 30 sec</p>
+            <p class="basicPreset-type">{{ $t('common.slow') }}</p>
+            <p class="basicPreset-time slow">{{ $t('common.maybeInSec', { secs: 30 }) }}</p>
             <p>{{ slowPreset.amount }} {{ asset }}</p>
             <p>{{ slowPreset.fiat }} USD</p>
             <p>max {{ slowPreset.maximum }} USD</p>
@@ -39,8 +45,8 @@
             :class="{ selectedPreset: basicPreset === 'average' }"
             v-on:click="selectPreset('average')"
           >
-            <p class="basicPreset-type">Average</p>
-            <p class="basicPreset-time">~likely in &lt; 30 sec</p>
+            <p class="basicPreset-type">{{ $t('common.average') }}</p>
+            <p class="basicPreset-time">{{ $t('common.likelyInSec', { secs: 30 }) }}</p>
             <p>{{ averagePreset.amount }} {{ asset }}</p>
             <p>{{ averagePreset.fiat }} USD</p>
             <p>max {{ averagePreset.maximum }} USD</p>
@@ -49,8 +55,8 @@
             :class="{ selectedPreset: basicPreset === 'fast' }"
             v-on:click="selectPreset('fast')"
           >
-            <p class="basicPreset-type">Fast</p>
-            <p class="basicPreset-time">~likely in &lt; 15 sec</p>
+            <p class="basicPreset-type">{{ $t('common.fast') }}</p>
+            <p class="basicPreset-time">{{ $t('common.likelyInSec', { secs: 15 }) }}</p>
             <p>{{ fastPreset.amount }} {{ asset }}</p>
             <p>{{ fastPreset.fiat }} USD</p>
             <p>max {{ fastPreset.maximum }} USD</p>
@@ -63,7 +69,9 @@
       <div v-else-if="view === 'custom'">
         <div class="current-base-fee">
           <span class="custom-fee-title">
-            <strong>CURRENT BASE FEE PER GAS</strong>
+            <strong>
+              {{ $t('components.customFees.currentBaseFeePerGas') }}
+            </strong>
           </span>
           <span
             >GWEI <span>{{ suggestedBaseFeePerGas }}</span></span
@@ -72,7 +80,11 @@
 
         <div class="custom-fee-inputs">
           <div class="input-wrapper">
-            <p><strong>MINER TIP</strong> TO SPEED UP</p>
+            <p>
+              <strong>
+                {{ $t('components.customFees.minerTip') }}
+              </strong>{{ ' ' + $t('components.customFees.toSpeedUp') }}
+            </p>
             <span>${{ minerTipFiat }}</span>
             <div class="custom-fee-details-item">
               <span class="gas-unit-label" :class="{ gasUnitLabel: padLabels }" style="left: 0">{{
@@ -99,7 +111,11 @@
             </div>
           </div>
           <div class="input-wrapper">
-            <p><strong>MAX FEE</strong> PER GAS</p>
+            <p>
+              <strong>
+                {{ $t('components.customFees.maxFee') }}
+              </strong> {{ $t('components.customFees.perGas') }}
+            </p>
             <span>${{ maxFiat }}</span>
             <div class="custom-fee-details-item">
               <span class="gas-unit-label" :class="{ gasUnitLabel: padLabels }" style="right: 0">{{
@@ -159,17 +175,19 @@
         </div>
 
         <div class="custom-fee-result" id="custom_speed_fee_results">
-          <div class="custom-fee-result-title">New Fee Total</div>
+          <div class="custom-fee-result-title">
+            {{ $t('components.customFees.newFeeTotal') }}
+          </div>
           <div class="custom-fee-estimation">
             <div>
-              <span>minimum</span>
-              <span>~Likely in &lt; 30 sec</span>
+              <span>{{ $t('common.minimum') }}</span>
+              <span>{{ $t('common.likelyInSec', { secs: 30 }) }}</span>
               <div class="custom-fee-result-amount">~{{ minimum.amount }}</div>
               <div class="custom-fee-result-fiat" v-if="minimum.fiat">~{{ minimum.fiat }} USD</div>
             </div>
             <div>
-              <span>maximum</span>
-              <span>~Likely in &lt; 15 sec</span>
+              <span>{{ $t('common.maximum') }}</span>
+              <span>{{ $t('common.likelyInSec', { secs: 15 }) }}</span>
               <div class="custom-fee-result-amount">~{{ maximum.amount }}</div>
               <div class="custom-fee-result-fiat" v-if="maximum.fiat">~{{ maximum.fiat }} USD</div>
             </div>
@@ -184,7 +202,7 @@
             id="custom_fee_cancel_button"
             @click="cancel"
           >
-            Cancel
+          {{ $t('common.cancel') }}
           </button>
           <button
             class="btn btn-primary btn-lg btn-block"
@@ -192,7 +210,7 @@
             @click="apply"
             :disabled="!tipFee || !maxFee"
           >
-            Apply
+          {{ $t('common.apply') }}
           </button>
         </div>
       </div>

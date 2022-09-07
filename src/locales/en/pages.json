@@ -31,10 +31,6 @@
             },
             "congrats": "Congrats!"
         },
-        "home": {
-            "iAccept": "I Accept",
-            "termsAndPrivacy": "Terms & Privacy"
-        },
         "warning": {
             "warning": "Warning",
             "iHavePrivacy": "I have privacy",
@@ -129,16 +125,12 @@
         "transferOn": "Transfer on %{marketplace}",
         "details": "Details",
         "description": "Description",
-        "contractAddress": "Contract Address",
-        "tokenID": "Token ID",
-        "tokenStandard": "Token Standard",
         "youOwn": "You own",
         "retry": "Retry",
         "pendingReceipt": "Pending Receipt",
         "signTo": "Sign To",
         "ledgerInstructions": "Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag",
         "onYourLedger": "On Your Ledger",
-        "transactionId": "Transaction ID",
         "today": "today",
         "time": "Time",
         "sent": "Sent"

@@ -19,9 +19,9 @@
                 isAccount: isAccount,
                 chain: chain
               }
-            }"
-            >See all</router-link
-          >
+            }">
+            {{ $t('components.nft.seeAll') }}
+          </router-link>
         </span>
       </div>
       <div

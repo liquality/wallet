@@ -4,7 +4,7 @@
       <LogoWallet />
     </div>
     <div class="onboading-home_tnc">
-      <h4 class="font-weight-bold">{{ $t('pages.onboarding.home.termsAndPrivacy') }}</h4>
+      <h4 class="font-weight-bold">{{ $t('terms.termsAndPrivacy') }}</h4>
       <div
         class="onboading-home_tnc__text mb-3"
         id="onboarding_home_text_container"
@@ -12,16 +12,7 @@
       >
         <p class="c7" id="h.gjdgxs">
           <span class="c14 c3">
-            THIS IS THE BETA VERSION OF THE LIQUALITY PLATFORM WHICH IS STILL BEING ACTIVELY
-            DEVELOPED. YOU ACKNOWLEDGE THE INFORMATION AVAILABLE IS NOT INTENDED TO BE RELIED ON OR
-            USED IN A PRODUCTION ENVIRONMENT. YOU ACKNOWLEDGE AND ACCEPT THAT THE SITE OR SERVICES
-            (A) MAY CONTAIN BUGS, ERRORS, AND DEFECTS, (B) MAY FUNCTION IMPROPERLY OR BE SUBJECT TO
-            PERIODS OF DOWNTIME AN UNAVAILABILITY, (C) MAY RESULT IN TOTAL OR PARTIAL LOSS OR
-            CORRUPTION OF DATA USED IN THE SITE, AND (D) MAY BE MODIFIED AT ANY TIME, INCLUDING
-            THROUGH THE RELEASE OF SUBSEQUENT VERSIONS, ALL WITH OR WITHOUT NOTICE. THE ALPHA
-            PLATFORM IS AVAILABLE ON AN “AS IS” AND “AS AVAILABLE” BASIS FOR THE SOLE PURPOSE OF
-            COLLECTING FEEDBACK ON QUALITY, USABILITY, PERFORMANCE AND ANY DEFECTS. THANK YOU FOR
-            YOUR SUPPORT WHILE WE CONTINUE TO WORK ON DELIVERING A PERFECT PRODUCT.
+            {{ $t('terms.firstParagraph') }}
           </span>
         </p>
         <p class="c9 c10">
@@ -31,85 +22,32 @@
           <span class="c19 c3 c17"></span>
         </p>
         <h1 class="c9 text-center">
-          <span class="c5 c3">Terms of Use</span>
+          <span class="c5 c3">{{ $t('terms.termsOfUse') }}</span>
         </h1>
         <p class="c9 text-center">Version 1.0</p>
-        <p class="c9 text-center">Last revised on: December 6, 2018</p>
+        <p class="c9 text-center">{{ $t('terms.lastRevised') }}</p>
         <p class="c7 c10">
           <span class="c2"></span>
         </p>
         <p class="c7">
-          <span>Welcome to ConsenSys AG’s</span>
-          <span>Liquality</span>
-          <span>(“</span>
-          <span class="c3">Liquality</span>
-          <span>”, “</span>
-          <span class="c3">Company</span>
-          <span>”, “</span>
-          <span class="c3">we</span>
-          <span>”, “</span>
-          <span class="c3">our</span>
-          <span>”, or “</span>
-          <span class="c3">us</span>
-          <span>
-            ”). Liquality is a client-based platform that would enable users to swap consumer tokens
-            on a peer-to-peer basis without an intermediary. These terms of use (“
-          </span>
-          <span class="c3">Terms</span>
-          <span>”, “</span>
-          <span class="c3">Terms of Use</span>
-          <span>” or the “</span>
-          <span class="c3">Agreement</span>
-          <span>”) govern your use of the website located at</span>
-          <span class="c15">
-            <a class="c16" href="https://liquality.io/"> https://liquality.io/ </a>
-          </span>
-          <span>&nbsp;(the “</span>
-          <span class="c3">Site</span>
-          <span>
-            ”), platform, and all related tools, applications, data, software, and other services
-            provided by us (the “
-          </span>
-          <span class="c3">Service</span>
-          <span class="c2">
-            ”). Certain features of the Site and Services may be subject to additional guidelines,
-            terms, or rules, which will be posted on the Site in connection with such features.
-            &nbsp;All such additional terms, guidelines, and rules are incorporated by reference
-            into these Terms and constitute a legally binding agreement between you and Company in
-            relation to your use of the Service. Any personal information submitted in connection
-            with your use of the Service is subject to our Privacy Policy, which is hereby
-            incorporated by reference into these Terms.
-          </span>
+          {{ $t('terms.welcomeMessage') }}
         </p>
         <p class="c7 c10">
           <span class="c2"></span>
         </p>
         <p class="c4">
           <span>
-            THESE TERMS SET FORTH THE LEGALLY BINDING TERMS AND CONDITIONS THAT GOVERN YOUR USE OF
-            THE SITE AND SERVICES. &nbsp;BY ACCESSING OR USING THE SITE OR SERVICES, YOU ARE
-            ACCEPTING THESE TERMS (ON BEHALF OF YOURSELF OR THE ENTITY THAT YOU REPRESENT), AND YOU
-            REPRESENT AND WARRANT THAT YOU HAVE THE RIGHT, AUTHORITY, AND CAPACITY TO ENTER INTO
-            THESE TERMS (ON BEHALF OF YOURSELF OR THE ENTITY THAT YOU REPRESENT). YOU FURTHER
-            REPRESENT AND WARRANT THAT YOU ARE OTHERWISE LEGALLY PERMITTED TO USE THE SERVICES IN
-            YOUR JURISDICTION AND THAT THE COMPANY IS NOT LIABLE FOR YOUR COMPLIANCE WITH SUCH
-            APPLICABLE LAWS. &nbsp;YOU MAY NOT ACCESS OR USE THE SITE OR ACCEPT THE TERMS IF YOU ARE
-            NOT AT LEAST 18 YEARS OLD. &nbsp;IF YOU DO NOT AGREE WITH ALL OF THE PROVISIONS OF THESE
-            TERMS, DO NOT ACCESS AND/OR USE THE SITE AND SERVICES.
+            {{ $t('terms.termsLegal') }}
           </span>
         </p>
         <p class="c4">
           <span class="c2">
-            THESE TERMS REQUIRE THE USE OF ARBITRATION (SECTION 13.2) ON AN INDIVIDUAL BASIS TO
-            RESOLVE DISPUTES, RATHER THAN JURY TRIALS OR CLASS ACTIONS, AND ALSO LIMIT THE REMEDIES
-            AVAILABLE TO YOU IN THE EVENT OF A DISPUTE.
+            {{ $t('terms.arbitration') }}
           </span>
         </p>
         <ol class="c12 lst-kix_list_1-0 start" start="1">
           <li class="c4 c13" id="h.30j0zll">
-            <span class="c3">TEST</span>
-            <span class="c3">SWAP TRANSACTIONS</span>
-            <span class="c3">&nbsp;</span>
+            {{ $t('terms.testSwapTransactions') }}
           </li>
         </ol>
         <p class="c0" id="h.1fob9te">
@@ -882,45 +820,25 @@
         </p>
         <p class="c0">
           <span class="c3">
-            13.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Electronic Communications.
+            13.5&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('terms.electronicComunications') }}
           </span>
           <span class="c2">
-            &nbsp; The communications between you and Company use electronic means, whether you use
-            the Site or send us emails, or whether Company posts notices on the Site or communicates
-            with you via email. For contractual purposes, you (a) consent to receive communications
-            from Company in an electronic form; and (b) agree that all terms and conditions,
-            agreements, notices, disclosures, and other communications that Company provides to you
-            electronically satisfy any legal requirement that such communications would satisfy if
-            it were be in a hard-copy writing. The foregoing does not affect your non-waivable
-            rights.
+            {{ $t('terms.electronicComunicationsContent') }}
           </span>
         </p>
         <p class="c0">
           <span class="c3">
-            13.6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Entire Terms.
+            13.6&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $t('terms.entireTerms') }}.
           </span>
           <span class="c2">
-            &nbsp;These Terms constitute the entire agreement between you and us regarding the use
-            of the Site and Services. Our failure to exercise or enforce any right or provision of
-            these Terms shall not operate as a waiver of such right or provision. The section titles
-            in these Terms are for convenience only and have no legal or contractual effect. The
-            word “including” means “including without limitation”. &nbsp;If any provision of these
-            Terms is, for any reason, held to be invalid or unenforceable, the other provisions of
-            these Terms will be unimpaired and the invalid or unenforceable provision will be deemed
-            modified so that it is valid and enforceable to the maximum extent permitted by law.
-            &nbsp;Your relationship to Company is that of an independent contractor, and neither
-            party is an agent or partner of the other. &nbsp;These Terms, and your rights and
-            obligations herein, may not be assigned, subcontracted, delegated, or otherwise
-            transferred by you without Company’s prior written consent, and any attempted
-            assignment, subcontract, delegation, or transfer in violation of the foregoing will be
-            null and void. &nbsp;Company may freely assign these Terms. &nbsp;The terms and
-            conditions set forth in these Terms shall be binding upon assignees.
+            {{ $t('terms.terms') }}
           </span>
         </p>
         <p class="c0" id="h.3j2qqm3">
-          <span class="c3"> 13.7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contact. </span>
+          <span class="c3"> 13.7&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {{ $t('terms.contact') }} </span>
           <span>
-            We welcome your comments or questions about these Terms. Please contact us at:
+            {{ $t('terms.commentsOrQuestions') }}
           </span>
           <a class="" href="mailto:info@liquality.io"> info@liquality.io </a>
           <span class="c2">.</span>
@@ -939,7 +857,7 @@
           class="btn btn-primary btn-lg ml-2"
           @click="acceptTnC"
         >
-          {{ $t('pages.onboarding.home.iAccept') }}
+          {{ $t('terms.iAccept') }}
         </button>
       </div>
     </div>

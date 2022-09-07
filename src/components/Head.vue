@@ -1,8 +1,8 @@
 <template>
   <div class="head">
-    <router-link to="/wallet" class="head_logo ml-3" id="wallet_header_logo"
-      ><LogoIcon
-    /></router-link>
+    <router-link to="/wallet" class="head_logo ml-3" id="wallet_header_logo">
+      <LogoIcon />
+    </router-link>
     <div id="head_network" class="head_network" @click.stop="toggleShowNetworks">
       {{ activeNetwork }}
       <ChevronUpIcon v-if="showNetworks" />
@@ -18,14 +18,14 @@
       v-if="showDappConnections"
       @click.stop="toggleShowConnectionDrawer"
     >
-      <template v-if="dappConnected"
-        ><ConnectionConnected class="mr-1 connection-icon" id="dappConnected" /> dApp
-        Connected</template
-      >
-      <template v-else
-        ><ConnectionDisconnected class="mr-1 connection-icon" id="connect_dapp" /> Connect
-        dApp</template
-      >
+      <template v-if="dappConnected">
+        <ConnectionConnected class="mr-1 connection-icon" id="dappConnected" />
+        {{ $t('components.head.dappConnected') }}
+      </template>
+      <template v-else>
+        <ConnectionDisconnected class="mr-1 connection-icon" id="connect_dapp" />
+        {{ $t('components.head.connectDapp') }}
+      </template>
       <ChevronUpIcon class="ml-1" v-if="showConnectionDrawer" />
       <ChevronDownIcon class="ml-1" v-else />
     </div>

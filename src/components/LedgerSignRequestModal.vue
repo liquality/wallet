@@ -1,14 +1,13 @@
 <template>
   <Modal v-if="open" @close="onClose">
     <template #header>
-      <h5>Initiate</h5>
+      <h5>{{ $t('components.ledger.initiate') }}</h5>
     </template>
     <template>
-      <div class="modal-title">On Your Ledger</div>
+      <div class="modal-title">{{ $t('components.ledger.onYourLedger') }}</div>
       <div class="ledger-options-container">
         <div class="ledger-options-instructions">
-          Follow prompts to verify and accept the amount, then confirm the transaction. There may be
-          a lag.
+          {{ $t('components.ledger.signInstructions') }}
         </div>
         <p>
           <LedgerSignRquest class="ledger-sign-request" />

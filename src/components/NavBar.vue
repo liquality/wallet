@@ -33,19 +33,19 @@
       <ul class="menu_list navbar_menu_list" v-if="showMenuList" v-click-away="hideMenu">
         <li id="manage_assets" @click="assets">
           <AssetsIcon />
-          Manage Assets
+          {{ $t('components.navbar.manageAssets') }}
         </li>
         <li id="manage_accounts" v-if="experiments.manageAccounts" @click="manageAccounts">
           <AccountsIcon />
-          Manage Accounts
+          {{ $t('components.navbar.manageAccounts') }}
         </li>
         <li id="export_privkey" v-if="$route.params.accountId" @click="exportPrivateKey">
           <KeyIcon />
-          Export Private Key
+          {{ $t('components.navbar.exportPrivateKey') }}
         </li>
         <li id="settings" @click="settings">
           <SettingsIcon />
-          Settings
+          {{ $t('components.navbar.settings') }}
         </li>
         <li id="ledger" @click="ledger">
           <LedgerIcon />
@@ -53,11 +53,11 @@
         </li>
         <li id="backup_seed" @click="backup">
           <PaperIcon />
-          Backup Seed
+          {{ $t('components.navbar.backupSeed') }}
         </li>
         <li id="lock" @click="lock">
           <LockIcon class="lock_icon" />
-          Lock
+          {{ $t('components.navbar.lock') }}
         </li>
       </ul>
     </div>
