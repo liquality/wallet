@@ -4,7 +4,8 @@
       <div class="activity-filter-header-actions">
         <div @click.stop="open = !open" class="filter-action">
           <ChevronDownIcon :class="open ? '' : 'right'" />
-          {{ $t('components.activityFilter.filters') }} {{ filterCount > 0 ? `(${filterCount})` : '' }}
+          {{ $t('components.activityFilter.filters') }}
+          {{ filterCount > 0 ? ` (${filterCount})` : '' }}
         </div>
         <div @click.stop="resetFilters" class="reset-action" v-if="filterCount > 0">
           <CloseIcon :class="open ? '' : 'right'" />

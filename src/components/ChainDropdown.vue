@@ -22,7 +22,7 @@
               type="text"
               class="form-control form-control-sm"
               v-model="search"
-              placeholder="Search"
+              :placeholder="$t('common.search')"
               autocomplete="off"
             />
           </div>
@@ -38,7 +38,9 @@
       </li>
       <li v-if="filteredItems.length <= 0">
         <span class="dropdown-item" href="#">
-          <div class="dropdown-item-chain-item">No items</div>
+          <div class="dropdown-item-chain-item">
+            {{ $t('common.noItems') }}
+          </div>
         </span>
       </li>
     </ul>

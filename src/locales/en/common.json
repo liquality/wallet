@@ -39,10 +39,13 @@
     "copyAddress": "Copy Address",
     "clickToCopy": "Click to copy",
     "viewInExplorer": "View in Explorer",
+    "noItems": "No items",
+    "search": "Search",
     "searchForCurrency": "Search for a Currency",
     "lowerAmountError": "Lower amount. This exceeds available balance.",
     "addressFormatError": "Wrong format. Please check the address.",
     "overview": "Overview",
+    "get": "Get",
     "account": {
         "zero": "Accounts",
         "one": "Account",

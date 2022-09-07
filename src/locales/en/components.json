@@ -6,5 +6,36 @@
         "export": "Export",
         "filters": "Filters",
         "dateRange": "Date Range"
+    },
+    "analyticsOptinModal": {
+        "title": "Help us improve Liquality to better serve you",
+        "message": "Share where you click. There is no identifying data. This permission can be revoked any time.",
+        "analitycsAccept": "Sure, I will share my clicks",
+        "analitycsReject": "Not today, ask me again"
+    },
+    "boostActivateBridgeAsset": {
+        "enabledAssetMessage": "To trade this pair %{asset} has to be enabled",
+        "okDoit": "OK, do it"
+    },
+    "bridgeAssetRequiredMessage": {
+        "needMore": "You need more %{asset} to pay for gas.",
+        "get": "Get"
+    },
+    "cannotCoverMinimumMessage": {
+        "needMore": "More %{asset} required to cover min trade plus fees."
+    },
+    "connectionDrawer": {
+        "dappNetwork": "dApp Network",
+        "instructions": "Find the connection button on the site. If you can’t connect try again after switching the network.",
+        "grantedConnection": "Granted Connection",
+        "connectedSites": "Connected sites can see your account address.",
+        "switchAccount": "Switch account"
+    },
+    "customFees": {
+        "presets": "Presets",
+        "customizedSetting": "Customized Setting",
+        "gasPrice": "Gas Price",
+        "newSpeedFee": "New Speed/Fee",
+        "apply": "Apply"
     }
 }
