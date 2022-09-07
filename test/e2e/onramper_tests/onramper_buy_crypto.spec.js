@@ -17,7 +17,7 @@ let browser
 let page = []
 
 describe('Buy Crypto ["MAINNET"]', async () => {
-    describe.only('Create new wallet & Buy Crypto options validation ["PULL_REQUEST_TEST"]', async () => {
+    describe('Create new wallet & Buy Crypto options validation ["PULL_REQUEST_TEST"]', async () => {
       beforeEach(async () => {
         browser = await puppeteer.launch(testUtil.getChromeOptions())
         page = await browser.newPage()
