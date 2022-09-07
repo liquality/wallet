@@ -47,19 +47,18 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     await passwordPage.SubmitPasswordDetails(page)
 
     // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWhatsNewModal(page)
-    await overviewPage.SelectNetwork(page, 'mainnet')
-    // check Send & Swap & Receive options have been displayed
-    await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'total assets validation on overview page').contain('11 Assets')
+    // create a new wallet
+    expect(assetsCount, 'total assets validation on overview page').contain('11')
+    console.log('Total assets on overview page: ', assetsCount)
 
     // Check the Total amount - 10s wait to load amount
     const totalAmount = parseInt(await overviewPage.GetTotalLiquidity(page), 10)
     expect(totalAmount, 'Create wallet first time has 0 fiat values').equals(0)
+    console.log('Total amount on overview page: ', totalAmount)
 
     const assertAddresses = []
 
@@ -134,7 +133,8 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // check Send & Swap & Receive options have been displayed (RSK & RSK legacy)
     await page.waitForSelector('#total_assets', { timeout: 120000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount, 'validate total assets on overview page').contain('12 Assets')
+    // import a wallet
+    expect(assetsCount, 'validate total assets on overview page').contain('12')
 
     // Validate RSK & RSK legacy chains listed
     const rskAccounts = await page.$$('#RSK')
@@ -193,7 +193,7 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     expect(rbtcValue, "RBTC value shouldn't be 0").not.equals('0')
     expect(sovValue, "SOV value shouldn't be 0").not.equals('0')
   })
-  // Create a new wallet & forgot password & enter new seed pharse
+  // Create a new wallet & forgot password & enter new seed parse
   it('Create wallet & Validate derived path address after user enter new seedpharse after lock', async () => {
     // Create new wallet
     await homePage.ClickOnCreateNewWallet(page)
@@ -204,6 +204,8 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     const seed1 = (await seedWordsPage.GetBackupSeedWords(page)).seed1
     const seed5 = (await seedWordsPage.GetBackupSeedWords(page)).seed5
     const seed12 = (await seedWordsPage.GetBackupSeedWords(page)).seed12
+    // Create a password & submit
+    const allSeedPhases = await page.$$eval('#backup_seed_word', elements => elements.map(item => item.textContent))
     // Click Next
     await seedWordsPage.ClickOnWalletNextButton(page)
     // Enter seed1,5,.12
@@ -213,15 +215,13 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // Set password
     await passwordPage.SubmitPasswordDetails(page)
     // overview page
-    await overviewPage.HasOverviewPageLoaded(page)
     await overviewPage.CloseWhatsNewModal(page)
-    await overviewPage.SelectNetwork(page, 'mainnet')
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // check Send & Swap & Receive options have been displayed
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
-    expect(assetsCount).contain(' 11 Assets ')
+    expect(assetsCount).contain('11')
 
     let allAddresses = await testUtil.getAllChainAddresses(page)
     console.log(allAddresses)
@@ -283,15 +283,11 @@ describe('Derived path address validation-["MAINNET","PULL_REQUEST_TEST","MAINNE
     // Terms & conditions
     await homePage.ScrollToEndOfTerms(page)
     await homePage.ClickOnAcceptPrivacy(page)
-    // some random seed phrase
-    const randomSeed =
-      'sense quality accuse asthma imitate rubber acquire surprise strategy whip harvest survey'.split(
-        ' '
-      )
+
     const seedsWordsCount = await page.$$('#import_wallet_word')
     for (let i = 0; i < seedsWordsCount.length; i++) {
       const wordInput = seedsWordsCount[i]
-      await wordInput.type(randomSeed[i])
+      await wordInput.type(allSeedPhases[i])
     }
     // Click on continue button
     await page.click('#import_wallet_continue_button')
