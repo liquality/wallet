@@ -1,6 +1,9 @@
 name: PullRequest tests
 
 on:
+  push:
+    branches:
+      - 'feat/**'
   pull_request:
     paths-ignore:
       - '**.md'
