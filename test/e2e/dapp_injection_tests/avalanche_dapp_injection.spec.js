@@ -20,7 +20,7 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.setDefaultNavigationTimeout(0)
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2', timeout: 0 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -50,7 +50,7 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     })
   })
   it('Avalanche pangolin Exchange dapp injection', async () => {
-    await dappPage.goto(pangolin_Url, { timeout: 60000, waitUntil: 'networkidle2' })
+    await dappPage.goto(pangolin_Url, { timeout: 0, waitUntil: 'networkidle2' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
