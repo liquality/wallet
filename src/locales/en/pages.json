@@ -14,6 +14,10 @@
             "enterSeedPhrase": "Enter the seed phrase, in the same order saved when creating your wallet.",
             "words": "%{words} words"
         },
+        "home": {
+            "iAccept": "I Accept",
+            "termsAndPrivacy": "Terms & Privacy"
+        },
         "setup": {
             "backupYourWallet": "Backup your Wallet",
             "backupDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
