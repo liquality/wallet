@@ -255,16 +255,6 @@ class OverviewPage {
           timeout: elementVisibleTimeout,
           visible: true
         })
-        // check assert value
-        await page.waitForSelector('.list-item-detail', {
-          timeout: elementVisibleTimeout,
-          visible: true
-        })
-        // check assert fiat value
-        await page.waitForSelector('.list-item-detail-sub', {
-          timeout: elementVisibleTimeout,
-          visible: true
-        })
         await page.click(`#${assetName}`)
         break
       }

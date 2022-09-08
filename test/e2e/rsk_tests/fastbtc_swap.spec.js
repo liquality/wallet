@@ -83,10 +83,7 @@ let browser, page
       const quoteProvider = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
 
       if (quoteProvider === 'FastBTC') {
-        expect(
-          await swapPage.getSelectedServiceProvider(page),
-          'BTC->RBTC,fastBTC swap Provider!!'
-        ).oneOf(['FastBTC'])
+       console.log('fastBTC swap provider is selected')
       } else {
         try {
           await page.waitForSelector('#see_all_quotes', {
@@ -102,11 +99,10 @@ let browser, page
           await testUtil.takeScreenshot(page, 'fastbtc-see-all-quotes')
           asset.fail('fastbtc see all quotes failed')
         }
-
-        expect(
-          await swapPage.getSelectedServiceProvider(page),
-          'BTC->RBTC,fastBTC swap Provider!!'
-        ).oneOf(['FastBTC', 'Liquality'])
       }
+      expect(
+        await swapPage.getSelectedServiceProvider(page),
+        'BTC->RBTC,fastBTC swap Provider!!'
+      ).oneOf(['FastBTC'])
     })
   })

@@ -34,9 +34,7 @@ const swapPairMap = [
   // }
 ]
 
-if (process.env.NODE_ENV === 'mainnet') {
-  // Only works on Mainnet
-  describe.only('1Inch Service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
+  describe('1Inch Service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     swapPairMap.forEach((obj) => {
       it(`SWAP (${obj.from}->${obj.to})-PULL_REQUEST_TEST `, async () => {
         const fromAsset = obj.from
@@ -110,4 +108,3 @@ if (process.env.NODE_ENV === 'mainnet') {
       await browser.close()
     })
   })
-}

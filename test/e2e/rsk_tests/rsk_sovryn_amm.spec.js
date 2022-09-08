@@ -15,13 +15,11 @@ const swapPage = new SwapPage()
 let browser, page
 const SOVRYN_AMM = 'Sovryn'
 
-if (process.env.NODE_ENV === 'mainnet') {
-  // Sovryn AMM works against RSK chain
   describe('SWAP Sovryn AMM service Provider-["MAINNET","MAINNET_RELEASE"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
       await homePage.ScrollToEndOfTerms(page)
@@ -37,7 +35,7 @@ if (process.env.NODE_ENV === 'mainnet') {
     afterEach(async () => {
       await browser.close()
     })
-    it('Sovryn AMM(RBTC->SOV) quote check', async () => {
+    it('Sovryn AMM(RBTC->SOV) quote check[PULL_REQUEST_TEST]', async () => {
       const fromAsset = 'RBTC'
       const toAsset = {
         chain: 'RSK',
@@ -188,4 +186,3 @@ if (process.env.NODE_ENV === 'mainnet') {
       ).oneOf(['Sovryn'])
     })
   })
-}
