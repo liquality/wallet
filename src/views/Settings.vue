@@ -147,7 +147,7 @@ export default {
       'trackAnalytics',
       'forgetDappConnections'
     ]),
-    ...mapActions('app', ['initializeAnalytics', 'setLocalePrefference']),
+    ...mapActions('app', ['initializeAnalytics', 'setLocalePreference']),
     toggleInjectEthereum(enable) {
       if (enable) {
         this.enableEthereumInjection()
@@ -204,7 +204,7 @@ export default {
     },
     async onChangeLocale(locale) {
       await this.changeLocale(locale)
-      await this.setLocalePrefference({ locale })
+      await this.setLocalePreference({ locale })
       this.hideChangeLocale()
     },
     toogleChangeLocale() {

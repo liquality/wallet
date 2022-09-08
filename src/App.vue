@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     ...mapActions(['initializeAnalytics']),
-    ...mapActions('app', ['setLocalePrefference', 'getBrowserLocale'])
+    ...mapActions('app', ['setLocalePreference', 'getBrowserLocale'])
   },
   async created() {
     await this.initializeAnalytics()
@@ -45,7 +45,7 @@ export default {
         : process.env.VUE_APP_DEFAULT_LOCALE
       await this.changeLocale(_locale)
       // store the local in state
-      await this.setLocalePrefference({ locale: this.currentLocale })
+      await this.setLocalePreference({ locale: this.currentLocale })
     }
   }
 }
