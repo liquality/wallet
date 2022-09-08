@@ -21,7 +21,7 @@ class OverviewPage {
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
-        expect(e, 'Hamburger icon loading issue').equals(null)
+        expect(e, 'Hamburger icon loading issue after user enter password').equals(null)
       }
     }
   }
@@ -433,12 +433,15 @@ class OverviewPage {
   async GetTotalLiquidity(page) {
     // Check the Total amount - 10s wait to load amount
     await page.waitForSelector('.wallet-stats_total', { timeout: 30000 })
-    await page.waitForTimeout(60000)
     let walletTotal = await page.$eval('.wallet-stats_total', (el) =>
       el.innerText.replace(/[.,\s]/g, '')
     )
     if (walletTotal.includes('NaN')) {
       assert.fail('Total Liquidity is NaN')
+    }
+    if (parseInt(walletTotal, 10) === 0) {
+      console.log('Total Liquidity is 0 so we will wait for 5s to load amount')
+      await page.waitForTimeout(5000)
     }
     return parseInt(walletTotal, 10)
   }
@@ -509,6 +512,8 @@ class OverviewPage {
   async GetAssertAddress(page, assertName) {
     let assertAddress
 
+    console.log(`trying to get ${assertName} address`)
+
     try {
       await page.waitForSelector(`#${assertName}`, { visible: true })
       const $parent = await page.$(`#${assertName}`)
@@ -516,7 +521,6 @@ class OverviewPage {
       assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
       if (assertAddress === "''" || assertAddress === '""') {
         await page.reload()
-        await page.waitForTimeout(10000)
       }
       assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
       expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.equals("''")

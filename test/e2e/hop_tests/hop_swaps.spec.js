@@ -19,7 +19,7 @@ describe('SWAP feature["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
 
     // Import wallet option and accept Terms
     await homePage.ClickOnImportWallet(page)
@@ -41,7 +41,7 @@ describe('SWAP feature["MAINNET"]', async () => {
     await browser.close()
   })
 
-  it('SWAP ARBETH to PWETH - Hop', async () => {
+  it('SWAP ARBETH to PWETH - Hop ["PULL_REQUEST_TEST"]', async () => {
     const fromAsset = 'ARBETH'
     const toAsset = 'PWETH'
 

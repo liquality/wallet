@@ -83,7 +83,6 @@ describe('Receive tokens ["MAINNET"]', async () => {
       // Set password & click next
       await passwordPage.SubmitPasswordDetails(page)
       // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWhatsNewModal(page)
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)

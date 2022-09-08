@@ -16,7 +16,7 @@ import { mapState } from 'vuex'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import { buildConfig } from '@liquality/wallet-core'
-import { chains } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 import { formatFiat } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import { getAccountIcon } from '@/utils/accounts'
 import ChainAccounts from './ChainAccounts.vue'
@@ -30,12 +30,12 @@ export default {
     ...mapState(['activeNetwork', 'activeWalletId', 'accounts']),
     chains() {
       return buildConfig.chains.map((chainId) => {
-        const { name, code, nativeAsset } = chains[chainId]
+        const { name, code, nativeAsset } = getChain(this.activeNetwork, chainId)
         return {
           id: chainId,
           name,
           code,
-          nativeAsset,
+          nativeAsset: nativeAsset[0].code,
           accounts: this.getChainAccounts(chainId)
         }
       })

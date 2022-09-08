@@ -76,13 +76,12 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       })
       await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
     } catch (e) {
-      await testUtil.takeScreenshot(
-        connectRequestWindow,
-        'uniswap-ethereum-connect-request-window-issue'
-      )
+      // await testUtil.takeScreenshot(
+      //   connectRequestWindow,
+      //   'uniswap-ethereum-connect-request-window-issue'
+      // )
       expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(
-        null
-      )
+        null)
     }
     await connectRequestWindow.waitForSelector('#dropdown-item', { visible: true })
     let filterValues = await connectRequestWindow.evaluate(() => {
@@ -104,7 +103,7 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       timeout: 60000
     })
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
-    await dappPage.waitFor(10000)
+    await dappPage.waitForTimeout(10000)
     await dappPage.reload()
     // Check web3 status as connected
     const connectedChainDetails = await dappPage.evaluate(async () => {

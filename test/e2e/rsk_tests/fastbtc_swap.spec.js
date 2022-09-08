@@ -16,9 +16,7 @@ const swapPage = new SwapPage()
 let browser, page
 
 // https://wiki.sovryn.app/en/sovryn-dapp/fast_btc
-if (process.env.NODE_ENV === 'mainnet') {
-  // fastBTC service provider only in mainnet(dev & prod)
-  describe('FastBTC swap provider-["MAINNET"]', async () => {
+  describe('FastBTC swap provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -112,4 +110,3 @@ if (process.env.NODE_ENV === 'mainnet') {
       }
     })
   })
-}

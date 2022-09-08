@@ -2,7 +2,7 @@ const Wallet = require('ethereumjs-wallet')
 const bitcoin = require('bitcoinjs-lib')
 const bip39 = require('bip39')
 const crypto = require('crypto')
-const chains = require('@liquality/cryptoassets').chains
+const { getChain, ChainId } = require('@liquality/cryptoassets')
 
 class TestDataUtils {
   /**
@@ -10,7 +10,7 @@ class TestDataUtils {
    * @param name - bitcoin name
    * @returns {string}
    */
-  getRandomAddress (name) {
+  getRandomAddress(name) {
     switch (name) {
       case 'ethereum': {
         return this.getRandomEthereumAddress()
@@ -33,7 +33,7 @@ class TestDataUtils {
    * Generate random ETH address.
    * @returns {string}
    */
-  getRandomEthereumAddress () {
+  getRandomEthereumAddress() {
     const EthWallet = Wallet.default.generate()
     return EthWallet.getAddressString()
   }
@@ -43,17 +43,16 @@ class TestDataUtils {
    * @param network - testnet/mainnet
    * @returns {string}
    */
-  getRandomRSKAddress (network = 'testnet') {
+  getRandomRSKAddress(network = 'testnet') {
     const EthWallet = Wallet.default.generate()
-
-    return chains.rsk.formatAddress(EthWallet.getAddressString(), network)
+    return getChain(network, ChainId.Rootstock).formatAddressUI(EthWallet.getAddressString())
   }
 
   /**
    * Generate bitcoin address for testnet.
    * @returns {*}
    */
-  getRandomBitcoinAddress () {
+  getRandomBitcoinAddress() {
     const keyPair = bitcoin.ECPair.makeRandom()
     const { address } = bitcoin.payments.p2pkh({
       pubkey: keyPair.publicKey,
@@ -66,7 +65,7 @@ class TestDataUtils {
    * Generate Random seed 12 words.
    * @returns {string}
    */
-  getRandomSeedWords () {
+  getRandomSeedWords() {
     const randomBytes = crypto.randomBytes(16)
     return bip39.entropyToMnemonic(randomBytes.toString('hex'))
   }

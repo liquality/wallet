@@ -204,7 +204,7 @@
 import { getFeeAsset, getNativeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import BN from 'bignumber.js'
 import {
@@ -216,6 +216,7 @@ import {
 import { prettyFiatBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -244,6 +245,7 @@ export default {
     this.maxFee = this.fees[this.basicPreset].fee.maxFeePerGas
   },
   computed: {
+    ...mapState(['activeNetwork']),
     // TODO: move erro handling to wallet-core
     noTipError() {
       return !this.tipFee ? 'Miner tip must be greater than 0 GWEI' : null
@@ -286,7 +288,7 @@ export default {
     gasUnit() {
       const chainId = cryptoassets[this.asset]?.chain
       if (chainId) {
-        const { unit } = chains[chainId]?.fees || ''
+        const { unit } = getChain(this.activeNetwork, chainId)?.fees || ''
         return getFeeAsset(this.asset) || unit
       }
       return ''
