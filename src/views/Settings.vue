@@ -76,13 +76,17 @@
           <span class="setting-item_sub">{{ $t('pages.settings.localeSub') }}</span>
         </div>
         <div class="setting-item_control">
-          <div class="dropdown-list" @click.stop="toogleChangeLocale">
-            {{ currentLocale }}
+          <div class="dropdown-list list-container" @click.stop="toogleChangeLocale">
+            {{ currentLocaleLabel }}
             <ChevronUpIcon v-if="showChangeLocaleList" />
             <ChevronDownIcon v-else />
-            <ul class="menu_list" v-if="showChangeLocaleList" v-click-away="hideChangeLocale">
-              <li v-for="locale in localeOptions" :key="locale" @click="onChangeLocale(locale)">
-                {{ locale }}
+            <ul class="menu_list list" v-if="showChangeLocaleList" v-click-away="hideChangeLocale">
+              <li
+                v-for="locale in localeOptions"
+                :key="locale.code"
+                @click="onChangeLocale(locale.code)"
+              >
+                {{ locale.label }}
               </li>
             </ul>
           </div>
@@ -126,7 +130,13 @@ export default {
       return version
     },
     localeOptions() {
-      return this.locales?.filter((i) => i !== this.currentLocale) || []
+      return (this.locales?.filter((i) => i !== this.currentLocale) || []).map((l) => ({
+        code: l,
+        label: this.$t(`common.localesLabels.${l}`)
+      }))
+    },
+    currentLocaleLabel() {
+      return this.$t(`common.localesLabels.${this.currentLocale}`)
     }
   },
   methods: {
@@ -220,6 +230,7 @@ export default {
   .setting-item {
     border-bottom: 1px solid $hr-border-color;
     padding: 16px 20px;
+    position: relative;
 
     &_control {
       display: flex;
@@ -238,6 +249,13 @@ export default {
     margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
+  }
+
+  .list-container {
+    width: 100%;
+  }
+  .list {
+    width: 100%;
   }
 }
 </style>

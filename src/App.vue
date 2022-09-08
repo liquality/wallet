@@ -36,12 +36,10 @@ export default {
   },
   async created() {
     await this.initializeAnalytics()
-    console.log('this.locale', this.locale)
     if (this.locale) {
       await this.changeLocale(this.locale)
     } else {
       const browserLocale = await this.getBrowserLocale()
-      console.log('browser locale', browserLocale)
       const _locale = this.locales.includes(browserLocale)
         ? browserLocale
         : process.env.VUE_APP_DEFAULT_LOCALE
