@@ -138,7 +138,8 @@ describe('SEND feature', async () => {
     expect(totalSendAmountFiat.toString().trim().replace('$', '')).not.equals('0.00')
 
     await page.click('#send_button_confirm')
-    await page.waitForSelector('#SEND_RBTC_RBTC', { visible: true, timeout: 60000 })
+    await page.waitForSelector(`#SEND_${assetName}_${assetName}`, { visible: true, timeout: 30000})
+      .catch((e) => expect(e, `Send ${assetName} failed after clicked confirm.....`).to.not.throw());
     await page.click('#SEND_RBTC_RBTC')
 
     await sendPage.ValidateSendConfirmationStatus(page)

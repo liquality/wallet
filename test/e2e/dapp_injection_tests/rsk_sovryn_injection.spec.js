@@ -102,7 +102,7 @@ describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","MAINNET_RELEASE"]', asy
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
   })
   it('SOVRYN dApp injection ["PULL_REQUEST_TEST"]', async () => {
-    await dappPage.goto(sovrynUrl, { timeout: 60000, waitUntil: 'load' })
+    await dappPage.goto(sovrynUrl, { timeout: 0, waitUntil: 'load' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
