@@ -281,7 +281,7 @@ export default {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
-        chainId: getAsset(this.asset).chain,
+        chainId: getAsset(this.activeNetwork, this.asset).chain,
         accountId: this.item.accountId
       })
       const transaction =

@@ -92,11 +92,7 @@ import { getChain, isEvmChain } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
-import {
-  isChainEvmCompatible,
-  getNativeAsset,
-  getAddressExplorerLink
-} from '@liquality/wallet-core/dist/src/utils/asset'
+import { getNativeAsset, getAddressExplorerLink } from '@liquality/wallet-core/dist/src/utils/asset'
 
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
@@ -178,7 +174,6 @@ export default {
     getNativeAsset,
     prettyBalance,
     shortenAddress,
-    isChainEvmCompatible,
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
