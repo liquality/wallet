@@ -44,6 +44,7 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
     await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
     await page.click(`#${fromAsset}_swap_button`)
     console.log(`User clicked on ${fromAsset} SWAP button`)
+    await page.waitForTimeout(2000)
     // Select toAsset
     await page.click('.swap-receive-main-icon')
     await page.waitForSelector('#search_for_a_currency', { visible: true })

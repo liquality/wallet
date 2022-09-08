@@ -13,12 +13,11 @@ const passwordPage = new PasswordPage();
 let browser, page;
 const dappUrl = "https://app.sushi.com";
 
-describe("Sushi Dapp Injection-[\"MAINNET\"]", async () => {
+describe("Sushi Dapp Injection-['MAINNET']", async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions());
     page = await browser.newPage();
-    await page.setDefaultNavigationTimeout(0);
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: "load", timeout: 60000 });
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: "load", timeout: 0 });
     // Import wallet option
     await homePage.ClickOnImportWallet(page);
     await homePage.ScrollToEndOfTerms(page);
@@ -35,9 +34,8 @@ describe("Sushi Dapp Injection-[\"MAINNET\"]", async () => {
     await browser.close();
   });
 
-  it("Sushi injection - ETH[\"PULL_REQUEST_TEST\"]", async () => {
+  it("Sushi injection - ETH['PULL_REQUEST_TEST']", async () => {
     const dappPage = await browser.newPage();
-    await dappPage.setDefaultNavigationTimeout(0);
     await dappPage.goto(dappUrl, { waitUntil: "networkidle2", timeout: 0 });
     await dappPage.waitForSelector("#connect-wallet", { visible: true, timeout: 90000 });
     await dappPage.click("#connect-wallet");
