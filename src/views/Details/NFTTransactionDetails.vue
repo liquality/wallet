@@ -120,7 +120,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import moment from '@liquality/wallet-core/dist/src/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { getChain, getNativeAssetCode } from '@liquality/cryptoassets'
+import { getChain, getNativeAssetCode, getAsset } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
 import { getSendTxFees, feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
 import {
@@ -281,7 +281,7 @@ export default {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
-        asset: this.asset,
+        chainId: getAsset(this.asset).chain,
         accountId: this.item.accountId
       })
       const transaction =
