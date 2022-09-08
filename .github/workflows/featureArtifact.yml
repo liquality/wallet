@@ -1,45 +1,56 @@
-name: PullRequest tests
+name: Feature branch artifact workflow
 
 on:
   push:
-    branches:
-      - 'feat/**'
-  pull_request:
     paths-ignore:
       - '**.md'
+      - '.github/**'
     branches:
-      - 'release-candidate-*'
-      - '!renovate/**'
-      - '!dependabot/**'
+      - 'feature/*'
+      - 'feat/*'
 
 env:
+  AMPLITUDE_API_KEY_DEV: ${{ secrets.VUE_APP_AMPLITUDE_API_KEY_DEV }}
   TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
   AVALANCHE_MAINNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_MAINNET_NODE }}
   AVALANCHE_TESTNET_NODE: ${{ secrets.VUE_APP_AVALANCHE_TESTNET_NODE }}
   NEAR_MAINNET_URL: ${{ secrets.VUE_APP_NEAR_MAINNET_URL }}
-  TRANSAK_WIDGET_URL_STAGE: ${{ secrets.VUE_APP_TRANSAK_WIDGET_URL_STAGE }}
-  TRANSAK_API_KEY_STAGE: ${{ secrets.VUE_APP_TRANSAK_API_KEY_STAGE }}
-  TRANSAK_DEFAULT_FIAT_CURRENCY: ${{ secrets.VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY }}
   SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
   TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
   TEST_WALLET_PASSWORD: ${{ secrets.TEST_WALLET_PASSWORD }}
+  # Transak stage details for testing
+  TRANSAK_WIDGET_URL_STAGE: ${{ secrets.VUE_APP_TRANSAK_WIDGET_URL_STAGE }}
+  TRANSAK_API_KEY_STAGE: ${{ secrets.VUE_APP_TRANSAK_API_KEY_STAGE }}
+  TRANSAK_DEFAULT_FIAT_CURRENCY: ${{ secrets.VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY }}
+
 
 jobs:
-  pull_request_tests:
+  feature-artifact-build:
     runs-on: ubuntu-latest
     steps:
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v5.1
+
+      - name: create artifact name
+        id: findandreplace
+        uses: mad9000/actions-find-and-replace-string@2
+        with:
+          source: ${{ steps.branch-name.outputs.current_branch }}
+          find: '/'
+          replace: '-'
+
       - name: Checkout code
         uses: actions/checkout@v2.4.2
         with:
           fetch-depth: 0
 
-      - name: Build project
-        uses: actions/setup-node@v2.5.1
+      - uses: actions/setup-node@v2.5.1
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
           node-version: '14'
-        # Create screenshots directory
+
       - run: mkdir screenshots
 
       - name: Get yarn cache directory path
@@ -60,11 +71,12 @@ jobs:
           echo VUE_APP_AVALANCHE_MAINNET_NODE =$AVALANCHE_MAINNET_NODE >> .env
           echo VUE_APP_AVALANCHE_TESTNET_NODE =$AVALANCHE_TESTNET_NODE >> .env
           echo VUE_APP_NEAR_MAINNET_URL =$NEAR_MAINNET_URL >> .env
+          echo VUE_APP_AMPLITUDE_API_KEY =$AMPLITUDE_API_KEY_DEV >> .env
           echo VUE_APP_TRANSAK_WIDGET_URL_STAGE =$TRANSAK_WIDGET_URL_STAGE >> .env
           echo VUE_APP_TRANSAK_API_KEY_STAGE =$TRANSAK_API_KEY_STAGE >> .env
           echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =$TRANSAK_DEFAULT_FIAT_CURRENCY >> .env
 
-      # Create Dev Wallet with Dev agent for pull request tests.
+      # Create Dev Wallet with Dev agent for feature branch tests.
       - name: Set development manifest (patch for DEV)
         run: |
           export NODE_OPTIONS="--max-old-space-size=5120"
@@ -78,7 +90,7 @@ jobs:
         uses: actions/upload-artifact@v2.3.1
         if: always()
         with:
-          name: pull-request-wallet
+          name: ${{ steps.findandreplace.outputs.value }}
           path: dist
           if-no-files-found: ignore
           retention-days: 30
@@ -91,18 +103,5 @@ jobs:
         with:
           args: yarn test:pullrequest
 
-      - name: Save Screenshots
-        uses: actions/upload-artifact@v2.3.1
-        if: always()
-        with:
-          name: screenshots
-          path: screenshots
-          if-no-files-found: ignore
 
-      - name: Discord notification
-        uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
-          title: "${{ github.workflow}}"
 

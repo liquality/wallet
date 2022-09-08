@@ -2,6 +2,8 @@ name: TAG Release
 
 on:
   push:
+    branches:
+      - 'release-**'
     tags:
       - 'v*'
 

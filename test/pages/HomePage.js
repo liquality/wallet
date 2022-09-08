@@ -37,8 +37,9 @@ class HomePage {
       visible: true
     })
     await terms_privacy_accept_button.click()
-    await page.waitForSelector('#optin_anaylitics_reject',{ visible: true })
-    await page.click('#optin_anaylitics_reject',{ delay: 100 })
+    await page.waitForSelector('#optin_anaylitics_reject', { visible: true })
+    // opt-out of analytics
+    await page.click('#optin_anaylitics_reject', { delay: 100 })
     await page.click('#analytics-ok-close-button')
   }
 
