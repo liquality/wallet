@@ -38,9 +38,9 @@ describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","MAINNET_RELEASE"]', asy
     await page.click('#connect_dapp_main_option')
     await page.waitForSelector('.v-switch-core', { visible: true })
     // Select rsk
-    await page.click('#dropdown-item', { delay: 1000 })
+    await page.click('#dropdown-item', { delay: 2000 })
     await page.waitForSelector('#rsk_web_network', { visible: true })
-    await page.click('#rsk_web_network', { delay: 1000 })
+    await page.click('#rsk_web_network', { delay: 3000 })
 
     // Go to SOVRYN app
     dappPage = await browser.newPage()
@@ -116,9 +116,9 @@ describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","MAINNET_RELEASE"]', asy
         visible: true,
         timeout: 120000
       })
-      await connectRequestWindow.waitForSelector('#RSK', { visible: true, timeout: 60000 })
+      await connectRequestWindow.waitForSelector('#RSK', { visible: true, timeout: 120000 })
     } catch (e) {
-      await testUtil.takeScreenshot(connectRequestWindow, 'rsk-sovryn-dapp-connect-request-issue')
+      // await testUtil.takeScreenshot(connectRequestWindow, 'rsk-sovryn-dapp-connect-request-issue')
       expect(
         e,
         'RSK sovryn injection ethereum not listed, connected window not loaded.....'

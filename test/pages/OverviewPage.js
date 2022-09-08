@@ -439,6 +439,10 @@ class OverviewPage {
     if (walletTotal.includes('NaN')) {
       assert.fail('Total Liquidity is NaN')
     }
+    if (parseInt(walletTotal, 10) === 0) {
+      console.log('Total Liquidity is 0 so we will wait for 5s to load amount')
+      await page.waitForTimeout(5000)
+    }
     return parseInt(walletTotal, 10)
   }
 
