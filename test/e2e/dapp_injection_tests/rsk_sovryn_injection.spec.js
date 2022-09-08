@@ -20,7 +20,7 @@ describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","MAINNET_RELEASE"]', asy
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.setDefaultNavigationTimeout(0)
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2', timeout: 0 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -50,7 +50,7 @@ describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","MAINNET_RELEASE"]', asy
     })
   })
   it('SOVRYN Bridge injection', async () => {
-    await dappPage.goto(bridgeUrl, { timeout: 60000, waitUntil: 'load' })
+    await dappPage.goto(bridgeUrl, { timeout: 0, waitUntil: 'load' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
