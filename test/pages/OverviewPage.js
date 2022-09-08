@@ -40,12 +40,10 @@ class OverviewPage {
 
     switch (network) {
       case 'testnet':
-        await page.click('#head_network', { delay: 5 })
-        await page.waitForTimeout(1000)
+        await page.click('#head_network', { delay: 100 })
         await page.waitForSelector('#testnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
-        await page.click('#testnet_network', { delay: 10 })
-        await page.waitForTimeout(2000)
+        await page.click('#testnet_network', { delay: 100 })
         await page.waitForSelector('#active_network', { visible: true })
         overviewText = await page.$eval('#active_network', (el) => el.innerText)
         expect(overviewText, 'switch to testnet failed').contain('TESTNET')

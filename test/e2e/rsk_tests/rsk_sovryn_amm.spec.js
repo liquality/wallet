@@ -62,17 +62,11 @@ const SOVRYN_AMM = 'Sovryn'
         visible: true,
         timeout: 60000
       })
-      // Validate available balance
-      const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
-      expect(
-        availableBalance,
-        `${fromAsset}->${toAsset.coin} swap, available balance should be greater than 0`
-      ).to.be.above(0)
-      await page.waitForTimeout(5000)
       expect(
         await swapPage.getSelectedServiceProvider(page),
         'RBTC->SOV, Supporting source should be chosen!'
       ).oneOf([SOVRYN_AMM])
+
       // validate Send & To fiat values
       const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
       expect(

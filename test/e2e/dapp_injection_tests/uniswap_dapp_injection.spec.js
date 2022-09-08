@@ -103,7 +103,6 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
     })
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
     await dappPage.waitForTimeout(10000)
-    await dappPage.reload()
     // Check web3 status as connected
     const connectedChainDetails = await dappPage.evaluate(async () => {
       const chainIDHexadecimal = await window.ethereum.request({
@@ -135,7 +134,7 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto(dappUrl, { timeout: 0 })
+    await dappPage.goto(dappUrl, { timeout: 0, waitUntil: 'load' })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
