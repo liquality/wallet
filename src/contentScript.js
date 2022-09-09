@@ -2,7 +2,7 @@ import { inject } from './broker/utils'
 import Script from './broker/Script'
 import { buildConfig } from '@liquality/wallet-core'
 import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
-import { chains, isEthereumChain } from '@liquality/cryptoassets'
+import { chains, getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
 import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
 new Script().start()
@@ -25,14 +25,17 @@ async function setupTerraStreams() {
 }
 
 function injectProviders(state) {
-  const evmChains = buildConfig.chains.filter(isEthereumChain).map((chain) => {
-    const network = ChainNetworks[chain][state.activeNetwork]
-    const asset = chains[chain].nativeAsset
-    return { chain, asset, network }
-  })
+  const { injectEthereumChain, activeNetwork } = state
+  const evmChains = buildConfig.chains
+    .filter((chain) => isEvmChain(activeNetwork, chain))
+    .map((chain) => {
+      const network = ChainNetworks[chain][activeNetwork]
+      const asset = getNativeAssetCode(activeNetwork, chain)
+      return { chain, asset, network }
+    })
 
   let globalEthereum = {
-    inject: !!state.injectEthereumChain
+    inject: !!injectEthereumChain
   }
   if (globalEthereum.inject) {
     globalEthereum = {

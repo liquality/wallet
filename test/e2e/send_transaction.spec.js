@@ -19,13 +19,12 @@ const puppeteer = require('puppeteer')
 let browser
 let page
 
-describe('SEND feature["TESTNET"]', async () => {
+describe('SEND feature', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     // Configure the navigation timeout
-    await page.setDefaultNavigationTimeout(0)
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout:0 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -138,7 +137,8 @@ describe('SEND feature["TESTNET"]', async () => {
     expect(totalSendAmountFiat.toString().trim().replace('$', '')).not.equals('0.00')
 
     await page.click('#send_button_confirm')
-    await page.waitForSelector('#SEND_RBTC_RBTC', { visible: true, timeout: 60000 })
+    await page.waitForSelector(`#SEND_${assetName}_${assetName}`, { visible: true, timeout: 30000})
+      .catch((e) => expect(e, `Send ${assetName} failed after clicked confirm.....`).to.not.throw());
     await page.click('#SEND_RBTC_RBTC')
 
     await sendPage.ValidateSendConfirmationStatus(page)
@@ -201,7 +201,7 @@ describe('SEND feature["TESTNET"]', async () => {
       await page.$eval('#transaction_detail_network_speed', (el) => el.innerText.toLowerCase())
     ).contains('average')
   })
-  it('Send AVAX-AVAX["PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
+  it('Send AVAX-AVAX ["PULL_REQUEST_TEST","MAINNET_RELEASE"]', async () => {
     const assetName = 'AVAX'
     const coinsToSend = '0.00001'
     const addressToSend = '0x9d6345f731e160cd90b65a91ab60f4f9e37bdbd2'
@@ -272,5 +272,73 @@ describe('SEND feature["TESTNET"]', async () => {
       availableAmount,
       'Available balance and Max send amount are equal for ethereum'
     ).contains(sendAmount)
+  })
+  it('Unstoppable Domains Send [PULL_REQUEST_TEST]', async () => {
+    const assetName = 'ETH'
+    const coinsToSend = '0.00001'
+    const domainName = 'shaista.blockchain'
+
+    await overviewPage.SelectAssetFromOverview(page, assetName)
+    console.log('Selected asset from overview')
+    await page.waitForSelector(`#${assetName}_send_button`, { visible: true }).then(() => {
+      console.log('Send button is visible')
+    })
+    await page.click(`#${assetName}_send_button`)
+    console.log('Clicked send button')
+
+    // Enter send amount (or) coins
+    await sendPage.EnterSendAmount(page, coinsToSend)
+    // Send address
+    await sendPage.EnterSendToAddress(page, domainName)
+    // Click Send Review Button
+    await page.waitForSelector('#send_review_button', { visible: true})
+    try {
+      await page.click('#send_review_button', { clickCount: 5 })
+      await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        await page.$eval('#send_review_button', (el) => el.click())
+      }
+    }
+    // Confirm SEND & validate send fiat details
+    await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
+    const sentFiatAmount = await page.$eval('#send_value_in_fiat', (el) => el.innerText)
+    expect(sentFiatAmount.toString().trim().replace('$', '')).not.equals('0.00')
+
+    const sentNetworkFiatAmount = await page.$eval(
+      '#send_network_fee_in_fiat',
+      (el) => el.innerText
+    )
+    expect(sentNetworkFiatAmount.toString().trim().replace('$', '')).not.equals('0.00')
+
+    const totalSendAmountFiat = await page.$eval('#total_to_send_in_fiat', (el) => el.innerText)
+    expect(totalSendAmountFiat.toString().trim().replace('$', '')).not.equals('0.00')
+
+    await page.click('#send_button_confirm')
+    await page.waitForSelector(`#SEND_${assetName}_${assetName}`, { visible: true, timeout: 60000 })
+    await page.click(`#SEND_${assetName}_${assetName}`)
+
+    await sendPage.ValidateSendConfirmationStatus(page)
+
+    // Validate Send transaction timeline
+    await page.waitForSelector('#transaction_details_date_time')
+    expect(await page.$eval('#transaction_detail_sent_amount', (el) => el.innerText)).contains(
+      coinsToSend
+    )
+    expect(
+      await page.$eval('#transaction_detail_sent_amount_today', (el) => el.innerText)
+    ).not.contains('0.00')
+    expect(
+      await page.$eval('#transaction_detail_sent_amount_then', (el) => el.innerText)
+    ).not.contains('0.00')
+    expect(
+      await page.$eval('#transaction_detail_network_speed', (el) => el.innerText.toLowerCase())
+    ).contains('average')
+
+    // validate domain name in transaction details
+    await page.waitForSelector('#transaction_details_send_to_link', { visible: true })
+    const sedToDetails = await page.$eval('#transaction_details_send_to_link', el => el.textContent)
+    expect(sedToDetails,'Send to transaction details should have unstoppabledomain name').contain(domainName)
+
   })
 })

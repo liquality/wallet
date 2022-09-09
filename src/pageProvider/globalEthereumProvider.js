@@ -5,7 +5,6 @@ class GlobalEthereumPageProvider extends PageProvider {
   ethereumChain
   constructor(window, override, ethereumChain) {
     super(window)
-    console.log(window)
     this.override = override
     this.ethereumChain = ethereumChain
   }

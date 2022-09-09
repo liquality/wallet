@@ -486,7 +486,7 @@ import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { currencyToUnit, unitToCurrency, isMultiLayeredChain } from '@liquality/cryptoassets'
+import { currencyToUnit, unitToCurrency, getChain } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
@@ -519,7 +519,6 @@ import {
   feePerUnit,
   newSendFees
 } from '@liquality/wallet-core/dist/src/utils/fees'
-import { chains } from '@liquality/cryptoassets'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ArrowDown from '@/assets/icons/arrow-down.svg'
@@ -688,11 +687,11 @@ export default {
   },
   computed: {
     isFromCustomFeeSupported() {
-      const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
+      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.asset].chain)
       return supportCustomFees
     },
     isToCustomFeeSupported() {
-      const { supportCustomFees } = chains[cryptoassets[this.toAsset].chain]
+      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.toAsset].chain)
       return supportCustomFees
     },
     account() {
@@ -1148,7 +1147,7 @@ export default {
           txType,
           quote: this.selectedQuote,
           feePrices: Object.values(assetFees).map((fee) => feePerUnit(fee.fee, chainId)),
-          feePricesL1: isMultiLayeredChain(chainId)
+          feePricesL1: getChain(this.activeNetwork, chainId).isMultiLayered
             ? Object.values(assetFees).map((fee) => feePerUnit(fee.multilayerFee?.l1, chainId))
             : undefined,
           max
@@ -1409,7 +1408,7 @@ export default {
       const selectedSpeed = this.selectedFee[chainAsset]
       const fees = this.getAssetFees(chainAsset)
       const chainId = cryptoassets[asset].chain
-      const { unit } = chains[chainId]?.fees || ''
+      const { unit } = getChain(this.activeNetwork, chainId)?.fees || ''
       return `${fees?.[selectedSpeed].fee || BN(0)} ${unit}`
     },
     getChainAssetSwapFee(asset) {
