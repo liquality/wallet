@@ -59,7 +59,7 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
     })
   })
   it('SOVRYN Bridge injection', async () => {
-    await dappPage.goto(bridgeUrl, { timeout: 60000, waitUntil: 'load' })
+    await dappPage.goto(bridgeUrl, { timeout: 0, waitUntil: 'load' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
@@ -75,7 +75,7 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
       })
       await connectRequestWindow.waitForSelector('#RSK', { visible: true, timeout: 60000 })
     } catch (e) {
-      await testUtil.takeScreenshot(connectRequestWindow, 'rsk-sovryn-dapp-connect-request-issue')
+      // await testUtil.takeScreenshot(connectRequestWindow, 'rsk-sovryn-dapp-connect-request-issue')
       expect(
         e,
         'RSK sovryn injection ethereum not listed, connected window not loaded.....'
@@ -110,8 +110,8 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
     })
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
   })
-  it('SOVRYN dApp injection', async () => {
-    await dappPage.goto(sovrynUrl, { timeout: 60000, waitUntil: 'load' })
+  it('SOVRYN dApp injection with create wallet', async () => {
+    await dappPage.goto(sovrynUrl, { timeout: 0, waitUntil: 'load' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
@@ -127,11 +127,7 @@ describe('RSK Bridge & Sovryn dapp Injection as create a new wallet-["MAINNET","
       })
       await connectRequestWindow.waitForSelector('#RSK', { visible: true, timeout: 60000 })
     } catch (e) {
-      await testUtil.takeScreenshot(connectRequestWindow, 'rsk-sovryn-dapp-connect-request-issue')
-      expect(
-        e,
-        'RSK sovryn injection ethereum not listed, connected window not loaded.....'
-      ).equals(null)
+      expect(e, 'RSK sovryn injection RSK not listed, connected window not loaded').equals(null)
     }
 
     const rskAccounts = await connectRequestWindow.$$('#RSK')

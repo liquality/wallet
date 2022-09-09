@@ -63,9 +63,9 @@ import SendIcon from '@/assets/icons/arrow_send.svg'
 import { getAssetIcon } from '@/utils/asset'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import EyeIcon from '@/assets/icons/eye.svg'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { chains } from '@liquality/cryptoassets'
-import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import { getChain, getNativeAssetCode } from '@liquality/cryptoassets'
+import { getAddressExplorerLink } from '@liquality/wallet-core/dist/src/utils/asset'
 
 export default {
   components: {
@@ -86,8 +86,12 @@ export default {
   data() {
     return {
       updatingAssets: false,
-      addressCopied: false
+      addressCopied: false,
+      nftAssetsCount: 0
     }
+  },
+  created() {
+    this.setNftAssetsCount()
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork', 'addresses']),
@@ -102,9 +106,6 @@ export default {
         return this.allNftCollections
       }
     },
-    nftAssetsCount() {
-      return Object.values(this.nftAssets).reduce((acc, nft) => acc + nft.length, 0)
-    },
     account() {
       return this.accountsData.filter((account) => account.id === this.id)[0]
     },
@@ -113,15 +114,14 @@ export default {
     },
     address() {
       if (this.isAccount) {
-        return chains[this.account.chain]?.formatAddress(
-          this.account.addresses[0],
-          this.activeNetwork
+        return getChain(this.activeNetwork, this.account.chain)?.formatAddressUI(
+          this.account.addresses[0]
         )
       }
       return ''
     },
     asset() {
-      return chains[this.account.chain].nativeAsset
+      return getNativeAssetCode(this.activeNetwork, this.account.chain)
     },
     addressLink() {
       if (this.account) {
@@ -146,7 +146,7 @@ export default {
           accountIds: accountIds
         })
       } catch (error) {
-        console.log(error)
+        console.error(error)
       } finally {
         this.updatingAssets = false
       }
@@ -157,6 +157,21 @@ export default {
       setTimeout(() => {
         this.addressCopied = false
       }, 2000)
+    },
+    setNftAssetsCount() {
+      this.nftAssetsCount = Object.values(this.nftAssets).reduce((acc, nft) => acc + nft.length, 0)
+    }
+  },
+  watch: {
+    accountNftCollections(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.setNftAssetsCount()
+      }
+    },
+    allNftCollections(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.setNftAssetsCount()
+      }
     }
   }
 }

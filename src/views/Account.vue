@@ -90,6 +90,7 @@
           @filters-changed="applyFilters"
           :activity-data="activityData"
           v-if="activityData.length > 0"
+          :showTypeFilters="true"
         />
         <TransactionList :transactions="activityData" />
         <EmptyActivity
@@ -106,8 +107,8 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar.vue'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import SendIcon from '@/assets/icons/arrow_send.svg'
@@ -117,13 +118,13 @@ import {
   prettyBalance,
   formatFiat,
   formatFiatUI
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getAddressExplorerLink } from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import { getAddressExplorerLink } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import TransactionList from '@/components/TransactionList'
 import ActivityFilter from '@/components/ActivityFilter'
-import { applyActivityFilters } from '@liquality/wallet-core/dist/utils/history'
+import { applyActivityFilters } from '@liquality/wallet-core/dist/src/utils/history'
 import EyeIcon from '@/assets/icons/eye.svg'
 import BN from 'bignumber.js'
 import { formatFontSize } from '@/utils/fontSize'
@@ -228,13 +229,16 @@ export default {
       accountId: this.accountId
     })
     const chainId = cryptoassets[this.asset]?.chain
-    this.address = chains[chainId]?.formatAddress(addresses[0], this.activeNetwork)
+    this.address = getChain(this.activeNetwork, chainId).formatAddressUI(addresses[0])
 
     await this.refresh()
     this.activityData = [...this.assetHistory]
   },
   watch: {
     activeNetwork() {
+      this.activityData = [...this.assetHistory]
+    },
+    activity() {
       this.activityData = [...this.assetHistory]
     }
   }

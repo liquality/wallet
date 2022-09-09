@@ -94,14 +94,14 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import moment from '@liquality/wallet-core/dist/utils/moment'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chains, unitToCurrency } from '@liquality/cryptoassets'
-
-import { prettyBalance, dpUI } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { calculateQuoteRate } from '@liquality/wallet-core/dist/utils/quotes'
-import { getStatusLabel } from '@liquality/wallet-core/dist/utils/history'
-import { isERC20, getNativeAsset, getFeeAsset } from '@liquality/wallet-core/dist/utils/asset'
+import moment from '@liquality/wallet-core/dist/src/utils/moment'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
+import { getChain, unitToCurrency } from '@liquality/cryptoassets'
+import { prettyBalance, dpUI } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
+import { feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
+import { getStatusLabel } from '@liquality/wallet-core/dist/src/utils/history'
+import { isERC20, getNativeAsset, getFeeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 
 import CompletedIcon from '@/assets/icons/completed.svg'
 import RefundedIcon from '@/assets/icons/refunded.svg'
@@ -145,28 +145,25 @@ export default {
       return getFeeAsset(this.item.to)
     },
     txFees() {
-      const fromFee = this.item.fee.suggestedBaseFeePerGas
-        ? this.item.fee.suggestedBaseFeePerGas + this.item.fee.maxPriorityFeePerGas
-        : this.item.fee
-
-      const claimFee = this.item.claimFee || 0
-      const toFee = claimFee.suggestedBaseFeePerGas
-        ? claimFee.suggestedBaseFeePerGas + claimFee.maxPriorityFeePerGas
-        : claimFee
-
-      const fees = []
       const fromChain = cryptoassets[this.item.from].chain
       const toChain = cryptoassets[this.item.to].chain
+
+      const fromFee = feePerUnit(this.item.fee, fromChain)
+
+      const fees = []
       fees.push({
         asset: getNativeAsset(this.item.from),
         fee: fromFee,
-        unit: chains[fromChain].fees.unit
+        unit: getChain(this.activeNetwork, fromChain).fees.unit
       })
       if (toChain !== fromChain) {
+        const claimFee = this.item.claimFee || 0
+        const toFee = feePerUnit(claimFee, toChain)
+
         fees.push({
           asset: getNativeAsset(this.item.to),
           fee: toFee,
-          unit: this.feeAsset ? this.feeAsset : chains[toChain].fees.unit
+          unit: this.feeAsset ? this.feeAsset : getChain(this.activeNetwork, toChain).fees.unit
         })
       }
       return fees

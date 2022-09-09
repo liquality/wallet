@@ -11,8 +11,8 @@ import {
   terraProvider
 } from './inject'
 import { buildConfig } from '@liquality/wallet-core'
-import { ChainNetworks } from '@liquality/wallet-core/dist/utils/networks'
-import { chains, isEthereumChain } from '@liquality/cryptoassets'
+import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
+import { getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
 import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
 new Script().start()
@@ -35,17 +35,22 @@ async function setupTerraStreams() {
 }
 
 function injectEthereum(state, chain) {
-  const network = ChainNetworks[chain][state.activeNetwork]
+  const { activeNetwork } = state
+  const nativeAssetCode = getNativeAssetCode(activeNetwork, chain)
+
+  const network = ChainNetworks[chain][activeNetwork]
   inject(
     ethereumProvider({
       chain,
-      asset: chains[chain].nativeAsset,
+      asset: nativeAssetCode,
       network
     })
   )
 }
 
 function injectProviders(state) {
+  const { activeNetwork } = state
+
   inject(providerManager())
   inject(bitcoinProvider())
   inject(nearProvider())
@@ -54,9 +59,11 @@ function injectProviders(state) {
   setupTerraStreams()
   inject(terraProvider())
 
-  buildConfig.chains.filter(isEthereumChain).forEach((chain) => {
-    injectEthereum(state, chain)
-  })
+  buildConfig.chains
+    .filter((chainId) => isEvmChain(activeNetwork, chainId))
+    .forEach((chain) => {
+      injectEthereum(state, chain)
+    })
 
   inject(paymentUriHandler())
 }

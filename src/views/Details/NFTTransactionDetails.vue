@@ -37,18 +37,18 @@
           <div class="col-12">
             <h2>Sent Asset</h2>
             <div class="d-flex">
-              <div class="nft-image mr-2">
+              <div class="nft-image mr-2" style="--img-width: 100px">
                 <img
                   ref="nftThumbnailImage"
                   :src="item.nft.image_thumbnail_url || thumbnailImage"
-                  alt="nft-image"
+                  :alt="item.nft.name || 'NFT Image'"
                   @error="imageError('nftThumbnailImage')"
                 />
               </div>
               <div class="w-100">
-                <p class="font-weight-bold">{{ item.nft.name }}</p>
-                <p>{{ item.nft.collection.name }}</p>
-                <p v-if="item.nft.token_id">#{{ item.nft.token_id }}</p>
+                <p class="font-weight-bold text-break">{{ item.nft.name }}</p>
+                <p class="text-break">{{ item.nft.collection.name }}</p>
+                <p class="text-break" v-if="item.nft.token_id">#{{ item.nft.token_id }}</p>
               </div>
             </div>
           </div>
@@ -68,7 +68,7 @@
               <span>
                 <a
                   class="speed-up"
-                  v-if="canUpdateFee && !showFeeSelector"
+                  v-if="canUpdateFee && !showFeeSelector && isCustomFeeSupported"
                   @click="openFeeSelector()"
                 >
                   Speed up
@@ -118,28 +118,34 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import moment from '@liquality/wallet-core/dist/utils/moment'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import moment from '@liquality/wallet-core/dist/src/utils/moment'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
+import { getChain, getNativeAssetCode, getAsset } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
-import { getSendFee } from '@liquality/wallet-core/dist/utils/fees'
-import { prettyBalance, prettyFiatBalance } from '@liquality/wallet-core/dist/utils/coinFormatter'
-import { getStatusLabel, ACTIVITY_FILTER_TYPES } from '@liquality/wallet-core/dist/utils/history'
+import { getSendTxFees, feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
+import {
+  prettyBalance,
+  prettyFiatBalance
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
+import {
+  getStatusLabel,
+  ACTIVITY_FILTER_TYPES
+} from '@liquality/wallet-core/dist/src/utils/history'
 import {
   getNativeAsset,
   getTransactionExplorerLink,
   getAddressExplorerLink
-} from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { getItemIcon } from '@/utils/history'
 
 import FeeSelector from '@/components/FeeSelector'
-import Timeline from '@/transactions/views/NFTTimeline.vue'
+import Timeline from '@/components/NFT/NFTTimeline.vue'
 import CompletedIcon from '@/assets/icons/completed.svg'
 import FailedIcon from '@/assets/icons/failed.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import NavBar from '@/components/NavBar.vue'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 export default {
@@ -156,13 +162,18 @@ export default {
       tx: null,
       showFeeSelector: false,
       feeSelectorLoading: false,
-      selectedFee: 'average'
+      selectedFee: 'average',
+      sendFees: {}
     }
   },
   props: ['id'],
   computed: {
-    ...mapGetters(['client', 'accountsData']),
+    ...mapGetters(['client', 'accountsData', 'suggestedFeePrices']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
+    isCustomFeeSupported() {
+      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.item.from].chain)
+      return supportCustomFees
+    },
     thumbnailImage() {
       return NFTThumbnailImage
     },
@@ -170,9 +181,8 @@ export default {
       return getNativeAsset(this.asset)
     },
     itemFee() {
-      return typeof this.item.fee !== 'object'
-        ? this.item.fee
-        : BN(this.item.fee.maxFeePerGas).dp(3)
+      const fee = feePerUnit(this.item.fee, cryptoassets[this.asset].chain)
+      return typeof this.item.fee !== 'object' ? fee : BN(fee).dp(3)
     },
     item() {
       return this.history[this.activeNetwork][this.activeWalletId].find(
@@ -189,10 +199,10 @@ export default {
       return getStatusLabel(this.item)
     },
     feeUnit() {
-      return chains[cryptoassets[this.asset].chain].fees.unit
+      return getChain(this.activeNetwork, cryptoassets[this.asset].chain).fees.unit
     },
     asset() {
-      return chains[this.chain].nativeAsset
+      return getNativeAssetCode(this.activeNetwork, this.chain)
     },
     chainId() {
       return cryptoassets[this.asset].chain
@@ -209,7 +219,7 @@ export default {
       )
     },
     assetFees() {
-      return this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      return this.suggestedFeePrices(this.assetChain)
     },
     feesAvailable() {
       return this.assetFees && Object.keys(this.assetFees).length
@@ -217,16 +227,6 @@ export default {
     typeIcon() {
       const filter = ACTIVITY_FILTER_TYPES[this.item.type]
       return this.getItemIcon(filter?.icon)
-    },
-    sendFees() {
-      const sendFees = {}
-
-      for (const [speed, fee] of Object.entries(this.assetFees)) {
-        const feePrice = fee.maxFeePerGas || fee.fee
-        sendFees[speed] = getSendFee(this.assetChain, feePrice)
-      }
-
-      return sendFees
     }
   },
   methods: {
@@ -237,6 +237,11 @@ export default {
     getAssetIcon,
     prettyFiatBalance,
     getItemIcon,
+    async _updateSendFees() {
+      // TODO: This fee calculation for sending NFTs is inccorect. It uses 21k gas limit of sending native asset.
+      // It might be based on updated fee.
+      this.sendFees = await getSendTxFees(this.accountId, this.asset, undefined, this.customFee)
+    },
     prettyTime(timestamp) {
       return moment(timestamp).format('MMM D YYYY, h:mm a')
     },
@@ -276,7 +281,7 @@ export default {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
-        asset: this.asset,
+        chainId: getAsset(this.activeNetwork, this.asset).chain,
         accountId: this.item.accountId
       })
       const transaction =
@@ -295,6 +300,7 @@ export default {
   created() {
     this.updateTransaction()
     this.interval = setInterval(() => this.updateTransaction(), 10000)
+    this._updateSendFees()
   },
   beforeDestroy() {
     clearInterval(this.interval)
@@ -360,7 +366,7 @@ export default {
   }
 
   .nft-image {
-    width: 120px;
+    min-width: var(--img-width);
 
     img {
       width: 100%;

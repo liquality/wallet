@@ -17,11 +17,39 @@
         Once you start owning NFTs with accounts in your Liquality wallet you will see them here.
       </p>
       <div class="d-flex justify-content-center brand">
-        <OpenSea @click="exploreNfts" class="cursor-pointer" />
+        <OpenSea @click="openMarketplace('polygon')" class="cursor-pointer" />
       </div>
-      <div class="d-flex justify-content-center w-100">
-        <a class="btn btn-primary w-100" :href="opensea" target="_blank" rel="noopener noreferrer"
-          >Check out Opensea</a
+      <p class="text-center">Explore NFTs on Polygon, Ethereum and Solana.</p>
+      <div class="d-flex justify-content-center mb-2">
+        <a
+          class="btn btn-primary"
+          :href="nftExplorerLink('polygon')"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Check out OpenSea</a
+        >
+      </div>
+      <hr />
+      <div class="d-flex justify-content-center brand">
+        <StratosNFT @click="openMarketplace('arbitrum')" class="cursor-pointer" />
+      </div>
+      <p class="text-center">Discover and collect NFTs on Arbitrum</p>
+      <div class="d-flex justify-content-center">
+        <a
+          class="btn btn-primary"
+          :href="nftExplorerLink('arbitrum')"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Check out Stratos</a
+        >
+      </div>
+      <div class="d-flex justify-content-center">
+        <a
+          class="text-primary font-weight-bold"
+          href="https://blog.liquality.io/nfts-are-here-manage-your-collections-from-multiple-chains-on-your-liquality-wallet/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Learn how it works</a
         >
       </div>
     </div>
@@ -30,15 +58,18 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import NFTAssets from '../../components/NFTAssets.vue'
-import { getNftLink, openseaLink } from '@liquality/wallet-core/dist/utils/asset'
+import NFTAssets from '../../components/NFT/NFTAssets.vue'
 import OpenSea from '../../assets/icons/opensea.svg'
-import { chains } from '@liquality/cryptoassets'
+import StratosNFT from '../../assets/icons/stratosnft.svg'
+import { getNftLink, openseaLink } from '@liquality/wallet-core/dist/src/utils/asset'
+import { getItemIcon } from '@/utils/history'
+import { getNativeAssetCode } from '@liquality/cryptoassets'
 
 export default {
   components: {
     NFTAssets,
-    OpenSea
+    OpenSea,
+    StratosNFT
   },
   props: {
     source: {
@@ -55,7 +86,7 @@ export default {
       assets: []
     }
   },
-  created() {
+  async created() {
     if (this.isAccount) {
       this.assets = this.accountNftCollections(this.accountId)
     } else {
@@ -74,10 +105,6 @@ export default {
     chain() {
       return this.account?.chain
     },
-    nftExplorerLink() {
-      const asset = chains[this.account?.chain].nativeAsset
-      return getNftLink(asset, this.activeNetwork)
-    },
     opensea() {
       return openseaLink(this.activeNetwork)
     }
@@ -85,11 +112,13 @@ export default {
   methods: {
     getNftLink,
     openseaLink,
-    exploreNfts() {
-      if (this.isAccount) {
-        window.open(this.nftExplorerLink, '_blank')
-      }
-      window.open(this.opensea, '_blank')
+    getItemIcon,
+    nftExplorerLink(chain) {
+      const asset = getNativeAssetCode(this.activeNetwork, chain)
+      return getNftLink(asset, this.activeNetwork)
+    },
+    openMarketplace(chain) {
+      window.open(this.nftExplorerLink(chain), '_blank')
     }
   }
 }
@@ -137,13 +166,12 @@ export default {
   .btn {
     border-radius: 22px;
     color: #ffffff;
+    margin-bottom: 30px;
   }
 
   .brand {
     border-radius: 10px;
-    padding: 28px 58px;
-    margin-bottom: 20px;
-
+    margin: 22px 0;
     svg {
       width: 215px;
       height: 49px;

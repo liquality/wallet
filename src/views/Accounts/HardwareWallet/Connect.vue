@@ -12,7 +12,7 @@
         <li>Plug the Ledger into the computer</li>
         <li>Enter pin to unlock it</li>
         <li>On the device, navigate to the asset that you want to access</li>
-        <li v-if="isEthereumChain(selectedAsset.name)">
+        <li v-if="isChainEvmCompatible(selectedAsset.name)">
           To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Blind signing'
         </li>
       </ul>
@@ -75,9 +75,9 @@
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import LedgerIcon from '@/assets/icons/ledger_icon.svg'
-import { LEDGER_OPTIONS } from '@liquality/wallet-core/dist/utils/ledger'
+import { LEDGER_OPTIONS } from '@liquality/wallet-core/dist/src/utils/ledger'
 import clickAway from '@/directives/clickAway'
-import { isEthereumChain } from '@liquality/wallet-core/dist/utils/asset'
+import { isChainEvmCompatible } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 
 export default {
@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     getAssetIcon,
-    isEthereumChain,
+    isChainEvmCompatible,
     connect() {
       if (this.selectedAsset) {
         this.$emit('on-connect', { asset: this.selectedAsset })

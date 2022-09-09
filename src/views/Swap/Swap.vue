@@ -147,7 +147,7 @@
             </template>
             <template v-slot:content>
               <ul class="selectors">
-                <li v-for="assetFee in availableFees" :key="assetFee">
+                <li v-for="(assetFee, idx) in availableFees" :key="assetFee">
                   <span class="selectors-asset">{{ assetFee }}</span>
                   <div v-if="customFees[assetFee]" class="selector-asset-switch">
                     <span v-if="getTotalSwapFee(assetFee).dp(6).eq(0)"
@@ -157,16 +157,34 @@
                     {{ getTotalSwapFeeInFiat(assetFee) }} USD
                     <button class="btn btn-link" @click="resetCustomFee(assetFee)">Reset</button>
                   </div>
-                  <FeeSelector
-                    v-else
-                    :asset="assetsFeeSelector[assetFee]"
-                    v-model="selectedFee[assetFee]"
-                    :fees="getAssetFees(assetFee)"
-                    :totalFees="amountOption === 'max' ? maxSwapFees[assetFee] : swapFees[assetFee]"
-                    :fiatRates="fiatRates"
-                    @custom-selected="onCustomFeeSelected"
-                    :swap="true"
-                  />
+                  <div v-else>
+                    <FeeSelector
+                      v-if="
+                        (idx === 0 && isFromCustomFeeSupported) ||
+                        (idx === 1 && isToCustomFeeSupported)
+                      "
+                      :asset="assetsFeeSelector[assetFee]"
+                      v-model="selectedFee[assetFee]"
+                      :fees="getAssetFees(assetFee)"
+                      :totalFees="
+                        amountOption === 'max' ? maxSwapFees[assetFee] : swapFees[assetFee]
+                      "
+                      :fiatRates="fiatRates"
+                      @custom-selected="onCustomFeeSelected"
+                      :swap="true"
+                    />
+                    <div
+                      v-else-if="
+                        (idx === 0 && !isFromCustomFeeSupported) ||
+                        (idx === 1 && !isToCustomFeeSupported)
+                      "
+                      class="network-header-container"
+                    >
+                      <span class="text-muted" id="send_network_speed_avg_fee">
+                        ({{ swapFees[assetFee].slow }} {{ assetFee }})
+                      </span>
+                    </div>
+                  </div>
                 </li>
                 <li v-if="hasPredefinedReceiveFee">
                   <span class="selectors-asset">{{ toAsset }} </span>{{ dpUI(receiveFee) }} /
@@ -467,8 +485,8 @@
 import { mapActions, mapGetters, mapState } from 'vuex'
 import _ from 'lodash'
 import BN from 'bignumber.js'
-import cryptoassets from '@liquality/wallet-core/dist/utils/cryptoassets'
-import { currencyToUnit, unitToCurrency } from '@liquality/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
+import { currencyToUnit, unitToCurrency, getChain } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import NavBar from '@/components/NavBar'
 import InfoNotification from '@/components/InfoNotification'
@@ -487,16 +505,20 @@ import {
   prettyBalance,
   prettyFiatBalance,
   VALUE_DECIMALS
-} from '@liquality/wallet-core/dist/utils/coinFormatter'
+} from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import {
   getAssetColorStyle,
   getNativeAsset,
   isERC20
-} from '@liquality/wallet-core/dist/utils/asset'
+} from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
-import { getFeeLabel, isEIP1559Fees } from '@liquality/wallet-core/dist/utils/fees'
-import { chains } from '@liquality/cryptoassets'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import {
+  getFeeLabel,
+  isEIP1559Fees,
+  feePerUnit,
+  newSendFees
+} from '@liquality/wallet-core/dist/src/utils/fees'
 import SwapIcon from '@/assets/icons/arrow_swap.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import ArrowDown from '@/assets/icons/arrow-down.svg'
@@ -512,11 +534,11 @@ import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import OperationErrorModal from '@/components/OperationErrorModal'
 import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
-import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/utils/quotes'
+import { calculateQuoteRate, sortQuotes } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { version as walletVersion } from '../../../package.json'
 import { buildConfig } from '@liquality/wallet-core'
-import { SwapProviderType } from '@liquality/wallet-core/dist/store/types'
-import { getSwapProvider } from '@liquality/wallet-core/dist/factory'
+import { SwapProviderType } from '@liquality/wallet-core/dist/src/store/types'
+import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
 import qs from 'qs'
 
 const QUOTE_TIMER_MS = 30000
@@ -664,6 +686,14 @@ export default {
     clearInterval(this.interval)
   },
   computed: {
+    isFromCustomFeeSupported() {
+      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.asset].chain)
+      return supportCustomFees
+    },
+    isToCustomFeeSupported() {
+      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.toAsset].chain)
+      return supportCustomFees
+    },
     account() {
       return this.accountItem(this.fromAccountId)
     },
@@ -828,10 +858,23 @@ export default {
     },
     available() {
       if (!this.networkWalletBalances) return BN(0)
+
+      // Some swap providers like "Jupiter" require extra amount to be extract from balance
+      // when perforing swaps using "MAX"
+      const getExtraAmountToExtractFromBalance =
+        this.selectedQuoteProvider?.getExtraAmountToExtractFromBalance
+      let extraAmountToExtractFromBalance = 0
+      if (getExtraAmountToExtractFromBalance) {
+        extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
+      }
+
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
-        : BN.max(BN(balance).minus(BN(this.maxFee).times(1.5)), 0)
+        : BN.max(
+            BN(balance).minus(BN(this.maxFee.plus(extraAmountToExtractFromBalance)).times(1.5)),
+            0
+          )
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     availableBeforeFees() {
@@ -994,14 +1037,13 @@ export default {
         this.receiveFee,
         this.fiatRates[this.selectedQuote?.bridgeAsset || this.toAssetChain]
       ).plus(cryptoToFiat(this.fromSwapFee, this.fiatRates[this.assetChain]))
-
       const receiveTotalPercentage = isNaN(this.totalToReceiveInFiat)
         ? 0
         : this.totalToReceiveInFiat * 0.15
-      return feeTotal.gte(BN(receiveTotalPercentage))
+      return receiveTotalPercentage !== 0 && feeTotal.gte(BN(receiveTotalPercentage))
     },
     isSwapNegative() {
-      return this.totalToReceiveInFiat <= 0
+      return this.totalToReceiveInFiat < 0
     },
     isEIP1559Fees() {
       return isEIP1559Fees(cryptoassets[this.customFeeAssetSelected].chain, this.activeNetwork)
@@ -1017,6 +1059,7 @@ export default {
       'trackAnalytics'
     ]),
     ...mapActions('app', ['startBridgeListener']),
+    ...mapGetters(['suggestedFeePrices']),
     shortenAddress,
     dpUI,
     prettyBalance,
@@ -1030,7 +1073,7 @@ export default {
       if (this.customFees[asset]) {
         assetFees.custom = { fee: this.customFees[asset] }
       }
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[asset]
+      const fees = this.suggestedFeePrices()(asset)
       if (fees) {
         Object.assign(assetFees, fees)
       }
@@ -1086,18 +1129,8 @@ export default {
     async _updateSwapFees(max) {
       if (!this.selectedQuote) return
       const fees = {
-        [this.assetChain]: {
-          slow: BN(0),
-          average: BN(0),
-          fast: BN(0),
-          custom: BN(0)
-        },
-        [this.toAssetChain]: {
-          slow: BN(0),
-          average: BN(0),
-          fast: BN(0),
-          custom: BN(0)
-        }
+        [this.assetChain]: newSendFees(),
+        [this.toAssetChain]: newSendFees()
       }
 
       const selectedQuoteProvider = this.selectedQuoteProvider
@@ -1105,20 +1138,25 @@ export default {
 
       const addFees = async (asset, chain, txType) => {
         const assetFees = this.getAssetFees(chain)
+        const chainId = cryptoassets[chain].chain
+
         const totalFees = await selectedQuoteProvider.estimateFees({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset,
           txType,
           quote: this.selectedQuote,
-          feePrices: Object.values(assetFees).map((fee) => fee.fee.maxFeePerGas || fee.fee),
+          feePrices: Object.values(assetFees).map((fee) => feePerUnit(fee.fee, chainId)),
+          feePricesL1: getChain(this.activeNetwork, chainId).isMultiLayered
+            ? Object.values(assetFees).map((fee) => feePerUnit(fee.multilayerFee?.l1, chainId))
+            : undefined,
           max
         })
 
         if (!totalFees) return
 
         for (const [speed, fee] of Object.entries(assetFees)) {
-          const feePrice = fee.fee.maxFeePerGas || fee.fee
+          const feePrice = feePerUnit(fee.fee, cryptoassets[asset].chain)
           fees[chain][speed] = fees[chain][speed].plus(totalFees[feePrice])
         }
       }
@@ -1371,7 +1409,7 @@ export default {
       const selectedSpeed = this.selectedFee[chainAsset]
       const fees = this.getAssetFees(chainAsset)
       const chainId = cryptoassets[asset].chain
-      const { unit } = chains[chainId]?.fees || ''
+      const { unit } = getChain(this.activeNetwork, chainId)?.fees || ''
       return `${fees?.[selectedSpeed].fee || BN(0)} ${unit}`
     },
     getChainAssetSwapFee(asset) {
@@ -1420,8 +1458,7 @@ export default {
       } else {
         this.updateMaxSwapFees()
         this.updateSwapFees()
-        this.customFees[asset] =
-          typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.customFees[asset] = feePerUnit(fee, cryptoassets[asset].chain)
         this.selectedFee[asset] = 'custom'
       }
       this.currentStep = 'inputs'
@@ -1624,5 +1661,9 @@ export default {
     height: 18px;
     fill: #a8aeb7;
   }
+}
+
+#send_network_speed_avg_fee {
+  margin-top: 0;
 }
 </style>

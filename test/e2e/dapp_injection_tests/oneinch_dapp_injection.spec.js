@@ -40,7 +40,7 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
   afterEach(async () => {
     await browser.close()
   })
-  it('1Inch injection - ETH["MAINNET_RELEASE"]', async () => {
+  it.skip('1Inch injection - ETH["MAINNET_RELEASE"]', async () => {
     let chain = 'ethereum'
 
     // Go to 1inch app
@@ -54,10 +54,16 @@ describe('1Inch Dapp Injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
       window.ethereum.enable()
     })
     const connectRequestWindow = await newPagePromise
-    await connectRequestWindow.waitForSelector('#filter_by_chain', {
-      visible: true,
-      timeout: 90000
-    })
+    try {
+      await connectRequestWindow.waitForSelector('#filter_by_chain', {
+        visible: true,
+        timeout: 90000
+      })
+    } catch (e) {
+      await testUtil.takeScreenshot(connectRequestWindow, '1inch-ethereum-loading-issue')
+      expect(e, '1inch injection not listed, connected window not loaded.....').equals(null)
+    }
+
     await connectRequestWindow.click('#filter_by_chain').catch((e) => e)
     await connectRequestWindow.waitForSelector(`#${chain}_web_network`, { visible: true })
     await connectRequestWindow.click(`#${chain}_web_network`, { delay: 1000 })

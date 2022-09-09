@@ -42,9 +42,9 @@
 
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
-import { isEthereumChain, chains } from '@liquality/cryptoassets'
+import { getChain, isEvmChain } from '@liquality/cryptoassets'
 import { version as walletVersion } from '../../package.json'
-import { shortenAddress } from '@liquality/wallet-core/dist/utils/address'
+import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import { buildConfig } from '@liquality/wallet-core'
 
 import clickAway from '@/directives/clickAway'
@@ -82,7 +82,7 @@ export default {
       return chains.length > 0
     },
     ethereumChains() {
-      return buildConfig.chains.filter(isEthereumChain)
+      return buildConfig.chains.filter((chainId) => isEvmChain(this.activeNetwork, chainId))
     },
     selectedAccount() {
       if (!this.dappConnected) {
@@ -116,7 +116,7 @@ export default {
     },
     formatAddress(account) {
       return shortenAddress(
-        chains[account.chain].formatAddress(account.addresses[0], this.activeNetwork)
+        getChain(this.activeNetwork, account.chain).formatAddressUI(account.addresses[0])
       )
     },
     switchAccount(account) {
