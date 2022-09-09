@@ -48,7 +48,7 @@ svg.ledger-sign-request {
 
 .ledger-options-instructions {
   margin-top: 10px;
-  align-self: start;
+  align-self: flex-start;
   padding-left: 0px !important;
   font-weight: 300;
   font-size: 14px;

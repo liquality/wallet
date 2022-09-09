@@ -274,7 +274,7 @@ export default {
     border-top: 0 none;
 
     li {
-      justify-content: start;
+      justify-content: flex-start;
       padding: 7px $wrapper-padding;
     }
 

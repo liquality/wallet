@@ -129,7 +129,7 @@ export default {
       gap: 12px;
       width: 100%;
       overflow: auto;
-      justify-content: start;
+      justify-content: flex-start;
       align-items: center;
       margin-right: 20px;
 

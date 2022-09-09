@@ -1,4 +1,5 @@
 export const trackAnalytics = async ({ state, dispatch }, { event, properties = {} }) => {
+  console.log('on app Track analitycs', state.locale)
   dispatch(
     'trackAnalytics',
     {

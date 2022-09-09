@@ -89,7 +89,7 @@ export const actions = {
   settingsModalOpen: ({ commit }, isOpen) => {
     commit('SET_SETTINGS_MODAL_OPEN', isOpen)
   },
-  setLocalePrefference: ({ commit }, { locale }) => {
+  setLocalePreference: ({ commit }, { locale }) => {
     commit('SET_LOCALE', { locale })
   },
   getBrowserLocale: () => {
