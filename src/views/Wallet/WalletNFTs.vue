@@ -1,16 +1,15 @@
 <template>
   <div class="nft-collectibles">
     <div v-if="Object.keys(assets).length">
-      <template v-for="(asset, key) in assets">
-        <NFTAssets
-          :assets="asset"
-          :collectionName="key"
-          :key="asset.id"
-          :source="source"
-          :isAccount="isAccount"
-          :accountId="accountId"
-        />
-      </template>
+      <NFTAssets
+        v-for="(asset, key) in assets"
+        :assets="asset"
+        :collectionName="key"
+        :key="asset.id"
+        :source="source"
+        :isAccount="isAccount"
+        :accountId="accountId"
+      />
     </div>
     <div class="activity-empty m-4" v-else>
       <p>
@@ -95,12 +94,12 @@ export default {
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
-    ...mapGetters(['allNftCollections', 'accountNftCollections', 'accountsData']),
+    ...mapGetters(['allNftCollections', 'accountNftCollections', 'accountItem']),
     accountId() {
       return this.$route.params.id
     },
     account() {
-      return this.accountsData.filter((account) => account.id === this.accountId)[0]
+      return this.accountItem(this.accountId)
     },
     chain() {
       return this.account?.chain

@@ -419,13 +419,10 @@ export default {
       if (this.$route.query.accountId) {
         return this.$route.query.accountId
       }
-      if (this.$route.query.nftAsset.accountId) {
-        return this.$route.query.nftAsset.accountId
-      }
       return this.selectedNFT.accountId
     },
     account() {
-      return this.accountsData.filter((account) => account.id === this.accountId)[0]
+      return this.accountItem(this.accountId)
     },
     assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
@@ -488,7 +485,7 @@ export default {
       return cryptoassets[this.asset].chain === this.account?.chain
     },
     asset() {
-      return getNativeAssetCode(this.activeNetwork, this.account?.chain)
+      return this.account ? getNativeAssetCode(this.activeNetwork, this.account?.chain) : null
     },
     startAddress() {
       return this.address.slice(0, 6)

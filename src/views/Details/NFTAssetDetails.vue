@@ -242,7 +242,7 @@ export default {
     })
   },
   computed: {
-    ...mapGetters(['accountsData']),
+    ...mapGetters(['accountItem', 'accountNftCollections']),
     ...mapState(['activeNetwork']),
     source() {
       return this.$route.fullPath
@@ -251,7 +251,7 @@ export default {
       return NFTThumbnailImage
     },
     account() {
-      return this.accountsData.filter((account) => account.id === this.accountId)[0]
+      return this.accountItem(this.accountId)
     },
     address() {
       return getChain(this.activeNetwork, this.account.chain)?.formatAddressUI(
@@ -268,7 +268,7 @@ export default {
       return this.account?.chain
     },
     asset() {
-      return getNativeAssetCode(this.activeNetwork, this.account?.chain)
+      return this.account ? getNativeAssetCode(this.activeNetwork, this.account?.chain) : null
     },
     addressLink() {
       return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
@@ -280,13 +280,15 @@ export default {
     if (nftAsset && this.prevRoute.path === '/wallet/nfts/send') {
       this.nftAsset = nftAsset
       this.accountId = nftAsset.accountId
-      return
+    } else {
+      this.accountId = this.$route.query.accountId
+      const collectionName = this.$route.query.collection
+      const nftAssetId = this.$route.query.nftAsset
+      const collections = this.accountNftCollections(this.accountId)
+      if (collections && collections[collectionName]) {
+        this.nftAsset = collections[collectionName].find((i) => i.id == nftAssetId)
+      }
     }
-    this.nftAsset = this.$route.query.nftAsset
-    this.accountId = this.$route.query.nftAsset.accountId
-      ? this.$route.query.nftAsset.accountId
-      : this.$route.query.accountId
-    return
   },
   destroyed() {
     localStorage.removeItem('nftAsset')

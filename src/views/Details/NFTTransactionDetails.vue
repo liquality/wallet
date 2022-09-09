@@ -168,7 +168,7 @@ export default {
   },
   props: ['id'],
   computed: {
-    ...mapGetters(['client', 'accountsData', 'suggestedFeePrices']),
+    ...mapGetters(['client', 'accountItem', 'suggestedFeePrices']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     isCustomFeeSupported() {
       const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.item.from].chain)
@@ -192,8 +192,11 @@ export default {
     accountId() {
       return this.item.nft.accountId || this.item.accountId
     },
+    account() {
+      return this.accountItem(this.accountId)
+    },
     chain() {
-      return this.accountsData.filter((account) => account.id === this.accountId)[0]?.chain
+      return this.account?.chain
     },
     status() {
       return getStatusLabel(this.item)
