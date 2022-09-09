@@ -17,14 +17,14 @@ const transactionDetailsPage = new TransactionDetailsPage()
 
 let browser, page
 
-describe.skip('Custom fee feature["TESTNET"]', async () => {
+describe('Custom fee feature["TESTNET"]', async () => {
   const coinName = 'SOV'
   const coinsToSend = '0.001'
 
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -69,7 +69,7 @@ describe.skip('Custom fee feature["TESTNET"]', async () => {
     // Check Network Speed/FEE
     const avgNetworkSpeedFee = await sendPage.GetNetworkSpeedFee(page)
     expect(avgNetworkSpeedFee, 'SOV->SOV send Network Fee should be 0.000001 RBTC').contains(
-      '0.000001 RBTC'
+      '0.000007 RBTC'
     )
 
     // Select Custom network speed fee

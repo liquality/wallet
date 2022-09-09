@@ -54,7 +54,9 @@ describe('SWAP feature["MAINNET"]', async () => {
     console.log('SWAP screen has been displayed with send amount input field')
 
     // Select toAsset
+    await page.waitForTimeout(2000)
     await page.click('.swap-receive-main-icon')
+    await page.waitForTimeout(2000)
     await page.waitForSelector('#search_for_a_currency')
     await page.type('#search_for_a_currency', 'PWETH')
     await page.waitForSelector(`#${toAsset}`, { timeout: 120000, visible: true })

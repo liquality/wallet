@@ -20,8 +20,7 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.setDefaultNavigationTimeout(0)
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout:0 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -49,7 +48,7 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto(dappUrl, { waitUntil: 'domcontentloaded', timeout: 60000 })
+    await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 0 })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#swap-currency-input', { visible: true })
@@ -104,7 +103,6 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
     })
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
     await dappPage.waitForTimeout(10000)
-    await dappPage.reload()
     // Check web3 status as connected
     const connectedChainDetails = await dappPage.evaluate(async () => {
       const chainIDHexadecimal = await window.ethereum.request({
@@ -136,7 +134,7 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       width: 1366,
       height: 768
     })
-    await dappPage.goto(dappUrl, { timeout: 60000 })
+    await dappPage.goto(dappUrl, { timeout: 0, waitUntil: 'load' })
     try {
       await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
       await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })

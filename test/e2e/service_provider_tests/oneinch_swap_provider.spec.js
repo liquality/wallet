@@ -34,9 +34,7 @@ const swapPairMap = [
   // }
 ]
 
-if (process.env.NODE_ENV === 'mainnet') {
-  // Only works on Mainnet
-  describe.only('1Inch Service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
+  describe('1Inch Service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     swapPairMap.forEach((obj) => {
       it(`SWAP (${obj.from}->${obj.to})-PULL_REQUEST_TEST `, async () => {
         const fromAsset = obj.from
@@ -44,7 +42,7 @@ if (process.env.NODE_ENV === 'mainnet') {
 
         browser = await puppeteer.launch(testUtil.getChromeOptions())
         page = await browser.newPage()
-        await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+        await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
         // Import wallet option
         await homePage.ClickOnImportWallet(page)
         await homePage.ScrollToEndOfTerms(page)
@@ -110,4 +108,3 @@ if (process.env.NODE_ENV === 'mainnet') {
       await browser.close()
     })
   })
-}
