@@ -26,7 +26,12 @@
             @click="
               $router.push({
                 path: '/wallet/nfts/send',
-                query: { nftAsset: nftAsset, source: source, accountId: accountId }
+                query: {
+                  nftAsset: nftAsset.id,
+                  source: source,
+                  collection: nftAsset.collection?.name || '[Collection]',
+                  accountId: accountId
+                }
               })
             "
             v-tooltip.bottom="{
@@ -276,12 +281,10 @@ export default {
   },
   async created() {
     const nftAsset = await JSON.parse(localStorage.getItem('nftAsset'))
-
+    this.accountId = this.$route.query.accountId
     if (nftAsset && this.prevRoute.path === '/wallet/nfts/send') {
       this.nftAsset = nftAsset
-      this.accountId = nftAsset.accountId
     } else {
-      this.accountId = this.$route.query.accountId
       const collectionName = this.$route.query.collection
       const nftAssetId = this.$route.query.nftAsset
       const collections = this.accountNftCollections(this.accountId)

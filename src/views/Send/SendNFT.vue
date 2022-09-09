@@ -334,8 +334,14 @@ export default {
   },
   async created() {
     if (this.$route.query.nftAsset) {
+      debugger
       this.activeView = 'selectedAsset'
-      this.selectedNFT = this.$route.query.nftAsset
+      const collectionName = this.$route.query.collection
+      const nftAssetId = this.$route.query.nftAsset
+      const collections = this.accountNftCollections(this.accountId)
+      if (collections && collections[collectionName]) {
+        this.selectedNFT = collections[collectionName].find((i) => i.id == nftAssetId)
+      }
     }
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(this.amount)
