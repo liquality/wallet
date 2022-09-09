@@ -110,6 +110,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('app', ['trackAnalytics']),
     ...mapActions(['setEthereumInjectionChain', 'addExternalConnection']),
     updateInjectEthereumChain(chain) {
       this.setEthereumInjectionChain({ chain })

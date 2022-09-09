@@ -92,7 +92,8 @@ export default {
     this.title = this.$t(`onboarding.seedLogin.title.${this.titleKey}`)
   },
   methods: {
-    ...mapActions(['unlockWallet', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['unlockWallet']),
     async unlock() {
       this.error = null
       this.loading = true

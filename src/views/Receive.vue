@@ -225,7 +225,8 @@ export default {
     )
   },
   methods: {
-    ...mapActions(['getUnusedAddresses', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['getUnusedAddresses']),
     getAssetIcon,
     async copy() {
       this.trackAnalytics({

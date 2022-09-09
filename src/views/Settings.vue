@@ -144,10 +144,9 @@ export default {
       'enableEthereumInjection',
       'disableEthereumInjection',
       'setAnalyticsResponse',
-      'trackAnalytics',
       'forgetDappConnections'
     ]),
-    ...mapActions('app', ['initializeAnalytics', 'setLocalePreference']),
+    ...mapActions('app', ['initializeAnalytics', 'setLocalePreference', 'trackAnalytics']),
     toggleInjectEthereum(enable) {
       if (enable) {
         this.enableEthereumInjection()

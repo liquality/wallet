@@ -92,7 +92,8 @@ export default {
   },
   methods: {
     getAssetIcon,
-    ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance']),
     async connect({ asset, walletType, page }) {
       this.loading = true
       // connect to ledger

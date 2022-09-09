@@ -487,7 +487,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateFees', 'sendTransaction', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['updateFees', 'sendTransaction']),
     ...mapActions('app', ['startBridgeListener']),
     prettyBalance,
     dpUI,

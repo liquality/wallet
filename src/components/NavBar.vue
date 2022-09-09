@@ -116,7 +116,8 @@ export default {
     ...mapGetters('app', ['isSettingsModalOpen'])
   },
   methods: {
-    ...mapActions(['lockWallet', 'trackAnalytics']),
+    ...mapActions(['lockWallet']),
+    ...mapActions('app', ['trackAnalytics']),
     async lock() {
       this.trackAnalytics({
         event: 'User clicked Lock wallet option in navbar',

@@ -191,7 +191,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateAccountBalance', 'getUnusedAddresses', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['updateAccountBalance', 'getUnusedAddresses']),
     getAssetIcon,
     shortenAddress,
     formatFontSize,

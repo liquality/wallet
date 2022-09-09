@@ -213,11 +213,12 @@
               class="btn btn-primary btn-lg"
               id="swap_review_button"
               @click="review"
-              :disabled="!canSwap || cannotCoverNetworkFee">
+              :disabled="!canSwap || cannotCoverNetworkFee"
+            >
               {{
-                (!canSwap || cannotCoverNetworkFee) ?
-                $t('pages.swap.insufficientFunds') 
-                : $t('common.review') 
+                !canSwap || cannotCoverNetworkFee
+                  ? $t('pages.swap.insufficientFunds')
+                  : $t('common.review')
               }}
             </button>
           </div>
@@ -456,7 +457,7 @@
       </div>
     </div>
     <div class="swap" v-else>
-      <NavBar :showBackButton="true" :backClick="back" :backLabel="$t('common.back')"> 
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="$t('common.back')">
         {{ $t('common.selectAsset') }}
       </NavBar>
       <Accounts
@@ -1063,15 +1064,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'updateMarketData',
-      'getQuotes',
-      'updateFees',
-      'newSwap',
-      'updateFiatRates',
-      'trackAnalytics'
-    ]),
-    ...mapActions('app', ['startBridgeListener']),
+    ...mapActions(['updateMarketData', 'getQuotes', 'updateFees', 'newSwap', 'updateFiatRates']),
+    ...mapActions('app', ['trackAnalytics']),
     ...mapGetters(['suggestedFeePrices']),
     shortenAddress,
     dpUI,
