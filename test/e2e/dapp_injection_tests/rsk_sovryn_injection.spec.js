@@ -40,7 +40,8 @@ describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","MAINNET_RELEASE"]', asy
     // Select rsk
     await page.click('#dropdown-item', { delay: 2000 })
     await page.waitForSelector('#rsk_web_network', { visible: true })
-    await page.click('#rsk_web_network', { delay: 3000 })
+    await page.click('#rsk_web_network', { delay: 2000 })
+    await page.waitForTimeout(3000)
 
     // Go to SOVRYN app
     dappPage = await browser.newPage()
@@ -101,7 +102,7 @@ describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","MAINNET_RELEASE"]', asy
     })
     await connectRequestWindow.click('#connect_request_button').catch((e) => e)
   })
-  it('SOVRYN dApp injection ["PULL_REQUEST_TEST"]', async () => {
+  it('SOVRYN dApp injection as import wallet user["PULL_REQUEST_TEST"]', async () => {
     await dappPage.goto(sovrynUrl, { timeout: 0, waitUntil: 'load' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
