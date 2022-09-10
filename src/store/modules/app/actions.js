@@ -8,7 +8,7 @@ import { executeRequest } from './executeRequest'
 import { handlePaymentUri } from './handlePaymentUri'
 import { initializeAnalytics } from './initializeAnalytics'
 import { checkAnalyticsOptIn } from './checkAnalyticsOptIn'
-import { chains } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 
 export const actions = {
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
@@ -65,7 +65,7 @@ export const actions = {
     const apiKey = process.env.VUE_APP_TRANSAK_API_KEY
     let url = `${widgetUrl}?apiKey=${apiKey}&disablePaymentMethods=apple_pay&cryptoCurrencyCode=${asset}&network=${chain}`
 
-    const _address = chains[chain]?.formatAddress(address, rootState.activeNetwork)
+    const _address = getChain(rootState.activeNetwork, chain).formatAddressUI(address)
     url = `${url}&walletAddress=${_address}`
 
     chrome.tabs.create({ url })
@@ -86,7 +86,7 @@ export const actions = {
     const apiKey = process.env.VUE_APP_ONRAMPER_API_KEY
     let url = `${widgetUrl}?apiKey=${apiKey}&defaultCrypto=${asset}&excludePaymentMethods=applePay`
 
-    const _address = chains[chain]?.formatAddress(address, rootState.activeNetwork)
+    const _address = getChain(rootState.activeNetwork, chain).formatAddressUI(address)
     url = `${url}&wallets=${asset}:${_address}&onlyCryptos=${asset}`
 
     chrome.tabs.create({ url })

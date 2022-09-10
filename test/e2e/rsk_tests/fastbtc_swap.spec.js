@@ -16,9 +16,7 @@ const swapPage = new SwapPage()
 let browser, page
 
 // https://wiki.sovryn.app/en/sovryn-dapp/fast_btc
-if (process.env.NODE_ENV === 'mainnet') {
-  // fastBTC service provider only in mainnet(dev & prod)
-  describe('FastBTC swap provider-["MAINNET"]', async () => {
+  describe('FastBTC swap provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
@@ -85,10 +83,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       const quoteProvider = await page.$eval('#selectedQuote_provider', (el) => el.textContent)
 
       if (quoteProvider === 'FastBTC') {
-        expect(
-          await swapPage.getSelectedServiceProvider(page),
-          'BTC->RBTC,fastBTC swap Provider!!'
-        ).oneOf(['FastBTC'])
+       console.log('fastBTC swap provider is selected')
       } else {
         try {
           await page.waitForSelector('#see_all_quotes', {
@@ -104,12 +99,10 @@ if (process.env.NODE_ENV === 'mainnet') {
           await testUtil.takeScreenshot(page, 'fastbtc-see-all-quotes')
           asset.fail('fastbtc see all quotes failed')
         }
-
-        expect(
-          await swapPage.getSelectedServiceProvider(page),
-          'BTC->RBTC,fastBTC swap Provider!!'
-        ).oneOf(['FastBTC', 'Liquality'])
       }
+      expect(
+        await swapPage.getSelectedServiceProvider(page),
+        'BTC->RBTC,fastBTC swap Provider!!'
+      ).oneOf(['FastBTC'])
     })
   })
-}

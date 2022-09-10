@@ -80,7 +80,7 @@ jobs:
           CI: 'true'
           DISPLAY: :99
         with:
-          args: yarn test:mainnet:prodagent # Run tests against Prod mainnet
+          args: yarn test-full-regression # Run tests against Prod mainnet
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1

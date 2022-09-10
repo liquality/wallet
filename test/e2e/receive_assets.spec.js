@@ -83,7 +83,6 @@ describe('Receive tokens ["MAINNET"]', async () => {
       // Set password & click next
       await passwordPage.SubmitPasswordDetails(page)
       // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWhatsNewModal(page)
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
@@ -119,7 +118,7 @@ describe('Receive tokens ["MAINNET"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
       await homePage.ScrollToEndOfTerms(page)
