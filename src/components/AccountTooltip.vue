@@ -12,7 +12,7 @@
           <p class="text-muted my-0 text-left">
             {{ address ? shortenAddress(address) : '' }}
           </p>
-          <p class="text-muted my-0 text-left" v-if="isEthereumChain(asset)">
+          <p class="text-muted my-0 text-left" v-if="isChainEvmCompatible(asset)">
             {{ $t('components.accountTooltip.availableGas') }} {{ nativeAssetBalance }} {{ nativeAsset }}
           </p>
         </div>
@@ -24,7 +24,7 @@
 <script>
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import { getAccountIcon } from '@/utils/accounts'
-import { isEthereumChain, getNativeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
+import { isChainEvmCompatible, getNativeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 
 export default {
@@ -51,7 +51,7 @@ export default {
   methods: {
     shortenAddress,
     getAccountIcon,
-    isEthereumChain,
+    isChainEvmCompatible,
     getNativeAsset
   }
 }

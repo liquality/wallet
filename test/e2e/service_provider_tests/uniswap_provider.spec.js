@@ -19,7 +19,7 @@ describe('UNISWAP service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () =>
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -36,7 +36,7 @@ describe('UNISWAP service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     await browser.close()
   })
 
-  it.skip('ETH->DAI swap - UNISWAP V2', async () => {
+  it('ETH->DAI swap - UNISWAP V2', async () => {
     const fromAsset = 'ETH'
     const toAsset = 'DAI'
     // Click on ETH then click on SWAP button
@@ -53,22 +53,36 @@ describe('UNISWAP service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     await page.click('#ETHEREUM')
     await page.waitForSelector(`#${toAsset}`, { visible: true })
     await page.click(`#${toAsset}`)
-    await swapPage.ClickOnMax(page)
+    await swapPage.ClickOnMin(page)
     // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
     await page.waitForSelector('#selectedQuote_provider', {
       visible: true,
       timeout: 60000
     })
+
+    const selectedQuoteProvider = await swapPage.getSelectedServiceProvider(page)
+    if (selectedQuoteProvider.trim().includes('uniswap')) {
+    } else {
+      await page.waitForSelector('#see_all_quotes', { visible: true })
+      // Select uniswap Boost
+      await page.waitForSelector('#see_all_quotes', { visible: true })
+      await page.click('#see_all_quotes')
+      await page.waitForSelector('#uniswapV2_rate_provider', { visible: true })
+      await page.click('#uniswapV2_rate_provider')
+      await page.click('#select_quote_button')
+    }
+
     expect(
       await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'ETH->DAI, Supporting source should be chosen!'
-    ).oneOf(['Uniswap V2', 'Thorchain', 'Liquality'])
+    ).oneOf(['Uniswap V2', 'Thorchain'])
 
     // Click on Network speed + FEE & Validate
-    const networkSpeedFee = await page.$eval(
-      '#details_header_chevron_down_icon',
+    await page.click('#details_header_chevron_down_icon')
+    const networkSpeedFeeDetails = await page.$eval(
+      '.selectors-asset',
       (el) => el.textContent
     )
-    expect(networkSpeedFee).contain(fromAsset + ' Avg')
+    expect(networkSpeedFeeDetails).contain(fromAsset)
   })
 })

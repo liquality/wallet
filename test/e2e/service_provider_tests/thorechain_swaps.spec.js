@@ -18,7 +18,7 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -41,13 +41,14 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
 
     // Click on BTC then click on SWAP button
     await overviewPage.SelectAssetFromOverview(page, fromAsset)
-    await page.waitForSelector('#BTC_swap_button', { visible: true })
+    await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
     await page.click(`#${fromAsset}_swap_button`)
     console.log(`User clicked on ${fromAsset} SWAP button`)
+    await page.waitForTimeout(2000)
     // Select toAsset
     await page.click('.swap-receive-main-icon')
-    let ethereumNetwork = await page.waitForSelector('#ETHEREUM', { timeout: 90000, visible: true })
-    await ethereumNetwork.click()
+    await page.waitForSelector('#search_for_a_currency', { visible: true })
+    await page.type('#search_for_a_currency', toAsset)
     await page.waitForSelector(`#${toAsset}`, { visible: true })
     await page.click(`#${toAsset}`)
     console.log(`User selected ${toAsset} as 2nd pair for swap`)
@@ -61,7 +62,7 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
       if (e instanceof puppeteer.errors.TimeoutError) {
         expect(
           e,
-          'BTC>ETH swap ETH should be automatically selected as to assert, something is wrong'
+          'BTC to ETH swap ETH should be selected as TO assert, something is wrong'
         ).to.be.null
       }
     }
@@ -91,15 +92,43 @@ describe('ThoreChain SWAP provider["MAINNET", "PULL_REQUEST_TEST"]', async () =>
     ).oneOf(['Thorchain'])
   })
   it('ETH->BTC - Thorchain', async () => {
+
+    const toAsset = 'BTC'
+
     // Click on BTC then click on SWAP button
     await overviewPage.SelectAssetFromOverview(page, 'ETH')
     await page.waitForSelector('#ETH_swap_button', { visible: true })
     await page.click('#ETH_swap_button')
     console.log('User clicked on ETH SWAP button')
+
+    // Select toAsset
+    await page.click('.swap-receive-main-icon')
+    await page.waitForSelector('#search_for_a_currency', { visible: true })
+    await page.type('#search_for_a_currency', toAsset)
+    await page.waitForSelector(`#${toAsset}`, { visible: true })
+    await page.click(`#${toAsset}`)
+    console.log(`User selected ${toAsset} as 2nd pair for swap`)
+    await page.waitForTimeout(2000)
+
+    try {
+      await page.waitForSelector(`#${toAsset}_swap_receive_pair_asset`, {
+        visible: true,
+        timeout: 10000
+      })
+    } catch (e) {
+      if (e instanceof puppeteer.errors.TimeoutError) {
+        expect(
+          e,
+          'ETH to BTC swap BTC should be selected as TO assert, something is wrong'
+        ).to.be.null
+      }
+    }
+
     const swapSendAmountField = await swapPage.GetSwapSendAmount(page)
     expect(swapSendAmountField, 'BTC to ETH SWAP min value not set in input').not.equals('0.0000')
     // Check source name
     await page.waitForSelector('#selectedQuote_provider', { visible: true })
+
     try {
       const selectedQuoteProviderText = await page.$eval(
         '#selectedQuote_provider',

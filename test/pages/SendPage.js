@@ -31,7 +31,7 @@ class SendPage {
   async EnterSendToAddress(page, sendToAddress) {
     await page.waitForSelector('#address', { visible: true })
     const elementHandle = await page.$('#address')
-    await elementHandle.type(sendToAddress)
+    await elementHandle.type(sendToAddress, { delay: 200 })
     await page.waitForTimeout(1000)
   }
 

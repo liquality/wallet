@@ -17,11 +17,11 @@ const addCustomTokenPage = new AddCustomTokenPage()
 
 let browser, page
 
-describe('SWAP feature["MAINNET"]', async () => {
+describe.skip('SWAP feature["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
 
     // Import wallet option and accept Terms
     await homePage.ClickOnImportWallet(page)
@@ -37,13 +37,12 @@ describe('SWAP feature["MAINNET"]', async () => {
     // overview page
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-    await overviewPage.SelectNetwork(page, 'mainnet')
   })
   afterEach(async () => {
     await browser.close()
   })
 
-  it('SWAP SOL to soLINK - Solana', async () => {
+  it('SWAP SOL to soLINK - Solana [PULL_REQUEST_TEST]', async () => {
     const fromAsset = 'SOL'
     const toAsset = 'soLINK'
 
@@ -58,9 +57,10 @@ describe('SWAP feature["MAINNET"]', async () => {
     // Select toAsset
     await page.click('.swap-receive-main-icon')
     await page.waitForSelector('#search_for_a_currency')
-    await page.type('#search_for_a_currency', 'soLINK')
-    await page.waitForSelector(`#${toAsset}`, { timeout: 120000, visible: true })
-    await page.click(`#${toAsset}`)
+    await page.type('#search_for_a_currency', 'soLINK', { delay: 100 })
+    console.log('User typed soLINK in search field')
+    await page.waitForSelector('#soLINK')
+    await page.click('#soLINK')
     console.log(`User selected ${toAsset} as 2nd pair for swap`)
 
     // Update the SWAP value to 0.1
@@ -177,7 +177,7 @@ describe('SWAP feature["MAINNET"]', async () => {
     expect(fetchedTokenDetails.tokenDecimal).to.equals(tokenDetails.decimal)
     // Click on Add Token button
     await addCustomTokenPage.AddTokenButton(page)
-    
+
     //Click overview link
     await page.waitForSelector('.navbar_prev_icon')
     await page.click('.navbar_prev_icon')

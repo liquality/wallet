@@ -77,7 +77,7 @@ import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import LedgerIcon from '@/assets/icons/ledger_icon.svg'
 import { LEDGER_OPTIONS } from '@liquality/wallet-core/dist/src/utils/ledger'
 import clickAway from '@/directives/clickAway'
-import { isEthereumChain } from '@liquality/wallet-core/dist/src/utils/asset'
+import { isChainEvmCompatible } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 
 export default {
@@ -97,7 +97,7 @@ export default {
   },
   methods: {
     getAssetIcon,
-    isEthereumChain,
+    isChainEvmCompatible,
     connect() {
       if (this.selectedAsset) {
         this.$emit('on-connect', { asset: this.selectedAsset })

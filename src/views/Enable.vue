@@ -80,8 +80,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import { isEthereumChain, dappChains } from '@liquality/cryptoassets'
+import { mapActions, mapGetters, mapState } from 'vuex'
+import { dappChains, isEvmChain } from '@liquality/cryptoassets'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import NetworkAccounts from '@/components/NetworkAccounts'
 import ChainDropdown from '@/components/ChainDropdown'
@@ -103,14 +103,15 @@ export default {
     }
   },
   computed: {
+    ...mapState(['activeNetwork']),
     ...mapGetters(['accountsData', 'accountItem']),
     isEthereumConnection() {
-      return isEthereumChain(this.chain)
+      return isEvmChain(this.activeNetwork, this.chain)
     },
     accounts() {
       if (this.isEthereumConnection) {
         const ethereumAccounts = this.accountsData.filter((account) =>
-          isEthereumChain(account.chain)
+          isEvmChain(this.activeNetwork, account.chain)
         )
 
         if (!this.selectedChain) {
@@ -141,7 +142,7 @@ export default {
       return `https://s2.googleusercontent.com/s2/favicons?domain_url=${this.origin}`
     },
     ethereumChains() {
-      return buildConfig.chains.filter(isEthereumChain)
+      return buildConfig.chains.filter((chainId) => isEvmChain(this.activeNetwork, chainId))
     }
   },
   methods: {

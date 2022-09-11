@@ -61,7 +61,7 @@ import OpenSea from '../../assets/icons/opensea.svg'
 import StratosNFT from '../../assets/icons/stratosnft.svg'
 import { getNftLink, openseaLink } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getItemIcon } from '@/utils/history'
-import { chains } from '@liquality/cryptoassets'
+import { getNativeAssetCode } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -112,7 +112,7 @@ export default {
     openseaLink,
     getItemIcon,
     nftExplorerLink(chain) {
-      const asset = chains[chain].nativeAsset
+      const asset = getNativeAssetCode(this.activeNetwork, chain)
       return getNftLink(asset, this.activeNetwork)
     },
     openMarketplace(chain) {

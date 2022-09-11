@@ -213,7 +213,7 @@ import CopyIcon from '@/assets/icons/copy.svg'
 import SendIcon from '@/assets/icons/send_nft.svg'
 import ShareIcon from '@/assets/icons/share_nft.svg'
 import NavBar from '../../components/NavBar.vue'
-import { chains } from '@liquality/cryptoassets'
+import { getChain, getNativeAssetCode } from '@liquality/cryptoassets'
 import { getAccountIcon } from '@/utils/accounts'
 import { getAssetIcon } from '@/utils/asset'
 import {
@@ -264,9 +264,8 @@ export default {
       return this.accountsData.filter((account) => account.id === this.accountId)[0]
     },
     address() {
-      return chains[this.account.chain]?.formatAddress(
-        this.account.addresses[0],
-        this.activeNetwork
+      return getChain(this.activeNetwork, this.account.chain)?.formatAddressUI(
+        this.account.addresses[0]
       )
     },
     routeSource() {
@@ -279,7 +278,7 @@ export default {
       return this.account?.chain
     },
     asset() {
-      return chains[this.account?.chain]?.nativeAsset
+      return getNativeAssetCode(this.activeNetwork, this.account?.chain)
     },
     addressLink() {
       return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
