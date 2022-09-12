@@ -8799,6 +8799,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"caniuse-lite@npm:^1.0.30001397":
+  version: 1.0.30001397
+  resolution: "caniuse-lite@npm:1.0.30001397"
+  checksum: 29b31780397221303b8fadda535e71f20319216df75028c60527f10f1aba1237ec81fa9c1d6b8fb3a0a83c201c01af8090e9cbb292da08c2538f367b1148a7ba
+  languageName: node
+  linkType: hard
+
 "capability@npm:^0.2.5":
   version: 0.2.5
   resolution: "capability@npm:0.2.5"
@@ -15244,7 +15251,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18n-js@npm:4.1.1":
+"i18n-js@npm:^4.1.1":
   version: 4.1.1
   resolution: "i18n-js@npm:4.1.1"
   dependencies:
@@ -18477,6 +18484,7 @@ __metadata:
     bitcoinjs-lib: 6.0.2
     bluebird: ^3.7.2
     bootstrap: 4.6.1
+    caniuse-lite: ^1.0.30001397
     chai: 4.3.6
     chai-match: ^1.1.1
     core-js: 3.20.3
@@ -18494,7 +18502,7 @@ __metadata:
     extension-port-stream: ^2.0.1
     human-standard-token-abi: ^2.0.0
     husky: 7.0.4
-    i18n-js: 4.1.1
+    i18n-js: ^4.1.1
     jest: 27.5.1
     jest-environment-jsdom-fifteen: ^1.0.2
     kcd-scripts: 12.0.0
