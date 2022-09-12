@@ -1,33 +1,33 @@
 {
     "splash": {
-        "importWithSeedPhrase": "Import with seed phrase",
-        "openWallet": "Open wallet",
-        "createNewWallet": "Create a new wallet"
+        "importWithSeedPhrase": "Isulat ang seed phrase",
+        "openWallet": "Buksan ang wallet",
+        "createNewWallet": "Gumawa ng bagong wallet"
     },
     "unlockWallet": {
-        "forgotPassword": "Forgot password? Import with seed phrase",
-        "unlock": "Unlock"
+        "forgotPassword": "Nakalimutan ang password? Buksan gamit ang seed phrase",
+        "unlock": "Isarado"
     },
     "onboarding": {
         "import": {
-            "unlockWallet": "Unlock wallet",
-            "enterSeedPhrase": "Enter the seed phrase, in the same order saved when creating your wallet.",
-            "words": "%{words} words"
+            "unlockWallet": "Buksan gamit ang password",
+            "enterSeedPhrase": "Ilagay ang seed phrase ng iyong wallet ayon sa tamang pagkaka sunod-sunod.",
+            "words": "mga salita"
         },
         "home": {
-            "iAccept": "I Accept",
-            "termsAndPrivacy": "Terms & Privacy"
+            "iAccept": "Tinatanggap ko",
+            "termsAndPrivacy": "mga tuntunin at patakaran sa privacy"
         },
         "setup": {
-            "backupYourWallet": "Backup your Wallet",
-            "backupDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
-            "choosePassword": "Choose Password ( at least 8 characters )",
-            "passwordTooShort": "Password is too short",
-            "confirmPassword": "Confirm Password",
-            "passwordDontMatch": "Passwords don't match.",
-            "confirmSeedTitle": "Confirm Seed Phrase",
-            "confirmSeedInstructions": "Tap the 3 words matching their position in the seed phrase. Once confirmed, store the phrase securely.",
-            "word": "Word",
+            "backupYourWallet": "I-backup ang wallet",
+            "backupDescription": "Ang seed phrase ay ang tanging paraan upang maibalik at mabuksan muli ang iyong wallet. Isulat ito, tiyakin muli na tama ang pagkasulat at pagkatapos ay itago.",
+            "choosePassword": "Pumili ng Password ( hindi bababa sa 8 character )",
+            "passwordTooShort": "Masyadong maikli ang password",
+            "confirmPassword": "Kumpirmahin ang Password",
+            "passwordDontMatch": "Hindi tugma ang mga password.",
+            "confirmSeedTitle": "Kumpirmahin ang Seed Phrase",
+            "confirmSeedInstructions": "Piliin ang 3 salita na tumutugma sa pagkakasunod-sunod ng seed phrase. Kapag nakumpirma na, i-save ito.",
+            "word": "Salita",
             "ordinals": {
                 "first": "st",
                 "fifth": "th",
@@ -36,198 +36,198 @@
             "congrats": "Congrats!"
         },
         "warning": {
-            "warning": "Warning",
-            "iHavePrivacy": "I have privacy",
-            "seedPhraseWarning": "Anyone who has this can steal your funds!",
-            "viewItInPrivate": "View it in private without cameras around.",
+            "warning": "Paalala",
+            "iHavePrivacy": "May privacy ako",
+            "seedPhraseWarning": "Ang sinumang mayroon nito ay maaaring nakawin ang iyong pondo!",
+            "viewItInPrivate": "Buksan ito nang pribado nang walang mga camera sa paligid.",
             "title": {
-                "seed": "Show Seed Phrase?",
-                "privateKey": "Show Private Key?"
+                "seed": "Ipakita ang Seed Phrase?",
+                "privateKey": "Ipakita ang Private Key?"
             }
         },
         "seedlogin": {
-            "understandTheRisk": "I understand the risk and have privacy",
-            "pleaseAcceptTerms": "Please Accept Terms",
-            "unlockError": "Try Again. Enter the right password (it has 8 or more characters).",
+            "understandTheRisk": "Naiintindihan ko ang panganib at may privacy",
+            "pleaseAcceptTerms": "Mangyaring Tanggapin ang Mga Tuntunin",
+            "unlockError": "Subukan Muli. Ilagay ang tamang password (mayroon itong 8 o higit pang mga character).",
             "title": {
-                "seed": "Sign-in to See Seed Phrase",
-                "export": "Sign-in to Export Private Key"
+                "seed": "Mag-sign-in para Makita ang Seed Phrase",
+                "export": "Mag-sign-in para I-export ang Private Key"
             }
         },
         "seedReveal": {
-            "yourSeedPhrase": "Your Seed Phrase",
-            "revealDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
-            "iSavedTheSeed": "I saved the seed"
+            "yourSeedPhrase": "Ang iyong Seed Phrase",
+            "revealDescription": "Ang seed phrase ay ang tanging paraan upang maibalik at mabuksan muli ang iyong wallet. Isulat ito, tiyakin muli na tama ang pagkasulat at pagkatapos ay itago.",
+            "iSavedTheSeed": "Nai-save ko na ang Seed Phrase"
         }
     },
     "settings": {
-        "settings": "Settings",
-        "title": "Default Web3 Wallet",
-        "description": "Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.",
+        "settings": "Mga setting",
+        "title": "Default na Web3 Wallet",
+        "description": "I-set ang Liquality bilang default na dapp wallet. Ang ibang mga wallet ay hindi maaaring makipag-ugnayan sa mga dapps habang ito ay pinagana.",
         "analytics": "Analytics",
-        "analyticsSub": "Share where you click. No identifying data is collected.",
-        "walletLogs": "Wallet Logs",
-        "walletLogsSub": "The wallet logs contain your public information such as addresses and transactions.",
-        "downloadLogs": "Download Logs",
-        "locale": "Language",
-        "localeSub": "Change Language",
-        "dappConnections": "Dapp Connections",
-        "dappConnectionsSub": "Forget all of the dapps connected.",
-        "done": "Done!",
-        "forgetAllConnections": "Forget all connections",
-        "version": "Version"
+        "analyticsSub": "Ibahagi kung saan ka nag-click. Walang nakolektang data ng pagkakakilanlan.",
+        "walletLogs": "Mga Log ng Wallet",
+        "walletLogsSub": "Ang mga log ng wallet ay naglalaman ng iyong pampublikong impormasyon tulad ng mga address at transaksyon.",
+        "downloadLogs": "Mag-download ng Mga Log",
+        "locale": "Wika",
+        "localeSub": "Baguhin ang Wika",
+        "dappConnections": "Mga Koneksyon sa Dapp",
+        "dappConnectionsSub": "Kalimutan ang lahat ng dapps na konektado.",
+        "done": "Tapos na.",
+        "forgetAllConnections": "Kalimutan ang lahat ng koneksyon",
+        "version": "Bersyon"
     },
     "experiments": {
-        "experiments": "Experiments",
-        "multiaccounts": "Multi-Accounts",
-        "multiaccountsDescription": "Allow account management and multiple accounts per network"
+        "experiments": "Mga eksperimento",
+        "multiaccounts": "Mga Multi-Account",
+        "multiaccountsDescription": "Payagan ang pamamahala ng account at maraming account sa bawat network"
     },
     "manageAssets": {
-        "assetView": "Asset View",
-        "addCustomToken": "Add Custom Token",
-        "cantFindThisToken": "Can't find this token",
-        "addCustomERC20Tokens": "Add Custom ERC20 tokens",
-        "learnHow": "Learn how"
+        "assetView": "Mga Assets",
+        "addCustomToken": "Magdagdag ng Custom Token",
+        "cantFindThisToken": "Hindi mahanap ang token na ito",
+        "addCustomERC20Tokens": "Magdagdag ng mga Custom na ERC20 token",
+        "learnHow": "Matuto kung paano"
     },
     "customToken": {
-        "selectChain": "Select chain...",
-        "tokenContractAddress": "Token Contract Address",
-        "name": "Name",
-        "tokenSymbol": "Token Symbol",
-        "decimals": "Decimals",
-        "addToken": "Add Token",
-        "addCustomToken": "Add Custom Token"
+        "selectChain": "Pumili ng chain...",
+        "tokenContractAddress": "Contract address ng Token",
+        "name": "Pangalan ng Token",
+        "tokenSymbol": "Symbolo ng Token",
+        "decimals": "Mga Decimal",
+        "addToken": "I-dagdag ang Token",
+        "addCustomToken": "Magdagdag ng Custom Token"
     },
     "wallet": {
-        "assets": "Assets",
-        "activity": "Activity",
+        "assets": "Mga assets",
+        "activity": "Aktibidad",
         "nfts": {
             "zero": "NFTs (0)",
             "one": "NFTs",
             "other": "NFTs (%{count})"
         },
-        "nftActivityDescription": "Once you start using your NFTs you will see the activity here",
-        "nftDescription": "Once you start owning NFTs with accounts in your Liquality wallet you will see them here",
-        "exploreNFT": "Explore NFTs on Polygon, Ethereum and Solana",
-        "checkOutOpenSea": "Check out OpenSea",
-        "discoverCollect": "Discover and collect NFTs on Arbitrum",
-        "checkOutStratos": "Check out Stratos",
-        "learnHowItWorks": "Learn how it works"
+        "nftActivityDescription": "Kapag sinimulan mong gamitin ang iyong mga NFT, makikita mo ang aktibidad dito",
+        "nftDescription": "Ang mga NFTs mo sa iyong Liquality account ay makikita dito",
+        "exploreNFT": "Tingnan at suriin ang mga NFT sa Polygon, Ethereum at Solana",
+        "checkOutOpenSea": "Tingnan at suriin ang OpenSea",
+        "discoverCollect": "Tuklasin at mangolekta ng mga NFT sa Arbitrum",
+        "checkOutStratos": "Tingnan at suriin ang Stratos",
+        "learnHowItWorks": "Alamin kung paano ito gumagana"
     },
     "details": {
-        "sentNFT": "Sent NFT",
+        "sentNFT": "Nagpadala ng NFT",
         "status": "Status",
-        "confirmations": "Confirmations",
-        "completed": "Completed",
-        "initiated": "Initiated",
-        "sentAsset": "Sent Asset",
-        "speed": "Speed",
+        "confirmations": "Mga kumpirmasyon",
+        "completed": "Nakumpleto",
+        "initiated": "Sinimulan",
+        "sentAsset": "Ipinadalang Asset",
+        "speed": "Bilis",
         "fee": "Fee",
-        "speedUp": "Speed up",
+        "speedUp": "Bilisan",
         "update": "Update",
-        "transaction": "Transaction",
-        "transferOn": "Transfer on %{marketplace}",
-        "details": "Details",
-        "description": "Description",
-        "youOwn": "You own",
-        "retry": "Retry",
-        "pendingReceipt": "Pending Receipt",
-        "signTo": "Sign To",
-        "ledgerInstructions": "Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag",
-        "onYourLedger": "On Your Ledger",
-        "today": "today",
-        "time": "Time",
-        "sent": "Sent"
+        "transaction": "Transaksyon",
+        "transferOn": "Ilipat sa %{marketplace}",
+        "details": "Mga Detalye",
+        "description": "Paglalarawan",
+        "youOwn": "pagmamay-ari mo",
+        "retry": "Subukan muli",
+        "pendingReceipt": "Nakabinbing Resibo",
+        "signTo": "Mag-sign To",
+        "ledgerInstructions": "Sundin ang mga prompt para i-verify ang halaga, bago tanggapin at kumpirmahin ang transaksyon. Maaaring may lag",
+        "onYourLedger": "Sa Iyong Ledger",
+        "today": "ngayon",
+        "time": "Oras",
+        "sent": "Ipinadala"
     },
     "accounts": {
-        "manageAccounts": "Manage Accounts",
-        "privateKey": "Private Key",
-        "eyeInstructions": "Keep this away from prying eyes!",
-        "exportLedger": "Cannot export from a Ledger account",
+        "manageAccounts": "Pamahalaan ang Mga Account",
+        "privateKey": "Private Key\n",
+        "eyeInstructions": "Maging mapagmatyag sa mga nanunuod sa paligid",
+        "exportLedger": "Hindi ma-export mula sa isang Ledger account",
         "createAccount": "Create Account",
         "selectNetwork": "Select Network",
         "chooseAccountName": "Choose Account Name",
-        "accountAliasErrorFiveChars": "Name should have 5 or more characters",
-        "accountAliasErrorTwentyChars": "Name shouldn't have more than 20 characters",
-        "accountAliasErrorExistingAccount": "Existing account with the same name or path",
-        "chooseTheColor": "Choose the Color",
-        "create": "Create",
+        "accountAliasErrorFiveChars": "Dapat may 5 o higit pang character ang pangalan",
+        "accountAliasErrorTwentyChars": "Hindi dapat lumampas sa 20 character ang pangalan",
+        "accountAliasErrorExistingAccount": "Mayroon nang account na may parehong pangalan o landas",
+        "chooseTheColor": "Pumili ng Kulay",
+        "create": "Gumawa",
         "accounts": {
-            "zero": "%{count} Accounts",
+            "zero": "%{count} na Mga Account",
             "one": "%{count} Account",
-            "other": "%{count} Accounts"
+            "other": "%{count} na Mga Account"
         },
-        "accountsAdded": "Accounts Added",
-        "closeThisTab": "Close this Tab",
-        "connectLedger": "Connect Ledger",
-        "selectAsset": "Select the same asset here",
-        "ledgerInstructions1": "Plug the Ledger into the computer",
-        "ledgerInstructions2": "Enter pin to unlock it",
-        "ledgerInstructions3": "On the device, navigate to the asset that you want to access",
-        "ledgerInstructions4": "To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Blind signing'",
-        "addLedgerAccounts": "Add Ledger Accounts",
-        "noAccountsFound": "No accounts found",
-        "errorGettingAccounts": "Error getting accounts",
-        "unlockAccount": "Unlock Account",
-        "findingAccounts": "Finding Accounts",
-        "creating": "Creating",
-        "creatingAccount": "Creating your new account",
-        "selectAccount": "Select Account",
-        "accountsLabel": "Accounts",
-        "accountAlreadyConnected": "This account is already connected: %{account}",
+        "accountsAdded": "Mga Nadagdag na Account",
+        "closeThisTab": "Isara ang Tab na ito",
+        "connectLedger": "Ikonekta ang Ledger",
+        "selectAsset": "Piliin ang parehong asset dito",
+        "ledgerInstructions1": "Isaksak ang Ledger sa computer",
+        "ledgerInstructions2": "Ilagay ang pin para i-unlock ito",
+        "ledgerInstructions3": "Sa device, mag-navigate sa asset na gusto mong i-access",
+        "ledgerInstructions4": "Upang mag swap, sa iyong Ledger sa eth App, Pumunta sa Settings, pagkatapos ay Piliin ang 'Blind signing'",
+        "addLedgerAccounts": "Magdagdag ng mga Ledger Account",
+        "noAccountsFound": "Walang nahanap na mga account",
+        "errorGettingAccounts": "Error sa pagkuha ng mga account",
+        "unlockAccount": "I-unlock ang Account",
+        "findingAccounts": "Paghahanap ng Mga Account",
+        "creating": "Gumagawa",
+        "creatingAccount": "Paggawa ng iyong bagong account",
+        "selectAccount": "Piliin ang Account",
+        "accountsLabel": "Mga account",
+        "accountAlreadyConnected": "Nakakonekta na ang account na ito: %{account}",
         "previous": "Previous",
-        "accountMessage1": "We weren’t able to get a list of accounts. Please try again, check on the ledger if the right app/asset was selected or cancel and choose a different asset.",
-        "accountMessage2": "Eventually close any other apps your ledger is connected to, including Ledger Live.",
-        "tryAgain": "Try Again",
-        "unlock": "Unlock"
+        "accountMessage1": "Walang nakukuhang listahan ng mga account. Tingnan ang ledger kung napili ang tamang app/asset o pumili ng ibang asset at subukang muli.",
+        "accountMessage2": "Isara ang anumang iba pang app kung saan nakakonekta ang iyong ledger, kabilang ang Ledger Live.",
+        "tryAgain": "Subukan muli",
+        "unlock": "I-unlock"
     },
     "receive": {
-        "yourCurrentAddress": "Your Current %{asset} Address",
-        "receiveMessage": "Scan this QR code with a mobile wallet to send funds to this address."
+        "yourCurrentAddress": "Ang Iyong Kasalukuyang %{asset} Address",
+        "receiveMessage": "I-scan ang QR code na ito gamit ang isang mobile wallet upang magpadala ng funds sa address na ito."
     },
     "assets": {
-        "noFunds": "No funds in the wallet"
+        "noFunds": "Walang funds sa wallet"
     },
     "enable": {
         "connectRequest": "Connect Request",
-        "selectAccounts": "Select accounts",
-        "filterByChain": "Filter by chain",
+        "selectAccounts": "Pumili ng mga account",
+        "filterByChain": "I-filter ayon sa chain",
         "deny": "Deny",
-        "byGrantingPermission": "By granting permission to",
-        "theyCanRead": "they can read your public account addresses.",
-        "makeSure": "Make sure you trust this site."
+        "byGrantingPermission": "Sa pamamagitan ng pagbibigay ng pahintulot sa",
+        "theyCanRead": "mababasa nila ang mga address ng iyong pampublikong account.",
+        "makeSure": "Tiyaking pinagkakatiwalaan mo ang site na ito."
     },
     "permission": {
-        "myWallet": "My Wallet",
-        "signTransaction": "Sign Transaction",
-        "requestToSign": "Request to Sign",
-        "request": "Request"
+        "myWallet": "Aking Wallet",
+        "signTransaction": "I-sign ang Transaksyon",
+        "requestToSign": "Kahilingan na Pumirma",
+        "request": "Kahilingan"
     },
     "send": {
-        "sendTo": "Send to",
-        "memo": "Memo (Optional)",
-        "sendFrom": "Send From",
-        "titleSelectNFT": "Select NFT",
-        "titleSendNFT": "Send NFT",
-        "titleReviewSendNFT": "Review Send NFT"
+        "sendTo": "Ipadala sa",
+        "memo": "Memo (Opsyonal)",
+        "sendFrom": "Ipadala Mula sa",
+        "titleSelectNFT": "Piliin ang NFT",
+        "titleSendNFT": "Ipadala ang NFT",
+        "titleReviewSendNFT": "Suriin bago Ipadala ang NFT"
     },
     "swap": {
         "availableQuotes": "AVAILABLE QUOTES",
-        "providersDescription": "These quotes are from different swap providers.",
-        "selectQuote": "Select Quote",
-        "learnMoreAboutSwapTypes": "Learn about swap types",
-        "learnMoreAboutSwapProviders": "Learn about swap providers",
-        "swapTypes": "Swap Types",
-        "seekingLiquidity": "Seeking Liquidity...",
-        "seeAllQuotes": "See all %{count} quotes",
-        "insufficientFunds": "Insufficient Funds",
-        "amountMinusFees": "Amount - Fees",
-        "initiateSwap": "Initiate Swap",
-        "maxSlipPage": "Max slippage is 3%.",
-        "refundMessage": "Max slippage is 3%. If the swap does not complete, you will be refunded in a few hours.",
-        "swapProvidersInfo": "There are tradeoffs different swap providers make across factors like convenience, security, liquidity, and fees. At a glance:",
-        "pros": "Pros",
-        "cons": "Cons",
-        "feeStructure": "Fee Structure"
+        "providersDescription": "Ang mga quote na ito ay mula sa iba't ibang swap provider.",
+        "selectQuote": "Pumili ng Quote",
+        "learnMoreAboutSwapTypes": "Tingnan ang mga uri ng swap",
+        "learnMoreAboutSwapProviders": "Tingnan ang mga uri ng swap providers",
+        "swapTypes": "Mga uri ng swap",
+        "seekingLiquidity": "Naghahanap ng Liquidity...",
+        "seeAllQuotes": "Tingnan ang lahat ng %{count} quotes",
+        "insufficientFunds": "Hindi Sapat ang Funds",
+        "amountMinusFees": "Halaga - Fees",
+        "initiateSwap": "Simulan ang Swap",
+        "maxSlipPage": "Ang max slippage ay 3%.",
+        "refundMessage": "Ang max slippage ay 3%. Kung hindi nakumpleto ang swap, ire-refund ka sa loob ng ilang oras.",
+        "swapProvidersInfo": "May mga tradeoff na ginagawa ng iba't ibang swap provider sa mga salik tulad ng convenience, seguridad, liquidity, at mga fees. Sa isang tingin:",
+        "pros": "Mga pros",
+        "cons": "Mga cons",
+        "feeStructure": "Istruktura ng Fee"
     }
 }

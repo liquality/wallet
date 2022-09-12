@@ -1,233 +1,233 @@
 {
     "splash": {
-        "importWithSeedPhrase": "Import with seed phrase",
-        "openWallet": "Open wallet",
-        "createNewWallet": "Create a new wallet"
+        "importWithSeedPhrase": "Importar con seed phrase",
+        "openWallet": "Abrir cartera",
+        "createNewWallet": "Crear nueva cartera"
     },
     "unlockWallet": {
-        "forgotPassword": "Forgot password? Import with seed phrase",
-        "unlock": "Unlock"
+        "forgotPassword": "¿Olvidaste tu contraseña? Importar con seed phrase",
+        "unlock": "Desbloquear"
     },
     "onboarding": {
         "import": {
-            "unlockWallet": "Unlock wallet",
-            "enterSeedPhrase": "Enter the seed phrase, in the same order saved when creating your wallet.",
-            "words": "%{words} words"
+            "unlockWallet": "Desbloquear cartera",
+            "enterSeedPhrase": "Introduce la seed phrase, en el mismo orden en el que la guardaste cuando creaste tu cartera.",
+            "words": "%{words} palabras"
         },
         "home": {
-            "iAccept": "I Accept",
-            "termsAndPrivacy": "Terms & Privacy"
+            "iAccept": "Acepto",
+            "termsAndPrivacy": "Términos y Privacidad"
         },
         "setup": {
-            "backupYourWallet": "Backup your Wallet",
-            "backupDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
-            "choosePassword": "Choose Password ( at least 8 characters )",
-            "passwordTooShort": "Password is too short",
-            "confirmPassword": "Confirm Password",
-            "passwordDontMatch": "Passwords don't match.",
-            "confirmSeedTitle": "Confirm Seed Phrase",
-            "confirmSeedInstructions": "Tap the 3 words matching their position in the seed phrase. Once confirmed, store the phrase securely.",
-            "word": "Word",
+            "backupYourWallet": "Haz un backup de tu Cartera",
+            "backupDescription": "La seed phrase es la única forma de restaurar tu cartera. Escríbela en papel, verifícala, y guárdala en un lugar seguro.",
+            "choosePassword": "Elige una Contraseña ( al menos 8 caracteres )",
+            "passwordTooShort": "La contraseña es muy corta",
+            "confirmPassword": "Confirmar Contraseña",
+            "passwordDontMatch": "Las contraseñas no coinciden.",
+            "confirmSeedTitle": "Confirma la Seed Phrase",
+            "confirmSeedInstructions": "Haz click en las 3 palabras que coinciden con su posición en la seed phrase. Una vez verificado, guara la seed phrase en un lugar seguro.",
+            "word": "Palabra",
             "ordinals": {
                 "first": "st",
                 "fifth": "th",
                 "twelfth": "th"
             },
-            "congrats": "Congrats!"
+            "congrats": "¡Felicitaciones!"
         },
         "warning": {
-            "warning": "Warning",
-            "iHavePrivacy": "I have privacy",
-            "seedPhraseWarning": "Anyone who has this can steal your funds!",
-            "viewItInPrivate": "View it in private without cameras around.",
+            "warning": "Cuidado",
+            "iHavePrivacy": "Tengo privacidad",
+            "seedPhraseWarning": "¡Quien tenga esto puede robar tus fondos!",
+            "viewItInPrivate": "Visualízalo en privado sin cámaras alrededor.",
             "title": {
-                "seed": "Show Seed Phrase?",
-                "privateKey": "Show Private Key?"
+                "seed": "¿Mostrar Seed Phrase?",
+                "privateKey": "¿Mostrar Llave Privada?"
             }
         },
         "seedlogin": {
-            "understandTheRisk": "I understand the risk and have privacy",
-            "pleaseAcceptTerms": "Please Accept Terms",
-            "unlockError": "Try Again. Enter the right password (it has 8 or more characters).",
+            "understandTheRisk": "Entiendo los riesgos y tengo privacidad",
+            "pleaseAcceptTerms": "Por Favor Acepta los Términos",
+            "unlockError": "Inténtalo de nuevo. Introduce la contraseña correcta (tiene 8 o más caracteres).",
             "title": {
-                "seed": "Sign-in to See Seed Phrase",
-                "export": "Sign-in to Export Private Key"
+                "seed": "Inicia sesión para Ver la Seed Phrase",
+                "export": "Inicia sesión para Exportar la Llave Privada"
             }
         },
         "seedReveal": {
-            "yourSeedPhrase": "Your Seed Phrase",
-            "revealDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
-            "iSavedTheSeed": "I saved the seed"
+            "yourSeedPhrase": "Tu Seed Phrase",
+            "revealDescription": "La seed phrase es la única forma de restaurar tu cartera. Escríbela en papel, verifícala, y guárdala en un lugar seguro.",
+            "iSavedTheSeed": "He guardado la seed"
         }
     },
     "settings": {
-        "settings": "Settings",
-        "title": "Default Web3 Wallet",
-        "description": "Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.",
+        "settings": "Configuración",
+        "title": "Cartera Web3 por defecto",
+        "description": "Usa Liquality como la cartera por defecto para dapps. Otras carteras no podrán interactuar con dapps mientras esto está activado.",
         "analytics": "Analytics",
-        "analyticsSub": "Share where you click. No identifying data is collected.",
+        "analyticsSub": "Comparte donde haces click. No recolectamos datos que puedan identificarte.",
         "walletLogs": "Wallet Logs",
-        "walletLogsSub": "The wallet logs contain your public information such as addresses and transactions.",
-        "downloadLogs": "Download Logs",
-        "locale": "Language",
-        "localeSub": "Change Language",
-        "dappConnections": "Dapp Connections",
-        "dappConnectionsSub": "Forget all of the dapps connected.",
-        "done": "Done!",
-        "forgetAllConnections": "Forget all connections",
-        "version": "Version"
+        "walletLogsSub": "Los Wallet Logs contienen tu información pública, como direcciones y transacciones.",
+        "downloadLogs": "Descargar Logs",
+        "locale": "Idioma",
+        "localeSub": "Cambiar Idioma",
+        "dappConnections": "Dapps Conectadas",
+        "dappConnectionsSub": "Olvidar todas las dapps conectadas.",
+        "done": "¡Hecho!",
+        "forgetAllConnections": "Olvidar todas las conecciones",
+        "version": "Versión"
     },
     "experiments": {
-        "experiments": "Experiments",
+        "experiments": "Experimentos",
         "multiaccounts": "Multi-Accounts",
-        "multiaccountsDescription": "Allow account management and multiple accounts per network"
+        "multiaccountsDescription": "Permite gestionar cuentas y tener múltiples cuentas por cadena"
     },
     "manageAssets": {
-        "assetView": "Asset View",
-        "addCustomToken": "Add Custom Token",
-        "cantFindThisToken": "Can't find this token",
-        "addCustomERC20Tokens": "Add Custom ERC20 tokens",
-        "learnHow": "Learn how"
+        "assetView": "Vista de Activos",
+        "addCustomToken": "Añadir Token Personalizado",
+        "cantFindThisToken": "No se encuentra este token",
+        "addCustomERC20Tokens": "Añadir Token ERC20 Personalizado",
+        "learnHow": "Aprende cómo"
     },
     "customToken": {
-        "selectChain": "Select chain...",
-        "tokenContractAddress": "Token Contract Address",
-        "name": "Name",
-        "tokenSymbol": "Token Symbol",
-        "decimals": "Decimals",
-        "addToken": "Add Token",
-        "addCustomToken": "Add Custom Token"
+        "selectChain": "Selecciona cadena...",
+        "tokenContractAddress": "Dirección de Contrato del Token",
+        "name": "Nombre",
+        "tokenSymbol": "Símbolo del Token",
+        "decimals": "Decimales",
+        "addToken": "Añadir Token",
+        "addCustomToken": "Añadir Token Personalizado"
     },
     "wallet": {
-        "assets": "Assets",
-        "activity": "Activity",
+        "assets": "Activos",
+        "activity": "Actividad",
         "nfts": {
             "zero": "NFTs (0)",
             "one": "NFTs",
             "other": "NFTs (%{count})"
         },
-        "nftActivityDescription": "Once you start using your NFTs you will see the activity here",
-        "nftDescription": "Once you start owning NFTs with accounts in your Liquality wallet you will see them here",
-        "exploreNFT": "Explore NFTs on Polygon, Ethereum and Solana",
-        "checkOutOpenSea": "Check out OpenSea",
-        "discoverCollect": "Discover and collect NFTs on Arbitrum",
-        "checkOutStratos": "Check out Stratos",
-        "learnHowItWorks": "Learn how it works"
+        "nftActivityDescription": "Cuando empieces a usas tus NFTs verás la actividad aquí",
+        "nftDescription": "Cuando tengas NFTs en cuentas de tu cartera Liquality los verás aquí",
+        "exploreNFT": "Explora NFTs en Polygon, Ethereum, y Solana",
+        "checkOutOpenSea": "Mira OpenSea",
+        "discoverCollect": "Descrubre y colecciona NFTs en Arbitrum",
+        "checkOutStratos": "Mira Stratos",
+        "learnHowItWorks": "Aprende cómo funciona"
     },
     "details": {
-        "sentNFT": "Sent NFT",
-        "status": "Status",
-        "confirmations": "Confirmations",
-        "completed": "Completed",
-        "initiated": "Initiated",
-        "sentAsset": "Sent Asset",
-        "speed": "Speed",
-        "fee": "Fee",
-        "speedUp": "Speed up",
-        "update": "Update",
-        "transaction": "Transaction",
-        "transferOn": "Transfer on %{marketplace}",
-        "details": "Details",
-        "description": "Description",
-        "youOwn": "You own",
-        "retry": "Retry",
-        "pendingReceipt": "Pending Receipt",
-        "signTo": "Sign To",
-        "ledgerInstructions": "Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag",
-        "onYourLedger": "On Your Ledger",
-        "today": "today",
+        "sentNFT": "NFT enviado",
+        "status": "Estado",
+        "confirmations": "Confirmaciones",
+        "completed": "Completado",
+        "initiated": "Iniciado",
+        "sentAsset": "Activo Enviado",
+        "speed": "Velocidad",
+        "fee": "Comisión",
+        "speedUp": "Acelerar",
+        "update": "Actualizar",
+        "transaction": "Transacción",
+        "transferOn": "Transferir en %{marketplace}",
+        "details": "Detalles",
+        "description": "Descripción",
+        "youOwn": "Posees",
+        "retry": "Reintentar",
+        "pendingReceipt": "Recepción Pendiente",
+        "signTo": "Firmar Para",
+        "ledgerInstructions": "Sigue las indicaciones para verificar y aceptar la cantidad, luego confirma la transacción. Puede haber algo de retraso",
+        "onYourLedger": "En Tu Ledger",
+        "today": "hoy",
         "time": "Time",
-        "sent": "Sent"
+        "sent": "Enviado"
     },
     "accounts": {
-        "manageAccounts": "Manage Accounts",
-        "privateKey": "Private Key",
-        "eyeInstructions": "Keep this away from prying eyes!",
-        "exportLedger": "Cannot export from a Ledger account",
-        "createAccount": "Create Account",
-        "selectNetwork": "Select Network",
-        "chooseAccountName": "Choose Account Name",
-        "accountAliasErrorFiveChars": "Name should have 5 or more characters",
-        "accountAliasErrorTwentyChars": "Name shouldn't have more than 20 characters",
-        "accountAliasErrorExistingAccount": "Existing account with the same name or path",
-        "chooseTheColor": "Choose the Color",
-        "create": "Create",
+        "manageAccounts": "Gestionar Cuentas",
+        "privateKey": "Llave Privada",
+        "eyeInstructions": "¡Mantén esto alejado de miradas indiscretas!",
+        "exportLedger": "No se puede exportar de una cuenta de Ledger",
+        "createAccount": "Crear Cuenta",
+        "selectNetwork": "Selecionar Cadena",
+        "chooseAccountName": "Elige un Nombre de Cuenta",
+        "accountAliasErrorFiveChars": "El nombre debe tener 5 o más caracteres",
+        "accountAliasErrorTwentyChars": "El nombre no puede tener más de 20 caracteres",
+        "accountAliasErrorExistingAccount": "Ya existe una cienta con el mismo nombre o ruta",
+        "chooseTheColor": "Selecciona el Color",
+        "create": "Crear",
         "accounts": {
-            "zero": "%{count} Accounts",
-            "one": "%{count} Account",
-            "other": "%{count} Accounts"
+            "zero": "%{count} Cuentas",
+            "one": "%{count} Cuenta",
+            "other": "%{count} Cuentas"
         },
-        "accountsAdded": "Accounts Added",
-        "closeThisTab": "Close this Tab",
-        "connectLedger": "Connect Ledger",
-        "selectAsset": "Select the same asset here",
-        "ledgerInstructions1": "Plug the Ledger into the computer",
-        "ledgerInstructions2": "Enter pin to unlock it",
-        "ledgerInstructions3": "On the device, navigate to the asset that you want to access",
-        "ledgerInstructions4": "To Swap, on your Ledger in the eth App, Go to Settings, then Select 'Blind signing'",
-        "addLedgerAccounts": "Add Ledger Accounts",
-        "noAccountsFound": "No accounts found",
-        "errorGettingAccounts": "Error getting accounts",
-        "unlockAccount": "Unlock Account",
-        "findingAccounts": "Finding Accounts",
-        "creating": "Creating",
-        "creatingAccount": "Creating your new account",
-        "selectAccount": "Select Account",
-        "accountsLabel": "Accounts",
-        "accountAlreadyConnected": "This account is already connected: %{account}",
-        "previous": "Previous",
-        "accountMessage1": "We weren’t able to get a list of accounts. Please try again, check on the ledger if the right app/asset was selected or cancel and choose a different asset.",
-        "accountMessage2": "Eventually close any other apps your ledger is connected to, including Ledger Live.",
-        "tryAgain": "Try Again",
-        "unlock": "Unlock"
+        "accountsAdded": "Cuentas Añadidas",
+        "closeThisTab": "Cierra esta Pestaña",
+        "connectLedger": "Connectar Ledger",
+        "selectAsset": "Selecciona el mismo activo aquí",
+        "ledgerInstructions1": "Conecta el Ledger al PC",
+        "ledgerInstructions2": "Introduce el PIN para desbloquearlo",
+        "ledgerInstructions3": "En el dispositivo, navega al activo al que quieres acceder",
+        "ledgerInstructions4": "Para hacer swap, en tu Ledger en la app de ETH, ve a configuración, luego selecciona 'Blind signing'",
+        "addLedgerAccounts": "Añadir Cuentas de Ledger",
+        "noAccountsFound": "No se encontraron cuentas",
+        "errorGettingAccounts": "Error al solicitar las cuentas",
+        "unlockAccount": "Desbloquear Cuenta",
+        "findingAccounts": "Buscando Cuentas",
+        "creating": "Creando",
+        "creatingAccount": "Creando tu nueva cuenta",
+        "selectAccount": "Seleccionar Cuenta",
+        "accountsLabel": "Cuentas",
+        "accountAlreadyConnected": "Esta cuenta ya está conectada: %{account}",
+        "previous": "Anterior",
+        "accountMessage1": "No pudimos obtener una lista de cuentas. Por favor inténtalo de nuevo, verifica en el Ledger si el activo o app correcta está seleccionada, o cancela y elige un activo diferente.",
+        "accountMessage2": "Cierra cualquier otra aplicación a la que esté conectado su Ledger, incluido Ledger Live.",
+        "tryAgain": "Volver a Intentar",
+        "unlock": "Desbloquear"
     },
     "receive": {
-        "yourCurrentAddress": "Your Current %{asset} Address",
-        "receiveMessage": "Scan this QR code with a mobile wallet to send funds to this address."
+        "yourCurrentAddress": "Tu Dirección Actual de %{asset}",
+        "receiveMessage": "Escanea este código QR con una cartera móvil para enviar fondos a esta dirección."
     },
     "assets": {
-        "noFunds": "No funds in the wallet"
+        "noFunds": "No hay fondos en la cartera"
     },
     "enable": {
-        "connectRequest": "Connect Request",
-        "selectAccounts": "Select accounts",
-        "filterByChain": "Filter by chain",
-        "deny": "Deny",
-        "byGrantingPermission": "By granting permission to",
-        "theyCanRead": "they can read your public account addresses.",
-        "makeSure": "Make sure you trust this site."
+        "connectRequest": "Solicitud de Conexión",
+        "selectAccounts": "Selecciona cuentas",
+        "filterByChain": "Filtrar por cadena",
+        "deny": "Rechazar",
+        "byGrantingPermission": "Al dar permiso a",
+        "theyCanRead": "pueden leer las direcciones públicas de tu cuenta.",
+        "makeSure": "Asegúrate de que es un sitio de confianza."
     },
     "permission": {
-        "myWallet": "My Wallet",
-        "signTransaction": "Sign Transaction",
-        "requestToSign": "Request to Sign",
-        "request": "Request"
+        "myWallet": "Mi Cartera",
+        "signTransaction": "Firmar Transacción",
+        "requestToSign": "Solicitud de Firma",
+        "request": "Solicitud"
     },
     "send": {
-        "sendTo": "Send to",
-        "memo": "Memo (Optional)",
-        "sendFrom": "Send From",
-        "titleSelectNFT": "Select NFT",
-        "titleSendNFT": "Send NFT",
-        "titleReviewSendNFT": "Review Send NFT"
+        "sendTo": "Enviar a",
+        "memo": "Memo (Opcional)",
+        "sendFrom": "Enviar Desde",
+        "titleSelectNFT": "Seleccionar NFT",
+        "titleSendNFT": "Enviar NFT",
+        "titleReviewSendNFT": "Revisar Envío de NFT"
     },
     "swap": {
-        "availableQuotes": "AVAILABLE QUOTES",
-        "providersDescription": "These quotes are from different swap providers.",
-        "selectQuote": "Select Quote",
-        "learnMoreAboutSwapTypes": "Learn about swap types",
-        "learnMoreAboutSwapProviders": "Learn about swap providers",
-        "swapTypes": "Swap Types",
-        "seekingLiquidity": "Seeking Liquidity...",
-        "seeAllQuotes": "See all %{count} quotes",
-        "insufficientFunds": "Insufficient Funds",
-        "amountMinusFees": "Amount - Fees",
-        "initiateSwap": "Initiate Swap",
-        "maxSlipPage": "Max slippage is 3%.",
-        "refundMessage": "Max slippage is 3%. If the swap does not complete, you will be refunded in a few hours.",
-        "swapProvidersInfo": "There are tradeoffs different swap providers make across factors like convenience, security, liquidity, and fees. At a glance:",
-        "pros": "Pros",
-        "cons": "Cons",
-        "feeStructure": "Fee Structure"
+        "availableQuotes": "OFERTAS DISPONIBLES",
+        "providersDescription": "Estas ofertas son de diferentes proveedores de swap.",
+        "selectQuote": "Seleccionar Oferta",
+        "learnMoreAboutSwapTypes": "Aprende sobre los tipos de swap",
+        "learnMoreAboutSwapProviders": "Aprende sobre los proveedores de swap",
+        "swapTypes": "Tipos de Swap",
+        "seekingLiquidity": "Buscando Liquidez...",
+        "seeAllQuotes": "Ver las %{count} ofertas",
+        "insufficientFunds": "Fondos Insuficientes",
+        "amountMinusFees": "Cantidad - Comisiones",
+        "initiateSwap": "Iniciar Swap",
+        "maxSlipPage": "Slippage máximo es 3%.",
+        "refundMessage": "Slippage máximo es 3%. Si el swap no se completa, recibirás un reembolso en unas horas.",
+        "swapProvidersInfo": "Existen compensaciones que los diferentes proveedores de swaps hacen entre factores como la conveniencia, la seguridad, la liquidez, y las comisiones. De un vistazo:",
+        "pros": "Ventajas",
+        "cons": "Desventajas",
+        "feeStructure": "Estructura de Comisión"
     }
 }

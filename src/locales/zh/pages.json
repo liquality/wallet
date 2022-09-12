@@ -1,48 +1,48 @@
 {
     "splash": {
-        "importWithSeedPhrase": "Import with seed phrase",
-        "openWallet": "Open wallet",
-        "createNewWallet": "Create a new wallet"
+        "importWithSeedPhrase": "导入助记词",
+        "openWallet": "打开钱包",
+        "createNewWallet": "创建新钱包"
     },
     "unlockWallet": {
-        "forgotPassword": "Forgot password? Import with seed phrase",
-        "unlock": "Unlock"
+        "forgotPassword": "忘记密码？使用助记词导入",
+        "unlock": "解锁"
     },
     "onboarding": {
         "import": {
-            "unlockWallet": "Unlock wallet",
-            "enterSeedPhrase": "Enter the seed phrase, in the same order saved when creating your wallet.",
+            "unlockWallet": "解锁钱包",
+            "enterSeedPhrase": "请按照特定的顺序依次输入助记词",
             "words": "%{words} words"
         },
         "home": {
-            "iAccept": "I Accept",
-            "termsAndPrivacy": "Terms & Privacy"
+            "iAccept": "我同意",
+            "termsAndPrivacy": "条款&隐私"
         },
         "setup": {
-            "backupYourWallet": "Backup your Wallet",
-            "backupDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
-            "choosePassword": "Choose Password ( at least 8 characters )",
-            "passwordTooShort": "Password is too short",
-            "confirmPassword": "Confirm Password",
-            "passwordDontMatch": "Passwords don't match.",
-            "confirmSeedTitle": "Confirm Seed Phrase",
-            "confirmSeedInstructions": "Tap the 3 words matching their position in the seed phrase. Once confirmed, store the phrase securely.",
-            "word": "Word",
+            "backupYourWallet": "备份钱包",
+            "backupDescription": "你的账户助记词恢复钱包的唯一方法。请将该账户助记词记录在纸上，然后验证助记词是否正确，并保存在安全的地方。",
+            "choosePassword": "输入密码（至少 8 个字符）",
+            "passwordTooShort": "密码长度不足",
+            "confirmPassword": "确认密码",
+            "passwordDontMatch": "密码不匹配",
+            "confirmSeedTitle": "确认助记词",
+            "confirmSeedInstructions": "输入特定位置的3个助记词。一旦确认，请安全地存储您的助记词",
+            "word": "词",
             "ordinals": {
                 "first": "st",
                 "fifth": "th",
                 "twelfth": "th"
             },
-            "congrats": "Congrats!"
+            "congrats": "恭喜！"
         },
         "warning": {
-            "warning": "Warning",
+            "warning": "注意",
             "iHavePrivacy": "I have privacy",
-            "seedPhraseWarning": "Anyone who has this can steal your funds!",
-            "viewItInPrivate": "View it in private without cameras around.",
+            "seedPhraseWarning": "任何拥有您的助记词的人都可以窃取您账户中的任何资产。",
+            "viewItInPrivate": "在没有摄像头的情况下私下查看。",
             "title": {
-                "seed": "Show Seed Phrase?",
-                "privateKey": "Show Private Key?"
+                "seed": "显示助记词？",
+                "privateKey": "显示私钥？"
             }
         },
         "seedlogin": {
