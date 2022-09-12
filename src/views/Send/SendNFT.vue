@@ -125,10 +125,11 @@
             <template v-slot:header>
               <div class="network-header-container">
                 <span class="details-title" id="send_network_speed"> Network Speed/Fee </span>
-                <span class="text-muted" id="send_network_speed_avg_fee">
+                <span class="text-muted" id="send_network_speed_avg_fee" v-show="!updatingFees">
                   ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
                 </span>
               </div>
+              <SpinnerIcon class="updating-fees" v-show="updatingFees" />
             </template>
             <template v-slot:content>
               <ul class="selectors">
@@ -162,17 +163,18 @@
               <span class="details-title" id="send_network_speed"
                 ><strong> Network Speed/Fee </strong></span
               >
-              <span class="text-muted" id="send_network_speed_avg_fee">
+              <span v-show="!updatingFees" class="text-muted" id="send_network_speed_avg_fee">
                 ({{ prettyFee }} {{ assetChain }})
               </span>
             </div>
+            <SpinnerIcon class="updating-fees" v-show="updatingFees" />
           </template>
           <div class="button-group">
             <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">Cancel</button>
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"
-              :disabled="!canSend"
+              :disabled="!canSend || updatingFees"
             >
               Review
             </button>
@@ -329,7 +331,8 @@ export default {
       customFee: null,
       sendErrorMessage: '',
       address: '',
-      selectedFee: 'average'
+      selectedFee: 'average',
+      updatingFees: true
     }
   },
   async created() {
@@ -344,6 +347,9 @@ export default {
     }
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(this.amount)
+    setTimeout(() => {
+      this.updatingFees = false
+    }, 1500)
     await this.trackAnalytics({
       event: 'Send NFT screen',
       properties: {
@@ -720,5 +726,13 @@ export default {
 
 .button-group {
   padding: 16px 0;
+}
+
+.updating-fees {
+  height: 24px !important;
+  margin-top: -6px !important;
+  circle {
+    stroke: #dedede;
+  }
 }
 </style>
