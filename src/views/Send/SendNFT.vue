@@ -334,7 +334,6 @@ export default {
   },
   async created() {
     if (this.$route.query.nftAsset) {
-      debugger
       this.activeView = 'selectedAsset'
       const collectionName = this.$route.query.collection
       const nftAssetId = this.$route.query.nftAsset
@@ -353,19 +352,6 @@ export default {
         label: `NFT`
       }
     })
-    if (this.selectedNFT) {
-      localStorage.setItem(
-        'nftAsset',
-        JSON.stringify(
-          this.selectedNFT.accountId
-            ? this.selectedNFT
-            : {
-                ...this.selectedNFT,
-                accountId: this.accountId
-              }
-        )
-      )
-    }
   },
   computed: {
     ...mapGetters([
@@ -597,12 +583,12 @@ export default {
     async _updateSendFees() {
       const sendFees = await estimateTransferNFT(
         this.account.id,
+        this.activeNetwork,
         this.address,
         [1],
         this.selectedNFT,
         this.customFee
       )
-
       this.sendFees = sendFees
     },
     updateSendFees: _.debounce(async function (amount) {

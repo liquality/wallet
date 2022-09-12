@@ -35,6 +35,10 @@ import { mapState } from 'vuex'
 export default {
   ...mapState(['activeNetwork']),
   props: ['asset', 'value', 'fees', 'totalFees', 'fiatRates', 'swap'],
+  created() {
+    debugger
+    console.log('this.fees', this.fees, this.totalFees, this.fiatRates)
+  },
   methods: {
     getTooltip(name) {
       let content = '<div class="text-right">'
