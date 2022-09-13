@@ -26,7 +26,7 @@
     },
     "connectionDrawer": {
         "dappNetwork": "dApp Network",
-        "instructions": "Encuentra el botón de conectar en el sitio que visitas. Si no puedes conectarte intentan otra vez después de cambiar la red.",
+        "instructions": "Encuentra el botón de conectar en el sitio que visitas. Si no puedes conectarte intenta otra vez después de cambiar la red.",
         "grantedConnection": "Conexión Concedida",
         "connectedSites": "Los sitios conectados pueden ver la dirección de tu cuenta.",
         "switchAccount": "Cambiar cuenta"
@@ -70,7 +70,7 @@
         "manageAccounts": "Gestionar Cuentas",
         "exportPrivateKey": "Exportar Llave Privada",
         "settings": "Configuración",
-        "backupSeed": "Hacer backup de la Seed",
+        "backupSeed": "Copia de seguridad",
         "lock": "Bloquear"
     },
     "noFundsForNetworkFee": {
@@ -102,12 +102,12 @@
         "recommendations": "Recomendamos empezar enviando ETH a tu cartera de Liquality porque así podrás cubrir el gas de muchas transacciones.",
         "transakInstructions": "Transak te permite comprar crypto con tu tarjeta de crédito o usando transferencias bancarias dependiendo de tu ubicación. Para cubrir pagar las comisiones (gas) o interactuar con dApps necesitarás el token nativo que se usa para el gas (el primer token que aparece habilitado en tu cuenta).",
         "onramperDescription": "Onramper es una agregador que provee la mejor oferta desde diferentes servicios y acepta los métodos de pago más populares dependiendo de tu ubicación.",
-        "trustedPartnerMessage": "También puedes comprar crypto en nuestro socio de confianza.",
+        "trustedPartnerMessage": "También puedes comprar crypto a través de nuestros socios.",
         "buyCryptoWithTransak": "Comprar Crypto con Transak",
         "buyCryptoWithOnramper": "Comprar Crypto con Onramper",
         "continueWithTransak": "Continuar con Transak",
         "continueWithOnramper": "Continuar con Onramper",
-        "feeAndLimitMessage": "Las comisiones y límites puedn variar. Normalmente toma sólo unos minutos y requiere que te registres."
+        "feeAndLimitMessage": "Las comisiones y límites pueden variar. Normalmente toma sólo unos minutos y requiere que te registres."
     },
     "nft": {
         "seeAll": "Ver todos",

@@ -19,8 +19,8 @@
             "termsAndPrivacy": "Términos y Privacidad"
         },
         "setup": {
-            "backupYourWallet": "Haz un backup de tu Cartera",
-            "backupDescription": "La seed phrase es la única forma de restaurar tu cartera. Escríbela en papel, verifícala, y guárdala en un lugar seguro.",
+            "backupYourWallet": "Guarda tu Seed Phrase",
+            "backupDescription": "La seed es la única forma de restaurar tu cartera. Escríbela en papel, verifícala, y guárdala en un lugar seguro.",
             "choosePassword": "Elige una Contraseña ( al menos 8 caracteres )",
             "passwordTooShort": "La contraseña es muy corta",
             "confirmPassword": "Confirmar Contraseña",
@@ -74,7 +74,7 @@
         "dappConnections": "Dapps Conectadas",
         "dappConnectionsSub": "Olvidar todas las dapps conectadas.",
         "done": "¡Hecho!",
-        "forgetAllConnections": "Olvidar todas las conecciones",
+        "forgetAllConnections": "Olvidar todas las conexiones",
         "version": "Versión"
     },
     "experiments": {
@@ -84,9 +84,9 @@
     },
     "manageAssets": {
         "assetView": "Vista de Activos",
-        "addCustomToken": "Añadir Token Personalizado",
+        "addCustomToken": "Añadir Token",
         "cantFindThisToken": "No se encuentra este token",
-        "addCustomERC20Tokens": "Añadir Token ERC20 Personalizado",
+        "addCustomERC20Tokens": "Añadir Token ERC20",
         "learnHow": "Aprende cómo"
     },
     "customToken": {
@@ -109,9 +109,9 @@
         "nftActivityDescription": "Cuando empieces a usas tus NFTs verás la actividad aquí",
         "nftDescription": "Cuando tengas NFTs en cuentas de tu cartera Liquality los verás aquí",
         "exploreNFT": "Explora NFTs en Polygon, Ethereum, y Solana",
-        "checkOutOpenSea": "Mira OpenSea",
+        "checkOutOpenSea": "Ver OpenSea",
         "discoverCollect": "Descrubre y colecciona NFTs en Arbitrum",
-        "checkOutStratos": "Mira Stratos",
+        "checkOutStratos": "Ver Stratos",
         "learnHowItWorks": "Aprende cómo funciona"
     },
     "details": {
@@ -159,7 +159,7 @@
         },
         "accountsAdded": "Cuentas Añadidas",
         "closeThisTab": "Cierra esta Pestaña",
-        "connectLedger": "Connectar Ledger",
+        "connectLedger": "Conectar Ledger",
         "selectAsset": "Selecciona el mismo activo aquí",
         "ledgerInstructions1": "Conecta el Ledger al PC",
         "ledgerInstructions2": "Introduce el PIN para desbloquearlo",

@@ -1,33 +1,33 @@
 {
     "accountTooltip": {
-        "availableGas": "Available Gas"
+        "availableGas": "Gas Disponível"
     },
     "activityFilter": {
-        "export": "Export",
-        "filters": "Filters",
+        "export": "Exportar",
+        "filters": "Filtros",
         "dateRange": "Date Range"
     },
     "analyticsOptinModal": {
-        "title": "Help us improve Liquality to better serve you",
+        "title": "Ajude-nos a melhorar Liquality",
         "message": "Share where you click. There is no identifying data. This permission can be revoked any time.",
-        "analitycsAccept": "Sure, I will share my clicks",
-        "analitycsReject": "Not today, ask me again"
+        "analitycsAccept": "Claro, vou compartilhar meus cliques",
+        "analitycsReject": "Não hoje, pergunte mais tarde"
     },
     "boostActivateBridgeAsset": {
-        "enabledAssetMessage": "To trade this pair %{asset} has to be enabled",
-        "okDoit": "OK, do it"
+        "enabledAssetMessage": "Para negociar este par, %{asset} precisa estar habilitado",
+        "okDoit": "Ok, faça isso"
     },
     "bridgeAssetRequiredMessage": {
-        "needMore": "You need more %{asset} to pay for gas.",
-        "get": "Get"
+        "needMore": "Você precisa de mais %{asset} para pegar o gas.",
+        "get": "Obtenha"
     },
     "cannotCoverMinimumMessage": {
-        "needMore": "More %{asset} required to cover min trade plus fees."
+        "needMore": "Mais %{asset} é necessário para cobrir o valor mínimo mais comissões."
     },
     "connectionDrawer": {
         "dappNetwork": "dApp Network",
-        "instructions": "Find the connection button on the site. If you can’t connect try again after switching the network.",
-        "grantedConnection": "Granted Connection",
+        "instructions": "Encontre o botão \"conectar\" no site. caso não consiga, tente de novo após mudar a rede.",
+        "grantedConnection": "Conexão Concedida",
         "connectedSites": "Connected sites can see your account address.",
         "switchAccount": "Switch account"
     },

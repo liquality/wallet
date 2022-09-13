@@ -1,117 +1,117 @@
 {
     "accountTooltip": {
-        "availableGas": "Available Gas"
+        "availableGas": "可用的gas"
     },
     "activityFilter": {
-        "export": "Export",
-        "filters": "Filters",
-        "dateRange": "Date Range"
+        "export": "导出",
+        "filters": "筛选",
+        "dateRange": "时间范围"
     },
     "analyticsOptinModal": {
-        "title": "Help us improve Liquality to better serve you",
-        "message": "Share where you click. There is no identifying data. This permission can be revoked any time.",
-        "analitycsAccept": "Sure, I will share my clicks",
-        "analitycsReject": "Not today, ask me again"
+        "title": "帮助我们改善Liquality，以更好地为您服务",
+        "message": "分享你点击的位置。不会读取你的数据。此权限可在任何时候被撤销。",
+        "analitycsAccept": "当然，我会分享我的点击",
+        "analitycsReject": "暂时不要，以后再问我"
     },
     "boostActivateBridgeAsset": {
-        "enabledAssetMessage": "To trade this pair %{asset} has to be enabled",
-        "okDoit": "OK, do it"
+        "enabledAssetMessage": "必须启用这对 %{asset} 才能交易。",
+        "okDoit": "可以，开始"
     },
     "bridgeAssetRequiredMessage": {
-        "needMore": "You need more %{asset} to pay for gas.",
-        "get": "Get"
+        "needMore": "你需要更多的 %{asset} 来支付 gas。",
+        "get": "获得"
     },
     "cannotCoverMinimumMessage": {
-        "needMore": "More %{asset} required to cover min trade plus fees."
+        "needMore": "需要更多 %{asset} 来支付最低交易费用。"
     },
     "connectionDrawer": {
         "dappNetwork": "dApp Network",
-        "instructions": "Find the connection button on the site. If you can’t connect try again after switching the network.",
-        "grantedConnection": "Granted Connection",
-        "connectedSites": "Connected sites can see your account address.",
-        "switchAccount": "Switch account"
+        "instructions": "在网站上找到连接按钮。 如果无法连接，请在切换网络后重试。",
+        "grantedConnection": "已授权的连接",
+        "connectedSites": "连接的站点可以看到您的帐户地址。",
+        "switchAccount": "切换账户"
     },
     "customFees": {
-        "presets": "Presets",
-        "customizedSetting": "Customized Setting",
-        "gasPrice": "Gas Price",
-        "newSpeedFee": "New Speed/Fee",
-        "customize": "CUSTOMIZE",
-        "basic": "BASIC",
-        "editGasFee": "EDIT GAS FEE",
-        "currentBaseFeePerGas": "CURRENT BASE FEE PER GAS",
+        "presets": "预设",
+        "customizedSetting": "自定义设置",
+        "gasPrice": "Gas价格",
+        "newSpeedFee": "新速度/费用",
+        "customize": "自定义",
+        "basic": "基本的",
+        "editGasFee": "编辑gas费",
+        "currentBaseFeePerGas": "当前每次gas的基本费用",
         "minerTip": "MINER TIP",
-        "toSpeedUp": "TO SPEED UP",
-        "maxFee": "MAX FEE",
-        "perGas": "PER GAS",
-        "newFeeTotal": "New Fee Total"
+        "toSpeedUp": "加速",
+        "maxFee": "最大费用",
+        "perGas": "每次gas",
+        "newFeeTotal": "新费用总额"
     },
     "emptyActivity": {
-        "message": "Once you start using your wallet you will see the activity here."
+        "message": "开始使用钱包后，您将在此处看到活动。"
     },
     "ethRequiredMessage": {
-        "message": "A balance is required to swap and you need ETH to pay for gas.",
-        "getETH": "Get ETH"
+        "message": "兑换需要一定的余额，您需要 ETH 来支付 gas。",
+        "getETH": "获得ETH"
     },
     "head": {
-        "dappConnected": "dApp Connected",
-        "connectDapp": "Connect dApp"
+        "dappConnected": "已连接的dApp",
+        "connectDapp": "连接dApp"
     },
     "ledger": {
         "signTo": "Sign to %{action} Swap",
-        "signNow": "Sign Now",
-        "initiate": "Initiate",
-        "onYourLedger": "On Your Ledger",
-        "signInstructions": "Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag.",
-        "tabBannerMessage": "Ledger works best in browser. Once you are done return to your wallet in the extension..."
+        "signNow": "立即签名",
+        "initiate": "发起",
+        "onYourLedger": "在你的Ledger钱包",
+        "signInstructions": "按照提示验证并接受金额，然后确认交易。 可能会有延迟。",
+        "tabBannerMessage": "Ledger 在浏览器中效果最好。 一旦你完成后，返回到扩展程序中的钱包..."
     },
     "navbar": {
-        "manageAssets": "Manage Assets",
-        "manageAccounts": "Manage Accounts",
-        "exportPrivateKey": "Export Private Key",
-        "settings": "Settings",
-        "backupSeed": "Backup Seed",
-        "lock": "Lock"
+        "manageAssets": "管理资产",
+        "manageAccounts": "管理账户",
+        "exportPrivateKey": "导出私钥",
+        "settings": "设置",
+        "backupSeed": "备份助记词",
+        "lock": "锁定"
     },
     "noFundsForNetworkFee": {
-        "noEnoughAsset": "Not enough %{asset} to cover fees. Lower speed to account for gas or get more.",
-        "getAsset": "Get %{asset}",
-        "lowerSpeed": "Lower speed to account for gas to cover both sides of transaction, or get more."
+        "noEnoughAsset": "没有足够的 %{asset} 支付费用。 请降低速度或获得更多gas。",
+        "getAsset": "获得%{asset}",
+        "lowerSpeed": "降低速度以覆盖交易双方的gas，或获得更多gas。"
     },
     "noLiquidityMessage": {
-        "noLiquidity": "Not enough liquidity for this trade. You can request %{asset} in ",
-        "tryAgainLater": " or try again later.",
-        "noTraded": "This pair isn't traded yet. Maybe there is a way to do multiple swaps to get that desired token."
+        "noLiquidity": "这笔交易的流动性不足。 您可以在 %{asset} 请求",
+        "tryAgainLater": " 或者晚点再试。",
+        "noTraded": "尚未有此交易对。 也许有其他方法可以进行多次交换以获得所需的代币。"
     },
     "operationErrorModal": {
-        "cantFindAccount": "Can’t find the ledger Account",
-        "instructions1": "Plug the Ledger into the computer",
-        "instructions2": "Enter pin to unlock it",
-        "instructions3": "On the Ledger, navigate to the asset you want to access",
-        "instructions4": "Once connected follow the prompts on the Ledger"
+        "cantFindAccount": "无法找到 Ledger 账户",
+        "instructions1": "将Ledger插入电脑",
+        "instructions2": "输入密码解锁",
+        "instructions3": "在Ledger上，导航到您要访问的资产",
+        "instructions4": "连接后，按照 Ledger 上的提示进行操作"
     },
     "warning": {
-        "message": "Experimental software, use at own risk"
+        "message": "实验性软件，使用风险自负"
     },
     "whatsNew": {
-        "title": "What's New"
+        "title": "新功能"
     },
     "buyCrypto": {
-        "buyCrypto": "Buy Crypto",
-        "gettingStarted": "Getting Started with Crypto is Easy",
-        "recommendations": "We recommend to start with sending ETH to your Liquality wallet because that fuels many transactions.",
-        "transakInstructions": "Transak lets you buy crypto with your credit card or via bank transfer depending on location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token (the first token of the account).",
-        "onramperDescription": "Onramper is an aggregated service providing the best quote from several sources and accepts popular payment methods depending on location.",
-        "trustedPartnerMessage": "You can also buy crypto at our trusted partner.",
-        "buyCryptoWithTransak": "Buy Crypto with Transak",
-        "buyCryptoWithOnramper": "Buy Crypto with Onramper",
-        "continueWithTransak": "Continue with Transak",
-        "continueWithOnramper": "Continue with Onramper",
-        "feeAndLimitMessage": "Fees and limits may vary. It usually takes just a couple of minutes and requires registration."
+        "buyCrypto": "购买加密货币",
+        "gettingStarted": "开始使用加密货币很容易",
+        "recommendations": "我们建议首先将 ETH 发送到您的 Liquality 钱包，因你将能够用以支付许多交易的费用。",
+        "transakInstructions": "Transak 允许您使用信用卡或通过银行转账购买加密货币，具体取决于地区。 要支付费用（gas）或与 dApp 交互，您主要需要 gas 代币（账户的第一个代币）。",
+        "onramperDescription": "Onramper 是一项综合服务，提供来自多个来源的最佳报价，并根据地区接受流行的付款方式。",
+        "trustedPartnerMessage": "您还可以在我们值得信赖的合作伙伴处购买加密货币。",
+        "buyCryptoWithTransak": "用 Transak 购买加密货币",
+        "buyCryptoWithOnramper": "用 Onramper 购买加密货币",
+        "continueWithTransak": "继续使用 Transak",
+        "continueWithOnramper": "继续使用 Onramper",
+        "feeAndLimitMessage": "费用和限额可能会有所不同。 通常只需几分钟，并且需要注册。"
     },
     "nft": {
-        "seeAll": "See all",
-        "yourNFTFromAddress": "Your NFT from address",
-        "yourNFTToAddress": "Your NFT to address"
+        "seeAll": "查看所有",
+        "yourNFTFromAddress": "您的 NFT 来自地址",
+        "yourNFTToAddress": "你的 NFT 到地址"
     }
 }
