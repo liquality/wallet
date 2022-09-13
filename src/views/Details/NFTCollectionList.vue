@@ -11,7 +11,7 @@
         >
       </span>
     </NavBar>
-    <div class="nft-collection mt-3">
+    <div class="nft-collection">
       <NFTAsset
         v-for="asset in nftCollection"
         :key="asset.id"
@@ -75,7 +75,7 @@ export default {
 
 <style lang="scss" scoped>
 .nft-collectibles {
-  overflow-y: auto;
+  overflow-y: hidden;
   .section-header {
     font-size: 20px;
     line-height: 25.78px;
@@ -109,11 +109,12 @@ export default {
     }
   }
   .nft-collection {
-    padding: 0 10px;
+    padding: 16px 10px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 5px;
     overflow-y: auto;
+    height: 100%;
   }
 }
 </style>
