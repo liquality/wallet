@@ -21,7 +21,7 @@ class OverviewPage {
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
         await testUtil.takeScreenshot(page, 'overview-page-loading-issue')
-        expect(e, 'Hamburger icon loading issue').equals(null)
+        expect(e, 'Hamburger icon loading issue after user enter password').equals(null)
       }
     }
   }
@@ -40,12 +40,10 @@ class OverviewPage {
 
     switch (network) {
       case 'testnet':
-        await page.click('#head_network', { delay: 5 })
-        await page.waitForTimeout(1000)
+        await page.click('#head_network', { delay: 100 })
         await page.waitForSelector('#testnet_network', { visible: true })
         console.log('user successfully logged in after import wallet')
-        await page.click('#testnet_network', { delay: 10 })
-        await page.waitForTimeout(2000)
+        await page.click('#testnet_network', { delay: 100 })
         await page.waitForSelector('#active_network', { visible: true })
         overviewText = await page.$eval('#active_network', (el) => el.innerText)
         expect(overviewText, 'switch to testnet failed').contain('TESTNET')
@@ -141,6 +139,7 @@ class OverviewPage {
       }
 
       case 'DAI':
+      case 'USDC':
       case 'ETH': {
         const eth = await page.waitForSelector('#ETHEREUM', {
           timeout: elementVisibleTimeout,
@@ -229,6 +228,7 @@ class OverviewPage {
 
       case 'MATIC':
       case 'PUSDT':
+      case 'PUSDC':
       case 'PWETH': {
         const polygon = await page.waitForSelector('#POLYGON', {
           timeout: elementVisibleTimeout,
@@ -250,16 +250,6 @@ class OverviewPage {
         })
         await solana.click()
         await page.waitForSelector(`#${assetName}`, {
-          timeout: elementVisibleTimeout,
-          visible: true
-        })
-        // check assert value
-        await page.waitForSelector('.list-item-detail', {
-          timeout: elementVisibleTimeout,
-          visible: true
-        })
-        // check assert fiat value
-        await page.waitForSelector('.list-item-detail-sub', {
           timeout: elementVisibleTimeout,
           visible: true
         })
@@ -386,7 +376,7 @@ class OverviewPage {
     console.log(`Total assets: ${chainNames.length}`)
     console.log(`Total assets: ${chainNames}`)
 
-    const assets = newWallet ? 10 : 11
+    const assets = newWallet ? 11 : 12
     await page.waitForSelector('#total_assets', { timeout: 60000 })
     const assetsCount = await page.$eval('#total_assets', (el) => el.textContent)
     expect(
@@ -431,12 +421,15 @@ class OverviewPage {
   async GetTotalLiquidity(page) {
     // Check the Total amount - 10s wait to load amount
     await page.waitForSelector('.wallet-stats_total', { timeout: 30000 })
-    await page.waitForTimeout(60000)
     let walletTotal = await page.$eval('.wallet-stats_total', (el) =>
       el.innerText.replace(/[.,\s]/g, '')
     )
     if (walletTotal.includes('NaN')) {
       assert.fail('Total Liquidity is NaN')
+    }
+    if (parseInt(walletTotal, 10) === 0) {
+      console.log('Total Liquidity is 0 so we will wait for 5s to load amount')
+      await page.waitForTimeout(5000)
     }
     return parseInt(walletTotal, 10)
   }
@@ -507,6 +500,8 @@ class OverviewPage {
   async GetAssertAddress(page, assertName) {
     let assertAddress
 
+    console.log(`trying to get ${assertName} address`)
+
     try {
       await page.waitForSelector(`#${assertName}`, { visible: true })
       const $parent = await page.$(`#${assertName}`)
@@ -514,7 +509,6 @@ class OverviewPage {
       assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
       if (assertAddress === "''" || assertAddress === '""') {
         await page.reload()
-        await page.waitForTimeout(10000)
       }
       assertAddress = await $parent.$eval('#assert_address', (el) => el.textContent.trim())
       expect(assertAddress, `${assertName} address is empty on overview page!`).to.not.equals("''")

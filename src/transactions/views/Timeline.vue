@@ -29,14 +29,16 @@
                 :href="addressLink(item.toAddress, item.to)"
                 target="_blank"
                 id="transaction_details_send_to_link"
-                >{{ shortenAddress(addPrefix(item.toAddress, item.to)) }}</a
-              >
+                >{{ toAddress }}
+              </a>
+
               <CopyIcon @click="copy(addPrefix(item.toAddress, item.to))" />
             </h3>
           </div>
         </div>
       </div>
       <div v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
+        <br />
         <small>Received</small>
         <br />
         <small>{{ prettyTime(item.endTime) }}</small>
@@ -86,21 +88,21 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import moment from '@liquality/wallet-core/dist/src/utils/moment'
-import { chains, assets as cryptoassets } from '@liquality/cryptoassets'
+import { getChain, isEvmChain } from '@liquality/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
-import {
-  isEthereumChain,
-  getNativeAsset,
-  getAddressExplorerLink
-} from '@liquality/wallet-core/dist/src/utils/asset'
+import { getNativeAsset, getAddressExplorerLink } from '@liquality/wallet-core/dist/src/utils/asset'
 
 import CopyIcon from '@/assets/icons/copy.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
+
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/src/swaps/utils'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
+import { debounce } from 'lodash'
 
 export default {
   components: {
@@ -115,8 +117,14 @@ export default {
       showFeeSelector: false,
       feeSelectorLoading: false,
       feeSelectorAsset: null,
-      newFeePrice: null
+      newFeePrice: null,
+      domainData: {},
+      domainResolver: null
     }
+  },
+  async mounted() {
+    this.domainResolver = new UNSResolver()
+    await this.getDomain()
   },
   props: ['id', 'tx'],
   computed: {
@@ -128,7 +136,11 @@ export default {
       )
     },
     fromAddress() {
-      return this.accountItem(this.item.accountId)?.addresses[0]
+      const from = this.accountItem(this.item.accountId)?.addresses[0]
+      const fromDomain = this.domainData[from]
+      return fromDomain
+        ? `${fromDomain} (${this.shortenAddress(this.addPrefix(from, this.item.from))})`
+        : this.shortenAddress(this.addPrefix(from, this.item.from))
     },
     reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
@@ -145,9 +157,16 @@ export default {
         getNativeAsset(this.feeSelectorAsset)
       ]
     },
+    toAddress() {
+      const to = this.item.toAddress
+      const toDomain = this.domainData[to]
+      return toDomain
+        ? `${toDomain} (${this.shortenAddress(this.addPrefix(to, this.item.to))})`
+        : this.shortenAddress(this.addPrefix(to, this.item.to))
+    },
     feeSelectorUnit() {
       const chain = cryptoassets[this.feeSelectorAsset].chain
-      return chains[chain].fees.unit
+      return getChain(this.activeNetwork, chain).fees.unit
     }
   },
   methods: {
@@ -155,7 +174,6 @@ export default {
     getNativeAsset,
     prettyBalance,
     shortenAddress,
-    isEthereumChain,
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
     },
@@ -166,11 +184,24 @@ export default {
       if (this.item.accountId) {
         return getAddressExplorerLink(address, asset, this.activeNetwork)
       }
-
       return '#'
     },
     addPrefix(address, asset) {
-      return !address.startsWith('0x') && isEthereumChain(asset) ? '0x' + address : address
+      return !address.startsWith('0x') && isEvmChain(this.activeNetwork, asset)
+        ? '0x' + address
+        : address
+    },
+    getDomain: debounce(async function () {
+      const from = this.accountItem(this.item.accountId)?.addresses[0]
+      const to = this.item.toAddress
+      this.getDomainData(from)
+      this.getDomainData(to)
+    }, 500),
+    async getDomainData(address) {
+      const domain = await this.domainResolver.reverseLookup(address)
+      if (domain) {
+        this.$set(this.domainData, address, domain)
+      }
     }
   },
   created() {

@@ -14,7 +14,7 @@ class SendPage {
    */
   async EnterSendAmount(page, coinsToSend) {
     // Enter send amount (or) coins
-    await page.waitForSelector('#send_amount_input_field', { visible: true })
+    await page.waitForSelector('#send_amount_input_field', { visible: true, timeout: 60000})
     console.log('SEND page has been loaded')
     const addressInputField = await page.$('#send_amount_input_field')
     await addressInputField.click({ clickCount: 3 })
@@ -31,7 +31,7 @@ class SendPage {
   async EnterSendToAddress(page, sendToAddress) {
     await page.waitForSelector('#address', { visible: true })
     const elementHandle = await page.$('#address')
-    await elementHandle.type(sendToAddress)
+    await elementHandle.type(sendToAddress, { delay: 200 })
     await page.waitForTimeout(1000)
   }
 

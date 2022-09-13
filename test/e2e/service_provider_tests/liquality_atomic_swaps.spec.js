@@ -18,7 +18,7 @@ const swapPage = new SwapPage()
 
 let browser, page
 
-describe('SWAP feature["TESTNET"]', async () => {
+describe.skip('SWAP feature["TESTNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()

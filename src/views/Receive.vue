@@ -82,7 +82,7 @@ import BuyCryptoButton from '@/components/BuyCrypto/BuyCryptoButton'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
-import { chains, ChainId } from '@liquality/cryptoassets'
+import { ChainId, getChain } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../package.json'
 
@@ -177,6 +177,10 @@ export default {
           FUSE: {
             name: 'FUSE',
             url: 'https://get.fusespark.io/'
+          },
+          OPTIMISM: {
+            name: 'OPTIMISM',
+            url: 'https://kovan.optifaucet.com/'
           }
         }[this.asset]
       }
@@ -189,9 +193,8 @@ export default {
       this.account?.type.includes('ledger') &&
       this.account?.chain !== ChainId.Bitcoin
     ) {
-      this.address = chains[cryptoassets[this.asset]?.chain]?.formatAddress(
-        this.account.addresses[0],
-        this.activeNetwork
+      getChain(this.activeNetwork, cryptoassets[this.asset]?.chain)?.formatAddressUI(
+        this.account.addresses[0]
       )
     } else {
       const addresses = await this.getUnusedAddresses({
@@ -200,7 +203,7 @@ export default {
         assets: [this.asset],
         accountId: this.accountId
       })
-      this.address = chains[this.chain]?.formatAddress(addresses[0], this.activeNetwork)
+      this.address = getChain(this.activeNetwork, this.chain)?.formatAddressUI(addresses[0])
     }
 
     const uri = this.chainName === 'terra' ? this.address : [this.chainName, this.address].join(':')

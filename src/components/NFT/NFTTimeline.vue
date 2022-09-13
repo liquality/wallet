@@ -118,7 +118,7 @@ import moment from '@liquality/wallet-core/dist/src/utils/moment'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import {
-  isEthereumChain,
+  isChainEvmCompatible,
   getNativeAsset,
   getAddressExplorerLink,
   getTransactionExplorerLink
@@ -168,7 +168,7 @@ export default {
     getNativeAsset,
     prettyBalance,
     shortenAddress,
-    isEthereumChain,
+    isChainEvmCompatible,
     getAddressExplorerLink,
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
@@ -184,7 +184,9 @@ export default {
       return '#'
     },
     addPrefix(address, asset) {
-      return !address.startsWith('0x') && isEthereumChain(asset) ? '0x' + address : address
+      return !address.startsWith('0x') && isChainEvmCompatible(asset, this.activeNetwork)
+        ? '0x' + address
+        : address
     }
   }
 }

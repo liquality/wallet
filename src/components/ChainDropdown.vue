@@ -48,11 +48,12 @@
 <script>
 import { getAssetColorStyle } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getChainIcon } from '@/utils/accounts'
-import { chains } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 import SearchIcon from '@/assets/icons/search.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import clickAway from '@/directives/clickAway'
+import { mapState } from 'vuex'
 
 export default {
   directives: {
@@ -72,6 +73,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['activeNetwork']),
     items() {
       return this.chains.filter((a) => a !== this.selected)
     }
@@ -80,7 +82,7 @@ export default {
     search(newSearch, oldSearch) {
       if (newSearch && newSearch !== oldSearch) {
         this.filteredItems = this.items.filter((a) =>
-          chains[a].name.toUpperCase().includes(newSearch.toUpperCase())
+          getChain(this.activeNetwork, a).name.toUpperCase().includes(newSearch.toUpperCase())
         )
       } else {
         this.filteredItems = [...this.items]
@@ -90,7 +92,7 @@ export default {
       if (newChains && newChains !== oldChains) {
         if (this.search) {
           this.filteredItems = this.items.filter((a) =>
-            chains[a].name.toUpperCase().includes(this.search.toUpperCase())
+            getChain(this.activeNetwork, a).name.toUpperCase().includes(this.search.toUpperCase())
           )
         } else {
           this.filteredItems = [...this.items]
@@ -102,7 +104,7 @@ export default {
     getAssetColorStyle,
     getChainIcon,
     getChainName(chain) {
-      const { name, code } = chains[chain]
+      const { name, code } = getChain(this.activeNetwork, chain)
       return `${name} (${code})`
     },
     selectItem(chain) {

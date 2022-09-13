@@ -64,7 +64,7 @@ import { getAssetIcon } from '@/utils/asset'
 import RefreshIcon from '@/assets/icons/refresh.svg'
 import EyeIcon from '@/assets/icons/eye.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
-import { chains } from '@liquality/cryptoassets'
+import { getChain, getNativeAssetCode } from '@liquality/cryptoassets'
 import { getAddressExplorerLink } from '@liquality/wallet-core/dist/src/utils/asset'
 
 export default {
@@ -114,15 +114,14 @@ export default {
     },
     address() {
       if (this.isAccount) {
-        return chains[this.account.chain]?.formatAddress(
-          this.account.addresses[0],
-          this.activeNetwork
+        return getChain(this.activeNetwork, this.account.chain)?.formatAddressUI(
+          this.account.addresses[0]
         )
       }
       return ''
     },
     asset() {
-      return chains[this.account.chain].nativeAsset
+      return getNativeAssetCode(this.activeNetwork, this.account.chain)
     },
     addressLink() {
       if (this.account) {

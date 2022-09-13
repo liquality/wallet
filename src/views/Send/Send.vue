@@ -36,6 +36,7 @@
                 placeholder="Address"
                 autocomplete="off"
                 required
+                @input="getDomainAddress"
               />
             </div>
             <small
@@ -202,7 +203,7 @@
           <div class="mt-40">
             <label>Send To</label>
             <p class="confirm-address" id="confirm-address">
-              {{ this.address ? shortenAddress(this.address) : '' }}
+              {{ confirmAddress }}
             </p>
           </div>
         </div>
@@ -242,11 +243,11 @@
 
 <script>
 import { mapState, mapActions, mapGetters } from 'vuex'
-import _ from 'lodash'
+import _, { debounce } from 'lodash'
 import BN from 'bignumber.js'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../../package.json'
-import { chains, currencyToUnit, unitToCurrency, ChainId } from '@liquality/cryptoassets'
+import { currencyToUnit, unitToCurrency, ChainId, getChain } from '@liquality/cryptoassets'
 import NavBar from '@/components/NavBar'
 import FeeSelector from '@/components/FeeSelector'
 import {
@@ -263,7 +264,8 @@ import {
 } from '@liquality/wallet-core/dist/src/utils/asset'
 import { getAssetIcon } from '@/utils/asset'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
-import { getSendFee, getFeeLabel, isEIP1559Fees } from '@liquality/wallet-core/dist/src/utils/fees'
+import { getSendTxFees, getFeeLabel, feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
+
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import DetailsContainer from '@/components/DetailsContainer'
 import SendInput from './SendInput'
@@ -273,6 +275,7 @@ import CustomFees from '@/components/CustomFees'
 import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 import qs from 'qs'
+import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
 
 export default {
   components: {
@@ -305,8 +308,13 @@ export default {
       customFeeAssetSelected: null,
       customFee: null,
       memo: '',
-      updatingFees: false
+      updatingFees: false,
+      domainData: {},
+      domainResolver: null
     }
+  },
+  mounted() {
+    this.domainResolver = new UNSResolver()
   },
   props: {
     asset: String,
@@ -315,7 +323,7 @@ export default {
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'fees', 'fiatRates']),
     ...mapGetters('app', ['ledgerBridgeReady']),
-    ...mapGetters(['accountItem', 'client']),
+    ...mapGetters(['accountItem', 'client', 'suggestedFeePrices']),
     account() {
       return this.accountItem(this.accountId)
     },
@@ -365,7 +373,7 @@ export default {
         assetFees.custom = { fee: this.customFee }
       }
 
-      const fees = this.fees[this.activeNetwork]?.[this.activeWalletId]?.[this.assetChain]
+      const fees = this.suggestedFeePrices(this.assetChain)
       if (fees) {
         Object.assign(assetFees, fees)
       }
@@ -379,16 +387,25 @@ export default {
       const fees = this.maxOptionActive ? this.maxSendFees : this.sendFees
       return this.selectedFee in fees ? fees[this.selectedFee] : BN(0)
     },
+    isValidDomain() {
+      return this.domainData[this.address] ? true : false
+    },
+    getAddressFromDomain() {
+      return this.domainData[this.address] ? this.domainData[this.address] : ''
+    },
     currentChainAssetFee() {
       const fees = this.assetFees
       return fees[this.selectedFee]?.fee || BN(0)
     },
     currentChainUnit() {
-      const { unit } = chains[cryptoassets[this.asset].chain].fees || ''
+      const { unit } = getChain(this.activeNetwork, cryptoassets[this.asset].chain).fees || ''
       return unit
     },
     isValidAddress() {
-      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
+      return (
+        this.isValidDomain ||
+        getChain(this.activeNetwork, cryptoassets[this.asset].chain).isValidAddress(this.address)
+      )
     },
     addressError() {
       if (!this.isValidAddress) {
@@ -404,7 +421,7 @@ export default {
       return null
     },
     isCustomFeeSupported() {
-      const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
+      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.asset].chain)
       return supportCustomFees
     },
     canSend() {
@@ -444,13 +461,20 @@ export default {
       return BN(this.amount).plus(BN(this.currentFee))
     },
     isEIP1559Fees() {
-      return isEIP1559Fees(cryptoassets[this.asset].chain, this.activeNetwork)
+      return getChain(this.activeNetwork, cryptoassets[this.asset].chain).EIP1559
     },
     showMemoInput() {
       return cryptoassets[this.asset].chain === ChainId.Terra
     },
     memoData() {
       return this.memo
+    },
+    confirmAddress() {
+      return this.address
+        ? this.isValidDomain
+          ? `${this.address} (${shortenAddress(this.getAddressFromDomain)})`
+          : shortenAddress(this.address)
+        : ''
     }
   },
   methods: {
@@ -464,41 +488,11 @@ export default {
     getAssetColorStyle,
     shortenAddress,
     async _updateSendFees(amount) {
-      const getMax = amount === undefined
-      if (this.feesAvailable) {
-        const sendFees = {}
-
-        for (const [speed, fee] of Object.entries(this.assetFees)) {
-          const feePrice = fee.fee.maxFeePerGas || fee.fee
-          sendFees[speed] = getSendFee(this.assetChain, feePrice)
-        }
-
-        if (this.asset === 'BTC') {
-          const client = this.client({
-            network: this.activeNetwork,
-            walletId: this.activeWalletId,
-            asset: this.asset,
-            accountId: this.account.id
-          })
-          const feePerBytes = Object.values(this.assetFees).map((fee) => fee.fee)
-          const value = getMax ? undefined : currencyToUnit(cryptoassets[this.asset], BN(amount))
-          try {
-            const txs = feePerBytes.map((fee) => ({ value, fee }))
-            const totalFees = await client.wallet.getTotalFees(txs, getMax)
-            for (const [speed, fee] of Object.entries(this.assetFees)) {
-              const totalFee = unitToCurrency(cryptoassets[this.asset], totalFees[fee.fee])
-              sendFees[speed] = totalFee
-            }
-          } catch (e) {
-            console.error(e)
-          }
-        }
-
-        if (getMax) {
-          this.maxSendFees = sendFees
-        } else {
-          this.sendFees = sendFees
-        }
+      const sendFees = await getSendTxFees(this.account.id, this.asset, amount, this.customFee)
+      if (amount === undefined) {
+        this.maxSendFees = sendFees
+      } else {
+        this.sendFees = sendFees
       }
     },
     updateSendFees: _.debounce(async function (amount) {
@@ -507,6 +501,18 @@ export default {
     async updateMaxSendFees() {
       await this._updateSendFees()
     },
+    getDomainAddress: debounce(async function () {
+      if (!this.isValidDomain) {
+        const currentAddress = this.address
+        const domainAddress = await this.domainResolver.lookupDomain(
+          currentAddress,
+          cryptoassets[this.asset].chain
+        )
+        if (domainAddress) {
+          this.$set(this.domainData, currentAddress, domainAddress)
+        }
+      }
+    }, 500),
     showInputsStep() {
       this.currentStep = 'inputs'
     },
@@ -544,14 +550,16 @@ export default {
         // validate for custom fees
         const fee = this.feesAvailable ? this.assetFees[this.selectedFee].fee : undefined
 
+        const domainAddress = this.getAddressFromDomain
         await this.sendTransaction({
           network: this.activeNetwork,
           walletId: this.activeWalletId,
           asset: this.asset,
-          to: this.address,
+          to: domainAddress != '' ? domainAddress : this.address,
           accountId: this.account.id,
           amount,
           fee,
+          gas: cryptoassets[this.asset].sendGasLimit,
           feeLabel: this.selectedFee,
           fiatRate: this.fiatRates[this.asset],
           ...(this.showMemoInput && { data: this.memoData })
@@ -613,7 +621,7 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
-        this.customFee = typeof fee === 'object' ? fee.maxFeePerGas + fee.maxPriorityFeePerGas : fee
+        this.customFee = feePerUnit(fee, cryptoassets[this.asset].chain)
         this.selectedFee = 'custom'
       }
       this.currentStep = 'inputs'
@@ -710,17 +718,21 @@ export default {
       margin-left: 12px;
     }
   }
+
   &_fees {
     display: flex;
     align-items: center;
     font-weight: bold;
     margin: 6px 0;
+
     .fee-selector {
       margin-left: 6px;
     }
+
     .selectors-asset {
       width: 70px;
     }
+
     .custom-fees {
       display: flex;
       align-items: center;
@@ -762,6 +774,7 @@ input[type='number'] {
 
 .updating-fees {
   height: 24px;
+
   circle {
     stroke: #dedede;
   }

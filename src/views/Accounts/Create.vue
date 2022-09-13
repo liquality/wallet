@@ -105,7 +105,7 @@ import ChevronRightIcon from '@/assets/icons/chevron_right_gray.svg'
 import clickAway from '@/directives/clickAway'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { chains } from '@liquality/cryptoassets'
+import { getAllSupportedChains, getChain } from '@liquality/cryptoassets'
 import { buildConfig } from '@liquality/wallet-core'
 import { getNextAccountColor } from '@liquality/wallet-core/dist/src/utils/accounts'
 import { getChainIcon } from '@/utils/accounts'
@@ -141,12 +141,12 @@ export default {
     chains() {
       return buildConfig.chains
         .map((chainId) => {
-          const { name, code, nativeAsset } = chains[chainId]
+          const { name, code, nativeAsset } = getChain(this.activeNetwork, chainId)
           return {
             id: chainId,
             name,
             code,
-            nativeAsset
+            nativeAsset: nativeAsset[0].code
           }
         })
         .filter((chain) => chain.id !== this.selectedChain?.id)
@@ -168,7 +168,7 @@ export default {
     if (this.chainId) {
       chain = this.chains.find((c) => c.id === this.chainId)
     }
-    this.selectedChain = chain || Object.values(chains)[0]
+    this.selectedChain = chain || Object.values(getAllSupportedChains()[this.activeNetwork])[0]
     this.accountIndex = this.getAccountIndex()
     this.accountColor = getNextAccountColor(this.selectedChain.id, this.accountIndex - 1)
 

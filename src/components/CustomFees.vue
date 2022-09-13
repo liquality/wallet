@@ -104,9 +104,10 @@ import { getFeeLabel } from '@liquality/wallet-core/dist/src/utils/fees'
 import BN from 'bignumber.js'
 import { prettyFiatBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -126,13 +127,14 @@ export default {
     this.fee = this.fees[this.preset]?.fee
   },
   computed: {
+    ...mapState(['activeNetwork']),
     nativeAsset() {
       return getFeeAsset(this.asset) || getNativeAsset(this.asset)
     },
     gasUnit() {
       const chainId = cryptoassets[this.asset]?.chain
       if (chainId) {
-        const { unit } = chains[chainId]?.fees || ''
+        const { unit } = getChain(this.activeNetwork, chainId)?.fees || ''
         return getFeeAsset(this.asset) || unit
       }
       return ''
@@ -199,8 +201,7 @@ export default {
           ? `${BN(this.fee).dp(6)} ${this.gasUnit} ${this.nativeAsset}`
           : `${totalFee} ${this.nativeAsset}`
       } else {
-        const chainId = cryptoassets[this.asset].chain
-        const { unit } = chains[chainId].fees
+        const unit = this.gasUnit()
         return `${this.fee || 0} ${unit}`
       }
     },

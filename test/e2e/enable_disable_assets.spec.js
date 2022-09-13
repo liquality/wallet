@@ -58,7 +58,7 @@ describe('Enable and disable asset ["MAINNET","PULL_REQUEST_TEST"]', async () =>
       await page.click('#previous_nav_bar')
       const totalAssetsAfterDisable = await overviewPage.getTotalAssetsFromOverview(page)
       console.log('Total assets after disable: ', totalAssetsAfterDisable)
-      expect(totalAssetsAfterDisable).lt(totalAssetsBeforeDisable)
+      expect(totalAssetsAfterDisable).lte(totalAssetsBeforeDisable)
     })
   })
 })
