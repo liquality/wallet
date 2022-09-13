@@ -33,7 +33,7 @@ describe.skip('Terra swaps-["PULL_REQUEST_TEST"]', async () => {
 
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
       await homePage.ScrollToEndOfTerms(page)

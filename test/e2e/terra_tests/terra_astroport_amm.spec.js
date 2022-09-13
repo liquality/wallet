@@ -13,14 +13,12 @@ const passwordPage = new PasswordPage()
 const swapPage = new SwapPage()
 
 let browser, page
-if (process.env.NODE_ENV === 'mainnet') {
-  // Astroport AMM works against Terra chain
-  //TODO: Skip these tests because wallet doesn't have enough balance in terra chain
-  describe.skip('SWAP Astroport AMM service Provider-["MAINNET"]', async () => {
+// Astroport AMM works against Terra chain
+describe.skip('SWAP Astroport AMM service Provider-["MAINNET"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
       await homePage.ScrollToEndOfTerms(page)
@@ -37,7 +35,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       await browser.close()
     })
 
-    it('Astroport AMM(LUNA->UST) quote check["MAINNET_RELEASE"]', async () => {
+    it('Astroport AMM(LUNA->UST) quote check["MAINNET_RELEASE",PULL_REQUEST_TEST]', async () => {
       const fromAsset = 'LUNA'
       const toAsset = {
         chain: 'TERRA',
@@ -52,7 +50,6 @@ if (process.env.NODE_ENV === 'mainnet') {
         swapSendAmountField,
         `${fromAsset} to ${toAsset} SWAP min value not set in input`
       ).not.equals('0.0000')
-      await swapPage.ClickOnMin(page)
       // Select 2nd Pair
       await page.click('.swap-receive-main-icon')
       await page.waitForSelector(`#${toAsset.chain}`, { visible: true })
@@ -67,7 +64,7 @@ if (process.env.NODE_ENV === 'mainnet') {
       const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
       expect(
         availableBalance,
-        `${fromAsset}->${toAsset.coin}) swap, available balance should be greater than 0`
+        `${fromAsset}->${toAsset.coin} swap, available balance should be greater than 0`
       ).to.be.above(0)
       await page.waitForTimeout(5000)
       expect(
@@ -380,4 +377,3 @@ if (process.env.NODE_ENV === 'mainnet') {
       await swapPage.clickSwapReviewButton(page)
     })
   })
-}

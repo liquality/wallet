@@ -61,7 +61,7 @@ import amplitude from 'amplitude-js'
 import WalletNFTs from './WalletNFTs.vue'
 import { getAccountIcon } from '@/utils/accounts'
 import NFTIcon from '@/assets/icons/nft.svg'
-import { chains } from '@liquality/cryptoassets'
+import { getNativeAssetCode } from '@liquality/cryptoassets'
 
 amplitude.getInstance().init('bf12c665d1e64601347a600f1eac729e')
 
@@ -103,7 +103,7 @@ export default {
       return this.accountsData.filter((account) => account.id === this.id)[0]
     },
     asset() {
-      return chains[this.account.chain].nativeAsset
+      return getNativeAssetCode(this.activeNetwork, this.account.chain)
     }
   },
   methods: {
