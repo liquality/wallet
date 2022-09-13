@@ -49,7 +49,9 @@ Send your ETH assets there using our built-in cross-chain swap feature.</pre
     <template #footer>
       <div class="footer">
         <div class="text-muted">{{ $t('common.version') }} {{ appVersion }}</div>
-        <button class="btn btn-outline-clear" id="wats_new_close_btn" @click="close">Close</button>
+        <button class="btn btn-outline-clear" id="wats_new_close_btn" @click="close">
+          {{ $t('common.close') }}
+        </button>
       </div>
     </template>
   </Modal>

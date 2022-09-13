@@ -1,6 +1,6 @@
 <template>
   <div class="empty-activity">
-    <div>{{ $t('components.emtpyActivity.message') }}</div>
+    <div>{{ $t('components.emptyActivity.message') }}</div>
     <div v-show="activeNetwork === 'mainnet'" class="buy-crypto-container">
       <CartIcon />
       <BuyCryptoButton
