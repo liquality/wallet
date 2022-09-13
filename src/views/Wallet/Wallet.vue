@@ -96,14 +96,10 @@ export default {
       return false
     },
     async getNFTs() {
-      const accountIds = this.accountsData.map((account) => {
-        return account.id
-      })
       try {
         await this.updateNFTs({
           walletId: this.activeWalletId,
-          network: this.activeNetwork,
-          accountIds: accountIds
+          network: this.activeNetwork
         })
       } catch (error) {
         console.error(error)
