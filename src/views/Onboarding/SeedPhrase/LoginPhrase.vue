@@ -36,7 +36,7 @@
             id="checkbox"
           />
           <label class="form-check-label mt-1" for="checkbox">
-            {{ $t('pages.onboarding.seedLogin.understandTheRisk') }}
+            {{ $t('pages.onboarding.seedlogin.understandTheRisk') }}
           </label>
         </div>
       </div>
@@ -89,7 +89,7 @@ export default {
     }
   },
   created() {
-    this.title = this.$t(`onboarding.seedLogin.title.${this.titleKey}`)
+    this.title = this.$t(`onboarding.seedlogin.title.${this.titleKey}`)
   },
   methods: {
     ...mapActions('app', ['trackAnalytics']),
@@ -102,11 +102,11 @@ export default {
           await this.unlockWallet({ key: this.password })
           this.$router.push(this.nextPath)
         } else {
-          this.error = this.$t('pages.onboarding.seedLogin.pleaseAcceptTerms')
+          this.error = this.$t('pages.onboarding.seedlogin.pleaseAcceptTerms')
         }
       } catch (e) {
         console.log(e)
-        this.error = this.$t('pages.onboarding.seedLogin.unlockError')
+        this.error = this.$t('pages.onboarding.seedlogin.unlockError')
         this.trackAnalytics({
           event: 'User Backup Seed failed',
           properties: {

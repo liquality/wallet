@@ -87,7 +87,8 @@
         "addCustomToken": "添加自定义代币",
         "cantFindThisToken": "无法找到该代币",
         "addCustomERC20Tokens": "添加自定义ERC20代币",
-        "learnHow": "学习如何"
+        "learnHow": "学习如何",
+        "searchForAsset": "Search for an Asset"
     },
     "customToken": {
         "selectChain": "选择链",

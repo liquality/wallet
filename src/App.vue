@@ -1,10 +1,15 @@
 <template>
-  <div id="app" v-if="brokerReady" :key="i18nVersion">
-    <Head v-if="unlockedAt" :show-dapp-connections="showDappConnections" />
-    <router-view />
-    <template v-if="unlockedAt && termsAcceptedAt">
-      <GlobalModals />
+  <div id="app" :key="i18nVersion">
+    <template v-if="brokerReady && localesLoaded">
+      <Head v-if="unlockedAt" :show-dapp-connections="showDappConnections" />
+      <router-view />
+      <template v-if="unlockedAt && termsAcceptedAt">
+        <GlobalModals />
+      </template>
     </template>
+    <div class="login-wrapper spinner-container" v-else>
+      <SpinnerIcon class="btn-loading" />
+    </div>
   </div>
 </template>
 
@@ -12,11 +17,17 @@
 import { mapState, mapActions } from 'vuex'
 import Head from '@/components/Head.vue'
 import GlobalModals from '@/components/GlobalModals.vue'
-
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 export default {
   components: {
     Head,
-    GlobalModals
+    GlobalModals,
+    SpinnerIcon
+  },
+  data() {
+    return {
+      localesLoaded: false
+    }
   },
   computed: {
     ...mapState(['activeNetwork', 'brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
@@ -47,6 +58,7 @@ export default {
       // store the local in state
       await this.setLocalePreference({ locale: this.currentLocale })
     }
+    this.localesLoaded = true
   }
 }
 </script>
@@ -59,6 +71,10 @@ export default {
   flex-direction: column;
   background: #ffffff;
   overflow: hidden;
+
+  .spinner-container {
+    justify-content: center;
+  }
 }
 
 @keyframes redraw {

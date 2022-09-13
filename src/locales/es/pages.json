@@ -87,7 +87,8 @@
         "addCustomToken": "Añadir Token",
         "cantFindThisToken": "No se encuentra este token",
         "addCustomERC20Tokens": "Añadir Token ERC20",
-        "learnHow": "Aprende cómo"
+        "learnHow": "Aprende cómo",
+        "searchForAsset": "Search for an Asset"
     },
     "customToken": {
         "selectChain": "Selecciona cadena...",

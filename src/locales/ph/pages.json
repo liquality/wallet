@@ -87,7 +87,8 @@
         "addCustomToken": "Magdagdag ng Custom Token",
         "cantFindThisToken": "Hindi mahanap ang token na ito",
         "addCustomERC20Tokens": "Magdagdag ng mga Custom na ERC20 token",
-        "learnHow": "Matuto kung paano"
+        "learnHow": "Matuto kung paano",
+        "searchForAsset": "Search for an Asset"
     },
     "customToken": {
         "selectChain": "Pumili ng chain...",

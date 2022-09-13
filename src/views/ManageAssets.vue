@@ -13,7 +13,7 @@
           autocomplete="off"
           class="form-control form-control-sm"
           v-model="search"
-          placeholder="Search for an Asset"
+          :placeholder="$t('pages.manageAssets.searchForAsset')"
         />
       </div>
       <router-link to="/settings/manage-assets/custom-token" id="add_custom_token">
