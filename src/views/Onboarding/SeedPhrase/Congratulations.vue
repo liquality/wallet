@@ -27,8 +27,12 @@ export default {
   &_top {
     z-index: 2;
     position: absolute;
-    top: 178px;
-    left: 112px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     h1 {
       color: $color-text-secondary;
     }

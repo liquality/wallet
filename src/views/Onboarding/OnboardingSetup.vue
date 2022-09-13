@@ -81,6 +81,7 @@ export default {
       this.mnemonic = generateMnemonic()
       this.currentStep = 'backup'
     }
+    this.currentStep = 'congrats'
   },
   computed: {
     seedList: function () {
