@@ -20,21 +20,25 @@ export const Localization = {
     Vue.mixin({
       data: () => {
         return {
-          i18nVersion: i18n.version,
+          localeKey: Date.now(),
           currentLocale: i18n.locale
         }
       },
       computed: {
         locales() {
           return (process.env.VUE_APP_SUPPORTED_LOCALES || []).split(',')
+        },
+        localeInstance() {
+          return i18n
         }
       },
       methods: {
         async changeLocale(locale) {
           await loadLocale(locale)
           i18n.locale = locale
-          this.i18nVersion = i18n.version
+          this.localeKey = Date.now()
           this.currentLocale = locale
+          this.$root.$forceUpdate()
         }
       }
     })

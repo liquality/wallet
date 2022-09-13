@@ -1,11 +1,9 @@
 <template>
-  <div id="app" :key="i18nVersion">
+  <div id="app">
     <template v-if="brokerReady && localesLoaded">
       <Head v-if="unlockedAt" :show-dapp-connections="showDappConnections" />
       <router-view />
-      <template v-if="unlockedAt && termsAcceptedAt">
-        <GlobalModals />
-      </template>
+      <GlobalModals v-if="unlockedAt && termsAcceptedAt" />
     </template>
     <div class="login-wrapper spinner-container" v-else>
       <SpinnerIcon class="btn-loading" />
@@ -55,7 +53,7 @@ export default {
         ? browserLocale
         : process.env.VUE_APP_DEFAULT_LOCALE
       await this.changeLocale(_locale)
-      // store the local in state
+      // store the locale in state
       await this.setLocalePreference({ locale: this.currentLocale })
     }
     this.localesLoaded = true
