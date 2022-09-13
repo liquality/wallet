@@ -41,6 +41,7 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     await page.click('#dropdown-item', { delay: 1000 })
     await page.waitForSelector('#avalanche_web_network', { visible: true })
     await page.click('#avalanche_web_network', { delay: 1000 })
+    await page.waitForTimeout(1000)
 
     // Go to dpp app
     dappPage = await browser.newPage()
@@ -53,7 +54,7 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     await dappPage.goto(pangolin_Url, { timeout: 0, waitUntil: 'networkidle2' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
-      window.ethereum.enable()
+      window.ethereum.request({ method: 'eth_requestAccounts' })
     })
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))

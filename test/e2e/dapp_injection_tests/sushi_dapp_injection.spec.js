@@ -36,16 +36,14 @@ describe("Sushi Dapp Injection-['MAINNET']", async () => {
 
   it("Sushi injection - ETH['PULL_REQUEST_TEST']", async () => {
     const dappPage = await browser.newPage();
-    await dappPage.goto(dappUrl, { waitUntil: "networkidle2", timeout: 0 });
-    await dappPage.waitForSelector("#connect-wallet", { visible: true, timeout: 90000 });
-    await dappPage.click("#connect-wallet");
+    await dappPage.goto(dappUrl, { waitUntil: "load", timeout: 0 });
     // Before click on injected wallet option.
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable()
+    })
     const newPagePromise = new Promise((x) =>
-      browser.once("targetcreated", (target) => x(target.page()))
-    ); /* eslint-disable-line */
-    // Click on Injected Option
-    const injectedOption = await dappPage.$x("//*[text()='Injected']");
-    injectedOption[0].click();
+      browser.once('targetcreated', (target) => x(target.page()))
+    ) /* eslint-disable-line */
 
     const connectRequestWindow = await newPagePromise;
     try {
@@ -83,26 +81,28 @@ describe("Sushi Dapp Injection-['MAINNET']", async () => {
     await dappPage.waitForSelector("#web3-status-connected", { visible: true, timeout: 30000})
       .catch((e) => expect(e, "Sushi dapp ETH chain injection not connected.....").to.not.throw());
   });
-  it("Sushi injection - Polygon", async () => {
+  it("Sushi injection - Polygon[PULL_REQUEST_TEST]", async () => {
     let chain = "polygon";
 
+    // Connected dapp option
+    await page.click('#connect_dapp_main_option')
+    await page.waitForSelector('#dropdown-item', { visible: true })
     // Select correct network
     await page.click("#dropdown-item", { delay: 1000 });
     await page.waitForSelector(`#${chain}_web_network`, { visible: true });
     await page.click(`#${chain}_web_network`, { delay: 2000 });
+    await page.waitForTimeout(3000)
 
     const dappPage = await browser.newPage();
-    await dappPage.goto(dappUrl, { waitUntil: "networkidle2" });
-    await dappPage.waitForSelector("#connect-wallet", { visible: true, timeout: 90000 });
-    await dappPage.click("#connect-wallet");
+    await dappPage.goto(dappUrl, { waitUntil: "networkidle2", timeout: 0 });
     // Before click on injected wallet option.
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable()
+    })
+    /* eslint-disable-line */
     const newPagePromise = new Promise((x) =>
-      browser.once("targetcreated", (target) => x(target.page()))
-    ); /* eslint-disable-line */
-    // Click on Injected Option
-    const injectedOption = await dappPage.$x("//*[text()='Injected']");
-    injectedOption[0].click();
-
+      browser.once('targetcreated', (target) => x(target.page()))
+    )
     const connectRequestWindow = await newPagePromise;
     await connectRequestWindow.waitForSelector("#filter_by_chain", {
       visible: true,
@@ -127,6 +127,6 @@ describe("Sushi Dapp Injection-['MAINNET']", async () => {
     await connectRequestWindow.click("#connect_request_button").catch((e) => e);
     // Check web3 status as connected
     await dappPage.waitForSelector("#web3-status-connected", { visible: true, timeout: 30000})
-      .catch((e) => expect(e, "Sushi dapp ETH chain injection not connected.....").to.not.throw());
+      .catch((e) => expect(e, "Sushi dapp Polygon chain injection not connected.....").to.not.throw());
   });
 });
