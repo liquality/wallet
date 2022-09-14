@@ -5,7 +5,7 @@ full-trace: true
 color: true
 inline-diffs: true
 async-only: true
-parallel: true
+parallel: false
 jobs: 10
 recursive: true
 diff: true

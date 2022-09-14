@@ -13,7 +13,7 @@ const passwordPage = new PasswordPage();
 let browser, page;
 const metamaskTestDappUrl = "https://metamask.github.io/test-dapp/"
 
-describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
+describe.only("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions());
     page = await browser.newPage();
@@ -38,16 +38,19 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     const dappPage = await browser.newPage();
     await dappPage.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
     await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 0})
-    // Before click on injected wallet option.
-    await dappPage.evaluate(async () => {
-        window.ethereum.enable()
-      }, { timeout: 60000 });
+    console.log("metmask test dapp loaded")
 
+    await dappPage.waitForFunction('window.ethereum', { timeout: 0 })
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable().then(() => {
+        console.log("window.ethereum.enable() called")
+      })
+      });
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
     ) /* eslint-disable-line */
 
-    const connectRequestWindow = await newPagePromise;
+     const connectRequestWindow = await newPagePromise;
     try {
       await connectRequestWindow.waitForSelector("#filter_by_chain", {
         visible: true,
@@ -95,9 +98,11 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     const dappPage = await browser.newPage();
     await dappPage.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
     await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 0})
-    // Before click on injected wallet option.
-    await dappPage.evaluate(() => {
-        window.ethereum.enable()
+    await dappPage.waitForFunction('window.ethereum', { timeout: 0 })
+    await dappPage.evaluate(async () => {
+      window.ethereum.enable().then(() => {
+        console.log("window.ethereum.enable() called")
+      })
     });
     /* eslint-disable-line */
     const newPagePromise = new Promise((x) =>
