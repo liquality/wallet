@@ -57,6 +57,11 @@ export default {
       await this.setLocalePreference({ locale: this.currentLocale })
     }
     this.localesLoaded = true
+  },
+  watch: {
+    localeKey(newVal, oldVal) {
+      console.log('localeKey', newVal, oldVal)
+    }
   }
 }
 </script>

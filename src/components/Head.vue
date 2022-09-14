@@ -18,14 +18,11 @@
       v-if="showDappConnections"
       @click.stop="toggleShowConnectionDrawer"
     >
-      <template v-if="dappConnected">
-        <ConnectionConnected class="mr-1 connection-icon" id="dappConnected" />
-        {{ $t('components.head.dappConnected') }}
-      </template>
-      <template v-else>
-        <ConnectionDisconnected class="mr-1 connection-icon" id="connect_dapp" />
-        {{ $t('components.head.connectDapp') }}
-      </template>
+      <ConnectionConnected v-if="dappConnected" class="mr-1 connection-icon" id="dappConnected" />
+      <ConnectionDisconnected v-else class="mr-1 connection-icon" id="connect_dapp" />
+      {{ dappConnected
+        ? $t('components.head.dappConnected')
+        : $t('components.head.connectDapp') }}
       <ChevronUpIcon class="ml-1" v-if="showConnectionDrawer" />
       <ChevronDownIcon class="ml-1" v-else />
     </div>
@@ -69,6 +66,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      locale: (state) => state.app?.locale
+    }),
     ...mapState(['wallets', 'activeWalletId', 'activeNetwork', 'externalConnections']),
     wallet: function () {
       return this.wallets.find((wallet) => wallet.id === this.activeWalletId)
@@ -116,6 +116,12 @@ export default {
           this.currentOrigin = origin
         }
       })
+    }
+  },
+  watch: {
+    locale() {
+      // we need to call this because this component seems to not take the local update
+      this.$forceUpdate()
     }
   }
 }

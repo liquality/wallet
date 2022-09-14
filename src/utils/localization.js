@@ -18,9 +18,8 @@ export const loadLocale = async (locale, namespaces = ['common', 'components', '
 export const Localization = {
   install: (Vue) => {
     Vue.mixin({
-      data: () => {
+      data() {
         return {
-          localeKey: Date.now(),
           currentLocale: i18n.locale
         }
       },
@@ -36,9 +35,7 @@ export const Localization = {
         async changeLocale(locale) {
           await loadLocale(locale)
           i18n.locale = locale
-          this.localeKey = Date.now()
           this.currentLocale = locale
-          this.$root.$forceUpdate()
         }
       }
     })
