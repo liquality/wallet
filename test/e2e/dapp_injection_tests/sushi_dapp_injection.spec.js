@@ -39,8 +39,11 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     await dappPage.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
+      window.ethereum
+    }, { timeout: 0 });
+    await dappPage.evaluate(async () => {
       window.ethereum.enable()
-    })
+    }, { timeout: 0 });
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
     ) /* eslint-disable-line */
@@ -61,12 +64,12 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
 
     await connectRequestWindow.waitForSelector("#ETHEREUM", { visible: true, timeout: 60000 });
     // click Next button
-    await connectRequestWindow.click("#connect_request_button").catch((e) => e);
+    await connectRequestWindow.click("#connect_request_button");
     await connectRequestWindow.waitForSelector("#make_sure_you_trust_this_site", {
       visible: false,
       timeout: 60000
     });
-    await connectRequestWindow.click("#connect_request_button").catch((e) => e);
+    await connectRequestWindow.click("#connect_request_button");
 
     // Check web3 status as connected
     await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 30000})
@@ -94,8 +97,11 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     await dappPage.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
+      window.ethereum
+    }, { timeout: 0 });
+    await dappPage.evaluate(async () => {
       window.ethereum.enable()
-    })
+    }, { timeout: 0 });
     /* eslint-disable-line */
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
@@ -112,7 +118,7 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     await connectRequestWindow.waitForSelector("#POLYGON", { visible: true });
     await connectRequestWindow.click("#POLYGON");
     // Check connect button is enabled
-    await connectRequestWindow.click("#connect_request_button").catch((e) => e);
+    await connectRequestWindow.click("#connect_request_button");
     await connectRequestWindow.waitForSelector("#make_sure_you_trust_this_site", {
       visible: false,
       timeout: 60000
@@ -125,7 +131,7 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     // Check web3 status as connected
     await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 30000})
       .catch((e) => expect(e, "Sushi dapp polygon chain injection not connected.....").to.not.throw());
-    await dappPage.click("#connectButton").catch((e) => e);
+    await dappPage.click("#connectButton");
     await dappPage.waitForSelector('#accounts', { visible: true, timeout: 30000 })
       .catch((e) => expect(e, "Sushi dapp polygon chain injection not connected.....").to.not.throw());
     const connectedAddress = await dappPage.$eval('#accounts', (el) => el.innerText)
