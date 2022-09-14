@@ -44,7 +44,7 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
         window.ethereum.enable().then(() => {
           resolve();
         });
-      })
+      }, { timeout: 60000 });
     });
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
@@ -100,12 +100,8 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 0})
     // Before click on injected wallet option.
     await dappPage.evaluate(() => {
-      new Promise((resolve) => {
-        window.ethereum.enable().then(() => {
-          resolve();
-        });
-      })
-    });
+        window.ethereum.enable()
+    },{ timeout: 60000 });
     /* eslint-disable-line */
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
