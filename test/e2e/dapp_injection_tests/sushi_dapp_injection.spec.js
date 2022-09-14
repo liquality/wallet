@@ -36,7 +36,7 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
 
   it("Sushi injection - ETH", async () => {
     const dappPage = await browser.newPage();
-    await dappPage.goto(metamaskTestDappUrl, { waitUntil: "domcontentloaded", timeout: 0 });
+    await dappPage.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
@@ -91,7 +91,7 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     await page.waitForTimeout(3000)
 
     const dappPage = await browser.newPage();
-    await dappPage.goto(metamaskTestDappUrl, { waitUntil: "domcontentloaded", timeout: 0 });
+    await dappPage.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
       window.ethereum.enable()

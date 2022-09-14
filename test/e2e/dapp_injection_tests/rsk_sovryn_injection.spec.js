@@ -20,7 +20,7 @@ describe('RSK Bridge & Sovryn dapp Injection-["MAINNET","MAINNET_RELEASE"]', asy
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.setDefaultNavigationTimeout(0)
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2', timeout: 0 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
