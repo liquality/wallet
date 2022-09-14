@@ -28,7 +28,7 @@
         </div>
         <div class="setting-item_control">
           <button
-            class="btn btn-outline-primary"
+            class="btn btn-outline-clear"
             id="forget_all_connections_button"
             @click="forgetAllDappConnections"
             v-tooltip="{
@@ -57,30 +57,20 @@
           />
         </div>
       </div>
-      <div class="setting-item" id="settings_item_wallet_logs">
-        <div class="setting-item_title flex-fill mb-2">
-          {{ $t('pages.settings.walletLogs') }}
-          <span class="setting-item_sub">
-            {{ $t('pages.settings.walletLogsSub') }}
-          </span>
-        </div>
-        <div class="setting-item_control">
-          <button class="btn btn-outline-primary" id="download_logs_button" @click="downloadLogs">
-            {{ $t('pages.settings.downloadLogs') }}
-          </button>
-        </div>
-      </div>
       <div class="setting-item">
         <div class="setting-item_title flex-fill mb-2">
           {{ $t('pages.settings.locale') }}
-          <span class="setting-item_sub">{{ $t('pages.settings.localeSub') }}</span>
         </div>
         <div class="setting-item_control">
-          <div class="dropdown-list list-container" @click.stop="toogleChangeLocale">
+          <div class="dropdown-list" @click.stop="toogleChangeLocale">
             {{ currentLocaleLabel }}
             <ChevronUpIcon v-if="showChangeLocaleList" />
             <ChevronDownIcon v-else />
-            <ul class="menu_list list" v-if="showChangeLocaleList" v-click-away="hideChangeLocale">
+            <ul
+              class="menu_list locale-options"
+              v-if="showChangeLocaleList"
+              v-click-away="hideChangeLocale"
+            >
               <li
                 v-for="locale in localeOptions"
                 :key="locale.code"
@@ -90,6 +80,19 @@
               </li>
             </ul>
           </div>
+        </div>
+      </div>
+      <div class="setting-item" id="settings_item_wallet_logs">
+        <div class="setting-item_title flex-fill mb-2">
+          {{ $t('pages.settings.walletLogs') }}
+          <span class="setting-item_sub">
+            {{ $t('pages.settings.walletLogsSub') }}
+          </span>
+        </div>
+        <div class="setting-item_control">
+          <button class="btn btn-outline-clear" id="download_logs_button" @click="downloadLogs">
+            {{ $t('pages.settings.downloadLogs') }}
+          </button>
         </div>
       </div>
       <div class="settings-footer">
@@ -130,10 +133,20 @@ export default {
       return version
     },
     localeOptions() {
-      return (this.locales?.filter((i) => i !== this.currentLocale) || []).map((l) => ({
-        code: l,
-        label: this.$t(`common.localesLabels.${l}`)
-      }))
+      return (this.locales?.filter((i) => i !== this.currentLocale) || [])
+        .map((l) => ({
+          code: l,
+          label: this.$t(`common.localesLabels.${l}`)
+        }))
+        .sort((a, b) => {
+          if (a.label < b.label) {
+            return -1
+          }
+          if (a.label > b.label) {
+            return 1
+          }
+          return 0
+        })
     },
     currentLocaleLabel() {
       return this.$t(`common.localesLabels.${this.currentLocale}`)
@@ -231,9 +244,16 @@ export default {
     padding: 16px 20px;
     position: relative;
 
+    &_title {
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 14px;
+      color: #000d35;
+    }
+
     &_control {
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
       align-items: center;
     }
 
@@ -241,6 +261,8 @@ export default {
       display: block;
       font-size: $font-size-tiny;
       color: $text-muted;
+      font-weight: 300;
+      line-height: 18px;
     }
   }
 
@@ -250,11 +272,12 @@ export default {
     text-align: center;
   }
 
-  .list-container {
-    width: 100%;
-  }
-  .list {
-    width: 100%;
+  .locale-options {
+    min-width: 180px;
+    border: 1px solid #d9dfe5;
+    li {
+      justify-content: flex-start;
+    }
   }
 }
 </style>
