@@ -85,7 +85,7 @@ describe.only("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () =
     expect(connectedAddress, "Sushi dapp ETH chain injection not connected.....").to.not.equal("");
     expect(connectedAddress, "Sushi dapp ETH chain injection not connected.....").to.not.null;
   });
-  it("Sushi injection - Polygon", async () => {
+  it.skip("Sushi injection - Polygon", async () => {
     let chain = "polygon";
 
     // Connected dapp option
@@ -100,7 +100,7 @@ describe.only("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () =
     const dappPage = await browser.newPage();
     await dappPage.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
     await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 0})
-    await dappPage.waitForFunction('window.ethereum', { timeout: 0 })
+
     await dappPage.evaluate(async () => {
       window.ethereum.enable().then(() => {
         console.log("window.ethereum.enable() called")
