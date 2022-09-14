@@ -38,9 +38,11 @@ describe.only("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () =
     const dappPage = await browser.newPage();
     await dappPage.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
     await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 0})
+    await dappPage.waitForSelector('.container-fluid', { visible: true, timeout: 0})
     console.log("metmask test dapp loaded")
+    await testUtil.takeScreenshot(dappPage, "metamask-test-dapp")
 
-    await dappPage.waitForFunction('window.ethereum', { timeout: 0 })
+    // await dappPage.waitForFunction('window.ethereum', { timeout: 0 })
     await dappPage.evaluate(async () => {
       window.ethereum.enable().then(() => {
         console.log("window.ethereum.enable() called")
