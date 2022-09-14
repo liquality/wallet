@@ -20,9 +20,7 @@
     >
       <ConnectionConnected v-if="dappConnected" class="mr-1 connection-icon" id="dappConnected" />
       <ConnectionDisconnected v-else class="mr-1 connection-icon" id="connect_dapp" />
-      {{ dappConnected
-        ? $t('components.head.dappConnected')
-        : $t('components.head.connectDapp') }}
+      {{ dappConnected ? $t('components.head.dappConnected') : $t('components.head.connectDapp') }}
       <ChevronUpIcon class="ml-1" v-if="showConnectionDrawer" />
       <ChevronDownIcon class="ml-1" v-else />
     </div>
