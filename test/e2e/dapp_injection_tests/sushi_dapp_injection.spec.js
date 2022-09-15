@@ -13,7 +13,7 @@ const passwordPage = new PasswordPage();
 let browser, page;
 const metamaskTestDappUrl = "https://metamask.github.io/test-dapp/"
 
-describe.only("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
+describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions());
     page = await browser.newPage();
