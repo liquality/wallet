@@ -151,13 +151,8 @@ export default {
         {
           bitcoin: 1,
           ethereum: 1,
-          rsk: 0.001,
-          bsc: 0.001,
-          polygon: 0.001,
           near: 0.00001,
-          solana: 0.00001,
-          terra: 0.001,
-          fuse: 0.001
+          solana: 0.00001
         }[chainId] || 0.001
       )
     }

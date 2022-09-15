@@ -30,17 +30,6 @@
                   {{ chain.label }}
                 </a>
               </li>
-              <li>
-                <a
-                  class="dropdown-item"
-                  id="optimism"
-                  href="#"
-                  @click="selectChain('optimism')"
-                  :class="{ active: chain === 'optimism' }"
-                >
-                  Optimism (OPTIMISM)
-                </a>
-              </li>
             </ul>
           </div>
         </div>

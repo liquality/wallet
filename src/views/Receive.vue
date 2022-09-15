@@ -82,7 +82,7 @@ import BuyCryptoButton from '@/components/BuyCrypto/BuyCryptoButton'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
-import { ChainId, getChain } from '@liquality/cryptoassets'
+import { ChainId, getChain, getAsset } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../package.json'
 
@@ -132,57 +132,14 @@ export default {
       }[this.chain]
     },
     faucet() {
-      if (this.activeNetwork === 'testnet') {
+      const asset = getAsset(this.activeNetwork, this.asset)
+      const chain = getChain(this.activeNetwork, asset.chain)
+
+      if (chain.faucetUrl) {
         return {
-          BTC: {
-            name: 'Bitcoin',
-            url: 'https://testnet-faucet.mempool.co/'
-          },
-          ETH: {
-            name: 'Ethererum Ropsten',
-            url: 'https://faucet.dimensions.network/'
-          },
-          RBTC: {
-            name: 'RBTC/RSK',
-            url: 'https://faucet.rsk.co/'
-          },
-          BNB: {
-            name: 'BNB',
-            url: 'https://testnet.binance.org/faucet-smart/'
-          },
-          NEAR: {
-            name: 'NEAR',
-            url: 'https://wallet.testnet.near.org/'
-          },
-          SOL: {
-            name: 'SOLANA',
-            url: 'https://solfaucet.com/'
-          },
-          MATIC: {
-            name: 'MATIC',
-            url: 'https://faucet.matic.network/'
-          },
-          ARBETH: {
-            name: 'ARBETH',
-            url: 'https://faucet.paradigm.xyz/'
-          },
-          AVAX: {
-            name: 'AVAX',
-            url: 'https://faucet.avax-test.network/'
-          },
-          LUNA: {
-            name: 'TERRA',
-            url: 'https://faucet.terra.money/'
-          },
-          FUSE: {
-            name: 'FUSE',
-            url: 'https://get.fusespark.io/'
-          },
-          OPTIMISM: {
-            name: 'OPTIMISM',
-            url: 'https://kovan.optifaucet.com/'
-          }
-        }[this.asset]
+          name: chain.name,
+          url: chain.faucetUrl
+        }
       }
       return null
     }
