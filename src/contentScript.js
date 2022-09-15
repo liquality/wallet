@@ -1,15 +1,5 @@
 import { inject } from './broker/utils'
 import Script from './broker/Script'
-import {
-  providerManager,
-  ethereumProvider,
-  globalEthereumProvider,
-  bitcoinProvider,
-  nearProvider,
-  paymentUriHandler,
-  solanaProvider,
-  terraProvider
-} from './inject'
 import { buildConfig } from '@liquality/wallet-core'
 import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
 import { getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
@@ -34,38 +24,35 @@ async function setupTerraStreams() {
   console.log('Stream setup successfully')
 }
 
-function injectEthereum(state, chain) {
-  const { activeNetwork } = state
-  const nativeAssetCode = getNativeAssetCode(activeNetwork, chain)
-
-  const network = ChainNetworks[chain][activeNetwork]
-  inject(
-    ethereumProvider({
-      chain,
-      asset: nativeAssetCode,
-      network
-    })
-  )
-}
-
 function injectProviders(state) {
-  const { activeNetwork } = state
+  const { injectEthereumChain, activeNetwork } = state
+  const evmChains = buildConfig.chains
+    .filter((chain) => isEvmChain(activeNetwork, chain))
+    .map((chain) => {
+      const network = ChainNetworks[chain][activeNetwork]
+      const asset = getNativeAssetCode(activeNetwork, chain)
+      return { chain, asset, network }
+    })
 
-  inject(providerManager())
-  inject(bitcoinProvider())
-  inject(nearProvider())
-  inject(solanaProvider())
+  let globalEthereum = {
+    inject: !!injectEthereumChain
+  }
+  if (globalEthereum.inject) {
+    globalEthereum = {
+      ...globalEthereum,
+      ...injectGlobalEthereum(state, true)
+    }
+  }
+
+  const injectConfig = {
+    evmChains,
+    globalEthereum
+  }
 
   setupTerraStreams()
-  inject(terraProvider())
 
-  buildConfig.chains
-    .filter((chainId) => isEvmChain(activeNetwork, chainId))
-    .forEach((chain) => {
-      injectEthereum(state, chain)
-    })
-
-  inject(paymentUriHandler())
+  inject(`window.liquality = ${JSON.stringify(injectConfig)};`)
+  inject('#PAGEPROVIDER#')
 }
 
 function injectGlobalEthereum(state, override) {
@@ -84,15 +71,10 @@ function injectGlobalEthereum(state, override) {
     }
   }
 
-  inject(globalEthereumProvider(ethereumChain, override))
+  return { override, ethereumChain }
 }
 
 chrome.storage.local.get(['liquality-wallet'], (storage) => {
   const state = storage['liquality-wallet']
   injectProviders(state)
-
-  if (state.injectEthereumChain) {
-    const override = Boolean(state.injectEthereum)
-    injectGlobalEthereum(state, override)
-  }
 })
