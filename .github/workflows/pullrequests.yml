@@ -3,6 +3,8 @@ name: PullRequest tests
 on:
   push:
   pull_request:
+    branches-ignore:
+      - 'test/fix_some_test_and_remove_liquality_swap_tests'
     paths-ignore:
       - '**.md'
     branches:

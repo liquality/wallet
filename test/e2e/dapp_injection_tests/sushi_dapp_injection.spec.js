@@ -34,23 +34,27 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     await browser.close();
   });
 
-  it("Sushi injection - ETH", async () => {
+  it.only("Sushi injection - ETH", async () => {
     const dappPage = await browser.newPage();
     await dappPage.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
+    console.log("Dapp page loaded");
+    await dappPage.waitForNetworkIdle({ timeout: 0 });
     await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 0})
     await dappPage.waitForSelector('.container-fluid', { visible: true, timeout: 0})
     console.log("metmask test dapp loaded")
     await testUtil.takeScreenshot(dappPage, "metamask-test-dapp")
 
     // await dappPage.waitForFunction('window.ethereum', { timeout: 0 })
-    await dappPage.evaluate(async () => {
-      window.ethereum.enable().then(() => {
-        console.log("window.ethereum.enable() called")
-      })
-      }, { timeout: 0 });
+    // await dappPage.evaluate(async () => {
+    //   window.ethereum.enable().then(() => {
+    //     console.log("window.ethereum.enable() called")
+    //   })
+    //   }, { timeout: 0 });
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
     ) /* eslint-disable-line */
+
+    await dappPage.click('#connectButton', { delay: 1000 })
 
      const connectRequestWindow = await newPagePromise;
     try {
