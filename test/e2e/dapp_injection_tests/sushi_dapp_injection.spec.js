@@ -47,7 +47,7 @@ describe.only("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () =
       window.ethereum.enable().then(() => {
         console.log("window.ethereum.enable() called")
       })
-      });
+      }, { timeout: 0 });
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
     ) /* eslint-disable-line */
