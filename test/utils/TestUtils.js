@@ -19,7 +19,8 @@ class TestUtils {
         '--disable-extensions-except=' + this.extensionPathBuildPath,
         '--load-extension=' + this.extensionPathBuildPath
       ],
-      defaultViewport: null
+      defaultViewport: null,
+      devtools: true
     }
   }
 

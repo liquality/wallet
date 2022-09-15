@@ -37,11 +37,14 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
   it.only("Sushi injection - ETH", async () => {
     const dappPage = await browser.newPage();
     await dappPage.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
+    dappPage.on("console", (msg) => {
+      console.log("PAGE LOG:", msg.text());
+    });
     console.log("Dapp page loaded");
     await dappPage.waitForNetworkIdle({ timeout: 0 });
     await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 0})
     await dappPage.waitForSelector('.container-fluid', { visible: true, timeout: 0})
-    console.log("metmask test dapp loaded")
+    console.log("metamask test dapp loaded")
     await testUtil.takeScreenshot(dappPage, "metamask-test-dapp")
 
     // await dappPage.waitForFunction('window.ethereum', { timeout: 0 })
@@ -55,8 +58,19 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     ) /* eslint-disable-line */
 
     await dappPage.click('#connectButton', { delay: 1000 })
+    console.log("clicked connect button from metamask test dapp")
 
-     const connectRequestWindow = await newPagePromise;
+    dappPage.on("pageerror", function(err) {
+      let theTempValue = err.toString();
+      console.log("Page error: " + theTempValue);
+    });
+
+    dappPage.on("pageerror", function(err) {
+      let theTempValue = err.toString();
+      console.log("Page error: " + theTempValue);
+    });
+
+    const connectRequestWindow = await newPagePromise;
     try {
       await connectRequestWindow.waitForSelector("#filter_by_chain", {
         visible: true,
@@ -80,9 +94,9 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     await connectRequestWindow.click("#connect_request_button");
 
     // Check web3 status as connected
-    await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 30000})
-      .catch((e) => expect(e, "Sushi dapp ETH chain injection not connected.....").to.not.throw());
-    await dappPage.click("#connectButton").catch((e) => e);
+    // await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 30000})
+    //   .catch((e) => expect(e, "Sushi dapp ETH chain injection not connected.....").to.not.throw());
+    // await dappPage.click("#connectButton").catch((e) => e);
     await dappPage.waitForSelector('#accounts', { visible: true, timeout: 30000 })
       .catch((e) => expect(e, "Sushi dapp ETH chain injection not connected.....").to.not.throw());
     const connectedAddress = await dappPage.$eval('#accounts', (el) => el.innerText)
