@@ -3,14 +3,13 @@ name: PullRequest tests
 on:
   push:
   pull_request:
-    branches-ignore:
-      - 'test/fix_some_test_and_remove_liquality_swap_tests'
     paths-ignore:
       - '**.md'
     branches:
       - 'release-candidate-*'
       - '!renovate/**'
       - '!dependabot/**'
+      - '!test/fix_some_test_and_remove_liquality_swap_tests'
 
 env:
   TERRA_MAINNET_URL: ${{ secrets.VUE_APP_TERRA_MAINNET_URL }}
