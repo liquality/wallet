@@ -75,7 +75,7 @@ jobs:
           yarn build
 
       - name: Regression tests against (Prod) Mainnet
-        uses: beemi/puppeteer-headful@v1.0.11
+        uses: beemi/puppeteer-headful@v1.0.12
         env:
           CI: 'true'
           DISPLAY: :99
