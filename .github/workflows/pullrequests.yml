@@ -2,6 +2,10 @@ name: PullRequest tests
 
 on:
   push:
+    paths-ignore:
+      - .github/**/*
+    tags-ignore:
+      - '**'
   pull_request:
     paths-ignore:
       - '**.md'
