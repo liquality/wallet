@@ -124,7 +124,7 @@ jobs:
 
 #      Run tests against Prod mainnet
       - name: Regression tests against Mainnet (PROD Agent)
-        uses: beemi/puppeteer-headful@v1.0.11
+        uses: beemi/puppeteer-headful@v1.0.12
         env:
           CI: 'true'
           DISPLAY: :99

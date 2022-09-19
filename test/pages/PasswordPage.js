@@ -31,8 +31,10 @@ class PasswordPage {
     }
     await page.type('#password', password)
     await page.type('#confirmPassword', password)
+    console.log('Password entered')
     // Click next button
     await page.click('#next_button')
+    console.log('Next button clicked')
   }
 
   /**
