@@ -1,32 +1,32 @@
 {
     "splash": {
-        "importWithSeedPhrase": "Import with seed phrase",
-        "openWallet": "Open wallet",
-        "createNewWallet": "Create a new wallet"
+        "importWithSeedPhrase": "Pag-import gamit ang seed phrase",
+        "openWallet": "Ablihi ang wallet",
+        "createNewWallet": "Paghimo ug bag-ong wallet"
     },
     "unlockWallet": {
-        "forgotPassword": "Forgot password? Import with seed phrase",
+        "forgotPassword": "Nakalimtan ang password? I-import ang seed phrase",
         "unlock": "Unlock"
     },
     "onboarding": {
         "import": {
             "unlockWallet": "Unlock wallet",
-            "enterSeedPhrase": "Enter the seed phrase, in the same order saved when creating your wallet.",
+            "enterSeedPhrase": "Ibutang ang seed phrase sa saktong pagka sunod-sunod sa paghimo nimo sa imong wallet.",
             "words": "%{words} words"
         },
         "home": {
-            "iAccept": "I Accept",
-            "termsAndPrivacy": "Terms & Privacy"
+            "iAccept": "Uyon ko",
+            "termsAndPrivacy": "Mga Terms ug Privacy"
         },
         "setup": {
-            "backupYourWallet": "Backup your Wallet",
-            "backupDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
-            "choosePassword": "Choose Password ( at least 8 characters )",
-            "passwordTooShort": "Password is too short",
-            "confirmPassword": "Confirm Password",
-            "passwordDontMatch": "Passwords don't match.",
-            "confirmSeedTitle": "Confirm Seed Phrase",
-            "confirmSeedInstructions": "Tap the 3 words matching their position in the seed phrase. Once confirmed, store the phrase securely.",
+            "backupYourWallet": "I-back up imong Wallet",
+            "backupDescription": "Ang seed phrase ra ang paagi aron mabalik ang imong wallet. Isulat kini, pamatud-i kini ug dayon tipigi kini.",
+            "choosePassword": "Pilia ang Password (labing menos 8 ka karakter)",
+            "passwordTooShort": "Mubo ra kaayo ang password",
+            "confirmPassword": "I-Kumpirma ang Password",
+            "passwordDontMatch": "Ang mga password dili magkatugma.",
+            "confirmSeedTitle": "I-Kumpirma ang Seed Phrase",
+            "confirmSeedInstructions": "I-tap ang 3 ka words sa seed phrase nga sakto ang pagka sunod-sunod. I-kumpirma ug tapigi.",
             "word": "Word",
             "ordinals": {
                 "first": "st",
@@ -37,50 +37,50 @@
         },
         "warning": {
             "warning": "Warning",
-            "iHavePrivacy": "I have privacy",
-            "seedPhraseWarning": "Anyone who has this can steal your funds!",
-            "viewItInPrivate": "View it in private without cameras around.",
+            "iHavePrivacy": "Naa koy privacy",
+            "seedPhraseWarning": "Bisan kinsa nga aduna niini mahimong makasulod sa imong wallet ug makuha ang imong funds!",
+            "viewItInPrivate": "Tan-awa kini sa pribado nga walay camera sa palibot.",
             "title": {
-                "seed": "Show Seed Phrase?",
-                "privateKey": "Show Private Key?"
+                "seed": "Ipakita ang Seed Phrase?",
+                "privateKey": "Ipakita ang Private Key?"
             }
         },
         "seedlogin": {
-            "understandTheRisk": "I understand the risk and have privacy",
-            "pleaseAcceptTerms": "Please Accept Terms",
-            "unlockError": "Try Again. Enter the right password (it has 8 or more characters).",
+            "understandTheRisk": "Nakasabot ko sa mga risgo ug duna koy privacy",
+            "pleaseAcceptTerms": "Palihug Dawata ang mga Terms",
+            "unlockError": "Sulayi Pag-usab. Pagsulod sa husto nga password (kini adunay 8 o labaw pa nga mga karakter).",
             "title": {
-                "seed": "Sign-in to See Seed Phrase",
-                "export": "Sign-in to Export Private Key"
+                "seed": "Sign-in aron Makita ang Seed Phrase",
+                "export": "Sign-in para ma Export ang Private Key"
             }
         },
         "seedReveal": {
-            "yourSeedPhrase": "Your Seed Phrase",
-            "revealDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
-            "iSavedTheSeed": "I saved the seed"
+            "yourSeedPhrase": "Imong Seed Phrase",
+            "revealDescription": "Ang seed phrase ra ang paagi aron mabalik ang imong wallet. Isulat kini, pamatud-i kini ug dayon tipigi kini.",
+            "iSavedTheSeed": "Na-save na nako ang seed"
         }
     },
     "settings": {
         "settings": "Settings",
         "title": "Default Web3 Wallet",
-        "description": "Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps while this is enabled.",
+        "description": "Ibutang ang Liquality isip default nga wallet sa dapp. Ang ubang mga wallet dili maka-interact sa mga dapps samtang kini gi-enable.",
         "analytics": "Analytics",
-        "analyticsSub": "Share where you click. No identifying data is collected.",
+        "analyticsSub": "Ipakigbahin kung asa ka naga-klik. Walay makaila nga datos nga nakolekta.",
         "walletLogs": "Wallet Logs",
-        "walletLogsSub": "The wallet logs contain your public information such as addresses and transactions.",
-        "downloadLogs": "Download Logs",
+        "walletLogsSub": "Ang mga log sa wallet nagbutang sa imong mga public na impormasyon sama sa mga adres ug mga transaksyon.",
+        "downloadLogs": "I-Download ang Logs",
         "locale": "Language",
-        "localeSub": "Change Language",
+        "localeSub": "Usba ang Language",
         "dappConnections": "Dapp Connections",
-        "dappConnectionsSub": "Forget all of the dapps connected.",
-        "done": "Done!",
-        "forgetAllConnections": "Forget all connections",
-        "version": "Version"
+        "dappConnectionsSub": "Idiskonekta ang tanan nga mga dapps nga konektado.",
+        "done": "Humana!",
+        "forgetAllConnections": "Kalimti ang tanan nga koneksyon",
+        "version": "Bersyon"
     },
     "experiments": {
         "experiments": "Experiments",
         "multiaccounts": "Multi-Accounts",
-        "multiaccountsDescription": "Allow account management and multiple accounts per network"
+        "multiaccountsDescription": "Tugoti ang pagdumala sa account ug daghang mga account matag network"
     },
     "manageAssets": {
         "assetView": "Asset View",

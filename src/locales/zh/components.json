@@ -9,8 +9,8 @@
     },
     "analyticsOptinModal": {
         "title": "帮助我们改善Liquality，以更好地为您服务",
-        "message": "分享你点击的位置。不会读取你的数据。此权限可在任何时候被撤销。",
-        "analitycsAccept": "当然，我会分享我的点击",
+        "message": "分享你的使用行为。不会读取你的数据。此权限可在任何时候被撤销。",
+        "analitycsAccept": "当然，我会分享我的行为",
         "analitycsReject": "暂时不要，以后再问我"
     },
     "boostActivateBridgeAsset": {

@@ -50,8 +50,8 @@
             "pleaseAcceptTerms": "请接受条款",
             "unlockError": "重试。输入正确的密码（至少8位）",
             "title": {
-                "seed": "签名查看助记词",
-                "export": "签名导出助记词"
+                "seed": "登录查看助记词",
+                "export": "登录导出助记词"
             }
         },
         "seedReveal": {
@@ -65,7 +65,7 @@
         "title": "默认web3钱包",
         "description": "将 Liquality 设置为默认的 dapp 钱包。 启用此功能后，其他钱包将无法与 dapp 交互。",
         "analytics": "Analytics",
-        "analyticsSub": "分享您点击的位置。 不会收集任何识别数据。",
+        "analyticsSub": "分享您的使用行为。但我们不会收集任何隐私数据。",
         "walletLogs": "Wallet Logs",
         "walletLogsSub": "钱包日志包含您的公共信息，例如地址和交易。",
         "downloadLogs": "下载日志",
@@ -87,8 +87,8 @@
         "addCustomToken": "添加自定义代币",
         "cantFindThisToken": "无法找到该代币",
         "addCustomERC20Tokens": "添加自定义ERC20代币",
-        "learnHow": "学习如何",
-        "searchForAsset": "Search for an Asset"
+        "learnHow": "如何添加自定义代币",
+        "searchForAsset": "搜索代币"
     },
     "customToken": {
         "selectChain": "选择链",
