@@ -12,7 +12,7 @@
         <li>{{ $t('pages.accounts.ledgerInstructions1') }}</li>
         <li>{{ $t('pages.accounts.ledgerInstructions2') }}</li>
         <li>{{ $t('pages.accounts.ledgerInstructions3') }}</li>
-        <li v-if="isEthereumChain(selectedAsset.name)">
+        <li v-if="isChainEvmCompatible(selectedAsset.name)">
           {{ $t('pages.accounts.ledgerInstructions4') }}
         </li>
       </ul>

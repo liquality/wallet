@@ -3,23 +3,23 @@
         "availableGas": "Available Gas"
     },
     "activityFilter": {
-        "export": "Export",
+        "export": "I-Export",
         "filters": "Filters",
         "dateRange": "Date Range"
     },
     "analyticsOptinModal": {
-        "title": "Help us improve Liquality to better serve you",
-        "message": "Share where you click. There is no identifying data. This permission can be revoked any time.",
-        "analitycsAccept": "Sure, I will share my clicks",
-        "analitycsReject": "Not today, ask me again"
+        "title": "Tulungan kaming pagbutihin ang Liquality para mas mapagsilbihan ka",
+        "message": "Ibahagi kung saan ka nag-click. Walang nagpapakilalang data. Maaaring bawiin ang pahintulot na ito anumang oras.",
+        "analitycsAccept": "Oo, ibabahagi ko ang aking mga pag-click",
+        "analitycsReject": "Hindi muna ngayon"
     },
     "boostActivateBridgeAsset": {
-        "enabledAssetMessage": "To trade this pair %{asset} has to be enabled",
-        "okDoit": "OK, do it"
+        "enabledAssetMessage": "Upang i-trade ang pares na ito {{token}} ay kailangang itong i-enable",
+        "okDoit": "OK, gawin ito"
     },
     "bridgeAssetRequiredMessage": {
-        "needMore": "You need more %{asset} to pay for gas.",
-        "get": "Get"
+        "needMore": "Kailangan mo magdagdag ng %{asset} para sa gas fee.",
+        "get": "Kunin"
     },
     "cannotCoverMinimumMessage": {
         "needMore": "More %{asset} required to cover min trade plus fees."

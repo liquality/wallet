@@ -1,5 +1,6 @@
 {
     "cancel": "Cancelar",
+    "create": "Crear",
     "type": "Tipo",
     "continue": "Continuar",
     "next": "Siguiente",
@@ -28,7 +29,7 @@
     "custom": "Personalizado",
     "customFees": "Comisiones Personalizadas",
     "selectedAsset": "Activo Seleccionado",
-    "selectAsset": "Seleccionar Activo",
+    "selectAsset": "Elige Activo",
     "sendNFT": "Enviar NFT",
     "sign": "Firmar",
     "in": "En",

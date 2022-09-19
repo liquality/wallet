@@ -91,7 +91,7 @@
             :disabled="loading || !inputsValidated"
           >
             <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>{{ $t('pages.accounts.create') }}</template>
+            <template v-else>{{ $t('common.create') }}</template>
           </button>
         </div>
       </div>

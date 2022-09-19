@@ -99,7 +99,7 @@
     "buyCrypto": {
         "buyCrypto": "购买加密货币",
         "gettingStarted": "开始使用加密货币很容易",
-        "recommendations": "我们建议首先将 ETH 发送到您的 Liquality 钱包，因你将能够用以支付许多交易的费用。",
+        "recommendations": "我们建议先将 ETH 发送到您的 Liquality 钱包，因为你需要ETH来支付交易费用。",
         "transakInstructions": "Transak 允许您使用信用卡或通过银行转账购买加密货币，具体取决于地区。 要支付费用（gas）或与 dApp 交互，您主要需要 gas 代币（账户的第一个代币）。",
         "onramperDescription": "Onramper 是一项综合服务，提供来自多个来源的最佳报价，并根据地区接受流行的付款方式。",
         "trustedPartnerMessage": "您还可以在我们值得信赖的合作伙伴处购买加密货币。",

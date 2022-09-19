@@ -4,7 +4,10 @@
       <LogoWallet />
     </div>
     <div>
-      <h2>Create {{ !imported ? $t('common.new') : '' }} {{ $t('common.password') }}</h2>
+      <h2>
+        {{ $t('common.create') }} {{ !imported ? $t('common.new') : '' }}
+        {{ $t('common.password') }}
+      </h2>
     </div>
     <form class="form" autocomplete="off" v-on:submit.prevent="generate">
       <div class="form-group mb-4">

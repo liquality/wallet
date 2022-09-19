@@ -1,6 +1,6 @@
 {
     "splash": {
-        "importWithSeedPhrase": "Isulat ang seed phrase",
+        "importWithSeedPhrase": "Mag-import gamit ang seed phrase",
         "openWallet": "Buksan ang wallet",
         "createNewWallet": "Gumawa ng bagong wallet"
     },
@@ -72,7 +72,7 @@
         "locale": "Wika",
         "localeSub": "Baguhin ang Wika",
         "dappConnections": "Mga Koneksyon sa Dapp",
-        "dappConnectionsSub": "Kalimutan ang lahat ng dapps na konektado.",
+        "dappConnectionsSub": "I-disconnect ang mga dapps na konektado.",
         "done": "Tapos na.",
         "forgetAllConnections": "Kalimutan ang lahat ng koneksyon",
         "version": "Bersyon"
@@ -101,13 +101,13 @@
     },
     "wallet": {
         "assets": "Mga assets",
-        "activity": "Aktibidad",
+        "activity": "Activity",
         "nfts": {
             "zero": "NFTs (0)",
             "one": "NFTs",
             "other": "NFTs (%{count})"
         },
-        "nftActivityDescription": "Kapag sinimulan mong gamitin ang iyong mga NFT, makikita mo ang aktibidad dito",
+        "nftActivityDescription": "Dito makikita ang mga activity ng iyong wallet kapag sinimulan mo na itong gamitin",
         "nftDescription": "Ang mga NFTs mo sa iyong Liquality account ay makikita dito",
         "exploreNFT": "Tingnan at suriin ang mga NFT sa Polygon, Ethereum at Solana",
         "checkOutOpenSea": "Tingnan at suriin ang OpenSea",
@@ -147,12 +147,11 @@
         "exportLedger": "Hindi ma-export mula sa isang Ledger account",
         "createAccount": "Create Account",
         "selectNetwork": "Select Network",
-        "chooseAccountName": "Choose Account Name",
+        "chooseAccountName": "Pumili ng Account Name",
         "accountAliasErrorFiveChars": "Dapat may 5 o higit pang character ang pangalan",
         "accountAliasErrorTwentyChars": "Hindi dapat lumampas sa 20 character ang pangalan",
         "accountAliasErrorExistingAccount": "Mayroon nang account na may parehong pangalan o landas",
         "chooseTheColor": "Pumili ng Kulay",
-        "create": "Gumawa",
         "accounts": {
             "zero": "%{count} na Mga Account",
             "one": "%{count} Account",

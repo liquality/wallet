@@ -152,7 +152,6 @@
         "accountAliasErrorTwentyChars": "Name shouldn't have more than 20 characters",
         "accountAliasErrorExistingAccount": "Existing account with the same name or path",
         "chooseTheColor": "Choose the Color",
-        "create": "Create",
         "accounts": {
             "zero": "%{count} Accounts",
             "one": "%{count} Account",

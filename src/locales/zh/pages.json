@@ -108,7 +108,7 @@
             "other": "NFTs (%{count})"
         },
         "nftActivityDescription": "开始使用 NFT 后，您将在此处看到活动",
-        "nftDescription": "一旦您 Liquality 钱包中的账户拥有 NFT，您将在此处看到它们",
+        "nftDescription": "如果您 Liquality 中的账户拥有 NFT，您可以在此处看到它们",
         "exploreNFT": "在Polygon, Ethereum and Solana查看NFT",
         "checkOutOpenSea": "在OpenSea上查看",
         "discoverCollect": "在 Arbitrum 上发现和收集 NFT",
@@ -152,7 +152,6 @@
         "accountAliasErrorTwentyChars": "名称不能超过20个字符",
         "accountAliasErrorExistingAccount": "具有相同名称或路径的现有帐户",
         "chooseTheColor": "选择颜色",
-        "create": "创建",
         "accounts": {
             "zero": "%{count} 个帐户",
             "one": "%{count} Account",

@@ -20,13 +20,13 @@
         },
         "setup": {
             "backupYourWallet": "Guarda tu Seed Phrase",
-            "backupDescription": "La seed es la única forma de restaurar tu cartera. Escríbela en papel, verifícala, y guárdala en un lugar seguro.",
+            "backupDescription": "La seed phrase es la única forma de restaurar tu cartera. Escríbela en papel, verifícala, y guárdala en un lugar seguro.",
             "choosePassword": "Elige una Contraseña ( al menos 8 caracteres )",
             "passwordTooShort": "La contraseña es muy corta",
             "confirmPassword": "Confirmar Contraseña",
             "passwordDontMatch": "Las contraseñas no coinciden.",
             "confirmSeedTitle": "Confirma la Seed Phrase",
-            "confirmSeedInstructions": "Haz click en las 3 palabras que coinciden con su posición en la seed phrase. Una vez verificado, guara la seed phrase en un lugar seguro.",
+            "confirmSeedInstructions": "Haz click en las 3 palabras que coinciden con su posición en la seed phrase. Una vez verificado, guarda la seed phrase en un lugar seguro.",
             "word": "Palabra",
             "ordinals": {
                 "first": "st",
@@ -84,11 +84,11 @@
     },
     "manageAssets": {
         "assetView": "Vista de Activos",
-        "addCustomToken": "Añadir Token",
+        "addCustomToken": "Añadir Token Personalizado",
         "cantFindThisToken": "No se encuentra este token",
         "addCustomERC20Tokens": "Añadir Token ERC20",
         "learnHow": "Aprende cómo",
-        "searchForAsset": "Search for an Asset"
+        "searchForAsset": "Buscar un activo"
     },
     "customToken": {
         "selectChain": "Selecciona cadena...",
@@ -97,7 +97,7 @@
         "tokenSymbol": "Símbolo del Token",
         "decimals": "Decimales",
         "addToken": "Añadir Token",
-        "addCustomToken": "Añadir Token Personalizado"
+        "addCustomToken": "Añadir Token"
     },
     "wallet": {
         "assets": "Activos",
@@ -137,7 +137,7 @@
         "ledgerInstructions": "Sigue las indicaciones para verificar y aceptar la cantidad, luego confirma la transacción. Puede haber algo de retraso",
         "onYourLedger": "En Tu Ledger",
         "today": "hoy",
-        "time": "Time",
+        "time": "Fecha",
         "sent": "Enviado"
     },
     "accounts": {
@@ -152,7 +152,6 @@
         "accountAliasErrorTwentyChars": "El nombre no puede tener más de 20 caracteres",
         "accountAliasErrorExistingAccount": "Ya existe una cienta con el mismo nombre o ruta",
         "chooseTheColor": "Selecciona el Color",
-        "create": "Crear",
         "accounts": {
             "zero": "%{count} Cuentas",
             "one": "%{count} Cuenta",
@@ -208,7 +207,7 @@
         "sendTo": "Enviar a",
         "memo": "Memo (Opcional)",
         "sendFrom": "Enviar Desde",
-        "titleSelectNFT": "Seleccionar NFT",
+        "titleSelectNFT": "Elige NFT",
         "titleSendNFT": "Enviar NFT",
         "titleReviewSendNFT": "Revisar Envío de NFT"
     },
