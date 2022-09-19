@@ -11,7 +11,7 @@ const homePage = new HomePage()
 const passwordPage = new PasswordPage()
 
 let browser, page, dappPage
-const pangolin_Url = 'https://app.pangolin.exchange/'
+const metamaskTestDappUrl = "https://metamask.github.io/test-dapp/"
 const chainId = 43114
 const expectedAddress = '0x3f429e2212718a717bd7f9e83ca47dab7956447b'
 
@@ -20,7 +20,7 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
     await page.setDefaultNavigationTimeout(0)
-    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2', timeout: 0 })
+    await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
     // Import wallet option
     await homePage.ClickOnImportWallet(page)
     await homePage.ScrollToEndOfTerms(page)
@@ -41,6 +41,7 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     await page.click('#dropdown-item', { delay: 1000 })
     await page.waitForSelector('#avalanche_web_network', { visible: true })
     await page.click('#avalanche_web_network', { delay: 1000 })
+    await page.waitForTimeout(3000)
 
     // Go to dpp app
     dappPage = await browser.newPage()
@@ -50,7 +51,9 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     })
   })
   it('Avalanche pangolin Exchange dapp injection', async () => {
-    await dappPage.goto(pangolin_Url, { timeout: 0, waitUntil: 'networkidle2' })
+    let chain = "avalanche";
+
+    await dappPage.goto(metamaskTestDappUrl, { timeout: 0, waitUntil: 'load' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {
       window.ethereum.enable()
@@ -58,30 +61,33 @@ describe('Avalanche Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
     ) /* eslint-disable-line */
-    const connectRequestWindow = await newPagePromise
-    try {
-      await connectRequestWindow.waitForSelector('#connect_request_button', {
-        visible: true,
-        timeout: 120000
-      })
-      await connectRequestWindow.waitForSelector('#AVALANCHE', { visible: true, timeout: 60000 })
-    } catch (e) {
-      await testUtil.takeScreenshot(connectRequestWindow, 'Avalanche-dapp-connect-request-issue')
-      expect(e, 'Avalanche injection not listed, connected window not loaded.....').equals(null)
-    }
-    const rskAccounts = await connectRequestWindow.$$('#AVALANCHE')
-    expect(
-      rskAccounts.length,
-      '1 AVALANCHE accounts should be listed under Connect request popupWindow'
-    ).to.equals(1)
-    await connectRequestWindow.click('#AVALANCHE')
-    // click Next button
-    await connectRequestWindow.click('#connect_request_button').catch((e) => e)
-    await connectRequestWindow.waitForSelector('#make_sure_you_trust_this_site', {
+    const connectRequestWindow = await newPagePromise;
+    await connectRequestWindow.waitForSelector("#filter_by_chain", {
+      visible: true,
+      timeout: 90000
+    });
+    await connectRequestWindow.click("#filter_by_chain").catch((e) => e);
+    await connectRequestWindow.waitForSelector(`#${chain}_web_network`, { visible: true });
+    await connectRequestWindow.click(`#${chain}_web_network`, { delay: 1000 });
+
+    await connectRequestWindow.waitForSelector("#AVALANCHE", { visible: true });
+    await connectRequestWindow.click("#AVALANCHE");
+    // Check connect button is enabled
+    await connectRequestWindow.click("#connect_request_button").catch((e) => e);
+    await connectRequestWindow.waitForSelector("#make_sure_you_trust_this_site", {
       visible: false,
       timeout: 60000
-    })
-    await connectRequestWindow.click('#connect_request_button').catch((e) => e)
+    });
+    await connectRequestWindow.click('#connect_request_button')
+    await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 30000})
+      .catch((e) => expect(e, "Sushi dapp polygon chain injection not connected.....").to.not.throw());
+    await dappPage.click("#connectButton");
+    await dappPage.waitForSelector('#accounts', { visible: true, timeout: 30000 })
+      .catch((e) => expect(e, "Sushi dapp polygon chain injection not connected.....").to.not.throw());
+    const connectedAddress = await dappPage.$eval('#accounts', (el) => el.innerText)
+    expect(connectedAddress, "Sushi dapp polygon chain injection not connected.....").to.not.equal("");
+    expect(connectedAddress, "Sushi dapp polygon chain injection not connected.....").to.not.null;
+
     // Check web3 status as connected against dapp Ui.
     const connectedChainDetails = await dappPage.evaluate(async () => {
       const chainIDHexadecimal = await window.ethereum.request({

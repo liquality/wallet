@@ -45,7 +45,7 @@ describe('Terra Dapp injection-["MAINNET"]', async () => {
       height: 768
     })
   })
-  it('Terra anchorprotocol dapp injection- "PULL_REQUEST_TEST"', async () => {
+  it.skip('Terra anchorprotocol dapp injection- "PULL_REQUEST_TEST"', async () => {
     await dappPage.goto(anchorProtocol_Url, { timeout: 60000, waitUntil: 'load' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {

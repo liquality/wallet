@@ -49,23 +49,11 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       height: 768
     })
     await dappPage.goto(dappUrl, { waitUntil: 'load', timeout: 0 })
-    try {
-      await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
-      await dappPage.waitForSelector('#swap-currency-input', { visible: true })
-    } catch (e) {
-      await testUtil.takeScreenshot(dappPage, 'uniswap-arbitrum-loading-issue')
-      const pageTitle = await dappPage.title()
-      const pageUrl = await dappPage.url()
-      expect(
-        e,
-        `Uniswap dapp UI not loading, seems to blank page.....${pageTitle}...${pageUrl}`
-      ).equals(null)
-    }
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
     ) /* eslint-disable-line */
     await dappPage.evaluate(async () => {
-      window.ethereum.enable()
+      window.ethereum.request({ method: 'eth_requestAccounts' })
     })
     const connectRequestWindow = await newPagePromise
     try {
@@ -75,10 +63,6 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       })
       await connectRequestWindow.waitForSelector('#ETHEREUM', { visible: true, timeout: 60000 })
     } catch (e) {
-      // await testUtil.takeScreenshot(
-      //   connectRequestWindow,
-      //   'uniswap-ethereum-connect-request-window-issue'
-      // )
       expect(e, 'Uniswap injection ethereum not listed, connected window not loaded.....').equals(
         null)
     }
@@ -135,20 +119,11 @@ describe('Uniswap Dapp Injection-["MAINNET"]', async () => {
       height: 768
     })
     await dappPage.goto(dappUrl, { timeout: 0, waitUntil: 'load' })
-    try {
-      await dappPage.waitForSelector('#swap-nav-link', { visible: true, timeout: 60000 })
-      await dappPage.waitForSelector('#connect-wallet', { visible: true, timeout: 60000 })
-    } catch (e) {
-      await testUtil.takeScreenshot(dappPage, 'uniswap-arbitrum-loading-issue')
-      const pageTitle = await dappPage.title()
-      const pageUrl = await dappPage.url()
-      expect(e, `Uniswap dapp UI not loading.....${pageTitle}...${pageUrl}`).equals(null)
-    }
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
     ) /* eslint-disable-line */
     await dappPage.evaluate(async () => {
-      window.arbitrum.enable()
+      window.ethereum.request({ method: 'eth_requestAccounts' })
     })
     const connectRequestWindow = await newPagePromise
     try {

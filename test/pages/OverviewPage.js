@@ -24,6 +24,7 @@ class OverviewPage {
         expect(e, 'Hamburger icon loading issue after user enter password').equals(null)
       }
     }
+    console.log('Overview page loaded after user loggedIn')
   }
 
   /**
