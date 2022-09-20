@@ -88,7 +88,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import moment from '@liquality/wallet-core/dist/src/utils/moment'
-import { getChain, isEvmChain } from '@liquality/cryptoassets'
+import { getChain, isEvmChain, getAsset } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
@@ -187,7 +187,14 @@ export default {
       return '#'
     },
     addPrefix(address, asset) {
-      return !address.startsWith('0x') && isEvmChain(this.activeNetwork, asset)
+      const chainId = getAsset(this.activeNetwork, asset)?.chain
+
+      // invariant check - this should never happen
+      if (!chainId) {
+        return address
+      }
+
+      return !address.startsWith('0x') && isEvmChain(this.activeNetwork, chainId)
         ? '0x' + address
         : address
     },
