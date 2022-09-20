@@ -10,18 +10,10 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <h3>RC 0.73.0</h3>
-            <pre class="text-wrap">
-- test</pre
-            >
-            <h3>Unstoppable Domains integration</h3>
-            <pre class="text-wrap">
-- test</pre
-            >
-            <pre class="text-wrap">
-- test</pre
-            >
-            <h3>NFT bug fixes</h3>
+            <pre class="text-wrap">- Injection Architecture change</pre>
+            <pre class="text-wrap">- New crypto-assets package update (architecture change)</pre>
+            <pre class="text-wrap">- Unstoppable domain bug fix</pre>
+            <pre class="text-wrap">- NFT notifications</pre>
           </div>
         </div>
       </div>
@@ -36,8 +28,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">test</pre>
-            <pre class="text-wrap">test</pre>
+            <pre class="text-wrap">Use a human-readable address (like liquality.wallet) to send assets using Liquality?</pre>
           </div>
         </div>
       </div>
