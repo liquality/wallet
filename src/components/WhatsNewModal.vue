@@ -12,14 +12,14 @@
           <div class="item-content">
             <h3>RC 0.73.0</h3>
             <pre class="text-wrap">
-- Send, receive and swap tokens in your brand new OP address</pre
+- test</pre
             >
             <h3>Unstoppable Domains integration</h3>
             <pre class="text-wrap">
-- Now you can send tokens to a human-readable address like liquality.crypto</pre
+- test</pre
             >
             <pre class="text-wrap">
-- This integration works on Bitcoin, Ethereum, Arbitrum, Avalanche, Polygon and Solana blockchains</pre
+- test</pre
             >
             <h3>NFT bug fixes</h3>
           </div>
@@ -36,12 +36,8 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-Use Optimism to access a dApp like Aave or Curve Finance and pay only a few cents for every transaction?</pre
-            >
-            <pre class="text-wrap">
-Send your ETH assets there using our built-in cross-chain swap feature.</pre
-            >
+            <pre class="text-wrap">test</pre>
+            <pre class="text-wrap">test</pre>
           </div>
         </div>
       </div>
