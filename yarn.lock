@@ -5100,9 +5100,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/terra.js@npm:^3.1.6":
-  version: 3.1.6
-  resolution: "@terra-money/terra.js@npm:3.1.6"
+"@terra-money/terra.js@npm:3.1.7":
+  version: 3.1.7
+  resolution: "@terra-money/terra.js@npm:3.1.7"
   dependencies:
     "@terra-money/legacy.proto": "npm:@terra-money/terra.proto@^0.1.7"
     "@terra-money/terra.proto": ^2.1.0
@@ -5118,7 +5118,7 @@ __metadata:
     tmp: ^0.2.1
     utf-8-validate: ^5.0.5
     ws: ^7.5.9
-  checksum: 675ef98007c754651c2059a2d1ad5c0a776e0d50c6ae5204f59a4581f4954abc30e1fce96272b109838c65e2ad019077303ef89ff2a3b91fc1d1be2b05428648
+  checksum: b8272943b70bc47213bb520bfdb7b645f993f5d3c628e631d7eaf67e07b2b96a9b8df722e8c8296d34d665771754d90972d9025b5cc80e38f1ec35eda4cfa08e
   languageName: node
   linkType: hard
 
@@ -18710,7 +18710,7 @@ __metadata:
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
     "@liquality/wallet-core": 1.29.20
-    "@terra-money/terra.js": ^3.1.6
+    "@terra-money/terra.js": 3.1.7
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/vue": ^5.8.2
     "@vue/cli-plugin-babel": 4.5.15
