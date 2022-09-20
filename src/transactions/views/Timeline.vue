@@ -139,8 +139,8 @@ export default {
       const from = this.accountItem(this.item.accountId)?.addresses[0]
       const fromDomain = this.domainData[from]
       return fromDomain
-        ? `${fromDomain} (${this.shortenAddress(this.addPrefix(from, this.item.from))})`
-        : this.shortenAddress(this.addPrefix(from, this.item.from))
+        ? `${fromDomain} (${this.addPrefix(from, this.item.from)})`
+        : this.addPrefix(from, this.item.from)
     },
     reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
@@ -161,8 +161,8 @@ export default {
       const to = this.item.toAddress
       const toDomain = this.domainData[to]
       return toDomain
-        ? `${toDomain} (${this.shortenAddress(this.addPrefix(to, this.item.to))})`
-        : this.shortenAddress(this.addPrefix(to, this.item.to))
+        ? `${toDomain} (${this.addPrefix(to, this.item.to)})`
+        : this.addPrefix(to, this.item.to)
     },
     feeSelectorUnit() {
       const chain = cryptoassets[this.feeSelectorAsset]?.chain
