@@ -171,7 +171,7 @@ export default {
     ...mapGetters(['client', 'accountsData', 'suggestedFeePrices']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     isCustomFeeSupported() {
-      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.item.from].chain)
+      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.item.from]?.chain)
       return supportCustomFees
     },
     thumbnailImage() {

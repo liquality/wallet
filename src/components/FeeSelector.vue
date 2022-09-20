@@ -51,7 +51,7 @@ export default {
         content += `${BN(total).dp(6)} ${nativeAsset}`
         content += `<br />${totalFiat} USD`
       } else {
-        const chainId = cryptoassets[this.asset].chain
+        const chainId = cryptoassets[this.asset]?.chain
         const { unit } = getChain(this.activeNetwork, chainId)?.fees || ''
         content += `${this.fees[name].fee} ${unit}`
       }
