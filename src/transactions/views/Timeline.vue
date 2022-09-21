@@ -29,7 +29,7 @@
                 :href="addressLink(item.toAddress, item.to)"
                 target="_blank"
                 id="transaction_details_send_to_link"
-                >{{ toAddress }}
+                >{{ shortenAddress(addPrefix(toAddress, item.to)) }}
               </a>
 
               <CopyIcon @click="copy(addPrefix(item.toAddress, item.to))" />
@@ -88,7 +88,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import moment from '@liquality/wallet-core/dist/src/utils/moment'
-import { getChain, isEvmChain } from '@liquality/cryptoassets'
+import { getChain, isEvmChain, getAsset } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
@@ -139,8 +139,8 @@ export default {
       const from = this.accountItem(this.item.accountId)?.addresses[0]
       const fromDomain = this.domainData[from]
       return fromDomain
-        ? `${fromDomain} (${this.shortenAddress(this.addPrefix(from, this.item.from))})`
-        : this.shortenAddress(this.addPrefix(from, this.item.from))
+        ? `${fromDomain} (${this.addPrefix(from, this.item.from)})`
+        : this.addPrefix(from, this.item.from)
     },
     reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
@@ -161,11 +161,11 @@ export default {
       const to = this.item.toAddress
       const toDomain = this.domainData[to]
       return toDomain
-        ? `${toDomain} (${this.shortenAddress(this.addPrefix(to, this.item.to))})`
-        : this.shortenAddress(this.addPrefix(to, this.item.to))
+        ? `${toDomain} (${this.addPrefix(to, this.item.to)})`
+        : this.addPrefix(to, this.item.to)
     },
     feeSelectorUnit() {
-      const chain = cryptoassets[this.feeSelectorAsset].chain
+      const chain = cryptoassets[this.feeSelectorAsset]?.chain
       return getChain(this.activeNetwork, chain).fees.unit
     }
   },
@@ -187,7 +187,14 @@ export default {
       return '#'
     },
     addPrefix(address, asset) {
-      return !address.startsWith('0x') && isEvmChain(this.activeNetwork, asset)
+      const chainId = getAsset(this.activeNetwork, asset)?.chain
+
+      // invariant check - this should never happen
+      if (!chainId) {
+        return address
+      }
+
+      return !address.startsWith('0x') && isEvmChain(this.activeNetwork, chainId)
         ? '0x' + address
         : address
     },

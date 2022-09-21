@@ -39,7 +39,9 @@
           <AccountsIcon />
           {{ $t('components.navbar.manageAccounts') }}
         </li>
-        <li id="export_privkey" v-if="$route.params.accountId" @click="exportPrivateKey">
+        <li id="export_privkey" 
+            v-if="showExportPrivateKey" 
+            @click="exportPrivateKey">
           <KeyIcon />
           {{ $t('components.navbar.exportPrivateKey') }}
         </li>
@@ -77,7 +79,7 @@ import AssetsIcon from '@/assets/icons/assets.svg'
 import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
 import KeyIcon from '@/assets/icons/key.svg'
-
+import { ChainId } from '@liquality/cryptoassets'
 import { version as walletVersion } from '../../package.json'
 
 export default {
@@ -112,8 +114,18 @@ export default {
     }
   },
   computed: {
-    ...mapState(['experiments']),
-    ...mapGetters('app', ['isSettingsModalOpen'])
+    ...mapState(['experiments', 'activeNetwork']),
+    ...mapGetters('app', ['isSettingsModalOpen']),
+    ...mapGetters(['accountItem']),
+    account() {
+      if (this.$route.params.accountId) {
+        return this.accountItem(this.$route.params.accountId)
+      }
+      return null
+    },
+    showExportPrivateKey() {
+      return this.account && this.account.chain !== ChainId.Bitcoin
+    }
   },
   methods: {
     ...mapActions(['lockWallet']),

@@ -23,13 +23,13 @@ module.exports = {
         entry: 'pageProvider'
       })
     )
+    config.optimization.splitChunks = {
+      cacheGroups: {
+        default: false
+      }
+    }
     if (isDevelopment) {
       config.devtool = 'cheap-source-map'
-      config.optimization.splitChunks = {
-        cacheGroups: {
-          default: false
-        }
-      }
     }
   },
 

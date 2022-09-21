@@ -438,7 +438,7 @@ export default {
       return this.currentFee.dp(6)
     },
     available() {
-      if (cryptoassets[this.asset].type === 'erc20') {
+      if (cryptoassets[this.asset]?.type === 'erc20') {
         return unitToCurrency(cryptoassets[this.asset], this.balance)
       } else {
         const maxSendFee =
