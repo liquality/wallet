@@ -145,8 +145,8 @@ export default {
       return getFeeAsset(this.item.to)
     },
     txFees() {
-      const fromChain = cryptoassets[this.item.from].chain
-      const toChain = cryptoassets[this.item.to].chain
+      const fromChain = cryptoassets[this.item.from]?.chain
+      const toChain = cryptoassets[this.item.to]?.chain
 
       const fromFee = feePerUnit(this.item.fee, fromChain)
 

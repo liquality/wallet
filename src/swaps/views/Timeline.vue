@@ -383,7 +383,7 @@ export default {
       ]
     },
     feeSelectorUnit() {
-      const chain = cryptoassets[this.feeSelectorAsset].chain
+      const chain = cryptoassets[this.feeSelectorAsset]?.chain
       return getChain(this.activeNetwork, chain).fees.unit
     },
     timelineDiagramSteps() {
