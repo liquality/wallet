@@ -29,7 +29,7 @@
                 :href="addressLink(item.toAddress, item.to)"
                 target="_blank"
                 id="transaction_details_send_to_link"
-                >{{ toAddress }}
+                >{{ shortenAddress(addPrefix(toAddress, item.to)) }}
               </a>
 
               <CopyIcon @click="copy(addPrefix(item.toAddress, item.to))" />
