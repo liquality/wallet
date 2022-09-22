@@ -57,6 +57,7 @@
         "seedReveal": {
             "yourSeedPhrase": "你的助记词",
             "revealDescription": "助记词是恢复钱包的唯一方法。 写下来，核对它，然后安全地存储它。",
+            "revealSubTitle": "Hidden for security, Mouse-Over to reveal phrase.",
             "iSavedTheSeed": "我已保存助记词"
         }
     },
@@ -127,6 +128,7 @@
         "speedUp": "加速",
         "update": "更新",
         "transaction": "交易",
+        "transactionId": "Transaction Id",
         "transferOn": "在 %{marketplace} 上转移",
         "details": "细节",
         "description": "描述",

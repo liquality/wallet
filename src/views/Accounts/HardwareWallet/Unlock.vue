@@ -48,7 +48,7 @@
         <div class="loading-message">
           <div>
             <span class="loading-message-title">{{ $t('common.loading') }}</span>
-            <span class="loading-message-text">{{ $t('pages.accounts.findingAccount') }}</span>
+            <span class="loading-message-text">{{ $t('pages.accounts.findingAccounts') }}</span>
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@
         <span class="indications">{{ $t('pages.accounts.selectAccount') }}</span>
         <p v-if="selectedAsset">
           <img :src="getAccountIcon(selectedAsset.chain)" class="asset-icon" />
-          {{ accountsLabel }} {{ $t('pages.accounts.accoutsLabel') }}
+          {{ accountsLabel }} {{ $t('pages.accounts.accountsLabel') }}
         </p>
         <div v-if="accounts && accounts.length > 0">
           <table class="table accounts-table">

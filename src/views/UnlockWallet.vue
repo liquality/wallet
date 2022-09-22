@@ -87,7 +87,7 @@ export default {
         })
       } catch (e) {
         console.log(e)
-        this.error = e.message
+        this.error = this.$t('pages.onboarding.seedlogin.unlockError')
         this.trackAnalytics({
           event: 'UnlockWallet failed',
           properties: {

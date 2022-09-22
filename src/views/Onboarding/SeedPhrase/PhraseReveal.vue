@@ -9,7 +9,7 @@
     </div>
     <div class="phrase-reveal_bottom">
       <p class="phrase-reveal_mouseText">
-        {{ $t('pages.onboarding.seedReveal.revealDescription') }}
+        {{ $t('pages.onboarding.seedReveal.revealSubTitle') }}
       </p>
       <div class="phrase-reveal_seed pl-0 mb-1">
         <span v-for="word in seedList" id="seed_word_mouse_hover" :key="word">{{ word }}</span>

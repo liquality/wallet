@@ -57,6 +57,7 @@
         "seedReveal": {
             "yourSeedPhrase": "Your Seed Phrase",
             "revealDescription": "The seed phrase is the only way to restore your wallet. Write it down, verify it and then store it securely.",
+            "revealSubTitle": "Hidden for security, Mouse-Over to reveal phrase.",
             "iSavedTheSeed": "I saved the seed"
         }
     },

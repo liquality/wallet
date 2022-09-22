@@ -1,14 +1,14 @@
 <template>
   <div v-if="isPairAvailable" class="notification-content">
     <div>
-      {{ $t('components.noLiquidityMesssage.noLiquidity', { asset }) }}
+      {{ $t('components.noLiquidityMessage.noLiquidity', { asset }) }}
       <a href="https://discord.com/invite/5mgYtuArkh" target="_blank"> discord </a>
-      {{ $t('components.noLiquidityMesssage.tryAgainLater') }}
+      {{ $t('components.noLiquidityMessage.tryAgainLater') }}
     </div>
   </div>
   <div v-else class="notification-content">
     <div>
-      {{ $t('components.noLiquidityMesssage.noTraded') }}
+      {{ $t('components.noLiquidityMessage.noTraded') }}
     </div>
   </div>
 </template>

@@ -57,6 +57,7 @@
         "seedReveal": {
             "yourSeedPhrase": "Ang iyong Seed Phrase",
             "revealDescription": "Ang seed phrase ay ang tanging paraan upang maibalik at mabuksan muli ang iyong wallet. Isulat ito, tiyakin muli na tama ang pagkasulat at pagkatapos ay itago.",
+            "revealSubTitle": "Hidden for security, Mouse-Over to reveal phrase.",
             "iSavedTheSeed": "Nai-save ko na ang Seed Phrase"
         }
     },
@@ -127,6 +128,7 @@
         "speedUp": "Bilisan",
         "update": "Update",
         "transaction": "Transaksyon",
+        "transactionId": "Transaction Id",
         "transferOn": "Ilipat sa %{marketplace}",
         "details": "Mga Detalye",
         "description": "Paglalarawan",

@@ -3288,13 +3288,13 @@ __metadata:
   linkType: hard
 
 "@humanwhocodes/config-array@npm:^0.10.4":
-  version: 0.10.4
-  resolution: "@humanwhocodes/config-array@npm:0.10.4"
+  version: 0.10.5
+  resolution: "@humanwhocodes/config-array@npm:0.10.5"
   dependencies:
     "@humanwhocodes/object-schema": ^1.2.1
     debug: ^4.1.1
     minimatch: ^3.0.4
-  checksum: d480e5d57e6d787565b6cff78e27c3d1b380692d4ffb0ada7d7f5957a56c9032f034da05a3e443065dbd0671ebf4d859036ced34e96b325bbc1badbae3c05300
+  checksum: af4fa2633c57414be22ddba0a072cc611ef9a07104542fa24bde918a0153b89b6e08ca6a20ccc9079de6079e219e2406e38414d1b662db8bb59a3ba9d6eee6e3
   languageName: node
   linkType: hard
 
@@ -4142,9 +4142,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/cryptoassets@npm:1.14.17, @liquality/cryptoassets@npm:^1.13.3":
-  version: 1.14.17
-  resolution: "@liquality/cryptoassets@npm:1.14.17"
+"@liquality/cryptoassets@npm:1.14.18, @liquality/cryptoassets@npm:^1.13.3":
+  version: 1.14.18
+  resolution: "@liquality/cryptoassets@npm:1.14.18"
   dependencies:
     "@ethersproject/address": 5.7.0
     "@types/bs58": 4.0.1
@@ -4153,7 +4153,7 @@ __metadata:
     bs58: 4.0.1
     ethereumjs-util: 7.1.5
     lodash: 4.17.21
-  checksum: 183a46db9eda3ffec2f918577087218cfbac1c7621717293d4733d96d1e9bddbef141924c99125ccb7cd08c99edcc5a27666d49350379d38cadcbe8ebead7cf0
+  checksum: b0fb5d682c22e863cca80ce720ecdf54b5f09c377ce60bb39fcf60ea067d65c77aba3694a408114f617ae585a2f37462faf4df1d2d105a1dec897eddd1d96804
   languageName: node
   linkType: hard
 
@@ -4236,9 +4236,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/wallet-core@npm:1.29.22":
-  version: 1.29.22
-  resolution: "@liquality/wallet-core@npm:1.29.22"
+"@liquality/wallet-core@npm:1.29.23":
+  version: 1.29.23
+  resolution: "@liquality/wallet-core@npm:1.29.23"
   dependencies:
     "@blobfishkate/sovryncontracts": 1.3.27
     "@chainify/bitcoin": 1.2.33
@@ -4260,7 +4260,7 @@ __metadata:
     "@ethersproject/providers": 5.7.0
     "@ethersproject/transactions": 5.7.0
     "@hop-protocol/sdk": 0.0.1-beta.314
-    "@liquality/cryptoassets": 1.14.17
+    "@liquality/cryptoassets": 1.14.18
     "@metamask/eth-sig-util": ^4.0.1
     "@terra-money/terra.js": 3.1.3
     "@thorchain/asgardex-util": ^0.10.0
@@ -4286,7 +4286,7 @@ __metadata:
     urql: ^2.2.0
     vue: ^2.6.11
     vuex: ^3.1.3
-  checksum: 32726a5ee0c6412162929a784c46fe5fa1a826fcd3caf4e3101289ea9ef0402e285cae3494af61c4dd473da5a28db872234e76608a1d0aaaa458b964fe8cffb6
+  checksum: 77ebf1526fe02ea22e5f2bfe0031bad196a41d4bfd29df9e3454a720bef49cf27ed3898c7315cf080b6faafb94c3c98aed9d6c2454459f6112255b692a0ae4c3
   languageName: node
   linkType: hard
 
@@ -4796,8 +4796,8 @@ __metadata:
   linkType: hard
 
 "@solana/web3.js@npm:^1.32.0":
-  version: 1.62.1
-  resolution: "@solana/web3.js@npm:1.62.1"
+  version: 1.63.0
+  resolution: "@solana/web3.js@npm:1.63.0"
   dependencies:
     "@babel/runtime": ^7.12.5
     "@noble/ed25519": ^1.7.0
@@ -4814,7 +4814,7 @@ __metadata:
     node-fetch: 2
     rpc-websockets: ^7.5.0
     superstruct: ^0.14.2
-  checksum: 026b65954635da95e79e67b33dc4751ddc0ce5330dac260dcfa8fe93504f09e9768449363d6b7f2d160690302517c86a82aeacadabe774e4047a0eb47855e87e
+  checksum: 909f1067b5c4da8ed61d3c2b0282044c7f395f650974370838eec905e18357f8d049b9210f79cd861870eb56e73cc57fefdadf2d3b87a609e1c5d525ea8cd8bf
   languageName: node
   linkType: hard
 
@@ -6828,12 +6828,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"anchor-markdown-header@npm:^0.5.7":
-  version: 0.5.7
-  resolution: "anchor-markdown-header@npm:0.5.7"
+"anchor-markdown-header@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "anchor-markdown-header@npm:0.6.0"
   dependencies:
-    emoji-regex: ~6.1.0
-  checksum: 97ed56c61ca8aacca635378de4959fd95929c4966f96e6483df06d5b22b541924e91569c819c49cbed8e8684b3b77eb5760216bc9bd11e54bb58389ce29cedaa
+    emoji-regex: ~10.1.0
+  checksum: 2fe51a4327d07d93fd7c2b4b5dc077598a29300217f876485ce91747e80823a58cbe34f80396f36b8abac24d1cbe080c27fd730dcf976200630f8ac754275606
   languageName: node
   linkType: hard
 
@@ -11559,18 +11559,18 @@ __metadata:
   linkType: hard
 
 "doctoc@npm:^2.1.0":
-  version: 2.2.0
-  resolution: "doctoc@npm:2.2.0"
+  version: 2.2.1
+  resolution: "doctoc@npm:2.2.1"
   dependencies:
     "@textlint/markdown-to-ast": ^12.1.1
-    anchor-markdown-header: ^0.5.7
+    anchor-markdown-header: ^0.6.0
     htmlparser2: ^7.2.0
     minimist: ^1.2.6
     underscore: ^1.13.2
     update-section: ^0.3.3
   bin:
     doctoc: doctoc.js
-  checksum: 78973a1275f056c044263d60546cf518beb15b79bd95a93dc5875d6dd46fa0873568661d74830b68e908c8a4465e9fd602eb49468e4d686e43ce4471d34012c3
+  checksum: 0643c5170fa8c5ec53bde585090c4c140f69eb498fea7d4d4a6a15455bff8b1d04632dcaec8909d2b3719a5f54760947f274aec99f4322fe098bce0c7fb30a0d
   languageName: node
   linkType: hard
 
@@ -11871,9 +11871,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.251":
-  version: 1.4.256
-  resolution: "electron-to-chromium@npm:1.4.256"
-  checksum: 878ca8e33a05165808a662b52ac332a42a5fcf842540de38c4cdde462e4c2cb2f2c10c4864cd44c486f8470f88818f42d275774865666aad424e1e4f500d91e8
+  version: 1.4.257
+  resolution: "electron-to-chromium@npm:1.4.257"
+  checksum: 0e15301c7420acbe5cdf8497026156144acfe5bedaba11bf0f837d4ed6d388d6f65a796a1b0569130c254066eea3062e50a4c452466ce9864b2bd9313181076e
   languageName: node
   linkType: hard
 
@@ -11934,10 +11934,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emoji-regex@npm:~6.1.0":
-  version: 6.1.3
-  resolution: "emoji-regex@npm:6.1.3"
-  checksum: 348c4808cdc614e5522023c1f102eb06093ca24c693c7aa074fac93d3880c51948e9468bf91554d2e77ce47f0053411767aae21dd58fed12fdc54c2352a07976
+"emoji-regex@npm:~10.1.0":
+  version: 10.1.0
+  resolution: "emoji-regex@npm:10.1.0"
+  checksum: 5bc780fc4d75f89369155a87c55f7e83a0bf72bcccda7df7f2c570cde4738d8b17d112d12afdadfec16647d1faef6501307b4304f81d35c823a938fe6547df0f
   languageName: node
   linkType: hard
 
@@ -13702,11 +13702,11 @@ __metadata:
   linkType: hard
 
 "fb-watchman@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "fb-watchman@npm:2.0.1"
+  version: 2.0.2
+  resolution: "fb-watchman@npm:2.0.2"
   dependencies:
     bser: 2.1.1
-  checksum: 8510230778ab3a51c27dffb1b76ef2c24fab672a42742d3c0a45c2e9d1e5f20210b1fbca33486088da4a9a3958bde96b5aec0a63aac9894b4e9df65c88b2cbd6
+  checksum: b15a124cef28916fe07b400eb87cbc73ca082c142abf7ca8e8de6af43eca79ca7bd13eb4d4d48240b3bd3136eaac40d16e42d6edf87a8e5d1dd8070626860c78
   languageName: node
   linkType: hard
 
@@ -17656,15 +17656,15 @@ __metadata:
   linkType: hard
 
 "joi@npm:^17.4.0":
-  version: 17.6.0
-  resolution: "joi@npm:17.6.0"
+  version: 17.6.1
+  resolution: "joi@npm:17.6.1"
   dependencies:
     "@hapi/hoek": ^9.0.0
     "@hapi/topo": ^5.0.0
     "@sideway/address": ^4.1.3
     "@sideway/formula": ^3.0.0
     "@sideway/pinpoint": ^2.0.0
-  checksum: eaf62f6c02f2edb1042f1ab04fc23a5918a2cb8f54bec84c6e1033624d8a462c10ae9518af55a3ba84f1793960450d58094eda308e7ef93c17edd4e3c8ef31d5
+  checksum: fcaf094869a5b9ee9fd41cdb087b93ea95a5ff1a77a061caac2637ffdd86c9860ee7c016645e9f0134a99cb0ba374723f78a350ce0d9f4d4d95cc466963d8028
   languageName: node
   linkType: hard
 
@@ -18543,11 +18543,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "liquality-wallet@workspace:."
   dependencies:
-    "@liquality/cryptoassets": 1.14.17
+    "@liquality/cryptoassets": 1.14.18
     "@liquality/ethereum-utils": ^1.13.12
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
-    "@liquality/wallet-core": 1.29.22
+    "@liquality/wallet-core": 1.29.23
     "@terra-money/terra.js": ^3.1.6
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/vue": ^5.8.2
@@ -23698,8 +23698,8 @@ __metadata:
   linkType: hard
 
 "rollup@npm:^2.63.0":
-  version: 2.79.0
-  resolution: "rollup@npm:2.79.0"
+  version: 2.79.1
+  resolution: "rollup@npm:2.79.1"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -23707,7 +23707,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: 166f1ffea1898e157003920065b3a328e7012ea6808860ee8fe5d1ce94804fcce9985c95a3c0f7fe9c611aff0d09a70f073f1d6f715c8faba28e4e40f71ee3bb
+  checksum: 6a2bf167b3587d4df709b37d149ad0300692cc5deb510f89ac7bdc77c8738c9546ae3de9322b0968e1ed2b0e984571f5f55aae28fa7de4cfcb1bc5402a4e2be6
   languageName: node
   linkType: hard
 
@@ -26836,11 +26836,11 @@ __metadata:
   linkType: hard
 
 "vue-date-pick@npm:^1.4.1":
-  version: 1.5.0
-  resolution: "vue-date-pick@npm:1.5.0"
+  version: 1.5.1
+  resolution: "vue-date-pick@npm:1.5.1"
   dependencies:
     vue: ^2.6.0
-  checksum: 3d38e4ea717ead454e12f26452c4dc8328d93aad7174597440952534781279fd3f9901bd371ce4a03f12e298e7c7f98c29af61e37fccbfd7ea4448369b258464
+  checksum: b4c6ba107895aae08836bbf5c91fec5f2c972e20783e2287d4cf1e96a619ad7a0197fcccdf2606039213a90cbaf4ebc7a7abc67e2dbf3fedf9550226edc732ea
   languageName: node
   linkType: hard
 

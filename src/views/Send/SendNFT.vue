@@ -394,7 +394,7 @@ export default {
         case 'custom-fees':
           return this.$t('common.customFees')
         case 'review':
-          return this.$t('titleReviewSendNFT')
+          return this.$t('pages.send.titleReviewSendNFT')
 
         default:
           return ''

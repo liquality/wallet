@@ -57,7 +57,9 @@
           <router-link
             :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
           >
-            <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">Done</button>
+            <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">
+              {{ $t('common.done') }}
+            </button>
           </router-link>
           <button class="btn btn-primary btn-lg btn-icon" id="copy_address_button" @click="copy">
             <template v-if="copied">

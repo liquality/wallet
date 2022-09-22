@@ -89,7 +89,7 @@ export default {
     }
   },
   created() {
-    this.title = this.$t(`onboarding.seedlogin.title.${this.titleKey}`)
+    this.title = this.$t(`pages.onboarding.seedlogin.title.${this.titleKey}`)
   },
   methods: {
     ...mapActions('app', ['trackAnalytics']),

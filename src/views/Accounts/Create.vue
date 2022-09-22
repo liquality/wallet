@@ -49,7 +49,7 @@
                 autocomplete="off"
                 class="form-control form-control-sm"
                 v-model="accountAlias"
-                placeholder="Choose name"
+                :placeholder="$t('pages.accounts.chooseAccountName')"
                 id="choose-account-name"
                 required
                 :class="{ 'is-invalid': accountAliasError }"

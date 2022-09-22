@@ -57,6 +57,7 @@
         "seedReveal": {
             "yourSeedPhrase": "Tu Seed Phrase",
             "revealDescription": "La seed phrase es la única forma de restaurar tu cartera. Escríbela en papel, verifícala, y guárdala en un lugar seguro.",
+            "revealSubTitle": "Hidden for security, Mouse-Over to reveal phrase.",
             "iSavedTheSeed": "He guardado la seed"
         }
     },
@@ -127,6 +128,7 @@
         "speedUp": "Acelerar",
         "update": "Actualizar",
         "transaction": "Transacción",
+        "transactionId": "ID de Transacción",
         "transferOn": "Transferir en %{marketplace}",
         "details": "Detalles",
         "description": "Descripción",
