@@ -226,7 +226,6 @@ export default {
   },
   methods: {
     ...mapActions(['retrySwap', 'updateFees']),
-    ...mapActions('app', ['startBridgeListener']),
     getNativeAsset,
     getFeeAsset,
     prettyBalance,

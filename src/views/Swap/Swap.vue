@@ -1058,7 +1058,6 @@ export default {
       'updateFiatRates',
       'trackAnalytics'
     ]),
-    ...mapActions('app', ['startBridgeListener']),
     ...mapGetters(['suggestedFeePrices']),
     shortenAddress,
     dpUI,
