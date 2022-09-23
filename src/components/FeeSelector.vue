@@ -33,7 +33,9 @@ import { getChain } from '@liquality/cryptoassets'
 import { mapState } from 'vuex'
 
 export default {
-  ...mapState(['activeNetwork']),
+  computed: {
+    ...mapState(['activeNetwork'])
+  },
   props: ['asset', 'value', 'fees', 'totalFees', 'fiatRates', 'swap'],
   methods: {
     getTooltip(name) {
