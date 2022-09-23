@@ -11,7 +11,7 @@
         @click="$emit('input', name)"
       >
         <input type="radio" name="fee" autocomplete="off" :checked="name === value" />
-        {{ name }}
+        {{ $t(`common.${name}`) }}
       </label>
     </div>
     <button
