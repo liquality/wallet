@@ -39,9 +39,7 @@
           <AccountsIcon />
           Manage Accounts
         </li>
-        <li id="export_privkey" 
-            v-if="showExportPrivateKey" 
-            @click="exportPrivateKey">
+        <li id="export_privkey" v-if="showExportPrivateKey" @click="exportPrivateKey">
           <KeyIcon />
           Export Private Key
         </li>
