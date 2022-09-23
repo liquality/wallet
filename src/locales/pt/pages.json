@@ -128,6 +128,7 @@
         "speedUp": "Speed up",
         "update": "Update",
         "transaction": "Transaction",
+        "transactionId": "Transaction Id",
         "transferOn": "Transfer on %{marketplace}",
         "details": "Details",
         "description": "Description",

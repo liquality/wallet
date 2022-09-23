@@ -9,8 +9,8 @@
     "close": "Close",
     "status": "Status",
     "start": "Começo",
-    "started": "Started",
     "end": "Final",
+    "started": "Started",
     "received": "Received",
     "completed": "Completado",
     "advanced": "Advanced",
@@ -25,6 +25,8 @@
     "send": "Enviar",
     "swap": "Trocar",
     "receive": "Receber",
+    "from": "From",
+    "to": "To",
     "edit": "Editar",
     "connect": "Conectar",
     "apply": "Aplicar",
@@ -38,8 +40,6 @@
     "or": "Ou",
     "ok": "Ok",
     "and": "e",
-    "from": "From",
-    "to": "To",
     "reset": "Reiniciar",
     "confirm": "Confirmar",
     "review": "Revisar",
@@ -88,8 +88,8 @@
     "localesLabels": {
         "en": "English",
         "es": "Spanish",
-        "zh": "Chinês (Simplificado)",
-        "pt": "Português",
+        "zh": "Chinese (Simplified)",
+        "pt": "Portuguese",
         "ph": "Filipino",
         "cb": "Bisaya (Cebuano)"
     }
