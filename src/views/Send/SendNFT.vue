@@ -342,7 +342,7 @@ export default {
       const nftAssetId = this.$route.query.nftAsset
       const collections = this.accountNftCollections(this.accountId)
       if (collections && collections[collectionName]) {
-        this.selectedNFT = collections[collectionName].find((i) => i.id == nftAssetId)
+        this.selectedNFT = collections[collectionName].find((i) => i.token_id == nftAssetId)
       }
     }
     await this.updateFees({ asset: this.assetChain })

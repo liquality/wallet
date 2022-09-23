@@ -27,9 +27,9 @@
               $router.push({
                 path: '/wallet/nfts/send',
                 query: {
-                  nftAsset: nftAsset.id,
+                  nftAsset: nftAsset.token_id,
                   source: source,
-                  collection: nftAsset.collection?.name || '[Collection]',
+                  collection: nftAsset.collection?.name,
                   accountId: accountId
                 }
               })
