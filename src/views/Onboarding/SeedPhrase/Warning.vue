@@ -1,5 +1,5 @@
 <template>
-  <div class="walletwarning-phrase">
+  <div class="wallet warning-phrase">
     <NavBar showMenu="true">
       <strong>Warning</strong>
     </NavBar>
