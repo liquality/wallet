@@ -112,7 +112,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { chainToTokenAddressMap } from '@liquality/cryptoassets'
+import { getToken } from '@liquality/cryptoassets'
 import FeeSelector from '@/components/FeeSelector'
 import CustomFees from '@/components/CustomFees'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
@@ -199,12 +199,12 @@ export default {
       this.showData = !this.showData
     },
     async getSymbol() {
-      const chain = cryptoassets[this.asset].chain
+      const chain = cryptoassets[this.asset]?.chain
       const tokenAddress = this.request.args[0].to
 
       try {
         // try to get token from cryptoassets
-        this.symbol = chainToTokenAddressMap[chain][tokenAddress].code
+        this.symbol = getToken(chain, tokenAddress).code
       } catch {
         // in case token doesn't exist in cryptoassets
         try {

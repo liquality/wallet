@@ -16,7 +16,7 @@ let browser, page, dappPage
 const dappUrl = 'https://app.uniswap.org'
 
 // Manage accounts experimental feature
-describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
+describe('Manage Accounts-["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -34,13 +34,11 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     // overview page
     await overviewPage.CloseWhatsNewModal(page)
     await overviewPage.HasOverviewPageLoaded(page)
-
-    await overviewPage.SelectNetwork(page, 'mainnet')
   })
   afterEach(async () => {
     await browser.close()
   })
-  it('RSK - toggle on/off validate accounts', async () => {
+  it('RSK - toggle on/off validate accounts-"PULL_REQUEST_TEST"', async () => {
     // check Send & Swap & Receive options have been displayed
     await overviewPage.ValidateSendSwipeReceiveOptions(page)
     // Validate RSK accounts on overview page first time
@@ -66,10 +64,11 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     ).not.contain('toggled')
     await page.click('#previous_nav_bar')
     // overview-screen-chain-section , RSK should be hidden
+
     expect(
       await overviewPage.getTotalAssets(page),
-      'After RSK account toggle off overview page should have 9 assets'
-    ).to.equals(9)
+      'After RSK account toggle off overview page should have 10 assets'
+    ).to.equals(10)
     // Go back to Manage account & toggle on
     await overviewPage.ClickOnManageAccounts(page)
     // Chain RSK toggle on but not accounts
@@ -77,8 +76,8 @@ describe('Manage Accounts-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await page.click('#previous_nav_bar')
     expect(
       await overviewPage.getTotalAssets(page),
-      'After RSK account toggle on overview page should have 11 assets'
-    ).to.equals(11)
+      'After RSK account toggle on overview page should have 12 assets'
+    ).to.equals(12)
   })
   it('RSK - create new account, validate RSK 3 accounts', async () => {
     // check Send & Swap & Receive options have been displayed

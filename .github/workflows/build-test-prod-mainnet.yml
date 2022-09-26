@@ -75,12 +75,12 @@ jobs:
           yarn build
 
       - name: Regression tests against (Prod) Mainnet
-        uses: beemi/puppeteer-headful@v1.0.11
+        uses: beemi/puppeteer-headful@v1.0.12
         env:
           CI: 'true'
           DISPLAY: :99
         with:
-          args: yarn test:mainnet:prodagent # Run tests against Prod mainnet
+          args: yarn test-full-regression # Run tests against Prod mainnet
 
       - name: Save Screenshots
         uses: actions/upload-artifact@v2.3.1

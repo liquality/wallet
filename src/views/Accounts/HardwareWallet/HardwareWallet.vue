@@ -192,7 +192,7 @@ export default {
           const assetKeys = this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
 
           const assets = assetKeys.filter((asset) => {
-            return cryptoassets[asset].chain === this.selectedAsset.chain
+            return cryptoassets[asset]?.chain === this.selectedAsset.chain
           })
 
           const selectedAccounts = { ...this.selectedAccounts }

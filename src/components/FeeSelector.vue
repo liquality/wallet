@@ -29,9 +29,11 @@ import BN from 'bignumber.js'
 import { prettyFiatBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import { getNativeAsset, getFeeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
+import { mapState } from 'vuex'
 
 export default {
+  ...mapState(['activeNetwork']),
   props: ['asset', 'value', 'fees', 'totalFees', 'fiatRates', 'swap'],
   methods: {
     getTooltip(name) {
@@ -49,8 +51,8 @@ export default {
         content += `${BN(total).dp(6)} ${nativeAsset}`
         content += `<br />${totalFiat} USD`
       } else {
-        const chainId = cryptoassets[this.asset].chain
-        const { unit } = chains[chainId].fees
+        const chainId = cryptoassets[this.asset]?.chain
+        const { unit } = getChain(this.activeNetwork, chainId)?.fees || ''
         content += `${this.fees[name].fee} ${unit}`
       }
 

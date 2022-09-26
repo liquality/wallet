@@ -1,4 +1,7 @@
 const path = require('path')
+const AssetReplacePlugin = require('./plugins/AssetReplacePlugin')
+
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 module.exports = {
   lintOnSave: false,
@@ -9,6 +12,24 @@ module.exports = {
       sass: {
         prependData: '@import "@/assets/scss/_vars.scss";'
       }
+    }
+  },
+
+  configureWebpack: (config) => {
+    config.entry.pageProvider = path.resolve('./src/pageProvider/index.js')
+    config.plugins.push(
+      new AssetReplacePlugin({
+        name: '#PAGEPROVIDER#',
+        entry: 'pageProvider'
+      })
+    )
+    config.optimization.splitChunks = {
+      cacheGroups: {
+        default: false
+      }
+    }
+    if (isDevelopment) {
+      config.devtool = 'cheap-source-map'
     }
   },
 
@@ -50,6 +71,12 @@ module.exports = {
           entries: {
             'content-script': ['src/contentScript.js']
           }
+        }
+      },
+      extensionReloaderOptions: {
+        entries: {
+          contentScript: ['pageProvider', 'content-script'],
+          background: 'background'
         }
       },
       manifestTransformer: (manifest) => {

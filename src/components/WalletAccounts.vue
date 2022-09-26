@@ -162,7 +162,7 @@ export default {
       const assetComparator = (asset) => {
         return (
           asset.toUpperCase().includes(search) ||
-          cryptoassets[asset].name.toUpperCase().includes(search)
+          cryptoassets[asset]?.name.toUpperCase().includes(search)
         )
       }
       return this.accounts

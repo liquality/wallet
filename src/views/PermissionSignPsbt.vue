@@ -66,6 +66,7 @@ import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
+import { getAsset } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -167,7 +168,7 @@ export default {
     const client = this.client({
       network: this.activeNetwork,
       walletId: this.activeWalletId,
-      asset: this.asset,
+      chainId: getAsset(this.activeNetwork, this.asset).chain,
       accountId: this.accountId
     })
 

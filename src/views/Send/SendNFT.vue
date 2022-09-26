@@ -277,7 +277,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 import NavBar from '@/components/NavBar.vue'
 import Accordion from '@/components/Accordion.vue'
-import { chains } from '@liquality/cryptoassets'
+import { getChain, getNativeAssetCode } from '@liquality/cryptoassets'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import CopyIcon from '@/assets/icons/copy.svg'
@@ -441,13 +441,14 @@ export default {
       return true
     },
     fromAddress() {
-      return chains[this.account?.chain]?.formatAddress(
-        this.account?.addresses[0],
-        this.activeNetwork
+      return getChain(this.activeNetwork, this.account?.chain)?.formatAddressUI(
+        this.account?.addresses[0]
       )
     },
     isValidAddress() {
-      return chains[cryptoassets[this.asset].chain].isValidAddress(this.address, this.activeNetwork)
+      return getChain(this.activeNetwork, cryptoassets[this.asset].chain).isValidAddress(
+        this.address
+      )
     },
     addressError() {
       if (!this.isValidAddress) {
@@ -487,7 +488,7 @@ export default {
       return cryptoassets[this.asset].chain === this.account?.chain
     },
     asset() {
-      return chains[this.account?.chain].nativeAsset
+      return getNativeAssetCode(this.activeNetwork, this.account?.chain)
     },
     startAddress() {
       return this.address.slice(0, 6)
@@ -499,7 +500,7 @@ export default {
       return this.address.slice(this.address.length - 4)
     },
     isCustomFeeSupported() {
-      const { supportCustomFees } = chains[cryptoassets[this.asset].chain]
+      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.asset].chain)
       return supportCustomFees
     }
   },

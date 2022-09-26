@@ -319,12 +319,12 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 import BN from 'bignumber.js'
 import moment from '@liquality/wallet-core/dist/src/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { chains } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import { getSwapTimeline, ACTIONS_TERMS } from '@liquality/wallet-core/dist/src/utils/timeline'
 import {
-  isEthereumChain,
+  isChainEvmCompatible,
   getNativeAsset,
   getAddressExplorerLink
 } from '@liquality/wallet-core/dist/src/utils/asset'
@@ -335,6 +335,7 @@ import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/src/swaps/utils'
 import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
+import { getAsset } from '@liquality/cryptoassets'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import { isObject } from 'lodash-es'
@@ -382,8 +383,8 @@ export default {
       ]
     },
     feeSelectorUnit() {
-      const chain = cryptoassets[this.feeSelectorAsset].chain
-      return chains[chain].fees.unit
+      const chain = cryptoassets[this.feeSelectorAsset]?.chain
+      return getChain(this.activeNetwork, chain).fees.unit
     },
     timelineDiagramSteps() {
       const swapProvider = getSwapProvider(this.item.network, this.item.provider)
@@ -395,7 +396,7 @@ export default {
     getNativeAsset,
     prettyBalance,
     shortenAddress,
-    isEthereumChain,
+    isChainEvmCompatible,
     // get to asset when liquality boost provider is swapping from Native to ERC20
     prettyTime(timestamp) {
       return moment(timestamp).format('L, LT')
@@ -425,9 +426,10 @@ export default {
       this.newFeePrice = null
     },
     async updateTransactions() {
-      const timeline = await getSwapTimeline(this.item, ({ network, walletId, asset }) =>
-        this.client({ network, walletId, asset })
-      )
+      const timeline = await getSwapTimeline(this.item, ({ network, walletId, asset }) => {
+        const chainId = getAsset(network, asset).chain
+        return this.client({ network, walletId, chainId })
+      })
 
       this.timeline = timeline
     },
@@ -464,7 +466,9 @@ export default {
       return '#'
     },
     addPrefix(address, asset) {
-      return !address.startsWith('0x') && isEthereumChain(asset) ? '0x' + address : address
+      return !address.startsWith('0x') && isChainEvmCompatible(asset, this.activeNetwork)
+        ? '0x' + address
+        : address
     }
   },
   created() {

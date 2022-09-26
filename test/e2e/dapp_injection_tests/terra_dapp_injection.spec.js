@@ -15,7 +15,7 @@ const anchorProtocol_Url = 'https://app.anchorprotocol.com/'
 const mirrorProtocol_Url = 'https://mirrorprotocol.app/#/trade/'
 const terra_swap_Url = 'https://app.terraswap.io'
 
-describe('Terra Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
+describe('Terra Dapp injection-["MAINNET"]', async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions())
     page = await browser.newPage()
@@ -45,7 +45,7 @@ describe('Terra Dapp injection-["MAINNET","PULL_REQUEST_TEST"]', async () => {
       height: 768
     })
   })
-  it('Terra anchorprotocol dapp injection', async () => {
+  it.skip('Terra anchorprotocol dapp injection- "PULL_REQUEST_TEST"', async () => {
     await dappPage.goto(anchorProtocol_Url, { timeout: 60000, waitUntil: 'load' })
     // Before click on injected wallet option.
     await dappPage.evaluate(async () => {

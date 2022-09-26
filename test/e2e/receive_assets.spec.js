@@ -33,18 +33,6 @@ async function importWalletTestReceive(bitcoin) {
   const yourCurrentAddress = await page.$eval('#your_current_asset_address', (el) => el.textContent)
   expect(yourCurrentAddress).contains(bitcoin)
   await receivePage.HasQRCodeDisplayed(page)
-  if (
-    bitcoin === 'ETH' ||
-    bitcoin === 'ARBETH' ||
-    bitcoin === 'AVAX' ||
-    bitcoin === 'RBTC' ||
-    bitcoin === 'BNB' ||
-    bitcoin === 'MATIC' ||
-    bitcoin === 'ARBETH' ||
-    bitcoin === 'LUNA'
-  ) {
-    await receivePage.CheckReceiveURL(page)
-  }
   await receivePage.CheckReceiveAddresses(page)
   await receivePage.ClickCopyAddress(page)
   await receivePage.ClickDone(page)
@@ -59,8 +47,7 @@ describe('Receive tokens ["MAINNET"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.setDefaultNavigationTimeout(0)
-      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'networkidle2' })
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
     })
     afterEach(async () => {
       await browser.close()
@@ -83,7 +70,6 @@ describe('Receive tokens ["MAINNET"]', async () => {
       // Set password & click next
       await passwordPage.SubmitPasswordDetails(page)
       // overview page
-      await overviewPage.HasOverviewPageLoaded(page)
       await overviewPage.CloseWhatsNewModal(page)
       // check Send & Swap & Receive options have been displayed
       await overviewPage.ValidateSendSwipeReceiveOptions(page)
@@ -119,7 +105,7 @@ describe('Receive tokens ["MAINNET"]', async () => {
     beforeEach(async () => {
       browser = await puppeteer.launch(testUtil.getChromeOptions())
       page = await browser.newPage()
-      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 60000 })
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
       // Import wallet option
       await homePage.ClickOnImportWallet(page)
       await homePage.ScrollToEndOfTerms(page)
