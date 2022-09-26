@@ -21,11 +21,13 @@
     "test-full-regression": "node_modules/mocha/bin/mocha"
   },
   "dependencies": {
+    "@chainify/hw-ledger": "^1.2.33",
     "@liquality/cryptoassets": "1.14.11",
     "@liquality/ethereum-utils": "^1.13.12",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
     "@liquality/wallet-core": "1.29.16",
+    "@solana/web3.js": "1.50.1",
     "@terra-money/terra.js": "^3.1.6",
     "@testing-library/vue": "^5.8.2",
     "amplitude-js": "8.18.2",
