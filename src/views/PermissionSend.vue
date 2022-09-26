@@ -199,7 +199,7 @@ export default {
       this.showData = !this.showData
     },
     async getSymbol() {
-      const chain = cryptoassets[this.asset].chain
+      const chain = cryptoassets[this.asset]?.chain
       const tokenAddress = this.request.args[0].to
 
       try {

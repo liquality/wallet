@@ -165,7 +165,7 @@ export default {
         : this.shortenAddress(this.addPrefix(to, this.item.to))
     },
     feeSelectorUnit() {
-      const chain = cryptoassets[this.feeSelectorAsset].chain
+      const chain = cryptoassets[this.feeSelectorAsset]?.chain
       return getChain(this.activeNetwork, chain).fees.unit
     }
   },
