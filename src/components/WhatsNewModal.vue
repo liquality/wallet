@@ -28,7 +28,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Use a human-readable address (like liquality.wallet) to send assets using Liquality?</pre>
+            <pre class="text-wrap">
+Use a human-readable address (like liquality.wallet) to send assets using Liquality?</pre
+            >
           </div>
         </div>
       </div>
