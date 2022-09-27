@@ -128,7 +128,9 @@
           <DetailsContainer v-if="feesAvailable && isCustomFeeSupported">
             <template v-slot:header>
               <div class="network-header-container">
-                <span class="details-title" id="send_network_speed"> Network Speed/Fee </span>
+                <span class="details-title" id="send_network_speed">
+                  {{ $t('common.networkSpeedFee') }}
+                </span>
                 <span class="text-muted" id="send_network_speed_avg_fee">
                   ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
                 </span>
@@ -174,7 +176,9 @@
             </div>
           </template>
           <div class="button-group">
-            <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">Cancel</button>
+            <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">
+              {{ $t('common.cancel') }}
+            </button>
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"

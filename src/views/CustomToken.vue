@@ -64,7 +64,7 @@
               @paste="contractAddressPaste"
               class="form-control form-control-sm"
               id="contractAddress"
-              placeholder="Address"
+              :placeholder="$t('common.address')"
               autocomplete="off"
               required
             />
@@ -76,7 +76,7 @@
               v-model="name"
               class="form-control form-control-sm"
               id="name"
-              placeholder="Name"
+              :placeholder="$t('pages.customToken.name')"
               autocomplete="off"
               required
               :disabled="autofilled"
