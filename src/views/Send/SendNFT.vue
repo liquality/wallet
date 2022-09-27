@@ -62,7 +62,7 @@
       </div>
     </template>
     <template v-else-if="activeView === 'selectedAsset'">
-      <NavBar :showBackButton="true" :backClick="back" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="$t('common.back')">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <div class="selected-nft-asset mx-3 mt-4 h-100">
@@ -111,7 +111,7 @@
                     v-model="address"
                     class="form-control form-control-sm"
                     id="address"
-                    placeholder="Address"
+                    :placeholder="$t('common.address')"
                     autocomplete="off"
                     required
                   />

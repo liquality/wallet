@@ -126,7 +126,9 @@
     </div>
     <div class="wrapper_bottom">
       <div class="button-group">
-        <button class="btn btn-light btn-outline-primary btn-lg" @click="cancel">Cancel</button>
+        <button class="btn btn-light btn-outline-primary btn-lg" @click="cancel">
+          {{ $t('common.cancel') }}
+        </button>
         <button
           v-if="ledgerError"
           class="btn btn-primary btn-lg btn-icon"

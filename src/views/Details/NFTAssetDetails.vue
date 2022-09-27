@@ -148,7 +148,7 @@
                       </tr>
                       <tr>
                         <td class="text-muted text-left small-12">
-                          {{ $t('pages.details.contractAddress') }}
+                          {{ $t('common.contractAddress') }}
                         </td>
                         <td class="text-break" v-if="nftAsset.asset_contract">
                           <span class="text-primary d-flex align-items-center">
@@ -161,7 +161,7 @@
                       </tr>
                       <tr>
                         <td class="text-muted text-left small-12" id="your_to_address">
-                          {{ $t('pages.details.tokenID') }}
+                          {{ $t('common.tokenID') }}
                         </td>
                         <td class="text-break" v-if="nftAsset.token_id">
                           <span class="text-primary">
@@ -172,7 +172,7 @@
                       </tr>
                       <tr>
                         <td class="text-muted text-left small-12">
-                          {{ $t('pages.details.tokenStandard') }}
+                          {{ $t('common.tokenStandard') }}
                         </td>
                         <td class="text-break">
                           {{ nftAsset.standard || '-' }}

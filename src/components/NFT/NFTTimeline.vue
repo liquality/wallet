@@ -66,7 +66,7 @@
           </tr>
           <tr>
             <td class="text-muted text-left small-12" id="your_token_id">
-              {{ $t('common.tokenId') }}
+              {{ $t('common.tokenID') }}
             </td>
             <td class="text-break" v-if="item.nft.token_id">
               <span class="text-primary">
