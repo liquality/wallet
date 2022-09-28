@@ -91,6 +91,7 @@ export default {
   &.full-height {
     min-height: 100vh !important;
     margin: 0 !important;
+    width: 100vw !important;
     .modal-header {
       padding: 0 !important;
     }
