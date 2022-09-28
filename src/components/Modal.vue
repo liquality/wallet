@@ -11,11 +11,12 @@
         :class="{
           'modal-dialog': true,
           [dialog]: true,
-          [type]: true
+          [type]: true,
+          'full-height': isFullHeight
         }"
         role="document"
       >
-        <div class="modal-content">
+        <div :class="['modal-content', isFullHeight ? 'full-height' : '']">
           <div class="modal-header">
             <div class="modal-header-container" v-if="hasSlot('header')">
               <slot name="header"></slot>
@@ -59,6 +60,10 @@ export default {
     closeOutside: {
       type: Boolean,
       default: false
+    },
+    isFullHeight: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -83,6 +88,13 @@ export default {
 
 .modal-dialog-centered {
   min-height: calc(100% - 40px) !important;
+  &.full-height {
+    min-height: 100vh !important;
+    margin: 0 !important;
+    .modal-header {
+      padding: 0 !important;
+    }
+  }
 }
 
 .modal {
@@ -99,6 +111,13 @@ export default {
   overflow: auto;
   max-height: 530px;
 
+  &.full-height {
+    max-height: 100%;
+    height: 100vh;
+    width: 100%;
+    padding: 48px;
+  }
+
   .modal-body {
     padding: 5px 20px 0 20px;
   }
@@ -111,6 +130,7 @@ export default {
 }
 
 .modal-header {
+  align-items: center !important;
   border-bottom: 0 !important;
   padding: 20px 20px 0 20px !important;
   svg.modal-close {

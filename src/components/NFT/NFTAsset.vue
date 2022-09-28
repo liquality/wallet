@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import Star from '@/components/NFT/Star'
-import NFTQuantity from '@/components/NFT/NFTQuantity.vue'
+import Star from '@/components/icons/Star'
+import NFTQuantity from '@/components/icons/NFTQuantity.vue'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 export default {

@@ -211,8 +211,8 @@ import {
   getMarketplaceName,
   getAddressExplorerLink
 } from '@liquality/wallet-core/dist/src/utils/asset'
-import Star from '@/components/NFT/Star.vue'
-import NFTQuantity from '@/components/NFT/NFTQuantity.vue'
+import Star from '@/components/icons/Star.vue'
+import NFTQuantity from '@/components/icons/NFTQuantity.vue'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 
 export default {
