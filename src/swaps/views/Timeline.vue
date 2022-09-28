@@ -71,7 +71,7 @@
                       v-if="!feeSelectorLoading"
                       @click="closeFeeSelector()"
                     >
-                    {{ $t('common.cancel') }}
+                      {{ $t('common.cancel') }}
                     </button>
                     <button
                       class="btn btn-sm btn-primary btn-icon"

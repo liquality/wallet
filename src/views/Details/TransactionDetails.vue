@@ -40,7 +40,7 @@
             </p>
             <p id="transaction_detail_sent_amount_today">
               ${{
-                prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from]) 
+                prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from])
               }}
               / {{ $t('pages.details.today') }}
             </p>

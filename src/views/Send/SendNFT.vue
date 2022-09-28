@@ -57,7 +57,7 @@
           @click="next('selectedAsset')"
           :disabled="!selectedNFT"
         >
-        {{ $t('common.next') }}
+          {{ $t('common.next') }}
         </button>
       </div>
     </template>
@@ -184,7 +184,7 @@
               @click="next('review')"
               :disabled="!canSend"
             >
-            {{ $t('common.review') }}
+              {{ $t('common.review') }}
             </button>
           </div>
         </div>
