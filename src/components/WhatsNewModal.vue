@@ -3,7 +3,9 @@
     <template #header>
       <Logo />
     </template>
-    <h6 class="modal-header mt-4 text-uppercase">What's New &#124; v {{ appVersion }}</h6>
+    <h6 class="modal-header mt-4 text-uppercase">
+      {{ $t('components.whatsNew.title') }} &#124; v {{ appVersion }}
+    </h6>
 
     <template>
       <div v-for="item in whatsNewModalContent" :key="item.page">

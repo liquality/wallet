@@ -4,7 +4,7 @@
       <NavBar
         :showBack="true"
         :backPath="routeSource"
-        backLabel="Back"
+        :backLabel="$t('common.back')"
         :hasSolidButton="true"
         :fullWidth="true"
       ></NavBar>
@@ -30,7 +30,7 @@
               })
             "
             v-tooltip.bottom="{
-              content: 'Send NFT',
+              content: $t('common.sendNFT'),
               hideOnTargetClick: false
             }"
           />
@@ -39,7 +39,7 @@
             class="nft-action-buttons__icon"
             @click="transferNFT"
             v-tooltip.left="{
-              content: `Transfer on ${marketplaceName()}`,
+              content: $t('pages.details.transferOn', { marketplace: marketplaceName() }),
               hideOnTargetClick: false
             }"
           />
@@ -105,7 +105,7 @@
                   id="overview_tab"
                   @click="activeTab = 'overview'"
                 >
-                  Overview
+                  {{ $t('common.overview') }}
                 </span>
               </li>
               <li class="nav-item">
@@ -114,14 +114,14 @@
                   id="details_tab"
                   @click="activeTab = 'details'"
                 >
-                  Details
+                  {{ $t('pages.details.details') }}
                 </span>
               </li>
             </ul>
             <div class="wallet-tab-content py-1">
               <div>
                 <div class="px-4 mt-2" v-if="activeTab === 'overview'">
-                  <h5 class="text-bold">Description</h5>
+                  <h5 class="text-bold">{{ $t('pages.details.description') }}</h5>
                   <markdown-it-vue-light
                     class="md-body"
                     :content="nftAsset.description || defaultDescription"
@@ -131,7 +131,9 @@
                   <table class="table bg-white border-0 mb-1 mt-1">
                     <tbody class="font-weight-normal">
                       <tr class="border-top-0">
-                        <td class="text-muted text-left small-12">Account</td>
+                        <td class="text-muted text-left small-12">
+                          {{ $t('common.account', { count: 1 }) }}
+                        </td>
                         <td class="text-break" v-if="nftAsset.asset_contract">
                           <a
                             class="text-primary d-flex align-items-center"
@@ -145,7 +147,9 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="text-muted text-left small-12">Contract Address</td>
+                        <td class="text-muted text-left small-12">
+                          {{ $t('common.contractAddress') }}
+                        </td>
                         <td class="text-break" v-if="nftAsset.asset_contract">
                           <span class="text-primary d-flex align-items-center">
                             {{ shortenAddress(nftAsset.asset_contract.address) }}
@@ -156,7 +160,9 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="text-muted text-left small-12" id="your_to_address">Token ID</td>
+                        <td class="text-muted text-left small-12" id="your_to_address">
+                          {{ $t('common.tokenID') }}
+                        </td>
                         <td class="text-break" v-if="nftAsset.token_id">
                           <span class="text-primary">
                             {{ nftAsset.token_id }}
@@ -165,13 +171,17 @@
                         </td>
                       </tr>
                       <tr>
-                        <td class="text-muted text-left small-12">Token Standard</td>
+                        <td class="text-muted text-left small-12">
+                          {{ $t('common.tokenStandard') }}
+                        </td>
                         <td class="text-break">
                           {{ nftAsset.standard || '-' }}
                         </td>
                       </tr>
                       <tr v-if="nftAsset.amount && nftAsset.amount > 1">
-                        <td class="text-muted text-left small-12">You own</td>
+                        <td class="text-muted text-left small-12">
+                          {{ $t('pages.details.youOwn') }}
+                        </td>
                         <td class="text-break">{{ nftAsset.amount }}</td>
                       </tr>
                       <tr>

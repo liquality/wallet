@@ -3,7 +3,7 @@
     <NavBar
       showBack="true"
       :backPath="routeSource === 'NFTActivity' ? '/wallet/nfts/activity' : '/wallet/nfts'"
-      :backLabel="'Back'"
+      :backLabel="$t('common.back')"
     >
       <span class="wallet-header cursor-pointer" :title="nftCollectionName">
         <strong class="text-uppercase">

@@ -2,10 +2,12 @@
   <div class="notification-content">
     <SpinnerIcon class="mr-2" />
     <div class="notification-text">
-      <strong>Sign to {{ action }} Swap</strong>
+      <strong>
+        {{ $t('components.ledger.signTo', { action }) }}
+      </strong>
     </div>
     <router-link :to="`/details/swap/${item.id}`" class="btn btn-sm btn-outline-primary">
-      Sign Now
+      {{ $t('components.ledger.signNow') }}
     </router-link>
   </div>
 </template>

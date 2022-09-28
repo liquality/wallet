@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="text">
-      Ledger works best in browser. Once you are done return to your wallet in the extension...
+      {{ $t('components.ledger.tabBannerMessage') }}
     </div>
   </div>
 </template>

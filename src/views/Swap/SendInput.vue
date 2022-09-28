@@ -4,7 +4,7 @@
       <div class="swap-send-main-input-container">
         <div class="swap-send-main-input">
           <div class="swap-send-top">
-            <div class="swap-send-top-label">Send</div>
+            <div class="swap-send-top-label">{{ $t('common.send') }}</div>
             <div class="swap-send-top-amount">
               <button
                 class="btn btn-option label-append"
@@ -77,7 +77,7 @@
               id="min_amount_send_button"
               @click="setSendAmount(min)"
             >
-              Min
+              {{ $t('common.min') }}
             </button>
             <template slot="popover">
               <p class="my-0 text-right">{{ min }} {{ asset }}</p>
@@ -94,7 +94,7 @@
               id="max_amount_send_button"
               @click="setSendAmount(max)"
             >
-              Max
+              {{ $t('common.max') }}
             </button>
             <template slot="popover">
               <p class="my-0 text-right">{{ max }} {{ asset }}</p>
@@ -104,7 +104,7 @@
         </div>
       </div>
       <div class="swap-send-bottom-available">
-        <span class="text-muted">Available</span>
+        <span class="text-muted">{{ $t('common.available') }}</span>
         {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
       </div>
     </div>
