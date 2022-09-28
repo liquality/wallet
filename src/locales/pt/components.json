@@ -5,11 +5,11 @@
     "activityFilter": {
         "export": "Exportar",
         "filters": "Filtros",
-        "dateRange": "Date Range"
+        "dateRange": "Período de Datas"
     },
     "analyticsOptinModal": {
         "title": "Ajude-nos a melhorar Liquality",
-        "message": "Share where you click. There is no identifying data. This permission can be revoked any time.",
+        "message": "Compartilhe seus cliques. Não há dados de identificação. Esta permissão pode ser revogada a qualquer momento.",
         "analitycsAccept": "Claro, vou compartilhar meus cliques",
         "analitycsReject": "Não hoje, pergunte mais tarde"
     },
@@ -28,90 +28,90 @@
         "dappNetwork": "dApp Network",
         "instructions": "Encontre o botão \"conectar\" no site. caso não consiga, tente de novo após mudar a rede.",
         "grantedConnection": "Conexão Concedida",
-        "connectedSites": "Connected sites can see your account address.",
-        "switchAccount": "Switch account"
+        "connectedSites": "Sites conectados podem ver o endereço de sua conta.",
+        "switchAccount": "Mudar conta"
     },
     "customFees": {
-        "presets": "Presets",
-        "customizedSetting": "Customized Setting",
-        "gasPrice": "Gas Price",
-        "newSpeedFee": "New Speed/Fee",
-        "customize": "CUSTOMIZE",
-        "basic": "BASIC",
-        "editGasFee": "EDIT GAS FEE",
-        "currentBaseFeePerGas": "CURRENT BASE FEE PER GAS",
+        "presets": "Pré-configuração",
+        "customizedSetting": "Configuração Customizada",
+        "gasPrice": "Preço do Gas",
+        "newSpeedFee": "Nova Velocidade/Comissão",
+        "customize": "CUSTOMIZAR",
+        "basic": "BÁSICO",
+        "editGasFee": "EDITAR COMISSÃO DE GÁS",
+        "currentBaseFeePerGas": "ATUAL COMISSÃO BASE POR GÁS",
         "minerTip": "MINER TIP",
-        "toSpeedUp": "TO SPEED UP",
-        "maxFee": "MAX FEE",
-        "perGas": "PER GAS",
-        "newFeeTotal": "New Fee Total"
+        "toSpeedUp": "PARA ACELERAR",
+        "maxFee": "COMISSÃO MÁXIMA",
+        "perGas": "POR GÁS",
+        "newFeeTotal": "Nova Comissão Total"
     },
     "emptyActivity": {
-        "message": "Once you start using your wallet you will see the activity here."
+        "message": "Quando começar a usar sua carteira, verá atividade aqui."
     },
     "ethRequiredMessage": {
-        "message": "A balance is required to swap and you need ETH to pay for gas.",
-        "getETH": "Get ETH"
+        "message": "Saldo é requerido para realizar trocas, e você precisa de ETH para pagar o gás.",
+        "getETH": "Obter ETH"
     },
     "head": {
-        "dappConnected": "dApp Connected",
-        "connectDapp": "Connect dApp"
+        "dappConnected": "dApp Conectado",
+        "connectDapp": "Conectar dApp"
     },
     "ledger": {
-        "signTo": "Sign to %{action} Swap",
-        "signNow": "Sign Now",
-        "initiate": "Initiate",
-        "onYourLedger": "On Your Ledger",
-        "signInstructions": "Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag.",
-        "tabBannerMessage": "Ledger works best in browser. Once you are done return to your wallet in the extension..."
+        "signTo": "Assine para %{action} Troca",
+        "signNow": "Assine Agora",
+        "initiate": "Iniciar",
+        "onYourLedger": "Em Seu Ledger",
+        "signInstructions": "Siga as instruções para verificar e aceitar a quantidade, então confirme a transação. Pode haver um atraso.",
+        "tabBannerMessage": "Ledger funciona melhor no navegador. Assim que você finalizar, retorne para a sua carteira na extensão..."
     },
     "navbar": {
-        "manageAssets": "Manage Assets",
-        "manageAccounts": "Manage Accounts",
-        "exportPrivateKey": "Export Private Key",
-        "settings": "Settings",
-        "backupSeed": "Backup Seed",
-        "lock": "Lock"
+        "manageAssets": "Gerenciar Ativos",
+        "manageAccounts": "Gerenciar Contas",
+        "exportPrivateKey": "Exportar Chave Privada",
+        "settings": "Configurações",
+        "backupSeed": "Salvar Seed",
+        "lock": "Bloquear"
     },
     "noFundsForNetworkFee": {
-        "noEnoughAsset": "Not enough %{asset} to cover fees. Lower speed to account for gas or get more.",
-        "getAsset": "Get %{asset}",
-        "lowerSpeed": "Lower speed to account for gas to cover both sides of transaction, or get more."
+        "noEnoughAsset": "Não há %{asset} para pagar as comissões. Diminua a velocidade para ter saldo para o gas ou obtenha mais.",
+        "getAsset": "Obtenha %{asset}",
+        "lowerSpeed": "Diminua a velocidade para pagar o gas de ambos os lados da transação, ou obtenha mais."
     },
     "noLiquidityMessage": {
-        "noLiquidity": "Not enough liquidity for this trade. You can request %{asset} in ",
-        "tryAgainLater": " or try again later.",
-        "noTraded": "This pair isn't traded yet. Maybe there is a way to do multiple swaps to get that desired token."
+        "noLiquidity": "Não é liquidez suficiente para esta negociação. Você pode solicitar mais t %{asset} em ",
+        "tryAgainLater": " ou tentar novamente.",
+        "noTraded": "Este para não é negociado ainda. Talvez haja uma forma de fazer múltiplas trocas para obter o token desejado."
     },
     "operationErrorModal": {
-        "cantFindAccount": "Can’t find the ledger Account",
-        "instructions1": "Plug the Ledger into the computer",
-        "instructions2": "Enter pin to unlock it",
-        "instructions3": "On the Ledger, navigate to the asset you want to access",
-        "instructions4": "Once connected follow the prompts on the Ledger"
+        "cantFindAccount": "Não é possível encontrar a Conta ledger",
+        "instructions1": "Conecte o Ledger ao computador",
+        "instructions2": "Insira a senha para destravar",
+        "instructions3": "No Ledger, navegue até o ativo que deseja acessar",
+        "instructions4": "Uma vez conectado, siga as instruções no Ledger"
     },
     "warning": {
-        "message": "Experimental software, use at own risk"
+        "message": "Software experimental, use ao seu risco"
     },
     "whatsNew": {
-        "title": "What's New"
+        "title": "O que há de novo"
     },
     "buyCrypto": {
-        "buyCrypto": "Buy Crypto",
-        "gettingStarted": "Getting Started with Crypto is Easy",
-        "recommendations": "We recommend to start with sending ETH to your Liquality wallet because that fuels many transactions.",
-        "transakInstructions": "Transak lets you buy crypto with your credit card or via bank transfer depending on location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token (the first token of the account).",
-        "onramperDescription": "Onramper is an aggregated service providing the best quote from several sources and accepts popular payment methods depending on location.",
-        "trustedPartnerMessage": "You can also buy crypto at our trusted partner.",
-        "buyCryptoWithTransak": "Buy Crypto with Transak",
-        "buyCryptoWithOnramper": "Buy Crypto with Onramper",
-        "continueWithTransak": "Continue with Transak",
-        "continueWithOnramper": "Continue with Onramper",
-        "feeAndLimitMessage": "Fees and limits may vary. It usually takes just a couple of minutes and requires registration."
+        "buyCrypto": "Compre Cripto",
+        "gettingStarted": "Começar com Cripto é Fácil",
+        "recommendations": "Recomendamos começar enviando ETH para a sua carteira Liquality porque ele é utilizado para pagar várias transações.",
+        "transakInstructions": "Transak permite que você compre cripto com seu cartão de crédito ou atráves de transferência bancária, dependendo da sua localização. para cobrir as comissões (gas) ou interagir com dApps, você provavelmente precisará do gas token (o primeiro token em sua conta).",
+        "onramperDescription": "Onramper é um serviço de agregação que fornece a melhor cotação entre várias fontes e aceita métodos de pagamento populares dependendo da localização.",
+        "trustedPartnerMessage": "Você também pode comprar cripto com nosso parceiro de confiança.",
+        "buyCryptoWithTransak": "Compre Cripto com Transak",
+        "buyCryptoWithOnramper": "Compre Cripto com Onramper",
+        "continueWithTransak": "Continue com Transak",
+        "continueWithOnramper": "Continue com Onramper",
+        "feeAndLimitMessage": "Comissões e limites podem variar. Normalmente leva alguns minutos, e requer registro."
     },
     "nft": {
-        "seeAll": "See all",
-        "yourNFTFromAddress": "Your NFT from address",
-        "yourNFTToAddress": "Your NFT to address"
+        "seeAll": "Veja tudo",
+        "yourNFTFromAddress": "Seus NFT do endereço",
+        "yourNFTToAddress": "Seu NFT para o endereço"
     }
 }
