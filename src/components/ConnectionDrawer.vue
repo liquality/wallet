@@ -2,10 +2,13 @@
   <div class="connection-drawer">
     <div class="connection-drawer_settings p-3">
       <div class="connection-drawer_settings_item">
-        <div class="mb-2"><strong>dApp Network</strong></div>
+        <div class="mb-2">
+          <strong>
+            {{ $t('components.connectionDrawer.dappNetwork') }}
+          </strong>
+        </div>
         <p class="text-muted">
-          Find the connection button on the site. If you can’t connect try again after switching the
-          network.
+          {{ $t('components.connectionDrawer.instructions') }}
         </p>
         <ChainDropdown
           :chains="ethereumChains"
@@ -15,8 +18,14 @@
       </div>
     </div>
     <div class="connection-drawer_connections p-3" v-if="dappConnected">
-      <div><strong>Granted Connection</strong></div>
-      <p class="text-muted">Connected sites can see your account address.</p>
+      <div>
+        <strong>
+          {{ $t('components.connectionDrawer.grantedConnection') }}
+        </strong>
+      </div>
+      <p class="text-muted">
+        {{ $t('components.connectionDrawer.connectedSites') }}
+      </p>
       <div class="connection-drawer_connections_origin" id="granted-connection-list">
         <strong>{{ currentOrigin }}</strong>
       </div>
@@ -32,7 +41,7 @@
           {{ formatAddress(account) }}
           <TickBlue class="float-right" v-if="selectedAccount.id === account.id" />
           <button v-else class="btn btn-option float-right" @click="switchAccount(account)">
-            Switch account
+            {{ $t('components.connectionDrawer.switchAccount') }}
           </button>
         </li>
       </ul>
@@ -101,6 +110,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions('app', ['trackAnalytics']),
     ...mapActions(['setEthereumInjectionChain', 'addExternalConnection']),
     updateInjectEthereumChain(chain) {
       this.setEthereumInjectionChain({ chain })

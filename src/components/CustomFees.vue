@@ -1,7 +1,7 @@
 <template>
   <div class="swap">
     <NavBar :showBackButton="false" :showBack="false" :showMenuList="false">
-      Network Speed/Fee
+      {{ $t('common.networkSpeedFee') }}
     </NavBar>
     <div class="wrapper form">
       <div class="wrapper_top">
@@ -12,7 +12,9 @@
           </span>
         </div>
         <!-- Presets -->
-        <div class="custom-fee-title">Presets</div>
+        <div class="custom-fee-title">
+          {{ $t('components.customFees.presets') }}
+        </div>
         <div class="custom-fee-presets">
           <div
             class="custom-fee-presets-option"
@@ -35,11 +37,15 @@
           </div>
         </div>
         <!-- Customized -->
-        <div class="custom-fee-title">Customized Setting</div>
+        <div class="custom-fee-title">
+          {{ $t('components.customFees.customizedSetting') }}
+        </div>
         <div class="custom-fee-customized">
           <div class="custom-fee-details">
             <div class="custom-fee-details-item">
-              <div class="gas-price-label">Gas Price</div>
+              <div class="gas-price-label">
+                {{ $t('components.customFees.gasPrice') }}
+              </div>
               <div class="gas-price-amount" v-if="customFiatAmount">
                 &nbsp;${{ customFiatAmount }}
               </div>
@@ -66,7 +72,9 @@
 
         <!-- Result -->
         <div class="custom-fee-result" id="custom_speed_fee_results">
-          <div class="custom-fee-result-title">New Speed/Fee</div>
+          <div class="custom-fee-result-title">
+            {{ $t('components.customFees.newSpeedFee') }}
+          </div>
           <div class="custom-fee-result-amount">{{ customFeeAmount }}</div>
           <div class="custom-fee-result-fiat" v-if="customFiatAmount">
             {{ customFiatAmount }}
@@ -80,7 +88,7 @@
             id="custom_fee_cancel_button"
             @click="cancel"
           >
-            Cancel
+            {{ $t('common.cancel') }}
           </button>
           <button
             class="btn btn-primary btn-lg btn-block"
@@ -88,7 +96,7 @@
             @click="apply"
             :disabled="!fee"
           >
-            Apply
+            {{ $t('common.apply') }}
           </button>
         </div>
       </div>

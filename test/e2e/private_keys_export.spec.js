@@ -46,7 +46,7 @@ describe('Private key exports-["MAINNET","PULL_REQUEST_TEST"]', async () => {
     await page.click('#continue_button_to_see_seed_phrase')
   }
 
-  it('BTC export private key', async () => {
+  it.skip('BTC export private key', async () => {
     await overviewPage.SelectAssetFromOverview(page, 'BTC')
     await page.waitForSelector('#BTC_swap_button', { visible: true })
     // Click on Export Private Key

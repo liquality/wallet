@@ -1,15 +1,14 @@
 <template>
   <div v-if="isPairAvailable" class="notification-content">
     <div>
-      Not enough liquidity for this trade. You can request {{ asset }} in
-      <a href="https://discord.com/invite/5mgYtuArkh" target="_blank">discord </a>
-      or try again later.
+      {{ $t('components.noLiquidityMessage.noLiquidity', { asset }) }}
+      <a href="https://discord.com/invite/5mgYtuArkh" target="_blank"> discord </a>
+      {{ $t('components.noLiquidityMessage.tryAgainLater') }}
     </div>
   </div>
   <div v-else class="notification-content">
     <div>
-      This pair isn't traded yet. Maybe there is a way to do multiple swaps to get that desired
-      token.
+      {{ $t('components.noLiquidityMessage.noTraded') }}
     </div>
   </div>
 </template>

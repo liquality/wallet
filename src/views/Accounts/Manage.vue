@@ -1,8 +1,8 @@
 <template>
   <div class="manage-accounts">
-    <NavBar showMenu="false" showBack="true" backPath="/wallet" backLabel="Back">
+    <NavBar showMenu="false" showBack="true" backPath="/wallet" :backLabel="$t('common.back')">
       <span class="wallet_header">
-        <strong>Manage Accounts</strong>
+        <strong>{{ $t('pages.accounts.manageAccounts') }}</strong>
       </span>
     </NavBar>
     <div class="chain-list">

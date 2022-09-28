@@ -6,7 +6,7 @@
     <div class="wrapper text-center">
       <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
       <div class="wrapper_top">
-        <h2>Sign Transaction</h2>
+        <h2>{{ $t('pages.permission.signTransaction') }}</h2>
         <p class="text-muted">{{ $route.query.origin }}</p>
         <img :src="getAssetIcon(asset)" class="permission-screen_icon mb-2" />
         <div class="permission-screen_tx">
@@ -26,7 +26,7 @@
                   <span
                     class="badge badge-primary"
                     v-if="externalAddresses.includes(output.address)"
-                    >My Wallet</span
+                    >{{ $t('pages.permission.myWallet') }}</span
                   >
                 </div>
               </div>
@@ -39,7 +39,7 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">
-            Cancel
+            {{ $t('common.cancel') }}
           </button>
           <button
             class="btn btn-primary btn-lg btn-icon"
@@ -47,7 +47,7 @@
             :disabled="loading"
           >
             <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>Sign</template>
+            <template v-else>{{ $t('common.sign') }}</template>
           </button>
         </div>
       </div>

@@ -1,7 +1,7 @@
 <template>
   <Modal v-if="open" @close="close" body-class="">
     <template #header>
-      <h6>What's New</h6>
+      <h6>{{ $t('components.whatsNew.title') }}</h6>
     </template>
     <template>
       <div class="items">
@@ -37,8 +37,10 @@ Use a human-readable address (like liquality.wallet) to send assets using Liqual
     </template>
     <template #footer>
       <div class="footer">
-        <div class="text-muted">Version {{ appVersion }}</div>
-        <button class="btn btn-outline-clear" id="wats_new_close_btn" @click="close">Close</button>
+        <div class="text-muted">{{ $t('common.version') }} {{ appVersion }}</div>
+        <button class="btn btn-outline-clear" id="wats_new_close_btn" @click="close">
+          {{ $t('common.close') }}
+        </button>
       </div>
     </template>
   </Modal>

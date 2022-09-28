@@ -5,7 +5,7 @@ import store, { broker } from '../store'
 import Splash from '@/views/Splash.vue'
 import OnboardingSetup from '@/views/Onboarding/OnboardingSetup.vue'
 import OnboardingHome from '@/views/Onboarding/OnboardingHome.vue'
-import ImportWallet from '@/views/ImportWallet.vue'
+import ImportWallet from '@/views/Onboarding/ImportWallet.vue'
 import Open from '@/views/Open.vue'
 import Wallet from '@/views/Wallet/Wallet.vue'
 import Account from '@/views/Account.vue'
@@ -297,7 +297,7 @@ const routes = [
     meta: { protect: true },
     component: Warning,
     props: ({ params: { accountId } }) => ({
-      title: 'Show Private Key?',
+      titleKey: 'privateKey',
       nextPath: `/export/${accountId}/login`
     })
   },
@@ -306,7 +306,7 @@ const routes = [
     component: LoginPhrase,
     meta: { protect: true },
     props: ({ params: { accountId } }) => ({
-      title: 'Sign-in to Export Private Key',
+      titleKey: 'export',
       nextPath: `/export/${accountId}/reveal`
     })
   },

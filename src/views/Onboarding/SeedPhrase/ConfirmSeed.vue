@@ -4,10 +4,9 @@
       <img :src="logo" />
     </div>
     <div class="confirm-seed_top">
-      <h2>Confirm Seed Phrase</h2>
+      <h2>{{ $t('pages.onboarding.setup.confirmSeedTitle') }}</h2>
       <p class="px-3">
-        Tap the 3 words matching their position in the seed phrase. Once confirmed, store the phrase
-        securely.
+        {{ $t('pages.onboarding.setup.confirmSeedInstructions') }}
       </p>
     </div>
     <div class="confirm-seed_bottom">
@@ -16,7 +15,10 @@
           <form class="form">
             <div class="confirm-seed_inputs d-flex flex-row justify-content-around">
               <div>
-                <label>1<sup>st</sup> Word</label>
+                <label
+                  >1<sup>{{ $t('pages.onboarding.setup.ordinals.first') }}</sup>
+                  {{ $t('pages.onboarding.setup.word') }}
+                </label>
                 <input
                   type="text"
                   class="form-control text-center w-75 mx-auto form-control-sm"
@@ -28,7 +30,10 @@
                 />
               </div>
               <div>
-                <label>5<sup>th</sup> Word</label>
+                <label
+                  >5<sup>{{ $t('pages.onboarding.setup.ordinals.fifth') }}</sup>
+                  {{ $t('pages.onboarding.setup.word') }}
+                </label>
                 <input
                   type="text"
                   class="form-control text-center w-75 mx-auto form-control-sm"
@@ -40,7 +45,10 @@
                 />
               </div>
               <div>
-                <label>12<sup>th</sup> Word</label>
+                <label
+                  >12<sup>{{ $t('pages.onboarding.setup.ordinals.twelfth') }}</sup>
+                  {{ $t('pages.onboarding.setup.word') }}
+                </label>
                 <input
                   type="text"
                   class="form-control text-center w-75 mx-auto form-control-sm"
@@ -74,14 +82,16 @@
     </div>
     <div class="footer-container bg-white px-2 pt-2">
       <div class="button-group px-2">
-        <button class="btn btn-outline-primary btn-lg" @click="cancel">Back</button>
+        <button class="btn btn-outline-primary btn-lg" @click="cancel">
+          {{ $t('common.back') }}
+        </button>
         <button
           class="btn btn-primary btn-lg"
           id="seed_phrase_continue"
           :disabled="!isConfirmedMatch"
           @click="onConfirm"
         >
-          Continue
+          {{ $t('common.continue') }}
         </button>
       </div>
     </div>
@@ -145,29 +155,36 @@ export default {
 .confirm-seed {
   padding: 0 !important;
   overflow: hidden;
+
   &_logo-wrap {
     height: 100px;
     width: 100px;
   }
+
   &_bottom {
     background: $color-text-secondary;
     overflow-y: auto;
   }
+
   &_bottom-top {
     overflow-x: hidden;
   }
+
   &_inputs {
     div {
       label {
         color: $color-text-primary;
       }
+
       input {
         color: $color-text-primary !important;
       }
     }
   }
+
   &_selections {
     font-size: 12px;
+
     button {
       color: $color-primary;
       width: 75px;
@@ -175,9 +192,11 @@ export default {
       border: 1px solid $hr-border-color;
       border-radius: 26px;
       font-weight: 600;
+
       &:disabled {
         color: $hr-border-color;
       }
+
       &:focus {
         box-shadow: none;
       }

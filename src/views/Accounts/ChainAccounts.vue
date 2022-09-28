@@ -7,7 +7,7 @@
           {{ chain.name }}
         </div>
         <div class="chain-item-accounts-len" :id="'chain-item-accounts-len-' + chain.id">
-          ({{ `${accountList.length} Account${accountList.length > 1 ? 's' : ''}` }})
+          ({{ $t('pages.accounts.accounts', { count: accountList.length }) }})
         </div>
       </div>
       <router-link
@@ -15,7 +15,7 @@
         :to="{ name: 'CreateAccount', params: { chainId: chain.id } }"
         class="create-link"
         :id="'create-account-plus-icon-' + chain.id"
-        v-tooltip="'Create Account'"
+        v-tooltip="$t('pages.accounts.createAccount')"
       >
         <PlusIcon />
       </router-link>

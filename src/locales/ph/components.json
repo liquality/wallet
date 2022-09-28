@@ -1,0 +1,117 @@
+{
+    "accountTooltip": {
+        "availableGas": "Available Gas"
+    },
+    "activityFilter": {
+        "export": "I-Export",
+        "filters": "Filters",
+        "dateRange": "Date Range"
+    },
+    "analyticsOptinModal": {
+        "title": "Tulungan kaming pagbutihin ang Liquality para mas mapagsilbihan ka",
+        "message": "Ibahagi kung saan ka nag-click. Walang nagpapakilalang data. Maaaring bawiin ang pahintulot na ito anumang oras.",
+        "analitycsAccept": "Oo, ibabahagi ko ang aking mga pag-click",
+        "analitycsReject": "Hindi muna ngayon"
+    },
+    "boostActivateBridgeAsset": {
+        "enabledAssetMessage": "Upang i-trade ang pares na ito {{token}} ay kailangang itong i-enable",
+        "okDoit": "OK, gawin ito"
+    },
+    "bridgeAssetRequiredMessage": {
+        "needMore": "Kailangan mo magdagdag ng %{asset} para sa gas fee.",
+        "get": "Kunin"
+    },
+    "cannotCoverMinimumMessage": {
+        "needMore": "Kinakailangan ng higit pang {{token}} upang masakop ang min trade plus fee."
+    },
+    "connectionDrawer": {
+        "dappNetwork": "dApp Network",
+        "instructions": "Hanapin at pindutin ang connect button sa site at siguradohing nasa tamang network ang naka set at subukang muli.",
+        "grantedConnection": "Granted Connection",
+        "connectedSites": "Makikita ng mga konektadong site ang address ng iyong account.",
+        "switchAccount": "Lumipat ng account"
+    },
+    "customFees": {
+        "presets": "Presets",
+        "customizedSetting": "Customized Setting",
+        "gasPrice": "Gas Price",
+        "newSpeedFee": "Bagong Bilis/Fee",
+        "customize": "CUSTOMIZE",
+        "basic": "BASIC",
+        "editGasFee": "I-edit ang GAS FEE",
+        "currentBaseFeePerGas": "KASALUKUYANG BASE FEE BAWAT GAS",
+        "minerTip": "MINER TIP",
+        "toSpeedUp": "BILISAN",
+        "maxFee": "MAX FEE",
+        "perGas": "PER GAS",
+        "newFeeTotal": "Bagong Fee Total"
+    },
+    "emptyActivity": {
+        "message": "Dito makikita ang mga activity ng iyong wallet kapag sinimulan mo na itong gamitin."
+    },
+    "ethRequiredMessage": {
+        "message": "Kinakailangan ang balanse para makapagpalit at kailangan mo ng ETH para sa gas fee.",
+        "getETH": "Kumuha ng ETH"
+    },
+    "head": {
+        "dappConnected": "dApp Connected",
+        "connectDapp": "Connect dApp"
+    },
+    "ledger": {
+        "signTo": "Mag-sign sa %{action} Swap",
+        "signNow": "Mag-sign",
+        "initiate": "Sinimulan",
+        "onYourLedger": "Sa Iyong Ledger",
+        "signInstructions": "Sundin ang mga prompt para i-verify ang halaga, bago tanggapin at kumpirmahin ang transaksyon. Maaaring may lag.",
+        "tabBannerMessage": "Pinakamahusay na gumagana ang Ledger sa browser. Kapag tapos ka na bumalik sa iyong wallet sa extension..."
+    },
+    "navbar": {
+        "manageAssets": "Manage Assets",
+        "manageAccounts": "Manage Accounts",
+        "exportPrivateKey": "I-export ang Private Key",
+        "settings": "Mga setting",
+        "backupSeed": "I-back up ang Seed",
+        "lock": "Lock"
+    },
+    "noFundsForNetworkFee": {
+        "noEnoughAsset": "Ang {{token}} ay hindi sapat para mabayaran ang fees. Ibaba ang bilis o mag dagdag ng kaukulang token para sa gas fee.",
+        "getAsset": "Kumuha %{asset}\n",
+        "lowerSpeed": "Magdagdag para mabayaran ang gas fee o kaya Ibaba ang bilis ng transaksyon."
+    },
+    "noLiquidityMessage": {
+        "noLiquidity": "Hindi sapat ang liquidity para sa trade na ito. Maaari kang humiling ng %{asset} sa ",
+        "tryAgainLater": " o subukang muli mamaya.",
+        "noTraded": "Ang pares na ito ay hindi pa maaring ipagpalit. Suriin ang ibang paraan para gumawa ng higit sa isang swap para makuha ang ninanais na token."
+    },
+    "operationErrorModal": {
+        "cantFindAccount": "Hindi mahanap ang ledger Account",
+        "instructions1": "Isaksak ang Ledger sa computer",
+        "instructions2": "Ilagay ang pin para i-unlock ito",
+        "instructions3": "Sa device, mag-navigate sa asset na gusto mong i-access",
+        "instructions4": "Sundin lang ang prompt ng Ledger kapag konektado kana"
+    },
+    "warning": {
+        "message": "Experimental software, gamitin at your own risk"
+    },
+    "whatsNew": {
+        "title": "Anong Bago"
+    },
+    "buyCrypto": {
+        "buyCrypto": "Bumili ng Crypto",
+        "gettingStarted": "Madali ang Pagsisimula sa Crypto",
+        "recommendations": "Inirerekomenda namin na magsimula sa pagpapadala ng ETH sa iyong Liquality wallet dahil ito ang karaniwang ginagamit sa maraming transaksyon.",
+        "transakInstructions": "Hinahayaan ka ng Transak na bumili ng crypto gamit ang iyong credit card o sa pamamagitan ng bank transfer depende sa lokasyon. Para mabayaran ang mga fee (gas) o makipag-ugnayan sa dApps, karamihan ay kakailanganin mo ang token ng gas (ang unang token ng account).",
+        "onramperDescription": "Ang Onramper ay isang pinagsama-samang serbisyong nagbibigay ng pinakamahusay na quote mula sa ilang source at tumatanggap ng mga karaniwang paraan ng pagbabayad depende sa lokasyon.",
+        "trustedPartnerMessage": "Maaari ka ring bumili ng crypto sa aming pinagkakatiwalaang partner.",
+        "buyCryptoWithTransak": "Bumili ng Crypto gamit ang Transak",
+        "buyCryptoWithOnramper": "Bumili ng Crypto gamit ang Onramper",
+        "continueWithTransak": "Magpatuloy sa Transak",
+        "continueWithOnramper": "Magpatuloy sa Onramper",
+        "feeAndLimitMessage": "Maaaring mag-iba ang mga fees at limitasyon. Karaniwang tumatagal lamang ng ilang minuto at nangangailangan ng pagpaparehistro."
+    },
+    "nft": {
+        "seeAll": "Ipakita lahat",
+        "yourNFTFromAddress": "Ang iyong NFT mula sa address",
+        "yourNFTToAddress": "Ang iyong NFT to address"
+    }
+}
