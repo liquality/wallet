@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">- Localization features</pre>
+            <pre class="text-wrap">Localization for Chinese, Spanish, Portuguese, Filipino and Cebuano</pre>
           </div>
         </div>
       </div>
@@ -25,7 +25,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">- Localization features</pre>
+            <pre class="text-wrap">Change the language by going to settings?</pre>
           </div>
         </div>
       </div>
