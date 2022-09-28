@@ -10,10 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">- Injection Architecture change</pre>
-            <pre class="text-wrap">- New crypto-assets package update (architecture change)</pre>
-            <pre class="text-wrap">- Unstoppable domain bug fix</pre>
-            <pre class="text-wrap">- NFT notifications</pre>
+            <pre class="text-wrap">- Localization features</pre>
           </div>
         </div>
       </div>
@@ -28,9 +25,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-Use a human-readable address (like liquality.wallet) to send assets using Liquality?</pre
-            >
+            <pre class="text-wrap">- Localization features</pre>
           </div>
         </div>
       </div>
