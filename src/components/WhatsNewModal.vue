@@ -9,11 +9,9 @@
       <div v-for="item in whatsNewModalContent" :key="item.page">
         <div v-if="item.page == currentView">
           <h2 class="page-title">{{ item.title }}</h2>
-          <p v-if="item.description" class="mt-3">{{ item.description }}</p>
+          <p v-if="item.description" class="mt-3" v-html="item.description"></p>
           <ul v-if="item.content">
-            <li v-for="(listItem, index) in item.content" :key="index">
-              {{ listItem }}
-            </li>
+            <li v-for="(listItem, index) in item.content" v-html="listItem" :key="index"></li>
           </ul>
         </div>
       </div>
