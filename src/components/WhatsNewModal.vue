@@ -10,7 +10,9 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Localization for Chinese, Spanish, Portuguese, Filipino and Cebuano</pre>
+            <pre class="text-wrap">
+Localization for Chinese, Spanish, Portuguese, Filipino and Cebuano</pre
+            >
           </div>
         </div>
       </div>
