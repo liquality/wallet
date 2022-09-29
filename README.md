@@ -16,6 +16,25 @@ npm run dev
 
 and load `/dist` directory as unpacked extension on Google Chrome.
 
+### Developing with wallet-core
+
+If you are simultaneously making changes in the [wallet-core](https://github.com/liquality/wallet-core) lib and you would like to test the wallet with your changes, do the following: 
+
+on wallet-core:
+```
+yarn
+yarn build // or yarn watch
+```
+
+on the wallet:
+```
+yarn link /path/to/wallet-core/repo
+```
+
+This will link wallet-core in the wallet with your local version. 
+
+If you see dependency errors when you link, try to update any common dependencies to the same version as in `wallet-core`.
+
 ### Compiles and minifies for production
 ```
 npm run build
