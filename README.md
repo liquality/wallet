@@ -21,13 +21,13 @@ and load `/dist` directory as unpacked extension on Google Chrome.
 If you are simultaneously making changes in the [wallet-core](https://github.com/liquality/wallet-core) lib and you would like to test the wallet with your changes, do the following: 
 
 on wallet-core:
-```
+```sh
 yarn
-yarn build // or yarn watch
+yarn build # or yarn watch
 ```
 
 on the wallet:
-```
+```sh
 yarn link /path/to/wallet-core/repo
 ```
 
