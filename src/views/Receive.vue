@@ -86,7 +86,7 @@ import BuyCryptoButton from '@/components/BuyCrypto/BuyCryptoButton'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
-import { ChainId, getChain, getAsset } from '@liquality/cryptoassets'
+import { ChainId, getChain, getAsset, isEvmChain } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../package.json'
 
@@ -122,18 +122,18 @@ export default {
       return cryptoassets[this.asset]?.chain
     },
     chainName() {
-      return {
-        bitcoin: 'bitcoin',
-        ethereum: 'ethereum',
-        near: 'near',
-        solana: 'solana',
-        rsk: 'ethereum',
-        bsc: 'ethereum',
-        avalanche: 'ethereum',
-        polyon: 'ethereum',
-        terra: 'terra',
-        fuse: 'ethereum'
-      }[this.chain]
+      const isEvm = isEvmChain(this.activeNetwork, this.chain)
+
+      if (isEvm) {
+        return 'ethereum'
+      } else {
+        return {
+          bitcoin: 'bitcoin',
+          near: 'near',
+          solana: 'solana',
+          terra: 'terra'
+        }[this.chain]
+      }
     },
     faucet() {
       const asset = getAsset(this.activeNetwork, this.asset)
