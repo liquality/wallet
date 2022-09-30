@@ -4,7 +4,7 @@
       <div class="swap-receive-main-input-container">
         <div class="swap-receive-main-input">
           <div class="swap-receive-top">
-            <div class="swap-receive-top-label">Receive</div>
+            <div class="swap-receive-top-label">{{ $t('common.receive') }}</div>
             <div class="swap-receive-top-amount">
               <button
                 class="btn btn-option label-append"

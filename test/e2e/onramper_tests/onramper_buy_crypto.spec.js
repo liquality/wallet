@@ -16,8 +16,8 @@ const seedWordsPage = new SeedWordsPage()
 let browser
 let page = []
 
-describe('Buy Crypto ["MAINNET"]', async () => {
-    describe('Create new wallet & Buy Crypto options validation ["PULL_REQUEST_TEST"]', async () => {
+describe('Buy Crypto onRamper ["MAINNET"]', async () => {
+    describe('Create new wallet & Buy Crypto options validation', async () => {
       beforeEach(async () => {
         browser = await puppeteer.launch(testUtil.getChromeOptions())
         page = await browser.newPage()
@@ -40,7 +40,6 @@ describe('Buy Crypto ["MAINNET"]', async () => {
         // Set password & click next
         await passwordPage.SubmitPasswordDetails(page)
         // overview page
-        await overviewPage.HasOverviewPageLoaded(page)
         await overviewPage.CloseWhatsNewModal(page)
       })
       afterEach(async () => {
@@ -98,4 +97,3 @@ describe('Buy Crypto ["MAINNET"]', async () => {
       })
     })
   })
-  

@@ -3,12 +3,13 @@
     <!-- <div class="analytics-optin"> -->
     <template #header>
       <!-- <h6>Help us to improve Liquality for you</h6> -->
-      <div class="analytics-optin-title">Help us improve Liquality to better serve you</div>
+      <div class="analytics-optin-title">
+        {{ $t('components.analyticsOptinModal.title') }}
+      </div>
     </template>
     <template>
       <div class="analytics-optin-message">
-        Share where you click. There is no identifying data. This permission can be revoked any
-        time.
+        {{ $t('components.analyticsOptinModal.message') }}
       </div>
     </template>
     <template #footer>
@@ -25,7 +26,7 @@
             :disabled="loading"
           />
           <label class="custom-control-label" for="optin_anaylitics_accept">
-            Sure, I will share my clicks
+            {{ $t('components.analyticsOptinModal.analitycsAccept') }}
           </label>
         </div>
         <div class="custom-control custom-radio">
@@ -40,7 +41,7 @@
             :disabled="loading"
           />
           <label class="custom-control-label" for="optin_anaylitics_reject">
-            Not today, ask me again
+            {{ $t('components.analyticsOptinModal.analitycsReject') }}
           </label>
         </div>
       </div>
@@ -50,7 +51,7 @@
         @click="close('nextStep')"
         :disabled="loading || accepted === null"
       >
-        Ok
+        {{ $t('common.ok') }}
       </button>
     </template>
   </Modal>

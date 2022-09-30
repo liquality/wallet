@@ -12,7 +12,7 @@
           </p>
         </div>
         <div class="form-group">
-          <label v-if="feeInUsdValue">Transaction fee {{ feeInUsdValue }} USD</label>
+          <label v-if="feeInUsdValue">{{ $t('common.transactionFee') }} {{ feeInUsdValue }} USD</label>
         </div>
       </div>
 
@@ -46,7 +46,7 @@
 
       <div class="form-group mt-4">
         <label
-          >Network Speed / Fee
+          >{{ $t('common.networkSpeedFee') }}
           <span class="text-muted fee-info"
             >({{ selectedFee }} / {{ feeInUnits }} {{ assetChain }})</span
           ></label
@@ -94,7 +94,7 @@
     <div v-if="currentStep === 'inputs'" class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">
-          Cancel
+          {{ $t('common.cancel') }}
         </button>
         <button
           class="btn btn-primary btn-lg btn-icon"
@@ -102,7 +102,7 @@
           :disabled="loading"
         >
           <SpinnerIcon class="btn-loading" v-if="loading" />
-          <template v-else>Confirm</template>
+          <template v-else>{{ $t('common.confirm') }}</template>
         </button>
       </div>
     </div>
@@ -199,7 +199,7 @@ export default {
       this.showData = !this.showData
     },
     async getSymbol() {
-      const chain = cryptoassets[this.asset].chain
+      const chain = cryptoassets[this.asset]?.chain
       const tokenAddress = this.request.args[0].to
 
       try {

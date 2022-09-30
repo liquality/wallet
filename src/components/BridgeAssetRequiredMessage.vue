@@ -1,8 +1,10 @@
 <template>
   <div class="notification-content">
-    <div class="notification-text">You need more {{ asset }} to pay for gas.</div>
+    <div class="notification-text">
+      {{ $t('components.bridgeAssetRequiredMessage.needMore', { asset }) }}
+    </div>
     <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
-      Get {{ asset }}
+      {{ $t('common.get') }} {{ asset }}
     </router-link>
   </div>
 </template>

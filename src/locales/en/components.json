@@ -1,0 +1,117 @@
+{
+    "accountTooltip": {
+        "availableGas": "Available Gas"
+    },
+    "activityFilter": {
+        "export": "Export",
+        "filters": "Filters",
+        "dateRange": "Date Range"
+    },
+    "analyticsOptinModal": {
+        "title": "Help us improve Liquality to better serve you",
+        "message": "Share where you click. There is no identifying data. This permission can be revoked any time.",
+        "analitycsAccept": "Sure, I will share my clicks",
+        "analitycsReject": "Not today, ask me again"
+    },
+    "boostActivateBridgeAsset": {
+        "enabledAssetMessage": "To trade this pair %{asset} has to be enabled",
+        "okDoit": "OK, do it"
+    },
+    "bridgeAssetRequiredMessage": {
+        "needMore": "You need more %{asset} to pay for gas.",
+        "get": "Get"
+    },
+    "cannotCoverMinimumMessage": {
+        "needMore": "More %{asset} required to cover min trade plus fees."
+    },
+    "connectionDrawer": {
+        "dappNetwork": "dApp Network",
+        "instructions": "Find the connection button on the site. If you can’t connect try again after switching the network.",
+        "grantedConnection": "Granted Connection",
+        "connectedSites": "Connected sites can see your account address.",
+        "switchAccount": "Switch account"
+    },
+    "customFees": {
+        "presets": "Presets",
+        "customizedSetting": "Customized Setting",
+        "gasPrice": "Gas Price",
+        "newSpeedFee": "New Speed/Fee",
+        "customize": "CUSTOMIZE",
+        "basic": "BASIC",
+        "editGasFee": "EDIT GAS FEE",
+        "currentBaseFeePerGas": "CURRENT BASE FEE PER GAS",
+        "minerTip": "MINER TIP",
+        "toSpeedUp": "TO SPEED UP",
+        "maxFee": "MAX FEE",
+        "perGas": "PER GAS",
+        "newFeeTotal": "New Fee Total"
+    },
+    "emptyActivity": {
+        "message": "Once you start using your wallet you will see the activity here."
+    },
+    "ethRequiredMessage": {
+        "message": "A balance is required to swap and you need ETH to pay for gas.",
+        "getETH": "Get ETH"
+    },
+    "head": {
+        "dappConnected": "dApp Connected",
+        "connectDapp": "Connect dApp"
+    },
+    "ledger": {
+        "signTo": "Sign to %{action} Swap",
+        "signNow": "Sign Now",
+        "initiate": "Initiate",
+        "onYourLedger": "On Your Ledger",
+        "signInstructions": "Follow prompts to verify and accept the amount, then confirm the transaction. There may be a lag.",
+        "tabBannerMessage": "Ledger works best in browser. Once you are done return to your wallet in the extension..."
+    },
+    "navbar": {
+        "manageAssets": "Manage Assets",
+        "manageAccounts": "Manage Accounts",
+        "exportPrivateKey": "Export Private Key",
+        "settings": "Settings",
+        "backupSeed": "Backup Seed",
+        "lock": "Lock"
+    },
+    "noFundsForNetworkFee": {
+        "noEnoughAsset": "Not enough %{asset} to cover fees. Lower speed to account for gas or get more.",
+        "getAsset": "Get %{asset}",
+        "lowerSpeed": "Lower speed to account for gas to cover both sides of transaction, or get more."
+    },
+    "noLiquidityMessage": {
+        "noLiquidity": "Not enough liquidity for this trade. You can request %{asset} in ",
+        "tryAgainLater": " or try again later.",
+        "noTraded": "This pair isn't traded yet. Maybe there is a way to do multiple swaps to get that desired token."
+    },
+    "operationErrorModal": {
+        "cantFindAccount": "Can’t find the ledger Account",
+        "instructions1": "Plug the Ledger into the computer",
+        "instructions2": "Enter pin to unlock it",
+        "instructions3": "On the Ledger, navigate to the asset you want to access",
+        "instructions4": "Once connected follow the prompts on the Ledger"
+    },
+    "warning": {
+        "message": "Experimental software, use at own risk"
+    },
+    "whatsNew": {
+        "title": "What's New"
+    },
+    "buyCrypto": {
+        "buyCrypto": "Buy Crypto",
+        "gettingStarted": "Getting Started with Crypto is Easy",
+        "recommendations": "We recommend to start with sending ETH to your Liquality wallet because that fuels many transactions.",
+        "transakInstructions": "Transak lets you buy crypto with your credit card or via bank transfer depending on location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token (the first token of the account).",
+        "onramperDescription": "Onramper is an aggregated service providing the best quote from several sources and accepts popular payment methods depending on location.",
+        "trustedPartnerMessage": "You can also buy crypto at our trusted partner.",
+        "buyCryptoWithTransak": "Buy Crypto with Transak",
+        "buyCryptoWithOnramper": "Buy Crypto with Onramper",
+        "continueWithTransak": "Continue with Transak",
+        "continueWithOnramper": "Continue with Onramper",
+        "feeAndLimitMessage": "Fees and limits may vary. It usually takes just a couple of minutes and requires registration."
+    },
+    "nft": {
+        "seeAll": "See all",
+        "yourNFTFromAddress": "Your NFT from address",
+        "yourNFTToAddress": "Your NFT to address"
+    }
+}
