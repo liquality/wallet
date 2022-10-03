@@ -1,8 +1,10 @@
 <template>
   <div class="notification-content">
-    <div class="notification-text">To trade this pair {{ asset }} has to be enabled</div>
+    <div class="notification-text">
+      {{ $t('components.boostActivateBridgeAsset.enabledAssetMessage', { asset }) }}
+    </div>
     <button type="button" class="btn btn-option get-bridgeAsset-btn" @click="toggleAsset()">
-      OK, do it
+      {{ $t('components.boostActivateBridgeAsset.okDoit') }}
     </button>
   </div>
 </template>

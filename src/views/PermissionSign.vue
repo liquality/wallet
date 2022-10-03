@@ -6,11 +6,11 @@
     <div class="permission-sign wrapper text-center">
       <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
       <div class="wrapper_top form">
-        <h2>Request to Sign</h2>
+        <h2>{{ $t('pages.permission.requestToSign') }}</h2>
         <img :src="getAssetIcon(asset)" class="permission-sign_icon mt-4 mb-2" />
         <p class="permission-sign_address">{{ shortenAddress(address) }}</p>
         <div class="permission-sign_message mt-4">
-          <p class="text-left mb-1 font-weight-bold">Message:</p>
+          <p class="text-left mb-1 font-weight-bold">{{ $t('common.message') }}:</p>
           <div class="legacy-message" v-if="typeof messageToDisplay === 'string'">
             <pre>{{ messageToDisplay }}</pre>
           </div>
@@ -27,7 +27,7 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">
-            Cancel
+            {{ $t('common.cancel') }}
           </button>
           <button
             class="btn btn-primary btn-lg btn-icon"
@@ -35,7 +35,7 @@
             :disabled="loading"
           >
             <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>Sign</template>
+            <template v-else>{{ $t('common.sign') }}</template>
           </button>
         </div>
       </div>

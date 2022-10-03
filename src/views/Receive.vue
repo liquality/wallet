@@ -1,11 +1,11 @@
 <template>
   <div class="receive">
     <NavBar
-      showBack="true"
+      :showBack="true"
       :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
-      :backLabel="routeSource === 'assets' ? 'Overview' : asset"
+      :backLabel="routeSource === 'assets' ? $t('common.overview') : asset"
     >
-      Receive {{ asset }}
+      {{ $t('common.receive') }} {{ asset }}
     </NavBar>
     <div class="wrapper form text-center">
       <div class="wrapper_top form">
@@ -13,24 +13,26 @@
           <div class="receive_asset">
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </div>
-          <label id="your_current_asset_address">Your Current {{ asset }} Address</label>
+          <label id="your_current_asset_address">
+            {{ $t('pages.receive.yourCurrentAddress', { asset }) }}
+          </label>
           <p class="receive_address text-break" id="receive_address">
             {{ address }}
             <CopyIcon
               class="copy-icon"
               @click="copy"
               v-tooltip.bottom="{
-                content: copied ? 'Copied!' : 'Click to copy',
+                content: copied ? $t('common.copied') : $t('common.clickToCopy'),
                 hideOnTargetClick: false
               }"
             />
           </p>
           <p class="receive_message">
-            Scan this QR code with a mobile wallet to send funds to this address.
+            {{ $t('pages.receive.receiveMessage') }}
           </p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
           <div class="buy-crypto-container" v-show="activeNetwork === 'mainnet'">
-            <div class="mt-2 text-uppercase font-weight-bold">Or</div>
+            <div class="mt-2 text-uppercase font-weight-bold">{{ $t('common.or') }}</div>
             <BuyCryptoButton
               :btn-class="['btn-light', 'btn-outline-primary']"
               :asset="asset"
@@ -55,16 +57,18 @@
           <router-link
             :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
           >
-            <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">Done</button>
+            <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">
+              {{ $t('common.done') }}
+            </button>
           </router-link>
           <button class="btn btn-primary btn-lg btn-icon" id="copy_address_button" @click="copy">
             <template v-if="copied">
               <TickIcon />
-              Copied!
+              {{ $t('common.copied') }}
             </template>
             <template v-else>
               <CopyWhiteIcon class="no-stroke" />
-              Copy Address
+              {{ $t('common.copyAddress') }}
             </template>
           </button>
         </div>
@@ -222,7 +226,8 @@ export default {
     )
   },
   methods: {
-    ...mapActions(['getUnusedAddresses', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['getUnusedAddresses']),
     getAssetIcon,
     async copy() {
       this.trackAnalytics({

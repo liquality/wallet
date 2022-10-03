@@ -1,7 +1,9 @@
 <template>
   <div class="manage-assets">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="wallet_header"><strong>Asset View</strong></span>
+    <NavBar :showMenu="true" :showBack="true" backPath="/wallet" backLabel="Overview">
+      <span class="wallet_header">
+        <strong>{{ $t('pages.manageAssets.assetView') }}</strong>
+      </span>
     </NavBar>
     <div class="manage-assets_search form wrapper">
       <div class="input-group">
@@ -11,20 +13,22 @@
           autocomplete="off"
           class="form-control form-control-sm"
           v-model="search"
-          placeholder="Search for an Asset"
+          :placeholder="$t('pages.manageAssets.searchForAsset')"
         />
       </div>
-      <router-link to="/settings/manage-assets/custom-token" id="add_custom_token"
-        >Add Custom Token</router-link
-      >
+      <router-link to="/settings/manage-assets/custom-token" id="add_custom_token">
+        {{ $t('pages.manageAssets.addCustomToken') }}
+      </router-link>
       <div v-if="sortedFilteredAssets.length === 0" class="mt-3 d-flex">
         <div>
-          <h4>Can't find this token</h4>
-          <p class="manage-assets_customText">Add Custom ERC20 tokens.</p>
+          <h4>{{ $t('pages.manageAssets.cantFindThisToken') }}</h4>
+          <p class="manage-assets_customText">
+            {{ $t('pages.manageAssets.addCustomERC20Tokens') }}.
+          </p>
           <a
             target="_blank"
             href="https://liquality.io/blog/how-to-use-the-liquality-wallet-101/#q-how-can-i-add-custom-tokens-to-my-liquality-wallet"
-            >Learn how</a
+            >{{ $t('pages.manageAssets.learnHow') }}</a
           >
         </div>
       </div>
@@ -71,7 +75,7 @@
           :id="asset + '_remove_custom_token'"
           @click="removeToken(asset)"
         >
-          Remove
+          {{ $t('common.remove') }}
         </button>
       </div>
     </div>
@@ -85,7 +89,7 @@
       "
     >
       <button class="btn btn-light btn-outline-primary btn-lg btn-block" @click="clearSearch">
-        Done
+        {{ $t('common.done') }}
       </button>
     </div>
   </div>

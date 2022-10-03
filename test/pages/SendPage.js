@@ -19,6 +19,7 @@ class SendPage {
     const addressInputField = await page.$('#send_amount_input_field')
     await addressInputField.click({ clickCount: 3 })
     await addressInputField.type(coinsToSend)
+    console.log('User entered SEND amount as ' + coinsToSend)
   }
 
   /**
@@ -33,6 +34,7 @@ class SendPage {
     const elementHandle = await page.$('#address')
     await elementHandle.type(sendToAddress, { delay: 200 })
     await page.waitForTimeout(1000)
+    console.log('User entered SEND to address as ' + sendToAddress)
   }
 
   /**

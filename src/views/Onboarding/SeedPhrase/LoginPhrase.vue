@@ -7,7 +7,7 @@
       <h2 class="mt-4 px-4">{{ title }}</h2>
       <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
         <div class="form-group mt-2">
-          <label for="password">Password</label>
+          <label for="password">{{ $t('common.password') }}</label>
           <div class="input-group">
             <input
               type="password"
@@ -36,21 +36,23 @@
             id="checkbox"
           />
           <label class="form-check-label mt-1" for="checkbox">
-            I understand the risk and have privacy
+            {{ $t('pages.onboarding.seedlogin.understandTheRisk') }}
           </label>
         </div>
       </div>
       <div class="button-group">
-        <router-link to="/wallet"
-          ><button class="btn btn-outline-primary btn-lg">Cancel</button></router-link
-        >
+        <router-link to="/wallet">
+          <button class="btn btn-outline-primary btn-lg">
+            {{ $t('common.cancel') }}
+          </button>
+        </router-link>
         <button
           class="btn btn-primary btn-lg"
           id="continue_button_to_see_seed_phrase"
           @click="unlock"
           :disabled="!checkbox || !password"
         >
-          Continue
+          {{ $t('common.continue') }}
         </button>
       </div>
     </div>
@@ -63,9 +65,9 @@ import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import { version as walletVersion } from '../../../../package.json'
 export default {
   props: {
-    title: {
+    titleKey: {
       type: String,
-      default: 'Sign-in to See Seed Phrase'
+      default: 'seed'
     },
     nextPath: {
       type: String,
@@ -77,7 +79,8 @@ export default {
       loading: false,
       error: null,
       password: null,
-      checkbox: false
+      checkbox: false,
+      title: ''
     }
   },
   computed: {
@@ -85,8 +88,12 @@ export default {
       return LogoWallet
     }
   },
+  created() {
+    this.title = this.$t(`pages.onboarding.seedlogin.title.${this.titleKey}`)
+  },
   methods: {
-    ...mapActions(['unlockWallet', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['unlockWallet']),
     async unlock() {
       this.error = null
       this.loading = true
@@ -95,11 +102,11 @@ export default {
           await this.unlockWallet({ key: this.password })
           this.$router.push(this.nextPath)
         } else {
-          this.error = 'Please Accept Terms'
+          this.error = this.$t('pages.onboarding.seedlogin.pleaseAcceptTerms')
         }
       } catch (e) {
         console.log(e)
-        this.error = e.message
+        this.error = this.$t('pages.onboarding.seedlogin.unlockError')
         this.trackAnalytics({
           event: 'User Backup Seed failed',
           properties: {

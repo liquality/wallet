@@ -13,7 +13,7 @@
             {{ address ? shortenAddress(address) : '' }}
           </p>
           <p class="text-muted my-0 text-left" v-if="isChainEvmCompatible(asset)">
-            Available Gas {{ nativeAssetBalance }} {{ nativeAsset }}
+            {{ $t('components.accountTooltip.availableGas') }} {{ nativeAssetBalance }} {{ nativeAsset }}
           </p>
         </div>
       </div>

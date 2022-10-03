@@ -4,29 +4,30 @@
       <img :src="logo" />
     </div>
     <div class="enable-screen wrapper">
-      <h2 class="text-center">Connect Request</h2>
+      <h2 class="text-center">{{ $t('pages.enable.connectRequest') }}</h2>
 
       <div class="enable-screen_icon mt-2 text-center">{{ originShort }}</div>
       <p class="mt-1 mb-2 text-center">{{ originDomain }}</p>
       <div class="main-content">
         <div v-if="confirmStep">
           <p class="mt-2 mb-4 text-center">
-            By granting permission to <strong id="origin_url">{{ origin }}</strong
-            >, they can read your public account addresses.
+            {{ $t('pages.enable.byGrantingPermission') }}
+            <strong id="origin_url"> {{ origin }}</strong>
+            , {{ $t('pages.enable.theyCanRead') }}
           </p>
           <p class="text-primary text-center mb-4" id="make_sure_you_trust_this_site">
-            Make sure you trust this site.
+            {{ $t('pages.enable.makeSure') }}
           </p>
         </div>
         <div v-else>
           <div class="d-flex justify-content-between">
-            <h5>Select accounts</h5>
+            <h5>{{ $t('pages.enable.selectAccounts') }}</h5>
             <div v-if="isEthereumConnection" id="filter_by_chain">
               <ChainDropdown
                 :chains="ethereumChains"
                 :selected="selectedChain"
                 @chain-changed="onChainSelected"
-                select-label="Filter by chain"
+                :select-label="$t('pages.enable.filterByChain')"
                 :right="true"
               />
             </div>
@@ -45,7 +46,7 @@
       <div class="wrapper_bottom">
         <div class="button-group">
           <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">
-            Deny
+            {{ $t('pages.enable.deny') }}
           </button>
           <button
             v-if="loading"
@@ -61,7 +62,7 @@
             id="connect_request_button"
             class="btn btn-primary btn-lg btn-icon"
           >
-            Connect
+            {{ $t('common.connect') }}
           </button>
           <button
             v-else
@@ -70,7 +71,7 @@
             class="btn btn-primary btn-lg btn-icon"
             :disabled="!selectedAccount"
           >
-            Next
+            {{ $t('common.next') }}
           </button>
         </div>
       </div>

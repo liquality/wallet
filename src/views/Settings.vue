@@ -1,16 +1,17 @@
 <template>
   <div class="view-container">
-    <NavBar showMenu="true" showBack="true" backPath="/wallet" backLabel="Overview">
-      <span class="wallet_header"><strong>Settings</strong></span>
+    <NavBar showMenu="true" showBack="true" backPath="/wallet" :backLabel="$t('common.overview')">
+      <span class="wallet_header">
+        <strong>{{ $t('pages.settings.settings') }}</strong>
+      </span>
     </NavBar>
     <div class="settings">
       <div class="setting-item" id="settings_item_default_wallet">
         <div class="setting-item_title flex-fill mb-2">
-          Default Web3 Wallet
-          <span class="setting-item_sub"
-            >Set Liquality as the default dapp wallet. Other wallets cannot interact with dapps
-            while this is enabled.</span
-          >
+          {{ $t('pages.settings.title') }}
+          <span class="setting-item_sub">
+            {{ $t('pages.settings.description') }}
+          </span>
         </div>
         <div class="setting-item_control" id="default_web3_wallet_toggle_button">
           <toggle-button
@@ -22,31 +23,31 @@
       </div>
       <div class="setting-item" id="forgetAllDappsDone">
         <div class="setting-item_title flex-fill mb-2">
-          Dapp Connections
-          <span class="setting-item_sub">Forget all of the dapps connected.</span>
+          {{ $t('pages.settings.dappConnections') }}
+          <span class="setting-item_sub">{{ $t('pages.settings.dappConnectionsSub') }}</span>
         </div>
         <div class="setting-item_control">
           <button
-            class="btn btn-outline-primary"
+            class="btn btn-outline-clear"
             id="forget_all_connections_button"
             @click="forgetAllDappConnections"
             v-tooltip="{
               trigger: 'manual',
-              content: 'Done!',
+              content: $t('pages.settings.done'),
               hideOnTargetClick: false,
               show: forgetAllDappsDone
             }"
           >
-            Forget all connections
+            {{ $t('pages.settings.forgetAllConnections') }}
           </button>
         </div>
       </div>
       <div class="setting-item" id="settings_item_default_wallet_analytics">
         <div class="setting-item_title flex-fill mb-2">
-          Analytics
-          <span class="setting-item_sub"
-            >Share where you click. No identifying data is collected.</span
-          >
+          {{ $t('pages.settings.analytics') }}
+          <span class="setting-item_sub">
+            {{ $t('pages.settings.analyticsSub') }}
+          </span>
         </div>
         <div class="setting-item_control" id="analytics_toggle_button">
           <toggle-button
@@ -56,24 +57,48 @@
           />
         </div>
       </div>
-      <div class="setting-item" id="settings_item_wallet_logs">
+      <div class="setting-item">
         <div class="setting-item_title flex-fill mb-2">
-          Wallet Logs
-          <span class="setting-item_sub"
-            >The wallet logs contain your public information such as addresses and
-            transactions.</span
-          >
+          {{ $t('pages.settings.locale') }}
         </div>
         <div class="setting-item_control">
-          <button class="btn btn-outline-primary" id="download_logs_button" @click="downloadLogs">
-            Download Logs
+          <div class="dropdown-list" @click.stop="toogleChangeLocale">
+            {{ currentLocaleLabel }}
+            <ChevronUpIcon v-if="showChangeLocaleList" />
+            <ChevronDownIcon v-else />
+            <ul
+              class="menu_list locale-options"
+              v-if="showChangeLocaleList"
+              v-click-away="hideChangeLocale"
+            >
+              <li
+                v-for="locale in localeOptions"
+                :key="locale.code"
+                @click="onChangeLocale(locale.code)"
+              >
+                {{ locale.label }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="setting-item" id="settings_item_wallet_logs">
+        <div class="setting-item_title flex-fill mb-2">
+          {{ $t('pages.settings.walletLogs') }}
+          <span class="setting-item_sub">
+            {{ $t('pages.settings.walletLogsSub') }}
+          </span>
+        </div>
+        <div class="setting-item_control">
+          <button class="btn btn-outline-clear" id="download_logs_button" @click="downloadLogs">
+            {{ $t('pages.settings.downloadLogs') }}
           </button>
         </div>
       </div>
       <div class="settings-footer">
         <div id="settings_app_version">
           <router-link to="/settings/experiments">
-            <span class="text-muted"> Version {{ appVersion }} </span>
+            <span class="text-muted"> {{ $t('pages.settings.version') }} {{ appVersion }} </span>
           </router-link>
         </div>
       </div>
@@ -86,14 +111,19 @@ import { mapState, mapActions, mapGetters } from 'vuex'
 import { version } from '../../package.json'
 import { getWalletStateLogs, downloadFile } from '@/utils/export'
 import NavBar from '@/components/NavBar.vue'
+import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
+import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 
 export default {
   components: {
-    NavBar
+    NavBar,
+    ChevronUpIcon,
+    ChevronDownIcon
   },
   data: function () {
     return {
-      forgetAllDappsDone: false
+      forgetAllDappsDone: false,
+      showChangeLocaleList: false
     }
   },
   computed: {
@@ -101,6 +131,25 @@ export default {
     ...mapGetters(['analyticsEnabled']),
     appVersion() {
       return version
+    },
+    localeOptions() {
+      return (this.locales?.filter((i) => i !== this.currentLocale) || [])
+        .map((l) => ({
+          code: l,
+          label: this.$t(`common.localesLabels.${l}`)
+        }))
+        .sort((a, b) => {
+          if (a.label < b.label) {
+            return -1
+          }
+          if (a.label > b.label) {
+            return 1
+          }
+          return 0
+        })
+    },
+    currentLocaleLabel() {
+      return this.$t(`common.localesLabels.${this.currentLocale}`)
     }
   },
   methods: {
@@ -108,10 +157,9 @@ export default {
       'enableEthereumInjection',
       'disableEthereumInjection',
       'setAnalyticsResponse',
-      'trackAnalytics',
       'forgetDappConnections'
     ]),
-    ...mapActions('app', ['initializeAnalytics']),
+    ...mapActions('app', ['initializeAnalytics', 'setLocalePreference', 'trackAnalytics']),
     toggleInjectEthereum(enable) {
       if (enable) {
         this.enableEthereumInjection()
@@ -165,6 +213,20 @@ export default {
       setTimeout(() => {
         this.forgetAllDappsDone = false
       }, 4000)
+    },
+    async onChangeLocale(locale) {
+      await this.changeLocale(locale)
+      await this.setLocalePreference({ locale })
+      this.hideChangeLocale()
+    },
+    toogleChangeLocale() {
+      this.showChangeLocaleList = !this.showChangeLocaleList
+    },
+    showChangeLocale() {
+      this.showChangeLocaleList = true
+    },
+    hideChangeLocale() {
+      this.showChangeLocaleList = false
     }
   },
   created() {
@@ -180,10 +242,18 @@ export default {
   .setting-item {
     border-bottom: 1px solid $hr-border-color;
     padding: 16px 20px;
+    position: relative;
+
+    &_title {
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 14px;
+      color: #000d35;
+    }
 
     &_control {
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
       align-items: center;
     }
 
@@ -191,6 +261,8 @@ export default {
       display: block;
       font-size: $font-size-tiny;
       color: $text-muted;
+      font-weight: 300;
+      line-height: 18px;
     }
   }
 
@@ -198,6 +270,14 @@ export default {
     margin-top: 20px;
     margin-bottom: 20px;
     text-align: center;
+  }
+
+  .locale-options {
+    min-width: 180px;
+    border: 1px solid #d9dfe5;
+    li {
+      justify-content: flex-start;
+    }
   }
 }
 </style>

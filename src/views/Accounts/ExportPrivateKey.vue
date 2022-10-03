@@ -2,12 +2,12 @@
   <div class="export-account">
     <NavBar>
       <span class="wallet_header">
-        <strong>{{ chainId }} Private Key</strong>
+        <strong>{{ chainId }} {{ $t('pages.accounts.privateKey') }}</strong>
       </span>
     </NavBar>
     <div class="export-account_top login-wrapper" v-if="!ledgerAccount">
       <Eye class="export-account_eye" />
-      <p class="mt-3">Keep this away from prying eyes!</p>
+      <p class="mt-3">{{ $t('pages.accounts.eyeInstructions') }}</p>
     </div>
     <main>
       <p class="account">
@@ -15,7 +15,7 @@
         <img :src="getAccountIcon(account.chain)" class="asset-icon" />
       </p>
       <p class="mt-3 alert alert-warning" v-if="ledgerAccount">
-        Cannot export from a Ledger account
+        {{ $t('pages.accounts.exportLedger') }}
       </p>
       <textarea
         v-else
@@ -28,7 +28,7 @@
     </main>
     <div class="p-3 pb-1">
       <button id="done_button" class="btn btn-primary btn-lg btn-block" @click="goback">
-        Done
+        {{ $t('common.done') }}
       </button>
     </div>
   </div>

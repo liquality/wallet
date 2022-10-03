@@ -4,7 +4,7 @@
       <div class="send-main-input-container">
         <div class="send-main-input">
           <div class="send-top">
-            <div class="send-top-label">Send</div>
+            <div class="send-top-label">{{ $t('common.send') }}</div>
             <div class="send-top-amount">
               <button
                 class="btn btn-option label-append"
@@ -65,7 +65,7 @@
     </div>
     <div class="send-bottom">
       <div class="send-bottom-available" id="send_available_balance">
-        <span class="text-muted">Available</span>
+        <span class="text-muted">{{ $t('common.available') }}</span>
         {{ isNaN(available) ? '0' : dpUI(available) || '0' }} {{ asset }}
       </div>
       <div class="send-bottom-options">
@@ -79,7 +79,7 @@
               id="max_send_amount_button"
               @click="$emit('toggle-max')"
             >
-              Max
+              {{ $t('common.max') }}
             </button>
             <template slot="popover">
               <p class="my-0 text-right">{{ max }} {{ asset }}</p>

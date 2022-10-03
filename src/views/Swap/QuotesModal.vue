@@ -1,15 +1,17 @@
 <template>
   <Modal @close="$emit('close')">
     <template #header>
-      <h5 id="available_quotes_header">{{ quotes.length }} AVAILABLE QUOTES</h5>
+      <h5 id="available_quotes_header">
+        {{ quotes.length }} {{ $t('pages.swap.availableQuotes') }}
+      </h5>
     </template>
     <template>
       <div>
-        <p>These quotes are from different swap providers.</p>
+        <p>{{ $t('pages.swap.providersDescription') }}</p>
         <div class="quote-list">
           <div class="row quote-list_header pb-2">
-            <div class="col-5">Rate</div>
-            <div class="col-7">Provider</div>
+            <div class="col-5">{{ $t('common.rate') }}</div>
+            <div class="col-7">{{ $t('common.provider') }}</div>
           </div>
           <div
             class="row quote-list_quote"
@@ -42,12 +44,12 @@
           id="select_quote_button"
           @click="selectQuote"
         >
-          Select Quote
+          {{ $t('pages.swap.selectQuote') }}
         </button>
         <div class="mt-3">
-          <a href="#" @click="$emit('click-learn-more')" class="text-muted"
-            >Learn about swap types</a
-          >
+          <a href="#" @click="$emit('click-learn-more')" class="text-muted">
+            {{ $t('pages.swap.learnMoreAboutSwapTypes') }}
+          </a>
         </div>
       </div>
     </template>
