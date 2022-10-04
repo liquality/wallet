@@ -1,6 +1,6 @@
 <template>
   <div class="account-container">
-    <NavBar showBack="true" backPath="/wallet" backLabel="Overview">
+    <NavBar showBack="true" backPath="/wallet" :backLabel="$t('common.overview')">
       <div class="account-title">
         <div class="icons d-flex justify-content-center">
           <span class="mr-2">
@@ -21,12 +21,12 @@
         <ul class="nav nav-tabs">
           <li class="nav-item" @click="activeTab = 'nfts'">
             <span :class="activeTab === 'nfts' ? 'nav-link active' : 'nav-link'">
-              NFTs ({{ nftAssetsCount || 0 }})
+              {{ $t('pages.wallet.nfts', { count: nftAssetsCount }) }}
             </span>
           </li>
           <li class="nav-item" @click="activeTab = 'activity'">
             <span :class="activeTab === 'activity' ? 'nav-link active' : 'nav-link'">
-              Activity
+              {{ $t('pages.wallet.activity') }}
             </span>
           </li>
         </ul>
@@ -42,7 +42,7 @@
           />
           <TransactionList :transactions="activityData" />
           <div class="activity-empty m-3" v-if="activityData.length <= 0">
-            Once you start using your NFTs you will see the activity here
+            {{ $t('pages.wallet.nftActivityDescription') }}
           </div>
         </div>
       </div>

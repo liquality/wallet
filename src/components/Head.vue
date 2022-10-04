@@ -1,8 +1,8 @@
 <template>
   <div class="head">
-    <router-link to="/wallet" class="head_logo ml-3" id="wallet_header_logo"
-      ><LogoIcon
-    /></router-link>
+    <router-link to="/wallet" class="head_logo ml-3" id="wallet_header_logo">
+      <LogoIcon />
+    </router-link>
     <div id="head_network" class="head_network" @click.stop="toggleShowNetworks">
       {{ activeNetwork }}
       <ChevronUpIcon v-if="showNetworks" />
@@ -18,14 +18,9 @@
       v-if="showDappConnections"
       @click.stop="toggleShowConnectionDrawer"
     >
-      <template v-if="dappConnected"
-        ><ConnectionConnected class="mr-1 connection-icon" id="dappConnected" /> dApp
-        Connected</template
-      >
-      <template v-else
-        ><ConnectionDisconnected class="mr-1 connection-icon" id="connect_dapp" /> Connect
-        dApp</template
-      >
+      <ConnectionConnected v-if="dappConnected" class="mr-1 connection-icon" id="dappConnected" />
+      <ConnectionDisconnected v-else class="mr-1 connection-icon" id="connect_dapp" />
+      {{ dappConnected ? $t('components.head.dappConnected') : $t('components.head.connectDapp') }}
       <ChevronUpIcon class="ml-1" v-if="showConnectionDrawer" />
       <ChevronDownIcon class="ml-1" v-else />
     </div>
@@ -69,6 +64,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      locale: (state) => state.app?.locale
+    }),
     ...mapState(['wallets', 'activeWalletId', 'activeNetwork', 'externalConnections']),
     wallet: function () {
       return this.wallets.find((wallet) => wallet.id === this.activeWalletId)
@@ -116,6 +114,12 @@ export default {
           this.currentOrigin = origin
         }
       })
+    }
+  },
+  watch: {
+    locale() {
+      // we need to call this because this component seems to not take the local update
+      this.$forceUpdate()
     }
   }
 }

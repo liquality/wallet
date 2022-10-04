@@ -15,7 +15,14 @@ const Broker = (state) => {
       key: 'liquality-wallet',
       storage: Storage,
       asyncStorage: true,
-      reducer: (s) => omit(s, ['key', 'wallets', 'unlockedAt', 'app']) // do not persist these states
+      reducer: (state) => {
+        return {
+          ...omit(state, ['key', 'wallets', 'unlockedAt', 'app']),
+          app: {
+            locale: state.app?.locale
+          }
+        }
+      }
     })
 
     /**

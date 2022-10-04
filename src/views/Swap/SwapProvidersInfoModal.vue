@@ -1,13 +1,14 @@
 <template>
   <Modal @close="$emit('close')" :close-outside="true">
     <template #header>
-      <h5 id="learn_about_swaps_types_header">Learn about swap providers</h5>
+      <h5 id="learn_about_swaps_types_header">
+        {{ $t('pages.swap.learnMoreAboutSwapProviders') }}
+      </h5>
     </template>
     <template>
       <div class="swap-providers-info">
         <p>
-          There are tradeoffs different swap providers make across factors like convenience,
-          security, liquidity, and fees. At a glance:
+          {{ $t('pages.swap.swapProvidersInfo') }}
         </p>
         <div class="swap-providers-info_links mb-4 border-bottom">
           <ul>
@@ -28,13 +29,13 @@
           <p>{{ provider.description }}</p>
           <div class="row">
             <div class="col">
-              <h6>Pros</h6>
+              <h6>{{ $t('pages.swap.pros') }}</h6>
               <ul>
                 <li v-for="pro in provider.pros" :key="pro">{{ pro }}</li>
               </ul>
             </div>
             <div class="col">
-              <h6>Cons</h6>
+              <h6>{{ $t('pages.swap.cons') }}</h6>
               <ul>
                 <li v-for="con in provider.cons" :key="con">{{ con }}</li>
               </ul>
@@ -42,7 +43,7 @@
           </div>
           <div class="row">
             <div class="col">
-              <h6>Fee Structure</h6>
+              <h6>{{ $t('pages.swap.feeStructure') }}</h6>
               <ul>
                 <li v-for="fee in provider.fees" :key="fee">{{ fee }}</li>
               </ul>
