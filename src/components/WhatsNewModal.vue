@@ -18,7 +18,7 @@
         </div>
       </div>
     </template>
-    <template #footer>
+    <template #footer v-if="whatsNewModalContent.length > 1">
       <div class="footer">
         <div class="carousel">
           <span
@@ -69,7 +69,7 @@ export default {
   },
   data: function () {
     return {
-      open: false,
+      open: true,
       currentView: 1
     }
   },
@@ -146,7 +146,7 @@ li {
     gap: 3px;
 
     &-line {
-      width: 85px;
+      width: 100%;
       height: 0px;
       border: 1px solid #bfc3c7;
       cursor: pointer;

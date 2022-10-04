@@ -210,14 +210,14 @@ export default {
       } catch {
         // in case token doesn't exist in cryptoassets
         try {
-          const tokeData = await this.fetchTokenDetails({
+          const tokenData = await this.fetchTokenDetails({
             network: this.activeNetwork,
             walletId: this.activeWalletId,
             chain,
             contractAddress: tokenAddress
           })
 
-          this.symbol = tokeData.symbol + ' (Unverified)'
+          this.symbol = tokenData.symbol + ' (Unverified)'
         } catch {
           this.symbol = this.assetChain
         }
@@ -324,6 +324,7 @@ export default {
       } else {
         this.updateMaxSendFees()
         this.updateSendFees(this.amount)
+        debugger
         this.customFee = this.calculateFee(fee)
         this.selectedFee = 'custom'
       }
@@ -345,6 +346,10 @@ export default {
     }, 800),
     async calculateGas() {
       this.gas = await this.estimateGas()
+    },
+    calculateFee(fee) {
+      const chainId = cryptoassets[this.asset].chain
+      return feePerUnit(fee, chainId)
     }
   },
   computed: {
@@ -354,7 +359,7 @@ export default {
       return this.request.asset
     },
     assetChain() {
-      return getNativeAsset(this.asset)
+      return getNativeAsset(this.asset, this.activeNetwork)
     },
     address() {
       return this.request.args[0].to
@@ -436,9 +441,6 @@ export default {
 
       const txCost = this.gas.times(BN(feePerGas).div(1e9))
       return txCost.dp(6)
-    },
-    calculateFee(fee) {
-      return feePerUnit(fee)
     },
     account() {
       return this.accountItem(this.request?.accountId)
