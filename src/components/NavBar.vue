@@ -39,9 +39,7 @@
           <AccountsIcon />
           {{ $t('components.navbar.manageAccounts') }}
         </li>
-        <li id="export_privkey" 
-            v-if="showExportPrivateKey" 
-            @click="exportPrivateKey">
+        <li id="export_privkey" v-if="showExportPrivateKey" @click="exportPrivateKey">
           <KeyIcon />
           {{ $t('components.navbar.exportPrivateKey') }}
         </li>
