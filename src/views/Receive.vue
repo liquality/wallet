@@ -1,11 +1,11 @@
 <template>
   <div class="receive">
     <NavBar
-      showBack="true"
+      :showBack="true"
       :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
-      :backLabel="routeSource === 'assets' ? 'Overview' : asset"
+      :backLabel="routeSource === 'assets' ? $t('common.overview') : asset"
     >
-      Receive {{ asset }}
+      {{ $t('common.receive') }} {{ asset }}
     </NavBar>
     <div class="wrapper form text-center">
       <div class="wrapper_top form">
@@ -13,24 +13,26 @@
           <div class="receive_asset">
             <img :src="getAssetIcon(asset)" class="asset-icon" />
           </div>
-          <label id="your_current_asset_address">Your Current {{ asset }} Address</label>
+          <label id="your_current_asset_address">
+            {{ $t('pages.receive.yourCurrentAddress', { asset }) }}
+          </label>
           <p class="receive_address text-break" id="receive_address">
             {{ address }}
             <CopyIcon
               class="copy-icon"
               @click="copy"
               v-tooltip.bottom="{
-                content: copied ? 'Copied!' : 'Click to copy',
+                content: copied ? $t('common.copied') : $t('common.clickToCopy'),
                 hideOnTargetClick: false
               }"
             />
           </p>
           <p class="receive_message">
-            Scan this QR code with a mobile wallet to send funds to this address.
+            {{ $t('pages.receive.receiveMessage') }}
           </p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
           <div class="buy-crypto-container" v-show="activeNetwork === 'mainnet'">
-            <div class="mt-2 text-uppercase font-weight-bold">Or</div>
+            <div class="mt-2 text-uppercase font-weight-bold">{{ $t('common.or') }}</div>
             <BuyCryptoButton
               :btn-class="['btn-light', 'btn-outline-primary']"
               :asset="asset"
@@ -55,16 +57,18 @@
           <router-link
             :to="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
           >
-            <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">Done</button>
+            <button class="btn btn-light btn-outline-primary btn-lg" id="done_button">
+              {{ $t('common.done') }}
+            </button>
           </router-link>
           <button class="btn btn-primary btn-lg btn-icon" id="copy_address_button" @click="copy">
             <template v-if="copied">
               <TickIcon />
-              Copied!
+              {{ $t('common.copied') }}
             </template>
             <template v-else>
               <CopyWhiteIcon class="no-stroke" />
-              Copy Address
+              {{ $t('common.copyAddress') }}
             </template>
           </button>
         </div>
@@ -82,7 +86,7 @@ import BuyCryptoButton from '@/components/BuyCrypto/BuyCryptoButton'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
-import { ChainId, getChain } from '@liquality/cryptoassets'
+import { ChainId, getChain, getAsset, isEvmChain } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../package.json'
 
@@ -118,71 +122,28 @@ export default {
       return cryptoassets[this.asset]?.chain
     },
     chainName() {
-      return {
-        bitcoin: 'bitcoin',
-        ethereum: 'ethereum',
-        near: 'near',
-        solana: 'solana',
-        rsk: 'ethereum',
-        bsc: 'ethereum',
-        avalanche: 'ethereum',
-        polyon: 'ethereum',
-        terra: 'terra',
-        fuse: 'ethereum'
-      }[this.chain]
+      const isEvm = isEvmChain(this.activeNetwork, this.chain)
+
+      if (isEvm) {
+        return 'ethereum'
+      } else {
+        return {
+          bitcoin: 'bitcoin',
+          near: 'near',
+          solana: 'solana',
+          terra: 'terra'
+        }[this.chain]
+      }
     },
     faucet() {
-      if (this.activeNetwork === 'testnet') {
+      const asset = getAsset(this.activeNetwork, this.asset)
+      const chain = getChain(this.activeNetwork, asset.chain)
+
+      if (chain.faucetUrl) {
         return {
-          BTC: {
-            name: 'Bitcoin',
-            url: 'https://testnet-faucet.mempool.co/'
-          },
-          ETH: {
-            name: 'Ethererum Ropsten',
-            url: 'https://faucet.dimensions.network/'
-          },
-          RBTC: {
-            name: 'RBTC/RSK',
-            url: 'https://faucet.rsk.co/'
-          },
-          BNB: {
-            name: 'BNB',
-            url: 'https://testnet.binance.org/faucet-smart/'
-          },
-          NEAR: {
-            name: 'NEAR',
-            url: 'https://wallet.testnet.near.org/'
-          },
-          SOL: {
-            name: 'SOLANA',
-            url: 'https://solfaucet.com/'
-          },
-          MATIC: {
-            name: 'MATIC',
-            url: 'https://faucet.matic.network/'
-          },
-          ARBETH: {
-            name: 'ARBETH',
-            url: 'https://faucet.paradigm.xyz/'
-          },
-          AVAX: {
-            name: 'AVAX',
-            url: 'https://faucet.avax-test.network/'
-          },
-          LUNA: {
-            name: 'TERRA',
-            url: 'https://faucet.terra.money/'
-          },
-          FUSE: {
-            name: 'FUSE',
-            url: 'https://get.fusespark.io/'
-          },
-          OPTIMISM: {
-            name: 'OPTIMISM',
-            url: 'https://kovan.optifaucet.com/'
-          }
-        }[this.asset]
+          name: chain.name,
+          url: chain.faucetUrl
+        }
       }
       return null
     }
@@ -222,7 +183,8 @@ export default {
     )
   },
   methods: {
-    ...mapActions(['getUnusedAddresses', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['getUnusedAddresses']),
     getAssetIcon,
     async copy() {
       this.trackAnalytics({

@@ -1,12 +1,12 @@
 <template>
   <div class="account-container">
     <NavBar :showMenu="false" :showBack="false">
-      <span class="account-title"> Create Account </span>
+      <span class="account-title">{{ $t('pages.accounts.createAccount') }}</span>
     </NavBar>
     <div class="wrapper">
       <div class="wrapper_top">
         <div class="create-item-row">
-          <div class="create-item-row-title">Select Network</div>
+          <div class="create-item-row-title">{{ $t('pages.accounts.selectNetwork') }}</div>
           <div class="dropdown" v-click-away="hideAssetList">
             <button class="btn custom-dropdown-toggle" @click="toggleAssetList">
               <div class="form" v-if="selectedChain">
@@ -36,7 +36,7 @@
           </div>
         </div>
         <div class="create-item-row">
-          <div class="create-item-row-title">Choose Account Name</div>
+          <div class="create-item-row-title">{{ $t('pages.accounts.chooseAccountName') }}</div>
           <div class="form">
             <div class="input-group">
               <div class="input-group-prepend">
@@ -49,7 +49,7 @@
                 autocomplete="off"
                 class="form-control form-control-sm"
                 v-model="accountAlias"
-                placeholder="Choose name"
+                :placeholder="$t('pages.accounts.chooseAccountName')"
                 id="choose-account-name"
                 required
                 :class="{ 'is-invalid': accountAliasError }"
@@ -61,7 +61,7 @@
           </div>
         </div>
         <div class="create-item-row">
-          <div class="create-item-row-title">Choose the Color</div>
+          <div class="create-item-row-title">{{ $t('pages.accounts.chooseTheColor') }}</div>
           <div class="form">
             <div class="input-group">
               <input
@@ -82,7 +82,7 @@
             id="cancel-button"
             @click="cancel"
           >
-            Cancel
+            {{ $t('common.cancel') }}
           </button>
           <button
             class="btn btn-primary btn-lg btn-icon"
@@ -91,7 +91,7 @@
             :disabled="loading || !inputsValidated"
           >
             <SpinnerIcon class="btn-loading" v-if="loading" />
-            <template v-else>Create</template>
+            <template v-else>{{ $t('common.create') }}</template>
           </button>
         </div>
       </div>
@@ -246,9 +246,9 @@ export default {
         this.accountAlias.length < 5 ||
         (this.accountAlias.match(/^[^\s]+(\s+[^\s]+)*$/) || []).length <= 0
       ) {
-        this.accountAliasError = 'Name should have 5 or more characters'
+        this.accountAliasError = this.$t('pages.accounts.accountAliasErrorFiveChars')
       } else if (this.accountAlias.length > 20) {
-        this.accountAliasError = "Name shouldn't have more than 20 characters"
+        this.accountAliasError = this.$t('pages.accounts.accountAliasErrorTwentyChars')
       } else if (
         this.accounts[this.activeWalletId]?.[this.activeNetwork]?.findIndex(
           (a) =>
@@ -256,7 +256,7 @@ export default {
             (a.index === this.accountIndex && a.chain === this.selectedChain.id)
         ) >= 0
       ) {
-        this.accountAliasError = 'Existing account with the same name or path'
+        this.accountAliasError = this.$t('pages.accounts.accountAliasErrorExistingAccount')
       } else {
         this.accountAliasError = null
       }

@@ -10,7 +10,7 @@
     <button class="copy-btn" @click="$emit('copyAddress')">
       <CopyIcon class="icon" v-if="!addressCopied" />
       <CheckIcon class="icon" v-if="addressCopied" />
-      {{ addressCopied ? 'Copied!' : 'Copy address' }}
+      {{ addressCopied ? $t('common.copied') : $t('common.copyAddress') }}
     </button>
   </div>
 </template>

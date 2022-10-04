@@ -1,6 +1,4 @@
 export const state = () => ({
-  ledgerBridgeConnected: false,
-  ledgerBridgeTransportConnected: false,
   analyticsStarted: false,
   analyticsOptInModalOpen: false,
   requestOriginAccessActive: false,
@@ -9,5 +7,6 @@ export const state = () => ({
   buyCryptoModalOpen: false,
   buyCryptoOverviewModalOpen: false,
   ledgertSignRequestModalOpen: false,
-  settingsModalOpen: false
+  settingsModalOpen: false,
+  locale: null
 })

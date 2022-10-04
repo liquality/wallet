@@ -1,44 +1,40 @@
 <template>
   <Modal v-show="open" @close="close" :dialog="'modal-dialog-bottom'">
     <template #header>
-      <h6>Buy Crypto</h6>
+      <h6>{{ $t('components.buyCrypto.buyCrypto') }}</h6>
     </template>
     <template>
       <div class="provider">
         <BuyCryptoProviderBrand :provider="'transak'" />
         <p class="main-message">
-          Transak lets you buy crypto with your credit card or via bank transfer depending on
-          location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token (the
-          first token of the account).
+          {{ $t('components.buyCrypto.transakInstructions') }}
         </p>
         <button
           class="btn btn-outline-primary"
           id="open_transak_tab_btn"
           @click="openProviderTab('transak')"
         >
-          Continue with Transak
+          {{ $t('components.buyCrypto.continueWithTransak') }}
         </button>
       </div>
       <div class="provider">
         <BuyCryptoProviderBrand :provider="'onramper'" />
         <p class="main-message">
-          Onramper is an aggregated service providing the best quote from several sources and
-          accepts popular payment methods depending on location.
+          {{ $t('components.buyCrypto.onramperDescription') }}
         </p>
         <button
           class="btn btn-outline-primary"
           id="open_transak_tab_btn"
           @click="openProviderTab('onramper')"
         >
-          Continue with Onramper
+          {{ $t('components.buyCrypto.continueWithOnramper') }}
         </button>
       </div>
     </template>
     <template #footer>
       <div class="footer">
         <p class="secondary-message">
-          Fees and limits may vary. It usually takes just a couple of minutes and requires
-          registration.
+          {{ $t('components.buyCrypto.feeAndLimitMessage') }}
         </p>
       </div>
     </template>

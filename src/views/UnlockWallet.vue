@@ -8,7 +8,9 @@
     </div>
     <form class="form d-flex flex-column h-100" autocomplete="off" @submit.prevent="unlock">
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">
+          {{ $t('common.password') }}
+        </label>
         <div class="input-group">
           <input
             type="password"
@@ -29,7 +31,7 @@
           <router-link
             :to="{ path: '/onboarding/home', query: { isImport: true } }"
             id="forgot_password_import_seed"
-            >Forgot password? Import with seed phrase</router-link
+            >{{ $t('pages.unlockWallet.forgotPassword') }}</router-link
           >
         </p>
         <div class="footer-content">
@@ -39,7 +41,7 @@
             :disabled="loading"
           >
             <span v-if="loading"> <SpinnerIcon /> &nbsp; </span>
-            <template v-else>Unlock</template>
+            <template v-else>{{ $t('pages.unlockWallet.unlock') }}</template>
           </button>
         </div>
       </div>
@@ -68,7 +70,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['unlockWallet', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['unlockWallet']),
     async unlock() {
       this.error = null
       this.loading = true
@@ -84,7 +87,7 @@ export default {
         })
       } catch (e) {
         console.log(e)
-        this.error = e.message
+        this.error = this.$t('pages.onboarding.seedlogin.unlockError')
         this.trackAnalytics({
           event: 'UnlockWallet failed',
           properties: {

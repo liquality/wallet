@@ -5,10 +5,9 @@
         <img :src="logo" />
       </div>
       <div class="backup-wallet_top">
-        <h2 class="p-1">Backup your Wallet</h2>
+        <h2 class="p-1">{{ $t('pages.onboarding.setup.backupYourWallet') }}</h2>
         <p class="mb-3 backup-wallet_description">
-          The seed phrase is the only way to restore your wallet. Write it down, verify it and then
-          store it securely.
+          {{ $t('pages.onboarding.setup.backupDescription') }}
         </p>
       </div>
       <div class="backup-wallet_bottom">
@@ -21,14 +20,14 @@
               class="btn btn-outline-primary btn-lg btn-footer btn-icon"
               @click="$router.go(-1)"
             >
-              Cancel
+              {{ $t('common.cancel') }}
             </button>
             <button
               class="btn btn-primary btn-lg btn-footer btn-icon"
               id="backup_your_wallet_next_button"
               @click="pushToConfirm"
             >
-              Next
+              {{ $t('common.next') }}
             </button>
           </div>
         </div>

@@ -3,17 +3,17 @@
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <router-link class="nav-link" id="asserts_tab" :to="{ name: 'WalletAssets' }">
-          Assets
+          {{ $t('pages.wallet.assets') }}
         </router-link>
       </li>
       <li class="nav-item">
         <router-link class="nav-link" id="nfts_tab" :to="{ name: 'WalletNFTs' }">
-          NFTs ({{ nftAssetsCount || 0 }})
+          {{ $t('pages.wallet.nfts', { count: nftAssetsCount }) }}
         </router-link>
       </li>
       <li class="nav-item">
         <router-link class="nav-link" id="activity_tab" :to="{ name: 'WalletActivity' }">
-          Activity
+          {{ $t('pages.wallet.activity') }}
         </router-link>
       </li>
     </ul>

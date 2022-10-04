@@ -1,56 +1,53 @@
 <template>
   <Modal v-show="open" @close="close">
     <template #header>
-      <h6>Getting Started with Crypto is Easy</h6>
+      <h6>{{ $t('components.buyCrypto.gettingStarted') }}</h6>
     </template>
     <template>
       <div class="top">
         <p class="first-message">
-          We recommend to start with sending ETH to your Liquality wallet because that fuels many
-          transactions.
+          {{ $t('components.buyCrypto.recommendations') }}
         </p>
         <div @click="receive" class="receive-action">
           <ReceiveIconPrimary class="receive-icon" />
-          Receive
+          {{ $t('common.receive') }}
         </div>
       </div>
-      <p class="second-message">You can also buy crypto at our trusted partner.</p>
+      <p class="second-message">
+        {{ $t('components.buyCrypto.trustedPartnerMessage') }}
+      </p>
     </template>
     <template #footer>
       <div class="footer">
-        <h6 class="footer-title">Buy Crypto</h6>
+        <h6 class="footer-title">{{ $t('components.buyCrypto.buyCrypto') }}</h6>
         <div class="provider">
           <BuyCryptoProviderBrand :provider="'transak'" />
           <p class="first-message">
-            Transak lets you buy crypto with your credit card or via bank transfer depending on
-            location. To cover fees (gas) or interact with dApps you’ll mostly need the gas token
-            (the first token of the account).
+            {{ $t('components.buyCrypto.transakInstructions') }}
           </p>
           <button
             class="btn btn-outline-primary btn-lg"
             id="open_transak_tab_btn"
             @click="openSelectAccount('transak')"
           >
-            Buy Crypto with Transak
+            {{ $t('components.buyCrypto.buyCryptoWithTransak') }}
           </button>
         </div>
         <div class="provider">
           <BuyCryptoProviderBrand :provider="'onramper'" />
           <p class="first-message">
-            Onramper is an aggregated service providing the best quote from several sources and
-            accepts popular payment methods depending on location.
+            {{ $t('components.buyCrypto.onramperDescription') }}
           </p>
           <button
             class="btn btn-outline-primary btn-lg"
             id="open_transak_tab_btn"
             @click="openSelectAccount('onramper')"
           >
-            Buy Crypto with Onramper
+            {{ $t('components.buyCrypto.buyCryptoWithOnramper') }}
           </button>
         </div>
         <p class="third-message">
-          Fees and limits may vary. It usually takes just a couple of minutes and requires
-          registration.
+          {{ $t('components.buyCrypto.feeAndLimitMessage') }}
         </p>
       </div>
     </template>

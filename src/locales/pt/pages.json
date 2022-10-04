@@ -1,0 +1,235 @@
+{
+    "splash": {
+        "importWithSeedPhrase": "Importar com seed phrase",
+        "openWallet": "Abrir carteira",
+        "createNewWallet": "Criar nova carteira"
+    },
+    "unlockWallet": {
+        "forgotPassword": "Esqueceu a senha? Importar com seed phrase",
+        "unlock": "Desbloquear"
+    },
+    "onboarding": {
+        "import": {
+            "unlockWallet": "Desbloquear carteira",
+            "enterSeedPhrase": "Insira a seed phrase, na mesma ordem salva quando criou a sua carteira.",
+            "words": "%{words} palavras"
+        },
+        "home": {
+            "iAccept": "Eu Aceito",
+            "termsAndPrivacy": "Termos & Privacidade"
+        },
+        "setup": {
+            "backupYourWallet": "Salve sua Carteira",
+            "backupDescription": "A seed phrase é a única forma de recuperar sua carteira. A anote, verifique, e a guarde em segurança.",
+            "choosePassword": "Escolha Senha (pelo menos 8 caracteres)",
+            "passwordTooShort": "Senha é muito pequena",
+            "confirmPassword": "Confirmar Senha",
+            "passwordDontMatch": "Senhas não coincidem.",
+            "confirmSeedTitle": "Confirmar Seed Phrase",
+            "confirmSeedInstructions": "Clique nas 3 palavras correspondendo suas posições na seed phrase. Uma vez confirmada, guarde-a em um local seguro.",
+            "word": "Palavra",
+            "ordinals": {
+                "first": "st",
+                "fifth": "th",
+                "twelfth": "th"
+            },
+            "congrats": "Parabéns!"
+        },
+        "warning": {
+            "warning": "Aviso",
+            "iHavePrivacy": "Tenho privacidade",
+            "seedPhraseWarning": "Quem a possua pode roubar seus ativos!",
+            "viewItInPrivate": "Acesse-a com privacidade, sem câmeras por perto.",
+            "title": {
+                "seed": "Mostrar Seed Phrase?",
+                "privateKey": "Mostrar Chave Privada?"
+            }
+        },
+        "seedlogin": {
+            "understandTheRisk": "Eu compreendo os riscos e tenho privacidade",
+            "pleaseAcceptTerms": "Favor Aceitar os Termos",
+            "unlockError": "Tente Novamente. Insira a senha correta (ela possui 8 ou mais caracteres).",
+            "title": {
+                "seed": "Conecte-se para Ver a Seed Phrase",
+                "export": "Conecte-se para Exportar a Chave Privada"
+            }
+        },
+        "seedReveal": {
+            "yourSeedPhrase": "Sua Seed Phrase",
+            "revealDescription": "A seed phrase é a única forma de recuperar sua carteira. A anote, verifique, e a guarde em segurança.",
+            "revealSubTitle": "Oculta por segurança, Passe o mouse para revelar a frase.",
+            "iSavedTheSeed": "Eu salvei a seed"
+        }
+    },
+    "settings": {
+        "settings": "Configurações",
+        "title": "Carteira Padrão Web3",
+        "description": "Definir Liquality como a carteira padrão para dApps. Outras carteiras não conseguirão interagir com os dApps enquanto esta opção estiver ativa.",
+        "analytics": "Analytics",
+        "analyticsSub": "Compartilhe seus cliques. Nenhum dado de identificação é coletado.",
+        "walletLogs": "Wallet Logs",
+        "walletLogsSub": "Os registros da carteira contém informações públicas, tais como endereços e transações.",
+        "downloadLogs": "Baixar Registros",
+        "locale": "Idioma",
+        "localeSub": "Mudar Idioma",
+        "dappConnections": "Conexões de dApps",
+        "dappConnectionsSub": "Esquecer todos os dApps conectados.",
+        "done": "Feito!",
+        "forgetAllConnections": "Esquecer todas conexões",
+        "version": "Versão"
+    },
+    "experiments": {
+        "experiments": "Experimental",
+        "multiaccounts": "Multi-Accounts",
+        "multiaccountsDescription": "Permite a gestão de contas e múltiplas contas em cada rede"
+    },
+    "manageAssets": {
+        "assetView": "Visão de Ativos",
+        "addCustomToken": "Adicionar Token Customizado",
+        "cantFindThisToken": "Não é possível encontrar este token",
+        "addCustomERC20Tokens": "Adicionar tokens ERC20 customizados",
+        "learnHow": "Aprenda como",
+        "searchForAsset": "Procurar um Ativo"
+    },
+    "customToken": {
+        "selectChain": "Selecionar cadeia...",
+        "tokenContractAddress": "Endereço do Contrato do Token",
+        "name": "Nome",
+        "tokenSymbol": "Símbolo do Token",
+        "decimals": "Decimais",
+        "addToken": "Adicionar Token",
+        "addCustomToken": "Adicionar Token Customizado"
+    },
+    "wallet": {
+        "assets": "Ativos",
+        "activity": "Atividade",
+        "nfts": {
+            "zero": "NFTs (0)",
+            "one": "NFTs",
+            "other": "NFTs (%{count})"
+        },
+        "nftActivityDescription": "Quando começar a usar seus NFTs, verá atividade aqui",
+        "nftDescription": "Quando começar a ter NFTs em suas contas de sua carteira Liquality, os verá aqui",
+        "exploreNFT": "Explore NFTs em Polygon, Ethereum and Solana",
+        "checkOutOpenSea": "Confira em OpenSea",
+        "discoverCollect": "Descubra e colecione NFTs em Arbitrum",
+        "checkOutStratos": "Confira Stratos",
+        "learnHowItWorks": "Descubra como funciona"
+    },
+    "details": {
+        "sentNFT": "Enviar NFT",
+        "status": "Status",
+        "confirmations": "Confirmações",
+        "completed": "Completado",
+        "initiated": "Iniciado",
+        "sentAsset": "Enviar Ativo",
+        "speed": "Velocidade",
+        "fee": "Comissão",
+        "speedUp": "Acelerar",
+        "update": "Atualizar",
+        "transaction": "Transação",
+        "transactionId": "Id da transação",
+        "transferOn": "Transferir em %{marketplace}",
+        "details": "Detalhes",
+        "description": "Descrição",
+        "youOwn": "Seu próprio",
+        "retry": "Tentar novamente",
+        "pendingReceipt": "Recibo Pendente",
+        "signTo": "Assinar",
+        "ledgerInstructions": "Siga as instruções para verificar e aceitar a quantidade, então confirme a transação. Pode haver um atraso",
+        "onYourLedger": "Em Seu Ledger",
+        "today": "hoje",
+        "time": "Hora",
+        "sent": "Enviado"
+    },
+    "accounts": {
+        "manageAccounts": "Gerenciar Contas",
+        "privateKey": "Chave Privada",
+        "eyeInstructions": "Mantenha a salvo!",
+        "exportLedger": "Não é possível exportar de uma conta Ledger",
+        "createAccount": "Criar Conta",
+        "selectNetwork": "Selecionar Rede",
+        "chooseAccountName": "Escolha o Nome da Conta",
+        "accountAliasErrorFiveChars": "O nome deve ter 5 ou mais caracteres",
+        "accountAliasErrorTwentyChars": "O nome não deve ter mais do que 20 caracteres",
+        "accountAliasErrorExistingAccount": "Conta já existente com mesmo nome ou caminho",
+        "chooseTheColor": "Escolha a Cor",
+        "accounts": {
+            "zero": "%{count} Contas",
+            "one": "%{count} Conta",
+            "other": "%{count} Contas"
+        },
+        "accountsAdded": "Conta Adicionadas",
+        "closeThisTab": "Feche esta Aba",
+        "connectLedger": "Conectar Ledger",
+        "selectAsset": "Selecione o mesmo ativo aqui",
+        "ledgerInstructions1": "Conecte o Ledger ao computador",
+        "ledgerInstructions2": "Insira a senha para destravar",
+        "ledgerInstructions3": "No dispositivo, navegue até o ativo que deseja acessar",
+        "ledgerInstructions4": "Para Trocar, no seu Ledger, no App Eth, Vá em Configurações e então selecione 'Blind signing'",
+        "addLedgerAccounts": "Adicionar Contas Ledger",
+        "noAccountsFound": "Nenhuma conta encontrada",
+        "errorGettingAccounts": "Erro ao acessar contas",
+        "unlockAccount": "Desbloquear Conta",
+        "findingAccounts": "Encontrando Contas",
+        "creating": "Criando",
+        "creatingAccount": "Criando sua nova conta",
+        "selectAccount": "Selecionar Conta",
+        "accountsLabel": "Contas",
+        "accountAlreadyConnected": "Esta conta já está conectada:%{account}",
+        "previous": "Anterior",
+        "accountMessage1": "Não conseguimos obter a lista de contas. Favor tentar novamente, confira no ledger se o app/ativo correto foi selecionado, ou cancele e escolha outro ativo.",
+        "accountMessage2": "Feche todos os outros apps em que seu ledger esteja conectado, incluíndo Ledger Live.",
+        "tryAgain": "Tente Novamente",
+        "unlock": "Desbloquear"
+    },
+    "receive": {
+        "yourCurrentAddress": "Seu Endereço %{asset} Atual",
+        "receiveMessage": "Escaneie este QR Code com uma carteira móvel para enviar fundos para este endereço."
+    },
+    "assets": {
+        "noFunds": "Sem fundos na carteira"
+    },
+    "enable": {
+        "connectRequest": "Solicitação de Conexão",
+        "selectAccounts": "Selecionar Contas",
+        "filterByChain": "Filtrar por cadeia",
+        "deny": "Negar",
+        "byGrantingPermission": "Ao conceder permissão para",
+        "theyCanRead": "eles podem ler os endereços públicos de sua conta.",
+        "makeSure": "Certifique-se de que confia neste site."
+    },
+    "permission": {
+        "myWallet": "Minha Carteira",
+        "signTransaction": "Assinar Transação",
+        "requestToSign": "Solicitação para Assinar",
+        "request": "Solicitar"
+    },
+    "send": {
+        "sendTo": "Enviar para",
+        "memo": "Memo (Opcional)",
+        "sendFrom": "Enviar De",
+        "titleSelectNFT": "Selecionar NFT",
+        "titleSendNFT": "Enviar NFT",
+        "titleReviewSendNFT": "Revisar Enviar NFT"
+    },
+    "swap": {
+        "availableQuotes": "COTAÇÕES DISPONÍVEIS",
+        "providersDescription": "Estas cotações vêm de diferentes provedores de negociações.",
+        "selectQuote": "Selecionar Cotação",
+        "learnMoreAboutSwapTypes": "Aprenda sobre tipos de trocas",
+        "learnMoreAboutSwapProviders": "Aprenda sobre provedores de negociação",
+        "swapTypes": "Tipos de Trocas",
+        "seekingLiquidity": "Procurando Liquidez...",
+        "seeAllQuotes": "Veja todas %{count} cotações",
+        "insufficientFunds": "Fundos Insuficientes",
+        "amountMinusFees": "Valor - Comissões",
+        "initiateSwap": "Iniciar Troca",
+        "maxSlipPage": "Desvio de preço máximo é 3%.",
+        "refundMessage": "Desvio de preço máximo é 3%. Se a troca não é executada, você será reembolsado em algumas horas.",
+        "swapProvidersInfo": "Há diferentes considerações que os fornecedores de negociação fazem sobre fatores como conveniência, segurança, liquidez, e comissões. Rapidamente:",
+        "pros": "Pros",
+        "cons": "Contras",
+        "feeStructure": "Estrutura da Comissão"
+    }
+}
