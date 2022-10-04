@@ -4182,7 +4182,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/ethereum-utils@npm:^1.13.12":
+"@liquality/ethereum-utils@npm:1.13.12":
   version: 1.13.12
   resolution: "@liquality/ethereum-utils@npm:1.13.12"
   dependencies:
@@ -4219,7 +4219,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/terra-networks@npm:^1.13.12":
+"@liquality/terra-networks@npm:1.13.12":
   version: 1.13.12
   resolution: "@liquality/terra-networks@npm:1.13.12"
   dependencies:
@@ -4229,7 +4229,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/types@npm:^1.13.12":
+"@liquality/types@npm:1.13.12, @liquality/types@npm:^1.13.12":
   version: 1.13.12
   resolution: "@liquality/types@npm:1.13.12"
   dependencies:
@@ -4884,7 +4884,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/terra.js@npm:^3.1.6":
+"@terra-money/terra.js@npm:3.1.7":
   version: 3.1.7
   resolution: "@terra-money/terra.js@npm:3.1.7"
   dependencies:
@@ -4979,7 +4979,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/vue@npm:^5.8.2":
+"@testing-library/vue@npm:5.8.3":
   version: 5.8.3
   resolution: "@testing-library/vue@npm:5.8.3"
   dependencies:
@@ -6104,7 +6104,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/cli-plugin-eslint@npm:~4.5.0":
+"@vue/cli-plugin-eslint@npm:4.5.19":
   version: 4.5.19
   resolution: "@vue/cli-plugin-eslint@npm:4.5.19"
   dependencies:
@@ -6143,7 +6143,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/cli-plugin-unit-jest@npm:^4.5.8":
+"@vue/cli-plugin-unit-jest@npm:4.5.19":
   version: 4.5.19
   resolution: "@vue/cli-plugin-unit-jest@npm:4.5.19"
   dependencies:
@@ -6344,7 +6344,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vue/eslint-config-prettier@npm:^6.0.0":
+"@vue/eslint-config-prettier@npm:6.0.0":
   version: 6.0.0
   resolution: "@vue/eslint-config-prettier@npm:6.0.0"
   dependencies:
@@ -7444,7 +7444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-eslint@npm:^10.1.0":
+"babel-eslint@npm:10.1.0":
   version: 10.1.0
   resolution: "babel-eslint@npm:10.1.0"
   dependencies:
@@ -8025,7 +8025,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bip39@npm:*, bip39@npm:^3.0.2, bip39@npm:^3.0.3, bip39@npm:^3.0.4":
+"bip39@npm:*, bip39@npm:3.0.4, bip39@npm:^3.0.3, bip39@npm:^3.0.4":
   version: 3.0.4
   resolution: "bip39@npm:3.0.4"
   dependencies:
@@ -8156,7 +8156,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bluebird@npm:3.7.2, bluebird@npm:^3.1.1, bluebird@npm:^3.5.0, bluebird@npm:^3.5.5, bluebird@npm:^3.7.2":
+"bluebird@npm:3.7.2, bluebird@npm:^3.1.1, bluebird@npm:^3.5.0, bluebird@npm:^3.5.5":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
   checksum: 869417503c722e7dc54ca46715f70e15f4d9c602a423a02c825570862d12935be59ed9c7ba34a9b31f186c017c23cac6b54e35446f8353059c101da73eac22ef
@@ -8858,7 +8858,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001397, caniuse-lite@npm:^1.0.30001400":
+"caniuse-lite@npm:1.0.30001412, caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001109, caniuse-lite@npm:^1.0.30001400":
   version: 1.0.30001412
   resolution: "caniuse-lite@npm:1.0.30001412"
   checksum: 7f5f476355f25a9841c30785c11df5225e2e7613f3334573e8da5490f195ac897a525fe4b514fa926b7be7e7937f15743e466bbc3a3272e848fb7ace7432ae02
@@ -8902,7 +8902,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai-match@npm:^1.1.1":
+"chai-match@npm:1.1.1":
   version: 1.1.1
   resolution: "chai-match@npm:1.1.1"
   checksum: b94ce8af10965af3f0a7fac6b139c8c30e897be4a802ec7ac036b466d97aac487bc292581ff4b2b31a531ddeb347a3410f66486a850723852d651cf4c362d2cf
@@ -9776,17 +9776,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"core-js@npm:3.25.3, core-js@npm:^3.6.5":
+  version: 3.25.3
+  resolution: "core-js@npm:3.25.3"
+  checksum: 26ca0a5e575e6da03dc30099f48bc00db50a1c0a3f81299165f111cb163869ae453de5e345f2cb7bc8be85a9adcee11fca94f0fbdbdf6d483c68e1c55a9efc5a
+  languageName: node
+  linkType: hard
+
 "core-js@npm:^2.4.0":
   version: 2.6.12
   resolution: "core-js@npm:2.6.12"
   checksum: 44fa9934a85f8c78d61e0c8b7b22436330471ffe59ec5076fe7f324d6e8cf7f824b14b1c81ca73608b13bdb0fef035bd820989bf059767ad6fa13123bb8bd016
-  languageName: node
-  linkType: hard
-
-"core-js@npm:^3.25.2, core-js@npm:^3.6.5":
-  version: 3.25.3
-  resolution: "core-js@npm:3.25.3"
-  checksum: 26ca0a5e575e6da03dc30099f48bc00db50a1c0a3f81299165f111cb163869ae453de5e345f2cb7bc8be85a9adcee11fca94f0fbdbdf6d483c68e1c55a9efc5a
   languageName: node
   linkType: hard
 
@@ -10007,7 +10007,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto-js@npm:4.1.1, crypto-js@npm:^4.0.0, crypto-js@npm:^4.1.1":
+"crypto-js@npm:4.1.1, crypto-js@npm:^4.1.1":
   version: 4.1.1
   resolution: "crypto-js@npm:4.1.1"
   checksum: b3747c12ee3a7632fab3b3e171ea50f78b182545f0714f6d3e7e2858385f0f4101a15f2517e033802ce9d12ba50a391575ff4638c9de3dd9b2c4bc47768d5425
@@ -12401,7 +12401,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.23.4, eslint-plugin-import@npm:^2.26.0":
+"eslint-plugin-import@npm:2.26.0, eslint-plugin-import@npm:^2.26.0":
   version: 2.26.0
   resolution: "eslint-plugin-import@npm:2.26.0"
   dependencies:
@@ -12477,7 +12477,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-node@npm:^11.1.0":
+"eslint-plugin-node@npm:11.1.0":
   version: 11.1.0
   resolution: "eslint-plugin-node@npm:11.1.0"
   dependencies:
@@ -12493,7 +12493,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^3.3.1":
+"eslint-plugin-prettier@npm:3.4.1":
   version: 3.4.1
   resolution: "eslint-plugin-prettier@npm:3.4.1"
   dependencies:
@@ -12561,7 +12561,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-vue@npm:^6.2.2":
+"eslint-plugin-vue@npm:6.2.2":
   version: 6.2.2
   resolution: "eslint-plugin-vue@npm:6.2.2"
   dependencies:
@@ -12654,7 +12654,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^6.8.0":
+"eslint@npm:6.8.0":
   version: 6.8.0
   resolution: "eslint@npm:6.8.0"
   dependencies:
@@ -13041,7 +13041,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-wallet@npm:^1.0.1":
+"ethereumjs-wallet@npm:1.0.2":
   version: 1.0.2
   resolution: "ethereumjs-wallet@npm:1.0.2"
   dependencies:
@@ -13538,7 +13538,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"extension-port-stream@npm:^2.0.1":
+"extension-port-stream@npm:2.0.1":
   version: 2.0.1
   resolution: "extension-port-stream@npm:2.0.1"
   dependencies:
@@ -15296,7 +15296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"human-standard-token-abi@npm:^2.0.0":
+"human-standard-token-abi@npm:2.0.0, human-standard-token-abi@npm:^2.0.0":
   version: 2.0.0
   resolution: "human-standard-token-abi@npm:2.0.0"
   checksum: 80501595a470d4fc8866ab82311ccf3619023e36083f0656e5733be82870f2d0eecf8d24635159d760d87583ac0c5497ac460d1eb0813ac5e4c0df106c5a8ad6
@@ -15342,7 +15342,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18n-js@npm:^4.1.1":
+"i18n-js@npm:4.1.1":
   version: 4.1.1
   resolution: "i18n-js@npm:4.1.1"
   dependencies:
@@ -16805,7 +16805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom-fifteen@npm:^1.0.2":
+"jest-environment-jsdom-fifteen@npm:1.0.2, jest-environment-jsdom-fifteen@npm:^1.0.2":
   version: 1.0.2
   resolution: "jest-environment-jsdom-fifteen@npm:1.0.2"
   dependencies:
@@ -18507,6 +18507,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lint-staged@npm:9.5.0":
+  version: 9.5.0
+  resolution: "lint-staged@npm:9.5.0"
+  dependencies:
+    chalk: ^2.4.2
+    commander: ^2.20.0
+    cosmiconfig: ^5.2.1
+    debug: ^4.1.1
+    dedent: ^0.7.0
+    del: ^5.0.0
+    execa: ^2.0.3
+    listr: ^0.14.3
+    log-symbols: ^3.0.0
+    micromatch: ^4.0.2
+    normalize-path: ^3.0.0
+    please-upgrade-node: ^3.1.1
+    string-argv: ^0.3.0
+    stringify-object: ^3.3.0
+  bin:
+    lint-staged: ./bin/lint-staged
+  checksum: 06d6289ab84968b102c04f132d0f8dba023dc725ccd14e4c7cadd382876d5c5a28b710eea551901b1c1ccf8dce27d683a9b435e126e2e147b21c77f9fa21e932
+  languageName: node
+  linkType: hard
+
 "lint-staged@npm:^12.1.5":
   version: 12.5.0
   resolution: "lint-staged@npm:12.5.0"
@@ -18531,89 +18555,65 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:^9.5.0":
-  version: 9.5.0
-  resolution: "lint-staged@npm:9.5.0"
-  dependencies:
-    chalk: ^2.4.2
-    commander: ^2.20.0
-    cosmiconfig: ^5.2.1
-    debug: ^4.1.1
-    dedent: ^0.7.0
-    del: ^5.0.0
-    execa: ^2.0.3
-    listr: ^0.14.3
-    log-symbols: ^3.0.0
-    micromatch: ^4.0.2
-    normalize-path: ^3.0.0
-    please-upgrade-node: ^3.1.1
-    string-argv: ^0.3.0
-    stringify-object: ^3.3.0
-  bin:
-    lint-staged: ./bin/lint-staged
-  checksum: 06d6289ab84968b102c04f132d0f8dba023dc725ccd14e4c7cadd382876d5c5a28b710eea551901b1c1ccf8dce27d683a9b435e126e2e147b21c77f9fa21e932
-  languageName: node
-  linkType: hard
-
 "liquality-wallet@workspace:.":
   version: 0.0.0-use.local
   resolution: "liquality-wallet@workspace:."
   dependencies:
     "@liquality/cryptoassets": 1.15.0
-    "@liquality/ethereum-utils": ^1.13.12
-    "@liquality/terra-networks": ^1.13.12
-    "@liquality/types": ^1.13.12
+    "@liquality/ethereum-utils": 1.13.12
+    "@liquality/terra-networks": 1.13.12
+    "@liquality/types": 1.13.12
     "@liquality/wallet-core": 1.30.0
-    "@terra-money/terra.js": ^3.1.6
+    "@terra-money/terra.js": 3.1.7
     "@testing-library/jest-dom": 5.16.2
-    "@testing-library/vue": ^5.8.2
+    "@testing-library/vue": 5.8.3
     "@vue/cli-plugin-babel": 4.5.15
-    "@vue/cli-plugin-eslint": ~4.5.0
+    "@vue/cli-plugin-eslint": 4.5.19
     "@vue/cli-plugin-router": 4.5.15
-    "@vue/cli-plugin-unit-jest": ^4.5.8
+    "@vue/cli-plugin-unit-jest": 4.5.19
     "@vue/cli-plugin-vuex": 4.5.15
     "@vue/cli-service": 4.5.15
-    "@vue/eslint-config-prettier": ^6.0.0
+    "@vue/eslint-config-prettier": 6.0.0
     "@vue/test-utils": 1.3.0
     amplitude-js: 8.18.2
-    babel-eslint: ^10.1.0
+    babel-eslint: 10.1.0
     bignumber.js: 9.0.2
-    bip39: ^3.0.2
+    bip39: 3.0.4
     bitcoinjs-lib: 6.0.2
-    bluebird: ^3.7.2
+    bluebird: 3.7.2
     bootstrap: 4.6.1
-    caniuse-lite: ^1.0.30001397
+    caniuse-lite: 1.0.30001412
     chai: 4.3.6
-    chai-match: ^1.1.1
-    core-js: ^3.25.2
-    crypto-js: ^4.0.0
+    chai-match: 1.1.1
+    core-js: 3.25.3
+    crypto-js: 4.1.1
     cryptocurrency-icons: 0.18.0
     date-fns: 2.28.0
-    eslint: ^6.8.0
-    eslint-plugin-import: ^2.23.4
-    eslint-plugin-node: ^11.1.0
-    eslint-plugin-prettier: ^3.3.1
+    eslint: 6.8.0
+    eslint-plugin-import: 2.26.0
+    eslint-plugin-node: 11.1.0
+    eslint-plugin-prettier: 3.4.1
     eslint-plugin-promise: 5.2.0
-    eslint-plugin-vue: ^6.2.2
-    ethereumjs-wallet: ^1.0.1
+    eslint-plugin-vue: 6.2.2
+    ethereumjs-wallet: 1.0.2
     ethers: 5.5.4
-    extension-port-stream: ^2.0.1
-    human-standard-token-abi: ^2.0.0
+    extension-port-stream: 2.0.1
+    human-standard-token-abi: 2.0.0
     husky: 7.0.4
-    i18n-js: ^4.1.1
+    i18n-js: 4.1.1
     jest: 27.5.1
-    jest-environment-jsdom-fifteen: ^1.0.2
+    jest-environment-jsdom-fifteen: 1.0.2
     kcd-scripts: 12.0.0
-    lint-staged: ^9.5.0
-    lodash-es: ^4.17.15
-    log: ^6.0.0
-    markdown-it-vue: ^1.1.7
-    memoizee: ^0.4.15
+    lint-staged: 9.5.0
+    lodash-es: 4.17.21
+    log: 6.3.1
+    markdown-it-vue: 1.1.7
+    memoizee: 0.4.15
     mocha: 9.2.2
-    moment: ^2.25.3
-    node-gyp: ^9.0.0
-    pbkdf2: ^3.1.1
-    post-message-stream: ^3.0.0
+    moment: 2.29.4
+    node-gyp: 9.1.0
+    pbkdf2: 3.1.2
+    post-message-stream: 3.0.0
     prettier: 2.5.1
     priv-key-precommit: 0.5.0
     puppeteer: 17.1.2
@@ -18622,22 +18622,22 @@ __metadata:
     qs: 6.10.3
     raw-loader: 4.0.2
     sass: 1.49.0
-    sass-loader: ^8.0.2
-    setimmediate: ^1.0.5
-    sinon-chrome: ^3.0.1
+    sass-loader: 8.0.2
+    setimmediate: 1.0.5
+    sinon-chrome: 3.0.1
     socket.io-client: 4.5.1
     svg-url-loader: 7.1.1
-    uuid: ^8.1.0
-    v-tooltip: ^2.0.3
-    vue: ^2.6.11
-    vue-cli-plugin-browser-extension: ^0.25.1
-    vue-date-pick: ^1.4.1
-    vue-js-toggle-button: ^1.3.3
-    vue-loader: ^17.0.0
-    vue-router: ^3.1.6
-    vue-svg-loader: ^0.16.0
-    vue-template-compiler: ^2.6.14
-    vuex: ^3.1.3
+    uuid: 8.3.2
+    v-tooltip: 2.1.3
+    vue: 2.7.10
+    vue-cli-plugin-browser-extension: 0.25.2
+    vue-date-pick: 1.5.1
+    vue-js-toggle-button: 1.3.3
+    vue-loader: 17.0.0
+    vue-router: 3.6.5
+    vue-svg-loader: 0.16.0
+    vue-template-compiler: 2.7.10
+    vuex: 3.6.2
     vuex-persist: 3.1.3
   languageName: unknown
   linkType: soft
@@ -18808,7 +18808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.17.15":
+"lodash-es@npm:4.17.21":
   version: 4.17.21
   resolution: "lodash-es@npm:4.17.21"
   checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
@@ -18980,7 +18980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"log@npm:^6.0.0":
+"log@npm:6.3.1":
   version: 6.3.1
   resolution: "log@npm:6.3.1"
   dependencies:
@@ -19353,7 +19353,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-it-vue@npm:^1.1.7":
+"markdown-it-vue@npm:1.1.7":
   version: 1.1.7
   resolution: "markdown-it-vue@npm:1.1.7"
   dependencies:
@@ -19585,7 +19585,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memoizee@npm:^0.4.15":
+"memoizee@npm:0.4.15, memoizee@npm:^0.4.15":
   version: 0.4.15
   resolution: "memoizee@npm:0.4.15"
   dependencies:
@@ -20188,7 +20188,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:^2.25.3, moment@npm:^2.29.1, moment@npm:^2.29.2":
+"moment@npm:2.29.4, moment@npm:^2.29.1, moment@npm:^2.29.2":
   version: 2.29.4
   resolution: "moment@npm:2.29.4"
   checksum: 0ec3f9c2bcba38dc2451b1daed5daded747f17610b92427bebe1d08d48d8b7bdd8d9197500b072d14e326dd0ccf3e326b9e3d07c5895d3d49e39b6803b76e80e
@@ -20614,7 +20614,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp@npm:^9.0.0, node-gyp@npm:latest":
+"node-gyp@npm:9.1.0, node-gyp@npm:latest":
   version: 9.1.0
   resolution: "node-gyp@npm:9.1.0"
   dependencies:
@@ -21684,7 +21684,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pbkdf2@npm:^3.0.17, pbkdf2@npm:^3.0.3, pbkdf2@npm:^3.0.9, pbkdf2@npm:^3.1.1":
+"pbkdf2@npm:3.1.2, pbkdf2@npm:^3.0.17, pbkdf2@npm:^3.0.3, pbkdf2@npm:^3.0.9":
   version: 3.1.2
   resolution: "pbkdf2@npm:3.1.2"
   dependencies:
@@ -21887,7 +21887,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"post-message-stream@npm:^3.0.0":
+"post-message-stream@npm:3.0.0":
   version: 3.0.0
   resolution: "post-message-stream@npm:3.0.0"
   dependencies:
@@ -23863,7 +23863,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^8.0.2":
+"sass-loader@npm:8.0.2":
   version: 8.0.2
   resolution: "sass-loader@npm:8.0.2"
   dependencies:
@@ -24186,7 +24186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"setimmediate@npm:^1.0.4, setimmediate@npm:^1.0.5":
+"setimmediate@npm:1.0.5, setimmediate@npm:^1.0.4, setimmediate@npm:^1.0.5":
   version: 1.0.5
   resolution: "setimmediate@npm:1.0.5"
   checksum: c9a6f2c5b51a2dabdc0247db9c46460152ffc62ee139f3157440bd48e7c59425093f42719ac1d7931f054f153e2d26cf37dfeb8da17a794a58198a2705e527fd
@@ -24344,7 +24344,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sinon-chrome@npm:^3.0.1":
+"sinon-chrome@npm:3.0.1":
   version: 3.0.1
   resolution: "sinon-chrome@npm:3.0.1"
   dependencies:
@@ -26712,6 +26712,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uuid@npm:8.3.2, uuid@npm:^8.3.2":
+  version: 8.3.2
+  resolution: "uuid@npm:8.3.2"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
+  languageName: node
+  linkType: hard
+
 "uuid@npm:^3.3.2":
   version: 3.4.0
   resolution: "uuid@npm:3.4.0"
@@ -26721,16 +26730,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^8.1.0, uuid@npm:^8.3.2":
-  version: 8.3.2
-  resolution: "uuid@npm:8.3.2"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
-  languageName: node
-  linkType: hard
-
-"v-tooltip@npm:^2.0.3":
+"v-tooltip@npm:2.1.3":
   version: 2.1.3
   resolution: "v-tooltip@npm:2.1.3"
   dependencies:
@@ -26847,7 +26847,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-cli-plugin-browser-extension@npm:^0.25.1":
+"vue-cli-plugin-browser-extension@npm:0.25.2":
   version: 0.25.2
   resolution: "vue-cli-plugin-browser-extension@npm:0.25.2"
   dependencies:
@@ -26862,7 +26862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-date-pick@npm:^1.4.1":
+"vue-date-pick@npm:1.5.1":
   version: 1.5.1
   resolution: "vue-date-pick@npm:1.5.1"
   dependencies:
@@ -26918,7 +26918,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-js-toggle-button@npm:^1.3.3":
+"vue-js-toggle-button@npm:1.3.3":
   version: 1.3.3
   resolution: "vue-js-toggle-button@npm:1.3.3"
   peerDependencies:
@@ -26937,6 +26937,19 @@ __metadata:
   peerDependencies:
     webpack: ^4.1.0 || ^5.0.0-0
   checksum: 7c0566847b09bd1d0b8b1bd146274eb53c775668388b10a6fcd0968b41353c85018c24bc91f7ed31c20a5d5fcdc50f08149c4656663500075576b06e546ca976
+  languageName: node
+  linkType: hard
+
+"vue-loader@npm:17.0.0":
+  version: 17.0.0
+  resolution: "vue-loader@npm:17.0.0"
+  dependencies:
+    chalk: ^4.1.0
+    hash-sum: ^2.0.0
+    loader-utils: ^2.0.0
+  peerDependencies:
+    webpack: ^4.1.0 || ^5.0.0-0
+  checksum: a6eb675f07357a7d7181b78549e342c444b4e28896f84444506f940c14bdd7833276f50d645efcdc742ba987218745f965361921f99012fecf184e0aae67a4a0
   languageName: node
   linkType: hard
 
@@ -26961,19 +26974,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-loader@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "vue-loader@npm:17.0.0"
-  dependencies:
-    chalk: ^4.1.0
-    hash-sum: ^2.0.0
-    loader-utils: ^2.0.0
-  peerDependencies:
-    webpack: ^4.1.0 || ^5.0.0-0
-  checksum: a6eb675f07357a7d7181b78549e342c444b4e28896f84444506f940c14bdd7833276f50d645efcdc742ba987218745f965361921f99012fecf184e0aae67a4a0
-  languageName: node
-  linkType: hard
-
 "vue-resize@npm:^1.0.1":
   version: 1.0.1
   resolution: "vue-resize@npm:1.0.1"
@@ -26985,7 +26985,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-router@npm:^3.1.6":
+"vue-router@npm:3.6.5":
   version: 3.6.5
   resolution: "vue-router@npm:3.6.5"
   checksum: b014ba4cba6838a4a6b7a2352b18982c2fd8bbbd6287e09c510845895d28f1c141fefb88369d1875c0cb6c7336c8536f614c8d1f5ac1c8709d60b4f945c486fb
@@ -27002,7 +27002,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-svg-loader@npm:^0.16.0":
+"vue-svg-loader@npm:0.16.0":
   version: 0.16.0
   resolution: "vue-svg-loader@npm:0.16.0"
   dependencies:
@@ -27014,7 +27014,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-template-compiler@npm:^2.6.14":
+"vue-template-compiler@npm:2.7.10":
   version: 2.7.10
   resolution: "vue-template-compiler@npm:2.7.10"
   dependencies:
@@ -27031,7 +27031,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue@npm:^2.6.0, vue@npm:^2.6.11, vue@npm:^2.6.12":
+"vue@npm:2.7.10, vue@npm:^2.6.0, vue@npm:^2.6.11, vue@npm:^2.6.12":
   version: 2.7.10
   resolution: "vue@npm:2.7.10"
   dependencies:
@@ -27053,7 +27053,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuex@npm:^3.1.3":
+"vuex@npm:3.6.2, vuex@npm:^3.1.3":
   version: 3.6.2
   resolution: "vuex@npm:3.6.2"
   peerDependencies:
