@@ -62,11 +62,10 @@ import { Psbt } from 'bitcoinjs-lib'
 import { getAssetIcon } from '@/utils/asset'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
-import { getAsset } from '@liquality/cryptoassets'
+import { ChainId, getAsset, getChain } from '@liquality/cryptoassets'
 
 export default {
   components: {
@@ -142,7 +141,7 @@ export default {
     },
     psbt() {
       return Psbt.fromBase64(this.psbtBase64, {
-        network: ChainNetworks.bitcoin[this.activeNetwork]
+        network: getChain(this.activeNetwork, ChainId.Bitcoin).network.utxo
       })
     },
     outputs() {
