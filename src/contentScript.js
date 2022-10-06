@@ -1,8 +1,7 @@
 import { inject } from './broker/utils'
 import Script from './broker/Script'
 import { buildConfig } from '@liquality/wallet-core'
-import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
-import { getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
+import { getChain, getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
 import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
 new Script().start()
@@ -29,7 +28,7 @@ function injectProviders(state) {
   const evmChains = buildConfig.chains
     .filter((chain) => isEvmChain(activeNetwork, chain))
     .map((chain) => {
-      const network = ChainNetworks[chain][activeNetwork]
+      const network = getChain(activeNetwork, chain).network
       const asset = getNativeAssetCode(activeNetwork, chain)
       return { chain, asset, network }
     })

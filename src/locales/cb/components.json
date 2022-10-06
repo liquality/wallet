@@ -1,0 +1,117 @@
+{
+    "accountTooltip": {
+        "availableGas": "Available Gas"
+    },
+    "activityFilter": {
+        "export": "Export",
+        "filters": "Filters",
+        "dateRange": "Sakot sa Petsa"
+    },
+    "analyticsOptinModal": {
+        "title": "Tabangi kami sa pagpalambo sa Liquality aron mas maayo nga makaalagad kanimo",
+        "message": "Ipakigbahin kung asa nimo gi-klik. Walay nagpaila nga datos. Kini nga pagtugot mahimong bawion bisan unsang orasa.",
+        "analitycsAccept": "Mouyon ko nga ipaambit ang akong mga pag-klik",
+        "analitycsReject": "Dili usa sa pagka karon"
+    },
+    "boostActivateBridgeAsset": {
+        "enabledAssetMessage": "Aron mabaylo kini nga pares %{asset} kinahanglan kini nga i-enable",
+        "okDoit": "OK, buhata kini"
+    },
+    "bridgeAssetRequiredMessage": {
+        "needMore": "Kinahanglan nimo ang dugang nga %{asset} aron makabayad sa gas.",
+        "get": "Pagkuha"
+    },
+    "cannotCoverMinimumMessage": {
+        "needMore": "Dugang nga %{asset} ang gikinahanglan aron mabayaran ang min nga trade plus fees."
+    },
+    "connectionDrawer": {
+        "dappNetwork": "dApp Network",
+        "instructions": "Pangitaa ug pislita ang connection button sa site. Kung dili ka makakonekt, balhin ug network ug sulayi pag-usab.",
+        "grantedConnection": "Naka-konekta na ka",
+        "connectedSites": "Makita sa mga konektadong site ang address sa imong account.",
+        "switchAccount": "Balhin og account"
+    },
+    "customFees": {
+        "presets": "Presets",
+        "customizedSetting": "Customized Setting",
+        "gasPrice": "Presyo sa Gas",
+        "newSpeedFee": "Bag-ong Speed/Fee",
+        "customize": "CUSTOMIZE",
+        "basic": "BASIC",
+        "editGasFee": "USBA ANG GAS FEE",
+        "currentBaseFeePerGas": "BASE FEE PER GAS SA PAGKAKARON",
+        "minerTip": "MINER TIP",
+        "toSpeedUp": "MAS IPADALI",
+        "maxFee": "MAX FEE",
+        "perGas": "PER GAS",
+        "newFeeTotal": "Bag-ong Total Fee"
+    },
+    "emptyActivity": {
+        "message": "Sa higayon nga magsugod ka sa paggamit sa imong wallet, dinhi nimo makita ang mga activity."
+    },
+    "ethRequiredMessage": {
+        "message": "Kinahanglan ang balanse aron magswap ug kinahanglan nimo ang ETH aron mabayran ang gas.",
+        "getETH": "Mokuha ug ETH"
+    },
+    "head": {
+        "dappConnected": "dApp Connected",
+        "connectDapp": "Connect dApp"
+    },
+    "ledger": {
+        "signTo": "Sign sa %{action} Swap",
+        "signNow": "Sign Now",
+        "initiate": "Sugdi kini",
+        "onYourLedger": "Sa imong Ledger",
+        "signInstructions": "Sunda ang mga prompt aron pamatud-an ug dawaton ang kantidad, dayon kumpirmahi ang transaksyon. Mahimong adunay lag.",
+        "tabBannerMessage": "Ang ledger labing maayo sa browser. Kung nahuman na ka balik sa imong wallet sa extension..."
+    },
+    "navbar": {
+        "manageAssets": "Manage Assets",
+        "manageAccounts": "Manage Accounts",
+        "exportPrivateKey": "I-export and Private Key",
+        "settings": "Settings",
+        "backupSeed": "I-Backup ang Seed",
+        "lock": "Lock"
+    },
+    "noFundsForNetworkFee": {
+        "noEnoughAsset": "Dili igo nga %{asset} para sa fees. Mahimo dugangi imong pondo o pa-ubsi ang speed.",
+        "getAsset": "Kuha ug %{asset}",
+        "lowerSpeed": "Mahimong dugangi ang pondo o pa-ubsi ang speed aron mabayaran ang transaksyon."
+    },
+    "noLiquidityMessage": {
+        "noLiquidity": "Dili igo nga liquidity alang niini nga trade. Mahimo kang mohangyo ug %{asset} sa",
+        "tryAgainLater": " o sulayi pag-usab.",
+        "noTraded": "Kini nga pares wala pa gi-trade. Sulayi ang ubang paagi sa paghimo sa daghang swap aron makuha ang gusto nga token."
+    },
+    "operationErrorModal": {
+        "cantFindAccount": "Dili makit-an ang ledger Account",
+        "instructions1": "I-plug ang Ledger sa computer",
+        "instructions2": "Ibutang ang pin para ma unlock kini",
+        "instructions3": "Sa imong Ledger, adtoa ang asset nga gusto nimong i-access",
+        "instructions4": "Kung konektado na ka sunda ang mga prompt sa Ledger"
+    },
+    "warning": {
+        "message": "Experimental software, gamiton sa kaugalingong risgo"
+    },
+    "whatsNew": {
+        "title": "Unsay bag-o"
+    },
+    "buyCrypto": {
+        "buyCrypto": "Palit ug Crypto",
+        "gettingStarted": "Sayon ang Pagsugod sa Crypto",
+        "recommendations": "Among girekomendar nga magsugod sa pagpadala sa ETH sa imong Liquality nga wallet tungod mao kini ang kasagarang ginagamit sa daghang mga transaksyon.",
+        "transakInstructions": "Gitugotan ka sa Transak nga makapalit og crypto gamit ang imong credit card o pinaagi sa pagbalhin sa bangko depende sa lokasyon. Aron mabayaran ang mga fees (gas) o makagamit sa dApps kasagaran kinahanglan nimo ang token sa gas (ang unang token sa account).",
+        "onramperDescription": "Ang Onramper usa ka aggregated nga serbisyo nga naghatag sa labing kaayo nga quote gikan sa daghang mga gigikanan ug gidawat ang mga kadaghanang pamaagi sa pagbayad depende sa lokasyon.",
+        "trustedPartnerMessage": "Mahimo ka usab mopalit og crypto sa among kasaligan nga partner.",
+        "buyCryptoWithTransak": "Pagpalit Crypto gamit ang Transak",
+        "buyCryptoWithOnramper": "Pagpalit Crypto gamit ang Onramper",
+        "continueWithTransak": "Padayon sa Transak",
+        "continueWithOnramper": "Padayon sa Onramper",
+        "feeAndLimitMessage": "Ang mga bayronon ug limitasyon mahimong magkalahi. Kasagaran kini nagkinahanglan lamang og pipila ka mga minuto og pagrehistro."
+    },
+    "nft": {
+        "seeAll": "Tan-awa ang tanan",
+        "yourNFTFromAddress": "Imohang gigikanang NFT nga address",
+        "yourNFTToAddress": "Imohang padulngang NFT address"
+    }
+}

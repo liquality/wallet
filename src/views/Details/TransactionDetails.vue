@@ -1,6 +1,6 @@
 <template>
   <div class="details-wrapper">
-    <NavBar :showBackButton="true" :backClick="goBack" :backLabel="'Back'">
+    <NavBar :showBackButton="true" :backClick="goBack" :backLabel="$t('common.back')">
       <img :src="getAssetIcon(item.from)" class="asset-icon mr-2" />
       <span class="mr-2">{{ item.from }}</span>
       <img :src="typeIcon" />
@@ -16,7 +16,7 @@
                 v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0"
                 id="transaction_details_status_number_of_confirmations"
               >
-                / {{ tx.confirmations }} Confirmations
+                / {{ tx.confirmations }} {{ $t('pages.details.confirmations') }}
               </span>
             </p>
           </div>
@@ -28,19 +28,21 @@
         </div>
         <div class="row" id="transaction_details_date_time">
           <div class="col">
-            <h2>Time</h2>
+            <h2>{{ $t('pages.details.time') }}</h2>
             <p>{{ prettyTime(item.endTime || item.startTime) }}</p>
           </div>
         </div>
         <div class="row">
           <div class="col">
-            <h2>Sent</h2>
+            <h2>{{ $t('pages.details.sent') }}</h2>
             <p id="transaction_detail_sent_amount" class="font-weight-bold mb-1">
               {{ prettyBalance(item.amount, item.from) }} {{ item.from }}
             </p>
             <p id="transaction_detail_sent_amount_today">
-              ${{ prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from]) }}
-              / today
+              ${{
+                prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from]) 
+              }}
+              / {{ $t('pages.details.today') }}
             </p>
             <p id="transaction_detail_sent_amount_then" v-if="item.fiatRate">
               ${{ prettyFiatBalance(prettyBalance(item.amount, item.from), item.fiatRate) }} / then
@@ -50,10 +52,10 @@
         <hr />
         <div class="row" id="transaction_details_network_speed_fee">
           <div class="col">
-            <h2>Network Speed/Fee</h2>
+            <h2>{{ $t('common.networkSpeedFee') }}</h2>
             <p class="d-flex justify-content-between">
               <span id="transaction_detail_network_speed"
-                >{{ assetChain }} Speed:
+                >{{ assetChain }} {{ $t('pages.details.speed') }}:
                 <span class="text-capitalize">{{ item.feeLabel }}</span></span
               >
               <span id="transaction_detail_fee_units">Fee: {{ itemFee }} {{ feeUnit }}</span>
@@ -63,7 +65,7 @@
                   v-if="canUpdateFee && !showFeeSelector && isCustomFeeSupported"
                   @click="openFeeSelector()"
                 >
-                  Speed up
+                  {{ $t('pages.details.speedUp') }}
                 </a>
               </span>
             </p>
@@ -81,14 +83,14 @@
                 @click="updateFee()"
               >
                 <SpinnerIcon class="btn-loading" v-if="feeSelectorLoading" />
-                <template v-else>Update</template>
+                <template v-else>{{ $t('pages.details.update') }}</template>
               </button>
               <button
                 class="btn btn-sm btn-outline-primary ml-2"
                 v-if="!feeSelectorLoading"
                 @click="closeFeeSelector()"
               >
-                Cancel
+                {{ $t('common.cancel') }}
               </button>
             </div>
           </div>
@@ -99,7 +101,7 @@
             class="col tx-details_link d-flex align-items-start"
             id="transaction_details_transaction_id"
           >
-            <h2 class="mr-4">Transaction ID</h2>
+            <h2 class="mr-4">{{ $t('pages.details.transactionId') }}</h2>
             <p>
               <a :href="transactionLink" target="_blank" id="transactionLink">{{
                 shortenAddress(item.txHash)

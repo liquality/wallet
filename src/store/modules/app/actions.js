@@ -9,6 +9,7 @@ import { handlePaymentUri } from './handlePaymentUri'
 import { initializeAnalytics } from './initializeAnalytics'
 import { checkAnalyticsOptIn } from './checkAnalyticsOptIn'
 import { getChain } from '@liquality/cryptoassets'
+import { trackAnalytics } from './trackAnalytics'
 
 export const actions = {
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
@@ -17,47 +18,35 @@ export const actions = {
   setBuyCryptoModalOpen: ({ commit, dispatch }, { open, chain, asset, address, screen }) => {
     commit('SET_BUY_CRYPTO_MODAL_OPEN', { open, chain, asset, address })
     if (screen === 'EmptyActivity') {
-      dispatch(
-        'trackAnalytics',
-        {
-          event: `Click Buy Crypto from EmptyActivity screen`,
-          properties: {
-            category: 'Buy Crypto'
-          }
-        },
-        { root: true }
-      )
+      dispatch('trackAnalytics', {
+        event: `Click Buy Crypto from EmptyActivity screen`,
+        properties: {
+          category: 'Buy Crypto'
+        }
+      })
     } else if (screen === 'Receive') {
-      dispatch(
-        'trackAnalytics',
-        {
-          event: `Click Buy Crypto from Receive screen`,
-          properties: {
-            category: 'Buy Crypto',
-            chain,
-            asset,
-            address
-          }
-        },
-        { root: true }
-      )
+      dispatch('trackAnalytics', {
+        event: `Click Buy Crypto from Receive screen`,
+        properties: {
+          category: 'Buy Crypto',
+          chain,
+          asset,
+          address
+        }
+      })
     }
   },
   setBuyCryptoOverviewModalOpen: ({ dispatch, commit }, { open }) => {
     commit('SET_BUY_CRYPTO_OVERVIEW_MODAL_OPEN', { open })
     if (open) {
-      dispatch(
-        'trackAnalytics',
-        {
-          event: `Click Buy Crypto from Overview`,
-          properties: {
-            action: open ? 'open' : 'close',
-            category: 'Buy Crypto',
-            label: `Buy Crypto from Overview screen`
-          }
-        },
-        { root: true }
-      )
+      dispatch('trackAnalytics', {
+        event: `Click Buy Crypto from Overview`,
+        properties: {
+          action: open ? 'open' : 'close',
+          category: 'Buy Crypto',
+          label: `Buy Crypto from Overview screen`
+        }
+      })
     }
   },
   openTransakWidgetTab: ({ dispatch, rootState }, { chain, asset, address }) => {
@@ -71,15 +60,11 @@ export const actions = {
     chrome.tabs.create({ url })
     dispatch('setBuyCryptoModalOpen', { open: false })
     dispatch('setBuyCryptoOverviewModalOpen', { open: false })
-    dispatch(
-      'trackAnalytics',
-      {
-        event: 'Continue with Transak clicked',
-        category: 'Buy Crypto',
-        label: 'Buy Crypto Continue with Transak clicked'
-      },
-      { root: true }
-    )
+    dispatch('trackAnalytics', {
+      event: 'Continue with Transak clicked',
+      category: 'Buy Crypto',
+      label: 'Buy Crypto Continue with Transak clicked'
+    })
   },
   openOnramperWidgetTab: ({ dispatch, rootState }, { chain, asset, address }) => {
     const widgetUrl = process.env.VUE_APP_ONRAMPER_WIDGET_URL
@@ -92,21 +77,28 @@ export const actions = {
     chrome.tabs.create({ url })
     dispatch('setBuyCryptoModalOpen', { open: false })
     dispatch('setBuyCryptoOverviewModalOpen', { open: false })
-    dispatch(
-      'trackAnalytics',
-      {
-        event: 'Continue with OnRamper clicked',
-        category: 'Buy Crypto',
-        label: 'Buy Crypto Continue with OnRamper clicked'
-      },
-      { root: true }
-    )
+    dispatch('trackAnalytics', {
+      event: 'Continue with OnRamper clicked',
+      category: 'Buy Crypto',
+      label: 'Buy Crypto Continue with OnRamper clicked'
+    })
   },
   setLedgerSignRequestModalOpen: ({ commit }, { open }) => {
     commit('SET_LEDGER_SIGN_REQUEST_MODAL_OPEN', { open })
   },
   settingsModalOpen: ({ commit }, isOpen) => {
     commit('SET_SETTINGS_MODAL_OPEN', isOpen)
+  },
+  setLocalePreference: ({ commit }, { locale }) => {
+    commit('SET_LOCALE', { locale })
+  },
+  getBrowserLocale: () => {
+    const browserLang = chrome.i18n.getUILanguage()
+    // we only support the locale and not the region, so we should remove it
+    if (browserLang.includes('-')) {
+      return browserLang.split('-')[0]
+    }
+    return browserLang
   },
   requestOriginAccess,
   requestPermission,
@@ -117,5 +109,6 @@ export const actions = {
   executeRequest,
   handlePaymentUri,
   initializeAnalytics,
-  checkAnalyticsOptIn
+  checkAnalyticsOptIn,
+  trackAnalytics
 }

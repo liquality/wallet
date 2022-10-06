@@ -4,9 +4,9 @@
       <NavBar
         showBack="true"
         :backPath="routeSource === 'assets' ? '/wallet' : `/accounts/${account.id}/${asset}`"
-        backLabel="Back"
+        :backLabel="$t('common.back')"
       >
-        Send
+        {{ $t('common.send') }}
       </NavBar>
       <div class="wrapper form">
         <div class="wrapper_top">
@@ -25,7 +25,7 @@
             :max-active="maxOptionActive"
           />
           <div class="form-group mt-40">
-            <label for="address">Send to</label>
+            <label for="address">{{ $t('pages.send.sendTo') }}</label>
             <div class="input-group">
               <input
                 type="text"
@@ -47,7 +47,7 @@
             >
           </div>
           <div class="form-group mt-20" v-if="showMemoInput">
-            <label for="memo">Memo (Optional)</label>
+            <label for="memo">{{ $t('pages.send.memo') }}</label>
             <div class="input-group">
               <textarea
                 type="text"
@@ -63,7 +63,9 @@
             <DetailsContainer v-if="feesAvailable && isCustomFeeSupported">
               <template v-slot:header>
                 <div class="network-header-container">
-                  <span class="details-title" id="send_network_speed"> Network Speed/Fee </span>
+                  <span class="details-title" id="send_network_speed">
+                    {{ $t('common.networkSpeedFee') }}
+                  </span>
                   <span class="text-muted" id="send_network_speed_avg_fee">
                     ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
                   </span>
@@ -80,7 +82,9 @@
                         >
                         <span v-else>{{ prettyFee }} {{ assetChain }}</span> /
                         {{ totalFeeInFiat }} USD
-                        <button class="btn btn-link" @click="resetCustomFee">Reset</button>
+                        <button class="btn btn-link" @click="resetCustomFee">
+                          {{ $t('common.reset') }}
+                        </button>
                       </div>
                       <FeeSelector
                         v-else
@@ -99,7 +103,7 @@
             <template v-if="!isCustomFeeSupported">
               <div class="network-header-container">
                 <span class="details-title" id="send_network_speed"
-                  ><strong> Network Speed/Fee </strong></span
+                  ><strong> {{ $t('common.networkSpeedFee') }} </strong></span
                 >
                 <span class="text-muted" id="send_network_speed_avg_fee">
                   ({{ prettyFee }} {{ assetChain }})
@@ -114,7 +118,7 @@
               :to="routeSource === 'assets' ? '/wallet' : `/accounts/${this.account.id}/${asset}`"
             >
               <button class="btn btn-light btn-outline-primary btn-lg" id="send_cancel_button">
-                Cancel
+                {{ $t('common.cancel') }}
               </button>
             </router-link>
             <button
@@ -123,7 +127,7 @@
               @click="review"
               :disabled="!canSend"
             >
-              Review
+              {{ $t('common.review') }}
             </button>
           </div>
         </div>
@@ -158,7 +162,7 @@
       <div class="send-confirm wrapper form">
         <div class="wrapper_top form">
           <div>
-            <label> Send </label>
+            <label> {{ $t('common.send') }} </label>
             <div class="d-flex align-items-center justify-content-between mt-0">
               <div id="confirm_send_value" class="confirm-value" :style="getAssetColorStyle(asset)">
                 {{ dpUI(amount) }} {{ asset }}
@@ -169,7 +173,7 @@
             </div>
           </div>
           <div class="detail-group" id="detail_group_network_fee">
-            <label class="text-muted"> Network Fee </label>
+            <label class="text-muted"> {{ $t('common.networkFee') }} </label>
             <div
               class="d-flex align-items-center justify-content-between mt-0"
               v-show="!updatingFees"
@@ -182,7 +186,7 @@
             <SpinnerIcon class="updating-fees" v-show="updatingFees" />
           </div>
           <div class="detail-group" id="detail_group_account_fee">
-            <label class="text-muted"> Amount + Fees </label>
+            <label class="text-muted"> {{ $t('common.amountPlusFees') }} </label>
             <div
               class="d-flex align-items-center justify-content-between mt-0"
               v-show="!updatingFees"
@@ -201,7 +205,7 @@
             <SpinnerIcon class="updating-fees" v-show="updatingFees" />
           </div>
           <div class="mt-40">
-            <label>Send To</label>
+            <label>{{ $t('pages.send.sendTo') }}</label>
             <p class="confirm-address" id="confirm-address">
               {{ confirmAddress }}
             </p>
@@ -215,7 +219,7 @@
               v-if="!loading"
               @click="showInputsStep"
             >
-              Edit
+              {{ $t('common.edit') }}
             </button>
             <button
               class="btn btn-primary btn-lg btn-icon"
@@ -224,7 +228,7 @@
               :disabled="loading"
             >
               <SpinnerIcon class="btn-loading" v-if="loading" />
-              <template v-else>Send {{ asset }}</template>
+              <template v-else>{{ $t('common.send') }} {{ asset }}</template>
             </button>
           </div>
         </div>
@@ -409,14 +413,14 @@ export default {
     },
     addressError() {
       if (!this.isValidAddress) {
-        return 'Wrong format. Please check the address.'
+        return this.$t('common.addressFormatError')
       }
       return null
     },
     amountError() {
       const amount = BN(this.amount)
       if (amount.gt(this.available)) {
-        return 'Lower amount. This exceeds available balance.'
+        return this.$t('common.lowerAmountError')
       }
       return null
     },
@@ -478,7 +482,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateFees', 'sendTransaction', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['updateFees', 'sendTransaction']),
     prettyBalance,
     dpUI,
     formatFiatUI,

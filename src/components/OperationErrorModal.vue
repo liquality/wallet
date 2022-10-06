@@ -4,15 +4,17 @@
       <div class="text-center text-danger">Oooops...</div>
     </template>
     <div class="justify-content-center" v-if="account && account.type.includes('ledger')">
-      <div class="modal-title d-flex justify-content-center">Can’t find the ledger Account</div>
+      <div class="modal-title d-flex justify-content-center">
+        {{ $t('components.operationErrorModal.cantFindAccount') }}
+      </div>
       <div class="step-icon d-flex justify-content-center">
         <LedgerIcon />
       </div>
       <ul class="step-instructions align-self-start">
-        <li>Plug the Ledger into the computer</li>
-        <li>Enter pin to unlock it</li>
-        <li>On the Ledger, navigate to the asset you want to access</li>
-        <li>Once connected follow the prompts on the Ledger</li>
+        <li>{{ $t('components.operationErrorModal.instructions1') }}</li>
+        <li>{{ $t('components.operationErrorModal.instructions2') }}</li>
+        <li>{{ $t('components.operationErrorModal.instructions3') }}</li>
+        <li>{{ $t('components.operationErrorModal.instructions4') }}</li>
       </ul>
       <p class="text-center text-break">
         {{ error }}
@@ -24,7 +26,9 @@
       </p>
     </div>
     <template #footer>
-      <button class="btn btn-outline-clear" @click="onClose">Ok</button>
+      <button class="btn btn-outline-clear" @click="onClose">
+        {{ $t('common.ok') }}
+      </button>
     </template>
   </Modal>
 </template>

@@ -10,13 +10,13 @@
       <div>
         <div class="account-container_balance_value">
           {{ nftAssetsCount || 0 }}
-          <span class="account-container_balance_code"
-            >NFT<span v-if="nftAssetsCount !== 1">S</span></span
-          >
+          <span class="account-container_balance_code">
+            {{ $t('pages.wallet.nfts', { count: nftAssetsCount }) }}
+          </span>
         </div>
-        <span class="account-container_balance_code" v-if="!isAccount && nftAssetsCount > 0"
-          >In {{ accountsWithNFTs }} Account<span v-if="accountsWithNFTs !== 1">s</span></span
-        >
+        <span class="account-container_balance_code" v-if="!isAccount && nftAssetsCount > 0">
+          {{ $t('common.in') }} {{ $t('common.account', { count: accountsWithNFTs }) }}
+        </span>
       </div>
     </div>
     <div class="account-container_address w-100" v-if="isAccount">
@@ -24,7 +24,7 @@
         class="btn btn-outline-primary"
         @click="copyAddress"
         v-tooltip.bottom="{
-          content: addressCopied ? 'Copied!' : 'Click to copy',
+          content: addressCopied ? $t('common.copied') : $t('common.clickToCopy'),
           hideOnTargetClick: false
         }"
       >
@@ -36,7 +36,7 @@
         @click="copyAddress"
         :href="addressLink"
         target="_blank"
-        v-tooltip.bottom="{ content: 'View in Explorer' }"
+        v-tooltip.bottom="{ content: $t('common.viewInExplorer') }"
       >
         <EyeIcon />
       </a>
@@ -51,7 +51,7 @@
         <div class="account-container_actions_button_wrapper">
           <SendIcon class="account-container_actions_button_icon" />
         </div>
-        Send
+        {{ $t('common.send') }}
       </router-link>
     </div>
   </div>

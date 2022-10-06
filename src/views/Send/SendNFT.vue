@@ -1,7 +1,7 @@
 <template>
   <div class="account-container">
     <template v-if="activeView === 'selectAsset'">
-      <NavBar :showBack="true" :backPath="routeSource" :backLabel="'Overview'">
+      <NavBar :showBack="true" :backPath="routeSource" :backLabel="$t('common.overview')">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <div class="account-content mx-3">
@@ -50,25 +50,25 @@
       </div>
       <div class="button-group mx-3">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="$router.push(routeSource)">
-          Cancel
+          {{ $t('common.cancel') }}
         </button>
         <button
           class="btn btn-primary btn-lg btn-icon"
           @click="next('selectedAsset')"
           :disabled="!selectedNFT"
         >
-          Next
+        {{ $t('common.next') }}
         </button>
       </div>
     </template>
     <template v-else-if="activeView === 'selectedAsset'">
-      <NavBar :showBackButton="true" :backClick="back" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="$t('common.back')">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <div class="selected-nft-asset mx-3 mt-4 h-100">
         <div class="d-flex flex-column justify-content-between h-100">
           <div class="mb-3">
-            <h3 class="text-uppercase">Selected Asset</h3>
+            <h3 class="text-uppercase">{{ $t('common.selectedAsset') }}</h3>
             <div class="selected-nft-asset__image">
               <div class="nft-image mr-2" style="--img-width: 110px">
                 <img
@@ -84,7 +84,7 @@
               </div>
             </div>
             <div class="selected-nft-asset__send-details">
-              <h3 class="text-uppercase">Send From</h3>
+              <h3 class="text-uppercase">{{ $t('pages.send.sendFrom') }}</h3>
               <div class="d-flex">
                 <img :src="getAssetIcon(asset)" class="asset-icon mr-3" />
                 <div>
@@ -95,11 +95,15 @@
                       <span><CopyIcon class="copy-icon" @click="copy(fromAddress)" /></span>
                     </div>
                   </div>
-                  <div class="text-muted">Available {{ balance }} {{ asset }}</div>
+                  <div class="text-muted">
+                    {{ $t('common.available') }} {{ balance }} {{ asset }}
+                  </div>
                 </div>
               </div>
               <div class="form-group mt-4">
-                <label for="address"><h3 class="text-uppercase">Send to</h3></label>
+                <label for="address">
+                  <h3 class="text-uppercase">{{ $t('pages.send.sendTo') }}</h3>
+                </label>
                 <div class="input-group">
                   <input
                     type="text"
@@ -107,7 +111,7 @@
                     v-model="address"
                     class="form-control form-control-sm"
                     id="address"
-                    placeholder="Address"
+                    :placeholder="$t('common.address')"
                     autocomplete="off"
                     required
                   />
@@ -124,11 +128,14 @@
           <DetailsContainer v-if="feesAvailable && isCustomFeeSupported">
             <template v-slot:header>
               <div class="network-header-container">
-                <span class="details-title" id="send_network_speed"> Network Speed/Fee </span>
+                <span class="details-title" id="send_network_speed">
+                  {{ $t('common.networkSpeedFee') }}
+                </span>
                 <span class="text-muted" id="send_network_speed_avg_fee">
                   ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
                 </span>
               </div>
+              <SpinnerIcon class="updating-fees" v-show="updatingFees" />
             </template>
             <template v-slot:content>
               <ul class="selectors">
@@ -141,7 +148,9 @@
                       >
                       <span v-else>{{ prettyFee }} {{ assetChain }}</span> /
                       {{ totalFeeInFiat }} USD
-                      <button class="btn btn-link" @click="resetCustomFee">Reset</button>
+                      <button class="btn btn-link" @click="resetCustomFee">
+                        {{ $t('common.reset') }}
+                      </button>
                     </div>
                     <FeeSelector
                       v-else
@@ -160,21 +169,24 @@
           <template v-if="!isCustomFeeSupported">
             <div class="network-header-container">
               <span class="details-title" id="send_network_speed"
-                ><strong> Network Speed/Fee </strong></span
+                ><strong> {{ $t('common.networkSpeedFee') }}</strong></span
               >
-              <span class="text-muted" id="send_network_speed_avg_fee">
+              <span v-show="!updatingFees" class="text-muted" id="send_network_speed_avg_fee">
                 ({{ prettyFee }} {{ assetChain }})
               </span>
             </div>
+            <SpinnerIcon class="updating-fees" v-show="updatingFees" />
           </template>
           <div class="button-group">
-            <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">Cancel</button>
+            <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">
+              {{ $t('common.cancel') }}
+            </button>
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"
-              :disabled="!canSend"
+              :disabled="!canSend || updatingFees"
             >
-              Review
+            {{ $t('common.review') }}
             </button>
           </div>
         </div>
@@ -184,7 +196,7 @@
       <NavBar
         :showBackButton="true"
         :backClick="(activeView = 'selectedAsset')"
-        :backLabel="'Back'"
+        :backLabel="$t('common.back')"
       >
         <span class="account-title">{{ title }}</span>
       </NavBar>
@@ -200,7 +212,7 @@
       />
     </template>
     <template class="send" v-else-if="activeView === 'custom-fees' && isEIP1559Fees">
-      <NavBar :showBackButton="true" :backClick="cancelCustomFee" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="cancelCustomFee" :backLabel="$t('common.back')">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <CustomFeesEIP1559
@@ -216,13 +228,13 @@
       />
     </template>
     <template v-else-if="activeView === 'review'">
-      <NavBar :showBackButton="true" :backClick="back" :backLabel="'Back'">
+      <NavBar :showBackButton="true" :backClick="back" :backLabel="$t('common.back')">
         <span class="account-title">{{ title }}</span>
       </NavBar>
       <div class="selected-nft-asset mx-3 mt-4 h-100">
         <div class="d-flex flex-column justify-content-between h-100">
           <div>
-            <h3 class="text-uppercase">Selected Asset</h3>
+            <h3 class="text-uppercase">{{ $t('common.selectedAsset') }}</h3>
             <div class="selected-nft-asset__image">
               <div class="nft-image mr-2" style="--img-width: 110px">
                 <img
@@ -238,13 +250,15 @@
               </div>
             </div>
             <div class="selected-nft-asset__send-details">
-              <h3 class="text-uppercase">Network speed/fee</h3>
+              <h3 class="text-uppercase">{{ $t('common.networkSpeedFee') }}</h3>
               <div class="d-flex justify-content-between">
                 <p>{{ prettyFee }} {{ asset }}</p>
                 <p>{{ totalFeeInFiat }} USD</p>
               </div>
               <div class="form-group mt-4">
-                <h3 for="address" class="text-uppercase text-muted">Send to</h3>
+                <h3 for="address" class="text-uppercase text-muted">
+                  {{ $t('pages.send.sendTo') }}
+                </h3>
                 <p class="address">
                   <span class="font-weight-bold">{{ startAddress }}</span
                   >{{ middleAddressPart }}<span class="font-weight-bold">{{ endAddress }}</span>
@@ -254,11 +268,11 @@
           </div>
           <div class="button-group">
             <button class="btn btn-light btn-outline-primary btn-lg" @click="next('selectedAsset')">
-              Edit
+              {{ $t('common.edit') }}
             </button>
             <button class="btn btn-primary btn-lg btn-icon" @click="sendNFT" :disabled="loading">
               <SpinnerIcon class="btn-loading" v-if="loading" />
-              <template v-else>Send NFT</template>
+              <template v-else>{{ $t('common.sendNFT') }}</template>
             </button>
           </div>
         </div>
@@ -329,16 +343,25 @@ export default {
       customFee: null,
       sendErrorMessage: '',
       address: '',
-      selectedFee: 'average'
+      selectedFee: 'average',
+      updatingFees: true
     }
   },
   async created() {
     if (this.$route.query.nftAsset) {
       this.activeView = 'selectedAsset'
-      this.selectedNFT = this.$route.query.nftAsset
+      const collectionName = this.$route.query.collection
+      const nftAssetId = this.$route.query.nftAsset
+      const collections = this.accountNftCollections(this.accountId)
+      if (collections && collections[collectionName]) {
+        this.selectedNFT = collections[collectionName].find((i) => i.token_id == nftAssetId)
+      }
     }
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(this.amount)
+    setTimeout(() => {
+      this.updatingFees = false
+    }, 1500)
     await this.trackAnalytics({
       event: 'Send NFT screen',
       properties: {
@@ -347,19 +370,6 @@ export default {
         label: `NFT`
       }
     })
-    if (this.selectedNFT) {
-      localStorage.setItem(
-        'nftAsset',
-        JSON.stringify(
-          this.selectedNFT.accountId
-            ? this.selectedNFT
-            : {
-                ...this.selectedNFT,
-                accountId: this.accountId
-              }
-        )
-      )
-    }
   },
   computed: {
     ...mapGetters([
@@ -380,13 +390,13 @@ export default {
     title() {
       switch (this.activeView) {
         case 'selectAsset':
-          return 'Select NFT'
+          return this.$t('pages.send.titleSelectNFT')
         case 'selectedAsset':
-          return 'Send NFT'
+          return this.$t('pages.send.titleSendNFT')
         case 'custom-fees':
-          return 'Custom Fees'
+          return this.$t('common.customFees')
         case 'review':
-          return 'Review Send NFT'
+          return this.$t('pages.send.titleReviewSendNFT')
 
         default:
           return ''
@@ -419,13 +429,10 @@ export default {
       if (this.$route.query.accountId) {
         return this.$route.query.accountId
       }
-      if (this.$route.query.nftAsset.accountId) {
-        return this.$route.query.nftAsset.accountId
-      }
       return this.selectedNFT.accountId
     },
     account() {
-      return this.accountsData.filter((account) => account.id === this.accountId)[0]
+      return this.accountItem(this.accountId)
     },
     assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
@@ -452,7 +459,7 @@ export default {
     },
     addressError() {
       if (!this.isValidAddress) {
-        return 'Wrong format. Please check the address.'
+        return this.$t('common.addressFormatError')
       }
       return null
     },
@@ -488,7 +495,7 @@ export default {
       return cryptoassets[this.asset].chain === this.account?.chain
     },
     asset() {
-      return getNativeAssetCode(this.activeNetwork, this.account?.chain)
+      return this.account ? getNativeAssetCode(this.activeNetwork, this.account?.chain) : null
     },
     startAddress() {
       return this.address.slice(0, 6)
@@ -505,7 +512,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['sendNFTTransaction', 'updateFees', 'trackAnalytics', 'updateNFTs']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['sendNFTTransaction', 'updateFees', 'updateNFTs']),
     getAssetIcon,
     shortenAddress,
     formatFiat,
@@ -594,12 +602,12 @@ export default {
     async _updateSendFees() {
       const sendFees = await estimateTransferNFT(
         this.account.id,
+        this.activeNetwork,
         this.address,
         [1],
         this.selectedNFT,
         this.customFee
       )
-
       this.sendFees = sendFees
     },
     updateSendFees: _.debounce(async function (amount) {
@@ -731,5 +739,13 @@ export default {
 
 .button-group {
   padding: 16px 0;
+}
+
+.updating-fees {
+  height: 24px !important;
+  margin-top: -6px !important;
+  circle {
+    stroke: #dedede;
+  }
 }
 </style>

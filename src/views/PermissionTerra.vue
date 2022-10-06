@@ -45,7 +45,7 @@
     <div class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" @click="reply(false)">
-          Cancel
+          {{ $t('common.cancel') }}
         </button>
         <button
           class="btn btn-primary btn-lg btn-icon"

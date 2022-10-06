@@ -4,11 +4,14 @@
       <LogoWallet />
     </div>
     <div>
-      <h2>Create {{ !imported ? 'New' : '' }} Password</h2>
+      <h2>
+        {{ $t('common.create') }} {{ !imported ? $t('common.new') : '' }}
+        {{ $t('common.password') }}
+      </h2>
     </div>
     <form class="form" autocomplete="off" v-on:submit.prevent="generate">
       <div class="form-group mb-4">
-        <label for="password">Choose Password ( at least 8 characters )</label>
+        <label for="password">{{ $t('pages.onboarding.setup.choosePassword') }}</label>
         <div class="input-group">
           <input
             type="password"
@@ -23,11 +26,11 @@
         <small
           v-show="showPasswordLengthError && validatePasswordLength"
           class="onboading-password_errorLength form-text hidden"
-          >Password is too short</small
+          >{{ $t('pages.onboarding.setup.passwordTooShort') }}</small
         >
       </div>
       <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
+        <label for="confirmPassword">{{ $t('pages.onboarding.setup.confirmPassword') }}</label>
         <div class="input-group">
           <input
             type="password"
@@ -42,14 +45,14 @@
           v-show="!passwordMatch"
           class="onboading-password_errorLength form-text hidden"
           id="password_match_error"
-          >Passwords don't match.</small
+          >{{ $t('pages.onboarding.setup.passwordDontMatch') }}</small
         >
       </div>
     </form>
     <div class="footer-container">
       <div class="footer-content">
         <button class="btn btn-light btn-lg btn-footer btn-icon" @click="$emit('on-cancel')">
-          Cancel
+          {{ $t('common.cancel') }}
         </button>
         <button
           class="btn btn-primary btn-lg btn-footer btn-icon"
@@ -57,7 +60,7 @@
           :disabled="disableNext"
           @click="next"
         >
-          Continue
+          {{ $t('common.continue') }}
         </button>
       </div>
     </div>

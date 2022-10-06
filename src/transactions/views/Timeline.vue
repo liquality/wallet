@@ -7,7 +7,7 @@
         <div class="liquality-timeline_container left completed">
           <div class="content">
             <h3 :id="item.from">
-              From:
+              {{ $t('common.from') }}:
               <a
                 :href="addressLink(fromAddress, item.from)"
                 target="_blank"
@@ -24,7 +24,7 @@
         >
           <div class="content">
             <h3 :id="item.to">
-              To:
+              {{ $t('common.to') }}:
               <a
                 :href="addressLink(item.toAddress, item.to)"
                 target="_blank"
@@ -39,7 +39,7 @@
       </div>
       <div v-if="item.status === 'SUCCESS' && tx && tx.confirmations > 0">
         <br />
-        <small>Received</small>
+        <small> {{ $t('common.received') }}:</small>
         <br />
         <small>{{ prettyTime(item.endTime) }}</small>
       </div>

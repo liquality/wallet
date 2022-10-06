@@ -339,6 +339,5 @@ describe('SEND feature', async () => {
     await page.waitForSelector('#transaction_details_send_to_link', { visible: true })
     const sedToDetails = await page.$eval('#transaction_details_send_to_link', el => el.textContent)
     expect(sedToDetails,'Send to transaction details should have unstoppabledomain name').contain(domainName)
-
   })
 })

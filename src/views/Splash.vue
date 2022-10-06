@@ -9,13 +9,13 @@
     <div class="footer-container">
       <router-link :to="{ path: '/onboarding/home', query: { isImport: true } }"
         ><p class="text-center" id="import_with_seed_phrase_option">
-          Import with seed phrase
+          {{ $t('pages.splash.importWithSeedPhrase') }}
         </p></router-link
       >
       <p v-if="keyUpdatedAt">
         <router-link to="/open"
           ><button class="btn btn-light btn-lg btn-block btn-icon" id="open_wallet_option">
-            Open wallet
+            {{ $t('pages.splash.openWallet') }}
           </button></router-link
         >
       </p>
@@ -26,7 +26,7 @@
             query: { isNewUser: true }
           }"
           ><button class="btn btn-primary btn-lg btn-block btn-icon" id="create_new_wallet_option">
-            Create a new wallet
+            {{ $t('pages.splash.createNewWallet') }}
           </button></router-link
         >
       </p>
