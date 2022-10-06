@@ -14,6 +14,7 @@
     "received": "Recibido",
     "completed": "Completado",
     "advanced": "Avanzado",
+    "address": "Dirección",
     "tokenID": "ID de Token",
     "tokenStandard": "Estándar de Token",
     "transactionId": "ID de Transacción",
