@@ -1,24 +1,24 @@
 <template>
   <div class="notification-content">
     <div v-if="!receiveFeeProblem && isSameChain" class="notification-text">
-      Not enough {{ assetChain }} to cover fees. Lower speed to account for gas or get more.
+      {{ $t('components.noFundsForNetworkFee.noEnoughAsset', { asset: assetChain }) }}
     </div>
     <div v-if="receiveFeeProblem || !isSameChain" class="notification-text">
-      Lower speed to account for gas to cover both sides of transaction, or get more.
+      {{ $t('components.noFundsForNetworkFee.lowerSpeed') }}
     </div>
     <br />
     <div v-if="isSameChain || receiveFeeProblem">
       <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
-        Get {{ assetChain }}
+        {{ $t('components.noFundsForNetworkFee.getAsset', { asset: assetChain }) }}
       </router-link>
     </div>
     <div v-else-if="!isSameChain">
       <router-link :to="accountUrl" class="btn btn-option get-bridgeAsset-btn">
-        Get {{ assetChain }}
+        {{ $t('components.noFundsForNetworkFee.getAsset', { asset: assetChain }) }}
       </router-link>
-      and
+      {{ $t('common.and') }}
       <router-link :to="toAccountUrl" class="btn btn-option get-bridgeAsset-btn">
-        Get {{ toAssetChain }}
+        {{ $t('components.noFundsForNetworkFee.getAsset', { asset: toAssetChain }) }}
       </router-link>
     </div>
   </div>

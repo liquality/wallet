@@ -1,9 +1,11 @@
 <template>
   <div class="notification-content">
     <div class="notification-text">
-      A balance is required to swap and you need ETH to pay for gas.
+      {{ $t('components.ethRequiredMesssage.message') }}
     </div>
-    <router-link :to="accountUrl" class="btn btn-option get-eth-btn"> Get ETH </router-link>
+    <router-link :to="accountUrl" class="btn btn-option get-eth-btn">
+      {{ $t('components.ethRequiredMesssage.getETH') }}
+    </router-link>
   </div>
 </template>
 

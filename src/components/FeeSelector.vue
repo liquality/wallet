@@ -11,7 +11,7 @@
         @click="$emit('input', name)"
       >
         <input type="radio" name="fee" autocomplete="off" :checked="name === value" />
-        {{ name }}
+        {{ $t(`common.${name}`) }}
       </label>
     </div>
     <button
@@ -19,7 +19,7 @@
       class="btn btn-link"
       @click="$emit('custom-selected', asset)"
     >
-      Custom
+      {{ $t('common.custom') }}
     </button>
   </div>
 </template>
@@ -33,7 +33,9 @@ import { getChain } from '@liquality/cryptoassets'
 import { mapState } from 'vuex'
 
 export default {
-  ...mapState(['activeNetwork']),
+  computed: {
+    ...mapState(['activeNetwork'])
+  },
   props: ['asset', 'value', 'fees', 'totalFees', 'fiatRates', 'swap'],
   methods: {
     getTooltip(name) {
@@ -51,7 +53,7 @@ export default {
         content += `${BN(total).dp(6)} ${nativeAsset}`
         content += `<br />${totalFiat} USD`
       } else {
-        const chainId = cryptoassets[this.asset].chain
+        const chainId = cryptoassets[this.asset]?.chain
         const { unit } = getChain(this.activeNetwork, chainId)?.fees || ''
         content += `${this.fees[name].fee} ${unit}`
       }

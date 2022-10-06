@@ -1,7 +1,9 @@
 <template>
   <div class="account-container">
     <NavBar :showMenu="false">
-      <span class="account-title"> Add Ledger Accounts </span>
+      <span class="account-title">
+        {{ $t('pages.accounts.addLedgerAccounts') }}
+      </span>
     </NavBar>
     <Connect
       v-if="currentStep === 'connect'"
@@ -90,7 +92,8 @@ export default {
   },
   methods: {
     getAssetIcon,
-    ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance', 'trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions(['createAccount', 'getLedgerAccounts', 'updateAccountBalance']),
     async connect({ asset, walletType, page }) {
       this.loading = true
       // connect to ledger
@@ -143,12 +146,12 @@ export default {
             })
           } else {
             this.ledgerConnected = false
-            this.ledgerError = { message: 'No accounts found' }
+            this.ledgerError = { message: this.$t('pages.accounts.onAccountsFound') }
           }
         }
       } catch (error) {
         this.ledgerError = {
-          message: error.message || 'Error getting accounts'
+          message: error.message || this.$t('pages.accounts.errorGettingAccounts')
         }
         this.ledgerConnected = false
         console.error('error getting accounts', error)
@@ -192,7 +195,7 @@ export default {
           const assetKeys = this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
 
           const assets = assetKeys.filter((asset) => {
-            return cryptoassets[asset].chain === this.selectedAsset.chain
+            return cryptoassets[asset]?.chain === this.selectedAsset.chain
           })
 
           const selectedAccounts = { ...this.selectedAccounts }

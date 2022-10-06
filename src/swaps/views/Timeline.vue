@@ -71,7 +71,7 @@
                       v-if="!feeSelectorLoading"
                       @click="closeFeeSelector()"
                     >
-                      Cancel
+                    {{ $t('common.cancel') }}
                     </button>
                     <button
                       class="btn btn-sm btn-primary btn-icon"
@@ -383,7 +383,7 @@ export default {
       ]
     },
     feeSelectorUnit() {
-      const chain = cryptoassets[this.feeSelectorAsset].chain
+      const chain = cryptoassets[this.feeSelectorAsset]?.chain
       return getChain(this.activeNetwork, chain).fees.unit
     },
     timelineDiagramSteps() {

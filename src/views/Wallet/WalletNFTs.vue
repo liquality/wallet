@@ -1,46 +1,43 @@
 <template>
   <div class="nft-collectibles">
     <div v-if="Object.keys(assets).length">
-      <template v-for="(asset, key) in assets">
-        <NFTAssets
-          :assets="asset"
-          :collectionName="key"
-          :key="asset.id"
-          :source="source"
-          :isAccount="isAccount"
-          :accountId="accountId"
-        />
-      </template>
+      <NFTAssets
+        v-for="(asset, key) in assets"
+        :assets="asset"
+        :collectionName="key"
+        :key="asset.id"
+        :source="source"
+        :isAccount="isAccount"
+        :accountId="accountId"
+      />
     </div>
     <div class="activity-empty m-4" v-else>
-      <p>
-        Once you start owning NFTs with accounts in your Liquality wallet you will see them here.
-      </p>
+      <p>{{ $t('pages.wallet.nftDescription') }}.</p>
       <div class="d-flex justify-content-center brand">
         <OpenSea @click="openMarketplace('polygon')" class="cursor-pointer" />
       </div>
-      <p class="text-center">Explore NFTs on Polygon, Ethereum and Solana.</p>
+      <p class="text-center">{{ $t('pages.wallet.exploreNFT') }}.</p>
       <div class="d-flex justify-content-center mb-2">
         <a
           class="btn btn-primary"
           :href="nftExplorerLink('polygon')"
           target="_blank"
           rel="noopener noreferrer"
-          >Check out OpenSea</a
+          >{{ $t('pages.wallet.checkOutOpenSea') }}</a
         >
       </div>
       <hr />
       <div class="d-flex justify-content-center brand">
         <StratosNFT @click="openMarketplace('arbitrum')" class="cursor-pointer" />
       </div>
-      <p class="text-center">Discover and collect NFTs on Arbitrum</p>
+      <p class="text-center">{{ $t('pages.wallet.discoverCollect') }}</p>
       <div class="d-flex justify-content-center">
         <a
           class="btn btn-primary"
           :href="nftExplorerLink('arbitrum')"
           target="_blank"
           rel="noopener noreferrer"
-          >Check out Stratos</a
+          >{{ $t('pages.wallet.checkOutStratos') }}</a
         >
       </div>
       <div class="d-flex justify-content-center">
@@ -49,7 +46,7 @@
           href="https://blog.liquality.io/nfts-are-here-manage-your-collections-from-multiple-chains-on-your-liquality-wallet/"
           target="_blank"
           rel="noopener noreferrer"
-          >Learn how it works</a
+          >{{ $t('pages.wallet.learnHowItWorks') }}</a
         >
       </div>
     </div>
@@ -95,12 +92,12 @@ export default {
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
-    ...mapGetters(['allNftCollections', 'accountNftCollections', 'accountsData']),
+    ...mapGetters(['allNftCollections', 'accountNftCollections', 'accountItem']),
     accountId() {
       return this.$route.params.id
     },
     account() {
-      return this.accountsData.filter((account) => account.id === this.accountId)[0]
+      return this.accountItem(this.accountId)
     },
     chain() {
       return this.account?.chain

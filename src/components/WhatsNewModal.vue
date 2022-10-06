@@ -1,7 +1,7 @@
 <template>
   <Modal v-if="open" @close="close" body-class="">
     <template #header>
-      <h6>What's New</h6>
+      <h6>{{ $t('components.whatsNew.title') }}</h6>
     </template>
     <template>
       <div class="items">
@@ -10,18 +10,10 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <h3>RC 0.73.0</h3>
-            <pre class="text-wrap">
-- Send, receive and swap tokens in your brand new OP address</pre
-            >
-            <h3>Unstoppable Domains integration</h3>
-            <pre class="text-wrap">
-- Now you can send tokens to a human-readable address like liquality.crypto</pre
-            >
-            <pre class="text-wrap">
-- This integration works on Bitcoin, Ethereum, Arbitrum, Avalanche, Polygon and Solana blockchains</pre
-            >
-            <h3>NFT bug fixes</h3>
+            <pre class="text-wrap">NFT bug fixes</pre>
+            <pre class="text-wrap">Localization updates</pre>
+            <pre class="text-wrap">Easy EVM chains build</pre>
+            <pre class="text-wrap">Ledger bug fixes</pre>
           </div>
         </div>
       </div>
@@ -36,20 +28,17 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-Use Optimism to access a dApp like Aave or Curve Finance and pay only a few cents for every transaction?</pre
-            >
-            <pre class="text-wrap">
-Send your ETH assets there using our built-in cross-chain swap feature.</pre
-            >
+            <pre class="text-wrap">Change the language by going to settings?</pre>
           </div>
         </div>
       </div>
     </template>
     <template #footer>
       <div class="footer">
-        <div class="text-muted">Version {{ appVersion }}</div>
-        <button class="btn btn-outline-clear" id="wats_new_close_btn" @click="close">Close</button>
+        <div class="text-muted">{{ $t('common.version') }} {{ appVersion }}</div>
+        <button class="btn btn-outline-clear" id="wats_new_close_btn" @click="close">
+          {{ $t('common.close') }}
+        </button>
       </div>
     </template>
   </Modal>

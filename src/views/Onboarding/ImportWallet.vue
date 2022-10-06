@@ -4,8 +4,8 @@
       <LogoWallet />
     </div>
     <div class="import-wallet_top" id="import-wallet_top">
-      <h2>Unlock wallet</h2>
-      <p>Enter the seed phrase, in the same order saved when creating your wallet.</p>
+      <h2>{{ $t('pages.onboarding.import.unlockWallet') }}</h2>
+      <p>{{ $t('pages.onboarding.import.enterSeedPhrase') }}</p>
     </div>
     <div class="import-wallet_bottom">
       <div class="btn-group" id="word_button_group">
@@ -15,7 +15,7 @@
           id="twelve_words_option"
           @click="setMnemonicLength(12)"
         >
-          12 words
+          {{ $t('pages.onboarding.import.words', { words: 12 }) }}
         </button>
         <button
           :class="{ active: numWords === 24 }"
@@ -23,7 +23,7 @@
           id="twenty_four_words_option"
           @click="setMnemonicLength(24)"
         >
-          24 words
+          {{ $t('pages.onboarding.import.words', { words: 24 }) }}
         </button>
       </div>
       <form class="form import-wallet_seed" autocomplete="off">
@@ -46,7 +46,7 @@
           class="btn btn-light btn-outline-primary btn-lg btn-footer btn-icon"
           @click="$router.push('/onboarding/home')"
         >
-          Cancel
+          {{ $t('common.cancel') }}
         </button>
         <button
           id="import_wallet_continue_button"
@@ -54,7 +54,7 @@
           :disabled="nextDisabled"
           @click="next"
         >
-          Continue
+          {{ $t('common.continue') }}
         </button>
       </div>
     </div>

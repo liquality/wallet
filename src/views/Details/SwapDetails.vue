@@ -1,6 +1,6 @@
 <template>
   <div class="details-wrapper">
-    <NavBar :showBackButton="true" :backClick="goBack" :backLabel="'Back'">
+    <NavBar :showBackButton="true" :backClick="goBack" :backLabel="$t('common.back')">
       {{ `Swap ${item.from} to ${item.to}` }}
     </NavBar>
     <div class="swap-details">
@@ -16,7 +16,7 @@
               v-if="item.error"
               @click="retry"
             >
-              Retry
+            {{ $t('pages.details.retry') }}
             </button>
             <CompletedIcon v-else-if="item.status === 'SUCCESS'" class="swap-details_status-icon" />
             <RefundedIcon
@@ -37,14 +37,14 @@
             <h2 v-if="['SUCCESS', 'REFUNDED', 'FAILED'].includes(item.status)">
               {{ item.status }}
             </h2>
-            <h2 v-else>Pending Receipt</h2>
+            <h2 v-else>{{ $t('pages.details.pendingReceipt') }}</h2>
             <p>{{ prettyBalance(item.toAmount, item.to) }} {{ item.to }}</p>
           </div>
         </div>
         <div class="row">
           <div class="col">
             <h2 class="d-flex align-items-center">
-              Rate
+              {{ $t('common.rate') }}
               <SwapProviderLabel class="ml-2" :provider="item.provider" :network="activeNetwork" />
             </h2>
             <p>
@@ -56,11 +56,13 @@
       <div class="swap-details_fee" id="swap-details-network-fee-section">
         <div class="row">
           <div class="col">
-            <h2>Network Speed/Fee</h2>
+            <h2>{{ $t('common.networkSpeedFee') }}</h2>
             <p v-for="fee in txFees" :key="fee.asset" :id="'network_fee_' + fee.asset">
               {{ fee.asset }} Fee: {{ dpUI(fee.fee) }} {{ fee.unit }}
             </p>
-            <p v-if="receiveFee">{{ this.item.to }} Receive Fee: {{ dpUI(receiveFee) }}</p>
+            <p v-if="receiveFee">
+              {{ this.item.to }} {{ $t('common.receiveFee') }}: {{ dpUI(receiveFee) }}
+            </p>
           </div>
         </div>
       </div>
@@ -68,14 +70,13 @@
     </div>
     <Modal v-if="ledgerSignRequired && showLedgerModal" @close="showLedgerModal = false">
       <template #header>
-        <h5>Sign to {{ ledgerModalTitle }}</h5>
+        <h5>{{ $t('pages.details.signTo') }} {{ ledgerModalTitle }}</h5>
       </template>
       <template>
-        <div class="modal-title">On Your Ledger</div>
+        <div class="modal-title">{{ $t('pages.details.onYourLedger') }}</div>
         <div class="ledger-options-container">
           <div class="ledger-options-instructions">
-            Follow prompts to verify and accept the amount, then confirm the transaction. There may
-            be a lag.
+            {{ $t('pages.details.ledgerInstructions') }}.
           </div>
           <p>
             <LedgerSignRquest class="ledger-sign-request" />
@@ -85,7 +86,7 @@
       <template #footer>
         <button class="btn btn-outline-clear" @click="retry" :disabled="retryingSwap">
           <template v-if="retryingSwap">...</template>
-          <template v-else>Sign</template>
+          <template v-else>{{ $t('common.sign') }}</template>
         </button>
       </template>
     </Modal>
@@ -145,8 +146,8 @@ export default {
       return getFeeAsset(this.item.to)
     },
     txFees() {
-      const fromChain = cryptoassets[this.item.from].chain
-      const toChain = cryptoassets[this.item.to].chain
+      const fromChain = cryptoassets[this.item.from]?.chain
+      const toChain = cryptoassets[this.item.to]?.chain
 
       const fromFee = feePerUnit(this.item.fee, fromChain)
 
@@ -226,7 +227,6 @@ export default {
   },
   methods: {
     ...mapActions(['retrySwap', 'updateFees']),
-    ...mapActions('app', ['startBridgeListener']),
     getNativeAsset,
     getFeeAsset,
     prettyBalance,

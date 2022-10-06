@@ -4,7 +4,7 @@
       <div v-for="n in 150" :key="n" :class="`confetti-${n}`"></div>
     </div>
     <div class="congrats-seed_top">
-      <h1 class="mb-3">Congrats!</h1>
+      <h1 class="mb-3">{{ $t('pages.onboarding.setup.congrats') }}</h1>
       <CompletedIcon class="congrats-seed_icon" />
     </div>
   </div>
@@ -27,8 +27,12 @@ export default {
   &_top {
     z-index: 2;
     position: absolute;
-    top: 178px;
-    left: 112px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     h1 {
       color: $color-text-secondary;
     }

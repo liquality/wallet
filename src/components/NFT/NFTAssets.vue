@@ -19,18 +19,22 @@
                 isAccount: isAccount,
                 chain: chain
               }
-            }"
-            >See all</router-link
-          >
+            }">
+            {{ $t('components.nft.seeAll') }}
+          </router-link>
         </span>
       </div>
       <div
         class="nft-assets__container__images"
         :class="{ 'nft-assets__container__images--is-account': isAccount }"
       >
-        <template v-for="nft in isAccount ? assets : firstThreeAssets">
-          <NFTAsset :nftAsset="nft" :accountId="accountId" :mode="'thumbnail'" :key="nft.id" />
-        </template>
+        <NFTAsset
+          v-for="nft in isAccount ? assets : firstThreeAssets"
+          :nftAsset="nft"
+          :accountId="accountId"
+          :mode="'thumbnail'"
+          :key="nft.id"
+        />
       </div>
     </div>
   </div>
@@ -129,7 +133,7 @@ export default {
       gap: 12px;
       width: 100%;
       overflow: auto;
-      justify-content: start;
+      justify-content: flex-start;
       align-items: center;
       margin-right: 20px;
 

@@ -1,4 +1,7 @@
 const path = require('path')
+const AssetReplacePlugin = require('./plugins/AssetReplacePlugin')
+
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 module.exports = {
   lintOnSave: false,
@@ -9,6 +12,24 @@ module.exports = {
       sass: {
         prependData: '@import "@/assets/scss/_vars.scss";'
       }
+    }
+  },
+
+  configureWebpack: (config) => {
+    config.entry.pageProvider = path.resolve('./src/pageProvider/index.js')
+    config.plugins.push(
+      new AssetReplacePlugin({
+        name: '#PAGEPROVIDER#',
+        entry: 'pageProvider'
+      })
+    )
+    config.optimization.splitChunks = {
+      cacheGroups: {
+        default: false
+      }
+    }
+    if (isDevelopment) {
+      config.devtool = 'cheap-source-map'
     }
   },
 
@@ -38,6 +59,12 @@ module.exports = {
           plugins: [{ removeViewBox: false }, { removeDimensions: true }]
         }
       })
+
+    config.module
+      .rule('html')
+      .test(/\.html$/)
+      .use('raw-loader')
+      .loader('raw-loader')
   },
 
   pluginOptions: {
@@ -52,12 +79,15 @@ module.exports = {
           }
         }
       },
+      extensionReloaderOptions: {
+        entries: {
+          contentScript: ['pageProvider', 'content-script'],
+          background: 'background'
+        }
+      },
       manifestTransformer: (manifest) => {
         manifest.content_security_policy =
           "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://cdn.segment.com 'sha256-ZgDy59Dh4jH9g/vcPYFpoQ1wumB4IdPEOS1BJc08i+Y='; object-src 'self';"
-        manifest.externally_connectable = {
-          matches: [`${process.env.VUE_APP_LEDGER_BRIDGE_URL}/*`]
-        }
         return manifest
       }
     }

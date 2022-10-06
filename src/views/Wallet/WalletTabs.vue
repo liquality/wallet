@@ -3,17 +3,17 @@
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <router-link class="nav-link" id="asserts_tab" :to="{ name: 'WalletAssets' }">
-          Assets
+          {{ $t('pages.wallet.assets') }}
         </router-link>
       </li>
       <li class="nav-item">
         <router-link class="nav-link" id="nfts_tab" :to="{ name: 'WalletNFTs' }">
-          NFTs ({{ nftAssetsCount || 0 }})
+          {{ $t('pages.wallet.nfts', { count: nftAssetsCount }) }}
         </router-link>
       </li>
       <li class="nav-item">
         <router-link class="nav-link" id="activity_tab" :to="{ name: 'WalletActivity' }">
-          Activity
+          {{ $t('pages.wallet.activity') }}
         </router-link>
       </li>
     </ul>
@@ -28,7 +28,7 @@ import { mapGetters, mapState } from 'vuex'
 export default {
   computed: {
     ...mapState(['accounts', 'activeNetwork', 'activeWalletId']),
-    ...mapGetters(['accountsData', 'allNftCollections']),
+    ...mapGetters(['allNftCollections']),
     nftAssetsCount() {
       return Object.values(this.allNftCollections).reduce(
         (acc, collection) => acc + collection.length,

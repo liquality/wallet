@@ -23,12 +23,12 @@
         <span>USD</span>
       </div>
       <span id="total_assets">
-        {{ accountsData.length }} Asset{{ accountsData.length === 1 ? '' : 's' }}
+        {{ accountsData.length }} {{ $t('common.asset', { count: accountsData.length }) }}
       </span>
       <div class="wallet-actions">
         <router-link to="/assets/send" class="wallet-actions-item send-action" id="send_action">
           <SendIcon />
-          Send
+          {{ $t('common.send') }}
         </router-link>
         <router-link
           to="/assets/swap.send"
@@ -36,7 +36,7 @@
           id="swap_action"
         >
           <SwapIcon />
-          Swap
+          {{ $t('common.swap') }}
         </router-link>
         <router-link
           to="/assets/receive"
@@ -44,7 +44,7 @@
           id="receive_action"
         >
           <ReceiveIcon />
-          Receive
+          {{ $t('common.receive') }}
         </router-link>
       </div>
     </div>
