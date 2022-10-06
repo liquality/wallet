@@ -484,7 +484,6 @@ export default {
   methods: {
     ...mapActions('app', ['trackAnalytics']),
     ...mapActions(['updateFees', 'sendTransaction']),
-    ...mapActions('app', ['startBridgeListener']),
     prettyBalance,
     dpUI,
     formatFiatUI,
@@ -647,18 +646,23 @@ export default {
       const { amount, address, selectedFee, currentStep, maxOptionActive, customFee } = sendParams
       this.amount = amount
       this.address = address
+      if (maxOptionActive) {
+        this.maxOptionActive = maxOptionActive === 'true' ? true : false
+      }
       if (selectedFee) {
-        this.selectedFee = selectedFee
         if (customFee) {
-          this.customFee = customFee
-          this.applyCustomFee({ fee: customFee })
+          this.customFee = Number(customFee)
+          if (this.maxOptionActive) {
+            this.updateMaxSendFees()
+          } else {
+            this.updateSendFees(this.amount)
+          }
         }
+
+        this.selectedFee = selectedFee
       }
       if (currentStep) {
         this.currentStep = currentStep
-      }
-      if (maxOptionActive) {
-        this.maxOptionActive = maxOptionActive === 'true' ? true : false
       }
     }
     this.updatingFees = true
