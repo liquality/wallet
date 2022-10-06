@@ -135,6 +135,7 @@
                   ({{ selectedFeeLabel }} / {{ prettyFee }} {{ assetChain }})
                 </span>
               </div>
+              <SpinnerIcon class="updating-fees" v-show="updatingFees" />
             </template>
             <template v-slot:content>
               <ul class="selectors">
@@ -170,10 +171,11 @@
               <span class="details-title" id="send_network_speed"
                 ><strong> {{ $t('common.networkSpeedFee') }}</strong></span
               >
-              <span class="text-muted" id="send_network_speed_avg_fee">
+              <span v-show="!updatingFees" class="text-muted" id="send_network_speed_avg_fee">
                 ({{ prettyFee }} {{ assetChain }})
               </span>
             </div>
+            <SpinnerIcon class="updating-fees" v-show="updatingFees" />
           </template>
           <div class="button-group">
             <button class="btn btn-light btn-outline-primary btn-lg" @click="back()">
@@ -182,7 +184,7 @@
             <button
               class="btn btn-primary btn-lg btn-icon"
               @click="next('review')"
-              :disabled="!canSend"
+              :disabled="!canSend || updatingFees"
             >
             {{ $t('common.review') }}
             </button>
@@ -341,16 +343,25 @@ export default {
       customFee: null,
       sendErrorMessage: '',
       address: '',
-      selectedFee: 'average'
+      selectedFee: 'average',
+      updatingFees: true
     }
   },
   async created() {
     if (this.$route.query.nftAsset) {
       this.activeView = 'selectedAsset'
-      this.selectedNFT = this.$route.query.nftAsset
+      const collectionName = this.$route.query.collection
+      const nftAssetId = this.$route.query.nftAsset
+      const collections = this.accountNftCollections(this.accountId)
+      if (collections && collections[collectionName]) {
+        this.selectedNFT = collections[collectionName].find((i) => i.token_id == nftAssetId)
+      }
     }
     await this.updateFees({ asset: this.assetChain })
     await this.updateSendFees(this.amount)
+    setTimeout(() => {
+      this.updatingFees = false
+    }, 1500)
     await this.trackAnalytics({
       event: 'Send NFT screen',
       properties: {
@@ -359,19 +370,6 @@ export default {
         label: `NFT`
       }
     })
-    if (this.selectedNFT) {
-      localStorage.setItem(
-        'nftAsset',
-        JSON.stringify(
-          this.selectedNFT.accountId
-            ? this.selectedNFT
-            : {
-                ...this.selectedNFT,
-                accountId: this.accountId
-              }
-        )
-      )
-    }
   },
   computed: {
     ...mapGetters([
@@ -431,13 +429,10 @@ export default {
       if (this.$route.query.accountId) {
         return this.$route.query.accountId
       }
-      if (this.$route.query.nftAsset.accountId) {
-        return this.$route.query.nftAsset.accountId
-      }
       return this.selectedNFT.accountId
     },
     account() {
-      return this.accountsData.filter((account) => account.id === this.accountId)[0]
+      return this.accountItem(this.accountId)
     },
     assetHistory() {
       return this.activity.filter((item) => item.from === this.asset)
@@ -500,7 +495,7 @@ export default {
       return cryptoassets[this.asset].chain === this.account?.chain
     },
     asset() {
-      return getNativeAssetCode(this.activeNetwork, this.account?.chain)
+      return this.account ? getNativeAssetCode(this.activeNetwork, this.account?.chain) : null
     },
     startAddress() {
       return this.address.slice(0, 6)
@@ -607,12 +602,12 @@ export default {
     async _updateSendFees() {
       const sendFees = await estimateTransferNFT(
         this.account.id,
+        this.activeNetwork,
         this.address,
         [1],
         this.selectedNFT,
         this.customFee
       )
-
       this.sendFees = sendFees
     },
     updateSendFees: _.debounce(async function (amount) {
@@ -744,5 +739,13 @@ export default {
 
 .button-group {
   padding: 16px 0;
+}
+
+.updating-fees {
+  height: 24px !important;
+  margin-top: -6px !important;
+  circle {
+    stroke: #dedede;
+  }
 }
 </style>
