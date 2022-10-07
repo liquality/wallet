@@ -1063,7 +1063,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['updateMarketData', 'getQuotes', 'updateFees', 'newSwap', 'updateFiatRates']),
+    ...mapActions([
+      'updateMarketData',
+      'getQuotes',
+      'getSlowQuotes',
+      'updateFees',
+      'newSwap',
+      'updateFiatRates'
+    ]),
     ...mapActions('app', ['trackAnalytics']),
     ...mapGetters(['suggestedFeePrices']),
     shortenAddress,
@@ -1229,23 +1236,14 @@ export default {
     debounceUpdateQuotes: _.debounce(async function () {
       await this._updateQuotes()
     }, 1000),
-    async _updateQuotes() {
-      const quotes = await this.getQuotes({
-        network: this.activeNetwork,
-        from: this.asset,
-        to: this.toAsset,
-        fromAccountId: this.fromAccountId,
-        toAccountId: this.toAccountId,
-        amount: BN(this.sendAmount),
-        walletId: this.activeWalletId
-      })
-
+    setQuotes(quotes, shouldReselect) {
       let shouldChooseNewQuote = false
       if (
         quotes.length &&
         quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)
       ) {
         this.quotes = quotes
+        if (!shouldReselect) return
         if (this.selectedQuote) {
           // Preserve selected provider
           if (this.userSelectedQuote) {
@@ -1281,7 +1279,7 @@ export default {
       } else {
         this.selectedQuote = null
       }
-      this.updatingQuotes = false
+
       this.cannotCoverMinimum =
         !this.canSwap &&
         !shouldChooseNewQuote &&
@@ -1289,6 +1287,31 @@ export default {
         BN(this.sendAmount).lt(this.max)
       // if(this.cannotCoverMinimum) this.sendAmount = 1
       this.resetQuoteTimer(!this.canSwap && shouldChooseNewQuote ? 1000 : QUOTE_TIMER_MS)
+    },
+    async _updateQuotes() {
+      const result = await this.getQuotes({
+        network: this.activeNetwork,
+        from: this.asset,
+        to: this.toAsset,
+        fromAccountId: this.fromAccountId,
+        toAccountId: this.toAccountId,
+        amount: BN(this.sendAmount),
+        walletId: this.activeWalletId,
+        slowQuoteThreshold: 1000
+      })
+
+      const quotes = result.quotes
+
+      if (result.hasSlowQuotes) {
+        this.getSlowQuotes({ requestId: result.requestId }).then((slowQuotes) => {
+          this.setQuotes([...this.quotes, ...slowQuotes], false)
+          this.updatingQuotes = false
+        })
+      } else {
+        this.updatingQuotes = false
+      }
+
+      this.setQuotes(quotes, true)
     },
     updateQuotes() {
       if (BN(this.sendAmount).eq(0)) return // Don't update quote when amount 0
