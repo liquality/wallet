@@ -20,7 +20,6 @@ async function setupTerraStreams() {
 
   extensionStream.pipe(pageStream)
   pageStream.pipe(extensionStream)
-  console.log('Stream setup successfully')
 }
 
 function injectProviders(state) {
@@ -33,11 +32,9 @@ function injectProviders(state) {
       return { chain, asset, network }
     })
 
-  let globalEthereum = {
-    override: injectEthereum
-  }
-  if (globalEthereum.override) {
-    globalEthereum.ethereumChain = getGlobalEthereumChain(state)
+  const globalEthereum = {
+    override: injectEthereum,
+    ethereumChain: getGlobalEthereumChain(state)
   }
 
   const injectConfig = {
