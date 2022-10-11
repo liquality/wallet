@@ -1239,6 +1239,7 @@ export default {
     setQuotes(quotes, shouldReselect) {
       let shouldChooseNewQuote = false
       if (
+        quotes &&
         quotes.length &&
         quotes.every((quote) => quote.from === this.asset && quote.to === this.toAsset)
       ) {
@@ -1301,10 +1302,10 @@ export default {
       })
 
       const quotes = result.quotes
-
       if (result.hasSlowQuotes) {
         this.getSlowQuotes({ requestId: result.requestId }).then((slowQuotes) => {
-          this.setQuotes([...this.quotes, ...slowQuotes], false)
+          const shouldReselect = !quotes.length // Reselect on slow quotes if there were no fast quotes
+          this.setQuotes([...this.quotes, ...slowQuotes], shouldReselect)
           this.updatingQuotes = false
         })
       } else {
