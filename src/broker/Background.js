@@ -1,6 +1,6 @@
 import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
-import { getAsset, getChain } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 import { connectRemote } from './terra-injection'
 
 function attemptOrWarn(func, message) {

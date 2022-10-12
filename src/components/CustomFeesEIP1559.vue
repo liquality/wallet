@@ -81,9 +81,8 @@
         <div class="custom-fee-inputs">
           <div class="input-wrapper">
             <p>
-              <strong>
-                {{ $t('components.customFees.minerTip') }}
-              </strong>{{ ' ' + $t('components.customFees.toSpeedUp') }}
+              <strong> {{ $t('components.customFees.minerTip') }} </strong
+              >{{ ' ' + $t('components.customFees.toSpeedUp') }}
             </p>
             <span>${{ minerTipFiat }}</span>
             <div class="custom-fee-details-item">
@@ -114,7 +113,8 @@
             <p>
               <strong>
                 {{ $t('components.customFees.maxFee') }}
-              </strong> {{ $t('components.customFees.perGas') }}
+              </strong>
+              {{ $t('components.customFees.perGas') }}
             </p>
             <span>${{ maxFiat }}</span>
             <div class="custom-fee-details-item">
@@ -202,7 +202,7 @@
             id="custom_fee_cancel_button"
             @click="cancel"
           >
-          {{ $t('common.cancel') }}
+            {{ $t('common.cancel') }}
           </button>
           <button
             class="btn btn-primary btn-lg btn-block"
@@ -210,7 +210,7 @@
             @click="apply"
             :disabled="!tipFee || !maxFee"
           >
-          {{ $t('common.apply') }}
+            {{ $t('common.apply') }}
           </button>
         </div>
       </div>
