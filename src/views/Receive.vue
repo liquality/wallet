@@ -86,7 +86,7 @@ import BuyCryptoButton from '@/components/BuyCrypto/BuyCryptoButton'
 import CopyIcon from '@/assets/icons/copy.svg'
 import CopyWhiteIcon from '@/assets/icons/copy_white.svg'
 import TickIcon from '@/assets/icons/tick.svg'
-import { ChainId, getChain, getAsset, isEvmChain } from '@liquality/cryptoassets'
+import { ChainId, getChain, isEvmChain } from '@liquality/cryptoassets'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../package.json'
 
@@ -136,7 +136,7 @@ export default {
       }
     },
     faucet() {
-      const asset = getAsset(this.activeNetwork, this.asset)
+      const asset = cryptoassets[this.asset]
       const chain = getChain(this.activeNetwork, asset.chain)
 
       if (chain.faucetUrl) {
