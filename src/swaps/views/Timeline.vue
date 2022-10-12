@@ -71,7 +71,7 @@
                       v-if="!feeSelectorLoading"
                       @click="closeFeeSelector()"
                     >
-                    {{ $t('common.cancel') }}
+                      {{ $t('common.cancel') }}
                     </button>
                     <button
                       class="btn btn-sm btn-primary btn-icon"
@@ -335,7 +335,6 @@ import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronRightIcon from '@/assets/icons/chevron_right.svg'
 import { getSwapProviderConfig } from '@liquality/wallet-core/dist/src/swaps/utils'
 import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
-import { getAsset } from '@liquality/cryptoassets'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import { isObject } from 'lodash-es'
@@ -427,7 +426,7 @@ export default {
     },
     async updateTransactions() {
       const timeline = await getSwapTimeline(this.item, ({ network, walletId, asset }) => {
-        const chainId = getAsset(network, asset).chain
+        const chainId = cryptoassets[asset].chain
         return this.client({ network, walletId, chainId })
       })
 

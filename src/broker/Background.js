@@ -188,7 +188,7 @@ class Background {
     let setDefaultEthereum = false
     let { chain, asset } = data
     if (asset) {
-      chain = getAsset(activeNetwork, asset).chain
+      chain = this.store.getters.cryptoassets(activeNetwork, asset).chain
     }
     if (!chain) {
       const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum

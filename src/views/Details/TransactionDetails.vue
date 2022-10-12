@@ -40,7 +40,7 @@
             </p>
             <p id="transaction_detail_sent_amount_today">
               ${{
-                prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from]) 
+                prettyFiatBalance(prettyBalance(item.amount, item.from), fiatRates[item.from])
               }}
               / {{ $t('pages.details.today') }}
             </p>
@@ -120,7 +120,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import moment from '@liquality/wallet-core/dist/src/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { getChain, getAsset } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
 import { getSendTxFees, feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
 import {
@@ -277,7 +277,7 @@ export default {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
-        chainId: getAsset(this.activeNetwork, this.item.from).chain,
+        chainId: cryptoassets[this.item.from].chain,
         accountId: this.item.accountId
       })
       const transaction =
