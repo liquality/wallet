@@ -88,10 +88,10 @@
     "provider": "Provider",
     "localesLabels": {
         "en": "English",
-        "es": "Spanish",
-        "zh": "Chinese (Simplified)",
-        "pt": "Portuguese",
-        "ph": "Filipino",
-        "cb": "Bisaya (Cebuano)"
+        "es": "Español",
+        "zh": "中文（简体）",
+        "pt": "Português",
+        "ph": "Tagalog",
+        "cb": "Cebuano"
     }
 }

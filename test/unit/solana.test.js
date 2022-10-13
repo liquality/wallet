@@ -1,10 +1,11 @@
 import { Client } from '@liquality/client'
-import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
 import { SolanaNetworks } from '@liquality/solana-networks'
 import { SolanaRpcProvider } from '@liquality/solana-rpc-provider'
 import { SolanaWalletProvider } from '@liquality/solana-wallet-provider'
 import { SolanaSwapProvider } from '@liquality/solana-swap-provider'
 import { SolanaSwapFindProvider } from '@liquality/solana-swap-find-provider'
+import { Network } from '@liquality/wallet-core/dist/src/store/types'
+import { ChainId, getChain } from '@liquality/cryptoassets'
 
 test('Solana Network TesnetConfig', () => {
   expect(SolanaNetworks.solana_testnet).toEqual({
@@ -51,7 +52,7 @@ test('Create Client for mainnet and attach Solana RpcProvider successfully', () 
 })
 
 test('Create Client for testnet and attach Solana Wallet Provider successfully', () => {
-  const solanaNetwork = ChainNetworks.solana.testnet
+  const solanaNetwork = getChain(Network.Testnet, ChainId.Solana)
   const client = new Client()
   const derivationPath = `m/44'/501'/${solanaNetwork.walletIndex}'/0'`
 
@@ -67,7 +68,7 @@ test('Create Client for testnet and attach Solana Wallet Provider successfully',
 })
 
 test('Create Client for Mainnet and attach Solana Wallet Provider successfully', () => {
-  const solanaNetwork = ChainNetworks.solana.mainnet
+  const solanaNetwork = getChain(Network.Mainnet, ChainId.Solana)
   const client = new Client()
   const derivationPath = `m/44'/501'/${solanaNetwork.walletIndex}'/0'`
 
@@ -117,7 +118,7 @@ test('Create Client for mainnet and attach Solana Swap Find Provider successfull
 test('Create Client for testnet and attach All Providers successfully', () => {
   const client = new Client()
 
-  const solanaNetwork = ChainNetworks.solana.testnet
+  const solanaNetwork = getChain(Network.Testnet, ChainId.Solana)
   const derivationPath = `m/44'/501'/${solanaNetwork.walletIndex}'/0'`
 
   client.addProvider(new SolanaRpcProvider(SolanaNetworks.solana_testnet))
@@ -137,7 +138,7 @@ test('Create Client for testnet and attach All Providers successfully', () => {
 test('Create Client for mainnet and attach All Providers successfully', () => {
   const client = new Client()
 
-  const solanaNetwork = ChainNetworks.solana.mainnet
+  const solanaNetwork = getChain(Network.Mainnet, ChainId.Solana)
   const derivationPath = `m/44'/501'/${solanaNetwork.walletIndex}'/0'`
 
   client.addProvider(new SolanaRpcProvider(SolanaNetworks.solana_mainnet))

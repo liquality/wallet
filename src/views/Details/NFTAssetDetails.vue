@@ -26,7 +26,12 @@
             @click="
               $router.push({
                 path: '/wallet/nfts/send',
-                query: { nftAsset: nftAsset, source: source, accountId: accountId }
+                query: {
+                  nftAsset: nftAsset.token_id,
+                  source: source,
+                  collection: nftAsset.collection?.name,
+                  accountId: accountId
+                }
               })
             "
             v-tooltip.bottom="{
@@ -232,7 +237,6 @@ export default {
       activeTab: 'overview',
       nftAsset: null,
       accountId: '',
-      prevRoute: null,
       defaultDescription: 'This NFT has no description.'
     }
   },
@@ -246,13 +250,8 @@ export default {
     NFTQuantity,
     MarkdownItVueLight
   },
-  beforeRouteEnter(to, from, next) {
-    next((vm) => {
-      vm.prevRoute = from
-    })
-  },
   computed: {
-    ...mapGetters(['accountsData']),
+    ...mapGetters(['accountItem', 'allNftCollections']),
     ...mapState(['activeNetwork']),
     source() {
       return this.$route.fullPath
@@ -261,7 +260,7 @@ export default {
       return NFTThumbnailImage
     },
     account() {
-      return this.accountsData.filter((account) => account.id === this.accountId)[0]
+      return this.accountItem(this.accountId)
     },
     address() {
       return getChain(this.activeNetwork, this.account.chain)?.formatAddressUI(
@@ -278,28 +277,23 @@ export default {
       return this.account?.chain
     },
     asset() {
-      return getNativeAssetCode(this.activeNetwork, this.account?.chain)
+      return this.account ? getNativeAssetCode(this.activeNetwork, this.account?.chain) : null
     },
     addressLink() {
       return getAddressExplorerLink(this.address, this.asset, this.activeNetwork)
     }
   },
-  async created() {
-    const nftAsset = await JSON.parse(localStorage.getItem('nftAsset'))
-
-    if (nftAsset && this.prevRoute.path === '/wallet/nfts/send') {
-      this.nftAsset = nftAsset
-      this.accountId = nftAsset.accountId
-      return
+  created() {
+    const collectionName = this.$route.query.collection
+    const nftAssetId = this.$route.query.nftAsset
+    if (this.allNftCollections[collectionName]) {
+      this.nftAsset = this.allNftCollections[collectionName].find((i) => i.id == nftAssetId)
+      if (this.$route.query.accountId) {
+        this.accountId = this.$route.query.accountId
+      } else {
+        this.accountId = this.nftAsset.accountId
+      }
     }
-    this.nftAsset = this.$route.query.nftAsset
-    this.accountId = this.$route.query.nftAsset.accountId
-      ? this.$route.query.nftAsset.accountId
-      : this.$route.query.accountId
-    return
-  },
-  destroyed() {
-    localStorage.removeItem('nftAsset')
   },
   methods: {
     shortenAddress,

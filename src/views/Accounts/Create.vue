@@ -215,7 +215,6 @@ export default {
     async createNewAccount() {
       this.loading = true
       const assetKeys = this.enabledAssets[this.activeNetwork]?.[this.activeWalletId] || []
-
       const assets = assetKeys.filter((asset) => {
         return cryptoassets[asset]?.chain === this.selectedChain.id
       })

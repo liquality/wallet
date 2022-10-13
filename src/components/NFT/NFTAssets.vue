@@ -29,9 +29,13 @@
         class="nft-assets__container__images"
         :class="{ 'nft-assets__container__images--is-account': isAccount }"
       >
-        <template v-for="nft in isAccount ? assets : firstThreeAssets">
-          <NFTAsset :nftAsset="nft" :accountId="accountId" :mode="'thumbnail'" :key="nft.id" />
-        </template>
+        <NFTAsset
+          v-for="nft in isAccount ? assets : firstThreeAssets"
+          :nftAsset="nft"
+          :accountId="accountId"
+          :mode="'thumbnail'"
+          :key="nft.id"
+        />
       </div>
     </div>
   </div>

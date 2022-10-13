@@ -81,7 +81,7 @@
     "experiments": {
         "experiments": "Experimentos",
         "multiaccounts": "Multi-Accounts",
-        "multiaccountsDescription": "Permite gestionar cuentas y tener múltiples cuentas por cadena"
+        "multiaccountsDescription": "Permite gestionar cuentas y tener múltiples cuentas por red"
     },
     "manageAssets": {
         "assetView": "Vista de Activos",
@@ -92,7 +92,7 @@
         "searchForAsset": "Buscar un activo"
     },
     "customToken": {
-        "selectChain": "Selecciona cadena...",
+        "selectChain": "Seleccionar red...",
         "tokenContractAddress": "Dirección de Contrato del Token",
         "name": "Nombre",
         "tokenSymbol": "Símbolo del Token",
@@ -148,7 +148,7 @@
         "eyeInstructions": "¡Mantén esto alejado de miradas indiscretas!",
         "exportLedger": "No se puede exportar de una cuenta de Ledger",
         "createAccount": "Crear Cuenta",
-        "selectNetwork": "Selecionar Cadena",
+        "selectNetwork": "Selecionar Red",
         "chooseAccountName": "Elige un Nombre de Cuenta",
         "accountAliasErrorFiveChars": "El nombre debe tener 5 o más caracteres",
         "accountAliasErrorTwentyChars": "El nombre no puede tener más de 20 caracteres",
@@ -193,7 +193,7 @@
     "enable": {
         "connectRequest": "Solicitud de Conexión",
         "selectAccounts": "Selecciona cuentas",
-        "filterByChain": "Filtrar por cadena",
+        "filterByChain": "Filtrar por red",
         "deny": "Rechazar",
         "byGrantingPermission": "Al dar permiso a",
         "theyCanRead": "pueden leer las direcciones públicas de tu cuenta.",
