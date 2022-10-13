@@ -182,13 +182,12 @@ class Background {
   onExternalMessage(connection, { id, type, data }) {
     const { url } = connection.sender
     const { origin } = new URL(url)
-    const { externalConnections, activeWalletId, injectEthereumChain, activeNetwork } =
-      this.store.state
+    const { externalConnections, activeWalletId, injectEthereumChain } = this.store.state
 
     let setDefaultEthereum = false
     let { chain, asset } = data
     if (asset) {
-      chain = this.store.getters.cryptoassets(activeNetwork, asset).chain
+      chain = this.store.getters.cryptoassets[asset].chain
     }
     if (!chain) {
       const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum
