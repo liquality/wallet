@@ -6,7 +6,7 @@
     <div class="warning-phrase_warning-line w-100"></div>
     <div class="mx-auto mt-2 px-2 mb-5 text-center">
       <h1 class="my-2" id="show_seed_phrase">{{ title }}</h1>
-      <h4 id="show_seed_phrase_warning"> {{ $t('pages.onboarding.warning.seedPhraseWarning') }}</h4>
+      <h4 id="show_seed_phrase_warning">{{ $t('pages.onboarding.warning.seedPhraseWarning') }}</h4>
     </div>
     <div class="warning-phrase_eye-svg mx-auto mt-4">
       <Eye />
@@ -22,7 +22,7 @@
             class="btn btn-light btn-outline-primary btn-lg"
             id="show_seed_phrase_cancel_button"
           >
-             {{ $t('common.cancel') }}
+            {{ $t('common.cancel') }}
           </button>
           <router-link :to="nextPath">
             <button class="btn btn-primary btn-lg" id="i_have_privacy_button">
