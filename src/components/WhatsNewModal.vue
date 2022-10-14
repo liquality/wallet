@@ -59,6 +59,7 @@ import { version } from '/package.json'
 import { mapActions, mapState } from 'vuex'
 import ArrowLeftIcon from '@/assets/icons/arrow_left.svg'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
+// import {getDatabase} from 'firebase/database'
 
 export default {
   components: {
