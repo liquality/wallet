@@ -1298,7 +1298,7 @@ export default {
         toAccountId: this.toAccountId,
         amount: BN(this.sendAmount),
         walletId: this.activeWalletId,
-        slowQuoteThreshold: 1000
+        slowQuoteThreshold: 5000
       })
 
       const quotes = result.quotes
