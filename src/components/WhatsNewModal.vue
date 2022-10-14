@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Bug fix on "Default Web3 Wallet" button</pre>
+            <pre class="text-wrap">Custom Tokens fix</pre>
           </div>
         </div>
       </div>
