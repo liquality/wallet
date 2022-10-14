@@ -41,7 +41,7 @@ export default {
   computed: {
     ...mapState(['wallets', 'activeWalletId']),
     wallet: function () {
-      return this.wallets.find(wallet => wallet.id === this.activeWalletId)
+      return this.wallets.find((wallet) => wallet.id === this.activeWalletId)
     },
     seedList: function () {
       return this.wallet.mnemonic.split(' ')

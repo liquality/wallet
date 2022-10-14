@@ -16,7 +16,7 @@
               v-if="item.error"
               @click="retry"
             >
-            {{ $t('pages.details.retry') }}
+              {{ $t('pages.details.retry') }}
             </button>
             <CompletedIcon v-else-if="item.status === 'SUCCESS'" class="swap-details_status-icon" />
             <RefundedIcon

@@ -12,7 +12,9 @@
           </p>
         </div>
         <div class="form-group">
-          <label v-if="feeInUsdValue">{{ $t('common.transactionFee') }} {{ feeInUsdValue }} USD</label>
+          <label v-if="feeInUsdValue"
+            >{{ $t('common.transactionFee') }} {{ feeInUsdValue }} USD</label
+          >
         </div>
       </div>
 

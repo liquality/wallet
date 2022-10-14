@@ -10,10 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">NFT bug fixes</pre>
-            <pre class="text-wrap">Localization updates</pre>
-            <pre class="text-wrap">Easy EVM chains build</pre>
-            <pre class="text-wrap">Ledger bug fixes</pre>
+            <pre class="text-wrap">Bug fix on "Default Web3 Wallet" button</pre>
           </div>
         </div>
       </div>
