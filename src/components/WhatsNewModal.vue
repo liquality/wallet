@@ -17,6 +17,15 @@
           </ul>
         </div>
       </div>
+      <span>
+        <Clap :fill="hasClapped ? '#9d4dfa' : '#3D4767'" class="cursor-pointer" @click="clap()" />
+        <span class="ml-2">
+          <template v-if="loading">
+            <SpinnerIcon class="btn-loading" />
+          </template>
+          <span v-else>{{ clapCount }}</span>
+        </span>
+      </span>
     </template>
     <template #footer v-if="whatsNewModalContent.length > 1">
       <div class="footer">
@@ -59,20 +68,39 @@ import { version } from '/package.json'
 import { mapActions, mapState } from 'vuex'
 import ArrowLeftIcon from '@/assets/icons/arrow_left.svg'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
-// import {getDatabase} from 'firebase/database'
+import Clap from './icons/Clap.vue'
+import firebase from 'firebase'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   components: {
     Modal,
     ArrowRightIcon,
     ArrowLeftIcon,
-    Logo
+    Logo,
+    Clap,
+    SpinnerIcon
   },
   data: function () {
     return {
-      open: false,
-      currentView: 1
+      open: true,
+      currentView: 1,
+      hasClapped: false,
+      loading: false,
+      clapCount: 0
     }
+  },
+  mounted() {
+    firebase
+      .auth()
+      .signInAnonymously()
+      .then(() => {
+        console.log('signed in anonymously')
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+    this.getClapCount()
   },
   computed: {
     ...mapState(['whatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
@@ -90,6 +118,41 @@ export default {
     ...mapActions(['setWhatsNewModalVersion']),
     close() {
       this.open = false
+    },
+    getClapCount() {
+      this.loading = true
+      const db = firebase.firestore()
+      db.collection('claps')
+        .doc(this.appVersion)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            this.clapCount = doc.data().count
+          } else {
+            db.collection('claps').doc(this.appVersion).set({ count: 0 })
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    clap() {
+      if (this.hasClapped) {
+        this.hasClapped = false
+        this.clapCount > 0 ? this.clapCount-- : this.clapCount
+        firebase.firestore().collection('claps').doc(this.appVersion).update({
+          count: this.clapCount
+        })
+      } else {
+        this.hasClapped = true
+        this.clapCount++
+        firebase.firestore().collection('claps').doc(this.appVersion).update({
+          count: this.clapCount
+        })
+      }
     }
   },
   created() {

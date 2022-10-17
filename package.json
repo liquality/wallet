@@ -41,7 +41,7 @@
     "date-fns": "2.28.0",
     "ethers": "5.5.4",
     "extension-port-stream": "^2.0.1",
-    "firebase": "^9.12.1",
+    "firebase": "8.3.2",
     "human-standard-token-abi": "^2.0.0",
     "i18n-js": "^4.1.1",
     "lodash-es": "^4.17.15",
