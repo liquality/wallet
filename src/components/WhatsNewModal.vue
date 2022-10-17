@@ -83,7 +83,7 @@ export default {
   },
   data: function () {
     return {
-      open: true,
+      open: false,
       currentView: 1,
       hasClapped: false,
       loading: false,
@@ -94,9 +94,7 @@ export default {
     firebase
       .auth()
       .signInAnonymously()
-      .then(() => {
-        console.log('signed in anonymously')
-      })
+      .then(() => {})
       .catch((error) => {
         console.error(error)
       })
