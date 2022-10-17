@@ -62,7 +62,6 @@
 </template>
 <script>
 import Modal from '@/components/Modal'
-import whatsNew from '@/assets/whats_new.json'
 import Logo from '@/components/icons/Logo'
 import { version } from '/package.json'
 import { mapActions, mapState } from 'vuex'
@@ -87,7 +86,9 @@ export default {
       currentView: 1,
       hasClapped: false,
       loading: false,
-      clapCount: 0
+      loadingContent: true,
+      clapCount: 0,
+      whatsNewModalContent: {}
     }
   },
   mounted() {
@@ -105,9 +106,7 @@ export default {
     appVersion() {
       return version
     },
-    whatsNewModalContent() {
-      return whatsNew
-    },
+
     carouselLines() {
       return this.whatsNewModalContent.length
     }
@@ -153,8 +152,15 @@ export default {
       }
     }
   },
-  created() {
-    if (this.whatsNewModalVersion !== this.appVersion) {
+  async created() {
+    if (
+      this.whatsNewModalVersion !== this.appVersion ||
+      process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS
+    ) {
+      const locale = this.currentLocale || process.env.VUE_APP_DEFAULT_LOCALE
+      const content = await import(`@/locales/${locale}/whats_new.json`)
+      this.whatsNewModalContent = content.default
+      this.loadingContent = false
       this.open = true
       this.setWhatsNewModalVersion({ version: this.appVersion })
     }
