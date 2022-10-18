@@ -10,7 +10,7 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Custom Tokens fix</pre>
+            <pre class="text-wrap">LIFI + Debridge + Move to Goerli</pre>
           </div>
         </div>
       </div>
