@@ -98,7 +98,7 @@
         "tokenSymbol": "Token Symbol",
         "decimals": "Decimals",
         "addToken": "Add Token",
-        "addCustomToken": "Add Custom Token"
+        "addCustomToken": "Add Token"
     },
     "wallet": {
         "assets": "Assets",
