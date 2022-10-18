@@ -94,6 +94,7 @@ export default {
     this.setNftAssetsCount()
   },
   computed: {
+    ...mapActions('app', ['trackAnalytics']),
     ...mapState(['activeWalletId', 'activeNetwork', 'addresses']),
     ...mapGetters(['accountsData', 'accountNftCollections', 'allNftCollections']),
     source() {
@@ -110,7 +111,14 @@ export default {
       return this.accountsData.filter((account) => account.id === this.id)[0]
     },
     accountsWithNFTs() {
-      return this.accountsData.filter((account) => account.nfts && account.nfts.length > 0).length
+      let lengthOfNFTs = this.accountsData.filter((account) => account.nftAssets.length > 0).length
+      this.trackAnalytics({
+        event: 'nft_accounts',
+        properties: {
+          nft_accounts: lengthOfNFTs
+        }
+      })
+      return lengthOfNFTs
     },
     address() {
       if (this.isAccount) {
