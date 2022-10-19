@@ -28,8 +28,12 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">use Lifi and deBridge with more than different 100 swap paths;</pre>
-            <pre class="text-wrap">use LiFi and deBridge to swap between akmost all EVM chains our wallet currently supports (except RSK, where you can use our fastBTC swap provider)</pre>
+            <pre class="text-wrap">
+use Lifi and deBridge with more than different 100 swap paths;</pre
+            >
+            <pre class="text-wrap">
+use LiFi and deBridge to swap between akmost all EVM chains our wallet currently supports (except RSK, where you can use our fastBTC swap provider)</pre
+            >
           </div>
         </div>
       </div>
