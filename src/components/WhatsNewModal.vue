@@ -28,8 +28,12 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Use LI.FI and deBridge with more than 100 different swap paths</pre>
-            <pre class="text-wrap">Use LI.FI and deBridge to swap between almost all EVM chains our wallet currently supports</pre>
+            <pre class="text-wrap">
+Use LI.FI and deBridge with more than 100 different swap paths</pre
+            >
+            <pre class="text-wrap">
+Use LI.FI and deBridge to swap between almost all EVM chains our wallet currently supports</pre
+            >
           </div>
         </div>
       </div>
