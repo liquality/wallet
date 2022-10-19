@@ -3759,9 +3759,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/cryptoassets@npm:1.16.0-next.4":
-  version: 1.16.0-next.4
-  resolution: "@liquality/cryptoassets@npm:1.16.0-next.4"
+"@liquality/cryptoassets@npm:1.16.1":
+  version: 1.16.1
+  resolution: "@liquality/cryptoassets@npm:1.16.1"
   dependencies:
     "@ethersproject/address": 5.7.0
     "@types/bs58": 4.0.1
@@ -3770,7 +3770,7 @@ __metadata:
     bs58: 4.0.1
     ethereumjs-util: 7.1.5
     lodash: 4.17.21
-  checksum: 99c543e5c3aa87a435b584a400512dd0115b1a874437813300b023ccb8d80ccbf275a87f136378afe1a70f5fd001cb78d6fabb7cbe4bc9facf772323d234bf4b
+  checksum: ca93290faf7268a77de988c03968119f7347091adb6893225d9b5669a11ba3065eff4009bd1e05685672bc450e38acc9616988725642a7d0ef241e122715d7d6
   languageName: node
   linkType: hard
 
@@ -3868,9 +3868,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/wallet-core@npm:1.31.0-next.4":
-  version: 1.31.0-next.4
-  resolution: "@liquality/wallet-core@npm:1.31.0-next.4"
+"@liquality/wallet-core@npm:1.31.1":
+  version: 1.31.1
+  resolution: "@liquality/wallet-core@npm:1.31.1"
   dependencies:
     "@blobfishkate/sovryncontracts": 1.3.27
     "@chainify/bitcoin": 1.2.33
@@ -3893,7 +3893,7 @@ __metadata:
     "@ethersproject/transactions": 5.7.0
     "@hop-protocol/sdk": 0.0.1-beta.314
     "@lifi/sdk": 1.0.2
-    "@liquality/cryptoassets": 1.16.0-next.4
+    "@liquality/cryptoassets": 1.16.1
     "@metamask/eth-sig-util": ^4.0.1
     "@terra-money/terra.js": 3.1.3
     "@thorchain/asgardex-util": ^0.10.0
@@ -3919,7 +3919,7 @@ __metadata:
     urql: ^2.2.0
     vue: ^2.6.11
     vuex: ^3.1.3
-  checksum: a715b1ab3e817ade1e69fd2e3971dd726dc0b9ff884973361c3a863ed5a39d476ebed5e7da5adc3ac19fb93284d6ce81adaf99c9d02846655af5c014fac1db71
+  checksum: 83fa502daa0aa2635b1c18986eb0f2a43cad74f91b63d78e54e790ca6b0227b220fb82bf2c07964661b50a9fffee773a938a42f27f8bfb2d0ce97ef167a2a58a
   languageName: node
   linkType: hard
 
@@ -18123,11 +18123,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "liquality-wallet@workspace:."
   dependencies:
-    "@liquality/cryptoassets": 1.16.0-next.4
+    "@liquality/cryptoassets": 1.16.1
     "@liquality/ethereum-utils": ^1.13.12
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
-    "@liquality/wallet-core": 1.31.0-next.4
+    "@liquality/wallet-core": 1.31.1
     "@terra-money/terra.js": 3.1.3
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/vue": ^5.8.2
