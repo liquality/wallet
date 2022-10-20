@@ -1,6 +1,6 @@
 import { I18n } from 'i18n-js'
 
-const i18n = new I18n()
+export const i18n = new I18n()
 
 export const loadLocale = async (locale, namespaces = ['common', 'components', 'pages']) => {
   if (!i18n.translations[locale]) {
