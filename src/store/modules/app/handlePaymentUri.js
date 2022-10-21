@@ -1,5 +1,6 @@
 import qs from 'qs'
 import { currencyToUnit } from '@liquality/cryptoassets'
+import { CUSTOM_ERRORS, createInternalError } from '@liquality/error-parser'
 
 export const handlePaymentUri = async ({ dispatch, rootGetters }, { data }) => {
   const { uri } = data
@@ -11,7 +12,7 @@ export const handlePaymentUri = async ({ dispatch, rootGetters }, { data }) => {
     bitcoin: 'BTC'
   }[parsed.protocol.replace(':', '')]
 
-  if (!asset) throw new Error('Unsupported payment URI')
+  if (!asset) throw createInternalError(CUSTOM_ERRORS.Unsupported.PaymentURI)
 
   const address = parsed.pathname
   const params = qs.parse(parsed.search.replace('?', ''))

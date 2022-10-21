@@ -293,7 +293,7 @@
           <tr v-if="item.error">
             <td class="text-danger text-left small-12">Error</td>
             <td class="text-danger" id="item_error">
-              <pre>{{ item.error.replace('Error: ', '') }}</pre>
+              <pre>{{ itemError }}</pre>
             </td>
           </tr>
           <tr>
@@ -337,7 +337,9 @@ import { getSwapProviderConfig } from '@liquality/wallet-core/dist/src/swaps/uti
 import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
+import { isLiqualityErrorString, LiqualityErrorStringToJson } from '@liquality/error-parser'
 import { isObject } from 'lodash-es'
+import { translateLiqualityError } from '../../utils/liqualityErrors'
 
 export default {
   components: {
@@ -365,6 +367,13 @@ export default {
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )
+    },
+    itemError(error) {
+      if (isLiqualityErrorString(error)) {
+        return translateLiqualityError(LiqualityErrorStringToJson(error))
+      }
+
+      return error.replace('Error: ', '')
     },
     reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)

@@ -1,7 +1,7 @@
 import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { getChain } from '@liquality/cryptoassets'
-import { LiqualityError } from '@liquality/error-parser'
+import { CUSTOM_ERRORS, createInternalError, LiqualityError } from '@liquality/error-parser'
 import { connectRemote } from './terra-injection'
 import { translateLiqualityError } from '../utils/liqualityErrors'
 
@@ -180,7 +180,7 @@ class Background {
         break
 
       default:
-        throw new Error(`Received an invalid message type: ${type}`)
+        throw createInternalError(CUSTOM_ERRORS.Invalid.MessageType(type))
     }
   }
 

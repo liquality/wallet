@@ -2,6 +2,12 @@ import { stringify } from 'qs'
 import { emitter } from '../../utils'
 import { createPopup } from '../../../broker/utils'
 import { ChainId } from '@liquality/cryptoassets'
+import {
+  CUSTOM_ERRORS,
+  createInternalError,
+  NoActiveWalletError,
+  WalletLockedError
+} from '@liquality/error-parser'
 
 const CONFIRM_REQUIRED = [
   /^wallet.buildTransaction$/,
@@ -36,12 +42,13 @@ export const requestPermission = async (
   if (!requestPermissionActive) {
     commit('SET_REQUEST_PERMISSION_ACTIVE', { active: true })
     await dispatch('requestUnlockWallet')
-    if (!rootState.unlockedAt) throw new Error('Wallet is locked. Unlock the wallet first.')
-    if (!rootState.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
+    if (!rootState.unlockedAt) throw new WalletLockedError()
+    if (!rootState.activeWalletId) throw new NoActiveWalletError()
 
     let { asset, accountId, method, args, chain } = data
 
-    if (!ALLOWED.some((re) => re.test(method))) throw new Error('Method not allowed')
+    if (!ALLOWED.some((re) => re.test(method)))
+      throw createInternalError(CUSTOM_ERRORS.Unsupported.Method)
 
     const { activeNetwork: network, activeWalletId: walletId } = rootState
 
