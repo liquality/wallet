@@ -1,3 +1,4 @@
+import { TRANSLATIONS } from '@liquality/error-parser'
 import { I18n } from 'i18n-js'
 
 export const i18n = new I18n()
@@ -11,7 +12,7 @@ export const loadLocale = async (locale, namespaces = ['common', 'components', '
         resources[n] = translations.default
       })
     )
-    i18n.store({ [locale]: { ...resources } })
+    i18n.store({ [locale]: { ...resources, ...TRANSLATIONS.walletExtension[locale] } })
   }
 }
 
