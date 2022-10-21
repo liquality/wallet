@@ -368,12 +368,12 @@ export default {
         (item) => item.id === this.id
       )
     },
-    itemError(error) {
-      if (isLiqualityErrorString(error)) {
-        return translateLiqualityError(LiqualityErrorStringToJson(error))
+    itemError() {
+      if (isLiqualityErrorString(this.item.error)) {
+        return translateLiqualityError(LiqualityErrorStringToJson(this.item.error))
       }
 
-      return error.replace('Error: ', '')
+      return this.item.error.replace('Error: ', '')
     },
     reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)
