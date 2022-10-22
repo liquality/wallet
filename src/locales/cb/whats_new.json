@@ -1,11 +1,24 @@
 [
   {
     "page": "1",
-    "title": "Did You Know...",
-    "description": "Change the language by going to settings?"
+    "title": "Features",
+    "content": [
+      "Integration with LI.FI as a swap provider",
+      "Integration with deBridge as a swap provider",
+      "Move to Goerli Testnet",
+      "Solana Endpoint Change to Quicknode"
+    ]
   },
   {
     "page": "2",
+    "title": "Did you know you can...",
+    "content": [
+      "Use LI.FI and deBridge with more than 100 different swap paths",
+      "Use LI.FI and deBridge to swap between almost all EVM chains our wallet currently supports"
+    ]
+  },
+  {
+    "page": "3",
     "title": "Issues Fixed",
     "content": ["Localization updates", "Easy EVM chains build", "Ledger bug fixes"]
   }

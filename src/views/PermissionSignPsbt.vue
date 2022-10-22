@@ -65,7 +65,8 @@ import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { prettyBalance } from '@liquality/wallet-core/dist/src/utils/coinFormatter'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
-import { ChainId, getAsset, getChain } from '@liquality/cryptoassets'
+import { ChainId, getChain } from '@liquality/cryptoassets'
+import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 
 export default {
   components: {
@@ -167,7 +168,7 @@ export default {
     const client = this.client({
       network: this.activeNetwork,
       walletId: this.activeWalletId,
-      chainId: getAsset(this.activeNetwork, this.asset).chain,
+      chainId: cryptoassets[this.asset].chain,
       accountId: this.accountId
     })
 
