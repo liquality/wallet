@@ -34,77 +34,81 @@ const swapPairMap = [
   // }
 ]
 
-  describe('1Inch Service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
-    swapPairMap.forEach((obj) => {
-      it(`SWAP (${obj.from}->${obj.to})-PULL_REQUEST_TEST `, async () => {
-        const fromAsset = obj.from
-        const toAsset = obj.to
+describe('1Inch Service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () => {
+  swapPairMap.forEach((obj) => {
+    it(`SWAP (${obj.from}->${obj.to})-PULL_REQUEST_TEST `, async () => {
+      const fromAsset = obj.from
+      const toAsset = obj.to
 
-        browser = await puppeteer.launch(testUtil.getChromeOptions())
-        page = await browser.newPage()
-        await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
-        // Import wallet option
-        await homePage.ClickOnImportWallet(page)
-        await homePage.ScrollToEndOfTerms(page)
-        await homePage.ClickOnAcceptPrivacy(page)
-        // Enter seed words and submit
-        await homePage.EnterSeedWords(page)
-        // Create a password & submit
-        await passwordPage.SubmitPasswordDetails(page)
-        // overview page
-        await overviewPage.CloseWhatsNewModal(page)
-        await overviewPage.HasOverviewPageLoaded(page)
+      browser = await puppeteer.launch(testUtil.getChromeOptions())
+      page = await browser.newPage()
+      await page.goto(testUtil.extensionRootUrl, { waitUntil: 'load', timeout: 0 })
+      // Import wallet option
+      await homePage.ClickOnImportWallet(page)
+      await homePage.ScrollToEndOfTerms(page)
+      await homePage.ClickOnAcceptPrivacy(page)
+      // Enter seed words and submit
+      await homePage.EnterSeedWords(page)
+      // Create a password & submit
+      await passwordPage.SubmitPasswordDetails(page)
+      // overview page
+      await overviewPage.CloseWhatsNewModal(page)
+      await overviewPage.HasOverviewPageLoaded(page)
 
-        await overviewPage.SelectAssetFromOverview(page, fromAsset)
-        await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
-        await page.click(`#${fromAsset}_swap_button`)
+      await overviewPage.SelectAssetFromOverview(page, fromAsset)
+      await page.waitForSelector(`#${fromAsset}_swap_button`, { visible: true })
+      await page.click(`#${fromAsset}_swap_button`)
 
-        await swapPage.SelectSwapReceiveCoin(page)
-        await page.waitForSelector('#search_for_a_currency', { visible: true })
-        await page.type('#search_for_a_currency', toAsset)
-        await page.click(`#${toAsset}`)
-        // 1inch
-        await page.waitForTimeout(10000)
-        await page.waitForSelector('#selectedQuote_provider', { visible: true })
-        try {
-          expect(
-            await page.$eval('#selectedQuote_provider', (el) => el.textContent),
-            `${obj.from}->${obj.to}) swap, Oneinch V4 should be chosen!`
-          ).equals('Oneinch V4')
-        } catch (e) {
-          await testUtil.takeScreenshot(page, '1inch-issue')
-          expect(e, '1inch V4 should be chosen').equals(null)
-        }
-        // Validate available balance
-        const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
-        expect(
-          availableBalance,
-          `${obj.from}->${obj.to}) swap, available balance should be greater than 0`
-        ).to.be.above(0)
+      await swapPage.SelectSwapReceiveCoin(page)
+      await page.waitForSelector('#search_for_a_currency', { visible: true })
+      await page.type('#search_for_a_currency', toAsset)
+      await page.click(`#${toAsset}`)
+      // 1inch
+      await page.waitForTimeout(10000)
+      await page.waitForSelector('#selectedQuote_provider', { visible: true })
+      console.log('Provider quote selected')
 
-        // validate Send & To fiat values
-        const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
+      const provider = await page.$eval('#selectedQuote_provider', (el) => el.innerText)
+      if (provider === 'Oneinch V4') {
+        expect(provider, `${obj.from}->${obj.to} swap, Oneinch V4 should be chosen!`).to.equal(
+          'Oneinch V4'
+        )
+      } else {
+        await page.waitForSelector('#see_all_quotes', { visible: true })
+        await page.click('#see_all_quotes')
+        await page.waitForSelector('#oneinchV4_rate_provider', { visible: true })
+        await page.click('#oneinchV4_rate_provider')
+      }
+      // Validate available balance
+      const { availableBalance } = await swapPage.getSwapAvailableBalance(page)
+      expect(
+        availableBalance,
+        `${obj.from}->${obj.to} swap, available balance should be greater than 0`
+      ).to.be.above(0)
 
-        expect(
-          sendFromFiat,
-          `${obj.from}->${obj.to}) swap, Send fiat amount should be correct!`
-        ).not.equals('$0.00')
-        expect(
-          sendFromFiat,
-          `${obj.from}->${obj.to}) swap, To fiat amount should be correct!`
-        ).not.equals('NaN')
-        // validate Receive fiat amount
-        expect(
-          toFiat,
-          `${obj.from}->${obj.to}) swap, Receive fiat amount should be correct!`
-        ).not.equals('$0.00')
-        expect(
-          toFiat,
-          `${obj.from}->${obj.to}) swap, Receive fiat amount should be correct!`
-        ).not.equals('NaN')
-      })
-    })
-    afterEach(async () => {
-      await browser.close()
+      // validate Send & To fiat values
+      const { sendFromFiat, toFiat } = await swapPage.getSwapFiatValues(page)
+
+      expect(
+        sendFromFiat,
+        `${obj.from}->${obj.to}) swap, Send fiat amount should be correct!`
+      ).not.equals('$0.00')
+      expect(
+        sendFromFiat,
+        `${obj.from}->${obj.to}) swap, To fiat amount should be correct!`
+      ).not.equals('NaN')
+      // validate Receive fiat amount
+      expect(
+        toFiat,
+        `${obj.from}->${obj.to}) swap, Receive fiat amount should be correct!`
+      ).not.equals('$0.00')
+      expect(
+        toFiat,
+        `${obj.from}->${obj.to}) swap, Receive fiat amount should be correct!`
+      ).not.equals('NaN')
     })
   })
+  afterEach(async () => {
+    await browser.close()
+  })
+})

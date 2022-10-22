@@ -273,10 +273,13 @@ describe('SEND feature', async () => {
       'Available balance and Max send amount are equal for ethereum'
     ).contains(sendAmount)
   })
-  it('Unstoppable Domains Send [PULL_REQUEST_TEST]', async () => {
-    const assetName = 'ETH'
+  it('Unstoppable Domains Send from AVAX to shaista.blockchain  [PULL_REQUEST_TEST]', async () => {
+    const assetName = 'AVAX'
     const coinsToSend = '0.00001'
-    const domainName = 'shaista.blockchain'
+    const domainDetails = {
+      name: 'shaista.blockchain',
+      address: '0xaDa3...3023'
+    }
 
     await overviewPage.SelectAssetFromOverview(page, assetName)
     console.log('Selected asset from overview')
@@ -289,11 +292,17 @@ describe('SEND feature', async () => {
     // Enter send amount (or) coins
     await sendPage.EnterSendAmount(page, coinsToSend)
     // Send address
-    await sendPage.EnterSendToAddress(page, domainName)
+    await sendPage.EnterSendToAddress(page, domainDetails.name)
     // Click Send Review Button
     await page.waitForSelector('#send_review_button', { visible: true})
+    const isReviewButtonDisabled = await page.$eval('#send_review_button', (el) => el.disabled)
+    expect(isReviewButtonDisabled, 'Send Review button should be enabled').to.be.false
+    console.log('Send review button is enabled so clicking it')
     try {
       await page.click('#send_review_button', { clickCount: 5 })
+      const confirmAddress = await page.$eval('#confirm-address', (el) => el.innerText)
+      expect(confirmAddress).contains(domainDetails.address)
+      console.log('Confirm address is correct')
       await page.waitForSelector('#send_button_confirm', { visible: true, timeout: 60000 })
     } catch (e) {
       if (e instanceof puppeteer.errors.TimeoutError) {
@@ -338,6 +347,6 @@ describe('SEND feature', async () => {
     // validate domain name in transaction details
     await page.waitForSelector('#transaction_details_send_to_link', { visible: true })
     const sedToDetails = await page.$eval('#transaction_details_send_to_link', el => el.textContent)
-    expect(sedToDetails,'Send to transaction details should have unstoppabledomain name').contain(domainName)
+    expect(sedToDetails,'Send to transaction details should have unstoppabledomain name').contain("shai")
   })
 })
