@@ -96,10 +96,10 @@ jobs:
           if-no-files-found: ignore
 
       - name: Changelog
-        uses: mikepenz/release-changelog-builder-action@v3.0.1
-        id: build_changelog
+        uses: Bullrich/generate-release-changelog@master
+        id: Changelog
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
 
       - name: Create Release
         id: create_release
@@ -110,7 +110,9 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           body: |
-            ${{steps.build_changelog.outputs.changelog}}
+            ${{ steps.Changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
 
       - name: Upload release
         uses: actions/upload-release-asset@v1
