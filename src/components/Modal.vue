@@ -24,7 +24,7 @@
             <h5 class="modal-title" v-else-if="hasSlot('title')">
               <slot name="title"></slot>
             </h5>
-            <ModalClose class="modal-close" @click="close" />
+            <ModalClose class="modal-close" @click="close" :id="closeId" />
           </div>
           <div :class="bodyClass">
             <slot></slot>
@@ -64,6 +64,10 @@ export default {
     isFullHeight: {
       type: Boolean,
       default: false
+    },
+    closeId: {
+      type: String,
+      required: false
     }
   },
   methods: {

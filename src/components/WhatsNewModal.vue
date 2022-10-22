@@ -1,5 +1,12 @@
 <template>
-  <Modal v-if="open" @close="close" body-class="" type="modal-lg" isFullHeight>
+  <Modal
+    v-if="open"
+    @close="close"
+    body-class=""
+    type="modal-lg"
+    isFullHeight
+    :closeId="'wats_new_close_btn'"
+  >
     <template #header>
       <Logo />
     </template>
