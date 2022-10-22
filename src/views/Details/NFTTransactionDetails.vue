@@ -126,7 +126,7 @@
 import { mapActions, mapState, mapGetters } from 'vuex'
 import moment from '@liquality/wallet-core/dist/src/utils/moment'
 import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
-import { getChain, getNativeAssetCode, getAsset } from '@liquality/cryptoassets'
+import { getChain, getNativeAssetCode } from '@liquality/cryptoassets'
 import BN from 'bignumber.js'
 import { getSendTxFees, feePerUnit } from '@liquality/wallet-core/dist/src/utils/fees'
 import {
@@ -174,10 +174,13 @@ export default {
   },
   props: ['id'],
   computed: {
-    ...mapGetters(['client', 'accountsData', 'suggestedFeePrices']),
+    ...mapGetters(['client', 'accountItem', 'suggestedFeePrices']),
     ...mapState(['activeWalletId', 'activeNetwork', 'history', 'fees', 'fiatRates']),
     isCustomFeeSupported() {
-      const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.item.from]?.chain)
+      const { supportCustomFees } = getChain(
+        this.activeNetwork,
+        cryptoassets[this.item.from]?.chain
+      )
       return supportCustomFees
     },
     thumbnailImage() {
@@ -198,8 +201,11 @@ export default {
     accountId() {
       return this.item.nft.accountId || this.item.accountId
     },
+    account() {
+      return this.accountItem(this.accountId)
+    },
     chain() {
-      return this.accountsData.filter((account) => account.id === this.accountId)[0]?.chain
+      return this.account?.chain
     },
     status() {
       return getStatusLabel(this.item)
@@ -287,7 +293,7 @@ export default {
       const client = this.client({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
-        chainId: getAsset(this.activeNetwork, this.asset).chain,
+        chainId: cryptoassets[this.asset].chain,
         accountId: this.item.accountId
       })
       const transaction =

@@ -1,8 +1,7 @@
 import { inject } from './broker/utils'
 import Script from './broker/Script'
 import { buildConfig } from '@liquality/wallet-core'
-import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
-import { getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
+import { getChain, getNativeAssetCode, isEvmChain } from '@liquality/cryptoassets'
 import PortStream from 'extension-port-stream'
 import LocalMessageDuplexStream from 'post-message-stream'
 new Script().start()
@@ -21,27 +20,21 @@ async function setupTerraStreams() {
 
   extensionStream.pipe(pageStream)
   pageStream.pipe(extensionStream)
-  console.log('Stream setup successfully')
 }
 
 function injectProviders(state) {
-  const { injectEthereumChain, activeNetwork } = state
+  const { injectEthereum, activeNetwork } = state
   const evmChains = buildConfig.chains
     .filter((chain) => isEvmChain(activeNetwork, chain))
     .map((chain) => {
-      const network = ChainNetworks[chain][activeNetwork]
+      const network = getChain(activeNetwork, chain).network
       const asset = getNativeAssetCode(activeNetwork, chain)
       return { chain, asset, network }
     })
 
-  let globalEthereum = {
-    inject: !!injectEthereumChain
-  }
-  if (globalEthereum.inject) {
-    globalEthereum = {
-      ...globalEthereum,
-      ...injectGlobalEthereum(state, true)
-    }
+  const globalEthereum = {
+    override: injectEthereum,
+    ethereumChain: getGlobalEthereumChain(state)
   }
 
   const injectConfig = {
@@ -55,7 +48,7 @@ function injectProviders(state) {
   inject('#PAGEPROVIDER#')
 }
 
-function injectGlobalEthereum(state, override) {
+function getGlobalEthereumChain(state) {
   const { externalConnections, activeWalletId, activeNetwork } = state
 
   let ethereumChain = state.injectEthereumChain
@@ -71,7 +64,7 @@ function injectGlobalEthereum(state, override) {
     }
   }
 
-  return { override, ethereumChain }
+  return ethereumChain
 }
 
 chrome.storage.local.get(['liquality-wallet'], (storage) => {

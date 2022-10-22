@@ -75,7 +75,7 @@
     },
     "noFundsForNetworkFee": {
         "noEnoughAsset": "No tienes suficientes %{asset} para cubrir las comisiones. Reduce la velocidad para tener en cuenta el gas o adquiere más.",
-        "getAsset": "Adquirir %{asset}",
+        "getAsset": "Recibir %{asset}",
         "lowerSpeed": "Reduce la velocidad para tener en cuenta el gas en ambas lados de la transacción, o adquiere más."
     },
     "noLiquidityMessage": {

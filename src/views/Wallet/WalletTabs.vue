@@ -28,7 +28,7 @@ import { mapGetters, mapState } from 'vuex'
 export default {
   computed: {
     ...mapState(['accounts', 'activeNetwork', 'activeWalletId']),
-    ...mapGetters(['accountsData', 'allNftCollections']),
+    ...mapGetters(['allNftCollections']),
     nftAssetsCount() {
       return Object.values(this.allNftCollections).reduce(
         (acc, collection) => acc + collection.length,

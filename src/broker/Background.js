@@ -1,7 +1,6 @@
-import { ChainNetworks } from '@liquality/wallet-core/dist/src/utils/networks'
 import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
-import { getAsset } from '@liquality/cryptoassets'
+import { getChain } from '@liquality/cryptoassets'
 import { connectRemote } from './terra-injection'
 
 function attemptOrWarn(func, message) {
@@ -54,7 +53,7 @@ class Background {
   getChainIds(network) {
     return buildConfig.chains.reduce((chainIds, chain) => {
       return Object.assign({}, chainIds, {
-        [chain]: ChainNetworks[chain][network].chainId
+        [chain]: getChain(network, chain).network.chainId
       })
     }, {})
   }
@@ -183,13 +182,12 @@ class Background {
   onExternalMessage(connection, { id, type, data }) {
     const { url } = connection.sender
     const { origin } = new URL(url)
-    const { externalConnections, activeWalletId, injectEthereumChain, activeNetwork } =
-      this.store.state
+    const { externalConnections, activeWalletId, injectEthereumChain } = this.store.state
 
     let setDefaultEthereum = false
     let { chain, asset } = data
     if (asset) {
-      chain = getAsset(activeNetwork, asset).chain
+      chain = this.store.getters.cryptoassets[asset].chain
     }
     if (!chain) {
       const defaultAccountId = (externalConnections[activeWalletId]?.[origin] || {}).defaultEthereum

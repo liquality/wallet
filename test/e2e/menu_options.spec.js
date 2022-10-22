@@ -87,8 +87,8 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals(
       'Show Seed Phrase?'
     )
-    expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent)).equals(
-      'Anyone who has this can steal your funds!'
+    expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent)).contains(
+      'Anyone who'
     )
     await page.click('#i_have_privacy_button')
     await page.waitForSelector('#password', { visible: true })
@@ -131,8 +131,8 @@ describe('Hamburger menu options["MAINNET"]', async () => {
     expect(await page.$eval('#show_seed_phrase', (el) => el.textContent)).equals(
       'Show Seed Phrase?'
     )
-    expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent)).equals(
-      'Anyone who has this can steal your funds!'
+    expect(await page.$eval('#show_seed_phrase_warning', (el) => el.textContent)).contain(
+      'Anyone who'
     )
     await page.click('#i_have_privacy_button')
     await page.waitForSelector('#password', { visible: true })

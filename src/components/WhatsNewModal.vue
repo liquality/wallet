@@ -10,9 +10,10 @@
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">
-Localization for Chinese, Spanish, Portuguese, Filipino and Cebuano</pre
-            >
+            <pre class="text-wrap">Integration with LI.FI as a swap provider</pre>
+            <pre class="text-wrap">Integration with deBridge as a swap provider</pre>
+            <pre class="text-wrap">Move to Goerli Testnet</pre>
+            <pre class="text-wrap">Solana Endpoint Change to Quicknode</pre>
           </div>
         </div>
       </div>
@@ -27,7 +28,12 @@ Localization for Chinese, Spanish, Portuguese, Filipino and Cebuano</pre
             <ChartIcon />
           </div>
           <div class="item-content">
-            <pre class="text-wrap">Change the language by going to settings?</pre>
+            <pre class="text-wrap">
+Use LI.FI and deBridge with more than 100 different swap paths</pre
+            >
+            <pre class="text-wrap">
+Use LI.FI and deBridge to swap between almost all EVM chains our wallet currently supports</pre
+            >
           </div>
         </div>
       </div>
