@@ -175,6 +175,13 @@ li {
   line-height: 19px;
 }
 
+ul {
+  padding-inline-start: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding: 12px;
+}
+
 .header {
   display: flex;
   width: 100%;
