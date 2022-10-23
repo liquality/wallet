@@ -1,0 +1,21 @@
+[
+  {
+    "page": "1",
+    "title": "Localization features",
+    "description": "Swaps enabled loreum ipsum loreum ipsum oreum ipsum loreum ipsum. Swaps enabled loreum ipsum loreum ipsum oreum ipsum loreum ipsum. <br/><br/> Swaps enabled loreum ipsum loreum ipsum oreum ipsum loreum ipsum. Swaps enabled loreum ipsum loreum ipsum oreum ipsum loreum ipsum"
+  },
+  {
+    "page": "2",
+    "title": "Did You Know...",
+    "description": "You can now view and manage your NFTs across Ethereum, Polygon and Arbitrum.  Loreum ipsum loreum ipsum oreum ipsum loreum ipsum"
+  },
+  {
+    "page": "3",
+    "title": "Issues Fixed",
+    "content": [
+      "Hop transaction status",
+      "UX validation prevents the user from making a swap",
+      "Thornchain swaps minimum transaction value and slippage"
+    ]
+  }
+]
