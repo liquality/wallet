@@ -92,6 +92,16 @@ jobs:
             echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =$TRANSAK_DEFAULT_FIAT_CURRENCY >> .env
             echo VUE_APP_ONRAMPER_WIDGET_URL =$ONRAMPER_WIDGET_URL >> .env
             echo VUE_APP_ONRAMPER_API_KEY =$ONRAMPER_API_KEY >> .env
+          
+            echo VUE_APP_FIREBASE_API_KEY =$VUE_APP_FIREBASE_API_KEY >> .env
+            echo VUE_APP_FIREBASE_AUTH_DOMAIN =$VUE_APP_FIREBASE_AUTH_DOMAIN >> .env
+            echo VUE_APP_FIREBASE_PROJECT_ID =$VUE_APP_FIREBASE_PROJECT_ID >> .env
+            echo VUE_APP_FIREBASE_STORAGE_BUCKET =$VUE_APP_FIREBASE_STORAGE_BUCKET >> .env
+            echo VUE_APP_FIREBASE_MESSAGING_SENDER_ID =$VUE_APP_FIREBASE_MESSAGING_SENDER_ID >> .env
+            echo VUE_APP_FIREBASE_APP_ID =$VUE_APP_FIREBASE_APP_ID >> .env
+            echo VUE_APP_FIREBASE_MEASUREMENT_ID =$VUE_APP_FIREBASE_MEASUREMENT_ID >> .env
+            echo VUE_APP_FIREBASE_DATABASE_URL =$VUE_APP_FIREBASE_DATABASE_URL >> .env
+          
             yarn install
             yarn lint
             yarn build
