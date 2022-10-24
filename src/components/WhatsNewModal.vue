@@ -75,13 +75,10 @@ import { mapActions, mapState } from 'vuex'
 import ArrowLeftIcon from '@/assets/icons/arrow_left.svg'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
 import Clap from './icons/Clap.vue'
+import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { initializeApp } from 'firebase/app'
 import { getAuth, signInAnonymously } from 'firebase/auth'
-import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { doc, setDoc } from 'firebase/firestore'
-
-console.log('🚀 ~ file: WhatsNewModal.vue ~ line 79 ~ signInAnonymously', signInAnonymously)
-console.log('🚀 ~ file: WhatsNewModal.vue ~ line 79 ~ getAuth', getAuth)
+import { doc, setDoc, collection, getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -93,10 +90,8 @@ const firebaseConfig = {
   appId: process.env.VUE_APP_FIREBASE_APP_ID,
   measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID
 }
-
-// eslint-disable-next-line no-unused-vars
-// const db = firebase.firestore()
-// console.log('🚀 ~ file: WhatsNewModal.vue ~ line 102 ~ firestore', firebase)
+const app = initializeApp(firebaseConfig)
+const db = getFirestore(app)
 
 export default {
   components: {
@@ -119,7 +114,6 @@ export default {
     }
   },
   mounted() {
-    initializeApp(firebaseConfig)
     const auth = getAuth()
     signInAnonymously(auth)
       .then(() => {
@@ -128,7 +122,7 @@ export default {
       .catch((error) => {
         console.error(error)
       })
-    // this.getClapCount()
+    this.getClapCount()
   },
   computed: {
     ...mapState(['whatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
@@ -147,37 +141,25 @@ export default {
     },
     async getClapCount() {
       this.loading = true
-      // db.collection('claps')
-      //   .doc(this.appVersion)
-      //   .get()
-      //   .then((doc) => {
-      //     if (doc.exists) {
-      //       this.clapCount = doc.data().count
-      //     } else {
-      //       db.collection('claps').doc(this.appVersion).set({ count: 0 })
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.error(error)
-      //   })
-      //   .finally(() => {
-      //     this.loading = false
-      //   })
-      // await setDoc(doc(db, 'claps', this.appVersion), { count: 0 })
+      const clapCollection = collection(db, 'claps')
+      const clapDoc = doc(clapCollection, this.appVersion)
+      const clapDocSnapshot = await clapDoc.get()
+      if (clapDocSnapshot.exists()) {
+        this.clapCount = clapDocSnapshot.data().count
+      } else {
+        await setDoc(clapDoc, { count: 0 })
+      }
+      this.loading = false
     },
     clap() {
       if (this.hasClapped) {
         this.hasClapped = false
         this.clapCount > 0 ? this.clapCount-- : this.clapCount
-        firebase.firestore().collection('claps').doc(this.appVersion).update({
-          count: this.clapCount
-        })
+        collection(db, 'claps').doc(this.appVersion).update({ count: this.clapCount })
       } else {
         this.hasClapped = true
         this.clapCount++
-        firebase.firestore().collection('claps').doc(this.appVersion).update({
-          count: this.clapCount
-        })
+        collection(db, 'claps').doc(this.appVersion).update({ count: this.clapCount })
       }
     }
   },
