@@ -145,24 +145,25 @@ export default {
     close() {
       this.open = false
     },
-    getClapCount() {
+    async getClapCount() {
       this.loading = true
-      db.collection('claps')
-        .doc(this.appVersion)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            this.clapCount = doc.data().count
-          } else {
-            db.collection('claps').doc(this.appVersion).set({ count: 0 })
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      // db.collection('claps')
+      //   .doc(this.appVersion)
+      //   .get()
+      //   .then((doc) => {
+      //     if (doc.exists) {
+      //       this.clapCount = doc.data().count
+      //     } else {
+      //       db.collection('claps').doc(this.appVersion).set({ count: 0 })
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error(error)
+      //   })
+      //   .finally(() => {
+      //     this.loading = false
+      //   })
+      // await setDoc(doc(db, 'claps', this.appVersion), { count: 0 })
     },
     clap() {
       if (this.hasClapped) {
