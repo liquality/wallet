@@ -188,7 +188,7 @@ export default {
   }
 
   &_address {
-    font-weight: bold;
+    font-weight: 600;
   }
 
   &_message {
@@ -219,7 +219,7 @@ export default {
 
       span {
         &:first-child {
-          font-weight: bold;
+          font-weight: 600;
           margin-right: 5px;
         }
       }

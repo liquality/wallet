@@ -356,7 +356,7 @@ export default {
       align-items: center;
       text-transform: uppercase;
       font-style: normal;
-      font-weight: bold;
+      font-weight: 600;
       font-size: $font-size-tiny;
       padding-top: 25px;
     }

@@ -731,7 +731,7 @@ export default {
   &_fees {
     display: flex;
     align-items: center;
-    font-weight: bold;
+    font-weight: 600;
     margin: 6px 0;
 
     .fee-selector {
@@ -790,7 +790,7 @@ input[type='number'] {
 }
 
 .details-title {
-  font-weight: bold;
+  font-weight: 600;
   text-transform: uppercase;
   padding-right: 0.5em;
 }

@@ -181,7 +181,7 @@ export default {
 
     .swap-send-top-label {
       font-size: 0.75rem;
-      font-weight: bold;
+      font-weight: 600;
       text-transform: uppercase;
     }
   }

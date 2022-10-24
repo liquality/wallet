@@ -223,7 +223,7 @@ export default {
   }
 
   &_message {
-    font-weight: bold;
+    font-weight: 600;
     margin-top: 26px;
   }
 

@@ -1592,7 +1592,7 @@ export default {
     &_asset {
       display: flex;
       align-items: center;
-      font-weight: bold;
+      font-weight: 600;
       margin: 6px 0;
 
       .fee-selector {
@@ -1631,7 +1631,7 @@ export default {
   }
 
   &_value {
-    font-weight: bold;
+    font-weight: 600;
   }
 
   a {

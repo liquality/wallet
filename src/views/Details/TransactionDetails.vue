@@ -343,7 +343,7 @@ export default {
 
   h2 {
     font-size: $font-size-sm;
-    font-weight: bold;
+    font-weight: 600;
     text-transform: uppercase;
   }
 
