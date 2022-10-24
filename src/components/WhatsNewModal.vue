@@ -75,8 +75,28 @@ import { mapActions, mapState } from 'vuex'
 import ArrowLeftIcon from '@/assets/icons/arrow_left.svg'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
 import Clap from './icons/Clap.vue'
-import firebase from 'firebase'
+import { initializeApp } from 'firebase/app'
+import { getAuth, signInAnonymously } from 'firebase/auth'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import { doc, setDoc } from 'firebase/firestore'
+
+console.log('🚀 ~ file: WhatsNewModal.vue ~ line 79 ~ signInAnonymously', signInAnonymously)
+console.log('🚀 ~ file: WhatsNewModal.vue ~ line 79 ~ getAuth', getAuth)
+
+const firebaseConfig = {
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_FIREBASE_APP_ID,
+  measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID
+}
+
+// eslint-disable-next-line no-unused-vars
+// const db = firebase.firestore()
+// console.log('🚀 ~ file: WhatsNewModal.vue ~ line 102 ~ firestore', firebase)
 
 export default {
   components: {
@@ -99,14 +119,16 @@ export default {
     }
   },
   mounted() {
-    firebase
-      .auth()
-      .signInAnonymously()
-      .then(() => {})
+    initializeApp(firebaseConfig)
+    const auth = getAuth()
+    signInAnonymously(auth)
+      .then(() => {
+        console.log('signed in anonymously')
+      })
       .catch((error) => {
         console.error(error)
       })
-    this.getClapCount()
+    // this.getClapCount()
   },
   computed: {
     ...mapState(['whatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
@@ -125,7 +147,6 @@ export default {
     },
     getClapCount() {
       this.loading = true
-      const db = firebase.firestore()
       db.collection('claps')
         .doc(this.appVersion)
         .get()
@@ -203,7 +224,7 @@ ul {
   padding-left: 0 !important;
 }
 .page-title {
-  font-weight: 900;
+  font-weight: 600;
   font-size: 32px;
   line-height: 36px;
   letter-spacing: 1px;
