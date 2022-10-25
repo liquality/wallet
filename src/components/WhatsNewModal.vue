@@ -78,7 +78,7 @@ import Clap from './icons/Clap.vue'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { initializeApp } from 'firebase/app'
 import { getAuth, signInAnonymously } from 'firebase/auth'
-import { doc, setDoc, collection, getFirestore } from 'firebase/firestore'
+import { doc, getDoc, updateDoc, setDoc, collection, getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -90,8 +90,10 @@ const firebaseConfig = {
   appId: process.env.VUE_APP_FIREBASE_APP_ID,
   measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID
 }
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
+
+let db = null
+let clapCollection = null
+let clapDoc = null
 
 export default {
   components: {
@@ -113,16 +115,22 @@ export default {
       whatsNewModalContent: {}
     }
   },
-  mounted() {
-    const auth = getAuth()
-    signInAnonymously(auth)
-      .then(() => {
-        console.log('signed in anonymously')
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-    this.getClapCount()
+  async mounted() {
+    try {
+      const app = initializeApp(firebaseConfig)
+      db = getFirestore(app)
+      const auth = getAuth()
+
+      await signInAnonymously(auth)
+      console.log('signed in anonymously')
+
+      clapCollection = collection(db, 'claps')
+      clapDoc = doc(clapCollection, this.appVersion)
+
+      this.getClapCount()
+    } catch (err) {
+      console.err(err)
+    }
   },
   computed: {
     ...mapState(['whatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
@@ -141,25 +149,35 @@ export default {
     },
     async getClapCount() {
       this.loading = true
-      const clapCollection = collection(db, 'claps')
-      const clapDoc = doc(clapCollection, this.appVersion)
-      const clapDocSnapshot = await clapDoc.get()
-      if (clapDocSnapshot.exists()) {
-        this.clapCount = clapDocSnapshot.data().count
-      } else {
-        await setDoc(clapDoc, { count: 0 })
+      try {
+        const clapSnap = await getDoc(clapDoc)
+        if (clapSnap.exists()) {
+          this.clapCount = clapSnap.data().count
+        } else {
+          await setDoc(clapDoc, { count: 0 })
+        }
+      } catch (err) {
+        console.erro(err)
       }
       this.loading = false
     },
-    clap() {
-      if (this.hasClapped) {
-        this.hasClapped = false
-        this.clapCount > 0 ? this.clapCount-- : this.clapCount
-        collection(db, 'claps').doc(this.appVersion).update({ count: this.clapCount })
-      } else {
-        this.hasClapped = true
-        this.clapCount++
-        collection(db, 'claps').doc(this.appVersion).update({ count: this.clapCount })
+    async clap() {
+      try {
+        let count = this.clapCount
+        let clapped = this.hasClapped
+        if (clapped) {
+          count > 0 ? count-- : count
+          clapped = false
+        } else {
+          count++
+          clapped = true
+        }
+
+        await updateDoc(clapDoc, { count })
+        this.clapCount = count
+        this.hasClapped = clapped
+      } catch (err) {
+        console.error(err)
       }
     }
   },
@@ -175,6 +193,11 @@ export default {
       this.open = true
       this.setWhatsNewModalVersion({ version: this.appVersion })
     }
+  },
+  beforeDestroy() {
+    clapDoc = null
+    clapCollection = null
+    db = null
   }
 }
 </script>
