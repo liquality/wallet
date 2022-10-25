@@ -97,14 +97,14 @@ export default {
         font-size: $font-size-tiny;
         counter-increment: wordIndex;
         content: counter(wordIndex);
-        font-weight: 700;
+        font-weight: 600;
       }
     }
     span:hover {
       color: $color-text-primary;
       transition: ease-in 0.7s;
       cursor: pointer;
-      font-weight: 700;
+      font-weight: 600;
     }
   }
 }

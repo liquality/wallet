@@ -155,7 +155,7 @@ export default {
       label {
         font-size: 12px;
         text-transform: uppercase;
-        font-weight: 700;
+        font-weight: 600;
         color: #fff;
       }
 

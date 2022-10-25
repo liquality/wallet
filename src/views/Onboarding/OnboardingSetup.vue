@@ -182,7 +182,7 @@ export default {
       flex: 0 0 94px;
       padding-bottom: 6px;
       text-align: left;
-      font-weight: 700;
+      font-weight: 600;
 
       &::before {
         display: block;
