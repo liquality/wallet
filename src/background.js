@@ -18,7 +18,7 @@ function asyncLoop(fn, delay) {
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
-    chrome.runtime.setUninstallURL('https://example.com/extension-survey')
+    chrome.runtime.setUninstallURL('https://z9ecyhlpots.typeform.com/to/NyT3jwRL')
   }
 })
 
