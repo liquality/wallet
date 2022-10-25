@@ -31,6 +31,10 @@ textarea {
   padding: 8px;
 }
 
+strong {
+  font-weight: 600;
+}
+
 #app {
   &.popup {
     min-width: auto;

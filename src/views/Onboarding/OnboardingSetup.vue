@@ -128,6 +128,12 @@ export default {
   padding: 0 !important;
   overflow: hidden;
 
+  &_top {
+    h2 {
+      font-weight: 600;
+    }
+  }
+
   &_description {
     font-weight: 100;
     font-size: 14px;
