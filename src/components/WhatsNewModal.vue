@@ -76,9 +76,10 @@ import ArrowLeftIcon from '@/assets/icons/arrow_left.svg'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
 import Clap from './icons/Clap.vue'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import { initializeApp } from 'firebase/app'
-import { getAuth, signInAnonymously } from 'firebase/auth'
-import { doc, getDoc, updateDoc, setDoc, collection, getFirestore } from 'firebase/firestore'
+import firebase from 'firebase/app'
+import 'firebase/database'
+import 'firebase/auth'
+import 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -117,19 +118,17 @@ export default {
   },
   async mounted() {
     try {
-      const app = initializeApp(firebaseConfig)
-      db = getFirestore(app)
-      const auth = getAuth()
+      const app = firebase.initializeApp(firebaseConfig)
+      db = firebase.firestore(app)
 
-      await signInAnonymously(auth)
-      console.log('signed in anonymously')
+      await firebase.auth().signInAnonymously()
 
-      clapCollection = collection(db, 'claps')
-      clapDoc = doc(clapCollection, this.appVersion)
+      clapCollection = db.collection('claps')
+      clapDoc = clapCollection.doc(this.appVersion)
 
       this.getClapCount()
     } catch (err) {
-      console.err(err)
+      console.error(err)
     }
   },
   computed: {
@@ -150,14 +149,14 @@ export default {
     async getClapCount() {
       this.loading = true
       try {
-        const clapSnap = await getDoc(clapDoc)
-        if (clapSnap.exists()) {
+        const clapSnap = await clapDoc.get()
+        if (clapSnap.exists) {
           this.clapCount = clapSnap.data().count
         } else {
-          await setDoc(clapDoc, { count: 0 })
+          await clapDoc.set({ count: 0 })
         }
       } catch (err) {
-        console.erro(err)
+        console.error(err)
       }
       this.loading = false
     },
@@ -172,8 +171,7 @@ export default {
           count++
           clapped = true
         }
-
-        await updateDoc(clapDoc, { count })
+        await clapDoc.update({ count })
         this.clapCount = count
         this.hasClapped = clapped
       } catch (err) {
