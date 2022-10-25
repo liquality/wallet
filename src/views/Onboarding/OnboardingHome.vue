@@ -4,7 +4,7 @@
       <LogoWallet />
     </div>
     <div class="onboading-home_tnc">
-      <h4 class="font-weight-bold">{{ $t('pages.onboarding.home.termsAndPrivacy') }}</h4>
+      <h4>{{ $t('pages.onboarding.home.termsAndPrivacy') }}</h4>
       <div v-if="termsLoading" class="loading-container">
         <SpinnerIcon class="btn-loading" />
       </div>
@@ -115,6 +115,7 @@ export default {
 
     h4 {
       font-size: 25px;
+      font-weight: 600;
     }
 
     &__text {

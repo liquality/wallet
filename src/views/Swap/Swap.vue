@@ -308,7 +308,7 @@
           <div class="detail-group">
             <label class="text-muted">{{ $t('common.amountPlusFees') }}</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
-              <div class="font-weight-bold" id="swap_send_amount_fees_value">
+              <div class="font-bold" id="swap_send_amount_fees_value">
                 <span v-if="asset === assetChain">
                   {{ dpUI(sendAmountSameAsset) }} {{ assetChain }}
                 </span>
@@ -317,7 +317,7 @@
                   {{ assetChain }}
                 </span>
               </div>
-              <div class="font-weight-bold" id="swap_send_amount_fees_fiat_rate">
+              <div class="font-bold" id="swap_send_amount_fees_fiat_rate">
                 {{ formatFiatUI(totalToSendInFiat) }}
               </div>
             </div>
@@ -392,7 +392,7 @@
           <div class="detail-group">
             <label class="text-muted">{{ $t('pages.swap.amountMinusFees') }}</label>
             <div class="d-flex align-items-center justify-content-between mt-0">
-              <div class="font-weight-bold" id="swap_receive_amount_fee_value">
+              <div class="font-bold" id="swap_receive_amount_fee_value">
                 <span v-if="toAsset === toAssetChain || !receiveFeeRequired">
                   {{ dpUI(receiveAmountSameAsset) }} {{ toAsset }}
                 </span>
@@ -402,7 +402,7 @@
                 </span>
               </div>
               <div
-                :class="!isSwapNegative ? 'font-weight-bold' : 'extreme-fee-text font-weight-bold'"
+                :class="!isSwapNegative ? 'font-bold' : 'extreme-fee-text font-bold'"
                 id="swap_receive_total_amount_in_fiat"
               >
                 {{ formatFiatUI(totalToReceiveInFiat) }}

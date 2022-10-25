@@ -31,8 +31,9 @@ textarea {
   padding: 8px;
 }
 
-strong {
-  font-weight: 600;
+strong,
+.font-bold {
+  font-weight: 600 !important;
 }
 
 #app {

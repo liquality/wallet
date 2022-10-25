@@ -191,14 +191,14 @@
               class="d-flex align-items-center justify-content-between mt-0"
               v-show="!updatingFees"
             >
-              <div class="font-weight-bold" v-if="asset === assetChain">
+              <div class="font-bold" v-if="asset === assetChain">
                 {{ dpUI(amountWithFee) }} {{ asset }}
               </div>
-              <div class="font-weight-bold" v-else>
+              <div class="font-bold" v-else>
                 {{ dpUI(amount) }} {{ asset }} + {{ prettyFee }}
                 {{ assetChain }}
               </div>
-              <div class="font-weight-bold" id="total_to_send_in_fiat">
+              <div class="font-bold" id="total_to_send_in_fiat">
                 {{ formatFiatUI(totalToSendInFiat) }}
               </div>
             </div>

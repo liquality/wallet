@@ -50,7 +50,7 @@
                 />
               </div>
               <div class="w-100">
-                <p class="font-weight-bold text-break">{{ item.nft.name }}</p>
+                <p class="font-bold text-break">{{ item.nft.name }}</p>
                 <p class="text-break">{{ item.nft.collection.name }}</p>
                 <p class="text-break" v-if="item.nft.token_id">#{{ item.nft.token_id }}</p>
               </div>

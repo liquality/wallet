@@ -89,7 +89,7 @@
                 <img :src="getAssetIcon(asset)" class="asset-icon mr-3" />
                 <div>
                   <div class="d-flex align-items-center">
-                    <span class="font-weight-bold mr-1">{{ asset }}</span>
+                    <span class="font-bold mr-1">{{ asset }}</span>
                     <div class="mr-3">
                       <span class="mr-1">{{ shortenAddress(fromAddress) }}</span>
                       <span><CopyIcon class="copy-icon" @click="copy(fromAddress)" /></span>
@@ -260,8 +260,8 @@
                   {{ $t('pages.send.sendTo') }}
                 </h3>
                 <p class="address">
-                  <span class="font-weight-bold">{{ startAddress }}</span
-                  >{{ middleAddressPart }}<span class="font-weight-bold">{{ endAddress }}</span>
+                  <span class="font-bold">{{ startAddress }}</span
+                  >{{ middleAddressPart }}<span class="font-bold">{{ endAddress }}</span>
                 </p>
               </div>
             </div>
