@@ -16,6 +16,12 @@ function asyncLoop(fn, delay) {
     .then(() => asyncLoop(fn, delay))
 }
 
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') {
+    chrome.runtime.setUninstallURL('https://example.com/extension-survey')
+  }
+})
+
 function getBalance(state) {
   let total = 0
   state.accounts?.[state.activeWalletId]?.[state.activeNetwork].map((item) => {
