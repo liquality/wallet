@@ -13,7 +13,7 @@ const passwordPage = new PasswordPage();
 let browser, page;
 const metamaskTestDappUrl = "https://metamask.github.io/test-dapp/"
 
-describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
+describe("Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions());
     page = await browser.newPage();
@@ -34,7 +34,7 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     await browser.close();
   });
 
-  it("Sushi injection - ETH", async () => {
+  it("Dapp injection - ETH", async () => {
     const metaMaskTestDapp = await browser.newPage();
     await metaMaskTestDapp.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
     await metaMaskTestDapp.waitForSelector("#connectButton", { visible: true, timeout: 0})
@@ -74,7 +74,7 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
       expect(connectedAddress, "Sushi dapp ETH chain injection not connected.....").to.not.null;
     }
   });
-  it("Sushi injection - Polygon", async () => {
+  it("Dapp test app injection - Polygon", async () => {
     let chain = "polygon";
 
     // Connected dapp option
@@ -90,7 +90,6 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     await metaMaskTestDapp.goto(metamaskTestDappUrl, { waitUntil: "load", timeout: 0 });
     await metaMaskTestDapp.waitForSelector("#connectButton", { visible: true, timeout: 0})
     console.log("Metmask test dapp loaded with connect button");
-    await testUtil.takeScreenshot(metaMaskTestDapp, "metamask-test-dapp-before-connect")
 
     await metaMaskTestDapp.click("#connectButton");
     await metaMaskTestDapp.waitForTimeout(2000);
@@ -120,9 +119,9 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
 
       // Check web3 status as connected
       await metaMaskTestDapp.waitForSelector('#accounts', { visible: true, timeout: 30000 })
-        .catch((e) => expect(e, "Sushi dapp ETH chain injection not connected.....").to.not.throw());
+      await metaMaskTestDapp.waitForTimeout(3000);
       const connectedAddress = await metaMaskTestDapp.$eval('#accounts', (el) => el.innerText)
-      console.log("Connected address: ", connectedAddress);
+      console.log("polygon Connected address: ", connectedAddress);
       expect(connectedAddress, "Sushi dapp polygon chain injection not connected.....").to.not.equal("");
       expect(connectedAddress, "Sushi dapp polygon chain injection not connected.....").to.not.null;
     }
