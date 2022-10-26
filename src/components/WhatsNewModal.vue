@@ -184,11 +184,11 @@ export default {
       this.whatsNewModalVersion !== this.appVersion ||
       process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS
     ) {
+      this.open = true
       const locale = this.currentLocale || process.env.VUE_APP_DEFAULT_LOCALE
       const content = await import(`@/locales/${locale}/whats_new.json`)
       this.whatsNewModalContent = content.default
       this.loadingContent = false
-      this.open = true
       this.setWhatsNewModalVersion({ version: this.appVersion })
     }
   },
