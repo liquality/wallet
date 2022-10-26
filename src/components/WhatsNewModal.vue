@@ -13,26 +13,28 @@
     <h6 class="modal-header mt-4 text-uppercase">
       {{ $t('components.whatsNew.title') }} &#124; v {{ appVersion }}
     </h6>
-
-    <template>
-      <div v-for="item in whatsNewModalContent" :key="item.page">
-        <div v-if="item.page == currentView">
-          <h2 class="page-title">{{ item.title }}</h2>
-          <p v-if="item.description" class="mt-3" v-html="item.description"></p>
-          <ul v-if="item.content">
-            <li v-for="(listItem, index) in item.content" v-html="listItem" :key="index"></li>
-          </ul>
+    <template v-if="loadingContent"> Loading... <SpinnerIcon class="btn-loading" /> </template>
+    <template v-else>
+      <template>
+        <div v-for="item in whatsNewModalContent" :key="item.page">
+          <div v-if="item.page == currentView">
+            <h2 class="page-title">{{ item.title }}</h2>
+            <p v-if="item.description" class="mt-3" v-html="item.description"></p>
+            <ul v-if="item.content">
+              <li v-for="(listItem, index) in item.content" v-html="listItem" :key="index"></li>
+            </ul>
+          </div>
         </div>
-      </div>
-      <span>
-        <Clap :fill="hasClapped ? '#9d4dfa' : '#3D4767'" class="cursor-pointer" @click="clap()" />
-        <span class="ml-2">
-          <template v-if="loading">
-            <SpinnerIcon class="btn-loading" />
-          </template>
-          <span v-else>{{ clapCount }}</span>
+        <span>
+          <Clap :fill="hasClapped ? '#9d4dfa' : '#3D4767'" class="cursor-pointer" @click="clap()" />
+          <span class="ml-2">
+            <template v-if="loading">
+              <SpinnerIcon class="btn-loading" />
+            </template>
+            <span v-else>{{ clapCount }}</span>
+          </span>
         </span>
-      </span>
+      </template>
     </template>
     <template #footer v-if="whatsNewModalContent.length > 1">
       <div class="footer">
