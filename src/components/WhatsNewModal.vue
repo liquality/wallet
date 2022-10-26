@@ -13,26 +13,28 @@
     <h6 class="modal-header mt-4 text-uppercase">
       {{ $t('components.whatsNew.title') }} &#124; v {{ appVersion }}
     </h6>
-
-    <template>
-      <div v-for="item in whatsNewModalContent" :key="item.page">
-        <div v-if="item.page == currentView">
-          <h2 class="page-title">{{ item.title }}</h2>
-          <p v-if="item.description" class="mt-3" v-html="item.description"></p>
-          <ul v-if="item.content">
-            <li v-for="(listItem, index) in item.content" v-html="listItem" :key="index"></li>
-          </ul>
+    <template v-if="loadingContent"> Loading... <SpinnerIcon class="btn-loading" /> </template>
+    <template v-else>
+      <template>
+        <div v-for="item in whatsNewModalContent" :key="item.page">
+          <div v-if="item.page == currentView">
+            <h2 class="page-title">{{ item.title }}</h2>
+            <p v-if="item.description" class="mt-3" v-html="item.description"></p>
+            <ul v-if="item.content">
+              <li v-for="(listItem, index) in item.content" v-html="listItem" :key="index"></li>
+            </ul>
+          </div>
         </div>
-      </div>
-      <span>
-        <Clap :fill="hasClapped ? '#9d4dfa' : '#3D4767'" class="cursor-pointer" @click="clap()" />
-        <span class="ml-2">
-          <template v-if="loading">
-            <SpinnerIcon class="btn-loading" />
-          </template>
-          <span v-else>{{ clapCount }}</span>
+        <span>
+          <Clap :fill="hasClapped ? '#9d4dfa' : '#3D4767'" class="cursor-pointer" @click="clap()" />
+          <span class="ml-2">
+            <template v-if="loading">
+              <SpinnerIcon class="btn-loading" />
+            </template>
+            <span v-else>{{ clapCount }}</span>
+          </span>
         </span>
-      </span>
+      </template>
     </template>
     <template #footer v-if="whatsNewModalContent.length > 1">
       <div class="footer">
@@ -75,8 +77,26 @@ import { mapActions, mapState } from 'vuex'
 import ArrowLeftIcon from '@/assets/icons/arrow_left.svg'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
 import Clap from './icons/Clap.vue'
-import firebase from 'firebase'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
+import firebase from 'firebase/app'
+import 'firebase/database'
+import 'firebase/auth'
+import 'firebase/firestore'
+
+const firebaseConfig = {
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_FIREBASE_APP_ID,
+  measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID
+}
+
+let db = null
+let clapCollection = null
+let clapDoc = null
 
 export default {
   components: {
@@ -98,15 +118,20 @@ export default {
       whatsNewModalContent: {}
     }
   },
-  mounted() {
-    firebase
-      .auth()
-      .signInAnonymously()
-      .then(() => {})
-      .catch((error) => {
-        console.error(error)
-      })
-    this.getClapCount()
+  async mounted() {
+    try {
+      const app = firebase.initializeApp(firebaseConfig)
+      db = firebase.firestore(app)
+
+      await firebase.auth().signInAnonymously()
+
+      clapCollection = db.collection('claps')
+      clapDoc = clapCollection.doc(this.appVersion)
+
+      this.getClapCount()
+    } catch (err) {
+      console.error(err)
+    }
   },
   computed: {
     ...mapState(['whatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
@@ -123,39 +148,36 @@ export default {
     close() {
       this.open = false
     },
-    getClapCount() {
+    async getClapCount() {
       this.loading = true
-      const db = firebase.firestore()
-      db.collection('claps')
-        .doc(this.appVersion)
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            this.clapCount = doc.data().count
-          } else {
-            db.collection('claps').doc(this.appVersion).set({ count: 0 })
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      try {
+        const clapSnap = await clapDoc.get()
+        if (clapSnap.exists) {
+          this.clapCount = clapSnap.data().count
+        } else {
+          await clapDoc.set({ count: 0 })
+        }
+      } catch (err) {
+        console.error(err)
+      }
+      this.loading = false
     },
-    clap() {
-      if (this.hasClapped) {
-        this.hasClapped = false
-        this.clapCount > 0 ? this.clapCount-- : this.clapCount
-        firebase.firestore().collection('claps').doc(this.appVersion).update({
-          count: this.clapCount
-        })
-      } else {
-        this.hasClapped = true
-        this.clapCount++
-        firebase.firestore().collection('claps').doc(this.appVersion).update({
-          count: this.clapCount
-        })
+    async clap() {
+      try {
+        let count = this.clapCount
+        let clapped = this.hasClapped
+        if (clapped) {
+          count > 0 ? count-- : count
+          clapped = false
+        } else {
+          count++
+          clapped = true
+        }
+        await clapDoc.update({ count })
+        this.clapCount = count
+        this.hasClapped = clapped
+      } catch (err) {
+        console.error(err)
       }
     }
   },
@@ -164,13 +186,18 @@ export default {
       this.whatsNewModalVersion !== this.appVersion ||
       process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS
     ) {
+      this.open = true
       const locale = this.currentLocale || process.env.VUE_APP_DEFAULT_LOCALE
       const content = await import(`@/locales/${locale}/whats_new.json`)
       this.whatsNewModalContent = content.default
       this.loadingContent = false
-      this.open = true
       this.setWhatsNewModalVersion({ version: this.appVersion })
     }
+  },
+  beforeDestroy() {
+    clapDoc = null
+    clapCollection = null
+    db = null
   }
 }
 </script>
@@ -203,7 +230,7 @@ ul {
   padding-left: 0 !important;
 }
 .page-title {
-  font-weight: 900;
+  font-weight: 600;
   font-size: 32px;
   line-height: 36px;
   letter-spacing: 1px;

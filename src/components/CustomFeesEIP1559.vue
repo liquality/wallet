@@ -479,7 +479,7 @@ export default {
     text-align: center;
 
     p {
-      font-weight: bold;
+      font-weight: 600;
       cursor: pointer;
       margin-bottom: 6px;
       color: #646f85;
@@ -532,7 +532,7 @@ export default {
 
 .basic-wrapper {
   .presets-title {
-    font-weight: bold;
+    font-weight: 600;
     margin-top: 20px;
     margin-bottom: 10px;
   }
@@ -716,7 +716,7 @@ export default {
   letter-spacing: -0.08px;
   text-transform: uppercase;
   font-style: normal;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 12px;
   line-height: 18px;
   color: #3d4767;
@@ -857,7 +857,7 @@ export default {
   flex-direction: column;
 
   .custom-fee-result-title {
-    font-weight: bold;
+    font-weight: 600;
     font-size: 14px;
     line-height: 26px;
   }

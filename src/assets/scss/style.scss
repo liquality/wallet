@@ -31,6 +31,11 @@ textarea {
   padding: 8px;
 }
 
+strong,
+.font-bold {
+  font-weight: 600 !important;
+}
+
 #app {
   &.popup {
     min-width: auto;
@@ -154,7 +159,7 @@ textarea {
     font-weight: normal;
 
     &.active {
-      font-weight: bold;
+      font-weight: 600;
     }
   }
 }
@@ -162,7 +167,7 @@ textarea {
 .form {
   label {
     font-size: $font-size-tiny;
-    font-weight: bold;
+    font-weight: 600;
     text-transform: uppercase;
     width: 100%;
 
@@ -401,20 +406,20 @@ svg.btn-loading {
 }
 
 .dropdown-list {
-    position: relative;
-    height: 36px;
-    display: flex;
-    font-size: $font-size-tiny;
-    font-weight: $font-weight-base;
-    justify-content: center;
-    align-items: center;
-    text-transform: capitalize;
-    cursor: pointer;
+  position: relative;
+  height: 36px;
+  display: flex;
+  font-size: $font-size-tiny;
+  font-weight: $font-weight-base;
+  justify-content: center;
+  align-items: center;
+  text-transform: capitalize;
+  cursor: pointer;
 
-    svg {
-      height: 6px;
-      margin-left: 4px;
-    }
+  svg {
+    height: 6px;
+    margin-left: 4px;
+  }
 }
 .menu_list {
   position: absolute;
@@ -573,7 +578,7 @@ svg.qr-icon {
 
 .selectors-asset {
   width: 40px;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .infinity-rotate {
@@ -782,7 +787,7 @@ svg.qr-icon {
     }
 
     .step-name {
-      font-weight: bold;
+      font-weight: 600;
       font-size: 12px;
       line-height: 24px;
       text-align: center;
@@ -812,7 +817,7 @@ svg.qr-icon {
     .options-text {
       max-width: 210px;
       font-style: normal;
-      font-weight: bold;
+      font-weight: 600;
       font-size: 12px;
       line-height: 16px;
       display: flex;
@@ -828,7 +833,7 @@ svg.qr-icon {
 
   .indications {
     font-style: normal;
-    font-weight: bold;
+    font-weight: 600;
     font-size: 12px;
     line-height: 24px;
     display: flex;

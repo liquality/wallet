@@ -124,7 +124,7 @@ export default {
       align-items: center;
 
       code {
-        font-weight: bold;
+        font-weight: 600;
         color: $color-text-primary;
       }
     }

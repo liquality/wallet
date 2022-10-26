@@ -128,6 +128,12 @@ export default {
   padding: 0 !important;
   overflow: hidden;
 
+  &_top {
+    h2 {
+      font-weight: 600;
+    }
+  }
+
   &_description {
     font-weight: 100;
     font-size: 14px;
@@ -176,7 +182,7 @@ export default {
       flex: 0 0 94px;
       padding-bottom: 6px;
       text-align: left;
-      font-weight: 700;
+      font-weight: 600;
 
       &::before {
         display: block;

@@ -117,6 +117,10 @@ export default {
   height: 600px;
   padding-bottom: 44px;
 
+  strong {
+    font-weight: 600;
+  }
+
   .wallet-content {
     overflow: auto;
   }
