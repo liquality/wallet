@@ -13,7 +13,7 @@ const passwordPage = new PasswordPage();
 let browser, page;
 const metamaskTestDappUrl = "https://metamask.github.io/test-dapp/"
 
-describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
+describe.only("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
   beforeEach(async () => {
     browser = await puppeteer.launch(testUtil.getChromeOptions());
     page = await browser.newPage();
@@ -40,7 +40,7 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     await dappPage.waitForSelector("#connectButton", { visible: true, timeout: 0})
     await dappPage.waitForSelector('.container-fluid', { visible: true, timeout: 0})
     console.log("metmask test dapp loaded")
-    await testUtil.takeScreenshot(dappPage, "metamask-test-dapp")
+    await testUtil.takeScreenshot(dappPage, "metamask-test-dapp-before-connect")
 
     // await dappPage.waitForFunction('window.ethereum', { timeout: 0 })
     await dappPage.evaluate(async () => {
@@ -48,11 +48,13 @@ describe("Sushi Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
         console.log("window.ethereum.enable() called")
       })
       }, { timeout: 0 });
+
     const newPagePromise = new Promise((x) =>
       browser.once('targetcreated', (target) => x(target.page()))
     ) /* eslint-disable-line */
 
      const connectRequestWindow = await newPagePromise;
+    await testUtil.takeScreenshot(connectRequestWindow, "sushi-ethereum-loading-issue-before");
     try {
       await connectRequestWindow.waitForSelector("#filter_by_chain", {
         visible: true,

@@ -53,7 +53,6 @@ describe('UNISWAP service Provider-["MAINNET","PULL_REQUEST_TEST"]', async () =>
     await page.click('#ETHEREUM')
     await page.waitForSelector(`#${toAsset}`, { visible: true })
     await page.click(`#${toAsset}`)
-    await swapPage.ClickOnMin(page)
     // Rate & source provider validation (ETH->DAI source chosen is Uniswap V2)
     await page.waitForSelector('#selectedQuote_provider', {
       visible: true,
