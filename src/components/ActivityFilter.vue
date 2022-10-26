@@ -345,7 +345,7 @@ export default {
       align-items: center;
       text-transform: uppercase;
       font-style: normal;
-      font-weight: 700;
+      font-weight: 600;
       font-size: $font-size-tiny;
       height: 30px;
       border-bottom: 1px solid $hr-border-color;
@@ -356,7 +356,7 @@ export default {
       align-items: center;
       text-transform: uppercase;
       font-style: normal;
-      font-weight: bold;
+      font-weight: 600;
       font-size: $font-size-tiny;
       padding-top: 25px;
     }

@@ -4,8 +4,8 @@
       <span>{{ asset }}</span>
     </div>
     <p class="address">
-      <span class="font-weight-bold">{{ startAddress }}</span
-      >{{ middleAddressPart }}<span class="font-weight-bold">{{ endAddress }}</span>
+      <span class="font-bold">{{ startAddress }}</span
+      >{{ middleAddressPart }}<span class="font-bold">{{ endAddress }}</span>
     </p>
     <button class="copy-btn" @click="$emit('copyAddress')">
       <CopyIcon class="icon" v-if="!addressCopied" />

@@ -169,7 +169,7 @@ export default {
 
   &_seed.form {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 600;
     padding-left: 0;
     margin-bottom: 10px;
     text-align: left;
@@ -189,12 +189,12 @@ export default {
         font-size: $font-size-tiny;
         counter-increment: wordIndex;
         content: counter(wordIndex);
-        font-weight: 700;
+        font-weight: 600;
       }
 
       input {
         color: $color-text-primary;
-        font-weight: 700;
+        font-weight: 600;
       }
     }
   }

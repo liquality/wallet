@@ -109,7 +109,7 @@ export default {
 <style lang="scss" scoped>
 .quote-list {
   &_header {
-    font-weight: bold;
+    font-weight: 600;
     text-transform: uppercase;
     border-bottom: 1px solid $hr-border-color;
   }
@@ -120,7 +120,7 @@ export default {
     border-bottom: 1px solid $hr-border-color;
 
     &_rate {
-      font-weight: bold;
+      font-weight: 600;
       font-size: $font-size-head-title;
     }
 

@@ -110,7 +110,7 @@ export default {
     text-align: center;
     font-size: 0.8125rem;
     margin-top: 20px;
-    font-weight: bold;
+    font-weight: 600;
   }
 
   .main-content {

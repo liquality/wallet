@@ -329,7 +329,7 @@ export default {
     .create-item-row-title,
     .account-name {
       font-style: normal;
-      font-weight: bold;
+      font-weight: 600;
       font-size: 12px;
       line-height: 16px;
       color: #3d4767;
