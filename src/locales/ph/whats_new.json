@@ -1,13 +1,8 @@
 [
   {
     "page": "1",
-    "title": "New Features",
-    "content": [
-      "Integration with LI.FI as a swap provider",
-      "Integration with deBridge as a swap provider",
-      "Move to Goerli Testnet",
-      "Solana Endpoint Change to Quicknode"
-    ]
+    "title": "What's New?",
+    "content": ["Fix for toggle in Settings", "What’s new prompt facelift"]
   },
   {
     "page": "2",
@@ -16,10 +11,5 @@
       "Use LI.FI and deBridge with more than 100 different swap paths",
       "Use LI.FI and deBridge to swap between almost all EVM chains our wallet currently supports"
     ]
-  },
-  {
-    "page": "3",
-    "title": "Issues Fixed",
-    "content": ["Localization updates", "Easy EVM chains build", "Ledger bug fixes"]
   }
 ]
