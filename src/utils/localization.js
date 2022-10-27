@@ -1,4 +1,5 @@
 import { TRANSLATIONS, liqualityErrorStringToJson } from '@liquality/error-parser'
+import { splitSuggestions } from '@liquality/error-parser/dist/src/utils'
 import { I18n } from 'i18n-js'
 
 export const i18n = new I18n()
@@ -50,7 +51,9 @@ export const Localization = {
       const errorObj = typeof error === 'string' ? liqualityErrorStringToJson(error) : error
       const cause = i18n.translate(errorObj.causeKey, errorObj.data)
       const suggestions = i18n.translate(errorObj.suggestionKey, errorObj.data)
-      return `${cause} ${suggestions}`
+      const suggestionsObj = splitSuggestions(suggestions)
+      const prelude = suggestionsObj.prelude ? `${suggestionsObj.prelude}:` : ''
+      return `${cause}; ${prelude} ${suggestionsObj.actions.join(', ')}`
     }
   }
 }
