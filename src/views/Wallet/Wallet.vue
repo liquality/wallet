@@ -26,6 +26,7 @@ import LedgerRequestMessage from '@/components/LedgerRequestMessage.vue'
 import WalletStats from './WalletStats.vue'
 import WalletTabs from './WalletTabs.vue'
 import NFTStats from './NFTStats'
+import { reportLiqualityError } from '@liquality/error-parser'
 
 export default {
   components: {
@@ -45,7 +46,7 @@ export default {
       })
     } catch (error) {
       // TODO: manage error
-      console.error(error)
+      reportLiqualityError(error)
     }
     await this.getNFTs()
   },
@@ -103,7 +104,7 @@ export default {
           accountIds: accountIds
         })
       } catch (error) {
-        console.error(error)
+        reportLiqualityError(error)
       }
     }
   }

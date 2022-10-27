@@ -281,6 +281,7 @@ import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 import qs from 'qs'
 import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
+import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 
 export default {
   components: {
@@ -572,7 +573,7 @@ export default {
 
         this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
       } catch (error) {
-        console.error(error)
+        reportLiqualityError(error)
         this.loading = false
         this.signRequestModalOpen = false
         this.sendErrorMessage = this.$tle(errorToLiqualityErrorString(error))

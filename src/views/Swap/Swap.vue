@@ -554,6 +554,7 @@ import { SwapProviderType } from '@liquality/wallet-core/dist/src/store/types'
 import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
 import qs from 'qs'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
+import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 
 const QUOTE_TIMER_MS = 30000
 
@@ -1381,7 +1382,7 @@ export default {
         this.signRequestModalOpen = false
         this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {
-        console.error(error)
+        reportLiqualityError(error)
         this.loading = false
         this.signRequestModalOpen = false
         this.swapErrorMessage = this.$tle(errorToLiqualityErrorString(error))

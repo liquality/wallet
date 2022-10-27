@@ -318,6 +318,7 @@ import _ from 'lodash'
 import BN from 'bignumber.js'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
+import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 
 export default {
   components: {
@@ -625,7 +626,7 @@ export default {
           accountIds: accountIds
         })
       } catch (error) {
-        console.error(error)
+        reportLiqualityError(error)
       }
     },
     async sendNFT() {

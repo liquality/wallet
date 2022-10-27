@@ -1,7 +1,7 @@
 import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { getChain } from '@liquality/cryptoassets'
-import { CUSTOM_ERRORS, createInternalError } from '@liquality/error-parser'
+import { CUSTOM_ERRORS, createInternalError, reportLiqualityError } from '@liquality/error-parser'
 import { connectRemote } from './terra-injection'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 
@@ -157,7 +157,7 @@ class Background {
           .then((result) => ({ result }))
           .catch((error) => {
             const liqualityErrorString = errorToLiqualityErrorString(error)
-            console.error(liqualityErrorString)
+            reportLiqualityError(error)
             return {
               error: liqualityErrorString
             }
@@ -284,7 +284,6 @@ class Background {
       .then((result) => ({ result }))
       .catch((error) => {
         const liqualityErrorString = errorToLiqualityErrorString(error)
-        console.error(liqualityErrorString) /* eslint-disable-line */
         return {
           error: liqualityErrorString
         }

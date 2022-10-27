@@ -56,6 +56,7 @@ import NewWalletText from '@/assets/icons/wallet_tagline.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { version as walletVersion } from '../../package.json'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
+import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 
 export default {
   components: {
@@ -87,7 +88,7 @@ export default {
           }
         })
       } catch (e) {
-        console.log(e)
+        reportLiqualityError(e)
         this.error = this.$tle(errorToLiqualityErrorString(e))
         this.trackAnalytics({
           event: 'UnlockWallet failed',
