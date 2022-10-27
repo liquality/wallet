@@ -271,7 +271,7 @@ export default {
         })
         this.replied = true
         if (response.error) {
-          this.error = response.error
+          this.error = this.$tle(response.error)
         } else {
           window.close()
         }

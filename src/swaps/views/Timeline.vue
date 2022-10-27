@@ -293,7 +293,7 @@
           <tr v-if="item.error">
             <td class="text-danger text-left small-12">Error</td>
             <td class="text-danger" id="item_error">
-              <pre>{{ itemError }}</pre>
+              <pre>{{ $tle(item.error) }}</pre>
             </td>
           </tr>
           <tr>
@@ -337,7 +337,6 @@ import { getSwapProviderConfig } from '@liquality/wallet-core/dist/src/swaps/uti
 import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
-import { isLiqualityErrorString } from '@liquality/error-parser'
 import { isObject } from 'lodash-es'
 
 export default {
@@ -366,13 +365,6 @@ export default {
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )
-    },
-    itemError() {
-      if (isLiqualityErrorString(this.item.error)) {
-        return this.$tle(this.item.error)
-      }
-
-      return this.item.error.replace('Error: ', '')
     },
     reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)

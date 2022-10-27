@@ -63,6 +63,7 @@
 import { mapActions } from 'vuex'
 import LogoWallet from '@/assets/icons/logo_wallet.svg?inline'
 import { version as walletVersion } from '../../../../package.json'
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 export default {
   props: {
     titleKey: {
@@ -106,7 +107,7 @@ export default {
         }
       } catch (e) {
         console.log(e)
-        this.error = this.$t('pages.onboarding.seedlogin.unlockError')
+        this.error = this.$tle(errorToLiqualityErrorString(e))
         this.trackAnalytics({
           event: 'User Backup Seed failed',
           properties: {

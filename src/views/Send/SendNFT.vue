@@ -317,6 +317,7 @@ import {
 import _ from 'lodash'
 import BN from 'bignumber.js'
 import NFTThumbnailImage from '@/assets/nft_thumbnail.png'
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 
 export default {
   components: {
@@ -648,9 +649,8 @@ export default {
         await this.refreshNFTs()
         this.$router.replace(`/wallet/nfts/activity/${this.account?.id}?tab=activity`)
       } catch (error) {
-        const { message } = error
         this.loading = false
-        this.sendErrorMessage = message || error
+        this.sendErrorMessage = this.$tle(errorToLiqualityErrorString(error))
         this.sendErrorModalOpen = true
       }
     },

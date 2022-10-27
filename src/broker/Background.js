@@ -1,8 +1,9 @@
 import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { getChain } from '@liquality/cryptoassets'
-import { CUSTOM_ERRORS, createInternalError, LiqualityError } from '@liquality/error-parser'
+import { CUSTOM_ERRORS, createInternalError } from '@liquality/error-parser'
 import { connectRemote } from './terra-injection'
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 
 function attemptOrWarn(func, message) {
   try {
@@ -155,9 +156,10 @@ class Background {
           .dispatch(data.type, data.payload)
           .then((result) => ({ result }))
           .catch((error) => {
-            console.error(error)
+            const liqualityErrorString = errorToLiqualityErrorString(error)
+            console.error(liqualityErrorString)
             return {
-              error: error instanceof LiqualityError ? error.toString() : error.message
+              error: liqualityErrorString
             }
           })
           .then((response) =>
@@ -281,9 +283,10 @@ class Background {
       .dispatch(action, data)
       .then((result) => ({ result }))
       .catch((error) => {
-        console.error(error) /* eslint-disable-line */
+        const liqualityErrorString = errorToLiqualityErrorString(error)
+        console.error(liqualityErrorString) /* eslint-disable-line */
         return {
-          error: error.toString()
+          error: liqualityErrorString
         }
       })
       .then((response) => {

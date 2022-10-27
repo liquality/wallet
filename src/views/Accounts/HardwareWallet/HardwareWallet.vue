@@ -46,7 +46,7 @@ import cryptoassets from '@liquality/wallet-core/dist/src/utils/cryptoassets'
 import { version as walletVersion } from '../../../../package.json'
 import { getNextAccountColor } from '@liquality/wallet-core/dist/src/utils/accounts'
 import { ChainId } from '@liquality/cryptoassets'
-
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 const LEDGER_PER_PAGE = 5
 
 export default {
@@ -151,7 +151,7 @@ export default {
         }
       } catch (error) {
         this.ledgerError = {
-          message: error.message || this.$t('pages.accounts.errorGettingAccounts')
+          message: this.$tle(errorToLiqualityErrorString(error))
         }
         this.ledgerConnected = false
         console.error('error getting accounts', error)
@@ -229,7 +229,7 @@ export default {
           this.creatingAccount = false
           this.currentStep = 'completed'
         } catch (error) {
-          this.ledgerError = { message: 'Error creating accounts' }
+          this.ledgerError = { message: this.$tle(errorToLiqualityErrorString(error)) }
           console.error('error creating accounts', error)
           this.creatingAccount = false
           this.trackAnalytics({

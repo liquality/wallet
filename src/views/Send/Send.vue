@@ -280,6 +280,7 @@ import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 import qs from 'qs'
 import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 
 export default {
   components: {
@@ -572,10 +573,9 @@ export default {
         this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
       } catch (error) {
         console.error(error)
-        const { message } = error
         this.loading = false
         this.signRequestModalOpen = false
-        this.sendErrorMessage = message || error
+        this.sendErrorMessage = this.$tle(errorToLiqualityErrorString(error))
         this.sendErrorModalOpen = true
       }
     },
