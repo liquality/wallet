@@ -13,19 +13,16 @@
     <h6 class="modal-header mt-4 text-uppercase">
       {{ $t('components.whatsNew.title') }} &#124; v {{ appVersion }}
     </h6>
-    <template v-if="loadingContent"> Loading... <SpinnerIcon class="btn-loading" /> </template>
-    <template v-else>
-      <template>
-        <div v-for="item in whatsNewModalContent" :key="item.page">
-          <div v-if="item.page == currentView">
-            <h2 class="page-title">{{ item.title }}</h2>
-            <p v-if="item.description" class="mt-3" v-html="item.description"></p>
-            <ul v-if="item.content">
-              <li v-for="(listItem, index) in item.content" v-html="listItem" :key="index"></li>
-            </ul>
-          </div>
+    <template>
+      <div v-for="item in whatsNewModalContent" :key="item.page">
+        <div v-if="item.page == currentView">
+          <h2 class="page-title">{{ item.title }}</h2>
+          <p v-if="item.description" class="mt-3" v-html="item.description"></p>
+          <ul v-if="item.content">
+            <li v-for="(listItem, index) in item.content" v-html="listItem" :key="index"></li>
+          </ul>
         </div>
-      </template>
+      </div>
     </template>
     <template #footer v-if="whatsNewModalContent.length > 1">
       <div class="footer">
@@ -67,15 +64,13 @@ import { version } from '/package.json'
 import { mapActions, mapState } from 'vuex'
 import ArrowLeftIcon from '@/assets/icons/arrow_left.svg'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
-import SpinnerIcon from '@/assets/icons/spinner.svg'
 
 export default {
   components: {
     Modal,
     ArrowRightIcon,
     ArrowLeftIcon,
-    Logo,
-    SpinnerIcon
+    Logo
   },
   data: function () {
     return {
