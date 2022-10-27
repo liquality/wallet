@@ -1,4 +1,4 @@
-import { TRANSLATIONS } from '@liquality/error-parser'
+import { TRANSLATIONS, liqualityErrorStringToJson } from '@liquality/error-parser'
 import { I18n } from 'i18n-js'
 
 export const i18n = new I18n()
@@ -43,6 +43,14 @@ export const Localization = {
 
     Vue.prototype.$t = (key, options) => {
       return i18n.translate(key, options)
+    }
+
+    Vue.prototype.$tle = (error) => {
+      // For translating liquality error string or liquality error objects
+      const errorObj = typeof error === 'string' ? liqualityErrorStringToJson(error) : error
+      const cause = i18n.translate(errorObj.causeKey, errorObj.data)
+      const suggestions = i18n.translate(errorObj.suggestionKey, errorObj.data)
+      return `${cause} ${suggestions}`
     }
   }
 }

@@ -3,7 +3,6 @@ import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './util
 import { getChain } from '@liquality/cryptoassets'
 import { CUSTOM_ERRORS, createInternalError, LiqualityError } from '@liquality/error-parser'
 import { connectRemote } from './terra-injection'
-import { translateLiqualityError } from '../utils/liqualityErrors'
 
 function attemptOrWarn(func, message) {
   try {
@@ -158,8 +157,7 @@ class Background {
           .catch((error) => {
             console.error(error)
             return {
-              error:
-                error instanceof LiqualityError ? translateLiqualityError(error) : error.message
+              error: error instanceof LiqualityError ? error.toString() : error.message
             }
           })
           .then((response) =>
@@ -285,7 +283,7 @@ class Background {
       .catch((error) => {
         console.error(error) /* eslint-disable-line */
         return {
-          error: error instanceof LiqualityError ? translateLiqualityError(error) : error.toString()
+          error: error.toString()
         }
       })
       .then((response) => {

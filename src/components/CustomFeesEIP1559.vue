@@ -242,7 +242,6 @@ import {
   NoMaxFeeError,
   VeryHighMaxFeeWarning
 } from '@liquality/error-parser/dist/src/LiqualityErrors'
-import { translateLiqualityError } from '../utils/liqualityErrors'
 
 export default {
   components: {
@@ -274,20 +273,20 @@ export default {
     ...mapState(['activeNetwork']),
     // TODO: move erro handling to wallet-core
     noTipError() {
-      return !this.tipFee ? translateLiqualityError(new NoTipError()) : null
+      return !this.tipFee ? this.$tle(new NoTipError()) : null
     },
     veryLowTipError() {
       return !this.noTipError && this.tipFee < this.fees.slow.fee.maxPriorityFeePerGas
-        ? translateLiqualityError(new VeryLowTipError())
+        ? this.$tle(new VeryLowTipError())
         : null
     },
     veryHighTipWarning() {
       return this.tipFee > this.fees.fast.fee.maxPriorityFeePerGas
-        ? translateLiqualityError(new VeryHighTipWarning())
+        ? this.$tle(new VeryHighTipWarning())
         : null
     },
     noMaxFeeError() {
-      return !this.maxFee ? translateLiqualityError(new NoMaxFeeError()) : null
+      return !this.maxFee ? this.$tle(new NoMaxFeeError()) : null
     },
     veryLowMaxFeeError() {
       return this.maxFee < this.fees.slow.fee.maxFeePerGas
@@ -296,9 +295,7 @@ export default {
     },
     veryHighFeeWarning() {
       return this.maxFee > this.fees.fast.fee.maxFeePerGas
-        ? translateLiqualityError(
-            new VeryHighMaxFeeWarning({ maxFeePerGas: this.fees.fast.fee.maxFeePerGas })
-          )
+        ? this.$tle(new VeryHighMaxFeeWarning({ maxFeePerGas: this.fees.fast.fee.maxFeePerGas }))
         : null
     },
     slowPreset() {

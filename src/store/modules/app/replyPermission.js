@@ -1,4 +1,3 @@
-import { translateLiqualityError } from '../../../utils/liqualityErrors'
 import { LiqualityError } from '@liquality/error-parser'
 import { emitter } from '../../utils'
 
@@ -8,8 +7,7 @@ export const replyPermission = async ({ dispatch }, { request, allowed }) => {
     try {
       response.result = await dispatch('executeRequest', { request })
     } catch (error) {
-      response.error =
-        error instanceof LiqualityError ? translateLiqualityError(error) : error.message
+      response.error = error instanceof LiqualityError ? error.toString() : error.message
     }
   }
 

@@ -337,9 +337,8 @@ import { getSwapProviderConfig } from '@liquality/wallet-core/dist/src/swaps/uti
 import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
-import { isLiqualityErrorString, LiqualityErrorStringToJson } from '@liquality/error-parser'
+import { isLiqualityErrorString } from '@liquality/error-parser'
 import { isObject } from 'lodash-es'
-import { translateLiqualityError } from '../../utils/liqualityErrors'
 
 export default {
   components: {
@@ -370,7 +369,7 @@ export default {
     },
     itemError() {
       if (isLiqualityErrorString(this.item.error)) {
-        return translateLiqualityError(LiqualityErrorStringToJson(this.item.error))
+        return this.$tle(this.item.error)
       }
 
       return this.item.error.replace('Error: ', '')
