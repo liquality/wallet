@@ -31,28 +31,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2.4.2
+        uses: actions/checkout@v3
         with:
+          node-version: 16
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
-          node-version: '14'
+          node-version: 16
         # Create screenshots directory
       - run: mkdir screenshots
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+        run: |
+          echo "yarn_cache_dir_path=$(yarn config get cacheFolder)" >> $GITHUB_ENV
 
       - name: Restore yarn cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: yarn-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          path: ${{ env.yarn_cache_dir_path}}
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
           restore-keys: |
             yarn-cache-folder-
@@ -94,7 +96,7 @@ jobs:
           args: yarn test:pullrequest
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: screenshots
