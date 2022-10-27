@@ -5,6 +5,9 @@ export const mutations = {
   SET_ANALYTICS_OPTIN_MODAL_OPEN(state, { open }) {
     state.analyticsOptInModalOpen = open
   },
+  SET_WHATS_NEW_MODAL_CONTENT(state, { content }) {
+    state.whatsNewModalContent = content
+  },
   SET_ORIGIN_ACCESS_ACTIVE(state, { active }) {
     state.requestOriginAccessActive = active
   },

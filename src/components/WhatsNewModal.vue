@@ -25,15 +25,6 @@
             </ul>
           </div>
         </div>
-        <span>
-          <Clap :fill="hasClapped ? '#9d4dfa' : '#3D4767'" class="cursor-pointer" @click="clap()" />
-          <span class="ml-2">
-            <template v-if="loading">
-              <SpinnerIcon class="btn-loading" />
-            </template>
-            <span v-else>{{ clapCount }}</span>
-          </span>
-        </span>
       </template>
     </template>
     <template #footer v-if="whatsNewModalContent.length > 1">
@@ -76,27 +67,7 @@ import { version } from '/package.json'
 import { mapActions, mapState } from 'vuex'
 import ArrowLeftIcon from '@/assets/icons/arrow_left.svg'
 import ArrowRightIcon from '@/assets/icons/arrow_right.svg'
-import Clap from './icons/Clap.vue'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
-import firebase from 'firebase/app'
-import 'firebase/database'
-import 'firebase/auth'
-import 'firebase/firestore'
-
-const firebaseConfig = {
-  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
-  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
-  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.VUE_APP_FIREBASE_APP_ID,
-  measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID
-}
-
-let db = null
-let clapCollection = null
-let clapDoc = null
 
 export default {
   components: {
@@ -104,7 +75,6 @@ export default {
     ArrowRightIcon,
     ArrowLeftIcon,
     Logo,
-    Clap,
     SpinnerIcon
   },
   data: function () {
@@ -112,29 +82,12 @@ export default {
       open: false,
       currentView: 1,
       hasClapped: false,
-      loading: false,
-      loadingContent: true,
-      clapCount: 0,
-      whatsNewModalContent: {}
-    }
-  },
-  async mounted() {
-    try {
-      const app = firebase.initializeApp(firebaseConfig)
-      db = firebase.firestore(app)
-
-      await firebase.auth().signInAnonymously()
-
-      clapCollection = db.collection('claps')
-      clapDoc = clapCollection.doc(this.appVersion)
-
-      this.getClapCount()
-    } catch (err) {
-      console.error(err)
+      loading: false
     }
   },
   computed: {
     ...mapState(['whatsNewModalVersion', 'termsAcceptedAt', 'unlockedAt']),
+    ...mapState('app', ['whatsNewModalContent']),
     appVersion() {
       return version
     },
@@ -147,38 +100,6 @@ export default {
     ...mapActions(['setWhatsNewModalVersion']),
     close() {
       this.open = false
-    },
-    async getClapCount() {
-      this.loading = true
-      try {
-        const clapSnap = await clapDoc.get()
-        if (clapSnap.exists) {
-          this.clapCount = clapSnap.data().count
-        } else {
-          await clapDoc.set({ count: 0 })
-        }
-      } catch (err) {
-        console.error(err)
-      }
-      this.loading = false
-    },
-    async clap() {
-      try {
-        let count = this.clapCount
-        let clapped = this.hasClapped
-        if (clapped) {
-          count > 0 ? count-- : count
-          clapped = false
-        } else {
-          count++
-          clapped = true
-        }
-        await clapDoc.update({ count })
-        this.clapCount = count
-        this.hasClapped = clapped
-      } catch (err) {
-        console.error(err)
-      }
     }
   },
   async created() {
@@ -187,17 +108,8 @@ export default {
       process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS
     ) {
       this.open = true
-      const locale = this.currentLocale || process.env.VUE_APP_DEFAULT_LOCALE
-      const content = await import(`@/locales/${locale}/whats_new.json`)
-      this.whatsNewModalContent = content.default
-      this.loadingContent = false
       this.setWhatsNewModalVersion({ version: this.appVersion })
     }
-  },
-  beforeDestroy() {
-    clapDoc = null
-    clapCollection = null
-    db = null
   }
 }
 </script>
