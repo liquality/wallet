@@ -48,6 +48,9 @@ describe("Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     if (sizeOfWindow.length > 1) {
       console.log("Metamask popup detected");
       const connectRequestWindow = (await browser.pages())[3];
+      let pageTitle = await connectRequestWindow.title();
+      console.log("Page title is: ", pageTitle);
+      expect(pageTitle,'Liquality wallet page title is wrong clicked metamask connect button').to.equal("Liquality Wallet");
       await connectRequestWindow.waitForSelector("#filter_by_chain", {
         visible: true,
         timeout: 90000
