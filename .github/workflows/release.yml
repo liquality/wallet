@@ -77,7 +77,6 @@ jobs:
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
-    # Minor PROD releases.
       - name: Set production agents
         run: |
             export NODE_OPTIONS="--max-old-space-size=5120"
