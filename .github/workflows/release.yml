@@ -91,7 +91,6 @@ jobs:
             echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =$TRANSAK_DEFAULT_FIAT_CURRENCY >> .env
             echo VUE_APP_ONRAMPER_WIDGET_URL =$ONRAMPER_WIDGET_URL >> .env
             echo VUE_APP_ONRAMPER_API_KEY =$ONRAMPER_API_KEY >> .env
-      # Firebase details
             echo VUE_APP_FIREBASE_API_KEY =$FIREBASE_API_KEY >> .env
             echo VUE_APP_FIREBASE_AUTH_DOMAIN =$FIREBASE_AUTH_DOMAIN >> .env
             echo VUE_APP_FIREBASE_PROJECT_ID =$FIREBASE_PROJECT_ID >> .env
