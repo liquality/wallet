@@ -6,7 +6,8 @@ import {
   CUSTOM_ERRORS,
   createInternalError,
   NoActiveWalletError,
-  WalletLockedError
+  WalletLockedError,
+  UserDeclinedError
 } from '@liquality/error-parser'
 
 const CONFIRM_REQUIRED = [
@@ -79,7 +80,7 @@ export const requestPermission = async (
       return new Promise((resolve, reject) => {
         commit('SET_REQUEST_PERMISSION_ACTIVE', { active: false })
         emitter.$once(`permission:${id}`, (response) => {
-          if (!response.allowed) reject(new Error('User denied'))
+          if (!response.allowed) reject(new UserDeclinedError())
           if (response.error) reject(new Error(response.error))
           resolve(response.result)
         })
@@ -102,7 +103,7 @@ export const requestPermission = async (
           permissionRoute = '/permission/signPsbt'
         }
 
-        createPopup(`${permissionRoute}?${query}`, () => reject(new Error('User denied')))
+        createPopup(`${permissionRoute}?${query}`, () => reject(new UserDeclinedError()))
       })
     } else {
       commit('SET_REQUEST_PERMISSION_ACTIVE', { active: false })

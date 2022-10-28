@@ -1,7 +1,12 @@
 import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { getChain } from '@liquality/cryptoassets'
-import { CUSTOM_ERRORS, createInternalError, reportLiqualityError } from '@liquality/error-parser'
+import {
+  CUSTOM_ERRORS,
+  createInternalError,
+  reportLiqualityError,
+  DappNotConnectedError
+} from '@liquality/error-parser'
 import { connectRemote } from './terra-injection'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 
@@ -252,7 +257,7 @@ class Background {
           connection.postMessage({
             id,
             data: {
-              error: 'Use enable() method first'
+              error: new DappNotConnectedError({ dapp: origin, chain: chain }).toString()
             }
           })
         }
@@ -265,7 +270,7 @@ class Background {
           connection.postMessage({
             id,
             data: {
-              error: 'Use enable() method first'
+              error: new DappNotConnectedError({ dapp: origin, chain: chain }).toString()
             }
           })
         }
