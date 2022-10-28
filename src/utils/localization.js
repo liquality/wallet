@@ -51,9 +51,17 @@ export const Localization = {
       const errorObj = typeof error === 'string' ? liqualityErrorStringToJson(error) : error
       const cause = i18n.translate(errorObj.causeKey, errorObj.data)
       const suggestions = i18n.translate(errorObj.suggestionKey, errorObj.data)
-      const suggestionsObj = splitSuggestions(suggestions)
-      const prelude = suggestionsObj.prelude ? `${suggestionsObj.prelude}:` : ''
-      return `${cause}; ${prelude} ${suggestionsObj.actions.join(', ')}`
+
+      return formatLiqualityError(cause, suggestions)
     }
   }
+}
+
+export function formatLiqualityError(cause, suggestions) {
+  const suggestionsObj = splitSuggestions(suggestions)
+
+  if (suggestionsObj.actions.length === 0) return cause
+
+  const prelude = suggestionsObj.prelude ? `${suggestionsObj.prelude}:` : ''
+  return `${cause}; ${prelude} ${suggestionsObj.actions.join(', ')}`
 }
