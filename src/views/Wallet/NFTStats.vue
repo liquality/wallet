@@ -15,7 +15,8 @@
           </span>
         </div>
         <span class="account-container_balance_code" v-if="!isAccount && nftAssetsCount > 0">
-          {{ $t('common.in') }} {{ $t('common.account', { count: accountsWithNFTs }) }}
+          {{ $t('common.in') }} {{ accountsWithNFTs }}
+          {{ $t('common.account', { count: accountsWithNFTs }) }}
         </span>
       </div>
     </div>
