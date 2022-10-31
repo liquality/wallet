@@ -117,7 +117,7 @@ export default {
         display: flex;
         h5,
         span {
-          font-weight: bold;
+          font-weight: 600;
           font-size: 16px;
           line-height: 20.63px;
         }

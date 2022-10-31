@@ -50,7 +50,7 @@ export default {
 
   .notification-text {
     font-size: $font-size-head-title;
-    font-weight: bold;
+    font-weight: 600;
     width: 100%;
   }
 

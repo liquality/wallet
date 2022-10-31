@@ -28,7 +28,14 @@ export default {
     }
   },
   computed: {
-    ...mapState(['activeNetwork', 'brokerReady', 'keyUpdatedAt', 'termsAcceptedAt', 'unlockedAt']),
+    ...mapState([
+      'activeNetwork',
+      'brokerReady',
+      'keyUpdatedAt',
+      'termsAcceptedAt',
+      'unlockedAt',
+      'whatsNewModalVersion'
+    ]),
     ...mapState({
       locale: (state) => state.app?.locale
     }),
@@ -41,7 +48,7 @@ export default {
   },
   methods: {
     ...mapActions(['initializeAnalytics']),
-    ...mapActions('app', ['setLocalePreference', 'getBrowserLocale'])
+    ...mapActions('app', ['setLocalePreference', 'getBrowserLocale', 'setWhatsNewModalContent'])
   },
   async created() {
     await this.initializeAnalytics()
@@ -55,6 +62,13 @@ export default {
       await this.changeLocale(_locale)
       // store the locale in state
       await this.setLocalePreference({ locale: this.currentLocale })
+    }
+    if (
+      this.whatsNewModalVersion !== this.appVersion ||
+      process.env.VUE_APP_SHOW_WHATS_NEW_ALWAYS
+    ) {
+      const content = await import(`@/locales/${this.currentLocale}/whats_new.json`)
+      await this.setWhatsNewModalContent({ content: content.default })
     }
     this.localesLoaded = true
   },

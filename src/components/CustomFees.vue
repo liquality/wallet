@@ -262,7 +262,7 @@ export default {
   letter-spacing: -0.08px;
   text-transform: uppercase;
   font-style: normal;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 12px;
   line-height: 18px;
   color: #3d4767;
@@ -341,7 +341,7 @@ export default {
 
     .gas-price-label {
       font-style: normal;
-      font-weight: bold;
+      font-weight: 600;
       font-size: 12px;
       line-height: 18px;
       display: flex;

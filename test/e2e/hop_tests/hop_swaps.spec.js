@@ -81,7 +81,7 @@ describe('SWAP feature["MAINNET"]', async () => {
     expect(
       await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'ARBETH->PWETH,Hop swap Provider!!'
-    ).oneOf(['Hop'])
+    ).oneOf(['Hop', 'LiFi','DeBridge'])
 
     //Click swap types
     await page.click('#swap_types_option')
@@ -191,7 +191,7 @@ describe('SWAP feature["MAINNET"]', async () => {
     expect(
       await page.$eval('#selectedQuote_provider', (el) => el.textContent),
       'USDC->PUSDC,Hop swap Provider!!'
-    ).oneOf(['Hop'])
+    ).oneOf(['Hop','DeBridge','LiFi'])
 
     //Click swap types
     await page.click('#swap_types_option')

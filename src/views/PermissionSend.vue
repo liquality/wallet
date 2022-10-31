@@ -476,7 +476,7 @@ export default {
   &_fees {
     display: flex;
     align-items: center;
-    font-weight: bold;
+    font-weight: 600;
     margin: 6px 0;
     .fee-selector {
       margin-left: 6px;

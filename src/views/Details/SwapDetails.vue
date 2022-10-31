@@ -287,7 +287,7 @@ export default {
 
   h2 {
     font-size: $font-size-sm;
-    font-weight: bold;
+    font-weight: 600;
     text-transform: uppercase;
   }
 
@@ -296,7 +296,7 @@ export default {
   }
 
   &_rate {
-    font-weight: bold;
+    font-weight: 600;
     margin: 0 4px;
   }
 

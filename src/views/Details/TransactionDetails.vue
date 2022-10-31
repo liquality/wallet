@@ -35,7 +35,7 @@
         <div class="row">
           <div class="col">
             <h2>{{ $t('pages.details.sent') }}</h2>
-            <p id="transaction_detail_sent_amount" class="font-weight-bold mb-1">
+            <p id="transaction_detail_sent_amount" class="font-bold mb-1">
               {{ prettyBalance(item.amount, item.from) }} {{ item.from }}
             </p>
             <p id="transaction_detail_sent_amount_today">
@@ -343,7 +343,7 @@ export default {
 
   h2 {
     font-size: $font-size-sm;
-    font-weight: bold;
+    font-weight: 600;
     text-transform: uppercase;
   }
 

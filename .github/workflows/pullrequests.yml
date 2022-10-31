@@ -31,16 +31,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2.4.2
+        uses: actions/checkout@v3
         with:
+          node-version: 16
           fetch-depth: 0
 
       - name: Build project
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'true'
         with:
-          node-version: '14'
+          node-version: 16
         # Create screenshots directory
       - run: mkdir screenshots
 
@@ -49,7 +50,7 @@ jobs:
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
 
       - name: Restore yarn cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -76,16 +77,16 @@ jobs:
           yarn lint
           yarn build
 
-      - name: Create wallet artifact
-        uses: actions/upload-artifact@v2.3.1
-        if: always()
-        with:
-          name: pull-request-wallet
-          path: dist
-          if-no-files-found: ignore
-          retention-days: 30
+#      - name: Create wallet artifact
+#        uses: actions/upload-artifact@v2.3.1
+#        if: always()
+#        with:
+#          name: pull-request-wallet
+#          path: dist
+#          if-no-files-found: ignore
+#          retention-days: 30
 
-      - name: Run Smoke tests againt PullRequest
+      - name: Run Smoke tests against PullRequest
         uses: beemi/puppeteer-headful@v1.0.11
         env:
           CI: 'true'
@@ -94,17 +95,17 @@ jobs:
           args: yarn test:pullrequest
 
       - name: Save Screenshots
-        uses: actions/upload-artifact@v2.3.1
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: screenshots
           path: screenshots
           if-no-files-found: ignore
 
-      - name: Discord notification
-        uses: sarisia/actions-status-discord@v1
-        if: always()
-        with:
-          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
-          title: "${{ github.workflow}}"
+#      - name: Discord notification
+#        uses: sarisia/actions-status-discord@v1
+#        if: always()
+#        with:
+#          webhook: ${{ secrets.DISCORD_PULL_REQUESTS_WEBHOOK }}
+#          title: "${{ github.workflow}}"
 

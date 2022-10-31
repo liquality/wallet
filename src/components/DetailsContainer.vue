@@ -59,7 +59,7 @@ export default {
     }
 
     .details-title {
-      font-weight: bold;
+      font-weight: 600;
       text-transform: uppercase;
       padding-right: 0.5em;
     }

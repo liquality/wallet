@@ -22,6 +22,15 @@ env:
   # Onramper details
   ONRAMPER_WIDGET_URL: ${{ secrets.ONRAMPER_WIDGET_URL }}
   ONRAMPER_API_KEY: ${{ secrets.ONRAMPER_API_KEY }}
+  # firebase details
+  FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+  FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+  FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+  FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+  FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+  FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+  FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+  FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
 
 jobs:
   build:
@@ -68,7 +77,6 @@ jobs:
         with:
           version: ${{ steps.previous_tag.outputs.tag }}
 
-    # Minor PROD releases.
       - name: Set production agents
         run: |
             export NODE_OPTIONS="--max-old-space-size=5120"
@@ -77,29 +85,36 @@ jobs:
             echo VUE_APP_AVALANCHE_TESTNET_NODE =$AVALANCHE_TESTNET_NODE >> .env
             echo VUE_APP_NEAR_MAINNET_URL =$NEAR_MAINNET_URL >> .env
             echo VUE_APP_AMPLITUDE_API_KEY =$AMPLITUDE_API_KEY_PROD >> .env
-    
             echo VUE_APP_TRANSAK_WIDGET_URL =$TRANSAK_WIDGET_URL_PROD >> .env
             echo VUE_APP_TRANSAK_API_KEY =$TRANSAK_API_KEY_PROD >> .env
             echo VUE_APP_TRANSAK_DEFAULT_FIAT_CURRENCY =$TRANSAK_DEFAULT_FIAT_CURRENCY >> .env
             echo VUE_APP_ONRAMPER_WIDGET_URL =$ONRAMPER_WIDGET_URL >> .env
             echo VUE_APP_ONRAMPER_API_KEY =$ONRAMPER_API_KEY >> .env
+            echo VUE_APP_FIREBASE_API_KEY =$FIREBASE_API_KEY >> .env
+            echo VUE_APP_FIREBASE_AUTH_DOMAIN =$FIREBASE_AUTH_DOMAIN >> .env
+            echo VUE_APP_FIREBASE_PROJECT_ID =$FIREBASE_PROJECT_ID >> .env
+            echo VUE_APP_FIREBASE_STORAGE_BUCKET =$FIREBASE_STORAGE_BUCKET >> .env
+            echo VUE_APP_FIREBASE_MESSAGING_SENDER_ID =$FIREBASE_MESSAGING_SENDER_ID >> .env
+            echo VUE_APP_FIREBASE_APP_ID =$FIREBASE_APP_ID >> .env
+            echo VUE_APP_FIREBASE_MEASUREMENT_ID =$FIREBASE_MEASUREMENT_ID >> .env
+            echo VUE_APP_FIREBASE_DATABASE_URL =$FIREBASE_DATABASE_URL >> .env
             yarn install
             yarn lint
             yarn build
 
-      - name: Save Screenshots
-        uses: actions/upload-artifact@v2.3.1
-        if: always()
-        with:
-          name: screenshots
-          path: screenshots
-          if-no-files-found: ignore
+#      - name: Save Screenshots
+#        uses: actions/upload-artifact@v2.3.1
+#        if: always()
+#        with:
+#          name: screenshots
+#          path: screenshots
+#          if-no-files-found: ignore
 
       - name: Changelog
-        uses: mikepenz/release-changelog-builder-action@v3.0.1
-        id: build_changelog
+        uses: Bullrich/generate-release-changelog@master
+        id: Changelog
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
 
       - name: Create Release
         id: create_release
@@ -110,7 +125,9 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           body: |
-            ${{steps.build_changelog.outputs.changelog}}
+            ${{ steps.Changelog.outputs.changelog }}
+          draft: false
+          prerelease: false
 
       - name: Upload release
         uses: actions/upload-release-asset@v1
@@ -122,13 +139,13 @@ jobs:
           asset_name: liquality-wallet-${{ steps.get_current_tag.outputs.tag }}.zip
           asset_content_type: application/zip
 
-#      Run tests against Prod mainnet
-#      - name: Regression tests against Mainnet (PROD Agent)
-#        uses: beemi/puppeteer-headful@v1.0.12
-#        env:
-#          CI: 'true'
-#          DISPLAY: :99
-#          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
-#          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
-#        with:
-#          args: yarn test:mainnet:prodagent:release
+      # Run tests against Prod mainnet
+      - name: Regression tests against Mainnet (PROD Agent)
+        uses: beemi/puppeteer-headful@v1.0.12
+        env:
+          CI: 'true'
+          DISPLAY: :99
+          SEED_WORDS: ${{ secrets.TEST_NET_SEED_WORDS }}
+          TWENTY_FOUR_SEEDS: ${{ secrets.TWENTY_FOUR_SEEDS }}
+        with:
+          args: yarn test:mainnet:prodagent:release

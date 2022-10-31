@@ -645,7 +645,7 @@ export default {
 
 .advanced-button {
   padding: 19px 20px;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 12px;
   display: flex;
   gap: 6.5px;

@@ -32,7 +32,7 @@
           </p>
           <div v-if="qrcode" v-html="qrcode" class="receive_qr" id="receive_qr"></div>
           <div class="buy-crypto-container" v-show="activeNetwork === 'mainnet'">
-            <div class="mt-2 text-uppercase font-weight-bold">{{ $t('common.or') }}</div>
+            <div class="mt-2 text-uppercase font-bold">{{ $t('common.or') }}</div>
             <BuyCryptoButton
               :btn-class="['btn-light', 'btn-outline-primary']"
               :asset="asset"
@@ -223,7 +223,7 @@ export default {
   }
 
   &_message {
-    font-weight: bold;
+    font-weight: 600;
     margin-top: 26px;
   }
 

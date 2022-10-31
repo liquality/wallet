@@ -198,16 +198,17 @@ class OverviewPage {
       }
 
       case 'AVAX': {
-        const eth = await page.waitForSelector('#AVALANCHE', {
+        const avalanche = await page.waitForSelector('#AVALANCHE', {
           timeout: elementVisibleTimeout,
           visible: true
         })
-        await eth.click()
+        await avalanche.click()
         await page.waitForSelector(`#${assetName}`, {
           timeout: elementVisibleTimeout,
           visible: true
         })
         await page.click(`#${assetName}`)
+        console.log('AVAX asset has been selected')
         break
       }
 
