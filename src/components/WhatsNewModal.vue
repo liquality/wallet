@@ -23,6 +23,15 @@
           </ul>
         </div>
       </div>
+      <!-- <span>
+        <Clap :fill="hasClapped ? '#9d4dfa' : '#3D4767'" class="cursor-pointer" @click="clap()" />
+        <span class="ml-2">
+          <template v-if="loading">
+            <SpinnerIcon class="btn-loading" />
+          </template>
+          <span v-else>{{ clapCount }}</span>
+        </span>
+      </span> -->
     </template>
     <template #footer v-if="whatsNewModalContent.length > 1">
       <div class="footer">
