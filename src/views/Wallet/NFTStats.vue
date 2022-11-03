@@ -66,6 +66,7 @@ import EyeIcon from '@/assets/icons/eye.svg'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import { getChain, getNativeAssetCode } from '@liquality/cryptoassets'
 import { getAddressExplorerLink } from '@liquality/wallet-core/dist/src/utils/asset'
+import { reportLiqualityError } from '@liquality/error-parser'
 
 export default {
   components: {
@@ -146,7 +147,7 @@ export default {
           accountIds: accountIds
         })
       } catch (error) {
-        console.error(error)
+        reportLiqualityError(error)
       } finally {
         this.updatingAssets = false
       }

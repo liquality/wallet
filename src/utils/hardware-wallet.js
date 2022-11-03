@@ -1,3 +1,5 @@
+import { LedgerDeviceConnectionError } from '@liquality/error-parser'
+
 export const LEDGER_USB_VENDOR_ID = '0x2c97'
 
 export async function tryConnectLedgerDevice() {
@@ -22,7 +24,7 @@ export const ledgerConnectMixin = {
         const connected = await tryConnectLedgerDevice()
 
         if (!connected) {
-          throw new Error('Ledger device not connected or not unlocked.')
+          throw new LedgerDeviceConnectionError()
         }
         this.ledgerConnected = connected
       }

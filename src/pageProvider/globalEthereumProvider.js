@@ -1,3 +1,4 @@
+import { UserDeclinedError } from '@liquality/error-parser'
 import { PageProvider } from './pageProvider'
 
 class GlobalEthereumPageProvider extends PageProvider {
@@ -12,7 +13,7 @@ class GlobalEthereumPageProvider extends PageProvider {
   async enable() {
     // TODO: explicityl pass provider maanger?
     const { accepted, chain } = await this.window.providerManager.enable()
-    if (!accepted) throw new Error('User rejected')
+    if (!accepted) throw new UserDeclinedError()
     const chainChanged = this.window.ethereumProxyChain !== chain
     this.window.ethereumProxyChain = chain
     const injectionName = this.window.providerManager.getInjectionName(chain)

@@ -235,6 +235,13 @@ import { prettyFiatBalance } from '@liquality/wallet-core/dist/src/utils/coinFor
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import { mapState } from 'vuex'
+import {
+  NoTipError,
+  VeryLowTipError,
+  VeryHighTipWarning,
+  NoMaxFeeError,
+  VeryHighMaxFeeWarning
+} from '@liquality/error-parser/dist/src/LiqualityErrors'
 
 export default {
   components: {
@@ -266,20 +273,20 @@ export default {
     ...mapState(['activeNetwork']),
     // TODO: move erro handling to wallet-core
     noTipError() {
-      return !this.tipFee ? 'Miner tip must be greater than 0 GWEI' : null
+      return !this.tipFee ? this.$tle(new NoTipError()) : null
     },
     veryLowTipError() {
       return !this.noTipError && this.tipFee < this.fees.slow.fee.maxPriorityFeePerGas
-        ? 'Miner tip is extremely low and the transaction could fail. Use ‘Low’.'
+        ? this.$tle(new VeryLowTipError())
         : null
     },
     veryHighTipWarning() {
       return this.tipFee > this.fees.fast.fee.maxPriorityFeePerGas
-        ? 'Miner tip is higher than necessary. You may pay more than needed. Use ‘High’.'
+        ? this.$tle(new VeryHighTipWarning())
         : null
     },
     noMaxFeeError() {
-      return !this.maxFee ? 'Max fee must be greater than 0 GWEI' : null
+      return !this.maxFee ? this.$tle(new NoMaxFeeError()) : null
     },
     veryLowMaxFeeError() {
       return this.maxFee < this.fees.slow.fee.maxFeePerGas
@@ -288,7 +295,7 @@ export default {
     },
     veryHighFeeWarning() {
       return this.maxFee > this.fees.fast.fee.maxFeePerGas
-        ? `Max fee is higher than necessary ${this.fees.fast.fee.maxFeePerGas} GWEI (Base Fee plus Miner Tip). Review  your maximum ‘New Fee Total’.`
+        ? this.$tle(new VeryHighMaxFeeWarning({ maxFeePerGas: this.fees.fast.fee.maxFeePerGas }))
         : null
     },
     slowPreset() {

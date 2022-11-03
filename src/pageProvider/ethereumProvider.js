@@ -1,3 +1,4 @@
+import { UserDeclinedError } from '@liquality/error-parser'
 import { PageProvider } from './pageProvider'
 
 class EthereumPageProvider extends PageProvider {
@@ -72,7 +73,7 @@ class EthereumPageProvider extends PageProvider {
       chainId: this.network.chainId.toString(16),
       enable: async () => {
         const { accepted } = await this.window.providerManager.enable(this.chain)
-        if (!accepted) throw new Error('User rejected')
+        if (!accepted) throw new UserDeclinedError()
         return this.getAddresses()
       },
       request: async (req) => {

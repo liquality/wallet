@@ -1,3 +1,4 @@
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 import { emitter } from '../../utils'
 
 export const replyPermission = async ({ dispatch }, { request, allowed }) => {
@@ -6,7 +7,7 @@ export const replyPermission = async ({ dispatch }, { request, allowed }) => {
     try {
       response.result = await dispatch('executeRequest', { request })
     } catch (error) {
-      response.error = error.message
+      response.error = errorToLiqualityErrorString(error)
     }
   }
 

@@ -1,6 +1,7 @@
 import { stringify } from 'qs'
 import { emitter } from '../../utils'
 import { createPopup } from '../../../broker/utils'
+import { UserDeclinedError } from '@liquality/error-parser'
 
 export const requestOriginAccess = async (
   { state, dispatch, commit },
@@ -31,14 +32,14 @@ export const requestOriginAccess = async (
             chain
           })
         } else {
-          reject(new Error('User denied'))
+          reject(new UserDeclinedError())
         }
       })
 
       const query = stringify({ origin, chain })
       createPopup(`/enable?${query}`, () => {
         commit('SET_ORIGIN_ACCESS_ACTIVE', { active: false })
-        reject(new Error('User denied'))
+        reject(new UserDeclinedError())
       })
     })
   }

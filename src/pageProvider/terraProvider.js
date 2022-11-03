@@ -1,3 +1,4 @@
+import { UserDeclinedError } from '@liquality/error-parser'
 import { PageProvider } from './pageProvider'
 import { COMMON_REQUEST_MAP } from './utils'
 
@@ -13,7 +14,7 @@ class TerraPageProvider extends PageProvider {
     this.window.terra = {
       enable: async () => {
         const accepted = await this.window.providerManager.enable('terra')
-        if (!accepted) throw new Error('User rejected')
+        if (!accepted) throw new UserDeclinedError()
         const terra = this.window.providerManager.getProviderFor('LUNA')
         return terra.getMethod('wallet.getAddresses')()
       },

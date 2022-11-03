@@ -293,7 +293,7 @@
           <tr v-if="item.error">
             <td class="text-danger text-left small-12">Error</td>
             <td class="text-danger" id="item_error">
-              <pre>{{ item.error.replace('Error: ', '') }}</pre>
+              <pre>{{ $tle(item.error) }}</pre>
             </td>
           </tr>
           <tr>

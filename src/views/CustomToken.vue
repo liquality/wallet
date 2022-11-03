@@ -133,6 +133,7 @@ import { CHAINS_WITH_FETCH_TOKEN_DETAILS } from '@liquality/wallet-core/dist/src
 import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
+import { DuplicateTokenSymbolError } from '@liquality/error-parser/dist/src/LiqualityErrors/DuplicateTokenSymbolError'
 
 export default {
   components: {
@@ -167,7 +168,7 @@ export default {
         (!this.autofilled && Object.keys(cryptoassets).includes(this.symbol)) ||
         this.isExistingNetworkAsset
       ) {
-        return 'Token with this symbol exists.'
+        return this.$tle(new DuplicateTokenSymbolError())
       }
       return null
     },

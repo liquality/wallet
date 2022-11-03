@@ -1,3 +1,4 @@
+import { UserDeclinedError } from '@liquality/error-parser'
 import { PageProvider } from './pageProvider'
 
 const BITCOIN_REQUEST_MAP = {
@@ -23,7 +24,8 @@ class BitcoinPageProvider extends PageProvider {
     this.window.bitcoin = {
       enable: async () => {
         const { accepted } = await this.window.providerManager.enable('bitcoin')
-        if (!accepted) throw new Error('User rejected')
+        if (!accepted) throw new UserDeclinedError()
+
         const btc = this.window.providerManager.getProviderFor('BTC')
         return btc.getMethod('wallet.getAddresses')()
       },
