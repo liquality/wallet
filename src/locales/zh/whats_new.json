@@ -2,7 +2,11 @@
   {
     "page": "1",
     "title": "What's New?",
-    "content": ["Fix for toggle in Settings", "What’s new prompt facelift"]
+    "content": [
+      "Arbitrum fix",
+      "Solana address fix",
+      "Wallet core: backend error parser"
+    ]
   },
   {
     "page": "2",
