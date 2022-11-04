@@ -105,4 +105,8 @@ export default {
 html {
   animation: redraw 1s linear infinite;
 }
+
+.test {
+  justify-content: center;
+}
 </style>
