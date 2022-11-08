@@ -57,7 +57,7 @@ export default {
           path: `/details/nft-asset/${this.nftAsset.token_id}`,
           query: {
             collection: this.nftAsset.collection?.name,
-            nftAsset: this.nftAsset.id,
+            nftAsset: this.nftAsset.token_id,
             accountId: this.accountId,
             source: this.$route.fullPath
           }
