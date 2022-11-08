@@ -28,8 +28,18 @@
           </div>
         </div>
         <div v-if="address" class="account-container_address">
-          <v-popover offset="16" show placement="top" hideOnTargetClick="false">
-            <button class="btn btn-outline-light" :id="`${asset}_address_container`">
+          <v-popover
+            offset="8"
+            trigger="hover focus active"
+            show
+            placement="top"
+            hideOnTargetClick="false"
+          >
+            <button
+              @click.prevent="copyAddress"
+              class="btn btn-outline-light"
+              :id="`${asset}_address_container`"
+            >
               {{ shortenAddress(address) }}
             </button>
             <template slot="popover">
