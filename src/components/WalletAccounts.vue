@@ -71,7 +71,7 @@
         </ListItem>
         <div class="account-assets" :class="{ active: shouldExpandAccount(account) }">
           <ListItem
-            v-if="account.nfts && !isAssetList"
+            v-if="account.nfts && !isAssetList && hasNFTActivity(account)"
             @item-selected="
               $router.push({
                 path: `/wallet/nfts/activity/${account.id}`,
@@ -166,7 +166,7 @@ export default {
   },
   computed: {
     ...mapState(['activeWalletId', 'activeNetwork']),
-    ...mapGetters(['accountsData']),
+    ...mapGetters(['accountsData', 'activity']),
     filteredItems() {
       if (!this.search) return this.accounts
 
@@ -210,6 +210,12 @@ export default {
     },
     getDefaultTab(account) {
       return account.nfts.length > 0 ? 'nfts' : 'activity'
+    },
+    hasNFTActivity(account) {
+      return (
+        this.activity.filter((item) => item.type === 'NFT' && item.accountId === account.id)
+          .length > 0
+      )
     }
   }
 }
