@@ -4308,9 +4308,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/cryptoassets@npm:2.0.0-next.6":
-  version: 2.0.0-next.6
-  resolution: "@liquality/cryptoassets@npm:2.0.0-next.6"
+"@liquality/cryptoassets@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@liquality/cryptoassets@npm:2.0.0"
   dependencies:
     "@ethersproject/address": 5.7.0
     "@types/bs58": 4.0.1
@@ -4319,7 +4319,7 @@ __metadata:
     bs58: 4.0.1
     ethereumjs-util: 7.1.5
     lodash: 4.17.21
-  checksum: 56f626f01ca2f0365d25cdc05e0c61f4765312786624e6497b43c811ddb202c6b862cda71946f3d78dce1e426f89b9d2ba1d1ae3bc6003586580c11e18088290
+  checksum: 7b10b14ba956719a2852e4a5b351d4d659f0e2b68e12d793e94f5f35107c7bae5eef40c7f72bb5f4716f6f8c40313aeca7520c9c5ce61854e9eb8c8d208271d9
   languageName: node
   linkType: hard
 
@@ -4338,15 +4338,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/error-parser@npm:2.0.0-next.6":
-  version: 2.0.0-next.6
-  resolution: "@liquality/error-parser@npm:2.0.0-next.6"
+"@liquality/error-parser@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@liquality/error-parser@npm:2.0.0"
   dependencies:
     "@chainify/client": ^1.2.33
     "@chainify/errors": ^1.2.33
-    "@liquality/cryptoassets": 2.0.0-next.6
+    "@liquality/cryptoassets": 2.0.0
     randombytes: ^2.1.0
-  checksum: 5000a7dda75fa6d810044a405c5bf354da71e1fe789ea7cf3da8c7351115aeb58858e58ba1d7556d65811c42d118dac6359ad0638c1ec009b4c4c25bbd7638e9
+  checksum: 92ef9f11767f219879bfa7c72355c9b141c9947fdb5d59300d80f50b43149e336aebf09cd5dcdab11138c71273a0ce805433df1c63584f71c2f22ed628c45f7c
   languageName: node
   linkType: hard
 
@@ -4429,9 +4429,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@liquality/wallet-core@npm:2.0.0-next.6":
-  version: 2.0.0-next.6
-  resolution: "@liquality/wallet-core@npm:2.0.0-next.6"
+"@liquality/wallet-core@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@liquality/wallet-core@npm:2.0.0"
   dependencies:
     "@blobfishkate/sovryncontracts": 1.3.27
     "@chainify/bitcoin": 1.2.33
@@ -4454,8 +4454,8 @@ __metadata:
     "@ethersproject/transactions": 5.7.0
     "@hop-protocol/sdk": 0.0.1-beta.314
     "@lifi/sdk": 1.0.2
-    "@liquality/cryptoassets": 2.0.0-next.6
-    "@liquality/error-parser": 2.0.0-next.6
+    "@liquality/cryptoassets": 2.0.0
+    "@liquality/error-parser": 2.0.0
     "@metamask/eth-sig-util": ^4.0.1
     "@terra-money/terra.js": 3.1.3
     "@thorchain/asgardex-util": ^0.10.0
@@ -4481,7 +4481,7 @@ __metadata:
     urql: ^2.2.0
     vue: ^2.6.11
     vuex: ^3.1.3
-  checksum: bb251e5c1000ec0ede229c671de7c8309ab876988458aab6c6022447aaf21df4130f50ee888f379bbfc0997e4ccec4410902684e2ee0b6b54e45ac89310545ae
+  checksum: 395f30658f8ea6b50d9cf3cde845abf411725081a26a1833c9cddbb6b4bbab79a6fdf20f24a1058bf8704fb3c622c0a53ee0c282b9c6339fdb3a4d843f545385
   languageName: node
   linkType: hard
 
@@ -18900,12 +18900,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "liquality-wallet@workspace:."
   dependencies:
-    "@liquality/cryptoassets": 2.0.0-next.6
-    "@liquality/error-parser": 2.0.0-next.6
+    "@liquality/cryptoassets": 2.0.0
+    "@liquality/error-parser": 2.0.0
     "@liquality/ethereum-utils": ^1.13.12
     "@liquality/terra-networks": ^1.13.12
     "@liquality/types": ^1.13.12
-    "@liquality/wallet-core": 2.0.0-next.6
+    "@liquality/wallet-core": 2.0.0
     "@terra-money/terra.js": ^3.1.6
     "@testing-library/jest-dom": 5.16.2
     "@testing-library/vue": ^5.8.2
