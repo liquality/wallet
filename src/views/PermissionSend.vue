@@ -286,6 +286,13 @@ export default {
       }
 
       const sendFees = await getSendTxFees(this.account.id, this.asset, amount, this.customFee)
+      console.log('🚀 ~ file: PermissionSend.vue ~ line 289 ~ _updateSendFees ~ amount', amount)
+      console.log(
+        '🚀 ~ file: PermissionSend.vue ~ line 289 ~ _updateSendFees ~ customFee',
+        this.customFee
+      )
+      console.log('🚀 ~ file: PermissionSend.vue ~ line 289 ~ _updateSendFees ~ sendFees', sendFees)
+      debugger
       if (amount === undefined) {
         this.maxSendFees = sendFees
       } else {
@@ -293,19 +300,25 @@ export default {
       }
     },
     async estimateGas() {
-      let gas = this.request.args[0].gas
+      try {
+        let gas = this.request.args[0].gas
 
-      if (!gas) {
-        const { data, to, value } = this.request.args[0]
+        if (!gas) {
+          const { data, to, value } = this.request.args[0]
 
-        gas = await estimateGas({
-          data,
-          to,
-          value
-        })
+          gas = await estimateGas({
+            data,
+            to,
+            value
+          })
+          console.log('🚀 ~ file: PermissionSend.vue ~ line 309 ~ estimateGas ~ gas', gas)
+        }
+
+        return BN(gas, 16)
+      } catch (error) {
+        console.log('🚀 ~ file: PermissionSend.vue ~ line 306 ~ estimateGas ~ error', error)
+        return BN(0, 16)
       }
-
-      return BN(gas, 16)
     },
     applyCustomFee({ fee }) {
       const presetFee = Object.entries(this.assetFees).find(([speed, speedFee]) => {
@@ -447,14 +460,14 @@ export default {
     }
   },
   async created() {
-    await Promise.all([
-      this.getSymbol(),
-      this.getLabel(),
-      this.updateFees({ asset: this.asset }),
-      this.updateSendFees(0),
-      this.updateMaxSendFees(),
-      this.calculateGas()
-    ])
+    // Promise.all([
+    this.getSymbol()
+    this.getLabel()
+    this.updateFees({ asset: this.asset })
+    this.updateSendFees(0)
+    this.updateMaxSendFees()
+    this.calculateGas()
+    // ])
   }
 }
 </script>

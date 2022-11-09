@@ -37,7 +37,7 @@
             <p class="basicPreset-type">{{ $t('common.slow') }}</p>
             <p class="basicPreset-time slow">{{ $t('common.maybeInSec', { secs: 30 }) }}</p>
             <p>{{ slowPreset.amount }} {{ asset }}</p>
-            <p>{{ slowPreset.fiat }} USD</p>
+            <p v-if="slowPreset.fiat">{{ slowPreset.fiat }} USD</p>
             <p>max {{ slowPreset.maximum }} USD</p>
           </div>
           <div
@@ -85,7 +85,7 @@
               >{{ ' ' + $t('components.customFees.toSpeedUp') }}
             </p>
             <span>${{ minerTipFiat }}</span>
-            <div class="custom-fee-details-item">
+            <div class="custom-fee-details-item" style="margin-top: '15px'">
               <span class="gas-unit-label" :class="{ gasUnitLabel: padLabels }" style="left: 0">{{
                 gasUnit.toUpperCase()
               }}</span>
@@ -117,7 +117,7 @@
               {{ $t('components.customFees.perGas') }}
             </p>
             <span>${{ maxFiat }}</span>
-            <div class="custom-fee-details-item">
+            <div class="custom-fee-details-item" style="margin-top: '15px'">
               <span class="gas-unit-label" :class="{ gasUnitLabel: padLabels }" style="right: 0">{{
                 gasUnit.toUpperCase()
               }}</span>
@@ -261,6 +261,10 @@ export default {
     this.suggestedBaseFeePerGas = this.fees[this.basicPreset].fee.suggestedBaseFeePerGas
     this.tipFee = this.fees[this.basicPreset].fee.maxPriorityFeePerGas
     this.maxFee = this.fees[this.basicPreset].fee.maxFeePerGas
+    console.log(
+      '🚀 ~ file: CustomFeesEIP1559.vue ~ line 296 ~ slowPreset ~ this.presetBase',
+      this.presetBase(this.fees?.average, this.totalFees.average)
+    )
   },
   computed: {
     ...mapState(['activeNetwork']),
@@ -292,6 +296,10 @@ export default {
         : null
     },
     slowPreset() {
+      console.log(
+        '🚀 ~ file: CustomFeesEIP1559.vue ~ line 301 ~ slowPreset ~ this.totalFees',
+        this.totalFees
+      )
       return this.presetBase(this.fees?.slow, this.totalFees.slow)
     },
     averagePreset() {
@@ -606,8 +614,9 @@ export default {
 
       span {
         width: 34px;
-        position: relative;
-        top: 15px;
+        position: absolute;
+        // position: relative;
+        // top: 15px;
       }
 
       input {

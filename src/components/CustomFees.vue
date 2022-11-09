@@ -50,7 +50,7 @@
                 &nbsp;${{ customFiatAmount }}
               </div>
             </div>
-            <div class="custom-fee-details-item">
+            <div class="custom-fee-details-item" style="margin-top: '15px'">
               <div class="gas-unit-label">{{ gasUnit }}</div>
               <div class="input-group">
                 <input
