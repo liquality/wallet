@@ -106,7 +106,7 @@
         "nfts": {
             "zero": "NFTs (0)",
             "one": "NFTs",
-            "other": "NFTs (%{count})"
+            "other": "NFTs"
         },
         "nftActivityDescription": "Once you start using your NFTs you will see the activity here",
         "nftDescription": "Once you start owning NFTs with accounts in your Liquality wallet you will see them here",
