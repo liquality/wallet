@@ -2,6 +2,7 @@ import { stringify } from 'qs'
 import { emitter } from '../../utils'
 import { createPopup } from '../../../broker/utils'
 import { ChainId } from '@liquality/cryptoassets'
+import { COMMON_REQUEST_MAP } from '../../../pageProvider/utils'
 
 const CONFIRM_REQUIRED = [
   /^wallet.buildTransaction$/,
@@ -18,7 +19,10 @@ const CONFIRM_REQUIRED = [
   /^swap.updateTransactionFee$/,
 
   // Bitcoin
-  /^wallet.signPSBT$/
+  /^wallet.signPSBT$/,
+
+  // Solana
+  /^wallet.getSigner$/
 ]
 
 const ALLOWED = [
@@ -36,12 +40,18 @@ export const requestPermission = async (
   if (!requestPermissionActive) {
     commit('SET_REQUEST_PERMISSION_ACTIVE', { active: true })
     await dispatch('requestUnlockWallet')
-    if (!rootState.unlockedAt) throw new Error('Wallet is locked. Unlock the wallet first.')
-    if (!rootState.activeWalletId) throw new Error('No active wallet found. Create a wallet first.')
+    if (!rootState.unlockedAt) {
+      throw new Error('Wallet is locked. Unlock the wallet first.')
+    }
+    if (!rootState.activeWalletId) {
+      throw new Error('No active wallet found. Create a wallet first.')
+    }
 
     let { asset, accountId, method, args, chain } = data
 
-    if (!ALLOWED.some((re) => re.test(method))) throw new Error('Method not allowed')
+    if (!ALLOWED.some((re) => re.test(method))) {
+      throw new Error('Method not allowed')
+    }
 
     const { activeNetwork: network, activeWalletId: walletId } = rootState
 
@@ -85,7 +95,20 @@ export const requestPermission = async (
 
         let permissionRoute = '/permission/default'
 
-        if (chain === ChainId.Terra) {
+        // handle solana injection
+        if (chain === ChainId.Solana) {
+          switch (method) {
+            case COMMON_REQUEST_MAP.wallet_getSigner: {
+              permissionRoute = '/permission/solana/signer'
+              break
+            }
+
+            case COMMON_REQUEST_MAP.wallet_signMessage: {
+              permissionRoute = '/permission/solana/sign'
+              break
+            }
+          }
+        } else if (chain === ChainId.Terra) {
           permissionRoute = '/permission/terra'
         } else if (method === 'wallet.sendTransaction') {
           permissionRoute = '/permission/send'

@@ -21,8 +21,12 @@
     "test-full-regression": "node_modules/mocha/bin/mocha"
   },
   "dependencies": {
+    "@chainify/hw-ledger": "^1.2.33",
+    "@debridge-finance/solana-transaction-parser": "github:debridge-finance/solana-tx-parser-public",
     "@liquality/cryptoassets": "1.16.1",
     "@liquality/ethereum-utils": "^1.13.12",
+    "@liquality/solana-wallet-injection": "1.0.0",
+    "@liquality/solana-wallet-standard": "1.0.0",
     "@liquality/terra-networks": "^1.13.12",
     "@liquality/types": "^1.13.12",
     "@liquality/wallet-core": "1.31.1",
@@ -118,5 +122,12 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:liquality/wallet.git"
+  },
+  "resolutions": {
+    "@liquality/cryptoassets": "link:/Users/kraykov/Documents/workspace/wallet-core/packages/cryptoassets",
+    "@liquality/error-parser": "link:/Users/kraykov/Documents/workspace/wallet-core/packages/error-parser",
+    "@liquality/wallet-core": "link:/Users/kraykov/Documents/workspace/wallet-core/packages/wallet-core",
+    "@liquality/solana-wallet-injection": "link:/Users/kraykov/Documents/workspace/wallet-core/packages/solana-wallet-injection",
+    "@liquality/solana-wallet-standard": "link:/Users/kraykov/Documents/workspace/wallet-core/packages/solana-wallet-standard"
   }
 }

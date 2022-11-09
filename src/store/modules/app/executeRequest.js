@@ -1,4 +1,5 @@
 export const executeRequest = async ({ rootGetters, dispatch }, { request }) => {
+  console.log('executeRequest', JSON.stringify(request))
   // Send transactions through wallet managed action
   const { network, walletId, asset, accountId } = request
   let call

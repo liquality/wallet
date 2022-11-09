@@ -1,34 +1,30 @@
-import { PageProvider } from './pageProvider';
-import { PhantomWallet } from './solana/PhantomInjection';
-import { COMMON_REQUEST_MAP } from './utils';
+import { PageProvider } from './pageProvider'
+// import { PhantomWallet } from './solana/PhantomInjection';
+import { COMMON_REQUEST_MAP } from './utils'
+
+import { initialize } from '@liquality/solana-wallet-standard'
+import { LiqualitySolanaWallet } from '@liquality/solana-wallet-injection'
 
 class SolanaPageProvider extends PageProvider {
   async handleRequest(req) {
-    const solana = this.window.providerManager.getProviderFor('SOL');
-    const method = COMMON_REQUEST_MAP[req.method] || req.method;
-    return solana.getMethod(method)(...req.params);
+    const solana = this.window.providerManager.getProviderFor('SOL')
+    const method = COMMON_REQUEST_MAP[req.method] || req.method
+    return solana.getMethod(method)(...req.params)
   }
   setup() {
-    this.window.sollet = {
-      enable: async () => {
-        const { accepted } = await this.window.providerManager.enable('solana');
-        if (!accepted) throw new Error('User rejected');
-        const solana = this.window.providerManager.getProviderFor('SOL');
-        return solana.getMethod('wallet.getAddresses')();
-      },
-      request: async (req) => {
-        const params = req.params || [];
-        return this.handleRequest({
-          method: req.method,
-          params
-        });
-      }
-    };
+    // Create a reference to your wallet's existing API.
+    const liqualityWallet = new LiqualitySolanaWallet(this.window)
 
-    const phantomWallet = new PhantomWallet(this.window);
-    this.window.phantom.solana = phantomWallet;
-    this.window.solana = phantomWallet;
+    // Register your wallet using the Wallet Standard, passing the reference.
+    initialize(liqualityWallet)
+
+    // Attach the reference to the window, guarding against errors.
+    try {
+      Object.defineProperty(window, 'liquality', { value: liqualityWallet })
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 
-export { SolanaPageProvider };
+export { SolanaPageProvider }

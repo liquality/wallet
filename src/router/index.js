@@ -28,6 +28,7 @@ import PermissionSend from '@/views/PermissionSend.vue'
 import PermissionSign from '@/views/PermissionSign.vue'
 import PermissionSignPsbt from '@/views/PermissionSignPsbt.vue'
 import PermissionTerra from '@/views/PermissionTerra.vue'
+import PermissionSolanaGetSigner from '@/views/Injection/Solana/PermissionGetSigner.vue'
 import Permission from '@/views/Permission.vue'
 import WalletAssets from '@/views/Wallet/WalletAssets.vue'
 import WalletNFTs from '@/views/Wallet/WalletNFTs.vue'
@@ -270,6 +271,11 @@ const routes = [
   {
     path: '/permission/default',
     component: Permission,
+    meta: { protect: false }
+  },
+  {
+    path: '/permission/solana/signer',
+    component: PermissionSolanaGetSigner,
     meta: { protect: false }
   },
   // Injection
