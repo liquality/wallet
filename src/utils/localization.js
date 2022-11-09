@@ -1,6 +1,7 @@
+import { TRANSLATIONS, liqualityErrorStringToJson } from '@liquality/error-parser'
 import { I18n } from 'i18n-js'
 
-const i18n = new I18n()
+export const i18n = new I18n()
 
 export const loadLocale = async (locale, namespaces = ['common', 'components', 'pages']) => {
   if (!i18n.translations[locale]) {
@@ -11,7 +12,7 @@ export const loadLocale = async (locale, namespaces = ['common', 'components', '
         resources[n] = translations.default
       })
     )
-    i18n.store({ [locale]: { ...resources } })
+    i18n.store({ [locale]: { ...resources, ...TRANSLATIONS.walletExtension[locale] } })
   }
 }
 
@@ -42,6 +43,12 @@ export const Localization = {
 
     Vue.prototype.$t = (key, options) => {
       return i18n.translate(key, options)
+    }
+
+    Vue.prototype.$tle = (error) => {
+      // For translating liquality error string or liquality error objects
+      const errorObj = typeof error === 'string' ? liqualityErrorStringToJson(error) : error
+      return i18n.translate(errorObj.translationKey, errorObj.data)
     }
   }
 }

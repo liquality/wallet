@@ -1,3 +1,4 @@
+import { CUSTOM_ERRORS, createInternalError } from '@liquality/error-parser'
 import EventEmitter from 'events'
 import { BG_PREFIX, connectToBackground, newConnectId, Deferred } from './utils'
 
@@ -60,7 +61,7 @@ class Foreground {
         break
 
       case 'REHYDRATE_STATE':
-        if (this.initialized) throw new Error('State has already been synchronised with Background')
+        if (this.initialized) throw createInternalError(CUSTOM_ERRORS.FailedAssert.RehydrateState)
 
         this.store.replaceState(data)
 
@@ -78,7 +79,7 @@ class Foreground {
         break
 
       default:
-        throw new Error(`Received an invalid message type: ${type}`)
+        throw createInternalError(CUSTOM_ERRORS.Invalid.MessageType(type))
     }
   }
 

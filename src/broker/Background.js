@@ -1,7 +1,14 @@
 import { buildConfig } from '@liquality/wallet-core'
 import { BG_PREFIX, handleConnection, removeConnectId, getRootURL } from './utils'
 import { getChain } from '@liquality/cryptoassets'
+import {
+  CUSTOM_ERRORS,
+  createInternalError,
+  reportLiqualityError,
+  DappNotConnectedError
+} from '@liquality/error-parser'
 import { connectRemote } from './terra-injection'
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 
 function attemptOrWarn(func, message) {
   try {
@@ -154,8 +161,11 @@ class Background {
           .dispatch(data.type, data.payload)
           .then((result) => ({ result }))
           .catch((error) => {
-            console.error(error)
-            return { error: error.message }
+            const liqualityErrorString = errorToLiqualityErrorString(error)
+            reportLiqualityError(error)
+            return {
+              error: liqualityErrorString
+            }
           })
           .then((response) =>
             attemptOrWarn(
@@ -175,7 +185,7 @@ class Background {
         break
 
       default:
-        throw new Error(`Received an invalid message type: ${type}`)
+        throw createInternalError(CUSTOM_ERRORS.Invalid.MessageType(type))
     }
   }
 
@@ -247,7 +257,7 @@ class Background {
           connection.postMessage({
             id,
             data: {
-              error: 'Use enable() method first'
+              error: new DappNotConnectedError({ dapp: origin, chain: chain }).toString()
             }
           })
         }
@@ -260,7 +270,7 @@ class Background {
           connection.postMessage({
             id,
             data: {
-              error: 'Use enable() method first'
+              error: new DappNotConnectedError({ dapp: origin, chain: chain }).toString()
             }
           })
         }
@@ -278,8 +288,10 @@ class Background {
       .dispatch(action, data)
       .then((result) => ({ result }))
       .catch((error) => {
-        console.error(error) /* eslint-disable-line */
-        return { error: error.toString() }
+        const liqualityErrorString = errorToLiqualityErrorString(error)
+        return {
+          error: liqualityErrorString
+        }
       })
       .then((response) => {
         connection.postMessage({

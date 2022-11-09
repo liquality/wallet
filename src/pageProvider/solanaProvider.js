@@ -1,3 +1,4 @@
+import { UserDeclinedError } from '@liquality/error-parser'
 import { PageProvider } from './pageProvider'
 import { COMMON_REQUEST_MAP } from './utils'
 
@@ -11,7 +12,7 @@ class SolanaPageProvider extends PageProvider {
     this.window.sollet = {
       enable: async () => {
         const { accepted } = await this.window.providerManager.enable('solana')
-        if (!accepted) throw new Error('User rejected')
+        if (!accepted) throw new UserDeclinedError()
         const solana = this.window.providerManager.getProviderFor('SOL')
         return solana.getMethod('wallet.getAddresses')()
       },
