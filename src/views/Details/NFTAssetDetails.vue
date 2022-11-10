@@ -62,7 +62,7 @@
         <div class="drawer nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
             <h1 class="nft-details_name">
-              {{ nftAsset && nftAsset?.name ? nftAsset.name : '[Name]' }}
+              {{ nftAsset && nftAsset?.asset_contract ? nftAsset?.asset_contract?.name : '[Name]' }}
             </h1>
             <ChevronDownIcon
               class="nft-details_arrow"
@@ -93,7 +93,9 @@
         </div>
         <div class="drawer drawer-open nft-details">
           <div class="d-flex justify-content-between pointer-cursor">
-            <h1 class="nft-details_name">{{ nftAsset ? nftAsset.name : '' }}</h1>
+            <h1 class="nft-details_name">
+              {{ nftAsset && nftAsset?.asset_contract ? nftAsset?.asset_contract?.name : '' }}
+            </h1>
             <ChevronDownIcon
               class="nft-details_arrow cursor-pointer"
               @click="showFullscreen = false"
@@ -285,9 +287,13 @@ export default {
   },
   created() {
     const collectionName = this.$route.query.collection
+
     const nftAssetId = this.$route.query.nftAsset
+
     if (this.allNftCollections[collectionName]) {
-      this.nftAsset = this.allNftCollections[collectionName].find((i) => i.id == nftAssetId)
+      this.nftAsset = this.allNftCollections[collectionName].find((i) => {
+        return i.token_id === nftAssetId
+      })
       if (this.$route.query.accountId) {
         this.accountId = this.$route.query.accountId
       } else {
