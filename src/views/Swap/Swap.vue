@@ -808,7 +808,7 @@ export default {
       return getSwapProvider(this.activeNetwork, this.selectedQuote.provider)
     },
     defaultAmount() {
-      return 1
+      return this.max;
     },
     isPairAvailable() {
       const liqualityMarket = this.networkMarketData?.find(
