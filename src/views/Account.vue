@@ -28,8 +28,17 @@
           </div>
         </div>
         <div v-if="address" class="account-container_address">
-          <v-popover offset="16" show placement="top" hideOnTargetClick="false">
-            <button class="btn btn-outline-light" :id="`${asset}_address_container`">
+          <v-popover
+            trigger="hover focus"
+            :show="showPopOver"
+            placement="top"
+            :hideOnTargetClick="false"
+          >
+            <button
+              @click.prevent="copyAddress"
+              class="btn btn-outline-light"
+              :id="`${asset}_address_container`"
+            >
               {{ shortenAddress(address) }}
             </button>
             <template slot="popover">
@@ -151,7 +160,8 @@ export default {
       addressCopied: false,
       activityData: [],
       updatingBalances: false,
-      address: null
+      address: null,
+      showPopOver: true
     }
   },
   props: ['accountId', 'asset'],
@@ -204,9 +214,11 @@ export default {
     async copyAddress() {
       await navigator.clipboard.writeText(this.address)
       this.addressCopied = true
+      this.showPopOver = true
       setTimeout(() => {
         this.addressCopied = false
-      }, 2000)
+        this.showPopOver = false
+      }, 4000)
     },
     async refresh() {
       if (this.updatingBalances) return
