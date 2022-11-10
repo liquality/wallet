@@ -41,7 +41,8 @@ class EthereumPageProvider extends PageProvider {
       const data = req.params[0].data
       const gas = req.params[0].gas
       const result = await eth.getMethod('wallet.sendTransaction')({ to, value, data, gas })
-      return result.hash
+      console.log('result', result)
+      return result.txHash
     }
     if (req.method === 'eth_accounts') {
       return this.getAddresses()
