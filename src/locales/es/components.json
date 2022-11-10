@@ -19,7 +19,7 @@
     },
     "bridgeAssetRequiredMessage": {
         "needMore": "Neceitas más %{asset} para pagar el gas.",
-        "get": "Adquirir"
+        "get": "Recibir"
     },
     "cannotCoverMinimumMessage": {
         "needMore": "Necesitas más %{asset} para cubrir el mínimo más las comisiones."
@@ -51,7 +51,7 @@
     },
     "ethRequiredMessage": {
         "message": "Se requiere tener balance para hacer swap y necesitas tener ETH para pagar por el gas.",
-        "getETH": "Adquirir ETH"
+        "getETH": "Recibir ETH"
     },
     "head": {
         "dappConnected": "dApp Conectada",
