@@ -14,9 +14,7 @@
           <ul>
             <li v-for="provider in uniqueProvides" :key="provider.id" class="py-1 px-2">
               <span class="d-flex align-items-center"
-                ><img :src="getProviderIcon(provider.id)" class="mr-2" />{{
-                  provider.name
-                }}</span
+                ><img :src="getProviderIcon(provider.id)" class="mr-2" />{{ provider.name }}</span
               >
             </li>
           </ul>
