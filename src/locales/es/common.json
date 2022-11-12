@@ -69,7 +69,7 @@
     "slow": "Lenta",
     "maybeInSec": "~tal vez en %{secs} seg",
     "likelyInSec": "~aprox. en < %{secs} seg",
-    "get": "Adquirir",
+    "get": "Recibir",
     "version": "Versión",
     "account": {
         "zero": "Cuentas",
@@ -88,10 +88,10 @@
     "provider": "Proveedor",
     "localesLabels": {
         "en": "English",
-        "es": "Spanish",
-        "zh": "Chinese (Simplified)",
-        "pt": "Portuguese",
-        "ph": "Filipino",
-        "cb": "Bisaya (Cebuano)"
+        "es": "Español",
+        "zh": "中文（简体）",
+        "pt": "Português",
+        "ph": "Tagalog",
+        "cb": "Cebuano"
     }
 }

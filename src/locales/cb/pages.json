@@ -1,235 +1,235 @@
 {
-    "splash": {
-        "importWithSeedPhrase": "Pag-import gamit ang seed phrase",
-        "openWallet": "Ablihi ang wallet",
-        "createNewWallet": "Paghimo ug bag-ong wallet"
+  "splash": {
+    "importWithSeedPhrase": "Pag-import gamit ang seed phrase",
+    "openWallet": "Ablihi ang wallet",
+    "createNewWallet": "Paghimo ug bag-ong wallet"
+  },
+  "unlockWallet": {
+    "forgotPassword": "Nakalimtan ang password? I-import ang seed phrase",
+    "unlock": "Unlock"
+  },
+  "onboarding": {
+    "import": {
+      "unlockWallet": "Unlock wallet",
+      "enterSeedPhrase": "Ibutang ang seed phrase sa saktong pagka sunod-sunod sa paghimo nimo sa imong wallet.",
+      "words": "%{words} words"
     },
-    "unlockWallet": {
-        "forgotPassword": "Nakalimtan ang password? I-import ang seed phrase",
-        "unlock": "Unlock"
+    "home": {
+      "iAccept": "Uyon ko",
+      "termsAndPrivacy": "Mga Terms ug Privacy"
     },
-    "onboarding": {
-        "import": {
-            "unlockWallet": "Unlock wallet",
-            "enterSeedPhrase": "Ibutang ang seed phrase sa saktong pagka sunod-sunod sa paghimo nimo sa imong wallet.",
-            "words": "%{words} words"
-        },
-        "home": {
-            "iAccept": "Uyon ko",
-            "termsAndPrivacy": "Mga Terms ug Privacy"
-        },
-        "setup": {
-            "backupYourWallet": "I-back up imong Wallet",
-            "backupDescription": "Ang seed phrase ra ang paagi aron mabalik ang imong wallet. Isulat kini, pamatud-i kini ug dayon tipigi kini.",
-            "choosePassword": "Pilia ang Password (labing menos 8 ka karakter)",
-            "passwordTooShort": "Mubo ra kaayo ang password",
-            "confirmPassword": "I-Kumpirma ang Password",
-            "passwordDontMatch": "Ang mga password dili magkatugma.",
-            "confirmSeedTitle": "I-Kumpirma ang Seed Phrase",
-            "confirmSeedInstructions": "I-tap ang 3 ka words sa seed phrase nga sakto ang pagka sunod-sunod. I-kumpirma ug tapigi.",
-            "word": "Word",
-            "ordinals": {
-                "first": "st",
-                "fifth": "th",
-                "twelfth": "th"
-            },
-            "congrats": "Congrats!"
-        },
-        "warning": {
-            "warning": "Warning",
-            "iHavePrivacy": "Naa koy privacy",
-            "seedPhraseWarning": "Bisan kinsa nga aduna niini mahimong makasulod sa imong wallet ug makuha ang imong funds!",
-            "viewItInPrivate": "Tan-awa kini sa pribado nga walay camera sa palibot.",
-            "title": {
-                "seed": "Ipakita ang Seed Phrase?",
-                "privateKey": "Ipakita ang Private Key?"
-            }
-        },
-        "seedlogin": {
-            "understandTheRisk": "Nakasabot ko sa mga risgo ug duna koy privacy",
-            "pleaseAcceptTerms": "Palihug Dawata ang mga Terms",
-            "unlockError": "Sulayi Pag-usab. Pagsulod sa husto nga password (kini adunay 8 o labaw pa nga mga karakter).",
-            "title": {
-                "seed": "Sign-in aron Makita ang Seed Phrase",
-                "export": "Sign-in para ma Export ang Private Key"
-            }
-        },
-        "seedReveal": {
-            "yourSeedPhrase": "Imong Seed Phrase",
-            "revealDescription": "Ang seed phrase ra ang paagi aron mabalik ang imong wallet. Isulat kini, pamatud-i kini ug dayon tipigi kini.",
-            "revealSubTitle": "Hidden for security, Mouse-Over to reveal phrase.",
-            "iSavedTheSeed": "Na-save na nako ang seed"
-        }
+    "setup": {
+      "backupYourWallet": "I-back up imong Wallet",
+      "backupDescription": "Ang seed phrase ra ang paagi aron mabalik ang imong wallet. Isulat kini, pamatud-i kini ug dayon tipigi kini.",
+      "choosePassword": "Pilia ang Password (labing menos 8 ka karakter)",
+      "passwordTooShort": "Mubo ra kaayo ang password",
+      "confirmPassword": "I-Kumpirma ang Password",
+      "passwordDontMatch": "Ang mga password dili magkatugma.",
+      "confirmSeedTitle": "I-Kumpirma ang Seed Phrase",
+      "confirmSeedInstructions": "I-tap ang 3 ka words sa seed phrase nga sakto ang pagka sunod-sunod. I-kumpirma ug tapigi.",
+      "word": "Word",
+      "ordinals": {
+        "first": "st",
+        "fifth": "th",
+        "twelfth": "th"
+      },
+      "congrats": "Congrats!"
     },
-    "settings": {
-        "settings": "Settings",
-        "title": "Default Web3 Wallet",
-        "description": "Ibutang ang Liquality isip default nga wallet sa dapp. Ang ubang mga wallet dili maka-interact sa mga dapps samtang kini gi-enable.",
-        "analytics": "Analytics",
-        "analyticsSub": "Ipakigbahin kung asa ka naga-klik. Walay makaila nga datos nga nakolekta.",
-        "walletLogs": "Wallet Logs",
-        "walletLogsSub": "Ang mga log sa wallet nagbutang sa imong mga public na impormasyon sama sa mga adres ug mga transaksyon.",
-        "downloadLogs": "I-Download ang Logs",
-        "locale": "Language",
-        "localeSub": "Usba ang Language",
-        "dappConnections": "Dapp Connections",
-        "dappConnectionsSub": "Idiskonekta ang tanan nga mga dapps nga konektado.",
-        "done": "Humana!",
-        "forgetAllConnections": "Kalimti ang tanan nga koneksyon",
-        "version": "Bersyon"
+    "warning": {
+      "warning": "Warning",
+      "iHavePrivacy": "Naa koy privacy",
+      "seedPhraseWarning": "Bisan kinsa nga aduna niini mahimong makasulod sa imong wallet ug makuha ang imong funds!",
+      "viewItInPrivate": "Tan-awa kini sa pribado nga walay camera sa palibot.",
+      "title": {
+        "seed": "Ipakita ang Seed Phrase?",
+        "privateKey": "Ipakita ang Private Key?"
+      }
     },
-    "experiments": {
-        "experiments": "Experiments",
-        "multiaccounts": "Multi-Accounts",
-        "multiaccountsDescription": "Tugoti ang pagdumala sa account ug daghang mga account matag network"
+    "seedlogin": {
+      "understandTheRisk": "Nakasabot ko sa mga risgo ug duna koy privacy",
+      "pleaseAcceptTerms": "Palihug Dawata ang mga Terms",
+      "unlockError": "Sulayi Pag-usab. Pagsulod sa husto nga password (kini adunay 8 o labaw pa nga mga karakter).",
+      "title": {
+        "seed": "Sign-in aron Makita ang Seed Phrase",
+        "export": "Sign-in para ma Export ang Private Key"
+      }
     },
-    "manageAssets": {
-        "assetView": "Asset View",
-        "addCustomToken": "Idugang ang Custom Token",
-        "cantFindThisToken": "Dili makit-an kini nga token",
-        "addCustomERC20Tokens": "Magdugang ug Custom ERC20 tokens",
-        "learnHow": "Pagkat-on unsaon",
-        "searchForAsset": "Mangita ug Asset"
-    },
-    "customToken": {
-        "selectChain": "Pili ug chain...",
-        "tokenContractAddress": "Token Contract Address",
-        "name": "Ngalan",
-        "tokenSymbol": "Simbolo sa Token",
-        "decimals": "Decimals",
-        "addToken": "Idugang ang Token",
-        "addCustomToken": "Idugang ang Custom Token"
-    },
-    "wallet": {
-        "assets": "Assets",
-        "activity": "Activity",
-        "nfts": {
-            "zero": "NFTs (0)",
-            "one": "NFTs",
-            "other": "NFTs (%{count})"
-        },
-        "nftActivityDescription": "Makita dinhi ang mga activity sa higayon nga magsugod naka ug gamit sa imong NFTs",
-        "nftDescription": "Makita nimo dinhi ang mga account sa imong Liquality wallet sa higayon nga magsugod ka sa pagpanag-iya sa mga NFT",
-        "exploreNFT": "Susihon ang mga NFT sa Polygon, Ethereum ug Solana",
-        "checkOutOpenSea": "Tan-awa ang OpenSea",
-        "discoverCollect": "Pagdiskobre ug pagkolekta sa mga NFT sa Arbitrum",
-        "checkOutStratos": "Tan-awa ang Stratos",
-        "learnHowItWorks": "Pagkat-on kung giunsa kini"
-    },
-    "details": {
-        "sentNFT": "Gipadala nga NFT",
-        "status": "Status",
-        "confirmations": "Mga kumpirmasyon",
-        "completed": "Nakompleto",
-        "initiated": "Gisugdan",
-        "sentAsset": "Gipadala nga Asset",
-        "speed": "Speed",
-        "fee": "Fee",
-        "speedUp": "Speed up",
-        "update": "Update",
-        "transaction": "Transaksyon",
-        "transactionId": "Transaction Id",
-        "transferOn": "Pagbalhin sa %{marketplace}",
-        "details": "Mga Detalye",
-        "description": "Deskripsyon",
-        "youOwn": "Ikaw ang tag-iya",
-        "retry": "Sulayi pag-usab",
-        "pendingReceipt": "Pending Receipt",
-        "signTo": "Sign Sa",
-        "ledgerInstructions": "Sunda ang mga prompt aron pamatud-an ug dawaton ang kantidad, dayon kumpirmahi ang transaksyon. Mahimong adunay lag",
-        "onYourLedger": "Sa imong Ledger",
-        "today": "karong adlawa",
-        "time": "Time",
-        "sent": "Gipadala"
-    },
-    "accounts": {
-        "manageAccounts": "Manage Accounts",
-        "privateKey": "Private Key",
-        "eyeInstructions": "Ipahilayo kini gikan sa mga mata sa uban!",
-        "exportLedger": "Dili ma-export gikan sa usa ka Ledger account",
-        "createAccount": "Paghimo og Account",
-        "selectNetwork": "Pili ug Network",
-        "chooseAccountName": "Pilia ang Ngalan sa Account",
-        "accountAliasErrorFiveChars": "Ang ngalan kinahanglan adunay 5 o labaw pa nga mga karakter",
-        "accountAliasErrorTwentyChars": "Ang ngalan kinahanglang dili mosobra sa 20 ka karakter",
-        "accountAliasErrorExistingAccount": "Aduna nay account nga parehas nga ngalan",
-        "chooseTheColor": "Pilia ang Kolor",
-        "accounts": {
-            "zero": "%{count} Mga Accounts",
-            "one": "%{count} Account",
-            "other": "%{count} Mga Accounts"
-        },
-        "accountsAdded": "Nadugang nga mga Accounts",
-        "closeThisTab": "Isira kini nga Tab",
-        "connectLedger": "I-konek ang Ledger",
-        "selectAsset": "Pilia ang parehas nga asset dinhi",
-        "ledgerInstructions1": "I-plug ang Ledger sa computer",
-        "ledgerInstructions2": "Ibutang ang pin para ma unlock kini",
-        "ledgerInstructions3": "Sa device, adtoa ang asset nga gusto nimong ma-access",
-        "ledgerInstructions4": "Para maka-Swap, sa imong Ledger sa eth App, Adto sa Settings, unya Pilia ang 'Blind signing'",
-        "addLedgerAccounts": "Idugang ang mga Account sa Ledger",
-        "noAccountsFound": "Walay mga account nga nakit-an",
-        "errorGettingAccounts": "Sayop sa pagkuha og mga account",
-        "unlockAccount": "I-unlock ang Account",
-        "findingAccounts": "Nangita ug mga Accounts",
-        "creating": "Naghimo",
-        "creatingAccount": "Naghimo sa imong bag-o nga account",
-        "selectAccount": "Pilia ang Account",
-        "accountsLabel": "Accounts",
-        "accountAlreadyConnected": "Kini nga account konektado na: %{account}",
-        "previous": "Previous",
-        "accountMessage1": "Wala kami makakuha og lista sa mga account. Palihug sulayi pag-usab, susiha ang ledger kung ang husto nga app/asset gipili o kanselahon ug pagpili og lain nga asset.",
-        "accountMessage2": "Isira ang bisan unsang ubang mga app nga konektado sa imong ledger, lakip ang Ledger Live.",
-        "tryAgain": "Sulayi Pag-usab",
-        "unlock": "Unlock"
-    },
-    "receive": {
-        "yourCurrentAddress": "Ang imohang %{asset} Address",
-        "receiveMessage": "I-scan ang QR code gamit ang usa ka mobile wallet aron makapadala og funds niini nga address."
-    },
-    "assets": {
-        "noFunds": "Walay pundo sa wallet"
-    },
-    "enable": {
-        "connectRequest": "Connect Request",
-        "selectAccounts": "Pilia ang mga Accounts",
-        "filterByChain": "Filter by chain",
-        "deny": "Deny",
-        "byGrantingPermission": "Pinaagi sa pagtugot sa",
-        "theyCanRead": "mabasa nila ang imong mga adres sa publiko nga account.",
-        "makeSure": "Siguroha nga mosalig ka niini nga site."
-    },
-    "permission": {
-        "myWallet": "Imohang Wallet",
-        "signTransaction": "Pirmahi ang Transaksyon",
-        "requestToSign": "Paghangyo sa Pagpirma",
-        "request": "Request"
-    },
-    "send": {
-        "sendTo": "Ipadala Sa",
-        "memo": "Memo (Optional)",
-        "sendFrom": "Ipadala Gikan sa",
-        "titleSelectNFT": "Pili ug NFT",
-        "titleSendNFT": "Magpadala ug NFT",
-        "titleReviewSendNFT": "Review Send NFT"
-    },
-    "swap": {
-        "availableQuotes": "AVAILABLE QUOTES",
-        "providersDescription": "Kini nga mga quotes gikan sa lainlaing mga swap provider.",
-        "selectQuote": "Pili ug Quote",
-        "learnMoreAboutSwapTypes": "Pagkat-on bahin sa mga tipo sa swap",
-        "learnMoreAboutSwapProviders": "Pagkat-on mahitungod sa swap providers",
-        "swapTypes": "Swap Types",
-        "seekingLiquidity": "Nangita ug Liquidity...",
-        "seeAllQuotes": "Tan-awa ang tanang %{count} quotes",
-        "insufficientFunds": "Kulang ang Pundo",
-        "amountMinusFees": "Amount - Fees",
-        "initiateSwap": "Sugdi ang Swap",
-        "maxSlipPage": "Max slippage kay 3%.",
-        "refundMessage": "Max slippage mao ang 3%. Kung dili makompleto ang swap, i-refund kini paghuman sa pila ka oras.",
-        "swapProvidersInfo": "Adunay mga tradeoff nga lain-laing mga swap provider nga gihimo sa mga hinungdan sama sa kasayon, seguridad, liquidity, ug bayronon. Sa pagtan-aw:",
-        "pros": "Pros",
-        "cons": "Cons",
-        "feeStructure": "Fee Structure"
+    "seedReveal": {
+      "yourSeedPhrase": "Imong Seed Phrase",
+      "revealDescription": "Ang seed phrase ra ang paagi aron mabalik ang imong wallet. Isulat kini, pamatud-i kini ug dayon tipigi kini.",
+      "revealSubTitle": "Hidden for security, Mouse-Over to reveal phrase.",
+      "iSavedTheSeed": "Na-save na nako ang seed"
     }
+  },
+  "settings": {
+    "settings": "Settings",
+    "title": "Default Web3 Wallet",
+    "description": "Ibutang ang Liquality isip default nga wallet sa dapp. Ang ubang mga wallet dili maka-interact sa mga dapps samtang kini gi-enable.",
+    "analytics": "Analytics",
+    "analyticsSub": "Ipakigbahin kung asa ka naga-klik. Walay maila nga datos nga nakolekta.",
+    "walletLogs": "Wallet Logs",
+    "walletLogsSub": "Ang mga log sa wallet nagbutang sa imong mga public na impormasyon sama sa mga adres ug mga transaksyon.",
+    "downloadLogs": "I-Download ang Logs",
+    "locale": "Language",
+    "localeSub": "Usba ang Language",
+    "dappConnections": "Mga Koneksyon sa Dapp",
+    "dappConnectionsSub": "Idiskonekta ang tanan nga mga dapps nga konektado.",
+    "done": "Humana!",
+    "forgetAllConnections": "Kalimti ang tanan nga koneksyon",
+    "version": "Bersyon"
+  },
+  "experiments": {
+    "experiments": "Experiments",
+    "multiaccounts": "Multi-Accounts",
+    "multiaccountsDescription": "Tugoti ang pagdumala sa account ug daghang mga account matag network"
+  },
+  "manageAssets": {
+    "assetView": "Asset View",
+    "addCustomToken": "Idugang ang Custom Token",
+    "cantFindThisToken": "Dili makit-an kini nga token",
+    "addCustomERC20Tokens": "Magdugang ug Custom ERC20 tokens",
+    "learnHow": "Pagkat-on unsaon",
+    "searchForAsset": "Mangita ug Asset"
+  },
+  "customToken": {
+    "selectChain": "Pili ug chain...",
+    "tokenContractAddress": "Token Contract Address",
+    "name": "Ngalan",
+    "tokenSymbol": "Simbolo sa Token",
+    "decimals": "Decimals",
+    "addToken": "Idugang ang Token",
+    "addCustomToken": "Idugang ang Token"
+  },
+  "wallet": {
+    "assets": "Assets",
+    "activity": "Activity",
+    "nfts": {
+      "zero": "NFTs",
+      "one": "NFT",
+      "other": "NFTs"
+    },
+    "nftActivityDescription": "Makita dinhi ang mga activity sa higayon nga magsugod naka ug gamit sa imong NFTs",
+    "nftDescription": "Makita nimo dinhi ang mga account sa imong Liquality wallet sa higayon nga magsugod ka sa pagpanag-iya sa mga NFT",
+    "exploreNFT": "Susihon ang mga NFT sa Polygon, Ethereum ug Solana",
+    "checkOutOpenSea": "Tan-awa ang OpenSea",
+    "discoverCollect": "Pagdiskobre ug pagkolekta sa mga NFT sa Arbitrum",
+    "checkOutStratos": "Tan-awa ang Stratos",
+    "learnHowItWorks": "Pagkat-on kung giunsa kini"
+  },
+  "details": {
+    "sentNFT": "Gipadala nga NFT",
+    "status": "Status",
+    "confirmations": "Mga kumpirmasyon",
+    "completed": "Nakompleto",
+    "initiated": "Gisugdan",
+    "sentAsset": "Gipadala nga Asset",
+    "speed": "Speed",
+    "fee": "Fee",
+    "speedUp": "Speed up",
+    "update": "Update",
+    "transaction": "Transaksyon",
+    "transactionId": "Transaction Id",
+    "transferOn": "Pagbalhin sa %{marketplace}",
+    "details": "Mga Detalye",
+    "description": "Deskripsyon",
+    "youOwn": "Ikaw ang tag-iya",
+    "retry": "Sulayi pag-usab",
+    "pendingReceipt": "Pending Receipt",
+    "signTo": "Sign Sa",
+    "ledgerInstructions": "Sunda ang mga prompt aron pamatud-an ug dawaton ang kantidad, dayon kumpirmahi ang transaksyon. Mahimong adunay lag",
+    "onYourLedger": "Sa imong Ledger",
+    "today": "karong adlawa",
+    "time": "Time",
+    "sent": "Gipadala"
+  },
+  "accounts": {
+    "manageAccounts": "Manage Accounts",
+    "privateKey": "Private Key",
+    "eyeInstructions": "Ipahilayo kini gikan sa mga mata sa uban!",
+    "exportLedger": "Dili ma-export gikan sa usa ka Ledger account",
+    "createAccount": "Paghimo og Account",
+    "selectNetwork": "Pili ug Network",
+    "chooseAccountName": "Pilia ang Ngalan sa Account",
+    "accountAliasErrorFiveChars": "Ang ngalan kinahanglan adunay 5 o labaw pa nga mga karakter",
+    "accountAliasErrorTwentyChars": "Ang ngalan kinahanglang dili mosobra sa 20 ka karakter",
+    "accountAliasErrorExistingAccount": "Aduna nay account nga parehas nga ngalan",
+    "chooseTheColor": "Pilia ang Kolor",
+    "accounts": {
+      "zero": "%{count} Mga Accounts",
+      "one": "%{count} Account",
+      "other": "%{count} Mga Accounts"
+    },
+    "accountsAdded": "Nadugang nga mga Accounts",
+    "closeThisTab": "Isira kini nga Tab",
+    "connectLedger": "I-konek ang Ledger",
+    "selectAsset": "Pilia ang parehas nga asset dinhi",
+    "ledgerInstructions1": "I-plug ang Ledger sa computer",
+    "ledgerInstructions2": "Ibutang ang pin para ma unlock kini",
+    "ledgerInstructions3": "Sa device, adtoa ang asset nga gusto nimong ma-access",
+    "ledgerInstructions4": "Para maka-Swap, sa imong Ledger sa eth App, Adto sa Settings, unya Pilia ang 'Blind signing'",
+    "addLedgerAccounts": "Idugang ang mga Account sa Ledger",
+    "noAccountsFound": "Walay mga account nga nakit-an",
+    "errorGettingAccounts": "Sayop sa pagkuha og mga account",
+    "unlockAccount": "I-unlock ang Account",
+    "findingAccounts": "Nangita ug mga Accounts",
+    "creating": "Naghimo",
+    "creatingAccount": "Naghimo sa imong bag-o nga account",
+    "selectAccount": "Pilia ang Account",
+    "accountsLabel": "Accounts",
+    "accountAlreadyConnected": "Kini nga account konektado na: %{account}",
+    "previous": "Previous",
+    "accountMessage1": "Wala kami makakuha og lista sa mga account. Palihug sulayi pag-usab, susiha ang ledger kung ang husto nga app/asset gipili o kanselahon ug pagpili og lain nga asset.",
+    "accountMessage2": "Isira ang bisan unsang ubang mga app nga konektado sa imong ledger, lakip ang Ledger Live.",
+    "tryAgain": "Sulayi Pag-usab",
+    "unlock": "Unlock"
+  },
+  "receive": {
+    "yourCurrentAddress": "Ang imohang %{asset} Address",
+    "receiveMessage": "I-scan ang QR code gamit ang usa ka mobile wallet aron makapadala og funds niini nga address."
+  },
+  "assets": {
+    "noFunds": "Walay pundo sa wallet"
+  },
+  "enable": {
+    "connectRequest": "Connect Request",
+    "selectAccounts": "Pilia ang mga Accounts",
+    "filterByChain": "Filter by chain",
+    "deny": "Deny",
+    "byGrantingPermission": "Pinaagi sa pagtugot sa",
+    "theyCanRead": "mabasa nila ang imong mga adres sa publiko nga account.",
+    "makeSure": "Siguroha nga mosalig ka niini nga site."
+  },
+  "permission": {
+    "myWallet": "Imohang Wallet",
+    "signTransaction": "Pirmahi ang Transaksyon",
+    "requestToSign": "Paghangyo sa Pagpirma",
+    "request": "Request"
+  },
+  "send": {
+    "sendTo": "Ipadala Sa",
+    "memo": "Memo (Optional)",
+    "sendFrom": "Ipadala Gikan sa",
+    "titleSelectNFT": "Pili ug NFT",
+    "titleSendNFT": "Magpadala ug NFT",
+    "titleReviewSendNFT": "Review Send NFT"
+  },
+  "swap": {
+    "availableQuotes": "AVAILABLE QUOTES",
+    "providersDescription": "Kini nga mga quotes gikan sa lainlaing mga swap provider.",
+    "selectQuote": "Pili ug Quote",
+    "learnMoreAboutSwapTypes": "Pagkat-on bahin sa mga tipo sa swap",
+    "learnMoreAboutSwapProviders": "Pagkat-on mahitungod sa swap providers",
+    "swapTypes": "Mga Tipo sa Swap",
+    "seekingLiquidity": "Nangita ug Liquidity...",
+    "seeAllQuotes": "Tan-awa ang tanang %{count} quotes",
+    "insufficientFunds": "Kulang ang Pundo",
+    "amountMinusFees": "Amount - Fees",
+    "initiateSwap": "Sugdi ang Swap",
+    "maxSlipPage": "Max slippage kay 3%.",
+    "refundMessage": "Max slippage mao ang 3%. Kung dili makompleto ang swap, i-refund kini paghuman sa pila ka oras.",
+    "swapProvidersInfo": "Adunay mga tradeoff nga lain-laing mga swap provider nga gihimo sa mga hinungdan sama sa kasayon, seguridad, liquidity, ug bayronon. Sa pagtan-aw:",
+    "pros": "Pros",
+    "cons": "Cons",
+    "feeStructure": "Fee Structure"
+  }
 }

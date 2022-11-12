@@ -19,7 +19,7 @@
     },
     "bridgeAssetRequiredMessage": {
         "needMore": "Kinahanglan nimo ang dugang nga %{asset} aron makabayad sa gas.",
-        "get": "Pagkuha"
+        "get": "Pagkuha ug"
     },
     "cannotCoverMinimumMessage": {
         "needMore": "Dugang nga %{asset} ang gikinahanglan aron mabayaran ang min nga trade plus fees."
@@ -51,11 +51,11 @@
     },
     "ethRequiredMessage": {
         "message": "Kinahanglan ang balanse aron magswap ug kinahanglan nimo ang ETH aron mabayran ang gas.",
-        "getETH": "Mokuha ug ETH"
+        "getETH": "Kuha ug ETH"
     },
     "head": {
-        "dappConnected": "dApp Connected",
-        "connectDapp": "Connect dApp"
+        "dappConnected": "naka-konek na ang dApp",
+        "connectDapp": "I-Konek ang Dapp"
     },
     "ledger": {
         "signTo": "Sign sa %{action} Swap",
@@ -68,7 +68,7 @@
     "navbar": {
         "manageAssets": "Manage Assets",
         "manageAccounts": "Manage Accounts",
-        "exportPrivateKey": "I-export and Private Key",
+        "exportPrivateKey": "I-export ang Private Key",
         "settings": "Settings",
         "backupSeed": "I-Backup ang Seed",
         "lock": "Lock"
