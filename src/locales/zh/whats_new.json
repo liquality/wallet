@@ -3,9 +3,10 @@
     "page": "1",
     "title": "What's New?",
     "content": [
-      "Arbitrum fix",
-      "Solana address fix",
-      "Wallet core: backend error parser"
+      "Fix on NFT displaying logic",
+      "Fix minor swap issues",
+      "Fix on displaying transaction responses",
+      "Translation updates"
     ]
   },
   {
