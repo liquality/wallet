@@ -99,7 +99,6 @@
               id="decimals"
               autocomplete="off"
               required
-              :disabled="autofilled"
             />
           </div>
         </fieldset>
