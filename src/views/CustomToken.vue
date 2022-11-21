@@ -57,6 +57,12 @@
               autocomplete="off"
               required
             />
+            <small
+              v-if="contractAddress && existingAsset"
+              id="token_with_this_symbol_exits"
+              class="text-danger form-text text-right"
+              >{{ tokenError }}</small
+            >
           </div>
           <div class="form-group">
             <label for="name">{{ $t('pages.customToken.name') }}</label>
@@ -172,6 +178,10 @@ export default {
       }
       return null
     },
+    tokenError() {
+      // TODO :: Need to add translations
+      return 'Already exists. Go to Token Assets.'
+    },
     canAdd() {
       if (!this.symbol || !this.name || !this.chain || !this.contractAddress || !this.decimals)
         return false
@@ -245,8 +255,10 @@ export default {
       })
     },
     contractAddressPaste(e) {
-      this.contractAddress = e.clipboardData.getData('text')
-      this.fetchToken()
+      this.$nextTick(() => {
+        this.contractAddress = e.clipboardData.getData('text')
+        this.fetchToken()
+      })
     },
     contractAddressChange(e) {
       if (this.contractAddress === e.target.value) return
