@@ -292,7 +292,7 @@ export default {
 
     if (this.allNftCollections[collectionName]) {
       this.nftAsset = this.allNftCollections[collectionName].find((i) => {
-        return i.token_id === nftAssetId
+        return i.token_id == nftAssetId
       })
       if (this.$route.query.accountId) {
         this.accountId = this.$route.query.accountId
