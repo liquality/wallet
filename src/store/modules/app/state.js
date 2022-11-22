@@ -9,5 +9,8 @@ export const state = () => ({
   ledgertSignRequestModalOpen: false,
   settingsModalOpen: false,
   whatsNewModalContent: null,
-  locale: null
+  locale: null,
+  wcSessions: {},
+  wcApprovedSessions: {},
+  wcRequests: {}
 })

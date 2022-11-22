@@ -10,6 +10,7 @@ import { initializeAnalytics } from './initializeAnalytics'
 import { checkAnalyticsOptIn } from './checkAnalyticsOptIn'
 import { getChain } from '@liquality/cryptoassets'
 import { trackAnalytics } from './trackAnalytics'
+import walletConnect from './walletConnect'
 
 export const actions = {
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
@@ -113,5 +114,6 @@ export const actions = {
   handlePaymentUri,
   initializeAnalytics,
   checkAnalyticsOptIn,
-  trackAnalytics
+  trackAnalytics,
+  ...walletConnect
 }

@@ -98,7 +98,8 @@
     "tokenSymbol": "Symbolo ng Token",
     "decimals": "Mga Decimal",
     "addToken": "I-dagdag ang Token",
-    "addCustomToken": "I-dagdag ang Token"
+    "addCustomToken": "I-dagdag ang Token",
+    "tokenExists": "Already exists. Go to Token Assets."
   },
   "wallet": {
     "assets": "Mga assets",

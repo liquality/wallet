@@ -98,7 +98,8 @@
     "tokenSymbol": "代币符号",
     "decimals": "代币精度",
     "addToken": "添加代币",
-    "addCustomToken": "添加代币"
+    "addCustomToken": "添加代币",
+    "tokenExists": "Already exists. Go to Token Assets."
   },
   "wallet": {
     "assets": "资产",

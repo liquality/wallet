@@ -33,5 +33,27 @@ export const mutations = {
   },
   SET_LOCALE(state, { locale }) {
     state.locale = locale
+  },
+  ADD_WALLET_CONNNECT_REQUEST(state, { request }) {
+    state.wcRequests = {
+      ...state.wcRequests,
+      [request.id]: request
+    }
+  },
+  REMOVE_WALLET_CONNNECT_REQUEST(state, { id }) {
+    const wcRequests = { ...state.wcRequests }
+    delete wcRequests[id]
+    state.wcRequests = wcRequests
+  },
+  ADD_WALLET_CONNNECT_SESSION(state, { request }) {
+    state.wcSession = {
+      ...state.wcSession,
+      [request.id]: request
+    }
+  },
+  REMOVE_WALLET_CONNNECT_SESSION(state, { id }) {
+    const wcSessions = { ...state.wcSessions }
+    delete wcSessions[id]
+    state.wcSessions = wcSessions
   }
 }
