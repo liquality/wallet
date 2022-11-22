@@ -881,6 +881,11 @@ export default {
       let extraAmountToExtractFromBalance = 0
       if (getExtraAmountToExtractFromBalance) {
         extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
+        const available = BN.max(
+            BN(balance).minus(BN(this.maxFee.plus(extraAmountToExtractFromBalance)).times(1.5)),
+            0
+          )
+        return unitToCurrency(cryptoassets[this.asset], available)
       }
 
       const balance = this.networkWalletBalances[this.asset]
