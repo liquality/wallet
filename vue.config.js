@@ -1,5 +1,6 @@
 const path = require('path')
 const AssetReplacePlugin = require('./plugins/AssetReplacePlugin')
+const CopyPlugin = require('copy-webpack-plugin')
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
@@ -23,6 +24,21 @@ module.exports = {
         entry: 'pageProvider'
       })
     )
+
+    config.plugins.push(
+      new CopyPlugin({
+        patterns: [
+          {
+            context: './src/locales',
+            from: '**/messages.json',
+            to({ context, absoluteFilename }) {
+              return `_locales/${path.relative(context, absoluteFilename)}`
+            }
+          }
+        ]
+      })
+    )
+
     config.optimization.splitChunks = {
       cacheGroups: {
         default: false
