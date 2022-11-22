@@ -65,6 +65,12 @@ module.exports = {
       .test(/\.html$/)
       .use('raw-loader')
       .loader('raw-loader')
+
+    config.module
+      .rule('walletConnect')
+      .test(/node_modules[\\/]@walletconnect/)
+      .use('babel-loader')
+      .loader('babel-loader')
   },
 
   pluginOptions: {

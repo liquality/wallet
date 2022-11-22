@@ -43,6 +43,7 @@ import ExportPrivateKey from '@/views/Accounts/ExportPrivateKey.vue'
 import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
 import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
 import PhraseReveal from '@/views/Onboarding/SeedPhrase/PhraseReveal'
+import WalletConnect from '@/views/WalletConnect.vue'
 
 Vue.use(VueRouter)
 
@@ -314,6 +315,13 @@ const routes = [
     path: '/export/:accountId/reveal',
     component: ExportPrivateKey,
     name: 'ExportPrivateKey',
+    props: true,
+    meta: { protect: true }
+  },
+  {
+    path: '/wc',
+    component: WalletConnect,
+    name: 'WalletConnect',
     props: true,
     meta: { protect: true }
   }
