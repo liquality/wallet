@@ -99,7 +99,7 @@
     "decimals": "代币精度",
     "addToken": "添加代币",
     "addCustomToken": "添加代币",
-    "tokenExists": "Already exists. Go to Token Assets."
+    "tokenExists": "Already exists. Go to Manage Assets."
   },
   "wallet": {
     "assets": "资产",
