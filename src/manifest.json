@@ -1,9 +1,8 @@
 {
   "manifest_version": 2,
-  "version": "0.79.0",
-  "name": "__MSG_appName__",
-  "description": "__MSG_appDesc__",
-  "default_locale": "en",
+  "version": "0.80.0",
+  "name": "Liquality Wallet",
+  "description": "Self-Custodial Multi-Chain Wallet that is 100% Open Source",
   "homepage_url": "https://liquality.io",
   "permissions": [
     "notifications",
