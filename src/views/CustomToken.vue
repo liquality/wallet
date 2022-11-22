@@ -61,7 +61,7 @@
               v-if="contractAddress && existingAsset"
               id="token_with_this_symbol_exits"
               class="text-danger form-text text-right"
-              >{{ tokenError }}</small
+              >{{ $t('pages.customToken.tokenExists') }}</small
             >
           </div>
           <div class="form-group">
@@ -177,10 +177,6 @@ export default {
         return this.$tle(new DuplicateTokenSymbolError())
       }
       return null
-    },
-    tokenError() {
-      // TODO :: Need to add translations
-      return 'Already exists. Go to Token Assets.'
     },
     canAdd() {
       if (!this.symbol || !this.name || !this.chain || !this.contractAddress || !this.decimals)
