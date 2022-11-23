@@ -99,7 +99,7 @@
     "decimals": "Decimals",
     "addToken": "Add Token",
     "addCustomToken": "Add Token",
-    "tokenExists": "Already exists. Go to Token Assets."
+    "tokenExists": "Already exists. Go to Manage Assets."
   },
   "wallet": {
     "assets": "Assets",
