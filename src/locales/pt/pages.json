@@ -98,7 +98,8 @@
     "tokenSymbol": "Símbolo do Token",
     "decimals": "Decimais",
     "addToken": "Adicionar Token",
-    "addCustomToken": "Adicionar Token"
+    "addCustomToken": "Adicionar Token",
+    "tokenExists": "Already exists. Go to Manage Assets."
   },
   "wallet": {
     "assets": "Ativos",

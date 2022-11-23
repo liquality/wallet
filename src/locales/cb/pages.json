@@ -98,7 +98,8 @@
     "tokenSymbol": "Simbolo sa Token",
     "decimals": "Decimals",
     "addToken": "Idugang ang Token",
-    "addCustomToken": "Idugang ang Token"
+    "addCustomToken": "Idugang ang Token",
+    "tokenExists": "Already exists. Go to Manage Assets."
   },
   "wallet": {
     "assets": "Assets",
