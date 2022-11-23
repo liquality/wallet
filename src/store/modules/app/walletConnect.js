@@ -14,16 +14,33 @@ export const initializeSignClient = async ({ commit }) => {
       ]
     }
   })
-  signClient.on('session_proposal', async (event) => {
-    console.log('session_proposal', event)
-    commit('ADD_WALLET_CONNNECT_SESSION', event)
+  signClient.on('session_proposal', async (session) => {
+    console.log('session_proposal', session)
+    commit('ADD_WALLET_CONNNECT_SESSION_PROPOSAL', { session })
   })
   signClient.on('session_event', (event) => {
     console.log('session_event', event)
   })
-  signClient.on('session_request', (event) => {
+  signClient.on('session_request', async (event) => {
     console.log('session_request', event)
-    commit('ADD_WALLET_CONNNECT_REQUEST', event)
+    //const { id, params, topic } = event
+    // const { request } = params
+    commit('ADD_WALLET_CONNNECT_REQUEST', { request: event })
+    // if (request.method === 'eth_sendTransaction') {
+    //   // await dispatch('sendTransaction', {
+    //   //     network: rootState.activeNetwork,
+    //   //     walletId: rootState.activeWalletId,
+    //   //     asset: 'ETH',
+    //   //     to: params.to,
+    //   //     accountId: this.account.id,
+    //   //     amount,
+    //   //     fee,
+    //   //     gas: cryptoassets[this.asset].sendGasLimit,
+    //   //     feeLabel: this.selectedFee,
+    //   //     fiatRate: this.fiatRates[this.asset],
+    //   //     ...(this.showMemoInput && { data: this.memoData })
+    //   //   })
+    // }
   })
   signClient.on('session_ping', (event) => {
     console.log('session_ping', event)
@@ -34,12 +51,9 @@ export const pairSignClient = async (_, { uri }) => {
   await signClient.pair({ uri })
 }
 
-export const approveSession = async ({ state, commit }, { id, accounts }) => {
-  if (!state.wcSessions[id]) {
-    return false
-  }
-
-  const { params } = state.wcSession[id]
+export const approveSession = async ({ commit }, { session, accounts }) => {
+    console.log('approveSession', { session, accounts })
+  const { id, params } = session
   const { requiredNamespaces } = params
   const { eip155 } = requiredNamespaces
   const { chains, methods, events } = eip155
@@ -57,13 +71,9 @@ export const approveSession = async ({ state, commit }, { id, accounts }) => {
   console.log('req', req)
   const { topic, acknowledged } = await signClient.approve(req)
   console.log('topic', topic)
-  // Optionally await acknowledgement from dapp
-  const session = await acknowledged()
+  const received = await acknowledged()
   console.log('session', topic)
-  console.log('session', session)
-  if (session) {
-    commit('REMOVE_WALLET_CONNNECT_SESSION', { id })
-    return true
-  }
-  return false
+  console.log('session', received)
+  commit('REMOVE_WALLET_CONNNECT_SESSION_PROPOSAL', { id })
+  commit('ADD_WALLET_CONNNECT_SESSION', { session })
 }

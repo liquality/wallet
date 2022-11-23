@@ -132,6 +132,15 @@ strong,
     background-color: #ffffff;
     z-index: 999;
   }
+
+  &_sub {
+    padding: 20px 0;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    z-index: 999;
+  }
 }
 
 .button-group {

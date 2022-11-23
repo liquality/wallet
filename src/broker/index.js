@@ -19,7 +19,8 @@ const Broker = (state) => {
         return {
           ...omit(state, ['key', 'wallets', 'unlockedAt', 'app']),
           app: {
-            locale: state.app?.locale
+            locale: state.app?.locale,
+            walletConnectSessions: state.app?.walletConnectSessions
           }
         }
       }

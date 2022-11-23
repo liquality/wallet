@@ -10,7 +10,7 @@ export const state = () => ({
   settingsModalOpen: false,
   whatsNewModalContent: null,
   locale: null,
-  wcSessions: {},
-  wcApprovedSessions: {},
-  wcRequests: {}
+  walletConnectSessions: [],
+  walletConnectSessionsProposals: [],
+  walletConnectRequests: []
 })

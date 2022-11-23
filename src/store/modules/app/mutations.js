@@ -34,26 +34,31 @@ export const mutations = {
   SET_LOCALE(state, { locale }) {
     state.locale = locale
   },
-  ADD_WALLET_CONNNECT_REQUEST(state, { request }) {
-    state.wcRequests = {
-      ...state.wcRequests,
-      [request.id]: request
-    }
-  },
-  REMOVE_WALLET_CONNNECT_REQUEST(state, { id }) {
-    const wcRequests = { ...state.wcRequests }
-    delete wcRequests[id]
-    state.wcRequests = wcRequests
-  },
-  ADD_WALLET_CONNNECT_SESSION(state, { request }) {
-    state.wcSession = {
-      ...state.wcSession,
-      [request.id]: request
-    }
+  ADD_WALLET_CONNNECT_SESSION(state, { session }) {
+    state.walletConnectSessions.push({ ...session })
   },
   REMOVE_WALLET_CONNNECT_SESSION(state, { id }) {
-    const wcSessions = { ...state.wcSessions }
-    delete wcSessions[id]
-    state.wcSessions = wcSessions
+    const index = state.walletConnectSessions.findIndex((s) => s.id === id)
+    if (index >= 0) {
+      state.walletConnectSessions.splice(index, 1)
+    }
+  },
+  ADD_WALLET_CONNNECT_SESSION_PROPOSAL(state, { session }) {
+    state.walletConnectSessionsProposals.push({ ...session })
+  },
+  REMOVE_WALLET_CONNNECT_SESSION_PROPOSAL(state, { id }) {
+    const index = state.walletConnectSessionsProposals.findIndex((s) => s.id === id)
+    if (index >= 0) {
+      state.walletConnectSessionsProposals.splice(index, 1)
+    }
+  },
+  ADD_WALLET_CONNNECT_REQUEST(state, { request }) {
+    state.walletConnectRequests.push({ ...request })
+  },
+  REMOVE_WALLET_CONNNECT_REQUEST(state, { id }) {
+    const index = state.walletConnectRequests.findIndex((s) => s.id === id)
+    if (index >= 0) {
+      state.walletConnectRequests.splice(index, 1)
+    }
   }
 }

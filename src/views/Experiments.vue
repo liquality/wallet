@@ -29,6 +29,20 @@
           />
         </div>
       </div>
+      <div class="setting-item">
+        <div class="setting-item_title flex-fill mb-2">
+          Wallet Connect
+          <span class="setting-item_sub"> Connect with dapps using Wallet Connect </span>
+        </div>
+        <div class="setting-item_control">
+          <toggle-button
+            id="exp-walletConnect-toggle-switch"
+            :css-colors="true"
+            :value="experiments['walletConnect']"
+            @change="toggleExperiment({ name: 'walletConnect' })"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>

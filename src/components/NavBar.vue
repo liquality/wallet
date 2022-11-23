@@ -51,6 +51,10 @@
           <LedgerIcon />
           Ledger
         </li>
+        <li id="wallet-connect" v-if="experiments.walletConnect" @click="walletConnect">
+          <WalletConnectIcon />
+          WalletConnect
+        </li>
         <li id="backup_seed" @click="backup">
           <PaperIcon />
           {{ $t('components.navbar.backupSeed') }}
@@ -77,6 +81,7 @@ import AssetsIcon from '@/assets/icons/assets.svg'
 import AccountsIcon from '@/assets/icons/accounts_menu_icon.svg'
 import LedgerIcon from '@/assets/icons/ledger_menu_icon.svg'
 import KeyIcon from '@/assets/icons/key.svg'
+import WalletConnectIcon from '@/assets/icons/wallet-connect-logo-black.svg'
 import { ChainId } from '@liquality/cryptoassets'
 import { version as walletVersion } from '../../package.json'
 
@@ -93,7 +98,8 @@ export default {
     SettingsIcon,
     AccountsIcon,
     LedgerIcon,
-    KeyIcon
+    KeyIcon,
+    WalletConnectIcon
   },
   props: [
     'showMenu',
@@ -221,6 +227,21 @@ export default {
       this.showMenuList = false
       chrome.tabs.create({
         url: browser.runtime.getURL('/index.html#/accounts/hardware-wallet?mode=tab')
+      })
+    },
+    walletConnect() {
+      this.trackAnalytics({
+        event: 'User clicked on Wallet Connect option in navbar',
+        properties: {
+          walletVersion,
+          category: 'HamburgerIcon',
+          action: 'Click on Wallet Connect',
+          label: 'User clicked on Wallet Connect from menu option'
+        }
+      })
+      this.showMenuList = false
+      chrome.tabs.create({
+        url: browser.runtime.getURL('/index.html#/wallet-connect')
       })
     },
     hideMenu() {
