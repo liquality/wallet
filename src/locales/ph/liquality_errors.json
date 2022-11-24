@@ -64,5 +64,8 @@
   },
   "LedgerDeviceNotupdatedError": {
     "plain": "Update your Ledger device firmware, and all apps, including Ledger Live app to the latest versions."
+  },
+  "LedgerDeviceSmartContractTransactionDisabledError": {
+    "plain": "Permission denied: enable Blind signing or Contract data in the Ethereum app Settings"
   }
 }
