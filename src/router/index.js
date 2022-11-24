@@ -43,12 +43,7 @@ import ExportPrivateKey from '@/views/Accounts/ExportPrivateKey.vue'
 import Warning from '@/views/Onboarding/SeedPhrase/Warning.vue'
 import LoginPhrase from '@/views/Onboarding/SeedPhrase/LoginPhrase.vue'
 import PhraseReveal from '@/views/Onboarding/SeedPhrase/PhraseReveal'
-
 import WalletConnect from '@/views/WalletConnect/WalletConnect.vue'
-import WalletConnectPair from '@/views/WalletConnect/WalletConnectPair.vue'
-import WalletConnectSession from '@/views/WalletConnect/WalletConnectSession.vue'
-import WalletConnectConnections from '@/views/WalletConnect/WalletConnectConnections.vue'
-import WalletConnectRequest from '@/views/WalletConnect/WalletConnectRequest.vue'
 
 Vue.use(VueRouter)
 
@@ -328,32 +323,11 @@ const routes = [
     component: WalletConnect,
     name: 'WalletConnect',
     meta: { protect: true },
-    children: [
-      {
-        path: 'pair',
-        component: WalletConnectPair,
-        name: 'WalletConnectPair'
-      },
-      {
-        path: 'session',
-        component: WalletConnectSession,
-        name: 'WalletConnectSession'
-      },
-      {
-        path: 'connections',
-        component: WalletConnectConnections,
-        name: 'WalletConnectConnections'
-      },
-      {
-        path: 'request',
-        component: WalletConnectRequest,
-        name: 'WalletConnectRequest'
-      },
-      {
-        path: '',
-        redirect: 'pair'
-      }
-    ]
+    props: (route) => ({
+      methodRequest: route.query.rq,
+      sessionRequest: route.query.session,
+      pairRequest: route.query.pair
+    })
   }
 ]
 

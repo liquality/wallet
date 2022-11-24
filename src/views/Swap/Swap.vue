@@ -1348,7 +1348,7 @@ export default {
           selectedQuote: this.selectedQuote
         })
         const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?${swapParams}`
-        chrome.tabs.create({ url: browser.runtime.getURL(url) })
+        browser.tabs.create({ url: browser.runtime.getURL(url) })
       } else {
         this.currentStep = 'confirm'
       }

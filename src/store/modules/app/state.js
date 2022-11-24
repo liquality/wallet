@@ -10,6 +10,7 @@ export const state = () => ({
   settingsModalOpen: false,
   whatsNewModalContent: null,
   locale: null,
+  extensionIsOpen: false,
   walletConnectSessions: [],
   walletConnectSessionsProposals: [],
   walletConnectRequests: []

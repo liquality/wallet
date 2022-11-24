@@ -21,7 +21,7 @@
         </small>
       </div>
     </div>
-    <div class="wrapper_sub">
+    <div class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" id="cancel-button" @click="cancel">
           {{ $t('common.cancel') }}
@@ -72,9 +72,9 @@ export default {
       }
     },
     cancel() {
-      chrome.tabs.getCurrent((tab) => {
+      browser.tabs.getCurrent((tab) => {
         if (tab !== undefined) {
-          chrome.tabs.remove([tab.id])
+          browser.tabs.remove([tab.id])
         }
       })
     }

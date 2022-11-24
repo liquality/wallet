@@ -34,7 +34,8 @@ export default {
       'keyUpdatedAt',
       'termsAcceptedAt',
       'unlockedAt',
-      'whatsNewModalVersion'
+      'whatsNewModalVersion',
+      'experiments'
     ]),
     ...mapState({
       locale: (state) => state.app?.locale
@@ -48,9 +49,16 @@ export default {
   },
   methods: {
     ...mapActions(['initializeAnalytics']),
-    ...mapActions('app', ['setLocalePreference', 'getBrowserLocale', 'setWhatsNewModalContent'])
+    ...mapActions('app', [
+      'setLocalePreference',
+      'getBrowserLocale',
+      'setWhatsNewModalContent',
+      'initializeSignClient',
+      'setExtensionIsOpen'
+    ])
   },
   async created() {
+    this.setExtensionIsOpen({ open: true })
     await this.initializeAnalytics()
     if (this.locale) {
       await this.changeLocale(this.locale)
@@ -71,11 +79,17 @@ export default {
       await this.setWhatsNewModalContent({ content: content.default })
     }
     this.localesLoaded = true
+    if (this.experiments.walletConnect) {
+      this.initializeSignClient()
+    }
   },
   watch: {
     localeKey(newVal, oldVal) {
       console.log('localeKey', newVal, oldVal)
     }
+  },
+  beforeDestroy() {
+    this.setExtensionIsOpen({ open: false })
   }
 }
 </script>

@@ -133,7 +133,7 @@ export default {
   },
   methods: {
     ...mapActions(['lockWallet']),
-    ...mapActions('app', ['trackAnalytics']),
+    ...mapActions('app', ['trackAnalytics', 'openWalletConnectTab']),
     async lock() {
       this.trackAnalytics({
         event: 'User clicked Lock wallet option in navbar',
@@ -240,9 +240,8 @@ export default {
         }
       })
       this.showMenuList = false
-      chrome.tabs.create({
-        url: browser.runtime.getURL('/index.html#/wallet-connect')
-      })
+      debugger
+      this.openWalletConnectTab()
     },
     hideMenu() {
       this.showMenuList = false

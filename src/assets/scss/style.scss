@@ -132,15 +132,6 @@ strong,
     background-color: #ffffff;
     z-index: 999;
   }
-
-  &_sub {
-    padding: 20px 0;
-    width: 320px;
-    display: flex;
-    flex-direction: column;
-    background-color: #ffffff;
-    z-index: 999;
-  }
 }
 
 .button-group {
@@ -641,12 +632,14 @@ svg.qr-icon {
 }
 
 // common for accounts screens
-.account-container {
+.account-container,
+.full-tab-container {
   display: flex;
   flex-direction: column;
   flex: 1;
 
-  .account-title {
+  .account-title,
+  .full-tab-container-title {
     font-size: $font-size-head-title;
     font-style: normal;
     line-height: 26px;
@@ -658,10 +651,15 @@ svg.qr-icon {
     }
   }
 
-  .account-content {
+  .account-content,
+  .full-tab-container-content {
     display: flex;
     flex-direction: column;
     flex: 1;
+  }
+
+  .full-tab-container-content {
+    max-height: 600px;
   }
 }
 

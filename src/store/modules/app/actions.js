@@ -10,9 +10,17 @@ import { initializeAnalytics } from './initializeAnalytics'
 import { checkAnalyticsOptIn } from './checkAnalyticsOptIn'
 import { getChain } from '@liquality/cryptoassets'
 import { trackAnalytics } from './trackAnalytics'
-import { initializeSignClient, pairSignClient, approveSession } from './walletConnect'
+import {
+  initializeSignClient,
+  pairSignClient,
+  approveSession,
+  openWalletConnectTab
+} from './walletConnect'
 
 export const actions = {
+  setExtensionIsOpen: ({ commit }, { open }) => {
+    commit('SET_EXTENSION_IS_OPEN', { open })
+  },
   setAnalyticsOptInModalOpen: ({ commit }, { open }) => {
     commit('SET_ANALYTICS_OPTIN_MODAL_OPEN', { open })
   },
@@ -117,5 +125,6 @@ export const actions = {
   trackAnalytics,
   initializeSignClient,
   pairSignClient,
-  approveSession
+  approveSession,
+  openWalletConnectTab
 }

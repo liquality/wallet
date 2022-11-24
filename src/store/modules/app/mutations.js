@@ -60,5 +60,8 @@ export const mutations = {
     if (index >= 0) {
       state.walletConnectRequests.splice(index, 1)
     }
+  },
+  SET_EXTENSION_IS_OPEN(state, { open }) {
+    state.extensionIsOpen = open
   }
 }
