@@ -58,7 +58,7 @@
               required
             />
             <small
-              v-if="contractAddress && existingAsset"
+              v-if="contractAddress && existingAsset && !addingToken"
               id="token_with_this_symbol_exits"
               class="text-danger form-text text-right"
               >{{ $t('pages.customToken.tokenExists') }}</small
@@ -90,7 +90,7 @@
               :disabled="autofilled && !isSymbolEditable"
             />
             <small
-              v-if="symbol && symbolError"
+              v-if="symbol && symbolError && !addingToken"
               id="token_with_this_symbol_exits"
               class="text-danger form-text text-right"
               >{{ symbolError }}</small
@@ -99,9 +99,11 @@
           <div class="form-group">
             <label for="decimals">{{ $t('pages.customToken.decimals') }}</label>
             <input
-              type="text"
-              v-model="decimals"
+              type="number"
+              v-model.trim="decimals"
+              @keypress="isNumber($event)"
               class="form-control form-control-sm"
+              :maxlength="2"
               id="decimals"
               autocomplete="off"
               required
@@ -139,6 +141,8 @@ import NavBar from '@/components/NavBar.vue'
 import ChevronDownIcon from '@/assets/icons/chevron_down.svg'
 import ChevronUpIcon from '@/assets/icons/chevron_up.svg'
 import { DuplicateTokenSymbolError } from '@liquality/error-parser/dist/src/LiqualityErrors/DuplicateTokenSymbolError'
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
+import { reportLiqualityError } from '@liquality/error-parser'
 
 export default {
   components: {
@@ -156,7 +160,8 @@ export default {
       autofilled: false,
       chainDropdownOpen: false,
       isSymbolEditable: false,
-      chainsWithFetchingTokenDetails: CHAINS_WITH_FETCH_TOKEN_DETAILS
+      chainsWithFetchingTokenDetails: CHAINS_WITH_FETCH_TOKEN_DETAILS,
+      addingToken: false
     }
   },
   computed: {
@@ -178,9 +183,15 @@ export default {
       return null
     },
     canAdd() {
-      if (!this.symbol || !this.name || !this.chain || !this.contractAddress || !this.decimals)
+      if (
+        !this.symbol ||
+        !this.name ||
+        !this.chain ||
+        !this.contractAddress ||
+        this.decimals.length <= 0
+      )
         return false
-      if (this.symbolError) return false
+      if (this.symbol && this.symbolError) return false
 
       return true
     },
@@ -204,31 +215,43 @@ export default {
     ]),
     async addToken() {
       if (!this.existingAsset) {
-        // Add only if it does not already exist
-        await this.addCustomToken({
-          network: this.activeNetwork,
-          walletId: this.activeWalletId,
-          chain: this.chain,
-          contractAddress: this.contractAddress,
-          name: this.name,
-          symbol: this.symbol,
-          decimals: Number(this.decimals)
-        })
+        try {
+          this.addingToken = true
+          // Add only if it does not already exist
+          await this.addCustomToken({
+            network: this.activeNetwork,
+            walletId: this.activeWalletId,
+            chain: this.chain,
+            contractAddress: this.contractAddress,
+            name: this.name,
+            symbol: this.symbol,
+            decimals: Number(this.decimals)
+          })
 
-        const isChainEnabledForNative = this.accountsData.find(
-          (account) => account.chain === this.chain
-        )
+          const isChainEnabledForNative = this.accountsData.find(
+            (account) => account.chain === this.chain
+          )
 
-        if (!isChainEnabledForNative) {
-          await this.enableChain()
+          if (!isChainEnabledForNative) {
+            await this.enableChain()
+          }
+
+          await this.enableAssets({
+            network: this.activeNetwork,
+            walletId: this.activeWalletId,
+            assets: [this.symbol]
+          })
+          this.$router.replace('/settings/manage-assets')
+        } catch (error) {
+          const liqualityErrorString = errorToLiqualityErrorString(error)
+          reportLiqualityError(error)
+          return {
+            error: liqualityErrorString
+          }
+        } finally {
+          this.addingToken = false
         }
       }
-      await this.enableAssets({
-        network: this.activeNetwork,
-        walletId: this.activeWalletId,
-        assets: [this.symbol]
-      })
-      this.$router.replace('/settings/manage-assets')
     },
     async enableChain() {
       await this.toggleBlockchain({
@@ -305,6 +328,14 @@ export default {
       this.chainDropdownOpen = false
       this.resetFields()
       this.fetchToken()
+    },
+    isNumber(evt) {
+      const keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+      const keyPressed = evt.key
+      // The Decimals field can only have 2 digits (0 - 99) and must be a number
+      if (!keysAllowed.includes(keyPressed) || this.decimals.length == 2) {
+        evt.preventDefault()
+      }
     }
   }
 }
