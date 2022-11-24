@@ -864,9 +864,28 @@ export default {
       return this.selectedQuote?.receiveFee
     },
     maxFee() {
-      const selectedSpeed = this.selectedFee[this.assetChain]
-      const fee = this.maxSwapFees[this.assetChain]?.[selectedSpeed]
-      return fee ? currencyToUnit(cryptoassets[this.assetChain], fee) : BN(0)
+      try {
+        const selectedSpeed = this.selectedFee[this.assetChain]
+        const fee = this.maxSwapFees[this.assetChain]?.[selectedSpeed] || 0
+
+        const getExtraAmountToExtractFromBalance =
+          this.selectedQuoteProvider?.getExtraAmountToExtractFromBalance
+        let extraAmountToExtractFromBalance = 0
+        if (getExtraAmountToExtractFromBalance) {
+          extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
+        }
+
+        const totalFees = currencyToUnit(cryptoassets[this.assetChain], fee).plus(
+          extraAmountToExtractFromBalance
+        )
+        return totalFees ? totalFees : BN(0)
+      } catch (error) {
+        const liqualityErrorString = errorToLiqualityErrorString(error)
+        reportLiqualityError(error)
+        return {
+          error: liqualityErrorString
+        }
+      }
     },
     receiveFeeRequired() {
       return this.selectedQuoteProvider?.toTxType
@@ -876,20 +895,12 @@ export default {
 
       // Some swap providers like "Jupiter" require extra amount to be extract from balance
       // when perforing swaps using "MAX"
-      const getExtraAmountToExtractFromBalance =
-        this.selectedQuoteProvider?.getExtraAmountToExtractFromBalance
-      let extraAmountToExtractFromBalance = 0
-      if (getExtraAmountToExtractFromBalance) {
-        extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
-      }
 
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
-        : BN.max(
-            BN(balance).minus(BN(this.maxFee.plus(extraAmountToExtractFromBalance)).times(1.5)),
-            0
-          )
+        : BN.max(BN(balance).minus(BN(this.maxFee).times(1.5)), 0)
+
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     availableBeforeFees() {
@@ -1556,6 +1567,9 @@ export default {
     },
     currentStep: function (val) {
       if (val === 'inputs') this.updateQuotes()
+    },
+    maxSwapFees(val) {
+      console.log('maxSwapFees', val)
     }
   }
 }
