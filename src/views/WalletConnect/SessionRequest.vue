@@ -1,21 +1,67 @@
 <template>
   <div class="wrapper">
     <div class="wrapper_top">
-      <div class="d-flex justify-content-between">
-        <h5>{{ $t('pages.enable.selectAccounts') }}</h5>
+      <div class="row" v-if="sessionProposal">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <div class="d-flex justify-content-between">
+                <h5>Proposer</h5>
+              </div>
+              <div class="list-items">
+                <ul class="list-group">
+                  <li class="list-group-item">Name: {{ proposerInfo.name }}</li>
+                  <li class="list-group-item">Description: {{ proposerInfo.description }}</li>
+                  <li class="list-group-item">
+                    Url: <a :href="proposerInfo.url" target="_blank">{{ proposerInfo.url }}</a>
+                  </li>
+                  <li
+                    class="list-group-item"
+                    v-if="proposerInfo.icons && proposerInfo.icons.length > 0"
+                  >
+                    <img :src="proposerInfo.icons[0]" />
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col">
+              <div class="d-flex justify-content-between">
+                <h5>Required Namespaces</h5>
+              </div>
+              <div class="list-items" v-for="(ns, key) in namespaces" :key="key">
+                <h6>{{ key }}</h6>
+                <ul class="list-group">
+                  <li class="list-group-item">Chains: {{ ns.chains.join(', ') }}</li>
+                  <li class="list-group-item">Events: {{ ns.events.join(', ') }}</li>
+                  <li class="list-group-item">Methods: {{ ns.methods.join(', ') }}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col">
+              <div class="d-flex justify-content-between">
+                <h5>{{ $t('pages.enable.selectAccounts') }}</h5>
+              </div>
+              <div class="list-items">
+                <NetworkAccounts
+                  @item-selected="onAccountSelected"
+                  :search="search"
+                  :account-id="selectedAccount ? selectedAccount.id : null"
+                  :accounts="accounts"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="list-items">
-        <NetworkAccounts
-          @item-selected="onAccountSelected"
-          :search="search"
-          :account-id="selectedAccount ? selectedAccount.id : null"
-          :accounts="accounts"
-        />
+      <div class="text-center" v-else>
+        <SpinnerIcon class="btn-loading" v-if="!sessionProposal" />
       </div>
     </div>
-    <div class="wrapper_sub">
-      <SpinnerIcon class="btn-loading" v-if="!session" />
+    <div class="wrapper_bottom">
       <div class="button-group">
         <button class="btn btn-light btn-outline-primary btn-lg" id="cancel-button" @click="cancel">
           {{ $t('common.cancel') }}
@@ -24,7 +70,7 @@
           class="btn btn-primary btn-lg btn-icon"
           id="wc-pair-button"
           @click="approve"
-          :disabled="loading || error || !session"
+          :disabled="loading || error || !sessionProposal"
         >
           <SpinnerIcon class="btn-loading" v-if="loading" />
           <template v-else>Approve</template>
@@ -40,9 +86,12 @@ import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { mapState, mapGetters, mapActions } from 'vuex'
 import { ChainId } from '@liquality/cryptoassets'
 
-let sessionSubscription = null
-
 export default {
+  props: {
+    pairingTopic: {
+      type: String
+    }
+  },
   components: {
     NetworkAccounts,
     SpinnerIcon
@@ -52,51 +101,55 @@ export default {
       loading: false,
       error: null,
       search: '',
-      session: null,
       selectedAccount: null
     }
   },
   computed: {
+    ...mapState({
+      proposals: (state) => state.app.wcSessionProposals
+    }),
     ...mapState(['activeNetwork']),
     ...mapGetters(['accountsData']),
     accounts() {
       return this.accountsData.filter((account) => account.chain === ChainId.Ethereum)
+    },
+    sessionProposal() {
+      if (this.pairingTopic) {
+        const index = this.proposals.findIndex((s) => s.pairingTopic === this.pairingTopic)
+        if (index >= 0) {
+          return this.proposals[index]
+        }
+      }
+      return null
+    },
+    proposerInfo() {
+      return this.sessionProposal?.proposer.metadata || {}
+    },
+    namespaces() {
+      return this.sessionProposal?.requiredNamespaces || {}
     }
   },
   methods: {
-    ...mapActions('app', ['approveSession']),
+    ...mapActions('app', ['approveSession', 'rejectSession']),
     onAccountSelected({ account }) {
       this.selectedAccount = account
     },
     async approve() {
-      if (this.session) {
+      if (this.selectedAccount && this.sessionProposal) {
         await this.approveSession({
-          session: this.session,
+          session: this.sessionProposal,
           accounts: [this.selectedAccount.addresses]
         })
+        this.$emit('approved')
       }
     },
-    cancel() {
-      chrome.tabs.getCurrent((tab) => {
-        if (tab !== undefined) {
-          chrome.tabs.remove([tab.id])
-        }
-      })
+    async cancel() {
+      this.rejectSession({ topic: this.pairingTopic })
+      this.$emit('cancel')
     }
   },
-  async created() {
-    sessionSubscription = this.$store.subscribe((mutation) => {
-      const { type, payload } = mutation
-
-      if (type === '##BACKGROUND##app/ADD_WALLET_CONNNECT_SESSION_PROPOSAL') {
-        this.session = payload.session
-      }
-    })
-  },
-  beforeDestroy() {
-    if (sessionSubscription) {
-      sessionSubscription()
-    }
+  created() {
+    console.log('pairingTopic', this.pairingTopic)
   }
 }
 </script>

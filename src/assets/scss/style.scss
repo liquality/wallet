@@ -632,6 +632,10 @@ svg.qr-icon {
 }
 
 // common for accounts screens
+.full-tab-container {
+  overflow: auto;
+ }
+ 
 .account-container,
 .full-tab-container {
   display: flex;
@@ -659,7 +663,7 @@ svg.qr-icon {
   }
 
   .full-tab-container-content {
-    max-height: 600px;
+    overflow: auto;
   }
 }
 

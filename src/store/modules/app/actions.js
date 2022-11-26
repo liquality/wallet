@@ -14,7 +14,14 @@ import {
   initializeSignClient,
   pairSignClient,
   approveSession,
-  openWalletConnectTab
+  rejectSession,
+  openWalletConnectTab,
+  getSessionProposals,
+  getSessions,
+  getPairings,
+  removeSessionProposal,
+  removeSession,
+  removePairing
 } from './walletConnect'
 
 export const actions = {
@@ -126,5 +133,12 @@ export const actions = {
   initializeSignClient,
   pairSignClient,
   approveSession,
-  openWalletConnectTab
+  openWalletConnectTab,
+  rejectSession,
+  getSessionProposals,
+  getSessions,
+  getPairings,
+  removeSessionProposal,
+  removeSession,
+  removePairing
 }

@@ -1,22 +1,35 @@
 <template>
-  <div class="full-tab-container">
-    <NavBar :showMenu="false">
-      <span class="full-tab-container-title"> Wallet Connect</span>
-    </NavBar>
-    <div class="full-tab-container-content">
-      <Connections @paired="onPair" :pair-request="pairRequest"></Connections>
-    </div>
-  </div>
+  <Modal body-class="" type="modal-lg" isFullHeight :show-close="false">
+    <template #header>
+      <h6 class="modal-header mt-4 text-uppercase">Wallet Connect</h6>
+    </template>
+
+    <template>
+      <Connections
+        v-if="currentView === 'connections'"
+        @paired="onPair"
+        :pair-request="pairRequest"
+      />
+      <SessionRequest
+        :pairing-topic="pairingTopic"
+        @cancel="onSessionCancel"
+        @approved="onSessionApproved"
+        v-if="currentView === 'session-request'"
+      />
+    </template>
+  </Modal>
 </template>
 
 <script>
-import NavBar from '@/components/NavBar'
+import Modal from '@/components/Modal'
 import Connections from './Connections'
+import SessionRequest from './SessionRequest'
 
 export default {
   components: {
-    NavBar,
-    Connections
+    Modal,
+    Connections,
+    SessionRequest
   },
   props: {
     sessionRequest: {
@@ -38,7 +51,8 @@ export default {
   data() {
     return {
       rawUri: null,
-      currentView: ''
+      currentView: '',
+      pairingTopic: null
     }
   },
   computed: {
@@ -56,16 +70,18 @@ export default {
   },
   methods: {
     async onPair({ topic }) {
-      this.pairTopic = topic
+      this.pairingTopic = topic
       this.currentView = 'session-request'
+    },
+    onSessionCancel() {
+      this.currentView = 'connections'
+    },
+    onSessionApproved() {
+      this.currentView = 'connections'
     }
   },
   async created() {
     this.currentView = this.currentViewFromProps
-    // if (this.$route.query.uri) {
-    //   const uri = encodeURIComponent(this.$route.query.uri)
-    //   await this.$router.replace({ name: 'WalletConnectPair', query: { uri } })
-    // }
   }
 }
 </script>

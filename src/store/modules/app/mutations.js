@@ -34,32 +34,14 @@ export const mutations = {
   SET_LOCALE(state, { locale }) {
     state.locale = locale
   },
-  ADD_WALLET_CONNNECT_SESSION(state, { session }) {
-    state.walletConnectSessions.push({ ...session })
+  SET_PAIRINGS(state, { pairings }) {
+    state.wcPairings = [...pairings]
   },
-  REMOVE_WALLET_CONNNECT_SESSION(state, { id }) {
-    const index = state.walletConnectSessions.findIndex((s) => s.id === id)
-    if (index >= 0) {
-      state.walletConnectSessions.splice(index, 1)
-    }
+  SET_SESSIONS(state, { sessions }) {
+    state.wcSessions = [...sessions]
   },
-  ADD_WALLET_CONNNECT_SESSION_PROPOSAL(state, { session }) {
-    state.walletConnectSessionsProposals.push({ ...session })
-  },
-  REMOVE_WALLET_CONNNECT_SESSION_PROPOSAL(state, { id }) {
-    const index = state.walletConnectSessionsProposals.findIndex((s) => s.id === id)
-    if (index >= 0) {
-      state.walletConnectSessionsProposals.splice(index, 1)
-    }
-  },
-  ADD_WALLET_CONNNECT_REQUEST(state, { request }) {
-    state.walletConnectRequests.push({ ...request })
-  },
-  REMOVE_WALLET_CONNNECT_REQUEST(state, { id }) {
-    const index = state.walletConnectRequests.findIndex((s) => s.id === id)
-    if (index >= 0) {
-      state.walletConnectRequests.splice(index, 1)
-    }
+  SET_SESSION_PROPOSALS(state, { propsals }) {
+    state.wcSessionProposals = [...propsals]
   },
   SET_EXTENSION_IS_OPEN(state, { open }) {
     state.extensionIsOpen = open

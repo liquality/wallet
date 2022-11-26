@@ -1,113 +1,95 @@
-import { Core } from '@walletconnect/core'
-import SignClient from '@walletconnect/sign-client'
+import { getSignClient } from '@/utils/wallet-connect'
+import { notify } from '@/utils/notification'
 import qs from 'qs'
 
-const notify = ({ notificationId, options = {} }, callback) => {
-  browser.notifications.create(notificationId, {
-    type: 'basic',
-    iconUrl: './icons/512x512.png',
-    requireInteraction: true,
-    ...options
-  })
-  if (callback) {
-    browser.notifications.onClicked.addListener((id) => {
-      callback(id)
-      browser.notifications.clear(id)
+let clientInitialized = false
+export const initializeSignClient = async ({ state, dispatch }) => {
+  const signClient = await getSignClient()
+  if (!clientInitialized) {
+    signClient.on('session_proposal', async ({ id, params }) => {
+      console.log('session_proposal', { id, params })
+      dispatch('getSessionProposals')
+      const notificationId = `session-proposal:${params.pairingTopic}`
+      notify(
+        {
+          notificationId,
+          options: {
+            title: 'Wallet Connect Session',
+            message: 'You have a new session request'
+          }
+        },
+        (id) => {
+          if (id === notificationId) {
+            if (state.app.extensionIsOpen === true) {
+              //dispatch('showWalletNotification')
+            } else {
+              dispatch('openWalletConnectTab', { session: id.replace('session-proposal:', '') })
+            }
+          }
+        }
+      )
     })
+    signClient.on('session_event', (event) => {
+      console.log('session_event', event)
+    })
+    signClient.on('session_request', async (event) => {
+      console.log('session_request', event)
+      dispatch('getSessionProposals')
+    })
+    signClient.on('session_ping', ({ id, topic }) => {
+      console.log('WalletConnect: session_ping', { id, topic })
+    })
+    signClient.on('session_delete', ({ id, topic }) => {
+      console.log('WalletConnect: session_delete', { id, topic })
+      dispatch('getSessions')
+    })
+
+    // TODO: check when these events are called and how to handle it inside the wallet data
+    signClient.core.pairing.events.on('pairing_delete', ({ id, topic }) => {
+      console.log('pairing_delete', { id, topic })
+      dispatch('getPairings')
+    })
+    signClient.core.pairing.events.on('pairing_ping', ({ id, topic }) => {
+      console.log('pairing_ping', { id, topic })
+    })
+    signClient.core.pairing.events.on('pairing_expire', ({ id, topic }) => {
+      console.log('pairing_expire', { id, topic })
+      dispatch('getPairings')
+    })
+    clientInitialized = true
   }
+  //initialize data
+  dispatch('getPairings')
+  dispatch('getSessions')
+  dispatch('getSessionProposals')
 }
 
-let _signClient = null
-export const initializeSignClient = async ({ dispatch, commit }) => {
-  const core = new Core({
-    projectId: process.env.VUE_APP_WALLET_CONNECT_PROJECT_ID,
-    relayUrl: process.env.VUE_APP_WALLET_CONNECT_RELAY_URL
-  })
-  const metadata = {
-    name: 'Liquality',
-    description: 'One Wallet all Chains',
-    url: 'https://liquality.io',
-    icons: [
-      'https://assets.website-files.com/61ae51cb7959d04801e85bc7/61ae51cb7959d04127e85c52_Liquality_logo.svg'
-    ]
-  }
-
-  _signClient = await SignClient.init({
-    core,
-    metadata
-  })
-
-  _signClient.on('session_proposal', async (session) => {
-    console.log('session_proposal', session)
-    commit('ADD_WALLET_CONNNECT_SESSION_PROPOSAL', { session })
-    const notificationId = `session-proposal:${session.id}`
-    notify(
-      {
-        notificationId,
-        options: {
-          title: 'Wallet Connect Session',
-          message: 'You have a new session request'
-        }
-      },
-      (id) => {
-        if (id === notificationId) {
-          dispatch('openWalletConnectTab', { session: id.replace('session-proposal:', '') })
-        }
-      }
-    )
-  })
-  _signClient.on('session_event', (event) => {
-    console.log('session_event', event)
-  })
-  _signClient.on('session_request', async (event) => {
-    console.log('session_request', event)
-    //const { id, params, topic } = event
-    // const { request } = params
-    commit('ADD_WALLET_CONNNECT_REQUEST', { request: event })
-    
-    // if (request.method === 'eth_sendTransaction') {
-    //   // await dispatch('sendTransaction', {
-    //   //     network: rootState.activeNetwork,
-    //   //     walletId: rootState.activeWalletId,
-    //   //     asset: 'ETH',
-    //   //     to: params.to,
-    //   //     accountId: this.account.id,
-    //   //     amount,
-    //   //     fee,
-    //   //     gas: cryptoassets[this.asset].sendGasLimit,
-    //   //     feeLabel: this.selectedFee,
-    //   //     fiatRate: this.fiatRates[this.asset],
-    //   //     ...(this.showMemoInput && { data: this.memoData })
-    //   //   })
-    // }
-  })
-  _signClient.on('session_ping', (event) => {
-    console.log('session_ping', event)
-  })
-  _signClient.on('session_delete', (event) => {
-    console.log('session_delete', event)
-  })
-
-  // TODO: check when these events are called and how to handle it inside the wallet data
-  _signClient.core.pairing.events.on('pairing_delete', ({ id, topic }) => {
-    console.log('pairing_delete', { id, topic })
-  })
-  _signClient.core.pairing.events.on('pairing_ping', ({ id, topic }) => {
-    console.log('pairing_ping', { id, topic })
-  })
-  _signClient.core.pairing.events.on('pairing_expire', ({ id, topic }) => {
-    console.log('pairing_expire', { id, topic })
-  })
+export const getPairings = async ({ commit }) => {
+  const signClient = await getSignClient()
+  const pairings = signClient.core.pairing.getPairings()
+  console.log('existing pairings', pairings)
+  commit('SET_PAIRINGS', { pairings })
 }
-
 export const pairSignClient = async (_, { uri }) => {
-  await _signClient.core.pairing.pair({ uri })
+  const signClient = await getSignClient()
+  await signClient.core.pairing.pair({ uri })
 }
 
-export const approveSession = async ({ commit }, { session, accounts }) => {
+export const getSessionProposals = async ({ commit }) => {
+  const signClient = await getSignClient()
+  const propsals = signClient.proposal.getAll()
+  commit('SET_SESSION_PROPOSALS', { propsals })
+}
+
+export const getSessions = async ({ commit }) => {
+  const signClient = await getSignClient()
+  const sessions = signClient.session.getAll()
+  commit('SET_SESSIONS', { sessions })
+}
+
+export const approveSession = async ({ dispatch }, { session, accounts }) => {
   console.log('approveSession', { session, accounts })
-  const { id, params } = session
-  const { requiredNamespaces } = params
+  const { id, requiredNamespaces } = session
   const { eip155 } = requiredNamespaces
   const { chains, methods, events } = eip155
   // Approve session proposal, use id from session proposal event and respond with namespace(s) that satisfy dapps request and contain approved accounts
@@ -122,18 +104,44 @@ export const approveSession = async ({ commit }, { session, accounts }) => {
     }
   }
   console.log('req', req)
-  const { topic, acknowledged } = await _signClient.approve(req)
+  const signClient = await getSignClient()
+  const { topic, acknowledged } = await signClient.approve(req)
   console.log('topic', topic)
-  const received = await acknowledged()
-  console.log('received', received)
-  if (received && received.acknowledged) {
-    commit('ADD_WALLET_CONNNECT_SESSION', { session: received })
-    commit('REMOVE_WALLET_CONNNECT_SESSION_PROPOSAL', { id })
-  }
+  const approvedSession = await acknowledged()
+  console.log('approvedSession', approvedSession)
+  dispatch('getPairings')
+  dispatch('getSessions')
+  dispatch('getSessionProposals')
+  return approvedSession && approvedSession.acknowledged
 }
 
-export const removeSessionProposal = async ({ commit }, { id }) => {
-  commit('REMOVE_WALLET_CONNNECT_SESSION_PROPOSAL', { id })
+export const rejectSession = async (_, { session }) => {
+  const signClient = await getSignClient()
+  const { id } = session
+  await signClient.reject({
+    id,
+    reason: {
+      code: 1,
+      message: 'rejected'
+    }
+  })
+  // TODO: maybe we need to call to remove proposal
+  // commit('REMOVE_WALLET_CONNNECT_SESSION_PROPOSAL', { topic: pairingTopic })
+}
+
+export const removeSessionProposal = async (_, { topic }) => {
+  const signClient = await getSignClient()
+  return signClient.proposal.delete(topic)
+}
+
+export const removeSession = async (_, { topic }) => {
+  const signClient = await getSignClient()
+  return signClient.session.delete(topic)
+}
+
+export const removePairing = async (_, { topic }) => {
+  const signClient = await getSignClient()
+  return signClient.core.pairing.disconnect({ topic })
 }
 
 export const openWalletConnectTab = async (_, query = null) => {
