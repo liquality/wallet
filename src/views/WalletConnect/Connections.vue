@@ -108,7 +108,7 @@
           </div>
           <div class="row mt-5">
             <div class="col">
-              <h6>Sessions</h6>
+              <h5>Sessions</h5>
               <ul class="list-group" v-for="(session, key) in sessions" :key="key">
                 <li class="list-group-item">
                   {{ session }}

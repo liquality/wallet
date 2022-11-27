@@ -631,19 +631,61 @@ svg.qr-icon {
   line-height: 28px;
 }
 
-// common for accounts screens
 .full-tab-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  outline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+}
+
+.full-tab-content {
+  max-width: 600px;
+  overflow: auto !important;
+  border-radius: 0 !important;
+  border: 1px solid #d9dfe5;
+  box-sizing: border-box;
+  box-shadow: 2px 4px 4px rgba(46, 44, 44, 0.25);
   overflow: auto;
- }
- 
-.account-container,
-.full-tab-container {
+  max-height: 530px;
+  padding: $wrapper-padding !important;
+
+  &.full-height {
+    max-height: 100%;
+    height: 100vh;
+    width: 100%;
+    padding: 48px;
+  }
+
+  .full-tab-body {
+    padding: 5px 20px 0 20px;
+  }
+
+  .full-tab-header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    padding: 20px 20px 0 20px !important;
+  }
+
+  .full-tab-footer {
+    border-top: 0 !important;
+    justify-content: center !important;
+  }
+}
+
+.account-container {
   display: flex;
   flex-direction: column;
   flex: 1;
 
-  .account-title,
-  .full-tab-container-title {
+  .account-title {
     font-size: $font-size-head-title;
     font-style: normal;
     line-height: 26px;
@@ -655,15 +697,10 @@ svg.qr-icon {
     }
   }
 
-  .account-content,
-  .full-tab-container-content {
+  .account-content {
     display: flex;
     flex-direction: column;
     flex: 1;
-  }
-
-  .full-tab-container-content {
-    overflow: auto;
   }
 }
 

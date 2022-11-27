@@ -61,21 +61,19 @@
         <SpinnerIcon class="btn-loading" v-if="!sessionProposal" />
       </div>
     </div>
-    <div class="wrapper_bottom">
-      <div class="button-group">
-        <button class="btn btn-light btn-outline-primary btn-lg" id="cancel-button" @click="cancel">
-          {{ $t('common.cancel') }}
-        </button>
-        <button
-          class="btn btn-primary btn-lg btn-icon"
-          id="wc-pair-button"
-          @click="approve"
-          :disabled="loading || error || !sessionProposal"
-        >
-          <SpinnerIcon class="btn-loading" v-if="loading" />
-          <template v-else>Approve</template>
-        </button>
-      </div>
+    <div class="button-group mt-4">
+      <button class="btn btn-light btn-outline-primary block" id="cancel-button" @click="cancel">
+        {{ $t('common.cancel') }}
+      </button>
+      <button
+        class="btn btn-primary btn-block btn-icon"
+        id="wc-pair-button"
+        @click="approve"
+        :disabled="!selectedAccount || loading || error || !sessionProposal"
+      >
+        <SpinnerIcon class="btn-loading" v-if="loading" />
+        <template v-else>Approve</template>
+      </button>
     </div>
   </div>
 </template>

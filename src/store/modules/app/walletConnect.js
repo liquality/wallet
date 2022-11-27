@@ -34,7 +34,7 @@ export const initializeSignClient = async ({ state, dispatch }) => {
     })
     signClient.on('session_request', async (event) => {
       console.log('session_request', event)
-      dispatch('getSessionProposals')
+      console.log('WalletConnect: session_request', event)
     })
     signClient.on('session_ping', ({ id, topic }) => {
       console.log('WalletConnect: session_ping', { id, topic })
@@ -78,12 +78,14 @@ export const pairSignClient = async (_, { uri }) => {
 export const getSessionProposals = async ({ commit }) => {
   const signClient = await getSignClient()
   const propsals = signClient.proposal.getAll()
+  console.log('propsals', propsals)
   commit('SET_SESSION_PROPOSALS', { propsals })
 }
 
 export const getSessions = async ({ commit }) => {
   const signClient = await getSignClient()
   const sessions = signClient.session.getAll()
+  console.log('sessions', sessions)
   commit('SET_SESSIONS', { sessions })
 }
 
@@ -134,14 +136,19 @@ export const removeSessionProposal = async (_, { topic }) => {
   return signClient.proposal.delete(topic)
 }
 
-export const removeSession = async (_, { topic }) => {
+export const removeSession = async ({ dispatch }, { topic }) => {
   const signClient = await getSignClient()
-  return signClient.session.delete(topic)
+  const result = signClient.session.delete(topic)
+  dispatch('getPairings')
+  dispatch('getSessions')
+  return result
 }
 
-export const removePairing = async (_, { topic }) => {
+export const removePairing = async ({ dispatch }, { topic }) => {
   const signClient = await getSignClient()
-  return signClient.core.pairing.disconnect({ topic })
+  const result = signClient.core.pairing.disconnect({ topic })
+  dispatch('getPairings')
+  return result
 }
 
 export const openWalletConnectTab = async (_, query = null) => {
