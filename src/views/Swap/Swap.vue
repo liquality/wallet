@@ -1567,9 +1567,6 @@ export default {
     },
     currentStep: function (val) {
       if (val === 'inputs') this.updateQuotes()
-    },
-    maxSwapFees(val) {
-      console.log('maxSwapFees', val)
     }
   }
 }
