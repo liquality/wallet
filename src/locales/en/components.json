@@ -81,7 +81,7 @@
     "noLiquidityMessage": {
         "noLiquidity": "Not enough liquidity for this trade. You can request %{asset} in ",
         "tryAgainLater": " or try again later.",
-        "noTraded": "This pair isn't traded yet. Maybe there is a way to do multiple swaps to get that desired token."
+        "noTraded": "This pair isn't traded yet or there's a problem trading it at the moment. Maybe there is a way to do multiple swaps to get that desired token."
     },
     "operationErrorModal": {
         "cantFindAccount": "Can’t find the ledger Account",
