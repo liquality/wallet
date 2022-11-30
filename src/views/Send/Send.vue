@@ -239,7 +239,7 @@
       :open="sendErrorModalOpen"
       :account="account"
       @close="closeSendErrorModal"
-      :error="sendErrorMessage"
+      :liqualityErrorString="sendErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
   </div>
@@ -576,7 +576,7 @@ export default {
         reportLiqualityError(error)
         this.loading = false
         this.signRequestModalOpen = false
-        this.sendErrorMessage = this.$tle(errorToLiqualityErrorString(error))
+        this.sendErrorMessage = errorToLiqualityErrorString(error)
         this.sendErrorModalOpen = true
       }
     },

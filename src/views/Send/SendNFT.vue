@@ -282,7 +282,7 @@
       :open="sendErrorModalOpen"
       :account="account"
       @close="closeSendErrorModal"
-      :error="sendErrorMessage"
+      :liqualityErrorString="sendErrorMessage"
     />
   </div>
 </template>
@@ -651,7 +651,7 @@ export default {
         this.$router.replace(`/wallet/nfts/activity/${this.account?.id}?tab=activity`)
       } catch (error) {
         this.loading = false
-        this.sendErrorMessage = this.$tle(errorToLiqualityErrorString(error))
+        this.sendErrorMessage = errorToLiqualityErrorString(error)
         this.sendErrorModalOpen = true
       }
     },

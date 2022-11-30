@@ -56,6 +56,7 @@
     "transactionFee": "Transaction Fee",
     "copied": "Copied!",
     "copyAddress": "Copy Address",
+    "copyError": "Copy Error",
     "clickToCopy": "Click to copy",
     "viewInExplorer": "View in Explorer",
     "noItems": "No items",
