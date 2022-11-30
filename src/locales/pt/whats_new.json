@@ -1,20 +1,20 @@
 [
-    {
-        "page": "1",
-        "title": "What's New?",
-        "content": [
-            "Add Custom Token improvements",
-            "Chrome Store internationalization",
-            "User friendly error messages for Ledger and deBridge",
-            "Fix Solana NFT displaying logic"
-        ]
-    },
-    {
-        "page": "2",
-        "title": "Você sabia que pode...",
-        "content": [
-            "Usar LI.FI e deBridge em mais de 100 diferentes tipos de swaps",
-            "Usar LI.FI e deBridge para fazer um swap em quase todas cadeias EVM que nossa carteira suporta atualmente"
-        ]
-    }
+  {
+    "page": "1",
+    "title": "What's New?",
+    "content": [
+      "Solana fees fix for swaps",
+      "User friendly error messages improvements",
+      "Solana NFTs fixes",
+      "Activity filter fixes"
+    ]
+  },
+  {
+    "page": "2",
+    "title": "Você sabia que pode...",
+    "content": [
+      "Usar LI.FI e deBridge em mais de 100 diferentes tipos de swaps",
+      "Usar LI.FI e deBridge para fazer um swap em quase todas cadeias EVM que nossa carteira suporta atualmente"
+    ]
+  }
 ]
