@@ -1,12 +1,12 @@
 <template>
   <div class="empty-state">
-    <p>{{ message || 'Sorry, no results found' }}</p>
+    <p>{{ message || `${$t('common.noResults')}` }}</p>
   </div>
 </template>
 <script>
 export default {
   name: 'NoTransactionsFound',
-  props: ['message']
+  props: ['message'],
 }
 </script>
 <style scoped lang="scss">
