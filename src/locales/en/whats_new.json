@@ -3,10 +3,10 @@
     "page": "1",
     "title": "What's New?",
     "content": [
-      "Add Custom Token improvements",
-      "Chrome Store internationalization",
-      "User friendly error messages for Ledger and deBridge",
-      "Fix Solana NFT displaying logic"
+      "Solana fees fix for swaps",
+      "User friendly error messages improvements",
+      "Solana NFTs fixes",
+      "Activity filter fixes"
     ]
   },
   {
