@@ -23,7 +23,7 @@
           {{ $t('components.activityFilter.dateRange') }}
         </div>
         <div class="date-filter-inputs h-padding form">
-          <date-pick v-model="dateFilters.start">
+          <date-pick v-model="dateFilters.start" @input="changeTrigered">
             <template v-slot:default="{ toggle, inputValue, inputEvents }">
               <div class="input-group" @click="toggle">
                 <input
@@ -37,7 +37,7 @@
               </div>
             </template>
           </date-pick>
-          <date-pick v-model="dateFilters.end">
+          <date-pick v-model="dateFilters.end" @input="changeTrigered">
             <template v-slot:default="{ toggle, inputValue, inputEvents }">
               <div class="input-group" @click="toggle">
                 <input
@@ -260,6 +260,11 @@ export default {
         types,
         statuses,
         dates: this.dateFilters
+      })
+    },
+    changeTrigered() {
+      this.$nextTick(() => {
+        this.applyFilters()
       })
     }
   }
