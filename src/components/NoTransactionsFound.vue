@@ -6,7 +6,7 @@
 <script>
 export default {
   name: 'NoTransactionsFound',
-  props: ['message'],
+  props: ['message']
 }
 </script>
 <style scoped lang="scss">
