@@ -211,7 +211,7 @@
               class="btn btn-primary btn-lg"
               id="swap_review_button"
               @click="review"
-              :disabled="!canSwap || cannotCoverNetworkFee"
+              :disabled="false"
             >
               {{
                 !canSwap || cannotCoverNetworkFee
@@ -486,7 +486,7 @@
       :open="swapErrorModalOpen"
       :account="account"
       @close="closeSwapErrorModal"
-      :error="swapErrorMessage"
+      :liqualityErrorString="swapErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
   </div>
@@ -1397,7 +1397,7 @@ export default {
         reportLiqualityError(error)
         this.loading = false
         this.signRequestModalOpen = false
-        this.swapErrorMessage = this.$tle(errorToLiqualityErrorString(error))
+        this.swapErrorMessage = errorToLiqualityErrorString(error)
         this.swapErrorModalOpen = true
       }
     },

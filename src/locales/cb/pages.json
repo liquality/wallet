@@ -81,7 +81,9 @@
   "experiments": {
     "experiments": "Experiments",
     "multiaccounts": "Multi-Accounts",
-    "multiaccountsDescription": "Tugoti ang pagdumala sa account ug daghang mga account matag network"
+    "multiaccountsDescription": "Tugoti ang pagdumala sa account ug daghang mga account matag network",
+    "errorReporting": "Error Reporting",
+    "errorReportingDescription": "Allow auto reporting of errors to support"
   },
   "manageAssets": {
     "assetView": "Asset View",

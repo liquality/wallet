@@ -81,7 +81,9 @@
   "experiments": {
     "experiments": "Experiments",
     "multiaccounts": "Multi-Accounts",
-    "multiaccountsDescription": "Allow account management and multiple accounts per network"
+    "multiaccountsDescription": "Allow account management and multiple accounts per network",
+    "errorReporting": "Error Reporting",
+    "errorReportingDescription": "Allow auto reporting of errors to support"
   },
   "manageAssets": {
     "assetView": "Asset View",
