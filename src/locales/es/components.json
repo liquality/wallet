@@ -50,7 +50,8 @@
         "message": "Cuando empieces a usar tu cartera verás la actividad aquí."
     },
     "ethRequiredMessage": {
-        "message": "Se requiere tener balance para hacer swap y necesitas tener %{nativeAsset} para pagar por el gas.",
+        "message_swap": "Se requiere tener balance para hacer swap y necesitas tener %{nativeAsset} para pagar por el gas.",
+        "message_send": "Necesitas tener %{nativeAsset} para pagar por el gas.",
         "getETH": "Recibir %{nativeAsset}"
     },
     "head": {

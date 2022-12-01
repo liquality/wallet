@@ -50,7 +50,8 @@
         "message": "Sa higayon nga magsugod ka sa paggamit sa imong wallet, dinhi nimo makita ang mga activity."
     },
     "ethRequiredMessage": {
-        "message": "Kinahanglan ang balanse aron magswap ug kinahanglan nimo ang %{nativeAsset} aron mabayran ang gas.",
+        "message_swap": "Kinahanglan ang balanse aron magswap ug kinahanglan nimo ang %{nativeAsset} aron mabayran ang gas.",
+        "message_send": "You need %{nativeAsset} to pay for gas.",
         "getETH": "Kuha ug %{nativeAsset}"
     },
     "head": {

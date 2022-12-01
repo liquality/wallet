@@ -50,7 +50,8 @@
         "message": "Dito makikita ang mga activity ng iyong wallet kapag sinimulan mo na itong gamitin."
     },
     "ethRequiredMessage": {
-        "message": "Kinakailangan ang balanse para makapagpalit at kailangan mo ng %{nativeAsset} para sa gas fee.",
+        "message_swap": "Kinakailangan ang balanse para makapagpalit at kailangan mo ng %{nativeAsset} para sa gas fee.",
+        "message_send": "You need %{nativeAsset} to pay for gas.",
         "getETH": "Kumuha ng %{nativeAsset}"
     },
     "head": {
