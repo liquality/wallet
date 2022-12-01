@@ -431,10 +431,10 @@ export default {
       return supportCustomFees
     },
     canSend() {
-      if (!this.address || this.addressError) return false
-      if (BN(this.amount).lte(0) || this.amountError) return false
-
-      return true
+      if (this.address && !this.addressError && BN(this.amount).gt(0) && !this.amountError) {
+        return true
+      }
+      return false
     },
     prettyFee() {
       return this.currentFee.dp(6)
@@ -523,21 +523,23 @@ export default {
       this.currentStep = 'inputs'
     },
     review() {
-      if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
-        // open in a new tab
-        const sendParams = qs.stringify({
-          mode: 'tab',
-          selectedFee: this.selectedFee,
-          amount: BN(this.amount).toString(),
-          address: this.address,
-          currentStep: 'confirm',
-          maxOptionActive: this.maxOptionActive,
-          customFee: this.customFee
-        })
-        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?${sendParams}`
-        chrome.tabs.create({ url: browser.runtime.getURL(url) })
-      } else {
-        this.currentStep = 'confirm'
+      if (this.canSend) {
+        if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
+          // open in a new tab
+          const sendParams = qs.stringify({
+            mode: 'tab',
+            selectedFee: this.selectedFee,
+            amount: BN(this.amount).toString(),
+            address: this.address,
+            currentStep: 'confirm',
+            maxOptionActive: this.maxOptionActive,
+            customFee: this.customFee
+          })
+          const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?${sendParams}`
+          chrome.tabs.create({ url: browser.runtime.getURL(url) })
+        } else {
+          this.currentStep = 'confirm'
+        }
       }
     },
     async send() {
