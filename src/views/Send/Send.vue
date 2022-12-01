@@ -9,7 +9,7 @@
         {{ $t('common.send') }}
       </NavBar>
       <InfoNotification v-if="nativeAssetRequired">
-        <EthRequiredMessage :account-id="account.id" />
+        <EthRequiredMessage :account-id="account.id" :action="'send'" />
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">

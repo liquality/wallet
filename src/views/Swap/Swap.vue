@@ -63,7 +63,7 @@
         <CannotCoverMinimumMessage :asset="asset" :account-id="account.id" />
       </InfoNotification>
       <InfoNotification v-else-if="ethRequired && !insufficientFundsError">
-        <EthRequiredMessage :account-id="account.id" />
+        <EthRequiredMessage :account-id="account.id" :action="'swap'" />
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
