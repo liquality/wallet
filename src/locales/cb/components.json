@@ -50,8 +50,8 @@
         "message": "Sa higayon nga magsugod ka sa paggamit sa imong wallet, dinhi nimo makita ang mga activity."
     },
     "ethRequiredMessage": {
-        "message": "Kinahanglan ang balanse aron magswap ug kinahanglan nimo ang ETH aron mabayran ang gas.",
-        "getETH": "Kuha ug ETH"
+        "message": "Kinahanglan ang balanse aron magswap ug kinahanglan nimo ang %{nativeAsset} aron mabayran ang gas.",
+        "getETH": "Kuha ug %{nativeAsset}"
     },
     "head": {
         "dappConnected": "naka-konek na ang dApp",
