@@ -8,6 +8,9 @@
       >
         {{ $t('common.send') }}
       </NavBar>
+      <InfoNotification v-if="nativeAssetRequired">
+        <EthRequiredMessage :account-id="account.id" />
+      </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
           <SendInput
@@ -282,6 +285,8 @@ import qs from 'qs'
 import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
 import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
 import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
+import InfoNotification from '@/components/InfoNotification'
+import EthRequiredMessage from '@/components/EthRequiredMessage'
 
 export default {
   components: {
@@ -293,7 +298,9 @@ export default {
     OperationErrorModal,
     LedgerSignRequestModal,
     CustomFees,
-    CustomFeesEIP1559
+    CustomFeesEIP1559,
+    InfoNotification,
+    EthRequiredMessage
   },
   mixins: [ledgerConnectMixin],
   data() {
@@ -332,6 +339,9 @@ export default {
     ...mapGetters(['accountItem', 'client', 'suggestedFeePrices']),
     account() {
       return this.accountItem(this.accountId)
+    },
+    networkWalletBalances() {
+      return this.account?.balances
     },
     amount: {
       get() {
@@ -430,8 +440,29 @@ export default {
       const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.asset].chain)
       return supportCustomFees
     },
+    nativeAssetRequired() {
+      if (!this.networkWalletBalances) {
+        return true
+      }
+
+      const nativeAssetBalance = this.networkWalletBalances[this.assetChain]
+      if (
+        !nativeAssetBalance ||
+        BN(nativeAssetBalance).lte(0) ||
+        BN(nativeAssetBalance).minus(BN(this.currentFee)).lt(0)
+      ) {
+        return true
+      }
+      return false
+    },
     canSend() {
-      if (this.address && !this.addressError && BN(this.amount).gt(0) && !this.amountError) {
+      if (
+        !this.nativeAssetRequired &&
+        this.address &&
+        !this.addressError &&
+        BN(this.amount).gt(0) &&
+        !this.amountError
+      ) {
         return true
       }
       return false

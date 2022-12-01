@@ -50,8 +50,8 @@
         "message": "开始使用钱包后，您将在此处看到活动。"
     },
     "ethRequiredMessage": {
-        "message": "兑换需要一定的余额，您需要 ETH 来支付 gas。",
-        "getETH": "获得ETH"
+        "message": "兑换需要一定的余额，您需要 %{nativeAsset} 来支付 gas。",
+        "getETH": "获得%{nativeAsset}"
     },
     "head": {
         "dappConnected": "已连接的dApp",

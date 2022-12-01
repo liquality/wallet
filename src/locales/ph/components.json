@@ -50,8 +50,8 @@
         "message": "Dito makikita ang mga activity ng iyong wallet kapag sinimulan mo na itong gamitin."
     },
     "ethRequiredMessage": {
-        "message": "Kinakailangan ang balanse para makapagpalit at kailangan mo ng ETH para sa gas fee.",
-        "getETH": "Kumuha ng ETH"
+        "message": "Kinakailangan ang balanse para makapagpalit at kailangan mo ng %{nativeAsset} para sa gas fee.",
+        "getETH": "Kumuha ng %{nativeAsset}"
     },
     "head": {
         "dappConnected": "Nakakonek na sa dApp",
