@@ -440,6 +440,7 @@ export default {
       return this.activity.filter((item) => item.from === this.asset)
     },
     balance() {
+      // The balance is always the native asset balance
       const balance = this.account?.balances?.[this.asset] || 0
       return prettyBalance(balance, this.asset)
     },
@@ -476,6 +477,7 @@ export default {
       return this.currentFee.dp(6)
     },
     assetChain() {
+      // in NFT screen the asset chain is always the asset
       return getNativeAsset(this.asset)
     },
     assetFees() {
@@ -613,7 +615,16 @@ export default {
       this.sendFees = sendFees
     },
     updateSendFees: _.debounce(async function (amount) {
-      await this._updateSendFees(amount)
+      // In NFT screen the balance is equal to the native asset balance
+      console.log(
+        `on updateSendFees => amount: ${amount}, balance: ${this.balance}, asset: ${this.asset}, `
+      )
+      if (BN(this.balance).gt(0)) {
+        console.log('Updating fees')
+        await this._updateSendFees(amount)
+      } else {
+        console.log('balance <= 0, not updating fees')
+      }
     }, 800),
     async refreshNFTs() {
       const accountIds = this.accountsData.map((account) => {

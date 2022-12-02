@@ -533,7 +533,16 @@ export default {
       }
     },
     updateSendFees: _.debounce(async function (amount) {
-      await this._updateSendFees(amount)
+      const nativeAssetBalance = this.networkWalletBalances[this.assetChain]
+      console.log(
+        `on updateSendFees => amount: ${amount}, nativeAssetBalance: ${nativeAssetBalance}, asset: ${this.asset}, `
+      )
+      if (BN(amount).gt(0) && BN(this.balance).gt(0) && BN(nativeAssetBalance).gt(0)) {
+        console.log('Updating fees')
+        await this._updateSendFees(amount)
+      } else {
+        console.log('balance or amount <= 0, not updating fees')
+      }
     }, 800),
     async updateMaxSendFees() {
       await this._updateSendFees()
