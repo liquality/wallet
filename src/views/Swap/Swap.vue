@@ -89,9 +89,7 @@
             <ArrowDown
               id="arrow"
               v-if="!updatingQuotes"
-              @click="
-                onReverseAssets(asset, toAsset, selectedQuote.toAmount, fromAccountId, toAccountId)
-              "
+              @click="onReverseAssets(asset, toAsset, selectedQuote, fromAccountId, toAccountId)"
             />
             <SpinnerIcon v-else />
           </div>
@@ -1146,9 +1144,10 @@ export default {
       this.updateQuotes()
       this.updateFiatRates({ assets: [asset] })
     },
-    onReverseAssets(fromAsset, toAsset, toAmount, fromAccountId, toAccountId) {
+    onReverseAssets(fromAsset, toAsset, selectedQuote, fromAccountId, toAccountId) {
       if (this.updatingQuotes) return
       this.amountOption = null
+      const toAmount = selectedQuote?.toAmount || 0
       this.fromAssetChanged(toAccountId, toAsset, toAmount)
       this.toAssetChanged(fromAccountId, fromAsset)
     },

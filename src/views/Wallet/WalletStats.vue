@@ -79,10 +79,10 @@ export default {
       return this.activeNetwork === 'mainnet' && this.totalFiatBalance?.lte(0)
     },
     assetsCount() {
-      const fiatBalances = this.accountsData.map((a) => a.fiatBalances)
+      const balances = this.accountsData.map((a) => a.balances)
 
-      return fiatBalances
-        .map((bal) => Object.values(bal).map((b) => b && b.gt(0)))
+      return balances
+        .map((bal) => Object.values(bal).map((b) => parseInt(b, 10) > 0))
         .flat(1)
         .filter((i) => !!i).length
     }
