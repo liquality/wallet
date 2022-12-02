@@ -23,7 +23,7 @@
         <span>USD</span>
       </div>
       <span id="total_assets">
-        {{ accountsData.length }} {{ $t('common.asset', { count: accountsData.length }) }}
+        {{ assetsCount }} {{ $t('common.asset', { count: assetsCount }) }}
       </span>
       <div class="wallet-actions">
         <router-link to="/assets/send" class="wallet-actions-item send-action" id="send_action">
@@ -77,6 +77,14 @@ export default {
     },
     showByCryptoBanner() {
       return this.activeNetwork === 'mainnet' && this.totalFiatBalance?.lte(0)
+    },
+    assetsCount() {
+      const fiatBalances = this.accountsData.map((a) => a.fiatBalances)
+
+      return fiatBalances
+        .map((bal) => Object.values(bal).map((b) => b && b.gt(0)))
+        .flat(1)
+        .filter((i) => !!i).length
     }
   },
   methods: {
