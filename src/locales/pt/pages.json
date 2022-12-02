@@ -81,7 +81,9 @@
   "experiments": {
     "experiments": "Experimental",
     "multiaccounts": "Multi-Accounts",
-    "multiaccountsDescription": "Permite a gestão de contas e múltiplas contas em cada rede"
+    "multiaccountsDescription": "Permite a gestão de contas e múltiplas contas em cada rede",
+    "errorReporting": "Error Reporting",
+    "errorReportingDescription": "Allow auto reporting of errors to support"
   },
   "manageAssets": {
     "assetView": "Visão de Ativos",

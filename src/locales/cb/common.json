@@ -56,6 +56,7 @@
     "transactionFee": "Transaction Fee",
     "copied": "Gikopya!",
     "copyAddress": "Kopyaha ang Address",
+    "copyError": "Copy Error",
     "clickToCopy": "I-klick para copyahon",
     "viewInExplorer": "Tan-awa sa Explorer",
     "noItems": "Walay items",
@@ -93,5 +94,6 @@
         "pt": "Português",
         "ph": "Tagalog",
         "cb": "Cebuano"
-    }
+    },
+    "noResults": "No results found"
 }

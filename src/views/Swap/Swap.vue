@@ -89,9 +89,7 @@
             <ArrowDown
               id="arrow"
               v-if="!updatingQuotes"
-              @click="
-                onReverseAssets(asset, toAsset, selectedQuote.toAmount, fromAccountId, toAccountId)
-              "
+              @click="onReverseAssets(asset, toAsset, selectedQuote, fromAccountId, toAccountId)"
             />
             <SpinnerIcon v-else />
           </div>
@@ -213,7 +211,7 @@
               class="btn btn-primary btn-lg"
               id="swap_review_button"
               @click="review"
-              :disabled="!canSwap || cannotCoverNetworkFee"
+              :disabled="false"
             >
               {{
                 !canSwap || cannotCoverNetworkFee
@@ -488,7 +486,7 @@
       :open="swapErrorModalOpen"
       :account="account"
       @close="closeSwapErrorModal"
-      :error="swapErrorMessage"
+      :liqualityErrorString="swapErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
   </div>
@@ -1146,9 +1144,10 @@ export default {
       this.updateQuotes()
       this.updateFiatRates({ assets: [asset] })
     },
-    onReverseAssets(fromAsset, toAsset, toAmount, fromAccountId, toAccountId) {
+    onReverseAssets(fromAsset, toAsset, selectedQuote, fromAccountId, toAccountId) {
       if (this.updatingQuotes) return
       this.amountOption = null
+      const toAmount = selectedQuote?.toAmount || 0
       this.fromAssetChanged(toAccountId, toAsset, toAmount)
       this.toAssetChanged(fromAccountId, fromAsset)
     },
@@ -1398,7 +1397,7 @@ export default {
         reportLiqualityError(error)
         this.loading = false
         this.signRequestModalOpen = false
-        this.swapErrorMessage = this.$tle(errorToLiqualityErrorString(error))
+        this.swapErrorMessage = errorToLiqualityErrorString(error)
         this.swapErrorModalOpen = true
       }
     },
