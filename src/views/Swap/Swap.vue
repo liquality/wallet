@@ -211,7 +211,7 @@
               class="btn btn-primary btn-lg"
               id="swap_review_button"
               @click="review"
-              :disabled="false"
+              :disabled="!canSwap || cannotCoverNetworkFee"
             >
               {{
                 !canSwap || cannotCoverNetworkFee
