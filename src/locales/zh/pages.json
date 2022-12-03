@@ -81,7 +81,9 @@
   "experiments": {
     "experiments": "实验功能",
     "multiaccounts": "Multi-Accounts",
-    "multiaccountsDescription": "开启账户管理和多账户模式"
+    "multiaccountsDescription": "开启账户管理和多账户模式",
+    "errorReporting": "Error Reporting",
+    "errorReportingDescription": "Allow auto reporting of errors to support"
   },
   "manageAssets": {
     "assetView": "查看资产",

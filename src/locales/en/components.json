@@ -50,8 +50,9 @@
         "message": "Once you start using your wallet you will see the activity here."
     },
     "ethRequiredMessage": {
-        "message": "A balance is required to swap and you need ETH to pay for gas.",
-        "getETH": "Get ETH"
+        "message_swap": "A balance is required to swap and you need %{nativeAsset} to pay for gas.",
+        "message_send": "You need %{nativeAsset} to pay for gas.",
+        "getETH": "Get %{nativeAsset}"
     },
     "head": {
         "dappConnected": "dApp Connected",

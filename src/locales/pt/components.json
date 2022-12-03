@@ -50,8 +50,9 @@
         "message": "Quando começar a usar sua carteira, verá atividade aqui."
     },
     "ethRequiredMessage": {
-        "message": "Saldo é requerido para realizar trocas, e você precisa de ETH para pagar o gás.",
-        "getETH": "Obter ETH"
+        "message_swap": "Saldo é requerido para realizar trocas, e você precisa de %{nativeAsset} para pagar o gás.",
+        "message_send": "You need %{nativeAsset} to pay for gas.",
+        "getETH": "Obter %{nativeAsset}"
     },
     "head": {
         "dappConnected": "dApp Conectado",

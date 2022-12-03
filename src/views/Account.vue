@@ -94,16 +94,16 @@
           </router-link>
         </div>
       </div>
-      <div class="account-container_transactions">
+      <div class="account-container_transactions" v-if="activityData.length > 0">
         <ActivityFilter
           @filters-changed="applyFilters"
           :activity-data="activityData"
-          v-if="activityData.length > 0"
           :showTypeFilters="true"
         />
         <TransactionList :transactions="activityData" />
+      </div>
+      <div class="account-container_transactions" v-else>
         <EmptyActivity
-          v-show="activityData.length <= 0"
           :active-network="activeNetwork"
           :chain="chain"
           :asset="asset"

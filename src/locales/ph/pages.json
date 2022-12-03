@@ -81,7 +81,9 @@
   "experiments": {
     "experiments": "Mga eksperimento",
     "multiaccounts": "Mga Multi-Account",
-    "multiaccountsDescription": "Payagan ang pamamahala ng account at maraming account sa bawat network"
+    "multiaccountsDescription": "Payagan ang pamamahala ng account at maraming account sa bawat network",
+    "errorReporting": "Error Reporting",
+    "errorReportingDescription": "Allow auto reporting of errors to support"
   },
   "manageAssets": {
     "assetView": "Mga Assets",

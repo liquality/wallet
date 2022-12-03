@@ -1,22 +1,41 @@
 <template>
   <div class="notification-content">
     <div class="notification-text">
-      {{ $t('components.ethRequiredMesssage.message') }}
+      {{ $t(`components.ethRequiredMessage.message_${action}`, { nativeAsset }) }}
     </div>
     <router-link :to="accountUrl" class="btn btn-option get-eth-btn">
-      {{ $t('components.ethRequiredMesssage.getETH') }}
+      {{ $t('components.ethRequiredMessage.getETH', { nativeAsset }) }}
     </router-link>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import { getNativeAsset, getFeeAsset } from '@liquality/wallet-core/dist/src/utils/asset'
 export default {
   props: {
-    accountId: String
+    accountId: String,
+    action: {
+      type: String,
+      default: 'swap'
+    }
   },
   computed: {
+    ...mapGetters(['accountItem', 'client', 'suggestedFeePrices']),
+    account() {
+      return this.accountItem(this.accountId)
+    },
     accountUrl() {
-      return `/accounts/${this.accountId}/ETH/receive`
+      return `/accounts/${this.accountId}/${this.nativeAsset}/receive`
+    },
+    nativeAsset() {
+      return getFeeAsset(this.asset) || getNativeAsset(this.asset)
+    },
+    asset() {
+      if (this.account?.assets && this.account?.assets.length > 0) {
+        return this.account?.assets[0]
+      }
+      return null
     }
   }
 }
