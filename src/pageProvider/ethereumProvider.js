@@ -59,9 +59,11 @@ class EthereumPageProvider extends PageProvider {
   }
 
   setup() {
-    const metamaskEmulated = ['opensea.io', 'unstoppabledomains.com'].some(
-      (site) => this.window.location.host.indexOf(site) !== -1
-    ) // Is some kind of smart emulation possible?
+    const metamaskEmulated = true
+    //::::: when we move to manifest V3 we will fix this and implement a better way to set it
+    // const metamaskEmulated = ['opensea.io', 'unstoppabledomains.com'].some(
+    //   (site) => this.window.location.host.indexOf(site) !== -1
+    // ) // Is some kind of smart emulation possible?
 
     const injectionName = this.window.providerManager.getInjectionName(this.chain)
 
