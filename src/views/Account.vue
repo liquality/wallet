@@ -94,7 +94,7 @@
           </router-link>
         </div>
       </div>
-      <div class="account-container_transactions" v-if="activityData.length > 0">
+      <div class="account-container_transactions" v-if="activity.length">
         <ActivityFilter
           @filters-changed="applyFilters"
           :activity-data="activityData"
