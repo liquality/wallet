@@ -1,8 +1,13 @@
+import { liqualityErrorStringToJson } from '@liquality/error-parser'
 import { I18n } from 'i18n-js'
 
-const i18n = new I18n()
+export const i18n = new I18n()
 
-export const loadLocale = async (locale, namespaces = ['common', 'components', 'pages']) => {
+const LIQUALITY_ERROR_NAMESPACE = 'liquality_errors'
+export const loadLocale = async (
+  locale,
+  namespaces = ['common', 'components', 'pages', LIQUALITY_ERROR_NAMESPACE]
+) => {
   if (!i18n.translations[locale]) {
     let resources = {}
     await Promise.all(
@@ -42,6 +47,15 @@ export const Localization = {
 
     Vue.prototype.$t = (key, options) => {
       return i18n.translate(key, options)
+    }
+
+    Vue.prototype.$tle = (error) => {
+      // For translating liquality error string or liquality error objects
+      const errorObj = typeof error === 'string' ? liqualityErrorStringToJson(error) : error
+      return i18n.translate(
+        `${LIQUALITY_ERROR_NAMESPACE}.${errorObj.translationKey}`,
+        errorObj.data
+      )
     }
   }
 }

@@ -102,7 +102,9 @@ export default {
     },
     async switchNetwork(network) {
       await this.changeActiveNetwork({ network })
-      await this.$router.replace('/wallet')
+      if (this.$route.name !== 'WalletAssets') {
+        await this.$router.replace({ name: 'WalletAssets'})
+      }
       this.showNetworks = false
     }
   },

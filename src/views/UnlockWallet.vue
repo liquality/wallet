@@ -55,6 +55,8 @@ import LogoWalletMain from '@/assets/icons/logo_wallet_main.svg'
 import NewWalletText from '@/assets/icons/wallet_tagline.svg'
 import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { version as walletVersion } from '../../package.json'
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
+import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 
 export default {
   components: {
@@ -86,8 +88,8 @@ export default {
           }
         })
       } catch (e) {
-        console.log(e)
-        this.error = this.$t('pages.onboarding.seedlogin.unlockError')
+        reportLiqualityError(e)
+        this.error = this.$tle(errorToLiqualityErrorString(e))
         this.trackAnalytics({
           event: 'UnlockWallet failed',
           properties: {

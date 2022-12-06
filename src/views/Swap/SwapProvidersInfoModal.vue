@@ -14,7 +14,7 @@
           <ul>
             <li v-for="provider in uniqueProvides" :key="provider.id" class="py-1 px-2">
               <span class="d-flex align-items-center"
-                ><img :src="getProviderIcon(provider.id)" class="mr-2" /> {{ provider.name }}</span
+                ><img :src="getProviderIcon(provider.id)" class="mr-2" />{{ provider.name }}</span
               >
             </li>
           </ul>
@@ -73,16 +73,20 @@ export default {
   },
   computed: {
     ...mapState(['activeNetwork']),
+    unsupportedProviders() {
+      // TODO:: We will need to remove this computed prop after these providers are removed from wallet-core
+      return new Array('liquality', 'liqualityBoostNativeToERC20', 'liqualityBoostERC20toNative')
+    },
     providers() {
-      return Object.entries(buildConfig.swapProviders[this.activeNetwork]).map(
-        ([provider, providerConfig]) => {
+      return Object.entries(buildConfig.swapProviders[this.activeNetwork])
+        .map(([provider, providerConfig]) => {
           return {
             id: provider,
             name: providerConfig.name,
             ...getSwapProviderInfo(this.activeNetwork, provider)
           }
-        }
-      )
+        })
+        .filter((provider) => !this.unsupportedProviders.includes(provider.id))
     },
     uniqueProvides() {
       return [...new Map(this.providers.map((item) => [item['name'], item])).values()]

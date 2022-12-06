@@ -69,12 +69,12 @@ describe("Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
       console.log("user clicked on connect button");
 
       // Check web3 status as connected
-      await metaMaskTestDapp.waitForSelector('#accounts', { visible: true, timeout: 30000 })
-        .catch((e) => expect(e, "Sushi dapp ETH chain injection not connected.....").to.not.throw());
+      await metaMaskTestDapp.waitForSelector('#accounts', { visible: true})
+      console.log("Metamask test dapp loaded with accounts success message, checking the address is correct");
       const connectedAddress = await metaMaskTestDapp.$eval('#accounts', (el) => el.innerText)
-      console.log("Connected address: ", connectedAddress);
-      expect(connectedAddress, "Sushi dapp ETH chain injection not connected.....").to.not.equal("");
-      expect(connectedAddress, "Sushi dapp ETH chain injection not connected.....").to.not.null;
+      console.log("Metamask dap test connected address: ", connectedAddress);
+      expect(connectedAddress, "Sushi dapp ETH chain injection account address shouldn't be null.....").to.not.equal("");
+      expect(connectedAddress, "Sushi dapp ETH chain injection account address shouldn't be null.....").to.not.null;
     }
   });
   it("Dapp test app injection - Polygon", async () => {
@@ -95,12 +95,18 @@ describe("Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
     console.log("Metmask test dapp loaded with connect button");
 
     await metaMaskTestDapp.click("#connectButton");
-    await metaMaskTestDapp.waitForTimeout(2000);
+    console.log("Metmask test dapp connect button clicked");
+    await metaMaskTestDapp.waitForTimeout(5000);
     let sizeOfWindow = await browser.pages();
+    expect(sizeOfWindow.length, "Metamask popup not detected").to.equal(4);
 
     if (sizeOfWindow.length > 1) {
       console.log("Metamask popup detected");
       const connectRequestWindow = (await browser.pages())[3];
+      let pageTitle = await connectRequestWindow.title();
+      let pageUrl = await connectRequestWindow.url();
+      console.log("Page title is: ", pageTitle);
+      console.log("Page url is: ", pageUrl);
       await connectRequestWindow.waitForSelector("#filter_by_chain", {
         visible: true,
         timeout: 90000
@@ -108,6 +114,7 @@ describe("Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
       await connectRequestWindow.click("#filter_by_chain").catch((e) => e);
       await connectRequestWindow.waitForSelector(`#${chain}_web_network`, { visible: true });
       await connectRequestWindow.click(`#${chain}_web_network`, { delay: 1000 });
+      console.log("user clicked on polygon web network connect button");
 
       await connectRequestWindow.waitForSelector("#POLYGON", { visible: true });
       await connectRequestWindow.click("#POLYGON");
@@ -118,7 +125,7 @@ describe("Dapp Injection-['MAINNET','PULL_REQUEST_TEST']", async () => {
         timeout: 60000
       });
       await connectRequestWindow.click("#connect_request_button");
-      console.log("user clicked on connect button");
+      console.log("user clicked on connect button from liquality wallet");
 
       // Check web3 status as connected
       await metaMaskTestDapp.waitForSelector('#accounts', { visible: true, timeout: 30000 })

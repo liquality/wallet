@@ -293,7 +293,12 @@
           <tr v-if="item.error">
             <td class="text-danger text-left small-12">Error</td>
             <td class="text-danger" id="item_error">
-              <pre>{{ item.error.replace('Error: ', '') }}</pre>
+              <pre>{{ translatedItemError }} 
+                <CopyError
+                  :translatedError="translatedItemError"
+                  :liqualityErrorString="item.error"
+                />
+              </pre>
             </td>
           </tr>
           <tr>
@@ -338,13 +343,15 @@ import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
 import { calculateQuoteRate } from '@liquality/wallet-core/dist/src/utils/quotes'
 import { shortenAddress } from '@liquality/wallet-core/dist/src/utils/address'
 import { isObject } from 'lodash-es'
+import CopyError from '../../components/CopyError.vue'
 
 export default {
   components: {
     SpinnerIcon,
     CopyIcon,
     ChevronDownIcon,
-    ChevronRightIcon
+    ChevronRightIcon,
+    CopyError
   },
   data() {
     return {
@@ -365,6 +372,9 @@ export default {
       return this.history[this.activeNetwork][this.activeWalletId].find(
         (item) => item.id === this.id
       )
+    },
+    translatedItemError() {
+      return this.$tle(this.item.error)
     },
     reverseRate() {
       return BN(1).div(calculateQuoteRate(this.item)).dp(8)

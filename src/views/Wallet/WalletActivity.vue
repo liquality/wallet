@@ -3,11 +3,11 @@
     <ActivityFilter
       @filters-changed="applyFilters"
       :activity-data="activityData"
-      v-if="activityData.length > 0"
+      v-if="activity.length"
       :showTypeFilters="true"
     />
-    <TransactionList :transactions="activityData" />
-    <EmptyActivity v-show="activityData.length <= 0" :active-network="activeNetwork" />
+    <TransactionList v-if="activity.length" :transactions="activityData" />
+    <EmptyActivity v-else :active-network="activeNetwork" />
   </div>
 </template>
 

@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
-  "version": "0.77.0",
-  "name": "Liquality Wallet",
-  "description": "Secure multi-crypto wallet with built-in Atomic Swaps!",
+  "version": "0.81.0",
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDesc__",
+  "default_locale": "en",
   "homepage_url": "https://liquality.io",
   "permissions": [
     "notifications",

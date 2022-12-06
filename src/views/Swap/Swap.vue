@@ -63,7 +63,7 @@
         <CannotCoverMinimumMessage :asset="asset" :account-id="account.id" />
       </InfoNotification>
       <InfoNotification v-else-if="ethRequired && !insufficientFundsError">
-        <EthRequiredMessage :account-id="account.id" />
+        <EthRequiredMessage :account-id="account.id" :action="'swap'" />
       </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
@@ -89,9 +89,7 @@
             <ArrowDown
               id="arrow"
               v-if="!updatingQuotes"
-              @click="
-                onReverseAssets(asset, toAsset, selectedQuote.toAmount, fromAccountId, toAccountId)
-              "
+              @click="onReverseAssets(asset, toAsset, selectedQuote, fromAccountId, toAccountId)"
             />
             <SpinnerIcon v-else />
           </div>
@@ -488,7 +486,7 @@
       :open="swapErrorModalOpen"
       :account="account"
       @close="closeSwapErrorModal"
-      :error="swapErrorMessage"
+      :liqualityErrorString="swapErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
   </div>
@@ -553,6 +551,8 @@ import { buildConfig } from '@liquality/wallet-core'
 import { SwapProviderType } from '@liquality/wallet-core/dist/src/store/types'
 import { getSwapProvider } from '@liquality/wallet-core/dist/src/factory'
 import qs from 'qs'
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
+import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
 
 const QUOTE_TIMER_MS = 30000
 
@@ -806,7 +806,7 @@ export default {
       return getSwapProvider(this.activeNetwork, this.selectedQuote.provider)
     },
     defaultAmount() {
-      return 1
+      return this.max
     },
     isPairAvailable() {
       const liqualityMarket = this.networkMarketData?.find(
@@ -862,9 +862,28 @@ export default {
       return this.selectedQuote?.receiveFee
     },
     maxFee() {
-      const selectedSpeed = this.selectedFee[this.assetChain]
-      const fee = this.maxSwapFees[this.assetChain]?.[selectedSpeed]
-      return fee ? currencyToUnit(cryptoassets[this.assetChain], fee) : BN(0)
+      try {
+        const selectedSpeed = this.selectedFee[this.assetChain]
+        const fee = this.maxSwapFees[this.assetChain]?.[selectedSpeed] || 0
+
+        const getExtraAmountToExtractFromBalance =
+          this.selectedQuoteProvider?.getExtraAmountToExtractFromBalance
+        let extraAmountToExtractFromBalance = 0
+        if (getExtraAmountToExtractFromBalance) {
+          extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
+        }
+
+        const totalFees = currencyToUnit(cryptoassets[this.assetChain], fee).plus(
+          extraAmountToExtractFromBalance
+        )
+        return totalFees ? totalFees : BN(0)
+      } catch (error) {
+        const liqualityErrorString = errorToLiqualityErrorString(error)
+        reportLiqualityError(error)
+        return {
+          error: liqualityErrorString
+        }
+      }
     },
     receiveFeeRequired() {
       return this.selectedQuoteProvider?.toTxType
@@ -874,20 +893,12 @@ export default {
 
       // Some swap providers like "Jupiter" require extra amount to be extract from balance
       // when perforing swaps using "MAX"
-      const getExtraAmountToExtractFromBalance =
-        this.selectedQuoteProvider?.getExtraAmountToExtractFromBalance
-      let extraAmountToExtractFromBalance = 0
-      if (getExtraAmountToExtractFromBalance) {
-        extraAmountToExtractFromBalance = getExtraAmountToExtractFromBalance()
-      }
 
       const balance = this.networkWalletBalances[this.asset]
       const available = isERC20(this.asset)
         ? BN(balance)
-        : BN.max(
-            BN(balance).minus(BN(this.maxFee.plus(extraAmountToExtractFromBalance)).times(1.5)),
-            0
-          )
+        : BN.max(BN(balance).minus(BN(this.maxFee).times(1.5)), 0)
+
       return unitToCurrency(cryptoassets[this.asset], available)
     },
     availableBeforeFees() {
@@ -1133,9 +1144,10 @@ export default {
       this.updateQuotes()
       this.updateFiatRates({ assets: [asset] })
     },
-    onReverseAssets(fromAsset, toAsset, toAmount, fromAccountId, toAccountId) {
+    onReverseAssets(fromAsset, toAsset, selectedQuote, fromAccountId, toAccountId) {
       if (this.updatingQuotes) return
       this.amountOption = null
+      const toAmount = selectedQuote?.toAmount || 0
       this.fromAssetChanged(toAccountId, toAsset, toAmount)
       this.toAssetChanged(fromAccountId, fromAsset)
     },
@@ -1331,24 +1343,26 @@ export default {
       this.showQuotesModal = false
     },
     review() {
-      if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
-        // open in a new tab
-        const swapParams = qs.stringify({
-          mode: 'tab',
-          selectedFee: this.selectedFee,
-          sendAmount: BN(this.sendAmount).toString(),
-          toAccountId: this.toAccountId,
-          toAsset: this.toAsset,
-          customFees: this.customFees,
-          userSelectedQuote: this.userSelectedQuote,
-          currentStep: 'confirm',
-          maxOptionActive: this.maxOptionActive,
-          selectedQuote: this.selectedQuote
-        })
-        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?${swapParams}`
-        chrome.tabs.create({ url: browser.runtime.getURL(url) })
-      } else {
-        this.currentStep = 'confirm'
+      if (this.canSwap) {
+        if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
+          // open in a new tab
+          const swapParams = qs.stringify({
+            mode: 'tab',
+            selectedFee: this.selectedFee,
+            sendAmount: BN(this.sendAmount).toString(),
+            toAccountId: this.toAccountId,
+            toAsset: this.toAsset,
+            customFees: this.customFees,
+            userSelectedQuote: this.userSelectedQuote,
+            currentStep: 'confirm',
+            maxOptionActive: this.maxOptionActive,
+            selectedQuote: this.selectedQuote
+          })
+          const url = `/index.html#/accounts/${this.accountId}/${this.asset}/swap?${swapParams}`
+          chrome.tabs.create({ url: browser.runtime.getURL(url) })
+        } else {
+          this.currentStep = 'confirm'
+        }
       }
     },
     async swap() {
@@ -1380,11 +1394,10 @@ export default {
         this.signRequestModalOpen = false
         this.$router.replace(`/accounts/${this.account?.id}/${this.asset}`)
       } catch (error) {
-        console.error(error)
-        const { message } = error
+        reportLiqualityError(error)
         this.loading = false
         this.signRequestModalOpen = false
-        this.swapErrorMessage = message || error
+        this.swapErrorMessage = errorToLiqualityErrorString(error)
         this.swapErrorModalOpen = true
       }
     },

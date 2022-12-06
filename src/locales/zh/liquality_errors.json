@@ -1,0 +1,71 @@
+{
+  "InsufficientFundsError": {
+    "plain": "Kindly add more funds to cover the transaction request"
+  },
+  "InsufficientGasFeeError": {
+    "plain": "More gas is needed to cover the fees for the transaction, Kindly add more funds to cover the fees."
+  },
+  "InsufficientInputAmountError": {
+    "plain": "Due to the provider's parameters, kindly add more funds to cover the transaction request."
+  },
+  "InternalError": {
+    "plain": "There is an unknown issue, Please try again at a later time, If the problem persists, get in touch with support on discord with errorId: %{errorId}"
+  },
+  "LowSpeedupFeeError": {
+    "plain": "suggestions"
+  },
+  "PairNotSupportedError": {
+    "plain": "Due to the provider's parameters, this swap pair is not available now, Kindly select a different swap provider."
+  },
+  "ThirdPartyError": {
+    "plain": {
+      "swap": "There is an unknown issue with the provider's service, Please select a different swap provider, try again at a later time.",
+      "unknown": "Kindly try again at a later time while the provider fixes this issue"
+    }
+  },
+  "UnknownError": {
+    "plain": "There is an unknown issue, please try again at a later time, In the event the issue persists, please contact support on discord with errorId: %{errorId}"
+  },
+  "SlippageTooHighError": {
+    "plain": "Please try again (Slippage is too high)"
+  },
+  "PasswordError": {
+    "plain": "Please Try Again (Password should have 8 or more characters)"
+  },
+  "NoTipError": {
+    "plain": "Please set up the miner tip greater than 0 GWEI"
+  },
+  "VeryLowTipError": {
+    "plain": "Please use the 'Low' option. (Miner tip is extremely low)"
+  },
+  "VeryHighTipWarning": {
+    "plain": "Please use the 'High' option. (Miner tip was higher than necessary)"
+  },
+  "VeryLowMaxFeeError": {
+    "plain": "Please review the 'Max Fee' value set. (The fee must be set higher)"
+  },
+  "VeryHighMaxFeeWarning": {
+    "plain": "Please review 'Max Fee', as it is higher than necessary"
+  },
+  "DuplicateTokenSymbolError": {
+    "plain": "Token with this symbol exists"
+  },
+  "LedgerDeviceConnectionError": {
+    "plain": "Ledger device not connected,connect or reconnect your device"
+  },
+  "LedgerDappConflictError": {
+    "plain": "We weren't able to get a list of accounts. Eventually, close any other apps your Ledger is connected to, including Ledger Live, and try again."
+  },
+  "LedgerAppMismatchError": {
+    "plain": "We weren't able to get a list of accounts. Please check on the Ledger if the right app/asset was selected, or cancel and choose a different asset"
+  },
+  "LedgerDevicelockedError": {
+    "plain": "Ledger device is connected but locked, please unlock your ledger device and try again"
+  },
+  "LedgerDeviceNotupdatedError": {
+    "plain": "Update your Ledger device firmware, and all apps, including Ledger Live app to the latest versions."
+  },
+  "LedgerDeviceSmartContractTransactionDisabledError": {
+    "plain": "Permission denied: enable Blind signing or Contract data in the Ethereum app Settings"
+  }
+}

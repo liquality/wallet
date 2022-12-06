@@ -2,14 +2,19 @@
   {
     "page": "1",
     "title": "What's New?",
-    "content": ["Fix for toggle in Settings", "What’s new prompt facelift"]
+    "content": [
+      "Solana fees fix for swaps",
+      "User friendly error messages improvements",
+      "Solana NFTs fixes",
+      "Activity filter fixes"
+    ]
   },
   {
     "page": "2",
-    "title": "Did you know you can...",
+    "title": "Você sabia que pode...",
     "content": [
-      "Use LI.FI and deBridge with more than 100 different swap paths",
-      "Use LI.FI and deBridge to swap between almost all EVM chains our wallet currently supports"
+      "Usar LI.FI e deBridge em mais de 100 diferentes tipos de swaps",
+      "Usar LI.FI e deBridge para fazer um swap em quase todas cadeias EVM que nossa carteira suporta atualmente"
     ]
   }
 ]

@@ -2,7 +2,12 @@
   {
     "page": "1",
     "title": "What's New?",
-    "content": ["Fix for toggle in Settings", "What’s new prompt facelift"]
+    "content": [
+      "Solana fees fix for swaps",
+      "User friendly error messages improvements",
+      "Solana NFTs fixes",
+      "Activity filter fixes"
+    ]
   },
   {
     "page": "2",

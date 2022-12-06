@@ -19,10 +19,10 @@
     },
     "bridgeAssetRequiredMessage": {
         "needMore": "Kailangan mo magdagdag ng %{asset} para sa gas fee.",
-        "get": "Kunin"
+        "get": "Kumuha ng"
     },
     "cannotCoverMinimumMessage": {
-        "needMore": "Kinakailangan ng higit pang {{token}} upang masakop ang min trade plus fee."
+        "needMore": "Kinakailangan ng higit pang %{asset} upang masakop ang min trade at fee."
     },
     "connectionDrawer": {
         "dappNetwork": "dApp Network",
@@ -50,12 +50,13 @@
         "message": "Dito makikita ang mga activity ng iyong wallet kapag sinimulan mo na itong gamitin."
     },
     "ethRequiredMessage": {
-        "message": "Kinakailangan ang balanse para makapagpalit at kailangan mo ng ETH para sa gas fee.",
-        "getETH": "Kumuha ng ETH"
+        "message_swap": "Kinakailangan ang balanse para makapagpalit at kailangan mo ng %{nativeAsset} para sa gas fee.",
+        "message_send": "You need %{nativeAsset} to pay for gas.",
+        "getETH": "Kumuha ng %{nativeAsset}"
     },
     "head": {
-        "dappConnected": "dApp Connected",
-        "connectDapp": "Connect dApp"
+        "dappConnected": "Nakakonek na sa dApp",
+        "connectDapp": "Kumonek sa dApp"
     },
     "ledger": {
         "signTo": "Mag-sign sa %{action} Swap",
@@ -75,7 +76,7 @@
     },
     "noFundsForNetworkFee": {
         "noEnoughAsset": "Ang {{token}} ay hindi sapat para mabayaran ang fees. Ibaba ang bilis o mag dagdag ng kaukulang token para sa gas fee.",
-        "getAsset": "Kumuha %{asset}\n",
+        "getAsset": "Kumuha ng %{asset}",
         "lowerSpeed": "Magdagdag para mabayaran ang gas fee o kaya Ibaba ang bilis ng transaksyon."
     },
     "noLiquidityMessage": {

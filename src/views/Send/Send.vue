@@ -8,6 +8,9 @@
       >
         {{ $t('common.send') }}
       </NavBar>
+      <InfoNotification v-if="nativeAssetRequired">
+        <EthRequiredMessage :account-id="account.id" :action="'send'" />
+      </InfoNotification>
       <div class="wrapper form">
         <div class="wrapper_top">
           <SendInput
@@ -239,7 +242,7 @@
       :open="sendErrorModalOpen"
       :account="account"
       @close="closeSendErrorModal"
-      :error="sendErrorMessage"
+      :liqualityErrorString="sendErrorMessage"
     />
     <LedgerSignRequestModal :open="signRequestModalOpen" @close="closeSignRequestModal" />
   </div>
@@ -280,6 +283,10 @@ import CustomFeesEIP1559 from '@/components/CustomFeesEIP1559'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
 import qs from 'qs'
 import { UNSResolver } from '@liquality/wallet-core/dist/src/nameResolvers/uns'
+import { errorToLiqualityErrorString } from '@liquality/error-parser/dist/src/utils'
+import { reportLiqualityError } from '@liquality/error-parser/dist/src/reporters/index'
+import InfoNotification from '@/components/InfoNotification'
+import EthRequiredMessage from '@/components/EthRequiredMessage'
 
 export default {
   components: {
@@ -291,7 +298,9 @@ export default {
     OperationErrorModal,
     LedgerSignRequestModal,
     CustomFees,
-    CustomFeesEIP1559
+    CustomFeesEIP1559,
+    InfoNotification,
+    EthRequiredMessage
   },
   mixins: [ledgerConnectMixin],
   data() {
@@ -330,6 +339,9 @@ export default {
     ...mapGetters(['accountItem', 'client', 'suggestedFeePrices']),
     account() {
       return this.accountItem(this.accountId)
+    },
+    networkWalletBalances() {
+      return this.account?.balances
     },
     amount: {
       get() {
@@ -428,11 +440,32 @@ export default {
       const { supportCustomFees } = getChain(this.activeNetwork, cryptoassets[this.asset].chain)
       return supportCustomFees
     },
-    canSend() {
-      if (!this.address || this.addressError) return false
-      if (BN(this.amount).lte(0) || this.amountError) return false
+    nativeAssetRequired() {
+      if (!this.networkWalletBalances) {
+        return true
+      }
 
-      return true
+      const nativeAssetBalance = this.networkWalletBalances[this.assetChain]
+      if (
+        !nativeAssetBalance ||
+        BN(nativeAssetBalance).lte(0) ||
+        BN(nativeAssetBalance).minus(BN(this.currentFee)).lt(0)
+      ) {
+        return true
+      }
+      return false
+    },
+    canSend() {
+      if (
+        !this.nativeAssetRequired &&
+        this.address &&
+        !this.addressError &&
+        BN(this.amount).gt(0) &&
+        !this.amountError
+      ) {
+        return true
+      }
+      return false
     },
     prettyFee() {
       return this.currentFee.dp(6)
@@ -500,7 +533,16 @@ export default {
       }
     },
     updateSendFees: _.debounce(async function (amount) {
-      await this._updateSendFees(amount)
+      const nativeAssetBalance = this.networkWalletBalances[this.assetChain]
+      console.log(
+        `on updateSendFees => amount: ${amount}, nativeAssetBalance: ${nativeAssetBalance}, asset: ${this.asset}, `
+      )
+      if (BN(amount).gt(0) && BN(this.balance).gt(0) && BN(nativeAssetBalance).gt(0)) {
+        console.log('Updating fees')
+        await this._updateSendFees(amount)
+      } else {
+        console.log('balance or amount <= 0, not updating fees')
+      }
     }, 800),
     async updateMaxSendFees() {
       await this._updateSendFees()
@@ -521,21 +563,23 @@ export default {
       this.currentStep = 'inputs'
     },
     review() {
-      if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
-        // open in a new tab
-        const sendParams = qs.stringify({
-          mode: 'tab',
-          selectedFee: this.selectedFee,
-          amount: BN(this.amount).toString(),
-          address: this.address,
-          currentStep: 'confirm',
-          maxOptionActive: this.maxOptionActive,
-          customFee: this.customFee
-        })
-        const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?${sendParams}`
-        chrome.tabs.create({ url: browser.runtime.getURL(url) })
-      } else {
-        this.currentStep = 'confirm'
+      if (this.canSend) {
+        if (this.account?.type.includes('ledger') && this.$route.query?.mode !== 'tab') {
+          // open in a new tab
+          const sendParams = qs.stringify({
+            mode: 'tab',
+            selectedFee: this.selectedFee,
+            amount: BN(this.amount).toString(),
+            address: this.address,
+            currentStep: 'confirm',
+            maxOptionActive: this.maxOptionActive,
+            customFee: this.customFee
+          })
+          const url = `/index.html#/accounts/${this.accountId}/${this.asset}/send?${sendParams}`
+          chrome.tabs.create({ url: browser.runtime.getURL(url) })
+        } else {
+          this.currentStep = 'confirm'
+        }
       }
     },
     async send() {
@@ -571,11 +615,10 @@ export default {
 
         this.$router.replace(`/accounts/${this.accountId}/${this.asset}`)
       } catch (error) {
-        console.error(error)
-        const { message } = error
+        reportLiqualityError(error)
         this.loading = false
         this.signRequestModalOpen = false
-        this.sendErrorMessage = message || error
+        this.sendErrorMessage = errorToLiqualityErrorString(error)
         this.sendErrorModalOpen = true
       }
     },

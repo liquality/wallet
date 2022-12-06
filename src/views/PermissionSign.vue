@@ -53,6 +53,10 @@ import SpinnerIcon from '@/assets/icons/spinner.svg'
 import { isAddress } from 'ethers/lib/utils'
 import LedgerSignRequestModal from '@/components/LedgerSignRequestModal'
 import { ledgerConnectMixin } from '@/utils/hardware-wallet'
+import {
+  createInternalError,
+  CUSTOM_ERRORS
+} from '@liquality/error-parser/dist/src/LiqualityErrors'
 
 const signTypedDataMethodToVersion = {
   eth_signTypedData: 'V1',
@@ -165,7 +169,7 @@ export default {
           msgParams.data = JSON.parse(first)
         }
       } catch (err) {
-        throw new Error(`Invalid JSON: ${err}`)
+        throw createInternalError(CUSTOM_ERRORS.Invalid.Json(err)) // Error(`Invalid JSON: ${err}`)
       }
 
       this.messageToDisplay = Object.entries(msgParams.data)

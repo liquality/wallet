@@ -1,6 +1,8 @@
 <template>
   <div class="transaction-list">
+    <NoTransactionsFound v-if="!transactions.length" />
     <ListItem
+      v-else
       v-for="item in transactions"
       :key="item.id"
       :id="item.type + '_' + item.from + '_' + item.to"
@@ -39,6 +41,8 @@
 <script>
 import ListItem from '@/components/ListItem'
 import TransactionStatus from '@/components/TransactionStatus'
+import NoTransactionsFound from '@/components/NoTransactionsFound.vue'
+
 import {
   getStep,
   ACTIVITY_STATUSES,
@@ -58,7 +62,8 @@ import { mapState } from 'vuex'
 export default {
   components: {
     ListItem,
-    TransactionStatus
+    TransactionStatus,
+    NoTransactionsFound
   },
   props: ['transactions'],
   computed: {
@@ -156,4 +161,4 @@ export default {
 }
 </script>
 
-<style lang="scss"></style>
+<style lang="sss"></style>

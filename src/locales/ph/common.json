@@ -56,6 +56,7 @@
     "transactionFee": "Transaction Fee",
     "copied": "Kinopya!",
     "copyAddress": "Kopyahin ang Address",
+    "copyError": "Copy Error",
     "clickToCopy": "Click to copy",
     "viewInExplorer": "Tingnan sa Explorer",
     "noItems": "No items",
@@ -88,10 +89,11 @@
     "provider": "Provider",
     "localesLabels": {
         "en": "English",
-        "es": "Spanish",
-        "zh": "Chinese (Simplified)",
-        "pt": "Portuguese",
-        "ph": "Filipino",
-        "cb": "Bisaya (Cebuano)"
-    }
+        "es": "Español",
+        "zh": "中文（简体）",
+        "pt": "Português",
+        "ph": "Tagalog",
+        "cb": "Cebuano"
+    },
+    "noResults": "No results found"
 }
