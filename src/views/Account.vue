@@ -30,9 +30,9 @@
         <div v-if="address" class="account-container_address">
           <v-popover
             trigger="hover focus"
-            :show="showPopOver"
             placement="top"
             :hideOnTargetClick="false"
+            :delay="{ hide: 1000, show: 200 }"
           >
             <button
               @click.prevent="copyAddress"
@@ -94,7 +94,7 @@
           </router-link>
         </div>
       </div>
-      <div class="account-container_transactions" v-if="activityData.length > 0">
+      <div class="account-container_transactions" v-if="activity.length">
         <ActivityFilter
           @filters-changed="applyFilters"
           :activity-data="activityData"
