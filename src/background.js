@@ -32,7 +32,7 @@ function getBalance(state) {
   return total
 }
 
-store.subscribe(async ({ type, payload }, state) => {
+store.subscribe(({ type, payload }, state) => {
   let currentState = _.cloneDeep(state)
   const { dispatch, getters } = store
 
@@ -79,7 +79,7 @@ store.subscribe(async ({ type, payload }, state) => {
         network: state.activeNetwork,
         walletId: state.activeWalletId
       })
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         event: `Change Active Network to ${state.activeNetwork}`,
         properties: {
           walletVersion,
@@ -99,7 +99,7 @@ store.subscribe(async ({ type, payload }, state) => {
         dispatch('updateMarketData', { network: state.activeNetwork })
       break
     case 'LOCK_WALLET':
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         event: 'Wallet locked successfully',
         properties: {
           walletVersion,
@@ -154,7 +154,7 @@ store.subscribe(async ({ type, payload }, state) => {
       // eslint-disable-next-line no-case-declarations
       let toAmountValue = unitToCurrency(cryptoassets[payload.swap.to], payload.swap.toAmount)
 
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         event: 'New SWAP',
         properties: {
           category: 'Swaps',
@@ -177,7 +177,7 @@ store.subscribe(async ({ type, payload }, state) => {
         cryptoassets[payload.transaction.from],
         payload.transaction.amount
       )
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         event: `User send funds`,
         properties: {
           walletVersion,
@@ -193,7 +193,7 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'ADD_EXTERNAL_CONNECTION':
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         event: 'Connect to Dapps',
         properties: {
           walletVersion,
@@ -206,7 +206,7 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'ADD_CUSTOM_TOKEN':
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         event: 'Custom Token Added',
         properties: {
           walletVersion,
@@ -224,7 +224,7 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'REMOVE_CUSTOM_TOKEN':
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         event: 'Custom Token Removed',
         properties: {
           walletVersion,
@@ -240,7 +240,7 @@ store.subscribe(async ({ type, payload }, state) => {
       const item = getters.historyItemById(payload.network, payload.walletId, payload.id)
       if (item.type === 'SWAP' && payload.updates) {
         if (payload.updates.status !== 'undefined') {
-          await dispatch('app/trackAnalytics', {
+          dispatch('app/trackAnalytics', {
             event: 'Swap status change',
             properties: {
               walletVersion,
@@ -256,7 +256,7 @@ store.subscribe(async ({ type, payload }, state) => {
       }
       if (item.type === 'SEND' && payload.updates) {
         if (payload.updates.status !== 'undefined') {
-          await dispatch('app/trackAnalytics', {
+          dispatch('app/trackAnalytics', {
             event: 'Send status change',
             properties: {
               walletVersion,
@@ -270,7 +270,7 @@ store.subscribe(async ({ type, payload }, state) => {
       }
       if (item.type === 'NFT' && payload.updates) {
         if (payload.updates.status !== 'undefined') {
-          await dispatch('app/trackAnalytics', {
+          dispatch('app/trackAnalytics', {
             event: 'Send NFT status change',
             properties: {
               walletVersion,
@@ -289,7 +289,7 @@ store.subscribe(async ({ type, payload }, state) => {
       const newBalance = getBalance(currentState)
       // Only trigger event for the first time when user funds their wallet, any subsequent balance updates are ignored.
       if (prevBalance === 0 && newBalance > prevBalance) {
-        await dispatch('app/trackAnalytics', {
+        dispatch('app/trackAnalytics', {
           event: 'User funded wallet',
           properties: {
             walletVersion,
@@ -302,7 +302,7 @@ store.subscribe(async ({ type, payload }, state) => {
       prevState = currentState
       break
     case 'TOGGLE_EXPERIMENT':
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         event: `User on Experiment feature ${payload.name}`,
         properties: {
           walletVersion,
@@ -313,7 +313,7 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'CHANGE_PASSWORD':
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         walletVersion,
         event: 'Change Password',
         properties: {
@@ -323,7 +323,7 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'DISABLE_ASSETS':
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         walletVersion,
         event: 'User Disable Asset',
         properties: {
@@ -334,7 +334,7 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'DISABLE_ETHEREUM_INJECTION':
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         walletVersion,
         event: 'User Disable Default Web3 Wallet Injection',
         properties: {
@@ -344,7 +344,7 @@ store.subscribe(async ({ type, payload }, state) => {
       })
       break
     case 'ENABLE_ETHEREUM_INJECTION':
-      await dispatch('app/trackAnalytics', {
+      dispatch('app/trackAnalytics', {
         walletVersion,
         event: 'User Enable Default Web3 Wallet Injection',
         properties: {

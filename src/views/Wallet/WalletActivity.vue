@@ -38,7 +38,7 @@ export default {
       this.activityData = applyActivityFilters([...this.activity], filters)
     }
   },
-  created() {
+  mounted() {
     this.activityData = [...this.activity]
   },
   watch: {

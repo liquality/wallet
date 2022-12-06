@@ -18,14 +18,21 @@
       </li>
     </ul>
     <div class="wallet-tab-content">
-      <router-view></router-view>
+      <Lazy>
+        <router-view></router-view>
+      </Lazy>
     </div>
   </div>
 </template>
 
 <script>
+import Lazy from '@/components/Lazy.vue'
 import { mapGetters, mapState } from 'vuex'
+
 export default {
+  components: {
+    Lazy
+  },
   computed: {
     ...mapState(['accounts', 'activeNetwork', 'activeWalletId']),
     ...mapGetters(['allNftCollections']),

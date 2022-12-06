@@ -30,37 +30,37 @@
 <script>
 import SearchIcon from '@/assets/icons/search.svg'
 import WalletAccounts from '@/components/WalletAccounts'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
+import { isEvmChain } from '@liquality/cryptoassets'
 
 export default {
   computed: {
+    props: {
+      account: Object,
+      toAccount: Object,
+      assetSelection: String,
+      excludeAsset: String
+    },
+    ...mapState(['activeNetwork']),
     ...mapGetters(['accountsData', 'accountsWithBalance', 'chainAssets']),
     accounts() {
-      if (this.assetSelection === 'from') {
-        return this.accountsWithBalance
-          .map((account) => {
-            const assets = this.chainAssets[account.chain].filter(
-              (asset) => asset !== this.excludeAsset
-            )
-            return {
-              ...account,
-              assets
+      return (this.assetSelection === 'from' ? this.accountsWithBalance : this.accountsData).map(
+        (acc) => {
+          const assets = this.chainAssets[acc.chain].filter((asset) => asset !== this.excludeAsset)
+          return {
+            ...acc,
+            assets
+          }.filter((acc) => {
+            if (isEvmChain(this.activeNetwork, acc.chain)) {
+              const _account = this.assetSelection === 'from' ? this.account : this.toAccount
+              if (_account) {
+                return _account.addresses[0] === acc.addresses[0] && acc.assets?.length > 0
+              }
             }
+            return acc.assets?.length > 0
           })
-          .filter((a) => a.assets?.length > 0)
-      } else {
-        return this.accountsData
-          .map((account) => {
-            const assets = this.chainAssets[account.chain].filter(
-              (asset) => asset !== this.excludeAsset
-            )
-            return {
-              ...account,
-              assets
-            }
-          })
-          .filter((a) => a.assets?.length > 0)
-      }
+        }
+      )
     }
   },
   components: {

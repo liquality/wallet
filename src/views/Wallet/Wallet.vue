@@ -1,5 +1,5 @@
 <template>
-  <div class="wallet">
+  <Lazy class="wallet">
     <NavBar showMenu="true">
       <span class="wallet-header">
         <strong>{{ $t('common.overview') }}</strong>
@@ -14,7 +14,7 @@
       <WalletStats v-else />
       <WalletTabs />
     </div>
-  </div>
+  </Lazy>
 </template>
 
 <script>
@@ -27,6 +27,7 @@ import WalletStats from './WalletStats.vue'
 import WalletTabs from './WalletTabs.vue'
 import NFTStats from './NFTStats'
 import { reportLiqualityError } from '@liquality/error-parser'
+import Lazy from '@/components/Lazy.vue'
 
 export default {
   components: {
@@ -35,11 +36,12 @@ export default {
     NFTStats,
     WalletTabs,
     InfoNotification,
-    LedgerRequestMessage
+    LedgerRequestMessage,
+    Lazy
   },
-  async created() {
+  mounted() {
     try {
-      await this.updateBalances({
+      this.updateBalances({
         network: this.activeNetwork,
         walletId: this.activeWalletId,
         loadingInitialBalance: true
@@ -48,7 +50,7 @@ export default {
       // TODO: manage error
       reportLiqualityError(error)
     }
-    await this.getNFTs()
+    this.getNFTs()
   },
   computed: {
     ...mapState(['activeNetwork', 'activeWalletId', 'history']),

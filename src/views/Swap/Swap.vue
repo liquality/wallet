@@ -462,6 +462,8 @@
         :exclude-asset="assetSelection === 'to' ? asset : toAsset"
         :asset-selection="assetSelection"
         @asset-selected="assetChanged"
+        :account="account"
+        :to-account="toAccount"
       />
     </div>
     <!-- Swap types -->
